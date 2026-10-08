@@ -28,8 +28,10 @@ payroll. The company moved to a new HR system last year; for four months both sy
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CFO, HR and the licensed basis. The matched comparison of recipients, capped by the policy, still clears the
   budget line, and nothing in the pack mentions teammates.
-* **Instrument repair.** Record every quit and every reason perfectly. The teammates' quits are recorded already; the difficulty is that the
-  programme's effect is a difference across two groups that no single table holds.
+* **Instrument repair.** Suspect file: the old HR system, which carries no manager id. Repaired so that every pre-award month records each
+  employee's manager, the crosswalk is no longer needed, and rung 0 still returns 172, rung 1 118 and rung 2 94; none returns 64. Separations
+  are complete in both systems. The answer still needs the deciding comparison: the teammates' extra quits are recorded already, and only
+  setting them against the recipients' gain, both by matched difference in differences, gives the net.
 * **Lens swap.** The naive figure is the recipients' gain; the answer is the gain less what the programme cost in teams it touched, a different
   population (recipients and their teammates) over the coming year.
 

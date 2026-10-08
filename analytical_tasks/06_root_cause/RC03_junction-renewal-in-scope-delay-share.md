@@ -29,8 +29,11 @@ the junction the larger cause.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the engineers' view, the performance team's ranking and the licensed basis. The delay file still files every
   junction incident under one location code, and the natural build still credits the renewal with all of it.
-* **Instrument repair.** Make every attribution final and every fault record perfect. The junction's signalling delay is then known exactly
-  (rung 2's 3,400 minutes) and is still not what the renewal removes, because 950 minutes a period come from track circuits beyond the boundary.
+* **Instrument repair.** Suspect file: the delay codes of the last three periods, still provisional. Repaired so that every period carries its
+  final codes, rung 0 returns 3,400 minutes, as rungs 1 and 2 then also do: the junction's whole signalling delay. None returns 2,450. The
+  location code is the attribution guide's location area, correct for every incident, and every fault record carries the failed asset's id. The
+  answer still needs each incident traced through its fault record to the scheme's asset schedule, because 950 minutes a period come from track
+  circuits beyond the boundary, the same asset type under the same location code.
 * **Lens swap.** The naive figure is the delay the junction location suffered; the answer is the delay from assets the scheme replaces: a
   different set of incidents, selected through a different entity.
 

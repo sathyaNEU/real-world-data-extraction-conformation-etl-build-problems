@@ -29,8 +29,11 @@ grants (E). The enforcement guide says how violations are counted, and every not
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the three voices and the licensed basis. Counting violation months by cause, the natural careful build, still names
   cold water.
-* **Instrument repair.** A perfect monitoring system still reports one row per limit type per month, as the permit requires; the episode is an
-  enforcement unit, built from a sequence of correct rows.
+* **Instrument repair.** Suspect file: the noncompliance report's cause code, which records the cause the permittee identified. Repaired so that
+  every exceedance carries its true cause (the permittees' codes agree with the regulator's inspection findings on every inspected report), rung
+  0 still names C (412 rows), rung 1 A (330 rows) and rung 2 B (230 months); none names D. The monitoring file holds every row the permits
+  require and the compliance schedules are complete. The answer still needs the episode, a run of correct rows that no file stores, however
+  complete.
 * **Lens swap.** The naive build counts months of noncompliance; the answer counts continuing failures, which group the months into a
   different population of events.
 

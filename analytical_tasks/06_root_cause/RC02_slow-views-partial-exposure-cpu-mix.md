@@ -29,8 +29,11 @@ goes to one cause.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice, the crawl dashboard and the licensed basis. The field data still shows a staggered joint ramp, the two
   partial-exposure groups still read A ahead of C, and nothing in the pack says their CPU mix matters.
-* **Instrument repair.** Give every view perfect per-script timing. Views that carried both changes still record their joint state, so the
-  counterfactual without one change is identified only through the partial-exposure groups, whose CPU mix the better instrument does not change.
+* **Instrument repair.** Suspect file: the synthetic crawl, whose URL list was refreshed in the same period, so its two months measure different
+  pages. Repaired to a matched list, rung 0 names E (the fonts, +300 KB) instead of B; rung 1's field event study still names D and rung 2 A,
+  and none names C. The field view log, the rollout log, the subscription register and the device registry are complete. The answer still needs
+  both partial-exposure effects estimated by CPU class and standardised to the base: even perfect per-script timing leaves the views that
+  carried both changes in their joint state, and the two groups' CPU mix is a property of who uses them, which no better timer changes.
 * **Lens swap.** The raw reads describe AMP landing views and subscribers' article views; the answer is about the views each fix acts on at
   last month's traffic, the ad-supported base for the ad stack and every mobile view for the framework: different populations, not one
   population under two lenses.

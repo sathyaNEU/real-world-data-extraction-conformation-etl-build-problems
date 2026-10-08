@@ -29,8 +29,11 @@ a successor company took over its open orders. Last quarter the board ran a rand
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete procurement's view, the head of product's belief and the licensed basis. The build records still carry the old
   vendor code only up to the closure, and the cohort analysis still bounds the swap there.
-* **Instrument repair.** Perfect failure records cannot show cameras that have not yet reached four months in service. The scope of the swap is
-  a forward population defined by the cells inside each camera, and only the receipts carry that across the closure.
+* **Instrument repair.** Suspect file: the complaint form's serial field, blank on retail complaints that carry only an RMA number. Repaired so
+  that every complaint carries its serial, rung 1 returns D (the enclosure rework, 3,300), as rung 2 does, and rung 0's calendar step still
+  names A; none returns B. The build records' vendor code is correct (the successor has been the vendor of record since the closure) and every
+  camera's cell lot is on its build record. The answer still needs the forward population: cameras built since the closure are under four months
+  old, so no failure record, however complete, can show them, and only the receipts carry their cells' part number across the closure.
 * **Lens swap.** The naive scope is cameras with the old vendor code, built before the closure; the answer adds cameras built since, which have
   no failure history at all: a different population at a different age.
 

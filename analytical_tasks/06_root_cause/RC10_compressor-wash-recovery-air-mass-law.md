@@ -28,8 +28,10 @@ only if the wash recovers at least 100 Btu/kWh over the plant's next twelve mont
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the licensed basis. The bridge's residual and the OEM's fired-hours rule still put the recovery
   above the approval line.
-* **Instrument repair.** Perfect fuel and power metering gives a perfect bridge and a perfect residual, and neither says what a wash will win
-  back next year: that is a forward effect measurable only from past washes.
+* **Instrument repair.** None suspect: the hourly fuel, power, airflow and ambient records are complete and continuous, the maintenance log
+  holds every wash, the twin's records cover every overlap, and the OEM manual states its own rule correctly. Perfect metering leaves rung 0 at
+  196, rung 1 at 128 and rung 2 at 112; none returns 92. A perfect bridge still cannot split its residual between fouling and hot-gas-path wear,
+  and what a wash will win back next year is measurable only from past washes against the twin, carried across next year's dispatch.
 * **Lens swap.** The residual describes how the plant degraded over the last year; the answer is what one intervention will change over the
   next year's dispatch: a different quantity over a different window.
 

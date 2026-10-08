@@ -29,8 +29,11 @@ years to the dollar. Staff publish the special contract's figures as confidentia
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the deck, both voices and the licensed basis. A schedule-level bridge with the rider at its annual average still
   reconciles to $412M, still puts the contract first and the rider fourth.
-* **Instrument repair.** Perfect metering and billing records change nothing: the rider's covariance with sales is in the correct billing data
-  already, and only a construction that follows each day of service reads it.
+* **Instrument repair.** Suspect file: staff's industrial class table, which publishes the special contract only inside the class total.
+  Published in full, the contract's row shows $110M on 2.4 TWh, as rung 2's bound already gives: rung 1 then names E with rung 2, rung 0 still
+  names A, and none names B. Sales, revenue, the rider's filed factors and the billing calendar are complete. The answer still needs each day of
+  service priced at the factor in force that day through the billing calendar: no billing record, however complete, prices a January day of
+  service at January's factor when its bill falls in March.
 * **Lens swap.** The annual-average bridge prices a year's sales at a year's rider; the answer prices each day of service at the rider in
   force that day, wherever its bill fell, so $110M of revenue moves between drivers.
 

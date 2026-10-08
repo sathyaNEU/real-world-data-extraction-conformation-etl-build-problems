@@ -29,8 +29,10 @@ keeps the actual results of every past winter scheme.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the board's request, the trusts' view and the licensed basis. The handover data and the book's queueing conversion
   still commit the fund to the H2 cohort area.
-* **Instrument repair.** Time every handover to the second: the queues are measured exactly already. What a cohort area can release is set
-  by the bays free in each hour, a property of the department beside it, which no better handover clock records.
+* **Instrument repair.** None suspect: incidents and outcomes, handover times by hospital and hour, each department's hourly census, the
+  proposals and the book are complete; the handover clock times every handover and the census counts every occupied bay each hour. Every rung
+  reads complete files, so rung 0 still commits A (6.2 minutes), rung 1 C (9.4) and rung 2 D (6.6); none holds. What a cohort area can release
+  is the smaller of crews waiting and bays free in each hour, a quantity built across two organisations' files that no record holds.
 * **Lens swap.** The naive build counts crew-hours lost at each hospital; the answer counts the crew-hours a cohort area could take back in the
   hours they are lost, a different set of hours.
 

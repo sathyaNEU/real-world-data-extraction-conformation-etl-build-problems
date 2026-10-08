@@ -32,7 +32,7 @@ placing homeless families in temporary accommodation outside it, and their child
   census still offers the resident-authority split that clears the tails, and nothing in either separates placed families.
 * **Instrument repair.** No file is suspect. The census records sessions possible and missed for every pupil and each pupil's address at
   each termly census; its resident-authority flag is correct and records residence, a different attribute from placement. The placement
-  register records every household the housing authority placed, with members, addresses and dates. The register's reason codes enter no
+  register records every household the housing authority placed, with members, addresses and dates. The attendance reason codes enter no
   rung, and even a perfect reason for every session leaves rung 0 at one distinct group, rung 1 at one shift (97%) and rung 2 at the city
   boundary (35%), because none of them reads reasons. The saturation at rung 1 sits in the framework's booking rule, not in a file. Telling
   placed families from cross-border choices is a join across complete records under the housing code's clause, and re-running the shift on

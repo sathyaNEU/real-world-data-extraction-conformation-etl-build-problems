@@ -4,14 +4,14 @@
 |---|---|
 | Objective | Root Cause Analysis |
 | Domain | Economics · retail pricing and procurement |
-| Mirrors | Cost and margin diagnostics at retailers and marketplaces (vendor cost increases at Amazon, supplier terms at Walmart and Costco), where a supplier raises its price by replacing an item with a near-identical successor that every price monitor treats as a new product |
+| Mirrors | Cost and margin diagnostics at retailers and marketplaces (vendor cost increases at Amazon, supplier terms at Walmart and Costco), where a supplier raises its price by replacing an item with a reformulated successor in a smaller pack, which every price monitor correctly treats as a new product |
 | Decision shape | Which of N root causes gets the fix: one procurement programme for next year |
 | Committed call | The cause the programme targets, and the points of gross margin it took between the second and fourth quarters |
 | Gap · Pattern | Gap 2 (population) · S7 (every screen is right and the answer is what nothing flags: predecessor–successor item pairs, linked through the planogram slot), with E15 (a loud decoy and a quiet contamination, each with its own control) at rungs 1 and 2 |
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #11 beats the headline trap, misses the quiet one · #7 uses the ready-made measure · #18 joins only on the visible key |
 | Calibration form | Pilot log: last year's cost-challenge desk in two categories, every flagged increase challenged, with outcomes and the filed decisions |
-| Driving force | The cost monitor flags price increases on continuing items, freight surcharges, promotional funding changes and shrink, each correctly. A supplier that delists an item and lists a slightly smaller pack at a higher unit cost creates no increase on any continuing item. The monitor books the margin lost to "range and mix". Only pairing each delisted item with the new item that took its planogram slot, a pair the monitor cannot express, shows those pairs carrying 0.44 of the 1.60 points lost. |
+| Driving force | The cost monitor flags price increases on continuing items, freight surcharges, promotional funding changes and shrink, each correctly. A supplier that delists an item and lists a reformulated product in a slightly smaller pack at the old pack's cost creates no increase on any continuing item. The monitor books the margin lost to "range and mix". Only pairing each delisted item with the new item that took its planogram slot, a pair the monitor cannot express, shows those pairs carrying 0.44 of the 1.60 points lost. |
 
 ## 1. Situation
 
@@ -29,8 +29,12 @@ old ones (D). Last year a cost-challenge desk piloted in two categories.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice and the licensed basis. The monitor's categories still reconcile to the squeeze, range and mix still
   reads as customers buying new things, and no flag marks a succession.
-* **Instrument repair.** A perfect price monitor still compares an item with its own history, and a successor has none; the pair is a relation
-  between two items, which only the planogram history records.
+* **Instrument repair.** Suspect files: the monitor's list-price category, which carries freight folded into delivered list prices; the freight
+  line, which carries the annual rebate's reversal as a fourth-quarter cost; and the cost index, which admits new items only after twelve
+  months. Repaired so that freight is split from list prices, the reversal sits in its accrual periods and every item enters the index at
+  listing, rungs 0 to 2 all name C, promotional funding at 0.28 against list prices' and freight's 0.24 each; none names D. A successor entering
+  the index at listing still has no history of its own, and each is a reformulated product under its own code, so no record, however complete,
+  says which item it replaced: the pair exists only in the planogram's slot history.
 * **Lens swap.** The monitor attributes margin item by item; the answer attributes it to pairs of items, a population of relations the
   item-level ledger does not contain.
 
@@ -41,9 +45,9 @@ A strong solver treats the monitor as a starting point. Many "list-price" increa
 carries the logistics provider's annual volume rebate, accrued through the year and reversed in the fourth quarter when the volume target was
 missed; the rebate ledger shows it as a timing item, not a cost change, and 0.22 points come out. Promotional funding then leads, and every
 check passes. The range-and-mix bucket still holds 0.50 points, read as customers trading into new products at lower margins. In 61 cases a
-supplier delisted an item and, the same week, a new item from the same supplier took its exact planogram slot: the same product, often
-relaunched under a new name, in a pack 8–12% smaller at the old pack's cost, a higher unit cost the monitor never compares because the successor
-has no history. Linked through the slot, those pairs took 0.44 points.
+supplier delisted an item and, the same week, a new item from the same supplier took its exact planogram slot: a reformulated product under its
+own name and code, in a pack 8–12% smaller at the old pack's cost, a higher unit cost the monitor never compares because the successor has no
+history. Linked through the slot, those pairs took 0.44 points.
 
 ## 4. The ladder
 

@@ -90,8 +90,8 @@ No operator reaches 10.
 * **What it certifies.** Rates per trip on the active fleet, and that the term-to-term rate is stable: the assessed and realised rates agree
   within 6% in 9 of 9. Injury counts alone miss all nine.
 * **What it is blind to.** Retiring fleets (property 2).
-* **Twin pair.** Zippa's Riverside zone and Hop's Old Town zone are identical on active devices (300), trips (640,000), injuries (83) and rate
-  (13.0). Riverside's fleet is 80% old model, all retiring. Old Town's single model is renewed whole. On their renewal fleets the
+* **Twin pair.** Zippa's Tannery zone and Hop's Castlegate zone are identical on active devices (300), trips (640,000), injuries (83) and rate
+  (13.0). Tannery's fleet is 80% old model, all retiring. Castlegate's single model is renewed whole. On their renewal fleets the
   conditioned rates are 6.5 and 13.0 (2.0×). Only the register's dates and the seasonal conditioning separate them.
 * **Resemblance points at the decoy.** Zippa's profile most resembles the book's 2021 renewal of a peer city's operator, refused at 13.8,
   whose rate over the next term came out at 13.5.
@@ -154,6 +154,6 @@ renewal-fleet rate + 5 named chart parts + 3 files ≈ 55 criteria.
 * Zippa's old model carries 75% of its trips at 15.3 and Volt's 80% at 11.8. Their approved models ran October to March at raw rates of
   11.0 and 10.4, which the 1.28 winter factor turns into 8.6 and 8.1.
 * Caps total 4,600, so refusing Zippa leaves 2,600, and refusing Volt leaves 3,600.
-* The book holds nine renewals, none with a retiring model. Riverside and Old Town are identical on every active-fleet column.
+* The book holds nine renewals, none with a retiring model. Tannery and Castlegate are identical on every active-fleet column.
 * Every non-hold cell refuses Zippa or Volt, and the hold's blocking quantity sits 10% under the threshold.
 * Corral polygons and maintenance holds never touch incidents, trips or registrations.

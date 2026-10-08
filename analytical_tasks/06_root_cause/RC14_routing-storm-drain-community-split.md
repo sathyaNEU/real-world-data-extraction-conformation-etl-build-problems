@@ -29,8 +29,12 @@ governs how a localisation supports a claim, and its incident record certifies s
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard, the on-call engineer's tickets and the licensed basis. The removed-link cover on the collector data
   still names T1's link, with every event counted alike.
-* **Instrument repair.** Perfect collectors record the same withdrawals with the same communities; the drain is real routing, not noise. The
-  split is a reading of the contract against an attribute, not a gap in the data.
+* **Instrument repair.** Suspect file: the regional collector's peer summary, which suppresses its confidential peer group's counts. Published
+  in full, it shows T2's link seen by thirteen peers, as rung 2's bound already gives, so rung 2 still names C (T1's link, 6,100 prefixes), rung
+  1 B and rung 0 A; none names D. Every update, community list and certified incident is complete, and the update record follows the protocol,
+  in which a withdrawal carries no attributes; even with each withdrawn route's community copied onto its withdrawal, rungs 0 to 2 return A, B
+  and C, because none of them splits planned changes from failures. The answer still needs each link's changes split by the community on the
+  route withdrawn and the drains removed under the contract's exclusion.
 * **Lens swap.** The naive cover attributes every withdrawal on T1's link to a failure; the answer removes the planned ones, so the failure
   population behind the storm is a different set of events.
 

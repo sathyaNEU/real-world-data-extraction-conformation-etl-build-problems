@@ -28,9 +28,11 @@ report growth. Members' schedules for next year are filed with the group, and tw
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's view, the OEM's practice and the licensed basis. The per-hour rate still back-tests perfectly on every
   closed year, and the hour-based projection still looks sound.
-* **Instrument repair.** Perfect reporting and perfect utilisation records leave each operator's hours and cycles in lockstep through the
-  closed years, so no better past instrument separates the two laws in time; only operators that differ in sector length do, and only next
-  year's schedule makes it matter.
+* **Instrument repair.** Suspect file: the service-difficulty reports, in which 340 of last year's 1,690 rows are supplements to earlier
+  reports. Repaired to one row per removal, rung 0 returns 1,713, as rung 1 does, and rung 2 1,560; none returns 1,180. The utilisation records
+  hold every operator's hours and cycles, and next year's schedules are filed. Perfect records still leave each operator's hours and cycles in
+  lockstep through the closed years, so only the cross-section of operators separates the per-cycle law, and only next year's longer sectors
+  make it matter.
 * **Lens swap.** The alert describes last year's fleet flying short sectors; the answer is next year's fleet flying longer ones: a different
   exposure profile at a different time.
 

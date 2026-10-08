@@ -90,8 +90,8 @@ rose 330 kWh per dwelling.
 * **What it certifies.** The remainder construction: a home's degree-day model on the remainder, fitted on its own days, reproduces its
   verified heating within 3% in 400 of 400 homes. The raw remainder misses by more than 10% in 122, because of lighting and plug loads.
 * **What it is blind to.** Second supply points (property 2).
-* **Twin pair.** The Ashby Vale and Kerrow Fields districts are identical on every main-supply-point column: 2,600 homes each, both winters'
-  hub readings, the circuit splits and the like-for-like normalised change (17 kWh). Heat-pump homes are 16% of Ashby Vale and 8% of Kerrow
+* **Twin pair.** The Haverleigh and Kerrow Fields districts are identical on every main-supply-point column: 2,600 homes each, both winters'
+  hub readings, the circuit splits and the like-for-like normalised change (17 kWh). Heat-pump homes are 16% of Haverleigh and 8% of Kerrow
   Fields, so heating rose 433 and 225 kWh per dwelling (1.92×). Only the certificates separate them.
 * **Resemblance points at the decoy.** The remainder's rise tracks degree-days as closely as it did in the audited homes with electric
   storage heating, so it reads as weather.
@@ -155,6 +155,6 @@ change and the weather term + 5 named chart parts + 3 files ≈ 45 criteria.
 * Normalised heating change: other homes +60 kWh, heat-pump homes' main supply points −300 and their heat pumps +2,600 (2,900 at this
   winter's weather). 14,400 heat-pump homes (12%).
 * The figure is 397 / 197 / 17 / 329 by rung. Partials sit at 294 and 365. Every other grid cell is at least 21% from 329.
-* The audit holds 400 homes, none with a heat pump. Ashby Vale and Kerrow Fields are identical on every main-supply-point column, with
+* The audit holds 400 homes, none with a heat pump. Haverleigh and Kerrow Fields are identical on every main-supply-point column, with
   heat-pump shares of 16% and 8%.
 * Export registers and charger rows never touch hub readings, supply-point reads or certificates.
