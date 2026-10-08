@@ -1,0 +1,100 @@
+{
+  "task": "task24",
+  "architecture": "iteration 14",
+  "drawn": "2026-08-15",
+  "slot_note": "Golden memo sits at the folder root with a humanized copy in humanizer/; stump_check_report.md is an in-house round on an earlier bundle.",
+  "domain": "product-analytics",
+  "subdomain": "other",
+  "niche": "FY26 flagship product-line pick for an H2 hero campaign, measured on recognised brand (DTC) revenue",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Commit NORDIC_CANDLES.",
+  "answer_source": "submission.md, Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "brand marketing lead at Aura Home Goods ('I lead brand marketing')",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "transactions.csv",
+    "rows": 60260,
+    "entity": "one row is one sale, refund or partial refund record",
+    "grain": "transaction, trailing 12 months 2025-07-01 to 2026-06-30",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States and Germany (US-CA sales tax, EU-DE VAT)",
+    "currency": "USD",
+    "org_type": "home-goods brand selling through its own storefront, app and a wholesale programme",
+    "invented_names": [
+      "Aura Home Goods",
+      "APAS",
+      "NORDIC_CANDLES",
+      "HAVEN_TEXTILES",
+      "ORRA_GLASSWARE",
+      "KURI_KITCHENWARE"
+    ]
+  },
+  "deliverables": [
+    "fy26_flagship_commitment_memo.docx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The pick turns on measuring candidates over the most recently closed programme window, not the fiscal half, and attributing each transaction to the grouping in effect on its own date, not a post-change snapshot, after scoping by enrolled account rather than a channel column; each partial correction lands on a different decoy.",
+  "driver_concrete": "On recognised brand revenue scoped by APAS-enrolled account, over the closed August 2025 to January 2026 campaign window, with each sale attributed to the line in effect on its date (the gifting cluster moved to ORRA only on 2026-07-01), NORDIC_CANDLES delivers $17,816,681 against $9,388,638, 1.90x.",
+  "stump": "Files ORRA_GLASSWARE ($15,014,721, 1.48x) after correcting scope and measuring the closed August-to-January window but joining sales to the shipped 2026-07-14 catalog, which already carries the 2026-07-01 regrouping of the gifting cluster out of NORDIC.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iterations up to 10 (closed fiscal half)",
+      "fate": "iter 6 was cracked by a flagship solver; iter 10 was cracked by a strong solver's full pandas reproduction (kept as solver_artifact_iter10.py)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The winner leads recognised revenue over the closed half only after a set of unsignposted pins (brand scope, as-of attribution, promotion and refund netting, shipment recognition), each omission flipping the pick to a named decoy."
+    },
+    {
+      "architecture": "iteration 11 (window funded by the selection)",
+      "fate": "failed a determinism review on Gates C, D and E (underspecified_objective); a strong solver reached every planted insight and still committed to KURI_KITCHENWARE",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The pick is measured on the future window the selection funds, which the golden projected from prior-year seasonality with no pinned method."
+    },
+    {
+      "architecture": "iteration 12 (closed window, no attribution rung)",
+      "fate": "in-house testing showed NORDIC won under every method once the period was read, so the task reduced to rule discovery",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Measuring on the most recently closed programme window rather than the fiscal half decides the pick, a rule found by reading the governing definitions."
+    },
+    {
+      "architecture": "iteration 13 (quotable governing documents)",
+      "fate": "cracked to the dollar on the portal 2026-08-15, 31 minutes after shipping, by a solver that quoted the FY26 definitions as a five-row recipe",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The pick turns on the most recently closed programme window and transaction-date attribution after an enrolled-account scope correction, with each rule stated quotably in the governing documents, so a solver could execute them as a recipe."
+    }
+  ],
+  "notes": "Untagged: domain and objective inferred. Design record is the generator docstring (iter 7 header, iter 14 notes); the submission's compound table names attribution at transition and time-horizon confusion, but no design note uses the vocabulary. Iter 14 changed document text only; every figure is frozen from iter 13."
+}

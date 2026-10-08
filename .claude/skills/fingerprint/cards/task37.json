@@ -1,0 +1,147 @@
+{
+  "task": "task37",
+  "architecture": "completions ask v2: enrolment-roll redraw, after the Gate C renewal repair",
+  "drawn": "2026-08-22",
+  "slot_note": "Design notes sit in _draw/DRAW.md and _draw/STATE.md (no top-level design note); the retired Economics wage build of this slot is kept in _retired_wage_build/.",
+  "domain": "policy-education",
+  "subdomain": "enrollment-attainment",
+  "niche": "Registered apprenticeship completions figure a state council files with the legislature, built from sponsor training agreements and related-instruction cohorts",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "File 2,585 completions for the 2026-27 programme year.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold markers removed)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "none",
+  "stakeholder_role": "chair of the state apprenticeship council in Ohio",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "related_instruction_enrolments_2019_2025.csv",
+    "rows": 39753,
+    "entity": "one apprentice enrolment in a related-instruction cohort of a closed programme year, with what it came to (certified or withdrawn)",
+    "grain": "apprentice x cohort",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, Ohio",
+    "currency": "none",
+    "org_type": "state apprenticeship council (public body)",
+    "invented_names": [
+      "Ohio Apprenticeship Council",
+      "Standards Desk",
+      "OAC-STD-2019-3 apprenticeship programme standards",
+      "Buckeye Cuyahoga Group",
+      "Cuyahoga County Technical Center"
+    ]
+  },
+  "deliverables": [
+    "completions_forecast.py",
+    "completions_memo.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a forward count conditioned on a coupling no document states: an enrolled unit converts only if a separate linked entity still holds its authorisation when the qualifying step ends, a rule recovered from a closed outcome roll where the split is absolute, and applying it cuts the total a reader of every clause files.",
+  "driver_concrete": "The closed enrolment roll (39,753 enrolments, 911 withdrawn) shows an enrolment certified if and only if the sponsor still held the agreement in the month the cohort ended; of 3,786 uncertified registrations in a 2026-27 cohort, 715 lack an agreement at the start and 395 lose it before the end, taking 3,057 to 2,585.",
+  "stump": "A competent solver files 3,057 with every clause of the standards read and every join made, assuming an apprentice enrolled in a cohort stays on the roll to its end, and never tests the closed enrolment roll against the sponsor's agreement status at cohort end.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "wage v1, estimator selection (Economics wage structure)",
+      "fate": "solved repeatedly (the wage note's round log has 8 rounds with 2 holds, its later table says 11 rounds all solved); moved on 2026-08-21",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive choice is which of several competent estimators recovers an unobservable within-interval share, settled by an out-of-sample reproduction test against a closed register, and it decides which of a few classes is certified."
+    },
+    {
+      "architecture": "wage class ask",
+      "fate": "determinism pass held, then 3 solves; ask shape retired 2026-08-21",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "D"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "driver": "A delivery-year eligibility condition on a rate-anchored determination, checked against a register of settled cases, sits above a size-conditioned reweighting of an administrative extract onto survey controls and changes which of four classes is certified."
+    },
+    {
+      "architecture": "wage characterisation ask",
+      "fate": "failed determination review 2026-08-21 on Gate C and Gate G (single_conceptual_flip)",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "C",
+        "E"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "structural_verdict",
+      "driver": "The spread in a population is carried by a latent arrangement no code names, recovered from how many reporting intervals each unit's own returns span, and the call is a characterisation of how many populations exist."
+    },
+    {
+      "architecture": "apprenticeship characterisation (agreement-status split, then three populations)",
+      "fate": "status split solved as a two-column lookup; three-population version failed determination review 2026-08-22 (Gate C/D granularity, Gate G single_conceptual_flip)",
+      "domain": "policy-education",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "structural_verdict",
+      "driver": "Whether a unit accrues at all in the coming period is a fact about a linked entity's authorisation rather than the unit, reachable only through an unsignposted join, and it splits the population into groups whose yield differs absolutely."
+    },
+    {
+      "architecture": "completions ask v1 (two conditions, cohort schedule, places and fill floor)",
+      "fate": "solved: two solvers at 2,972 against 2,974, then three solvers landed exactly on 1,347 (2026-08-22)",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [
+        "objective",
+        "rule"
+      ],
+      "pattern": [
+        "C",
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A forward count built from filed conditions applied across joins (an in-force calendar, two completion conditions, cohort end dates, a queue-rationed place) plus a minimum fill floor recovered from closed cohorts."
+    }
+  ],
+  "notes": "Mechanism from _draw/STATE.md (REDRAW and Gate C repair, 2026-08-22). Ledger: the main 37 row (time, A, agreement clock) describes the third redraw; row '37 (completions ask, v2)' is this build but quotes pre-repair roll counts (41,037/1,029; disk 39,753/911). G14 mapped from Pattern E by name. Submission still carries pre-repair figures: Justification heading 3,044 (vs 3,057) and ask 4 basis 2,473 (0.1225 is 2,585/21,099). Council chair mapped to policy_adviser (board role)."
+}

@@ -1,0 +1,121 @@
+{
+  "task": "task60",
+  "architecture": "v8",
+  "drawn": "2026-08-31",
+  "slot_note": "design note header says Version 6 and its sections 4 and 5 still carry the pre-round-8 answer 13,682; ledger and submission are v8",
+  "domain": "policy-education",
+  "subdomain": "enrollment-attainment",
+  "niche": "certifying fundable industry-credential attainments for a state CTE incentive from planned concentrator rosters filed by districts",
+  "objective": "forecasting",
+  "shape": "08",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Certify 13,203 fundable industry credential attainments for PY2027-28, supporting an appropriation of 4,951,125 US dollars at the rate of 375 dollars an attainment.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "D",
+    "B",
+    "A"
+  ],
+  "generators": [
+    "G15"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the Office of Career and Technical Education, certifying to the State Board",
+  "role_family": "programme_officer",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "credential_exam_attempts.csv",
+    "rows": 215303,
+    "entity": "one credential exam sitting by one student",
+    "grain": "student x credential x sitting date",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US state (Tamarack)",
+    "currency": "USD",
+    "org_type": "state department of education office administering a career and technical education credential incentive",
+    "invented_names": [
+      "Tamarack Department of Education",
+      "Tamarack Industry Credential Incentive",
+      "Tamarack Career and Technical Education Association"
+    ]
+  },
+  "deliverables": [
+    "credential_commitment_py2027_28.pdf",
+    "commitment_build.py",
+    "district_commitment_workings.csv",
+    "basis_backtest_py2027_28.png",
+    "completed_year_review.csv",
+    "credential_pipeline_py2025_26.png",
+    "concentrator_pipeline_py2027_28.csv",
+    "credential_exposure_ledger.csv"
+  ],
+  "opening_move": "other",
+  "driver": "The forward count is struck over a register of filings rather than a roll of people, and a unit filed by two filers is one unit allocated by a filed tie-break, so the decisive step is a group-and-rank across filers no column expresses, the overlap small in the fit window and large forward so the back-test cannot see it.",
+  "driver_concrete": "2,879 of the 23,832 PY2027-28 concentrators are filed by both the district they leave and the one they join; terms 2.1 makes each one concentrator with a filing-date then district tie-break, and basis R-05 at k = 3 over the deduplicated exposure certifies 13,203 attainments against 15,007 when every filing counts.",
+  "stump": "A competent solver counts every filing on the planned rosters, so a student filed by the district they leave and the one they join counts twice, and certifies 15,007 (13.7 per cent high); the back-test cannot see it because the overlap is 2.1 to 4.3 per cent in the fit window against 12.1 forward.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (coverage run length decisive)",
+      "fate": "round 1: one live response filed the answer (7,849) by recovering the three-year run length from the settlement record",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "Which units sit inside a forward certification turns on a coverage run length that no file states and that a back-test of candidate terms against settled payments selects from an enumerable menu."
+    },
+    {
+      "architecture": "v2 (filed exposure netting decisive)",
+      "fate": "solved by both responses with every graded cell reproduced (answer 5,139)",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "Forward exposure is netted of outcomes the units already hold, a filed clause the solver executed on the fit window and the forward roster alike, while a cell-grain settlement file validated every eligibility join at once."
+    },
+    {
+      "architecture": "v3 (settlement shipped at district and year grain only)",
+      "fate": "solved by both responses, every graded cell reproduced (answer 12,392)",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "The same eligibility, coverage and netting rungs with the cell-grain settlement detail withheld, so the eligibility rules could no longer be validated row by row against the payments."
+    },
+    {
+      "architecture": "v4 (execution-date program year)",
+      "fate": "solved anyway (answer 13,298) after spring executions were put on a cadence the corpus could not refuse",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "Each agreement has to be dated to the program year it was executed in rather than its calendar year, which moves spring executions forward a year and changes the covered set."
+    }
+  ],
+  "notes": "v5 introduced the current double-filing rung (answer 13,682); v6 and v7 added asks (round 7 rubric 37 and 75, the stump fired on the weaker response at 15,519); v8 closed two determinism axes and moved the answer to 13,203. No G-code is named for the decisive rung (G10-like duplication); G15 is the rival-killer. Calibration: payment summary of 621 settled district-years."
+}

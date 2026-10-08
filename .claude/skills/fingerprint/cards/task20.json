@@ -1,0 +1,82 @@
+{
+  "task": "task20",
+  "architecture": "rebuild 2026-09-16, second pass",
+  "drawn": "2026-09-16",
+  "slot_note": "source/ is the legacy input set of the retired award build; answer_key/ was folded into DATASET_NOTES.md.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "niche": "annual release commitment of one valve body to a settled origin under a frame supply agreement, sized from programme call-off rates",
+  "objective": "forecasting",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We commit 744,000 accepted units of FL-2280 to Anselm Precision Components for the 2026 plan year, 31 release lots of 24,000.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "none",
+  "stakeholder_role": "inbound supply planner at the buying manufacturer ('I plan inbound supply here')",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "call_off_history_2021_2025.csv",
+    "rows": 11748,
+    "entity": "one row is one customer call-off (release) line against a programme's plan",
+    "grain": "programme x release line, five closed plan years 2021 to 2025",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional manufacturer; customer ship-tos in the US, UK, Thailand, Malaysia and Hungary; fictional supplier origins",
+    "currency": "USD",
+    "org_type": "industrial fluid-systems manufacturer buying a valve body",
+    "invented_names": [
+      "Ferrolyne Fluid Systems",
+      "Anselm Precision Components",
+      "Kalder",
+      "Bregmann",
+      "Selvica",
+      "FL-2280"
+    ]
+  },
+  "deliverables": [
+    "fl2280_release_commitment.pdf",
+    "fl2280_release_bridge.png",
+    "fl2280_release_placement.xlsx"
+  ],
+  "opening_move": "deliverable-first",
+  "driver": "The forward rate is a property of whether each unit's commitment fence covers the supply lead time, a classification built by comparing two files and filed nowhere, and because two large units moved to a shorter fence at renewal, every rate carried forward from the closed years, pooled or per unit, overstates the commitment.",
+  "driver_concrete": "Programmes whose schedule freezes at or before the 11-week cumulative lead time call off 95.9% of plan and the rest 52.3%; FP-1205 and FP-1533 republished on a shorter fence for 2026, so the group rates give 749,926 units, 31 lots of 24,000 (744,000), against 840,000 per programme and 864,000 pooled.",
+  "stump": "Measures each programme's own call-off rate over the five closed plan years, carries it onto the 2026 plan and commits 840,000 units (35 lots), because only the 2026 rows of the schedule revision file show FP-1205 and FP-1533 republished on a shorter fence at renewal.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (August award decision)",
+      "fate": "came back from submission and was rebuilt 2026-09-16: invalid Axis 1 tag, planted devices driving the main call, the retired charge-reconstruction shape, no 10,000-row file and no deliverables",
+      "domain": "supply-chain-logistics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The origin with the lowest landed cost per accepted unit under a filed costing standard, reached only after repairing a disposition extract that fans one event across many deliveries and pricing each bidder on its own restructured volume bands."
+    },
+    {
+      "architecture": "rebuild first pass (asks named the treatment)",
+      "fate": "solved on the portal 2026-09-16: both top responses landed 744,000 after the asks named the two call-off rates and the renewal movers",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "The forward rate is a property of whether each unit's commitment fence covers the supply lead time, filed nowhere, and two large units moved to a shorter fence at renewal, but the asks named the two rates and the movers, leaving only the fence comparison to find."
+    }
+  ],
+  "notes": "G6 is named in the design note for the 2026 mix shift; the decisive fence-against-lead-time classification has no G-code there, and gap and pattern are not named. The asks now name quantities only, and the planted devices (MRB fan-out, per-bidder bands) sit in the ask layer, off the main call's path."
+}

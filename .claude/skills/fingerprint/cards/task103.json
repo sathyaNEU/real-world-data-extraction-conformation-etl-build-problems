@@ -1,0 +1,115 @@
+{
+ "task": "task103",
+ "architecture": "v3",
+ "drawn": "2026-10-03",
+ "slot_note": "",
+ "domain": "nonprofit-grant-making",
+ "subdomain": "giving-strategy-program-funding",
+ "niche": "a community foundation's restricted food-security reserve that releases a quarter's purchased-food grant to a regional food bank's partner-pantry network when households served run above a same-weeks-of-prior-years baseline for a run of weeks after a declared local shock",
+ "objective": "anomaly-detection",
+ "shape": "17",
+ "decision_type": "go_hold_or_stop",
+ "answer_unit": "currency",
+ "answer": "CAD 279,234",
+ "answer_source": "task103/verify_pack.py (recomputed from target/ alone); task103/generator/assertions.py",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "D"
+ ],
+ "generators": [
+  "G2",
+  "G14",
+  "G16"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "certified_matrix",
+ "context_artifact": "published_series",
+ "stakeholder_role": "programme officer for food security at the community foundation, who prepares the reserve determination for the board",
+ "role_family": "programme_officer",
+ "scoring_unit": "units served",
+ "spine": {
+  "file": "intake_visits_2024-01_2027-10.csv",
+  "rows": 281970,
+  "entity": "one household's card scan or sheet line at one partner-pantry distribution",
+  "grain": "household x distribution",
+  "source": "synthetic"
+ },
+ "forum": "trustees_or_governors",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "foundation_or_funder",
+ "world": {
+  "geography": "Canada, Ontario (fictional Port Alder lakeshore district: Tollan and Corriston counties)",
+  "currency": "CAD",
+  "org_type": "community foundation (funder) and a regional food bank with partner pantries",
+  "invented_names": [
+   "Port Alder Community Foundation",
+   "Port Alder District Food Network",
+   "Food Security Reserve",
+   "Northfield Castings",
+   "Tollan County",
+   "Corriston County",
+   "Port Alder",
+   "Tollan Mills",
+   "Tarbrook Crossing",
+   "Brisby Bay",
+   "Brannock",
+   "Corriston",
+   "Cresswell",
+   "Garrow-Wenlow",
+   "Keswold Road",
+   "Orrin",
+   "Lakemere District",
+   "Dunsop Bay",
+   "Halvorsen family",
+   "Port Alder Rotary"
+  ],
+  "people": [
+   "Monica Wilson",
+   "Isaac Ortiz",
+   "Patrick Preston",
+   "Tiffany Bryant"
+  ]
+ },
+ "deliverables": [
+  "northfield_reserve_determination.pdf",
+  "northfield_reserve_workings.xlsx"
+ ],
+ "opening_move": "stakes-first",
+ "driver": "A record of contact stands for one unit and a standing authorization names further units it may serve, but an authorization is a permission rather than a record of service, and each unit has one allowance a period: the only per-contact record of which authorized units were served is a handed-over quantity that decomposes into per-unit standard amounts, and a contact's second contact in a period carries only units it serves for others, so the count the decision is scored on is each contact plus the units its quantities show were served under the one-allowance rule; the decision is a per-unit amount over the excess, so every counting route files its own figure, and the settled cases predate any authorization.",
+ "driver_concrete": "A visit row records the household that came; since April 2026 a household can name a pickup partner, partners collect only some weeks, and the hamper_lb is the only record of whether a named household's hamper went out. Since the closure a partner at a pantry open more than one day a week often collects a named household of its own size on another distribution day; a household has one hamper a week, so one of the two hampers is the named household's, though read as own-plus-rest the visit decomposes to the partner's own hamper. The release is CAD 54 per household above baseline over the run, so the fan-out (CAD 370,656), the own-plus-rest weights (CAD 263,412) and the visit count (nil) each file their own figure.",
+ "stump": "A competent solver finds the pickup-partner field, sees the forms fan-out overshoot, reads each partner visit's hamper weight as the partner's own hamper plus the hampers it carried, finds every visit decomposes, and files CAD 263,412, never asking why partners came in twice in a week when a household has one hamper a week; a solver who stops at the forms files CAD 370,656 and one who never finds the field files no release.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task72": "task72 books a movement to the owner whose agreement covered each unit's service, a complete re-partition of the same rows; task103 adds units that appear on no row, fanning one contact out to every unit that named the contact's maker, so totals do not tie and no re-partition reaches it.",
+  "task81": "task81 merges a re-keyed entity across a next-day identifier change by its identical attached set, many records to one unit over time; task103 splits one same-day contact into several units through an effective-dated authorization, one record to many units.",
+  "task86": "task86 v1 chains a buyer-side position across supplier asset substitutions to re-rate stays under a tariff; task103 counts how many units one contact served that day through a standing authorization, with no chaining over time and no tariff.",
+  "task90": "task90 (built as task86 v1) chains a buyer-side position across asset substitutions under a tariff; task103 fans one contact out to the units that authorised its maker, with no chaining and no tariff.",
+  "task103": "v1's decisive move, fanning each contact out to every unit whose authorization in force names it, is kept in v2 as the rung a cracker files (a wrong release in the top band); v2's decisive move is the per-contact test of whether an authorization was exercised, read only off the handed-over quantity, which no forms route reaches and which makes the as-of and start-date readings of the forms irrelevant to the answer."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-03",
+   "fate": "solved on the portal (author report 2026-10-03): a response fanned each visit out through the forms in force, read straight off handbook section 7, and filed the golden CAD 280,800 (mean 36.7 from keeping both uploads of a re-sent batch). The fan-out was a filed computation, not a stump.",
+   "driver": "A record of contact stands for one unit, but a standing authorization lets one contact serve several units, so the count the decision is scored on is each contact fanned out through the authorizations in force on its day; the settled cases predate any authorization and reproduce the contact count exactly, and authorizations grow with the event, so every contact-count route understates the excess and breaks the run.",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "D"
+   ],
+   "gate_g": "decomposition_attribution"
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-03",
+   "fate": "portal response filed the golden release again (author report 2026-10-04). The release was weeks times one of three weekly rates, so any count between the visit count and the fan-out landed the middle band; the weight rung bought no exactness.",
+   "driver": "A record of contact stands for one unit and a standing authorization names further units it may serve, but an authorization is a permission rather than a record of service: the only per-contact record of which authorized units were actually served is a handed-over quantity that decomposes exactly into per-unit standard amounts, so the count the decision is scored on is each contact plus the authorized units its quantity shows were served; fanning every contact out to every authorization in force overstates the shock weeks into the top rate band, and the settled cases predate any authorization."
+  }
+ ],
+ "notes": "Author set the bar for this build at top-two average under 50 per cent (build to about 40), overriding CLAUDE.md's 70. Author explicitly authorised (2026-10-03, in session) a guard override for a pattern D / G2 decisive rung despite task98's D/G2 and task102's G2: the only decisive mechanisms with a measured stump record in this repo are unit/identity constructions, and every non-D candidate was rejected on the four checks (see DESIGN_NOTE.md Tried and rejected). Driver is a fan-out (one contact serves several units through an effective-dated authorization), distinct from task98 (chaining members by distance), task102 (place history across occupants), task81 (re-keyed entity matched by identical attached set), task60 (one unit filed by two filers) and task77 (rows collapsed to persons). Re-rooted 2026-10-03 (v2) after the author reported the v1 portal solve: the decisive rung moved from the forms fan-out (now rung 3, a wrong committed answer) to per-visit service verified by the handed-over hamper weight; handbook section 7 and the thread's device narration were removed. Same gap and pattern as v1 (author-authorised D/G2 override stands); the deepening is a conditioned-yield step (G14) inside the same construction. Re-hardened 2026-10-04 (v3) after the author reported the v2 portal result: the release became a per-household amount (terms section 6) and a one-hamper-a-week rung sits above the weight reading; the draw is unchanged, so the card was edited in place rather than re-registered. Repaired 2026-10-05 after the third determinism pass: the re-sent batches carried one upload time per row, a generator bug, and with one per re-send the answer is CAD 279,234; the draw is unchanged."
+}

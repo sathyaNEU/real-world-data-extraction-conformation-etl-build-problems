@@ -1,0 +1,66 @@
+{
+  "task": "task79",
+  "architecture": "only",
+  "drawn": "2026-09-07",
+  "slot_note": "no deliverables/ folder: the three deliverables sit at the folder root beside golden/; the design note is DATASET_NOTES.md and the generator is build/",
+  "domain": "demographic-social-science",
+  "subdomain": "crime-social-surveys",
+  "niche": "social-survey field operations: sizing an address-based sample release in replicates against a contracted wave minimum of completed interviews on a fixed interviewer roster",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We release 48,500 addresses, being 97 replicates of 500, for wave 2029A.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold opening line)",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none",
+    "A"
+  ],
+  "generators": [
+    "G11",
+    "G6"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "published_series",
+  "stakeholder_role": "runs field operations at Whitmore Survey Research",
+  "role_family": "operations_director",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "shcs_sample_dispositions.csv",
+    "rows": 54500,
+    "entity": "one released sample address (case) with its frame source, follow-up assignment and final disposition",
+    "grain": "address case x wave, six closed waves",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, fictional state",
+    "currency": "USD",
+    "org_type": "university-affiliated survey research centre under a standing agreement with the state statistical unit",
+    "invented_names": [
+      "Whitmore Survey Research",
+      "Statewide Household Conditions Survey",
+      "Household Conditions Report",
+      "Capitol Basin",
+      "Northern Uplands",
+      "Western Ridge"
+    ]
+  },
+  "deliverables": [
+    "wave2029a_release_authorization.pdf",
+    "wave2029a_yield_curve.png",
+    "wave2029a_release_pack.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The conversion rate from input to output is not a constant but falls once a downstream capacity binds, and the forward window sits several times past the binding point, so the required input comes from a piecewise inverse solve against a capacity constant recovered as the maximum the closed periods reach, not from dividing the target by a historical ratio.",
+  "driver_concrete": "Follow-up can work at most 11.5 cases per interviewer-week (three of six closed waves land on it exactly on three rosters, none exceed it), so the 2029A roster takes 6,831 cases and past 13,000 addresses each 500-address replicate adds only its 52.3 self-response completes, putting the smallest release reaching 7,677 completes at 97 replicates, 48,500 addresses.",
+  "stump": "A competent solver who matures the rates on the final file, takes eligibility by frame source and applies the 2029A allocation with stratum rates, but treats completes per released address as a constant, files 25,500 addresses, 47 per cent under.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "pattern opens with none because no A to E pattern carries the decisive rung; A carries the middle rungs. G11 and G6 mapped from the note's prose. In one review both solver responses found the 11.5 ceiling and still filed 129 replicates on an unpinned response domain, closed since, so the decisive rung did not stump them."
+}

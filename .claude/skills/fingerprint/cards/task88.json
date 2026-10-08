@@ -1,0 +1,63 @@
+{
+  "task": "task88",
+  "architecture": "only",
+  "drawn": "2026-09-12",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "city transient guest (lodging) tax estimate: the tournament room-block line behind a sports complex marketing appropriation",
+  "objective": "forecasting",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The FY2027 lodging tax estimate should carry a tournament line of $50,900.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G11",
+    "G1"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "revenue estimator in a city Finance department",
+  "role_family": "finance_controller",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "tid_nightly_room_census.csv",
+    "rows": 37264,
+    "entity": "one property's rooms available, rooms sold and room revenue on one night",
+    "grain": "property x night",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Missouri (Lake of the Ozarks, fictional city)",
+    "currency": "USD",
+    "org_type": "city finance department",
+    "invented_names": [
+      "Glaize Harbor",
+      "Glaize Harbor CVB",
+      "Lake Area Tourism District",
+      "Mid-America Regional Championship Series",
+      "Lake Showdown Baseball"
+    ]
+  },
+  "deliverables": [
+    "fy2027_lodging_tax_brief.docx"
+  ],
+  "opening_move": "deliverable-first",
+  "driver": "On periods when capacity would have filled anyway, an added booking adds no units and swaps full-rate demand for discounted demand, so its contribution is the rate gap on the displaced units and can be negative, and the closed record is blind because no past booking fell on a full period.",
+  "driver_concrete": "The June championship series and the Lake Showdown fall on summer weekends every partner hotel already sells out at $208 to $339, so their blocks swap regular guests for team families at $114 to $131 and cut receipts, giving a tournament line of $50,900 against the full-block $184,100.",
+  "stump": "A competent solver applies the remittance lag and the Bureau's pooled pickup, back-tests against the close-outs and the closed months, and files $184,100, never comparing each partner hotel's regular rooms with its rooms available on the block nights.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Pattern B only pins the pickup rung (frame, listed after none). Shape: the note says 03 widened onto the estimate's twelve base months (both sides month by month plus the two-item walk); the ledger row says 02. One deliverable, chart embedded. Ledger says BUILT 2026-09-11; the build on disk carries the 2026-09-12 re-scope repair. No round recorded in the note's round log. opening_move added from the prompt."
+}

@@ -1,0 +1,100 @@
+{
+  "task": "task65",
+  "architecture": "v3",
+  "drawn": "2026-09-04",
+  "slot_note": "",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "state air-quality permitting: the annual emissions fee on Class A sources that must first be constituted from emission units, under a per-pollutant ceiling",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The Office invoices 1,468,358 dollars in emissions fees for permit year 2029.",
+  "answer_source": "submission.md, 1. Final recommendation",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "published_series",
+  "stakeholder_role": "permit section of a state Office of Air Quality, filing the PY2029 fee determination for Finance (prompt is not first person)",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "product_shipment_log.csv",
+    "rows": 23169,
+    "entity": "one row is one monthly movement of one material from a shipping facility to a receiving counterparty",
+    "grain": "shipping facility x receiving counterparty x material x month (873 cutover movements sent twice)",
+    "source": "synthetic (fictional state programme on real Arkansas county codes, SIC codes and survey grid)"
+  },
+  "world": {
+    "geography": "United States, Arkansas (real county codes, fictional state programme)",
+    "currency": "USD",
+    "org_type": "state air-quality regulator (Office of Air Quality, permit section)",
+    "invented_names": [
+      "Office of Air Quality",
+      "Air Rules Chapter 7",
+      "East Delta district (delegated)",
+      "Okolona Bluff Cement Works",
+      "Tyronza Prairie Paperboard Mill",
+      "Caney Bend Creek Holdings Inc"
+    ]
+  },
+  "deliverables": [
+    "source_fee_determination.pdf",
+    "py2029_fee_schedule.csv",
+    "reported_emissions_review_2027.xlsx",
+    "activity_reconciliation_2027.csv",
+    "fee_recompute.py",
+    "fee_base_py2029.png"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a sum of per-entity capped sums in which each entity must first be constituted from child records by the child's own location rather than the parent record's administrative address, so regrouping children moves the total through the cap without changing any child's value.",
+  "driver_concrete": "Each emission unit is seated at its own parcel and grouped into sources by ultimate controller, surveyed section and two-digit group, so the 33 multi-site permits split across sources and the 125-ton per-pollutant ceiling lifts the fee from 1,270,916 to 1,468,358 dollars.",
+  "stump": "A solver who builds sources at the site each permit names, unioning whole operations that share a surveyed section instead of seating each unit at its own parcel, files 1,270,916 dollars (R2); the first live rollout landed exactly there and was ruled valid_stump on 2026-09-04.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (filed-rule classification)",
+      "fate": "solved exactly on the first graded response 2026-09-03 (Class A count 114 via Chapter 7.2(f) and 7.3); retired",
+      "domain": "policy-education",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "A count over a qualifying set whose membership turns on a multi-limb grouping rule filed in full in the governing document, so the decisive rung was a reading of the filed rule."
+    },
+    {
+      "architecture": "v2 (emissions fee, built 2026-09-03)",
+      "fate": "graded 94 and 52 (top response over the bar) after a section-notes sentence handed over the decisive rung; redrawn as v3 2026-09-04",
+      "domain": "policy-education",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The same capped sum over entities constituted from child records by their own location as the build on disk, before a narrating sentence was cut and a second independent ask axis was added."
+    }
+  ],
+  "notes": "Predates the 2026-09-05 spec and shape library (six deliverables, 38 asks). Generators mapped from the design note's mechanism text, which names no G-code; v1 gate_g inferred from its ledger mechanism cell. The decisive data is the 1,222-row unit register, not the spine. Thread personas J. Rusk, A. Sturdivant, E. Marchetti."
+}

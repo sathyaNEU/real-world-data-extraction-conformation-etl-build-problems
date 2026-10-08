@@ -1,0 +1,63 @@
+{
+  "task": "task90",
+  "architecture": "only (built as task86 v1)",
+  "drawn": "2026-09-11",
+  "slot_note": "Byte-identical copy of the retired task86 v1 (prompt, submission, design note, clone report, all 18 target files, goldens, deliverables and zips match task86/archive/v1-keystone-mhe-retired-2026-09-12.tgz); submission and design note are still headed task86; no ledger row under 90.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "fulfillment-warehousing",
+  "niche": "peak forklift (MHE) hire purchase-order commitment across a 3PL's five DCs under a dealer's short-term peak rental conditions",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "Raise one purchase order to Keystone Lift & Rental for $275,061, before sales tax, for the 2026-27 peak forklift hire across the five DCs.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "D",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G1"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "MHE fleet manager for a 3PL's five DCs",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "mhe_telematics_sessions_2026-27.parquet",
+    "rows": 23457,
+    "entity": "one operator session on a DC access-control module fitted to a hired truck",
+    "grain": "operator session (module x login), first peak delivery to 4 December 2026",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Pennsylvania, Ohio and Indiana",
+    "currency": "USD",
+    "org_type": "third-party logistics operator with five DCs",
+    "invented_names": [
+      "Ridgeline Logistics",
+      "Keystone Lift & Rental",
+      "Tristate Staffing",
+      "KLR-C7 conditions of rental"
+    ]
+  },
+  "deliverables": [
+    "peak_mhe_po_request.pdf",
+    "peak_mhe_rental_register.json"
+  ],
+  "opening_move": "other",
+  "driver": "The priced unit is a buyer-side position that persists across the supplier's substitutions of the physical asset, so supplier-keyed asset stays must be chained into that unit through a buyer-side mapping before a length-tiered tariff re-rates each unit from its first day, and a settled history billed at a flat rate cannot show the difference.",
+  "driver_concrete": "Under KLR-C7 clause 6.1 a Keystone exchange continues the same Rental, so 258 unit stays chain through the DC access-module register into 150 hires; 113 pass 56 days and bill every day at the extended rate (7.3), exchange movements are uncharged (7.4), giving $275,060.85 against $393,689.72 when each stay is priced alone.",
+  "stump": "A competent solver applies the noon off-rent clock and the certificate rule correctly but prices each Keystone unit's stay as its own hire, filing $393,690 (+43.1 per cent), because every dealer record keys on fleet number and the prior peaks' invoices recompute exactly whether exchanges are chained or not.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Carries an open Track B Template finding against task72 v2 (a filed continuity clause keeps the contract unit running across a carrier change), in this folder's clone report and the 86 (v1) row. G-codes mapped from the note (G2 decisive, G1 for the two size quantities); gate_g is the first of the note's two labels. Shape is 05 laid out as 07's grid."
+}

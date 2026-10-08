@@ -1,0 +1,167 @@
+{
+  "task": "task62",
+  "architecture": "seat billing wave 16",
+  "drawn": "2026-09-04",
+  "slot_note": "the folder carried a retired Demographic & Social Science world through wave 13 (DESIGN_NOTE Part One, s.1 to 28); the build on disk is Part Two (s.29 to 32)",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "seat-based B2B billing: the seat base a quarterly revenue plan is built on when a reseller master agreement lapses at the close with no successor",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "The 2026 Q1 plan should be built on 51,220 seats.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "time",
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "A",
+    "D"
+  ],
+  "generators": [
+    "G19",
+    "G18"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "Revenue Operations at a seat-billed B2B software vendor, committing the 2026 Q1 plan's seat base (the prompt writes as 'us'; Finance anchors on the provisioning feed)",
+  "role_family": "finance_controller",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "seat_ledger_2023_2025.csv",
+    "rows": 24504,
+    "entity": "one subscription line in one calendar month",
+    "grain": "subscription line x month, 2023-01 to 2025-12, 1,300 lines",
+    "source": "synthetic (generator/gen.py, fixed seed)"
+  },
+  "world": {
+    "geography": "global, unnamed vendor (NA, LATAM, EMEA and APAC billing regions)",
+    "currency": "USD",
+    "org_type": "B2B software vendor billing per seat, with a four-partner reseller channel",
+    "invented_names": [
+      "Nordhaven Distribution",
+      "Sundberg Reseller Network",
+      "Calderon Technology Group",
+      "Ottershaw Business Systems"
+    ]
+  },
+  "deliverables": [
+    "billing_base_commitment.pdf",
+    "billing_base_audit.csv",
+    "seat_base_rebuild.py"
+  ],
+  "opening_move": "other",
+  "driver": "A correct closed-window exclusion is limited to the term of the instrument that creates it, so when that term lapses unrenewed at the boundary the excluded population enters the forward base, admitted only for members whose governing spell is in force at the boundary and who hold an open receiving record.",
+  "driver_concrete": "MA-4101 ends on 31 December 2025 with no successor, so under BP-4 7.2 and clause 9.2 its in-force schedule (178 spells, 9,187 seats, not the 14 stale codes) reverts to direct billing, but only the 152 accounts with an open line carry their 7,260 seats into Q1: 41,820 + 2,140 + 7,260 = 51,220.",
+  "stump": "A competent solver sums the closing ledger month and the effective-dated contract book, confirms the base against the line-for-line settlement, leaves the channel out under BP-4 7.1 and files 43,960 (14.17 per cent low); executing the filed channel chain naively books all 9,187 seats for 53,147.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task62": "wave 16 keeps wave 14's lapse-at-the-boundary rung and turns its interior: the schedule-in-force and line-of-record constructions make wave 14's answer (53,147) the terminal decoy"
+  },
+  "lineage": [
+    {
+      "architecture": "fertility, exchange-ledger fold (s.1 to 15)",
+      "fate": "solved in rounds R1 and R2 (reported 2026-09-01) by folding the exchange ledger; the stopping rule fired and the ask was re-rooted",
+      "domain": "demographic-social-science",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "A reference-period file is short records that a reciprocal exchange transmits on a lag, so each unit's true count has to be completed from a second register before the departure test, which moves the threshold crossing to a unit no earlier reading favoured."
+    },
+    {
+      "architecture": "fertility, tempo re-root (s.16 to 21)",
+      "fate": "built 2026-09-01; a determinism review failed it on Gates C and E until the annex was filed; graded rounds then landed the answer (waves 7, 8 and 10; wave 9 top two 92 and 10), and the wave 11 review failed it on Gate G single_conceptual_flip (2026-09-03)",
+      "domain": "demographic-social-science",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "B",
+        "D"
+      ],
+      "generators": [
+        "G16",
+        "G6",
+        "G12",
+        "G2"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "A period rate measures the level plus the pace of a shift in timing, so the level has to be recovered with a tempo adjustment whose basis is pinned only by a closed register of past determinations before it is compared against a filed assumption."
+    },
+    {
+      "architecture": "marriage-licence re-skin, population construction (wave 11)",
+      "fate": "2026-09-03; both graded responses filed the answer county in the next round (wave 12)",
+      "domain": "demographic-social-science",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "A filed definition counts each resident event wherever it is registered, so the unit's population has to be assembled from an in-state file and an interstate exchange register that are each complete for what they hold, which moves the threshold crossing."
+    },
+    {
+      "architecture": "marriage-licence licensed hold (waves 12 to 13)",
+      "fate": "2026-09-03; both top responses filed the hold in the wave 13 round (2026-09-04), the stopping rule fired and the world was retired",
+      "domain": "demographic-social-science",
+      "objective": "anomaly-detection",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "signal_vs_noise_or_hold",
+      "decision_type": "go_hold_or_stop",
+      "driver": "Every reading short of the full filed annex puts some unit past the threshold while the annex as written puts none past it, so the committed answer is the licensed hold."
+    },
+    {
+      "architecture": "seat billing s.29",
+      "fate": "2026-09-04; solved on its first round by the natural pipeline at 43,960",
+      "domain": "product-analytics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [],
+      "generators": [
+        "G18"
+      ],
+      "gate_g": "confirm_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The reported base is correct and three documented structures each invite a downward correction that a line-for-line settlement tie refuses, so the figure is the unadjusted base plus date-filtered commitments."
+    },
+    {
+      "architecture": "seat billing waves 14 to 15",
+      "fate": "2026-09-04, answer 53,147; a review of a stale zip failed it on Gate B and Gate A; after the burial pass the author's grading of the wave 15 bundle found the asks collected nearly whole and one response passing, and the interior was turned as wave 16",
+      "domain": "product-analytics",
+      "objective": "etl",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "generators": [
+        "G19",
+        "G18"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "A correct closed-window exclusion is limited to the term of the instrument that creates it, and that term lapses unrenewed at the boundary, so the whole population served under that instrument enters the forward base."
+    }
+  ],
+  "notes": "Opening move is a situation clause with a deadline (vocab other). context_artifact is the provisioning feed Finance anchors on. The December settlement referees the base; the crosswalk exit history calibrates the decisive rung. golden/ holds pre-rename copies, deliverables/ matches the prompt. Two redraws (allocation under a control total; payment fraud x Experiment & Causal) died on paper (s.26 to 28)."
+}

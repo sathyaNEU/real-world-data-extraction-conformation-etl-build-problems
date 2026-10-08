@@ -1,0 +1,103 @@
+{
+  "task": "task51",
+  "architecture": "v5",
+  "drawn": "2026-08-27",
+  "slot_note": "v3 receipts-gap build preserved in task51/v3_snapshot; this card describes v5",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "monthly-remittance tranche placement for earnings-tax withholding accounts, certified by a revenue estimating board on the receipts the placements bring forward",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "currency",
+  "answer": "The Director places the fifteen accounts listed in the paper's table on monthly remittance from 1 July 2026, and the Board certifies that the tranche brings forward 102,491 USD.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "time",
+    "rule",
+    "objective"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [],
+  "gate_g": "forecasting",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "none",
+  "stakeholder_role": "unstated in the prompt; the paper goes to the district Revenue Estimating Board, which certifies the Director's tranche",
+  "role_family": "finance_controller",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "wage_records_2024q3_2026q2.csv",
+    "rows": 287629,
+    "entity": "one worker's wages paid by one employer account in one quarter",
+    "grain": "account x worker x quarter",
+    "source": "synthetic (second half of the wage panel; wage_records_2022q2_2024q2.csv adds 278,089 rows, 565,718 across both)"
+  },
+  "world": {
+    "geography": "fictional (Havelock District, a US-style local earnings-tax jurisdiction)",
+    "currency": "USD",
+    "org_type": "district revenue administration and its revenue estimating board",
+    "invented_names": [
+      "Havelock District",
+      "Havelock District Revenue Estimating Board",
+      "Ordinance 2026-11",
+      "Ordinance 2024-09",
+      "Marrowby",
+      "Pellsmoor"
+    ]
+  },
+  "deliverables": [
+    "fy2027_tranche_certification.pdf",
+    "fy2027_tranche_capture.png"
+  ],
+  "opening_move": "other",
+  "driver": "The intervention is valued by its additionality over a baseline that an unfiled standing rule moves on its own inside the forward window; back-testing the state history in the pack's own transaction file recovers the rule, and projecting it zeroes most largest-looking candidates before a capped slate fills.",
+  "driver_concrete": "Of 102 eligible quarterly accounts, 52 already remit April and May on the monthly dates and an unfiled anniversary review (two closed years on one side of the 17,750 USD floor; 0 contradictions in 58,374 class samples) moves 20 more first, so the 15 places fill from the other 30 for 102,491.05 USD.",
+  "stump": "A competent solver checks remittance behaviour against due dates but holds the register static, never diffing the class column's 236 flips, and certifies the fifteen largest April and May amounts among quarterly-settling accounts at 186,708 USD, sharing 3 of 15 accounts with the certified tranche.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 to v3 (receipts-gap driver)",
+      "fate": "v3 solved, then failed Gate C while its selection rule lived only in prose, then solved again once the rule was filed; retired 2026-08-26",
+      "domain": "economics",
+      "objective": "root-cause",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G18",
+        "G15"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "root_cause_named",
+      "driver": "A cumulative decomposition against a fixed reference year ranks candidate drivers one way while the year last closed ranks them another, and the forward base names the driver the last closed year moved, measured over the population a standard hygiene reflex removes."
+    },
+    {
+      "architecture": "v4 (static-register tranche)",
+      "fate": "solved exactly by two strong runs, 2026-08-26, both silently assuming the register static",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G8"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "ranked_slate_under_cap",
+      "driver": "A placement under a cap buys nothing from candidates already behaving as the placement would require, which shows only in received dates against due dates, so the capped slate fills from the remainder."
+    }
+  ],
+  "notes": "Decisive gap is time (the baseline moves inside the open window) with B, the class-flip back-test, underneath; the ledger calls the device 'additionality against a standing schedule' and names no G-code, so generators is empty. v4's reachability device survives as rung 2. Context artifact none per ledger. Calibration is a register's reclassification history, filed as closed_decision_corpus."
+}

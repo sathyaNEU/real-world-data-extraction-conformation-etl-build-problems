@@ -1,0 +1,73 @@
+{
+  "task": "task116",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "product-analytics x opportunity-sizing-decision, a pairing never built before this slot",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "a schools edtech company choosing which multi-academy trusts its two trust partnership managers take a trust-wide licence to in the spring 2027 round, sized by the net new recurring revenue each trust's not-yet-subscribing academies can add",
+  "objective": "opportunity-sizing-decision",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8",
+    "G2",
+    "G1"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "pilot_log",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "director of trust partnerships at a schools edtech company",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "edubasealldata20261007.csv",
+    "rows": 52588,
+    "entity": "one establishment in the national schools register (open, closed or proposed), with its trust and federation membership and pupils on roll",
+    "grain": "establishment (URN)",
+    "source": "Department for Education, Get Information about Schools, establishment extract of 7 October 2026, Open Government Licence v3.0"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United Kingdom, England",
+    "currency": "GBP",
+    "org_type": "schools edtech company selling a maths practice platform per pupil to state schools in England",
+    "invented_names": [
+      "Tallybridge Maths",
+      "Tallybridge Trust Licence",
+      "Tallybridge Cluster Licence"
+    ],
+    "people": [
+      "Pamela Andrews",
+      "Henry Miles",
+      "Leah O'Neill",
+      "Joel Bailey",
+      "Philip Saunders",
+      "Maureen Webb"
+    ]
+  },
+  "deliverables": [
+    "trust_round_spring2027.xlsx",
+    "trust_round_spring2027.pptx"
+  ],
+  "opening_move": "constraint-first",
+  "driver": "The realisable value of an offer made to a group comes only from groups whose members' existing purchases were all made by one decision-maker, a property visible only as one signatory recurring across the members' separate records; every closed offer went to such a group, so sizing each group's uncovered members, netted for repricing, at the closed sign rate reproduces all of them, while the largest uncovered volumes sit in groups whose members buy one by one and never take a group-wide offer.",
+  "driver_concrete": "A trust-wide licence is only ever signed by a trust whose academies' current agreements were all signed by one trust officer; the 2026 pilot went only to trusts that asked for it, all of that kind, so successor-matched whitespace net of repricing at the pilot's sign rate reproduces every pilot booking, while about half of the trusts with the most net whitespace have each academy signing for itself and, like every such trust offered the 2023-24 cluster licence, will not sign.",
+  "stump": "A competent solver matches customer academies to the register through their successor URNs, prices each trust's not-yet-subscribing academies at the trust rate net of repricing the academies it already has, confirms that construction against every 2026 pilot booking, and files the ten trusts with the largest net whitespace at the pilot's sign rate; the step that lands it there is never asking whether a trust buys for its academies at all, which the agreements' signatories answer (one trust officer for every academy, or each school for itself) and the 2023-24 cluster-licence offers settle (no trust whose schools sign for themselves ever took a trust-wide licence).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Decisive rung from the measured catalogue: #13 validates on one population, applies to another (the pilot's trusts all buy centrally), with #6 treats a mixed segment all one way behind it. Pattern B unavailable (task110, task109)."
+}

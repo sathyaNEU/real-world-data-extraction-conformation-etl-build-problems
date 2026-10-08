@@ -1,0 +1,96 @@
+{
+  "task": "task81",
+  "architecture": "v3, the Economics re-root (rebuilt in place after a Gate G review)",
+  "drawn": "2026-09-09",
+  "slot_note": "Slot reused: ledger row 81 (seed 810908) describes the retired Nonprofit v1/v2 build; the folder holds the v3 Economics re-root (seed 810915), which has no ledger row of its own.",
+  "domain": "economics",
+  "subdomain": "other",
+  "niche": "business demography and firm dynamics: a regional employment incentive paid per net new filled job, costed from employer monthly schedules against a business register whose unit takes a new number when a firm restructures",
+  "objective": "descriptive-distribution",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The 2027/28 payment run commits NZD 7,725,800, to 471 firms on 3,169 net new filled jobs.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold first sentence)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G11"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "published_series",
+  "stakeholder_role": "manager of economic programmes at a regional development agency, signing the incentive liability for the council committee",
+  "role_family": "programme_officer",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "employer_monthly_schedules.csv",
+    "rows": 108868,
+    "entity": "one employer monthly schedule filed for a PAYE registration and month (an original or an amendment)",
+    "grain": "PAYE registration x month x schedule version",
+    "source": "synthetic (task81/generator, seed 810915), presented as Inland Revenue employer monthly schedule data"
+  },
+  "world": {
+    "geography": "New Zealand, Wellington region (Kapiti Coast, Porirua, Lower Hutt, Upper Hutt)",
+    "currency": "NZD",
+    "org_type": "regional development agency administering an employment incentive",
+    "invented_names": [
+      "Te Awakairangi Regional Development Agency",
+      "Regional Activation Employment Incentive",
+      "Economic Development Committee"
+    ]
+  },
+  "deliverables": [
+    "liability_determination.pdf",
+    "qualifying_firms_schedule.xlsx",
+    "incentive_run_review.html"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive move is recovering the entity the governing rule pays from records kept at a registry identifier, by matching each unit that ceased to the unit that opened the next day with an identical set of attached sub-units, which lets those entities pass a continuous-filing gate and reverses the downward corrections into a higher total.",
+  "driver_concrete": "Rule 3 pays the firm while the register keys the NZBN, so the 203 units that ceased and the 203 that opened the next day filing the identical site set are one firm each, letting 119 firms worth NZD 3,024,200 clear rule 4's every-month gate and lifting the run from NZD 4,701,600 to NZD 7,725,800.",
+  "stump": "A competent solver nets each register unit's PAYE registrations at the amended schedule, back-tests the pilot to the dollar and files NZD 4,701,600 across 352 units, because it groups by the NZBN and never links the 203 units that ceased and reopened the next day on identical site sets, so rule 4 refuses 119 firms.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1/v2, Nonprofit grantee assurance (the build ledger row 81 still describes)",
+      "fate": "built 2026-09-08 (ledger answer 16,816 transactions); after a 2026-09-09 repair made the closed-year corpus louder, two live responses filed its committed figure exactly; retired and re-rooted 2026-09-09 (DESIGN_NOTE s.0)",
+      "domain": "nonprofit-grant-making",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is the share of items an operating record correctly marks closed that a filed standard would count as actually examined, recovered only through a two-hop join to a time ledger behind an activity filter, which lengthens a threshold-plus-run-length trigger and raises a forward count."
+    },
+    {
+      "architecture": "v3 first cut (Economics x Root-Cause)",
+      "fate": "failed a review on Gate G as planted_defect_flip / surface_read_rejection (a register-grain employment decomposition, 7,715 jobs from new firms against 1,147, drawn beside the answer); rebuilt in place 2026-09-09, decomposition removed, tag moved to Descriptive (DESIGN_NOTE s.2b)",
+      "domain": "economics",
+      "objective": "root-cause",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The same identity recovery (a unit that ceased matched to one that opened the next day with an identical sub-unit set), framed as attributing a correctly measured movement to entries against identifier changes, which a reviewer read as flipping away from a misleading surface decomposition."
+    }
+  ],
+  "notes": "Subdomain other: business demography is not in the Economics list (the note sets it apart from labour and output). Shape other: one total cut three reconciling ways (tiers, divisions, districts) plus a 471-row ranked firm schedule; criteria in DESIGN_NOTE s.10. G-codes and the v1/v2 gate_g are mapped from prose; the note names none."
+}

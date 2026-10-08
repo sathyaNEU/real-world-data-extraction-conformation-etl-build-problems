@@ -1,0 +1,200 @@
+{
+  "task": "task87",
+  "architecture": "v9",
+  "drawn": "2026-09-14",
+  "slot_note": "",
+  "domain": "policy-education",
+  "subdomain": "k12-outcomes",
+  "niche": "credit recovery placement for seniors short of the graduation schedule in a consolidated six-school district",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "The 2027-28 recovery schedule brings 102 of next year's seniors to a regular high school diploma.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G11",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "register",
+  "stakeholder_role": "superintendent of a six-school consolidated school district",
+  "role_family": "operations_director",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "course_credits_2019_2027.csv",
+    "rows": 119823,
+    "entity": "one course enrolment with the credits attempted and earned",
+    "grain": "student x school year x course",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Pennsylvania (Huntingdon, Bedford and Fulton Counties)",
+    "currency": "none",
+    "org_type": "consolidated public school district",
+    "invented_names": [
+      "Raystown Regional School District",
+      "Raystown High School",
+      "Warriors Ridge High School",
+      "Trough Creek Alternative Program",
+      "Raystown Regional Cyber Academy",
+      "Board Policy 218"
+    ]
+  },
+  "deliverables": [
+    "recovery_plan_2027_28.xlsx",
+    "recovery_plan_review.png"
+  ],
+  "opening_move": "other",
+  "driver": "A filed procedure's delivered count is capped because two owed items that meet in the same time slot cannot both be taken by one unit, an exclusivity the schedule's data encodes but the governing procedure never mentions, and the closed record never paid for it because every past unit had a later period to defer into.",
+  "driver_concrete": "Recovery sections meet in recorded periods (ELA 1, Mathematics 2, the other four areas 3), so a senior short in two period-3 areas can hold only one place and has no following year or summer section for the other, and the filed offer walk over all 286 short seniors brings 102 to a diploma rather than 121.",
+  "stump": "A competent solver executes operations note 3.1 as the complete walk, takes every offered place and files 121 (or 143 or 166 if it also drops the seniors a place cannot graduate), never asking whether the schedule's period column stops a student holding two offers that meet at once.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (Halvorsen Health Foundation, May docket headroom)",
+      "fate": "failed determinism 2026-09-12 on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes); never reached the portal",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "time"
+      ],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "Remaining headroom is the budget less recorded charges less instruments already executed but not yet posted to the system of record, recovered from a signing log the fact pipeline never joins."
+    },
+    {
+      "architecture": "v2 (Halvorsen, per-organisation cumulative cap)",
+      "fate": "failed determinism 2026-09-12 on Gates C, D and E (underspecified_objective, a semantic fork on the slate reading and the fund scope)",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A per-entity cumulative cap binds where entity membership is itself a construction (two records sharing an identifier plus an absorption), capping what the open period can commit."
+    },
+    {
+      "architecture": "v3 (Halvorsen, the slate the board can approve, grouping pinned by a corpus)",
+      "fate": "solved on the portal: both responses landed $3,096,535 (recorded 2026-09-13)",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A per-entity cap binds on entities whose grouping (a shared identifier and an absorption) is pinned by a closed corpus of determinations built to discriminate, so a back-tester recovers the grouping rule."
+    },
+    {
+      "architecture": "v4 (Halvorsen, allocation under a joint cap at one docket)",
+      "fate": "scored 100 per cent on the portal, main call and every ask (2026-09-13)",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "Several requests from one entity at one sitting compete for one pool of room under a joint cap, so the most the slate can approve is an allocation in which the middle requests beat the largest."
+    },
+    {
+      "architecture": "v5 (Halvorsen, the unit the cap counts resolved through a group ruling)",
+      "fate": "solved on the portal: both responses landed $3,199,517 (2026-09-13); the world was declared exhausted and redrawn",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "The unit a joint cap counts is the holder of a group ruling, which only an external master-file join reveals, so subordinates with unrelated names share one cap."
+    },
+    {
+      "architecture": "v6 (Raystown, Class of 2027 non-graduate count)",
+      "fate": "solved on the portal: both top responses filed 95 (2026-09-13)",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "A cohort count is reduced only for exits to destinations of a type that meets a filed condition, which needs every destination classified against a directory, while a closed corpus refuses every cruder removal rule."
+    },
+    {
+      "architecture": "v6b (Raystown, confirm-the-number inversion)",
+      "fate": "solved on the portal: both top responses landed 114 (2026-09-13); the apparent defects were defused in the dictionary, so the premise was absent",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G18"
+      ],
+      "gate_g": "confirm_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The reported figure is right apart from one genuine correction, and several apparent defects are legitimate, so each cleaning reflex moves the answer away from the truth."
+    },
+    {
+      "architecture": "v7 (Raystown, cohort rebuilt over two records)",
+      "fate": "failed Gate G 2026-09-13 (planted_defect_flip, surface_read_rejection) and one model scored 100 per cent on the portal",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A reporting system's draft cohort misses members who entered elsewhere, and rebuilding it from a second record before applying a filed removal rule changes the certified count."
+    },
+    {
+      "architecture": "v8 (Raystown credit recovery, placement maximum)",
+      "fate": "solved outright on the portal 2026-09-13: both top responses landed 197",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "The most units a capacity-capped schedule can complete is a conjunctive coverage maximum over a filed feasible set, where capacity spent on a unit needing several scarce items buys nothing unless every item is served."
+    }
+  ],
+  "notes": "Ledger row 87 still describes v8 and the Halvorsen world; the folder holds v9 (committed 102), drawn 2026-09-13 and rebuilt twice on 2026-09-14 after two determinism results; no v9 portal result recorded, and the note's stopping rule retires the folder if the top two land 102. Generators G7, G11 and G13 are mapped from the note's mechanism (it names none for v9). Shape 05 carried from v8's section J.5. Context artifact (the SIS draft certification file) mapped to register. Spine is 119,823 rows on disk (note O.6 says 119,819). Opening move is situation-first, not in the vocab, so other."
+}

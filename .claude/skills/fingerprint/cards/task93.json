@@ -1,0 +1,91 @@
+{
+  "task": "task93",
+  "architecture": "v3 claim costing (hardened after run 3)",
+  "drawn": "2026-10-02",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "labor-markets",
+  "niche": "multi-employer agreement rate base for bargaining: the ordinary rate of pay rebuilt from rosters in contract cleaning, security and catering",
+  "objective": "descriptive-distribution",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "rate_or_share",
+  "answer": "Open bargaining at 4.7 per cent on every Schedule A rate.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "D",
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G11",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "gold_standard_subsample",
+  "context_artifact": "other",
+  "stakeholder_role": "economist at a facilities services employers' federation",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "shift_roster_2025-26.parquet",
+    "rows": 137902,
+    "entity": "one rostered shift worked by an employee",
+    "grain": "employee x shift",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional (Merrindal region)",
+    "currency": "none",
+    "org_type": "employers' federation party to a multi-employer agreement",
+    "invented_names": [
+      "Merrindal Facilities Services Agreement 2024",
+      "Merrindal Facilities Services Employers",
+      "Merrindal Static Security Instrument 2019",
+      "Ardenvale Assurance Partners",
+      "Services and Property Union",
+      "Kestrelline rostering"
+    ],
+    "people": [
+      "Gerald Martinez",
+      "Ruth Bradford",
+      "Kenneth Carter",
+      "Paula Campbell"
+    ]
+  },
+  "deliverables": [
+    "opening_offer_costing.py",
+    "offer_cost_curve.png"
+  ],
+  "opening_move": "evidence-first",
+  "driver": "The decisive quantity is what raising a floor obliges each unit to pay, which for units paid on a flat all-in arrangement is a shortfall tested per person per pay period against the floor-priced entitlement of the work actually done, so the cost curve is convex in the dial, and testing the flat amount against the floor, or netting the test over a year or a unit, finds no cost where the cost sits and sets the dial too high.",
+  "driver_concrete": "The opening offer is the largest uniform increase in the Schedule A rates whose cost stays inside the council's mandate in cents per ordinary hour on the rate base; the cost is each member's shortfall below the raised rate on penalty-weighted hours, plus, for members paying one flat rate for every hour under the set-off clause, the amount by which each employee's fortnight falls short of the raised rates' entitlement for the shifts worked, so a flat rate several dollars above the raised minimum still costs money in the weekend and night fortnights.",
+  "stump": "A competent solver recovers each member's rate from penalty-weighted hours, tests it against the raised Schedule A rate at each setting and finds the largest setting inside the mandate, reading the flat-rate members as clear because their rate sits above the raised minimum, so it never prices what each of their employees' fortnights would be entitled to and opens with an offer the mandate does not cover.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task77": "task77 v2 collapses a join that fans out to one row per person before netting coverage unit by unit; here nothing fans out, and the decisive move is a per-pay-period shortfall test of a flat all-in rate against a floor-priced entitlement, convex in the dial being set, which netting over the year or the employer erases.",
+    "task93": "The same decisive move, kept on purpose and hardened rather than redrawn: the first cut filed the flat-rate arrangement and its per-pay-period top-up as a clause, so the cost was a filed formula; this version files only a general pay-period rule, leaves the arrangement to arithmetic, and ships a closed costing that every method reproduces. If this version is solved the slot's world is retired, per the design note's stopping rule."
+  },
+  "lineage": [
+    {
+      "architecture": "v1-v2 rate-versus-earnings ladder",
+      "drawn": "2026-09-13",
+      "fate": "solved on the portal twice on 2026-10-02: run 1 named CL4 at 25.2c (dropped the clause 23 allowance), run 2 named CL4 at 25.4c exactly after recovering the start-band rule from the 364-fortnight audit; the build's own stopping rule fired and the committed question was re-rooted",
+      "driver": "The reported average is payment per unit of time worked, while the decision runs on a rate that exists in no column and is recovered only by rebuilding the weighted time each payment paid for from event-level schedules, and on that basis the weighting fell and the ranking of contributors inverts."
+    },
+    {
+      "architecture": "v3 first cut: the opening offer under a clause that spelled out the flat rate",
+      "drawn": "2026-10-02",
+      "fate": "solved on the portal 2026-10-02 (run 3), both responses on 4.5 per cent: clause 20.4 described the flat-rate arrangement and its per-pay-period top-up, so the cost was arithmetic under published terms. Hardened the same day: 20.4 reduced to a general pay-period rule, the arrangement left to arithmetic, and the Secretariat's July 2026 costing shipped as a closed record every method reproduces",
+      "driver": "The decisive quantity is what raising a floor obliges each unit to pay, which for units paid on a flat all-in arrangement is a shortfall tested per person per pay period against the floor-priced entitlement of the work actually done, so the cost curve is convex in the dial, and testing the flat amount against the floor, or netting the test over a year or a unit, finds no cost where the cost sits and sets the dial too high."
+    }
+  ],
+  "notes": "Re-rooted 2026-10-02 after two portal solves of the classification-contribution call (lineage). Context artifact other: the union's log of claims, a counterparty's served demand, which no vocab key names. Shape 04: the cost stated at every allowed setting of the offer, the committed setting and the one above it. Scoring unit per ordinary hour, no vocab item. Currency: dollars with no ISO code in the pack. Spine: the larger of two roster years (137,902 and 135,379 rows, 273,281 together). Hardened 2026-10-02 after run 3; the stopping rule in the design note retires the world if this version is solved.",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body"
+}

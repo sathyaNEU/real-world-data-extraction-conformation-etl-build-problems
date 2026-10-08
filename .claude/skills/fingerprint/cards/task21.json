@@ -1,0 +1,76 @@
+{
+  "task": "task21",
+  "architecture": "iteration 14",
+  "drawn": "2026-08-14",
+  "slot_note": "No root prompt.md or submission.md (answer_key/PROMPT.md, answer_key/SUBMISSION_WRITEUP.md); IDEATION.md's header still says iteration 13.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "niche": "aiming one expedite block at the distribution centre that stocks out of one SKU first during peak",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Point the expedite block at Aurora (DC-AUR), which runs out of SEN-4400 first, in forecast week FW08 (ISO 2026-W34, week commencing 2026-08-17).",
+  "answer_source": "answer_key/SUBMISSION_WRITEUP.md, 1. Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "physical_verification",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "S&OP Lead at NovaTech Manufacturing (memo header)",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "order_lines_recent.csv",
+    "rows": 711,
+    "entity": "one row is one outbound order line with its ship site, account and posting status",
+    "grain": "order line x ISO week, last 26 weeks",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (Midwest, Southeast and Northeast DCs)",
+    "currency": "USD",
+    "org_type": "manufacturer's North American distribution network",
+    "invented_names": [
+      "NovaTech Manufacturing",
+      "Aurora",
+      "Brandt",
+      "Calder",
+      "Merrow",
+      "SEN-4400"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "constraint-first",
+  "driver": "A certified serving-layer measure is an undocumented sum of raw components and one load release dropped a component, so the decisive rival's in-transit supply is understated; the identity is recovered by searching component subsets against the good batches, flagged by a sibling derived measure that stayed intact.",
+  "driver_concrete": "Release r2026.06.4-hotfix (batch LOAD-20260629-0410) omits full_pallet_eaches from bronze qty_eaches, so Calder's in-transit reads 1,625 instead of 5,000; the unique signed subset of 12 raw fields restores it, and with the demand, territory and supply repairs Aurora breaches first in FW08.",
+  "stump": "Files Calder in FW06 by taking the certified bronze qty_eaches at face value (Calder in-transit 1,625 instead of 5,000), a read the circulated cover report independently corroborates by banding Calder worst at 2.2 weeks.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iterations 1 to 8 (silent row loss)",
+      "fate": "iteration 8's single-flag pin was defused by two independent rollouts with one groupby; earlier fates are not recorded",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "One candidate's draws never post to the ledger every analyst opens first, so its demand must be rebuilt from line-level and scan records, and the ledger-to-count residual equals the missing draws."
+    },
+    {
+      "architecture": "iterations 9 to 13 (dated territory register)",
+      "fate": "iterations 9 to 11 were each reached by blind rollouts, iteration 12 failed the determinism gate on a trailing-window fork, and a rollout defused every layer of iteration 13",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Forward demand belongs to the site that serves each account under a dated, versioned register at the decision date, with unposted draws re-added and a completed bounded episode excluded, so both the pick and the week move."
+    }
+  ],
+  "notes": "Objective untagged (ideation frames it prospective), inferred as forecasting. Recipe labels (R1, R2, R5, R6, DEC-R) predate the vocabulary, so nothing is back-fitted. Largest table 711 rows. Persona Priya Raghunathan recurs from task18."
+}

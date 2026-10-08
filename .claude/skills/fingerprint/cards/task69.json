@@ -1,0 +1,133 @@
+{
+  "task": "task69",
+  "architecture": "v4",
+  "drawn": "2026-09-06",
+  "slot_note": "Superseded v1, v2 and v3 builds sit in a hidden .superseded_builds.tar.gz at the folder root (lineage only).",
+  "domain": "product-analytics",
+  "subdomain": "other",
+  "niche": "seller onboarding slate for a live-inventory programme (Managed Availability) on a B2B industrial-parts exchange, priced from a staggered trial",
+  "objective": "experiment-causal",
+  "shape": "01",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Onboard these eight sellers in the Q1 round and commit 182 incremental fulfilled orders for 2026Q2, the quarter the cohort goes live: Boquillas Bearing & Drive, Tallapoosa Supply Company, Piedmont Parts & Controls, Tensas Bearing & Drive, Shenandoah Electrical Supply, Yazoo Electrical Supply, Yampa Industrial Group and Housatonic Fluid Power.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "C",
+    "B"
+  ],
+  "generators": [
+    "G10",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "pilot_log",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs seller operations at an industrial-parts exchange",
+  "role_family": "operations_director",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "order_lines_2024.csv, order_lines_2025.csv",
+    "rows": 433547,
+    "entity": "one row is one order line placed by a buyer site against a seller listing, FULFILLED or CANCELLED",
+    "grain": "order line (buyer site x seller x part x timestamp), two trading years of 211,244 and 222,303 rows",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (regional seller naming, fictional exchange)",
+    "currency": "none",
+    "org_type": "B2B industrial-parts (MRO) marketplace, sell side",
+    "invented_names": [
+      "Merrowfield Parts Exchange",
+      "Managed Availability (charter MA-2024-03)",
+      "Housatonic Fluid Power",
+      "Lodgepole Process Supply",
+      "Bitterroot Fluid Power",
+      "Boquillas Bearing & Drive"
+    ]
+  },
+  "deliverables": [
+    "onboarding_commitment_memo.pdf",
+    "candidate_yield_chart.png",
+    "availability_slate.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The committed figure is the value of a capped set whose members' contributions overlap, so the value-maximising set is not the top-k by standalone value and summing standalone values overstates it, priced at a rate a staggered trial pins for the tenure stage the forward window falls in.",
+  "driver_concrete": "Stockout events tried at more than one candidate's listings convert once, so the 8-of-20 slate maximises distinct 2025Q2 events (741, Lodgepole out and Housatonic in) and is priced at the first-live-quarter rate 0.246 the three trial waves identify, committing 182 orders.",
+  "stump": "A solver who builds the charter's stockout events, carries the close-out summary's pooled 0.409 rate and sums the top eight sellers' own 2025Q2 events files 349 orders on a slate that keeps Lodgepole (R2, +92 per cent); finding the 0.246 tenure rate but still summing gives 210 (R3).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "PA draw (never built)",
+      "fate": "superseded the same day 2026-09-05, folder empty; mechanism recorded as spent in ledger row '69 (PA draw, SUPERSEDED)'",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "D"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "Each candidate's certified effect is its effect under the baseline configuration, and a concurrently randomized second change inflated some pooled effects through an interaction no balance check sees, so effects must be rebuilt in the joint assignment cells."
+    },
+    {
+      "architecture": "v1 (Demographic & Social Science, assignment reconstruction)",
+      "fate": "built 2026-09-05; two responses landed the golden EXTEND +5.5 pp with the full construction (at ceiling by its own stopping rule); re-rooted 2026-09-06",
+      "domain": "demographic-social-science",
+      "objective": "experiment-causal",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "go_hold_or_stop",
+      "driver": "The causal quantity is a within-site contrast recovered by reconstructing assignment at intake behind a roster join, because the site-level movement is diluted by the routed share and the service-log contrast is survivor-conditioned by definition."
+    },
+    {
+      "architecture": "v2 (Demographic & Social Science re-root, period-varying assignment rate)",
+      "fate": "failed its determinism review 2026-09-06 on Gate G single_conceptual_flip (answer CONTINUE, +2.9 pp)",
+      "domain": "demographic-social-science",
+      "objective": "experiment-causal",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "go_hold_or_stop",
+      "driver": "A case-blind designed test whose assignment rate varied across the periods the outcome moved over, so the year-long arm contrast is biased and the effect must be estimated within periods and re-pooled on the filed weights."
+    },
+    {
+      "architecture": "v3 (Product Analytics marketplace, first draw of this world)",
+      "fate": "failed its determinism review 2026-09-06 on Gates B, C and G (single_conceptual_flip): constructs lived only in the write-up and a 55 per cent Q1 scaling contradicted the data (answer 169 orders)",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [
+        "objective",
+        "rule"
+      ],
+      "pattern": [
+        "C",
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A forward commitment sized by how much of a trial effect a count cap can buy, where the decisive move swaps the counting basis from exception records to underlying demand events, the basis under which the trial's per-unit effect is homogeneous."
+    }
+  ],
+  "notes": "D&SS was v1 and v2 (tarball); the build on disk is Product Analytics. Generators mapped from the design note (names no G-code). Subdomain, marketplace supply and seller operations, is outside the vocab. Executed-pilot calibration is one build from spent in Experiment & Causal (task43, 44, 69). Personas Petrosyan, Quintero, Vantorre, Novikov."
+}

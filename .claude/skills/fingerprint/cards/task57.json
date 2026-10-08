@@ -1,0 +1,160 @@
+{
+  "task": "task57",
+  "architecture": "v23",
+  "drawn": "2026-08-30",
+  "slot_note": "v22 preserved in task57/v22_snapshot; generator/src holds the raw IRS archives and was not opened; this card describes v23",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "giving-strategy-program-funding",
+  "niche": "appropriation for a community-foundation capacity-building grant line bounded by the never-funded eligible nonprofit population built from IRS exempt-organization extracts",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The Board should approve an appropriation of 1,470,000 US dollars for the Cycle 2025 Organizational Strengthening Grant line.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G11"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "register",
+  "stakeholder_role": "unstated in the prompt (writes the Board memo for a Kentucky community foundation pooled fund's grant line)",
+  "role_family": "programme_officer",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "irs_eo_bmf_kentucky.csv",
+    "rows": 22567,
+    "entity": "one exempt organization on the IRS Business Master File",
+    "grain": "organization",
+    "source": "IRS Exempt Organizations Business Master File, Kentucky cut (irs.gov/pub/irs-soi/eo_ky.csv), public domain; with the IRS SOI Form 990 and 990-EZ extracts FY2019 to FY2023 (27,785 returns)"
+  },
+  "world": {
+    "geography": "United States, Kentucky",
+    "currency": "USD",
+    "org_type": "pooled fund at a community foundation running a capacity-building grant line",
+    "invented_names": [
+      "Commonwealth Capacity Partners",
+      "Organizational Strengthening Grant line",
+      "Capacity Grants programme 2016 to 2019",
+      "Rennick bequest"
+    ]
+  },
+  "deliverables": [
+    "osg_c2025_appropriation_memo.pdf",
+    "osg_c2025_screen_summary.csv",
+    "ccp_payment_position.csv",
+    "ccp_portfolio_panel.xlsx",
+    "osg_appropriation.py",
+    "ccp_position_charts.png"
+  ],
+  "opening_move": "other",
+  "driver": "The decision is bounded by an eligible population assembled from a published source split into two archives with different field names, so the natural union nulls a third of the records silently while the closed-period back-test still passes, because every past award came from the archive the natural read keeps.",
+  "driver_concrete": "The IRS publishes 990 and 990-EZ extracts as separate archives with different field names (totexpns against totfuncexpns, taxpd from FY2021), so a long-form-only panel finds 7 and 11 never-funded organizations in Bands 1 and 2, not 100 and 65; with Band 3 at 7 of 36 places the line needs 1,470,000 USD for 41 grants.",
+  "stump": "A competent solver builds the screen from extracts read on the long form's column names, back-tests it against all five closed cycles (0 of 350 award bands change) and files 1,065,000 USD, never seeing that 9,944 short-form returns dropped out and 2,546 short-form filers left the population.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (14-county gap round, 2026-08-28)",
+      "fate": "superseded by later re-roots; its ledger row records no round or portal outcome",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": null,
+      "decision_type": "pick_one_of_n",
+      "driver": "Recorded support differs from payable support because a conditional pledge's match condition fails under a donor-history classification, so the candidate whose largest commitment looks secure has less support in place."
+    },
+    {
+      "architecture": "v17b (state relocation-assistance obligation)",
+      "fate": "solved exactly by the forward walk with both joins, a second exact solve that fired the stopping rule; re-rooted 2026-08-30",
+      "domain": "demographic-social-science",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "A forward obligation for an unopened window is built by walking the closed cycles forward through two joins, a computation a strong solver reproduced exactly."
+    },
+    {
+      "architecture": "v18 (same world, same-sign ladder)",
+      "fate": "the objective-type reviewer returned none on its rule-walking discriminator; replaced by a fresh draw",
+      "domain": "demographic-social-science",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "generators": [
+        "G11",
+        "G13"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A forward obligation needs closed cycles rebuilt, residents held to their lease end, a forward eligibility schedule and each unit placed at the later of its scheduled date and its next availability, with every wrong cell above the answer."
+    },
+    {
+      "architecture": "v19 (credential projection, fresh draw)",
+      "fate": "drawn only, never built",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "E",
+        "A"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "Several candidate measures reproduce their own year by arithmetic identity in sample, so only a held-out year separates them, and the contaminated measure's error grows in one direction."
+    },
+    {
+      "architecture": "v20 (Kentucky world, projected appropriation)",
+      "fate": "failed the determinism review on Gates C and D (underspecified_objective): the projection method was in no shipped file",
+      "domain": "nonprofit-grant-making",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "An appropriation projected as eligible population times an unfiled per-band capture rate, where carrying the flat observed grant count forward was an equally legal reading a third away."
+    },
+    {
+      "architecture": "v21 and v22 (filed place limits)",
+      "fate": "v21 scored live with one response landing the call at 94 per cent; v22 cut the signposts and a diverging response still scored 54; superseded by v23 on 2026-08-30",
+      "domain": "nonprofit-grant-making",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "The line is limited by the organizations it may still fund rather than by money, and the band carrying most of the money has fallen below its filed place limit, so the sum of the lesser of places and population sets the figure."
+    }
+  ],
+  "notes": "Ledger rows exist for v1, v18, v19, v22 and v23 (v17b, v20 and v21 are described inside them); v2 to v16 are not recorded. No G-code is named for the decisive split-extract rung (pattern D); G11 is the demoted depth rung. Context artifact: the predecessor programme's award list. Calibration: closed cycles' award bands, built blind to the form-type reading (0 of 350)."
+}

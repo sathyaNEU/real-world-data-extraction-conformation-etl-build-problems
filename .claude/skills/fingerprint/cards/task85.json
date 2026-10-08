@@ -1,0 +1,92 @@
+{
+  "task": "task85",
+  "architecture": "v2.5",
+  "drawn": "2026-09-12",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "acquisition-growth",
+  "niche": "quarterly quality-probation call on a neobank's bounty-paid acquisition partners, measured by payroll activation on each member's own pay dates",
+  "objective": "anomaly-detection",
+  "shape": "10",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "We should place no partner on quality probation for November 2026 through January 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G7",
+    "G3"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "none",
+  "stakeholder_role": "chair of the October partner quality review at a neobank",
+  "role_family": "product_manager",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "ach_credit_ledger.parquet",
+    "rows": 1610251,
+    "entity": "one ACH entry received for a member's accounts in the member's first 120 days",
+    "grain": "member x ACH entry (trace number), received January 2024 to October 2026",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (Nevada switching pause, Federal Reserve holidays, US Eastern time)",
+    "currency": "USD",
+    "org_type": "neobank running a bounty-paid acquisition partner programme",
+    "invented_names": [
+      "Wrenfield",
+      "ShiftBridge",
+      "Harborline Rewards",
+      "Tollgate Media",
+      "Stipendly",
+      "Halden HCM"
+    ]
+  },
+  "deliverables": [
+    "q3_partner_quality_review.pptx",
+    "partner_review_workings.ipynb"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is each unit's own observation window, built from an intermediary's lead time recovered as the minimum gap in confirmed past events, the unit's own schedule instead of its parent's default, and only the periods after the unit's own relationship with a third party began, with a closed corpus of past determinations refusing every shorter reading.",
+  "driver_concrete": "A member's pay dates are those that pay a period they worked in, on their own pay group, reachable after the provider's lead (Halden HCM 10 business days, from the switch confirmations); on that clock no assessed partner breaches in both months and ShiftBridge sits at 0.948 and 0.916.",
+  "stump": "A competent solver runs the policy's clock off each employer's primary calendar with the instruction effective on the next pay date and places Tollgate Media (pooled 0.599), because Halden HCM's 10-business-day lead exists only as the minimum gap in the switch confirmations; with the lead but not own pay groups it places Harborline Rewards (0.745).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "built 2026-09-10; solved on the platform in round 1 (2026-09-11), both responses filed ShiftBridge with figures in bin because the policy's wording narrated both constructions; re-rooted to v2 (gap and pattern labels for v1 not recorded in the current note)",
+      "domain": "product-analytics",
+      "objective": "anomaly-detection",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive quantity is each unit's own observation window, built from an intermediary's lead time recovered from confirmed past events and the unit's own schedule in place of its parent's default, constructions the governing text narrates."
+    },
+    {
+      "architecture": "v2 (shipped rung-0 screen)",
+      "fate": "built 2026-09-11; author-reported rubric average 37; failed the determination review on Gate G (single_conceptual_flip, surface_read_rejection) because a weekly 14-day screen shipped as rung 0 and the prompt tied it to the call; v2.1 to v2.5 removed it and pinned conventions",
+      "domain": "product-analytics",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "go_hold_or_stop",
+      "driver": "The same per-unit window opening at the unit's own third-party start, refused by a closed corpus, but with a correct trailing screen shipped and quoted by a stakeholder as the decision, which ranked the candidates as rung 0."
+    }
+  ],
+  "notes": "v2.5's dictionary sentence ('A pay date pays the employees who worked in that period') concedes the employment-period rung; the note says the lead-time recovery and the own-pay-group rung now carry the stump. G-codes mapped from the note's mechanism text (it names none); its clone check warns against a gap-4 reading. Context artifact none: rung 0 unshipped since v2.1."
+}

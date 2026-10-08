@@ -1,0 +1,89 @@
+{
+  "task": "task31",
+  "architecture": "R10",
+  "drawn": "2026-08-19",
+  "slot_note": "_superseded_R8_target/ and superseded/ hold the R8 pack and the old-ask deliverable; generator/ keeps R8 and R9 backup configs",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "niche": "booking the FY27 material cost bridge resourcing line for the one alternate-source resourcing project a contract manufacturer's council authorises",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "Finance should book $301,986 on the FY27 material cost bridge resourcing line.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G16",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "censored_or_lagged_release",
+  "context_artifact": "register",
+  "stakeholder_role": "runs supply management at Tarrant Ridge Industries, a contract manufacturer",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "goods_receipt_lines_2025_2026.csv",
+    "rows": 4780,
+    "entity": "one row is one goods receipt posting line (movement type, PO line, part, supplier, plant)",
+    "grain": "receipt line",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "contract manufacturer of machined and fabricated assemblies, three plants",
+    "invented_names": [
+      "Tarrant Ridge Industries",
+      "Cordray Precision",
+      "Redhill Machine Works",
+      "Larkspur",
+      "Northmark",
+      "Halloway"
+    ]
+  },
+  "deliverables": [
+    "fy27_bridge_resourcing_forecast.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The in-year value depends on a lag whose closed record splits absolutely on whether the provider already holds a prior approval with the same counterparty, a property recovered through a multi-file join, while the natural per-counterparty split is censored and inestimable, and one closed case scores the two readings.",
+  "driver_concrete": "MACH-2200 (RS-2704, to Cordray) books $301,986 because Cordray already holds released production on every programme the shaft family answers to, where ten of ten approval packages came back inside 45 days, so it ships 2027-05-23 and accrues from July after SA-2189's window; SEAL-8800's never-released source ships nothing in FY27, and closed package CR-2514 scores the readings.",
+  "stump": "A solver who settles landed cost and bridge eligibility but ignores the source-approval clock reaches for SEAL-8800, which ships nothing in FY27, and one who forecasts approval from each customer's queue read as one population books HARN-5500 at $189,849.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "old ask: which project to authorise (PDF deliverable)",
+      "fate": "solved in house round 1 on 2026-08-16: both threads named RS-2705 MACH-2200 with FY27 figures 0.43 percent apart; the ask then moved to the booked FY27 figure",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "Each candidate's in-year contribution is plan volume on the eligible share times a landed unit delta, phased from a qualification clock, and the largest in-year contributor is authorised."
+    },
+    {
+      "architecture": "R8 (approval clock with informative censoring)",
+      "fate": "superseded by R10 on 2026-08-19; the portal review that returned answer_contradicts_files read the R8 write-up against the R10 folder",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "statistical_rigor",
+      "decision_type": "quantity_figure",
+      "driver": "A milestone duration is estimated from a log whose slow cases are still open, so dropping the censored rows understates the delay and overstates the in-year accrual."
+    }
+  ],
+  "notes": "Back-fitted labels: the ledger row (population, D, censored milestone completion) matches the earlier censoring-led rung; design_note.md and the generator/config.py comments put R10's decisive move in an absolute released-source split, carded population/E with G16 and Gate G from the design note. Ledger status failed. Largest table 4,780 rows, under the 10,000-row input gate."
+}

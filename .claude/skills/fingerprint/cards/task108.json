@@ -1,0 +1,87 @@
+{
+  "task": "task108",
+  "architecture": "v1",
+  "drawn": "2026-10-06",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "niche": "a sparkling-water producer with one can line reserving a contract canner's monthly capacity for the 2027 summer, where the plan base has to be demand of record (each customer requirement counted once at its first request) compiled for the allocation months the S&OP archive has not yet signed off",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We should reserve 12,853 cases a month on Rideau's Line 2 for May to September 2027.",
+  "answer_source": "submission.md",
+  "gap": [
+    "rule",
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "D",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the producer's co-manufacturing manager, who places the contract canner reservation",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "lbc_order_lines_2024-01-01_2026-09-30.csv",
+    "rows": 38654,
+    "entity": "one customer order line for one SKU, with ordered and shipped cases",
+    "grain": "customer PO x SKU line",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "agriculture_or_food_producer",
+  "world": {
+    "geography": "Canada, Ontario",
+    "currency": "CAD",
+    "org_type": "independent sparkling and flavoured water producer with one bottling plant (can and PET lines)",
+    "invented_names": [
+      "Larchmere Beverage Co.",
+      "Rideau Contract Canning Ltd.",
+      "Harrowfield Foods Ltd.",
+      "Marchbank Grocers Inc.",
+      "Pinecrest Food Stores Ltd.",
+      "Kawartha Fresh Distributors",
+      "Bruce Peninsula Wholesale Ltd.",
+      "Ottawa Valley Beverage Supply",
+      "Distribution Levis-Bellechasse inc.",
+      "Maritime Convenience Supply Ltd.",
+      "Northshore Club Warehouse Ltd.",
+      "Lakehead Foodservice Inc.",
+      "Trillium Office & Campus Foodservice"
+    ],
+    "people": [
+      "Sarah Stark",
+      "Seth Reed",
+      "Vanessa Myers",
+      "Courtney Holt",
+      "James Nash"
+    ]
+  },
+  "deliverables": [
+    "copack_reservation_2027.pptx",
+    "copack_reservation_2027.xlsx"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The forward requirement rests on unconstrained demand for a period when supply was rationed, and every quantity cut during rationing was asked for a second time by the requester's own resubmission (automatic at the largest accounts); the published history counts each requirement once at its first request, so the fulfilled basis reproduces almost every closed period because a cut and its resubmission cancel inside the period, the requested basis double counts every resubmission, each single correction reproduces fewer published periods than neither, and only first requests with resubmissions removed reproduce every published period and size the requirement against fixed capacity.",
+  "driver_concrete": "Demand of record counts each customer requirement once, at the order line that first asked for it, so the re-orders of cut cases during allocation (automatic at the grocery chains, keyed by hand elsewhere) are left out; in the closed months a cut and its re-order ship in the same month, so shipped cases reproduce nearly every published month while ordered cases overshoot, and only ordered cases with re-orders removed reproduce all of them and carry the July to September 2026 allocation into the 2027 plan correctly.",
+  "stump": "A competent solver finds that shipped cases dated by the order month return 116 of the 120 signed demand-of-record cells and ordered cases only 114, keeps the shipped basis, then sees the July to September 2026 allocation and switches those three months to ordered cases (190,569 / 182,621 / 138,511 against first requests of 166,810 / 158,970 / 135,509), so every re-entry of a cut quantity counts as new demand and it files a reservation of about 44,800 cases a month against 12,853 (or, holding the shipped basis throughout, about 7,700); the step that lands them there is never asking why ordered cases miss exactly the signed months where a cut and its re-release ship inside the same month, which is the only evidence of the counting grain.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task67": "task67 v1 dropped the rationed periods from the rate fit; here the rationed months stay in the base and their demand is rebuilt at requirement grain (first requests, chain re-orders removed), pinned by published months where a cut and its re-order cancel, so the solved move there (distrust rationed shipments) is this build's decoy rung.",
+    "task18": "task18 de-duplicated replayed postings in a lost-sales log (a recording artifact told apart by volumes); here every order line is a genuine customer order and the re-orders are correct records, so nothing de-duplicates on a key and the requirement grain is recovered only by reproducing the published demand of record."
+  },
+  "lineage": [],
+  "notes": "calibration_form: the S&OP archive's signed demand-of-record actuals by month and pack family for the existing customer book (Jan 2024 to Jun 2026), which the rebuild must reproduce; not a certified score matrix. Pattern D decisive: the attempt grain (order lines, where every cut quantity re-ordered is a second attempt) against the requirement grain (each requirement once at its first request), both arithmetically perfect; the grain is pinned by the published series (B supporting), never by a filed sentence, hence gap rule first."
+}

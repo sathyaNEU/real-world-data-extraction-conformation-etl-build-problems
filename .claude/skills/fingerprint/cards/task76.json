@@ -1,0 +1,80 @@
+{
+  "task": "task76",
+  "architecture": "v2",
+  "drawn": "2026-09-07",
+  "slot_note": "",
+  "domain": "demographic-social-science",
+  "subdomain": "crime-social-surveys",
+  "niche": "victim navigator scheme of a community safety partnership: the household caseload committed before a commissioning year opens",
+  "objective": "anomaly-detection",
+  "shape": "05",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We should commit a caseload of 1,474 households for the 2027-28 commissioning year.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "director of community safety at the Kirklees partnership",
+  "role_family": "operations_director",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "contact_log.csv",
+    "rows": 20696,
+    "entity": "one contact attempt on a referral",
+    "grain": "referral x attempt",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United Kingdom, England (Kirklees, West Yorkshire)",
+    "currency": "none",
+    "org_type": "community safety partnership commissioning a victim navigator provider",
+    "invented_names": [
+      "Kirklees Victim Navigator Scheme",
+      "West Yorkshire residents' safety survey"
+    ]
+  },
+  "deliverables": [
+    "navigator_caseload_commitment.pdf",
+    "navigator_caseload_by_neighbourhood.png"
+  ],
+  "opening_move": "role-first",
+  "driver": "A determinate forward count drawn from a closed earning window is reduced by a class that exists only as a per-unit look-back over a log of earlier failed contacts, a class with zero observed conversion, and the only reported period predates the class so it cannot show it.",
+  "driver_concrete": "Households that declined support in an earlier commissioning year are never engaged again (0 of 1,581 later referrals), so specification 4.2 removes 555 of them from the 2,029 left after open cases, committing 1,474 households.",
+  "stump": "A competent solver applies the scope, the household collapse and the open-case exclusion and files 2,029 households, reading clause 4.2 as intent because nothing in the cohort year or the first-year annual return shows the prior-decline class.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (Ashworth Relief Fund March run)",
+      "fate": "solved exactly by two independent live responses (GBP 130,130), 2026-09-07; archived at _archive/task76_v1 in the repo root. Pattern B pinned its middle rungs",
+      "domain": "nonprofit-grant-making",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A rolling per-unit entitlement ceiling, consumed partly through a second payment channel the main ledger never shows at unit grain, caps what an open run can release below assessed need, a closed identity over shipped quantities."
+    }
+  ],
+  "notes": "G14 is mapped from pattern E (the vocab pairs them); the note names no G-code. The contact log (0 of 1,581) pins the decisive rung; the calibration is the scheme's first-year annual return, blind by construction. Shape 05 per DRAW_v2 (closest, used as the picker licenses). Stakeholder per the prompt is the director; the ledger says research lead. Scoring: the provider is paid a fixed sum per committed household. No portal result for v2 recorded. opening_move added from the prompt."
+}

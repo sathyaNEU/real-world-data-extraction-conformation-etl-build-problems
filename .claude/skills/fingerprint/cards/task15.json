@@ -1,0 +1,84 @@
+{
+  "task": "task15",
+  "architecture": "v4.1",
+  "drawn": "2026-08-10",
+  "slot_note": "prompt.md carries an author-only design section below the prompt; data/ is the earlier v1 base scenario.",
+  "domain": "product-analytics",
+  "subdomain": "experimentation-measurement",
+  "niche": "A/B readout of a guided onboarding wizard whose treatment client drops activation beacons",
+  "objective": "experiment-causal",
+  "shape": "single-figure",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "Ship the guided onboarding wizard on Monday.",
+  "answer_source": "submission.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "not stated in the prompt; the sign-off owner above Growth, data science and marketing",
+  "role_family": "product_manager",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "activation_events.csv",
+    "rows": 24608,
+    "entity": "one row is one client analytics event for an enrolled user",
+    "grain": "user x event x timestamp, experiment window Jan to Feb 2025",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "global, fictional (traffic across LATAM, APAC and other regions)",
+    "currency": "USD",
+    "org_type": "B2B SaaS project management tool",
+    "invented_names": [
+      "FlowDesk",
+      "EXP-2025-0041",
+      "projects-svc"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "The decisive move is noticing that the outcome table is missing rows for one arm after a dated client change, recovered by reconciling against an independent system-of-action log on which the other arm ties exactly, which lifts the measured effect over the decision bar.",
+  "driver_concrete": "260 treatment users have a projects-svc POST /v2/projects 201 creation but no activation_events row, because from client v3.14.1 wizard completion navigates away before the beacon flushes; with control tying at 1,487 the lift moves from -0.21pp to +4.11pp against the 3pp bar.",
+  "stump": "Reproduces the DS readout memo's corrections (dedupe, renamed event, provisioning exclusion, 7-day window, QA, MAC backfill), never asks whether activation_events.csv is missing rows, reads the faded weekly cohorts as novelty decay, and files NO-SHIP at -0.21pp.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "every frontier response converged on NO-SHIP (over-determined: all seven traps corrected in the same direction)",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "go_hold_or_stop",
+      "driver": "Seven planted record defects all inflate the treatment effect, so correcting any subset of them lands the hold."
+    },
+    {
+      "architecture": "v2",
+      "fate": "two frontier responses found both pivots and landed NO-SHIP, one through a leak that needed neither pivot",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "go_hold_or_stop",
+      "driver": "The hold needs two unannounced corrections, removing system-generated outcomes from one arm and re-attributing orphaned outcome rows in the other through a device key in a service log, which together pull the lift under the bar."
+    },
+    {
+      "architecture": "v3",
+      "fate": "a frontier response found both pivots in one crosstab and reproduced the ground truth to the decimal",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "go_hold_or_stop",
+      "driver": "The hold needs two corrections, excluding system-generated outcomes in one arm and restoring a renamed outcome event in the other, which together pull the lift under the bar."
+    }
+  ],
+  "notes": "Objective inferred (the author section names experimentation). Design note (author section of prompt.md, traps_reference.md) uses the pre-vocabulary catalog (Stumping A2, A4), so nothing is back-fitted. Spine is the largest CSV; the service log has 42,209 lines. v1 to v3 answered NO-SHIP; v4 inverted to SHIP."
+}

@@ -1,0 +1,68 @@
+{
+  "task": "task12",
+  "architecture": "v2.1",
+  "drawn": "2026-08-08",
+  "slot_note": "No submission.md: problem_statement.md carries the prompt, Final recommendation, failure ladder and trap register; v1 archived in v1_archive/; generator/ builds source/ and target/.",
+  "domain": "product-analytics",
+  "subdomain": "experimentation-measurement",
+  "niche": "which search ranker ships from a three-arm bake-off, on orders per enrolled customer",
+  "objective": "experiment-causal",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Ship sem_v2 (treatment_a).",
+  "answer_source": "problem_statement.md, 2. Final recommendation",
+  "gap": [
+    "population"
+  ],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "unnamed owner of the single July release slot, with Priya's readout backing the personalised ranker, Rob wanting it shipped and Dan wanting to hold",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "search_events_*.tsv (6 weekly partitions)",
+    "rows": 170723,
+    "entity": "one row is one search query",
+    "grain": "session x query",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional",
+    "currency": "USD",
+    "org_type": "online kitchen and home-goods retailer's search team",
+    "invented_names": [
+      "Harborline",
+      "Northgate Commerce Ltd",
+      "SRCH-2231",
+      "INC-4449",
+      "INC-4471",
+      "MSA2214"
+    ]
+  },
+  "deliverables": [],
+  "driver": "A three-arm test favours the wrong arm under a per-query denominator and on raw extracts, and the true winner appears only after an arm-correlated population captured in a second party's system is recovered by anti-join and duplicated captures are collapsed, against three documents that certify the broken data as clean.",
+  "driver_concrete": "sem_v2 wins on orders per enrolled customer (0.4780 against 0.4247 control and 0.4218 p13n, +12.53%, z=+5.94) once 1,419 Northgate-routed orders absent from orders.jsonl are recovered from the manifest and 1,390 latency double-captures are collapsed despite INC-4471's false all-clear.",
+  "stump": "A solver who trusts the readout and incident documents lands on sem_v2_p13n (L2 or L3), and one who finds the duplicate captures but not the Northgate orders lands on bm25_v7 (L4) (plan_v2_harder_traps.md).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved by two strong-model runs: INC-4449 and INC-4471 documented both repairs and the settlement-versus-export count gap confirmed them in one subtraction (plan_v2_harder_traps.md)",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A three-arm test whose true winner needs an omitted second-party population recovered and duplicated captures collapsed, with incident documents naming both repairs and a count gap confirming them."
+    }
+  ],
+  "notes": "Objective inferred (write-up domain line: Search, Ranking & Recommendations / Experimentation & A-B Testing). Gap read from the trap register (T8, population silently dropped), the same move as task11's partner channel. Wrong-methodology readout and false all-clear documents (legacy surface read). v2.0 red team: two strong solvers reached sem_v2, one low-effort solver stumped."
+}

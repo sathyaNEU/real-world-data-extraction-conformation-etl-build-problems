@@ -1,0 +1,99 @@
+{
+  "task": "task67",
+  "architecture": "v3",
+  "drawn": "2026-09-06",
+  "slot_note": "Folder also holds preserved_11d, preserved_11e and preserved_11h snapshots of the retired v1 and v2 builds (lineage only); deliverables/ carries a stray .tex and chart png beside the three goldens, golden/ holds the three.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "delivery duty establishment for a contract-hire fleet order, priced from depot-sector-day route-plan loops at a five-depot chilled foodservice distributor",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Commit a delivery duty establishment of 31 full duties for the quarter beginning 4 October 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "transport planner at a five-depot chilled and frozen foodservice distributor",
+  "role_family": "capacity_planner",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "delivery_movements_2025h2.csv, delivery_movements_2026.csv, delivery_movements_2027h1.csv",
+    "rows": 77156,
+    "entity": "one row is one delivery movement (a consignment can split by temperature regime; trunk movements included)",
+    "grain": "movement x delivery date, three period extracts of 8,285, 42,255 and 26,616 rows (the 2025h2 file in a legacy date format)",
+    "source": "synthetic (fictional distributor on real Lincolnshire and south Yorkshire depot towns and postcode sectors)"
+  },
+  "world": {
+    "geography": "United Kingdom, England (Lincolnshire, north Nottinghamshire, south Yorkshire)",
+    "currency": "GBP",
+    "org_type": "regional chilled and frozen foodservice distributor, five depots",
+    "invented_names": [
+      "Kelsey Vale Foodservice",
+      "Doncaster cross-dock",
+      "route planning service time standard STD-05",
+      "transport operating agreement issue 7"
+    ]
+  },
+  "deliverables": [
+    "duty_establishment_case.pdf",
+    "duty_establishment_plan.xlsx",
+    "duty_establishment.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a forward requirement priced from a fixed-plus-variable cost structure recovered exactly from historical per-unit shares, because carrying the per-unit shares onto a denser future period re-pays the fixed component once per unit and overstates the requirement.",
+  "driver_concrete": "The shipped planned_service_minutes is each drop's share of a depot-sector-day loop (stem plus running plus service), so the loop is recovered exactly from 28,975 sector-days and the denser October book re-priced as route plans, filing 31 duties where carried account shares file 37.",
+  "stump": "A solver who carries each account's mean shipped minutes per drop onto the October register book and sizes the peak trading day depot by depot files 37 duties, because summing shares across a denser day re-pays each sector-day's fixed stem once per drop (designed decoy, not yet measured on the portal).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (release-rationing world, busiest-weekday mean, 21 duties)",
+      "fate": "failed determinism twice 2026-09-05 (Gate C, then A/C), repaired; solved in R1 and R2 (five responses at 21); a corpus-pin variant failed a third review (Gate C, Gate G planted_defect_flip)",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The training history is a capacity-rationed observation of the forecast target, so the forward rate must be fitted only over periods whose capacity release was still open, an exclusion that binds in a resource unit the history table does not carry."
+    },
+    {
+      "architecture": "v2 (same world, ask re-rooted to a constrained minimum, 25 duties)",
+      "fate": "R3 held 2026-09-06 (determinism pass plus one valid stump at 20); after the register corpus was removed, R4 and R5 solved twice each; declared at ceiling 2026-09-06, preserved at preserved_11h",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The same rationed-history exclusion feeding a constrained minimum (the maximum over periods of a sum of per-site whole-unit ceilings), so every correction walks the answer up and the answer is the maximal grid cell."
+    }
+  ],
+  "notes": "Generators mapped from design note V3.1 (names no G-code). The note calls all pre-V3 work 'v2'; the ledger's split (v2 = preserved_11h) is used. Scoring unit read as the contract-hire vehicle, flat per committed duty. Shape echo with task70 (pdf+xlsx+py, chart sentence). Personas Prowse, Hatcliffe, Bilsdale."
+}

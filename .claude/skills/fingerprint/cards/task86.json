@@ -1,0 +1,101 @@
+{
+  "task": "task86",
+  "architecture": "v2 (decisive rung re-rooted 2026-09-12)",
+  "drawn": "2026-09-12",
+  "slot_note": "Folder holds v2. The retired v1 (Keystone MHE hire) is archived at task86/archive/v1-keystone-mhe-retired-2026-09-12.tgz and a byte-identical copy of it sits in task90/.",
+  "domain": "demographic-social-science",
+  "subdomain": "population-structure",
+  "niche": "bedroom-size unit mix of a replacement public housing building, sized on the households due initial-occupancy offers (returning relocated households, then the waiting list)",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "We should build Barraza Place as 15 studios, 20 one-bedroom, 16 two-bedroom, 54 three-bedroom and 19 four-bedroom units, 290 bedrooms in all.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence, bold markup removed)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G5",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "register",
+  "stakeholder_role": "research and planning lead at a county housing authority",
+  "role_family": "research_desk",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "waitlist_members_2027-06-18.csv",
+    "rows": 10971,
+    "entity": "one member of a portal or paper public housing waiting-list application",
+    "grain": "application x member, with added and removed dates",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional (Almagro County, no state named; US public housing rules)",
+    "currency": "USD",
+    "org_type": "county public housing authority",
+    "invented_names": [
+      "Almagro County Housing Authority",
+      "Barraza Place",
+      "Barraza Courts",
+      "Quesada Commons",
+      "Cepeda Village",
+      "Mayorga Heights"
+    ]
+  },
+  "deliverables": [
+    "barraza_place_unit_mix.svg",
+    "barraza_place_offer_roll.xlsx"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "The decision's population is a shared pool as it will stand on a future date, so a second, earlier draw on the same pool, scheduled and sized only in an inventory row, has to be run forward member by member against its own fixed category mix, and the members it reaches are gone before the decision's own draw begins.",
+  "driver_concrete": "Quesada Commons (56 units, 0/14/22/20/0, notice of availability 1 November 2027) leases up off the same waiting list first in ACOP 4.2 order, seating four-bedroom families in its three-bedrooms (ACOP 8.3), so 56 families leave before Barraza Place's 1 August 2028 offers and the 50 list units reach place 102 (PH-2022-00770).",
+  "stump": "A competent solver who conforms the list, recovers the Guidelines from the offer register, seats the 74 right-to-return households first and sizes them from today's roster files 8 / 17 / 22 / 57 / 20 and 312 bedrooms (R3, the mix both round-1 responses filed), because nothing joins the inventory's under-construction row to Barraza Place's list.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (Keystone peak forklift hire, Supply Chain)",
+      "fate": "built 2026-09-11, no stump round; retired 2026-09-12 on a Track B Template clone finding against task72 v2 and archived in task86/archive; a byte-identical copy now sits in task90/ (carded there)",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "D",
+        "B"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The priced unit is a buyer-side position that persists across the supplier's substitutions of the physical asset, so supplier-keyed asset stays must be chained into that unit through a buyer-side mapping before a length-tiered tariff re-rates each unit from its first day."
+    },
+    {
+      "architecture": "v2 first cut (relocated-household rung decisive)",
+      "fate": "solved on the platform in round 1 (2026-09-12): both responses committed to its mix exactly (8 / 17 / 22 / 57 / 20, 312 bedrooms); decisive rung redrawn the same day and kept as R3, marked spent",
+      "domain": "demographic-social-science",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "allocation_to_total",
+      "driver": "A rule-placed unit is measured by its present membership, read from a second current record reached through its head, rather than from a correct but dated certification of the same unit, because the rule measures units as they stand on the decision date."
+    }
+  ],
+  "notes": "G-codes mapped from the note's mechanism text (it names none): G5 for the earlier building serving the same list asymmetrically by size (no studios or four-bedrooms), G13 for the list as it will stand, G16 for the Guidelines recovered from 1,121 offers. The relocated-household rung is spent. The 2026-09-12 clone check predates the re-root."
+}

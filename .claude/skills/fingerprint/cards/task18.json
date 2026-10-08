@@ -1,0 +1,63 @@
+{
+  "task": "task18",
+  "architecture": "v2, fourth review round",
+  "drawn": "2026-08-12",
+  "slot_note": "No root prompt.md or submission.md: both live in answer_key/ (PROMPT.md, SUBMISSION.md).",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "niche": "one peak-season air-freight escalation slot for a single SKU, ranked on a coverage gap under a filed planning standard",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Escalate HH-2251 Stoneware Mixing Bowl Set, 5-piece, at a coverage gap of 26,596 eaches, out of a review population of 31 items.",
+  "answer_source": "answer_key/SUBMISSION.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "not stated in the prompt; the shipped brief is from the Director of Demand and Supply Planning at a home-goods supplier",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "inventory_snapshots.tsv",
+    "rows": 5860,
+    "entity": "one row is one SKU's on-hand and backorder position at one DC in one fiscal week",
+    "grain": "SKU x DC x fiscal week, 2024-W27 to 2025-W39",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (DC-EAST Allentown, DC-WEST Reno)",
+    "currency": "none",
+    "org_type": "home-goods supplier with two distribution centres",
+    "invented_names": [
+      "Harrowgate Home Supply",
+      "Ceramica do Vouga, Lda",
+      "Klingenwerk Solingen GmbH",
+      "SCM-PLN-014"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "constraint-first",
+  "driver": "The decisive quantity is uncensored demand for supply-starved candidates, rebuilt from a lost-volume run log whose repeated keys are either additive postings or replays (told apart only by volumes, arbitrated by an independent fill series), with lead times re-measured from realised receipts.",
+  "driver_concrete": "HH-2251's demand is 1,342 eaches a week once lost_sales_v1 is summed after dropping rows repeating (sku, week, units), against 429 on shipments; with a realised 65.2-day lead time (12-week protection period) and a position of 1,000 its gap is 26,596 against HH-7745's 25,612.",
+  "stump": "Files HH-2290 at about 25,374 eaches, where most wrong paths converge, by de-duplicating the lost-sales run log on (sku, week) or taking the lost_sales_v2_current tab, which under-reconstructs demand for the supply-starved HH-2251.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (marked traps)",
+      "fate": "two frontier reports reached HH-2251 at 26,596 cleanly: every trap carried a status word and dropping marked rows was always correct",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The pick has the largest coverage gap once censored demand is rebuilt from lost-volume records and lead times are re-measured from realised receipts, with every planted defect marked by a status word so a uniformly sceptical cleaning pass reaches it."
+    }
+  ],
+  "notes": "Tagged Supply Chain and Forecasting in the write-up. Design note is answer_key/TRAP_REGISTER.md, whose stumping letters (A3, B1, B4, C1) are the pre-2026-08-20 families, not the current patterns, so nothing is back-fitted. Pre-input-gate build (largest table 5,860 rows). The persona Priya Raghunathan recurs in task21."
+}

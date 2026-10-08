@@ -1,0 +1,102 @@
+{
+  "task": "task34",
+  "architecture": "R6",
+  "drawn": "2026-08-18",
+  "slot_note": "verify_task34.py sits at the folder root",
+  "domain": "demographic-social-science",
+  "subdomain": "housing",
+  "niche": "deciding how many distinct renter populations a regional biennial housing needs assessment reports housing cost burden for, and what separates them",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "structural_verdict",
+  "answer_unit": "set_of_items",
+  "answer": "The assessment should adopt three renter populations, separated by what the amount payable answers to: the household's income at 15.4 per cent of renter households, the size of the household at 5.1 per cent, and neither at 79.6 per cent.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G16",
+    "G2",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "context_artifact": "filed_model",
+  "stakeholder_role": "directs the housing research unit at the Ostrander Regional Council of Governments",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "survey/ohcs_2026_person_records.csv",
+    "rows": 7894,
+    "entity": "one row is one person in a surveyed renter household, as collected and unweighted",
+    "grain": "person within household",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US region (Ostrander valley)",
+    "currency": "USD",
+    "org_type": "regional council of governments, housing research unit running a renter survey",
+    "invented_names": [
+      "Ostrander Regional Council of Governments",
+      "Ostrander Housing Conditions Survey",
+      "Meridian Verge"
+    ]
+  },
+  "deliverables": [
+    "ostrander_burden_structure_call.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive structure is a subpopulation that no column names and only a within-cluster fit of an amount on unit size can enumerate, confirmed by a re-measured verification subsample, while the pooled distribution shows no break and the column-aligned grouping gives the right count with the wrong classes.",
+  "driver_concrete": "Three populations (income 15.4, household size 5.1, neither 79.6 per cent) because 17 of 32 site communities fit rent = base + 52 dollars x persons (slope 42.4 to 59.7, R squared 0.853 to 0.962) and 13 re-contacted size movers stepped by exactly 52 dollars a person, a per-occupant fee no file records.",
+  "stump": "A solver who reads clause 4.3 off the arrangement columns files two populations (income indexed 15.4 against everything else 84.6 per cent), and one who groups on the frame and schedule codes files three with the wrong classes (73.6, 15.4 and 11.0 per cent).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "predecessor (avipi opportunity-sizing build)",
+      "fate": "killed: wrong Axis 1 (Opportunity Sizing), a planted-defect flip between published and corrected series, solved in house on the first pass (Case D) and a determinism defect on the chaining convention",
+      "domain": "economics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A published series is corrected for planted defects and the corrected money, computed clause by clause, picks which component is funded."
+    },
+    {
+      "architecture": "R1 to R4 (three regimes from structural attributes)",
+      "fate": "in-house R4 on 2026-08-18 bit on a wrong route, then a submitted model run cleared the Main Ask by reading clause 4.3 onto two columns (R5 evidence)",
+      "domain": "demographic-social-science",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "structural_verdict",
+      "driver": "The number of distinct populations in a smooth unimodal distribution is decided by structural attributes behind a join and confirmed against a re-measured verification subsample, not by any break on the measured axis."
+    },
+    {
+      "architecture": "R5 (two populations by an admissibility test)",
+      "fate": "solved by a second model run on 2026-08-18, and its decisive refinement carried a semantic fork (arrangement against observed-amount reading of clause 4.3)",
+      "domain": "demographic-social-science",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "structural_verdict",
+      "driver": "A filed admissibility test on whether an amount responds to a household change, applied at record grain over two time points, splits one population off a column-aligned class, with the reference date recovered from the verification subsample."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern from the ledger row (population, D); generators and Gate G from the design note. R6 replaced the decisive rung after R5 was solved and found to carry a semantic fork; the note records R6 as untested live. Largest table 7,894 person rows, under the 10,000-row input gate. Context artifact is a filed vendor segmentation model, carded monitoring_export (no filed-model key). Context artifact set to filed_model on 2026-10-02, the key added for a filed consultancy or vendor model."
+}

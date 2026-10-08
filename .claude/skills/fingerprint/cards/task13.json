@@ -1,0 +1,64 @@
+{
+  "task": "task13",
+  "architecture": "v2 (ship rs_b)",
+  "drawn": "2026-08-08",
+  "slot_note": "No prompt.md: the prompt is quoted inside submission.md, which has no tags block.",
+  "domain": "product-analytics",
+  "subdomain": "trust-safety-support",
+  "niche": "exiting a card-network dispute monitoring programme by promoting a tightened fraud ruleset at a ticket resale marketplace",
+  "objective": "root-cause",
+  "shape": "single-figure",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "Ship rs_b on 1 August 2026. Do not stay on rs_a.",
+  "answer_source": "submission.md, 2. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "not stated in the prompt; the acquirer notice is addressed to the Head of Payments of the ticket marketplace",
+  "role_family": "other",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "risk_decision_events.jsonl.gz",
+    "rows": 77405,
+    "entity": "one row is one risk decision event on a checkout order, with live and shadow scores",
+    "grain": "order attempt x decision timestamp, Oct 2025 to Jun 2026",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (Emeryville, CA), with Canadian and UK merchant IDs",
+    "currency": "USD",
+    "org_type": "online ticket resale marketplace",
+    "invented_names": [
+      "Trestle Tickets Inc",
+      "Northbridge Acquiring Ltd",
+      "Cardnet International",
+      "Global Dispute Monitoring Programme",
+      "fraudscore 3.0"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "The decisive move is re-attributing outcomes by physical evidence rather than their filed reason label, joining labelled cases to an exceptions-only log where absence means the event succeeded, which roughly doubles the share an intervention can address and clears a threshold the label-based analysis says it misses.",
+  "driver_concrete": "282 of the 543 first chargebacks coded 13.1 'not received' have no line in the ERROR/WARN-only ticket transfer log and score 76.8 on the shadow model, so the fraud-addressable share of the programme numerator is 63.2%, not 29.1%, and rs_b's 40.0% removal holds the ratio under 0.90% for three consecutive months.",
+  "stump": "Files 'stay on rs_a' by reproducing Growth's counter-analysis, which reads the reason code as the driver (29.1% coded fraud x 39.2% recall = 11.4% removed, ratio still 1.33%), without joining the 13.1 cases to the transfer-error log.",
+  "mechanism_source": "submission_only",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (stay on rs_a)",
+      "fate": "inverted to ship rs_b before the write-up on 2026-08-08; still described by the build_target.py docstring and the verify_target.py header; no outcome recorded",
+      "domain": "product-analytics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "go_hold_or_stop",
+      "driver": "A promotion readout projects the governing ratio just under the exit threshold by its own stated method, and correcting the ratio definition, the label mix and duplicated records keeps it above the threshold, so holding is the answer."
+    }
+  ],
+  "notes": "Untagged build: domain and objective mapped from content (objective inferred). No design note on disk for the current version, so gap, pattern and generators are empty. Calibration none: the decisive evidence is a join to an ERROR/WARN-only transfer log, corroborated by shadow scores. Pre-input-gate era build."
+}

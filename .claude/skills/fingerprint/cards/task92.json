@@ -1,0 +1,109 @@
+{
+  "task": "task92",
+  "architecture": "v4",
+  "drawn": "2026-09-14",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "import container demurrage and detention at a deep-sea terminal: which consignee accounts take a haulier's direct-delivery places",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "currency",
+  "answer": "The four places take GBP 255,732 off demurrage and detention over a quarter, measured on the 2028Q1 book. That is GBP 379,802 of demurrage removed less GBP 124,070 of detention created, and the places carrying it go to Bucklesham Components Ltd (M08), Shottisham Ceramics Ltd (M12), Alderton Paper Ltd (M14) and Falkenham Retail Ltd (M10).",
+  "answer_source": "submission.md, 1. Final Recommendation, first two sentences",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G7",
+    "G8",
+    "G11"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "manager of import operations at a port-centric import logistics operator",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "terminal_move_log.csv",
+    "rows": 89191,
+    "entity": "one container move recorded by the terminal (discharge, yard, inspection or gate-out)",
+    "grain": "container x move",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United Kingdom, England (Felixstowe, Suffolk)",
+    "currency": "GBP",
+    "org_type": "port-centric import logistics operator holding the bill of lading",
+    "invented_names": [
+      "Bucklesham Components Ltd",
+      "Shottisham Ceramics Ltd",
+      "Alderton Paper Ltd",
+      "Falkenham Retail Ltd",
+      "Wickham Market Homewares Ltd",
+      "Nacton Road Distribution Ltd"
+    ]
+  },
+  "deliverables": [
+    "place_allocation_note.pdf",
+    "recoverable_by_account.svg"
+  ],
+  "opening_move": "other",
+  "driver": "A capped counterfactual service is worth only what it can remove on the days each candidate actually receives, days stated nowhere and recovered from each candidate's whole history, and working the capped queue on those days, net of the second charge the intervention itself starts, re-ranks which candidates the slate should take.",
+  "driver_concrete": "A direct-delivery place collects only on the days its account takes delivery (schedule 1.2), and each account's three-to-seven-day diary is recoverable only from its whole gate-out history, so working the netted three-a-day queue on those days drops the four places' value from GBP 307,028 to GBP 255,732 and swaps M05 for M10.",
+  "stump": "A competent solver conforms the move log, depot file and tariff into a per-box charge set, models the place at three collections a day so the detention transfer falls out of the recomputation, runs the queue on all seven days because pooled gate-outs are flat by weekday, and files GBP 307,028 on M05, M08, M12 and M14.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task92": "v4 re-roots onto each account's delivery-day diary recovered from its whole history; v3's netting of the two charge clocks is now rung 3"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (statutory trade-declaration threshold)",
+      "fate": "solved on the portal 2026-09-13: both top responses filed EUR 600,000; the threshold identity closed over filed rules and a corpus-pinned denominator. Domain inferred (the note says the author then authorised a full redraw into Supply Chain), objective and gate unrecorded",
+      "domain": "economics",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "dial_setting",
+      "driver": "A declaration threshold is set as the highest step at which every published heading keeps a filed coverage share, a closed identity over a filed selection rule, a filed release scope and a corpus-pinned denominator."
+    },
+    {
+      "architecture": "v2 (container demurrage and detention accrual against a filed tariff)",
+      "fate": "solved on the portal 2026-09-13; the graded quantity was retired as a statutory world in operational clothes",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "A charge accrual is reconstructed against a filed tariff whose free time runs from a call-level completion time built as a maximum over move records, a quantity the published terms fully specify."
+    },
+    {
+      "architecture": "v3 (netted value of the places, run every day of the week)",
+      "fate": "solved on the portal 2026-09-14: both top responses filed GBP 295,718 exactly, after determinism repairs on 2026-09-13 and 2026-09-14",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "ranked_slate_under_cap",
+      "driver": "A capped intervention's value per candidate is what it removes from one charge clock net of the second clock it starts, with removal capped by a per-day service slot against arrival spikes, so the candidates with the biggest bills are not the ones it serves best."
+    }
+  ],
+  "notes": "Ledger row 92 still describes v3 as drawing; the folder holds v4, built 2026-09-14, with no v4 portal result recorded. Generators G7, G8 and G11 are mapped from the note's mechanism (it names none). Calibration is two closed years of settled carrier charges, which confirm the naive ranking. Spine is 89,191 rows on disk (the v4 draw table says 84,381). The ask layer is all pool A per the note. opening_move added from the prompt."
+}

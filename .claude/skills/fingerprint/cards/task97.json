@@ -1,0 +1,133 @@
+{
+  "task": "task97",
+  "architecture": "v5",
+  "drawn": "2026-10-02",
+  "slot_note": "v5 of the task97 slot: drawn 2026-10-02 under the card name task102 after v4 was solved on the portal, and built into task97/; re-keyed from cards/task102.json on 2026-10-03 so the task102 slot can carry its own draw",
+  "domain": "demographic-social-science",
+  "subdomain": "income-poverty-inequality",
+  "niche": "a gas and electric utility's customer hardship fund: how many of this year's grant customers will need another grant next heating season, pledged by operating district to the fund's administrator before the season opens",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We should fund 60 renewal caseworkers for PY2028.",
+  "answer_source": "task97/submission.md, block 1 (and the first line the golden notebook prints)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E",
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G6",
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "analyst in the utility's customer assistance and regulatory filings team",
+  "role_family": "finance_controller",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "legacy_chf_grants_2001_2025.dat",
+    "rows": 225766,
+    "entity": "one hardship-fund grant credited to a customer's account at a service address",
+    "grain": "customer x programme year",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, Michigan",
+    "currency": "USD",
+    "org_type": "investor-owned gas and electric utility",
+    "invented_names": [
+      "Maple River Gas & Electric Company",
+      "Hearthline Program Services",
+      "maplerivergas.com",
+      "hearthlineps.org",
+      "Customer Hardship Fund"
+    ],
+    "people": [
+      "Cathy Cruz",
+      "Bradley Moreno",
+      "Natasha Moss"
+    ]
+  },
+  "deliverables": [
+    "py2028_renewal_caseworkers.ipynb",
+    "py2028_renewal_schedule.csv"
+  ],
+  "opening_move": "number-first",
+  "driver": "A unit's chance of needing the service again next period is set by the cumulative history of the place it occupies, counted across every occupant, not by its own history, a count reached only by carrying a retired system's records to the place through the account conversion; the forward roster's newcomers sit unusually often at places with long histories while every count and rate on the units themselves stays ordinary, so every unit-level route underforecasts.",
+  "driver_concrete": "A hardship-grant customer comes back the next programme year at about 20 per cent where the service address has carried fewer than three grants in its life and about 75 per cent where it has carried three or more, whoever received them; grants to 2024-25 sit in the legacy billing archive and reach platform premises only through the account conversion; 2026-27's first-time customers sit at long-history addresses about three times as often as any settled season's did (37.7 against 10 to 12 per cent) while the roster and every district's first-time count stay on trend, so the close-out's pooled rate and every customer-level history table understate 2027-28 renewals and the caseworkers sized from them.",
+  "stump": "A solver who rebuilds each 2026-27 customer's own grant history through the account conversion and applies the customer-level renewal table (or the close-out's pooled rate) expects about 5,080 renewals and funds 51 caseworkers against 60, because half of 2026-27's grant customers, and about 38 per cent of its first-time customers, sit at addresses with three or more lifetime grants, where customers come back at 75 per cent whatever their own history.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task37": "task37 asks whether an enrolment survives its cohort's end through a linked sponsor's agreement status; this build's decisive quantity is a forward return rate set by the grant history of the address a customer lives at, counted across every tenant, with the forward roster's first-timers shifted onto long-history addresses.",
+    "task44": "task44's moderator is how a period orders an item, read off one pick log in one window; this build's moderator is the cumulative grant count of a different entity (the service address) reached through a cross-system account conversion, and it is the address's history, not the customer's, that sets next year's return.",
+    "task46": "task46's rate law lives in each unit's own cumulative service exposure rebuilt from a movement log, with a cohort crossing an exposure step forward; here no unit crosses anything, the law lives in another entity's history (the address, across tenants), and the forward error comes from newcomers placed at long-history addresses while the units' own histories are ordinary.",
+    "task65": "task65 regroups child records by their own parcel so a per-entity cap binds differently, a static aggregation for a fee; here the place is the covariate of a forward behavioural rate, not the unit a cap is applied to, and nothing is regrouped or capped.",
+    "task66": "task66 classifies each dwelling's current year-round status from supply continuity on its point of delivery, pinned by a corpus of adjudications; here nothing is classified, the decisive quantity is next year's return rate, and it is set by how many grants the address has carried across all its tenants, which only the outcome record pins.",
+    "task83": "task83 conditions a measured effect on each unit's own prior treatment history; here the unit's own history is the validated decoy and the law lives in the address's history across tenants."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (Connect platform enforcement register, T6)",
+      "fate": "solved on the portal: the response filed 2,168 with every supplemental correct. Domain inferred from the note's platform nouns; the objective is the tag the note says was held",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "A count of units blocked at an enforcement date depends on which of two authority records governs each unit, a precedence the governing notice's clause states when read as written."
+    },
+    {
+      "architecture": "v2 (Connect, T7 subscription carve-out)",
+      "fate": "solved on the portal: the response reproduced the golden on every axis; the world was then declared exhausted (the enforcement notice fully specifies the count) and redrawn",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "A count of units blocked at an enforcement date nets out capabilities carried by a separately purchased entitlement, found by joining products to capabilities through subscription lines."
+    },
+    {
+      "architecture": "v3 (apprenticeship additionality as a deduction chain)",
+      "fate": "after a determinism repair (manual clause 3.4), both top responses filed 2,779 on the next portal round (2026-09-16)",
+      "domain": "policy-education",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "Additional outcomes a funded line buys are the funded places in force less the intake each funded pair would have registered anyway less places another funder covers, a chain of filed deductions over observed inputs."
+    },
+    {
+      "architecture": "v4 (state apprenticeship employer incentive, per-occupation cap)",
+      "fate": "solved on the portal 2026-10-02: both top responses filed 1,353, not stumped; rubric scores not reported; the world was declared exhausted for the main call",
+      "domain": "policy-education",
+      "objective": "experiment-causal",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A funded total converts into additional outcomes only up to each category's own pool of eligible counterparties not yet converted, a per-category cap that does not commute with netting the pool across categories, and the closed years never exercised the cap because the pool always exceeded what was funded."
+    }
+  ],
+  "notes": "re-drawn the same day from the customer-history return law (rejected in the design note: quiet versions separate by under 6 percent and tenure recovers the answer); shape other: forecast across operating districts, arithmetic in the design note; forum and forcing event redrawn after task98 v2 took regulator_or_inspector and statutory_or_regulatory_filing; finalised 2026-10-03 against the built pack Re-keyed 2026-10-03: this architecture lives in task97/ (it replaced the solved v4 there); v1 to v4 moved into lineage from the old task97 card, whose own notes read: Shipped as a deterministic execution task with no stump, in the note's and the ledger's own words. The note's pattern cell is S7 with S5 (strategies, not A to E), so pattern none, and G11 is mapped from its stated binding_constraint mechanism. Subdomain workforce development has no vocab item, so other. Shape inferred (a bridge from funded places to the figure plus per-occupation rows; the note names none). Context artifact is the appropriation schedule, mapped to filed_standard. Version numbers v1 to v4 are this card's count; the note calls only the first Connect version v1. opening_move added from the prompt."
+}

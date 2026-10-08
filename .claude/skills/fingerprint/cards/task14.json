@@ -1,0 +1,52 @@
+{
+  "task": "task14",
+  "architecture": "only",
+  "drawn": "2026-08-09",
+  "slot_note": "No submission.md: the write-up is solution.md (pre-spec block set with an appendix trap ladder).",
+  "domain": "product-analytics",
+  "subdomain": "engagement-retention",
+  "niche": "sunsetting one of six secondary product surfaces before a platform freeze, counted on entitled customer accounts with three or more uses",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Sunset Workload Planner.",
+  "answer_source": "solution.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "not stated in the prompt; speaks for Product ('which surface we sunset'), the council is chaired by the VP Product",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "feature_events_2025-06.jsonl to feature_events_2025-10.jsonl (one event stream in five monthly files)",
+    "rows": 16829,
+    "entity": "one row is one product event delivery (not one action) on a surface",
+    "grain": "account x event x timestamp, 1 Jun to 5 Oct 2025",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional, location unstated (costs in USD)",
+    "currency": "USD",
+    "org_type": "B2B SaaS work-management product company",
+    "invented_names": [
+      "Trellis Software",
+      "Workload Planner",
+      "Board Snapshots",
+      "Scheduled Exports",
+      "Guest Review Links"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "The decisive count keeps only members entitled on the decision date, resolved point in time from an append-only change log, which strips a lapsed-trial cohort from one candidate, while planted record defects (a renamed event, a mistyped class column, mis-parsed short dates) each flip the pick to a decoy.",
+  "driver_concrete": "Workload Planner has 74 materially affected accounts (entitled on 2025-09-28 with three or more distinct uses) because 135 of its 209 heavy customer users had reverted from a 30-day Business trial to team, against 146 for Scheduled Exports; the BI pre-read's pre-rename event points at Board Snapshots.",
+  "stump": "Files Scheduled Exports after trusting account_type (118 partner sandboxes typed customer) or letting a date parser read 123 short-year plan_history rows as 2023, either of which restores lapsed trial entitlement and lifts Workload Planner (to 183 or 167) above Scheduled Exports (146 or 151).",
+  "mechanism_source": "submission_only",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Untagged; objective inferred. No design note (generator code only), so gap, pattern and generators are empty; driver and stump come from solution.md. The council brief files the whole measure, so the pick is an argmax under a stated rule. Spine is one stream split into monthly files (largest 5,068 rows)."
+}

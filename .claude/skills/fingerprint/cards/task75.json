@@ -1,0 +1,82 @@
+{
+  "task": "task75",
+  "architecture": "v2",
+  "drawn": "2026-09-07",
+  "slot_note": "Design note sections 0 to 22 describe the superseded build (23, 25 to 27 operative); generator/DESIGN_NOTE.md is a stale second note (seed 750929, answer 1,975)",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "other",
+  "niche": "obligating funded tenant-representation slots to a legal-aid provider panel under a fixed-price agreement with a monthly overflow rate",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "2,200 funded representation slots",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "C",
+    "D"
+  ],
+  "generators": [],
+  "gate_g": "forecasting",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "published_series",
+  "stakeholder_role": "runs program obligations at a statewide legal-access intermediary",
+  "role_family": "programme_officer",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "matter_events.tsv",
+    "rows": 83976,
+    "entity": "one recorded lifecycle event on a legal matter (intake, assignment, re-assignment, hearing, pleading, disposition, closure)",
+    "grain": "matter x event",
+    "source": "synthetic (real Missouri judicial circuit numbering)"
+  },
+  "world": {
+    "geography": "United States, Missouri",
+    "currency": "USD",
+    "org_type": "statewide nonprofit legal-access intermediary buying representation capacity from a provider panel",
+    "invented_names": [
+      "Crossroads Legal Access Alliance",
+      "Housing Stability Representation Program",
+      "Panel Services Agreement",
+      "Conflict Panel",
+      "FY2027 Service Plan"
+    ]
+  },
+  "deliverables": [
+    "panel_obligation_memo.pdf",
+    "panel_obligation_workbook.xlsx",
+    "panel_obligation_chart.png"
+  ],
+  "opening_move": "role-first",
+  "driver": "The forward inflow is not the filed forward plan: a second arrival channel that bypasses the authorising gate is discovered as the residual between two internal counts of one closed period, timed by an exact recurrence interval and projected from events already observed, and omitting it drops an order-statistic level one quantisation block.",
+  "driver_concrete": "FY2027 openings are the Service Plan's 1,440 authorisations plus 270 files reopened after closure (same household and subject, exactly 18 months on), found from 3,283 FY2026 register openings against 3,040 intake referrals and projected from closures 18 months ahead, putting April 2027, the 7th busiest month, at 2,149.74 and the obligation at 2,200.",
+  "stump": "A competent solver rebuilds the covered caseload, per-type run-off and the 7-month break-even correctly, takes the Service Plan as the FY2027 opening schedule, misses the 270 reopened files and files 2,100 slots, one block low (design note section 26 records one such response as a clean valid_stump).",
+  "mechanism_source": "ledger",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (design note sections 0 to 22)",
+      "fate": "built 2026-09-06 at 1,800 slots after a Gate C repair (section 19); both live responses landed 1,800 (section 22); re-rooted 2026-09-07",
+      "domain": "nonprofit-grant-making",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "D",
+        "C"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is a forward stock the records carry only as a flow, rolled forward per type from right-censored, mix-shifting durations and the cases already open, so any conversion through the mean duration of completed cases understates it, with a chargeability exit recovered from effective-dated reassignment events beneath it."
+    }
+  ],
+  "notes": "gate_g read structurally: section 0c's declaration belongs to the superseded build; the operative stump is a forward-input completeness rung. Generators empty (none named for v2). Objective gap from section 18's chargeability rung. Invoice corpus blind to the decisive rung again. Clone check 2026-09-07: Track A template with task76 and task79. Submission cites verifier 52 (superseded count)."
+}

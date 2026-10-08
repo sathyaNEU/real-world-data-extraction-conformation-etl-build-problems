@@ -1,0 +1,112 @@
+{
+  "task": "task63",
+  "architecture": "v3",
+  "drawn": "2026-09-01",
+  "slot_note": "ledger says the build lives outside the handshake tree, but it is on disk at handshake/task63",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "certifying quarterly taxable barrels for an oil extraction tax with a per-property low-production exemption across two overlapping production reporting systems",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We certify 2,528,078 barrels as taxable for production quarter 2028 Q2.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G12",
+    "G10",
+    "G2",
+    "G19",
+    "G15"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the Mineral Tax Section (design note: a revenue certification section head)",
+  "role_family": "finance_controller",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "well_production_legacy_202401_202703.txt",
+    "rows": 63408,
+    "entity": "one fixed-width mainframe production or adjustment record for a well and production month",
+    "grain": "well (API number) x production month",
+    "source": "synthetic (real North Dakota counties, API-number structure and pool names); portal_submissions_202610_202806.csv is the second spine, 33,461 submissions"
+  },
+  "world": {
+    "geography": "United States, North Dakota (six real counties in an invented North Central certification district)",
+    "currency": "USD",
+    "org_type": "state tax department section certifying an oil extraction tax base",
+    "invented_names": [
+      "North Central certification district",
+      "Mineral Tax Section",
+      "Antler Creek Operating Company",
+      "Souris Valley Resources LLC",
+      "Coteau Petroleum Corporation",
+      "Northern Plains Crude Marketing LLC"
+    ]
+  },
+  "deliverables": [
+    "extraction_tax_certification.pdf",
+    "certified_property_month_table.csv",
+    "settlement_conformance_review.xlsx",
+    "certified_barrels_recompute.py",
+    "certified_barrels_by_county.png"
+  ],
+  "opening_move": "other",
+  "driver": "An unstated per-unit divisor is recovered from a closed register of past determinations as the as-of count of capable members, including members with no activity rows, and a grain rule binds only after an earlier correct key resolution merges two correct filings of one obligation, so a correct step arms the later trap.",
+  "driver_concrete": "The low-production divisor is the wells completed and unplugged as of each month of the qualifying period (the only one reproducing all 534 filed determinations), and resolving filed API numbers to the well collapses 201 re-entered-completion filings on 67 wells to one per well-month, removing 527,235 barrels.",
+  "stump": "A competent solver back-tests the divisor correctly against the 534 determinations but certifies at the portal's filed-number grain, never collapsing re-entered completions to one filing per well and production month after the resolve, and files 3,055,313 barrels (dividing by the wells that filed gives 3,919,879).",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task63": "v3 keeps v2's recovered divisor, which a live solver back-tested at 90 per cent, and adds a terminal grain rung the determination corpus is structurally blind to (one filing per well-month, armed by the correct key resolution); v1's stump was a stated carried-status read, removed at v2."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (carried exemption status on file)",
+      "fate": "a strong model failed at the entry rung by deferring to a stated carried-status read; that surface-read entry was removed at v2",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G12"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The year's exemption has to be redetermined rather than read off a carried prior-year status the pack presented through a stated instruction, with the per-unit divisor recovered from closed determinations beneath it."
+    },
+    {
+      "architecture": "v2 (divisor decisive, five rungs)",
+      "fate": "graded round: one response at 90 per cent landed the call by back-testing the divisor, the other at 43, top two 66.5 against the 50 bar; re-stumped at v3 on 2026-09-01",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G12",
+        "G19"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "An unstated per-unit divisor is recovered from a closed register of past determinations as the as-of count of capable members, including members with no activity rows, which no control total flags because the members it adds contribute no rows."
+    }
+  ],
+  "notes": "Ledger row names only the divisor and mixes v1 and v2 ladder figures; the 2026-09-13 reconciliation flags the second decisive layer (one filing per well-month, binding only after the number is resolved to the well, 527,235 barrels, 20.86 per cent, near miss 3,055,313), added at v3 and carried as G10 and G2. Design note records a Template-level calibration-form collision with task62."
+}

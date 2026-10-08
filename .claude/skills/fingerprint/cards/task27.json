@@ -1,0 +1,79 @@
+{
+  "task": "task27",
+  "architecture": "round 7 (asks rebuilt 2026-09-17, manual repaired 2026-09-18)",
+  "drawn": "2026-08-16",
+  "slot_note": "folder also holds a submission.txt copy, a golden/ folder and in-house stump traces for rounds 1 to 7",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "choosing which of five sunset-docket tax credits to let expire for the largest FY2028-29 general fund recovery, measured net of in-window recapture",
+  "objective": "forecasting",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Report the **Rural Broadband Deployment Credit (RBDC)** for expiration in the FY2028-29 cycle.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "rule"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G12",
+    "G13",
+    "G10",
+    "G4",
+    "G14",
+    "G7",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "runs revenue estimating at the Wescott Legislative Fiscal Office",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "claims_extract_fy2016_fy2026.csv",
+    "rows": 45850,
+    "entity": "one row is one tax-credit claim line filed on a return (original, restated or reissued)",
+    "grain": "claim line (award x tax year x filer x filing sequence)",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US state (Wescott), county FIPS in the 55 series",
+    "currency": "USD",
+    "org_type": "state legislative fiscal office, revenue estimating desk",
+    "invented_names": [
+      "Wescott Legislative Fiscal Office",
+      "Rural Broadband Deployment Credit",
+      "Advanced Manufacturing Retooling Credit",
+      "Film and Digital Production Incentive",
+      "Research and Development Expansion Credit",
+      "Historic Structure Rehabilitation Credit"
+    ]
+  },
+  "deliverables": [
+    "wescott_fy2829_sunset_recommendation.docx"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a conversion rate from committed volume to realised cash recovered from a closed corpus of completed cases, and only the rate netted of reversals recorded on a separate ledger reproduces every case, because the transaction record is complete about inflows and structurally silent about clawbacks.",
+  "driver_concrete": "RBDC's $56.8M beats AMRC's $38.9M by 1.46 only when exposure is converted at the 24-month rate net of in-window recapture from the certification register (23-14-071(c) keeps recapture off the claims extract), the one bridge that reproduces all four completed close-outs while every gross or rival window rule misses one by 42 percent or more.",
+  "stump": "A solver who scores cash rather than exposure but measures the 24-month conversion off the claims extract alone, which never shows a recapture, files AMRC at $72.0M, the decoy the design-archetype shortcut and the analyst's 24 July read also reach; in-house rounds 6 and 7 both landed AMRC.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "rounds 1 to 5 (gross-conversion ladder)",
+      "fate": "in-house rounds on 2026-08-16: solved in rounds 1, 3 and 5 (RBDC at $57M), round 2 split on the figure and round 4 was a determinism defect; the ladder was exhausted at the gross-conversion rung",
+      "domain": "economics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "Expiring a commitment recovers its prevented exposure converted at a candidate-specific realisation rate measured from vintage history and back-tested on closed cases, not the exposure itself or the published cumulative total."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern from the ledger row (rule, B); generators from the design note (G12 decisive since round 6). Retagged Forecasting 2026-09-17 from the invalid Opportunity Sizing tag. Portal reviews 2026-09-18: one failed ask 5 on Gates A and C (repaired) and logged an RDEC stump; one failed the main call on C, D and E (underspecified_objective), repaired by manual clause 4.2a."
+}

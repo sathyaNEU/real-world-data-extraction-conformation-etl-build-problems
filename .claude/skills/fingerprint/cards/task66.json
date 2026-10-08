@@ -1,0 +1,63 @@
+{
+  "task": "task66",
+  "architecture": "only",
+  "drawn": "2026-09-03",
+  "slot_note": "",
+  "domain": "demographic-social-science",
+  "subdomain": "housing",
+  "niche": "state housing unit inventory return: year-round dwellings certified for a municipal cost-share from the E911 layer, assessor commitments and two utilities' service records",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Certify 13,745 year-round housing units for Washington County on the cycle 2029 return.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G14",
+    "G16",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "custodian of the housing unit inventory at Maine's Population and Housing Data Program",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "versant_bhd_service_points_2029Q1.csv",
+    "rows": 44531,
+    "entity": "one account service spell at a utility point of delivery (premise)",
+    "grain": "premise x account spell",
+    "source": "synthetic (modelled on a Versant Power Bangor Hydro District extract)"
+  },
+  "world": {
+    "geography": "United States, Maine (Washington County)",
+    "currency": "USD",
+    "org_type": "state statistical program certifying a housing unit inventory",
+    "invented_names": [
+      "Population and Housing Data Program",
+      "Standard PHDP-4",
+      "Housing Unit Inventory cycle 2029"
+    ]
+  },
+  "deliverables": [
+    "hui_2029_certification_memo.pdf",
+    "hui_2029_certification.py",
+    "hui_2029_return_composition.png"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive move is to read each unit's activity from continuity of the physical supply connection rather than from the customer account on it, and to credit a connection shared by several units to every unit behind it, a basis that only a closed corpus of unit-level adjudications separates from four complete rival builds.",
+  "driver_concrete": "A year-round dwelling is one whose serving point of delivery stayed on supply through the season (only a field disconnect breaks it, a final read does not), and a parcel's shared meter serves every dwelling on it, which the cycle 2027 challenge dispositions reproduce at 0 misses of 364, certifying 13,745 of 23,508.",
+  "stump": "A competent solver builds an occupancy panel from account records at each dwelling's own point of delivery and files 11,159 (or 11,600 on the any-touch reading, which the live R1 response filed), missing that a final read leaves supply in place and that one meter serves every dwelling on its parcel.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Spine per the brief is the largest table, the Versant service-spell extract; the design note and ledger call the 34,630-row E911 address-point layer the spine. Shape: the note says none of the eighteen fits (a certified 73-row roster; nearest 07 and 01) and works its own criteria arithmetic. Deliverables folded from four to three on 2026-09-05 with no figure moved. Live R1 (2026-09-05) filed 11,600; no later portal result recorded. opening_move added from the prompt."
+}

@@ -1,0 +1,100 @@
+{
+  "task": "task38",
+  "architecture": "v3, which member gets the one remediation direction",
+  "drawn": "2026-08-21",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "money-credit",
+  "niche": "Regional banking commission choosing which member institution gets the single concentration remediation direction under named-obligor supervision",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "The Commission should direct Littlestown County Trust Company, RSSD 444850. The direction is served against its directed exposure of $156,649,532.52",
+  "answer_source": "submission.md, 1. Final Recommendation, first two sentences (bold markers and line wraps removed)",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "C",
+    "E",
+    "B"
+  ],
+  "generators": [
+    "G14",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "none",
+  "stakeholder_role": "runs the Credit Conditions Unit at the Cumberland Valley Banking Commission",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "rcer_obligor_detail_2025Q3.csv",
+    "rows": 39771,
+    "entity": "one facility line as submitted by a member institution at the 2025-09-30 cycle, every submission version included",
+    "grain": "member x facility x submission sequence, one cycle",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, Cumberland Valley region (south-central Pennsylvania and northern Maryland)",
+    "currency": "USD",
+    "org_type": "regional banking commission (bank supervisor)",
+    "invented_names": [
+      "Cumberland Valley Banking Commission",
+      "Regional Credit Exposure Register",
+      "Concentration Review Panel",
+      "CS-14 concentration monitoring standard",
+      "Littlestown County Trust Company",
+      "Susquehanna Commercial Bank"
+    ]
+  },
+  "deliverables": [
+    "rcer_directive_recommendation.py",
+    "rcer_directive_candidates.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is the share of each candidate's correctly reported magnitude that the single intervention can actually remove, built from a horizon filter crossed with a control attribute computed behind a join, with the realisation rule recovered from a closed corpus of past interventions, so the winner ranks near the bottom on magnitude and first on the removable share.",
+  "driver_concrete": "Rank the six in-scope members on directed exposure falling due inside the two-cycle compliance window on credits the member itself leads (leadership computed from the register), the quantity the 33 closed directions' certified reductions track; Littlestown leads at $100,357,597.09 against $44,701,417.06.",
+  "stump": "A competent solver stops at the fit and names Lebanon Community Bank, ranking on exposure falling due inside the window whoever leads the credit (R squared 0.8408 on the closed directions), missing that seven closed directions certified more than fell due, so only led credits can be retired.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "retired 2026-08-20 after 11 rounds, every one solved",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive choice is which estimator recovers a slice inside an open-ended cell, settled by an out-of-sample reproduction test against lagged ground truth, and it sets which of three postures is adopted."
+    },
+    {
+      "architecture": "v2",
+      "fate": "retired 2026-08-21 after 4 solves",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G18"
+      ],
+      "gate_g": "confirm_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The compiled figure is correct, four legitimate-looking corrections each move it, and only the unadjusted figure closes a two-sided control total, so over-correction is the trap."
+    }
+  ],
+  "notes": "Gap and pattern from the ledger's current 38 row (objective over time, C over E); the design note's organs add B (rule recovered from the 33 closed directions), G13 (filed window) and G14. Shape 01: the workbook ranks all six and the cap is one direction. Submission defect on disk: R squared 0.9844/0.8408/0.1213 in Critical Components vs 0.9806/0.2583/0.0141 in Step 6. The v1 published release still ships; the ledger calls the context artifact none by design. Scoring unit is the certified reduction."
+}

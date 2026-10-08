@@ -1,0 +1,87 @@
+{
+  "task": "task70",
+  "architecture": "v2",
+  "drawn": "2026-09-06",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "agreeing a parcel carrier's demand surcharge accrual for the uninvoiced part of a season, hinged per collection point per operating day over filed baselines",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "GBP 16,078.88",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none",
+    "B",
+    "D"
+  ],
+  "generators": [
+    "G16",
+    "G2",
+    "G19",
+    "G11"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "runs the settlement desk at an online garden and outdoor-living retailer",
+  "role_family": "finance_controller",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "pod_events_2028.csv",
+    "rows": 138590,
+    "entity": "one proof-of-delivery scan event the carrier posted for a consignment",
+    "grain": "consignment x delivery scan event",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United Kingdom, England (Northamptonshire and Lancashire collection points)",
+    "currency": "GBP",
+    "org_type": "online garden and outdoor-living retailer settling with its parcel carrier",
+    "invented_names": [
+      "Kelbrook Home & Garden",
+      "Pennine Parcel Network",
+      "Rawtenstall Hub",
+      "Kettering RDC",
+      "Preston RDC",
+      "agreement PPN/KHG/2027-11"
+    ]
+  },
+  "deliverables": [
+    "carriage_settlement_position.pdf",
+    "carriage_settlement_2028.xlsx",
+    "carriage_settlement.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "A per-record date is constructed from an event log with a class-conditional cut, because a filed clause bars one record class from a late capacity slot that began after the closed validation window, so the classless construction reproduces the corpus exactly yet overstates a per-period threshold hinge until that class's late records roll forward a period.",
+  "driver_concrete": "Clause 2.3 reserves the evening Rawtenstall hub trunk (17 Rushden departures from 26 April 2028) to Guaranteed Services, so N48 and BKY consignments manifested after the last Kettering depot pull are accepted the next operating day; 5,101 consignments move off surcharged days and the surcharge falls from GBP 18,986.21 to GBP 16,078.88.",
+  "stump": "A competent solver builds acceptance dates from the yard log against manifest timestamps, validates them 29 of 29 against the carrier's April daily statement, receipts and invoice, and files GBP 18,986.21, because no trunk ran in April so the classless and per-service cuts are identical there.",
+  "mechanism_source": "ledger",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved on the platform in round R1 (diagnosed 2026-09-06): one response filed the v1 golden GBP 15,123.71 exactly by the designed route; re-rooted to v2 the same day",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "D",
+        "B"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "A per-record chargeable date has to be rebuilt from a movement log as the first departure after the record's own timestamp, rolling across closed days, which leaves the window total unchanged but reshapes the daily distribution feeding a per-period threshold hinge, and a closed counterparty statement validates the rebuilt date row for row."
+    }
+  ],
+  "notes": "Pattern 'none' first per the ledger: G16 model-class selection under corpus blindness decides, B and D underneath. The design note names etl_conformance as Gate G primary, with method_or_model_selection and binding_constraint supporting; gate_g here is the stump's mechanism. v1 gate_g not recorded, etl_conformance assumed. Blindness-as-engine spent (clone check 2026-09-06, with task71)."
+}

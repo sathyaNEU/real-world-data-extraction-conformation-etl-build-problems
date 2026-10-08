@@ -1,0 +1,66 @@
+{
+  "task": "task68",
+  "architecture": "only",
+  "drawn": "2026-09-04",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "trade-international",
+  "niche": "merchandise-export statistics compilation: which chapter the quarterly review's significant-movements annex designates, from customs declaration microdata",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "The September annex names chapter 22, beverages, spirits and vinegar, as the cycle's single significant movement in export activity.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G6",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "external trade statistics compilation team at a national statistics office, settling the September annex position (prompt is not first person)",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "declaration_lines_2025.parquet, declaration_lines_2026.parquet, declaration_lines_2027ytd.parquet",
+    "rows": 2188677,
+    "entity": "one row is one export declaration line as transmitted",
+    "grain": "declaration x version x line, latest accepted version is the record; three acceptance-year files of 836,370, 850,865 and 501,442 rows",
+    "source": "synthetic (constructed border-management extract with real HS codes, ports and partner countries)"
+  },
+  "world": {
+    "geography": "New Zealand",
+    "currency": "NZD",
+    "org_type": "national statistics office, external trade statistics unit",
+    "invented_names": [
+      "External Trade Statistics unit",
+      "External Merchandise Trade Compilation and Review Standard, issue 9",
+      "Hurunui Trading Holdings Ltd",
+      "Harbourline Group Co-operative Ltd",
+      "Bluff Point Holdings Limited"
+    ]
+  },
+  "deliverables": [
+    "annex_decision_memo.pdf",
+    "movement_assessment.csv",
+    "annex_workings.py",
+    "movement_review_charts.png"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a like-for-like change on a matched panel of continuing units linked across identity successions, because entrant inflow and a price offset hold every aggregate of the true event flat, and the qualifying basis and bar are recoverable only from a closed corpus of settled dispositions.",
+  "driver_concrete": "Chapter 22's matched exporter-and-heading quantity, with exporters walked through the 2026 trader successions, falls 18.1 per cent while bulk entrants and premium repricing hold its value flat, and only that basis reproduces all 17 register dispositions (corridor 8.52 to 10.07).",
+  "stump": "A solver who sets dairy aside as a price move and fruit as an early season, then finds no other value movement clearing a seasonally conditioned, multiplicity-corrected bar (or reads chapter 22's unmatched total at -9.1 per cent), files a nil return without building the matched panel the register certifies.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Predates the shape library; four deliverables, over today's ceiling of three. Shape read as 01 with a cap of one (30 chapters ranked, chapter 44 first below the line at -7.2). Scoring unit is matched like-for-like quantity change, outside the vocab. Repaired in place 2026-09-05. Personas Tainui, Calder, Ngata, Averill."
+}

@@ -1,0 +1,68 @@
+{
+  "task": "task1",
+  "architecture": "prompt C (one of three alternative prompts in TASK_GUIDE.md)",
+  "drawn": "2026-07-25",
+  "slot_note": "Old-format build: no prompt.md or submission.md; TASK_GUIDE.md carries prompts A, B and C and SOLUTION_REFERENCE.md writes up prompt C; no target/ (the shipped bundle is partitioned.zip); analytics_standards.md, which the prompt cites, is missing from the folder.",
+  "domain": "product-analytics",
+  "subdomain": "onboarding-activation",
+  "niche": "share of extended checkout paths (10 or more event rows) by age cohort among logged-in H1 2025 checkouts, to target an instrumentation audit",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Boomers+",
+  "answer_source": "SOLUTION_REFERENCE.md, Recommendation line",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "Ops (no persona; prompt C reads: Ops asks which age cohort shows the highest share of extended paths)",
+  "role_family": "other",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "partitioned/events_2019_2023.csv + events_2024.txt + events_2025_2026.txt",
+    "rows": 20032,
+    "entity": "one row is one web clickstream event",
+    "grain": "session x event",
+    "source": "thelook_ecommerce (Google BigQuery public dataset)"
+  },
+  "world": {
+    "geography": "fictional store (thelook demo dataset), global users",
+    "currency": "none",
+    "org_type": "online clothing store (thelook demo dataset)",
+    "invented_names": []
+  },
+  "deliverables": [],
+  "driver": "The winner is a small segment whose records join only after a corrupted prefix is stripped from the join key, and among the linked records it leads on within-segment share while a larger segment leads on raw count.",
+  "driver_concrete": "Boomers+ leads extended-path share at 7/20 among 113 logged-in H1 2025 checkouts once ID:-prefixed and zero-width user_ids are normalised and path length is counted as event rows, while Millennials lead on raw extended count (8 of 31).",
+  "stump": "A solver whose user_id normalisation misses the ID: prefix carried by every Boomers+ H1 2025 checkout drops Boomers+ from the cohort table, and one who ranks on raw extended count files Millennials (TASK_GUIDE.md, Common failure modes).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "prompt A (traffic source)",
+      "fate": "alternative prompt in TASK_GUIDE.md on the same pack, never written up; the guide names Email (47/50) in its answer line and YouTube in its grading line",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive quantity is a per-segment conversion rate rather than a raw conversion count, computed over a population that links only after corrupted join keys and fragmented segment labels are normalised."
+    },
+    {
+      "architecture": "prompt B (longest checkout path)",
+      "fate": "alternative prompt in TASK_GUIDE.md on the same pack, never written up",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive quantity is a per-segment mean path length counted as raw rows rather than from a sequence field, over a population linked only after corrupted join keys are normalised, in a window where the prior year's leader no longer leads."
+    }
+  ],
+  "notes": "Untagged; objective and subdomain inferred (README area: Funnels & conversion). Pre-v3 planted-defect build (judge labels would be planted_defect_flip plus the share-versus-count flip the prompt itself names); no gap or A to E pattern applies. TASK_GUIDE.md's prompt C answer line (9/24, 8/28) disagrees with its own tables (7/20, 8/31)."
+}

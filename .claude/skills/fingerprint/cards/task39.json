@@ -1,0 +1,68 @@
+{
+  "task": "task39",
+  "architecture": "only",
+  "drawn": "2026-08-21",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "trade-flows",
+  "niche": "Importer's month-end accrual for ocean carrier demurrage and per diem, built as a bronze-silver-gold pipeline to a registered output contract",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "We should book USD 883,990 at the 31 March 2027 close as the ocean equipment charge accrual, which is USD 883,989.55 to the cent.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (line wrap removed)",
+  "gap": [
+    "objective",
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G19",
+    "G2",
+    "G16",
+    "G12"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "runs import operations at Brayfield Industrial Supply",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "bronze/tms_shipment_events.csv",
+    "rows": 43465,
+    "entity": "one terminal, depot or carrier event on a container movement from the TMS feed",
+    "grain": "container movement x event",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, five container ports (Long Beach, Los Angeles, Savannah, Houston, Elizabeth NJ)",
+    "currency": "USD",
+    "org_type": "industrial MRO and fluid power distributor importing by ocean",
+    "invented_names": [
+      "Brayfield Industrial Supply",
+      "Service Contract Amendment No. 7",
+      "Nordline",
+      "Talara",
+      "Ostmark",
+      "Kestrel"
+    ]
+  },
+  "deliverables": [
+    "port_charge_conform.py",
+    "equipment_charge_accrual_pack.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a priced duration driven by an event sequence, where a stop rule keyed on event reason codes, which the published output contract's grain prunes away, is recovered from a closed corpus of settled disputes, and it turns down a total that every earlier correction walked up.",
+  "driver_concrete": "The per diem clock stops at the first return presentation a depot refused for its own reason (RJ12, RJ18, RJ21, RJ27, RJ33), the one partition of 1,024 that reproduces all 98 settled per diem cases in the closed 2026 audit file; the codes survive only at bronze event grain.",
+  "stump": "A competent solver books USD 1,267,221.90 with a complete, correctly priced pipeline on the amendment terms and the close scope whose per diem clock runs to final acceptance, because the refusal reason codes were pruned to the gold contract's column list.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Draw: objective into rule, G19 decisive with B pinning the last rung only (pattern none first, so G19 is the decisive code). The design note concedes the stump really rests on rungs 1 and 3 in the population gap (793 direct-booked movements missing from the TMS feed; open clocks a two-endpoint day count drops), since the corpus hands rungs 2 and 4 to any back-tester, hence population third. Context artifact is the carrier on-hire statement at the close date. Scored per billable equipment-day."
+}

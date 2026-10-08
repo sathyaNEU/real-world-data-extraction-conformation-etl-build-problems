@@ -1,0 +1,113 @@
+{
+  "task": "task32",
+  "architecture": "v5",
+  "drawn": "2026-08-17",
+  "slot_note": "the only design note is DESIGN_NOTE_v2.md, which carries v5 at its head; archive_v1/ holds the retired award-pick build and generator2/ is the live generator",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "niche": "nominating a take-or-pay committed fibre volume tier for a single-machine recycled containerboard mill's 2027 master supply agreement under a residuals handling authorisation",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "We should nominate the 250,000 net ton tier for 2027.",
+  "answer_source": "submission.md, Final Recommendation",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G11",
+    "G16",
+    "G2",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "runs the fibre desk at Selby Creek Paperboard, a single-machine recycled containerboard mill",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "fibre_receipts_2026.csv",
+    "rows": 13447,
+    "entity": "one row is one inbound fibre receipt ticket from an origin site, with net weight, moisture and settled grade",
+    "grain": "receipt ticket",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "unspecified US county (fictional mill)",
+    "currency": "USD",
+    "org_type": "single-machine recycled containerboard mill, fibre procurement desk",
+    "invented_names": [
+      "Selby Creek Paperboard",
+      "Halverson Recycling Systems",
+      "Castlebar Materials",
+      "Meridian Recovery Group"
+    ]
+  },
+  "deliverables": [
+    "fibre_commitment_2027.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive constraint binds at a finer time resolution than the natural forecast, so only a forecast that carries the seasonal shape and a regime shift weighted by the committed forward schedule shows the limit binding, and the covering choice tested at annual resolution is infeasible.",
+  "driver_concrete": "250,000 net tons is the largest tier clearing SC-RH-118 clause 2.2's 21,500 t quarterly residuals condition, because a programme-specific seasonal and regime fit weighted by the winter-heavy schedule puts 0.07512 reject per net ton of the book in 2027Q1, 1.64 times a flat quarter; the 410,000 covering tier passes the 86,000 t annual allowance and fails the quarter at 30,798 t.",
+  "stump": "A solver who forecasts the fibre requirement correctly but tests the nomination at annual resolution against the 86,000 t allowance files the 410,000 covering tier, which consigns 30,798 t of residuals in the first quarter against a 21,500 t limit.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (seven-bid award pick, archive_v1)",
+      "fate": "solved in house round 1 (Case D, both threads named Braddock Route Services); reshaped because the ask was an award pick rather than a forecast",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "Each offer's realised delivered cost depends on a yield conditioned on the collection programme behind it, so the cheapest headline offer is not the cheapest realised one."
+    },
+    {
+      "architecture": "v2 (committed-tonnage forecast across a regime break)",
+      "fate": "solved in house in rounds 1 and 2 on 2026-08-17, each within one or two rounding bins of the golden",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "A forward conversion rate must come from a model fitted jointly across a regime break and a seasonal cycle and weighted by the committed forward schedule, because every post-break observation sits in one season."
+    },
+    {
+      "architecture": "v3 (tier bound by an annual residuals cap)",
+      "fate": "solved in house round 3 on 2026-08-17: the solver read the permit and applied the annual cap to reach the 290,000 tier",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "dial_setting",
+      "driver": "The tier the forecast covers is not permitted because a filed annual cap on a by-product binds below it, so the largest permitted tier is the answer."
+    }
+  ],
+  "notes": "Back-fitted labels: the ledger row (objective, C) fits the v4/v5 quarterly condition; generators from DESIGN_NOTE_v2.md (G11 from the round-2 redesign, then the v2 list). Ledger status failed: in-house round 4 reached the v4 answer and v4 then failed the determinism gate (underspecified_objective), so v5 added four policy pins and a new tier grid. Ledger artifact 'Supplier scorecard' reads like v1."
+}

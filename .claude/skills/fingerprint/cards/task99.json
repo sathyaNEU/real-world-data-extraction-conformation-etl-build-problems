@@ -1,0 +1,78 @@
+{
+  "task": "task99",
+  "architecture": "R5",
+  "drawn": "2026-08-17",
+  "slot_note": "Spare slot: an August build (Tarrant Ridge Industries, FY27 resourcing) whose design note is headed task31; it is the R5 state of the world the task31 folder later carried forward (ledger row 31, failed). No task99 ledger row. Pre-2026-09-05 spec: numbered asks, one .py deliverable, largest table under 10,000 rows.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "niche": "contract manufacturer authorising one resourcing project, ranked on in-year material cost bridge savings phased by supplier qualification time",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Authorise RS-2705, MACH-2200 precision machined shafts, moving the family from Redhill Machine Works to Cordray Precision. It delivers $352,317 into the FY27 material cost bridge, 1.63 times the next best project on the slate.",
+  "answer_source": "submission.md, 1. Final recommendation, first two sentences",
+  "gap": [],
+  "pattern": [],
+  "generators": [
+    "G16",
+    "G14",
+    "G13",
+    "G5",
+    "G11",
+    "G1",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "censored_or_lagged_release",
+  "context_artifact": "register",
+  "stakeholder_role": "head of supply management at a contract manufacturer",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "goods_receipt_lines_2025_2026.csv",
+    "rows": 4194,
+    "entity": "one goods movement line (receipt or reversal) for a part from a supplier",
+    "grain": "goods movement line",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (fictional manufacturer, three plants; alternate suppliers in Mexico, India, Viet Nam and Germany)",
+    "currency": "USD",
+    "org_type": "contract manufacturer of machined and fabricated assemblies",
+    "invented_names": [
+      "Tarrant Ridge Industries",
+      "Cordray Precision",
+      "Redhill Machine Works",
+      "Nagavali Castings",
+      "Kestrel Industrial Research",
+      "MCR-04 material cost reduction procedure"
+    ]
+  },
+  "deliverables": [
+    "fy27_resourcing_authorisation.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The ranking basis is the in-year realised saving, which phases each candidate by a start delay estimated from a right-censored corpus of past projects stratified on a covariate behind a join, and dropping the unfinished cases or taking quoted delays erases the slow stratum and keeps the decoy on top.",
+  "driver_concrete": "FY27 bridge contribution phases each family's retained landed savings by the first production shipment predicted from the censored qualification log stratified on tooling and customer-controlled characteristics (Kaplan-Meier 300 days against 144 complete-case for the controlled no-tooling stratum), which puts MACH-2200 first at $352,317.",
+  "stump": "A competent solver reproduces the pipeline, rebases on the plan of record, lands the quotes and strips directed and consigned volume, then phases on the quoted lead times or a complete-case duration (144 days for the controlled stratum) and authorises SEAL-8800.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "R0 to R4 (controlled-characteristic gate read as a category)",
+      "fate": "in-house solver rounds R1, R3 and R4 all named MACH-2200 (R3 and R4 total solves, August 2026); hardened to R5 with every graded answer unchanged",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "generators": [
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The in-year saving is phased by a start delay that a covariate behind a join turns into a category (a stratum that never completes), so a crosstab of ever-completed against the covariate reads the gate off directly."
+    }
+  ],
+  "notes": "The design note predates gap and pattern labels, so both are empty; ledger row 31 (the same world carried forward in task31) reads population and D. Generators are the note's own list: G16 decisive with G14 and G13, G5 or G11 at rung 3, G1 at rung 2, G2 at rung 1. Context artifact is Cost Engineering's pipeline workbook, mapped to register. Scoring unit is purchased material cost absorbed inside the funding year, no vocab item. Shape single-figure (predates the library). R6 was pending when the folder was left. opening_move added from the prompt."
+}

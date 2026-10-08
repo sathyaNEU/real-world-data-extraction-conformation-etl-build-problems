@@ -1,0 +1,73 @@
+{
+  "task": "task7",
+  "architecture": "v3",
+  "drawn": "2026-08-02",
+  "slot_note": "Write-up is submissions.md (plural) with the prompt quoted inside; no prompt file. Three versioned design notes sit under scripts/ (DESIGN.md, DESIGN_V2.md, DESIGN_V3.md).",
+  "domain": "product-analytics",
+  "subdomain": "engagement-retention",
+  "niche": "one of four lifecycle re-engagement campaigns, sized as eligible contactable panel members times pilot response rate on a bank's web panel",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund LC-12, Time-Deposit Rescue, at 7.10 expected incremental conversions. Reject LC-11 Dormant Win-Back, the campaign the roster's own audience column and its owner both point at.",
+  "answer_source": "submissions.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed lifecycle budget owner funding one Q1 campaign before Thursday's steering group, wanting more than Marcos's conviction",
+  "role_family": "product_manager",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "events_web_2018_part01..04.csv",
+    "rows": 628208,
+    "entity": "one row is one web page-view event",
+    "grain": "member x page view",
+    "source": "unnamed bank web-analytics dataset (pageviews, device_data, conversiones, PAGE, CONTENT_CATEGORY)"
+  },
+  "world": {
+    "geography": "Argentina (ART timestamps, Spanish page labels)",
+    "currency": "none",
+    "org_type": "retail bank's digital channel and lifecycle marketing team",
+    "invented_names": [
+      "Time-Deposit Rescue",
+      "Loan-Application Rescue",
+      "Third-Party Transfer Rescue",
+      "Dormant Win-Back"
+    ]
+  },
+  "deliverables": [],
+  "driver": "Each candidate is sized as distinct eligible reachable members times a pinned response rate, and eight independent delivery, tagging, identity and encoding repairs each move those counts, the subtlest a second instrumentation source whose impossible completion rate exposes fabricated completions; uncorrected, the winner ranks last.",
+  "driver_concrete": "LC-12 wins at 71 contactable members x 10.0% = 7.10 once the archive delivery is unioned, web-tag-v2's mis-mapped completions are rejected (94% against 56% completion), note-only, path-in-token and session-token rows are resolved, and legacy contact ids and opt-in variants are normalised.",
+  "stump": "A solver who counts the second tag container's completions as new volume drops LC-12 to 3.00 and files LC-14 Loan-Application Rescue at 4.11, and one who reads only the CSV parts files LC-11 at 8.55 (scripts/DESIGN_V3.md).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved: the submitted solver cleared every trap with generic cleaning helpers and used the shipped manifest and dictionary as self-checks (scripts/DESIGN_V2.md)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Candidate member counts distorted by surface label, timestamp, key and spelling corruption that generic normalisation functions repair without understanding the data."
+    },
+    {
+      "architecture": "v2",
+      "fate": "sent back in review: the note-only rows were an optional repair a careful solver could decline, and the second tag container refuted itself with a zero column (scripts/DESIGN_V3.md)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Candidate member counts distorted by structural ambiguity over which record to believe (a second delivery, a mis-mapped tag container, prose-only page identity), with one decisive repair left optional."
+    }
+  ],
+  "notes": "Untagged; objective inferred (write-up maps four product-analytics areas). A stale owner_estimate column on the shortlist and a Slack roll call (Marcos pushing LC-11) carry the surface read. DESIGN_V3.md names the second tag container as the residual discriminator. Source data not named in the folder (raw/ files dated 2019-08-29)."
+}

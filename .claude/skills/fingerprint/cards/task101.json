@@ -1,0 +1,103 @@
+{
+  "architecture": "v1",
+  "drawn": "2026-10-02",
+  "slot_note": "",
+  "answer": "The Even Ground Fund's round-three cold-spot line is £12.40 a head.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "task": "task101",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "funding-gaps-landscape",
+  "niche": "which Scottish council areas a community foundation calls charitable-funding cold spots, from the grants every published funder awards into them",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G3",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the foundation's grants portfolio lead",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "units served",
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "foundation_or_funder",
+  "spine": {
+    "file": "scotland_grants_extract_2026-10-02.csv",
+    "rows": 43975,
+    "entity": "one published grant row",
+    "grain": "grant x funding organisation x recipient x award date",
+    "source": "real 360Giving publisher files (45 publishers, 83 files, retrieved through the 360Giving registry on 2026-10-02) for grants with a Scottish recipient, beneficiary location or address awarded April 2016 to September 2026 (37,678 rows), with the OSCR register, NRS mid-year estimates (three releases), SIMD 2020v2 and ONS postcode and ward lookups; records for the case's invented organisations are added to the extract (the four area partners' 5,543 grants and five other local funders' 754), the registry status file (9 entries) and the register (22 entries) in each download's own layout, declared file by file in sources_and_licences.md"
+  },
+  "world": {
+    "geography": "United Kingdom, Scotland",
+    "currency": "GBP",
+    "org_type": "community foundation",
+    "invented_names": [
+      "Craigmorven Community Foundation",
+      "Even Ground Fund",
+      "Dunwanside Community Development Association",
+      "Mearnsdyke Community Partnership",
+      "Glazert and Luggie Communities Trust",
+      "Kelvinlea Connect",
+      "Ury and Don Rural Development Company Limited",
+      "Ardhaugh Community Trust",
+      "Nethan and Calder Community Anchor",
+      "Laighmoor Community Development",
+      "Torlinbeg Community Fund",
+      "Craigentarbh Community Fund",
+      "Beinn Dubhcraig Community Fund",
+      "Earnscleugh Trust",
+      "Hoxavoe Community Trust",
+      "Kildonan Shore Trust",
+      "Auchareoch Hall Trust",
+      "Bennecarrigan Hall SCIO",
+      "Achnaclach Hall Trust",
+      "Inversanda Hall Trust",
+      "Ardmorrach Community Hub",
+      "Achnacreebeag Hall SCIO",
+      "Bowmontshiel Trust",
+      "Kershielaw Hall SCIO",
+      "Mossilee Hall SCIO",
+      "Fernilee Hall SCIO",
+      "Hoxavoe Hall SCIO",
+      "Skeldavoe Rowing Club"
+    ],
+    "people": [
+      "Sheila Bennett",
+      "Phillip Mills",
+      "Kimberley Baker",
+      "Jennifer Bruce",
+      "Alex Wade",
+      "Danielle Marshall",
+      "Jade Parker",
+      "Stephanie Stevens",
+      "Louise Moran",
+      "Claire Lucas"
+    ]
+  },
+  "deliverables": [
+    "even_ground_round3_donor_briefing.pptx",
+    "even_ground_round3_council_areas.xlsx"
+  ],
+  "opening_move": "question-first",
+  "driver": "The threshold is cut from a distribution that the decision's own earlier payments have since entered under their intermediaries' names, so the population to cut from is the published total less those payments, a component that no closed setting can reveal because every closed baseline ended before the first payment.",
+  "driver_concrete": "The three-year grants baseline for round three is the first to contain the Even Ground Fund's own round-one top-ups (£3,521,991 paid 1 April 2025), granted out by its four area partners alongside the other funders' money they have regranted since 2020 and published under trading names that differ from the names on their signed statements, so the cold-spot line has to be cut on other funders' money with each acknowledged receipt taken out as it lands; the two closed rounds, whose baselines end before the first payment, reproduce all eight acknowledged top-ups to the pound either way.",
+  "stump": "A solver who reproduces both closed rounds' acknowledged top-ups to the pound and reruns the same method on April 2023 to March 2026 files a round-three line of £13.80 a head, because counting the partners' published grants in full puts the Fund's own round-one money inside the baseline, lifts Aberdeenshire from £12.36 to £13.77 and brings Renfrewshire into the tier; on other funders' money the line is £12.40. Searching the extract for the Foundation or for the partners by their statement names finds nothing; the link is the charity number on the register.",
+  "notes": "PROPOSED, Phase 2 built 2026-10-02 (coordinator registers it after the two ETL builds). Mechanism unchanged from Phase 1: gap population, decisive G3, decomposition_attribution. Phase 2 hardening: the statements carry only round, area, legal name, amount, dates and signatory; the partners publish under trading names with GB-SC identifiers and are joined to the statements only through the register (no statement name string-matches any extract funder); each partner has regranted other funders' money every year since April 2020, and each partner area's 2025-26 change in money landing (35 to 50 per cent) sits below the 90th percentile of all areas' closed-year changes (64.6 per cent); the decisive rung removes the acknowledged receipts as they land (£12.40), not the partners' files (£12.20). Margins: answer raw £12.3583 (4.2p inside its bin), neighbours 23.5p and 40.2p away, stop 11.3 per cent above. Corpus: 432 convention variants, only the method's set reproduces 8 of 8 (two duplicate-rule readings converge), six reproduce 4, 424 reproduce none. Local Energy Scotland source dropped (licence). Publisher-level step closed on the coordinator's request: each partner also regrants in neighbouring areas outside every tier, so its own 2025-26 change (+112 to +143 per cent) sits at the 83rd to 89th percentile of all 64 funders' closed-year changes (90th +172.5 per cent); the design's figures did not move. Pool-B leakage is high (about 80 per cent): the bar rests on the stump. Guard not run by the build agent. Input-gate fix 2026-10-02 (route a): records added to the three public downloads are declared file by file in sources_and_licences.md and are not the partners' alone (the Foundation's register entry, five local funders publishing small programmes in North Ayrshire, East Renfrewshire to 2020, Highland and Argyll and Bute, the Scottish Borders and Shetland, and thirteen registered recipients); everything else is checked value for value against the downloads. Renamed after a near-name screen against OSCR's current and former charities and every real 360Giving publisher and funder (Allanbrae to Craigmorven, and seven of the eight partner names); partner charity numbers replaced, since all four had been held by former charities. Line, tier, stop and target unchanged; North Ayrshire's top-up falls by £4,012 to £710,865 (allocation £2,876,246), its funder count rises to 24 and its gap to Aberdeenshire narrows to 18.9p; publisher-level p90 now +179.6 per cent over 69 funders, partners at the 83rd to 88th percentile points."
+}

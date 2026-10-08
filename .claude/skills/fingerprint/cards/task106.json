@@ -1,0 +1,103 @@
+{
+  "task": "task106",
+  "architecture": "v1",
+  "drawn": "2026-10-03",
+  "slot_note": "first build under the author-declared Axis 1 objective Opportunity Sizing & Decision Support (2026-10-03, objective not domain); bar top two under 50, build to 40",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "a retailer-owned cooperative grocery wholesaler sizing which inbound suppliers to move from delivered prices to collected (ex-works) prices, collected by its own store-delivery trucks on their empty return legs",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Move Meagher Dairies, Colleneler Preserves, Devanney Fresh Foods, Kenlan Meats, O'Kieve Crisps, Briody Grain Foods and Paten Flour Mills onto collected terms from 1 March 2027, saving EUR 370,900 a year (370,890.45 unrounded); the eleven that pay alone (EUR 503,400) double-book four corridors' return trips.",
+  "answer_source": "task106/submission.md, Final Recommendation; task106/golden/collected_terms_2027.xlsx, first sheet",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G11",
+    "G8",
+    "G1"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "pilot_log",
+  "context_artifact": "register",
+  "stakeholder_role": "head of buying terms at a cooperative grocery wholesaler",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "tms_trip_log_2025-10-01_2026-09-30.csv",
+    "rows": 10386,
+    "entity": "one store delivery trip (route-day) with its stops and its return leg",
+    "grain": "route x delivery date",
+    "source": "synthetic (fictional cooperative's transport management export); real Irish towns, real Irish public holidays, EU drivers' hours rules (Regulation (EC) No 561/2006)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Ireland",
+    "currency": "EUR",
+    "org_type": "retailer-owned cooperative grocery wholesaler serving independent convenience stores",
+    "invented_names": [
+      "Brosna Retail Co-operative Society",
+      "Meagher Dairies",
+      "Fennessey Bakeries",
+      "Colleneler Preserves",
+      "Devanney Fresh Foods",
+      "Dulohery Mineral Waters",
+      "Kenlan Meats",
+      "O'Kieve Crisps",
+      "Briody Grain Foods",
+      "Roddy Crisps",
+      "Paten Flour Mills",
+      "Feeley Table Waters",
+      "Tobin Dairies",
+      "McGirl Pork Products",
+      "Kerrisk Foods",
+      "Ivory Honey",
+      "Geoghegan Eggs",
+      "Crehan Herbs",
+      "Foran Pickles"
+    ],
+    "people": [
+      "Ciaran Gilmartin",
+      "Evelyn McDyer",
+      "Rhianna Heavey",
+      "Miriam Dunny",
+      "Jonathan Kinnane",
+      "Anton Watters"
+    ]
+  },
+  "deliverables": [
+    "collected_terms_2027.xlsx",
+    "collected_terms_2027.png"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is what a set of candidates can jointly realise when each one draws on a shared, finite pool of spare capacity, so sizing every candidate against the whole pool and adding them up overstates the set and admits members whose share of the pool is already taken by better ones; a pilot whose members never shared the pool reproduces exactly under the independent sizing and cannot see it.",
+  "driver_concrete": "A supplier's collection saving is earned only on a store truck's return leg that passes it with enough spare driving time for the detour, and suppliers on the same corridor draw on the same few return legs, so netting each supplier's allowance against every leg that passes it and switching all that pay double-books the corridor legs; the 2026 pilot ran one supplier per corridor, so it reproduces the independent sizing to the cent.",
+  "stump": "A competent solver nets each supplier's collection allowance of the detour cost on the return legs that pass it and can take its orders, switches every supplier that still pays, and files that set and its annual saving; it never lets the switched suppliers compete for the same return legs, so it double-books the busiest corridor's legs, overstates the saving and switches suppliers whose legs a better supplier already uses.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task64": "task64 allocates a cross-partition supply shortfall by a rule recovered from refused orders; task106 has no recovered allocation rule, the shared pool is spare driving time on return legs and the decision is which members join the set at all",
+    "task69": "task69's slate members overlap in the events they cover; task106's members cover disjoint volume and compete for a capacity pool, so the overstatement comes from double-booked legs rather than double-counted events",
+    "task32": "task32 v3 is a single filed annual by-product cap that rules out the tier a forecast covers; task106 has no filed cap on the answer, the limit is trailer room left after returns on each return trip, and it binds pairwise between candidates competing for the same trips.",
+    "task36": "task36 R4 to R5 excludes the largest repair by a filed rule (a counterparty agreement already remedies it) and rescopes a population through a join; task106 excludes no candidate by rule, the losers pay on their own and lose only because a better supplier takes the same return trips.",
+    "task37": "task37's wage class ask is an eligibility condition on a rate-anchored determination that changes which of four classes is certified; task106 has no eligibility condition, every candidate is eligible and the set is an optimum over shared trip capacity.",
+    "task43": "task43 iteration B allocates a fixed number of places to the units an intervention moves, found through a moderator behind a directory join; task106 has no count cap, the capacity is per trip and per day, and which supplier keeps a trip is decided by the subset optimum, not by a moderator.",
+    "task50": "task50 v4 measures how much of each candidate's exposure falls inside a funded window by projecting a filed issue order forward; task106 has no window containment or queue projection, it nets each supplier's allowance against detours and resolves who shares return trips.",
+    "task57": "task57 v21 and v22 bind a grant line on filed place limits per band, summing the lesser of places and population; task106 has no per-band place limit, the room is spare trailer space on each return trip and candidates exclude each other pairwise.",
+    "task58": "task58 v8 sizes the smallest supplement under a capped pro-rata formula and v15 floors entitlements at the sub-unit grain after a split; task106 has no pro-rata formula, floor or partition, it picks which candidates join a set when two cannot share one return trip.",
+    "task73": "task73 world ten fits a capped slate under a monthly processing allocation whose forward load comes from re-assigning review intervals; task106 has no forward load to re-derive, the room on each return trip is observed, and the binding fact is that two switched orders never fit one trip.",
+    "task76": "task76 v1 caps an open run with a rolling per-unit entitlement ceiling consumed through a second payment channel; task106 has no per-unit ceiling or second channel, every supplier's saving stands alone and is lost only to a competitor for the same trips.",
+    "task79": "task79 solves a piecewise inverse against a capacity constant recovered as the closed periods' maximum; task106 recovers no constant, trip room is filed (fleet spaces less returns), and the decision is a subset of candidates rather than a required input volume.",
+    "task87": "task87 v2 binds a per-entity cumulative cap where entity membership is constructed from shared identifiers; task106 has no entity grouping or cumulative cap, each supplier is its own candidate and the capacity is one order per return trip."
+  },
+  "lineage": [],
+  "notes": "Objective opportunity-sizing-decision added to vocab.json on 2026-10-03 on the author's instruction that Opportunity Sizing & Decision Support is a new Axis 1 objective (not a domain). Shape other: a designation over every candidate supplier with a per-supplier sizing scorecard; criteria arithmetic in the design note. Gap population (the unit being allocated is a return-leg detour slot, not a supplier's volume) and pattern C (each supplier's serviceable share depends on leg capacity filed in the route master and on which other suppliers claim it); the signature objective/none/binding_constraint is spent in 12 builds. Decisive G11 because a hard per-leg capacity (one detour within the drivers' hours slack) binds across the candidate set; G8 (serviceable share: only legs that pass the supplier on its order days) carries rung 2, G1 (allowance per case against a per-trip detour cost) rung 1. Context artifact register: the route and supplier masters. WARN driver.near task86 answered: task86 runs a shared waiting list forward through an earlier draw that depletes it; task106 has no depletion over time, the pool is per-leg spare driving time and the members compete for it in the same week. 2026-10-03 follow-up: five supplier names renamed after a near-real-name check (H21) found same-sector or same-town Irish businesses; the ask layer was re-cut from device-carried supplier asks to a route sheet that inherits the decisive rung, after the mirror sweep put a stumped response at 87.5 per cent of the answers block. Company names flagged as personas by guard.py surface (Roddy Crisps, Tobin Dairies) are supplier names, not people. 2026-10-04: ask layer rebuilt to the 2026-10-03 decoupling rule. The route sheet (pool A) was retired; the one decoupled ask is the 2026 pilot outturn per pilot supplier (collections, earned, cost, net) on a second sheet of the same workbook, carried by silently lost handheld records plus re-sends, not-ready costing, the February trial and the pilot rates. Escape hatch applied for asks two and three. Deliverables unchanged (xlsx, png). A latent main-call fork (an invoice posted after the extract date) was fixed; the set is unchanged and the total moved to 370,890.45. 2026-10-04: the signature returned to the honest one (gap objective then population, pattern none, generators G11 decisive then G8 and G1, binding_constraint). Pattern C had been a relabel chosen to dodge the spent signature, and the author's re-root of task105 to v2 (pattern C) at 00:23 on 2026-10-04 made it collide with the build before this one; the honest signature is carried by differentiation lines against the twelve older builds instead. Later on 2026-10-04 the ask layer went from one decoupled ask to three, each with its own silent primary: the pilot outturn (lost handheld records, the organ moved behind the fleet register's handheld swaps and TS-04 1.4), spend with the twelve case and pallet suppliers (amounts gross of VAT on a legacy EDI mapping), and diesel per km and litres per 100 km by unit type and quarter (the fleet renumbered on 1 September). Two files added to the pack (fuel card file, tachograph km). Deliverables unchanged (xlsx with five sheets, png). Third pass on 2026-10-04, against the reader of stumping Part 0: every organ moved off the main path's files (IT service desk tickets and KB0142 for the handhelds, the fleet system change log for the renumbering, EDI partner profiles and KB0217 for the legacy map), and the spend and fuel asks widened to eight files each (paper invoices, the DC tank and its bulk deliveries). Pack now 26 files. Deliverables unchanged."
+}

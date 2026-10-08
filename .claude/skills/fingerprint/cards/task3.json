@@ -1,0 +1,60 @@
+{
+  "task": "task3",
+  "architecture": "v2 (campaign brief added after the v1 review failure)",
+  "drawn": "2026-07-28",
+  "slot_note": "No target/ folder: the shipped bundle is data.zip (9 files, mirrored in dirty/); prompt in PROMPT.md, write-up in submission.md.",
+  "domain": "product-analytics",
+  "subdomain": "engagement-retention",
+  "niche": "single spotlight SKU for a Gold/Platinum retention push, ranked by units bought by members browsing their favourite category, behind browser-count and net-cart gates",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Wilson Fitness Equipment Pro (dbe68f3f-99a8-4ef2-a103-908a6fca244d)",
+  "answer_source": "submission.md, Step-by-Step Solution step 9 (Commit); the Recommendation line carries an em dash",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed marketing lead funding a premium-member retention spotlight (I need the SKU that's genuinely winning with that group)",
+  "role_family": "product_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "data/interactions.csv",
+    "rows": 100288,
+    "entity": "one row is one product interaction event (view, cart add, cart remove)",
+    "grain": "user x product x event",
+    "source": "unnamed public e-commerce dataset (users, products, sessions, interactions, purchases, reviews; 10,000 users)"
+  },
+  "world": {
+    "geography": "multi-country synthetic users (US, GB, CA, DE and others)",
+    "currency": "USD",
+    "org_type": "online retailer with loyalty tiers",
+    "invented_names": [
+      "Retention Spotlight"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "Corrupted encodings, a nested catalogue record and duplicated events each knock the true winner out of the cohort or below an activity gate, and a filed rule memo that overrides an auto-generated manifest fixes the ranking unit, so partial repair or the manifest's metric lands on the runner-up.",
+  "driver_concrete": "Wilson Fitness Equipment Pro wins at 10 units (7 transactions) once Gold buyers encoded with invisible characters are restored, its Sports & Outdoors category is unpacked from products.json, semantic event dedupe gives net cart +11, and campaign_brief.md's units rule replaces the manifest's conversion metric.",
+  "stump": "A partial-cleaning pipeline, or one that follows export_manifest.json's flat products.csv and same-session conversion, files Apple Accessorie Stand at 8 units (answer_key.json, trap_answer_product).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (no campaign brief)",
+      "fate": "failed review: the decision rule was not pinned in shipped files, so units, transactions and revenue each crowned a different SKU (techniques.md, Older Task Feedbacks)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Corrupted encodings, a nested catalogue record, duplicated events and a manifest pushing the wrong metric, with the ranking unit left unpinned so three defensible units each crown a different candidate."
+    }
+  ],
+  "notes": "Untagged; objective inferred. Pre-v3 planted-defect build with a misleading manifest (legacy surface read); no gap or A to E pattern applies. Design read from answer_key.json and techniques.md. Base tables are byte-identical to task9's source (users.csv, sessions.csv). Scored on units purchased, which no scoring-unit key fits."
+}

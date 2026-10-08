@@ -1,0 +1,62 @@
+{
+  "task": "task10",
+  "architecture": "v2 (eight defects, adds the June cutover replay)",
+  "drawn": "2026-08-07",
+  "slot_note": "Prompt in PROMPT.md; the write-up is SOLUTION.md (author's answer key); the bundle is data/ (data.zip, 17 files); generator under build/.",
+  "domain": "product-analytics",
+  "subdomain": "acquisition-growth",
+  "niche": "single acquisition channel for leftover Q4 budget, ranked on net new-customer ARR over fully loaded cost under a filed 18-month payback ceiling",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund review directories (G2, Capterra, GetApp, TrustRadius, Software Advice and the Peerbound review-generation programme). Reject affiliate, reject paid search, reject the field programme.",
+  "answer_source": "SOLUTION.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed holder of leftover Q4 acquisition budget going into a single channel",
+  "role_family": "product_manager",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "invoices.tsv",
+    "rows": 63813,
+    "entity": "one row is one subscription invoice",
+    "grain": "subscription x billing period",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional, multi-currency book (USD, EUR, GBP, CAD, AUD)",
+    "currency": "USD",
+    "org_type": "B2B SaaS (project-management software) growth team",
+    "invented_names": [
+      "Kestrel",
+      "Peerbound",
+      "GIS-04 Growth Investment Standard"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "Survivors of a filed payback ceiling separate on one efficiency ratio only after a replayed record batch, invisible to full-row and business-key dedupe, is stripped by footing against counterparty batch control totals; seven other repairs only unseat a decoy and leave the replay's beneficiary on top.",
+  "driver_concrete": "Review directories wins at efficiency 2.425 (payback 6.1 months) against content/SEO's 1.150 once the June 14 cutover replay (1,363 rows, a $1,292,378 overshoot across 202 of 465 PSP batches) is removed; left in, content/SEO reads 2.972 and wins.",
+  "stump": "A competent analyst who clears defects 1 to 7 and dedupes the normal way (full-row DISTINCT or a business key) keeps the replays and files content/SEO at 2.972 (SOLUTION.md, Justification).",
+  "mechanism_source": "submission_only",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (seven defects)",
+      "fate": "solved by two independent frontier runs; four of seven defects left the winner unchanged and the rest were collinear (REDESIGN_marginal.md)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Candidates ranked on one efficiency ratio after collinear repairs (quote convention, ledger costs, first-touch credit, new-customer definition) that all flatter one decoy, so fixing the two policy-pinned ones is enough."
+    }
+  ],
+  "notes": "Untagged; objective inferred. REDESIGN_marginal.md proposed making marginal return the decisive quantity; it was not built (SOLUTION.md still ranks on average efficiency and adds the replay instead). q3_channel_scorecard.xlsx is the decoy artifact (its method puts affiliate at 66.80). PSP batch control totals are the calibration organ."
+}

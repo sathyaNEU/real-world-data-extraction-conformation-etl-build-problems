@@ -1,0 +1,62 @@
+{
+  "task": "task11",
+  "architecture": "v2 with the v3 prompt revision (four labelled proposals)",
+  "drawn": "2026-08-09",
+  "slot_note": "No submission.md: problem_statement.md carries the prompt, Final Recommendation, Critical Components and Justification; design and verification in build_notes.md; raw ElecKart files over 50 MB sit in over50mb/.",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "lever choice after an April GMV miss: markdown to a supplier co-op threshold against a media restore, a promotion, or no action",
+  "objective": "root-cause",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "C (Camera book, 48.5% threshold, 4.50pp cut).",
+  "answer_source": "problem_statement.md, 1. The Prompt, Correct answer line (the 2. Final Recommendation sentence carries em dashes)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "unnamed committee member who can fund at most one proposal, and only if it returns more gross profit than it costs",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "orders_2015H2.csv + orders_2016H1.csv",
+    "rows": 59366,
+    "entity": "one row is one order line",
+    "grain": "order x SKU",
+    "source": "ElecKart consumer-electronics dataset"
+  },
+  "world": {
+    "geography": "India",
+    "currency": "INR",
+    "org_type": "Indian consumer-electronics marketplace (ElecKart dataset)",
+    "invented_names": [
+      "VS-2016-CAM-01",
+      "MERCH-COOP"
+    ]
+  },
+  "deliverables": [],
+  "driver": "A threshold-triggered per-unit rebate makes the shallowest qualifying discount accretive at zero volume response, and that value only appears on a ledger rebuilt with an omitted partner channel, per-row quote directions, event-date attribution and repaired inverted rate windows, each of which alone flips the call to doing nothing.",
+  "driver_concrete": "Proposal C wins: the Camera book runs at 44.00% against VS-2016-CAM-01's 48.5% threshold paying ₹2,100 a unit, so a 4.50pp cut returns +₹461,055 at zero volume response once partner_settlements.tsv, per-row FX base and quote, and order-date attribution are rebuilt; media fails 28:1.",
+  "stump": "Any one of T1 to T4 (a single FX convention, the partner channel left out, settlement-date booking, or the inverted rate windows used verbatim) turns the Camera markdown negative and the solver files D, take no action (problem_statement.md and build_notes.md).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved: a strong solver ground through 13 engineered traps, helped by release notes that named every defect class (build_notes.md)",
+      "domain": "product-analytics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A lever choice reached by grinding through many loud, self-announcing data defects that a shipped release note enumerated, so diligence alone solves it."
+    }
+  ],
+  "notes": "Untagged; root-cause inferred from 'what is actually behind the April number', the committed call is a lever choice. Gap read from build_notes.md T2 (partner channel absent from the order ledger), the same move as task12's Northgate orders. Four settled MERCH-COOP credits replay only on the repaired book. First judge pass: one pass, one fail, which build_notes.md traces to a verify-script bug."
+}

@@ -1,0 +1,126 @@
+{
+  "task": "task36",
+  "architecture": "R8 (R6 architecture retuned as the outlier shape)",
+  "drawn": "2026-08-21",
+  "slot_note": "_retired_2026-08-20/ holds the Calderstone Provision Company build and _r5_gatefix_2026-08-21/ the R5 build; rubric.csv and solution.zip sit at the root",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "naming the one standing cause of a parts distributor's year-over-year dealer on-time delivery decline for the annual recovery line",
+  "objective": "root-cause",
+  "shape": "single-figure",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "**Put F4, dealer receiving conversion, on the FY27 recovery line.**",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "E",
+    "D"
+  ],
+  "generators": [
+    "G14",
+    "G11"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs distribution and transport at Osterhout Parts Company",
+  "role_family": "operations_director",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "outbound_consignments.csv",
+    "rows": 167397,
+    "entity": "one row is one outbound movement from a regional distribution centre, either a dealer consignment or an inter-RDC replenishment transfer",
+    "grain": "consignment",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (four RDCs including Grand Island, Joliet and Lebanon)",
+    "currency": "USD",
+    "org_type": "agricultural and construction equipment parts distributor serving about 600 dealers",
+    "invented_names": [
+      "Osterhout Parts Company",
+      "Norland Express",
+      "NS-11 network service review procedure"
+    ]
+  },
+  "deliverables": [
+    "otd_decline_driver_call.py",
+    "otd_recovery_line_scan.csv"
+  ],
+  "opening_move": "role-first",
+  "driver": "The largest candidate is excluded by a filed rule because an existing counterparty agreement already remedies it, and the loud dated candidate's counterfactual, once conditioned on a structural property that cancels it everywhere but one segment, falls below a small uncontested candidate that becomes the largest fundable contribution.",
+  "driver_concrete": "F4 accounts for 1.4 of the 8.1 point dealer-scope decline and leads the next fundable cause 3.21 times because F1 (carrier, 6.6 points) is minuted under NS-11 s.3 as already answered by carrier service-credit terms, and F6 (dispatch waves) falls from 2.3 to 0.4 points once the 0.68 to 0.86 of a day the night consolidation trailer gives back on interline lanes is netted off.",
+  "stump": "A solver who scopes out RDC transfers and minutes the carrier under NS-11 s.3 but prices the dispatch wave restructure on the tender day alone files F6 at 2.3 points; one who skips the s.3 carve-out files F1, the carrier, at 6.6.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "Calderstone Provision Company build (_retired_2026-08-20)",
+      "fate": "retired 2026-08-20 after its own rounds R1 to R7: the six-block attribution rule was method guessing when undocumented (Gate D twice) and a spec to implement when documented, and the winner's own condition was the growth",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "root_cause_named",
+      "driver": "An undocumented multi-part precedence rule recovered from a closed review file attributes each shortfall to the binding condition on a reconstructed promise clock, and the driver named is the condition the rule charges most."
+    },
+    {
+      "architecture": "Osterhout R1 (joint feasibility slack, answer F6)",
+      "fate": "solved 2026-08-20 by two solvers who named F6 by aligning the outcome series to four dated cutovers, the claim corpus's date spike and the schedule diff, never computing the slack",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C",
+        "D"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "root_cause_named",
+      "driver": "The decline lives in the joint distribution of two factors whose marginals are flat, visible only as a computed feasibility margin, and the dated change that re-paired them is the cause."
+    },
+    {
+      "architecture": "Osterhout R2 to R3 (inversion, answer F1)",
+      "fate": "solved 2026-08-20 at R3: the solver computed both readings of the contracted position cap, gave the decoy its generous case, and the leader survived either way",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "confirm_surface_read",
+      "decision_type": "root_cause_named",
+      "driver": "The largest correctly reported repair is the answer and a contracted capacity cap prices the loud dated alternative down, so every sophisticated adjustment argues toward the decoy."
+    },
+    {
+      "architecture": "Osterhout R4 to R5 (filed eligibility, answer F6)",
+      "fate": "R4 was solved and its determinism review failed on an unpinned position fill order; R5 pinned it empirically (167,392 of 167,392) and was solved twice on 2026-08-21",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "D"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "root_cause_named",
+      "driver": "The largest repair is excluded by a filed rule because an existing counterparty agreement already remedies it, the population is rescoped through a join the table does not mark, and the next candidate's counterfactual is priced against contracted capacity."
+    }
+  ],
+  "notes": "Back-fitted labels. Ledger lesson: seven solves across four architectures closed this ask shape, because an argmax over six filed candidates scored by a filed rule never makes the ranking unreliable (name right, graded figures wrong), so never draw 'rank N filed candidates by a filed rule and name the top eligible one' again. Current ledger row (G11 over D) describes R4/R5; the 2026-09-13 reconciliation adds the night-trailer give-back, carded decisive. R8 untested."
+}
