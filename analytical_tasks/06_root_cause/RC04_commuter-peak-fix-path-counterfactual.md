@@ -7,7 +7,7 @@
 | Mirrors | Latency attribution along multi-hop paths (an early slow hop whose delay the pipeline's slack absorbs against a short late hop that makes a call miss its batch window, a late linehaul leg recovered by sort slack against a dock overrun that makes parcels miss their wave at a hub), where per-hop latency points at the hop with the most waiting and only a replay of the path shows which hop decides the deadline |
 | Decision shape | Which of N root causes gets the fix: one intervention budget this winter |
 | Committed call | The cause fixed, the late peak arrivals at the terminal its fix would have avoided this autumn, and the same figure for the runner-up |
-| Gap · Pattern | Gap 4 (rule) over Gap 3 (objective) · Pattern B (the published controls pin a path replay) carrying E22 (the deciding comparison is a set of isolated counterfactuals), with E21 (a saturated tie) at rung 1 |
+| Gap · Pattern | Gap 4 (rule) over Gap 3 (objective) · E22 (the deciding comparison is a set of isolated counterfactuals: every peak train's path replayed without each cause, allowances and headways included), inside a reproduction-gated control set (Pattern B), with E21 (a saturated tie) at rung 1 |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution |
 | Measured traps engaged | #20 leaves the deciding comparison unstated · #1 reports a failed back-test, ships anyway · #19 breaks a big tie instead of questioning it |
 | Calibration form | Published control set with a reproduction clause: twelve certified fault-free punctuality figures for closed disruptions on the line |
