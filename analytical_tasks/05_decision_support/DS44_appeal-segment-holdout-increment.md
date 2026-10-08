@@ -51,8 +51,8 @@ and an unmandated share that responds. That mix differs by segment and is visibl
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (1.22× behind C), and leads only rung 3. Rung leaders beat
   their runners-up by at least 1.25×.
 * **Partial correction priced (L3).** A solver who uses each segment's own year-end holdout increment, where one exists, names C, because the
-  lapsed segment has no year-end holdout. A solver who borrows lapsed's spring holdout lands on E with a figure 27% low (spring gifts are
-  smaller): the right name and a wrong graded figure.
+  lapsed segment has no year-end holdout. A solver who borrows lapsed's spring holdout computes E's net increment 27% low (spring gifts are
+  smaller), which puts E below C's year-end increment, so it also names C. Every partial route lands on C, never on E.
 * **Grid.** Response, expected gift or net value × increment (none, pooled by segment, mandate-conditioned) = 9 cells. Only the
   mandate-conditioned net increment names E at the committed figure.
 * **Discriminator dominance.** C carries a 1.22× net-value advantage into rung 3. E's unmandated share (0.91) against C's (0.44), combined
@@ -134,4 +134,6 @@ its margin + 5 named chart parts + 3 files ≈ 80 criteria.
 * Segment mandate shares range from 9% (lapsed mid-value) to 71% (monthly loyal).
 * Rung leaders are A, B, C, E. E is 5th / 4th / 2nd (1.22× behind C) / 1st, and rung margins are at least 1.25× outside rung 2.
 * The twin cells are identical on every visible segment attribute.
+* Lapsed's spring-holdout increment, carried to year-end, sits 27% below its mandate-conditioned year-end figure and at least 1.15× below
+  C's year-end increment.
 * Gift Aid declarations and payment returns never change mandate status or the holdout outcomes.
