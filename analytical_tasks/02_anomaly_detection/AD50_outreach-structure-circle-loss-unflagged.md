@@ -17,11 +17,11 @@
 
 A distance-learning university's student-success team calls students at risk of withdrawing. Tutors can call at most 8% of active
 students in any week. Next year's call lists will be fed by a new set of alert rules, and the student-success policy scores any proposed set
-on the share of the last full year's withdrawals (2024) it would have flagged at least two weeks before the withdrawal, without breaching
-capacity in any week. The policy's equity rule bars any rule that flags students with a declared disability at more than 1.25 times their
-share of active students. The team holds daily activity, assessment submissions, registrations and withdrawal dates, the peer-review tool's
-assignment log, the course-design change log and the university's equality report; its extract suppresses the disability field in
-module-presentations with fewer than five declarations. The head of tutoring trusts missed assessments above everything.
+on the share of the last full year's withdrawals (2024) whose student it would have had on a call list two weeks before the withdrawal,
+without breaching capacity in any week. The policy's equity rule bars any rule that flags students with a declared disability at more than
+1.25 times their share of active students. The team holds daily activity, assessment submissions, registrations and withdrawal dates, the
+peer-review tool's assignment log, the course-design change log and the university's equality report; its extract suppresses the
+disability field in module-presentations with fewer than five declarations. The head of tutoring trusts missed assessments above everything.
 
 ## 2. Gate G: why this is legal
 
@@ -40,33 +40,38 @@ module-presentations with fewer than five declarations. The head of tutoring tru
 
 A strong solver drops absolute click counts (the change log shows calendar shifts swinging them across whole cohorts), ranks each student
 within module, presentation and week, bounds the suppressed disability cells to clear the missed-assessment rule on equity, and tunes the
-cohort-relative cut so the two rules fill capacity: 46% of withdrawals flagged in time. Every step is correct, and every rule looks at one
+cohort-relative cut so the two rules fill capacity: 40% of withdrawals flagged in time. Every step is correct, and every rule looks at one
 student's own record. The withdrawal file, read against the review-assignment log, shows the rest. The peer-review tool puts each student in a
 circle of four who review each other's drafts all term; the log records only reviewer–reviewee pairs per assignment, so circles are
 components of that graph. When a circle-mate withdraws, each remaining member's chance of leaving in the next three weeks rises from 2% to
-19% and falls back after, and those students' activity never dips beforehand. A circle-loss rule flagging remaining members for three weeks
-costs little capacity and catches what no individual rule can.
+19% and falls back after, and those students' activity never dips beforehand. A circle-loss rule flagging remaining members for the two weeks
+after a circle-mate leaves catches what no individual rule can. It needs the room missed assessments take in the weeks after each
+deadline, so the structure trades that rule for this one and retunes the cohort cut to what is left.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | The current absolute alert (under 20 clicks in a week) | Structure: {absolute} | It is what tutors work from today | The change log: calendar changes pushed absolute flags to 31% of a cohort in assessment weeks, far over capacity, while cohort ranks stayed flat |
-| 1 | Cohort-relative rank alone at the cut that fills capacity (rank below 14th percentile two weeks running); the missed-assessment rule left out because its equity cannot be checked where disability is suppressed | Structure: {cohort-relative 14}, 38% caught | The change log certifies cohort ranks, and only verifiable rules can be adopted | The equality report: each module has one suppressed presentation, so its declared total less the visible presentations gives that presentation's declared count exactly, and even with every declared student there flagged the missed-assessment rule's ratio is at most 1.12 |
-| 2 | Cohort-relative and missed-assessment rules, cut retuned to fill capacity together | Structure: {cohort-relative 9, missed assessment}, 46% caught | Both strongest individual signals, equity-cleared, within capacity | The withdrawal file against the review log: 31% of withdrawals fell within three weeks of a circle-mate's, with no flag from any rule beforehand |
-| 3 | **Decisive:** circles built as components of the review-assignment graph; remaining members flagged for three weeks after a circle-mate withdraws; the cohort cut retuned to fill what capacity remains | **Structure: {cohort-relative 7, circle loss}, 61% caught** | — | — |
+| 1 | Cohort-relative rank alone at the cut that fills capacity (rank below 14th percentile two weeks running); the missed-assessment rule left out because its equity cannot be checked where disability is suppressed | Structure: {cohort-relative 14}, 36% caught | The change log certifies cohort ranks, and only verifiable rules can be adopted | The equality report: each module has one suppressed presentation, so its declared total less the visible presentations gives that presentation's declared count exactly, and even with every declared student there flagged the missed-assessment rule's ratio is at most 1.12 |
+| 2 | Cohort-relative and missed-assessment rules, cut retuned to fill capacity together | Structure: {cohort-relative 9, missed assessment}, 40% caught | Both strongest individual signals, equity-cleared, within capacity | The withdrawal file against the review log: 36% of withdrawals fell within three weeks of a circle-mate's, 31 points of them two weeks or more after it, with no flag from any rule beforehand |
+| 3 | **Decisive:** circles built as components of the review-assignment graph; remaining members flagged for the two weeks after a circle-mate withdraws; the cohort cut retuned to fill what capacity remains | **Structure: {cohort-relative 7, circle loss}, 61% caught** | — | — |
 
-* **Structure table.** Four different rule sets, and the circle-loss rule appears on no lower rung. Scores run 38%, 46% and 61%; the
+* **Structure table.** Four different rule sets, and the circle-loss rule appears on no lower rung. Scores run 36%, 40% and 61%; the
   absolute rule is infeasible on capacity.
-* **Separation.** The best structure without the circle-loss rule catches 46%; adding the rule while keeping missed assessments forces the
-  cohort cut to 5 and catches 52%; the answer's two-rule set catches 61%, 1.17× the nearest alternative, because missed assessments mostly
-  re-flag students the cohort rank already holds.
-* **Partial correction priced (L3).** A solver who looks for group effects in tutor groups (a column) instead of review circles finds a weak
-  clustering, adds a tutor-group-loss rule that flags twenty students per withdrawal, and adopts {cohort-relative 10, tutor-group loss} at
-  41% caught: below rung 2, and 20 points under the answer. A solver who builds circles but keeps the missed-assessment rule adopts three
-  rules at cut 5 and catches 52%, the answer's 61% being 1.17× that.
-* **Grid.** Rule set (each subset of cohort-relative, missed assessment, circle loss, tutor-group loss) × equity handling (suppressed cells
-  unknown or bounded) = 30 cells. Every set without circle loss scores 46% or less; with it, only the two-rule set at cut 7 reaches 61%.
+* **Separation.** The best structure without the circle-loss rule is rung 2's, at 40%. Circle loss cannot join missed assessments: in the two
+  weeks after each deadline they flag 3.2% and 5.1% of active students, so any set holding both breaches 8% before a single cohort flag.
+  Circle loss alone catches 31%; with the cohort cut at 7 it catches 61%, 1.53× the best feasible alternative and 21 points clear of it.
+* **Partial correction priced (L3).** A solver who looks for group effects in tutor groups (a column) instead of review circles sees a
+  group's three-week risk rise from 2% to 4.7% after a withdrawal, but flagging whole groups is far over capacity, so the affordable rule
+  flags each group's three lowest-ranked remaining members for two weeks. Those are students the cohort rank already holds, and
+  {cohort-relative 4, tutor-group loss} catches 22%, 39 points under the answer. A solver who builds circles but keeps missed assessments as
+  the head of tutoring's fixed rule finds no feasible set holding both and stays on rung 2's {cohort-relative 9, missed assessment} at 40%;
+  the answer's 61% is 1.53× that.
+* **Grid.** Rule set (each non-empty subset of cohort-relative, missed assessment, circle loss and tutor-group loss) × equity handling
+  (suppressed cells unknown or bounded) = 30 cells. Every set holding two of missed assessment, circle loss and tutor-group loss breaches 8%
+  in the weeks after a deadline. Feasible sets without circle loss score at most 40% (rung 2's pair, and only with the equity bound; 36%
+  without it); circle loss alone scores 31%; only {cohort-relative 7, circle loss} reaches 61%, 1.53× the best feasible alternative.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -78,7 +83,7 @@ costs little capacity and catches what no individual rule can.
 3. **No arithmetic symptom.** Every rule's weekly flags stay under 8%, the scores reconcile to the withdrawal file, and the circle withdrawals
    carry no missing data or odd activity.
 4. **Not a row predicate.** Circles are components of a reviewer–reviewee graph per term; flags need each circle's withdrawal dates and a
-   three-week window per remaining member, recomputed week by week against capacity.
+   two-week flag per remaining member, recomputed week by week against capacity.
 5. **The enumeration is arithmetic.** Which students the circle rule flags in each week is computed; no column names a circle or a loss.
 6. **No cutover date.** Circles reached modules gradually as each was redesigned; the 2024 contagion is a standing pattern within the year.
 7. **Survives deletion.** Remove both voices and the absolute alert, and the two individual rules are still the natural build.
@@ -99,10 +104,10 @@ costs little capacity and catches what no individual rule can.
 
 ## 7. Pins, voices and the licensed wrong basis
 
-* **Filed pins.** The student-success policy: a rule set is scored on the share of the last full year's withdrawals it flags at least two
-  weeks ahead, never exceeding 8% of active students in any week; no rule may flag students with a declared disability at more than 1.25
-  times their share. The equality report's suppression rule. One sentence each.
-* **Empirical pins.** Cohort ranks, from the change log; the circle hazard and its three-week window, from the 2024 withdrawals.
+* **Filed pins.** The student-success policy: a rule set is scored on the share of the last full year's withdrawals whose student was on a
+  call list two weeks before the withdrawal, never exceeding 8% of active students in any week; no rule may flag students with a declared
+  disability at more than 1.25 times their share. The equality report's suppression rule. One sentence each.
+* **Empirical pins.** Cohort ranks, from the change log; the circle hazard and its three-week span, from the 2024 withdrawals.
 * **Voices.** The head of tutoring: "Missed assessments are the best predictor we have; every tutor knows it." The data team lead:
   "Engagement against the cohort catches everyone who is drifting."
 * **Licensed wrong basis.** The policy records that the academic board evaluates alerts by their precision against end-of-module failure and
@@ -112,10 +117,13 @@ costs little capacity and catches what no individual rule can.
 
 * **Circles.** Every term's review graph splits into disjoint groups of four in which each member reviews the other three, so components and
   cliques give the same circles.
-* **Window.** The hazard after a circle-mate's withdrawal is 19% in weeks one to three and back to 2% in week four, so two- to four-week windows
-  pick the same structure and the scoring uses three.
+* **Window.** The hazard after a circle-mate's withdrawal is 19% over weeks one to three and back to 2% in week four, and 31 of the 36
+  points of circle withdrawals fall in weeks two and three. A flag raised at the circle-mate's withdrawal and held two weeks is on the list
+  two weeks before every one of them; a one-week flag misses the third-week leavers and a longer flag spends capacity that catches nothing
+  more, so the score peaks at two weeks and the first-week leavers are out of every structure's reach.
 * **Capacity.** The cohort cut is the largest whole percentile keeping every week under 8%, which is unique for each rule set.
-* **Equity.** Every bounded suppressed cell leaves each adopted rule under 1.25 at the bound's upper end.
+* **Equity.** Every bounded suppressed cell leaves each adopted rule under 1.25 at the bound's upper end. Only the missed-assessment rule's
+  flags gather in the small, suppressed presentations; the cohort and circle rules clear 1.25 on visible presentations alone.
 
 ## 9. Prompt sketch and deliverables
 
@@ -148,8 +156,15 @@ and the score + 5 named chart parts + 3 files ≈ 54 criteria.
 
 ## 12. World-building constraints
 
-* Scores 38% / 46% / 61%; the three-rule set at cut 5 scores 52%; the tutor-group variant 41%. Absolute flags reach 31% in assessment weeks.
-* 31% of 2024 withdrawals fall within three weeks of a circle-mate's, with no prior flag; circle hazard 19% for three weeks, 2% otherwise.
+* Scores 36% / 40% / 61%, the answer 1.53× rung 2; circle loss alone 31%; the tutor-group variant 22%. Absolute flags reach 31% in assessment
+  weeks.
+* Cohort-relative catches: cut 4 19%, cut 7 30%, cut 9 32%, cut 14 36%; missed assessments add 8 points at cut 9; circle loss adds 31 points
+  with no overlap; tutor-group loss adds 3.
+* Peak weekly flags in the two weeks after each deadline: missed assessments 5.1%, tutor-group loss 5.4%, circle loss 3.2% of active students.
+  The binding cohort cuts are 14 alone, 9 with missed assessments, 7 with circle loss and 4 with tutor-group loss; any two of the three
+  other rules together exceed 8%.
+* 36% of 2024 withdrawals fall within three weeks of a circle-mate's with no prior flag, 31 points of them in weeks two and three; circle
+  hazard 19% for three weeks, 2% otherwise; the circle flag runs two weeks; a tutor group's three-week risk after a withdrawal 4.7%.
 * Each module has exactly one suppressed presentation, recovered exactly from the module's declared total; with every declared student there
   flagged, the missed-assessment rule's ratio is at most 1.12.
 * T-114 and T-207 are identical on every alert, activity and submission column.
