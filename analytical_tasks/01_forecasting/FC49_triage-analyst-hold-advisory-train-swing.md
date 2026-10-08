@@ -41,12 +41,12 @@ The staffing note is due on 10 December.
 
 ## 3. The driving force
 
-A strong solver starts from the dashboard, then rebuilds the policy's four-quarter mean from the advisories, because the policy counts
-the vendor's own severity and the dashboard pulls NVD's. It reads the triage standard and moves from CVEs to CVE–line pairs, because a shared kernel
-or crypto-library CVE is triaged on every line it affects. Routers lead campus switching by 14 critical triages, and the standard deviation
-of the router-minus-campus difference over the last eight quarters, dated by publication, is 9, so the analyst goes to routers. Every step
-is correct except the date. The triage standard puts a triage in the quarter its line's advisory ships. Routers ship advisories every
-quarter, so their triages track publication. Campus switching ships monthly patches and a half-yearly bundle in the first and third
+A strong solver starts from the dashboard, then rebuilds the policy's four-quarter mean from the advisories, because the policy counts the
+vendor's own severity and the dashboard pulls NVD's. It reads the triage standard and moves from CVEs to CVE–line pairs, because a shared
+kernel or crypto-library CVE is triaged on every line it affects. Routers lead campus switching by 14 critical triages, and the standard
+deviation of the router-minus-campus difference over the last eight quarters, dated by publication, is 9, so the analyst goes to routers.
+Every step is correct except the date. The triage standard puts a triage in the quarter its line's advisory ships. Routers ship advisories
+every quarter, so their triages track publication. Campus switching ships monthly patches and a half-yearly bundle in the first and third
 quarters that carries a quarter of its year's triages. Dated by advisory, as the coordination centre's acknowledgements record them, the
 difference swings by up to 41 between quarters, a deviation of 19. A lead of 14 is inside one deviation of its own swing, so the analyst
 stays in the pool.
