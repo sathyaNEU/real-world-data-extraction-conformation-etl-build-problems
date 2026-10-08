@@ -5,7 +5,7 @@
 | Objective | Descriptive & Distribution Analysis |
 | Domain | Policy & Education · health-system commissioning |
 | Mirrors | Sizing a service on a flagged population when need splits on a marker held in another system (fraud reviews needed only for flagged accounts with a device signal, support escalations needed only for tickets with a failed payment, returns inspections needed only where a sensor fired), so the flagged count overstates where the marker is rare |
-| Decision shape | Which of N gets one scarce thing: an eight-cot small-baby unit for one of six maternity hospitals |
+| Decision shape | Which of N gets one scarce thing: a new eight-cot small-baby unit for one of the six maternity hospitals without one |
 | Committed call | The hospital that gets the unit, and the small-for-gestational-age babies a year the unit would care for there |
 | Gap · Pattern | Gap 2 (population) over Gap 3 (objective) · Pattern E (conditioned yield: need splits on a scan reading reached through a join), with a binding transfer limit applied in the count at rung 2 (measured #10) |
 | Gate G mechanism | method_or_model_selection, with binding_constraint support |
@@ -70,8 +70,8 @@ growth-restricted. Conditioned on the reading, the new unit would care for 167 E
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The framework counts the small babies the unit would care for. The ledger settles each existing unit's top-ups; the
-   scan file ships for the dashboard's scan audit. No document links a reading to special care.
+1. **Written nowhere.** The framework counts the small babies the new unit would care for. The ledger settles each existing unit's
+   top-ups; the scan file ships for the dashboard's scan audit. No document links a reading to special care.
 2. **Pattern E, pinned at zero tolerance.** Doppler-conditioned need returns all 96 settled unit-quarters exactly. The pooled rate,
    fitted to the ledger's three-year total, returns 9, the 3rd-percentile marker 23 and booking risk 14. The conditioning is a
    construction: each baby joined to its mother's last scan, then counted by reading, unit by unit and quarter by quarter.
@@ -97,9 +97,9 @@ growth-restricted. Conditioned on the reading, the new unit would care for 167 E
 
 ## 7. Pins, voices and the licensed wrong basis
 
-* **Filed pins.** The framework: the new unit goes to the hospital without one whose small-for-gestational-age babies it would care for most each year,
-  classed by the region's reference table on completed gestational weeks. The network protocol: babies under 1,500 g transfer to the
-  tertiary centre.
+* **Filed pins.** The framework: the new unit goes to the hospital without one whose small-for-gestational-age babies it would care for
+  most each year, classed by the region's reference table on completed gestational weeks. The network protocol: babies under 1,500 g
+  transfer to the tertiary centre.
 * **Empirical pins.** The need and its marker, from the ledger.
 * **Voices.** Calderbrook's neonatal lead: "We see more small babies than anyone; the numbers speak for themselves." The commissioning
   analyst: "A small baby is a small baby; the chart decides."
@@ -112,13 +112,13 @@ growth-restricted. Conditioned on the reading, the new unit would care for 167 E
 * **Need.** In every unit-quarter, top-ups equal 0.88 of the kept small babies with an abnormal reading, to the nearest whole baby, and
   no product lies within 0.1 of a half; babies with a normal reading are never admitted.
 * **Weights.** Birthweights are heaped at 50 g, and no heaped value equals a reference percentile.
-* **Year.** Each hospital's yearly count is the three-year mean, and no year departs from it by more than 6%.
+* **Year.** Each of the six hospitals' yearly count is the three-year mean, and no year departs from it by more than 6%.
 
 ## 9. Prompt sketch and deliverables
 
-> The board commissions the small-baby unit on the 19th, and Calderbrook's neonatal lead says the numbers make the case. Tell me which
-> hospital gets the unit and how many small-for-gestational-age babies a year it would care for there, in one line for the board paper.
-> Send `unit_siting.xlsx`, a chart `need_by_reading.png`, and a one-page `siting_note.pdf`.
+> The board commissions the new small-baby unit on the 19th, and Calderbrook's neonatal lead says the numbers make the case. Tell me
+> which hospital gets the unit and how many small-for-gestational-age babies a year it would care for there, in one line for the board
+> paper. Send `unit_siting.xlsx`, a chart `need_by_reading.png`, and a one-page `siting_note.pdf`.
 
 * `unit_siting.xlsx` — the count for all six hospitals under each rung, the stay sheet (ask A), the residence sheet (ask B) and the
   ledger table (ask C).
@@ -128,11 +128,13 @@ growth-restricted. Conditioned on the reading, the new unit would care for 167 E
 
 ## 10. The ask layer
 
-* **Ask A (device-carried, decoupled).** For each hospital, the median postnatal stay in days. *Device:* ward moves split one stay into
-  two episodes, which the patient administration system links by spell number; counting episodes halves the median at three hospitals.
-* **Ask B (device-carried).** For each hospital, the share of births to mothers living outside the region. *Device:* the postcode-to-region
-  lookup carries boundary changes with effective dates; using the current boundaries misassigns 7% of births.
-* **Ask C (validity).** Each hospital's count under each of the four rungs, and the settled unit-quarters returned by each need construction.
+* **Ask A (device-carried, decoupled).** For each of the six hospitals, the median postnatal stay in days. *Device:* ward moves split one
+  stay into two episodes, which the patient administration system links by spell number; counting episodes halves the median at three
+  hospitals.
+* **Ask B (device-carried).** For each of the six, the share of births to mothers living outside the region. *Device:* the
+  postcode-to-region lookup carries boundary changes with effective dates; using the current boundaries misassigns 7% of births.
+* **Ask C (validity).** Each of the six hospitals' count under each of the four rungs, and the settled unit-quarters returned by each
+  need construction.
 * **Decoupling.** Clearing the Doppler conditioning changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
