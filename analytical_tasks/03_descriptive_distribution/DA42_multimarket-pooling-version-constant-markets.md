@@ -28,8 +28,10 @@ and the standard.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and both voices. Random-effects pooling over complete markets at the market grain still returns
   58 of 72 register figures and classes E1 and E3 as transferable.
-* **Instrument repair.** Measure every market perfectly: a market that ran two versions still measured the mixture correctly. Which
-  markets the pool admits is the council's rule, and it is pinned only by the register.
+* **Instrument repair.** No file is suspect: results, completion flags, configurations and the release log are complete and correct, and
+  the flag records what it claims, a test that ran to its planned end. Version constancy is a relation between each market's window and
+  the dated deployments. With every file perfect, rung 0 still adopts E1 to E5, rung 1 E1, E3, E4 and E5, and rung 2 E1 and E3; the join
+  is still needed for E2 and E3.
 * **Lens swap.** The naive pool holds every complete market; the answer's pool drops the markets that changed version mid-test. Different
   markets in the pool, not the same markets reweighted.
 

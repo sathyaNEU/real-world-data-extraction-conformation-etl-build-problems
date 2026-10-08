@@ -28,8 +28,10 @@ reaches. Fourteen earlier onboarding campaigns paid an invite credit whenever an
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the dashboard. The connections file still yields a clean two-hop reach that names
   Infrastructure, and nothing in the pack says which pairs can accept.
-* **Instrument repair.** Make every connection, membership and credit perfectly recorded: they already are. A complete ledger still has
-  to be read against a membership history nobody joins to it, so the difficulty survives a better instrument.
+* **Instrument repair.** No file is suspect: the connections file, the membership history and the ledger are complete and current, and no
+  field claims to record whether a pair can accept an invitation. Co-membership on the seeding date is a pair relation built by an
+  effective-dated self-join, which adds no information to any row. With every file perfect, rung 0 still names Web front-end, rung 1
+  Data & ML and rung 2 Infrastructure, and the self-join is still needed to reach Embedded systems.
 * **Lens swap.** The naive population is every connection pair; the answer's population is the pairs sharing an organisation on the
   seeding date. They are different edge sets at a different moment, not one set under two lenses.
 

@@ -28,8 +28,10 @@ substation close-out.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the consultant's basis and both voices. The coincident half-hour, built from the data, still gives the solar
   group 117.0 kVA.
-* **Instrument repair.** Meter every home at one-second resolution: the half-hours are already exact. The event is a unit defined in the
-  standard's words and built from runs of half-hours, which no better meter supplies.
+* **Instrument repair.** Suspect: the customer register's solar flag, stale for 16 homes. Repaired from the generation-meter register,
+  rung 0 returns rung 1's 118.0 / 78.0 / 104.0 and rung 2 stays 123.0 / 60.0 / 117.0. The half-hourly loads are complete, and the
+  maximum-demand event is a unit no row claims to record, so the answer stays 136.0 / 70.0 / 94.0 and still needs the event built from
+  runs of half-hours.
 * **Lens swap.** The half-hour reading weights one moment; the answer weights seven half-hours across which solar homes change from
   near-zero to full import. Different moments, different contributions.
 

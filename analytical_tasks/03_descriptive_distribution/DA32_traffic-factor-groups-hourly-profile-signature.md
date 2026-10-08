@@ -27,8 +27,9 @@ register, 46 automatic counters' hourly data and published annual flows, the nat
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the regional body's note. Category-and-region factors, the published convention, still tie
   every regional total and still put the wrong link first.
-* **Instrument repair.** Make every count and counter perfect: the register still carries no factor group, and a road's class is still a
-  property of its rhythm, which only its own hours reveal.
+* **Instrument repair.** Suspect: the count register, which carries road category and region but no rhythm class. Repaired by recording
+  each link's rhythm class directly, rung 0 still ranks L07 first, rung 1 L19 and rung 2 L11, since none uses a class. The class factors
+  still have to be built from each class's counters, so the answer stays L23 and the construction is still needed.
 * **Lens swap.** The naive expansion gives each link its category-and-region factor; the answer gives it the factor of the roads that move
   like it. The links are re-grouped into different populations, not re-weighted.
 

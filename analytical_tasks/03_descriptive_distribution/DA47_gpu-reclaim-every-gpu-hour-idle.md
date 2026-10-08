@@ -27,8 +27,9 @@ job log, the capacity charter, and the book of six past reclaim reviews with the
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and both voices. Node-average utilisation over the window, built from the GPU samples, still
   commits 298 nodes.
-* **Instrument repair.** Sample every GPU every second: the window's averages and its minimum both sharpen, and the book still says which
-  one decides a reclaim. Next quarter's reclaim is a forward commitment no sample measures.
+* **Instrument repair.** Suspect: the reservation register's active flag, stale for pools whose term ends before the quarter. Repaired by
+  contract term, rung 0 returns rung 1's 356 and rung 2 stays 298. The samples are complete, 672 per GPU, so the answer stays 141 and the
+  minimum over GPU-hours, a law recovered from the complete book, is still needed.
 * **Lens swap.** The naive count takes nodes whose average is low; the answer takes nodes with no busy GPU-hour at all, a different set of
   nodes that is half the size.
 

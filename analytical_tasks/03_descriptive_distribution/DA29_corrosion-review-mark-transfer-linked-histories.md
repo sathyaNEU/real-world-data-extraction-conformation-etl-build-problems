@@ -27,8 +27,10 @@ transfer register, the change log of past running changes with their engineering
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dealer council's notes and both voices. The interval-censored estimate on test keys, certified by the
   change log, still names the premium saloon.
-* **Instrument repair.** Record every test and mark perfectly: the key still follows the mark by design, and every row is right. The
-  vehicle is a chain across two files, so a better test record leaves the construction to be done.
+* **Instrument repair.** No file is suspect: each test row records the mark it was tested under, which is correct, and the transfer
+  register records every transfer; no field claims to identify a vehicle. A vehicle is a chain of key histories, spells under successive
+  marks, built through the complete register, which adds no information to any row. With every file perfect, rung 0 still names the
+  Kestrel hatchback, rung 1 the Puffin city car and rung 2 the Osprey saloon, and the chained estimate is still needed for the Tern MPV.
 * **Lens swap.** The naive population is registration keys; the answer's population is vehicles, some of which are two keys. Counts,
   denominators and onsets all differ, not only the lens.
 

@@ -27,8 +27,10 @@ export with its relations file, field assignments, the council's framework, and 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the association's list and both voices. Field-year reference sets with fractional ties, built from the records,
   still match 548 of 600 audited classes and still fund the wrong university.
-* **Instrument repair.** Make every record and citation link perfect: preprints and published versions remain distinct works by design,
-  and a paper is still a family to be assembled.
+* **Instrument repair.** No file is suspect: each record is a work exactly as the database defines one, the relations file links every
+  version, and every citation link is correct. A paper is a family of versions built through the complete relations file, a unit no
+  record claims to be. Auditing every paper instead of 600 changes no rung's construction: rung 0 still puts Harrowgate in at 13.8%,
+  rung 1 at 12.6% and rung 2 at 12.0%, and the families are still needed to fund Northfield.
 * **Lens swap.** The naive structure ranks records with their own citations; the answer ranks families with their distinct citers. The
   units, their counts and the reference-set populations all differ.
 

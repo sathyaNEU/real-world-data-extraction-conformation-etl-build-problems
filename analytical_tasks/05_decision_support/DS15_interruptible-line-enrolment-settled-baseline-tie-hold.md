@@ -66,14 +66,14 @@ sits out.
 * **Blocking quantity.** The best record on the settled baseline is 17 of 18 (94.4%), and the policy requires 18. Events failed: EAF 3,
   rolling mill 2, oxygen plant 1 (event 4, 8.70 MW against 9.0), ladle preheat 1 (event 15, 5.88 against 6.0), compressed air 2, water
   treatment 5.
-* **Falsifiability.** The oxygen plant would have been enrolled had its load in the hour before event 4's dispatch stood 0.30 MW higher,
-  at its ten-day level. Any line with every interval of all 18 events at or above commitment on the settled baseline would have been the
+* **Falsifiability.** The oxygen plant would have been enrolled had its load in the hour before event 4's dispatch stood at its ten-day
+  level, 0.6 MW higher. Any line with every interval of all 18 events at or above commitment on the settled baseline would have been the
   pick.
 * **Partial correction priced (L3).** Taking the settled rule's pre-dispatch hour as the clock hour before the event, instead of the hour
-  before the dispatched minute, misses the trimming that began at 13:40 for a 14:20 dispatch, clears event 4 and enrols the oxygen plant
-  again. Applying the settled rule only at the service point and sharing its delivered reduction by commitment passes every line and enrols
-  the EAF. Applying it to the clean hourly historian averages the 15-minute shortfalls away and enrols the rolling mill. Each half-insight lands
-  on a pick.
+  before the dispatched minute, catches only a third of the trimming that began at 13:40 for a 14:20 dispatch,
+  clears event 4 and enrols the oxygen plant again. Applying the settled rule only at the service point and sharing its delivered reduction
+  by commitment passes every line and enrols the EAF. Applying it to the clean hourly historian averages the 15-minute shortfalls away and
+  enrols the rolling mill. Each half-insight lands on a pick.
 * **Grid.** Data and windows (historian raw, historian clean, submeters on clock hours, submeters on dispatch windows) × baseline (the guide's
   ten-day average, the settled lower-of rule) gives 8 cells. On the guide's baseline they enrol A, B, B and C; on the settled rule A, B, B
   and, in the full cell only, hold. The nearest pick is the settled rule on dispatch windows with a clock-hour baseline hour (the oxygen

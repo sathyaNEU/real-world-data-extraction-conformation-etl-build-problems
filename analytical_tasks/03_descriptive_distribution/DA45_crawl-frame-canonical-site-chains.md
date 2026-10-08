@@ -27,8 +27,10 @@ redirect shares by rank band, the team's protocol, and the gold-standard verific
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the lab's report and both voices. Rank-biased overlap on registrable domains, checked against the gold
   standard at 99.4%, still adopts Corvid.
-* **Instrument repair.** Make every list and log perfect: an alias is a correct entry and a redirect is a correct response. The landing
-  site is a chain to be followed, not a missing value.
+* **Instrument repair.** Suspect: the gold standard, which verifies only the top 10,000. Repaired by verifying every entry's landing
+  site, rung 0 still adopts Avocet, rung 1 Bittern and rung 2 Corvid, since none uses a landing site; the full sample would only show
+  rung 2's normalisation failing in the deep band. The lists and logs are complete and an alias is a correct entry, so the answer stays
+  Dunlin and the overlap on collapsed landing sites is still needed.
 * **Lens swap.** The naive frame compares domains across days; the answer compares landing sites, a different set of units in which many
   domains collapse into one.
 

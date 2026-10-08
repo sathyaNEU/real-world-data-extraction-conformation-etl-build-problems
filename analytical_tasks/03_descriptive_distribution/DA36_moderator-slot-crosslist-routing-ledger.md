@@ -10,33 +10,35 @@
 | Gap · Pattern | Gap 4 (rule) over Gap 2 (population) · Pattern B (a reproduction gate over the settled credit ledger), with Pattern D (versions against submissions) at rung 2 |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
 | Measured traps engaged | #1 reports a failed back-test, ships anyway · #3 stops at a close but inexact match · #2 counts file rows instead of the real unit |
-| Calibration form | Settled-transaction ledger: moderator credits settled for every moderation action in 16 closed quarters (2019–2022) |
+| Calibration form | Settled-transaction ledger: moderator credits settled for every moderation action in 20 closed quarters (2019–2023), paid to moderators drawing from five field pools |
 | Driving force | A cross-list requested with the submission is checked by the primary category's moderators; one requested after announcement goes to the target category's own queue. Listing counts, whole or fractional, cannot see that, and only routing by the cross-list's request time, a join to the submission history, reproduces every settled cell. Machine-learning authors add Statistical methodology after posting, so that queue grew fastest while every listing count credits the cross-list magnets. |
 
 ## 1. Situation
 
 A preprint server adds one volunteer moderator a year, and its charter sends the new moderator to the category whose moderation load grew
-most between 2019 and 2023. Twenty categories are eligible. Moderators earn a credit per moderation action, settled quarterly, and the 2023
-quarters are not yet settled. The pack holds submission metadata with every version and cross-list, the submission history with event
-times, the moderator roster, the credit ledger for 2019–2022, and the charter.
+most between 2019 and 2023. Twenty categories are eligible. Moderators earn a credit per moderation action, settled quarterly, and each draws
+actions from the shared queue of one of five field pools. The pack holds submission metadata with every version and cross-list, the
+submission history with event times, the moderator roster, the credit ledger for 2019–2023, and the charter.
 
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: each submission, version, cross-list event and settled credit. Nobody reports a load ranking and
   nothing is overturned. The difficulty is which queue a cross-list lands in.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete both voices and the board's basis. Fractional version counts, built from the metadata, still match 288 of 320
-  settled cells and still name Quantum physics.
-* **Instrument repair.** Make every timestamp exact and settle 2023 tomorrow: the 2023 credits would show the answer only once settled, and
-  the decision is made before. The routing rule must still be recovered from the closed quarters.
+* **Deletion test.** Delete both voices and the board's basis. Fractional version counts, built from the metadata, still match 90 of 100
+  settled pool-quarters and still name Quantum physics.
+* **Instrument repair.** No file is suspect: the metadata, the submission history and the ledger are complete through 2023, and the ledger
+  records what it claims, credits paid to moderators who share one queue per field pool. A category's own queue is a routing of actions
+  that no row records. With every file perfect, rung 0 still names Machine learning, rung 1 Computer vision and rung 2 Quantum physics,
+  and the routing by request time is still needed for Statistical methodology.
 * **Lens swap.** Listing counts credit every category a paper names; the answer credits the queues that actually reviewed a version or a
   late request. Different actions, not different weights on the same listing.
 
 ## 3. The driving force
 
 A strong solver knows whole counting inflates cross-list magnets, splits each submission fractionally, reads the charter's "every version a
-moderator reviews is a unit of work", counts versions, and back-tests against the settled ledger: 288 of 320 category-quarters match. The
-misses all fall where cross-lists were added after a paper was announced. The server routes cross-lists by when they were requested. At
+moderator reviews is a unit of work", counts versions, and back-tests against the settled ledger: 90 of 100 pool-quarters match. The
+misses all fall where cross-lists from another pool were added after a paper was announced. The server routes cross-lists by when they were requested. At
 submission, the primary category's moderators check the whole paper and its cross-lists, so the primary does the whole unit and the target
 nothing. After announcement, the request enters the target category's queue as an action of its own. Machine learning, a magnet for
 at-submission cross-lists, does far less moderation than its listings suggest. Statistical methodology, which ML authors add after
@@ -46,9 +48,9 @@ posting, does far more, and its queue grew 1.33× faster than the next.
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Every listing counts in full (primary and cross-lists) | A, Machine learning (+21,000, 1.25× Computer vision) | The category pages count it this way | The ledger: whole listings match 104 of 320 settled cells |
+| 0 | Every listing counts in full (primary and cross-lists) | A, Machine learning (+21,000, 1.25× Computer vision) | The category pages count it this way | The ledger: whole listings match 31 of 100 settled pool-quarters |
 | 1 | Fractional submissions: half to the primary, half shared across cross-lists | B, Computer vision (+11,900, 1.24× Machine learning) | The standard correction for multi-label counts | The charter: every version a moderator reviews is a unit of work |
-| 2 | Fractional versions (each replacement re-reviewed) | C, Quantum physics (+12,400, 1.23× Computer vision) | Right unit, and 288 of 320 cells match | The ledger: all 32 misses are category-quarters with cross-lists requested after announcement |
+| 2 | Fractional versions (each replacement re-reviewed) | C, Quantum physics (+12,400, 1.23× Computer vision) | Right unit, and 90 of 100 pool-quarters match | The ledger: all 10 misses are pool-quarters receiving cross-lists from another pool requested after announcement |
 | 3 | **Decisive:** each version to its primary's queue, each post-announcement cross-list request to its target's queue | **E, Statistical methodology (+11,600, 1.33× Computer vision)** (5th of 20 on rung 0) | — | — |
 
 * **Position table.** Statistical methodology ranks 5th on rung 0 (+9,400), 4th on rung 1 (+7,000) and 3rd on rung 2 (+8,300), and
@@ -66,8 +68,8 @@ posting, does far more, and its queue grew 1.33× faster than the next.
 
 1. **Written nowhere.** The charter defines the unit of work and the allocation basis. The submission guide says cross-lists "may be
    requested at submission or later". No document says which queue reviews which.
-2. **Pattern B, reproduction against the best rival.** Routed versions reproduce 320 of 320 settled category-quarters exactly. Fractional
-   versions reproduce 288, primary-only versions 251, fractional submissions 211 and whole listings 104. Every rival omits post-announcement
+2. **Pattern B, reproduction against the best rival.** Routed versions reproduce 100 of 100 settled pool-quarters exactly. Fractional
+   versions reproduce 90, primary-only versions 78, fractional submissions 64 and whole listings 31. Every rival omits post-announcement
    requests as actions, so each falls short of the ledger's quarterly totals by 4% to 9%. The routing is a construction: each cross-list's
    request time from the history joined against its paper's announcement time.
 3. **No arithmetic symptom.** Versions reconcile to the metadata, history events to versions, and credits to the roster under every
@@ -76,25 +78,25 @@ posting, does far more, and its queue grew 1.33× faster than the next.
    to a different category's queue.
 5. **The enumeration is arithmetic.** No column marks a cross-list as late or routes an action.
 6. **No cutover date.** Late cross-listing grew steadily with the ML field, with no step.
-7. **Survives deletion.** With every voice removed, fractional versions still match 90% of the ledger and name Quantum physics.
+7. **Survives deletion.** With every voice removed, fractional versions still match 90 of 100 pool-quarters and name Quantum physics.
 
 ## 6. The calibration corpus
 
-* **Form.** The credit ledger: every moderation action settled to a moderator, 2019 to 2022, rolled to 320 category-quarters through the
-  roster.
+* **Form.** The credit ledger: every moderation action settled to a moderator, 2019 to 2023, rolled to 100 pool-quarters through the
+  roster. No finer roll-up exists, because a pool's moderators share one queue.
 * **What it certifies.** That versions are the unit, which a back-tester finds quickly.
-* **What pins the routing.** The 32 category-quarters only timing-routed actions reproduce.
-* **Twin pair.** Statistical methodology and Mathematical statistics match in 2021 on primaries, versions, cross-lists received and
-  listing counts. Their settled credits are 6,840 and 3,420 (2.0×): Statistical methodology's cross-lists were mostly requested after
-  announcement and Mathematical statistics' at submission.
+* **What pins the routing.** The 10 pool-quarters only timing-routed actions reproduce.
+* **Twin pair.** The statistics pool in 2021 Q3 and the mathematics pool in 2022 Q1 match on primaries, versions, cross-lists received
+  and listing counts. Their settled credits are 6,840 and 3,420 (2.0×): most of the statistics pool's incoming cross-lists were requested
+  after announcement, and the mathematics pool's at submission.
 * **Resemblance points at the decoy.** On every listing column, Statistical methodology resembles Mathematical statistics, whose load is
   flat.
 
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The charter: the new moderator goes to the category whose moderation load grew most from 2019 to 2023; every version a
-  moderator reviews is a unit of work; a load measure that does not reproduce each category's settled credits in every closed quarter is
-  not the charter's measure.
+  moderator reviews is a unit of work; a load measure that does not reproduce each pool's settled credits in every quarter is not the
+  charter's measure.
 * **Empirical pins.** The routing, from the ledger.
 * **Voices.** The operations lead: "Cross-listing is the whole story; count every listing a category appears in." The moderators' council
   chair: "Replacements are where the real work is, and quantum's queue is drowning."
@@ -104,9 +106,10 @@ posting, does far more, and its queue grew 1.33× faster than the next.
 ## 8. Determinism by construction
 
 * **Timing.** No cross-list request falls within 24 hours of its paper's announcement, so the routing has no boundary cases.
-* **Roster.** Each moderator serves one category in each quarter, so credits roll up without a split rule.
+* **Roster.** Each moderator draws from one field pool in each quarter, and no category belongs to two pools, so credits roll up to pools
+  exactly.
 * **Withdrawals.** Withdrawal notices generate no credit in any settled quarter and are excluded under every construction.
-* **Growth.** 2023 is computed with the construction that reproduces the ledger and 2019 is settled; the two agree for 2019.
+* **Growth.** Both years are computed with the construction that reproduces every settled pool-quarter.
 
 ## 9. Prompt sketch and deliverables
 
@@ -127,7 +130,7 @@ posting, does far more, and its queue grew 1.33× faster than the next.
   misplaces 14% of next-day announcements.
 * **Ask B (device-carried).** For each category, the share of 2023 submissions from first-time submitters. *Device:* the account-merge log
   links duplicate submitter accounts; counting raw accounts overstates newcomers in six categories.
-* **Ask C (validity).** Settled cells reproduced by each of the four constructions, and the six leading categories' growth under each.
+* **Ask C (validity).** Settled pool-quarters reproduced by each of the four constructions, and the six leading categories' growth under each.
 * **Decoupling.** Clearing the routing changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
@@ -139,6 +142,6 @@ and its margin + 5 named chart parts + 3 files ≈ 79 criteria.
 
 * Growth (thousands of actions): rung 0 A 21.0, B 16.8, D 12.1, C 10.9, E 9.4; rung 1 B 11.9, A 9.6, C 8.8, E 7.0; rung 2 C 12.4, B 10.1,
   E 8.3, A 8.0; rung 3 E 11.6, B 8.7, C 7.2, A 6.2.
-* Ledger: 320 category-quarters; reproduced 320 / 288 / 251 / 211 / 104.
+* Ledger: 100 pool-quarters (five pools, 20 quarters); reproduced 100 / 90 / 78 / 64 / 31.
 * Statistical methodology and Mathematical statistics match on every listing column in 2021.
 * Time zones and account merges never touch a version, a cross-list or a credit.

@@ -28,8 +28,9 @@ and last year's close-out.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the transport lead's view and the councillors' basis. Robust station intervals with each measure's local
   effect still fund all three restrictions and clear five stations.
-* **Instrument repair.** Measure every street perfectly: the boundary increase is a real effect of moving traffic, already measured. What
-  the decision needs is the net across stations, which no better monitor reports.
+* **Instrument repair.** Suspect: the hourly concentrations, with up to 15 missing days a station. Repaired by filling every hour, no
+  upper bound crosses 40 (none lies within 0.2), so rung 0 still clears 4, rung 1 3 and rung 2 5, each crediting measures only with
+  their own stations. The answer stays 8, and the net across stations, a combination no monitor records, is still needed.
 * **Lens swap.** The naive allocation credits each measure with its own stations; the answer credits it with every station it changes,
   including those it makes worse. Different stations enter each measure's count.
 

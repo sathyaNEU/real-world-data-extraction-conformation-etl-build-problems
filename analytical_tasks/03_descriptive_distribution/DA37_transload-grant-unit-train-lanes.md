@@ -27,8 +27,9 @@ county geography, and the book of six existing transload terminals in neighbouri
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the co-op's view and the commission's basis. The weighted, net, coarse-group build still files 760 million and
   reconciles with every published table.
-* **Instrument repair.** Survey every shipment with no sampling at all: the terminal book's rate still fits only the unit-train flows, and
-  next year's shift has not happened. The difficulty is which segment converts, not how well it is measured.
+* **Instrument repair.** Suspect: the survey microdata, a weighted sample with masked establishment IDs. Repaired to a census of every
+  shipment with real IDs, rung 0 returns rung 1's 880M, rung 1 stays 880M and rung 2 760M. Establishment-lane flows at unit-train scale
+  are a unit no row claims to record, so the answer stays 1,010M and still has to be built.
 * **Lens swap.** The naive base is every long-haul farm-product truck flow; the answer's base is the establishment-lane flows at
   unit-train scale, a different set of shipments carrying a different rate.
 

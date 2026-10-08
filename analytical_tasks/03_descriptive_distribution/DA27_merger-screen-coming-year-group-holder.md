@@ -27,8 +27,10 @@ with its award history and retiree census, and the deal documents. Halvard close
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the target's counsel's note. The latest release still yields a clean ΔHHI near 380 to 560, and
   no sentence says which holder a block belongs to.
-* **Instrument repair.** Unsuppress and deduplicate the release perfectly: it still reports the Harrow block under the insurer serving it
-  today, which is correct. The department's basis assigns it to next year's holder, a fact no enrolment instrument records before January.
+* **Instrument repair.** Suspect: the enrolment release, with one suppressed cell and crosswalk-month duplicates. Repaired, Harrow's cell
+  published and the duplicates removed, rungs 0, 1 and 2 all return 384, each enrollee under the plan serving them this month, which is
+  correct. The department's basis assigns each employer block to its coming-year contract holder, an employer-level award recorded in the
+  register that no enrolment field claims to record, so the answer stays 1,200 and the attribution is still needed.
 * **Lens swap.** The naive market holds the blocks with their current insurers; the answer's market holds them with the coming-year
   insurers. Same enrollees, different holders at a different moment.
 

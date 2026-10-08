@@ -4,7 +4,7 @@
 |---|---|
 | Objective | Opportunity Sizing & Decision Support |
 | Domain | Supply Chain & Logistics · port operations and resilience investment |
-| Mirrors | Placing resilience spend where an outage is avoidable rather than merely recorded (Amazon fulfilment-centre flood protection, cloud region hardening where grid outages coincide with the storms that cause them, airline hub de-icing capacity) |
+| Mirrors | Placing resilience spend where an outage is avoidable rather than merely recorded (Amazon fulfilment-centre flood protection, cloud region resilience upgrades where grid outages coincide with the storms that cause them, airline hub de-icing capacity) |
 | Decision shape | Which of N gets one scarce thing: the single permanent flood wall in this capital cycle |
 | Committed call | The terminal that gets the wall, and the revenue loss it avoids a year, in $ thousands to the nearest ten |
 | Gap · Pattern | Gap 3 (objective) over Gap 2 (population) · S10, the governing verb is causal so the baseline is constructed from the harbour master's closures and each terminal's own wind stops, with a suppressed revenue cell bounded by the published total (#24) at rung 2 |

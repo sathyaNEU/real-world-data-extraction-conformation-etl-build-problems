@@ -27,8 +27,10 @@ per shift slot, the union contract, the payroll revision log, and the budget off
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the title table and both voices. Greedy placement by overtime displaced, built from payroll and rosters,
   still clears no unit.
-* **Instrument repair.** Record every shift to the minute and every pay line exactly: the re-rating law is still unwritten and still has
-  to be recovered from the closed periods. The allocation is next year's and no instrument measures it.
+* **Instrument repair.** No file is suspect: payroll, rosters, minimums and the revision log are complete for the 26 closed periods, and
+  the title table is a correct summary at a coarser grain. Recording every shift to the minute moves no rung: rung 0 still avoids $8.7M,
+  rung 1 $9.2M and rung 2 $8.6M, none clearing a unit. The re-rating law, a minimum over slots and days, is recovered by reproduction
+  from complete records, and the allocation is next year's.
 * **Lens swap.** The naive allocation buys hours of overtime wherever they are dearest. The answer buys complete coverage in three units,
   a different set of units relieved in a different way.
 

@@ -9,9 +9,9 @@
 | Committed call | The share of Coastline Cable's panel households receiving at least 80% of their plan speed at peak, to one decimal |
 | Gap · Pattern | Gap 4 (rule) over Gap 2 (population) · Pattern B (a reproduction gate over the pilot's filed decisions), with a saturated tie broken by a documented rule at rung 2 |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
-| Measured traps engaged | #1 reports a failed back-test, ships anyway · #19 breaks a big tie instead of questioning it · #5 takes the population a flag suggests |
+| Measured traps engaged | #1 reports a failed back-test, ships anyway · #19 breaks a big tie instead of questioning it · #3 stops at a close but inexact match |
 | Calibration form | Pilot log: 1,200 households in two states, each with the agency's filed decision (meets or does not meet) under the household standard |
-| Driving force | The pilot judged each household at its own node's four busiest hours that month, not on the panel's 19:00–23:00 flag. That is a property of a different entity, reached by joining the node register to the node traffic file. Every fixed window stalls at the same 1,121 of 1,200 filed decisions. Coastline's student-housing and shift-worker nodes congest outside the evening window, so their households pass on the flag and fail at their node's peak. |
+| Driving force | The pilot judged each household at its own node's four busiest hours that month, not in the panel's 19:00–23:00 reporting window. That is a property of a different entity, reached by joining the node register to the node traffic file. Every fixed window stalls at the same 1,121 of 1,200 filed decisions. Coastline's student-housing and shift-worker nodes congest outside the evening window, so their households pass in the evening and fail at their node's peak. |
 
 ## 1. Situation
 
@@ -26,16 +26,18 @@ standard.
 * **Litmus.** Every figure is correct: each test, each plan speed, each pilot decision and each node's hourly traffic. Nobody publishes a
   wrong share and nothing is overturned. The difficulty is which hours count as a household's peak.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete Coastline's submission and both voices. Household medians on the panel's peak flag still give 93.4%, and the
+* **Deletion test.** Delete Coastline's submission and both voices. Household medians in the evening window still give 93.4%, and the
   back-test still ties every fixed window.
-* **Instrument repair.** Make every test perfect and add tests every minute: the household's figure still depends on which hours are its
-  peak, and that comes from the node it shares, not from any test.
+* **Instrument repair.** No file is suspect: every scheduled test is present with its timestamp, plan speeds agree across files, and the
+  node register and traffic file are complete for the month; the evening window is the methods note's reporting convention, not a field.
+  Testing every minute instead of every hour moves no rung: rung 0 still returns 95.6%, rung 1 93.4% and rung 2 92.4%. A node's busy
+  hours are a property of another entity built from complete traffic, so the answer stays 84.6% and the join is still needed.
 * **Lens swap.** The naive figure scores each household's evening tests. The answer scores each household's tests in its node's busiest
   hours, a different set of tests that for a third of households barely overlaps the evening.
 
 ## 3. The driving force
 
-A strong solver builds household medians from valid tests in the panel's peak window and back-tests against the pilot log. It reproduces 1,121
+A strong solver builds household medians from valid tests in the panel's evening window and back-tests against the pilot log. It reproduces 1,121
 of 1,200 decisions. It then tries 18:00–22:00 and 20:00–24:00 and gets 1,121 again, a tie at the most a fixed window can reach. The panel
 methods note breaks window ties toward the window ending latest, so the solver files 20:00–24:00. The tie is the signal. The 79 decisions no
 fixed window returns all belong to households whose node is busiest outside the evening, around student housing after 22:00 and estates of
@@ -46,8 +48,8 @@ such nodes, and its share falls to 84.6%.
 
 | Rung | Construction | Lands on | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Pooled share of valid peak-flag tests at or above 80% of plan | 95.6%, +13.0% | The panel's rows, read straight | The standard judges households, not tests |
-| 1 | Household medians on the panel's peak flag (19:00–23:00 local) | 93.4%, +10.4% | The right unit on the panel's own window | The pilot log: 1,121 of 1,200 filed decisions |
+| 0 | Pooled share of valid evening-window tests at or above 80% of plan | 95.6%, +13.0% | The panel's rows, read straight | The standard judges households, not tests |
+| 1 | Household medians in the evening window (19:00–23:00 local), the methods note's reporting convention | 93.4%, +10.4% | The right unit on the panel's own window | The pilot log: 1,121 of 1,200 filed decisions |
 | 2 | Fixed windows back-tested: 18–22, 19–23 and 20–24 all reproduce 1,121; the methods note's tie-break picks 20:00–24:00 | 92.4%, +9.2% | The window is tested and the tie is broken by the written rule | The node traffic file: every one of the 79 unreturned decisions sits on a node busiest outside 18:00–24:00 |
 | 3 | **Decisive:** each household's peak is its node's four busiest consecutive hours that month (node register joined to node traffic) | **84.6%** | — | — |
 
@@ -61,8 +63,8 @@ such nodes, and its share falls to 84.6%.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The standard says "at peak" and points to the pilot's method. The methods note defines the peak flag as 19:00–23:00
-   local. The node register ships with the transparency filing to weight Coastline's subscriber counts, not to define a window.
+1. **Written nowhere.** The standard says "at peak" and points to the pilot's method. The methods note reports panel results for 19:00–23:00
+   local, the industry's convention. The node register ships with the transparency filing to weight Coastline's subscriber counts, not to define a window.
 2. **Pattern B, a gate passed by a construction.** Node windows reproduce 1,200 of 1,200 filed decisions. Every fixed window reproduces 1,121,
    and network-wide hours 1,133, all erring the same way (calling failing households passing). The construction is not a menu: it needs
    the register join, an argmax of four-hour utilisation per node, and per-household test selection.
@@ -90,7 +92,7 @@ such nodes, and its share falls to 84.6%.
 
 * **Filed pins.** The standard: a household receives its speed when its median download at peak is at least 80% of its plan speed; the
   annual figure is computed by the method the pilot's filed decisions were made on, and a method that misses any filed decision is not
-  that method. The methods note: the panel's peak flag and its tie-break for windows that perform equally.
+  that method. The methods note: the panel's evening reporting window and its tie-break for windows that perform equally.
 * **Empirical pins.** The node windows, from the pilot log.
 * **Voices.** Coastline's regulatory lead: "Peak is seven to eleven at night everywhere; that's the industry convention." The panel
   manager: "We have scored households on the evening window since the panel began, and the pilot was the same panel."
