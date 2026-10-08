@@ -1,4 +1,4 @@
-# AD10 — Which turbine gets next summer's one leading-edge repair campaign, when the worst blades spent the year on another turbine and in the yard
+# AD10 — Which turbine gets next summer's one leading-edge repair campaign, when the turbine with the worst year no longer carries the blades that caused it
 
 | Field | Value |
 |---|---|
@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #18 joins only on the visible key · #24 treats an unpublished figure as unknown · #4 never tests its reading against the control |
 | Calibration form | Pilot log: nine blade-repair campaigns on the company's other farms last year, each with the deficit computed before repair and the energy recovered in the following year |
-| Driving force | Leading-edge erosion travels with the rotor, and rotors move: when a main bearing is exchanged the crane lifts the rotor off and fits the spare from the laydown yard. The eroded rotor ran four winter months on G, sat in the yard, and was fitted to E eighteen days before the extract, inside the run-in the performance filters drop, so G's year dilutes its loss and E's year never sees it. Its deficit appears only when SCADA periods are linked through position codes and the crane's lift log to rotor serials, a chain the asset register's current-rotor field hides, and only that construction reproduces what the pilot campaigns recovered. |
+| Driving force | Leading-edge erosion travels with the rotor, and rotors move: when a main bearing is exchanged the crane lifts the rotor off and fits the spare from the laydown yard. Rotor R-3 ran the whole year on G, so the industry-standard test puts G's 9.4% deficit first; but twenty days before the extract G's bearing failed, R-3 came off, and two days later it went onto E, both inside the run-in the performance filters drop. The deficit now sits on E, and it appears only when SCADA periods are linked through position codes and the crane's lift log to rotor serials, a chain the asset register's current-rotor field hides; only that construction reproduces what the pilot campaigns recovered. |
 
 ## 1. Situation
 
@@ -25,28 +25,27 @@ power curve and the pilot log.
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: production, wind, status codes, curtailment, the register's current rotors, every lift and every
-  pilot outcome. Nothing reported is overturned and no stakeholder read is corrected; the difficulty is that the thing the repair acts on is
-  a rotor, and rotors are not turbines.
+  pilot outcome. G's 9.4% is a true account of G's year. Nothing reported is overturned and no stakeholder read is corrected; the
+  difficulty is that the thing the repair acts on is a rotor, and rotors are not turbines.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete both voices. A careful own-curve deficit per turbine-year, the industry's standard test, still names C, and
-  joining the register's current rotors to it credits R-3 with E's healthy year.
+* **Deletion test.** Delete both voices. A careful own-curve deficit per turbine-year, the industry's standard test, still names G, and
+  joining the register's current rotors to it credits G's year to the spare G now carries.
 * **Instrument repair.** Give every turbine perfect SCADA and the register perfect current fields; they are already right. A better
   instrument of turbines still records R-3's loss on G, where it no longer is, and nothing on E.
 * **Lens swap.** The naive unit is the turbine-year; the answer's unit is the rotor over its months in operation, which lie in G's SCADA
-  from October to January and in no unfiltered month of E's: a different population of SCADA periods.
+  and in no unfiltered day of E's: a different population of SCADA periods, credited to a different turbine.
 
 ## 3. The driving force
 
 A strong solver throws out year-on-year energy because the wind fell 6%, removes downtime and curtailment, bounds the curtailment the grid
 operator suppressed for B's connection, builds each turbine's power curve by the method of bins with density normalisation and the
-standard filters, and compares it with the warranted curve. That names C at 5.8%, and the industry would sign it. But erosion lives on
-blades. When G's main bearing was exchanged in January the crane lifted rotor R-3 off and fitted the yard spare; R-3 sat in the yard
-until 12 September, when E's bearing was exchanged and E received it. R-3 lost 9.4% over its four months on G, which G's turbine-year
-dilutes to 4.4%, and its eighteen days on E fall inside the run-in the memo's filters drop, so E's year shows only its previous, healthy
-rotor. The asset register lists each turbine's current rotor, which looks like the link and credits R-3 with E's healthy year. R-3's
-history runs from turbine ID to position code in the site layout, to the crane's dated lifts, to rotor serials, a chain the O&M manual
-describes as practice ("the removed rotor is held in the yard and fitted at the next exchange") and no file joins. The pilot log's
-recoveries are reproduced only at rotor grain.
+standard filters, and compares it with the warranted curve. That names G at 9.4%, and the industry would sign it. But erosion lives on
+blades. On 10 September G's main bearing failed; the crane lifted rotor R-3 off and fitted the yard spare. On 12 September E's bearing was
+exchanged and E received R-3, as the O&M manual's yard practice says it would ("the removed rotor is held in the yard and fitted at the
+next exchange"). Both lifts fall inside the 30-day run-in the performance memo's filters drop, so no series steps: G's year still reads
+9.4% and E's year shows only its previous, healthy rotor. The asset register lists each turbine's current rotor, which looks like the
+link and credits G's year to the spare. R-3's history runs from turbine ID to position code in the site layout, to the crane's dated lifts,
+to rotor serials, a chain no file joins, and the pilot log's recoveries are reproduced only at rotor grain.
 
 ## 4. The ladder
 
@@ -54,37 +53,39 @@ recoveries are reproduced only at rotor grain.
 |---|---|---|---|---|
 | 0 | Year-on-year energy per turbine | A (−11.2%) | What the owners see on every report, and A had the worst year | The met mast: wind fell 6% across the farm, and A's own event log holds a 41-day gearbox outage |
 | 1 | Shortfall against the farm mean after downtime and curtailment, the suppressed connection's curtailment taken as unknown and set to zero | B (5.9%) | Wind and outages are out, and the operator's report is used as published | The report's farm percentage is an energy-weighted mean of the connections' percentages, and inverting it bounds B's suppressed cell at 370–432 MWh, more than B's 340 MWh shortfall |
-| 2 | Own-curve deficit per turbine-year: method of bins, density-normalised, the memo's filters, against the warranted curve | C (5.8%) | The industry-standard performance test, every filter applied | The pilot log: turbine-year deficits reproduce the recovered energy of 5 of 9 campaigns, missing every one whose turbine changed rotor in the year |
+| 2 | Own-curve deficit per turbine-year: method of bins, density-normalised, the memo's filters, against the warranted curve | G (9.4%) | The industry-standard performance test, every filter applied | The pilot log: turbine-year deficits reproduce the recovered energy of 5 of 9 campaigns, missing every one whose turbine changed rotor in the year |
 | 3 | **Decisive:** SCADA periods linked through position codes and the crane's lift log to rotor serials; each installed rotor's deficit over its months in operation | **E, carrying rotor R-3 (9.4%)** (5th of 10 on rung 0) | — | — |
 
 * **Position table.** E ranks 5th on rung 0 (−6.1%), 4th on rung 1 (3.9%, E sitting in D's wake) and 8th on rung 2 (1.2%), and leads only
-  rung 3, 1.62× C's rotor. Intermediate leaders hold margins of 1.23×, 1.23× and 1.26×.
-* **Discriminator dominance.** C carries a 4.83× advantage over E into rung 3 (5.8% against 1.2%). Rotor grain multiplies E's figure by
-  7.83 and leaves C's, whose rotor never moved, unchanged: an edge of 7.83 against the 1.2 × 4.83 = 5.80 required, 1.35× headroom.
-* **Partial correction priced (L3).** A solver who joins the register's current rotor serials to the turbine-year deficits credits R-3
-  with E's 1.2% and names C (5.8% against D's 4.6%, 1.26×). A solver who follows the lift log but maps position codes to turbines by
-  number, without the site layout, reads R-3's winter from D's SCADA, credits it 4.6%, and names C by the same margin. A solver who builds
-  the chain but measures each rotor only on its current turbine finds no unfiltered day of R-3 and names C again. No half lands on E.
+  rung 3, 1.62× C's rotor (5.8%). Intermediate leaders hold margins of 1.23×, 1.23× and 1.62×.
+* **Discriminator dominance.** G carries a 7.83× advantage over E into rung 3 (9.4% against 1.2%). Rotor grain multiplies E's figure by
+  7.83 and G's by 0.09, the healthy spare's 0.8%: an edge of 92 against the 1.2 × 7.83 = 9.40 required, 9.8× headroom.
+* **Partial correction priced (L3).** A solver who joins the register's current rotor serials to the turbine-year deficits credits G's
+  9.4% to the spare now on G and names G (1.62× C). A solver who follows the lift log but maps position codes to turbines by number,
+  without the site layout, reads both September lifts at other turbines, leaves G's rotor in place and names G again (1.62× C). A solver who builds
+  the chain but measures each rotor only on its current turbine finds no unfiltered day for R-3 or for G's spare and names C (5.8%
+  against D's 4.6%, 1.26×). No half lands on E.
 * **Grid.** Curtailment cell (zero or bounded) × deficit basis (shortfall or own curve) × unit (turbine-year, current rotor, rotor history)
   gives twelve cells. Zero-cell shortfall cells name B under every unit; bounded shortfall cells name C under every unit, because G stands
-  at the farm's windiest position and a shortfall against the farm mean hides most of R-3's loss there (3.9% against C's 4.8%). Every
-  own-curve cell names C except rotor history, which names E; the nearest wrong cell (C) needs only the lift log left unjoined.
+  at the farm's windiest position and a shortfall against the farm mean hides most of R-3's loss there (3.6% against C's 4.8%). Own-curve
+  cells name G at turbine-year and current-rotor grain and E only at rotor history; the nearest wrong cell (G) needs only the lift log left
+  unjoined.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The O&M manual describes the yard practice for main-bearing exchanges; it says nothing about erosion, deficits or
    which rotor sits where now. The lift log is a crane contractor's record keyed by position code, which SCADA never uses.
 2. **The corpus pins a construction, not a menu.** Rotor-grain deficits reproduce the recovered energy of 9 of 9 pilot campaigns within 0.3
-   points; turbine-year deficits 5 of 9 and the current-rotor join 6 of 9, each over-predicting the recovery of a rotor that had moved in
-   and under-predicting one that had moved out, so neither balances on the pilot's total. The reproducing unit is a construction: a rotor's
-   operating months exist only after SCADA periods are chained through the layout and the lift log, and no column holds them.
+   points; turbine-year deficits 5 of 9 and the current-rotor join 6 of 9, each over-predicting the recovery of a turbine whose eroded
+   rotor had moved out, so neither balances on the pilot's total. The reproducing unit is a construction: a rotor's operating months exist
+   only after SCADA periods are chained through the layout and the lift log, and no column holds them.
 3. **No arithmetic symptom.** SCADA ties to the export meter, the register's current rotors are correct today, and the lift log balances:
    every rotor is on a turbine or in the yard on every day.
 4. **Not a row predicate.** It needs a two-hop join with dated intervals, an assignment of every 10-minute period to the rotor installed,
    and a power-curve fit per rotor across turbines.
 5. **The enumeration is arithmetic.** Which rotor ran when is computed from lift dates; no SCADA column carries a rotor.
-6. **No cutover date.** G's series steps down at the January lift, and that step says only that G is healthy now, not where R-3 went. E's
-   series never steps, because R-3's days on E fall inside the run-in the filters drop.
+6. **No cutover date.** Both lifts fall inside the run-in the filters drop, so neither G's series nor E's steps; R-3's erosion is steady
+   across its year on G.
 7. **Survives deletion.** With every voice removed, the answer and the difficulty are unchanged.
 
 ## 6. The calibration corpus
@@ -99,7 +100,7 @@ recoveries are reproduced only at rotor grain.
 * **Every rule exercised.** One pilot rotor spent three months in a yard, so the operating-months basis is tested; one pilot rotor was
   fitted inside 30 days of that farm's extract, so the run-in filter is tested; one pilot farm's position codes run in a different order
   from its turbine IDs, so the layout hop is tested.
-* **Resemblance points at the decoy.** E's turbine-year profile most resembles P-7's, the pilot's smallest recovery.
+* **Resemblance points at the decoy.** G's turbine-year profile most resembles P-3's, the pilot's cleanest full recovery.
 
 ## 7. Pins, voices and the licensed wrong basis
 
@@ -130,7 +131,7 @@ recoveries are reproduced only at rotor grain.
 * `campaign_choice.xlsx` — the turbine and rotor build, the yaw sheet (ask A), the reactive-power sheet (ask B) and the pilot back-test (ask C).
 * `rotor_deficits.png` — a timeline of each turbine's rotor serials over the twelve months with the lifts marked, beside paired bars of
   turbine-year and rotor deficits, R-3's path from G through the yard to E highlighted.
-* `campaign_note.docx` — the committed turbine, the expected recovery, and why C and the turbine-year ranking are not it.
+* `campaign_note.docx` — the committed turbine, the expected recovery, and why G and the turbine-year ranking are not it.
 
 ## 10. The ask layer
 
@@ -152,11 +153,12 @@ margin over C + 5 named chart parts + 3 files ≈ 48 criteria.
 
 ## 12. World-building constraints
 
-* Rung leaders are A, B, C, E. E is 5th / 4th / 8th / 1st; intermediate margins are at least 1.23×; E leads rung 3 by 1.62×.
-* R-3's own-curve deficit is 9.4% over its months in operation: on G from October to the January lift, in the yard to 11 September, on E
-  from 12 September, its eighteen days there inside the 30-day run-in. G's turbine-year reads 4.4% and E's 1.2%, on E's previous rotor.
-  C's rotor never moved. G stands at the farm's windiest position.
-* Lifts: G in January, E on 12 September, both on stopped days; no lift is planned before the campaign or in the twelve months after it.
+* Rung leaders are A, B, G, E. E is 5th / 4th / 8th / 1st; intermediate margins are at least 1.23×; E leads rung 3 by 1.62× over C.
+* R-3's own-curve deficit is 9.4% over its months in operation, all on G until 10 September; it reached E on 12 September. Both lifts fall
+  inside the 30-day run-in. G's turbine-year reads 9.4%, E's 1.2% on its previous rotor; G's spare reads 0.8%. C's rotor never moved. G
+  stands at the farm's windiest position, so its shortfall against the farm mean is 3.6%.
+* Lifts: G on 10 September and E on 12 September 2026, both on stopped days; no lift is planned before the campaign or in the twelve
+  months after it.
 * B runs on a single-turbine flexible connection whose curtailment cell is suppressed; connection percentages are published to 0.1 and
   the farm's to 0.01.
 * The pilot log holds nine campaigns; P-3 and P-7 are identical on every turbine-level column.

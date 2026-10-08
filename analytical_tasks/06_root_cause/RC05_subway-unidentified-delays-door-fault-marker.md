@@ -80,8 +80,8 @@ door work. Applied to the last twelve months, 14,600 of the unidentified peak mi
    reproduces 1,212, on the set-out log's recorded reason 1,296, and on the unit's next repair order 1,251. The rule is a three-hop join
    through other entities' records (two temporal hops, then the set-out's defect ticket), not a parameter.
 3. **No arithmetic symptom.** Minutes, incidents and codes reconcile under every rung; unidentified minutes are a complete, legitimate code.
-4. **Not a row predicate.** The delay record has no train or unit id. The train comes from platform occupancy at that station and minute, the
-   unit from the train's formation, and the defect from a repair order dated after the incident.
+4. **Not a row predicate.** The delay record has no train or unit id. The train comes from platform occupancy at that station and minute, its
+   set-out from the set-out log, and the defect from the repair order that closes that set-out's ticket, weeks after the incident.
 5. **The enumeration is arithmetic.** No column marks an unidentified incident as a door fault; 14,600 minutes are built from four files.
 6. **No cutover date.** Door faults rose with the fleet's mileage across the year; the dated events (the switch failures, the passenger
    programme's launch) are the decoys.

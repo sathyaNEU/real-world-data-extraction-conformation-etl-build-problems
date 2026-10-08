@@ -60,7 +60,7 @@ reconciliation.
 * **Discriminator dominance.** C carries a 1.29× velocity advantage over E into rung 3 (9.8 against 7.6 mm/s). On the reconciled share E
   holds 100% to C's 48.0%, an edge of 2.08× against the 1.2 × 1.29 = 1.55 required, 1.35× headroom.
 * **Partial correction priced (L3).** A solver who reconciles against the run counters but fills unevidenced hours at each pump's own
-  received share keeps all five at 100% and is back at the tie-break's B (class 1, 1.22× C's hours since overhaul). A solver who reconciles
+  received share keeps the four duty pumps at 100% and is back at the tie-break's B, the one class-1 pump among them. A solver who reconciles
   but keeps the register's duty flags has A level with E at 100%, A's hours all in May with full coverage, and the tie-break names A
   (class 1 against E's class 2). Neither half lands on E.
 * **Grid.** Population (register or changeover log) × share (received snapshots or running hours) × tie handling (tie-break or velocity)
@@ -155,6 +155,6 @@ reconciled share and the margin over D + 5 named chart parts + 3 files ≈ 59 cr
 * A's set changed over on 14 June; A's 100% is May's running hours. A second set changed over in July with no effect on the tie.
 * Gateway outages: 19 days at B's station, 58 at C's (August and September, when C ran around the clock), 9 at D's; E's gateway never
   failed. C ran 2,677 hours in the window, 1,392 of them unevidenced.
-* Tie-break values: A 41,200 h, B 33,900 h, C 27,800 h (class 2), E 19,500 h (class 2). Velocities: C 9.8, D 8.1, E 7.6, B 6.9 mm/s.
+* Tie-break values: A 41,200 h and B 33,900 h (class 1); C 27,800 h, D 24,600 h and E 19,500 h (class 2). Velocities: C 9.8, D 8.1, E 7.6, B 6.9 mm/s.
 * The close-outs hold 27 settled shares; P4 and P7 are identical on every export-visible column.
 * Lubrication routes and recirculation lines never touch the snapshot file or the run counters.

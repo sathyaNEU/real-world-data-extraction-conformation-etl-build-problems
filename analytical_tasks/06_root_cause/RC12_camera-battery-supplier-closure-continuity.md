@@ -41,9 +41,10 @@ is a cohort effect, early-age swelling in cameras built after the chemistry chan
 linking them to serials through the RMA log adds the newest cohorts, sold mostly through retail. With the full link, the swap's scope looks like
 "cameras whose cells came from the old vendor code": built from the chemistry change to the plant closure, 2,100 forward failures, less than the
 enclosure rework. That scope follows the closure notice, and the cohort table seems to agree: the last cohorts before the closure, built while
-the plant wound down and the line dual-sourced, drew only 13% of their cells from the affected lots, so the effect looks as if it is fading. Goods receipts since the closure show the same cell part number, the same lot-number
-prefix and the same open purchase orders, transferred to the successor's vendor code. Cameras built in the last three months carry those cells.
-They are under four months old, so they have no failures yet and the most risk ahead. With them in scope the swap prevents 5,600 failures.
+the plant wound down and the line dual-sourced, drew only 13% of their cells from the affected lots, so the effect looks as if it is fading.
+Goods receipts since the closure show the same cell part number, the same lot-number prefix and the same open purchase orders, transferred to
+the successor's vendor code. Of the cameras built in the last three months, 73% carry those cells. They are under four months old, so they have
+no failures yet and the most risk ahead. With them in scope the swap prevents 5,600 failures.
 
 ## 4. The ladder
 

@@ -103,9 +103,9 @@ meet. Replayed that way, removing the overruns avoids 96 late arrivals and remov
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The board's investment rule: an intervention is judged on the late arrivals at the terminal it would have avoided over the
-  autumn peak. The standard's reproduction clause, one sentence. The standard's two-level tie-break for its incidence measure: tied
-  locations are ordered first by distance upstream of the terminal, then by mean seconds lost per affected train. The working timetable (running times, allowances, minimum dwells, the
-  interchange headway, the planned meets).
+  autumn peak. The standard's reproduction clause, one sentence. The standard's two-level tie-break for its incidence measure: tied locations
+  are ordered first by distance upstream of the terminal, then by mean seconds lost per affected train. The working timetable (running times,
+  allowances, minimum dwells, the interchange headway, the planned meets).
 * **Empirical pins.** Meet order (timetabled order held) and the headway knock-on, both recovered from the controls.
 * **Voices.** The operations manager: "Everything bunches in the throat; that's where we lose the trains." The infrastructure planner: "The loop
   is the bottleneck. Since the timetable change trains have stood there every morning."

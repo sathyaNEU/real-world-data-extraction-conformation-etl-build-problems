@@ -37,13 +37,14 @@ cause is chosen. The product change log records every past partnership launch.
 ## 3. The driving force
 
 A strong solver distrusts the open-to-work flag, because members forget to switch it off, and uses the research definition (applied in the last
-30 days or switched on in the last 90). It decomposes the rise into flows: lower job-finding accounts for 0.36 million, and inflows for the rest,
-split by reason. The reason is an optional field, filled by 21% of this year's new seekers. Laid-off members fill it 55% of the time, graduates 60%, returners from
-a career break 5%. Scaling stated reasons up hands the unknown 70% to whoever states most, and the hiring freeze stays on top. Returners can be
-identified anyway: an account dormant for at least twelve months, reactivated, followed by a profile update and the open-to-work switch within
-thirty days. The six partnership launches in the change log come with partner lists, settled records of who was laid off and who was returning
-from a break, and the dormancy trace reproduces every returnship list while the layoff trace (a cluster of colleagues ending positions at the
-same employer in the same fortnight) reproduces every outplacement list. Assigned by trace, returners account for 0.57 million of the rise.
+30 days or switched on in the last 90). It decomposes the rise into flows: lower job-finding accounts for 0.36 million, and inflows for the
+rest, split by reason. The reason is an optional field, filled by 21% of this year's new seekers. Laid-off members fill it 55% of the time,
+graduates 60%, returners from a career break 5%. Scaling stated reasons up hands the unknown 79% to whoever states most, and the hiring freeze
+stays on top. Returners can be identified anyway: an account dormant for at least twelve months, reactivated, followed by a profile update and
+the open-to-work switch within thirty days. The six partnership launches in the change log come with partner lists, settled records of who was
+laid off and who was returning from a break, and the dormancy trace reproduces every returnship list while the layoff trace (a cluster of
+colleagues ending positions at the same employer in the same fortnight) reproduces every outplacement list. Assigned by trace, returners account
+for 0.57 million of the rise.
 
 ## 4. The ladder
 
@@ -74,8 +75,9 @@ same employer in the same fortnight) reproduces every outplacement list. Assigne
 1. **Written nowhere.** The data dictionary calls the reason field optional; the change log describes each partnership. No document says
    returners can be identified, or by what.
 2. **The corpus pins a construction, not a menu.** The dormancy trace reproduces both returnship lists in full and the colleague-cluster trace
-   all four outplacement lists; stated reasons reproduce 31% of listed members, banded imputation 44%, and the "reactivated" status flag 33% of the returnship members. The traces need logins, profile edits and
-   colleagues at the same employer, ordered in time; nothing in them is a single column.
+   all four outplacement lists; stated reasons reproduce 31% of listed members, banded imputation 44%, and the "reactivated" status flag 33% of
+   the returnship members. The traces need logins, profile edits and colleagues at the same employer, ordered in time; nothing in them is a
+   single column.
 3. **No arithmetic symptom.** Flows reconcile to the stock change exactly (1.20M) under every assignment; members, flags and applications tie.
 4. **Not a row predicate.** Dormancy is a gap between logins; a layoff cluster is a group of colleagues whose position end dates fall in one
    fortnight; both need ordered histories and other members' records.

@@ -36,13 +36,14 @@ old ones (D). Last year a cost-challenge desk piloted in two categories.
 
 ## 3. The driving force
 
-A strong solver treats the monitor as a starting point. Many "list-price" increases turn out to be suppliers moving to delivered pricing (freight
-folded into the list price), and the supplier terms log says which, so 0.22 points move to freight. Freight's fourth quarter also carries the
-logistics provider's annual volume rebate, accrued through the year and reversed in the fourth quarter when the volume target was missed; the
-rebate ledger shows it as a timing item, not a cost change, and 0.22 points come out. Promotional funding then leads, and every check passes.
-The range-and-mix bucket still holds 0.50 points, read as customers trading into new products at lower margins. In 61 cases a supplier delisted an
-item and, the same week, a new item from the same supplier took its exact planogram slot: the same product in a pack 8–12% smaller at the old pack's
-cost, a higher unit cost the monitor never compares because the successor has no history. Linked through the slot, those pairs took 0.44 points.
+A strong solver treats the monitor as a starting point. Many "list-price" increases turn out to be suppliers moving to delivered pricing
+(freight folded into the list price), and the supplier terms log says which, so 0.22 points move to freight. Freight's fourth quarter also
+carries the logistics provider's annual volume rebate, accrued through the year and reversed in the fourth quarter when the volume target was
+missed; the rebate ledger shows it as a timing item, not a cost change, and 0.22 points come out. Promotional funding then leads, and every
+check passes. The range-and-mix bucket still holds 0.50 points, read as customers trading into new products at lower margins. In 61 cases a
+supplier delisted an item and, the same week, a new item from the same supplier took its exact planogram slot: the same product, often
+relaunched under a new name, in a pack 8–12% smaller at the old pack's cost, a higher unit cost the monitor never compares because the successor
+has no history. Linked through the slot, those pairs took 0.44 points.
 
 ## 4. The ladder
 
@@ -64,7 +65,7 @@ cost, a higher unit cost the monitor never compares because the successor has no
   and names C (4.7×).
 * **Grid.** Freight reassignment (off, on) × rebate timing (in, out) × pairing (none, by description, by prefix, by slot) gives sixteen builds.
   Without pairing they name A, B or C, and description or prefix pairing changes none of those names. Slot pairing names D only with both
-  earlier corrections; without either, list prices or freight (0.46) still edge its 0.44 (1.05×), the nearest wrong cells.
+  earlier corrections; without one or both of them, list prices or freight (0.46) still edge its 0.44 (1.05×), the nearest wrong cells.
 
 ## 5. Why the decisive rung survives the opponent
 

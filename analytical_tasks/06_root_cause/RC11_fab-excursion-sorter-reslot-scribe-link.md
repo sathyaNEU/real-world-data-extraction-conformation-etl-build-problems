@@ -40,9 +40,9 @@ counterfactuals: the excess failing wafers each tool accounts for, holding the o
 every lot visits all four deposition chambers and the chamber cannot show. It moves to wafer level, joins sort results to process history on lot
 and slot, and every row matches. The CMP head now leads. The CMP module's loading procedure assigns incoming wafers to carrier positions by
 measured thickness, which a sorter does by moving them between slots, so for 38% of wafers the slot at deposition is not the slot at sort, and
-the documented key quietly gives them a neighbour's deposition chamber. Chamber D2-C's degrading showerhead thickens its wafers; the sorter routes thick wafers to head 3; so head 3
-carries D2-C's failures while D2-C's own signal is diluted by mislinked neighbours. Linking through the scribe id the sorter reads moves 640
-excess wafers off the CMP head and puts D2-C at 900.
+the documented key quietly gives them a neighbour's deposition chamber. Chamber D2-C's degrading showerhead thickens its wafers; the sorter
+routes thick wafers to head 3; so head 3 carries D2-C's failures while D2-C's own signal is diluted by mislinked neighbours. Linking through the
+scribe id the sorter reads moves 640 excess wafers off the CMP head and puts D2-C at 900.
 
 ## 4. The ladder
 

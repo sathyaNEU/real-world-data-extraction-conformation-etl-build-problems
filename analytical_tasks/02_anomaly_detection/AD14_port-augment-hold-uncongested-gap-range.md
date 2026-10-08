@@ -11,7 +11,7 @@
 | Gate G mechanism | signal_vs_noise_or_hold, with method_or_model_selection |
 | Measured traps engaged | #9 picks from the offered options when none passes · #14 coarsens the segment it was asked about · #1 reports a failed back-test, ships anyway |
 | Calibration form | Prior-period close-out: the augment programme's close-out for the last two quarters, six funded augments with their gaps and results, and twelve monitored interconnect-quarters with no congestion |
-| Driving force | The investment rule funds an augment where the evening slowdown is specific to the interconnect. The specificity gap, the interconnect's evening ratio against the same ISP's other paths in the metro, is significant for C on 9,800 tests. The close-out shows what that is worth: three augments funded on test-significant gaps of 0.14 to 0.19 changed nothing, and uncongested interconnects show gaps up to 0.21 from server placement and path mix. C's 0.17 sits inside that range, every other candidate lower, and no augment is justified this quarter. |
+| Driving force | The investment rule funds an augment where the evening slowdown is specific to the interconnect. The specificity gap, the interconnect's evening ratio against the same ISP's other paths in the metro, is significant for C on 9,800 tests. The close-out shows what that is worth: three augments funded on test-significant gaps of 0.11 to 0.15 changed nothing, and uncongested interconnects show gaps up to 0.21 from server placement and path mix. C's 0.17 sits inside that range, every other candidate lower, and no augment is justified this quarter. |
 
 ## 1. Situation
 
@@ -41,7 +41,7 @@ register lists, notices that B's slow evenings are shared by every path of B's I
 against its ISP's other paths. C stands out at 0.17 with a test-level interval of ±0.02, and C is funded. Each step is competent. But tests
 are not the unit that varies: two interconnects of the same ISP in the same metro differ by server site, transit path and test-population
 mix every quarter, and those differences are not congestion. The close-out has measured them. Twelve monitored interconnect-quarters whose
-transit statements showed no congestion produced gaps from −0.07 to 0.21. Three augments funded on gaps of 0.14 to 0.19, each significant on
+transit statements showed no congestion produced gaps from −0.07 to 0.21. Three augments funded on gaps of 0.11 to 0.15, each significant on
 thousands of tests, changed nothing. The three that worked had gaps of 0.24 to 0.31. C's 0.17 is inside the uncongested range, so the rule's
 specificity test fails for every candidate and the quarter's augment is held.
 
@@ -51,7 +51,7 @@ specificity test fails for every candidate and the quarter's augment is held.
 |---|---|---|---|---|
 | 0 | The dashboard's ISP-level evening ratio; augment the worst ISP's busiest interconnect | A (ISP X at 0.74) | The network team's own table, and the ISP everyone complains about | The peering register: the rule's unit is the interconnect, and at that grain every one of ISP X's paths shows the same evening ratio |
 | 1 | Evening-to-reference median throughput per interconnect, at least 300 tests per window | B (0.62; its drop 1.31× C's) | The segment the rule names, built from tests, with the sample floor applied | The same tests: B's ISP's other paths in that metro read 0.64, so B's slowdown is the ISP's access network, not the interconnect |
-| 2 | Specificity gap against the ISP's other paths in the metro, test-level interval | C (0.17 ± 0.02; 1.55× D) | Specific, large and significant on 9,800 tests | The close-out: three augments funded on test-significant gaps of 0.14–0.19 changed nothing, and uncongested interconnect-quarters reach 0.21 |
+| 2 | Specificity gap against the ISP's other paths in the metro, test-level interval | C (0.17 ± 0.02; 1.55× D) | Specific, large and significant on 9,800 tests | The close-out: three augments funded on test-significant gaps of 0.11–0.15 changed nothing, and uncongested interconnect-quarters reach 0.21 |
 | 3 | **Decisive:** every candidate's gap set against the close-out's uncongested range | **Hold: the largest gap, C's 0.17, is below the 0.21 uncongested ceiling** | — | — |
 
 * **Blocking quantity.** C's specificity gap of 0.17 against the 0.21 ceiling of uncongested interconnect-quarters (0.81 of it); the
@@ -59,8 +59,9 @@ specificity test fails for every candidate and the quarter's augment is held.
 * **Why each candidate fails.** A: gap 0.01, its ISP's slowdown is access. B: gap 0.06, access again. C: 0.17, inside the uncongested
   range. D: 0.11. E, F and G: 0.05 or less.
 * **Partial correction priced (L3).** A solver who reads the close-out's three failed augments as bad luck and funds C anyway has shipped
-  on a failed back-test; a solver who raises the bar to the failed augments' highest gap (0.19) still funds nobody, but for the wrong reason,
-  and would fund an interconnect at 0.20 that the uncongested range covers.
+  on a failed back-test. A solver who raises the bar to the failed augments' highest gap (0.15) funds C, which clears it by 0.02 and leads
+  D by 1.55× (0.17 against 0.11). A solver who sets C's gap against the uncongested quarters' mean (0.06) with the test-level interval,
+  rather than against their spread, funds C as well. No half lands on the hold.
 * **Grid.** Grain (ISP or interconnect) × comparison (absolute ratio or specificity gap) × standard (test-level interval or uncongested
   range) gives eight cells; the ISP cells name A, absolute-ratio cells B, test-level gap cells C. Only the gap against the uncongested range
   holds, and the nearest wrong cell (C) needs the close-out's failed augments set aside.
@@ -86,10 +87,10 @@ specificity test fails for every candidate and the quarter's augment is held.
 * **Form.** The close-out for the last two quarters: six funded augments, each with its pre-augment specificity gap, its test count, and its
   evening ratio before and after; and twelve monitored interconnect-quarters whose transit statements showed no congestion, with their gaps.
 * **What it pins.** Effective augments had gaps of 0.24, 0.27 and 0.31 and recovered 0.16 to 0.22 of evening ratio; ineffective ones had
-  0.14, 0.16 and 0.19 and recovered 0.08 or less; uncongested slices span −0.07 to 0.21. Nothing lies between 0.21 and 0.24.
+  0.11, 0.13 and 0.15 and recovered 0.08 or less; uncongested slices span −0.07 to 0.21. Nothing lies between 0.21 and 0.24.
 * **Twin pair.** Augments K-1 and K-6 are identical on the interconnect's evening ratio (0.66), test count, the ISP's dashboard ratio, metro
   size and server mix. K-1 recovered 0.18 of evening ratio and K-6 0.08 (2.25×): K-1's gap against its ISP's other paths was 0.27 and
-  K-6's 0.14. Nothing at interconnect or ISP level separates them.
+  K-6's 0.13. Nothing at interconnect or ISP level separates them.
 * **Every rule exercised.** One uncongested slice sits in the same metro as C, so the within-metro comparison is tested; one effective augment
   had only 6,100 tests, so test volume is not the separator.
 * **Resemblance points at the decoy.** C's test profile most resembles the 2025 Q4 augment at 0.27, the programme's best result.
@@ -146,7 +147,7 @@ gap still needed + 5 named chart parts + 3 files ≈ 69 criteria.
 
 * Candidate gaps: A 0.01, B 0.06, C 0.17, D 0.11, E 0.05, F 0.04, G 0.03; C's test-level interval ±0.02 on 9,800 tests.
 * B reads 0.62 and its ISP's other paths in the metro 0.64; ISP X's paths all read about 0.74.
-* Close-out: effective gaps 0.24, 0.27, 0.31 (recoveries 0.16–0.22); ineffective 0.14, 0.16, 0.19 (0.08, 0.02, 0.01); uncongested −0.07 to
+* Close-out: effective gaps 0.24, 0.27, 0.31 (recoveries 0.16–0.22); ineffective 0.11, 0.13, 0.15 (0.02, 0.08, 0.01); uncongested −0.07 to
   0.21; nothing between 0.21 and 0.24.
 * K-1 and K-6 are identical on every interconnect-level and ISP-level column.
 * Bundle member resets and reopened tickets never touch the speed tests or the close-out.

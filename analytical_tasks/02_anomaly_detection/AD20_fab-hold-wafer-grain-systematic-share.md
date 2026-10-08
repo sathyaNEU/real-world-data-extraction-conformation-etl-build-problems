@@ -18,15 +18,16 @@
 A wafer fab can take one tool unit down for an engineering hold this week. Its hold standard gives the hold to the unit with the highest
 systematic share over the last 14 days: of the wafers the unit processed, the share whose final-test map shows a systematic pattern
 (join-count z of 3 or more with at least five failing dies). Every figure is the lowest value consistent with every file of record, and
-ties go to the unit longest since its last preventive maintenance. The pack carries the yield system's unit report, the 14 days' wafer
-maps, the MES lot history, the etch tool's chamber log (every wafer by chamber), the fault-detection log, the fab's pattern-to-tool
-reference table, the maintenance log and the pilot log.
+ties go to the unit longest since its last preventive maintenance. The pack carries the yield system's unit report (each unit's share of
+the lots it processed that were dispositioned systematic, as its header states), the 14 days' wafer maps, the MES lot history, the etch
+tool's chamber log (every wafer by chamber), the fault-detection log, the fab's pattern-to-tool reference table, the maintenance log and
+the pilot log.
 
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: every map, lot record, chamber-log line, alarm and pilot finding. The four 100% readings are exactly
-  what the unit report computes. Nothing reported is overturned and no stakeholder read is corrected; the difficulty is the grain at which
-  the standard's share has to be computed.
+  what the unit report says it computes, a share of lots dispositioned systematic. Nothing reported is overturned and no stakeholder read
+  is corrected; the difficulty is the grain at which the standard's share has to be computed.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the reference table. The unit report still puts four units at 100%, and the documented
   tie-break still picks the deposition chamber.

@@ -54,7 +54,7 @@ also reaches subscribers' 80M ad-free views. Both readings sum to the same joint
 | 0 | Crawl byte bridge: KB each cause added per crawled mobile page, current list against prior list | B, image pipeline (+520 KB) | It is the quarterly report's own metric, cleanly decomposed by resource | The charter scores a fix on field page views, not crawled pages |
 | 1 | Field event study: the over-budget share's step at each release date, in views a month | D, consent banner (5.6M views) | It moves to the scored metric and uses the dates the change log files | The rollout log shows A and C switched on by template cohort over six weeks: a ramp no date captures |
 | 2 | Cohort-aligned joint ramp split by each partial-exposure group's effect read in its own views; the article segment split through the subscription register to find framework-only views | A, ad stack (12.6M) | Two clean natural experiments, and their effects sum exactly to the joint ramp | The device registry shows the AMP group 85% and the subscriber group 10% low-end phones against the base's 38% |
-| 3 | **Decisive:** each group's effect estimated by CPU class and standardised to the ad-supported base's CPU mix | **C, framework bundle (10.3M)** (4th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** each group's effect estimated by CPU class and standardised to the ad-supported base's CPU mix, each fix counted on the views it acts on | **C, framework bundle (10.3M)** (4th of 5 on rung 0) | — | — |
 
 * **Position table.** C ranks 4th on rung 0, 5th on rung 1 (unattributed) and 3rd on rung 2, behind A and the banner; it leads only rung 3.
   Rung leaders beat their runners-up by 1.73×, 1.40×, 2.25× and 1.58×.
@@ -154,8 +154,8 @@ figure and its margin over A + 5 named chart parts + 2 files ≈ 120 criteria.
 
 ## 12. World-building constraints
 
-* 400M mobile views a month, 320M of them ad-supported and 80M subscribers' ad-free article views. Over-budget share 9% to 16% (+28.0M views): D 5.6M, B 4.0M and E 2.4M as dated steps;
-  A and C a cohort-staggered ramp of +4.99 points on ad-supported views.
+* 400M mobile views a month, 320M of them ad-supported and 80M subscribers' ad-free article views. Over-budget share 9% to 16% (+28.0M views): D
+  5.6M, B 4.0M and E 2.4M as dated steps; A and C a cohort-staggered ramp of +4.99 points on ad-supported views.
 * CPU-class effects (points): A 4.54 / 0.63 / 0.20 and C 6.98 / 0.63 / 0.20 (low / mid / high). Mixes: AMP 85 / 11 / 4, subscriber article
   views 10 / 40 / 50, ad-supported base 38 / 42 / 20. Raw reads A 3.94 and C 1.05, standardised 2.03 and 2.96; both sum to 4.99. In views a
   month: rung 2 A 12.6M, C 4.2M (3.36M ad-supported plus 0.84M subscriber); rung 3 C 10.3M (9.46M plus 0.84M), A 6.5M.
