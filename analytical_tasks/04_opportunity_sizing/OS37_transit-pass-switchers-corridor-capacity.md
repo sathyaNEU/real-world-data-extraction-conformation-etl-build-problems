@@ -30,8 +30,8 @@ works near a station.
 * **Deletion test.** Delete the chair's view and every voice. Both-ends eligibility at the pilot's banded switching rates still gives
   5,813, and no document says switchers are limited by space.
 * **Instrument repair.** No file is suspect. Addresses, the frequent-stop list, the survey, the close-out and the agency's capacity and load
-  file are complete and current. Rungs 0, 1 and 2 still return 8,525, 4,675 and 5,813. The pilot's trains had room, so no better instrument
-  of the pilot shows a cap, and the corridor routing is still needed for 3,213.
+  file are complete and current. Rungs 0, 1 and 2 still return 8,525, 4,675 and 5,813. After its fourth week the pilot's trains had room,
+  so no better instrument shows a cap binding on its year-end figures, and the corridor routing is still needed for 3,213.
 * **Lens swap.** The answer counts commuters whose trips land on corridors with room, a different population from the commuters who would
   switch.
 
@@ -88,9 +88,9 @@ with or without a cap. Removed commuters are Σ over corridors min(switchers, sp
 * **Twin pair (free training instance).** The pilot's first-month cohorts on its two corridors, Eastline and Westline, are identical on
   every close-out column: 960 activated car commuters each, the same journey-time mix (528 within 1.3×, 432 above) and the same distances.
   In the four weeks before frequency doubled, Eastline ran at 97% of registered capacity with 96 spare peak places, and its cohort put 96
-  switchers on the trains against Westline's 194, 2.0× apart. The cap separates them exactly. By year-end both cohorts had 241 switchers, the
-  banded rates exactly, so the cap changed nothing the close-out reports. Next year Northline and Harbour Rail run at 96% and 97% with no added
-  service, and there the same cap decides.
+  switchers on the trains against Westline's 194, 2.0× apart. The cap separates them exactly. By year-end both cohorts had 241 switchers,
+  as the banded rates predict, so the cap changed nothing the close-out reports. Next year Northline and Harbour Rail run at 96% and 97%
+  with no added service, and there the same cap decides.
 * **Resemblance points at the decoy.** By eligible share and journey-time mix, the forward centres most resemble the pilot centre, so a
   solver transferring its uptake by resemblance files rung 2.
 
