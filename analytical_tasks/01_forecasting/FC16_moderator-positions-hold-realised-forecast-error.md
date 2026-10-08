@@ -11,7 +11,7 @@
 | Gate G mechanism | signal_vs_noise_or_hold, with forecasting and binding_constraint support |
 | Measured traps engaged | #9 picks from the offered options when none passes · #10 notes a binding limit as a risk · #12 stops at the first control that passes |
 | Calibration form | Revision log: every twelve-month forecast the growth team has issued over three years, by wiki and month, with its revisions and the realised outcome |
-| Driving force | The staffing standard places a position only where the forecast's lower bound clears 1,500 active contributors per moderator, the bound being the forecast less its 80th-percentile error. A back-test that re-runs the cohort model at past origins plugs in the inflows that actually arrived, and errs by 7%. The forecasts the team actually issued had to use the campaign plans of their day, and the revision log shows them erring by 18%. At 18% the best wiki's lower bound is 1,394, and no wiki clears. |
+| Driving force | The staffing standard places a position only where the forecast's lower bound clears 1,500 active contributors per moderator, the bound being the forecast less its 80th-percentile error. A back-test that re-runs the cohort model at past origins plugs in the inflows that actually arrived, and errs by 7%. The forecasts the team actually issued had to use the campaign plans of their day, and the revision log shows them erring by 25%. At 25% the best wiki's lower bound is 1,275, 15% under the bar, and no wiki clears. |
 
 ## 1. Situation
 
@@ -32,7 +32,7 @@ held to the next cycle. The growth team's cohort model is the filed method.
 * **Instrument repair.** No file is suspect: the edit history holds every edit, the revision log every issued vintage with the campaign
   plan assumed at issue, and the mentorship register every mentor. Perfect records return the same rungs (2 · 2 · 1 · 1 · 0, then
   1 · 2 · 1 · 1 · 0, then 1 · 0 · 1 · 1 · 0), because a model back-test plugs in the inflow that arrived, and the issued forecasts missed
-  by 18% because campaigns changed after issue.
+  by 25% because campaigns changed after issue.
 * **Lens swap.** The naive read and the answer differ in moment: a forecast scored as if the future inflow were known, against the same
   forecast scored as it was issued.
 
@@ -43,9 +43,9 @@ lower bound from a careful back-test. It re-runs the cohort model at 24 past ori
 inflow, and the growth memo's back-test procedure feeds the model the cohorts that actually arrived, as model back-tests do. Scored that
 way the method errs by 7%, and three wikis clear the bar. The standard's bound is the method's error as a
 forecast, and inflow is the one input a forecast never knows. The revision log holds every twelve-month forecast the team issued, each
-made with the plan of its day. Two campaigns were cancelled after issue and one was doubled. The 80th-percentile absolute error is 18%.
-At that width W1's 1,700 per moderator has a lower bound of 1,394, 106 short of the bar. Every other wiki is further short, so all six
-positions are held.
+made with the plan of its day. Two campaigns were cancelled after issue and one was doubled, and 22 of the 60 issued forecasts were made
+before one of those changes. The 80th-percentile absolute error is 25%. At that width W1's 1,700 per moderator has a lower bound of 1,275,
+225 (15%) short of the bar. Every other wiki is further short, so all six positions are held.
 
 ## 4. The ladder
 
@@ -53,16 +53,16 @@ positions are held.
 |---|---|---|---|---|
 | 0 | Aggregate retention ratio applied to the latest totals, point forecasts, positions placed greedily while per-moderator load exceeds 1,500 | 2 · 2 · 1 · 1 · 0 | The team's long-standing forecast and the standard's placement order | **E14 (a binding limit applied in the figure):** the mentorship register shows one mentor on W1, and every new moderator needs a mentor that year |
 | 1 | The same with each wiki capped at its mentors | 1 · 2 · 1 · 1 · 0 (one held) | Every placement can actually be onboarded | The edit history: last year's campaign cohorts lapse far faster than tenured editors, so the aggregate ratio overstates next year where campaigns ran |
-| 2 | Cohort model (retention by months since first edit, new cohorts from next year's plan), lower bound from a 24-origin back-test with realised inflows (±7%) | 1 · 0 · 1 · 1 · 0 (three held) | The filed method, a rolling back-test, the standard's bound applied | The revision log: the forecasts actually issued, made with the plans of their day, erred by 18% at the 80th percentile |
-| 3 | **Decisive:** the same forecasts with the bound built from the issued forecasts' realised errors (±18%) | **Hold all six: best lower bound 1,394 (W1), 106 short** | — | — |
+| 2 | Cohort model (retention by months since first edit, new cohorts from next year's plan), lower bound from a 24-origin back-test with realised inflows (±7%) | 1 · 0 · 1 · 1 · 0 (three held) | The filed method, a rolling back-test, the standard's bound applied | The revision log: the forecasts actually issued, made with the plans of their day, erred by 25% at the 80th percentile |
+| 3 | **Decisive:** the same forecasts with the bound built from the issued forecasts' realised errors (±25%) | **Hold all six: best lower bound 1,275 (W1), 225 (15%) short** | — | — |
 
-* **Blocking quantity.** W1's lower bound is 1,700 × 0.82 = 1,394, 106 below the bar. W4 (1,378), W3 (1,361), W2 (1,292) and W5 (984)
-  fall further short. The hold would become a pick if the realised error were below 11.8%; the log's 80th percentile is 18% under every
-  interpolation convention (17–19%).
+* **Blocking quantity.** W1's lower bound is 1,700 × 0.75 = 1,275, 225 (15%) below the bar. W4 (1,260), W3 (1,245), W2 (1,181) and W5
+  (900) fall further short. The hold would become a pick only if the realised error were below 11.8%; every defensible way of measuring
+  it gives 23–28% (section 8), so the best lower bound stays 12.7–18.4% under the bar.
 * **Figure shape.** Each correction removes placements (six, then five, then three, then none), so a solver who stops short always
   over-commits headcount.
 * **Partial correction priced (L3).** Using the log's six-month-horizon errors (±11%) for a twelve-month forecast places one position
-  on W1. Applying the realised ±18% to the aggregate forecasts places two (W1 and W2). Both commit headcount the evidence does not
+  on W1. Applying the realised ±25% to the aggregate forecasts places two (W1 and W2). Both commit headcount the evidence does not
   support.
 * **Grid.** Forecast (aggregate, cohort) × caps (off, on) × bound (none, back-test, realised) gives 12 cells. Every cell except the answer
   places at least one position. The nearest wrong cell places one.
@@ -89,9 +89,9 @@ positions are held.
 * **What it certifies.** The cohort model's structure: with each vintage's own inflow it reproduces the realised outcomes within 2%, so
   rung 2's model is right and only its error at issue is wide.
 * **What it pins.** The forecast error the standard asks for: the 80th percentile of 60 absolute errors at the twelve-month horizon is
-  18%.
+  25%.
 * **Twin pair.** The March vintages for W2 and W4 are identical on every column the log carries at issue: point forecast, model
-  parameters and planned inflow growth. They realised errors of −8% and −17% (2.1×), because W4's planned campaign was cancelled two
+  parameters and planned inflow growth. They realised errors of −12% and −25% (2.1×), because W4's planned campaign was cancelled two
   months after issue. A back-test that plugs in realised inflow gives both −3%.
 * **Resemblance points at the decoy.** Next year's plan most resembles the plans of the stable-inflow vintages, whose errors were small.
 
@@ -109,8 +109,11 @@ positions are held.
 
 ## 8. Determinism by construction
 
-* **Interval.** 60 errors at one horizon. Inclusive, exclusive and nearest-rank 80th percentiles give 17–19%, all above the 11.8% that
-  would let W1 qualify.
+* **Interval.** W1 qualifies only below 11.8%. Every defensible measurement of the issued forecasts' error stays at least 11 points above
+  that: the 80th percentile of the 60 absolute errors of the annual average is 25% with inclusive interpolation, 26% exclusive and 25%
+  nearest-rank; 23% with errors scaled by the forecast instead of the outcome; 28% on the twelfth month alone instead of the annual
+  average; 24% pooling the ten- to fourteen-month horizons; and 23% on W1's own twelve errors. The best lower bound runs from 1,224 to
+  1,309, 12.7–18.4% under the bar.
 * **Placement order.** No two wikis tie on load per moderator at any step of any rung.
 * **Activity.** The five-edit threshold and bot exclusion are filed, and the cohort model reproduces the published active counts
   exactly.
@@ -125,7 +128,7 @@ positions are held.
 
 * `moderator_placement.xlsx` — forecasts, bounds and placements under each construction, the admin-actions sheet (ask A) and the
   response-time sheet (ask B).
-* `staffing_bar_check.png` — each wiki's forecast active contributors per moderator as a point, with the ±7% back-test and ±18% realised
+* `staffing_bar_check.png` — each wiki's forecast active contributors per moderator as a point, with the ±7% back-test and ±25% realised
   intervals as error bars, the 1,500 bar as a labelled line, mentor caps annotated, and the hold verdict in the title.
 * `board_note.pdf` — the committed placement or hold, the blocking quantity, and what would change it.
 
@@ -150,7 +153,8 @@ blocking quantity, its shortfall and the falsifying error + 5 named chart parts 
 
 * Moderators: W1–W5 have 4, 4, 4, 3 and 3; mentors 1, 2, 2, 2 and 2.
 * Aggregate forecasts: 9,600 / 8,200 / 6,800 / 5,250 / 3,900. Cohort forecasts: 6,800 / 6,300 / 6,640 / 5,040 / 3,600.
-* Back-test 80th-percentile error 7%; issued-forecast 80th-percentile error 18%. With each vintage's own inflow the model reproduces
-  outcomes within 2%.
+* Back-test 80th-percentile error 7%; issued-forecast 80th-percentile error 25% (23–28% across the conventions in section 8). 22 of the
+  60 issued forecasts precede a campaign change, and campaign cohorts make up 30–45% of a wiki's actives in campaign years. With each
+  vintage's own inflow the model reproduces outcomes within 2%.
 * Placements 6 / 5 / 3 / 0 across the rungs. W2's and W4's March vintages are identical at issue.
 * Block-length changes and merged reports never touch edits, cohorts or the revision log.

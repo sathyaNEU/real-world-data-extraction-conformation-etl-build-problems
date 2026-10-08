@@ -31,8 +31,12 @@ structure on 20 January 2027.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CFO's view, the analytics lead's view and the actuaries' basis. Every plan file still labels Medicaid as
   one line, and the state's report still checks only lines.
-* **Instrument repair.** Perfect the plan's files and Medicaid is still one line of business with one product code, because the plan
-  sells one Medicaid product. The rate cell is the state's classification, carried in the state's roster.
+* **Instrument repair.** Clean-data test. No file is suspect. The enrolment file holds every member and month, the claims extract carries
+  both allowed and paid amounts on every claim, and the roster carries one aid code per member-month with retroactive changes applied. The
+  plan's line field records the line of business, a correct field for a different attribute from the state's rate cell, because the plan
+  sells one Medicaid product. Nothing is left to fill, correct or replace: rung 0 adopts Small group and Individual, rung 1 Large group,
+  Small group, Individual and Medicaid, and rung 2 Individual and Medicaid, and the answer stays Individual and Family Health, because
+  splitting Medicaid by the aid code in force each month is still needed.
 * **Lens swap.** The two reads cover different populations: 82,000 Medicaid members pooled, against 63,000 member-years in Family Health
   and 19,000 in Disability Health, each scored on its own costliest 5%.
 

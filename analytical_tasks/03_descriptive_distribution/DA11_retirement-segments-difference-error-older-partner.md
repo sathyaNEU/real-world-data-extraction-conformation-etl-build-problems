@@ -30,9 +30,13 @@ tables and the research memo. The committee meets on 27 January.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the actuary's and the product director's views and the partner's licensed basis. Per-group medians and errors
   still reproduce the bulletin exactly, and overlapping intervals still look like the same market.
-* **Instrument repair.** Remove imputation altogether and the sampling covariance between neighbouring groups (shared strata and
-  replicates) still halves several differences' errors. Regrouping by the older partner survives any instrument, because the survey's
-  reference person is fixed by design.
+* **Instrument repair.** Clean-data test. Two inputs are suspect. Business and housing wealth that families did not report are filled by
+  five implicates, and the extract's age is the reference person's, which for 1,140 couples is the younger partner, a narrower record of
+  the age the brief keys on. Repair both (observe every family's wealth; give each household its older partner's age): rung 0 still splits
+  all six groups, rung 1 adopts rung 2's two segments, and rung 2 stays at two, because imputation carries under a fifth of each group's
+  variance and removing it moves no pair across 1.96. No other file is suspect: the replicate weights and the bulletin are complete. The
+  answer stays four segments, and the difference's own error, taken inside every replicate, is still needed, because neighbouring groups
+  share strata in every replicate whatever the instrument.
 * **Lens swap.** The two reads are about different populations. Bulletin groups place 1,140 couples by a reference person who is the
   younger partner, and the product's groups place them by the older one.
 
@@ -152,6 +156,8 @@ named chart parts + 2 files ≈ 57 criteria.
 * 1,140 couples have an older partner who is not the reference person. Bulletin groups give the three-segment rung-1 structure under the
   textbook error and five segments under the difference's own error.
 * Stacking shrinks every error by more than half and splits all five pairs.
+* Imputation carries under a fifth of every group's and every difference's variance, so with every wealth item observed no pair's
+  statistic crosses 1.96 under either error.
 * The bulletin's twelve cells reproduce exactly under the per-group method. Replicate correlations between neighbouring groups run 0.55 to
   0.72.
 * The policy-administration system touches no survey row.

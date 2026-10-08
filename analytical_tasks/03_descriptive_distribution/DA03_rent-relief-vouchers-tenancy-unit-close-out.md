@@ -30,9 +30,11 @@ Council approves the split on 9 February.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Remove the housing director's view, the coalition's view and the finance committee's licensed basis. The dwelling
   file still offers one weighted row per household with rent and income on it, and pro-rata shares off it still look complete.
-* **Instrument repair.** A perfect dwelling interview already records every occupant, income and rent share, and this one does. A
-  tenancy is an arrangement between occupants and a landlord that the dwelling record carries only through the roster's pointer, so no
-  better dwelling instrument removes the construction.
+* **Instrument repair.** Clean-data test. No file is suspect. The dwelling file records the survey's household, everyone living in the
+  dwelling, exactly as the survey defines it, and the roster carries every sampled occupant's income, rent share and rent-payer pointer;
+  the weights and the registry are complete. No row claims to record a tenancy: it is a unit built from the roster's pointer, the way a
+  household is built from returns. Nothing is left to fill, correct or replace: rung 0 gives Harlow Flats 323 vouchers, rung 1 409 and rung
+  2 532, and the answer stays 607, because grouping occupants by rent payer and pooling each tenancy's income is still needed.
 * **Lens swap.** The reads count different units: 61,400 weighted renter dwellings against 78,900 tenancies, 11,910 of them severely
   burdened against 10,040 burdened dwellings.
 

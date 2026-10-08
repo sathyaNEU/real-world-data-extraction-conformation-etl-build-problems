@@ -30,8 +30,11 @@ January 2027.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the operations chief's view, the analyst's view and the riders' council's basis. Every table in the pack is
   still kept by route, and the revision log still reproduces the route measure exactly.
-* **Instrument repair.** Perfect the location data and the branches still run 30-minute headways that drift. A branch's waiting is real
-  delay, measured correctly. It is simply not the waiting the standard allocates on.
+* **Instrument repair.** Clean-data test. The suspect file is the vendor's first release of departures, superseded by the revised file
+  where unmatched pings split headways in the downtown canyon. Repair it by using the revised departures: rung 0 still gives route 14 3
+  posts, rung 1 moves to rung 2's 9, and rung 2 is unchanged. No other file is suspect: boardings, the timetable and the map are complete,
+  and every table kept by route is correct for its route. The answer stays 13, and restricting excess wait to the map's frequent stop
+  ranges is still needed, because a branch's 30-minute headways are real waiting outside the riders the standard counts.
 * **Lens swap.** The two reads count different riders: everyone boarding the eight routes in the peaks, against the 61% who board on
   the frequent network. Branch riders are outside the second population.
 
@@ -152,7 +155,8 @@ to the map's stop ranges, the branch routes lose a third of their posts and rout
   300/100, 3: 200/0, 40: 160/220, 52: 240/0. First release: 14: 560/0, 7: 240/640, 22: 280/380, 31: 660/0, 9: 420/130, 3: 330/0, 40:
   170/300, 52: 250/0. Lateness (frequent / branch): 14: 70/0, 7: 90/150, 22: 80/90, 31: 170/0, 9: 170/40, 3: 210/0, 40: 60/80, 52:
   60/0.
-* Route 14's posts by rung 3 / 8 / 9 / 13; other cells 5 and 11; partials 10 and 22.
+* Route 14's posts by rung 3 / 8 / 9 / 13; other cells 5 and 11; partials 10 and 22. Lateness gives route 14 3 posts under either
+  release of departures, and 5 on the frequent ranges.
 * Revision log: 60 route-quarters on routes 14, 31, 3 and 52, reproduced 60/60 by revised excess wait.
 * Routes 22 and 31 are identical on every route-level column.
 * Duties and shelters touch no departure or boarding.

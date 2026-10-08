@@ -31,8 +31,12 @@ partners in the region bring their own bands to the same meeting.
 * **Deletion test.** Delete the aviation manager's view, the statistician's view and the federal partners' licensed basis. The incident
   file still carries an origin responsibility field and a final size on every row, and area-weighted bands off it still follow the
   method's arithmetic exactly.
-* **Instrument repair.** Make every report, perimeter and map perfect; they already are. The planning weight is an intersection of two
-  correct layers, the perimeter and the map in force that day, and no better incident record carries it.
+* **Instrument repair.** Clean-data test. Two files are suspect. The incident type records each escaped prescribed fire as prescribed, its
+  type at ignition rather than what it became, and the perimeter file covers only fires of 300 acres or more. Repair both (type every
+  escape a wildfire from its conversion; draw every perimeter): rung 0 moves to 1,500 acres, rung 1 to rung 2's 1,680, and rung 2 is
+  unchanged, while the new perimeters change nothing, because no fire under 300 acres starts within a mile of a responsibility line. No
+  other file is suspect: the dispatcher's field records the area of origin, as labelled, and the map's revisions are complete. The answer
+  stays 2,690 acres, and weighting each fire by its perimeter inside the map in force is still needed.
 * **Lens swap.** The two reads cover different populations: 9,412 SRA-origin fires at their whole size, against 10,268 fires that burned
   SRA acres, 856 of them federal- or local-origin, each at its SRA portion.
 

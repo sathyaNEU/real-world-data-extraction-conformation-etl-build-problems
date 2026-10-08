@@ -31,8 +31,11 @@ docket pendency for twenty years.
 * **Deletion test.** Remove the deputy commissioner's view, the union's licensed basis and the production system's figures. The docket
   still has one tidy row per docket with a filing date, an end date and an end code, and survival analysis on it is still the competent
   first build.
-* **Instrument repair.** Make the docket, the action history and the partner's file perfect; each one already is. Examination is
-  organised in dockets. An applicant's wait is a chain of dockets that no row records, so no better docket instrument shows it.
+* **Instrument repair.** Clean-data test. No file is suspect. The docket, the action history and the continuity table are complete, and
+  each docket row records a docket, as its codebook says, with no field claiming the application. The 13% of FY2022 applications undecided
+  at the extract are not a gap: their decisions have not happened yet, and every one already lies beyond every rung's median, so a later
+  extract would move no figure. Nothing is left to fill, correct or replace: rung 0 returns 22.4 months, rung 1 19.0 and rung 2 23.8, and
+  the answer stays 31.4, because chaining dockets into applications along CX edges is still needed.
 * **Lens swap.** The two reads cover different populations: 476,000 dockets opened in FY2022, 96,000 of them continued-examination
   dockets (91% for applications filed earlier), against 380,000 applications filed in FY2022.
 

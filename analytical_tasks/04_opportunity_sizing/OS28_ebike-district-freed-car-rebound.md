@@ -53,7 +53,7 @@ second adults mostly work from home.
 | 0 | Short car-driver trips (3 miles or less) × the pilot's switched share of all short kilometres (0.36) | A, Old Town, 11.52 (1.23× Riverside) | The official definition of a bikeable trip and the pilot's own switching rate | The fund's guidance counts a car journey as replaceable only when its whole home-to-home tour can be ridden |
 | 1 | Short kilometres inside all-short tours only (a join from trip to person-day tour) × the pilot's pooled in-tour share (0.48) | B, Riverside, 9.98 (1.19× Northgate) | Tour-level feasibility, which is the planners' own objection to trip counting, executed correctly | The verified riders switched 0.72 of kilometres in single-stop tours and 0.31 in multi-stop ones |
 | 2 | Tour-type switched shares applied to each district's single-stop and multi-stop mix | C, Northgate, 12.24 (1.22× Ashby Vale) | Gold-standard switching rates by tour type, reproduced by every verified rider | Car loggers fell by only 12% of switched kilometres in 166 of 380 verified households |
-| 3 | **Decisive:** net of rebound: × (1 − 0.88 × the district's contested-car share), the share built from the household roster and each other driver's travel | **E, Ashby Vale, 9.61 (1.29× Riverside)** (5th of 6 at rung 0) | — | — |
+| 3 | **Decisive:** net of rebound: × (1 − 0.88 × the district's contested-car share), the share built from the household roster and each other driver's travel | **E, Ashby Vale, 9.61 (1.29× Riverside)** (5th of 6 on rung 0) | — | — |
 
 * **The answer.** Ashby Vale: 9.61 km per rider-week, so 1,500 riders over 52 weeks remove 749,300 car-kilometres a year, committed as
   750,000.
@@ -63,10 +63,11 @@ second adults mostly work from home.
   share 0.05) against Northgate's 0.490 (0.58), an edge of 1.95×, which is 1.34 times the required 1.2 × 1.22 = 1.46.
 * **The deciding comparison (#20).** For Northgate, the memo must set 12.24 km switched against 6.25 km rebound. For Ashby Vale it is 10.05
   against 0.44. Switched kilometres alone never decide.
-* **Partial correction priced (L3).** Every half-applied netting names a wrong district. Netting rebound at the pilot's pooled 0.39 keeps
-  Northgate, 7.47 against Ashby Vale's 6.13 (1.22×). Charging rebound to every household with fewer cars than drivers also keeps
-  Northgate, 5.56 against 4.92 (1.13×), because Ashby Vale has many such households whose second adult never needed the car. Finding the
-  contested rebound but skipping the tour-type rates names Riverside, 9.11 against Ashby Vale's 7.23 (1.26×).
+* **Partial correction priced (L3).** Every half-applied netting names a wrong district at least 1.22× ahead of Ashby Vale. Netting
+  rebound at the pilot's pooled 0.39 keeps Northgate, 7.47 against Ashby Vale's 6.13 (1.22×). Charging rebound to every household with
+  fewer cars than drivers also keeps Northgate, 5.99 against Ashby Vale's 4.92 (1.22×): both districts have such households at 0.58, but
+  in Northgate every one of them is contested and in Ashby Vale the second adult rarely needs the car. Finding the contested rebound but
+  skipping the tour-type rates names Riverside, 9.11 against Ashby Vale's 7.23 (1.26×).
 * **Grid.** Trip or tour grain × pooled or typed in-tour shares × rebound (none, pooled, every short-of-cars household, contested) = 12
   feasible cells. Every non-answer cell names Old Town, Riverside, Northgate or Westmoor.
 
@@ -153,10 +154,11 @@ and the two deciding comparisons + 5 named chart parts + 3 files ≈ 62 criteria
 
 * District values (km per eligible resident-week): short car-driver km Old Town 32, Riverside 26, Northgate 25, Westmoor 22, Ashby Vale 21,
   Crossfield 17. All-short-tour shares 0.45 / 0.80 / 0.70 / 0.55 / 0.75 / 0.65. Single-stop shares 0.80 / 0.20 / 0.95 / 0.40 / 0.80 /
-  0.55. Contested shares 0.70 / 0.10 / 0.58 / 0.05 / 0.05 / 0.20. Shares of households with fewer cars than drivers 0.85 / 0.55 / 0.62 /
+  0.55. Contested shares 0.70 / 0.10 / 0.58 / 0.05 / 0.05 / 0.20. Shares of households with fewer cars than drivers 0.85 / 0.55 / 0.58 /
   0.30 / 0.58 / 0.35.
 * Pilot: 380 verified households, 214 non-contested (rebound 0) and 166 contested (rebound 0.88 ± 0.03). Pilot all-short-tour share 0.75
   and single-stop share 0.415, so 0.48 × 0.75 = 0.36.
-* Rung leaders are Old Town, Riverside, Northgate and Ashby Vale with margins of at least 1.19×, and all twelve grid cells name as stated.
+* Rung leaders are Old Town, Riverside, Northgate and Ashby Vale with margins of at least 1.19×, all twelve grid cells name as stated, and
+  every partial's wrong leader is at least 1.22× ahead of Ashby Vale.
 * Larchfield and Mill Row are identical on every rider- and household-level column except other drivers' modes.
 * Transfer taps and parking stands never touch the travel survey, the riders' logs or the car loggers.

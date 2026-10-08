@@ -30,9 +30,11 @@ combined bill when they file separate state returns, so many of them do.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chief economist's view and the fiscal office's licensed basis. The return file still ties to the
   Department's table to the row and the dollar, and percentiles off it still look like the textbook answer.
-* **Instrument repair.** Perfect every field of the return file and it changes nothing, because every field is already right. Returns
-  are what the tax system files; a household is formed by claiming relationships between returns, which no return observes, so no
-  better return instrument carries it.
+* **Instrument repair.** Clean-data test. No file is suspect. The return file is complete and correct for what it records: every row
+  carries its residency code and its federal primary TIN, and the dependents schedule lists every claimed dependent's TIN. No row claims to
+  record a household. A household is a unit formed by claiming relationships between returns, the legal kind of construction, like a
+  household from returns anywhere. Nothing is left to fill, correct or replace: rung 0 returns a top-1% floor of $504,000, rung 1 $565,000
+  and rung 2 $667,000, and the answer stays $742,000, because attaching the dependents' own returns to their claimants is still needed.
 * **Lens swap.** The naive read and the answer are different populations: 2,876,000 resident returns against 2,328,000 household units,
   a fifth of which hold two to four returns.
 

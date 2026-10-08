@@ -30,8 +30,12 @@ board paper. The board decides on 4 February 2027.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the strategy lead's view, the growth lead's view and the real-estate ranking. The census is still the only
   table that counts people by tract, and population-weighted density on it is still the textbook answer.
-* **Instrument repair.** Perfect the census and it still counts each person at home, because that is what a census counts. The
-  service-hours population is built from the commuting table, which no density measure on file uses.
+* **Instrument repair.** Clean-data test. The suspect file is the tract boundary file, whose polygon areas include the harbour water inside
+  Port Ellery's and Wrenmouth's core tracts, a broader record of the land area the routing standard uses. Repair it by taking land areas:
+  rung 0 still names Corvale, rung 1 becomes rung 2's construction and names Port Ellery, and rung 2 is unchanged. No other file is
+  suspect: the census counts every resident at home, which is what it records and says it records, and the commuting table holds every
+  primary job by tract of residence and of work. The answer stays Wrenmouth, and building the service-hours population from the commuting
+  table is still needed, because no file counts people where they are on a weekday afternoon.
 * **Lens swap.** The two reads cover different populations at different moments: 1,606,000 residents at night against 1,292,000 people
   present on a weekday, of whom 352,000 have come in from another tract.
 

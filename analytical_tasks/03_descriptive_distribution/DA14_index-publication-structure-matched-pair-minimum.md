@@ -30,8 +30,10 @@ the structure on 9 December.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of methodology's view and the client panel's licensed basis. The register still shows healthy
   item counts in every format-week for eleven categories, and a per-week threshold still looks like the natural reliability screen.
-* **Instrument repair.** Make the scanner feed perfect; it already records every sale. A rotating assortment is what the shops sold, and a
-  perfect record of it still leaves January and July with few items in common.
+* **Instrument repair.** Clean-data test. No file is suspect. The movement file records every sale in every store-week, and an item with no
+  sale in a week was not on sale there, a fact about the shelf, not a gap; the item and store masters are complete, and each audit cell is
+  a full re-pricing. Nothing is left to fill, correct or replace: rung 0 publishes 15 categories, rung 1 13 and rung 2 11, and the answer
+  stays eight, because a rotating assortment leaves January and July with few items in common however perfectly it is recorded.
 * **Lens swap.** The two reads count different units: format-weeks (each with 20 or more items) against the 1,326 week pairs per format that
   GEKS uses, of which a rotating category leaves hundreds with fewer than 12 items in common.
 

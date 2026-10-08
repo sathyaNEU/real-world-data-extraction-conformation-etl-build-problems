@@ -29,8 +29,12 @@ domains runbook, the RUM beacon extract with LCP attribution, the CDN host list,
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of platform's view and the advertising team's licensed basis. Non-good loads are still a clean
   ranking quantity, and the change log still offers a pooled yield and a device split to scale them by.
-* **Instrument repair.** Perfect CrUX and RUM change nothing: they already measure every load. The yield of a lever on a load depends on
-  who serves that load's largest element, which is a property of the page, not a better reading of its timing.
+* **Instrument repair.** Clean-data test. The suspect file is the portfolio origin list, which lists one www origin per property and leaves
+  out the AMP-cache, m-dot and guides origins. Repair it by listing every origin: rung 0 then names Matchday, rung 1's leader, and rungs 1
+  and 2 still name Matchday and Hearth. No other file is suspect: CrUX and RUM cover every origin's loads, every LCP resource resolves
+  against the CDN host list, and the change log records every engagement's levers and results. The answer stays Trailhead, and conditioning
+  each engagement's yield on the host of each load's largest element is still needed, because that host is a property of the page, not a
+  better reading of its timing.
 * **Lens swap.** The two reads count different populations. Matchday's 77 million non-good loads a month are mostly video-player LCP the
   squad cannot touch. Trailhead has 33 million non-good loads whose largest element is the group's own image.
 

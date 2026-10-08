@@ -30,8 +30,13 @@ and the association's exit-outlook revision log. The board votes on 11 February.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the research director's view, the Mountain president's view and the regulator's licensed basis. The memo's
   estimator still classes by entry assets, and that construction still passes every national and league control.
-* **Instrument repair.** Make the call-report panel perfect: it already reports every quarter's assets exactly. Class at entry is a true
-  label of 1994 size, and the programme funds credit unions that are small now. No better panel makes the two the same population.
+* **Instrument repair.** Clean-data test. Two files are suspect. The revision log withholds Mountain's 2022–2024 small-exit cell, and the
+  call-report panel starts in 1994, so credit unions that exited earlier are missing from it. Repair both (publish the cell; carry every
+  credit union's history back to its charter, classed as the memo classes it): survival from charter loses the bias that kills rung 0, so
+  rung 0 falls in with rung 1, and with Mountain's guarantee applied both give Lakes 13, rung 2's figure; rung 2 stays at 13. No other file
+  is suspect: every quarter's assets are reported exactly, and class at first observed quarter is a true label of that quarter's size, not
+  a field claiming current size. The answer stays 19, and classing each credit union by its assets at the start of each quarter is still
+  needed.
 * **Lens swap.** The two reads cover different populations: 2,961 open credit unions that were small at entry, against 3,373 small now:
   438 were mid-sized when the panel began, and 26 have grown out of the class.
 

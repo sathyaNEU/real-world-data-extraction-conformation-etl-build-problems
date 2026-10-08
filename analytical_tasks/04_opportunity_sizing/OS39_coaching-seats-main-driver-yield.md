@@ -42,30 +42,32 @@ coaching can touch, at-fault collisions, and applies the randomised pilot's 19%.
 and it puts the seats in two-car families. But coaching is delivered to the policyholder's phone. The pilot's trip logs record which phone
 was paired on each trip, and the yield splits absolutely on the share of a vehicle's trips driven with the policyholder's phone: 31% at
 90% and above, 0% below 50%, and no vehicle in between. In two-car families the policyholder drives the car under coaching on 35% of
-vehicles. Among retirees it is 97%. The policy file's "declared main driver" field says 95% for both. The real share is a statistic over
+vehicles. Among retirees it is 97%. The policy file's "declared main driver" field says 98% and 94%. The real share is a statistic over
 trips through the pairing join, rolled up by segment.
 
 ## 4. The ladder
 
 | Rung | Construction ($ claims avoided per seat; fill 24,000 by value) | Names (ranked first) and annual saving | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Claims cost per vehicle from summed payment rows × the pilot's 19% | A, added teens, 334 (1.17× rideshare); $7.27M, +42.8% | The insurer's own ledger and its own randomised effect | The ledger guide: a reissued payment leaves the stopped original as a row, and recoveries sit in a separate file by claim number |
-| 1 | Hygiene: net cost per claim (stopped payments out, recoveries netted) × 19% | B, shared-car pairs, 270 (1.18× rideshare); $5.83M, +14.6% | The real unit, a settled claim's net cost | The pilot report: arms differ only on at-fault collision claims, and theft, glass and weather claims are identical |
+| 0 | Claims cost per vehicle from summed payment rows × the pilot's 19% | A, added teens, 334 (1.17× trade vans); $7.28M, +43.0% | The insurer's own ledger and its own randomised effect | The ledger guide: a reissued payment leaves the stopped original as a row, and recoveries sit in a separate file by claim number |
+| 1 | Hygiene: net cost per claim (stopped payments out, recoveries netted) × 19% | B, shared-car pairs, 270 (1.18× rideshare); $5.81M, +14.3% | The real unit, a settled claim's net cost | The pilot report: arms differ only on at-fault collision claims, and theft, glass and weather claims are identical |
 | 2 | Net behavioural claims × 19% | C, two-car families, 186 (1.15× shared-car pairs); $4.13M, −18.9% | Causal, correctly costed and correctly scoped | The trip logs: the pilot's yield is 31% at a main-driver share of 0.90 and above and 0% below 0.50 |
 | 3 | **Decisive:** net behavioural claims × 31% × each segment's share of vehicles driven at least 90% with the policyholder's phone | **E, retirees, 253 (1.26× trade vans); $5.09M** (5th of 6 on rung 0) | — | — |
 
-* **The answer.** Retirees 8,000 seats, trade vans 6,000, rideshare 7,000 and shared-car pairs 3,000, avoiding $5,088,740 a year,
+* **The answer.** Retirees 8,000 seats, trade vans 6,000, rideshare 7,000 and shared-car pairs 3,000, avoiding $5,088,744 a year,
   committed as $5,090,000.
-* **Position table.** Retirees rank 5th on rung 0, 3rd on rung 1 and 4th on rung 2, and lead only rung 3. They are never 2nd on the
+* **Position table.** Retirees rank 5th on rungs 0 and 1 and 4th on rung 2, and lead only rung 3. They are never 2nd on the
   ladder.
 * **Discriminator dominance.** Two-car families carry a 1.16× lead into rung 3. Conditioning multiplies retirees' yield by 1.58 and
   families' by 0.57, an edge of 2.8×, above 1.2 × 1.16 = 1.40.
-* **Partial correction priced (L3).** Every half-applied conditioning puts a wrong segment first. Conditioning the yield on the policy's
-  declared main driver keeps two-car families first, 289 against shared-car pairs' 261 (1.11×), because families declare the policyholder
-  as main driver on 95% of vehicles. Conditioning on the trip-based share without netting recoveries names trade vans, 348 against
-  retirees' 291 (1.19×). Conditioning without restricting to behavioural claims names rideshare, 353 against retirees' 317 (1.12×).
+* **Partial correction priced (L3).** Every half-applied conditioning puts a wrong segment first, at least 1.20× ahead of retirees.
+  Conditioning the yield on the policy's declared main driver keeps two-car families first, 298 against retirees' 246 (1.21×), because
+  families declare the policyholder as main driver on 98% of vehicles and retirees on 94%. Conditioning on the trip-based share without
+  netting recoveries names trade vans, 350 against retirees' 291 (1.20×). Conditioning without restricting to behavioural claims names
+  rideshare, 353 against retirees' 293 (1.21×).
 * **Grid.** Cost (payment rows, net claims) × scope (all claims, behavioural) × yield (pooled, main-driver conditioned) = 8 cells. Every
-  non-answer cell names added teens, shared-car pairs, two-car families, rideshare or trade vans. The nearest figure is rung 1 at +14.6%.
+  non-answer cell names added teens, shared-car pairs, two-car families, rideshare or trade vans. The nearest figure is the payment-row
+  behavioural cell at +14.1%, then rung 1 at +14.3%.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -115,7 +117,7 @@ trips through the pairing join, rolled up by segment.
 * **Ledger closure.** Every pilot-year claim is settled, so there are no reserves to choose.
 * **Fill boundary.** The last seats fall between rideshare ($194) and shared-car pairs ($164), $30 apart, and the order among fully
   filled segments never changes the total.
-* **Rounding.** The answer, $5,088,740, sits $3,740 from the nearest $10,000 rounding boundary.
+* **Rounding.** The answer, $5,088,744, sits $3,744 from the nearest $10,000 rounding boundary.
 
 ## 9. Prompt sketch and deliverables
 
@@ -150,10 +152,11 @@ and the families comparison + 5 named chart parts + 3 files ≈ 51 criteria.
 ## 12. World-building constraints
 
 * Per vehicle (payment-row cost / net cost / behavioural share / trip-based main-driver share): added teens $1,760 / $1,000 / 0.85 / 0.15,
-  shared-car pairs $1,450 / $1,420 / 0.60 / 0.62, two-car families $1,180 / $1,032 / 0.95 / 0.35, rideshare $1,500 / $1,200 / 0.55 / 0.95,
-  retirees $1,211 / $1,053 / 0.80 / 0.97, trade vans $1,500 / $870 / 0.85 / 0.88. Eligible vehicles 9,000 / 12,000 / 10,000 / 7,000 /
-  8,000 / 6,000.
+  shared-car pairs $1,450 / $1,420 / 0.60 / 0.62, two-car families $1,100 / $1,032 / 0.95 / 0.35, rideshare $1,500 / $1,200 / 0.55 / 0.95,
+  retirees $1,120 / $975 / 0.864 / 0.97, trade vans $1,510 / $870 / 0.85 / 0.88. Declared main-driver shares 0.90 / 0.99 / 0.98 / 0.97 /
+  0.94 / 0.96. Eligible vehicles 9,000 / 12,000 / 10,000 / 7,000 / 8,000 / 6,000.
 * Pilot: 61% of vehicles at a share of 0.90 or above, yields 31% and 0%, none between 0.50 and 0.90.
-* Rung figures $7.27M / $5.83M / $4.13M / $5.09M. The off-ladder cells are +82.7%, +46.7%, +30.1% and +16.5%.
+* Rung figures $7.28M / $5.81M / $4.13M / $5.09M. The off-ladder cells are +78.7%, +43.0%, +30.3% and +14.1%. Every partial's wrong
+  leader is at least 1.20× ahead of retirees.
 * Kenwood and Wye Valley are identical on every policy column.
 * Premium adjustments and message retries never touch claims, recoveries or trip logs.
