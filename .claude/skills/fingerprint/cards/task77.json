@@ -1,0 +1,86 @@
+{
+  "task": "task77",
+  "architecture": "v2 (re-rooted 2026-09-07)",
+  "drawn": "2026-09-07",
+  "slot_note": "",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "state early-learning workforce credentialing: interim lead teacher permits for certified-centre classrooms under a staffing rule phased in at each centre's licence renewal",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We ask the Council to authorise 3,811 interim lead teacher permits.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold opening line)",
+  "gap": [
+    "population",
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "D",
+    "A"
+  ],
+  "generators": [
+    "G10",
+    "G13",
+    "G2",
+    "G11"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "published_series",
+  "stakeholder_role": "runs Registry operations for the state's early learning workforce",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "training_completions.csv",
+    "rows": 61580,
+    "entity": "one approved-course completion filed on a provider roster for a Registry member",
+    "grain": "member x course x completion date, per provider roster",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Oregon",
+    "currency": "USD",
+    "org_type": "state early learning division (workforce Registry and centre licensing)",
+    "invented_names": [
+      "Sandy River Professional Development Group",
+      "Deschutes Training Collective",
+      "Nehalem Community College",
+      "Lead Teacher Qualification pathway",
+      "Quality Investment Contract",
+      "Harvest Early Learning Center"
+    ]
+  },
+  "deliverables": [
+    "interim_permit_council_paper.pdf",
+    "interim_permit_chart.png",
+    "workforce_delivery_workbook.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive step collapses a join that returns one valid row per qualifying record to one row per person before supply is netted against demand unit by unit, because a filed clause lets a person cover only one unit while a minority hold two equally valid records, so counting rows overstates coverage and no reconciliation complains.",
+  "driver_concrete": "The employment-to-determination join returns a row per Lead Teacher Qualification determination and 500 of 6,930 members hold two on the same practicum, so counting people under OAR 414-350-0030 (one person leads one classroom) moves December 2029 from 3,374 to 3,811 classrooms without a qualified lead.",
+  "stump": "A competent solver who nets the deficit per centre, takes forward supply from the pathway stock (529, not the trend's ~930) and matches each lead to the age groups their course of study reaches, but counts determination rows rather than people, files 3,374, 11.5 per cent low.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved on the platform 2026-09-07: a frontier response landed every figure and scored 100 per cent (the prompt presupposed the run-rate conclusion and a same-day Gate C repair had filed the transcript-route closure); re-rooted the same day",
+      "domain": "policy-education",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "Forward supply is the output of a staged pipeline whose intake has already fallen, so it is pinned by the stock in flight times stage completion recovered from closed cohorts rather than by the flat trailing output series, and that supply lands mostly at units that are not short."
+    }
+  ],
+  "notes": "Decisive rung contested: the LADDER and submission make rung 5 (people not rows, 3,374) decisive; the note's last section says the strongest recorded model did that collapse unaided and the live fork is trend against stock (3,104), and the own clone check advised relabelling, unapplied. Rows-against-people is a Template collision with task60. G10, G13 mapped from prose."
+}

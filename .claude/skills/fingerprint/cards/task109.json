@@ -1,0 +1,97 @@
+{
+  "task": "task109",
+  "architecture": "v2 (re-root after round 1)",
+  "drawn": "2026-10-07",
+  "slot_note": "re-root of v1 (solved in round 1 by one plain solver); domain and objective fixed by the author",
+  "domain": "business-operations-analytics",
+  "subdomain": "back-office-processing",
+  "niche": "resetting a parcel carrier's published claims-settlement promise per claim type for 2027 from the claims desk's parcel-level records, where the published settlement means were compiled under two conventions nobody wrote down",
+  "objective": "etl",
+  "shape": "14",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "File 2027 settlement promises of 22 days for lost parcels, 19 for damaged parcels, 21 for missing contents, 13 for late delivery, 13 for cash on delivery not remitted and 13 for delivery to the wrong recipient.",
+  "answer_source": "task109/submission.md, block 1 (the bold sentence)",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "certified_matrix",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of claims operations at a Polish parcel carrier",
+  "role_family": "operations_director",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "reklamacje_pozycje_fy2022_fy2026.parquet",
+    "rows": 99757,
+    "entity": "one claim line: one parcel's claim on the claims system",
+    "grain": "parcel x claim",
+    "source": "constructed (fictional parcel carrier's claims, consignment and hub-incident extracts)"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "Poland",
+    "currency": "PLN",
+    "org_type": "parcel carrier, claims desk",
+    "invented_names": [
+      "Wierzba Kurier S.A.",
+      "Kramik sp. z o.o.",
+      "STR-04 claims handling standard",
+      "Service Quality Report (raport jakości usług)",
+      "ZK-26/03 (Stryków flood incident)"
+    ],
+    "people": [
+      "Eliza Kiedrowicz",
+      "Norbert Garczyk",
+      "Krystyna Kurant",
+      "Marcin Wiencek",
+      "Tymoteusz Kociemba",
+      "Nela Rejek"
+    ]
+  },
+  "deliverables": [
+    "settlement_promise_2027.csv",
+    "settlement_promise_filing_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "driver": "Two unwritten compilation rules decide the population a published control set was computed on: one groups several file rows into the published unit, timed from the earliest of them, and one leaves out a class of records identifiable only by a date-window join to a register that no column flags; each rule applied alone reproduces fewer published figures than applying neither, so a one-at-a-time search abandons both, and only the joint pair reproduces every control and moves the forward percentile standards.",
+  "driver_concrete": "The carrier's published mean settlement days per claim type and year are compiled one per consignment claim, timed from the first parcel's notification, with consignments scanned at their hub inside a declared incident window left out; the claims file holds one row per parcel and no disruption flag, so the parcel grain reproduces most published means, grouping to consignments alone or dropping disruption-window claims alone each reproduce fewer, and only both together reproduce all of them and set the 2027 settlement promise at the filed percentile.",
+  "stump": "A competent solver compiles settlement days one per parcel claim line, reproduces 20 of the 24 published means, tries grouping lines to consignment claims and leaving out the incident-window consignments one at a time and finds each reproduces fewer, keeps the parcel compilation as the best fit and files a 2027 promise three to seven days too long at every claim type (or refiles the 2026 promises, wrong at five of six), because the February 2026 hub flood's backlog sits inside its population and only the two conventions together reproduce the published means.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task66": "task66 credits a shared physical connection to every unit behind it and lets one corpus separate four complete rival builds; here no single rule is decisive, because two compilation conventions each move the corpus away when applied alone and only their joint application reproduces it.",
+    "task67": "task67's lineage excludes capacity-rationed periods from a rate fit and prices a fixed-plus-variable structure; here nothing is fitted or priced, the published unit is a grouping of file rows and the excluded class is reached by a date-window join to an incident register, recovered jointly.",
+    "task86": "task86's first cut measures a unit by its present membership through a second current record; here the unit is a historical grouping of rows timed from its earliest member, and the decisive difficulty is that each of two conventions alone reproduces fewer controls than neither."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (day-room departure unit, hotel housekeeping standards)",
+      "fate": "solved in round 1 by one plain solver (2026-10-07): HK-04 2.1's per-check-out definition sent it to the PMS, it built vacate events and assigned each departure session to the latest one, and every ask device was a filed work order; re-rooted at stage 1",
+      "domain": "business-operations-analytics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "dial_setting",
+      "driver": "The unit being timed is a turnover between one occupant leaving and the next arriving, but every closed period held at most one turnover per place per day, so grouping each place's day of activity into one unit reproduces every published control exactly and is the grain the controls teach; the open period is the first with same-day re-lets, where that grouping merges two turnovers into one long unit, and only ordering each place's stays inside the day, from a separate booking record, splits them.",
+      "stump": "A competent solver merges each room's departure sessions on a date into one clean (or folds PMS check-outs to one per room and date to absorb shared rooms), gives back all 28 housekeeping figures in the Summer 2025 operations review, and loads 2027 departure standards that count a re-let room's two departure cleans as one long clean, so every hotel's standard comes out one or two minutes high, because no room was vacated twice on one date in 2025."
+    }
+  ],
+  "notes": "Measured architecture (client exemplar 0.13: two hidden definitions, each alone worse than neither, reproduction clause as the gate). Pattern B was spent by task110 in this batch; the author explicitly overrode the ban at checkpoint A on 2026-10-07 after reading the guard's block list, choosing the measured architecture over a non-B redraw, so the card is registered with --force. Gap population decisive with rule recovery behind it; Gate G method_or_model_selection (the compilation is selected by the corpus), not etl_conformance, which task110 carries."
+}

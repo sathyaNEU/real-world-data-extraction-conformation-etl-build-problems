@@ -1,0 +1,112 @@
+{
+  "task": "task105",
+  "architecture": "v2",
+  "drawn": "2026-10-03",
+  "slot_note": "v2 re-root of task105; retagged 2026-10-04 to Demographic & Social Science (housing) with Opportunity Sizing & Decision Support as the Axis 1 objective, on the author's instruction",
+  "domain": "demographic-social-science",
+  "subdomain": "housing",
+  "niche": "a regional lettings agency forecasting the first year of a second branch it is opening beside an existing branch in the same conurbation, where the new branch's catchment overlaps the older branch's",
+  "objective": "opportunity-sizing-decision",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Set the Canford Cliffs branch's first-year target at 150 tenancies started, 6 April 2027 to 5 April 2028 (149.1 before rounding).",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G5",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "lettings director",
+  "role_family": "other",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "census2021_rm003_accommodation_by_tenure_lsoa_southwest.csv",
+    "rows": 166943,
+    "entity": "one census count for one lower layer super output area and one category",
+    "grain": "LSOA x census category",
+    "source": "ONS Census 2021 via nomis (OGL v3); ONS National Statistics Postcode Lookup August 2026 via the Open Geography Portal (OGL v3)"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "England, South West",
+    "currency": "GBP",
+    "org_type": "independent regional lettings and property management agency",
+    "invented_names": [
+      "Cobb Ferris Commercial",
+      "Sandford Holt Investments",
+      "WBL Growth Fund LP",
+      "Watson Barry Lettings"
+    ],
+    "people": [
+      "Roger Myers",
+      "Raymond Watson",
+      "Carole Lowe",
+      "Diane Price",
+      "Hannah Parsons",
+      "Sean Spencer",
+      "Alexandra Shepherd",
+      "Justin Blackburn"
+    ]
+  },
+  "deliverables": [
+    "canford_cliffs_branch_case.docx",
+    "canford_cliffs_workings.xlsx"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "A new outlet's market is only the part of its catchment that lies nearer to it than to any sister outlet already open, because every new commitment in the record went to the open outlet nearest it on the day it was taken, so an outlet opened within reach of a sister wins only its own side of the bisector, a cut no closed opening could show because none of them opened within reach of a sister.",
+  "driver_concrete": "A second Poole-area lettings branch at BH13 7NP opens 3.96 km from the agency's Poole branch; every one of the agency's homes sits on the open branch nearest its postcode on the day it was instructed (Burnham took Weston-patch homes until Weston opened and none after), so Poole keeps the instructions on its side of the bisector, 26 of the 46 patch LSOAs and 39 per cent of the patch's lets a year, and the first year comes to 150 tenancies (149.1) against 240 on the whole patch.",
+  "stump": "A solver who nets the homes the Poole branch already manages, turns the 4 km patch into lets a year by let type and applies the openings' first-year share files 240, because nothing in the four openings shows a sister branch keeping the instructions nearer to it; set every new instruction on the nearest open branch, as the record shows without exception, and Poole keeps its side of the patch, so the branch starts 150.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task94": "task94 caps a set by each site's receiving capacity at its own peak (binding constraint); task105 cuts one outlet's market by a forward nearest-outlet assignment rule against a sister already open, with no capacity, eligibility or delivery window in it.",
+    "task69": "task69 values a capped set whose members' contributions overlap, so top-k overstates; task105 has no set and no cap, it cuts one outlet's catchment by which open outlet is nearer each area.",
+    "task106": "task106 sizes many candidates drawing on a shared finite pool of return-leg capacity and designates a set; task105 is one forecast figure whose market is cut by assignment to the nearest open outlet, with no pool and no designation.",
+    "task37": "task37 conditions a forward count on a linked entity still holding an authorisation when a step ends (pattern E); task105's forward count is cut by spatial assignment to the nearest open outlet.",
+    "task87": "task87 caps a delivered count by a time-slot exclusivity in a schedule (ETL); task105 cuts an outlet's market by a nearest-outlet rule, with no slots and no exclusivity."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-03",
+      "domain": "opportunity-sizing",
+      "subdomain": "expansion-site-selection",
+      "niche": "a regional lettings agency choosing which of six towns gets its next high-street branch, sized on the tenancies the branch would start in its first full year",
+      "objective": "forecasting",
+      "shape": "09",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "time",
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G13",
+        "G5"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "existing_book_actuals",
+      "driver": "A new outlet earns its fee when a commitment starts but can only win commitments agreed after it opens, and one class of commitment is agreed a fixed season ahead of its start, so an outlet that opens just after that season starts none of the class in its first year however large the class's turnover, a loss no closed opening could show because every one opened either before the season or in a patch without the class.",
+      "stump": "A solver who nets out the homes the agency already manages, turns each town's privately rented homes into the lets that come up in a year by let type, and applies the newest branch's first-year win rate files the university town, because it never sets the January-to-March student agreement season against an April opening, which leaves a flats-heavy town with turnover spread through the year ahead.",
+      "answer": "Open the 2027 branch in Torquay: 240 tenancies started in its first year, 6 April 2027 to 5 April 2028 (237.5 before rounding), at Weston's 6.63% first-year share of the flat and house lets that come up in the patch, with student lets contributing nothing because they are agreed January to March, before an April opening.",
+      "fate": "solved on the portal 2026-10-03: both top responses filed Torquay 240 and every pool-B figure (fee per tenancy 549.67, 491.77, 617.25, 782.92); the correct basis was the natural basis because Weston, the one April opening, has no student houses, so a by-type calibration off Weston drops student lets with no timing argument"
+    }
+  ],
+  "notes": "AUTHOR OVERRIDE 2026-10-03, registered with --force on the author's explicit instruction (AskUserQuestion answer 'Override guard, re-root'): ban.pattern blocks pattern C against task106 and test.same_puzzle blocks gap objective + pattern C + quantity_figure against task94, task37, task69 and task87. The labels are kept honest rather than relabelled. The driver is new (nearest driver on file 0.16, this slot's own v1). Re-rooted 2026-10-03 after the v1 portal solve: the six-town argmax cannot be moved by any construction on real census stocks (rate changes fail dominance, cuts expose the Swindon/Exeter tie at R3, lifts need 1.8x), so the committed call becomes a single branch's first-year figure. Pattern C because the decisive quantity is the serviceable share of a correctly measured patch behind a join to the other branches' premises; G5 because the provider covering the overlap is a sister branch. Gate G forecasting: the committed figure is a forward count and the decisive rung is how the forward window's instructions will be assigned. RETAG 2026-10-04: domain demographic-social-science/housing and objective opportunity-sizing-decision on the author's instruction that Opportunity Sizing is an analytical objective, not a domain; the retag adds no guard block, and the blocks above stand under the same override."
+}

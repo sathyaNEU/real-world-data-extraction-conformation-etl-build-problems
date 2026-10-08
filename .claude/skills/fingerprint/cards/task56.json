@@ -1,0 +1,100 @@
+{
+  "task": "task56",
+  "architecture": "v6",
+  "drawn": "2026-08-29",
+  "slot_note": "no design note on disk (mechanism from the ledger rows); folder also holds a 'deliverables 2' copy and a later golden/ set",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "measuring billed consumption revenue for a closed cycle on a usage-billed platform whose committed-use plan opened at the cycle start",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The platform billed $1,618,907.85 of consumption revenue for the cycle ended 30 September 2026.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G12",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "none",
+  "stakeholder_role": "Revenue Operations at a consumption platform (the prompt names the team, not a person)",
+  "role_family": "finance_controller",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "mrd_usage_meter_daily.csv",
+    "rows": 756698,
+    "entity": "metered units for one account on one day under one service code",
+    "grain": "account x day x service code",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional company (accounts across NA, EMEA and APAC; correspondence on US Central time)",
+    "currency": "USD",
+    "org_type": "consumption-billed analytics platform",
+    "invented_names": [
+      "Meridian Analytics"
+    ]
+  },
+  "deliverables": [
+    "consumption_billing.py",
+    "cycle_billing_2026Q3.csv",
+    "billing_review.md",
+    "billing_bridge.png"
+  ],
+  "opening_move": "other",
+  "driver": "A whole population is billed on a different basis and is identifiable only by its absence from the event streams, so a faithful pipeline that collapses to the filed grain with an inner join drops it entirely, while the closed-period corpus is blind by construction because that population exists only in the open period.",
+  "driver_concrete": "Billing spec 1.3 bills committed-use accounts on contracted units whether metered or not; the plan opened 1 July 2026, so 633 of 1,208 accounts billed have no meter rows and no plan flag, and the meter-only pipeline that ties all six closed cycles to the cent misses their 892,468.13 USD.",
+  "stump": "A competent solver applies all four spec rules, back-tests the meter-only pipeline against six closed cycles to the cent and files 726,439.72 USD, never noticing that 633 committed-use accounts have no meter rows and vanish from the account-cycle frame.",
+  "mechanism_source": "ledger",
+  "differentiation": {
+    "task56": "v6 keeps v5's absence-of-record population but grades a closed-cycle billed figure under a filed billing spec, where obeying the spec's grain with an inner join is what drops the committed-use accounts; v5 graded an open accrual ratio transported onto an inverted delivery mix and died on domain scope and stump power."
+  },
+  "lineage": [
+    {
+      "architecture": "v4 and v4.1 (ETL re-root, federated workplace campaign)",
+      "fate": "solved twice, 2026-08-29: v4 read straight off policy 4.3, v4.1 by the close-out back-test the prompt itself requested",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G19"
+      ],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "The close-out settlement rule is recovered from closed close-outs that reproduce only under it, while the provisional runs a solver reproduces first certify the natural spreading rule, and a join on the wrong key drops the rows an acquiring account remitted."
+    },
+    {
+      "architecture": "v5 (consumption accrual)",
+      "fate": "rejected 2026-08-29: executed as corporate accounting (out-of-scope domain by its artifacts) and 0 per cent stumped",
+      "domain": "product-analytics",
+      "objective": "etl",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G12"
+      ],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "A pooled booked-to-recoverable ratio, correct on history, is untransportable because the open period's mix on delivering anything at all is inverted, and the non-delivering units are identifiable only by their absence from an event stream."
+    }
+  ],
+  "notes": "No design note on disk: gap, pattern and generators come from the v6 ledger row (E decisive with G12 and G19); gate_g etl_conformance is read from the structure. The v6 row has nine cells with the artifact cell missing and no rung-0 artifact ships, so context_artifact is none. A first v4 draw under Forecasting was rejected by the author; v1 to v3 are not in the ledger."
+}

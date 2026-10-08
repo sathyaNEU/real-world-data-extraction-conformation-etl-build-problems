@@ -1,0 +1,84 @@
+{
+  "task": "task41",
+  "architecture": "only (FSSF certification), decisive layer restated after round 1",
+  "drawn": "2026-08-22",
+  "slot_note": "Folder holds the build the ledger records at row 42 (its own design note calls it task42); the ledger's row 41 (Policy & Education, four outreach arms) matches no folder.",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grant-award-portfolios",
+  "niche": "Pass-through intermediary certifying a statewide family support fund's subrecipient expenditure for a closed award year across two report systems",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "Camino Real Family Partnership should certify USD 11,279,958.13 to the Office of Family Services as Fund certifiable subrecipient expenditure for award year FY2026.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers and line wrap removed)",
+  "gap": [
+    "rule",
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G11",
+    "G16",
+    "G2",
+    "G10"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "register",
+  "stakeholder_role": "director of grants compliance at Camino Real Family Partnership, pass-through entity for a statewide family support fund",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "bronze/lgs_exprpt_fy2026.txt",
+    "rows": 57360,
+    "entity": "one cost-code amount on one version of a subrecipient monthly expenditure report (legacy fixed-width extract)",
+    "grain": "award x reporting period x report version x cost code",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, New Mexico",
+    "currency": "USD",
+    "org_type": "nonprofit pass-through intermediary and fiscal agent",
+    "invented_names": [
+      "Camino Real Family Partnership",
+      "Family Support Services Fund",
+      "Office of Family Services",
+      "Rio Puerco Community Partnership",
+      "CRFP Grants Portal",
+      "Legacy Grants System"
+    ]
+  },
+  "deliverables": [
+    "fssf_fy2026_certification.py",
+    "fssf_fy2026_certification_pack.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is an eligibility test no document states, that a cost counts only where its category already carried an approved budget line on the date it was incurred, recovered by sweeping candidate rules against a closed corpus of determinations and layered over a settled-version scope rule on a version-history table and a two-system de-duplication, and it cuts the naive total.",
+  "driver_concrete": "A cost is certifiable only where its Fund category already carried an approved budget line on the day it was incurred, the one rule of ten that reproduces all 240 closed FY2025 determinations to the cent, holding back USD 3,824,955.20 across 7,830 lines after the settled-version basis and the migration collapse.",
+  "stump": "Both round-1 solvers settled every period, collapsed the migration overlap and kept the chargeable categories, then certified USD 15,104,913.33 (or 14,916,204.68 carrying the closed reviews as a lump), because neither swept the 240 closed reviews for the budget-line-in-force test.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "ledger row 41 draw (Policy & Education outreach arms)",
+      "fate": "recorded in the ledger as drawing only; no folder on disk holds it (2026-09-13 reconciliation)",
+      "domain": "policy-education",
+      "objective": "experiment-causal",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "driver": "A correctly measured per-person effect does not aggregate because displacement under a fixed assessment capacity absorbs it, tested on untreated units against treatment density joined to a capacity roster, and it changes which arm to scale."
+    }
+  ],
+  "notes": "Design note sections 2, 13 and 14 restate the decisive layer after round 1 as the eligibility test (binding_constraint recovered by method selection; section 13 calls it a Gap 4 build); the draw table's gap (time into population) and G16-decisive label described the settled-version basis, now scope work worth 12.5 per cent. Ledger row 42 still records that version-basis framing (pattern none of A to E). Retrospective call on a closed award year. Lineage row-41 gate_g read from its capacity mechanism."
+}

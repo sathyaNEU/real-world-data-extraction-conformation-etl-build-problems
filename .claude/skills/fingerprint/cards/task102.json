@@ -1,0 +1,79 @@
+{
+  "task": "task102",
+  "architecture": "v1",
+  "drawn": "2026-10-03",
+  "slot_note": "fresh draw for the empty task102 folder; the slot's earlier card (a utility hardship-fund build) belongs to the build in task97/ and was re-keyed to task97 on 2026-10-03",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "a state education department projecting the state financial support for special education it will disburse in the current fiscal year against the federal maintenance-of-effort floor set by the prior year, to size a supplemental appropriation request before the year closes",
+  "objective": "forecasting",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "$48,300,000 FY2029 supplemental appropriation (FY2029 SFS projected at $339,414,875 to the dollar against the FY2028 certified $387,664,450.77, shortfall $48,249,576)",
+  "answer_source": "task102/submission.md, block 1 (and the Request sheet of golden/fy2029_moe_projection.xlsx)",
+  "gap": [
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G11",
+    "G7"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "filed_model",
+  "stakeholder_role": "the department's director of special education finance and compliance, who certifies maintenance of effort",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "sped_disbursements_fy2026_fy2029ytd.csv",
+    "rows": 17188,
+    "entity": "one disbursement (EFT or warrant) from a state or federal fund to one payee on one special education program",
+    "grain": "payee x program x release date",
+    "source": "synthetic (fictional state); release dates follow the real U.S. Federal Reserve holiday calendar"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "period_close",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (fictional state)",
+    "currency": "USD",
+    "org_type": "state department of education, office of special education finance",
+    "invented_names": [
+      "Ellery County Schools",
+      "North Ellery City Schools",
+      "Kellwater Virtual Academy",
+      "Wrenfield Academy",
+      "Halston Speech & Therapy Services, Inc.",
+      "Larkin Bay Pediatric Therapies, LLC",
+      "Thursby Lake Rehabilitation Group",
+      "Youth Services Education Consortium",
+      "70 county systems, 39 city systems, 26 charters, 94 DOH providers (all invented, place-style)"
+    ],
+    "people": [
+      "Christina Knight",
+      "Dustin Oliver",
+      "Jared Chapman",
+      "Rebecca Jackson",
+      "Angela Alexander",
+      "William Adkins"
+    ]
+  },
+  "deliverables": [
+    "fy2029_moe_projection.xlsx",
+    "fy2029_moe_bridge.png"
+  ],
+  "opening_move": "number-first",
+  "driver": "A period total counts each scheduled payment in the period it is actually released, payments due on a non-business day are released on the next business day by a rule only the payment history shows, and every closed period ended on a business day, so the closed totals confirm a count by scheduled date exactly; the forward period ends on a weekend, so the payments due that day fall into the next period, while a capped line whose claims always stayed under its cap now carries claims, grossed up from the share received by the decision date, that exceed it.",
+  "driver_concrete": "FY2029 state financial support for special education is counted by release date; formula aid installment 12, the second half of transportation aid and the June state schools allotment are due Saturday 30 June 2029 and are released on Monday 2 July under the next-business-day rule that every weekend and holiday date in three closed years and FY2029 to date shows, so they land in FY2030, while 30 June was a business day in every closed year; and high-cost reimbursements, paid in full in every closed year, are limited to the categorical balance left after full-year transportation aid and the state schools' allotments once the claims received by mid-January are grossed up by the share every closed year had received by that date.",
+  "stump": "A competent solver rebuilds FY2029 support line by line from the payment schedule, the December 2028 child count and the high-cost claims, ties every certified closed-year total to the dollar, and files a supplemental near zero; it books the 30 June 2029 payments in FY2029 although that day is a Saturday and the history releases such payments on the next business day, and it pays the high-cost line at its claims trend although the grossed-up claims exceed the appropriation, so FY2029 support falls tens of millions short of FY2028.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-03 after the advisor's two-insight rule: the roll is unfiled (pinned by payment-history identity), the cap is a quantity predicate (claims grossed up against an appropriation). Decisive generator G13 (which period a release falls in) because task105 holds G7. Gate G forecasting repeats task105 (WARN, answered in the design note). Built 2026-10-03: the FRB holiday file, the statute's 'not before the fixed date' clause and the high-cost manager's belief were dropped as signposts; DJJ pays quarterly in advance so no quarter-end payment slips across a quarter in FY2029 to date; the context artifact is the July 2028 SEFA preliminary allocation, not an October projection."
+}

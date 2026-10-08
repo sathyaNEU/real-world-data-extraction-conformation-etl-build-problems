@@ -1,0 +1,195 @@
+{
+ "task": "task98",
+ "architecture": "v7",
+ "drawn": "2026-10-04",
+ "slot_note": "seventh architecture of the slot: v1 to v4 and v6 solved on the portal, v5 failed the determinism judge. Same fictional gemeente Peelvenne, the same register and the same forward graded quantity as v6 (the 2027 growth of the social rental stock on the WWS points systematics, against the woondeal tranche); the author asked on 2026-10-04 to harden v6 rather than retire it: decouple the asks, give them dirty data recoverable only on a closer look, and put analytical rungs on the main call. The renovation rung of v6 is kept as depth; the decisive rung is new.",
+ "domain": "policy-education",
+ "subdomain": "public-administration",
+ "niche": "a gemeente's prognosis to the province of its first year of social rental production counted on WWS points, measured as the growth of the social rental stock between 1 January and 31 December against the regional housing agreement's tranche",
+ "objective": "forecasting",
+ "shape": "07",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "expected inhaalopgave of 112 sociale huurwoningen carried into 2028 (taakstelling 2027 of 190; growth 78 = 261 put into use less 183 that leave once: 38 demolished, 131 in the 2027 heat-plan blocks lifted over 143 or sold first, 14 verkoopvijver sales outside the blocks; 15 verkoopvijver dwellings sold in 2027 stand in blocks B2 and B7)",
+ "answer_source": "task98/submission.md, block 1; golden prognose_sociale_huur_2027_peelvenne.xlsx, sheet Prognose",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G13",
+  "G16"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "prior_period_close_out",
+ "context_artifact": "filed_standard",
+ "stakeholder_role": "the gemeente's senior policy adviser for housing, who files the woondeal monitor and the province's prognosis",
+ "role_family": "policy_adviser",
+ "scoring_unit": "per certified output",
+ "spine": {
+  "file": "woningregister_202701.csv (the register's export of Monday 4 January 2027)",
+  "rows": 15021,
+  "entity": "one dwelling (verblijfsobject with a residential function, or a non-independent letting unit) in the gemeente's woningregister",
+  "grain": "dwelling",
+  "source": "synthetic (fictional gemeente Peelvenne, North Limburg): a register export with WWS points, energy label and complex per dwelling"
+ },
+ "forum": "regulator_or_inspector",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "local_government",
+ "world": {
+  "geography": "Netherlands, Limburg (fictional gemeente Peelvenne in North Limburg)",
+  "currency": "EUR",
+  "org_type": "municipality (gemeente): research and statistics keeps the woningregister; the province as grant authority",
+  "invented_names": [
+   "Peelvenne",
+   "Lomkamp",
+   "Wendelveld",
+   "Heikervelt",
+   "Braakveld"
+  ],
+  "people": [
+   "Annemijn Arts",
+   "Laurens Arent",
+   "Rosalie Wolzak",
+   "Quinten Broekhoven",
+   "Senna Boudewijns"
+  ]
+ },
+ "deliverables": [
+  "prognose_sociale_huur_2027_peelvenne.xlsx"
+ ],
+ "opening_move": "deliverable-first",
+ "driver": "Two dated schedules held in separate files under different keys each remove members from one population, a disposal list and an upgrade programme, and a subset of members stands in both, disposed of before the upgrade reaches them; summing the two lists removes that subset twice, and only a member-level join between a code-keyed list and an address-keyed list exposes it, while every closed period's additive flow sum was exact because the upgrade channel did not exist then.",
+ "driver_concrete": "Peelvenne's 2027 social rental production is the growth of the number of rental dwellings with at most 143 WWS points; Velmaro sells the dwellings of its verkoopvijver, let on temporary Leegstandwet contracts, as each permit ends, and some of them stand in two blocks of the heat-transition plan that complete after the sale; the closed monitors' flow model was exact because on rent no renovation moved a dwelling, but in 2027 the renovation and the sales both take dwellings out of the social stock and the sold dwellings inside the blocks leave once though they appear in both lists; a complex Velmaro sells to an investor with its tenants stays social whoever lets it.",
+ "stump": "A competent solver lifts the renovated dwellings over 143 out of the social stock, takes the verkoopvijver's 2027 sales from the Leegstandwet permits that end in 2027, and subtracts both, never checking whether the dwellings sold in 2027 stand in the blocks the packages renovate; some do, and they complete after the sale, so it subtracts those dwellings twice and files an inhaalopgave too high by their number, and higher again if it withdraws the complex sold to an investor with its tenants.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task102": "task102 moves scheduled payments across a period end by a release rule only the payment history shows; v7 moves no timing across the period end, it removes double-listed units from a within-period flow sum",
+  "task98": "v6 turned on a population absent from every flow list (renovated dwellings lifted over 143, read off twins); v7 keeps that as depth and turns on a population present in two flow lists at once (verkoopvijver dwellings sold before their heat-plan block completes), named by complex code in one file and by address range in the other, so only a dwelling-level join finds it"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-02",
+   "fate": "retired 2026-10-02: portal result not stumped, both top responses filed the golden 288 by the system route; the decisive population half was conceded by covenant art. 1b and the location register, the time half by the chart ask, and the governing identity closed over shipped quantities",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G5",
+    "G13",
+    "G11"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "The commitment is the nightly residual of a whole system's demand over the stock that stays open, in the first period after the outlet that used to absorb that residual is removed; part of the demand sits in a closed record that confirms a displaced-cohort model exactly only because the outlet was still taking every later overflow while it ran, and the residual peaks on a night the whole system sets rather than the night the displaced group peaks."
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-02",
+   "fate": "retired 2026-10-03: portal result not stumped, a top response filed the golden 19 by the intended route; the prompt dictated the build-up, circular 3.2 pointed at the IND file, and the H2 2026 carry demonstrated the arrival channel inside a computation the solver had to perform",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "C"
+   ],
+   "generators": [
+    "G13",
+    "G2",
+    "G4"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "A persons-denominated target for a period is partly met by arrivals who register with members already in place and so count without consuming a unit, and by arrivals who join listed units once those are served, so the units the period needs are a prefix of the ordered list that the natural one-unit-per-listed-household count overstates, and no closed period can show it because the arrival channel had not yet opened."
+  },
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-03",
+   "fate": "retired 2026-10-03: portal not stumped twice (100/62, then 100/66 after the hardening); the kern construction and the briefadres-scope bridge were both executed by the top response",
+   "gap": [
+    "population",
+    "rule"
+   ],
+   "pattern": [
+    "D"
+   ],
+   "generators": [
+    "G2",
+    "G11"
+   ],
+   "gate_g": "etl_conformance",
+   "decision_type": "designation_set",
+   "driver": "A per-unit threshold decides each unit's whole entitlement, and the units are not the labelled groups the records carry but groups formed by chaining members that lie within a fixed distance of one another; every settled period had the chains and the labels coincide, so the settled record confirms the labels, and in the forward period one closed gap chains two labelled groups into one unit over the threshold while every total of members ties."
+  },
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-03",
+   "fate": "retired 2026-10-03: portal result: one top response filed the golden EUR 1,712,500 exactly and named every rung (the 12 October switch, the herindeling, the latest-state clause, the 550,000 face-value and the 2,000,000 18-January totals); the other filed 887,500 or 875,000 from the segments stored in the export before the visible herindeling; the author chose a redraw that stays ETL with a new graded quantity",
+   "gap": [
+    "rule",
+    "time"
+   ],
+   "pattern": [
+    "B"
+   ],
+   "generators": [
+    "G19",
+    "G3"
+   ],
+   "gate_g": "etl_conformance",
+   "decision_type": "designation_set",
+   "driver": "A per-unit share threshold decides each unit's whole payment on a code field whose derivation changed version; the load job began writing the new version for newly added rows weeks before a visible backfill rewrote the existing rows, so the snapshot taken just before the visible change already mixes both versions, and the filing's contract fixes the old version, which is stated nowhere and recoverable only by identity from the rows added before the silent switch."
+  },
+  {
+   "architecture": "v5",
+   "drawn": "2026-10-03",
+   "fate": "retired 2026-10-04: the determinism judge failed it on Gate C (the rent basis, at ingebruikname against today's rent, was pinned only by a reference close-out the literal register indeling contradicted) and Gate G (planted_defect_flip, sole_data_defect yes: give the register a starting-rent column and the naive count is the answer); the portal response was a valid stump of the banned kind (165 sociaal, inhaalopgave 48); the Gate C fork and the stump were the same unpinned axis, so no pin could close one without spending the other",
+   "gap": [
+    "time",
+    "objective",
+    "rule"
+   ],
+   "pattern": [
+    "B"
+   ],
+   "generators": [
+    "G4",
+    "G19",
+    "G3"
+   ],
+   "gate_g": "etl_conformance",
+   "decision_type": "quantity_figure",
+   "driver": "A count of units by class is scored on the class each unit had at the moment it entered the population, but the register's class label follows a value that was raised for every early entrant after that moment and is only ever exported after the raise; the entry-moment value survives in no snapshot and has to be rebuilt from a factor in the table history, and the only evidence that the count is taken at entry is a handful of cases in a certified prior-period close-out that a current-value reading reproduces everywhere else."
+  },
+  {
+   "architecture": "v6",
+   "drawn": "2026-10-04",
+   "fate": "retired 2026-10-04: portal result not stumped, both top responses filed the golden 97 by the intended route and scored 100 per cent on the generated rubric; the twins made the renovation step a lookup, the Prognose movements were components of the call, and every grid device had a filed rule or a key-check symptom",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G13",
+    "G16"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "The forward figure is the change over a period in the number of units under a threshold on a score; the closed periods were counted on a different classifier that a programme of improvements could not move, so their change was exactly the listed additions less the listed removals and that flow model reproduces every closed period; in the forward period the class is read off the score, a scheduled improvement programme lifts a subset of existing units over the threshold by a step recoverable only by comparing improved and unimproved twins in the same groups, and those units leave the class without appearing in any list of removals."
+  }
+ ],
+ "notes": "v7 card filed at the draw on 2026-10-04 (re-root of v6 at the author's request after the portal result) and updated at delivery the same day (answer, spine rows)."
+}

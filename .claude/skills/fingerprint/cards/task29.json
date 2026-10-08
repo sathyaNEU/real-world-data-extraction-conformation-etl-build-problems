@@ -1,0 +1,89 @@
+{
+  "task": "task29",
+  "architecture": "interaction build (2026-08-16 rebuild)",
+  "drawn": "2026-08-16",
+  "slot_note": "archive_retired_build/ holds the retired fourteen-case build's reports and scripts",
+  "domain": "economics",
+  "subdomain": "trade-international",
+  "niche": "choosing which of seven destination markets gets the single market access dossier, scored on additional levy-bearing export tonnage in the placement year",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "File the MY2028 market access dossier for Corrasil (CRS).",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "rule"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G16",
+    "G1",
+    "G3",
+    "G8",
+    "G11",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the Kestermarch Grain and Pulse Export Board's dossier desk (the prompt states no title; the design note calls it the Board's research desk)",
+  "role_family": "research_desk",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "partner_recorded_imports.csv",
+    "rows": 30826,
+    "entity": "one row is one destination administration's recorded monthly arrivals of a product form group from one origin partner (mirror statistics)",
+    "grain": "destination market x month x origin partner x form group",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional country (Kestermarch)",
+    "currency": "none",
+    "org_type": "statutory grain and pulse export levy board",
+    "invented_names": [
+      "Kestermarch Grain and Pulse Export Board",
+      "Corrasil",
+      "Halden",
+      "Norvale",
+      "Sirakut",
+      "Belkarn"
+    ]
+  },
+  "deliverables": [
+    "my2028_access_dossier_decision.py"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a forward yield from a function fitted on closed interventions whose slope on a continuous competitive covariate differs by the type of instrument released, so a single pooled relationship, though it fits, names the wrong candidate.",
+  "driver_concrete": "Corrasil's 12,992 t MY2028 gain leads only when the preference slope is fitted separately by instrument (b = 0.01177 for tariff-rate quotas, 0.03290 otherwise) and capped by listed capacity, the fit that reproduces the closed releases within 0.77 percent; one pooled slope (515 percent worst miss) names Halden, and Norvale is barred by an open consultation.",
+  "stump": "A solver who fits one preference-erosion slope pooled across barrier types (or rates on a competitor flag, or reads preference on the in-force date) files Halden, the market the committee thread's analyst already argues for; the in-house round split Halden against Corrasil.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 fourteen-case build (archive_retired_build)",
+      "fate": "solved in house round 1 (both threads named CRS on the first pass); replaced on 2026-08-16 because its decisive rung was a looked-up two-valued rate rather than a model",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "A two-valued conversion rate looked up from a small closed corpus, times the blocked volume under a capacity ceiling, ranks the candidates."
+    },
+    {
+      "architecture": "forecasting rebuild before the instrument interaction",
+      "fate": "solved in house round 1 on 2026-08-16 (Case D, both threads Corrasil in about nine minutes); ladder exhaustion, the corpus held the winner's own cases and the prompt carried a method hint",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "A single realisation slope on a continuous covariate, fitted on closed interventions, times a capacity ceiling ranks the candidates, and the corpus included the winner's own cases."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern follow the ledger row (rule, B); the design note carries the Gate G block (method_or_model_selection, secondary binding_constraint) and generators (G16 decisive). Determinism report 2026-08-16: DETERMINISTIC, APPROVE on Gates A to G. Pack values are in a fictional currency (marks)."
+}

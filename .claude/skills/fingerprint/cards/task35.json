@@ -1,0 +1,98 @@
+{
+  "task": "task35",
+  "architecture": "provision ask (redraw 2026-08-21)",
+  "drawn": "2026-08-21",
+  "slot_note": "the golden PDF, the model and deliverables.zip sit beside six in-house stump reports and a determinism report",
+  "domain": "economics",
+  "subdomain": "prices-inflation",
+  "niche": "filing a cost adjustment board's annual price-adjustment provision for member agencies' indexed construction and supply agreements",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "**File the AY2027 adjustment provision at $11,097,686, which is $11.1 million.**",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "time",
+    "rule"
+  ],
+  "pattern": [
+    "A",
+    "B"
+  ],
+  "generators": [
+    "G13",
+    "G10",
+    "G2",
+    "G11",
+    "G15"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs the index desk at the Kestrel Basin Cost Adjustment Board",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "work_order_schedule_ay2020_ay2028.csv",
+    "rows": 29225,
+    "entity": "one row is one work order filed on an agreement's schedule for an adjustment year, with its scheduled month and value",
+    "grain": "work order x schedule year",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional basin region (Kestrel Basin)",
+    "currency": "USD",
+    "org_type": "joint cost adjustment board for eleven member agencies on a capital programme",
+    "invented_names": [
+      "Kestrel Basin Cost Adjustment Board",
+      "Kestrel Basin Component Cost Index",
+      "Uniform Price Adjustment Schedule"
+    ]
+  },
+  "deliverables": [
+    "kbcab_ay2027_adjustment_provision.pdf",
+    "adjustment_provision_model.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a forward obligation whose attachment period is recovered from settled records rather than the filing period, so the coming period inherits the prior period's still-open stock, and every other correction walks the figure down while only this one turns it back up.",
+  "driver_concrete": "The AY2027 provision is $11,097,686 because an adjustment attaches to the year a work order is endorsed in (1253 of 1253 statement lines, against 1086 for the schedule year), so AY2027 carries the AY2026 schedule still open at the 18 December filing date plus the part of the AY2027 schedule endorsed inside 2027 at a three-year value-weighted release rate.",
+  "stump": "A full-route solver that attributes each work order to the year its schedule was filed for, treating carry-in and carry-out as broadly offsetting, files $8,841,550 (the AY2027 schedules above the Part 7.3 floor), 1.26 times too small, as the round-6 thread did.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 stabilization election (floor and grain), rounds 1 to 3",
+      "fate": "solved in house in rounds 1 to 3 (both threads named LTM in rounds 1 and 2, round 3 by ladder exhaustion); retired 2026-08-21",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "Measured price change becomes money only on per-order component value above a filed floor and on the share expected to certify, so the largest clean book protects little and the candidate with few large orders wins the single hold."
+    },
+    {
+      "architecture": "election ask, certification-year rebuild (rounds 4 to 5)",
+      "fate": "round 4 solved with the whole ladder performed (the attribution was filed); round 5 named the group right with the figure 12 percent wrong after the rule came out of the schedule; ask shape declared exhausted 2026-08-21",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "rule",
+        "time"
+      ],
+      "pattern": [
+        "B",
+        "A"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The period an adjustment attaches to is recovered from settled records rather than read from the filing, and the stock carried in from the prior period decides which single candidate a hold protects most."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern from the current ledger row (time over rule, A over B); generators from the design note's list, which predates the redraw. Design note gives Gate G forecasting; the 2026-08-21 determinism pass returned method_or_model_selection, DETERMINISTIC. Round 6 held in house. Both memorandum money figures sit within 1 percent of a $0.1M boundary."
+}

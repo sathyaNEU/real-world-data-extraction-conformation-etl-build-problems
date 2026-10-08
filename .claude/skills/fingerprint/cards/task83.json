@@ -1,0 +1,105 @@
+{
+  "task": "task83",
+  "architecture": "RE-ROOT 2.1, the parity rung (fourth architecture), with determinism repairs 1 to 4",
+  "drawn": "2026-09-09",
+  "slot_note": "DATASET_NOTES.md stacks four architectures, the re-root blocks out of date order (RE-ROOT, RE-ROOT 2.1, RE-ROOT 2), and REPAIR_NOTE_2026-09-08.md covers v1; the operative state is RE-ROOT 2.1 plus the repair log at the foot of the note.",
+  "domain": "product-analytics",
+  "subdomain": "retention-risk",
+  "niche": "allocating a capped monthly allowance of save-offer sends across churn-score bands at a digital news subscription network, priced off a standing randomized holdout",
+  "objective": "experiment-causal",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "July's 200 sends go to readers on their first pass through the save programme, best-measured band first: all 104 first-qualification readers in band B2 on the parked list, then 96 of the 183 in B1, none of B3, and none of the 309 readers on the list the programme has already been through. The plan should prevent 26.6 stops across the programme's ninety-day window, 30 to the nearest ten.",
+  "answer_source": "submission.md, 1. Final Recommendation (first paragraph)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G11",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "pilot_log",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "subscriber retention desk lead at a multi-metro digital news network, owning the save programme's July send plan",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "feature_snapshots.csv",
+    "rows": 811213,
+    "entity": "one subscriber's monthly engagement feature snapshot",
+    "grain": "subscriber x month",
+    "source": "synthetic (seed 830340); score_log.csv carries the same 811,213 rows"
+  },
+  "world": {
+    "geography": "United States, twelve metro editions (Upper Midwest, Plains, Mountain West and Portland) plus a national desk",
+    "currency": "USD",
+    "org_type": "digital news subscription network",
+    "invented_names": [
+      "Northlight Media",
+      "Northlight save programme",
+      "cps_v3 and cps_v4 churn propensity scorecards"
+    ]
+  },
+  "deliverables": [
+    "july_send_plan.xlsx",
+    "save_program_review_2027-06.docx"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive move is conditioning a randomized holdout's measured treatment effect on each unit's own prior treatment history, rebuilt only by grouping the treatment log per unit, because the target pool's mix on that axis differs from the measurement corpus, so a correct stratum-level effect misprices and misallocates a capped budget.",
+  "driver_concrete": "Grouping the offer log per reader (and replaying the queue rule for holdout members) splits each band's 90-day return into first-qualification cells (+6.64 / +19.45 / -1.05) and re-qualified cells that measure nothing; June's B2 is 73 of 177 re-qualified against about one in six in the corpus, so the 200 sends go 104 B2 + 96 B1 for 26.6 stops.",
+  "stump": "A competent solver rebuilds the queue, differences offered against held-out within each reporting band on closed windows and files the band-cell fill, all 177 of B2 plus 23 from B1 at 31.7 stops, because it never splits the cells by the reader's own programme history, which exists only by grouping the offer log per reader.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1, the original Root-Cause build (seed 830234)",
+      "fate": "both live responses named the ground truth (roll cps_v4 back to cps_v3), zero valid stumps; the answer was nominated by timing (REPAIR_NOTE_2026-09-08.md)",
+      "domain": "product-analytics",
+      "objective": "root-cause",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "root_cause_named",
+      "driver": "A retrained selection model learned its own intervention's successes as low risk and silently stopped selecting the responsive profile, so an outcome rise belongs to a population enumerable only by re-scoring current records under the archived model."
+    },
+    {
+      "architecture": "RE-ROOT (1), 2026-09-09: cause conceded, allocation under a cap",
+      "fate": "failed the 2026-09-09 determinism verdict on Gate G as planted_defect_flip / surface_read_rejection (the pooled slide 7.44 to -3.37 off a broken scorecard); superseded by RE-ROOT 2",
+      "domain": "product-analytics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "allocation_to_total",
+      "driver": "With the cause conceded, a binding cap makes the allocation rank strata by measured treatment effect, single-peaked in the risk score, rather than by the score, while a pooled effect series slides by composition off a contaminated model."
+    },
+    {
+      "architecture": "RE-ROOT 2, the honest-data rebuild (seed 830327)",
+      "fate": "two live responses executed the golden end to end (185 B2 + 15 B1 + 0, 32.4, 30), zero valid stumps; its band-cell fill became the RE-ROOT 2.1 decoy",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "allocation_to_total",
+      "driver": "Under a binding cap the allocation must rank strata by a randomized holdout's measured effect, which is single-peaked in the risk score, rather than by the score itself, so filling from the top of the score spends the budget where the treatment does nothing."
+    }
+  ],
+  "notes": "Spine tie: score_log.csv also has 811,213 rows. Calibration mapped to pilot_log (standing randomized holdout). G14 from pattern E, G6 from the note's mix-gap engine, G11 and G16 from the ledger. Repair 4's runbook pin says a finer separating cut governs (no axis named); the note says stump power must be re-measured. RE-ROOT (1) gap and pattern unrecorded."
+}

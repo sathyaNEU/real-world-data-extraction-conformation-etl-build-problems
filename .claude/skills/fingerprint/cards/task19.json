@@ -1,0 +1,76 @@
+{
+  "task": "task19",
+  "architecture": "iteration 3",
+  "drawn": "2026-08-15",
+  "slot_note": "No root prompt.md or submission.md (answer_key/PROMPT.md, answer_key/SUBMISSION_WRITEUP.md); IDEATION.md is headed 'Task 28', a working number (task28 holds a different build).",
+  "domain": "product-analytics",
+  "subdomain": "retention-risk",
+  "niche": "one retention budget to the commercial portfolio with the most monthly recurring revenue crossing a 36-month repricing cliff",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Point the retention budget at NORTHSHORE (PF-NRS). It has $2,865,473 of monthly recurring revenue sitting on the 36-month repricing cliff inside the twelve-month horizon",
+  "answer_source": "answer_key/SUBMISSION_WRITEUP.md, 1. Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "not stated in the prompt; the owner of one retention budget across three commercial portfolios",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "account_lifecycle_log.csv",
+    "rows": 16641,
+    "entity": "one row is one account status event (activation, migration, novation, termination, reinstatement, suspension and noise codes)",
+    "grain": "account x status event",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (Great Lakes, Mountain West and other regions)",
+    "currency": "USD",
+    "org_type": "B2B field-service contracts company",
+    "invented_names": [
+      "Meridian Field Services",
+      "Northshore",
+      "Kestrel",
+      "Almanby",
+      "MSA-2026",
+      "BILL-CORE"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "constraint-first",
+  "driver": "A published per-entity duration is anchored on the wrong event and must be rebuilt from an event log under continuity rules (restart only past a gap threshold read from dates, not labels), and the value at risk is split across two record systems where only an exact join plus an identifier chain recovers the decisive rows.",
+  "driver_concrete": "customer_dim.tenure_months measures contract-vehicle age, wrong on 453 of 1,367 accounts after the MSA-2026 migration; tenure rebuilt from the lifecycle log puts 141 Northshore accounts in [24, 36), and MRR from BILL-CORE plus TAS rows recovered by exact join, name identity and the prior_contract_id chain gives $2,865,473.",
+  "stump": "Files Kestrel (about $2.20M against Northshore's $2.12M) after a complete name-based repair of the TAS billing export, because $749k of Northshore's exposed MRR sits behind superseded contract ids that resolve only through the lifecycle log's prior_contract_id chain.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iteration 1 (count-sized)",
+      "fate": "the solver defused the tenure stack and named Northshore at 141 accounts (failed to stump)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A published per-entity duration is anchored on the wrong event and must be rebuilt from a finer event log under continuity rules, which changes which group has the most entities crossing a threshold inside the horizon."
+    },
+    {
+      "architecture": "iteration 2 (revenue-sized)",
+      "fate": "the iteration-2 solver named Northshore correctly through a name oracle, a count identity, reason codes that matched the gap rule and a one-step join",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The mis-anchored duration rebuild is compounded by a value base split across two record systems, one a mostly dead export whose validity flag marks both junk rows and the decisive recoverable ones."
+    }
+  ],
+  "notes": "Untagged: IDEATION.md's 'Domain: B2B field-service contracts' is a world line, mapped to Product Analytics retention-risk; objective inferred. Recipe labels (R-DERIVE) predate the vocabulary, so nothing is back-fitted. The answer excerpt stops where the source sentence runs on past an em dash. 'Meridian' recurs in task16 and task17."
+}

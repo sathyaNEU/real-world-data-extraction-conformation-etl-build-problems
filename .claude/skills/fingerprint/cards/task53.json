@@ -1,0 +1,86 @@
+{
+  "task": "task53",
+  "architecture": "v2",
+  "drawn": "2026-08-28",
+  "slot_note": "first build (2026-08-27) was backed up to task53_backup_20260828, which is not on disk",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "committing one add-on build slot to a workload category of usage-billed video delivery, scored on the add-on volume billing at the plan-year close",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "We should commit the FY2027 add-on build slot to the api_partner_delivery workload category.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "rule",
+    "objective"
+  ],
+  "pattern": [
+    "E",
+    "B",
+    "C"
+  ],
+  "generators": [
+    "G14",
+    "G8",
+    "G1"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "pilot_log",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "unstated in the prompt (writes for Kestrelcast's packaging council; design note: packaging council, product and finance)",
+  "role_family": "product_manager",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "metering_monthly.csv",
+    "rows": 87518,
+    "entity": "delivered minutes for one workspace in one month under one player context and delivery class",
+    "grain": "workspace x month x player context x delivery class",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional company; customer accounts in the US, GB, CA, IE, AU, NL and DE",
+    "currency": "USD",
+    "org_type": "B2B usage-billed video delivery platform",
+    "invented_names": [
+      "Kestrelcast",
+      "Priority Encoding add-on",
+      "Ravenna Components",
+      "Ravenna Tooling",
+      "Hartwell CE Partners",
+      "Stonebriar CE Partners"
+    ]
+  },
+  "deliverables": [
+    "fy2027_build_slot.py",
+    "build_slot_basis.csv",
+    "build_slot_monthly.csv",
+    "build_slot_margin.png"
+  ],
+  "opening_move": "other",
+  "driver": "The pick turns on where each candidate's eligible volume pools per account against a scale break that a closed offer-and-adoption log draws and no file states, after a term-eligibility screen; the leader of the eligible sum is a long tail of small accounts below the break, so a few large accounts carry the answer.",
+  "driver_concrete": "Only accounts reaching a renewal by 31 October 2027 can bill a new add-on, and the FY2025 launch ledger shows adoption only at 432k MDU and above (decliners at 238k and below, nobody between), so api_partner_delivery's 22 whales hold 26.2M addressable MDU against internal_comms' 15.3M, a 1.71 margin.",
+  "stump": "A competent solver who cleans to the billable base, converts minutes to MDU and applies committed-term eligibility at the FY2027 close files internal_comms at 32.9M MDU (1.25 ahead), never grouping the eligible volume per account against the 238k to 432k MDU adoption break the launch ledger draws.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (first build, 2026-08-27)",
+      "fate": "objective reviewer read its eligibility-filter-and-sum discriminator as accounting against the Descriptive tag (delivers_wanted_shape none); rebuilt 2026-08-28 keeping the answer",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "driver": "The pick is decided by which candidate's volume can be billing by the funded window's close, found by joining committed-term end dates to the window, which removes the size leader's volume locked inside multi-year commitments."
+    }
+  ],
+  "notes": "Design note names the decisive generator 'G14/E-style break on a per-account distribution', the break corpus-recovered (B), C contract eligibility beneath; the ledger calls the decisive rung 'heavy tail against count'. Context artifact is a platform load report of delivered minutes (capacity_report, same key as task52). Calibration is a closed launch offer and adoption ledger (pilot_log)."
+}

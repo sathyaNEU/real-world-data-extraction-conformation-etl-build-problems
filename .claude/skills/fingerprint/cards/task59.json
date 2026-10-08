@@ -1,0 +1,92 @@
+{
+  "task": "task59",
+  "architecture": "v2",
+  "drawn": "2026-08-31",
+  "slot_note": "v1 backup folder task59.backup-20260831-154735 named in the ledger is not on disk",
+  "domain": "economics",
+  "subdomain": "labor-markets",
+  "niche": "certifying a half-year transfer into an unemployment-benefit reserve for workers separated under filed dislocation notices",
+  "objective": "forecasting",
+  "shape": "08",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "Authorise a transfer of $22,847,893 into the Dislocated Worker Benefit Reserve for the 2027H1 obligation period.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold sentence)",
+  "gap": [
+    "objective",
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "B",
+    "D"
+  ],
+  "generators": [
+    "G11",
+    "G2",
+    "G13",
+    "G15"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the Desk (design note: actuarial desk of a state unemployment insurance trust fund), certifying to the Trust Fund Finance Council",
+  "role_family": "research_desk",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "quarterly_wage_records_2023_2026.parquet",
+    "rows": 191705,
+    "entity": "one worker's quarterly wages at one employer account and reporting unit",
+    "grain": "worker x account x reporting unit x quarter",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US state (Vantry)",
+    "currency": "USD",
+    "org_type": "state unemployment insurance trust fund holding a dislocated-worker benefit reserve",
+    "invented_names": [
+      "Vantry Employment Security Trust Fund",
+      "Trust Fund Finance Council",
+      "Dislocated Worker Benefit Reserve",
+      "Halloway Freight Depot",
+      "Sable Ridge Cross-Dock",
+      "Kestermill"
+    ]
+  },
+  "deliverables": [
+    "reserve_transfer_certification_2027h1.pdf",
+    "certification_workings_2027h1.csv",
+    "reserve_transfer_build.py",
+    "settled_period_reconstruction.csv",
+    "settled_period_accuracy.png"
+  ],
+  "opening_move": "other",
+  "driver": "A per-unit yield measured on closed periods must be rebuilt from primitives at the unit the forward filings name, and each new episode arising inside the window must be capped at the weeks it can draw before the window closes, a cap no sentence states for new episodes and only the settled certification record reproduces.",
+  "driver_concrete": "New obligation is rebuilt at the reporting unit each notice names (0.787465 benefit years per eligible worker) and each new 2027H1 benefit year is held to its 13 to 21 compensable weeks before 30 June 2027, which charter 2.3 never states; held, the four settled halves tie within 3.1 per cent, unheld they run 19.4 to 58.1 over.",
+  "stump": "A competent solver rebuilds new obligation at the reporting unit but carries each new benefit year at its whole entitlement and files 26,826,838 USD (v1's answer, filed by a live solver), or repairs the 25.6 per cent settled-period overstatement with a scalar instead of the week hold.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (reporting-unit grain decisive)",
+      "fate": "a live solver reached the reporting-unit population and filed the v1 answer, 26,826,838 USD; re-rooted 2026-08-31 and kept as rung 3",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "generators": [
+        "G2",
+        "G13"
+      ],
+      "gate_g": null,
+      "decision_type": "quantity_figure",
+      "driver": "A per-unit yield measured at one grain is applied to forward exposure filed one level below it, and the two grains coincide in every closed case, so the population has to be taken at the filed unit through a second join nothing signposts."
+    }
+  ],
+  "notes": "Design note section 5 still carries v1's 'rung 3 carries the stump' paragraph after the v2 text; the draw table and ledger agree the week hold (G11, rung 4) is decisive. Shape 08: 16 of 23 asks sit on the settled-period replay. Two calibration corpora; the decisive one is the four closed half-year certifications with settled outlay."
+}

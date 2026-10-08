@@ -1,0 +1,47 @@
+{
+  "task": "task5",
+  "architecture": "only",
+  "drawn": "2026-08-01",
+  "slot_note": "No prompt file: the prompt is quoted inside submission.md. target/ ships 7 files.",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "launch vertical for a seller receivables-advance product, sized on net advanceable installment balance behind a single-seller concentration screen",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund the Health & Beauty vertical (health_beauty) for the Olist Capital Q1 2019 pilot. Do not fund Watches, Home Décor, or any other eligible vertical.",
+  "answer_source": "submission.md, Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed Olist lead choosing the Olist Capital pilot vertical, with Partnerships pushing Watches and Growth pushing Home Décor",
+  "role_family": "product_manager",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "olist_order_items_dataset.csv",
+    "rows": 52121,
+    "entity": "one row is one order item",
+    "grain": "order x item",
+    "source": "Olist Brazilian E-Commerce Public Dataset (Kaggle)"
+  },
+  "world": {
+    "geography": "Brazil",
+    "currency": "BRL",
+    "org_type": "Brazilian e-commerce marketplace (Olist) and its contracted sellers",
+    "invented_names": [
+      "Olist Capital"
+    ]
+  },
+  "deliverables": [],
+  "driver": "The largest raw bucket fails a filed single-contributor concentration screen, and the advocated rival's total is inflated by near-duplicate and unnetted reversal rows that only a per-record reconciliation against underlying item totals strips, while the winner's orphaned rows are recoverable through a secondary join.",
+  "driver_concrete": "Health & Beauty wins at $68,534.71 once 53 orphaned order_items rows are re-linked by customer_id and purchase timestamp with seller ids read from review reply_comment notes, Home Décor and A/V/E duplicate installments and chargebacks are reconciled, and Watches (96.8% one seller) fails the multi-seller rule.",
+  "stump": "A solver who trusts plain joins and sums files Home Décor at $49,064.50, one who skips the concentration test files Watches at $103,132.58, and one who reconciles only the vertical that already looks broken files Audio/Video/Electronics (submission.md, Justification).",
+  "mechanism_source": "submission_only",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Untagged; objective inferred. Roll call in the prompt (Partnerships, Growth). The concentration screen is a binding constraint on honest data, but the stump rests on planted duplicate, chargeback and orphaned rows. Amounts are BRL though the write-up prints $. Also uses the Olist Marketing Funnel closed-deals table. AI Analysis (1).py is a solver script run against an earlier bundle layout."
+}

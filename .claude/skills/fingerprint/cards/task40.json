@@ -1,0 +1,133 @@
+{
+  "task": "task40",
+  "architecture": "fifth draw with the autonomy limb (rebuild after round 2)",
+  "drawn": "2026-08-22",
+  "slot_note": "_v1_retired/ holds the v1 division-nomination build; REBUILD_DESIGN.md governs and DESIGN_NOTE.md describes v1.",
+  "domain": "economics",
+  "subdomain": "output-activity",
+  "niche": "Regional industrial transition support provision struck per mille on scheme producers' returned value added, reconciling revenue returns with a business register",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The Board should certify a transition support provision of 1,623 thousand florins for cycle 2029.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (line wrap removed)",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "published_series",
+  "stakeholder_role": "secretary of the Halvern Basin Industrial Transition Panel",
+  "role_family": "policy_adviser",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "sources/revenue/quarterly_trading_returns_2026_2027.csv",
+    "rows": 12969,
+    "entity": "one quarterly trading return version as filed (legacy pull, semicolon separated, Latin-1)",
+    "grain": "filer x quarter x version",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional (Halvern Basin, a sub-national region of six districts)",
+    "currency": "FLN",
+    "org_type": "statutory regional transition panel and statistical board",
+    "invented_names": [
+      "Halvern Basin",
+      "Basin Statistical Board",
+      "Industrial Transition Panel",
+      "National Transition Fund",
+      "Statutory Instrument 2029/17",
+      "Corriedale"
+    ]
+  },
+  "deliverables": [
+    "basin_provision_2029.py",
+    "basin_provision_return_2029.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a charge base gated by an eligibility description no document operationalises, recovered by rebuilding a settled prior-cycle obligation, and the recovery fits only when each filer is tested together with its control-linked group from a separate links extract, which no single-column threshold scan can find, so the scan's least-bad fit stays too high.",
+  "driver_concrete": "A scheme producer is an enterprise under an employment ceiling counted with its control-linked enterprises (participations above one half), which reproduces all twelve settled cycle-2028 division rows at every ceiling from 193 to 209; 2028 chargeable value added is 1,197,271.4 thousand florins against 4,049,979.3 returned.",
+  "stump": "A competent solver certifies about 1,821 thousand florins by recovering an employment ceiling with a one-dimensional scan on each filer's own head count and taking its least-bad fit, never joining the participation extract; the round-2 solver filed 1,812 by that route before the limb was added.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1, division nomination",
+      "fate": "built 2026-08-18; round 1 solved on a boosted harness (recorded inconclusive), round 2 solved with no rung engaged; replaced 2026-08-22",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G19"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "pick_one_of_n",
+      "driver": "The unit of observation and the rule for spreading a consolidated return across producing units are recovered by running candidate rulesets against a certified back-year matrix, and the conformed panel names which candidate leads."
+    },
+    {
+      "architecture": "second draw, productive-base grossing",
+      "fate": "built and failed determinism review 2026-08-22 on Gate G (single_conceptual_flip)",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The charge is assessed on a population neither file enumerates, so filed returns are grossed to a control total to reconstruct the base."
+    },
+    {
+      "architecture": "third draw, confirm the conformed panel",
+      "fate": "round 1 solved twice 2026-08-22 (a citation route and a corpus-rebuild route)",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G18"
+      ],
+      "gate_g": "confirm_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The conformed panel is itself the charge base, and every uplift to a published control total is an invitation to over-correct."
+    },
+    {
+      "architecture": "fifth draw before the autonomy limb",
+      "fate": "round 2 solved 2026-08-22 by a one-dimensional threshold scan that found the corridor (filed 1,812)",
+      "domain": "economics",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "An eligibility ceiling no document operationalises gates the charge base and is recovered by a one-parameter scan against a settled prior-cycle obligation."
+    }
+  ],
+  "notes": "Mechanism from REBUILD_DESIGN.md (fifth draw plus autonomy limb) and ledger row '40 (rebuild)'; the main 40 row's mechanism, calibration (certified 2027 matrix) and B-with-G19 cells describe v1. No G-code is named for the decisive B rung; G19 stands only for the conformance layer the certified matrix still confirms. Prompt asks per NIC-2017 division while returns carry NIC-2012 classes split by concordance. FLN is the build's fictional florin, not ISO. Panel secretary mapped to policy_adviser."
+}

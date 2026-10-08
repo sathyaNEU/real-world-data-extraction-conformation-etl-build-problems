@@ -1,0 +1,129 @@
+{
+ "task": "task94",
+ "architecture": "v3",
+ "drawn": "2026-10-03",
+ "slot_note": "",
+ "domain": "supply-chain-logistics",
+ "subdomain": "inventory-demand-planning",
+ "niche": "polymer distributor's bulk silo programme: the one-grade tonnage nominated for a plan year across customer moulding plants",
+ "objective": "forecasting",
+ "shape": "13",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "We nominate 9,669 tonnes of HM-233 on the bulk silo programme for plan year 2028.",
+ "answer_source": "submission.md, 1. Final Recommendation",
+ "gap": [
+  "objective",
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "C",
+  "A"
+ ],
+ "generators": [
+  "G8",
+  "G7",
+  "G11",
+  "G15"
+ ],
+ "gate_g": "binding_constraint",
+ "calibration_form": "retry_or_revision_log",
+ "context_artifact": "monitoring_export",
+ "stakeholder_role": "demand planning lead at a polymer distributor",
+ "role_family": "capacity_planner",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "despatch_lines_2025_2027.csv",
+  "rows": 91363,
+  "entity": "one despatch line of a part's resin to a customer plant",
+  "grain": "plant x part x despatch line",
+  "source": "synthetic"
+ },
+ "world": {
+  "geography": "United States, Midwest (Indiana, Ohio, Michigan, Wisconsin, Illinois)",
+  "currency": "USD",
+  "org_type": "polymer resin distributor",
+  "invented_names": [
+   "Kinnear Polymer Supply",
+   "Bulk Silo Programme",
+   "Sidney Technologies",
+   "Napoleon Molded Products",
+   "Warsaw Injection Molding",
+   "Oshkosh Polymer Products"
+  ],
+  "people": [
+   "Fraser Deloach",
+   "H. Ravensworth",
+   "T. Beaudry",
+   "M. Ostrander",
+   "J. Farkas",
+   "P. Villalobos",
+   "D. Kranz",
+   "S. Nwachukwu",
+   "R. Castellano",
+   "A. Pieterse",
+   "L. Whitcomb"
+  ]
+ },
+ "deliverables": [
+  "hm233_nomination_2028.xlsx"
+ ],
+ "opening_move": "question-first",
+ "driver": "Eligibility for a fixed commitment turns on whether each site's receiving capacity can take one full delivery on top of the stock the site must already be holding when a delivery can land, which is the draw across the supplier's call-off-to-delivery window at the site's own peak on its period profile, so the largest requirements at the smallest receivers drop out, and the residence limit shortens by the same window because the delivery waits behind that stock.",
+ "driver_concrete": "A plant joins the HM-233 silo programme only if its silo can take a 24-tonne T24 discharge on top of the two weeks of draw it must be holding when a load is called off (terms 2.1 has a load called off when the silo, counting loads already called off, is down to the plant's next two weeks on the plan, and the producer can discharge it that day), tested at the plant's busiest two weeks on the period plan, and only if the load then clears inside the six weeks of silo life it has left behind that cover: 9 plants and 9,669 tonnes, against the 15 plants and 15,915 tonnes the empty-silo eight-week reading files.",
+ "stump": "A competent solver builds the qualified requirement, applies 2.4's three limbs with the eight-week rolling minimum on the period plan, tests the silo limb as a static capacity of at least 24 t, and files the eight-week figure; it never asks what the silo is already holding when a load lands, so it keeps the big plants whose silos cannot take a load on top of two weeks' draw and the seasonal plants whose load waits behind that cover past its eight weeks.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task94": "the v3 re-root moves the decisive test from the trough of the period profile (the eight-week minimum, now a solved middle rung) to its peak against the receiving silo, through the cover a continuous supply forces the plant to hold across the call-off window",
+  "task37": "task37 grades completions under a places cap and a fill floor on a cohort schedule; task94 grades a supply tonnage whose plants drop out because a silo cannot hold a load on top of the cover a call-off window forces",
+  "task69": "task69's marketplace builds turn on reconstructing assignment and allocation; task94 turns on a receiving capacity tested at the peak of a forward period profile through a lead-time cover",
+  "task87": "task87 resolves the unit a funding cap counts through a group ruling; task94 tests each plant's silo against a load plus the peak draw across a call-off window",
+  "task28": "different world and move: task94's constraint is a receiving capacity against peak window draw on a forward plan",
+  "task32": "different world and move: task94's constraint is a receiving capacity against peak window draw on a forward plan",
+  "task51": "task51 recovers a register's own reclassification rule; task94 has no recovered rule, the constraint is filed facts composed into a peak test",
+  "task53": "task53 splits addressable volume on a break in one column; task94's drawable set is a two-sided band in silo against peak and trough of the profile, which no column cut reproduces"
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (annual-rate silo test)",
+   "fate": "solved on the portal: both top responses filed the ground truth (reported 2026-09-14); re-rooted the same day",
+   "domain": "supply-chain-logistics",
+   "objective": "forecasting",
+   "gap": [
+    "objective",
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "C",
+    "A"
+   ],
+   "gate_g": "binding_constraint",
+   "decision_type": "quantity_figure",
+   "driver": "A committed volume is the part of a correctly built requirement drawable where a full delivery increment fits the receiving unit and the unit's average rate turns it over inside a shelf-life limit, with the requirement built over every item approved for the grade rather than the grade's own book."
+  },
+  {
+   "architecture": "v2 (eight-week rolling minimum on the period plan)",
+   "fate": "solved on the portal: both top responses filed the ground truth, 15,103 t on 14 plants (reported 2026-10-03); re-rooted the same day",
+   "domain": "supply-chain-logistics",
+   "objective": "forecasting",
+   "gap": [
+    "objective",
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "C",
+    "A"
+   ],
+   "gate_g": "binding_constraint",
+   "decision_type": "quantity_figure",
+   "driver": "Eligibility for a fixed commitment is tested on each site's minimum draw over a rolling window of its period profile rather than on its average rate, and because profile shape is independent of size the committed set is not the top of any reported column and the total falls well below the average-rate reading."
+  }
+ ],
+ "notes": "No ledger row (the note writes it only when the portal reports). Context artifact: the note's planning-system exception (action-message) export, which it says is none of the vocab types; mapped to monitoring_export as the nearest key. Generators: the note names G15 (rival-killer); G7 and G8 are mapped from the mechanism. Pattern A carries the time frame. Answer unit is whole tonnes (count is the nearest key); scoring unit is per tonne of one committed grade, no vocab item. opening_move added from the prompt. v3 (2026-10-03): decisive generator G8 (the largest requirements are the unreachable ones), G11 eligibility on a quantity predicate (silo against load plus peak two-week cover), G7 the call-off window; the eight-week minimum of v2 is now a middle rung. FORCE 2026-10-03, author-authorised override of test.same_driver against task92 v3/v4 (objective, C, binding_constraint): the collision predates this re-root (task94 v1 and v2 carried the same signature in the same batch), task92 is container demurrage with an unrelated driver (driver similarity 0.05 or less), and relabelling the gap as time collides with task98 instead, so the honest label is kept. Personas were typed before the 2026-10-02 name rule; none appears in the corpus index, so they are listed rather than redrawn. Forum: the nomination goes to the producer under schedule 7 after the internal review; org family other (a polymer distributor). Answer to be filled at build.",
+ "forum": "customer_or_counterparty",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "other"
+}

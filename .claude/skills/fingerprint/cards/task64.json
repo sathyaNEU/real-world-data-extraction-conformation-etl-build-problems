@@ -1,0 +1,194 @@
+{
+  "task": "task64",
+  "architecture": "v17",
+  "drawn": "2026-09-05",
+  "slot_note": "build files live under task64/build/ beside the v1 to v12 .bak notes; the design note on disk is titled v17",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "usage-based billing on a background-screening platform: committed quarterly revenue under per-account seat capacity and platform-wide upstream search-source quotas",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "We should file $3,111,552.25 as the committed revenue for the quarter that opened on 1 July 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence, bold markers removed)",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G11",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "unstated in the prompt; the paper is for Rowan Data Systems' Revenue Committee and its forecast of record, against the revenue desk's blended-rate basis",
+  "role_family": "finance_controller",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "usage_meter_2026.csv",
+    "rows": 93379,
+    "entity": "one meter emission: a branch's completed and cancelled reports for one product code in one billing month",
+    "grain": "branch x billing month x product code, calendar 2026 (batch re-statements repeat combinations); the meter is split across three yearly files, 201,818 rows in all",
+    "source": "synthetic (build/generator/generate.py, fixed seed)"
+  },
+  "world": {
+    "geography": "United States, national",
+    "currency": "USD",
+    "org_type": "background-screening verification platform billing staffing agencies per branch and per completed report",
+    "invented_names": [
+      "Rowan Data Systems",
+      "Oakridge Talent Services",
+      "Amberley Personnel Solutions",
+      "Ravensmoor Staffing Services",
+      "Harrowgate Placement Group",
+      "Kestrel Placement Group"
+    ]
+  },
+  "deliverables": [
+    "commitment_2027q3.pdf",
+    "branch_commitment_panel.csv",
+    "closed_period_reconciliation.tsv",
+    "account_integrity_review.json",
+    "commitment_workings.py",
+    "commitment_panel.png"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a supply ceiling on a grouping orthogonal to the partition the contract and every other constraint use, so a flawless per-partition capacity model overstates the forward total until the cross-partition shortfall is allocated by a rule recovered as the unique fit to a log of refused orders.",
+  "driver_concrete": "Platform-wide monthly quotas on upstream search sources bind in ten source months of 2027Q3 on top of each account's seat ceiling, cutting 194,035 of 783,009 reports, with the shortfall allocated by the draw discipline order_returns.csv pins, so the seat-only $3,951,912.75 becomes $3,111,552.25 on schedule R5.",
+  "stump": "A competent solver gates demand on activation, applies each account's seat ceiling with carry and the filed draw order, prices on R5 and files $3,951,912.75 (27.01 per cent high), because every grouping it forms is by account and it never forms the product-month grouping the source quotas bind on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task64": "v17's ceiling is a platform-wide source quota on a product-month grouping orthogonal to the account partition, where v2 to v4 turned on the per-account seat ceiling that v17 keeps as rung 2; v13 to v16 share v17's rung and differ only in how its allocation rule and applicability were pinned"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "2026-09-01; solved, 0 per cent stumped (the response filed USD 304,800 against 304,812.60, a largest-remainder tie): the corpus scored the shape-rule menu",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "A forward period's per-unit intra-period shape drives a non-linear allowance charge, and the shape rule is chosen from a menu by back-test on closed periods, where the corpus nominates the unique survivor."
+    },
+    {
+      "architecture": "v2",
+      "fate": "2026-09-01; solved exactly, the filed and narrated mechanism executed clause by clause",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A filed per-account capacity ceiling turns the forward figure into a stateful group-and-rank allocation with carry-forward, which a closed corpus where the ceiling never bound certifies under the wrong method."
+    },
+    {
+      "architecture": "v3",
+      "fate": "2026-09-01; failed determinism Gate A/B answer_contradicts_files (the asserted ceiling never bound, gated demand at 0.59 of capacity); the same round scored 49 and 51 against a bar of 50",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "Contracts start at the window's open while activations stagger through it, so pre-activation demand queues into activation months and concentration pushes units through capacity ceilings, two unfiled coupled effects of opposite sign."
+    },
+    {
+      "architecture": "v4",
+      "fate": "2026-09-02; solved exactly (the asks narrated the construction and the response hardcoded the figure)",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A filed monthly capacity binds for the first time against a forward book refiled after capacity was granted, composed with an activation gate that accepts demand only from each unit's start month."
+    },
+    {
+      "architecture": "v5",
+      "fate": "2026-09-02; solved exactly, twice",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The plan of record is the demand the commitment is struck against, not the population it is struck over: every unit on the master list bills a base charge from activation, including units the plan contracts no volume through."
+    },
+    {
+      "architecture": "v6 to v12",
+      "fate": "2026-09-02 to 2026-09-04: v6 top two 56 and 58 (both missed), v7 29 and 44, v8 and v9 93 and 49, v10 56 and 53, v11 failed determinism Gate C, and v12 was found by a clone check colliding with task56 v6 (shipped) and redrawn",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "A population that bills while emitting no usage, plan or register records sits outside every file the natural pipeline joins, so it has to be restored by anti-joining a decision register against the master list, and the closed record reproduces to the cent without it."
+    },
+    {
+      "architecture": "v13 to v16",
+      "fate": "2026-09-04 to 2026-09-05: v13 failed determinism Gate C (allocation rule unrecoverable), v14 was solved by a live response reading the filed source policy, v15 and v16 failed second and third determinism reviews (the applicability fork, then the product-split integerisation fork)",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11",
+        "G16"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A supply ceiling on a grouping orthogonal to the contract's partition binds across it, with the shortfall's allocation rule first unrecoverable, then filed in prose, then recovered as the unique fit to a refusal log."
+    }
+  ],
+  "notes": "Opening move org-first (vocab other). Drawn as v13 on 2026-09-04 (clone redraw off task56 v6), reached v17 on 2026-09-05. B (returns fit, 3,581 cells, 0 misses) pins only the allocation rule, so it follows none in pattern. Closed billing runs are a second, blind corpus. scoring_unit: reports above allowance plus a base per branch-month. Six deliverables (pre-spec)."
+}

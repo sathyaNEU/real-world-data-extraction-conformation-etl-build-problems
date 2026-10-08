@@ -1,0 +1,102 @@
+{
+  "task": "task44",
+  "architecture": "v2 re-root, cut 4 (decisive rung moved into the measurement window)",
+  "drawn": "2026-08-24",
+  "slot_note": "v1 (Schedule C committed hours) is archived in _backup_r10_before_reroot/; backup folders _bk_gen_preV3 and generator_backup_r7 also sit in the folder.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "fulfillment-warehousing",
+  "niche": "Shared-user e-commerce fulfilment campus deciding which requested carton-flow items get shelf faces at the pre-peak re-slot shutdown",
+  "objective": "experiment-causal",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Move 66 of the 288 items on the desk's request list onto shelf faces on the 4 October shutdown.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers and line wrap removed)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G17",
+    "G11"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs the ABE-2 campus for Marchant Logistics Group",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "pick_transactions_2026q2.csv",
+    "rows": 619915,
+    "entity": "one confirmed pick line in the spring quarter",
+    "grain": "pick confirmation: order line x item x picker shift",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, Pennsylvania (outside Allentown)",
+    "currency": "USD",
+    "org_type": "third-party shared-user e-commerce fulfilment campus",
+    "invented_names": [
+      "Marchant Logistics Group",
+      "ABE-2 campus",
+      "Arborway",
+      "Castello",
+      "Dunmore",
+      "Lorimer"
+    ]
+  },
+  "deliverables": [
+    "peak_reslot_call.py",
+    "reslot_decision_note.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is how many requested items gain under a pilot whose correct pooled effect is a mixture of opposite effects split by a behavioural moderator in no column, and the moderator has to be measured over a prior instance of the future window the decision serves rather than the pilot's own window, which flips membership in both directions.",
+  "driver_concrete": "Eaches per line measured on the prior peak, the quarter the faces are released for, puts 66 of the 288 requested items below the July block's 2.38 boundary against 138 on the spring's lines, the two sets differing on 132 items in both directions.",
+  "stump": "A competent solver files 138 by decomposing the July block, taking the 2.38 eaches-per-line boundary it draws and applying it to the requested items' spring profile without asking which quarter the property should be measured over; two frontier solvers filed exactly this on cut 3.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1, Schedule C committed hours",
+      "fate": "solved exactly four times by four routes (rounds 7 and 9 plus two client-side solves); re-rooted 2026-08-24",
+      "domain": "supply-chain-logistics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "Committed volume converts to labour hours through an unstated composition of two operations, two equations in two line counts, with per-segment standards recovered from two corpora each structurally blind to the other's rule."
+    },
+    {
+      "architecture": "v2 cuts 1 to 3",
+      "fate": "cut 1 solved twice client-side by a cross-sectional group-by; cut 2 failed Gate G (single_conceptual_flip, seasonal confound); cut 3 solved exactly at the decomposition (138), all 2026-08-24",
+      "domain": "supply-chain-logistics",
+      "objective": "experiment-causal",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G17",
+        "G11"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "A pilot's correctly reported pooled gain is a mixture of two opposite effects split by a moderator in no column, and carrying it onto a request with the inverse mix makes the decomposition mandatory."
+    }
+  ],
+  "notes": "Ledger row 44 (line 150) is shifted one column and describes v1; row '44 (v2, re-rooted 2026-08-24)' describes this build. Design note section 2 moves the decisive rung into gap 1 (Gate G forecasting) while its draw table still reads population over time, so time is listed first. G14 mapped from E; G17 supporting; G11 is the face cap, which does not bind (200 spare). Graded call is a count, a designation underneath. Scored on direct pick hours over the release quarter (no key)."
+}

@@ -1,0 +1,80 @@
+{
+  "task": "task17",
+  "architecture": "revision 4, rescoped 2026-09-17",
+  "drawn": "2026-09-17",
+  "slot_note": "original_prompt.txt holds the pre-rescope prompt; answer_key/ holds the August trap register and answer key.",
+  "domain": "economics",
+  "subdomain": "money-credit",
+  "niche": "sectoral countercyclical capital buffer release to the credit segment projected to contract, compiled from supervisory credit returns",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Release the countercyclical capital buffer against large corporate exposures (`NFC_LARGE`). Credit to that segment is projected at -6.9 per cent over the twelve months the release takes effect, the only one of the six segments projected to contract.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "compiler of the credit statistics at the central bank ('I compile the credit statistics')",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "large_exposures_register.csv",
+    "rows": 45916,
+    "entity": "one row is one large-ticket credit facility with its end-2024 balance and status",
+    "grain": "facility at 2024-12-31",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional country (Maravia)",
+    "currency": "MRK",
+    "org_type": "central bank monetary and financial statistics directorate",
+    "invented_names": [
+      "Central Bank of Maravia",
+      "Maravia Handelsbank ASA",
+      "Meridian Kredit ASA",
+      "Aurora Bank Maravia ASA",
+      "MFI-2",
+      "SUP-9"
+    ]
+  },
+  "deliverables": [
+    "ccyb_sectoral_release.docx",
+    "ccyb_release_annex.xlsx",
+    "sector_credit_paths.png"
+  ],
+  "opening_move": "other",
+  "driver": "A mandated normalisation must precede carrying a part-period rate forward, and because two candidates' adjustment factors point in opposite directions in the anchor period, the unadjusted rate names the wrong candidate; the decoy is also depressed by a block of records filed under the wrong category.",
+  "driver_concrete": "Manual s.4.1 requires removing the calendar pattern before carrying 2024Q4 monthly rates forward; agriculture's December effect (-1.26pp) makes its published quarter annualise to about -10.8% while large corporates (+0.46pp) adjust to -6.95%, and six lenders' purpose misclassification further depresses the farm series.",
+  "stump": "Compiles the eight-step pipeline, carries the fourth quarter's published monthly rates forward and files agriculture at about -10.8 per cent (the pre-read's and the Chief Economist's answer), skipping manual s.4.1's calendar adjustment where agriculture's Q4 is its trough and large corporates' its peak.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "revision 2 (August)",
+      "fate": "two frontier solver reports reached NFC_LARGE without the decisive trap, because every hard trap moved a rival and the answer's own series was the loudest signal",
+      "domain": "legacy-other",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Planted compilation defects move only the rival candidates while the answer's own series stays the loudest signal, with the intended decisive trap a block of records coded to the wrong category by security rather than purpose."
+    },
+    {
+      "architecture": "revision 3 (August)",
+      "fate": "one frontier report reached NFC_LARGE on a damped-trend rule, because the misfiled block depressed the decoy series by a constant, so slope-extrapolating rules favoured the answer without the adjustment",
+      "domain": "legacy-other",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A mandated calendar adjustment must precede carrying a part-period rate forward because two candidates' seasonal factors point opposite ways at the anchor quarter, but the decoy's misfiled block was a constant offset, so any slope-extrapolating rule reached the answer without it."
+    }
+  ],
+  "notes": "Design note says Gate G is licensed to fail; the decisive rung itself is a filed calendar adjustment on correct published rates. The pre-rescope tags (Banking & Financial Services, Opportunity Sizing & Decision Support) were off-roster. Manual s.5 was pinned on 2026-09-18 in its minimal form; the fuller procedure is in Tried and rejected."
+}

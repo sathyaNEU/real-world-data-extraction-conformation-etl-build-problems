@@ -1,0 +1,85 @@
+{
+  "task": "task104",
+  "architecture": "v1",
+  "drawn": "2026-10-03",
+  "slot_note": "first build in the author-declared new domain Data Quality Monitoring & Alerting; bar announced by the author as top two under 50, build to 40",
+  "domain": "data-quality-monitoring-alerting",
+  "subdomain": "alerting-noise-on-call",
+  "niche": "choosing the fleet-wide sensitivity of a self-adapting warehouse volume detector for the next on-call rota from a replay of its own year, where a load that alerts never enters the detector's baseline and an alerting load is re-run once before anyone is paged",
+  "objective": "anomaly-detection",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "index_or_score",
+  "answer": "volwatch runs at 3.25 from the 12 October 2026 handover (up from 2.50): the least sensitive threshold that would still have paged the on-call for all seven severity-one incidents that count against a threshold, held there by DRI-26-071, which 3.25 would first have paged for at 08:16 on 3 June 2026 and 3.50 would never have paged for.",
+  "answer_source": "task104/golden/volwatch_threshold_q4_2026.html, first section; task104/submission.md, Final Recommendation",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G16",
+    "G5",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "other",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "head of data reliability at an audio streaming platform",
+  "role_family": "operations_director",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "volume_checks_2025-07-01_2026-09-30.csv",
+    "rows": 42748,
+    "entity": "one scoring attempt of one daily table load by the volume detector",
+    "grain": "monitor x load date x attempt",
+    "source": "synthetic (fictional platform's warehouse telemetry); real NSW public holiday and daylight-saving calendar"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "shift_or_daily_cycle",
+  "org_family": "media_or_publishing",
+  "world": {
+    "geography": "Australia, New South Wales (Sydney)",
+    "currency": "AUD",
+    "org_type": "audio streaming and podcast platform, data reliability team",
+    "invented_names": [
+      "Currawong",
+      "volwatch",
+      "Northgate",
+      "Brightwell",
+      "Mallee",
+      "Wirra",
+      "Tallowood",
+      "Kestrel",
+      "Saltbush"
+    ],
+    "people": [
+      "Christine Fuller",
+      "Hector Carroll",
+      "Garrett Woodard",
+      "Amanda Green",
+      "Peter Morris",
+      "Jessica Perez",
+      "David Rios",
+      "Michelle Perkins",
+      "Robert Owens"
+    ]
+  },
+  "deliverables": [
+    "volwatch_threshold_q4_2026.html",
+    "volwatch_threshold_q4_2026.svg"
+  ],
+  "opening_move": "options-first",
+  "driver": "The decisive quantity is what a self-adapting scorer would have flagged under a setting it never ran at, and because the scorer withholds every flagged observation from its own reference window and the process re-takes a flagged observation before acting, the logged scores and the logged observations both describe only the setting that produced them; re-thresholding the log reproduces the whole closed record exactly yet overstates what a stricter setting catches, since mild early deviations would have entered the reference and masked the rest.",
+  "driver_concrete": "volwatch scores each load against the mean and SD of its last 28 accepted loads, a load that alerts is re-run once and is never accepted, and five alerting loads in a row restart the baseline; at thresholds above today's 2.50 the first mild loads of the slow iOS heartbeat loss (and a short early-commit fact load that 2.50 re-ran) would have entered the baselines and masked the loss, so the least sensitive threshold that still pages for every severity-one incident that counts is 3.25, not the 4.25 the logged z-scores imply.",
+  "stump": "A competent solver re-thresholds volwatch's logged z-scores at each allowed threshold, which reproduces every production alert and page exactly, finds every counting severity-one incident still paged up to 4.25 (the Wirra feed drop, DRI-26-033, binds there) and files 4.25; it never re-runs the detector, so it misses that at 3.50 and above the iOS heartbeat loss of 26 May would have been absorbed into the baselines and never paged (answer 3.25). A solver who does re-run volwatch but on each load's final logged rows lands on 3.75.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task70": "task70 v2 constructs a per-record date from an event log under a class-conditional cut a filed clause sets; task104 constructs no per-record attribute, it re-runs a stateful scorer whose reference window withholds its own flags and whose observations are re-taken only when flagged, because the logged scores are endogenous to the one setting that produced them"
+  },
+  "lineage": [],
+  "notes": "calibration_form 'other': the corpus is the production detector's own scoring log at the production setting, an identity corpus (every logged baseline reproduces exactly only under the true scoring rule) that is blind to settings it never ran at. context_artifact capacity_report: the desk's monthly on-call load report. Domain added to vocab.json on the author's instruction that Data Quality Monitoring & Alerting is a new domain. Opening move recorded as options-first (the first sentence lays out the closed set of thresholds); voice-check's regex classifies it as other."
+}

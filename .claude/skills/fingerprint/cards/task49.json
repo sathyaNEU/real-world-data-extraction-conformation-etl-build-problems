@@ -1,0 +1,64 @@
+{
+  "task": "task49",
+  "architecture": "only",
+  "drawn": "2026-08-25",
+  "slot_note": "",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grantee-financial-health",
+  "niche": "Health trust sizing its obligation to a member working capital line (revolving advance facility) from award-level funded positions",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The Trust should obligate $6,925,000 to the Member Working Capital Line for programme year 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers removed)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "D",
+    "C"
+  ],
+  "generators": [
+    "G2",
+    "G12",
+    "G1",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the Reserve Committee and grants management office of Piedmont Community Health Trust (prompt written in third person)",
+  "role_family": "finance_controller",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "member_expenditure_reports.csv",
+    "rows": 25877,
+    "entity": "one member expenditure report line for an award, service month and cost category, every version kept",
+    "grain": "award x service month x cost category x report version",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, North Carolina",
+    "currency": "USD",
+    "org_type": "community health trust operating a revolving member working capital facility",
+    "invented_names": [
+      "Piedmont Community Health Trust",
+      "Member Working Capital Line",
+      "Reserve Committee"
+    ]
+  },
+  "deliverables": [
+    "working_capital_obligation.py",
+    "member_position_schedule.xlsx"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is an unpaid amount that cannot go negative per instrument, so the requirement is floored instrument by instrument before summing, because netting opposite-signed instruments inside one entity makes the position look comfortable at every reporting date, and only the audited control totals for each tail refute the netted build.",
+  "driver_concrete": "Hold each award's position separately, flooring unpaid cost at zero per award and taking each award's grantor cash out of resources, which reproduces audited receivables and refundable advances line by line and qualifies eight of 24 members ($6,912,427.09 of limits, filed $6,925,000) where member-level netting qualifies five.",
+  "stump": "A competent solver files $2,900,000 by rebuilding each member's position month by month and netting each member's awards into one pot, which drops PCM-107, PCM-110 and PCM-170; the netted pipeline still ties to the audited net position, so no self-check alerts it.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Retagged 2026-08-25 from Anomaly Detection to ETL. The in-house round 1 filed the golden exactly and design note section 1b records the build as legal but dead (charter 2.1 to 4.1 read in order are a complete algorithm). G12 is 'G12-adjacent' in the draw. Shape 10: the obligation sums a per-member pass/fail schedule. The 2026-09-13 reconciliation's remark that 1,750,000 is absent from the submission is wrong (it is in the Final Recommendation). Prompt opens situation-first (no key)."
+}

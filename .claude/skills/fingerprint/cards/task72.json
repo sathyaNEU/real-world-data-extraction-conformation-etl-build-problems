@@ -1,0 +1,82 @@
+{
+  "task": "task72",
+  "architecture": "v2",
+  "drawn": "2026-09-06",
+  "slot_note": "v1 is kept as task72/archive/v1-solved-2026-09-06.tgz (lineage only)",
+  "domain": "policy-education",
+  "subdomain": "program-evaluation",
+  "niche": "state adult career-pathways programme delivered through lead grantees: assigning a year's improvement engagement from a decomposition of the milestone-rate fall",
+  "objective": "root-cause",
+  "shape": "12",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "The PY2027-28 improvement engagement is assigned to Maumee Valley Opportunity Council (LG-0426), placed there by Central Ohio and, inside it, by the Columbus West Workforce Center (OH-TS-1075).",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G4",
+    "G2"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "lead of programme evaluation for a state adult career pathways programme",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "service_month_panel.parquet",
+    "rows": 1325923,
+    "entity": "one participant's service in one month at one site under one enrolment spell",
+    "grain": "participant x spell x service month",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Ohio",
+    "currency": "USD",
+    "org_type": "state workforce agency programme run through lead grantees",
+    "invented_names": [
+      "Maumee Valley Opportunity Council",
+      "Miami Valley Career Pathways",
+      "Cuyahoga Workforce Collaborative",
+      "Ohio Valley Training Partnership",
+      "Buckeye Skills Alliance",
+      "Columbus West Workforce Center"
+    ]
+  },
+  "deliverables": [
+    "engagement_assignment_memo.pdf",
+    "movement_tree.png",
+    "network_year_end_checks.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "A movement must be booked to the owner whose agreement covered each piece of service, which for units that transferred mid-period means the origin owner under a filed terms clause, and every booking is a complete partition of the same rows so no total, rate or reconciliation reveals the difference.",
+  "driver_concrete": "Clause 4 of the subaward standard terms keeps service to the 1,706 participants transferred out of Maumee Valley's four Central Ohio sites (5,354 participant-months) under the origin subaward, and composing it with methods note section 3 moves the worst piece from Buckeye Skills Alliance to Maumee Valley at -0.66 pp.",
+  "stump": "A competent solver finds the 1 May 2028 change of hands, books every site-month to the grantee under agreement that month and files Buckeye Skills Alliance at -0.31 pp, never following the 1,706 transferred participants back to their origin sites' subaward under clause 4.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task72": "v2 re-books transferred participants' service to the origin subaward under a terms clause; v1's agreement-holder allocation is now v2's rung 3 decoy"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved on the portal 2026-09-06: both top responses filed the golden in two live rounds (before and after a de-oracle pass); archived and demoted to v2's rung 3",
+      "domain": "policy-education",
+      "objective": "root-cause",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "A movement is allocated to whichever owner held each unit in each period under an effective-dated agreement history rather than to the holder at the close, and both allocations are complete partitions of the same rows so no control total distinguishes them."
+    }
+  ],
+  "notes": "Generators G4 and G2 are mapped from the design note's mechanism text; the note's G1 to G6 are grantee labels, not generator codes. Context artifact is the quarterly regional performance dashboard (ledger). Round 3 on v2 is not recorded in the repo. Submission says 183 generator assertions, ledger 182. opening_move added from the prompt."
+}

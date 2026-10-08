@@ -1,0 +1,154 @@
+{
+ "task": "task107",
+ "architecture": "v4-forecast",
+ "drawn": "2026-10-05",
+ "slot_note": "v4 of slot 107, built on the author's request to complete the slot after the section 10 screen: Forecasting, the provision for the Kerrow Energy Trust's January 2027 Power Credit run",
+ "domain": "nonprofit-grant-making",
+ "subdomain": "giving-strategy-program-funding",
+ "niche": "a community energy trust's forward provision for its next quarterly power-credit run, set before the assessment months are earned, where a processing plant's hiring intake reaches its twelve-month pay step as the assessment window opens",
+ "objective": "forecasting",
+ "shape": "other",
+ "decision_type": "quantity_figure",
+ "answer_unit": "currency",
+ "answer": "Redeem $275,000 for the January 2027 Power Credit run: without the $33,825 October paid the 142 of 199 households in employer K6157's September 2025 intake that its experienced rate takes over their threshold, the run falls below $275,000; carrying October forward asks for $300,000",
+ "answer_source": "task107/submission.md, Final Recommendation; task107/golden/january_2027_drawdown_note.docx; task107/golden/pay_again_2027-01.xlsx",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "A"
+ ],
+ "generators": [
+  "G13",
+  "G6"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "settled_transaction_ledger",
+ "context_artifact": "close_out_summary",
+ "stakeholder_role": "finance manager at a community energy trust",
+ "role_family": "finance_controller",
+ "scoring_unit": "units served",
+ "spine": {
+  "file": "member_earnings_2025-04_to_2026-09.csv",
+  "rows": 58766,
+  "entity": "one member's gross earnings from one employer for one calendar month, as summarised by the payroll data broker",
+  "grain": "member x employer x month",
+  "source": "synthetic (fictional trust's payroll-broker extract); New Zealand calendar"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "nonprofit_or_charity",
+ "world": {
+  "geography": "New Zealand",
+  "currency": "NZD",
+  "org_type": "community energy trust",
+  "invented_names": [
+   "Kerrow",
+   "Kerrow Energy Trust",
+   "Kerrow Lines",
+   "Peranto",
+   "Working Households Power Credit",
+   "Corvan Energy",
+   "Ampleway Power",
+   "Orrel Power",
+   "Brindle Energy",
+   "Quillon Power",
+   "Hearthline Energy",
+   "Kerrow Trust Fund",
+   "Mallowfield Cards",
+   "Brackwater IT"
+  ],
+  "people": [
+   "Toni Fleming",
+   "Levi Edwards",
+   "Amelia Blick",
+   "Renee Miller"
+  ]
+ },
+ "deliverables": [
+  "january_2027_drawdown_note.docx",
+  "pay_again_2027-01.xlsx"
+ ],
+ "opening_move": "other",
+ "driver": "A forward count of units under a line includes a tight group that sits under it only on an entry rate its counterparty lifts at a fixed service anniversary, a step every earlier entrant to that counterparty shows exactly in the transaction history; the group's anniversaries all fall just before the forward window opens, so every trailing, seasonal and per-unit carry-forward route, each of which reproduces every closed period, overcounts.",
+ "driver_concrete": "199 working households in the October 2026 run have an earner in the intake employer K6157 took on between 8 and 26 September 2025; every earlier K6157 hire (April and June 2025) moved from the trainee to the experienced monthly amount in the first full month after twelve months' service, so the intake is on the experienced rate for all of October to December 2026 and 142 of those households go over their threshold ($33,825 of October's credits), while carrying the October run forward, a seasonal ratio from the closed year and household re-tests on July to September earnings all reproduce every closed run.",
+ "stump": "A competent solver projects the January 2027 run by carrying each household's July to September earnings forward (or the October run with the closed year's October-to-January ratio), confirms that the method reproduces every closed run, and files a drawdown about a tenth too high; the step that lands them there is treating the intake's starting-rate pay as their October to December pay, when the employer's own earlier hires show the twelve-month step that takes effect as the window opens.",
+ "mechanism_source": "design_note",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-03",
+   "fate": "solved on the portal (author's report 2026-10-04): both top models filed the golden eight at 5.84; the decisive rung was a replay of filed checks on each incident's delivery with a loud row-count symptom; redrawn on the author's instruction",
+   "domain": "economics",
+   "subdomain": "output-activity",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G1"
+   ],
+   "gate_g": "decomposition_attribution",
+   "calibration_form": "parallel_run_overlap",
+   "driver": "The decisive quantity is the share of past failures a new check could have stopped, and whether a check can see a failure depends on how each source delivers, a property no field records and only each source's own delivery history reveals; a shadow trial run only on sources of one delivery kind reproduces a uniform catch rate exactly and is blind to the other kind."
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-04",
+   "fate": "solved on the portal (author's report 2026-10-04): a top response filed offer at 4.0 and every ask figure exactly; the filed two-sided IV formula and 'literacy block' wording conceded the comparison-receipt construction, and every ask rule sat beside its ask; driver spent",
+   "domain": "policy-education",
+   "subdomain": "program-evaluation",
+   "gap": [
+    "objective",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G3",
+    "G5"
+   ],
+   "gate_g": "decomposition_attribution",
+   "calibration_form": "gold_standard_subsample",
+   "driver": "A lottery pilot's comparison arm received the intervention through practitioners who were trained for treated units and then reassigned into comparison units, a property of who delivered each unit's sessions that is reached only by joining a timetable to a staff directory to a certification register, so scaling the assignment effect by the treated arm's receipt alone understates the effect of the intervention, while an earlier pilot with no reassignment reproduces the one-sided scaling exactly."
+  },
+  {
+   "architecture": "v3-etl",
+   "drawn": "2026-10-04",
+   "fate": "solved on the portal (author's report 2026-10-04): both top responses filed $294,651, the golden; the run's identity closes over filed inputs, conformance was the top rung, the from-scratch basis was the correct one, and the device is exposed to the instrument-repair reading; ETL-run design space in this slot spent",
+   "domain": "nonprofit-grant-making",
+   "subdomain": "giving-strategy-program-funding",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G2"
+   ],
+   "gate_g": "etl_conformance",
+   "calibration_form": "realised_outcome_roster",
+   "driver": "A production pipeline written for a monthly summary that carried a row for every month a person was on a payroll averages each person's last three rows; re-pointed at a feed that records only payments, the same window averages the months that had pay and silently drops the months that did not, which the scheme counts as nil, while every closed quarter the pipeline was validated on reproduces exactly because the summary carried those months."
+  }
+ ],
+ "differentiation": {
+  "task35": "task35 recovers which year an adjustment attaches to and carries the prior year's open stock forward; here nothing attaches or carries over, an identified cohort's earnings step by a fixed amount recovered from its employer's earlier hires.",
+  "task46": "task46 chooses between two clocks for one fitted failure-rate law (register age against reconstructed service exposure); here no law is fitted and no clock is chosen, the step is a contractual pay rise whose month and amount every earlier hire at one employer shows exactly, and the cohort is found by employer, not by age.",
+  "task47": "task47 reweights segment- and phase-conditional yields to a shifted season mix; here no yield is conditioned or reweighted, one employer's intake moves by a fixed pay step and every other household carries forward.",
+  "task57": "task57 v18 places each unit against lease ends and a filed eligibility schedule; here nothing about the forward window is filed, the step is written nowhere and is recovered from pay history.",
+  "task62": "task62 reads a filed instrument's term lapsing at the boundary and admits an excluded population into the base; here no term is filed, the step is recovered from pay history, and it takes households out of the forward count.",
+  "task77": "task77 rolls stock already in flight through stage completion rates recovered from closed cohorts; here there is no pipeline or completion rate, a fixed pay step lands on one employer's intake.",
+  "task89": "task89 differences a stock's movement against an inflow schedule and rolls it to a first passage; here there is no stock-flow identity, the forward count moves on a per-household earnings step.",
+  "task95": "task95 recovers a hidden two-class weight by differencing two dated events across two registers and reweights a conversion rate; here no class is hidden and no rate is reweighted, the affected households are named by their earner's employer and their earnings move by a fixed step."
+ },
+ "notes": "v4 (Forecasting) drawn 2026-10-05 on the author's request to complete the slot after the section 10 screen and built the same day; v1, v2 and v3 in lineage with their portal fates. Built as the strongest legal candidate for a portal read, with its known failing lines stated in the design note and the report: its driver sits close to task46's (a tight cohort crossing a step inside the window) and the intake is visible in a split of the earnings feed by employer. guard.py surface promotes six older forecasting builds on the card signature only, no surface overlap."
+}

@@ -1,0 +1,79 @@
+{
+  "task": "task82",
+  "architecture": "v2, the checkout-credit re-root",
+  "drawn": "2026-09-10",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "engagement-retention",
+  "niche": "first annual loyalty tier determination after a two-brand programme merge, sizing the top-tier welcome-kit purchase order",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Order 1,298 Top Dog welcome kits on the January 16 purchase order, split 749 dog builds, 353 cat builds, and 196 other companion builds.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G19",
+    "G1"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "retry_or_revision_log",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "Pack Rewards loyalty program lead who runs the tier determination and owns the welcome-kit purchase order",
+  "role_family": "product_manager",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "pack_points_ledger_2027.csv",
+    "rows": 202243,
+    "entity": "one points ledger entry posted to a member",
+    "grain": "member x posting",
+    "source": "synthetic (task82/generator)"
+  },
+  "world": {
+    "geography": "United States (program dates on U.S. Eastern)",
+    "currency": "USD",
+    "org_type": "pet retailer's loyalty program after absorbing a second brand's members",
+    "invented_names": [
+      "Fetchwell",
+      "Pack Rewards",
+      "Hazel & Hound",
+      "The Den",
+      "Brightpack",
+      "Top Dog tier"
+    ]
+  },
+  "deliverables": [
+    "pack_rewards_2028_determination_memo.docx",
+    "pack_rewards_2027_member_year.csv"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive move is attributing records the store filed under unindexed one-off keys to the holder a second system's credit ledger assigned them to, joined on a transaction reference, which adds qualifying volume to holders near a threshold and lifts the count above an account-keyed read that reconciles everywhere.",
+  "driver_concrete": "Hazel & Hound purchases The Den credited to a member who gave the membership phone number at a checkout that never signed in sit under one-off customer records, and only the Den ledger's base postings joined on order reference tie them back, carrying 155 members over the $2,400 line (1,143 to 1,298 kits).",
+  "stump": "A competent solver conforms both order stacks on the terms' tender-blind merchandise subtotal, routes Hazel & Hound orders through the link register and provisioned accounts, reconciles to the cent and files 1,143 kits, because it reads the archive by account and never joins the Den ledger's postings on order reference.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (tender-blind merchandise subtotal)",
+      "fate": "solved at ceiling by the designed route in stump-check round R1 on 2026-09-10 (1,128 kits and every review figure); re-rooted to v2 the same day, its route kept as the 1,143 account-read decoy",
+      "domain": "product-analytics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "The governing terms define the qualifying measure on gross value regardless of tender, while the operating ledger and finance read value net of a stored-value credit, so the natural read understates exactly the heaviest qualifiers near a threshold."
+    }
+  ],
+  "notes": "G3 and G19 mapped from the note's prose (entity resolution through a second ledger, etl_conformance primary); the ledger names G1 as v1's tender swap kept below. The register is the retry or revision log family task80 used first (clone check 2026-09-11). v1's pattern and gate_g are unrecorded; gate_g assumed from the unchanged ETL tag."
+}

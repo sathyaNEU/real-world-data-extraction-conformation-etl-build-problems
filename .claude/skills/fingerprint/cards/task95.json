@@ -1,0 +1,65 @@
+{
+  "task": "task95",
+  "architecture": "only",
+  "drawn": "2026-09-14",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "output-activity",
+  "niche": "statutory sawn-timber levy base: the registered mills' output for a levy year forecast from the felling programme and private clearfell licences",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "The Board should determine the 2027 levy base at 937,000 cubic metres of sawn timber.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G6",
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "head of statistics at a statutory timber levy board",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "log_deliveries_2022_2026.csv",
+    "rows": 17334,
+    "entity": "one roundwood consignment delivered from a stand to a destination",
+    "grain": "consignment (stand x month x assortment)",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "Ireland",
+    "currency": "EUR",
+    "org_type": "statutory levy board for sawmills",
+    "invented_names": [
+      "Timber Processing Board",
+      "Timber Processing Levy Order",
+      "Ballyduff Sawmills",
+      "Cloonagh Timber",
+      "Glenmalure Forest Products",
+      "Derrymore Sawmilling"
+    ]
+  },
+  "deliverables": [
+    "levy_base_2027.py",
+    "levy_base_2027_determination.docx",
+    "sawn_output_2027_quarters.svg"
+  ],
+  "opening_move": "number-first",
+  "driver": "A conversion rate that reproduces every closed period is a weighted average over two classes, and the forward period's class weight, fixed long ago and recoverable only by differencing two dated events on each unit across two registers, has moved far outside anything the closed record carried.",
+  "driver_concrete": "Sawlog yield splits by age at first thinning (0.7695 when thinned at 17 to 22 years, 0.2894 at 29 or later), recovered by joining the stand register to the licence register, and the late class is 62.9 per cent of the 2027 harvest base against 14.4 to 15.0 in every settled year, so the blended conversion gives way to a class-by-class 937,000.",
+  "stump": "A competent solver multiplies the 2027 felling programme by the sector conversion that reproduces all four settled years within 1.1 per cent, adds the private clearfell licences and the contracted sawlog, and files about 1,346,000 cubic metres, because splitting the crop on any register column fails Article 5.5 and the thinning-age class sits in no column.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "No ledger row and no portal result in the repo. The note puts pattern A in its pattern cell (carrying the frame) and names the decisive rung S4, a forward regime the closed window never reached; generators G6 and G14 are mapped from the mechanism (the note names none). Articles 5.4 and 5.5 were added 2026-09-14 to close a determinism fork, which the note says weakened Gate F. Answer unit is cubic metres (count is the nearest key). Nearest rival per the submission is 828,000 (11.7 per cent). opening_move added from the prompt."
+}

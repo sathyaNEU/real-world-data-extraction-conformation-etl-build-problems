@@ -1,0 +1,90 @@
+{
+  "task": "task16",
+  "architecture": "build 4 revision 4",
+  "drawn": "2026-09-16",
+  "slot_note": "DATASET_NOTES.md holds builds 1 to 4 and four revisions of build 4; the build on disk is revision 4.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "niche": "one-shot January replenishment buy across six buildings that cannot transfer stock, imported families ordered quarterly and domestic monthly",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Put 493,000 eaches on the January order.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "forecasting",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "none",
+  "stakeholder_role": "replenishment planner at a North American wholesale distributor of electronics and appliances",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "inventory_snapshots.parquet",
+    "rows": 84906,
+    "entity": "one row is one SKU's stock position at one building on one weekly snapshot",
+    "grain": "SKU x building x week, 2024 to 2026",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (six DCs in GA, TX, OH, NJ, MS and NV)",
+    "currency": "USD",
+    "org_type": "wholesale distributor of consumer electronics and appliances",
+    "invented_names": [
+      "Meridian Distribution Co.",
+      "Swiftline Freight Systems",
+      "Pinnacle Express Lines",
+      "Cascade Van Lines",
+      "Northrail Intermodal"
+    ]
+  },
+  "deliverables": [
+    "january_buy_sheet.xlsx",
+    "q1_cover_by_family.html",
+    "goods_received_tie_out.py"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is a sum of per-cell shortfalls each floored at zero, because surpluses cannot transfer between the sites the pooled position adds together, so netting at the pooled grain, which looks balanced, understates the commitment; each cell's cover period also runs to the next arrival on its own supply cadence.",
+  "driver_concrete": "Each region-family is served from exactly one of six buildings and stock never moves between them, so the buy floors each building's shortfall over its arrival-to-next-arrival period at zero before summing, 492,981 eaches, where netting the network (859,057 held against 867,520 needed) gives 443,080.",
+  "stump": "Files about 443,100 eaches (443,080) by netting plan-of-record demand against the network-wide position, which reads as balanced at 859,057 held against 867,520 needed, instead of flooring each building's shortfall at zero before summing.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "build 2 (drop one carrier)",
+      "fate": "three independent frontier reports returned Swiftline off one lane x service groupby, because the lane key encoded the origin DC and cancelled the capacity confounder for free",
+      "domain": "supply-chain-logistics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "The candidate to drop has the largest excess of late outcomes after controlling for a shared origin capacity constraint, with a handling authorisation stranding a rival's volume, but a within-cell contrast on a key that encodes the origin cancels the confounder for free."
+    },
+    {
+      "architecture": "build 3 (drop one carrier, planted delivery partition)",
+      "fate": "found illegal under Gate G v3 on 2026-09-16 (planted_defect_flip on 3,045 fabricated proof-of-delivery dates) and replaced before any portal run",
+      "domain": "supply-chain-logistics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Repairing a planted block of fabricated completion dates inverts the ranking of candidates on excess late outcomes, with duplicated rows inflating every candidate except the answer."
+    },
+    {
+      "architecture": "build 4 revisions 1 to 3 (cover period)",
+      "fate": "rev 1 failed the determinism rehearsal on Gates C, D and E; rev 2 measured 46 and 25 per cent on the portal; rev 3, forks closed, was solved by both top responses at about 95 per cent (2026-09-16)",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "The period a one-shot commitment must cover runs from its own arrival to the next arrival on its supply cadence, which for long-lead sources runs past the planning quarter and for short-lead sources ends inside it, so netting quarter demand errs in opposite directions on the two halves."
+    }
+  ],
+  "notes": "Design note gives Gate G flags (forecasting, with method_or_model_selection) but no gap, pattern or G-code for the revision 4 re-root; G1 to G9 there are build guards. Its written stump sentence is the revision 1 quarter-net path. Build 1 is not described. 'Meridian' also names firms in task17 and task19."
+}

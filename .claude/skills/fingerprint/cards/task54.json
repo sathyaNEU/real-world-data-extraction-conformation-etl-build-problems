@@ -1,0 +1,62 @@
+{
+  "task": "task54",
+  "architecture": "only",
+  "drawn": "2026-08-28",
+  "slot_note": "prompt file is PROMPT.md; goldens under golden/ and generator under build/",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "committing a quarterly replacement buffer of 2 to 8 degree medicine packs for temperature write-offs on multi-drop refrigerated runs under a published consolidation plan",
+  "objective": "anomaly-detection",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Commit a replacement buffer of 1,420 packs for the quarter beginning 1 October 2026.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold sentence)",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G13",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "unstated in the prompt (Amberside's buffer review; design note: cold-chain quality and distribution function inside a specialist wholesaler)",
+  "role_family": "operations_director",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "reefer_telemetry_202508_202510.csv",
+    "rows": 74656,
+    "entity": "one return-air temperature reading from a refrigerated vehicle compartment on a run",
+    "grain": "vehicle run x reading timestamp",
+    "source": "synthetic (one of four period files, 290,136 rows across all four)"
+  },
+  "world": {
+    "geography": "United Kingdom (England: depots at Haydock, Normanton and Avonmouth)",
+    "currency": "GBP",
+    "org_type": "refrigerated distribution arm of a specialist medicines wholesaler",
+    "invented_names": [
+      "Amberside Cold Chain"
+    ]
+  },
+  "deliverables": [
+    "buffer_commitment.pdf",
+    "buffer_provision.py",
+    "planned_buffer_by_depot_month.csv",
+    "buffer_basis_chart.png"
+  ],
+  "opening_move": "other",
+  "driver": "Loss is generated per event and borne by every unit still in custody when it starts, so a forward plan that only re-sequences the same work multiplies the exposure integral at unchanged rates; the rule, recovered from closed investigations and run over the plan's sequence, turns the figure up after every rate correction walked it down.",
+  "driver_concrete": "A qualifying reefer excursion writes off every consignment still aboard at onset (48 of 48 closed investigations), so loss scales with pack-legs; the Q4 plan puts hospital drops last on every merged run, pack-legs per pack go from 2.98 to 8.34, and 48 per 35,676 calls on 1,055,638 planned pack-legs gives 1,420.3 packs.",
+  "stump": "A competent solver strips the withdrawn credits and the resolved Haydock cold-store losses and carries the transit write-off rate per pack onto the plan's volume, filing about 510 packs (790 on QA's depot-rate basis), never computing packs aboard per call on the plan's merged run sequence.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Design note: no A to E pattern is decisive (the unit of independent risk is not the unit of record) and B pins only the machinery, so pattern is none and the decisive G-code is G14-flavoured exposure conditioning. Round 1 (2026-08-28) landed the call at about 95 per cent through prompt leaks; the ask set was rebuilt with no rung touched, so no lineage entry. Context artifact: depot cold-chain scorecard."
+}

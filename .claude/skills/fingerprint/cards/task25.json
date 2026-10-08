@@ -1,0 +1,73 @@
+{
+  "task": "task25",
+  "architecture": "post-round-1 patch (2026-08-15)",
+  "drawn": "2026-08-15",
+  "slot_note": "no design note; the folder holds a generic .claude/skill playbook, a stream_pre_transform copy of the event dumps and one in-house stump report",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "placing one mobile eligibility-determination team across ten county offices against a 30-day determination timeliness standard in a heating-season energy assistance program",
+  "objective": "anomaly-detection",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Deploy the mobile determination team to the Silverbow County office (SLB).",
+  "answer_source": "submission.md, Final Recommendation (first sentence)",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8"
+  ],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs program operations for the Caldera Energy Assistance Program at Caldera DHS",
+  "role_family": "operations_director",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "stream/ceap-case-events-v1-partition-{0,1,2}.jsonl.gz",
+    "rows": 30064,
+    "entity": "one row is one case event (envelope plus payload) on the ceap.case-events.v1 topic, across three partition dumps",
+    "grain": "application x lifecycle event",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US state (Caldera), county offices on 08-series FIPS codes",
+    "currency": "USD",
+    "org_type": "state human services department, energy assistance program operations",
+    "invented_names": [
+      "Caldera DHS",
+      "Caldera Energy Assistance Program",
+      "ELIGIS",
+      "Silverbow County CEAP Office",
+      "Elkhorn County CEAP Office",
+      "Operating Directive DPI-2026-03"
+    ]
+  },
+  "deliverables": [
+    "ceap_surge_deployment_memo.docx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The candidate sitting exactly on the standard today wins a filed forward ranking by projected recoverable lift only after records that a second source holds and the primary feed never received are added to its inflow, while the worst-measured candidate cannot be lifted over the standard at any capacity.",
+  "driver_concrete": "Silverbow, at 85.0 percent today, wins the DPI-2026-03 section 5 projected-lift ranking (24.9 points against Elkhorn's 19.8) only once the 125 Silverbow applications held in wh_applications.csv but never sent to the event topic are added to its inflow and Elkhorn's 51 docs_complete events lacking the income item are refused under manual section 5.4.",
+  "stump": "A solver who rebuilds the event topic perfectly but treats it as the whole record, or counts Elkhorn's 51 docs_complete events that lack the income item, files Elkhorn, the Track A office the stream alone supports.",
+  "mechanism_source": "ledger",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "round-1 build (before the 18:35 data patch, 2026-08-15)",
+      "fate": "in-house stump round 1 on 2026-08-15: both threads named Elkhorn by the directive's gate-then-lift rule, read as solved (Case D); the stream, wh_applications, the activity extract and the directive were patched that evening, moving the answer to Silverbow",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A filed two-stage rule, a feasibility gate on a projected close and then projected lift, applied to a feed rebuilt at the correct attribution grain names the candidate, while the shipped digest's ranking reproduces the wrong measure on an incomplete table."
+    }
+  ],
+  "notes": "Back-fitted labels: gap, pattern and G8 follow the ledger row (objective, C; G8 is the skill's pairing for C). Dual-tagged Anomaly Detection and ETL, carded anomaly-detection. gate_g is my reading: the stump rests on an incomplete event feed and mislabelled completion events, and the shipped digest ranks the offices wrongly. Ledger calibration cell: 'Season-to-date determination log'."
+}

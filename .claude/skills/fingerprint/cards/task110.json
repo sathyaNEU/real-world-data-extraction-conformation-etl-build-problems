@@ -1,0 +1,76 @@
+{
+  "task": "task110",
+  "architecture": "v1",
+  "drawn": "2026-10-06",
+  "slot_note": "author-declared new domain (Accounting, Audit & Forensic Analytics), added to vocab.json 2026-10-06",
+  "domain": "accounting-audit-forensic",
+  "subdomain": "fixed-assets-leases",
+  "niche": "internal audit's re-performance of the last legacy fixed-asset register to migrate: one acquired imaging practice's spreadsheet register conformed to the group ledger's load schema for a 1 January 2027 cutover, accepted only if the rebuilt schedules replay fifteen months of the practice's depreciation postings to the cent; two sister practices went live in July 2026 as the precedent",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "conformed_dataset",
+  "answer_unit": "currency",
+  "answer": "The group ledger will post $951,870 of depreciation on Yacaaba Radiology's assets from January to June 2027.",
+  "answer_source": "task110/submission.md, Final Recommendation; task110/deliverables/cutover_signoff.docx; task110/deliverables/fa_load_2027-01-01.csv",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G16",
+    "G2",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "register",
+  "stakeholder_role": "the group's internal audit manager signing off Yacaaba Radiology's fixed-asset migration for the CFO's go/no-go",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "YCB_GL_detail_2025-07_to_2026-09.csv",
+    "rows": 19280,
+    "entity": "one journal line in Yacaaba Radiology's legacy general ledger",
+    "grain": "journal x line, July 2025 to September 2026",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Australia",
+    "currency": "AUD",
+    "org_type": "diagnostic imaging group; the practice migrating is a four-site regional radiology practice on a spreadsheet register",
+    "invented_names": [
+      "Quandong Imaging Group",
+      "Yacaaba Radiology",
+      "Bremer Radiology",
+      "Strzelecki Imaging",
+      "Wright Accounting Partners"
+    ],
+    "people": [
+      "Cynthia Rice",
+      "Timothy Hill",
+      "Lorraine Wright",
+      "Ronald Lawrence",
+      "Donna Ramirez"
+    ]
+  },
+  "deliverables": [
+    "fa_load_2027-01-01.csv",
+    "cutover_signoff.docx"
+  ],
+  "opening_move": "other",
+  "driver": "Some records are enhancements fitted to another record and were spread over the months that record had left rather than over the filed horizon for their category; the filed horizon replays the closed postings to within a fraction of a per cent and ties every balance because early and late enhancements net out, and only the inherited horizon, reached through a side register that names each enhancement's host, replays them exactly and moves the forward figure.",
+  "driver_concrete": "Yacaaba's upgrades (coil packages, detectors, software platforms, digital retrofits) were depreciated over the remaining life of the imaging system each was fitted to, a link held only in the capital approvals register; the five years the rate card gives options and accessories (also the best single life a sweep finds) ties both trial balances and misses the imaging account by about $375 a month, and only the host horizon replays every posting and puts six upgrades on systems that ran out in September to December 2026 at nil book value, which takes $1,182,333 down to $951,870 for January to June 2027.",
+  "stump": "A competent solver cleans Yacaaba's register, recovers the ledger's conventions (full month in the month bought, computer equipment moved to four years prospectively, the June 2025 impairment, the Bremer Voluson's brought-forward depreciation), gives the unrated Equipment upgrades the five years the card gives options and accessories (which is also the best single life a sweep finds), sees the rebuild tie both trial balance runs within a few thousand dollars and replay every account and month except the imaging account, which it misses by about $375 a month, takes that as immaterial legacy noise, and files a January to June 2027 charge of $1,182,333, 24 per cent high; only the capital approvals register names each upgrade's host, and only the host's remaining months replay every posting to the cent, which puts six upgrades on systems that ran out between September and December 2026 at nil book value.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task110": "same architecture refined before any data was cut: scope narrowed from three practices to Hunter alone and the lure fixed at the filed five-year rate; the decisive rung (an upgrade's horizon taken from its host through a side register, gated by an exact replay) is unchanged"
+  },
+  "lineage": [],
+  "notes": "decisive rung from _measured.md trap 2 (the depreciable unit is the scanner with its upgrades, not the register row), gated by traps 1 and 3 (a migration standard making exact replay of the parallel-run postings the load condition); re-checked 2026-10-06 after the re-scope; shape moved back to 03 because task109 took 07 the same day"
+}

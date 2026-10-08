@@ -1,0 +1,251 @@
+{
+  "task": "task58",
+  "architecture": "v15",
+  "drawn": "2026-08-30",
+  "slot_note": "slot has carried fifteen versions across six worlds; the build on disk is v15, the grain wind-up settlement",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "farm-cooperative grain origination and country-elevator merchandising: winding up a deferred-pricing (Price Later) programme in one settlement run, with crop-share divisions of proceeds, advances and setoff",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The wind-up settlement run of 20 November 2027 pays out $9,450,518.62.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence, bold markers removed)",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G11",
+    "G2",
+    "G10",
+    "G19",
+    "G15"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the grain accounting office and desk of a farmer-owned grain cooperative, preparing the Board's wind-up settlement run (the prompt writes as 'us')",
+  "role_family": "finance_controller",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "valley_city_scale_tickets.csv",
+    "rows": 14588,
+    "entity": "one scale ticket for a load weighed in at the main house, including the house's transfer tickets for station grain",
+    "grain": "load ticket, 2026 and 2027 crops, receiving 1 September to the 31 October close each year",
+    "source": "synthetic (generator/build.py)"
+  },
+  "world": {
+    "geography": "United States, North Dakota",
+    "currency": "USD",
+    "org_type": "farmer-owned grain cooperative with a main elevator and a country station",
+    "invented_names": [
+      "Sheyenne Valley Cooperative",
+      "Sheyenne Ag Transport",
+      "Kling Trucking",
+      "Dakota Bulk",
+      "R&K Hauling"
+    ]
+  },
+  "deliverables": [
+    "windup_settlement_memo.pdf",
+    "windup_settlement_register.csv",
+    "harvest_receipt_conformance.tsv",
+    "harvest_movement_summary.csv",
+    "windup_settlement_panel.png",
+    "windup_settlement.py"
+  ],
+  "opening_move": "other",
+  "driver": "A non-negativity floor does not commute with an entitlement split across a partition, so the split has to be applied first and the floor at the sub-unit grain, and the natural pipeline that nets and floors once at the keyed parent grain understates the total while every control total still ties.",
+  "driver_concrete": "Proceeds are divided among the parties on the division of proceeds before setoff, which reaches only the Debtor's share (security agreement 3.1), and each payee line is floored at nil (terms 3.3), so landlords on 54 underwater accounts are paid and the run is $9,450,518.62, not $7,515,618.34.",
+  "stump": "A competent solver collapses the transfer tickets, scopes to Price Later contracts, then settles one grain account at a time (setoff and nil floor per account, the grain every source system is keyed to) and files $7,515,618.34, 20.47 per cent low, because every control total ties under that order.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task58": "v15's floor is a per-payee nil floor that does not commute with a filed entitlement split (an order of operations), where v8 solved for the smallest supplement clearing every floor under a capped pro-rata distribution (a constrained minimum)"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "retired 2026-08-29, scenario exhausted: a strong solver cleared the whole build (max-flow, the duplicate retransmissions, both join directions)",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "Shared supply admissible to several overlapping demands cannot be counted twice, so the committed quantity is a maximum flow over a bipartite admissibility structure rather than the sum of per-demand availability."
+    },
+    {
+      "architecture": "v2",
+      "fate": "2026-08-29; solved on round 1 by both responses (clause plus back-test); residency-enumeration world, domain and objective not recorded",
+      "domain": "",
+      "objective": "",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive count applies a filed days-held rule per unit summed across record segments, and a closed canvass certifies that summing convention, so the natural reading plus a back-test lands the answer."
+    },
+    {
+      "architecture": "v3",
+      "fate": "2026-08-29; failed the determinism review on Gate G (single_conceptual_flip) although the live model's natural figure was a valid stump",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A class of honest records carrying a non-qualifying location has to be inferred as ineligible through an unsignposted range join and excluded, so the natural count over every held location overstates."
+    },
+    {
+      "architecture": "v4",
+      "fate": "2026-08-29; failed Gate G a second time, judged a lens swap even with the eligibility rule filed",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The same class exclusion with the eligibility rule filed (a majority-of-days test at a qualifying location), carried by a side-of-the-street range join and a per-span floor interaction."
+    },
+    {
+      "architecture": "v5",
+      "fate": "2026-08-29; passed determinism and was solved on round 1 (the solver merged intervals from first principles)",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A filed floor on distinct calendar days held, where the natural implementation sums span lengths and double counts overlapping records, so a summed figure clears floors that the merged-interval figure fails."
+    },
+    {
+      "architecture": "v6",
+      "fate": "2026-08-29; decision re-rooted to a capped which-of-N; no round recorded before the world was replaced by v7 the same day",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "driver": "Under a cap on how many sub-areas one enumeration may cover in a unit, the scored quantity is how concentrated each unit's residual group is at sub-area grain, so the decoys hold the largest groups and the answer the fifth largest, behind an unsignposted join."
+    },
+    {
+      "architecture": "v7",
+      "fate": "2026-08-29; failed determinism on Gate A (the golden did not reproduce) and Gate G (three surface-read flips on a hinge)",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A hinge of the form sum of max(0, floor minus allocation), where each rung is a choice of which correct filed column is the floor and which basis is the allocation."
+    },
+    {
+      "architecture": "v8",
+      "fate": "built 2026-08-29; solved exactly on round 1, 2026-08-30, by a solver that read the split pin and iterated the cap set",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11",
+        "G19"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "The committed figure is the smallest supplement that, distributed with the base allotment under a capped pro-rata formula whose capped set grows with the pot, lifts every member to its floor, so summing shortfalls at the base allotment understates it."
+    },
+    {
+      "architecture": "v9",
+      "fate": "built 2026-08-30; no round recorded; the landed-cost world continued through v10 (unrecorded) and v11",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "A fully filed rulebook whose interactions apply only in the open period prices quantities at grains a per-line pipeline never assembles, while a closed corpus certifies only the base rules and is blind to every interaction."
+    },
+    {
+      "architecture": "v11",
+      "fate": "solved before v12 was built on 2026-08-30; only 'rule decisive, pattern B' is recorded",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "A decisive rule written nowhere is recovered as the unique survivor of a back-test over a closed register of settled cases."
+    },
+    {
+      "architecture": "v12 to v12.1",
+      "fate": "built 2026-08-30; round 1 on v12: one of two solvers landed the figure; v12.1 was then solved exactly with its full ask layer, and the world was declared exhausted (G19 carried only the middle rungs)",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "Which source batch a unit was drawn from is in no file, and the running balance that decides it is consumed by every outflow rather than only the in-scope ones, so the natural inner join drops withdrawals and assigns later orders to batches already exhausted, and batch origin then moves the rate."
+    },
+    {
+      "architecture": "v13 to v14",
+      "fate": "v13 built 2026-08-30 and solved the same day by a live response (958 exact); v14 hardened it (804 payable) and was replaced by v15 the same day with no round recorded (G19 carried only the middle rungs)",
+      "domain": "demographic-social-science",
+      "objective": "etl",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "Payable scope is a hereditary property (a unit qualifies if it includes a member of the origin sample or a descendant of one) that the producing operation's systems truthfully never track, wrapped in operational columns that answer a different true question, so every correction walks the count down."
+    }
+  ],
+  "notes": "Clone check 2026-08-31: Template on Track B against task49 (a non-negativity floor that does not commute with aggregation over a partition, decisive in both); task49 was never delivered and the author kept this build. B corroborates only. Six deliverables (pre-2026-09-05). Opening move situation-first (vocab other). v10 is unrecorded; blank lineage fields are unrecorded."
+}

@@ -1,0 +1,98 @@
+{
+  "task": "task26",
+  "architecture": "round 10",
+  "drawn": "2026-08-16",
+  "slot_note": "submission is submission.txt; answer_key/ holds the trap register; REVIEW_CONTEXT.md and a shelved round-11 runbook wait on detailed review feedback",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "choosing which of seven managed seller programs takes the single FY27 monetization investment slot on post-P07 net program contribution in a managed resale marketplace",
+  "objective": "legacy-retired",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Commit the FY27 monetization investment slot to ATELIER_DIRECT.",
+  "answer_source": "submission.txt, Final Recommendation (first sentence)",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G4",
+    "G1",
+    "G11",
+    "G13"
+  ],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "leads monetization analytics at Alderloop, a managed resale marketplace",
+  "role_family": "research_desk",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "raw/orders_ledger_raw.ndjson",
+    "rows": 13133,
+    "entity": "one row is one order economic document emission with a nested charges array (restated and backfilled orders emit more than once)",
+    "grain": "order x emission",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional",
+    "currency": "USD",
+    "org_type": "managed resale marketplace earning commission and fees on settled orders",
+    "invented_names": [
+      "Alderloop",
+      "Novapay",
+      "ATELIER_DIRECT",
+      "HALLOWAY_HOME",
+      "LOOPBACK_TRADE",
+      "VERGE_OUTLET"
+    ]
+  },
+  "deliverables": [
+    "fy27_monetization_commitment.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "Candidate scores come from executing a delegated rule engine in which two cells have no sanctioning rule and only the counterparty's settlement and payout records refute them, and the forward-window leader's lead is a concluded fixed-scope engagement that does not continue.",
+  "driver_concrete": "ATELIER_DIRECT leads the pinned post-P07 window at $200,136.01 against LOOPBACK_TRADE's $149,906.49 only after the S1-only settlement-class predicate and the trade-in acquisition margin memo are refused in the epoch-8 engine (Novapay settlement ties to the cent only with the margin out) and HALLOWAY_HOME's $197,948.35 from concluded engagement EL-2025-11 is excluded.",
+  "stump": "A solver who runs the epoch-8 engine as shipped, or corrects only the margin memo, files LOOPBACK_TRADE, and one who reconciles the engine but takes the post-P07 window as recorded files HALLOWAY_HOME on a lead that is mostly concluded engagement EL-2025-11; the two round-10 reviews saw one of each.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "rounds 1 to 4 (configuration departs from a fully specified standard)",
+      "fate": "0 of 2 threads stumped in each of four in-house rounds, round 4 matching the key to the penny (2026-08-15)",
+      "domain": "product-analytics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "A prose standard fully specifies the method and a configuration table departs from it, so implementing the standard from scratch and naming the configuration defective picks the candidate."
+    },
+    {
+      "architecture": "round 5 (inverted authority, forward book)",
+      "fate": "solved 2 of 2 in the round-5 in-house stump check (2026-08-15): both refused the closed books for the right reason and the forward read was the natural basis",
+      "domain": "product-analytics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "A correct closed-period measurement names a decoy because the decision is about the forward book, so a cohort transferred at a mid-year transition is re-attributed to its current holder and the closed period is re-priced to the terms now in force."
+    },
+    {
+      "architecture": "rounds 6 to 6.1 (concluded-engagement rung, rogue engine filters)",
+      "fate": "round-6.1 solvers never opened the configuration because the prose standard was computable; round 7 made the engine unavoidable",
+      "domain": "product-analytics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "pick_one_of_n",
+      "driver": "The forward-window leader's lead is a concluded fixed-scope engagement that does not continue, and two configuration filters that no prose clause sanctions suppress the true leader, but the prose alone computes the answer."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern from the ledger row (objective, C); generators mapped from DATASET_NOTES trap names, and the decisive engine-cell defects carry no G-code. Ledger status contested: round 10 drew one unsure and one passed review. Objective was the invalid Opportunity Sizing tag. Round 8 was solved in house; the round-9 pack failed determination on Gates C and E."
+}

@@ -1,0 +1,69 @@
+{
+  "task": "task114",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "",
+  "domain": "business-operations-analytics",
+  "subdomain": "facilities-workplace",
+  "niche": "meeting-room count for the single new office of a consultancy formed by merging two firms, replayed from both legacy offices' reference-year meetings, where meetings between the two offices book no room today and take one on a shared floor",
+  "objective": "descriptive-distribution",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A",
+    "D"
+  ],
+  "generators": [
+    "G6",
+    "G2",
+    "G10"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "workplace planning lead at the merged firm",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "calendar_meetings_attendees.csv",
+    "rows": 250000,
+    "entity": "one invitee on one calendar meeting in the reference year",
+    "grain": "meeting x invitee",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "Canada, Toronto",
+    "currency": "CAD",
+    "org_type": "engineering and planning consultancy formed by a 2025 merger of two firms, moving its two downtown Toronto offices into one floor plate in 2027",
+    "invented_names": [],
+    "people": [
+      "Claudia Hernandez",
+      "Tiffany Kline",
+      "Mary Hurst"
+    ]
+  },
+  "deliverables": [
+    "meeting_rooms_2027.xlsx",
+    "room_demand_fy2026.svg"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is demand that takes a unit of a resource only when two or more of its parties are at the same site that day, a rule the records keep without exception wherever the parties were together; parties split across two sites took nothing, so each site's own records and period reports are exact and adding the sites leaves out the demand that appears once the sites become one.",
+  "driver_concrete": "Every calendar meeting with two or more attendees badged into the same office that day booked a room in that office, and meetings whose attendees were in different offices booked none; on the single 2027 floor those meetings take a room whenever two or more attendees are in, which no room booking and no quarterly utilisation report from either office can show.",
+  "stump": "A competent solver puts both offices' reference-year room bookings on one timeline, takes each working day's peak, and files the lowest room count short on no more than the allowed number of days, which reproduces every quarterly utilisation figure for both offices; the step that lands it there is never asking which meetings booked no room only because their attendees sat in different offices, when on one floor every meeting with two or more attendees in that day takes a room, as the records show for every meeting whose attendees were in the same office.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task33": "task33 truncates a measured elevation at a filed future intervention and picks one of eleven series by forward yield; task114 adds demand a two-site layout never put on the resource and reads a capacity dial off a replay of the closed year, so no series is projected and nothing is truncated."
+  },
+  "lineage": [],
+  "notes": "Draw registered at checkpoint A; deliverables and opening move provisional until the prompt is written. WARN repeat.gate_g answered in the design note (task109 selects between compilation rules a control set arbitrates; here two replay bases no control set can arbitrate). Pattern A is the off-chain form: how a site layout treats a meeting decides whether it takes a room."
+}

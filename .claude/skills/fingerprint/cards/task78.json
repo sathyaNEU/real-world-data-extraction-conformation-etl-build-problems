@@ -1,0 +1,64 @@
+{
+  "task": "task78",
+  "architecture": "only",
+  "drawn": "2026-09-07",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "aftermarket field service on an equipment maker's installed base: planned maintenance site visits sized for a field-network subcontract renewal under a two-interval maintenance schedule",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We commit to 3,642 planned maintenance site visits falling due in service year 2031.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold opening line)",
+  "gap": [
+    "rule",
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "B",
+    "D"
+  ],
+  "generators": [
+    "G16",
+    "G2",
+    "G13",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "plans aftermarket service at Brayford Compression Services",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "unit_meter_readings.csv",
+    "rows": 259962,
+    "entity": "one monthly telemetry reading (cumulative running hours and condition values) for one telemetry-fitted unit",
+    "grain": "unit x month",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United Kingdom, England and Wales",
+    "currency": "GBP",
+    "org_type": "equipment maker's aftermarket service company with own districts and a subcontracted field network",
+    "invented_names": [
+      "Brayford Compression Services"
+    ]
+  },
+  "deliverables": [
+    "sy2031_visit_commitment.pdf",
+    "sy2031_visit_profile.png",
+    "district_service_review.xlsx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive step recovers the unfiled measurement span of a filed classification test by scoring candidate spans against a counterparty's settled claims for the closed period, where exactly one span reproduces every claim, and applying it across the whole population moves a class of units onto a longer cycle with no work due in the forward window.",
+  "driver_concrete": "Schedule 2.1 puts a unit on the 24-month interval when its running hours accumulate at or below its model's nominal rate but never says over what span; of nine spans scored against the subcontractor's 2,387 settled SY2030 claims only between-planned-visits reproduces all of them, putting 2,620 covered units on 24 months and SY2031 at 3,642 site visits.",
+  "stump": "A competent solver who scopes coverage and term, dates first visits off commissioning and collapses due units to site-month visits either never assigns the interval (4,850) or measures duty from the last service event of any kind (4,162, 14.3 per cent high), a span the settlement refuses on 23.9 per cent of its claims.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "A first draw (D&SS energy-assistance reverification due-list) was discarded before data for colliding with task79. Before the section 17 repair a response scored 96 per cent because stores kits keyed on the interval published rung 4; kits now key on the model. Subdomain other: aftermarket field service is outside the five named SC subdomains per the draw table."
+}

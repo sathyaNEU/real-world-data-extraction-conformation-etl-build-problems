@@ -1,0 +1,112 @@
+{
+ "architecture": "v2",
+ "drawn": "2026-10-05",
+ "slot_note": "",
+ "answer": "Glendine Community School (24.8), Clonroad Community College (24.4), Larchfield College (23.1) and Moore Bay Secondary School (21.2) come into the Schools Equity Scheme on 1 September 2027; Harbourview Secondary School (19.2) just misses out.",
+ "answer_source": "submission.md, 1. Final Recommendation",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task100": "v1 turned on building the forward roll at all (exits by the top year, movers and entrants read off labelled records), which a filed clause states; v2 keeps that roll as its fourth rung and turns on which members exit, a class no clause or column carries and only the prior snapshot enumerates.",
+  "task62": "task62 admits an excluded population into a forward base when an instrument lapses at a boundary; here the forward base loses members whose course ends a period early, found by tracing each member across two snapshots.",
+  "task86": "task86 runs an earlier draw on a shared pool forward member by member against a fixed category mix; here no pool is drawn down, the exit class is read from each member's own prior record.",
+  "task95": "task95 recovers a forward class weight by differencing two dated events on each unit; here nothing is estimated, the exit class is enumerated exactly from two snapshots."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-02",
+   "domain": "policy-education",
+   "subdomain": "institutional-finance-aid",
+   "gap": [
+    "time",
+    "objective",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G4",
+    "G13"
+   ],
+   "gate_g": "etl_conformance",
+   "calibration_form": "certified_matrix",
+   "driver": "Each unit is scored on the members it will hold in the period the designation covers, so members the latest snapshot lists under their current holder must be re-attributed across a scheduled transition (exits removed, members holding a place at another holder moved, committed entrants added with attributes read from a different entity's records); because every score is scaled between the extremes of the whole set, re-attributing members at the extreme units moves every other unit's score, and the closed corpus was scored on a snapshot taken inside its own period, so the snapshot reading reproduces it exactly.",
+   "fate": "solved on the portal (author's report 2026-10-05): no response was stumped and the golden was found easily; the decisive rung was the forward roll that the counting clause read against the circular hands over, and every limb of it (exits, movers, entrants) sat on a filed sentence or a labelled column; re-rooted on the author's instruction"
+  }
+ ],
+ "task": "task100",
+ "domain": "policy-education",
+ "subdomain": "institutional-finance-aid",
+ "niche": "which schools an Irish regional education authority puts forward when a national school-support scheme expands, scored from the electoral divisions its pupils live in",
+ "objective": "etl",
+ "shape": "16",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "gap": [
+  "time",
+  "population",
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G9",
+  "G4",
+  "G13"
+ ],
+ "gate_g": "etl_conformance",
+ "calibration_form": "certified_matrix",
+ "context_artifact": "filed_model",
+ "stakeholder_role": "the authority's head of school planning",
+ "role_family": "capacity_planner",
+ "scoring_unit": "per covered member",
+ "forum": "minister_or_cabinet",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "university_or_school",
+ "spine": {
+  "file": "census_returns_2026.csv",
+  "rows": 26529,
+  "entity": "one pupil on one school census return for 30 September 2026 (a school may make several returns; the latest accepted one is of record)",
+  "grain": "return x school x pupil, census of 30 September 2026",
+  "source": "constructed pupil layer over real Pobal HP Deprivation Index electoral divisions (2016 and 2022 editions), the Tailte Eireann / CSO electoral division attribute table and CSO Census 2022 child populations"
+ },
+ "world": {
+  "geography": "Ireland",
+  "currency": "EUR",
+  "org_type": "regional education authority (school planning unit), unnamed",
+  "invented_names": [
+   "Brookmount Secondary School",
+   "Clonroad Community College",
+   "Estuary House",
+   "Feale Court",
+   "Fergus Bridge House",
+   "Glendine Community School",
+   "Harbourview Secondary School",
+   "Larchfield College",
+   "Moore Bay Secondary School",
+   "Mount Kennett Lodge",
+   "Riverside House",
+   "Schools Equity Scheme",
+   "Schools Equity Unit",
+   "Spa Wells Hotel"
+  ],
+  "people": [
+   "Saoirse McLeese",
+   "Giles O'Flaherty",
+   "Duncan Steward",
+   "Connie Rowan",
+   "Siofra O'Daly"
+  ]
+ },
+ "deliverables": [
+  "expansion_return_2027-28.xlsx",
+  "expansion_scores_2027-28.png"
+ ],
+ "opening_move": "constraint-first",
+ "driver": "Each unit is scored on the members it will hold in the forward period, and a member exits on completing a two-stage course; the snapshot records only how many periods each member has been enrolled, and members who skipped an optional interim stage complete one period early, so the exiting class is not the top tier of that count and can be enumerated only by finding the same member already in the final course on the prior period's snapshot, a file kept for another check; the closed corpus was scored inside its own period and never needed exits, and removing the early completers takes out of the selected set the one unit that every tier-based reading selects.",
+ "driver_concrete": "Schools are identified on the pupils they will have in 2027/28, so the September 2026 census has to be rolled across the year end; the census gives each pupil's year in the school, but a pupil who went straight from third year into a Leaving Certificate programme is in its second year in fifth year and leaves in June with the sixth years, which shows only when the same pupil is found in a Leaving Certificate programme on the September 2025 census of record; the certified 2023 identification was made after its own year's census, so no reading of who leaves is tested by it.",
+ "stump": "A solver who reads the counting clause, takes the sixth years out, moves the 44 transfer places and adds the 4,077 accepted first-year places names Glendine, Clonroad, Harbourview and Larchfield with Moore Bay first out, because nothing in the pack says who finishes in June; 77 fifth years are already in the second year of a Leaving Certificate programme and leave too, which shows only when the same pupil is found on one in the September 2025 census of record, and 16 of them are Harbourview's (seven living at the Kilrush centre), so Harbourview falls to fifth behind Moore Bay.",
+ "notes": "v2 re-root 2026-10-05 after the v1 portal solve. Same slot, same world, same prompt and deliverables; the decisive rung moves from the forward roll (G4, now rung 4 of six) to the exit class behind an unsignposted join to the prior census (G9, never drawn before). Answer by code: L16, C04, L08, C09 (first out C05). Pack 18 files, generator 170 assertions, verifier 115 checks, two builds byte-identical. Role family re-keyed from programme_officer to capacity_planner at the re-root: the prompt's role is unchanged (head of school planning at a regional education authority, a unit that plans school places and provision), and that family describes it more truthfully than a programme or grants officer; the first key was the slot's provisional choice."
+}

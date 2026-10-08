@@ -1,0 +1,66 @@
+{
+  "task": "task84",
+  "architecture": "only",
+  "drawn": "2026-09-10",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "acquisition-growth",
+  "niche": "paid user acquisition across ad networks at a metro-by-metro consumer dating app: a cost-per-new-payer rise driven by duplicate prospecting campaigns bidding against each other",
+  "objective": "root-cause",
+  "shape": "03",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "On 1 July we merge the copied prospecting campaigns: pause every campaign that repeats another live campaign's targeting on the same network and platform (same age band, same metro set) and move its daily budget to the longest-running campaign carrying that targeting, which is 50 pauses and 49 budget changes on Anvil and Prism.",
+  "answer_source": "submission.md, 1. Final Recommendation (first paragraph)",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "head of growth (paid acquisition) at a consumer dating app",
+  "role_family": "product_manager",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "account_devices.parquet",
+    "rows": 150336,
+    "entity": "one device seen by the MMP, mapped to its account",
+    "grain": "device",
+    "source": "synthetic; the largest event table is mmp_install_log.csv (113,570 installs), and the real file is Census PEP Vintage 2023 cbsa-est2023-agesex.csv"
+  },
+  "world": {
+    "geography": "United States, 38 launched CBSA metros (account run on Denver time)",
+    "currency": "USD",
+    "org_type": "consumer subscription dating app",
+    "invented_names": [
+      "Larkspur Labs",
+      "Larkspur",
+      "Anvil",
+      "Prism",
+      "Corridor",
+      "Tessellate"
+    ]
+  },
+  "deliverables": [
+    "july_1_account_changes.csv",
+    "growth_review_june.html"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive move is grouping the entity's own concurrently live units on a composite target key that nothing is keyed on, finding that identical copies compete and raise the price each pays, pricing that premium from the entity's own past episodes of removing a copy, and attributing the largest piece of a cost rise to the growing contested share.",
+  "driver_concrete": "Grouping Anvil and Prism prospecting campaigns by network, platform, age band and metro set finds 49 copied sets whose share of spend rose from 17.1% to 62.0%; the seven 2027 merges price a live copy at 1.2814 times CPM, worth $15.17 of the $40.05 rise in cost per new payer, so the change is 50 pauses into 49 longest-running survivors.",
+  "stump": "A competent solver walks January to May cost per new payer to the cent, nets the bid switch to 5.6 per cent by difference in differences and commits to rolling back the 3-day trial (+$9.47) or a creative sprint, because it never groups campaigns by network, platform, age band and metro set to see the copies bidding against each other.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Spine by row count is account_devices.parquet; the ledger calls the MMP install log the spine and the draw table names the real Census PEP file. Calibration mapped to existing_book_actuals (own change-log merges read against own daily actuals; alternatives pilot_log, retry_or_revision_log). G-codes mapped from prose. Context-artifact type repeats task83 back to back (clone check 2026-09-11)."
+}

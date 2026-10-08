@@ -1,0 +1,111 @@
+{
+  "task": "task45",
+  "architecture": "fourth pack (measured per-van reorder point), after the imprest-list pack was solved",
+  "drawn": "2026-08-22",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "niche": "Field service-parts purchase quantity for a mandatory controller replacement campaign in commercial refrigeration, netting store and van stock",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Place a single purchase order on Monday for 2,596 units of material 10042817, the EEV3200 case controller, one release.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers and line wrap removed)",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G11",
+    "G16",
+    "G2",
+    "G19",
+    "G15"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs parts planning for the Midlands and East service region at Kelworth Refrigeration Services",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "installed_base_positions.csv",
+    "rows": 38497,
+    "entity": "one controller position (one refrigeration circuit on a case) on the current asset register",
+    "grain": "case x circuit",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "UK, Midlands and East service region (England)",
+    "currency": "none",
+    "org_type": "commercial refrigeration maintenance company",
+    "invented_names": [
+      "Kelworth Refrigeration Services",
+      "Merridale",
+      "Northgate",
+      "Aldermoor",
+      "Penrose",
+      "MSB-2214 service bulletin"
+    ]
+  },
+  "deliverables": [
+    "commit_quantity.py",
+    "replenishment_commitment.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a per-holder floor no document states, measured from each holder's own replenishment history and confirmed by back-testing closed cases where full netting fails in one direction, and deducting it from the reconstructed available position lifts the commitment above the full-netting figure.",
+  "driver_concrete": "Each of 86 vans keeps a reorder-point floor (2 to 8 controllers, 491 in total) read off its own 201/202 and fitment ledger history, and only netting store stock plus van stock above that floor reproduces all nine closed campaigns, so 4,345 positions less 1,749 available gives 2,596.",
+  "stump": "A competent solver commits 2,105 by netting the whole regional position, store plus all 1,491 controllers on the 86 vans, against the 4,345 positions (the finance partner's reading), because no document says each van's reorder-point stock is unavailable.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "packs 1 and 2",
+      "fate": "rounds 1 and 2 both solved at the golden on a first pass 2026-08-22 (3,297 and 2,749)",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "The requirement is the serviceable share of a contracted scope, positions still carrying an affected unit, netted against a holding position reconstructed from a movement ledger joined to a field system."
+    },
+    {
+      "architecture": "1,684 pack",
+      "fate": "failed determinism check 2026-08-22 on Gate G (surface_read_rejection, planted_defect_flip)",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A stale register hides already-fitted units and holder stock is hidden behind a consumption posting, so scope and position are corrected for planted defects."
+    },
+    {
+      "architecture": "2,648 pack (filed imprest list)",
+      "fate": "round 3 solved 2026-08-22 by lifting per-duty quantities off the filed imprest list without the corpus",
+      "domain": "supply-chain-logistics",
+      "objective": "etl",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A per-holder floor withheld from the available position is read off a filed stocking list and confirmed against closed campaigns."
+    }
+  ],
+  "notes": "Ledger row 45's gap and pattern cells (population into objective, C) describe the earlier packs; its mechanism cell was reconciled to this build. Design note on disk: rule into population, B carrying a measured binding constraint, G2 at rung 1, G19 held to rung 1, G15 on the corpus. Stock status report mapped to monitoring_export (the note calls it its own species); closed campaign files mapped to closed_decision_corpus. Design note names erp_goods_movements.csv (11,496 rows) as its spine."
+}

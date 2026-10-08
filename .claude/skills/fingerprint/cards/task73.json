@@ -1,0 +1,133 @@
+{
+  "task": "task73",
+  "architecture": "world ten",
+  "drawn": "2026-09-11",
+  "slot_note": "",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "SNAP recertification navigator placement at community sites under an appropriation and an eligibility desk's monthly interview allocation",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "Fund navigators for FY2028 at Southgate Head Start, Eastgate Branch Library, Riverside Community Center, Westbrook Family Resource Center and Carter Street Day Center.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G11",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "register",
+  "stakeholder_role": "Benefits Access manager at a county department of social services",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "client_notices_fy2027.csv",
+    "rows": 19617,
+    "entity": "one notice sent to a SNAP household",
+    "grain": "notice",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, unnamed state (fictional Alder County)",
+    "currency": "USD",
+    "org_type": "county department of social services, SNAP benefits access",
+    "invented_names": [
+      "Alder County Department of Social Services",
+      "Benefits Access Unit",
+      "Southgate Head Start",
+      "Carter Street Day Center",
+      "Loon Harbor Town Hall",
+      "Eastgate Branch Library"
+    ]
+  },
+  "deliverables": [
+    "fy2028_navigator_slate.docx",
+    "navigator_desk_fy2028.svg"
+  ],
+  "opening_move": "other",
+  "driver": "A capped slate is bound by a monthly processing allocation whose forward load depends on re-assigning each case's next review interval from the circumstances on file under a filed rule, rather than rolling forward the intervals cases hold today, which moves cases both ways and changes which slate fits.",
+  "driver_concrete": "Households recertified October to March get a new period from the income on file under manual chapter 7, so Loon Harbor's 186 zero-income twelve-month households return inside FY2028 and Carter Street's 96 earners do not, which takes July past the desk's 279 for the Loon Harbor slate and admits Carter Street.",
+  "stump": "A competent solver carries the households' current six-month periods forward to build the FY2028 desk load and files Southgate, Eastgate, Riverside, Westbrook and Loon Harbor ($1,083,197), never re-setting each period from the income on file as manual chapter 7 requires.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "birth-decline world, v1",
+      "fate": "no valid stump (stumping register, 2026-09-06: four responses across this and v2); the cause was reachable by elimination and the planning-basis pin defused the trap. Objective and gate inferred",
+      "domain": "demographic-social-science",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "root_cause_named",
+      "driver": "A decline governed by a closed accounting identity over fully observed inputs is attributed by eliminating the other components, and its real trap, whether an institutional sub-population sits inside the base, was settled in the open by the planning-basis pin determinism required."
+    },
+    {
+      "architecture": "birth-decline world, v2 (re-root onto a capped forward commitment)",
+      "fate": "both live responses still landed the direction (recorded 2026-09-06); the governing identity closed over shipped inputs",
+      "domain": "demographic-social-science",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A capped forward commitment is sized on a served share that is an age mix rather than a constant, so the forward cohort's composition moves the figure, with the age grain pinned for determinism."
+    },
+    {
+      "architecture": "Product Analytics retention redraw",
+      "fate": "R1 solved the call outright; R2 came back 13 points wrong on the headline after a fairness sentence was deleted (2026-09-06); superseded by later worlds. Objective inferred",
+      "domain": "product-analytics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "A movement shared by two collinear causes is apportioned by standardising the partial-exposure group to the base its effect will be applied to, because that group is not a miniature of the base."
+    },
+    {
+      "architecture": "world six",
+      "fate": "R2 after its v2 hardening (2026-09-09): both platform responses solved the schedule and every settlement ask; the certification identity closed over filed documents",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "",
+      "driver": "A certified schedule is composed from a filed credit, a filed batch-replacement rule, de-duplication on a physical-reading grain and band-based attribution of unmatched records, each construction filed or exposed by a habitual hygiene sweep."
+    },
+    {
+      "architecture": "world seven (v3)",
+      "fate": "built on the maturity attack, then an R2 review moved the main call onto a binding constraint; superseded, no outcome recorded in the repo",
+      "domain": "",
+      "objective": "",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "",
+      "driver": "A figure certified months after the extract ties every closed period exactly under the naive basis, and the open tail is completed from an operational registry the natural pipeline never joins."
+    },
+    {
+      "architecture": "world nine (meter-changeout slate)",
+      "fate": "failed its determinism review 2026-09-10 on Gate G (single_conceptual_flip, surface_read_rejection) and on scope; removed from the folder",
+      "domain": "economics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "ranked_slate_under_cap",
+      "driver": "Which whole groups a capped replacement slate takes turned on re-reading a correct record of the same population through a second lens, which the judge classed as a single conceptual flip."
+    }
+  ],
+  "notes": "Second context artifact: the Eligibility Unit's FY2028 staffing plan (capacity_report). Spine per the brief is the notices log; the note calls the 18,072-row members file the spine. Worlds three, four, five and eight are not individually recorded in the repo; lineage holds the worlds the stumping register, supplemental-stumping and other builds' notes describe, with inferred fields said so and unknown ones left blank. Scoring unit stands for benefits kept per navigator dollar. No portal result for world ten recorded. opening_move added from the prompt."
+}

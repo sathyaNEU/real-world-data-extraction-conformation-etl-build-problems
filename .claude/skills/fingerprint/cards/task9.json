@@ -1,0 +1,57 @@
+{
+  "task": "task9",
+  "architecture": "v2 (adds content-clone trap T6 after the previous build was beaten)",
+  "drawn": "2026-08-06",
+  "slot_note": "Partial: no submission.md; problem_statement.md carries the prompt, the correct answer and the author-side lineage and trap spec. The shipped bundle is bundle.zip (target/, 69 partition files named by Unix epoch).",
+  "domain": "product-analytics",
+  "subdomain": "monetization-subscriptions",
+  "niche": "income tier for next year's personalization budget, chosen by a filed two-of-three rule over revenue per session, revenue per user and verified satisfaction",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "fund the very-high-income tier.",
+  "answer_source": "problem_statement.md, 1. The Prompt, Correct answer line",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed owner of next year's personalization budget, with Growth backing low-income and Finance backing very-high-income shoppers",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "interactions/*.csv (14 quarterly partitions)",
+    "rows": 138614,
+    "entity": "one row is one product interaction event",
+    "grain": "user x product x event",
+    "source": "unnamed public e-commerce dataset (users, products, sessions, interactions, purchases, reviews; 10,000 users)"
+  },
+  "world": {
+    "geography": "multi-country synthetic users (US, GB, CA, DE and others)",
+    "currency": "USD",
+    "org_type": "online retailer segmenting shoppers by income tier",
+    "invented_names": []
+  },
+  "deliverables": [],
+  "driver": "Every naive rate favours the volume segment, and the premium segment wins a filed two-of-three rule only after content clones carrying fresh surrogate keys are deduplicated on meaningful columns rather than keys, with dates repaired and ownership taken through the session path.",
+  "driver_concrete": "very_high wins revenue per session ($15.19 against $3.16), revenue per user ($41.55 against $8.29) and verified satisfaction (4.269 against 3.960) in the 2025-06-01 to 2026-05-31 window once cloned sessions and purchases are content-deduped, month spellings repaired and purchases tied to tiers via session_id.",
+  "stump": "A solver who dedupes sessions, purchases and reviews on primary keys, as both submitted solutions did, keeps the cloned very_high sessions and low purchases and files low, which already leads every rate metric (problem_statement.md, trap lattice).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (traps T1 to T5)",
+      "fate": "beaten in part by two submitted solutions, the second also clearing the ownership trap; both deduped on keys only, which prompted the content-clone trap T6 (problem_statement.md)",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Every naive rate favours the volume segment, and the premium segment wins a two-of-three rule only after dates are repaired, ownership is taken through the session path and key-unique duplicate ratings are collapsed on content."
+    }
+  ],
+  "notes": "Untagged; objective and subdomain inferred. Pre-v3 planted-defect build; no gap or A to E pattern applies. Base tables are byte-identical to task3's (users.csv, sessions.csv), so the two share a data surface. Lattice: 58 of 64 correction combinations return low."
+}

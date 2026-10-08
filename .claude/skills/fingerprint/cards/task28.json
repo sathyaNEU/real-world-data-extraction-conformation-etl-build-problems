@@ -1,0 +1,81 @@
+{
+  "task": "task28",
+  "architecture": "v2",
+  "drawn": "2026-08-16",
+  "slot_note": "v1_retired/ holds the retired Wracklyn Marine Trades Alliance build",
+  "domain": "economics",
+  "subdomain": "labor-markets",
+  "niche": "placing one rapid-response dislocated-worker session team on one of six flagged (local area x industry) initial-claims cells for a monthly cycle",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Place the October 2026 rapid response deployment at **HLC-5613, Hallowmere Central / Employment Services**.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8",
+    "G14",
+    "G16",
+    "G17",
+    "G15"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "published_series",
+  "stakeholder_role": "directs the rapid response unit at the state labour department in Hallowmere",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "claims_records_2024_2026.csv",
+    "rows": 125326,
+    "entity": "one row is one initial unemployment insurance claim with its filing and separation dates and employer account",
+    "grain": "claim",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional US-style state (Hallowmere)",
+    "currency": "none",
+    "org_type": "state labour department rapid-response unit",
+    "invented_names": [
+      "Hallowmere Workforce Response Office",
+      "Hallowmere Central",
+      "Marchwood",
+      "Ardenmoor",
+      "Vellinge Port",
+      "Thistlebrook"
+    ]
+  },
+  "deliverables": [
+    "hallowmere_rapid_response_deployment.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is the share of each flagged excess that one intervention can actually reach, counted as records clustered in single-source batch events, and only that basis reproduces a closed set of realised intervention outcomes, so the largest and statistically worst excesses lose.",
+  "driver_concrete": "HLC-5613 leads on 256 convenable claims (claims in same-employer, same-separation-date actions, 9.48 times the nearest eligible cell), the one basis that reproduces the seventeen filed session rosters at a 0.536 participation coefficient within 7.3 percent while the watch index, raw claims, excess claims and covered employment miss by 131 to 328 percent.",
+  "stump": "A solver who does everything right up to rung 3 (a same-month baseline past the work-sharing stretch, then excess per thousand covered) files MAR-2382 Marchwood / Building Equipment Contractors, the worst rate in the state, whose rise is 48 contractors filing one and two at a time.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (Wracklyn Marine Trades Alliance, Article 14 increment)",
+      "fate": "four in-house rounds on 2026-08-16: rounds 1, 2 and 4 both threads named PFM (solved), round 3 both landed on the SFT decoy; retired the same day for a wrong Axis 1 objective and a decisive chain that read as a planted-defect flip",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The at-stake volume per candidate is conditioned on a portability property recovered through a credential join, after a published gap is level-matched and superseded filings are removed, so the loudest gap is not the most exposed volume."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern follow the ledger row (objective, C); generators come from the design note (G8 decisive, G14 as the empirical pin). gate_g binding_constraint is my reading, since the note gives no Gate G label. The v2 design note says v2 has not been stump-checked while the ledger row reads approved."
+}

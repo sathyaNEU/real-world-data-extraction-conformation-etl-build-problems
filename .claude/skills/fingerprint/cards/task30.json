@@ -1,0 +1,91 @@
+{
+  "task": "task30",
+  "architecture": "round 4 (carrier-choice rung)",
+  "drawn": "2026-08-17",
+  "slot_note": "REPAIR_PLAN.md and REPAIR_PLAN_R4.md sit beside the design note",
+  "domain": "economics",
+  "subdomain": "prices-inflation",
+  "niche": "choosing which CPI item group moves from field price collection to retailer transaction data, scored on predicted source divergence times basket weight",
+  "objective": "forecasting",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "The 2027 source modernisation provision goes to PHT, Pharmacy, health and personal care.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B",
+    "E"
+  ],
+  "generators": [
+    "G16",
+    "G14",
+    "G2",
+    "G1",
+    "G12"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "filed_model",
+  "stakeholder_role": "head of price statistics at the Kelverton Statistical Office",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "parallel_run_transactions.csv",
+    "rows": 45460,
+    "entity": "one row is one retailer transaction-feed record (units sold and net value for one variant at one outlet in one month) from the completed parallel runs",
+    "grain": "outlet x variant x month",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional territory (Kelverton)",
+    "currency": "none",
+    "org_type": "national statistical office, consumer price index compilation",
+    "invented_names": [
+      "Kelverton Statistical Office",
+      "Levenmoor",
+      "Brackwell"
+    ]
+  },
+  "deliverables": [
+    "kso_2027_source_conversion_decision.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The forward gap has a component that cannot be computed for untreated candidates and must be carried across from closed parallel cases on an unstated transmission variable, and only one candidate carrier reproduces the closed cases while the intuitive carrier names a decoy.",
+  "driver_concrete": "PHT leads at 0.103 pp of the all-items change (PKG 0.064, MEA 0.046) only once the feed-minus-field gap is split into a content part and a pack-mix part carried on the within-stratum quantity-discount gradient, fitted on the seven completed conversions at 3.42 (worst residual 0.111 pp) against a dispersion carrier missing by 1.137 pp.",
+  "stump": "A solver who recovers the sales-weighted feed construction but ranks on the content component it can compute without units files MEA, and one who carries the pack-mix component on within-stratum content dispersion instead of the quantity-discount gradient files PKG.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "rounds 1 to 2 (comparable-treated pack-size conditioning)",
+      "fate": "solved in house in rounds 1 and 2 on 2026-08-16 (Case D, both threads PHT; the basket-weight rung collided with raw divergence)",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive quantity is a change measured only over the subset of events the existing procedure leaves unadjusted, recovered through a catalogue join, because adjusted events carry no bias."
+    },
+    {
+      "architecture": "round 3 (pre-link against post-link regime rung)",
+      "fate": "solved in house on 2026-08-17: a solver rebuilt the transaction basis directly from field data and never entered the blend fit where the rung lived",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "A calibration corpus spanning a documented methodology change has to be segmented, because only the post-change cohort measures the quantity the forward decision needs."
+    }
+  ],
+  "notes": "Back-fitted labels: the ledger row (population, E) describes the round 1 to 2 rung, which survives as the content component; round 4 is decided by the carrier choice (Gate G method_or_model_selection), carded rule/B over population/E. Context artifact is a filed consultancy risk model, carded monitoring_export (no filed-model key). No round-4 stump or determinism report. Fictional currency (kd). Context artifact set to filed_model on 2026-10-02, the key added for a filed consultancy or vendor model."
+}

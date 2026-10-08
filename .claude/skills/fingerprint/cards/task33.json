@@ -1,0 +1,109 @@
+{
+  "task": "task33",
+  "architecture": "v5 (with the R4 acceptance-bar repair)",
+  "drawn": "2026-08-18",
+  "slot_note": "",
+  "domain": "legacy-biology",
+  "subdomain": "epidemiology",
+  "niche": "directing one field epidemiology response team to one of eleven open syndromic surveillance signals for the fortnight after the panel",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Direct the field epidemiology response team to SIG-2027-0256, the acute gastrointestinal illness signal at Dunmore Bay Community.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence)",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G16",
+    "G7",
+    "G13",
+    "G14",
+    "G17",
+    "G6",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs the communicable disease surveillance unit at the Vantry Health Protection Agency",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "ed_presentations_daily.csv",
+    "rows": 380016,
+    "entity": "one row is one day's emergency-department presentation count for one syndrome group at one facility, with its report lag",
+    "grain": "facility x syndrome x day",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "fictional territory (Vantry)",
+    "currency": "none",
+    "org_type": "territorial health protection agency, syndromic surveillance unit holding one field team",
+    "invented_names": [
+      "Vantry Health Protection Agency",
+      "Dunmore Bay Community",
+      "Kelby Vale District Hospital",
+      "Saltcombe District Hospital",
+      "Port Hallow",
+      "Meridian North"
+    ]
+  },
+  "deliverables": [
+    "signal_deployment_call.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a forward yield in which a measured elevation scales with the expected forward path and stops at a filed intervention, recovered by back-testing closed actions against an acceptance bar, so additive level-times-days projections name a decoy and the largest past exceedance has already resolved.",
+  "driver_concrete": "Dunmore Bay (SIG-2027-0256) returns 279.7 expected excess presentations against 161.3 because the elevation is carried as a ratio across what the surviving field days are expected to bring (summer term from 12 April) and stops at filed interventions, the one basis inside protocol 2.5's bar on the in-force close-out returns, while flat projections name Kelby Vale.",
+  "stump": "A solver who back-tests the close-out returns and truncates at filed interventions but carries the level in force flat across the surviving days files SIG-2027-0245 Kelby Vale, which leads every flat projection at 171.6, as the in-house round-3 thread and four reviewed solvers did.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "earlier task33 (Kelbrae CPI maintenance cycle)",
+      "fate": "withdrawn before submission for objective mismatch (tagged Opportunity Sizing & Decision Support) and a PDF deliverable; its archive folder is no longer in the repo",
+      "domain": "economics",
+      "objective": "legacy-retired",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "",
+      "driver": ""
+    },
+    {
+      "architecture": "v1 to v2 (ongoing against resolved forward yield)",
+      "fate": "in-house R1 on 2026-08-17: the thread named the then-answer (Highfen GI) at high confidence; the ladder was two rungs deep and annex A dictated the method",
+      "domain": "legacy-biology",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "statistical_rigor",
+      "decision_type": "pick_one_of_n",
+      "driver": "Of many series that breached, the one to act on is the one whose shift is still in force, measured as forward yield over the action window, because the largest past exceedance has already resolved."
+    },
+    {
+      "architecture": "v3 to v4 (intervention truncation)",
+      "fate": "v3 failed the portal determinism review because filed annex A.7 supported the decoy; v4 re-pinned the truncation empirically under clause 2.5 and the evaluated model response named the v4 answer (R2, 2026-08-17)",
+      "domain": "legacy-biology",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "The forward yield stops at a filed future intervention that removes the exposure partway through the action window, recovered by back-testing closed actions, so the candidate with the highest current rate pays out for only part of the window."
+    }
+  ],
+  "notes": "Back-fitted labels: gap and pattern follow the ledger row (time, A); legacy Biology domain, dropped 2026-08-27, never draw it. Generators come from the design note, G16 decisive from v5 and G7 from the v3 truncation rung. DATASET_NOTES gives Gate G method_or_model_selection; the R4 repair restates it as forecasting pinned by method selection. The main call held in house at R3 on the Kelby Vale decoy."
+}

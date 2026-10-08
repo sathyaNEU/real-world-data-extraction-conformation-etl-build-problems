@@ -1,0 +1,97 @@
+{
+  "task": "task22",
+  "architecture": "iteration 10d",
+  "drawn": "2026-08-14",
+  "slot_note": "No root prompt.md or submission.md: both live in answer_key/ (PROMPT.md, SUBMISSION.md).",
+  "domain": "product-analytics",
+  "subdomain": "retention-risk",
+  "niche": "win-back budget to the platform-region with the steepest projected decline in qualifying paid subscribers under a metric standard",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Commit the FY27 win-back programme to DIRECT_WEB / LATAM; its Qualifying Paid Subscribers on 31 March 2026 will be 6,288.",
+  "answer_source": "answer_key/SUBMISSION.md, FINAL RECOMMENDATION",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "Chief Product Officer at Vespera Labs (memo header)",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "subscriber_months_2024_2025.csv",
+    "rows": 104170,
+    "entity": "one row is one aggregate of subscriptions in a state for a platform, plan, region, cohort and paid-through month",
+    "grain": "month x platform x plan x region x cohort x state, 2024 to 2025",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "global (North America, EU, UK and LATAM markets)",
+    "currency": "USD",
+    "org_type": "consumer subscription software company selling on web and app-store platforms",
+    "invented_names": [
+      "Vespera Labs",
+      "Orchard",
+      "Playfront",
+      "Meridia",
+      "MS-014"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "The steepest-declining candidate is masked by two inflations of its own base (records booked by a payment attribute instead of the supply attribute, and an accumulating stock of test records known only by identifier format), so any incomplete correction hands the pick to a guard candidate parked just above.",
+  "driver_concrete": "DIRECT_WEB/LATAM falls from 8,171 to 7,168 (-4.272% a month, 6,288 QPS at 2026-03-31) only after moving direct-web subscriptions from the card's market to the place of supply and removing 615 accumulated QA-harness subscriptions; any partial fix leaves it shallower than DIRECT_WEB/UK's -3.662%.",
+  "stump": "Files DIRECT_WEB/UK (about 2,800 to 3,600 QPS), the segment the December close and the board pre-read name, after an incomplete correction of LATAM's book (harness left in, netted as a flow or decayed, or the instrument's market kept), each reading LATAM shallower than -3.662%.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iterations 1 to 3 (clears or misses the plan floor)",
+      "fate": "25 of 25 panel responses correct; the repair was the rehearsed add-the-missing-rows move",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A block of missing partitions understates one month of a paid-base series, and restoring the missing records shows the projected base clears the floor."
+    },
+    {
+      "architecture": "iterations 4 and 5 (floor verdict inverted)",
+      "fate": "report 5 landed 445,837 against the 445,669 golden, a complete solve",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "Four planted defects (stale paid-state rows, overlapping delta windows, zero-consideration entitlements and an un-backfilled quarantine) inflate the paid base, so only the full repair set shows the projected base misses the floor."
+    },
+    {
+      "architecture": "iterations 6 to 9 (segment pick)",
+      "fate": "each golden was reached by two panels in turn: ORCHARD/EU, ORCHARD/UK and finally DIRECT_WEB/UK at 3,606",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The segment with the steepest projected decline is masked by planted defects on its own book, so a rehearsed cleaning step that is correct for one population and wrong for a look-alike lands on a decoy segment."
+    },
+    {
+      "architecture": "iterations 10 to 10c (no guard segment)",
+      "fate": "both panels named DIRECT_WEB/LATAM, one at the exact figure, so the segment was free to a pipeline that got the mechanics wrong",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The steepest-declining candidate is masked by two inflations of its own base (payment-attribute booking and an accumulating test-record stock), but with no candidate parked just above the truth, incomplete corrections still name it and miss only the figure."
+    }
+  ],
+  "notes": "Tagged Product Analytics and Forecasting in ANSWER_KEY.md. Trap letters (M, N, Z, U, B, R, C) and catalog IDs are not the current vocabulary, so nothing is back-fitted. Iteration 10d added the guard segment and the stale market map. Monetization-subscriptions also fits the subdomain."
+}

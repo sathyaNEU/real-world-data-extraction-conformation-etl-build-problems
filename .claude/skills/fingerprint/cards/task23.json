@@ -1,0 +1,74 @@
+{
+  "task": "task23",
+  "architecture": "iteration 27",
+  "drawn": "2026-08-14",
+  "slot_note": "Prompt file is PROMPT.md; the design record lives in source/generators/build_target.py (the IDEATION.md it cites is not in the folder).",
+  "domain": "product-analytics",
+  "subdomain": "retention-risk",
+  "niche": "Customer Success save-play budget to one account segment, chosen on a calibrated churn model and sized as a rate-card funding ask",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund Mid-Market-Renewal for the Q3 2026 save-play, with a funding ask of $1,023,900 (2026-09-01 → 2026-11-30 window, inside the $1.4M envelope).",
+  "answer_source": "submission.md, Recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "head of Customer Success at a B2B SaaS platform ('I run Customer Success')",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "workspace_signin_weekly_2025_2026.csv",
+    "rows": 59802,
+    "entity": "one row is one account's login and logout counts in one week",
+    "grain": "account x week, 2025-01-06 onward",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "unstated (NAMER, EMEA and APAC regions)",
+    "currency": "USD",
+    "org_type": "B2B SaaS platform, Customer Success function",
+    "invented_names": [
+      "Retention Playbook Council",
+      "MLGov",
+      "GCR-2026-08",
+      "DP-4471"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "role-first",
+  "driver": "Eligibility is gated on entity age and the age field froze at a migration for one block of records, so the winner's young high-value records drop out unless age is reconciled with an independent activity log as a lower bound, on top of a per-segment model calibration test and a value backfill through a free-text identifier.",
+  "driver_concrete": "tenure_months froze at the 2026-03 ledger migration, so 55 young re-papered Mid-Market-Renewal accounts read as onboarding; age as max(telemetry first activity, live ledger) restores 180 eligible, and MMR's Model A miscalibration (19/61 against 0.177, p = 0.009) gives $8.95M saved ARR and a 174-account ask of $1,023,900.",
+  "stump": "Files Enterprise-Anchor (about $5.40M expected saved ARR) after every other repair, because the shipped tenure_months froze at the 2026-03 migration and drops 55 young re-papered Mid-Market-Renewal accounts from the post-onboarding eligible base (125 instead of 180).",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iterations up to 23 (ARR backfill decisive)",
+      "fate": "sealed solvers broke successive iterations (the iter21 solver used the Q4 snapshot as an ARR oracle, patched in iter22); the decisive rung moved to stale tenure at iter24",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "The winner's value base is blank for a block of records and survives only in an external log keyed on an identifier buried in free text, so a blank-skipping mean understates it, while a per-segment calibration test of the risk model singles it out."
+    },
+    {
+      "architecture": "iterations 24 to 26 (uniform tenure freeze)",
+      "fate": "sealed solvers broke iter24 through renewal-date arithmetic and iter25 by treating first telemetry week as a clean clock, and iter26 reports keyed on the uniform offset that iter27 made variable",
+      "domain": "product-analytics",
+      "objective": "forecasting",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "Eligibility is gated on entity age and the age field froze at a migration for one block of records, recoverable from an independent activity log, but a uniform freeze offset and a clean activity clock let either cross-check expose it in one step."
+    }
+  ],
+  "notes": "Untagged: objective inferred (model calibration and expected save). Generator docstring says iter24, its comments run to iter27; its labels (L14 calibration primary, Categories A, D, T) predate the vocabulary, so nothing is back-fitted."
+}

@@ -1,0 +1,59 @@
+{
+  "task": "task6",
+  "architecture": "v2 (revised after the returned review)",
+  "drawn": "2026-08-03",
+  "slot_note": "No prompt file: the prompt is quoted inside submission.md. reconfirmation.md is a superseded blind pass over v1.",
+  "domain": "product-analytics",
+  "subdomain": "experimentation-measurement",
+  "niche": "ship, roll back or scope an auto-replenishment ordering feature after a non-randomised two-quarter pilot, judged on revenue difference-in-differences and a line-level backorder guardrail",
+  "objective": "experiment-causal",
+  "shape": "11",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "Ship Suggested Reorder to every account. Reject the roll-back, and reject keeping it on for only part of the book.",
+  "answer_source": "submission.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "unnamed owner of the release-review call on the Suggested Reorder pilot, with Ops wanting it off and the PM wanting it kept for some accounts",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "order_events.part1.tsv + order_events.part2.psv + order_events.part3.json",
+    "rows": 117540,
+    "entity": "one row is one order line",
+    "grain": "order line",
+    "source": "Wide World Importers sample database (Microsoft)"
+  },
+  "world": {
+    "geography": "USA (Wide World Importers sample)",
+    "currency": "USD",
+    "org_type": "wholesale importer's B2B ordering product",
+    "invented_names": [
+      "Suggested Reorder"
+    ]
+  },
+  "deliverables": [],
+  "driver": "A non-randomised pilot that fails on level comparisons wins once its own record stream hidden in a shadow schema is recovered, a partial exclusion list is completed by pattern, and both the outcome and the guardrail are measured as change against each arm's own baseline.",
+  "driver_concrete": "Ship to every account: with 9,936 _metadata-nested auto-orders recovered and all 760 injected incident rows removed (261 listed), enrolled revenue grows +20.21% against +1.71% (+18.49pp) and the line-level backorder change is -5.39pp against a +2pp breach threshold.",
+  "stump": "A solver who values part3's 9,936 nested orders at zero (-25.14pp), trusts the 261-row incident list (-65.68pp) or compares backorder levels (+4.89pp breach) files roll back (submission.md, Trap register).",
+  "mechanism_source": "submission_only",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (pre-revision)",
+      "fate": "returned in review: the -2.57pp guardrail rested on an undocumented outage exclusion, flipped sign per order, and was a regression-to-the-mean artifact of arms selected on a noisy realised rate (submission.md, Revision log)",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "go_hold_or_stop",
+      "driver": "A non-randomised pilot read as change against own baseline after recovering a hidden record stream and completing a partial exclusion list, with the guardrail unit and threshold unstated and arms selected on a noisy realised rate."
+    }
+  ],
+  "notes": "Untagged; objective inferred (write-up area: Experimentation / A-B Testing). Traps 1 and 2 are planted and the prompt's surface read (revenue per order down, more backorders) is overturned; trap 3 (levels versus change under confounded assignment) is honest-data causal reasoning. Backorder flag is modelled, not WWI's. No design note."
+}

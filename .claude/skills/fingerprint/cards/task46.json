@@ -1,0 +1,84 @@
+{
+  "task": "task46",
+  "architecture": "post-R2 repair (two-plateau rate law, cohort crossing inside the data shadow)",
+  "drawn": "2026-08-24",
+  "slot_note": "target.zip (2026-08-24 13:56) predates the R2 repair and differs from target/ in 9 files (38,559 shop orders against 39,229); target/ was regenerated 2026-09-30 and matches the submission. Design note is DATASET_NOTES.md.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "Cooperative marine chassis pool electing take-or-pay repair-vendor shop capacity for the next pool year",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We should file a Pool Year 2027 reserved-volume election of 10,000 repair orders.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A",
+    "E"
+  ],
+  "generators": [
+    "G6",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "physical_verification",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "runs the Lower Gulf Chassis Pool, a cooperative marine chassis pool serving the Gulf coast ports",
+  "role_family": "operations_director",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "mobile_service_log.csv",
+    "rows": 77069,
+    "entity": "one in-terminal mobile service event on a chassis (a stream the reservation excludes)",
+    "grain": "chassis x service event",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, Gulf coast (New Orleans, Gulfport, Mobile, Baton Rouge)",
+    "currency": "USD",
+    "org_type": "cooperative marine chassis pool",
+    "invented_names": [
+      "Lower Gulf Chassis Pool",
+      "Gulf Star",
+      "Pelican",
+      "Crescent",
+      "Bayline",
+      "Atchafalaya"
+    ]
+  },
+  "deliverables": [
+    "py2027_reservation_model.py",
+    "py2027_reservation_letter.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is a forward burden from a rate law that is stationary only in cumulative service exposure reconstructed from a movement log, onto which a tight cohort crosses a step inside the gap between the data close and the window open, so every trailing and register-age route underbuys.",
+  "driver_concrete": "Rebuild each chassis's service exposure from the movement log (storage does not accrue), estimate the shop rate law (0.19 below eight service years, 0.63 to 0.65 to ten, 1.33 to 1.40 past ten) and roll it over the executed-schedule roster, where the 10,700-unit 2018 cohort crosses the eight-year step after the archive closes.",
+  "stump": "A competent solver files 8,000 off a build-age rate curve on active-service denominators with the executed schedule applied (about 8,074 modeled), as both live stump rounds did (8,500 and 8,000), because register age is not service exposure.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1, before the R2 repair",
+      "fate": "R1 valid stump with determinism PASS; R2 valid stump with judge UNSURE (margin_or_boundary_fragility); repaired 2026-08-24",
+      "domain": "supply-chain-logistics",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "A",
+        "E"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward burden from a steep rate law stationary only in reconstructed service exposure, with a tight cohort crossing the steep band inside the committed window, elected in fine increments that straddled sub-month age conventions."
+    }
+  ],
+  "notes": "Ledger row 46 still cites a 900-unit exit, a 380-unit tranche and survey R squared 0.36 vs 0.05; the submission has Crescent 1,430, Bayline 240 and 0.45 vs 0.04. Off-hire condition surveys mapped to physical_verification though the design note calls them pilot-log family. Spine by row count is the out-of-scope mobile stream; the decision runs on shop_repair_orders.csv (39,229) and pool_movement_log.csv (52,636). Reserved repair orders mapped to per episode."
+}

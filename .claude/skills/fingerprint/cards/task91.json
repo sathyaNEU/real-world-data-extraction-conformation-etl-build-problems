@@ -1,0 +1,86 @@
+{
+  "task": "task91",
+  "architecture": "v2",
+  "drawn": "2026-09-16",
+  "slot_note": "",
+  "domain": "economics",
+  "subdomain": "money-credit",
+  "niche": "banknote series changeover: the print order for an exchange wave, built from the outstanding stock by print vintage",
+  "objective": "forecasting",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We order 33,206 thousand S21 notes for the 2027 production year: 27,747 thousand of the 500 and 5,459 thousand of the 1000.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "B",
+    "A"
+  ],
+  "generators": [
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "published_series",
+  "stakeholder_role": "note supply planner for the Note Issue Department",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "depot_lodgement_ledger.csv",
+    "rows": 40456,
+    "entity": "notes of one denomination and series lodged through one cash centre in one reporting month, per ledger version",
+    "grain": "cash centre x month x denomination x ledger version",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "Sweden",
+    "currency": "SEK",
+    "org_type": "central bank note issue department and its cash depot network",
+    "invented_names": [
+      "Standing Instruction NI-7",
+      "Nordkassa AB",
+      "Vardehantering Mitt AB",
+      "S21 note series"
+    ]
+  },
+  "deliverables": [
+    "note_order_2027.json",
+    "wave2_surrenders_2024.csv",
+    "depot_position_2027.csv"
+  ],
+  "opening_move": "other",
+  "driver": "A stock splits into an active pool and a dormant residue, and one presentation constant recovered from closed conversions applies only to the residue, but units too young to have begun exiting look dormant, and the closed corpus never contained such units so it cannot tell them apart.",
+  "driver_concrete": "Outstanding S04 500 and 1000 notes split by print run into a recirculating pool, which includes the runs printed since 2022 that have not reached the five-year onset age for unfit returns, and a dormant residue presenting at 0.1784, giving 35,254 thousand presentations and an order of 33,206 thousand.",
+  "stump": "A competent solver refuses the pooled share and the flow rate, counts the outstanding stock by print run, finds that taking every run with no recent destruction as the residue reproduces all four settled conversions at 0.1784, and files 24,066 thousand notes, booking five years of recent print runs as dormant.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task91": "the restructure moved the decisive rung from counting the dormant residue to separating runs still inside their onset lag from runs whose exit stream has terminated"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (pre-restructure ladder, to 2026-09-16)",
+      "fate": "portal runs with a top response at 95 to 100 per cent, the last at 98 per cent with response 1 landing the order and response 2 filing the pooled realised share; the vintage blocks were then restructured with the order unchanged",
+      "domain": "economics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "B",
+        "A"
+      ],
+      "generators": [
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A stock splits into a recirculating pool and a dormant residue counted from units whose exit stream has terminated, and one presentation constant recovered from closed conversions applies only to the residue, so transferring the pooled realised share overstates the forward flow."
+    }
+  ],
+  "notes": "v1 and v2 are this card's labels (the note numbers no versions). Ledger row 91 still says built and awaiting the portal; the note records several portal runs and the ladder restructure (dated 2026-09-17 in the note, files dated 2026-09-16; the note's dates are unreliable, some read 2027-01). Pattern A supplies rung 1; G16 is the shape of the rival set. Spine per the brief is the lodgement ledger; the note calls the sorting-line log the spine. Submission names the outgoing series S04, the note S08. Answer unit is thousands of notes. Role mapped to procurement_lead (supply of printed stock). opening_move added from the prompt."
+}

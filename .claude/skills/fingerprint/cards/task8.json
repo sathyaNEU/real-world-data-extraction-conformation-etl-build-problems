@@ -1,0 +1,48 @@
+{
+  "task": "task8",
+  "architecture": "only",
+  "drawn": "2026-08-02",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "engagement-retention",
+  "niche": "win-back vertical sized on licensed seats in force at churn over 2024 churners still gone at the snapshot, rebuilt from three disagreeing churn ledgers",
+  "objective": "descriptive-distribution",
+  "shape": "single-figure",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund the single Q1 win-back campaign targeting the Cybersecurity vertical. It carries 14,601 recoverable seats across 180 accounts, ahead of HealthTech at 13,910. Reject EdTech, the vertical the circulated scorecard recommends, and reject HealthTech, which leads only on uncorrected seat data.",
+  "answer_source": "submission.md, 1. Final recommendation",
+  "gap": [],
+  "pattern": [],
+  "generators": [],
+  "gate_g": "legacy_surface_read",
+  "calibration_form": "none",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "unnamed GA budget holder signing off one win-back campaign (one vertical, a per-seat credit), wanting an independent read of Growth's scorecard",
+  "role_family": "product_manager",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "product_telemetry_2024.jsonl",
+    "rows": 65419,
+    "entity": "one row is one product usage event",
+    "grain": "subscription x event",
+    "source": "RavenStack synthetic SaaS dataset (Rivalytics)"
+  },
+  "world": {
+    "geography": "fictional global SaaS (EMEA entity RS-EU-1)",
+    "currency": "USD",
+    "org_type": "B2B SaaS company (RavenStack, from the source dataset)",
+    "invented_names": [
+      "RS-EU-1"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "other",
+  "driver": "The measure is each churned entity's size at the moment of exit, and the leader flips only after a per-record correction stated as free text in a machine log is applied and a migration-replayed duplicate population is collapsed, while a circulated scorecard ranks the right metric over the wrong cohort.",
+  "driver_concrete": "Cybersecurity wins at 14,601 seats across 180 accounts once 56 Enterprise lines pegged at 150 seats are read as 15 from free-text exceptions in cloudwatch_provisioning_svc.log and 82 CRM-migration replayed tenants are collapsed; uncorrected, HealthTech wins at 16,880.",
+  "stump": "A solver who takes the 56 lines at 150 seats files HealthTech at 16,880 against 15,006 (LINEAGE.md, T9), and one who trusts winback_scorecard_2025q1.html files EdTech at 23,167.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Untagged; objective inferred (write-up area: retention and cohorts crossed with monetization). Pre-v3 planted-defect build with a wrong-methodology scorecard (legacy surface read). LINEAGE.md partly describes an earlier iteration (98 duplicates, structured log payloads); the write-up's trap slate is current. DETERMINISM_REVIEW.md (2026-08-02) judged it DETERMINISTIC."
+}

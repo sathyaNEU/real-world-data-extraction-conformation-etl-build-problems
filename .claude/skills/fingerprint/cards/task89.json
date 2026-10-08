@@ -1,0 +1,173 @@
+{
+  "task": "task89",
+  "architecture": "v12",
+  "drawn": "2026-09-14",
+  "slot_note": "Folder holds v12 of a build redrawn on 2026-09-13 into a new world (Nonprofit); the design note keeps v1 to v7 (the retired 911 world) as history, and its header and sections before 23 are stale.",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grantee-financial-health",
+  "niche": "a community foundation's one-award Stabilisation Fund sized to the payee's projected trough below nil across a twelve-month award term",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The 2026 Stabilisation Fund award is written for 330,000 US dollars.",
+  "answer_source": "submission.md, 1. Final Recommendation (first sentence, bold markup removed)",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G13",
+    "G7"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "head of grants and compliance at a community foundation",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "monthly_financial_returns.csv",
+    "rows": 29736,
+    "entity": "one filed monthly return measure for one grantee",
+    "grain": "organisation x month x measure (84 organisations, July 2021 to May 2026, six measures, long form)",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, Vermont (real county names)",
+    "currency": "USD",
+    "org_type": "community foundation",
+    "invented_names": [
+      "Wheelock Valley Foundation",
+      "Stabilisation Fund",
+      "Peacham Food Shelf",
+      "Craftsbury Community Action",
+      "Chelsea Neighbor Fund",
+      "Barnet Elder Network"
+    ]
+  },
+  "deliverables": [
+    "stabilisation_award_2026.pptx",
+    "applicant_position_2026.xlsx"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "A trailing rate measured as the change in a stock is already net of the inflows that landed in those periods, so the decisive work is to recover the self-funded rate by differencing the known inflow schedule against the observed movement, roll the stock forward against the dated future inflows to a first passage through zero, and read the depth of the trough.",
+  "driver_concrete": "Peacham Food Shelf's own gap (60,000 a month) is scheduled support less the month's movement in unrestricted net assets; rolled from the May 2026 close against its 2027-only payments it crosses nil in September 2026 and bottoms 330,000 under at the February 2027 month end, which guidelines section 5 makes the award.",
+  "stump": "A competent solver adds the term's contracted support to the balance and runs the trailing fall rate, which already nets in past support, so the grants count twice and it files Chelsea Neighbor Fund at 100,000; v11's two portal responses named Peacham but filed 610,000 and 682,000, one carrying a burn near 95,000 a month against the true 60,000.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 and v2 (911 call-volume relief, location re-assessment)",
+      "fate": "v1 solved exactly by two platform responses (USD 46,628); v2 raised every join, never round-tested, its own note admitting the ceiling",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "A filed assessment rule counts events by origin, so each event's origin is recovered from a second log through a keyed join and multi-leg records are collapsed before a filed baseline and rate are applied."
+    },
+    {
+      "architecture": "v3 (911, router-against-delivered population swap)",
+      "fate": "failed the determinism check as a banned scaffold (planted_defect_flip, surface_read_rejection), 2026-09-13; do not rebuild any variant",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The delivered count understates the population the filed rule assesses, so events a router diverted away are recovered from a second traffic record and added back."
+    },
+    {
+      "architecture": "v4 and v5 (911, Rule 7.4.6 staffing gate)",
+      "fate": "v4 solved on the portal through narration; v5 moved the certification date to a Board register and was SOLVED ON THE PORTAL 2026-09-13, both top responses filing USD 67,837 (the shipped-ledger row)",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A filed gate pays only for periods whose staffed hours reach a filed plan, and hours worked by people who held no qualifying status yet, dated only in a second entity's register, do not count, so the gate binds where the floor looks full."
+    },
+    {
+      "architecture": "v6 (911, unrecorded cell-sector re-homing)",
+      "fate": "failed Gate G as planted_defect_flip / surface_read_rejection (instrument-repair test), 2026-09-13",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The comparison periods describe a different territory because an unrecorded re-homing moved events across a boundary, so each historical event's origin is recovered from a key-block structure before the rise is measured."
+    },
+    {
+      "architecture": "v7 (911, handset gesture calls)",
+      "fate": "the whole 911 world retired 2026-09-13 on the reviewer's domain finding (call-centre operations outside the six domains) and a P1 finding on the committed call's shape",
+      "domain": "policy-education",
+      "objective": "anomaly-detection",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "Two collinear causes started days apart, so one cause's events are enumerated directly from a repeat structure (bursts from one source inside a threshold-free gap band) rather than taken as a residual."
+    },
+    {
+      "architecture": "v8 (Nonprofit redraw, award payee by term-scoped commitments)",
+      "fate": "solved by both top responses on the portal, 2026-09-13; the stronger one named the face-value rung in its headline",
+      "domain": "nonprofit-grant-making",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "decision_type": "pick_one_of_n",
+      "driver": "A candidate's unmet need is its filed budget less only the committed support scheduled to land inside the decision's window, not the commitments' face value."
+    },
+    {
+      "architecture": "v9 and v10 (Nonprofit, runway as balance over net burn)",
+      "fate": "v9 came back from the portal with the main limb working, one response at 95 per cent and a wrong ask-6 golden; v10 added ask devices and failed Gate G as single_conceptual_flip, 2026-09-14",
+      "domain": "nonprofit-grant-making",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "decision_type": "pick_one_of_n",
+      "driver": "Time to exhaustion is a stock over the net change in that stock, not the published stock over gross outflow, so a candidate near break-even never exhausts however thin its reserve."
+    },
+    {
+      "architecture": "v11 (Nonprofit, forward roll graded on the payee)",
+      "fate": "portal 2026-09-14: both top responses named Peacham but filed 610,000 and 682,000 against 330,000, failing the stump condition because the payee was the graded call; re-pointed to the sum as v12 (objective tag at v11 not restated in the note)",
+      "domain": "nonprofit-grant-making",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "pick_one_of_n",
+      "driver": "The same forward roll as the build on disk, a self-funded rate recovered from net movement against the inflow schedule and rolled to a first passage, but graded on which candidate crosses first, which absorbs the rate error."
+    }
+  ],
+  "notes": "Submission tags Forecasting; the PART TWO draw records Anomaly Detection as author-pinned and the note never records the re-tag. Pattern A is that draw's (sections 24 and 25 restate gap 1 only). No calibration corpus; the constant self-funded gap is a confirmation oracle. The stump-carrying double count has no G-code. Shape 02 read from the prompt."
+}

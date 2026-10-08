@@ -1,0 +1,72 @@
+{
+  "task": "task42",
+  "architecture": "rebuild v2 (join resolution rule), after the span repair",
+  "drawn": "2026-08-22",
+  "slot_note": "Folder holds the build the ledger records at row 43 (HSAF, Maumee Valley); its design note still names ledger row 42.",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grant-award-portfolios",
+  "niche": "Continuum-of-care lead agency certifying a homelessness prevention and diversion subaward's operating-year assistance for its renewal request",
+  "objective": "etl",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "We certify USD 6,468,921.99 in support of the OY2028 renewal request.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "pilot_log",
+  "context_artifact": "published_series",
+  "stakeholder_role": "grants and compliance lead at Maumee Valley Housing Partnership, lead agency for a five-county continuum",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "bronze/fin_assistance_ledger.csv",
+    "rows": 19366,
+    "entity": "one financial assistance payment line from the finance system, re-delivered months included",
+    "grain": "payment line x delivery extract",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, northwest Ohio (five-county continuum)",
+    "currency": "USD",
+    "org_type": "nonprofit continuum lead agency and pass-through",
+    "invented_names": [
+      "Maumee Valley Housing Partnership",
+      "Housing Stability Assistance Fund",
+      "Homelessness Prevention and Diversion subaward"
+    ]
+  },
+  "deliverables": [
+    "pd_renewal_certification.py",
+    "pd_renewal_request.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive step is a temporal join that charges each transaction to the programme the person was enrolled in over the period the transaction covers, because the enrolment history fans out and every one-row-per-person collapse answers a question about the person rather than the period, while a calibration corpus pins the lower rules and is structurally blind to this one, so the collapse under-certifies.",
+  "driver_concrete": "Each payment is charged to the project the applicant of record was enrolled in over the period the payment covers, a temporal join on the HMIS enrolment history, which separates USD 6,468,921.99 from the USD 4,043,014.35 a most-recent-enrolment collapse gives; the FY2025 pilot of 432 single-enrolment households cannot score it.",
+  "stump": "A competent solver certifies USD 4,043,014.35, 37.1 per cent short, after resolving re-deliveries, the period-covered rule and the per-household maximum, because it collapses each client's enrolment history to the most recent enrolment so the join keeps one row per client.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (shipped current-project dimension)",
+      "fate": "failed determinism review 2026-08-22 on Gate G, banned scaffold (single_conceptual_flip, surface_read_dependency yes); rebuilt the same day",
+      "domain": "nonprofit-grant-making",
+      "objective": "etl",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "A shipped current-state dimension that assigns each person one programme has to be refused in favour of the enrolment in force over each transaction's covered period."
+    }
+  ],
+  "notes": "Draw: rule into population, B decisive with G16 as the label; Gate G method_or_model_selection over decomposition_attribution. The pilot corpus pins the period rule and the household grain only. The four readings of the chargeability clause converge by construction (span repair). Ledger row 43 matches this build. Context artifact is the published system performance measures report (plus a cash-basis GL summary). Forward call on an operating year still open at the cut."
+}

@@ -1,0 +1,89 @@
+{
+  "task": "task43",
+  "architecture": "iteration B, allocation under a cap (the write-up); the folder is mid-iteration C",
+  "drawn": "2026-08-22",
+  "slot_note": "Mid-iteration per _staged/STATE.md: prompt.md, target/, leverage_commitment.py and verify_pack.py are on iteration C (places by lot, 20 places, golden USD 5,598,000); submission.md, DESIGN_NOTE.md and the board note are on iteration B; target.zip still holds B's bundle.",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "giving-strategy-program-funding",
+  "niche": "Foundation committing a fundraising-coaching leverage figure when a cut cap leaves fewer coaching places than accepting grantees",
+  "objective": "experiment-causal",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "The board should commit to USD 6,749,000 of additional money raised from everybody other than the Foundation, and the twenty four contracted engagements should go to the organisations that hold an individual major gift pipeline.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers and line wraps removed); stale against the prompt on disk, see slot_note",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "E"
+  ],
+  "generators": [
+    "G11",
+    "G14"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "gold_standard_subsample",
+  "context_artifact": "published_series",
+  "stakeholder_role": "vice president for programmes at the Halverson Family Foundation",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "contributed_revenue_schedule_fy2019_fy2022.csv",
+    "rows": 48274,
+    "entity": "one named contributed-revenue source line a grantee filed for a fiscal year",
+    "grain": "grantee x fiscal year x named source",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "USA, upper Midwest (Minnesota, Wisconsin, Iowa, North and South Dakota)",
+    "currency": "USD",
+    "org_type": "private family foundation",
+    "invented_names": [
+      "Halverson Family Foundation",
+      "Upper Midwest Council of Nonprofits",
+      "Leverage Commitment Policy",
+      "Fundraising Capacity Engagement",
+      "Upper Midwest Fundraising Benchmark 2025"
+    ]
+  },
+  "deliverables": [
+    "leverage_commitment.py",
+    "board_leverage_note.pdf"
+  ],
+  "opening_move": "role-first",
+  "driver": "The decisive quantity is what a capped set of places is worth when they go to the units the intervention actually moves, where the moderating property is a bimodal hole reachable only by joining a filed schedule to an external directory, so the correctly estimated pooled effect applied blind to the places undercounts.",
+  "driver_concrete": "Count named non-institutional contributed-revenue sources (schedules joined to the Council directory) to split grantees into major-gift pipeline holders (22 or more) and non-holders (2 or fewer); an engagement is worth USD 281,218 in a holder against USD 89,990, and 28 of 42 acceptors hold one, so all 24 places go to them.",
+  "stump": "The design note's stop is USD 5,328,679: refute the raw gap and the finance basis with the draw record, then apply the correctly estimated pooled per-engagement effect to the 24 places blind; but the in-house iteration B solver found the moderator and filed USD 6,747,000.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "iteration A, transport",
+      "fate": "stump held in house (4,762,000 and 4,722,000 against 8,218,000); determinism split, one judge passed it as forecasting, one failed Gate G (single_conceptual_flip); re-rooted 2026-08-22",
+      "domain": "nonprofit-grant-making",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A correctly estimated pooled effect is carried onto a coming cohort whose mix of a moderating property is reversed, the moderator being a bimodal hole behind a join to an external directory."
+    },
+    {
+      "architecture": "iteration C, cap without the allocation instruction (in flight)",
+      "fate": "paused mid-build 2026-08-22 and never run against a solver; prompt.md, target/ and the code are already on it (golden USD 5,598,000, naive 4,274,840)",
+      "domain": "nonprofit-grant-making",
+      "objective": "experiment-causal",
+      "gap": [],
+      "pattern": [],
+      "gate_g": "binding_constraint",
+      "decision_type": "quantity_figure",
+      "driver": "A capped number of places is drawn by lot among acceptors, so the commitment is the places times the composition-weighted worth of one engagement in this cohort, where the moderator that sets that worth is a bimodal hole behind a join to an external directory."
+    }
+  ],
+  "notes": "Main fields follow the write-up (iteration B), which the design note and ledger row '43 (task43 folder)' also describe (the 2026-09-13 reconciliation called it unrecorded). B lost its stump in house: the 'place where they produce most' minute hands over the moderator. Spine rows are iteration C's on-disk pack; target.zip (B) has 49,981. Submission says five withdrawn offers in step 2, three in ask 5. G14 mapped from E. Scoring unit is leverage dollars per placed engagement (no key)."
+}

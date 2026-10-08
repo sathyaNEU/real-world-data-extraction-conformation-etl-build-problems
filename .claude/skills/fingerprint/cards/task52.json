@@ -1,0 +1,66 @@
+{
+  "task": "task52",
+  "architecture": "only",
+  "drawn": "2026-08-26",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "onboarding-activation",
+  "niche": "sizing a non-refundable term block of partner-agency go-live reviews from the guided-support handover clock at a children's activity school booking SaaS",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Coachdesk should contract 146 go-live reviews for the autumn term 2026.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold sentence)",
+  "gap": [
+    "population",
+    "time",
+    "rule"
+  ],
+  "pattern": [
+    "D",
+    "A",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G13",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "unstated in the prompt (Coachdesk onboarding; design note: onboarding operations lead at a vertical SaaS)",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "session_registers_2026.parquet",
+    "rows": 356647,
+    "entity": "one class occurrence with its submitted register",
+    "grain": "account x class slot x coach x session date",
+    "source": "synthetic (2026 part; session_registers_2025.parquet adds 92,114 rows, 448,761 across both)"
+  },
+  "world": {
+    "geography": "United Kingdom (England and Wales: real local authority districts and school-term calendar)",
+    "currency": "GBP",
+    "org_type": "vertical SaaS selling booking, registers and payments software to children's activity schools",
+    "invented_names": [
+      "Coachdesk",
+      "Brackenhall Partners"
+    ]
+  },
+  "deliverables": [
+    "handover_commitment.py",
+    "guided_book_clearance.csv",
+    "autumn_review_block.png",
+    "block_breakdown.xlsx"
+  ],
+  "opening_move": "other",
+  "driver": "The forward count rests on a milestone that fires only when every sub-unit of an entity has reached a threshold of distinct active days, so the entity's clock is its slowest sub-unit on a set-valued unit decorrelated from the obvious activity count; settled cases pin the threshold and rival laws pin none.",
+  "driver_concrete": "An account leaves guided support on the first teaching day on which every coach on its roster has taught on at least 46 separate days (slowest coach binds), the unique integer reproducing all 200 settled 2025-cohort handovers to the day; run through the locked autumn timetable it clears 146 of the 370 accounts.",
+  "stump": "A competent solver fits a register-count handover law on the 200 settled handovers and runs the autumn timetable forward, filing 176 to 181 reviews (or ages the book on a weeks-in-guided-support survival curve and files about 96), never counting separate teaching days per coach with the slowest coach binding.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Single build; deliverables widened to four files on 2026-08-28 with the trap untouched. Shape single-figure: one committed count, pre-library, with weekly and monthly series as stacked asks. Calibration is the platform's support-tier change log (200 settled handovers whose rule is recovered), filed as closed_decision_corpus; realised_outcome_roster also fits."
+}

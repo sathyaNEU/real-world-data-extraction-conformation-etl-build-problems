@@ -1,0 +1,79 @@
+{
+  "task": "task80",
+  "architecture": "v2",
+  "drawn": "2026-09-08",
+  "slot_note": "",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "categorical programme entitlement certification: a district's first self-certified served-student count, with sites on referral or open service under fixed-term designations",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "We certify 5,195 students for PY2029.",
+  "answer_source": "submission.md, 1. Final Recommendation (bold opening line)",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "retry_or_revision_log",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "runs state and federal reporting for Ridgeway Unified School District",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "session_attendance_py2028.csv",
+    "rows": 59752,
+    "entity": "one student's attendance record at one delivered programme session",
+    "grain": "student x session, PY2028",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States, unnamed state",
+    "currency": "none",
+    "org_type": "mid-size public school district certifying a state categorical programme",
+    "invented_names": [
+      "Ridgeway Unified School District",
+      "Extended Learning Programme",
+      "Office of School Support Programmes",
+      "Granger Mill",
+      "Canfield Park",
+      "Kestrel Ridge"
+    ]
+  },
+  "deliverables": [
+    "elp_py2029_site_schedule.csv",
+    "elp_py2029_certification.pdf",
+    "certify_elp_py2029.py"
+  ],
+  "opening_move": "number-first",
+  "driver": "A fixed-term status has to be dated from the criterion event that conferred it, a settled share crossing a filed threshold designating the next period, not from the first period it is observed operating, because operation lagged conferral wherever the event's own paperwork settled late, so observed dating keeps a lapsed status in force and overstates the forward count.",
+  "driver_concrete": "Handbook s.6.4 designates open service the year after a site's settled referral share reaches 55.0 per cent, for four years; dating Canfield Park from its PY2024 criterion (57.1) rather than its first open year PY2026 (reference share 49.2) lapses it with PY2028, so it certifies 367 determination holders, not its 1,418 roster, and the district files 5,195, not 6,246.",
+  "stump": "A competent solver who resolves identifiers, scopes determinations, reads open service off the served-equals-enrolled signature and rolls the filed four-year term from each site's first open year keeps Canfield Park open through PY2029 and files 6,246, 20.2 per cent high.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "solved: both live responses landed its answer exactly (DATASET_NOTES.md and ledger, 2026-09-08); hardened into v2 the same day, its ground truth 6,246 now v2's decoy",
+      "domain": "policy-education",
+      "objective": "etl",
+      "gap": [
+        "population"
+      ],
+      "pattern": [],
+      "gate_g": "",
+      "decision_type": "quantity_figure",
+      "driver": "A group status that changes whom each unit serves is read off an exact all-or-fraction signature in closed-period settled returns, because the live share is suppressed at exactly the groups holding the status, and its filed fixed term is rolled forward from the first period the status is observed."
+    }
+  ],
+  "notes": "Spine by row count is the PY2028 attendance file (delivery asks only); the draw table names the enrolment panel. Settled programme returns filed as operations_log because the draw table calls them fresh against close-out summaries (nearest alternative close_out_summary). v1's pattern and Gate G labels are not on disk; G16 and G19 mapped from the note."
+}

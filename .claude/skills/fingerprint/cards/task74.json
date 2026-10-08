@@ -1,0 +1,83 @@
+{
+  "task": "task74",
+  "architecture": "v2",
+  "drawn": "2026-09-06",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "experimentation-measurement",
+  "niche": "certifying the season-open assortment count of choices against a size-grading standard across a retail stack and a partner platform",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "9,928 choices",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "objective",
+    "rule"
+  ],
+  "pattern": [
+    "D",
+    "B"
+  ],
+  "generators": [],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "runs product data at an online fashion retailer selling its own range alongside a partner platform",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "collective_offers_ss27.jsonl",
+    "rows": 57400,
+    "entity": "one partner-platform offer for one variant (garment, colour, size) as the brand supplies it",
+    "grain": "partner SKU variant x season",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United Kingdom",
+    "currency": "none",
+    "org_type": "online fashion retailer running a retail stack and a partner platform on one site",
+    "invented_names": [
+      "Marchbank",
+      "Marchbank Collective",
+      "Loomstack",
+      "Assortment Data Standard ADS-3.2",
+      "Trading Data Board",
+      "Ashgill Textiles Ltd"
+    ]
+  },
+  "deliverables": [
+    "ss27_assortment_certification.pdf",
+    "ss27_assortment_workbook.xlsx",
+    "certify_ss27_assortment.py"
+  ],
+  "opening_move": "role-first",
+  "driver": "Members are tested against a standard defined at the parent's grain, recovered as the union of an attribute across the parent's whole resolved history (siblings, closed periods, both sources via a re-code chain), and members holding a proper subset are excluded, while the per-member test self-validates because nested reference sets let short members match a smaller valid set.",
+  "driver_concrete": "A choice certifies only across the size scale its pattern is graded to, recovered as the union of size labels the pattern has carried across every colourway, both closed seasons and both trading stacks via the style re-code chain, which marks 3,022 of the 12,950 choices served at season open as partials and certifies 9,928.",
+  "stump": "A competent solver resolves both stacks and the season-open schedule to 12,950, then checks each colourway's own size run against the scale master, where short runs match nested smaller scales exactly (ALPHA-4 inside ALPHA-6, UK-WMN-STD inside UK-WMN-EXT), so only the 980 ragged runs fail and it files 11,970.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (shape 03 cut)",
+      "fate": "failed determinism Gate G on 2026-09-06 as single_conceptual_flip / surface_read_rejection (prompt, memo and chart framed the figure against the 6,200 platform-export count); rebuilt onto shape 07 the same day with the ladder, decisive rung and figures unchanged",
+      "domain": "product-analytics",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "objective",
+        "rule"
+      ],
+      "pattern": [
+        "D",
+        "B"
+      ],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "quantity_figure",
+      "driver": "The same parent-grain union standard decided the figure, but the deliverable was a bridge from a reported source count to the certified count, so every surface read as overturning a reported number."
+    }
+  ],
+  "notes": "Generators empty: no G-code named in note or ledger (nearest by the note: G2 pattern against option grain, G19 and G10 on rungs 0 and 1, G13 on rung 2). Slot held a retention/RCA draw on the morning of 2026-09-06, superseded before any build. Lineage gate_g is the judge's call on the shape 03 cut. golden/ workbook has 2 sheets, the submission says 3."
+}

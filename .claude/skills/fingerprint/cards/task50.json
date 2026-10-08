@@ -1,0 +1,109 @@
+{
+  "task": "task50",
+  "architecture": "v4",
+  "drawn": "2026-08-27",
+  "slot_note": "no design note file in the folder; v4's design lives in generator comments (gen_world.py, build.py s.4d) and ledger row 318",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "finished-goods damage claims in a two-DC furniture distribution flow: which one corrective programme (carrier revert, liner, peak staffing, supplier containment, pack-out and pallet-build QA) a quarter's claims reserve funds",
+  "objective": "root-cause",
+  "shape": "18",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Fund the pack-out and pallet-build QA programme at both distribution centres. The driver it corrects is the dealer pallet build",
+  "answer_source": "submission.md, 1. Final Recommendation (first paragraph, and the opening clause of the second)",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G11",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "physical_verification",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "unstated in the prompt; the requester writes the call for the CFO's claims reserve review (the thread's lead is the Finance claims reserve desk)",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "outbound_order_lines.csv",
+    "rows": 196719,
+    "entity": "one shipped order line",
+    "grain": "order x line, both DCs, all channels, ship dates 2024-01-01 to 2026-08-12",
+    "source": "synthetic (generator/gen_world.py, fixed seed)"
+  },
+  "world": {
+    "geography": "United States, Nevada and Indiana",
+    "currency": "USD",
+    "org_type": "home-furniture company with two distribution centres, dealer and e-commerce channels, one offshore supplier",
+    "invented_names": [
+      "Tallgrass Home Products",
+      "Cardinal Freight Systems",
+      "Bluestem Freight Lines",
+      "PT Meranti Cipta Furnitama",
+      "StockPath WMS",
+      "OrderHub OMS"
+    ]
+  },
+  "deliverables": [
+    "q4_program_case.py",
+    "q4_program_decision.pdf"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is how much of each candidate's exposure falls inside the funded window, recovered by projecting a filed, corpus-validated issue order forward against that window, and it demotes the causally correct, largest-exposure candidate below a rival whose exposure the window contains in full.",
+  "driver_concrete": "Projecting each sku-site queue forward under the drill-validated oldest-receipt-first rule puts only 621 to 796 of the 1,965 live cohort units inside the Sep to Nov funded window (70 to 89 claims), so the containment that names the true cause loses to pallet-build QA at about 170 claims.",
+  "stump": "A competent solver pins the rise on the 2549-2552 press-week cohort, replays the queue to find 1,965 units still on the racks, prices containment on that whole pile (about 221 claims, ahead of the pallet build's 170) and files the supplier containment, never asking what ships inside the funded window.",
+  "mechanism_source": "ledger",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "built 2026-08-25; in-house round 1 (2026-08-26) solved it exactly: the filed rotation rule, the scan corpus and the lot-code decoder composed into a written procedure",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "Outcome records carry no key to the inbound cohorts that cause them, so the per-cohort exposure base exists only after rebuilding each site's issue queue from receipts and shipments under the filed rotation rule, which isolates one production cohort as the driver of the rise."
+    },
+    {
+      "architecture": "v2",
+      "fate": "built 2026-08-26; stumped 2 of 4 models, then a 12-model rollout solved it (operations manual s.4 plus the item master composed into a procedure for the construction)",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive exposure exists in no column and is constructed by joining unit weights and ranking units within each shipment to get the load each one carries, which assigns the excess to the handling process while the visibly causal production cohort has already been withdrawn."
+    },
+    {
+      "architecture": "v3",
+      "fate": "built 2026-08-27; failed the determinism review on Gate G (single_conceptual_flip / surface_read_rejection): a compound chain of overturning correct surface reads",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "time"
+      ],
+      "pattern": [],
+      "generators": [],
+      "gate_g": "legacy_surface_read",
+      "decision_type": "pick_one_of_n",
+      "driver": "One failure mode surfaces on a slow clock, so the graded window is mostly unsurfaced and the forward burden has to be projected with a run-out law taken from a closed episode, overturning the correct-looking window read."
+    }
+  ],
+  "notes": "Opening move is symptom-first (vocab other). B (lot-trace drills, 513 of 513 against 486) only pins the replay machinery, so it follows none in pattern. scoring_unit other: claims avoided on units shipped inside the funded quarter (manual s.6). role_family inferred from the email thread; the prompt names no role."
+}

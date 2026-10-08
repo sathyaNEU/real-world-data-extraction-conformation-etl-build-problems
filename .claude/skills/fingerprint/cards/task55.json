@@ -1,0 +1,101 @@
+{
+  "task": "task55",
+  "architecture": "v3",
+  "drawn": "2026-08-29",
+  "slot_note": "submission.md title still reads 'program withdrawal' from the pre-re-root ask; its blocks describe the committed exposure figure",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "niche": "vendor-side refusal exposure under a grocery retailer's amended freshness (code-date guarantee) program for cultured dairy",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "We should commit to 516,267 dollars of refusal exposure for the first Bluestem compliance review window, periods P1 to P6, November 2, 2026 through May 2, 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation",
+  "gap": [
+    "rule",
+    "time"
+  ],
+  "pattern": [
+    "B",
+    "A"
+  ],
+  "generators": [
+    "G16",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "first-person vendor ('our everyday dairy program'; design note: retail account and trade-compliance manager at a chilled-foods manufacturer)",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "asn_lot_allocations.csv",
+    "rows": 15572,
+    "entity": "one production lot allocated to one purchase-order line on an advance ship notice",
+    "grain": "delivery line x lot",
+    "source": "synthetic (program_delivery_lines.csv is a second spine of 11,092 delivery lines)"
+  },
+  "world": {
+    "geography": "United States (Wisconsin and Minnesota plants, Illinois retailer DC)",
+    "currency": "USD",
+    "org_type": "cultured-dairy manufacturer supplying a grocery retailer's everyday dairy program",
+    "invented_names": [
+      "Lakeshore Cultured Foods",
+      "Bluestem Markets",
+      "JCS Janesville chilled DC"
+    ]
+  },
+  "deliverables": [
+    "bluestem_program_decision.pdf",
+    "deduction_rebuild_fy2025_fy2026.csv",
+    "program_exposure_model.py",
+    "acceptance_floor_outlook.png"
+  ],
+  "opening_move": "other",
+  "driver": "The forward exposure turns on which date each planned unit's expiry runs from, an unstated convention by which one line anchors a whole production cycle to one shared start, so the per-line offset is a mixture, not a constant; identity across the closed lot record pins it, and it moves the forward count under a raised acceptance floor.",
+  "driver_concrete": "On Owatonna P2-L2 one vat feeds a whole production cycle, so each block's sell-by runs 7 or 8 days short of fill plus printed life by which family opens the cycle (vat lead 7 days, unique over 4,462 lot codes); dated that way, 144 of 780 Greek lines fall under the 28-day guarantee and P1 to P6 exposure is 516,267 USD.",
+  "stump": "A competent solver dates every planned lot at fill plus printed life, the rule that reproduces every historical allocation, and commits 72,818 USD (the shipped model response did); one who groups the offset by filler line fits a flat 7 or 8 days and commits 303,650 or 572,034 USD, missing the shared cycle vat.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (forward FEFO conveyor, printed-life dating)",
+      "fate": "solved on round 1, 2026-08-28: the golden was filed by a straight forward FEFO simulation from six filed inputs",
+      "domain": "supply-chain-logistics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": null,
+      "decision_type": "pick_one_of_n",
+      "driver": "A forward conveyor of filed fills, demand and opening stock served first-expired-first-out against raised acceptance floors finds which single candidate's withdrawal clears a vendor-level floor that no historical figure measures."
+    },
+    {
+      "architecture": "v2 (per-line code-date constant)",
+      "fate": "rubric review 2026-08-29: response 1 scored 85.7 per cent and read the 7-day L2 offset off one group-by; re-rooted and the ask moved from the family name to the figure",
+      "domain": "supply-chain-logistics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "rule",
+        "time"
+      ],
+      "pattern": [
+        "B",
+        "A"
+      ],
+      "generators": [
+        "G16",
+        "G13"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "One production line prints each unit's expiry a fixed number of days short of fill plus printed life, a per-line constant recovered from the closed lot record, which moves one candidate's forward units under a raised floor and names the withdrawal."
+    }
+  ],
+  "notes": "Retagged Descriptive to Forecasting at the 2026-08-29 determination review. Two calibration organs: the retailer deduction ledger (filed as counterparty_acknowledgement) and the plant lot record, the lot-trace pin for the decisive dating rule. Context artifact: customer P&L summary. Clone check 2026-08-29 recorded a Shape echo with task47 (counterparty deadline, SC plus Forecasting)."
+}

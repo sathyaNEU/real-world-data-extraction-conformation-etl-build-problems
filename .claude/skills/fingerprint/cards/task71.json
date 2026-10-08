@@ -1,0 +1,69 @@
+{
+  "task": "task71",
+  "architecture": "only",
+  "drawn": "2026-09-05",
+  "slot_note": "",
+  "domain": "supply-chain-logistics",
+  "subdomain": "fulfillment-warehousing",
+  "niche": "striking a per-product-family free storage allowance in days against a clearance standard in a shared-user distribution-centre tariff",
+  "objective": "descriptive-distribution",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "date_or_period",
+  "answer": "35 days",
+  "answer_source": "submission.md, 1. Final recommendation",
+  "gap": [
+    "rule",
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "B",
+    "E"
+  ],
+  "generators": [
+    "G16",
+    "G14",
+    "G2",
+    "G13",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "runs commercial pricing at a shared-user contract logistics operator",
+  "role_family": "other",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "occupancy_night_extract_2022_2026.parquet",
+    "rows": 3152086,
+    "entity": "one pallet licence plate on hand at a distribution centre on one night",
+    "grain": "licence plate x night",
+    "source": "synthetic (real UNSPSC family codes and site geography)"
+  },
+  "world": {
+    "geography": "United States (Ohio, Indiana, Mississippi, Texas)",
+    "currency": "USD",
+    "org_type": "shared-user contract logistics operator running four distribution centres",
+    "invented_names": [
+      "Northbank Contract Logistics",
+      "Commercial Policy CP-07",
+      "NBWMS",
+      "BX2 billing engine",
+      "Kestrel",
+      "Norhaven"
+    ]
+  },
+  "deliverables": [
+    "ty2027_storage_allowance_determination.pdf",
+    "ty2027_clearance_curve.png"
+  ],
+  "opening_move": "role-first",
+  "driver": "A coverage share is struck on a weighting recovered from a closed corpus of past determinations and on a clock that drops only the interruption types a zero-activity behavioural test shows truly blocked use, which the corpus cannot see because none of its cases carries the interruption, so the back-tested weighting alone overshoots the dial.",
+  "driver_concrete": "Clearance is struck equal-weighted across 40 client groups (the only basis reproducing all 32 published allowances) on available nights, dropping only hold nights under CERT-PEND, LOTREC-CHK and PKG-REV (zero despatch lines across 630 spans), which moves the 90.0 per cent crossing from day 47 (56 days) to day 32 (35 days).",
+  "stump": "A competent solver back-tests the 32 published allowances, recovers client-group weighting 32 of 32 and files 56 days on nights on hand, because none of the sixteen published families carries release holds; one who reads the availability clause and removes every hold night files 28.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "DRAW table (status still DRAWING) names the weighting decisive; the settled ladder makes the clock rung decisive, which the ledger calls G14-shaped, hence B then E. Calibration mapped closed_decision_corpus (adjacent: certified_matrix), billing summary close_out_summary, answer_unit date_or_period (a duration in days). Blindness-as-engine shared with task70."
+}
