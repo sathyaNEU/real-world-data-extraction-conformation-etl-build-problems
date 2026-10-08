@@ -17,11 +17,11 @@
 
 A traffic management centre pages operators whenever a station on its 31-mile corridor drops below 35 mph: 18,000 pages a year, one
 operator-hour per four pages. A profile-based rule (speed against the station's own time-of-week profile, confirmed at neighbouring
-stations, held for several five-minute bins) comes in four configurations, from the quietest (mainline confirmation, four bins: 3,600 alerts)
-to the noisiest (connector stations included, two bins: 7,300). The staffing policy lets the centre adopt the quietest configuration that
-catches at least 85% of lane-closure incidents within 15 minutes, on an evaluation basis that reproduces every one of the department's
-published detection figures. The centre holds a year of station data, the station inventory, the police incident log, its sign-message
-log, the landmark and interchange tables and the published figures. The operations chief is sure the quietest version will do.
+stations, held for several five-minute bins) comes in four configurations, from the quietest (mainline confirmation, four bins: 3,600
+alerts) to the noisiest (connector stations included, two bins: 7,300). The staffing policy lets the centre adopt the quietest configuration
+that catches at least 85% of lane-closure incidents within 15 minutes, on an evaluation basis that reproduces every one of the department's
+published detection figures. The centre holds a year of station data, the station inventory, the police incident log, its sign-message log,
+the landmark and interchange tables and the published figures. The operations chief is sure the quietest version will do.
 
 ## 2. Gate G: why this is legal
 
@@ -115,8 +115,8 @@ configuration clears 85%.
 * **Queue threshold.** Around every closure, stations sit below 60% or above 80% of profile, so any threshold between them builds the same
   queue.
 * **Match window.** No closure has an alert between 14 and 16 minutes after it, so 15-minute matching is not a fork.
-* **Profiles.** Built from the prior eight same weekdays with holidays skipped, as the memo states; six- and ten-week profiles adopt the same
-  configuration.
+* **Profiles.** Built from the prior eight same weekdays with holidays skipped, as the memo states; six- and ten-week profiles adopt the
+  same configuration.
 * **Rounding.** 51.4 hours rounds to 51 under any convention.
 
 ## 9. Prompt sketch and deliverables
@@ -144,8 +144,8 @@ configuration clears 85%.
 
 ## 11. Rubric arithmetic
 
-8 segments × 2 (ask A) + 8 × 2 (ask B) + 4 bases × 3 (ask C) + the committed hours, the adopted configuration, its recall and the recall of the
-configuration ruled out + 5 named chart parts + 3 files ≈ 56 criteria.
+8 segments × 2 (ask A) + 8 × 2 (ask B) + 4 bases × 3 (ask C) + the committed hours, the adopted configuration, its recall and the recall of
+the configuration ruled out + 5 named chart parts + 3 files ≈ 56 criteria.
 
 ## 12. World-building constraints
 

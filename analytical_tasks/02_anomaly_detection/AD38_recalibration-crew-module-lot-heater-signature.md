@@ -30,9 +30,12 @@ schedule and the measured drift from every service visit. The product manager po
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the product manager's view and the dashboard. Current drift scores, re-homed through the manifests, still name
   C.
-* **Instrument repair.** Make the register and the swap log perfect as records of what they hold: the swap log still holds no lot, because
-  kits never carried one, and current drift is already measured exactly. The forward rate lives in a lot that only the module's own
-  signature reveals.
+* **Instrument repair.** Suspect files: the swap log's lot field, blank for every field-kit module (38% of units), and the asset register's
+  region for distributor stock, which records the warehouse rather than the working site (24% of units). Give the swap log every module's
+  lot and register every unit where it works: rung 0 still names A, which has the most units at work, rung 1 becomes rung 2 and names C,
+  rung 2 names C, and none of rungs 0–2 reads a lot. Confirmed: the recorded lot makes the heater-signature recovery unnecessary, but the
+  forward projection (each lot's drift rate run to each unit's next service) is still needed, because on drift already accumulated E is
+  second.
 * **Lens swap.** The naive population is units with high drift today; the answer's is units that will cross tolerance before their next
   service, which depends on lot. A different set of units at a different moment.
 
@@ -72,10 +75,10 @@ module's lot is recoverable, and L7, which drifts at three times the rate of the
 
 1. **Written nowhere.** Boot diagnostics are documented as a power-on self-test. No document connects heater resistance to lots, and the
    swap log's blank lot column is explained only as "kit not lot-labelled".
-2. **The corpus pins a construction, not a menu (Pattern B).** Drift rates by heater-signature lot reproduce all 1,800 measured drifts within
-   0.05 of tolerance. The build-record lot reproduces 1,116, and a fleet-average rate for swapped units 1,340; both under-predict every L7
-   swap, so both miss the book's total. The assignment is a band map learned from known-lot modules and applied to swapped ones, not a
-   parameter on a list.
+2. **The corpus pins a construction, not a menu (Pattern B).** Drift rates by heater-signature lot reproduce all 1,800 measured drifts
+   within 0.05 of tolerance. The build-record lot reproduces 1,116, and a fleet-average rate for swapped units 1,340; both under-predict
+   every L7 swap, so both miss the book's total. The assignment is a band map learned from known-lot modules and applied to swapped ones,
+   not a parameter on a list.
 3. **No arithmetic symptom.** Every unit has a build lot, every swap has a serial, register counts tie to manifests, and the build-lot drift
    rates reproduce every unswapped unit exactly.
 4. **Not a row predicate.** It needs a lot map learned across 13,000 modules, applied to 8,000 swapped ones, then a per-unit drift
@@ -95,16 +98,16 @@ module's lot is recoverable, and L7, which drifts at three times the rate of the
 * **Twin pair.** Units 4471-0932 and 4471-1208 are identical on every register column (model, build lot, install month, site type, region,
   last drift score). Their measured drifts at service were 0.31 and 0.64 of tolerance, 2.1× apart, because 1208's swapped module reads in
   L7's heater band.
-* **Resemblance points at the decoy.** On every register column E's units resemble the serviced units with the slowest measured drift (recent
-  installs of the best build lot).
+* **Resemblance points at the decoy.** On every register column E's units resemble the serviced units with the slowest measured drift
+  (recent installs of the best build lot).
 
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The service plan: the crew goes where it prevents the most device-months outside certified tolerance before each unit's
   next regular service. The service schedule's next-visit dates. The distribution agreement's registration practice. One sentence each.
 * **Empirical pins.** Lot drift rates, from the book; the heater-band map, from known-lot modules.
-* **Voices.** The product manager: "Region A's dashboard has been red since spring; that is where the drift is." The service director: "Drift
-  is drift; send the crew where today's scores are worst."
+* **Voices.** The product manager: "Region A's dashboard has been red since spring; that is where the drift is." The service director:
+  "Drift is drift; send the crew where today's scores are worst."
 * **Licensed wrong basis.** The service plan records that the certification body's surveillance auditor counts units outside tolerance at
   the last telemetry read, by registered site, and will review the plan on that basis.
 
@@ -152,3 +155,4 @@ margin + 5 named chart parts + 3 files ≈ 60 criteria.
   registered to B's distributor and carry 1,700 of E's 4,900 forward device-months. Under the fleet-average rate: D 3,400, C 2,850, E 2,500.
 * Twins 4471-0932 and 4471-1208 are identical on every register column.
 * CRM records and factory test records never touch telemetry, the swap log, manifests or the service book.
+* Re-homed through the manifests, A still has the most units at work.

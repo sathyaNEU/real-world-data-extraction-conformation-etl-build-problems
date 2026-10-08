@@ -16,14 +16,14 @@
 ## 1. Situation
 
 A food-safety nonprofit holds a foundation grant to train kitchen staff in restaurant segments (cuisine × neighbourhood) with high
-critical-violation rates; the grant pays per restaurant that completes training, so the work plan must commit the reach. The grant terms make
-a segment eligible when the health department's published figures show its initial-inspection critical rate at least five points above the
-citywide rate, and cap the work in each borough at what its trainers can visit (90 visits a trainer, training given on the visit; three
+critical-violation rates; the grant pays per restaurant that completes training, so the work plan must commit the reach. The grant terms
+make a segment eligible when the health department's published figures show its initial-inspection critical rate at least five points above
+the citywide rate, and cap the work in each borough at what its trainers can visit (90 visits a trainer, training given on the visit; three
 trainers work in Brooklyn, Queens and Staten Island, five in the Bronx and Manhattan). Trainers visit eligible restaurants in the order the
-department's next inspection cycle reaches them. The department publishes, by segment, restaurants and restaurants with a critical
-violation on their first cycle inspection. The nonprofit holds those tables, the department's quality-assurance re-inspection results, the
-permit register, the state franchise registry and last year's pilot, with every visit and whether the owner enrolled. The outreach lead says
-about half the owners they visit sign up.
+department's next inspection cycle reaches them. The department publishes, by segment, restaurants and restaurants with a critical violation
+on their first cycle inspection. The nonprofit holds those tables, the department's quality-assurance re-inspection results, the permit
+register, the state franchise registry and last year's pilot, with every visit and whether the owner enrolled. The outreach lead says about
+half the owners they visit sign up.
 
 ## 2. Gate G: why this is legal
 
@@ -35,8 +35,8 @@ about half the owners they visit sign up.
   pilot's enrolment, still give 670.
 * **Instrument repair.** Suspect files: the permit register's chain flag, which marks only brands with 15 or more city locations (a narrower
   record of franchise status), and the re-inspection subsample (1,100 restaurants). Flagging every franchise outlet and re-inspecting every
-  restaurant leaves rungs 0–2 at 1,360, 850 and 670, because none of them conditions enrolment, and the conditioned enrolment is still needed
-  to reach 990; no instrument can record which owners will enrol this year.
+  restaurant leaves rungs 0–2 at 1,360, 850 and 670, because none of them conditions enrolment, and the conditioned enrolment is still
+  needed to reach 990; no instrument can record which owners will enrol this year.
 * **Lens swap.** The naive yield is the pilot's 48%, true of no restaurant; the answer's is each visited restaurant's own status rate, a
   different population of likely trainees that moves the figure up by half.
 

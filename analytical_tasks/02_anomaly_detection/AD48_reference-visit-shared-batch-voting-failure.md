@@ -16,11 +16,11 @@
 ## 1. Situation
 
 An agricultural insurer settles frost and heat-index policies on the published daily temperatures of its 40-station network. Each station
-carries three aspirated sensors and publishes their mean. The maintenance plan has one reference visit this quarter: a technician replaces all
-three sensors and the fan at one station and removes whatever error the station carries, and the visit goes where it removes the most
+carries three aspirated sensors and publishes their mean. The maintenance plan has one reference visit this quarter: a technician replaces
+all three sensors and the fan at one station and removes whatever error the station carries, and the visit goes where it removes the most
 absolute error from published temperatures over the next policy year, which begins four months from now. Five stations are shortlisted. The
-insurer holds the five-minute data (three sensor channels and the fan-speed channel), the swap log, the depot's delivery records, neighbouring
-public stations and the book of past reference checks. The maintenance contractor trusts its checks on the published value.
+insurer holds the five-minute data (three sensor channels and the fan-speed channel), the swap log, the depot's delivery records,
+neighbouring public stations and the book of past reference checks. The maintenance contractor trusts its checks on the published value.
 
 ## 2. Gate G: why this is legal
 
@@ -30,8 +30,10 @@ public stations and the book of past reference checks. The maintenance contracto
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the contractor's flags. Pairwise voting plus the fan channel, the natural careful build, still
   names C.
-* **Instrument repair.** Add a fourth sensor of the same make from the same depot and the vote still fails wherever the sensors share B7. The
-  difficulty is in where the parts came from.
+* **Instrument repair.** Suspect files: the swap log, which records no shipment for a fitted sensor, and the 31 reference checks made while
+  a fan was failing (a narrower measurement of sensor error). Record every sensor's shipment and correct those checks: rung 0 still names A,
+  rung 1 B and rung 2 C, none of which reads a shipment. The forward drift is still needed: E's two agreeing B7 sensors are nine months in
+  service and reach the plateau before the policy year, so today's readings put E joint third.
 * **Lens swap.** The naive population is the sensor a vote flags at each station; the answer's is the sensors that share a shipment, a
   different set at two of the five stations, and a different station.
 
@@ -61,15 +63,15 @@ agreeing sensors are B7 as well, and over the policy year E's error is 0.55°C.
 * **Discriminator dominance.** C carries a 1.64× advantage over E into rung 3 (110 against 67), so the required edge is 1.2 × 1.64 = 1.97×.
   E's policy-year error is 3.0× what the vote implies (three B7 sensors on the plateau, not one) while C's is unchanged, an edge 1.52× the
   requirement, and the net is 3.0 / 1.64 = 1.83×.
-* **Partial correction priced (L3).** A solver who assigns shipments but values each sensor at today's reading sees one drifted B7 at E, keeps
-  E at 67 and names C, 110 against B's 91 (1.21×); a date-window assignment, which puts E's two later sensors in a later shipment, does the
-  same. A solver who assigns shipments but reads B7's drift from the raw book, where checks made with a failing fan pull it to −0.19°C, puts
-  E at 69 with C's fan unmeasured and names B, 91 against 69 (1.32×).
+* **Partial correction priced (L3).** A solver who assigns shipments but values each sensor at today's reading sees one drifted B7 at E,
+  keeps E at 67 and names C, 110 against B's 91 (1.21×); a date-window assignment, which puts E's two later sensors in a later shipment,
+  does the same. A solver who assigns shipments but reads B7's drift from the raw book, where checks made with a failing fan pull it to
+  −0.19°C, puts E at 69 with C's fan unmeasured and names B, 91 against 69 (1.32×).
 * **Grid.** Check (published value or voting) × fan bias (ignored or measured) × assignment (none, date window, oldest first valued today,
-  oldest first over the policy year) = 16 cells. Published-value cells name A; voting cells name B with the fan ignored (at least 1.32×)
-  and C with it measured (1.21×) under every assignment but one; only oldest first over the policy year with the fan measured names E.
-* **Falsifiable.** Had E's two later sensors come from shipment B8, which the depot delivered two days after B7, E's policy-year error
-  would be 67, and C would get the visit.
+  oldest first over the policy year) = 16 cells. Published-value cells name A; voting cells name B with the fan ignored (at least 1.32×) and
+  C with it measured (1.21×) under every assignment but one; only oldest first over the policy year with the fan measured names E.
+* **Falsifiable.** Had E's two later sensors come from shipment B8, which the depot delivered two days after B7, E's policy-year error would
+  be 67, and C would get the visit.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -105,8 +107,8 @@ agreeing sensors are B7 as well, and over the policy year E's error is 0.55°C.
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The maintenance plan: the reference visit goes where it removes the most absolute error from published temperatures over
-  the next policy year. The publication rule (the mean of three sensors). The station readme's channel list, including fan speed. One sentence
-  each.
+  the next policy year. The publication rule (the mean of three sensors). The station readme's channel list, including fan speed. One
+  sentence each.
 * **Empirical pins.** Shipment drifts and the issue order, from the book; fan bias, from the book's fan-failure checks.
 * **Voices.** The contractor: "Our checks on the published value have caught every bad station for years." The network scientist: "Two of
   three always finds the bad sensor."
@@ -141,18 +143,18 @@ agreeing sensors are B7 as well, and over the policy year E's error is 0.55°C.
 ## 10. The ask layer
 
 * **Ask A (device-carried, decoupled).** For each of the 40 stations, technician travel hours last year from the visit log. *Device:* a trip
-  covering two stations logs its travel once against the first station, as the visit log guide says; charging travel per log row loads all of
-  it on the first station of each pair. The visit choice never uses the visit log.
+  covering two stations logs its travel once against the first station, as the visit log guide says; charging travel per log row loads all
+  of it on the first station of each pair. The visit choice never uses the visit log.
 * **Ask B (device-carried).** For each of the six agencies that download the network's data, downloads per month last year. *Device:* the
-  portal guide lists the user agents of automated harvesters, which are excluded from downloads; counting them inflates four agencies by more
-  than half.
+  portal guide lists the user agents of automated harvesters, which are excluded from downloads; counting them inflates four agencies by
+  more than half.
 * **Ask C (validity).** Each station's figure under each of the four rung bases.
 * **Decoupling.** Clearing the shipment assignment and the fan bias changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
 
-40 stations × 1 (ask A) + 6 agencies × 2 (ask B) + 5 stations × 4 bases (ask C) + the committed station, its error removed, the runner-up and
-the margin + 5 named chart parts + 3 files ≈ 84 criteria.
+40 stations × 1 (ask A) + 6 agencies × 2 (ask B) + 5 stations × 4 bases (ask C) + the committed station, its error removed, the runner-up
+and the margin + 5 named chart parts + 3 files ≈ 84 criteria.
 
 ## 12. World-building constraints
 

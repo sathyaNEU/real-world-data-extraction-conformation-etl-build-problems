@@ -24,14 +24,16 @@ The fish-health vet wants the hottest site.
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every figure is correct: temperatures, the bulletin, biomass, the insurer's accepted tonnes and the logged harvests and deaths.
-  The vet is right that site A's water is the warmest in absolute terms. Nothing is overturned; the difficulty is an effect of the
+* **Litmus.** Every figure is correct: temperatures, the bulletin, biomass, the insurer's accepted tonnes and the logged harvests and
+  deaths. The vet is right that site A's water is the warmest in absolute terms. Nothing is overturned; the difficulty is an effect of the
   intervention that the plan assumes away and the log can measure.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the bulletin. Site-level categories with the insurer's mortality rates, applied to the fish the
   week harvests, still name C.
-* **Instrument repair.** Make every temperature and every claim exact: they are. The claims file cannot contain a thinned pen (thinning voids
-  its cover), so no better record of claims shows what thinning does.
+* **Instrument repair.** Suspect file: the insurer's acknowledgement file, which holds no thinned pen because thinning voids the cover. Add
+  the thinned pens' mortality: no category rate moves by 0.1 points, so rung 0 still names A, rung 1 B and rung 2 C. The survivor effect is
+  still needed, measurable only by reading the change log's harvests as natural experiments; temperatures, the pen register and the change
+  log are complete.
 * **Lens swap.** The naive population is the fish harvested; the answer adds the fish left behind in thinned pens, a different population
   whose mortality changes only after the intervention.
 
@@ -42,9 +44,9 @@ mean hides a fjord site at category III and an exposed site at category I), take
 acknowledged claims, and values the harvest week as the fish it removes times their site's rate. Every step is correct, and every step
 assumes the remaining fish are unaffected. The insurer cannot see otherwise: its policy voids thermal cover on any pen harvested mid-event,
 so thinned pens never reach the claims file. The farm system's change log records eleven partial harvests that market timing put inside past
-heatwaves, with daily deaths per pen before and after. Joined to the pen register, they split absolutely on density: where the harvest took a
-pen from above 20 kg per cubic metre to below it, the survivors' mortality fell 52–58%; where the pen stayed below 20 throughout, it did not
-move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne harvest.
+heatwaves, with daily deaths per pen before and after. Joined to the pen register, they split absolutely on density: where the harvest took
+a pen from above 20 kg per cubic metre to below it, the survivors' mortality fell 52–58%; where the pen stayed below 20 throughout, it did
+not move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne harvest.
 
 ## 4. The ladder
 
@@ -60,8 +62,8 @@ move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne
 * **Discriminator dominance.** C carries a 1.24× advantage into rung 3, so the required edge is 1.2 × 1.24 = 1.49×. E's value doubles (17.2
   to 34.8, 2.02×) when survivors are counted, because its two densest pens fall from 25 to 16 kg per cubic metre and keep 780 tonnes; C's
   pens sit at 14 and gain nothing. The edge is 1.36× the requirement, and the net is 2.02 / 1.24 = 1.63×.
-* **Partial correction priced (L3).** A solver who reads the log but averages all eleven harvests applies a 35% survivor effect everywhere and
-  credits C's thinned pens too, naming C, 35.5 against E's 28.3 (1.25×): rung 2's answer again. A solver who models density as a smooth
+* **Partial correction priced (L3).** A solver who reads the log but averages all eleven harvests applies a 35% survivor effect everywhere
+  and credits C's thinned pens too, naming C, 35.5 against E's 28.3 (1.25×): rung 2's answer again. A solver who models density as a smooth
   elasticity per tonne removed credits large sites and names B, 33.4 against E's 27.1 (1.23×).
 * **Grid.** Category grain (annual percentile, regional, site) × survivor effect (none, pooled, density-conditioned) = 9 cells. Percentile
   cells name A without a survivor effect and B with either (B's thinned pens keep the most tonnes); regional cells name B, 17.5 against E's
@@ -89,24 +91,24 @@ move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne
   event and the accepted tonnes.
 * **What it certifies.** Mortality by site-level category (0.4%, 1.6%, 4.1%), which the regional bulletin cannot reproduce (it misses every
   fjord-site claim by half), so a back-tester is confirmed at rung 2.
-* **What it is blind to.** Thinned pens (above). The refusal sits in the less inviting record: the change log's eleven partial harvests, seven
-  crossing 20 kg per cubic metre (survivor mortality −52% to −58%) and four staying below it (−2% to +3%), with no harvest ending between 19 and
-  21.
+* **What it is blind to.** Thinned pens (above). The refusal sits in the less inviting record: the change log's eleven partial harvests,
+  seven crossing 20 kg per cubic metre (survivor mortality −52% to −58%) and four staying below it (−2% to +3%), with no harvest ending
+  between 19 and 21.
 * **Twin pair.** Pens F-07 (2019) and H-03 (2022) are identical on every log column: site category III, 600 tonnes, 200 tonnes removed, the
-  event's third week. F-07 went from 24 to 16 kg per cubic metre and its survivors died at 1.9%; H-03 went from 15 to 10 and its survivors died
-  at 4.0%, 2.1× apart, separated only by the pen-volume join.
+  event's third week. F-07 went from 24 to 16 kg per cubic metre and its survivors died at 1.9%; H-03 went from 15 to 10 and its survivors
+  died at 4.0%, 2.1× apart, separated only by the pen-volume join.
 * **Resemblance points at the decoy.** By biomass and exposure, E resembles past claims at sites with low acknowledged mortality.
 
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The emergency plan: the week goes where it avoids the most thermal mortality over the rest of the event; categories are
   taken at each site's own grid cell; the densest pens are harvested first, market-size fish only. The pen register. One sentence each.
-* **Empirical pins.** Category mortality rates, from the acknowledgement file; the survivor effect and its 20 kg per cubic metre line, from the
-  change log.
-* **Voices.** The fish-health vet: "Hot water kills; go where it is hottest." The regional manager: "The bulletin says category II everywhere,
-  so take the biggest harvest."
-* **Licensed wrong basis.** The plan records that the plant's planners allocate emergency weeks by harvest-ready tonnage and will present that
-  allocation on the call.
+* **Empirical pins.** Category mortality rates, from the acknowledgement file; the survivor effect and its 20 kg per cubic metre line, from
+  the change log.
+* **Voices.** The fish-health vet: "Hot water kills; go where it is hottest." The regional manager: "The bulletin says category II
+  everywhere, so take the biggest harvest."
+* **Licensed wrong basis.** The plan records that the plant's planners allocate emergency weeks by harvest-ready tonnage and will present
+  that allocation on the call.
 
 ## 8. Determinism by construction
 
@@ -134,7 +136,8 @@ move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne
   from counter-and-weigh samples that the husbandry guide adjusts for fish removed as mortality during the month; dividing feed by
   unadjusted biomass gain misstates three sites. The allocation never uses feed records.
 * **Ask B (device-carried).** For each site, sea-lice treatments last year and the median days between them. *Device:* a bath treatment is
-  logged per pen per day, and the health guide counts one treatment per site campaign; counting log rows multiplies treatments at four sites.
+  logged per pen per day, and the health guide counts one treatment per site campaign; counting log rows multiplies treatments at four
+  sites.
 * **Ask C (validity).** Each site's avoided mortality under each of the four rung bases.
 * **Decoupling.** Clearing the survivor effect and the site-level categories changes no figure in asks A or B.
 
@@ -152,3 +155,4 @@ named chart parts + 3 files ≈ 52 criteria.
 * Change log: seven crossing harvests (−52% to −58%), four non-crossing (−2% to +3%), none ending between 19 and 21 kg per cubic metre.
 * F-07 and H-03 are identical on every change-log column.
 * Feed records and treatment logs never touch temperatures, the pen register, the change log or the claims.
+* Thinned pens hold under 3% of past heatwave biomass, so adding them to the claims moves no category rate by 0.1 points.

@@ -104,8 +104,9 @@ weakest month comes from the receipts feed, joined to each contract's customer t
 * **The absolute split (O2).** The 71 contracts with a calendar month without a receipt were all declined. Every other contract was
   approved at exactly 4.8 times its weakest month, and no decision falls in between.
 * **Twin pair.** Two pilot security contracts, each invoicing £9,000 on the first of every month to a customer in the same size band on
-  30-day terms, are identical on every invoice column and on twelve months' receipts (£108,000 each). The funder approved £43,200 for one and £21,600 for the other, 2.0× apart, because
-  the second customer, a managing agent, holds back half an invoice for sign-off twice a year and pays it with the next.
+  30-day terms, are identical on every invoice column and on twelve months' receipts (£108,000 each). The funder approved £43,200 for one
+  and £21,600 for the other, 2.0× apart, because the second customer, a managing agent, holds back half an invoice for sign-off twice a
+  year and pays it with the next.
 * **Resemblance points at the decoy.** IT's market contracts match the pilot's IT contracts on every invoice column (flat per-seat amounts
   every month, customer size and terms), so transferring the pilot's 96% rate by resemblance lands on IT. The pilot's IT clients brought
   their monthly payers.

@@ -11,14 +11,14 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #18 joins only on the visible key · #5 takes the population a flag or filter suggests · #12 stops at the first control that passes |
 | Calibration form | Parallel-run overlap: 2025, when the insurer's own death-notification process and each market's death-register screening service both checked every contract in force |
-| Driving force | The committee's rule compares the life expectancy of annuitants by annual pension, and the policy system stores contracts. In Calbria, 1,250 well-off annuitants bought one annuity from each of three to five pension pots. Contract by contract they sit in the small and middle bands, where they live long and flatten the gradient. Each contract carries its own customer reference, opened at purchase, which looks like a person key. Only the annual tax statements, one per recipient, list which contracts belong to one person. Built that way, Calbria's gradient doubles. The screening overlap, run contract by contract, cannot tell the difference. |
+| Driving force | The committee's rule compares the life expectancy of annuitants by annual pension, and the policy system stores contracts. In Calbria, 1,250 well-off annuitants bought one annuity from each of three to five pension pots. Contract by contract they sit in the small and middle bands, where they live long and flatten the gradient. The policy system opens a new contract for every purchase and keeps no customer record across contracts. Only the annual tax statements, one per recipient, list which contracts belong to one person. Built that way, Calbria's gradient doubles. The screening overlap, run contract by contract, cannot tell the difference. |
 
 ## 1. Situation
 
 A life insurer sells retirement annuities in six markets: Ostmark, Norvik, Calbria, Vellan, Sarda and Tirenne. Its rates are flat
 within each market. For the 2027 basis the pricing committee will move a market to size-banded rates where the experience shows that
 annuitants with large pensions live materially longer than those with small ones. The pack holds the policy system's contract file
-(product, customer reference, date of birth, sex, postal district, annual amount, commencement, guarantee period, status and
+(contract number, product, date of birth, sex, postal district, annual amount, commencement, guarantee period, status and
 termination), the death-notification register, the 2025 screening results, the annual tax statements, the basis note and the
 committee's rule. The committee adopts the structure on 11 March 2027.
 
@@ -29,10 +29,13 @@ committee's rule. The committee adopts the structure on 11 March 2027.
   difficulty is what one unit of the committee's rule is.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of pricing's view, the chief actuary's view and the reinsurers' basis. Calbria's contract-level
-  experience is still flat, and the customer reference still gives every contract its own record.
-* **Instrument repair.** Perfect the policy system and each purchase still opens its own contract and customer record, because a person
-  with three pots bought three annuities. Perfect the screening and it still answers per submitted record. The person is assembled
-  only in the tax statements, because the tax authorities require one statement per recipient.
+  experience is still flat, and every contract is still its own record.
+* **Instrument repair.** Clean-data test. The suspect field is the contract status, which keeps a contract "in payment" through its
+  guarantee period after the annuitant dies, a narrower record of death. Repair it by recording every death on its contract: rung 0
+  then adopts Ostmark, Vellan, Sarda and Tirenne, rung 1 adopts rung 2's Ostmark, Vellan and Sarda, and rung 2 is unchanged. No other
+  file is suspect: the contract file records contracts and claims no person, and the register and the tax statements are complete. The
+  answer stays Ostmark, Calbria, Vellan and Sarda, and building annuitants from the statements is still needed, because a person with
+  three pots really bought three annuities and only the statements say which contracts are one person's.
 * **Lens swap.** The two reads count different units: 61,900 contracts against 51,710 annuitants, 4,410 of whom hold two to five
   contracts and change band once their contracts are added together.
 
@@ -41,9 +44,9 @@ committee's rule. The committee adopts the structure on 11 March 2027.
 A strong solver takes the committee's rule at its word: period life expectancy at 65 for standard annuitants with an annual pension of
 €12,000 or more against those under €2,000, by market. It drops enhanced annuities, which the rule excludes, and dates deaths from the
 notification register rather than the contract status, because a contract in its guarantee period stays "in payment" after the
-annuitant dies. That reproduces every death the 2025 screening matched, and it names Ostmark, Vellan and Sarda. Every row has its own
-customer reference, so the file looks like one contract per person. It is not. Annuitants who saved through several employers bought one
-annuity per pot, and each purchase opened a new customer record. In Calbria 1,250 annuitants did this. Each of their contracts pays
+annuitant dies. That reproduces every death the 2025 screening matched, and it names Ostmark, Vellan and Sarda. The file holds one row
+per contract and no customer record, and nothing in it says a person holds more than one. Annuitants who saved through several
+employers bought one annuity per pot, and each purchase opened its own contract. In Calbria 1,250 annuitants did this. Each of their contracts pays
 €1,200 to €3,500, so per contract they sit in the bottom and middle bands, raising those bands' life expectancy and leaving the top band
 short of its longest-lived people. Added together they pay €12,000 to €16,000 and make up two-thirds of Calbria's top band. Only the tax
 statements, one per recipient each year, say which contracts are one person's.
@@ -54,7 +57,7 @@ statements, one per recipient each year, say which contracts are one person's.
 |---|---|---|---|---|
 | 0 | Every contract, deaths read from the status ("terminated – death"), bands on each contract's amount | Ostmark, Vellan, Tirenne | The book's experience on its own records, as the system holds them | The committee's rule covers standard annuitants, and enhanced annuities carry their own product code |
 | 1 | Standard contracts only | Vellan | The rule's population, filtered on the authoritative product code | The overlap: status-based deaths miss 236 of the 1,412 deaths the screening matched, every one inside a guarantee period |
-| 2 | Deaths dated from the notification register (E33) | Ostmark, Vellan, Sarda | Reproduces all 1,412 screening matches with their dates, and every row has its own customer reference | The tax statements: 4,410 recipients' statements each list two to five contracts |
+| 2 | Deaths dated from the notification register (E33) | Ostmark, Vellan, Sarda | Reproduces all 1,412 screening matches with their dates, and every contract is a distinct record | The tax statements: 4,410 recipients' statements each list two to five contracts |
 | 3 | **Decisive:** annuitants built from the tax statements, each counted once and banded on the sum of their contracts (E02) | **Ostmark, Calbria, Vellan, Sarda** | — | — |
 
 * **Structure shape.** Each rung adopts a different list, and only rung 3 adds Calbria. Gradients (top band minus bottom band, years)
@@ -70,20 +73,20 @@ statements, one per recipient each year, say which contracts are one person's.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The rule says "standard annuitants with an annual pension of €12,000 or more". The data dictionary describes the
-   customer reference as the customer record opened with the purchase. No document says that a person can hold several contracts or
+1. **Written nowhere.** The rule says "standard annuitants with an annual pension of €12,000 or more". The data dictionary says the policy
+   system opens a contract for each purchase. No document says that a person can hold several contracts or
    connects the tax statements to the experience.
 2. **Corpus blind to the unit.** The overlap certifies the death source exactly. *In every overlap case the unit is a contract, because
    the insurer submits each contract to the screening service as its own record and the service returns one result per record.* Run
    over the overlap, contract and annuitant constructions return the same 1,412 matches.
-3. **No arithmetic symptom.** Customer references are unique, no contract repeats, and exposure and deaths reconcile to the contract file
+3. **No arithmetic symptom.** Contract numbers are unique, no contract repeats, and exposure and deaths reconcile to the contract file
    and the register under every rung. The tax statements' totals tie to annual payments.
 4. **Not a row predicate.** An annuitant is a group of contracts assembled through another system's record, and its band is a sum over
    the group. No column on a contract says which group it belongs to.
 5. **The enumeration is arithmetic.** 14,600 contracts collapse into 4,410 annuitants through the statements, and their bands are
    computed, not read.
 6. **No cutover date.** Customers have bought one annuity per pot in every year of the window, and no series steps.
-7. **Survives deletion.** No wrong number exists to delete. Without any voice, the customer reference still looks like a person.
+7. **Survives deletion.** No wrong number exists to delete. Without any voice, a contract still looks like a person.
 
 ## 6. The calibration corpus
 
@@ -159,7 +162,9 @@ figures (ask C) + 6 market decisions + 4 named chart parts + 2 files ≈ 90 crit
   Calbria's top band holds 1,870 annuitants, 1,250 of them multi-contract.
 * Gradients by rung as in section 4. Partials: Calbria 1.25 under date-of-birth grouping and 1.3 under largest-contract banding; Sarda
   0.8 when linked with status deaths; Tirenne 2.05 when linked with enhanced annuities left in. Nothing falls between 1.3 and 1.7.
-* Rung lists: Ostmark, Vellan, Tirenne / Vellan / Ostmark, Vellan, Sarda / Ostmark, Calbria, Vellan, Sarda.
+* Rung lists: Ostmark, Vellan, Tirenne / Vellan / Ostmark, Vellan, Sarda / Ostmark, Calbria, Vellan, Sarda. The cell with every
+  product, register deaths and contracts (rung 0 once the status is repaired) gives Ostmark 2.4, Norvik 1.3, Calbria 1.3, Vellan 2.3,
+  Sarda 2.0 and Tirenne 2.0, adopting Ostmark, Vellan, Sarda and Tirenne.
 * The overlap: 1,412 screening matches, 236 of them in guarantee periods and missed by status.
 * Norvik and Calbria are identical on every contract-level column; their multi-contract annuitants number 140 and 1,250.
 * Sales and complaints touch no contract in the experience.

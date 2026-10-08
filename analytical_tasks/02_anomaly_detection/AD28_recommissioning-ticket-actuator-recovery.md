@@ -29,8 +29,10 @@ automation system's change log. The facilities director wants the ticket on Buil
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the year-over-year alert. The weather-normalised, scope-correct build still multiplies
   each building's controllable excess by the book's recovery and names C.
-* **Instrument repair.** Make every meter, sub-meter and baseline perfect. C's excess is real and controllable; the issue is what a reset
-  does to a leaking pneumatic valve, which no better meter of the past measures.
+* **Instrument repair.** Suspect file: the book of closed tickets, filtered by the old intake checklist to buildings with electronic
+  actuators, so no ticket ever touched a pneumatic valve. Fill it with outcomes on pneumatic buildings, as the change log's resets supply:
+  rung 0 still names A, rung 1 B, and rung 2 at any uniform recovery (0.71 pooled over all 31 resets) still names C, 1.36× ahead of D.
+  Conditioning recovery on actuator type through the equipment register is still needed. The meters, sub-meters and baselines are complete.
 * **Lens swap.** The naive figure is waste already incurred; the answer is energy recovered next year after a specific intervention. The
   answer's population is the share of each excess a reset can stop, at a different moment from the excess itself.
 
@@ -54,13 +56,13 @@ in the equipment register, one join from the air-handler tags in the change log 
 | 2 | Controllable excess (process sub-meters removed) × the book's realised recovery of 0.88: C 563, D 414, E 290, B 180, A 53 | C | Weather-normalised, scope-correct, and calibrated on 40 closed tickets | The change log: nine resets on pneumatic air handlers recovered 0.27–0.35 of their excess once weather-normalised |
 | 3 | **Decisive:** controllable excess × the recovery measured from the change log's resets, conditioned on actuator type through the equipment register: D 414, E 290, C 198, B 180, A 53 | **D** (4th of 5 on rung 0) | — | — |
 
-* **Position table.** D ranks 4th on rung 0, 3rd on rung 1 and 2nd on rung 2 (C leads it by 1.36×), and leads only rung 3. Rung leaders
-  beat their runners-up by 1.19×, 1.28×, 1.36× and 1.43×.
+* **Position table.** D ranks 4th on rung 0, 3rd on rung 1 and 2nd on rung 2 (C leads it by 1.36×), and leads only rung 3. Rung leaders beat
+  their runners-up by 1.19×, 1.28×, 1.36× and 1.43×.
 * **Discriminator dominance.** C carries a 1.36× controllable-excess advantage into rung 3. D's edge on the decisive axis is its recovery,
-  0.88 against 0.31 (2.84×), 1.74× the required 1.2 × 1.36 = 1.63×, so the net is 2.84 / 1.36 = 2.09×. At rung 2, B carried a 1.28× excess advantage against C's 4.0× controllable
-  share (1.00 against 0.25), a net of 3.1×.
-* **Partial correction priced (L3).** A solver who measures recovery from the change log but pools all 31 resets gets 0.71 and still names
-  C (454 against D's 334, 1.36×), the rung 2 answer. Conditioning on building use (labs against offices) instead of actuators also names C,
+  0.88 against 0.31 (2.84×), 1.74× the required 1.2 × 1.36 = 1.63×, so the net is 2.84 / 1.36 = 2.09×. At rung 2, B carried a 1.28× excess
+  advantage against C's 4.0× controllable share (1.00 against 0.25), a net of 3.1×.
+* **Partial correction priced (L3).** A solver who measures recovery from the change log but pools all 31 resets gets 0.71 and still names C
+  (454 against D's 334, 1.36×), the rung 2 answer. Conditioning on building use (labs against offices) instead of actuators also names C,
   because C and D are both office buildings and office resets average 0.80: C 512 against D's 376 (1.36×).
 * **Grid.** Weather basis (year-over-year or baseline) × scope (whole meter or controllable) × recovery (book 0.88, pooled 0.71, actuator-
   conditioned) = 12 cells. Year-over-year cells name A, whole-meter baseline cells name B, controllable cells with either uniform recovery

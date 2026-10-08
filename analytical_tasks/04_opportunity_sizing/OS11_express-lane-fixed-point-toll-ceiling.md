@@ -9,9 +9,9 @@
 | Committed call | The corridor converted next, and its annual toll revenue, to the nearest $0.1M |
 | Gap · Pattern | Gap 3 (objective) over Gap 1 (time) · S5 (a ceiling that binds only after the fixed-point solve, #22), with a uniformly labelled commercial segment split through the vehicle registry (#6) below it |
 | Gate G mechanism | binding_constraint, with method_or_model_selection |
-| Measured traps engaged | #22 solves a self-referencing rule in one pass · #6 treats a mixed segment all one way · #19 breaks a big tie instead of questioning it |
+| Measured traps engaged | #22 solves a self-referencing rule in one pass · #6 treats a mixed segment all one way · #13 validates on one population, applies to another |
 | Calibration form | Change-log natural experiments: the nine logged toll-table changes on the authority's four existing express lanes, with hourly volumes before and after |
-| Driving force | An express-lane toll is set by the demand it creates: it rises until the vehicles that choose the lane fit its capacity of 1,600 an hour. That steady-state toll is a fixed point, and where it would pass the $14 legal maximum the hour is degraded and runs HOV-only, earning nothing. A one-pass projection at today's volumes never meets the ceiling. Solved hour by hour with the change log's elasticity, Lakeshore's peak needs $14.80 and goes free, and Western, identical to Ridge Road on averages, loses its two concentrated peak hours. |
+| Driving force | An express-lane toll is set by the demand it creates: it rises until the vehicles that choose the lane fit its capacity of 1,600 an hour. That steady-state toll is a fixed point, and where it would pass the $14 legal maximum the hour is degraded and runs HOV-only, earning nothing. A one-pass projection at today's volumes never meets the ceiling, and neither does a solve on average hours. Solved hour by hour with the change log's elasticity, Lakeshore needs $14.59 to $14.82 in seven of its ten tolled hours and they go free, and Western, which outearns Ridge Road on average hours, loses its two sharpest peak hours and its busiest shoulder. |
 
 ## 1. Situation
 
@@ -38,35 +38,38 @@ conversion on its annual toll revenue.
 
 ## 3. The driving force
 
-A strong solver drops the feasibility study's diversion share, removes the heavy trucks the statute bars (reached by joining counted
-plates to the vehicle registry, because the counts lump all commercial vehicles together), and applies the change log's elasticity: each
-extra dollar cuts lane volume by 8%. Applied once to the indicative toll at today's volumes, Lakeshore leads. But the toll is not an
-input. It adjusts against lane volume until the vehicles that pay fit the lane. In Lakeshore's peak hours that price is $14.80. The statute
-stops the toll at $14, demand stays above capacity, the hour is degraded, and the corridor agreement runs degraded hours HOV-only. Lakeshore
-keeps only its shoulders. Western looks identical to Ridge Road on average volumes, but two of its peak hours carry half its peak traffic
-and cross the ceiling. Ridge Road's peak never does.
+A strong solver drops the feasibility study's diversion share, removes the heavy trucks the statute bars (reached by joining counted plates
+to the vehicle registry, because the counts lump all commercial vehicles together), and applies the change log's elasticity: each extra
+dollar cuts lane volume by 8%. Applied once to the indicative toll at today's volumes, Lakeshore leads. But the toll is not an input. It
+adjusts against lane volume until the vehicles that pay fit the lane. In Lakeshore's four peak hours that price is $14.59, and in three of
+its shoulder hours $14.82. The statute stops the toll at $14, demand stays above capacity, the hour is degraded, and the corridor agreement
+runs degraded hours HOV-only. Lakeshore keeps three hours of ten. A solve on average hours sees none of this for Western, whose averages
+sit under the threshold and outearn Ridge Road's. Hour by hour, Western's two sharpest peak hours and its busiest shoulder cross the
+ceiling. Ridge Road's busiest hour needs $13.48 and never does.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Counted volume × 25% diversion × the indicative toll | A, Port Way ($46.8M) | The feasibility study's method on the authority's own counts | The registry joined to the counts: 60% of Port Way's vehicles are over 26,000 lb and barred from the lane |
-| 1 | The same on eligible traffic (heavy trucks out, vans in) | B, Northern ($36.8M, 1.41× over C) | The statute applied record by record | The change log: lane volume falls 8% for each extra dollar of toll, 9 of 9 logged changes |
-| 2 | Indicative toll at today's eligible volume, then the logged elasticity, once | C, Lakeshore ($39.6M, 1.24× over E) | Demand response from the authority's own natural experiments | The corridor agreement: an hour whose volume exceeds capacity is degraded and runs HOV-only, and Lakeshore's peak needs $14.80 |
-| 3 | **Decisive:** each hour's steady-state toll (the price at which choosers fit 1,600 an hour), capped at $14, degraded hours earning nothing | **E, Ridge Road** (tied 4th of 5 on rung 0), **$33.7M a year** | — | — |
+| 0 | Counted volume × 25% diversion × the indicative toll | A, Port Way ($53.4M, 1.27× over B) | The feasibility study's method on the authority's own counts | The registry joined to the counts: 60% of Port Way's vehicles are over 26,000 lb and barred from the lane |
+| 1 | The same on eligible traffic (heavy trucks out, vans in) | B, Northern ($40.7M, 1.26× over C) | The statute applied record by record | The change log: lane volume falls 8% for each extra dollar of toll, 9 of 9 logged changes |
+| 2 | Indicative toll at today's eligible volume, then the logged elasticity, once | C, Lakeshore ($45.2M, 1.26× over D) | Demand response from the authority's own natural experiments | The corridor agreement: an hour whose volume exceeds capacity is degraded and runs HOV-only, and Lakeshore's peak needs $14.59 |
+| 3 | **Decisive:** each hour's steady-state toll (the price at which choosers fit 1,600 an hour), capped at $14, degraded hours earning nothing | **E, Ridge Road** (5th of 5 on rung 0), **$30.9M a year** | — | — |
 
-* **Position table.** Ridge Road ties 4th on rung 0, ties 3rd on rung 1 and ties 2nd on rung 2 (1.24× behind Lakeshore), and leads only
-  rung 3 (1.70× over Lakeshore).
-* **Discriminator dominance.** Lakeshore carries a 1.24× advantage into rung 3 ($39.6M against $31.9M). Solving the steady state multiplies
-  Ridge Road's revenue by 1.06 and Lakeshore's by 0.50, an edge of 2.11×, 1.41 times the 1.49× floor. Product: 2.11 / 1.24 = 1.70.
-* **Partial correction priced (L3).** Every half-applied construction names a wrong corridor. A solver who solves the steady state on
-  average peak hours ties Western and Ridge Road at $33.7M, and the board's tie-break (lower conversion cost) names Western, which really
-  earns $16.7M. One who solves it hour by hour but removes every commercial vehicle, vans included, drops Lakeshore's peak to 4,698
-  eligible vehicles, under the ceiling's threshold, and names Lakeshore ($38.2M against Ridge Road's $27.4M, 1.39×). One who keeps the
-  heavy trucks in names Port Way ($33.0M against Western's $23.7M, 1.39×).
-* **Grid.** Commercial reading (all counted, all removed, registry split) × toll (indicative once, steady state) × grain (average hour,
-  each hour) gives 12 cells. Indicative-toll cells name Port Way or Lakeshore (1.19× to 1.26× clear); steady-state cells name Port Way
-  (1.39× to 1.59×), Lakeshore (1.39×) or the Western tie. Only the answer cell names Ridge Road.
+* **Position table.** Ridge Road ranks 5th on rung 0 (1.17× behind Western), 4th on rung 1 and 4th on rung 2, and leads only rung 3 (1.42×
+  over Port Way). It is never 2nd.
+* **Discriminator dominance.** Lakeshore carries a 1.49× advantage into rung 3 ($45.2M against $30.4M). Solving the steady state hour by
+  hour multiplies Ridge Road's revenue by 1.02 and Lakeshore's by 0.20, an edge of 4.98×, 2.79 times the 1.78× floor. Product: 4.98 / 1.49 =
+  3.35.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong corridor outright. A solver who solves the steady state
+  on average hours names Western ($38.8M against Ridge Road's $30.9M, 1.26×), which really earns $19.6M. One who solves it hour by hour but
+  removes every commercial vehicle, vans included, drops Lakeshore's busiest hours to 4,611 and 4,698 eligible vehicles, under the ceiling's
+  threshold, and names Lakeshore ($44.9M against Western's $30.8M, 1.46×). One who keeps the heavy trucks in names Port Way ($31.7M against
+  Ridge Road's $14.6M, 2.17×).
+* **Grid.** Commercial reading (all counted, all removed, registry split) × toll (indicative once, steady state) × grain (average hour, each
+  hour) gives 12 cells. Indicative-toll cells name Port Way or Lakeshore (1.07× to 1.28× over the runner-up, at least 1.33× over Ridge
+  Road); steady-state cells name Port Way (1.09× to 2.18×), Lakeshore (1.42× to 1.46×) or Western (1.26×). Only the answer cell names Ridge
+  Road, and the nearest wrong cell, the average-hour solve, is one toggle away.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -90,9 +93,10 @@ and cross the ceiling. Ridge Road's peak never does.
 * **What it certifies.** The elasticity: volume falls 8.0% per dollar in all nine changes (7.8–8.2%). Treating demand as fixed misses all
   nine.
 * **What it is blind to.** The ceiling (above).
-* **Twin pair.** Western and Ridge Road are identical on average peak volume (5,200 an hour counted), shoulder volume (3,000), heavy share
-  (16%) and van share (10%). Western's peak runs two hours at 7,800 and two at 2,600. Solved hour by hour, Western earns $16.7M and Ridge
-  Road $33.7M, 2.0× apart, separated only by the hour-by-hour solve against the ceiling.
+* **Twin pair.** Western's and Ridge Road's morning peaks are identical on the count summary: 5,600 vehicles an hour counted over the two
+  hours, 16% heavy, 10% vans. Western's runs one hour at 6,050 and one at 5,150; Ridge Road's runs two at 5,600. Solved hour by hour, Ridge
+  Road's morning earns $43,140 a weekday and Western's $19,890, 2.2× apart. Averaged, they earn the same, so only the hour-by-hour solve
+  against the ceiling separates them.
 * **Resemblance points at the decoy.** Lakeshore's volumes most resemble the busiest existing lane, where every logged toll increase
   raised revenue.
 
@@ -101,7 +105,7 @@ and cross the ceiling. Ridge Road's peak never does.
 * **Filed pins.** The statute: tolls may not exceed $14; vehicles over 26,000 lb may not use express lanes, and lighter commercial
   vehicles pay the car toll. The corridor agreement: an hour in which lane volume exceeds 1,600 is degraded, and degraded hours run
   HOV-only. The operations manual: the toll adjusts every five minutes against lane volume. The board's rule: a conversion is judged on
-  annual toll revenue, and equal cases go to the lower conversion cost.
+  annual toll revenue.
 * **Empirical pins.** The elasticity, from the change log. The eligible share, from the registry join.
 * **Voices.** The finance director: "Revenue goes where the traffic is, and Port Way carries the most vehicles in the region." The corridor
   manager: "Lakeshore is the most congested road we run. That is what express lanes are for."
@@ -111,12 +115,12 @@ and cross the ceiling. Ridge Road's peak never does.
 ## 8. Determinism by construction
 
 * **Elasticity.** All nine logged changes give 8.0% ± 0.2% per dollar, and log-linear and linear fits agree to within 0.1 point.
-* **Threshold clearance.** No corridor-hour's eligible volume lies within 3% of 4,903 (Lakeshore's peak sits at 5,238), so any elasticity
-  in the logged range sorts every hour the same way.
+* **Threshold clearance.** No corridor-hour's eligible volume lies within 3% of 4,903. Across the logged elasticity range (7.8% to 8.2%)
+  the threshold moves between 4,768 and 5,043, and Western's sharpest hours (5,082) and Ridge Road's peak (4,704) stay on their sides.
 * **Hours.** Tolling runs 4 peak and 6 shoulder hours on 250 weekdays; every tolled hour's eligible demand exceeds 1,600, so the minimum
   toll never applies.
 * **Registry.** Every counted plate matches the registry, and every commercial plate carries a gross weight.
-* **Rounding.** Ridge Road's figure is $33.71M, mid-bin at $0.1M.
+* **Rounding.** Ridge Road's figure is $30.90M, mid-bin at $0.1M.
 
 ## 9. Prompt sketch and deliverables
 
@@ -150,12 +154,13 @@ the runner-up, the margin and Lakeshore's degraded hours + 5 named chart parts +
 
 ## 12. World-building constraints
 
-* Counted volume an hour (peak, shoulder), heavy and van shares: Port Way 7,200 / 4,800, 60% / 5%; Northern 10,000 / 1,800, 3% / 4%;
-  Lakeshore 5,400 / 3,200, 3% / 10%; Western peaks of 7,800 and 2,600 (average 5,200) / 3,000, 16% / 10%; Ridge Road 5,200 / 3,000, 16% /
-  10%.
+* Counted volume an hour, heavy and van shares: Port Way 9,600 peak and 4,600 shoulder, 60% / 5%; Northern 10,500 / 2,400, 3% / 4%;
+  Lakeshore 5,300 peak, three shoulder hours at 5,400 and three at 3,050, 3% / 10%; Western peak hours of 6,050, 5,150, 6,050 and 5,150, one
+  shoulder hour at 6,300 and five at 2,800, 16% / 10%; Ridge Road 5,600 / 2,600, 16% / 10%.
 * Lane capacity 1,600 an hour; elasticity 8% per dollar; maximum $14; degraded threshold 4,903 eligible vehicles an hour.
-* Rung figures ($M): rung 0 46.8 / 38.0 / 27.8 / 25.3 / 25.3; rung 1 8.6 / 36.8 / 26.2 / 17.9 / 17.9; rung 2 20.9 / 30.5 / 39.6 / 31.9 /
-  31.9; rung 3 17.2 / 2.6 / 19.9 / 16.7 / 33.7 (Port Way, Northern, Lakeshore, Western, Ridge Road).
+* Rung figures ($M, Port Way, Northern, Lakeshore, Western, Ridge Road): rung 0 53.4 / 42.2 / 34.3 / 30.3 / 25.9; rung 1 12.4 / 40.7 / 32.3
+  / 21.4 / 18.3; rung 2 24.2 / 35.2 / 45.2 / 35.9 / 30.4; rung 3 21.7 / 11.3 / 9.2 / 19.6 / 30.9; the average-hour steady state 21.7 / 11.3
+  / 28.2 / 38.8 / 30.9.
 * No existing lane's eligible demand exceeds 4,500 an hour in any logged hour.
-* Western and Ridge Road match on every average and class share; Western's conversion cost is lower.
+* Western's and Ridge Road's morning peaks match on the two-hour average and both class shares.
 * Plate invoices and incident logs never touch counts, registry or the change log.

@@ -29,10 +29,11 @@ most credits.
   results. The scheduler team is right that A and B paid the most. Nothing reported is overturned; the difficulty is which of a family's
   credits a backup can actually avoid.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete the scheduler team's view and the credit totals. The sibling-relative straggler build still ties four families at
-  1.00 and still lets the tie-break choose.
-* **Instrument repair.** Record every instance and every credit perfectly: they are. A late job with a straggler is still late with a
-  straggler; whether removing it would have saved the deadline depends on when the inputs landed, a fact in another file.
+* **Deletion test.** Delete the scheduler team's view and the credit totals. The sibling-relative straggler build still ties four families
+  at 1.00 and still lets the tie-break choose.
+* **Instrument repair.** None suspect: the instance tables, the dependency log, the SLA register and both ledgers are complete, and each
+  records what it claims. A perfect record leaves rung 0 at {A, B}, rung 1 at {C, D} and rung 2 at {D, E}; each late job's counterfactual
+  finish is still needed, because whether a backup would have saved a deadline is never recorded, only computed.
 * **Lens swap.** The naive population is late jobs that carried a straggler; the answer's is the subset a straggler alone made late, a
   different set of jobs reached by a counterfactual, not the same set under a new lens.
 
@@ -55,17 +56,17 @@ dependency log, the instance tables and the SLA register is a counterfactual per
 | 2 | The same shares with the policy's charge test stated (C fails), tie among D, E, F broken by credits at risk | {D, E} | Ranked, charge-tested and tie-broken exactly as written | The dependency log: most of D's late jobs received their inputs after the latest start that could still meet the deadline |
 | 3 | **Decisive:** each late job's counterfactual finish (input landing, then every stage at sibling-median speed) against its deadline; shares C 0.97 (out on its charges), D 0.38, E 0.93, F 1.00 | **{E, F}, saving $651k net** | — | — |
 
-* **Structure table.** Four different admission lists. The answer appears on no lower rung, and its net saving ($331k from E and $320k from F)
-  is computed only at rung 3.
+* **Structure table.** Four different admission lists. The answer appears on no lower rung, and its net saving ($331k from E and $320k from
+  F) is computed only at rung 3.
 * **Separation at the decisive rung.** The tie at 1.00 becomes F 1.00, C 0.97, E 0.93, D 0.38. C stays out on the charge test, and E leads D
   by 2.45× on the policy's ranking basis where rung 2 had them level, and D's avoidable credits fall to $182k against E's $381k.
 * **Partial correction priced (L3).** A solver who sees late inputs but removes only jobs whose inputs landed after the deadline itself (not
   after the latest feasible start) gets shares C 0.99, D 0.98, E 0.95, F 1.00, because most of D's input-bound jobs land between the two
-  times, and admits {F, D} with a net of $730k: a wrong list and a figure 12% above the answer's. A solver who breaks the naive
-  tie by job count instead of credits also admits {D, F}.
-* **Grid.** Ranking basis (credits paid or share) × charge test (unstated or stated) × shares (naive or counterfactual) = 8 cells. Credits-paid
-  cells name {A, B}; naive-share cells name {C, D} or {D, E}; counterfactual cells name {C, F} without the charge test (C's 0.97
-  outranks E's 0.93) and {E, F} with it, so only the charge test with the counterfactual names the answer, at $651k net.
+  times, and admits {F, D} with a net of $730k: a wrong list and a figure 12% above the answer's. A solver who breaks the naive tie by job
+  count instead of credits also admits {D, F}.
+* **Grid.** Ranking basis (credits paid or share) × charge test (unstated or stated) × shares (naive or counterfactual) = 8 cells.
+  Credits-paid cells name {A, B}; naive-share cells name {C, D} or {D, E}; counterfactual cells name {C, F} without the charge test (C's
+  0.97 outranks E's 0.93) and {E, F} with it, so only the charge test with the counterfactual names the answer, at $651k net.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -86,12 +87,12 @@ dependency log, the instance tables and the SLA register is a counterfactual per
 
 * **Form.** The settled SLA-credit ledger and the chargeback ledger for families G and H over last half's pilot: every late job's settled
   credit before and during the pilot, and every backup's settled charge.
-* **What it certifies.** The sibling-relative straggler rule, the charge arithmetic and a share of 1.00: during the pilot G's and H's credits
-  fell by exactly the straggler-job credits, less 2%.
+* **What it certifies.** The sibling-relative straggler rule, the charge arithmetic and a share of 1.00: during the pilot G's and H's
+  credits fell by exactly the straggler-job credits, less 2%.
 * **What it is blind to.** Input-bound lateness (above).
-* **Twin pair.** Pipelines D-07 and E-12 are identical on stragglers per run, sibling medians, credits at risk ($48k each), charges and extra
-  instances. D-07's inputs landed after its latest feasible start on 11 of its 20 late days and E-12's on none, so their avoidable credits are
-  $22k and $45k, 2.0× apart, separated only by the counterfactual.
+* **Twin pair.** Pipelines D-07 and E-12 are identical on stragglers per run, sibling medians, credits at risk ($48k each), charges and
+  extra instances. D-07's inputs landed after its latest feasible start on 11 of its 20 late days and E-12's on none, so their avoidable
+  credits are $22k and $45k, 2.0× apart, separated only by the counterfactual.
 * **Resemblance points at the decoy.** C's and D's straggler profiles match G and H, where every rescued straggler saved its deadline.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -139,12 +140,13 @@ dependency log, the instance tables and the SLA register is a counterfactual per
 
 ## 11. Rubric arithmetic
 
-6 families × 2 (ask A) + 6 × 2 (ask B) + 6 × 4 bases (ask C) + the committed list, the net saving, the cap used and the deciding comparison for
-the admitted families + 5 named chart parts + 3 files ≈ 60 criteria.
+6 families × 2 (ask A) + 6 × 2 (ask B) + 6 × 4 bases (ask C) + the committed list, the net saving, the cap used and the deciding comparison
+for the admitted families + 5 named chart parts + 3 files ≈ 60 criteria.
 
 ## 12. World-building constraints
 
-* Credits paid A 900, B 760, C 610, D 520, E 430, F 380; on straggler jobs 120, 150, 560, 480, 410, 360; charges 70, 80, 610, 60, 50, 40 ($k).
+* Credits paid A 900, B 760, C 610, D 520, E 430, F 380; on straggler jobs 120, 150, 560, 480, 410, 360; charges 70, 80, 610, 60, 50, 40
+  ($k).
 * Extra instances A 2.4%, B 2.5%, C 2.6%, D 2.2%, E 1.9%, F 1.7%. Counterfactual shares C 0.97, D 0.38, E 0.93, F 1.00.
 * The pilot families' inputs always land two or more hours early; their settled results match the naive share within 2%.
 * D-07 and E-12 are identical on every instance-level column.

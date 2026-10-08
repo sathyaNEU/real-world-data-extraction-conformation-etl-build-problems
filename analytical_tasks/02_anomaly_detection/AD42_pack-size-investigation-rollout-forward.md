@@ -19,17 +19,17 @@ A national consumer authority opens one pack-size investigation a quarter into a
 and the outcome is undertakings from the manufacturers concerned. Its prioritisation framework values an investigation at the consumer
 detriment it prevents over the twelve months after it opens, and admits an estimate only if its method reproduces every evaluated outcome in
 the revision log within 5%. Five categories are shortlisted for the quarter opening on 1 October. The authority holds weekly scanner sales
-for every outlet of the five largest grocery chains to the end of September, the national product register (barcode, line code, net quantity,
-launch date and an optional successor barcode), the manufacturers' announced roll-out schedules filed with their launches, the chains' listing
-files, household spend by category, the revision log, consumer complaints and shelf-label spot checks. The head of markets says shoppers feel
-it most in toiletries.
+for every outlet of the five largest grocery chains to the end of September, the national product register (barcode, line code, net
+quantity, launch date and an optional successor barcode), the manufacturers' announced roll-out schedules filed with their launches, the
+chains' listing files, household spend by category, the revision log, consumer complaints and shelf-label spot checks. The head of markets
+says shoppers feel it most in toiletries.
 
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: the scanner sales, the register's quantities and links as declared, each category's past detriment,
   the schedules as announced, the listings and the evaluated outcomes. The chief economist is right that cereals carry the most detriment of
-  the past year. Nothing is overturned; the difficulty is how much of each category's detriment is still to come at outlets the reduced packs
-  have not reached.
+  the past year. Nothing is overturned; the difficulty is how much of each category's detriment is still to come at outlets the reduced
+  packs have not reached.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the household spend table. The outlet-level past detriment, the authority's standard estimate,
   still names cereals.
@@ -43,15 +43,15 @@ it most in toiletries.
 
 ## 3. The driving force
 
-A strong solver sets aside per-unit price inflation (most of toiletries' rise is list prices on unchanged packs), finds every reduced line by
-grouping barcodes on the register's line code rather than on the optional successor field, and measures each category's detriment over the
-past twelve months outlet by outlet. Cereals lead at $3.6 million. Every step is correct, and the result is a record of harm done. Back-tested
-against the revision log, it reproduces none of the eight evaluated outcomes: the two investigations opened after their reductions were on
-every shelf prevented almost nothing, and the cases opened early in a roll-out prevented more than their opening estimates. What reproduces
-all eight is each line's detriment at the outlets that had not yet sold its reduced barcode at opening, at those outlets' own volume, over the
-full twelve months. That needs each outlet's first sale of each line's reduced barcode, which only the line-code grouping can see. Cereals'
-seven complete lines have nothing left to stop. Confectionery's seven undeclared lines converted the northern region in November, 38% of their
-volume, and the other three regions not yet.
+A strong solver sets aside per-unit price inflation (most of toiletries' rise is list prices on unchanged packs), finds every reduced line
+by grouping barcodes on the register's line code rather than on the optional successor field, and measures each category's detriment over
+the past twelve months outlet by outlet. Cereals lead at $3.6 million. Every step is correct, and the result is a record of harm done.
+Back-tested against the revision log, it reproduces none of the eight evaluated outcomes: the two investigations opened after their
+reductions were on every shelf prevented almost nothing, and the cases opened early in a roll-out prevented more than their opening
+estimates. What reproduces all eight is each line's detriment at the outlets that had not yet sold its reduced barcode at opening, at those
+outlets' own volume, over the full twelve months. That needs each outlet's first sale of each line's reduced barcode, which only the
+line-code grouping can see. Cereals' seven complete lines have nothing left to stop. Confectionery's seven undeclared lines converted the
+northern region in November, 38% of their volume, and the other three regions not yet.
 
 ## 4. The ladder
 
@@ -65,18 +65,19 @@ volume, and the other three regions not yet.
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.24×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.21×, 1.27×, 1.24× and 3.4×.
 * **Discriminator dominance.** C carries a 1.24× advantage into rung 3, so the required edge is 1.2 × 1.24 = 1.49×. E's preventable
-  detriment is 1.52 times its past detriment and C's is 0.11 times, an edge of 13.6×, 9.2 times the requirement, and the net is 13.6 / 1.24 =
-  11.0×.
+  detriment is 1.52 times its past detriment and C's is 0.11 times, an edge of 13.6×, 9.2 times the requirement, and the net is 13.6 / 1.24
+  = 11.0×.
 * **Partial correction priced (L3).** A solver who goes forward but counts every outlet's next twelve months, converted or not, names C,
-  $10.3 million against E's $8.3 million (1.25×). A solver who takes the outlets still to convert from the manufacturers' announced schedules
-  books snacks' second wave, announced for November and in fact converted in July, and only the one confectionery region the manufacturer has
-  announced, and names D, $2.6 million against E's $2.1 million (1.22×). A solver who reads conversion from the chains' listing files, where
-  a chain lists a line nationally once any of its regions sells it, names D at $1.3 million against B's $0.9 million (1.43×), with E at $0.5
-  million. Each lands on a wrong category.
+  $10.3 million against E's $8.3 million (1.25×). A solver who takes the outlets still to convert from the manufacturers' announced
+  schedules books snacks' second wave, announced for November and in fact converted in July, and only the one confectionery region the
+  manufacturer has announced, and names D, $2.6 million against E's $2.1 million (1.22×). A solver who reads conversion from the chains'
+  listing files, where a chain lists a line nationally once any of its regions sells it, names D at $1.3 million against B's $0.9 million
+  (1.43×), with E at $0.5 million. Each lands on a wrong category.
 * **Grid.** Line grouping (declared successor or line code) × basis (past twelve months; forward at every outlet; forward by announced
   schedule; forward by chain listing; forward by outlet first sale) = 10 cells. Declared-successor cells name B on the past and D on every
-  forward basis, because E's four declared lines are already on every shelf. Line-code cells name C on the past and at every outlet, D on the
-  schedule and the listing, and E only by outlet first sale. The nearest wrong cell is the schedule basis, which keeps E second at 1.22×.
+  forward basis, because E's four declared lines are already on every shelf. Line-code cells name C on the past and at every outlet, D on
+  the schedule and the listing, and E only by outlet first sale. The nearest wrong cell is the schedule basis, which keeps E second at
+  1.22×.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -84,13 +85,13 @@ volume, and the other three regions not yet.
    can stop, and the revision log records each case's figures, not its undertakings' terms.
 2. **The revision log pins a construction, not a menu (Pattern B).** The outlet-level forward construction reproduces all eight evaluated
    outcomes within 5%. The best rivals, the announced-schedule forward and the declared-successor forward, reproduce five each and miss one
-   case by 45% and 60%; the chain-listing forward reproduces four; the every-outlet forward reproduces one, the case opened before any outlet
-   had sold its reduced packs; the past basis reproduces none. The winner needs each outlet's first sale of each line's reduced barcode,
-   grouped by line code and joined back to the outlet's own volume, which no category-level parameter supplies.
+   case by 45% and 60%; the chain-listing forward reproduces four; the every-outlet forward reproduces one, the case opened before any
+   outlet had sold its reduced packs; the past basis reproduces none. The winner needs each outlet's first sale of each line's reduced
+   barcode, grouped by line code and joined back to the outlet's own volume, which no category-level parameter supplies.
 3. **No arithmetic symptom.** Scanner sales tie to the chains' totals, every barcode carries a line code and a net quantity, and every
    rung's past figure reproduces exactly from sales.
-4. **Not a row predicate.** An outlet's status for a line is the minimum sale week of the line's reduced barcode at that outlet, a group over
-   barcodes and weeks joined back to the outlet's trailing sales of the old pack.
+4. **Not a row predicate.** An outlet's status for a line is the minimum sale week of the line's reduced barcode at that outlet, a group
+   over barcodes and weeks joined back to the outlet's trailing sales of the old pack.
 5. **The enumeration is arithmetic.** The 1,560 outlets still to receive confectionery's seven reduced lines are computed; no field marks
    them.
 6. **No cutover date.** The decisive quantity is a population that has not converted. The northern region's conversion in November sits in
@@ -100,24 +101,24 @@ volume, and the other three regions not yet.
 
 ## 6. The calibration corpus
 
-* **Form.** The revision log: eight closed pack-size investigations from 2019 to 2025, each with its category, opening date, opening estimate
-  (detriment over the past twelve months), the detriment prevented as revised at the twelve-month evaluation, and the scanner extracts and
-  register snapshots for the 52 weeks either side of opening.
+* **Form.** The revision log: eight closed pack-size investigations from 2019 to 2025, each with its category, opening date, opening
+  estimate (detriment over the past twelve months), the detriment prevented as revised at the twelve-month evaluation, and the scanner
+  extracts and register snapshots for the 52 weeks either side of opening.
 * **What it pins.** The forward construction and its convention: remaining outlets counted for the full twelve months at their trailing
   52-week volume (above). A one-month run-out allowance misses five of the eight by 6–9%.
 * **Twin pair.** PS-04 (2021) and PS-17 (2024), two snacks cases, are identical on every column of the log and the register: opening
   estimate $0.5 million, six reduced lines, a 9% per-unit rise, five chains and 2,300 outlets, and an announced schedule showing one wave
-  still to come. Their evaluated outcomes are $600k and $300k, 2.0× apart: at opening 40% of PS-04's reduced-line volume sat at outlets
-  that had not sold the reduced barcodes, against 20% of PS-17's. Only outlet first sales separate them.
+  still to come. Their evaluated outcomes are $600k and $300k, 2.0× apart: at opening 40% of PS-04's reduced-line volume sat at outlets that
+  had not sold the reduced barcodes, against 20% of PS-17's. Only outlet first sales separate them.
 * **Resemblance points at the decoy.** On category and opening estimate, cereals most resemble PS-09, the log's largest evaluated outcome, a
   cereal case opened when its reductions had reached a fifth of outlets.
 
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The prioritisation framework: an investigation is valued at the consumer detriment it prevents over the twelve months
-  after it opens, by a method that reproduces every evaluated outcome in the revision log within 5%. The register's field guide: every barcode
-  carries a line code and a net quantity, and the successor field is optional. The data agreement: scanner sales cover every outlet of the
-  five chains. One sentence each.
+  after it opens, by a method that reproduces every evaluated outcome in the revision log within 5%. The register's field guide: every
+  barcode carries a line code and a net quantity, and the successor field is optional. The data agreement: scanner sales cover every outlet
+  of the five chains. One sentence each.
 * **Empirical pins.** The full-twelve-month convention and outlet-level status, from the log; each line's per-unit rise, from the register's
   net quantities.
 * **Voices.** The head of markets: "Shoppers feel it most in toiletries; that is where we should be." The chief economist: "Cereals are the
@@ -152,8 +153,8 @@ volume, and the other three regions not yet.
 ## 10. The ask layer
 
 * **Ask A (device-carried, decoupled).** For each category, pack-size complaints received in the past twelve months and the share escalated
-  to a second review. *Device:* an escalated complaint is re-filed under its number with a tier suffix (C-20417-T2), and the complaints guide
-  counts one complaint per base number; counting rows inflates three categories. The decision never reads complaints.
+  to a second review. *Device:* an escalated complaint is re-filed under its number with a tier suffix (C-20417-T2), and the complaints
+  guide counts one complaint per base number; counting rows inflates three categories. The decision never reads complaints.
 * **Ask B (device-carried).** For each category, the share of last year's shelf-label spot checks whose displayed unit price was correct.
   *Device:* labels show unit prices per 100 g, except multipacks, which the unit-pricing order lets show per item; checking every label
   against a per-100 g price fails every multipack. Spot checks never touch scanner sales or the register.
@@ -171,11 +172,12 @@ margin + 5 named chart parts + 3 files ≈ 52 criteria.
   million and E $8.3 million; the schedule forward D $2.6 million and E $2.1 million; the listing forward D $1.3 million, B $0.9 million and
   E $0.5 million. Declared-successor forward cells give E nothing.
 * E: 11 reduced lines at 100 g to 92 g. Four declared lines launched nationally in January and have been on every shelf since February
-  (full-conversion detriment $1.17 million a year). Seven undeclared lines converted the northern region in November, 38% of their volume and
-  840 outlets, and no other outlet since (full-conversion detriment $7.1 million a year). The manufacturer has announced the next region,
-  30% of the seven lines' volume, for the new year. Every chain but one discounter (7% of that volume) lists the seven lines nationally.
-* C: seven lines on every shelf since May (three declared, carrying a third of C's past detriment; $9.3 million a year at full
-  conversion); an eighth, undeclared, launched in August and sold at outlets holding 60% of its volume ($1.0 million a year).
+  (full-conversion detriment $1.17 million a year). Seven undeclared lines converted the northern region in November, 38% of their volume
+  and 840 outlets, and no other outlet since (full-conversion detriment $7.1 million a year). The manufacturer has announced the next
+  region, 30% of the seven lines' volume, for the new year. Every chain but one discounter (7% of that volume) lists the seven lines
+  nationally.
+* C: seven lines on every shelf since May (three declared, carrying a third of C's past detriment; $9.3 million a year at full conversion);
+  an eighth, undeclared, launched in August and sold at outlets holding 60% of its volume ($1.0 million a year).
 * D: five declared lines converted chain by chain through distribution centres, two chains in February and a third in July, 72% of volume;
   the schedule still shows the third chain for November and the last two for spring. A sixth, undeclared line is on every shelf.
 * B: every line declared, 75% of volume converted, schedule accurate. A: one declared line.

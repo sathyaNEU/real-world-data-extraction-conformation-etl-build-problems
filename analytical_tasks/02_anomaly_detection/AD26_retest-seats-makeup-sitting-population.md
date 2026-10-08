@@ -29,9 +29,11 @@ file marks 640 classrooms, and the director of assessment wants to book on it.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's preference and the vendor's flag file. A competent screen built from the score file still groups
   on classroom, still reproduces every audit, and still books the wrong number.
-* **Instrument repair.** Perfect the rosters, the score file and the scan records: each is already exact. A better roster is still a roster
-  of the October class. The sitting is a different entity, the occasion that produced a result, and no repair to a classroom-keyed file
-  changes what it is keyed on.
+* **Instrument repair.** Suspect files: the audited sittings, filtered to main-window sittings because audit teams leave before any make-up
+  is held, and the October rosters, stale by May. Audit make-up sittings too and roster every result to its May classroom: rung 0 still
+  books 15,400, rung 1 9,900 and rung 2 7,200, each within 1%, because each counts classrooms; the audited make-ups now break rung 2's 520
+  of 520 instead of certifying it, and the regroup into sittings is still needed to find the 84 referred make-ups among 2,600. The score
+  file's classroom is a correct record of a different thing, the roster group, and no file records the sitting a result came from.
 * **Lens swap.** The naive figure counts students on the rosters of referred classrooms; the answer counts students who sat referred
   sittings. The two populations differ in both directions (absentees leave, make-up testers arrive), not only in lens.
 
@@ -165,3 +167,4 @@ classroom-grain figure they replace + 5 named chart parts + 3 files ≈ 65 crite
   at most 0.11 SD in every audited sitting.
 * Corrie Lane and Hatherley are identical on every classroom-level column. The enrolment register and the shipping manifest never touch
   scan records or the sitting register.
+* May rosters differ from October's for under 1% of students in every referred classroom.

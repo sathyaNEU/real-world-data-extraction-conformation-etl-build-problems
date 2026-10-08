@@ -31,8 +31,9 @@ disability field in module-presentations with fewer than five declarations. The 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the current alert. A cohort-relative alert with missed assessments, equity checked by bounding,
   is still the natural build and still misses the circle withdrawals.
-* **Instrument repair.** Record every click and submission perfectly: the students who leave after a circle-mate look the same as students
-  who stay until they go. No better instrument of individual activity shows a group's loss.
+* **Instrument repair.** Suspect file: the extract's disability field, suppressed in module-presentations with fewer than five declarations.
+  Unsuppress it: rung 0 still adopts {absolute}, rung 1 can check the missed-assessment rule and becomes rung 2 ({cohort-relative 9, missed
+  assessment}, 40%), and rung 2 is unchanged. The circles are still built as components of the review-assignment graph, which no file names.
 * **Lens swap.** The naive population is students whose own behaviour flags them; the answer adds students flagged by what happened to their
   circle, a different set of students and a different structure.
 
@@ -41,11 +42,11 @@ disability field in module-presentations with fewer than five declarations. The 
 A strong solver drops absolute click counts (the change log shows calendar shifts swinging them across whole cohorts), ranks each student
 within module, presentation and week, bounds the suppressed disability cells to clear the missed-assessment rule on equity, and tunes the
 cohort-relative cut so the two rules fill capacity: 40% of withdrawals flagged in time. Every step is correct, and every rule looks at one
-student's own record. The withdrawal file, read against the review-assignment log, shows the rest. The peer-review tool puts each student in a
-circle of four who review each other's drafts all term; the log records only reviewer–reviewee pairs per assignment, so circles are
+student's own record. The withdrawal file, read against the review-assignment log, shows the rest. The peer-review tool puts each student in
+a circle of four who review each other's drafts all term; the log records only reviewer–reviewee pairs per assignment, so circles are
 components of that graph. When a circle-mate withdraws, each remaining member's chance of leaving in the next three weeks rises from 2% to
-19% and falls back after, and those students' activity never dips beforehand. A circle-loss rule flagging remaining members for the two weeks
-after a circle-mate leaves catches what no individual rule can. It needs the room missed assessments take in the weeks after each
+19% and falls back after, and those students' activity never dips beforehand. A circle-loss rule flagging remaining members for the two
+weeks after a circle-mate leaves catches what no individual rule can. It needs the room missed assessments take in the weeks after each
 deadline, so the structure trades that rule for this one and retunes the cohort cut to what is left.
 
 ## 4. The ladder
@@ -59,8 +60,8 @@ deadline, so the structure trades that rule for this one and retunes the cohort 
 
 * **Structure table.** Four different rule sets, and the circle-loss rule appears on no lower rung. Scores run 36%, 40% and 61%; the
   absolute rule is infeasible on capacity.
-* **Separation.** The best structure without the circle-loss rule is rung 2's, at 40%. Circle loss cannot join missed assessments: in the two
-  weeks after each deadline they flag 3.2% and 5.1% of active students, so any set holding both breaches 8% before a single cohort flag.
+* **Separation.** The best structure without the circle-loss rule is rung 2's, at 40%. Circle loss cannot join missed assessments: in the
+  two weeks after each deadline they flag 3.2% and 5.1% of active students, so any set holding both breaches 8% before a single cohort flag.
   Circle loss alone catches 31%; with the cohort cut at 7 it catches 61%, 1.53× the best feasible alternative and 21 points clear of it.
 * **Partial correction priced (L3).** A solver who looks for group effects in tutor groups (a column) instead of review circles sees a
   group's three-week risk rise from 2% to 4.7% after a withdrawal, but flagging whole groups is far over capacity, so the affordable rule
@@ -75,13 +76,13 @@ deadline, so the structure trades that rule for this one and retunes the cohort 
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The peer-review tool is documented as a teaching tool; no document mentions circles in connection with retention, and
-   the assignment log has no circle field.
-2. **Corpus blind for a computable reason.** *Every module in the change log ran without peer-review circles, because circles were introduced
-   only in modules redesigned after the last logged calendar change.* The log certifies cohort-relative ranks against absolute counts (rung 1)
-   and cannot show a group effect.
-3. **No arithmetic symptom.** Every rule's weekly flags stay under 8%, the scores reconcile to the withdrawal file, and the circle withdrawals
-   carry no missing data or odd activity.
+1. **Written nowhere.** The peer-review tool is documented as a teaching tool; no document mentions circles in connection with retention,
+   and the assignment log has no circle field.
+2. **Corpus blind for a computable reason.** *Every module in the change log ran without peer-review circles, because circles were
+   introduced only in modules redesigned after the last logged calendar change.* The log certifies cohort-relative ranks against absolute
+   counts (rung 1) and cannot show a group effect.
+3. **No arithmetic symptom.** Every rule's weekly flags stay under 8%, the scores reconcile to the withdrawal file, and the circle
+   withdrawals carry no missing data or odd activity.
 4. **Not a row predicate.** Circles are components of a reviewer–reviewee graph per term; flags need each circle's withdrawal dates and a
    two-week flag per remaining member, recomputed week by week against capacity.
 5. **The enumeration is arithmetic.** Which students the circle rule flags in each week is computed; no column names a circle or a loss.
@@ -97,8 +98,8 @@ deadline, so the structure trades that rule for this one and retunes the cohort 
 * **What it is blind to.** Circles (above). The pin for the decisive rung is the policy's scoring clause on 2024 withdrawals, which the
   constructed rule meets exactly, with the hazard's three-week end visible as an empty fourth week.
 * **Twin pair.** Tutor groups T-114 and T-207 in one module are identical on every alert's flag counts, activity distributions and
-  submissions. T-114 lost 14 students and T-207 seven, 2.0× apart, because two of T-114's circles unravelled one member after another; only the
-  circle construction separates them.
+  submissions. T-114 lost 14 students and T-207 seven, 2.0× apart, because two of T-114's circles unravelled one member after another; only
+  the circle construction separates them.
 * **Resemblance points at the decoy.** 2024's activity profile resembles 2022's, the year the cohort and missed-assessment pair would have
   caught the most.
 
@@ -128,12 +129,12 @@ deadline, so the structure trades that rule for this one and retunes the cohort 
 ## 9. Prompt sketch and deliverables
 
 > The board adopts next year's alert rules in June, and tutors can only call so many students a week. Our head of tutoring thinks missed
-> assessments are all we really need. Tell me which rules we adopt and with what settings, and what share of last year's withdrawals that set
-> would have caught at least two weeks ahead, to the nearest per cent, in a paragraph for the board. Send `alert_structure.xlsx`, a chart
-> `caught_in_time.png`, and a one-page `board_note.pdf`.
+> assessments are all we really need. Tell me which rules we adopt and with what settings, and what share of last year's withdrawals that
+> set would have caught at least two weeks ahead, to the nearest per cent, in a paragraph for the board. Send `alert_structure.xlsx`, a
+> chart `caught_in_time.png`, and a one-page `board_note.pdf`.
 
-* `alert_structure.xlsx` — each rung's rule set with its weekly flag shares and score (ask C), the call-log sheet (ask A) and the forum sheet
-  (ask B).
+* `alert_structure.xlsx` — each rung's rule set with its weekly flag shares and score (ask C), the call-log sheet (ask A) and the forum
+  sheet (ask B).
 * `caught_in_time.png` — weekly flags as a share of active students for each rung's rule set, the 8% capacity line drawn and labelled, the
   share of withdrawals caught in time annotated for each set, and the circle-loss flags shaded in the adopted set.
 * `board_note.pdf` — the committed structure and score, and why each other structure falls short.
@@ -156,13 +157,13 @@ and the score + 5 named chart parts + 3 files ≈ 54 criteria.
 
 ## 12. World-building constraints
 
-* Scores 36% / 40% / 61%, the answer 1.53× rung 2; circle loss alone 31%; the tutor-group variant 22%. Absolute flags reach 31% in assessment
-  weeks.
+* Scores 36% / 40% / 61%, the answer 1.53× rung 2; circle loss alone 31%; the tutor-group variant 22%. Absolute flags reach 31% in
+  assessment weeks.
 * Cohort-relative catches: cut 4 19%, cut 7 30%, cut 9 32%, cut 14 36%; missed assessments add 8 points at cut 9; circle loss adds 31 points
   with no overlap; tutor-group loss adds 3.
-* Peak weekly flags in the two weeks after each deadline: missed assessments 5.1%, tutor-group loss 5.4%, circle loss 3.2% of active students.
-  The binding cohort cuts are 14 alone, 9 with missed assessments, 7 with circle loss and 4 with tutor-group loss; any two of the three
-  other rules together exceed 8%.
+* Peak weekly flags in the two weeks after each deadline: missed assessments 5.1%, tutor-group loss 5.4%, circle loss 3.2% of active
+  students. The binding cohort cuts are 14 alone, 9 with missed assessments, 7 with circle loss and 4 with tutor-group loss; any two of the
+  three other rules together exceed 8%.
 * 36% of 2024 withdrawals fall within three weeks of a circle-mate's with no prior flag, 31 points of them in weeks two and three; circle
   hazard 19% for three weeks, 2% otherwise; the circle flag runs two weeks; a tutor group's three-week risk after a withdrawal 4.7%.
 * Each module has exactly one suppressed presentation, recovered exactly from the module's declared total; with every declared student there

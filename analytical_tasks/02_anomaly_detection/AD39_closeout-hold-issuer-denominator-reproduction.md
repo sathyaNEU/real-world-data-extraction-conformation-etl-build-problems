@@ -31,10 +31,12 @@ summed fails, and the committee meets Monday.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the leaderboard and both voices. A day-panel, point-in-time monitor that matches 58 of 61 published days is
   still the natural build and still closes out S-C.
-* **Instrument repair.** Make every fails row and every filing complete and exact: they are. The rule's wording still leaves the denominator
-  open, and only the overlap settles it.
-* **Lens swap.** The naive denominator is one class's shares; the answer's is the issuer's across classes, which changes which days count and
-  moves the verdict from a named close-out to a hold, a different population of threshold days.
+* **Instrument repair.** Suspect file: the fails file, which has rows only on days a balance reaches the reporting floor. Fill every
+  settlement day: rung 0 has nothing left to carry forward and becomes rung 1, closing out S-B at 17; rung 1 closes out S-B, and rung 2
+  closes out S-C at 14. Shares outstanding are filed per class, a correct record of a different thing from the issuer's total, and the
+  issuer-wide denominator is still needed, recovered by reproducing all 61 published days.
+* **Lens swap.** The naive denominator is one class's shares; the answer's is the issuer's across classes, which changes which days count
+  and moves the verdict from a named close-out to a hold, a different population of threshold days.
 
 ## 3. The driving force
 
@@ -63,12 +65,12 @@ began three days later, and it stands at 11.
   close-out could fall due is S-C on the second settlement day after the review, if it stays on the test.
 * **Partial correction priced (L3).** A solver who sums the issuer's classes but takes every class's shares from its latest filing, rather
   than as filed before each date, puts S-B back at 17 (a single class, so the issuer sum changes nothing for it), 1.55× S-C's 11 and four
-  days past the trigger, and closes it out: a name, not the hold. A solver who sums the classes but keeps the file's rows as they come closes
-  out S-A at 20.
-* **Grid.** Missing days (carried or panel) × shares timing (latest or as filed) × denominator (class or issuer) = 8 cells. The four
-  carried cells close out S-A (20 days), the two panel cells with latest filings close out S-B (17), and the panel, as-filed, class cell
-  closes out S-C (14). Only the panel, as-filed, issuer cell holds, and it alone matches 61 of 61. The nearest wrong cell is rung 2's, one
-  toggle and three days away.
+  days past the trigger, and closes it out: a name, not the hold. A solver who sums the classes but keeps the file's rows as they come
+  closes out S-A at 20.
+* **Grid.** Missing days (carried or panel) × shares timing (latest or as filed) × denominator (class or issuer) = 8 cells. The four carried
+  cells close out S-A (20 days), the two panel cells with latest filings close out S-B (17), and the panel, as-filed, class cell closes out
+  S-C (14). Only the panel, as-filed, issuer cell holds, and it alone matches 61 of 61. The nearest wrong cell is rung 2's, one toggle and
+  three days away.
 * **Falsifiable.** S-C would have been closed out had its fails exceeded half a per cent of the issuer's total on the two settlement days
   before its run began, about 41,000 more shares each day.
 
@@ -95,11 +97,11 @@ began three days later, and it stands at 11.
   covered the same 4,800 listed securities.
 * **What it pins.** The issuer-wide, as-filed construction on the settlement-day panel, 61 of 61. The policy's reproduction clause makes
   that the only monitor allowed to drive a close-out.
-* **Every rule exercised.** The overlap holds mid-window tender offers and share cancellations, missing rows inside runs and nine
-  dual-class issuers, so every component of the construction breaks at least one day when removed.
-* **Twin pair.** Listed securities L-114 and L-207 have identical daily fails, identical listed-class share counts and the same market. L-114's
-  issuer has one class and L-207's has a second, unlisted class 1.4 times as large, so the lists carry L-114 on 22 overlap days and L-207 on 11,
-  2.0× apart, separated only by the issuer-wide denominator.
+* **Every rule exercised.** The overlap holds mid-window tender offers and share cancellations, missing rows inside runs and nine dual-class
+  issuers, so every component of the construction breaks at least one day when removed.
+* **Twin pair.** Listed securities L-114 and L-207 have identical daily fails, identical listed-class share counts and the same market.
+  L-114's issuer has one class and L-207's has a second, unlisted class 1.4 times as large, so the lists carry L-114 on 22 overlap days and
+  L-207 on 11, 2.0× apart, separated only by the issuer-wide denominator.
 * **Resemblance points at the decoy.** S-C's fail pattern closely matches a listed security the firm closed out last quarter at 13 days.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -108,8 +110,8 @@ began three days later, and it stands at 11.
   settlement days; one programme a week, to the longest current run; a monitor may drive a close-out only if it reproduces every published
   list in the parallel run. The fails files' documentation of missing rows. The regulation's text, shipped as published. One sentence each.
 * **Empirical pins.** The denominator, the shares timing and the reading of missing days, from the overlap.
-* **Voices.** The analyst: "The leaderboard has never missed a big fail." The head of operations: "Ours is the monitor we've always run; three
-  days out of sixty-one is rounding."
+* **Voices.** The analyst: "The leaderboard has never missed a big fail." The head of operations: "Ours is the monitor we've always run;
+  three days out of sixty-one is rounding."
 * **Licensed wrong basis.** The policy records that the firm's clearing broker escalates on runs built from the fails file's rows as they
   come and will bring its list to the committee.
 
@@ -128,19 +130,20 @@ began three days later, and it stands at 11.
 
 > The committee meets Monday to decide what goes into this week's close-out programme, and our analyst's leaderboard has four names on it.
 > Tell me which security we close out this week, or that we hold, in a line the committee can minute, with the run length that decides it
-> and the earliest date anything could fall due. Send `closeout_case.xlsx`, a chart `threshold_runs.png`, and a one-page `committee_note.pdf`.
+> and the earliest date anything could fall due. Send `closeout_case.xlsx`, a chart `threshold_runs.png`, and a one-page
+> `committee_note.pdf`.
 
-* `closeout_case.xlsx` — each candidate's run under each construction with each construction's overlap match count (ask C), the lending sheet
-  (ask A) and the volume sheet (ask B).
+* `closeout_case.xlsx` — each candidate's run under each construction with each construction's overlap match count (ask C), the lending
+  sheet (ask A) and the volume sheet (ask B).
 * `threshold_runs.png` — a strip per candidate across the last 20 settlement days, threshold days shaded under the per-class and issuer-wide
   denominators, the 13-day line marked, and S-C's three lost days annotated.
 * `committee_note.pdf` — the committed verdict, the blocking quantity and what would have triggered a close-out.
 
 ## 10. The ask layer
 
-* **Ask A (device-carried, decoupled).** For each of the twelve candidates, the 20-day average stock-loan fee from the lending feed. *Device:*
-  some lenders quote in basis points a year and others as an indicative bucket from 1 to 10, whose bands the feed specification lists;
-  averaging raw fields mixes the two and misstates seven securities. The verdict never uses lending data.
+* **Ask A (device-carried, decoupled).** For each of the twelve candidates, the 20-day average stock-loan fee from the lending feed.
+  *Device:* some lenders quote in basis points a year and others as an indicative bucket from 1 to 10, whose bands the feed specification
+  lists; averaging raw fields mixes the two and misstates seven securities. The verdict never uses lending data.
 * **Ask B (device-carried).** For each candidate, average daily traded volume over the last 30 sessions. *Device:* halted sessions appear as
   zero-volume rows, and the market-data guide excludes them from averages; including them understates four securities.
 * **Ask C (validity).** Each construction's overlap match count and each candidate's run under each construction.

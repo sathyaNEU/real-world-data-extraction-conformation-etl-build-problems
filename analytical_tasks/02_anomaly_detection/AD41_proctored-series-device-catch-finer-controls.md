@@ -30,10 +30,10 @@ account register, the series terms and the pilot log. The community manager is s
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the community manager's view and the best-five list. A per-depth residual screen with division-correct prize
   money at the pilot's overall catch rate still names E.
-* **Instrument repair.** Suspect files: the 960 games' evaluations, made at depth 12 (a narrower measurement of move quality), and the account
-  register's sign-up device (a narrower record of the device a prize session is played on). Repaired at depth 20 and with every session's
-  device, rung 0 still names A, rung 1 B, rung 2 now names E (80 against D's 56) as rung 3 does, and the device-conditioned catch is still
-  needed: proctoring cannot see 95% of the 960 Series' prize sessions.
+* **Instrument repair.** Suspect files: the 960 games' evaluations, made at depth 12 (a narrower measurement of move quality), and the
+  account register's sign-up device (a narrower record of the device a prize session is played on). Repaired at depth 20 and with every
+  session's device, rung 0 still names A, rung 1 B, rung 2 now names E (80 against D's 56) as rung 3 does, and the device-conditioned catch
+  is still needed: proctoring cannot see 95% of the 960 Series' prize sessions.
 * **Lens swap.** The naive protection is assisted prize money at one catch rate; the answer's is assisted prize money on the devices
   proctoring can see, a different set of prize sessions and a different series.
 
@@ -41,12 +41,12 @@ account register, the series terms and the pilot log. The community manager is s
 
 A strong solver rejects raw and best-five accuracy, builds expected move loss by rating band, time control and colour, splits prizes by
 division through the entry table, and finds the quiet trap: the prize queue's engine build has no 960 support, so every game in both 960
-series was analysed client-side at depth 12, which inflates and squeezes the 960 residuals. Rebuilt per depth, the 960 Series carries $80k of
-assisted prize money and the 960 Masters $56k, and at the pilot's catch rate of 0.82 the 960 Series wins. Every step is correct, and the catch
-rate is a mix. Read account by account, the pilot log shows proctoring caught 148 of 164 assisted desktop accounts live and 3 of 20 on the
-mobile app, whose screen share cannot see a second device. The pilot ran on two desktop-heavy series, so its overall rate hides the split.
-The session log puts 95% of the 960 Series' prize sessions on the app and 85% of the 960 Masters' on desktop: proctoring would protect $15k
-in the first and $44k in the second.
+series was analysed client-side at depth 12, which inflates and squeezes the 960 residuals. Rebuilt per depth, the 960 Series carries $80k
+of assisted prize money and the 960 Masters $56k, and at the pilot's catch rate of 0.82 the 960 Series wins. Every step is correct, and the
+catch rate is a mix. Read account by account, the pilot log shows proctoring caught 148 of 164 assisted desktop accounts live and 3 of 20 on
+the mobile app, whose screen share cannot see a second device. The pilot ran on two desktop-heavy series, so its overall rate hides the
+split. The session log puts 95% of the 960 Series' prize sessions on the app and 85% of the 960 Masters' on desktop: proctoring would
+protect $15k in the first and $44k in the second.
 
 ## 4. The ladder
 
@@ -67,8 +67,8 @@ in the first and $44k in the second.
   before playing their prize sessions on the app, puts E's catch at 0.68 and names E again, 54 against D's 44 (1.22×). Both land on the
   rung-3 leader.
 * **Grid.** Expectation (best-five, pooled, per depth) × prize assignment (one pool or by division) × catch (pilot overall or by device) =
-  12 cells. Best-five cells name A; pooled cells name B in one pool and C by division under either catch; per-depth cells name B in one pool,
-  E by division at the overall catch, and D only by division with the device catch.
+  12 cells. Best-five cells name A; pooled cells name B in one pool and C by division under either catch; per-depth cells name B in one
+  pool, E by division at the overall catch, and D only by division with the device catch.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -96,8 +96,8 @@ in the first and $44k in the second.
   the per-depth screen all 23.
 * **Twin pair.** Pilot finals F-09 and F-14 in series B are identical on every screen column: 14 flagged accounts each, the same residual
   distribution and the same prize pool. The committee confirmed 12 assisted accounts in each; proctors had caught 10 live in F-09 and 5 in
-  F-14, 2.0× apart, because two thirds of F-14's confirmed accounts played their prize sessions on the app. Only the session device separates
-  them.
+  F-14, 2.0× apart, because two thirds of F-14's confirmed accounts played their prize sessions on the app. Only the session device
+  separates them.
 * **Resemblance points at the decoy.** On every residual column the 960 Series resembles the pilot's best-protected finals.
 
 ## 7. Pins, voices and the licensed wrong basis

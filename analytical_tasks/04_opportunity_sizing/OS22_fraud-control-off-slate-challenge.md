@@ -11,7 +11,7 @@
 | Gate G mechanism | method_or_model_selection, with binding_constraint |
 | Measured traps engaged | #9 picks from the offered options when none passes · #11 beats the headline trap, misses the quiet one · #7 uses the ready-made measure |
 | Calibration form | Change-log natural experiments: the rules engine's nine logged decline and referral changes, each measured at 45 days and re-measured at 180 days, every touched transaction re-scored by the new model |
-| Driving force | Every option on the model team's list breaks a condition of the fraud standard: the declines either turn away too many good customers or leave fraud above the scheme's exit line, and the referral swamps the review team. The standard also admits a strong-authentication challenge on the same score, and exactly one control on the threshold grid, a challenge at 0.55, clears all four conditions. Seeing that the list is empty needs fraud valued at maturity: on the holdout's 45-day labels low-score fraud is half reported, so decline at 0.80 appears to clear an exit line it misses by 8 points. |
+| Driving force | Every option on the model team's list breaks a condition of the fraud standard: the declines either turn away too many good customers or leave fraud above the scheme's exit line, and the referral swamps the review team. The standard also admits a strong-authentication challenge on the same score, and exactly one control on the threshold grid, a challenge at 0.55, clears all four conditions. Seeing that the list is empty needs fraud valued at maturity: on the holdout's 45-day labels low-score fraud is half reported, so decline at 0.80 appears to clear an exit line it misses by 9 points. |
 
 ## 1. Situation
 
@@ -39,35 +39,38 @@ year. The fraud committee meets on the 12th. The model team favours decline at 0
 ## 3. The driving force
 
 A strong solver drops precision for money: fraud prevented less finance's costs of $40 a declined good transaction, $3.00 a referral plus
-$0.50 for each good customer referred, and $6.06 a challenged good transaction. On the holdout as labelled, decline at 0.80 is the only listed control that clears every condition.
-But the labels are 45 to 60 days old, and the change log's re-measured changes show low-score fraud is reported slowly: 44% of the 0.55
-band's fraud is in by day 45, against 85% above 0.90. At maturity decline at 0.80 stops 62% of fraud against the 70% the exit line needs,
-and no listed control passes; the best-valued, referral at 0.65, overruns the review team by 36%. The standard admits challenges, and the
-authentication log shows 85% of challenged fraud failing. A challenge at 0.55 stops 73.1% of fraud while challenging 1.86% of good
-transactions against a 2.0% ceiling, and every other control on the grid fails a condition.
+$0.50 for each good customer referred, and $6.06 a challenged good transaction. On the holdout as labelled, decline at 0.80 is the only
+listed control that clears every condition. But the labels are 45 to 60 days old, and the change log's re-measured changes show low-score
+fraud is reported slowly: 50% of the 0.55 band's fraud is in by day 45, against 85% above 0.90. At maturity decline at 0.80 stops 61% of
+fraud against the 70% the exit line needs, and no listed control passes; the best-valued, referral at 0.65, overruns the review team by 13%
+and stops only 59%. The standard admits challenges, and the authentication log shows 85% of challenged fraud failing. A challenge at 0.55
+stops 72.2% of fraud while challenging 1.90% of good transactions against a 2.0% ceiling, and every other control on the grid fails a
+condition.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | The model team's ranking by alert precision, sized as fraud dollars flagged | A, decline at 0.90 (precision 0.45, 1.66× over decline at 0.80); $8.6M | The model team's own metric on its own holdout | Finance's cost schedule: a declined good transaction costs $40, and precision counts neither fraud dollars nor good customers |
-| 1 | Net savings on the holdout as labelled, the four conditions checked, listed controls only | B, decline at 0.80, the only listed control that passes; $5.3M | Money-weighted, every condition applied, and the change log's 45-day results agree | The change log's 180-day re-measurements: the 0.55 band's fraud is 44% reported by day 45 and the band above 0.90 85% |
-| 2 | Net savings at maturity, each score band grossed up by its reporting lag; listed controls only | C, referral at 0.65 ($10.5M, 1.41× over decline at 0.90), breaching review capacity by 36%; no listed control passes | Every figure mature, and the best of the list with its breach noted | The fraud standard: a control may decline, refer or challenge, at any threshold on the 0.05 grid |
-| 3 | **Decisive:** every admissible control on the grid, at maturity, against the four conditions | **E, challenge at 0.55 (5th of 5 on rung 0), $6.4M a year** | — | — |
+| 0 | The model team's ranking by alert precision, sized as fraud dollars flagged | A, decline at 0.90 (precision 0.55, 1.83× over decline at 0.80); $8.6M | The model team's own metric on its own holdout | Finance's cost schedule: a declined good transaction costs $40, and precision counts neither fraud dollars nor good customers |
+| 1 | Net savings on the holdout as labelled, the four conditions checked, listed controls only | B, decline at 0.80, the only listed control that passes; $5.2M | Money-weighted, every condition applied, and the change log's 45-day results agree | The change log's 180-day re-measurements: the 0.55 band's fraud is 50% reported by day 45 and the band above 0.90 85% |
+| 2 | Net savings at maturity, each score band grossed up by its reporting lag; listed controls only | C, referral at 0.65 ($9.4M, 1.27× over decline at 0.90), breaching review capacity by 13%; no listed control passes | Every figure mature, and the best of the list with its breach noted | The fraud standard: a control may decline, refer or challenge, at any threshold on the 0.05 grid |
+| 3 | **Decisive:** every admissible control on the grid, at maturity, against the four conditions | **E, challenge at 0.55 (5th of 5 on rung 0), $6.1M a year** | — | — |
 
-* **Position table.** The challenge ranks 5th on rung 0 (precision 0.06). Valued on rung 1's basis it would rank 2nd (1.60× behind decline
+* **Position table.** The challenge ranks 5th on rung 0 (precision 0.06). Valued on rung 1's basis it would rank 2nd (1.66× behind decline
   at 0.80) and on rung 2's 4th; it leads only rung 3, as the one control that passes.
-* **Discriminator dominance.** Referral at 0.65 carries a 1.64× value advantage into rung 3 ($10.46M against $6.39M). The conditions admit
-  none of it (445,800 referrals against capacity for 328,500, and 66.6% of fraud stopped against 70%) and all of the challenge, which
-  clears its binding conditions with 7% (friction) and 4% (prevention) to spare, so no value lead survives the decisive test.
-* **Partial correction priced (L3).** Every half-applied construction names a wrong control. A solver who searches the whole grid at
-  maturity but ranks by value without the conditions names referral at 0.70 ($10.56M, 1.65× the challenge). One who searches the grid
-  with the conditions on the labels as reported, or grosses them up with one pooled lag, names referral at 0.70 (2.6× the challenge on
-  that basis). One who treats a challenge as stopping every challenged fraud passes challenges up to 0.70 and names challenge at 0.70
-  ($11.40M against $8.71M, 1.31×).
-* **Grid.** Labels (as reported, at maturity) × controls (the list, the whole grid) × conditions (ignored, applied) gives 8 cells:
-  referral at 0.65, decline at 0.80, referral at 0.70 twice, referral at 0.65, no passing control, referral at 0.70, and the answer.
-  Only the answer cell names a challenge, and the nearest wrong figure is rung 1's $5.3M (−17%), attached to decline at 0.80.
+* **Discriminator dominance.** Referral at 0.65 carries a 1.55× value advantage into rung 3 ($9.42M against $6.09M). The conditions admit
+  none of it (370,200 referrals against capacity for 328,500, and 59.4% of fraud stopped against 70%) and all of the challenge, which clears
+  its binding conditions with 5% (friction) and 3% (prevention) to spare, so no value lead survives the decisive test.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong control, at least 1.15× clear of its runner-up and of
+  the answer on its own basis. A solver who searches the whole grid at maturity but ranks by value without the conditions names referral at
+  0.60 ($11.05M, 1.15× referral at 0.55 and 1.81× the challenge at 0.55). One who searches the grid with the conditions on the labels as
+  reported names challenge at 0.60 ($7.04M on that basis, 1.37× decline at 0.80 and 2.27× the challenge at 0.55); grossing the labels up
+  with one pooled lag keeps the same passing set and names it again (1.22× and 1.52×). One who treats a challenge as stopping every
+  challenged fraud passes challenges up to 0.60 and names challenge at 0.60 ($11.60M against $8.39M for the challenge at 0.55, 1.38×).
+* **Grid.** Labels (as reported, at maturity) × controls (the list, the whole grid) × conditions (ignored, applied) gives 8 cells: referral
+  at 0.65, decline at 0.80, referral at 0.60, challenge at 0.60, referral at 0.65, no passing control, referral at 0.60, and the answer.
+  Only the answer cell names a challenge at 0.55, and the nearest wrong figures are rung 1's $5.2M (−15%), attached to decline at 0.80, and
+  the as-labelled grid's $7.0M (+15%), attached to challenge at 0.60.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -89,11 +92,11 @@ transactions against a 2.0% ceiling, and every other control on the grid fails a
 * **Form.** The change log: nine changes to the rules engine's decline and referral rules over three years, each with alerts, declines
   and prevented fraud at 45 days and at 180 days, and every touched transaction re-scored by the new model.
 * **What it certifies.** Money-weighted net savings at finance's costs reproduce all nine changes' 180-day results; precision and recall
-  rank them wrongly 6 times in 9. The ratio of 45-day to 180-day fraud by score band gives the lag table (44% in the 0.55 band, rising to
+  rank them wrongly 6 times in 9. The ratio of 45-day to 180-day fraud by score band gives the lag table (50% in the 0.55 band, rising to
   85% above 0.90).
 * **What it is blind to.** Challenges (above).
 * **Twin pair.** Changes C3 and C6 are identical on every change-log column at 45 days: 1,200 alerts a day, the same declines, $0.40M of
-  fraud prevented. C3's fraud scored above 0.85 and C6's around 0.55, so at 180 days they prevented $0.47M and $0.91M, 1.9× apart. Only
+  fraud prevented. C3's fraud scored above 0.85 and C6's in the 0.50 band, so at 180 days they prevented $0.47M and $1.00M, 2.1× apart. Only
   the lag by score band separates them.
 * **Resemblance points at the decoy.** The listed declines most resemble change C2, the decline rule that met its fraud target on its
   45-day measurement.
@@ -116,13 +119,14 @@ transactions against a 2.0% ceiling, and every other control on the grid fails a
 ## 8. Determinism by construction
 
 * **Grid.** Thresholds sit on the 0.05 grid from 0.40 to 0.90, three actions, 33 controls.
-* **Clearance.** The challenge at 0.55 clears its ceilings by 7% and 4%; every other control misses its binding condition by at least 5%
-  (challenge at 0.60 stops 66.3% of fraud; decline at 0.80 at maturity 62%).
+* **Clearance.** The challenge at 0.55 clears its ceilings by 5% (friction) and 3% (prevention); every other control misses its binding
+  condition by at least 5% (challenge at 0.60 stops 66.3% of fraud; decline at 0.80 at maturity 61%). On the labels as reported, decline at
+  0.80 clears by 3% and every other listed control misses by at least 13%.
 * **Lags.** Each band's 45-to-180-day ratio is the same in every logged change within one point, and every holdout transaction is 45 to 60
   days old, inside one lag column.
 * **Challenges.** The authentication log covers every challenge issued on e-commerce last year, and its outcome rates are the same in
   every month within one point.
-* **Rounding.** The challenge's net savings are $6.391M, which rounds to $6.4M.
+* **Rounding.** The challenge's net savings are $6.092M, which rounds to $6.1M.
 
 ## 9. Prompt sketch and deliverables
 
@@ -158,11 +162,14 @@ control, its savings, the best listed control and its breach + 5 named chart par
 
 ## 12. World-building constraints
 
-* Year: 60M good e-commerce transactions ($4.5B), 90,000 frauds ($18.0M, 0.40% of sales). Share of fraud dollars above 0.40 to 0.90 by
-  0.05: 0.95, 0.92, 0.89, 0.86, 0.78, 0.74, 0.71, 0.66, 0.62, 0.57, 0.48; of good transactions: 4.2%, 3.2%, 2.4%, 1.86%, 1.2%, 0.65%,
-  0.38%, 0.26%, 0.17%, 0.10%, 0.05%.
-* Share of each band's fraud reported by day 45, from 0.40 to above 0.90: 0.36, 0.38, 0.40, 0.44, 0.52, 0.60, 0.68, 0.74, 0.80, 0.82,
-  0.85.
-* Listed controls at maturity: decline 0.70 $3.66M, decline 0.80 $7.08M, decline 0.90 $7.44M, referral 0.65 $10.46M; answer $6.39M.
+* Year: 60M good e-commerce transactions ($4.5B), 90,000 frauds ($18.0M, 0.40% of sales). Share of fraud dollars above 0.40 to 0.90 by 0.05:
+  0.95, 0.92, 0.89, 0.85, 0.78, 0.66, 0.645, 0.63, 0.61, 0.53, 0.48; of fraud counts: 0.88, 0.85, 0.81, 0.79, 0.67, 0.58, 0.55, 0.52, 0.48,
+  0.44, 0.40; of good transactions: 5.8%, 4.5%, 3.2%, 1.90%, 0.67%, 0.53%, 0.39%, 0.25%, 0.17%, 0.10%, 0.05%. Good transactions thin out
+  with score in every band; the fraud dollars bunch in the 0.60 band.
+* Share of each band's fraud reported by day 45, from 0.40 to above 0.90: 0.36, 0.38, 0.40, 0.50, 0.60, 0.62, 0.68, 0.74, 0.80, 0.82, 0.85
+  (0.34 below 0.40).
+* Listed controls at maturity: decline 0.70 $2.25M, decline 0.80 $6.90M, decline 0.90 $7.44M, referral 0.65 $9.42M; answer $6.09M. Partials:
+  referral 0.60 $11.05M at maturity without conditions; challenge 0.60 $7.04M on the labels as reported; challenge 0.60 $11.60M if every
+  challenged fraud were stopped.
 * C3 and C6 match on every change-log column at 45 days.
 * Review-queue logs and authorisation retries never touch labels, scores or the authentication log.

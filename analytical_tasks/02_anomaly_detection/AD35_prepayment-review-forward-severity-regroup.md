@@ -30,8 +30,10 @@ director thinks academic centres overbill everywhere.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the old z-score list. A two-way model net of add-ons, the build every close-out
   confirms, still names C.
-* **Instrument repair.** Make every claim and every residual exact. C's FY2026 excess stays real; what changes it is how FY2027 groups the
-  same coding, which no better record of FY2026 contains.
+* **Instrument repair.** None suspect: the FY2026 claims carry every secondary diagnosis and add-on payment, the hospital summaries and
+  close-outs are complete, and the FY2027 final rule is published in full. A perfect record of FY2026 leaves rung 0 at A, rung 1 at B and
+  rung 2 at C, because each measures last year's excess; regrouping each claim under next year's severity table, a forward quantity, is
+  still needed.
 * **Lens swap.** The naive basis is FY2026 claims as they grouped then; the answer is the same coding as FY2027 will group it, a different
   population of payments at a different moment.
 
@@ -88,19 +90,20 @@ from every secondary diagnosis to its next-year severity, and recomputing the ex
 * **What it certifies.** Add-on-net excess predicts denials within 10% in all nine; the raw two-way residual misses the three cells with
   add-on payments by 35% or more and the z-score misses six of nine, all overstating, so neither reconciles on the total.
 * **What it is blind to.** Severity reclassification (above).
-* **Twin pair.** D and F are identical on every rung 2 column: add-on-net excess ($900k each), volume, family, MCC rate and hospital type. D's
-  excess rests on respiratory-failure coding and F's on the malnutrition code, so their forward yields are $690k and $330k, 2.1× apart,
+* **Twin pair.** D and F are identical on every rung 2 column: add-on-net excess ($900k each), volume, family, MCC rate and hospital type.
+  D's excess rests on respiratory-failure coding and F's on the malnutrition code, so their forward yields are $690k and $330k, 2.1× apart,
   separated only by the regrouping.
-* **Resemblance points at the decoy.** By hospital type, family and excess, C most resembles the two closed reviews with the largest denials.
+* **Resemblance points at the decoy.** By hospital type, family and excess, C most resembles the two closed reviews with the largest
+  denials.
 
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The review charter: the team goes where it will deny the most improper payment over the twelve months after selection, on
-  the selection year's volume. The review manual: new-technology add-on payments are lawful and outside review scope. The FY2027 final
-  rule, shipped as published. One sentence each.
+  the selection year's volume. The review manual: new-technology add-on payments are lawful and outside review scope. The FY2027 final rule,
+  shipped as published. One sentence each.
 * **Empirical pins.** Denials track add-on-net excess, from the close-outs; each claim's FY2027 tier, from the severity table.
-* **Voices.** The medical director: "Academic centres overbill in everything they do; start with A." The analytics lead: "The two-way residual
-  is the national standard; trust it."
+* **Voices.** The medical director: "Academic centres overbill in everything they do; start with A." The analytics lead: "The two-way
+  residual is the national standard; trust it."
 * **Licensed wrong basis.** The charter records that the program-integrity oversight contractor ranks cells on the two-way residual and will
   present its list at the selection meeting.
 
@@ -120,19 +123,19 @@ from every secondary diagnosis to its next-year severity, and recomputing the ex
 > one-page `selection_memo.pdf`.
 
 * `review_case.xlsx` — the six cells under each rung's basis (ask C), the cost-ratio sheet (ask A) and the payer-mix sheet (ask B).
-* `excess_survival.png` — for each cell, FY2026 add-on-net excess as a bar with the part surviving FY2027 grouping overlaid, the survival share
-  labelled on each bar, the selected cell highlighted and the denial figure in the title.
+* `excess_survival.png` — for each cell, FY2026 add-on-net excess as a bar with the part surviving FY2027 grouping overlaid, the survival
+  share labelled on each bar, the selected cell highlighted and the denial figure in the title.
 * `selection_memo.pdf` — the committed cell, its expected denials and why each other cell falls away.
 
 ## 10. The ask layer
 
 * **Ask A (device-carried, decoupled).** For each candidate hospital, the operating cost-to-charge ratio in effect on 1 October 2025, 1
-  April 2026 and 1 October 2026. *Device:* the provider-specific file keeps a record per change with an effective date, and a correction
-  can carry the same effective date with a later file date; the file guide says the latest file date wins. Reading the first record misstates
+  April 2026 and 1 October 2026. *Device:* the provider-specific file keeps a record per change with an effective date, and a correction can
+  carry the same effective date with a later file date; the file guide says the latest file date wins. Reading the first record misstates
   four of the eighteen values. The review build never uses cost-to-charge ratios.
-* **Ask B (device-carried).** For each candidate hospital, its FY2026 share of inpatient days covered by private-plan enrolees, from the cost
-  reports. *Device:* cost reports run on each hospital's own fiscal year, recorded in the report index, and the federal year needs proration
-  across two reports for four hospitals; reading the latest report alone misstates them.
+* **Ask B (device-carried).** For each candidate hospital, its FY2026 share of inpatient days covered by private-plan enrolees, from the
+  cost reports. *Device:* cost reports run on each hospital's own fiscal year, recorded in the report index, and the federal year needs
+  proration across two reports for four hospitals; reading the latest report alone misstates them.
 * **Ask C (validity).** Each cell's figure under each of the four rung bases.
 * **Decoupling.** Clearing the regrouping and the add-on stripping changes no figure in asks A or B.
 

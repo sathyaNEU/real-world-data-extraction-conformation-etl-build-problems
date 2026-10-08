@@ -24,14 +24,16 @@ acknowledgement file from 12 past campaigns.
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every statistic is correct and labelled for what it measures: return levels, storm counts, exceedance hours, longest storms and
-  window availability. The planner is right that S1 has the roughest seas. Nothing is overturned; the difficulty is a population (stand-down
-  sequences against port distance) the monitor's grain cannot express.
+* **Litmus.** Every statistic is correct and labelled for what it measures: return levels, storm counts, exceedance hours, longest storms
+  and window availability. The planner is right that S1 has the roughest seas. Nothing is overturned; the difficulty is a population
+  (stand-down sequences against port distance) the monitor's grain cannot express.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the planner's view and the monitor's export. A weather-window analysis built from the buoy data still names S3,
   and still misses S5.
-* **Instrument repair.** Make every buoy record complete and every statistic exact. Sea-state statistics describe the sea; the loss depends
-  on how far each site's vessel must run to shelter, which no better wave record contains.
+* **Instrument repair.** Suspect file: the buoy series, whose documented missing codes leave hours blank. Fill them from the hindcast: no
+  missing hour falls within 48 hours of a stand-down, so rung 0 still names S1, rung 1 S2 and rung 2 S3. Chaining stand-downs through gaps
+  shorter than each site's round trip is still needed, since no wave record holds a vessel's transit; the vessel and port registers and the
+  acknowledgement file are complete.
 * **Lens swap.** The monitor's populations are storms and hours at a site; the answer's is chains of stand-downs and the gaps between them,
   weighed against a property of a different entity (the marshalling port). A different population, not one population under a new lens.
 
@@ -39,11 +41,11 @@ acknowledgement file from 12 past campaigns.
 
 A strong solver rejects the alert-level storms, rebuilds stand-downs at each vessel's crane limit for the site's depth, and runs the
 industry's weather-window analysis: a day is lost when no 24-hour workable window is available. Every step is correct, and each treats a
-calm gap of a day or more as usable. A floating vessel, though, is in port when the gap opens. It must sail out, remobilise, work at least
-a shift and be clear before the next stand-down, so a gap counts only if it covers the round trip and remobilisation plus twelve hours of
-work. That threshold is a property of the port, not the sea: 38 to 42 hours for four sites and 54 for S5, whose port is 16 hours away.
-S5's stand-downs come in pairs 45 to 51 hours apart, usable at any other site and lost there. Chaining stand-downs through lost gaps, per site, with each site's own
-round trip, is the construction.
+calm gap of a day or more as usable. A floating vessel, though, is in port when the gap opens. It must sail out, remobilise, work at least a
+shift and be clear before the next stand-down, so a gap counts only if it covers the round trip and remobilisation plus twelve hours of
+work. That threshold is a property of the port, not the sea: 38 to 42 hours for four sites and 54 for S5, whose port is 16 hours away. S5's
+stand-downs come in pairs 45 to 51 hours apart, usable at any other site and lost there. Chaining stand-downs through lost gaps, per site,
+with each site's own round trip, is the construction.
 
 ## 4. The ladder
 
@@ -57,23 +59,23 @@ round trip, is the construction.
 * **Position table.** S5 ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (S3 leads it by 1.23×), and leads only rung 3. Rung leaders
   beat their runners-up by 1.24×, 1.24×, 1.23× and 1.63×.
 * **Discriminator dominance.** S3 carries a 1.23× window-analysis advantage into rung 3, so the required edge is 1.2 × 1.23 = 1.48×. S5's
-  sequence uplift (80 against 39, 2.05×) against S3's (49 against 48, 1.02×) is an edge of 2.01×, 1.36× the requirement, and the net is
-  2.01 / 1.23 = 1.63×.
+  sequence uplift (80 against 39, 2.05×) against S3's (49 against 48, 1.02×) is an edge of 2.01×, 1.36× the requirement, and the net is 2.01
+  / 1.23 = 1.63×.
 * **Partial correction priced (L3).** A solver who lengthens the window to one round trip for every site (the fleet's typical 28 hours)
   names S3 again, 52 days against S5's 44 (1.18×). One who uses each site's own round trip but drops the 12-hour working minimum puts S5's
   threshold at 42 hours, below its 45- to 51-hour gaps, and also names S3, 53 against S5's 45 (1.18×). Both land on the rung-2 leader.
 * **Grid.** Event population (alert storms or stand-downs) × gap rule (none, 24-hour window, uniform round trip, site round trip plus work
-  minimum) = 8 cells. Alert-storm cells name S1; stand-down cells name S2, S3, S3 and S5 in that order, so only the site-specific chain names
-  S5.
+  minimum) = 8 cells. Alert-storm cells name S1; stand-down cells name S2, S3, S3 and S5 in that order, so only the site-specific chain
+  names S5.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The operations manual says only that floating vessels shelter in their marshalling port during stand-downs. No
    document says when they return or that gaps can be lost.
-2. **The corpus pins a construction, not a menu (Pattern B).** The site-specific chain reproduces the acknowledged weather downtime of all 12
-   campaigns within one day. The best rival, the 24-hour window, reproduces 5; no single uniform gap length from 12 to 60 hours reproduces
-   more than 7, because the threshold is different at every port. Every rival under-predicts far-port campaigns, so each misses the 12-campaign
-   total by 15% or more.
+2. **The corpus pins a construction, not a menu (Pattern B).** The site-specific chain reproduces the acknowledged weather downtime of all
+   12 campaigns within one day. The best rival, the 24-hour window, reproduces 5; no single uniform gap length from 12 to 60 hours
+   reproduces more than 7, because the threshold is different at every port. Every rival under-predicts far-port campaigns, so each misses
+   the 12-campaign total by 15% or more.
 3. **No arithmetic symptom.** Buoy records are complete after the documented missing codes, stand-downs tie to the vessel logs, and every
    monitor statistic reproduces from the hourly series.
 4. **Not a row predicate.** It needs declustered stand-downs, the gaps between consecutive ones, a join from site to port to transit time,
@@ -152,3 +154,4 @@ and the margin + 5 named chart parts + 3 files ≈ 54 criteria.
 * The jack-up's limit exceeds every recorded peak at all five sites.
 * S4-2021 and S5-2023 are identical on every monitor statistic.
 * Fuel records and tide tables never touch the buoy series, stand-downs or the acknowledgement file.
+* No missing buoy hour falls within 48 hours of a stand-down at any site.

@@ -16,8 +16,8 @@
 ## 1. Situation
 
 A community energy nonprofit runs 30 rooftop solar systems on schools and halls, monitored by its maintenance contractor. A foundation grant
-holds a repair reserve that can fund one component repair this quarter. The grant terms fund a repair only where the energy it is expected to
-recover over the three years after repair repays its cost at the community tariff (60 MWh), and otherwise carry the reserve forward. The
+holds a repair reserve that can fund one component repair this quarter. The grant terms fund a repair only where the energy it is expected
+to recover over the three years after repair repays its cost at the community tariff (60 MWh), and otherwise carry the reserve forward. The
 contractor flagged five systems. The nonprofit holds five-minute output per system, the revenue meters, string-current logs from the new
 monitoring, the site pyranometer and the reference pyranometer from the overlap year, the asset register and the programme's repair log. The
 contractor wants the reserve spent on its worst performance-ratio alarm.
@@ -25,12 +25,16 @@ contractor wants the reserve spent on its worst performance-ratio alarm.
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: the performance ratios as computed from the site pyranometer, the meters, the string currents, the
-  register and each logged repair's outcome. The contractor is right that A alarms most. Nothing is overturned; the difficulty is which repair
-  outcome applies to which candidate, and then that none of them pays back.
+  register and each logged repair's outcome. The contractor is right that A alarms most. Nothing is overturned; the difficulty is which
+  repair outcome applies to which candidate, and then that none of them pays back.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete the contractor's alarms and both voices. A string-level deficit costed at the log's pooled recovery still funds C.
-* **Instrument repair.** Make every meter, string log and repair record perfect: they are. C's deficit is real and repairable today; whether a
-  repair stays fixed is a property of its inverter model that no better meter of past output contains.
+* **Deletion test.** Delete the contractor's alarms and both voices. A string-level deficit costed at the log's pooled recovery still funds
+  C.
+* **Instrument repair.** Suspect files: the site pyranometer, which read up to 9% low while soiled, and the repair log, where 16 of 41
+  repairs are too recent for three-year follow-up. Use the cleaned reference throughout and complete the follow-up (the recent repairs split
+  by model like the rest): rung 0 still funds A, whose shortfall is its technology's normal yield on either sensor, rung 1 B and rung 2 C at
+  a pooled recovery that stays near 0.59. The recovery conditioned on inverter model is still needed, and on it the best candidate, D,
+  recovers 48 MWh against 60.
 * **Lens swap.** The naive recovery is the log's pooled share, true of no repair; the answer's is each candidate's model's share over the
   three years after repair, a different population of repairs at a different moment, and the verdict moves from a pick to a hold.
 
@@ -38,11 +42,11 @@ contractor wants the reserve spent on its worst performance-ratio alarm.
 
 A strong solver drops the performance-ratio alarms (the overlap shows the site pyranometer read low while soiled), compares each system's
 daily yield with the site's median system, finds the sustained deficits, looks down to string currents to separate component faults (dark
-strings, a tripped inverter) from uniform module ageing that no repair fixes, and costs each repairable deficit at the repair log's recovery.
-C's two dark strings clear the break-even comfortably. Every step is correct, and the recovery share is the log's pool: 59% over three years.
-The log does not record inverter models; the asset register does. Joined, the log splits absolutely: all 14 repairs on model X with three
-years of follow-up kept 95–100% of the recovered energy, and all 11 on model Y lost it within the first year as the DC arcing fault came back,
-keeping 12–20%. No repair recovered anything in between. C runs model Y. On model X the best candidate is D at 48 MWh.
+strings, a tripped inverter) from uniform module ageing that no repair fixes, and costs each repairable deficit at the repair log's
+recovery. C's two dark strings clear the break-even comfortably. Every step is correct, and the recovery share is the log's pool: 59% over
+three years. The log does not record inverter models; the asset register does. Joined, the log splits absolutely: all 14 repairs on model X
+with three years of follow-up kept 95–100% of the recovered energy, and all 11 on model Y lost it within the first year as the DC arcing
+fault came back, keeping 12–20%. No repair recovered anything in between. C runs model Y. On model X the best candidate is D at 48 MWh.
 
 ## 4. The ladder
 
@@ -53,26 +57,26 @@ keeping 12–20%. No repair recovered anything in between. C runs model Y. On mo
 | 2 | String-level component deficit (dark or low strings, tripped inverters) × 3 × 0.59: C 92 MWh | Fund C | The right grain, the right repair, a payback well clear of 60 MWh | The asset register joined to the repair log: every repair on C's inverter model lost its recovery within the first year |
 | 3 | **Decisive:** component deficit × 3 × the recovery for the candidate's inverter model (X 0.97, Y 0.16): D 48, E 41, C 25, A and B 0 | **Hold: the reserve carries forward; the best candidate, D, recovers 48 MWh against 60** | — | — |
 
-* **The blocking quantity.** The best expected three-year recovery among the five is D's 48 MWh, 12 MWh (20%) short of the 60 MWh break-even.
-  E reaches 41, C 25, and A and B have no repairable component deficit, so every candidate fails on the same standard.
-* **Partial correction priced (L3).** A solver who conditions on inverter model but carries the log's one-year recovery (X 0.98, Y 0.48) over
-  three years credits C with 75 MWh, 15 MWh (1.25×) over the break-even and 1.56× D's 48, and funds it: a pick, not the hold.
+* **The blocking quantity.** The best expected three-year recovery among the five is D's 48 MWh, 12 MWh (20%) short of the 60 MWh
+  break-even. E reaches 41, C 25, and A and B have no repairable component deficit, so every candidate fails on the same standard.
+* **Partial correction priced (L3).** A solver who conditions on inverter model but carries the log's one-year recovery (X 0.98, Y 0.48)
+  over three years credits C with 75 MWh, 15 MWh (1.25×) over the break-even and 1.56× D's 48, and funds it: a pick, not the hold.
 * **Grid.** Monitoring basis (performance ratio, system peer, string level) × recovery (pooled or model-conditioned) = 6 cells. Five fund a
   system (A, A, B, B, C); only string-level deficits with model-conditioned recovery hold.
-* **Falsifiable.** D would be funded with a component deficit of 20.6 MWh a year instead of 16.5, or a repair cost under about $14,400 at the
-  same tariff.
+* **Falsifiable.** D would be funded with a component deficit of 20.6 MWh a year instead of 16.5, or a repair cost under about $14,400 at
+  the same tariff.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The repair log lists systems, repair types and outcomes; no document mentions inverter models in connection with
    repairs or says that any fault recurs.
-2. **Corpus blind for a computable reason.** *No repair took place on any system during the overlap year, because the reserve was frozen while
-   the new monitoring was commissioned.* The overlap certifies the peer comparison and the string-level attribution (string currents sum to
-   the meters within 0.5% every month) and cannot show what happens after a repair.
-3. **No arithmetic symptom.** The pooled recovery is the log's exact mean, the string deficits reconcile to the meters, and every candidate's
-   payback computes cleanly.
-4. **Not a row predicate.** Recovery by model needs the repair log joined to the asset register, each repair's three-year outcome computed from
-   output before and after, and the split carried to each candidate's inverter.
+2. **Corpus blind for a computable reason.** *No repair took place on any system during the overlap year, because the reserve was frozen
+   while the new monitoring was commissioned.* The overlap certifies the peer comparison and the string-level attribution (string currents
+   sum to the meters within 0.5% every month) and cannot show what happens after a repair.
+3. **No arithmetic symptom.** The pooled recovery is the log's exact mean, the string deficits reconcile to the meters, and every
+   candidate's payback computes cleanly.
+4. **Not a row predicate.** Recovery by model needs the repair log joined to the asset register, each repair's three-year outcome computed
+   from output before and after, and the split carried to each candidate's inverter.
 5. **The enumeration is arithmetic.** Which candidates' repairs would hold is computed; no column on the system list carries the model.
 6. **No cutover date.** The decision rests on a split across 25 repairs over five years; no candidate's series steps.
 7. **Survives deletion.** Remove the alarms and both voices: the pooled-recovery string build is still the natural one.
@@ -85,9 +89,9 @@ keeping 12–20%. No repair recovered anything in between. C runs model Y. On mo
   deficits; a back-tester is confirmed at rung 2.
 * **What it is blind to.** Repair outcomes (above). The refusal sits in the less inviting record: the repair log, which joined to the asset
   register splits absolutely (model X 0.95–1.00, model Y 0.12–0.20 over three years, nothing between).
-* **Twin pair.** Logged repairs R-2019-06 and R-2020-11 are identical on every log column: a 30 kW school system, two dark strings, a combiner
-  and inverter repair in March, the same pre-repair deficit. One recovered 14.1 MWh in its first year and the other 6.8 MWh, 2.1× apart,
-  separated only by the inverter model in the register.
+* **Twin pair.** Logged repairs R-2019-06 and R-2020-11 are identical on every log column: a 30 kW school system, two dark strings, a
+  combiner and inverter repair in March, the same pre-repair deficit. One recovered 14.1 MWh in its first year and the other 6.8 MWh, 2.1×
+  apart, separated only by the inverter model in the register.
 * **Resemblance points at the decoy.** By system size, age and deficit, C most resembles the log's largest successful repairs.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -136,8 +140,8 @@ keeping 12–20%. No repair recovered anything in between. C runs model Y. On mo
 
 ## 11. Rubric arithmetic
 
-30 sites × 1 (ask A) + 5 districts × 2 (ask B) + 5 candidates × 4 bases (ask C) + the committed verdict, the blocking quantity, the shortfall
-and the falsifiability figure + 5 named chart parts + 3 files ≈ 72 criteria.
+30 sites × 1 (ask A) + 5 districts × 2 (ask B) + 5 candidates × 4 bases (ask C) + the committed verdict, the blocking quantity, the
+shortfall and the falsifiability figure + 5 named chart parts + 3 files ≈ 72 criteria.
 
 ## 12. World-building constraints
 
@@ -149,3 +153,4 @@ and the falsifiability figure + 5 named chart parts + 3 files ≈ 72 criteria.
 * No repair in the overlap year; the soiled site pyranometer read up to 9% low.
 * R-2019-06 and R-2020-11 are identical on every log column.
 * Lease amendments and curriculum rosters never touch output, meters, string logs, the register or the repair log.
+* The 16 repairs without three-year follow-up split by inverter model like the 25 with it.

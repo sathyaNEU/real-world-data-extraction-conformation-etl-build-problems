@@ -15,13 +15,13 @@
 
 ## 1. Situation
 
-An integrated care board's antibiotic items per STAR-PU run 14% above the national mean across its 62 practices. Its three-year
-stewardship plan must name the intervention populations: practices for pharmacist visits (which review how courses are started) and
-practices for care-home medication reviews (which review residents on long-term prophylaxis). The plan scores each population on the excess
-its intervention can act on. The board holds the national prescribing file (items by practice, chemical and month, with monthly cells under
-five suppressed), the national annual summary (financial-year totals by practice and chemical, unsuppressed), quinary list sizes and STAR-PU weights, its own linked patient-level prescriptions, practice care-home contracts and the log
-of past visits. Until this plan, practices with care-home contracts were served only by the care-home pharmacy team. The GP lead expects the
-usual twenty practices.
+An integrated care board's antibiotic items per STAR-PU run 14% above the national mean across its 62 practices. Its three-year stewardship
+plan must name the intervention populations: practices for pharmacist visits (which review how courses are started) and practices for
+care-home medication reviews (which review residents on long-term prophylaxis). The plan scores each population on the excess its
+intervention can act on. The board holds the national prescribing file (items by practice, chemical and month, with monthly cells under five
+suppressed), the national annual summary (financial-year totals by practice and chemical, unsuppressed), quinary list sizes and STAR-PU
+weights, its own linked patient-level prescriptions, practice care-home contracts and the log of past visits. Until this plan, practices
+with care-home contracts were served only by the care-home pharmacy team. The GP lead expects the usual twenty practices.
 
 ## 2. Gate G: why this is legal
 
@@ -31,21 +31,23 @@ usual twenty practices.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the GP lead's view and the dashboard. The board's own standard, items per STAR-PU with bounded broad-spectrum
   shares, still yields one population of sixteen.
-* **Instrument repair.** Make the item file and the list sizes perfect: they are. An item is still an item, and a monthly prophylaxis
-  prescription is still twelve of them a year; only the patient-level episodes say what the items were for.
+* **Instrument repair.** Suspect file: the national prescribing file, which suppresses monthly cells under five. Publish every cell: rung 0
+  still names twenty practices, rung 1 no longer leaves anyone out and names rung 2's sixteen, and rung 2 names sixteen. The episodes
+  rebuilt from the linked prescriptions are still needed, because an item is a correct record of a prescription, not of a course, and no
+  file records what an item was for.
 * **Lens swap.** The naive structure is built on prescription items; the answer is built on two different patient populations (people
   starting acute courses and residents on prophylaxis), with different practices in each and one practice in neither.
 
 ## 3. The driving force
 
-A strong solver drops items per 1,000 patients for STAR-PU, applies the board's dual standard (excess items above an overdispersed limit and a
-broad-spectrum share above 10%), bounds the suppressed chemical cells instead of dropping three practices, and confirms on 38 past visits that
-a visit cuts items per STAR-PU by about a fifth. Every step is correct, and every step counts items. A visit changes how often a clinician
-starts a course; it does not touch a resident whose prophylaxis a specialist started. In the six practices with nursing-home contracts, most
-excess items are monthly repeats for a few dozen residents, and in three dispensing practices seven-day courses go out as two items. Grouping
-each patient's prescriptions into episodes (items within 14 days are one course; six or more consecutive monthly repeats of one drug are
-prophylaxis) and standardising each by STAR-PU gives two excesses with different members, and the visit log, drawn only from practices
-without care-home contracts, shows items and courses falling together and cannot tell them apart.
+A strong solver drops items per 1,000 patients for STAR-PU, applies the board's dual standard (excess items above an overdispersed limit and
+a broad-spectrum share above 10%), bounds the suppressed chemical cells instead of dropping three practices, and confirms on 38 past visits
+that a visit cuts items per STAR-PU by about a fifth. Every step is correct, and every step counts items. A visit changes how often a
+clinician starts a course; it does not touch a resident whose prophylaxis a specialist started. In the six practices with nursing-home
+contracts, most excess items are monthly repeats for a few dozen residents, and in three dispensing practices seven-day courses go out as
+two items. Grouping each patient's prescriptions into episodes (items within 14 days are one course; six or more consecutive monthly repeats
+of one drug are prophylaxis) and standardising each by STAR-PU gives two excesses with different members, and the visit log, drawn only from
+practices without care-home contracts, shows items and courses falling together and cannot tell them apart.
 
 ## 4. The ladder
 
@@ -65,9 +67,9 @@ without care-home contracts, shows items and courses falling together and cannot
   everyone else still lists the three dispensing practices for visits and misses the two new ones: one population of ten and no care-home
   population, misplacing 11 of the 18 practices in play (three dispensing practices in; two new visit practices and all six care-home
   practices out), where rung 2 still held 13 of the answer's 15.
-* **Grid.** Denominator (patients or STAR-PU) × suppressed cells (dropped or bounded) × grain (items or episodes) = 8 cells. Every item-grain
-  cell yields one population (20, 20, 14 or 16); episode cells yield two populations, of 13 and 7 on raw patients and of 8 and 5 with
-  suppressed cells dropped; only with STAR-PU and bounded cells do they hold nine and six.
+* **Grid.** Denominator (patients or STAR-PU) × suppressed cells (dropped or bounded) × grain (items or episodes) = 8 cells. Every
+  item-grain cell yields one population (20, 20, 14 or 16); episode cells yield two populations, of 13 and 7 on raw patients and of 8 and 5
+  with suppressed cells dropped; only with STAR-PU and bounded cells do they hold nine and six.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -78,8 +80,8 @@ without care-home contracts, shows items and courses falling together and cannot
    STAR-PU, the rung 2 grain, and cannot separate items from courses.
 3. **No arithmetic symptom.** Items tie to the national file, patient-level items tie to the practice totals, list sizes tie to STAR-PU
    denominators, and every bound sits inside its published total.
-4. **Not a row predicate.** Episodes need each patient's prescriptions ordered in time and grouped by gap and repeat pattern, then counted per
-   practice against STAR-PU.
+4. **Not a row predicate.** Episodes need each patient's prescriptions ordered in time and grouped by gap and repeat pattern, then counted
+   per practice against STAR-PU.
 5. **The enumeration is arithmetic.** Which items are prophylaxis is computed from sequences; no column marks them.
 6. **No cutover date.** Care-home prophylaxis and dispensing habits are standing; no series steps.
 7. **Survives deletion.** Remove the GP lead and the dashboard, and the standard-based single population is still the natural build.
@@ -94,13 +96,14 @@ without care-home contracts, shows items and courses falling together and cannot
 * **Twin pair.** Practices Hollins Road and Wexcombe have identical items per STAR-PU (1.38× the board), list sizes, age profiles,
   broad-spectrum shares and rurality. Hollins Road's excess is 470 acute courses and Wexcombe's 230, 2.0× apart, because 40 of Wexcombe's
   residents are on monthly prophylaxis; only the episode grain separates them.
-* **Resemblance points at the decoy.** By item rate and list profile, the care-home practices most resemble the visited practices whose items
-  fell by a fifth.
+* **Resemblance points at the decoy.** By item rate and list profile, the care-home practices most resemble the visited practices whose
+  items fell by a fifth.
 
 ## 7. Pins, voices and the licensed wrong basis
 
-* **Filed pins.** The plan's scoring clause: a visit is scored on the decisions to start courses it can act on, and a care-home review on the
-  residents on long-term prophylaxis it can act on. The board's dual standard. The suppression rule of the national file. One sentence each.
+* **Filed pins.** The plan's scoring clause: a visit is scored on the decisions to start courses it can act on, and a care-home review on
+  the residents on long-term prophylaxis it can act on. The board's dual standard. The suppression rule of the national file. One sentence
+  each.
 * **Empirical pins.** The episode gap and the prophylaxis run, from the absolute split in the patient records (below).
 * **Voices.** The GP lead: "It is the same twenty practices every year; visit them." The prescribing adviser: "Items per STAR-PU is the
   national measure, and it has never let us down."
@@ -134,8 +137,8 @@ without care-home contracts, shows items and courses falling together and cannot
 * **Ask A (device-carried, decoupled).** For each of the five primary care networks, the share of antibiotic items written by nurse and
   pharmacist prescribers. *Device:* prescriber type sits in the prescriber register, effective-dated because prescribers move between
   practices; joining on the current row misattributes a sixth of items in two networks. The structure never uses prescriber type.
-* **Ask B (device-carried).** For each of the twelve care homes linked to the board's practices, residents on census day and the share with a
-  medication review in the last twelve months. *Device:* the census guide counts respite residents only if resident on census day, and the
+* **Ask B (device-carried).** For each of the twelve care homes linked to the board's practices, residents on census day and the share with
+  a medication review in the last twelve months. *Device:* the census guide counts respite residents only if resident on census day, and the
   home register's bed counts are capacity, not residents; using beds understates review shares in five homes.
 * **Ask C (validity).** Each of the four rung structures with its populations, members and total excess.
 * **Decoupling.** Clearing the episode grain and the bounds changes no figure in asks A or B.
@@ -148,8 +151,8 @@ population's excess + 5 named chart parts + 3 files ≈ 58 criteria.
 ## 12. World-building constraints
 
 * 62 practices. Rung structures: 20, 14, 16, and the answer's 9 + 6, with 3 dropped and 2 new.
-* Six care-home practices: items 1.41×, courses 1.02×. Two new visit practices: items 1.08×, courses 1.37×. Three dispensing practices: items
-  1.29×, courses 0.97×.
+* Six care-home practices: items 1.41×, courses 1.02×. Two new visit practices: items 1.08×, courses 1.37×. Three dispensing practices:
+  items 1.29×, courses 0.97×.
 * The visit log holds 38 visits, none at a practice with a care-home contract; items and courses fall within one point of each other in all.
 * Hollins Road and Wexcombe are identical on every item-level column.
 * The three practices with suppressed broad-spectrum months have them on both sides of 1 April, so the bound needs the financial-year total

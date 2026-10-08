@@ -46,9 +46,9 @@ thousand mile-years against 1.7 for other pre-1970 pipe, so it gets its own char
 reads rates off 2021–2026. Ten of LF-ERW's eleven failures sit on the 250 miles that have run in batch service for a decade, where pressure
 cycles daily. The service register shows operator Y converted another 120 miles of LF-ERW to batch service in March 2025, and the change log
 holds six earlier conversions with before-and-after records: on the four LF-ERW lines the seam-failure rate rose 3.9 to 4.6 times within two
-years; on the two seamless lines it held within 10%. Splitting LF-ERW by each line's own record puts the converted miles with quiet pipe. The
-commission's rule asks about 2027, and at the measured multiple those miles join the batch class: LF-ERW in batch service (370 miles), other
-pre-1970 pipe with the 60 steady LF-ERW miles (1,470), and post-1970 pipe, with only the first chart signalling.
+years; on the two seamless lines it held within 10%. Splitting LF-ERW by each line's own record puts the converted miles with quiet pipe.
+The commission's rule asks about 2027, and at the measured multiple those miles join the batch class: LF-ERW in batch service (370 miles),
+other pre-1970 pipe with the 60 steady LF-ERW miles (1,470), and post-1970 pipe, with only the first chart signalling.
 
 ## 4. The ladder
 
@@ -61,16 +61,17 @@ pre-1970 pipe with the 60 steady LF-ERW miles (1,470), and post-1970 pipe, with 
 
 * **Structure table.** Four different structures: two per-operator structures naming different operators, a three-class seam split ordering
   430 miles, and the three-class service split ordering 370. No lower rung holds the answer's partition or its order scope.
-* **Separation at the decisive rung.** At the measured multiple (4.3, the mean of the four LF-ERW conversions) the converted miles run at 7.3
-  per thousand mile-years in 2027, level with LF-ERW that has always cycled (7.3) and 4.3× the pooled pre-1970 class (1.7). At the low end of
-  the measured range (3.9) they still sit within 1.5× of the batch class (6.6 against 7.3) and 3.9× the pooled class.
+* **Separation at the decisive rung.** At the measured multiple (4.3, the mean of the four LF-ERW conversions) the converted miles run at
+  7.3 per thousand mile-years in 2027, level with LF-ERW that has always cycled (7.3) and 4.3× the pooled pre-1970 class (1.7). At the low
+  end of the measured range (3.9) they still sit within 1.5× of the batch class (6.6 against 7.3) and 3.9× the pooled class.
 * **Partial correction priced (L3).** A solver who splits LF-ERW by each line's own 2021–2026 record finds the 120 converted miles at 1.5
   per thousand mile-years, puts them and the 60 steady miles in a class of their own, and orders inspection of the 250 always-cycling miles:
   four classes and an order 120 miles short. A solver who sees the conversion but applies the integrity guidance's assumed 1.3× allowance
   puts the converted miles at 2.2, within 1.5× of steady pipe, and orders the same 250 miles. Both name structures no rung names.
 * **Grid.** Monitored unit (operator or class) × tie handling (documented tie-break or open gaps) × rate basis (seam record, line record,
   monitoring year at the measured multiple) = 12 cells. Operator cells name X or Y; class cells name the 430-mile seam split, the four-class
-  250-mile line split, or the answer, which only the monitoring-year basis reaches (with either tie handling, which class charts do not use).
+  250-mile line split, or the answer, which only the monitoring-year basis reaches (with either tie handling, which class charts do not
+  use).
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -159,7 +160,8 @@ the conversion multiple + 5 named chart parts + 3 files ≈ 60 criteria.
 ## 12. World-building constraints
 
 * 6,200 miles; pre-1970 1,840 (LF-ERW 430: 250 in batch service throughout, 120 converted in March 2025, 60 steady); post-1970 4,360.
-  Incidents since 2021: LF-ERW 11 (10 on the always-batch miles, 1 on the converted miles in December 2025), other pre-1970 13, post-1970 14.
+  Incidents since 2021: LF-ERW 11 (10 on the always-batch miles, 1 on the converted miles in December 2025), other pre-1970 13, post-1970
+  14.
 * Rates per thousand mile-years over 2021–2026: always-batch LF-ERW 7.3, all LF-ERW 4.6, other pre-1970 1.7, post-1970 0.6; the converted
   miles 1.5 on their record.
 * Change log: nine transfers within 12%; six conversions, four LF-ERW at 3.9–4.6× within two years and two seamless within ±10%.

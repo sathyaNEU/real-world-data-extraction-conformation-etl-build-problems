@@ -16,21 +16,22 @@
 ## 1. Situation
 
 A cold snap pushed heat and hot-water complaints in the city up 70% this week. The housing agency can send one extra inspection team to one
-community district. Its inspection manual says an inspection covers one heating system, the boiler or plant and every building it serves, and
-its deployment rule sends the extra team where the weather-adjusted excess of heating systems without heat is largest. The agency holds the
-311 complaints (with each building's lot number), daily temperatures, the lot register, the boiler register with its served-lots table and
-last season's close-out summary. The dashboard points at district A, which has had the most heat calls for three winters running.
+community district. Its inspection manual says an inspection covers one heating system, the boiler or plant and every building it serves,
+and its deployment rule sends the extra team where the weather-adjusted excess of heating systems without heat is largest. The agency holds
+the 311 complaints (with each building's lot number), daily temperatures, the lot register, the boiler register with its served-lots table
+and last season's close-out summary. The dashboard points at district A, which has had the most heat calls for three winters running.
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every figure is correct: complaint counts, building-days, temperatures, the boiler register and the close-out. The dashboard is
-  right that A has the most calls. Nothing reported is overturned; the difficulty is building the unit the inspection covers, which no file
-  is keyed on.
+* **Litmus.** Every figure is correct: complaint counts, building-days, temperatures, the boiler register and the close-out. The dashboard
+  is right that A has the most calls. Nothing reported is overturned; the difficulty is building the unit the inspection covers, which no
+  file is keyed on.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and both voices. A weather-adjusted count of distinct buildings without heat, with the expectation
   model that reproduces the close-out, still names C.
-* **Instrument repair.** Make every complaint perfectly geocoded and every lot correct: they are. A lot is still a lot, and a campus plant
-  still serves twenty of them.
+* **Instrument repair.** None suspect: every complaint carries its building's lot, and the boiler register's served-lots table links every
+  lot to its plant. A perfect record leaves rung 0 at A, rung 1 at B and rung 2 at C, because each counts buildings; the heating system is
+  still built through the link, and no complaint claims to record one.
 * **Lens swap.** The naive population is buildings (lots) without heat; the answer's is heating systems, a different population that merges
   campus lots and leaves walk-ups unchanged, and it names a different district.
 
@@ -42,8 +43,8 @@ expectations rather than only the citywide one, and names C. Every step is corre
 heating system. Public-housing campuses and co-op villages run one plant for many buildings on separate tax lots, so one plant failure files
 complaints from every lot it serves. The boiler register's served-lots table links lots to plants; a heating-system day is a plant with at
 least one complaint from any lot it serves. B and C are campus districts, averaging 2.7 and 2.2 lots per system among complaining lots; E's
-complaining buildings are walk-ups, where nearly every lot has its own boiler. Last season's close-out counts inspections per heating system, and only the plant link
-reproduces it.
+complaining buildings are walk-ups, where nearly every lot has its own boiler. Last season's close-out counts inspections per heating
+system, and only the plant link reproduces it.
 
 ## 4. The ladder
 
@@ -58,25 +59,25 @@ reproduces it.
   their runners-up by 1.27×, 1.29×, 1.27× and 1.54×.
 * **Discriminator dominance.** C carries a 1.27× advantage into rung 3, so the required edge is 1.2 × 1.27 = 1.52×. E keeps 0.97
   heating-system days per building-day against C's 0.45 (2.16×), 1.42× the requirement, so the net is 2.16 / 1.27 = 1.70×.
-* **Partial correction priced (L3).** A solver who merges lots by owner instead of by plant treats every walk-up in a landlord's portfolio as one
-  system; E's walk-ups sit in three large portfolios with separate boilers, so E collapses to 72 and C leads again, 112 against A's 91
-  (1.23×). A solver who divides building-days by each district's average lots per plant, instead of linking complaining lots, names D: E's
-  average is inflated by a co-op village whose plants never failed, so E falls to 85, while D keeps 114 against A's and C's 93 (1.23×).
-* **Grid.** Unit (calls, lots, owners, plants) × expectation (citywide slope or district slopes) = 8 cells. Call cells name A; lot cells name
-  B (citywide) or C (district); owner cells name A (156 against D's 113) or C (112 against A's 91); plants with the citywide slope name A,
-  221 against E's 184 (1.20×), because A's walk-ups keep their rung-1 lead at plant grain; only plants with district slopes name E.
+* **Partial correction priced (L3).** A solver who merges lots by owner instead of by plant treats every walk-up in a landlord's portfolio
+  as one system; E's walk-ups sit in three large portfolios with separate boilers, so E collapses to 72 and C leads again, 112 against A's
+  91 (1.23×). A solver who divides building-days by each district's average lots per plant, instead of linking complaining lots, names D:
+  E's average is inflated by a co-op village whose plants never failed, so E falls to 85, while D keeps 114 against A's and C's 93 (1.23×).
+* **Grid.** Unit (calls, lots, owners, plants) × expectation (citywide slope or district slopes) = 8 cells. Call cells name A; lot cells
+  name B (citywide) or C (district); owner cells name A (156 against D's 113) or C (112 against A's 91); plants with the citywide slope name
+  A, 221 against E's 184 (1.20×), because A's walk-ups keep their rung-1 lead at plant grain; only plants with district slopes name E.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The manual defines the inspection's unit; nothing says how lots relate to plants or that complaint files count lots.
    The boiler register is filed for permit renewals.
-2. **The corpus pins a construction, not a menu (Pattern B).** Plant-linked heating-system days reproduce last season's published
-   inspection counts in all 59 districts. Building-days reproduce 18, owner groups 27; both over-count in every campus district, so both miss
-   the citywide total by more than 25%. The unit is a join from lot to plant and a group by plant and day, not a setting.
+2. **The corpus pins a construction, not a menu (Pattern B).** Plant-linked heating-system days reproduce last season's published inspection
+   counts in all 59 districts. Building-days reproduce 18, owner groups 27; both over-count in every campus district, so both miss the
+   citywide total by more than 25%. The unit is a join from lot to plant and a group by plant and day, not a setting.
 3. **No arithmetic symptom.** Complaints geocode to lots, lots tie to the lot register, building-days reconcile, and the expectation models
    reproduce their controls.
-4. **Not a row predicate.** It needs every complaining lot joined to its plant, plant-days formed across lots, and the expectation refitted at
-   plant grain.
+4. **Not a row predicate.** It needs every complaining lot joined to its plant, plant-days formed across lots, and the expectation refitted
+   at plant grain.
 5. **The enumeration is arithmetic.** Heating systems without heat are computed; no field carries a plant on a complaint.
 6. **No cutover date.** The campus structure is permanent; nothing steps.
 7. **Survives deletion.** Remove both voices and the dashboard: the building-day build is still the natural one.
@@ -85,8 +86,8 @@ reproduces it.
 
 * **Form.** Last heating season's close-out summary: for each district, complaints, distinct building-days, heating systems inspected, and
   the published weather-adjusted expectation for each borough.
-* **What it pins.** The district-slope expectation, through the borough figures (the finer controls), and the heating-system unit, through the
-  inspection counts (above).
+* **What it pins.** The district-slope expectation, through the borough figures (the finer controls), and the heating-system unit, through
+  the inspection counts (above).
 * **Every rule exercised.** Districts with campuses, with walk-ups and with mixed stock all appear, so each construction is tested where it
   differs.
 * **Twin pair.** Last season, districts 7 and 12 had identical complaints, building-days, buildings, units and degree-day exposure. The
@@ -102,16 +103,17 @@ reproduces it.
 * **Empirical pins.** The expectation form, from the borough figures; the unit, from the inspection counts.
 * **Voices.** The dashboard owner: "District A has had the most heat calls for three winters running." The borough inspection chief:
   "Distinct buildings is how we count; calls are noise."
-* **Licensed wrong basis.** The manual records that the council's housing committee tracks districts by heat complaints per thousand units and
-  will review the deployment on that basis.
+* **Licensed wrong basis.** The manual records that the council's housing committee tracks districts by heat complaints per thousand units
+  and will review the deployment on that basis.
 
 ## 8. Determinism by construction
 
-* **Plant links.** Every lot in the contending districts maps to exactly one active plant for the season; split systems are registered as one
-  plant.
+* **Plant links.** Every lot in the contending districts maps to exactly one active plant for the season; split systems are registered as
+  one plant.
 * **Plant-day.** A plant counts on a day when any lot it serves files at least one complaint; first-complaint and any-complaint definitions
   agree because no plant's complaints straddle midnight in the week.
-* **Model.** District-slope models with or without a squared degree-day term reproduce the borough figures equally and name the same district.
+* **Model.** District-slope models with or without a squared degree-day term reproduce the borough figures equally and name the same
+  district.
 * **Rounding.** The committed excess is given to the nearest whole heating system; E's 199 sits clear of a boundary.
 
 ## 9. Prompt sketch and deliverables
@@ -131,9 +133,9 @@ reproduces it.
 * **Ask A (device-carried, decoupled).** For each borough, last season's median days from complaint to completed inspection. *Device:* an
   attempt where the inspector was refused entry is logged and re-attempted, and the manual dates the inspection at the first completed
   attempt; dating from the first attempt understates the delay in three boroughs. The deployment never uses inspection timing.
-* **Ask B (device-carried).** For each contending district, open heat violations at the end of last season and their median age. *Device:* the
-  violation history holds one row per status change, and the dictionary takes a violation's status at a date from its latest row on or before
-  that date; counting rows ever marked open overstates four districts.
+* **Ask B (device-carried).** For each contending district, open heat violations at the end of last season and their median age. *Device:*
+  the violation history holds one row per status change, and the dictionary takes a violation's status at a date from its latest row on or
+  before that date; counting rows ever marked open overstates four districts.
 * **Ask C (validity).** Each contending district's figure under each of the four rung bases.
 * **Decoupling.** Clearing the plant link and the district slopes changes no figure in asks A or B.
 

@@ -30,19 +30,20 @@ standard fairness algorithm.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the fairness scores. A reciprocal-pair build that reproduces both published shares and applies
   the cap is still the natural build and still prints 7,400.
-* **Instrument repair.** Label every sampled rating perfectly: they are. The published shares stay exactly right and still cannot tell the
-  two definitions apart; only the rating-level labels, joined to trades, can.
-* **Lens swap.** The naive population is ratings exchanged in reciprocal pairs; the answer's is ratings with no trade behind them, which adds
-  cycle and star rings and removes backed repeat partners. Different ratings, not one set under a new lens.
+* **Instrument repair.** Suspect file: Q3's verification sample, unlabelled until January. Label it: rung 0 still removes 14,200, rung 1
+  11,200 and rung 2 7,400, because none of them reads a label; Q3's labels add a control that breaks the reciprocal definition directly, and
+  the escrow join over all 190,000 ratings is still needed to count 9,600. The ratings and the escrow ledger are complete.
+* **Lens swap.** The naive population is ratings exchanged in reciprocal pairs; the answer's is ratings with no trade behind them, which
+  adds cycle and star rings and removes backed repeat partners. Different ratings, not one set under a new lens.
 
 ## 3. The driving force
 
-A strong solver rejects the fairness algorithm because it misses both published shares, defines rings as components of reciprocal +10
-pairs, sees that definition reproduce 6.1% and 5.8% to the decimal, applies the per-seller cap, and prints 7,400. Every step is correct, and
-the salient control has been passed. The rating-level labels behind those shares are in the same archive. Read rating by rating, the
-reciprocal definition misses 61 labelled ring ratings, given in cycles (A rates B, B rates C, C rates A) and stars (sockpuppets rating one
-hub), and wrongly flags 46 ratings between repeat partners who traded through escrow before every rating. The errors offset in both quarters.
-The labels are reproduced, all 4,000, only by joining each rating to the escrow ledger, keeping those with no settled trade between the pair,
+A strong solver rejects the fairness algorithm because it misses both published shares, defines rings as components of reciprocal +10 pairs,
+sees that definition reproduce 6.1% and 5.8% to the decimal, applies the per-seller cap, and prints 7,400. Every step is correct, and the
+salient control has been passed. The rating-level labels behind those shares are in the same archive. Read rating by rating, the reciprocal
+definition misses 61 labelled ring ratings, given in cycles (A rates B, B rates C, C rates A) and stars (sockpuppets rating one hub), and
+wrongly flags 46 ratings between repeat partners who traded through escrow before every rating. The errors offset in both quarters. The
+labels are reproduced, all 4,000, only by joining each rating to the escrow ledger, keeping those with no settled trade between the pair,
 and linking them into components. In Q3 the cycle ring grew and genuine repeat trading rose, so the offset breaks: more ring ratings, fewer
 false ones, and the capped count rises to 9,600.
 
@@ -68,21 +69,22 @@ false ones, and the capped count rises to 9,600.
 
 1. **Written nowhere.** The integrity policy says ratings from accounts in a coordinated ring are expunged. The escrow ledger is filed as a
    payments record; no document links ratings to trades or defines a ring.
-2. **Finer controls pin a construction, not a menu.** Both the reciprocal and the unbacked definitions reproduce the published shares. On the
-   4,000 labelled ratings the unbacked components reproduce all 4,000 and the reciprocal pairs 3,893, with errors in both directions that
-   net to the published share, so a solver checking only shares is confirmed. The unbacked test is a join on each rating's pair and time to
-   the escrow ledger followed by components, not a threshold on a list.
+2. **Finer controls pin a construction, not a menu.** Both the reciprocal and the unbacked definitions reproduce the published shares. On
+   the 4,000 labelled ratings the unbacked components reproduce all 4,000 and the reciprocal pairs 3,893, with errors in both directions
+   that net to the published share, so a solver checking only shares is confirmed. The unbacked test is a join on each rating's pair and
+   time to the escrow ledger followed by components, not a threshold on a list.
 3. **No arithmetic symptom.** Ratings, accounts and escrow trades reconcile; the reciprocal build ties to both published shares exactly.
 4. **Not a row predicate.** Ring membership needs a join of 190,000 ratings to the ledger, a graph of unbacked ratings, components, and then
    a per-seller cap over the ratings those members gave.
-5. **The enumeration is arithmetic.** Ring accounts are computed; no column flags them, and the community's reciprocal tell is wrong both ways.
+5. **The enumeration is arithmetic.** Ring accounts are computed; no column flags them, and the community's reciprocal tell is wrong both
+   ways.
 6. **No cutover date.** The cycle ring grew steadily through Q2 and Q3; no series steps.
 7. **Survives deletion.** Remove both voices and the fairness scores, and the reciprocal build is still the natural one.
 
 ## 6. The calibration corpus
 
-* **Form.** The Q1 and Q2 verification samples: 2,000 ratings drawn at random each quarter and labelled ring or not by expert
-  investigators, whose labelled shares are the published prevalence figures (6.1% and 5.8%).
+* **Form.** The Q1 and Q2 verification samples: 2,000 ratings drawn at random each quarter and labelled ring or not by expert investigators,
+  whose labelled shares are the published prevalence figures (6.1% and 5.8%).
 * **What it pins.** The salient control (the shares) admits the reciprocal and unbacked definitions alike; the finer control (the labels)
   admits only the unbacked one, 4,000 of 4,000 against 3,893.
 * **Every rule exercised.** The samples contain cycle-ring ratings, star-ring ratings and backed repeat-partner ratings, so each part of the
@@ -90,7 +92,8 @@ false ones, and the capped count rises to 9,600.
 * **Twin pair.** Sellers Kestrel and Larkspur each received 60 Q3 ratings, 30 of them reciprocal +10s from raters of the same tenure and
   fairness profile. Kestrel's reciprocal raters are escrow-backed repeat partners and Larkspur's are an unbacked star ring, so the sweep
   removes 15 of Kestrel's ratings and 30 of Larkspur's, 2.0× apart, separated only by the escrow join.
-* **Resemblance points at the decoy.** Q3's aggregate rating profile matches Q2's closely, so carrying Q2's published share to Q3 looks safe.
+* **Resemblance points at the decoy.** Q3's aggregate rating profile matches Q2's closely, so carrying Q2's published share to Q3 looks
+  safe.
 
 ## 7. Pins, voices and the licensed wrong basis
 
@@ -133,7 +136,8 @@ false ones, and the capped count rises to 9,600.
 * **Ask B (device-carried).** For each of the six fiat currencies, Q3 withdrawal volume and the share held for review. *Device:* a held
   withdrawal posts a release record, and the payments guide dates the withdrawal on release for volume reporting; dating on request moves a
   third of held volume into the wrong month and misstates three currencies.
-* **Ask C (validity).** The count under each of the four rung constructions, with each construction's published-share and label reproduction.
+* **Ask C (validity).** The count under each of the four rung constructions, with each construction's published-share and label
+  reproduction.
 * **Decoupling.** Clearing the escrow join and the cap changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
