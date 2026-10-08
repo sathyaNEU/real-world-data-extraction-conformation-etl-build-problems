@@ -32,9 +32,9 @@ Fridays lighter than mid-week mornings.
   count still misses the platforms that carry the crowd.
 * **Instrument repair.** Clean-data test. One file is suspect: the station register still flags Ferrier Street's two downtown platforms in
   service, superseded by the service-change register's closure for the whole pick. Repaired, with Ferrier Street's riders moved to Hollins
-  Road and Marsh Gate, rung 0 returns 34 and rung 1 returns 47 (rung 2's figure), neither 58. Fare-device entries, the engineering map,
-  the transfer census and the hand counts are complete for what they claim, entries and links rather than platform loads, which no file
-  claims to hold, so the platform build is still needed.
+  Road and Marsh Gate, rung 0 returns 34 and rung 1 returns 47 (rung 2's figure), neither 58. Fare-device entries, the engineering map and
+  the transfer census are complete and record entries and links, not platform loads, which no population file claims to hold; the hand
+  counts are complete for the 60 mornings they cover and serve as the check. The platform build is still needed.
 * **Lens swap.** The naive read and the answer count different populations: complexes whose averaged load crosses the line, against
   platforms whose own load does, which include platforms at complexes that never cross it.
 
