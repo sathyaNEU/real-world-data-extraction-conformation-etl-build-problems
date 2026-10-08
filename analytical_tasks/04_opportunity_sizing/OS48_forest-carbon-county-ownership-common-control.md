@@ -92,9 +92,11 @@ acres or more, against 25% in parcels of that size. In Tamarack the same link mo
   avoided-removal rates by county. A solver who back-tests rungs 1 and 2 is confirmed.
 * **What it pins.** The ownership unit (above), and with it the published National Woodland Owner Survey counts of family ownerships of 40
   acres or more, which common control matches within 3% in every county.
-* **Twin pair.** Polk Township in Sassafras and Union Township in Tamarack are identical on every column of the parcel file a lookup
-  reaches: parcel counts, parcel-size bands, family-forest acres and avoided-removal rates. Under common control 72% of Polk's acres are
-  eligible and 36% of Union's, 2.0× apart, because Polk's small parcels belong to a few family LLCs and trusts.
+* **Twin pair.** In the verification subsample, the 18 parcels sampled in Polk Township (Sassafras) and the 18 in Union Township
+  (Tamarack) are identical on every column of the parcel file a lookup reaches: parcel-size bands, family-forest acres and avoided-removal
+  rates. The foresters verified 72% of Polk's sampled acres and 36% of Union's as lying in ownerships of 40 acres or more, 2.0× apart,
+  because Polk's small parcels belong to a few family LLCs and trusts. Only the links through the entity and trust registries separate
+  them.
 * **Resemblance points at the decoy.** By parcel sizes, growth and harvest, Tamarack resembles the county of the developer's last project,
   so a solver transferring that project's enrolment by resemblance lands on Tamarack.
 
@@ -159,5 +161,6 @@ named chart parts + 3 files ≈ 56 criteria.
 * Uptake 15%; leakage 20%; buffer 15%. Title-holder grouping recovers a quarter of the ownership uplift and township-bound linking 30%.
 * Rung leaders Laurel, Chestnut Hill, Tamarack and Sassafras with margins of 1.51×, 1.94×, 1.40× and 1.59×; both half-built ownerships name
   Tamarack; all eight grid cells name as stated.
-* Polk and Union townships are identical on every parcel-file column, at 72% and 36% eligible under common control.
+* The 18 sampled parcels in Polk and in Union townships are identical on every parcel-file column, at 72% and 36% of acres verified in
+  ownerships of 40 acres or more.
 * Re-advertised sales and station-days never touch parcels, ownership links or easements.

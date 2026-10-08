@@ -69,7 +69,8 @@ route geometry, priced at the segment rates.
 1. **Written nowhere.** The close-out reports one validated rate. No document says consumption depends on speed or that the forward depots
    sit outside their zones; the route geometry is a mapping file.
 2. **Corpus blind for a computable reason.** *In every tranche-1 route the stem share is between 2% and 4%, because all three tranche-1
-   depots sit inside their delivery zones.* The day rate and the segment rates predict every closed route's worst day within 1.5% of each
+   depots sit inside their delivery zones; the ten diversion days of last March's bridge closure are the only exception, and the
+   close-out's design day excludes them.* The day rate and the segment rates predict every closed route's worst day within 1.5% of each
    other, so the close-out's 120-of-120 holds under both.
 3. **No arithmetic symptom.** Daily energy, miles, charging sessions and the close-out's predictions reconcile under every rung, and the
    day-level fit has an R² of 0.99.
@@ -87,9 +88,12 @@ route geometry, priced at the segment rates.
   2%. A solver who back-tests rung 2 is confirmed.
 * **What it is blind to.** Speed (above). No tranche-1 van has yet run a day below 0°C, so it is silent on cold as well, which is why the
   bound in rung 1 is needed.
-* **Twin pair.** Forward depots Hartley Lane and Ousebridge are identical on every route-master column: 64 routes each, the same
-  95th-percentile miles by route, stops, parcels and payload. Hartley Lane sits inside its zone (stem share 0.06) and Ousebridge 14 miles
-  outside its own (0.45). They qualify 52 and 25 vans, 2.1× apart, and no depot-level rate reproduces both.
+* **Twin pair (free training instance).** Tranche-1 routes R-047 and R-052 are identical on every route-master column: 62 miles at the
+  95th percentile, the same stops, parcels and payload. For ten days of last March's bridge closure, R-047 ran from a temporary depot 20
+  miles outside its zone, adding 40 stem miles a day at 50 mph or more, and its van drew 50.4 kWh a day against R-052's 24.8, 2.0× apart.
+  The stem miles at the telemetry's 0.64 kWh a mile account for the whole 25.6 kWh difference; the day rate on R-047's 102 miles misses
+  it by 19%. Both vans finished every day, and the close-out's design day excludes diversion days, so the stem changed nothing tranche 1
+  reports. The forward depots sit outside their zones every day, and there the same stem pricing decides.
 * **Resemblance points at the decoy.** The forward depots match the tranche-1 depots on stops per route, payload and 95th-percentile miles,
   so a solver who transfers the validated rate by resemblance files rung 2's 281.
 
@@ -152,5 +156,6 @@ count lost to stems + 5 named chart parts + 3 files ≈ 46 criteria.
   miles on stems. Four edge-of-town depots, each with 20–28 local loops (stem share under 0.05).
 * Rung counts are 312 / 236 / 281 / 198. Grid cells are 352 and 268. The depot-average partial lands at 118. No cell is within 19% of the
   answer.
-* Hartley Lane and Ousebridge are identical on every route-master column and differ only in depot location.
+* Tranche-1 routes R-047 and R-052 are identical on every route-master column; on the ten diversion days R-047 drew 50.4 kWh a day
+  against R-052's 24.8, and the close-out's design day excludes diversion days.
 * Fuel-card yard fills, reversals and midnight-split shifts never touch route geometry, telemetry or the close-out.

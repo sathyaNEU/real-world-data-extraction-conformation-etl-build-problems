@@ -68,7 +68,8 @@ to a log no capture model opens.
 1. **Written nowhere.** The amendment file, the plant register and the battery specification say nothing about discharge. The constraint
    log is an ISO publication about transmission, and no document connects it to storage.
 2. **Corpus blind for a computable reason.** *In every one of the pilot log's 730 days no discharge was revised for congestion, because the
-   pilot plant exports on an unconstrained 500 kV path.* The daily-cycle model and the recursion return identical capture for every pilot
+   pilot plant exports on an unconstrained 500 kV path; its only blocked nights, four in a planned line outage, are coded as
+   unavailability.* The daily-cycle model and the recursion return identical capture for every pilot
    day.
 3. **No arithmetic symptom.** Curtailment, charging, discharge and losses balance every day under every rung, and state of charge never
    leaves 0–400 MWh.
@@ -88,9 +89,11 @@ to a log no capture model opens.
 * **What it is blind to.** Blocked nights (above).
 * **The absolute split (O2).** On the forward plants' curtailment days, Kettle Pass either binds for all of 21:00 to 05:00 or for none of
   it. There is no partially blocked night.
-* **Twin pair.** Weeks 15 and 17 at Kettle North are identical on every column of the curtailment report: daily curtailment within 1%,
-  the same curtailed hours and the same irradiance. The battery captures 2,800 MWh in week 15 and 1,200 MWh in week 17, 2.3× apart, because
-  four of week 17's nights were blocked. No rate per curtailed megawatt-hour reproduces both.
+* **Twin pair (free training instance).** The pilot's weeks 31 and 33 are identical on every column of the curtailment report: daily
+  curtailment within 1%, the same curtailed hours and the same irradiance. In week 33 a planned outage on the pilot's export line blocked
+  four nights, so the battery started those days full and captured 1,200 MWh against week 31's 2,800 MWh, 2.3× apart. The log codes those
+  days as unavailable, inside the 97% availability, so the blocking changed nothing the rung-2 model or its capture ratio reports. Behind
+  Kettle Pass the path blocks nights with no outage, on 58% of curtailment days, and there the same recursion decides.
 * **Resemblance points at the decoy.** The forward plants match the pilot on curtailment profile and battery size, so transferring the
   pilot's capture ratio by resemblance files rung 2.
 
@@ -151,6 +154,6 @@ energy and the blocked-day counts for the three Kettle plants + 5 named chart pa
 * Rung-2 charged energy: Kettle North 34, Kettle South 33, Kettle West 31, Dry Lake 30. Rung 3: 15.32, 14.88, 13.87 and 30.00. Corona Flats and
   Ewan Ridge would charge 31 and 29 on unconstrained lines.
 * Rung figures are 361.2 / 258.0 / 110.1 / 63.7 GWh, and no other grid cell is within 70% of the answer.
-* Kettle Pass binds all of 21:00–05:00 on 58% of the Kettle plants' curtailment days and on none of the pilot's. Kettle North's weeks
-  15 and 17 are identical on every curtailment-report column.
+* Kettle Pass binds all of 21:00–05:00 on 58% of the Kettle plants' curtailment days and on none of the pilot's. The pilot's weeks 31 and
+  33 are identical on every curtailment-report column, and week 33's four outage nights cut its capture to 1,200 MWh against 2,800.
 * Derate overlaps and instruction revisions never touch curtailment, the constraint log or the pilot log.

@@ -96,9 +96,12 @@ $22,250, not $73,000. Net of rebates, the clinic-billed B3 is the best use of a 
   patient on the molecule switched within the same seven days, contacted or not; those 348 are formulary switches, and only excluding them
   reproduces the vendor's invoice.
 * **What it is blind to.** Rebates (above).
-* **Twin pair.** B5 and B6 are identical on every column a lookup reaches: list price ($44,000 a year), biosimilar price ($10,000),
-  members (600), prescriber mix and pharmacy channel. A switch saves $14,200 on B5 and $27,400 on B6, 1.93× apart, because the PBM returns
-  45% of B5's reference cost and 15% of B6's. Only the rebate statements, joined by product, separate them.
+* **Twin pair (free training instance).** Two years ago the PBM moved the plan's members on two insulins, I-1 and I-2, to biosimilars on
+  its own formulary. The two are identical on every column a lookup reaches: list price ($3,600 a year), biosimilar price ($1,200),
+  members switched (400 each), prescriber mix and pharmacy channel. Net of the reference makers' rebates, which the ledger posts by
+  product and quarter, a switch saved $960 on I-1 and $1,860 on I-2, 1.94× apart, because the PBM returned 40% of I-1's cost and 15% of
+  I-2's. Only the rebate statements, joined by product, separate them. The switches were the PBM's, outside the pilot, and the plan's
+  annual report booked them gross, so the rebates changed nothing anyone priced. On B1, B2, B5 and B6 the same rebates decide.
 * **Resemblance points at the decoy.** By prescriber type and gross gap, B2 resembles the pilot's best office practices, so a solver
   transferring the pilot's saving per switch by resemblance carries it to B2.
 
@@ -163,5 +166,6 @@ margin + 5 named chart parts + 3 files ≈ 67 criteria.
 * Yields: reported 55%; outreach-driven 40% in offices and 12% in hospital clinics.
 * Rung leaders B1, B4, B2 and B3 with margins of 1.21×, 1.18×, 1.96× and 1.17×. Both half-netted rebates name B2 (1.38× and 1.28×), and
   all eight grid cells name as stated.
-* B5 and B6 are identical on every claims column; their net savings per switch are $14,200 and $27,400.
+* Insulins I-1 and I-2, switched by the PBM two years ago, are identical on every claims column; their net savings per switch were $960
+  and $1,860, at rebates of 40% and 15%.
 * Authorisation status rows and provider record IDs never touch claims, members or rebate statements.

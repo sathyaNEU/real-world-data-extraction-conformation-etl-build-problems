@@ -85,8 +85,11 @@ from the federal site list to blocks to licence areas.
 * **What it is blind to.** Encumbrance (above).
 * **The absolute split (O2).** In the seller's site register the band is lit at 0 of 405 sites inside a protection radius and 94% of the
   1,380 outside, with no site in between.
-* **Twin pair.** Licence areas L3 and L6 are identical on population (0.62M each), MHz, region class and licensing history. L6 has 46% of
-  its population inside one zone and L3 none, so their deployable values differ 1.85×. No licensed-MHz-pop rule separates them.
+* **Twin pair (free training instance).** In the seller's site register, licence areas L3 and L6 are identical on every licence-register
+  column (0.62M population, 40 MHz, region class and licensing history) and on sites built, 240 each. The band is lit at 226 of L3's sites
+  and 113 of L6's, 2.0× apart, because 120 of L6's sites sit inside a radar site's protection radius, where no site is lit. Only the
+  spatial join of the federal site list separates them. The register answers a network question that no closed sale ever priced, so the
+  zone changed nothing the book reports. In the holding's value, the same zone decides.
 * **Resemblance points at the decoy.** The holding matches closed sale 9 on MHz, population class and region, and sale 9 closed exactly at
   the rung-2 basis.
 
@@ -148,5 +151,6 @@ population and partitioned population + 5 named chart parts + 3 files ≈ 44 cri
 * Constant-dollar benchmarks: 2022 auction $1.04, 2017 $0.79 per MHz-pop. Round-result completeness is 100% for the 2014, 2017, 2020 and
   2022 auctions. After closing-notice cancellations it is 0.93, 1.00, 0.97 and 0.88.
 * Rung figures are $174.7M / $132.7M / $115.3M / $89.1M, and no other grid cell is within 19% of the answer.
-* Every closed sale has zero zone population. Four have partitions. L3 and L6 are identical on every licence-register column.
+* Every closed sale has zero zone population. Four have partitions. L3 and L6 are identical on every licence-register column and on 240
+  built sites each, of which 226 and 113 carry the band.
 * Lease amendments and re-parented cells never touch populations, zones, benchmarks or the book.

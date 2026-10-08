@@ -60,8 +60,8 @@ one pass. Its liquidated invoices, all at 25%, were each revised from a quarter 
 * **The answer.** 2030 plate costs $1,120 ex-works, $50 freight and a $1,344 surcharge (the collar), $2,514 a tonne. With $868 of
   fabrication, a tonne of tower costs $3,583, and the floor is $3,869.8.
 * **Partial correction priced (L3).** Scaling the one-pass surcharge by the liquidated invoices' revision ratio (4/3) gives $3,394
-  (−12.3%): the ratio fits every closed invoice and is wrong at the new rate. Solving the loop at 60% without the collar gives $4,349
-  (+12.4%). Each half lands at least 12% from the answer.
+  (−12.3%): the ratio fits every invoice in the current log and is wrong at any other rate. Solving the loop at 60% without the collar
+  gives $4,349 (+12.4%). Each half lands at least 12% from the answer.
 * **Grid.** Rate (today's 25%, scheduled 60%) × plate index (general, contract class) × surcharge (one pass, solved with the collar) = 8
   cells. The nearest are one pass at 60% on the contract class, $3,121 (−19.4%), and the solved surcharge on the general index, $3,100
   (−19.9%). Every cell at today's rate sits at least 28% below the answer.
@@ -70,9 +70,10 @@ one pass. Its liquidated invoices, all at 25%, were each revised from a quarter 
 
 1. **Written nowhere.** The plate contract says how value is declared and that the surcharge passes on duty. No document joins the two,
    and the mill's open invoices compute the surcharge in one pass.
-2. **The corpus pins the loop and is blind to the collar.** *In every liquidated invoice the solved surcharge was a third of ex-works plus
-   freight, far below the collar, because every entry so far came in at the 25% rate; the 60% rate starts on 1 January.* The loop
-   reproduces 96 of 96 final revisions and so does the 4/3 ratio. They part only at the new rate, where the collar binds.
+2. **The corpus pins the loop and is blind to the collar.** *In every liquidated invoice under the current contract the solved surcharge
+   was a third of ex-works plus freight, far below the collar, because every entry so far came in at the 25% rate; the 60% rate starts on
+   1 January.* The loop reproduces 96 of 96 final revisions and so does the 4/3 ratio. They part only above 25%: in the previous
+   contract's safeguard lots (the training instance below), where the collar never bound, and at the new rate, where it binds.
 3. **No arithmetic symptom.** First issues tie to the shipments, revisions tie to the liquidation notices, and the cost sheet reconciles to
    the ledger on every rung.
 4. **Not a row predicate.** The surcharge is a fixed point of the declared value and then a minimum against a second quantity, the collar,
@@ -89,10 +90,12 @@ one pass. Its liquidated invoices, all at 25%, were each revised from a quarter 
 * **What it certifies.** Ex-works prices, freight and tonnages, and the revision rule for liquidated entries. A solver who back-tests the
   first issues' one-pass method on closed entries finds it fails all 96 and is pushed to a ratio or to the loop.
 * **What it is blind to.** The collar (above).
-* **Twin pair.** 2030 plate lots 07 and 11 are identical on every price and quantity column of the order file a lookup reaches: tonnes,
-  plate class, ex-works price ($1,120) and freight ($50). Lot 07 comes from the contract mill, delivered duty paid; lot 11 from a spot mill cleared by the
-  company's own broker at ex-works plus freight. Their surcharges are $1,344 and $702 a tonne, 1.91× apart, and no one-pass rule tells them
-  apart.
+* **Twin pair (free training instance).** Two lots under the previous plate contract, bought during the 50% safeguard that lapsed in
+  2024, are identical on every price and quantity column: 400 tonnes of contract-class plate, ex-works $1,040 and freight $50. Lot 14 came
+  from the mill delivered duty paid and declared at its invoice price; lot 19 was cleared by the company's own broker at ex-works plus
+  freight. Their final surcharges were $1,090 and $545 a tonne, 2.0× apart. The loop is the whole difference, and the collar, $1,248, never
+  bound. That contract passed duty straight to the customer, so the loop cost the company nothing and nobody priced it. At 60% the same loop
+  overshoots the collar, and there it sets the floor.
 * **Resemblance points at the decoy.** The 2030 floor looks like last year's settled tower contracts on tonnage, class and plate share, and
   a solver who carries their realised surcharge rate (a third) lands at the ratio partial.
 
@@ -157,5 +160,6 @@ surcharge, plate cost and fabrication cost + 5 named chart parts + 3 files ≈ 3
 * Surcharges at 60% on the contract class: one pass $702, 4/3 ratio $936, solved $1,755, collared $1,344.
 * Rung floors $2,206 / $2,561 / $3,121 / $3,870; partials $3,394 and $4,349; the other grid cells $2,290, $2,643, $2,757 and $3,100.
 * The revision log: 96 liquidated invoices at 25%, each revised from 25% to 33.3% of ex-works plus freight; 38 open first issues at 25%.
-  Lots 07 and 11 are identical on every price and quantity column.
+  Safeguard lots 14 and 19 (400 tonnes each, ex-works $1,040, freight $50) closed at $1,090 and $545 a tonne, with the collar ($1,248)
+  unbound.
 * Inspection sequences and delivery amendments never touch plate invoices, the tariff schedule or the cost sheet.

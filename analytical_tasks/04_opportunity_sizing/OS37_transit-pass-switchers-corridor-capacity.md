@@ -29,9 +29,9 @@ works near a station.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's view and every voice. Both-ends eligibility at the pilot's banded switching rates still gives
   5,813, and no document says switchers are limited by space.
-* **Instrument repair.** No file is suspect. Addresses, the frequent-stop list, the survey, the close-out and the agency's capacity and load
-  file are complete and current. Rungs 0, 1 and 2 still return 8,525, 4,675 and 5,813. After its fourth week the pilot's trains had room,
-  so no better instrument shows a cap binding on its year-end figures, and the corridor routing is still needed for 3,213.
+* **Instrument repair.** No file is suspect. Addresses, the frequent-stop list, the survey, the close-out and the agency's capacity and
+  load file are complete and current. Rungs 0, 1 and 2 still return 8,525, 4,675 and 5,813. After its fourth week the pilot's trains had
+  room, so no better instrument shows a cap binding on its year-end figures, and the corridor routing is still needed for 3,213.
 * **Lens swap.** The answer counts commuters whose trips land on corridors with room, a different population from the commuters who would
   switch.
 

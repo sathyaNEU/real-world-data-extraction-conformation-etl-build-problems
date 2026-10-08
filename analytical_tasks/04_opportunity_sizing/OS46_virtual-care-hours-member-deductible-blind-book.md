@@ -7,11 +7,11 @@
 | Mirrors | Capacity split between a familiar channel and new ones whose counterparty keeps part of each price, sized on a closed book that never had a deduction (digital-health firms moving from employer contracts into insurer networks, apps entering carrier billing where the carrier nets a share, sellers listing on marketplaces that deduct fees the direct channel never charged) |
 | Decision shape | An allocation under a cap: 90,000 clinician visit-hours next year across six payer contracts |
 | Committed call | Visit-hours for each contract, and next year's net collections from them, to the nearest $100,000 |
-| Gap · Pattern | Gap 2 (population) over Gap 1 (time) · E03 (the closed book of employer contracts reproduces revenue per hour exactly and is blind to member cost-sharing, because no employer contract ever had any; the insurer contracts are the first window where the deductible takes the payment), with E14 below it (clinicians may see patients only in states where they are licensed, and the licence register caps each contract's hours) |
+| Gap · Pattern | Gap 2 (population) over Gap 1 (time) · E03 (the closed book of employer contracts reproduces revenue per hour exactly and is blind to member cost-sharing, because every employer contract paid the member's share itself; the insurer contracts are the first window where the deductible takes the payment), with E14 below it (clinicians may see patients only in states where they are licensed, and the licence register caps each contract's hours) |
 | Gate G mechanism | binding_constraint, with forecasting |
 | Measured traps engaged | #13 validates on one population, applies to another · #10 notes a binding limit as a risk · #7 uses the ready-made measure |
 | Calibration form | Counterparty acknowledgement file: the employer payers' remittance acknowledgements for all 412,000 claims since 2021, each with allowed amount, payment, member responsibility and adjustment codes |
-| Driving force | Every claim in the closed book was paid at the full allowed amount, because the company's employer contracts carry no member cost-sharing, so revenue per hour reproduces to the cent. Next year's three insurer contracts pay the allowed amount less the member's deductible or coinsurance, and the company has promised members it will never bill them. On Prairie's plans 85% of telehealth visits fall before the member meets the deductible, so a Prairie hour that looks like $126 earns $15. Only the insurers' accumulator files, set against each contract's visit months, say how much of the allowed amount will arrive. |
+| Driving force | Every claim in the closed book was paid at the full allowed amount, because the company's employer contracts always covered the member's share, so revenue per hour reproduces to the cent. Next year's three insurer contracts pay the allowed amount less the member's deductible or coinsurance, and the company has promised members it will never bill them. On Prairie's plans 85% of telehealth visits fall before the member meets the deductible, so a Prairie hour that looks like $126 earns $15. Only the insurers' accumulator files, set against each contract's visit months, say how much of the allowed amount will arrive. |
 
 ## 1. Situation
 
@@ -72,9 +72,10 @@ share, a Prairie hour earns $15.12 and a Peachtree hour $105.
 
 1. **Written nowhere.** The insurer contracts state a payment formula that leaves the member's share to each plan. No document says how much
    of a visit falls inside a deductible, and the member promise is a service standard, not a revenue rule.
-2. **Corpus blind for a computable reason.** *In every one of the 412,000 closed claims the member's share was zero, because every contract
-   the company has run is employer-paid with no member cost-sharing.* Revenue per booked hour at the allowed amount reproduces every
-   employer contract's remittances to the cent, and rung 2's method passes every back-test the book allows.
+2. **Corpus blind for a computable reason.** *In every one of the 412,000 closed claims the company was paid the full allowed amount,
+   because every contract it has run is employer-paid, and where an employer's own plan carried a deductible, its telehealth carve-out
+   paid the member's share.* Revenue per booked hour at the allowed amount reproduces every employer contract's remittances to the cent,
+   and rung 2's method passes every back-test the book allows.
 3. **No arithmetic symptom.** Hours, visits, allowed amounts and remittances reconcile on every rung, and the insurer contracts have no
    claims yet to disagree with.
 4. **Not a row predicate.** A visit's payment depends on where its member stands against the deductible in the visit's month, aggregated over
@@ -91,10 +92,13 @@ share, a Prairie hour earns $15.12 and a Peachtree hour $105.
   responsibility and adjustment codes, and the booking log behind them.
 * **What it certifies.** Booked share (84% of released hours in every quarter) and payment at the allowed amount; with the request series,
   each contract's decay to its plateau. A solver who back-tests rungs 0 to 2 on the book is confirmed.
-* **What it is blind to.** The member's share (above).
-* **Twin pair.** Sunbelt employer groups 114 and 131 are identical on every column of the contract file a lookup reaches: allowed amount
-  ($140), members, telehealth users and requested hours. Group 131's members are on an HSA plan, and half their visits fall inside the
-  deductible, so a visit pays $112 for group 114 and $56 for group 131, 2.0× apart. Only the accumulator file separates them.
+* **What it is blind to.** Any effect of the member's share on what the company is paid (above).
+* **Twin pair (free training instance).** Lakeshore's hourly and salaried groups are identical on every column of the contract file a
+  lookup reaches: allowed amount ($119), members, telehealth users and booked hours. The salaried group is on an HSA plan, and the
+  acknowledgements show member responsibility on half its visits, all before the member met the deductible, so its plan paid $59.50 a
+  visit on average against $119 for the hourly group, 2.0× apart. The deductible separates them exactly. Lakeshore's telehealth carve-out
+  paid every member share, so the company was paid $119 a visit in both groups and the deductible changed nothing it earned. Under the
+  insurer contracts nobody pays the member's share, and there the same deductible decides.
 * **Resemblance points at the decoy.** Prairie resembles Lakeshore, the company's best employer contract, on demand growth, session length
   and age mix, so a solver transferring Lakeshore's revenue per hour lands on rung 2.
 
@@ -157,5 +161,6 @@ chart parts + 3 files ≈ 42 criteria.
   18,000 / 40,000.
 * Booked share 84%; coinsurance 20%; capacity 90,000 hours.
 * Rung figures $11.02M / $11.06M / $10.48M / $7.72M; partials $6.81M and $9.09M; the other grid cells $9.14M and $8.70M.
-* Every one of the 412,000 closed claims paid the allowed amount. Sunbelt groups 114 and 131 are identical on every contract-file column.
+* Every one of the 412,000 closed claims paid the company the allowed amount. Lakeshore's hourly and salaried groups are identical on
+  every contract-file column; their plans paid $119 and $59.50 a visit, and Lakeshore's carve-out paid the difference.
 * Rescheduled slots and superseded templates never touch remittances, licences or accumulators.

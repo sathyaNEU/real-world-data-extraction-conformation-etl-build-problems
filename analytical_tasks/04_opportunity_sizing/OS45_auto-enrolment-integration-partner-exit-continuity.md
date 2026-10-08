@@ -91,10 +91,10 @@ participants to a Ledgerwise build, and none to anyone else's.
 * **What it certifies.** The gain model: the cross-sectional 30 points fails the total, a pooled difference-in-differences passes the
   total and fails all three band rows, and band gains pass all four figures.
 * **What it is blind to.** Partner continuity (above). The remittance records of the four exits since 2024 supply it.
-* **Twin pair.** Corvid and Maple Payroll are identical on every column a lookup reaches: 2,200 plans, 58,000 employees, size mix, plans
-  without auto-enrolment and the wording of their closure notices. Within 45 days, 89% of Corvid's employees were remitting on an
-  integrated feed (86% on Ledgerwise's) and 44% of Maple's, 2.0× apart. Only Tallybook's client list, joined to each provider, separates
-  them.
+* **Twin pair.** Corvid and Maple Payroll, both closed in 2024, are identical on every column a lookup reaches: 2,200 plans, 58,000
+  employees, size mix, plans without auto-enrolment and the wording of their closure notices. Their remittance records, closed and final,
+  show 89% of Corvid's employees remitting on an integrated feed within 45 days (86% on Ledgerwise's) against 44% of Maple's, 2.0× apart.
+  Only Tallybook's client list, joined to each provider, separates them.
 * **Resemblance points at the decoy.** By size mix, region and plan count, PayLine's book resembles Maple's, so a solver transferring an
   exit by resemblance treats PayLine's clients as lost.
 
@@ -160,5 +160,5 @@ margin + 5 named chart parts + 3 files ≈ 62 criteria.
   other partners, 11% to manual remittance.
 * Rung leaders Rotaline, Corvex, Hearthline and Ledgerwise with margins of 1.25×, 2.00×, 1.20× and 1.59×; half-carried books name
   Hearthline; all eight grid cells name as stated.
-* Corvid and Maple are identical on every lookup column; their 45-day continuation is 89% and 44%.
+* Corvid and Maple, both closed in 2024, are identical on every lookup column; their observed 45-day continuation is 89% and 44%.
 * Deferral elections and loan records never touch eligibility, the outcomes report or remittances.
