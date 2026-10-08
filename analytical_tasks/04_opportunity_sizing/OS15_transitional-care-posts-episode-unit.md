@@ -47,19 +47,22 @@ and St Anne's from 55% to 18%. Central, where those episodes end, holds the high
 
 | Rung | Construction | Lands on | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Stays × the pilot's 4.2-point reduction | Riverside leads (8 posts); 1,021 avoided (+63%) | The planning team's method on the discharge file | The pilot report: the effect is relative (24.0% to 19.8%), so it scales with each hospital's own rate |
-| 1 | Stays × each hospital's readmission rate × the pilot's relative reduction | St Anne's leads (9, 1.26× over Riverside); 1,606 (+157%) | Reproduces the pilot's headline result and uses each hospital's own rate | The pilot report's by-tier results: 36.0% to 27.2% high-risk, 20.0% to 18.4% medium, 8.0% unchanged low |
-| 2 | Stays by tier × tier readmission rates × the tier effects | Lakeview leads (9, 1.61× over St Anne's); 1,201 (+92%) | Reproduces the pilot's headline and all three tier results | The charter's unit, with the plan's episode numbers: stays chained by patient with a gap of a day or less form one episode, 6,412 of 6,412 |
-| 3 | **Decisive:** index episodes by tier (stays chained by patient across hospitals, a readmission being a new episode within 30 days) × tier effects | **Riverside 4 · St Anne's 3 · Lakeview 7 · Northgate 5 · Central 11; 625 avoided** | — | — |
+| 0 | Stays × the pilot's 4.2-point reduction | Riverside leads (8 posts); 1,029 avoided (+62%) | The planning team's method on the discharge file | The pilot report: the effect is relative (24.0% to 19.8%), so it scales with each hospital's own rate |
+| 1 | Stays × each hospital's readmission rate × the pilot's relative reduction | St Anne's leads (9, 1.26× over Riverside); 1,642 (+159%) | Reproduces the pilot's headline result and uses each hospital's own rate | The pilot report's by-tier results: 36.0% to 27.2% high-risk, 20.0% to 18.4% medium, 8.0% unchanged low |
+| 2 | Stays by tier × tier readmission rates × the tier effects | Lakeview leads (9, 1.43× over Central); 1,235 (+94%) | Reproduces the pilot's headline and all three tier results | The charter's unit, with the plan's episode numbers: stays chained by patient with a gap of a day or less form one episode, 6,412 of 6,412 |
+| 3 | **Decisive:** index episodes by tier (stays chained by patient across hospitals, a readmission being a new episode within 30 days) × tier effects | **Riverside 4 · St Anne's 3 · Lakeview 6 · Northgate 5 · Central 12; 635 avoided** | — | — |
 
-* **Position table.** Central ranks 5th on rung 0, 4th on rung 1 and 3rd on rung 2, and leads only rung 3 (1.42× over Lakeview).
-* **Discriminator dominance.** Lakeview carries a 1.61× advantage into rung 3 (379 against 235 avoidable at stay grain). Chaining keeps
-  0.96 of Central's figure and 0.42 of Lakeview's, an edge of 2.30×, above the 1.93× floor. Product: 2.30 / 1.61 = 1.42.
-* **Partial correction priced (L3).** A solver who builds episodes but keeps the pilot's single relative reduction lands at 693 avoided
-  (+10.6%) and misplaces 4 posts. One who links stays only through the transfer disposition code reproduces 5,010 of the plan's 6,412 episodes
-  and still scores every home-coded next-day admission as a readmission. One who builds episodes with the flat 4.2 points names Riverside.
-* **Grid.** Unit (stays, episodes) × effect (absolute, relative, by tier) gives 6 cells: Riverside, St Anne's and Lakeview at stay grain;
-  Riverside, Central (+10.6%, 4 posts misplaced) and the answer at episode grain. Every leader is at least 1.26× clear.
+* **Position table.** Central ranks 4th on rung 0, 4th on rung 1 and 2nd on rung 2 (1.43× behind Lakeview), and leads only rung 3 (1.94×
+  over Lakeview).
+* **Discriminator dominance.** Lakeview carries a 1.43× advantage into rung 3 (375 against 263 avoidable at stay grain). Chaining keeps
+  0.97 of Central's figure and 0.35 of Lakeview's, an edge of 2.77×, 1.62 times the 1.71× floor. Product: 2.77 / 1.43 = 1.94.
+* **Partial correction priced (L3).** No half-applied construction reaches the post vector. A solver who builds episodes but keeps the
+  pilot's single relative reduction lands at 704 avoided (+10.9%) and misplaces 4 posts (Riverside 6, St Anne's 4, Lakeview 5, Northgate
+  6, Central 9). One who links stays only through the transfer disposition code reproduces 5,010 of the plan's 6,412 episodes
+  and still scores every home-coded next-day admission as a readmission. One who builds episodes with the flat 4.2 points puts Riverside first
+  (218 against Central's 176, 1.24×) with 8 posts.
+* **Grid.** Unit (stays, episodes) × effect (absolute, relative, by tier) gives 6 cells: Riverside (1.28×), St Anne's (1.26×) and
+  Lakeview (1.43×) at stay grain; Riverside (1.24×), Central (+10.9%, 4 posts misplaced) and the answer at episode grain.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -73,7 +76,7 @@ and St Anne's from 55% to 18%. Central, where those episodes end, holds the high
    reproduce under rungs 1 to 3.
 4. **Not a row predicate.** An episode needs a group per patient, an order within it, a gap rule, and a reassignment of every readmission
    to the hospital where the episode ended.
-5. **The enumeration is arithmetic.** Episodes are built for 24,310 stays; nothing flags a stay as a transfer when it was coded home.
+5. **The enumeration is arithmetic.** Episodes are built for 24,510 stays; nothing flags a stay as a transfer when it was coded home.
 6. **No cutover date.** Transfer patterns are stable across the year, and no series steps.
 7. **Survives deletion.** Removing every voice leaves the stay file and the pilot certifying rung 2.
 
@@ -107,8 +110,8 @@ and St Anne's from 55% to 18%. Central, where those episodes end, holds the high
 * **Tiers.** Every stay in a chain carries the same risk tier, so an episode's tier does not depend on which stay supplies it.
 * **Linkage.** The system-wide patient number is on every stay, and the plan's episode numbers cover every Medicaid stay.
 * **Planned admissions.** Planned readmissions carry a filed flag and are excluded under every construction.
-* **Rounding.** The answer is 626 avoided readmissions, mid-bin at the nearest five, and no hospital's post quota sits within 0.03 of a
-  remainder tie.
+* **Rounding.** The answer is 634.9 avoided readmissions, 635 at the nearest five. The remainders that win the last two posts (St Anne's
+  0.78, Riverside 0.66) sit 0.28 above the next (Northgate 0.38).
 
 ## 9. Prompt sketch and deliverables
 
@@ -144,9 +147,9 @@ and St Anne's from 55% to 18%. Central, where those episodes end, holds the high
 ## 12. World-building constraints
 
 * Episodes ending at each hospital by tier (high, medium, low): Riverside 500 / 2,080 / 2,620; St Anne's 450 / 1,200 / 1,200; Lakeview
-  1,600 / 1,100 / 700; Northgate 900 / 1,600 / 1,300; Central 2,400 / 900 / 500. Next-day transfers out: Riverside 400 / 700 / 400; St
-  Anne's 200 / 1,600 / 600; Lakeview 800 / 300 / 100; Northgate 50 / 40 / 10; Central 30 / 20 / 10.
+  1,300 / 1,000 / 700; Northgate 1,000 / 1,600 / 1,300; Central 2,700 / 1,000 / 500. Next-day transfers out: Riverside 400 / 700 / 400; St
+  Anne's 200 / 1,600 / 600; Lakeview 900 / 300 / 100; Northgate 50 / 40 / 10; Central 30 / 20 / 10.
 * Episode readmission rates by tier 36%, 20%, 8%; tier effects 0.755, 0.92, 1.00 (the pilot's 24.0% to 19.8% at a 40 / 40 / 20 mix).
-* Rung leaders Riverside, St Anne's, Lakeview, Central at 1.28×, 1.26×, 1.61×, 1.42×; posts by rung as in the ladder.
+* Rung leaders Riverside, St Anne's, Lakeview, Central at 1.28×, 1.26×, 1.43×, 1.94×; posts by rung as in the ladder.
 * The two cardiology services match on every stay-level column.
 * Requisitions and home-health referrals never touch stays, episodes or acknowledgements.

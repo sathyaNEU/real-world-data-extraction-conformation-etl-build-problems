@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with binding_constraint |
 | Measured traps engaged | #23 reads a closure notice as a market exit · #13 validates on one population, applies to another · #18 joins only on the visible key |
 | Calibration form | Pilot log: every owner household contacted in last year's retrofit pilot in Harbour and Metro, with its feed-in tariff contract and outcome |
-| Driving force | The leasing programme's closure reads as 12,500 Eastern Hills systems leaving the market: the lessor owns them, and the solar register flags them so. But the leases passed to a successor servicer, whose customers' battery referrals reach us as one bulk business account with an address manifest. Joined address by address to the solar register, the manifest shows those same households buying at 6.2% a year, and nothing in the regional sales or the register counts them as Eastern Hills demand. |
+| Driving force | The leasing programme's closure reads as 12,500 Eastern Hills systems leaving the market: the lessor owns them, and the solar register flags them so. But the leases passed to a successor servicer, whose customers' battery referrals reach us as one bulk business account with a manifest of export-meter numbers. Joined meter by meter to the solar register, the manifest shows those same households buying at 6.2% a year, and nothing in the regional sales or the register counts them as Eastern Hills demand. |
 
 ## 1. Situation
 
@@ -41,8 +41,8 @@ A strong solver drops the deck's new-install attach rate for the pilot's retrofi
 battery. It sees the pilot ran where most feed-in tariffs had expired, joins the tariff register, and converts at 7.0% for expired
 contracts and 1.5% for live ones. It excludes the SunLease systems: the register says the lessor owns them, and the closure notice says
 the programme ended. Harbour wins. But the leases did not end; their servicing passed to Brightpath, and Brightpath refers its customers'
-battery requests to us. Those orders arrive as one business account with an address manifest, 580 in nine months. Joined to the solar
-register, every address is a SunLease system in Eastern Hills: 12,500 households buying at 6.2% a year, which lifts Eastern Hills from third
+battery requests to us. Those orders arrive as one business account with a manifest of export-meter numbers, 580 in nine months. Joined
+to the solar register, every meter is a SunLease system in Eastern Hills: 12,500 households buying at 6.2% a year, which lifts Eastern Hills from third
 to first.
 
 ## 4. The ladder
@@ -56,9 +56,10 @@ to first.
 
 * **Shape.** The graded objects are the unit vector and each region's expected sales. The leading region changes at every rung (Valley,
   Metro, Harbour, Eastern Hills), and the total walks down then reverses: +833%, +13.7%, −21.2%, answer.
-* **Partial correction priced (L3).** A solver who finds the continuing households but keeps the pooled 5.9% names Eastern Hills with 740
-  units and 4,926 sales (+35%). One who finds them but forgets systems that already have a battery names Eastern Hills with 820 units and
-  overstates its sales by 14%. One who reads the manifest as Brightpath's own business and leaves it out stays at rung 2.
+* **Partial correction priced (L3).** No half-applied construction reaches the unit vector. A solver who finds the continuing households
+  but keeps the pooled 5.9% ships Valley 500 · Metro 640 · Harbour 520 · Eastern Hills 740 and expects 4,926 sales (+35%). One who finds
+  them but forgets systems that already have a battery ships 420 · 520 · 640 · 820 and overstates Eastern Hills' sales by 14%. One who
+  reads the manifest as Brightpath's own business and leaves it out stays at rung 2.
 * **Grid.** Base (all owners, owners without a battery) × conversion (pooled, by tariff status) × lessee households (out, continuing)
   gives 8 cells, each leader at least 1.15× clear. The cell whose total lands nearest (+1.5%) needs two refuted readings at once, names
   Harbour, and ships 380 units to the wrong regions.
@@ -71,7 +72,7 @@ to first.
    and the pilot ran in Harbour and Metro.* The pilot reproduces every group from owner households alone.
 3. **No arithmetic symptom.** Regional retrofit sales tie to homeowner invoices, and Brightpath's orders sit under one business account
    with no region, so no regional back-test shows an excess.
-4. **Not a row predicate.** The population needs the manifest's addresses joined to the solar register, the matched systems grouped by
+4. **Not a row predicate.** The population needs the manifest's meter numbers joined to the solar register, the matched systems grouped by
    region, and a rate taken from referrals over the months since the transfer.
 5. **The enumeration is arithmetic.** No column marks a lessee household as reachable; the register's owner type says the opposite.
 6. **No cutover date.** The closure is the decoy. No regional sales series steps on it, and the decisive population is found by a join,
@@ -105,8 +106,8 @@ to first.
 
 * **Lessee rate.** Referrals have run at 64 or 65 a month in each of the nine months since the transfer, so any annualising window gives
   775 and 6.2% of 12,500.
-* **Manifest join.** Every manifest address matches exactly one register address after the register's own normalisation; none matches an
-  owner system.
+* **Manifest join.** Every manifest meter number matches exactly one register entry, which records each system's export meter; none
+  matches an owner system.
 * **Battery links.** Every battery in the storage register names its solar system, so the without-battery base needs no matching rule.
 * **Tariff status.** Status is taken at 1 January next year; no contract ends within 60 days of that date.
 * **Pallets.** No region's quota sits within 0.05 pallets of a remainder tie at any rung.

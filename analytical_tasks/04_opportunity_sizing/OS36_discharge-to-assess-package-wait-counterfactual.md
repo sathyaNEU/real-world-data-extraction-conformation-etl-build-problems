@@ -41,7 +41,7 @@ The trust's delay runs from medically optimised to discharge and includes days s
 care was arranged. A D2A patient waits those days too, as the pilot shows. The brokerage feed records, for each referral, the start date a
 provider had already offered. Freed days are max(0, offered start − optimised date − 1). Where providers are scarce (Eskvale, a rural
 community hospital), that is most of the delay. Where care is usually arranged before optimisation (Ardmore, a teaching hospital), it is a
-fifth of it.
+quarter of it.
 
 ## 4. The ladder
 
@@ -59,9 +59,10 @@ fifth of it.
   Eskvale's 0.79, an edge of 3.2×, above 1.2 × 1.26 = 1.51.
 * **Sign discipline.** Every correction walks the figure down, and the answer is the minimum cell. A solver who stops anywhere promises the
   board at least twice the beds.
-* **Partial correction priced (L3).** A solver who takes the pilot's pooled freed days (2.2 per package) and applies them everywhere files
-  2,640 bed-days (−45%), with the largest hospitals filled first and Ardmore at the top. A solver who measures package wait on the weekly
-  census instead of per episode over-samples Dunford's long waits for double-handed care and names Dunford at 7,410 bed-days (+55%).
+* **Partial correction priced (L3).** Every half-built counterfactual puts a wrong hospital first. Scaling each hospital's pathway-1
+  delay by the pilot's pooled ratio of freed days to delay (0.28) keeps rung 2's order and names Calder, 2.78 days a package against
+  Bridgend's 2.27 (1.23×), filing 2,790 bed-days (−41%). Measuring package wait on the weekly census instead of per episode over-samples
+  Dunford's long waits for double-handed care and names Dunford, 8.4 days against Eskvale's 7.0 (1.20×), filing 7,410 bed-days (+55%).
 * **Grid.** Census or episode grain × all pathways or pathway 1 × full delay or package wait = 8 cells. Every non-answer cell names Ardmore,
   Bridgend, Calder or Dunford and sits at least 25% from the answer.
 
@@ -82,9 +83,9 @@ fifth of it.
 ## 6. The calibration corpus
 
 * **Form.** Every provider acknowledgement of a pathway-1 referral at the six hospitals last winter (offered start date or decline,
-  timestamped), with the 640 pilot referrals' D2A discharge dates.
-* **What it certifies.** Process days are the same with and without D2A at each hospital (2.1–2.6 days), and the episode grain reproduces
-  the weekly return's patient counts.
+  timestamped), with the D2A discharge dates of the 640 pilot referrals at Ardmore and Bridgend.
+* **What it certifies.** Process days (transport, medicines, paperwork) are the same with and without D2A at both pilot hospitals (5.6 at
+  Ardmore, 5.5 at Bridgend), and the episode grain reproduces the weekly return's patient counts.
 * **The absolute split (O2).** Pilot patients whose care was offered to start on or before optimisation: 0 days freed (212 of 212).
   Patients without such an offer: freed days equal offered start − optimised − 1 to the day (428 of 428).
 * **Twin pair.** Pilot wards Heron and Linnet are identical on every column of the delay file: pathway-1 episodes (160 each), mean delay
@@ -135,7 +136,7 @@ fifth of it.
   their booked slot. *Device:* an amended transport booking gets a new reference that carries the original in a linked field. Counting
   amendments as new bookings halves the miss rate at the two hospitals with a shared ambulance contract.
 * **Ask C (validity).** The split and bed-days under each of the four rung bases, and the pilot reproduction (the freed-days rule matches
-  640 of 640 pilot patients, while full delay overstates the pilot's freed days by 2.3×).
+  640 of 640 pilot patients, while full delay overstates the pilot's freed days by 3.5×).
 * **Decoupling.** Clearing the brokerage join changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
@@ -150,8 +151,10 @@ two deciding comparisons + 5 named chart parts + 3 files ≈ 51 criteria.
   11.0 / 7.0 / 6.0 / 4.16.
 * Pathway-1 winter referrals: Ardmore 380, Bridgend 300, Calder 260, Dunford 320, Eskvale 280, Fernlea 240 (1,780 against 1,200
   packages).
-* Rung figures 20,470 / 11,538 / 9,832 / 4,770 bed-days. The census-grain package-wait cell is +55% and names Dunford, and no cell is
-  within 25%.
-* Pilot: 640 D2A patients, 212 with care arranged by optimisation and 0 days freed, 428 freed exactly offered start − optimised − 1.
-  Heron and Linnet are identical on every delay-file column.
+* Rung figures 20,470 / 11,538 / 9,832 / 4,770 bed-days. The census-grain pathway-1 package waits are Ardmore 3.6, Bridgend 4.1, Calder
+  3.9, Dunford 8.4, Eskvale 7.0 and Fernlea 5.4 days; that cell is +55% and names Dunford, and no cell is within 25%.
+* Process days (pathway-1 delay less package wait) run from 1.65 at Eskvale to 7.39 at Calder.
+* Pilot: 640 D2A patients at Ardmore and Bridgend, mean pathway-1 delay 7.75 days and 1,408 days freed (2.2 a package, 0.28 of delay).
+  212 had care arranged by optimisation and freed 0 days; 428 freed exactly offered start − optimised − 1. Heron and Linnet are identical
+  on every delay-file column.
 * Care-home double acknowledgements and transport amendments never touch pathway-1 episodes or offers.

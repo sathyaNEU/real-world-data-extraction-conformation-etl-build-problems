@@ -31,7 +31,7 @@ retailers' monthly price lists and SKU catalogues, and the revision log.
 * **Instrument repair.** Make the report form perfect from now on; four quarters of reports are already filed. A better form for future
   reports does not name the model in the ones already received, and the files that do are not the form.
 * **Lens swap.** The naive rate counts reports linked to a model by an identifier; the answer counts reports assigned by a price paid, a
-  different population of reports that adds 312 fires to one pair.
+  different population of reports that adds 455 fires to one pair.
 
 ## 3. The driving force
 
@@ -41,27 +41,30 @@ reports with no model and no SKU, 41% of all fire reports, which every natural r
 retailer's best seller. Each of those reports records where it was bought, when, and what was paid. The retailers' price lists show that in
 every retailer-month each model sold at its own price, so retailer, month and price name the model exactly. The revision log holds 1,240
 reports first filed without a model and later completed by a follow-up, and the price match reproduces every one. Applied to the
-quarter's blanks, it puts 312 fires on the K-200, sold almost entirely through a discount chain whose shoppers never write down a model.
+quarter's blanks, it puts 455 fires on the K-200, sold almost entirely through a discount chain whose shoppers never write down a model.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Reports per 100,000 units for each pair, every row in the database | A, K-100 kettle and scalds (41) | The database's own counts on the policy's rate | The policy counts each case once at its latest version, and the revision log shows A's cases filed in up to five versions |
-| 1 | Hygiene: each case at its latest version, linked by the model field | B, H-12 heater and overheating (29; 1.21× C) | Clean case counts on the policy's basis | The retailer reporting guide: retailers file under their own SKU, and their reports carry no model field |
+| 1 | Hygiene: each case at its latest version, linked by the model field | B, H-12 heater and fire (29; 1.21× C) | Clean case counts on the policy's basis | The retailer reporting guide: retailers file under their own SKU, and their reports carry no model field |
 | 2 | Retailer reports joined to models through the retailers' SKU catalogues | C, C-7 charger and fire (36; 1.24× B) | Every report with an identifier is now linked, and no guess is made for the rest | The revision log: 1,240 reports filed with no model were later completed by follow-ups, and they are spread nothing like sales or best sellers |
-| 3 | **Decisive:** every report with no model and no SKU assigned through the retailer's price list for the month it records | **E, K-200 kettle and fire (47)** (5th of 8 on rung 0) | — | — |
+| 3 | **Decisive:** every report with no model and no SKU assigned through the retailer's price list for the month it records | **E, K-200 kettle and fire (60)** (5th of 8 on rung 0) | — | — |
 
-* **Position table.** E ranks 5th on rungs 0, 1 and 2 (18, 17 and 19), and leads only rung 3, 1.27× C. Intermediate leaders hold margins of
-  1.24×, 1.21× and 1.24×.
-* **Discriminator dominance.** C carries a 1.89× advantage over E into rung 3 (36 against 19). The price match multiplies E's rate by 2.47 and
-  C's by 1.03, an edge of 2.41 against the 1.2 × 1.89 = 2.27 required; net 1.27×.
-* **Partial correction priced (L3).** A solver who spreads the blank reports by each model's sales share in the category names C again (38),
-  because the K-200 sells little outside the discount chain. A solver who gives each blank to the retailer's best-selling model in the
-  category names B, the heater the discount chain sells most.
-* **Grid.** Versions (all or latest) × identifier joins (model field, plus SKU) × blanks (dropped, sales share, best seller, price match)
-  gives sixteen cells: all-version cells name A; latest-version cells name B or C under every blank rule but the price match. Only the
-  price match with both joins names E, and the nearest wrong cell (C at 38) needs the blanks spread by sales.
+* **Position table.** E ranks 5th on rungs 0, 1 and 2 (18, 17 and 19), and leads only rung 3, 1.62× C (37). Intermediate leaders hold
+  margins of 1.24×, 1.21× and 1.24×.
+* **Discriminator dominance.** C carries a 1.89× advantage over E into rung 3 (36 against 19). The price match multiplies E's rate by 3.16 and
+  C's by 1.03, an edge of 3.07 against the 1.2 × 1.89 = 2.27 required, 1.35× headroom.
+* **Partial correction priced (L3).** A solver who spreads the blank reports by each model's national sales share names C again (38 against
+  B's 31, 1.23×), because the K-200 sells little outside the discount chain and reaches only 24. Spreading by each model's share of the
+  reporting retailer's sales still names C (37 against E's 31, 1.19×): the K-200 is 30% of the chain's kettle sales but owns most of its
+  blank kettle fires. A solver who gives each blank to the retailer's best-selling model in the category names B (45 against C's 37,
+  1.22×), the heater the discount chain sells most. No half lands on E.
+* **Grid.** Versions (all or latest) × identifier joins (model field, plus SKU) × blanks (dropped, national sales share, retailer sales
+  share, best seller, price match) gives twenty cells: all-version cells name A; latest-version cells name B or C under every blank rule
+  but the price match. Only the price match with both joins names E, and the nearest wrong cell, retailer sales shares (C at 37, E at 31),
+  needs only the price lists left unread.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -130,19 +133,21 @@ quarter's blanks, it puts 312 fires on the K-200, sold almost entirely through a
 * **Ask B (device-carried).** For each of the nine regions, reports filed in the last four quarters and the share filed by phone.
   *Device:* phone reports are keyed by call-centre staff into the web form, so they carry the web channel and a staff ID in the submitter
   field, per the intake guide. Reading the channel field alone understates phone reports everywhere.
-* **Ask C (validity).** For each of the four blank-report rules (dropped, sales share, best seller, price match), the follow-up attributions
-  it reproduces out of 1,240.
+* **Ask C (validity).** For each of the five blank-report rules (dropped, national sales share, retailer sales share, best seller, price
+  match), the follow-up attributions it reproduces out of 1,240.
 * **Decoupling.** Clearing the price match changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
 
-10 categories × 2 (ask A) + 9 regions × 2 (ask B) + 4 rules (ask C) + the committed pair, its rate and the margin over C + 5 named chart parts +
-3 files ≈ 53 criteria.
+10 categories × 2 (ask A) + 9 regions × 2 (ask B) + 5 rules (ask C) + the committed pair, its rate and the margin over C + 5 named chart parts +
+3 files ≈ 54 criteria.
 
 ## 12. World-building constraints
 
-* Rung leaders are A, B, C, E. E is 5th / 5th / 5th / 1st; intermediate margins are at least 1.21×; E leads rung 3 by 1.27×.
-* 41% of fire reports carry no model and no SKU; 312 of them match the K-200 by price; the K-200 sells 87% through the discount chain.
+* Rung leaders are A, B, C, E. E is 5th / 5th / 5th / 1st; intermediate margins are at least 1.21×; E leads rung 3 by 1.62×.
+* 41% of fire reports carry no model and no SKU; 455 of them match the K-200 by price, on 1.11 million units sold (211 named fires before
+  the match). The K-200 sells 87% through the discount chain and is 30% of the chain's kettle sales.
+* Rung 3: E 60, C 37, B 33. National sales share: C 38, B 31, E 24. Retailer sales share: C 37, E 31. Best seller: B 45, C 37.
 * No two models share a price at a retailer in a month; 8% of blank reports have no price or retailer.
 * The revision log holds 1,240 follow-up attributions; the two chains' second-quarter blank kettle-fire reports are identical on every
   report column.

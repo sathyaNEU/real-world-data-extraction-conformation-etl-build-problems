@@ -56,9 +56,9 @@ customer-minutes per flight-minute, and Brennan's own departures cost 4.1.
 * **Position table.** Outstation sign-offs rank 5th, 5th and 3rd on rungs 0 to 2, and lead only rung 3.
 * **Discriminator dominance.** Brennan turnarounds carry a 3.10× flight-minute lead into rung 3. The sign-offs' journey amplification is
   22 against Brennan's 4.1, an edge of 5.37×, above 1.2 × 3.10 = 3.72.
-* **Partial correction priced (L3).** A solver who weights flight delay by passengers aboard ranks Brennan first. One who counts a
-  misconnected customer's delay only to the missed flight's scheduled departure, not to the re-accommodated arrival, leaves the sign-offs
-  at 210k against Brennan's 381k and names Brennan. Neither half names the sign-offs.
+* **Partial correction priced (L3).** A solver who weights flight delay by passengers aboard ranks Brennan first, at 2.59× the next
+  cause. One who counts a misconnected customer's delay only to the missed flight's scheduled departure, not to the re-accommodated arrival,
+  leaves the sign-offs at 210k against Brennan's 381k and names Brennan at 1.82×. Neither half names the sign-offs.
 * **Grid.** Codes (station or rule) × knock-on (as coded or traced) × grain (flight, passengers aboard, journey) = 12 cells. Only rule codes,
   traced roots and the journey grain name the outstation sign-offs. With station codes, the journey grain names Westmarch at 1.65×.
 

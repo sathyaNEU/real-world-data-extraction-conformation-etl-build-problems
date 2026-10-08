@@ -55,12 +55,15 @@ enterprise programme having taken other courses first.
 
 * **Position table.** E is 5th on rung 0 (0.38), 4th on rung 1 (0.60), and on rung 2 tied at the cap and third on completions (12,000).
   It is never second and leads only rung 3. Rung margins: A over B 1.22×, B over C 1.22×, C over D on completions 1.58×, E over D on the
-  first-course score 1.53× (0.78 against 0.51).
-* **Discriminator dominance.** C carries a 1.58× completions advantage into rung 3. On the first-course score E stands at 3.5× C (0.78
-  against 0.22), more than 1.2 × 1.58 = 1.90.
-* **Partial correction priced (L3).** A solver who distrusts the sort order and breaks the tie on the uncapped calibrated score over all
-  raters places six of last year's nine and names D (5.21 against E's 5.12 uncapped). One who keeps first-course learners but leaves them
-  uncalibrated places five and names C. Half the construction lands on a wrong course.
+  first-course score 1.63× (0.78 against 0.48).
+* **Discriminator dominance.** No finalist carries a score advantage into rung 3: C, D and E stand level at 5.00, and completions only
+  order the tie, C first by 1.58×. The decisive key replaces that order, so E's edge has to clear 1.2 against level scores, and 1.56 with
+  headroom, on its own: E leads D 1.63× (0.78 against 0.48) and C 3.5× (0.22). Against C's completions order it overturns, the 3.5× also
+  clears 1.2 × 1.58 = 1.90 with 1.84× headroom.
+* **Partial correction priced (L3).** No half-applied tie order names E. A solver who distrusts the sort order and breaks the tie on the
+  uncapped calibrated score over all raters places six of last year's nine and names D: 5.36 against C's 5.12 and E's 5.08, leads of 1.26,
+  1.02 and 0.98 over the 4.10 median, D 1.24× ahead of C. One who keeps first-course learners but leaves them uncalibrated places five and
+  names C, whose first-course learners are generous newcomers: a raw lead of 1.02 against E's 0.84 (1.21×).
 * **Grid.** Duplicates (kept, removed) × tie order (completions, uncapped all-rater score, first-course score) × calibration of the
   tie-break population (raw, calibrated) = 12 cells; duplicates kept name B in every cell. With duplicates removed the cells name C or D,
   except the one cell with the calibrated first-course score, which names E. The nearest wrong cell is D, one choice of population away.
@@ -112,7 +115,7 @@ enterprise programme having taken other courses first.
 * **Sample.** Every finalist has at least 800 first-course learners with ratings, and every capped course last year at least 600.
 * **Calibration of the tie score.** First-course learners are calibrated against their own anchors exactly as all learners are, and the tie
   score is uncapped; the published places pin both, since raw and capped variants misplace at least four of the nine.
-* **Rounding.** E's first-course lead is 0.783 and D's 0.512; no finalist sits within 0.005 of a rounding edge.
+* **Rounding.** E's first-course lead is 0.783 and D's 0.482; no finalist sits within 0.005 of a rounding edge.
 
 ## 9. Prompt sketch and deliverables
 
@@ -149,8 +152,8 @@ the runner-up and the margin + 5 named chart parts + 3 files ≈ 76 criteria.
 ## 12. World-building constraints
 
 * Rung 0 leads: A 0.61, B 0.50, F 0.47, C 0.44, E 0.38, D 0.35, G 0.30, H 0.22. Rung 1: B 0.88, C 0.72, D 0.66, E 0.60. Rung 2: C, D and E
-  capped at 5.00 (lead 0.90); completions C 41,000, D 26,000, E 12,000; B 0.70. Rung 3 first-course leads: E 0.78, D 0.51, C 0.22.
-  Uncapped all-rater scores: D 5.21, E 5.12, C 5.08.
+  capped at 5.00 (lead 0.90 over the 4.10 median); completions C 41,000, D 26,000, E 12,000; B 0.70. Rung 3 first-course leads: E 0.78,
+  D 0.48, C 0.22. Uncapped all-rater scores: D 5.36, C 5.12, E 5.08. Raw first-course leads: C 1.02, E 0.84, D 0.70.
 * B's legacy-app fives are 31% duplicates; no duplicate falls on C, D or E. C's learners mostly arrive through its enterprise programme after
   other courses.
 * Last year's table: 60 courses, nine at the cap; places reproduced 9 / 6 / 5 / 2 by the first-course, uncapped all-rater, raw first-course

@@ -57,9 +57,10 @@ each timesheet's start time and day under the agreement's definitions.
 * **Figure shape.** Every correction walks the saving down (−3.0%, −1.1%, −15.9%), and the answer is the minimum cell of the grid.
 * **The deciding comparison.** The rung-2 plan's saving as realised under the rota is $0.29M, because 16 of its posts idle on days and
   weekends. The brief has to set that against $2.04M.
-* **Partial correction priced (L3).** A solver who sees the rota but applies the group-wide shift mix (a quarter of agency hours on
-  weekday days) to every home lands at $2.32M (+13.6%), with Carrow taking the largest block. A solver who takes the rota minimum on billed
-  hours lands at $2.34M (+14.5%) with Bellmont. Both are wrong allocations well outside the floor.
+* **Partial correction priced (L3).** Every half-applied rota hands the largest block to a wrong home. Applying the group-wide shift mix
+  (a quarter of agency hours on weekday days) to every home gives Carrow 9 posts against 6 each at Ashgrove and Bellmont, Elmstead only 4,
+  and $2.32M (+13.6%); an exact quarter gives Carrow 10 and $2.34M. Taking the rota minimum on billed hours gives Bellmont 13 against 5
+  each at Ashgrove and Dene Park, Elmstead 4, and $2.34M (+14.5%). Both are wrong allocations well outside the floor.
 * **Grid.** Position control (ignored, applied) × hours (billed, worked) × post law (total ÷ 36, rota minimum) = 8 cells. The nearest
   wrong cell is the rota minimum with position control ignored, $2.28M (+11.5%), which puts 15 posts at Dene Park against its 5 budgeted
   vacancies. Every other cell is at least 14% away.

@@ -11,7 +11,7 @@
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution |
 | Measured traps engaged | #1 reports a failed back-test, ships anyway · #3 stops at a close but inexact match · #24 treats an unpublished figure as unknown |
 | Calibration form | Published control set with a reproduction clause: staff's revenue bridges for the four preceding years, each component to the dollar |
-| Driving force | The fuel rider rose in November on a winter gas forecast and stayed up through the heaviest months of use; gas fell and the rider kept collecting. Priced at its annual average against annual sales, the rider looks $80M smaller than it was, and that $80M lands in "base rates". Only the rider's monthly factors applied to each schedule's monthly sales, with bills that straddle a factor change split by days through the billing calendar, reproduce staff's four published bridges to the dollar. That construction makes the rider the largest driver. |
+| Driving force | The fuel rider rose in November on a winter gas forecast and stayed up through the heaviest months of use; gas fell and the rider kept collecting until March. Priced at its annual average against annual sales, the rider looks $110M smaller than it was, and that $110M lands in "base rates" and weather-driven volume. Residential bills cover two months, so the winter peak is billed after the factor that priced it has gone: only the rider's factors applied to each schedule's sales day by day of service, with every bill that straddles a factor change split by days through the billing calendar, reproduce staff's four published bridges to the dollar. That construction makes the rider the largest driver. |
 
 ## 1. Situation
 
@@ -28,51 +28,57 @@ years to the dollar. Staff publish the special contract's figures as confidentia
   the unbilled true-up is real. Nothing is overturned; the decision turns on which construction the published record admits.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the deck, both voices and the licensed basis. A schedule-level bridge with the rider at its annual average still
-  reconciles to $412M and still puts the rider third.
-* **Instrument repair.** Perfect metering and billing records change nothing: the rider's covariance with sales is in the correct monthly data
-  already, and only a monthly construction reads it.
-* **Lens swap.** The annual-average bridge prices a year's sales at a year's rider; the answer prices each month's sales at the rider that
-  month's bills carried, so $80M of revenue moves between drivers.
+  reconciles to $412M, still puts the contract first and the rider fourth.
+* **Instrument repair.** Perfect metering and billing records change nothing: the rider's covariance with sales is in the correct billing data
+  already, and only a construction that follows each day of service reads it.
+* **Lens swap.** The annual-average bridge prices a year's sales at a year's rider; the answer prices each day of service at the rider in
+  force that day, wherever its bill fell, so $110M of revenue moves between drivers.
 
 ## 3. The driving force
 
 A strong solver discards the deck's two lines, builds the bridge by rate schedule with stable schedule ids, and splits each schedule's price
-change into base rates and the fuel rider, the rider at its filed annual average. The industrial class has a confidential row; it bounds the
-row from the published class total less the published schedules and so finds the data-centre contract's $128M, which then leads. It tests the
-build against staff's four published bridges, as the commission requires, and reproduces 12 of 20 published components exactly; the misses are
-the rider and base-rate cells of the years when the rider changed in winter. The rider is not collected at its average. It changes on a filed date,
-each month's bills carry the factor in force for the days they cover, and a bill straddling a change is split by days. Winter months carry most of
-the year's sales, and this year the rider was highest exactly then. Applied month by month through the billing calendar, the construction
-reproduces all 20 published cells, and the rider's over-collection comes to $170M, the largest driver.
+change into base rates and the fuel rider, the rider at its filed annual average. The industrial class has a confidential row; valuing its 2.4
+TWh at the published industrial price makes volume the story, so the solver bounds the row from the published class total less the published
+schedules and finds the data-centre contract's $110M, which then leads. It tests the build against staff's four published bridges, as the
+commission requires, and reproduces 11 of 20 published components exactly; the misses are the rider, base and volume cells of the three years
+whose rider changed in winter. The rider is not collected at its average. It changes on a filed date, each bill carries the factor in force on
+each day of service it covers, and a bill straddling a change is split by days. Residential bills cover two months, so the January and February
+peak, 31% of residential sales, reaches bills rendered in March and April, after the factor that priced it has fallen. Applied day by day
+through the billing calendar, the construction reproduces all 20 published cells, and the rider's over-collection comes to $175M, the largest
+driver.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | The investor deck's class-level bridge: price, volume, accounting, new contracts | A, rate increases ($196M) | The utility's own published bridge, reconciled to the total | Staff's bridges: class-level price and volume reproduce 4 of 20 published components |
-| 1 | Schedule-level bridge, rider split from base at its annual average, the confidential industrial row left in industrial volume | C, sales volume ($157M) | Price measured where prices are set, every schedule mapped | The industrial class total less its published schedules leaves $128M in one confidential row |
-| 2 | The same with the confidential row bounded and attributed to the special contract | E, data-centre contract ($128M) | Nothing left unknown; 12 of 20 published components reproduce | The misses are the rider and base cells of every year whose rider changed in winter |
-| 3 | **Decisive:** the rider's monthly factors applied to each schedule's monthly sales, bills straddling a change split by days through the billing calendar | **B, rider over-collection ($170M)** (5th of 5 on rung 0) | — | — |
+| 0 | The investor deck's class-level bridge: price, volume, accounting, new contracts | A, rate increases ($205M) | The utility's own published bridge, reconciled to the total | Staff's bridges: class-level price and volume reproduce 4 of 20 published components |
+| 1 | Schedule-level bridge, rider split from base at its annual average, the confidential industrial row's kWh valued at the published industrial price | C, sales volume ($254M) | Price measured where prices are set, every schedule mapped, the unpublished row valued the standard way | The industrial class total less its published schedules leaves $110M of revenue on 2.4 TWh in one confidential row, a third below the published price |
+| 2 | The same with the confidential row bounded and attributed to the special contract | E, data-centre contract ($110M) | Nothing left unknown; 11 of 20 published components reproduce | The misses are the rider, base and volume cells of the three years whose rider changed in winter |
+| 3 | **Decisive:** the rider's factors applied to each schedule's sales by day of service, bills straddling a change split by days through the billing calendar | **B, rider over-collection ($175M)** (5th of 5 on rung 0) | — | — |
 
-* **Position table.** B ranks 5th on rung 0 and 3rd on rungs 1 and 2, and leads only rung 3. Rung leaders beat their runners-up by 1.37×,
-  1.48×, 1.21× and 1.33×.
-* **Discriminator dominance.** The contract carries a 1.42× lead over the rider into rung 3 ($128M against $90M). Monthly proration
-  multiplies the rider's figure by 1.89 and leaves the contract's unchanged, an edge of 1.89×, above the required 1.2 × 1.42 = 1.71; the net
-  margin is 1.33×.
-* **Partial correction priced (L3).** A solver who applies monthly factors to calendar-month sales, ignoring that bills cover read cycles,
-  reproduces 17 of 20 cells and puts the rider at $112M, behind the contract's $128M, naming E as rung 2 does. One who weights the annual factor
-  by monthly sales without splitting straddling bills reproduces 15 and puts the rider at $104M, again naming E.
-* **Grid.** Grain (class, schedule) × confidential row (left in volume, bounded) × rider (annual, sales-weighted, calendar-monthly,
-  cycle-prorated) gives ten feasible builds. Class builds name A, unbounded schedule builds C, bounded builds E unless the rider is cycle-
-  prorated, and only that build reproduces all 20 published cells.
+* **Position table.** B ranks 5th on rung 0, 2nd on rung 1 (3.91× behind volume) and 4th on rung 2, and leads only rung 3. Rung leaders beat
+  their runners-up by 1.53×, 3.91×, 1.22× and 1.59×.
+* **Discriminator dominance.** The contract carries a 1.69× lead over the rider into rung 3 ($110M against $65M). Cycle proration multiplies
+  the rider's figure by 2.69 and leaves the contract's unchanged, an edge of 2.69×, 1.33 times the required 1.2 × 1.69 = 2.03; the net margin
+  is 1.59×.
+* **Partial correction priced (L3).** Each half-built proration leaves the contract in front. A solver who applies each month's factor to the
+  kilowatt-hours billed that month, ignoring that a residential bill covers the two months of service before it, prices much of the peak at
+  March's lower factor: 16 of 20 cells reproduce and the rider comes to $92M against the contract's $110M (1.20×), naming E as rung 2 does.
+  One who weights the annual factor by billed monthly sales without splitting straddling bills reproduces 14 and puts the rider at $82M
+  against $110M (1.34×), again naming E.
+* **Grid.** Grain (class, schedule) × confidential row (valued at the published price, bounded) × rider (annual, sales-weighted,
+  billing-month, cycle-prorated) gives nine builds. The class build names A. Every build that values the confidential row at the published
+  price names C, even with cycle proration (C $204M against B's $175M, 1.17×), because 2.4 TWh at the published price is $166M of volume.
+  Bounded builds name E unless the rider is cycle-prorated, and only that build reproduces all 20 published cells.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The commission's rule demands reproduction and says nothing of method; the rider's tariff sheet states factors and
    effective dates. No document says bills straddling a change are split by days or that the bridge must be monthly.
-2. **The control set pins a construction, not a menu.** Cycle-prorated monthly factors reproduce 20 of 20 published cells; calendar-monthly
-   17, sales-weighted annual 15, annual average 12, class level 4. Every rival understates the rider in the winter-change years, so none
-   reproduces the four years' rider total either (the annual average misses it by 28%). The construction joins each schedule's billing cycles to
+2. **The control set pins a construction, not a menu.** Cycle-prorated factors reproduce 20 of 20 published cells; billing-month factors
+   16, sales-weighted annual 14, average-valued confidential rows 14, annual average 11, class level 4. Every rider rival understates the rider in
+   the winter-change years, so none reproduces the four years' rider total either; the average-valued rows miss the confidential cells and
+   their years' base and volume cells. The construction joins each schedule's billing cycles to
    the rider's effective dates; it has no parameter.
 3. **No arithmetic symptom.** Every build closes to $412M; schedules, classes and the confidential row reconcile.
 4. **Not a row predicate.** A bill's rider revenue depends on the days of its cycle on each side of a filed date, joined from the billing
@@ -87,7 +93,8 @@ reproduces all 20 published cells, and the rider's over-collection comes to $170
 * **Form.** Staff's earnings-surveillance revenue bridges for the four preceding years, each splitting the year's change into base rates, the
   rider, sales volume, special contracts and accounting items, to the dollar, with the special-contract cells marked confidential; and the
   commission's admission rule.
-* **What it pins.** The construction (above), including the bound on the confidential cells, which decides two of the twenty.
+* **What it pins.** The construction (above), including the bound on the confidential rows, which decides the two confidential cells and
+  their years' base and volume cells.
 * **Twin pair.** Years Y-2 and Y-4 are identical on every class-level column: revenue change, sales change, customers and the average rider
   factor. Staff's rider components are $34M and $17M (2.0×): in Y-2 the rider rose in November, in Y-4 in May. Only cycle proration reproduces
   both.
@@ -105,7 +112,8 @@ reproduces all 20 published cells, and the rider's over-collection comes to $170
 
 ## 8. Determinism by construction
 
-* **Cycles.** Twenty-one read cycles; every bill's start and end dates are in the calendar, and no rider change falls on a read date.
+* **Cycles.** Twenty-one read cycles; residential schedules are billed every two months and the others monthly; every bill's start and end
+  dates are in the calendar, and no rider change falls on a read date.
 * **Confidential row.** The class total less the published schedules equals the confidential row exactly in every year.
 * **Schedules.** Stable ids from the tariff crosswalk; no schedule opened or closed during the year except the special contract.
 * **Accounting.** The unbilled true-up is taken from the revenue accounts as booked; no build differs on it.
@@ -141,9 +149,13 @@ contested driver, its dollars and the runner-up's + 5 named chart parts + 2 file
 
 ## 12. World-building constraints
 
-* $412M increase: rider 170, contract 128, unbilled true-up 59, weather sales 29, base rates 26 (cycle-prorated); the annual-average rider
-  moves $80M from rider to base.
-* Deck lines: rate increases 196, volume 143, accounting 59, new contract minimum charges 14.
-* Reproduction: cycle-prorated 20/20, calendar-monthly 17, sales-weighted 15, annual 12, class 4.
+* $412M increase: rider 175, contract 110, unbilled true-up 59, weather sales 38, base rates 30 (cycle-prorated); the annual-average rider
+  moves $110M out of the rider, $60M into base rates and $50M into weather-driven volume.
+* Deck lines: rate increases 205, volume 134, accounting 59, new contract minimum charges 14.
+* Rung 1 values the confidential row's 2.4 TWh at the published industrial price, $166M of volume against its $110M of revenue (base
+  −$56M): C 254, B 65, F 59, A 34. With cycle proration that build gives C 204 against B 175.
+* Partial builds (B / E / A / C): billing-month factors 92 / 110 / 76 / 75; sales-weighted annual 82 / 110 / 80 / 81.
+* The rider rose on 1 November and fell on 1 March; January and February carry 31% of residential sales.
+* Reproduction: cycle-prorated 20/20, billing-month 16, sales-weighted 14, average-valued confidential rows 14, annual 11, class 4.
 * Y-2 and Y-4 identical on every class-level column; rider changes in November and May.
 * Budget-billing settlements and meter channels touch no revenue-by-usage cell.

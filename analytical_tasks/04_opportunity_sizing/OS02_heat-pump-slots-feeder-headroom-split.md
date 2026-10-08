@@ -57,7 +57,7 @@ slots. That sum is 1,300 installs, so 500 slots cannot be placed this year, and 
 * **Leaders.** The district receiving most slots changes at every rung: Valley (1.33×), North Shore (1.32×), Uplands (1.22×), Lakes
   (1.34×).
 * **Discriminator dominance.** Uplands carries 1.54× more expected buyers than Lakes into rung 3 (800 against 520). Lakes can place
-  0.90 of its buyers against Uplands' 0.34, an edge of 2.68×, above the 1.85× floor. Product: 2.68 / 1.54 = 1.74, Lakes 470 against
+  0.90 of its buyers against Uplands' 0.34, an edge of 2.68×, 1.45 times the 1.85× floor. Product: 2.68 / 1.54 = 1.74, Lakes 470 against
   Uplands 270.
 * **Partial correction priced (L3).** A solver who checks the hosting map at district level finds headroom above demand in every district
   (North Shore 850 slots for 640 buyers, Uplands 970 for 800) and stays exactly at rung 2.

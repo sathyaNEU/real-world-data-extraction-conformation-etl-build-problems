@@ -57,11 +57,12 @@ queue rates no longer describe any queue.
 * **Position table.** E is 4th on rung 0 (8.8%), 4th on rung 1's volume tie-break (24,000) and 5th on rung 2 (5.5 a week), and leads only
   rung 3. Rung margins: D over B 1.21×, B over A 1.24×, A over F 2.8×, E over F 1.63× (44 against 27).
 * **Discriminator dominance.** A carries a 9.3× pilot-yield advantage over E into rung 3 (51 against 5.5). The cohort's move multiplies
-  E's fast-track share by 8 (1.2% to 9.6%) and divides A's by 7.5 (11.2% to 1.5%), an edge of 60×, far beyond 1.2 × 9.3 = 11.2.
-* **Partial correction priced (L3).** A solver who finds the cohort split but applies it to the pilot's queue shares names A at 51. One who
-  carries the pilot's pooled 1.4% to every queue is back at the volume tie. One who transports by worker rather than by majority, treating
-  any item with one cohort label as at risk, names F at 39 a week, because F's cohort workers are spread thinly across many items. Half
-  the construction names A, B or F.
+  E's fast-track share by 8 (1.2% to 9.6%) and divides A's by 7.5 (11.2% to 1.5%), an edge of 60×, far beyond 1.2 × 9.3 = 11.2 and the
+  14.5 that headroom asks.
+* **Partial correction priced (L3).** Half the construction names A, B or F, never E. A solver who finds the cohort split but applies it
+  to the pilot's queue shares names A at 51 a week, 2.8× F. One who carries the pilot's pooled 1.4% to every queue is back at the volume
+  tie and names B, 1.24× A on volume. One who transports by worker rather than by majority, treating any item with one cohort label as at
+  risk, names F at 39 a week against E's 31 (1.26×), because F's cohort workers are spread thinly across many items.
 * **Grid.** Aggregation (vote margin, Dawid–Skene) × error evidence (model, pilot by queue, cohort split) × mix (pilot, next quarter) ×
   at-risk unit (majority, any label) = cells that name D, B, A or F; only the cohort split with next quarter's mix and the majority unit
   names E.
@@ -149,7 +150,8 @@ runner-up and the margin + 5 named chart parts + 3 files ≈ 58 criteria.
 ## 12. World-building constraints
 
 * Rung 0 narrow-margin shares: D 14.0%, B 11.6%, A 9.0%, E 8.8%, F 7.1%, C 5.0%. Weekly volumes: B 41,000, A 33,000, F 28,000, E 24,000, D
-  19,000, C 12,000. Pilot weekly yields: A 51, F 18, D 12, B 9, E 5.5, C 3. Forward: E 44, F 27, D 14, B 10, A 7, C 4.
+  19,000, C 12,000. Pilot weekly yields: A 51, F 18, D 12, B 9, E 5.5, C 3. Forward: E 44, F 27, D 14, B 10, A 7, C 4. Forward with any
+  cohort label as the at-risk unit: F 39, E 31.
 * 61 fast-track workers; pilot split 68 of 179 against 0 of 4,781. Fast-track workers match other workers on every registry and label
   column except onboarding route.
 * Batches 17 and 31 match on every batch column.

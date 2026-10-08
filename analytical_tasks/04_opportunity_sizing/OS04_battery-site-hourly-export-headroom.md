@@ -55,10 +55,12 @@ of its revenue. Cedar Flats has no neighbour and keeps all of it.
 
 * **Position table.** Cedar Flats ranks 5th on rung 0, 5th on rung 1 and 3rd on rung 2, and leads only rung 3 (1.28× over Northfield).
 * **Discriminator dominance.** Ridgeline carries a 1.41× advantage into rung 3 ($1.62M against $1.15M). Cedar Flats keeps 1.00 of its
-  revenue under the caps and Ridgeline 0.40, an edge of 2.50×, above the 1.69× floor. Product: 2.50 / 1.41 = 1.77.
-* **Partial correction priced (L3).** A solver who checks 20 MW against Ridgeline's 60 MW firm capacity sees no conflict and stays at
-  rung 2. One who nets the neighbours' annual average output (17 MW at their capacity factors) finds 43 MW of headroom, never binding,
-  and stays at rung 2. Only the hourly coincidence binds.
+  revenue under the caps and Ridgeline 0.40, an edge of 2.50×, 1.48 times the 1.69× floor. Product: 2.50 / 1.41 = 1.77.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong site. A solver who checks 20 MW against Ridgeline's
+  60 MW firm capacity sees no conflict and stays on Ridgeline ($1.62M against Harbor Point's $1.31M, 1.24×). One who nets the neighbours'
+  annual average output (17 MW at their capacity factors) finds 43 MW of headroom, never binding, and also stays on Ridgeline (1.24×).
+  One who applies the hourly caps to the zone-price schedule names Northfield ($1.18M against Harbor Point's $1.02M, 1.16×), and one who
+  applies them under perfect foresight names Northfield ($3.20M against Cedar Flats' $2.10M, 1.52×).
 * **Grid.** Foresight (perfect, day-ahead) × price (zone, bus) × export (uncapped, hourly caps) gives 8 cells. Perfect-foresight cells
   name Northfield (1.23× to 1.74× clear). Day-ahead at the zone price names Harbor Point uncapped and Northfield capped (1.16×). Only
   day-ahead at the bus price with hourly caps names Cedar Flats. Cedar Flats' own figure in any other cell is at least 17% from $1.15M.

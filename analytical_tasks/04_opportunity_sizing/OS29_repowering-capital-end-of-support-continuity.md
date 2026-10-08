@@ -42,30 +42,31 @@ The notice dates the end of K-77 support, so the old turbines' energy stops in 2
 output. The notice is about the manufacturer. The ledger's southern rows show seven K-77 projects whose support ended in March 2022. In each,
 the manufacturer's O&M invoices stop that month, an independent provider's start the next, and settled energy over the following twelve
 months is within 1% of the twelve before. Run back across that date, the ledger says the end of support is a change of supplier. The
-no-repower path therefore runs to each project's consent end in the consent register (2038 to 2041 for the K-77s), and Dunmore, a
+no-repower path therefore runs to each project's consent end in the consent register (2038 to 2043 for the K-77s), and Dunmore, a
 supported-model site whose consent ends in 2029, becomes the best use of a dollar.
 
 ## 4. The ladder
 
 | Rung | Construction (incremental MWh a year per $M) | Names (ranked first) | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Fund energy model; no-repower path ends at the support date for K-77 sites, at consent end for the rest; greedy whole-turbine fill | A, Bitter Creek, 2,589 (1.19× Antelope Flats); 1,544 GWh a year, +66.2% | The validated model, the filed notice and the policy's own allocation rule | The wind atlas puts ridge-line shear at 0.05 against the 0.20 behind every validated repower, so ridge energy is 0.62 of the model's figure |
-| 1 | Energy recalibrated by terrain class | B, Antelope Flats, 2,182 (1.19× Fox Hollow); 1,342 GWh, +44.4% | The model is now used only where it was validated | The interconnection register caps Antelope Flats' exports at 0.68 of its repowered output |
-| 2 | Exports capped at each project's interconnection limit | C, Fox Hollow, 1,829 (1.16× Bitter Creek); 1,170 GWh, +25.9% | Terrain-correct, grid-feasible and filed-notice compliant | The ledger: the southern K-77 fleet's settled energy runs through its March 2022 support end without a step, on a successor provider's invoices |
-| 3 | **Decisive:** K-77 no-repower paths run to consent end, so every project's path ends at its own consent | **E, Dunmore, 1,493 (1.25× Hatch Mesa)** (5th of 9 on rung 0) | — | — |
+| 0 | Fund energy model; no-repower path ends at the support date for K-77 sites, at consent end for the rest; greedy whole-turbine fill | A, Bitter Creek, 2,589 (1.19× Antelope Flats); 1,544 GWh a year, +67.7% | The validated model, the filed notice and the policy's own allocation rule | The wind atlas puts ridge-line shear at 0.05 against the 0.20 behind every validated repower, so ridge energy is 0.62 of the model's figure |
+| 1 | Energy recalibrated by terrain class | B, Antelope Flats, 2,182 (1.19× Fox Hollow); 1,342 GWh, +45.7% | The model is now used only where it was validated | The interconnection register caps Antelope Flats' exports at 0.68 of its repowered output |
+| 2 | Exports capped at each project's interconnection limit | C, Fox Hollow, 1,829 (1.16× Bitter Creek); 1,170 GWh, +27.0% | Terrain-correct, grid-feasible and filed-notice compliant | The ledger: the southern K-77 fleet's settled energy runs through its March 2022 support end without a step, on a successor provider's invoices |
+| 3 | **Decisive:** K-77 no-repower paths run to consent end, so every project's path ends at its own consent | **E, Dunmore, 1,493 (1.24× Hatch Mesa)** (5th of 9 on rung 0) | — | — |
 
-* **The answer.** Dunmore 26 turbines, Hatch Mesa 16 and Fox Hollow 14 ($715.2M), buying 929.3 GWh a year, committed as 930.
+* **The answer.** Dunmore 26 turbines, Hatch Mesa 16 and Elk Run 15 ($719.0M), buying 920.9 GWh a year, committed as 920.
 * **Position table.** Dunmore ranks 5th on rung 0, 4th on rung 1 and 3rd on rung 2, and leads only rung 3. It is never 2nd.
-* **Discriminator dominance.** Fox Hollow carries a 1.225× lead into rung 3 (1,829 against 1,493). Under continuity it keeps 0.567 of its
-  value and Dunmore all of it, an edge of 1.76×, above 1.2 × 1.225 = 1.47.
-* **Sign discipline.** Every rung below the answer over-states the capital's yield (+66%, +44%, +26%). The decisive move takes 21% off rung
+* **Discriminator dominance.** Fox Hollow carries a 1.225× lead into rung 3 (1,829 against 1,493). Under continuity it keeps 0.505 of its
+  value and Dunmore all of it, an edge of 1.98×, which is 1.35 times the required 1.2 × 1.225 = 1.47.
+* **Sign discipline.** Every rung below the answer over-states the capital's yield (+68%, +46%, +27%). The decisive move takes 21% off rung
   2, and the answer is the minimum cell of the grid.
-* **Partial correction priced (L3).** A solver who replaces the hard stop with a five-year post-support decline, the usual rule of thumb,
-  still names Fox Hollow (1,688 against 1,493). So does a solver who keeps the K-77s running only for the independent provider's current
-  contract term to 2031 (1,603). Each lands nearer rung 2 than the answer.
+* **Partial correction priced (L3).** Every half-applied path names Fox Hollow first. Replacing the hard stop with a five-year
+  post-support decline, the usual rule of thumb, gives Fox Hollow 1,688 against Dunmore's 1,493 (1.13×) and 1,104 GWh (+19.9%). Running
+  the K-77s only as far as the evidence runs, the southern provider's current contract to March 2029, gives Fox Hollow 1,716 (1.15×) and
+  1,115 GWh (+21.1%). Each lands nearer rung 2 than the answer.
 * **Grid.** Terrain (off, on) × interconnection cap (off, on) × no-repower path (support end, consent end) = 8 cells. Every non-answer
   cell names Bitter Creek, Antelope Flats or Fox Hollow. The nearest figure is terrain plus continuity without the export cap: 1,046 GWh
-  (+12.5%), led by Antelope Flats. Reaching it means ignoring a filed export limit.
+  (+13.6%), led by Antelope Flats. Reaching it means ignoring a filed export limit.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -115,7 +116,8 @@ supported-model site whose consent ends in 2029, becomes the best use of a dolla
 * **Continuity window.** Southern settled energy in the 6, 12 and 24 months after March 2022 is within 1% of the same spans before, so the
   window choice cannot reopen the step.
 * **Terrain class.** The atlas assigns every site a class, and no candidate sits on a class boundary.
-* **Integer fill.** After whole turbines, $4.8M is left, below every project's capex per turbine, so no remainder rule changes the split.
+* **Integer fill.** After whole turbines, $1.0M is left, below every project's capex per turbine, so no remainder rule changes the split,
+  and 920.9 GWh sits 4.1 from the nearest rounding boundary.
 * **Maturity.** Only closed settlement months are used, and the ledger carries no provisional rows for them.
 
 ## 9. Prompt sketch and deliverables
@@ -153,10 +155,10 @@ the K-77 comparison + 5 named chart parts + 3 files ≈ 74 criteria.
 
 * Per new turbine (flat-model MWh a year, capex $M): Bitter Creek 25,500 / 9.6 (ridge), Antelope Flats 23,500 / 10.5 (export share 0.68),
   Fox Hollow 21,500 / 11.4, Coyote Draw 19,800 / 13.4 (the four K-77 sites), Dunmore 20,800 / 13.0, Elk Run 23,000 / 11.0 (ridge), Grange
-  Hill 19,300 / 12.8 (export share 0.90), Hatch Mesa 18,900 / 13.6, Iron Gap 20,000 / 10.8 (ridge). Three old turbines retire per new one.
-* No-repower path lengths under consent end, as shares of 20 years: Bitter Creek and Antelope Flats 0.60, Fox Hollow 0.75, Coyote Draw
+  Hill 19,300 / 12.8 (export share 0.90), Hatch Mesa 18,900 / 13.5, Iron Gap 20,000 / 10.8 (ridge). Three old turbines retire per new one.
+* No-repower path lengths under consent end, as shares of 20 years: Bitter Creek and Antelope Flats 0.60, Fox Hollow 0.85, Coyote Draw
   0.65, Dunmore 0.15, Elk Run 0.35, Grange Hill 0.50, Hatch Mesa 0.30, Iron Gap 0.40. Under the support-end reading the K-77s run 0.05.
-* Rung figures are 1,544 / 1,342 / 1,170 / 929 GWh a year, and no other cell of the 8-cell grid is within 12% of the answer.
+* Rung figures are 1,544 / 1,342 / 1,170 / 921 GWh a year, and no other cell of the 8-cell grid is within 12% of the answer.
 * Seven southern K-77 projects end support in March 2022, with provider invoices from April 2022 and no step in settled energy. Sandy Ford
   and Tor Hill are identical on every asset-register column.
 * Royalty true-ups and curtailment revisions never touch settled energy, capex or the consent register.

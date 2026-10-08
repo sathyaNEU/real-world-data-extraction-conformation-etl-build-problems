@@ -41,8 +41,8 @@ binomial expectation on heating degree days from two prior seasons, picks the mo
 expectations rather than only the citywide one, and names C. Every step is correct, and every step counts lots. The manual's unit is the
 heating system. Public-housing campuses and co-op villages run one plant for many buildings on separate tax lots, so one plant failure files
 complaints from every lot it serves. The boiler register's served-lots table links lots to plants; a heating-system day is a plant with at
-least one complaint from any lot it serves. B and C are campus districts, averaging 2.7 and 2.0 lots per system among complaining lots; E is
-walk-ups, where nearly every lot has its own boiler. Last season's close-out counts inspections per heating system, and only the plant link
+least one complaint from any lot it serves. B and C are campus districts, averaging 2.7 and 2.2 lots per system among complaining lots; E's
+complaining buildings are walk-ups, where nearly every lot has its own boiler. Last season's close-out counts inspections per heating system, and only the plant link
 reproduces it.
 
 ## 4. The ladder
@@ -52,17 +52,19 @@ reproduces it.
 | 0 | Complaints in the week: A 1,240, B 980, C 860, D 760, E 690 | A | The dashboard and the council's own measure | The complaint file: A's calls come from 31 lots, six of them carrying 40% of the calls |
 | 1 | Excess distinct building-days over a heating-degree-day expectation that reproduces the citywide published figure: B 310, A 240, C 220, E 190, D 150 | B | The memo's unit and weather adjustment, passing the citywide control | The close-out's borough expectations: this model misses four of five boroughs by 9–16% |
 | 2 | Excess building-days over the model with district-specific degree-day slopes, which reproduces all five borough expectations: C 260, E 205, B 190, A 140, D 120 | C | Passes the salient control and every finer one | The close-out's inspection counts: last season's heating systems inspected match building-days in only 18 of 59 districts |
-| 3 | **Decisive:** link lots to plants through the served-lots table, count heating-system days, same expectation model at that grain: E 182, C 130, D 105, B 70, A 55 | **E** (5th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** link lots to plants through the served-lots table, count heating-system days, same expectation model at that grain: E 199, A 129, C 117, D 114, B 70 | **E** (5th of 5 on rung 0) | — | — |
 
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.27×), and leads only rung 3. Rung leaders beat
-  their runners-up by 1.27×, 1.29×, 1.27× and 1.40×.
-* **Discriminator dominance.** C carries a 1.27× advantage into rung 3. E keeps 0.89 heating-system days per building-day against C's 0.50
-  (1.78×), so the net is 1.78 / 1.27 = 1.40×.
+  their runners-up by 1.27×, 1.29×, 1.27× and 1.54×.
+* **Discriminator dominance.** C carries a 1.27× advantage into rung 3, so the required edge is 1.2 × 1.27 = 1.52×. E keeps 0.97
+  heating-system days per building-day against C's 0.45 (2.16×), 1.42× the requirement, so the net is 2.16 / 1.27 = 1.70×.
 * **Partial correction priced (L3).** A solver who merges lots by owner instead of by plant treats every walk-up in a landlord's portfolio as one
-  system; E's walk-ups sit in three large portfolios with separate boilers, so E collapses and C leads again. A solver who divides building-days
-  by each district's average lots per plant, instead of linking complaining lots, names D.
-* **Grid.** Unit (calls, lots, owners, plants) × expectation (citywide slope or district slopes) = 8 cells. Call cells name A, lot cells B or C,
-  owner cells C, and only plants with district slopes name E; plants with the citywide slope name C.
+  system; E's walk-ups sit in three large portfolios with separate boilers, so E collapses to 72 and C leads again, 112 against A's 91
+  (1.23×). A solver who divides building-days by each district's average lots per plant, instead of linking complaining lots, names D: E's
+  average is inflated by a co-op village whose plants never failed, so E falls to 85, while D keeps 114 against A's and C's 93 (1.23×).
+* **Grid.** Unit (calls, lots, owners, plants) × expectation (citywide slope or district slopes) = 8 cells. Call cells name A; lot cells name
+  B (citywide) or C (district); owner cells name A (156 against D's 113) or C (112 against A's 91); plants with the citywide slope name A,
+  221 against E's 184 (1.20×), because A's walk-ups keep their rung-1 lead at plant grain; only plants with district slopes name E.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -110,7 +112,7 @@ reproduces it.
 * **Plant-day.** A plant counts on a day when any lot it serves files at least one complaint; first-complaint and any-complaint definitions
   agree because no plant's complaints straddle midnight in the week.
 * **Model.** District-slope models with or without a squared degree-day term reproduce the borough figures equally and name the same district.
-* **Rounding.** The committed excess is given to the nearest whole heating system; E's 182 sits clear of a boundary.
+* **Rounding.** The committed excess is given to the nearest whole heating system; E's 199 sits clear of a boundary.
 
 ## 9. Prompt sketch and deliverables
 
@@ -142,8 +144,9 @@ margin + 5 named chart parts + 3 files ≈ 52 criteria.
 
 ## 12. World-building constraints
 
-* Rung figures as in the ladder; E is 5th, 4th, 2nd (1.27× behind C) and 1st.
-* Lots per plant among complaining lots: B 2.7, C 2.0, A 2.5, D 1.1, E 1.12.
+* Rung figures as in the ladder; E is 5th, 4th, 2nd (1.27× behind C) and 1st (1.70× ahead of C, 1.54× ahead of A).
+* Lots per plant among complaining lots: A 1.09, B 2.7, C 2.2, D 1.05, E 1.03. District-wide averages over all plants: A 1.5, B 2.9, C 2.8,
+  D 1.05, E 2.4 (E's co-op village never failed). Owner-days per building-day: A 0.65, B 0.35, C 0.43, D 0.75, E 0.35.
 * The close-out: plant-linked counts match all 59 districts; building-days 18; owner groups 27.
 * Districts 7 and 12 are identical on every complaint, lot and weather column.
 * Inspection attempts and violation histories never touch complaints, the boiler register or temperatures.

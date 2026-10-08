@@ -42,29 +42,31 @@ opposing train has claimed the single line, waits four minutes, and arrives at t
 The following train, held outside the interchange platform, inherits part of the overrun as well. The interchange's own gained delay is small,
 but the comparison that decides the fix is between whole autumns: each train's path replayed in timetable order with one cause removed, with
 the working timetable's allowances absorbing what they can, the preceding train setting the platform release and the opposing train setting the
-meet. Replayed that way, removing the overruns avoids 92 late arrivals and removing the loop's waits 61.
+meet. Replayed that way, removing the overruns avoids 96 late arrivals and removing the loop's waits 61.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Minutes on late trains by the delay-cause code recorded at the terminal | A, terminal throat (610 min) | The codes are the operator's own attribution, and they are complete | The coding guide records a cause where a train's lateness crosses three minutes, at the point of observation; the published controls reproduce 0 of 12 under coded minutes |
-| 1 | Incidence: share of late trains that lost at least 30 s at each location; A and B tie at 100% and the standard's tie-break (the upstream location first) names B | B, bridge restriction | It is the standard's own incidence measure, settled by its documented tie-break | The working timetable under-times both locations against recovery allowances, so every train loses time there by design; incidence reproduces 2 of 12 controls |
+| 1 | Incidence: share of late trains that lost at least 30 s at each location; A and B tie at 100%, and the standard's filed two-level tie-break (first the location further upstream, then the larger mean loss per affected train) settles it at level one and names B | B, bridge restriction | It is the standard's own incidence measure, settled by the standard's own filed tie-break | The working timetable under-times both locations against recovery allowances, so every train loses time there by design; incidence reproduces 2 of 12 controls |
 | 2 | Gross delay gained per segment and per dwell, summed over the peak | C, single-track loop (1,320 min) | Delay is attributed where it is gained, the textbook correction | The controls: gross subtraction reproduces 7 of 12, missing every disruption whose trains were followed within the platform headway or met at the loop |
-| 3 | **Decisive:** for each cause, every peak train's path replayed in timetable order without that cause, and the late arrivals avoided compared across causes | **D, interchange dwell overruns (92 avoided)** (5th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** for each cause, every peak train's path replayed in timetable order without that cause, and the late arrivals avoided compared across causes | **D, interchange dwell overruns (96 avoided)** (5th of 5 on rung 0) | — | — |
 
 * **Position table.** D ranks 5th on rung 0, 4th on rung 1 and 3rd on rung 2, and leads only rung 3. Rung 0's leader beats its runner-up by
-  1.61×, rung 2's by 1.47× and rung 3's by 1.51× (92 against the loop's 61). Rung 1 is a designed exact tie: A and B sit at 100% under every
-  cut-off from 15 to 60 s, the tie-break names B, the third candidate trails at 73% (1.37×) and D at 55% (1.82×).
+  1.61×, rung 2's by 1.47× and rung 3's by 1.57× (96 against the loop's 61). Rung 1 is a designed exact tie (1.00×): A and B sit at 100% under
+  every cut-off from 15 to 60 s. The standard's filed two-level tie-break decides it at level one, the location further upstream, and names B,
+  the bridge restriction, 14 km upstream of the throat; level two (mean loss per affected train) is never reached. The third candidate trails
+  at 73% (1.37×) and D at 55% (1.82×).
 * **Discriminator dominance.** The loop carries a 1.78× gross-gain advantage into rung 3 (1,320 against 742 minutes). Late arrivals avoided
-  per gained minute are 0.124 for D and 0.046 for C, an edge of 2.68×, above the required 1.2 × 1.78 = 2.14; the net margin is 1.51×.
+  per gained minute are 0.129 for D and 0.046 for C, an edge of 2.80×, 1.31 times the required 1.2 × 1.78 = 2.14; the net margin is 1.57×.
 * **Partial correction priced (L3).** A solver who replays paths with the allowances but treats trains independently (no platform headway)
   credits D with only the meets it causes, 58 avoided against the loop's 61, and names C, rung 2's answer. One who replays with first-come
   meets moves the waits onto outbound trains outside the measure and names A.
 * **Grid.** Attribution (coded, incidence, gross, replay) × headway knock-on (off, on) × meet order (first-come, timetabled) gives six
   distinct builds. Coded, incidence and gross name A, B and C; the three incomplete replays name C or A; only the full replay names D, and it
   alone reproduces all twelve controls.
-* **The deciding comparison (#20).** 92 late arrivals avoided by fixing the overruns against 61 by fixing the loop is the sentence the board
+* **The deciding comparison (#20).** 96 late arrivals avoided by fixing the overruns against 61 by fixing the loop is the sentence the board
   note has to carry; no segment-level table contains it.
 
 ## 5. Why the decisive rung survives the opponent
@@ -101,7 +103,8 @@ meet. Replayed that way, removing the overruns avoids 92 late arrivals and remov
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The board's investment rule: an intervention is judged on the late arrivals at the terminal it would have avoided over the
-  autumn peak. The standard's reproduction clause, one sentence. The working timetable (running times, allowances, minimum dwells, the
+  autumn peak. The standard's reproduction clause, one sentence. The standard's two-level tie-break for its incidence measure: tied
+  locations are ordered first by distance upstream of the terminal, then by mean seconds lost per affected train. The working timetable (running times, allowances, minimum dwells, the
   interchange headway, the planned meets).
 * **Empirical pins.** Meet order (timetabled order held) and the headway knock-on, both recovered from the controls.
 * **Voices.** The operations manager: "Everything bunches in the throat; that's where we lose the trains." The infrastructure planner: "The loop
@@ -115,8 +118,9 @@ meet. Replayed that way, removing the overruns avoids 92 late arrivals and remov
   trains are outside the measure under the standard.
 * **Counterfactual.** Removing a cause sets its excess over the working timetable to zero at its own location only; every later event is
   replayed in timetable order with observed running wherever no constraint binds.
-* **Thresholds.** The incidence cut-off is immaterial: the A–B tie holds from 15 to 60 s.
-* **Interactions.** Each fix is replayed alone, so the ranking needs no joint convention; the 92 and 61 do not sum with each other.
+* **Thresholds.** The incidence cut-off is immaterial: the A–B tie holds from 15 to 60 s, and under every cut-off the filed two-level
+  tie-break settles it at level one (the bridge lies upstream of the throat) and names B.
+* **Interactions.** Each fix is replayed alone, so the ranking needs no joint convention; the 96 and 61 do not sum with each other.
 * **Rounding.** Late arrivals are whole trains; the committed figures are exact counts.
 
 ## 9. Prompt sketch and deliverables
@@ -150,7 +154,7 @@ and the runner-up's + 5 named chart parts + 3 files ≈ 145 criteria.
 ## 12. World-building constraints
 
 * 1,080 peak inbound trains, 151 late. Coded minutes A 610, E 380, C 250, B 120, D 60; incidence A and B 100%, C 73%, D 55%, E 41%; gross gains
-  C 1,320, B 900, D 742, A 700, E 520; replay avoidances D 92, C 61, A 40, E 30, B 18.
+  C 1,320, B 900, D 742, A 700, E 520; replay avoidances D 96, C 61, A 40, E 30, B 18.
 * Overruns average 75 s on 55% of trains; a train more than 60 s late at the loop waits for the opposing train; the interchange headway is
   three minutes.
 * The twelve controls: replay 12/12, no-headway 9/12, first-come meets 8/12, gross 7/12, incidence 2/12, all misses one way.

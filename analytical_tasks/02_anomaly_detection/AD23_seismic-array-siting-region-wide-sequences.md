@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #24 treats an unpublished figure as unknown · #14 coarsens the segment it was asked about |
 | Calibration form | Counterparty acknowledgement file: the seismic network operator's acknowledgements of 340 events the commission queried, each classified as independent, an aftershock of a named event, or a blast |
-| Driving force | The monitoring rule counts independent earthquakes, and a strong solver declusters each area's catalog. But a sequence belongs to the region, not to the area: B's M4.6 mainshock sat 3 km from the D line and threw 60 of its 140 aftershocks into D. Declustered inside D's own catalog, with no mainshock to hang them on, 54 of them pass as independent and D tops the ranking. Declustering the whole catalog and assigning each sequence to its mainshock's area is the only reading the network's acknowledgements reproduce. |
+| Driving force | The monitoring rule counts independent earthquakes, and a strong solver declusters each area's catalog. But a sequence belongs to the region, not to the area: B's M4.6 mainshock sat 3 km from the D line and threw 80 of its 160 aftershocks into D. Declustered inside D's own catalog, with no mainshock to hang them on, 72 of them pass as independent and D tops the ranking. Declustering the whole catalog and assigning each sequence to its mainshock's area is the only reading the network's acknowledgements reproduce. |
 
 ## 1. Situation
 
@@ -32,35 +32,36 @@ operator's acknowledgement file.
 * **Instrument repair.** Densify the network further; magnitude 2.5 is already well above completeness everywhere. A better instrument
   records the same aftershocks in the same places, and their dependence on a mainshock across a boundary is still a construction.
 * **Lens swap.** The naive unit is the catalog event; the answer's unit is the independent earthquake, built region-wide and assigned by
-  mainshock, a different population that removes 60 events from D and none from E.
+  mainshock, a different population that, against per-area declustering, removes 72 events from D and none from E.
 
 ## 3. The driving force
 
 A strong solver refuses raw event counts, which the M4.8's 150 aftershocks dominate, divides by deep disposal, notices that confidential
-wells leave B's public volume at a third of its true total and recovers it from the disposal summary's area totals, then declusters, as
+wells leave B's public volume at a fifth of its true total and recovers it from the disposal summary's area totals, then declusters, as
 the rule's "independent earthquakes" demands. It filters the catalog to each area, runs the windows, and finds D on top. Each step is
-competent. But aftershock windows scale with the mainshock's magnitude, and B's M4.6 struck 3 km from the D line; 60 of its aftershocks
-fall in D. Inside D's own catalog there is no M4.6 to attach them to, so the windows hang a few on each other and 54 survive as independent.
-Declustered region-wide, every one of the 60 is a dependent of an event in B, and each sequence counts once, in the area of its mainshock.
-D falls from 18.1 to 10.8 per million barrels and E, a steady rise of small independent quakes beside a growing disposal well, leads at 15.0.
+competent. But aftershock windows scale with the mainshock's magnitude, and B's M4.6 struck 3 km from the D line; 80 of its aftershocks
+fall in D. Inside D's own catalog there is no M4.6 to attach them to, so the windows hang a few on each other and 72 survive as independent.
+Declustered region-wide, every one of the 80 is a dependent of an event in B, and each sequence counts once, in the area of its mainshock.
+D falls from 18.9 to 9.2 per million barrels and E, a steady rise of small independent quakes beside a growing disposal well, leads at 15.0.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Catalog events of magnitude 2.5 or more per area, last twelve months | A (212; 1.51× D) | The catalog as published, the largest earthquake inside it | The rule counts per million barrels of deep disposal, and A injects the most |
-| 1 | Events per million barrels, confidential wells left out as unknown | B (33.3; 1.51× A) | The rule's denominator from the public report, nothing guessed | The disposal summary's area totals: B's confidential wells carry 8.2 of its 12.1 million barrels |
-| 2 | Bounded volumes; each area's catalog declustered on its own | D (18.1; 1.21× E) | The rule's unit, independent earthquakes, by the standard windows, on the right denominator | The network's acknowledgements: 53 events in D that this build keeps are classified as aftershocks of B's M4.6 |
+| 0 | Catalog events of magnitude 2.5 or more per area, last twelve months | A (212; 1.43× D) | The catalog as published, the largest earthquake inside it | The rule counts per million barrels of deep disposal, and A injects the most |
+| 1 | Events per million barrels, confidential wells left out as unknown | B (52.0; 2.35× A) | The rule's denominator from the public report, nothing guessed | The disposal summary's area totals: B's confidential wells carry 9.6 of its 12.1 million barrels |
+| 2 | Bounded volumes; each area's catalog declustered on its own | D (18.9; 1.26× E) | The rule's unit, independent earthquakes, by the standard windows, on the right denominator | The network's acknowledgements: 64 events in D that this build keeps are classified as aftershocks of B's M4.6 |
 | 3 | **Decisive:** the whole catalog declustered, each sequence counted once in its mainshock's area | **E (15.0)** (5th of 6 on rung 0) | — | — |
 
-* **Position table.** E ranks 5th on rung 0 (97) and rung 1 (16.0) and 2nd on rung 2, 1.21× behind D, and leads only rung 3, 1.39× D.
-  Intermediate leaders hold margins of 1.51×, 1.51× and 1.21×.
-* **Discriminator dominance.** D carries a 1.21× advantage over E into rung 3. Region-wide declustering multiplies D's count by 0.60 and E's by
-  1.00, an edge of 1.68 against the 1.2 × 1.21 = 1.45 required; net 1.39×.
-* **Partial correction priced (L3).** A solver who bounds the volumes but counts events, not independent earthquakes, has C and D within 4%
-  of each other (19.6 and 18.9) and names C. A solver who declusters region-wide but leaves confidential volumes out names B again, at 12.8.
+* **Position table.** E ranks 5th on rung 0 (97) and rung 1 (16.0) and 2nd on rung 2, 1.26× behind D, and leads only rung 3, 1.63× D.
+  Intermediate leaders hold margins of 1.43×, 2.35× and 1.26×.
+* **Discriminator dominance.** D carries a 1.26× advantage over E into rung 3. Region-wide declustering multiplies D's count by 0.49 and E's by
+  1.00, an edge of 2.06 against the 1.2 × 1.26 = 1.51 required, 1.36× headroom.
+* **Partial correction priced (L3).** A solver who bounds the volumes but counts events, not independent earthquakes, names D (20.0, with C
+  close behind at 19.6 and E third at 16.0, 1.25× below). A solver who declusters region-wide but leaves confidential volumes out names B
+  (20.0 against E's 15.0, 1.33×). Neither half lands on E.
 * **Grid.** Volumes (public or bounded) × unit (events, per-area declustered, region-wide declustered) gives six cells: public-volume cells
-  name B under every unit; bounded cells name C, D and E. Only bounded volumes with region-wide sequences name E, and the nearest wrong cell
+  name B under every unit; bounded cells name D, D and E. Only bounded volumes with region-wide sequences name E, and the nearest wrong cell
   (D) needs each area's catalog declustered on its own.
 
 ## 5. Why the decisive rung survives the opponent
@@ -86,8 +87,8 @@ D falls from 18.1 to 10.8 per million barrels and E, a steady rise of small inde
   independent, as an aftershock of a named event, or as a blast.
 * **What it pins.** Region-wide Gardner–Knopoff and nearest-neighbour declustering both reproduce all 340; per-area declustering 287;
   Reasenberg's method region-wide 331, keeping E first.
-* **Twin pair.** D's first and fourth quarters are identical on events (35 each), magnitude distribution and depth profile. The
-  acknowledgements count 34 and 17 independent earthquakes (2×): the fourth quarter's events include 18 of B's aftershocks.
+* **Twin pair.** D's first and fourth quarters are identical on events (34 each), magnitude distribution and depth profile. The
+  acknowledgements count 34 and 17 independent earthquakes (2×): the fourth quarter's events include 17 of B's aftershocks.
 * **Every rule exercised.** One queried event was a quarry blast, so blasts are excluded under every rule; one sequence in the corpus crossed
   two boundaries, so assignment by mainshock is tested.
 * **Resemblance points at the decoy.** By catalog profile D most resembles the area where last year's array mapped a newly active fault.
@@ -142,9 +143,10 @@ chart parts + 3 files ≈ 51 criteria.
 
 ## 12. World-building constraints
 
-* A: M4.8 with 150 aftershocks, 62 independent, 14.0 million barrels. B: M4.6 with 140 aftershocks (80 in B, 60 in D), 50 independent, 12.1
-  million (3.9 public). C: M4.1 with 70 aftershocks, 61 independent, 6.7 million. D: 80 independent plus B's 60, 7.4 million; per-area
-  declustering keeps 54 of the 60. E: 91 independent, 6.06 million. F: 60 independent, 7.1 million.
-* Rung leaders are A, B, D, E; E is 5th / 5th / 2nd (1.21×) / 1st and leads rung 3 by 1.39×.
+* A: M4.8 with 150 aftershocks, 62 independent, 14.0 million barrels (9.6 public). B: M4.6 with 160 aftershocks (80 in B, 80 in D), 50
+  independent, 12.1 million (2.5 public). C: M4.1 with 70 aftershocks, 61 independent, 6.7 million. D: 68 independent plus B's 80, 7.4
+  million; per-area declustering keeps 72 of the 80. E: 91 independent and 6 aftershocks of its own, 6.06 million. F: 60 independent and 4
+  aftershocks, 7.1 million.
+* Rung leaders are A, B, D, E; E is 5th / 5th / 2nd (1.26×) / 1st and leads rung 3 by 1.63×.
 * The acknowledgement file holds 340 events; D's first and fourth quarters are identical on every catalog column.
 * Repeat citations and revised felt reports never touch the catalog, the volumes or the acknowledgements.

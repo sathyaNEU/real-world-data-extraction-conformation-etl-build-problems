@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #18 joins only on the visible key · #7 uses the ready-made measure · #11 beats the headline trap, misses the quiet one |
 | Calibration form | Counterparty acknowledgement file: the hosted CI vendor's accepted and rejected infrastructure claims for four quarters |
-| Driving force | When a batch in the merge queue fails, the queue splits it and re-tests the halves, filing the follow-up builds as superseded rather than failed. A real defect is found in one split. A flaky test that fails once and then passes sends the queue through every split and back to a full re-run, while all the batch's pull requests wait. Those waits sit in neither the failed-build log nor the triage tracker, and appear only as the queue's waiting time less normal queue time less the delay recorded failures explain: 2,600 hours, 88% of them set off by flaky tests. |
+| Driving force | When a batch in the merge queue fails, the queue splits it and re-tests the halves, filing the follow-up builds as superseded rather than failed. A real defect is found in one split. A flaky test that fails once and then passes sends the queue through every split and back to a full re-run, while all the batch's pull requests wait. Those waits sit in neither the failed-build log nor the triage tracker, and appear only as the queue's waiting time less normal queue time less the delay recorded failures explain: 2,600 hours, 94% of them set off by flaky tests. |
 
 ## 1. Situation
 
@@ -42,7 +42,7 @@ hour each, put runner capacity on top. Every recorded failure is accounted for, 
 waiting time once normal queue time is removed. The gap is the queue's bisection. After a failed batch the queue re-tests halves and quarters,
 filing those builds as superseded, which the build log does not count as failures and the tracker never sees. A real defect is isolated in one split.
 A flaky test that fails once and then passes leaves every split green, so the queue exhausts its splits and re-runs the whole batch while its pull
-requests wait. Traced through the batch log to the failure that set each chain off, 2,300 of the 2,600 hours belong to flaky tests.
+requests wait. Traced through the batch log to the failure that set each chain off, 2,450 of the 2,600 hours belong to flaky tests.
 
 ## 4. The ladder
 
@@ -51,12 +51,12 @@ requests wait. Traced through the batch log to the failure that set each chain o
 | 0 | Failed builds by the committing author's tenure, priced at the mean merge delay | A, review gates (2,600 hours) | The maintainers' own view, from the build log's own author field | The batch log: 61% of failed builds are queue builds committed by the bot, which the author field credits to nobody |
 | 1 | Failures linked through the batch log to pull requests and failing tests, classified by the triage rules, priced at the mean delay | C, dependency pinning (2,300) | Every failure linked and classified; dependency breakages hit many pull requests at once | The queue log: delay per failure ranges from 6 minutes to 3 hours, and the mean misprices every class |
 | 2 | The same, each failure priced at the delay the queue log records for it | D, runner capacity (2,700) | Every recorded failure priced exactly; the vendor's acknowledgements reproduce the infrastructure class | The queue log: waiting time less normal queue time exceeds the delay recorded failures explain by 2,600 hours |
-| 3 | **Decisive:** the residual waiting traced through the batch log to the failure that set off each bisection chain, and added to its cause | **B, flaky-test remediation (4,100)** (4th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** the residual waiting traced through the batch log to the failure that set off each bisection chain, and added to its cause | **B, flaky-test remediation (4,250)** (4th of 5 on rung 0) | — | — |
 
 * **Position table.** B ranks 4th on rung 0 and 3rd on rungs 1 and 2, and leads only rung 3. Rung leaders beat their runners-up by 1.86×,
-  1.53×, 1.29× and 1.52×.
+  1.53×, 1.29× and 1.57×.
 * **Discriminator dominance.** Runner capacity carries a 1.50× lead into rung 3 (2,700 against 1,800). The residual multiplies the flaky
-  class by 2.28 and leaves runner capacity unchanged, an edge of 2.28×, above the required 1.2 × 1.50 = 1.80; the net margin is 1.52×.
+  class by 2.36 and leaves runner capacity unchanged, an edge of 2.36×, 1.31 times the required 1.2 × 1.50 = 1.80; the net margin is 1.57×.
 * **Partial correction priced (L3).** A solver who finds the 2,600-hour gap and spreads it across classes in proportion to recorded delay keeps
   runner capacity on top (3,546 against 2,364). One who counts superseded builds as failures of their batch's class adds them at the mean delay
   and names C again.
@@ -142,7 +142,7 @@ requests wait. Traced through the batch log to the failure that set each chain o
 ## 12. World-building constraints
 
 * Quarter's waiting 12,400 hours: normal queue 1,500, recorded failures 8,300 (D 2,700, C 2,100, B 1,800, A 1,200, E 500), residual 2,600
-  (B 2,300, C 200, A 100).
+  (B 2,450, C 100, A 50).
 * Rung figures as in section 4; 61% of failed builds are queue builds committed by the bot.
 * Acknowledgements: 412 claims, all on hosted runners, all reproduced by the triage rules.
 * Weeks 19 and 27 identical on every build, failure and merge column.

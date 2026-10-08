@@ -58,11 +58,15 @@ summer days a year, more than any downtown corridor's weakest segment.
 * **Discriminator dominance.** Station Approach carries a 2.67× advantage into rung 3 (24 days against 9). The weakest-segment rule
   multiplies Millrace Way's days 4.56× (9 to 41) and Station Approach's 1.08× (24 to 26), an edge of 4.21× against the 3.2× that 1.2 × 2.67
   requires. The product, (1/2.67) × 4.21 = 1.58×, is Millrace Way's margin.
-* **Partial correction priced (L3).** A solver who checks every segment but at the headline segment's capacity, ignoring widths, names
-  Station Approach. One who checks every segment's width but on daily totals rather than the peak hour names Harbour Bridge again.
+* **Partial correction priced (L3).** Every half-applied rule names a wrong corridor. Checking every segment in the peak hour but
+  against the headline segment's capacity, ignoring widths, names Station Approach (25 days against Canal Street's 19, 1.32×): the mill
+  segment carries less flow than Millrace Way's wider headline stretch, so it never binds at that stretch's capacity and Millrace Way
+  stays at 9. Checking every segment against its own width but on daily totals names Harbour Bridge (24 days against Canal Street's 16,
+  1.50×; Millrace Way 12), because Millrace Way's flow is packed into its commuter peaks.
 * **Grid.** Time grain (day, peak hour) × counters (headline, every segment) × capacity (one threshold, each segment's width) × hygiene
-  (raw, recalibrated) = 16 cells. Only peak hour, every segment and each segment's width together name Millrace Way; every other cell names
-  Harbour Bridge, Canal Street or Station Approach.
+  (raw, recalibrated) = 16 cells. Only peak hour, every segment and each segment's width together name Millrace Way, at 41 days with or
+  without the loop correction (Canal Street reads 32 raw, still 1.28× behind). Every other cell names Harbour Bridge, Canal Street or
+  Station Approach; the nearest is Station Approach by 1.32×.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -83,8 +87,8 @@ summer days a year, more than any downtown corridor's weakest segment.
 
 * **Form.** 140 corridor-days over three summers on which trained observers walked each corridor at peak hour and recorded whether cyclists
   could still pass safely anywhere along it, with the counter data for those days.
-* **What it certifies.** The peak-hour definition and the 85% capacity line: both reproduce the observations wherever the headline segment is
-  also the narrowest.
+* **What it certifies.** The peak-hour definition and the guide's 85% comfort line: both reproduce the observations wherever the headline
+  segment is also the narrowest.
 * **What it pins.** The weakest-segment rule (above).
 * **Twin pair.** Station Approach on 14 July and Millrace Way on 21 July of the second summer show identical headline counters: daily total,
   peak-hour flow and peak-hour share. Observers recorded Millrace Way crowded and Station Approach clear, and over the whole replay their
@@ -96,8 +100,8 @@ summer days a year, more than any downtown corridor's weakest segment.
 
 * **Filed pins.** The policy: the widening goes to the corridor forecast to be crowded on the most summer days next year; flows are assessed
   in the peak hour, the busiest 60 minutes in 07:00–09:30 or 16:00–18:30. The forecasting convention: replay the last three summers' days,
-  each counter scaled by its year-on-year growth. The design guide's capacity table by path width.
-* **Empirical pins.** The weakest-segment rule and the 85% line, from the observations. The faulty loop's correction, from its recalibrated
+  each counter scaled by its year-on-year growth. The design guide's capacity table by path width, with its comfort line at 85%.
+* **Empirical pins.** The weakest-segment rule, from the observations. The faulty loop's correction, from its recalibrated
   ratio to its neighbour.
 * **Voices.** The cycling officer: "The bridge counter is the busiest in the city; it's obviously the corridor." The traffic engineer:
   "Peaks are what hurt; look at the peak hour, not the day." The ward councillor: "The station approach is where the complaints come from."
@@ -148,7 +152,8 @@ and its margin + 5 named chart parts + 3 files ≈ 71 criteria.
 ## 12. World-building constraints
 
 * Crowded days by rung (Harbour Bridge, Canal Street, Station Approach, Riverside Loop, Millrace Way, Northfield): rung 0 22/15/11/8/4/2;
-  rung 1 18/31/24/7/9/3; rung 2 18/19/24/7/9/3; rung 3 21/20/26/9/41/4.
+  rung 1 18/31/24/7/9/3; rung 2 18/19/24/7/9/3; rung 3 21/20/26/9/41/4 (Canal Street 32 without the loop correction).
+* Partials (same order): every segment at the headline capacity 18/19/25/7/9/3; each width on daily totals 24/16/13/9/12/2.
 * Millrace Way: headline counter on a 4.0-metre segment; the 2.4-metre mill segment carries 94% of its flow.
 * Observations: 140 corridor-days; reproduction 140 / 104 / 96 / 88; daily thresholds 6,000–8,000 give 84–90.
 * The twin corridor-days are identical on every headline-counter column.

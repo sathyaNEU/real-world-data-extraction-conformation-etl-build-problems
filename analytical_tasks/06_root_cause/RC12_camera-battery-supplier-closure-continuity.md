@@ -40,7 +40,8 @@ A strong solver sees the calendar step at the firmware date and does not trust i
 is a cohort effect, early-age swelling in cameras built after the chemistry change. Retail complaints carry only the retailer's RMA number, and
 linking them to serials through the RMA log adds the newest cohorts, sold mostly through retail. With the full link, the swap's scope looks like
 "cameras whose cells came from the old vendor code": built from the chemistry change to the plant closure, 2,100 forward failures, less than the
-enclosure rework. That scope follows the closure notice. Goods receipts since the closure show the same cell part number, the same lot-number
+enclosure rework. That scope follows the closure notice, and the cohort table seems to agree: the last cohorts before the closure, built while
+the plant wound down and the line dual-sourced, drew only 13% of their cells from the affected lots, so the effect looks as if it is fading. Goods receipts since the closure show the same cell part number, the same lot-number
 prefix and the same open purchase orders, transferred to the successor's vendor code. Cameras built in the last three months carry those cells.
 They are under four months old, so they have no failures yet and the most risk ahead. With them in scope the swap prevents 5,600 failures.
 
@@ -57,13 +58,16 @@ They are under four months old, so they have no failures yet and the most risk a
   1.37×, 1.27× and 1.70×.
 * **Discriminator dominance.** The enclosure rework carries a 1.57× lead into rung 3 (3,300 against 2,100). Continuity multiplies the swap's
   forward failures by 2.67 and leaves the rework's unchanged, an edge of 2.67×, above the required 1.2 × 1.57 = 1.89; the net margin is 1.70×.
-* **Partial correction priced (L3).** A solver who suspects the successor but extends the swap only to cameras whose post-closure cells came
-  from successor lots that have already shipped in a failed camera finds none (no post-closure camera is old enough) and stays at 2,100, naming
-  D. One who extends it to every post-closure camera regardless of cells overshoots to 6,900 against the enclosure's 3,300, naming B at a figure
-  23% high.
-* **Grid.** Attribution (calendar, cohort) × link (serial field, RMA log) × scope (vendor code, cell lots, all recent cameras) gives eight
-  feasible builds: calendar names A; cohort on the serial field names C; cohort on the full link names D by vendor code, B at 5,600 by cell lots
-  and B at 6,900 by all recent cameras. Only cell-lot scope commits the right figure.
+* **Partial correction priced (L3).** Every half-applied continuity names D, rung 2's answer. A solver who suspects the successor but extends
+  the swap only to cameras whose post-closure cells came from successor lots that have already shipped in a failed camera finds none (no
+  post-closure camera is old enough): B stays at 2,100 against the enclosure's 3,300 (1.57×). One who doubts the closure but has no cell link
+  projects the post-closure cameras at the trend of the last observable cohorts, which the wind-down's dual sourcing pulled to 13% affected
+  cells: B 2,720 against 3,300 (1.21×). Giving them the affected cells' hazard needs to know they carry those cells, which is the receipts
+  link itself.
+* **Grid.** Attribution (calendar, cohort) × link (serial field, RMA log) × scope (vendor code, recent cameras at the trend hazard, cell lots)
+  gives seven builds, scope mattering only to the cohort builds. Calendar names A. Cohort on the serial field names C under every scope: the
+  retail-heavy newest cohorts look nearly clean there, so even cell-lot scope lifts B only to 2,150 against C's 2,600 (1.21×). Cohort on the
+  full link names D by vendor code (1.57×) or by the trend (1.21×), and B only by cell lots, at 5,600.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -88,9 +92,9 @@ They are under four months old, so they have no failures yet and the most risk a
 * **What it certifies.** The cohort hazard (rung 2's model reproduces the control arm's failures within 3%) and the swap's effect (the
   treated arm fails at the pre-change base rate).
 * **What it is blind to.** Cameras built since the closure (above).
-* **Twin pair.** Cameras built in May and in August of last year are identical on volume, enclosure revision, charger batch, firmware at ship
-  and channel mix. Their four-to-ten-month failure rates are 1.9% and 0.9% (2.1×), because May's cameras drew 92% of their cells from the
-  affected lots and August's 44% while the plant dual-sourced. Only the cell-lot link reproduces both.
+* **Twin pair.** Cameras built in September and in November of last year are identical on volume, enclosure revision, charger batch, firmware
+  at ship and channel mix. Their four-to-ten-month failure rates are 1.9% and 0.9% (2.1×), because September's cameras drew 92% of their cells
+  from the affected lots and November's 44% while the plant dual-sourced through a capacity shortfall. Only the cell-lot link reproduces both.
 * **Resemblance points at the decoy.** The complaint mix (swelling reports clustered in summer) matches the closed enclosure-revision case, a
   heat-driven issue the board fixed two years ago.
 
@@ -150,5 +154,8 @@ its figure and the runner-up's + 5 named chart parts + 3 files ≈ 175 criteria.
 * The closure was three months before the extract; the failure mode begins at four months; post-closure cameras are 31% of in-scope units and
   62% of the swap's forward failures.
 * 41% of battery complaints are retail RMAs without a serial on the form.
-* May and August cohorts identical on every cohort-summary column.
+* September and November cohorts identical on every cohort-summary column.
+* The last four pre-closure cohorts drew 13% of their cells from the affected lots; 73% of post-closure cameras carry successor cells of the
+  affected part number, the rest a second supplier's. B under the partial builds: successor lots with failures 2,100; post-closure cameras at
+  the trend hazard 2,720; serial field with cell lots 2,150.
 * Retail returns and stale check-ins touch no complaint, build record or receipt.

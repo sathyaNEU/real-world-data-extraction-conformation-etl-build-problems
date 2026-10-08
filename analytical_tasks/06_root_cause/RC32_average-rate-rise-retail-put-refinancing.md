@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #13 validates on one population, applies to another · #12 stops at the first control that passes · #11 beats the headline trap, misses the quiet one |
 | Calibration form | Pilot log: the retail Citizen Notes pilot, six series over three years, each with its filed coupon decision and redemption record |
-| Driving force | Citizen Notes carry a holder's put at par after twelve months. In every pilot series the coupon stayed above the market yield, nobody put, and the pilot certified the notes as stable funding. After the peak, yields rose through the coupons and holders put €150B back. The debt office refinanced them through long-bond syndications, so in the marketable data the cost sits on the syndication programme, with nothing to say why. Only the monthly financing identity ties the syndications' rate effect to the retail redemptions. |
+| Driving force | Citizen Notes carry a holder's put at par after twelve months. In every pilot series the coupon stayed above the market yield, nobody put, and the pilot certified the notes as stable funding. After the peak, yields rose through the coupons and holders put €175B back. The debt office refinanced them through long-bond syndications, so in the marketable data the cost sits on the syndication programme, with nothing to say why. Only the monthly financing identity ties the syndications' rate effect to the retail redemptions. |
 
 ## 1. Situation
 
@@ -38,10 +38,10 @@ is still paying top-of-market rates on everything it sells.
 
 A strong solver rebuilds the average rate from the security-level data. It picks the construction the published class averages accept,
 which is amount-weighted yields across reopenings. It splits nominal coupons by programme and finds the regular auctions merely
-refinancing maturities, while syndications of long bonds at about 4.2% carry most of the rise. That is a satisfying, dated story: each
+refinancing maturities, while syndications of long bonds at about 4.25% carry most of the rise. That is a satisfying, dated story: each
 syndication steps the rate on its settlement day. But the syndications were not sized to a duration target. The regular calendar covered
 maturities and the budgeted deficit, and the syndications met everything else. Everything else was the retail book. Citizen Notes are
-puttable at par, and once yields passed their coupons, holders of five of the six series put €150B in eight months. The pilot never
+puttable at par, and once yields passed their coupons, holders of five of the six series put €175B in eight months. The pilot never
 showed this, because in every pilot series the coupon stayed above the market and the put was worthless.
 
 ## 4. The ladder
@@ -50,15 +50,16 @@ showed this, because in every pilot series the coupon stayed above the market an
 |---|---|---|---|---|
 | 0 | Flow reading: each programme's gross issuance × (issue yield − average rate) | Bill programme (18; syndications 9) | The briefing's comparison of new yields with the stock | Security-level outstanding: bills repriced before the peak, and the post-peak rise sits in nominal coupons |
 | 1 | Stock reconstruction by class, on the construction the finer controls accept | Regular coupon rollover (33) | Reproduces the published total and every class average | The auction and syndication records split nominal coupon issuance by programme, and the regular auctions only refinanced maturities |
-| 2 | Nominal coupons split by issuing programme | Long-bond syndications (24 against 9) | Dated, programme-level and exact, and each syndication steps the rate | The funding plan, retail statements and maturity calendar: syndications met needs beyond the calendar, and the only such need was €150B of Citizen Note puts |
-| 3 | **Decisive:** each month's financing identity, with the syndications' rate effect booked to the need they met | **Citizen Notes (16 against 9)**, 5th on rung 0 | — | — |
+| 2 | Nominal coupons split by issuing programme | Long-bond syndications (24 against 9) | Dated, programme-level and exact, and each syndication steps the rate | The funding plan, retail statements and maturity calendar: syndications met needs beyond the calendar, and the only such need was €175B of Citizen Note puts |
+| 3 | **Decisive:** each month's financing identity, with the syndications' rate effect booked to the need they met | **Citizen Notes (19 against 9)**, 5th on rung 0 | — | — |
 
-* **Position table.** Citizen Notes rank 5th on rungs 0, 1 and 2 and lead only rung 3. Margins are 2.00, 8.25, 2.67 and 1.78.
-* **Discriminator dominance.** Syndications carry a 24 bp lead over the retail notes into rung 3. The identity moves 16 bp from one to the
-  other, a 32 bp swing, which is 1.33× the carried lead.
+* **Position table.** Citizen Notes rank 5th on rungs 0, 1 and 2 and lead only rung 3. Margins are 2.00, 8.25, 2.67 and 2.11.
+* **Discriminator dominance.** Syndications carry a 24 bp lead over the retail notes into rung 3. The identity moves 19 bp from one to the
+  other, a 38 bp swing, which is 1.58× the carried lead. The floor is 1.2×, so the edge has 1.32× headroom.
 * **Partial correction priced (L3).** A solver who finds the puts but values them with the pilot's behaviour, as stable funding refinanced
-  at maturity, books nothing to the notes and keeps the syndications. One who books the puts at the notes' own coupons, the rate the
-  government stopped paying, credits the notes with a fall and names syndications again.
+  at maturity, books nothing to the notes and names syndications at 24 bp, 2.67× the regular auctions. One who books the puts at the notes'
+  own coupons, the rate the government stopped paying, credits the notes with a fall and names syndications again, at the same 2.67×.
+  Neither half names the notes.
 * **Grid.** Reconstruction (coupon, first-auction yield, amount-weighted) × attribution (class, issuing programme, financing need) = 9
   cells. Only amount-weighted yields with need-based attribution names the notes. Under the coupon construction, bills lead every
   attribution.
@@ -146,9 +147,9 @@ contributions and the winning margin + 5 named chart parts + 3 files ≈ 67 crit
 ## 12. World-building constraints
 
 * Marketable debt is €1.9T at a 2.0% average before the peak, and the rise over the window is 40 bp. True contributions are Citizen Notes
-  16, regular rollover 9, syndications 8, linkers 4 and bills 3.
-* Citizen Note puts total €150B over eight months, across five of six series, and are refinanced through syndications at about 4.2%.
+  19, regular rollover 9, syndications 5, linkers 4 and bills 3.
+* Citizen Note puts total €175B over eight months, across five of six series, and are refinanced through syndications at about 4.25%.
 * Every pilot series kept its coupon above the market yield, with zero puts.
 * M+4 and M+7 are identical on every column of the monthly report except the €26B syndication.
-* Rung leaders are bills, regular rollover, syndications and Citizen Notes, with margins of at least 1.78.
+* Rung leaders are bills, regular rollover, syndications and Citizen Notes, with margins of at least 2.00.
 * Central-bank rollover flags and sweep postings never touch outstanding, yields or retail statements.

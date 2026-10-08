@@ -57,9 +57,9 @@ of the old ship's in-scope burn on fuel oil. On MN4, which calls at both supply 
   and MN4 keeps 0.961, an edge of 2.85×, above 1.2 × 1.63 = 1.96.
 * **The deciding comparison (#20).** For MN4, 46.0 kt replaced against 1.8 kt still burned. For AE2, 58.0 against 24.9. For TA3, 75.0
   against 49.7. The note has to state these. Replaced-ship emissions alone never decide.
-* **Partial correction priced (L3).** A solver who takes the overlap's own ratio (the newbuild emitted 0.337 of its sisters' in-scope CO2
-  on TA3) and applies it to every string still names TA3. A solver who gives the newbuild clean running on any string that calls at a
-  supply port also names TA3.
+* **Partial correction priced (L3).** Every half-applied netting names TA3. Taking the overlap's own ratio (the newbuild emitted 0.337 of
+  its sisters' in-scope CO2 on TA3) and applying it to every string gives TA3 25.3 kt against AM1's 20.9 (1.21×), with MN4 4th at 15.5.
+  Giving the newbuild clean running on any string that calls at a supply port gives TA3 75.0 against AE2's 58.0 (1.29×), with MN4 3rd.
 * **Grid.** Voyage classes (report split, scheme list) × build (ship-year, string rotation) × newbuild fuel (clean, overlap ratio, leg
   sequence) = 12 cells. Every non-answer cell names AE2, AM1, TA3 or CF1. The nearest is the scheme list with the leg sequence but no
   rotation rebuild, led by AE2 at 1.15× over MN4.

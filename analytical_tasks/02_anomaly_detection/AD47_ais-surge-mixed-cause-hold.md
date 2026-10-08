@@ -39,7 +39,7 @@ episode. Customer success wants a jamming warning out this week.
 A strong solver starts from the common-mode test (ten or more ships jumping in one half-degree cell in one hour) and finds interference at
 71%. It then sees that a validly formatted identity can be two ships, finds them by joining position messages to static messages where the
 ship's registry number alternates within a day, attributes their alerts first and finds shared identities at 56%. Or it applies the
-kinematic gap test first (a long message gap with a plausible speed over it) and finds gaps at 52%. Each order is defensible, each commits,
+kinematic gap test first (a long message gap with a plausible speed over it) and finds gaps at 58%. Each order is defensible, each commits,
 and each assigns the overlap to whatever runs first: jammed ships lose messages, so they also fail the gap test, and shared identities crowd
 busy approaches, so they also pass the common-mode test. The pilotage invoices settle the overlap: a pilot boarded a known ship at a known
 point and minute, so an alert on that ship near that minute is a displacement, another ship's position, or a coverage gap. Only one order
@@ -51,15 +51,19 @@ reproduces all 412 ledger-checked alerts, and on it nothing reaches half.
 |---|---|---|---|---|
 | 0 | Common-mode cell-hour test first, then concurrent kinematic tracks, then gaps: interference 71%, shared identities 18%, gaps 11% | Interference: issue the jamming warning | The industry's standard common-mode test | The static messages: 3% of validly formatted identities alternate between two registry numbers within a day and carry 35% of alerts |
 | 1 | Identities first (shared identities found through the static-message join), then common-mode, then gaps: shared identities 56%, interference 33%, gaps 11% | Shared identities: issue the data-quality notice | The validity flag fails 3% of identities, and identity before kinematics is the textbook order | The ledger: 61 of the alerts this order calls shared identity are on piloted ships whose AIS position sat exactly on a displaced track at boarding |
-| 2 | Kinematic gap test first, then identities, then common-mode: gaps 52%, shared identities 27%, interference 21% | Reception gaps: issue the coverage notice | Long gaps with plausible speeds are the cheapest explanation | The ledger: piloted ships whose alerts follow a dropout inside a jammed cell-hour were displaced, not merely unheard |
+| 2 | Kinematic gap test first, then identities, then common-mode: gaps 58%, shared identities 24%, interference 18% | Reception gaps: issue the coverage notice | Long gaps with plausible speeds are the cheapest explanation | The ledger: piloted ships whose alerts follow a dropout inside a jammed cell-hour were displaced, not merely unheard |
 | 3 | **Decisive:** the order that reproduces all 412 ledger-checked alerts (common-mode on single-ship identities, then shared identities outside jammed cell-hours, then gaps outside them) | **Hold: a mixed surge, no cause notice; the largest share is interference at 46%** | — | — |
 
 * **The blocking quantity.** On the only reproducing attribution, interference holds 46% of the 40,000 alerts, 4 points below the policy's
   majority line; shared identities hold 35% and gaps 19%. Every cause fails the same standard, each by a stated margin.
-* **Partial correction priced (L3).** A solver who uses the ledger only to check interference, and keeps the identity-first order for the
-  rest, gets interference 38% and shared identities 51% and issues the data-quality notice: a named cause, not the hold.
-* **Grid.** Attribution order (six orders) × identity population (validity flag or static join) = 12 partitions. Eleven name a majority cause
-  between 51% and 71%; only the ledger-reproducing order with the static join leaves the largest share below half.
+* **Partial correction priced (L3).** A solver who uses the ledger to choose among the textbook orders, instead of building the order it
+  implies, takes the identity-first order (288 of 412, the best of the three) and issues the data-quality notice on shared identities at
+  56%, 6 points over the line. A solver who builds the reproducing order but finds shared identities through the validity flag sees almost
+  none of them, lets interference claim their approaches, and issues the jamming warning at 74%. Both name a cause, not the hold.
+* **Grid.** Attribution order (the six simple orders and the ledger-reproducing one) × identity population (validity flag or static join) =
+  14 partitions. Every simple order hands the overlap to its first test and names that cause at 56% to 75%; the reproducing order with the
+  validity flag names interference at 74%; only the reproducing order with the static join leaves the largest share below half. The
+  nearest wrong cell, identity-first with the static join, sits 10 points above the answer's 46%.
 * **Falsifiable.** Interference would have been named, and the warning issued, with about 1,600 more interference alerts (4 points of share),
   or had the ledger shown the contested approach cell-hours as displaced rather than shared.
 
@@ -143,7 +147,8 @@ falsifiability margin + 5 named chart parts + 3 files ≈ 52 criteria.
 
 ## 12. World-building constraints
 
-* 40,000 alerts. Partitions: 71/18/11, 33/56/11, 21/27/52 and the reproducing 46/35/19 (interference/shared/gaps).
+* 40,000 alerts. Partitions: 71/18/11, 33/56/11, 18/24/58 and the reproducing 46/35/19 (interference/shared/gaps); the reproducing order
+  with the validity flag gives interference 74%. No non-answer partition has a largest share under 56%.
 * Shared identities: 3% of validly formatted identities, carrying 35% of alerts on the reproducing order.
 * The ledger: 1,150 jobs, 412 alerts within ten minutes of boarding; reproduction 412 / 288 / 263 / 241.
 * The twin approach cell-hours are identical on every alert and traffic column.

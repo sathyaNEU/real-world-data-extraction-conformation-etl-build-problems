@@ -125,7 +125,7 @@ the 80% band is ±87%. Its lower edge is 1,600 pallets of overflow, and the firs
 > sure the rush stock will keep us full into spring. Tell me how many blocks to take up, if any, in one line I can send the landlord, and
 > send `overflow_case.xlsx` with the build and the sheets below, a chart `peak_overflow_band.png`, and a one-page `option_note.pdf`.
 
-* `overflow_case.xlsx` — the forecast and the policy test under each band, the dwell sheet (ask A) and the demurrage sheet (ask B).
+* `overflow_case.xlsx` — the forecast and the policy test under each band, the dock-time sheet (ask A) and the put-away sheet (ask B).
 * `peak_overflow_band.png` — monthly pallet stock from August to June against the 40,000-position capacity line, the payback forecast
   with both the residual band and the post-rush band shaded, the first block's 3,000-pallet threshold drawn above capacity, and the
   January lower edge annotated with the decision.
@@ -133,20 +133,22 @@ the 80% band is ±87%. Its lower edge is 1,600 pallets of overflow, and the firs
 
 ## 10. The ask layer
 
-* **Ask A (device-carried, decoupled).** For each of the eight largest existing customers, the mean dwell of their pallets in each quarter
-  of the last year. *Device:* a pallet moved between the operator's buildings keeps its original receipt date in the transfer log, while
-  the receiving building's record starts a new one, as the warehouse system guide documents; dwell from building records understates it
-  for four customers. Transfers move no pallet in or out of the network, so stock is unchanged.
-* **Ask B (device-carried).** For each of the eight, the share of last quarter's inbound containers that ran past their free time at each
-  of the two terminals. *Device:* free-time extensions granted by a terminal are issued as separate notices, as the terminal tariff notes
-  document; reading the original free-time date flags extended containers as late at both terminals.
+* **Ask A (device-carried, decoupled).** For each of the eight largest existing customers and each month of last quarter, the share of
+  inbound containers received at the dock within 48 hours of leaving the terminal gate. *Device:* terminal gate-out events arrive from the
+  terminals' feed stamped in UTC, while dock receipts are stamped in Pacific local time, as the integration guide documents; differencing
+  the raw stamps drops seven or eight hours and moves containers across the 48-hour line for five customers. No receipt, pallet or TEU
+  count changes.
+* **Ask B (device-carried).** For each of the eight and each month of last quarter, the pallets put away into storage. *Device:* a
+  cross-docked pallet is written to the receiving table like any receipt and leaves the same day, with its cross-dock status held in the
+  dock-appointment table, as the warehouse system guide documents; counting every receipt as a put-away overstates storage receipts for
+  three customers. A cross-docked pallet never holds a position at a month-end, so the stock counts the forecast uses are unchanged.
 * **Ask C (validity).** The block count each rung's construction takes, its lower edge, and the coverage of each band method on the 24
   post-rush customer-episodes.
 * **Decoupling.** Clearing the post-rush band changes no figure in asks A or B.
 
 ## 11. Rubric arithmetic
 
-8 customers × 4 quarters (ask A) + 8 × 2 terminals (ask B) + 4 constructions × 3 (ask C) + the committed hold, the lower edge, the point
+8 customers × 3 months (ask A) + 8 × 3 months (ask B) + 4 constructions × 3 (ask C) + the committed hold, the lower edge, the point
 forecast and the falsifying threshold + 5 named chart parts + 3 files ≈ 72 criteria.
 
 ## 12. World-building constraints
@@ -158,4 +160,4 @@ forecast and the falsifying threshold + 5 named chart parts + 3 files ≈ 72 cri
   model's errors stay within ±17%.
 * The rush is led by furniture and appliance customers at 1.6 times the book's average pallets per TEU.
 * The twin customers are identical on rush TEU, bookings and pallets per TEU.
-* Building transfers and free-time extensions touch no pallet count, TEU or booking used in the forecast.
+* Timestamp zones and cross-docked pallets touch no month-end pallet count, TEU or booking used in the forecast.

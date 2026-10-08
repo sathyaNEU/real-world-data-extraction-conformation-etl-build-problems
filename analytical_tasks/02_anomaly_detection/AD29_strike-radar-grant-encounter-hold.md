@@ -58,9 +58,9 @@ before its inspection date (or keeping it as its own encounter where none exists
 * **The blocking quantity.** On encounters, the best lower 90% bound across the six airports is C's, at −0.08 damaging encounters per
   100,000 movements per year, 0.08 below the rule's zero line. The others sit at A −0.31, B −0.22, D −0.15, E −0.12 and F −0.27, so every
   candidate fails on the same standard.
-* **Partial correction priced (L3).** A solver who sees the shop reports and drops them as a reporter-type filter clears C and funds E (lower
-  bound +0.06): E's crew reports rose while its shop-only encounters fell as the carrier moved maintenance away, so the filter fails in
-  both directions and lands on a new name rather than on the hold.
+* **Partial correction priced (L3).** A solver who sees the shop reports and drops them as a reporter-type filter clears C and funds E, at a
+  lower bound of +0.14, 0.14 above the line, with the next best (D) at −0.02: E's crew reports rose while its shop-only encounters fell as
+  the carrier moved maintenance away, so the filter fails in both directions and lands on a new name rather than on the hold.
 * **Grid.** Damage basis (all strikes, raw damaging, calibrated damaging) × unit (reports, shop reports dropped, encounters) = 9 cells.
   Every cell but (calibrated, encounters) commits to A, B, C or E with a positive bound; only that cell holds.
 * **Falsifiable.** C would have qualified with a trend 0.08 higher, about seven more damaging encounters over the last four years, or with
@@ -150,6 +150,6 @@ line and the national trend + 5 named chart parts + 3 files ≈ 60 criteria.
 * Rung leaders A, B, C commit with lower bounds +0.62, +0.37 and +0.21; on encounters every airport's bound is negative, the best C at −0.08.
 * C's share of damaging encounters inspected at its own base rises smoothly from 8% (2018) to 61% (2025). Elsewhere 40% of shop reports
   are shop-only encounters.
-* E's crew reports rise while its shop-only encounters fall, so the reporter-type filter funds E at +0.06.
+* E's crew reports rise while its shop-only encounters fall, so the reporter-type filter funds E at +0.14, with D next at −0.02.
 * The nine overlap airports host no maintenance base. C and D are identical on every report-level column in 2025.
 * Inspection records and closure notices never touch the strike database or the movement counts.

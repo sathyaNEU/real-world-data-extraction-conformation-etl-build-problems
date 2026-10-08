@@ -50,7 +50,7 @@ on some weekday mornings, four of them at complexes whose own average stays unde
 | Rung | Construction | Lands on (shifts per week) | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Complex peak from the dashboard's pooled weekday average, against summed platform capacity, over the platforms the station register flags in service | 30 (−48%) | The audited dashboard and the standard's threshold, applied station by station | The hand counts: Tuesday–Thursday mornings run 14% above the pooled weekday, Mondays and Fridays 19% below |
-| 1 | Complex peak by day type (Monday, Tuesday–Thursday, Friday) | 41 (−29%) | Hybrid-aware and confirmed by the hand counts' day-type levels at single-platform stations | The service-change register closes Ferrier Street's two downtown platforms from 1 March to 30 June and routes their riders to Halden Road and Marsh Gate, though the station register still flags them in service |
+| 1 | Complex peak by day type (Monday, Tuesday–Thursday, Friday) | 41 (−29%) | Hybrid-aware and confirmed by the hand counts' day-type levels at single-platform stations | The service-change register closes Ferrier Street's two downtown platforms from 1 March to 30 June and routes their riders to Hollins Road and Marsh Gate, though the station register still flags them in service |
 | 2 | Day-typed complex peaks over the platforms the register puts in service, with Ferrier Street's riders diverted | 47 (−19%) | The population is the one the register puts in service on the pick's dates, not the one the flag suggests | The hand counts at multi-line complexes: complex loads shared out reproduce only 29 of 60 counted platform-mornings |
 | 3 | **Decisive:** platform loads built from array entries through the engineering map plus in-system transfers from the census, day-typed and over the platforms in service | **58** | — | — |
 
@@ -157,7 +157,7 @@ and the four platforms at under-threshold complexes + 5 named chart parts + 3 fi
 * 23 platforms need conductors on some weekday mornings; four sit at complexes whose day-typed average stays under 85%.
 * Hand counts: 60 platform-mornings, 44 at single-platform stations; reproduction 60 / 46 / 38 / 29 as above.
 * Ferrier Street's two downtown platforms close from 1 March to 30 June; the station register's flag still reads in service. They sit
-  below the threshold even when open, and their diverted riders push three platforms at Halden Road and Marsh Gate over it on Tuesday to
+  below the threshold even when open, and their diverted riders push three platforms at Hollins Road and Marsh Gate over it on Tuesday to
   Thursday mornings.
 * The twin complexes are identical on every device, capacity and departure column.
 * Fare caps, zero-fare transfers and lift outages touch no entry count or platform load.

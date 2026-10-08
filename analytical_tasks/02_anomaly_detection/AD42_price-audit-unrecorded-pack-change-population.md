@@ -57,14 +57,16 @@ outlet and product, joined back to the quotes.
 
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.24×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.21×, 1.27×, 1.24× and 1.75×.
-* **Discriminator dominance.** C carries a 1.24× advantage into rung 3. E's error rises 2.17× when unrecorded pack changes are counted while
-  C's is unchanged (no cereal line changed quantity), so the net is 2.17 / 1.24 = 1.75×.
+* **Discriminator dominance.** C carries a 1.24× advantage into rung 3, so the required edge is 1.2 × 1.24 = 1.49×. E's error rises 2.17×
+  when unrecorded pack changes are counted while C's is unchanged (no cereal line changed quantity), an edge 1.46× the requirement, and the
+  net is 2.17 / 1.24 = 1.75×.
 * **Partial correction priced (L3).** A solver who finds the barcode changes but dates every outlet's switch at the manufacturer's launch date
-  marks quotes non-comparable before outlets had sold through old stock and names D, whose launches were early and sell-through slow: a new
-  wrong name, further from E than rung 2.
+  marks quotes non-comparable before outlets had sold through old stock, books a quantity cut that had not reached the shelf, and names D,
+  whose launches were early and sell-through slow: D 7.9 against E's 6.5 (1.22×). A solver who dates switches by first sale but matches on
+  shop codes loses the re-coded chain, which holds 70% of E's unrecorded changes, and names B, 3.8 against E's 3.1 (1.23×).
 * **Grid.** Screen (level or relative) × outlet unit (shop code or linked) × comparable population (indicator, launch date, outlet first
-  sale) = 12 cells. Level cells name A; relative cells name B or C under the indicator, D under launch dates, and E only with linked outlets and
-  first-sale dates.
+  sale) = 12 cells. Level cells name A; relative cells on shop codes name B under the indicator and first-sale dates and D under launch
+  dates; relative cells on linked outlets name C under the indicator, D under launch dates, and E only with first-sale dates.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -143,7 +145,8 @@ margin + 5 named chart parts + 3 files ≈ 66 criteria.
 
 * Rung figures as in the ladder; E is 5th, 4th, 2nd (1.24× behind C) and 1st.
 * Eleven confectionery lines cut 5–10% at unchanged prices; 1,900 quotes collected after their outlet's switch, all marked comparable. No
-  cereal line changed quantity; D's changes launched early and sold through slowly.
+  cereal line changed quantity; D's changes launched early and sold through slowly. 70% of E's unrecorded-change quotes sit in the
+  chain re-coded in March. Launch dating gives D 7.9 and E 6.5; first-sale dating on shop codes gives B 3.8 and E 3.1.
 * 140 outlets re-coded in March, linked one to one in the shop register.
 * The eight audits fall outside every launch season.
 * Timesheets and product descriptions never touch quote prices, indicators, registers or scanner sales.

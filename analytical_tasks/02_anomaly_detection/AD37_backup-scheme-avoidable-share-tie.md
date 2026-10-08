@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with binding_constraint support |
 | Measured traps engaged | #19 breaks a big tie instead of questioning it · #20 leaves the deciding comparison unstated · #4 never tests its reading against the control |
 | Calibration form | Settled-transaction ledger: the settled SLA-credit and compute-charge ledgers from last half's pilot of backups on two other families |
-| Driving force | Four families tie at 1.00 on the share of their SLA credits that backups would avoid, because every one of their late jobs carried a straggler. The capacity policy states shares at the lowest value consistent with every file of record, and the dependency log is one: in C and D most late jobs received their inputs too late to finish on time even with no straggler. Building each late job's counterfactual finish (input landing, then every stage at its sibling-median speed) breaks the tie: F stays at 1.00 and E falls only to 0.93, while D drops to 0.38 and C to 0.31, and the policy's own tie-break would have spent the cap on C and D. |
+| Driving force | Four families tie at 1.00 on the share of their SLA credits that backups would avoid, because every one of their late jobs carried a straggler. The capacity policy states shares at the lowest value consistent with every file of record, and the dependency log is one: in D most late jobs received their inputs too late to finish on time even with no straggler. Building each late job's counterfactual finish (input landing, then every stage at its sibling-median speed) breaks the tie: F stays at 1.00 and E falls only to 0.93, while D drops to 0.38, and C, at 0.97, still costs more in GPU backups than it saves. The policy's own tie-break would have spent the cap on D. |
 
 ## 1. Situation
 
@@ -42,7 +42,7 @@ A strong solver drops credits paid (A's and B's late jobs barely carry straggler
 time, computes avoidable shares, sets avoidable credits against backup charges as the policy requires, removes C for costing more than it
 saves on GPU instances, and lets the documented tie-break pick D and E from the remaining tie at 1.00. Every step is correct, and the tie
 is the tell. A share of 1.00 says every late job with a straggler would have made its deadline had the straggler been rescued, which holds
-only if the job could have finished on time at all. The dependency log records when each job's inputs landed, and for most of C's and D's
+only if the job could have finished on time at all. The dependency log records when each job's inputs landed, and for most of D's
 late jobs that was after the latest start that could still meet the deadline at sibling-median speed. The lowest share consistent with the
 dependency log, the instance tables and the SLA register is a counterfactual per late job, and it leaves only F at 1.00.
 
@@ -53,19 +53,19 @@ dependency log, the instance tables and the SLA register is a counterfactual per
 | 0 | Credits paid last half ($k): A 900, B 760, C 610, D 520, E 430, F 380; the two largest within the cap | {A, B} | Money lost is money to win back | The policy ranks by avoidable share, and only 120 of A's and 150 of B's credits sit on jobs with a straggler |
 | 1 | Avoidable share with every straggler-job credit counted (A 0.62, B 0.71, C to F all 1.00), tie broken by credits at risk | {C, D} | The policy's ranking and its written tie-break | The deciding comparison: C's backups run on GPU instances and cost $610k against $560k avoided |
 | 2 | The same shares with the policy's charge test stated (C fails), tie among D, E, F broken by credits at risk | {D, E} | Ranked, charge-tested and tie-broken exactly as written | The dependency log: most of D's late jobs received their inputs after the latest start that could still meet the deadline |
-| 3 | **Decisive:** each late job's counterfactual finish (input landing, then every stage at sibling-median speed) against its deadline; shares C 0.31, D 0.38, E 0.93, F 1.00 | **{E, F}, saving $651k net** | — | — |
+| 3 | **Decisive:** each late job's counterfactual finish (input landing, then every stage at sibling-median speed) against its deadline; shares C 0.97 (out on its charges), D 0.38, E 0.93, F 1.00 | **{E, F}, saving $651k net** | — | — |
 
 * **Structure table.** Four different admission lists. The answer appears on no lower rung, and its net saving ($331k from E and $320k from F)
   is computed only at rung 3.
-* **Separation at the decisive rung.** The tie at 1.00 becomes F 1.00, E 0.93, D 0.38, C 0.31: E leads D by 2.45× on the policy's ranking basis
-  where rung 2 had them level, and D's avoidable credits fall to $182k against E's $381k.
+* **Separation at the decisive rung.** The tie at 1.00 becomes F 1.00, C 0.97, E 0.93, D 0.38. C stays out on the charge test, and E leads D
+  by 2.45× on the policy's ranking basis where rung 2 had them level, and D's avoidable credits fall to $182k against E's $381k.
 * **Partial correction priced (L3).** A solver who sees late inputs but removes only jobs whose inputs landed after the deadline itself (not
-  after the latest feasible start) gets shares C 0.84, D 0.98, E 0.95, F 1.00, because most of D's input-bound jobs land between the two
+  after the latest feasible start) gets shares C 0.99, D 0.98, E 0.95, F 1.00, because most of D's input-bound jobs land between the two
   times, and admits {F, D} with a net of $730k: a wrong list and a figure 12% above the answer's. A solver who breaks the naive
   tie by job count instead of credits also admits {D, F}.
 * **Grid.** Ranking basis (credits paid or share) × charge test (unstated or stated) × shares (naive or counterfactual) = 8 cells. Credits-paid
-  cells name {A, B}; naive-share cells name {C, D} or {D, E}; counterfactual cells name {E, F}, and only with the charge test and the
-  counterfactual does the net figure come out at $651k.
+  cells name {A, B}; naive-share cells name {C, D} or {D, E}; counterfactual cells name {C, F} without the charge test (C's 0.97
+  outranks E's 0.93) and {E, F} with it, so only the charge test with the counterfactual names the answer, at $651k net.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -79,7 +79,7 @@ dependency log, the instance tables and the SLA register is a counterfactual per
 4. **Not a row predicate.** Each late job's counterfactual needs its input landing time from the dependency log, its stage structure, the
    sibling-median duration of every stage, and its deadline, combined into a finish time per job across 2,300 late jobs.
 5. **The enumeration is arithmetic.** Which late jobs a backup could have saved is computed; no column says so.
-6. **No cutover date.** Input-bound lateness is a standing property of C's and D's upstream sources; no series steps.
+6. **No cutover date.** Input-bound lateness is a standing property of D's upstream sources; no series steps.
 7. **Survives deletion.** Remove the scheduler team's view and the totals, and the tie-broken build is still the natural one.
 
 ## 6. The calibration corpus
@@ -145,7 +145,7 @@ the admitted families + 5 named chart parts + 3 files ≈ 60 criteria.
 ## 12. World-building constraints
 
 * Credits paid A 900, B 760, C 610, D 520, E 430, F 380; on straggler jobs 120, 150, 560, 480, 410, 360; charges 70, 80, 610, 60, 50, 40 ($k).
-* Extra instances A 2.4%, B 2.5%, C 2.6%, D 2.2%, E 1.9%, F 1.7%. Counterfactual shares C 0.31, D 0.38, E 0.93, F 1.00.
+* Extra instances A 2.4%, B 2.5%, C 2.6%, D 2.2%, E 1.9%, F 1.7%. Counterfactual shares C 0.97, D 0.38, E 0.93, F 1.00.
 * The pilot families' inputs always land two or more hours early; their settled results match the naive share within 2%.
 * D-07 and E-12 are identical on every instance-level column.
 * Queue history and storage metrics never touch instances, the dependency log, the SLA register or the pilot ledgers.

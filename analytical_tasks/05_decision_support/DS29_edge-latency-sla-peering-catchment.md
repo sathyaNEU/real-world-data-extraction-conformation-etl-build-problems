@@ -39,8 +39,9 @@ A strong solver ignores the probe average, weights by user requests as the SLA s
 with each candidate added, and takes the request-weighted 95th percentile. That beats the decoy the planning team fell for, and it names C
 at 51 ms. But the CDN announces one anycast prefix everywhere, and a user's network decides which site its packets reach. A network that
 peers with the CDN at the new site sends its users there. One that reaches the CDN through a transit provider keeps the route that
-provider already prefers. The trial at C shows it without exception: every beacon from a network peering at C's exchange was served at C,
-and no beacon from any other network was. The tail of the APAC distribution is mobile users on three large networks, and they peer at D's
+provider already prefers. The trial at C shows it without exception: every beacon from a network on C's exchange route server, where the
+trial site peered, was served at C, and no beacon from any other network was, including the exchange's members that peer only off the
+route server. The tail of the APAC distribution is mobile users on three large networks, and they peer at D's
 exchange, not at C's. A new site at C reaches 41% of the users nearest-site assignment gives it; at D the figure is 88%.
 
 ## 4. The ladder
@@ -50,29 +51,31 @@ exchange, not at C's. A new site at C reaches 41% of the users nearest-site assi
 | 0 | Probe-weighted mean latency reduction picks the city; p95 over probes, nearest-site service | A; 46 ms (−22.0%) | The planning team's established method on the measurement network everyone uses | The SLA schedule defines the measure as the request-weighted 95th percentile over users |
 | 1 | User weighting, then the planning memo's coverage score (countries whose median falls within 60 ms); B, C and D all reach 14 of 14, and the memo's tie-break (cheaper colocation) picks B | B; 53 ms (−10.2%) | The memo's own score and tie-break, now on the right population | The SLA's measure is the 95th percentile, not the median; ranked on it, the tie breaks to C |
 | 2 | Request-weighted p95 with each candidate added and every user on the nearest site | C; 51 ms (−13.6%) | Exactly the SLA's measure, with the right weights and the best city | The trial log: beacons from networks without a peering session at C's exchange never reached C |
-| 3 | **Decisive:** each network moves to a candidate only if it peers at that city's exchange; everyone else keeps today's serving PoP; p95 recomputed per candidate | **D; 59 ms** | — | — |
+| 3 | **Decisive:** each network moves to a candidate only if it is on that city's exchange route server; everyone else keeps today's serving PoP; p95 recomputed per candidate | **D; 59 ms** | — | — |
 
 * **Figure shape.** The natural stops land 10% to 22% below the answer. The partial applications (below) land above it, so the answer is
   bracketed, with no cell within 8%.
-* **Partial correction priced (L3).** A solver who applies the peering rule but keeps rung 2's city files 64 ms for C (+8.5%). One who
-  applies it to the tie-broken city files 67 ms for B (+13.6%). One who picks D on peering but then assigns D's users by distance files
-  52 ms (−11.9%). Half the insight is no nearer than rung 1.
-* **Grid.** Weighting (probe, request) × city rule (mean, coverage tie-break, p95) × assignment (nearest site, peering) = 12 cells. Only
-  request weighting, the p95 and peering give 59 ms with D. The nearest wrong cell is 64 ms (+8.5%), which needs the peering rule applied
-  to a city chosen without it.
+* **Partial correction priced (L3).** No half-applied construction names D. A solver who applies the peering rule but keeps rung 2's city
+  files 64 ms for C (+8.5%), and one who applies it to the tie-broken city files 67 ms for B (+13.6%). A solver who builds catchment from
+  the exchange member lists but counts every member, not only those on the route server, credits C with 21 networks that never reached the
+  trial site and names C at 53 ms (−10.2%), 1.11× ahead of D, whose exchange has no members off its route server and stays at 59 ms.
+* **Grid.** Assignment (nearest site, exchange membership, route-server peering) × city rule (probe mean, coverage tie-break, request p95),
+  request-weighted, = 9 cells, plus the cell that fixes C by distance and then prices it under peering. Only route-server peering with the
+  p95 gives D and 59 ms. The other cells name A, B or C at 51 to 67 ms, and the nearest are 53 and 54 ms (−10.2%, −8.5%) and 64 ms (+8.5%).
 * **Which guard binds.** Under nearest-site assignment C and D sit 1 ms apart (51 against 52), a thin city margin that is harmless:
   either city by distance files 51–52 ms, 12–14% below the answer. For a figure graded to the millisecond the separation floor is the
   guard that binds. What the decisive rung must do is move the figure, and it does: peering gives D 88% of its nearest-site users and C
-  41%, a 2.15× edge, which carries C to 64 ms and D to 59 ms.
+  41%, a 2.15× edge against a required 1.2 × 1.02 = 1.22 (1.59 with headroom), which carries C to 64 ms and D to 59 ms.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The routing note says the prefix is announced at every PoP. The peering register lists sessions. No document says
    which users a new site will serve.
-2. **The control pins it, and nothing else in the pack does.** In the trial log the peering rule reproduces the serving PoP of 1,912,400
-   of 1,912,400 beacons. Nearest-site assignment reproduces 41% of the beacons it sends to C, and every miss runs the same way (users
-   credited to C who never arrived), so it fails on the totals as well. The rule is a construction: client networks from the beacons,
-   joined to each city's exchange membership, then today's serving PoP for every network that does not peer.
+2. **The control pins it, and nothing else in the pack does.** In the trial log the route-server rule reproduces the serving PoP of
+   1,912,400 of 1,912,400 beacons. Nearest-site assignment reproduces 41% of the beacons it sends to C, and every miss runs the same way
+   (users credited to C who never arrived), so it fails on the totals as well; counting every exchange member misses the 21 members off
+   the route server. The rule is a construction: client networks from the beacons, joined to each city's member list and its route-server
+   column, then today's serving PoP for every network that is not on it.
 3. **No arithmetic symptom.** Beacons, probes, sessions and request counts reconcile on every rung, and the nearest-site model fits
    today's served RTTs, because today every network already reaches a PoP it peers at or its transit prefers.
 4. **Not a row predicate.** Catchment needs the client network of each request, a join to each candidate's exchange membership, and a
@@ -85,8 +88,8 @@ exchange, not at C's. A new site at C reaches 41% of the users nearest-site assi
 
 * **Form.** The trial log: six weeks of real-user beacons from the 14 countries, each with client network, serving PoP and RTT, while a
   temporary PoP ran in city C.
-* **What it pins.** The peering rule (above), absolutely: 100% of beacons from the 37 networks peering at C's exchange were served at C,
-  and 0% of beacons from the other 212 networks, whatever their RTT to C.
+* **What it pins.** The peering rule (above), absolutely: 100% of beacons from the 37 networks on C's exchange route server were served
+  at C, and 0% of beacons from the other 212 networks, whatever their RTT to C, the 21 exchange members off the route server among them.
 * **What it does not show.** How D's exchange would draw. D's catchment has to be built from D's membership list.
 * **Twin pair.** Two networks in the same country carry the same request share (2.4%), the same probe count and the same median probe RTT
   to C (19 ms). In the trial one was served at 38 ms at the 95th percentile and the other at 77 ms (2.0×): the first peers at C's
@@ -100,7 +103,8 @@ exchange, not at C's. A new site at C reaches 41% of the users nearest-site assi
   network-country cell's RTT taken as the median of its beacons, rounded to the whole millisecond. The capacity plan: one new PoP this
   quarter, from cities A–D. The planning memo: candidates are scored on countries whose median falls within 60 ms, with ties going to the
   cheaper colocation.
-* **Empirical pins.** Catchment by peering, from the trial log. Each network's RTT to a candidate, from probes in that network.
+* **Empirical pins.** Catchment by route-server peering, from the trial log and the exchange member lists, each with a route-server
+  column. Each network's RTT to a candidate, from probes in that network.
 * **Voices.** The head of network planning: "Averages over thousands of probes don't lie." The peering manager: "Every network that
   matters can reach us anywhere." The sales director: "Customers buy the number on the page."
 * **Licensed wrong basis.** The planning memo records that the infrastructure council reviews the build on its coverage score and will
@@ -150,11 +154,12 @@ and its margin to 60 ms + 5 named chart parts + 3 files ≈ 98 criteria.
 
 ## 12. World-building constraints
 
-* Rung figures 46 / 53 / 51 / 59 ms (−22.0%, −10.2%, −13.6%, answer). Partial cells: C with peering 64 ms, B with peering 67 ms, D by
-  distance 52 ms. No cell of the 12 sits within 8% of 59 ms.
+* Rung figures 46 / 53 / 51 / 59 ms (−22.0%, −10.2%, −13.6%, answer). Request-weighted p95 by assignment: nearest site A 54, B 53, C 51,
+  D 52; membership A 65, B 65, C 53, D 59; route-server peering A 66, B 67, C 64, D 59. No cell a construction files sits within 8% of
+  59 ms. C's exchange has 58 members, 37 on the route server; every member of D's exchange is on its route server.
 * Trial log: 1,912,400 beacons; 37 networks peer at C's exchange (100% served at C), 212 do not (0%). Three mobile networks carry 31% of
   tier requests, sit in the slowest decile today and peer at D's exchange but not at C's.
-* Coverage score: B, C and D reach 14 of 14; A reaches 13. B's colocation is cheapest.
+* Coverage score: B, C and D reach 14 of 14 under every assignment; A reaches 13. B's colocation is cheapest.
 * Today every network's serving PoP is also its lowest-RTT existing PoP, so nearest-site assignment reproduces today's served RTTs exactly
   and only the trial log separates the two rules.
 * The twin networks match on every probe and request column.

@@ -42,8 +42,8 @@ the base model, because that is how the vendor's case and the obvious test are s
 which ranks bureau over transactions over telco. Its method reproduces that ranking. But the policy's test is every figure, and the
 scorecard holds 18 segment cells. Measuring each production source on top of the base model reproduces 7 of them, every miss too high. Only
 measuring each source as the value it adds to the other two, re-deciding the holdout with and without it, reproduces all 18. Under that
-construction the feed adds little in thick-file segments, where the bureau already carries repayment behaviour, and most where applicants
-have no bureau file at all.
+construction the feed adds little in thick-file segments, where the bureau and the transaction data between them already carry repayment
+behaviour, and most where applicants have no bureau file at all.
 
 ## 4. The ladder
 
@@ -59,12 +59,16 @@ have no bureau file at all.
 * **Position table.** Branch thin, the segment that enters only at rung 3, is 5th of six on rung 0, 3rd funded on rung 1 and unfunded on
   rung 2. Branch thick, funded at rungs 1 and 2, leaves.
 * **Discriminator dominance.** Branch thick carries a 1.18× net-value advantage over branch thin into rung 3 ($2.30 against $1.95 a pull).
-  Measured as added value, branch thin is worth $1.60 and branch thick $0.40, an edge of 4.0×, more than 1.2 × 1.18 = 1.42.
-* **Partial correction priced (L3).** A solver who measures added value but keeps last year's partner mix funds the same three segments for
-  $1.28M (−35%): the right segments on a figure that misses the partner's growth. One who measures the feed's value added to the bureau
-  alone, ignoring the transaction and telco sources, funds partner, online thin and branch thick for $2.58M (+32%).
+  Measured as added value, branch thin is worth $1.60 and branch thick $0.40: branch thin keeps 0.82 of its value and branch thick 0.17,
+  an edge of 4.7×, against the required 1.2 × 1.18 = 1.42 and well past the 1.84 that headroom asks.
+* **Partial correction priced (L3).** No half-applied construction funds the answer's three. A solver who measures added value but keeps
+  last year's partner mix, 15% new to the country, finds the partner worth $0.25 a pull and funds online thin, branch thin and branch
+  thick for $1.19M (−39%): branch thick's $0.40 leads the partner by 1.6×. One who measures the feed's value added to the bureau alone,
+  ignoring the transaction and telco sources, funds partner, branch thick and online thin for $2.74M (+40%), with branch thick at $2.10 a
+  pull, 1.31× over branch thin.
 * **Grid.** Value (AUC, standalone, added to bureau only, added to all three) × mix (last year, next year) = 8 cells. Only added-to-all on
-  next year's mix gives $1.96M; the nearest other figure is $2.25M (+15%), added to the bureau alone on last year's mix.
+  next year's mix funds partner, online thin and branch thin, for $1.96M; the nearest other figure is $2.15M (+10%), added to the bureau
+  alone on last year's mix, which funds branch thick, online thin and branch thin.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -108,7 +112,8 @@ have no bureau file at all.
 ## 8. Determinism by construction
 
 * **Models.** Model specification, seeds and calibration are filed, and the scorecard reproduces to the cent only under them; implementation
-  differences move no segment's value by more than $0.03 a pull, against a smallest funding margin of $0.35.
+  differences move no segment's value by more than $0.03 a pull, against a smallest funding margin of $1.20 (branch thin over branch
+  thick).
 * **Budget.** Whole segments: the three funded segments use 990,000 pulls ($1.78M); the next segment would need 520,000 more, so no
   ordering convention changes the set.
 * **File depth.** Next year's partner mix is the profile's 70% new to the country; the other segments keep last year's mix, which the
@@ -152,7 +157,8 @@ pulls used and the margin to the next segment + 5 named chart parts + 3 files �
 * Next-year volumes (thousands): branch thick 520, branch thin 260, online thick 610, online thin 330, co-brand thick 480, partner 400.
 * Net value per pull. Standalone, last year's mix: branch thick 2.30, online thin 2.10, branch thin 1.95, online thick 1.40, partner 0.90,
   co-brand 0.60. Standalone, next year's mix: partner 2.60, others unchanged. Added value, next year's mix: partner 2.45, online thin 1.70,
-  branch thin 1.60, branch thick 0.40, online thick 0.30, co-brand 0.10. Added to the bureau alone, next year's mix: partner 2.50, online
-  thin 1.95, branch thick 1.80, branch thin 1.70.
+  branch thin 1.60, branch thick 0.40, online thick 0.30, co-brand 0.10; on last year's mix the partner falls to 0.25. Added to the bureau
+  alone, next year's mix: partner 2.50, branch thick 2.10, online thin 1.95, branch thin 1.60; on last year's mix the partner falls to
+  0.45.
 * Scorecard: 18 cells; 18 reproduced by added value, 7 by standalone; the twin cells match on every column.
 * Postings and bureau billing are independent of every main-call record.

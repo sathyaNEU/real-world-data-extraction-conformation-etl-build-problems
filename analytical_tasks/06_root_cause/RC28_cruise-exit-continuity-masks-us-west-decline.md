@@ -56,8 +56,9 @@ residents who were never Seaward customers spent $69M less. The successor line m
 * **Discriminator dominance.** The cruise exit carries a $69M lead over US West into rung 3 ($75M against $6M). Continuity moves $63M from
   one column to the other, a $126M swing, which is 1.83× the carried lead and above the 1.2× floor.
 * **Partial correction priced (L3).** One solver nets Seaward's two product lines at operator level, so the cruise loss falls to $9M, but
-  leaves the continuers in US West air. It names the Halekai. Another links continuity only through this year's January–March sailors.
-  That catches 3,100 continuers and names the cruise exit again, at $53M. Neither half lands on US West.
+  leaves the continuers in US West air. It names the Halekai at $46M, 1.21× the yen. Another links continuity only through this year's
+  January–March sailors. That catches 2,700 continuers ($19M) and names the cruise exit again at $56M, 1.22× the Halekai. Neither half
+  lands on US West.
 * **Grid.** Halekai (whole or split) × Japan (market or factor) × cruise continuity (none, operator-netted, Q1-linked, customer-linked) = 16
   cells. Only the fully corrected cell names US West. Every other cell names the Halekai, the yen or the cruise exit.
 

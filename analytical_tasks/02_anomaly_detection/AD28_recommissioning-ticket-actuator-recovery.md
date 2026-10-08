@@ -57,11 +57,11 @@ in the equipment register, one join from the air-handler tags in the change log 
 * **Position table.** D ranks 4th on rung 0, 3rd on rung 1 and 2nd on rung 2 (C leads it by 1.36×), and leads only rung 3. Rung leaders
   beat their runners-up by 1.19×, 1.28×, 1.36× and 1.43×.
 * **Discriminator dominance.** C carries a 1.36× controllable-excess advantage into rung 3. D's edge on the decisive axis is its recovery,
-  0.88 against 0.31 (2.84×), so the net is 2.84 / 1.36 = 2.09×. At rung 2, B carried a 1.28× excess advantage against C's 4.0× controllable
+  0.88 against 0.31 (2.84×), 1.74× the required 1.2 × 1.36 = 1.63×, so the net is 2.84 / 1.36 = 2.09×. At rung 2, B carried a 1.28× excess advantage against C's 4.0× controllable
   share (1.00 against 0.25), a net of 3.1×.
 * **Partial correction priced (L3).** A solver who measures recovery from the change log but pools all 31 resets gets 0.71 and still names
-  C (454 against D's 334), the rung 2 answer. Conditioning on building use (labs against offices) instead of actuators also names C, because
-  C is an office building and office resets average 0.80.
+  C (454 against D's 334, 1.36×), the rung 2 answer. Conditioning on building use (labs against offices) instead of actuators also names C,
+  because C and D are both office buildings and office resets average 0.80: C 512 against D's 376 (1.36×).
 * **Grid.** Weather basis (year-over-year or baseline) × scope (whole meter or controllable) × recovery (book 0.88, pooled 0.71, actuator-
   conditioned) = 12 cells. Year-over-year cells name A, whole-meter baseline cells name B, controllable cells with either uniform recovery
   name C, and only the conditioned cell names D.
@@ -150,6 +150,6 @@ chart parts + 3 files ≈ 52 criteria.
 * Rung figures as in the ladder: A 430 / B 820 / C 563 / D 414 lead their rungs, with D 4th, 3rd, 2nd (1.36× behind C) and 1st.
 * B's server-room sub-meter carries 615 of its 820 MWh excess. C's 640 MWh is all on pneumatic air handlers.
 * The book holds 40 tickets, all electronic, realising 0.84–0.91. The change log holds 22 electronic resets (0.84–0.91) and 9 pneumatic
-  (0.27–0.35), none between.
+  (0.27–0.35), none between. Office buildings account for 18 electronic and 3 pneumatic resets, averaging 0.80; C and D are offices.
 * CL-2023-114 and CL-2024-037 are identical on every change-log column.
 * Card-access reads and service-desk tickets never touch meters, sub-meters, the change log or the equipment register.

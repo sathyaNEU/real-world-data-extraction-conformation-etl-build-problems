@@ -41,7 +41,7 @@ share of passengers over 20 minutes, notices that one airport opened five lanes 
 step is competent and it names C. But the survey's sampling rate was set by staffing at each checkpoint and hour band, one card in five
 passengers in quiet hours and one in twenty-five at the morning bank, and the protocol is not in the pack. Long waits live in the bank
 hours, where cards are thinnest. Airport E's waits sit almost wholly in its 05:00–08:00 low-cost bank, so its card share reads 11.5% while
-its passenger share is twice that. The bridge from cards to passengers is a reconciliation: each card carries its checkpoint-hour's
+its passenger share is nearly three times that. The bridge from cards to passengers is a reconciliation: each card carries its checkpoint-hour's
 throughput divided by that checkpoint-hour's cards. Nothing invites it, and only it reproduces the after-action book.
 
 ## 4. The ladder
@@ -51,19 +51,21 @@ throughput divided by that checkpoint-hour's cards. Nothing invites it, and only
 | 0 | The detector: spring throughput growth against the holiday-aligned baseline | A (+14.2%) | The agency's own anomaly screen, calendar-aligned, and growth is what breaks a checkpoint | The after-action book: last summer's realised moves bear no relation to spring growth at the six airports deployed |
 | 1 | Hygiene and the survey: duplicate exit scans collapsed, share of last summer's cards over 20 minutes in the peak | B (17.8%) | The direct measure of waiting, cleaned, at the airport level the policy names | The lane register: B commissioned five lanes this spring, enough to absorb most of its excess |
 | 2 | The deciding comparison: last summer's excess passengers (card share × throughput) net of the passengers this spring's new lanes absorb | C (61,000) | Demand against capacity, stated as one comparison, every input on file | The after-action book: card-grain excess reproduces 6 of 15 deployment-weeks within 5% |
-| 3 | **Decisive:** each card weighted by its checkpoint-hour's throughput over that checkpoint-hour's cards, excess summed per checkpoint-hour, net of new lanes | **E (112,000)** (5th of 8 on rung 0) | — | — |
+| 3 | **Decisive:** each card weighted by its checkpoint-hour's throughput over that checkpoint-hour's cards, excess summed per checkpoint-hour, net of new lanes | **E (118,000)** (5th of 8 on rung 0) | — | — |
 
-* **Position table.** E ranks 5th on rung 0 (+6.4%), 4th on rung 1 (11.5%) and 3rd on rung 2 (41,000), and leads only rung 3, 1.33× C.
-  Intermediate leaders hold margins of 1.26×, 1.24× and 1.27×.
+* **Position table.** E ranks 5th on rung 0 (+6.4%), 4th on rung 1 (11.5%) and 3rd on rung 2 (41,000), and leads only rung 3, 1.55× D
+  (76,000) and 1.64× C (72,000). Intermediate leaders hold margins of 1.26×, 1.24× and 1.27×.
 * **Discriminator dominance.** C carries a 1.49× advantage over E into rung 3 (61,000 against 41,000). Passenger weighting multiplies E's
-  excess by 2.73 and C's by 1.38, an edge of 1.98 against the 1.2 × 1.49 = 1.79 required; net 1.33×.
+  excess by 2.88 and C's by 1.18, an edge of 2.44 against the 1.2 × 1.49 = 1.79 required, 1.37× headroom.
 * **Partial correction priced (L3).** A solver who converts cards to passengers at airport level, card share times total throughput, has a
-  passenger figure that is still card-weighted and names C. A solver who weights by hour band airport-wide instead of by checkpoint-hour
-  names D, whose single large checkpoint dominates its bands.
+  passenger figure that is still card-weighted and names C (61,000 against D's 48,000, 1.27×). A solver who weights by hour band
+  airport-wide instead of by checkpoint-hour names D (88,000 against E's 74,000, 1.19×): D's long waits sit at its densely carded main
+  checkpoint, which airport-wide band weights inflate, and E's at the thinly carded second of its two checkpoints, which they deflate.
+  Neither half lands on E.
 * **Grid.** Weighting (card, airport-level conversion, hour band, checkpoint-hour) × new lanes (ignored or netted) gives eight cells. Every
   cell that ignores the new lanes names B, whose gross excess is the largest under any weighting; the netted cells name C, C, D and E. The
   nearest wrong cell, hour-band weighting (D), needs the checkpoint dimension of the reconciliation dropped.
-* **The deciding comparison (#20).** E's 112,000 passengers moved against C's 84,000 is the comparison the decision note has to state;
+* **The deciding comparison (#20).** E's 118,000 passengers moved against C's 72,000 is the comparison the decision note has to state;
   neither the card shares nor the lane counts compute it alone.
 
 ## 5. Why the decisive rung survives the opponent
@@ -147,9 +149,10 @@ deciding comparison against C + 5 named chart parts + 3 files ≈ 55 criteria.
 
 ## 12. World-building constraints
 
-* Rung leaders are A, B, C, E. E is 5th / 4th / 3rd / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 1.33×.
+* Rung leaders are A, B, C, E. E is 5th / 4th / 3rd / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 1.55×.
+* Rung 2: C 61,000, D 48,000, E 41,000. Rung 3: E 118,000, D 76,000, C 72,000. Airport-wide hour-band weights: D 88,000, E 74,000.
 * Sampling: one card per five passengers in quiet hours, one per twenty-five in bank hours, varying by checkpoint; no protocol ships.
-* E's waits over 20 minutes sit 81% in its 05:00–08:00 bank; C's are spread across the day. B's five spring lanes absorb 70% of its
-  excess.
+* E's waits over 20 minutes sit 81% in its 05:00–08:00 bank, at the second and thinner-carded of its two checkpoints; C's are spread
+  across the day. B's five spring lanes absorb 70% of its excess.
 * The book holds 15 deployment-weeks at six airports; D-07 and D-11 are identical on every card-level column.
 * Interception rows and overtime bookings never touch the card file, the throughput file or the lane register.

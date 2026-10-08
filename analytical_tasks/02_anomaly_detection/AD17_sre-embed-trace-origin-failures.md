@@ -7,7 +7,7 @@
 | Mirrors | Embedding reliability engineers where user-facing failures originate rather than where they surface (Google SRE engagements, AWS service-team operational reviews, dependency-attributed incident reviews at Meta) |
 | Decision shape | Which of N gets one scarce thing: two SREs embedded with one service for a quarter |
 | Committed call | The one service the SREs embed with, and the failed user requests the embed should remove next quarter |
-| Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · S7, every screen is right and the answer is what nothing flags (E11), at call-chain grain, with Pattern B (the existing book pins the trace construction) and a stale catalogue flag at the lower rung (E33) |
+| Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · S7, every screen is right and the answer is what nothing flags (E11), at call-chain grain, with Pattern B (the existing book pins the trace construction) and a catalogue flag overridden by a two-hop route join at the lower rung (E33) |
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #5 takes the population a flag or filter suggests · #1 reports a failed back-test, ships anyway · #18 joins only on the visible key |
 | Calibration form | Existing-book actuals: the ten past embeds, each with the service embedded and the measured fall in failed user requests the quarter after |
@@ -18,8 +18,8 @@
 A consumer platform can embed two site-reliability engineers with one service for next quarter. The SRE charter judges an embed by the
 fall in failed user requests over the following quarter. The SLO dashboard exports, per service, error-budget consumption, burn-rate pages,
 latency-SLO breach minutes, saturation alerts and on-call toil, each correct for last quarter and labelled as such, and each high somewhere
-for a documented reason. The pack carries the dashboard export, the incident register, the service catalogue, the API gateway's dated
-route table, last quarter's traces (every failed request is traced in full), and the book of past embeds.
+for a documented reason. The pack carries the dashboard export, the incident register, the service catalogue, the API gateway's route
+table, the public facade's forwarding map, last quarter's traces (every failed request is traced in full), and the book of past embeds.
 
 ## 2. Gate G: why this is legal
 
@@ -36,9 +36,10 @@ route table, last quarter's traces (every failed request is traced in full), and
 
 ## 3. The driving force
 
-A strong solver discounts the payments API's budget burn to a documented processor outage, restricts to user-facing services because the
-charter counts user failures, notices from the gateway's route table that the catalogue's user-facing flag is stale for three services,
-and ranks services by the user failures they returned. That names the mobile gateway, and each step is competent. But the dashboard and the
+A strong solver discounts the payments API's budget burn to a documented processor outage, restricts to user requests because the charter
+counts user failures, and finds that the catalogue's user-facing flag does not define them: a user request is one that enters on a public
+route, and public routes reach services through the gateway's route table or, two hops on, through the facade's forwarding map. It ranks
+services by the user failures they returned. That names the mobile gateway, and each step is competent. But the dashboard and the
 gateway logs book a failure where it surfaced. The session cache serves every authenticated call. During eviction storms it answers
 slowly and successfully, so its own availability SLO stays green, while four callers hit their 1.5-second deadlines and return 504s. A
 trace records every hop: walking each failed request's span tree to the innermost span still open when the outermost deadline expired
@@ -49,19 +50,20 @@ moves 520,000 failures to the cache. Nothing in the pack invites a tree walk, an
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Error-budget consumption last quarter, all services | A, payments API (212% of budget) | The SLO policy's own headline and the dashboard's first column | The incident register: 81% of A's burn was one documented outage at the external card processor, since resolved |
-| 1 | Failed user requests returned at the edge by the services the catalogue flags user-facing, documented external incidents excluded | B, search API (410,000) | The charter counts user failures, and the catalogue says which services serve users | The gateway's dated route table: B's public routes moved behind the facade in May, and two services the catalogue marks internal have served public routes since June |
-| 2 | Failed user requests by the service that returned them, each request's route taken from the table on its date | C, mobile gateway (390,000; 1.30× F) | The right population on the right dates, every failure counted once | The book of past embeds: failures by returning service reproduce 5 of 10 realised falls and overstate the book's total by 46% |
+| 1 | Failed user requests returned at the edge by the services the catalogue flags user-facing, documented external incidents excluded | B, search API (410,000) | The charter counts user failures, and the catalogue says which services serve users | The gateway's route table joined to the facade's forwarding map: 46% of B's failures came from internal batch callers that never touch a public route, and two services the catalogue marks internal sit behind public facade paths |
+| 2 | Failed user requests, those entering on a public route through the gateway or the facade's map, by the service that returned them | C, mobile gateway (390,000; 1.30× F) | The charter's population, built by the route join, every failure counted once | The book of past embeds: failures by returning service reproduce 5 of 10 realised falls and overstate the book's total by 46% |
 | 3 | **Decisive:** each failed request's trace walked to the innermost span still open at the deadline, failures credited to that span's service | **E, the session cache (520,000)** (5th of 8 on rung 0) | — | — |
 
 * **Position table.** E ranks 5th on rung 0 (97% of budget), is outside rung 1's population (internal) and 8th on rung 2 (60,000 returned on
-  its one public route), and leads only rung 3, 2.26× C. Intermediate leaders hold margins of 1.26×, 1.24× and 1.30×.
+  its one facade path), and leads only rung 3, 2.26× C. Intermediate leaders hold margins of 1.26×, 1.24× and 1.30×.
 * **Discriminator dominance.** C carries a 6.5× advantage over E into rung 3 (390,000 against 60,000). Trace attribution multiplies E's
-  failures by 8.7 and C's by 0.59, an edge of 14.7 against the 1.2 × 6.5 = 7.8 required; net 2.26×.
+  failures by 8.7 and C's by 0.59, an edge of 14.7 against the 1.2 × 6.5 = 7.8 required, 1.88× headroom.
 * **Partial correction priced (L3).** A solver who walks traces one level, crediting a failure to the returning service's immediate callee,
-  names F, the recommendations API, which sits between the edge and the cache on most chains (310,000). A solver who walks traces but
-  credits the first span to log an error names C again, because the cache logs no errors.
-* **Grid.** Population (catalogue flag or route table) × attribution (returning service, immediate callee, first error, innermost open span)
-  gives eight cells. Catalogue-flag cells never admit the cache as a candidate and name B or C; route-table cells name C, F, C and E. Only
+  names F, the recommendations API, which sits between the edge and the cache on most chains (330,000 against C's 280,000, 1.18×). A
+  solver who walks traces but credits the first span to log an error names C again (390,000 against F's 300,000, 1.30×): when the edge's
+  deadline passes, the inner spans end as cancelled and the edge logs the only error. Neither half lands on E.
+* **Grid.** Population (catalogue flag or route join) × attribution (returning service, immediate callee, first error, innermost open span)
+  gives eight cells. Catalogue-flag cells never admit the cache as a candidate and name B or C; route-join cells name C, F, C and E. Only
   the innermost open span names E, and the nearest wrong cell (F) needs the walk stopped one hop short.
 
 ## 5. Why the decisive rung survives the opponent
@@ -77,8 +79,8 @@ moves 520,000 failures to the cache. Nothing in the pack invites a tree walk, an
 4. **Not a row predicate.** It needs each trace's spans assembled into a tree by parent ID, the deadline of the outermost span, and the
    deepest span still open at that time.
 5. **The enumeration is arithmetic.** Which service owns each failure is computed trace by trace; the cache's share appears in no metric.
-6. **No cutover date.** Eviction storms recur at scattered times all quarter; no series steps. The only dated events, the May and June route
-   changes, sit in the rungs below.
+6. **No cutover date.** Eviction storms recur at scattered times all quarter; no series steps. The only dated event, the card processor's
+   outage, sits under rung 0.
 7. **Survives deletion.** With every voice and the dashboard removed, the answer and the difficulty are unchanged.
 
 ## 6. The calibration corpus
@@ -110,6 +112,7 @@ moves 520,000 failures to the cache. Nothing in the pack invites a tree walk, an
 * **Attribution.** In 99.6% of failed traces the innermost open span at the deadline belongs to the same service as the span whose stall
   consumed most of the deadline; the rest split evenly and change no rank.
 * **Deadlines.** Every outermost span carries its deadline in its attributes, so no timeout convention exists.
+* **Population.** Every gateway and facade request carries its trace ID, so the route join is exact and no request is counted twice.
 * **Window.** The cache's storms are steady across the quarter, so last quarter or its second half alone gives the same leader.
 * **Rate.** The 0.62 realisation rate is uniform across the book, so the expected fall is a fixed share of originated failures.
 
@@ -145,6 +148,8 @@ and the margin over C + 5 named chart parts + 3 files ≈ 48 criteria.
 
 * Rung leaders are A, B, C, E. E is 5th / absent / 8th / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 2.26×.
 * The cache originates 520,000 failed user requests and returns 60,000 itself; its availability SLO is met all quarter.
-* A's burn is 81% one external outage; B's routes moved behind the facade in May; F and one other internal service gained public routes in June.
+* A's burn is 81% one external outage; 46% of B's failures come from internal batch callers; the cache (E) and F, both marked internal,
+  sit behind public facade paths.
+* Rung 2: C 390,000, F 300,000, E 60,000. One-level walk: F 330,000, C 280,000. First-error walk: C 390,000, F 300,000.
 * The book holds ten embeds at a uniform 0.62 realisation; X-3 and X-8 are identical on every dashboard column.
 * Canary aborts and secondary escalations never touch traces or gateway logs.

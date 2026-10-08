@@ -59,10 +59,14 @@ only Vela, whose heater option is electric, keeps every unit at target.
 * **Position table.** Vela is 4th of the tied seven on rung 0 (ranked by the tie-break), 3rd on rung 1 and 2nd on rung 2 (1.22× behind
   Aldo on distance), and leads only rung 3. Each rung's leader beats its runner-up by at least 1.21×.
 * **Discriminator dominance.** Aldo carries 1.22× on distance, the tie-break axis, into rung 3. On the decisive axis, demonstrated share,
-  Vela holds 1.00 against Aldo's 0.66, an edge of 1.52×. That clears 1.2 × 1.22 = 1.46, even though the framework ranks share before
-  any tie-break.
-* **Partial correction priced (L3).** A solver who reconciles card litres at fleet level, finds the 1.9% annual gap inside the bureau's
-  tolerance and stops, keeps rung 2 (Aldo). A solver who checks card litres only in the parallel-run months finds nothing.
+  Vela holds 1.00 against Aldo's 0.50, an edge of 2.00×. That is 1.37 times the required 1.2 × 1.22 = 1.46, even though the framework
+  ranks share before any tie-break.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong outcome. Reconciling card litres at fleet level finds
+  the 1.9% gap inside the bureau's tolerance and keeps Aldo (1.22× Vela on distance). Checking card litres only in the parallel-run months
+  finds nothing and keeps Aldo too. Averaging the two economies instead of taking the lower halves the heater penalty and leaves Aldo,
+  Corso and Vela at 100%, so the tie-break again gives Aldo Tier 1 (1.22×). In April, 41 Aldo vans and 41 Vela vans swapped depots and
+  their depot fuel cards changed hands. Allocating fills by each card's current van, not its van on the fill date, moves the Aldo vans'
+  winter heater litres onto those Vela vans. Vela falls to 0.97, no model is fully demonstrated, and the board would adopt no Tier 1 at all.
 * **Grid.** Averaging (monthly mean or total) × post-transfer distance (twice or once) × files (telematics or lowest consistent) gives 8
   cells. Every non-answer cell names Torvan, Kestrel or Aldo. Kestrel carries no fuel-fired heaters, so without the transfer fix its
   doubled distance keeps it level with Vela at 100% under the lowest-consistent rule, and the tie-break hands it Tier 1.
@@ -78,7 +82,7 @@ only Vela, whose heater option is electric, keeps every unit at target.
    tank-timing tolerance. Distance, card counts and assignments all reconcile.
 4. **Not a row predicate.** A van's card litres are fills allocated through effective-dated card assignments, summed by month and set
    against the same van's telematics. Its score is the lower of two annual economies. No row carries it.
-5. **The enumeration is arithmetic.** 1,060 heater vans, of which 236 fall below target, are found only by the allocation and the
+5. **The enumeration is arithmetic.** 1,060 heater vans, of which 526 fall below target, are found only by the allocation and the
    comparison.
 6. **No cutover date.** Heaters fire with the weather every winter, and the card gap rises and falls smoothly with temperature. No series
    steps.
@@ -151,7 +155,8 @@ parts + 2 files ≈ 89 criteria.
 
 * Distances (millions of km): Torvan 9.8, Kestrel 7.4, Aldo 6.1, Vela 5.0, Corso 4.2, Brenta 3.4, Ferro 2.9, Lumo 2.6, Sabre 2.2.
 * Tier 1 by rung: Torvan, Kestrel, Aldo, Vela. Shares at rung 3: Vela 1.00, Kestrel 0.82, Ferro 0.80, Brenta 0.79, Corso 0.78, Lumo
-  0.77, Torvan 0.69, Sabre 0.67, Aldo 0.66, giving Tier 2 to five models and Tier 3 to three.
+  0.77, Torvan 0.69, Sabre 0.67, Aldo 0.50, giving Tier 2 to five models and Tier 3 to three. Van counts follow distance at about
+  16,500 km a van (Torvan 594, Kestrel 448, Aldo 370, Vela 303, Corso 255, Brenta 206, Ferro 176, Lumo 158, Sabre 133).
 * 1,060 vans carry H2. Every one of their card-minus-telematics litres falls between November and March. The fleet's annual gap is 1.9%,
   and the parallel run shows no gap above 0.5%.
 * Kestrel runs only from southern depots and carries no fuel-fired heaters. Its relief vans' dual-gateway reporting holds 18% of its

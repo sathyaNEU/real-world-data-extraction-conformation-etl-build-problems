@@ -58,18 +58,18 @@ from 0.44 to 0.80.
 * **Position table.** Cataract ranks 4th on rung 0, 5th on rung 1 and 6th on rung 2, and leads only rung 3. It is never 2nd. Rung leaders
   beat their runners-up by 1.26×, 1.21×, 1.41× and 1.40×.
 * **Discriminator dominance.** Endoscopy carries a 3.11× value-per-navigation lead over cataract into rung 3 (985 against 317). Cataract's
-  shared-surgeon share rises from 0.44 to 0.80 (×1.82) while endoscopy's falls from 0.95 to 0.15 (×0.158), an edge of 11.5×. That clears
-  1.2 × 3.11 = 3.73 with room.
+  shared-surgeon share rises from 0.44 to 0.80 (×1.82) while endoscopy's falls from 0.95 to 0.15 (×0.158), an edge of 11.5×. That is
+  3.1 times the required 1.2 × 3.11 = 3.73.
 * **Sign discipline.** The two corrections walk the figure up (+78.5% at rung 1, +113.7% at rung 2) and the decisive move reverses it to
   $1.91M. A solver who stops anywhere short over-promises savings to the council.
 * **Partial correction priced (L3).** A solver who sees that acceptance depends on the surgeon but applies the region-wide shared share
-  (0.541) to every group keeps the rung-1 order and lands at $2.75M (+43.6%), further from the answer than rung 0. A solver who conditions
-  on surgeons but carries the pilot counties' shares reproduces rung 2 exactly. The rung-2 plan's realised savings under the true acceptance
-  is $0.90M, which is the comparison the note has to state.
+  (0.541) to every group keeps the rung-1 order, arthroscopy first by 1.21× over endoscopy, and lands at $2.75M (+43.6%), further from the
+  answer than rung 0. A solver who conditions on surgeons but carries the pilot counties' shares reproduces rung 2 exactly, endoscopy first
+  by 1.41×. The rung-2 plan's realised savings under the true acceptance is $0.90M, which is the comparison the note has to state.
 * **Grid.** Unit (line, case) × price (current receiving price, tier-1 rate) × acceptance (pooled, group pilot, surgeon-conditioned) = 12
-  cells. The nearest wrong cell is case grain, surgeon-conditioned acceptance at current receiving prices, at −11.5%. Reaching it means
-  pricing next year's moves at this year's receiving prices against the tier-1 rates the receiving sites acknowledged. The next nearest is
-  line grain with group pilot acceptance at −15.3%. Every other cell is more than 33% away.
+  cells, and no non-answer cell reproduces the answer's split. The nearest is line grain with group pilot acceptance at −15.3%, led by MRI.
+  The decisive conditioning at current receiving prices lands at −24.5%, led by hernia (1.11× cataract) with sleep studies in the split,
+  because the receiving sites' tier-1 discount is deepest on cataract. Every other cell is more than 30% away.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -172,7 +172,7 @@ the cataract-over-hernia margin and the endoscopy comparison + 5 named chart par
 * Tier-1 gaps per case: arthroscopy $2,050, endoscopy $1,700, hernia $1,400, upper GI $1,250, cataract $1,180, MRI $760. Lines per case:
   endoscopy 3.2, arthroscopy 3.4, hernia 3.0, upper GI 2.8, cataract 2.4, MRI 1.0.
 * Forward cases at higher-priced origins total 13,600 (P/K 0.35), including cataract 1,400, hernia 800, MRI 1,300, arthroscopy 1,300 and
-  endoscopy 2,600.
-* Rung figures are $1.27M / $3.42M / $4.09M / $1.91M. No other cell of the 12-cell grid lies within 11.5% of the answer.
+  endoscopy 2,600. At current receiving prices the gaps are cataract $700, arthroscopy $1,500, hernia $1,300 and cystoscopy $580.
+* Rung figures are $1.27M / $3.42M / $4.09M / $1.91M. No other cell of the 12-cell grid lies within 15% of the answer.
 * Bramwell and Ferris Lake are identical on every claims-side and acknowledgement-side column except the surgeons' site histories.
 * Capacity amendments and authorisation resubmissions never touch the claims, the acknowledgements or the surgeon histories.

@@ -7,7 +7,7 @@
 | Mirrors | Usage-anomaly programmes that rank accounts by transaction rows when a few heavy recurring users generate most of the rows (cloud cost-anomaly reviews where scheduled jobs dominate line items, subscription reviews where auto-renewals swamp new purchases, recurring delivery orders against one-off orders at Amazon) |
 | Decision shape | A structure the body adopts: how many intervention populations the three-year stewardship plan names and which practices sit in each, scored on each population holding excess at the grain its intervention acts on |
 | Committed call | The populations and their member practices, adopted into the stewardship plan at the board meeting in March |
-| Gap · Pattern | Gap 2 (population: courses started and residents on prophylaxis, not items) over Gap 3 (objective) · Pattern D (items and courses, both flawless, differ in shape because repeat prophylaxis concentrates items in few patients), with a suppressed cell bounded from published totals below it |
+| Gap · Pattern | Gap 2 (population: courses started and residents on prophylaxis, not items) over Gap 3 (objective) · Pattern D (items and courses, both flawless, differ in shape because repeat prophylaxis concentrates items in few patients), with suppressed monthly cells bounded from a financial-year total that straddles the standard's window below it |
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection support |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #6 treats a mixed segment all one way · #24 treats an unpublished figure as unknown |
 | Calibration form | Change-log natural experiments: the board's log of 38 pharmacist visits (2022–2025), with each visited practice's prescribing for six months before and after |
@@ -18,8 +18,8 @@
 An integrated care board's antibiotic items per STAR-PU run 14% above the national mean across its 62 practices. Its three-year
 stewardship plan must name the intervention populations: practices for pharmacist visits (which review how courses are started) and
 practices for care-home medication reviews (which review residents on long-term prophylaxis). The plan scores each population on the excess
-its intervention can act on. The board holds the national prescribing file (items by practice, chemical and month, with chemical cells under
-five suppressed), quinary list sizes and STAR-PU weights, its own linked patient-level prescriptions, practice care-home contracts and the log
+its intervention can act on. The board holds the national prescribing file (items by practice, chemical and month, with monthly cells under
+five suppressed), the national annual summary (financial-year totals by practice and chemical, unsuppressed), quinary list sizes and STAR-PU weights, its own linked patient-level prescriptions, practice care-home contracts and the log
 of past visits. Until this plan, practices with care-home contracts were served only by the care-home pharmacy team. The GP lead expects the
 usual twenty practices.
 
@@ -52,7 +52,7 @@ without care-home contracts, shows items and courses falling together and cannot
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Items per 1,000 registered patients, top twenty | One population of 20, mostly retirement-town practices | The board's dashboard | The STAR-PU weights: age and sex explain most of the dashboard's spread |
-| 1 | The board's dual standard on items per STAR-PU, practices with suppressed chemical cells left out as unverifiable | One population of 14 | The board's own standard, applied to what is published | The published section totals: each suppressed cell is bounded by the section total less the published chemicals |
+| 1 | The board's dual standard on items per STAR-PU, practices with suppressed chemical cells left out as unverifiable | One population of 14 | The board's own standard, applied to what is published | The national annual summary: each suppressed month in the standard's October-to-September window is bounded by its chemical's April-to-March total less the published months, with every suppressed month between one and four items |
 | 2 | The dual standard with suppressed cells bounded (two of three practices qualify under every value in their bounds) | One population of 16 | Standard, case-mix and suppression all handled | The care-home contracts and the linked records: six of the sixteen owe most of their excess to residents on monthly prophylaxis |
 | 3 | **Decisive:** episodes rebuilt per patient; acute courses per STAR-PU and residents on prophylaxis per STAR-PU, each against its own overdispersed limit | **Two populations: visits for 9 practices (7 from rung 2 and 2 new), care-home reviews for 6; 3 of rung 2's sixteen in neither** | — | — |
 
@@ -62,11 +62,12 @@ without care-home contracts, shows items and courses falling together and cannot
   the two new visit practices run at 1.08× on items and 1.37× on courses. The three dropped dispensing practices sit at 1.29× on items and
   0.97× on courses.
 * **Partial correction priced (L3).** A solver who removes care-home residents' items from the item counts but keeps the item grain for
-  everyone else still lists the three dispensing practices for visits and misses the two new ones: one population of ten, further from the
-  answer than rung 2's sixteen on membership.
+  everyone else still lists the three dispensing practices for visits and misses the two new ones: one population of ten and no care-home
+  population, misplacing 11 of the 18 practices in play (three dispensing practices in; two new visit practices and all six care-home
+  practices out), where rung 2 still held 13 of the answer's 15.
 * **Grid.** Denominator (patients or STAR-PU) × suppressed cells (dropped or bounded) × grain (items or episodes) = 8 cells. Every item-grain
-  cell yields one population (20, 20, 14 or 16); episode cells yield two populations, and only with STAR-PU and bounded cells do they hold
-  nine and six.
+  cell yields one population (20, 20, 14 or 16); episode cells yield two populations, of 13 and 7 on raw patients and of 8 and 5 with
+  suppressed cells dropped; only with STAR-PU and bounded cells do they hold nine and six.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -151,4 +152,6 @@ population's excess + 5 named chart parts + 3 files ≈ 58 criteria.
   1.29×, courses 0.97×.
 * The visit log holds 38 visits, none at a practice with a care-home contract; items and courses fall within one point of each other in all.
 * Hollins Road and Wexcombe are identical on every item-level column.
+* The three practices with suppressed broad-spectrum months have them on both sides of 1 April, so the bound needs the financial-year total
+  and the suppression rule together; the bound is 6 to 9 points of broad-spectrum share wide for each.
 * Prescriber register and care-home census never touch items, list sizes or the patient-level records.

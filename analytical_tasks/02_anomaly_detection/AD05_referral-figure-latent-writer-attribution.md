@@ -11,11 +11,11 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #17 guesses an attribution the data can settle · #11 beats the headline trap, misses the quiet one · #18 joins only on the visible key |
 | Calibration form | Gold-standard verification subsample: 400 original prescriptions pulled from pharmacies, each with the clinician who signed it |
-| Driving force | Pharmacy claims carry the prescriber an e-prescribing account is registered to. The nurse practitioner's renewals go out under Dr. Halvorsen's number, and his own prescriptions at the satellite clinic go out under the satellite's registered prescriber. The writer is recoverable exactly as the clinician of the member's latest visit at the practice on or before the fill, a ranked join into the medical claims, and it moves patients both off and onto his count. |
+| Driving force | Pharmacy claims carry the prescriber an e-prescribing account is registered to. The nurse practitioner's renewals go out under Dr. Szabo's number, and his own prescriptions at the satellite clinic go out under the satellite's registered prescriber. The writer is recoverable exactly as the clinician of the member's latest visit at the practice on or before the fill, a ranked join into the medical claims, and it moves patients both off and onto his count. |
 
 ## 1. Situation
 
-A state health-insurance programme's integrity unit has already decided to refer Dr. Halvorsen to the medical board, and the letter that
+A state health-insurance programme's integrity unit has already decided to refer Dr. Szabo to the medical board, and the letter that
 goes on 20 November must state how many of his patients were on high-dose opioid therapy in the second quarter. The referral standard
 defines the figure. The pack carries the practice's pharmacy claims and medical claims, the member file, the programme's conversion table,
 the claims guide, the quarterly paid-claims reconciliation, and the unit's verification sample of 400 original prescriptions.
@@ -35,7 +35,7 @@ the claims guide, the quarterly paid-claims reconciliation, and the unit's verif
 
 ## 3. The driving force
 
-A strong solver pulls every pharmacy claim under Dr. Halvorsen's number, drops reversed claims, notices that adjusted claims chain to their
+A strong solver pulls every pharmacy claim under Dr. Szabo's number, drops reversed claims, notices that adjusted claims chain to their
 originals and keeps only the final link, reconciles to the paid-claims control, converts to morphine milligram equivalents and counts
 members over the line. Every step is right, and the count is wrong by more than a third. The practice runs one e-prescribing account per
 registered prescriber per site. The nurse practitioner, who writes most routine renewals at the main site, sends them under his account;
@@ -115,7 +115,7 @@ on member and date, and applying it removes 29 members from his count and adds 1
 
 ## 9. Prompt sketch and deliverables
 
-> The letter referring Dr. Halvorsen to the medical board goes out on 20 November and has to state how many of his patients were on
+> The letter referring Dr. Szabo to the medical board goes out on 20 November and has to state how many of his patients were on
 > high-dose opioid therapy in the second quarter. Our clinical pharmacist reads the prescriber field as the prescriber. Give me the number
 > as one sentence for the letter, with `referral_evidence.xlsx` holding the sheets below, a chart `writer_attribution.png`, and a one-page
 > `referral_figure.html` I can attach.

@@ -40,10 +40,10 @@ changeover log, the PLC run counters, the snapshot file and the close-outs of th
 A strong solver applies the standard, notices the register's duty flags are stale for two sets and rebuilds the population from the
 changeover log, sees the five-way tie and, distrusting a criticality tie-break, separates the tied pumps by an uncapped severity, mean overall
 velocity. Each step is competent. But the tie is not a property of the pumps. Every sensor reports every two hours while its pump runs,
-and the platform divides zone-D snapshots by snapshots received. At two stations the cellular gateway was down for 19 and 31 days in
-August and September, and at a third for 9 days; the pumps ran, as the PLC counters show, and nothing was received. Those hours are in the
-standard's denominator and in no snapshot. Counted at the lowest value the records allow, none of them evidenced in zone D, four of the
-five 100% readings fall, to between 61% and 84%. The settled shares in the last three close-outs reproduce only under that
+and the platform divides zone-D snapshots by snapshots received. The cellular gateway at B's station was down for 19 days in August, at
+C's for 58 days across August and September, and at D's for 9 days; the pumps ran through the summer peak, as the PLC counters show, and
+nothing was received. Those hours are in the standard's denominator and in no snapshot. Counted at the lowest value the records allow,
+none of them evidenced in zone D, four of the five 100% readings fall, to between 48% and 84%. The settled shares in the last three close-outs reproduce only under that
 reconciliation.
 
 ## 4. The ladder
@@ -58,13 +58,15 @@ reconciliation.
 * **Position table.** E ranks 5th on rung 0 (class 2, 19,500 h), 4th on rung 1 and 3rd on rung 2 (7.6 mm/s), and leads only rung 3, where it
   is the one pump left at 100%, 1.19× D (84.0%).
 * **Discriminator dominance.** C carries a 1.29× velocity advantage over E into rung 3 (9.8 against 7.6 mm/s). On the reconciled share E
-  holds 100% to C's 61.4%, an edge of 1.63× against the 1.2 × 1.29 = 1.55 required; net 1.26×.
+  holds 100% to C's 48.0%, an edge of 2.08× against the 1.2 × 1.29 = 1.55 required, 1.35× headroom.
 * **Partial correction priced (L3).** A solver who reconciles against the run counters but fills unevidenced hours at each pump's own
-  received share keeps all five at 100% and is back at the tie-break's B. A solver who reconciles but keeps the register's duty flags names
-  A, whose 100% sits in May, before its changeover, with full coverage.
+  received share keeps all five at 100% and is back at the tie-break's B (class 1, 1.22× C's hours since overhaul). A solver who reconciles
+  but keeps the register's duty flags has A level with E at 100%, A's hours all in May with full coverage, and the tie-break names A
+  (class 1 against E's class 2). Neither half lands on E.
 * **Grid.** Population (register or changeover log) × share (received snapshots or running hours) × tie handling (tie-break or velocity)
-  gives eight cells. Register cells name A; changeover-log cells on received snapshots name B or C; running-hours cells need no tie
-  handling and name E with the changeover-log population or A with the register's. The nearest wrong cell (A) needs the stale flag kept.
+  gives eight cells. Register cells name A under every share and tie handling; changeover-log cells on received snapshots name B or C. Only
+  running hours on the changeover-log population name E, with no tie left to handle, and the nearest wrong cell (A) needs only the stale
+  flag kept.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -149,9 +151,10 @@ reconciled share and the margin over D + 5 named chart parts + 3 files ≈ 59 cr
 
 ## 12. World-building constraints
 
-* Five pumps read 100% on the export (A, B, C, D, E); reconciled, E stays at 100% and D, B and C fall to 84.0%, 79.0% and 61.4%.
+* Five pumps read 100% on the export (A, B, C, D, E); reconciled, E stays at 100% and D, B and C fall to 84.0%, 79.0% and 48.0%.
 * A's set changed over on 14 June; A's 100% is May's running hours. A second set changed over in July with no effect on the tie.
-* Gateway outages: 19 and 31 days at the stations of B and C, 9 days at D's; E's gateway never failed.
+* Gateway outages: 19 days at B's station, 58 at C's (August and September, when C ran around the clock), 9 at D's; E's gateway never
+  failed. C ran 2,677 hours in the window, 1,392 of them unevidenced.
 * Tie-break values: A 41,200 h, B 33,900 h, C 27,800 h (class 2), E 19,500 h (class 2). Velocities: C 9.8, D 8.1, E 7.6, B 6.9 mm/s.
 * The close-outs hold 27 settled shares; P4 and P7 are identical on every export-visible column.
 * Lubrication routes and recirculation lines never touch the snapshot file or the run counters.

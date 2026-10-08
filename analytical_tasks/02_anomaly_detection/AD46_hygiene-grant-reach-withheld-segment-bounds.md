@@ -18,8 +18,8 @@
 A food-safety nonprofit holds a foundation grant to train kitchen staff in restaurant segments (cuisine × neighbourhood) with high
 critical-violation rates; the grant pays per restaurant trained, so the work plan must commit the reach. The grant terms make a segment
 eligible when the health department's published figures show its initial-inspection critical rate at least five points above the citywide
-rate, and cap reach in each borough at what its two trainers can deliver (150 restaurants each). The department publishes, by segment and by
-neighbourhood, restaurants and restaurants with a critical violation on their first cycle inspection, withholding segment critical counts under
+rate, and cap reach in each borough at what its trainers can deliver in the grant year (90 restaurants each; three trainers work in
+Brooklyn, Queens and Staten Island, five in the Bronx and Manhattan). The department publishes, by segment and by neighbourhood, restaurants and restaurants with a critical violation on their first cycle inspection, withholding segment critical counts under
 40 restaurants. The nonprofit holds those tables, the department's quality-assurance re-inspection results and last year's all-inspection
 pilot. The department's liaison says a withheld rate is a rate nobody has.
 
@@ -52,7 +52,7 @@ Island, where trainers still have room.
 | Rung | Construction | Lands on | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Every inspection row in the pilot, 40 segments over the line, no cap | 2,600, +87% | Last year's pilot and the owners' own complaints | The re-inspection subsample: all-inspection rates run 9 points above the senior inspectors' verified rates, first-cycle rates within 1 |
-| 1 | Published first-cycle rates: 22 eligible segments, no cap | 1,560, +12% | The department's own published basis | The trainer table: Brooklyn's 520 and Queens's 410 eligible restaurants exceed the 300 each borough's trainers can deliver |
+| 1 | Published first-cycle rates: 22 eligible segments, no cap | 1,560, +12% | The department's own published basis | The trainer table: Brooklyn's 520 and Queens's 410 eligible restaurants exceed the 270 that each borough's three trainers can deliver |
 | 2 | Published eligible segments under the per-borough cap | 1,170, −16% | Basis and capacity both respected | The neighbourhood totals: six withheld segments are bounded above the line |
 | 3 | **Decisive:** bound every withheld segment from its neighbourhood total and the published cuisines, add those over the line at the low end of their bound, apply the cap | **1,390** | — | — |
 
@@ -60,7 +60,9 @@ Island, where trainers still have room.
 * **Partial correction priced (L3).** A solver who bounds the withheld segments but tests each at the midpoint of its bound admits the three
   straddling segments too, all in uncapped boroughs, and commits 1,540: 11% above the answer and further from it than rung 2.
 * **Grid.** Basis (all inspections or first cycle) × withheld segments (dropped, midpoint, bounded) × cap (noted or applied) = 12 cells. The
-  first-cycle cells run 1,560 / 2,090 / 1,780 uncapped and 1,170 / 1,540 / 1,390 capped; the nearest wrong cell is 1,560, 12% above.
+  first-cycle cells run 1,560 / 1,930 / 1,780 uncapped and 1,170 / 1,540 / 1,390 capped. The pilot rated every segment, so the six
+  all-inspection cells give 2,600 uncapped and 1,580 capped whatever is done with withheld segments. The nearest wrong cell is the midpoint
+  partial's 1,540, 11% above; every other cell is at least 12% away.
 * **Cap interaction.** The six bounded segments fall where the cap is slack, so the cap and the bound do not cancel; had they fallen in
   Brooklyn, the decisive move would have changed nothing, which is why the world puts them elsewhere.
 
@@ -86,9 +88,9 @@ Island, where trainers still have room.
 * **What it certifies.** First-cycle rates match the verified rates within one point in every sampled segment; all-inspection rates run 9
   points high, because follow-up visits target restaurants that already failed. A back-tester is confirmed at rung 1.
 * **What it is blind to.** Withheld segments (above).
-* **Twin pair.** Withheld segments Caribbean × Flatbush and Caribbean × Wakefield both hold 34 restaurants in boroughs of similar size and both
-  show only the withheld marker. Flatbush's bound puts its critical rate at 31% or more and Wakefield's at 15% or less, about 2× apart, which
-  only the neighbourhood arithmetic reveals.
+* **Twin pair.** Withheld segments West African × Concourse (the Bronx) and West African × Inwood (Manhattan) both hold 34 restaurants, both
+  sit in boroughs with trainer places to spare and both show only the withheld marker. Concourse's bound puts its critical rate at 31% or
+  more and Inwood's at 15% or less, about 2× apart, which only the neighbourhood arithmetic reveals.
 * **Resemblance points at the decoy.** Withheld segments look like the smallest published segments, most of which fall below the line.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -107,7 +109,9 @@ Island, where trainers still have room.
 * **What "show" means.** A withheld segment counts only when the published figures show it over the line at every value in its bound; three
   straddling segments are not shown and stay out, and no other segment lies within one point of the line at either end.
 * **Neighbourhood structure.** No neighbourhood withholds more than two cuisines, so every bound is a single subtraction and split.
-* **Capacity.** Trainer capacity is filed per borough; the six added segments sit in boroughs with at least 60 places spare after rung 2.
+* **Capacity.** Trainer capacity is filed per borough. The six added segments sit in the Bronx, Manhattan and Staten Island, which keep at
+  least 160 places spare after rung 2 and room for the three straddling segments as well, so on every first-cycle cell the cap binds only in
+  Brooklyn and Queens.
 * **Rounding.** Reach is committed to the nearest ten; 1,390 is exact.
 
 ## 9. Prompt sketch and deliverables
@@ -143,6 +147,9 @@ segments, the capped boroughs and the citywide rate + 5 named chart parts + 3 fi
 * Rung figures 2,600 / 1,560 / 1,170 / 1,390; the midpoint partial 1,540.
 * 14 withheld segments: six over the line at their lower bound (220 restaurants, outside Brooklyn and Queens), three straddling (150), five
   below at their upper bound.
-* Brooklyn and Queens have 520 and 410 published-eligible restaurants against caps of 300.
-* Flatbush and Wakefield Caribbean segments are identical on every column of their own.
+* Published-eligible restaurants by borough: Brooklyn 520 and Queens 410 against caps of 270, the Bronx 250 and Manhattan 290 against 450,
+  Staten Island 90 against 270. The six proved segments add 100 / 60 / 60 in the Bronx, Manhattan and Staten Island; the three straddling
+  segments add 90 and 60 in the Bronx and Staten Island. The pilot's 2,600 splits 820 / 640 / 520 / 480 / 140 in the same borough order.
+* The Concourse and Inwood West African segments are identical on every column of their own; Concourse is one of the six, Inwood one of
+  the five below the line.
 * Permit records and grades never touch the published segment and neighbourhood tables.

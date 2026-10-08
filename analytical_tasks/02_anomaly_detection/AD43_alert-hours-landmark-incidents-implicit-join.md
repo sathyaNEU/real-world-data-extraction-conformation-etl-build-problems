@@ -60,7 +60,7 @@ confirms late. With them, only the connector two-bin configuration clears 85%, a
   give up, and each is wrong in the same direction.
 * **Partial correction priced (L3).** A solver who resolves landmarks by the nearest cross-street postmile on the street centreline file
   (instead of the interchange table) puts a third of them on the wrong side of the interchange or the wrong carriageway, gets 85.2% for the
-  three-bin connector configuration and frees 60 hours: rung 2's figure, no nearer the answer.
+  three-bin connector configuration and frees 60 hours: rung 2's figure, 18% above the answer and no nearer it.
 * **Grid.** Hygiene (off or on) × lane attribution (field or sign log) × location (postmile only or landmarks resolved) = 8 cells: 69, 66,
   66, 66, 60, 60, 60 and 51. The nearest wrong cell is 60, 18% above the answer, and needs two of the three constructions.
 * **Configuration table.** On the reproducing basis recall runs 78%, 80%, 83% and 86% from quietest to noisiest, so the gate selects

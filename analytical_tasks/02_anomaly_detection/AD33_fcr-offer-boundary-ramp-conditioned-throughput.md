@@ -59,7 +59,7 @@ hours when hydro exports switch direction, and January's indicative schedule put
 * **Figure shape.** The answer is the minimum cell of the grid. Every rung and every partial route over-offers, so a solver stopping short
   breaches the warranty in a known direction.
 * **Partial correction priced (L3).** A solver who sees that the window matters but conditions on hour of day from the pilot log finds
-  summer nights quiet (2.4 MWh per MW), lifts the cap's limit to 50 MW and offers the full 40: further from the answer than rung 2, because
+  summer nights quiet (2.4 MWh per MW), lifts the cap's limit to 50 MW and offers the full 40, five times the answer and further from it than rung 2, because
   in summer the large reversals sat in daytime.
 * **Grid.** Cap (noted or applied) × intensity source (pilot pooled, published pro-rated, pilot hour-of-day, boundary-conditioned) = 8 cells:
   40 / 40 / 40 / 40 with the cap noted and 30 / 20 / 40 / 8 with it applied. The nearest wrong cell is 20 MW, 150% above the answer.

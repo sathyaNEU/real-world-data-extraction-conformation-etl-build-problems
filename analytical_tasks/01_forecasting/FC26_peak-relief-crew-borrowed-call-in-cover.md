@@ -11,7 +11,7 @@
 | Gate G mechanism | forecasting, with decomposition_attribution |
 | Measured traps engaged | #19 breaks a big tie instead of questioning it · #13 validates on one population, applies to another · #6 treats a mixed segment all one way |
 | Calibration form | Retry log: every call-in request the eight stores raised in 32 closed weeks, with each offer, decline and retry |
-| Driving force | A casual borrowed from a sister store accepts a call-in only when their own store has no open request on the same shift block. In the closed weeks shortages were scattered sick calls, so borrowing filled and the most cluster-reliant store had the best record in the chain. In the peak the four west-cluster stores are short on the same Saturday and late-night blocks, and borrowed cover fills almost nothing. The split shows only in a self-join of the call-in log, and its weight only in a block-level forecast of every lending store's shortage. |
+| Driving force | A casual borrowed from a sister store accepts a call-in only when their own store has no open request in the same shift block. In the closed weeks shortages were scattered sick calls, so borrowing filled and the most cluster-reliant store had the best record in the chain. In the peak the four west-cluster stores are short in the same Saturday and late-night blocks, and borrowed cover fills almost nothing there, while the east cluster's staggered peaks leave most of its borrowing intact. The split shows only in a self-join of the call-in log, and its weight only in a block-level forecast of every lending store's shortage. |
 
 ## 1. Situation
 
@@ -44,35 +44,36 @@ subtracts the published roster and nets off call-ins at each store's own logged 
 rate measured on offers sent while one store at a time was short. A borrowed casual takes a sister store's shift only if their own store has
 no open request in the same shift block, because the system offers home-store shifts first and the casual is already committed. In the
 closed weeks fewer than one cross-store offer hour in ten met an open home-store request. In the peak the four west-cluster stores are short
-on the same Saturday, late-night and Christmas Eve blocks, so their borrowed cover collapses. Wattle Grove, a newer store with a small own
-pool, covered 74% of its call-in hours with borrowed casuals and filled 95% overall, the best record in the chain. Its peak fill falls to
-about 35%.
+in the same Saturday, late-night and Christmas Eve blocks, so four fifths of their borrowed cover meets a busy lender; the east cluster's
+CBD and suburban stores peak in different blocks, so only two fifths of theirs does. Wattle Grove, a newer west-cluster store with a small
+own pool, covered 74% of its call-in hours with borrowed casuals and filled 95% overall, the best record in the chain. Its peak fill falls to
+about 36%.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Trading-day peak forecast × labour standard − published roster. The crew would work its full 4,000 hours at six stores, so the standard's tie-break (higher forecast peak turnover) decides | A, Harrow Quay | The standard's own placement rule and tie-break, run on a clean calendar-aware forecast | The call-in log: across the closed weeks call-ins covered 84% of the hours rosters left open |
-| 1 | Saturation broken: each store's open hours net of call-ins at the chain fill rate (84%) | B, Kellet Road (1.26× the runner-up) | Every open hour now nets the cover the record shows, and the six-way tie dissolves into one leader | The workforce standard assesses call-in cover store by store, and store fill in the log runs from 0.78 to 0.95 |
-| 2 | Each store's open hours net of its own logged fill rate | C, Tamsin Creek (1.41×) | Store-specific, reconciled to the log to the hour, and it points at the one store with no cluster to borrow from | Within the log, a cross-store offer is never accepted when the casual's home store has an open request in the same block, and the peak forecast puts most west-cluster call-in hours in such blocks |
+| 0 | Trading-day peak forecast × labour standard − published roster. The crew would work its full 4,000 hours at six stores, so the standard's tie-break (higher forecast peak turnover) decides | A, Harrow Quay (turnover 1.22× the next tied store) | The standard's own placement rule and tie-break, run on a clean calendar-aware forecast | The call-in log: across the closed weeks call-ins covered 84% of the hours rosters left open |
+| 1 | Saturation broken: each store's open hours net of call-ins at the chain fill rate (84%) | B, Kellet Road (1.23× the runner-up) | Every open hour now nets the cover the record shows, and the six-way tie dissolves into one leader | The workforce standard assesses call-in cover store by store, and store fill in the log runs from 0.78 to 0.95 |
+| 2 | Each store's open hours net of its own logged fill rate | C, Tamsin Creek (1.51×) | Store-specific, reconciled to the log to the hour, and it points at the one store with no cluster to borrow from | Within the log, a cross-store offer is never accepted when the casual's home store has an open request in the same block, and the peak forecast puts most west-cluster call-in hours in such blocks |
 | 3 | **Decisive:** fill conditioned on whether the lending casual's home store is short in the same block, carried to each store's peak block profile (own-pool fill as logged; borrowed fill only in blocks where the lender is not short) | **E, Wattle Grove** (5th of 8 on rung 0) | — | — |
 
 * **Position table.** Wattle Grove ranks 5th on rung 0 (fifth of the six saturated stores by forecast turnover), 4th on rung 1 and 8th on
-  rung 2, and leads only rung 3. Rung leaders beat their runners-up by 1.22× (forecast turnover, the tie-break), 1.26×, 1.41× and 2.00×.
-* **Discriminator dominance.** Tamsin Creek carries a 5.06× advantage into rung 3 (1,342 unfilled hours against Wattle Grove's 265). The
-  peak conditioning multiplies Wattle Grove's unfilled hours 12.9× (265 to 3,420) and leaves Tamsin Creek's unchanged, because it borrows
-  nothing: an edge of 12.9× against the 6.1× that 1.2 × 5.06 requires. The product, (1/5.06) × 12.9 = 2.55×, is Wattle Grove's margin over
-  Tamsin Creek; over the rung-3 runner-up, Brindle Park (1,707), it is 2.00×.
-* **Partial correction priced (L3).** A solver who notices borrowed offers fill slightly worse (55% against 61% per offer) and haircuts
-  borrowed cover by that ratio puts Wattle Grove at about 660 hours and still names Tamsin Creek. A solver who finds the split but weights it
-  at the log's own shared-block share (9.8%) puts Wattle Grove at about 650 hours and also names Tamsin Creek, exactly where rung 2 stopped.
-  Half the insight buys nothing.
+  rung 2, and leads only rung 3. Rung leaders beat their runners-up by 1.22× (forecast turnover, the tie-break), 1.23×, 1.51× and 1.42×.
+* **Discriminator dominance.** Tamsin Creek carries a 5.40× advantage into rung 3 (1,430 unfilled hours against Wattle Grove's 265). The
+  peak conditioning multiplies Wattle Grove's unfilled hours 12.8× (265 to 3,400) and leaves Tamsin Creek's unchanged, because it borrows
+  nothing: an edge of 12.8× against the 6.5× that 1.2 × 5.40 requires, with 1.98× headroom. The product, (1/5.40) × 12.8 = 2.38×, is Wattle
+  Grove's margin over Tamsin Creek; over the rung-3 runner-up, Orwell Square (2,394), it is 1.42×.
+* **Partial correction priced (L3).** Every half-applied construction names another store. Haircutting borrowed cover by the visible
+  per-offer gap (55% against 61%), or weighting the split at the log's own shared-block share (9.8%), names Tamsin Creek at 1,430 hours,
+  1.20× ahead of Orwell Square, with Wattle Grove last at about 650. One chain-wide shared share for every store (0.62), ignoring which
+  cluster's peaks coincide, names Orwell Square at 3,272 hours, 1.21× ahead of Wattle Grove. Dropping all borrowed cover sends Orwell Square
+  and Wattle Grove both past the crew's 4,000 hours, and the standard's tie-break names Orwell Square on turnover (1.17×).
 * **Grid.** Forecast (seasonal naive or trading-day) × call-in treatment (none, chain rate, store rate, conditioned at the log's shared
-  share, conditioned at the peak block profile) = 10 cells. The eight cells without the peak block profile name Harrow Quay, Kellet Road or
-  Tamsin Creek. The nearest wrong cell is seasonal naive with the peak profile: Wattle Grove at 3,030 hours, 11.4% low, because last year's
-  window put Christmas Eve on a Wednesday and this one adds a late-trading Thursday. Two over-corrections also name Wattle Grove with the
-  wrong hours: dropping all borrowed cover hits the crew's 4,000-hour ceiling (+17.0%), and one chain-wide shared share for every store
-  (0.62) gives 2,700 (−21%).
+  share, one chain-wide share, cluster shares from the block forecast) = 12 cells. Only the trading-day forecast with cluster shares names
+  Wattle Grove at 3,400 hours; seasonal naive with cluster shares also names it, at 3,010 hours (11.5% low), because last year's window put
+  Christmas Eve on a Wednesday and this one adds a late-trading Thursday. Every other cell names Harrow Quay, Kellet Road, Tamsin Creek or
+  Orwell Square.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -100,9 +101,9 @@ about 35%.
 * **The absolute split (O2).** 0 of 1,184 cross-store offers to a casual whose home store had an open request in the same block were
   accepted; 6,648 of 10,898 other cross-store offers (61.0%) and 61.2% of own-store offers were. Pooled, cross-store offers fill 55.0%. No
   visible column (offering store, weekday, block, lead time, casual tenure) shows more than a 4-point spread in cross-store acceptance.
-* **Twin pair.** Orwell Square and Brindle Park in log week 23 raised identical requests (count, blocks and lead times) from pools of the
-  same size with the same borrowed share. Orwell Square filled 88% of its call-in hours and Brindle Park 44%, because Brindle Park's lenders
-  had open requests in the same blocks that week and Orwell Square's did not. Only the self-join separates them.
+* **Twin pair.** Brindle Park in log weeks 19 and 23 raised identical requests (count, blocks and lead times) from the same pool with the
+  same borrowed share. It filled 88% of its call-in hours in week 19 and 44% in week 23, because in week 23 its lenders had open requests in
+  the same blocks and in week 19 they did not. Only the self-join separates the two weeks.
 * **Resemblance points at the decoy.** Wattle Grove's peak request profile most resembles its own closed weeks, in which it filled 95%,
   the best in the chain.
 
@@ -111,8 +112,8 @@ about 35%.
 * **Filed pins.** The workforce standard: the crew goes where it will work the most hours that would otherwise go unworked. Its tie-break:
   where the crew would work its full hours at more than one store, the store with the higher forecast peak turnover. Call-in cover is
   assessed store by store. The labour standard (hours per thousand dollars of turnover, by store format) is in the same document.
-* **Empirical pins.** The split, from the self-joined log. Each store's own-pool fill, from its own-store offers. The shared blocks, from
-  the block-level shortage forecast.
+* **Empirical pins.** The split, from the self-joined log. Each store's own-pool fill, from its own-store offers. Each cluster's shared
+  blocks, from the block-level shortage forecast.
 * **Voices.** The regional operations manager: "Our call-in fill is the best in the group; the stores will cope." The workforce analyst:
   "The store with nobody to borrow from always struggles most." The Wattle Grove store manager: "We borrow from Harrow Quay and Kellet Road
   whenever we're short, and it has always worked."
@@ -134,20 +135,20 @@ about 35%.
   average, so own-pool fill carries as logged.
 * **Censoring and maturity.** A request still open when its shift starts is closed as unfilled in the log. The extract was taken on a
   Monday before any request of that week was raised, so nothing is open.
-* **Rounding.** The committed hours sit mid-bin at the nearest 10.
+* **Rounding.** The committed hours land at 3,400, mid-bin at the nearest 10.
 
 ## 9. Prompt sketch and deliverables
 
 > Our relief crew can go to only one store for the four trading weeks to Christmas Eve, and the regional operations manager is sure our
 > call-in record means the stores will cope. Tell me which store gets the crew and how many crew hours it will actually work there, to the
 > nearest 10 hours, in a sentence I can read out at Thursday's peak planning meeting. Send me `peak_relief.xlsx` with the build and the
-> sheets below, a chart `peak_cover.png`, and a one-page `relief_note.pdf` that commits to the store.
+> sheets below, a chart `peak_cover.svg`, and a one-page `relief_note.docx` that commits to the store.
 
 * `peak_relief.xlsx` — the placement build for all eight stores, the penalty-hours sheet (ask A) and the attrition sheet (ask B).
-* `peak_cover.png` — one horizontal stacked bar per store, ordered by unfilled hours: the peak roster gap split into own-pool cover,
+* `peak_cover.svg` — one horizontal stacked bar per store, ordered by unfilled hours: the peak roster gap split into own-pool cover,
   borrowed cover and unfilled hours, with the crew's 4,000-hour line, a marker for the unfilled hours the chain rate implies, and the chosen
   store annotated with its hours.
-* `relief_note.pdf` — the committed store and hours, and why each of the other seven is not it.
+* `relief_note.docx` — the committed store and hours, and why each of the other seven is not it.
 
 ## 10. The ask layer
 
@@ -171,14 +172,15 @@ margin over the runner-up + 5 named chart parts + 3 files ≈ 99 criteria.
 ## 12. World-building constraints
 
 * Clusters: west (Harrow Quay, Kellet Road, Wattle Grove, Brindle Park), east (Orwell Square, Fenwick Lane, Sorrel Vale); Tamsin Creek has
-  none. Forecast peak roster gaps (hours): Harrow Quay 5,000, Kellet Road 7,700, Tamsin Creek 6,100, Orwell Square 5,600, Wattle Grove
-  5,300, Brindle Park 4,400, Fenwick Lane 3,800, Sorrel Vale 3,200. Six exceed 4,000. Forecast peak turnover ranks Harrow Quay > Kellet Road
-  (1.22×) > Tamsin Creek > Orwell Square > Wattle Grove > Brindle Park.
-* Logged fill: chain 0.84; stores 0.81, 0.90, 0.78, 0.86, 0.95, 0.82, 0.84, 0.80 in the order above. Wattle Grove's own-pool share is 0.21
-  and its borrowed share 0.74; Tamsin Creek borrows nothing.
-* Peak shared-block share of borrowed hours: 0.80 at every west-cluster store and 0.40 at every east-cluster store. Wattle Grove lands at
-  3,420 ± 2 unfilled hours; Brindle Park, the rung-3 runner-up, at 1,707.
-* Rung leaders are Harrow Quay, Kellet Road, Tamsin Creek and Wattle Grove, with margins of 1.22×, 1.26×, 1.41× and 2.00×.
+  none. Forecast peak roster gaps (hours): Harrow Quay 5,000, Kellet Road 8,000, Tamsin Creek 6,500, Orwell Square 5,700, Wattle Grove 5,300,
+  Brindle Park 4,400, Fenwick Lane 3,800, Sorrel Vale 3,200. Six exceed 4,000. Forecast peak turnover ($M): 15.4, 12.6, 10.4, 9.6, 8.2, 7.8,
+  6.9, 6.0 in the same order.
+* Logged fill (own + borrowed): Harrow Quay 0.75 + 0.06, Kellet Road 0.86 + 0.04, Tamsin Creek 0.78 + 0, Orwell Square 0.16 + 0.70, Wattle
+  Grove 0.21 + 0.74, Brindle Park 0.56 + 0.26, Fenwick Lane 0.70 + 0.14, Sorrel Vale 0.72 + 0.08; chain 0.84.
+* Peak shared-block share of borrowed hours: 0.80 at every west-cluster store and 0.40 at every east-cluster store. Unfilled hours at rung
+  3: Wattle Grove 3,400 ± 2, Orwell Square 2,394, Brindle Park 1,707, Tamsin Creek 1,430.
+* Half-applied constructions: haircut or log share names Tamsin Creek (1.20×); chain-wide share names Orwell Square (1.21×); no borrowed
+  cover ties Orwell Square and Wattle Grove at 4,000 and the tie-break names Orwell Square (turnover 1.17×).
 * 0 of 1,184 shared-block cross-store offers accepted, 61.0% of the other 10,898. Shared-block share in the log is 9.8% overall and under
-  15% in every store-week except the twin pair's. The twins are identical on every visible request and pool column.
+  15% in every store-week except the twin weeks. The twin weeks are identical on every visible request and pool column.
 * Penalty classes, night-fill shifts and transfers touch no quantity in the crew build.

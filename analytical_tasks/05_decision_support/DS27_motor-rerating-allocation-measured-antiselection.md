@@ -58,13 +58,14 @@ the claims.
   the 14 under-priced areas on rung 2. It never enters an intermediate allocation. R07-U and R03-U lead every rung below 3 and leave at
   rung 3.
 * **Discriminator dominance.** R07-U carries a 1.21× deficiency advantage over R02-R into rung 3 (91% against 75%). R02-R's measured gain
-  per euro is 4.4× R07-U's (0.83 against 0.19), more than 1.2 × 1.21 = 1.45.
+  per euro is 4.4× R07-U's (0.83 against 0.19), against the required 1.2 × 1.21 = 1.45 and well past the 1.89 that headroom asks.
 * **Figure.** Rungs 0 to 2 book €17.1M to €17.9M, because a static book turns every euro into result. The answer, €11.5M, sits 33% below
   the nearest of them. The six rung-2 areas, priced on the measured response, add €8.0M.
-* **Partial correction priced (L3).** Measuring lapse but treating leavers as average risks makes the aggregator areas look sound and
-  names a set with R03-U in place of R14-U at €14.6M (+27%). The pricing manual's planning elasticity, applied uniformly, gives €15.1M
-  (+31%). Measuring both effects but pooling the channels at the book's 34% aggregator share keeps the rung-2 areas and books €9.4M (18%
-  below). Half the insight lands no nearer.
+* **Partial correction priced (L3).** No half-applied response funds the answer's seven. Measuring lapse but treating leavers as average
+  risks makes the aggregator areas look sound and funds a set with R03-U in place of R14-U at €14.6M (+27%): R03-U adds €2.1M under that
+  reading against R14-U's €1.6M (1.3×). The pricing manual's planning elasticity, applied uniformly, keeps the rung-2 areas and books
+  €15.1M (+31%), and measuring both effects but pooling the channels at the book's 34% aggregator share keeps them too and books €9.4M (18%
+  below): a response the same in every area leaves the deficiency order standing, R07-U 1.21× ahead of R02-R.
 * **Grid.** Grain (region, area) × claims basis (claimant rows, incidents with credibility) × response (none, manual elasticity, lapse
   only, pooled, by channel) = 20 cells. Only area grain, incidents with credibility and the channel response give the seven areas at
   €11.5M. The nearest wrong figure is the region-grain channel cell at €10.3M (10.4% below), which needs the coarse grain the manual's

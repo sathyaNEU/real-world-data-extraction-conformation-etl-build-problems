@@ -49,16 +49,17 @@ becomes the heaviest link in the county.
 | 0 | No expansion: 12-hour counts × length | L07, harbour road (1.26× L02) | The counts as taken | The guidance: short counts are expanded before they are compared |
 | 1 | One national factor set for all minor roads | L19, college link (1.24× L07) | The national tables applied evenly | The national tables' own regional totals miss by 6% to 14% under one set |
 | 2 | Category × region groups, the published convention | L11, ring-road spur (1.25× L23) | Every regional total ties within 1% | The clause: it returns 19 of 46 counters' published flows |
-| 3 | **Decisive:** three rhythm classes assigned by each count's 08:00-to-12:00 hourly ratio, factors from each class's counters | **L23, reservoir B-road (1.52× L11)** (5th of 30 on rung 0) | — | — |
+| 3 | **Decisive:** three rhythm classes assigned by each count's 08:00-to-12:00 hourly ratio, factors from each class's counters | **L23, reservoir B-road (1.62× L11)** (5th of 30 on rung 0) | — | — |
 
 * **Position table.** L23 ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (1.25× behind L11, its only second place), and leads only
   rung 3.
-* **Discriminator dominance.** L11 carries 1.25× into rung 3. The class factors raise L23's flow by 1.58× (leisure, counted in November)
-  and lower L11's by 0.83× (commuter, counted in October), an edge of 1.90×, above the 1.2 × 1.25 = 1.50 needed. The product, 1.90 / 1.25 =
-  1.52, is L23's final margin.
+* **Discriminator dominance.** L11 carries 1.25× into rung 3. The class factors raise L23's flow by 1.62× (leisure, counted in November)
+  and lower L11's to 0.80× (commuter, counted in October), an edge of 2.03×, against the 1.2 × 1.25 = 1.50 needed (1.35× headroom). The
+  product, 2.03 / 1.25 = 1.62, is L23's final margin.
 * **Partial correction priced (L3).** A solver who builds rhythm classes but assigns links by the nearest counter's class (a lookup by
-  location) puts L23 with the commuter counter two miles away and ranks L11 first again. A solver who classifies by the noon-to-17:00
-  ratio splits leisure from commuter but merges through routes with commuters and ranks L19 first.
+  location) puts L23 with the commuter counter two miles away and ranks L11 first again, 1.25× L23. A solver who classifies by the
+  noon-to-17:00 ratio puts the reservoir road, whose visitors leave around five, among the through routes and ranks L19 first, 1.18×
+  L23. Neither half lands on L23.
 * **Grid.** Eight constructions: no expansion, the national set, category × region by register, category × region by nearest counter,
   and rhythm classes assigned by nearest counter, by the noon-to-17:00 ratio, by count-size band, or by each count's own 08:00-to-12:00
   ratio. Seven rank L07, L19 or L11 first; only the last ranks L23 first.
@@ -139,6 +140,6 @@ parts + 3 files ≈ 79 criteria.
 ## 12. World-building constraints
 
 * Hourly-ratio classes 1.6–2.1, 1.2–1.4 and 0.7–1.0 with empty gaps; 46 counters split 19 / 11 / 16.
-* First links: L07 (1.26×), L19 (1.24×), L11 (1.25×), L23 (1.52×). L23 is 5th, 4th and 2nd on rungs 0 to 2.
+* First links: L07 (1.26×), L19 (1.24×), L11 (1.25×), L23 (1.62×). L23 is 5th, 4th and 2nd on rungs 0 to 2.
 * Counters reproduced: 46 / 31 / 19 / 11. C14 and C31 match on every register column.
 * Condition-index versions and resurfacing schemes never touch a count, a counter or a length.

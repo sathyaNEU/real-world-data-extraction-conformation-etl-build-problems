@@ -50,22 +50,23 @@ bridge those clusters, so the co-member graph reaches furthest from Embedded.
 | 0 | Two-hop reach approximated from the dashboard's mean connections per member (members × k̄ × (k̄ − 1)) | A, Web front-end (1,630k) | The platform's own network statistic, a textbook reach estimate | The connections file: actual two-hop counts weight neighbours by their own degree |
 | 1 | Exact distinct two-hop reach on the connection graph (Pattern D, the edge grain) | B, Data & ML (1,940k, 1.28× Web front-end) | Counts the graph itself and captures the hubs the paradox predicts | The data guide: automation and organisation accounts connect in bulk and cannot accept an invitation |
 | 2 | Hygiene: two-hop reach on person accounts only | D, Infrastructure (1,150k, 1.31× Data & ML) | Clean, exact and reconciled to the dashboard's person counts | The ledger: no invitation between non-co-members ever settled |
-| 3 | **Decisive:** two-hop reach on connection pairs sharing an organisation on the seeding date, person accounts only | **E, Embedded systems (640k, 1.41× Infrastructure)** (5th of 6 on rung 0) | — | — |
+| 3 | **Decisive:** two-hop reach on connection pairs sharing an organisation on the seeding date, person accounts only | **E, Embedded systems (640k, 1.56× Mobile)** (5th of 6 on rung 0) | — | — |
 
 * **Position table.** Embedded ranks 5th on rung 0 (790k), 4th on rung 1 (980k) and 3rd on rung 2 (860k), and leads only rung 3. Rung
-  leaders beat their runners-up by 1.25×, 1.28×, 1.31× and 1.41×.
+  leaders beat their runners-up by 1.25×, 1.28×, 1.31× and 1.56×.
 * **Discriminator dominance.** Infrastructure carries 1.34× (1,150k against 860k) into rung 3. The share of each community's rung-2 reach
-  that survives the co-member construction is 0.744 for Embedded against 0.396 for Infrastructure, an edge of 1.88×, above the 1.2 × 1.34
-  = 1.60 needed. The product, 1.88 / 1.34 = 1.41, is the final margin.
+  that survives the co-member construction is 0.744 for Embedded against 0.340 for Infrastructure, an edge of 2.19×, against the 1.2 ×
+  1.34 = 1.60 needed (1.37× headroom). The product, 2.19 / 1.34 = 1.63, is Embedded's lead over Infrastructure on rung 3.
 * **Partial correction priced (L3).** A solver who builds co-membership but ignores `left_at` (ever co-members) names Infrastructure at
-  1,010k against Embedded's 700k, because infrastructure engineers change employers often and keep ex-colleague connections. A solver who
-  instead transfers each inviter community's settled rate from the ledger onto rung-2 reach also names Infrastructure: the onboarding
-  cohorts' embedded inviters were hobbyists outside organisations and settled 11%, against 24% for infrastructure inviters. Both partials
-  land on rung 2's leader, no nearer than rung 2.
+  1,010k, 1.44× Embedded's 700k, because infrastructure engineers change employers often and keep ex-colleague connections. A solver who
+  instead transfers each inviter community's settled rate from the ledger onto rung-2 reach names Infrastructure at 276k, 1.75× Web
+  front-end, with Embedded last: the onboarding cohorts' embedded inviters were hobbyists outside organisations and settled 11%, against
+  24% for infrastructure inviters. Both partials land on rung 2's leader, and neither touches the answer.
 * **Grid.** Counting (dashboard approximation or exact) × hygiene (off or on) × invitation population (all connections, ever co-members,
   co-members on the seeding date) = 12 cells. Eleven name Web front-end, Data & ML or Infrastructure. The nearest wrong cell is exact
   counting on the seeding-date co-member graph without hygiene: CI automation accounts are members of the large infrastructure
-  organisations, so Infrastructure leads at 760k against 655k. Reaching it costs skipping a documented exclusion after finding the rule.
+  organisations, so Infrastructure leads at 760k, 1.16× Embedded's 655k. Reaching it costs skipping a documented exclusion after finding
+  the rule.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -148,7 +149,7 @@ chart parts + 3 files ≈ 77 criteria.
 ## 12. World-building constraints
 
 * Rung figures (thousands): rung 0 A 1,630, C 1,300, B 1,140, D 1,020, E 790, F 600; rung 1 B 1,940, A 1,520, D 1,210, E 980, C 890,
-  F 610; rung 2 D 1,150, B 880, E 860, A 790, C 700, F 520; rung 3 E 640, D 455, C 410, A 380, B 300, F 260.
+  F 610; rung 2 D 1,150, B 880, E 860, A 790, C 700, F 520; rung 3 E 640, C 410, D 391, A 380, B 300, F 260.
 * Ledger: 61,300 invitations, 23,950 co-member (9,820 settled), 37,350 not (0 settled). Co-member rates 40.6% to 41.9% per campaign.
 * Twin campaigns identical on every visible column, settling 4,120 and 1,980. Ever-co-member reach: D 1,010, E 700. No-hygiene
   co-member reach: D 760, E 655.

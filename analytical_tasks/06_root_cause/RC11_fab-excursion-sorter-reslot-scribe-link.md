@@ -58,10 +58,14 @@ excess wafers off the CMP head and puts D2-C at 900.
 * **Discriminator dominance.** The CMP head carries a 1.52× lead into rung 3 (790 against 520). Relinking multiplies D2-C's excess by 1.73 and
   the head's by 0.19, an edge of 9.1×, far above the required 1.2 × 1.52 = 1.82.
 * **Partial correction priced (L3).** A solver who suspects identity problems but links through the lot genealogy table (splits and merges)
-  changes nothing, because re-slotting creates no new lot: it still names C. A solver who finds the sorter and drops re-slotted wafers rather
-  than relinking names D but puts its excess at 558, 38% low, against the committed figure.
-* **Grid.** Grain (lot, wafer) × model (single-factor, joint) × link (lot and slot, genealogy, scribe id) gives seven feasible builds. Lot builds
-  name A or B, wafer builds on the documented key or the genealogy name C, and only the scribe link names D at 900.
+  changes nothing, because re-slotting creates no new lot: C 790 against B's 560 (1.41×), rung 2's answer. A solver who finds the sorter but
+  drops the re-slotted wafers rather than relinking them throws away the thick wafers, and the thick wafers are D2-C's: 84% of its wafers were
+  re-slotted against 23% of the rest, so its excess falls to 140 and the scanner leads, B 450 against A's 225 (2.0×), rung 1's answer.
+  Scaling the kept 62% back up to all wafers changes no ranking.
+* **Grid.** Grain (lot, wafer) × model (single-factor, joint) × link (lot and slot, genealogy, re-slotted dropped, scribe id) gives ten builds,
+  the link mattering only at wafer grain. Every single-factor build names A, because E3's week mix tops every ratio (1.70 against D2-C's 1.42
+  even on the scribe link); the lot-level joint model names B; wafer-level joint builds name C on the documented key or the genealogy and B
+  with the re-slotted wafers dropped; only the joint model on the scribe link names D, at 900.
 * **The deciding comparison (#20).** D2-C's 900 excess wafers against the scanner's 600 is the sentence the board note carries.
 
 ## 5. Why the decisive rung survives the opponent
@@ -145,7 +149,10 @@ committed candidate, its excess and the runner-up's + 5 named chart parts + 2 fi
 
 * 2,200 excess failing wafers. Lot-level ratios A 1.74, B 1.38, E 1.21, C 1.12, D 1.00; lot-level joint excess B 640, A 310, E 260, C 190, D 0;
   wafer-level on the documented key C 790, B 560, D 520, A 190, E 140; scribe-linked D 900, B 600, A 300, E 250, C 150.
-* 38% of this quarter's wafers re-slotted before CMP; D2-C's wafers are 2.4× more likely than others to be routed to head 3.
+* 38% of this quarter's wafers re-slotted before CMP: 84% of D2-C's wafers against 23% of the rest. D2-C's wafers are 2.4× more likely than
+  others to be routed to head 3.
+* Re-slotted wafers dropped (joint model, wafer level): B 450, A 225, E 190, D 140, C 110. Wafer-level single-factor ratios on the scribe link:
+  A 1.70, D 1.42, B 1.30, E 1.15, C 1.05.
 * Change log: 14 closed excursions, all before the sorter routine; wafer-level joint model 14/14, lot-level joint 8, single-factor 5.
 * L-4471 and L-4519 identical on every lot-level column.
 * SPC sites and engineering states touch no sort result, sorter event or process-history row.

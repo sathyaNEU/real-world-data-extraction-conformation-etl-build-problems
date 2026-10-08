@@ -56,9 +56,10 @@ units. The admissible band is 1,677 ≤ capacity ≤ 1,857, and exactly one mult
   1,750.
 * **Margins.** At 1,750, year-3 utilisation clears 70% by 4.3 points, and year-5 orders sit 5.4 points under 130%. The nearest admissible
   rivals fail by wide margins: 1,500 carries 145% of year-5 orders and 2,000 runs at 65%.
-* **Partial correction priced (L3).** A solver who searches off the slate but only in the 500-unit steps the term sheet uses tests 1,500
-  and 2,500, finds neither passes, and returns to 2,000. A solver who solves utilisation for exactly 70% gets 1,857, which is not admissible
-  and fails no test only because it is not an option.
+* **Partial correction priced (L3).** Every half-opened search lands on a wrong capacity. Searching off the slate only in the term
+  sheet's 500-unit steps tests 1,500 (year-5 orders at 145% of capacity) and 2,500 (52% in year 3), finds neither passes, and files 2,000
+  as the exception, 14.3% above the answer and 5 points under the utilisation test. Solving year-3 utilisation for exactly 70% gives
+  1,857, 6.1% above the answer and not a multiple of 250, so it is not admissible.
 * **Grid.** Forecast (rung 0, rung 1, exact) × choice set (slate, admissible) = 6 cells. Every non-answer cell names a wrong capacity:
   rung 0's forecast with the full set passes everything from 3,000 to 4,250, and the policy's "largest passing" rule then picks 4,250.
 

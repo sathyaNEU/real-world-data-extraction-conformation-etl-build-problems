@@ -60,11 +60,12 @@ reproduced by it and by no trust-level screen.
 * **Position table.** E ranks 5th on rung 0 (z 1.2), 4th on rung 1 (z 1.4) and 3rd on rung 2 (1.2 × the interval), and leads only rung 3.
   Intermediate leaders beat their runners-up by 1.27×, 1.26× and 1.27×.
 * **Discriminator dominance.** C carries a 1.58× CUSUM advantage over E into rung 3 (1.9 against 1.2). On chain-origin excess E holds 38
-  deaths to C's 2, an edge of 19×, far beyond 1.2 × 1.58 = 1.90. E's margin over the rung-3 runner-up G (17) is 2.24×.
+  deaths to C's 2, an edge of 19×, against the 1.2 × 1.58 = 1.90 required, 10.0× headroom. E's margin over the rung-3 runner-up G (17)
+  is 2.24×.
 * **Partial correction priced (L3).** A solver who builds the chains but counts chain deaths by first trust without setting them against
   the first spell's risk names G, the largest sender (66 chain deaths against E's 52, 1.27×), whose chains die at the expected rate. A
   solver who builds chains and credits each death to the trust that held the patient longest names A again, the rung-0 name, because
-  critical-care stays are long. Both land further from E than rung 2 does.
+  critical-care stays are long (31 excess deaths against E's 14, 2.2×). Neither half lands on E.
 * **Grid.** Segment (all spells or remit) × grain (last spell or chain) × chain measure (death count or excess over first-spell risk) gives
   six feasible cells. Last-spell cells name A or B; chain-count cells name G on both segments; chain excess on all spells names A, whose
   post-surgical step-down transfers carry elective deaths the remit excludes. Only chain excess on the remit's segment names E, and the

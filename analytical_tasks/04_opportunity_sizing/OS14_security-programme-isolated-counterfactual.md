@@ -29,7 +29,7 @@ MFA everywhere.
   The difficulty is the comparison the policy's "for the firm" requires, which no table computes.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CISO's view and the convenience table. The ISAC-certified scenario losses times the efficacy table still
-  rank ransomware protection first by 1.45×.
+  rank ransomware protection first by 1.49×.
 * **Instrument repair.** Record every incident at every peer firm perfectly. Gross scenario losses sharpen and still describe firms
   without this firm's controls.
 * **Lens swap.** The naive read is a peer firm with no controls. The answer is this firm with its own chain in place, a different
@@ -39,10 +39,10 @@ MFA everywhere.
 
 A strong solver rejects the three-category convenience table, because the risk register names twelve scenarios and the ISAC publishes at
 that grain. It finds that sample-mean severities reproduce only 31 of the ISAC's 48 cells, refits the tails, reaches 48 of 48 and
-satisfies the clause. Ransomware protection then avoids $18.0M a year and leads by 1.45×. But the ISAC's cells are gross: they describe
+satisfies the clause. Ransomware protection then avoids $17.4M a year and leads by 1.49×. But the ISAC's cells are gross: they describe
 a member before its controls. This firm's email filter passes 60% of phishing attempts, conditional access passes 30% of stolen-credential
-logins, and immutable backups cut ransomware losses by 70%. On top of that chain, ransomware protection avoids $2.9M and MFA $1.7M. Vendor
-access is attacked through suppliers' own accounts, which no current control sees, so it keeps its whole $4.7M.
+logins, and immutable backups cut ransomware losses by 70%. On top of that chain, ransomware protection avoids $2.8M and MFA $1.7M. Vendor
+access is attacked through suppliers' own accounts, which no current control sees, so it keeps its whole $5.2M.
 
 ## 4. The ladder
 
@@ -50,20 +50,23 @@ access is attacked through suppliers' own accounts, which no current control see
 |---|---|---|---|---|
 | 0 | Vendor-claimed efficacy × the convenience table's broad-category expected loss | A, email gateway ($22.0M) | The vendors' claims on the consortium's own category totals | The risk register's twelve scenarios and the ISAC's scenario-level cells: the categories mix scenarios each programme does not touch |
 | 1 | Efficacy table × scenario expected loss, sample-mean severity | B, MFA ($12.9M, 1.35× over C) | The right grain, the class list the register spells out | The clause: sample-mean severity reproduces 31 of 48 ISAC cells |
-| 2 | Efficacy × scenario loss with fitted-tail severity (48 of 48) | C, ransomware protection ($18.0M, 1.45× over B) | Every published cell reproduced, as the policy demands | The SOC chain log: the existing filter, conditional access and backups already pass only 18% of the losses ransomware protection targets |
-| 3 | **Decisive:** each programme's isolated counterfactual, loss with the existing chain less loss with the chain plus the programme, scenario by scenario | **E, vendor-access control** (5th of 5 on rung 0), **$4.7M a year** | — | — |
+| 2 | Efficacy × scenario loss with fitted-tail severity (48 of 48) | C, ransomware protection ($17.4M, 1.49× over A) | Every published cell reproduced, as the policy demands | The SOC chain log: the existing filter, conditional access and backups already pass only 18% of the losses ransomware protection targets |
+| 3 | **Decisive:** each programme's isolated counterfactual, loss with the existing chain less loss with the chain plus the programme, scenario by scenario | **E, vendor-access control** (5th of 5 on rung 0), **$5.2M a year** | — | — |
 
-* **Position table.** Vendor-access control ranks 5th on rung 0, 5th on rung 1 and 4th on rung 2, and leads only rung 3 (1.64× over
+* **Position table.** Vendor-access control ranks 5th on rung 0, 5th on rung 1 and 4th on rung 2, and leads only rung 3 (1.85× over
   ransomware protection).
-* **Discriminator dominance.** Ransomware protection carries a 3.83× advantage into rung 3 ($18.0M against $4.7M). The existing chain leaves
-  vendor access's scenario whole (multiplier 1.00) and ransomware protection's at 0.16, an edge of 6.29×, above the 4.59× floor. Product:
-  6.29 / 3.83 = 1.64.
-* **Partial correction priced (L3).** A solver who prices programmes on the existing chain but keeps sample-mean severities names
-  vendor access at $3.9M (−17.9%). One who applies the chain at the broad-category grain blends the hacking scenarios' multipliers to 0.16
-  and names MFA ($5.4M). One who discounts every programme by the chain's average leaves the ranking at rung 2.
-* **Grid.** Grain (broad, scenario) × severity (sample mean, fitted tail) × basis (gross, on the existing chain) gives 8 cells. Gross cells
-  name the email gateway, MFA or ransomware protection; chain cells name MFA (broad grain, 1.16×) or vendor access at −17.9%. Only the
-  answer cell names vendor access at $4.7M.
+* **Discriminator dominance.** Ransomware protection carries a 3.34× advantage into rung 3 ($17.4M against $5.2M). The existing chain
+  leaves vendor access's scenario whole (multiplier 1.00) and ransomware protection's at 0.16, an edge of 6.18×, 1.54 times the 4.01×
+  floor. Product: 6.18 / 3.34 = 1.85.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong programme. A solver who prices programmes on the
+  existing chain but keeps sample-mean severities names DLP ($2.54M against vendor access's $2.02M, 1.26×), because sample means miss
+  vendor compromise's rare mega-losses. One who applies the chain with one multiplier per broad category blends the access-compromise
+  scenarios to 0.41 and names MFA ($4.73M against ransomware protection's $3.81M, 1.24×). One who discounts every programme by the
+  firm-wide average leaves ransomware protection on top (1.49×), and one who credits only the backups names MFA ($8.85M against the
+  email gateway's $6.66M, 1.33×).
+* **Grid.** Chain grain (none, one firm-wide multiplier, one per broad category, per scenario) × severity (sample mean, fitted tail)
+  gives 8 cells. Unchained and firm-wide cells name MFA (1.35×) or ransomware protection (1.49×); category cells name MFA (1.24×); the
+  scenario chain on sample means names DLP (1.26×). Only the answer cell names vendor-access control.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -84,8 +87,9 @@ access is attacked through suppliers' own accounts, which no current control see
 
 * **Form.** The ISAC's published expected-loss cells (12 scenarios, 2021–2024) and its incident file.
 * **What it pins.** Scenario grain and fitted-tail severity: tails fitted above each scenario's 95th percentile reproduce 48 of 48 cells.
-  Sample means reproduce 31, and every miss runs low in the scenarios with mega-losses, so the total fails too. Broad categories
-  reproduce none.
+  Sample means reproduce 31: they run low where mega-losses are rarely observed (phishing-led ransomware, vendor compromise) and high where
+  one outsized loss sits in a short record, and their total falls 32% short, so they fail in aggregate too. Broad categories reproduce
+  none.
 * **What it is blind to.** The firm's own control chain (above).
 * **Twin pair.** The Wholesale and Retail business units are identical on headcount, revenue band, scenario frequencies and gross ISAC
   losses. MFA would avoid $1.22M a year in Wholesale, which has no conditional access, and $0.55M in Retail, whose conditional access covers
@@ -113,7 +117,7 @@ access is attacked through suppliers' own accounts, which no current control see
   multiplies.
 * **Window.** The log's eighteen months show flat pass-through by quarter; any twelve-month window gives the same multipliers.
 * **Scenario mapping.** Every SOC attempt carries one register scenario, and every programme's efficacy is filed by scenario.
-* **Rounding.** Vendor access avoids $4.704M, mid-bin at $0.1M.
+* **Rounding.** Vendor access avoids $5.208M (0.84 × $6.2M), which rounds to $5.2M with $0.04M to the nearer bin edge.
 
 ## 9. Prompt sketch and deliverables
 
@@ -148,9 +152,11 @@ figure, the runner-up and the margin + 5 named chart parts + 3 files ≈ 62 crit
 ## 12. World-building constraints
 
 * Scenario losses ($M a year; sample mean / fitted tail): phishing-led takeover 10.5 / 9.0; phishing-led ransomware 11.0 / 24.0;
-  remote-access ransomware 5.0 / 6.0; vendor compromise 4.6 / 5.6; insider exfiltration 3.4 / 3.0.
+  remote-access ransomware 5.0 / 5.0; vendor compromise 2.4 / 6.2; insider exfiltration 3.6 / 3.0. The convenience table's categories:
+  access compromise (takeover, remote-access ransomware, vendor compromise and credential stuffing, $24.0M), malware ($20.0M) and insider
+  ($10.0M); vendor claims of 50% on access and malware, 75% on access, 82.5% on malware, 60% on insider and 10% on access give rung 0.
 * Efficacy: email gateway 0.5 and 0.3 on the two phishing scenarios; MFA 0.85 takeover, 0.8 remote access; ransomware protection 0.6 on
   both ransomware scenarios; DLP 0.2 takeover, 0.6 insider; vendor access 0.84 vendor compromise.
-* Chain multipliers: 0.18, 0.18, 0.075, 1.00, 1.00. Rung leaders A, B, C, E at 1.22×, 1.35×, 1.45×, 1.64×.
+* Chain multipliers: 0.18, 0.18, 0.075, 1.00, 1.00. Rung leaders A, B, C, E at 1.22×, 1.35×, 1.49×, 1.85×.
 * Wholesale and Retail match on every ISAC-visible column.
 * Simulation clicks and patch records never touch incidents, cells or the SOC log.

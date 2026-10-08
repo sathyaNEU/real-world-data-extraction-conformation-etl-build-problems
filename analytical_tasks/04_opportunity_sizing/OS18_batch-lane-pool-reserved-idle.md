@@ -19,7 +19,7 @@ A cloud provider will launch a "batch lane" that guarantees customers a number o
 launches on one host pool (an availability zone and hardware generation), and the charter shortlists five: e1-gen6, e2-gen5, e2-gen6,
 e1-gen5 and w1-gen6. The lane's SLA guarantees the cores at 95% of hourly start times. The capacity dashboard reports average idle
 cores by availability zone. A month of five-minute host telemetry is in the pack, with the reservation ledger and the hardware inventory.
-Last quarter the capacity team ran 400 six-hour test jobs on sampled hosts. The product manager points at e1's idle.
+Last quarter the capacity team ran 400 six-hour test jobs on sampled hosts. The product manager points at e1, the biggest zone.
 
 ## 2. Gate G: why this is legal
 
@@ -47,7 +47,7 @@ cores, and w1-gen6, with no reservation, guarantees 3,896.
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | The dashboard's zone idle share × each pool's cores | A, e1-gen6 (8,560 cores) | The capacity team's own planning figure, on the hardware inventory | The charter launches on one pool, and each zone's figure mixes generations, including e1's and w1's busy gen-4 pools |
+| 0 | The dashboard's zone idle share × each pool's cores | A, e1-gen6 (8,560 cores) | The capacity team's own planning figure, on the hardware inventory | The charter launches on one pool and excludes gen-4 hosts, which lack local scratch disks; each zone's figure blends in e1's and w1's busy gen-4 pools |
 | 1 | Each pool's average idle cores, from the telemetry | B, e2-gen5 (8,000, 1.25× over A) | The right grain, from the raw trace | The test jobs: average idle predicts 271 of 400 outcomes, and e2-gen5's idle is bursty |
 | 2 | Each pool's idle available for six hours at 95% of start times | C, e2-gen6 (5,200, 1.33× over E) | Predicts all 400 test outcomes and matches the SLA | The reservation ledger: 3,380 of e2-gen6's guaranteed idle cores are an unused failover reservation |
 | 3 | **Decisive:** six-hour guaranteed idle less unused reserved cores, by pool | **E, w1-gen6** (5th of 5 on rung 0), **3,896 cores** | — | — |
@@ -55,9 +55,11 @@ cores, and w1-gen6, with no reservation, guarantees 3,896.
 * **Position table.** w1-gen6 ranks 5th on rung 0, 5th on rung 1 and 2nd on rung 2 (1.33× behind e2-gen6), and leads only rung 3 (1.39×
   over e1-gen5).
 * **Discriminator dominance.** e2-gen6 carries a 1.33× advantage into rung 3 (5,200 against 3,900). Its sellable share is 0.35 against
-  w1-gen6's 1.00, an edge of 2.86×, above the 1.60× floor. Product: 2.86 / 1.33 = 2.14.
-* **Partial correction priced (L3).** A solver who subtracts reservations from average idle names e2-gen5 (8,000). One who subtracts them
-  from zone-level figures names e1-gen6. One who treats a reservation as releasable because it went unused all month lands back on rung 2.
+  w1-gen6's 1.00, an edge of 2.86×, 1.79 times the 1.60× floor. Product: 2.86 / 1.33 = 2.14.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong pool. A solver who subtracts reservations from
+  average idle names e2-gen5 (8,000 against e1-gen6's 5,320, 1.50×). One who subtracts them from zone-level figures names e1-gen6 (7,880
+  against 5,360 on average idle, 1.47×; 3,850 against 2,210 on the window, 1.74×). One who treats a reservation as releasable because it
+  went unused all month lands back on e2-gen6 (5,200 against 3,900, 1.33×).
 * **Grid.** Grain (zone, pool) × availability (average, six-hour window) × reservations (kept, subtracted) gives 8 cells. Zone cells name
   e1-gen6 (1.16× to 1.74×); pool cells name e2-gen5, e2-gen5, e2-gen6 and the answer. Only the answer cell names w1-gen6.
 
@@ -89,11 +91,11 @@ cores, and w1-gen6, with no reservation, guarantees 3,896.
 
 ## 7. Pins, voices and the licensed wrong basis
 
-* **Filed pins.** The charter: the lane launches on one host pool, named by zone and generation, and is sized on the cores it can guarantee
-  to customers' jobs. The product sheet: jobs run six hours. The SLA: capacity is guaranteed at 95% of hourly start times. The pricing
-  note: guaranteed cores are sold in blocks of 8.
+* **Filed pins.** The charter: the lane launches on one host pool, named by zone and generation (gen-4 hosts, without local scratch disks,
+  are excluded), and is sized on the cores it can guarantee to customers' jobs. The product sheet: jobs run six hours. The SLA: capacity
+  is guaranteed at 95% of hourly start times. The pricing note: guaranteed cores are sold in blocks of 8.
 * **Empirical pins.** The window rule, from the test jobs. Unused reserved cores, from the ledger.
-* **Voices.** The product manager: "e1 has more idle cores than anywhere in the fleet." The SRE lead: "Idle is idle. The scheduler will
+* **Voices.** The product manager: "e1 is our biggest zone and a quarter of it sits idle." The SRE lead: "Idle is idle. The scheduler will
   find it."
 * **Licensed wrong basis.** The charter records that the finance review sizes new capacity products on the dashboard's average idle cores
   and will present that sizing.
@@ -110,7 +112,7 @@ cores, and w1-gen6, with no reservation, guarantees 3,896.
 ## 9. Prompt sketch and deliverables
 
 > We launch the six-hour batch lane on one host pool next quarter and I need to tell the launch review which, and how many cores we can
-> promise, in blocks of 8. Our product manager points at e1, which has the most idle cores in the fleet. Put the answer in a sentence and
+> promise, in blocks of 8. Our product manager wants it in e1, our biggest zone. Put the answer in a sentence and
 > send `pool_sizing.xlsx`, a chart `pool_idle_layers.png`, and a one-page `launch_review.pdf`.
 
 * `pool_sizing.xlsx` — each pool on four bases, the window build and the reservation subtraction, the failure sheet (ask A) and the power

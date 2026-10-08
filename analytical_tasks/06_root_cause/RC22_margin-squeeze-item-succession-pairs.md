@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #11 beats the headline trap, misses the quiet one · #7 uses the ready-made measure · #18 joins only on the visible key |
 | Calibration form | Pilot log: last year's cost-challenge desk in two categories, every flagged increase challenged, with outcomes and the filed decisions |
-| Driving force | The cost monitor flags price increases on continuing items, freight surcharges, promotional funding changes and shrink, each correctly. A supplier that delists an item and lists a slightly smaller pack at a higher unit cost creates no increase on any continuing item. The monitor books the margin lost to "range and mix". Only pairing each delisted item with the new item that took its planogram slot, a pair the monitor cannot express, shows those pairs carrying 0.40 of the 1.60 points lost. |
+| Driving force | The cost monitor flags price increases on continuing items, freight surcharges, promotional funding changes and shrink, each correctly. A supplier that delists an item and lists a slightly smaller pack at a higher unit cost creates no increase on any continuing item. The monitor books the margin lost to "range and mix". Only pairing each delisted item with the new item that took its planogram slot, a pair the monitor cannot express, shows those pairs carrying 0.44 of the 1.60 points lost. |
 
 ## 1. Situation
 
@@ -37,32 +37,34 @@ old ones (D). Last year a cost-challenge desk piloted in two categories.
 ## 3. The driving force
 
 A strong solver treats the monitor as a starting point. Many "list-price" increases turn out to be suppliers moving to delivered pricing (freight
-folded into the list price), and the supplier terms log says which, so 0.20 points move to freight. Freight's fourth quarter also carries the
+folded into the list price), and the supplier terms log says which, so 0.22 points move to freight. Freight's fourth quarter also carries the
 logistics provider's annual volume rebate, accrued through the year and reversed in the fourth quarter when the volume target was missed; the
-rebate ledger shows it as a timing item, not a cost change, and 0.26 points come out. Promotional funding then leads, and every check passes.
-The range-and-mix bucket still holds 0.44 points, read as customers trading into new products at lower margins. In 61 cases a supplier delisted an
+rebate ledger shows it as a timing item, not a cost change, and 0.22 points come out. Promotional funding then leads, and every check passes.
+The range-and-mix bucket still holds 0.50 points, read as customers trading into new products at lower margins. In 61 cases a supplier delisted an
 item and, the same week, a new item from the same supplier took its exact planogram slot: the same product in a pack 8–12% smaller at the old pack's
-cost, a higher unit cost the monitor never compares because the successor has no history. Linked through the slot, those pairs took 0.40 points.
+cost, a higher unit cost the monitor never compares because the successor has no history. Linked through the slot, those pairs took 0.44 points.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | The monitor's categories, as booked | A, list prices (0.46 pts) | The retailer's own reconciled decomposition, the head of trading's story | The supplier terms log: 0.20 points of "list-price" increases are suppliers moving to delivered pricing |
-| 1 | Delivered-pricing conversions moved to freight | B, freight and energy (0.46) | The loud decoy beaten with its own control; freight now carries what it really is | The rebate ledger: 0.26 points of the fourth quarter's freight are the annual rebate reversed, a timing item |
-| 2 | The rebate reversal removed as a timing item | C, promotional funding (0.32) | The quiet contamination found with its own control, every category reconciled | The planogram history: 61 delisted items were replaced in their slots the same week by the same supplier's smaller packs |
-| 3 | **Decisive:** delisted and new items paired through the planogram slot, the successor's unit cost compared with its predecessor's | **D, increases via successions (0.40)** (5th of 5 on rung 0) | — | — |
+| 0 | The monitor's categories, as booked | A, list prices (0.46 pts) | The retailer's own reconciled decomposition, the head of trading's story | The supplier terms log: 0.22 points of "list-price" increases are suppliers moving to delivered pricing |
+| 1 | Delivered-pricing conversions moved to freight | B, freight and energy (0.46) | The loud decoy beaten with its own control; freight now carries what it really is | The rebate ledger: 0.22 points of the fourth quarter's freight are the annual rebate reversed, a timing item |
+| 2 | The rebate reversal removed as a timing item | C, promotional funding (0.28) | The quiet contamination found with its own control, every category reconciled | The planogram history: 61 delisted items were replaced in their slots the same week by the same supplier's smaller packs |
+| 3 | **Decisive:** delisted and new items paired through the planogram slot, the successor's unit cost compared with its predecessor's | **D, increases via successions (0.44)** (5th of 5 on rung 0) | — | — |
 
 * **Position table.** D ranks 5th on rungs 0–2, where no category can hold it, and leads only rung 3. Rung leaders beat their runners-up by
-  1.44×, 1.44×, 1.23× and 1.25×.
-* **Discriminator dominance.** Promotional funding carries 0.32 points into rung 3 and D carries none. The pairing moves 0.40 points out of
-  the range-and-mix bucket, 1.25× promotional funding's figure against the 1.2× floor; the bucket keeps 0.04 points of genuine mix.
-* **Partial correction priced (L3).** A solver who suspects shrinkflation and pairs delisted and new items by brand and description finds 140
-  candidate pairs, most of them range changes with no common slot, and books 0.71 points to D, 78% high. One who pairs only items sharing a
-  product code prefix finds 9 pairs, books 0.06 and names C.
+  1.64×, 1.64×, 1.17× and 1.57×.
+* **Discriminator dominance.** Promotional funding carries 0.28 points into rung 3 and D carries none. The pairing moves 0.44 points out of
+  the range-and-mix bucket, 1.57× promotional funding's figure, 1.31 times the 1.2× floor; the bucket keeps 0.06 points of genuine mix.
+* **Partial correction priced (L3).** Every half-built pairing leaves promotional funding in front. A solver who suspects shrinkflation and
+  pairs delisted and new items by brand and description finds 140 candidate pairs but only 17 of the 61 successions, because 44 successors
+  were relaunched under a new name; the rest are range changes with no common slot, and D comes to 0.16 points (0.20 counting increases
+  only) against C's 0.28, naming C (1.40× at the closest). One who pairs only items sharing a product code prefix finds 9 pairs, books 0.06
+  and names C (4.7×).
 * **Grid.** Freight reassignment (off, on) × rebate timing (in, out) × pairing (none, by description, by prefix, by slot) gives sixteen builds.
-  Without pairing they name A, B or C; prefix pairing names A, B or C; description pairing names D at an inflated figure; slot pairing names D
-  at 0.40 only with both earlier corrections, and A or B otherwise, because list prices (0.46) or freight (0.46) then still lead.
+  Without pairing they name A, B or C, and description or prefix pairing changes none of those names. Slot pairing names D only with both
+  earlier corrections; without either, list prices or freight (0.46) still edge its 0.44 (1.05×), the nearest wrong cells.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -142,8 +144,9 @@ cause, its points, the pair count and the runner-up + 5 named chart parts + 2 fi
 
 ## 12. World-building constraints
 
-* Squeeze 1.60 points: monitor categories A 0.46, B 0.26, C 0.32, E 0.12, range and mix 0.44; delivered pricing moves 0.20 from A to B; the
-  rebate reversal is 0.26 of B; succession pairs 0.40 of range and mix.
-* 61 slot pairs, packs 8–12% smaller at the predecessor's pack cost; description matching finds 140 candidates, prefix matching 9.
+* Squeeze 1.60 points: monitor categories A 0.46, B 0.24, C 0.28, E 0.12, range and mix 0.50; delivered pricing moves 0.22 from A to B; the
+  rebate reversal is 0.22 of B, leaving freight's own change at 0.02; succession pairs 0.44 of range and mix, genuine mix 0.06.
+* 61 slot pairs, packs 8–12% smaller at the predecessor's pack cost, 44 of the successors under a new name; description matching finds 140
+  candidates including 17 successions and books D 0.16 (0.20 counting increases only); prefix matching finds 9 and books 0.06.
 * Cereal and pet food identical on every monitor column.
 * Multi-buy lines and cross-dock rows touch no invoice cost, planogram slot or item-master pack size.

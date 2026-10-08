@@ -11,7 +11,7 @@
 | Gate G mechanism | signal_vs_noise_or_hold, with method_or_model_selection |
 | Measured traps engaged | #26 picks a window across a documented confounder · #1 reports a failed back-test, ships anyway · #14 coarsens the segment it was asked about |
 | Calibration form | Retry or revision log: six rounds of the regional authority's retiming evaluations, 14 corridor retimings with predicted savings, before-and-after daily travel times, control corridors, and whether each plan stood or was reverted |
-| Driving force | The best retiming the delay model finds saves 4.1% of corridor travel time. The authority's evaluations compare 20 school days either side of the summer break, and term-to-term shifts move every corridor, retimed or not. In the revision log, a plan stood only when its saving beat twice the spread of the untouched control corridors, 5.2%. Nothing under 10.4% can be confirmed, and an unconfirmed plan is reverted. |
+| Driving force | The best retiming the delay model finds saves 6.0% of corridor travel time. The authority's evaluations compare 20 school days either side of the summer break, and term-to-term shifts move every corridor, retimed or not. In the revision log, a plan stood only when its saving beat twice the spread of the untouched control corridors, 5.2%. Nothing under 10.4% can be confirmed, and an unconfirmed plan is reverted. |
 
 ## 1. Situation
 
@@ -24,7 +24,7 @@ evaluation can detect. The consultant has sized the cycle on hourly volumes.
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: the hourly and 15-minute counts, the recounts, the delay model, the probe travel times and the
-  revision log. No stakeholder read is overturned: the queues are real, and the model's best plan does save 4.1%. The difficulty is whether
+  revision log. No stakeholder read is overturned: the queues are real, and the model's best plan does save 6.0%. The difficulty is whether
   that saving can ever be shown.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the consultant's table and every voice. The delay model on the design flows still finds a better cycle, and
@@ -37,7 +37,7 @@ evaluation can detect. The consultant has sized the cycle on hourly volumes.
 ## 3. The driving force
 
 A strong solver sizes the cycle on the timing standard's design period (the peak 15 minutes of the school-start surge, not the hour),
-uses the recounted volumes, finds the delay model's best cycle (112 s, saving 4.1%), and applies the standard's test. Measured as
+uses the recounted volumes, finds the delay model's best cycle (112 s, saving 6.0%), and applies the standard's test. Measured as
 within-term day-to-day variation in the probe archive, the evaluation's noise is small: 20 days either side gives a detectable change of
 3.6%, and the plan passes. But the evaluation does not compare days within a term. It compares June with September, across the summer
 break, and between terms school traffic shifts on every corridor: new intakes, changed bell times, moved bus routes. The authority
@@ -51,29 +51,33 @@ control spread: 14 of 14. Twice 5.2% is 10.4%, and no cycle the controller can r
 |---|---|---|---|---|
 | 0 | Webster's cycle on the consultant's hourly volumes | 100 s (+11.1%) | The textbook method on the table the consultant supplied | The timing standard: the design period is the peak 15 minutes of the school-start surge |
 | 1 | Webster on peak 15-minute flows, at the controller's 120 s maximum | 120 s (+33.3%) | The standard's own design period, sized for the surge | The count revision log: two intersections were recounted after camera faults, and the recount supersedes the first count |
-| 2 | Hygiene: recounted flows, the delay model's best cycle, and the standard's test with noise from within-term daily travel times | 112 s (+24.4%), saving 4.1% against a detectable 3.6% | Correct flows, the model's optimum, and the filing test passed | The revision log: the within-term noise rule reproduces 9 of 14 past outcomes, and every miss is a plan it would have confirmed that the authority reverted |
-| 3 | **Decisive:** the detectable change is twice the control corridors' spread in the authority's evaluations, the rule that reproduces all 14 outcomes | **90 s, kept: 4.1% against a detectable 10.4%** | — | — |
+| 2 | Hygiene: recounted flows, the delay model's best cycle, and the standard's test with noise from within-term daily travel times | 112 s (+24.4%), saving 6.0% against a detectable 3.6% | Correct flows, the model's optimum, and the filing test passed | The revision log: the within-term noise rule reproduces 9 of 14 past outcomes, and every miss is a plan it would have confirmed that the authority reverted |
+| 3 | **Decisive:** the detectable change is twice the control corridors' spread in the authority's evaluations, the rule that reproduces all 14 outcomes | **90 s, kept: 6.0% against a detectable 10.4%** | — | — |
 
 * **Figure shape.** The answer is the minimum cell: every construction that files a new plan lands at least 11.1% above 90 s.
-* **Blocking quantity.** The detectable change is 10.4%, 2.5× the best predicted saving of 4.1%. The hold is falsifiable: a predicted
-  saving above 10.4%, or a control spread under 2.05%, would have filed 112 s.
-* **Discriminator dominance.** Rung 2's plan clears its test by 1.14× (4.1 against 3.6). The control spread multiplies the detectable change
-  by 2.9× (10.4 against 3.6), so the plan lands at 0.39 of the line, a margin no flow or model convention closes.
-* **Partial correction priced (L3).** A solver who uses the control corridors but keeps their non-school days in the windows finds a spread
-  of 3.1% and a detectable 6.2%: the right verdict on a blocking quantity 40% low. One who scales within-term noise for 20 days without the
-  cross-term shift stays at 3.6% and files 112 s.
-* **Grid.** Design period (hour, peak 15) × counts (first, recount) × noise (within-term, controls with all days, controls on school days)
-  = 12 cells. The four within-term cells file 100, 118, 120 or 112 s. The four all-days control cells hold on a 6.2% floor. The four
-  school-day control cells hold at 10.4%, and only the peak-15, recount cell among them states the best saving correctly as 4.1% (the
-  hourly cells put it at 2.6%, the first-count cells at 4.9%).
+* **Blocking quantity.** The detectable change is 10.4%, 1.73× the best predicted saving of 6.0%. The hold is falsifiable: a predicted
+  saving above 10.4%, or a pooled control spread under 3.0%, would have filed 112 s.
+* **Discriminator dominance.** Rung 2's plan clears its test by 1.67× (6.0 against 3.6). The control spread multiplies the detectable
+  change by 2.9× (10.4 against 3.6), against the required 1.2 × 1.67 = 2.0 and past the 2.6 that headroom asks, so the plan lands at 0.58
+  of the line.
+* **Partial correction priced (L3).** No half-applied test keeps 90 s; each files 112 s (+24.4%). A solver who requires the plan to beat
+  the control spread once, not twice, finds 5.2% and files, 1.15× clear; the log refutes that rule on three retimings that beat one spread
+  and were reverted. One who uses the control corridors but tests against their pooled day-to-day variation, not their corridor-to-corridor
+  change across the break, finds 3.4% and files. One who scales within-term noise for 20 days without the cross-term shift stays at 3.6%
+  and files.
+* **Grid.** Design period (hour, peak 15) × counts (first, recount) × noise (within-term, the control spread once, twice the control
+  spread) = 12 cells. The eight cells without the doubled spread file a new cycle at 100, 118, 120 or 112 s. The four with it hold at
+  10.4%, and only the peak-15, recount cell among them states the best saving correctly as 6.0% (the hourly cells put it at 5.5% and
+  5.7%, the peak-15, first-count cell at 7.2%).
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The standard says a plan must beat the change the evaluation can detect. The authority's protocol says what is
    compared. No document says how big that change is, or that the summer break sets it.
-2. **The log pins it, as a construction.** Twice each round's control-corridor spread reproduces 14 of 14 past outcomes; within-term noise
-   reproduces 9, and its misses all run the same way (plans it would confirm that were reverted). The spread is built from before-and-after
-   differences on corridors nobody retimed, school days only, round by round, so no setting of the day-to-day model reaches it.
+2. **The log pins it, as a construction.** Twice each round's control-corridor spread reproduces 14 of 14 past outcomes; the spread taken
+   once reproduces 11, and within-term noise 9, every miss running the same way (plans the rule would confirm that were reverted). The
+   spread is built from before-and-after differences on corridors nobody retimed, school days only, round by round, so no setting of the
+   day-to-day model reaches it.
 3. **No arithmetic symptom.** Counts, recounts, probe times and the delay model reconcile, and every rung's plan improves the model's
    delay.
 4. **Not a row predicate.** The floor is a standard deviation across control corridors of differences between two windows' means, per
@@ -88,10 +92,10 @@ control spread: 14 of 14. Twice 5.2% is 10.4%, and no cycle the controller can r
   either side, the round's three control corridors over the same days, and the outcome (the plan stood, or was revised back).
 * **What it pins.** The detectable change (above). The rounds' control spreads run from 5.0% to 5.4%; pooled, latest and averaged they
   all give 5.2%.
-* **Twin pair.** The 2017 and 2020 retimings of two school corridors are identical on every column the log shows: eight signals, a
-  predicted saving of 7.8%, the same windows across the break, and a realised saving of 8.6%. The 2017 plan stood and the 2020 plan was
-  reverted. Their rounds' control spreads were 3.9% and 4.6% (thresholds 7.8% and 9.2%); no function of the retimings' own figures
-  reproduces both outcomes.
+* **Twin pair.** Two control corridors in the 2019 round are identical on every within-term column the archive shows: eight signals, the
+  same AM volume and the same day-to-day standard deviation of travel time, 2.1%. Their June-to-September changes were 3.8% and 7.6%
+  (2.0×): the second carries a school whose intake grew across the break. Within-term noise cannot separate them; only the cross-term
+  difference does.
 * **Resemblance points at the decoy.** The corridor most resembles the 2019 retiming of the parallel avenue, which stood.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -109,7 +113,7 @@ control spread: 14 of 14. Twice 5.2% is 10.4%, and no cycle the controller can r
 ## 8. Determinism by construction
 
 * **Delay model.** The standard's delay formula on the recounted peak-15 flows; its best cycle is 112 s, and no cycle from 60 to 120 s
-  saves more than 4.1%.
+  saves more than 6.0%.
 * **School days.** The authority's calendar defines school days; every evaluation window holds exactly 20.
 * **Spread.** Sample standard deviation across each round's three control corridors of the percentage change in mean travel time; the
   six rounds sit within 0.2 points of 5.2%, so pooling conventions converge.
@@ -137,19 +141,19 @@ control spread: 14 of 14. Twice 5.2% is 10.4%, and no cycle the controller can r
   each stop line, and the vendor's export flags a second image of the same plate within two seconds as a duplicate. Counting images
   overstates violations every month.
 * **Ask C (validity).** Each rung's cycle and predicted saving, the detectable change under within-term noise and under the control
-  spread, and each noise rule's reproduction count out of 14.
+  spread, and each of the three noise rules' reproduction counts out of 14.
 * **Decoupling.** Clearing the control-spread floor changes no figure in asks A or B. Pedestrian minimums are met by every candidate cycle,
   and button and camera logs touch no count, probe or evaluation record.
 
 ## 11. Rubric arithmetic
 
-8 signals (ask A) + 12 months (ask B) + 4 rung cycles and savings + 2 detectable changes + 2 reproduction counts (ask C) + the filed
-figure, the blocking quantity, the best predicted saving and the falsifier + 5 named chart parts + 3 files ≈ 46 criteria.
+8 signals (ask A) + 12 months (ask B) + 4 rung cycles and savings + 2 detectable changes + 3 reproduction counts (ask C) + the filed
+figure, the blocking quantity, the best predicted saving and the falsifier + 5 named chart parts + 3 files ≈ 47 criteria.
 
 ## 12. World-building constraints
 
-* Rung figures 100 / 120 / 112 / 90 s; best predicted saving 4.1% at 112 s; within-term detectable change 3.6%; control spreads 5.0–5.4%
-  (5.2% pooled); detectable change 10.4%; with non-school days 6.2%.
-* Revision log: 14 retimings across six rounds; 14 of 14 outcomes reproduced by twice the round's control spread, 9 by within-term noise.
-  The 2017 and 2020 twins match on every log column.
+* Rung figures 100 / 120 / 112 / 90 s; best predicted saving 6.0% at 112 s (5.5% and 5.7% on hourly flows, 7.2% on the peak-15 first
+  count); within-term detectable change 3.6%, pooled daily controls 3.4%; control spreads 5.0–5.4% (5.2% pooled); detectable change 10.4%.
+* Revision log: 14 retimings across six rounds; outcomes reproduced 14 of 14 by twice the round's control spread, 11 by the spread once,
+  9 by within-term noise. The 2019 twin control corridors match on every within-term column.
 * Two recounts supersede first counts. Pedestrian minimums never bind. Button and camera logs are independent of every main-call record.

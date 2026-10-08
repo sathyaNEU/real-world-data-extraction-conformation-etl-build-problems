@@ -57,9 +57,9 @@ degrades all year, but at 1,500. No region clears 1,800.
   Kestrel's cycle. Northern Hills (700) is mixed. Capital Metro (1,500) degrades all year but too little.
 * **The blocking quantity.** The maximum forward avoidable minutes across regions, 1,500, sits 17% under the 1,800 bar. It would become a
   pick if Capital Metro's year-round rate were 20% higher, or if Kestrel's cycle left River Delta degrading 9 months in 12.
-* **Partial correction priced (L3).** A solver who sees the cycle but averages the last two quarters gets River Delta at 2,000 and still
-  builds there. A solver who applies the cycle with the dense-region thresholds builds in Inland Plateau at 3,300. Neither half reaches the
-  hold.
+* **Partial correction priced (L3).** A solver who sees the cycle but averages the last two quarters gets River Delta at 2,000, 1.29× Capital
+  Metro and 11% over the bar, and still builds there. A solver who applies the cycle with the dense-region thresholds builds in Inland
+  Plateau at 3,300, 2.20× Capital Metro. Neither half reaches the hold.
 * **Grid.** Classification (exposure, dense, calibrated) × horizon (quarter, six months, full cycles) gives 7 cells. Only calibrated with full
   cycles holds. The others name Coastal South, Inland Plateau or River Delta, each over the bar by at least 11%.
 

@@ -48,16 +48,17 @@ every audited class matches. Physics-heavy Northfield University then clears the
 | 0 | One global reference set, records as units | Harrowgate 13.8% in; Northfield 21st at 7.9% | The provider's default percentile | The audit: global classes match 233 of 600 |
 | 1 | Field × year reference sets, records as units, papers at the threshold counted whole | Harrowgate 12.6% in; Northfield 11th | The textbook normalisation the reviewers asked for | The audit's fractional classes (0.12 to 0.88) for tied papers, which whole counting cannot return |
 | 2 | Field × year, records as units, tied papers shared fractionally | Harrowgate 12.0% in (1.15× Northfield, 9th at 10.4%) | 548 of 600 audited classes match, and both visible traps are beaten | The audit: all 52 misses are version-family papers or their field-years |
-| 3 | **Decisive:** field × year, papers as version families joined through the relations file, citations as distinct citing works, ties shared | **Northfield 14.1% in (1.20× Harrowgate, now 9th at 11.75%)** | — | — |
+| 3 | **Decisive:** field × year, papers as version families joined through the relations file, citations as distinct citing works, ties shared | **Northfield 16.8% in (1.56× Harrowgate, now 9th at 10.8%)** | — | — |
 
 * **Position table.** Northfield sits 21st, 11th and 9th on rungs 0 to 2 and enters the eight only on rung 3. Each rung's boundary
   margin is at least 1.15×.
-* **Discriminator dominance.** Harrowgate carries 1.15× into rung 3. Families raise Northfield's share 1.36× and lower Harrowgate's 0.98×,
-  an edge of 1.39×, above the 1.2 × 1.15 = 1.38 needed. The product, 1.39 / 1.15 = 1.20, is the final margin.
+* **Discriminator dominance.** Harrowgate carries 1.15× into rung 3. Families raise Northfield's share 1.62× and lower Harrowgate's to
+  0.90×, an edge of 1.80×, against the 1.2 × 1.15 = 1.38 needed (1.30× headroom). The product, 1.80 / 1.15 = 1.56, is Northfield's lead
+  over Harrowgate on rung 3.
 * **Partial correction priced (L3).** A solver who merges versions but keeps each version's own citation count (summing rather than
-  de-duplicating citers) overstates preprint-heavy fields and funds Calder Institute of Technology instead, leaving Northfield 10th. A
-  solver who merges families but takes the preprint's field drops 31 physics papers into an astronomy reference set and leaves Harrowgate
-  in.
+  de-duplicating citers) inflates preprint-heavy reference sets and funds Calder Institute of Technology at 13.9%, 1.20× Northfield,
+  which falls to 10th at 11.6%. A solver who merges families but takes the preprint's field drops 31 physics papers into an astronomy
+  reference set and keeps Harrowgate in at 12.3%, 1.17× Northfield at 10.5%. Neither half funds Northfield.
 * **Grid.** Reference sets (global or field-year) × ties (whole or fractional) × unit (record, family with summed counts, family with
   distinct citers) = 12 cells. Eleven fund Harrowgate or Calder; only field-year, fractional ties and distinct-citer families fund
   Northfield.
@@ -137,7 +138,7 @@ university brought in and the one dropped + 5 named chart parts + 3 files ≈ 76
 ## 12. World-building constraints
 
 * Boundary shares (%): rung 0 Harrowgate 13.8, Northfield 7.9 (21st); rung 1 Harrowgate 12.6, Northfield 11th; rung 2 Harrowgate 12.0,
-  Northfield 10.4; rung 3 Northfield 14.1, Harrowgate 11.75.
+  Northfield 10.4; rung 3 Northfield 16.8, Harrowgate 10.8.
 * 18% of records in physics, computing and mathematics belong to multi-version families, against 3% elsewhere.
 * Audit: 600 / 571 / 548 / 512 / 233 by structure. P-0193 and P-0471 match on every record column.
 * Date pairs and author merges never touch a version link, a citation or a field.

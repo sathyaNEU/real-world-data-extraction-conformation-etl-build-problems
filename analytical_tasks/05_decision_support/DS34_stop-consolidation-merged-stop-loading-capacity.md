@@ -11,7 +11,7 @@
 | Gate G mechanism | binding_constraint, with decomposition_attribution |
 | Measured traps engaged | #10 notes a binding limit as a risk · #18 joins only on the visible key · #20 leaves the deciding comparison unstated |
 | Calibration form | Gold-standard verification subsample: 240 manually ride-checked trips across the six routes, with boardings, alightings and dwell by stop |
-| Driving force | Removing stops on the trunk route saves the most rider-minutes on paper, because its buses are frequent and full. But each removed stop's riders board at a neighbour, and the neighbour's dwell grows. At 30 buses an hour, three of the trunk's surviving stops would pass the loading capacity the curb register gives them, and buses would queue. The plan the standards allow saves 45% of the paper figure; a moderate route's keeps 98%. |
+| Driving force | Removing stops on the trunk route saves the most rider-minutes on paper, because its buses are frequent and full. But each removed stop's riders board at a neighbour, and the neighbour's dwell grows. At 30 buses an hour, three of the trunk's surviving stops would pass the loading capacity the curb register gives them, and buses would queue. The plan the standards allow saves 40% of the paper figure; a moderate route's keeps 98%. |
 
 ## 1. Situation
 
@@ -42,7 +42,7 @@ many rider-minutes. But the riders of a removed stop do not vanish. They board a
 grows by their boardings. The curb guide sets a stop's loading capacity from its loading areas and its dwell, and the curb register gives
 each stop one area or two. On route C, three surviving stops with one loading area would see dwell rise from 19 to 31 seconds, which takes
 their capacity from 34 buses an hour to 24, below the 30 the route runs. The standards allow only plans that keep every stop within
-capacity, so route C's admissible plan removes five stops, not eleven, and saves 1,650 rider-minutes. Route E, at 12 buses an hour with
+capacity, so route C's admissible plan removes five stops, not eleven, and saves 1,480 rider-minutes. Route E, at 12 buses an hour with
 two-area stops on its dense segment, keeps 98% of its paper saving.
 
 ## 4. The ladder
@@ -56,14 +56,16 @@ two-area stops on its dense segment, keeps 98% of its paper saving.
 
 * **Position table.** E is 5th on rung 0, 4th on rung 1 (1,850) and 3rd on rung 2 (2,500); it is never second and leads only rung 3.
   Rung margins: A over B 1.40×, B over C 1.23×, C over B 1.23×, E over B 1.20× (2,450 against B's 2,040 admissible).
-* **Discriminator dominance.** C carries a 1.48× paper advantage over E into rung 3 (3,700 against 2,500). C's admissible plan keeps 0.45
-  of its paper saving and E's 0.98, an edge of 2.2×, more than 1.2 × 1.48 = 1.78.
-* **The deciding comparison (#20).** C's admissible 1,650 rider-minutes against E's 2,450 is what the board paper has to state; neither
+* **Discriminator dominance.** C carries a 1.48× paper advantage over E into rung 3 (3,700 against 2,500). C's admissible plan keeps 0.40
+  of its paper saving and E's 0.98, an edge of 2.45×, against the required 1.2 × 1.48 = 1.78: 1.38× headroom, past the 1.3 × 1.78 = 2.31
+  the edge needs.
+* **The deciding comparison (#20).** C's admissible 1,480 rider-minutes against E's 2,450 is what the board paper has to state; neither
   route's paper figure computes it.
-* **Partial correction priced (L3).** A solver who checks loading capacity on today's dwell, not the consolidated dwell, finds every stop
-  within capacity and names C. One who flags C's capacity as a risk and caps its saving by the share of peak buses that would queue names
-  C at 2,900. One who rebuilds dwell from consolidated boardings but on the daily average rather than the peak hour finds one stop over
-  capacity, not three, and names C at 2,720. Each partial reading stays on C.
+* **Partial correction priced (L3).** Each half-applied reading names C, never E. A solver who checks loading capacity on today's dwell,
+  not the consolidated dwell, finds every stop within capacity and names C at 3,700, 1.48× over E. One who flags C's capacity as a risk and
+  caps its saving by the share of peak buses that would queue names C at 2,900, 1.16× over E's 2,500. One who rebuilds dwell from
+  consolidated boardings but on the daily average rather than the peak hour finds one stop over capacity, not three, and names C at 2,950,
+  1.18× over E.
 * **Grid.** Join (visible key, relocation chain) × measure (low-boarding count, memo method) × capacity (none, today's dwell, consolidated
   dwell) = 12 cells. They name A, B or C except the one cell with the chain, the memo method and consolidated dwell.
 
@@ -152,7 +154,7 @@ the runner-up and C's admissible saving + 5 named chart parts + 3 files ≈ 66 c
 ## 12. World-building constraints
 
 * Rung figures: low-boarding stops A 14, B 10; rung 1 B 2,950, C 2,400, A 2,100, E 1,850; rung 2 C 3,700, B 3,020, E 2,500; rung 3 E 2,450, B
-  2,040, C 1,650.
+  2,040, C 1,480. Partial cells for C: 3,700 (today's dwell), 2,900 (risk cap), 2,950 (daily-average dwell); E keeps 2,500 under each.
 * Route C runs 30 buses an hour in the peak; three of its one-area surviving stops go from 19 s to 31 s of dwell, from 34 to 24 buses an
   hour of capacity. Route E runs 12 an hour with two-area stops on its dense segment.
 * 23 relocated stops, six moved twice, concentrated on C's busy segment. The twin removals match on every count and schedule column.

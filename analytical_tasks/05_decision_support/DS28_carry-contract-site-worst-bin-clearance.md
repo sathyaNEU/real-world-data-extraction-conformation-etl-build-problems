@@ -54,11 +54,13 @@ but its last bin filled at 15.8%. Site E's intake ran wetter, and every bin fini
 
 * **Position table.** E is 5th on rung 0 (31¢), 4th on rung 1 (11.5¢) and 2nd on rung 2, 1.26× behind C, the only rung where it is
   second. It leads only rung 3. Rung margins: A over B 1.21×, B over C 1.22×, C over E 1.26×, E over F 1.75×.
-* **Discriminator dominance.** C carries a 1.26× value advantage into rung 3. Its worst bin (15.8%) fails the line and its value falls to
-  −$21.4k; E's worst (14.7%) clears it, and E stands 1.75× the next qualifying site (F, $33.0k). The rung needs 1.2 × 1.26 = 1.51.
-* **Partial correction priced (L3).** A solver who takes the minimum over loads rather than bins (no site with any load above 15%) rules out
-  E too, because E received loads at up to 15.6% that blended down, and names F: a different wrong name. A solver who blends at site level
-  is at rung 2.
+* **Discriminator dominance.** C carries a 1.26× value advantage into rung 3, so the rung must turn it by 1.2 × 1.26 = 1.51, and with
+  headroom by 1.3 × 1.51 = 1.97. Its worst bin (15.8%) fails the line and its value falls to −$21.4k, so E's edge over C is not a ratio
+  near 1.97 but a sign change. E's worst (14.7%) clears the line, and E stands 1.75× the next qualifying site (F, $33.0k), which carried no
+  advantage over E into the rung ($30k against $50.0k on rung 2).
+* **Partial correction priced (L3).** No half-applied construction names E. A solver who takes the maximum over loads rather than bins (no
+  site with any load above 15%) rules out E too, because E received loads at up to 15.6% that blended down, and names F at $33.0k, the only
+  site left above zero. A solver who blends at site level is at rung 2 and names C, 1.26× ahead of E.
 * **Grid.** Price basis (average spread, paired carry, contract margin) × delivery rule (none, site average, any load, worst bin) = 12
   cells. The cells name A, B, C or F; only contract margin with the worst bin names E. The nearest wrong cell is contract margin with the
   any-load rule (F), reached by one wrong unit.

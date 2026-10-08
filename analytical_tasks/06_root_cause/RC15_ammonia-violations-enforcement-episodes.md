@@ -61,8 +61,9 @@ month, then pass. Counted as the guide counts, the slugs lead.
   outfalls. The slugs reach both outfalls at the six septage-receiving plants that have two, so hauled waste halves to 52 episodes and cold
   water leads at 62, rung 2's answer.
 * **Grid.** Unit (rows, months, episodes) × schedule split (off, on) × run key (plant, outfall and parameter) gives eight feasible builds. Row
-  builds name C or A, month builds B, plant-keyed episodes B, and only outfall-and-parameter episodes with the schedule split name D. Without
-  the split D still leads at 104 but C rises to 88, so the margin falls to 1.18×.
+  builds name C or A, month builds B, plant-keyed episodes C or B, and outfall-and-parameter episodes name D only with the schedule split.
+  Without it they name C: the final-limit exceedances at schedule plants come and go month to month, 126 outfall-months in 92 runs, so C
+  reaches 122 episodes against D's 104 (1.17×), the nearest wrong cell.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -142,6 +143,8 @@ cause, its episodes and the runner-up's + 5 named chart parts + 2 files ≈ 395 
 
 * Rows by cause (A / B / C / D / E): 330 / 260 / 412 / 120 / 140; after the schedule split 330 / 260 / 110 / 120 / 140; violation-months 140
   / 230 / 90 / 110 / 100; episodes 60 / 62 / 30 / 104 / 70.
+* The schedule plants' final-limit exceedances: 302 rows, 126 outfall-months, 92 runs. Without the split C has 216 violation-months (B 230)
+  and 122 episodes.
 * Acknowledgements: 418 permittee-spring counts; outfall-parameter runs 418/418, plant runs 301, two-month gaps 266, months 140, rows 31.
 * P-118 and P-140 identical on every row, month, cause and plant column.
 * Overflow reports and biosolids tonnage touch no ammonia monitoring row.

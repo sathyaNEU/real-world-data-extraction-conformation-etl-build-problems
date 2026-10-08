@@ -11,7 +11,7 @@
 | Gate G mechanism | forecasting, with decomposition_attribution |
 | Measured traps engaged | #5 takes the population a flag or filter suggests · #13 validates on one population, applies to another · #25 assumes an effect the log could measure |
 | Calibration form | Change-log natural experiments: nine earlier station-commissioning batches, each logged with dates and weekly trips against matched mature stations |
-| Driving force | Riverside's eighteen newest stations opened five weeks before the season closed and ran at 35% of the level every earlier batch reached by week 17. Every closed season was fully mature, because all earlier batches opened in winter, so last season's need forecasts each next season exactly. The new stations' forward need comes from the registry's commissioning dates and the ramp the nine logged batches share. No trip column carries a station's age. |
+| Driving force | Riverside's eighteen newest stations opened five weeks before the season closed and ran at 25% of the level every earlier batch reached by week 17. Every closed season was fully mature, because all earlier batches opened in the off-season, so last season's need forecasts each next season exactly. The new stations' forward need comes from the registry's commissioning dates and the ramp the nine logged batches share. No trip column carries a station's age. |
 
 ## 1. Situation
 
@@ -38,10 +38,10 @@ opening day. This autumn a permit delay held back Riverside's expansion, and 18 
 A strong solver moves from logged moves to the zone the standard defines, sees that capped crews log less than the need, and rebuilds the
 need from net overnight imbalance in the trip table. That build reproduces every uncapped zone's logged moves exactly and names
 Harbourside. It also reads eighteen Riverside stations as quiet. They are not quiet, they are young. Every earlier batch in the change log
-ran at 35% of its eventual level for eight weeks and reached 100% by week 17, measured against matched mature stations. All of those
-batches were commissioned in winter and matured before any season opened, so no closed season contains a young station. Riverside's
+ran at 25% of its eventual level for eight weeks and reached 100% by week 17, measured against matched mature stations. All of those
+batches were commissioned in the off-season and matured before any season opened, so no closed season contains a young station. Riverside's
 forward need is its mature stations plus the eighteen at full level. That comes from the registry's commissioning dates and the logged
-ramp, and it is 2.0× what the trip table shows.
+ramp, and it is 2.5× what the trip table shows.
 
 ## 4. The ladder
 
@@ -49,27 +49,27 @@ ramp, and it is 2.0× what the trip table shows.
 |---|---|---|---|---|
 | 0 | Last season's logged overnight moves, grouped by the log's crew-zone field | A, Downtown (152 against 118) | The operations record of overnight work, grouped the way crews are run | The station registry's effective-dated zones: the standard counts moves at the zone's stations, and Downtown's crew serves 38 moves a night in two neighbouring zones |
 | 1 | **E33 (the population a field suggests):** moves re-attributed to the zone of the station served, on opening-day boundaries | B, University (142 against 114) | Every move now sits where the standard puts it, and the total still ties to 585 | The crew shift log: University, Harbourside and Riverside trucks ran at capacity on most nights, so logged moves are work done, not need |
-| 2 | Net overnight imbalance per station from the trip table, summed by zone | C, Harbourside (190 against 150) | The need itself, uncapped; it equals logged moves exactly in every uncapped zone | The registry's commissioning dates and the change log's ramp: Riverside's eighteen newest stations are at 35% of maturity |
-| 3 | **Decisive:** mature stations' imbalance plus each new station's imbalance raised to maturity by the logged ramp | **D, Riverside** (240 against 190) | — | — |
+| 2 | Net overnight imbalance per station from the trip table, summed by zone | C, Harbourside (190 against 150) | The need itself, uncapped; it equals logged moves exactly in every uncapped zone | The registry's commissioning dates and the change log's ramp: Riverside's eighteen newest stations are at 25% of maturity |
+| 3 | **Decisive:** mature stations' imbalance plus each new station's imbalance raised to maturity by the logged ramp | **D, Riverside** (300 against 190) | — | — |
 
 * **Position table.** Riverside is 5th on rung 0 (70), 5th on rung 1 (84) and 3rd on rung 2 (120), and leads only rung 3. Each rung's
-  leader beats its runner-up by 1.29×, 1.25×, 1.27× and 1.26×.
-* **Discriminator dominance.** Harbourside carries a 1.58× advantage into rung 3 (190 against 120). Riverside's maturity edge is 2.00×
-  (240 against 120), above the required 1.2 × 1.58 = 1.90, for a final margin of 1.26×.
+  leader beats its runner-up by 1.29×, 1.25×, 1.27× and 1.58×.
+* **Discriminator dominance.** Harbourside carries a 1.58× advantage into rung 3 (190 against 120). Riverside's maturity edge is 2.50×
+  (300 against 120), 1.32 times the required 1.2 × 1.58 = 1.90, for a final margin of 1.58×.
 * **Partial correction priced (L3).** The commissioning step is dated and visible, so an event study reads Riverside's post-step run-rate
-  and annualises it: 157 moves, and Harbourside still leads by 1.21×. Raising the new stations by the ramp on their season-average share
-  instead of their weekly rate gives 135, still third behind Harbourside and University.
+  and annualises it: 159 moves, and Harbourside still leads by 1.19×. Raising the new stations by the ramp on their season-average share
+  instead of their weekly rate gives 146, which leaves Harbourside ahead (1.27× over University) and Riverside third.
 * **Grid.** Need basis (logged by crew zone, logged by station zone, imbalance) × new-station treatment (as observed, annualised run-rate,
   matured by the ramp) gives 9 cells. No logged move touches a new station, because routes are rebuilt monthly and the eighteen joined
   the November build, so the logged rows collapse to Downtown and University. The imbalance row names Harbourside, Harbourside and
-  Riverside. The nearest wrong cell is the run-rate cell (Harbourside by 1.21×).
+  Riverside. The nearest wrong cell is the run-rate cell (Harbourside by 1.19×).
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The change log records batches and their trips. No document says new stations ramp or that Riverside's are
    young, and the registry's commissioning date is one field among forty.
 2. **Corpus blind for a computable reason.** *In every closed season each station had at least 17 weeks of service before opening day,
-   because all nine earlier batches were commissioned between November and January.* Last season's imbalance, grown by the filed factor,
+   because all nine earlier batches were commissioned in the off-season, between late October and early December.* Last season's imbalance, grown by the filed factor,
    reproduces each of the four closed seasons within 1%.
 3. **No arithmetic symptom.** Moves re-attribute without loss (585 both ways), and imbalance ties to logged moves in every uncapped zone.
    Young stations trip no check.
@@ -84,13 +84,14 @@ ramp, and it is 2.0× what the trip table shows.
 
 * **Form.** The operations change log: nine station-commissioning batches over five years, each with its stations, commissioning dates
   and 26 weeks of trips against matched mature stations in the same zone.
-* **What it certifies.** The ramp: 35% of the mature level in weeks 1–8, rising linearly to 100% at week 17, identical within one point
+* **What it certifies.** The ramp: 25% of the mature level in weeks 1–8, rising linearly to 100% at week 17, identical within one point
   across all nine batches. It also certifies the imbalance construction, because each batch's zone need rose by the batch's matured
   share.
 * **What it cannot show.** A young station inside a season (above).
-* **Twin pair.** Stations R-14 (Riverside, week 4) and N-07 (Eastgate, three years old) are identical on every trip-table column: 19 docks,
-  the same last-five-weeks trips and nightly imbalance, and the same residential class. Their forward needs differ 2.86×, because R-14 is
-  at 35% of its ramp.
+* **Twin pair.** Stations K-31 (batch 6, in week 11 at the batch's winter review) and E-09 (Eastgate, three years old) were identical on
+  every trip-table column in the review week: 19 docks, the same trips and nightly imbalance, and the same residential class. The next
+  season K-31 needed 2.0× E-09's moves, because in week 11 it stood at 50% of its ramp. Only age from the registry, read through the
+  ramp, reproduces both.
 * **Resemblance points at the decoy.** The eighteen new stations resemble Eastgate's low-demand residential stations on every column the
   trip table carries.
 
@@ -108,12 +109,13 @@ ramp, and it is 2.0× what the trip table shows.
 
 * **Night and boundaries.** A night is 22:00–05:00, trips are timed by undocking, and no station changes zone between the extract and
   opening day.
-* **Ramp position.** Every new station is in weeks 1–5 at the extract, inside the 35% plateau, so no interpolation convention is
+* **Ramp position.** Every new station is in weeks 1–5 at the extract, inside the 25% plateau, so no interpolation convention is
   exercised.
 * **Imbalance.** Need is each station-night's positive net outflow, summed; this reproduces logged moves exactly in Downtown, Midtown and
   Eastgate, whose crews never hit capacity.
 * **Growth.** The filed factor is uniform, so it cannot reorder zones.
-* **Routes.** Crew routes are rebuilt monthly and the eighteen new stations joined the November build, so no logged move touches them and
+* **Routes.** Crew routes are rebuilt monthly from stations with four full weeks of service, and the eighteen new stations joined the
+  November build, after the late-October close, so no logged move touches them and
   the maturity question can only be asked of the trip table.
 * **Maturity of the record.** The season's trips are complete at the extract; the open-trip queue was empty at close.
 
@@ -147,9 +149,9 @@ margin + 5 named chart parts + 3 files ≈ 60 criteria.
 
 ## 12. World-building constraints
 
-* Rung needs: 152/118/108/92/70/45 (crew zone), 142/114/108/92/84/45 (station zone), 190/150/120/114/92/45 (imbalance), and Riverside 240
-  at rung 3. Riverside's mature stations need 112 a night and the eighteen new ones 128 at maturity.
-* The new stations opened five weeks before close. All nine earlier batches opened November–January and share the 35%-to-100% ramp.
+* Rung needs: 152/118/108/92/70/45 (crew zone), 142/114/108/92/84/45 (station zone), 190/150/120/114/92/45 (imbalance), and Riverside 300
+  at rung 3. Riverside's mature stations need 112 a night and the eighteen new ones 188 at maturity (25% plateau, five of 28 weeks).
+* The new stations opened five weeks before close. All nine earlier batches opened between late October and early December and share the 25%-to-100% ramp.
 * University, Harbourside and Riverside crews ran at truck capacity on most nights; the other three never did.
-* R-14 and N-07 are identical on every trip-table column.
+* K-31 and E-09 are identical on every trip-table column in the review week; K-31's next-season need is 2.0× E-09's.
 * Telemetry offline intervals and workshop transfers never touch trips, moves or the registry.

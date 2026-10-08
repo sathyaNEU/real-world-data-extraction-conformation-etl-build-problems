@@ -11,7 +11,7 @@
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution |
 | Measured traps engaged | #6 treats a mixed segment all one way · #12 stops at the first control that passes · #5 takes the population a flag or filter suggests · #15 follows the requester's hunch over the rule |
 | Calibration form | Settled-transaction ledger: the commissioner's 24 months of settled elective episodes at the trust and its partner site, with pathway, procedure, site and dates |
-| Driving force | Ophthalmology's at-risk list is more than half second-eye cataract listings, and every row carries the original referral date as its wait start. The access policy's clock annex starts a second procedure's clock when the first is done, and the first eye's date sits only in the treatment history, found by grouping each patient's procedures by family and ordering them by date. Re-clocked, 58% of Ophthalmology's apparent 52-week risk is months short of 52 weeks, and the team prevents the most waits in Urology. |
+| Driving force | Ophthalmology's at-risk list is more than half second-eye cataract listings, and every row carries the original referral date as its wait start. The access policy's clock annex starts a second procedure's clock when the first is done, and the first eye's date sits only in the treatment history, found by grouping each patient's procedures by family and ordering them by date. Re-clocked, 60% of Ophthalmology's apparent 52-week risk is months short of 52 weeks, and the team prevents the most waits in Urology. |
 
 ## 1. Situation
 
@@ -33,7 +33,7 @@ unit's operating documents. The board decides on 15 October.
 * **Instrument repair.** Make the snapshot and the ledger perfect; they already are. A second-eye listing's clock is set by an event on
   another record, the first eye's treatment, so no better list instrument carries it.
 * **Lens swap.** The two reads cover different populations: 470 Ophthalmology day cases that look at risk on weeks since referral,
-  against the 197 of them whose clock, started at referral or at the first eye, actually reaches 52 weeks by 31 March.
+  against the 188 of them whose clock, started at referral or at the first eye, actually reaches 52 weeks by 31 March.
 
 ## 3. The driving force
 
@@ -44,7 +44,7 @@ which matches the clinical director's belief and the length of the cataract list
 patient listed for the second eye after the first was done has the original referral on the row, often 50 to 70 weeks old. The clock
 annex says a second procedure on a paired organ starts its own clock when the first is done. The first eye's date is not on the list.
 It sits in the treatment history, reached by grouping each patient's procedures by family and ordering them by date. Re-clocked,
-Ophthalmology keeps 42% of its apparent risk, and Urology, with almost no staged procedures, leads by 1.46×.
+Ophthalmology keeps 40% of its apparent risk, and Urology, with almost no staged procedures, leads by 1.46×.
 
 ## 4. The ladder
 
@@ -52,16 +52,18 @@ Ophthalmology keeps 42% of its apparent risk, and Urology, with almost no staged
 |---|---|---|---|---|
 | 0 | Projection with the PAS theatre log as existing throughput, all intended managements, capped at 640 slots | A, Orthopaedics (640, 1.23× General Surgery) | The trust's own throughput log; the projection reproduces the closed year's trust-wide breach count within 1% | The ledger's per-specialty breach and wait-at-treatment controls: the theatre log misses partner-site joints and counts endoscopy surveillance as throughput |
 | 1 | Existing throughput from settled RTT treatments at both sites, linked to list pathways (E16) | B, General Surgery (640, 1.36× Ophthalmology) | Reproduces all six specialties' closed-year breach counts and median waits at treatment | The unit's operating document: weekend lists are day cases, and 73% of General Surgery's at-risk patients are listed as inpatients |
-| 2 | Same, keeping only patients listed as day cases | C, Ophthalmology (470, 1.49× Urology) | The team's real casemix, cleanly applied | The clock annex, read through the treatment history: 58% of Ophthalmology's at-risk day cases are second-eye listings on a clock that started at the first eye |
+| 2 | Same, keeping only patients listed as day cases | C, Ophthalmology (470, 1.49× Urology) | The team's real casemix, cleanly applied | The clock annex, read through the treatment history: 60% of Ophthalmology's at-risk day cases are second-eye listings on a clock that started at the first eye |
 | 3 | **Decisive:** second-procedure clocks re-started at the first procedure's treatment, found by patient × procedure family in the treatment history | **D, Urology (309, 1.46× Gynaecology)** (5th of 6 on rung 0) | — | — |
 
 * **Position table.** Urology ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (1.49× behind Ophthalmology), and leads only rung 3.
   Each rung's leader beats its runner-up by at least 1.23×.
 * **Discriminator dominance.** Ophthalmology carries 1.49× (470 against 315) into rung 3. On the decisive axis, the share of apparent
-  risk that survives re-clocking, Urology keeps 0.98 and Ophthalmology 0.42, an edge of 2.33×, which clears 1.2 × 1.49 = 1.79. The
-  final margin over Ophthalmology is 309 against 197 (1.57×).
+  risk that survives re-clocking, Urology keeps 0.98 and Ophthalmology 0.40, an edge of 2.45×. That is 1.37 times the required
+  1.2 × 1.49 = 1.79. The final margin over Ophthalmology is 309 against 188 (1.64×).
 * **Partial correction priced (L3).** A solver who re-clocks only second eyes whose first eye was done at the trust's own site misses the
-  partner site's first eyes. Ophthalmology then keeps 0.71 of its risk (334) and still leads: the half insight names the decoy.
+  partner site, where two-thirds of the first eyes were done. Ophthalmology then keeps 374 (0.80 of its risk) and still leads Urology by
+  1.21×: the half insight names the decoy. A solver who re-clocks but keeps the theatre-log throughput names Orthopaedics (472 against
+  Urology's 304, 1.55×).
 * **Grid.** Throughput (theatre log or ledger) × casemix (all or day case) × clocks (referral or re-started) gives 8 cells. Every
   non-answer cell names Orthopaedics, General Surgery or Ophthalmology, and only the ledger, day cases and re-started clocks together name
   Urology.
@@ -78,7 +80,7 @@ Ophthalmology keeps 42% of its apparent risk, and Urology, with almost no staged
    pathway on the list resolves.
 4. **Not a row predicate.** A second-eye listing is found by grouping a patient's treatment history by procedure family, ranking by
    date and comparing to the listing date, then re-clocking from the first treatment. No list column flags it.
-5. **The enumeration is arithmetic.** 273 of 470 at-risk Ophthalmology day cases are re-clocked by the join alone, and 6 Urology
+5. **The enumeration is arithmetic.** 282 of 470 at-risk Ophthalmology day cases are re-clocked by the join alone, and 6 Urology
    listings (staged ureteroscopies) by the same rule.
 6. **No cutover date.** The second-eye queue lengthened gradually, the clock annex dates from years earlier, and no breach series steps.
 7. **Survives deletion.** No wrong number exists to delete. Without any voice, the snapshot still invites weeks since referral.
@@ -154,9 +156,9 @@ waits prevented and its margin + 4 named chart parts + 2 files ≈ 75 criteria.
 
 * Waits prevented by rung (Orthopaedics, General Surgery, Ophthalmology, Urology, Gynaecology, ENT): rung 0 640 (1,180 at risk) / 520 /
   450 / 345 / 360 / 280; rung 1 380 / 640 (760 at risk) / 470 / 350 / 320 / 285; rung 2 152 / 205 / 470 / 315 / 211 / 205; rung 3 152
-  / 205 / 197 / 309 / 211 / 205.
+  / 205 / 188 / 309 / 211 / 205.
 * Day-case shares of at-risk patients: Orthopaedics 0.40, General Surgery 0.27, Ophthalmology 1.00, Urology 0.90, Gynaecology 0.66,
-  ENT 0.72. Shares surviving re-clocking: Ophthalmology 0.42, Urology 0.98, all others 1.00.
+  ENT 0.72. Shares surviving re-clocking: Ophthalmology 0.40, Urology 0.98, all others 1.00.
 * The theatre-log projection reproduces the closed year's trust-wide breach count within 1% and misses the per-specialty controls. The
   ledger projection reproduces all twelve.
 * No settled cataract episode in the closed 24 months waited over 49 weeks on either clock. Patients 7731 and 7748 are identical on every

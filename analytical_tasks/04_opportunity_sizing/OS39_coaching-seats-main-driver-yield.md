@@ -58,9 +58,10 @@ trips through the pairing join, rolled up by segment.
   ladder.
 * **Discriminator dominance.** Two-car families carry a 1.16× lead into rung 3. Conditioning multiplies retirees' yield by 1.58 and
   families' by 0.57, an edge of 2.8×, above 1.2 × 1.16 = 1.40.
-* **Partial correction priced (L3).** A solver who conditions the yield on the policy's declared main driver keeps two-car families first
-  (289 against 261), because families declare the policyholder as main driver on 95% of vehicles. A solver who conditions without netting
-  recoveries or restricting to behavioural claims names rideshare or trade vans.
+* **Partial correction priced (L3).** Every half-applied conditioning puts a wrong segment first. Conditioning the yield on the policy's
+  declared main driver keeps two-car families first, 289 against shared-car pairs' 261 (1.11×), because families declare the policyholder
+  as main driver on 95% of vehicles. Conditioning on the trip-based share without netting recoveries names trade vans, 348 against
+  retirees' 291 (1.19×). Conditioning without restricting to behavioural claims names rideshare, 353 against retirees' 317 (1.12×).
 * **Grid.** Cost (payment rows, net claims) × scope (all claims, behavioural) × yield (pooled, main-driver conditioned) = 8 cells. Every
   non-answer cell names added teens, shared-car pairs, two-car families, rideshare or trade vans. The nearest figure is rung 1 at +14.6%.
 

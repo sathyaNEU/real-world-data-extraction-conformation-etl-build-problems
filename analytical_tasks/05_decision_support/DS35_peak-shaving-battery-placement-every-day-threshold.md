@@ -41,8 +41,8 @@ battery as the penalty it removes. The obvious valuation takes 100 kW off each p
 battery's energy: on the peak day, the deepest threshold the 200 kWh can hold. Both rank clients by their penalties, and both are wrong in
 the same way. The controller holds one threshold for the billing period and discharges whenever demand exceeds it, recharging overnight.
 Shaving the peak day only exposes the next-highest day, so the period's maximum after shaving is the lowest threshold every day of the
-period can hold within 200 kWh. For a cold store whose compressors plateau for three hours on twenty days a month, that threshold sits 18
-kW below the old maximum. For a press shop whose peaks are single 15-minute spikes, it sits 100 kW below. The largest penalties belong to
+period can hold within 200 kWh. For a cold store whose compressors run within 20 kW of their maximum for eleven hours on twenty days a
+month, that threshold sits 18 kW below the old maximum. For a press shop whose peaks are single 15-minute spikes, it sits 100 kW below. The largest penalties belong to
 the plateau clients.
 
 ## 4. The ladder
@@ -57,13 +57,16 @@ the plateau clients.
 * **Figure shape.** Every correction walks the figure down, and the answer is the minimum cell of the grid.
 * **Position table.** The five clients who enter only at rung 3 rank 13th to 19th by penalty on rung 0. The press shop that leads the
   answer is 17th on rung 0, 15th on rung 1 and 9th on rung 2. The three cold stores that lead rungs 0 to 2 fall to 14th, 16th and 18th.
-* **Discriminator dominance.** The largest cold store carries a 2.6× penalty advantage over the leading press shop into rung 3. Its
-  shaveable share is 0.18 against the press shop's 0.91, an edge of 5.1×, more than 1.2 × 2.6 = 3.1.
-* **The deciding comparison (#20).** The cold store's €2.9k of avoidable penalty against the press shop's €5.6k is what the launch note
+* **Discriminator dominance.** The largest cold store carries a 2.6× penalty advantage over the leading press shop into rung 3 (€33.8k
+  against €13.0k a year). Its shaveable share is 0.18 against the press shop's 0.91, an edge of 5.1×, against the required
+  1.2 × 2.6 = 3.1: 1.6× headroom, past the 1.3 × 3.1 = 4.1 the edge needs.
+* **The deciding comparison (#20).** The cold store's €6.1k of avoidable penalty against the press shop's €11.8k is what the launch note
   has to state; neither client's penalty bill shows it.
-* **Partial correction priced (L3).** Holding the threshold on the top two days of each period files €141k (+19.5%). Holding it every day
-  but ignoring the 100 kW power limit lets the spiky clients shave their whole spikes and files €151k (+28.0%). Half the construction
-  stays well above the answer.
+* **Partial correction priced (L3).** No half-applied model returns the answer's twelve. Holding the threshold on the top two days of each
+  period files €141k (+19.5%) and keeps two cold stores in the twelve, in place of the answer's 11th and 12th clients: under that model the
+  weaker cold store is worth €9.6k against €7.4k for the best client it leaves out (1.30×). Holding the threshold every day but ignoring
+  the 100 kW power limit lets the spiky clients shave their whole spikes, files €151k (+28.0%) and swaps both bakeries in for the same two
+  clients: their spikes run up to 190 kW over contracted power, and unlimited they are worth €12.4k and €10.9k against €7.9k (1.38×).
 * **Grid.** Data (raw, cleaned) × period (calendar month, billing period) × battery model (power, peak-day energy, every-day threshold) = 12
   cells. Only cleaned data, billing periods and the every-day threshold give €118k; the nearest other cell is cleaned calendar months with
   the every-day threshold at €131k (+11.0%).
@@ -149,6 +152,9 @@ the twelfth place + 5 named chart parts + 3 files ≈ 118 criteria.
 ## 12. World-building constraints
 
 * Rung figures €221k / €196k / €163k / €118k. Partial cells €141k and €151k; the nearest grid cell €131k.
+* Every-day avoidable penalty (€k), the answer's twelve: three press shops 11.8, 11.6, 11.4; client 14 11.2; then 10.6, 10.1, 9.6, 9.2,
+  8.8, 8.4, 7.9, 7.4. Outside: bakery 6.5, largest cold store 6.1, client 07 5.6, cold store 5.2, bakery 4.5, cold store 3.9, food
+  processors 3.1 and 2.2.
 * Three cold stores and two food processors plateau for at least two hours on at least 15 days a period; three press shops and two
   bakeries spike for one or two intervals on one or two days. The plateau clients pay the five largest penalties.
 * Clients 07 and 14 match on all 24 settled lines.

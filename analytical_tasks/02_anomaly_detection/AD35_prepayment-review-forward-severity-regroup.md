@@ -57,10 +57,11 @@ from every secondary diagnosis to its next-year severity, and recomputing the ex
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.37×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.23×, 1.24×, 1.37× and 1.42×.
 * **Discriminator dominance.** C carries a 1.37× excess advantage into rung 3. E's edge on the decisive axis is the share of excess that
-  survives the regrouping, 0.92 against 0.16 (5.75×), so the net is 5.75 / 1.37 = 4.2×.
+  survives the regrouping, 0.92 against 0.16 (5.75×), 3.5× the required 1.2 × 1.37 = 1.64×, so the net is 5.75 / 1.37 = 4.2×.
 * **Partial correction priced (L3).** A solver who notices the final rule but discounts every candidate by the family's average share of
-  malnutrition-only cases, instead of regrouping each cell's own claims, names D (its family-average discount is small), further from E
-  than rung 2. A solver who regroups but keeps add-on payments names B.
+  malnutrition-only cases, instead of regrouping each cell's own claims, cuts C to 730 and E to 690 but barely touches the sepsis family,
+  where D and F sit level at 860, 1.18× C: a tie between two wrong cells, with E fourth. A solver who regroups but keeps add-on payments
+  names B, 1,800 against E's 1,020 (1.76×).
 * **Grid.** Level removal (z-score or two-way) × add-ons (kept or stripped) × grouping (FY2026 or FY2027) = 8 cells: A, A, B, C under
   FY2026 grouping and A, A, B, E under FY2027, so only two-way, add-on-net and regrouped names E.
 
@@ -146,5 +147,6 @@ margin + 5 named chart parts + 3 files ≈ 66 criteria.
 * C's add-on-net excess: 84% on cases whose only MCC is the malnutrition code. E's: 92% on MCCs unchanged in FY2027. B's raw excess: 72%
   add-on payments.
 * The nine close-outs touch no code that changes severity in their review years.
-* D and F are identical on every rung 2 column.
+* D and F are identical on every rung 2 column, both in the sepsis family. Family-average malnutrition-only shares: heart failure 0.50,
+  respiratory 0.35, sepsis 0.04.
 * Cost-to-charge records and cost-report payer mix never touch the claims, the residual model or the severity tables.

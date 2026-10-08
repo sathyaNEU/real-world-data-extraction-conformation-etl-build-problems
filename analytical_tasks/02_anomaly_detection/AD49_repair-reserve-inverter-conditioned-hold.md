@@ -50,13 +50,13 @@ keeping 12–20%. No repair recovered anything in between. C runs model Y. On mo
 |---|---|---|---|---|
 | 0 | Performance-ratio shortfall below the alarm line × 3 years × the log's pooled recovery (0.59): A 92 MWh | Fund A | The contractor's alarm and the industry's standard ratio | The overlap's reference pyranometer: the site pyranometer read up to 9% low while soiled, and A's shortfall is its technology's normal yield |
 | 1 | Sustained deficit against the site's median system (each system against its own reference ratio) × 3 × 0.59: B 67 MWh | Fund B | Peer comparison cancels the shared sensor error | The string-current logs: B's deficit is spread evenly over all eight strings, module ageing that no component repair reverses |
-| 2 | String-level component deficit (dark or low strings, tripped inverters) × 3 × 0.59: C 78 MWh | Fund C | The right grain, the right repair, a payback well clear of 60 MWh | The asset register joined to the repair log: every repair on C's inverter model lost its recovery within the first year |
-| 3 | **Decisive:** component deficit × 3 × the recovery for the candidate's inverter model (X 0.97, Y 0.16): D 48, E 41, C 21, A and B 0 | **Hold: the reserve carries forward; the best candidate, D, recovers 48 MWh against 60** | — | — |
+| 2 | String-level component deficit (dark or low strings, tripped inverters) × 3 × 0.59: C 92 MWh | Fund C | The right grain, the right repair, a payback well clear of 60 MWh | The asset register joined to the repair log: every repair on C's inverter model lost its recovery within the first year |
+| 3 | **Decisive:** component deficit × 3 × the recovery for the candidate's inverter model (X 0.97, Y 0.16): D 48, E 41, C 25, A and B 0 | **Hold: the reserve carries forward; the best candidate, D, recovers 48 MWh against 60** | — | — |
 
 * **The blocking quantity.** The best expected three-year recovery among the five is D's 48 MWh, 12 MWh (20%) short of the 60 MWh break-even.
-  E reaches 41, C 21, and A and B have no repairable component deficit, so every candidate fails on the same standard.
+  E reaches 41, C 25, and A and B have no repairable component deficit, so every candidate fails on the same standard.
 * **Partial correction priced (L3).** A solver who conditions on inverter model but carries the log's one-year recovery (X 0.98, Y 0.48) over
-  three years credits C with 63 MWh and funds it: a pick, not the hold.
+  three years credits C with 75 MWh, 15 MWh (1.25×) over the break-even and 1.56× D's 48, and funds it: a pick, not the hold.
 * **Grid.** Monitoring basis (performance ratio, system peer, string level) × recovery (pooled or model-conditioned) = 6 cells. Five fund a
   system (A, A, B, B, C); only string-level deficits with model-conditioned recovery hold.
 * **Falsifiable.** D would be funded with a component deficit of 20.6 MWh a year instead of 16.5, or a repair cost under about $14,400 at the
@@ -103,8 +103,8 @@ keeping 12–20%. No repair recovered anything in between. C runs model Y. On mo
 
 ## 8. Determinism by construction
 
-* **Recovery shares.** Model X's 0.95–1.00 keeps D between 47.0 and 49.5 MWh, under 60 at either end; model Y's 0.12–0.20 keeps C between 16
-  and 26.
+* **Recovery shares.** Model X's 0.95–1.00 keeps D between 47.0 and 49.5 MWh, under 60 at either end; model Y's 0.12–0.20 keeps C between 19
+  and 31.
 * **Deficit window.** Component deficits are measured over the last 90 valid days; 60- and 120-day windows give the same order and keep D
   under 52 MWh.
 * **Horizon.** The three years and the tariff are filed; every candidate's roof lease runs past the horizon under any reading of the lease
@@ -141,7 +141,9 @@ and the falsifiability figure + 5 named chart parts + 3 files ≈ 72 criteria.
 
 ## 12. World-building constraints
 
-* Rung figures: A 92, B 67, C 78 under pooled recovery; model-conditioned D 48, E 41, C 21. Component deficits: C 44, D 16.5, E 14 MWh a year.
+* Rung figures: A 92, B 67, C 92 under pooled recovery; model-conditioned D 48, E 41, C 25; the one-year partial C 75. Component deficits:
+  C 52, D 16.5, E 14 MWh a year. C runs model Y and the other four model X, so the alarm and peer builds still fund A and B under
+  model-conditioned recovery.
 * The repair log: 41 repairs, 25 with three-year follow-up (14 model X at 0.95–1.00, 11 model Y at 0.12–0.20); pooled three-year recovery
   0.59, one-year 0.98 and 0.48.
 * No repair in the overlap year; the soiled site pyranometer read up to 9% low.

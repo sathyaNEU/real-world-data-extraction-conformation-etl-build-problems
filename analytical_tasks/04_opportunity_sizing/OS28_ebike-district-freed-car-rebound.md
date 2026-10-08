@@ -58,12 +58,13 @@ second adults mostly work from home.
 * **Position table.** Ashby Vale ranks 5th on rung 0, 3rd on rung 1 and 2nd on rung 2 (1.22× behind Northgate), and leads only rung 3.
   Rung leaders beat their runners-up by 1.23×, 1.19×, 1.22× and 1.29×.
 * **Discriminator dominance.** Northgate carries a 1.22× lead into rung 3. Ashby Vale keeps 0.956 of its switched kilometres (contested
-  share 0.05) against Northgate's 0.516 (0.55), an edge of 1.85×, above 1.2 × 1.22 = 1.46.
-* **The deciding comparison (#20).** For Northgate, the memo must set 12.24 km switched against 5.92 km rebound. For Ashby Vale it is 10.05
+  share 0.05) against Northgate's 0.490 (0.58), an edge of 1.95×, which is 1.34 times the required 1.2 × 1.22 = 1.46.
+* **The deciding comparison (#20).** For Northgate, the memo must set 12.24 km switched against 6.25 km rebound. For Ashby Vale it is 10.05
   against 0.44. Switched kilometres alone never decide.
-* **Partial correction priced (L3).** A solver who nets rebound at the pilot's pooled 0.39 keeps Northgate (7.47 against 6.13). A solver who
-  charges rebound to every household with fewer cars than drivers also keeps Northgate (5.56 against 4.92), because Ashby Vale has many
-  such households whose second adult never needed the car. A solver who finds the rebound but skips the tour-type rates names Riverside.
+* **Partial correction priced (L3).** Every half-applied netting names a wrong district. Netting rebound at the pilot's pooled 0.39 keeps
+  Northgate, 7.47 against Ashby Vale's 6.13 (1.22×). Charging rebound to every household with fewer cars than drivers also keeps
+  Northgate, 5.56 against 4.92 (1.13×), because Ashby Vale has many such households whose second adult never needed the car. Finding the
+  contested rebound but skipping the tour-type rates names Riverside, 9.11 against Ashby Vale's 7.23 (1.26×).
 * **Grid.** Trip or tour grain × pooled or typed in-tour shares × rebound (none, pooled, every short-of-cars household, contested) = 12
   feasible cells. Every non-answer cell names Old Town, Riverside, Northgate or Westmoor.
 
@@ -150,7 +151,7 @@ and the two deciding comparisons + 5 named chart parts + 3 files ≈ 62 criteria
 
 * District values (km per eligible resident-week): short car-driver km Old Town 32, Riverside 26, Northgate 25, Westmoor 22, Ashby Vale 21,
   Crossfield 17. All-short-tour shares 0.45 / 0.80 / 0.70 / 0.55 / 0.75 / 0.65. Single-stop shares 0.80 / 0.20 / 0.95 / 0.40 / 0.80 /
-  0.55. Contested shares 0.70 / 0.10 / 0.55 / 0.05 / 0.05 / 0.20. Shares of households with fewer cars than drivers 0.85 / 0.55 / 0.62 /
+  0.55. Contested shares 0.70 / 0.10 / 0.58 / 0.05 / 0.05 / 0.20. Shares of households with fewer cars than drivers 0.85 / 0.55 / 0.62 /
   0.30 / 0.58 / 0.35.
 * Pilot: 380 verified households, 214 non-contested (rebound 0) and 166 contested (rebound 0.88 ± 0.03). Pilot all-short-tour share 0.75
   and single-stop share 0.415, so 0.48 × 0.75 = 0.36.

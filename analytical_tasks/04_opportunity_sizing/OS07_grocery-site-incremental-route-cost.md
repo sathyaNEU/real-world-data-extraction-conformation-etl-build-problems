@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with binding_constraint |
 | Measured traps engaged | #7 uses the ready-made measure · #24 treats an unpublished figure as unknown · #13 validates on one population, applies to another |
 | Calibration form | Gold-standard verification subsample: the internal audit's fully traced P&L for 15 randomly sampled stores |
-| Driving force | Finance charges logistics to stores at the audited network rate of $1.10 a case, a correct share of route costs for the stores that produced it. A new store's real logistics cost is what it adds: one stop and its cases on a route with slack, or a whole route-day where no route reaches. Carried onto a new store, the share charges route fixed costs a second time to a site that joins a route, and undercharges a site that needs its own. Which candidate rides which route, with how much slack, comes only from joining each site to the route plan. The audit cannot show it, because every audited store sits mid-route on a dense metro route. |
+| Driving force | Finance charges logistics to stores at the audited network rate of $1.10 a case, a correct share of route costs for the stores that produced it. A new store's real logistics cost is what it adds: one stop and its cases on a route with slack, a second truck where the route it would join is already full, or a whole route-day where no route reaches. Carried onto a new store, the share charges route fixed costs a second time to a site that joins a route, and undercharges a site that needs its own. Which candidate rides which route, with how much slack, comes only from joining each site to the route plan. The audit cannot show it, because every audited store sits mid-route on a dense metro route. |
 
 ## 1. Situation
 
@@ -40,30 +40,36 @@ A strong solver discounts the three-mile spend because two of the chain's own st
 for incremental chain sales. It finds the competitor near Riverside listed by the scouts without a size, sees that the census suppresses
 that store's size class, and bounds it from the county's published total floor area: at least 98,000 square feet, a hypermarket that takes
 Riverside's catchment. It then charges logistics at the audited rate, which the audit confirms on all 15 sampled stores, and Pine Ridge
-wins. But Pine Ridge sits 41 miles past the end of any route and needs its own route-day six days a week, $0.9M a year. Brookfield sits
-two miles off Route 14, which runs with three and a half hours of slack, so it adds one stop and its cases. The audited rate charges both
-sites the same per case, so it overcharges Brookfield by $350k and undercharges Pine Ridge by $450k.
+wins. But Pine Ridge sits 41 miles past the end of any route and needs its own route-day seven days a week, $1.04M a year. Millbank sits
+on Route 6, which already runs at its drivers' hours limit, so adding it splits the route and puts a second truck on the road five days a
+week. Brookfield sits two miles off Route 14, which runs with three and a half hours of slack, so it adds one stop and its cases. The
+audited rate charges every site the same per case, so it overcharges Brookfield by $350k and undercharges Pine Ridge by $580k and Millbank
+by $170k.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Grocery spend within three miles | A, Northgate ($98M) | The real-estate team's screen on the census spend estimates | The chain's store list: two of its own stores lie within four miles of Northgate, and the location model gives the new store mostly their shoppers |
-| 1 | Incremental chain sales from the location model, the scouted competitor without a size set at the county's mean store (32,000 sq ft), margin less opex less cases × $1.10 | B, Riverside ($1.37M, 1.25× over C) | Cannibalisation removed with the chain's own model and the audited cost rate | The census: county K's published total floor area, against its published size classes, puts the suppressed store at no less than 98,000 sq ft |
-| 2 | The same with the hypermarket bounded from the published totals | C, Pine Ridge ($1.10M, 1.25× over E) | Every competitor sized from published figures; the audited rate verified 15 of 15 | The route plan: Pine Ridge lies 41 miles beyond the last stop of any route and needs its own route-day six days a week |
+| 1 | Incremental chain sales from the location model, the scouted competitor without a size set at the county's mean store (32,000 sq ft), margin less opex less cases × $1.10 | B, Riverside ($1.61M, 1.20× over C) | Cannibalisation removed with the chain's own model and the audited cost rate | The census: county K's published total floor area, against its published size classes, puts the suppressed store at no less than 98,000 sq ft |
+| 2 | The same with the hypermarket bounded from the published totals | C, Pine Ridge ($1.34M, 1.20× over Millbank) | Every competitor sized from published figures; the audited rate verified 15 of 15 | The route plan: Pine Ridge lies 41 miles beyond the last stop of any route and needs its own route-day seven days a week |
 | 3 | **Decisive:** the same sales, with logistics as the cost the site adds to next year's route plan (stop and cases on a route with slack, or the fixed cost of the route-day it needs) | **E, Brookfield** (5th of 6 on rung 0), **$1.22M a year** | — | — |
 
-* **Position table.** Brookfield ranks 5th on rung 0 (tied with Ashgrove), 3rd on rung 1 and 2nd on rung 2 (1.25× behind Pine Ridge),
-  and leads only rung 3 (1.51× over Millbank).
-* **Discriminator dominance.** Pine Ridge carries a 1.25× advantage into rung 3 ($1.10M against $0.87M). Replacing the share with the
-  added cost multiplies Brookfield's contribution by 1.40 and Pine Ridge's by 0.59, an edge of 2.38×, above the 1.50× floor. Product:
-  2.38 / 1.25 = 1.90, Brookfield $1.22M against Pine Ridge $0.64M.
-* **Partial correction priced (L3).** A solver who costs logistics by added route cost but leaves the hypermarket at the county mean names
-  Riverside ($1.84M against $1.22M). One who uses route-level shares (each route's cost per case after adding the site) still charges
-  Brookfield a share of Route 14's fixed cost and keeps Pine Ridge on top.
+* **Position table.** Brookfield ranks 5th on rung 0, 4th on rung 1 and 3rd on rung 2 (tied with Ashgrove each time), and leads only
+  rung 3 (1.28× over Millbank).
+* **Discriminator dominance.** Pine Ridge carries a 1.54× advantage into rung 3 ($1.34M against $0.87M). Replacing the share with the
+  added cost multiplies Brookfield's contribution by 1.40 and Pine Ridge's by 0.57, an edge of 2.45×, 1.33 times the 1.85× floor.
+  Product: 2.45 / 1.54 = 1.59, Brookfield $1.22M against Pine Ridge $0.77M.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong site. A solver who costs logistics by added route
+  cost but leaves the hypermarket at the county mean names Riverside ($2.11M against Brookfield's $1.22M, 1.73×). One who charges every
+  site only a stop and its cases, as if each joined a route with slack, names Pine Ridge ($1.77M against Millbank's $1.47M, 1.20×). One
+  who keeps the audited rate and adds route-days for the two sites no route reaches names Millbank ($1.12M against $0.87M, 1.29×), and
+  so does one who charges each site its route's cost per case after adding it ($1.10M against Brookfield's $0.92M, 1.20×), because both
+  miss Route 6's split and still charge Brookfield a share of Route 14.
 * **Grid.** Sales (three-mile capture, location model) × hypermarket (county mean, bounded) × logistics (audited rate, added cost) gives 8
-  cells. Capture-based cells all name Northgate (3.25× clear); model-based cells name Riverside, Riverside, Pine Ridge and the answer.
-  Brookfield's figure in any other cell is at least 28% from $1.22M.
+  cells. Capture-based cells all name Northgate (4.2× clear on the audited rate, the only positive site on added cost); model-based cells
+  name Riverside (1.20×), Riverside (1.73×), Pine Ridge (1.20×) and the answer. Brookfield's figure in any other cell is at least 28% from
+  $1.22M.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -109,7 +115,8 @@ sites the same per case, so it overcharges Brookfield by $350k and undercharges 
   178,000 sq ft for the pair, so the hypermarket lies between 98,000 and 128,000 sq ft. Every value in that range keeps Riverside below
   Pine Ridge and Brookfield, and Riverside's own figures are graded as upper bounds.
 * **Slack.** Route 14 has 3.5 hours of slack on each of its five days and Brookfield's stop takes 40 minutes, so no rerouting reading
-  changes its added cost; Millbank's route extension and the new route-days are priced from the schedule alone.
+  changes its added cost. Route 6 has 10 minutes of slack against Millbank's 55-minute stop and detour, so it splits under any reading,
+  and the split and the new route-days are priced from the schedule alone.
 * **Sales.** The location model's parameters are filed, and every site's catchment is closed at 15 miles with no store at that edge.
 * **Rounding.** Brookfield's contribution is $1,221,000, mid-bin at the nearest $10k.
 
@@ -146,11 +153,13 @@ runner-up and the margin + 5 named chart parts + 3 files ≈ 73 criteria.
 
 ## 12. World-building constraints
 
-* Three-mile spend ($M): 98, 80, 70, 72, 55, 55. Modelled incremental sales ($M): 14.0, 24.0 (18.6 with the hypermarket bounded), 20.5,
-  18.0, 18.0, 18.0. Operating cost ($M): 3.9, 4.6, 4.0, 3.8, 3.6, 3.6. Margin 28%; 28,571 cases per $1M of sales.
+* Three-mile spend ($M): 98, 80, 70, 72, 55, 55; the screen's capture is 20% of it. Modelled incremental sales ($M): 14.0, 25.0 (18.6
+  with the hypermarket bounded), 21.5, 18.0, 18.0, 18.0. Operating cost ($M): 3.9, 4.6, 4.0, 3.35, 3.6, 3.6. Margin 28%; 28,571 cases per
+  $1M of sales.
 * Added route fixed cost ($M a year): Northgate, Riverside and Brookfield $0.04 (a stop five days a week on a route with slack),
-  Millbank $0.25 (an extension), Pine Ridge $0.89 (312 route-days of 380 miles), Ashgrove $0.66 (260 route-days of 240 miles).
-* Rung leaders A, B, C, E at 1.23×, 1.25×, 1.25×, 1.51×; Brookfield is 5th, 3rd, 2nd, 1st.
+  Millbank $0.56 (a stop, and Route 6's split: 260 route-days of 20 miles), Pine Ridge $1.04 (364 route-days of 380 miles), Ashgrove
+  $0.66 (260 route-days of 240 miles). Route 6 carries 3.12M cases a year, Route 14 3.5M.
+* Rung leaders A, B, C, E at 1.23×, 1.20×, 1.20×, 1.28×; Brookfield is 5th, 4th, 3rd, 1st.
 * Every audited store sits mid-route on a metro route of six to eight stores.
 * Brookfield and Ashgrove match on every column outside the route plan.
 * Shrink and county survey records never touch routes, sales or the census size table.

@@ -38,7 +38,7 @@ vertical. The test archive holds every concluded test at package level. The audi
 A strong solver distrusts the dashboard, rebuilds each desk's lift from the archive, notices that winners are selected on noise, and
 shrinks them. The change log confirms it: shrunk lift × desk clicks reproduces all seven past embeddings. Then it ranks, and the
 large, clean Business desk wins. But a headline variant is assigned when the platform draws a page. A Business story read through a
-partner news app, a search result, a social card, a newsletter or an alert is clicked on the canonical headline, and 70% of
+partner news app, a search result, a social card, a newsletter or an alert is clicked on the canonical headline, and 72% of
 Business·national's clicks start there. The change log cannot show this, because every embedding so far was in an app-exclusive desk
 whose stories have no feed entry, no web URL and no search listing. Local·metro's readers arrive almost entirely through the app's own
 feed, so its modest lift lands on 95% of its clicks.
@@ -49,20 +49,21 @@ feed, so its modest lift lands on 95% of its clicks.
 |---|---|---|---|---|
 | 0 | The dashboard's average winning lift for the desk's vertical × the desk's planned clicks | A, Politics·national | The experimentation team's own programme figure on the audience plan's traffic | The charter names desks by vertical and edition, and the archive carries each test's desk code; Politics' average is lifted by the metro edition's small, noisy tests |
 | 1 | Each desk's own average observed winning lift, from the archive, × planned clicks | B, Sport·metro (1.22× over C) | The right grain, from the raw tests | The change log: every embedding's realised gain matches the empirical-Bayes shrunk lift, 7 of 7 within 2%, and the raw winning lift overstates all seven by 1.3× to 3.6× |
-| 2 | Shrunk winning lift (prior fitted on all packages) × planned clicks | C, Business·national (1.27× over A) | Selection bias removed, and certified by every past embedding | The click-source log: 70% of Business·national's clicks start on surfaces that show the canonical headline |
+| 2 | Shrunk winning lift (prior fitted on all packages) × planned clicks | C, Business·national (1.27× over A) | Selection bias removed, and certified by every past embedding | The click-source log: 72% of Business·national's clicks start on surfaces that show the canonical headline |
 | 3 | **Decisive:** shrunk lift × the clicks that start on a platform-drawn headline (home, section fronts, app feed, in-article links), by desk | **E, Local·metro** (5th of 6 on rung 0), **2.82M clicks a year** | — | — |
 
 * **Position table.** Local·metro ranks 5th on rung 0, 5th on rung 1 and 4th on rung 2, and leads only rung 3 (1.35× over Sport·metro).
   The rung leaders beat their runners-up by 1.88×, 1.22× and 1.27×.
 * **Discriminator dominance.** Business·national carries a 2.06× advantage into rung 3 (6.12M against 2.97M shrunk-lift clicks).
-  Local·metro's drawn share is 0.95 against Business·national's 0.30, an edge of 3.17×, above the 2.47× the margin floor needs. Product:
-  3.17 / 2.06 = 1.54× in Local·metro's favour.
-* **Partial correction priced (L3).** A solver who removes only partner-app clicks, the channel the syndication agreement makes visible,
-  keeps search, social, newsletter and alert clicks and still names Business·national (3.98M against 2.97M, 1.34×). A solver who applies
-  the drawn share to unshrunk lifts names Sport·metro at 7.48M, further from the answer than rung 2. A solver who applies it at vertical
-  grain names Business·national (1.84M against 1.52M).
+  Local·metro's drawn share is 0.95 against Business·national's 0.28, an edge of 3.39×, 1.37 times the 2.47× the margin floor needs.
+  Product: 3.39 / 2.06 = 1.65× in Local·metro's favour.
+* **Partial correction priced (L3).** Every half-applied construction names a wrong desk. A solver who removes only partner-app clicks,
+  the channel the syndication agreement makes visible, keeps search, social, newsletter and alert clicks and still names
+  Business·national (3.98M against Local·metro's 2.97M, 1.34×). A solver who applies the drawn share to unshrunk lifts names Sport·metro
+  (7.48M against 3.76M, 1.99×). A solver who applies it at vertical grain names Business·national (1.71M against Politics·national's
+  1.39M, 1.23×).
 * **Grid.** Grain (vertical, desk) × shrinkage (off, on) × click base (all, all but partner apps, platform-drawn) gives 12 cells. Only the
-  answer cell names Local·metro. Every other cell names A, B or C, each with a leader at least 1.20× clear. The nearest wrong figure for
+  answer cell names Local·metro. Every other cell names A, B or C, each with a leader at least 1.19× clear. The nearest wrong figure for
   Local·metro is 2.97M (+5.3%), and it sits in cells whose leader is Business·national, so reaching it also costs the name.
 
 ## 5. Why the decisive rung survives the opponent
@@ -127,7 +128,7 @@ feed, so its modest lift lands on 95% of its clicks.
   change-log back-test (ask C).
 * `desk_click_gain.png` — a script-rendered grouped bar chart: per desk, clicks gained on observed lift, on shrunk lift and on
   platform-drawn clicks; desks ordered by the last; the chosen desk highlighted; a stacked strip under each desk showing its click-source
-  mix; Business·national's 30% drawn share annotated.
+  mix; Business·national's 28% drawn share annotated.
 * `squad_memo.pdf` — the committed desk, its click figure, and why the other five are not it.
 
 ## 10. The ask layer
@@ -153,10 +154,10 @@ click figure, the runner-up and the margin + 5 named chart parts + 3 files ≈ 6
 
 * Planned clicks (M): Politics·national 420, Sport·metro 80, Business·national 300, Sport·national 350, Local·metro 110,
   Culture·national 150. Observed winning lifts by desk: 1.3%, 11.0%, 2.4%, 1.5%, 3.6%, 2.6%; shrinkage factors 0.88, 0.28, 0.85, 0.85,
-  0.75, 0.70. Dashboard vertical averages: Politics 3.23% (metro edition 130 tests at 6.2%), Sport 1.95%, Local 1.89% (suburban edition
-  200 tests at 1.2%).
-* Platform-drawn shares: 0.20, 0.85, 0.30, 0.30, 0.95, 0.55; partner-app shares 0.55, 0.05, 0.35, 0.35, 0.00, 0.10.
+  0.75, 0.70. Dashboard vertical averages: Politics 3.23% (metro edition 130 tests at 6.2%), Sport 1.95%, Local 1.71% (suburban edition
+  300 tests at 1.2%).
+* Platform-drawn shares: 0.19, 0.85, 0.28, 0.29, 0.95, 0.50; partner-app shares 0.55, 0.05, 0.35, 0.35, 0.00, 0.10.
 * Rung leaders are A, B, C, E with margins 1.88×, 1.22×, 1.27×, 1.35×; Local·metro is 5th, 5th, 4th, 1st. Every grid cell's leader is
-  at least 1.20× clear.
+  at least 1.19× clear.
 * Every past embedding is app-exclusive. The twin embeddings #3 and #6 match on every change-log column.
 * Correction revisions and newsletter opens never touch tests, clicks or source codes.

@@ -11,7 +11,7 @@
 | Gate G mechanism | forecasting, with method_or_model_selection |
 | Measured traps engaged | #25 assumes an effect the log could measure · #24 treats an unpublished figure as unknown · #4 never tests its reading against the control |
 | Calibration form | Published control set with a reproduction clause: the utility's filed 2024 adoption-forecast vintage (40 feeder-year cells), which the forecasting standard requires a method to reproduce |
-| Driving force | Next spring the city runs neighbourhood solar campaigns on two feeders. The change log holds seven earlier campaigns; measured per feeder their lifts swing from 1.3× to 3.4×, but measured per not-yet-adopted eligible household every one converted 4.1% within a year, as a permanent step. Eligible households live in the parcel register, not in the log. Feeder D's newer suburb has 9,800 of them and few installs so far, so its campaign adds 2.8 MW, which a trend, a vendor target or a per-feeder multiplier all miss. |
+| Driving force | Next spring the city runs neighbourhood solar campaigns on two feeders. The change log holds seven earlier campaigns; measured per feeder their lifts swing from 1.3× to 3.4×, but measured per not-yet-adopted eligible household every one converted 4.1% within a year, as a permanent step. Eligible households live in the parcel register, not in the log. Feeder D's newer suburb has 10,450 of them and few installs so far, so its campaign adds 3.0 MW, which a trend, a vendor target or a per-feeder multiplier all miss. |
 
 ## 1. Situation
 
@@ -41,7 +41,7 @@ start dates. Per feeder, the lift is all over the place (1.3× to 3.4× a year's
 stated target or the average multiplier. Both scale feeder D's small trend and leave D third. The instability is in the unit. A campaign
 reaches households that could adopt and have not: owner-occupied single-family parcels with a suitable roof and no system yet. That count
 comes from the parcel register joined to interconnection history. Per such household, every past campaign converted 4.1% within twelve
-months, and the step stayed. D's suburb is young: 9,800 eligible households, few systems yet, so its campaign adds 402 systems and 2.8 MW.
+months, and the step stayed. D's suburb is young: 10,450 eligible households, few systems yet, so its campaign adds 428 systems and 3.0 MW.
 
 ## 4. The ladder
 
@@ -50,17 +50,17 @@ months, and the step stayed. D's suburb is young: 9,800 eligible households, few
 | 0 | Each feeder's install CAGR on the published report's installed base, suppressed commercial cells read as zero | A (3.1 against 2.4) | The utility's own growth rates on the utility's own published base | **E25 (a suppressed cell, bounded):** B's published feeder total minus its residential cell fixes its suppressed commercial cell at 1.5–1.6 MW |
 | 1 | The same with B's commercial base bounded from the published total | B (3.9 against 3.1) | Every published figure used, the unpublished one bounded, nothing guessed | The reproduction clause: CAGR reproduces 9 of the filed vintage's 40 cells |
 | 2 | Diffusion per feeder with market size set by eligible households from the parcel register, which reproduces 40 of 40 filed cells | C (3.2 against 2.6) | The method the standard requires, proven on every filed cell | The city's campaign schedule, sized by the change log's seven campaigns per eligible household |
-| 3 | **Decisive:** rung 2 plus each scheduled campaign's permanent step of 4.1% of the feeder's not-yet-adopted eligible households | **D (4.8 against 3.2)** | — | — |
+| 3 | **Decisive:** rung 2 plus each scheduled campaign's permanent step of 4.1% of the feeder's not-yet-adopted eligible households | **D (5.0 against 3.2)** | — | — |
 
 * **Position table.** D is 5th on rung 0 (1.2), 5th on rung 1 and 3rd on rung 2 (2.0), and leads only rung 3. Leaders beat runners-up by
-  1.29×, 1.26×, 1.23× and 1.50×.
-* **Discriminator dominance.** C carries a 1.60× advantage into rung 3 (3.2 against 2.0). D's campaign edge is 2.40× (4.8 against 2.0),
-  above the required 1.2 × 1.60 = 1.92, for a final margin of 1.50×.
+  1.29×, 1.26×, 1.23× and 1.56×.
+* **Discriminator dominance.** C carries a 1.60× advantage into rung 3 (3.2 against 2.0). D's campaign edge is 2.50× (5.0 against 2.0),
+  1.30 times the required 1.2 × 1.60 = 1.92, for a final margin of 1.56×.
 * **Partial correction priced (L3).** The vendor's target of +60% installs in the campaign year puts D at 2.25 MW. The per-feeder event
-  study's average multiplier (2.1× a year's installs) puts it at 2.46 MW. Both leave D third behind C and B, where rung 2 left it.
+  study's average multiplier (2.1× a year's installs) puts it at 2.46 MW. Both still name C, 1.23× ahead of B (3.2 against 2.6), with D third, where rung 2 left it.
 * **Grid.** Base (suppressed as zero, bounded) × model (CAGR, eligible-household diffusion) × campaign (none, vendor target, per-feeder
   multiplier, per eligible household) gives 16 cells. The name is A, B or C everywhere except diffusion with per-household campaigns,
-  and the nearest wrong cell (the per-feeder multiplier) still has C ahead by 1.30×.
+  and the nearest wrong cell (the per-feeder multiplier) still names C, 1.23× over B and 1.30× over D.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -147,8 +147,8 @@ runner-up and the margin + 5 named chart parts + 3 files ≈ 76 criteria.
 
 ## 12. World-building constraints
 
-* 2029 exceedance (MW) by rung: A 3.1/3.1/1.9/1.9, B 2.4/3.9/2.6/2.6, C 2.0/2.0/3.2/3.2, D 1.2/1.2/2.0/4.8, G 0.6/0.6/0.5/1.5.
-* Feeder D: 9,800 not-yet-adopted eligible households, 60 installs a year on trend, campaign step 402 systems × 7.0 kW.
+* 2029 exceedance (MW) by rung: A 3.1/3.1/1.9/1.9, B 2.4/3.9/2.6/2.6, C 2.0/2.0/3.2/3.2, D 1.2/1.2/2.0/5.0, G 0.6/0.6/0.5/1.5.
+* Feeder D: 10,450 not-yet-adopted eligible households, 60 installs a year on trend, campaign step 428 systems × 7.0 kW.
 * Seven past campaigns, each a 4.1% step (±0.3 point) per not-yet-adopted eligible household; per-feeder lifts span 1.3×–3.4×.
 * The filed vintage's 40 cells: 40 / 23 / 9 reproduced by the three model families. No vintage window contains a campaign.
 * Reopened complaints and transformer banks never touch installs, parcels or the change log.

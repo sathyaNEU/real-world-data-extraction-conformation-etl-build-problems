@@ -5,21 +5,21 @@
 | Objective | Anomaly Detection & Diagnostics |
 | Domain | Economics · weather-index insurance pricing |
 | Mirrors | Deciding whether a metric shift is real before repricing on it, when the comparison series used to test it carry changes of their own (guardrail metrics after an SDK upgrade, ad-measurement panels whose control publishers changed tagging, sensor fleets judged against neighbours at Google and Amazon data centres) |
-| Decision shape | Hold, forced by a blocking quantity: the 2027 heat-index rate filing either adjusts the Marlow Creek series for its 1986 break or holds the 2026 rate |
+| Decision shape | Hold, forced by a blocking quantity: the 2027 heat-index rate filing either adjusts the Tallis Creek series for its 1986 break or holds the 2026 rate |
 | Committed call | The adjustment the pricing series takes, or a hold of the 2026 rate, with the quantity that decides it |
 | Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · the quiet second trap (E15) behind a loud instrument decoy, settled by a precision rather than a cause, with an implicit successor-ID join at the lower rung (E20) |
 | Gate G mechanism | signal_vs_noise_or_hold, with method_or_model_selection |
 | Measured traps engaged | #11 beats the headline trap, misses the quiet one · #18 joins only on the visible key · #8 papers over a failed reproduction |
-| Calibration form | Parallel-run overlap: Marlow Creek's 14 months of side-by-side glass and electronic readings, and neighbour N3's 24 months of side-by-side 07:00 and 17:00 readings |
-| Driving force | The neighbour difference series is the right instrument and it shows a +0.44 °C step, inside the pricing tolerance. But the nearest neighbour, which carries 45% of the composite's weight, moved its daily reading from 17:00 to 07:00 two months after Marlow Creek's own changes and reads 0.36 °C cooler for it. Its overlap file shows that; once N3 is corrected or dropped, the step's 95% half-width is 0.22–0.24 °C against a tolerance of 0.15, and no adjustment can enter. |
+| Calibration form | Parallel-run overlap: Tallis Creek's 14 months of side-by-side glass and electronic readings, and neighbour N3's 24 months of side-by-side 07:00 and 17:00 readings |
+| Driving force | The neighbour difference series is the right instrument and it shows a +0.44 °C step, inside the pricing tolerance. But the nearest neighbour, which carries 45% of the composite's weight, moved its daily reading from 17:00 to 07:00 two months after Tallis Creek's own changes and reads 0.36 °C cooler for it. Its overlap file shows that; once N3 is corrected or dropped, the step's 95% half-width is 0.22–0.24 °C against a tolerance of 0.15, and no adjustment can enter. |
 
 ## 1. Situation
 
-A crop insurer prices a heat-index product off the Marlow Creek cooperative station, whose annual mean temperature jumps by about half a
+A crop insurer prices a heat-index product off the Tallis Creek cooperative station, whose annual mean temperature jumps by about half a
 degree in 1986 and stays there. The pricing manual lets a break enter the series as an adjustment only when its size is known to within
 ±0.15 °C at 95% from a difference series against the five nearest stations; a station with an unresolved break larger than that is not
 used for repricing, and the rate holds at the prior year's. The 2027 rate is filed on 1 February. The pack carries daily and annual series
-for Marlow Creek and twelve stations within 100 km, every station's history file, the network's station register, and both overlaps.
+for Tallis Creek and twelve stations within 100 km, every station's history file, the network's station register, and both overlaps.
 
 ## 2. Gate G: why this is legal
 
@@ -37,7 +37,7 @@ for Marlow Creek and twelve stations within 100 km, every station's history file
 ## 3. The driving force
 
 A strong solver refuses the pricing analyst's climate story because no neighbour jumps in 1986, builds the difference series, finds the
-station's June 1986 switch from glass thermometers to an electronic sensor, and refuses that story too, because Marlow Creek's own
+station's June 1986 switch from glass thermometers to an electronic sensor, and refuses that story too, because Tallis Creek's own
 overlap shows the sensor reads only 0.06 °C cooler. It attributes the step to the September relocation, finds +0.44 °C with a half-width
 of 0.11, inside tolerance, and files the adjustment. Every move is competent and the loud decoy has been beaten twice. The quiet one is in
 the comparison set. N3, 12 km away and the composite's heaviest member, changed its observer's reading hour from 17:00 to 07:00 in August
@@ -50,7 +50,7 @@ holds the rate.
 
 | Rung | Construction | Lands on | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Marlow Creek's own series: the jump read as regional warming; price on the unadjusted series | H1, no adjustment | The series is long, clean and continuous, and the decade did warm | The neighbours: none of the twelve steps in 1986, so the difference series steps and the jump is local |
+| 0 | Tallis Creek's own series: the jump read as regional warming; price on the unadjusted series | H1, no adjustment | The series is long, clean and continuous, and the decade did warm | The neighbours: none of the twelve steps in 1986, so the difference series steps and the jump is local |
 | 1 | Difference series against the five nearest stations with complete records under one station ID (40–90 km); +0.61 °C ± 0.13 at the June instrument change | H2, adjust 0.61 °C for the sensor switch | The textbook relative test, a documented instrument event at the break, inside tolerance | The station register's successor links: the three nearest stations (8–20 km) were renumbered in 1993 and continue under new IDs, so the nearest five are different stations |
 | 2 | Difference series against the true nearest five via successor links: +0.44 °C ± 0.11; the station's own overlap puts the sensor at −0.06 °C, so the step is the September relocation | H3, adjust 0.44 °C for the relocation | Right neighbours, the loud decoy beaten by the station's own overlap, inside tolerance | N3's overlap file: from August 1986 N3 read at 07:00, 0.36 °C cooler than its 17:00 readings, and N3 carries 45% of the composite's weight |
 | 3 | **Decisive:** N3 corrected month by month from its overlap, or dropped; the step re-estimated with its interval | **Hold the 2026 rate:** +0.28 °C ± 0.24 (corrected), +0.29 °C ± 0.22 (dropped), both beyond ±0.15 | — | — |
@@ -58,7 +58,7 @@ holds the rate.
 * **Blocking quantity.** The 95% half-width of the step once N3 is clean: 0.24 °C corrected and 0.22 °C dropped, 1.60× and 1.47× the 0.15
   tolerance. The point estimate is far from zero, so the break is real; it cannot be sized, so H3 fails and the manual's hold applies.
 * **Why each candidate fails.** H1: the step is local. H2: the station's overlap sizes the sensor at −0.06 °C. H3: unsizeable within
-  tolerance. H4 (reading hour at Marlow Creek): its reading hour never changed. H5 (urban growth): gradual, no step in the difference series.
+  tolerance. H4 (reading hour at Tallis Creek): its reading hour never changed. H5 (urban growth): gradual, no step in the difference series.
 * **Partial correction priced (L3).** A solver who corrects N3 with the overlap's annual mean offset, ignoring the seasonal pattern and the
   offset's own uncertainty, gets +0.30 °C ± 0.11 and files an adjustment: a pick, as wrong as rung 2.
 * **Grid.** Neighbour join (single ID or successor chain) × N3 (as recorded, annual offset, monthly correction, dropped) × sensor evidence
@@ -72,11 +72,11 @@ holds the rate.
 
 1. **Written nowhere.** N3's history file records an observer change in August 1986 and says nothing about the reading hour. The manual's
    tolerance is a basis; no document says a neighbour is contaminated.
-2. **Corpus blind for a computable reason.** *Marlow Creek's own overlap is identical under every reading of the comparison set, because it
+2. **Corpus blind for a computable reason.** *Tallis Creek's own overlap is identical under every reading of the comparison set, because it
    measures the station against itself.* It refutes the instrument decoy and is arithmetically incapable of seeing N3; only N3's own overlap,
    reached through the successor ID, can.
 3. **No arithmetic symptom.** Every series is complete and continuous once successor links are followed; N3's step is buried inside the
-   same four months as Marlow Creek's and does not stand out in the composite.
+   same four months as Tallis Creek's and does not stand out in the composite.
 4. **Not a row predicate.** It needs a monthly offset from a two-reading overlap, a re-weighted composite, a difference series and an
    interval on its step.
 5. **The enumeration is arithmetic.** The verdict is a half-width compared with a tolerance; no field marks a neighbour as unusable.
@@ -86,16 +86,16 @@ holds the rate.
 
 ## 6. The calibration corpus
 
-* **Form.** Two parallel-run overlaps: Marlow Creek's 14 months of glass and electronic readings side by side from June 1986, and N3's 24
+* **Form.** Two parallel-run overlaps: Tallis Creek's 14 months of glass and electronic readings side by side from June 1986, and N3's 24
   months of 07:00 and 17:00 readings side by side from August 1986.
-* **What it pins.** Marlow Creek's overlap sizes the sensor change at −0.06 °C (±0.04), refuting H2 at every neighbour set. N3's overlap
+* **What it pins.** Tallis Creek's overlap sizes the sensor change at −0.06 °C (±0.04), refuting H2 at every neighbour set. N3's overlap
   sizes its reading-hour change month by month, −0.48 °C in July and −0.19 °C in January, 0.36 °C on the annual mean.
-* **Twin pair.** N3 and N4 are identical on distance (12 and 13 km), elevation, correlation with Marlow Creek (0.94), record length and
-  every entry in their history files. Their difference series against Marlow Creek step by +0.68 °C and +0.32 °C in 1986 (2.1×); only N3's
+* **Twin pair.** N3 and N4 are identical on distance (12 and 13 km), elevation, correlation with Tallis Creek (0.94), record length and
+  every entry in their history files. Their difference series against Tallis Creek step by +0.68 °C and +0.32 °C in 1986 (2.1×); only N3's
   overlap separates them.
 * **Every rule exercised.** One of the far single-ID neighbours had a screen replacement in 1985, which is why rung 1 overshoots; the
   register links all three renumbered stations, so the successor join is tested three times.
-* **Resemblance points at the decoy.** Marlow Creek's step most resembles the network's 23 documented relocation breaks, which average
+* **Resemblance points at the decoy.** Tallis Creek's step most resembles the network's 23 documented relocation breaks, which average
   +0.41 °C.
 
 ## 7. Pins, voices and the licensed wrong basis
@@ -122,14 +122,14 @@ holds the rate.
 
 ## 9. Prompt sketch and deliverables
 
-> The 2027 heat-index rate is filed on 1 February and it rests on the Marlow Creek series, which jumped in 1986. Our pricing analyst is
+> The 2027 heat-index rate is filed on 1 February and it rests on the Tallis Creek series, which jumped in 1986. Our pricing analyst is
 > sure the jump is climate. Tell me in one sentence for the filing which adjustment, if any, the series takes before we price, or whether
 > we hold this year's rate, and send `break_assessment.xlsx` with the sheets below, the chart `difference_series.png`, and a short
 > `filing_memo.pdf`.
 
 * `break_assessment.xlsx` — the step estimates under each comparison set, the hot-day sheet (ask A), the policy sheet (ask B) and the
   rung table (ask C).
-* `difference_series.png` — Marlow Creek minus the composite from 1976 to 1996 for the far, nearest-five and clean composites, the three
+* `difference_series.png` — Tallis Creek minus the composite from 1976 to 1996 for the far, nearest-five and clean composites, the three
   1986 changes marked, each composite's step with its 95% band, and the ±0.15 tolerance drawn around the clean estimate.
 * `filing_memo.pdf` — the committed verdict, the blocking quantity, and what would turn it into an adjustment.
 
@@ -152,7 +152,7 @@ point estimate and the falsification condition + 5 named chart parts + 3 files �
 
 ## 12. World-building constraints
 
-* Marlow Creek's step is +0.28 °C against clean neighbours; the sensor offset is −0.06 °C; the relocation carries the rest.
+* Tallis Creek's step is +0.28 °C against clean neighbours; the sensor offset is −0.06 °C; the relocation carries the rest.
 * N3 carries 45% of the inverse-distance weight and reads 0.36 °C cooler after August 1986; the contaminated step is +0.44 ± 0.11.
 * Half-widths: 0.13 (far set), 0.11 (nearest five as recorded), 0.11 (annual offset), 0.24 (monthly correction), 0.22 (N3 dropped).
 * N3 and N4 are identical on every register and history column; their 1986 difference steps are +0.68 and +0.32.

@@ -7,7 +7,7 @@
 | Mirrors | Customer-health and churn early warning where churn spreads through small groups that no per-account metric expresses (SaaS seats leaving with a departing champion, friend-group churn on Meta and Instagram, multiplayer game clans quitting together) |
 | Decision shape | A structure the body adopts: the set of alert rules feeding tutors' weekly call lists, scored on the share of last year's withdrawals flagged at least two weeks ahead, never exceeding the 8% weekly call capacity |
 | Committed call | The adopted alert rules and their settings, and the share of 2024 withdrawals the structure would have flagged in time, adopted by the student-success board in June |
-| Gap · Pattern | Gap 2 (population) over Gap 3 (objective) · every screen is right and the answer is what nothing flags (students whose peer-review circle has just lost a member, a group grain built from the review graph), with a suppressed cell bounded from published totals below it |
+| Gap · Pattern | Gap 2 (population) over Gap 3 (objective) · every screen is right and the answer is what nothing flags (students whose peer-review circle has just lost a member, a group grain built from the review graph), with a suppressed cell recovered exactly from a published total and bounded by worst-case allocation below it |
 | Gate G mechanism | method_or_model_selection, with binding_constraint support |
 | Measured traps engaged | #24 treats an unpublished figure as unknown · #7 uses the ready-made measure · #4 never tests its reading against the control |
 | Calibration form | Change-log natural experiments: the course-design change log's 14 assessment-calendar changes (2019–2023), each with weekly activity before and after |
@@ -52,7 +52,7 @@ costs little capacity and catches what no individual rule can.
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | The current absolute alert (under 20 clicks in a week) | Structure: {absolute} | It is what tutors work from today | The change log: calendar changes pushed absolute flags to 31% of a cohort in assessment weeks, far over capacity, while cohort ranks stayed flat |
-| 1 | Cohort-relative rank alone at the cut that fills capacity (rank below 14th percentile two weeks running); the missed-assessment rule left out because its equity cannot be checked where disability is suppressed | Structure: {cohort-relative 14}, 38% caught | The change log certifies cohort ranks, and only verifiable rules can be adopted | The equality report: each module's declared total less the visible cells bounds the suppressed ones, and the missed-assessment rule's ratio is at most 1.12 |
+| 1 | Cohort-relative rank alone at the cut that fills capacity (rank below 14th percentile two weeks running); the missed-assessment rule left out because its equity cannot be checked where disability is suppressed | Structure: {cohort-relative 14}, 38% caught | The change log certifies cohort ranks, and only verifiable rules can be adopted | The equality report: each module has one suppressed presentation, so its declared total less the visible presentations gives that presentation's declared count exactly, and even with every declared student there flagged the missed-assessment rule's ratio is at most 1.12 |
 | 2 | Cohort-relative and missed-assessment rules, cut retuned to fill capacity together | Structure: {cohort-relative 9, missed assessment}, 46% caught | Both strongest individual signals, equity-cleared, within capacity | The withdrawal file against the review log: 31% of withdrawals fell within three weeks of a circle-mate's, with no flag from any rule beforehand |
 | 3 | **Decisive:** circles built as components of the review-assignment graph; remaining members flagged for three weeks after a circle-mate withdraws; the cohort cut retuned to fill what capacity remains | **Structure: {cohort-relative 7, circle loss}, 61% caught** | — | — |
 
@@ -62,7 +62,9 @@ costs little capacity and catches what no individual rule can.
   cohort cut to 5 and catches 52%; the answer's two-rule set catches 61%, 1.17× the nearest alternative, because missed assessments mostly
   re-flag students the cohort rank already holds.
 * **Partial correction priced (L3).** A solver who looks for group effects in tutor groups (a column) instead of review circles finds a weak
-  clustering, adds a tutor-group-loss rule that flags twenty students per withdrawal and catches 41% within capacity: below rung 2.
+  clustering, adds a tutor-group-loss rule that flags twenty students per withdrawal, and adopts {cohort-relative 10, tutor-group loss} at
+  41% caught: below rung 2, and 20 points under the answer. A solver who builds circles but keeps the missed-assessment rule adopts three
+  rules at cut 5 and catches 52%, the answer's 61% being 1.17× that.
 * **Grid.** Rule set (each subset of cohort-relative, missed assessment, circle loss, tutor-group loss) × equity handling (suppressed cells
   unknown or bounded) = 30 cells. Every set without circle loss scores 46% or less; with it, only the two-rule set at cut 7 reaches 61%.
 
@@ -148,6 +150,7 @@ and the score + 5 named chart parts + 3 files ≈ 54 criteria.
 
 * Scores 38% / 46% / 61%; the three-rule set at cut 5 scores 52%; the tutor-group variant 41%. Absolute flags reach 31% in assessment weeks.
 * 31% of 2024 withdrawals fall within three weeks of a circle-mate's, with no prior flag; circle hazard 19% for three weeks, 2% otherwise.
-* Suppressed disability cells bound the missed-assessment rule's ratio at 1.12 or less.
+* Each module has exactly one suppressed presentation, recovered exactly from the module's declared total; with every declared student there
+  flagged, the missed-assessment rule's ratio is at most 1.12.
 * T-114 and T-207 are identical on every alert, activity and submission column.
 * Call logs and forum posts never touch activity, submissions, withdrawals or the review log.

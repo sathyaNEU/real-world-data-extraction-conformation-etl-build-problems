@@ -57,10 +57,12 @@ shared-batch high-level visits × the shared-batch downcode rate × the fee diff
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.36×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.24×, 1.28×, 1.36× and 1.83×.
 * **Discriminator dominance.** C carries a 1.36× divergence advantage into rung 3. E's edge on the decisive axis is its shared-batch share of
-  high-level visits, 0.68 against 0.12 (5.7×), so the net is 5.7 / 1.36 = 4.2×.
+  high-level visits, 0.68 against 0.12 (5.7×), 3.5× the required 1.2 × 1.36 = 1.63×, so the net is 5.7 / 1.36 = 4.2×; the rung-3 figures
+  themselves stand 3.0× apart ($640k against $210k).
 * **Partial correction priced (L3).** A solver who finds co-submission but weights each group by its three-year average shared-batch share
-  names D, which handed 70% of its coding out in 2023 and took all but 20% back in 2025; that lands further from E than rung 2. A solver who
-  carries each group's last audit rate forward names D as well.
+  names D, which handed 70% of its coding out in 2023 and took all but 20% back in 2025: D $700k against E's $420k (1.67×). A solver who
+  carries each group's last audit rate forward names D as well, because D's last audit fell in its 70% year: D $1.01 million, 2.6× the
+  runner-up B. Both land on a wrong name that no rung of the ladder names.
 * **Grid.** Measure (share or divergence) × peers (statewide or finer) × recovery (divergence, last audit rate, claim-level mixture) = 12
   cells. Share cells name A, divergence cells name B or C, last-audit cells name D, and only claim-level mixture cells name E.
 
@@ -145,7 +147,8 @@ named chart parts + 3 files ≈ 76 criteria.
 ## 12. World-building constraints
 
 * Rung leaders A, B, C, E with the margins above; E is 5th, 4th, 2nd (1.36× behind C) and 1st.
-* Shared-batch shares of high-level visits this year: E 0.68, C 0.12, D 0.20 (0.70 in 2023), B 0.41. Shared-batch lags 2–9 days, in-house
+* Shared-batch shares of high-level visits this year: E 0.68, C 0.12, D 0.20, B 0.41. D's shares ran 0.70 in 2023 (its last audit) and
+  0.55 in 2024; E's three-year average is 0.45. Shared-batch lags 2–9 days, in-house
   1–12, both on every weekday.
 * The revision log: 1,410 shared-batch audited claims (649 downcoded) and 2,380 in-house (none).
 * F's 2023 and 2025 audits are identical on every visible column.

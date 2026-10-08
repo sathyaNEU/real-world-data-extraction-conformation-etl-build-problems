@@ -11,7 +11,7 @@
 | Gate G mechanism | signal_vs_noise_or_hold, with method_or_model_selection support |
 | Measured traps engaged | #14 coarsens the segment it was asked about · #2 counts file rows instead of the real unit · #1 reports a failed back-test, ships anyway |
 | Calibration form | Pilot log: six weeks of shadow running for three candidate detectors and the incumbent rule, every alert and every failed block adjudicated by on-call |
-| Driving force | The paging policy admits a detector on its paging class when the pilot establishes recall at 90% confidence. The pilot log has one row per failed block, and on blocks the invariant miner clears the bar comfortably (21 of 23). The 23 replica-loss blocks came from five datanode-loss incidents, and every detector caught all or none of each incident's blocks, 124 of 124 detector-incident pairs. The trial is the incident: four of five caught bounds recall at 0.42, and no candidate does better, so the slot holds. |
+| Driving force | The paging policy admits a detector on its paging class when the pilot establishes recall at 90% confidence. The pilot log has one row per failed block, and on blocks the invariant miner clears the bar comfortably (22 of 23). The 23 replica-loss blocks came from five datanode-loss incidents, and every detector caught all or none of each incident's blocks, 124 of 124 detector-incident pairs. The trial is the incident: four of five caught bounds recall at 0.42, and no candidate does better, so the slot holds. |
 
 ## 1. Situation
 
@@ -39,7 +39,7 @@ failure in the pilot log. The on-call lead wants anything but the current rule.
 
 A strong solver ignores line-level counts, evaluates per block on the adjudicated pilot, notices that the policy pages on replica-loss
 failures rather than on every anomaly, recomputes on that class, deduplicates re-fired alerts as the pager would, and finds I clearing every
-condition with a lower bound of 0.79. Every step is correct, and the bound treats 23 blocks as 23 trials. Replica loss is a datanode
+condition with a lower bound of 0.84. Every step is correct, and the bound treats 23 blocks as 23 trials. Replica loss is a datanode
 event: when a node drops, every under-replicated block it held fails at once, and the pilot log carries each block's incident ID. The log
 also shows, for all four detectors and all 31 pilot incidents, that a detector alerted on all of an incident's blocks or on none. Blocks
 inside an incident are one outcome counted many times. On five incidents, I and V each caught four and P three, so the best lower bound
@@ -50,18 +50,19 @@ is 0.42, and no defensible interval at incident grain clears 0.70.
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Block-level F1 over all anomalous blocks in the pilot: P 0.85, V 0.72, I 0.66 | P | The pilot scorecard's own grain, time-ordered and adjudicated | The paging policy pages on replica-loss failures, a class the runbook lists separately, where P's recall is 12 of 23 |
-| 1 | Paging class at block grain, recall bound and per-alert precision: V recall 22/23 (bound 0.83), precision 0.79; I precision 0.74 | V | The policy's class and conditions, applied with a confidence bound | The pager configuration suppresses re-alerts on a block already paged; per alerted block V's precision is 0.61 |
-| 2 | Paging class at block grain with pager deduplication: I recall 21/23 (bound 0.79), precision 0.81; V fails precision | I | Every condition met, every alert counted as the pager would count it | The pilot log's incident IDs: the 23 blocks are five incidents, and every detector caught all or none of each one's blocks |
+| 1 | Paging class at block grain, recall bound and per-alert precision: V recall 21/23 (bound 0.79), precision 0.79; I precision 0.74 | V | The policy's class and conditions, applied with a confidence bound | The pager configuration suppresses re-alerts on a block already paged; per alerted block V's precision is 0.61 |
+| 2 | Paging class at block grain with pager deduplication: I recall 22/23 (bound 0.84), precision 0.81; V fails precision | I | Every condition met, every alert counted as the pager would count it | The pilot log's incident IDs: the 23 blocks are five incidents, and every detector caught all or none of each one's blocks |
 | 3 | **Decisive:** recall bound at incident grain for every candidate: I 4 of 5, V 4 of 5, P 3 of 5 | **Hold: no detector takes the slot** | — | — |
 
 * **The blocking quantity.** The best incident-grain lower 90% bound on paging-class recall is 0.42 (I and V, four of five, Clopper-Pearson),
   0.28 below the policy's 0.70; P's is 0.25. Every candidate fails on the same standard, and each one's reason is named in ask C.
 * **Partial correction priced (L3).** A solver who sees the incident IDs but widens the block-level interval by a design effect estimated
-  across all 31 pilot incidents (1.9 blocks each on average) shrinks I's 23 blocks to about 12 effective trials, gets a bound of 0.71 and
-  adopts it. A solver who pools all 31 incidents across classes gets I at 26 of 31 (bound 0.72) and adopts it on the wrong class. Both land
-  on a pick, not the hold.
+  across all 31 pilot incidents (1.9 blocks each on average) shrinks I's 23 blocks to about 12 effective trials, gets a bound of 0.77 and
+  adopts I, 0.07 above the line; a cluster bootstrap over the five incidents puts I's lower decile at 0.87 and adopts it too. A solver who
+  pools all 31 incidents across classes gets I at 29 of 31 (bound 0.84) and adopts it on the wrong class, 0.14 above the line. Every partial
+  route lands on I, never on the hold.
 * **Grid.** Class (all anomalies or paging class) × alert counting (per alert or per paged block) × trial unit (block or incident) = 8
-  cells. All-anomaly cells name P at block grain and I at incident grain (26 of 31); paging-class block cells name V or I; only the
+  cells. All-anomaly cells name P at block grain and I at incident grain (29 of 31); paging-class block cells name V or I; only the
   paging-class incident cells hold, and the deduplicated one holds for the policy's reason.
 * **Falsifiable.** Had the pilot seen seven replica-loss incidents and I caught all seven, its bound would be 0.72 and I would take the slot.
 
@@ -86,9 +87,9 @@ is 0.42, and no defensible interval at incident grain clears 0.70.
   on-call's adjudication of each, over six weeks and 31 incidents.
 * **What it certifies.** Every block-level figure on rungs 0 to 2 reproduces exactly from the log, so a back-tester is confirmed at rung 2,
   and the all-or-nothing pattern pins the trial unit (above).
-* **Twin pair.** Replica-loss failures and write-pipeline timeouts each have 23 failed blocks in the pilot, and I caught 21 of 23 in both,
-  with matching precision. Timeouts came from 21 incidents and replica loss from five, so I's incident-grain bounds are 0.77 and 0.42, 1.8×
-  apart, separated only by the trial unit.
+* **Twin pair.** Replica-loss failures and write-pipeline timeouts each have 23 failed blocks in the pilot, and I caught 22 of 23 in both,
+  with matching precision. Timeouts came from 21 incidents (I caught 20) and replica loss from five (I caught four), so I's incident-grain
+  bounds are 0.83 and 0.42, 2.0× apart, separated only by the trial unit.
 * **Resemblance points at the decoy.** On block counts, I's replica-loss record is indistinguishable from its timeout record, which clears the
   bar, so a lookup across classes reads I as admissible.
 
@@ -105,7 +106,7 @@ is 0.42, and no defensible interval at incident grain clears 0.70.
 
 ## 8. Determinism by construction
 
-* **Interval method.** At block grain every standard interval admits I (Clopper-Pearson 0.79, Wilson 0.81); at incident grain every one
+* **Interval method.** At block grain every standard interval admits I (Clopper-Pearson 0.84, Wilson 0.87); at incident grain every one
   fails (0.42 to 0.51), so the method is not a fork.
 * **Incident membership.** Each failed block carries exactly one incident ID, and the incident's datanode and time agree with the datanode
   event log for every block.
@@ -143,10 +144,11 @@ count and the falsifiability count + 5 named chart parts + 3 files ≈ 56 criter
 
 ## 12. World-building constraints
 
-* Paging class: 23 failed blocks from five incidents of 9, 6, 5, 2 and 1 blocks. I misses the 2-block incident, V the 1-block incident, and P
+* Paging class: 23 failed blocks from five incidents of 9, 6, 5, 2 and 1 blocks. I misses the 1-block incident, V the 2-block incident, and P
   catches the 9-, 2- and 1-block incidents (12 blocks).
 * All 31 pilot incidents show all-or-nothing detection for all four detectors.
 * V re-fires on persisting benign anomalies, so its precision falls from 0.79 per alert to 0.61 per paged block; I's rises from 0.74 to
   0.81.
-* Timeouts: 23 blocks over 21 incidents, I catching 19 incidents.
+* Timeouts: 23 blocks over 21 incidents (19 of one block, two of two), I catching 20 incidents and 22 blocks. The other five pilot
+  incidents hold 13 blocks, all caught by I, so I catches 29 of 31 incidents in all.
 * Shipper heartbeats and acknowledgement records never touch the pilot log's alerts, blocks or adjudications.

@@ -15,7 +15,7 @@
 
 ## 1. Situation
 
-Ardent Press retracted 2,064 papers this year against 410 last year. The integrity board adopts one account of the surge on the 20th, and
+Corbel Scientific retracted 2,064 papers this year against 410 last year. The integrity board adopts one account of the surge on the 20th, and
 the account decides which remediation programmes the portfolio funds: a portfolio-wide re-review, controls on guest-edited special issues, or
 reviews of named journal families. Next year's close-out will check whether each problem the account names produced its stated share of the
 excess. The board chair believes standards have collapsed across the portfolio. The head of integrity points to nine mass retractions of

@@ -54,9 +54,9 @@ existing premises to that utility's premise file.
 
 * **Figure shape.** South Central's block is graded with the other three. The answer is the grid's extreme cell (the largest South Central
   block), so every partial application under-places it: −96%, −36% and −44% at rungs 0–2.
-* **Discriminator dominance.** At rung 2 North Central's uncovered exposure leads South Central's by 1.16× (320 against 275 MW). The new
-  premises' subgroup rate is 1.99× the pooled rate on 38% of South Central's book, which lifts its exposure 1.55× (425 against 275). 1.55
-  exceeds 1.2 × 1.16 = 1.39, so the last rung moves the largest block.
+* **Separation.** The answer is graded as four blocks, not a name. The new premises' subgroup rate is 1.99× the pooled rate on 38% of
+  South Central's book, which lifts its exposure from 275 to 425 MW and raises the water level from 150 to 200 MW. Every block moves:
+  Coast 105 → 55, North Central 170 → 120, South Central 125 → 225, Far West 0. No other grid cell puts South Central within 16% of 225.
 * **Partial correction priced (L3).** A solver who sees that new homes differ but gives every new premise the all-electric rate places
   260 MW in South Central (+16%). One who gives new premises the existing book's 21% all-electric share places 140 MW (−38%), further away
   than rung 1.

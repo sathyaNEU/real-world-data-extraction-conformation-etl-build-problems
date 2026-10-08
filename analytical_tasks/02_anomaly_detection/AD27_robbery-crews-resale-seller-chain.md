@@ -7,7 +7,7 @@
 | Mirrors | Trust-and-safety teams sizing coordinated abuse by the accounts that cash out rather than by where it surfaces (marketplace fraud rings linked through payout accounts at Amazon and eBay, coordinated-inauthentic-behaviour takedowns at Meta linked through shared infrastructure, card-testing rings linked through the merchants they settle at) |
 | Decision shape | A structure the body adopts: how many series teams the summer plan stands up and which districts each one covers, scored on whether each team holds exactly one offender group |
 | Committed call | The number of new series teams and the districts each covers, signed into the summer deployment plan on 30 May |
-| Gap · Pattern | Gap 2 (population: the unit is the offender group, not the area) over Gap 4 (rule) · an implicit join through a second identifier, with Pattern B (the settled ledger pins the linkage) and a suppressed cell bounded from a published total below it |
+| Gap · Pattern | Gap 2 (population: the unit is the offender group, not the area) over Gap 4 (rule) · an implicit join through a second identifier, with Pattern B (the settled ledger pins the linkage) and a suppressed cell bounded by a rounded published share and its published base below it |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
 | Measured traps engaged | #18 joins only on the visible key · #24 treats an unpublished figure as unknown · #4 never tests its reading against the control |
 | Calibration form | Settled-transaction ledger: the property-recovery ledger of 31 robbery series closed by charges in 2023–2025, with every recovered phone's resale transaction |
@@ -50,7 +50,7 @@ files, and the property unit's recovery practice (match a held phone to its repo
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | CompStat hotspot read: beats over the department's twelve-week hotspot line | Two teams: D8 and D10 | The department's own map; D8 and D10 carry the most robberies | The 2023–2025 incident history: D10's spring level is the same every year, and its stadium detail already covers it |
-| 1 | Space-time permutation scan (emerging only), with the D9 station cluster left to the juvenile unit because juvenile cells are suppressed | Two teams: D7 and D8 | The right detection method, and juvenile records are legally withheld from the unit | The records division's district-week juvenile table bounds beat 931's juvenile incidents at 10 or fewer against 98 in the extract |
+| 1 | Space-time permutation scan (emerging only), with the D9 station cluster left to the juvenile unit because juvenile cells are suppressed | Two teams: D7 and D8 | The right detection method, and juvenile records are legally withheld from the unit | The records division's monthly release: D9's juvenile-suspect share of robberies, published to the whole per cent (3%), and its published count of 262 put D9's juvenile-suspect robberies at 7 to 9, so beat 931 holds at most 9 of its 98 |
 | 2 | Scan with D9 restored as an adult cluster, each cluster confirmed by detectives' related-case links | Three teams: D7, D8, D9 | Three emerging clusters, each with its own linked series | The settled ledger: district-bounded linkage reproduces 14 of 31 settled series, and all 17 misses are series that crossed a district line |
 | 3 | **Decisive:** link incidents through item IMEI → resale transaction → seller → the seller's other transactions, take connected components, keep the components inside emerging clusters | **Two teams: D7 with D9, and D8** | — | — |
 
@@ -58,12 +58,14 @@ files, and the property unit's recovery practice (match a held phone to its repo
   rung holds the answer's territory, and the answer's merged team appears on no rung below it. Three of the partitions have two teams, so
   the committed call is stated and graded team by team on territory, never on the count alone.
 * **Partial correction priced (L3).** A solver who joins incidents to the resale ledger but links by kiosk instead of by seller merges
-  crews A and B, which both cash out at the Riverside mall kiosks, and adopts one team for D7, D8 and D9: further from the answer than
-  rung 2. A solver who builds seller components over every incident, without the emerging-cluster population, adds crew C's persistent D10
-  component and adopts three teams.
+  crews A and B, which both cash out at the Riverside mall kiosks (96 of their 512 resales), and adopts one team for D7, D8 and D9: a team
+  short, on a linkage that reproduces 11 of the 31 settled series. A solver who follows the seller chain but keeps linkage inside each
+  district's case files, as the detectives do, splits crew A at the D7–D9 line (its sellers' 249 resales divide 111 and 138) and adopts
+  rung 2's three teams, a team too many. Neither holds the answer's merged D7–D9 team.
 * **Grid.** Baseline (hotspot counts or scan) × juvenile claim (accepted or bounded) × linkage (detective links, kiosk, seller) = 12 cells.
   Every cell without seller linkage names rung 0, 1 or 2's partition or the kiosk merge; seller linkage over hotspot zones keeps the D10
-  team. Only the scan population with seller linkage names {D7+D9, D8}.
+  team; with the juvenile claim accepted, D9 goes to the juvenile unit and seller linkage leaves rung 1's {D7, D8}. Only the scan
+  population with the juvenile cells bounded and seller linkage names {D7+D9, D8}.
 * **Component dominance.** The answer is not a ranking, so dominance is stated as separation: of crew A's 415 incidents, 307 carry an
   IMEI and 262 of those phones were resold; its four sellers account for 249 of the 262 (95%), with the other 13 sold by one-off buyers who
   link to nothing else. No 2026 seller ever sold a phone taken outside their own component.
@@ -119,7 +121,8 @@ files, and the property unit's recovery practice (match a held phone to its repo
 * **Persistence.** Crew C's D10 component is non-emerging under every scan window from 8 to 16 weeks.
 * **Coverage.** IMEIs are captured for 74% of incidents. Each crew component holds at least 120 linked incidents, so the unlinked quarter
   changes no team's territory.
-* **The juvenile bound.** The claim fails at the bound's upper end (10 of 108, 9%), so no reading of the suppressed cells restores it.
+* **The juvenile bound.** The claim fails at the bound's upper end (9 of 98, 9%), so no reading of the rounding or the suppressed beat cells
+  restores it.
 
 ## 9. Prompt sketch and deliverables
 
@@ -155,9 +158,10 @@ per crew and the juvenile bound + 5 named chart parts + 3 files ≈ 40 criteria.
 
 * 1,460 phone robberies in the extract: crew A 184 in D7 and 231 in D9 (98 at beat 931), crew B 402 in D8, crew C 286 in D10, 357
   unlinked background incidents.
-* Crew A's IMEI-linked phones are sold by four sellers and crew B's by three; both cash out partly at the Riverside mall kiosks. No 2026
+* Crew A's IMEI-linked phones are sold by four sellers and crew B's by three; both cash out partly at the Riverside mall kiosks (96 of
+  512 resales: A 262, B 250 from 296 IMEI-carrying incidents). No 2026
   seller crosses components.
-* The juvenile table gives D9 19 juvenile-suspect incidents over twelve weeks, with nine in published cells outside beat 931, so beat 931
-  holds at most 10.
+* The records division suppresses beat-level juvenile counts and publishes each district's juvenile-suspect share of robberies to the whole
+  per cent with its robbery count: D9 3% of 262 (crew A's 231 and 31 background incidents), so 7 to 9 in D9 and at most 9 of beat 931's 98.
 * The settled ledger holds 31 series; 17 crossed a district line. Twins 2024-11 and 2025-03 are identical on every visible column.
 * CAD records and the 2025 clearance file never touch the incident extract, the property sub-table or the resale ledger.

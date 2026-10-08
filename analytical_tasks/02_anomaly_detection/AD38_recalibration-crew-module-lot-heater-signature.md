@@ -57,13 +57,16 @@ module's lot is recoverable, and L7, which drifts at three times the rate of the
 
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.22×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.19×, 1.23×, 1.22× and 1.58×.
-* **Discriminator dominance.** C carries a 1.22× advantage in at-risk units into rung 3. E's forward device-months per at-risk unit are 4.54
-  against C's 2.35 (1.93×), because 46% of E's at-risk units carry L7 against 9% of C's, so the net is 1.93 / 1.22 = 1.58×.
+* **Discriminator dominance.** C carries a 1.22× advantage in at-risk units into rung 3, so the required edge is 1.2 × 1.22 = 1.46×. E's
+  forward device-months per at-risk unit are 4.54 against C's 2.35 (1.93×), because 46% of E's at-risk units carry L7 against 9% of C's: an
+  edge 1.32× the requirement, and a net of 1.93 / 1.22 = 1.58×.
 * **Partial correction priced (L3).** A solver who sees the swaps but gives every swapped module the fleet-average drift rate names D, whose
-  swaps are slow lots that the average overstates and whose L7 share the average hides: further from E than rung 2.
+  swaps are slow lots that the average overstates, while the average hides E's L7: D 3,400 against C's 2,850 (1.19×), E at 2,500. A solver
+  who reads the heater signature but leaves warehouse-registered units where they are registered names B, which is credited with 260 of E's
+  field units still registered to its distributor's warehouse: B 4,000 against E's 3,200 (1.25×).
 * **Grid.** Region link (registered or re-homed) × lot (build record, fleet average for swaps, heater signature) × horizon (today's drift or
-  forward exceedance) = 12 cells. Today's-drift cells name B or C; forward cells name C with the build lot, D with the average, and E only with
-  the heater-signature lot on re-homed units.
+  forward exceedance) = 12 cells. Today's-drift cells name B (registered) or C (re-homed); registered forward cells name B; re-homed
+  forward cells name C with the build lot, D with the fleet average, and E only with the heater-signature lot.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -145,6 +148,7 @@ margin + 5 named chart parts + 3 files ≈ 60 criteria.
 
 * Rung figures as in the ladder; E is 5th, 4th, 2nd (1.22× behind C) and 1st.
 * 38% of units carry a swapped module; 46% of E's at-risk units and 9% of C's carry L7. L7 drifts at 3.1× the other lots.
-* 24% of units are registered to distributor warehouses; each appears in one manifest.
+* 24% of units are registered to distributor warehouses; each appears in one manifest. 260 at-risk units working at E's customers are
+  registered to B's distributor and carry 1,700 of E's 4,900 forward device-months. Under the fleet-average rate: D 3,400, C 2,850, E 2,500.
 * Twins 4471-0932 and 4471-1208 are identical on every register column.
 * CRM records and factory test records never touch telemetry, the swap log, manifests or the service book.

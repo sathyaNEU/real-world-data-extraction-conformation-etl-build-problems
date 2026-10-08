@@ -52,15 +52,16 @@ round trip, is the construction.
 | 0 | Storms above the planner's alert level per winter × mean storm length (expected days lost): S1 31, S2 25, S3 22, S4 19, S5 15 | S1 | The planner's alert levels, set on eighteen winters | The vessel register: floating vessels stand down at a crane limit of 2.2–2.8 m for each site's depth, far below the alert level |
 | 1 | Stand-downs at each vessel's limit for the site's depth, declustered, × mean duration: S2 41, S3 33, S1 30, S5 27, S4 24 | S2 | The right event population, joined through the vessel register | The acknowledgement file: event-duration totals reproduce 3 of 12 past campaigns |
 | 2 | Weather-window analysis: a day is lost when no 24-hour workable window is available: S3 48, S5 39, S2 37, S4 34, S1 31 | S3 | The industry-standard downtime estimate, reproducing 5 of 12 campaigns | The port register: S5's vessels need 42 hours of round trip and remobilisation before they can work |
-| 3 | **Decisive:** chain stand-downs through gaps shorter than each site's round trip plus 12 hours of work, count the chained span: S5 66, S3 49, S2 44, S4 38, S1 33 | **S5** (5th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** chain stand-downs through gaps shorter than each site's round trip plus 12 hours of work, count the chained span: S5 80, S3 49, S2 44, S4 38, S1 33 | **S5** (5th of 5 on rung 0) | — | — |
 
 * **Position table.** S5 ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (S3 leads it by 1.23×), and leads only rung 3. Rung leaders
-  beat their runners-up by 1.24×, 1.24×, 1.23× and 1.35×.
-* **Discriminator dominance.** S3 carries a 1.23× window-analysis advantage into rung 3. S5's sequence uplift (66 against 39, 1.69×) against
-  S3's (49 against 48, 1.02×) is an edge of 1.66×, so the net is 1.66 / 1.23 = 1.35×.
+  beat their runners-up by 1.24×, 1.24×, 1.23× and 1.63×.
+* **Discriminator dominance.** S3 carries a 1.23× window-analysis advantage into rung 3, so the required edge is 1.2 × 1.23 = 1.48×. S5's
+  sequence uplift (80 against 39, 2.05×) against S3's (49 against 48, 1.02×) is an edge of 2.01×, 1.36× the requirement, and the net is
+  2.01 / 1.23 = 1.63×.
 * **Partial correction priced (L3).** A solver who lengthens the window to one round trip for every site (the fleet's typical 28 hours)
-  names S3 again (52 days against S5's 44), and one who uses round trips without the 12-hour working minimum names S2: both further from S5
-  than rung 2's runner-up position.
+  names S3 again, 52 days against S5's 44 (1.18×). One who uses each site's own round trip but drops the 12-hour working minimum puts S5's
+  threshold at 42 hours, below its 45- to 51-hour gaps, and also names S3, 53 against S5's 45 (1.18×). Both land on the rung-2 leader.
 * **Grid.** Event population (alert storms or stand-downs) × gap rule (none, 24-hour window, uniform round trip, site round trip plus work
   minimum) = 8 cells. Alert-storm cells name S1; stand-down cells name S2, S3, S3 and S5 in that order, so only the site-specific chain names
   S5.
@@ -144,7 +145,8 @@ and the margin + 5 named chart parts + 3 files ≈ 54 criteria.
 
 ## 12. World-building constraints
 
-* Rung figures as in the ladder; S5 is 5th, 4th, 2nd (1.23× behind S3) and 1st.
+* Rung figures as in the ladder; S5 is 5th, 4th, 2nd (1.23× behind S3) and 1st (1.63× ahead of S3). The two partial builds give S3 52
+  and 53 against S5's 44 and 45.
 * Round trips plus remobilisation: 26–30 hours for S1–S4 and 42 for S5, so chain thresholds of 38–42 and 54 hours. S5's within-pair gaps
   run 45–51 hours.
 * The jack-up's limit exceeds every recorded peak at all five sites.

@@ -16,7 +16,7 @@
 ## 1. Situation
 
 A battery-refurbishment company will tool its plant for 3,000 out-of-warranty pack replacements next year across five platforms: the
-Volta hatch, Kestrel SUV, Arden saloon, Mira city car and Tern van. Tooling is committed per platform in lots of 50, in proportion to
+Volta hatch, Kestrel SUV, Plover saloon, Mira city car and Tern van. Tooling is committed per platform in lots of 50, in proportion to
 each platform's forecast, before the year starts. Its investors' term sheet admits a demand model only if it reproduces the parts
 distributor's published out-of-warranty replacement count for every platform in every year from 2021 to 2024. The vehicle register
 gives each car's platform and Dutch registration date. A separate import register holds the first-use abroad of imported used cars. The
@@ -40,8 +40,8 @@ A strong solver drops the fleet-over-life shortcut and applies the OEM life curv
 the published counts fails on the Mira, which it traces to imports: the register's date is when a used import reached the Netherlands,
 and the import certificate, linked through the register's certificate number, puts first use 3.5 years earlier. Aged correctly, cars
 reproduce 13 of 20 counts, and the misses all run high in the later years. That looks like noise near a solution. It is depletion: every
-settled replacement removes an original pack and installs a refurbished one with its own clock. Arden and Mira have lost 2,900 and 3,400
-original packs to replacement since 2019. Rebuilt as a stock of packs in service, Arden's forecast falls from 1,300 to 760, Mira's from
+settled replacement removes an original pack and installs a refurbished one with its own clock. Plover and Mira have lost 2,900 and 3,400
+original packs to replacement since 2019. Rebuilt as a stock of packs in service, Plover's forecast falls from 1,300 to 760, Mira's from
 1,600 to 1,040, and Volta, with few packs replaced so far, leads.
 
 ## 4. The ladder
@@ -49,11 +49,11 @@ original packs to replacement since 2019. Rebuilt as a stock of packs in service
 | Rung | Construction | Lands on | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Registered fleet ÷ a twelve-year life, by platform | Kestrel leads (1,200 slots); 6,300 replacements (+67.6%) | The investors' own model | The published counts: it reproduces none of the 20 |
-| 1 | OEM life curve on cars aged from the register's Dutch date, out of warranty after 8 years | Arden leads (1,150); 3,250 (−13.6%) | A proper hazard on the installed base; reproduces 8 of 20 | The import register: 55% of Mira cars were first used abroad 3.5 years before their Dutch date |
-| 2 | The same with imported cars aged from first use, through the certificate chain | Mira leads (1,000, 1.23× over Arden); 4,810 (+27.9%) | Reproduces 13 of 20, every miss in the later years | The ledger: 2,900 Arden and 3,400 Mira originals were replaced in 2019–2025 and are no longer at risk |
-| 3 | **Decisive:** a stock of packs in service from the ledger (originals aged from first use, refurbished packs aged from install on their own curve and warranty) | **Volta 1,050 · Kestrel 150 · Arden 600 · Mira 800 · Tern 400; 3,760 replacements** | — | — |
+| 1 | OEM life curve on cars aged from the register's Dutch date, out of warranty after 8 years | Plover leads (1,150); 3,250 (−13.6%) | A proper hazard on the installed base; reproduces 8 of 20 | The import register: 55% of Mira cars were first used abroad 3.5 years before their Dutch date |
+| 2 | The same with imported cars aged from first use, through the certificate chain | Mira leads (1,000, 1.23× over Plover); 4,810 (+27.9%) | Reproduces 13 of 20, every miss in the later years | The ledger: 2,900 Plover and 3,400 Mira originals were replaced in 2019–2025 and are no longer at risk |
+| 3 | **Decisive:** a stock of packs in service from the ledger (originals aged from first use, refurbished packs aged from install on their own curve and warranty) | **Volta 1,050 · Kestrel 150 · Plover 600 · Mira 800 · Tern 400; 3,760 replacements** | — | — |
 
-* **Shape.** The graded objects are the slot vector and the demand figure. The leading platform changes at every rung (Kestrel, Arden,
+* **Shape.** The graded objects are the slot vector and the demand figure. The leading platform changes at every rung (Kestrel, Plover,
   Mira, Volta, each at least 1.23× clear), and the answer is bracketed: −13.6% at rung 1 and +27.9% at rung 2.
 * **Partial correction priced (L3).** A solver who removes replaced packs from the risk set but gives the refurbished packs no clock of
   their own reproduces 15 of 20, every miss low, and lands at 2,560 (−31.9%), further from the answer than rung 2, with 360 slots
@@ -84,10 +84,10 @@ original packs to replacement since 2019. Rebuilt as a stock of packs in service
   published out-of-warranty counts by platform for 2021–2024 (20 controls).
 * **What it pins.** The pack-in-service construction, 20 of 20; cars on Dutch dates 8; cars on first-use dates 13; packs without a
   refurbished clock 15 (all misses low).
-* **Twin pair.** The Arden 2024 and Mira 2021 control cells are identical on cars at risk (8,000), ages (9–11 years from first use) and
-  import share (22%). Their published counts are 410 and 830, 2.0× apart: by 2024 Arden had already replaced 2,900 originals, most now
+* **Twin pair.** The Plover 2024 and Mira 2021 control cells are identical on cars at risk (8,000), ages (9–11 years from first use) and
+  import share (22%). Their published counts are 410 and 830, 2.0× apart: by 2024 Plover had already replaced 2,900 originals, most now
   refurbished packs inside their warranty. Only the pack stock separates them.
-* **Resemblance points at the decoy.** Next year's Arden and Mira fleets resemble Mira 2021, the highest count on file.
+* **Resemblance points at the decoy.** Next year's Plover and Mira fleets resemble Mira 2021, the highest count on file.
 
 ## 7. Pins, voices and the licensed wrong basis
 
@@ -132,7 +132,7 @@ original packs to replacement since 2019. Rebuilt as a stock of packs in service
   share for three platforms.
 * **Ask B (device-carried).** For each platform, the share of incoming cores passing cell grading in each quarter of 2025. *Device:* a core
   re-tested after balancing gets a second record under the same core number, and the grading procedure says the final test decides.
-  Counting first tests understates yield on the Arden and Mira.
+  Counting first tests understates yield on the Plover and Mira.
 * **Ask C (validity).** Controls reproduced (of 20) and next year's demand under each of the four constructions and the partial reading.
 * **Decoupling.** Rebuilding the risk set on cars instead of packs changes no figure in asks A or B. Core returns and grading records
   touch neither the register nor the forecast.
@@ -144,10 +144,10 @@ chart parts + 3 files ≈ 54 criteria.
 
 ## 12. World-building constraints
 
-* Forecasts by platform (Volta, Kestrel, Arden, Mira, Tern): rung 0 1,500 / 2,500 / 1,000 / 800 / 500; rung 1 1,000 / 150 / 1,250 / 600
+* Forecasts by platform (Volta, Kestrel, Plover, Mira, Tern): rung 0 1,500 / 2,500 / 1,000 / 800 / 500; rung 1 1,000 / 150 / 1,250 / 600
   / 250; rung 2 1,300 / 160 / 1,300 / 1,600 / 450; answer 1,300 / 180 / 760 / 1,040 / 480; partial 1,180 / 160 / 420 / 560 / 240.
 * Refurbished-pack failures out of warranty next year: 1,200 of the 3,760.
 * 55% of Mira cars are imports first used 3.5 years before their Dutch date; other platforms 4–22%.
 * Reproduction: 0, 8, 13, 15 and 20 of 20 for rung 0, rung 1, rung 2, the partial and the answer.
-* Arden 2024 and Mira 2021 match on every control-visible column.
+* Plover 2024 and Mira 2021 match on every control-visible column.
 * Core returns and grading records never touch the register, the import certificates or the ledger's replacement lines.

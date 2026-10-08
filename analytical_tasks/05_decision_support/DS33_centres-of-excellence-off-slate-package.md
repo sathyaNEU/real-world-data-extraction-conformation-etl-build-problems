@@ -61,9 +61,11 @@ and renews last year's package only if it qualifies. One package of four does: H
 * **Dominance.** Here dominance is admissibility, not size. The slate's failures sit where no convention closes them: H3 at 15.2% and H9 at
   no less than 15.1% against 14.6%, and P3 4.3% over the cap. The answer clears the cap by 1.4% and meets the other three conditions by
   margins of at least 0.6 points, 9 road miles and 11 episodes.
-* **Partial correction priced (L3).** A solver who searches beyond the slate but reads H9's suppressed rate as no breach finds H2, H9, H7
-  and H11 at $13.2M, cheaper and wrong. One who routes by straight-line distance finds H2, H5, H7 and H11 clearing the cap on paper at
-  $13.5M; routed by road, the river towns go to H5 instead of H2 and it costs $14.3M. Each half-insight names a different wrong package.
+* **Partial correction priced (L3).** Each half-insight names a different wrong package. A solver who searches beyond the slate but reads
+  H9's suppressed rate as no breach finds H2, H9, H7 and H11 at $13.2M, which under that reading beats the answer's $13.8M by 4.5%. One
+  who routes by straight-line distance finds H2, H5, H7 and H11 clearing the cap on paper at $13.5M, and cannot reach the answer at all:
+  by straight line the river towns go to H2, and H6 falls 24 episodes below the volume floor. Routed by road, that package sends the
+  river towns to H5 instead of H2 and costs $14.3M, over the cap.
 * **Grid.** Rates (raw, risk-adjusted) × H9 (no breach shown, bounded) × scope (slate, all packages) × routing (straight line, road miles)
   = 16 cells. They name P1, P2, P3, the H9 package or the straight-line package; only risk-adjusted, bounded, all packages and road miles
   names the answer.
@@ -156,6 +158,7 @@ condition each slate package fails + 5 named chart parts + 3 files ≈ 63 criter
   $14.6M; answer $13.8M; the H9 off-slate package $13.2M; the straight-line package $13.5M on paper and $14.3M by road.
 * H3: raw 12.1%, risk-adjusted 15.2%. H4: raw 15.0%, risk-adjusted 13.8%. H9: suppressed, bounded 15.1–15.8% by the region's totals.
 * Exactly one package of the 793 meets all four conditions. H9 and H12 match on every published and bid column. The river towns' road
-  route to H2 runs to the only bridge, so road routing sends them to H6, the dearest eligible centre.
+  route to H2 runs to the only bridge, so road routing sends them to H6, the dearest eligible centre, which then clears the volume floor
+  by 11 episodes; by straight line it falls 24 short.
 * Last year a slate package qualified, and the close-out reproduces to the dollar under road-mile routing.
 * Telehealth stamps and travel legs are independent of every main-call record.

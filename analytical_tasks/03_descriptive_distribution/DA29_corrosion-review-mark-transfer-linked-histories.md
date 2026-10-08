@@ -39,7 +39,7 @@ interval-censored estimator, and checks it against the change log: all seven log
 key is a mark. Owners of the saloon keep personal marks when they sell, so the car carries on under a new key. If the car had a corrosion
 repair under its first mark, its next failure under the second is counted as a new first onset, and its early survival is counted twice.
 The transfer register holds the chain from old mark to new mark at a dated transfer. Linked into vehicles, the saloon falls from 16.8% to
-9.6%, and the van-derived MPV, whose owners almost never transfer, leads at 13.6%.
+8.4%, and the van-derived MPV, whose owners almost never transfer, leads at 13.6%.
 
 ## 4. The ladder
 
@@ -52,11 +52,13 @@ The transfer register holds the chain from old mark to new mark at a dated trans
 
 * **Position table.** Tern ranks 5th on rung 0 (9.4), 4th on rung 1 (9.6) and 2nd on rung 2 (13.7, 1.23× behind the saloon, its only
   second place), and leads only rung 3.
-* **Discriminator dominance.** The saloon carries 1.23× into rung 3. Linking keeps 0.99 of Tern's rung-2 share and 0.57 of the saloon's, an
-  edge of 1.74×, above the 1.2 × 1.23 = 1.47 needed. The product, 1.74 / 1.23 = 1.41, is Tern's lead over the saloon on rung 3.
+* **Discriminator dominance.** The saloon carries 1.23× into rung 3. Linking keeps 0.99 of Tern's rung-2 share and 0.50 of the saloon's, an
+  edge of 1.99×, against the 1.2 × 1.23 = 1.47 needed (1.35× headroom). The product, 1.99 / 1.23 = 1.62, is Tern's lead over the saloon
+  on rung 3.
 * **Partial correction priced (L3).** A solver who links only keys whose first test fails (the visible oddity) and leaves passing
-  continuations unlinked still names the saloon, at 14.9 against Tern's 13.6, because the double-counted early survival stays in. A
-  solver who drops late-starting keys as imports deletes the post-transfer years and names the Puffin city car.
+  continuations unlinked still names the saloon, at 15.9, 1.17× Tern's 13.6, because the double-counted early survival stays in. A
+  solver who drops late-starting keys as imports deletes the post-transfer years and names the Puffin city car at 13.0, 1.16× Tern's
+  11.2. Neither half lands on Tern.
 * **Grid.** Grain (rows or cycles) × estimator (empirical or interval-censored) × identity (keys or linked vehicles) = 8 cells. Seven name
   Kestrel, Puffin or Osprey. Only cycles, interval censoring and linking name Tern.
 
@@ -139,7 +141,7 @@ margin + 5 named chart parts + 3 files ≈ 74 criteria.
 ## 12. World-building constraints
 
 * Eight-year shares (%): rung 0 A 15.0, B 12.2, C 11.5, D 10.6, E 9.4, F 8.1; rung 1 D 13.0, A 10.6, C 10.4, E 9.6, B 9.1, F 7.0; rung 2
-  C 16.8, E 13.7, D 13.4, A 12.0, B 10.8, F 8.4; rung 3 E 13.6, A 11.0, B 10.5, D 10.2, C 9.6, F 8.0.
+  C 16.8, E 13.7, D 13.4, A 12.0, B 10.8, F 8.4; rung 3 E 13.6, A 11.0, B 10.5, D 10.2, C 8.4, F 8.0.
 * Keys that continue an earlier vehicle by year eight: saloon 25%, city car 14%, hatchback 6%, MPV 1%; 9% of all keys in scope.
 * No fleet-registered vehicle in the change log carries a transfer before year eight. Harcourt and Linden match on every key-level column.
 * Item renumbering and odometer units never touch a structural corrosion item's presence or a cycle's date.

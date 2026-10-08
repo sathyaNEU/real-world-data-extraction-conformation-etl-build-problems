@@ -11,7 +11,7 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #17 guesses an attribution the data can settle · #5 takes the population a flag or filter suggests · #7 uses the ready-made measure |
 | Calibration form | Change-log natural experiments: six partnership launches in the product change log, each with its partner's member list and their timelines before and after |
-| Driving force | The reason a member is looking is an optional field; laid-off members fill it in more than half the time and people returning from a career break one time in twenty. Read through the field, the rise looks like layoffs, then a hiring freeze. Returners leave a consistent trace instead: an account dormant for a year or more, reactivated, with a profile update and the open-to-work switch inside thirty days. That trace reproduces every member on the returnship partners' lists and assigns 470,000 of the rise to them. |
+| Driving force | The reason a member is looking is an optional field; laid-off members fill it in more than half the time and people returning from a career break one time in twenty. Read through the field, the rise looks like layoffs, then a hiring freeze. Returners leave a consistent trace instead: an account dormant for a year or more, reactivated, with a profile update and the open-to-work switch inside thirty days. That trace reproduces every member on the returnship partners' lists and assigns 570,000 of the rise to them. |
 
 ## 1. Situation
 
@@ -32,18 +32,18 @@ cause is chosen. The product change log records every past partnership launch.
 * **Instrument repair.** Make the reason field mandatory from tomorrow: this year's rise was recorded without it, and the bet is judged on this
   year. The behavioural trace already in the logs settles the reasons the field never captured.
 * **Lens swap.** The naive split assigns reasons to the members who stated one and scales them up; the answer assigns every member by what
-  they did, which moves 0.37 million members into a group the stated reasons barely contain.
+  they did, which moves 0.44 million members into a group the stated reasons barely contain.
 
 ## 3. The driving force
 
 A strong solver distrusts the open-to-work flag, because members forget to switch it off, and uses the research definition (applied in the last
 30 days or switched on in the last 90). It decomposes the rise into flows: lower job-finding accounts for 0.36 million, and inflows for the rest,
-split by reason. The reason is an optional field filled by 30% of members. Laid-off members fill it 55% of the time, graduates 60%, returners from
+split by reason. The reason is an optional field, filled by 21% of this year's new seekers. Laid-off members fill it 55% of the time, graduates 60%, returners from
 a career break 5%. Scaling stated reasons up hands the unknown 70% to whoever states most, and the hiring freeze stays on top. Returners can be
 identified anyway: an account dormant for at least twelve months, reactivated, followed by a profile update and the open-to-work switch within
 thirty days. The six partnership launches in the change log come with partner lists, settled records of who was laid off and who was returning
 from a break, and the dormancy trace reproduces every returnship list while the layoff trace (a cluster of colleagues ending positions at the
-same employer in the same fortnight) reproduces every outplacement list. Assigned by trace, returners account for 0.47 million of the rise.
+same employer in the same fortnight) reproduces every outplacement list. Assigned by trace, returners account for 0.57 million of the rise.
 
 ## 4. The ladder
 
@@ -52,29 +52,35 @@ same employer in the same fortnight) reproduces every outplacement list. Assigne
 | 0 | Rise in open-to-work flags by stated reason, scaled to the whole rise | A, layoffs (595k) | The recruiting team's own view, from the profile's own field | The research definition: an active seeker applied in the last 30 days or switched on in the last 90, and 0.9M flags are stale |
 | 1 | Rise in active seekers by the dated definition, by stated reason, scaled | C, graduates (410k) | The research team's own population, with stale flags gone | The stock rose partly because fewer seekers left: job-finding fell, which no reason field can show |
 | 2 | Flow decomposition: lower job-finding against inflows, inflows split by stated reason | B, hiring freeze (360k) | Flows and hazards rather than counts, with every member in the population | The partner lists: stated reasons reproduce 31% of the members on the six settled lists |
-| 3 | **Decisive:** inflows assigned by behavioural trace (dormancy for returners, colleague clusters for layoffs), the rest by stated reason | **D, returners (470k)** (4th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** inflows assigned by behavioural trace (dormancy for returners, colleague clusters for layoffs), the rest by stated reason | **D, returners (570k)** (4th of 5 on rung 0) | — | — |
 
 * **Position table.** D ranks 4th on rungs 0 and 1 and 5th on rung 2, and leads only rung 3. Rung leaders beat their runners-up by 2.02×,
-  1.24×, 1.26× and 1.31×.
-* **Discriminator dominance.** The hiring freeze carries a 3.56× lead into rung 3 (360k against 101k). The trace multiplies returners'
-  inflow by 4.65 and leaves the outflow component unchanged, an edge of 4.65×, above the required 1.2 × 3.56 = 4.28; the net margin is 1.31×.
-* **Partial correction priced (L3).** A solver who fills missing reasons from the stated mix within each experience band still hands returners
-  a stated-reason share and names B. One who treats every reactivated account as a returner, without the dormancy length, sweeps in members
-  back from short absences and names D at 640k, 36% high, while reproducing only 2 of 6 lists.
-* **Grid.** Population (flags, dated rule) × decomposition (stock, flows) × reasons (stated, banded, trace) gives ten feasible builds; the
-  flag builds name A, the dated stock builds C, the flow builds with stated or banded reasons B, and only flows with the trace name D.
+  1.24×, 1.26× and 1.58×.
+* **Discriminator dominance.** The hiring freeze carries a 2.68× lead into rung 3 (360k against 134k). The trace multiplies returners'
+  inflow by 4.24 and leaves the outflow component unchanged, an edge of 4.24×, 1.32 times the required 1.2 × 2.68 = 3.21; the net margin is
+  1.58×.
+* **Partial correction priced (L3).** Every half-built marker leaves the freeze in front. Filling missing reasons from the stated mix within
+  each experience band hands returners' blanks to the layoffs and career moves that dominate their mid-career bands: B 360k against A's 300k
+  (1.20×), D 160k. Taking returners from the account-status flag "reactivated", which the platform sets only when an account closed
+  automatically after 24 months without a login is re-verified, catches the longest breaks alone: D 263k against B's 360k (1.37×), the other
+  returners still scaled from a field they leave blank.
+* **Grid.** Population (flags, dated rule) × decomposition (stock, flows) × reasons (stated, banded, status flag, trace). Stock builds break the
+  template's flows rule; the two the ladder walks name A (flags) and C (dated). Flow builds on the flags name B under every reason source,
+  because 0.9M stale flags read as slower exits. On the dated rule, stated, banded and status-flag reasons name B, and only the trace names D;
+  the nearest wrong cell is banded imputation, 1.20× short.
 
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The data dictionary calls the reason field optional; the change log describes each partnership. No document says
    returners can be identified, or by what.
 2. **The corpus pins a construction, not a menu.** The dormancy trace reproduces both returnship lists in full and the colleague-cluster trace
-   all four outplacement lists; stated reasons reproduce 31% of listed members, banded imputation 44%. The traces need logins, profile edits and
+   all four outplacement lists; stated reasons reproduce 31% of listed members, banded imputation 44%, and the "reactivated" status flag 33% of the returnship members. The traces need logins, profile edits and
    colleagues at the same employer, ordered in time; nothing in them is a single column.
 3. **No arithmetic symptom.** Flows reconcile to the stock change exactly (1.20M) under every assignment; members, flags and applications tie.
 4. **Not a row predicate.** Dormancy is a gap between logins; a layoff cluster is a group of colleagues whose position end dates fall in one
    fortnight; both need ordered histories and other members' records.
-5. **The enumeration is arithmetic.** No column says "returner"; 470,000 are built from activity logs.
+5. **The enumeration is arithmetic.** No column says "returner" (the status flag marks only the 24-month closures); 570,000 are built
+   from activity logs.
 6. **No cutover date.** Returners arrived steadily across the year; the dated events (two large layoff announcements in the spring) are the
    recruiting team's decoy.
 7. **Survives deletion.** With every voice gone, the flow decomposition with stated reasons still names the hiring freeze.
@@ -103,7 +109,8 @@ same employer in the same fortnight) reproduces every outplacement list. Assigne
 ## 8. Determinism by construction
 
 * **Dormancy.** At least twelve months without a login; the dormancy distribution has no mass between 7 and 12 months for reactivated
-  open-to-work members, so the cut does not move the answer.
+  open-to-work members, so the cut does not move the answer. The "reactivated" status flag is set only for accounts closed after 24 months
+  without a login; a third of returners carry it.
 * **Clusters.** Twenty or more colleagues at one employer ending positions within one fortnight; the clusters are separated from ordinary
   turnover by an empty band between 6 and 20.
 * **Flows.** Monthly inflow and outflow hazards on the dated population, combined by Shapley over the five components; the components sum to the
@@ -141,8 +148,11 @@ and the runner-up's + 5 named chart parts + 2 files ≈ 135 criteria.
 
 ## 12. World-building constraints
 
-* Rise of 1.20M: lower job-finding 0.36M; inflows A 0.20M, C 0.10M, D 0.47M, E 0.07M by trace.
-* Reason fill rates: layoffs 55%, graduates 60%, voluntary 50%, returners 5%; rung figures as in section 4.
+* Rise of 1.20M: lower job-finding 0.36M; inflows by trace and residual stated reasons A 0.11M, C 0.10M, D 0.57M, E 0.06M (true graduates
+  0.09M and voluntary changers 0.07M).
+* Reason fill rates: layoffs 55%, graduates 60%, voluntary 50%, returners 5%, 21% of new seekers overall. Rung figures (A / B / C / D / E):
+  0.595 / 0.010 / 0.295 / 0.103 / 0.197; 0.33 / 0.02 / 0.41 / 0.17 / 0.27; 0.286 / 0.36 / 0.255 / 0.134 / 0.165; 0.11 / 0.36 / 0.10 / 0.57 /
+  0.06. Banded imputation 0.30 / 0.36 / 0.21 / 0.16 / 0.17; status flag 0.233 / 0.36 / 0.208 / 0.263 / 0.135.
 * 0.9M stale open-to-work flags; dormancy gap empty between 7 and 12 months; layoff clusters separated by an empty band from 6 to 20.
 * March and September identical on every flag, reason, application and account-type column.
 * Posting refreshes and billing rows touch no seeker's activity log.

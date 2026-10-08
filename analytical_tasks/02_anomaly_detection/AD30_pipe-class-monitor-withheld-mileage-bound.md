@@ -60,12 +60,14 @@ its rate between 4.3 and 4.9 incidents per thousand mile-years against 1.65 to 1
 * **Separation at the decisive rung.** LF-ERW's rate is 4.26 to 4.88 per thousand mile-years across the bound and the rest of pre-1970 runs
   1.65 to 1.73, a ratio of at least 2.46 against the rule's 1.5. LF-ERW's last five gaps all fall below its lower limit at both ends of the
   bound; the other pre-1970 chart has none below.
-* **Partial correction priced (L3).** A solver who reads a withheld cell as zero miles cannot place LF-ERW's eleven incidents against any
-  exposure, drops them as unlocatable, and finds the remaining pre-1970 chart quiet: no order at all, further from the answer than rung 2's
-  1,840-mile order. A solver who bounds LF-ERW but keeps operator charts names Y again.
+* **Partial correction priced (L3).** A solver who builds class mileage by summing seam-type cells and reads a withheld cell as zero keeps
+  LF-ERW's eleven incidents in a pre-1970 class of 1,370 published miles, sees that chart signal, and orders inspection of 1,370 miles that
+  leave out all 430 failing ones: a two-class structure ordering the wrong pipe, further from the answer than rung 2's 1,840-mile order,
+  which at least contains it. A solver who bounds LF-ERW but keeps operator charts names Y again, the only operator at 100% against X's
+  67%.
 * **Grid.** Monitored unit (operator or class) × tie handling (documented tie-break or open gaps) × withheld mileage (unknown, zero or
-  bounded) = 12 cells. Operator cells name X or Y; class cells name the two-class era split or, with withheld read as zero, no order at all;
-  only class charts with the bound name the three-class structure.
+  bounded) = 12 cells. Operator cells name X or Y; class cells name the two-class era split, ordering 1,840 miles, or with withheld read as
+  zero 1,370 miles without LF-ERW; only class charts with the bound name the three-class structure.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -150,7 +152,7 @@ bound and the rate ratio + 5 named chart parts + 3 files ≈ 60 criteria.
 ## 12. World-building constraints
 
 * 6,200 miles; pre-1970 1,840 (LF-ERW 430, inside a published bound of 410–470); incidents since 2021: 11 LF-ERW, 13 other pre-1970, 14
-  post-1970.
+  post-1970. Published pre-1970 seam cells sum to 1,370 miles; the one withheld SAW cell holds 40, capped at 60 by its county total.
 * Y holds 300 LF-ERW miles and Z 130. Six operators tie at 100% on closed gaps; only Y stays there with open gaps counted.
 * The nine transfers hold every post-transfer rate within 12% of the pre-transfer rate; none is LF-ERW.
 * Harlan and Mercer are identical on every published column.

@@ -38,8 +38,8 @@ stand-downs prevented across its reference fleets. The fleet director wants the 
 ## 3. The driving force
 
 A strong solver prices prevented stand-downs at tow cost plus the close-out's lost-trip share, applies the 250-kit limit and replaces the
-vendor's pooled rate with each depot's own alert-flagged share. Each step is competent, and Highmoor wins on its 34% lost-trip share.
-But a lost trip is the day's excess of stood-down trucks over the float. Highmoor holds three spare trucks. 140 of its 141 lost trips fell on 28 frost mornings, each with seven frozen dryers, and no alert precedes a frozen dryer. The gradual leaks the model does catch fall on Highmoor's ordinary days, when the float covers them. Replayed day by day, its prevented stand-downs save 23 trips, not the 59 the share implies. Fenwick holds one spare truck and its stand-downs are almost all gradual leaks. The replay saves 49 of its 50 lost trips, more than its share credits. The value is a sum of per-day floors and does not commute with the depot totals.
+vendor's pooled rate with each depot's own alert-flagged share. Each step is competent, and Highmoor wins on its 33.5% lost-trip share.
+But a lost trip is the day's excess of stood-down trucks over the float. Highmoor holds three spare trucks. 144 of its 146 lost trips fell on 24 frost mornings, each with nine frozen dryers, and no alert precedes a frozen dryer. The gradual leaks the model does catch fall on Highmoor's ordinary days, when the float covers them. Replayed day by day, its prevented stand-downs save 2 trips, not the 59 the share implies. Fenwick holds one spare truck and its stand-downs are almost all gradual leaks. The replay saves 49 of its 50 lost trips, more than its share credits. The value is a sum of per-day floors and does not commute with the depot totals.
 
 ## 4. The ladder
 
@@ -47,21 +47,21 @@ But a lost trip is the day's excess of stood-down trucks over the float. Highmoo
 |---|---|---|---|---|
 | 0 | Vendor's 45% × stand-downs × (tow and roadside cost + close-out lost-trip share × trip cost), kits on every truck | A, Kingsbridge hub (€1,030k) | The vendor's rate and the depot's own record, a complete-looking value | The supplier allocation register: 250 kits, so 250 of Kingsbridge's 600 trucks |
 | 1 | The 250 kits applied in the figure (#10) | B, Ravensdale (€803k) | The binding limit is respected and the cost is per equipped truck | The alert back-test: 7% of Ravensdale's stand-downs had an alert three days ahead (debris ruptures on quarry routes) |
-| 2 | Each depot's alert-flagged share in place of the vendor's 45% (#13), lost trips still at the close-out share | C, Highmoor (€561k) | Prevention is now measured on the depot's own failures, not on the vendor's fleets | The daily stand-down log: Highmoor's lost trips fall on its 28 frost mornings, none of them alert-preceded |
+| 2 | Each depot's alert-flagged share in place of the vendor's 45% (#13), lost trips still at the close-out share | C, Highmoor (€564k) | Prevention is now measured on the depot's own failures, not on the vendor's fleets | The daily stand-down log: Highmoor's lost trips fall on its 24 frost mornings, none of them alert-preceded |
 | 3 | **Decisive:** replay the closed year day by day, remove the flagged stand-downs of equipped trucks and recompute each day's lost trips as the excess over float | **E, Fenwick (€494k)** (4th of 6 on rung 0) | — | — |
 
-* **Position table.** Fenwick is 4th on rung 0 (€250k, behind 1,030, 803 and 607), 4th on rung 1, and 2nd on rung 2 (1.28× behind
-  Highmoor). It leads only rung 3, by 1.27× over Highmoor (€389k). Rung margins: 1.28, 1.32, 1.28, 1.27.
-* **Discriminator dominance.** Highmoor carries a 1.28× advantage into rung 3 (561 against 439). On the decisive axis, lost trips saved per
-  prevented stand-down, Fenwick sits at 0.34 and Highmoor at 0.13. The replay raises Fenwick by 12.5% and cuts Highmoor by 30.7%, a relative
-  swing of 1.62. Product: 0.78 × 1.62 = 1.27.
+* **Position table.** Fenwick is 4th on rung 0 (€250k, behind 1,030, 803 and 639), 4th on rung 1, and 2nd on rung 2 (1.29× behind
+  Highmoor). It leads only rung 3, by 1.70× over Highmoor (€291k). Rung margins: 1.28, 1.26, 1.29, 1.70.
+* **Discriminator dominance.** Highmoor carries a 1.29× advantage into rung 3 (564 against 439). On the decisive axis, lost trips saved per
+  prevented stand-down, Fenwick sits at 0.34 and Highmoor at 0.01. The replay raises Fenwick by 12.6% and cuts Highmoor by 48.4%, a relative
+  swing of 2.18. Product: 0.78 × 2.18 = 1.70. The swing is 1.41× the 1.54 it needs (1.2 × the carried 1.29).
 * **Partial correction priced (L3).** Replaying day by day but thinning every stand-down at the vendor's 45%, frost and debris failures
-  included, names Ravensdale (€1,056k). That is rung 1's decoy again, because it saves trips on days no alert could reach. Doing both
-  halves and forgetting the kit limit names Kingsbridge (€681k).
+  included, names Ravensdale (€1,056k, 1.32× over Highmoor's €800k). That is rung 1's decoy again, because it saves trips on days no
+  alert could reach. Doing both halves and forgetting the kit limit names Kingsbridge (€681k, 1.38× over Fenwick's €494k).
 * **Grid.** Kits (ignored, applied) × prevention (vendor 45%, alert-flagged) × lost trips (close-out share, day replay) gives 8 cells, naming
   A, B, A, A, B, B, C and E. The nearest wrong cell is alert-flagged prevention with day replay and no kit limit (Kingsbridge, 1.38× clear),
   and it costs one omission.
-* **The deciding comparison (#20).** Trips saved per prevented stand-down at Fenwick against Highmoor (0.34 against 0.13) is what the note has
+* **The deciding comparison (#20).** Trips saved per prevented stand-down at Fenwick against Highmoor (0.34 against 0.01) is what the note has
   to state. No depot-level figure in the close-out shows it.
 
 ## 5. Why the decisive rung survives the opponent
@@ -88,7 +88,7 @@ But a lost trip is the day's excess of stood-down trucks over the float. Highmoo
   share valuation reproduces the totals trivially, which is why a solver who back-tests is confirmed at rung 2.
 * **What it is blind to.** Any prevented stand-down (above).
 * **Twin pair.** Ravensdale in March and Highmoor in February are identical on every close-out input column: 220 trucks, float 3, 46
-  stand-downs, 31 tows. Their lost trips are 7 and 14, 2× apart. Highmoor's month held four frost mornings. Only the day-grain floor
+  stand-downs, 31 tows. Their lost trips are 6 and 12, 2× apart. Highmoor's month held two frost mornings. Only the day-grain floor
   reproduces both, and any monthly rate gives them the same count.
 * **Every rule exercised.** Thornbury's float rose from 2 to 3 in June when a hired truck joined, with the date effective in the fleet
   register, so the floor is tested at two values. Eleven Fenwick repairs ran across two dispatches, so "stood down at dispatch" is tested
@@ -149,9 +149,9 @@ But a lost trip is the day's excess of stood-down trucks over the float. Highmoo
 ## 12. World-building constraints
 
 * Fleets and floats: Kingsbridge 600 / 18, Ravensdale 220 / 3, Highmoor 220 / 3, Ashworth 180 / 3, Fenwick 100 / 1, Thornbury 200 / 2
-  (3 from June). Stand-downs: 1,344 / 707 / 413 / 210 / 193 / 149. Lost trips: 0 / 103 / 141 / 2 / 50 / 4.
-* Alert-flagged shares: 33% / 7% / 42% / 69% / 74% / 48%. Highmoor's 28 frost mornings carry seven frozen-dryer stand-downs each, and 140
-  of its 141 lost trips. The replay saves 23.4 trips at Highmoor and 48.6 at Fenwick.
-* Rung values (€k): 1,030 / 803 / 561 / 494 for the four leaders. Fenwick 250 / 250 / 439 / 494, Highmoor 607 / 607 / 561 / 389.
+  (3 from June). Stand-downs: 1,344 / 707 / 436 / 210 / 193 / 149. Lost trips: 0 / 103 / 146 / 2 / 50 / 4.
+* Alert-flagged shares: 33% / 7% / 40% / 69% / 74% / 48%. Highmoor's 24 frost mornings carry nine frozen-dryer stand-downs each and no
+  gradual leak, and 144 of its 146 lost trips. The replay saves 2.0 trips at Highmoor and 48.6 at Fenwick.
+* Rung values (€k): 1,030 / 803 / 564 / 494 for the four leaders. Fenwick 250 / 250 / 439 / 494, Highmoor 639 / 639 / 564 / 291.
 * The twin months are identical on every close-out input column. No closed month holds a prevented stand-down.
 * Tyre fitments and fuel transactions never touch stand-downs, alerts or floats.

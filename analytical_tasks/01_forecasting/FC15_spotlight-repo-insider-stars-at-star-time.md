@@ -57,8 +57,9 @@ from each stargazer to the register, compared with the event's timestamp. Nothin
   leads only rung 3. Rung margins are 1.19×, 1.16×, 1.22× and 1.21×.
 * **Discriminator dominance.** B carries a 1.22× lead into rung 3. D's edge on the decisive axis, the share of its flag-external first
   week that was external on the day, is 1.92× (100% against 52%), above the required 1.2 × 1.22 = 1.46.
-* **Partial correction priced (L3).** Removing today's members as well as the flag's members does nothing, since that is the flag.
-  Removing only stargazers whose accounts were created in launch week catches 30 of the 140 and leaves B ahead at 4.6.
+* **Partial correction priced (L3).** Removing today's members as well as the flag's members does nothing, since that is the flag: B
+  stays ahead at 5.0 against D's 4.1 (1.22×). Removing only stargazers whose accounts were created in launch week catches 14 of the 140
+  and leaves B ahead at 4.8 (1.17× over D).
 * **Grid.** Repeat stars (kept, removed) × model (pooled, subgroup) × membership (today, star date) gives 8 cells, which name A, C, B or
   D. Only star-date membership with both lower corrections names D. The nearest wrong cell is star-date membership without the subgroup
   calibration, which names C at 5.8.

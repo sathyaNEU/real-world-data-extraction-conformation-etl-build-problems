@@ -56,14 +56,15 @@ the origin recurred on two or more days in the 90 days before, is the step nothi
 
 * **Position table.** E ranks 5th on rung 0 (930), 4th on rung 1 (900) and 3rd on rung 2 (690), and leads only rung 3, 1.36× D. Intermediate
   leaders hold margins of 1.25×, 1.24× and 1.25×.
-* **Discriminator dominance.** C carries a 1.51× advantage over E into rung 3 (1,040 against 690). The measured effect keeps 93% of E's and 37%
-  of C's, an edge of 2.54 against the 1.2 × 1.51 = 1.81 required; E leads C by 1.68×.
+* **Discriminator dominance.** C carries a 1.51× advantage over E into rung 3 (1,040 against 690). The measured effect keeps 640 of E's
+  pages and 380 of C's (93% and 36.5%), an edge of 2.54 against the 1.2 × 1.51 = 1.81 required, 1.40× headroom; E leads C by 1.68×.
 * **Partial correction priced (L3).** A solver who measures the engagements' pooled effect, 58% of not-found pages, and applies it to every
-  candidate keeps rung 2's order and names C. A solver who counts recurring origins over the quarter itself instead of the 90 days before
-  each page names D, whose leaks recur within a quarter but never across one.
+  candidate keeps rung 2's order and names C (603 against D's 483, 1.25×). A solver who counts recurrence over the base quarter instead of
+  the 90 days before each page names D (790 against E's 640, 1.23×), because D's leaking neighbour repeats each mistake once within the
+  quarter and two days in a quarter pass where one prior day does not. Neither half lands on E.
 * **Grid.** Prefix scope (all or customer-held) × effect (all pages, not-found, pooled rate, recurring origins) gives eight cells. All-prefix
   cells name A or C; customer-held cells name B, C, C and E. Only customer-held prefixes with the measured recurring-origin effect name E,
-  and the nearest wrong cell (D) needs the lookback taken from the wrong window.
+  and the nearest wrong construction, recurrence counted over the quarter (D), needs only the lookback taken from the wrong window.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -76,8 +77,9 @@ the origin recurred on two or more days in the 90 days before, is the step nothi
 3. **No arithmetic symptom.** Pages tie to events, events to the collectors, delegations to the RIR file; every rung reconciles.
 4. **Not a row predicate.** It needs, for every page, the count of distinct days its origin announced that prefix in the preceding 90 days: a
    self-join on prefix and origin over time, then a sum per customer.
-5. **The enumeration is arithmetic.** Legitimate origins appear on at least nine days in any 90, one-off origins on exactly one, so every
-   threshold from two to nine days, and lookbacks of 60 to 120 days, select the same pages.
+5. **The enumeration is arithmetic.** Legitimate origins appear on at least ten days in any 90; a leaked origin appears on one day, or on
+   two when the leaking network repeats itself, so it never has more than one prior day. Every threshold from two to nine prior days, and
+   lookbacks of 60 to 120 days, select the same pages.
 6. **No cutover date.** The engagements are past experiments at fourteen different dates; the candidates' pages are steady through the
    quarter, and no series steps.
 7. **Survives deletion.** With every voice removed, the answer and the difficulty are unchanged.
@@ -107,7 +109,7 @@ the origin recurred on two or more days in the 90 days before, is the step nothi
 
 ## 8. Determinism by construction
 
-* **Recurrence.** The empty band between one and nine days makes the threshold and lookback immaterial.
+* **Recurrence.** The empty band between one and nine prior days makes the threshold and lookback immaterial.
 * **Quarter.** The base quarter is the last complete one; the following quarter's page rate is stationary for every candidate, so pages a
   quarter carry forward without a trend convention.
 * **Scope.** No prefix changed holder in the RIR file during the window.
@@ -147,6 +149,7 @@ margin over D + 5 named chart parts + 3 files ≈ 47 criteria.
 * Rung leaders are A, B, C, E. E is 5th / 4th / 3rd / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 1.36×.
 * A's pages fall 72% on sub-allocated prefixes; B's are 60% already invalid; C's not-found pages are 63% one-off origins; E's are 93%
   recurring (its own two ASNs).
-* Legitimate origins announce on at least nine of any 90 days; one-off origins on exactly one.
+* Legitimate origins announce on at least ten of any 90 days; leaked origins on one day, or two when the leak repeats (D's neighbour).
+* Rung 2: C 1,040, D 832, E 690. Rung 3: E 640, D 470, C 380. Recurrence counted over the quarter: D 790, E 640.
 * The log holds fourteen engagements; three paged more afterwards; R-06 and R-11 are identical on every pre-engagement column.
 * Session syslog and billing samples never touch the pager log or the event feed.

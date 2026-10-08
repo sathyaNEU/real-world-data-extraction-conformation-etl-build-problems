@@ -31,8 +31,9 @@ goes to one cause.
   partial-exposure groups still read A ahead of C, and nothing in the pack says their CPU mix matters.
 * **Instrument repair.** Give every view perfect per-script timing. Views that carried both changes still record their joint state, so the
   counterfactual without one change is identified only through the partial-exposure groups, whose CPU mix the better instrument does not change.
-* **Lens swap.** The raw reads describe AMP landing views and subscribers' article views; the answer is about the ad-supported mobile base
-  the fix will act on, at last month's traffic: different populations, not one population under two lenses.
+* **Lens swap.** The raw reads describe AMP landing views and subscribers' article views; the answer is about the views each fix acts on at
+  last month's traffic, the ad-supported base for the ad stack and every mobile view for the framework: different populations, not one
+  population under two lenses.
 
 ## 3. The driving force
 
@@ -41,10 +42,10 @@ to its date and finds clean steps for the image pipeline, the banner and the fon
 template cohort over the same six weeks, so the series shows a ramp with no date. The solver aligns the ramp by cohort week and gets their
 joint effect (+4.99 points on ad-supported views), then looks for views that got only one change. AMP landing views carry the ad stack without
 the framework. Subscribers signed in on article pages get the framework without ads, once the "article" segment is split through the
-subscription register. Each group's effect is a correct measurement, and A reads 2.88 points against C's 2.11. Both effects, however, grow on
-weaker phones, and CPU class is a property of the device model held in the registry, not a column in the view log. AMP views are 80% low-end
-phones; subscribers' are 25%; the ad-supported base is 45%. Standardised to the base, C is 2.88 points and A 2.12. Both readings sum to the
-same joint ramp, so nothing fails to reconcile.
+subscription register. Each group's effect is a correct measurement, and A reads 3.94 points against C's 1.05. Both effects, however, grow on
+weaker phones, and CPU class is a property of the device model held in the registry, not a column in the view log. AMP views are 85% low-end
+phones; subscribers' are 10%; the ad-supported base is 38%. Standardised to the base, C is 2.96 points and A 2.03, and the framework's fix
+also reaches subscribers' 80M ad-free views. Both readings sum to the same joint ramp, so nothing fails to reconcile.
 
 ## 4. The ladder
 
@@ -52,21 +53,23 @@ same joint ramp, so nothing fails to reconcile.
 |---|---|---|---|---|
 | 0 | Crawl byte bridge: KB each cause added per crawled mobile page, current list against prior list | B, image pipeline (+520 KB) | It is the quarterly report's own metric, cleanly decomposed by resource | The charter scores a fix on field page views, not crawled pages |
 | 1 | Field event study: the over-budget share's step at each release date, in views a month | D, consent banner (5.6M views) | It moves to the scored metric and uses the dates the change log files | The rollout log shows A and C switched on by template cohort over six weeks: a ramp no date captures |
-| 2 | Cohort-aligned joint ramp split by each partial-exposure group's effect read in its own views; the article segment split through the subscription register to find framework-only views | A, ad stack (9.21M) | Two clean natural experiments, and their effects sum exactly to the joint ramp | The device registry shows the AMP group 80% and the subscriber group 25% low-end phones against the base's 45% |
-| 3 | **Decisive:** each group's effect estimated by CPU class and standardised to the ad-supported base's CPU mix | **C, framework bundle (9.20M)** (4th of 5 on rung 0) | — | — |
+| 2 | Cohort-aligned joint ramp split by each partial-exposure group's effect read in its own views; the article segment split through the subscription register to find framework-only views | A, ad stack (12.6M) | Two clean natural experiments, and their effects sum exactly to the joint ramp | The device registry shows the AMP group 85% and the subscriber group 10% low-end phones against the base's 38% |
+| 3 | **Decisive:** each group's effect estimated by CPU class and standardised to the ad-supported base's CPU mix | **C, framework bundle (10.3M)** (4th of 5 on rung 0) | — | — |
 
-* **Position table.** C ranks 4th on rung 0, 5th on rung 1 (unattributed) and 2nd on rung 2, 1.36× behind A; it leads only rung 3. Rung
-  leaders beat their runners-up by 1.73×, 1.40×, 1.36× and 1.36×.
-* **Discriminator dominance.** A carries a 1.36× advantage into rung 3 (9.21M against 6.75M). Standardisation multiplies C's read by 1.36
-  and A's by 0.73, an edge of 1.86×, above the required 1.2 × 1.36 = 1.64; the net margin is 1.36×.
-* **Partial correction priced (L3).** A solver who suspects the groups differ and standardises on the view log's own columns (device
-  category, effective connection type) changes nothing, because both are decorrelated from CPU class inside each group by construction: it
-  still names A at 9.21M. Standardising to all mobile views rather than the ad-supported base gives C 2.76 points and A 2.03 and names C, so
-  the base choice converges on the name.
-* **Grid.** Grain (crawl or field) × crawl list (full or matched) × ramp (unattributed or cohort-aligned) × split (raw, standardised on view
-  columns, standardised on CPU class) collapses to six distinct builds, because the list only matters on the crawl and the split only after
-  alignment. The crawl builds name B (full list) or E (matched list, fonts +300 KB); the unaligned field build names D; the aligned builds name
-  A, A and C. The nearest wrong cell is the view-column standardisation, which names A, and moving from it to C takes the registry join.
+* **Position table.** C ranks 4th on rung 0, 5th on rung 1 (unattributed) and 3rd on rung 2, behind A and the banner; it leads only rung 3.
+  Rung leaders beat their runners-up by 1.73×, 1.40×, 2.25× and 1.58×.
+* **Discriminator dominance.** A carries a 3.00× advantage over C into rung 3 (12.6M against 4.2M). Standardisation multiplies C's figure by
+  2.45 and A's by 0.52, an edge of 4.76×, 1.32 times the required 1.2 × 3.00 = 3.60; the net margin is 1.58×.
+* **Partial correction priced (L3).** Every half-built standardisation leaves A in front. Standardising on the view log's own columns (device
+  category, effective connection type) changes nothing, because both are decorrelated from CPU class inside each group by construction: A
+  12.6M against the banner's 5.6M (2.25×). Standardising only the AMP group, whose low-end skew its search referrals make visible, takes A to
+  6.5M, still ahead of the banner's 5.6M (1.16×) and of C's raw 4.2M; standardising only the subscriber group lifts C to 10.3M against A's raw
+  12.6M (1.22×).
+* **Grid.** Grain (crawl or field) × crawl list (full or matched) × ramp (unattributed or cohort-aligned) × split (raw, view columns, AMP
+  group only, subscriber group only, both groups on CPU class) collapses to eight distinct builds, because the list only matters on the crawl
+  and the split only after alignment. The crawl builds name B (full list) or E (matched list, fonts +300 KB); the unaligned field build names
+  D; the aligned builds name A four times and C once. The nearest wrong cell is the subscriber-only standardisation (A by 1.22×), and moving
+  from it to C takes the AMP group's registry join.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -96,7 +99,7 @@ same joint ramp, so nothing fails to reconcile.
   mix, lab bytes and month. P-09 removed 1.9 points and P-06 0.9 (2.1×), because P-09's audience is 55% low-end phones and P-06's 20%. No rate
   transferred by template, bytes or connection reproduces both; the per-CPU-class effect does.
 * **Resemblance points at the decoy.** The AMP group matches pilot P-04 (ad-slot lazy-loading on landing templates) on every visible column,
-  and P-04's filed saving of 2.8 points sits beside A's raw read.
+  and P-04's filed saving of 3.9 points sits beside A's raw read.
 
 ## 7. Pins, voices and the licensed wrong basis
 
@@ -114,8 +117,8 @@ same joint ramp, so nothing fails to reconcile.
 
 * **Over budget.** A view is over budget when its largest-contentful-paint exceeds 4.0 s; no percentile convention enters.
 * **CPU bands.** Three classes fixed by the registry's benchmark bands; every device model in the view log resolves to exactly one.
-* **Base.** The charter's "last month's traffic" fixes the ad-supported mobile views of the last full month (320M) as the standardisation base;
-  the all-mobile base converges on the name.
+* **Base.** Each fix is valued on the views it acts on in the last full month: the ad stack on the 320M ad-supported views at their CPU mix,
+  the framework on those and on subscribers' 80M ad-free article views at the subscriber group's own read, so no base is left to choose.
 * **Effect windows.** Four pre-rollout and four post-rollout weeks per cohort; three- and five-week windows give the same per-class effects to
   0.05 points, because no other release touches the A-only or C-only groups.
 * **Maturity.** Beacons arrive within 48 hours, and the extract is taken five days after month-end.
@@ -151,10 +154,11 @@ figure and its margin over A + 5 named chart parts + 2 files ≈ 120 criteria.
 
 ## 12. World-building constraints
 
-* 400M mobile views a month, 320M of them ad-supported. Over-budget share 9% to 16% (+28.0M views): D 5.6M, B 4.0M and E 2.4M as dated steps;
+* 400M mobile views a month, 320M of them ad-supported and 80M subscribers' ad-free article views. Over-budget share 9% to 16% (+28.0M views): D 5.6M, B 4.0M and E 2.4M as dated steps;
   A and C a cohort-staggered ramp of +4.99 points on ad-supported views.
-* CPU-class effects (points): A 3.31 / 1.375 / 0.50 and C 4.425 / 1.985 / 0.60 (low / mid / high). Mixes: AMP 80 / 15 / 5, subscriber article
-  views 25 / 40 / 35, ad-supported base 45 / 40 / 15. Raw reads 2.88 and 2.11, standardised 2.12 and 2.88; both sum to 4.99.
+* CPU-class effects (points): A 4.54 / 0.63 / 0.20 and C 6.98 / 0.63 / 0.20 (low / mid / high). Mixes: AMP 85 / 11 / 4, subscriber article
+  views 10 / 40 / 50, ad-supported base 38 / 42 / 20. Raw reads A 3.94 and C 1.05, standardised 2.03 and 2.96; both sum to 4.99. In views a
+  month: rung 2 A 12.6M, C 4.2M (3.36M ad-supported plus 0.84M subscriber); rung 3 C 10.3M (9.46M plus 0.84M), A 6.5M.
 * Device category and connection type are decorrelated from CPU class inside each group; no other release touches either group.
 * Crawl rung: B +520, E +300, A +210, C +140, D +60 KB (full list); matched list E +300 leads.
 * P-06 and P-09 are identical on every visible pilot column. Every pilot was randomised across users.

@@ -32,7 +32,7 @@ ledger and the measurement standard. The brief is due on 2 February.
 * **Instrument repair.** Perfect the streaming logs and the Family profile is still one profile shared by a household, because that is
   how households set up their TVs. The person is recorded by a different system, the OS log, which the session never references.
 * **Lens swap.** The two reads credit different people: 410 million Family-profile minutes a day go to account holders aged 35 to 64,
-  or to the household members signed into the TV, 140 million of them aged 15 to 24.
+  or to the household members signed into the TV, 158 million of them aged 15 to 24.
 
 ## 3. The driving force
 
@@ -51,14 +51,16 @@ account belongs to the household's teenager or young adult. The ledger's three T
 | 0 | Average daily minutes per viewer, each session credited to the account holder's age | A, 65 and over (212 min, 1.26× 50–64) | The streaming service's standard engagement metric | The brief scores minutes per person, and the household rosters count everyone, viewers or not |
 | 1 | Minutes per person (roster denominators), credited to the account holder | B, 35–49 (78 min, 1.22× 50–64) | The brief's population, the service's documented attribution | The ledger's age cells: account-holder credit reproduces 112 of 190 personal-device cells |
 | 2 | Personal profiles credited to their birth year, Family profiles to the account holder (E16) | C, 50–64 (72 min, 1.26× 35–49) | Reproduces all 41 campaign totals and all 190 personal-device age cells | The ledger's TV pilots: profile credit reproduces 4 of their 15 age cells |
-| 3 | **Decisive:** Family-profile sessions credited to the OS account signed into the TV at session start (E19) | **D, 15–24 (78 min, 1.32× 25–34)** (5th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** Family-profile sessions credited to the OS account signed into the TV at session start (E19) | **D, 15–24 (84 min, 1.40× 25–34)** (5th of 5 on rung 0) | — | — |
 
 * **Position table.** 15–24 ranks 5th on rungs 0, 1 and 2 and leads only rung 3. Each rung's leader beats its runner-up by at least 1.22×.
 * **Discriminator dominance.** 50–64 carries 2.18× (72 against 33 minutes) into rung 3. On the decisive axis, minutes kept once the TV log
-  credits the viewer, 15–24 rises 2.36-fold and 50–64 keeps 0.78, an edge of 3.03×. That clears 1.2 × 2.18 = 2.62. The final margin over
-  50–64 is 78 against 56 (1.39×).
-* **Partial correction priced (L3).** A solver who sees that Family profiles are shared and splits their minutes equally among the
-  household's members (the guessed attribution) names 50–64 (61 against 58): the heuristic lands on the decoy.
+  credits the viewer, 15–24 rises 2.55-fold and 50–64 keeps 0.72, an edge of 3.52×. That is 1.35 times the required 1.2 × 2.18 = 2.62.
+  The final margin over 50–64 is 84 against 52 (1.62×).
+* **Partial correction priced (L3).** Every half-applied construction names a wrong group. Splitting Family minutes equally among the
+  household's members (the guessed attribution) names 50–64 (63 against 25–34's 57, 1.11×): the heuristic lands on the decoy. Opening the
+  OS log but crediting each TV's registered owner instead of the account signed in reproduces the holder and names 50–64 again (72
+  against 57, 1.26×).
 * **Grid.** Denominator (viewers or persons) × personal-profile credit (holder or birth year) × Family credit (holder, equal split or OS
   account) gives 12 cells. They name 65+, 35–49 or 50–64, and only persons, birth years and the OS account name 15–24.
 
@@ -145,9 +147,9 @@ minutes and its margin + 4 named chart parts + 3 files ≈ 70 criteria.
 
 * Persons in platform households (millions): 3.1 / 4.0 / 6.2 / 5.4 / 3.6 for 15–24 / 25–34 / 35–49 / 50–64 / 65+. Daily minutes total 1,260
   million under every attribution.
-* Minutes per person by rung: rung 1: 12 / 49 / 78 / 64 / 55; rung 2: 33 / 54 / 57 / 72 / 55; rung 3: 78 / 59 / 45 / 56 / 55. Per viewer at
-  rung 0: 96 / 118 / 141 / 168 / 212. The equal split gives 55 / 58 / 53 / 61 / 55.
-* Family profiles carry 410 million minutes a day, and 140 million of them belong to 15- to 24-year-olds by the OS log.
+* Minutes per person by rung: rung 1: 12 / 49 / 78 / 64 / 55; rung 2: 33 / 54 / 57 / 72 / 55; rung 3: 84 / 60 / 45 / 52 / 55. Per viewer at
+  rung 0: 96 / 118 / 141 / 168 / 212. The equal split gives 55 / 57 / 52 / 63 / 55.
+* Family profiles carry 410 million minutes a day, and 158 million of them belong to 15- to 24-year-olds by the OS log.
 * The 38 personal-device campaigns reproduce under birth-year credit and the 3 TV pilots only under OS-account credit.
 * H-2207 and H-5513 are identical on every streaming column.
 * Billing and crash data touch no session.

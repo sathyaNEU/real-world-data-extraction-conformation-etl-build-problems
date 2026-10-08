@@ -57,14 +57,16 @@ move. E's densest pens drop from 25 to 16 kg per cubic metre under its 420-tonne
 
 * **Position table.** E ranks 5th on rung 0, 4th on rung 1 and 2nd on rung 2 (C leads it by 1.24×), and leads only rung 3. Rung leaders beat
   their runners-up by 1.19×, 1.16×, 1.24× and 1.63×.
-* **Discriminator dominance.** C carries a 1.24× advantage into rung 3. E's value doubles (17.2 to 34.8, 2.02×) when survivors are counted,
-  because its two densest pens fall from 25 to 16 kg per cubic metre and keep 780 tonnes; C's pens sit at 14 and gain nothing. Net 2.02 / 1.24
-  = 1.63×.
+* **Discriminator dominance.** C carries a 1.24× advantage into rung 3, so the required edge is 1.2 × 1.24 = 1.49×. E's value doubles (17.2
+  to 34.8, 2.02×) when survivors are counted, because its two densest pens fall from 25 to 16 kg per cubic metre and keep 780 tonnes; C's
+  pens sit at 14 and gain nothing. The edge is 1.36× the requirement, and the net is 2.02 / 1.24 = 1.63×.
 * **Partial correction priced (L3).** A solver who reads the log but averages all eleven harvests applies a 35% survivor effect everywhere and
-  credits C's thinned pens too, naming C (C 35.5 against E 28.3): rung 2's answer again. A solver who models density as a smooth elasticity
-  per tonne removed credits large sites and names B.
+  credits C's thinned pens too, naming C, 35.5 against E's 28.3 (1.25×): rung 2's answer again. A solver who models density as a smooth
+  elasticity per tonne removed credits large sites and names B, 33.4 against E's 27.1 (1.23×).
 * **Grid.** Category grain (annual percentile, regional, site) × survivor effect (none, pooled, density-conditioned) = 9 cells. Percentile
-  cells name A, regional cells B, site cells C under no or pooled effect, and only site categories with the density-conditioned effect name E.
+  cells name A without a survivor effect and B with either (B's thinned pens keep the most tonnes); regional cells name B, 17.5 against E's
+  13.6 with the density-conditioned effect; site cells name C under no or pooled effect; only site categories with the density-conditioned
+  effect name E.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -145,7 +147,8 @@ named chart parts + 3 files ≈ 52 criteria.
 
 * Rung figures as in the ladder; E is 5th, 4th, 2nd (1.24× behind C) and 1st.
 * Harvest-ready tonnes: A 500, B 600, C 520, D 380, E 420. E's two densest pens hold 600 tonnes each at 25 kg per cubic metre; C's pens all
-  sit at 14.
+  sit at 14; B's thinned pens cross 20 kg per cubic metre and keep 900 tonnes. The pooled build gives C 35.5 and E 28.3; the elasticity
+  build B 33.4 and E 27.1.
 * Change log: seven crossing harvests (−52% to −58%), four non-crossing (−2% to +3%), none ending between 19 and 21 kg per cubic metre.
 * F-07 and H-03 are identical on every change-log column.
 * Feed records and treatment logs never touch temperatures, the pen register, the change log or the claims.

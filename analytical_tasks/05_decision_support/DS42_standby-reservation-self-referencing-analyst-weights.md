@@ -42,8 +42,8 @@ measures each analyst against the plain average, the only aggregate to hand, and
 thinly and nobody nears 15%. C2's sanctions risk tops the list. But the benchmark is the weighted aggregate itself. Recompute the
 aggregate with those weights, re-score everyone against it, and repeat: the aggregate sharpens, most analysts stop beating it, and weight
 flows to the two Asia-logistics analysts whose forecasts beat even the sharpened aggregate. Both hit the cap, the excess is redistributed,
-and the iteration settles. Their forecasts put the port strike that would cut C4's main supplier at 0.46, against 0.31 in the one-pass
-aggregate.
+and the iteration settles. The settled aggregate puts the port strike that would cut C4's main supplier at 0.52, against 0.31 in the
+one-pass aggregate, and the sanctions action against C2's controller at 0.34, against 0.42.
 
 ## 4. The ladder
 
@@ -52,17 +52,20 @@ aggregate.
 | 0 | Plain average of the analysts' latest probabilities × the component's full exposure | C1, a display driver ($9.6M against C2's $7.8M) | The committee's long-standing practice | The charter: a reservation covers only the capacity the backup supplier has acknowledged, and C1's backup acknowledged 30% |
 | 1 | Plain average × exposure capped at acknowledged backup capacity | C3, a power module ($6.4M against C2's $5.2M) | The binding limit applied in the figure, not noted as a risk | The charter: the aggregate weights analysts by resolved skill, not equally |
 | 2 | Charter weights measured against the plain average in one pass, capped exposure | C2, a sanctions-exposed controller ($6.3M against C3's $5.1M) | The charter's rule, applied with the only aggregate available | Last quarter's minutes publish all 24 weights; one-pass weights match 9 of them |
-| 3 | **Decisive:** weights and aggregate solved together to the fixed point, cap and redistribution applied at each step; capped exposure | **C4, a memory part shipped through one port ($7.2M)** (4th of six on rung 0) | — | — |
+| 3 | **Decisive:** weights and aggregate solved together to the fixed point, cap and redistribution applied at each step; capped exposure | **C4, a memory part shipped through one port ($8.2M)** (4th of six on rung 0) | — | — |
 
 * **Position table.** C4 is 4th on rung 0 ($6.0M), 3rd on rung 1 ($4.6M) and 3rd on rung 2 ($4.9M); it is never second and leads only rung
-  3. Rung margins: C1 over C2 1.23×, C3 over C2 1.23×, C2 over C3 1.24×, C4 over C2 1.29× ($7.2M against $5.6M).
+  3. Rung margins: C1 over C2 1.23×, C3 over C2 1.23×, C2 over C3 1.24×, C4 over C6 1.37× ($8.2M against $6.0M).
 * **Discriminator dominance.** C2 carries a 1.29× advantage over C4 into rung 3 ($6.3M against $4.9M). The fixed point multiplies C4's
-  probability by 1.48 (0.31 to 0.46) and C2's by 0.88 (0.42 to 0.37), a relative edge of 1.68, more than 1.2 × 1.29 = 1.55.
-* **Partial correction priced (L3).** Iterating to the fixed point without the cap gives one analyst 31% of the weight and names C4 at
-  $8.4M (+17%). Applying the cap once to one-pass weights, without iterating, names C2. Iterating twice and stopping names C3 at $5.3M.
-  Only the full solve reaches $7.2M.
+  probability by 1.68 (0.31 to 0.52) and C2's by 0.81 (0.42 to 0.34), a relative edge of 2.07, against the required 1.2 × 1.29 = 1.55 and
+  past the 2.01 that headroom asks.
+* **Partial correction priced (L3).** No half-applied solve names C4. Applying the cap to one-pass weights changes nothing, since no
+  one-pass weight nears 15%, and names C2 at $6.3M. Re-scoring once against the one-pass weighted aggregate, a second pass rather than a
+  solve, names C2 at $5.9M, 1.18× over C4's $5.0M. Iterating to the fixed point without the cap hands analyst 21 31% of the weight; her
+  typhoon forecasts for C6's port carry the aggregate, and it names C6 at $9.6M, 1.20× over C4's $8.0M.
 * **Grid.** Exposure (full, acknowledged) × weights (equal, one-pass, fixed point uncapped, fixed point capped) = 8 cells. They name C1, C3,
-  C2, or C4 at $8.4M or $7.2M; only acknowledged exposure with capped fixed-point weights gives C4 at $7.2M.
+  C2 or C6; only acknowledged exposure with capped fixed-point weights names C4, and full exposure with the same weights names C1 ($12.0M
+  against C4's $10.4M).
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -110,7 +113,7 @@ aggregate.
 * **Forecasts.** Each analyst's latest probability on each question at the committee's cut-off; no analyst revised within an hour of it.
 * **Exposure.** Acknowledged capacity times the component's loss rate per unit, both filed; no component's cap sits within 5% of its full
   exposure.
-* **Rounding.** C4's $7.2M and C2's $5.6M sit clear of the rounding edges.
+* **Rounding.** C4's $8.22M and C6's $6.00M sit clear of the rounding edges.
 
 ## 9. Prompt sketch and deliverables
 
@@ -146,8 +149,10 @@ runner-up and the margin + 5 named chart parts + 3 files ≈ 68 criteria.
 ## 12. World-building constraints
 
 * Rung 0: C1 $9.6M, C2 $7.8M, C3 $7.1M, C4 $6.0M, C5 $4.4M, C6 $3.0M. Rung 1: C3 $6.4M, C2 $5.2M, C4 $4.6M, C5 $3.8M, C1 $2.9M. Rung 2: C2
-  $6.3M, C3 $5.1M, C4 $4.9M. Rung 3: C4 $7.2M, C2 $5.6M, C3 $4.4M.
-* 24 analysts, 212 resolved questions; one-pass: 19 analysts with positive weight, none above 9%; fixed point: two at 15%, nine with
-  positive weight. C4's probability 0.31 one-pass and 0.46 at the fixed point; C2's 0.42 and 0.37.
+  $6.3M, C3 $5.1M, C4 $4.9M, C6 $2.4M. Rung 3: C4 $8.2M, C6 $6.0M, C2 $5.1M, C3 $4.4M.
+* Acknowledged exposure: C4 $15.8M, C2 $15.0M, C6 $24.0M (60% of its full $40M). Probabilities, one-pass / fixed point / uncapped fixed
+  point: C4 0.31 / 0.52 / 0.506; C2 0.42 / 0.34; C6 0.10 / 0.25 / 0.40. Full exposure at the fixed point: C1 $12.0M, C4 $10.4M.
+* 24 analysts, 212 resolved questions; one-pass: 19 analysts with positive weight, none above 9%; fixed point: analysts 03 and 21 at 15%,
+  nine with positive weight; uncapped: analyst 21 at 31%.
 * Last quarter's minutes: 24 weights, all reproduced by the fixed point. Analysts 07 and 15 match on every forecast and roster column.
 * Time entries and receipts are independent of every main-call record.

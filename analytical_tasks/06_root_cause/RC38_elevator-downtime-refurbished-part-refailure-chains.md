@@ -43,7 +43,7 @@ parts waits lead. That is a satisfying, root-caused answer, and the parts-invent
 are the same failure repeated. This year's parts framework introduced refurbished door operators. A unit whose door operator was
 replaced with one fails on that component again within days, typically five times in a row, and every repeat has its own existence, response
 and parts wait. Read one at a time, each repeat is an ordinary outage on a busy old unit, an ordinary parts wait or an ordinary callout.
-Put in sequence by unit and component, and matched to the part fitted through the invoice's purchase order, they form chains carrying 9,600
+Put in sequence by unit and component, and matched to the part fitted through the invoice's purchase order, they form chains carrying 10,800
 of the added hours.
 
 ## 4. The ladder
@@ -51,17 +51,18 @@ of the added hours.
 | Rung | Construction | Names (added downtime, thousand hours) | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Outage counts × average duration, by the monitor's flags | Capital replacement (12.6, 2.33×) | The contractor's dashboard and the reported KPI | Availability is frequency × duration, and the duration records split each outage into response, parts wait and repair |
-| 1 | Downtime by duration component, outages linked to work orders on the explicit key | Night response (10.4, 1.53×) | Duration-aware, heavy tail included, every linked outage caused | The maintenance manual: re-dispatches carry only a parent-ticket reference, and 18% of outages link that way |
-| 2 | Hygiene of the join: re-dispatches linked through their parent ticket | Parts inventory (9.2, 1.35×) | Every outage now caused, and the parts timestamps tie to the invoices | Each unit's repair sequence: the same component fails again within days of a refurbished door operator being fitted |
-| 3 | **Decisive:** failures ordered by unit and component, chained to the prior repair, and matched to the part fitted through PO → work order | **Parts quality assurance (9.6, 1.60×)**, 5th on rung 0 | — | — |
+| 1 | Downtime by duration component, outages linked to work orders on the explicit key | Night response (10.8, 1.54×) | Duration-aware, heavy tail included, every linked outage caused | The maintenance manual: re-dispatches carry only a parent-ticket reference, and 18% of outages link that way |
+| 2 | Hygiene of the join: re-dispatches linked through their parent ticket | Parts inventory (8.6, 1.23×) | Every outage now caused, and the parts timestamps tie to the invoices | Each unit's repair sequence: the same component fails again within days of a refurbished door operator being fitted |
+| 3 | **Decisive:** failures ordered by unit and component, chained to the prior repair, and matched to the part fitted through PO → work order | **Parts quality assurance (10.8, 2.16×)**, 5th on rung 0 | — | — |
 
 * **Position table.** Parts quality assurance ranks 5th on rungs 0, 1 and 2 and leads only rung 3. The other four sizes at rung 3 are parts
-  waits 6.0, ageing 3.8, response 3.2 and water 2.4.
-* **Discriminator dominance.** Parts waits carry a 9.2 lead over the chains into rung 3. The chain construction takes 3.2 from parts waits
-  and gives the chains 9.6, a 12.8 swing, 1.39× the carried lead.
+  waits 5.0, ageing 3.8, response 3.2 and water 2.2.
+* **Discriminator dominance.** Parts waits carry an 8.6 lead over the chains into rung 3. The chain construction takes 3.6 from parts waits
+  and gives the chains 10.8, a 14.4 swing, 1.67× the carried lead. The floor is 1.2×, so the edge has 1.40× headroom.
 * **Partial correction priced (L3).** A solver who sequences repeats by unit but not by component sweeps in coincident faults on busy old
-  units and books the repeats to ageing. One who matches components but never reaches the invoice's parts lines cannot tell refurbished
-  chains from waits on discontinued models, and books them to parts waits. Each half names a wrong programme.
+  units and books the repeats to ageing, which then leads at 14.6 against parts waits' 5.0 (2.92×). One who matches components but never
+  reaches the invoice's parts lines cannot tell refurbished chains from waits on discontinued models, and books them to parts waits, which
+  lead at 15.8 against ageing's 3.8 (4.16×). Neither half names parts quality assurance.
 * **Grid.** Join (explicit or parent) × measure (counts or downtime) × sequence (none, by unit, by component, by component and part) = 16
   cells. Only parent links, downtime and component-and-part chains name parts quality assurance.
 * **Control totals.** Added downtime is 25.0 thousand hours on every rung, because each construction partitions the same outage hours.
@@ -145,8 +146,8 @@ margin + 5 named chart parts + 3 files ≈ 77 criteria.
 
 ## 12. World-building constraints
 
-* Added downtime is 25.0 thousand hours. True causes are chains 9.6, parts 6.0, ageing 3.8, response 3.2 and water 2.4. The chains' 9.6
-  appears under ageing 3.0, parts 3.2, response 2.4 and water 1.0 until sequenced.
+* Added downtime is 25.0 thousand hours. True causes are chains 10.8, parts 5.0, ageing 3.8, response 3.2 and water 2.2. The chains' 10.8
+  appears under ageing 3.2, parts 3.6, response 2.8 and water 1.2 until sequenced.
 * Re-dispatches are 18% of outages and carry 4.8 thousand hours of parts waits.
 * Refurbished door operators were fitted from this year's framework only. Every chain repeat falls within 9 days, and no other
   same-component repeat within 30.

@@ -47,23 +47,25 @@ sector.
 
 | Rung | Construction | Lands on (S1–S8 teams; saving) | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | 18% × each segment's average paid-to-date indemnity, segments as stored | 3·3·0·3·0·3·2·3; $3,010k, +46% | The verified effect applied to the insurer's own claims, ranked by what each slot saves | **E19 (a latent attribution marker):** blank-region claims from the TPA feed default to Metro, and the claim-number prefix (the TPA office code) places every one exactly; only prefix regions reproduce last year's filed team caseloads |
-| 1 | The same with regions from the prefix | 3·3·3·3·0·3·2·0; $2,990k, +45% | Every claim sits in its true segment, and last year's caseloads tie exactly | The paid triangles: the averages are paid-to-date on immature claims, while the verified 18% is a share of ultimate |
-| 2 | 18% × each segment's indemnity developed to ultimate (volume-weighted chain ladder per segment) | 3·3·2·3·0·3·3·0; $3,520k, +70% | The verified effect on the basis it was verified on, the actuarial standard for the committee | The verified subsample joined to employers' payment history: $9,400 per managed claim where the employer paid temporary-partial benefits within three years, nil elsewhere |
+| 0 | 18% × each segment's average paid-to-date indemnity, segments as stored | 3·3·0·3·0·3·2·3; $3,140k, +52% | The verified effect applied to the insurer's own claims, ranked by what each slot saves | **E19 (a latent attribution marker):** blank-region claims from the TPA feed default to Metro, and the claim-number prefix (the TPA office code) places every one exactly; only prefix regions reproduce last year's filed team caseloads |
+| 1 | The same with regions from the prefix | 3·3·3·3·0·3·2·0; $3,120k, +51% | Every claim sits in its true segment, and last year's caseloads tie exactly | The paid triangles: the averages are paid-to-date on immature claims, while the verified 18% is a share of ultimate |
+| 2 | 18% × each segment's indemnity developed to ultimate (volume-weighted chain ladder per segment) | 3·3·2·3·0·3·3·0; $3,730k, +81% | The verified effect on the basis it was verified on, the actuarial standard for the committee | The verified subsample joined to employers' payment history: $9,400 per managed claim where the employer paid temporary-partial benefits within three years, nil elsewhere |
 | 3 | **Decisive:** $9,400 × each segment's share of forward claims at employers with that history, joined through the policy | **0·0·3·3·3·2·3·3; $2,068k → $2,070k** | — | — |
 
 Segments: S1 construction back (North), S2 construction back (South), S3 manufacturing upper limb (North), S4 healthcare back (Metro), S5
 retail lower limb (Metro), S6 transport multiple (South), S7 public-sector back (North), S8 hospitality upper limb (Metro).
 
-* **Figure shape.** Every rung over-books the saving (+46%, +45%, +70%), and the decisive rung brings it down while moving all six
+* **Figure shape.** Every rung over-books the saving (+52%, +51%, +81%), and the decisive rung brings it down while moving all six
   construction teams elsewhere. Under the true saving, the rung 2 allocation would save $1,421k against the answer's $2,068k.
 * **Partial correction priced (L3).** Keeping the percentage form but applying it only at light-duty employers (36% of their ultimate
-  indemnity) gives the answer's allocation and a saving of $3,140k (+52%): the right teams, the wrong figure, because it prices the
-  costliest claims highest. Conditioning on light duty but measuring shares on the stored regions books $1,814k (−12%).
+  indemnity) prices transport's costly claims above retail's: S6 takes a third team from S5 ($6,120 against $4,770 a claim, 1.28×), giving
+  0·0·3·3·2·3·3·3 and $3,240k (+57%). Conditioning on light duty but measuring shares on the stored regions, where a TPA-administered
+  resort operator with no light-duty history dilutes Metro hospitality to 18%, moves S8's third team to S6 (25% against 18%, 1.39×),
+  giving 0·0·3·3·3·3·3·2 and $1,700k (−18%).
 * **Grid.** Region (stored, prefix) × severity (paid-to-date, developed) × saving (18% pooled, 36% at light duty, $9,400 at light duty)
-  gives 12 cells and five distinct allocations. Only prefix regions with the dollar saving reach the answer, and they reach it under
-  either severity, because the dollar saving does not scale with severity. The nearest other cell is stored regions with the dollar
-  saving, at −12%.
+  gives 12 cells and eight distinct allocations. Only prefix regions with the dollar saving reach the answer's allocation, and they reach
+  it under either severity, because the dollar saving does not scale with severity. Every other cell moves at least one team; the
+  nearest in saving is stored regions with the dollar saving, at −18%.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -148,8 +150,8 @@ counts and the saving + 5 named chart parts + 3 files ≈ 77 criteria.
 
 ## 12. World-building constraints
 
-* Developed severity ($k): S1 76.8, S2 69.6, S3 41.0, S4 51.7, S5 22.1, S6 48.3, S7 52.2, S8 21.0. Light-duty shares: 10, 12, 45, 85,
-  60, 25, 90, 70%.
+* Developed severity ($k): S1 76.8, S2 69.6, S3 41.0, S4 51.7, S5 22.1, S6 68.0, S7 52.2, S8 21.0. Paid-to-date on prefix regions: 64,
+  58, 38, 47, 21, 58, 36, 20. Light-duty shares: 10, 12, 45, 85, 60, 25, 90, 70%; on stored regions S4 78%, S5 52% and S8 18%.
 * Blank-region TPA claims inflate Metro's paid-to-date averages (S8 41 against 20) and deflate S3's (31 against 38).
 * Allocations and savings by rung as in the ladder. Under the truth, rung 2's teams save $1,421k.
 * In the subsample, light-duty share is 50% in every claim-column cell. The twin cells differ only in their employers.

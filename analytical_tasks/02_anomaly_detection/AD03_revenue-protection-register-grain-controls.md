@@ -18,13 +18,13 @@
 An electricity retailer's revenue-protection team has one specialist crew with bypass-detection kit for January to March, and to keep
 travel down the crew works a single district. Eight districts are candidates. The policy judges a quarter by the cases its crew confirms.
 The pack carries 36 months of half-hourly consumption for every credit meter, the meter registration file, daily register reads, the
-meter event log, district degree-days, the meter operator's acknowledgement file and the field contractor's job summary. Every past
+meter event log, district degree-days, the meter operator's acknowledgement file and the retailer's disputes register. Every past
 referral came from the team's standard score, a robust z after a population seasonal index.
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every figure is correct: consumption, register reads, degree-days, the operator's assessments and the contractor's visit
-  counts. Nobody's figure is overturned; the team's score measures exactly what it says. The difficulty is which construction of a
+* **Litmus.** Every figure is correct: consumption, register reads, degree-days, the operator's assessments and the appeal outcomes in
+  the disputes register. Nobody's figure is overturned; the team's score measures exactly what it says. The difficulty is which construction of a
   household's shortfall reproduces the operator's register lines.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the procedure note's tie-break. A total-consumption, weather-adjusted score still reproduces
@@ -36,9 +36,9 @@ referral came from the team's standard score, a robust z after a population seas
 
 ## 3. The driving force
 
-A strong solver sees that the team's score sends crews to no-fault visits, checks where referrals have confirmed, reconciles those
-rates, then rebuilds the forward score with a weather-adjusted baseline and fills comms gaps from register reads. It back-tests against the
-acknowledgement file and every case total ties to the kilowatt-hour, so it stops. The totals tie because a shortfall is additive across
+A strong solver sees that the team's score sends crews to no-fault visits, checks where referrals have confirmed, sets aside
+confirmations the disputes register overturned, then rebuilds the forward score with a weather-adjusted baseline and fills comms gaps
+from register reads. It back-tests against the acknowledgement file and every case total ties to the kilowatt-hour, so it stops. The totals tie because a shortfall is additive across
 registers: any construction that gets the whole-house expectation right gets every case total right. District E is built on storage
 heating behind two-rate meters, and a bypass there diverts part of the night register. Whole-house consumption drops 6–9%, which is where
 legitimate no-fault households also sit, while the night register drops 35–60%. Seeing it needs each meter joined to its time-pattern
@@ -50,18 +50,19 @@ shortfall. The operator's per-register lines are reproduced by that construction
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | The team's standard score: robust z on whole-house weekly kWh after a population seasonal index; households at z ≥ 4 counted per district | A (46 households) | The textbook per-household baseline, robust to spikes and shared seasonality, and the team's own method | The acknowledgement file: this score sent 117 referrals over three winters and 64% came back no fault found |
-| 1 | Where referrals confirm: each district's confirmed share of acknowledged visits, three winters | B, by the procedure note's tie-break (four districts at 100%; B has the most customers, 1.32× D) | An outcome measure from the counterparty's own record, with the documented tie-break applied | The contractor's job summary counts no-access visits the acknowledgement file never lists; under the note's rule (the lowest rate consistent with every file of record) B's 7 of 7 is 7 of 12, and the tie breaks |
+| 1 | Where referrals confirm: each district's confirmed share of acknowledged visits, three winters | B, by the procedure note's tie-break (four districts at 100%; B has the most customers, 1.32× D) | An outcome measure from the counterparty's own record, with the documented tie-break applied | The retailer's disputes register: four of B's seven confirmations were overturned on appeal, and under the note's rule (the lowest rate consistent with every file of record) B's 7 of 7 is 3 of 7, so the tie breaks |
 | 2 | Hygiene and weather: comms-loss zeros refilled from register reads, whole-house baseline fitted on district degree-days per household; candidates whose shortfall clears the best whole-house band (12%) counted per district | C (34 expected confirmations) | Clean, weather-adjusted, forward-looking, and it reproduces all 210 acknowledged case totals and all three winters' totals to the kilowatt-hour | The operator's per-register lines: this construction misclassifies all 9 two-rate night-register confirmations, which sit at 6–9% whole-house shortfall among no-fault households |
-| 3 | **Decisive:** each meter's half-hours split at its own switching regime, a degree-day baseline per register per household, candidates whose larger register shortfall clears the band counted per district | **E (46)** (5th of 8 on rung 0) | — | — |
+| 3 | **Decisive:** each meter's half-hours split at its own switching regime, a degree-day baseline per register per household, candidates whose larger register shortfall clears the band counted per district | **E (56)** (5th of 8 on rung 0) | — | — |
 
-* **Position table.** E ranks 5th on rung 0 (24), 7th on rung 1 (38%) and 3rd on rung 2 (14), and leads only rung 3. Intermediate leaders hold
+* **Position table.** E ranks 5th on rung 0 (24), 7th on rung 1 (38%) and 3rd on rung 2 (16), and leads only rung 3. Intermediate leaders hold
   margins of 1.24×, 1.32× (the tie-break's customer ratio) and 1.26×.
-* **Discriminator dominance.** C carries a 2.43× advantage over E into rung 3 (34 against 14). Register grain multiplies E's expected
-  confirmations by 3.29 and C's, all single-register meters, by 1.00: an edge of 3.29 against the 1.2 × 2.43 = 2.92 required. E leads C by
-  1.35×.
-* **Partial correction priced (L3).** A solver who reconciles the job summary but keeps ranking on past rates names D (9 of 9), a district
-  with only 27 forward candidates and no two-rate stock. A solver who splits registers but fits one population index per register instead
-  of a degree-day baseline per household names A again, because A's retrofit heat pumps cut night use in a mild month.
+* **Discriminator dominance.** C carries a 2.13× advantage over E into rung 3 (34 against 16). Register grain multiplies E's expected
+  confirmations by 3.50 and C's, all single-register meters, by 1.00: an edge of 3.50 against the 1.2 × 2.13 = 2.55 required, 1.37× headroom.
+  E leads C by 1.65×.
+* **Partial correction priced (L3).** A solver who sets aside the overturned confirmations but keeps ranking on past rates names D (9 of 9
+  against H's 2 of 3, 1.50×), a district with only 27 forward candidates and no two-rate stock. A solver who splits registers but fits one
+  population index per register instead of a degree-day baseline per household names A (48 against E's 39, 1.23×), because A's retrofit
+  heat pumps cut night use in a mild month. Neither half lands on E.
 * **Grid.** Score basis (population index or degree-day) × grain (whole house or register) × comms gaps (zero or refilled) gives eight
   cells. Population-index cells name A; degree-day whole-house cells name C (refilled) or B (zeros left in); register grain with zeros
   left in names B, whose comms-loss zeros fill its night registers. Only register grain with refilled gaps on degree-day baselines names
@@ -87,16 +88,17 @@ shortfall. The operator's per-register lines are reproduced by that construction
 
 ## 6. The calibration corpus
 
-* **Form.** The meter operator's acknowledgement file: 210 visits over the winters of 2023/24 to 2025/26, each with an outcome code (61
-  confirmed, 149 no fault found) and, for each confirmed case, assessed unrecorded energy per register per week. The contractor's job
-  summary adds 34 no-access visits the file never lists.
+* **Form.** The meter operator's acknowledgement file: 210 visits over the winters of 2023/24 to 2025/26, each with an outcome code and,
+  for each confirmed case, assessed unrecorded energy per register per week. With the disputes register applied, 61 confirmations stand and
+  149 visits are no fault.
 * **What it pins.** The salient control (case and winter totals) is met by any construction with the right whole-house expectation,
   rungs 2 and 3 alike. The finer controls, the 61 cases' register lines, are met only by register grain: 210 of 210 against 201 of 210 for
   the whole-house score and 131 of 210 for the team's standard score, which also misses the 2024/25 winter total by 11%.
 * **Twin pair.** Cases 2024-117 and 2025-033 sit in the same district on two-rate meters with the same regime, the same 6,850 kWh baseline
   year, the same population-index z and the same 8.1% weather-adjusted whole-house shortfall. 2024-117 was confirmed with 1,620 kWh
   assessed on the night register; 2025-033 was no fault found. No whole-house field separates them.
-* **Every rule exercised.** Nine confirmed cases are night-register only. Four no-fault cases are two-rate meters whose shortfall is spread
+* **Every rule exercised.** Nine confirmations overturned in the disputes register stand as no fault, so the corpus scores standing
+  outcomes. Nine confirmed cases are night-register only. Four no-fault cases are two-rate meters whose shortfall is spread
   evenly across both registers, so a register split alone, without the per-register baseline, misclassifies them. Six cases span a
   comms-loss gap that register reads refill.
 * **Resemblance points at the decoy.** On every whole-house column E's forward candidates most resemble the 2024/25 no-fault referrals; C's
@@ -106,7 +108,7 @@ shortfall. The operator's per-register lines are reproduced by that construction
 
 * **Filed pins.** The revenue-protection policy: a crew's quarter is judged by the cases it confirms. The procedure note: a district's
   confirmation rate is the lowest rate consistent with every file of record, and ties go to the district with more customers. The crew
-  works credit meters only.
+  works credit meters only. The disputes register is the record of appeals against tamper findings.
 * **Empirical pins.** The register band and the per-register degree-day baseline, from the acknowledgement file.
 * **Voices.** The revenue-protection manager: "Our score has found every bypass we've ever confirmed; send the crew where the scores
   are." The contractor's field supervisor: "Where referrals confirm, sweeps confirm."
@@ -157,12 +159,12 @@ margin over C + 5 named chart parts + 3 files ≈ 49 criteria.
 
 ## 12. World-building constraints
 
-* Rung leaders are A, B, C, E. E is 5th / 7th / 3rd / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 1.35×.
-* E's forward candidates: 14 whole-house plus 32 night-register cases (46). C's 34 are all single-register meters. D holds 27 and no
+* Rung leaders are A, B, C, E. E is 5th / 7th / 3rd / 1st; intermediate margins are at least 1.24×; E leads rung 3 by 1.65×.
+* E's forward candidates: 16 whole-house plus 40 night-register cases (56). C's 34 are all single-register meters. D holds 27 and no
   two-rate stock.
 * Night-register bypasses cut the register 35–60% and the whole house 6–9%; no-fault two-rate households sit at 4–11% whole-house and at
   most 8% on every register.
-* Past rates: B 7 of 7 acknowledged (7 of 12 visits), D 9 of 9 (9 of 9), F 4 of 4 (4 of 7), H 3 of 3 (3 of 5). Customer bases: B
-  14,800, D 11,200.
+* Past rates: B 7 of 7 acknowledged (3 of 7 after the disputes register), D 9 of 9 (none overturned), F 4 of 4 (2 of 4), H 3 of 3 (2 of
+  3). Customer bases: B 14,800, D 11,200. Nine confirmations in all were overturned, none of them on two-rate meters.
 * Cases 2024-117 and 2025-033 are identical on every whole-house column. A's 2026 heat-pump retrofit sits under rung 0 only.
 * Prepayment vends and ombudsman re-logs never touch credit-meter consumption or the acknowledgement file.

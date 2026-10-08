@@ -57,9 +57,9 @@ removes 57k.
 * **Position table.** The scale-in fix ranks 5th, 3rd and 4th on rungs 0 to 2 and leads only rung 3. Margins are 1.67, 1.29 and 1.22.
 * **Discriminator dominance.** Rightsizing carries a 1.83× lead (110 against 60) into rung 3. The fix's serviceable share is 0.95 against
   rightsizing's 0.28, an edge of 3.39×, above 1.2 × 1.83 = 2.20.
-* **Partial correction priced (L3).** A solver who checks the SKU catalogue but not the reservation ledger leaves rightsizing at 68k and
-  builds it. One who counts every training job as spot-ready, not only those that checkpoint, puts spot migration at 85k. Neither half names
-  the scale-in fix.
+* **Partial correction priced (L3).** A solver who checks the SKU catalogue but not the reservation ledger leaves rightsizing at 68k,
+  1.19× the scale-in fix, and builds it. One who counts every training job as spot-ready, not only those that checkpoint, puts spot
+  migration at 85k, 1.49× the scale-in fix. Neither half names the scale-in fix.
 * **Grid.** Consumption basis (existence or billed) × serviceability (none, partial joins, all joins) = 6 cells. Only billed core-hours with
   every join names the scale-in fix. On existence the same joins name the lifecycle policy, because deallocated dev VMs swell its target.
 

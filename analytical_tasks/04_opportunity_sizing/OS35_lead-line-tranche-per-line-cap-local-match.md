@@ -59,8 +59,9 @@ along each plan's order.
   figure while Easton keeps 1.00, an edge of 4.8×, far above 1.2 × 1.44 = 1.73.
 * **The deciding comparison.** Corliss: 3,050 lines needed, $14M could fund 3,406 at capped cost, and the local contribution stops it at
   600. Easton: 2,100 needed and 2,010 funded, with $0.25M of local money barely touched.
-* **Partial correction priced (L3).** A solver who applies the per-line cap but assumes the excess is always met keeps Corliss, at 3,050
-  lines. A solver who checks the local contribution against average excess, max(0, $4,860 − $9,500) = 0, keeps Corliss at rung 2.
+* **Partial correction priced (L3).** Every half-applied cap names Corliss. Applying the per-line cap but assuming the excess is always
+  met gives Corliss 3,050 lines against Brennan's 2,460 (1.24×), with Easton 4th at 2,010. Checking the local contribution against the
+  average excess, max(0, $4,860 − $9,500) = 0, leaves rung 2 standing: Corliss 2,881 against Brennan's 2,460 (1.17×), Easton 4th.
 * **Grid.** Unknowns (off, on) × galvanised (off, on) × reach (average cost, per-line cap, cap plus local contribution) = 12 cells. Every
   non-answer cell names Ardley, Brennan, Corliss or Delmar. Delmar, local-bound at 1,600, leads every cell that has the decisive reach
   without both need corrections.

@@ -15,7 +15,7 @@
 
 ## 1. Situation
 
-One turbine (T07) on a 12-turbine hill farm produced about 6% less than its neighbours over the winter. The OEM's service team wants to replace its pitch
+One turbine (T07) on a 12-turbine hill farm produced about 14% less than its neighbours over the winter. The OEM's service team wants to replace its pitch
 bearing; the farm's performance engineer is sure it was ice. The owner has one crew visit this spring and the asset policy sends it to the fault with
 the largest winter lost energy. Five faults have signatures in the 10-minute data: pitch offset (A), yaw misalignment (B), blade icing (C), nacelle
 anemometer drift (D) and leading-edge erosion (E). The turbines are under the OEM's warranty, which compensates lost energy, and its settled claims sit
@@ -53,19 +53,22 @@ MWh, the easterly ice loss shrinks, the westerly yaw loss grows, and yaw misalig
 | 0 | Signature-conditioned residuals against the nacelle anemometer and warranted curve, over periods the SCADA state flag marks "operating" | A, pitch offset (340 MWh) | The SCADA system's own reference and states, with the textbook diagnosis on top | The grid operator's curtailment instructions: 150 MWh of "pitch" loss falls in setpoint periods the state flag still calls operating |
 | 1 | The same, with curtailed periods removed through the instruction log | E, leading-edge erosion (260) | The population is now the turbine's own unconstrained operation | The ledger: the nacelle reference reproduces 15 of 24 settled claims, understating every claim from a yawed or iced month |
 | 2 | Free-stream reference from the met mast, density-corrected, warranted curve | C, icing (360) | The fault-bent anemometer is gone, and 19 of 24 claims now reproduce | The ledger's five misses are westerly-dominated months; the mast and T07 disagree by direction |
-| 3 | **Decisive:** mast wind corrected by 30° sector factors fitted on the commissioning year's concurrent data, against the site power curve | **B, yaw misalignment (400 MWh)** (4th of 5 on rung 0) | — | — |
+| 3 | **Decisive:** mast wind corrected by 30° sector factors fitted on the commissioning year's concurrent data, against the site power curve | **B, yaw misalignment (430 MWh)** (4th of 5 on rung 0) | — | — |
 
 * **Position table.** B ranks 4th on rungs 0 and 1 and 3rd on rung 2, and leads only rung 3. Rung leaders beat their runners-up by 1.31×,
-  1.37×, 1.33× and 1.38×.
-* **Discriminator dominance.** Ice carries a 1.50× lead into rung 3 (360 against 240 MWh). The sector reference multiplies yaw's loss by 1.67
-  (westerly hours) and ice's by 0.81 (easterly hours), an edge of 2.07×, above the required 1.2 × 1.50 = 1.80; the net margin is 1.38×.
-* **Partial correction priced (L3).** Adopting the site curve without sector factors removes the curve gap that inflated erosion but leaves ice
-  at 360 against yaw's 240, naming C as rung 2 does. Sector factors fitted on last year (when the yaw fault had begun) reproduce 16 of 24 and
-  name C; factors at 10° or 45° reproduce 20 and 18. Sector factors with the warranted curve name B but put its loss at 452 MWh, 13% high, and
-  reproduce 21 of 24.
+  1.37×, 1.33× and 1.59×.
+* **Discriminator dominance.** Ice carries a 1.50× lead into rung 3 (360 against 240 MWh). The sector reference with the site curve
+  multiplies yaw's loss by 1.79 (westerly hours) and ice's by 0.75 (easterly hours), an edge of 2.39×, 1.33 times the required
+  1.2 × 1.50 = 1.80; the net margin is 1.59×.
+* **Partial correction priced (L3).** Each half of the method names a wrong fault. The site curve without sector factors removes the curve
+  gap that inflated erosion but leaves ice at 360 against yaw's 228, naming C as rung 2 does (1.58×). Sector factors with the warranted curve
+  lift 1,900 clean westerly hours across 9 m/s, where the warranted curve runs 7% above the site curve, and that gap lands on erosion, the
+  guide's residual fault: E 570 against yaw's 470, naming E, rung 1's answer (1.21×), while reproducing 21 of 24. Factors fitted on last
+  winter, when the vane offset had begun, put the westerly factor at 1.01: ice 310 against yaw's 255, naming C (1.22×), with 16 of 24.
 * **Grid.** Population (state flag, instruction log) × reference (nacelle, mast, mast by sector) × curve (warranted, site) gives twelve builds.
-  Every flag-based build names A, every nacelle build E or A, every unsectored mast build C, and only the sector reference names B; with the
-  site curve it alone reproduces the ledger.
+  Every flag-based build names A or E (curtailed "pitch" loss grows to 320 MWh on the sector reference, so even the sector-and-site build
+  gives A 510 against B's 430, 1.19×), every nacelle build E or A, every unsectored mast build C, sectors with the warranted curve E, and only
+  the sector reference with the site curve names B; it alone reproduces the ledger.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -109,7 +112,10 @@ MWh, the easterly ice loss shrinks, the westerly yaw loss grows, and yaw misalig
 ## 8. Determinism by construction
 
 * **Fault windows.** The diagnostic guide's windows (icing by temperature and humidity, pitch at or above rated, yaw by misalignment band) are
-  applied in its stated order, so every period belongs to one fault or none.
+  applied in its stated order, and erosion takes the below-rated shortfall left outside every other window, so every period belongs to one
+  fault or none.
+* **Curves.** The site curve is T07's commissioning-year curve against the sector-corrected mast, in 0.5 m/s bins; above 9 m/s the warranted
+  curve runs 7% above it.
 * **Curtailment.** Instructions carry start and end times to the second; no instruction edge falls inside a 10-minute period.
 * **Factors.** The commissioning year has at least 400 valid hours in every sector; the factor is the ratio of mean wind speeds.
 * **Density.** The guide's correction is applied to every reference; no build differs on it.
@@ -146,7 +152,10 @@ runner-up's + 5 named chart parts + 2 files ≈ 160 criteria.
 ## 12. World-building constraints
 
 * T07 winter losses by rung (A / B / C / D / E, MWh): 340 / 90 / 140 / 60 / 260; 190 / 90 / 140 / 60 / 260; 190 / 240 / 360 / 60 / 270;
-  190 / 400 / 290 / 60 / 110.
+  190 / 430 / 270 / 60 / 110.
+* Partial builds (same order): site curve without sectors 190 / 228 / 360 / 60 / 100; sectors with the warranted curve 190 / 470 / 270 / 60
+  / 570; last winter's factors 190 / 255 / 310 / 60 / 105. Curtailed "pitch" loss: 150 MWh on the nacelle reference, 230 on the mast, 320 on
+  the sector reference.
 * Sector factors from the commissioning year: 1.06 in the westerly sectors, 0.92 in the easterly ones, near 1 elsewhere; the yaw fault's hours
   are 70% westerly and the icing hours 85% easterly.
 * Ledger: full method 24/24, sectors with warranted curve 21, mast 19, nacelle 15; last-year factors 16, 10° sectors 20, 45° sectors 18.

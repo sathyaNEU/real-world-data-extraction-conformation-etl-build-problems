@@ -57,11 +57,13 @@ published exposure. For this storm, two inland facilities whose substations sit 
   least 11.0% from $24.6M.
 * **Position table.** F9 and F11, the facilities that enter at rung 3, rank 9th and 11th on rung 0's cone distance, 8th and 10th on rung 1
   and 7th and 9th on rung 2. F4, F5, F6 and F7, which each lead a slot at rungs 0 to 2, leave.
-* **Discriminator dominance.** F6, rung 2's fifth, carries a 1.38× point-exposure advantage over F9 into rung 3 (0.29 against 0.21). F9's
-  substation is exposed at 0.47, so its union exposure is 0.52 against F6's 0.29, a 1.79× edge, more than 1.2 × 1.38 = 1.66.
-* **Partial correction priced (L3).** Adding substations to the all-basin vectors reproduces 47 of 52 and files $27.3M (+11.0%) with F7 in
-  place of F11. Scoring substations alone, without the facility point, reproduces 39 and files $20.2M (−17.9%). Neither half reaches the
-  answer.
+* **Discriminator dominance.** F6, rung 2's fifth, carries a 1.38× advantage over F9 into rung 3: the two carry the same avoided-loss
+  figure, and F6's point exposure is 0.29 against F9's 0.21. F9's substation is exposed at 0.58, so its union exposure is 0.66 against
+  F6's 0.29 (F6's substation is inland), a 2.28× edge against the required 1.2 × 1.38 = 1.66, past the 2.15 the edge needs with headroom.
+* **Partial correction priced (L3).** Neither half names the answer's five. Adding substations to the all-basin vectors reproduces 47 of
+  52 and files $27.3M (+11.0%) on F2, F9, F3, F1 and F7: the wider errors keep F7, 1.21× ahead of F11 ($3.4M against $2.8M). Scoring
+  substations alone, without the facility point, reproduces 39 and files $20.2M (−17.9%) on F2, F9, F3, F11 and F8: F1, nearest the track
+  but fed from a substation 60 km inland, falls out, and F8, fed from the barrier coast, leads it 1.63× ($3.1M against $1.9M).
 * **Grid.** Error sample (all-basin, Gulf) × exposure unit (point, substation, union) = 6 cells beyond the cone; only Gulf and union
   reproduce 52 of 52, and every other cell names a different five.
 
@@ -147,6 +149,7 @@ avoided loss and the margin at fifth place + 5 named chart parts + 3 files ≈ 9
 
 * Rung sets and figures as in the ladder; partial cells $27.3M and $20.2M. Reproduction: 52 / 47 / 44 / 39 for union-Gulf, union-all,
   point-Gulf and substation-Gulf; point with all-basin vectors reproduces 31.
-* F9's point exposure 0.21, substation 0.47, union 0.52; F6's point 0.29 with an inland substation.
+* F9's point exposure 0.21, substation 0.58, union 0.66; F6's point 0.29 with an inland substation and the same avoided-loss figure as
+  F9. F1's substation lies 60 km inland; F8's on the barrier coast.
 * The twin facility-advisories match on every log and advisory column.
 * Outage records and tank strapping are independent of every main-call record.

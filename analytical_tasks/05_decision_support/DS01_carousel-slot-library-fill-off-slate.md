@@ -31,7 +31,7 @@ logging policy's propensities. The personalisation lead believes the two-tower m
 * **Deletion test.** Delete the lead's belief, the dashboard and the library's registration estimates. The replay estimate on the logs still
   ranks A first among the proposals, and nothing on the slate looks inadmissible.
 * **Instrument repair.** Give the logger unlimited traffic and perfect attribution. A still loses 3.1% of orders in the app new-shopper cell,
-  B's reproduced lift is still negative, C still gives fresh listings 7.1% of top-three impressions, and E is still the only policy clearing
+  B's reproduced lift is still negative, C still gives fresh listings 5.4% of top-three impressions, and E is still the only policy clearing
   all three. Narrower intervals change no pass or fail.
 * **Lens swap.** The naive read ranks the three proposals by replay lift. The answer is a policy nobody proposed, scored on a weighting of
   sessions that the replay estimate never forms: a different candidate population, not the proposals under another lens.
@@ -60,8 +60,8 @@ to every logged session before any condition can be tested. Only E clears all th
   replay; C fails the floor). It is 2nd on rung 1, 1.79× behind B. Rung 2 ranks proposals only, so E is not on its list. It leads only rung
   3, as the sole policy clearing all three conditions. Rung margins: A over B 1.24×, B over E 1.79×, C over A 1.26×.
 * **Discriminator dominance.** C carries a 1.61× reproduced-lift advantage into rung 3 (2.9 against 1.8). On the fresh-listing floor E stands
-  at 2.0× C's share (14.2% against 7.1%, floor 12%). Product: 0.62 × 2.0 = 1.24, so no exposure convention rescues C, and C would need
-  1.69× its own share to qualify.
+  at 2.63× C's share (14.2% against 5.4%, floor 12%). Product: 0.62 × 2.63 = 1.63, clear of the 1.56 headroom bar (1.3 × 1.2), so no
+  exposure convention rescues C, and C would need 2.22× its own share to qualify.
 * **Partial correction priced (L3).** A solver who reaches rung 2 and turns to the library but takes each entry's filed registration
   estimate for condition 1 names F (2.4 at registration against E's 1.6). F's reproduced lift on current logs is −0.4, so the half-insight
   lands on a policy with negative lift, further from the answer than C.
@@ -163,7 +163,7 @@ condition each proposal fails + 6 named chart parts + 3 files ≈ 60 criteria.
 * Replay lifts: A 4.2, B 3.4, C 2.6, D 2.2, E 1.9, F 1.5. Session-grain lifts: A 2.3, B −0.3, C 2.9, D 1.4, E 1.8 (bound +0.6), F −0.4.
   Request-grain lifts keep every bound above zero.
 * Worst fine cells: A −3.1% (app, under 30 days), D −2.6% (web, under 30 days), all others no worse than −1.2%. On the dashboard's coarse
-  view every policy is no worse than −0.8%. Fresh shares: C 7.1%, E 14.2%, all others at least 12.9%.
+  view every policy is no worse than −0.8%. Fresh shares: C 5.4%, E 14.2%, all others at least 12.9%.
 * Library registration estimates: D 3.0, E 1.6, F 2.4.
 * The archive: 9 tests, 9 of 9 under session-grain weights, 6 under request-grain and 3 under replay, with every rival miss overstating.
   T3 and T7 are identical on every archive column. Every archived cycle had a qualifying proposal.

@@ -43,31 +43,32 @@ segment, because traffic entering or leaving at the two interchanges inside it h
 can carry. The re-identification readers at the segment's ends give the through share by hour, 22% in the Sunday 21:00 window. The weigh-in-motion
 station gives the share of those through vehicles under 26 tonnes, 41% then, when long-haul trucks dominate. The pool is 9%, the
 traffic-management plan signs the detour as mandatory for exactly that pool, and with 9% removed instead of 20% the best window's expected
-delay is 790 vehicle-hours.
+delay is 950 vehicle-hours.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Window with the lowest average hourly volume on the counter | Sunday 23:00 (980 vehicles an hour against 1,210 for the next) | The planner's measure, and the quietest hour by a clear margin | The mobility policy: windows are judged on expected queue delay per night, which a queue run over every night gives |
-| 1 | Deterministic queue over every historical night in vehicles, with the manual's 20% diversion | Monday 22:00 (410 vehicle-hours, against 505 for the next) | The policy's measure on the full distribution of nights, under the cap | The work-zone manual: capacity is in passenger-car equivalents, with the counter's heavy class split by axle configuration into 1.5 and 2.5 |
+| 1 | Deterministic queue over every historical night in vehicles, with the manual's 20% diversion | Monday 22:00 (410 vehicle-hours, against 505 for the next) | The policy's measure on the full distribution of nights, under the cap | The work-zone manual: capacity is in passenger-car equivalents, 1.5 for a heavy vehicle of unknown class and 1.5 or 2.5 by axle configuration where it is known |
 | 2 | Hygiene of class: heavy vehicles split through the weigh-in-motion axle records and converted; 20% diversion | Sunday 21:00 (540, against 660 for the next) | Capacity measured the way the manual defines it, and a window still within the cap | The traffic-management plan's detour takes only through traffic under 26 tonnes; re-identification and weigh-in-motion put that pool at 9% at night |
-| 3 | **Decisive:** diversion limited to the pool, hour by hour, from the through share and the weight split | **Push the works: the best window, Sunday 21:00, at 790 vehicle-hours** | — | — |
+| 3 | **Decisive:** diversion limited to the pool, hour by hour, from the through share and the weight split | **Push the works: the best window, Sunday 21:00, at 950 vehicle-hours** | — | — |
 
 * **Position table.** Rung leaders are Sunday 23:00, Monday 22:00, Sunday 21:00, then the hold; no leader repeats. Margins: 1.23× on
   volume (1,210 against 980), 1.23× on delay (505 against 410) and 1.22× (660 against 540).
-* **Blocking quantity.** With the pool as the diversion, the best window's expected delay is 790 vehicle-hours a night, 1.32× the cap;
-  every other window is at 905 or more. The hold is falsifiable: had the night pool reached 15%, Sunday 21:00 would have come in at 590
+* **Blocking quantity.** With the pool as the diversion, the best window's expected delay is 950 vehicle-hours a night, 1.58× the cap;
+  every other window is at 1,090 or more. The hold is falsifiable: had the night pool reached 16%, Sunday 21:00 would have come in at 590
   and been booked.
 * **Discriminator dominance.** Sunday 21:00 carries a 1.11× clearance into rung 3 (600 against 540). Cutting diversion from 20% to 9%
-  multiplies its delay by 1.46× (790 against 540), more than the 1.11 clearance times the 1.20 floor (1.33), so it lands 1.32× over.
-* **Partial correction priced (L3).** Limiting diversion to the through share alone, forgetting the weight posting, gives 22% and books
-  Sunday 21:00 at 525. Limiting it to vehicles under 26 tonnes alone gives 41% and books it at 470. Applying the 9% pool to cars and the
-  counter's heavy class without the axle split finds Sunday 21:00 at 700, a hold on a figure 11.4% low. Half the construction books a
-  window.
-* **Grid.** Measure (average volume, queue) × capacity unit (vehicles, PCE by axle class) × diversion (20%, through only, weight only,
-  pool) = 16 cells. Twelve book a window; the hold appears only with the queue and the pool, at 700 without the axle split and 790 with
-  it.
+  multiplies its delay by 1.76× (950 against 540), against the 1.11 clearance times the 1.20 floor (1.33): 1.32× headroom, so it lands
+  1.58× over the cap.
+* **Partial correction priced (L3).** No half-applied construction holds; each books Sunday 21:00. Limiting diversion to the through share
+  alone, forgetting the weight posting, gives 22% and books it at 525. Limiting it to vehicles under 26 tonnes alone gives 41% and books
+  it at 470. Applying the 9% pool with the manual's unknown-class 1.5 for every heavy vehicle, without the axle split, books it at 520,
+  1.15× inside the cap, because the night's combination trucks are counted as single units.
+* **Grid.** Measure (average volume, queue) × capacity unit (vehicles, PCE at the unknown-class 1.5, PCE by axle class) × diversion (20%,
+  through only, weight only, pool) = 24 cells. Twenty-three book a window; the hold appears only with the queue, the axle split and the
+  pool, at 950. The booking nearest the cap is 540 (rung 2).
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -92,7 +93,7 @@ delay is 790 vehicle-hours.
   3% on all three closure nights).
 * **What it is blind to.** Diversion (above).
 * **Twin pair.** Monday 22:00 and Wednesday 22:00 are identical on every counter column: volume, heavy share, PCE demand and unmitigated
-  expected delay. Their delay with the pool as diversion is 905 and 1,810 vehicle-hours (2.0×): Monday's late traffic still carries
+  expected delay. Their delay with the pool as diversion is 1,090 and 2,180 vehicle-hours (2.0×): Monday's late traffic still carries
   commuters passing through in cars, Wednesday's is mostly deliveries to the riverside depots inside the segment, pools of 6% and 2%.
   Only the re-identification join separates them.
 * **Resemblance points at the decoy.** Sunday 21:00 most resembles last year's Sunday closure on the adjacent segment, which stayed within
@@ -102,7 +103,8 @@ delay is 790 vehicle-hours.
 
 * **Filed pins.** The mobility policy: a window is booked only where expected queue delay with the detour signed stays at or under 600
   vehicle-hours a night; otherwise the works move to next season's weekend programme. The work-zone manual: work-zone capacity 2,900
-  passenger-car equivalents an hour with one lane closed; equivalents of 1.5 and 2.5 by axle class. The traffic-management plan: the detour
+  passenger-car equivalents an hour with one lane closed; equivalents of 1.5 for a heavy vehicle of unknown class, and 1.5 or 2.5 by axle
+  class where it is known. The traffic-management plan: the detour
   is signed as mandatory for through traffic within the bridge posting. The bridge posting: 26 tonnes.
 * **Empirical pins.** The through share and weight split by hour, from the readers and the weigh-in-motion station.
 * **Voices.** The planner: "The quietest hour on the counter is the safest bet." The traffic-management engineer: "A signed detour always
@@ -117,8 +119,8 @@ delay is 790 vehicle-hours.
 * **Re-identification.** A through trip is a read at both ends within 15 minutes; every matched trip falls within 4 to 9 minutes, so match
   windows from 10 to 20 minutes give the same share.
 * **Weights.** No through vehicle's weigh-in-motion gross weight sits within 0.5 tonnes of 26, so the posting splits them unambiguously.
-* **Margins.** Every window's pool-limited delay is at least 31% over 600, so no capacity or equivalence convention within the manual's
-  range books one.
+* **Margins.** Every window's pool-limited delay with the axle split is at least 58% over 600, so no queue or capacity convention within
+  the manual's range books one.
 
 ## 9. Prompt sketch and deliverables
 
@@ -129,7 +131,7 @@ delay is 790 vehicle-hours.
 
 * `closure_windows.xlsx` — the six windows under each rung basis (ask C), the crash sheet (ask A) and the speed sheet (ask B).
 * `night_delay_by_window.png` — expected delay for the six windows under the manual's 20% and under the pool, as paired bars, with the
-  600 line labelled, the 790 annotated, and each window's pool share printed on its bar.
+  600 line labelled, the 950 annotated, and each window's pool share printed on its bar.
 * `booking_decision.pdf` — the committed call, the blocking quantity and what would have made a window bookable.
 
 ## 10. The ask layer
@@ -151,8 +153,9 @@ from the cap and the falsifier + 5 named chart parts + 3 files ≈ 78 criteria.
 
 ## 12. World-building constraints
 
-* Rung leaders: Sunday 23:00 (980 vehicles an hour), Monday 22:00 (410 vehicle-hours), Sunday 21:00 (540), then the hold at 790. Every
-  other window under the pool is at 905 or more.
+* Rung leaders: Sunday 23:00 (980 vehicles an hour), Monday 22:00 (410 vehicle-hours), Sunday 21:00 (540), then the hold at 950. Every
+  other window under the pool is at 1,090 or more. Sunday 21:00 under the partials: 525 (through only), 470 (weight only), 520 (pool
+  without the axle split); 590 at a 16% pool.
 * In the Sunday 21:00 window the through share is 22% and the under-26-tonne share among through vehicles 41%: pool 9%. Monday and
   Wednesday 22:00 match on every counter column, with pools of 6% and 2%.
 * The overlap holds three closure nights, none with a detour signed. The adjacent segment's through share was 58%.
