@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Digit- and distribution-based fraud screens on truncated data (expense audits with reporting thresholds, payments above approval limits) |
 | Domain | Public-sector internal audit / forensic accounting |
 | Task shape | 10 · Scorecard against thresholds (department × digit test → refer / clear) |
 | Core method | Digit-frequency tests (first, second, first-two digits) with mean-absolute-deviation conformity bands; restricting to the amount range where the expected distribution holds |

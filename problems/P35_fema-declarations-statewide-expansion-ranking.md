@@ -49,15 +49,17 @@ Rules (initiative method):
 | 3 | `FemaWebDisasterDeclarations.csv` | CSV | ~5k | OpenFEMA | Public domain | Disaster-level attributes |
 | 4 | `openfema_declarations_data_dictionary.pdf` | PDF | — | FEMA | Public domain | Field semantics (statewide, tribal) |
 | 5 | `national_county2020.txt` | Pipe-delimited | ~3.2k | Census | Public domain | County-equivalents list |
-| 6 | `county_changes_2004_2023.csv` | CSV | ~10 | Census substantial-changes pages | Public domain | Lists in effect by date |
-| 7 | `fema_regions.csv` | CSV | ~56 | FEMA | Public domain | Region → states |
-| 8 | `initiative_method.pdf` | PDF | — | Task author | — | Rules in §2 |
-| 9 | `PublicAssistanceFundedProjectsSummaries.csv` (optional) | CSV | ~0.2M | OpenFEMA | Public domain | Context only |
+| 6 | `national_county2010.txt` | CSV | ~3.2k | Census 2010 FIPS codes for counties and county equivalents | Public domain | County-equivalents list before the 2010s changes |
+| 7 | `county_changes_2004_2023.csv` | CSV | ~10 | Census substantial-changes pages | Public domain | Lists in effect by date |
+| 8 | `fema_regions.csv` | CSV | ~56 | FEMA | Public domain | Region → states |
+| 9 | `initiative_method.pdf` | PDF | — | Task author | — | Rules in §2 |
+| 10 | `PublicAssistanceFundedProjectsSummaries.csv` (optional) | CSV | ~0.2M | OpenFEMA | Public domain | Context only |
 
 ## 5. Deterministic solution path
 
 1. Filter declarations; exclude biological; keep PA-declared DRs in the region's states.
-2. Expand statewide rows to all county-equivalents in effect on each declaration date; drop tribal rows.
+2. Expand statewide rows to all county-equivalents in effect on each declaration date (start from the 2010 list and apply the dated
+   changes up to that date; the 2020 list is the check); drop tribal rows.
 3. Build (county FIPS, disasterNumber) distinct pairs; count per county.
 4. Rank with tie-breaks; top 15 + 16th.
 5. Contrast: unexpanded statewide; row counts; name grouping.

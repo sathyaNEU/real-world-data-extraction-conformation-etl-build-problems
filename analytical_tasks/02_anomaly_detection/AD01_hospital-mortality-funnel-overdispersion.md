@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Outlier flagging with overdispersion (quality or fraud screens across stores, sellers or data centres), where pure sampling-error limits flag a third of units |
 | Domain | Healthcare quality surveillance (NHS England) |
 | Task shape | 14 · Cuts of a distribution (nested 95% / 99.8% funnel bands per trust) |
 | Core method | Funnel-plot control limits for standardized ratios with an additive random-effects overdispersion adjustment (winsorized z-scores) |

@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Descriptive & Distribution Analysis |
+| Mirrors | Count- versus size-weighted distributions (incidents vs minutes of impact, tickets vs hours, transactions vs dollars), where the resource-relevant mass sits in the tail |
 | Domain | Wildland fire management / emergency resource planning / catastrophe insurance |
 | Task shape | 14 · Cuts of a distribution (area-weighted size thresholds at 50% / 80% / 95% coverage across four regions) |
 | Core method | Weighted (area-weighted) quantiles of a heavy-tailed size distribution; cumulative coverage curves from the largest fire downward; consistent rounding |

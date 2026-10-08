@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Path-dependent simulation of resource needs (inventory with carry-over, battery state of charge, cloud budget burn), where percentiles require replaying whole scenarios |
 | Domain | Agricultural water management / irrigation districts |
 | Task shape | 08 · Rule replayed on history (30 weather seasons through a daily soil-water balance → P80 order) |
 | Core method | Daily root-zone water balance with crop coefficients, replayed over historical weather years; empirical percentile of seasonal totals |

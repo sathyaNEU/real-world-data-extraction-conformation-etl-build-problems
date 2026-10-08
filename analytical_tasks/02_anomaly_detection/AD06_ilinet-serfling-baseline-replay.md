@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Baselines for operational surveillance contaminated by past events (error-rate baselines fitted through past incidents, demand baselines fitted through past promotions) |
 | Domain | Public health surveillance / hospital surge planning |
 | Task shape | 08 · Rule replayed on history (ten seasons replayed through the threshold rule → surge weeks to budget) |
 | Core method | Serfling-type cyclic regression baseline fitted only on non-epidemic weeks, prediction-interval threshold, season-by-season replay |

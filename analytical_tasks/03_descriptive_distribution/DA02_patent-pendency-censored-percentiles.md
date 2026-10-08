@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Descriptive & Distribution Analysis |
+| Mirrors | Percentiles of durations with open cases (ticket resolution times, time-to-hire, feature lead times), where completed-only statistics drop the slowest |
 | Domain | Government operations / intellectual-property administration / workload planning |
 | Task shape | 01 · Ranked list under a cap (5 work groups receive new examiner teams) |
 | Core method | Kaplan–Meier (product-limit) estimation of time-to-disposition with pending applications right-censored at the data cut-off; percentiles read from the survival curve |

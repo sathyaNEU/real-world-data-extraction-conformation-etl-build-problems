@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Per-entity baselines for fleet anomaly detection (device telemetry, per-host monitoring at cloud providers, per-merchant transaction monitoring) |
 | Domain | Electricity distribution / metering operations / revenue protection |
 | Task shape | 01 · Ranked list under a cap (20 field inspections) |
 | Core method | Per-household robust standardization (median/MAD) of weekly consumption after removing the population seasonal index; maximum robust z over the inspection window |

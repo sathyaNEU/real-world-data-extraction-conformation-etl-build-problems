@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Scheduling maintenance windows against tail demand (network and data-centre maintenance windows, warehouse system cutovers, release freezes) |
 | Domain | Inland waterways / freight logistics / infrastructure maintenance |
 | Task shape | 06 · Sequenced schedule under capacity (four closures, crew limit, blackout, one dependency) |
 | Core method | Weekly traffic quantile forecasts from multi-year history (week-of-year P90 of tonnage), constraint-feasible sequencing that minimizes exposed traffic, quantiles of window sums computed on the sums |

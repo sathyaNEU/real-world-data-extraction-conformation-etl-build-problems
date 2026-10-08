@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Leakage in production forecasting models (ride-hail and delivery demand forecasts, ads delivery forecasts, supply-chain ML), where backtests use information unavailable at prediction time |
 | Domain | Micromobility operations / fleet rebalancing |
 | Task shape | 10 · Scorecard against thresholds (candidate model × criterion → adopt / hold) |
 | Core method | Forecast-origin discipline (information set at issuance), rolling-origin evaluation with monthly refits, Poisson GLMs with pinned specifications |

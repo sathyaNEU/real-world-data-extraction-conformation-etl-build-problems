@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Forecasting a netted metric whose parts follow different drivers (net revenue = gross − refunds, net adds = gross adds − churn, net load = load − rooftop solar) |
 | Domain | Grid operations / renewable integration / curtailment planning |
 | Task shape | 02 · Forecast across many periods (12 monthly minimum net loads → one committed planning level) |
 | Core method | Component forecasting: reconstitute gross consumption by adding back behind-the-meter (BTM) solar, apply growth to the gross series, subtract next year's BTM output |

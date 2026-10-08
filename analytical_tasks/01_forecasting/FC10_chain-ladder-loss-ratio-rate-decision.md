@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Immature cohort metrics compared with mature ones (LTV of recent user cohorts, warranty claims by build month, chargebacks by transaction month) without development to ultimate |
 | Domain | Property & casualty insurance / reserving and pricing |
 | Task shape | 03 · Bridge between two totals (paid-to-date → developed ultimate, by accident year) |
 | Core method | Chain-ladder development on the cumulative paid triangle as known at the evaluation date (volume-weighted age-to-age factors), ultimate loss ratios by accident year |

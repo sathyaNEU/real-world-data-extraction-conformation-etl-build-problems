@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Ranking outliers with small denominators (seller defect rates, click fraud by publisher, per-team incident rates), where shrinkage and peer groups are required |
 | Domain | Health program integrity / prescription drug monitoring |
 | Task shape | 16 · Indicators into one score (eligibility screen → shrunken indicators → percentile scaling within specialty → weighted composite → selected unit) |
 | Core method | Beta-binomial empirical-Bayes shrinkage of rate indicators toward specialty means (method-of-moments prior), within-specialty percentile scaling, weighted composite |

@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Score cut-offs set by expected value (sales outreach lists, fraud review queues, retention offers) rather than by accuracy metrics |
 | Domain | Retail banking / direct marketing / propensity modelling |
 | Task shape | 04 · Setting one dial (score threshold → number of calls) |
 | Core method | Time-ordered train/validation/test split, admissible-feature propensity model (logistic regression, MLE), expected-profit threshold chosen on validation, reported on test |

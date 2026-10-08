@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Separating measurement breaks from real shifts (logging pipeline changes, SDK upgrades, sensor firmware updates) by comparison with peers |
 | Domain | Climate data / weather-index insurance / infrastructure design data |
 | Task shape | 18 · Hypotheses versus evidence (candidate causes × lines of evidence, each cell with its figure) |
 | Core method | Relative homogeneity analysis: station-minus-neighbour difference series, step estimation around candidate dates, Tmax/Tmin signature analysis, seasonal structure of the step |

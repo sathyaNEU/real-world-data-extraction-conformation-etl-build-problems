@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Coincident-peak sizing of pooled capacity (cloud regions serving several products, shared CDN egress, pooled call centres): the peak of the sum is not the sum of the peaks |
 | Domain | Electric utilities / capacity procurement / transmission planning |
 | Task shape | 02 · Forecast across many periods (12 monthly P90 peaks → one committed level) |
 | Core method | Weather-year replay of growth-normalized hourly zone loads, summed hour by hour before taking maxima; empirical quantiles of monthly maxima |

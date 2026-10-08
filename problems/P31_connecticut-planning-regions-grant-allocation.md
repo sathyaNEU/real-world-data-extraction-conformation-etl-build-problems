@@ -49,15 +49,17 @@ Rules (allocation statute summary in the folder):
 | 7 | `acs5_2023_B17001_ct_county.csv` | CSV | 9 | Census | Public domain | Planning-region figures (check target) |
 | 8 | `ct_town_to_planning_region.xlsx` | XLSX | ~170 | Census geography change notes / CT OPM | Public | Assignment |
 | 9 | `ct_2020_tract_to_2022_tract_relationship.txt` | Pipe-delimited | ~900 | Census relationship files | Public domain | Shows recoding (context) |
-| 10 | `ct_legacy_county_to_region_area_overlap.csv` | CSV | ~20 | Task author from TIGER/Line polygons | Public domain inputs | The tempting crosswalk |
-| 11 | `tl_2023_09_cousub.zip` | Shapefile | ~170 | Census TIGER/Line | Public domain | Optional map |
-| 12 | `geography_change_notes_ct_2022.pdf` | PDF | — | Census Bureau | Public domain | Documentation |
-| 13 | `allocation_statute_summary.pdf` | PDF | — | Task author | — | Rules in §2 |
+| 10 | `BlockAssign_ST09_CT_MCD.txt` | Pipe-delimited | ~50k blocks | Census 2020 Block Assignment Files (county subdivision) | Public domain | Nesting check: every 2020 block's town lies in exactly one planning region |
+| 11 | `ct_legacy_county_to_region_area_overlap.csv` | CSV | ~20 | Task author from TIGER/Line polygons | Public domain inputs | The tempting crosswalk |
+| 12 | `tl_2023_09_cousub.zip` | Shapefile | ~170 | Census TIGER/Line | Public domain | Optional map |
+| 13 | `geography_change_notes_ct_2022.pdf` | PDF | — | Census Bureau | Public domain | Documentation |
+| 14 | `allocation_statute_summary.pdf` | PDF | — | Task author | — | Rules in §2 |
 
 ## 5. Deterministic solution path
 
 1. Load each vintage's town table; keep total-below-poverty estimates; map towns to regions; sum.
-2. Verify the 2019–2023 region sums equal Census's published planning-region figures.
+2. Verify the 2019–2023 region sums equal Census's published planning-region figures, and confirm with the block assignment file that
+   every town nests in one planning region.
 3. Average across five vintages per region.
 4. Solve r: sort regions by need; iterate floors (regions where r × need < floor get the floor); solve r on the rest;
    repeat until stable.

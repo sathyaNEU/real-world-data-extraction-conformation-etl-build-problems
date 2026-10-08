@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Predictive-maintenance alarms on manufacturing and data-centre equipment (supplier production lines, network hardware, cooling plant), with limits learned from healthy periods |
 | Domain | Industrial condition monitoring / predictive maintenance |
 | Task shape | 17 · Periods around a change point (snapshots after the baseline checked against committed limits; longest excess run; go/no-go) |
 | Core method | Phase I/Phase II monitoring: baseline-only parameter estimation, AR(1) residuals to remove autocorrelation, EWMA chart on residuals, causal (one-sided-in-time) computation |

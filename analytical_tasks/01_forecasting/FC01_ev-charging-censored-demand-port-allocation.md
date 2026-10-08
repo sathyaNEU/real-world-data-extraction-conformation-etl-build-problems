@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Capacity-censored demand at any constrained service (rejected GPU or quota requests, sold-out inventory, data-centre power slots), where recorded usage understates the busiest sites |
 | Domain | Municipal EV infrastructure / transport electrification |
 | Task shape | 05 · Allocation to a fixed total (24 ports across 8 sites) |
 | Core method | Loss-system (M/G/c/c) demand recovery: invert observed (carried) load to offered load; grow it; allocate ports by greedy marginal reduction in lost arrivals |

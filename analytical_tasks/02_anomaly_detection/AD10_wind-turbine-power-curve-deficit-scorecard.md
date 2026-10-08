@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Judging an asset against its own normalised baseline (server throughput per watt, line yield per shift, fleet fuel efficiency) rather than neighbours or last year |
 | Domain | Wind energy asset management / operations & maintenance |
 | Task shape | 10 · Scorecard against thresholds (turbine × test → inspect / clear) |
 | Core method | IEC 61400-12-style method of bins on 10-minute SCADA data with air-density normalization and abnormal-operation filtering; energy deficit computed by applying the baseline curve to the current year's wind distribution |

@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Time-weighting event-logged data (price-change logs, configuration-change logs, status histories), where averaging records weights by change frequency instead of duration |
 | Domain | Competition / consumer protection / retail fuel markets |
 | Task shape | 07 · Grid of cells (brand × federal state relative margin change → the anomalous cell) |
 | Core method | Duration-weighted (time-weighted) average prices from price-change event logs; local-peer relative pricing; before/during comparison of relative position against a peer median |

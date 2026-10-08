@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Descriptive & Distribution Analysis |
+| Mirrors | Tail estimation from binned data (revenue concentration among top customers from banded reports, latency tails from histogram buckets) |
 | Domain | Public finance / state revenue volatility / credit analysis |
 | Task shape | 14 · Cuts of a distribution (top 10% / 5% / 1% thresholds and shares across six states) |
 | Core method | Pareto interpolation within income classes and in the open-ended top class (alpha from the class mean), cumulative shares from grouped data |

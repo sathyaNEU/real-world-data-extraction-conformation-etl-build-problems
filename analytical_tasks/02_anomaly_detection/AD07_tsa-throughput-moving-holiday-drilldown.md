@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Anomaly Detection & Diagnostics |
+| Mirrors | Calendar alignment in metric anomaly detection (Easter, Ramadan, Lunar New Year or shopping events moving between years in traffic, sales and app usage) |
 | Domain | Aviation security operations / airport capacity planning |
 | Task shape | 12 · Drill-down to one leaf (national → hub size → airport), separating calendar shift from real change |
 | Core method | Holiday- and weekday-aligned year-over-year baselines (moving-holiday alignment, 364-day lag elsewhere), decomposition of each node's change into calendar effect and aligned (real) change, drill on the largest real decline |

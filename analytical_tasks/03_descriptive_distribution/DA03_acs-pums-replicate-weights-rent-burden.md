@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Descriptive & Distribution Analysis |
+| Mirrors | Survey-weighted metrics with design-based uncertainty (user research panels, employee surveys, market-sizing surveys) used for eligibility or targeting |
 | Domain | Housing policy / grant eligibility / survey statistics |
 | Task shape | 10 · Scorecard against thresholds (PUMA × test → designated / not; city go/no-go) |
 | Core method | Weighted proportions from ACS PUMS household records, successive-difference replicate weights (80) for standard errors, 90% intervals compared with a threshold |

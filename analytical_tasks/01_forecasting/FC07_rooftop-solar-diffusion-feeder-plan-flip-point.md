@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Category | Forecasting & Predictive Modelling |
+| Mirrors | Adoption forecasting with saturating diffusion (new device or feature adoption at consumer-tech companies, enterprise seat growth), where compound-growth extrapolation overshoots |
 | Domain | Distribution utilities / DER integration / capital planning |
 | Task shape | 13 · Scenarios and the flip point (A-or-B decision across a 2 × 3 scenario grid) |
 | Core method | Bass diffusion fitted by the discrete OLS form (n_t on N_{t−1}, N_{t−1}²), recursive forecasting to 2030, scenario grid over market potential and innovation rate, flip-point search |
