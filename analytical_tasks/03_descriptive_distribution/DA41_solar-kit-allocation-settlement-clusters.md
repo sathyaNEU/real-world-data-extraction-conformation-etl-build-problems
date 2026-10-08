@@ -5,19 +5,19 @@
 | Objective | Descriptive & Distribution Analysis |
 | Domain | Economics · energy-access programme planning |
 | Mirrors | Allocating capped resources on machine-detected counts when only part of the detections convert (map-detected businesses targeted by a sales team, model-flagged leads routed to reps, fraud alerts sent to a fixed pool of investigators), where conversion splits on a structural property no column carries |
-| Decision shape | An allocation under a cap: 40,000 kits divided across eight districts in proportion to eligible unelectrified households |
+| Decision shape | An allocation under a cap: 40,000 kits divided across eight districts in proportion to the eligible households each can enrol |
 | Committed call | Kits per district, and the households the allocation electrifies, to the nearest 100 |
 | Gap · Pattern | Gap 2 (population) over Gap 3 (objective) · Pattern E (conditioned yield, reached through a spatial construction), with a mixed segment split through a join at rung 2 |
 | Gate G mechanism | binding_constraint, with method_or_model_selection |
 | Measured traps engaged | #13 validates on one population, applies to another · #6 treats a mixed segment all one way · #7 uses the ready-made measure |
 | Calibration form | Retry or revision log: the field verification log of last year's pilot, every visit and revisit to every detected footprint in three districts with its outcome |
-| Driving force | A detected footprint becomes an enrolled household only inside a settlement cluster, five or more footprints within 50 metres; the pilot's retry log shows 82% of clustered footprints enrolled after revisits and 0 of 4,120 isolated ones. Cluster membership is a spatial self-join, not a column. The three pastoral districts hold most of the isolated footprints (kraals, stores, pens), so every count-based allocation sends them kits that cannot be placed. |
+| Driving force | A detected footprint becomes an enrolled household only inside a settlement cluster, five or more footprints within 50 metres; the pilot's retry log shows 82% of clustered footprints enrolled after revisits and 0 of 4,120 isolated ones. Cluster membership is a spatial self-join, not a column. The three pastoral districts hold most of the isolated footprints (kraals, stores, pens and lone homesteads), so every count-based allocation sends them kits that cannot be placed. |
 
 ## 1. Situation
 
 A rural electrification programme distributes 40,000 solar home kits this year across eight districts. Its manual allocates kits in
-proportion to each district's eligible unelectrified households, counted from a machine-learning building-footprint layer outside a 2 km
-buffer around the grid. Last year's pilot in three districts sent enumerators to every detected footprint. The pack holds the footprint
+proportion to the eligible unelectrified households each district can enrol, counted from a machine-learning building-footprint layer
+outside a 2 km buffer around the grid. Last year's pilot in three districts sent enumerators to every detected footprint. The pack holds the footprint
 layer with confidence scores, the provider's precision and recall tables, the grid buffer, the utility's three-year extension plan, the
 pilot's verification log, and the manual.
 
@@ -66,8 +66,8 @@ land in households: 40,000 against 33,850.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The manual counts "eligible unelectrified households" from the footprint layer. The provider's notes describe
-   building detection, not dwelling status. No document mentions settlements or isolation.
+1. **Written nowhere.** The manual counts the eligible households a district can enrol from the footprint layer. The provider's notes
+   describe building detection, not dwelling status. No document mentions settlements or isolation.
 2. **Pattern E, absolute in the retry log.** Clustered footprints enrolled at 82% (80% to 84% in every pilot district) and isolated ones at
    0 of 4,120 after up to three visits, with nothing in between. The pooled pilot rate of 74% fits no footprint. Clustering is a
    construction: a spatial self-join of footprints within 50 metres and a count per neighbourhood.
@@ -92,8 +92,9 @@ land in households: 40,000 against 33,850.
 
 ## 7. Pins, voices and the licensed wrong basis
 
-* **Filed pins.** The manual: 40,000 kits allocated in proportion to eligible unelectrified households, counted from the footprint layer
-  outside the 2 km grid buffer, with households in the utility's three-year extension corridors ineligible. Allocations round by largest
+* **Filed pins.** The manual: 40,000 kits allocated in proportion to the eligible unelectrified households each district can enrol,
+  counted from the footprint layer outside the 2 km grid buffer, with households in the utility's three-year extension corridors
+  ineligible. Allocations round by largest
   remainder.
 * **Empirical pins.** The settlement condition and its radius, from the retry log.
 * **Voices.** The GIS lead: "Precision-adjusted footprints are the best household count we will ever get." The pastoral districts' liaison:

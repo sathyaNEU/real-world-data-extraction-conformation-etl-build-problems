@@ -57,12 +57,14 @@ options. One division of the ten clears every stage.
 
 * **Shape.** The graded object is the division; each rung names a different one. Under the certified load the options issue 6,240,
   6,240, 7,020 and 6,760 permits a year, and only the committed division issues all 7,800 filed.
-* **Partial correction priced (L3).** A solver who corrects plan review's load but keeps corrections at its completions (100 a week)
-  finds three divisions passing and cannot single one out. One who searches the divisions on filings finds 119 passing, (d) among them,
-  and keeps the director's option.
-* **Grid.** Load (filings, receipt-built) × plan space (options, all divisions) gives 4 cells: (d), 119 divisions, (c), and the answer.
-  The answer is the only cell with one admissible division. The nearest wrong division, (c), differs by one position and issues 10% fewer
-  permits, and reaching it costs keeping the plan to the options.
+* **Partial correction priced (L3).** No half-applied construction reaches the answer's division. A solver who corrects plan review's
+  load but keeps corrections at its completions (100 a week) finds three divisions passing, and the policy's cheapest-plan rule picks
+  intake +1, plan review +6, corrections +1, issuance +2 ($976k), which runs the corrections desk at 96% under the true load. One who
+  searches the divisions on filings finds 119 passing, and the same rule picks intake +1, corrections +1, issuance +8 ($694k), which
+  leaves plan review at 115%.
+* **Grid.** Load (filings, receipt-built) × plan space (options, all divisions) gives 4 cells: (d), the cheapest of 119 divisions (issuance
+  +8), (c), and the answer. The answer is the only cell with one admissible division. The nearest wrong division, (c), differs by one
+  position and issues 10% fewer permits, and reaching it costs keeping the plan to the options.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -95,9 +97,9 @@ options. One division of the ten clears every stage.
 ## 7. Pins, voices and the licensed wrong basis
 
 * **Filed pins.** The operations policy: no stage may run above 95% of its capacity; the new positions' annual cost may not exceed $1.0M;
-  positions are assigned to stages in whole positions; funded positions are not held vacant. The workload standard: weekly capacity per
-  person is 45 filings at intake, 9 reviews in plan review, 25 resubmissions on the corrections desk and 60 permits at issuance. The
-  filing forecast: 150 a week next year at this year's mix.
+  positions are assigned to stages in whole positions; funded positions are not held vacant; where more than one plan meets every condition,
+  the centre adopts the cheapest. The workload standard: weekly capacity per person is 45 filings at intake, 9 reviews in plan review, 25
+  resubmissions on the corrections desk and 60 permits at issuance. The filing forecast: 150 a week next year at this year's mix.
 * **Empirical pins.** Reviews and resubmissions per filing, from the receipts.
 * **Voices.** The director: "Plan review has the longest wait, so that's where the ten go." The permit centre manager: "Intake is the
   front door. If intake flows, everything flows."
@@ -148,8 +150,9 @@ figure, its cost and plan review's utilisation + 5 named chart parts + 3 files �
 ## 12. World-building constraints
 
 * Roster today: intake 3, plan review 26, corrections 4, issuance 2. Filings 150 a week; 1.80 reviews and 0.80 resubmissions per filing.
-* Under filings: only option (d) passes; 119 of 286 divisions pass. Under the receipt-built load: no option passes; exactly one division
-  passes (+1, +6, +2, +1) at 83%, 94%, 80% and 83% utilisation.
+* Under filings: only option (d) passes; 119 of 286 divisions pass, the cheapest +1, 0, +1, +8 at $694k. With corrections at its completions
+  and plan review corrected, three pass, the cheapest +1, +6, +1, +2 at $976k (corrections at 96% under the true load). Under the
+  receipt-built load: no option passes; exactly one division passes (+1, +6, +2, +1) at 83%, 94%, 80% and 83% utilisation.
 * True permits a year: (a) 6,240, (b) 6,240, (c) 7,020, (d) 6,760, committed 7,800.
 * Additions and fit-outs match on every intake-visible column and on first-review returns.
 * Inspection and refund records never touch receipts, roster or filings.

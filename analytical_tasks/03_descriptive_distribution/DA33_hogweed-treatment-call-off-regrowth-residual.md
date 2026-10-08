@@ -11,7 +11,7 @@
 | Gate G mechanism | forecasting, with binding_constraint |
 | Measured traps engaged | #10 notes a binding limit as a risk · #5 takes the population a flag suggests · #4 never tests its reading against the control |
 | Calibration form | Counterparty acknowledgement file: the contractor's acknowledgement of every work order over four seasons, with completion and the infestation stage found at first visit |
-| Driving force | A site treated while flowering regrows from its seed bank in the second season after, without exception. Those sites are closed in the agency's register, and nobody reports regrowth before it spreads. Next season's regrowth sites therefore sit in neither the report stream nor the open queue. Only the contractor's acknowledgements of last season's flowering first treatments recover them, and they fall in districts where crew capacity is spare. |
+| Driving force | A site treated while flowering regrows from its seed bank in the season after, without exception. Those sites are closed in the agency's register, and nobody reports regrowth before it spreads. Next season's regrowth sites therefore sit in neither the report stream nor the open queue. Only the contractor's acknowledgements of last season's flowering first treatments recover them, and they fall in districts where crew capacity is spare. |
 
 ## 1. Situation
 
@@ -28,8 +28,10 @@ contractor's acknowledgement file, the framework's registered crew capacity by d
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the manager's view and the committee's basis. The effort-corrected projection and the district caps still
   give a clean 2,050 with nothing missing from any reconciliation.
-* **Instrument repair.** Give the app perfect coverage and the register perfect statuses: next season's regrowth has not emerged, so no
-  instrument of the past can record it.
+* **Instrument repair.** Suspect: the app's report stream, which misses infestations observers do not revisit. Repaired so that every
+  infestation is reported in the season it appears, rungs 0 and 1 project 2,370 and rung 2 caps at 2,110: the stream would then carry
+  earlier seasons' regrowth, about 60 a season, not last season's 590 flowering first treatments. The register's statuses are correct
+  work-order states. The answer stays 2,640, and carrying those treatments into next season is still needed.
 * **Lens swap.** The naive figure is sites already reported or projected from reports; the answer adds sites that will exist in the
   coming season from treatments already done, a different population at a different moment.
 
@@ -37,9 +39,9 @@ contractor's acknowledgement file, the framework's registered crew capacity by d
 
 A strong solver sees that raw reports track app adoption, projects new sites from the share of complete checklists recording the species,
 carries forward the open sites, and caps each district at its registered crew capacity, deferring the excess as the plan requires. It
-reaches 2,050, and every number ties. But a hogweed stand that flowered before treatment leaves seed that germinates in the second summer.
-The contractor's acknowledgements show every flowering first treatment in a closed season followed by a regrowth treatment two seasons
-later, 1,410 of 1,410, and no vegetative first treatment ever regrowing. The register closes a site once it is treated, and observers do
+reaches 2,050, and every number ties. But a hogweed stand that flowered before treatment leaves seed that germinates the next summer.
+The contractor's acknowledgements show every flowering first treatment in a closed season followed by a regrowth treatment the season
+after, 180 of 180, and no vegetative first treatment ever regrowing. The register closes a site once it is treated, and observers do
 not revisit fenced sites, so regrowth is reported a season late, after it spreads. Last season's 590 flowering first treatments are next
 season's regrowth. They sit in districts where crews have room, and the call-off is 2,640.
 
@@ -49,7 +51,7 @@ season's regrowth. They sit in districts where crews have room, and the call-off
 |---|---|---|---|---|
 | 0 | Open sites plus new sites projected from the trend in raw reports | 4,860, +84% | The reports are the programme's early warning, and they tripled | The app's participation series: complete checklists rose 3.4× while the share recording hogweed rose 1.2× |
 | 1 | New sites projected from the reporting rate per complete checklist, plus open sites | 2,310, −12.5% | Observer growth removed; the textbook effort correction | The framework register: three districts' need exceeds their registered crew capacity |
-| 2 | Each district capped at its registered capacity, the excess carried to the following season as the plan requires | 2,050, −22.3% | Feasible, plan-compliant, every district reconciled | The acknowledgement file: every flowering first treatment regrows in the second season |
+| 2 | Each district capped at its registered capacity, the excess carried to the following season as the plan requires | 2,050, −22.3% | Feasible, plan-compliant, every district reconciled | The acknowledgement file: every flowering first treatment regrows the season after |
 | 3 | **Decisive:** add last season's flowering first treatments as next season's regrowth, then cap by district | **2,640** | — | — |
 
 * **Figure shape.** Rungs 0 to 2 walk the figure down (−52%, then −11%), and the decisive move reverses them (+29%).
@@ -62,14 +64,14 @@ season's regrowth. They sit in districts where crews have room, and the call-off
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The fact sheet says seed "can persist in soil". The plan schedules follow-ups "when regrowth is reported". No
-   document links a flowering stage to a second-season return.
-2. **Pattern B, absolute in the counterparty's record.** Regrowth in the second season reproduces 1,410 of 1,410 flowering first treatments
-   and 0 of 2,260 vegetative ones in closed seasons. Rival intervals (next season, any later season) and rival stages (all first
-   treatments) each miss at least 840 cases. It is a residual, not a menu: the contractor's completions joined against the register and
+   document links a flowering stage to a return the season after.
+2. **Pattern B, absolute in the counterparty's record.** Regrowth in the following season reproduces 180 of 180 flowering first treatments
+   and 0 of 3,490 vegetative ones in closed seasons. Rival intervals (two seasons on, any later season) and rival stages (all first
+   treatments) each miss at least 120 cases. It is a residual, not a menu: the contractor's completions joined against the register and
    the report stream, with nothing labelling next season's regrowth.
 3. **No arithmetic symptom.** Register counts tie to acknowledgements, reports tie to checklists, and every district reconciles with or
    without the regrowth.
-4. **Not a row predicate.** It needs the season and stage of each site's first treatment from another organisation's file, a two-season
+4. **Not a row predicate.** It needs the season and stage of each site's first treatment from another organisation's file, a one-season
    offset recovered from closed cases, and an anti-join against the register and reports.
 5. **The enumeration is arithmetic.** No column marks a site as due to regrow.
 6. **No cutover date.** Regrowth runs at the same offset every season and steps no series.
@@ -139,7 +141,8 @@ count and the deferred count + 5 named chart parts + 3 files ≈ 69 criteria.
 
 * Need components: 1,180 open, 1,130 projected new (3,680 on raw trend), 590 regrowth. Three districts defer 260 in total. Total capacity
   3,000.
-* Closed seasons: 1,410 flowering first treatments all regrow in the second season; 2,260 vegetative never do.
+* Closed seasons: 180 flowering first treatments, all regrowing in the following season; 3,490 vegetative never do. Last season's 590
+  flowering first treatments are more than eight times any earlier season's.
 * Rung figures 4,860 / 2,310 / 2,050 / 2,640; other cells 3,330 and 2,900. Ashcombe and Brenley match on every report and register
   column.
 * Device merges and order suffixes never touch a flowering first treatment or a capacity line.
