@@ -30,8 +30,11 @@ the county's offload report by hospital and the destination rule. The deployment
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the operations chief's view and every voice. Replaying last year with each hospital's hourly mean time at
   hospital is still the natural build, it still reproduces every closed quarter within a unit, and it still lands at 28.
-* **Instrument repair.** Imagine every ambulance's minute at every hospital recorded perfectly. The past would be exact, but Riverside has
-  never received seven ambulances an hour all evening; how its desk behaves then must still be built from the pace its past queues reveal.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the status table
+  records every attachment (a unit re-assigned mid-call stays attached to both incidents, as the guide documents), the claims every
+  transfer of care, the routing matrix every drive time. The deepest repair available, a status table with one row per unit and minute,
+  makes rung 0 return 31 and rung 1 28 (rung 2's figure), neither 40, and the desk queue is still needed, because Riverside has never
+  received seven ambulances an hour.
 * **Lens swap.** The naive read and the answer describe different moments of the same desk: Riverside below its pace, where time at
   hospital is a stable 14 minutes, against Riverside above it, where time at hospital grows with every arrival since the afternoon.
 

@@ -28,8 +28,9 @@ director considers the sanctions exposure the obvious choice.
   The difficulty is computing the aggregate the charter actually defines.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the audit committee's basis. The charter's weights computed in one pass still name C2.
-* **Instrument repair.** Resolve every past question instantly and record every forecast perfectly. The weights are still defined against
-  an aggregate that depends on them, so the one-pass reading still misses the fixed point.
+* **Instrument repair.** No file the ladder uses is suspect: forecasts, resolved questions, acknowledgements and the published weights are
+  complete. Recording every forecast perfectly leaves rung 0 on C1, rung 1 on C3 and rung 2 on C2, because the weights are defined against
+  an aggregate that depends on them; the fixed-point solve is still needed.
 * **Lens swap.** The naive read and the answer differ in population: an aggregate in which 19 analysts carry weight, against the one the
   charter defines, in which the weight concentrates on the few who beat it.
 

@@ -30,8 +30,9 @@ catchment populations.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the draft's figure and every voice. Union coverage on the station records, with uptime from the session log,
   still reproduces every closed report year and still lands 59% high.
-* **Instrument repair.** Make every station record and uptime figure exact. Records stay one per network, and the plaza pairs are still
-  two records making one site.
+* **Instrument repair.** The suspect field is the operators' reported uptime, which counts only the outages operators log and reads 100% for
+  41 of 47 stations. Replace it with uptime rebuilt from the session-attempt log: rung 0 still returns 412,000, rung 1 collapses onto rung 2
+  at 170,000, and sites still have to be built from records, which the station file correctly keeps one per network.
 * **Lens swap.** The naive read is records; the answer is sites, a different entity that only a spatial grouping of records forms.
 
 ## 3. The driving force

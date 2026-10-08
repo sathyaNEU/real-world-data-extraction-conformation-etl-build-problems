@@ -29,8 +29,9 @@ engineer believes the worst intersections will keep producing crashes at their c
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the budget request's figure and the engineer's belief. Empirical-Bayes expectations and the build schedule
   still produce a confident 46.4, and nothing in the pack connects the retiming review to the grant.
-* **Instrument repair.** Geocode every crash perfectly and observe every site for a decade. The expectations sharpen and the review
-  still retimes the same corridors next January.
+* **Instrument repair.** No file is suspect: the crash file locates every reported injury crash, the measure the grant counts; the revision
+  log holds all 120 of the review's past selections; the crew register and schedule are complete. Rung 0 returns 150.0, rung 1 93.0 and rung
+  2 46.4, and the review still has to enter the baseline.
 * **Lens swap.** The naive read compares the redesign against an untouched intersection. The answer compares it against the
   intersection as the city's own standing process will leave it in 2026, a different counterfactual population.
 

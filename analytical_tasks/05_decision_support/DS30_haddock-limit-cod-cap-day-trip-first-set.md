@@ -28,8 +28,10 @@ permits to 22 small-trawl vessels. The chair believes five years inside the cod 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's view and the industry panel's basis. Per-day rates by sector, carried onto next year's planned
   days, still set the limit at 45,800 t.
-* **Instrument repair.** Put an observer on every trip. The per-day rate becomes exact for the six-day book and is still the wrong rate for
-  day trips, which have not yet been fished.
+* **Instrument repair.** Suspect files: the fish tickets, revised after first submission; landings, which leave out discards; the vessel
+  roster's sector field, stale after mid-year enrolments; and the observer programme's sample of trips. Repaired (final tickets, an observer
+  recording every discard on every trip, sectors as enrolled on each trip date), rungs 0 to 2 land between 45,800 and 46,500 t. Day trips
+  have not been fished, so the first-set build is still needed and the answer stays 40,300 t.
 * **Lens swap.** The naive read and the answer are different books at different moments: six-day trips in closed years against day trips
   next year.
 

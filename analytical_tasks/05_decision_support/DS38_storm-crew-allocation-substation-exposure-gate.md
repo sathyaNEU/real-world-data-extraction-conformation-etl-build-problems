@@ -29,8 +29,9 @@ forecast cone.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete operations' habit and the modeller's view. An exposure built on each facility's point from the error archive
   still ranks the coastal facilities first and still misses eight published exposures.
-* **Instrument repair.** Give the company a perfect track forecast. The storm's path would be known, but whether a facility stays up would
-  still depend on whether its substation is in the wind field, which no measurement at the facility shows.
+* **Instrument repair.** No file the ladder uses is suspect: the error archive, the advisories, the registers and the storm log are
+  complete, and the log's exposures are published figures. A perfect track forecast would fix the storm's path but not which facilities lose
+  supply through their substations, which the register join supplies; rungs 0 to 2 fund the same fives under any repair.
 * **Lens swap.** The naive read and the answer differ in population: the facility's own site, against the facility together with the
   substation it cannot run without, reached through a register no forecast product mentions.
 

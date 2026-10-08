@@ -29,8 +29,10 @@ lead is confident last December is a safe guide.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CRM lead's view. Quota less forecast transactional mail, divided by the seasonal retry rate, still commits
   37.8M, and every closed month reconciles.
-* **Instrument repair.** Log every attempt perfectly. Each closed month still reproduces under its own constant rate, and the two-hour batch
-  is still in the future.
+* **Instrument repair.** The suspect file is the email log, which carries no message type, so order and account mail are told apart
+  only by sending subdomain. With a type field, rung 1 reads the split directly and still lands on 39.4M, and rungs 0 and 2 stay at 43.9M
+  and 37.8M. The attempts, deferrals and retries are otherwise complete, no field gives a provider's ceiling, and the hourly fixed point is
+  still needed for 29.7M.
 * **Lens swap.** The naive figure treats retries as a fixed share of first attempts. The answer is built from the hours in which a
   provider's queue overflows, a population of deferred attempts that exists only under next month's schedule.
 

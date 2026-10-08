@@ -24,22 +24,24 @@ drains. The CISO wants the bulk of the tickets on payments, where the worst expo
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every reported number is correct and no stakeholder read is overturned. That covers the scanner results, the exploitability
-  scores, the CMDB, the office's close-out, the capacity register's static concurrency field and the provider's acknowledgements. The CISO
+  scores, the CMDB, the office's close-out, the drain tool's parallelism setting and the provider's acknowledgements. The CISO
   is right that payments holds the most exploitable exposure. The difficulty is that a ticket counts against the cap but completes only
   if its hosts can be drained inside a window, and nobody counts that.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CISO's view and the close-out. Ranking package updates by exploitable exposure still sends 88 tickets to
   payments, and nothing in the ticket data fails.
-* **Instrument repair.** Give the office a perfect scanner and a CMDB with no retired records. Every exposure count is then exact, and
-  payments still has 96 reboots next month. The limit is a property of the windows, not of any measurement.
+* **Instrument repair.** The suspect file is the CMDB, which still lists retired hosts beside their re-imaged successors. Resolved, rung 0
+  lands on rung 1's 7,630 (+89%), and rungs 1 and 2 stay at 7,630 and 6,690. The scanner's exploit flag and the drain tool's parallelism
+  setting are correct records of other attributes (a public exploit, a tool limit), and no file records drains per window, so rung 2's
+  6,690 stands and the answer still needs the drains built from the register, the forecast and the calendar.
 * **Lens swap.** The naive figure is exposure on the tickets cut. The answer is exposure on the tickets that can complete inside next
   month's windows: a different set of tickets in a forward month, not the same plan read another way.
 
 ## 3. The driving force
 
 A strong solver deduplicates the host records, recovers the exploitability rule the close-out pins and fills the cap greedily with the
-richest package updates. Each step is competent, and payments and checkout take 198 tickets. The capacity register's static concurrency
-field (48 and 60 hosts per window) says those tickets fit, and so does any headroom read at average load. Neither is the rule the provider
+richest package updates. Each step is competent, and payments and checkout take 198 tickets. The drain tool's parallelism setting (48 and
+60 hosts at once, a tool limit) says those tickets fit, and so does any headroom read at average load. Neither is the rule the provider
 applies. The SRE standard keeps every estate one failure domain (a rack of 40 hosts) above the forecast peak during maintenance. Payments'
 windows fall on its evening peak, which leaves 44 hosts of headroom and so four concurrent drains. At eight drain cycles per window and
 three windows, that is 96 reboots. Checkout gets 120. With 2.4 and 2.0 exploitable exposures per reboot, the two estates can take out 470
@@ -52,12 +54,12 @@ moves 187 tickets to search, media, tools and the data pipeline.
 |---|---|---|---|---|
 | 0 | Fill 300 tickets by exploitable host exposure, using the scanner's exploit-available flag and raw CMDB host records | 8,250 (+104%); payments 66, checkout 100 | The office's own data, ranked on its own objective | The re-image link table: media and the data pipeline still list retired records for half their fleets |
 | 1 | Hygiene: retired records resolved through the re-image links | 7,630 (+89%); payments 81, checkout 120 | Clean hosts, every count reconciles to the capacity register's host totals | The close-out's per-estate and per-month figures: the flag matches the quarter total and only 2 of the 6 estate figures |
-| 2 | Exploitability as the close-out pins it, EPSS of at least 0.10 on the day the ticket is cut (#12) | 6,690 (+65%); payments 88, checkout 110 | Reproduces all nine close-out figures, and the static concurrency field says the plan fits | The acknowledgements: only per-window forecast-peak headroom reproduces all 412 requests, and it gives payments 96 reboots next month |
+| 2 | Exploitability as the close-out pins it, EPSS of at least 0.10 on the day the ticket is cut (#12) | 6,690 (+65%); payments 88, checkout 110 | Reproduces all nine close-out figures, and the drain tool's parallelism setting says the plan fits | The acknowledgements: only per-window forecast-peak headroom reproduces all 412 requests, and it gives payments 96 reboots next month |
 | 3 | **Decisive:** drains per window from the capacity register, the hourly forecast and the window calendar; fill each estate's reboots, then re-spend the cap | **4,050; payments 5, checkout 6, search 71, media 102, tools 31, data pipeline 85** | — | — |
 
 * **Figure shape.** Every correction walks the figure down, by 7.5%, 12.3% and then 39.5%. The answer is bracketed. Every under-corrected
   cell lands at least 13.5% above. The half-insight below lands 49.8% low on rung 2's split.
-* **Partial correction priced (L3).** A solver who checks the limit against the static field or against headroom at average load finds
+* **Partial correction priced (L3).** A solver who checks the limit against the tool's parallelism setting or against headroom at average load finds
   slack and keeps rung 2's split and figure unchanged (#10). A solver who applies the true limit as a haircut and does not re-spend the
   freed tickets keeps all six of rung 2's ticket counts and reports 2,030 (−49.8%).
 * **Grid.** Exploitability (flag, cut-day EPSS) × host records (raw, resolved) × limit (none or a slack reading, per-window
@@ -69,29 +71,29 @@ moves 187 tickets to search, media, tools and the data pipeline.
 ## 5. Why the decisive rung survives the opponent
 
 1. **Written nowhere.** The SRE standard states the N+1-at-peak principle for maintenance in general. No document converts it into drains
-   per window or links it to the ticket cap, and the capacity register's only concurrency figure is the static field, which is slack.
+   per window or links it to the ticket cap, and the only concurrency figure in the pack is the drain tool's parallelism setting, which is slack.
 2. **No sweepable corpus nominates it.** The acknowledgements pin the rule as a construction. Per-window forecast-peak headroom reproduces
-   412 of 412. The best rival, the static field, reproduces 351, and average-load headroom 318. Every rival miss accepts what the provider
+   412 of 412. The best rival, the tool's parallelism setting, reproduces 351, and average-load headroom 318. Every rival miss accepts what the provider
    declined. *In every month of the file the office's tickets to payments and checkout stayed under 14, because tickets were spread by CVSS
    band, so no office ticket was ever declined.* The file's 31 declines all sit on other teams' requests.
-3. **No arithmetic symptom.** Tickets sum to 300, host records reconcile to the register, exposures tie to the scanner, and the static
-   field reports slack.
+3. **No arithmetic symptom.** Tickets sum to 300, host records reconcile to the register, exposures tie to the scanner, and the tool's
+   parallelism setting reports slack.
 4. **Not a row predicate.** Drains per window need the window's hours joined to the hourly forecast, the peak taken over those hours, the
    rack reserve subtracted and the result multiplied by drain cycles. A per-estate allocation is then re-optimised against the shared cap.
 5. **The enumeration is arithmetic.** Which tickets complete is computed from reboots per estate. No column flags a ticket as unabsorbable.
 6. **No cutover date.** Payments' evening peak recurs every day, and the limit has always existed. It binds now because the allocation
    rule changed, and no outcome series steps.
-7. **Survives deletion.** No wrong number exists to delete, and the static field still reports slack.
+7. **Survives deletion.** No wrong number exists to delete, and the tool's parallelism setting still reports slack.
 
 ## 6. The calibration corpus
 
 * **Form.** The provider's acknowledgements: 412 change requests over six months for the two colocated estates. Each carries the hosts
   requested, the window, the hosts accepted and any deferral or decline reason.
 * **What it pins.** A request is accepted up to the drains that keep the estate one rack above the forecast peak of the window's hours,
-  counting drains already accepted in the window. 412 of 412 under that rule, against 351, 318 and 296 for the static field, average-load
+  counting drains already accepted in the window. 412 of 412 under that rule, against 351, 318 and 296 for the tool's setting, average-load
   headroom and a flat 10% of hosts.
 * **What it is blind to.** Payments flooded with office tickets (above): it never happened.
-* **Twin pair.** Two payments requests are identical on every column: 8 hosts, a Tuesday 20:00–24:00 window, the same static field, the same
+* **Twin pair.** Two payments requests are identical on every column: 8 hosts, a Tuesday 20:00–24:00 window, the same tool setting, the same
   month and the same submitting team. The provider accepted 8 of one and 4 of the other, 2× apart. The second window held the month-end
   settlement peak (91% forecast utilisation against 84%), and only per-window forecast headroom separates them.
 * **Every rule exercised.** Thirty-eight requests landed in windows that already held accepted drains, which tests the "together with" clause.
@@ -152,7 +154,7 @@ its figure + 5 named chart parts + 3 files ≈ 60 criteria.
 ## 12. World-building constraints
 
 * Payments: 1,400 hosts, evening-peak windows leaving 44 hosts of headroom, rack of 40, three 4-hour windows, so 96 reboots. Checkout:
-  four 3-hour windows at five concurrent drains, so 120 reboots. Exposures per reboot are 2.4 and 2.0. The static field is 48 and 60 per window,
+  four 3-hour windows at five concurrent drains, so 120 reboots. Exposures per reboot are 2.4 and 2.0. The tool's parallelism setting is 48 and 60,
   and average-load headroom exceeds 700 hosts.
 * Rung figures 8,250 / 7,630 / 6,690 / 4,050. The haircut cell is 2,030 on rung 2's split. Every cell of the 12-cell grid sits at least
   13.4% from the answer.

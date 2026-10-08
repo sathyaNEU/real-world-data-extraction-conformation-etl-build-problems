@@ -28,8 +28,10 @@ wants any storage case made on paired crop years, net of interest. The board nam
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the merchandiser's view, the lender's request and the annual report. The contract margin net of carrying cost,
   adjusted by each site's intake moisture, still names C.
-* **Instrument repair.** Put a moisture probe in every bin and log it daily. The probes would read what the blend already implies; the
-  answer still turns on taking the worst bin rather than the site. The difficulty is the unit, not the measurement.
+* **Instrument repair.** No file the ladder uses is suspect: every ticket carries its load's moisture at the bin leg, the fill log every
+  bin's interval, and the storage log every site-season's outcome. Bin moisture is an entity no row claims to record, built by the interval
+  join and the blend, so rungs 0 to 2 name A, B and C under any repair, and the rule that a site is only as good as its worst bin is still
+  the decisive step.
 * **Lens swap.** The naive read scores each site's intake as one pool. The answer scores the bins inside it: a different population, and
   a minimum rather than a mean.
 

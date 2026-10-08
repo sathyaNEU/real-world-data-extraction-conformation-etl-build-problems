@@ -29,8 +29,10 @@ log, the segment-group capacity plan and the planning standard. The forecast goe
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete network planning's view and every voice. Carrying each route's load factor is still the natural build, and the
   standard's floor still gives a defensible lower figure; neither touches the change log.
-* **Instrument repair.** Imagine a reservation system recording every traveller who looked and walked away. Spill would be measured
-  better, but the response to larger aircraft also includes travel the bigger schedule creates, which only a past upgauge shows.
+* **Instrument repair.** Clean-data test. One field is suspect: recorded denials count only travellers who tried to book a sold-out
+  flight, narrower than the demand turned away. Replaced by a perfect spill record (1.25 times denials on every route), rung 0 still
+  returns 600,000, rung 1 540,000 and rung 2 87,500, none of them 254,000, and the response measured on past upgauges is still needed,
+  because it includes travel the bigger schedule creates, which no record of turned-away demand holds.
 * **Lens swap.** The naive read and the answer are different moments: these routes' carried traffic at last summer's gauge, against their
   traffic at the new gauge, which only the nine past before-and-after pairs describe.
 
@@ -148,6 +150,7 @@ named chart parts + 3 files ≈ 62 criteria.
 * Nine routes, 1.24M summer seats last summer at 98–100% load factor; 620,000 seats added; recorded denials total 70,000.
 * Additional passengers by rung: 600,000 / 540,000 / 70,000 / 254,000; denials × 1.5 gives 105,000; denials × 2.3 gives 161,000.
 * Nine past upgauges: first-summer response 40.8–41.2% of added seats, 1.6–3.1 times recorded denials.
-* This summer's routes recorded denials at 11% of added seats, against 13–26% in the past instances.
+* This summer's routes recorded denials at 11% of added seats, against 13–26% in the past instances. A perfect spill record would run
+  1.25 times recorded denials on every route, past and present, so the floor on it is 87,500.
 * The twin routes are identical on every pre-upgauge close-out column.
 * Gate returns and through-flight segments touch no seat, passenger or denial count used in the forecast.

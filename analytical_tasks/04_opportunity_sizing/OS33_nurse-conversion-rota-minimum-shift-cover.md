@@ -28,8 +28,10 @@ Ashgrove, whose agency bill is the group's worst.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the finance director's view and every voice. Agency hours by home still rank the night-heavy urban homes first,
   and no document says a post must find work in every shift type.
-* **Instrument repair.** Make every timesheet perfect. The hours are already exact. A post is still a fixed rota, and the agency hours
-  still sit mostly at night.
+* **Instrument repair.** Suspect file: the agency invoices, whose billed hours include call-off fees and orientation. Repaired to hours
+  worked, rung 0 gives Ashgrove 16, Bellmont 8 and Carrow 6 ($2.51M), and rung 1 becomes rung 2 (Carrow 13, $2.43M). Timesheets and the
+  position-control register are complete. A post is still a fixed rota and the agency hours still sit mostly at night, so the rota minimum
+  is still needed for $2.04M.
 * **Lens swap.** The answer counts different hours, those in each home's scarcest shift type, which are a different population from the
   agency hours on the invoice.
 

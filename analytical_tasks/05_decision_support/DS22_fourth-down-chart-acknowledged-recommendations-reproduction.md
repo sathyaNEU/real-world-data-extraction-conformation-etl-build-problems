@@ -30,8 +30,9 @@ offensive coordinator wants the chart to "trust the numbers, they say go".
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the coordinator's view and the observed conversion table. A situational conversion model with a standard win
   probability model still produces a confident chart with 33 go cells and reproduces 352 of 412 displayed values.
-* **Instrument repair.** Give the club perfect tracking data on every snap. Coaches still chose when to go, strong offences still made most
-  attempts, and the log still reproduces only under the strength and spread construction.
+* **Instrument repair.** No file the ladder uses is suspect: the play-by-play holds every snap and no-play row, and the official
+  statistics, the ratings, the lines and the acknowledgement log are complete and exact. Perfect tracking on every snap moves no rung (46,
+  38 and 33 go cells), coaches still chose when to go, and the ratings-and-spread construction is still needed for 24.
 * **Lens swap.** The naive chart uses the attempts teams chose to make. The answer uses conversion for an average offence against an average
   defence, a different population of attempts from the one the log records.
 

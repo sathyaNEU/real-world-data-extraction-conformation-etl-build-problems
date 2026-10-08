@@ -30,8 +30,11 @@ Fridays lighter than mid-week mornings.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and every voice. Device entries still aggregate most naturally to the complex, and the complex
   count still misses the platforms that carry the crowd.
-* **Instrument repair.** Imagine platform sensors that counted every person. They would measure past mornings; the spring count is still
-  a forecast built on entries, arrays and transfers, and the hand counts already tell the solver what such sensors would have shown.
+* **Instrument repair.** Clean-data test. One file is suspect: the station register still flags Ferrier Street's two downtown platforms in
+  service, superseded by the service-change register's closure for the whole pick. Repaired, with Ferrier Street's riders moved to Hollins
+  Road and Marsh Gate, rung 0 returns 34 and rung 1 returns 47 (rung 2's figure), neither 58. Fare-device entries, the engineering map,
+  the transfer census and the hand counts are complete for what they claim, entries and links rather than platform loads, which no file
+  claims to hold, so the platform build is still needed.
 * **Lens swap.** The naive read and the answer count different populations: complexes whose averaged load crosses the line, against
   platforms whose own load does, which include platforms at complexes that never cross it.
 
@@ -156,6 +159,7 @@ and the four platforms at under-threshold complexes + 5 named chart parts + 3 fi
   without transfers 50, departure share 51, full build over the flagged population 49, full build on pooled weekdays 46.
 * 23 platforms need conductors on some weekday mornings; four sit at complexes whose day-typed average stays under 85%.
 * Hand counts: 60 platform-mornings, 44 at single-platform stations; reproduction 60 / 46 / 38 / 29 as above.
+* With the station register repaired and Ferrier Street's riders moved, rung 0 gives 34 and rung 1 gives 47.
 * Ferrier Street's two downtown platforms close from 1 March to 30 June; the station register's flag still reads in service. They sit
   below the threshold even when open, and their diverted riders push three platforms at Hollins Road and Marsh Gate over it on Tuesday to
   Thursday mornings.

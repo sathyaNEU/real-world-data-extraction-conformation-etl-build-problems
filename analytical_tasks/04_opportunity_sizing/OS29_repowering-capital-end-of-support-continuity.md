@@ -29,8 +29,10 @@ own repower energy model has met its forecast on all five repowers completed so 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the origination lead's view and every voice. The dated notice and the policy's no-repower path still lead any
   careful analyst to stop the K-77s in 2027.
-* **Instrument repair.** Make every record perfect. The notice is already exact and the ledger already complete. What the end of support
-  means for operation has to be inferred from another fleet's history, and no better instrument of the forward projects shows it.
+* **Instrument repair.** No file is suspect. The notice, the ledger, the consent and interconnection registers and the atlas are complete
+  and current, and the notice records exactly what it claims, the end of manufacturer support. Rungs 0, 1 and 2 still name Bitter Creek,
+  Antelope Flats and Fox Hollow. What the end of support means for operation is inferred from another fleet's history, and no better
+  instrument of the forward projects records it.
 * **Lens swap.** The answer moves the no-repower path of four projects across 14 future years, a different population of turbine-years
   from the one the notice describes.
 

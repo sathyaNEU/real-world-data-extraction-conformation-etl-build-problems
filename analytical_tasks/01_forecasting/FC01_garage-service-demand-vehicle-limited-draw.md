@@ -28,8 +28,9 @@ contracted kilowatt carries a fixed monthly charge, so the division signs the fi
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the operator's peak report and both voices. The interval ledger still certifies "draw = port rating" in every
   closed month, and a replay at 11.5 kW is still the natural sophisticated build.
-* **Instrument repair.** Make every meter and every settlement perfect; they already are. No better instrument of the past observes how a
-  7.2 kW car behaves on an 11.5 kW pedestal that has never been installed.
+* **Instrument repair.** No file is suspect: every session carries its interval readings, every permit names the vehicle registered at
+  this year's renewal, and the state list covers every model. No field records a draw on an 11.5 kW pedestal, because none is installed.
+  On perfect records rungs 0–2 still return 373, 244 and 116 kW, and only the session → permit → model → limit join reaches 150.
 * **Lens swap.** The naive read and the answer differ in moment and regime: the permit base's sessions on 6.6 kW pedestals last year
   against the same base's sessions on 11.5 kW pedestals next year.
 

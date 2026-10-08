@@ -30,8 +30,10 @@ founder is sure Cinder River, the state's power-plant river, is the biggest wate
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the founder's view and every voice. The published basin factors still rank Sage River first and still
   reproduce every old-method determination.
-* **Instrument repair.** Make every discharge report and call entry perfect. They already are. Whether a day's effluent is owed depends on
-  where it enters the river relative to another party's headgate, and no better meter shows that.
+* **Instrument repair.** No file is suspect. Discharge reports, supply decrees, the call record, the rights register and both sets of
+  determinations are complete and current, and the basin factors are exactly what the old accounting used. Rungs 0, 1 and 2 still name
+  Cinder River, Tunnel Creek and Sage River. Which outfall-days are owed depends on where another party's headgate sits on each day, which
+  no file records and the reproduction recovers.
 * **Lens swap.** The answer counts effluent-days that no right below the outfall needs, a different population from the effluent volume or
   its source.
 

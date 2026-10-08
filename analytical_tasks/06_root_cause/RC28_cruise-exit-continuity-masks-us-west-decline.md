@@ -29,8 +29,11 @@ ledger are all in the pack, and the board chair is sure the cruise exit hurt mos
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's view and every voice. The market table still shows the cruise line −$75M and US West air −$6M, and
   every natural attribution still books the cruise loss to the cruise exit.
-* **Instrument repair.** Survey every visitor perfectly: the cruise market still loses $75M and US West air still nets −$6M. Which customers
-  continued is a fact about one operator's customers across a product change, and no better visitor count records it.
+* **Instrument repair.** No file is suspect. The market tables classify every visitor correctly by origin and mode, the lodging register,
+  unit inventory and permit are complete, and the ledger carries every customer ID. Repair the visitor tables anyway, down to a perfect
+  survey of every visitor. Rung 0 still names the Halekai (110), rung 1 the yen (90) and rung 2 the cruise exit (75), because a perfect
+  count still puts the continuers in US West air. Continuity is a customer's history across one operator's products, which no row claims to
+  record, so the link is still needed.
 * **Lens swap.** The naive reading sizes a product category, the cruise market. The answer sizes customers who left the destination, with
   the continuers moved to the market they now sit in. These are different populations.
 

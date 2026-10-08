@@ -30,8 +30,10 @@ committee judges a new store on the incremental annual contribution it adds to t
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the three-mile ranking and every voice. The location model and the audited rate still produce a confident
   ranking with Pine Ridge on top.
-* **Instrument repair.** Trace every logistics dollar to source, as the audit already does. The audited shares stay correct for today's
-  stores, and a new stop on a route with slack still costs only its stop and its cases.
+* **Instrument repair.** The suspect file is the retail census, which suppresses the hypermarket's size class, with the scouts' list that
+  leaves it unsized. Fill the gap with its true floor area (112,000 sq ft, inside the bound): rung 0 still returns Northgate, rung 1
+  collapses onto rung 2 and both return Pine Ridge, and the added route cost is still needed. The audit, the route plan and the fleet
+  schedule are complete.
 * **Lens swap.** The naive read is a share of today's routes. The answer is the change in next year's route plan, a different book.
 
 ## 3. The driving force

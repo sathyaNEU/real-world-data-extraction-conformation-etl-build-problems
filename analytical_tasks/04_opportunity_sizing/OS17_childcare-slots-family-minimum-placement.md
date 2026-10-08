@@ -29,8 +29,9 @@ certified enrolment. The grants director says every funded place gets filled.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view. Places against waitlisted children by band, discounted by the certification ratio, still
   give a clean 1,355.
-* **Instrument repair.** Make every roster, attendance mark and subsidy payment exact. Families still decline offers that leave a child
-  without a place.
+* **Instrument repair.** The suspect field is the roster count, which records children on the roster, a narrower thing than certified
+  enrolment, and reads 100% everywhere. Replace it with certified counts: rung 0 still returns 1,800, rung 1 1,584 and rung 2 1,355, and the
+  family pass is still needed. The waitlists carry every child with family number and application date.
 * **Lens swap.** The naive read counts places and children by band; the answer counts families placed whole, a different unit.
 
 ## 3. The driving force

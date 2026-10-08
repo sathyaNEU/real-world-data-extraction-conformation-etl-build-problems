@@ -30,9 +30,10 @@ operations director wants the launch where the pilot ran, since it is known to w
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view. A trip-level 95th percentile per corridor still makes Docklands cheapest, its replay still
   matches the 95.3% headline, and the per-cell version still matches all twelve cell on-time rates.
-* **Instrument repair.** Give every van perfect telemetry from gate to door. Docklands' port-gate queue is still 40 minutes, Hillcrest's
-  Friday 07:00 cell still carries the school run, and a rule that matches only the headline or the on-time rates still names the wrong
-  corridor.
+* **Instrument repair.** Two files are suspect: probe travel time runs from the depot gate, a narrower meaning than door to door, and
+  the pilot log keeps no dispatch times. Timed from bay to door, with dispatch times kept, rung 0 names Ring Road North (45 against
+  Hillcrest's 52), rung 1 Motorway West (the daily index is unchanged) and rung 2 Riverside (pooled door to door, 66). No lower rung names
+  Hillcrest, whose pooled percentile is still set by its Friday school-run cell, and the per-cell construction is still needed for 58.
 * **Lens swap.** The naive rule plans for each corridor's pooled road trips. The answer plans for each weekday × bucket cell's door-to-door
   trips, a different population of departures that includes the gate.
 

@@ -30,8 +30,9 @@ its bid capacity. The consultant has proposed three packages (P1–P3). The CFO'
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CFO's view and the committee's raw table. The slate still reads as the choice set, and with the state's
   suppressed rate read as "no breach shown" one package still passes.
-* **Instrument repair.** Have the state publish every rate unsuppressed. Rung 1 falls, and the answer does not move: every slate package
-  still fails one condition, and the off-slate package is still the only one that meets all four.
+* **Instrument repair.** Suspect file: the state report, which suppresses H9's first-year rate. Repaired with the rate itself, 15.4%, rung 1
+  can no longer pass P2 and lands with rung 2 on P3; rung 0 still names P1. Every slate package still fails a condition, so the search over
+  all eligible packages is still needed to find H2, H6, H7 and H11.
 * **Lens swap.** The naive read and the answer differ in population: the consultant's three packages against every package the eligible
   hospitals can form.
 

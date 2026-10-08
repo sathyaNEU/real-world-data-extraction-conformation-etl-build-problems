@@ -30,8 +30,9 @@ OEM publishes its pack-life curve, and the company's own refurbished packs carry
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the investors' fleet-over-life model and every voice. A hazard model on correctly aged cars still reproduces
   13 of 20 counts, and the clause still sends the solver hunting.
-* **Instrument repair.** Make the register and ledger perfect; they already are. The pack stock still has to be built, and a car
-  registered in 2014 can carry a pack installed in 2023.
+* **Instrument repair.** The suspect field is the register's first-registration date, which records an imported car's Dutch date rather than
+  its first use. Replace it with first use for every car: rung 0 still returns Kestrel, rung 1 collapses onto rung 2 (Mira, 4,810
+  replacements), and the pack stock still has to be built from the ledger, which is complete.
 * **Lens swap.** The naive read is cars by age. The answer is packs in service by their own install dates, a different population.
 
 ## 3. The driving force

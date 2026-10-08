@@ -29,8 +29,11 @@ run rate. The platform lead believes VMs that never get deleted explain the grow
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete finance's proposal and every voice. The stock-based decomposition still points at long-lived VMs, and with
   deallocation handled it points at upsized ones.
-* **Instrument repair.** Meter every core-second exactly. Upsized VMs are still the largest growth, and reservation pins still decide how
-  much of it a resize can remove.
+* **Instrument repair.** No file is suspect. The VM table records each VM's life and size correctly, a different attribute from billed time,
+  and the power-state log, SKU catalogue, reservation ledger, service catalogue, exemption tags and scheduler configs are complete and
+  current. Repair them anyway, down to a meter of billed core-seconds per VM. Rung 0 still names the quota, rung 1 moves from the lifecycle
+  policy (150) to rightsizing (110), and rung 2 names rightsizing. What each control can remove is a join to pins and floors that no row
+  records, so the decisive construction is still needed.
 * **Lens swap.** The naive ranking sizes each control's target. The answer sizes what each control can remove next quarter, a different
   population inside each target.
 

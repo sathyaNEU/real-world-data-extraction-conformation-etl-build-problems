@@ -30,8 +30,10 @@ loading plan goes to the launch provider on 1 December.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the mission assurance lead's view and every voice. The daily storm-day table is still the natural input, and
   any loss rate applied to it still halves the April and October loads.
-* **Instrument repair.** Imagine a perfect space-weather record. Storms would be measured exactly, but 2027's storms have not happened;
-  how many onsets each launch's exposure will meet is still a forecast built from storms grouped out of the record.
+* **Instrument repair.** Clean-data test. One field is suspect: the fleet register's raising flag closes on the planned day 9 even for
+  campaigns paused below 350 km. Corrected from the orbit table, rung 0 returns 35 a launch (150 deferred) and rung 1 the 12-day loads
+  (195 deferred), neither the answer. The Kp record, the storm-day table and the revision log are complete, and counting onsets is still
+  needed, because no file stores a storm.
 * **Lens swap.** The naive read and the answer count different populations: storm days, two to three to a storm in the declining phase,
   against storm onsets, one to a storm.
 

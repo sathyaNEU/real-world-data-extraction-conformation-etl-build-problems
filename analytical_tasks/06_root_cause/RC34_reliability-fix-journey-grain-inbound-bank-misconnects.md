@@ -28,8 +28,10 @@ customer-delay figure of the last eight quarters. The operations vice-president 
   own figures is overturned. The difficulty is which grain of delay ranks the causes.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The natural flight-grain pipeline still ranks Westmarch or Brennan turnarounds first.
-* **Instrument repair.** Time every flight to the second and code every delay correctly. A twelve-minute inbound still strands its
-  connectors, and the hours they lose exist only at the journey grain.
+* **Instrument repair.** Suspect: the station delay codes record only the cause station staff could see. Repair: code every delay by what
+  actually caused it, then replace the codes with a root-cause record for every flight. Rung 0 then names late-aircraft knock-on (90k) or,
+  on root causes, Brennan turnarounds (93k), and rungs 1 and 2 both name Brennan. None names the sign-offs, whose cost exists only in
+  customer journeys across connections, which no flight record contains. The journey construction is still needed.
 * **Lens swap.** The naive grain is flights, and the answer's is customer journeys across connections. These are different units, and the
   answer counts customers whose own flight was on time but who missed their connection.
 

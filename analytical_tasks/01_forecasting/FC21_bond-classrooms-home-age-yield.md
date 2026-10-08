@@ -28,8 +28,9 @@ The district has no filed projection method. The developer-agreement template us
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the facilities committee's report. Cohort survival with the pipeline at 0.45 a home still
   gives Brookside eight classrooms and Glenview none.
-* **Instrument repair.** Count every pupil and home perfectly. Brookside's pupils are really there, and Dunmore's are not yet. No better
-  record of past Octobers shows that the first set will leave and the second will arrive.
+* **Instrument repair.** Suspect: the impact-fee ledger, whose prepaid-plat rows are keyed to master parcels retired at platting. Key every
+  credit draw to its lot's parcel. Rung 0 then returns rung 1's 0 · 8 · 0 · 0 · 0 · 8 · 8 and rung 2 still 0 · 8 · 0 · 8 · 0 · 8 · 0;
+  Brookside keeps eight until each home's age is read through the yield curve.
 * **Lens swap.** The naive read and the answer differ in moment: each school's enrolment as it has run, against the pupils each home will
   yield at the ages it will reach in years two to six.
 

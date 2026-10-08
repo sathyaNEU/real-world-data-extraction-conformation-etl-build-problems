@@ -30,8 +30,10 @@ that cost per funded recapture has barely moved in two years.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the controller's view and every voice. The allocation file still prices every funded recapture, and volume ×
   cost per loan is still the standard budget build.
-* **Instrument repair.** Make every invoice and allocation perfect. They already are: allocated costs sum to every invoice to the cent. A
-  better instrument of last year cannot price a quarter with 2.3 times the volume.
+* **Instrument repair.** Suspect file: the campaign codes, which stand in for a missing recapture field and also tag purchase loans after a
+  home sale. Repaired, rung 0 becomes rung 1 ($6.57M), and rung 2 stays at $5.24M. Invoices and allocations are complete: allocated costs
+  sum to every invoice to the cent, and an invoice records what was billed. Its split into retainer and fee is a rule recovered from
+  complete records, so the retainer construction is still needed for $3.39M.
 * **Lens swap.** The answer prices a different moment: the invoices of a quarter whose density no closed quarter had, not last year's
   costs under another lens.
 

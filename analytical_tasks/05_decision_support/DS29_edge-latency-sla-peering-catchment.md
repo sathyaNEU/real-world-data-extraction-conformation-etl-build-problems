@@ -28,8 +28,9 @@ measurement-probe network. A six-week trial PoP ran in city C last spring.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the planning team's choice and the coverage scores. User-weighted p95 under nearest-site assignment still
   names C and commits 51 ms.
-* **Instrument repair.** Give every user a perfect RTT measurement to every candidate. Nearest-site assignment still credits D's and C's
-  sites with users whose networks will route elsewhere. No better measurement of distance reveals who arrives.
+* **Instrument repair.** No file the ladder uses is suspect: probes, beacons and the exchange member lists are complete, and every beacon
+  records its serving PoP. Perfect RTT measurement to every candidate leaves rung 0 on A, rung 1 on B and rung 2 on C at 51 ms, because who
+  arrives at a new site is set by route-server peering, a forward population no measurement of today's paths contains.
 * **Lens swap.** The naive read and the answer are different populations at a different moment: today's users assigned to their nearest
   site, against next quarter's users on the paths their networks will actually take.
 

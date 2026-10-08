@@ -28,8 +28,9 @@ scores and places, the test of any method. The head of content believes completi
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of content's view and the partner council's raw table. Calibration still stacks three finalists at
   the cap, and the catalogue's own sort order still names C.
-* **Instrument repair.** Give every learner a perfect, unbiased rating instrument. The cap is the award's, not the scale's, so C, D and E
-  still score 5.00, and the tie still has to be ordered the way the published table orders ties. No better measurement supplies the order.
+* **Instrument repair.** Suspect file: the ratings export, in which the legacy app and the sync service both log each legacy-app rating.
+  Repaired to one row per rating, rung 0 still names A, and rung 1 lands with rung 2 on the tie at the cap, which the catalogue order gives
+  to C. The cap is the award's, not the scale's, so ordering the tie by first-course learners is still needed to reach E.
 * **Lens swap.** The tie-break and the answer differ in population: every completer of the course against the learners for whom it was
   their first course on the platform, a group that exists only through the enrolment history.
 

@@ -28,8 +28,9 @@ utility's filed 2024 forecast vintage. The city's sustainability plan schedules 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the vendor's proposal. The standard-compliant forecast still names C, and campaigns are
   still sized by whatever multiplier a solver assumes or reads off per-feeder installs.
-* **Instrument repair.** Record every install perfectly. The campaigns are next spring's, and their size depends on households that have
-  not adopted yet; no better record of the past observes it.
+* **Instrument repair.** Suspect: the hosting-capacity report, which suppresses commercial cells under three customers. Publish them.
+  Rung 0 then names B (3.9 against 3.1), as rung 1 does, rung 2 still names C, and next spring's campaigns still have to be sized per
+  eligible household from the change log.
 * **Lens swap.** The naive read and the answer differ in moment and population: feeder D's adoption path without a campaign against its
   eligible households under one.
 

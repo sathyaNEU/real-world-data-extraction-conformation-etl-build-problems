@@ -28,8 +28,9 @@ requirement above in-house capacity before the next gets any. In-house capacity 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the finance basis. Age-specific hazards with the per-drive visit share still send 650 visits
   to DC2.
-* **Instrument repair.** Record every visit perfectly; they are. In the parallel quarter failures arrived alone, so no better record of it
-  could show how DC2's wear-out failures will batch.
+* **Instrument repair.** Suspect: the asset register, which dates pods, not drives. Give every drive its own install date from the swap
+  log. Rung 0 then returns rung 1's 0 · 390 · 310 · 0 and rung 2 still 0 · 650 · 50 · 0; failures in the parallel quarter still arrived
+  alone, so pod-week batching is still a construction the answer needs.
 * **Lens swap.** The naive read and the answer differ in moment: an unclustered closed quarter against a quarter in which one cohort's
   failures share pods.
 

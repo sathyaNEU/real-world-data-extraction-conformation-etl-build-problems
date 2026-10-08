@@ -30,8 +30,11 @@ Lowmoor line.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the BID letter and every voice. The Review's standard account, an OD decomposition on journeys, still books the
   whole destination effect to the station. A solver who notices the closure still books that same effect to the works.
-* **Instrument repair.** Give the authority perfect daily journey counts. Both causes began on 1 September, so every daily series steps
-  once, by their sum. Only past closures, where nothing else changed, measure what a closure costs.
+* **Instrument repair.** No file is suspect. The gate arrays, card taps, census matrices, works log and close-outs are complete and current,
+  and an exit count records exits correctly; a journey is built from taps, and no row claims to record one. Repair them anyway at every
+  depth, down to an instrument that records every journey's origin and destination by day. Rung 0 still returns 6,900, rung 1 5,200, rung 2
+  4,300 and rung 3 0, because both causes began on 1 September and every series steps once, by their sum. Only the past closures split them,
+  so the decisive construction is still needed.
 * **Lens swap.** The naive account describes this autumn's destination effect. The answer splits it by the part still missing at next
   autumn's census, sized from closures at other stations in other years: a different moment, measured on different populations.
 

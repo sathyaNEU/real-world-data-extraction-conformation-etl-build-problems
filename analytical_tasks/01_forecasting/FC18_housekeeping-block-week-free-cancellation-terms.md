@@ -11,7 +11,7 @@
 | Gate G mechanism | forecasting, with decomposition_attribution |
 | Measured traps engaged | #13 validates on one population, applies to another · #11 beats the headline trap, misses the quiet one · #18 joins only on the visible key |
 | Calibration form | Counterparty acknowledgement file: the online travel agency's acknowledgements of every booking it delivered over two years, each with its confirmation number, cancellation terms, every change and cancellation, and the stay's outcome |
-| Driving force | The memo's cancellation share at each lead is pooled, and it reproduces every closed August week within 1% because the free-cancellation share of the 1 July book never left 14–16%. This spring the agency sold the festival packages with free cancellation, so 48% of the festival week's book can walk away free, against none of the trade-fair week's, sold on the agency's non-refundable fair rate. Free-cancellation bookings lose 45% of their book by arrival, the rest 3%. The terms sit only in the agency's acknowledgement file, reached through the channel confirmation number, because the hotel's system files every agency booking under one rate code. |
+| Driving force | The memo's cancellation share at each lead is pooled, and it reproduces every closed August week within 1% because the free-cancellation share of the 1 July book never left 14–16%. This spring the agency sold the festival packages with free cancellation, so 48% of the festival week's book can walk away free, against none of the trade-fair week's, sold on the agency's non-refundable fair rate. Free-cancellation bookings lose 45% of their book by arrival, the rest 3%. The terms sit only in the agency's acknowledgement file, reached through the channel confirmation number, because the hotel's system records an agency booking's channel, not its terms. |
 
 ## 1. Situation
 
@@ -29,8 +29,9 @@ pickup at that lead, both averaged over the same weekday's nights in the last tw
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the agency's pricing basis. The memo's forecast on night-by-night rooms still names W3, and
   the closed Augusts still confirm the curve within 1%.
-* **Instrument repair.** Record every booking and cancellation perfectly. The pooled rate stays exact for the books that produced it,
-  and this August's festival-week book is a different mix of terms, so no better record of past Augusts shows its losses.
+* **Instrument repair.** Suspect: the PMS export, whose share-with reservations put two reservations in one room. Count rooms. Rung 0 then
+  names W3 (500 against W1's 413), rung 1 becomes rung 2's W3 (500 against 409), and the PMS never held the agency's terms (it stores the
+  channel and the confirmation number), so the terms join is still needed for W4.
 * **Lens swap.** The naive read and the answer differ in population: a book whose terms were mixed as in every closed August, against
   weekly books whose terms run from none free to 48% free.
 
@@ -42,8 +43,8 @@ mixture, and the mixture held still. Bookings the agency sold with free cancella
 else, non-refundable agency rates, corporate and group contracts, loses 3%. Until this spring free cancellation was only on the agency's
 flexible rate and made up 14–16% of every August week's book. This spring's festival packages were sold with free cancellation, and
 the trade fair's visitors booked the agency's non-refundable fair rate. The festival week (W3) will shed far more than the curve says
-and the trade-fair week (W4) far less. The PMS files every agency booking under one channel rate code, so the terms come only from the
-agency's acknowledgement file, joined on the channel confirmation number.
+and the trade-fair week (W4) far less. The PMS records an agency booking's channel and confirmation number, and the terms live with the
+agency, so they come only from its acknowledgement file, joined on the confirmation number.
 
 ## 4. The ladder
 
@@ -69,8 +70,8 @@ agency's acknowledgement file, joined on the channel confirmation number.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The memo files a cancellation share by lead. No document says cancellation depends on terms, that the PMS rate
-   code hides them, or which weeks the spring packages filled; the acknowledgement file ships for commission reconciliation.
+1. **Written nowhere.** The memo files a cancellation share by lead. No document says cancellation depends on terms, that the PMS does
+   not carry them, or which weeks the spring packages filled; the acknowledgement file ships for commission reconciliation.
 2. **Corpus blind for a computable reason.** *In every closed August week the free-cancellation share of the 1 July book was 14–16%,
    because until this spring the agency offered free cancellation only on its flexible rate.* The pooled curve reproduces all ten closed
    August weeks within 1%, and so does a terms-calibrated curve.

@@ -30,8 +30,9 @@ MFA everywhere.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CISO's view and the convenience table. The ISAC-certified scenario losses times the efficacy table still
   rank ransomware protection first by 1.49×.
-* **Instrument repair.** Record every incident at every peer firm perfectly. Gross scenario losses sharpen and still describe firms
-  without this firm's controls.
+* **Instrument repair.** No file is suspect: the ISAC file holds every member incident, its cells are correct gross figures (a different
+  attribute from this firm's own loss), and the SOC log records every attempt with the stage that stopped it. Rung 0 returns the email
+  gateway, rung 1 MFA and rung 2 ransomware protection, and the isolated counterfactual is still needed.
 * **Lens swap.** The naive read is a peer firm with no controls. The answer is this firm with its own chain in place, a different
   population, observed in the firm's own SOC log.
 

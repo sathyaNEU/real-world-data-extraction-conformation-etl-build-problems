@@ -28,8 +28,10 @@ megawatt-hour is one the batteries can store.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CEO's view and every voice. The pilot log still certifies a daily cycle that empties overnight, and nothing
   says a forward battery cannot.
-* **Instrument repair.** Make every meter and log perfect. The pilot's nights are still unconstrained, and the Kettle Pass nights are still
-  full. No better instrument at the pilot site would have recorded a blocked night.
+* **Instrument repair.** Suspect file: the plant register's hybrid flag, which marks approval rather than an amendment in force. Repaired to
+  effective dates, rung 0 becomes rung 1 (258.0 GWh), and rung 2 stays at 110.1. The constraint log and the pilot's revision log are
+  complete, and the pilot's nights are unconstrained however well they are metered, so the blocked-night recursion is still needed for 63.7
+  GWh.
 * **Lens swap.** The answer runs on different days, the curtailment days that follow a blocked night at plants behind Kettle Pass, a
   population the pilot never contained.
 

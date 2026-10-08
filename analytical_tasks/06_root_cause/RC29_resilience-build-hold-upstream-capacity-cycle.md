@@ -30,8 +30,10 @@ which tops it.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's preference and every voice. The existing book still certifies carrying a correctly classified
   quarter forward, and that construction still names River Delta.
-* **Instrument repair.** Make every signal perfect and every event perfectly classified. River Delta still degraded last quarter, and its
-  forward minutes are still set by an upgrade cycle the quarter only samples at its peak.
+* **Instrument repair.** Suspect: probing and telescope coverage are sparse in two regions, where the memo's thresholds misclassify power
+  cuts. Repair: dense probing everywhere, then a perfect event classifier. Rung 0 still names Coastal South (4,800), and rungs 1 and 2 both
+  name River Delta (2,400), the coverage error gone. Neither holds, because River Delta really did degrade last quarter. Only averaging over
+  the build's two upgrade cycles reaches the hold, so the decisive construction is still needed.
 * **Lens swap.** The naive read is last quarter. The answer is a 24-month term spanning two full upgrade cycles, a different moment.
 
 ## 3. The driving force

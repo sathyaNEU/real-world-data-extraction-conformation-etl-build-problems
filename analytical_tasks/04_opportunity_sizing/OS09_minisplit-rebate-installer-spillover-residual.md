@@ -30,9 +30,10 @@ contractors, to independent installers who complete its training: 40 registered 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. Rebated systems, the evaluated free-ridership and the plan's volume still produce a clean
   13.4 GWh that the closed years confirm.
-* **Instrument repair.** Install a perfect census of every system fitted, with its installer. Nothing in it says which systems the
-  programme caused: the answer still subtracts each installer's own pre-registration run-rate, a counterfactual no instrument records,
-  and still projects the rate onto 110 installers who have not yet registered.
+* **Instrument repair.** No file is suspect: the tracking database records every claim line, the job file groups lines into systems, and
+  every distributor reports every registered installer's purchases. Even a tracking database that counted systems directly would move rung 0
+  only to 21.1 GWh (−8%); rung 1 stays at 19.2 and rung 2 at 13.4, and the installer residual is still needed, because no instrument records
+  which systems the programme caused.
 * **Lens swap.** The naive read is rebated systems. The answer adds a different population, unclaimed systems fitted by newly
   registered installers, found in a different pair of files.
 

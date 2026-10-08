@@ -28,8 +28,9 @@ standard the board follows has its own tie rule. The banker's view is that the 2
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the banker's view and every voice. The book still certifies the 2017 benchmark on licensed MHz-pop 14 of 14,
   and no document says zones reduce value.
-* **Instrument repair.** Make every record perfect. The licence populations, zone radii and book prices are already exact. A licence's
-  population is still not the population it can serve, and no record of the licence states the second.
+* **Instrument repair.** Suspect files: the auction results, which still list three 2022 winners the closing notices cancel, and the licence
+  register, whose populations predate the 2019 partition. Repaired, rung 0 benchmarks on 2017 and nets partitions ($115.3M), and rung 1
+  lands there too. Neither reaches $89.1M. No licence file records the population outside the zones, so the spatial join is still needed.
 * **Lens swap.** The answer prices a different population, the people outside federal protection zones, which is a strict subset of the
   licensed population.
 

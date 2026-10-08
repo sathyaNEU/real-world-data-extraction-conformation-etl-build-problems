@@ -29,8 +29,9 @@ evaluation can detect. The consultant has sized the cycle on hourly volumes.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the consultant's table and every voice. The delay model on the design flows still finds a better cycle, and
   within-term probe noise still says its saving is detectable.
-* **Instrument repair.** Give the corridor perfect travel-time measurement. Term-to-term shifts in school traffic are real changes, not
-  measurement error, so the control corridors still move as much, and the floor stays at 10.4%.
+* **Instrument repair.** Suspect file: the counts at two intersections, superseded by recounts after camera faults. Repaired, rung 0 still
+  files 100 s, rung 1 a cycle at or near the controller's 120 s maximum and rung 2 112 s. Perfect travel-time measurement leaves the
+  term-to-term shifts, which are real changes in school traffic, so the control-spread floor is still needed and the plan stays at 90 s.
 * **Lens swap.** The naive read and the answer differ in moment: day-to-day variation within one term, against the change between June and
   September that every evaluation straddles.
 

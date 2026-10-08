@@ -27,8 +27,9 @@ next year's loss-ratio pick, so it needs the allocation and the saving it buys.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the reinsurer's basis. The verified 18% applied to developed severities still sends nine
   teams to construction and transport.
-* **Instrument repair.** Verify every pilot claim perfectly, as the review already did. The 18% stays correct for the pilot's mix and
-  stays wrong for next year's segments, whose employers differ.
+* **Instrument repair.** Suspect: the claim file's region, blank on TPA-fed claims and defaulted to Metro. Fill it from the true region.
+  Rung 0 then returns rung 1's 3·3·3·3·0·3·2·0 ($3,120k) and rung 2 still 3·3·2·3·0·3·3·0 ($3,730k). The policy file never claimed a
+  light-duty field, and the employer's history is still built from payments.
 * **Lens swap.** The naive read and the answer are different populations: the pilot's half-and-half mix of employers against each
   segment's forward mix.
 

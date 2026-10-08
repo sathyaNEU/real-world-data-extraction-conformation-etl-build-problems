@@ -30,8 +30,9 @@ is the week after Labor Day.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the trading desk's consensus basis. The house method still reproduces 52 of 52 published
   nowcasts and still says 223,000.
-* **Instrument repair.** Record every page view and every claim perfectly. The pages still record people, and an employer filing for an
-  idled shift leaves no page view. A better instrument of attention cannot see a claim nobody searched for.
+* **Instrument repair.** Suspect: the pageview files, keyed by title where the house method reads pages. Re-key every view to its page
+  through the move log. Rung 0 then returns rung 1's 200,000 and rung 2 still 222,800. The pages still record people, so the employer-filed
+  block is still needed for 252,000.
 * **Lens swap.** The naive read and the answer differ in population: claims filed by people whose searching the pages record, against a
   total that also holds claims employers file for idled workers.
 

@@ -28,8 +28,9 @@ balance is closed and audited by lateral.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the project's check basis. The replay on split crop-acres with the latest audited loss rate
   is still the careful build, and it still orders 19% too much.
-* **Instrument repair.** Meter every turnout and lateral perfectly; the close-outs already balance. The order is set by a season whose
-  deliveries have not happened, and its losses depend on how they will cluster.
+* **Instrument repair.** Suspect: the parcel file, which records one crop per parcel where 10,850 acres carry two. Record every crop
+  season. Rung 0 then returns rung 1's 50,600 AF and rung 2 still 52,600 AF; no constant loss rate reproduces the close-outs, so the
+  refill mixture is still needed for 44,100.
 * **Lens swap.** The naive read and the answer differ in moment: last season's wet-year loss rate against a dry season in which laterals
   never dry out.
 

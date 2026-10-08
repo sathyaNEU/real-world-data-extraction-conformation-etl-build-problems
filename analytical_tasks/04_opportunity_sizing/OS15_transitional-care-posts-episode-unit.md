@@ -29,8 +29,10 @@ risk tier and the system-wide patient number. The Medicaid managed-care plan ack
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The stay-level file and the pilot's by-tier effects still produce a confident split with
   Lakeview on top.
-* **Instrument repair.** Code every stay's disposition perfectly. A patient sent home and admitted elsewhere the next day is still two
-  stays; only chaining by patient makes them one episode.
+* **Instrument repair.** The suspect field is the discharge disposition, which records what staff coded (home) for patients admitted
+  elsewhere the next day. Correct it, or give every stay the plan's episode number: rungs 0 to 2 count stays and still return Riverside (8
+  posts), St Anne's (9) and Lakeview (9), and the episodes still have to be built and their readmissions moved to the hospital where each
+  ends.
 * **Lens swap.** The naive read counts stays; the answer counts episodes ending at each hospital, a different population built by
   linking stays across hospitals.
 

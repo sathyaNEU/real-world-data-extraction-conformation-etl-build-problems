@@ -28,8 +28,9 @@ more years of the scheme's rent, then a sale, at the trust's 4% discount rate an
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the agent's projection and every voice. A hedonic lease-decay model on the transactions still values the hold
   path without the upgrade.
-* **Instrument repair.** Give the trust a perfect valuation of every flat today. Block 216 is not yet upgraded, so today's perfect value
-  carries none of the lift its 2031 sale will carry.
+* **Instrument repair.** Suspect file: the published remaining-lease field, computed at the extract date rather than the sale date. Repaired
+  to lease at sale, rung 1 lands with rung 2 on S$428,000, and rung 0 stays at S$612,000. Block 216 has not been upgraded, so a perfect
+  valuation of today carries none of the 2031 lift; the measured lift is still needed.
 * **Lens swap.** The naive read and the answer differ in moment and population: today's block, valued like every comparable, against the
   block in 2031, upgraded, which today's comparables do not include.
 

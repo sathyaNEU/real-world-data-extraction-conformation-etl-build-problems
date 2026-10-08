@@ -30,8 +30,10 @@ pool's policy-portfolio return history, the price index and the spending policy.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CFO's view and every voice. The historical simulation with pooled spending is still the natural build,
   still follows the board's rule to the letter, and still allows a draw less than half the answer.
-* **Instrument repair.** Imagine the custodian reporting every gift's value daily. The floor's bite in the simulated bad paths is still a
-  property of when each gift bought its units, which the acknowledgements already record exactly.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the custodian's
+  acknowledgements record every gift lot's units, original amount and distributions, the fund ledger its funds' totals correctly, and the
+  return history is complete. The deepest repair available, daily values for every gift, leaves rung 0 at $95M, rung 1 at $160M and rung 2
+  at $185M, and the lot-by-lot floor carried through the simulated paths is still needed, because the draw is a forward bad-path quantity.
 * **Lens swap.** The naive read and the answer weigh different populations: the 2008 lot mix whose drawdown set the realised 3.1%, against
   today's lots, two fifths of them from a campaign that bought near the top.
 

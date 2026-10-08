@@ -29,8 +29,10 @@ is still paying top-of-market rates on everything it sells.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The marketable data still show the rise concentrated in nominal coupons and the syndications, and
   the pilot still certifies the retail notes as stable.
-* **Instrument repair.** Publish every security's rate perfectly. The syndications still carry the rise, and why they were sized as they
-  were is a fact about the retail book's holders, not about measurement.
+* **Instrument repair.** No file is suspect. Security-level outstanding, auction and syndication records, retail statements and the funding
+  plan are complete and current, and no record states the need a syndication met. Repair them anyway, down to a perfect rate on every
+  security. Rung 0 still names bills (18), rung 1 regular coupon rollover (33) and rung 2 the syndications (24). Booking the syndications'
+  rate to the puts is a monthly identity across complete records, which no row claims to record, so it is still needed.
 * **Lens swap.** The naive grain is the programme that issued the debt. The answer is the programme whose holders' behaviour created the
   need, which is a different population of securities, non-marketable notes.
 

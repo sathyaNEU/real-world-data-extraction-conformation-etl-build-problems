@@ -29,8 +29,8 @@ suppresses that size class's rate.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the insurer's basis. Shrinkage toward the bounded benchmark times planned hours still says
   1,837, and every closed year still confirms the method.
-* **Instrument repair.** Record every injury and hour perfectly. The second shifts have not worked a day, and their injuries depend on
-  where each associate will be in tenure next year, which no record of the past holds.
+* **Instrument repair.** Suspect: the state survey table, which suppresses the 1,000-plus class. Publish it (6.5). Rung 0 still returns
+  1,633, rung 1 becomes rung 2's 1,837, and the second shifts' tenure path is still needed for 2,150.
 * **Lens swap.** The naive read and the answer differ in population and moment: hours worked by a steady tenure mix against hours worked
   by a cohort moving through its first year.
 

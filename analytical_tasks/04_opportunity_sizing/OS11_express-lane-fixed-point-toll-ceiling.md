@@ -30,8 +30,9 @@ conversion on its annual toll revenue.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the feasibility study and every voice. Counts, the registry split and the logged elasticity still project
   Lakeshore first in one pass.
-* **Instrument repair.** Count every vehicle perfectly and log every toll change for a decade. The elasticity sharpens, and Lakeshore's
-  steady-state peak toll is still above $14.
+* **Instrument repair.** The suspect file is the detector count, which records all commercial vehicles in one class rather than by the
+  weight that decides eligibility. Replace it with weigh-in-motion counts by weight: rung 0 still returns Port Way, rung 1 Northern (the
+  registry split was already exact) and rung 2 Lakeshore, and the hour-by-hour steady state is still needed.
 * **Lens swap.** The naive read prices today's traffic. The answer prices the traffic that the steady-state toll leaves in the lane,
   hour by hour, a different population at a different moment.
 

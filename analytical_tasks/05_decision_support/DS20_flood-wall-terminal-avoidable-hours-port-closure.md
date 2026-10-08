@@ -1,4 +1,4 @@
-# DS20 — Which terminal gets the port's flood wall, when most flood-coded hours would have been lost to the storm anyway
+# DS20 — Which terminal gets the port's flood wall, when most hours lost with water on the quay would have been lost to the storm anyway
 
 | Field | Value |
 |---|---|
@@ -11,50 +11,54 @@
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #24 treats an unpublished figure as unknown · #7 uses the ready-made measure · #2 counts file rows instead of the real unit · #15 follows the requester's hunch over the rule |
 | Calibration form | Retry or revision log: the harbour master's berth-window revision log for five years, with every port closure's start and end, checked against the 14 surge days when the liquid-bulk terminal's demountable barrier held |
-| Driving force | The capital plan funds the wall where it avoids the most lost revenue. The operations log codes every suspended hour on a surge day as flood whenever water is on the quay, but on those days the harbour master also closes the port to vessel movements, and cranes and loading arms stop for wind, so much of the coded loss would have happened behind any wall. Only the hours outside the union of port closures and the terminal's own wind stops are avoidable, and the union is a construction across two logs that the barrier days reproduce exactly. Container and reefer cranes stop on the same storms that flood them; the low ro-ro quay floods through whole tide cycles after the port reopens. |
+| Driving force | The capital plan funds the wall where it avoids the most lost revenue. The operations log and the quay sensors show every hour a terminal stood suspended with water on its quay, but on those days the harbour master also closes the port to vessel movements, and cranes and loading arms stop for wind, so much of that loss would have happened behind any wall. No record says why a terminal stood idle. Only the hours outside the union of port closures and the terminal's own wind stops are avoidable, and the union is a construction across two logs that the barrier days reproduce exactly. Container and reefer cranes stop on the same storms that flood them; the low ro-ro quay floods through whole tide cycles after the port reopens. |
 
 ## 1. Situation
 
 A port authority can build one permanent flood wall this capital cycle, at one of six terminals: two container terminals (four and two
 berths), a reefer terminal, a single-tenant dry-bulk terminal, a one-berth ro-ro terminal and a liquid-bulk terminal that already deploys a
 demountable barrier. The capital plan funds the wall where it avoids the most lost revenue a year. The port holds five years of surge-day
-operations logs, the harbour master's berth-window revision log, the crane and loading-arm anemometer logs, and its annual statistical
-report, which publishes revenue and operating hours by terminal but suppresses the dry-bulk tenant's revenue. The chief operating officer
+operations logs (each berth's suspension intervals), each quay's water-sensor record, the harbour master's berth-window revision log, the
+crane and loading-arm anemometer logs, and its annual statistical report, which publishes revenue and operating hours by terminal but
+suppresses the dry-bulk tenant's revenue. The chief operating officer
 wants the wall at the biggest container terminal.
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every reported number is correct and no stakeholder read is overturned. That covers the operations log's coded hours (water
-  was on the quay), the revision log, the anemometer logs and the statistical report. The difficulty is that the plan's verb is "avoids",
+* **Litmus.** Every reported number is correct and no stakeholder read is overturned. That covers the operations log's suspensions, the quay
+  sensors' wet intervals, the revision log, the anemometer logs and the statistical report. The difficulty is that the plan's verb is "avoids",
   and the records count hours lost, not hours a wall would have saved.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
-* **Deletion test.** Delete the chief operating officer's view. Flood-coded hours valued at each terminal's revenue rate still put a
+* **Deletion test.** Delete the chief operating officer's view. Wet-quay suspended hours valued at each terminal's revenue rate still put a
   container or reefer terminal first, and every figure ties to its log.
-* **Instrument repair.** Put a perfect water sensor on every quay. The coded hours are then exact, and the port still closes and the cranes
-  still stop for wind on the same storms.
-* **Lens swap.** The naive read values every flood-coded hour. The answer values only the hours outside the closure and wind-stop union, a
+* **Instrument repair.** The suspect file is the statistical report, which suppresses dry bulk's revenue. Published, it moves rung 1 to
+  reefer (rung 2's pick) and leaves rung 0 at Container North and rung 2 at reefer; no lower rung names the ro-ro. No other file is
+  suspect: the operations log records suspensions and the quay sensors record water, both complete, and neither claims why a terminal
+  stood idle. A perfect sensor on every quay and every berth leaves the closures and wind stops where they were, so the union is still
+  needed for the ro-ro's $980k.
+* **Lens swap.** The naive read values every wet-quay suspended hour. The answer values only the hours outside the closure and wind-stop union, a
   different population of hours that differs by terminal.
 
 ## 3. The driving force
 
-A strong solver values each terminal's flood-coded suspensions at its revenue rate. It converts berth-hours to terminal-hours, because the
-statistical report's rates are per terminal operating hour, and it bounds the dry-bulk tenant's suppressed revenue from the published total
+A strong solver values each terminal's suspended hours with water on its quay at its revenue rate. It converts berth-hours to
+terminal-hours, because the statistical report's rates are per terminal operating hour, and it bounds the dry-bulk tenant's suppressed revenue from the published total
 and the other terminals' rounded cells, instead of taking the port average. Each step is competent, and the reefer terminal leads at
 $2.10M a year. But the plan's verb is causal. On every surge day the harbour master closes the port to vessel movements for part of the
 storm, and the container and reefer cranes stop at their wind limit. A terminal that cannot work a ship for those reasons loses those hours
 behind any wall. The revision log gives each closure's start and end, and the anemometer logs give each terminal's wind stops. Avoidable
-hours are the flood-coded hours outside their union. Only a quarter of the reefer terminal's hours fall outside it. The ro-ro quay is the
-port's lowest, floods through whole tide cycles after the port reopens, and its ramps never reach their wind limit on a surge day, so 87.5%
+hours are the wet-quay suspended hours outside their union. Only a quarter of the reefer terminal's hours fall outside it. The ro-ro
+quay is the port's lowest, floods through whole tide cycles after the port reopens, and its ramps never reach their wind limit on a surge day, so 87.5%
 of its hours are avoidable.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Flood-coded berth-hours a year × the terminal's revenue rate, the suppressed dry-bulk rate replaced by the port average ($15k) | A, Container North ($5.40M) | The operations log and the published rates, as the plan's verb seems to ask | The statistical report's rates are per terminal operating hour, and Container North's four berths log one suspension four times |
+| 0 | Wet-quay suspended berth-hours a year × the terminal's revenue rate, the suppressed dry-bulk rate replaced by the port average ($15k) | A, Container North ($5.40M) | The operations log and the published rates, as the plan's verb seems to ask | The statistical report's rates are per terminal operating hour, and Container North's four berths log one suspension four times |
 | 1 | Terminal-hours (union across berths), dry bulk still at the port average | D, Dry Bulk ($2.55M) | The right unit, every terminal valued | The statistical report: the published total less the other terminals' rounded cells bounds dry bulk's rate at $4.6–5.4k an hour (#24) |
 | 2 | Terminal-hours at bounded rates | C, Reefer ($2.10M) | Every hour and rate now ties to a source | The revision log and the anemometer logs: most reefer hours fall inside a port closure or its own crane wind stops |
-| 3 | **Decisive:** avoidable terminal-hours (flood-coded hours outside the union of port closures and the terminal's own wind stops), at bounded rates | **E, Ro-ro ($980k)** (5th of 6 on rung 0) | — | — |
+| 3 | **Decisive:** avoidable terminal-hours (wet-quay suspended hours outside the union of port closures and the terminal's own wind stops), at bounded rates | **E, Ro-ro ($980k)** (5th of 6 on rung 0) | — | — |
 
 * **Position table.** Ro-ro is 5th on rung 0 ($1.12M), 5th on rung 1 and 4th on rung 2, and leads only rung 3, 1.36× over dry bulk
   ($722k). Rung margins: 1.38, 1.21, 1.31, 1.36.
@@ -72,15 +76,15 @@ of its hours are avoidable.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The plan says "avoids". The operations manual's coding rule says a suspension is coded flood while water is on the
-   quay. No document says a closed port or a stopped crane loses the hour anyway.
+1. **Written nowhere.** The plan says "avoids". The operations log records suspensions and the quay sensors record water; no record says why a terminal
+   stood idle. No document says a closed port or a stopped crane loses the hour anyway.
 2. **The reproducing rule is a construction, not a menu.** On the 14 surge days the liquid-bulk barrier held, its quay stayed dry and it
    still lost hours. The union of port closures and its own loading-arm wind stops reproduces those hours on 14 of 14 days. Closures
    alone reproduce 5, and wind stops alone 3, both short. The union is an interval construction across two logs joined by date and time,
    with no parameter to scan.
 3. **No arithmetic symptom.** Coded hours reconcile to the operations log, revisions to the harbour master's record, and rates to the
    statistical report under every rung.
-4. **Not a row predicate.** It needs each surge day's closure intervals, each terminal's wind-stop intervals, their union, and the coded
+4. **Not a row predicate.** It needs each surge day's closure intervals, each terminal's wind-stop intervals, their union, and the wet-quay
    suspension intervals with that union removed, summed and valued.
 5. **The enumeration is arithmetic.** No column marks an hour as avoidable; the ro-ro's 70 hours a year fall out of the interval arithmetic.
 6. **No cutover date.** Surges, closures and wind stops recur every winter, and nothing steps.
@@ -98,8 +102,8 @@ of its hours are avoidable.
   loading-arm wind stop, and on day 4 it followed it.
 * **Every rule exercised.** Closures longer than wind stops, wind stops longer than closures, and days with neither all occur, so both arms
   of the union are tested.
-* **Resemblance points at the decoy.** On the operations log the ro-ro looks like the barrier terminal (one berth, short coded
-  suspensions), which every valuation of coded hours ranks low.
+* **Resemblance points at the decoy.** On the operations log the ro-ro looks like the barrier terminal (one berth, short wet-quay
+  suspensions), which every valuation of wet-quay hours ranks low.
 
 ## 7. Pins, voices and the licensed wrong basis
 
@@ -108,7 +112,7 @@ of its hours are avoidable.
 * **Empirical pins.** The union rule, from the barrier days.
 * **Voices.** The chief operating officer: "Container North moves the most boxes; protect it first." The reefer tenant: "Our power rooms
   flood every winter." The harbour master: "The port closes when it must; that is a safety call, not a flood call."
-* **Licensed wrong basis.** The capital plan records that the board's audit committee compares terminals on flood-coded hours from the
+* **Licensed wrong basis.** The capital plan records that the board's audit committee compares terminals on wet-quay suspended hours from the
   operations log and will see that basis.
 
 ## 8. Determinism by construction
@@ -128,7 +132,7 @@ of its hours are avoidable.
 
 * `wall_case.xlsx` — the six terminals under each rung, the turnaround sheet (ask A), the carrier sheet (ask B) and the reproduction sheet
   (ask C).
-* `surge_day_hours.png` — for each terminal, a stacked bar of flood-coded hours split into port closure, own wind stop and avoidable, with
+* `surge_day_hours.png` — for each terminal, a stacked bar of wet-quay suspended hours split into port closure, own wind stop and avoidable, with
   the chosen terminal marked, plus a timeline panel of barrier days 4 and 11 showing closure, wind stop and lost hours.
 * `capital_note.pdf` — the committed terminal and figure, and why the reefer and container terminals lose.
 
@@ -152,7 +156,7 @@ quarterly carrier counts (ask B) + the committed terminal, its figure and the ru
 
 ## 12. World-building constraints
 
-* Flood-coded hours a year, berth / terminal: Container North 300 / 80, Container South 170 / 100, Reefer 130 / 70, Dry Bulk 250 / 170,
+* Wet-quay suspended hours a year, berth / terminal: Container North 300 / 80, Container South 170 / 100, Reefer 130 / 70, Dry Bulk 250 / 170,
   Ro-ro 80 / 80, Liquid Bulk 40 / 40. Rates ($k an hour): 18, 16, 30, 5 (suppressed; port average 15), 14, 12.
 * Avoidable shares (union / closures only / wind only): 0.30 / 0.55 / 0.45, 0.32 / 0.58 / 0.47, 0.25 / 0.58 / 0.65, 0.85 / 0.85 / 1.0,
   0.875 / 0.875 / 1.0, 0.50 / 0.60 / 0.80.

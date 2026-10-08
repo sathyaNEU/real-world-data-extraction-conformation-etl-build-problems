@@ -30,8 +30,10 @@ inventories cleared first.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the litigation chief's preference and counsel's ratings. Expected saving on the methodology's probabilities,
   with claimants counted once, still settles Hale, Ortiz and Liang, and every figure ties to the book.
-* **Instrument repair.** Give counsel a perfect record of every closed case. It is still a record of home-venue cases, and the second
-  venue's awards still run 2.2× higher.
+* **Instrument repair.** The suspect file is the claimant register, where Kessler's inventory still lists six claimants who moved to
+  Duarte's firm. Removing the stale entries leaves rung 0's tie-break on Hale, Duarte and Kessler, moves rung 1 to rung 2's Hale, Ortiz and
+  Liang, and leaves rung 2 there; no lower rung settles the answer's three. Counsel's ratings, the book and the verdict report are complete
+  and record what they claim, and the venue valuation is still needed.
 * **Lens swap.** The naive valuation prices every claimant on the home venue's closed cases. The answer prices second-venue claimants on
   that venue's awards: a different population of outcomes, for cases that have not yet closed.
 

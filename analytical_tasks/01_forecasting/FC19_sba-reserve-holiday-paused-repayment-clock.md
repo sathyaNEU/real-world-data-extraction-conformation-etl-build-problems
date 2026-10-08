@@ -30,8 +30,9 @@ close-out's snapshot, it reproduces every audited reserve cell to the dollar. Th
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the regulator's ratio. The dollar-weighted incidence on calendar age still reproduces 34
   of 48 cells and still books $15.3 million.
-* **Instrument repair.** Record every payment and holiday perfectly; they are. Calendar age stays a correct count of months since
-  disbursement, and the reserve still needs months at risk, which only the ledger's holidays turn it into.
+* **Instrument repair.** No file is suspect: every loan's events, balances and guarantees are recorded, and the deferral ledger holds every
+  holiday month. On perfect records rungs 0–2 still return $28.8M, $21.5M and $15.3M, because calendar age is a correct count of months
+  since disbursement, not of months at risk.
 * **Lens swap.** The naive read and the answer differ in moment: the same loans placed on their hazard curves by months since
   disbursement against months actually spent repaying.
 

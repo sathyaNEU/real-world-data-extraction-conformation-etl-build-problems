@@ -29,8 +29,9 @@ Last quarter the capacity team ran 400 six-hour test jobs on sampled hosts. The 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the product manager's view and the dashboard. The telemetry's six-hour window minimum, certified by the test
   jobs, still names e2-gen6.
-* **Instrument repair.** Sample telemetry every second and test a million jobs. The window minimum sharpens, and the reservation holder can
-  still claim its cores mid-job.
+* **Instrument repair.** The suspect file is the verification subsample, drawn from gen-5 hosts only. Fill it with test jobs on every pool:
+  no reservation was claimed in the month, so the gen-6 jobs complete as the window predicts; rung 0 still returns e1-gen6, rung 1 e2-gen5
+  and rung 2 e2-gen6, and the reservation subtraction is still needed. The telemetry and the ledger are complete.
 * **Lens swap.** The naive read is idle cores; the answer is idle cores no contract can recall, a different population found in a
   different file.
 

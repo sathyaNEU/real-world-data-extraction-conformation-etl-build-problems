@@ -32,8 +32,9 @@ both side by side on split samples. The deputy director has proposed cutting to 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the deputy's proposal and the flagged-share history. The memo's options, evaluated at the parallel run's rates,
   still point at (39, 10), and nothing fails a check.
-* **Instrument repair.** Give the lab perfect set-up timing and a parallel run ten times larger. The valid-split rates do not move, every
-  memo option still fails one condition, and the qualifying plan is still off the memo.
+* **Instrument repair.** The suspect field is the parallel run's paired status, which marks every split with two results, late
+  set-ups included. Recorded as valid only within 24 hours, rung 1 lands on rung 2's reading, where no memo option qualifies and F is the
+  least bad; rung 0 (culture rates) stays at A. No lower rung names (39, 9), and the family search is still needed.
 * **Lens swap.** The naive read ranks the memo's options at the current method's rates. The answer is a plan outside the memo, judged at
   next year's method's rates and capacity: a different candidate population at a different moment.
 

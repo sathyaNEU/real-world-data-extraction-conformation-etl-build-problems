@@ -29,8 +29,9 @@ quarter's level.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the finance basis. The policy's "one quarter" applied to each tenant's projection still gives
   77,310 cores, with no budget in sight.
-* **Instrument repair.** Make the ledger and every projection perfect; they are. The levy's base and the budget crossings are properties
-  of next quarter's reservations, which no record of the past contains.
+* **Instrument repair.** No file is suspect: the ledger's batch line is a correct total, the registry's scheduling class is complete, and
+  every settled share is recorded. Splitting the ledger's batch line by class moves rung 0 to rung 1's 81,060; rung 2 still returns 77,310,
+  and the fixed point is still needed for 58,000.
 * **Lens swap.** The naive read and the answer differ in moment and population: last quarter's reservations, when no tenant was near a
   budget, against next quarter's, in which five tenants are cut to theirs.
 

@@ -29,8 +29,10 @@ days scaled by each counter's year-on-year growth. The committee report is due i
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and every voice. A corridor's busiest counter is still its natural measure, and any threshold on it
   still matches the observations about two times in three.
-* **Instrument repair.** Put a counter on every metre of path. The rule that turns segment flows into a crowded corridor would still have to be
-  recovered from the observations, and next summer's flows would still be a forecast.
+* **Instrument repair.** Clean-data test. One file is suspect: Canal Street's headline loop over-counted by 40% on 26 days before
+  recalibration. Corrected, rung 0 still names Harbour Bridge and rung 1 names Station Approach (rung 2's leader), neither Millrace Way.
+  Every other counter, the path inventory and the capacity table are complete, the observers' records hold every corridor-day they claim,
+  and the weakest-segment rule is still needed, because next summer's crowded days are a replay of segment flows through it.
 * **Lens swap.** The naive read and the answer count different populations: days on which the corridor's busiest point is busy, against days
   on which its weakest segment fails, which happen on different days and different corridors.
 

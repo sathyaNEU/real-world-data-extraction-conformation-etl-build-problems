@@ -29,8 +29,10 @@ budget rule funds the programme whose cause accounts for the most added downtime
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice and the monitor itself. The outage and work-order records still decompose into the four
   familiar causes, and no unit-level or outage-level table shows a chain.
-* **Instrument repair.** Record every outage and repair to the minute. Chains are still sequences across records, linked through the
-  parts fitted, and no better per-outage instrument contains them.
+* **Instrument repair.** Suspect: 18% of outages carry only a parent-ticket reference instead of the work-order key. Repair: fill the key on
+  every outage. Rung 0 still names capital replacement (12.6), and rung 1 moves from night response to parts inventory (8.6), which rung 2
+  already names. None names parts quality: the re-failure chains are sequences across repairs and the parts fitted, which no outage or
+  work-order row records, so the chain construction is still needed.
 * **Lens swap.** The naive causes are properties of units or outages. The answer is a population of repair-then-failure sequences tied to
   one part source, a different unit of analysis.
 

@@ -29,8 +29,9 @@ a deployment on the net fare revenue it adds a year. The operations director wan
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view. The pilot's rates still fit every pilot day, transport cleanly in arithmetic, and name
   Riverside.
-* **Instrument repair.** Log every trip with GPS and run the pilot twice as long. The pooled rate stays exact for the pilot, and the
-  districts still differ in how many trips climb.
+* **Instrument repair.** The suspect file is the portal's trip table, which suppresses University's casual cells. Fill them (108,000 casual
+  trips a year): rung 0 still returns Central, rung 1 collapses onto rung 2 and both return Riverside, and the climb split is still needed.
+  The trip logs and dock elevations are complete.
 * **Lens swap.** The naive read applies the pilot docks' trips to every district. The answer weights each district's own trips by their
   climb, a different population.
 

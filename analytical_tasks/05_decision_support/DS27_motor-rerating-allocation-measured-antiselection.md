@@ -29,8 +29,10 @@ meets on the 14th.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chief actuary's view and the regulator's reading. The natural allocation still re-rates the most
   under-priced areas first, and still books every euro of increase as a euro of result.
-* **Instrument repair.** Give the insurer perfect claims data and unlimited credibility. The indicated changes become exact, and the
-  aggregator-heavy areas still give the increase back, because the customers who leave have not left yet.
+* **Instrument repair.** No file the ladder uses is suspect: the claims file records every claimant under a complete incident key (counting
+  incidents is a choice of unit, not a repair), and the rate-change log, renewals and policy records are complete. Perfect claims data leave
+  rung 0 on R07, R14 and R16, rung 1 on R07, R03 and R11 and rung 2 on the six urban areas, because the customers who leave after a rise
+  have not left yet; the measured response is still needed.
 * **Lens swap.** The naive read prices today's book. The answer prices next year's renewing book, a different population once the
   increase has changed who stays.
 

@@ -29,8 +29,10 @@ public statistics, the dashboard totals, the parallel-run export and the release
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the tools team's view and every voice. The parallel run still reproduces its own four weeks exactly, and the
   release-aligned bug forecast times that ratio is still the natural build.
-* **Instrument repair.** Imagine a parallel run with perfect counts. It would still contain no post-release week, because none happened
-  in it; the post-release item count has to be built from the old tracker's merge records either way.
+* **Instrument repair.** Clean-data test. One file is suspect: the public bug statistics leave out security bugs. Filled from the
+  dashboard's totals, rung 0 returns 14, rung 1 16 (rung 2 merges into it) and rung 3 17, none of them 26. The old tracker's bug records
+  and merge records are complete, and the rebuild of triage items by release phase is still needed, because no file counts post-release
+  triage items: the old tracker merged them at filing and the new tracker has not yet met a release week.
 * **Lens swap.** The naive read and the answer count different things at different moments: merged bugs in a release hold, against
   separate reports in the week after a release.
 

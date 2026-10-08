@@ -11,27 +11,29 @@
 | Gate G mechanism | decomposition_attribution, with forecasting |
 | Measured traps engaged | #14 coarsens the segment it was asked about · #7 uses the ready-made measure · #13 validates on one population, applies to another · #15 follows the requester's hunch over the rule |
 | Calibration form | Gold-standard verification subsample: the programme evaluator's metered savings on a random 8% of last year's installs |
-| Driving force | Each installer's quote per unit is correct for last year's book, where almost every job was one unit in one house. Part of every quote is per job (survey, permit, panel upgrade, commissioning), and next year's multi-family book averages 4.2 units per job. Carrying last year's per-unit price onto that book pays the per-job part once per unit. The split is written nowhere. It is recovered by fitting each installer's invoices on units per job, and it cuts the Elm bundle's cost per unit by 56% while barely moving Dalton's. |
+| Driving force | Each installer's quote is its price for a single-family install, the one figure the programme's bid form asks for, and it is correct for last year's book, where almost every job was one unit in one house. Part of every quote is per job (survey, permit, panel upgrade, commissioning), and next year's multi-family book averages 4.2 units per job. Carrying last year's per-unit price onto that book pays the per-job part once per unit. The split is written nowhere. It is recovered by fitting each installer's invoices on units per job, and it cuts the Elm bundle's cost per unit by 56% while barely moving Dalton's. |
 
 ## 1. Situation
 
 A utility's efficiency programme will award next year's bulk heat-pump contract to one bundle: one model, installed by one contractor. The
 programme plan gives the contract to the bundle with the most verified lifetime savings per programme dollar on next year's book, which is
 climate-zone-6 multi-family retrofits at 4.2 units per job. Six bundles have bid. The programme holds the technical reference manual's
-deemed savings (with a convenience table for "cold zones 5–7"), each installer's quoted installed cost per unit, last year's invoices
+deemed savings (with a convenience table for "cold zones 5–7"), each installer's quote (its price for a single-family install, the one figure the bid form asks for), last year's invoices
 (including a small multi-family pilot), and the evaluator's metered subsample. The programme manager wants the contract on the model that
 tops the efficiency scorecard.
 
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every reported number is correct and no stakeholder read is overturned. The scorecard, the deemed savings, the convenience
-  table, the quotes, the invoices and the metered subsample are all right for what they cover. The difficulty is that a quote per unit is
-  an average over last year's job sizes, and next year's job sizes are different.
+  table, the quotes, the invoices and the metered subsample are all right for what they cover. The difficulty is that a quote prices a
+  one-unit job, next year's jobs hold 4.2 units, and nothing records what a unit costs on them.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the manager's view and the scorecard. Verified zone-6 savings over quoted cost still name the Dalton bundle, and
   every figure ties to its source.
-* **Instrument repair.** Meter every install and audit every invoice. Last year's per-unit cost is still exact for last year, and a
-  single-unit job still carries its whole per-job cost on one unit.
+* **Instrument repair.** No file the ladder uses is suspect. A quote is the installer's correct price for a single-family install, a
+  different job from next year's, and claims nothing about a multi-family unit; the invoices are complete and exact; the subsample meters a
+  random 8% of installs in full; and the manual's deemed values are its method's output. Metering every install and auditing every invoice
+  moves no rung (rung 0 Aster, rung 1 Cedar, rung 2 Dalton), and the per-job fit is still needed to reach Elm.
 * **Lens swap.** The naive read prices each bundle on last year's jobs. The answer prices it on next year's jobs, a different book whose
   density changes what a unit costs.
 

@@ -29,8 +29,10 @@ group in the seasons before and after. The credit committee chair is sure the su
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's belief. Before-and-after effects from the change log still clear the bar at 2.61 per $100,000,
   lower bound 2.11, and the pool still goes to Bottoms, Ridge and Lakes.
-* **Instrument repair.** Record every covenant test and every payment perfectly. The before season of seven of the eight rounds is still a
-  loss season, and the same-season comparison still has eight rounds of evidence.
+* **Instrument repair.** The one field open to doubt is the change log's payee, which for 31% of supported members is their farming
+  company. Recording the member beside the company moves rung 1 to rung 2's Bottoms, Ridge and Lakes and leaves rung 0 (indemnity, no join)
+  at Prairie, Bottoms and Ridge; no lower rung holds. The loss-cost series, the ownership table and the outcomes are complete, and the
+  same-season comparison is still needed for the hold.
 * **Lens swap.** The naive read compares supported members with themselves a season earlier. The answer compares them with unsupported
   members of the same group in the same season: a different comparison population at a different moment.
 
@@ -62,10 +64,13 @@ lower bound of −0.22 on two rounds. Nothing clears the bar, so the pool is hel
   show. A record of the same spread needs a pooled mean of 1.79 for its lower bound to reach 1.0.
 * **Partial correction priced (L3).** Seeing the loss seasons but dropping their rounds, instead of comparing within season, leaves one
   round (Lakes, 2.6) and funds Lakes $0.9M. The half-insight lands on a pick, further from the answer than rung 2's. Same-season comparisons
-  with the member-ID join hold too, but on a blocking quantity of 0.81 that misstates every group.
+  with the member-ID join drop the company-held farms from the supported group, because their covenant outcomes sit under the company's
+  borrower ID, and those farms improved least; Bottoms' effect rises to 2.85 per $100,000 with a lower bound of 1.28, and the pool funds
+  Bottoms $0.8M. No half-insight holds.
 * **Grid.** Measure (indemnity, breaches) × join (member ID, entity chain) × comparison (before-and-after, same season) gives 5 feasible
-  cells, since indemnity uses no join. The three non-decisive cells allocate to different groups, and both same-season cells hold. The
-  nearest pick is the dropped-rounds partial above, and it costs one error: a comparison no round supports.
+  cells, since indemnity uses no join. The three before-and-after and indemnity cells allocate to different groups, the member-ID
+  same-season cell funds Bottoms (above), and only the entity-chain same-season cell holds. The nearest pick is that member-ID cell
+  (Bottoms, lower bound 1.28 against the bar of 1.0), one omission away: the entity chain.
 
 ## 5. Why the decisive rung survives the opponent
 

@@ -30,8 +30,11 @@ commitments ledger records each contract's Q1 reports and calls. The cluster's s
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the capacity lead's view and every voice. Forward requests at the close-out's cost per request is still
   the natural build, it still reproduces every closed quarter at product level, and it still names Agents.
-* **Instrument repair.** Imagine a close-out that split every product's GPU time into prefill and decode. The Q1 shortfall would still
-  have to be rebuilt from Q1's documents and calls, because the bulk contracts' book has not run yet.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the serving log holds
+  every request with its session and GPU time, the close-outs every product's quarter, the commitments ledger every contract's reports and
+  calls. The deepest repair available, close-outs that split every product's GPU time into prefill and decode, leaves rung 0 at Agents,
+  rung 1 at the code assistant and rung 2 at the voice assistant, each of which prices Q1 at a per-request cost, and the session rebuild
+  is still needed, because the bulk contracts' two-call book has not run yet.
 * **Lens swap.** The naive read and the answer price different books: Q3's sessions and requests against Q1's, where 44% of one
   product's requests move from nine-call sessions to two-call ones and another product's sessions more than double.
 

@@ -30,9 +30,11 @@ capacity log records how many calls it attempted each day. The chief medical off
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CMO's belief and the subsample. Called against uncalled, risk-adjusted, still clears break-even at Elmhurst,
   and every number reconciles.
-* **Instrument repair.** Give every uncalled patient a recorded reason and make claims capture perfect. The called-versus-uncalled gap is
-  still selection on who answers. No measurement of the past observes a called patient's uncalled outcome, and the overflow is still the
-  only as-good-as-random split.
+* **Instrument repair.** No file the ladder uses is suspect: the flag is a correct model score (a different attribute from eligibility),
+  the call and capacity logs are complete, and the chart-verified subsample confirms the claims capture every readmission. The deepest
+  repair on offer, a recorded reason for every uncalled patient, leaves rungs 0 to 2 at Northgate, Riverside and Elmhurst, because each
+  compares called with uncalled patients, and no record of the past observes a called patient's uncalled outcome. The overflow split is
+  still needed for the hold.
 * **Lens swap.** The naive comparison sets all called patients against all uncalled ones. The answer compares patients on over-capacity days
   split at the day's attempt count: a different population, compared at a cut the naive read never forms.
 
@@ -64,10 +66,12 @@ hospital, gives the effect of a call. It is 0.5 to 1.9 per 100, and no hospital'
   upper bound and point estimate cleared 3.4 would have been funded.
 * **Partial correction priced (L3).** Using the over-capacity days but comparing called patients with every uncalled patient on those days,
   refusals and unreachable patients included, puts Elmhurst at 3.6 and funds it. The half-insight lands on a pick, further from the answer
-  than rung 2's own figure. Pooling the overflow across hospitals also holds, but on a blocking quantity of 1.3 that misstates every
-  hospital's figure.
-* **Grid.** Population (flag, protocol) × adjustment (none, risk) × comparison (all uncalled, overflow cut) gives 8 cells. All four cells
-  with the overflow cut hold, because the list is protocol-built and the cut is as-good-as-random. The four without it name Northgate,
+  than rung 2's own figure. Pooling the overflow across hospitals mixes their baselines: the hospitals with the most over-capacity days
+  also readmit most, so the pooled cut puts the effect at 3.6 per 100 everywhere, and the team goes where most patients are called,
+  Northgate. No half-insight holds.
+* **Grid.** Population (flag, protocol) × adjustment (none, risk) × comparison (all uncalled, overflow cut) gives 8 cells. Under the cut
+  the population and adjustment toggles are idle (only listed patients have list positions, and the cut is as-good-as-random), so the four
+  cut cells are one construction, and it holds. The four without it name Northgate,
   Riverside or Elmhurst. The nearest pick to the answer is the partial above (Elmhurst at 3.6), and it costs one error: an uncalled group the
   list cut never formed.
 

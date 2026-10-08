@@ -30,8 +30,11 @@ sales-share forecasts and the pilot log. The compliance filing is due on the 30t
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The flat-coincidence build still reproduces 96% of the pilot and still puts the coastal
   districts first.
-* **Instrument repair.** Imagine a perfect charger registry with every charger's schedule. The allocation would still need the method that
-  reproduces the pilot and a forecast of where 2027's added vehicles charge; the interval data already records what such a registry would.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: vehicle registrations,
+  premises links, the interval data and the pilot log are complete, and the EV-rate flag records a tariff, a different attribute from when
+  a home charges, so using it is an ordinary wrong rung. With nothing to repair, rung 0 returns 18, rung 1 22 and rung 2 31, and the
+  decisive build is still needed for the 2027 additions, whose charging depends on their district's recent-adopter mix rather than on any
+  record of the past.
 * **Lens swap.** The naive read and the answer count different populations: vehicles on a transformer, against vehicles whose homes start
   charging inside the peak window, which differ most in exactly the districts that adopted first.
 

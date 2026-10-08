@@ -28,8 +28,10 @@ total across ten replay years of receipts. The state's weekly receipts report is
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the railroad's basis. Pool receipts against pool headroom is still the natural build, and it
   still files a figure a third low.
-* **Instrument repair.** Publish receipts by terminal, perfectly. The pooled balance is still the obvious computation, and it is still
-  wrong by the same tonnage, because the error is where the ceiling binds, not what was measured.
+* **Instrument repair.** Suspect: the licence register, which keeps surrendered licences and lists two re-operated terminals twice, and
+  the receipts report, which publishes receipts by pool only. Remove the stale licences and publish receipts by terminal. Rung 0 then
+  returns 44,000 t, rung 2's pooled balance still returns 74,000 t, and the per-terminal floor is still needed for 112,000 t, because the
+  error is where the ceiling binds, not what was measured.
 * **Lens swap.** The naive read and the answer are different populations: a pool's grain against each terminal's grain, and each closure
   is a moment the closed record never contained (a two-week closure with full receipts).
 

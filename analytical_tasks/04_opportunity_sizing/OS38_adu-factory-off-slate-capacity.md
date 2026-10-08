@@ -29,8 +29,10 @@ investor prefers 2,000.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the investor's preference and every voice. The term sheet still lists three capacities, and testing each
   against the policy still leaves none standing.
-* **Instrument repair.** Perfect permit data makes the forecast exact, which is what makes every slate option fail. A better instrument
-  sharpens the trap.
+* **Instrument repair.** Suspect file: the permit file, whose APN is blank for ADU permits filed under combined projects. With every APN
+  filled, rung 0 is unchanged (4,000), and rung 1 forecasts 1,585 year-3 orders before the completion rate, finds no slate option passing
+  and files 2,000, as rung 2 does. The verification sample and the roll are complete. Perfect permits make the forecast exact, which is what
+  makes every slate option fail, so the off-slate search is still needed for 1,750.
 * **Lens swap.** The answer is a different object, a capacity outside the priced set, and no change of lens on the slate reaches it.
 
 ## 3. The driving force

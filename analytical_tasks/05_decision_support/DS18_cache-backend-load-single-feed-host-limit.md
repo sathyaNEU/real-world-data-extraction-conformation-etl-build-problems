@@ -11,7 +11,7 @@
 | Gate G mechanism | binding_constraint, with forecasting |
 | Measured traps engaged | #10 notes a binding limit as a risk · #11 beats the headline trap, misses the quiet one · #7 uses the ready-made measure · #4 never tests its reading against the control |
 | Calibration form | Change-log natural experiments: seven past resizes of this cluster and two siblings, each with peak-hour hit ratios for the fortnight before and after |
-| Driving force | The capacity plan grows the cluster from 48 to 80 hosts. The facilities standard requires each pod's peak load to fit on one of its two power feeds, and on that basis the four pods take only 16 more hosts, so next quarter's cluster holds 10.24 TB, not 12.8. A solver who beats the capacity model with the trace and strips the trace's post-restart warm-up has every number right at the planned memory and notes the power check as a risk. The figure moves only when the limit sets the memory, and the steady-state miss ratio there is 4.2%, not 3.1%. |
+| Driving force | The capacity plan grows the cluster from 48 to 80 hosts. The facilities standard requires each pod's peak load to fit on one of its two power feeds, and on that basis the four pods take only 16 more hosts, so next quarter's cluster holds 10.24 TB, not 12.8. A solver who beats the capacity model with the trace and strips the trace's post-restart warm-up has every number right at the planned memory and notes power as a risk. The figure moves only when the limit sets the memory, and the steady-state miss ratio there is 4.2%, not 3.1%. |
 
 ## 1. Situation
 
@@ -29,8 +29,10 @@ last month, the change log of past resizes, the facilities register and the hard
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the infrastructure lead's view and the capacity model. A trace-driven miss ratio at the planned 12.8 TB still
   gives a confident figure, and every pod still shows ample power against its two feeds.
-* **Instrument repair.** Give the team a perfect month-long trace and exact power metering. The steady-state curve does not move, each pod
-  still has to carry its peak load on one feed, and only 16 hosts still fit.
+* **Instrument repair.** No file the ladder uses is suspect: the trace records every request of its day, the restart's cold hours
+  included, and the change log, the facilities register and the hardware catalogue are complete and exact. The nearest thing to a
+  repair, a trace from a day without a restart, moves rung 1 to rung 2's 155 and leaves rung 0 at 250 and rung 2 at 155; exact power
+  metering moves no pod's headroom. No rung below the decisive one gives 210, and the single-feed limit is still needed to set the memory.
 * **Lens swap.** The naive read prices the cluster the plan describes. The answer prices the cluster next quarter can hold, a different
   host population at the moment the load arrives.
 
@@ -39,8 +41,8 @@ last month, the change log of past resizes, the facilities register and the hard
 A strong solver distrusts the capacity model, replays the trace through an LRU cache by bytes, and finds the real hit ratio higher, because
 requests come in bursts. It notices that the trace day began with a rolling restart, and it measures the warm cache at the evening peak, as
 the change log's resize records are measured. That curve reproduces every past resize. At 12.8 TB it gives a 3.1% miss ratio, or 155
-thousand reads a second. Each step is competent. The plan's power check looks clean too, since each pod has two 10 kW feeds and draws 7.5
-to 9.1 kW. But the facilities standard requires a pod's peak load to fit on one feed, so a failed feed can never drop the pod. On that
+thousand reads a second. Each step is competent. A power check against the facilities register looks clean too, since each pod has two 10 kW feeds
+and draws 7.5 to 9.1 kW. But the facilities standard requires a pod's peak load to fit on one feed, so a failed feed can never drop the pod. On that
 basis the four pods have room for 4, 2, 6 and 4 more hosts at 0.38 kW each: 16, not the plan's 32. The capacity policy says deployments
 must fit the facilities register. Next quarter's cluster is 64 hosts holding 10.24 TB, where the steady-state miss ratio is 4.2%.
 
@@ -50,7 +52,7 @@ must fit the facilities register. Next quarter's cluster is 64 hosts holding 10.
 |---|---|---|---|---|
 | 0 | Capacity model (Zipf, independent requests) at the planned 12.8 TB: 95.0% hits | 250 | The model the plan was sized with | The change log: the model mispredicts every past resize, by 40–60% of the measured gain |
 | 1 | Trace-driven LRU by bytes at 12.8 TB, hit ratio over the whole trace day (96.3%) | 185 | Real requests, real sizes, and the loud decoy beaten | The change log: the trace day opens with a rolling restart at 03:10, and every resize's hit ratios are peak-hour figures on a warm cache |
-| 2 | Same replay, warm cache measured at the evening peak (96.9%), the power limit noted as a risk (#10) | 155 | The curve reproduces all seven past resizes, and the plan shows two feeds per pod with room to spare | The facilities standard: a pod's peak load must fit on one feed, which leaves room for 16 new hosts, not 32 |
+| 2 | Same replay, warm cache measured at the evening peak (96.9%), the power limit noted as a risk (#10) | 155 | The curve reproduces all seven past resizes, and the facilities register shows two feeds per pod with room to spare | The facilities standard: a pod's peak load must fit on one feed, which leaves room for 16 new hosts, not 32 |
 | 3 | **Decisive:** deployable memory from single-feed headroom (64 hosts, 10.24 TB), then the warm peak-hour miss ratio there (4.2%) | **210** | — | — |
 
 * **Walk and reversal.** The corrections walk one way, 250 → 185 → 155 (offsets −65 and −30), as the trace and then the warm window raise
@@ -64,7 +66,7 @@ must fit the facilities register. Next quarter's cluster is 64 hosts holding 10.
 
 ## 5. Why the decisive rung survives the opponent
 
-1. **Written nowhere.** The plan lists 80 hosts and a power check against each pod's two feeds. The single-feed requirement sits in the
+1. **Written nowhere.** The plan lists 80 hosts, eight new ones per pod, and says nothing about power. The single-feed requirement sits in the
    facilities standard's redundancy chapter, and no document converts it into hosts or memory.
 2. **No sweepable corpus nominates it.** *In every resize in the change log the deployed memory equalled the planned memory, because every
    past resize swapped hosts one for one or removed hosts.* No closed resize ever met a pod's single-feed headroom, so the change log

@@ -29,8 +29,10 @@ member universities, administered by a service desk.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the NOC manager's view and the technical committee's basis. The textbook single-failure simulation still names
   the science-corridor link, and its one-pass check with the upgrade in service still passes.
-* **Instrument repair.** Give the network perfect, unsaturating flow telemetry. The rung-1 tie disappears, and the hold does not move: the
-  circuits that break the standard have not been provisioned yet, so no instrument of today's traffic can observe them.
+* **Instrument repair.** Suspect file: the link counters, which stop at line rate, so four incident readings sit at 100%. Repaired with
+  unsaturating flow telemetry, rung 1 reads offered loads (C 146%, B 104%, A 101%) and names C; rung 0 still names A and rung 2 still names
+  C. No instrument of today's traffic records the circuits the upgrade will admit, so the admission solve is still needed and the hold
+  stands.
 * **Lens swap.** The naive read and the answer are different populations at different moments: today's traffic against the traffic the
   network will carry once the requests the upgrade admits are in service.
 

@@ -30,9 +30,12 @@ the recruits had stopped driving by May.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice and last year's payout total. The stock-flow model still reproduces every closed month it is
   calibrated on, and it still has no term for drivers who return after a gap.
-* **Instrument repair.** Imagine a KPI report that labelled every returning driver. Last January's returners would be readable, but this
-  January's are drivers who have not come back yet; their number is set by last spring's lapse cohort and the return rule, which no
-  better instrument of the past observes.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the KPI report's
+  active, continuing and first-trip counts are exact, the insurer's acknowledgements list every declared driver with the date first
+  declared, and the payout files hold every payment. The deepest repair available, a KPI report with a returning-driver line, leaves rung
+  0 at $2,904,200, rung 1 at $2,102,100 and rung 2 at $2,634,100 (it would show last January's 1,900 returners, the constant rung 2
+  already carries), and the decisive projection is still needed, because this January's returners come from last spring's 6,000 lapsers
+  and have not returned yet.
 * **Lens swap.** The naive read and the answer are different populations at different moments: last January's mix of continuing, new
   and returning drivers, against this January's, whose returners come from a cohort more than twice as large.
 

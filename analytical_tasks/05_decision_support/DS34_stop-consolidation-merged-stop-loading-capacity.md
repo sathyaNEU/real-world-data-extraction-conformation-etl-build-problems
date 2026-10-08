@@ -29,8 +29,9 @@ it. The draft went to the route with the most lightly used stops.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the draft, the scheduler's view and the council's basis. The memo's method on correctly joined counts still
   names the trunk route.
-* **Instrument repair.** Ride-check every trip and measure every dwell exactly. Today's stops would be measured perfectly, and none of them
-  is the merged stop the plan creates; its dwell exists only after the plan.
+* **Instrument repair.** Suspect file: the passenger counts, whose 23 relocated stops still carry their old counter codes. Repaired to the
+  new stop IDs, rung 1 lands with rung 2 on C at 3,700, and rung 0 still names A. No count records a removed stop's riders boarding at its
+  neighbour, whose dwell exists only after the plan, so the merged-stop capacity check is still needed.
 * **Lens swap.** The naive read and the answer differ in moment and population: today's stops and their riders, against the surviving
   stops carrying the removed stops' riders next year.
 

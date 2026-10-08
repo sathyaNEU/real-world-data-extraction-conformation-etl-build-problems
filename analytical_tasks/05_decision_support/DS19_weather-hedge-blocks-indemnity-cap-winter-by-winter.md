@@ -30,8 +30,10 @@ biggest.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of trading's view. Expected payout per contract, on any series, still fills the three biggest regions
   with two blocks each, and every payout ties to the term sheet.
-* **Instrument repair.** Give every region a perfect station and a perfect cost model. The clause still returns every payout above the
-  winter's cost, and Northgate's storage still keeps that cost low.
+* **Instrument repair.** No file the ladder uses is suspect: the regional series and the station records are complete and exact for
+  what each measures, the 1990s winters are correct records of colder winters that the policy detrends by method, and the supply model's
+  costs and the pilot log are complete. A perfect station at every load centre and a perfect cost model move no rung (2-2-2-0-0, 2-0-2-2-0,
+  2-0-2-0-2), and the winter-by-winter clause is still needed for 1-2-1-1-1.
 * **Lens swap.** The naive read values the contracts' average payout. The answer values what each block keeps in each winter, a different
   population of region-winters once the cap is applied.
 

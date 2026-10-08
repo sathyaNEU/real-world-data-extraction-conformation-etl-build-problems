@@ -29,8 +29,9 @@ programme director is confident next year will look like last year, only bigger.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view. The close-out still offers a clean per-unit savings rate, every visible segment of the
   pipeline matches last year's, and the rate transports in arithmetic.
-* **Instrument repair.** Meter every home's heating use directly. Under-heated homes still verify nothing, and next year's pipeline still
-  holds nine times their share.
+* **Instrument repair.** No file is suspect: every premise has 24 monthly bills on actual reads, the close-out verifies every project and
+  the unit counts are complete. Metering heating use directly would give the same slopes, so rung 0 still returns 54.4 GWh, rung 1 36.0 and
+  rung 2 30.6, and conditioning on the slope is still needed.
 * **Lens swap.** The naive read is last year's participants' yield. The answer is the yield of a different population, next year's
   homes, conditioned on how they heated before.
 

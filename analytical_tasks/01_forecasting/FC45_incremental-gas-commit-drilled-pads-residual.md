@@ -30,9 +30,10 @@ wells at 1,000 feet. The term sheet is due on 20 November.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the reserves lead's view and every voice. The rig schedule is still the natural list of next year's new
   wells, and every closed year still confirms it.
-* **Instrument repair.** Imagine production reported with no lag. The drilled pads would still show nothing, because they have not been
-  fracked; the gas they add in 2027 is set by when they turn in line and how tight-spaced wells perform, which no better record of past
-  production shows.
+* **Instrument repair.** Clean-data test. One file is suspect: the state's production reports run only to September. Brought to date, they
+  add the October–December turn-in-lines to the producing base and move no incremental rung: rung 0 returns 60, rung 1 45 and rung 2 30,
+  none of them 130. The spud register and completion log are complete, and the residual of drilled pads is still needed, because those
+  wells have never produced and appear in no plan.
 * **Lens swap.** The naive read and the answer count different populations: wells the 2027 rig will spud, against wells that will first
   produce in 2027, a majority of which were spudded in 2026.
 

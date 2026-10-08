@@ -29,8 +29,9 @@ every month of 2024. Each candidate has a non-firm connection offer from the uti
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the screening model and every voice. The control set still certifies day-ahead scheduling at the nodal
   price, 24 of 24, and still names Ridgeline.
-* **Instrument repair.** Meter every interval perfectly and publish every price. The neighbours' output is already metered exactly; the
-  headroom binds whatever the instrument.
+* **Instrument repair.** No file is suspect: prices, settlements and the neighbours' output are recorded for every interval, and the site
+  register's zone is a correct field for a different attribute (the pricing zone), used as a proxy at rung 1. Rung 0 returns Northfield,
+  rung 1 Harbor Point and rung 2 Ridgeline, and the hourly caps are still needed.
 * **Lens swap.** The naive read is the revenue a 20 MW battery earns at a price. The answer is the revenue of the energy the substation
   can take from it in each hour, a different quantity at a different grain.
 

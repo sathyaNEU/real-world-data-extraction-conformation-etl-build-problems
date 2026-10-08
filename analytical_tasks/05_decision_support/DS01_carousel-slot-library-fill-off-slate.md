@@ -30,9 +30,10 @@ logging policy's propensities. The personalisation lead believes the two-tower m
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the lead's belief, the dashboard and the library's registration estimates. The replay estimate on the logs still
   ranks A first among the proposals, and nothing on the slate looks inadmissible.
-* **Instrument repair.** Give the logger unlimited traffic and perfect attribution. A still loses 3.1% of orders in the app new-shopper cell,
-  B's reproduced lift is still negative, C still gives fresh listings 5.4% of top-three impressions, and E is still the only policy clearing
-  all three. Narrower intervals change no pass or fail.
+* **Instrument repair.** One field is stale: the library's registration estimates, computed on the logs of each policy's registration
+  year. No rung uses them, since rungs 0 to 2 score policies on the current logs, so refreshing them leaves rung 0 at A, rung 1 at B and
+  rung 2 at C. The logs, the archive's nine tests and the dashboard's coarse view are complete and exact for what they record, and the
+  library fill under the charter's three conditions, cell by cell and against the floor, is still needed for E.
 * **Lens swap.** The naive read ranks the three proposals by replay lift. The answer is a policy nobody proposed, scored on a weighting of
   sessions that the replay estimate never forms: a different candidate population, not the proposals under another lens.
 

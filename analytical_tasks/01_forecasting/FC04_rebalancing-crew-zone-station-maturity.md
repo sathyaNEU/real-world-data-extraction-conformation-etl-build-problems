@@ -28,8 +28,9 @@ opening day. This autumn a permit delay held back Riverside's expansion, and 18 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the transport department's basis. Net imbalance from trips still names Harbourside, and the
   closed seasons still confirm it.
-* **Instrument repair.** Instrument every dock perfectly. The new stations' mature level is five months away, and the past observes only
-  their first five weeks.
+* **Instrument repair.** No file is suspect: the rebalancing log is a complete record of moves done, by the crew that did them, and the
+  trip table holds every trip, the new stations' five weeks included. Even a log of uncapped need by station zone returns Harbourside at
+  rungs 0–2 (190 against 150), because the new stations' mature level lies five months ahead.
 * **Lens swap.** The naive read and the answer differ in moment: eighteen stations in their fifth week of service against the same
   stations in a mature season.
 

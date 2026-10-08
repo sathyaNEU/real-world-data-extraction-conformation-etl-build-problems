@@ -30,8 +30,10 @@ the worst corridor.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the district engineers' view. Lifecycle saving on class-calibrated curves still names Hollins Road, and every
   figure reconciles.
-* **Instrument repair.** Survey every section perfectly. The culvert section's subgrade still gives it 3.1 years, and the contractor's
-  decision still turns on the worst section, not the corridor.
+* **Instrument repair.** No file the ladder uses is suspect: the inventory, the condition report and all 38 acknowledgements are
+  complete, the manual's curves are exact for the Interstates they were fitted to, and an acknowledgement records a decision, which is all
+  it claims. Re-surveying every section moves no rung (rung 0 Ashby, rung 1 Pell, rung 2 Hollins), and the every-section rule is still
+  needed for Garrow.
 * **Lens swap.** The naive read ranks corridors on their own savings. The answer first applies the counterparty's underwriting, which is
   decided by a different population (each corridor's weakest section).
 

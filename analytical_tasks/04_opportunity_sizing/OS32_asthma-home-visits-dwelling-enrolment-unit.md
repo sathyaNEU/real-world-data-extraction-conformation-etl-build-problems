@@ -28,8 +28,10 @@ records each launch. The medical director wants Abbotsford, which has the most a
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and every voice. The claims still rank counties by children's stays, and nothing says an
   enrolment is a home.
-* **Instrument repair.** Make every claim perfect and every ID permanent. Children are still the rows and homes are still the enrolments,
-  so the unit still has to be built.
+* **Instrument repair.** Suspect files: the plan's member IDs, re-issued so that one child's stays split across IDs, and the active flag,
+  which records today's status rather than eligibility on the start date. Repaired, rungs 0 and 1 both become the index-linked, start-date
+  build and name Calder (943). Children are still the rows and homes still the enrolments, so the dwelling construction is still needed, and
+  Eastvale still wins at 1,545.
 * **Lens swap.** The answer counts a different population, the siblings an enrolment reaches who were never the enrolled child.
 
 ## 3. The driving force

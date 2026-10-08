@@ -30,8 +30,9 @@ Brightpath Energy Services for servicing.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice and the closure notice. The register still marks 12,500 Eastern Hills systems as lessor-owned,
   and the natural pipeline still sizes owners only.
-* **Instrument repair.** Make every register perfect; it already is. The systems remain lessor-owned, and only the referral manifest
-  connects their households to battery orders.
+* **Instrument repair.** No file is suspect: the solar, storage and tariff registers are complete, and the owner type correctly records that
+  the lessor still owns the SunLease systems, a different attribute from who buys batteries. Rung 0 returns Valley, rung 1 Metro and rung 2
+  Harbour, and only the manifest connects the lessee households to orders.
 * **Lens swap.** The naive read is owner households. The answer adds a population the owner view excludes, lessee households buying
   through a successor.
 

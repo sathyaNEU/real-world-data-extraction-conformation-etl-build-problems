@@ -29,8 +29,9 @@ asset director wants the filing to carry the pilot's number.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view. The pilot's controlled effect applied to a correct baseline still files 145 breaks, and every
   count reconciles.
-* **Instrument repair.** Record every break perfectly and probe every main. The pooled effect is still 48%, the clay mains still break from
-  movement, and the list is still 29% corrosive.
+* **Instrument repair.** The suspect file is the regulator's table, which suppresses the corrosive cohort. Published, it moves rung 0 to
+  rung 1's 124 (+79%) and leaves rung 1 at 124 and rung 2 at 145. A probe on every main and a soil column in the pilot log move no rung,
+  because rungs 0 to 2 use the pooled effect, and the soil-conditioned effect is still needed for 69.
 * **Lens swap.** The naive figure transports the pilot's segments to next year's list. The answer re-weights a soil-specific effect to a
   different population of mains, in a year the pilot does not cover.
 

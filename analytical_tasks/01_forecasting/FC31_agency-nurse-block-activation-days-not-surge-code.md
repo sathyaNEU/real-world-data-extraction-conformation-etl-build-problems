@@ -30,8 +30,11 @@ statements and each hospital's surge plan.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the pool manager's view and every voice. S-coded shifts per admission still reproduce last winter's pool total
   exactly, and the S code still mislabels the hospitals that will draw most.
-* **Instrument repair.** Imagine the agencies coding every shift by activation day. Past winters would then read correctly, but this
-  January's draw still depends on which hospitals the forecast pushes across the trigger, which no better code of the past records.
+* **Instrument repair.** Clean-data test. One field is suspect: the agencies' surge code marks the desk that took the booking, a narrower
+  thing than the pool's activation days. Recoded by activation day, rung 0 still returns 4,186 (last winter's activation-day total equals
+  its S-coded total), rung 1 3,910 and rung 2 4,020 (activation-day shifts per surge admission, carried hospital by hospital, give the
+  community hospitals only last winter's few activation days), none of them 4,700. The census and the settlement statements are complete,
+  and the forecast of this January's activation days from forecast occupancy is still needed.
 * **Lens swap.** The naive read and the answer are different populations at different moments: shifts coded by booking desk last winter,
   against shifts on the activation days this January's occupancy will produce.
 
@@ -157,7 +160,8 @@ hospital-days and the twin hospitals' draws + 5 named chart parts + 3 files ≈ 
   days and 23% of activation-day shifts were coded R, at different hospitals.
 * Seven community hospitals with baseline occupancy of 88–90% book surge cover through routine desks; two teaching hospitals book every
   shift through the surge desk.
-* Block figures: 4,186 / 3,910 / 3,560 / 4,700 across rungs; network-wide activation 3,700; single-midnight trigger 5,500.
+* Block figures: 4,186 / 3,910 / 3,560 / 4,700 across rungs; network-wide activation 3,700; single-midnight trigger 5,500. Recoded by
+  activation day, rungs 0 and 1 are unchanged and rung 2 gives 4,020.
 * Reproduction of 48 hospital-winter lines: 48 (rule), 41 (two-midnight runs), 27 (single midnight), 19 (S code).
 * The twin hospitals are identical on every invoice, admissions and wastewater column.
 * Unit transfers and re-sent requests touch no shift count, hospital total or census day.

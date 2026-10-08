@@ -31,8 +31,11 @@ certified cell of that parallel run.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the committee's view and every voice. The parallel run still certifies the event-log rule on 56 of 72 cells and
   the grid marker on 68, and only the frozen-schedule split reaches 72.
-* **Instrument repair.** Meter every hour exactly and code every event perfectly. Each refuelling outage is still one continuous event, and
-  only its frozen schedule, not a better instrument, says which of its hours were planned.
+* **Instrument repair.** Suspect: the plant's derate records leave the cause blank when the grid operator instructed the derate. Repair:
+  fill the cause on every derate. Rung 0 still returns +5.99, and rung 1 falls to +0.90, the figure rung 2 reaches by matching instructions;
+  none reaches +1.80. The event log is not suspect: it types every event correctly as a refuelling outage, forced outage or derate, a
+  different attribute from planned capability loss, and the outage register's frozen schedules are complete. The split at the frozen
+  schedule is a rule recovered by reproduction, which no row records, so it is still needed.
 * **Lens swap.** The naive figure compares annual capacity factors. The answer counts a different set of lost hours: the overrun and
   forced-early hours inside runs the event log files as planned.
 

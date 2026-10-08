@@ -30,8 +30,10 @@ The CEO says every dollar moved instead of through a bank saves senders nearly e
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CEO's view and the deck. The central bank's shares, the RPW quotes and the registration limit still give a
   clean, certified $0.77M.
-* **Instrument repair.** Quote every provider daily and count every transfer in the corridor. The market cost sharpens, and the senders
-  who switch are still mostly on an app already.
+* **Instrument repair.** The suspect file is the waitlist, 11,800 sign-ups standing for every year-one sender. Fill it with every year-one
+  sender's prior provider: in the launched corridors the waitlist sent 96% of year-one volume with the same mix, so the answer holds; rung 0
+  still returns $1.55M, rung 1 $1.15M and rung 2 $0.77M, none of which reads the waitlist, and the switchers' counterfactual is still
+  needed.
 * **Lens swap.** The naive read prices the corridor's senders. The answer prices the senders who will switch, a different population with
   its own prior costs.
 
@@ -113,6 +115,8 @@ through apps at 3.0%, so the senders' own prior cost is 3.8%, the saving is 2.0 
 * **Costs.** The RPW type averages (apps 3.0%, cash agents 6.2%, banks 9.4%, post 7.2%) are unchanged across the last four quarters.
 * **Headroom.** The running corridors carry a steady $1.25M a month, so the twelve months of year one are the binding window and Kenya's
   headroom is $24.0M under any month-by-month throttle.
+* **Coverage.** In both launched corridors the 4% of year-one volume sent by senders outside the waitlist had the waitlist's prior-provider
+  mix within one point.
 * **Rounding.** $24.0M × 2.0 points is exactly $480,000.
 
 ## 9. Prompt sketch and deliverables

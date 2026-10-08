@@ -31,9 +31,11 @@ where it will work the most hours that would otherwise go unworked.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the manager's view and every voice. The logged fill rates still look like the obvious thing to carry forward,
   and the store that borrows most still has the best record in the file.
-* **Instrument repair.** Imagine a call-in system that records the reason for every decline. The closed weeks would still hold too few
-  shared-shift offers to show the peak's weight, because the peak has not happened; the forward overlap has to be built from the forecast
-  either way.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the call-in log holds
+  every request, offer, decline and retry in the 32 closed weeks, the published rosters every shift, the casual register every casual's
+  home store. The deepest repair available, a log that records why each borrowed casual declined, leaves rung 0 at Harrow Quay, rung 1 at
+  Kellet Road and rung 2 at Tamsin Creek, none of which reads decline reasons, and the peak conditioning is still needed, because the
+  shared-block share it turns on is a forecast of shortages that have not happened.
 * **Lens swap.** The naive read and the answer differ in population and moment: offers made in sick-call weeks, one store short at a time,
   against the offers the peak's shared shortages will generate.
 

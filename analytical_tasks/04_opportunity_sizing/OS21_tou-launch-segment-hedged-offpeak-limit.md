@@ -30,8 +30,10 @@ director says heat-pump homes are where the savings are.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the pricing model. Per-home savings on the eligible population, certified by the
   parallel run, still name heat-pump homes by 1.26×.
-* **Instrument repair.** Meter every home perfectly and extend the run to every region. Savings and shifts sharpen, and 25 GWh still buys
-  fewer heat-pump switchers than the segment holds.
+* **Instrument repair.** Two files are suspect: the CRM's tariff field, set at acquisition and now stale, and the parallel run, one region's
+  8,000 homes. Replace the field with each account's tariff on 1 March and shadow-bill every home (segment rates are the same in every
+  region): rung 0 still returns storage-heater homes, rung 1 collapses onto rung 2 and both return heat-pump homes, and the limit is still
+  needed.
 * **Lens swap.** The naive read is customers who would gain. The answer is customers the launch can take on under the hedge, a different
   population counted in a different register.
 
@@ -114,6 +116,7 @@ fit under the limit, and they deliver £3.8M.
   within 10% of any segment's eligible demand.
 * **Eligibility.** The tariff history is complete to the launch date, and no tariff change straddles it.
 * **Switching.** No home's shadow saving lies within £2 of the £25 threshold.
+* **Regions.** Each segment's savings and shift per switcher in the pilot region match the half-hourly data of every other region within 2%.
 * **Rounding.** 29,700 switchers × £128 is £3.80M, mid-bin at £0.1M.
 
 ## 9. Prompt sketch and deliverables

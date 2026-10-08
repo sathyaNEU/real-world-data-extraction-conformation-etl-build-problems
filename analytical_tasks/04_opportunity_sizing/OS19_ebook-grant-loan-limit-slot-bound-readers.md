@@ -30,8 +30,9 @@ and every loan. The collections manager wants the money to follow the holds list
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the manager's view and the holds report. The ledger's turns and the state's series still certify rung 2 and
   send 43% of the grant to Romance.
-* **Instrument repair.** Time every loan and hold to the second, as the ledger already does. Every lot still settles its full turns, and
-  a card holding six loans still reads no more books.
+* **Instrument repair.** No file is suspect: the ledger times every loan, return and hold delivery to the second, and the holds report,
+  price list and state series are complete. Rung 0 returns Adult fiction's share, rung 1 Young readers' and rung 2 Romance's, and the card
+  replay is still needed.
 * **Lens swap.** The naive read counts checkouts on new licences. The answer counts checkouts by cards with a free slot, a different
   population of borrowers.
 

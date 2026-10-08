@@ -31,8 +31,11 @@ leads with each pool's trailing-year loss in economic value. The designation mem
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the treasurer's view, every voice and the report's headline. The static sensitivity, the natural forward
   measure, still ranks the mortgage pool first after the eligibility split.
-* **Instrument repair.** Make every pool's valuation perfect. The trailing losses and static sensitivities are already exact; the forward
-  year's runoff, set by each loan's incentive against rates that have not yet come, is not something a better instrument of the past shows.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: balances, durations,
+  the tapes, the pledge register and the control set are complete, and the ALM report labels its headline as a statement about the last
+  four quarters. The deepest repair available, a perfect valuation of every pool, leaves rung 0 at the ladder, rung 1 at the MBS and rung
+  2 at the mortgages, and the incentive runoff is still needed, because the forward year's prepayments under the new planning rate have
+  not happened.
 * **Lens swap.** The naive read and the answer weigh different moments: what each pool lost over the last four quarters, or holds today,
   against what it will still hold, and at what duration, through the swap's first year.
 

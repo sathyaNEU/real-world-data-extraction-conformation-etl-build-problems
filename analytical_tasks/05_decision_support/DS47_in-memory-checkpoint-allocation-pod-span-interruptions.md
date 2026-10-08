@@ -29,9 +29,10 @@ the 4,096 are used. The reliability dashboard counts interruptions by programme,
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and every voice. Each programme's own interruption rate per GPU-hour, carried onto next
   quarter's plan, still covers P1, P2 and P6.
-* **Instrument repair.** Give the platform a perfect record of every interruption and its cause. Last quarter's rates become exact and
-  still describe last quarter's placements; P3's jobs have not yet run across six pods, so no record of the past shows the rate they will
-  have.
+* **Instrument repair.** Suspect file: the incident log's category, which records the cause the incident tool could classify, filing
+  graceful pre-emptions as infrastructure and fabric stops as application timeouts. Repaired to the SLO's cause, rung 0 covers P4, P1 and
+  one of the three programmes tied at 20.8 interruptions, rung 1 lands on per-programme rates (P1, P2 and P6), and rung 2 stays on P1, P2
+  and P6. P3's six-pod placement has not yet run, so the two-term law on the plan is still needed.
 * **Lens swap.** The naive read and the answer differ in moment and unit: last quarter's book at a rate per GPU-hour, against next
   quarter's placement, where a fabric term is paid once per pod a job spans.
 

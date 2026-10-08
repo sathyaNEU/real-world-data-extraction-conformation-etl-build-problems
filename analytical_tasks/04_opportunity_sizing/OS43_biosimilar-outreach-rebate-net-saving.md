@@ -29,8 +29,10 @@ expects the biggest savings where list prices are highest.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and every voice. The pilot's per-switch formula still reproduces 312 of 312 settled
   switches, and no document says it fails anywhere.
-* **Instrument repair.** Record every pilot switch perfectly. The pilot molecules still carry no rebate, so no better instrument of the pilot
-  can show what a rebate does to a switch.
+* **Instrument repair.** Suspect files: the pilot log, which counts every switch within 60 days with no field for its cause, and the price
+  file the pilot used, superseded on 1 January. Repaired, rungs 0 and 1 become rung 2 and name B2 ($29,200 a contact). Claims and rebate
+  statements are complete, and the pilot molecules carry no rebate however well they are recorded, so the rebate netting is still needed for
+  B3.
 * **Lens swap.** Pharmacy-benefit members whose reference cost is partly repaid are a different population from the clinic-billed members
   the pilot measured, not the same members under another lens.
 

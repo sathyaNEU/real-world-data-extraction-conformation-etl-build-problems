@@ -31,8 +31,10 @@ resurfacing is the firm's bread and butter.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chief estimator's view. The textbook model at the new markups, on realised margins and with warranty
   resurfacing split out, still spends 20 bids on ordinary resurfacing, and every figure ties to its source.
-* **Instrument repair.** Make the tabulations, cost reports and log perfect. Competitors' response to the firm's price is still visible only
-  in the log's before-and-after seasons, and it still differs by warranty status.
+* **Instrument repair.** No file the ladder uses is suspect: the tabulations, cost reports, special provisions, change log and the
+  board's report are complete and exact, and the warranty status sits correctly in the special provisions. Copying the provision onto the
+  tabulations moves no rung (rung 0 bridge, full-depth and resurfacing; rung 1 bridge and resurfacing; rung 2 bridge, ordinary resurfacing
+  and culverts), and the change-log measurement is still needed.
 * **Lens swap.** The naive plan prices each class from competitors' past bids at the firm's past markups. The answer prices it from what
   happened after the firm moved its price: a different set of lettings, at a different moment.
 

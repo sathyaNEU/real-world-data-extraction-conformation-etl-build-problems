@@ -28,9 +28,10 @@ busiest. Last year the platform retired v1 and had its partner team audit what h
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the dashboard and every voice. Revenue on each version, built from integrations, still ranks v5.0, v4.1 and
   v3.1 first.
-* **Instrument repair.** Give the platform perfect telemetry, every call labelled as person-driven or machine and every key mapped to its
-  application. The revenue on each version becomes exact and still overstates what retirement strands, because whether an integration can
-  move is a property of the operations it uses against the successor map, not of how well its traffic is measured.
+* **Instrument repair.** No file the ladder uses is suspect: the call log, key registry, successor map and audit are complete, and every
+  write call carries its mode. Even with every call labelled as person-driven or machine, rung 0 stays on v3.1, v2.0 and v4.1 and rung 1
+  only moves onto rung 2's v5.0, v4.1 and v3.1. Integrations and operations are entities no row records, so the operation-grain minimum is
+  still needed.
 * **Lens swap.** The naive read and the answer differ in population: every integration on a version, against the integrations that use at
   least one operation without a successor, a set built operation by operation.
 

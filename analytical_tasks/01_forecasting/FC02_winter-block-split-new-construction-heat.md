@@ -28,8 +28,10 @@ spring the company signed exclusive enrolment deals with three home builders in 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the trading head's view and the zone tool. The book's own per-customer replay still reproduces 40 of 40
   closed zone-winters and still carries the pooled rate onto the new premises.
-* **Instrument repair.** Give every premise perfect interval data for ten winters. The new premises were built this year and have no
-  winter at all, so no instrument of the past observes their winter peak.
+* **Instrument repair.** Suspect: the enrolment file, whose 9,200 South Central resubmissions sit beside the rows they supersede, and the
+  new-construction report, which gives heating by ZIP, not by premise. Repair both: one row per premise and a heating type on every new
+  premise. Rung 0 still levels raw maxima to 160 · 200 · 10 · 30, rung 1 becomes rung 2's 105 · 170 · 125 · 0, and the pooled rate still
+  carries the book's 21% all-electric onto the new premises, so the subgroup replay is still needed for 225.
 * **Lens swap.** The naive read and the answer are different populations: the book that lived through the closed winters against the
   coming winter's book, 38% of whose South Central premises did not exist a year ago.
 

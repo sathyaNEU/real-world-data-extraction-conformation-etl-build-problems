@@ -31,8 +31,9 @@ on 1 May.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the planning analyst's view and every voice. Area-level percentiles summed into districts are still the
   natural build, every close-out still confirms them, and they still take all ten surge units.
-* **Instrument repair.** Imagine every call recorded unsuppressed. The areas' counts would be exact, but no closed summer dispatched across
-  districts; the district requirement still has to be built from the areas' joint evenings.
+* **Instrument repair.** Clean-data test. One file is suspect: the public dataset suppresses station-area cells of one or two calls.
+  Published in full, rung 0 returns 4 surge units and rung 1 10 (rung 2's figure), neither 7. The status log, close-outs and roster are
+  complete, and the district percentile is still needed, because no closed summer dispatched across districts.
 * **Lens swap.** The naive read and the answer staff different populations: each area's calls for each area's units, against each
   district's calls for the units that will serve the whole district.
 

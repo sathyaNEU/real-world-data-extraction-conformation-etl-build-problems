@@ -29,8 +29,10 @@ held to the next cycle. The growth team's cohort model is the filed method.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the finance basis. The cohort model's point forecasts with its back-test interval still
   place three positions.
-* **Instrument repair.** Count every edit perfectly. The issued forecasts still missed by 18%, because the inflows they had to assume
-  changed after issue. A better record of the past does not shrink the error of a forecast about the future.
+* **Instrument repair.** No file is suspect: the edit history holds every edit, the revision log every issued vintage with the campaign
+  plan assumed at issue, and the mentorship register every mentor. Perfect records return the same rungs (2 · 2 · 1 · 1 · 0, then
+  1 · 2 · 1 · 1 · 0, then 1 · 0 · 1 · 1 · 0), because a model back-test plugs in the inflow that arrived, and the issued forecasts missed
+  by 18% because campaigns changed after issue.
 * **Lens swap.** The naive read and the answer differ in moment: a forecast scored as if the future inflow were known, against the same
   forecast scored as it was issued.
 
@@ -38,8 +40,8 @@ held to the next cycle. The growth team's cohort model is the filed method.
 
 A strong solver replaces the aggregate retention ratio with cohort retention, respects the mentorship caps, and computes the standard's
 lower bound from a careful back-test. It re-runs the cohort model at 24 past origins. That back-test needs each origin's new-contributor
-inflow. The campaign plans of those origins were overwritten, and only next year's plan ships, so the back-test uses the inflow that
-actually arrived. Scored that way the method errs by 7%, and three wikis clear the bar. The standard's bound is the method's error as a
+inflow, and the growth memo's back-test procedure feeds the model the cohorts that actually arrived, as model back-tests do. Scored that
+way the method errs by 7%, and three wikis clear the bar. The standard's bound is the method's error as a
 forecast, and inflow is the one input a forecast never knows. The revision log holds every twelve-month forecast the team issued, each
 made with the plan of its day. Two campaigns were cancelled after issue and one was doubled. The 80th-percentile absolute error is 18%.
 At that width W1's 1,700 per moderator has a lower bound of 1,394, 106 short of the bar. Every other wiki is further short, so all six
@@ -70,8 +72,8 @@ positions are held.
 1. **Written nowhere.** The standard says "the method's 80th-percentile absolute error at the twelve-month horizon". No document says
    that a back-test with known inflows is not that error, or that inflow plans changed after issue.
 2. **Corpus blind for a computable reason.** *In every one of the 24 back-test origins the inflow used is the inflow that arrived,
-   because past campaign plans were overwritten and only next year's plan ships.* The back-test reproduces the edit history to within 7%
-   and contains no inflow surprise at all.
+   because the memo's back-test procedure feeds the model observed cohorts.* The back-test reproduces the edit history to within 7% and
+   contains no inflow surprise at all.
 3. **No arithmetic symptom.** Cohorts tie to the edit history, the back-test ties to realised actives, and the mentorship caps hold
    under every rung.
 4. **Not a row predicate.** The blocking quantity is an order statistic over 60 issued forecasts' realised errors (12 vintages × 5
@@ -98,7 +100,7 @@ positions are held.
 * **Filed pins.** The staffing standard: positions are placed one at a time on the wiki with the most forecast active contributors per
   moderator, while its lower bound (forecast less the method's 80th-percentile absolute twelve-month error) exceeds 1,500; unplaced
   positions are held. The growth memo: active means five or more edits in a month by a registered non-bot account, and the cohort model is
-  the method. The mentorship policy: one mentee per mentor per year.
+  the method, back-tested by re-running it at past origins on the cohorts observed. The mentorship policy: one mentee per mentor per year.
 * **Empirical pins.** The interval, from the revision log. Retention by cohort age, from the edit history.
 * **Voices.** The community-support director: "Big wikis always need more moderators; the numbers just confirm it." The growth analyst:
   "Our model back-tests within seven per cent. That's tight enough to staff on."

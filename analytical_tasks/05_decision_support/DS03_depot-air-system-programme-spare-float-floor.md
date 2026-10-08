@@ -30,8 +30,10 @@ stand-downs prevented across its reference fleets. The fleet director wants the 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the vendor's 45% and the director's view. Stand-downs priced at the close-out's own lost-trip share still name
   Kingsbridge, then Highmoor once the kits bind, and nothing fails a check.
-* **Instrument repair.** Give every truck perfect telematics and the close-out perfect records. The share is still an average over days,
-  Highmoor's frost failures still come without warning, and Fenwick's float is still one truck.
+* **Instrument repair.** No file the ladder uses is suspect: the close-out, the daily stand-down log, the alert back-test and the float
+  register are complete and exact, and no field records which stand-downs cost a trip. Perfect telematics and records leave rung 0 at
+  Kingsbridge, rung 1 at Ravensdale and rung 2 at Highmoor, Highmoor's frost failures still come without warning, and the day-by-day replay
+  is still needed for Fenwick.
 * **Lens swap.** The naive read prices every stand-down at the depot's average. The answer prices only the stand-downs the model removes,
   each on the day it would have fallen: a different population, valued at the depot-day grain.
 

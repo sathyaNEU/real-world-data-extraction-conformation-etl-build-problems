@@ -28,8 +28,10 @@ officer wants the scheme in Old Town, the inner district with the most short car
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the officer's view and every voice. Tour-level substitution with the verified switched shares still names
   Northgate, and nothing in the pack mentions anyone but the rider.
-* **Instrument repair.** Give every rider a perfect diary and every car a perfect logger. Both already are perfect. The rebound is
-  produced by other people's real trips, and no better instrument of the rider removes it.
+* **Instrument repair.** Suspect file: the pilot's after-week diaries, which follow only the rider. Repair: an after-week diary from every
+  household member (the loggers already cover every car). Rungs 0, 1 and 2 never use other members' driving and still name Old Town,
+  Riverside and Northgate. The rebound becomes directly visible in the pilot, but no forward district is in the pilot, so Ashby Vale still
+  wins only through each district's contested-car share, built from the survey's rosters and diaries.
 * **Lens swap.** The rider's own driving and the trips other household members make in the freed car are different populations. The
   answer needs the second one, which is in no survey row.
 

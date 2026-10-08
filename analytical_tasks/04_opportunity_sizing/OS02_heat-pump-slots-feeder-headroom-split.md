@@ -29,8 +29,10 @@ pilot sold to qualified households in six neighbourhoods. The utility publishes 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the deck and every voice. The survey and the pilot still produce a confident split of all 1,800 slots, and
   district totals of the hosting map still show no binding.
-* **Instrument repair.** Survey every household and measure every feeder exactly. Demand and headroom are already exact; the binding
-  still lives at a grain the allocation never forms.
+* **Instrument repair.** The only partial instrument is the household survey, a weighted sample. Replace it with a census of every
+  household: the survey's joint counts already match it, so rung 0 still commits NS 430 · VA 640 · LA 480 · UP 250, rung 1 NS 620 · VA 470 ·
+  LA 460 · UP 250 and rung 2 NS 440 · VA 450 · LA 360 · UP 550, all 1,800 slots, and the feeder caps are still needed. The pilot log, the
+  hosting map and the feeder map are complete.
 * **Lens swap.** The naive read is households who would buy. The answer is households who would buy on a feeder with a free slot in
   the coming year, a different population.
 

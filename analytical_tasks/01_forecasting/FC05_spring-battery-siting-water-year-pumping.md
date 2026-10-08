@@ -29,8 +29,9 @@ state commission on 15 November.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the alarm export and both voices. Last spring's SCADA back-feed, grown by the queue, still puts five units on
   agricultural substations.
-* **Instrument repair.** Meter every substation and every rooftop perfectly. Last spring is then measured exactly, and the pumps' return
-  is still a property of a spring that has not happened.
+* **Instrument repair.** Suspect: the interconnection queue, whose capacity column is DC nameplate where the commission's additions are
+  AC. Restate every system in AC. Rung 0 still returns 2 · 2 · 2 · 1 · 2 · 1 · 1 · 1, rung 1 becomes rung 2's 2 · 2 · 1 · 2 · 2 · 1 · 1 ·
+  1, and the pumps' return in a 15% year is still a property of a spring that has not happened.
 * **Lens swap.** The naive read and the answer differ in moment: a full-allocation spring against a 15% spring, at the same substations.
 
 ## 3. The driving force

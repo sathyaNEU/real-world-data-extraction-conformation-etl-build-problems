@@ -28,8 +28,9 @@ winters, in December to February from 17:00 to 21:00. Procurement believes a fif
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete procurement's view and the utility's desk check. The five-farm model on the reference winters still files at
   the accreditation ceiling of 158 MW.
-* **Instrument repair.** Give every farm a perfect meter and the ridge a perfect weather mast. The coastal farms still never ice, the
-  ridge still ices in episodes, and the ridge's output on future evenings is still unmetered. A better instrument of the past adds nothing.
+* **Instrument repair.** No file the ladder uses is suspect: the acknowledgements are complete hourly records of the four farms, the
+  published icing losses complete daily records, and the reanalysis covers every reference hour. The ridge farm has never run, so its icing
+  evenings are a forward population built from the zone's rule; rungs 0 to 2 return 142, 171 and 158 MW under any repair of the past.
 * **Lens swap.** The naive read and the answer differ in population: the farms the model was validated on against a farm whose winter
   regime none of them shares, at a moment (next winter) none of them has metered.
 

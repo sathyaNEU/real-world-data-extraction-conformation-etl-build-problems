@@ -29,8 +29,10 @@ did the work.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair and the economist. The event study still shows a pre-period drift, and the textbook responses (ignore
   it, or detrend it) still miss.
-* **Instrument repair.** Meter every household perfectly. The local ordinances still began at staggered dates that no supplier report
-  records, and they still sit inside the pre-period.
+* **Instrument repair.** Suspect: no supplier report records a local ordinance. Repair: add a field dating each supplier's ordinance. Rung 0
+  still returns 0.92, rung 1 0.71 and rung 2 0.48, because none of them treats part of the pre-period as treated. Entering the ordinances as
+  a second, staggered treatment is still needed to reach 0.55. The repair makes the warning-run dating unnecessary, and the
+  staggered-treatment construction carries the call.
 * **Lens swap.** The naive comparison treats the pre-period as untreated. The answer dates a different treatment, local ordinances from July
   2014 to March 2015, inside that window.
 

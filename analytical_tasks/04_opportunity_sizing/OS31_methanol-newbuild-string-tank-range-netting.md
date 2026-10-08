@@ -27,8 +27,10 @@ EU allowance. The sustainability director wants the ship on the Asia–North Eur
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and every voice. The replaced ships' in-scope emissions still rank AE2 and TA3 first,
   and nothing says the newbuild will burn fuel oil.
-* **Instrument repair.** Give every ship perfect fuel meters. The overlap already has them. What the newbuild will burn on a rotation it has
-  never sailed is a construction, not a measurement.
+* **Instrument repair.** No file is suspect. The monitoring reports correctly record emissions under the monitoring rules' own voyage split,
+  a different attribute from the trading scheme's scope; restated on the scheme's class list, rung 0 becomes rung 1 and names AM1. Voyage
+  records and the overlap's fuel meters are complete. Rungs 1 and 2 still name AM1 and TA3, and what the newbuild will burn on a rotation it
+  has never sailed is still a construction.
 * **Lens swap.** The answer needs the newbuild's own future fuel by leg on each candidate rotation, a different population of voyages from
   the replaced ship's past ones.
 

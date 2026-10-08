@@ -30,8 +30,10 @@ and the team's dashboard. The quote goes live on 15 December.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of mobility's view and every voice. The book's renewals are still the obvious reference for a
   quarter of renewals, and their 80th percentile, shifted for the growing queue, still lands at 5.0 months.
-* **Instrument repair.** Imagine USCIS publishing every case's appointment and decision dates. The past would be clearer, but which of
-  next quarter's filers need a new appointment is still decided by each person's own appointment history, joined across their cases.
+* **Instrument repair.** Clean-data test. One field is suspect: the dashboard measures each case from its first receipt, though USCIS's
+  clock starts at the accepted one. Repaired, rung 0 returns 3.5 months (rung 1's figure) and rung 2 5.0, neither 8.0. The case register's
+  appointment notices are complete, and the fingerprint classing is still needed, because next quarter's filers have not filed and their
+  appointment histories, not any case field, decide their wait.
 * **Lens swap.** The naive read and the answer weigh different populations: renewals whose fingerprints were a year old, against renewals
   whose fingerprints are two years old, which the book's renewals never included.
 

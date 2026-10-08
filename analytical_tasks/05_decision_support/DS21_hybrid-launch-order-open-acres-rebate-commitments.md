@@ -30,8 +30,9 @@ the seed company's sell-through statements. The agronomy manager wants the order
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the agronomy manager's view. The launch model times members' corn acres still gives a confident order, and
   every acre ties to the registry or the crop plans.
-* **Instrument repair.** Survey every field by satellite. The acres become exact, and the large members' rebate commitments still close
-  91% of them.
+* **Instrument repair.** The suspect field is the registry's operator key, which carries entity-farmed fields under the entity, not the
+  member. Linked to members directly, rung 0 lands on rung 1's 35,900, and rungs 1 and 2 stay at 35,900 and 37,600. The crop plans and the
+  agreement register are complete, and no file records open acres, so the netting is still needed for 16,800.
 * **Lens swap.** The naive read orders for the corn footprint. The answer orders for the open acres, a different population that differs
   member by member.
 

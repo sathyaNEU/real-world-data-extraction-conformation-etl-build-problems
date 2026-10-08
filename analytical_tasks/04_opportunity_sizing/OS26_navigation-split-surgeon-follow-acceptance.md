@@ -29,8 +29,10 @@ booking. The network director wants the navigations concentrated on endoscopy.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the vendor's claim about its record. The pilot's own group acceptance still ranks
   endoscopy first, and no document mentions surgeons in connection with navigation.
-* **Instrument repair.** Make the pilot ten times larger and every acknowledgement perfect. The group rates stay exactly right for the pilot
-  counties and stay wrong for a region whose surgeon mix by group is inverted.
+* **Instrument repair.** No file is suspect. The claims carry every line with its rendering surgeon, the tier-1 rates and all 2,240
+  acknowledgements are complete, and member addresses are current. Nothing is blank, stale or narrower than it claims, so rungs 0, 1 and 2
+  still return MRI, arthroscopy and endoscopy. A ten-times-larger pilot keeps the group rates right for the pilot counties and wrong for a
+  region whose surgeon mix by group is inverted, so the shared-surgeon construction is still needed for cataract.
 * **Lens swap.** The pilot counties' referrals last year and the forward region's referrals next year are different populations at
   different moments. The answer rests on the forward population's surgeon mix, which no lens on the pilot can supply.
 

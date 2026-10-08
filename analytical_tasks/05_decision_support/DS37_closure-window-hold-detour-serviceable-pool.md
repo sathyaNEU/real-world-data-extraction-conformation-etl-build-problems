@@ -29,8 +29,10 @@ quietest hour on the counter. The booking is due on Friday.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the planner's preference and the manual's default. A queue model with any diversion a solver might assume
   still books a window; the pool still has to be built from two files to see that none qualifies.
-* **Instrument repair.** Count every vehicle perfectly by class and speed. The pool is a property of trips and weights, not of counts, and
-  the detour has never been signed at night here, so no better counter reveals how much traffic it would take.
+* **Instrument repair.** Suspect file: the loop station's heavy class, coarser than the axle classes the manual's equivalents need. Repaired
+  with axle classification at the loop, rung 0 still names Sunday 23:00, rung 1 Monday 22:00, and rung 2 still books Sunday 21:00 at 540,
+  since the weigh-in-motion split already supplied the classes. No other file is suspect: the end readers and the weigh-in-motion station
+  record every vehicle. The detour has never been signed at night, so the pool is still a construction and the hold stands.
 * **Lens swap.** The naive read and the answer differ in population: all traffic times a statewide diversion rate, against the through
   trips under 26 tonnes that can actually leave the segment.
 

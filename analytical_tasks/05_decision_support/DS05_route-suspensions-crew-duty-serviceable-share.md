@@ -29,8 +29,11 @@ long-distance sleepers are where the money goes.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the CFO's belief. Avoidable cost less every fare a suspension loses still puts the Lakeshore sleeper first, and
   every figure reconciles to the ledger.
-* **Instrument repair.** Give the operator a perfect P&L and a perfect journey file. A per-route crew line, however exact, still credits
-  Lakeshore with $68M that no shift change can release.
+* **Instrument repair.** No file the ladder uses is suspect: the P&L's crew and revenue lines are correct allocations (crew by
+  train-miles, revenue by leg) and the avoidability table is a costing convention, so none claims what a suspension releases or loses; the
+  journey file, the roster and the ledger are complete. Even a P&L that booked every connecting fare to the route only moves rung 1 to
+  rung 2's Lakeshore, Valley, Harbour and Moorland, rung 0 still leads with Sunrise and Lakeshore on allocated loss, and the duty construction
+  is still needed for Pennine.
 * **Lens swap.** The naive read prices each route's own cost lines. The answer prices the duties that would cease to exist: a different
   population (roster duties), reached through the trains they carry.
 

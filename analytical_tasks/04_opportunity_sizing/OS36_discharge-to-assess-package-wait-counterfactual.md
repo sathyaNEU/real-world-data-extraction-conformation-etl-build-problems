@@ -28,8 +28,9 @@ director of adult services believes the scheme halves delays wherever it runs.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's belief and every voice. Delay per pathway-1 patient still ranks Calder first, and no document
   separates waiting for care from waiting to leave.
-* **Instrument repair.** Record every delay to the minute. The delay is already exact. A package still frees only the part spent waiting
-  for care, and that is defined by another party's commitment.
+* **Instrument repair.** No file is suspect. The weekly return records census-day delays and the delay file records each episode's optimised
+  and discharge times, both complete and with no cause field, and the brokerage feed holds every offer and decline. Rungs 0, 1 and 2 still
+  name Ardmore, Bridgend and Calder. Days freed are a counterfactual built from another party's commitment, which no row claims to record.
 * **Lens swap.** The answer counts days that would not have happened anyway, a different population of bed-days from the delays recorded.
 
 ## 3. The driving force
@@ -89,8 +90,8 @@ quarter of it.
 * **The absolute split (O2).** Pilot patients whose care was offered to start on or before optimisation: 0 days freed (212 of 212).
   Patients without such an offer: freed days equal offered start − optimised − 1 to the day (428 of 428).
 * **Twin pair.** Pilot wards Heron and Linnet are identical on every column of the delay file: pathway-1 episodes (160 each), mean delay
-  (8.1 days), age mix and reasons coded. D2A freed 2.0× as many bed-days on Linnet (604 against 302), because Heron's patients had care
-  arranged earlier. No delay-based rule reproduces both.
+  (8.1 days), age mix and discharge destination. D2A freed 2.0× as many bed-days on Linnet (604 against 302), because Heron's patients had
+  care arranged earlier. No delay-based rule reproduces both.
 * **Resemblance points at the decoy.** Calder resembles the pilot's best ward on delay length, age mix and pathway share.
 
 ## 7. Pins, voices and the licensed wrong basis

@@ -28,8 +28,10 @@ tranche takes out of the ground. The programme manager favours Corliss, an old m
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the manager's view and every voice. The inventories, once unknown and galvanised lines are counted, still put
   Corliss far ahead, and every system's average cost sits under the cap.
-* **Instrument repair.** Make every inventory fully verified. Corliss's need grows more certain, and its local money still runs out after
-  600 lines.
+* **Instrument repair.** Suspect files: the inventories' unknown lines and their galvanised lines recorded as non-lead behind a lead
+  connector. Repaired, rungs 0, 1 and 2 all become the full-need, average-cost build and name Corliss (2,881). The cost schedule, plans and
+  local contributions are complete, and Corliss's local money still runs out after 600 lines, so the per-line cap in plan order is still
+  needed for Easton's 2,010.
 * **Lens swap.** The answer counts lines that can actually be paid for, a subset of the lines that need replacing, and Corliss's subset is
   a fifth of its need.
 

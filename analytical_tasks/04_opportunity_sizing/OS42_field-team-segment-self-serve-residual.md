@@ -29,8 +29,9 @@ belongs.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chief revenue officer's view and every voice. Field wins by segment, built from the change log's own win
   rates, still name fitness studios, and no document mentions self-serve upgrades.
-* **Instrument repair.** Perfect CRM and billing records change nothing, because both are already exact. The firms a team would merely
-  relabel are real customers on real invoices.
+* **Instrument repair.** Suspect file: billing, which carries no channel field. Repaired, self-serve upgrades become a column, but rungs 0,
+  1 and 2 size field wins only and still name restaurants, home health and fitness. What a team adds is still its wins less the 80% of
+  self-serve upgrades it absorbs, which only the change log measures, so the netting is still needed for landscaping.
 * **Lens swap.** The answer counts firms whose paying depends on the team, a counterfactual population, not the field wins under another
   lens.
 

@@ -29,8 +29,10 @@ of every installation with its revised winter load, the programme's verification
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the forecasting team's confidence and every voice. A weather-and-trend model on the bills still ties every
   closed winter, and still sees nothing of the 2026 cohort.
-* **Instrument repair.** Imagine interval meters on every home with perfect reads. The 2026 cohort's heating load still has not happened;
-  no instrument of the past can observe a winter that has not come.
+* **Instrument repair.** Clean-data test. One field is missing: the bills carry no conversion flag, only the rebate credit. Given the
+  flag, rung 0 still returns 18 GWh, rung 1 12 GWh and rung 2 −22 GWh (it identifies the same converted homes), none of them 50 GWh, and
+  the 2026 cohort's first winter is still needed, because the 12,000 homes converted after the last winter have no heating month in any
+  bill and no instrument of the past can observe a winter that has not come.
 * **Lens swap.** The naive read and the answer are different moments for the same homes: the 12,000 converted homes as they were last
   winter, heated by gas, against the same homes this winter, heated electrically.
 

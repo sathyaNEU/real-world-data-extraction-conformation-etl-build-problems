@@ -28,8 +28,10 @@ paired phone. The telematics lead is sure the two-car-family segment is where co
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the telematics lead's view and every voice. The pilot's randomised 19% on behavioural claims still ranks
   two-car families first, and no document mentions who drives.
-* **Instrument repair.** Make the randomisation larger and every claim settled to the penny. The 19% is still a correct average over a mix
-  that no forward segment shares.
+* **Instrument repair.** Suspect file: the policy file's declared main driver, which records who was named at sale rather than who drives.
+  Repaired to the trip-based share, rungs 0, 1 and 2, which never condition the yield, still name added teens, shared-car pairs and two-car
+  families. The pilot, payments, recoveries and trip logs are complete, and the 19% is still a correct average over a mix no forward segment
+  shares, so the conditioning is still needed for retirees.
 * **Lens swap.** The answer applies to each segment's own vehicles split by who drives them, a different population from the pilot's
   pooled cohort.
 

@@ -28,8 +28,9 @@ stack and one emissions monitor. The OEM's brochure reports 91% fewer exceedance
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the OEM's figure and the compliance manager's view. Projecting each unit's hours forward and applying the
   before-and-after reductions the fleet book shows at retrofitted units still names GT2.
-* **Instrument repair.** Give every unit its own perfect monitor. Rung 1 falls away, and the answer does not move: the overhauls are still
-  scheduled, they still remove most of the hours the brochure credits to the retrofit, and the retrofit still bites harder on one model.
+* **Instrument repair.** Suspect file: the shared stack's monitor, which records GT3's and GT4's exceedances together. Repaired with a
+  monitor on each unit, rung 0 lands with rung 1 on GT4, and rung 2 still names GT2. No monitor records the hours a retrofit avoids against
+  overhauls that have not happened, so the netting and the split by model are still needed to reach GT5.
 * **Lens swap.** The naive read and the answer differ in population and moment: the hours each unit will have, against the hours it will
   have only because it was not retrofitted, a counterfactual nobody has observed.
 

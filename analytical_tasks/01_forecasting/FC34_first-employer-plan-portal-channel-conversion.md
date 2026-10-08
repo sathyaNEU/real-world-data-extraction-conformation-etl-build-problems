@@ -29,8 +29,10 @@ state registration reforms. Applications in the core states rose 26% over the la
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the head of growth's view and every voice. The lag convolution on the published rates still reproduces every
   closed quarter and still carries the surge into 2027 at full value.
-* **Instrument repair.** Imagine formation statistics published by filing channel. The portal cohorts' quarters three to eight have still
-  not happened, so their conversion still has to be measured from the earlier launches.
+* **Instrument repair.** Clean-data test. One field is suspect: the vendor file's first-time flag is set by employer identifier, a
+  narrower thing than a first-time business. Corrected through the predecessor links, rung 0 returns 8,180 and rung 1 6,880 (rung 2's
+  figure), neither 5,900. The published cohort rates, registration statistics and change log are complete, and the portal-channel
+  conversion is still needed, because the portal cohorts' later quarters have not happened.
 * **Lens swap.** The naive read and the answer convert different populations: pre-portal cohorts, on which the rates were fitted, against
   portal-era cohorts in three states, which the rates were never fitted on.
 

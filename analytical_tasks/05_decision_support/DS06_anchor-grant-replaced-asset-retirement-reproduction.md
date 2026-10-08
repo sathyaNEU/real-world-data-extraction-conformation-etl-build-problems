@@ -31,8 +31,10 @@ transit electrification because its tonnage is the largest.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the board's preference and the applicants' stated figures. Recomputing reductions with the methodology's
   hourly counting and a standard two-stage baseline still names the refuse fleet, and still reproduces 33 of 40.
-* **Instrument repair.** Make every meter, register entry and certificate perfect. The method still has to be recovered, and the refuse
-  trucks still retire under the ordinance in the project's first year.
+* **Instrument repair.** No file the ladder uses is suspect: the register records each vehicle's install date and claims no retirement
+  date, and the certificates, the ordinance, the factors and the book are complete. Making every entry perfect leaves rung 0 at the buses,
+  rung 1 at the cold chain and rung 2 at the refuse fleet (33 of 40), because install year plus standard life is a convention, not a
+  record, and the three-source retirement is still needed for the drayage cooperative.
 * **Lens swap.** The naive read credits each project against its own replaced asset for the project's whole life. The answer credits each
   replaced vehicle only until the date the register, its certificates and the ordinance would have retired it: a different counterfactual
   population of vehicle-years.

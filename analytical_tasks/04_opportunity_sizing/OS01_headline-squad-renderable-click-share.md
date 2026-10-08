@@ -28,8 +28,10 @@ vertical. The test archive holds every concluded test at package level. The audi
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's view and the dashboard. The archive still ranks desks by lift × clicks, the change log still
   certifies shrinkage on total clicks, and nothing in the pack says which clicks a winner can reach.
-* **Instrument repair.** Give every test unlimited impressions and perfect measurement. The lifts become exact and the canonical headline
-  still governs every click that starts outside the platform's own screens.
+* **Instrument repair.** No file is suspect: the click-source log gives a source surface for every article pageview, the archive holds every
+  concluded test at package level and the change log all seven embeddings, with nothing blank, suppressed, stale or narrower than the
+  decision needs. Rung 0 returns Politics·national, rung 1 Sport·metro and rung 2 Business·national, none of them reads the click source,
+  and the drawn share still has to be built.
 * **Lens swap.** The naive read and the answer are different populations: all clicks a desk earns against the clicks that start on a
   platform-drawn headline in the coming year.
 

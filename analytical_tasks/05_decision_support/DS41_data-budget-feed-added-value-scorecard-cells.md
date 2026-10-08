@@ -29,8 +29,10 @@ points to the feed's AUC lift.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the AUC case and every voice. The feed's decision value measured on top of the base model still funds the
   branch thick-file segment.
-* **Instrument repair.** Give the issuer perfect repayment outcomes for every applicant. The feed's standalone value becomes exact and
-  still overstates what it adds where the bureau already knows the same thing.
+* **Instrument repair.** No file the ladder uses is suspect: the holdout outcomes, the scorecard, the application forecast and the partner's
+  profile are complete. Perfect repayment outcomes leave rung 0 on the AUC case, rung 1 on branch thick, online thin and branch thin, and
+  rung 2 on partner, branch thick and online thin: the feed's standalone value becomes exact and still overstates what it adds to the other
+  sources, so the added-value construction is still needed.
 * **Lens swap.** The naive read and the answer differ in population: decisions made on the base model alone, against decisions already
   made with three sources, where only the applicants the feed moves count.
 

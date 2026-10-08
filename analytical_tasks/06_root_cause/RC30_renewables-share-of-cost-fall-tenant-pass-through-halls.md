@@ -28,8 +28,10 @@ it with the PPA. At the start of the second year a cloud tenant moved into newly
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The overlap still certifies that cost equals metered load at the hourly price, and the natural
   pipeline still prices the build-out on the gross meters.
-* **Instrument repair.** Give every meter a perfect clock and a site tag. The halls' kWh are still inside the site meters, and the lease, not
-  a better meter, decides whose they are.
+* **Instrument repair.** Suspect: nine meter feeds stamp UTC, so their hours mean something different from the others'. Repair: a local
+  clock on every meter. Rung 0 still returns 9.0, rung 1 12.0 and rung 2 14.0, now without any recovery; none reaches 10.5. The site meters
+  and invoices are not suspect: they record physical consumption and the supplier's charge exactly. The operator's own exposure is set by
+  the lease and built from the sub-meter register, which no row claims to record, so netting the halls is still needed.
 * **Lens swap.** The naive figure prices the build-out on all metered consumption. The answer prices it on the 60% the operator bears, which
   has a different hourly shape. These are different populations.
 

@@ -29,8 +29,10 @@ are where the doubt is.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the lead's view and the council's dashboard. The pilot's correction rate by queue, the natural measured
   evidence, still names A.
-* **Instrument repair.** Give the pilot a hundred times the sample. The split by cohort becomes sharper and the queue rates exact, and A's
-  pilot rate is still last quarter's: the cohort will not be in A next quarter.
+* **Instrument repair.** No file the ladder uses is suspect: the crowd labels, the pilot's corrections and the onboarding register are
+  complete, and saturated posteriors are a model's output, not a gap. A pilot a hundred times larger leaves rung 0 on D, rung 1 on B and
+  rung 2 on A, because it still describes last quarter's assignments; next quarter's placement of the cohort is a forward population, so the
+  transport is still needed.
 * **Lens swap.** The naive read and the answer differ in population and moment: last quarter's items by queue, against next quarter's
   items carried by a cohort that has changed queues.
 

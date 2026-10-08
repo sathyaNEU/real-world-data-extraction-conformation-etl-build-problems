@@ -28,8 +28,10 @@ end-of-lease battery capacity, keeping a 15% reserve. The sustainability team ex
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the sustainability team's expectation and every voice. The close-out still certifies a rate with a 120-of-120
   record, and nothing in the pack says that rate depends on speed.
-* **Instrument repair.** Give tranche 1 perfect telemetry for a full year. Its routes still contain 2–4% stem miles, so any day-level
-  instrument still returns one rate that fits them all.
+* **Instrument repair.** Suspect file: the manufacturer's suppressed cold-weather cell. Repair: publish it; any value inside the 0.59–0.63
+  bound decides every van as the bound does. Rung 0 stays at 312 vans, rung 1 at 236 and rung 2 at 281, and the answer stays 198. The
+  close-out, segment telemetry and route master are complete, and a full year of perfect tranche-1 telemetry still shows only 2–4% stem
+  miles, so each forward route must still be priced segment by segment.
 * **Lens swap.** Tranche-1 routes last year and the forward depots' routes next year are different populations at different moments. The
   answer rests on the forward routes' own speed profiles.
 

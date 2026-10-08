@@ -30,8 +30,9 @@ held vacant. The workload standard gives each stage's weekly capacity per person
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the director's preference and her four options. A throughput model on filings still finds intake,
   corrections and issuance short and plan review comfortable, and still lands on a division that leaves plan review at 115%.
-* **Instrument repair.** Time-stamp every review perfectly. The receipts are already complete; each filing still returns for 0.8
-  further reviews, and the options still fail.
+* **Instrument repair.** No file is suspect: the receipts hold every closed job's notices and resubmissions, and the waits, roster and
+  completions are complete; completions are a correct count of a different thing, used as load at rung 1. Rung 0 returns option (a), rung 1
+  option (d) and rung 2 option (c), and the search over divisions is still needed.
 * **Lens swap.** The naive read counts filings. The answer counts reviews and resubmissions, a different population of work items, and
   searches a different set of plans.
 

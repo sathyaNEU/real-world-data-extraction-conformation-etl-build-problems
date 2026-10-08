@@ -30,8 +30,10 @@ book's monthly TEU and pallet-position actuals, customers' December booking noti
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete operations' view and every voice. The pallet-grain payback forecast still produces a confident January figure,
   its residual band is still narrow, and the policy's test on that band still takes two blocks.
-* **Instrument repair.** Imagine perfect daily stock records for every customer. January has not happened, and the spread of drawdowns
-  after past rushes is a property of how customers unwind front-loaded stock, not of how well stock is measured.
+* **Instrument repair.** Clean-data test. No file the ladder reads is incomplete, stale or narrower than it claims: the port statistics,
+  the existing book's monthly TEU and month-end pallet positions, and the December bookings are complete closed counts. The deepest repair
+  available, daily stock records for every customer, leaves rung 0 at four blocks, rung 1 at one and rung 2 at two, and the post-rush band
+  is still needed, because January's drawdown speeds have not happened; the book's 24 post-rush episodes are what measure their spread.
 * **Lens swap.** The naive read and the answer differ in moment: forecast errors drawn from calm months, against the errors the book
   actually showed one month after a rush ended, the moment the decision sits in.
 

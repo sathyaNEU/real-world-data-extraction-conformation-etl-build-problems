@@ -11,7 +11,7 @@
 | Gate G mechanism | method_or_model_selection, with forecasting support |
 | Measured traps engaged | #18 joins only on the visible key · #3 stops at a close but inexact match · #13 validates on one population, applies to another |
 | Calibration form | Counterparty acknowledgement file: the vendor's case acknowledgements for last campaign, with every attempt, the number dialled, the outcome and each case's closure |
-| Driving force | A case closes on a contact or when every callable number has had six unanswered attempts. Last campaign's young list had almost no uncallable numbers, so "six per number on file" fitted 97.5% of closures. Next quarter's list is the maturity segment: three numbers on file for 75% of clients, but 22% of the list's numbers are carrier-dead or on the do-not-call register and are never dialled. Callable count lives behind two number-level joins and is in no column, and work per client follows it, not the count on file. |
+| Driving force | A case closes on a contact or when every callable number has had six unanswered attempts. Last campaign's young list had almost no uncallable numbers, so "six per number on file" fitted 97.5% of closures. Next quarter's list is the maturity segment: three numbers on file for 75% of clients, but 22% of the list's numbers are on the national do-not-call register or the bank's own suppression list and are never dialled. Callable count lives behind two number-level joins and is in no column, and work per client follows it, not the count on file. |
 
 ## 1. Situation
 
@@ -23,13 +23,15 @@ until it is exhausted under the vendor's standard dialling rules. The rules them
 ## 2. Gate G: why this is legal
 
 * **Litmus.** Every figure is correct: the vendor's acknowledgement file, the list files, the CRM's phone numbers, the do-not-call
-  register, the carrier validation file and the contract. No one's claim about their own numbers is overturned. The difficulty is what a
+  register, the bank's suppression list and the contract. No one's claim about their own numbers is overturned. The difficulty is what a
   unit of work is on a list that does not look like the last one.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and procurement's sizing. Per-number work rates from last campaign, applied to next quarter's
   numbers on file, are still the careful build, and still 20% high.
-* **Instrument repair.** Log every attempt perfectly; they already are. Next quarter's numbers have not been dialled, and which of them
-  will be is a property of numbers no past attempt touched.
+* **Instrument repair.** Suspect: the acknowledgement file, whose attempts carry the wave-one case ID for 30% of clients. Re-key every
+  attempt to the client's current case: rung 0 then returns rung 1's 4,200 h, and rung 2 still returns 6,000 h. The CRM is not suspect:
+  every number on file is live and the client's own, and the 22% that may not be dialled are excluded by consent records (the national
+  register and the bank's suppression list), which are complete. Callable count per client is still a construction, needed for 5,000.
 * **Lens swap.** The naive read and the answer are different populations: last quarter's young clients, whose numbers on file were
   callable, against a maturity list whose numbers on file mostly are not.
 
@@ -37,11 +39,11 @@ until it is exhausted under the vendor's standard dialling rules. The rules them
 
 A strong solver links every attempt to its client, then sees that work per client rises with the numbers a client has. It fits a
 per-number law: six unanswered attempts on each number, then the case closes. That law reproduces 97.5% of last campaign's closures, and the
-2.5% it misses look like vendor noise. They are clients with a number the vendor never dialled: carrier-dead or registered on the
-do-not-call list. The closing rule is a minimum over callable numbers. A case is exhausted when each callable number has six unanswered
+2.5% it misses look like vendor noise. They are clients with a number the vendor never dialled: on the national do-not-call register or on
+the bank's list of numbers clients have asked it not to call. The closing rule is a minimum over callable numbers. A case is exhausted when each callable number has six unanswered
 attempts, and uncallable numbers do not count. Last campaign hardly exercised the distinction. Next quarter does: 75% of the maturity list
 has three numbers on file, but only 35% has three callable. Callable status needs each number joined to the register snapshot and to the
-carrier file, then a count per client, and work follows that count.
+suppression list, then a count per client, and work follows that count.
 
 ## 4. The ladder
 
@@ -49,7 +51,7 @@ carrier file, then a count per client, and work follows that count.
 |---|---|---|---|---|
 | 0 | Last campaign's hours per client, attempts joined to clients on the list file's case ID, × 18,400 | 2,940 h, −41% | The vendor's own record of work, per client, scaled to the new list | **E20 (an implicit join):** the vendor's carry-forward table, which its practice note documents; 30% of clients were worked under their wave-one case IDs |
 | 1 | The same with carry-forward cases linked | 4,200 h, −16% | Every attempt now belongs to a client, and hours tie to the vendor's invoice | The acknowledgement file: attempts to closure rise with a client's numbers, and the new list has far more numbers per client |
-| 2 | Work per client by numbers on file (six unanswered attempts per number), at next quarter's on-file mix | 6,000 h, +20% | A closing law that reproduces 97.5% of closures, applied to the list's actual structure | The do-not-call register and the carrier file: every miss is a client with an undialled number, and 22% of the new list's numbers are undialable |
+| 2 | Work per client by numbers on file (six unanswered attempts per number), at next quarter's on-file mix | 6,000 h, +20% | A closing law that reproduces 97.5% of closures, applied to the list's actual structure | The do-not-call register and the suppression list: every miss is a client with an undialled number, and 22% of the new list's numbers may not be dialled |
 | 3 | **Decisive:** closure when every callable number has six unanswered attempts; callable count per client from both number-level joins; expected work at next quarter's callable mix | **5,021 h → 5,000** | — | — |
 
 * **Figure shape.** Two corrections walk the figure up (−41%, −16%), the per-number law overshoots (+20%), and the decisive rung brings it
@@ -84,7 +86,7 @@ carrier file, then a count per client, and work follows that count.
 * **What it pins (Pattern B).** The closing rule (above), and the contact rate per attempt by number type: 9% on mobiles and 4% on
   landlines, stable across the campaign's weeks.
 * **Twin pair.** Clients C-44017 and C-58210 are identical on every CRM column: three numbers on file, age band, segment, score band and
-  region. They were exhausted after 12 and 6 attempts (2.0×), because C-58210's landline is carrier-dead and its work number is on the
+  region. They were exhausted after 12 and 6 attempts (2.0×), because C-58210's landline is on the suppression list and its work number is on the
   register. Only the callable minimum reproduces both.
 * **Resemblance points at the decoy.** Next quarter's clients resemble last campaign's three-number clients on every CRM column. Those
   clients took the most work, because their numbers were callable.
@@ -95,7 +97,7 @@ carrier file, then a count per client, and work follows that count.
   and one attempt per number per day. The list file: next quarter's 18,400 clients. The practice note: clients carried between waves keep
   their first case ID in the carry-forward table.
 * **Empirical pins.** The closing rule and the contact rates, from the acknowledgement file. Callable status, from the register snapshot
-  dated the week before the campaign and the carrier validation run on the list.
+  dated the week before the campaign and the suppression list of the same date.
 * **Voices.** The contact-centre manager: "List size drives the booking; every client is about the same work." The vendor's account lead:
   "Older clients have more numbers on file, so they take more dialling."
 * **Licensed wrong basis.** The booking procedure records that procurement sizes bookings on the vendor's quoted hours per thousand list
@@ -106,7 +108,7 @@ carrier file, then a count per client, and work follows that count.
 * **Threshold.** Six attempts per callable number is unique: five or seven reproduce no exhaustion in the file.
 * **Window.** At most three callable numbers per client, one attempt per number per day, so every case closes inside 21 days and no
   forward case is cut off by the window.
-* **Snapshots.** The register snapshot and the carrier run both predate the campaign and are the vendor's own pre-dial inputs, so no
+* **Snapshots.** The register snapshot and the suppression list both predate the campaign and are the vendor's own pre-dial inputs, so no
   number's status changes mid-campaign.
 * **Expectation.** Contact rates are fixed by number type, and the first callable number dialled is the mobile where one exists, as the
   file shows for every case.

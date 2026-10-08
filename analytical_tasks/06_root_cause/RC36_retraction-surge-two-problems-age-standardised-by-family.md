@@ -29,8 +29,10 @@ guest-edited special issues.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both views. Paper counts still say collapse, decisions still say concentrated batches, and family period counts
   still point at chemistry.
-* **Instrument repair.** Record every retraction perfectly. Materials science's age-specific rates still rose under falling exposure, which
-  no period count, however accurate, can show.
+* **Instrument repair.** No file is suspect. Notices, decisions, journal families and publication counts are complete and current. Repair
+  them anyway at every depth. Rung 0 still reads one portfolio-wide problem, rung 1 the nine mass retractions and rung 2 special issues and
+  chemistry. The age-specific baseline on current exposure is a counterfactual built from earlier cohorts, which no row records, so the
+  decisive construction is still needed.
 * **Lens swap.** The naive readings count this year's notices. The answer sets each family's notices against what its earlier cohorts'
   rates predict for papers of the same age, a different population of comparisons.
 

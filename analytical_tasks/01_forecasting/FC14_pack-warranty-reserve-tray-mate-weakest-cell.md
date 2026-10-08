@@ -29,8 +29,9 @@ release day.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the finance basis. The filed model still predicts a cell failure share, and a cell share
   still reads as a pack share.
-* **Instrument repair.** Cycle every cell to end of life and measure it perfectly. The test still stores cells, and the reserve still
-  counts packs of tray-mates.
+* **Instrument repair.** No file is suspect: the test file holds every cell's cycling, the formation log every cell's tray and position,
+  and the change log every pack-build change. Cycling every cell to end of life returns the same rungs (420, 500, 1,400), because the
+  reserve counts packs of tray-mates, a unit no file stores.
 * **Lens swap.** The naive read and the answer are different populations: test cells against the packs those cells' tray-mates will
   form.
 

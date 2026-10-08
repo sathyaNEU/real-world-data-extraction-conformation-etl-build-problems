@@ -29,8 +29,12 @@ the Carrow group cost this year.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice. The roster still matches the eligibility file exactly, and the natural counterfactual removes
   9,000 people.
-* **Instrument repair.** Verify every member record to the audit's gold standard. The measures and published scores are already correct.
-  Who belongs to the group is a fact about billing accounts, and no better measurement of care supplies it.
+* **Instrument repair.** Suspect: the vendor's group table, where Carrow's survey cell is suppressed, and the audit, which samples only
+  members enrolled for two years. Repair: publish the cell and audit a random sample of all members. Rung 0 still returns 0.13, rung 1 rises
+  to 0.11 because the survey measures can now be re-starred, and rung 2 stays at 0.11; none reaches 0.18. The roster is not suspect: it
+  lists Carrow's retirees exactly as Carrow's eligibility file does, a different attribute from the lives Carrow pays for, and no member
+  record carries a group field. The group is built from complete enrolment and billing-account records, so that construction is still
+  needed.
 * **Lens swap.** The roster counterfactual and the answer remove different populations, 9,000 lives against 14,200, and they flip
   different measures.
 
@@ -74,7 +78,8 @@ the roster alone leaves it there. Removing the whole group lifts it back.
    survey cells reconcile to the group total, and the spouses' premiums tie to billing.
 4. **Not a row predicate.** Membership is a property of the billing account (account → covered lives), and the effect needs every measure's
    counterfactual re-starred against this year's cut points.
-5. **The enumeration is arithmetic.** Which measures flip is computed. No column carries a group flag for spouses.
+5. **The enumeration is arithmetic.** Which measures flip is computed. No member record carries a group field; the group exists only in
+   the roster and the billing accounts.
 6. **No cutover date.** Carrow's arrival and the cut-point rise hit the same rating year. No series separates them.
 7. **Survives deletion.** Removing every voice leaves the roster as the obvious list.
 

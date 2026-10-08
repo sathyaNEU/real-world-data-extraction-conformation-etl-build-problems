@@ -29,8 +29,10 @@ proposal sizes the burst from per-minute peaks.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete engineering's proposal and every voice. A per-tier replay of last month's traffic, capped at the gateway's 60,
   still passes every tier and still rolls out.
-* **Instrument repair.** Record every request at microsecond precision. Last month's traffic replays more exactly and still passes, because
-  95% of last month's mobile devices ran v4; the traffic that breaches the line does not exist yet at scale.
+* **Instrument repair.** No file the ladder uses is suspect: the gateway logs every request to the millisecond, the device registry maps
+  every device to its SDK on every day, and the nine rollouts and the v5 beta are complete traces. Recording last month's traffic more
+  finely leaves rung 0 at 20, rung 1 at 85 and rung 2 rolling out at 60, because 95% of last month's mobile devices ran v4. Next quarter's
+  78% v5 mix is a forward population built from the release plan, so the calibration by SDK version is still needed.
 * **Lens swap.** The naive read and the answer differ in population and moment: last month's devices, 95% on v4, against next quarter's,
   78% on v5, through a join to the device registry.
 
@@ -65,7 +67,7 @@ allows brings it to 0.1%.
 * **Partial correction priced (L3).** No half-applied calibration holds; each rolls out. Calibrating by SDK version but weighting to last
   month's 5% v5 share gives mobile 0.09% and rolls out at 60. Weighting to next quarter's mix but treating the gateway's 60 as a risk to
   note finds the burst v5 needs, 140, and rolls out there in breach of the register. Weighting to the forward mix but testing the tiers
-  pooled, as engineering's dashboard does, gives 0.08% at 60 (mobile is a fifth of requests) and rolls out at 60.
+  pooled, as engineering's dashboard does, gives 0.09% at 60 (mobile is a fifth of requests) and rolls out at 60.
 * **Grid.** Sizing (per-minute rule, pooled replay, per-tier replay) × gateway cap (noted, applied) × mobile mix (last month, next
   quarter by SDK version) = 12 cells. The per-minute cells roll out at 20; the pooled cells at 34 or 52; per tier without the cap at 85 or
   140; per tier with the cap at 60 on last month's mix. Only per tier, the cap and the forward mix hold, at 0.34%.
@@ -117,8 +119,8 @@ allows brings it to 0.1%.
 * **Timestamps.** The gateway logs to the millisecond, so no tie convention enters the replay.
 * **Mix.** The quarter-average v5 share is 78%; the end-of-quarter share, 95%, only raises the blocking quantity (to 0.39%).
 * **Registry.** Every mobile device ID in the log maps to one SDK version on each day; devices that upgrade mid-quarter are split by date.
-* **Rounding.** Mobile's forward share is 0.336% (0.78 × 0.41 + 0.22 × 0.07), clear of the two-decimal edges, and every candidate burst
-  from 20 to 60 leaves it above 0.30%.
+* **Rounding.** Mobile's forward share is 0.335% (0.78 × 0.41 + 0.22 × 0.07), reported as 0.34%, and every candidate burst from 20 to 60
+  leaves it above 0.30%.
 
 ## 9. Prompt sketch and deliverables
 

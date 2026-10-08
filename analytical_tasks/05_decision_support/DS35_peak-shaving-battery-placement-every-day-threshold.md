@@ -29,8 +29,9 @@ launch figure is the penalties the placement avoids.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the account team's view and the board's basis. Ranking clients by the penalty a 100 kW battery would remove
   still names the plateau clients first.
-* **Instrument repair.** Meter every client at one-second resolution. The plateaus are still plateaus and still recur on many days; a finer
-  instrument changes no client's shaveable share.
+* **Instrument repair.** Suspect file: the 15-minute loads, with zeros in the March clock-change hour and the October hour doubled.
+  Repaired, rung 0 still funds the cold stores first, rung 1 lands on €196k and rung 2 on €163k, on the same clients. No meter shows how one
+  threshold holds across every day of a billing period, so the every-day threshold is still needed.
 * **Lens swap.** The naive read and the answer differ in population and moment: the peak 15 minutes that set last year's penalty, against
   every day of next year's billing periods, each of which can set the shaved maximum.
 

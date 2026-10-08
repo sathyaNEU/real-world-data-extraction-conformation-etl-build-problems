@@ -29,8 +29,10 @@ contracted cage-free cover, or a cage-free contract outside Calder County.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both teams' views. Delivery shortfalls still line up in time with Fairmeadow's own detection, and the natural
   attribution still books them to its depopulation.
-* **Instrument repair.** Record every delivery and every detection perfectly. Fairmeadow's three uninfected complexes still shipped nothing
-  for eleven to twelve weeks, and the control-area rule's geometry, not measurement, explains why.
+* **Instrument repair.** No file is suspect. Deliveries, detections, release notices and complex locations are complete and current, and no
+  delivery row records why a supplier shorted. Repair them anyway at every depth. Rung 0 still names quote-indexed contracts (19.0), rung 1
+  under-contracting (15.0) and rung 2 Fairmeadow's own losses (12.5). The control area is a unit built from detections, distances and
+  release dates, which no row claims to record, so the decisive construction is still needed.
 * **Lens swap.** The naive grain is the infected premises, the rows of the detection file. The answer's unit is every premises inside a
   control area, most of them never infected: a different population.
 

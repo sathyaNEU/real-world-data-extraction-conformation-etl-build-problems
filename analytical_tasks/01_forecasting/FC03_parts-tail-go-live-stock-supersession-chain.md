@@ -29,8 +29,9 @@ for new parts.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the finance analyst's view and the legacy engine's outputs. The specification run on per-part history still
   reproduces 83% of the shadow run and still files a figure 31% low.
-* **Instrument repair.** Make every order line and every catalogue record perfect. The supersession records are already complete; what
-  remains is a construction no record states.
+* **Instrument repair.** Suspect: the order history, whose EDI retransmissions repeat 12% of dealer lines. Remove them. Rung 0 then
+  returns rung 1's $3.90M and rung 2 still $3.35M, and every shadow-run miss is still a successor part: the supersession chain is a
+  construction no record holds, still needed for $4.86M.
 * **Lens swap.** The naive read and the answer differ in population: the demand recorded against 412 successor part numbers since their
   introduction, against the demand of the chains they inherited.
 
