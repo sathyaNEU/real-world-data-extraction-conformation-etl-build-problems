@@ -279,6 +279,15 @@ def build_index(repo, cache_path):
     for d in sorted(Path(repo).glob("task*")):
         if d.is_dir() and re.fullmatch(r"task\d+", d.name):
             builds[d.name] = [list(x) for x in people_in_build(d)]
+    # Builds indexed on another checkout are not on this disk; keep their cached names so the
+    # check still sees the whole corpus.
+    if Path(cache_path).exists():
+        try:
+            cached = json.loads(Path(cache_path).read_text()).get("builds", {})
+        except ValueError:
+            cached = {}
+        for task, pairs in cached.items():
+            builds.setdefault(task, pairs)
     data = {"builds": builds}
     Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
     # Written to a temporary file and renamed, so two guard runs refreshing at once can never leave
