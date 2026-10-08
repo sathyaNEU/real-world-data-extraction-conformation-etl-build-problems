@@ -265,12 +265,12 @@ A ten-row header table: **Objective**, **Domain**, **Mirrors**, **Decision shape
 
 | Domain | FC | AD | DA | OS | DS | RC | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Economics | 17 | 10 | 12 | 24 | 18 | 11 | **92** |
-| Supply Chain & Logistics | 15 | 12 | 7 | 7 | 11 | 16 | **68** |
-| Policy & Education | 7 | 14 | 16 | 11 | 7 | 13 | **68** |
-| Product Analytics | 8 | 9 | 11 | 6 | 12 | 8 | **54** |
-| Nonprofit & Grant-making | 2 | 3 | 2 | 1 | 2 | – | **10** |
-| Demographic & Social Science | 1 | 2 | 2 | 1 | – | 2 | **8** |
+| Economics | 16 | 10 | 12 | 24 | 19 | 11 | **92** |
+| Supply Chain & Logistics | 17 | 12 | 7 | 7 | 11 | 18 | **72** |
+| Policy & Education | 7 | 14 | 16 | 10 | 6 | 11 | **64** |
+| Product Analytics | 7 | 9 | 11 | 7 | 12 | 8 | **54** |
+| Nonprofit & Grant-making | 1 | 3 | 2 | 1 | 2 | – | **9** |
+| Demographic & Social Science | 2 | 2 | 2 | 1 | – | 2 | **9** |
 | **Total** | **50** | **50** | **50** | **50** | **50** | **50** | **300** |
 
 ### Where the decisive moves come from
