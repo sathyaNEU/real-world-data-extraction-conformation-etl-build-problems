@@ -28,8 +28,10 @@ pilot's verification log, and the manual.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the donor's basis and both voices. Precision-adjusted counts outside the buffer and the corridors still send
   15,600 kits to the pastoral districts.
-* **Instrument repair.** Give the footprint model perfect precision: kraals and stores are real buildings, correctly detected, and still
-  never hold a household. The split is in what the buildings are, not in how well they are seen.
+* **Instrument repair.** Suspect: the footprint layer, whose detector misses some buildings and adds others (precision 0.61 to 0.88).
+  Repaired to perfect detection, rung 0 returns rung 1's 35,050. Replaced by a register of every household outside the buffer, rungs 0
+  and 1 electrify 36,000 and rung 2 35,600, because isolated homesteads are households too and none enrolled (0 of 1,320 in the pilot).
+  The answer stays 40,000, and the cluster self-join is still needed.
 * **Lens swap.** The naive base is every detected building outside the grid; the answer's base is the buildings in settlements, a
   different population, smallest exactly where the naive base is largest.
 
@@ -39,7 +41,8 @@ A strong solver counts footprints outside the buffer, corrects them with the pro
 utility's extension corridors as the manual's eligibility clause requires, and allocates pro rata. Every step is right, and it sends 39% of
 the kits to three pastoral districts. The pilot log tells a different story at the footprint grain. Enumerators visited every detected
 footprint up to three times. Inside settlement clusters, 82% became enrolled households. Isolated footprints, more than 50 metres from
-four neighbours, produced none in 4,120 attempts: they are kraals, stores and seasonal shelters, as real and as well detected as houses.
+four neighbours, produced none in 4,120 attempts. Most are kraals, stores and seasonal shelters, as real and as well detected as houses,
+and the 1,320 that are occupied homesteads enrolled no more than the rest.
 The pastoral districts are 70% isolated footprints, while the pilot districts were 10%. Allocated on clustered footprints, the kits all
 land in households: 40,000 against 33,850.
 
@@ -82,7 +85,7 @@ land in households: 40,000 against 33,850.
   (enrolled, not a dwelling, no one home, refused) and revisits up to three.
 * **What it certifies.** That detections over-count households, and the pooled rate a solver will carry.
 * **What pins the condition.** The absolute split by cluster status, the same in all three pilot districts and at every radius from 30 to
-  70 metres.
+  70 metres; the 1,320 occupied isolated homesteads enrolled none, like the kraals and stores around them.
 * **Twin pair.** Enumeration areas K-14 and P-07 match on detected footprints (412), mean confidence, mean area and roof mix. They enrolled
   338 and 169 households (2.0×): every K-14 footprint is in a cluster, and half of P-07's are isolated.
 * **Resemblance points at the decoy.** On every visible footprint column, the pastoral districts resemble the pilot's highest-yield area.
@@ -137,7 +140,8 @@ electrified + 5 named chart parts + 3 files ≈ 69 criteria.
 ## 12. World-building constraints
 
 * Outside the buffer: 96,000 detected footprints; 9,000 in corridors (mostly peri-urban); 31,000 isolated, 70% of the pastoral districts'
-  footprints against 10% in the pilot districts.
+  footprints against 10% in the pilot districts, about a third of them occupied homesteads.
+* A household register in place of the layer allocates 31% to the pastoral districts and electrifies 36,000 (35,600 net of corridors).
 * Pastoral share and households electrified: 40% / 33,450; 36% / 35,050; 39% / 33,850; 24% / 40,000. Partial cells 36,200 and 36,300.
 * Retry log: clustered 82%, isolated 0 of 4,120. K-14 and P-07 match on every footprint column.
 * Roof codes and road status never touch a footprint's position or a corridor.
