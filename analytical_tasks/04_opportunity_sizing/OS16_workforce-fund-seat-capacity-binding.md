@@ -28,8 +28,9 @@ additional participants employed in the second quarter after exit.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete staff's preference and the published indicators. The pilots still rank outreach first per dollar, and the seat
   arithmetic still reverses it.
-* **Instrument repair.** Make every pilot larger and every outcome perfectly measured. The outreach lift is still correct for its pilot
-  counties and still undeliverable where seats are full.
+* **Instrument repair.** No file is suspect: the seat register, the participant records and the pilot files are complete and current. Make every
+  pilot larger and every outcome perfectly measured and rung 2 still names outreach. Seat binding is a forward stock condition that
+  still has to be computed per provider.
 * **Lens swap.** The pilot counties' spare seats in a closed year and next year's provider stock are different populations at different
   moments.
 

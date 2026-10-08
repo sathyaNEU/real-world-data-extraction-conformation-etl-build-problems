@@ -28,8 +28,9 @@ wants the team sent to the authority with the strongest flag profile. The office
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's preference and the monitor export itself. The tender and bid records still hide the ring at pair
   grain, and the natural authority-level analyses still miss it.
-* **Instrument repair.** Recompute every flag perfectly; they are already correct. No better authority-level instrument reveals pair-level
-  rotation.
+* **Instrument repair.** No file is suspect: the award register, the bid lists and the monitor flags are complete and correct. Recompute every flag
+  perfectly and every rung still names what it names now. No authority-level instrument reveals pair-level rotation; it is still a
+  construction across lots.
 * **Lens swap.** The flags describe authorities' purchasing profiles. The answer is a set of supplier pairs operating inside one authority:
   a different population.
 

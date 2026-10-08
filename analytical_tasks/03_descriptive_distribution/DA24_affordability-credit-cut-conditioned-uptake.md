@@ -26,8 +26,8 @@ sizes. The commission's staff expect the cut to be set so the budget is used, no
   anyone reports is overturned. The difficulty is which enrolment behaviour applies to the statewide eligible pool.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Remove every voice. The pilot's pooled rate still transports cleanly in arithmetic and still sets the wrong cut.
-* **Instrument repair.** Perfect income measurement and a complete pilot log change nothing. The pilot is already complete, and the issue is
-  transport across a channel mix.
+* **Instrument repair.** No file is suspect: the pilot log, the billing-channel records and the income data are complete. Perfect income measurement
+  leaves every rung where it is. The issue is transport across a channel mix, which still has to be built through the join.
 * **Lens swap.** The pilot towns' accounts and the statewide account base are different populations. The answer is about the statewide
   base's forward enrolment.
 

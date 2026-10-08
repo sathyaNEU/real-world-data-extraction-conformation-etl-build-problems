@@ -28,8 +28,9 @@ register has never been part of quantification.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Remove the lead's note and every voice. The adult series still extrapolates cleanly, and nothing in the pack says
   children will join it.
-* **Instrument repair.** Make every register perfect and complete. The wave is still in the future, so nothing about it can be read from a
-  better instrument of the past.
+* **Instrument repair.** No file is suspect: the switch log, the weight records and the dispensing registers are complete and current. Make every
+  register perfect and rungs 0 to 2 return what they return now. The wave is a forward population, so no better instrument of the past
+  contains it.
 * **Lens swap.** The naive read and the answer are different populations: patients already on adult TLD in closed cycles against those
   joining in C7.
 

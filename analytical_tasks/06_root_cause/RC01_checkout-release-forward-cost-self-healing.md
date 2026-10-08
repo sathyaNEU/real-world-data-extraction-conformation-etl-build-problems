@@ -27,8 +27,8 @@ for. The release went out behind a feature flag in account cohorts.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the team's claim and the growth team's request. The flag log and session data still lead a competent solver to a
   correct past effect, projected forward as a constant.
-* **Instrument repair.** Perfect session tracking changes nothing, because the past effect is already measured exactly. The forward pool is
-  the issue.
+* **Instrument repair.** No file is suspect: sessions, release logs and the address book are complete. Perfect session tracking leaves every rung
+  where it is, because the past effect is already measured exactly. The forward pool still has to be constructed.
 * **Lens swap.** The answer is about accounts not yet hit, over weeks that have not happened: a different population at a different time.
 
 ## 3. The driving force

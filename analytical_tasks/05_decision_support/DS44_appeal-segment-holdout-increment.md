@@ -26,8 +26,8 @@ fundraising policy judges an appeal on the income it raises. Eight past appeals 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the vendor's scores and the director's view. Observed response by segment, the natural first construction, still
   points at the mandated segment.
-* **Instrument repair.** Perfect gift tracking adds nothing, because the gift ledger already records every gift. Mandated gifts are real
-  gifts.
+* **Instrument repair.** No file is suspect: the gift ledger, the holdout records and the mandate register are complete. Perfect gift tracking
+  leaves every rung where it is, because mandated gifts are real gifts. The increment still has to be constructed from the holdouts.
 * **Lens swap.** The answer is about donors whose giving changes when mailed: a counterfactual population, not the responders under another
   lens.
 
