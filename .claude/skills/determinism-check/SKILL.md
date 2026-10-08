@@ -29,7 +29,7 @@ a verdict is contested. `references/forcing-the-answer.md` is the evidence for e
    `sole_data_defect: no`. Flags are claims; section B asserts them.
 4. **Ship no artifact that ranks the candidates on the decision question and gets it wrong.** A
    past-quantity ranking is legal only if it is correct about the past and labelled in-file for the
-   question it answers. The one exception to the rule is the declared distractor (`dataset-generation` §8.3): wrong on a basis a shipped fact rules out, named in `metadata.json`, and never the stump. Assert that its answer is neither the correct answer nor the decoy.
+   question it answers. The one exception to the rule is a declared wrong-basis distractor (`dataset-generation` §8.3): wrong on a basis a shipped fact rules out, named in `metadata.json`, and never the stump. Assert that its answer is neither the correct answer nor the decoy.
 5. **Walk the 22 axes** in `forcing-the-answer.md` Part 1 and write one line per axis in the design
    note: the reading chosen and which closure move closed it.
    - **C1 converge**: build the records so every reasonable reading selects the same rows and the
@@ -75,7 +75,7 @@ verifier that reads only the shipped bytes on a code path sharing nothing with t
 - file grain honoured wherever a rate, average or roll-up runs (a delta feed is reconstructed into a
   panel before any rate)
 - the input gates: 10 or more files, 3 or more formats, a file of 25,000 or more rows in any format, or a large database file, at
-  least one distractor (no more than 20 per cent of files) named in `metadata.json`, 1 to 3
+  least two distractors (files the solution does not use that look relevant) named in `metadata.json`, 1 to 3
   deliverables, every ask with unit and rounding
 - two consecutive builds byte-identical
 
@@ -116,7 +116,7 @@ else licenses it: not a finished build, not a patch that seems to want validatio
 ## Checklist
 
 - [ ] Litmus answered in writing; mechanism from the pass list; three flags in the design note
-- [ ] No shipped artifact ranks the candidates on the decision question, the declared distractor excepted
+- [ ] No shipped artifact ranks the candidates on the decision question, a declared wrong-basis distractor excepted
 - [ ] 22 axes walked, one closure move per axis, in the design note
 - [ ] Every convergence, back-test, corridor, grid cell and bin distance asserted in the generator and checked in the independent verifier
 - [ ] Clean-data test and lens-swap test asserted, once per suspect file

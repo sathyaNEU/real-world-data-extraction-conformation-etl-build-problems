@@ -260,7 +260,7 @@ task tagged outside the eight is rejected on the tag alone.
 
 **Gate G (determinism judge v3) bans surface-read rejection at any depth.** Ship no artifact that
 ranks the candidates on the decision question and gets it wrong, however many rungs sit above it.
-The one exception is the declared distractor: wrong on a basis a shipped fact rules out, named in
+The one exception is a declared wrong-basis distractor: wrong on a basis a shipped fact rules out, named in
 `metadata.json`, and never the stump. Depth is not a defence. The difficulty has to survive deleting every wrong number from the pack.
 `.claude/skills/stumping/SKILL.md` Parts 1 and 2 carry the four gaps and the five patterns that
 pass.
@@ -271,6 +271,7 @@ written into the design note. This is an ask-shape rule and not a tag rule, so a
 objective, and retagging as Forecasting because the window is open is itself a rejection risk.
 
 **Input gates:** 10 or more files, 3 or more distinct formats, either a file of 25,000 or more
-rows in any format or a large database file, at least one distractor (no more than 20 per cent of
-the input files, named in `metadata.json` and never in a file name), files real and license-clean with source, date and license recorded, nothing that reads as
+rows in any format or a large database file, two or more distractors (files the solution does not use
+that look relevant enough that the solver has to weigh them; a completely unrelated file does not
+count; named in `metadata.json` and never in a file name), files real and license-clean with source, date and license recorded, nothing that reads as
 LLM generated.

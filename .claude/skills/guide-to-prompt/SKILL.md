@@ -108,8 +108,8 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 > - **The rubric weights:** 30 to 40 percent on the recommendation and its critical components, 5
 > to 10 percent on instruction-following, about 55 to 60 percent on the asks.
 > - **The roster and the input gates:** six domains, eight objectives, 10 or more files, 3 or more
-> formats, a file of 25,000 or more rows in any format, or a large database file, at least one
-> distractor named in `metadata.json`, real and license-clean with source, date and license
+> formats, a file of 25,000 or more rows in any format, or a large database file, two or more
+> distractors (unused by the solution, relevant-looking) named in `metadata.json`, real and license-clean with source, date and license
 > recorded, nothing that reads as LLM generated.
 >
 > The eight objectives include **Opportunity Sizing & Decision Support**, which the client's
