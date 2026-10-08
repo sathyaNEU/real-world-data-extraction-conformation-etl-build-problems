@@ -11,7 +11,7 @@
 | Gate G mechanism | binding_constraint, with forecasting |
 | Measured traps engaged | #10 notes a binding limit as a risk · #20 leaves the deciding comparison unstated · #13 validates on one population, applies to another |
 | Calibration form | Prior-period close-out: the coalition's signed close-out of last year's pass pilot at one employment centre (eligible car commuters, activations and switchers by journey-time band and corridor) |
-| Driving force | Switchers have to fit on the trains. Northline and Harbour Rail already run at 96% and 97% of registered peak capacity, with 500 spare places between them, yet 3,100 of the programme's 5,813 likely switchers would ride them. The pilot's corridors had just doubled frequency, so its close-out never met a full train. The cap is a sum over corridors of the smaller of switchers and spare places, built by routing every commute onto a corridor. |
+| Driving force | Switchers have to fit on the trains. Northline and Harbour Rail already run at 96% and 97% of registered peak capacity, with 500 spare places between them, yet 3,100 of the programme's 5,813 likely switchers would ride them. The pilot's corridors doubled frequency in its fifth week, so its year-end close-out never met a full train. The cap is a sum over corridors of the smaller of switchers and spare places, built by routing every commute onto a corridor. |
 
 ## 1. Situation
 
@@ -37,13 +37,13 @@ works near a station.
 
 ## 3. The driving force
 
-A strong solver refuses to count workplaces near transit and builds eligibility from both ends of each commute. It then refuses the pilot's
-pooled switching rate, because the close-out shows switching splits by journey-time ratio, and transports the banded rates to the forward
-mix. The result is 5,813 switchers. But every switcher is a peak-hour rider on a particular corridor, and the agency's planning file shows
-Northline and Harbour Rail at 96% and 97% of their registered peak capacity. Together they have 500 spare places, while routing each
-eligible commute through the network puts 3,100 of the likely switchers on those two lines. The pilot centre's two corridors had their
-frequency doubled the year the pilot began and never passed 72% loading, so its close-out reproduces perfectly with or without a cap.
-Removed commuters are Σ over corridors min(switchers, spare places).
+A strong solver refuses to count workplaces near transit and builds eligibility from both ends of each commute. It then refuses the
+pilot's pooled switching rate, because the close-out shows switching splits by journey-time ratio, and transports the banded rates to the
+forward mix. The result is 5,813 switchers. But every switcher is a peak-hour rider on a particular corridor, and the agency's planning
+file shows Northline and Harbour Rail at 96% and 97% of their registered peak capacity. Together they have 500 spare places, while routing
+each eligible commute through the network puts 3,100 of the likely switchers on those two lines. The pilot centre's two corridors had
+their frequency doubled in the pilot's fifth week and never passed 72% loading after it, so its year-end close-out reproduces perfectly
+with or without a cap. Removed commuters are Σ over corridors min(switchers, spare places).
 
 ## 4. The ladder
 
@@ -68,9 +68,9 @@ Removed commuters are Σ over corridors min(switchers, spare places).
 
 1. **Written nowhere.** The agency's file lists capacities and loads for its own planners. The pass agreement says passes are valid on all
    services. No document says switchers need room.
-2. **Corpus blind for a computable reason.** *In every corridor serving the pilot centre, peak loads stayed under 72% of registered
-   capacity, because the agency doubled frequency on both lines the year the pilot began.* The banded rates reproduce the pilot's 775
-   switchers capped or uncapped alike.
+2. **Corpus blind for a computable reason.** *In every week after the agency doubled frequency on both pilot corridors, in the pilot's
+   fifth week, peak loads stayed under 72% of registered capacity, and the crowded weeks before it changed when commuters switched, not how
+   many had switched by year-end.* The banded rates reproduce the pilot's 775 year-end switchers capped or uncapped alike.
 3. **No arithmetic symptom.** Employees, eligible commutes, survey shares and the pilot's activations reconcile on every rung.
 4. **Not a row predicate.** Each commute is routed through the network to a corridor, switchers are summed by corridor, and each sum is
    capped by that corridor's spare places.
@@ -84,10 +84,13 @@ Removed commuters are Σ over corridors min(switchers, spare places).
   journey-time band and corridor, and weekly peak loads on its two corridors.
 * **What it certifies.** Both-ends eligibility (every switcher lived within 0.5 miles of a frequent stop) and the banded rates: 697 of
   1,700 (41.0%) within 1.3× and 78 of 1,400 (5.6%) above. A solver who back-tests rung 2 is confirmed to the commuter.
-* **What it is blind to.** Capacity (above).
-* **Twin pair.** Forward centres Quayside and Mill Lane are identical on every column a lookup reaches: employees, both-ends eligible car
-  commuters (2,600 each), journey-time mix and survey shares. Quayside's commutes route mainly onto Northline and Mill Lane's onto
-  uncrowded lines, so they remove 404 and 808 commuters, 2.0× apart.
+* **What it is blind to.** Capacity at year-end (above). The pilot's first four weeks show it only as a delay.
+* **Twin pair (free training instance).** The pilot's first-month cohorts on its two corridors, Eastline and Westline, are identical on
+  every close-out column: 960 activated car commuters each, the same journey-time mix (528 within 1.3×, 432 above) and the same distances.
+  In the four weeks before frequency doubled, Eastline ran at 97% of registered capacity with 96 spare peak places, and its cohort put 96
+  switchers on the trains against Westline's 194, 2.0× apart. The cap separates them exactly. By year-end both cohorts had 241 switchers, the
+  banded rates exactly, so the cap changed nothing the close-out reports. Next year Northline and Harbour Rail run at 96% and 97% with no added
+  service, and there the same cap decides.
 * **Resemblance points at the decoy.** By eligible share and journey-time mix, the forward centres most resemble the pilot centre, so a
   solver transferring its uptake by resemblance files rung 2.
 
@@ -148,9 +151,10 @@ corridors and removed commuters per centre + 5 named chart parts + 3 files ≈ 4
 
 * 62,000 employees; 34,100 car commuters with a workplace near a frequent stop; 18,700 with both ends near; 72% of those within 1.3× the
   drive time.
-* Pilot: 3,100 eligible car commuters, 775 switchers (697 of 1,700 within 1.3×, 78 of 1,400 above), peak loads under 72% throughout.
+* Pilot: 3,100 eligible car commuters, 775 year-end switchers (697 of 1,700 within 1.3×, 78 of 1,400 above), peak loads under 72% from
+  the fifth week, when frequency doubled. In weeks 1–4 Eastline ran at 97% with 96 spare places and Westline at 70%.
 * Forward switchers by corridor: Northline and Harbour Rail 3,100 against 300 and 200 spare places; four other corridors 2,713 against
   4,900.
-* Rung figures 8,525 / 4,675 / 5,813 / 3,213, and the nearest other cell is 2,683 (−16.5%). Quayside and Mill Lane are identical on every
-  centre-level column.
+* Rung figures 8,525 / 4,675 / 5,813 / 3,213, and the nearest other cell is 2,683 (−16.5%). The first-month Eastline and Westline cohorts
+  are identical on every close-out column at 96 and 194 switchers in weeks 1–4, and both reach the banded rates by year-end.
 * Lease renewals and resubmitted claims never touch addresses, survey shares, the close-out or corridor loads.
