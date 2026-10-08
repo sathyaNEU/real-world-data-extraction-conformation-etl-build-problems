@@ -29,8 +29,11 @@ table, the public facade's forwarding map, last quarter's traces (every failed r
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the SRE lead's preference and the dashboard export. Counting failed requests by the service that returned them,
   the natural build from the gateway logs, still credits the cache's failures to its callers.
-* **Instrument repair.** Make every per-service metric perfect; they already are. A better per-service instrument still records a timeout
-  where the deadline expired, never where the call stalled.
+* **Instrument repair.** Suspect file: the service catalogue's user-facing flag, which marks a service, not a request, and misses two
+  internal services reachable through the facade. Corrected for those two, rung 1 still names B (410,000); replaced by a label on every
+  request saying whether it entered on a public route, rung 1 becomes rung 2 and names C (390,000). Rung 0 still names A (212%) and rung 2
+  C. The dashboard, gateway logs, route table, forwarding map and traces are complete, and no field claims to record where a failure began,
+  so the innermost-open-span walk is still needed for E.
 * **Lens swap.** The naive read groups failed requests by returning service; the answer groups them by the innermost span open at the
   deadline, a different population for each service: the cache owns 520,000 failures it returned almost none of.
 

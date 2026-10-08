@@ -31,8 +31,12 @@ dispositions, the stand historian, and last summer's units with their 90-day fie
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. The overlap still shows every multivariate screen ahead, and a careful solver who fixes the
   retest count still switches.
-* **Instrument repair.** Run a perfect winter overlap twice as long; its interval narrows around a winter answer. No better winter
-  instrument measures a summer covariance or a summer fault mix.
+* **Instrument repair.** Suspect file: the station test log, which records a reject per test, so a unit retested twice under one serial
+  counts three times. Repaired to one disposition per unit, rung 0 lands on rung 1 and switches to the hybrid (82% against 61%); rung 1
+  still switches to the hybrid and rung 2 to the Q screen. The overlap, the MES dispositions, the historian and last summer's records are
+  complete: every summer unit's channels are logged, every reject was torn down, and every shipped unit has its full return window, with no
+  screenable fault returned after day 90. No record of a past season is a record of July to September, so the summer re-baseline scored
+  against last summer's 42 faults is still needed for the hold.
 * **Lens swap.** The naive read is winter units on winter baselines; the answer is summer units on summer baselines against summer
   faults: a different population at a different moment.
 
@@ -109,7 +113,8 @@ manual holds the switch.
 
 ## 8. Determinism by construction
 
-* **Healthy set.** Last summer's healthy units are those without a 90-day return, and every one has a complete return window.
+* **Healthy set.** Last summer's healthy units are those without a 90-day return; every one has a complete return window, and the
+  twelve-month return file adds no screenable fault after day 90.
 * **Intervals.** Paired Wald, exact McNemar and bootstrap intervals all span zero for every candidate (half-widths 15–17 points).
 * **Limits.** Each screen's limit is the unit false-reject rate's quantile on the summer healthy set; 0.4% and 0.6% leave every interval
   across zero.

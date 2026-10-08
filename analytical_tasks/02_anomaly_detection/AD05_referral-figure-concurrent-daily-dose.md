@@ -30,9 +30,9 @@ of 400 original prescriptions, and the board's closed reviewer files from its la
 * **Deletion test.** Delete both voices and the investigators' method. A careful quarterly count of his members, with reversals,
   adjustment chains and the writer handled, still lands 17.9% low at 230.
 * **Instrument repair.** Suspect files: the claims' prescriber field (the account, not the writer) and the reversed and adjusted claims
-  (superseded rows). Repaired, every claim names its writer and carries only its final link: rungs 0 to 3 all return 230, and the
-  daily-dose construction is still needed to reach 280. Fill dates, days' supply and the conversion table are complete, and a claim that
-  recorded its writer still records one fill, not a day's dose.
+  (superseded rows). Repaired, every claim names its writer and carries only its final link: rungs 0 to 3 all return 230, and the daily-dose
+  construction is still needed to reach 280. Fill dates, days' supply and the conversion table are complete, and a claim that recorded its
+  writer still records one fill, not a day's dose.
 * **Lens swap.** The naive read sums a quarter's fills per member; the answer reads each member's dose day by day, a different population
   of member-days in which short high-dose courses count and stockpiled supply does not.
 

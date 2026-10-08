@@ -10,16 +10,17 @@
 | Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · S7, every screen is right and the answer is what nothing flags, at transfer-chain grain, with Pattern B (the retry log pins the chain construction) |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
 | Measured traps engaged | #14 coarsens the segment it was asked about · #1 reports a failed back-test, ships anyway · #18 joins only on the visible key |
-| Calibration form | Retry or revision log: the rapid-review retry log, 34 closed reviews and 47 attempts over five years, with each review's confirmed avoidable deaths |
+| Calibration form | Retry or revision log: the national rapid-review retry log from the four neighbouring regions, 34 closed reviews and 47 attempts over five years, with each review's confirmed avoidable deaths |
 | Driving force | Every death is counted against the patient's last spell, so a trust that transfers deteriorating patients late exports its avoidable deaths to whichever hospitals receive them, a few to each, and its own figures look ordinary. Only chains of spells linked across trusts by patient key and a hand-over gap of hours, credited to the trust where the chain began and set against that first spell's risk, concentrate those deaths, and only that construction reproduces the retry log. |
 
 ## 1. Situation
 
-A regional health board replaces its six-week rapid mortality reviews with one twelve-month external engagement, and it can fund one for
-next year across the region's eight acute trusts. The board's quality monitor exports five flags per trust for the last 36 months, each a
-correct measure: the overdispersion-adjusted SHMI funnel z, the weekend-admission mortality ratio, the palliative-coding share of deaths,
-the 30-day emergency readmission ratio and the share of deaths occurring after discharge. Each flag is high somewhere, and each high flag
-has a documented service reason. The committee chair wants the engagement sent to the trust in the funnel's alarm band.
+A regional health board funds one twelve-month external mortality-review engagement for next year across the region's eight acute trusts, in
+place of the six-week rapid reviews its four neighbouring regions have run under a national programme since 2021. The board's quality
+monitor exports five flags per trust for the last 36 months, each a correct measure: the overdispersion-adjusted SHMI funnel z, the
+weekend-admission mortality ratio, the palliative-coding share of deaths, the 30-day emergency readmission ratio and the share of deaths
+occurring after discharge. Each flag is high somewhere, and each high flag has a documented service reason. The committee chair wants the
+engagement sent to the trust in the funnel's alarm band.
 
 ## 2. Gate G: why this is legal
 
@@ -30,9 +31,12 @@ has a documented service reason. The committee chair wants the engagement sent t
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the chair's preference and the monitor export. The episode records still credit each death to the last spell,
   and every trust-level analysis built from them still misses the trust where the chains begin.
-* **Instrument repair.** Recompute every flag from perfect coding and a perfect case-mix model; they are already correct. A better
-  trust-level instrument still counts a death where it happens, so it still cannot see a pathway that begins at one trust and ends at
-  another.
+* **Instrument repair.** Suspect file: the regional extract, which carries admission method but drops the admission source and discharge
+  destination the national dataset holds, so a transfer arrives as a plain emergency admission. Repaired at every depth, down to a tag on
+  every death naming the trust where its pathway began, rung 0 still names A, rung 1 B and rung 2 C, because each scores spells at the trust
+  of the last spell, the indicator's convention. Counted by first trust, the tagged deaths name G (66 against E's 52); the excess needs
+  every chain's first-spell risk, survivors included, so the chain construction is still needed for E. The flags, the risk model and the
+  retry log are complete, and the log reviewed trusts outside the region, so filling it touches none of the eight.
 * **Lens swap.** The naive read is spells grouped by the trust of the last spell. The answer is multi-trust chains grouped by their first
   trust: a different population, not the same spells under another lens.
 
@@ -92,10 +96,10 @@ reproduced by it and by no trust-level screen.
 
 ## 6. The calibration corpus
 
-* **Form.** The rapid-review retry log: 34 reviews closed from 2021 to 2025, each a trust-year, 47 attempts in all. Each of 13 reviews
-  that confirmed nothing on the first attempt was retried with a doubled case-note sample, and none of the 13 retries confirmed anything.
-  Each closed review carries its confirmed avoidable deaths (0 in 21 reviews, 9 to 31 in the other 13), and the episode records for the
-  reviewed years ship with it.
+* **Form.** The national rapid-review retry log from the four neighbouring regions: 34 reviews closed from 2021 to 2025, each a trust-year
+  at a trust outside the board's region, 47 attempts in all. Each of 13 reviews that confirmed nothing on the first attempt was retried with
+  a doubled case-note sample, and none of the 13 retries confirmed anything. Each closed review carries its confirmed avoidable deaths (0 in
+  21 reviews, 9 to 31 in the other 13), and the episode records for the reviewed years ship with it.
 * **What it pins.** Chain-origin excess reproduces all 34 outcomes: every confirmed count within ±2 deaths, and every unconfirmed review at a
   trust whose chain excess was 3 or fewer. Trust-of-death excess over-predicts the confirmed total by 74% (412 against 237), because it
   books the receivers' model shortfalls as deaths to find; the best rival's misses are all confirmed reviews it left below its alarm line.
@@ -174,6 +178,6 @@ the margin over the runner-up + 5 named chart parts + 3 files ≈ 51 criteria.
 * Inter-trust gaps are under 4 hours or at least 2 days. The regional extract carries admission method but no admission source or
   discharge destination.
 * Rung leaders are A, B, C, E with margins of 1.27×, 1.26× and 1.27×; E is 5th, 4th and 3rd across rungs 0–2.
-* The retry log holds 34 reviews (13 confirmed, 237 confirmed deaths) and 13 failed retries; Kellow Bridge and Sandmere are identical on
-  every trust-level field.
+* The retry log holds 34 reviews at trusts outside the region (13 confirmed, 237 confirmed deaths) and 13 failed retries; Kellow Bridge and
+  Sandmere are identical on every trust-level field.
 * Critical-care step-downs and ambulance cohorting never touch the episode file or the chains.

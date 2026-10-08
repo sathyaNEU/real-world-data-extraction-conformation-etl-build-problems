@@ -29,8 +29,11 @@ pressure signals, the formation register with reservoir volumes, the door contro
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. Volume-normalised decay over every off-period still passes the headline control, matches 15 of 23
   measured flows, and alarms seven trains the answer does not.
-* **Instrument repair.** Sample pressure ten times faster; the decay is already measured exactly. A better pressure instrument still mixes
-  door draw into a stopping train's off-period.
+* **Instrument repair.** No file the ladder uses is suspect: the pressure and compressor signals are complete and exact, the door log
+  records every door event with its time, the dated formation register holds every unit's volume and the change log every repair's measured
+  flow. No field claims to record a leak flow; decay is what the pressure shows, a proxy. Perfect files leave rung 0 at 38 alarms, rung 1 at
+  the fleet decay rule at 0.031 bar/min and rung 2 at the volume rule at 7.9 L/min, so the door-free segment join is still needed for 6.4
+  L/min.
 * **Lens swap.** The naive feature uses every off-period; the answer uses only off-periods with no door event, a different population of
   segments, and scales them by a property of a different entity, the unit's reservoir.
 

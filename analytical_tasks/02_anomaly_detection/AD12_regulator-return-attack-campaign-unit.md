@@ -30,8 +30,11 @@ published returns.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. Counting significant alarm episodes after collapsing the duplicate feed and scaling each link's flows
   correctly, the natural complete pipeline, still lands 16.6% low.
-* **Instrument repair.** Make the detectors perfect; they already are. A better detector still alarms per destination prefix per minute,
-  and no detector knows which customer held an address that day or where one campaign ends.
+* **Instrument repair.** Suspect file: the sampled flow records, 1 in 1,000 on the main link and 1 in 250 on the regional one. Repaired with
+  every flow recorded, rung 0 lands on rung 1's 842 (+15.2%) and rung 2 stays at 610 (−16.6%); reading one feed of the redundant pair takes
+  rungs 0 and 1 to 610 as well. The address plan's current table is a correct snapshot beside a complete dated history, and the detectors
+  record every episode. An episode is what a detector records and a campaign is a unit no row claims to record, so the dated customer join
+  and the merge are still needed for 731.
 * **Lens swap.** The naive count is of alarm episodes on prefixes; the answer counts campaigns against customers, a different population of
   objects built from many episodes, with its own significance test.
 

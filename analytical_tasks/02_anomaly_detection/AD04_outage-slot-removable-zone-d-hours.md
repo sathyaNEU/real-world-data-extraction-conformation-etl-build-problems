@@ -29,10 +29,12 @@ changeover log, the PLC run counters, the pumps' discharge-flow log, the drive l
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the platform export. Counting zone-D running hours per duty pump from the snapshot file, the
   natural careful build, still names C.
-* **Instrument repair.** Suspect file: the asset register's duty flags, stale since two changeovers. Repaired, rung 0 becomes rung 1 and
-  names B, rung 2 still names C, and the decisive split is still needed, because no file claims to record which zone-D hours a bearing
-  causes. The snapshot feed, run counters, flows, drive speeds and curves are complete, and a perfect vibration sensor would still read
-  recirculation as zone D.
+* **Instrument repair.** Suspect files: the asset register's duty flags, stale since two changeovers, and the snapshot file, which reads
+  each pump every two hours. Repaired, with current duty on every pump and a reading every minute, rung 0 becomes rung 1 and names B (84%),
+  rung 1 still names B and rung 2 still names C (2,730 h), because C's low-flow nights and E's in-region running each last hours at a
+  stretch. The run counters, flows, drive speeds and curves are complete, and a perfect vibration sensor still reads recirculation as zone
+  D. No field records which zone-D hours a bearing causes, so the split by flow against the speed-scaled best-efficiency flow is still
+  needed for E.
 * **Lens swap.** The naive population is every zone-D running hour; the answer's is the hours a new bearing would remove, those inside each
   pump's preferred operating region at that hour's speed: a different population of hours, under a fifth of C's total.
 
@@ -51,7 +53,7 @@ affinity laws. E, a variable-speed pump, has 92% of its 1,664 zone-D hours insid
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | The platform's zone-D share for the nine pumps the asset register flags as duty | A (100%; 1.19× B) | The platform's own figure, on the register's own duty list | The operations changeover log: A has run as standby since 14 June, and a standby pump is overhauled without an outage |
+| 0 | The platform's zone-D share for the nine pumps the asset register flags as duty | A (100%; 1.19× B) | The platform's own figure, on the register's own duty list | The operations changeover log: A has run as standby since 14 July, and a standby pump is overhauled without an outage |
 | 1 | Duty pumps from the changeover log, the platform's zone-D share | B (84%; 1.20× C) | The right population and the platform's measure | The run counters: the standard counts running hours, and B's 84% sits on 1,100 night hours |
 | 2 | Zone-D running hours per duty pump, snapshots times the two hours each closes, tied to the run counters | C (2,730 h; 1.22× D) | The standard's unit, on the right population, every hour evidenced | The close-outs: overhauls removed the zone-D hours inside the pump's preferred operating region and none of those at low flow, and 82% of C's are at low flow |
 | 3 | **Decisive:** zone-D hours whose snapshot flow lies inside 70–120% of the pump's best-efficiency flow at that hour's drive speed, summed per duty pump | **E (1,531 h)** (5th of 9 on rung 0) | — | — |
@@ -83,7 +85,7 @@ affinity laws. E, a variable-speed pump, has 92% of its 1,664 zone-D hours insid
 4. **Not a row predicate.** It needs each snapshot aligned to the pump's flow and drive speed at that minute, the best-efficiency flow
    rescaled to that speed through the pump curve, and the hours summed per pump.
 5. **The enumeration is arithmetic.** Which zone-D hours an overhaul removes is computed per snapshot; no field marks a cause.
-6. **No cutover date.** Low-flow running follows the network's night demand every day; no series steps. The only dated event, A's June
+6. **No cutover date.** Low-flow running follows the network's night demand every day; no series steps. The only dated event, A's July
    changeover, sits under rung 0.
 7. **Survives deletion.** With every voice and the platform export removed, the answer and the difficulty are unchanged.
 
@@ -152,8 +154,8 @@ chart parts + 3 files ≈ 51 criteria.
 
 ## 12. World-building constraints
 
-* Running hours: A 1,900 (1 April to 14 June), B 1,100, C 3,900, D 3,600, E 3,200, F 2,800, G 3,000, H 2,500, I 3,400; J, A's set-mate,
-  2,600. Platform shares: A 100%, B 84%, C 70%, D 62%, E 52%, F 45%, G 30%, H 25%, I 20%, J 12%.
+* Running hours: A 1,900 (1 April to 14 July), B 1,100, C 3,900, D 3,600, E 3,200, F 2,800, G 3,000, H 2,500, I 3,400; J, A's set-mate,
+  1,700 (from 14 July). Platform shares: A 100%, B 84%, C 70%, D 62%, E 52%, F 45%, G 30%, H 25%, I 20%, J 12%.
 * In-region share of zone-D hours: A 0.95, B 0.70, C 0.18, D 0.35, E 0.92, F 0.60, G 0.70, H 0.50, I 0.80, J 0.50. Removable hours: A 1,805
   (standby), E 1,531, D 781, F 756, B 647, G 630, I 544, C 491.
 * E and G have drives; E runs at about 72% speed, so full-speed classification cuts E to 650 hours. No other pump moves rank under it.

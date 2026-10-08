@@ -30,8 +30,10 @@ filings.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. Linking complaints into incidents, dating them by incident and dividing by vehicles built, the
   natural careful build, still lands at 13.1, 46.5% low.
-* **Instrument repair.** Make every complaint perfect and unmask every VIN; the incidents link more easily, and the exposure is untouched,
-  because vehicles in service live in the registration snapshots, not in any complaint.
+* **Instrument repair.** Suspect file: the public complaint file, which masks the last six VIN characters and holds one row per complaint
+  where the manual counts incidents. Repaired at every depth, every VIN in full and one row per incident, rung 0 lands on rung 1's 15.1
+  (−38.2%), rung 1 stays at 15.1 and rung 2 at 13.1 (−46.5%). Production and the 24 monthly snapshots are complete. Vehicles in service
+  exist only as a sum over the snapshots, and no file records vehicle-years, so the exposure construction is still needed for 24.5.
 * **Lens swap.** The naive rate divides by the population of vehicles built; the answer divides by vehicle-years actually on the road in
   the window, a population that shrinks by a fifth across it.
 

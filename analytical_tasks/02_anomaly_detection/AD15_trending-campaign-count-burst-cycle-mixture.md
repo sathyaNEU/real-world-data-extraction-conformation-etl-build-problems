@@ -10,7 +10,7 @@
 | Gap · Pattern | Gap 4 (rule) over Gap 2 (population) · a mixture, not a constant (E31): the unique set of burst cycles under which every verified minute agrees, with finer controls separating constructions at the lower rung (E16) |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
 | Measured traps engaged | #3 stops at a close but inexact match · #12 stops at the first control that passes · #2 counts file rows instead of the real unit |
-| Calibration form | Gold-standard verification subsample: 50 article-days the forensic team resolved minute by minute, with every inauthentic view attributed to its campaign from server-side fingerprints |
+| Calibration form | Gold-standard verification subsample: 50 article-days of the two closed quarters that the forensic team resolved minute by minute, with every inauthentic view attributed to its campaign from server-side fingerprints |
 | Driving force | Each campaign fires a fixed burst at a fixed period and phase across its own list of articles, and twelve articles sit on two lists, so their minute series is the sum of two cycles. A single period per article reproduces every verified day's total and none of the verified minutes on those twelve; co-movement clustering chains campaigns that share an article into one. Only the decomposition into cycles, the unique set of periods and phases under which every verified minute agrees at zero tolerance, counts the operations, and it gives nine. |
 
 ## 1. Situation
@@ -18,8 +18,8 @@
 A media app's trending rail draws on article views. The integrity team's composite flags article-days whose view spikes look inauthentic, and
 each quarter its report to the trust and safety council states how many coordinated campaigns it found; enforcement opens one investigation
 per campaign. The council's reporting standard defines a campaign as one coordinated operation, whatever the number of articles it targets.
-The pack carries Q3's minute-level view counts for every candidate article by access method, the composite's flags, the cross-language
-series, and the forensic team's verification subsample.
+The pack carries minute-level view counts for every candidate article by access method from January to September, the composite's
+flags, the cross-language series, and the forensic team's verification subsample from the two quarters it has closed.
 
 ## 2. Gate G: why this is legal
 
@@ -29,8 +29,11 @@ series, and the forensic team's verification subsample.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the composite's flags. The minute series still show bursts, and fitting one timer per inflated
   article, the natural reading, still yields 13.
-* **Instrument repair.** Label every view perfectly as automated or human; the bursts are already visible. A perfect per-view label still
-  says nothing about which bursts belong to one operation, which exists only across articles and minutes.
+* **Instrument repair.** Suspect file: the forensic subsample, 50 article-days of the two closed quarters. Filled, every article-day of Q1
+  and Q2 resolved minute by minute, it pins the same cycle structure on more days and names none of Q3's operations, which began after the
+  closed quarters' campaigns had stopped; rung 0 still counts 47, rung 1 13 and rung 2 6. Q3's minute counts are exact and complete, and the
+  access-method split is a correct record of a different attribute. No Q3 row claims a campaign, so the decomposition into cycles is still
+  needed for 9.
 * **Lens swap.** The naive count is of articles or article clusters; the answer counts cycles, a population of operations each spanning
   several articles, with twelve articles belonging to two of them.
 
@@ -77,13 +80,15 @@ fixed period, phase and burst size across its own article list, and that decompo
    cycles on mixed articles.
 5. **The enumeration is arithmetic.** Each of the nine cycles is the unique period and phase consistent with every burst minute; every
    cycle repeats more than 300 times in the quarter, so no second solution fits at zero tolerance.
-6. **No cutover date.** All nine campaigns run through the whole quarter; no series steps.
+6. **No cutover date.** All nine campaigns run through the whole of Q3, and the closed quarters' campaigns had stopped before it began;
+   no series steps inside the quarter.
 7. **Survives deletion.** With every voice and the composite removed, the answer and the difficulty are unchanged.
 
 ## 6. The calibration corpus
 
-* **Form.** The forensic subsample: 50 article-days drawn from Q2 and Q3, each resolved minute by minute from server-side fingerprints, with
-  every inauthentic view attributed to a campaign.
+* **Form.** The forensic subsample: 50 article-days drawn from Q1 and Q2, the two quarters the forensic team has closed, each resolved
+  minute by minute from server-side fingerprints, with every inauthentic view attributed to a campaign. Every campaign it verified was
+  referred and had stopped by mid-June; Q3's nine cycles all began in the first days of July.
 * **What it pins.** Campaigns are cycles of fixed period, phase and burst size; twelve verified days carry two campaigns, whose minute counts
   are exact sums; no verified day carries three.
 * **Twin pair.** Verified days V-08 and V-33 are identical on every composite indicator (desktop-share change, hourly concentration,
@@ -148,5 +153,6 @@ periods + 5 named chart parts + 3 files ≈ 57 criteria.
 * Nine cycles with periods from 17 to 53 minutes (two at 29, different phases); twelve articles on two lists; 47 articles flagged.
 * Rung figures are 47 / 13 / 6 / 9; period-only matching gives 7 and per-article counts without union 31.
 * Single-period fits reproduce every verified day's total within 1% and no minute on the twelve mixed days.
-* The subsample holds 50 days, 12 with two campaigns; V-08 and V-33 are identical on every composite column.
+* The subsample holds 50 days from Q1 and Q2, 12 with two campaigns, and none of its campaigns fired after mid-June; V-08 and V-33 are
+  identical on every composite column.
 * Refresh impressions and auto-closed reports never touch the minute view counts.

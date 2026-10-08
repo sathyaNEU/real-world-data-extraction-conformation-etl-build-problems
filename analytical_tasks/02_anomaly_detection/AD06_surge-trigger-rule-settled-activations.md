@@ -30,8 +30,11 @@ the region's lab-confirmed admissions, the authority's method note and the settl
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the workforce director's memory of the old trigger and the agency's view. A careful replay still lands at 57 or
   59 of 64 with a cut on the signal itself, and a strong solver still ships it.
-* **Instrument repair.** Make every sentinel report perfect and the signal exact; it already is. A better instrument of ILI visits cannot
-  say which weeks were epidemic, because that definition lives in admissions.
+* **Instrument repair.** No file the ladder uses is suspect: sentinel visits, served populations, admissions (reported within three weeks,
+  extracted ten weeks after the last closed season) and the settled ledger are complete and final, and no field claims to mark a week as
+  epidemic. Perfect sentinel reporting leaves rung 0 at 4.71%, rung 1 at 3.86% and rung 2 at 2.71%, because each takes its baseline weeks
+  from the signal it judges. The method note's silence on non-epidemic weeks is the rule the task recovers by reproduction from complete
+  records, not a gap in a record, so the admissions-run construction is still needed for 2.38%.
 * **Lens swap.** The naive baseline is built from weeks chosen by the signal it is meant to judge; the answer's baseline is built from a
   different population of weeks, chosen by admissions in another file, so rival rules disagree on which weeks enter, not on how one set is
   read.

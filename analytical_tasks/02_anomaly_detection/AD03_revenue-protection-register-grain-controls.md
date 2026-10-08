@@ -23,27 +23,31 @@ referral came from the team's standard score, a robust z after a population seas
 
 ## 2. Gate G: why this is legal
 
-* **Litmus.** Every figure is correct: consumption, register reads, degree-days, the operator's assessments and the appeal outcomes in
-  the disputes register. Nobody's figure is overturned; the team's score measures exactly what it says. The difficulty is which construction of a
-  household's shortfall reproduces the operator's register lines.
+* **Litmus.** Every figure is correct: consumption, register reads, degree-days, the operator's assessments and the appeal outcomes in the
+  disputes register. Nobody's figure is overturned; the team's score measures exactly what it says. The difficulty is which construction of
+  a household's shortfall reproduces the operator's register lines.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the procedure note's tie-break. A total-consumption, weather-adjusted score still reproduces
   every acknowledged total and still names C.
-* **Instrument repair.** Make every half-hour perfect and every meter communicate; the totals are already exact. A better total-consumption
-  instrument still averages a night-register loss into a whole-house figure where it sits inside noise.
+* **Instrument repair.** Suspect files: the half-hourly file, which records a comms-loss gap as zeros, and the acknowledgement file, nine of
+  whose confirmations the disputes register overturned. Repaired, every half-hour read and every outcome as it stands after appeal, rung 0
+  still names A (its population index, not the gaps, is the error), rung 1 loses B's tie and names D (9 of 9 against H's 2 of 3), and rung 2
+  still names C, which already refilled the gaps. Half-hours labelled by register at the meter add nothing the daily register reads do not
+  hold, and with one population index per register they name A (48 against E's 39). Every visit made is in the file and a household no crew
+  visited has no outcome to fill, so the per-household degree-day baseline per register is still needed for E.
 * **Lens swap.** The naive read scores households on whole-house consumption. The answer scores registers: for a two-rate meter, a
   different population of measured quantities, each with its own baseline, not the same total under another lens.
 
 ## 3. The driving force
 
-A strong solver sees that the team's score sends crews to no-fault visits, checks where referrals have confirmed, sets aside
-confirmations the disputes register overturned, then rebuilds the forward score with a weather-adjusted baseline and fills comms gaps
-from register reads. It back-tests against the acknowledgement file and every case total ties to the kilowatt-hour, so it stops. The totals tie because a shortfall is additive across
-registers: any construction that gets the whole-house expectation right gets every case total right. District E is built on storage
-heating behind two-rate meters, and a bypass there diverts part of the night register. Whole-house consumption drops 6–9%, which is where
-legitimate no-fault households also sit, while the night register drops 35–60%. Seeing it needs each meter joined to its time-pattern
-regime, every half-hour assigned to a register, a weather-adjusted baseline per register per household, and a test on the larger register
-shortfall. The operator's per-register lines are reproduced by that construction alone.
+A strong solver sees that the team's score sends crews to no-fault visits, checks where referrals have confirmed, sets aside confirmations
+the disputes register overturned, then rebuilds the forward score with a weather-adjusted baseline and fills comms gaps from register reads.
+It back-tests against the acknowledgement file and every case total ties to the kilowatt-hour, so it stops. The totals tie because a
+shortfall is additive across registers: any construction that gets the whole-house expectation right gets every case total right. District E
+is built on storage heating behind two-rate meters, and a bypass there diverts part of the night register. Whole-house consumption drops
+6–9%, which is where legitimate no-fault households also sit, while the night register drops 35–60%. Seeing it needs each meter joined to
+its time-pattern regime, every half-hour assigned to a register, a weather-adjusted baseline per register per household, and a test on the
+larger register shortfall. The operator's per-register lines are reproduced by that construction alone.
 
 ## 4. The ladder
 

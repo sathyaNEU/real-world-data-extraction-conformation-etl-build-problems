@@ -126,8 +126,8 @@ fit under the limit, and they deliver £3.8M.
 > call as one sentence for the launch paper, with `segment_case.xlsx`, a chart `savings_under_limit.svg`, and a one-slide
 > `launch_paper.pptx`.
 
-* `segment_case.xlsx` — the five segments on four bases, the eligibility and limit builds, the meter sheet (ask A) and the collections
-  sheet (ask B).
+* `segment_case.xlsx` — the five segments on four bases, the eligibility and limit builds, the meter sheet (ask A) and the
+  estimated-bills sheet (ask B).
 * `savings_under_limit.svg` — a script-rendered bar chart per segment: savings of all eligible switchers, savings of the switchers the
   limit admits drawn inside them, each bar's night-time demand in GWh printed against the 25 GWh line, and the committed segment
   highlighted.
@@ -138,12 +138,13 @@ fit under the limit, and they deliver £3.8M.
 * **Ask A (device-carried, decoupled).** For each segment, the share of smart meters that missed their daily read on more than ten days
   last quarter. *Device:* a meter whose communications hub was replaced reports under a new device ID carrying `replaces_device`, and the
   metering guide counts by meter. Counting device IDs double-counts the failures of the two segments with most hub replacements.
-* **Ask B (device-carried).** For each segment, the share of direct-debit customers with a failed collection in the last twelve months.
-  *Device:* a collection re-presented after a failure is logged as a new collection carrying `represent_of`, and the credit guide counts a
-  failure once per original collection. Counting re-presentations as fresh failures inflates the share in two segments.
+* **Ask B (device-carried).** For each segment, the share of last quarter's bills issued on an estimated read. *Device:* when an actual read
+  arrives after an estimated bill, the billing system keeps the estimate and posts the actual as a new read flagged `replaces_estimate`, and
+  the billing guide classes each bill by the read it finally rests on. Counting every estimated read as an estimated bill overstates the
+  share in the two segments whose meters report latest.
 * **Ask C (validity).** Each segment's savings under each of the four rung bases, eligible homes under the CRM field and the tariff
   history, and switchers' bills reproduced (of 2,900) by own-profile and average-profile savings.
-* **Decoupling.** Ignoring the limit changes no figure in asks A or B. Meter communications and collections touch neither the tariff
+* **Decoupling.** Ignoring the limit changes no figure in asks A or B. Meter communications and billing reads touch neither the tariff
   history, the parallel run nor the risk register.
 
 ## 11. Rubric arithmetic
@@ -159,4 +160,4 @@ committed segment, its savings, the runner-up and the margin + 5 named chart par
 * Limit 25 GWh a year: EV owners capped at 10,400 switchers (£2.5M), heat-pump homes at 13,900 (£2.2M); others uncapped.
 * Rung leaders D, B, C, E at 3.75×, 2.04×, 1.26×, 1.52×; solar-and-battery homes 5th, 4th, 3rd, 1st.
 * Ashby Road and Kiln Lane match on every CRM and billing column.
-* Meter communications and collections never touch tariffs, the parallel run or the risk register.
+* Meter communications and billing reads never touch tariffs, the parallel run's half-hourly data or the risk register.

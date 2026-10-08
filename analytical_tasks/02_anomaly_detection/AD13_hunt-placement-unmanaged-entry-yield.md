@@ -32,9 +32,12 @@ log, the network access register, the criticality register and the provider's fi
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the guidance note. Ranking divisions on confirmed lateral movement, the natural reading of
   where attackers are, still names Treasury once its cells are recovered.
-* **Instrument repair.** Suspect file: the provider's matrix, which prints cells of one to four cases as "<5". Printed in full, rung 2's
-  recovery becomes a lookup and still names Treasury, and rungs 0 and 1 are unchanged; the conditioned yield is still needed. No file claims
-  to record where a hunt will find footholds, and the VPN log records every session's device posture.
+* **Instrument repair.** Suspect files: the provider's file, which withholds line-level acknowledgements for the two restricted divisions
+  and prints their matrix cells of one to four cases as "<5", and the scorecard, which rounds triage shares to the whole percent. Repaired,
+  every line acknowledged and every share exact, rung 0 still names A (70.0), rung 1 names F, whose 16 of 16 is the only exact 100%, and
+  rung 2's recovery becomes a lookup that still names Treasury (8.89); Treasury's unmanaged-entry cases, bounded at one, become exactly one.
+  The device inventory records today's enrolment, a different moment from the session, and the VPN log records every session's posture. No
+  file claims to record where a hunt will find footholds, so the conditioned yield is still needed for E.
 * **Lens swap.** The naive population is every confirmed case; the answer's is the cases that entered through unmanaged-device sessions, a
   different population of cases, 87% of the Library's and at most one of Treasury's eight.
 

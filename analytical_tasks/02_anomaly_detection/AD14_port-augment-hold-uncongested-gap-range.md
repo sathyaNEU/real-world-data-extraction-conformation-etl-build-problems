@@ -29,8 +29,11 @@ the network dashboard's ISP-level evening ratios, and the programme's close-out.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the peering manager's view and the dashboard. The tests still give C a gap of 0.17, significant at any test-level
   threshold, and a careful solver still funds C.
-* **Instrument repair.** Double the speed-test panel; the test-level interval only narrows. The gap's comparison with uncongested slices
-  does not change, because the 0.21 range comes from path and server differences, not sampling.
+* **Instrument repair.** Suspect file: the speed-test panel, a sample of the evenings' sessions. Filled with every session's throughput,
+  rung 0 still names A (0.74), rung 1 B (0.62) and rung 2 C (0.17), its test-level interval only narrowing, because the panel already
+  estimates each median. No field claims to record congestion on a port: a test records the throughput one client drew over one path, and
+  the gap built from it is a proxy. The 0.21 ceiling comes from server placement and path mix, not sampling, so setting the gap against the
+  uncongested range is still needed for the hold.
 * **Lens swap.** The naive test asks whether C's gap differs from zero across tests; the answer asks whether it differs from what
   uncongested interconnect-quarters show, a different population of reference slices, and no candidate does.
 

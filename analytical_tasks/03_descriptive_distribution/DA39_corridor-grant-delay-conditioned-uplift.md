@@ -54,12 +54,13 @@ Upgraded, Wexford gains 1.10 million journeys a year and Lakeline 0.10 million.
 | 0 | Annual boardings × the change log's pooled uplift (+17%) | A, Harbour feeder (3.32M added, 1.18× Ridgeway) | The counters are the ridership record, scaled by measured upgrades | The survey: riders board 1.00 to 2.80 times per journey by corridor, and the counter guide double-counts interlined trips |
 | 1 | Journeys: boardings net of interlining ÷ published factors, hidden factors at the system average (1.55), × the pooled uplift | B, Ridgeway (1.81M, 1.31× Harbour) | The right unit, every corridor filled in | The sector table: each hidden factor is fixed by its sector's total and visible routes |
 | 2 | Hidden factors recovered from the respondent-weighted sector identity, × the pooled uplift | C, Lakeline express (1.65M, 1.20× Harbour) | Exact journeys on every corridor, scaled by every past upgrade | The change log: sections losing time at stops gained 0% to 2%, sections losing it at junctions 22% to 26% |
-| 3 | **Decisive:** each corridor's journeys × the uplift of its sections' delay type, apportioned from AVL timepoints against the junction and stop registers | **E, Wexford (1.10M, 1.21× Mill Lane)** (4th of 6 on rung 0) | — | — |
+| 3 | **Decisive:** each corridor's journeys × the uplift of its sections' delay type, apportioned from AVL timepoints against the junction and stop registers | **E, Wexford (1.10M, 1.19× Mill Lane)** (4th of 6 on rung 0) | — | — |
 
 * **Position table.** Wexford ranks 4th on rung 0 (1.87M), 3rd on rung 1 (1.21M) and 5th on rung 2 (0.78M), and leads only rung 3.
-* **Discriminator dominance.** Lakeline carries 2.11× over Wexford into rung 3 (9.7 against 4.6 million journeys). Conditioning multiplies
-  Wexford by 1.41 (24% for 17%) and Lakeline by 0.06 (1% for 17%), an edge of 24×, against the 1.2 × 2.11 = 2.53 needed (9.5× headroom). The product,
-  24 / 2.11 = 11.4, is Wexford's lead over Lakeline on rung 3; Mill Lane, also junction-delayed, is runner-up at 0.91M.
+* **Discriminator dominance.** Lakeline carries 2.12× over Wexford into rung 3 (9.7 against 4.6 million journeys). Conditioning
+  multiplies Wexford by 1.41 (24% for 17%) and Lakeline by 0.06 (1% for 17%), an edge of 24×, against the 1.2 × 2.12 = 2.54 needed (9.4×
+  headroom). The product, 24 / 2.12 = 11.3, is Wexford's lead over Lakeline on rung 3; Mill Lane, also junction-delayed, is runner-up at
+  0.92M.
 * **Partial correction priced (L3).** A solver who conditions on the authority's corridor types instead of measured delay counts the
   Lakeline express with the junction-delayed corridors and funds it, 2.1× Wexford (2.33M). One who apportions delay from the timetable's
   running-time allowances rather than the AVL timepoints counts Canal Street as junction-delayed and funds it, 1.53× Wexford (1.68M). No
@@ -147,6 +148,6 @@ and its margin + 5 named chart parts + 3 files ≈ 57 criteria.
 * Factors: Harbour 2.40, Canal Street 1.10 and Mill Lane 1.30 published; Ridgeway 2.80, Wexford 2.40 and Lakeline 1.00 hidden; system
   average 1.55. Journeys with recovered factors (M): Lakeline 9.7, Harbour 8.1, Canal Street 7.0, Ridgeway 5.9, Wexford 4.6, Mill Lane 3.8.
 * Uplift by delay type: Wexford and Mill Lane 24%; Harbour and Canal Street 2%; Lakeline and Ridgeway 1%; pooled 17%. Journeys added at
-  rung 3 (M): Wexford 1.10, Mill Lane 0.91, Harbour 0.16, Canal Street 0.14, Lakeline 0.10, Ridgeway 0.06. Partial cells: Lakeline 2.33,
+  rung 3 (M): Wexford 1.10, Mill Lane 0.92, Harbour 0.16, Canal Street 0.14, Lakeline 0.10, Ridgeway 0.06. Partial cells: Lakeline 2.33,
   Canal Street 1.68.
 * Concession taps and deadhead hours never touch a boarding count, a survey factor or a timepoint.

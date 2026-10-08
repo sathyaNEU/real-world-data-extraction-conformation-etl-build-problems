@@ -29,9 +29,11 @@ their pattern rates), the fault-detection log, the fab's pattern-to-tool referen
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the reference table. The wafer-grain systematic share, the natural careful build from the maps
   and the chamber logs, still names C.
-* **Instrument repair.** None suspect: the maps, the lot history and the chamber logs record every wafer and every unit it passed, and the
-  product file holds every product's qualification rate, so there is nothing to fill or correct. A perfect map still marks K's design ring
-  as systematic, and rungs 0 to 2 return D, C and F exactly as shipped.
+* **Instrument repair.** No file the ladder uses is suspect: the maps, the lot history and the chamber logs record every wafer and every
+  unit it passed, and the product file holds every product's qualification rate. The pattern flag records spatial clustering, which K's edge
+  ring and Q's centre spot genuinely are, and the pattern-to-tool table is a generic guide, not a record of these wafers; no field claims to
+  record which unit caused a pattern. Perfect files leave rung 0 at D (684), rung 1 at C (62.4%) and rung 2 at F (52.0%), so the excess over
+  each wafer's product rate is still needed for E.
 * **Lens swap.** The naive population is every patterned wafer a unit processed; the answer's is the patterning in excess of what each
   wafer's product shows on any tool, a different population, near zero for C and 27 points of everything CMP head 2 polishes.
 
@@ -134,7 +136,7 @@ low-pattern products whose raw shares looked ordinary.
   maintenances. *Device:* a maintenance that runs across a shift change is logged as two records linked by a continuation ID, per the
   maintenance system's guide. Counting records doubles those maintenances and shortens the mean interval at four units. The hold build
   never reads the maintenance log.
-* **Ask B (device-carried).** For each of the six products, wafer starts in the window and the share on priority lots. *Device:* a lot split
+* **Ask B (device-carried).** For each of the four products, wafer starts in the window and the share on priority lots. *Device:* a lot split
   into child lots keeps its parent's start date and gains a suffix, as the MES guide documents. Counting child lots as starts overcounts
   the two products split most.
 * **Ask C (validity).** For each of the four rung constructions, the pilot findings it reproduces out of 12.
@@ -142,8 +144,8 @@ low-pattern products whose raw shares looked ordinary.
 
 ## 11. Rubric arithmetic
 
-9 units × 2 (ask A) + 6 products × 2 (ask B) + 4 constructions (ask C) + the committed unit, its excess and the margin over I + 5 named
-chart parts + 3 files ≈ 45 criteria.
+9 units × 2 (ask A) + 4 products × 2 (ask B) + 4 constructions (ask C) + the committed unit, its excess and the margin over I + 5 named
+chart parts + 3 files ≈ 41 criteria.
 
 ## 12. World-building constraints
 

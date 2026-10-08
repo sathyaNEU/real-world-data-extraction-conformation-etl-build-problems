@@ -30,8 +30,12 @@ the contract register and the contractor's settled ledger.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the vendor's deck and the board chair's view. The ledger still gives a pooled 39% and detector yields that favour
   D1, and every structure built on them over-forecasts.
-* **Instrument repair.** Give every detector perfect precision on the benchmark; they would still alarm on commanded steps, because a step
-  is a real change in the signal. A better detector does not know the step was ordered.
+* **Instrument repair.** No file the ladder uses is suspect: telemetry, alarms, the command log and the contract register are complete;
+  every ticket the old routing raised is in the ledger with its final disposition, and an alarm it logged was never investigated, so there
+  is no disposition to fill. The dictionary's flag records which channels carry a command mnemonic, a correct record of capability, not of
+  whether commands set a channel's values; as a proxy it is the partial at 157. Perfect files leave rung 0 at all D3 (368 forecast, 1,410
+  hours), rung 1 at D3 less payload (330) and rung 2 at all D1 (286), and no column marks a channel as commanded, so the behavioural split
+  from the command-log join is still needed.
 * **Lens swap.** The ledger's population is mostly free-running channels under the old routing; the decision set is all 82 channels, 62%
   commanded. The answer applies yields to a different population of alarms, split by a property, not the same alarms re-weighted.
 

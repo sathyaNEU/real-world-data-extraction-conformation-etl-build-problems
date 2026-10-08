@@ -34,8 +34,8 @@ log.
   Repaired, every report names its model at its latest version: rungs 0 to 3 all name the K-200, and the batch construction is still
   needed to reach E. Purchase dates, the production and shipment registers and the price lists are complete, and a report that named its
   model would still not say whether its hazard is the design's or the batch's.
-* **Lens swap.** The naive rate pools a pair's units across batches; the answer's is the rate in the batch where the pair is least
-  hazardous, a different population of units for every pair, a thirteenth of the K-200's pooled figure would hold in its other batches.
+* **Lens swap.** The naive rate pools a pair's units across batches; the answer's is the rate in the pair's least hazardous batch, a
+  different population of units for every pair: 12 per 100,000 for the K-200 against its pooled 60, and 29 for the T-9 against its 31.
 
 ## 3. The driving force
 

@@ -10,7 +10,7 @@
 | Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · the quiet second trap (E15): beyond the loud heaping and stock-shape story, a lump of identical dwellings inside the window that a smooth counterfactual books as shading, controlled by the stock model's scores for the same dwellings; a grant segment the register labels uniformly, split by route through the application file at the lower rung (E29) |
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution support |
 | Measured traps engaged | #11 beats the headline trap, misses the quiet one · #6 treats a mixed segment all one way · #7 uses the ready-made measure |
-| Calibration form | Prior-period close-out: the close-out reports of the last four audit rounds, eight audited areas, each with every re-assessed certificate's lodged and re-assessed score |
+| Calibration form | Prior-period close-out: the close-out reports of the four audit rounds under the fund's previous programme, eight audited areas outside the current partners, each with every re-assessed certificate's lodged and re-assessed score |
 | Driving force | Every bunching estimator a careful analyst reaches compares the lodged scores with a smooth curve, and a smooth curve cannot bend to a lump of identical dwellings. In March an assessor team surveyed C's Oak Lane estate, 640 identical electrically heated flats that genuinely score 36 to 38, and the curve books them as shading. The stock model scores the same dwellings by archetype before any assessor arrives; against that counterfactual, scaled outside the window, C's excess vanishes and E's, real shading spread across ordinary gas-heated houses, leads. |
 
 ## 1. Situation
@@ -30,8 +30,12 @@ model (an archetype score for every dwelling in the six areas), the scheme rules
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. The integrity manual's smooth counterfactual on the rating-route certificates, the natural careful
   build, still names C.
-* **Instrument repair.** Make the register perfect; every lodged score is already what its assessor lodged. A better smooth curve still
-  cannot bend to a lump of identical flats, and only the same dwellings' modelled scores show the lump was there before any assessor came.
+* **Instrument repair.** No file the ladder uses is suspect. The register holds every lodged score as lodged, which is the behaviour under
+  audit; the application file records every route, the stock model every dwelling's archetype score, as it claims, and the close-outs every
+  re-assessed score from the previous programme's areas, none a current partner. The register's single grant label records funding, not
+  route: writing the route onto every certificate, or giving every dwelling an exact score in place of its archetype's, leaves rung 0 at A
+  (31%), rung 1 at B (6.2) and rung 2 at C (11.4), because none of them reads the dwellings' scores. No row records what a dwelling would
+  score without the incentive, so setting the rating-route certificates against the same dwellings' scores is still needed for E.
 * **Lens swap.** The naive comparison is the lodged distribution against a curve drawn through it; the answer compares rating-route
   certificates with the modelled scores of the same dwellings, a different reference population: dwellings before assessment, not
   certificates after it.
@@ -91,9 +95,9 @@ Against that histogram, scaled outside the window, C's excess falls from 11.4 to
 
 ## 6. The calibration corpus
 
-* **Form.** The close-out reports of the last four audit rounds: eight audited areas, in each the rating-route certificates under the line
-  that the team re-assessed, with each one's lodged and re-assessed score, and the round's confirmed excess per 100 rating-route
-  certificates.
+* **Form.** The close-out reports of the four audit rounds held under the fund's previous programme, 2021 to 2024: eight audited areas,
+  none of them among the current six partners, in each the rating-route certificates under the line that the team re-assessed, with
+  each one's lodged and re-assessed score, and the round's confirmed excess per 100 rating-route certificates.
 * **What it pins.** The stock-model shape on the rating route reproduces 8 of 8 confirmed excesses within 0.5 per 100; the smooth curve 5,
   overstating the three areas with estate lumps; the sale-and-rental shape 4; dwelling-level crossings 2.
 * **Twin pair.** Round-two area Q-2 and round-four area Q-4 are identical on rating-route certificates (1,520), smooth-curve excess (9.4 per
@@ -164,5 +168,6 @@ chart parts + 3 files ≈ 47 criteria.
   C 1.5.
 * Oak Lane: 640 identical flats in C, modelled at 36–38 and surveyed in March. D's solid-wall terraces are modelled at 35–37. B's sales are
   dominated by a new-build suburb.
-* The close-outs hold eight audited areas; Q-2 and Q-4 are identical on every register column.
+* The close-outs hold eight audited areas of the previous programme, none a current partner; Q-2 and Q-4 are identical on every register
+  column.
 * Retention releases and shared guarantees never touch certificates, routes or modelled scores.

@@ -30,8 +30,12 @@ power curve and the pilot log.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. A careful own-curve deficit per turbine-year, the industry's standard test, still names G, and
   joining the register's current rotors to it credits G's year to the spare G now carries.
-* **Instrument repair.** Give every turbine perfect SCADA and the register perfect current fields; they are already right. A better
-  instrument of turbines still records R-3's loss on G, where it no longer is, and nothing on E.
+* **Instrument repair.** Suspect file: the grid operator's curtailment report, which suppresses B's connection. Published in full, rung 1
+  names C (4.8%), B's 340 MWh shortfall sitting below its curtailment, while rung 0 still names A (it never reads curtailment) and rung 2
+  still names G (9.4%). The asset register's current-rotor field is correct today and claims no history; even a dated install history on
+  every turbine would only replace the layout and lift-log hops, leaving rung 2 and the current-rotor join on G, so each rotor's deficit
+  over its operating months is still needed for E. SCADA, the status log and the lift log are complete, and the run-in filter is the memo's
+  rule, not a gap in a record.
 * **Lens swap.** The naive unit is the turbine-year; the answer's unit is the rotor over its months in operation, which lie in G's SCADA
   and in no unfiltered day of E's: a different population of SCADA periods, credited to a different turbine.
 

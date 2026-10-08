@@ -29,8 +29,12 @@ the payee records and the three published conformity statements ship with it.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the external auditor's view and the screen file. The statements still certify the closed-year construction,
   every department's recent series is still flat, and carrying the closed year forward still looks like the careful forecast.
-* **Instrument repair.** Make every payment record perfect; it already is. The plan year has not happened, and no better instrument of
-  2025/26 shows how many instalments a household has left.
+* **Instrument repair.** Suspect file: the published payment files, whose rows are invoice lines wherever a remittance has several. Repaired
+  to one row per payment, rung 0 sheds the 4,200 line rows and returns 34,700 (+238%), and rung 1 lands on rung 2's 12,800 (+24.5%); the
+  £500 floor removes no row the filter or any rung uses. The payee records are complete for what they hold, a household and an amount, and
+  writing the 30-instalment term or each household's last instalment date onto every record leaves all three rungs where they are, because
+  each carries the closed year forward. Instalments not yet paid are a forward population no payment row records, so the per-household count
+  into 2027/28 is still needed for 10,280.
 * **Lens swap.** The naive figure counts payments made in 2025/26. The answer counts payments in 2027/28, which for Housing Support is a
   different population: the households of one cohort with instalments still to come.
 
@@ -155,8 +159,8 @@ Support's plan-year count and the gap to the carry-forward figure + 5 named char
 
 ## 12. World-building constraints
 
-* Rung figures are 38,900 / 17,000 / 12,800 / 10,280. Every single-error cell sits at least 24.5% from the answer, and the only cell
-  inside 20% (11,750) needs two filed rules broken.
+* Rung figures are 38,900 / 17,000 / 12,800 / 10,280, and the full range at payment grain returns 34,700. Every single-error cell sits
+  at least 24.5% from the answer, and the only cell inside 20% (11,750) needs two filed rules broken.
 * Housing Support: 480 households approved 40 a month from October 2024 to September 2025, 30 instalments each; 5,160 instalments in
   2025/26, 5,760 in 2026/27 and 2,640 in 2027/28, plus 90 ordinary payments a year in the cell. The 2021 intake: 512 households, 30 each,
   run off between September 2023 and August 2024.

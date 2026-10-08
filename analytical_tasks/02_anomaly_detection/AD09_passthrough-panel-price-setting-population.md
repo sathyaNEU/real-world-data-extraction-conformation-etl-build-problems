@@ -29,8 +29,10 @@ of the prices in force from 07:00 to 22:00. The pack carries the minute-stamped 
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the markets unit head's preference. The standard still names "the stations whose prices the brand sets", the
   register still offers a company-owned flag that seems to answer it, and the flag panel still reproduces only 22 of 28 logged figures.
-* **Instrument repair.** Make the register perfect; its ownership flag is already exact. A better ownership register still records who owns
-  a site, not who prices it.
+* **Instrument repair.** No file the ladder uses is suspect: the register's company-owned flag is exact about ownership, a different
+  attribute from who sets a price, the price-change log is minute-stamped and complete, and the logged pass-throughs are final. Perfect
+  files leave rung 0 at 9 of 28, rung 1 at 15 and rung 2, the ownership panel, at 22. No row records who prices a station, and 61 stations
+  changed terms during the log, so the timing panel drawn before each change is still needed for 28 of 28.
 * **Lens swap.** The naive panel is the population of company-owned sites; the answer's panel is the population of stations priced by head
   office, which differs station by station and changes between levy dates: a different population, not the same stations under another
   lens.

@@ -29,9 +29,11 @@ last summer's roster and this summer's roster plan (lanes staffed per checkpoint
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices and the detector export. Excess passengers net of the new lanes, the natural careful build from
   the queue sensors, still names C.
-* **Instrument repair.** None suspect: the queue sensors record every passenger's wait, the register every position and the rosters every
-  staffed lane, so there is nothing to fill or correct. A perfect queue sensor still measures waiting, not where a lane could open, and
-  rungs 0 to 2 return A, B and C exactly as shipped.
+* **Instrument repair.** No file the ladder uses is suspect: the queue sensors record every passenger's entry and exit, the lane register
+  every position and its rated capacity, last summer's roster every staffed lane, and this summer's roster plan is the plan of record for
+  the hours the team would work. No field records where the team could open a lane, so perfect files leave rung 0 at A (+14.2%), rung 1 at B
+  (24.1%) and rung 2 at C (61,000), and the hour-by-hour position limit is still needed for E. The after-action book records every
+  deployment made; an airport-week without the team has no moves to fill.
 * **Lens swap.** The naive population is every passenger who waited over 20 minutes; the answer's is the passengers in checkpoint-hours
   where a lane position stood idle, up to what three lanes can screen: a different population, under a sixth of C's excess.
 

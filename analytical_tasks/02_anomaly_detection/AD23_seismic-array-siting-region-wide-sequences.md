@@ -10,16 +10,16 @@
 | Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · two flawless grains (E07): catalog events against independent earthquakes, the bridge built region-wide because aftershock productivity scales with mainshock size and crosses area lines; a suppressed cell bounded at the lower rung (E25) |
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #24 treats an unpublished figure as unknown · #14 coarsens the segment it was asked about |
-| Calibration form | Counterparty acknowledgement file: the seismic network operator's acknowledgements of 340 events the commission queried, each classified as independent, an aftershock of a named event, or a blast |
+| Calibration form | Counterparty acknowledgement file: the seismic network operator's acknowledgements of 340 events the commission queried in the three years before the window, each classified as independent, an aftershock of a named event, or a blast |
 | Driving force | The monitoring rule counts independent earthquakes, and a strong solver declusters each area's catalog. But a sequence belongs to the region, not to the area: B's M4.6 mainshock sat 3 km from the D line and threw 80 of its 160 aftershocks into D. Declustered inside D's own catalog, with no mainshock to hang them on, 72 of them pass as independent and D tops the ranking. Declustering the whole catalog and assigning each sequence to its mainshock's area is the only reading the network's acknowledgements reproduce. |
 
 ## 1. Situation
 
 A state oil and gas commission has one temporary dense seismic array (40 stations) for next year, to be sited in one of six areas of
 interest. Its monitoring rule sends the array to the area with the most independent earthquakes of magnitude 2.5 or more per million
-barrels of deep disposal over the last twelve months. The pack carries the regional catalog, the public well-volume report (wells under a
-confidentiality order shown as "C"), the commission's annual disposal summary with area totals, the area boundaries, and the network
-operator's acknowledgement file.
+barrels of deep disposal over the last twelve months. The pack carries the regional catalog for four years, the public well-volume
+report (wells under a confidentiality order shown as "C"), the commission's annual disposal summary with area totals, the area
+boundaries, and the network operator's acknowledgement file for the three years before the window.
 
 ## 2. Gate G: why this is legal
 
@@ -29,8 +29,10 @@ operator's acknowledgement file.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. Bounding the confidential volumes and declustering each area's catalog, the natural careful build,
   still names D.
-* **Instrument repair.** Densify the network further; magnitude 2.5 is already well above completeness everywhere. A better instrument
-  records the same aftershocks in the same places, and their dependence on a mainshock across a boundary is still a construction.
+* **Instrument repair.** Suspect file: the public well-volume report, which shows confidential wells as "C". Published in full, rung 1 names
+  D (20.0, C 19.6), rung 0 still names A and rung 2 still names D (18.9). The catalog is complete above M2.5 and marks no aftershock, and
+  the acknowledgement file covers only the three years before the window, so filling it classifies past events, not this year's. No row
+  records which mainshock an event belongs to, so region-wide declustering is still needed for E.
 * **Lens swap.** The naive unit is the catalog event; the answer's unit is the independent earthquake, built region-wide and assigned by
   mainshock, a different population that, against per-area declustering, removes 72 events from D and none from E.
 
@@ -50,7 +52,7 @@ D falls from 18.9 to 9.2 per million barrels and E, a steady rise of small indep
 |---|---|---|---|---|
 | 0 | Catalog events of magnitude 2.5 or more per area, last twelve months | A (212; 1.43× D) | The catalog as published, the largest earthquake inside it | The rule counts per million barrels of deep disposal, and A injects the most |
 | 1 | Events per million barrels, confidential wells left out as unknown | B (52.0; 2.35× A) | The rule's denominator from the public report, nothing guessed | The disposal summary's area totals: B's confidential wells carry 9.6 of its 12.1 million barrels |
-| 2 | Bounded volumes; each area's catalog declustered on its own | D (18.9; 1.26× E) | The rule's unit, independent earthquakes, by the standard windows, on the right denominator | The network's acknowledgements: 64 events in D that this build keeps are classified as aftershocks of B's M4.6 |
+| 2 | Bounded volumes; each area's catalog declustered on its own | D (18.9; 1.26× E) | The rule's unit, independent earthquakes, by the standard windows, on the right denominator | The network's acknowledgements for the three years before: this build keeps as independent 53 of the 340 queried events, each one an aftershock of a mainshock across an area line |
 | 3 | **Decisive:** the whole catalog declustered, each sequence counted once in its mainshock's area | **E (15.0)** (5th of 6 on rung 0) | — | — |
 
 * **Position table.** E ranks 5th on rung 0 (97) and rung 1 (16.0) and 2nd on rung 2, 1.26× behind D, and leads only rung 3, 1.63× D.
@@ -83,12 +85,14 @@ D falls from 18.9 to 9.2 per million barrels and E, a steady rise of small indep
 
 ## 6. The calibration corpus
 
-* **Form.** The network operator's acknowledgement file: 340 events the commission queried over three years, each acknowledged as
-  independent, as an aftershock of a named event, or as a blast.
+* **Form.** The network operator's acknowledgement file: 340 events the commission queried in the three years before the window, each
+  acknowledged as independent, as an aftershock of a named event, or as a blast. Two of those years' sequences crossed area lines: C's
+  M4.3 of October 2023, 4 km from the F line, and A's M4.0 of 2024. No event of the last twelve months was queried.
 * **What it pins.** Region-wide Gardner–Knopoff and nearest-neighbour declustering both reproduce all 340; per-area declustering 287;
   Reasenberg's method region-wide 331, keeping E first.
-* **Twin pair.** D's first and fourth quarters are identical on events (34 each), magnitude distribution and depth profile. The
-  acknowledgements count 34 and 17 independent earthquakes (2×): the fourth quarter's events include 17 of B's aftershocks.
+* **Twin pair.** F's second and fourth quarters of 2023 are identical on events (34 each), magnitude distribution and depth profile. The
+  acknowledgements count 34 and 17 independent earthquakes (2×): the fourth quarter's events include 17 aftershocks of C's M4.3 across
+  the F line.
 * **Every rule exercised.** One queried event was a quarry blast, so blasts are excluded under every rule; one sequence in the corpus crossed
   two boundaries, so assignment by mainshock is tested.
 * **Resemblance points at the decoy.** By catalog profile D most resembles the area where last year's array mapped a newly active fault.
@@ -105,7 +109,8 @@ D falls from 18.9 to 9.2 per million barrels and E, a steady rise of small indep
 
 ## 8. Determinism by construction
 
-* **Completeness.** Magnitude 2.5 is at least 0.7 above completeness in every area in both years, so no completeness choice moves a count.
+* **Completeness.** Magnitude 2.5 is at least 0.7 above completeness in every area in every year of the catalog, so no completeness
+  choice moves a count.
 * **Declustering.** Gardner–Knopoff and nearest-neighbour methods agree event by event region-wide; Reasenberg differs on nine events and
   changes no rank.
 * **Volumes.** Area totals are published to 0.1 million barrels, so each bounded volume is exact within 0.05; E's wells are all public.
@@ -148,5 +153,6 @@ chart parts + 3 files ≈ 51 criteria.
   million; per-area declustering keeps 72 of the 80. E: 91 independent and 6 aftershocks of its own, 6.06 million. F: 60 independent and 4
   aftershocks, 7.1 million.
 * Rung leaders are A, B, D, E; E is 5th / 5th / 2nd (1.26×) / 1st and leads rung 3 by 1.63×.
-* The acknowledgement file holds 340 events; D's first and fourth quarters are identical on every catalog column.
+* The acknowledgement file holds 340 events from the three years before the window and none from it; F's second and fourth quarters of
+  2023 are identical on every catalog column.
 * Repeat citations and revised felt reports never touch the catalog, the volumes or the acknowledgements.

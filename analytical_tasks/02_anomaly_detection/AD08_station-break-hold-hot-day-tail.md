@@ -30,10 +30,11 @@ station register, the two overlaps and the network's parallel-run archive.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete both voices. The clean difference series of annual means still shows +0.28 °C with a 0.07 half-width, and every
   solver who builds it still files an adjustment.
-* **Instrument repair.** Suspect file: N3's series, whose reading hour moved from 17:00 to 07:00 in August 1986. Homogenised, rungs 2 and 3
-  both return +0.28 °C ± 0.07 and file an adjustment, rung 1 still files the sensor story and rung 0 no adjustment; the hot-day construction
-  is still needed to reach the hold. Tallis Creek's own break is the object of the filing, not a defect elsewhere, and its overlap, the
-  archive and the other neighbours are complete.
+* **Instrument repair.** Suspect files: N3's series, whose reading hour moved from 17:00 to 07:00 in August 1986, and the three nearest
+  neighbours' series, split across old and new IDs in 1993. Repaired, each neighbour one continuous series and N3 homogenised, rung 1 lands
+  with rungs 2 and 3 on +0.28 °C ± 0.07 and files an adjustment, and rung 0 still files none; the hot-day construction is still needed to
+  reach the hold. Tallis Creek's own break is the object of the filing, not a defect in a comparison record, and its overlap, the archive
+  and the other neighbours are complete.
 * **Lens swap.** The naive quantity is the annual mean; the answer's is the daily maximum on the days that set the index, a different
   population of days, about fifteen a summer, whose break is twice the mean's.
 

@@ -33,7 +33,7 @@ biggest.
 * **Instrument repair.** No file the ladder uses is suspect: the regional series and the station records are complete and exact for
   what each measures, the 1990s winters are correct records of colder winters that the policy detrends by method, and the supply model's
   costs and the pilot log are complete. A perfect station at every load centre and a perfect cost model move no rung (2-2-2-0-0, 2-0-2-2-0,
-  2-0-2-0-2), and the winter-by-winter clause is still needed for 1-2-1-1-1.
+  2-0-0-2-2), and the winter-by-winter clause is still needed for 1-2-1-1-1.
 * **Lens swap.** The naive read values the contracts' average payout. The answer values what each block keeps in each winter, a different
   population of region-winters once the cap is applied.
 
@@ -41,11 +41,11 @@ biggest.
 
 A strong solver prices each region's contracts from the 30-winter burn, settles them on the term sheet's index stations rather than the
 utility's regional series, detrends as the hedging policy requires, and gives two blocks to each of the three regions with the largest
-expected payout. Each step is competent, and the plan claims $13.8M a winter. The pilot log confirms every settlement. But the master
+expected payout. Each step is competent, and the plan claims $15.3M a winter. The pilot log confirms every settlement. But the master
 agreement's indemnity clause returns, in any winter, whatever a region's payouts exceed its incremental supply cost that winter. Northgate
 pays most because its continental winters are cold, yet its storage keeps its extra cost at $0.9M in a moderate winter and $6.1M in a
 continental one, below what one block pays. Its second block recovers $0.17M a winter, not the $3.20M its average payout suggests. Bayside
-has no storage and buys spot LNG, so its cost exceeds two blocks' payout in nearly every winter, and its second block keeps $1.49M.
+has no storage and buys spot LNG, so its cost exceeds two blocks' payout in nearly every winter, and its second block keeps $1.56M.
 Valuing every block winter by winter and region by region, then choosing the six with the largest marginal recovery, moves the cover to
 one block each in four regions and two in Bayside.
 
@@ -53,24 +53,29 @@ one block each in four regions and two in Bayside.
 
 | Rung | Construction | Lands on (N-B-U-S-G) | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Expected payout per contract on the utility's regional degree days, raw 30-winter burn; two blocks to each of the top three | 2-2-2-0-0; claims $17.45M, recovers $7.33M | The utility's own weather and the term sheet's payout formula | The term sheet: contracts settle on each region's index station, and the pilot settled on it |
-| 1 | The same on index-station degree days (two grains) | 2-0-2-2-0; claims $15.51M, recovers $6.61M | The settlement grain the pilot confirms to the cent | The hedging policy: burn analysis uses degree days detrended to the coming winter, and two 1990s winters carry Uplands' and Seaboard's raw payouts |
-| 2 | Station degree days, detrended (hygiene) | 2-0-2-0-2; claims $13.77M, recovers $6.24M | Right grain, right method, and the pilot reproduces | The master agreement's indemnity clause: a region's payout above its incremental supply cost in a winter goes back |
-| 3 | **Decisive:** each block's recovery as the lesser of payout and incremental cost, winter by winter and region by region; the six blocks with the largest marginal recovery | **1-2-1-1-1; $9.52M** | — | — |
+| 0 | Expected payout per contract on the utility's regional degree days, raw 30-winter burn; two blocks to each of the top three | 2-2-2-0-0; claims $16.42M, recovers $6.96M | The utility's own weather and the term sheet's payout formula | The term sheet: contracts settle on each region's index station, and the pilot settled on it |
+| 1 | The same on index-station degree days (two grains) | 2-0-2-2-0; claims $15.95M, recovers $5.62M | The settlement grain the pilot confirms to the cent | The hedging policy: burn analysis uses degree days detrended to the coming winter, and two 1990s winters carry Uplands' raw payouts |
+| 2 | Station degree days, detrended (hygiene) | 2-0-0-2-2; claims $15.33M, recovers $5.45M | Right grain, right method, and the pilot reproduces | The master agreement's indemnity clause: a region's payout above its incremental supply cost in a winter goes back |
+| 3 | **Decisive:** each block's recovery as the lesser of payout and incremental cost, winter by winter and region by region; the six blocks with the largest marginal recovery | **1-2-1-1-1; $9.99M** | — | — |
 
-* **Figure shape.** The claimed recovery walks down at every rung (17.45, 15.51, 13.77, 9.52), and the answer is the smallest claim. On the
-  recovery each allocation actually earns, the first three rungs walk down (7.33, 6.61, 6.24) and the decisive rung reverses them (+53%).
+* **Figure shape.** The claimed recovery walks down at every rung (16.42, 15.95, 15.33, 9.99), and the answer is the smallest claim. On the
+  recovery each allocation actually earns, the first three rungs walk down (6.96, 5.62, 5.45) and the decisive rung reverses them (+83%).
 * **Position.** Bayside, which takes two blocks in the answer, has the lowest station payout of the five on rungs 1 and 2 and gets none
   there. No intermediate rung's allocation equals the answer.
 * **Discriminator dominance.** Northgate's second block carries a 2.02× lead over Bayside's into rung 3 ($3.20M against $1.59M a winter in
-  expected payout). Winter by winter the clause leaves Northgate's second block $0.17M and Bayside's $1.49M, an 8.8× reversal. Swing: 2.02
-  × 8.8 = 17.7, against a required 1.2 × 2.02 = 2.4.
-* **Partial correction priced (L3).** Applying the clause to expected payout against expected cost lands on 1-1-1-2-1 and recovers $8.66M
-  (−9.1%). Applying it winter by winter without detrending lands on 1-1-2-1-1 ($8.88M, −6.7%). Applying it on the regional series lands on
-  1-2-2-1-0 ($8.87M, −6.9%). No half lands on the answer.
-* **Grid.** Grain (regional, station) × burn (raw, detrended) × clause (ignored, on expectations, winter by winter) gives 12 cells and nine
-  distinct allocations. Only the station, detrended, winter-by-winter cell names the answer. The nearest wrong cell is the raw winter-by-winter
-  cell (1-1-2-1-1, −6.7%), and it costs one omission: the detrending.
+  expected payout). Winter by winter the clause leaves Northgate's second block $0.17M and Bayside's $1.56M, a 9.3× reversal. Swing: 2.02
+  × 9.3 = 18.8, against a required 1.2 × 2.02 = 2.4.
+* **Partial correction priced (L3).** Applying the clause to expected payout against expected cost lands on 1-1-1-2-1, ahead of the answer
+  by 1.07× on its own arithmetic, and recovers $8.43M (−15.6%). Seaboard's expected cost ($4.74M) nearly covers two blocks of expected
+  payout ($2.39M each), but most of it falls in continental winters, when its headland station pays nothing, so winter by winter its second
+  block recovers nothing. Applying the clause winter by winter on the regional series lands on 1-2-1-0-2, ahead by 1.05×, and recovers
+  $8.30M (−16.9%): on the towns' degree days Seaboard's payouts shrink to a tenth and Glenside's second block looks nearly as full as its
+  first. Capping each block separately at its region's cost still doubles up three regions and lands on 2-0-2-2-0 ($5.62M, −43.8%).
+  Skipping the detrending is not a half, because under the clause it converges (section 8). No half lands on the answer.
+* **Grid.** Grain (regional, station) × burn (raw, detrended) × clause (ignored, on expectations, winter by winter) gives 12 cells and six
+  distinct allocations. Only the two station winter-by-winter cells name the answer, and they agree to the cent because the detrending
+  converges under the clause. Every other cell recovers at least 15.6% less. The nearest wrong cells are the station clause-on-expectations
+  pair (1-1-1-2-1, $8.43M), and they cost one shortcut: the lesser of two expectations in place of the expectation of the lesser.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -116,12 +121,16 @@ one block each in four regions and two in Bayside.
 ## 8. Determinism by construction
 
 * **Burn window.** The 30 winters 1995–2024, filed in the policy, with no partial season.
-* **Detrending.** The policy's single method (a linear trend in each station's seasonal degree days, carried to 2025), so detrended payouts
-  have one value.
+* **Detrending.** Made to converge at the decisive rung. The policy files one method (a linear trend in each station's seasonal degree
+  days, carried to 2025), and it orders only the payout rungs. The trend is material only at the Uplands station in the two 1990s winters
+  ($2.45M a contract raw, $0.26M detrended). Under the clause, the filed cost of those winters ($0.3M) sits below even one detrended block's
+  payout ($1.04M), so raw and detrended burns clip to the same recovery for every allocation. Both land on 1-2-1-1-1 and $10.0M.
+* **Costs.** The supply model files one replay (each winter's weather, detrended to the coming winter, on next year's system), so costs
+  carry no burn choice.
 * **Clause.** Applied per region and per winter, as the agreement's schedule states; costs come from the supply model's filed replay.
-* **Blocks.** Marginal recoveries are concave by region, so greedy and exhaustive choice agree, and the answer beats the next allocation by
-  6.7%.
-* **Rounding.** The expected recovery is $9.519M, filed to one decimal ($9.5M).
+* **Blocks.** Marginal recoveries are concave by region, so greedy and exhaustive choice agree. The next allocation of any kind recovers
+  13.9% less (2-2-1-1-0 and 2-1-1-1-1, $8.60M), and every grid cell that misses the answer at least 15.6% less.
+* **Rounding.** The expected recovery is $9.992M, filed to one decimal ($10.0M).
 
 ## 9. Prompt sketch and deliverables
 
@@ -155,11 +164,16 @@ committed blocks and the expected recovery + 12 grid cells + 5 named chart parts
 ## 12. World-building constraints
 
 * Winters: 10 mild, 8 moderate, 5 continental, 4 coastal storm, 1 general severe, 2 severe 1990s. Detrended station payout per contract
-  ($M), by type and region (N, B, U, S, G): moderate 0.81, 0.52, 0.46, 0.11, 0.60; continental 2.41, 0.85, 1.03, 0.06, 1.23; coastal 0.63,
-  0.13, 0.39, 2.22, 0.02; general 2.5 each; 1990s 0.23, 0.24, 0.34, 0.10, 0.27 (raw 0.69, 0.42, 2.5, 1.40, 0.38). Regional degree days
-  scale station payouts by 1.0, 1.78, 1.26, 1.0 and 0.61.
-* Incremental cost ($M): moderate 0.9, 4.3, 1.2, 1.2, 1.0; continental 6.1, 14.3, 10.7, 8.9, 7.1; coastal 1.1, 0.3, 0.4, 11.6, 0.9;
-  general 13.2, 19.2, 14.9, 12.5, 10.2; 1990s 2.6, 2.2, 1.1, 2.7, 2.9 (raw Uplands 23.1).
-* Marginal recovery per block (first, second): N 1.80, 0.17; B 1.56, 1.49; U 1.47, 0.85; S 1.70, 0.63; G 1.50, 0.45. The answer 1-2-1-1-1
-  recovers $9.519M; the next allocation $8.88M.
+  ($M), by type and region (N, B, U, S, G): moderate 0.81, 0.52, 0.44, 0.80, 0.60; continental 2.41, 0.85, 1.35, 0.00, 1.44; coastal 0.63,
+  0.13, 0.06, 2.04, 0.08; general 2.5 each; 1990s 0.23, 0.24, 0.26, 0.42, 0.37. Raw station payouts equal these everywhere except Uplands in
+  the 1990s winters (2.45). Regional degree days scale station payouts by 1.0, 1.78, 1.03, 0.10 and 0.47, capped at 2.5 a contract.
+* Incremental cost ($M), one filed replay: moderate 0.9, 4.3, 1.6, 1.9, 0.5; continental 6.1, 14.3, 6.4, 17.6, 6.2; coastal 1.1, 7.6, 0.2,
+  7.6, 1.5; general 13.2, 19.2, 9.1, 8.0, 9.8; 1990s 2.6, 2.2, 0.3, 0.3, 1.5; nothing in mild winters.
+* Marginal recovery per block (first, second): N 1.80, 0.17; B 1.59, 1.56; U 1.68, 0.17; S 1.81, 0.00; G 1.56, 0.12. The answer 1-2-1-1-1
+  recovers $9.992M. The next allocation of any kind recovers $8.60M (1.16×), and every grid cell that misses the answer recovers at most
+  $8.43M (1.19×). The regional winter-by-winter and clause-on-expectations partials prefer their picks to the answer by 1.05× and 1.07×.
+* Convergence: Uplands' 1990s cost ($0.3M) sits below one detrended block's payout ($1.04M), so the raw and detrended winter-by-winter
+  tables match to the cent.
+* Rung separations: on rung 1 Seaboard leads Glenside by 1.15× (0.597 against 0.519 a contract), and on rung 2 Glenside leads Uplands by
+  1.15× (0.519 against 0.451).
 * The twin pilot contracts are identical on every visible column. Sendout rows and customer registers never touch payouts or costs.

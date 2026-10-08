@@ -145,4 +145,5 @@ count and the deferred count + 5 named chart parts + 3 files ≈ 69 criteria.
   flowering first treatments are more than eight times any earlier season's.
 * Rung figures 4,860 / 2,310 / 2,050 / 2,640; other cells 3,330 and 2,900. Ashcombe and Brenley match on every report and register
   column.
+* With every infestation reported in the season it appears, rungs 0 and 1 project 2,370 and rung 2 caps at 2,110.
 * Device merges and order suffixes never touch a flowering first treatment or a capacity line.

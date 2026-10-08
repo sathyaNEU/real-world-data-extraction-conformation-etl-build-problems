@@ -29,8 +29,11 @@ delegation file, the monitored-prefix list and the revision log.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete the lead's rule of thumb. Ranking the actionable not-found pages, the natural reading of what ROAs fix, still
   names C.
-* **Instrument repair.** Make the pager and the event feed perfect; they already are. A better instrument of last quarter's pages still
-  cannot say which pages an engagement removes; only past engagements can.
+* **Instrument repair.** No file the ladder uses is defective. The one field open to doubt is the monitored-prefix list's customer label,
+  which marks the customer a prefix is monitored for, not who holds it; relabelled by holder from the RIR file, rung 0 becomes rung 1 and
+  names B (1,390), rung 1 still names B and rung 2 still names C (1,040). The pager log, the events, the delegations and the revision log
+  are complete. No row records which origins a customer will authorise, which its ROAs state only after an engagement, so the recurrence
+  rule measured from the fourteen engagements is still needed for E.
 * **Lens swap.** The naive read counts last quarter's pages; the answer counts the pages that will not occur next quarter, a different moment
   and, within each customer, a different population of origins.
 
