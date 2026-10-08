@@ -64,9 +64,9 @@ bays. Carried through the curve, no scheme reaches four minutes; the best is the
 * **Partial correction priced (L3).** A solver who caps releasable hours by each scheme's bay count over the whole day, rather than by the bays
   free in each hour, releases 74% of H2's excess and commits D at 4.9 minutes. One who applies the census but converts at the average rather than
   on the curve commits C at 5.6 minutes. Both commit; neither holds.
-* **Grid.** Accounting (incidents, crew-hours) × conversion (average, curve) × reach (gross, daily bay cap, hourly free bays) gives eight
-  feasible builds. Six commit to A, C or D. Two hold: the decisive build, on H1's 3.1 minutes, and the incidents-only build on the curve,
-  which never values a handover scheme and holds on the crews' 2.4 minutes, a different blocking figure.
+* **Grid.** Accounting (incidents, crew-hours) × conversion (average, curve) × reach (gross, daily bay cap, hourly free bays) gives seven
+  feasible builds, because the curve is fitted on crew-hours released and reach applies only to handover hours. Six commit to A, C or D, and
+  only the decisive build holds.
 
 ## 5. Why the decisive rung survives the opponent
 

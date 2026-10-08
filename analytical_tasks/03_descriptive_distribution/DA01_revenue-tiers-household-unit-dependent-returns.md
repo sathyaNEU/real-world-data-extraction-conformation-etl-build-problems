@@ -11,7 +11,7 @@
 | Gate G mechanism | method_or_model_selection, with decomposition_attribution |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #3 stops at a close but inexact match · #1 reports a failed back-test, ships anyway · #14 coarsens the segment it was asked about |
 | Calibration form | Published control set with a reproduction clause: the conference's three prior Household Income Tables (69 published cells), which the methodology makes the condition of adopting any schedule |
-| Driving force | The tables count household units, which no file stores. A household is a federal filing unit plus the own returns of the people its dependents schedule claims, and a dependent's return carries no field naming its claimant. 380,000 resident returns are such returns. Attached, they stop being units, which lifts every floor through the count, and their custodial and trust income lifts the claimants who hold the only cells the textbook tax unit misses. |
+| Driving force | The tables count household units, which no file stores. A household is a federal filing unit plus the own returns of the people its dependents schedule claims, and a dependent's return carries no field naming its claimant. 380,000 resident returns are such returns. Attached, they stop being units, which lifts every floor through the count. 9,400 of them are high earners' children with trust and investment income, and attached to their claimants that income carries 3,900 households past the top-1% mark. |
 
 ## 1. Situation
 
@@ -34,20 +34,21 @@ combined bill when they file separate state returns, so many of them do.
   carries its residency code and its federal primary TIN, and the dependents schedule lists every claimed dependent's TIN. No row claims to
   record a household. A household is a unit formed by claiming relationships between returns, the legal kind of construction, like a
   household from returns anywhere. Nothing is left to fill, correct or replace: rung 0 returns a top-1% floor of $504,000, rung 1 $565,000
-  and rung 2 $667,000, and the answer stays $742,000, because attaching the dependents' own returns to their claimants is still needed.
+  and rung 2 $594,000, and the answer stays $742,000, because attaching the dependents' own returns to their claimants is still needed.
 * **Lens swap.** The naive read and the answer are different populations: 2,876,000 resident returns against 2,328,000 household units,
   a fifth of which hold two to four returns.
 
 ## 3. The driving force
 
 A strong solver filters to full-year residents, takes each return as a unit and checks itself against the Department's table, which it
-reproduces exactly. Knowing the top-income literature, it then recombines separately filed state returns into federal filing units through
-the federal primary TIN each one carries. That is the textbook tax unit, and it reproduces 58 of the 69 published cells. The 11 misses are
-the $500,000 to $1M class's units and AGI in each year (each under 0.4%) and five small-county counts, all on the same side. The published tables count households, and a household
-also holds the own returns of the people its dependents schedule claims: summer-job wages, custodial-account and trust income. Nothing on
-a dependent's own return names the claimant. Only the claimant's schedule lists the dependent's TIN, so the link is a two-hop join no
-column invites. Attached, those 380,000 returns stop being units. That lifts every floor through the count, and their income lifts the
-households just under $500,000 that hold the missing cells.
+reproduces exactly. Knowing the top-income literature, it then recombines separately filed state returns into federal filing units
+through the federal primary TIN each one carries. That is the textbook tax unit, and it reproduces 58 of the 69 published cells. The 11
+misses are the $500,000 to $1M class's units (under 0.4% short) and AGI (3.1% to 3.6% short) in each year and five small-county counts,
+all on the same side. The published tables count households, and a household also holds the own returns of the people its dependents
+schedule claims: summer-job wages, custodial-account and trust income. Nothing on a dependent's own return names the claimant. Only the
+claimant's schedule lists the dependent's TIN, so the link is a two-hop join no column invites. Attached, those 380,000 returns stop
+being units. That lifts every floor through the count. Their income lifts the households just under $500,000 that hold the missing unit
+cells, and the trust and investment income of 9,400 high earners' children carries 3,900 households past the top-1% mark.
 
 ## 4. The ladder
 
@@ -55,18 +56,19 @@ households just under $500,000 that hold the missing cells.
 |---|---|---|---|---|
 | 0 | Every row of the processed-return file is a unit; percentiles of AGI | $504,000 (−32.1%) | The file ties to the Department's all-filer table to the row and the dollar | The codebook's residency list: codes 2 and 3 are part-year and non-resident filers, outside the methodology's full-year residents |
 | 1 | Full-year residents (code 1), each return one unit | $565,000 (−23.9%) | The methodology's population, filtered on the authoritative code list | The published tables: the return grain reproduces only the 3 total-AGI cells of 69 |
-| 2 | Federal filing units: separate state returns recombined through the federal primary TIN | $667,000 (−10.1%) | The literature's tax unit, reproducing 58 of 69 cells; its six state-level misses are each under 0.4% | The dependents schedule: 380,000 resident returns are filed by people another return claims, and only attaching them reproduces the 11 missed cells |
+| 2 | Federal filing units: separate state returns recombined through the federal primary TIN | $594,000 (−19.9%) | The literature's tax unit, reproducing 58 of 69 cells; every miss sits in one class, a few per cent at most | The dependents schedule: 380,000 resident returns are filed by people another return claims, and only attaching them reproduces the 11 missed cells |
 | 3 | **Decisive:** household units, each federal filing unit plus the own returns of the dependents its schedule claims | **$742,000** | — | — |
 
 * **Figure shape.** The answer is the maximum cell of the grid, so every partial application files floors too low and pushes top-tier
-  liability into the middle tier. The full answer schedule is $214,000 / $318,000 / $742,000; rung 2 files $197,000 / $293,000 / $667,000.
-* **Partial correction priced (L3).** A solver who finds the dependents' returns and attaches them, but keeps separately filed spouses as
-  two units, lands at $628,000 (−15.4%), further out than rung 2. A solver who finds them and drops them, the literature's convention for
-  dependent filers, lands at $718,000. The gate refuses that construction outright: it misses all three published total-AGI cells by
-  −2.1%, totals that every complete partition ties.
-* **Grid.** Residency (all filers or code 1) × filing unit (return or federal) × dependents (separate or attached) gives 8 cells. The
-  nearest non-answer cells are rung 2 at −10.1% and households built on all filers at −10.6%. Reaching the answer takes the residency
-  filter and both links.
+  liability into the middle tier. The full answer schedule is $214,000 / $318,000 / $742,000; rung 2 files $197,000 / $293,000 / $594,000.
+* **Partial correction priced (L3).** A solver who finds the dependents' returns and drops them, the literature's convention for
+  dependent filers, lands at $657,000 (−11.5%): the count falls to the households', but the trust and investment income that carries
+  3,900 households past the mark is gone. The gate also refuses it, since it misses all three published total-AGI cells by −2.1%, totals
+  that every complete partition ties. A solver who attaches them but keeps separately filed spouses as two units lands at $633,000
+  (−14.7%), because the trust income then sits on one spouse's return, far below the mark.
+* **Grid.** Residency (all filers or code 1) × filing unit (return or federal) × dependents (separate, dropped or attached) gives 12
+  cells, from $504,000 to $742,000. The nearest non-answer cells are dropped dependents at −11.5% and households built on all filers at
+  −12.9%. Reaching the answer takes the residency filter and both links.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -74,7 +76,8 @@ households just under $500,000 that hold the missing cells.
    construction reproducing the published tables. It never says what a household holds. The schedule's codebook describes it as the list
    of dependents claimed for the exemption credit.
 2. **Reproduction, and why it is a construction.** Households reproduce 69 of 69 published cells. Federal filing units reproduce 58 and
-   the return grain 3. Every rival miss runs the same way (too few units in the $500,000 to $1M class), so no rival nets out on that class.
+   the return grain 3. Every rival miss runs the same way (too few units and too little AGI in the $500,000 to $1M class), so no rival nets out on that
+   class.
    The reproducing unit is a connected set of returns reached through two link types, one of them a two-hop join from schedule to own
    return. No column or parameter can be scanned to reach it.
 3. **No arithmetic symptom.** Every construction is a complete partition of the same resident returns, so total AGI ties the Department's
@@ -165,8 +168,13 @@ the household-unit count and the twin-county counts + 4 named chart parts + 2 fi
   return carries the federal primary TIN, giving 2,708,000 federal filing units.
 * 380,000 resident returns are filed by people claimed on another resident return. They hold 2.1% of resident AGI, and each TIN sits on
   exactly one schedule. That gives 2,328,000 households with floors $214,000 / $318,000 / $742,000.
-* Top-1% floors by rung are $504,000 / $565,000 / $667,000 / $742,000, and every other grid cell sits at least 10% below the answer. The
-  dropped-dependents construction ($718,000) misses each year's total-AGI cell by −2.1%.
+* 9,400 of those returns carry trust and investment income of $30,000 to $90,000 and are claimed by 5,900 households whose own AGI is
+  $620,000 to $740,000, four in five of them separately filing couples. Attached, that income carries 3,900 of them past the top-1% mark,
+  and no household's total crosses $1M. On a separately filing spouse's own return the same income stays far below the mark.
+* Top-1% floors by rung are $504,000 / $565,000 / $594,000 / $742,000. Dropped dependents give $657,000 (−11.5%) and miss each year's
+  total-AGI cell by −2.1%. The other grid cells are $646,000, $633,000, $621,000, $572,000, $556,000, $545,000 and $527,000, so every
+  non-answer cell sits at least 11.5% below the answer.
 * Hit counts out of 69: households 69, federal filing units 58, return grain 3. Federal filing units fall short in the $500,000 to $1M
-  class by 92, 38 and 121 units in TY2022 to TY2024 (TY2024's 121 include Kessler's 59). The Kessler and Abington twin facts hold exactly.
+  class by 92, 38 and 121 units in TY2022 to TY2024 (TY2024's 121 include Kessler's 59), and on its AGI by 3.1% to 3.6%. The Kessler and
+  Abington twin facts hold exactly.
 * No prior floors ship, and the withholding and estimated-payment ledgers touch no return.

@@ -28,8 +28,11 @@ builds run on the hosted CI vendor's runners, whose infrastructure failures the 
   delay is a population recorded in neither stream.
 * **Flags.** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
 * **Deletion test.** Delete every voice and the licensed basis. Delay per recorded failure, the careful build, still names the runners.
-* **Instrument repair.** Record every build perfectly: the queue's follow-up builds are correctly superseded, not failed, and correctly
-  untriaged, because nothing went wrong in them. The residual is a property of the queue's process, not a gap in any log.
+* **Instrument repair.** Suspect file: the build log's author field, which credits the 61% of failed builds that are queue builds to the queue's
+  bot rather than to the authors of the pull requests in the batch. Repaired so that every build carries its pull requests' authors, rung 0
+  still names A, now on every failure, rung 1 C and rung 2 D; none names B. The batch log and every timestamp are complete, superseded is the
+  correct status of a build that found nothing wrong, and no field anywhere records the waiting a failure caused: rung 2 measures holds from
+  timestamps. The answer still needs the residual waiting traced through each bisection chain to the failure that set it off.
 * **Lens swap.** The naive build prices failures; the answer prices the waiting failures cause, including waits no failure record carries, a
   different population of delay.
 
@@ -37,31 +40,32 @@ builds run on the hosted CI vendor's runners, whose infrastructure failures the 
 
 A strong solver ignores the failure rate and prices what the charter scores: hours pull requests wait to merge. Merge-queue builds are committed
 by the queue's bot, so it links them to their pull requests and failing tests through the batch log, and classifies each failure by the triage
-rules. It then reads each recorded failure's delay from the queue log rather than assuming a mean, and runner timeouts, which hold a batch for an
-hour each, put runner capacity on top. Every recorded failure is accounted for, and the delays they explain fall 2,600 hours short of the queue's
-waiting time once normal queue time is removed. The gap is the queue's bisection. After a failed batch the queue re-tests halves and quarters,
-filing those builds as superseded, which the build log does not count as failures and the tracker never sees. A real defect is isolated in one split.
-A flaky test that fails once and then passes leaves every split green, so the queue exhausts its splits and re-runs the whole batch while its pull
-requests wait. Traced through the batch log to the failure that set each chain off, 2,450 of the 2,600 hours belong to flaky tests.
+rules. It then measures the hold each recorded failure put on its batch from the batch log's timestamps rather than assuming a mean, and runner
+timeouts, which hold a batch for an hour each, put runner capacity on top. Every recorded failure is accounted for, and the delays they explain
+fall 2,600 hours short of the queue's waiting time once normal queue time is removed. The gap is the queue's bisection. After a failed batch the
+queue re-tests halves and quarters, filing those builds as superseded, which the build log does not count as failures and the tracker never
+sees. A real defect is isolated in one split. A flaky test that fails once and then passes leaves every split green, so the queue exhausts its
+splits and re-runs the whole batch while its pull requests wait. Traced through the batch log to the failure that set each chain off, 2,450 of
+the 2,600 hours belong to flaky tests.
 
 ## 4. The ladder
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Failed builds by the committing author's tenure, priced at the mean merge delay | A, review gates (2,600 hours) | The maintainers' own view, from the build log's own author field | The batch log: 61% of failed builds are queue builds committed by the bot, which the author field credits to nobody |
-| 1 | Failures linked through the batch log to pull requests and failing tests, classified by the triage rules, priced at the mean delay | C, dependency pinning (2,300) | Every failure linked and classified; dependency breakages hit many pull requests at once | The queue log: delay per failure ranges from 6 minutes to 3 hours, and the mean misprices every class |
-| 2 | The same, each failure priced at the delay the queue log records for it | D, runner capacity (2,700) | Every recorded failure priced exactly; the vendor's acknowledgements reproduce the infrastructure class | The queue log: waiting time less normal queue time exceeds the delay recorded failures explain by 2,600 hours |
+| 1 | Failures linked through the batch log to pull requests and failing tests, classified by the triage rules, priced at the mean delay | C, dependency pinning (2,300) | Every failure linked and classified; dependency breakages hit many pull requests at once | The batch log's timestamps: the hold a failure puts on its batch ranges from 6 minutes to 3 hours, and the mean misprices every class |
+| 2 | The same, each failure priced at the hold it put on its batch, from the batch log's timestamps | D, runner capacity (2,700) | Every recorded failure priced exactly; the vendor's acknowledgements reproduce the infrastructure class | The queue log: waiting time less normal queue time exceeds the delay recorded failures explain by 2,600 hours |
 | 3 | **Decisive:** the residual waiting traced through the batch log to the failure that set off each bisection chain, and added to its cause | **B, flaky-test remediation (4,250)** (4th of 5 on rung 0) | — | — |
 
 * **Position table.** B ranks 4th on rung 0 and 3rd on rungs 1 and 2, and leads only rung 3. Rung leaders beat their runners-up by 1.86×,
   1.53×, 1.29× and 1.57×.
 * **Discriminator dominance.** Runner capacity carries a 1.50× lead into rung 3 (2,700 against 1,800). The residual multiplies the flaky
   class by 2.36 and leaves runner capacity unchanged, an edge of 2.36×, 1.31 times the required 1.2 × 1.50 = 1.80; the net margin is 1.57×.
-* **Partial correction priced (L3).** A solver who finds the 2,600-hour gap and spreads it across classes in proportion to recorded delay keeps
-  runner capacity on top (3,546 against 2,364). One who counts superseded builds as failures of their batch's class adds them at the mean delay
-  and names C again.
-* **Grid.** Link (author, batch log) × pricing (mean, recorded) × residual (none, pro rata, traced) gives eight feasible builds; author builds
-  name A, mean-priced builds C, recorded-priced builds D with or without a pro-rata residual, and only the traced residual names B.
+* **Partial correction priced (L3).** A solver who finds the 2,600-hour gap and spreads it across classes in proportion to each class's measured
+  holds keeps runner capacity on top (3,546 against 2,364). One who counts superseded builds as failures of their batch's class adds them at the
+  mean delay and names C again.
+* **Grid.** Link (author, batch log) × pricing (mean, timestamped hold) × residual (none, pro rata, traced) gives eight feasible builds; author
+  builds name A, mean-priced builds C, hold-priced builds D with or without a pro-rata residual, and only the traced residual names B.
 
 ## 5. Why the decisive rung survives the opponent
 
@@ -76,14 +80,14 @@ requests wait. Traced through the batch log to the failure that set each chain o
 5. **The enumeration is arithmetic.** No column marks waiting as bisection-caused; 2,600 hours are a residual, attributed through chains.
 6. **No cutover date.** Flaky failures and bisections run all quarter; the dated events (an upstream major release, a runner pool migration)
    step the failure series and are the decoys.
-7. **Survives deletion.** With every voice gone, recorded delays still name runner capacity.
+7. **Survives deletion.** With every voice gone, measured holds still name runner capacity.
 
 ## 6. The calibration corpus
 
 * **Form.** The vendor's acknowledgement file: 412 failed builds the project claimed as infrastructure failures over four quarters, each
   accepted or rejected by the vendor after review.
-* **What it certifies.** The triage rules' infrastructure class (every acceptance and rejection reproduces) and the recorded delay of each
-  infrastructure failure, the basis of rung 2.
+* **What it certifies.** The triage rules' infrastructure class (every acceptance and rejection reproduces) and the build time each acknowledged
+  failure cost, measured from the build log's timestamps as rung 2 measures holds.
 * **What it is blind to.** The merge queue's bisections (above).
 * **Twin pair.** Weeks 19 and 27 carried identical builds, failures by class, pull requests merged and mean batch size. Merge-delay hours were
   1,040 and 500 (2.08×), because week 19's flaky failures fell in eight-PR batches at peak and week 27's in two-PR batches overnight. Only the

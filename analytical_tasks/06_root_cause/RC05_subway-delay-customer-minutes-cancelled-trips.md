@@ -7,7 +7,7 @@
 | Mirrors | Reliability investment at networks that log delay per vehicle and judge it per customer (cancelled runs at metro and bus operators, missed pickups against late deliveries at Amazon and parcel carriers, dropped batch jobs against slow ones on cloud platforms), where a run that never happened leaves no delay record and the customers behind it carry the cost |
 | Decision shape | Which of N root causes gets the fix: one remediation programme for the coming year |
 | Committed call | The programme funded, and the weekday peak customer delay minutes its cause accounted for over the last twelve months, in millions to one decimal |
-| Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · E02 (the unit the decision funds is not stored: customer delay minutes, rebuilt from fare taps and the trains that actually ran, cancelled trips' gaps included), with E18 (the segment coarsened: weekday minutes for the peak periods) at rung 1 and E19 (a latent attribution marker: unidentified incidents assigned through the set-out chain) at rung 3 |
+| Gap · Pattern | Gap 2 (population) over Gap 4 (rule) · E07 (two grains, both flawless: train delay minutes and customer delay minutes differ in shape, because a train minute weighs by the customers it holds and a cancelled trip has no train minute at all; the standard pins the customer grain, rebuilt from fare taps and the trains that actually ran), with E19 (a latent attribution marker: unidentified incidents assigned through the set-out chain) at rung 2 |
 | Gate G mechanism | decomposition_attribution, with method_or_model_selection |
 | Measured traps engaged | #2 counts file rows instead of the real unit · #14 coarsens the segment it was asked about · #7 uses the ready-made measure |
 | Calibration form | Counterparty acknowledgement file: the train manufacturer's accepted and rejected warranty delay claims for four closed quarters |
@@ -32,8 +32,8 @@ for want of operators.
 * **Deletion test.** Delete the passenger programme, the operating officer's view and the licensed basis. The delay file still records no minute
   for a cancelled trip, and the train-minute tables still name doors once the unidentified minutes are assigned.
 * **Instrument repair.** Suspect file: the delay record's cause code, which records what station staff could see ("unidentified" for 19,000 peak
-  minutes). Repaired so that every delay carries its true cause, rung 0's count still names A (door incidents rise to 2,400 against 5,200),
-  rung 1's weekday minutes name D (27,000 against doors' 23,000), and rungs 2 and 3 both return B, the door faults the chain already recovers;
+  minutes). Repaired so that every delay carries its true cause, rung 0's count still names A (door incidents rise to 2,400 against 5,200), and
+  rungs 1 and 2 both return B, the door faults the chain already recovers (17,700 peak minutes against at most 16,900 for the signal system);
   none returns E. The cancellation log, the taps and the movement log are complete. The answer still needs customer delay minutes rebuilt from
   them, which no delay record, perfect or not, holds.
 * **Lens swap.** The naive build counts train delay minutes; the answer counts customers' excess minutes, including trips that never ran: a
@@ -56,17 +56,16 @@ faults 5.68 million.
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
-| 0 | Weekday incidents by code, counted | A, passenger incidents (5,200) | The agency's own reading, and the code is by far the most frequent | The service standard judges a programme on delay minutes, not incidents |
-| 1 | Weekday delay minutes by code from the monthly report's table, mapped to programmes | D, switches and track (27,000 min) | Minutes, from the published table, through the catalogue's own codes | The standard names the weekday peak periods (07:00–10:00, 16:00–19:00), and the two long switch failures ran mostly before 07:00 |
-| 2 | Weekday peak delay minutes by code, unidentified minutes left out | C, signal system (12,500) | The standard's own periods, every coded minute accounted for | The acknowledgement file: the manufacturer accepted 61% of closed-quarter unidentified incidents as train defects |
-| 3 | Peak minutes with the unidentified assigned through the occupancy, set-out and repair-order chain the acknowledgements follow | B, new-fleet doors (17,700 min) | Every minute assigned, every acknowledgement reproduced | The cancellation log: 2,400 peak trips cancelled for want of an operator, none with a delay record, against the charter's customer minute |
-| 4 | **Decisive:** weekday peak customer delay minutes rebuilt from fare taps and the trains that ran, each cancelled trip's gap credited to its cause | **E, crew availability (9.29M)** (4th of 5 on rung 0) | — | — |
+| 0 | Weekday incidents by code, counted | A, passenger incidents (5,200) | The agency's own reading, and the code is by far the most frequent | The service standard judges a programme on weekday peak-period delay minutes (07:00–10:00, 16:00–19:00), not incidents |
+| 1 | Weekday peak delay minutes by code, unidentified minutes left out | C, signal system (12,500) | The standard's own periods and minutes, every coded minute accounted for | The acknowledgement file: the manufacturer accepted 61% of closed-quarter unidentified incidents as train defects |
+| 2 | Peak minutes with the unidentified assigned through the occupancy, set-out and repair-order chain the acknowledgements follow | B, new-fleet doors (17,700 min) | Every minute assigned, every acknowledgement reproduced | The cancellation log: 2,400 peak trips cancelled for want of an operator, none with a delay record, against the charter's customer minute |
+| 3 | **Decisive:** weekday peak customer delay minutes rebuilt from fare taps and the trains that ran, each cancelled trip's gap credited to its cause | **E, crew availability (9.29M)** (4th of 5 on rung 0) | — | — |
 
-* **Position table.** E ranks 4th on rungs 0 and 1 and 5th on rungs 2 and 3, and leads only rung 4. Rung leaders beat their runners-up by
-  5.78×, 1.29×, 1.30×, 1.31× and 1.20× (9.29M against the signal system's 7.74M).
-* **Discriminator dominance.** Door faults carry a 6.81× lead over crew shortages into rung 4 (17,700 train minutes against 2,600). Customer
-  minutes per train minute are 3,573 for E, its 2,400 cancelled trips included, and 321 for B, an edge of 11.1×, 1.36 times the required
-  1.2 × 6.81 = 8.17; the net margin is 1.64×.
+* **Position table.** E ranks 4th on rung 0 and 5th on rungs 1 and 2, and leads only rung 3. Rung leaders beat their runners-up by 5.78×, 1.30×,
+  1.31× and 1.20× (9.29M against the signal system's 7.74M).
+* **Discriminator dominance.** Door faults carry a 6.81× lead over crew shortages into rung 3 (17,700 train minutes against 2,600). Customer
+  minutes per train minute are 3,573 for E, its 2,400 cancelled trips included, and 321 for B, an edge of 11.1×, 1.36 times the required 1.2 ×
+  6.81 = 8.17; the net margin is 1.64×.
 * **Partial correction priced (L3).** Every half-rebuilt customer measure leaves another cause in front. Weighting train minutes by the average
   peak load gives B 7.08M against C's 5.40M (1.31×), E 1.04M. Weighting each delay by its own train's load and the customers waiting behind it,
   with no cancellations, gives C 7.02M against A's 4.61M (1.52×). Adding cancellations at one headway for the missing train's own load, with
@@ -82,7 +81,7 @@ faults 5.68 million.
    fields. No document converts delays or cancellations into customer minutes, or says a cancelled trip's cost falls on the customers behind it.
 2. **Corpus blind for a computable reason.** *Every claim in the acknowledgement file concerns a new-fleet train that ran and was delayed, so no
    closed quarter's acknowledged minutes include a cancelled trip or a customer, and the file is arithmetically incapable of pricing a gap.* It
-   pins rung 3's chain (1,860 of 1,860 acknowledgements reproduce) and cannot see the unit the standard counts.
+   pins rung 2's chain (1,860 of 1,860 acknowledgements reproduce) and cannot see the unit the standard counts.
 3. **No arithmetic symptom.** Train minutes, incidents, codes, cancelled trips and taps all reconcile; a cancelled trip has no delay to
    reconcile.
 4. **Not a row predicate.** A customer's excess wait is the gap between their platform arrival and the first later train with room, built from
@@ -97,7 +96,7 @@ faults 5.68 million.
 
 * **Form.** The manufacturer's acknowledgement file: 1,860 incidents claimed in four closed quarters (coded door faults plus unidentified
   incidents on new-fleet trains), each accepted or rejected, with the occupancy, set-out and repair records for those quarters.
-* **What it certifies.** The chain for unidentified incidents (rung 3): it reproduces 1,860 of 1,860 acknowledgements, against 1,212 for the
+* **What it certifies.** The chain for unidentified incidents (rung 2): it reproduces 1,860 of 1,860 acknowledgements, against 1,212 for the
   door code alone, 1,296 for the set-out's recorded reason and 1,251 for the unit's next repair order.
 * **What it is blind to.** Customer minutes and cancelled trips (above).
 * **Twin pair.** Tuesdays 9 and 16 April carried identical train delay minutes by code, incidents, loads and tap counts, and six crew
@@ -149,15 +148,15 @@ faults 5.68 million.
 * **Ask B (device-carried).** For the 20 busiest stations, lift and escalator outage events and outage hours over the twelve months.
   *Device:* an outage running past midnight is written as one row per calendar day, later rows carrying a continuation flag, as the asset
   log's schema documents; counting rows as events inflates events at eleven stations.
-* **Ask C (validity).** For each closed quarter, accepted minutes under each of the four assignment rules; and each cause's figure under each
-  of the five rung constructions.
+* **Ask C (validity).** For each closed quarter, accepted minutes under each of the four assignment rules; and each cause's figure under each of
+  the four rung constructions.
 * **Decoupling.** Clearing the customer-minute rebuild changes no figure in asks A or B; neither touches a delay record, a cancellation, a tap
   or a train movement.
 
 ## 11. Rubric arithmetic
 
-4 lines × 12 months × 2 figures (ask A) + 20 stations × 2 figures (ask B) + 4 quarters × 4 rules + 5 causes × 5 constructions (ask C) + the
-funded programme, its figure and the runner-up's + 5 named chart parts + 3 files ≈ 190 criteria.
+4 lines × 12 months × 2 figures (ask A) + 20 stations × 2 figures (ask B) + 4 quarters × 4 rules + 5 causes × 4 constructions (ask C) + the
+funded programme, its figure and the runner-up's + 5 named chart parts + 3 files ≈ 185 criteria.
 
 ## 12. World-building constraints
 
