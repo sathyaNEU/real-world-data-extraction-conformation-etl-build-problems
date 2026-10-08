@@ -43,13 +43,13 @@ Rules (environment memo):
 | # | File | Format | Approx. rows | Source | Licence | Role |
 |---|---|---|---|---|---|---|
 | 1–12 | `<country>_8_<station>_<year>_timeseries.csv` (12 stations) | CSV | ~8.8k each | EEA Air Quality download service (E1a) | CC BY 4.0 (EEA standard reuse) | Hourly NO₂ with validity/verification |
-| 2 | `station_metadata.csv` | CSV | 12 | EEA | CC BY 4.0 | Station type, location |
-| 3 | `eea_e1a_data_dictionary.pdf` | PDF | — | EEA | CC BY 4.0 | Flags |
-| 4 | `aaq_directive_annex_xi_citation.pdf` | PDF | — | Directive 2008/50/EC (cite) | EU reuse | Limit value |
-| 5 | `environment_memo.pdf` | PDF | — | Task author | — | Rules in §2 |
-| 6 | `draft_station_intervals.xlsx` | XLSX | 12 | Task author | — | Naive intervals |
-| 7 | `effective_sample_size_reference.pdf` | PDF | — | Cite (Bayley & Hammersley / Wilks) | Cite | n_eff |
-| 8 | `daily_means.parquet` | Parquet | ~4.4k | Derived | CC BY 4.0 | Convenience |
+| 13 | `station_metadata.csv` | CSV | 12 | EEA | CC BY 4.0 | Station type, location |
+| 14 | `eea_e1a_data_dictionary.pdf` | PDF | — | EEA | CC BY 4.0 | Flags |
+| 15 | `aaq_directive_annex_xi_citation.pdf` | PDF | — | Directive 2008/50/EC (cite) | EU reuse | Limit value |
+| 16 | `environment_memo.pdf` | PDF | — | Task author | — | Rules in §2 |
+| 17 | `draft_station_intervals.xlsx` | XLSX | 12 | Task author | — | Naive intervals |
+| 18 | `effective_sample_size_reference.pdf` | PDF | — | Cite (Bayley & Hammersley / Wilks) | Cite | n_eff |
+| 19 | `daily_means.parquet` | Parquet | ~4.4k | Derived | CC BY 4.0 | Convenience |
 
 ## 5. Deterministic solution path
 
