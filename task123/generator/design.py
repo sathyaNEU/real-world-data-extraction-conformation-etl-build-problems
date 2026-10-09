@@ -6,7 +6,7 @@ import datetime as dt
 import numpy as np
 
 from common import (MARCH_CENSUSES, SEPT_CENSUS, POTS, SEPT_POT, natural_end, census_q, LINE_PCT,
-                    pct1, qend, fyq)
+                    pct1, qend, fyq, is_final, fstart)
 from roster import build_roster, Q
 from identity import assign_identity
 from movers import assign_movers, assign_short_form, GENERIC
@@ -18,7 +18,7 @@ from world import rng_for
 
 DESIGNED = {"marker", "answer", "common", "decoy", "decoy_soft", "filed_offer", "late_restated",
             "lag_dual", "new_june", "dec_may", "dec_mixed", "dec_feb", "june_late23", "june_late24",
-            "june_cday23", "june_cday26", "twin_a", "twin_b", "dual_offer23"}
+            "june_cday23", "june_cday26", "twin_a", "twin_b", "dual_offer23", "bal_change", "gap"}
 
 
 def scored_at(o, c):
@@ -37,6 +37,8 @@ def nat_fall(tot_o, n):
 
 
 def sept_t_end(o):
+    if getattr(o, "cal_change", None):
+        return Q(2025, 12)
     if o.bal == 6:
         return Q(2026, 3)
     if o.bal == 3 and o.sept_status in ("oct", "later"):
@@ -82,6 +84,9 @@ FALL_TARGETS = {
     "Y4": (Q(2025, 12), 7.72, [Q(2025, 3), Q(2025, 6), Q(2025, 9), Q(2025, 12)]),
     "G_R2": (Q(2026, 6), 12.55, [Q(2025, 9), Q(2025, 12), Q(2026, 3), Q(2026, 6)]),
     "L_dual": (Q(2026, 6), 6.35, [Q(2025, 9), Q(2025, 12), Q(2026, 3), Q(2026, 6)]),
+    # hardening loop 3: the grantee between terms at the census, offered by every rung that reads the
+    # register's dates for scope
+    "GT": (Q(2026, 6), 13.62, [Q(2025, 9), Q(2025, 12), Q(2026, 3), Q(2026, 6)]),
 }
 
 
@@ -186,7 +191,7 @@ def complete(W):
     W["true_lines"] = true_lines(orgs, tot, apt, ref_tot, apt_og)
     for (key, q4), ar in W["annual"].items():
         L = W["true_lines"][key]
-        s = {k: sum(L[q][k] for q in range(q4 - 3, q4 + 1)) for k in L[q4]}
+        s = {k: sum(L[q][k] for q in range(fstart(by[key], q4), q4 + 1)) for k in L[q4]}
         ar.lines = {"gov": s["gov_grant"] + s["gov_contract"], "donations": s["donations"],
                     "trading": s["trading"], "grants_other": s["other_grants"] + s["apt"] + s["apt_sgf"],
                     "investment": s["investment"], "other": s["other"]}
@@ -197,7 +202,9 @@ def complete(W):
 
 DEFAULT_PARAMS = {
     "twin_a_pct": 5.9,
-    "g_r2_held_pct": 5.4,
+    # hardening loop 2: held under the first grantee outside the line in dollars as well as per cent, so
+    # both readings of "first outside" (screen order, nearest the line) name the same grantee
+    "g_r2_held_pct": 1.6,
     "l_dual_pg_pct": 12.7,
     "reissues": [("F5", dt.date(2025, 2, 20)), ("B020", dt.date(2025, 8, 20))],
 }
@@ -253,6 +260,23 @@ def make_plan(orgs, tot, annual, params):
     P.l_dual_plan(plan, int(round(prior * (params["l_dual_pg_pct"] - true_pct) / 100.0)))
     P.du2_plan(plan, int(round(tot["DU2"][Q(2022, 12)] * 0.031)))
     P.post_census_corrections(plan, orgs, tot, pick_post_census(orgs, tot))
+    # hardening loop 3 (determinism): in three rounds a correction to the window's last quarter was accepted
+    # four days after the March census, so the replay pins the data cutoff to the census day; a cutoff a
+    # week after the census (where the extract sits after the September census) misses all three rows
+    rng_c = np.random.default_rng([12345, 24])
+    params["_cutoff_cases"] = []
+    for ry in (2022, 2023, 2025):
+        pool = sorted([o for o in orgs if o.role == "steady" and o.bal == 3 and not o.dual and not o.gaps
+                       and scored_at(o, dt.date(ry, 3, 31)) and not mover_rounds(o)
+                       and (o.key, Q(ry - 1, 12)) not in plan
+                       and o.key not in {k for k, _ in params["_cutoff_cases"]}], key=lambda o: o.key)
+        oc = pool[int(rng_c.integers(0, len(pool)))]
+        sign = 1 if rng_c.random() < 0.5 else -1
+        P.add(plan, (oc.key, Q(ry - 1, 12)),
+              v1_error={"op": sign * int(round(tot[oc.key][Q(ry - 1, 12)] * float(rng_c.uniform(0.025, 0.045))))},
+              events=[{"date": dt.date(ry, 4, 4), "kind": "correction", "refs": "both", "error_after": 0,
+                       "review_days": 0}])
+        params["_cutoff_cases"].append((oc.key, ry))
     # four on-time filers whose fourth quarter was re-amended (line split only) after a census
     v3 = []
     rng = np.random.default_rng([12345, 22])
@@ -301,7 +325,7 @@ def texture(plan, orgs, tot):
     for n in range(150):
         o = pool[int(rng.integers(0, len(pool)))]
         q = int(rng.integers(max(o.first_q, 5), min(o.last_q, 36) + 1))
-        if fyq(q, o.bal) == 4 or (o.key, q) in plan:
+        if is_final(o, q) or (o.key, q) in plan:
             continue
         kind = ["correction", "withdrawn", "linesplit"][int(rng.integers(0, 3))]
         orig_acc = qend(q) + dt.timedelta(days=60)

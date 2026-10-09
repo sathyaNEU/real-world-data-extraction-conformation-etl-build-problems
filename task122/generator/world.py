@@ -331,6 +331,14 @@ def build_world():
         # render) sees the same buyers in every arm
         bslot = rng.integers(0, int(P.BLOCK[c]), size=len(bg))
         blocks.append(dict(rend=rend, sizes=sizes, wprof=wprof, bg=bg, bslot=bslot))
+    # purchases paid from a Vouwlijn balance (shipped only): a property of the template row, drawn on its
+    # own stream so no other draw moves, and identical in every copy of the block
+    for c in range(8):
+        for key in ("wprof", "bg"):
+            prof = blocks[c][key]
+            rng_w = P.stream(f"wallet-{key}{c}")
+            u = rng_w.random(len(prof))
+            prof["wallet"] = (prof.delivery.to_numpy() == "shipped") & (u < P.WALLET_SHARE)
     W.blocks = blocks
 
     # ---- sessions: 100 copies per cell, each copy one ranker

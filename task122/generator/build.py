@@ -104,10 +104,7 @@ def write_all(W, tests_df, arch_sessions, adj, tgt):
     D.capacity_note(str(tgt / D.F_CAPACITY))
     D.tariff_register(str(tgt / D.F_TARIFF))
     D.thread(str(tgt / D.F_THREAD))
-    PM = W.PM.copy()
-    PM["captured_iso"] = [str(np.datetime64("2025-01-01T00:00:00") + np.timedelta64(int(x), "s")) for x in PM.captured]
-    plat = W.O.set_index("order_id").platform
-    D.finance_statement(str(tgt / D.F_FINANCE), PM, PM.order_id.map(plat).to_numpy())
+    D.finance_statement(str(tgt / D.F_FINANCE), W.PROT)
     D.search_tests(str(tgt / D.F_SEARCH))
     D.seller_survey(str(tgt / D.F_SURVEY))
     D.folder_index(str(tgt / D.F_INDEX), index_rows(name))
@@ -122,7 +119,8 @@ def index_rows(offers_name):
          "logged sessions 22 Jun to 20 Sep 2026", "carousel logger 4.3", pulled),
         (Wr.F_ORDERS, "Orders by the logger slice's buyers, every channel", "1 Jun to 11 Oct 2026", "orders warehouse",
          pulled),
-        (Wr.F_PAYMENTS, "Checkout payments for those orders", "1 Jun to 11 Oct 2026", "payments ledger", pulled),
+        (Wr.F_PAYMENTS, "Card and iDEAL payments captured for those orders", "1 Jun to 11 Oct 2026",
+         "payment provider capture file", pulled),
         (offers_name, "Accepted offers by those buyers", "offers accepted up to 11 Oct 2026", "offers service", pulled),
         (D.F_ARCHIVE, "Archive of completed home carousel tests", "nine tests, March 2023 to May 2026",
          "Marketplace Science", "2026-06-02"),
@@ -228,7 +226,9 @@ def main():
     t0 = time.time()
     W = Wm.build_world()
     R.build_records(W)
-    og, fg = PL.orders_grid_now(W), PL.fee_grid_now(W)
+    gold_c, combos_c = PL.combo_grids(W)
+    W.fee_grid_gen = (gold_c, combos_c)
+    og, fg = PL.orders_grid_now(W), {k: v / 100 for k, v in gold_c.items()}
     adj, margin = PL.choose_traffic_adjust(W, og, fg)
     W.traffic_adjust, W.traffic_margin = adj, margin
     tests, meta, A = Ar.build_archive()

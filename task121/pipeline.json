@@ -2,18 +2,27 @@
   "task": "task121",
   "domain": "product-analytics",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "solver round 1: harden",
   "updated": "2026-10-09",
   "stump": "A competent solver gives the sprint to the card-authentication upgrade: it measures the address check on its flag cohorts and watches its losses drain as accounts re-save, books the club app's low-converting sessions as new-fan dilution because they carry no account and a new-visitor cookie and both closed partner close-outs book partner traffic that way, and is left with the rise in 3-D Secure challenges as the largest real loss, because it joins sessions to accounts on the account key alone and never follows each club-app session's members'-price token through the club's redemption report to a member number on a store loyalty profile, which shows most of those sessions are existing customers landing signed out, whose lost orders are the largest current loss and which only the one-time-code sign-in reaches.",
   "harden_loops": 0,
-  "solver_rounds": [],
+  "solver_rounds": [
+    {
+      "label": "round 1, plain",
+      "date": "2026-10-09",
+      "score": 86.1,
+      "landed": true,
+      "cracked": 6,
+      "items": 11
+    }
+  ],
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
-  "approved": null,
+  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md"

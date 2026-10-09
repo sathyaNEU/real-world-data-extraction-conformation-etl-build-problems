@@ -45,10 +45,10 @@ def true_table(adjust=None):
         total = 2.43e6 * season * growth * (1 + rng.normal(0, 0.012))
         app = 0.647 if y == 2026 else 0.622
         app += rng.normal(0, 0.004)
-        # new buyers arrive after the holidays: the two younger bands swell in January and February
+        # new buyers arrive after the holidays: the two younger bands swell a little in January
         jan = np.exp(-((w - 2.5) / 3.5) ** 2)
-        t1 = 0.112 + 0.080 * jan + 0.010 * np.exp(-((w - 48.5) / 2.5) ** 2)
-        t2 = 0.221 + 0.040 * jan
+        t1 = 0.112 + P.JAN_SURGE[0] * jan + 0.010 * np.exp(-((w - 48.5) / 2.5) ** 2)
+        t2 = 0.221 + P.JAN_SURGE[1] * jan
         shares = np.array([t1, t2, 0.303, 1 - t1 - t2 - 0.303])
         for pi_, plat in enumerate(P.PLATFORMS):
             pt = total * (app if plat == "app" else 1 - app)

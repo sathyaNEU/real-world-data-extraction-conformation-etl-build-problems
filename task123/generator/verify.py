@@ -62,6 +62,48 @@ def census_before(c):
     return max(d for d in days if d < c)
 
 
+def months_between(a, b):
+    return (b[0] - a[0]) * 12 + (b[1] - a[1])
+
+
+def fiscal(P, cc, q, labels="returns", census=None):
+    """(final, position) of quarter q in the organisation's financial year.
+
+    returns: the year the return's own figures run within (its year_end); the year starts the day after
+    the year end before it, so a year of other than twelve months places its quarters correctly; a quarter
+    with no return is an ordinary quarter. app: one balance date per organisation, the balance date of its
+    latest annual return on the register as held at the census."""
+    if labels == "app":
+        key = (cc, census)
+        bal = P.app_bal.get(key)
+        if bal is None:
+            held = [x["ye"] for (k, _), x in P.reg.items() if k == cc and census is not None and x["rec"] <= census.isoformat()]
+            bal = max(held).month if held else max(P.ye_list.get(cc, [date(2000, 3, 31)])).month
+            P.app_bal[key] = bal
+        k = fy_pos(q, bal)
+        return k == 4, k
+    y = P.ye.get((cc, q))
+    if y is None:
+        return False, None
+    final = q_last_day(q) == y
+    prev = [d for d in P.ye_list.get(cc, []) if d < y]
+    if prev and months_between((prev[-1].year, prev[-1].month), (y.year, y.month)) <= 15:
+        start = q_add((prev[-1].year, prev[-1].month), 1)
+    else:
+        start = q_add((y.year, y.month), -3)
+    return final, months_between(start, q) // 3 + 1
+
+
+def bal_now(P, cc, c):
+    """The balance month of the year the organisation's latest quarter before census c runs within."""
+    nat = q_add(q_of(c), -1)
+    for k in range(0, 4):
+        y = P.ye.get((cc, q_add(nat, -k)))
+        if y is not None:
+            return y.month
+    return max(P.ye_list.get(cc, [date(2000, 3, 31)])).month
+
+
 def rule7_pay_day(y, m):
     """Rule 7: an instalment is paid on the 20th of the month before the month it is for, or on the
     Friday before when the 20th falls at a weekend."""
@@ -141,17 +183,34 @@ class Pack:
         self.org_refs = defaultdict(list)
         self.name = {}
         self.bal = {}
+        self.has_bal_col = "balance_date" in hdr
         for r in g[1:]:
             d = dict(zip(hdr, r))
-            bal = {"31 March": 3, "30 June": 6, "31 December": 12}[d["balance_date"]]
             rec = dict(prog=d["programme"], cc=d["charity_no"], start=excel_date(d["start_date"]),
-                       end=excel_date(d["end_date"]), bal=bal, sector=d["sector"], district=d["district"],
+                       end=excel_date(d["end_date"]), sector=d["sector"], district=d["district"],
                        amount=d["annual_amount"])
             self.grant[d["grant_ref"]] = rec
             self.org_refs[d["charity_no"]].append(d["grant_ref"])
             self.name[d["charity_no"]] = d["organisation"]
-            self.bal[d["charity_no"]] = bal
         self.variations = [dict(zip(sh["Variations"][0], r)) for r in sh["Variations"][1:]]
+        # government co-funding paid with operating instalments: grant reference -> (monthly sum, first
+        # month, first month after it ended), read off the Variations sheet
+        self.cofund = {}
+        on = {v["grant_ref"]: v for v in self.variations if v["variation"] == "Government co-funding"}
+        off = {v["grant_ref"]: v for v in self.variations if v["variation"] == "Government co-funding ended"}
+        for ref, v in on.items():
+            m = (int(v["annual_amount_after"]) - int(v["annual_amount_before"])) // 12
+            a = excel_date(v["effective_date"])
+            b = excel_date(off[ref]["effective_date"])
+            self.cofund[ref] = (m, (a.year, a.month), (b.year, b.month))
+        # each grant's annual amount in effect, from its Variations rows (a lapsed term sets it to nil until
+        # the renewal), for the scope at a census and for the base instalment under each payment
+        self.var_by_ref = defaultdict(list)
+        for v in self.variations:
+            self.var_by_ref[v["grant_ref"]].append((excel_date(v["effective_date"]), int(v["annual_amount_before"]),
+                                                    int(v["annual_amount_after"]), v["variation"]))
+        for lst in self.var_by_ref.values():
+            lst.sort()
         so = sh["Steady Ground offers"]
         self.sgf_offers = [dict(zip(so[0], r)) for r in so[1:]]
         self.op_ref = {cc: next(r for r in refs if self.grant[r]["prog"] == "Operating grant")
@@ -177,6 +236,12 @@ class Pack:
                     self.versions[key][vno] = v
                 (v["ytd"] if row["column"] == "YTD" else v["py"])[row["line_code"]] = int(row["amount"])
             self.spine_rows = n
+        # the financial year each return's figures run within (the same on every version of a return)
+        self.ye = {}
+        for (ref, q), vs in self.versions.items():
+            cc = self.grant[ref]["cc"]
+            for v in vs.values():
+                self.ye[(cc, q)] = iso(v["year_end"])
         # register match
         self.reg = {}
         with open(f("charities_register_returns_extract_20261007.csv"), newline="") as fh:
@@ -185,7 +250,7 @@ class Pack:
                 ye = iso(row["year_end"])
                 self.reg[(cc, (ye.year, ye.month))] = dict(
                     rec=row["date_received"], total=int(row["total_gross_income"]),
-                    gov=int(row["govt_grants_contracts"]))
+                    gov=int(row["govt_grants_contracts"]), ye=ye)
         # packs
         self.packs = {}
         for fn in self.files:
@@ -212,6 +277,14 @@ class Pack:
                 self.pay.append(dict(cc=row["charity_no"], ref=row["grant_ref"], value=iso(row["value_date"]),
                                      inst=row["instalment_for"], amount=int(row["amount"]),
                                      status=row["payment_status"], prog=row["programme"]))
+        # every year end the organisation's returns and annual returns name, for the calendar
+        self.ye_list = defaultdict(set)
+        for (cc, q), y in self.ye.items():
+            self.ye_list[cc].add(y)
+        for (cc, q), x in self.reg.items():
+            self.ye_list[cc].add(x["ye"])
+        self.ye_list = {cc: sorted(v) for cc, v in self.ye_list.items()}
+        self.app_bal = {}
         # documents: the rules' line, floor and cap; the budget minute's September pot
         rules = pdf_text(f("SGF_round_rules_rev2026-06.pdf"))
         self.rules = rules
@@ -220,6 +293,25 @@ class Pack:
         self.cap = int(re.search(r"held to \$([\d,]+)", rules).group(1).replace(",", ""))
         minute = pdf_text(f("trustees_budget_minute_2026-27_extract.pdf"))
         self.sept_pot = int(re.search(r"September 2026 round\s*\$([\d,]+)", minute).group(1).replace(",", ""))
+
+
+def annual_in_effect(P, ref, d):
+    """The grant's annual amount in effect on date d, from its Variations rows; the Grants sheet's amount
+    where the grant has none."""
+    lst = P.var_by_ref.get(ref, [])
+    before = [x for x in lst if x[0] <= d]
+    if before:
+        return before[-1][2]
+    if lst:
+        return lst[0][1]
+    return int(P.grant[ref]["amount"])
+
+
+def in_force(P, ref, c):
+    """Rule 3.1: a term of the grant is in force at c (inside the register's dates, and not in a lapse the
+    Variations sheet records as a nil annual amount)."""
+    g = P.grant[ref]
+    return g["start"] <= c <= g["end"] and annual_in_effect(P, ref, c) > 0
 
 
 # ----------------------------------------------------------------------------- the screen
@@ -269,22 +361,24 @@ class Screen:
 
     def row(self, cc, ref, c, o):
         P = self.P
-        bal = P.bal[cc]
-        cut = cutoff_str(EXTRACT if o.get("latest") else c)
-        reg_by = EXTRACT if o.get("reg_extract") else c
+        lab = o.get("labels", "returns")
+        bal = bal_now(P, cc, c)
+        late = c + timedelta(days=o.get("delay", 0))
+        cut = cutoff_str(EXTRACT if o.get("latest") else late)
+        reg_by = EXTRACT if o.get("reg_extract") else late
         strict = o.get("strict", False)
         nat = q_add(q_of(c), -1)
         sb = o.get("stepback", "T")
         bals = o.get("bals")
 
         def admissible(q):
-            if fy_pos(q, bal) != 4 or sb == "none" or (bals is not None and bal not in bals):
+            if not fiscal(P, cc, q, lab, c)[0] or sb == "none" or (bals is not None and bal not in bals):
                 return True
             got = self.received(cc, q, reg_by, strict)
             if sb == "T":
                 return got
             if sb == "overdue":
-                due = date(q[0], 9, 30) if bal == 3 else (date(q[0], 12, 31) if bal == 6 else date(q[0] + 1, 6, 30))
+                due = q_last_day(q_add(q, 2))       # six months after the year end
                 return got or c <= due
             if sb == "dec":
                 return not (bal == 12 and c.month == 3 and q == nat)
@@ -315,14 +409,14 @@ class Screen:
             return None if v is None else self.total(v)
 
         def disc(q):
-            k = fy_pos(q, bal)
+            final, k = fiscal(P, cc, q, lab, c)
             y = ytd(q)
-            if y is None:
+            if y is None or k is None:
                 return None
             b = 0 if k == 1 else ytd(q_add(q, -1))
             if b is None:
                 return None
-            if k == 4 and o.get("q4", "register") == "register" and self.received(cc, q, reg_by, strict):
+            if final and o.get("q4", "register") == "register" and self.received(cc, q, reg_by, strict):
                 return P.reg[(cc, q)]["total"] - b
             return y - b
 
@@ -340,6 +434,8 @@ class Screen:
             op = P.op_ref[cc]
             g = P.grant[op]
             if not (g["start"] <= c <= g["end"]):
+                continue
+            if o.get("scope", "term") == "term" and not in_force(P, op, c):
                 continue
             units = [op] if o.get("unit", "org") != "ref" else [r for r in refs if
                                                                P.grant[r]["start"] <= c <= P.grant[r]["end"]]
@@ -427,15 +523,61 @@ class Asks:
             return S.version(cc, q, cut, how="delivered")
         return S.version(cc, q, cut)
 
-    def k1(self, r, c, q4="register", **kw):
+    def cofund_series(self, how="value", statuses=("paid",)):
+        """Government co-funding the Trust paid with operating instalments, by organisation and quarter. What a
+        payment carried is read off the run: the payment less the base instalment, which is a twelfth of the
+        grant's annual amount in effect for that month (Variations) less the annual co-funding. how='value'
+        counts it in the quarter the payment reached the grantee, 'for' in the quarter of the month the
+        instalment was for; 'twelfths' and 'twelfths_for' instead put a twelfth of the annual co-funding on
+        every instalment for the co-funded months."""
+        key = ("cofund", how, statuses)
+        if key in self.cache:
+            return self.cache[key]
+        out = defaultdict(int)
         P = self.P
-        cc, bal = r["cc"], P.bal[r["cc"]]
+        odd, lumps = [], 0
+        for p in P.pay:
+            if p["prog"] != "Operating grant" or p["status"] not in statuses or p["ref"] not in P.cofund:
+                continue
+            m, a, b = P.cofund[p["ref"]]
+            y, mo = int(p["inst"][:4]), int(p["inst"][5:7])
+            if not (a <= (y, mo) < b):
+                continue
+            if how in ("twelfths", "twelfths_for"):
+                co = m
+            else:
+                base = (annual_in_effect(P, p["ref"], date(y, mo, 1)) - 12 * m) // 12
+                co = p["amount"] - base
+                if co not in (0, 3 * m):
+                    odd.append((p["ref"], p["inst"], co))
+                lumps += co == 3 * m
+            if not co:
+                continue
+            if how in ("for", "twelfths_for"):
+                q = q_of(date(y, mo, 1))
+            else:
+                q = q_of(p["value"])
+                if how == "transit" and (q_last_day(q) - p["value"]).days <= 10:
+                    continue
+            out[(p["cc"], q)] += co
+        if how == "value" and statuses == ("paid",):
+            check(not odd and lumps > 100, f"every co-funded instalment carries nil or a quarter's co-funding "
+                                           f"({lumps} quarter lumps; odd {odd[:3]})")
+        self.cache[key] = out
+        return out
+
+    def k1(self, r, c, q4="register", cofund="value", **kw):
+        """Government money in the fall: the returns' government lines (QFR-16 grants and the contracts
+        memo, QFR-24 grants and contracts; a year's final quarter from the register), plus the government
+        co-funding the Trust passed on with the operating instalments."""
+        P = self.P
+        cc = r["cc"]
         cut = cutoff_str(c)
         cur = [q_add(r["end"], -k) for k in range(4)]
         pri = [q_add(r["pend"], -k) for k in range(4, 8)]
         tot = {}
         for q in cur + pri:
-            k = fy_pos(q, bal)
+            final, k = fiscal(P, cc, q, "returns", c)
             g = self.gov(cc, q, cut, **kw)
             if k == 1:
                 tot[q] = g
@@ -443,13 +585,17 @@ class Asks:
             b = self.gov(cc, q_add(q, -1), cut, **kw)
             if b is None:
                 return None
-            if k == 4 and q4 == "register":
+            if final and q4 == "register":
                 tot[q] = P.reg[(cc, q)]["gov"] - b
             else:
                 tot[q] = None if g is None else g - b
         if any(v is None for v in tot.values()):
             return None
-        return sum(tot[q] for q in pri) - sum(tot[q] for q in cur)
+        out = sum(tot[q] for q in pri) - sum(tot[q] for q in cur)
+        if cofund:
+            cs = self.cofund_series(cofund)
+            out += sum(cs[(cc, q)] for q in pri) - sum(cs[(cc, q)] for q in cur)
+        return out
 
     def instalments(self):
         """Steady Ground instalments, rebuilt from the offers sheet and rule 7 (they are in no run)."""
@@ -489,13 +635,19 @@ class Asks:
         self.cache[key] = out
         return out
 
-    def k2(self, r, c, **kw):
+    def k2(self, r, c, cofund_out=True, cofund_how=None, **kw):
+        """The Trust's own money in the fall: operating and project grants from the run and the Steady
+        Ground instalments rebuilt from the offers sheet, by value date, less the government co-funding."""
         cc = r["cc"]
         run = self.run_series(**kw)
         cur = [q_add(r["end"], -k) for k in range(4)]
         pri = [q_add(r["pend"], -k) for k in range(4, 8)]
         v = {q: run[(cc, q)] for q in cur + pri}
-        return sum(v[q] for q in pri) - sum(v[q] for q in cur)
+        out = sum(v[q] for q in pri) - sum(v[q] for q in cur)
+        if cofund_out:
+            cs = self.cofund_series(cofund_how or kw.get("how", "value"), kw.get("statuses", ("paid",)))
+            out -= sum(cs[(cc, q)] for q in pri) - sum(cs[(cc, q)] for q in cur)
+        return out
 
 
 # ----------------------------------------------------------------------------- checks
@@ -534,6 +686,34 @@ def main():
             check("distractor" not in open(os.path.join(target, fn), encoding="utf-8").read().lower(),
                   f"{fn} never says distractor")
 
+    # --- dates after the extract (house fix H16): only where the record is forward looking by design, the
+    # Grants sheet's end of the current term, a renewal approved by the census and taking effect later, and
+    # the year end each portal return runs within
+    fwd = set()
+    for fn in files:
+        path = os.path.join(target, fn)
+        if fn.endswith(".csv"):
+            with open(path, newline="", encoding="utf-8") as fh:
+                for row in csv.DictReader(fh):
+                    for col, val in row.items():
+                        if val and re.fullmatch(r"20\d\d-\d\d-\d\d", val) and date.fromisoformat(val) > EXTRACT:
+                            fwd.add((fn, col))
+    for ref, g in P.grant.items():
+        if g["end"] > EXTRACT:
+            fwd.add(("grants_register_20261007.xlsx", "Grants.end_date"))
+        if g["start"] > EXTRACT:
+            fwd.add(("grants_register_20261007.xlsx", "Grants.start_date"))
+    for v in P.variations:
+        d = excel_date(v["effective_date"])
+        if d > EXTRACT:
+            m = re.fullmatch(r"Approved (\d+) (\w+) (\d{4})", v["note"] or "")
+            ok = v["variation"] == "Renewal" and m and \
+                datetime.strptime(" ".join(m.groups()), "%d %B %Y").date() <= SEPT
+            fwd.add(("grants_register_20261007.xlsx", "Variations.effective_date" + ("" if ok else " (unapproved)")))
+    check(fwd == {("portal_return_lines_2018q3_2026q2.csv", "year_end"), ("grants_register_20261007.xlsx", "Grants.end_date"),
+                  ("grants_register_20261007.xlsx", "Variations.effective_date")},
+          f"dates after the extract only in the term ends, renewals approved by the census, and year ends ({sorted(fwd)})")
+
     # --- the corpus under the standing method
     T = {}
     for c in MARCH:
@@ -553,6 +733,7 @@ def main():
         "V1": dict(stepback="overdue"), "V2": dict(stepback="dec"), "V3": dict(stepback="amended"),
         "V4": dict(prior_natural=True), "V5": "drop", "T-strict": dict(strict=True),
         "T-extract": dict(reg_extract=True), "fallback": dict(stepback="none"),
+        "a week after": dict(delay=7),
     }
     misses = {}
     for name, o in rivals.items():
@@ -595,7 +776,7 @@ def main():
     check(misses["R2"]["rows"] >= 40 and misses["R2"]["offers"] >= 4, f"R2 misses {misses['R2']['rows']} rows and {misses['R2']['offers']} rounds' offers")
     check(misses["R1"]["counts"] == 6, "R1's row count fails all six rounds")
     check(r0 >= 0.95 * total_rows, f"R0 misses {r0} of {total_rows} rows")
-    exp = {"V1": 8, "V2": 12, "V4": 10, "V5": 10, "T-strict": 3, "T-extract": 10, "fallback": 10}
+    exp = {"V1": 8, "V2": 12, "V4": 10, "V5": 10, "T-strict": 3, "T-extract": 10, "fallback": 10, "a week after": 3}
     for k, n in exp.items():
         check(misses[k]["rows"] == n, f"rival {k} misses {misses[k]['rows']} rows (expected {n})")
     check(misses["V3"]["rows"] >= 10, f"rival V3 misses {misses['V3']['rows']}")
@@ -604,6 +785,12 @@ def main():
         check(set(misses[k]["who"]) == residue, f"{k} misses exactly the R3 residue rows")
     check(set(misses["V1"]["who"]) < residue and set(misses["T-strict"]["who"]).isdisjoint(residue),
           "V1 misses a subset of the residue; T-strict misses the census-day receipts only")
+    # the data cutoff is pinned to the census day: three corrections accepted four days after a census
+    late_acc = sorted({(P.grant[ref]["cc"], q) for (ref, q), vs in P.versions.items() for v in vs.values()
+                       if v["acc"] and any(date(y, 3, 31) < date.fromisoformat(v["acc"][:10]) <= date(y, 4, 7)
+                                           for y in range(2021, 2027))})
+    check(len(late_acc) == 3 and set(misses["a week after"]["who"]) == {(cc, q[0] + 1) for cc, q in late_acc},
+          f"a cutoff a week after the census misses exactly the three rows corrected within a week of a census")
     out["rivals"] = {k: dict(rows=v["rows"], offers=v["offers"], rates=v["rates"]) for k, v in misses.items()}
     out["rivals"]["R0"] = dict(rows=r0)
     # residue rows: small, not offered, far from the line
@@ -619,7 +806,7 @@ def main():
     twins = []
     for x, y in combinations(sorted(lat), 2):
         gx, gy = P.grant[P.op_ref[x]], P.grant[P.op_ref[y]]
-        if all(gx[k] == gy[k] for k in ("sector", "district", "start", "bal", "amount")) and \
+        if all(gx[k] == gy[k] for k in ("sector", "district", "start", "amount")) and \
                 (lat[x]["cur"], lat[x]["prior"]) == (lat[y]["cur"], lat[y]["prior"]):
             twins.append((x, y))
     check(len(twins) == 1, f"one twin pair found: {[(P.name[a_], P.name[b_]) for a_, b_ in twins]}")
@@ -646,6 +833,28 @@ def main():
     on_it = sorted((P.name[r["cc"]], c.year) for c in MARCH for r in T[c.year]["rows"]
                    if q_last_day(r["end"]) == census_before(c))
     check(len(on_it) == 2, f"windows ending on the census before: {on_it} (the inclusive reading is pinned)")
+    # one balance date per organisation (its latest annual return's) is as blind on the corpus: every
+    # March round is given back in full on that calendar too
+    for c in MARCH:
+        s_ = S.run(c, P.packs[c.year]["pot"], labels="app")
+        back, ok_o, ok_r, ok_c = replay(P, c.year, s_)
+        check(back == len(P.packs[c.year]["rows"]) and ok_o and ok_r and ok_c,
+              f"one balance date: {c.year} given back in full (the corpus cannot see the calendar)")
+    check(not P.has_bal_col, "the grants register carries no balance date; each return carries its own year end")
+    docs = [fn for fn in P.files if fn.endswith((".md", ".txt", ".pdf", ".docx"))]
+    said = []
+    for fn in docs:
+        path = os.path.join(target, fn)
+        if fn.endswith(".pdf"):
+            txt = pdf_text(path)
+        elif fn.endswith(".docx"):
+            txt = " ".join(re.sub(r"<[^>]+>", " ", zipfile.ZipFile(path).read(n).decode("utf-8", "ignore"))
+                           for n in zipfile.ZipFile(path).namelist() if n.endswith(".xml"))
+        else:
+            txt = open(path, encoding="utf-8").read()
+        if re.search(r"balance.date|nine.month year|short(ened)? year|transitional year", txt, re.I):
+            said.append(fn)
+    check(not said, f"no document names a balance date, a short year or a transition ({said})")
 
     # --- September: the call
     pot = P.sept_pot
@@ -666,10 +875,16 @@ def main():
     under = sorted([r for r in TS["rows"] if r["pct"] < P.line], key=lambda r: -r["pct"])
     check(under[0]["pct"] - under[1]["pct"] >= 0.3 and 6.0 <= under[0]["pct"] <= 8.5,
           f"first outside the line {P.name[under[0]['cc']]} at {pct1(under[0]['pct'])} per cent")
+    unoff = sorted([r for r in TS["rows"] if not r["offer"]], key=lambda r: -r["fall"])
+    check(unoff[0]["cc"] == under[0]["cc"] and unoff[0]["fall"] >= 1.10 * unoff[1]["fall"],
+          f"in screen order the first grantee not offered is also {P.name[unoff[0]['cc']]} (fall {unoff[0]['fall']:,}, "
+          f"next {unoff[1]['fall']:,})")
     check(sum(1 for r in TS["rows"] if r["offer"] == P.cap) == 1 and
           not any(r["offer"] == P.floor for r in TS["rows"]), "one capped offer, none at the floor")
     # the rungs and the cells
-    rungs = {"R1": rivals["R1"], "R2": rivals["R2"], "R3": rivals["R3"], "R4": dict(recency="off")}
+    rungs = {"R1": dict(rivals["R1"], scope="dates"), "R2": dict(rivals["R2"], scope="dates"),
+             "R3": dict(rivals["R3"], scope="dates"), "R4": dict(recency="off", labels="app", scope="dates"),
+             "R5": dict(labels="app", scope="dates"), "R6": dict(scope="dates")}
     RS = {k: S.run(SEPT, pot, **o) for k, o in rungs.items()}
     names = {k: {r["cc"] for r in s["rows"] if r["offer"]} for k, s in RS.items()}
     names["T"] = {r["cc"] for r in el}
@@ -687,35 +902,103 @@ def main():
     r0rate, _ = strike(P, [r["fall"] for r in r0el], pot)
     RS["R0"] = dict(rate=r0rate)
     names["R0"] = {r["cc"] for r in r0el}
-    for k, lo_ in (("R0", 1.15), ("R1", 1.40), ("R2", 1.40), ("R3", 1.30), ("R4", 2.00)):
+    for k, lo_ in (("R0", 1.15), ("R1", 1.40), ("R2", 1.40), ("R3", 1.40), ("R4", 2.00), ("R5", 1.40),
+                   ("R6", 1.20)):
         check(TS["rate"] >= lo_ * RS[k]["rate"], f"the answer at {TS['rate']/RS[k]['rate']:.3f}x {k}'s rate")
     ks = sorted(names)
     for x, y in combinations(ks, 2):
         check(names[x] != names[y], f"{x} and {y} name different offer sets")
     check(len(names["R3"] ^ names["T"]) >= 6, f"R3 and T differ by {len(names['R3'] ^ names['T'])} names")
-    check(names["T"] < names["R4"] and len(names["R4"] - names["T"]) == 5,
-          "the answer's offers are R4's less five it does not score")
-    check(len(RS["R4"]["rows"]) == 146 and len(RS["R3"]["rows"]) == 147 and len(RS["R2"]["rows"]) == 147 and
-          len(RS["R1"]["rows"]) == 154, "R4 scores 146, R3 and R2 147, R1 154 rows")
-    gone = {r["cc"] for r in RS["R4"]["rows"]} - {r["cc"] for r in TS["rows"]}
+    check(names["T"] < names["R6"] and len(names["R6"] - names["T"]) == 1,
+          "the answer's offers are the stop's (R6) less the one grantee it does not score")
+    check(names["R6"] < names["R5"] and len(names["R5"] - names["R6"]) == 2,
+          "on one balance date the stop's offers gain the two balance-date movers that fell (R5)")
+    check(names["R5"] < names["R4"] and len(names["R4"] - names["R5"]) == 5, "rule 4.1 takes five offers out of R4")
+    R4R = S.run(SEPT, pot, recency="off")
+    check(len(RS["R6"]["rows"]) == 133 and len(RS["R5"]["rows"]) == 136 and len(RS["R4"]["rows"]) == 150 and
+          len(R4R["rows"]) == 149 and len(RS["R3"]["rows"]) == 148 and len(RS["R2"]["rows"]) == 148 and
+          len(RS["R1"]["rows"]) == 154 + 1,
+          "R6 scores 133, R5 136, R4 150, the step-back without rule 4.1 149, R3 and R2 148, R1 155 rows")
+    # the decisive rung (hardening loop 3): one operating grant whose register dates span the census lapsed
+    # before it (a nil annual amount from the Variations sheet's "Term ended" row) and was renewed after it,
+    # so no term was in force at the census; the stop scores and offers the organisation, the answer does not
+    lapsed = []
+    for ref, lst in P.var_by_ref.items():
+        g = P.grant[ref]
+        if g["prog"] != "Operating grant":
+            continue
+        for (d1, b1, a1, k1_), (d2, b2, a2, k2_) in zip(lst, lst[1:]):
+            if k1_ == "Term ended" and a1 == 0 and k2_ == "Renewal" and b2 == 0:
+                lapsed.append((ref, d1, d2))
+    at_sept = [x for x in lapsed if x[1] <= SEPT < x[2] and P.grant[x[0]]["start"] <= SEPT <= P.grant[x[0]]["end"]]
+    check(len(at_sept) == 1, f"one operating grant lapsed and not yet renewed at the census ({at_sept})")
+    gref, g_off, g_on = at_sept[0]
+    gcc = P.grant[gref]["cc"]
+    r6map = {r["cc"]: r for r in RS["R6"]["rows"]}
+    check(gcc not in {r["cc"] for r in TS["rows"]} and gcc in r6map and r6map[gcc]["offer"] > 0 and
+          r6map[gcc]["end"] == (2026, 6),
+          f"{P.name[gcc]}: term ended {g_off - timedelta(days=1)}, renewed from {g_on}; the stop scores it on twelve "
+          f"months to June 2026 at {pct1(r6map[gcc]['pct'])} per cent and offers {r6map[gcc]['offer']:,}; the answer does not")
+    t6 = {r["cc"]: r for r in TS["rows"]}
+    check(all(pubrow(r6map[cc])[:4] == pubrow(t6[cc])[:4] for cc in t6) and set(r6map) - set(t6) == {gcc},
+          "the stop and the answer agree on all 132 rows the answer scores")
+    paid_g = {p["inst"] for p in P.pay if p["ref"] == gref}
+    check({"2026-08", "2026-09"}.isdisjoint(paid_g) and "2026-07" in paid_g,
+          "no instalment was paid for the months of the lapse")
+    check(len(lapsed) == 4 and all(not (d1 <= c < d2) for _, d1, d2 in lapsed for c in MARCH),
+          f"four lapses in the register, none at a March census")
+    for c in MARCH:
+        s_ = S.run(c, P.packs[c.year]["pot"], scope="dates")
+        back, ok_o, ok_r, ok_c = replay(P, c.year, s_)
+        check(back == len(P.packs[c.year]["rows"]) and ok_o and ok_r and ok_c,
+              f"scope from the register's dates: {c.year} given back in full (the corpus cannot see the lapse)")
+    gone = {r["cc"] for r in R4R["rows"]} - {r["cc"] for r in TS["rows"]}
     m26 = P.packs[2026]["rows"]
-    r4map = {r["cc"]: r for r in RS["R4"]["rows"]}
-    check(len(gone) == 14 and all(r4map[cc]["end"] == (2025, 12) and P.bal[cc] == 3 and
+    r4map = {r["cc"]: r for r in R4R["rows"]}
+    check(len(gone) == 17 and all(r4map[cc]["end"] == (2025, 12) and bal_now(P, cc, SEPT) == 3 and
                                   (r4map[cc]["cur"], r4map[cc]["prior"]) == m26[cc][:2] for cc in gone),
-          "the fourteen R4 scores and the answer does not: 31 March grantees on the March 2026 round's own twelve months")
-    cells = {"dual twice": dict(unit="ref"), "latest": dict(latest=True), "dual twice, latest": dict(unit="ref", latest=True),
+          "the seventeen the step-back scores and the answer does not: grantees whose year ended 31 March 2026, "
+          "on the March 2026 round's own twelve months")
+    # the decisive rung: three grantees whose returns to September 2025, December 2025 and March 2026 run
+    # within a year ending 31 March 2026, though their latest annual return is for a year to 30 June
+    movers = sorted(cc for cc in gone if any(x["ye"].month == 6 for (k, _), x in P.reg.items() if k == cc))
+    r5map = {r["cc"]: r for r in RS["R5"]["rows"]}
+    check(len(movers) == 3 and all(P.ye[(cc, (2026, 3))] == date(2026, 3, 31) and P.ye[(cc, (2025, 9))] == date(2026, 3, 31)
+                                   and (cc, (2026, 6)) not in P.ye and r5map[cc]["end"] == (2026, 3)
+                                   and (cc, (2026, 3)) not in P.reg for cc in movers),
+          f"three balance-date movers ({[P.name[cc] for cc in movers]}): a nine-month year to 31 March 2026 with no "
+          "annual return and no June 2026 return; the stop scores them on twelve months to March 2026")
+    check(names["R5"] - names["R6"] == {cc for cc in movers if r5map[cc]["pct"] >= P.line},
+          "R5's two extra offers over the stop are the two movers that fell")
+    cells = {"dual twice, no step-back": dict(unit="ref", q4="portal", stepback="none"),
+             "dual twice": dict(unit="ref"), "latest": dict(latest=True), "dual twice, latest": dict(unit="ref", latest=True),
              "30 June unstepped": dict(bals={3, 12}), "only 30 June stepped": dict(bals={6}),
              "prior natural": dict(prior_natural=True), "register at extract": dict(reg_extract=True),
              "census exclusive": dict(strict=True), "4.1 strict": dict(recency="strict"),
              "4.1 a year before": dict(recency="year"), "R4 dual twice": dict(unit="ref", recency="off"),
              "R4 latest": dict(latest=True, recency="off"), "fallback": dict(stepback="none"),
-             "overdue": dict(stepback="overdue")}
+             "overdue": dict(stepback="overdue"),
+             "one balance date, dual twice": dict(labels="app", unit="ref"),
+             "one balance date, latest": dict(labels="app", latest=True),
+             "one balance date, census exclusive": dict(labels="app", strict=True),
+             "one balance date, register at extract": dict(labels="app", reg_extract=True),
+             "dates scope, census exclusive": dict(scope="dates", strict=True),
+             "dates scope, register at extract": dict(scope="dates", reg_extract=True),
+             "dates scope, dual twice": dict(scope="dates", unit="ref"),
+             "dates scope, latest": dict(scope="dates", latest=True),
+             "dates scope, no rule 4.1": dict(scope="dates", recency="off"),
+             "a week after the census": dict(delay=7)}
     CS = {k: S.run(SEPT, pot, **o) for k, o in cells.items()}
     for k in ("30 June unstepped", "prior natural", "4.1 strict"):
         check(CS[k]["rate"] >= 1.10 * TS["rate"], f"cell {k} at {CS[k]['rate']/TS['rate']:.3f}x")
     check(CS["only 30 June stepped"]["rate"] <= 0.80 * TS["rate"],
           f"cell only 30 June stepped at {CS['only 30 June stepped']['rate']/TS['rate']:.3f}x")
-    for k in ("dual twice", "latest", "dual twice, latest", "R4 dual twice", "R4 latest"):
+    CS["step-back without rule 4.1"] = R4R
+    for k in ("dual twice", "latest", "dual twice, latest", "R4 dual twice", "R4 latest", "step-back without rule 4.1",
+              "one balance date, dual twice", "one balance date, latest", "one balance date, census exclusive",
+              "one balance date, register at extract", "dates scope, census exclusive",
+              "dates scope, register at extract", "dates scope, dual twice", "dates scope, latest",
+              "dates scope, no rule 4.1", "a week after the census"):
         check(CS[k]["rate"] <= 0.92 * TS["rate"], f"cell {k} {100*(CS[k]['rate']/TS['rate']-1):+.1f}%")
     toffers = {r["cc"]: r["offer"] for r in TS["rows"] if r["offer"]}
     for k, dn in (("census exclusive", -14), ("register at extract", 6)):
@@ -723,9 +1006,11 @@ def main():
         check(x["rate"] == TS["rate"] and {r["cc"]: r["offer"] for r in x["rows"] if r["offer"]} == toffers and
               len(x["rows"]) - len(TS["rows"]) == dn, f"{k}: the same rate and offers, {len(x['rows'])} scored")
     sig = lambda s_: sorted((r["cc"], r["cur"], r["prior"], r["offer"]) for r in s_["rows"])
-    check(sig(CS["fallback"]) == sig(RS["R3"]) and sig(CS["overdue"]) == sig(RS["R3"]),
-          "the register fallback and the overdue-only step-back both equal R3 at September")
-    check(sig(CS["4.1 a year before"]) == sig(RS["R4"]), "rule 4.1 read against the census a year before equals R4")
+    r3t = S.run(SEPT, pot, **rivals["R3"])        # R3 on the answer's scope, as the cells are
+    check(sig(CS["fallback"]) == sig(r3t) and sig(CS["overdue"]) == sig(r3t),
+          "the register fallback and the overdue-only step-back both equal R3 at September (on the answer's scope)")
+    check(sig(CS["4.1 a year before"]) == sig(R4R),
+          "rule 4.1 read against the census a year before equals the step-back without the clause")
     out["september"] = dict(rate=TS["rate"], total=TS["total"], scored=len(TS["rows"]),
                             first_outside=[P.name[under[0]["cc"]], pct1(under[0]["pct"])],
                             rungs={k: RS[k]["rate"] for k in RS}, cells={k: v["rate"] for k, v in CS.items()})
@@ -736,12 +1021,20 @@ def main():
     off = [r for r in TS["rows"] if r["offer"]]
     n = len(off)
     r3map = {r["cc"]: r for r in RS["R3"]["rows"]}
-    stops = {"K1 GOV_GRT on both forms": lambda r: A.k1(r, SEPT, mapping="label"),
+    stops = {"K1 the government lines alone": lambda r: A.k1(r, SEPT, cofund=None),
+             "K1 co-funding by instalment month": lambda r: A.k1(r, SEPT, cofund="for"),
+             "K1 a twelfth a month by value date": lambda r: A.k1(r, SEPT, cofund="twelfths"),
+             "K1 a twelfth a month by instalment month": lambda r: A.k1(r, SEPT, cofund="twelfths_for"),
+             "K1 GOV_GRT on both forms": lambda r: A.k1(r, SEPT, mapping="label"),
              "K1 comparatives": lambda r: A.k1(r, SEPT, comps=True),
              "K1 whole fees": lambda r: A.k1(r, SEPT, mapping="over"),
              "K1 project copy": lambda r: A.k1(r, SEPT, how="pg"),
              "K1 delivered": lambda r: A.k1(r, SEPT, how="delivered"),
-             "K2 payment run alone": lambda r: A.k2(r, SEPT, sgf=False),
+             "K2 payment run alone": lambda r: A.k2(r, SEPT, sgf=False, cofund_out=False),
+             "K2 run and instalments, co-funding left in": lambda r: A.k2(r, SEPT, cofund_out=False),
+             "K2 run less co-funding, no instalments": lambda r: A.k2(r, SEPT, sgf=False),
+             "K2 run and instalments less a twelfth a month": lambda r: A.k2(r, SEPT, cofund_how="twelfths"),
+             "K2 run alone less a twelfth a month": lambda r: A.k2(r, SEPT, sgf=False, cofund_how="twelfths"),
              "K2 instalment month": lambda r: A.k2(r, SEPT, how="for"),
              "K2 returned": lambda r: A.k2(r, SEPT, statuses=("paid", "returned")),
              "K2 ten-day transit": lambda r: A.k2(r, SEPT, how="transit"),
@@ -752,36 +1045,60 @@ def main():
         d = [(r["cc"], fn(r) - G[r["cc"]][ask]) for r in off]
         check(all(x == 0 or abs(x) >= 500 for _, x in d), f"stop {name}: no offered figure within NZ$500 of the answer")
         moved[name] = sum(1 for _, x in d if x)
-    for name, lo_ in (("K1 GOV_GRT on both forms", n - 1), ("K1 comparatives", n - 3), ("K1 whole fees", n),
-                      ("K2 payment run alone", n), ("K2 instalment month", n - 2), ("K2 ten-day transit", n)):
+    for name, lo_ in (("K1 the government lines alone", n - 1), ("K1 co-funding by instalment month", n),
+                      ("K1 a twelfth a month by value date", n), ("K1 a twelfth a month by instalment month", n),
+                      ("K2 run and instalments less a twelfth a month", n), ("K2 run alone less a twelfth a month", n),
+                      ("K1 GOV_GRT on both forms", n - 1), ("K1 comparatives", n - 3), ("K1 whole fees", n),
+                      ("K2 payment run alone", n), ("K2 run and instalments, co-funding left in", n),
+                      ("K2 run less co-funding, no instalments", n), ("K2 instalment month", n - 2),
+                      ("K2 ten-day transit", n)):
         check(moved[name] >= lo_, f"stop {name} moves {moved[name]} of {n} offered figures")
     for name, want in (("K2 returned", 1), ("K2 one reference", 1), ("K1 project copy", 1), ("K1 delivered", 2)):
         check(moved[name] == want, f"stop {name} moves {moved[name]} offered figure(s)")
-    same = [r["cc"] for r in off if (r4map[r["cc"]]["end"], r4map[r["cc"]]["pend"]) == (r["end"], r["pend"])]
-    check(len(same) == n, "R4 holds every offered grantee on the answer's windows (only the devices separate it)")
+    # the co-funding: every offered grantee carried it, and the register's government figure carries none
+    # of it (the year-end tie confirms the government lines and is blind to the co-funding)
+    check(all(P.op_ref[r["cc"]] in P.cofund for r in off) and len(P.cofund) >= 30,
+          f"government co-funding on {len(P.cofund)} operating grants, every offered grantee's among them")
+    # the mirror: the stop (R6) holds every offered grantee on the answer's windows, so only the devices
+    # separate it; R3 holds the two 30 June offerees on June windows and misses both asks for each
+    same = [r["cc"] for r in off if r["cc"] in r6map and (r6map[r["cc"]]["end"], r6map[r["cc"]]["pend"]) == (r["end"], r["pend"])]
+    check(len(same) == n, "the stop (R6) holds every offered grantee on the answer's windows (only the devices separate it)")
     mir = [(r["cc"], A.k1(r3map[r["cc"]], SEPT, q4="portal") - G[r["cc"]]["K1"],
             A.k2(r3map[r["cc"]], SEPT) - G[r["cc"]]["K2"]) for r in off if r3map[r["cc"]]["end"] != r["end"]]
     check(len(mir) == 2 and all(abs(x) >= 500 and abs(y) >= 500 for _, x, y in mir),
           "R3's windows miss both 30 June offerees on K1 and K2")
+    # the pair on the asks: the habitual path (the government lines alone; the payment run alone) on the
+    # answer's windows and on the stop's
+    crack = sum(A.k1(r, SEPT, cofund=None) == G[r["cc"]]["K1"] for r in off) + \
+        sum(A.k2(r, SEPT, sgf=False, cofund_out=False) == G[r["cc"]]["K2"] for r in off)
+    check(crack == 0, f"the habitual path files {crack} of {2 * n} ask figures right")
+    crack3 = sum(A.k1(r, SEPT, cofund="twelfths") == G[r["cc"]]["K1"] for r in off) + \
+        sum(A.k2(r, SEPT, sgf=False, cofund_how="twelfths") == G[r["cc"]]["K2"] for r in off)
+    check(crack3 == 0, f"the round 3 path (the co-funding at a twelfth a month, the run alone) files {crack3} of "
+                       f"{2 * n} ask figures right")
     # the new-form Trust memo equals the payment run by value date; Steady Ground money is in neither
     run = A.run_series(sgf=False)
     full = A.run_series()
-    bad = nchk = outside = 0
+    cof = A.cofund_series()
+    bad = nchk = outside = inside = 0
     for (cc, q), lst in S.by_org.items():
         if q < (2024, 12):
             continue
         v = lst[-1]
         if "GRT_NGO_APT" not in v["ytd"]:
             continue
-        k = fy_pos(q, P.bal[cc])
+        k = fiscal(P, cc, q)[1]
         nchk += 1
         want = sum(run[(cc, q_add(q, -j))] for j in range(k))
         if v["ytd"]["GRT_NGO_APT"] != want:
             bad += 1
         if sum(full[(cc, q_add(q, -j))] for j in range(k)) != want:
             outside += 1
+        if sum(cof[(cc, q_add(q, -j))] for j in range(k)):
+            inside += 1
     check(bad == 0 and nchk > 800, f"Trust memo equals the payment run on {nchk} returns")
     check(outside >= 100, f"Steady Ground instalments sit outside the memo and the run on {outside} returns")
+    check(inside >= 150, f"the government co-funding sits inside the memo and the run on {inside} returns")
     # distractors: delete them and the answer does not move
     tmp = tempfile.mkdtemp()
     try:

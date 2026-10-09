@@ -143,9 +143,10 @@ def check_files(W, C, target, info):
     # A39: no shipped sentence or header states a window end, a fourth-quarter source or knowledge time
     bad = re.compile(r"twelve months to|months to 3[01]|year to december|four quarters|fourth quarter|"
                      r"trailing|knowledge time|as held|as at the census|step(ped)? back|provisional|"
-                     r"management (return|figure|accounts)|audited quarter|window", re.I)
+                     r"management (return|figure|accounts)|audited quarter|window|balance.date|"
+                     r"nine.month year|short(ened)? year|transitional year", re.I)
     hits = [(f, m.group(0)) for f, t in texts.items() for m in [bad.search(t)] if m]
-    C.ok("A39", not hits, f"no window, fourth-quarter or knowledge-time statement anywhere ({hits})")
+    C.ok("A39", not hits, f"no window, fourth-quarter, knowledge-time or balance-date statement anywhere ({hits})")
     # A40: no shipped artifact ranks September's grantees
     offer_files = [f for f in files if f.endswith(".xlsx") and "Offer ($)" in texts[f]]
     C.ok("A40", sorted(offer_files) == sorted(WD.pack_name(c.year) for c in MARCH_CENSUSES),
@@ -228,8 +229,11 @@ def record(W, C, info, path):
         "offers": [x for x in rows if x["offer"]], "rows": rows,
         "rungs": {k: {"rate_hc": S[k]["rate"], "offered": sorted(W["by"][o].name for o in
                                                                  {r["org"] for r in S[k]["rows"] if r["offer"]}),
-                      "n_rows": len(S[k]["rows"])} for k in ("R0", "R1", "R2", "R3", "R4")},
-        "cells": {k: S[k]["rate"] for k in S if k not in ("T", "R0", "R1", "R2", "R3", "R4")},
+                      "n_rows": len(S[k]["rows"])} for k in ("R0", "R1", "R2", "R3", "R4", "R5", "R6")},
+        "cells": {k: S[k]["rate"] for k in S if k not in ("T", "R0", "R1", "R2", "R3", "R4", "R5", "R6")},
+        "gaps": {o.key: [[str(x) for x in g] for g in o.gaps] for o in W["orgs"] if o.gaps},
+        "cofund": {o.key: o.cofund for o in W["orgs"] if o.cofund},
+        "movers": {o.key: o.name for o in W["orgs"] if o.cal_change},
         "corpus": {c.year: {"rows": len(W["corpus"][c]["rows"]), "offers": W["corpus"][c]["n_offers"],
                             "rate_hc": W["corpus"][c]["rate"],
                             "total": sum(r["offer"] for r in W["corpus"][c]["rows"])} for c in MARCH_CENSUSES},

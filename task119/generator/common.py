@@ -105,6 +105,15 @@ def dst_window(d):
 DST_WINDOWS = [dst_window(d) for d in DST_DAYS]
 
 
+def clear_of_dst(m, direction=-1):
+    """A local minute moved out of a clock-change window (earlier by default), so no shipped local time falls in
+    an hour that does not exist or occurs twice."""
+    for x, y in DST_WINDOWS:
+        if x <= m < y:
+            return x - 1 if direction < 0 else y
+    return m
+
+
 def crosses_dst(a, b):
     for x, y in DST_WINDOWS:
         if a < y and b > x:

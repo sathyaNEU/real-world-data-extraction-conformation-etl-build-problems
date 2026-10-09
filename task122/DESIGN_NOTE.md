@@ -701,8 +701,8 @@ Pack
 | 1 | `home_carousel_render_log_2026-06-22_2026-09-20.csv` | spine, 405,000 renders | main |
 | 2 | `orders_enrolled_buyers_2026-06-22_2026-10-11.parquet` | operating extract, every channel | main (price column ask only) |
 | 3 | `watchlist_events_2026-05-01_2026-10-11.csv` | operating extract | main |
-| 4 | `carousel_test_archive.xlsx` | calibration: tests sheet and logged-sessions sheet (99,000 rows) | main |
-| 5 | `experimentation_charter_home_surfaces_v4.pdf` | governing: conditions, lift definition, clause, cell table | main |
+| 4 | `carousel_experiment_archive.xlsx` | calibration: tests sheet and logged-sessions sheet (99,000 rows) | main |
+| 5 | `experimentation_charter_home_surfaces.pdf` | governing: conditions, lift definition, clause, cell table | main |
 | 6 | `fresh_listing_commitment_2026.docx` | governing: the floor | main |
 | 7 | `ranking_policy_register.json` | context artifact: specifications and inputs, no lift | main |
 | 8 | `carousel_logger_data_dictionary.md` | dictionary | main |
@@ -714,7 +714,7 @@ Pack
 | 14 | `home_carousel_sessions_weekly_2025W01_2026W39.csv` | traffic, first release | ask |
 | 15 | `home_carousel_sessions_weekly_R2_2026W01_2026W26.csv` | restatement | ask |
 | 16 | `analytics_release_log.md` | organ, P2 | ask |
-| 17 | `test_capacity_and_release_gating.md` | organ, HZ3; cell-by-cell planning line; same weeks last year | ask |
+| 17 | `slot_capacity_and_release_gating.md` | organ, HZ3; cell-by-cell planning line; same weeks last year | ask |
 | 18 | `app_release_calendar_2026-2027.ics` | HZ3 dates | ask |
 | 19 | `finance_buyer_protection_fee_income_2026Q3.xlsx` | the referee | ask |
 | 20 | `planning_thread_carousel_slot.txt` | social layer: Fabian Stoffel (the pinned tiles convert better than any tiles the carousel has had, which the log bears out), Tygo Knoers (the archive has never missed with session weights), Kayleigh Zeemans (the interleave costs a tile and she would not put it against the velocity boost) | neither |
@@ -954,7 +954,7 @@ stop is F's pooled-lift total, 85.4 outside). R2 keeps every platform-week total
 - Zero device rows in the main call's declared population; scrambling the device columns of the orders extract moves
   neither E nor B (1e-12). Hygiene battery clean: unique keys, every payment and every offer has its order, no
   duplicate purchase.
-- Each load-bearing fact stands in exactly one file: lift definition (experimentation_charter_home_surfaces_v4.pdf); reproduction clause (experimentation_charter_home_surfaces_v4.pdf); cell table (experimentation_charter_home_surfaces_v4.pdf); floor (fresh_listing_commitment_2026.docx); slot share (experimentation_charter_home_surfaces_v4.pdf); tariff deferral (pricing_committee_minutes_2026-10-06.docx); app gating (test_capacity_and_release_gating.md); r2 replaces (analytics_release_log.md); cell by cell planning (test_capacity_and_release_gating.md); fee basis (buyer_protection_terms_2026-09.pdf); change clause (buyer_protection_terms_2026-09.pdf).
+- Each load-bearing fact stands in exactly one file: lift definition (experimentation_charter_home_surfaces.pdf); reproduction clause (experimentation_charter_home_surfaces.pdf); cell table (experimentation_charter_home_surfaces.pdf); floor (fresh_listing_commitment_2026.docx); slot share (experimentation_charter_home_surfaces.pdf); tariff deferral (pricing_committee_minutes_2026-10-06.docx); app gating (slot_capacity_and_release_gating.md); r2 replaces (analytics_release_log.md); cell by cell planning (slot_capacity_and_release_gating.md); fee basis (buyer_protection_terms_2026-09.pdf); change clause (buyer_protection_terms_2026-09.pdf).
 
 ### Placement, for the record
 
@@ -1009,9 +1009,9 @@ departs from the plan:
 | app_release_calendar_2026-2027.ics | ics |  | 11,403 |
 | buyer_protection_terms_2026-09.pdf | pdf |  | 2,731 |
 | carousel_logger_field_reference.md | md |  | 4,065 |
-| carousel_test_archive.xlsx | xlsx | 99,200 | 3,617,682 |
-| experimentation_charter_home_surfaces_v4.pdf | pdf |  | 3,856 |
-| extract_register_slot_review.md | md |  | 3,650 |
+| carousel_experiment_archive.xlsx | xlsx | 99,200 | 3,617,682 |
+| experimentation_charter_home_surfaces.pdf | pdf |  | 3,856 |
+| extract_register_slot_review.md | md |  | 3,653 |
 | finance_buyer_protection_fee_income_2026Q3.xlsx | xlsx |  | 6,018 |
 | fresh_listing_commitment_2026.docx | docx |  | 37,365 |
 | home_carousel_render_log_2026-06-22_2026-09-20.csv | csv | 404,100 | 26,227,263 |
@@ -1027,8 +1027,68 @@ departs from the plan:
 | ranking_policy_register.json | json |  | 3,488 |
 | search_ranking_tests_2026H1.xlsx | xlsx |  | 6,541 |
 | seller_survey_fresh_listings_2026Q2.csv | csv | 1,612 | 86,853 |
-| test_capacity_and_release_gating.md | md |  | 1,249 |
+| slot_capacity_and_release_gating.md | md |  | 1,249 |
 
+
+## Stage 3: write-up and ship checks (2026-10-09)
+
+Skills run in order: submission-writeup, golden-realism, reduce-house-fixes, leak-check, fingerprint (dataviz loaded
+before the chart code).
+
+- **Golden.** `generator/golden.py` reads only `target/`. It defines the notebook's code cells once, runs them
+  in-process so the opening sentence carries the computed call, writes `carousel_slot_q1_2027.ipynb`, executes it
+  top to bottom with a Jupyter kernel in `golden/` (the last cell saves `carousel_slot_q1_2027_cells.png`), refuses
+  any error or stderr output, checks the executed outputs show the same call line, fee grid and totals table, and
+  asserts every graded figure against this note's build record (call 5.697, runner-up 3.303, gap 2.394; all 48
+  fee cells to 0.001 and the same tenth; all 12 totals to 0.06; the two breaches; archive 9, 6 and 3 of 9; the two
+  qualifiers). Two runs, one into the scratchpad, are byte-identical on both files.
+- **The notebook's path.** Per-session weights certified on the archive, then each buyer's orders over the 21
+  days after the session (a 1 to 21 day sweep shows every lift flat from day 6), the watched-listing netting as a
+  cross-check (anyway rate 62.5 per cent, route 2 within 0.01 of route 1 for all six), the three conditions as point
+  rules, the fee grid at KB-2026-02 on the price paid with no fee on items paid in person, and the totals on the
+  R2-current 2026-W01 to W12 cells with the app arm from W03.
+- **submission.md**: five blocks; block 4 carries the call, runner-up and gap, all 48 cells (one point per policy,
+  every cell named) and all 12 totals, plus the heatmap's four parts. Every block 4 figure was diffed against
+  `verify_pack.py --out` (48 of 48 cells, 12 of 12 totals).
+- **golden-realism.** The chart: deliberate diverging red to blue palette with a grey zero (dataviz palette, poles
+  validated), cells labelled to one decimal, app and web column groups, hatching with a backed label so the value
+  stays legible, the chosen row outlined above the group gap, a status column, a finding title, a source line.
+  First render clipped the title and HC-37's label and ran two tenure headers together; fixed in the chart cell and
+  re-rendered. The notebook opens on the call in Saar Dries's voice, carries the argument in short markdown cells,
+  keeps constants at the top with their charter and commitment sections, and leaves control assertions in (session
+  tie to the orders extract, archive 9 of 9, windows flat from day 7, price paid on two routes).
+- **reduce-house-fixes.** H1: `scrub_producer_metadata.py` audit of `golden/` clean; the PNG carries only its dpi
+  chunk. H4: `golden/` holds exactly the two files the prompt names (asserted in golden.py). H6: the fee rule the
+  notebook states (fixed amount plus a percentage of the price paid, none on items paid in person) is back-tested in
+  the notebook on every payment in the ledger, each at the register row in force on its capture date (325,156 of
+  325,156), and every order without a payment is a pickup (asserted). H8: the three renamed files are updated in
+  this note, the submission and the verifier, and nothing cites an old name. H11: one `submission.md` and one
+  `prompt.md` under the task tree. Figures re-run after the realism pass: unchanged.
+- **Leak fix.** `leak.py` returned LEAK on three file names (`test_` twice, `_v4`). Renamed in `generator/docs.py`:
+  `carousel_experiment_archive.xlsx`, `slot_capacity_and_release_gating.md`,
+  `experimentation_charter_home_surfaces.pdf`. The rebuild (240 assertions) left every other file byte-identical
+  and changed only the three names inside `extract_register_slot_review.md`; `verify_pack.py` 62 of 62 after it.
+  Re-run verdict REVIEW.
+- **Surface:** 0 promoted pairs (nearest task109 at 0.092). **Heart:** WARN, no BLOCK (repeat.gate_g against
+  task119 and task121, repeat.decision against task121, both answered under Guard); nearest heart text 0.06
+  (task118's stump). Card updated (answer, answer_source, spine rows 404,100, deliverables, opening move) and
+  `guard.py validate` clean.
+
+## Leak review
+
+- Charter, golden figures 179, 180, 729, 730: the cell table's tenure band edges, which the golden uses as cell labels, not as answers.
+- Charter, golden figure 1.5: the guardrail threshold in condition 4(b), a pinned rule the golden applies.
+- Charter, golden figure 2.4: the section number of definition 2.4, which only coincides with the gap.
+- Extract register, 11 of 17 words of the call: the folder's own subject line (Q1 2027 home carousel test slot and its dates); it names no policy.
+- Planning thread, 12 of 17 words of the call: the slot's vocabulary; the one voice on the interleave argues against it, so nothing points at the answer.
+- Release log, 3 stump terms: ordinary table-release vocabulary (session, source); it says nothing about orders after a session.
+- Field reference, 7 stump terms: the logger's field definitions; it defines in-session orders and the watch list and never says an order can be brought forward.
+- Charter, 7 stump terms: the reproduction clause and the cell table, pins the design requires; no sentence on borrowed orders.
+- Extract register, 5 stump terms: file titles only.
+- Fresh-listing commitment, 3 stump terms: the counting rule per served ranking, a pin.
+- Planning thread, 6 stump terms: the voices hold beliefs (the pinned tiles convert, the archive never misses with session weights) and none names the move.
+- Prompt, two stump terms in the question: the question itself (registered policies, carousel sessions), no method or basis.
+- Tariff register, 2027-01-04: the deferred January row, a forward-dated entry by design (HZ1); the minutes defer it.
 
 ## Tried and rejected
 
@@ -1125,3 +1185,24 @@ departs from the plan:
   B, C, E and F (4 to 23 orders apart). The weekly table now carries a January new-buyer surge in both years (the
   0-29 band peaks 8 points above its base share in early January, the 30-179 band 4 points), which puts the pooled
   and cell-by-cell totals at least 138 orders apart for every policy before placement.
+- Solver round 1 (plain, 2026-10-09), the five-rung build as shipped: LANDED, proxy 89.8, asks 6 of 8. The solver walked every
+  rung without friction and executed the decisive one at its step 6 as a work order: "Lift outcome: all orders by the buyer (any
+  channel) within 7 days of session start, from orders_enrolled_buyers. The result is identical at 14 days. HC-33 pins watch-list
+  listings in tiles 1-2, which cannibalises favourites/alerts orders in the 180+ tenure cells, so its net log-mix lift is 3.30
+  against a gross carousel lift of 7.96." The charter's lift definition (orders during the test, every channel) plus a shipped
+  all-channel order file keyed by buyer makes the any-channel window the default outcome, so the netting is never a construction.
+  It also kept every ask figure (48 fee cells, 12 totals), and it weighted the headline to 5.8 on the slot mix against the
+  golden's 5.7 on the logged mix while using the slot mix for the totals, a determinism finding on the headline basis.
+- Harden loop 1, diagnosis of round 1 (the borrowed-order netting as the decisive rung; P1 in-person pickups, P2 the R2
+  restatement, HZ1 the deferred tariff, HZ2 the price paid and HZ3 the app gating as the ask devices): the decisive quantity
+  was the charter's own observable, so the solver never had to think of borrowing at all. Its "Lift outcome: all orders by
+  the buyer (any channel) within 7 days of session start, from orders_enrolled_buyers. The result is identical at 14 days"
+  is charter 2.2 executed on the one extract that already holds every order by buyer, and the netting of B fell out of it as
+  a by-product ("which cannibalises favourites/alerts orders in the 180+ tenure cells"). Every ask device died the same way:
+  each organ sits in a file the ask's own path opens with its rule beside it ("recomputed at the 1 Sep 2026 tariff ...
+  because KB-2027-01 was deferred", "Pickup orders paid directly carry no fee", "R2 restatement 2026-W01..W12 (it matches the
+  account-service tenure), app only from W03 because of the release 27.1 gate"). Dead: a decisive rung whose correct basis
+  is the definition's own observable on a shipped extract, and an ask device whose rule is filed in a document the ask path
+  reads anyway. What the trace holds fixed without checking is that the logger's in-session columns measure the charter's
+  quantities whenever the charter is not about orders over the test (its guardrail is read "from ordered_tiles"), which is
+  where loop 1 goes. Harden loop 1 of 3 on this architecture.

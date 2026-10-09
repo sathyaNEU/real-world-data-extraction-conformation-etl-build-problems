@@ -1,109 +1,118 @@
 {
-  "task": "task121",
-  "architecture": "v2 (redraw at checkpoint A: signed-out club-app customers)",
-  "drawn": "2026-10-09",
-  "slot_note": "realises analytical_tasks note RC01 (checkout release, self-healing exposure), redrawn at checkpoint A on 2026-10-09: the note's world and decision kept (an online store's one engineering sprint after a checkout conversion fall), the call made a pick of the fix with the attribution left open, the note's self-healing exposure demoted to a lower rung, and a new decisive move drawn; product-analytics x root-cause, last built at task84",
-  "domain": "product-analytics",
-  "subdomain": "onboarding-activation",
-  "niche": "an online licensed-merchandise store in Portugal choosing which of five shortlisted checkout fixes gets the quarter's one engineering sprint after a September conversion fall, where the club app's low-converting shop-tab sessions are mostly existing customers whom the app's own browser lands signed out, so only the parked one-time-code sign-in reaches the largest loss",
-  "objective": "root-cause",
-  "shape": "18",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population",
-    "time"
+ "task": "task121",
+ "architecture": "v2 (redraw at checkpoint A: signed-out club-app customers)",
+ "drawn": "2026-10-09",
+ "slot_note": "realises analytical_tasks note RC01 (checkout release, self-healing exposure), redrawn at checkpoint A on 2026-10-09: the note's world and decision kept (an online store's one engineering sprint after a checkout conversion fall), the call made a pick of the fix with the attribution left open, the note's self-healing exposure demoted to a lower rung, and a new decisive move drawn; product-analytics x root-cause, last built at task84",
+ "domain": "product-analytics",
+ "subdomain": "onboarding-activation",
+ "niche": "an online licensed-merchandise store in Portugal choosing which of five shortlisted checkout fixes gets the quarter's one engineering sprint after a September conversion fall, where the club app's low-converting shop-tab sessions are mostly existing customers whom the app's own browser lands signed out, so only the parked one-time-code sign-in reaches the largest loss",
+ "objective": "root-cause",
+ "shape": "18",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Give Q4's sprint to the one-time-code sign-in, which removes the loss from existing account holders who arrive from the club app's Shop tab without signing in: 51 orders lost in the week of 21 to 27 September, 33 more than the card SDK upgrade's cause at 18.",
+ "answer_source": "task121/submission.md, block 1 (Final Recommendation) and block 4 items 1 to 5",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none",
+  "A"
+ ],
+ "generators": [
+  "G3",
+  "G6",
+  "G13",
+  "G14"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "prior_period_close_out",
+ "context_artifact": "monitoring_export",
+ "stakeholder_role": "head of product at an online licensed-merchandise store, who assigns the quarter's one engineering sprint",
+ "role_family": "product_manager",
+ "scoring_unit": "per settled transaction",
+ "spine": {
+  "file": "basket_sessions_2026-07-27_2026-09-27.parquet",
+  "rows": 214457,
+  "entity": "one storefront session that put an item in the basket, with its account when signed in, its traffic source and members'-price token, its new-visitor flag and the furthest checkout step it reached",
+  "grain": "session",
+  "source": "synthetic"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "incident_or_complaint",
+ "org_family": "retailer_or_ecommerce",
+ "world": {
+  "geography": "Portugal",
+  "currency": "EUR",
+  "org_type": "online store selling licensed football, music and gaming merchandise to customers in Portugal, linked from a top-flight football club's members app",
+  "invented_names": [
+   "Ventania Merch",
+   "CD Monteralto",
+   "Monteralto+",
+   "Tagus Payments",
+   "Lusolog Expresso",
+   "Bankora",
+   "Finvo"
   ],
-  "pattern": [
-    "none",
-    "A"
-  ],
-  "generators": [
-    "G3",
-    "G6",
+  "people": [
+   "Júlia Machado",
+   "Duarte Cunha",
+   "Luciana Castro",
+   "Lia Neto",
+   "Cristiano Soares",
+   "Jaime Jesus",
+   "Noah Coelho",
+   "Raquel Pires",
+   "Henrique Valadares"
+  ]
+ },
+ "deliverables": [
+  "q4_sprint_call.html",
+  "checkout_fall_workings.xlsx"
+ ],
+ "opening_move": "options-first",
+ "driver": "The decisive quantity is the loss carried by units that the records file as newcomers with no owning account but that belong to established accounts, reachable only by following a reference each unit carries through a second party's report to an identifier held on a different entity, because the channel that brings them strips the stored state that makes established accounts succeed; joined on the visible account key they read as incremental newcomers whose shortfall is harmless dilution, every closed case confirms that reading because in every closed case those accounts arrived with their state intact, and the loss is charged to the largest symptom it produces downstream instead of to the stripped state.",
+ "driver_concrete": "The club app opens the store in its own browser, where nobody is signed in, so most of the shop-tab sessions the session log files as new, signed-out visitors are existing customers: each session's members'-price token resolves through the club's monthly redemption report to a member number held on a store loyalty profile; signed out, they lose their saved address, saved card and card-on-file exemptions and convert at a fraction of their own usual rate, which makes their lost orders the largest current loss and puts it within reach of the parked one-time-code sign-in alone, while joined on the account key they look like new fans, both closed partner close-outs (open-web partners whose visitors arrived signed in) book partner traffic as dilution exactly, and their losses surface as typed-postcode failures at the address check and 3-D Secure challenges at payment.",
+ "stump": "A competent solver gives the sprint to the card-authentication upgrade: it measures the address check on its flag cohorts and watches its losses drain as accounts re-save, books the club app's low-converting sessions as new-fan dilution because they carry no account and a new-visitor cookie and both closed partner close-outs book partner traffic that way, and is left with the rise in 3-D Secure challenges as the largest real loss, because it joins sessions to accounts on the account key alone and never follows each club-app session's members'-price token through the club's redemption report to a member number on a store loyalty profile, which shows most of those sessions are existing customers landing signed out, whose lost orders are the largest current loss and which only the one-time-code sign-in reaches.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task101": "task101 takes the decision's own earlier payments out of a published distribution they entered under intermediaries' names, a component removed so a threshold can be cut; here a channel files established customers as signed-out newcomers and strips the stored state that makes them buy, so re-attaching them turns a shortfall every closed case books as dilution into the largest current loss and changes which fix is named, with nothing removed from any total."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (first draft: the address check's forward weekly cost, self-healing exposure)",
+   "drawn": "2026-10-08",
+   "domain": "product-analytics",
+   "subdomain": "onboarding-activation",
+   "objective": "root-cause",
+   "shape": "09",
+   "decision_type": "quantity_figure",
+   "answer_unit": "count",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "A",
+    "E",
+    "C"
+   ],
+   "generators": [
     "G13",
-    "G14"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "prior_period_close_out",
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "head of product at an online licensed-merchandise store, who assigns the quarter's one engineering sprint",
-  "role_family": "product_manager",
-  "scoring_unit": "per settled transaction",
-  "spine": {
-    "file": "basket_sessions_2026.csv",
-    "rows": 0,
-    "entity": "one storefront session that put an item in the basket, with its account when signed in, its traffic source and members'-price token, its new-visitor flag and the furthest checkout step it reached",
-    "grain": "session",
-    "source": "synthetic"
-  },
-  "forum": "line_manager_or_team",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "retailer_or_ecommerce",
-  "world": {
-    "geography": "Portugal",
-    "currency": "EUR",
-    "org_type": "online store selling licensed football, music and gaming merchandise to customers in Portugal, linked from a top-flight football club's members app",
-    "invented_names": [],
-    "people": [
-      "Júlia Machado",
-      "Duarte Cunha",
-      "Luciana Castro",
-      "Lia Neto",
-      "Cristiano Soares",
-      "Jaime Jesus",
-      "Noah Coelho",
-      "Raquel Pires"
-    ]
-  },
-  "deliverables": [
-    "q4_sprint_call.html",
-    "checkout_fall_workings.xlsx"
-  ],
-  "opening_move": "options-first",
-  "driver": "The decisive quantity is the loss carried by units that the records file as newcomers with no owning account but that belong to established accounts, reachable only by following a reference each unit carries through a second party's report to an identifier held on a different entity, because the channel that brings them strips the stored state that makes established accounts succeed; joined on the visible account key they read as incremental newcomers whose shortfall is harmless dilution, every closed case confirms that reading because in every closed case those accounts arrived with their state intact, and the loss is charged to the largest symptom it produces downstream instead of to the stripped state.",
-  "driver_concrete": "The club app opens the store in its own browser, where nobody is signed in, so most of the shop-tab sessions the session log files as new, signed-out visitors are existing customers: each session's members'-price token resolves through the club's monthly redemption report to a member number held on a store loyalty profile; signed out, they lose their saved address, saved card and card-on-file exemptions and convert at a fraction of their own usual rate, which makes their lost orders the largest current loss and puts it within reach of the parked one-time-code sign-in alone, while joined on the account key they look like new fans, both closed partner close-outs (open-web partners whose visitors arrived signed in) book partner traffic as dilution exactly, and their losses surface as typed-postcode failures at the address check and 3-D Secure challenges at payment.",
-  "stump": "A competent solver gives the sprint to the card-authentication upgrade: it measures the address check on its flag cohorts and watches its losses drain as accounts re-save, books the club app's low-converting sessions as new-fan dilution because they carry no account and a new-visitor cookie and both closed partner close-outs book partner traffic that way, and is left with the rise in 3-D Secure challenges as the largest real loss, because it joins sessions to accounts on the account key alone and never follows each club-app session's members'-price token through the club's redemption report to a member number on a store loyalty profile, which shows most of those sessions are existing customers landing signed out, whose lost orders are the largest current loss and which only the one-time-code sign-in reaches.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task101": "task101 takes the decision's own earlier payments out of a published distribution they entered under intermediaries' names, a component removed so a threshold can be cut; here a channel files established customers as signed-out newcomers and strips the stored state that makes them buy, so re-attaching them turns a shortfall every closed case books as dilution into the largest current loss and changes which fix is named, with nothing removed from any total."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (first draft: the address check's forward weekly cost, self-healing exposure)",
-      "drawn": "2026-10-08",
-      "domain": "product-analytics",
-      "subdomain": "onboarding-activation",
-      "objective": "root-cause",
-      "shape": "09",
-      "decision_type": "quantity_figure",
-      "answer_unit": "count",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "A",
-        "E",
-        "C"
-      ],
-      "generators": [
-        "G13",
-        "G14",
-        "G2",
-        "G6",
-        "G16"
-      ],
-      "gate_g": "decomposition_attribution",
-      "calibration_form": "closed_decision_corpus",
-      "context_artifact": "operations_log",
-      "driver": "The decisive move conditions a correctly measured pooled effect on a state each unit holds only until the effect first strikes it, because a struck unit repairs the property that exposed it; the state is reached only through a two-step join from the event records to a property of a different entity, ordered against the unit's own occurrence, so the forward cost is the expected first occurrences among units still holding the state as that pool drains period by period, while the pooled effect carried flat forward reproduces every closed case (no earlier case could alter the property) and overstates every forward period.",
-      "driver_concrete": "The address check rejects only saved addresses holding a four-digit CP4 postcode without its three-digit extension, and an account that fails it once re-saves a full CP7 address within two days and never fails again, so the release's forward cost is the expected first failures among accounts still holding a CP4-only address over the quarter's 13 weeks, reached session to account to saved address, while the cohort-measured weekly loss carried flat reproduces both prior releases' reviewed effects (neither touched saved customer data) and overstates every forward week.",
-      "stump": "A competent solver nets out the partner-referral mix, measures the release's per-session effect from the staggered flag cohorts balanced on channel and account age (the construction that reproduces both prior releases' reviewed effects), and applies that pooled effect to the quarter's planned sessions, filing a weekly cost about a quarter too high, because it never follows sessions through accounts to their saved addresses, where only four-digit-postcode addresses fail and an account that fails once re-saves and never fails again, so the share of checkouts still exposed falls week by week.",
-      "fate": "drafted 2026-10-08 and never registered; redrawn at checkpoint A on 2026-10-09. It passed the guard only after its decisive pattern was relabelled from the note's A (past effect against forward yield) to E, and as E it still collides with task117 (registered in this batch) on time, E and a quantity figure, while A stays blocked inside the window by task107's v4 lineage. Its committed figure, the release's forward weekly cost, read as Forecasting and put the Root-Cause tag at risk. Its stump was weak: the staggered flag cohorts let a solver run an event study by weeks since exposure and watch the effect fade (an arithmetic symptom, task75's dead shape), the vendor's published address rules pointed at the address book, and both nearest measured exemplars scored above 0.50 because the model names the cause and loses only on sizing. Rolling back a flag-gated release is a flag flip, not a sprint. The self-healing exposure survives in v2 as a lower rung."
-    }
-  ],
-  "notes": "Redraw of the first draft (lineage v1) at checkpoint A. Decisive move: G3 record versus operation, labelled as the generator list files it (gap 2): the session record is correct at its meaning (signed out, new-visitor cookie) and the decision needs the customer behind it, settled by three signatures that agree on the same sessions (the members'-price token through the club's redemption report to a loyalty-profile member number, the typed delivery address matching a saved one, the typed card matching a saved card fingerprint). No A to E pattern carries it, so pattern reads none first; A is listed behind it for the demoted self-healing rung (the address check's past losses overstate its current cost as accounts re-save). Decisive trap from the measured catalogue: #5 takes the population a flag or filter suggests (decided 5 of 64, 3 under 0.50, established), reached through #18 joins only on the visible key (2 of 64, 1 under 0.50, emerging), with #13 validates on one population, applies to another (3 of 64, 2 under 0.50) holding the corpus blind. Calibration organ: the two closed partner campaigns' close-outs (prior_period_close_out), which book partner traffic as dilution and reproduce exactly under that reading because both partners linked to the open web, where a returning customer arrived in their own browser already signed in. The release's two closed flagged-release reviews stay in the pack and certify the cohort method of the lower rung. Forum line_manager_or_team: the head of product assigns the sprint to her own engineering squads with no board. Forcing event incident_or_complaint: the conversion-fall incident the review has to close by naming its cause and the fix. Realism: the address check enforces the carrier's full-postcode label rule from 1 September, so rolling it back is not on the table and the address-step candidate is an inline postcode lookup. Shape 18: five shortlisted fixes against four lines of evidence, each decoy killed by a different line. Objective: the committed answer is the fix for the cause that carries the fall, with the attribution left open in the prompt; the sprint is forward, the basis is the attribution of the closed weeks, and no forecast enters the call."
+    "G14",
+    "G2",
+    "G6",
+    "G16"
+   ],
+   "gate_g": "decomposition_attribution",
+   "calibration_form": "closed_decision_corpus",
+   "context_artifact": "operations_log",
+   "driver": "The decisive move conditions a correctly measured pooled effect on a state each unit holds only until the effect first strikes it, because a struck unit repairs the property that exposed it; the state is reached only through a two-step join from the event records to a property of a different entity, ordered against the unit's own occurrence, so the forward cost is the expected first occurrences among units still holding the state as that pool drains period by period, while the pooled effect carried flat forward reproduces every closed case (no earlier case could alter the property) and overstates every forward period.",
+   "driver_concrete": "The address check rejects only saved addresses holding a four-digit CP4 postcode without its three-digit extension, and an account that fails it once re-saves a full CP7 address within two days and never fails again, so the release's forward cost is the expected first failures among accounts still holding a CP4-only address over the quarter's 13 weeks, reached session to account to saved address, while the cohort-measured weekly loss carried flat reproduces both prior releases' reviewed effects (neither touched saved customer data) and overstates every forward week.",
+   "stump": "A competent solver nets out the partner-referral mix, measures the release's per-session effect from the staggered flag cohorts balanced on channel and account age (the construction that reproduces both prior releases' reviewed effects), and applies that pooled effect to the quarter's planned sessions, filing a weekly cost about a quarter too high, because it never follows sessions through accounts to their saved addresses, where only four-digit-postcode addresses fail and an account that fails once re-saves and never fails again, so the share of checkouts still exposed falls week by week.",
+   "fate": "drafted 2026-10-08 and never registered; redrawn at checkpoint A on 2026-10-09. It passed the guard only after its decisive pattern was relabelled from the note's A (past effect against forward yield) to E, and as E it still collides with task117 (registered in this batch) on time, E and a quantity figure, while A stays blocked inside the window by task107's v4 lineage. Its committed figure, the release's forward weekly cost, read as Forecasting and put the Root-Cause tag at risk. Its stump was weak: the staggered flag cohorts let a solver run an event study by weeks since exposure and watch the effect fade (an arithmetic symptom, task75's dead shape), the vendor's published address rules pointed at the address book, and both nearest measured exemplars scored above 0.50 because the model names the cause and loses only on sizing. Rolling back a flag-gated release is a flag flip, not a sprint. The self-healing exposure survives in v2 as a lower rung."
+  }
+ ],
+ "notes": "Redraw of the first draft (lineage v1) at checkpoint A. Decisive move: G3 record versus operation, labelled as the generator list files it (gap 2): the session record is correct at its meaning (signed out, new-visitor cookie) and the decision needs the customer behind it, settled by three signatures that agree on the same sessions (the members'-price token through the club's redemption report to a loyalty-profile member number, the typed delivery address matching a saved one, the typed card matching a saved card fingerprint). No A to E pattern carries it, so pattern reads none first; A is listed behind it for the demoted self-healing rung (the address check's past losses overstate its current cost as accounts re-save). Decisive trap from the measured catalogue: #5 takes the population a flag or filter suggests (decided 5 of 64, 3 under 0.50, established), reached through #18 joins only on the visible key (2 of 64, 1 under 0.50, emerging), with #13 validates on one population, applies to another (3 of 64, 2 under 0.50) holding the corpus blind. Calibration organ: the two closed partner campaigns' close-outs (prior_period_close_out), which book partner traffic as dilution and reproduce exactly under that reading because both partners linked to the open web, where a returning customer arrived in their own browser already signed in. The release's two closed flagged-release reviews stay in the pack and certify the cohort method of the lower rung. Forum line_manager_or_team: the head of product assigns the sprint to her own engineering squads with no board. Forcing event incident_or_complaint: the conversion-fall incident the review has to close by naming its cause and the fix. Realism: the address check enforces the carrier's full-postcode label rule from 1 September, so rolling it back is not on the table and the address-step candidate is an inline postcode lookup. Shape 18: five shortlisted fixes against four lines of evidence, each decoy killed by a different line. Objective: the committed answer is the fix for the cause that carries the fall, with the attribution left open in the prompt; the sprint is forward, the basis is the attribution of the closed weeks, and no forecast enters the call."
 }

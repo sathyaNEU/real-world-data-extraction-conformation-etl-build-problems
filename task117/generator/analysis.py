@@ -33,6 +33,44 @@ def merge_charges(s: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+POOL_HOLDER = "Larch County Fleet Services"
+HANDOFF_MAX = 600   # a pool car going on within ten minutes of the pool car before it coming off the same unit
+
+
+def handoffs(s: pd.DataFrame, pool: set) -> pd.Series:
+    """For each charge, the charge it follows on a hand-off (None when it follows none): the next charge at the same
+    station is a pool car going on within ten minutes of the previous pool car coming off."""
+    o = s.sort_values(["station_id", "start"], kind="mergesort")
+    st = o["station_id"].to_numpy()
+    t0 = o["start"].to_numpy(np.int64)
+    po = o["plug_out"].to_numpy(np.int64)
+    pm = o["permit_no"].isin(pool).to_numpy()
+    gap = t0[1:] - po[:-1]
+    h = (st[1:] == st[:-1]) & pm[1:] & pm[:-1] & (gap > 0) & (gap <= HANDOFF_MAX)
+    prev = pd.Series([None] * len(o), index=o.index, dtype=object)
+    prev.iloc[1:] = np.where(h, o.index[:-1].to_numpy(), None)
+    return prev.reindex(s.index)
+
+
+def retime(s: pd.DataFrame, rate: pd.Series, prev: pd.Series, lag: str = "own") -> pd.Series:
+    """Forward starts on the new units. A charge that follows another on a hand-off goes on once the one before it has
+    finished at its new draw, after the interval it waited behind that car's 6.6 kW finish in 2026 (lag "own"), or
+    after a fixed interval (lag "mean": the mean of every hand-off's interval; "zero": none)."""
+    start = s["start"].astype(np.float64)
+    end66 = start + s["energy"] / 6.6 * 3600.0
+    waits = {i: start[i] - end66[p] for i, p in prev.items() if p is not None}
+    mean = float(np.mean(list(waits.values()))) if waits else 0.0
+    new = {}
+    for i in s.sort_values("start", kind="mergesort").index:
+        p = prev[i]
+        if p is None:
+            new[i] = start[i]
+            continue
+        w = waits[i] if lag == "own" else mean if lag == "mean" else 0.0
+        new[i] = new[p] + s.at[p, "energy"] / float(rate[p]) * 3600.0 + w
+    return pd.Series(new).reindex(s.index)
+
+
 def local_dates(t):
     return pd.to_datetime(np.asarray(t, dtype=np.int64), unit="s", utc=True).tz_convert(TZ)
 
@@ -70,6 +108,10 @@ class Analysis:
                        "CCS": float(np.mean(np.minimum(11.5, veh27.loc[veh27["deck"] == "South", "rating"])))}
         self.veh26 = veh26
         self.veh27 = veh27
+        permits = w.veh["permits"]
+        self.pool = set(permits.loc[permits["holder"] == POOL_HOLDER, "permit_no"])
+        self.prev26 = handoffs(self.pop26, self.pool)
+        self.prev_rec = handoffs(self.rec26, self.pool)
 
     # ------------------------------------------------------------------ the car behind a session
     def car_by_join(self, s: pd.DataFrame, as_of: date | None = None) -> pd.Series:
@@ -124,6 +166,13 @@ class Analysis:
             en = st + s.loc[m, "energy"].to_numpy(np.float64) / r * 3600.0
             out[deck] = load_curve(st, en, r)
         return out
+
+    def load_rot(self, s: pd.DataFrame, rate, prev: pd.Series, lag: str = "own") -> dict:
+        """The replay with the county pool's hand-offs re-timed on the new units."""
+        rate = pd.Series(rate, index=s.index) if not isinstance(rate, pd.Series) else rate
+        s2 = s.copy()
+        s2["start"] = retime(s, rate, prev, lag)
+        return self.load(s2, rate)
 
     def monthly(self, load: dict, year=2026, shift=False, decks=DECKS) -> dict:
         mask = self.bill_shift if shift else self.bill
@@ -184,6 +233,12 @@ class Analysis:
         for r, ld in loads.items():
             v, t = self.annual(ld)
             res[r] = {"peak": v, "at": t, "filed": GROWTH * v}
+        # the same replays with the pool's hand-offs re-timed on the new units; "percar" with them is the answer
+        self.rot_loads = {r: self.load_rot(s, self.rate_rule(r, s), self.prev26) for r in loads}
+        res["rot"] = {}
+        for r, ld in self.rot_loads.items():
+            v, t = self.annual(ld)
+            res["rot"][r] = {"peak": v, "at": t, "filed": GROWTH * v, "monthly": self.monthly(ld)}
         # the same replays run record by record, each settlement record as if it were a charge of its own
         rec = self.rec26
         self.rec_loads = {r: self.load(rec, self.rate_rule(r, rec)) for r in ("percar", "percar26", "r115", "r110")}
@@ -191,6 +246,11 @@ class Analysis:
         for r, ld in self.rec_loads.items():
             v, t = self.annual(ld)
             res["records"][r] = {"peak": v, "at": t, "filed": GROWTH * v, "monthly": self.monthly(ld)}
+        self.rec_rot_loads = {r: self.load_rot(rec, self.rate_rule(r, rec), self.prev_rec) for r in ("percar", "percar26")}
+        res["records_rot"] = {}
+        for r, ld in self.rec_rot_loads.items():
+            v, t = self.annual(ld)
+            res["records_rot"][r] = {"peak": v, "at": t, "filed": GROWTH * v, "monthly": self.monthly(ld)}
         # rung 0: the log's highest month, both registers summed
         log = self.w.log
         l26 = log[(pd.to_datetime(log["read_date"]).dt.year == 2026)]

@@ -33,7 +33,7 @@ def snap(t):
 # finished before noon, South 11.0 still charging at noon). "Kept" North pool cars stay on their permits into 2027;
 # "renewed" ones are the 2020 Bolt EVs the county replaced with 2023 Bolt EVs at the January 2027 renewal.
 PEAK_2026 = {
-    1: (date(2026, 1, 21), 8, 2, 0, 4, 0, 6, 1),
+    1: (date(2026, 1, 21), 7, 4, 0, 5, 0, 5, 1),
     2: (date(2026, 2, 17), 0, 10, 4, 2, 2, 6, 0),
     3: (date(2026, 3, 12), 7, 2, 1, 3, 1, 7, 0),
     4: (date(2026, 4, 14), 5, 3, 2, 1, 0, 8, 2),
@@ -47,9 +47,9 @@ PEAK_2026 = {
     12: (date(2026, 12, 8), 6, 0, 4, 1, 3, 5, 1),
 }
 # the binding days that carry a 7.2 kW car finishing between 12:20 and 12:27, so 12:15 sits below 12:00
-EARLY_MONTHS = (2, 12)
+EARLY_MONTHS = (1, 2, 12)
 RUNG2_DAY = date(2026, 6, 10)
-RUNG2_SPEC = {"CCN": [7.2, 7.2, 7.2, 7.2], "CCS": [11.0, 11.0, 7.2, 7.7]}
+RUNG2_SPEC = {"CCN": [7.2, 7.2, 7.2, 7.2], "CCS": [11.0, 11.0, 7.2]}
 
 # --- kW each device session adds to the 12:00 quarter-hour on the back-test days (it ends inside that
 # quarter-hour; 0.004 kW resolution keeps every reading exact at 0.001 kWh)
@@ -59,6 +59,8 @@ P_R25 = 2.20    # reissued-identifier unit, January to March 2025
 P_V2 = 1.76     # restated unit, accepted version; version 1 is 0.88 lower, version 3 0.88 higher
 P_D25 = 0.88    # session re-delivered in the October and December 2025 batches
 P_F = 0.70      # fleet-card top-up on every back-test day (before April 2025 it settled outside the export)
+P_Q = 1.32      # 2024 back-test session restated in March 2025: version 1 (on record when the forecast was made) ends
+Q_STEP = 0.88   # inside the 12:00 quarter-hour; version 2, accepted in March 2025, adds or takes 0.88 kW there
 B3_LEVELS_24 = {1: 15, 2: 16, 3: 14, 4: 13, 5: 12, 6: 11, 7: 11, 8: 11, 9: 13, 10: 14, 11: 15, 12: 15}
 B3_BANDS = {1: (-1.6, -0.4), 2: (1.5, 2.9), 3: (-2.2, -0.8), 4: (0.8, 2.2), 5: (-1.2, -0.2), 6: (1.6, 2.9),
             7: (-2.0, -0.6), 8: (1.0, 2.4), 9: (-2.2, -0.9), 10: (1.2, 2.7), 11: (0.6, 1.8), 12: (-1.2, -0.2)}
@@ -77,13 +79,16 @@ def _frac_ok(x, lo=0.06, hi=0.24):
 
 def b3_misses(sel, sub=()):
     """Misses on the filed path (stated whole-kW forecast against recorded whole-kW demand) under a subset
-    of mishandlings: F the fleet-card sessions that settled outside the export before April 2025 left out,
+    of mishandlings: Q the 2024 base taken on the March 2025 restatements rather than the versions on record when the
+    forecast was made, F the fleet-card sessions that settled outside the export before April 2025 left out,
     Fx every fleet-card transaction added (so the ones the export already carries count twice), D7 raw
     identifier join, H6 gateway B left out, H2 the 1.09 revision, H3l/H3f the latest or first restated
     version, H1 re-deliveries kept."""
     out = {}
     for m, p in sel.items():
         base, A, fac = p["base"], p["A"], 1.09 if "H2" in sub else FACTOR_2025
+        if "Q" in sub:
+            base += p["q_sign"] * Q_STEP
         if "F" in sub:
             base -= P_F
             if m <= 3:
@@ -107,7 +112,7 @@ def b3_misses(sel, sub=()):
     return out
 
 
-B3_DEVICES = ("F", "Fx", "D7", "H6", "H2", "H3l", "H3f", "H1")
+B3_DEVICES = ("Q", "F", "Fx", "D7", "H6", "H2", "H3l", "H3f", "H1")
 B3_SUBSETS = [s for k in range(1, len(B3_DEVICES) + 1) for s in itertools.combinations(B3_DEVICES, k)
               if not ("H3l" in s and "H3f" in s) and not ("F" in s and "Fx" in s)]
 
@@ -121,7 +126,7 @@ def choose_b3_parameters():
     grid = np.round(np.arange(0.4, 6.2, 0.004), 3)
     options = {}
     for m in range(1, 13):
-        dev24 = P_R24 + P_F + (P_G24 if m <= 4 else 0.0)
+        dev24 = P_R24 + P_F + P_Q + (P_G24 if m <= 4 else 0.0)
         hi = 0.20 if m <= 4 else 0.24
         lo_b, hi_b = B3_BANDS[m]
         opts = []
@@ -154,7 +159,7 @@ def choose_b3_parameters():
             if n25 is None or not _frac_ok(A):
                 break
             sel[m] = {"n24": n24, "p24": p24, "base": base, "F": F, "n25": n25, "p25": p25, "A": A, "NF": NF,
-                      "NA": NA, "miss": miss}
+                      "NA": NA, "miss": miss, "q_sign": int(rng.choice([-1, 1]))}
         if len(sel) < 12:
             continue
         if len({p["base"] for p in sel.values()}) < 12 or len({p["A"] for p in sel.values()}) < 12:
@@ -165,9 +170,9 @@ def choose_b3_parameters():
             if abs(sum(v) / 12) > B3_MEAN_GUARD or min(v) >= 0 or max(v) <= 0:
                 ok = False
                 break
-        # the primary device, the fleet-card charges outside the export, moves every forecast and every miss
-        g, f = b3_misses(sel), b3_misses(sel, ("F",))
-        if ok and all(f[m][0] != g[m][0] and round(f[m][2], 1) != round(g[m][2], 1) for m in range(1, 13)):
+        # the primary device, the 2024 base taken on the March 2025 restatements, moves every forecast and every miss
+        g, q = b3_misses(sel), b3_misses(sel, ("Q",))
+        if ok and all(q[m][0] != g[m][0] and round(q[m][2], 1) != round(g[m][2], 1) for m in range(1, 13)):
             return sel
     raise RuntimeError("no back-test configuration")
 
@@ -546,7 +551,11 @@ def generate_decks(gen: Generator, cal, reads, b3):
                     parts.append((P_G24, GATEWAY_B_POS[int(rng.integers(4))], "G"))
                     protect |= set(GATEWAY_B_POS)
                 parts.append((P_F, None, "F"))
+                parts.append((P_Q, None, "Q"))
                 gen.b3_day(d, p["n24"], parts, protect)
+                q = [r for r in gen.rows[-40:] if r["role"] == "Q" and r["day"] == d]
+                assert len(q) == 1
+                q[0]["q_sign"] = p["q_sign"]
             else:
                 parts = [(p["p25"], None, "P"), (P_F, None, "F")]
                 protect = set()
@@ -640,3 +649,162 @@ def generate_public(gen: Generator, pos: pd.DataFrame, deck_special_days: set):
                     gen.add(garage=g, position=position, start=t0, energy=E, rate=6.6, plug_out=po, acct="PUBLIC",
                             role="public", day=d)
                 free_at = po
+
+
+# ==================================================================================== the county pool's rotation
+# Larch County Fleet Services keeps its pool cars charging one after another on the North Deck units: when a pool car
+# finishes charging and another pool car is waiting, the attendant unplugs the first and puts the next one on the unit.
+# On the binding days the rotation is placed so the forward replay moves it: "up" puts a waiting pool car behind a
+# renewed car that finishes after noon at 6.6 kW and well before it at 11.0 kW; "down" puts a renewed pool car ahead of
+# a kept car whose charge then runs through noon in 2026 and ends before it once the renewed car ahead finishes sooner.
+ROTATION_SEED = 2026_0701
+CHAINS = {2: (1, 0), 3: (0, 2), 4: (0, 2), 5: (0, 1), 6: (1, 0), 7: (1, 0), 8: (0, 1), 9: (1, 0), 10: (0, 1),
+          11: (0, 3), 12: (0, 4)}
+LAG1 = (360, 1200)   # seconds from a pool car's last charging second to the attendant unplugging it
+LAG2 = (60, 300)     # seconds from that unplug to the next pool car going on the unit
+ORDINARY_P = 0.30    # share of ordinary weekdays on which the attendant swaps a car at the North Deck
+
+
+def _snap_up(t):
+    return int(SNAP * math.ceil(t / SNAP))
+
+
+def apply_rotation(gen: Generator, cal, permits: pd.DataFrame):
+    rng = np.random.default_rng(ROTATION_SEED)
+    pool = set(permits.loc[permits["holder"] == "Larch County Fleet Services", "permit_no"])
+    renewed = set(gen.changed)
+    by_day = {}
+    for i, r in enumerate(gen.rows):
+        by_day.setdefault(r["day"], []).append(i)
+
+    def used(d):
+        return {gen.rows[i]["permit_no"] for i in by_day.get(d, []) if gen.rows[i]["permit_no"]}
+
+    def free_pool(d, kind):
+        u = used(d)
+        cands = sorted(p for p in pool if p not in u and (p in renewed) == (kind == "renewed")
+                       and not gen.active("CCN", d)[gen.active("CCN", d)["permit_no"] == p].empty)
+        return cands[int(rng.integers(len(cands)))]
+
+    def add_row(**kw):
+        r = gen.add(**kw)
+        by_day.setdefault(r["day"], []).append(len(gen.rows) - 1)
+        return r
+
+    def plug_out_for(start, energy):
+        po = start + float(np.clip(rng.normal(8.6, 0.6), 6.8, 10.4)) * H
+        return int(round(max(po, start + energy / 7.2 * H + 2.15 * H, start + energy / 6.6 * H + 1.6 * H)))
+
+    for d, tag in sorted(cal.items()):
+        if tag[0] != "bind" or tag[1] not in CHAINS:
+            continue
+        n_up, n_down = CHAINS[tag[1]]
+        mid = lt_date(d)
+        north = [i for i in by_day[d] if gen.rows[i]["garage"] == "CCN" and gen.rows[i]["role"].startswith("long")]
+        # up: a waiting pool car goes on behind a renewed car
+        heads = [i for i in north if gen.rows[i]["permit_no"] in renewed and gen.rows[i]["role"] == "long_slow"]
+        heads = [heads[j] for j in rng.permutation(len(heads))][:n_up]
+        assert len(heads) == n_up, (d, "heads")
+        for i in heads:
+            h = gen.rows[i]
+            for _ in range(5000):
+                E = float(rng.uniform(32.0, 38.0))
+                lo = hm(12, 17) - E * (1 / 8.081 - 1 / 9.75)
+                hi = min(hm(11, 56), hm(11, 12) + E * (1 / 9.75 - 1 / 11.0))
+                if hi > lo:
+                    t0 = float(rng.uniform(lo, hi)) - E / 9.75
+                    if hm(7, 40) <= t0 <= hm(8, 40):
+                        break
+            else:
+                raise RuntimeError("up head")
+            h["start"] = snap(mid + t0 * H)
+            h["energy"] = round(E, 3)
+            h["end_charge"] = h["start"] + h["energy"] / 6.6 * H
+            d1 = int(rng.integers(*LAG1))
+            h["plug_out"] = int(round(h["end_charge"])) + d1
+            sb = _snap_up(h["plug_out"] + int(rng.integers(*LAG2)))
+            fwd = h["start"] + h["energy"] / 11.0 * H + (sb - h["end_charge"])
+            assert fwd <= mid + hm(11, 45) * H and sb >= mid + hm(12, 25) * H, (d, fwd, sb)
+            eb = round(max(7.2 * (mid + hm(12, 50) * H - fwd) / H, 9.0) + float(rng.uniform(0.0, 3.0)), 3)
+            pb = int(sb + eb / 6.6 * H + float(rng.uniform(1.2, 2.8)) * H)
+            permit = free_pool(d, "kept")
+            add_row(garage="CCN", position=h["position"], start=sb, energy=eb, rate=6.6, plug_out=pb, acct="PERMIT",
+                    permit_no=permit, car_kw=7.2, role="chain_up_b", day=d)
+        # down: a renewed pool car goes on ahead of a kept car on its unit
+        kept = [i for i in north if gen.rows[i]["permit_no"] in pool and gen.rows[i]["permit_no"] not in renewed
+                and gen.rows[i]["role"] == "long_slow"]
+        kept = [kept[j] for j in rng.permutation(len(kept))][:n_down]
+        assert len(kept) == n_down, (d, "kept")
+        for i in kept:
+            b = gen.rows[i]
+            for _ in range(5000):
+                t0 = float(rng.uniform(hm(9, 30), hm(9, 50)))
+                lo = max(8.081 * (hm(12, 17) - t0), 7.2 * (hm(12, 33) - t0))
+                hi = 9.75 * (hm(11, 56) - t0)
+                if hi > lo:
+                    E = float(rng.uniform(lo, hi))
+                    break
+            else:
+                raise RuntimeError("down b")
+            b["start"] = snap(mid + t0 * H)
+            b["energy"] = round(E, 3)
+            b["end_charge"] = b["start"] + b["energy"] / 6.6 * H
+            b["plug_out"] = plug_out_for(b["start"], b["energy"])
+            b["role"] = "long_down"
+            for _ in range(5000):
+                d2 = int(rng.integers(*LAG2))
+                d1 = int(rng.integers(*LAG1))
+                dur = SNAP * int(round(float(rng.uniform(19.8, 23.0)) / 6.6 * H / SNAP))
+                ta = SNAP * int((b["start"] - d2 - d1 - dur) // SNAP)
+                ca = ta + dur
+                ea = round(6.6 * dur / H, 3)
+                fwd_end = ta + ea / 11.0 * H + (b["start"] - ca) + b["energy"] / 7.2 * H
+                if LAG1[0] <= b["start"] - d2 - ca <= LAG1[1] and ta >= mid + hm(6, 10) * H \
+                        and fwd_end <= mid + hm(11, 30) * H:
+                    break
+            else:
+                raise RuntimeError("down a")
+            permit = free_pool(d, "renewed")
+            add_row(garage="CCN", position=b["position"], start=ta, energy=ea, rate=6.6, plug_out=b["start"] - d2,
+                    acct="PERMIT", permit_no=permit, car_kw=7.2, role="chain_down_a", day=d)
+    # the standing rotation on ordinary weekdays, 2024 to 2026
+    special = set(cal)
+    for d in daterange(D0, D1):
+        if d.weekday() >= 5 or d in CITY_HOLIDAYS or d in special or rng.random() >= ORDINARY_P:
+            continue
+        idx = by_day.get(d, [])
+        rows_n = [i for i in idx if gen.rows[i]["garage"] == "CCN"]
+        per_unit = {}
+        for i in rows_n:
+            per_unit.setdefault(gen.rows[i]["position"], []).append(i)
+        mid = lt_date(d)
+        cands = []
+        for posn, ii in per_unit.items():
+            if len(ii) != 1:
+                continue
+            r = gen.rows[ii[0]]
+            if r["role"] != "bg" or r["permit_no"] not in pool:
+                continue
+            if posn in GATEWAY_B_POS and d < GATEWAY_B_END:
+                continue
+            if posn == BACKFED_POS and BACKFEED[0] <= d <= BACKFEED[1]:
+                continue
+            if r["end_charge"] > mid + hm(11, 20) * H:
+                continue
+            cands.append(ii[0])
+        k = min(len(cands), 1 if rng.random() < 0.7 else 2)
+        for j in rng.permutation(len(cands))[:k]:
+            h = gen.rows[cands[j]]
+            h["plug_out"] = int(round(h["end_charge"])) + int(rng.integers(*LAG1))
+            sb = _snap_up(h["plug_out"] + int(rng.integers(*LAG2)))
+            eb = round(float(np.clip(rng.lognormal(math.log(10.0), 0.35), 4.0, 18.0)), 3)
+            pb = int(sb + eb / 6.6 * H + float(rng.uniform(1.0, 4.0)) * H)
+            u = used(d)
+            pick = sorted(p for p in pool if p not in u
+                          and not gen.active("CCN", d)[gen.active("CCN", d)["permit_no"] == p].empty)
+            if not pick:
+                continue
+            permit = pick[int(rng.integers(len(pick)))]
+            kw = float(gen.active("CCN", d).set_index("permit_no").loc[permit, "rating"])
+            add_row(garage="CCN", position=h["position"], start=sb, energy=eb, rate=6.6, plug_out=pb, acct="PERMIT",
+                    permit_no=permit, car_kw=kw, role="chain_b", day=d)

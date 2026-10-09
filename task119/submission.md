@@ -9,7 +9,7 @@
 
 **Place the 2027-28 external review at Stennock University Hospitals NHS Foundation Trust, where a year of review could confirm 27 deaths.**
 
-That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Trust, at 15. Not Lathingbury, which has the most deaths inside the remit but runs no level 3 beds, so every wait was for another trust's bed. Not Ristenholm, where 2 deaths followed a wait beside its own empty staffed bed, or Brackenford, where none did; their other long waits passed with their own units full and admitting no planned patients. Not Prideswick, whose waits beside its own empty staffed beds account for fewer deaths. Not Ellerdyke, Tannerby or Pellowham, which held no level 3 beds in the placement year.
+That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Trust, at 15. Not Lathingbury, which has the most deaths inside the remit but runs no level 3 beds, so every wait was for another trust's bed. Not Ristenholm, whose full unit gave beds to other patients through most of its long waits: each went to a patient transferred from another trust on a bed the network's bed bureau allocated, so only its 2 deaths after a wait beside its own empty staffed bed are its own care. Not Brackenford, whose unit was full at every hour of each of its long waits. Not Prideswick, whose waits beside its own empty staffed beds account for fewer deaths. Not Ellerdyke, Tannerby or Pellowham, which held no level 3 beds in the placement year.
 
 ## 2. Critical Components
 
@@ -24,9 +24,9 @@ That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Tr
 2. Linked `date_of_death` from `apc_episodes_referred_patients_2022-2026.parquet` within 30 days of the decision: 213 deaths, Lathingbury the most at 56.
 3. Read each referring trust's own level 3 unit from `acc_unit_register.csv` on the decision date: Lathingbury, Tannerby, Ellerdyke and Pellowham held none, so none of their deaths is their own care.
 4. Rebuilt each unit's census minute by minute from `acc_unit_stays_202306_202606.parquet` against `beds_open` in `acc_bed_return_0800_202306_202606.csv`: Prideswick 15 and Ristenholm 2 deaths followed waits beside the trust's own empty staffed bed, and every other wait passed with the own unit full.
-5. Read the own unit's admissions during each full-unit wait: through every Stennock wait its unit admitted planned local surgical patients (`admission_type` 04) from its theatres, which the methodology note (section 4) makes Stennock's own care: 27 deaths.
+5. Read the own unit's admissions during each full-unit wait: Ristenholm, Brackenford and Prideswick took only patients referred by other trusts, whose beds the network bed bureau allocated (`interhospital_transfer_audit_202307_202606.csv`, `bed_confirmed_at` in the field guide), while through every Stennock wait its unit admitted planned local surgical patients (`admission_type` 04) from its theatres, which the methodology note (section 4) makes Stennock's own care: 27 deaths.
 6. Ranked the deaths in each trust's own care: Stennock 27, Prideswick 15, gap 12.
-7. Repeated steps 1 to 5 from July 2023, conforming the migrated CCRS rows (times from UTC per `ccrs_migration_export_specification_rel2.3.pdf`, decision level from `ccrs_referral_levels_202307_202604.csv`, verified keys from `pas_patient_key_links_2023-2026.csv`, each patient once, contiguous bed rows as one stay, unit levels as registered on the date): 2,163 patients, 629 deaths, 148 confirmable.
+7. Repeated steps 1 to 5 from July 2023 with waits in elapsed time across the March clock changes, conforming the migrated CCRS rows (times from UTC per `ccrs_migration_export_specification_rel2.3.pdf`, decision level from `ccrs_referral_levels_202307_202604.csv`, verified keys from `pas_patient_key_links_2023-2026.csv`, each patient once, contiguous bed rows as one stay, transfers by the referring trust, unit levels as registered on the date): 2,163 patients, 629 deaths, 148 confirmable.
 8. Recommendation: place the review at Stennock University Hospitals NHS Foundation Trust.
 
 ## 4. Deliverable Answers

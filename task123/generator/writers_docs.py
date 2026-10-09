@@ -257,12 +257,11 @@ Memo lines are part of the line above them and are not added to the total.
 | charity_no | The organisation's registration number with Charities Services. |
 | organisation | The organisation's name as the Trust holds it. |
 | sector, district | The grants team's classification. |
-| balance_date | The organisation's financial year end. |
 | start_date, end_date | Start of the grant and end of its current term. |
 | annual_amount | Annual amount for the current term. |
 | status | Active or Ended. |
 
-Variations lists each renewal with its effective date and the annual amount before and after. Steady Ground offers lists every offer made in a round, with the month its first instalment pays for and the monthly instalment; the twelfth instalment carries any balance.
+Variations lists each change to a grant's annual amount, with its effective date, the annual amount before and after, and a note where the grants team added one. Steady Ground offers lists every offer made in a round, with the month its first instalment pays for and the monthly instalment; the twelfth instalment carries any balance.
 
 ## charities_register_returns_extract (register match)
 
@@ -357,7 +356,7 @@ This folder is a constructed case. The Ashworth Pascoe Trust, its Steady Ground 
 | File | What it is | Coverage | How it was produced |
 |---|---|---|---|
 | portal_return_lines_2018q3_2026q2.csv | Grantee portal export of quarterly financial returns ({rows_info['spine']:,} rows) | Every version of every return for quarters ending 30 September 2018 to 30 June 2026, all statuses, with submission and acceptance times | Portal reporting export, 7 October 2026, unedited |
-| grants_register_20261007.xlsx | Grants register: grants, renewals and Steady Ground offers | Grants current at any time since 1 July 2018, as at 7 October 2026 | Warehouse snapshot, 7 October 2026 |
+| grants_register_20261007.xlsx | Grants register: grants, variations and Steady Ground offers | Grants current at any time since 1 July 2018, as at 7 October 2026 | Warehouse snapshot, 7 October 2026 |
 | charities_register_returns_extract_20261007.csv | Register match: annual returns for organisations in the Trust's book ({rows_info['register']:,} rows) | Returns received by Charities Services up to 7 October 2026, for financial years ending on or after 1 July 2018, from the first year each organisation filed with the Trust | Warehouse match on charity number, 7 October 2026 |
 | SGF_screen_run_2021-03.xlsx to SGF_screen_run_2026-03.xlsx | Ledgerwood Analytics' screen packs for the six March rounds | One pack per round | Copied from the grants team folder as issued |
 | SGF_round_rules_rev2026-06.pdf | Steady Ground Fund round rules | As amended 16 June 2026 | Copy of the trustees' approved rules |

@@ -88,10 +88,15 @@ def build_restatements(rng, df: pd.DataFrame):
         kinds[i] = "v2" if j % 7 not in (3, 5) else ("v3" if j % 7 == 3 else "v2only")
     for i in v.index:
         kinds[i] = "V"
+    # the 2024 back-test sessions Curbline restated in March 2025: version 2 accepted, after the 2024-based forecast
+    for i in df.index[df["role"] == "Q"]:
+        kinds[i] = "Q"
     for i, kind in kinds.items():
         E = float(df.at[i, "energy"])
         if kind == "V":
             vs = [(1, round(E - 0.22, 3), False), (2, E, True), (3, round(E + 0.22, 3), False)]
+        elif kind == "Q":
+            vs = [(1, E, False), (2, round(E + 0.22 * float(df.at[i, "q_sign"]), 3), True)]
         elif kind == "v2":
             a = round(float(rng.uniform(0.15, 0.55)), 3)
             b = round(float(rng.uniform(0.2, 0.7)), 3)
@@ -133,6 +138,8 @@ def build_ledger(rng, df: pd.DataFrame, pos: pd.DataFrame, read_dec2025: int):
     for i, g in vers.groupby("row"):
         s0 = df.at[i, "settled_on"]
         recv2 = s0 + timedelta(days=int(rng.integers(18, 34)))
+        if g["kind"].iloc[0] == "Q":
+            recv2 = date(2025, 3, 2) + timedelta(days=int(rng.integers(0, 19)))
         recv3 = recv2 + timedelta(days=int(rng.integers(9, 26)))
         for _, r in g.sort_values("version").iterrows():
             ver = int(r["version"])

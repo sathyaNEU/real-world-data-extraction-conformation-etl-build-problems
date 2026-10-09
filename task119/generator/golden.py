@@ -409,12 +409,12 @@ def confirmable(x, construction):
 
 
 def asks(D, handle=None, over=None, construction="decisive", per_referral_deaths=None, years=(1, 2, 3)):
-    """3a, 3b, 3c per trust (and total) over the given years. per_referral_deaths: count deaths per
-    referral row (HZ2 mishandled) instead of per patient; defaults to HZ2 not handled. DV7 mishandled counts
-    referral rows as patients (parallel-run copies dropped where HZ2 is handled)."""
+    """3a, 3b, 3c per trust (and total) over the given years. DV7 mishandled counts referral rows instead of
+    patients in every column, parallel-run copies dropped where HZ2 is handled; HZ2 mishandled counts deaths per
+    referral row, copies included, while patients are still counted as people. per_referral_deaths overrides."""
     handle = set(DEVICES if handle is None else handle)
     if per_referral_deaths is None:
-        per_referral_deaths = "HZ2" not in handle
+        per_referral_deaths = not {"HZ2", "DV7"} <= handle
     cl = classified(D, handle, over)
     if over == "DV7":
         n = Counter((x["trust"], x["person"]) for x in cl if x["id"] not in D.copies)
@@ -431,7 +431,9 @@ def asks(D, handle=None, over=None, construction="decisive", per_referral_deaths
         elif not ("HZ2" in handle and x["id"] in D.copies):
             a3[t].add(x["id"])
         tag = x["id"] if per_referral_deaths else x["person"]
-        if x["died"]:
+        if per_referral_deaths and "HZ2" in handle and x["id"] in D.copies:
+            tag = None
+        if x["died"] and tag is not None:
             b3[t].add(tag)
             if confirmable(x, construction):
                 c3[t].add(tag)
@@ -563,14 +565,31 @@ def figures(D):
     assert stn_waits_alloc == y3[call][0] and all(x["dta"].weekday() < 5 for x in cl if x["trust"] == call)
     assert not any(x["alloc"] for x in cl if x["trust"] != call and not x["empty"])
     assert R[3]["RIS"] == held["RIS"]["empty"] + held["RIS"]["bureau"] and R[3]["RIS"] > R[3][call]
+    # the paper's table splits these trusts' deaths into what held the waits: the parts tie to the row
+    for t in ("RIS", "PRW"):
+        assert sum(held[t][k] for k in ("empty", "alloc", "bureau", "capacity")) == y3[t][1]
+    # every bed the full unit gave away during a Ristenholm wait went to a patient referred by a trust that held
+    # no level 3 beds on that date (the paper says so)
+    rows = sorted((u, a, rid) for u, k, a, b, typ, rid in D.merged if u == "RIS-ACC")
+    ref_by = {r["id"]: r for r in D.refs}
+    for x in cl:
+        if x["trust"] != "RIS" or not x["alloc_any"] or x["empty"]:
+            continue
+        inside = [rid for u, a, rid in rows if x["a"] < a < x["b"]]
+        assert inside and all(D.is_transfer_op("RIS-ACC", rid) and
+                              not D.own_units(ref_by[rid]["trust"], ref_by[rid]["dta"].date()) for rid in inside)
     assert all(x["dta"].hour >= 18 and not x["empty"] for x in cl if x["trust"] == "BRK")
     ret = D.ret[(D.ret.unit_code == "BRK-ACC") & (D.ret.return_date >= "2025-07-01") &
                 (D.ret.return_date <= "2026-06-30")]
     assert (ret.beds_occupied_0800 < ret.beds_open).sum() * 2 > len(ret)
+    # "at weekends no Stennock referral waited more than four hours": every level, open waits included
     for w in waits(D):
-        if (w["trust"] == call and w["level"] == 3 and w["end"] is not None and w["dta"].weekday() >= 5
-                and year_of(w["dta"].date()) == 3):
-            assert w["end"] - w["dta"] <= dt.timedelta(hours=4)
+        if w["trust"] == call and w["dta"].weekday() >= 5 and year_of(w["dta"].date()) == 3:
+            assert w["end"] is not None and w["end"] - w["dta"] <= dt.timedelta(hours=4)
+    # "the most confirmable deaths in each four-quarter year", with Prideswick second each year
+    for y in (1, 2, 3):
+        yr = sorted(CODES, key=lambda t: -by_year[y][t][2])
+        assert yr[0] == call and yr[1] == run and by_year[y][call][2] > by_year[y][run][2]
     # chart order: confirmable deaths, then deaths inside the remit, then name
     order = sorted(CODES, key=lambda t: (-y3[t][2], -y3[t][1], SHORT[t]))
     assert order[0] == call and order[1] == run
@@ -725,8 +744,8 @@ def write_xlsx(fx, path):
             "an empty staffed bed or assigned a bed to a planned surgical admission from the trust's own theatres "
             "(sections 3 and 4). Beds the network's bed bureau allocated to patients transferred from other trusts "
             "are not the trust's own decision.",
-            "Waits are elapsed time, so the two March nights when the clocks went forward are measured an hour "
-            "shorter than the clock readings. A patient with two long waits at a trust is one patient.",
+            "Waits are elapsed time: a wait across a night when the clocks went forward is an hour shorter than "
+            "its clock readings. A patient with two long waits at a trust is one patient.",
             "Before 2 April 2024 the record is migrated CCRS data: decision level from the CCRS level entries, "
             "CCRS times converted from UTC, temporary patient keys resolved through the key links, parallel-run "
             "copies counted once, transfers identified by the referring trust (the CCRS-era feed coded every "
@@ -920,11 +939,12 @@ def write_docx(fx, path, png):
     hdr = ["Trust", "Deaths inside the remit", "Confirmable in own care", "What held the waits"]
     reason = {
         "STN": "Own unit admitting planned surgical patients from Stennock's theatres throughout each wait",
-        "PRW": "{:,} deaths after waits beside its own empty staffed beds; {:,} after waits with its unit full"
-               .format(held["PRW"]["empty"], held["PRW"]["capacity"]),
-        "RIS": "{:,} deaths after waits through which its full unit took patients transferred from other trusts on "
-               "beds the network's bed bureau allocated; {:,} with its unit full and no admission; {:,} beside an "
-               "empty staffed bed".format(held["RIS"]["bureau"], held["RIS"]["capacity"], held["RIS"]["empty"]),
+        "PRW": "{:,} after waits beside its own empty staffed beds; {:,} after waits through which its full unit "
+               "took transfers the bed bureau placed; {:,} with the unit full and no admission".format(
+                   held["PRW"]["empty"], held["PRW"]["bureau"], held["PRW"]["capacity"]),
+        "RIS": "{:,} after waits through which its full unit took transfers the bed bureau placed; {:,} with the "
+               "unit full and no admission; {:,} beside an empty staffed bed".format(
+                   held["RIS"]["bureau"], held["RIS"]["capacity"], held["RIS"]["empty"]),
         "LAT": "No level 3 beds: every wait was for another trust's bed",
         "BRK": "Empty beds at 08:00 on most mornings, but full at every hour of each long wait, all of which began "
                "in the evening",
@@ -972,8 +992,8 @@ def write_docx(fx, path, png):
          "staffed beds. That is a smaller yield than Stennock's, {:,} deaths fewer, and the Board can raise the "
          "weekend rule with Prideswick through the network without a twelve-month review."
          .format(rv, gap), after=6)
-    para("Ristenholm's unit gave beds to other patients during most of its own patients' long waits ({:,} of its "
-         "{:,} deaths in the placement year), which can read as Ristenholm putting other patients first. Every one of "
+    para("Ristenholm's unit gave beds to other patients during the waits behind {:,} of its {:,} deaths in the "
+         "placement year, which can read as Ristenholm putting other patients first. Every one of "
          "those beds went to a patient transferred from a trust without level 3 beds, and the network's bed bureau "
          "allocates the bed for each transfer between trusts, so those waits are the network's capacity rather than "
          "Ristenholm's own decisions. Brackenford's morning returns show empty beds most days, which is what the "

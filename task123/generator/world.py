@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from common import (SEED, NQ, SPINE_FIRST, LAST_Q, MARCH_CENSUSES, SEPT_CENSUS, EXTRACT_DATE,
-                    qend, fyq, fy_q4)
+                    qend, fyq, fy_q4, fiscal, fpos, fend, fstart, is_final)
 from roster import Q
 
 CENSUS_DATES = MARCH_CENSUSES + [SEPT_CENSUS]
@@ -121,6 +121,13 @@ D2_PLAN = {2018: dt.date(2019, 2, 14), 2019: dt.date(2020, 2, 18), 2020: dt.date
 
 def received_date(o, q4, r):
     fye = qend(q4)
+    cc = getattr(o, "cal_change", None)
+    if cc:
+        # a balance-date mover: its June years file like any 30 June grantee's; the nine-month year
+        # to 31 March 2026 is due on 30 September 2026 and had not reached the register by the extract
+        if q4 == cc["short_end"]:
+            return None
+        return dt.date(fye.year, 10, 6) + dt.timedelta(days=int(r.integers(0, 50)))
     if o.bal == 12:
         y = fye.year + 1
         if o.key == "D1":
@@ -154,7 +161,7 @@ def received_date(o, q4, r):
 def first_fy_q4(o):
     if o.first_q <= SPINE_FIRST:
         return None
-    return fy_q4(o.first_q, o.bal)
+    return fend(o, o.first_q)
 
 
 def build_annual(orgs, tot):
@@ -163,13 +170,13 @@ def build_annual(orgs, tot):
         r = rng_for("annual", o.key)
         f4 = first_fy_q4(o)
         for q4 in range(3, NQ):
-            if fyq(q4, o.bal) != 4 or qend(q4).year < 2018:
+            if not is_final(o, q4) or qend(q4).year < 2018:
                 continue
             if f4 is not None and q4 < f4:
                 continue
             if q4 > o.last_q + 2:
                 continue
-            total = int(tot[o.key][q4 - 3:q4 + 1].sum())
+            total = int(tot[o.key][fstart(o, q4):q4 + 1].sum())
             rec = received_date(o, q4, r)
             out[(o.key, q4)] = AnnualReturn(o.key, q4, rec, total)
     octs = sorted(o.key for o in orgs if o.bal == 3 and o.sept_status == "oct")
@@ -183,6 +190,10 @@ def build_annual(orgs, tot):
         if o.bal == 6 and (o.key, Q(2026, 6)) in out:
             out[(o.key, Q(2026, 6))].eventual = dt.date(2026, 10, 21) + dt.timedelta(
                 days=int(r.integers(0, 70)))
+        cc = getattr(o, "cal_change", None)
+        if cc and (o.key, cc["short_end"]) in out:
+            out[(o.key, cc["short_end"])].eventual = dt.date(2026, 10, 14) + dt.timedelta(
+                days=int(r.integers(0, 40)))
     return out
 
 
@@ -196,14 +207,12 @@ def org_refs(o):
 
 
 def ytd_true(tot_o, o, q):
-    k = fyq(q, o.bal)
-    return int(tot_o[q - k + 1:q + 1].sum())
+    return int(tot_o[fstart(o, q):q + 1].sum())
 
 
 def original_dates(o, ref, q, r):
     qe = qend(q)
-    k = fyq(q, o.bal)
-    lag = int(r.integers(26, 52)) if k == 4 else int(r.integers(16, 44))
+    lag = int(r.integers(26, 52)) if is_final(o, q) else int(r.integers(16, 44))
     sub = business(qe + dt.timedelta(days=lag))
     acc = ok_day(sub + dt.timedelta(days=int(r.integers(1, 9))))
     return (at(sub, int(r.integers(8, 18)), int(r.integers(0, 60))),
@@ -248,19 +257,22 @@ def build_versions(orgs, tot, annual, plan, q4p):
         r = rng_for("filing", o.key)
         for kind, ref, f, l in org_refs(o):
             for q in range(max(f, SPINE_FIRST), min(l, LAST_Q) + 1):
-                versions.extend(file_quarter(o, kind, ref, q, tot[o.key], annual, plan, q4p, r))
+                vs = file_quarter(o, kind, ref, q, tot[o.key], annual, plan, q4p, r)
+                if getattr(o, "no_june26", False) and q == LAST_Q:
+                    continue        # not filed by the extract (the draws above still run, so nothing else moves)
+                versions.extend(vs)
     return versions
 
 
 def file_quarter(o, rkind, ref, q, tot_o, annual, plan, q4p, r):
     out = []
-    k = fyq(q, o.bal)
+    final = is_final(o, q)
     true = ytd_true(tot_o, o, q)
     s_dt, a_dt = original_dates(o, ref, q, r)
     spec = plan.get((o.key, q), {})
     v1 = true
     kind1 = "original"
-    if k == 4:
+    if final:
         kind1 = "mgmt"
         p = q4p.get((o.key, q))
         if p is not None and not p["exact"]:
@@ -272,7 +284,7 @@ def file_quarter(o, rkind, ref, q, tot_o, annual, plan, q4p, r):
                     err_line=spec.get("err_line", "other") if e1 else None)
     out.append(first)
     events = []
-    if k == 4:
+    if final:
         p = q4p.get((o.key, q))
         if p is not None and p["trueup"] is not None and v1 != true:
             events.append({"date": p["trueup"], "kind": "trueup", "refs": "both", "ytd": true})

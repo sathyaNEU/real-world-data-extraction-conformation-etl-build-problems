@@ -57,8 +57,8 @@ def write_agreement(path):
           Spacer(1, 4),
           Pp("Recitals", h2),
           Pp("A. The Club publishes the official members' app, Monteralto+, to its members."),
-          Pp("B. In the 2025/26 season the Store gave members 10% off licensed kits on its website where the member "
-             "had entered their Club member number in their Store loyalty profile."),
+          Pp("B. In the 2025/26 season members took 10% off licensed kits on the Store's website by entering at "
+             "checkout the code printed on their membership card: SOCIO followed by their seven-digit member number."),
           Pp("C. From the 2026/27 season the members' price is offered through the app and the website discount "
              "ends on 30 August 2026."),
           Pp("Schedule 2: Shop tab", h2),
@@ -250,34 +250,34 @@ The club's monthly token reports as received with its invoices, unedited. member
 One row per account enrolled in the loyalty scheme. club_member_no is the member number the customer entered on
 the profile.
 
+## promo_redemptions
+
+One row per promotion code redeemed at checkout in the 2025/26 season. promo_code is the code as entered,
+upper-cased; account_id is empty for a guest checkout.
+
 ## address_book_history
 
-Every change to a saved delivery address since the address was created. changed_at is UTC. is_default marks the
-address used to prefill checkout. address_fp is computed as in basket_sessions.
+Every change to a saved delivery address since the address was created. is_default marks the address used to
+prefill checkout. address_fp is computed as in basket_sessions.
 
 ## checkout_flags_export
 
 Export of the feature-flag service for one flag. assignments is the cohort each account is in at extract;
-assignment_moves lists accounts moved between cohorts, with the time of the move. A session's cohort is the latest
-assignment at or before the session. The flag applies to signed-in sessions.
+assignment_moves lists accounts moved between cohorts, with the time of the move.
 
 ## saved_cards and saved_card_events
 
-saved_cards is a snapshot of every saved card at extract, with is_default as at extract. saved_card_events is the
-change history over the extract window; previous_default_card_id is filled on set_default events.
+saved_cards lists every saved card with its issuer, BIN and fingerprint; saved_card_events lists changes to saved
+cards.
 
 ## tagus_3ds_log
 
-Authentication messages exchanged with the payment provider for card payments. attempt_ref is one payment
-attempt. three_ds_status is the status returned by the provider; card_fp is the provider's card fingerprint, the
-same fingerprint saved_cards carries.
+Authentication messages exchanged with the payment provider for card payments. three_ds_status is the status
+returned by the provider; card_fp is the provider's card fingerprint, the same fingerprint saved_cards carries.
 
 ## finance_order_export
 
-Daily export from the finance system, one row per shipment; order_total_eur repeats the order total on each
-shipment row of the order. When an order is exported again, the latest export of the order is the one of record.
-Amounts are net of VAT on rows exported from the 10 August 2026 finance release; rows exported before it carry
-amounts including VAT at 23%.
+Daily export from the finance system. order_id is the storefront order; order_total_eur is in euros.
 
 ## catalogue_status_history
 

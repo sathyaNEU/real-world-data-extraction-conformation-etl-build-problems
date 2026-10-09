@@ -1,0 +1,248 @@
+{
+ "task": "task121",
+ "domain": "Product Analytics",
+ "subdomain": "onboarding-activation",
+ "objective": "Root-Cause Analysis",
+ "as_of": "2026-09-28",
+ "deliverables": [
+  "q4_sprint_call.html",
+  "checkout_fall_workings.xlsx"
+ ],
+ "distractor_files": [
+  "lusolog_cp7_label_notice_2026-07.pdf",
+  "stock_availability_2026-09-25.csv"
+ ],
+ "input_gates": {
+  "files": 24,
+  "formats": [
+   "csv",
+   "docx",
+   "json",
+   "md",
+   "parquet",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file_rows": 214457,
+  "largest_file": "basket_sessions_2026-07-27_2026-09-27.parquet"
+ },
+ "files": [
+  {
+   "path": "address_book_history_2026-09-28.csv",
+   "format": "csv",
+   "bytes": 1976236,
+   "rows": 22306,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "basket_sessions_2026-07-27_2026-09-27.parquet",
+   "format": "parquet",
+   "bytes": 5227787,
+   "rows": 214457,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "catalogue_status_history.csv",
+   "format": "csv",
+   "bytes": 3726,
+   "rows": 51,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cdm_partnership_agreement_2026-27_extract.pdf",
+   "format": "pdf",
+   "bytes": 3291,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cdm_token_billing_2026-08.csv",
+   "format": "csv",
+   "bytes": 22897,
+   "rows": 381,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cdm_token_billing_2026-09.csv",
+   "format": "csv",
+   "bytes": 1148017,
+   "rows": 19133,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "checkout_flags_export_2026-09-28.json",
+   "format": "json",
+   "bytes": 925853,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "closeout_festival_margens_app_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 7308,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "closeout_kaiju_tuga_link_page_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 7167,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "edge_bot_verdicts_2026-07-27_2026-09-27.csv",
+   "format": "csv",
+   "bytes": 204088,
+   "rows": 4081,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "finance_order_export_2026-07-27_2026-09-27.csv",
+   "format": "csv",
+   "bytes": 551049,
+   "rows": 8101,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "inc-0914-checkout-conversion_export.txt",
+   "format": "txt",
+   "bytes": 2333,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "loyalty_profiles_2026-09-28.csv",
+   "format": "csv",
+   "bytes": 394413,
+   "rows": 10246,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "lusolog_cp7_label_notice_2026-07.pdf",
+   "format": "pdf",
+   "bytes": 2479,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "q4_sprint_shortlist.docx",
+   "format": "docx",
+   "bytes": 36366,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "release_log_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 13594,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "saved_card_events_2026-07-27_2026-09-27.csv",
+   "format": "csv",
+   "bytes": 81326,
+   "rows": 1445,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "saved_cards_2026-09-28.csv",
+   "format": "csv",
+   "bytes": 2182291,
+   "rows": 21212,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "stock_availability_2026-09-25.csv",
+   "format": "csv",
+   "bytes": 3669,
+   "rows": 137,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "tagus_3ds_log_2026-08-31_2026-09-27.csv",
+   "format": "csv",
+   "bytes": 608845,
+   "rows": 7420,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "tagus_3ds_report_2026-09.pdf",
+   "format": "pdf",
+   "bytes": 3136,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "warehouse_extract_register.csv",
+   "format": "csv",
+   "bytes": 2547,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "warehouse_field_reference.md",
+   "format": "md",
+   "bytes": 3724,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "weekly_trading_dashboard_2026-w39.xlsx",
+   "format": "xlsx",
+   "bytes": 8309,
+   "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  }
+ ]
+}

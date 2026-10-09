@@ -218,6 +218,9 @@ def write_work_orders(path):
         ["WO-26-0455", "2026-06-15", "2026-06-16", "Main Library", "Roof", "Clear roof drains", "Closed", "Building"],
         ["WO-26-0503", "2026-07-06", "2026-07-06", "Civic Center North Deck", "Exhaust fan EF-1",
          "Noisy bearing. Lubricated, monitor", "Closed", "HVAC"],
+        ["WO-26-0529", "2026-07-21", "2026-07-21", "Civic Center North Deck", "EVSE N-07",
+         "Connector latch sticking. County fleet attendant reports it on swaps between pool cars. Replaced latch, "
+         "tested OK", "Closed", "Electrical"],
         ["WO-26-0560", "2026-08-03", "2026-08-04", "City Hall", "Chiller 1", "Condenser tube cleaning", "Closed",
          "Contractor"],
         ["WO-26-0612", "2026-08-25", "2026-08-25", "Civic Center South Deck", "Signage",
@@ -356,6 +359,27 @@ def write_log(w, path):
     ws.set_column(4, 5, 13)
     ws.set_column(6, 7, 8)
     ws.freeze_panes(4, 0)
+    wc = wb.add_worksheet("Corrections")
+    wc.write(0, 0, "Corrected reads", bold)
+    wc.write(1, 0, "A corrected reading replaces the reading logged for that date on the Reads sheet.")
+    cheads = ["Read date", "Meter", "Panel", "kWh as logged", "kWh corrected", "Corrected on", "By", "Note"]
+    for j, h in enumerate(cheads):
+        wc.write(3, j, h, hdr)
+    for i, r in enumerate(w.fixes.itertuples(index=False), start=4):
+        wc.write_datetime(i, 0, datetime(r.read_date.year, r.read_date.month, r.read_date.day), datef)
+        wc.write_string(i, 1, r.meter)
+        wc.write_string(i, 2, r.panel)
+        wc.write_number(i, 3, float(r.kwh_logged), num1)
+        wc.write_number(i, 4, float(r.kwh_corrected), num1)
+        wc.write_datetime(i, 5, datetime(r.corrected_on.year, r.corrected_on.month, r.corrected_on.day), datef)
+        wc.write_string(i, 6, r.by)
+        wc.write_string(i, 7, r.note)
+    wc.set_column(0, 0, 11)
+    wc.set_column(1, 2, 9)
+    wc.set_column(3, 5, 13)
+    wc.set_column(6, 6, 6)
+    wc.set_column(7, 7, 26)
+    wc.freeze_panes(4, 0)
     wb.close()
 
 

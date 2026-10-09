@@ -83,13 +83,15 @@ def main():
         key = {"V1 overdue only": "V1", "V2 December balance dates": "V2", "V3 Q4 amended after census": "V3",
                "V4 current window only": "V4", "V5 unfiled left unscored": "V5",
                "T-strict census day exclusive": "T-strict", "T-extract register at 7 Oct": "T-extract",
-               "fallback register Q4 else management": "fallback"}.get(k, k)
+               "fallback register Q4 else management": "fallback",
+               "cutoff a week after the census": "a week after"}.get(k, k)
         assert v["rivals"][key]["rows"] == m["rows"], (k, m, v["rivals"][key])
         n += 1
-    for k in ("R0", "R1", "R2", "R3", "R4"):
+    for k in ("R0", "R1", "R2", "R3", "R4", "R5", "R6"):
         assert v["september"]["rungs"][k] == g["rungs"][k]["rate_hc"], k
         n += 1
-    cell_names = {"per return, as held, step-back": "dual twice", "per organisation, latest, step-back": "latest",
+    cell_names = {"per return, as held, no step-back": "dual twice, no step-back",
+                  "per return, as held, step-back": "dual twice", "per organisation, latest, step-back": "latest",
                   "per return, latest, step-back": "dual twice, latest",
                   "30-June grantees not stepped back": "30 June unstepped",
                   "only 30-June grantees stepped back": "only 30 June stepped",
@@ -98,7 +100,19 @@ def main():
                   "census day exclusive": "census exclusive", "4.1 read strictly (after, not on)": "4.1 strict",
                   "4.1 against the census a year before": "4.1 a year before",
                   "R4, per return, as held": "R4 dual twice", "R4, latest versions": "R4 latest",
-                  "register fallback, no step-back": "fallback", "overdue only": "overdue"}
+                  "register fallback, no step-back": "fallback", "overdue only": "overdue",
+                  "step-back on each return's own year, without rule 4.1": "step-back without rule 4.1",
+                  "one balance date, per return": "one balance date, dual twice",
+                  "one balance date, latest versions": "one balance date, latest",
+                  "one balance date, census day exclusive": "one balance date, census exclusive",
+                  "one balance date, register at the extract": "one balance date, register at extract",
+                  "scope from the register's dates, census day exclusive": "dates scope, census exclusive",
+                  "scope from the register's dates, register at the extract": "dates scope, register at extract",
+                  "scope from the register's dates, per return": "dates scope, dual twice",
+                  "scope from the register's dates, latest versions": "dates scope, latest",
+                  "scope from the register's dates, without rule 4.1": "dates scope, no rule 4.1",
+                  "data a week after the census": "a week after the census"}
+    assert set(cell_names) == set(g["cells"]), sorted(set(g["cells"]) ^ set(cell_names))
     for gk, vk in cell_names.items():
         assert v["september"]["cells"][vk] == g["cells"][gk], (gk, v["september"]["cells"][vk], g["cells"][gk])
         n += 1

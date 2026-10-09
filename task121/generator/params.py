@@ -79,3 +79,14 @@ N_COHORTS = 12
 BOT_SCRAPE_TOKENS = 14
 BOT_SCRAPE_SESSIONS = 304
 BOT_STUFF_ACCOUNTS = 380
+
+# where a member's link to a store account is stored: the loyalty profile's member number (a field the
+# March 2026 re-platform added) or last season's members' website code, SOCIO plus the seven-digit member
+# number, redeemed on the account. Drawn on a stream of its own so the rest of the world is unchanged.
+LINK_SEED = SEED + 3000
+PROFILE_KEEP = {"MEMBER": 0.24, "OTHER": 0.45}
+SEASON_START = dt.datetime(2025, 7, 1)
+SEASON_END = dt.datetime(2026, 6, 30, 23, 59)
+REVERT_SEED = SEED + 4000
+REVERT_SHARE = 0.36
+REVERT_AT = dt.datetime(2026, 9, 16, 9, 30)

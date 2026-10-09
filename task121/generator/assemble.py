@@ -15,7 +15,7 @@ FMT = "%Y-%m-%d %H:%M:%S"
 
 
 def empty_knobs():
-    return {"remove": set(), "scale": {}, "flip": {}, "extra": {}}
+    return {"remove": set(), "scale": {}, "flip": {}, "extra": {}, "oscale": {}}
 
 
 def _ts(x):
@@ -50,6 +50,7 @@ def net_amounts(T, K):
     for i in np.flatnonzero(sk.order.to_numpy()):
         key = W.aov_key(sk.seg[i], sk.klass[i], sk.mixed[i])
         f = sc.get(key, 1.0) if key else 1.0
+        f *= K["oscale"].get(int(i), 1.0)
         amt[i] = round(float(sk.amount_base[i]) * f, 2)
     return amt
 
@@ -136,7 +137,10 @@ def assemble(T, K):
     ch_h["valid_from"] = _ts(ch_h.valid_from)
     ch_h = ch_h[["sku", "product_name", "category", "status", "valid_from"]].sort_values(
         ["sku", "valid_from"]).reset_index(drop=True)
+    promo = T["promo"].copy()
+    promo["redeemed_at"] = _ts(promo.redeemed_at)
     return {
+        "promo": promo,
         "sessions": sessions_table(T, K),
         "edge": edge,
         "tokens_aug": tok(aug),

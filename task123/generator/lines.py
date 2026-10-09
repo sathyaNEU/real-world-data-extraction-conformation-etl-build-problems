@@ -5,7 +5,20 @@ import datetime as dt
 
 import numpy as np
 
-from common import NQ, FORM_CHANGE_Q, fyq, pay_date, month_add, quarter_of_date
+from common import NQ, FORM_CHANGE_Q, fyq, pay_date, month_add, quarter_of_date, fstart
+
+# Government co-funding (hardening loop 2; its timing became K1's primary device in hardening loop 3): from
+# the instalment for January 2025 to the instalment for March 2026 the Trust paid central government's
+# co-funding to a set of grantees with their operating grant instalments, passing each quarter's sum on
+# with the first instalment of the quarter; the government cut ended it with March 2026.
+COFUND_FIRST = (2025, 1)
+COFUND_LAST = (2026, 3)
+COFUND_MUST = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "A5", "A6")
+# the offered grantees' monthly sums, set by a scan over NZ$1,200 to NZ$3,600 a month so that no combination of
+# mishandlings on a K1 or K2 figure lands within NZ$500 of the answer (hardening loop 3, with the co-funding
+# passed on quarterly in advance from January 2025; nearest composed miss per offeree NZ$898 or more)
+COFUND_SET = {"F1": 2400, "F2": 3200, "F3": 1200, "F4": 1900, "F5": 2000, "F6": 1700, "F7": 2100,
+              "A5": 1900, "A6": 1800}
 from world import rng_for
 
 RUN_START = dt.date(2018, 7, 1)
@@ -51,6 +64,42 @@ def grant_terms(o):
     return terms
 
 
+def cofunded_month(y, m):
+    return COFUND_FIRST <= (y, m) <= COFUND_LAST
+
+
+def cofund_paid_with(o, y, m):
+    """The co-funding carried by the instalment for month (y, m). The Ministry paid the Trust each quarter's
+    co-funding in advance, and the Trust passed it on with the first operating instalment of the quarter
+    (October, January, April, July): three months' co-funding on that instalment, none on the other two
+    (hardening loop 3; until then a twelfth of the annual sum rode on every instalment)."""
+    if not o.cofund or not cofunded_month(y, m) or m not in (1, 4, 7, 10):
+        return 0
+    return 3 * o.cofund
+
+
+def in_gap(o, y, m):
+    """True when the instalment for month (y, m) falls in a lapse between two terms of the operating grant."""
+    d = dt.date(y, m, 1)
+    return any(end < d < restart for end, restart, _ in o.gaps)
+
+
+def assign_cofunding(orgs, terms_by):
+    """Which grantees carried the co-funding, and the monthly sum the co-funding agreement set for each
+    (NZ$1,200 to NZ$3,200). The nine offered grantees are among them; the twin pair and the balance-date
+    movers are not."""
+    r = rng_for("cofund")
+    pool = sorted([o for o in orgs if o.role not in ("exit", "young", "bal_change", "twin_a", "twin_b",
+                                                     "entrant_sept", "gap") and o.key not in COFUND_MUST
+                   and o.og_start <= dt.date(2024, 10, 1) and o.og_end >= dt.date(2026, 3, 31)],
+                  key=lambda o: o.key)
+    pick = set(COFUND_MUST) | {pool[int(j)].key for j in r.permutation(len(pool))[:27]}
+    for o in sorted(orgs, key=lambda o: o.key):
+        if o.key not in pick:
+            continue
+        o.cofund = COFUND_SET.get(o.key) or (2400 if o.income > 1_000_000 else 1600)
+
+
 def months(start, last):
     y, m = start.year, start.month
     while (y, m) <= (last.year, last.month):
@@ -74,13 +123,17 @@ def build_payments(orgs, corpus_offers, reissues):
         terms_by["TA"] = [list(t) for t in terms_by["TB"]]
     pg_level = {}
     pays = []
+    assign_cofunding(orgs, terms_by)
     for o in sorted(orgs, key=lambda o: o.key):
         terms = terms_by[o.key]
         for y, m in months(o.og_start, o.og_end):
+            if in_gap(o, y, m):
+                continue                # no term in force: nothing is paid for the month
             py, pm = month_add(y, m, -1)
+            co = cofund_paid_with(o, y, m)
             pays.append(dict(org=o.key, ref=o.og_ref, prog="OG", inst_for=(y, m),
-                             value=pay_date(py, pm), amount=level_at(terms, y, m) // 12,
-                             status="paid"))
+                             value=pay_date(py, pm), amount=level_at(terms, y, m) // 12 + co,
+                             status="paid", cofund=co))
         if o.dual:
             r = rng_for("pg", o.key)
             pa = max(6000, int(round(o.income * float(r.uniform(0.025, 0.05)) / 1200.0)) * 1200)
@@ -122,7 +175,7 @@ def build_payments(orgs, corpus_offers, reissues):
             rd += dt.timedelta(days=1)
         assert quarter_of_date(rd) == quarter_of_date(vd)
         pays.append(dict(org=key, ref=p["ref"], prog="OG", inst_for=p["inst_for"], value=rd,
-                         amount=p["amount"], status="paid", reissue=True))
+                         amount=p["amount"], status="paid", reissue=True, cofund=p.get("cofund", 0)))
     pays.sort(key=lambda p: (p["value"], by[p["org"]].cc, p["ref"], p["inst_for"]))
     pid = 304_117
     for p in pays:
@@ -244,9 +297,8 @@ def true_lines(orgs, tot, apt, ref_tot, apt_og):
 
 
 def ytd_lines(L, o, q):
-    k = fyq(q, o.bal)
     acc = {}
-    for qq in range(q - k + 1, q + 1):
+    for qq in range(fstart(o, q), q + 1):
         src = L[qq] if qq >= 0 else L[qq + 4]   # before the modelled span: the next year's quarter
         for kk, v in src.items():
             acc[kk] = acc.get(kk, 0) + v
@@ -302,7 +354,6 @@ def attach_lines(W):
     vs = sorted(W["versions"], key=lambda v: (v.q, v.submitted, v.no))
     for v in vs:
         o = by[v.org]
-        k = fyq(v.q, o.bal)
         t_ytd = ytd_lines(L[o.key], o, v.q)
         delta = v.ytd - sum(t_ytd.values())
         if delta and v.err_line is not None and t_ytd[v.err_line] + delta >= 0:

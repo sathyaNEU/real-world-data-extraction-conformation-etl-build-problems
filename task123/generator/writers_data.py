@@ -8,8 +8,9 @@ import numpy as np
 import openpyxl
 from openpyxl.styles import Font, Alignment
 
-from common import (MARCH_CENSUSES, POTS, qend, fyq, fy_q4, pct1, SEED)
-from lines import (OLD_CODES, NEW_CODES, OLD_SHORT, NEW_SHORT, is_new_form)
+from common import (MARCH_CENSUSES, POTS, qend, fyq, fy_q4, pct1, SEED, fend, month_add)
+from lines import (OLD_CODES, NEW_CODES, OLD_SHORT, NEW_SHORT, is_new_form, cofunded_month,
+                   COFUND_FIRST, COFUND_LAST)
 from roster import Q
 from world import rng_for
 
@@ -64,7 +65,7 @@ def portal_rows(W):
     vs = sorted(W["versions"], key=lambda v: (rid[(v.ref, v.q)], v.no))
     for v in vs:
         o = by[v.org]
-        fye = qend(fy_q4(v.q, o.bal))
+        fye = qend(fend(o, v.q))          # the year this return's figures run within
         for code in line_order(v.q, o.short_form):
             ytd, py = v.lines[code]
             for col, amt in (("YTD", ytd), ("PY", py)):
@@ -104,7 +105,7 @@ def write_grants_register(path, W):
     ws = wb.active
     ws.title = "Grants"
     hdr = ["grant_ref", "programme", "charity_no", "organisation", "sector", "district",
-           "balance_date", "start_date", "end_date", "annual_amount", "status"]
+           "start_date", "end_date", "annual_amount", "status"]
     ws.append(hdr)
     rows = []
     for o in W["orgs"]:
@@ -112,48 +113,75 @@ def write_grants_register(path, W):
         cur = [t for t in terms if t[0] <= dt.date(2026, 10, 7)][-1]
         status = "Ended" if o.role == "exit" else "Active"
         rows.append([o.og_ref, "Operating grant", o.cc, o.name, o.sector, o.district,
-                     BAL_LABEL[o.bal], o.og_start, o.og_end, cur[2], status])
+                     o.og_start, o.og_end, cur[2], status])
         if o.dual:
             pt = [t for t in W["pg_level"][o.key] if t[0] <= dt.date(2026, 10, 7)][-1]
             rows.append([o.pg_ref, "Project grant", o.cc, o.name, o.sector, o.district,
-                         BAL_LABEL[o.bal], o.pg_start, o.pg_end, pt[2], "Active"])
+                         o.pg_start, o.pg_end, pt[2], "Active"])
     rows.sort(key=lambda r: r[0])
     for r in rows:
         ws.append(r)
-    for row in ws.iter_rows(min_row=2, min_col=8, max_col=9):
+    for row in ws.iter_rows(min_row=2, min_col=7, max_col=8):
         for cell in row:
             cell.number_format = "yyyy-mm-dd"
-    for row in ws.iter_rows(min_row=2, min_col=10, max_col=10):
+    for row in ws.iter_rows(min_row=2, min_col=9, max_col=9):
         for cell in row:
             cell.number_format = "#,##0"
-    widths = [18, 16, 11, 44, 24, 16, 13, 12, 12, 14, 8]
+    widths = [18, 16, 11, 44, 24, 16, 12, 12, 14, 8]
     for i, wdt in enumerate(widths):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wdt
     ws.freeze_panes = "A2"
     # variations: every renewal at a new annual amount
     wv = wb.create_sheet("Variations")
     wv.append(["grant_ref", "effective_date", "variation", "annual_amount_before",
-               "annual_amount_after", "approved_by"])
+               "annual_amount_after", "approved_by", "note"])
     vrows = []
+    c_on, c_off = dt.date(*COFUND_FIRST, 1), dt.date(*month_add(*COFUND_LAST, 1), 1)
     for o in W["orgs"]:
         terms = W["terms"][o.key]
+        co = 12 * o.cofund
+        lapses = {end + dt.timedelta(days=1): (restart, approved) for end, restart, approved in o.gaps}
         for a, b in zip(terms, terms[1:]):
             if b[0] > dt.date(2026, 10, 7):
                 continue
-            vrows.append([o.og_ref, b[0], "Renewal", a[2], b[2], "Grants committee"])
+            add = co if co and cofunded_month(b[0].year, b[0].month) else 0
+            if b[0] in lapses:
+                # the term lapsed before the grant was renewed: the annual amount is nil until the renewal
+                restart, approved = lapses[b[0]]
+                add2 = co if co and cofunded_month(restart.year, restart.month) else 0
+                vrows.append([o.og_ref, b[0], "Term ended", a[2] + add, 0, None, None])
+                vrows.append([o.og_ref, restart, "Renewal", 0, b[2] + add2, "Grants committee",
+                              f"Approved {approved.day} {approved.strftime('%B %Y')}"])
+                continue
+            vrows.append([o.og_ref, b[0], "Renewal", a[2] + add, b[2] + add, "Grants committee", None])
+        if o.role == "exit":
+            off = o.og_end + dt.timedelta(days=1)
+            if off <= dt.date(2026, 10, 7):
+                lv = [t for t in terms if t[0] <= o.og_end][-1][2]
+                vrows.append([o.og_ref, off, "Term ended", lv, 0, None, None])
+        if co:
+            lv_on = [t for t in terms if t[0] <= c_on][-1][2]
+            lv_off = [t for t in terms if t[0] <= c_off][-1][2]
+            vrows.append([o.og_ref, c_on, "Government co-funding", lv_on, lv_on + co, "Trustees",
+                          "Central government co-funding, paid by the Trust with the operating instalments"])
+            vrows.append([o.og_ref, c_off, "Government co-funding ended", lv_off + co, lv_off, "Trustees",
+                          "Government funding for the co-funding ended on 31 March 2026"])
         if o.dual:
             pt = W["pg_level"][o.key]
             for a, b in zip(pt, pt[1:]):
                 if b[0] > dt.date(2026, 10, 7):
                     continue
-                vrows.append([o.pg_ref, b[0], "Renewal", a[2], b[2], "Grants committee"])
-    vrows.sort(key=lambda r: (r[1], r[0]))
+                vrows.append([o.pg_ref, b[0], "Renewal", a[2], b[2], "Grants committee", None])
+    vrows.sort(key=lambda r: (r[1], r[0], r[2]))
     for r in vrows:
         wv.append(r)
     for row in wv.iter_rows(min_row=2, min_col=2, max_col=2):
         for cell in row:
             cell.number_format = "yyyy-mm-dd"
-    for col, wdt in zip("ABCDEF", [18, 14, 12, 20, 20, 18]):
+    for row in wv.iter_rows(min_row=2, min_col=4, max_col=5):
+        for cell in row:
+            cell.number_format = "#,##0"
+    for col, wdt in zip("ABCDEFG", [18, 14, 26, 20, 20, 18, 70]):
         wv.column_dimensions[col].width = wdt
     # Steady Ground offers
     wo = wb.create_sheet("Steady Ground offers")

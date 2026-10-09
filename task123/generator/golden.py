@@ -43,14 +43,13 @@ OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE.parent / "golden"
 
 CENSUS = date(2026, 9, 30)
 PAPER_DATE = datetime(2026, 10, 28, 9, 0, 0)
-BALANCE = {"31 March": 3, "30 June": 6, "31 December": 12}
 DOCX = "steady_ground_sep2026_offers.docx"
 CSV_OUT = "steady_ground_sep2026_screen.csv"
 PNG = "steady_ground_sep2026_offers.png"
 
 
 # --------------------------------------------------------------------------- quarters
-# A quarter is (year, month of its last day). fy_q is its position in the organisation's financial year.
+# A quarter is (year, month of its last day).
 
 def q_shift(q, k):
     t = q[0] * 12 + q[1] - 1 + 3 * k
@@ -61,8 +60,8 @@ def q_of(d):
     return (d.year, (d.month - 1) // 3 * 3 + 3)
 
 
-def fy_q(q, bal):
-    return (q[1] - bal - 1) % 12 // 3 + 1
+def months(a, b):
+    return (b.year - a.year) * 12 + b.month - a.month
 
 
 def iso(s):
@@ -93,14 +92,15 @@ wb = openpyxl.load_workbook(TARGET / "grants_register_20261007.xlsx", read_only=
 grants = [dict(zip(r[0], x)) for r in [list(wb["Grants"].iter_rows(values_only=True))] for x in r[1:]]
 ORG_OF = {g["grant_ref"]: g["charity_no"] for g in grants}
 NAME = {g["charity_no"]: g["organisation"] for g in grants}
-BAL = {g["charity_no"]: BALANCE[g["balance_date"]] for g in grants}
 OPERATING = {g["charity_no"]: (g["start_date"].date(), g["end_date"].date())
              for g in grants if g["programme"] == "Operating grant"}
+OP_REF = {g["charity_no"]: g["grant_ref"] for g in grants if g["programme"] == "Operating grant"}
 assert len(OPERATING) == len(NAME), "every organisation holds one operating grant"
 
 # Portal: accepted versions only (field guide), pooled across an organisation's grant references.
 accepted = defaultdict(list)          # (charity_no, quarter) -> [(accepted_at, lines)]
 versions = {}
+YEAR_END = {}                         # (charity_no, quarter) -> end of the financial year the return runs within
 with open(TARGET / "portal_return_lines_2018q3_2026q2.csv", newline="") as fh:
     for r in csv.DictReader(fh):
         key = (r["return_id"], r["version_no"])
@@ -109,6 +109,8 @@ with open(TARGET / "portal_return_lines_2018q3_2026q2.csv", newline="") as fh:
             pe = iso(r["period_end"])
             v = versions[key] = dict(cc=ORG_OF[r["grant_ref"]], q=(pe.year, pe.month), status=r["version_status"],
                                      acc=r["accepted_at"], form=r["form"], ytd={}, py={})
+            ye = iso(r["year_end"])
+            assert YEAR_END.setdefault((v["cc"], v["q"]), ye) == ye, "one year end per organisation and quarter"
         (v["ytd"] if r["column"] == "YTD" else v["py"])[r["line_code"]] = int(r["amount"])
 for v in versions.values():
     if v["status"] == "accepted":
@@ -122,16 +124,89 @@ with open(TARGET / "charities_register_returns_extract_20261007.csv", newline=""
         cc = r["charity_no"].strip().upper()
         ye = iso(r["year_end"])
         assert (cc, (ye.year, ye.month)) not in register, "one annual return per organisation and year"
-        register[(cc, (ye.year, ye.month))] = dict(received=iso(r["date_received"]),
+        register[(cc, (ye.year, ye.month))] = dict(received=iso(r["date_received"]), ye=ye,
                                                    total=int(r["total_gross_income"]),
                                                    govt=int(r["govt_grants_contracts"]))
 assert all(cc in NAME for cc, _ in register), "every register row joins after trimming and upper-casing"
+YEARS = defaultdict(set)              # every financial year end an organisation's returns and annual returns name
+for (cc, _), ye in YEAR_END.items():
+    YEARS[cc].add(ye)
+for (cc, _), r in register.items():
+    YEARS[cc].add(r["ye"])
+
+
+def place(cc, q):
+    """Where quarter q sits in its financial year, from the year end its own return carries: (position, last).
+    The year starts the day after the year end before it, so a year cut short by a change of balance date
+    has fewer quarters, and its last quarter is the one ending on the new year end."""
+    ye = YEAR_END.get((cc, q))
+    if ye is None:
+        return None, False
+    qe = date(q[0] + (q[1] == 12), q[1] % 12 + 1, 1) - timedelta(days=1)
+    before = sorted(d for d in YEARS[cc] if d < ye)
+    if before and months(before[-1], ye) <= 12:
+        k = months(before[-1], qe) // 3
+    else:
+        k = 4 - months(qe, ye) // 3
+    return k, qe == ye
+
+
+# Government co-funding the Trust paid with operating instalments (grants register, Variations): the
+# monthly sum, the first instalment month that carried it and the first that did not.
+var_rows = list(wb["Variations"].iter_rows(values_only=True))
+variations = [dict(zip(var_rows[0], r)) for r in var_rows[1:]]
+VAR = defaultdict(list)               # grant_ref -> [(effective date, annual amount before, after, kind)]
+for v in variations:
+    VAR[v["grant_ref"]].append((v["effective_date"].date(), int(v["annual_amount_before"]),
+                                int(v["annual_amount_after"]), v["variation"]))
+for lst in VAR.values():
+    lst.sort()
+GRANT_AMOUNT = {g["grant_ref"]: int(g["annual_amount"]) for g in grants}
+
+
+def annual_in_effect(ref, d):
+    """A grant's annual amount in effect on date d, from its Variations rows (a lapsed term is nil until the
+    renewal takes effect)."""
+    lst = VAR.get(ref, [])
+    past = [x for x in lst if x[0] <= d]
+    if past:
+        return past[-1][2]
+    return lst[0][1] if lst else GRANT_AMOUNT[ref]
+
+
+def in_force(cc, d):
+    """Rule 3.1: the organisation holds a current operating grant on date d, a term of it in force."""
+    start, end = OPERATING[cc]
+    return start <= d <= end and annual_in_effect(OP_REF[cc], d) > 0
+co_end = {v["grant_ref"]: v["effective_date"] for v in variations if v["variation"] == "Government co-funding ended"}
+COFUND = {}
+for v in variations:
+    if v["variation"] == "Government co-funding":
+        add = int(v["annual_amount_after"]) - int(v["annual_amount_before"])
+        assert add % 12 == 0
+        a, b = v["effective_date"], co_end[v["grant_ref"]]
+        COFUND[v["grant_ref"]] = (add // 12, (a.year, a.month), (b.year, b.month))
 
 run_paid = defaultdict(int)           # (charity_no, quarter the money reached the account) -> dollars
+cofund_paid = defaultdict(int)        # the government co-funding inside those payments
+lumps = 0
 with open(TARGET / "trust_payment_run_2018-07_to_2026-09.csv", newline="") as fh:
     for r in csv.DictReader(fh):
-        if r["payment_status"] == "paid":          # a returned line is reissued under its own row
-            run_paid[(r["charity_no"], q_of(iso(r["value_date"])))] += int(r["amount"])
+        if r["payment_status"] != "paid":          # a returned line is reissued under its own row
+            continue
+        q = q_of(iso(r["value_date"]))
+        run_paid[(r["charity_no"], q)] += int(r["amount"])
+        co = COFUND.get(r["grant_ref"])
+        month = (int(r["instalment_for"][:4]), int(r["instalment_for"][5:7]))
+        if co and co[1] <= month < co[2]:
+            # what this payment carried: the payment less the operating instalment, a twelfth of the annual
+            # amount in effect for the month less the annual co-funding
+            base = (annual_in_effect(r["grant_ref"], date(*month, 1)) - 12 * co[0]) // 12
+            carried = int(r["amount"]) - base
+            assert carried in (0, 3 * co[0]), (r["grant_ref"], r["instalment_for"], carried)
+            lumps += carried > 0
+            cofund_paid[(r["charity_no"], q)] += carried
+assert lumps > 100, "the co-funding rode on the first instalment of each quarter"
 
 
 def rule7_pay_day(y, m):
@@ -186,14 +261,15 @@ def total_line(v):
 
 
 def quarter_amount(cc, q, census, ytd_of, year_total):
-    """Discrete quarter from year-to-date figures. The final quarter of a financial year exists only as
-    the filed annual return less the nine-month year to date, and only once the return is received."""
-    bal = BAL[cc]
-    k = fy_q(q, bal)
-    if k == 4:
+    """Discrete quarter from year-to-date figures. The last quarter of a financial year exists only as the
+    filed annual return less the year to date at the quarter before, and only once the return is received."""
+    k, last = place(cc, q)
+    if k is None:
+        return None
+    if last:
         if not received(cc, q, census):
             return None
-        before = ytd_of(cc, q_shift(q, -1), census)
+        before = 0 if k == 1 else ytd_of(cc, q_shift(q, -1), census)
         return None if before is None else year_total(cc, q) - before
     now = ytd_of(cc, q, census)
     if now is None:
@@ -220,7 +296,7 @@ def ytd_govt(cc, q, census):
 
 
 def admissible(cc, q, census):
-    return fy_q(q, BAL[cc]) != 4 or received(cc, q, census)
+    return not place(cc, q)[1] or received(cc, q, census)
 
 
 def census_before(census):
@@ -264,8 +340,8 @@ def strike(falls, pot):
 def screen(census, pot):
     rows = []
     for cc, (start, end) in OPERATING.items():
-        if not start <= census <= end:
-            continue
+        if not in_force(cc, census):
+            continue                                     # no term of its operating grant in force (rule 3.1)
         w = windows(cc, census)
         if w is None:
             continue
@@ -281,7 +357,7 @@ def screen(census, pot):
     rate = strike([r["fall"] for r in elig], pot)
     for r in rows:
         r["offer"] = offer_at(rate, r["fall"]) if r["eligible"] else 0
-    in_scope = sum(1 for s, e in OPERATING.values() if s <= census <= e)
+    in_scope = sum(1 for cc in OPERATING if in_force(cc, census))
     return dict(rows=rows, rate=rate, total=sum(r["offer"] for r in rows), in_scope=in_scope)
 
 
@@ -304,19 +380,32 @@ rows = sorted(S["rows"], key=lambda r: -r["fall"])
 offered = [r for r in rows if r["offer"]]
 outside = max((r for r in rows if not r["eligible"]), key=lambda r: (r["fall"] / r["before"]))
 stepped = [r for r in rows if r["end"] != q_shift(q_of(CENSUS), -1)]
-# The rule the paper states, checked row by row: a stepped-back window ends at the quarter before the year-end
-# whose return was not on the register, December 2025 for 31 March and March 2026 for 30 June.
-assert all(r["end"] == {3: (2025, 12), 6: (2026, 3)}[BAL[r["cc"]]] for r in stepped)
-assert all(not received(r["cc"], {3: (2026, 3), 6: (2026, 6)}[BAL[r["cc"]]], CENSUS) for r in stepped)
+# The rule the paper states, checked row by row: a stepped-back window ends at the quarter before the year end
+# whose annual return was not on the register at the census. Every scored one is a year to 30 June 2026,
+# stepped back to March 2026.
+assert all(r["end"] == (2026, 3) and place(r["cc"], (2026, 6)) == (4, True) and not received(r["cc"], (2026, 6), CENSUS)
+           for r in stepped)
 unscored = S["in_scope"] - len(rows)
 scored_cc = {r["cc"] for r in rows}
-not_scored = [cc for cc, (s, e) in OPERATING.items() if s <= CENSUS <= e and cc not in scored_cc]
-# Rule 4.1: a 31 March organisation without its 2025-26 return on the register would be scored on twelve months
-# to December 2025, which end before the census before (31 March 2026), so it is not scored this round.
-late31 = sorted(cc for cc in not_scored if BAL[cc] == 3 and not received(cc, (2026, 3), CENSUS))
+not_scored = [cc for cc in OPERATING if in_force(cc, CENSUS) and cc not in scored_cc]
+# Out of scope although the register's start and end dates span the census: an operating grant whose term had
+# ended and whose renewal had not yet taken effect (the Variations sheet: a nil annual amount at the census)
+between = sorted(cc for cc, (s, e) in OPERATING.items() if s <= CENSUS <= e and not in_force(cc, CENSUS))
+assert len(between) == 1
+gap_end = max(x[0] for x in VAR[OP_REF[between[0]]] if x[0] <= CENSUS) - timedelta(days=1)
+gap_on = min(x[0] for x in VAR[OP_REF[between[0]]] if x[0] > CENSUS)
+assert all(in_force(cc, date(y, 3, 31)) == (OPERATING[cc][0] <= date(y, 3, 31) <= OPERATING[cc][1])
+           for cc in OPERATING for y in range(2021, 2027)), "no grant was between terms at a March census"
+# Rule 4.1: an organisation whose 2025-26 year ended on 31 March 2026, without that annual return on the register,
+# would be scored on twelve months to December 2025, which end before the census before (31 March 2026).
+late31 = sorted(cc for cc in not_scored if place(cc, (2026, 3))[1] and not received(cc, (2026, 3), CENSUS))
+# Three of them moved their balance date from 30 June to 31 March: their 2025-26 year ran nine months.
+moved = sorted(cc for cc in late31 if place(cc, (2026, 3))[0] == 3)
+assert all(place(cc, (2025, 6)) == (4, True) and place(cc, (2025, 9))[0] == 1 for cc in moved)
+assert all(place(cc, (2026, 3)) == (4, True) for cc in late31 if cc not in moved)
 newer = [cc for cc in not_scored if cc not in late31]
 assert all(OPERATING[cc][0] >= date(2024, 7, 1) for cc in newer), "the rest are grantees from mid-2024 or later"
-assert census_before(CENSUS) == date(2026, 3, 31) and not any(BAL[r["cc"]] == 3 for r in stepped)
+assert census_before(CENSUS) == date(2026, 3, 31)
 for cc in late31:                                        # ... on the same twelve months as in March 2026
     qs = [q_shift((2025, 12), -k) for k in range(8)]
     a = [quarter_amount(cc, q, CENSUS, ytd_total, lambda c, q: register[(c, q)]["total"]) for q in qs]
@@ -324,24 +413,30 @@ for cc in late31:                                        # ... on the same twelv
 assert S["total"] <= POT < sum(offer_at(S["rate"] + 1, r["fall"]) for r in offered)
 assert len({r["fall"] for r in rows}) == len(rows), "no two falls equal, so the sort is stable"
 
-# The parts of each fall: government grants and contracts, and the Trust's own money, over the same windows.
+# The parts of each fall over the same windows: government money (the returns' government grants and contracts,
+# and the government co-funding the Trust paid with operating instalments), and the Trust's own money (its
+# payments, less that co-funding, and Steady Ground instalments).
 for r in rows:
     cc = r["cc"]
     g = [quarter_amount(cc, q, CENSUS, ytd_govt, lambda c, q: register[(c, q)]["govt"]) for q in r["cur"] + r["pri"]]
-    r["govt"] = None if any(x is None for x in g) else sum(g[4:]) - sum(g[:4])
-    r["trust"] = sum(trust_paid[(cc, q)] for q in r["pri"]) - sum(trust_paid[(cc, q)] for q in r["cur"])
+    co = sum(cofund_paid[(cc, q)] for q in r["pri"]) - sum(cofund_paid[(cc, q)] for q in r["cur"])
+    r["govt"] = None if any(x is None for x in g) else sum(g[4:]) - sum(g[:4]) + co
+    r["trust"] = sum(trust_paid[(cc, q)] for q in r["pri"]) - sum(trust_paid[(cc, q)] for q in r["cur"]) - co
 
-# Control: on every QFR-24 return held at the census, the Trust memo agrees with the payment run.
+# Control: on every QFR-24 return held at the census, the Trust memo agrees with the payment run (co-funding
+# inside, as grantees report it).
 memo_checked = 0
 for (cc, q), lst in accepted.items():
     v = held(cc, q, CENSUS)
     if v is None or "GRT_NGO_APT" not in v["ytd"]:
         continue
-    k = fy_q(q, BAL[cc])
+    k = place(cc, q)[0]
     assert v["ytd"]["GRT_NGO_APT"] == sum(run_paid[(cc, q_shift(q, -j))] for j in range(k)), (cc, q)
     memo_checked += 1
 assert memo_checked > 800
 assert all(r["govt"] is not None for r in offered), "every offered grantee files the full form"
+cofunded = {ORG_OF[g] for g in COFUND}
+assert all(r["cc"] in cofunded for r in offered), "every offered grantee's operating grant carried the co-funding"
 
 # --------------------------------------------------------------------------- outputs
 OUT.mkdir(parents=True, exist_ok=True)
@@ -352,7 +447,7 @@ for stale in (DOCX, CSV_OUT, PNG):
 with open(OUT / CSV_OUT, "w", newline="") as fh:
     w = csv.writer(fh, lineterminator="\n")
     w.writerow(["charity_no", "organisation", "twelve_month_income", "twelve_months_before", "fall",
-                "fall_pct", "offer", "fall_govt_grants_contracts", "fall_trust_money"])
+                "fall_pct", "offer", "fall_government_money", "fall_trust_own_money"])
     for r in rows:
         w.writerow([r["cc"], NAME[r["cc"]], r["income"], r["before"], r["fall"], f"{r['pct']:.1f}", r["offer"],
                     "" if r["govt"] is None else r["govt"], r["trust"]])
@@ -526,28 +621,34 @@ para(doc, f"This is the first round the Trust has screened itself. Of the {S['in
           f"{COUNT_WORD[n_cap].capitalize()} offer{'s' if n_cap > 1 else ''} {'is' if n_cap == 1 else 'are'} held at "
           + ("the cap; none needed raising to the floor." if n_floor == 0 else
              f"the cap and {COUNT_WORD[n_floor]} {'is' if n_floor == 1 else 'are'} raised to the floor."))
-p = para(doc, "A September census falls on the filing deadline for organisations with a 31 March balance date, "
+p = para(doc, "A September census falls on the filing deadline for organisations whose year ends on 31 March, "
               "and three months before the deadline for those balancing at 30 June, so a good number had no "
               "2025-26 annual return on the register at the census. The screen takes a year's last quarter only "
-              "from the filed annual return (its total gross income less the nine-month year to date), so for "
-              "those organisations the twelve months end at the quarter before that year-end, with the twelve "
-              f"months before stepping back with them. For the {len(stepped)} balancing at 30 June that is March "
-              "2026, and they are scored on it. For the "
-              f"{len(late31)} balancing at 31 March it is December 2025, which ends before 31 March 2026, the census "
-              "before this one, so under rule 4.1 they cannot be scored this round; each was scored on those same "
-              "twelve months in the March 2026 round. This is the method that gives back Ledgerwood's six March "
-              "packs, below. Rule 4.1 never bound in a March round, where the census before was a year earlier.")
+              "from the filed annual return (its total gross income less the year to date at the quarter before), "
+              "so for those organisations the twelve months end at the quarter before that year end, with the "
+              f"twelve months before stepping back with them. For the {len(stepped)} balancing at 30 June that is "
+              f"March 2026, and they are scored on it. For the {len(late31)} whose 2025-26 year ended on 31 March "
+              "2026 it is December 2025, which ends before 31 March 2026, the census before this one, so under "
+              "rule 4.1 they cannot be scored this round; each was scored on those same twelve months in the "
+              "March 2026 round. This is the method that gives back Ledgerwood's six March packs, below. Rule 4.1 "
+              "never bound in a March round, where the census before was a year earlier.")
 note_ref(p, 1)
+para(doc, f"{in_words(len(moved)).capitalize()} of the {len(late31)} changed their balance date from 30 June to 31 March, "
+          "so their 2025-26 year ran nine months, July 2025 to March 2026. Their quarterly returns from September "
+          "2025 carry the new year end, the screen places every quarter in the year its own return runs within, "
+          "and they are treated like the other 31 March organisations.")
 
 para(doc, "Offers", bold=True, size=11.5, after=4)
-p = para(doc, "Each offer, with the part of the fall it is struck on that was government grants and contracts "
-              "and the part that was money from the Trust itself (operating and project grants, and Steady "
-              "Ground instalments from earlier rounds). A negative part means that income rose over the year "
-              "while total income fell.", after=4)
+p = para(doc, "Each offer, with the part of the fall it is struck on that was government money and the part "
+              "that was the Trust's own. Government money is the grants and contracts grantees report from "
+              "government, and the central government co-funding the Trust paid with operating instalments from "
+              "January 2025 to March 2026; the Trust's own is its operating and project grant payments less that "
+              "co-funding, and Steady Ground instalments from earlier rounds. A negative part means that income "
+              "rose over the year while total income fell.", after=4)
 note_ref(p, 2)
 body = [[NAME[r["cc"]], money(r["offer"]) + (" (cap)" if r["offer"] == CAP else " (floor)" if r["offer"] == FLOOR else ""),
          money(r["govt"]), money(r["trust"])] for r in offered]
-table(doc, ["Organisation", "Offer", "Government part of fall", "Trust part of fall"], body,
+table(doc, ["Organisation", "Offer", "Government money in fall", "Trust's own money in fall"], body,
       [7.4, 3.2, 3.3, 2.7], total=["Total", money(S["total"]), "", ""])
 para(doc, "Source: in-house screen at 30 September 2026 (steady_ground_sep2026_screen.csv); portal returns, "
           "register match, grants register and payment run as at 7 October 2026.", italic=True, size=8, after=8,
@@ -576,16 +677,25 @@ para(doc, "It has been put to me that the round is for the groups hit by the Mar
 
 para(doc, "Notes", bold=True, size=9.5, after=2)
 for n, txt in ((1, "Annual returns are read from the register match as received by the end of the census day. "
-                   f"Of the {unscored} organisations in scope and not scored, {len(late31)} are the 31 March "
-                   f"organisations above and {COUNT_WORD[len(newer)]} are newer grantees whose returns do not yet "
-                   "cover both twelve-month periods (rule 3.2)."),
+                   f"Of the {unscored} organisations in scope and not scored, {len(late31)} are those above whose "
+                   f"2025-26 year ended on 31 March 2026 and {COUNT_WORD[len(newer)]} are newer grantees whose "
+                   "returns do not yet cover both twelve-month periods (rule 3.2). "
+                   f"{NAME[between[0]]} is not in scope: the term of its operating grant ended on "
+                   f"{gap_end.day} {gap_end.strftime('%B %Y')} and the renewal runs from {gap_on.day} "
+                   f"{gap_on.strftime('%B %Y')}, so it held no operating grant in force at the census (rule 3.1)."),
                (2, "Government grants and contracts: on QFR-24 returns the 'Government grants and contracts' line; "
                    "on QFR-16 returns (to September 2024) 'Government grants' plus the memo 'of which government "
-                   "service contracts', as the line kept its code when contracts moved onto it. Trust money is "
-                   "counted in the quarter it reached the organisation's account: operating and project grant "
-                   "payments from the payment run (paid lines, so a returned payment counts once, through its "
-                   "reissue), and Steady Ground instalments, which are not in the payment run, from the offers "
-                   "sheet on the pay day rule 7 sets. Whole dollars throughout; fall percentages to one decimal.")):
+                   "service contracts', as the line kept its code when contracts moved onto it. Government "
+                   "co-funding: from January 2025 to March 2026 the grants listed on the Variations sheet carried "
+                   "central government co-funding, passed on with the first operating instalment of each quarter; "
+                   "what a payment carried is the payment less the operating instalment. Grantees report the whole "
+                   "instalment as money from the Trust, so the co-funding is in no government line and in no "
+                   "annual return's government figure; it is added to government money and taken out of the "
+                   "Trust's. Money from the Trust is counted in the quarter it reached the organisation's account: "
+                   "operating and project grant payments from the payment run (paid lines, so a returned payment "
+                   "counts once, through its reissue), and Steady Ground instalments, which are not in the payment "
+                   "run, from the offers sheet on the pay day rule 7 sets. Whole dollars throughout; fall "
+                   "percentages to one decimal.")):
     p = para(doc, after=2, size=8)
     r1 = p.add_run(f"{n}  ")
     r1.font.size = Pt(8)
@@ -616,8 +726,10 @@ for f in (DOCX, CSV_OUT, PNG):
 # --------------------------------------------------------------------------- what the paper rests on
 print(f"Rate: {rate_txt} cents per dollar of fall ({len(offered)} offers, {money(S['total'])} of {money(POT)}, "
       f"{money(POT - S['total'])} left in the Fund)")
+print(f"Between terms at the census, not in scope: {NAME[between[0]]} (term ended {gap_end}, renewed from {gap_on})")
 print(f"In scope {S['in_scope']}, scored {len(rows)}; twelve months to March 2026 for {len(stepped)} at 30 June; "
-      f"{len(late31)} at 31 March not scored under rule 4.1; {len(newer)} newer grantees not scored")
+      f"{len(late31)} with a year to 31 March 2026 not scored under rule 4.1 ({len(moved)} moved their balance date); "
+      f"{len(newer)} newer grantees not scored")
 print("Replay: " + "; ".join(f"{y} {v['back']} of {v['published']} rows, {v['offers_back']} of {v['offers']} offers, "
                              f"rate {'given back' if v['rate_back'] else 'MISSED'}" for y, v in replay.items()))
 print(f"Replay totals: {sum(v['back'] for v in replay.values())} of {sum(v['published'] for v in replay.values())} "

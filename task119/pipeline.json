@@ -3,15 +3,23 @@
  "domain": "policy-education",
  "objective": "anomaly-detection",
  "stage": 4,
- "stage_name": "solver round 1: harden",
+ "stage_name": "solver round 1 (second run after loop 1): landed, harden",
  "updated": "2026-10-09",
- "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those waits D's own care and D's deaths after them the largest number the review can confirm.",
- "harden_loops": 0,
+ "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays and writes the remit's methodology sentence as its test, a death being the trust's own care when its own unit held an empty staffed bed during the wait or gave a bed to another patient during it, and sends the engagement to A, 37 deaths over D's 27; the step that lands it there is reading every admission during a wait as the trust's own decision about its beds without asking who placed the patient: every admission inside one of A's long waits was a patient transferred from a trust without level-3 beds, on a bed the network's bed bureau allocated (the transfer audit's `bed_confirmed_at`, which the field guide defines as the bureau's allocation), so those waits are the network's capacity and A keeps 2 deaths of its own, while through every one of D's long waits D's unit admitted planned post-operative patients from D's own theatres, which makes D's 27 the largest number the review can confirm. A solver who stops one step earlier, at the census, files G at 15.",
+ "harden_loops": 1,
  "solver_rounds": [
   {
    "label": "round 1, plain",
    "date": "2026-10-09",
    "score": 83.8,
+   "landed": true,
+   "cracked": 4,
+   "items": 11
+  },
+  {
+   "label": "round 2, plain",
+   "date": "2026-10-09",
+   "score": 82.3,
    "landed": true,
    "cracked": 4,
    "items": 11

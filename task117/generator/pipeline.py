@@ -33,6 +33,8 @@ class World:
     read_times: dict
     read_report: dict
     log: pd.DataFrame
+    fixes: pd.DataFrame = None
+    corr: dict = None
     extra: dict = field(default_factory=dict)
 
 
@@ -47,6 +49,7 @@ def build_world(seed: int = SEED) -> World:
     S.generate_library_fast(gen)
     special = {d for d, t in cal.items() if t[0] in ("bind", "rung2", "b3")}
     S.generate_public(gen, pos, special)
+    S.apply_rotation(gen, cal, veh["permits"])
     sess = gen.frame()
 
     df, led, gwb, decisions = L.build_ledger(rng, sess, pos, read_dec2025=None)
@@ -59,7 +62,7 @@ def build_world(seed: int = SEED) -> World:
 
     light = {p: M.Lighting(np.random.default_rng(seed + (1 if p == "CP-N" else 2)), p) for p in M.PANELS}
     books = M.PanelBooks(rows, rd, light)
-    times, report = M.choose_read_times(rng, books)
-    log = M.build_log(books, times, rng)
+    times, report, corr = M.choose_read_times(rng, books)
+    log, fixes = M.build_log(books, times, rng, corr)
     return World(pos=pos, register=register, veh=veh, cal=cal, reads=reads, b3=b3, sessions=df, rows=rows,
-                 decisions=decisions, rd=rd, light=light, books=books, read_times=times, read_report=report, log=log)
+                 decisions=decisions, rd=rd, light=light, books=books, read_times=times, read_report=report, log=log, fixes=fixes, corr=corr)

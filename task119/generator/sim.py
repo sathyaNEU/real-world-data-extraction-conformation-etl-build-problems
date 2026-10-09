@@ -73,14 +73,17 @@ def assign_admissions(world, P):
         for s in U.slots:
             t = s["t"]
             if s["kind"] == "tx_in":
-                # a patient from a trust without its own level-3 unit, placed here by the bed bureau
+                # a patient from a trust without its own level-3 unit, placed here by the bed bureau: a planned
+                # post-operative transfer from that trust's theatre recovery, or an unplanned transfer
                 d = day_of(t)
                 pool = ["E", "B"] + (["F"] if own_unit("F", d) is None else []) + \
                        (["H"] if own_unit("H", d) is None else [])
                 pp = np.array([{"E": 0.5, "B": 0.22, "F": 0.16, "H": 0.12}[x] for x in pool])
                 letter = str(r.choice(pool, p=pp / pp.sum()))
-                pid = P.new(kind="bg", letter=letter, level=3, unit=u, tx_for=s["ref"])
-                adm[u].append({"t": t, "pid": pid, "type": "02", "src": "06" if r.random() < 0.74 else "04",
+                planned = world.waits_by_id[s["ref"]].get("tx_kind") == "planned"
+                pid = P.new(kind="bg", letter=letter, level=3, unit=u, tx_for=s["ref"], planned_tx=planned)
+                src = "01" if planned else ("06" if r.random() < 0.74 else "04")
+                adm[u].append({"t": t, "pid": pid, "type": "03" if planned else "02", "src": src,
                                "mode": "turn", "wid": None, "leaver": None, "bg": True})
                 continue
             if s["kind"] in ("wait_end", "gap_close_wait"):
@@ -129,9 +132,15 @@ def assign_admissions(world, P):
                 continue
             if p.get("readmit"):
                 pid = readmit[p["ref"]]
+            elif u == "STN-ACC":
+                # Stennock's planned surgery runs at its elective centre: the patient comes over as a planned transfer
+                # in, referred by Stennock from the centre's recovery
+                pid = P.new(kind="planned", unit=u, letter="D", ec=True,
+                            inside_wid=p.get("wid") if p["tag"] == "inside" else None)
             else:
                 pid = P.new(kind="planned", unit=u)
-            adm[u].append({"t": p["t"], "pid": pid, "type": "04", "src": "01", "mode": "turn", "wid": p.get("wid"),
+            typ = "03" if u == "STN-ACC" and not p.get("readmit") else "04"
+            adm[u].append({"t": p["t"], "pid": pid, "type": typ, "src": "01", "mode": "turn", "wid": p.get("wid"),
                            "hold_until": p.get("hold_until"), "planned": True})
         for f in U.forced:
             adm[u].append({"t": f["t"], "pid": None, "mode": "forced", "leaver_pid": readmit[f["pid"]]})
@@ -173,14 +182,15 @@ def simulate(world, P):
         occ = {}
 
         def admit(t, pid, a):
+            assert pid not in occ, ("a patient admitted twice to one unit", u, pid)
             occ[pid] = {"pid": pid, "unit": u, "admit": t, "target": t + target_los(P, pid, r, world),
                         "type": a.get("type", "01"), "src": a.get("src", "06"), "rows": [], "row0": t,
                         "hold": a.get("hold_until") or 0, "deadline": None}
             p = P.p[pid]
             if p["kind"] == "wait":
-                w = world.waits_by_id[p["wid"]]
+                w = world.waits_by_id[a["wid"] if a.get("wid") is not None else p["wid"]]
                 if w["died"] and w["outcome"] == "admitted":
-                    occ[pid]["deadline"] = w["dta"] + 19 * 1440
+                    occ[pid]["deadline"] = w["dta"] + w.get("deadline_days", 19) * 1440
 
         def leave(t, pid=None):
             if pid is None:
@@ -231,11 +241,11 @@ def simulate(world, P):
                     if len(cands) < 2:
                         continue
                     o1 = cands[int(r.integers(len(cands)))]
-                rest = [o for o in cands if o is not o1 and (a["need"] == "planned" or o["type"] != "04")]
+                rest = [o for o in cands if o is not o1 and (a["need"] == "planned" or o["type"] not in ("03", "04"))]
                 if not rest:
                     continue
                 o2 = rest[int(r.integers(len(rest)))]
-                if a["need"] is None and (o1["type"] == "04" or o2["type"] == "04"):
+                if a["need"] is None and (o1["type"] in ("03", "04") or o2["type"] in ("03", "04")):
                     continue
                 for o in (o1, o2):
                     o["rows"].append((o["row0"], t))

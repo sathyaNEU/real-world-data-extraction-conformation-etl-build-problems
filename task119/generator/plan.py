@@ -50,10 +50,11 @@ COMPOSITION = {
 # designed rows inside the golden population (all in the legacy months, year 1). Each entry:
 # (tag, letter, cls, died, count)
 GOLDEN_DEVICE_ROWS = [
-    # DV2a: temporary identity, discharged alive, readmitted and died under the verified key
-    ("DV2a", "A", "own", True, 1), ("DV2a", "B", "cap", True, 1), ("DV2a", "C", "alloc", True, 1),
-    ("DV2a", "D", "alloc", True, 1), ("DV2a", "E", "cap", True, 3), ("DV2a", "F", "own", True, 1),
-    ("DV2a", "G", "alloc", True, 1), ("DV2a", "H", "own", True, 1),
+    # DV9: a temporary identity the links never resolve; the patient died in hospital, so the death is on the
+    # temporary-key spell's discharge method only (no date of death anywhere)
+    ("DV9", "A", "cap", True, 1), ("DV9", "B", "cap", True, 1), ("DV9", "C", "cap", True, 1),
+    ("DV9", "D", "alloc", True, 1), ("DV9", "E", "cap", True, 3), ("DV9", "F", "cap", True, 1),
+    ("DV9", "G", "alloc", True, 1), ("DV9", "H", "cap", True, 1),
     # DV2b: temporary identity on the first long wait, a second long wait months later under the verified key
     ("DV2b", "A", "cap", False, 1), ("DV2b", "B", "cap", False, 1), ("DV2b", "C", "cap", False, 1),
     ("DV2b", "D", "alloc", False, 1), ("DV2b", "E", "cap", False, 2), ("DV2b", "F", "cap", False, 1),
@@ -99,7 +100,7 @@ DV1_SPURIOUS = [("A", "empty", True), ("A", "planned", True), ("A", "any", False
 # bureau transfers admitted to the referring trust's own full unit inside its capacity waits, per year and
 # trust: (waits ending in a death, waits survived). Untagged capacity waits only. The year-3 deaths at C sit
 # on days C's own 08:00 return showed a vacancy.
-TX_INSIDE = {1: {"A": (24, 74), "C": (6, 16), "G": (0, 2)},
+TX_INSIDE = {1: {"A": (24, 74), "C": (6, 16), "G": (0, 2), "F": (3, 6)},
              2: {"A": (32, 80), "C": (6, 16), "G": (1, 3)},
              3: {"A": (35, 82), "C": (6, 17), "G": (2, 4)}}
 
@@ -108,16 +109,39 @@ TX_INSIDE = {1: {"A": (24, 74), "C": (6, 16), "G": (0, 2)},
 # the decision to the bed; 'cap' the own unit full; 'none' no own level-3 unit (admitted elsewhere).
 DV5_NIGHTS = {
     "2024-03-30": [("A", "cap", True), ("B", "none", False), ("C", "cap", True), ("D", "own", True),
-                   ("E", "none", True), ("F", "own", True), ("F", "own", True), ("G", "cap", True),
+                   ("D", "own", True), ("E", "none", True), ("F", "own", True), ("F", "own", True), ("G", "cap", True),
                    ("H", "own", True), ("H", "own", True)],
     "2025-03-29": [("A", "cap", True), ("B", "none", False), ("C", "cap", True), ("D", "own", True),
-                   ("E", "none", True), ("F", "none", False), ("G", "cap", True), ("H", "none", True)],
+                   ("D", "own", True), ("E", "none", True), ("F", "none", False), ("G", "cap", True), ("H", "none", True)],
 }
 # tagged capacity waits that also carry a bureau transfer inside: (year, letter, tag) -> deaths
 TX_TAGGED = {(1, "G", "HZ2"): 2}
+# the bureau's placements inside A's waits: a planned post-operative transfer (03) from a trust without level-3 beds,
+# referred after A's waiting patient, on every death-wait and on every other survivor wait; unplanned (02), referred
+# before, on the rest and at C, F and G. Year-1 transfers inside waits sit in the legacy months (the held-bed device).
+TX_PLANNED_LETTERS = "A"
+PLANNED_TX_DTA = (18 * 60 + 45, 20 * 60 + 10)     # A's waiting patient's decision on a list-day evening
+PLANNED_TX_LATEST = 22 * 60 + 10                 # the planned transfer's bed by 22:10
 
-# DV7: genuine repeat patients, two long waits under one verified key at one trust, both in year 2, alive.
+# DV8: legacy transfers between trusts, whose bed the bureau allocated (bed_confirmed_at) before the patient arrived;
+# the legacy feed dates the stay from the arrival. Near misses: allocation wait 3h10 to 3h52, arrival past 4h15.
+# (letter, died) rows in the winter legacy months (GMT, so the UTC device cannot touch them).
+DV8_NEAR = [("E", True), ("E", True), ("E", False), ("E", False), ("B", True), ("B", False), ("H", True), ("H", False)]
+DV8_ALLOC_WAIT = (190, 232)
+DV8_PLACED_MIN = 255
+TRANSIT = (40, 110)                              # legacy transfer: minutes from allocation to arrival
+LEGACY_TX_MAX_WAIT = 190                         # every other legacy transfer: allocation wait <= 3h10
+LEGACY_TX_MAX_PLACED = 232                       # and arrival inside 3h52 of the decision
+
+# Stennock's elective centre: its planned post-operative patients come to STN-ACC as planned transfers in (03),
+# referred from the centre's recovery 10 to 90 minutes before the bed
+EC_WAIT = (10, 90)
+
+# DV7: genuine repeat patients, two long waits under one verified key at one trust, both in year 2: discharged
+# alive from the first stay, referred again 8 to 13 days after the first decision, dead after the second stay.
 DV7_PER_TRUST = 2
+# not at D: every D long wait is confirmable, and a pair there moves the confirmable total onto a cancellation
+DV7_TRUSTS = "ABCEFGH"
 
 # deaths before a bed was assigned among the golden waits, by year (others die after admission)
 DIED_WAITING = {3: {"E": 10, "A": 3, "C": 2, "B": 2, "F": 2, "H": 1},

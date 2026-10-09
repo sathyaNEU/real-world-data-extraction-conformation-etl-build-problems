@@ -2,8 +2,8 @@
 
     python3 task117/generator/golden.py [target_dir] [out_dir]
 
-Reads only the files in target_dir (default ../target). Rebuilds the 2026 deck sessions, the car
-behind each one and the replay on the Exhibit A units, then writes contract_demand_note.pdf,
+Reads only the files in target_dir (default ../target). Rebuilds the 2026 deck charges, the car
+behind each one, the county pool's hand-offs and the replay on the Exhibit A units, then writes contract_demand_note.pdf,
 deck_load_day.png and civic_service_demand.xlsx to out_dir (default ../golden) and prints the
 figures the note rests on. The file readers and quarter-hour arithmetic are verify_pack.py's, which
 reads nothing but the shipped files, so the goldens and the verifier cannot drift apart.
@@ -24,8 +24,9 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from verify_pack import (EXPECTED, LA, Q, Grid, backtest_load, car_ratings, charges, dated_join,  # noqa: E402
-                         factor_on, load, of_record, panel_spans, rules)
+from verify_pack import (EXPECTED, LA, POOL, Q, Grid, backtest_load, car_ratings, charges, dated_join,  # noqa: E402
+                         factor_on, forecast_window, forward_starts, handoff_prev, load, of_record, of_record_asof,
+                         panel_spans, rules)
 
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")
@@ -71,10 +72,17 @@ def compute():
     pop["car"] = car_ratings(P, pop, as_of=FORECAST_MADE)
     pop["car_then"] = car_ratings(P, pop)
     draw = np.minimum(R["new_kw"], pop["car"])
+    old_kw = 6.6
+    # the county pool's hand-offs at North Deck: a pool car going on within ten minutes of a pool car coming off the
+    # same unit goes on, on the new units, once the car ahead has finished at its new draw, after the same wait
+    per = P["permits"].set_index("permit_no")
+    pool = set(per.index[per["holder"] == POOL])
+    prev = handoff_prev(pop, pool)
 
-    def replay(rate):
+    def replay(rate, held=False):
         rate = pd.Series(rate, index=pop.index)
-        return {g: G.blocks(pop.loc[pop["garage"] == g, "t0"], pop.loc[pop["garage"] == g, "kwh_delivered"],
+        t0 = pop["t0"] if held else forward_starts(pop, rate, prev, old_kw)
+        return {g: G.blocks(t0[pop["garage"] == g], pop.loc[pop["garage"] == g, "kwh_delivered"],
                             rate[pop["garage"] == g]) for g in DECKS}
 
     percar = replay(draw)
@@ -90,15 +98,25 @@ def compute():
     rung2, t2 = G.peak(rated[DECKS[0]] + rated[DECKS[1]])
     then = replay(np.minimum(R["new_kw"], pop["car_then"]))
     own_date, t4 = G.peak(then[DECKS[0]] + then[DECKS[1]])
+    held = replay(draw, held=True)
+    tot_held = held[DECKS[0]] + held[DECKS[1]]
+    held_peak, t6 = G.peak(tot_held)
+    j6 = (t6 - G.t0) // Q
+    fol = pop.loc[list(prev)]
+    ahead = pop.loc[[prev[i] for i in prev]]
+    idle = (ahead["t1"].to_numpy() - (ahead["t0"].to_numpy() + ahead["kwh_delivered"].to_numpy() / old_kw * 3600)) / 60
+    wait = (fol["t0"].to_numpy() - ahead["t1"].to_numpy()) / 60
+    dec8 = [i for i in prev if pop.at[i, "plug_in"].startswith("2026-12-08")]
     # the note's "the 11 kW cars nearly always are" charged before noon: their morning sessions on the new units
-    end = pop["t0"] + pop["kwh_delivered"] / draw * 3600
+    start_new = forward_starts(pop, draw, prev, old_kw)
+    end = start_new + pop["kwh_delivered"] / draw * 3600
     noon = pd.to_datetime(pop["plug_in"].str[:10]).map(
         lambda d: datetime(d.year, d.month, d.day, 12, tzinfo=LA).timestamp())
-    fast_am = (pop["car"] >= 11.0) & (pop["t0"] < noon)
+    fast_am = (pop["car"] >= 11.0) & (start_new < noon)
     fast_done = float((fast_am & (end <= noon)).sum() / fast_am.sum())
-    # the 7.2 and 7.7 kW cars' part of the binding quarter-hour (the note's "most of December's peak")
+    # the 7.2 and 7.7 kW cars' part of the binding quarter-hour (the note's "most of January's peak")
     slow = pop["car"] <= 7.7
-    slow_load = sum(G.blocks(pop.loc[slow & (pop["garage"] == g), "t0"], pop.loc[slow & (pop["garage"] == g), "kwh_delivered"],
+    slow_load = sum(G.blocks(start_new[slow & (pop["garage"] == g)], pop.loc[slow & (pop["garage"] == g), "kwh_delivered"],
                              draw[slow & (pop["garage"] == g)])[j] for g in DECKS)
 
     sp = P["sp"]
@@ -142,6 +160,9 @@ def compute():
         "own_date": growth * own_date, "own_date_at": datetime.fromtimestamp(t4, LA),
         "renewal": renewal, "slow_share": slow_load / base, "fast_done": fast_done, "kw_2027": sorted(set(jan_kw)),
         "pairs": int((pop["n_rec"] > 1).sum()), "charges_2026": len(pop), "records_2026": len(recs),
+        "handoffs": len(prev), "idle_max": float(idle.max()), "wait_max": float(wait.max()),
+        "held": growth * held_peak, "held_at": datetime.fromtimestamp(t6, LA),
+        "held_drop_dec8": float(tot_held[j6] - tot[j6]), "dec8_handoffs": len(dec8),
     }
     F["filed"] = nearest5(F["answer"])
     F["b3"] = backtest(P, R, G, rec)
@@ -157,13 +178,18 @@ def day_series(G, closed, forecast, day):
 
 def backtest(P, R, G, rec):
     """FES-07 applied to 2025 from 2024 at the decks: every dated register assignment, the gateway B sessions at the
-    units that reported through it, the fleet card charges the export does not carry, the accepted version of each
-    restated session."""
-    load_, _, _ = backtest_load(P, G, rec)
+    units that reported through it, the fleet card charges the export does not carry; the 2024 base as its records
+    stood when the forecast was made, the 2025 months on the accepted version of each restated session."""
+    lo, hi = forecast_window(P)
+    assert lo <= BACKTEST_MADE <= hi, (lo, hi)
+    then = of_record_asof(P, BACKTEST_MADE).copy()
+    then["garage"], then["position"] = dated_join(P, then)
+    base_ = backtest_load(P, G, then)
+    load_ = backtest_load(P, G, rec)
     fac = factor_on(R["factors"], BACKTEST_MADE)
     out = []
     for m in range(1, 13):
-        b = G.peak(load_, year=2024, month=m)[0]
+        b = G.peak(base_, year=2024, month=m)[0]
         a = G.peak(load_, year=2025, month=m)[0]
         fc, ac = whole(fac * b), whole(a)
         out.append({"month": m, "base": b, "factor": fac, "forecast": fc, "recorded": ac,
@@ -179,9 +205,12 @@ def assert_record(F):
     assert abs(F["north"] - EXPECTED["split"][0]) < 1e-6 and abs(F["south"] - EXPECTED["split"][1]) < 1e-6
     for m in range(1, 13):
         assert abs(F["monthly"][m]["forecast"] - EXPECTED["monthly"][m - 1]) < 1e-6, m
-    assert max(F["monthly"], key=lambda m: F["monthly"][m]["forecast"]) == 12
-    assert abs(F["own_date"] - EXPECTED["rung4"]) < 1e-6 and F["renewed"] == 18
-    # the note's wording about the renewal and the rival peak, back-tested on the record
+    assert max(F["monthly"], key=lambda m: F["monthly"][m]["forecast"]) == 1
+    assert abs(F["own_date"] - EXPECTED["own_date"]) < 1e-6 and F["renewed"] == 18
+    # the note's wording about the hand-offs, the renewal and the rivals, back-tested on the record
+    assert F["handoffs"] == 101 and F["idle_max"] <= 20.0 and F["wait_max"] <= 6.0, (F["idle_max"], F["wait_max"])
+    assert abs(F["held"] - EXPECTED["held"]) < 1e-6 and F["held_at"].isoformat() == EXPECTED["held_binding"]
+    assert F["dec8_handoffs"] == 4 and abs(F["held_drop_dec8"] - 4 * 7.2) < 1e-6, (F["dec8_handoffs"], F["held_drop_dec8"])
     rn = F["renewal"]
     assert rn["deck"] == ["North"] and rn["holder"] == ["Larch County Fleet Services"], rn
     assert rn["from"] == [("CHEVROLET", "BOLT EV", 2020)] and rn["to"] == [("CHEVROLET", "BOLT EV", 2023)], rn
@@ -216,13 +245,16 @@ def chart(F, path):
     ax.set_facecolor(SURFACE)
     day0 = datetime.combine(d["day"], datetime.min.time())
     lo, hi = day0 + timedelta(hours=5), day0 + timedelta(hours=21)
+    top = 25 * math.ceil((max(float(np.max(d["closed"])), float(np.max(d["forecast"]))) + 25) / 25)
+    m_bind = F["t_bind"].month
+    cmonth = f"{MONTHS[m_bind - 1]} {2028 if m_bind <= 3 else 2027}"
     ax.axvspan(day0 + timedelta(hours=12), day0 + timedelta(hours=20), color=WASH, lw=0, zorder=0)
-    ax.text(day0 + timedelta(hours=16), 236, "Billing demand counted, 12:00 to 20:00 weekdays",
+    ax.text(day0 + timedelta(hours=16), top - 4, "Billing demand counted, 12:00 to 20:00 weekdays",
             ha="center", va="top", color=MUTED, fontsize=8.5)
     ax.stairs(d["closed"], t_end, color=ORANGE, lw=2, baseline=None, zorder=3,
-              label="Drawn on the 6.6 kW units, Dec 8, 2026")
+              label=f"Drawn on the 6.6 kW units, {d['day']:%b} {d['day'].day}, {d['day'].year}")
     ax.stairs(d["forecast"], t_end, color=BLUE, lw=2, baseline=None, zorder=4,
-              label="Forecast on the 11.5 kW units, December 2027 (x 1.12 growth)")
+              label=f"Forecast on the 11.5 kW units, {cmonth} (x 1.12 growth)")
     filed = F["filed"]
     ax.axhline(filed, color=INK, lw=1, zorder=2)
     ax.text(hi - timedelta(minutes=10), filed + 3, f"Contract demand {filed} kW", ha="right", va="bottom",
@@ -231,14 +263,15 @@ def chart(F, path):
     mid = tb + timedelta(minutes=7.5)
     ax.plot([mid], [F["answer"]], "o", ms=8, color=BLUE, mec=SURFACE, mew=2, zorder=5)
     ax.annotate(f"12:00 quarter-hour: {whole(F['answer'])} kW\nsets the contract (North {whole(F['north'])}, "
-                f"South {whole(F['south'])})", xy=(mid, F["answer"]), xytext=(tb + timedelta(hours=1, minutes=40), 182),
+                f"South {whole(F['south'])})", xy=(mid, F["answer"]),
+                xytext=(tb + timedelta(hours=1, minutes=40), F["answer"] + 0.3 * (top - F["answer"])),
                 color=INK, fontsize=9, ha="left", va="center",
                 arrowprops=dict(arrowstyle="-", color=INK2, lw=0.8, shrinkA=2, shrinkB=6))
     ax.set_xlim(lo, hi)
-    ax.set_ylim(0, 240)
+    ax.set_ylim(0, top)
     ax.xaxis.set_major_locator(mdates.HourLocator(byhour=range(6, 22, 2)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-    ax.set_yticks(range(0, 231, 50))
+    ax.set_yticks(range(0, top - 9, 50))
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:,.0f}"))
     ax.set_ylabel("Average demand per quarter-hour (kW)")
     ax.grid(axis="y", color=GRID, lw=1)
@@ -250,13 +283,13 @@ def chart(F, path):
     ax.legend(loc="upper right", bbox_to_anchor=(0.995, 0.36), frameon=False, fontsize=8.8, labelcolor=INK2)
     fig.text(0.055, 0.955, f"File {filed} kW: the decks' busiest billed quarter-hour on the new units comes to "
              f"{whole(F['answer'])} kW at noon", fontsize=13.5, fontweight="bold", color=INK)
-    fig.text(0.055, 0.912, "Civic Center North and South Decks combined, by quarter-hour, Tuesday, December 8, 2026, "
-             "the basis day for December 2027", fontsize=9.5, color=INK2)
+    fig.text(0.055, 0.912, f"Civic Center North and South Decks combined, by quarter-hour, {d['day']:%A}, "
+             f"{d['day']:%B} {d['day'].day}, {d['day'].year}, the basis day for {cmonth}", fontsize=9.5, color=INK2)
     fig.text(0.055, 0.022, "Source: Curbline settlement and interval exports, 2026 deck charges (records split at the "
-             "settlement run rejoined); each charge replayed from its start at the lower of 11.5 kW\nand the onboard "
-             "charger rating of the car its permit carries in 2027 (January 2027 vehicle check, Parking Services "
-             "reference list), grown by the FES-07 factor of 1.12.\n"
-             "Billing demand per NSPL Schedule 26. Energy & Facilities, January 2027.", fontsize=7.6, color=MUTED,
+             "settlement run rejoined), each replayed at the lower of 11.5 kW\nand the onboard charger rating of the car "
+             "its permit carries in 2027 (January 2027 vehicle check, Parking Services reference list); a county pool car "
+             "put on\nbehind another starts once the car ahead finishes. Grown by the FES-07 factor of 1.12. Billing "
+             "demand per NSPL Schedule 26. Energy & Facilities, January 2027.", fontsize=7.6, color=MUTED,
              linespacing=1.4)
     fig.subplots_adjust(left=0.075, right=0.975, top=0.86, bottom=0.19)
     fig.savefig(path, facecolor=SURFACE, metadata={"Software": None})
@@ -274,10 +307,11 @@ def note(F, path):
 
     filed, ans = F["filed"], F["answer"]
     north, south = whole(F["north"]), whole(F["south"])
-    dec = F["monthly"][12]
-    gap = F["planners"] - filed
+    mb = F["t_bind"].month
+    yb = 2028 if mb <= 3 else 2027
+    top = F["monthly"][mb]
     rate = 11.40
-    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=12.8, spaceAfter=6.5, alignment=TA_LEFT)
+    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=12.6, spaceAfter=6, alignment=TA_LEFT)
     small = ParagraphStyle("s", parent=body, fontSize=7.6, leading=9.6, textColor=colors.HexColor("#3d3d3a"), spaceAfter=2)
     head = ParagraphStyle("h", parent=body, fontName="Helvetica-Bold", fontSize=13.5, leading=16.5, spaceAfter=7)
     lh = ParagraphStyle("lh", parent=body, fontName="Helvetica-Bold", fontSize=10.5, leading=12.5, spaceAfter=0)
@@ -311,45 +345,49 @@ def note(F, path):
     s.append(Paragraph(
         f"I recommend Council approve the agreement with <b>{filed} kW</b> entered in Schedule 1 as the contract demand "
         f"for April 2027 through March 2028. That is the highest billing demand I forecast for the new service in any "
-        f"month of the contract year: <b>{whole(dec['forecast'])} kW in December 2027</b>, set in the quarter-hour "
-        f"beginning at noon. In that quarter-hour North Deck carries {north} kW and South Deck {south} kW. Schedule 1 "
-        f"takes whole multiples of 5 kW, and {dec['forecast']:.1f} kW comes to {filed} kW whether it is rounded to the "
-        f"nearest step or up.", body))
+        f"month of the contract year: <b>{whole(top['forecast'])} kW in {MONTHS[mb - 1]} {yb}</b>, set in the "
+        f"quarter-hour beginning at noon. In that quarter-hour North Deck carries {north} kW and South Deck {south} kW. "
+        f"Schedule 1 takes whole multiples of 5 kW, and {top['forecast']:.1f} kW comes to {filed} kW whether it is "
+        f"rounded to the nearest step or up.", body))
+    words = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
     s.append(Paragraph(
         "The forecast follows FES-07: each contract month comes from the same month of 2026 at the equipment the "
-        "service will supply, grown by the 2027 factor of 1.12. Rather than scale up the old units' peaks, I replayed "
-        "every 2026 charge at the decks on the Exhibit A units, each car taking its 2026 energy from the start of its "
-        "charge at the lower of 11.5 kW and its own onboard charger rating. Curbline's 10 a.m. settlement run splits a "
-        f"charge still running into two session records; I joined the {F['pairs']:,} pairs back into one charge first, "
-        "because record by record every car still charging at the run would restart at full power. At the old units' "
-        "6.6 kW the replay reproduces every 2026 interval reading Curbline settled at the decks.", body))
+        "service will supply, grown by the 2027 factor of 1.12. I replayed every 2026 charge at the decks on the "
+        "Exhibit A units at the lower of 11.5 kW and the car's onboard charger rating, after joining the "
+        f"{F['pairs']:,} charges Curbline's 10 a.m. settlement run splits into two records; at 6.6 kW the replay "
+        "reproduces every 2026 interval reading at the decks.", body))
     s.append(Paragraph(
-        f"The car that counts is the one each permit carries in the contract year: in January Larch County Fleet "
-        f"Services moved {F['renewed']} North Deck permits from 2020 Bolt EVs (7.2 kW) to 2023 Bolt EVs (11 kW). With "
-        f"the 2026 cars the year would peak at {whole(F['own_date'])} kW in February. Ricardo Moore expects everyone "
-        f"charged before lunch, and the 11 kW cars nearly always are, but {F['slow_2027']} of the {F['permits_2027']} "
-        f"permit vehicles are listed at 7.2 or 7.7 kW; the ones arriving mid-morning still charge at noon, and most of "
-        f"December's peak is theirs.", body))
+        "At North Deck the county's fleet attendant swaps pool cars: a pool car comes off within twenty minutes of "
+        "finishing and the next goes on within six, "
+        f"{F['handoffs']} times in 2026. On the new units the car ahead finishes sooner, so the next one starts "
+        f"sooner, after the same wait. On December 8, 2026 that takes {words[F['dec8_handoffs']]} pool cars out of the noon "
+        f"quarter-hour; holding every 2026 start time would put December 2027 at {whole(F['held'])} kW and the filing "
+        f"at {nearest5(F['held'])} kW.", body))
+    s.append(Paragraph(
+        f"The car that counts is the one each permit carries in the contract year: in January the county moved "
+        f"{F['renewed']} North Deck permits from 2020 Bolt EVs (7.2 kW) to 2023 Bolt EVs (11 kW); with the 2026 cars "
+        f"the year would peak at {whole(F['own_date'])} kW in February. Ricardo Moore expects everyone charged before "
+        f"lunch, and the 11 kW cars nearly always are, but {F['slow_2027']} of the {F['permits_2027']} permit vehicles "
+        f"are listed at 7.2 or 7.7 kW, and most of {MONTHS[mb - 1]}'s peak is theirs.", body))
     gap = F["planners"] - filed
     s.append(Paragraph(
-        f"North Sound Power &amp; Light's planners size an EV service at nameplate times the diversity factor in "
-        f"Section 7 of their planning guide: {F['units']} units at 11.5 kW times {F['diversity']:.2f}, to the next "
-        f"5 kW above, is <b>{F['planners']} kW</b>, which I expect Paul Henderson to propose at the service review. "
-        f"Ours is <b>{gap} kW lower</b>, worth ${gap * rate * 12:,.0f} a year at Schedule 26's ${rate:.2f} a month per "
-        f"contracted kW, and Section 4 of the agreement makes the contract demand the maximum billing demand we expect. "
-        f"A month above {filed} kW would reset the contract to that month's demand, rounded up to the next 5 kW, for "
-        f"twelve months.", body))
+        f"North Sound Power &amp; Light's planners size at nameplate times the diversity factor in Section 7 of their "
+        f"planning guide: {F['units']} units at 11.5 kW times {F['diversity']:.2f}, to the next 5 kW above, is "
+        f"<b>{F['planners']} kW</b>, which I expect Paul Henderson to propose. Ours is <b>{gap} kW lower</b>, worth "
+        f"${gap * rate * 12:,.0f} a year at Schedule 26's ${rate:.2f} a month per contracted kW. Section 4 of the "
+        f"agreement asks for the maximum billing demand we expect, and a month above {filed} kW would reset the "
+        f"contract to that month's demand, rounded up to the next 5 kW, for twelve months.", body))
     rows = [["Contract month", "Built from", "Forecast billing demand (kW)"]]
     for m, y in CONTRACT:
         v = F["monthly"][m]
         rows.append([f"{MONTHS[m - 1]} {y}", f"{MONTHS[m - 1][:3]} 2026", f"{whole(v['forecast'])}"])
     rows.append(["Contract demand, first contract year", "", f"{filed}"])
     tb = Table(rows, colWidths=[2.6 * inch, 1.3 * inch, 2.0 * inch], hAlign="LEFT")
-    dec_row = 1 + CONTRACT.index((12, 2027))
+    dec_row = 1 + CONTRACT.index((mb, yb))
     tb.setStyle(TableStyle([
         ("FONT", (0, 0), (-1, -1), "Helvetica", 8.6), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.6),
         ("FONT", (0, -1), (-1, -1), "Helvetica-Bold", 8.6), ("FONT", (0, dec_row), (-1, dec_row), "Helvetica-Bold", 8.6),
-        ("ALIGN", (2, 0), (2, -1), "RIGHT"), ("TOPPADDING", (0, 0), (-1, -1), 1.1), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.1),
+        ("ALIGN", (2, 0), (2, -1), "RIGHT"), ("TOPPADDING", (0, 0), (-1, -1), 0.7), ("BOTTOMPADDING", (0, 0), (-1, -1), 0.7),
         ("LEFTPADDING", (0, 0), (-1, -1), 2),
         ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#52514e")),
         ("LINEABOVE", (0, -1), (-1, -1), 0.6, colors.HexColor("#52514e")),
@@ -359,14 +397,13 @@ def note(F, path):
     s.append(Paragraph("Source: Curbline settlement and interval exports, sessions plugged in January to December 2026 "
                        "at the 32 deck units, deliveries through January 18, 2027; Parking Services permit registry, "
                        "vehicle checks (renewals through January 15, 2027) and vehicle reference list.", small))
-    s.append(Spacer(1, 5))
-    s.append(Paragraph("Billing demand is as Schedule 26, Section 3 defines it: the highest average kW in any "
+    s.append(Spacer(1, 3))
+    s.append(Paragraph("Billing demand as Schedule 26, Section 3 defines it: the highest average kW in any "
                        "fifteen-minute interval beginning 12:00 noon through 7:45 p.m., Monday to Friday, outside the "
-                       "listed holidays. The new service has one meter, so the decks' loads are summed before the "
-                       "highest quarter-hour is taken. Monthly figures are rounded to whole kW; the factor of 1.12 is "
-                       "FES-07 Table 1, adopted September 15, 2026.", small))
+                       "listed holidays, both decks summed behind the new service's one meter. Factor 1.12: FES-07 "
+                       "Table 1, adopted September 15, 2026.", small))
     doc = SimpleDocTemplate(str(path), pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch,
-                            topMargin=0.65 * inch, bottomMargin=0.75 * inch, title="Contract demand, Civic Center decks",
+                            topMargin=0.6 * inch, bottomMargin=0.7 * inch, title="Contract demand, Civic Center decks",
                             author="Shelley Tanner", subject="Schedule 1 contract demand", creator="City of Larch Harbor",
                             invariant=1)
     doc.build(s, onFirstPage=foot)
@@ -437,8 +474,10 @@ def workbook(F, path):
            "processor and are not in the Curbline export; they are added from the fleet card transactions, matched to "
            "the export on NETWORK_REF so no charge counts twice. The processor stamps START and END in UTC (on every "
            "charge both files carry, START is the export's plug-in to the second), so they are placed in local time.",
-           "Restated sessions: the version Parking Services marked ACCEPTED, otherwise the version delivered first; "
-           "re-delivered records counted once per authorization code."])
+           "2024 base months as their records stood when the forecast was made (FES-07 Section 4): the twelve 2024 "
+           "sessions Curbline restated in March 2025 count at the version settled before then.",
+           "2025 months: for a restated session, the version Parking Services marked ACCEPTED, otherwise the version "
+           "delivered first; re-delivered records counted once per authorization code."])
 
     # 2. the 2026 basis against the panel meters
     ws = wb.create_sheet("2026 panel check")
@@ -458,11 +497,13 @@ def workbook(F, path):
                  [None, None, "0", "yyyy-mm-dd", None, None, None, "#,##0.0", "#,##0.0", "#,##0"],
                  ["The sub-meters keep Pacific Standard Time all year (DST adjustment disabled, nameplate record), so "
                   "read times from March to October are an hour behind local time.",
-                  "Session kWh: Curbline readings for every quarter-hour inside the span; in the quarter-hour a read "
-                  "falls inside, each session's constant 6.6 kW draw up to the read time. Weekend and Schedule 26 "
-                  "holiday charging is free to permit holders and is not settled, so it comes from Curbline's "
-                  "courtesy-session report (none of those sessions spans a read).",
-                  "On December 31 the South panel was read twice; the later read (09:52) stands, per the log.",
+                  "Metered kWh: the register at each read, with the eight reads on the log's Corrections sheet "
+                  "replaced by their corrected values.",
+                  "Session kWh: Curbline readings for every quarter-hour inside the span (each read closes a "
+                  "15-minute interval on the meter clock). Weekend and Schedule 26 holiday charging is free to permit "
+                  "holders and is not settled, so it comes from Curbline's courtesy-session report (none of those "
+                  "sessions spans a read).",
+                  "On December 31 the South panel was read twice; the later read (09:45) stands, per the log.",
                   "Unit N-11 was on the North Deck house panel from June 1 to July 12, 2026 (WO-26-0418, panel "
                   "schedule), so its sessions in that period are not on CP-N.",
                   "The unaccounted energy is mostly each panel's roof-level pole lighting (circuit 33)."])
@@ -471,6 +512,9 @@ def workbook(F, path):
     ws.auto_filter.ref = f"A4:J{last}"
 
     # 3. the contract year, as filed
+    mb = F["t_bind"].month
+    yb = 2028 if mb <= 3 else 2027
+    top = F["monthly"][mb]
     ws = wb.create_sheet("Contract year")
     rows = []
     for m, y in CONTRACT:
@@ -483,13 +527,15 @@ def workbook(F, path):
                  ["Contract month", "Built from", "Highest billed quarter-hour (start)", "2026 replay (kW)", "Factor",
                   "Forecast billing demand (kW)"],
                  rows, [17, 11, 20, 12, 8, 14], [None, None, None, "0.0", "0.00", "0"],
-                 ["Replay: each 2026 deck charge from its start until its delivered kWh, at the lower of 11.5 kW and "
-                  "the onboard charger rating of the car its permit carries in 2027 (January 2027 vehicle check, "
-                  "vehicle reference list). A charge the 10 a.m. settlement run split into two session records is "
-                  "replayed as one.",
-                  f"Contract demand: the highest month ({whole(F['monthly'][12]['forecast'])} kW, December 2027) in "
+                 ["Replay: each 2026 deck charge until its delivered kWh, at the lower of 11.5 kW and the onboard "
+                  "charger rating of the car its permit carries in 2027 (January 2027 vehicle check, vehicle reference "
+                  "list). A charge the 10 a.m. settlement run split into two session records is replayed as one.",
+                  f"Start: as in 2026, except the {F['handoffs']} county pool cars the attendant put on a North Deck unit "
+                  "behind another pool car, which start once the car ahead finishes at its new rate, after the same "
+                  "wait as in 2026.",
+                  f"Contract demand: the highest month ({whole(top['forecast'])} kW, {MONTHS[mb - 1]} {yb}) in "
                   f"whole multiples of 5 kW: {F['filed']} kW."])
-    dec_row = 5 + CONTRACT.index((12, 2027))
+    dec_row = 5 + CONTRACT.index((mb, yb))
     for c in range(1, 7):
         ws.cell(dec_row, c).font = Font(name="Calibri", size=10, bold=True)
 
@@ -504,6 +550,10 @@ def workbook(F, path):
                           "the same records. The 10 a.m. settlement run closes a session still charging and the charge "
                           "carries on in a new record from that second at the same unit, under the same permit or fleet card; "
                           "the forecast replays charges, so those pairs are joined back into one."),
+             ("Pool hand-offs", "Larch County Fleet Services' attendant swaps pool cars on the North Deck units: a pool "
+                                "car comes off within twenty minutes of finishing and the next pool car goes on within "
+                                "six (the swaps are noted on WO-26-0529). On the new units the next car goes on once the "
+                                "car ahead finishes at its new rate."),
              ("Courtesy sessions", "curbline_courtesy_sessions_civic_decks_2024-2026.csv, for the panel check (weekend "
                                    "and holiday charging)."),
              ("Garage and unit", "station_register.csv, by the assignment in service on the session date."),
@@ -513,7 +563,8 @@ def workbook(F, path):
              ("Fleet card charges", "fleet_card_ev_transactions_2024-2026.csv for the charges the Curbline export "
                                     "does not carry (before April 1, 2025)."),
              ("Panel circuits", "deck_panel_circuit_schedule.csv, by the assignment in force on the reading date."),
-             ("Meter reads", "deck_panel_meter_log_2024-2026.xlsx; clock per deck_submeter_nameplates.csv."),
+             ("Meter reads", "deck_panel_meter_log_2024-2026.xlsx, Reads sheet with the Corrections sheet applied; "
+                             "clock per deck_submeter_nameplates.csv."),
              ("Growth", "FES-07 Rev. 4, Table 1: 1.12 for forecasts made from September 15, 2026; 1.08 for the 2025 "
                         "forecast."),
              ("Rounding", "kW and kWh to whole numbers in the filed figures; errors to one decimal of a percent.")]
@@ -583,7 +634,11 @@ def main():
     print(f"  2026 billed-hours maximum  {F['base']:.1f} kW at {F['t_bind']:%H:%M} on {F['t_bind']:%a %d %b %Y} "
           f"(North {F['north_base']:.1f}, South {F['south_base']:.1f})")
     print(f"  growth factor              {F['growth']:.2f}")
-    print(f"  December 2027              {F['monthly'][12]['forecast']:.1f} kW, the highest contract month")
+    mb = F["t_bind"].month
+    print(f"  {MONTHS[mb - 1]} {2028 if mb <= 3 else 2027}{'':<14}{F['monthly'][mb]['forecast']:.1f} kW, the highest "
+          f"contract month")
+    print(f"  hand-offs re-timed         {F['handoffs']} in 2026; held at their 2026 starts the call is "
+          f"{F['held']:.3f} kW, set {F['held_at']:%d %b %Y %H:%M} (rival)")
     print(f"\ndeck split after growth     North {F['north']:.3f} ({whole(F['north'])}), South {F['south']:.3f} "
           f"({whole(F['south'])})")
     print(f"NSPL planners' sizing       {F['units']} x {F['new_kw']} x {F['diversity']:.2f} = "

@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, level-, planned, staffed, capacity, attribution, referrals, admissions, referral, waited, hospitals, objective, occupancy, census, admitted, patient, decomposition, population, allocation, report, reviews, admission, window, latest, quarters
+Stump terms swept: decisive, level-, staffed, planned, admissions, attribution, capacity, referrals, referral, waited, hospitals, objective, occupancy, census, patient, decomposition, population, report, reviews, admitted, admission, window, latest, quarters, structural
 
 ## 4 design-note vocabulary (REVIEW 5)
 - **REVIEW** `accn_board_paper_2023-11-21_level3_capacity.pdf`: 5 of 25 stump-paragraph terms appear (staffed, capacity, hospitals, patient, report); read whether the document names the move
-- **REVIEW** `ccrs_migration_export_specification_rel2.3.pdf`: 5 of 25 stump-paragraph terms appear (referrals, referral, admitted, patient, admission); read whether the document names the move
-- **REVIEW** `rds_apc_extract_specification.txt`: 4 of 25 stump-paragraph terms appear (referral, admitted, patient, admission); read whether the document names the move
+- **REVIEW** `ccrs_migration_export_specification_rel2.3.pdf`: 5 of 25 stump-paragraph terms appear (referrals, referral, patient, admitted, admission); read whether the document names the move
+- **REVIEW** `rds_apc_extract_specification.txt`: 4 of 25 stump-paragraph terms appear (referral, patient, admitted, admission); read whether the document names the move
 - **REVIEW** `review_terms_of_reference_2027-28.docx`: 8 of 25 stump-paragraph terms appear (referrals, referral, waited, hospitals, patient, report); read whether the document names the move
-- **REVIEW** `wenmarsh_acc_extract_field_guide.pdf`: 11 of 25 stump-paragraph terms appear (planned, staffed, capacity, referrals, admissions, referral); read whether the document names the move
+- **REVIEW** `wenmarsh_acc_extract_field_guide.pdf`: 11 of 25 stump-paragraph terms appear (staffed, planned, admissions, capacity, referrals, referral); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

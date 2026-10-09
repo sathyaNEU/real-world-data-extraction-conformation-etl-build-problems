@@ -8,8 +8,11 @@ from collections import defaultdict
 import numpy as np
 
 from common import (CODE, TRUSTS, LETTERS, PARALLEL0, PARALLEL1, lm, day_of, fmt, to_dt, local_to_utc_min, own_unit,
-                    rng, DAY, CORE_UNITS)
+                    rng, DAY, CORE_UNITS, clear_of_dst, DST_WINDOWS)
 from people import PILOT_WARDS
+import plan
+
+DV8_UNCAPPED = {"DV8", "DV1sp", "DV5"}      # legacy transfers whose arrival reads past four hours by design
 
 GO = lm(dt.date(2024, 4, 2), 0, 0)
 OUTCOME = {"admitted": "Admitted", "stood_down": "Stood down", "died": "Died before admission"}
@@ -121,11 +124,50 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         for i, (t, e, lv) in enumerate(ev, start=1):
             hist.append({"referral_id": ref["ref_id"], "entry_no": i, "recorded_at": fmt(t), "entry": e, "level": lv})
     out["level_history"] = hist
-    # ---------------------------------------------------------------- unit stays (bed episodes before go-live)
+    # ---------------------------------------------------------------- transfers between trusts: allocation to arrival
+    # The bureau allocates the bed (the stay's admit minute); the patient arrives later. Before go-live the bed list
+    # dated the stay from the arrival. Every legacy transfer but the designed ones arrives inside 3h52 of its
+    # decision; no held bed spans 08:00 or runs into a wait at the receiving unit's own trust.
     ref_of_stay = {}
     for ref in refs:
         if ref["stay"] is not None:
             ref_of_stay[ref["stay"]] = ref
+    rt = rng("transit")
+    frozen = {u: sorted(U.frozen) for u, U in world.units.items()}
+    transit = {}
+    for i in sorted(ref_of_stay, key=lambda i: (stays[i]["admit"], i)):
+        ref = ref_of_stay[i]
+        st = stays[i]
+        if ref["outcome"] != "admitted" or own_unit(ref["letter"], day_of(ref["dta"])) == st["unit"]:
+            continue
+        t, u = st["admit"], st["unit"]
+        if t >= GO:
+            continue
+        w = world.waits_by_id.get(ref["wid"]) if ref["wid"] is not None else None
+        tags = (w["tags"] if w is not None else set())
+        lo, hi = plan.TRANSIT
+        wt = t - ref["dta"]
+        if w is not None and "DV8" in tags:
+            transit[i] = w["transit"]
+            continue
+        if tags & DV8_UNCAPPED:
+            lo = max(lo, 250 - wt)            # a near miss: its arrival reads past four hours
+        elif wt <= 240:
+            hi = min(hi, plan.LEGACY_TX_MAX_PLACED - wt)
+        hi = min(hi, st["rows"][0][1] - t - 15)
+        day8 = lm(day_of(t), 8, 0)
+        nxt8 = day8 if t < day8 else day8 + DAY
+        hi = min(hi, nxt8 - t - 1)
+        for a, b in frozen[u]:
+            if a > t:
+                hi = min(hi, a - t - 1)
+                break
+        for a, b in DST_WINDOWS:
+            if t < b and t + hi > a:
+                hi = min(hi, a - t - 1)
+        assert hi >= lo, ("legacy transit", fmt(t), u, wt, lo, hi, sorted(tags))
+        transit[i] = int(rt.integers(lo, hi + 1))
+    out["transit"] = transit
     srows = []
     lb = 7340021
     st = 1102544
@@ -137,7 +179,7 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         if ref is not None:
             key = temp.get(ref["rid"]) if (ref["legacy"] and ref["rid"] in temp) else vkey(s["pid"])
             rid = ref["ref_id"]
-            src = "04" if ref["ward"] == "ED" else "06"
+            src = "04" if ref["ward"] == "ED" else ("01" if ref["ward"] == "REC" else "06")
             typ = s["type"]
         else:
             key = p["key"]
@@ -149,6 +191,8 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         if legacy and typ == "02":
             typ = "01"              # the CCRS-era bed-management list had one code for every unplanned admission
         seg = s["rows"] if legacy else [(s["admit"], s["discharge"])]
+        if legacy and i in transit:
+            seg = [(seg[0][0] + transit[i], seg[0][1])] + list(seg[1:])      # placed in the bed on arrival
         for j, (a, b) in enumerate(seg):
             if legacy:
                 lb += int(r.integers(1, 3))
@@ -162,8 +206,11 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
     out["stays"] = srows
     # ---------------------------------------------------------------- identity merges
     merges = []
+    ref_by_rid = {x["rid"]: x for x in refs}
     for rid, tk in sorted(temp.items(), key=lambda kv: kv[1]):
-        ref = [x for x in refs if x["rid"] == rid][0]
+        ref = ref_by_rid[rid]
+        if "DV9" in ref["tags"]:
+            continue              # never identified: no merge
         merged = day_of(ref["dta"]) + dt.timedelta(days=int(r.integers(1, 22)))
         merges.append({"temporary_key": tk, "verified_key": vkey(ref["pid"]), "merged_on": d_s(merged),
                        "registering_trust": CODE[ref["letter"]]})
@@ -178,9 +225,14 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         if own_unit(ref["letter"], day_of(ref["dta"])) == s["unit"]:
             continue
         k += int(r.integers(1, 3))
-        dep = s["admit"] + int(r.integers(25, 95))
-        arr = dep + int(r.integers(20, 75))
-        tx.append({"transfer_ref": "TX%06d" % k, "patient_key": vkey(ref["pid"]),
+        if ref["stay"] in transit:
+            arr = s["admit"] + transit[ref["stay"]]
+            dep = arr - int(r.integers(15, max(16, min(55, transit[ref["stay"]] - 15) + 1)))
+        else:
+            dep = clear_of_dst(s["admit"] + int(r.integers(25, 95)), +1)
+            arr = clear_of_dst(dep + int(r.integers(20, 75)), +1)
+        key = temp[ref["rid"]] if "DV9" in ref["tags"] else vkey(ref["pid"])
+        tx.append({"transfer_ref": "TX%06d" % k, "patient_key": key,
                    "from_trust": CODE[ref["letter"]], "from_site": TRUSTS[ref["letter"]][2], "to_unit": s["unit"],
                    "decision_at": fmt(ref["dta"]), "bed_confirmed_at": fmt(s["admit"]), "departed_at": fmt(dep),
                    "arrived_at": fmt(arr)})

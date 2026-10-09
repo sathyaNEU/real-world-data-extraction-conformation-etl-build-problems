@@ -2,11 +2,11 @@
   "task": "task123",
   "domain": "nonprofit-grant-making",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "solver round 1",
+  "stage": 3,
+  "stage_name": "built",
   "updated": "2026-10-09",
-  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, recovers the step-back from Ledgerwood's residue rows or the twelve-month identity on the register as held, gives back all 797 published rows, every offer and every rate, and strikes the offers at 17.76 cents on 14 names, because it scores the 14 grantees balancing at 31 March whose 2025-26 annual return was not on the register on twelve months to December 2025, reading rule 4.1's census before as a year back the way every March round had it, when rule 2 makes 31 March 2026 the census before the first September census and those twelve months end before it, so the answer scores 132 grantees and strikes 42.55 cents on nine.",
-  "harden_loops": 1,
+  "stump": "A competent solver rebuilds the screen as held at the 30 September census, recovers the step-back, gives back all 815 published rows, every offer and every rate, applies rule 4.1 against rule 2's census list, and strikes the offers at 34.11 cents on 11 names, because it places every quarter on one balance date per organisation (its latest annual return's), so it scores the three grantees that moved from 30 June to 31 March in 2025-26 on twelve months to March 2026 and offers two of them, when each return's own year end makes March 2026 the last quarter of their nine-month year, with no annual return on the register, so rule 4.1 removes them and the answer scores 132 grantees and strikes 42.55 cents on nine.",
+  "harden_loops": 2,
   "solver_rounds": [
     {
       "label": "round 1, plain",
@@ -28,6 +28,17 @@
       "decision": "harden",
       "report": "solver_rounds/round-2-plain.md",
       "note": "token match read missed (4 of 7, the sentence lacks Strike and Steady Ground); main thread re-graded --landed yes: 42.55 cents, nine offers, $559,969 of $560,000 is block 1"
+    },
+    {
+      "label": "round 3, plain",
+      "date": "2026-10-09",
+      "score": 86.0,
+      "landed": true,
+      "cracked": 6,
+      "items": 9,
+      "decision": "harden",
+      "report": "solver_rounds/round-3-plain.md",
+      "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path reached R6 at step 3 (each LTM term taken from its own return, short years for the three movers), R4 at step 4, R5 at step 6. K1 government parts cracked on all nine (co-funding via Variations and the payment run); K2 own money held on all nine (Steady Ground instalments missing)."
     }
   ],
   "judge": {

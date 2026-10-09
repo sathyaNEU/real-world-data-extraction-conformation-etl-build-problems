@@ -76,30 +76,40 @@ patient's wait.
 
 ## Stump sentence
 
-A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's
-staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was
-full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands
-it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long
-waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those
-waits D's own care and D's deaths after them the largest number the review can confirm.
+A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the
+trusts holding no level-3 beds, rebuilds every unit's census from its stays and writes the remit's methodology sentence
+as its test, a death being the trust's own care when its own unit held an empty staffed bed during the wait or gave a bed
+to another patient during it, and sends the engagement to A, 37 deaths over D's 27; the step that lands it there is
+reading every admission during a wait as the trust's own decision about its beds without asking who placed the patient:
+every admission inside one of A's long waits was a patient transferred from a trust without level-3 beds, on a bed the
+network's bed bureau allocated (the transfer audit's `bed_confirmed_at`, which the field guide defines as the bureau's
+allocation), so those waits are the network's capacity and A keeps 2 deaths of its own, while through every one of D's
+long waits D's unit admitted planned post-operative patients from D's own theatres, which makes D's 27 the largest number
+the review can confirm. A solver who stops one step earlier, at the census, files G at 15.
 
 ## Decisive rung
 
 **#17 Guesses an attribution the data can settle** (`_measured.md`): decided 2 of 64 client tasks, both under 0.50, status
-emerging. The records leave out whose decision a long wait was. Every solver who takes up the remit's "own care" question
-attributes a wait at a full unit to capacity, the sensible heuristic, and the signal that settles each wait exactly sits in the
-unit's own admission record: through each of D's long waits D's unit, full at every hour, was taking planned post-operative
-patients from D's theatres. It is reached behind **#11 Beats the headline trap, misses the quiet one** (4 of 64, 2 under 0.50,
-established): the solver who distrusts the morning bed return and rebuilds the census hour by hour has beaten the visible trap
-and stops at G. **#7 Uses the ready-made measure** (5 of 64, 2 under 0.50) carries the rung below, where the 08:00 return stands
-in for occupancy during the wait. #17's recipe ships a settled case that only the signal reproduces; this build ships none,
-because a case that refutes the capacity reading would be a corpus built to refute the naive read, and the remit's methodology
-note pins the attribution instead.
+emerging. The records leave out whose decision a long wait was. A solver who takes up the remit's "own care" question reads
+a wait at a full unit as capacity, and one who reads the methodology sentence literally counts any bed the unit gave to
+another patient during the wait as the trust's decision; what settles each wait is the unit's own admissions joined to the
+referral log and the bureau's transfer audit: through each of D's long waits D's unit, full at every hour, admitted planned
+post-operative patients from D's theatres, while every admission during A's, C's and G's long waits was a transfer the
+network's bed bureau placed. It is reached behind **#6 Treats a mixed segment all one way** (5 of 64, 2 under 0.50,
+established): the admissions to the own unit during a wait carry one meaning in the methodology sentence's literal test (a
+bed given away), and what splits them sits away from the stays table, in the field guide's entry for the transfer audit's
+`bed_confirmed_at` (the bureau's allocation) and in each admitted patient's referring trust; read all one way they name A.
+#6 sits behind **#11 Beats the headline trap, misses the quiet one** (4 of 64, 2 under 0.50, established), where the solver
+who distrusts the morning return and rebuilds the census stops at G, and **#7 Uses the ready-made measure** (5 of 64, 2
+under 0.50) carries the 08:00 rung below that. #17's recipe ships a settled case that only the signal reproduces; this
+build ships none, because a case that refutes the capacity reading would be a corpus built to refute the naive read, and
+the remit's methodology note and the field guide's bureau line pin the attribution instead.
 
 **Corpus blind for a computable reason (L1).** In every corpus case every wait over four hours passed while the reviewed trust's
 own unit held an empty staffed bed, because the four neighbouring networks never ran full from 2021 to 2025, so counting every
-long wait, counting waits on days the morning return showed a free bed, counting waits in hours the census shows a free bed and
-counting waits the trust's own care could have shortened return the same deaths for all 34 reviews. Under the naive path (count
+long wait, counting waits on days the morning return showed a free bed, counting waits in hours the census shows a free bed,
+counting waits through which the unit admitted anyone and counting waits the trust's own care could have shortened return the
+same deaths for all 34 reviews. Under the naive path (count
 every long wait) the corpus reproduces (L7), and every attribution partitions the same deaths, so every total ties (L8).
 
 **Gate G at the draw.** Litmus: no. Every figure is correct (the waits, the 08:00 returns, the units' admission and discharge
@@ -121,14 +131,16 @@ no wrong number exists to delete.
   hourly bed return still excuses D); argmax under a stated rule (no rule states the attribution beyond the methodology's general
   sentence); a dated cause (D's practice is steady, the only dated events sit under decoys).
 - First moves of the opponent: the one-period group-by names E; the occupancy decomposition names C (morning return) or G
-  (census); the corpus back-test reproduces under every reading; no series steps; every total ties.
+  (census); the methodology sentence read as a work order (any bed given to another patient) names A; the corpus back-test
+  reproduces under every reading; no series steps; every total ties.
 - Objective: the call separates each trust's waits held by network capacity (the artifact) from the waits its own care made (the
   real event), and places the one review there; no forecast enters the call.
 
 ## Ladder sketch
 
 The draw's four-rung sketch, kept as the draw record. Stage 2 replaces it with the five-rung ladder under `## Stage 2: design`
-(a structural rung added, D moved to fourth on rung 0, E killed by the unit register).
+(a structural rung added, D moved to fourth on rung 0, E killed by the unit register; hardening loop 1 then put the
+any-admission rung in the structural rung's place).
 
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
@@ -185,6 +197,10 @@ with task121 and task122 now registered, it returns **WARN** (exit 0) on repeat.
   2026-10-09) check at WARN only, on repeat.gate_g and repeat.decision (all three are decomposition_attribution picks) and, for
   task121, overuse.org_family. Calibration, artifact, role, forum, event and organisation family were chosen clear of both
   siblings, and with task122 registered first this card also checks at WARN on the same two rules.
+- Hardening loop 1 (2026-10-09): the card's stump is the loop-1 sentence (A at the any-admission rung), its spine row count the
+  rebuilt 30,785 and its notes carry #6 behind the decisive rung; `guard.py validate task119` 0 invalid, `guard.py heart task119`
+  **WARN** (exit 0) on the same two rules, nearest heart text 0.05 (task89 lineage) and nearest driver 0.06, under the 0.12 WARN
+  line.
 - Variants checked and not taken: crediting delays to a unit only when a bed stood free anywhere in the network forks between
   own-unit and network readings, needs a pin that names the question, and repeats task111 v1's frame and task88's full-period
   blindness as the decisive move; a fixed random review sample that makes the yield a density is C on reach and reads as
@@ -231,7 +247,8 @@ this note; their names are provisional until the stage-3 H21 sweep.
 1. **Five rungs, not four.** The stage gate asks for 5 to 6 rungs, and the sketch had four with D third on rung 0, which breaks
    the position rule (stumping Part 3, 4th or 5th). A structural rung goes in after the raw count: the remit's own-care clause
    read at the trust's structure, which sets aside the four trusts holding no level-3 beds and names A, the regional centre. D now
-   sits fourth on rung 0 and third on rung 1.
+   sits fourth on rung 0 and third on rung 1. Hardening loop 1 moved that structural reading into the correction grid (the
+   none/own cell, A 44 over C 35) and put the any-admission rung (A 37 over D 27) fourth, so A leads one rung, not two.
 2. **Rung 0 is killed by the unit register.** E's long waits pass in evenings and nights with every unit full, and some of their
    decision dates follow a morning when C's unit reported an empty staffed bed, so the sketch's killing fact (every unit full at
    08:00 on every day E waited) no longer holds. The register does: E holds no level-3 beds, so every E wait is for another
@@ -244,9 +261,10 @@ this note; their names are provisional until the stage-3 H21 sweep.
    row is added (three criteria).
 4. **The corpus refutes nothing.** It reproduces all 34 reviews under the naive count and under every attribution the ladder offers
    (L1, L7, L8); no settled case refutes the capacity reading, and the remit's methodology note pins the attribution.
-5. **Own unit against whole network.** They agree at the census and allocation bases by construction (no long wait overlaps an hour
-   when another unit held an empty staffed bed or admitted a planned case). At the 08:00 basis they differ, because C reports empty
-   beds on mornings before other trusts' patients wait, and the network reading names C: a wrong cell, mapped to "its own beds".
+5. **Own unit against whole network.** They agree at the census basis with admissions ignored by construction (no long wait
+   overlaps an hour when another unit held an empty staffed bed). Once admissions are read, the network reading counts other
+   units' admissions during E's and A's waits and names E; at the 08:00 basis C reports empty beds on mornings before other
+   trusts' patients wait, and the network reading names C or E. Each is a wrong cell, mapped to "its own beds".
 6. **The census-grain fork is closed by the bed-assignment convention.** The unit feed dates a stay from the minute its bed is
    assigned, so a bed that frees and goes to the next patient shows no empty interval at any grain.
 7. **Deaths** come from the admitted patient care episodes' linked date of death, as the draw planned, so in-hospital and
@@ -260,20 +278,22 @@ The Ostle Regional Health Board commissions and oversees eight acute trusts and 
 
 | | Trust (provisional name) | Level-3 beds | Role |
 |---|---|---|---|
-| A | Ostlebury Teaching Hospitals NHS Foundation Trust | 30 staffed, regional centre | rung 1 decoy: most deaths among trusts holding level-3 beds, all capacity |
+| A | Ostlebury Teaching Hospitals NHS Foundation Trust | 30 staffed, regional centre | rung 3 decoy: its full unit takes bureau transfers from trusts without level-3 beds through most of its long waits |
 | B | Tannerby Hospital NHS Trust | none (level-2 unit) | texture |
-| C | Brenhythe Hospitals NHS Foundation Trust | 14 staffed at night, 16 by day | rung 2 decoy: empty staffed beds at 08:00 on most weekday mornings, full by midday with emergencies |
+| C | Brenhythe Hospitals NHS Foundation Trust | 14 staffed at night, 16 by day | rung 1 decoy: empty staffed beds at 08:00 on most weekday mornings, full by midday with emergencies |
 | D | Stennock University Hospitals NHS Foundation Trust | 18 staffed, surgical centre | the answer: weekday elective lists send planned post-operative patients to its unit |
 | E | Lessington Hospitals NHS Trust | none (level-2 unit) | rung 0 decoy: most deaths after long waits, all for other trusts' beds |
 | F | Ellerdyke Hospitals NHS Trust | level 3 until 31 March 2024, level 2 since | carries the register-vintage device |
-| G | Gorrington Hospitals NHS Foundation Trust | 12 staffed | rung 3 decoy: holds staffed beds empty through weekend afternoons until a consultant review |
+| G | Gorrington Hospitals NHS Foundation Trust | 12 staffed | rung 2 decoy: holds staffed beds empty through weekend afternoons until a consultant review |
 | H | Pevenham Hospitals NHS Trust | 3 winter level-3 beds, 4 December 2023 to 31 March 2024 | carries the register-vintage device |
 
 Timing, constructed and asserted: D's planned post-operative admissions arrive on weekdays from late morning to early evening, and
 every D long wait falls inside those hours; C's long waits start in the evening after its unit fills; G's start on weekend
 afternoons; A's, B's, E's, F's and H's long waits pass in evenings and nights with every unit full. No planned admission at any unit falls inside a long wait at any trust but D, no long wait
 overlaps an hour when a unit other than its own held an empty staffed bed, and physical beds equal staffed beds at the four units
-through the latest four quarters.
+through the latest four quarters. A bed that frees inside an A, C or G long wait goes to a patient referred earlier by a trust
+without level-3 beds, placed by the network's bed bureau and logged in its transfer audit (117 such admissions inside A's waits
+in the latest four quarters, 23 inside C's, 6 inside G's).
 
 Latest four quarters (July 2025 to June 2026): patients who waited more than four hours from the decision to admit to the
 assignment of a level-3 bed, deaths within 30 days of the decision among them, and the deaths the review can confirm.
@@ -293,7 +313,8 @@ assignment of a level-3 bed, deaths within 30 days of the decision among them, a
 D's 27 are deaths after waits through which D's unit, full at every hour, admitted planned post-operative patients from D's own
 theatres: every D long wait falls on a weekday during the elective lists, and at weekends D's freed beds reach its waiting ward
 patients inside four hours. G's 15 are waits through which G's own unit held an empty staffed bed from
-the decision to the assignment; its other 6 are capacity. A's 2 are waits with an hour of empty staffed bed at A. Long-wait
+the decision to the assignment; its other 6 are capacity. A's 2 are waits with an hour of empty staffed bed at A; 35 of its
+other 42 followed waits through which its full unit took bureau transfers, and 7 waits through which it admitted nobody. Long-wait
 mortality runs 28 to 30 per cent at every trust. E also leads the deaths before a bed was assigned, so the chair's belief points at
 E on either reading.
 
@@ -308,7 +329,7 @@ E on either reading.
   pipeline still counts E first, the census still shows D's unit full at every hour of every D wait, and the answer is still D. No
   wrong number exists to delete.
 - **Clean-data test, per suspect file (asserted in the generator).** The daily 08:00 bed return: filled (it has no gap), corrected
-  (it is correct at its stated meaning) and replaced by an hourly return of occupancy against staffed beds; rung 2 then names G, the
+  (it is correct at its stated meaning) and replaced by an hourly return of occupancy against staffed beds; rung 1 then names G, the
   answer stays D because D's unit is full at every hour (D filled it), the naive leader stays E, and D differs from E. The capacity
   report: deleted, nothing moves. An instrument observing the decision's own quantity would be a field on each referral saying
   whether the trust's own unit took a planned case during the wait; no system records it, because it is a relation between two
@@ -341,68 +362,83 @@ natural pipeline, behind E by 2.07x.
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Deaths within 30 days after a wait of more than four hours for a level-3 bed, by referring trust, latest four quarters | E, 56 over A 44 (1.27x) | The remit's own population counted exactly as filed, and the corpus reproduces all 34 reviews under it | The unit register: E holds no level-3 beds, so every E wait is for another trust's bed |
-| 1 | The same count at the four trusts holding level-3 beds | A, 44 over C 35 (1.26x) | The own-care clause applied to the trust's structure: a trust whose patients can only wait for another trust's bed carries no waits of its own | A's 08:00 returns: A's unit reported no empty staffed bed on any day A's referrals waited |
-| 2 | Waits set aside on days the trust's own 08:00 return showed no empty staffed bed | C, 34 over G 4 (8.5x) | A capacity check on the network's own published return, and C's waits survive it | The census rebuilt from C's stays: C's unit was full at every hour of every C long wait (it fills by midday, the waits start in the evening) |
-| 3 | Waits set aside where the census shows the own unit full at every hour of the wait | G, 15 over A 2 (7.5x) | The exact occupancy through each wait, and G's waits passed beside its own empty staffed beds | Overtaken: D's stays during D's waits, planned post-operative admissions from D's theatres through every one of D's long waits (27 deaths) |
-| 4 | **Decisive:** waits through which the referring trust's own unit held an empty staffed bed or admitted planned post-operative patients from the trust's own theatres | **D, 27 over G 15 (1.80x)** | | |
+| 1 | Waits set aside on days the trust's own 08:00 return showed no empty staffed bed (trusts without level-3 beds carry none) | C, 34 over G 4 (8.50x) | A capacity check on the network's own published return, and C's waits survive it | The census rebuilt from C's stays: C's unit was full at every hour of every C long wait (it fills by midday, the waits start in the evening) |
+| 2 | Waits set aside where the census shows the own unit full at every hour of the wait | G, 15 over A 2 (7.50x) | The exact occupancy through each wait, and G's waits passed beside its own empty staffed beds | The methodology note counts the trust's decisions about the use of its own beds, and the full units gave beds to other patients through 78 per cent of A's long waits and every one of D's |
+| 3 | Waits through which the own unit held an empty staffed bed or admitted any other patient | A, 37 over D 27 (1.37x) | The methodology sentence applied as written: a bed given to another patient while this one waited | The transfer audit and the field guide's `bed_confirmed_at` line: every admission inside an A long wait was a patient referred earlier by a trust without level-3 beds, on a bed the network's bed bureau allocated, not A's decision |
+| 4 | **Decisive:** waits through which the own unit held an empty staffed bed or admitted a patient the trust placed itself (its own planned or local admissions, never a bureau transfer) | **D, 27 over G 15 (1.80x)** | | |
 
-- A solver who does everything right up to rung 3 commits to G, which is the stump sentence's wrong answer.
-- Every rung names a different trust (E, A, C, G, D), asserted by name after every parameter change.
-- Rung 4 carries the stump (#17), behind #11 at rung 3 and #7 at rung 2.
-- Gaps (stumping Part 1). Rung 0 to 1 opens the objective gap: deaths after a long wait are counted correctly and are not what the
-  review is scored on. Rungs 1 to 3 move the moment at which the trust's capacity is read (its structure, its 08:00 state, its state
-  at every hour of the wait), each a measurement-time refinement on correct records. Rung 3 to 4 opens the population gap: the waits
-  the trust's own allocation made, a set that exists only as a relation to other patients' admissions. Decisive gap objective,
-  reached through population, as the card files it.
-- Survival properties of rung 4: written nowhere (the remit's note counts "decisions about the use of its own beds and staff" and
-  names no planned admission, occupancy or order of admission); no sweepable corpus nominates it (the corpus is blind, below); no
+- A solver who writes the methodology sentence as its test commits to A at rung 3, which is the stump sentence's wrong answer;
+  one who stops at the census commits to G.
+- Every rung names a different trust (E, C, G, A, D), asserted by name after every parameter change.
+- Rung 4 carries the stump (#17), behind #6 at rung 3, #11 at rung 2 and #7 at rung 1.
+- The structural reading (the raw count at the four trusts holding level-3 beds, A 44 over C 35, 1.26x) is the none/own cell of
+  the grid, killed by A's 08:00 returns (no empty staffed bed on any of the 135 days A's referrals waited in the latest four
+  quarters).
+- Gaps (stumping Part 1). Rung 0 to 1 opens the objective gap: deaths after a long wait are counted correctly and are not what
+  the review is scored on. Rungs 1 and 2 move the moment at which the own unit's capacity is read (its 08:00 state, its state at
+  every hour of the wait), each a measurement-time refinement on correct records; rung 3 reads the full unit's admissions during
+  the wait. Rung 3 to 4 opens the population gap: who placed each admitted patient, a set that exists only as a relation between
+  the waiting patient's interval, the admitted patient's referral and the bureau's audit. Decisive gap objective, reached
+  through population, as the card files it.
+- Survival properties of rung 4: written nowhere (the remit counts "decisions about the use of its own beds and staff" and
+  names no planned admission, occupancy, transfer or order of admission; the field guide defines `bed_confirmed_at` as the
+  bureau's allocation and states no rule about own care); no sweepable corpus nominates it (the corpus is blind, below); no
   arithmetic symptom (every rung partitions the same deaths, every total ties, the census is exact); not a row predicate (an
-  interval join from each wait to the referring trust's own unit's other admissions with their source); its class exists only as
-  that join; no cutover date (D's practice is steady through 36 months; the only dated events, the 2024 platform cutover and
-  consolidation, sit in the ask layer before the main window); survives deletion.
-- Worth on the graded quantity: the leading count walks 56, 44, 34, 15, then 27. Rungs 1 to 3 each set waits aside and only rung 4
-  adds waits back, so the decisive rung reverses the direction of every correction before it.
+  interval join from each wait to the own unit's other admissions, then a join from each admitted patient to its referral or
+  the transfer audit); no cutover date in the window (D's practice is steady through 36 months, and the CCRS-era coding of
+  transfers sits in the ask layer before the window); survives deletion.
+- Worth on the graded quantity: the leading count walks 56, 34, 15, 37, then 27. Rungs 1 and 2 set waits aside, rung 3 adds
+  back every wait through which the own unit admitted anyone, and rung 4 keeps only the admissions the trust placed itself.
 
 ### Position table (asserted row by row)
 
-| Rung | Leader | D's rank | D's count | D behind the leader by |
+| Rung | Leader | D's rank among the four trusts holding level-3 beds | D's count | D behind the leader by |
 |---|---|---|---|---|
-| 0 | E 56 | 4 of 8 | 27 | 2.07x |
-| 1 | A 44 | 3 of 4 | 27 | 1.63x |
-| 2 | C 34 | last | 0 | (at zero) |
-| 3 | G 15 | last | 0 | (at zero) |
+| 0 | E 56 | 4 of 8 overall | 27 | 2.07x |
+| 1 | C 34 | last | 0 | (at zero) |
+| 2 | G 15 | last | 0 | (at zero) |
+| 3 | A 37 | 2 | 27 | 1.37x |
 | 4 | D 27 | 1 | 27 | leads G by 1.80x |
 
-D leads no intermediate rung and is second on none. No rung margin is under 1.15x; the thinnest is 1.26x at rung 1.
+D leads no intermediate rung and is second on one, rung 3, 1.37x behind A (the position rule allows one second place at
+1.20x or more). No rung margin is under 1.15x; the thinnest is 1.27x at rung 0.
 
 ### Discriminator dominance
 
-- The rung-3 decoy G carries no raw advantage into rung 4 (G 21 against D 27); D's decisive edge is 27 against 15, 1.80x.
-- Against the raw leaders: E (56 against 27, 2.07x; attributable share 0 against D's 1.0), A (44, 1.63x; share 0.045, an edge of
-  22x against the 1.96 required), C (35, 1.30x; share 0). Every product clears the 1.2 floor.
+- Against A, the rung-3 decoy: A carries 37 against D's 27 into rung 4 (1.37x). On the decisive axis D keeps all 27 of its rung-3
+  deaths (share 1.000) and A keeps 2 of 37 (0.054), an edge of 18.5x against the 1.64x required (1.2 x 1.37).
+- The rung-2 decoy G carries no raw advantage into rung 4 (G 21 against D 27); D's decisive edge is 27 against 15, 1.80x.
+- Against the raw leaders: E (56 against 27, 2.07x; share 0 against D's 1.0), A (44, 1.63x; share 0.045, an edge of 22x against
+  the 1.96 required), C (35, 1.30x; share 0). Every product clears the 1.2 floor.
 
 ### Correction grid (asserted cell by cell)
 
-Toggles: occupancy basis (none, 08:00 return, hourly census) by unit scope (own unit, whole network) by allocation (ignored, read),
-twelve cells.
+Toggles: occupancy basis (none, 08:00 return, hourly census) by unit scope (own unit, whole network) by the reading of the unit's
+admissions during the wait (ignored, any admission, admissions the trust placed itself), eighteen cells.
 
-| Basis | Scope | Allocation | Names | Violates |
+| Basis | Scope | Admissions | Names | Violates |
 |---|---|---|---|---|
-| none | own | ignored or read | A 44 over C 35 | own care at the hour (A's unit full through every A wait) |
-| none | network | ignored or read | E 56 over A 44 | own care (E holds no level-3 beds) |
-| 08:00 | own | ignored | C 34 over G 4 | own care at the hour of the wait (the 08:00 return describes the morning) |
-| 08:00 | own | read | C 34 over D 27 (1.26x) | as above |
-| 08:00 | network | ignored | C 34 over E 21 (1.62x) | "its own beds" |
-| 08:00 | network | read | C 34 over D 27 (1.26x) | "its own beds" |
-| census | own | ignored | G 15 over A 2 | the methodology note: D's decisions about the use of its own beds are D's own care |
-| census | network | ignored | G 15 over A 2 | as above |
-| census | own | read | **D 27 over G 15** | |
-| census | network | read | **D 27 over G 15**, equal per trust to the own-unit cell (C1) | |
+| none | own | any of the three | A 44 over C 35 (1.26x) | own care at the hour (A's unit full through every A wait) |
+| none | network | any of the three | E 56 over A 44 (1.27x) | own care (E holds no level-3 beds) |
+| 08:00 | own | ignored | C 34 over G 4 (8.50x) | own care at the hour of the wait (the 08:00 return describes the morning) |
+| 08:00 | own | any | A 35, C 34, D 27 | as above; two wrong trusts within 1.2x of each other, D 1.30x behind |
+| 08:00 | own | placed | C 34 over D 27 (1.26x) | as above |
+| 08:00 | network | ignored | C 34 over D 24 (1.42x) | "its own beds" |
+| 08:00 | network | any | E 54 over A 40 (1.35x) | "its own beds" |
+| 08:00 | network | placed | E 48 over A 35 (1.37x) | "its own beds" |
+| census | own | ignored | G 15 over A 2 (7.50x) | the methodology note: a full unit's own placements during the wait are the trust's decisions about its beds |
+| census | own | any | A 37 over D 27 (1.37x) | the bed bureau allocates every transfer's bed (field guide, transfer audit): a transfer is not the trust's decision |
+| census | own | placed | **D 27 over G 15 (1.80x)** | |
+| census | network | ignored | G 15 over A 2 (7.50x), equal per trust to the own-unit cell (C1) | "its own beds" |
+| census | network | any | E 54 over A 40 (1.35x) | "its own beds" |
+| census | network | placed | E 47 over A 30 (1.57x) | "its own beds" |
 
-Only the two census-and-allocation cells name D. Partial applications: allocation read on the 08:00 basis names C; allocation
-counted from any admission, any theatre admission or a planned admission inside the first four hours of the wait selects the same
-waits (C1, asserted). Window cells: the latest eight quarters (D 55 over G 32) and the whole record (D 80 over G 46) name D, so no
-window moves the name; the counts are pinned by the remit's placement clause (C4).
+Only the census, own-unit, own-placement cell names D. Partial applications: admissions read on the 08:00 basis name A or C;
+own placement read from each admitted patient's referring trust, from the admission type (02 a transfer in) and from the
+bureau's audit select the same admissions in the latest four quarters (C1, asserted: D's 133 planned own-theatre admissions,
+type 04; A's 117, C's 23 and G's 6 transfers, type 02); any admission and own placement part only at A (37 against 2), C (6
+against 0) and G (17 against 15), by bureau transfers. Window cells: the latest eight quarters (D 55 over G 32) and the whole
+record (D 80 over G 46) name D, so no window moves the name; the counts are pinned by the remit's placement clause (C4).
 
 ### The calibration corpus
 
@@ -420,8 +456,9 @@ window moves the name; the counts are pinned by the remit's placement clause (C4
   stage 3.
 - **Blind to the decisive move, for a computable reason (L1).** In every corpus review every long wait passed while the reviewed
   trust's own unit held an empty staffed bed, because the four neighbouring networks never ran a unit full in 2021 to 2025. The raw,
-  structural, 08:00, census and decisive constructions therefore return the same deaths on all 34 (asserted twice: zero corpus long
-  waits with the reviewed unit full at any hour, and every rung re-run review by review).
+  structural, 08:00, census, any-admission and decisive constructions therefore return the same deaths on all 34 (asserted: zero
+  corpus long waits with the reviewed unit full at any hour, and the raw, structural, 08:00, census and decisive constructions
+  re-run review by review; the any-admission count follows, every corpus wait already holding an empty bed).
 - **Corpus direction.** Under the naive path the corpus reproduces, 34 of 34; it refutes no rung.
 - **Twin pair.** Kellow Bridge (2022) and Sandmere (2023): identical on trust type (a district general hospital with a 14-bed
   level-3 unit), referrals in the year, the programme's screen (71 referrals waiting more than four hours from receipt, each),
@@ -446,19 +483,21 @@ window moves the name; the counts are pinned by the remit's placement clause (C4
   from receipt, and Sharon Banks will present that screen to the board (it ranks E first).
 - **Filed, the field guide (authority 4).** A unit stay's `admitted_at` is the minute its bed was assigned; times are as each system
   recorded them; the unit register is effective-dated; death registrations lag at most 14 days and the extract was taken on 14
-  August 2026.
+  August 2026; the transfer audit's `bed_confirmed_at` is the time the network bed bureau allocated the bed at the receiving
+  unit (the rung-3 killing fact, stated once, as a field definition).
 - **Empirical, the corpus.** The yield equals the count (34 of 34).
 - **Counter-pins: none.** The capacity report is labelled in-file (occupancy is the 08:00 return; referrals waiting over four hours
   are counted from receipt, the network's operational standard; it ranks no trust). The network manager's notes state facts (D's
-  unit is full every morning) and beliefs (C could take its own patients), never a rule that a full unit is capacity. The stage-3
-  sweep greps every shipped document for quotable sentences near capacity, full, own, planned, theatre and elective.
+  unit is full every morning) and beliefs (C could take its own patients), never a rule that a full unit is capacity. No
+  document says that a transfer is or is not the receiving trust's own care. The stage-3 sweep greps every shipped document for
+  quotable sentences near capacity, full, own, planned, theatre, elective, bureau and transfer.
 
 ### Fork grid: the 22-axis closure table (determinism-check A.5)
 
 | # | Axis | Reading chosen | Closure |
 |---|---|---|---|
 | 1 | Population | adult ward and ED referrals whose decision to admit was for a level-3 bed, waiting more than four hours to the bed's assignment; deaths within 30 days of the decision | filed (remit); C1: since 2 April 2024 the level on every referral is the decision's level; C2: the corpus confirms 34 of 34 |
-| 2 | Unit of account | one patient, one death | C1: no patient holds two long waits in the latest four quarters, so patient and referral counts agree (asserted); in the record they differ only on device rows, where the ask's own word (patients) governs |
+| 2 | Unit of account | one patient, one death | C1: no patient holds two long waits in the latest four quarters, so patient and referral counts agree (asserted); in the record they differ only on device rows (identity merges, parallel-run copies and DV7's 14 repeat patients), where the prompt's "every figure counts people" governs |
 | 3 | Attribution window | a death belongs to the window of its decision to admit | C1: no long-wait death straddles either edge of the latest four quarters (asserted), so decision-dated and death-dated windows select the same deaths |
 | 4 | As-of dating | a unit's level and staffed beds as of the wait | C1 in the latest four quarters (no register change in the window, asserted); before April 2024 the as-of reading is ask device DV3 |
 | 5 | Version basis | one vintage of every main-path file | C1 |
@@ -474,10 +513,10 @@ window moves the name; the counts are pinned by the remit's placement clause (C4
 | 15 | Duplicate resolution | no duplicate decision in the latest four quarters | C1; the parallel-run copies are spring 2024 (ask hazard HZ2) |
 | 16 | Identity normalisation | verified identities since 2 April 2024 | C1; temporary identities are legacy (ask device DV2) |
 | 17 | Netting | none | n/a |
-| 18 | Dimensional units | local time throughout the platform era and the unit feed | C1; the legacy UTC clock is ask hazard DV1 |
-| 19 | Code semantics | the stay's source; own care counts planned post-operative admissions from the trust's own theatres | C1: during long waits in the window the only admissions to a referring trust's own unit are planned post-operative admissions from its own theatres, so any admission, any theatre admission and planned own-theatre admission select the same waits (asserted) |
+| 18 | Dimensional units | local time throughout the platform era and the unit feed; a wait is elapsed time | C1 in the window: no wait in the latest four quarters crosses a clock change (asserted), so elapsed and clock readings agree; the legacy UTC clock is ask hazard DV1 and the two spring clock-change nights are ask device DV5 |
+| 19 | Code semantics | own care counts the admissions the trust placed itself (its planned and local admissions), never a transfer whose bed the bureau allocated | C1 in the window: inside every long wait the own unit admitted only planned own-theatre patients (D, type 04) or bureau transfers (A, C and G, type 02), so own placement read from the referring trust, from the admission type and from the transfer audit select the same admissions (asserted); any admission against own placement is the rung-3 fork, closed by the field guide's `bed_confirmed_at` line and the audit (C4: A 37 over D 27 against D 27 over G 15); before April 2024 the CCRS-era feed coded every unplanned admission 01, ask device DV6 |
 | 20 | Integerisation | none | n/a |
-| 21 | Scope of a stated clause | own care governs every wait; "own unit" scope | C1 at the census and allocation bases (no wait overlaps another unit's empty staffed bed or planned admission, asserted); at the 08:00 basis the network reading names C (C4, violates "its own beds") |
+| 21 | Scope of a stated clause | own care governs every wait; "own unit" scope | C1 at the census basis with admissions ignored (no wait overlaps another unit's empty staffed bed, asserted); with admissions read the network reading names E, and at the 08:00 basis C or E (C4, each violates "its own beds") |
 | 22 | Forward window contents | 2027-28, placed on the latest four quarters | filed; D leads the decisive construction in each four-quarter year of the record (25, 28, 27 against G's 14, 17, 15, asserted); no register change or reconfiguration inside the latest four quarters |
 | + | Census grain (hourly snapshot or continuous) | the bed is assigned at the minute it frees | C1: no capacity wait shows an empty staffed bed at any grain; every own-empty wait holds the empty bed from decision to assignment (asserted at minute grain and at hourly snapshots) |
 | + | Census reading (empty at the decision, at any time, for an hour, through the wait) | any of them | C1 by the same construction |
@@ -500,109 +539,121 @@ Criteria: 8 trusts x 3 figures (24) + 3 totals + the trust, its count, the runne
 files = 39, over the 25 floor. Distinct findings: the decisive yield, the three-year record of case load and yield, the network
 totals. Validity check: the record against the latest year (the call's persistence). Over-determination: no ask names a source, a
 time of day or a share, so nothing solves back for the allocation class. Each ask fails under a wrong path: the call furniture under
-every rung below 4; 3a under the legacy level, the legacy clock or unmerged identities; 3b under those and a per-referral death
-count; 3c under the census path (A, C, D, G), the current register (F, H), the legacy feed's bed episodes read as admissions (A, C,
-G) and the devices on 3a and 3b.
+every rung below 4; 3a under repeat patients counted per referral, the clock-change nights read on the clock, the legacy level,
+the legacy clock or unmerged identities; 3b under those and a per-referral death count; 3c under the census path (A, C, D, G),
+the any-admission path (A, C, G), the CCRS-era transfers read by their code (A, C, G), the current register (F, H), the legacy
+feed's bed episodes read as admissions (A, C, G) and the devices on 3a and 3b.
 
 ### The ask ledger (supplemental-stumping Part 9)
 
+Hardening loop 1 re-rooted the device layer: round 1's solver handled every stage-2 device and kept its confirmable column
+exact, so each ask now carries a fresh silent primary (DV7 on 3a, DV5 on 3b, DV6 on 3c) and the stage-2 devices stay on as
+hazards.
+
 **Main call's declared row population.** Files: the referral log (decisions 1 July 2025 to 30 June 2026, every trust and level),
 the unit stays at A, C, D and G overlapping 1 June 2025 to 30 June 2026 (the census lead-in), the daily bed returns for that span,
-the admitted patient care episodes of patients referred in the window (date of death), the unit register rows in force in the
-window, the remit and the capacity report. Columns: referral `referral_id, patient_key, trust_code, dta_at, level, outcome,
-outcome_at`; stays `unit_code, referral_id, patient_key, admitted_at, discharged_at, source`; returns `unit_code, return_date,
-staffed_beds, occupied_0800`; episodes `patient_key, date_of_death`; register `unit_code, trust_code, care_level, valid_from,
-valid_to`. **Every device and hazard row sits before 2 April 2024**, and the zero-counts inside the population are asserted per
-device (DV1 July to October 2023; DV2, DV4 and HZ1 July 2023 to 1 April 2024; HZ2 19 February to 1 April 2024; DV3's register rows
-valid to 31 March 2024). The call, its count, the runner-up and the gap are recomputed with every device mishandled and asserted
-identical, and on the wrong window (the whole record) D leads with the devices handled or not.
+the transfer audit's rows in that span, the admitted patient care episodes of patients referred in the window (date of death),
+the unit register rows in force in the window, the remit, the field guide and the capacity report. Columns: referral
+`referral_id, patient_key, referring_trust, dta_at, level_of_care, outcome, outcome_at`; stays `unit_code, referral_id,
+patient_key, admitted_at, discharged_at, admission_type, source_location`; returns `unit_code, return_date, beds_open,
+beds_occupied_0800`; transfer audit `patient_key, from_trust, to_unit, bed_confirmed_at`; episodes `patient_key,
+date_of_death`; register `unit_code, trust_code, care_level, valid_from, valid_to`. **Every device and hazard row sits outside
+the latest four quarters**: the legacy months to 1 April 2024 (DV1, DV2, DV4, DV6, HZ1, HZ2, and DV3's register rows valid to
+31 March 2024), the two spring clock-change nights (DV5: 30 March 2024 and 29 March 2025) and year 2 (DV7's repeat patients,
+July 2024 to June 2025). The zero-counts inside the population are asserted per device; the call, its count, the runner-up and
+the gap are recomputed with every device mishandled and asserted identical, and on the whole record D leads with the devices
+handled or not.
 
 | Ask | Figures, unit | Pool; construction layer | Device layer: primary; hazards | File path (causal) | Use, and how it enters the call (H18) |
 |---|---|---|---|---|---|
-| 1 Call furniture | the trust; its confirmable deaths in a year; the runner-up; the gap in deaths | A (the recommendation block); rung 4 | none (main path) | register, referral log, stays, returns, episodes, remit, field guide | component |
+| 1 Call furniture | the trust; its confirmable deaths in a year; the runner-up; the gap in deaths | A (the recommendation block); rung 4 | none (main path) | register, referral log, stays, returns, transfer audit, episodes, remit, field guide | component |
 | 2 Chart | 5 parts | A (the call drawn); rung 4 | none | as ask 1 | component: the call at a glance |
-| 3a Record: patients inside the remit | per trust, whole patients; total | B; none | **DV4** legacy level semantics (D3); hazards DV1 legacy clock (D8), DV2 temporary identities (D7) | referral log, stays, legacy referral events, legacy referral form guide, platform go-live notice, legacy export specification, identity merges, transfer audit (referee), remit, field guide: 10 files, 13 columns | qualifier: the record behind the forward call, which lets one year stand for 2027-28 |
-| 3b Record: deaths among them | per trust, whole deaths; total | B; none | **DV2** temporary identities (D7); hazards DV1, DV4, HZ2 parallel-run copies on a per-referral count (D1) | 3a plus episodes and the episode field guide: 12 files | qualifier |
-| 3c Record: deaths the reviewers could have confirmed | per trust, whole deaths; total | B, both layers; rung 4 (the census path misses A, C, D, G) | **DV3** register vintage (D2); hazards DV1, DV2, DV4, HZ1 legacy unit-feed grain (D6) | 3b plus register, returns, the 2024 consolidation paper, the legacy unit export note: 15 files, over 15 columns | qualifier |
+| 3a Record: patients inside the remit | per trust, whole patients; total | B; none | **DV7** repeat patients (D6); hazards DV1 legacy clock (D8), DV2 temporary identities (D7), DV4 legacy level semantics (D3), DV5 | referral log, stays, CCRS level entries, key links, CCRS specification, episode specification, remit, field guide: 8 files, 14 columns | qualifier: the record behind the forward call, which lets one year stand for 2027-28 |
+| 3b Record: deaths among them | per trust, whole deaths; total | B; none | **DV5** the spring clock change (D8); hazards DV1, DV2, DV4, DV7, HZ2 parallel-run copies (D1) | 3a plus episodes: 9 files, 16 columns | qualifier |
+| 3c Record: deaths the reviewers could have confirmed | per trust, whole deaths; total | B, both layers; rung 4 (the census path misses A, C, D, G; the any-admission path A, C, G) | **DV6** CCRS-era transfers coded as local admissions (D3); hazards DV1, DV2, DV3 register vintage (D2), DV4, DV5, HZ1 legacy unit-feed grain (D6), HZ2 at D | 3b plus register, returns, the 2023 board paper, transfer audit: 13 files, 29 columns | qualifier |
 
 Pool A is the call and its picture only (9 criteria, the cracker's by construction); every ask block is pool B. No primary family
-repeats (D3, D7, D2); the hazards are D8, D6 and D1.
+repeats (D6, D8, D3).
 
-**Primaries, organs and root causes.** Two root causes, both in spring 2024: the referral platform replacing the legacy system on 2
-April 2024 after a six-week parallel run (RC1), and the network's level-3 consolidation on 1 April 2024 (RC2). Each device's two
-antidotes sit in different files, neither of them a document the main call reads, and no file carries the documentary organ of two
-primaries.
+**Primaries, organs and root causes.** Three root causes: the referral platform replacing the legacy system (CCRS) on 2 April
+2024 after a six-week parallel run (RC1), the network's level-3 consolidation on 1 April 2024 (RC2) and the clock itself (RC3:
+the platform and the bed-management feed record local time). Each primary's two organs sit in different files, the documentary
+one in a document the main call does not read, and no file carries two primaries' documentary organs.
 
-- **DV4, legacy level semantics (primary on 3a).** On referrals migrated from the legacy system, `level` is the level the referring
-  team requested; the platform has held the level the decision was made for since go-live. De-escalated legacy referrals (level 3
-  requested, level 2 decided) read as level-3 waits on the natural path: 3a +2 at every trust, 3b +2, 3c +2 at D and H. Organs: the
-  legacy referral events export (structural, the level changes before each legacy decision) and the legacy referral form guide
-  ("level of care: the level requested by the referring team"). Over-correction stop: every legacy referral with a level change
-  dropped.
-- **DV2, temporary identities (primary on 3b).** A patient first registered under a temporary identity carries that key on the legacy
-  referral; later episodes, and the date of death linked to them, sit under the verified key. The natural join finds the index episode
-  and misses a death recorded later, and a later long wait under the verified key counts as a second patient: 3b minus 1 at every trust
-  but E (minus 3), 3a +1 (E +2), 3c minus 1 at A, C, D, F, G and H. Organs: the temporary-identity merge file (structural) and the
-  episode field guide's line on temporary registrations (documentary). Over-cleaning stop: every temporary-identity referral dropped
-  (3a minus 21, 3b minus 6, 3c minus 2).
-- **DV3, register vintage (primary on 3c).** F's unit held level-3 beds until 31 March 2024 and H ran three winter level-3 beds from 4
-  December 2023 to 31 March 2024; the current register reads both as level-2 units throughout, which removes their own-care waits (F 6
-  to 0, H 3 to 0). Organs: the register's effective dates (structural) and the 2024 consolidation paper (documentary).
-  Over-correction stop: F and H read as level-3 units across the record (3c +5; the call, its count, the runner-up and the gap
-  unchanged, asserted, since F's 13 and H's 7 latest-year deaths stay under G's 15).
-- **DV1, legacy clock (hazard).** The legacy system held its timestamps in UTC; the platform and the unit feed are local. From July to
-  October 2023 a legacy decision time sits an hour early against the unit's assignment time, so true waits of three to four hours
-  read as long and some waits' intervals shift onto an empty bed or a planned admission: 3a +2 (A and E +4), 3b +2, 3c +2 at C, D and
-  F, +4 at A and G. Organs: the legacy export specification (documentary) and the transfer audit's local decision times (structural,
-  the referee). Over-correction stop: every legacy time shifted, winter months included (3a minus 9, 3b minus 3).
-- **HZ1, legacy unit-feed grain (hazard).** Before April 2024 the unit feed held one row per bed episode, each carrying the stay's
-  source, so a planned patient moved between beds during a ward patient's wait reads as a planned admission during it: 3c +2 at A
-  and C, +4 at G, on the allocation reading (D's long waits are all allocation waits, so the hazard cannot move D). Organs: the
-  legacy unit export note and the contiguous rows of one patient in one unit. Over-cleaning stop: stays of one patient within 24
-  hours merged (3c minus 2).
-- **HZ2, parallel-run copies (hazard).** From 19 February to 1 April 2024 wards entered referrals on both systems and the migration
-  loaded the legacy copies beside the platform's, minutes apart and under two id schemes: 3b +2 at every trust on a per-referral death
-  count, neutral on a patient count. Genuine same-day re-referrals (stood down and referred again) are the over-cleaning half. Organs:
-  the go-live notice's parallel-run paragraph and the pair structure. Over-cleaning stop: one referral kept per patient per day (3a
-  minus 6, 3b minus 2).
+- **DV7, repeat patients (primary on 3a).** At seven trusts (all but D) two year-2 patients come back with a second long wait at
+  the same trust under the same verified key: discharged alive from the first stay inside four days, referred again 8 to 13 days
+  after the first decision, and dead after the second stay, inside 21 days of the first decision. They are one patient and one
+  death each. Counting referral rows moves 3a by 3 at those trusts (the identity device's second waits count again too; E by 4,
+  D by 1) and a per-referral death count moves 3b by 2. Organs: the referral log (two referrals under one verified key,
+  structural) and the episode extract specification's verified-key line (documentary); the prompt's "every figure counts people"
+  pins the unit. Over-correction stop: every patient with two long waits at one trust dropped (totals 2,140 / 615 / 148). Not at
+  D, because every D long wait is confirmable and a pair there cancelled the confirmable total (`## Tried and rejected`).
+- **DV5, the spring clock change (primary on 3b).** On the evenings before the clocks went forward in 2024 and 2025, 20 waits
+  were decided at about 22:30 to 00:10 and given a bed after 02:00: 3h10 to 3h50 of elapsed time, 4h10 to 4h50 on the clock. Read
+  on the clock they enter the remit: 3a +2 at A, B, C, E and G, +3 at F and H, +4 at D; 3b +2 at A, C, E, F and G, +3 at H, +4 at
+  D (B's two survive); 3c +4 at D (two waits each night beside an empty staffed bed in D's unit), +2 at F and H. Organs: the CCRS specification's
+  "the network bed-management feed records local time" (documentary) and the capacity report, whose referral waits reproduce from
+  the referral log only in elapsed time (four trust-months differ on the clock readings, structural). Over-correction stop: every
+  wait decided on a clock-change eve dropped (totals 2,157 / 627 / 147).
+- **DV6, CCRS-era transfers coded local (primary on 3c).** Before 2 April 2024 the bed-management feed coded every unplanned
+  admission 01, transfers included; the platform codes a transfer in 02. Own placement read from the admission type takes the
+  legacy bureau transfers inside A's, C's and G's full-unit waits as the trust's own admissions: 3c +20 at A, +5 at C, +2 at G.
+  Organs: the transfer audit (every transfer from July 2023 with its receiving unit and the bureau's allocation time, and the
+  admitted patient's referral from another trust, structural) and the 2023 board paper's "Transfers will continue to be agreed
+  through the network's bed bureau" (documentary). Over-correction stop: only platform-era admissions read as own placements
+  (3c minus 20 at D, minus 3 at C, minus 2 at A, minus 1 at G; total 122). It bites only on the reading "not coded as a
+  transfer"; a solver who reads own placement as a planned admission (04) alone handles it without seeing it, which makes DV6
+  the weakest of the three primaries.
+- **The stage-2 devices, now hazards.** DV4 legacy level semantics (3a +2 and 3b +2 at every trust, 3c +2 at D and H; organs the
+  CCRS level entries and the CCRS specification's "requested by the referring team"; stop: legacy referrals with a level change
+  dropped, 2,154 / 626 / 148). DV2 temporary identities (3a +1, E +2; 3b minus 1, E minus 3; 3c minus 1 at A, C, D, F, G and H;
+  organs the key links and the episode specification's temporary-registration line; stop: temporary-identity referrals dropped,
+  2,153 / 619 / 142). DV3 register vintage (3c minus 6 at F, minus 3 at H; organs the register's dates and the 2023 board paper;
+  stop: F and H read as level 3 throughout, 3c 190, call unchanged). DV1 legacy UTC clock (3a +2, A and E +4; 3b +2; 3c +7 at A,
+  +3 at C, +2 at D and F, +4 at G; organs the CCRS specification's "held in UTC" and the transfer audit's local decision times;
+  stop: every legacy time shifted, 2,133 / 623 / 142). HZ1 legacy bed-episode rows (3c +2 at A and C, +4 at G; stop: stays of one
+  patient within 24 hours merged, 3c 146). HZ2 parallel-run copies on a per-referral death count (3b +4 at every trust: two copies and
+  DV7's two second waits at each trust but D, four copies at D, where 3c moves +4 too; stop: one referral per patient per day,
+  2,157 / 627 / 148).
 
-**No-cancel rule.** On every figure the positive deltas are even and the one negative device is odd, so no subset of mishandlings
-lands on a golden (asserted over every subset, per trust and per total); DV3 zeroes a trust's own care, which never equals its golden.
-On the census path no subset lands on the golden at A, C, D or G (asserted).
+**No-cancel rule.** Asserted by enumeration rather than parity: no subset of the 511 combinations of mishandled devices lands any
+touched figure or total on its golden, per trust and per total; on the census path no subset lands on the golden 3c at A, C, D
+or G, and on the any-admission path none at A, C or G.
 
 **Targets (record, July 2023 to June 2026).**
 
-| Trust | 3a patients | 3b deaths | 3c confirmable | Natural path 3a / 3b / 3c | Census path 3c, devices handled / not |
-|---|---|---|---|---|---|
-| A | 438 | 126 | 8 | 445 / 131 / 13 | 6 / 9 |
-| B | 104 | 29 | 0 | 109 / 34 / 0 | 0 / 0 |
-| C | 351 | 104 | 5 | 356 / 109 / 8 | 1 / 2 |
-| D | 275 | 80 | 80 | 280 / 85 / 83 | 0 / 0 |
-| E | 559 | 165 | 0 | 567 / 168 / 0 | 0 / 0 |
-| F | 140 | 40 | 6 | 145 / 45 / 0 | 6 / 0 |
-| G | 221 | 63 | 46 | 226 / 68 / 53 | 45 / 48 |
-| H | 75 | 22 | 3 | 80 / 27 / 0 | 3 / 0 |
-| Total | 2,163 | 629 | 148 | 2,208 / 667 / 157 | 61 / 59 |
+| Trust | 3a patients | 3b deaths | 3c confirmable | Natural path 3a / 3b / 3c | Census path 3c, devices handled / not | Any-admission path 3c, handled / not |
+|---|---|---|---|---|---|---|
+| A | 438 | 126 | 8 | 452 / 135 / 35 | 6 / 6 | 99 / 106 |
+| B | 104 | 29 | 0 | 115 / 36 / 0 | 0 / 0 | 0 / 0 |
+| C | 351 | 104 | 5 | 363 / 113 / 14 | 1 / 2 | 23 / 27 |
+| D | 275 | 80 | 80 | 289 / 91 / 91 | 0 / 4 | 80 / 91 |
+| E | 559 | 165 | 0 | 575 / 172 / 0 | 0 / 0 | 0 / 0 |
+| F | 140 | 40 | 6 | 152 / 49 / 0 | 6 / 0 | 6 / 0 |
+| G | 221 | 63 | 46 | 232 / 72 / 57 | 45 / 47 | 51 / 60 |
+| H | 75 | 22 | 3 | 87 / 32 / 0 | 3 / 0 | 3 / 0 |
+| Total | 2,163 | 629 | 148 | 2,265 / 700 / 197 | 61 / 59 | 262 / 284 |
 
 By four-quarter year (golden): patients 695, 737, 731; deaths 204, 212, 213; confirmable 54, 50, 44 (D 25, 28, 27; G 14, 17, 15).
-The confirmable figures split into empty-bed waits (A 6, C 1, F 6, G 45, H 3) and allocation waits (A 2, C 4, D 80, G 1). Per-trust
-stops (each device handled alone, each over-correction) are asserted off the golden at every trust they touch.
+The confirmable figures split into empty-bed waits (A 6, C 1, F 6, G 45, H 3) and own-placement waits (A 2, C 4, D 80, G 1).
+Every device alone moves exactly its designed deltas per trust per figure (asserted); every figure but B's and E's 3c sits under
+three or more devices; the necessity matrix holds (each device moves a figure at every trust it is planted at).
 
-**Hazard table.** DV1 moves 3a, 3b, 3c and the three totals at all eight trusts; HZ1 moves 3c at three; HZ2 moves 3b at eight on a
-per-referral count. Necessity matrix: every device moves at least one figure at every trust it is planted at.
+**Referee (exactly one).** The network's inter-hospital transfer audit: 3,852 transfers, local decision times, verified keys and
+the bureau's allocation time for every patient moved between trusts, all 36 months, no deaths, no levels, byte-clean. It is on
+the main path for rung 3 (its rows in the window) and is the structural organ of DV6 and DV1 (its legacy rows). It covers
+transfers only (36 per cent of long waits), so it hands over no column.
 
-**Referee (exactly one).** The network's inter-hospital transfer audit: local decision times and verified identities for patients
-moved between trusts, all 36 months, no deaths, no levels, byte-clean. In summer 2023 a transferred legacy patient's decision time in
-the audit is an hour later than on the referral, and a transferred temporary-identity patient appears under the verified key. It
-covers transfers only (about a fifth of the long waits), so it hands over no column.
-
-**Pair arithmetic (Part 0), planning weights 38 / 7 / 55, r = 5, 32 ask criteria at 1.72 points.** Cracker (files D): recommendation
-38, instruction-following 7, the chart's five parts and the two structural zeros (B's and E's 3c), device-blind on the rest: 57.0.
-Mirror (files G from rung 3): r 5, instruction-following 7, one chart part and the two zeros: 17.2. Pair **37.1**. Every single and
-every double catch among the six devices leaves the pair at 37.1, because every figure sits under three or more devices. The layer's
-thinnest point is the triple catch of DV1, DV2 and DV4: 53.4 if both top responses make it (it also completes D's 3c, which
-carries no grain hazard), 45.7 if only the cracker does. Reachability (A1): 5 of 32 ask criteria are reachable from the landed call. The pass condition rests on the ladder holding the field
-to at most one response on D, and on the three silent wait-and-death devices staying silent.
+**Pair arithmetic (Part 0), planning weights 38 / 7 / 55, r = 5, 32 ask criteria at 1.72 points.** Cracker (files D):
+recommendation 38, instruction-following 7, the chart's five parts and the structural zeros; mirror (files A from rung 3, or G
+from rung 2): r 5, instruction-following 7, one chart part. With the hygiene battery applied and every device missed the pair
+is **37.1** (the same with either mirror); every single and double catch leaves it at 37.1 or under, and the thinnest triple at
+37.1. Named profiles, both top responses making the same catches (asserted and printed by the generator): round 1's six catches
+with transfers read by their code 37.1, read by the referring trust 39.7; round 1's six and elapsed time 44.0; everything but DV5
+41.4; everything but DV7 47.4; everything but DV6 73.2; everything 76.6. The layer holds the pair under 50 unless both top
+responses compute waits in elapsed time across the clock change **and** count each repeat patient's death once; with those two
+caught and DV6 missed the pair is 73.2. Reachability (A1): 5 of 32 ask criteria are reachable from the landed call. The pass
+condition rests on the ladder holding the field to at most one response on D, and on DV5 or DV7 staying silent.
 
 ### Prompt (stage 2)
 
@@ -615,20 +666,22 @@ sentence, context 34.1 per cent, longest paragraph 77 words, a sentence under ei
 no "because", no flagged carrier, no shared six-word run. Institutional nouns for H20: acute trusts, the regional health board, the
 board funding one twelve-month engagement, quality surveillance.
 
-### Assertion plan (54, generator then independent verifier)
+### Assertion plan (54 at stage 2, as revised by hardening loop 1; generator then independent verifier)
 
 1. Rung 0 leader E, margin at least 1.20 (1.27).
-2. Rung 1 leader A, margin at least 1.20 (1.26).
-3. Rung 2 leader C, margin at least 1.20 (8.5); the mixed reading (network for trusts with no level-3 beds) also names C (1.62).
-4. Rung 3 leader G, margin at least 1.20 (7.5).
+2. Rung 1 leader C, margin at least 1.20 (8.5); the mixed reading (network for trusts with no level-3 beds) also names C (1.62).
+3. Rung 2 leader G, margin at least 1.20 (7.5).
+4. Rung 3 leader A, margin at least 1.20 (1.37).
 5. Rung 4 leader D, margin at least 1.50 (1.80).
 6. Five distinct leaders.
 7. D 4th on rung 0, behind by at least 1.5x.
-8. D never first or second on rungs 1 to 3.
-9. Dominance against G, E, A and C, both ratios and the product.
-10. Twelve grid cells by name; exactly the two census-and-allocation cells name D.
-11. Own and network scope equal per trust at the census basis, with and without allocation.
-12. Any admission, any theatre admission and planned own-theatre admission select identical waits during long waits in the window.
+8. D never first on rungs 1 to 3, and second on at most one of them by at least 1.20x (rung 3, 1.37x).
+9. Dominance against G, E, A and C, both ratios and the product, and against A at rung 3 on the share each keeps at rung 4.
+10. Eighteen grid cells by name; exactly the census, own-unit, own-placement cell names D.
+11. Own and network scope equal per trust at the census basis with admissions ignored.
+12. Inside every long wait in the window the own unit admitted only planned own-theatre patients (D, type 04) or bureau transfers
+    (A, C and G, type 02), and in the record only those two kinds; every such transfer was decided before the wait it falls in and
+    is in the bureau's audit at its bed time; any admission and own placement part only at A, C and G.
 13. Every allocation wait holds a planned admission inside its first four hours.
 14. Every own-empty wait holds the empty staffed bed from decision to assignment; no capacity wait shows an empty staffed bed at
     minute grain or at hourly snapshots.
@@ -674,6 +727,10 @@ board funding one twelve-month engagement, quality surveillance.
 52. E leads both deaths after a long wait and deaths before a bed was assigned.
 53. Two consecutive builds byte-identical.
 54. Distractors unused on the golden's code path.
+55. Hardening loop 1: the clock-change nights carry exactly the designed waits (11 and 9) and none of them is long in elapsed
+    time; the repeat patients are exactly the designed pairs (two at each trust but D); DV5, DV6 and DV7 have zero rows in the main
+    population, their designed deltas, two organs each and one primary per documentary file; the any-admission path lands no
+    subset on the golden; the named pair profiles are printed and the two round-1 profiles stay under 50.
 
 ### Realism debts (stated)
 
@@ -691,8 +748,18 @@ board funding one twelve-month engagement, quality surveillance.
 5. **Long-wait mortality near 29 per cent**, plausible for deteriorating ward patients referred for level 3.
 6. **The corpus networks never ran a unit full in five years.** Forced by L1. Mitigation: those networks carry more level-3 beds per
    head; nothing in the pack states it, the records show it.
-7. **Every device in nine legacy months.** A platform migration concentrates exactly this mess, and the clean months after it are
-   what a cutover looks like.
+7. **Most devices in nine legacy months.** A platform migration concentrates exactly this mess, and the clean months after it are
+   what a cutover looks like. DV5 and DV7 sit outside them, on two clock-change nights and in year 2.
+8. **Bureau transfers into A's full unit through 78 per cent of its long waits in the placement year** (117 admissions; 35 of A's
+   44 deaths follow such a wait). Forced by the rung-3 margin (A 37 over D 27, 1.37x) and by A's carried advantage over D on the
+   raw count. Mitigation: A is the regional centre with 30 staffed beds, and a regional centre's freed beds go to the patients the
+   bureau has waiting from trusts without level-3 units, who were referred earlier.
+9. **Twenty waits on two clock-change nights, 17 of them followed by a death within 30 days** (85 per cent, against 28 to 30 per
+   cent among long waits), and empty staffed beds at D, F and H through those nights. Forced by DV5's weight on 3b and 3c.
+   Mitigation: 20 waits in three years, outside the remit when read correctly, with nothing in the pack pointing at the nights.
+10. **Fourteen patients discharged from critical care inside four days, referred again 8 to 13 days after the first decision and
+    dead inside 21 days of it.** Forced by DV7 moving 3b. Mitigation: early readmission to critical care is a recognised
+    high-mortality group; the pairs fall at seven trusts, two each.
 
 ### Stopping rule (written before any round)
 
@@ -701,6 +768,81 @@ board funding one twelve-month engagement, quality surveillance.
 - One more repair is licensed by a round whose top responses stop at G, C, A or E while the pair clears 40 through the asks: harden
   the device layer (supplemental-stumping Part 10), not the ladder.
 - A response filing D without reading D's stays (by resemblance or by chance) is a shortcut to find and close before anything else.
+- State after round 1 (2026-10-09): one round in which a response filed D at 27 by the allocation route, read straight off the
+  methodology sentence; loop 1 makes that reading name A. A second consecutive round with a response on D by the placement route
+  puts the ladder at ceiling.
+
+### Hardening loop 2 (2026-10-09): the design on paper
+
+Brief: round 2 (plain, proxy 82.3, call landed) "kept only own-unit admissions coded admission_type 04 (planned
+local) during each wait and dropped the type 02 transfers in as bureau-allocated beds", so rung 3 (A at about 37) was
+seen and declined with one row filter, and every workbook figure came back exact: its trace executes each filed device
+rule in turn (UTC, decision level, key links, pilot copies, elapsed time, one patient once, register dates). Loop 2
+repairs both halves and moves no graded figure: the rungs keep 56, 34, 15, 37 and 27, the placement year 731 / 213 /
+44, the record 2,163 / 629 / 148.
+
+**Main ladder: the admission type stops standing in for who placed the patient** (stumping Part 10 escalation 2, the
+discriminator behind a join; measured trap #5, the population a flag suggests, with #6 behind it).
+
+1. Stennock's planned surgery runs at its elective centre, a second Stennock hospital with no level-3 beds. Every
+   planned post-operative admission to STN-ACC is a planned transfer in (`admission_type` 03, source location 01),
+   referred by Stennock from the centre's theatre recovery (referral log: STN, `REC`, level 3), given the bed 10 to 90
+   minutes after the referral, and absent from the bureau's audit, which lists transfers between trusts. Inside every
+   D long wait the planned transfer was referred after the waiting patient: D put its own elective patient ahead.
+2. Through Ristenholm's long waits the bureau's placements become, on every death-wait and on half the survivors,
+   planned post-operative transfers in (03, source 01) booked for patients of trusts without level-3 beds, referred
+   from their recovery after Ristenholm's waiting patient and given the next bed that freed on a weekday evening; the
+   rest stay unplanned transfers (02) referred earlier. Every one is in the audit with its `bed_confirmed_at`.
+3. No unit-feed column separates them: 03 and source 01 carry D's own patients and the bureau's alike. The admitted
+   patient's referring trust does, and for transfers between trusts the audit agrees (C1, asserted).
+
+Readings of "an admission the trust placed itself" on the latest four quarters (deaths): the referring trust, or the
+audit: D 27 over G 15 (golden); by type, local (01, 04, 05) or 04 alone: G 15 over A 2, D 0; by type, planned (03,
+04, 05) or "not 02": A 37 over D 27; any admission: A 37 over D 27; queue order (an admission referred after the
+waiting patient is the unit's choice): A 37 over D 27. Every code reading and the queue reading land on A or G; only
+the join from the unit's admission to the admitted patient's referral names D. Round 2's own step ("type 02 out, 04
+in") now completes and files G at 15.
+
+**Ask layer: two silent primaries; the executed ones become hazards** (supplemental-stumping Parts 4 and 5).
+
+- **DV8 (primary on 3a; hazard on 3b and 3c; D8)**, the legacy bed list dated a stay from the minute the patient was
+  placed in the bed, where the platform dates it from the assignment. For a transfer between trusts the bureau
+  allocated the bed (`bed_confirmed_at`) and it stood empty until the patient arrived, so on the shipped stays a legacy
+  transfer's wait ends at the arrival (3a and 3b up at B, E and H, where allocation waits of 3h10 to 3h52 read past
+  four hours) and the legacy census shows the held bed as an empty staffed bed inside the receiving trust's capacity
+  wait (3c up at A, C, F and G). Organs: the transfer audit (each legacy transfer's stay begins at `arrived_at`, each
+  platform transfer's at `bed_confirmed_at`) and the CCRS specification ("from the time the patient was placed in the
+  bed"). A trust moving its own patient between its sites assigns the bed on arrival, so no Stennock row is held.
+  Silent: the 08:00 returns are computed from the same feed and agree with the shipped census, no held bed spans 08:00,
+  every other legacy transfer's wait plus transit stays under four hours, and no held bed overlaps an own-trust wait
+  except the designed ones. Over-correction stop: every legacy stay moved back by the audit's median transit.
+- **DV9 (primary on 3b; D4)**, temporary identities never merged: the ten old DV2a rows become legacy ED referrals
+  inside the remit whose temporary key the links file never resolves. The patient died in hospital within 30 days,
+  so the death is in the episode extract only as a spell under the temporary key ending in death (discharge method
+  4), with no date of death: 3b down one at every trust (three at E), 3c down one at D and G. Organs: the episode
+  extract (discharge method and date) and the extract specification's temporary-registration line. Over-correction
+  stop: deaths from the discharge method for everyone (post-discharge deaths lost, the corpus's refused rival). DV2
+  keeps its repeat-wait rows and moves 3a only.
+- DV3 stays the 3c primary (its documentary organ is the only one in the board paper). DV6 leaves the device layer:
+  with own placement read from the referring trust it moves nothing, and the legacy coding it carried is now part of
+  the type readings the construction layer prices. DV5 and DV7 become hazards. Primaries' documentary organs: DV8 the
+  CCRS specification, DV9 the extract specification, DV3 the board paper, one each.
+
+**Stump sentence (loop 2).** A competent solver counts each trust's deaths after a wait of more than four hours for a
+level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the
+remit's methodology sentence as its test, declines the any-admission reading by setting aside every transfer into a
+unit as the bed bureau's placement by its admission type, and files G at 15 over A's 2; the step that lands it there
+is reading the admission type as who placed the patient: every planned transfer into D's unit during D's long waits
+was D's own post-operative patient, referred by D from its elective centre (the referral log's referring trust; none is
+in the bureau's audit), which makes D's 27 the largest number the review can confirm, while the planned transfers into
+A's unit were patients of trusts without level-3 beds on beds the bureau booked, so a solver who keeps planned
+admissions as the trust's choice instead files A at 37.
+
+**Targets asserted at the rebuild** (measured values replace the paper ones in the tables above): rungs and the
+record unchanged; the two type readings and the queue reading name G and A as above; no unit-feed column separates
+own from bureau placements inside long waits in the window (both directions); DV8 and DV9 each move only the trusts
+listed, with zero rows in the main call's population; the no-cancel enumeration over every subset of the ten devices;
+the pair simulation with mirrors on the census, any-admission and both type readings.
 
 ### Pack plan (provisional; dataset-generation builds against it)
 
@@ -715,59 +857,67 @@ without merging any device's two organs into one file and without one file holdi
 
 ## Build record
 
-Stage 3, 2026-10-09. Generator `task119/generator/`, seed 119: `build.py` (entry point), `world.py` (day roles and every
-designed wait on the clock), `sim.py` (each unit's events into stays), `people.py` (referrals, deaths, episodes), `legacy.py`
-(migrated rows, level entries, parallel-run copies, bed-episode rows, transfer audit, key links), `corpus.py` (review
-records), `docs.py` and `texts.py` (papers), `golden.py` (every figure from the shipped files), `checks.py` (assertions).
-`verify.py` is the independent verifier (DuckDB joins, pandas UTC conversion, numpy census over islands of contiguous rows;
-imports nothing from the generator). `reproduce.py` builds twice and compares bytes.
+Stage 3, 2026-10-09, rebuilt in hardening loop 1 the same day. Generator `task119/generator/`, seed 119: `build.py` (entry
+point), `plan.py` (designed waits and device rows), `world.py` (day roles and every designed wait on the clock), `sim.py` (each
+unit's events into stays), `people.py` (referrals, deaths, episodes), `legacy.py` (migrated rows, level entries, parallel-run
+copies, bed-episode rows, transfer audit, key links), `extracts.py` (capacity report, ambulance and level-2 extracts),
+`corpus.py` (review records), `docs.py` and `texts.py` (papers), `golden.py` (every figure from the shipped files), `checks.py`
+(assertions). `verify.py` is the independent verifier (DuckDB joins, pandas time-zone conversion, numpy census over islands of
+contiguous rows; imports nothing from the generator). `reproduce.py` builds twice and compares bytes.
 
-**Gates.** Generator: 120 assertions, 0 failed, on the build into the task folder. Verifier: 22 claims, 0 failed, on
-`task119/target`. Two consecutive builds into the scratchpad byte-identical (20 files: 19 under `target/` plus
-`metadata.json`, file times equal), and the task folder's pack byte-identical to them. Input gates: 19 files; 8 formats (csv,
-docx, eml, parquet, pdf, sqlite, txt, xlsx); referral log 30,259 rows; review database a 12.7 MB SQLite file with five tables;
-distractors `level2_unit_bed_return_0800_2025-26.csv` and `ambulance_handovers_hourly_2025-26.csv`, named in `metadata.json`
-only and each asserted unused (every figure unchanged with it deleted). `leak.py` on a scratch copy: REVIEW only (sweep 4,
-generic domain words in five papers), no LEAK, container metadata clean.
+**Gates (loop 1).** Generator: 137 assertions, 0 failed, on the build into the task folder. Verifier: 24 claims, 0 failed, on
+`task119/target`. Two consecutive builds into the scratchpad byte-identical (20 files: 19 under `target/` plus `metadata.json`,
+file times equal), and the task folder's pack byte-identical to them (a reporting line added to `checks.py` afterwards writes
+nothing into the pack). Input gates: 19 files; 8 formats (csv, docx, eml, parquet, pdf, sqlite, txt, xlsx); referral log 30,785
+rows; review database a SQLite file with five tables; distractors `level2_unit_bed_return_0800_2025-26.csv` and
+`ambulance_handovers_hourly_2025-26.csv`, named in `metadata.json` only and each asserted unused (every figure unchanged with it
+deleted). Goldens regenerated from the rebuilt pack byte-identical to the shipped ones.
 
 **The answer.** STN (D), Stennock University Hospitals NHS Foundation Trust: 27 deaths a year of review could confirm;
 runner-up PRW (G) 15; gap 12 deaths; margin 1.80x. D ranks 4th on the natural pipeline, 2.07x behind E.
 
 | Rung | Leader | Runner-up | Margin |
 |---|---|---|---|
-| 0 | LAT (E) 56 | RIS (A) 44 | 1.27x |
-| 1 | RIS (A) 44 | BRK (C) 35 | 1.26x |
-| 2 | BRK (C) 34 | PRW (G) 4 | 8.50x |
-| 3 | PRW (G) 15 | RIS (A) 2 | 7.50x |
-| 4 | STN (D) 27 | PRW (G) 15 | 1.80x |
+| 0 raw | LAT (E) 56 | RIS (A) 44 | 1.27x |
+| 1 08:00 | BRK (C) 34 | PRW (G) 4 | 8.50x |
+| 2 census | PRW (G) 15 | RIS (A) 2 | 7.50x |
+| 3 any admission | RIS (A) 37 | STN (D) 27 | 1.37x |
+| 4 decisive | STN (D) 27 | PRW (G) 15 | 1.80x |
 
-Position: D 4th on rung 0, 3rd of the four trusts holding level-3 beds on rung 1, last on rungs 2 and 3; thinnest margin
-1.257 (rung 1). Grid: every cell names the trust the design table names; the 08:00/network/allocation-ignored cell's
-runner-up is D 22 (C 34, 1.55x), not E 21; the mixed 08:00 reading names C 34 over E 21. Clean-data test (hourly return):
-rung names G 15, call D, naive E. Lens swap: no referral-log column or pair reproduces the confirmable counts.
+Position: D 4th on rung 0, last of the four trusts holding level-3 beds on rungs 1 and 2, second on rung 3 (1.37x behind A);
+thinnest margin 1.273 (rung 0). Dominance over A at rung 3: shares 1.000 against 0.054, edge 18.5 against 1.64 required. Grid:
+eighteen cells, each naming the trust the design table names, and only census, own unit, own placement naming D. Killing facts
+(verifier): LAT holds no level-3 beds; RIS-ACC reported no empty bed at 08:00 on any of the 135 days RIS referrals waited;
+BRK-ACC full at every moment of all 118 BRK long waits; the full units admitted other patients through 78 per cent of RIS's long
+waits and every STN wait; all 117 admissions inside RIS long waits were patients referred by another trust and listed in the
+bureau's transfer audit at their bed time; STN-ACC admitted planned post-operative patients through all 92 STN long waits.
+Clean-data test (hourly return): rung names G 15, call D, naive E. Lens swap: no referral-log column or pair reproduces the
+confirmable counts.
 
 **The asks (record, July 2023 to June 2026; patients / deaths / confirmable).** A 438 / 126 / 8; B 104 / 29 / 0;
 C 351 / 104 / 5; D 275 / 80 / 80; E 559 / 165 / 0; F 140 / 40 / 6; G 221 / 63 / 46; H 75 / 22 / 3; total 2,163 / 629 / 148.
 By four-quarter year: 695 / 204 / 54, 737 / 212 / 50, 731 / 213 / 44 (D 25, 28, 27; G 14, 17, 15). Confirmable split:
-empty-bed waits A 6, C 1, F 6, G 45, H 3; allocation waits A 2, C 4, D 80, G 1. The latest four quarters match the stage-2
-table trust by trust (731 / 213 / 44).
+empty-bed waits A 6, C 1, F 6, G 45, H 3; own-placement waits A 2, C 4, D 80, G 1. Unchanged by loop 1.
 
-**Device layer (measured).** Natural path (every device mishandled): A 445 / 131 / 13, B 109 / 34 / 0, C 356 / 109 / 8,
-D 280 / 87 / 87, E 567 / 168 / 0, F 145 / 45 / 0, G 226 / 68 / 53, H 80 / 27 / 0, total 2,208 / 669 / 161. Census path 3c,
-devices handled / not: A 6 / 6, C 1 / 2, D 0 / 0, F 6 / 0, G 45 / 47, H 3 / 0, total 61 / 55. Each device alone moves its
-designed deltas exactly (asserted per trust per figure); no subset of the 64 lands a touched figure or total on its golden;
-no census-path subset lands on the golden at A, C, D or G; zero device and hazard rows inside the main call's declared
-population. Over-correction stops (totals): DV1 every legacy time shifted -32 / -9 / -8; DV2 temporary keys dropped
--10 / -10 / -6; DV3 F and H level 3 throughout 3c +46 (F +30, H +16; the call is unchanged); DV4 level changes dropped
--9 / -3 / 0; HZ1 stays within 24 hours merged 3c -2; HZ2 one referral per patient per day -6 / -2 / 0. Hygiene battery
-clean on the natural path. Pair simulation 37.1; every single and double catch 37.1; thinnest triple (DV1, DV2, DV4) 52.6.
-Referee: 3,419 transfers, verified keys, local decision times, 36 per cent of long waits. Spans from the golden's code path:
-3a 8 files / 14 columns, 3b 9 / 16, 3c 12 / 24.
+**Device layer (measured, loop 1).** Natural path (every device mishandled): A 452 / 135 / 35, B 115 / 36 / 0,
+C 363 / 113 / 14, D 289 / 91 / 91, E 575 / 172 / 0, F 152 / 49 / 0, G 232 / 72 / 57, H 87 / 32 / 0, total 2,265 / 700 / 197.
+Census path 3c, devices handled / not: A 6 / 6, C 1 / 2, D 0 / 4, F 6 / 0, G 45 / 47, H 3 / 0, total 61 / 59. Any-admission
+path 3c: A 99 / 106, C 23 / 27, D 80 / 91, F 6 / 0, G 51 / 60, H 3 / 0, total 262 / 284. Each device alone moves its designed
+deltas exactly (asserted per trust per figure); no subset of the 511 lands a touched figure or total on its golden; no census-path
+subset lands on the golden at A, C, D or G and no any-admission subset at A, C or G; zero device and hazard rows inside the main
+call's declared population. Over-correction stops (totals): DV1 2,133 / 623 / 142; DV2 2,153 / 619 / 142; DV3 3c 190; DV4
+2,154 / 626 / 148; DV5 2,157 / 627 / 147; DV6 3c 122; DV7 2,140 / 615 / 148; HZ1 3c 146; HZ2 2,157 / 627 / 148. Clock-change
+nights: 11 waits on 30 March 2024 and 9 on 29 March 2025, none long in elapsed time. Repeat patients: 14 designed (two at each
+trust but D) among 46 people with two long waits in the record (the rest identity-device rows and parallel-run copies). Hygiene
+battery clean on the natural path. Pair simulation 37.1; every single and double catch 37.1 or under; thinnest triple 37.1;
+named profiles 37.1 (round 1, transfers by code), 39.7 (by referring trust), 44.0 (round 1 and elapsed time), 41.4 (all but DV5),
+47.4 (all but DV7), 73.2 (all but DV6), 76.6 (all). Referee: 3,852 transfers, verified keys, local decision times, 36 per cent of
+long waits. Spans from the golden's code path: 3a 8 files / 14 columns, 3b 9 / 16, 3c 13 / 29.
 
 **The corpus.** The filed rule reproduces 34 of 34 (412 confirmed, 41 attempts, 7 zero reviews retried on a doubled sample
 and zero again). 216 rules swept; the nearest rival (requested level 3) misses 19 reviews; every one-directional rival
 misses the 412 total by 14.8 per cent or more (deaths before assignment dropped: 351). Every widening rival is non-zero on
-all seven zero reviews. Blind: no reviewed unit was ever full, so all five constructions equal the rule on every review.
+all seven zero reviews. Blind: no reviewed unit was ever full, so every construction equals the rule on every review.
 Twin pair Ormerleby 2022 and Selarwell 2023: district general, 14 beds, 1,184 referrals, screen 71, 8.6 beds occupied at
 08:00, 96 deaths; confirmed 24 and 11; the receipt clock gives both 24. Feningby 2021 counts three post-discharge deaths
 inside 30 days and not five between days 31 and 60.
@@ -783,69 +933,92 @@ inside 30 days and not five between days 31 and 60.
    primary per file holds); the go-live notice, the network manager's notes and G's weekend rule sit in the correspondence;
    provenance and dictionary are one field guide. Spans fall from the planned 10 / 12 / 15 to 8 / 9 / 12, at the skill floor.
 3. HZ2 at D is four duplicated deaths, not two: with two, {DV2, DV4, HZ2} cancelled on the 3c total. HZ2 counts per
-   referral row on 3b and 3c alike, so the natural path is 2,208 / 669 / 161, not 2,208 / 667 / 157.
+   referral row on 3b and 3c alike, so the stage-3 natural path was 2,208 / 669 / 161, not 2,208 / 667 / 157.
 4. The capacity report covers April 2024 to June 2026, not 36 months (`## Tried and rejected`).
 5. C runs 16 staffed beds day and night, so one staffed figure per day holds and physical equals staffed.
 6. The 08:00 return is read on the decision's date; no long wait has its decision between midnight and 08:00, so the
    latest-return reading converges.
+7. Hardening loop 1 (rung 3 and the re-rooted device layer): bureau transfers placed into A's, C's and G's full units
+   inside their capacity waits (`plan.TX_INSIDE`), the transfer audit's `bed_confirmed_at` defined in the field guide, the
+   structural reading moved into the grid; DV5 on the two spring clock-change nights (stays and receipts kept clear of the
+   nonexistent local hour, the capacity report computed in elapsed time); DV6 by recoding every CCRS-era unplanned admission 01;
+   DV7 as lethal repeat pairs at seven trusts. The pack grew from the stage-3 build with the transfers, the clock-change waits,
+   the repeat patients and the background that moved with the world's random stream (referral log 30,259 to 30,785 rows,
+   transfer audit 3,419 to 3,852); every golden figure is unchanged, and rungs 0 to 2 and the call keep their figures.
 
 ## Write-up and ship checks
 
-Stage 3 close, 2026-10-09. `generator/golden.py` run as a script reads only `target/` (the referral log, unit stays,
-bed returns, episodes, register, CCRS level entries and key links) and writes the three deliverables into `golden/`:
-`external_review_placement_2027-28.docx` (the board paper: the call, 27, Prideswick at 15, a gap of 12; why each other
-trust is not it; the record totals; the chart), `review_placement_workings.xlsx` (Record by trust, Placement year,
-Notes) and `review_placement_by_trust.png` (deaths inside the remit by trust, July 2025 to June 2026, the confirmable
-part shaded, ordered by it, the gap bracketed, titled on Stennock). It prints the critical components and the rungs,
-and asserts the paper's worded rules on the record: all 92 of Stennock's long waits in the placement year are
-allocation waits and fall on weekdays, no Stennock weekend referral waited more than four hours, no other trust's
-long wait holds a planned admission outside an empty-bed wait, every Brackenford long wait began at 18:00 or later
-with its unit full, and Brackenford's 08:00 return showed an empty staffed bed on 206 of 365 mornings.
+Stage 3 close, 2026-10-09, redone in hardening loop 1. `generator/golden.py` run as a script reads only `target/` and writes the
+three deliverables into `golden/`: `external_review_placement_2027-28.docx` (the board paper: the call, 27, Prideswick at 15, a
+gap of 12; why each other trust is not it, Ristenholm's transfers included; the record totals; the chart),
+`review_placement_workings.xlsx` (Record by trust, Placement year, Notes) and `review_placement_by_trust.png` (deaths inside the
+remit by trust, July 2025 to June 2026, the confirmable part shaded, ordered by it, the gap bracketed, titled on Stennock). It
+prints the critical components and the five rungs, and asserts the paper's worded rules on the record: all 92 of Stennock's
+long waits in the placement year are allocation waits and fall on weekdays, no Stennock weekend referral waited more than four
+hours, no other trust's long wait holds an own placement outside an empty-bed wait, Ristenholm's any-admission count (37) is
+its empty-bed deaths plus its bureau-transfer deaths and exceeds Stennock's, every bed Ristenholm's full unit gave away during
+one of its long waits went to a patient referred by a trust holding no level-3 beds on that date, every Brackenford long wait
+began at 18:00 or later with its unit full, and Brackenford's 08:00 return showed an empty staffed bed on most mornings (206 of
+365).
 
-- **Figures.** Every figure in `submission.md` and the goldens recomputes from the engine the checks use: rungs 56,
-  44, 34, 15, 27; the placement year 731 / 213 / 44; the record 2,163 / 629 / 148 with the eight trust rows as the
-  build record states; Stennock 25, 28, 27 and Prideswick 14, 17, 15 by year. The chart's zero-confirmable trusts tie,
-  so block 4 states the order only for the three with a confirmable part.
-- **Golden realism.** Board-paper identifying block, a title stating the finding, lopsided sections, the decision in
-  prose and the trusts in a table with a source line, one footnote on the death linkage and its completeness, page
-  footer; workbook with named sheets, frozen panes, set widths, number formats, a tied total row and a Notes sheet;
-  chart with a deliberate two-tone palette (validated blue against a neutral remainder), direct labels and the gap
-  bracket. Figures frozen before the pass and unchanged after it (printed output identical across four runs).
-- **Container.** `golden.py` scrubs both OOXML files through `writers.scrub_ooxml` (producer "Quality surveillance,
-  Wenmarsh Regional Health Board", stamped 2 October 2026, fixed entry times) and sets the file times; the H1 audit
-  reads `golden/` and `target/` clean, and two golden runs are byte-identical.
-- **Reduce-house-fixes.** H4: `golden/` holds exactly the three named files, one `submission.md` and one `prompt.md`
-  in the tree. H6: the rules above are back-tested in code. H8: every file, column and clause the write-up and
-  paper cite resolves (WRHB/26/097 sections 3, 4 and 5). H3: Ristenholm's two empty-bed deaths are named in block 1
-  rather than folded into "units full".
-- **Pack rebuild.** The correspondence sign-offs now carry a `-- ` signature delimiter (see `## Tried and rejected`);
-  the rebuild passes 120 of 120 assertions, the verifier 22 of 22 claims, and two scratch builds are byte-identical
-  to each other and to the task folder's pack. No figure moved.
-- **Surface screen** (`guard.py surface`): no byte-identical file, same-seed table, shared name or prompt wording
-  promoted; the five promoted pairs are on the mechanism layer only (task118 back to back on gap and decision type;
-  task25, task26, task28 and task38 on gap, pattern and decision type), which no rename or regeneration moves. Each
-  is answered by a differentiation line on the card (task118's added at this stage). People in the cut pack: the six
-  drawn personas and nobody else.
-- **Heart check** (`guard.py heart task119`): **WARN**, exit 0. Nearest heart text 0.06 (task89 lineage), under the
-  WARN line; the WARNs are repeat.gate_g (task121, task122) and repeat.decision (task122), answered under `## Guard`.
-  Card updated with the answer, its source, the spine's 30,259 rows, the deliverables and the opening move;
-  `guard.py validate` 119 cards, 0 invalid.
+- **Figures.** Every figure in `submission.md` and the goldens recomputes from the engine the checks use: rungs 56, 34, 15, 37,
+  27; the placement year 731 / 213 / 44; the record 2,163 / 629 / 148 with the eight trust rows as the build record states;
+  Stennock 25, 28, 27 and Prideswick 14, 17, 15 by year. The chart's zero-confirmable trusts tie, so block 4 states the order
+  only for the three with a confirmable part. Loop 1 moved no graded figure: blocks 2 and 4 are unchanged, block 1's Ristenholm
+  clause now names the bureau's transfers, step 5 cites `interhospital_transfer_audit_202307_202606.csv` and the field guide's
+  `bed_confirmed_at`, and step 7 adds elapsed time across the March clock changes and transfers by the referring trust.
+- **Golden realism.** Board-paper identifying block, a title stating the finding, lopsided sections, the decision in prose and
+  the trusts in a table with a source line, one footnote on the death linkage and its completeness, page footer; the Ristenholm
+  paragraph and table reason (35 after waits through which its full unit took transfers the bureau placed, 7 with the unit full
+  and no admission, 2 beside an empty staffed bed) added in loop 1; workbook with named sheets, frozen panes, set widths, number
+  formats, a tied total row and a Notes sheet whose definitions now carry the bureau's allocation, waits in elapsed time and one
+  patient per person; chart with a deliberate two-tone palette, direct labels and the gap bracket. Figures frozen before the
+  pass; the goldens regenerated from the final pack are byte-identical to the shipped ones.
+- **Container.** `golden.py` scrubs both OOXML files through `writers.scrub_ooxml` (producer "Quality surveillance, Wenmarsh
+  Regional Health Board", stamped 2 October 2026, fixed entry times) and sets the file times; the H1 audit reads `golden/` and
+  `target/` clean.
+- **Reduce-house-fixes.** H4: `golden/` holds exactly the three named files, one `submission.md` and one `prompt.md` in the
+  tree. H6: the worded rules above are back-tested in code, the bureau rule included. H8: every file, column and clause the
+  write-up and paper cite resolves (WRHB/26/097 sections 3, 4 and 5; the transfer audit and its field-guide entry). H3: the
+  Ristenholm sentence counts deaths and the waits behind them in one population ("the waits behind 35 of its 44 deaths").
+- **Pack rebuild.** 137 of 137 assertions, 24 of 24 verifier claims, two scratch builds byte-identical to each other and to the
+  task folder's pack.
+- **Surface screen** (`guard.py surface`, loop 1): no byte-identical file, same-seed table, shared name or prompt wording
+  promoted; the five promoted pairs are the stage-3 ones on the mechanism layer only (task118 back to back on gap and decision
+  type; task25, task26, task28 and task38 on gap, pattern and decision type), which no rebuild moves, each answered by a
+  differentiation line on the card. People in the cut pack: the six drawn personas and nobody else.
+- **Heart check** (`guard.py heart task119`): see `## Guard`; the card's stump is the loop-1 sentence.
+- **Stage 3 re-run after loop 1 (2026-10-09).** `golden.py` re-run from the shipped pack: every figure unchanged (rungs 56,
+  34, 15, 37, 27; placement year 731 / 213 / 44; record 2,163 / 629 / 148), workbook and chart byte-identical. H3 found one
+  count-word defect in the paper's table: Prideswick's row split its 21 deaths as 15 and 4 and dropped the 2 after waits
+  through which its full unit took bureau transfers; the row now reads 15, 2 and 4, emitted from the same counts, and
+  `figures()` asserts the parts tie to the row for Prideswick and Ristenholm. H6 tightened two worded rules to the sentence
+  as written: no Stennock weekend referral at any level waited more than four hours (open waits included), and Stennock
+  leads with Prideswick second in each four-quarter year. Only the docx moved (one table cell); the regenerated golden
+  equals a scratch build byte for byte, the H1 audit reads `golden/` and `target/` clean, the verifier passes 24 of 24 and
+  `submission.md` needed no change. Surface screen: the same five mechanism-layer pairs, nothing on the surface layer.
+  Heart: **WARN** (exit 0) on repeat.gate_g and repeat.decision, nearest heart text 0.05 (task89 lineage), nearest driver
+  0.06; card fields agree with the submission and the pack, `guard.py validate` 119 cards, 0 invalid.
 
 ## Leak review
 
-`leak.py task119 --asof 2026-10-02`: **REVIEW**, no LEAK; sweeps 1 to 3 and 5 to 11 clean. The five REVIEW lines are
-sweep 4 (generic stump-paragraph words), each read in full:
+`leak.py task119 --asof 2026-10-02`, re-run in hardening loop 1 against the loop-1 stump sentence and again at the stage-3
+re-run (2026-10-09, same pack): **REVIEW**, no LEAK; sweeps 1 to 3 and 5 to 11 clean. The five REVIEW lines are sweep 4 (generic stump-paragraph words), each read in full:
 
 - `accn_board_paper_2023-11-21_level3_capacity.pdf`: the 2023 consolidation paper (Ellerdyke to level 2, Pellowham's
-  winter beds); it says nothing about planned admissions, waits or Stennock, and is DV3's documentary organ.
-- `ccrs_migration_export_specification_rel2.3.pdf`: the legacy export's clock, level and bed-episode semantics, the
-  ask layer's organs; no sentence touches the platform era or the order in which a unit fills.
-- `rds_apc_extract_specification.txt`: the episode extract's fields and its temporary-key linkage, DV2's organ;
-  "admission" there is the hospital spell, not the unit.
-- `review_terms_of_reference_2027-28.docx`: the remit's scope, judging rule and methodology note, the filed pins; it
-  names no planned admission, occupancy or order of admission.
-- `wenmarsh_acc_extract_field_guide.pdf`: the field definitions, where "planned" sits only in the admission_type
-  code list beside the five other codes and "staffed" in beds_open; it states no rule about either.
+  winter beds, transfers continuing through the network's bed bureau); it says nothing about planned admissions, waits,
+  own care or Stennock, and is the documentary organ of DV3 and DV6.
+- `ccrs_migration_export_specification_rel2.3.pdf`: the legacy export's clock, level and bed-episode semantics and the
+  bed-management feed's local time, the ask layer's organs; no sentence touches the platform era or the order in which a
+  unit fills.
+- `rds_apc_extract_specification.txt`: the episode extract's fields, its temporary-key linkage and the verified key, the
+  organs of DV2 and DV7; "admission" there is the hospital spell, not the unit.
+- `review_terms_of_reference_2027-28.docx`: the remit's scope (transferred patients reviewed with the trust that referred
+  them), judging rule and methodology note, the filed pins; it names no planned admission, occupancy, bureau or order of
+  admission.
+- `wenmarsh_acc_extract_field_guide.pdf`: the field definitions, where "planned" sits only in the admission_type code list
+  beside the five other codes, "staffed" in beds_open and the bureau in the transfer audit's `bed_confirmed_at`; it states
+  no rule about any of them and never says whose care a transfer is.
 
 ## Tried and rejected
 
@@ -889,3 +1062,7 @@ sweep 4 (generic stump-paragraph words), each read in full:
   people.inside. A `-- ` signature delimiter now separates the sign-off from the signature, in `docs.thread`.
 - Stage 4, solver round 1 (plain), the five-rung ladder as built: the solver landed D at 27, G 15, gap 12 (proxy 83.8, main call landed by reading, 4 of 11 asks cracked, its confirmable column exact at 148). It went from rung 0 straight to rung 4 and never filed G: "A remit death is confirmable when the trust's own unit had a free bed during the wait, or admitted another patient (here always a planned surgical admission) during it." It built the allocation test as a work order from the remit's methodology sentence (own beds and staff are own care), not from the census, so the full-unit stop on rung 3 never happened.
 - Stage 4 loop 1, the decisive rung built as a C1 convergence on code semantics (axis 19: during every long wait the only admissions to a referring trust's own unit were planned post-operative admissions from its own theatres, so any admission, any theatre admission and a planned own-theatre admission selected the same waits): the convergence turned the remit's methodology sentence into a work order with nothing behind it. The round-1 solver wrote its test straight from that sentence, "A remit death is confirmable when the trust's own unit had a free bed during the wait, or admitted another patient (here always a planned surgical admission) during it", never met the full-unit stop at rung 3 and filed D at 27; it died because the most literal operationalisation of "decisions about the use of its own beds" (any bed given to anyone while the patient waited) was exactly the decisive set, so no rung sat between the sentence and the answer.
+- Stage 4 loop 1, DV7 as surviving repeat patients (two long waits under one verified key, 45 days or more apart, both survived): it moved only 3a, so 3b rested on the clock-change device alone, and a pair whose top responses computed waits in elapsed time with round 1's six catches measured 57.7 (61.2 with DV6 caught too). The pairs now die after the second wait, 8 to 13 days after the first, so a per-referral death count moves 3b at seven trusts and the same profiles measure 44.0 and 47.4.
+- Stage 4 loop 1, a lethal repeat pair at Stennock (D) as well: every D long wait is confirmable, so the pair moved D's confirmable column by two and the confirmable total cancelled on three subsets ({DV2, HZ2}, {DV2, DV4, DV7}, {DV2, DV7, HZ2}: the identity device's minus six against plus six). No repeat pair at D; DV7 sits at the other seven trusts.
+- Stage 4 loop 1, the rung-3 decoy as bureau transfers into Ristenholm's full unit (A at 37 on "any admission during the wait"): the second plain round (labelled round 2, plain; proxy 82.3, main call landed by reading, 4 of 11 asks cracked, confirmable total exact at 148) saw the rung and declined it in one column predicate: "Beds taken by inter-hospital transfers in (type 02) were excluded, because the network bed bureau allocates them and every such patient's decision to admit came before the waiting patient's." The `admission_type` code (02 against 04) on the unit stays partitions the bureau's placements from the trust's own without the interval join to the transfer audit, so the population gap at rung 3 to 4 is a row filter, and the solver's own confidence line names A at about 37 as the road not taken.
+- Stage 4 loop 2 (opening line), axis 19 closed by C1 on the admission type (own placement read from the admitted patient's referring trust, from `admission_type` and from the bureau's audit selecting the same admissions in the window, asserted as a convergence): built to close a fork, it made the population gap at rung 3 to 4 a one-column filter, so the decline of rung 3 and the decisive set were the same row predicate. Round 2 plain wrote "Beds taken by inter-hospital transfers in (type 02) were excluded, because the network bed bureau allocates them and every such patient's decision to admit came before the waiting patient's" and kept "a planned local admission (type 04)", landing D at 27 without the interval join to the audit. The code has to disagree with who placed the patient in both directions, not be pinned louder.

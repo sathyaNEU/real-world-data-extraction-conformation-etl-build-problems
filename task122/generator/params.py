@@ -69,7 +69,7 @@ ALPHA = 0.45
 # in-session lift per (cell, renders): a[c] + b * (n - nbar[c]); A has no slope in web 730+
 LIFT = {
     "HC-31": ([7.159, 7.698, 7.866, 8.236, 6.889, 7.276, 7.225, -1.567], 2.7035),
-    "HC-34": ([-1.300, 10.400, 11.000, 11.399, 9.300, 9.700, 10.000, 10.100], -0.6461),
+    "HC-34": ([-0.200, 10.400, 11.000, 11.399, 9.300, 9.700, 10.000, 10.100], -0.6461),
     "HC-36": ([6.699, 6.936, 5.504, 5.318, 4.179, 4.353, 3.480, 3.356], 0.1507),
     "HC-37": ([7.632, 6.660, 5.585, 5.104, 7.318, 6.336, 5.347, 4.853], -0.1128),
     "HC-39": ([2.547, 2.076, 1.109, 0.910, 2.382, 1.863, 1.005, 0.805], 0.2260),
@@ -90,6 +90,23 @@ ANYWAY_DAY_P = np.array([0.12, 0.17, 0.20, 0.30, 0.13, 0.08])   # calendar day 1
 # background orders per buyer per day, by tenure band
 BG_RATE = np.array([0.010, 0.012, 0.014, 0.016] * 2)
 WINDOW_DAYS = 21                       # template-balanced orders sit within 21 days either side
+
+# come-back tile orders: a buyer leaves the home screen open, the session closes (30 minutes without
+# activity), and the buyer comes back and orders straight from a tile still on screen. The order is placed
+# in the new home session the return opened, so the orders extract credits it there and the render log's
+# ordered_tiles (orders placed in the session) never sees it; only the listing ties it to the tile the
+# logged session served. Per 1,000 sessions, by cell, for the incumbent and every policy but the
+# session-sequence model, whose buyers come back to the item through favourites or search instead. They
+# are drawn from background orders the block template already places on the session's own day after it
+# ends, so no order enters or leaves any window.
+COMEBACK_PER_1000 = np.array([1.6, 1.5, 1.6, 1.7, 1.2, 1.2, 1.3, 1.4])
+COMEBACK_NONE = ("HC-34",)
+COMEBACK_MAX_S = 4 * 3600              # come-back orders land 2 minutes to 4 hours after the session closed
+
+# purchases paid from a Vouwlijn balance: covered and charged the fee, but not captured by the payment
+# provider, so they are absent from the payments export (shipped orders only)
+WALLET_SHARE = 0.07
+VAT_RATE = 0.21                        # VAT on the buyer-protection fee; fee income is booked excluding it
 
 # fresh tiles: share of the six tiles on listings under 48 hours old, per served ranking
 FRESH_SHARE = {"HC-24": 0.130, "HC-31": 0.136, "HC-33": 0.141, "HC-34": 0.139, "HC-37": 0.214, "HC-39": 0.152}
@@ -117,6 +134,7 @@ BG_OFFER_SHARE = 0.24                  # orders away from the carousel bought on
 
 # ------------------------------------------------------------------ slot traffic
 SLOT_SHARE = 0.10
+JAN_SURGE = (0.020, 0.010)             # extra share of the two younger bands at the January peak
 ISO_WEEKS_SLOT = list(range(1, 13))    # 2027-W01..W12, planned on the same weeks of 2026
 APP_WEEKS = list(range(3, 13))         # app arm starts with the 18 January release (W03)
 R2_MOVED_SHARE = 0.062                 # sessions R2 moves from the two younger bands to the two older

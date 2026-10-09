@@ -172,9 +172,10 @@ def forecasting_standard(path):
     s.append(Spacer(1, 6))
     s.append(Paragraph("4. Records and accuracy", h2))
     s.append(Paragraph(
-        "Forecast demand is stated in whole kilowatts. The forecast workbook, the base-month records and the "
-        "factor used are kept with the filing for six years, and forecasts presented to Council state the base "
-        "months and the factor.", base))
+        "Forecast demand is stated in whole kilowatts. The forecast workbook, the base-month records as they stood on "
+        "the day the forecast was made, and the factor used are kept with the filing for six years; a forecast is not "
+        "restated when a base-month record is later restated. Forecasts presented to Council state the base months "
+        "and the factor.", base))
     s.append(Paragraph(
         "Once a forecast month has closed, the division records the forecast's error: the stated forecast less "
         "the month's recorded billing demand in whole kilowatts, as a percentage of that recorded demand.", base))

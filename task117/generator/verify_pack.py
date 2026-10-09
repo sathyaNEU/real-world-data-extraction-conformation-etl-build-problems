@@ -26,15 +26,17 @@ LA = ZoneInfo("America/Los_Angeles")
 Q = 900
 
 EXPECTED = {
-    "answer": 129.136, "filed": 130, "split": (82.88, 46.256), "binding": "2026-12-08T12:00:00-08:00",
-    "monthly": [109.088, 67.872, 97.888, 90.272, 84.896, 79.072, 72.128, 74.816, 87.136, 94.080, 103.264, 129.136],
-    "rung0": 412.16, "rung1": 309.12, "rung2": 103.04, "rung3": 98.56, "rung4": 148.512,
-    "rung4_binding": "2026-02-17T12:00:00-08:00", "planners": 225,
-    "rung4_records": 162.2432, "rung5_records": 155.35744, "rung5_records_binding": "2026-12-08T12:00:00-08:00",
-    "b3_forecast": [112, 117, 107, 106, 88, 88, 82, 90, 106, 114, 113, 111],
-    "b3_miss": [-0.9, 2.6, -1.8, 1.9, -1.1, 2.3, -1.2, 2.3, -0.9, 1.8, 0.9, -0.9],
-    "b1": {"CP-N": [1069, 908, 910, 725, 594, 592, 599, 691, 791, 914, 1065, 1130],
-           "CP-S": [934, 798, 794, 633, 520, 517, 523, 606, 693, 799, 932, 990]},
+    "answer": 109.088, "filed": 110, "split": (56.448, 52.64), "binding": "2026-01-21T12:00:00-08:00",
+    "monthly": [109.088, 75.936, 81.760, 74.144, 76.832, 87.136, 80.192, 66.752, 95.200, 86.016, 79.072, 96.880],
+    "rung0": 412.16, "rung1": 309.12, "rung2": 90.16, "rung3": 86.24, "own_date": 148.512,
+    "own_date_binding": "2026-02-17T12:00:00-08:00", "planners": 225,
+    "held": 129.136, "held_binding": "2026-12-08T12:00:00-08:00", "held_split": (82.88, 46.256),
+    "rung4_records": 160.7424, "rung4_records_binding": "2026-01-21T12:00:00-08:00",
+    "rung5_records": 155.35744, "rung5_records_binding": "2026-12-08T12:00:00-08:00",
+    "b3_forecast": [112, 122, 105, 102, 102, 83, 83, 82, 107, 114, 121, 114],
+    "b3_miss": [-0.9, 1.7, -1.9, 1.0, -1.0, 2.5, -1.2, 1.2, -1.8, 1.8, 1.7, -0.9],
+    "b1": {"CP-N": [1069, 908, 910, 725, 594, 592, 599, 691, 791, 914, 1063, 1133],
+           "CP-S": [934, 799, 794, 633, 520, 517, 523, 606, 693, 799, 932, 990]},
 }
 AS_OF = date(2027, 1, 25)
 FAILS = []
@@ -144,13 +146,18 @@ def load(tdir):
     plates = pd.read_csv(j("deck_submeter_nameplates.csv"))
     from openpyxl import load_workbook
     wb = load_workbook(j("deck_panel_meter_log_2024-2026.xlsx"), read_only=True)
-    rows = list(wb.active.iter_rows(values_only=True))
-    hi = [i for i, r in enumerate(rows) if r and r[0] == "Read date"][0]
-    log = pd.DataFrame([r for r in rows[hi + 1:] if r and r[0] is not None], columns=list(rows[hi]))
-    log["Read date"] = pd.to_datetime(log["Read date"]).dt.date
+
+    def sheet(ws):
+        rows = list(ws.iter_rows(values_only=True))
+        hi = [i for i, r in enumerate(rows) if r and r[0] == "Read date"][0]
+        df = pd.DataFrame([r for r in rows[hi + 1:] if r and r[0] is not None], columns=list(rows[hi]))
+        df["Read date"] = pd.to_datetime(df["Read date"]).dt.date
+        return df
+    log = sheet(wb.worksheets[0])
+    fixes = sheet(wb["Corrections"])
     return dict(hdr=hdr, dec=dec, reg=reg, sp=sp, gw=gw, fc=fc, ct=ct, stm=stm, permits=permits, checks=checks, ref=ref,
-                fleet=fleet,
-                sched=sched, plates=plates, log=log, log_path=j("deck_panel_meter_log_2024-2026.xlsx"))
+                fleet=fleet, sched=sched, plates=plates, log=log, fixes=fixes,
+                log_path=j("deck_panel_meter_log_2024-2026.xlsx"))
 
 
 def dated_join(P, frame, tcol="d", with_rating=False):
@@ -193,6 +200,55 @@ def charges(fr):
     first["kwh_delivered"] = np.round(g["kwh_delivered"].sum().to_numpy(), 3)
     first["n_rec"] = g.size().to_numpy()
     return first
+
+
+def of_record_asof(P, when):
+    """Session rows as they stood on a date: a restated version counts once it was decided ACCEPTED by then."""
+    h = P["hdr"]
+    dec = P["dec"].copy()
+    dec["decd"] = pd.to_datetime(dec["decided_on"]).dt.date
+    acc = dec[(dec["decision"] == "ACCEPTED") & (dec["decd"] <= when)].groupby("session_id")["version"].max()
+    keep_ver = h["session_id"].map(acc).fillna(1).astype(int)
+    r = h[h["version"] == keep_ver]
+    return r.sort_values(["session_id"]).drop_duplicates("auth_code", keep="first")
+
+
+POOL = "Larch County Fleet Services"
+
+
+def handoff_prev(ch, pool, window=600, need_pool=True):
+    """For each charge, the charge it follows on a hand-off: the next charge at a unit is a pool car going on within
+    the window of a pool car coming off."""
+    o = ch.sort_values(["station_id", "t0"], kind="mergesort")
+    st, t0, t1 = o["station_id"].to_numpy(), o["t0"].to_numpy(np.int64), o["t1"].to_numpy(np.int64)
+    pm = o["permit_no"].isin(pool).to_numpy() if need_pool else np.ones(len(o), bool)
+    gap = t0[1:] - t1[:-1]
+    h = (st[1:] == st[:-1]) & pm[1:] & pm[:-1] & (gap > 0) & (gap <= window)
+    prev = {}
+    idx = o.index.to_numpy()
+    for k in np.flatnonzero(h):
+        prev[idx[k + 1]] = idx[k]
+    return prev
+
+
+def forward_starts(ch, rate, prev, old_kw, lag="own"):
+    """Start of each charge on the new units: a hand-off follower goes on once the car ahead of it has finished at its
+    new draw, after the wait it had behind that car's finish on the old units (or the mean wait, or none)."""
+    start = ch["t0"].astype(float)
+    fin_old = start + ch["kwh_delivered"].astype(float) / old_kw * 3600.0
+    waits = {i: start[i] - fin_old[p] for i, p in prev.items()}
+    mean = float(np.mean(list(waits.values()))) if waits else 0.0
+    rate = pd.Series(rate, index=ch.index).astype(float)
+    new = {}
+    for i in ch.sort_values("t0", kind="mergesort").index:
+        if i not in prev:
+            new[i] = start[i]
+            continue
+        p = prev[i]
+        w = waits[i] if lag == "own" else mean if lag == "mean" else 0.0
+        new[i] = new[p] + ch.at[p, "kwh_delivered"] / rate[p] * 3600.0 + w
+    return pd.Series(new).reindex(ch.index)
+
 
 
 # ------------------------------------------------------------------------------ cars
@@ -303,74 +359,134 @@ def main():
     recs["car27"] = car_ratings(P, recs, as_of=AS_OF)
     old_kw = float(P["reg"].loc[P["reg"]["garage"].isin(decks), "rating_kw"].unique()[0])
     check("V02 every deck unit is rated 6.6 kW today and the new units 11.5 kW", old_kw == 6.6 and R["new_kw"] == 11.5)
+    per = P["permits"].set_index("permit_no")
+    pool = set(per.index[per["holder"] == POOL])
+    prev = handoff_prev(pop, pool)
 
-    def replay(rate):
-        rate = pd.Series(rate, index=pop.index)
-        return {g: G.blocks(pop.loc[pop["garage"] == g, "t0"], pop.loc[pop["garage"] == g, "kwh_delivered"],
-                            rate[pop["garage"] == g]) for g in decks}
-    # the answer: every 2026 session replayed at the smaller of the new rating and the onboard rating of the car its
-    # permit carries into the contract year (the January 2027 renewal check)
-    percar = replay(np.minimum(R["new_kw"], pop["car27"]))
+    def replay(rate, frame=None, starts=None):
+        frame = pop if frame is None else frame
+        rate = pd.Series(rate, index=frame.index)
+        t0 = frame["t0"] if starts is None else starts
+        return {g: G.blocks(t0[frame["garage"] == g], frame.loc[frame["garage"] == g, "kwh_delivered"],
+                            rate[frame["garage"] == g]) for g in decks}
+
+    def replay_fwd(rate, frame=None, prv=None, lag="own"):
+        frame = pop if frame is None else frame
+        prv = prev if prv is None else prv
+        return replay(rate, frame, forward_starts(frame, rate, prv, old_kw, lag))
+    # the answer: every 2026 charge replayed at the smaller of the new rating and the onboard rating of the car its
+    # permit carries into the contract year, the county pool's hand-offs going on once the car ahead has finished
+    r27 = np.minimum(R["new_kw"], pop["car27"])
+    percar = replay_fwd(r27)
     tot = percar[decks[0]] + percar[decks[1]]
     v, t = G.peak(tot)
     ans = growth * v
     OUT["answer"] = ans
-    check("V03 the answer recomputes: 129.136 kW at 12:00 on 8 December 2026",
+    check("V03 the answer recomputes: 109.088 kW at 12:00 on 21 January 2026",
           near(ans, EXPECTED["answer"], 1e-6) and iso(t) == EXPECTED["binding"], (ans, iso(t)))
     filed = int(math.floor(ans / 5 + 0.5) * 5)
-    check("V04 files 130 kW to the nearest 5 kW (and rounded up)", filed == 130 and math.ceil(ans / 5) * 5 == 130)
+    check("V04 files 110 kW to the nearest 5 kW (and rounded up)", filed == 110 and math.ceil(ans / 5) * 5 == 110)
     j = (t - G.t0) // Q
     split = (growth * percar[decks[0]][j], growth * percar[decks[1]][j])
     OUT["split"] = split
-    check("V05 deck split 82.9 / 46.3 kW", near(split[0], 82.88, 1e-6) and near(split[1], 46.256, 1e-6), split)
+    check("V05 deck split 56.4 / 52.6 kW", near(split[0], 56.448, 1e-6) and near(split[1], 52.64, 1e-6), split)
     mon = [growth * G.peak(tot, month=m)[0] for m in range(1, 13)]
     OUT["monthly"] = mon
     check("V06 the twelve contract months recompute", all(near(a, b, 1e-6) for a, b in zip(mon, EXPECTED["monthly"])), mon)
-    check("V07 the month that sets the figure is December (contract month December 2027)",
-          max(range(12), key=lambda i: mon[i]) == 11)
+    check("V07 the month that sets the figure is January (contract month January 2028)",
+          max(range(12), key=lambda i: mon[i]) == 0)
+    # the hand-offs, read from the export and the permit registry alone
+    allc = charges(rec[rec["garage"].isin(decks)].copy())
+    prev_all = handoff_prev(allc, pool)
+    o = allc.sort_values(["station_id", "t0"], kind="mergesort")
+    st_o, t0_o, t1_o = o["station_id"].to_numpy(), o["t0"].to_numpy(np.int64), o["t1"].to_numpy(np.int64)
+    gap_o = t0_o[1:] - t1_o[:-1]
+    is_h = np.array([i in prev_all for i in o.index.to_numpy()[1:]])
+    others = (st_o[1:] == st_o[:-1]) & ~is_h
+    fol = allc.loc[list(prev_all)]
+    head = allc.loc[[prev_all[i] for i in prev_all]]
+    idle = (head["t1"].to_numpy() - (head["t0"].to_numpy() + head["kwh_delivered"].to_numpy() / old_kw * 3600)) / 60
+    lagm = (fol["t0"].to_numpy() - head["t1"].to_numpy()) / 60
+    OUT["handoffs"] = (len(prev_all), len(prev))
+    check("V07k the county pool's hand-offs: 282 in the export from 2024 to 2026, 101 in 2026, every one at a North Deck "
+          "unit; the car ahead came off 6 to 20 minutes after its last charging second and the next went on 1 to 5.4 "
+          "minutes later; every other pair of consecutive charges at a deck unit sits 42 minutes or more apart",
+          len(prev_all) == 282 and len(prev) == 101 and (fol["garage"] == decks[0]).all()
+          and idle.min() >= 6.0 and idle.max() <= 20.0 and lagm.min() >= 1.0 and lagm.max() <= 5.4
+          and gap_o[others].min() >= 42 * 60,
+          (len(prev_all), len(prev), round(float(idle.min()), 2), round(float(idle.max()), 2), float(gap_o[others].min()) / 60))
+    same = all(handoff_prev(pop, pool, w_, need) == prev for w_ in (360, 2520) for need in (True, False))
+    conv = {}
+    for lag in ("mean", "zero"):
+        lo = replay_fwd(r27, lag=lag)
+        tl = lo[decks[0]] + lo[decks[1]]
+        conv[lag] = (growth * G.peak(tl)[0], G.peak(tl)[1], [growth * G.peak(tl, month=m)[0] for m in range(1, 13)])
+    check("V07l the hand-offs converge: every window from 6 to 42 minutes, with or without the pool condition, selects "
+          "the same hand-offs; the mean wait and no wait give the answer, its quarter-hour and every month",
+          same and all(near(c[0], ans, 1e-9) and c[1] == t and all(near(a, b, 1e-9) for a, b in zip(c[2], mon))
+                       for c in conv.values()), {k: c[0] for k, c in conv.items()})
+    held = replay(r27)
+    th = held[decks[0]] + held[decks[1]]
+    vh, tth = G.peak(th)
+    jh = (tth - G.t0) // Q
+    OUT["held"] = growth * vh
+    hsplit = (growth * held[decks[0]][jh], growth * held[decks[1]][jh])
+    jd = int((int(datetime(2026, 12, 8, 12, tzinfo=LA).timestamp()) - G.t0) // Q)
+    check("V07m every charge replayed from its 2026 start (the hand-offs held) lands 129.136 kW at 12:00 on 8 December "
+          "2026 (82.9 / 46.3), filed 130; re-timing the hand-offs takes December's 12:00 quarter-hour from 115.3 to 86.5 kW",
+          near(growth * vh, EXPECTED["held"], 1e-6) and iso(tth) == EXPECTED["held_binding"]
+          and near(hsplit[0], 82.88, 1e-6) and near(hsplit[1], 46.256, 1e-6)
+          and near(th[jd], 115.3, 1e-6) and near(tot[jd], 86.5, 1e-6), (growth * vh, iso(tth), th[jd], tot[jd]))
+    closed_fwd = replay_fwd(np.full(len(pop), old_kw))
+    closed_held = replay(np.full(len(pop), old_kw))
+    check("V07n the closed record is blind to the hand-offs: at 6.6 kW every re-timed charge starts when it started",
+          all(np.allclose(closed_fwd[g], closed_held[g], atol=1e-9) for g in decks))
     # the renewal, read from the checks alone
     ch = P["checks"].copy()
     ch["checked_on"] = pd.to_datetime(ch["checked_on"]).dt.date
     jan = ch[ch["checked_on"] >= date(2027, 1, 1)].set_index("permit_no")
     before = ch[ch["checked_on"] < date(2027, 1, 1)].sort_values("checked_on").groupby("permit_no").last()
     changed = sorted(p for p in jan.index if jan.loc[p, "vin"] != before.loc[p, "vin"])
-    per = P["permits"].set_index("permit_no")
     check("V07a the January 2027 renewal: eighteen county permits moved from 2020 to 2023 Bolt EVs, checked by 15 January",
-          len(changed) == 18 and set(per.loc[changed, "holder"]) == {"Larch County Fleet Services"}
+          len(changed) == 18 and set(per.loc[changed, "holder"]) == {POOL}
           and set(before.loc[changed, "model_year"]) == {2020} and set(jan.loc[changed, "model_year"]) == {2023}
           and jan["checked_on"].max() <= date(2027, 1, 15), (len(changed), jan["checked_on"].max()))
     diff = pop[pop["car"] != pop["car27"]]
     check("V07b the two vehicle joins differ only on the renewed permits' sessions, 7.2 kW then and 11.0 kW in the "
           "contract year", set(diff["permit_no"]) <= set(changed) and (diff["car"] == 7.2).all()
           and (diff["car27"] == 11.0).all() and len(diff) == int(pop["permit_no"].isin(changed).sum()), len(diff))
-    # rung 4: each session's car on its own date
-    own_date = replay(np.minimum(R["new_kw"], pop["car"]))
+    # each session's car on its own date
+    r26c = np.minimum(R["new_kw"], pop["car"])
+    own_date = replay_fwd(r26c)
+    own_held = replay(r26c)
     v4, t4 = G.peak(own_date[decks[0]] + own_date[decks[1]])
-    OUT["rung4"] = growth * v4
-    check("V07c rung 4 recomputes: 148.512 kW at 12:00 on 17 February 2026, filed 150",
-          near(growth * v4, EXPECTED["rung4"], 1e-6) and iso(t4) == EXPECTED["rung4_binding"]
-          and int(math.floor(growth * v4 / 5 + 0.5) * 5) == 150, (growth * v4, iso(t4)))
+    v4h, t4h = G.peak(own_held[decks[0]] + own_held[decks[1]])
+    OUT["own_date"] = growth * v4
+    check("V07c each session's own car lands 148.512 kW at 12:00 on 17 February 2026, the hand-offs re-timed or held, "
+          "filed 150", near(growth * v4, EXPECTED["own_date"], 1e-6) and iso(t4) == EXPECTED["own_date_binding"]
+          and near(v4h, v4, 1e-9) and t4h == t4 and int(math.floor(growth * v4 / 5 + 0.5) * 5) == 150,
+          (growth * v4, iso(t4)))
     # the natural path replays settlement records: rung 4 (own-date cars) and rung 5 (contract-year cars)
-    def replay_rec(rate):
-        rate = pd.Series(rate, index=recs.index)
-        return {g: G.blocks(recs.loc[recs["garage"] == g, "t0"], recs.loc[recs["garage"] == g, "kwh_delivered"],
-                            rate[recs["garage"] == g]) for g in decks}
-    r5 = replay_rec(np.minimum(R["new_kw"], recs["car27"]))
+    prev_rec = handoff_prev(recs, pool)
+    r5 = replay(np.minimum(R["new_kw"], recs["car27"]), recs)
     v5, t5 = G.peak(r5[decks[0]] + r5[decks[1]])
-    r4 = replay_rec(np.minimum(R["new_kw"], recs["car"]))
+    r4 = replay(np.minimum(R["new_kw"], recs["car"]), recs)
     v4r, t4r = G.peak(r4[decks[0]] + r4[decks[1]])
+    r5f = replay_fwd(np.minimum(R["new_kw"], recs["car27"]), recs, prev_rec)
+    r4f = replay_fwd(np.minimum(R["new_kw"], recs["car"]), recs, prev_rec)
     OUT["rung5_records"], OUT["rung4_records"] = growth * v5, growth * v4r
-    check("V07d record by record, rung 5 lands 155.357 kW at 12:00 on 8 December 2026 and rung 4 162.243 kW: the "
-          "settlement records the run closed and carried on restart at the run on the new units",
+    check("V07d record by record, rung 5 lands 155.357 kW at 12:00 on 8 December 2026 and rung 4 160.742 kW at 12:00 on "
+          "21 January 2026, and re-timing the hand-offs on records moves neither",
           near(growth * v5, EXPECTED["rung5_records"], 1e-5) and iso(t5) == EXPECTED["rung5_records_binding"]
-          and near(growth * v4r, EXPECTED["rung4_records"], 1e-5), (growth * v5, iso(t5), growth * v4r))
+          and near(growth * v4r, EXPECTED["rung4_records"], 1e-5) and iso(t4r) == EXPECTED["rung4_records_binding"]
+          and near(G.peak(r5f[decks[0]] + r5f[decks[1]])[0], v5, 1e-9)
+          and near(G.peak(r4f[decks[0]] + r4f[decks[1]])[0], v4r, 1e-9), (growth * v5, iso(t5), growth * v4r, iso(t4r)))
     j5, j4 = (t5 - G.t0) // Q, (t4r - G.t0) // Q
     sp5 = (growth * r5[decks[0]][j5], growth * r5[decks[1]][j5])
     sp4 = (growth * r4[decks[0]][j4], growth * r4[decks[1]][j4])
-    check("V07h record by record, North carries the same load as on charges at each rung's quarter-hour and South more: "
-          "rung 5 82.88 and 72.477 kW, rung 4 115.136 and 47.107 kW at 12:00 on 17 February 2026",
-          near(sp5[0], 82.88, 1e-6) and near(sp5[1], 72.47744, 1e-5) and near(sp4[0], 115.136, 1e-6)
-          and near(sp4[1], 47.1072, 1e-5) and iso(t4r) == "2026-02-17T12:00:00-08:00", (sp5, sp4, iso(t4r)))
+    check("V07h record by record: rung 5 82.88 and 72.477 kW at its quarter-hour, rung 4 88.704 and 72.038 kW",
+          near(sp5[0], 82.88, 1e-6) and near(sp5[1], 72.47744, 1e-5) and near(sp4[0], 88.704, 1e-6)
+          and near(sp4[1], 72.0384, 1e-5), (sp5, sp4))
     mon5 = [growth * G.peak(r5[decks[0]] + r5[decks[1]], month=m)[0] for m in range(1, 13)]
     check("V07e rung 5 differs from the answer at whole kW in every month", all(round(a) != round(b) for a, b in
                                                                               zip(mon5, mon)), mon5)
@@ -390,8 +506,6 @@ def main():
           and (np.abs(kwh.reindex(idx).fillna(0) - stm["kwh"]) < 0.0005).all()
           and int((n_rec.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 0.5 * len(idx)
           and int((n_over.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 10, len(idx))
-    # at one unit under one permit or card the only gap under 42 minutes is a zero gap, so any join tolerance below
-    # that selects the same pairs
     allr = rec.copy()
     allr["who"] = allr["permit_no"].where(allr["permit_no"] != "", allr["fleet_card"])
     allr = allr[allr["who"] != ""].sort_values(["station_id", "who", "t0"], kind="mergesort")
@@ -401,23 +515,20 @@ def main():
     check("V07i at one unit under one permit or card, records either meet end to start or sit 42 minutes or more apart, "
           "and never overlap, 2024 to 2026", int((gaps_k < 0).sum()) == 0 and gaps_k[gaps_k > 0].min() >= 42 * 60,
           (int((gaps_k == 0).sum()), float(gaps_k[gaps_k > 0].min()) / 60))
-    # weekend and holiday charging at the decks is not settled: the export carries none there, and every other garage
-    # has some
     off = pd.to_datetime(rec["plug_in"].str[:10])
     off_day = (off.dt.weekday >= 5) | off.dt.date.isin(set(R["holidays"]))
     by_g = off_day.groupby(rec["garage"]).sum()
     check("V07j the settlement export carries no weekend or holiday session at either deck, and some at each of the other "
           "six garages", int(by_g[decks].sum()) == 0 and int((by_g.drop(decks) > 0).sum()) == 6, by_g.to_dict())
     # merging every same-day record of a permit or card at a unit also joins the genuine replugs; on the call it
-    # converges
+    # converges, hand-offs included
     ov = recs.copy()
     ov["who"] = ov["permit_no"].where(ov["permit_no"] != "", ov["fleet_card"])
     ov["day"] = ov["plug_in"].str[:10]
     om = ov.sort_values("t0", kind="mergesort").groupby(["station_id", "who", "day"], as_index=False, sort=False).agg(
-        t0=("t0", "min"), kwh_delivered=("kwh_delivered", "sum"), garage=("garage", "first"), car27=("car27", "first"))
-    rate_om = pd.Series(np.minimum(R["new_kw"], om["car27"]), index=om.index)
-    lo = {g: G.blocks(om.loc[om["garage"] == g, "t0"], om.loc[om["garage"] == g, "kwh_delivered"],
-                      rate_om[om["garage"] == g]) for g in decks}
+        t0=("t0", "min"), t1=("t1", "max"), kwh_delivered=("kwh_delivered", "sum"), garage=("garage", "first"),
+        car27=("car27", "first"), permit_no=("permit_no", "first"))
+    lo = replay_fwd(np.minimum(R["new_kw"], om["car27"]), om, handoff_prev(om, pool))
     tot_om = lo[decks[0]] + lo[decks[1]]
     v_om, t_om = G.peak(tot_om)
     mon_om = [growth * G.peak(tot_om, month=m)[0] for m in range(1, 13)]
@@ -440,17 +551,17 @@ def main():
     r1 = c_peak * growth * R["new_kw"] / old_kw
     check("V09 rung 1 recomputes from the quarter-hour readings: 158.4 closed, 309.12", near(c_peak, 158.4, 1e-6)
           and near(r1, EXPECTED["rung1"], 1e-6), (c_peak, r1))
-    r115 = replay(np.full(len(pop), R["new_kw"]))
+    r115 = replay_fwd(np.full(len(pop), R["new_kw"]))
     v2, t2 = G.peak(r115[decks[0]] + r115[decks[1]])
-    check("V10 rung 2 recomputes: 103.04 on 10 June 2026", near(growth * v2, EXPECTED["rung2"], 1e-6)
-          and iso(t2).startswith("2026-06-10"), (growth * v2, iso(t2)))
+    check("V10 rung 2 recomputes: 90.16 at 12:00 on 10 June 2026", near(growth * v2, EXPECTED["rung2"], 1e-6)
+          and iso(t2) == "2026-06-10T12:00:00-07:00", (growth * v2, iso(t2)))
     lib = rec[(rec["position"] == "L-09")]
     obs = observed(P, lib)
     lib_rate = float(obs[lib["fleet_card"].map(P["fleet"].set_index("fleet_card")["department"]) ==
                          "Parking Enforcement"].median())
-    r110 = replay(np.full(len(pop), lib_rate))
+    r110 = replay_fwd(np.full(len(pop), lib_rate))
     v3, t3 = G.peak(r110[decks[0]] + r110[decks[1]])
-    check("V11 rung 3 recomputes at the Library unit's van draw: 98.56", near(growth * v3, EXPECTED["rung3"], 1e-6),
+    check("V11 rung 3 recomputes at the Library unit's van draw: 86.24", near(growth * v3, EXPECTED["rung3"], 1e-6),
           growth * v3)
     all_hours = float(closed[(G.year == 2026)].max())
     check("V11a the closed all-hours maximum is the registers' 211.2 kW, the billing-hours maximum 158.4",
@@ -460,34 +571,46 @@ def main():
     check("V11b reading the stamps as interval ends returns every monthly figure",
           all(near(a, b, 1e-6) for a, b in zip(mon, mon_shift)))
     own = {g: G.peak(percar[g])[1] for g in decks}
-    check("V11c each deck's own per-car maximum falls in the binding quarter-hour", all(x == t for x in own.values()))
-    # grid
-    cells = {"draw 6.6": growth * c_peak, "growth left off": v, "rung 4, cars on their own dates": growth * v4}
-    for tag, when in (("2026 vehicles", date(2026, 12, 31)), ("contract-year vehicles", AS_OF)):
-        veh = vehicles_at(P, when)
-        favg = float(np.mean(np.minimum(R["new_kw"], veh["rating"])))
-        davg = {g: float(np.mean(np.minimum(R["new_kw"], veh.loc[veh["deck"] == k, "rating"])))
-                for g, k in zip(decks, ("North", "South"))}
-        cells[f"fleet-average ratio, {tag}"] = growth * c_peak * favg / old_kw
-        cells[f"fleet-average replay, {tag}"] = growth * G.peak(sum(replay(np.full(len(pop), favg)).values()))[0]
-        cells[f"deck-average replay, {tag}"] = growth * G.peak(sum(replay(pop["garage"].map(davg)).values()))[0]
-    cells["per car North, rating South"] = growth * G.peak(sum(replay(np.where(
-        pop["garage"] == decks[0], np.minimum(11.5, pop["car27"]), 11.5)).values()))[0]
-    cells["per car South, rating North"] = growth * G.peak(sum(replay(np.where(
-        pop["garage"] == decks[1], np.minimum(11.5, pop["car27"]), 11.5)).values()))[0]
+    check("V11c each deck's own maximum falls in the binding quarter-hour", all(x == t for x in own.values()))
+    # grid: one violation of the answer's construction per cell
+    cells = {"draw 6.6": growth * c_peak, "growth left off": v, "cars on their own dates": growth * v4,
+             "the hand-offs held at their 2026 starts": growth * vh, "settlement records": growth * v5}
+    veh = vehicles_at(P, AS_OF)
+    favg = float(np.mean(np.minimum(R["new_kw"], veh["rating"])))
+    davg = {g: float(np.mean(np.minimum(R["new_kw"], veh.loc[veh["deck"] == k, "rating"])))
+            for g, k in zip(decks, ("North", "South"))}
+    cells["fleet-average ratio, contract-year vehicles"] = growth * c_peak * favg / old_kw
+    cells["fleet-average replay, contract-year vehicles"] = growth * G.peak(sum(replay_fwd(np.full(len(pop), favg)).values()))[0]
+    cells["deck-average replay, contract-year vehicles"] = growth * G.peak(sum(replay_fwd(
+        pop["garage"].map(davg).to_numpy()).values()))[0]
+    cells["per car North, rating South"] = growth * G.peak(sum(replay_fwd(np.where(
+        pop["garage"] == decks[0], r27, 11.5)).values()))[0]
+    cells["per car South, rating North"] = growth * G.peak(sum(replay_fwd(np.where(
+        pop["garage"] == decks[1], r27, 11.5)).values()))[0]
     units = R["units"]
     divf = [f for (a, b), f in R["diversity"].items() if a <= units <= b][0]
     planners = math.ceil(units * R["new_kw"] * divf / 5) * 5
     cells["planners' sizing"] = planners
     OUT["cells"] = cells
-    check("V12 the planners' figure is 225 kW (32 x 11.5 x 0.60 to the next 5 kW above), 95 kW above ours",
-          planners == 225 and planners - filed == 95, planners)
-    check("V13 every rival cell at least 10 per cent from the answer", all(abs(x / ans - 1) >= 0.10 for x in cells.values()),
-          {k: round(x / ans - 1, 3) for k, x in cells.items()})
-    check("V14 the fleet-average replay on 2026 vehicles sits at least 40 per cent above, the deck averages at least 10 "
-          "below", cells["fleet-average replay, 2026 vehicles"] >= 1.4 * ans
-          and cells["deck-average replay, 2026 vehicles"] <= 0.90 * ans)
-    check("V14a own-date cars with growth left off file 135, not 130", int(math.floor(v4 / 5 + 0.5) * 5) == 135, v4)
+    check("V12 the planners' figure is 225 kW (32 x 11.5 x 0.60 to the next 5 kW above), 115 kW above ours",
+          planners == 225 and planners - filed == 115, planners)
+    check("V13 every single-error cell at least 10 per cent from the answer",
+          all(abs(x / ans - 1) >= 0.10 for x in cells.values()), {k: round(x / ans - 1, 3) for k, x in cells.items()})
+    veh26 = vehicles_at(P, date(2026, 12, 31))
+    davg26 = {g: float(np.mean(np.minimum(R["new_kw"], veh26.loc[veh26["deck"] == k, "rating"])))
+              for g, k in zip(decks, ("North", "South"))}
+    favg26 = float(np.mean(np.minimum(R["new_kw"], veh26["rating"])))
+    two = {"deck averages on 2026 vehicles": growth * G.peak(sum(replay_fwd(pop["garage"].map(davg26).to_numpy()).values()))[0],
+           "fleet average on 2026 vehicles": growth * G.peak(sum(replay_fwd(np.full(len(pop), favg26)).values()))[0],
+           "the hand-offs held, growth left off": vh, "own-date cars, growth left off": v4}
+    check("V14 two-error cells: each deck's average on 2026 vehicles files 115, the fleet average on 2026 vehicles sits "
+          "at least 40 per cent above, the hand-offs held with growth left off files 115, own-date cars with growth left "
+          "off 135; none files 110", int(math.floor(two["deck averages on 2026 vehicles"] / 5 + 0.5) * 5) == 115
+          and two["fleet average on 2026 vehicles"] >= 1.4 * ans
+          and int(math.floor(two["the hand-offs held, growth left off"] / 5 + 0.5) * 5) == 115
+          and int(math.floor(two["own-date cars, growth left off"] / 5 + 0.5) * 5) == 135
+          and all(int(math.floor(x / 5 + 0.5) * 5) != 110 and math.ceil(x / 5) * 5 != 110 for x in two.values()),
+          {k: round(x, 3) for k, x in two.items()})
     # calibration: the five-rule family on every session with an identified vehicle
     idd = rec[(rec["permit_no"] != "") | (rec["fleet_card"] != "")].copy()
     idd["obs"] = observed(P, idd)
@@ -521,10 +644,11 @@ def main():
     north_ids = recs.loc[recs["garage"] == decks[0], "session_id"]
     cl_n = G.readings_load(closed_rows.loc[closed_rows["session_id"].isin(north_ids), "q"],
                            closed_rows.loc[closed_rows["session_id"].isin(north_ids), "kwh"])
-    check("V18 twin decks matched on counts and distributions, equal closed load at the binding quarter-hour (66.0 kW "
-          "each), 1.79 to 1 apart per car",
-          abs(cnt.iloc[0] / cnt.iloc[1] - 1) <= 0.02 and max(ks.values()) < 0.05 and 1.7 <= split[0] / split[1] <= 1.9
-          and near(cl_n[j], 66.0, 1e-6) and near(closed[j] - cl_n[j], 66.0, 1e-6), (cnt.to_dict(), ks, cl_n[j]))
+    check("V18 twin decks matched on counts and distributions; equal closed load at the answer's quarter-hour (72.6 kW "
+          "each) and at 12:00 on 8 December 2026 (66.0 kW each)",
+          abs(cnt.iloc[0] / cnt.iloc[1] - 1) <= 0.04 and max(ks.values()) < 0.07
+          and near(cl_n[j], 72.6, 1e-6) and near(closed[j] - cl_n[j], 72.6, 1e-6)
+          and near(cl_n[jh], 66.0, 1e-6) and near(closed[jh] - cl_n[jh], 66.0, 1e-6), (cnt.to_dict(), ks, cl_n[j]))
     # B3
     OUT["b3"] = b3(P, R, G, rec)
     # B1
@@ -537,7 +661,7 @@ def main():
               len(files) >= 10 and len({os.path.splitext(f)[1] for f in files}) >= 3
               and pq.ParquetFile(os.path.join(tdir, "session_intervals_2024-2026.parquet")).metadata.num_rows >= 25000
               and len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]))
-    print(json.dumps({k: v for k, v in OUT.items() if k in ("answer", "split")}, default=str))
+    print(json.dumps({k: v for k, v in OUT.items() if k in ("answer", "split", "held", "handoffs")}, default=str))
     print(f"\n{len(FAILS)} failure(s)")
     sys.exit(1 if FAILS else 0)
 
@@ -600,13 +724,22 @@ def vehicles_at(P, when):
 
 def backtest_load(P, G, rec):
     """The decks' 2024 and 2025 load on the old units: the settlement export's sessions of record at their dated
-    units, the gateway B sessions, and the fleet card charges the export does not carry. Returns (load, fleet rows)."""
+    units, the gateway B sessions, and the fleet card charges the export does not carry."""
     decks = ["Civic Center North Deck", "Civic Center South Deck"]
     sp = P["sp"]
     deck_rec = rec[rec["garage"].isin(decks)]
     rr = sp[sp["session_id"].isin(deck_rec["session_id"])]
     rr = rr[rr["version"] == rr["session_id"].map(deck_rec.set_index("session_id")["version"])]
     load = G.readings_load(rr["q"], rr["kwh"])
+    return load + other_loads(P, G)
+
+
+def other_loads(P, G):
+    """Gateway B's sessions and the fleet card charges the export does not carry, on the old units (computed once)."""
+    if "_other" in P:
+        return P["_other"]
+    decks = ["Civic Center North Deck", "Civic Center South Deck"]
+    load = np.zeros(G.n)
     gw = P["gw"].copy()
     gw["t0"] = [int(datetime.strptime(x, "%m/%d/%Y %H:%M:%S").replace(tzinfo=LA).timestamp()) for x in gw["Start"]]
     gw["d"] = [datetime.strptime(x, "%m/%d/%Y %H:%M:%S").date() for x in gw["Start"]]
@@ -628,11 +761,44 @@ def backtest_load(P, G, rec):
     f_gar, _ = dated_join(P, fc)
     fd = fc[f_gar.isin(decks)]
     load = load + G.blocks(fd["t0"], fd["KWH"].astype(float), np.full(len(fd), 6.6))
-    return load, fc, fd
+    P["_fleet_outside"] = (fc, fd)
+    P["_other"] = load
+    return load
+
+
+def forecast_window(P):
+    """FES-07: a forecast starts from the latest twelve closed calendar months, and a month is closed once its
+    sessions have settled. A forecast from the 2024 base months can be made from the day the last December 2024 deck
+    record settled to the day before the last January 2025 deck record settled."""
+    h = P["hdr"].copy()
+    h["garage"], _ = dated_join(P, h)
+    h = h[h["garage"].isin(["Civic Center North Deck", "Civic Center South Deck"]) & (h["version"] == 1)]
+    so = pd.to_datetime(h["settled_on"]).dt.date
+    dec_close = max(so[(h["d"] >= date(2024, 12, 1)) & (h["d"] <= date(2024, 12, 31))])
+    jan_close = max(so[(h["d"] >= date(2025, 1, 1)) & (h["d"] <= date(2025, 1, 31))])
+    return dec_close, jan_close - timedelta(days=1)
 
 
 def b3(P, R, G, rec):
-    load, fc, fd = backtest_load(P, G, rec)
+    lo, hi = forecast_window(P)
+    decks = ["Civic Center North Deck", "Civic Center South Deck"]
+    bases = {}
+    for when in (lo, hi):
+        r0 = of_record_asof(P, when).copy()
+        r0["garage"], r0["position"] = dated_join(P, r0)
+        bases[when] = backtest_load(P, G, r0)
+    load24 = bases[hi]
+    load = backtest_load(P, G, rec)
+    fc, fd = P["_fleet_outside"]
+    dec = P["dec"].copy()
+    dec["recv"] = pd.to_datetime(dec["received_on"]).dt.date
+    late = dec[dec["recv"] > hi]
+    late_24 = P["hdr"][P["hdr"]["session_id"].isin(late["session_id"]) & (P["hdr"]["d"] < date(2025, 1, 1))]
+    check("V20b a forecast from the 2024 base can be made from %s to %s; twelve 2024 deck sessions were restated after "
+          "that (received 3 to 20 March 2025, accepted), and the base as it stood is the same on every day of the window"
+          % (lo, hi), lo <= hi and late_24["session_id"].nunique() == 12
+          and all(near(G.peak(bases[lo], year=2024, month=m)[0], G.peak(bases[hi], year=2024, month=m)[0], 1e-9)
+                  for m in range(1, 13)), (lo, hi, late_24["session_id"].nunique()))
     check("V19a the fleet card charges outside the export all predate the April 2025 platform move",
           len(fd) > 0 and max(fc["d"]) < date(2025, 4, 1), (len(fd), max(fc["d"])))
     fac = factor_on(R["factors"], date(2025, 1, 31))
@@ -640,8 +806,11 @@ def b3(P, R, G, rec):
     st = re.sub(r"\s+", " ", pdf_text(os.path.join(os.path.dirname(P["log_path"]), "fes-07_load_forecasting_standard_rev4.pdf")))
     check("V19 the standard files the accuracy record: whole-kW forecast less whole-kW recorded demand",
           "Forecast demand is stated in whole kilowatts" in st and "recorded billing demand in whole kilowatts" in st)
-    F = {m: fac * G.peak(load, year=2024, month=m)[0] for m in range(1, 13)}
+    F = {m: fac * G.peak(load24, year=2024, month=m)[0] for m in range(1, 13)}
     A = {m: G.peak(load, year=2025, month=m)[0] for m in range(1, 13)}
+    Fq = {m: int(math.floor(fac * G.peak(load, year=2024, month=m)[0] + 0.5)) for m in range(1, 13)}
+    check("V20c the 2024 base taken on the restated versions moves all twelve forecasts",
+          all(Fq[m] != int(math.floor(F[m] + 0.5)) for m in range(1, 13)), Fq)
     fc = {m: int(math.floor(F[m] + 0.5)) for m in F}
     ac = {m: int(math.floor(A[m] + 0.5)) for m in A}
     miss = {m: 100 * (fc[m] - ac[m]) / ac[m] for m in F}
@@ -713,6 +882,13 @@ def panel_spans(P, G, rec):
             return float(ct_e[(ct_t0 >= a) & (ct_t0 < b)].sum())
         lg = log[log["Panel"] == panel].copy()
         lg = lg.groupby("Read date").last().reset_index()
+        # a corrected reading replaces the reading logged for that date
+        fx = P["fixes"][P["fixes"]["Panel"] == panel].set_index("Read date")
+        for i in lg.index:
+            d = lg.at[i, "Read date"]
+            if d in fx.index:
+                assert abs(float(lg.at[i, "kWh register"]) - float(fx.at[d, "kWh as logged"])) < 1e-9
+                lg.at[i, "kWh register"] = float(fx.at[d, "kWh corrected"])
         lg["t"] = [int(datetime.combine(d, datetime.strptime(tm, "%H:%M").time(), tzinfo=PST).timestamp())
                    for d, tm in zip(lg["Read date"], lg["Read time (meter)"])]
         lg = lg.sort_values("t")
@@ -734,7 +910,13 @@ def b1(P, R, G, rec):
     plates = P["plates"]
     check("V23 the deck sub-meters keep standard time all year",
           all("Standard Time" in x for x in plates["clock_time_base"]) and set(plates["dst_adjustment"]) == {"Disabled"})
-    check("V26 no read is logged on a quarter-hour", all(int(x.split(":")[1]) % 15 for x in log["Read time (meter)"]))
+    check("V26 every read is logged at the close of a quarter-hour on the meter clock",
+          all(int(x.split(":")[1]) % 15 == 0 for x in log["Read time (meter)"]))
+    fx = P["fixes"]
+    check("V27 the log's Corrections sheet corrects eight 2026 reads, four on each meter, each matching the reading "
+          "logged on the Reads sheet", len(fx) == 8 and fx.groupby("Panel").size().to_dict() == {"CP-N": 4, "CP-S": 4}
+          and all(((log["Read date"] == d) & (log["Panel"] == pn) & ((log["kWh register"] - k).abs() < 1e-9)).any()
+                  for d, pn, k in zip(fx["Read date"], fx["Panel"], fx["kWh as logged"])), len(fx))
     spans, ev, r = panel_spans(P, G, rec)
     out = {p: [x["gap"] for x in v] for p, v in spans.items()}
     for panel in ("CP-N", "CP-S"):

@@ -15,6 +15,11 @@ ZIP_TIME = (2026, 9, 28, 9, 0, 0)
 
 
 def write_csv(df, path):
+    # the warehouse writes booleans in lower case
+    df = df.copy()
+    for c in df.columns:
+        if df[c].dtype == bool:
+            df[c] = df[c].map({True: "true", False: "false"})
     df.to_csv(path, index=False, lineterminator="\n")
 
 
@@ -22,7 +27,7 @@ def write_parquet(df, path):
     tbl = pa.Table.from_pandas(df, preserve_index=False).replace_schema_metadata(None)
     buf = io.BytesIO()
     pq.write_table(tbl, buf, compression="zstd", compression_level=9, use_dictionary=True,
-                   write_statistics=True, row_group_size=60000)
+                   write_statistics=True, row_group_size=60000, store_schema=False)
     b = buf.getvalue()
     m = re.search(rb"parquet-cpp-arrow version [0-9.]+", b)
     if m:
@@ -79,7 +84,7 @@ def normalize_pdf(path, when, producer=ORG):
     stamp = when.strftime("D:%Y%m%d%H%M%S").encode()
     b = re.sub(rb"D:20000101000000", stamp, b)
     for key in (rb"/Producer", rb"/Creator"):
-        m = re.search(key + rb" \(([^)]*)\)", b)
+        m = re.search(key + rb" \(((?:\\.|[^\\)])*)\)", b)   # values may hold escaped parentheses
         if m:
             old = m.group(1)
             new = producer.encode()

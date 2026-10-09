@@ -157,6 +157,8 @@ def ambulance_handovers():
         winter = d.month in (12, 1, 2)
         for L in LETTERS:
             for h in range(24):
+                if d == dt.date(2026, 3, 29) and h == 1:
+                    continue            # the clocks went forward: no 01:00 hour that night
                 lam = base[L] * hour_w[h] * (1.12 if winter else 1.0) * (1.06 if d.weekday() == 0 else 1.0)
                 n = int(r.poisson(lam))
                 if n == 0:

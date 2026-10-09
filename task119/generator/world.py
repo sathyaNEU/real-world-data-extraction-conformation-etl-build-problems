@@ -232,7 +232,8 @@ class World:
                     for i in range(n - nd - na):
                         specs.append({"letter": L, "year": y, "cls": cls, "died": False, "tags": set()})
         assert not dev, dev
-        # capacity waits through which the own unit admitted a transfer the bed bureau allocated
+        # capacity waits through which the own unit admitted a transfer the bed bureau allocated: at A a planned
+        # post-operative transfer on every death-wait and every other survivor wait, otherwise unplanned
         for y, m in plan.TX_INSIDE.items():
             for L, (kd, ka) in m.items():
                 dead = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
@@ -240,14 +241,17 @@ class World:
                 alive = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
                          and not s["tags"] and not s["died"]]
                 assert len(dead) >= kd and len(alive) >= ka, (y, L, len(dead), len(alive))
-                for s in dead[:kd] + alive[:ka]:
-                    s["tx"] = True
+                for i, s in enumerate(dead[:kd] + alive[:ka]):
+                    planned = L in plan.TX_PLANNED_LETTERS and (s["died"] or i % 2 == 0)
+                    s["tx"] = "planned" if planned else "emergency"
+                    if y == 1:
+                        s["legacy_only"] = True
         for (y, L, tag), kd in plan.TX_TAGGED.items():
             dead = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
                     and s["tags"] == {tag} and s["died"]]
             assert len(dead) >= kd, (y, L, tag, len(dead))
             for s in dead[:kd]:
-                s["tx"] = True
+                s["tx"] = "emergency"
         # deaths before a bed was assigned
         for y, m in plan.DIED_WAITING.items():
             for L, k in m.items():
@@ -288,8 +292,10 @@ class World:
         for key in sorted(by, key=lambda k: (k[0], k[1])):
             caps.extend(by[key])
         self.place_caps(caps)
-        # 4. genuine repeat patients (DV7): a second long wait months later under the same verified key
+        # 4. genuine repeat patients (DV7): a second long wait days later under the same verified key
         self.place_dv7()
+        # 5. DV8 near misses: legacy transfers given a bed inside four hours that arrive after it
+        self.place_dv8()
 
     # ------------------------------------------------------------------ own-empty waits (role days)
     def place_own(self, ss, days, y, L):
@@ -565,6 +571,12 @@ class World:
             pool = [d for d in pool if WINTER0 <= d <= WINTER1]
         if "DV1rc" in tags or "HZ1" in tags:
             pool = [d for d in pool if self.days[d]["list"]]
+        if s.get("tx") == "planned":
+            pool = [d for d in pool if self.days[d]["list"]]
+        if s.get("legacy_only"):
+            pool = [d for d in pool if d < LEGACY_END and not (PARALLEL0 <= d <= PARALLEL1)]
+            if s["letter"] == "F":
+                pool = [d for d in pool if d < F_UNIT_END]
         if s.get("died"):
             pool = [d for d in pool if (YEARS[y][1] - d).days >= 26]
         if y == 3 and not tags:
@@ -623,9 +635,14 @@ class World:
         bst_legacy = legacy and is_bst(lm(d, 12, 0))
         winter_legacy = legacy and not bst_legacy
         ou = own_unit(L, d)
+        planned_tx = s.get("tx") == "planned"
         for attempt in range(12):
             daytime = (not info["list"]) and info["role"] is None and r.random() < 0.45 and "DV1rc" not in tags
-            if "DV1rc" in tags:
+            if planned_tx:
+                daytime = False
+                lo, hi = plan.PLANNED_TX_DTA
+                dta = lm(d) + lo + int(r.integers(0, hi - lo + 1))
+            elif "DV1rc" in tags:
                 dta = lm(d, 17, 40) + int(r.integers(0, 20))
             elif daytime:
                 dta = lm(d, 8, 30) + int(r.integers(0, 300))
@@ -702,12 +719,16 @@ class World:
                 U.swaps.append({"t": ts, "need": "planned", "ref": w["wid"]})
                 w["swap_at"] = ts
             if s.get("tx"):
-                # a bed frees inside the wait and the bed bureau allocates it to a patient from another trust
-                # who had been waiting longer
+                # a bed frees inside the wait and the bed bureau allocates it to a patient from another trust: a
+                # planned post-operative transfer referred after this patient, or an unplanned one referred before
                 U = self.units[ou]
+                latest = lm(d) + plan.PLANNED_TX_LATEST
                 for k in range(40):
-                    tt = dta + int(r.integers(20, 151))
-                    if U.busy(tt) or crosses_dst(dta - 250, tt + 5):
+                    if planned_tx:
+                        tt = dta + int(r.integers(25, max(26, min(111, latest - dta + 1))))
+                    else:
+                        tt = dta + int(r.integers(20, 151))
+                    if tt >= end - 10 or U.busy(tt) or crosses_dst(dta - 250, tt + 120):
                         continue
                     break
                 else:
@@ -716,6 +737,7 @@ class World:
                 U.add_event(tt)
                 U.slots.append({"t": tt, "kind": "tx_in", "ref": w["wid"]})
                 w["tx_at"] = tt
+                w["tx_kind"] = s["tx"]
             return w
         return None
 
@@ -944,28 +966,32 @@ class World:
 
     # ------------------------------------------------------------------ DV7: genuine repeat patients
     def place_dv7(self):
-        """Two year-2 survivors per trust come back months later with a second long wait at the same trust,
-        under the same verified key, and survive it."""
+        """Two year-2 patients per trust come back with a second long wait at the same trust, under the same
+        verified key: discharged alive from the first stay inside four days, referred again 8 to 13 days after
+        the first decision, and dead after the second stay, inside 21 days of the first decision. Both waits
+        are long-wait deaths; the patient is one death."""
         r = rng("dv7")
         a2, b2 = YEARS[2]
-        for L in LETTERS:
+        for L in plan.DV7_TRUSTS:
             firsts = [w for w in self.waits if w["letter"] == L and w["year"] == 2 and w["golden"] and not w["tags"]
-                      and not w["died"] and w["outcome"] == "admitted" and "tx_at" not in w
-                      and w["cls"] in ("cap", "alloc") and day_of(w["dta"]) <= b2 - dt.timedelta(days=120)]
+                      and w["died"] and w["outcome"] == "admitted" and "tx_at" not in w
+                      and w["cls"] in ("cap", "alloc") and day_of(w["dta"]) <= b2 - dt.timedelta(days=60)
+                      and day_of(w["dta"]) >= a2 + dt.timedelta(days=20)]
             firsts.sort(key=lambda w: w["dta"])
+            order = firsts[::5] + [w for i, w in enumerate(firsts) if i % 5]
             picked = 0
-            for w1 in firsts[::7]:
+            for w1 in order:
                 if picked == plan.DV7_PER_TRUST:
                     break
                 d1 = day_of(w1["dta"])
-                pool = [d for d in daterange(d1 + dt.timedelta(days=45), b2 - dt.timedelta(days=1))
+                pool = [d for d in daterange(d1 + dt.timedelta(days=8), d1 + dt.timedelta(days=13))
                         if not crosses_dst(lm(d, 0, 0), lm(d + dt.timedelta(days=1), 9, 0))]
                 if w1["cls"] == "alloc":
                     used = {day_of(w["dta"]) for w in self.waits if w["cls"] == "alloc"}
                     pool = [d for d in pool if self.days[d]["list"] and d not in used]
                 r.shuffle(pool)
-                s2 = {"letter": L, "year": 2, "cls": w1["cls"], "died": False, "tags": {"DV7b"}}
-                for d in pool[:300]:
+                s2 = {"letter": L, "year": 2, "cls": w1["cls"], "died": True, "tags": {"DV7b"}}
+                for d in pool:
                     if w1["cls"] == "alloc":
                         w2 = self.try_alloc(s2, d, w1["unit"])
                     else:
@@ -976,8 +1002,52 @@ class World:
                     continue
                 w1["tags"] = {"DV7a"}
                 w1["pair"], w2["pair"] = w2["wid"], w1["wid"]
+                w1["deadline_days"], w2["deadline_days"] = 4, 7
                 picked += 1
             assert picked == plan.DV7_PER_TRUST, ("dv7", L, picked)
+
+    # ------------------------------------------------------------------ DV8: legacy transfers placed after the bed
+    def place_dv8(self):
+        """Legacy referrals at trusts without level-3 beds whose bed the bureau allocated 3h10 to 3h52 after the
+        decision, at another trust's unit, and who arrived in it more than 4h15 after the decision. The legacy bed
+        list dates the stay from the arrival; the remit's wait ends at the allocation."""
+        r = rng("dv8")
+        lo_w, hi_w = plan.DV8_ALLOC_WAIT
+        for L, died in plan.DV8_NEAR:
+            a1 = dt.date(2023, 11, 1)
+            b1 = dt.date(2023, 12, 2) if L == "H" else dt.date(2024, 2, 16)
+            pool = [d for d in daterange(a1, b1) if not crosses_dst(lm(d, 0, 0), lm(d + dt.timedelta(days=1), 9, 0))]
+            if died:
+                pool = [d for d in pool if (YEARS[1][1] - d).days >= 26]
+            r.shuffle(pool)
+            for d in pool:
+                if any(day_of(w["dta"]) == d and w["letter"] == L for w in self.waits):
+                    continue
+                dta = lm(d, 18, 50) + int(r.integers(0, 200))
+                W = int(r.integers(lo_w, hi_w + 1))
+                end = dta + W
+                transit = int(r.integers(max(plan.TRANSIT[0], plan.DV8_PLACED_MIN - W), plan.TRANSIT[1] + 1))
+                arr = end + transit
+                lim = self.morning_limit(d + dt.timedelta(days=1))
+                if arr > lim or self.gap_overlap(dta - 5, arr + 5) or crosses_dst(dta - 70, arr + 10):
+                    continue
+                unit = self.pick_unit(end, d)
+                if unit is None:
+                    continue
+                U = self.units[unit]
+                if U.events_inside(end - 4, arr + 4) or any(a - 5 < arr and b + 5 > end for a, b in U.frozen):
+                    continue
+                w = self.new_wait(letter=L, year=1, cls="cap", died=died, tags={"DV8"}, dta=dta, end=end, unit=unit,
+                                  golden=False, outcome="admitted")
+                self.commit(w)
+                w["transit"] = transit
+                U.add_event(end)
+                U.slots.append({"t": end, "kind": "wait_end", "ref": w["wid"]})
+                # nothing else happens in the unit while the allocated bed waits for the patient
+                U.frozen.append((end, arr))
+                break
+            else:
+                raise RuntimeError("dv8 %s" % L)
 
     # ------------------------------------------------------------------ planned lists
     def build_planned(self):

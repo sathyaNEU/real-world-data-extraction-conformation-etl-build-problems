@@ -52,6 +52,43 @@ def fy_q4(i, bal):
     return i + (4 - fyq(i, bal))
 
 
+def fiscal(o, q, labels="returns"):
+    """(final quarter, position, length) of the financial year holding quarter q for organisation o.
+
+    labels="returns" follows the organisation's own financial years, the year each return's figures run
+    within (a balance-date change gives one year of other than four quarters); labels="app" keys every
+    year to one balance date per organisation, the balance date of its latest annual return as held at
+    the census (o.bal_app), which is the reading the stop takes."""
+    cc = getattr(o, "cal_change", None)
+    if labels == "app":
+        bal = getattr(o, "bal_app", None) or o.bal
+        return fy_q4(q, bal), fyq(q, bal), 4
+    if cc:
+        old_end, short_end = cc["old_end"], cc["short_end"]
+        if q <= old_end:
+            return fy_q4(q, cc["old_bal"]), fyq(q, cc["old_bal"]), 4
+        if q <= short_end:
+            return short_end, q - old_end, short_end - old_end
+    return fy_q4(q, o.bal), fyq(q, o.bal), 4
+
+
+def fpos(o, q, labels="returns"):
+    return fiscal(o, q, labels)[1]
+
+
+def fend(o, q, labels="returns"):
+    return fiscal(o, q, labels)[0]
+
+
+def fstart(o, q, labels="returns"):
+    end, pos, n = fiscal(o, q, labels)
+    return end - n + 1
+
+
+def is_final(o, q, labels="returns"):
+    return fend(o, q, labels) == q
+
+
 def census_q(c):
     """Internal index of the quarter that ends on census date c."""
     return qidx(c.year, c.month)

@@ -13,7 +13,9 @@ import params as P
 FIX = {"P1": "F1", "P2": "F2", "P3": "F3", "P4": "F4", "P5": "F5"}
 POPS = ["P1", "P2", "P3", "P4", "P5"]
 GOLD = dict(keep_bots=False, clock_raw=False, cards_current=False, tokens_sep_only=False,
-            catalogue_current=False, cohort_current=False, drop_touched=False)
+            catalogue_current=False, cohort_current=False, drop_touched=False, identity="union",
+            cohort_lastmove=False)
+SOCIO = re.compile(r"SOCIO(\d{7})")
 WEEK_EDGES = [pd.Timestamp(x) for x in P.WEEK_STARTS] + [pd.Timestamp(P.END)]
 
 
@@ -49,26 +51,18 @@ def enrich(pack, o=GOLD):
     # the club's token reports joined to loyalty profiles
     tk = pack["tokens_sep"] if o["tokens_sep_only"] else pd.concat([pack["tokens_aug"], pack["tokens_sep"]])
     t2m = dict(zip(tk.token, tk.member_no))
-    pr = pack["profiles"].dropna(subset=["club_member_no"])
-    m2a = dict(zip(pr.club_member_no.astype(int), pr.account_id))
     s["member_no"] = s.token.map(t2m)
+    m2a = member_accounts(pack, o["identity"])
     s["chain_account"] = s.member_no.map(lambda m: m2a.get(int(m)) if pd.notna(m) else None)
     s["P4"] = s.club & s.chain_account.notna()
     s["P2"] = s.club & s.chain_account.isna()
     # flag cohort as of the session, and whether the cohort was live
     fl = pack["flags"]
-    cur = {d["account_id"]: d["cohort"] for d in fl["assignments"]}
-    mv = {d["account_id"]: (d["from_cohort"], pd.Timestamp(d["moved_at"][:19])) for d in fl["assignment_moves"]}
     live = {d["cohort"]: pd.Timestamp(d["enabled_at"][:19]) for d in fl["rollout"]}
+    cohort_at = cohort_reader(fl, "current" if o["cohort_current"] else "lastmove" if o["cohort_lastmove"] else "asof")
     coh = []
     for a, t, si in zip(s.account_id, s.t, s.signed_in):
-        if not si:
-            coh.append(0)
-            continue
-        c = cur[a]
-        if not o["cohort_current"] and a in mv and t < mv[a][1]:
-            c = mv[a][0]
-        coh.append(int(c))
+        coh.append(int(cohort_at(a, t)) if si else 0)
     s["cohort"] = coh
     s["live"] = [c > 0 and t >= live[c] for c, t in zip(s.cohort, s.t)]
     # default delivery address as of the session (address book times are UTC)
@@ -122,6 +116,46 @@ def enrich(pack, o=GOLD):
         mixed.append("pre_order" in sts and "in_stock" in sts)
     s["P5"] = mixed
     return s.reset_index(drop=True)
+
+
+def cohort_reader(fl, mode="asof"):
+    """The flag cohort of an account at a time. asof: the latest move at or before the time, else the
+    first move's origin, else the assignment at extract. current: the assignment at extract.
+    lastmove: one move kept per account (the last), the reading a dict keyed on the account gives."""
+    cur = {d["account_id"]: d["cohort"] for d in fl["assignments"]}
+    moves = {}
+    for d in fl["assignment_moves"]:
+        moves.setdefault(d["account_id"], []).append((pd.Timestamp(d["moved_at"][:19]), d["from_cohort"], d["to_cohort"]))
+    for v in moves.values():
+        v.sort()
+
+    def at(a, t):
+        if mode == "current" or a not in moves:
+            return cur[a]
+        mv = moves[a]
+        if mode == "lastmove":
+            return mv[-1][1] if t < mv[-1][0] else cur[a]
+        c = mv[0][1]
+        for when, _, to in mv:
+            if when <= t:
+                c = to
+        return c
+    return at
+
+
+def member_accounts(pack, identity="union"):
+    """Member number to store account. profile: the loyalty profile's club_member_no alone (the visible
+    key). union: that, plus last season's members' code (SOCIO and the seven-digit member number)
+    redeemed on an account."""
+    pr = pack["profiles"].dropna(subset=["club_member_no"])
+    m2a = dict(zip(pr.club_member_no.astype(int), pr.account_id))
+    if identity == "union":
+        pm = pack["promo"].dropna(subset=["account_id"])
+        for code, a in zip(pm.promo_code, pm.account_id):
+            mt = SOCIO.fullmatch(code)
+            if mt:
+                m2a.setdefault(int(mt.group(1)), a)
+    return m2a
 
 
 # --------------------------------------------------------------------------- populations and losses
@@ -221,11 +255,9 @@ def challenge_shares(pack, s, mode="golden", week="W4"):
 def cohort_sheet(s, fold_club=False, pack=None):
     x = s[s.week.isin(P.REVIEW) & s.signed_in][["cohort", "conv"]]
     if fold_club:
-        fl = pack["flags"]
-        cur = {d["account_id"]: d["cohort"] for d in fl["assignments"]}
-        mv = {d["account_id"]: (d["from_cohort"], pd.Timestamp(d["moved_at"][:19])) for d in fl["assignment_moves"]}
+        at = cohort_reader(pack["flags"])
         c4 = s[s.week.isin(P.REVIEW) & s.P4].copy()
-        c4["cohort"] = [mv[a][0] if a in mv and t < mv[a][1] else cur[a] for a, t in zip(c4.chain_account, c4.t)]
+        c4["cohort"] = [at(a, t) for a, t in zip(c4.chain_account, c4.t)]
         x = pd.concat([x, c4[["cohort", "conv"]]])
     g = x.groupby("cohort").conv.agg(["size", "sum"])
     return {int(c): (int(r["size"]), 100.0 * r["sum"] / r["size"]) for c, r in g.iterrows()}

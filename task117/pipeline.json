@@ -2,11 +2,11 @@
   "task": "task117",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "solver round 3 graded: landed, harden",
+  "stage": 5,
+  "stage_name": "solver round 2",
   "updated": "2026-10-09",
-  "stump": "A competent solver replays every 2026 deck session record on the new units at the smaller of 11.5 kW and the onboard rating of the car its permit carries in the contract year (the January 2027 renewal check), grows by the filed 1.12 and files 155 kW (155.357 unrounded, 160 rounded up, set at 12:00 on 8 December 2026); the step that lands it there is replaying each settlement record as a charge of its own: Curbline's daily settlement run from 10:00 a.m. closes every session still charging and carries the charge on in a new record from that second at the same unit under the same permit or card, so record by record each charge's second record restarts at the run at the car's full new rate; joined back into charges (3,033 zero-gap pairs at the decks in 2026, the only reading whose counts reproduce every permit-month of Parking Services' 2026 charging statements), the contracted demand is 130 kW (129.136), set in the same quarter-hour.",
-  "harden_loops": 2,
+  "stump": "A competent solver joins the settlement run's record pairs into charges (the reading the 2026 charging statements reproduce), replays every 2026 deck charge on the new units at the smaller of 11.5 kW and the onboard rating of the car its permit carries in the contract year, grows by the filed 1.12 and files 130 kW (129.136 unrounded, set at 12:00 on 8 December 2026); the step that lands it there is replaying each charge from the minute it started in 2026: at the North Deck the county's attendant swaps pool cars on a unit, the car ahead coming off 6 to 20 minutes after it finishes and the next pool car going on 1 to 5.4 minutes later (101 hand-offs in 2026), so on the new units the car ahead finishes sooner and the next car goes on sooner; re-timed that way, December's four kept pool cars finish before noon and the contracted demand is 110 kW (109.088), set at 12:00 on 21 January 2026.",
+  "harden_loops": 3,
   "solver_rounds": [
     {
       "label": "round 1, plain",
@@ -30,6 +30,30 @@
       "score": 90.4,
       "landed": true,
       "cracked": 6,
+      "items": 12
+    },
+    {
+      "label": "round 4, plain",
+      "date": "2026-10-09",
+      "score": 25.6,
+      "landed": false,
+      "cracked": 0,
+      "items": 12
+    },
+    {
+      "label": "round 5, plain",
+      "date": "2026-10-09",
+      "score": 28.5,
+      "landed": false,
+      "cracked": 0,
+      "items": 12
+    },
+    {
+      "label": "round 5, skeptic",
+      "date": "2026-10-09",
+      "score": 29.3,
+      "landed": false,
+      "cracked": 0,
       "items": 12
     }
   ],

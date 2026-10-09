@@ -205,7 +205,9 @@ def pack_gates(out, meta, prompt_path, answer_figures):
              "accuracy record": r"recorded billing demand in whole kilowatts",
              "version of record": r"marked ACCEPTED replaces", "gateway B coverage": r"not in the settlement export",
              "permit-only decks": r"permit-only", "settlement run time": r"settlement run is daily",
-             "free courtesy charging": r"free to permit holders"}
+             "free courtesy charging": r"free to permit holders",
+             "records as they stood": r"as they stood on the day the forecast was made",
+             "corrected reads": r"corrected reading replaces the reading logged"}
     alltext = dict(texts)
     for f in files:
         if f.endswith(".csv"):
@@ -272,11 +274,12 @@ def main():
     main_res = C.main_call(an, r)
     renewal_res = C.renewal(an)
     charges_res = C.charges(an)
+    rotation_res = C.rotation(an, r)
     corpus_res = C.corpus(an, r)
     b3_res = C.b3(an)
     b1_res = C.b1(an)
     counts, repairs = C.separation(an, r, main_res["answer"])
-    C.referee(an)
+    referee_res = C.referee(an)
 
     rng = np.random.default_rng(pipeline.SEED + 99)
     info = write_all(w, a.out, rng)
@@ -300,11 +303,11 @@ def main():
     for f in sorted(os.listdir(a.out)):
         p = os.path.join(a.out, f)
         meta["files"].append({"path": f, "format": os.path.splitext(f)[1][1:], "bytes": os.path.getsize(p)})
-    figs = ["129.136", "129.14", "115.3", "82.88", "46.256", "103.04", "98.56", "412.16", "309.12", "148.512",
-            "132.6"]
+    figs = ["109.088", "109.09", "97.4", "56.448", "52.64", "129.136", "129.14", "115.3", "82.88", "46.256", "90.16",
+            "86.24", "412.16", "309.12", "148.512", "132.6", "155.357", "160.742"]
     gates = pack_gates(a.out, meta, os.path.abspath(a.prompt), figs)
     heads = [main_res["answer"], main_res["rung0"], main_res["rung1"], main_res["rung2"], main_res["rung3"],
-             main_res["rung4"], main_res["rung4_rec"], main_res["rung5_rec"]]
+             main_res["rung4"], main_res["rung5"], main_res["rung6"], main_res["own_date"]]
     C.ck("G14 generation tell: no headline figure sits on a round boundary",
          all(abs(x / 5 - round(x / 5)) > 0.02 for x in heads), heads)
     with open(a.meta, "w") as f:
@@ -315,34 +318,41 @@ def main():
 
     record = {
         "answer_unrounded": round(main_res["answer"], 3), "answer_filed": nearest5(main_res["answer"]),
+        "answer_at": main_res["at"],
         "split": [round(x, 3) for x in main_res["split"]], "split_unscaled": [round(x, 3) for x in main_res["split_unscaled"]],
         "monthly": [round(x, 3) for x in main_res["monthly"]],
         "rungs": {"0": round(main_res["rung0"], 3), "1": round(main_res["rung1"], 3), "2": round(main_res["rung2"], 3),
-                  "3": round(main_res["rung3"], 3), "4": round(main_res["rung4"], 3)},
+                  "3": round(main_res["rung3"], 3), "4": round(main_res["rung4"], 3), "5": round(main_res["rung5"], 3),
+                  "6": round(main_res["rung6"], 3), "7": round(main_res["answer"], 3)},
+        "rung_at": {"4": main_res["rung4_at"], "5": main_res["rung5_at"], "6": main_res["rung6_at"]},
         "rung4_split": [round(x, 3) for x in main_res["rung4_split"]],
-        "records": {"rung4": round(main_res["rung4_rec"], 3), "rung5": round(main_res["rung5_rec"], 3),
-                    "rung5_at": main_res["rung5_rec_at"], "rung4_at": main_res["rung4_rec_at"],
-                    "rung4_split": [round(x, 3) for x in main_res["rung4_rec_split"]],
-                    "rung5_split": [round(x, 3) for x in main_res["rung5_rec_split"]],
-                    "rung5_monthly": [round(x, 3) for x in main_res["rung5_rec_monthly"]],
-                    "rung4_monthly": [round(x, 3) for x in main_res["rung4_rec_monthly"]]},
-        "charges": charges_res,
+        "rung5_split": [round(x, 3) for x in main_res["rung5_split"]],
+        "rung6_split": [round(x, 3) for x in main_res["rung6_split"]],
         "rung4_monthly": [round(x, 3) for x in main_res["rung4_monthly"]],
+        "rung5_monthly": [round(x, 3) for x in main_res["rung5_monthly"]],
+        "rung6_monthly": [round(x, 3) for x in main_res["rung6_monthly"]],
+        "own_date": round(main_res["own_date"], 3), "own_date_split": [round(x, 3) for x in main_res["own_date_split"]],
+        "own_date_monthly": [round(x, 3) for x in main_res["own_date_monthly"]],
+        "records_unrounded": {k: round(v, 3) for k, v in main_res["rec"].items()},
+        "charges": charges_res, "rotation": rotation_res,
         "renewal": {k: v for k, v in renewal_res.items()},
         "cells": {k: round(v, 3) for k, v in main_res["cells"].items()},
         "two_error": {k: round(v, 3) for k, v in main_res["two_error"].items()},
+        "grid_cells": main_res["grid_cells"],
         "convergent": {k: round(v, 3) for k, v in main_res["convergent"].items()},
         "family": corpus_res["family"], "twins_ks": corpus_res["twins_ks"], "shares": corpus_res["shares"],
         "departure_min_slack_min": corpus_res["departure_min_slack_min"],
         "b3_forecast": b3_res["forecast"], "b3_miss": b3_res["miss"],
-        "b3_subset_mean_range": b3_res["subset_mean_range"],
+        "b3_subset_count": b3_res["subset_count"], "b3_subset_mean_range": b3_res["subset_mean_range"],
+        "b3_forecast_window": b3_res["forecast_window"], "b3_restated_2024_received": b3_res["restated_2024_received"],
+        "b3_moves": b3_res["moves"],
         "b1_golden": {f"{p} {k:02d}": v for (p, k), v in b1_res["golden"].items()},
+        "b1_corrections_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["corrections_moves"].items()},
         "b1_clock_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["clock_moves"].items()},
         "b1_redelivery_moves": b1_res["redelivery_moves"], "b1_backfeed_moves": b1_res["backfeed_moves"],
         "b1_double_read_move": b1_res["double_read_move"], "b1_nearest_wrong": b1_res["nearest_wrong"],
         "b1_courtesy_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["courtesy_moves"].items()},
-        "b1_split_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["split_moves"].items()},
-        "b3_moves": b3_res["moves"],
+        "register_moves_2025": referee_res["register_moves_2025"],
         "separation_counts": counts, "pack": {k: v for k, v in gates.items() if k != "rule_homes"},
         "rule_homes": gates["rule_homes"], "assertions": len(C.LOG),
     }

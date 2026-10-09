@@ -1,14 +1,12 @@
 """task122 generator: every assertion the build makes, on the files as written (read back from disk),
-plus the few facts only the generator can see (the archive's hidden layers). Fails loudly at the
-first assertion that does not hold, and returns the build record (every figure the design note
-quotes).
+plus the few facts only the generator can see (the archive's hidden layers, the come-back counts it
+planted). Fails loudly at the first assertion that does not hold, and returns the build record (every
+figure the design note quotes).
 """
 import itertools
 import json
 import os
 import re
-import subprocess
-import sys
 
 import numpy as np
 import pandas as pd
@@ -49,10 +47,16 @@ def same_bin(a, b, unit=0.1):
     return np.floor(a / unit + 0.5) == np.floor(b / unit + 0.5)
 
 
-def reading(M, y_basis, y_in, est_kind, guard, floor_grain):
+def outside(x, ref, unit=0.1):
+    """How far x sits outside ref's bin (negative when inside it, by its distance to the nearer edge)."""
+    k = np.floor(ref / unit + 0.5)
+    return max((k - 0.5) * unit - x, x - (k + 0.5) * unit)
+
+
+def reading(M, y_basis, y_guard, est_kind, guard, floor_grain):
     S = M.S
     vals = A.est(S, y_basis, est_kind)
-    ok, g, f, b = A.conditions(S, y_basis, y_in, vals, est_kind, guard, floor_grain)
+    ok, g, f, b = A.conditions(S, y_guard, vals, est_kind, guard, floor_grain)
     first, second, margin = A.leader(vals, ok)
     return vals, ok, first, second, margin
 
@@ -62,13 +66,17 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     rec = {}
     tgt = str(tgt)
     M = A.load_main(tgt)
-    S = M.S
+    S, O = M.S, M.O
     y_in = S.y.to_numpy().astype(float)
     y_kept = A.followup(M, hours=21 * 24).astype(float)
+    y_r1 = y_in                                              # the render log's ordered_tiles
+    y_r2 = A.tile_orders(M).astype(float)                    # every order placed from the session's tiles
+    y_w7 = A.carousel_window(M, 7).astype(float)             # every carousel order by the buyer, 7 days
 
     # ---------------------------------------------------------------- ties and identities
     K_(len(S) == 150_400 and len(M.R) >= 25_000, "spine.size", (len(S), len(M.R)))
-    K_((A.in_session_from_orders(M) == S.y.to_numpy()).all(), "tie.render_log_to_orders_by_session")
+    K_((A.session_orders(M) == S.y.to_numpy()).all(), "tie.ordered_tiles_to_orders_credited_to_the_session")
+    K_((A.tile_orders(M, timed=True) == S.y.to_numpy()).all(), "tie.tile_orders_before_the_end_to_ordered_tiles")
     fam = {k: A.est(S, y_in, k) for k in A.SESSION_GRAIN}
     K_(all(abs(fam[k][r] - fam["session_ipw"][r]) < 1e-9 for k in A.SESSION_GRAIN for r in P.POLICIES),
        "estimators.session_grain_identical")
@@ -77,67 +85,147 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
        "logger.quota_exact")
     rec["sessions"], rec["renders"] = int(len(S)), int(len(M.R))
 
+    # ---------------------------------------------------------------- come-back tile orders
+    tiles = S.melt(id_vars=["session_id", "buyer_id", "ranker", "cell", "ended_at", "watchlist_at_start"],
+                   value_vars=[f"tile_{i}" for i in range(1, 7)], value_name="listing_id")
+    x = O.merge(tiles, on=["buyer_id", "listing_id"], how="inner")
+    after = x[x.ordered_at > x.ended_at]
+    cb = after[after.channel == "carousel"]
+    secs = (cb.ordered_at - cb.ended_at).dt.total_seconds()
+    K_(len(cb) == int((y_r2 - y_r1).sum()) and len(cb) > 0, "comeback.count_is_the_tile_order_gap", len(cb))
+    K_(secs.min() >= 120 and secs.max() <= P.COMEBACK_MAX_S, "comeback.2_minutes_to_4_hours_after_the_end",
+       (secs.min(), secs.max()))
+    K_(not cb.home_session_id.isin(S.session_id).any() and cb.home_session_id.notna().all(),
+       "comeback.credited_to_an_unlogged_home_session")
+    K_((cb.ranker != C_).all(), "comeback.none_for_the_session_sequence_model")
+    wl_hit = [str(l) in (w or "").split() for l, w in zip(cb.listing_id, cb.watchlist_at_start)]
+    K_(not any(wl_hit), "comeback.never_a_watched_listing")
+    per = cb.groupby(["cell", "ranker"]).size()
+    want = {(c, k): W.comeback_counts[(c, k)] for c in range(8) for k in range(7)}
+    K_(all(int(per.get((c, P.RANKERS[k]), 0)) == n for (c, k), n in want.items()), "comeback.counts_as_planted")
+    # the seven-day rule: no listing a session showed comes back to its buyer through a carousel tile later,
+    # other than the come-backs from the tile still on screen
+    K_(not ((after.channel == "carousel") & ((after.ordered_at - after.ended_at).dt.total_seconds()
+                                            > P.COMEBACK_MAX_S)).any(), "comeback.seven_day_rule_holds")
+    rate = {f"{P.CELL_NAMES[c]}|{L[r]}": round(1000 * int(per.get((c, r), 0)) / int(cnt[(c, r)]), 3)
+            for c in range(8) for r in P.RANKERS}
+    rec["comebacks"] = dict(orders=int(len(cb)), sessions=int((y_r2 != y_r1).sum()), per_1000=rate,
+                            later_orders_of_shown_listings_by_channel=after.channel.value_counts().to_dict())
+
     # ---------------------------------------------------------------- the five rungs
-    rungs = [("replay_rows", "platform", y_in, "rendered", D_, 1.20),
-             ("render_weights", "platform", y_in, "rendered", A_, 1.20),
-             ("session_ipw", "platform", y_in, "ranking", C_, 1.15),
-             ("session_ipw", "eight", y_in, "ranking", B_, 1.20),
-             ("session_ipw", "eight", y_kept, "ranking", E_, 1.50)]
+    rungs = [("replay_rows", "platform", y_in, y_r1, "rendered", D_, 1.20),
+             ("render_weights", "platform", y_in, y_r1, "rendered", A_, 1.20),
+             ("session_ipw", "eight", y_in, y_r1, "ranking", C_, 1.20),
+             ("session_ipw", "eight", y_in, y_r2, "ranking", B_, 1.20),
+             ("session_ipw", "eight", y_kept, y_r2, "ranking", E_, 1.50)]
     rec["rungs"] = []
     raw = []
-    for i, (ek, gr, yb, fg, want, mmin) in enumerate(rungs):
-        vals, ok, first, second, margin = reading(M, yb, y_in, ek, gr, fg)
+    for i, (ek, gr, yb, yg, fg, want_, mmin) in enumerate(rungs):
+        vals, ok, first, second, margin = reading(M, yb, yg, ek, gr, fg)
         raw.append({L[r]: float(v) for r, v in vals.items()})
-        K_(first == want and margin >= mmin, f"rung{i}.leader",
+        K_(first == want_ and margin >= mmin, f"rung{i}.leader",
            (i, L[first], L[second], round(margin, 3), {L[r]: round(v, 3) for r, v in vals.items()}))
         rank_all = sorted(P.POLICIES, key=lambda r: -vals[r])
-        rec["rungs"].append(dict(rung=i, estimator=ek, guardrail=gr, basis="kept" if yb is y_kept else "in-session",
+        rec["rungs"].append(dict(rung=i, estimator=ek, guardrail=gr,
+                                 guardrail_count="ordered_tiles" if yg is y_r1 else "orders from the tiles",
+                                 basis="kept" if yb is y_kept else "in-session",
                                  values={L[r]: round(v, 3) for r, v in vals.items()}, leader=L[first],
                                  runner_up=L[second] if second else None, margin=round(margin, 3),
                                  E_rank_all=rank_all.index(E_) + 1,
                                  qualifiers=[L[r] for r in P.POLICIES if ok[r]]))
     pos = [r["E_rank_all"] for r in rec["rungs"]]
-    K_(pos[0] == 5 and pos[1] == 4 and pos[2] == 4, "position.E_5th_4th_4th", pos)
+    K_(pos[0] == 5 and pos[1] == 4 and pos[2] == 4 and pos[3] == 4, "position.E_5th_4th_4th_4th", pos)
     K_(all(r["leader"] != "E" for r in rec["rungs"][:4]), "position.E_leads_no_intermediate_rung")
     second_at = [i for i, r in enumerate(rec["rungs"][:4]) if r["runner_up"] == "E"]
     K_(second_at == [3], "position.E_second_only_at_rung3", second_at)
-    v3, v4 = raw[3], raw[4]          # unrounded; the record carries them to three decimals
+    v3, v4 = raw[3], raw[4]
     K_(v3["B"] / v3["E"] >= 1.20, "position.rung3_gap", v3["B"] / v3["E"])
-    # discriminator dominance
     carried = v3["B"] / v3["E"]
     edge = (v4["E"] / v3["E"]) / (v4["B"] / v3["B"])
     K_(edge >= 1.2 * carried, "dominance", (round(edge, 3), round(carried, 3)))
     rec["dominance"] = dict(carried=round(carried, 3), edge=round(edge, 3), product=round(edge / carried, 3))
-    # the call
     e_k, b_k = v4["E"], v4["B"]
     rec["call"] = dict(answer="HC-37", lift=round(e_k, 3), runner_up="HC-33", runner_up_lift=round(b_k, 3),
                        gap=round(e_k - b_k, 3))
-    for nm, x in (("E_kept", e_k), ("B_kept", b_k), ("gap", e_k - b_k)):
-        K_(bin_dist(x) >= 0.03, f"bins.{nm}", (x, bin_dist(x)))
+    for nm, x_ in (("E_kept", e_k), ("B_kept", b_k), ("gap", e_k - b_k)):
+        K_(bin_dist(x_) >= 0.03, f"bins.{nm}", (x_, bin_dist(x_)))
 
-    # ---------------------------------------------------------------- correction grid (12 cells)
+    # ---------------------------------------------------------------- the stump: kept lift, guardrail on the logger
+    vals, ok, first, second, margin = reading(M, y_kept, y_r1, "session_ipw", "eight", "ranking")
+    K_(first == C_ and second == E_ and margin >= 1.5, "stump.kept_with_the_logger_guardrail_names_C",
+       (L[first], L[second], round(margin, 3)))
+    rec["stump"] = dict(call=L[first], lift=round(vals[first], 3), runner_up=L[second],
+                        runner_up_lift=round(vals[second], 3), gap=round(vals[first] - vals[second], 3))
+    K_(not same_bin(vals[first], e_k) and not same_bin(vals[second], b_k) and
+       not same_bin(vals[first] - vals[second], e_k - b_k), "stump.every_call_figure_apart", rec["stump"])
+
+    # ---------------------------------------------------------------- the guardrail by count
+    counts = {"ordered_tiles": y_r1, "orders_from_the_tiles": y_r2}
+    for h in (0.5, 1, 1.5, 2, 3, 4, 6, 24):
+        counts[f"tiles_within_{h}h"] = A.tile_orders(M, hours=h).astype(float)
+    for d in (1, 7, 21):
+        counts[f"buyer_carousel_orders_{d}d"] = A.carousel_window(M, d).astype(float)
+    counts["orders_credited_to_the_session"] = A.session_orders(M).astype(float)
+    gtab = {}
+    for nm, yc in counts.items():
+        g = A.guardrail(S, yc)
+        gtab[nm] = dict(breaches=sorted(f"{L[r]}|{P.CELL_NAMES[c]}" for (r, c), v in g.items() if v < -1.5),
+                        C_app_0_29=round(g[(C_, 0)], 3), A_web_730=round(g[(A_, 7)], 3))
+    rec["guardrail_by_count"] = gtab
+    K_(gtab["ordered_tiles"]["breaches"] == ["A|web 730+"], "guardrail.logger_breaches_A_only",
+       gtab["ordered_tiles"])
+    K_(gtab["orders_credited_to_the_session"] == gtab["ordered_tiles"], "guardrail.credited_equals_logger")
+    K_(gtab["orders_from_the_tiles"]["breaches"] == ["A|web 730+", "C|app <30"], "guardrail.tiles_breach_A_and_C",
+       gtab["orders_from_the_tiles"])
+    K_(gtab["ordered_tiles"]["C_app_0_29"] >= -1.5 + 0.4 and gtab["orders_from_the_tiles"]["C_app_0_29"] <= -1.5 - 1.5,
+       "guardrail.C_margins", (gtab["ordered_tiles"]["C_app_0_29"], gtab["orders_from_the_tiles"]["C_app_0_29"]))
+    for h in (4, 6, 24):
+        K_(np.array_equal(counts[f"tiles_within_{h}h"], y_r2), f"guardrail.C1_any_limit_from_4h.{h}")
+    for d in (1, 7, 21):
+        K_("C|app <30" not in gtab[f"buyer_carousel_orders_{d}d"]["breaches"], f"guardrail.buyer_window_passes_C.{d}",
+           gtab[f"buyer_carousel_orders_{d}d"])
+    for nm, yc in (("logger", y_r1), ("tiles", y_r2)):
+        g = A.guardrail(S, yc)
+        others = [v for (r, c), v in g.items() if (r, c) not in ((A_, 7), (C_, 0))]
+        K_(min(others) >= -0.9, f"guardrail.others_clear.{nm}", min(others))
+        for coarse in ("platform", "tenure", "pooled"):
+            gc = A.guardrail(S, yc, coarse=coarse)
+            K_(min(gc.values()) >= -0.8, f"guardrail.coarse.{coarse}.{nm}", min(gc.values()))
+    g0 = A.guardrail(S, y_r2)
+    rec["guardrail_pct"] = {f"{L[r]}|{P.CELL_NAMES[c]}": round(v, 3) for (r, c), v in g0.items()}
+
+    # ---------------------------------------------------------------- correction grid (24 cells)
+    guards = {"platform": ("platform", y_r1), "eight_logger": ("eight", y_r1), "eight_tiles": ("eight", y_r2),
+              "eight_buyer_7d": ("eight", y_w7)}
+    want = {}
+    for gk in guards:
+        want[("replay_rows", gk, "in")] = D_
+        want[("replay_rows", gk, "kept")] = D_
+    want.update({("render_weights", "platform", "in"): A_, ("render_weights", "platform", "kept"): A_,
+                 ("render_weights", "eight_logger", "in"): B_, ("render_weights", "eight_logger", "kept"): B_,
+                 ("render_weights", "eight_tiles", "in"): B_, ("render_weights", "eight_tiles", "kept"): B_,
+                 ("render_weights", "eight_buyer_7d", "in"): A_, ("render_weights", "eight_buyer_7d", "kept"): A_,
+                 ("session_ipw", "platform", "in"): C_, ("session_ipw", "platform", "kept"): C_,
+                 ("session_ipw", "eight_logger", "in"): C_, ("session_ipw", "eight_logger", "kept"): C_,
+                 ("session_ipw", "eight_tiles", "in"): B_, ("session_ipw", "eight_tiles", "kept"): E_,
+                 ("session_ipw", "eight_buyer_7d", "in"): C_, ("session_ipw", "eight_buyer_7d", "kept"): C_})
     grid = {}
-    want = {("replay_rows", "platform", "in"): D_, ("replay_rows", "platform", "kept"): D_,
-            ("replay_rows", "eight", "in"): D_, ("replay_rows", "eight", "kept"): D_,
-            ("render_weights", "platform", "in"): A_, ("render_weights", "platform", "kept"): A_,
-            ("render_weights", "eight", "in"): B_, ("render_weights", "eight", "kept"): B_,
-            ("session_ipw", "platform", "in"): C_, ("session_ipw", "platform", "kept"): C_,
-            ("session_ipw", "eight", "in"): B_, ("session_ipw", "eight", "kept"): E_}
-    for (ek, gr, bas), w in want.items():
+    for (ek, gk, bas), w in want.items():
         fg = "ranking" if ek == "session_ipw" else "rendered"
-        vals, ok, first, second, margin = reading(M, y_kept if bas == "kept" else y_in, y_in, ek, gr, fg)
-        grid[f"{ek}|{gr}|{bas}"] = dict(leader=L[first], value=round(vals[first], 3),
+        gr, yg = guards[gk]
+        vals, ok, first, second, margin = reading(M, y_kept if bas == "kept" else y_in, yg, ek, gr, fg)
+        grid[f"{ek}|{gk}|{bas}"] = dict(leader=L[first], value=round(vals[first], 3),
                                         next=L[second] if second else None,
                                         margin=round(margin, 3) if np.isfinite(margin) else "only qualifier")
-        K_(first == w and margin >= 1.15, f"grid.{ek}.{gr}.{bas}", grid[f"{ek}|{gr}|{bas}"])
+        K_(first == w and margin >= 1.15, f"grid.{ek}.{gk}.{bas}", grid[f"{ek}|{gk}|{bas}"])
+    K_(len(grid) == 24 and sum(v["leader"] == "E" for v in grid.values()) == 1, "grid.E_in_one_cell_only")
     rec["correction_grid"] = grid
 
     # ---------------------------------------------------------------- partial readings
     share_B = (v3["B"] - v4["B"]) / v3["B"]
     flat = {r: v * (1 - share_B) for r, v in v3.items()}
     elig = rec["rungs"][3]["qualifiers"]
-    elig_flat = [r for r in elig if flat[r] >= 2.0]
-    lead_flat = max(elig_flat, key=lambda r: flat[r])
+    lead_flat = max([r for r in elig if flat[r] >= 2.0], key=lambda r: flat[r])
     K_(lead_flat == "B", "partial.flat_haircut_at_B_share", (round(share_B, 3), {r: round(v, 2) for r, v in flat.items()}))
     q, Sw, m = A.route2(M)
     pooled_share = float((Sw * q).sum() / max(1, y_in.sum()))
@@ -149,10 +237,10 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     win = {}
     for d in range(1, 22):
         yw = A.followup(M, hours=d * 24).astype(float)
-        vals, ok, first, second, margin = reading(M, yw, y_in, "session_ipw", "eight", "ranking")
+        vals, ok, first, second, margin = reading(M, yw, y_r2, "session_ipw", "eight", "ranking")
         win[d] = dict(leader=L[first], E=round(vals[E_], 3), B=round(vals[B_], 3))
-    full = min(d for d in range(1, 22) if all(win[x]["E"] == win[21]["E"] and win[x]["B"] == win[21]["B"]
-                                                for x in range(d, 22)))
+    full = min(d for d in range(1, 22) if all(win[x_]["E"] == win[21]["E"] and win[x_]["B"] == win[21]["B"]
+                                              for x_ in range(d, 22)))
     rec["window_complete_from_days"] = full
     K_(full <= 7, "window.complete_by_7_days", full)
     K_(all(win[d]["leader"] == "B" for d in (1, 2, 3)), "partial.windows_1_to_3_name_B", {d: win[d] for d in (1, 2, 3)})
@@ -175,7 +263,6 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     c1, c2 = A.per_cell(S, y_kept), A.per_cell(S, k2)
     dif = [abs((c1[(r, c)] - c1[("HC-24", c)]) - (c2[(r, c)] - c2[("HC-24", c)])) for r in P.POLICIES for c in range(8)]
     K_(max(dif) < 1e-6, "route1_equals_route2.per_cell", max(dif))
-    # comparison sets for the anyway rate: every segment a reader can form from the logged sessions
     si = S.set_index("session_id")
     seg_of = {
         "cell": si.cell,
@@ -196,9 +283,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         un[col] = un.session_id.map(ser)
         g = un.groupby(col, observed=True).bought_later.agg(["mean", "size"])
         rates[col] = {str(k): (round(float(v["mean"]), 4), int(v["size"])) for k, v in g.iterrows()}
-        # stratified netting: each session's watched in-session orders netted at its own segment's rate
         qs = S.session_id.map(ser).map(g["mean"]).to_numpy(float)
-        qs = np.where(Sw > 0, qs, 0.0)          # a segment with no unshown watched listing has nothing to net
+        qs = np.where(Sw > 0, qs, 0.0)
         K_(not np.isnan(qs).any(), f"anyway.every_netted_session_has_a_rate.{col}")
         vs = A.est(S, y_in - qs * Sw, "session_ipw")
         strat[col] = (round(vs[E_], 4), round(vs[B_], 4))
@@ -207,12 +293,11 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     rec["anyway_rates"] = rates
     rec["anyway_stratified"] = strat
     exact = [v[0] for col in ("cell", "ranker", "cell_ranker", "platform", "tenure_band") for v in rates[col].values()]
-    K_(all(abs(x - 0.625) < 1e-9 for x in exact), "anyway.exact_in_every_charter_cut_and_arm")
+    K_(all(abs(x_ - 0.625) < 1e-9 for x_ in exact), "anyway.exact_in_every_charter_cut_and_arm")
     seg = [v[0] for col in ("renders", "watch_size", "weekday", "iso_week", "half") for v in rates[col].values()
            if v[1] >= 2000]
-    K_(all(abs(x - 0.625) <= 0.01 for x in seg), "anyway.segments_close", (min(seg), max(seg)))
+    K_(all(abs(x_ - 0.625) <= 0.01 for x_ in seg), "anyway.segments_close", (min(seg), max(seg)))
     rec["anyway_segment_range"] = (min(seg), max(seg))
-    # a rate measured on one natural sub-population and applied to every session
     subs = {"incumbent_arm": un.ranker == "HC-24", "velocity_arm": un.ranker == B_, "app": un.platform == "app",
             "web": un.platform == "web", "first_half": un.half == "first", "second_half": un.half == "second",
             "one_render": un.renders == 1, "up_to_two_renders": un.renders <= 2}
@@ -223,31 +308,15 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         sub_fig[nm] = (round(qq, 4), round(vx[E_], 4), round(vx[B_], 4))
         K_(same_bin(vx[E_], e_k) and same_bin(vx[B_], b_k), f"anyway.subpopulation.{nm}", sub_fig[nm])
     rec["anyway_subpopulations"] = sub_fig
-    # the thinnest boundary, recorded rather than asserted: the most extreme single segment's rate
-    # applied to every session (no reading does this; it bounds what any segment can do)
     ext = {}
-    for x in (min(seg), max(seg)):
-        vx = A.est(S, y_in - x * Sw, "session_ipw")
-        ext[str(x)] = (round(vx[E_], 4), round(vx[B_], 4))
+    for x_ in (min(seg), max(seg)):
+        vx = A.est(S, y_in - x_ * Sw, "session_ipw")
+        ext[str(x_)] = (round(vx[E_], 4), round(vx[B_], 4))
     rec["anyway_extreme_segment_applied_globally"] = ext
     K_(all(same_bin(v[0], e_k) for v in ext.values()), "anyway.E_independent_of_rate", ext)
     rec["route2_q"] = q
 
-    # ---------------------------------------------------------------- guardrail, floor, bar
-    breaches = {}
-    for basis_nm, yb in (("in", y_in), ("kept", y_kept)):
-        for rw in (False, True):
-            g = A.guardrail(S, yb, y_in, weighted_by_renders=rw)
-            br = sorted((L[r], c) for (r, c) in g if g[(r, c)] < -1.5)
-            breaches[f"{basis_nm}|{'render' if rw else 'session'}"] = br
-            K_(br == [("A", 7), ("C", 0)], f"guardrail.breaches.{basis_nm}.{rw}", br)
-            others = [g[k] for k in g if (L[k[0]], k[1]) not in (("A", 7), ("C", 0))]
-            K_(min(others) >= -0.9, f"guardrail.others_clear.{basis_nm}.{rw}", min(others))
-            for coarse in ("platform", "tenure", "pooled"):
-                gc = A.guardrail(S, yb, y_in, weighted_by_renders=rw, coarse=coarse)
-                K_(min(gc.values()) >= -0.8, f"guardrail.coarse.{coarse}.{basis_nm}.{rw}", min(gc.values()))
-    g0 = A.guardrail(S, y_in, y_in)
-    rec["guardrail_pct"] = {f"{L[r]}|{P.CELL_NAMES[c]}": round(v, 3) for (r, c), v in g0.items()}
+    # ---------------------------------------------------------------- floor, bar, halves
     fl = A.floors(S)
     rec["floors"] = {f"{L[r]}|{k}": round(fl[(r, k)], 3) for (r, k) in fl}
     K_(fl[(D_, "per_ranking")] < 12 and fl[(D_, "per_ranking_ipw")] < 12, "floor.D_fails_per_ranking",
@@ -261,7 +330,6 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         vv = A.est(S, y_in, k)
         K_(vv[F_] <= 2.0 - 0.6, f"bar.F_under.{k}", vv[F_])
     K_(b_k >= 2.0 + 1.3, "bar.B_kept_clears", b_k)
-    # halves
     half = (S.started_at < pd.Timestamp(P.HALF_SPLIT)).to_numpy()
     for nm, yb in (("in", y_in), ("kept", y_kept)):
         h1 = A.est(S[half].reset_index(drop=True), yb[half], "session_snipw")
@@ -281,10 +349,10 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         Tt, Cc = df[df.arm == "test"], df[df.arm == "control"]
         snip = ((Tt.y / Tt.p).sum() / (1 / Tt.p).sum() - (Cc.y / Cc.p).sum() / (1 / Cc.p).sum()) * 1000
         clip = ((Tt.y / np.maximum(Tt.p, 0.05)).sum() - (Cc.y / np.maximum(Cc.p, 0.05)).sum()) / N * 1000
-        strat = 0.0
+        strat_ = 0.0
         for c, gc in df.groupby(["platform", "tenure_band"]):
-            strat += len(gc) / N * (gc[gc.arm == "test"].y.mean() - gc[gc.arm == "control"].y.mean()) * 1000
-        arch[t.test_id] = dict(R=float(t.realised_lift), sess=s, snip=snip, clip=clip, strat=strat, render=rw,
+            strat_ += len(gc) / N * (gc[gc.arm == "test"].y.mean() - gc[gc.arm == "control"].y.mean()) * 1000
+        arch[t.test_id] = dict(R=float(t.realised_lift), sess=s, snip=snip, clip=clip, strat=strat_, render=rw,
                                replay=rp, replay_sessions=rs, published=float(t.offline_estimate_published))
     rec["archive"] = {k: {kk: round(vv, 3) for kk, vv in v.items()} for k, v in arch.items()}
     hits = lambda key: [k for k, v in arch.items() if abs(v[key] - v["R"]) <= 0.25]
@@ -297,7 +365,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_(len(hits("replay")) == 3 and sorted(set(hits("replay"))) == ["T1", "T5", "T6"], "archive.replay_3_of_9")
     K_(len(hits("replay_sessions")) < 9, "archive.replay_over_sessions_refuted")
     misses = [v[k] - v["R"] for v in arch.values() for k in ("render", "replay") if abs(v[k] - v["R"]) > 0.25]
-    K_(all(x > 0 for x in misses), "archive.every_miss_overstates", min(misses))
+    K_(all(x_ > 0 for x_ in misses), "archive.every_miss_overstates", min(misses))
     rec["archive_totals"] = {k: round(100 * (sum(v[k] for v in arch.values()) / sum(v["R"] for v in arch.values()) - 1), 1)
                              for k in ("render", "replay")}
     K_(all(round(v["replay"] + 1e-9, 1) == v["published"] for v in arch.values()), "archive.published_is_replay")
@@ -315,14 +383,12 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         K_(abs(wl) <= 0.1, f"archive.blind.{tid}", wl)
         kept = ((Tt.y + Tt.followup_orders) / Tt.p).sum() / len(g) * 1000 - ((Cc.y + Cc.followup_orders) / Cc.p).sum() / len(g) * 1000
         K_(abs(kept - arch[tid]["R"]) <= 0.25, f"archive.clean_data_kept_reproduces.{tid}", (kept, arch[tid]["R"]))
-    # lookup transfer by resemblance names the two-tower personaliser, a decoy
     fam_of = {A_: "Two-tower personaliser", B_: "Trending boost", C_: "Sequence model", D_: "Local pickup radius",
               E_: "Sequence model", F_: "Seller-diversity cap"}
     transfer = {r: T[T.policy_family == f].realised_lift.mean() for r, f in fam_of.items()}
     K_(max(transfer, key=transfer.get) == A_, "archive.lookup_transfer_names_decoy",
        {L[r]: round(v, 2) for r, v in transfer.items()})
     rec["lookup_transfer"] = {L[r]: round(v, 2) for r, v in transfer.items()}
-    # the clean-data repair moves neither answer: the main pack is untouched by it
     K_(rec["rungs"][4]["leader"] == "E" and rec["rungs"][3]["leader"] == "B", "clean_data.answer_E_naive_B")
 
     # ---------------------------------------------------------------- per-cell rounding before pooling
@@ -335,63 +401,104 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
 
     # ---------------------------------------------------------------- asks
     res = K.compute(tgt, M)
+    # the headline on the slot's own planned cell mix converges with the logged window's
+    hl, hs = res["headline_logged_mix"], res["headline_slot_mix"]
+    K_(abs(hl[E_] - e_k) < 1e-9 and abs(hl[B_] - b_k) < 1e-9, "headline.logged_mix_is_the_estimator")
+    K_(same_bin(hs[E_], e_k) and same_bin(hs[B_], b_k) and same_bin(hs[E_] - hs[B_], e_k - b_k) and
+       min(bin_dist(hs[E_]), bin_dist(hs[B_]), bin_dist(hs[E_] - hs[B_])) >= 0.02, "headline.C1_slot_mix",
+       (hs[E_], hs[B_]))
+    other_mix = {}
+    for nm, a in (("first_release", res["arm_sessions_r1"]), ("twelve_weeks_app", res["arm_sessions_12wk"]),
+                  ("both", res["arm_sessions_r1_12wk"])):
+        sm = a / a.sum()
+        other_mix[nm] = {L[r]: round(float(sum(sm[c] * res["orders_kept"][(r, c)] for c in range(8))), 4)
+                         for r in (E_, B_)}
+    rec["headline"] = dict(logged_mix={L[r]: round(hl[r], 4) for r in P.POLICIES},
+                           slot_mix={L[r]: round(hs[r], 4) for r in P.POLICIES}, slot_mix_wrong_traffic=other_mix)
     K_(res["price_routes_agree"], "ask1.price_paid_routes_agree")
     gold = res["fee"]
     dists = {k: bin_dist(v) for k, v in gold.items()}
-    K_(min(dists.values()) >= 0.03, "ask1.cells_mid_bin", min(dists.values()))
+    K_(min(dists.values()) >= 0.035, "ask1.cells_mid_bin", min(dists.values()))
     small = [k for k, v in gold.items() if abs(v) < 1.0]
     K_(len(small) <= 4, "ask1.small_cells", [(L[r], c, round(gold[(r, c)], 2)) for r, c in small])
-    def outside(x, ref):
-        """How far x sits outside ref's one-decimal bin (negative when inside it)."""
-        k = np.floor(ref / 0.1 + 0.5)
-        return max((k - 0.5) * 0.1 - x, x - (k + 0.5) * 0.1)
+    # every subset of the five fee devices, and the natural read, carries every cell out of its bin
+    gen_gold, gen_combos = W.fee_grid_gen
+    K_(max(abs(gen_gold[k] / 100 - gold[(P.RANKERS[k[0]], k[1])]) for k in gen_gold) < 1e-6,
+       "ask1.generator_and_files_agree.golden")
     clear = []
     for key, g in res["fee_combos"].items():
         stay = [k for k in gold if same_bin(g[k], gold[k])]
         K_(not stay, f"ask1.subset.{'-'.join(key)}", stay)
         clear += [outside(g[k], gold[k]) for k in gold]
+        gg = gen_combos[key]
+        K_(max(abs(gg[k] / 100 - g[(P.RANKERS[k[0]], k[1])]) for k in gg) < 1e-6,
+           f"ask1.generator_and_files_agree.{'-'.join(key)}")
     nat_stay = [k for k in gold if same_bin(res["fee_natural"][k], gold[k])]
     K_(not nat_stay, "ask1.natural_read_moves_every_cell", nat_stay)
     clear += [outside(res["fee_natural"][k], gold[k]) for k in gold]
     K_(min(clear) >= 0.03, "ask1.devices_clear_by_0.03", round(min(clear), 4))
     rec["ask1_device_min_clearance"] = round(float(min(clear)), 4)
-    for nm in ("fee_charged", "fee_drop_pickups", "fee_every_offer", "fee_old_tariff"):
+    # VAT taken off order by order to the cent files the same grid
+    vp = res["fee_vat_per_order"]
+    inside = [-outside(vp[k], gold[k]) for k in gold]
+    K_(min(inside) >= 0.01, "ask1.C1_vat_per_order", round(min(inside), 4))
+    rec["ask1_vat_per_order_min_inside"] = round(float(min(inside)), 4)
+    for nm, floor_ in (("fee_charged", 40), ("fee_drop_pickups", 36), ("fee_every_offer", 36), ("fee_old_tariff", 40),
+                       ("fee_vat_off_gross", 36)):
         moved = sum(not same_bin(res[nm][k], gold[k]) for k in gold)
-        K_(moved >= 36, f"ask1.over_cleaner.{nm}", moved)
+        K_(moved >= floor_, f"ask1.over_cleaner.{nm}", moved)
         rec[f"ask1_{nm}_cells_moved"] = int(moved)
     b_cells = [(B_, c) for c in range(8) if abs(res["orders_insession"][(B_, c)] - res["orders_kept"][(B_, c)]) > 1e-9]
-    K_(all(not same_bin(res["fee_insession_right"][k], gold[k]) for k in b_cells) and len(b_cells) >= 4,
-       "ask1.in_session_basis_moves_B_cells", len(b_cells))
-    # route 2 at the fee level files the same grid (the asks pin the fee, whichever route reaches it)
+    moved_b = [k for k in b_cells if not same_bin(res["fee_insession_right"][k], gold[k])]
+    K_(len(b_cells) >= 4 and len(moved_b) >= 4 and
+       all(same_bin(res["fee_insession_right"][k], gold[k]) for k in gold if k[0] != B_),
+       "ask1.in_session_basis_moves_B_cells_only", (len(b_cells), len(moved_b)))
+    rec["ask1_in_session_B_cells_moved"] = [P.CELL_NAMES[c] for _, c in moved_b]
     rec["ask1"] = {f"{L[r]}|{P.CELL_NAMES[c]}": round(v, 3) for (r, c), v in gold.items()}
     rec["ask1_small_cells"] = [f"{L[r]}|{P.CELL_NAMES[c]}" for r, c in small]
+    split = res["no_payment_split"]
+    rec["no_payment_split"] = split
     # ask 2
+    inside_readings = []
     for r in P.POLICIES:
         for nm in ("tot_orders", "tot_fee"):
-            x = res[nm][r]
-            K_(bin_dist(x, 100) >= 20, f"ask2.mid_bin.{nm}.{L[r]}", x)
-        for nm in ("tot_orders_r1", "tot_orders_12wk", "tot_orders_r1_12wk", "tot_orders_pooled", "tot_orders_natural"):
-            K_(not same_bin(res[nm][r], res["tot_orders"][r], 100), f"ask2.stop.{nm}.{L[r]}",
-               (res[nm][r], res["tot_orders"][r]))
+            x_ = res[nm][r]
+            K_(20 <= bin_dist(x_, 100) <= 45, f"ask2.mid_bin.{nm}.{L[r]}", x_)
+        readings = [(nm, res[nm][r], res["tot_orders"][r]) for nm in
+                    ("tot_orders_r1", "tot_orders_12wk", "tot_orders_r1_12wk", "tot_orders_natural", "tot_orders_pooled")]
+        readings += [("tot_fee_pooled", res["tot_fee_pooled"][r], res["tot_fee"][r]),
+                     ("tot_fee_natural", res["tot_fee_natural"][r], res["tot_fee"][r])]
+        readings += [("fee|" + "|".join(str(z) for z in key), v[r], res["tot_fee"][r])
+                     for key, v in res["tot_fee_subsets"].items()]
+        clr = []
+        for nm, x_, g_ in readings:
+            o_ = outside(x_, g_, 100)
+            clr.append((abs(o_), nm, round(x_, 1), round(g_, 1)))
+            if o_ < 0:
+                inside_readings.append(f"{L[r]}|{nm}")
+        K_(min(clr)[0] >= 5 and len(clr) == 134, f"ask2.every_reading_clear_of_the_edges.{L[r]}", min(clr))
         K_(abs(res["tot_orders_r1"][r] - res["tot_orders"][r]) >= 100, f"ask2.P2_moves_100.{L[r]}",
            res["tot_orders_r1"][r] - res["tot_orders"][r])
-    # the in-session basis: only the velocity boost's totals move (no other ranker shows a watched listing)
+    pooled_inside = [z for z in inside_readings if "pooled" in z]
+    device_inside = [z for z in inside_readings if "pooled" not in z]
+    K_(len(device_inside) <= 3 and not any("tot_orders" in z for z in device_inside),
+       "ask2.device_readings_out_of_the_hundred", device_inside)
+    rec["ask2_readings_inside_the_hundred"] = dict(pooled=pooled_inside, devices=device_inside)
     tot_in = K.totals(res["orders_insession"], res["arm_sessions"])
     K_(not same_bin(tot_in[B_], res["tot_orders"][B_], 100) and
        all(abs(tot_in[r] - res["tot_orders"][r]) < 1e-6 for r in P.POLICIES if r != B_),
        "ask2.in_session_basis_moves_B_only", {L[r]: round(tot_in[r], 1) for r in P.POLICIES})
     rec["ask2_orders_in_session_basis"] = {L[r]: round(tot_in[r], 1) for r in P.POLICIES}
-    stay = [(k, L[r]) for k, v in res["tot_fee_subsets"].items() for r in P.POLICIES
-            if same_bin(v[r], res["tot_fee"][r], 100)]
-    K_(not stay and len(res["tot_fee_subsets"]) == 31, "ask2.fee_31_subsets", stay[:5])
+    K_(len(res["tot_fee_subsets"]) == 127, "ask2.fee_readings_127", len(res["tot_fee_subsets"]))
     rec["ask2"] = {"orders": {L[r]: round(v, 1) for r, v in res["tot_orders"].items()},
                    "fee": {L[r]: round(v, 1) for r, v in res["tot_fee"].items()},
-                   "arm_sessions": [int(round(x)) for x in res["arm_sessions"]],
+                   "arm_sessions": [int(round(x_)) for x_ in res["arm_sessions"]],
                    "orders_first_release": {L[r]: round(v, 1) for r, v in res["tot_orders_r1"].items()},
                    "orders_12_weeks_app": {L[r]: round(v, 1) for r, v in res["tot_orders_12wk"].items()},
                    "orders_pooled": {L[r]: round(v, 1) for r, v in res["tot_orders_pooled"].items()},
-                   "orders_natural": {L[r]: round(v, 1) for r, v in res["tot_orders_natural"].items()}}
-    # R2 against the first release
+                   "orders_natural": {L[r]: round(v, 1) for r, v in res["tot_orders_natural"].items()},
+                   "fee_pooled": {L[r]: round(v, 1) for r, v in res["tot_fee_pooled"].items()},
+                   "fee_natural": {L[r]: round(v, 1) for r, v in res["tot_fee_natural"].items()}}
     r1n, r2n, cur = K.load_traffic(tgt)
     j = r1n.merge(r2n, on=["year", "week", "platform", "band"], suffixes=("_r1", "_r2"))
     pw1 = j.groupby(["year", "week", "platform"]).sessions_r1.sum()
@@ -403,27 +510,47 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
 
     # ---------------------------------------------------------------- referee and hygiene battery
     pay = pd.read_parquet(os.path.join(tgt, Wr.F_PAYMENTS))
-    o = M.O.merge(pay, on="order_id", how="left")
-    fin = pd.read_excel(os.path.join(tgt, D.F_FINANCE), header=None).iloc[5:11]
-    o["m"] = o.captured_at.dt.strftime("%Y-%m")
-    q3 = o[o.m.isin(["2026-07", "2026-08", "2026-09"])]
-    booked = q3.groupby(["m", "platform"]).buyer_protection_fee_eur.sum().round(2)
+    o, w = K.load_fee_path(tgt, M)
+    fin = pd.read_excel(os.path.join(tgt, D.F_FINANCE), header=None)
+    hdr = int(np.flatnonzero(fin[0].astype(str).str.strip() == "Month")[0])
+    body = fin.iloc[hdr + 1:hdr + 7]
     names = {"July 2026": "2026-07", "August 2026": "2026-08", "September 2026": "2026-09"}
-    tie = all(abs(booked[(names[r[0]], r[1])] - float(r[4])) < 0.005 for r in fin.itertuples(index=False))
-    K_(tie, "referee.ties_to_payments")
-    # formula pricing of every order in Q3 overstates it
-    allq3 = M.O[M.O.ordered_at.dt.strftime("%Y-%m").isin(["2026-07", "2026-08", "2026-09"])]
-    formula = (0.80 + 0.05 * allq3.asking_price_eur).sum()
-    over = formula / float(fin[4].sum()) - 1
-    K_(over > 0.10, "referee.formula_overstates", round(over, 3))
-    rec["referee_overstatement"] = round(float(over), 4)
+    tariffs = pd.read_csv(os.path.join(tgt, D.F_TARIFF))
+    starts = pd.to_datetime(tariffs.ingangsdatum).to_numpy()
+    fixed_c = np.round(tariffs.vast_bedrag_eur.to_numpy() * 100).astype(int)
+    prot = o[~o.inperson].copy()
+    prot["booked"] = np.where(prot.paid_through, prot.captured_at, prot.ordered_at)
+    idx_t = np.searchsorted(starts, prot.booked.to_numpy(), side="right") - 1
+    prot["fee_c"] = fixed_c[idx_t] + 5 * np.round(prot.price_paid.to_numpy()).astype(int)
+    prot["m"] = pd.to_datetime(prot.booked).dt.strftime("%Y-%m")
+    q3 = prot[prot.m.isin(names.values())]
+    gq = q3.groupby(["m", "platform"]).agg(n=("order_id", "size"), fee=("fee_c", "sum"), item=("price_paid", "sum"))
+    tie = all(abs(round(gq.loc[(names[r[0]], r[1]), "fee"] / 100 / (1 + P.VAT_RATE), 2) - float(r[4])) < 0.005 and
+              int(gq.loc[(names[r[0]], r[1]), "n"]) == int(r[2]) and
+              abs(gq.loc[(names[r[0]], r[1]), "item"] - float(r[3])) < 0.005 for r in body.itertuples(index=False))
+    K_(tie, "referee.ties_to_every_protected_purchase_excl_VAT")
+    # the provider's charged fees alone, with or without the VAT, do not tie
+    pq3 = pay.assign(m=pay.captured_at.dt.strftime("%Y-%m"))
+    pq3 = pq3[pq3.m.isin(names.values())]
+    gross_pay = float(pq3.buyer_protection_fee_eur.sum())
+    stated = float(body[4].astype(float).sum())
+    K_(abs(gross_pay / stated - 1) > 0.10 and abs(gross_pay / 1.21 / stated - 1) > 0.05,
+       "referee.payments_alone_do_not_tie", (round(gross_pay, 2), round(stated, 2)))
+    rec["referee"] = dict(stated=round(stated, 2), payments_gross=round(gross_pay, 2),
+                          payments_net=round(gross_pay / 1.21, 2),
+                          balance_share_of_protected=round(float((~q3.paid_through).mean()), 4))
     offf = pd.read_csv(os.path.join(tgt, K.offers_file(tgt)))
-    K_(M.O.order_id.is_unique and pay.payment_id.is_unique and pay.order_id.is_unique and offf.offer_id.is_unique,
+    K_(O.order_id.is_unique and pay.payment_id.is_unique and pay.order_id.is_unique and offf.offer_id.is_unique,
        "hygiene.keys_unique")
-    K_(pay.order_id.isin(M.O.order_id).all(), "hygiene.every_payment_has_an_order")
-    ob = offf.merge(M.O[["buyer_id", "listing_id"]], on=["buyer_id", "listing_id"], how="left", indicator=True)
+    K_(pay.order_id.isin(O.order_id).all(), "hygiene.every_payment_has_an_order")
+    ob = offf.merge(O[["buyer_id", "listing_id"]], on=["buyer_id", "listing_id"], how="left", indicator=True)
     K_((ob["_merge"] == "both").all(), "hygiene.every_offer_has_an_order")
-    K_(not M.O.duplicated(["buyer_id", "listing_id"]).any(), "hygiene.no_duplicate_purchases")
+    K_(not O.duplicated(["buyer_id", "listing_id"]).any(), "hygiene.no_duplicate_purchases")
+    ship = o[o.delivery == "shipped"]
+    bal = ship.groupby(ship.ordered_at.dt.strftime("%Y-%m")).balance.mean()
+    K_(bal.between(0.06, 0.08).all(), "hygiene.balance_share_steady_by_month", bal.round(4).to_dict())
+    K_(not o[o.inperson].paid_through.any() and (o[o.balance].delivery == "shipped").all(),
+       "hygiene.no_payment_is_pickup_in_person_or_shipped_on_balance")
 
     # ---------------------------------------------------------------- separation and necessity
     declared_main = {Wr.F_RENDER, Wr.F_RANKINGS, Wr.F_ORDERS, D.F_ARCHIVE, D.F_CHARTER, D.F_COMMIT, D.F_REGISTER,
@@ -432,18 +559,20 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
                     D.F_RELEASES, D.F_CAPACITY, D.F_ICS, D.F_FINANCE}
     K_(not (declared_main & device_files), "separation.files")
     main_cols = {"order_id", "buyer_id", "listing_id", "ordered_at", "channel", "home_session_id"}
-    K_(not ({"asking_price_eur", "delivery"} & main_cols), "separation.columns")
-    # scramble every device column the orders file carries: the call does not move
+    K_(not ({"asking_price_eur", "delivery", "platform", "category"} & main_cols), "separation.columns")
     M2 = A.load_main(tgt)
     M2.O["asking_price_eur"] = M2.O.asking_price_eur.sample(frac=1.0, random_state=1).to_numpy()
     M2.O["delivery"] = "shipped"
     yk2 = A.followup(M2, hours=21 * 24).astype(float)
     v2 = A.est(M2.S, yk2, "session_ipw")
-    K_(abs(v2[E_] - e_k) < 1e-12 and abs(v2[B_] - b_k) < 1e-12, "necessity.devices_do_not_move_the_call")
+    g2 = A.guardrail(M2.S, A.tile_orders(M2).astype(float))
+    K_(abs(v2[E_] - e_k) < 1e-12 and abs(v2[B_] - b_k) < 1e-12 and
+       sorted((L[r], c) for (r, c), v in g2.items() if v < -1.5) == [("A", 7), ("C", 0)],
+       "necessity.devices_do_not_move_the_call")
     rec["device_rows_in_main_population"] = 0
 
     # ---------------------------------------------------------------- pair simulation
-    rec["pair"] = pair_simulation(res, gold, small)
+    rec["pair"] = pair_simulation(res, gold)
     K_(rec["pair"]["pair"] <= 40.0, "pair.at_or_under_40", rec["pair"])
 
     # ---------------------------------------------------------------- pack
@@ -462,7 +591,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
             blob[f] = "\n".join(pg.extract_text() for pg in PdfReader(p).pages)
         elif f.endswith(".docx"):
             from docx import Document
-            blob[f] = "\n".join(x.text for x in Document(p).paragraphs)
+            blob[f] = "\n".join(x_.text for x_ in Document(p).paragraphs)
         elif f.endswith(".xlsx") and f != D.F_ARCHIVE:
             blob[f] = "\n".join(pd.read_excel(p, sheet_name=None, header=None)[s].astype(str).to_csv() for s in
                                 pd.ExcelFile(p).sheet_names)
@@ -472,11 +601,10 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_("distractor" not in alltext.lower() and not any("distractor" in f.lower() for f in files),
        "gates.distractors_unnamed_in_pack")
     bad = re.compile(r"\b(trap|decoy|golden|stump|rung|ladder|answer key|synthetic|generated by|placeholder|lorem|"
-                     r"python-docx|openpyxl|reportlab|matplotlib|xlsxwriter|pyarrow|seed)\b", re.I)
+                     r"python-docx|openpyxl|reportlab|matplotlib|xlsxwriter|pyarrow|seed|come-back|comeback)\b", re.I)
     hits_ = {f: bad.findall(t) for f, t in blob.items() if bad.search(t)}
     K_(not hits_, "leak.author_vocabulary", hits_)
-    K_("\u2014" not in alltext, "leak.no_em_dash")
-    # no shipped table carries a per-policy lift, guardrail or ranking
+    K_("—" not in alltext, "leak.no_em_dash")
     for f, t in blob.items():
         ids = [r for r in P.POLICIES if r in t]
         if len(ids) >= 3:
@@ -484,9 +612,10 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     reg = json.load(open(os.path.join(tgt, D.F_REGISTER), encoding="utf-8"))
     K_(not re.search(r"\d+\.\d+ (extra )?orders|lift", json.dumps(reg).lower().replace("lift", "LIFTX"))
        or "liftx" not in json.dumps(reg).lower(), "register.no_lift")
-    # single-statement invariant
     facts = {
         "lift_definition": r"change in orders placed by the arm's buyers during the test",
+        "rate_definition": r"orders placed from the carousel tiles it served",
+        "seven_day_rule": r"kept off it in their later sessions for seven days",
         "reproduction_clause": r"within 0\.25 extra orders",
         "cell_table": r"730 days and over",
         "floor": r"at least 12 of every 100 tiles",
@@ -497,6 +626,9 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         "cell_by_cell_planning": r"cell by cell, in the cells of the experimentation charter",
         "fee_basis": r"percentage of the\s+price you pay",
         "change_clause": r"approved by the Vouwlijn pricing committee",
+        "vat_in_the_fee": r"includes 21 per cent VAT",
+        "balance_payment": r"your Vouwlijn balance",
+        "provider_captures_only": r"card and iDEAL payment the payment provider captured",
     }
     single = {}
     for k, pat in facts.items():
@@ -504,26 +636,20 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         single[k] = where
         K_(len(where) == 1, f"single_statement.{k}", where)
     rec["single_statement"] = single
-    # folder index lists every file but itself
     idx = blob[D.F_INDEX]
     listed = set(re.findall(r"^\| ([^|]+?) \|", idx, re.M)) - {"file", "---"}
     K_(listed == set(files) - {D.F_INDEX}, "H9.index_covers_every_file", sorted(set(files) ^ (listed | {D.F_INDEX})))
-    # dates after the pack date only where the record is forward-looking by design
     allow = {D.F_TARIFF, D.F_ICS, D.F_CAPACITY, D.F_MINUTES}
     late = sorted(f for f, t in blob.items() if any(d > P.PACK_DATE.isoformat() for d in
                                                      re.findall(r"\b20\d\d-\d\d-\d\d\b", t)))
     K_(set(late) <= allow, "H16.forward_dates_allow_list", late)
-    # container metadata
     K_(scrub_rc[1] == 0 and "clean" in scrub_rc[2], "H1.containers_clean", scrub_rc[2][-200:])
-    # generation tells: no uniform row counts; headline totals off round boundaries
-    rows = [len(M.R), len(S), len(M.O), len(pay), len(offf)]
-    K_(len(set(rows)) == len(rows) and all(x % 1000 for x in rows[2:]), "tells.row_counts", rows)
-    # personas: every named person in the pack is from the guard draw
+    rows = [len(M.R), len(S), len(O), len(pay), len(offf)]
+    K_(len(set(rows)) == len(rows) and all(x_ % 1000 for x_ in rows[2:]), "tells.row_counts", rows)
     drawn = ["Saar Dries", "Tygo Knoers", "Livia Verhaar", "Fabian Stoffel", "Kayleigh Zeemans", "Amélie Middelkoop",
              "Esila Stichter", "Lindsey Mudden", "Rik Breugelensis", "Britt Tins", "Zoey Joosten", "Jasmijn Zijlemans",
              "Tycho Feenstra", "Yasmine Billung", "Ali Maas", "Stef Steenbakkers", "Evy Mathieu"]
     rec["personas"] = drawn
-    named = set(re.findall(r"\b([A-Z][a-zé]+ (?:[A-Z][a-z]+))\b", alltext))
     K_(all(n in alltext for n in drawn[:6]), "personas.core_present")
     failed = [n for n, ok, _ in K_.items if not ok]
     if failed:
@@ -533,21 +659,31 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     return rec
 
 
-def pair_simulation(res, gold, small):
-    """Two answer sheets with the habitual hygiene battery applied and no device handled beyond it:
-    the response that lands the call, and the best one that stops at the velocity boost. Weights at
-    the planning split (38 / 7 / 55 over 4 call, 4 file and 64 ask criteria)."""
+def pair_simulation(res, gold):
+    """Two answer sheets at the planning weights (38 / 7 / 55 over 4 call, 4 file and 64 ask criteria): the
+    response that lands the call and the best one that misses it on the guardrail count (it files the
+    session-sequence model). Both run the habitual battery, net the velocity boost's brought-forward orders,
+    take the restatement and the app release gate, and price the fee on the provider's payments the way the
+    first round did (slot tariff, price paid, pickups paid in person uncharged, no VAT taken out); a fee cell
+    or total counts only where that path lands in the golden bin."""
     w_call, w_if, w_ask = 38 / 4, 7 / 4, 55 / 64
-    # cracker: the call, the files, the heatmap's four parts; a grid cell only where the natural fee path
-    # (formula on the asking price at the newest register row, every order priced) leaves it in its bin
-    nat = res["fee_natural"]
-    keep_c = sum(same_bin(res["fee_combos"][("wrong", "asking", "jan")][k], gold[k]) for k in gold)
-    cracker = 4 * w_call + 4 * w_if + (4 + keep_c) * w_ask
-    # mirror: stops at B on in-session orders; three points of the call block survive (the exclusions it
-    # names), the files, two heatmap parts (scale and hatching); its natural fee path keeps no cell
-    keep_m = sum(same_bin(nat[k], gold[k]) for k in gold)
-    mirror = 3 + 4 * w_if + (2 + keep_m) * w_ask
-    exposure = 4 * w_call + 4 * w_if + (4 + 48) * w_ask
+    paths = {"vat_kept_in": ("wrong", "right", "right", "right", "right"),
+             "vat_kept_in_and_balance_uncharged": ("wrong", "wrong", "right", "right", "right"),
+             "balance_uncharged": ("right", "wrong", "right", "right", "right")}
+    kept = {}
+    for nm, key in paths.items():
+        g = res["fee_combos"][key]
+        cells = sum(same_bin(g[k], gold[k]) for k in gold)
+        tf = res["tot_fee_subsets"][(False, False) + key]
+        tots = sum(same_bin(tf[r], res["tot_fee"][r], 100) for r in P.POLICIES)
+        kept[nm] = (int(cells), int(tots))
+    cells, tots = max(kept.values())
+    # cracker: the call block, the files, the heatmap's four parts, the six order totals
+    cracker = 4 * w_call + 4 * w_if + (4 + 6 + cells + tots) * w_ask
+    # mirror: three call criteria survive (the exclusions it names), the files, the euro scale, the six order
+    # totals; its hatching misses the session-sequence model's cell and its outline and title name C
+    mirror = 3 + 4 * w_if + (1 + 6 + cells + tots) * w_ask
+    exposure = 4 * w_call + 4 * w_if + (4 + 6 + 48 + 6) * w_ask
     return dict(cracker=round(cracker, 1), mirror=round(mirror, 1), pair=round((cracker + mirror) / 2, 1),
-                cracker_cells=int(keep_c), mirror_cells=int(keep_m),
-                exposure_if_cracker_handles_every_fee_device=round((exposure + mirror) / 2, 1))
+                fee_kept_by_path=kept,
+                exposure_if_both_fee_devices_handled=round((exposure + mirror) / 2, 1))

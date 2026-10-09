@@ -21,7 +21,7 @@ description: "The stage machine that takes a domain and an objective to a delive
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`), `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, `leak.py` not LEAK, surface screen clean |
 | B | **checkpoint: `/approve`** | `fingerprint` (`heart`) | heart verdict not BLOCK; the author has read the stump sentence against the pack |
 | 4 | solver round 1 | `solver-round` (one plain solver) | main call missed and proxy under 40; else **harden** (max three loops) and return to 3 |
-| 5 | solver round 2 | `solver-round` (plain and skeptic) | average under 40, one under 25; both landing is a re-root to stage 1 |
+| 5 | solver round 2 | `solver-round` (plain and skeptic) | average under 40, one under 25; both landing is a re-root to stage 1; with the three loops spent, both missing the call and the pair under 40 passes on the author's standing waiver (`solver-round`) |
 | 6 | judge rehearsal | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC; FIX_NOW findings fixed in the generator and the stage re-run |
 | 7 | leak read and heart | `/leak-check` reader pass, `guard.py heart` | no sentence quoted for question 1; heart not BLOCK |
 | 8 | deliver | card fields updated, zips cut, summary | the author has the bundle, the stump sentence, both rounds' scores and the judge line |

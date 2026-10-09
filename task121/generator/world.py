@@ -672,7 +672,8 @@ def make_addresses(rng, acc, sk, resave):
             rows.append(dict(account_id=a, address_id="AD" + fp16(rng)[:10], event="added", is_default=False,
                              postcode=f"{p2_}{int(rng.integers(0, 100)):02d}-{int(rng.integers(1, 999)):03d}",
                              locality=l2, address_fp=fp16(rng),
-                             changed_at=c + dt.timedelta(days=int(rng.integers(30, 900)))))
+                             changed_at=min(c + dt.timedelta(days=int(rng.integers(30, 900))),
+                                            dt.datetime(2026, 7, 20, 12, 0))))
     for a, r in sorted(resave.items()):
         if r >= P.END:
             continue
@@ -754,6 +755,8 @@ def make_flags(acc):
             "moved_at": P.REBALANCE_AT.strftime("%Y-%m-%dT%H:%M:%S+01:00")}
            for a, c0, c1 in zip(acc.account_id, acc.cohort0, acc.cohort1) if c0 != c1]
     return {"flag_key": "checkout.address.full_postcode", "scope": "signed_in_sessions",
+            "notes": "A session's cohort is the latest assignment at or before the session. The flag applies to "
+                     "signed-in sessions.",
             "rollout": sched, "assignments": current, "assignment_moves": log}
 
 
@@ -906,6 +909,99 @@ def make_edge(rng, sk):
     return e.sort_values(["first_seen", "session_id"]).reset_index(drop=True)
 
 
+# --------------------------------------------------------------------------- member links
+
+PROMO_CODES = [  # code, first day, last day, redemptions, guest share, discount (low, high)
+    ("BEMVINDO10", dt.datetime(2025, 7, 1), dt.datetime(2026, 6, 30), 2460, 0.62, (3.9, 12.5)),
+    ("KAIJU15", dt.datetime(2025, 11, 3), dt.datetime(2025, 11, 30), 690, 0.81, (5.2, 17.9)),
+    ("BLACKFRIDAY25", dt.datetime(2025, 11, 27), dt.datetime(2025, 12, 1), 1385, 0.31, (6.0, 31.0)),
+    ("NATAL25", dt.datetime(2025, 12, 1), dt.datetime(2025, 12, 24), 905, 0.27, (4.0, 14.0)),
+    ("SALDOS26", dt.datetime(2026, 1, 7), dt.datetime(2026, 2, 28), 1110, 0.35, (5.0, 22.0)),
+]
+
+
+def _season_t(rng, lo, hi):
+    span = (hi - lo).total_seconds()
+    t = lo + dt.timedelta(seconds=float(rng.uniform(0, span)))
+    return t.replace(microsecond=0)
+
+
+def make_member_links(T):
+    """Where each member's link to a store account is stored, on a random stream of its own: the
+    loyalty profile's member number for some members, last season's members' code (SOCIO plus the
+    seven-digit member number) redeemed on the account for the rest, and both for many. The promotions
+    extract also carries every other code of the 2025/26 season, guests included."""
+    rng = np.random.default_rng(P.LINK_SEED)
+    acc = T["acc"]
+    mem = acc[acc.member_no.notna()]
+    keep, socio = {}, []
+    for a, k, m in zip(mem.account_id, mem.klass, mem.member_no):
+        kp = bool(rng.random() < P.PROFILE_KEEP.get(k, 0.45))
+        keep[a] = kp
+        n = int(rng.poisson(0.6)) if kp else 1 + int(rng.poisson(0.8))
+        for _ in range(n):
+            u = rng.random()
+            if u < 0.45:
+                t = _season_t(rng, P.SEASON_START, dt.datetime(2025, 9, 30, 23, 0))
+            elif u < 0.70:
+                t = _season_t(rng, dt.datetime(2025, 11, 15), dt.datetime(2025, 12, 24, 22, 0))
+            else:
+                t = _season_t(rng, P.SEASON_START, P.SEASON_END)
+            kits = 1 if rng.random() < 0.83 else 2
+            price = float(rng.choice([64.99, 69.99, 74.99, 79.99, 89.99]))
+            socio.append((t, a, f"SOCIO{int(m):07d}", round(0.10 * price * kits, 2)))
+    prof = T["profiles"].copy()
+    prof["club_member_no"] = [m if (pd.notna(m) and keep.get(a, False)) else None
+                              for a, m in zip(prof.account_id, prof.club_member_no)]
+    T["profiles"] = prof
+    rows = list(socio)
+    allacc = acc.account_id.to_numpy()
+    for code, lo, hi, n, guest, (dlo, dhi) in PROMO_CODES:
+        for _ in range(n):
+            a = None if rng.random() < guest else str(rng.choice(allacc))
+            rows.append((_season_t(rng, lo, hi), a, code, round(float(rng.uniform(dlo, dhi)), 2)))
+    for mth in range(12):
+        y, mo = (2025, 7 + mth) if mth < 6 else (2026, mth - 5)
+        lo = dt.datetime(y, mo, 1)
+        hi = (dt.datetime(y + (mo == 12), mo % 12 + 1, 1) - dt.timedelta(minutes=1))
+        for _ in range(int(rng.integers(205, 290))):
+            a = None if rng.random() < 0.09 else str(rng.choice(allacc))
+            rows.append((_season_t(rng, lo, hi), a, f"NL{y % 100:02d}{mo:02d}", 5.0))
+    rows.sort(key=lambda r: (r[0], r[2], r[1] or ""))
+    span = (P.SEASON_END - P.SEASON_START).total_seconds()
+    used, out = set(), []
+    for j, (t, a, code, disc) in enumerate(rows):
+        oid = 2_180_000 + int((t - P.SEASON_START).total_seconds() / span * 423_000)
+        while oid in used:
+            oid += 1
+        used.add(oid)
+        out.append(dict(redemption_id=f"PR{3_310_000 + j * 3 + int(rng.integers(0, 3)):07d}",
+                        redeemed_at=t, order_id=f"VM{oid}", account_id=a, promo_code=code,
+                        discount_eur=disc))
+    T["promo"] = pd.DataFrame(out)
+    T["profile_keep"] = keep
+    return T
+
+
+def revert_moves(T):
+    """On 16 September the checkout squad put part of the 14 September rebalance back: those accounts
+    carry a second move, back to the cohort they came from, and that cohort is their assignment at
+    extract. Every move stays inside its rollout wave, so no session's exposure changes."""
+    rng = np.random.default_rng(P.REVERT_SEED)
+    fl = T["flags"]
+    back = []
+    for m in fl["assignment_moves"]:
+        if rng.random() < P.REVERT_SHARE:
+            back.append({"account_id": m["account_id"], "from_cohort": m["to_cohort"], "to_cohort": m["from_cohort"],
+                         "moved_at": P.REVERT_AT.strftime("%Y-%m-%dT%H:%M:%S+01:00")})
+    home = {m["account_id"]: m["to_cohort"] for m in back}
+    fl["assignments"] = [{"account_id": a["account_id"], "cohort": home.get(a["account_id"], a["cohort"])}
+                         for a in fl["assignments"]]
+    fl["assignment_moves"] = sorted(fl["assignment_moves"] + back, key=lambda m: (m["moved_at"], m["account_id"]))
+    T["reverted"] = sorted(home)
+    return T
+
+
 # --------------------------------------------------------------------------- orchestration
 
 def build_truth(seed=P.SEED):
@@ -981,9 +1077,11 @@ def build_truth(seed=P.SEED):
                          zip(sk.seg, sk.source, sk.basket, sk.token)]
     edge = make_edge(rng, sk)
     flags = make_flags(acc)
-    return dict(acc=acc, sk=sk, victims=victims, switches=switches, resave=resave, cat=cat, cat_hist=cat_hist,
-                tokens=tk, harvested=harvested, nonacct=nonacct, profiles=prof, address=ab, cards=cards,
-                card_changes=cch, refund=refund, attempts=att, edge=edge, flags=flags, balance=bal, balance_it=bal_it)
+    T = dict(acc=acc, sk=sk, victims=victims, switches=switches, resave=resave, cat=cat, cat_hist=cat_hist,
+             tokens=tk, harvested=harvested, nonacct=nonacct, profiles=prof, address=ab, cards=cards,
+             card_changes=cch, refund=refund, attempts=att, edge=edge, flags=flags, balance=bal, balance_it=bal_it)
+    T = make_member_links(T)
+    return revert_moves(T)
 
 
 # --------------------------------------------------------------------------- baseline balance

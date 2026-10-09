@@ -307,10 +307,10 @@ def assign_listing_ids(W, extra_created):
 # ------------------------------------------------------------------ orders
 
 ORDER_COLS = ["kind", "sid", "t", "channel", "session_id", "platform", "cat", "asking", "offer", "otype", "paid",
-              "delivery", "inperson", "wid", "pos"]
+              "delivery", "inperson", "wallet", "wid", "pos", "bgrow"]
 
 
-def _frame(kind, sid, t, channel, session_id, platform, a, wid=None, pos=None):
+def _frame(kind, sid, t, channel, session_id, platform, a, wid=None, pos=None, wallet=None, bgrow=None):
     k = len(sid)
     return pd.DataFrame(dict(kind=kind, sid=np.asarray(sid, np.int64), t=np.asarray(t, np.int64),
                              channel=np.asarray(channel, object), session_id=np.asarray(session_id, object),
@@ -318,8 +318,21 @@ def _frame(kind, sid, t, channel, session_id, platform, a, wid=None, pos=None):
                              asking=np.asarray(a["asking"], int), offer=np.asarray(a["offer"], int),
                              otype=np.asarray(a["otype"], object), paid=np.asarray(a["paid"], int),
                              delivery=np.asarray(a["delivery"], object), inperson=np.asarray(a["inperson"], bool),
+                             wallet=np.zeros(k, bool) if wallet is None else np.asarray(wallet, bool),
                              wid=np.full(k, -1, np.int64) if wid is None else np.asarray(wid, np.int64),
-                             pos=np.full(k, -1, np.int64) if pos is None else np.asarray(pos, np.int64)))[ORDER_COLS]
+                             pos=np.full(k, -1, np.int64) if pos is None else np.asarray(pos, np.int64),
+                             bgrow=np.full(k, -1, np.int64) if bgrow is None else np.asarray(bgrow, np.int64)))[ORDER_COLS]
+
+
+def _wallet_exact(rng, delivery):
+    """Balance-paid flags for one group's in-session orders: exactly the share's nearest count of the
+    shipped orders, at random among them."""
+    ship = np.flatnonzero(np.asarray(delivery) == "shipped")
+    k = int(np.floor(P.WALLET_SHARE * len(ship) + 0.5))
+    out = np.zeros(len(delivery), bool)
+    if k:
+        out[rng.choice(ship, size=k, replace=False)] = True
+    return out
 
 
 def build_orders(W):
@@ -343,7 +356,7 @@ def build_orders(W):
     iw = w >= 0
     a = {key: WL[key].to_numpy()[w[iw]] for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
     frames.append(_frame("insession_watched", sid[iw], t[iw], np.full(iw.sum(), "carousel"), sess[sid[iw]],
-                         plat[sid[iw]], a, wid=w[iw], pos=pos[iw]))
+                         plat[sid[iw]], a, wid=w[iw], pos=pos[iw], wallet=WL.wallet.to_numpy()[w[iw]]))
     nsid, npos, nt = sid[~iw], pos[~iw], t[~iw]
     for k in range(7):
         sel = arms[nsid] == k
@@ -354,8 +367,9 @@ def build_orders(W):
             if not sc.any():
                 continue
             a = Wm.stratified_attrs(P.stream(f"insession-attrs{k}-{c}"), int(sc.sum()), P.RANKERS[k])
+            wal = _wallet_exact(P.stream(f"insession-wallet{k}-{c}"), a["delivery"])
             frames.append(_frame("insession_new", nsid[sc], nt[sc], np.full(sc.sum(), "carousel"),
-                                 sess[nsid[sc]], plat[nsid[sc]], a, pos=npos[sc]))
+                                 sess[nsid[sc]], plat[nsid[sc]], a, pos=npos[sc], wallet=wal))
     # --- watched listings their watcher buys later (not bought in the session)
     later = WL[WL.intent & ~WL.bought]
     sd = later.sid.to_numpy()
@@ -364,8 +378,12 @@ def build_orders(W):
     clock = np.where(later.alate.to_numpy(), et + 60 + u * (86_399 - 60 - et), u * (st - 60)).astype(np.int64)
     t = day0[sd] + later.aday.to_numpy() * 86400 + clock
     a = {key: later[key].to_numpy() for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
-    frames.append(_frame("anyway", sd, t, Wm.LATER_CHANNELS[later.achan.to_numpy()], np.full(len(sd), None), plat[sd],
-                         a, wid=later.wid.to_numpy()))
+    # a listing shown on the buyer's carousel stays off it in later sessions for seven days, so a shown
+    # watched listing bought later comes through the watch list, never a carousel tile
+    chan = Wm.LATER_CHANNELS[later.achan.to_numpy()].astype(object)
+    chan[later.shown.to_numpy() & (chan == "carousel")] = "favourites"
+    frames.append(_frame("anyway", sd, t, chan, np.full(len(sd), None), plat[sd],
+                         a, wid=later.wid.to_numpy(), wallet=later.wallet.to_numpy()))
     # --- background orders in the 21 days either side (identical in every block copy)
     sd = BG.sid.to_numpy()
     u = rng.random(len(BG))
@@ -375,7 +393,8 @@ def build_orders(W):
     oth = np.where(plat[sd] == "app", "web", "app")
     bplat = np.where(BG.same_platform.to_numpy(), plat[sd], oth)
     a = {key: BG[key].to_numpy() for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
-    frames.append(_frame("bg_window", sd, t, Wm.BG_CHANNELS[BG.chan.to_numpy()], np.full(len(sd), None), bplat, a))
+    frames.append(_frame("bg_window", sd, t, Wm.BG_CHANNELS[BG.chan.to_numpy()], np.full(len(sd), None), bplat, a,
+                         wallet=BG.wallet.to_numpy(), bgrow=np.arange(len(BG))))
     # --- other orders across the extract, away from the 43-day window around the session
     t0 = int((datetime(P.ORDERS_FROM.year, P.ORDERS_FROM.month, P.ORDERS_FROM.day) - EPOCH).total_seconds())
     t1 = int((datetime(P.EXTRACT.year, P.EXTRACT.month, P.EXTRACT.day) - EPOCH).total_seconds()) + 86399
@@ -394,8 +413,10 @@ def build_orders(W):
     chan = Wm.BG_CHANNELS[rng.choice(len(Wm.BG_CHANNELS), size=len(sd), p=Wm.BG_P)]
     oth = np.where(plat[sd] == "app", "web", "app")
     pl = np.where(rng.random(len(sd)) < 0.82, plat[sd], oth)
-    frames.append(_frame("bg_outside", sd, t, chan, np.full(len(sd), None), pl, a))
+    wal = (a["delivery"] == "shipped") & (P.stream("wallet-outside").random(len(sd)) < P.WALLET_SHARE)
+    frames.append(_frame("bg_outside", sd, t, chan, np.full(len(sd), None), pl, a, wallet=wal))
     O = pd.concat(frames, ignore_index=True)
+    comeback(W, O, end)
     # carousel orders outside the logged session come from other, unlogged home sessions
     m = ((O.channel == "carousel") & O.session_id.isna()).to_numpy()
     hx = rng.integers(0, 16 ** 10, size=int(m.sum()), dtype=np.int64)
@@ -407,12 +428,58 @@ def build_orders(W):
     return O
 
 
+def comeback(W, O, end):
+    """Come-back tile orders. In every (cell, ranker) group but the session-sequence model's, a fixed
+    count of the group's sessions (COMEBACK_PER_1000 per 1,000 sessions, nearest whole order) have one of
+    their background orders from the session's own evening, or failing that the next morning, become an
+    order the buyer placed from a tile still on screen after the session closed: channel carousel, the
+    listing on a tile the buyer did not order from in the session and was not watching, 2 minutes to 4
+    hours after the session ended, placed in the new (unlogged) home session the buyer's return opened.
+    The order keeps every attribute it had (price, offer, delivery, payment), so no order enters or leaves
+    any window and no lift, half or fee figure moves; only its channel, its listing and its clock change.
+    The session-sequence model's buyers come back to the item through favourites or search."""
+    S, BG = W.S, W.BG
+    bg = (O.kind == "bg_window").to_numpy()
+    rows = np.flatnonzero(bg)
+    br = O.bgrow.to_numpy()[rows]
+    day, late = BG.day.to_numpy()[br], BG.late.to_numpy()[br]
+    pref = np.where((day == 0) & late, 0, np.where((day == 1) & ~late, 1, 9))
+    cand = pd.DataFrame(dict(row=rows, sid=O.sid.to_numpy()[rows], pref=pref))
+    cand = cand[cand.pref < 9].sort_values(["sid", "pref", "row"], kind="stable").drop_duplicates("sid")
+    cell, arm = S.cell.to_numpy(), S.arm.to_numpy()
+    cand["cell"], cand["arm"] = cell[cand.sid.to_numpy()], arm[cand.sid.to_numpy()]
+    W.comeback_counts = {}
+    ci = {k: O.columns.get_loc(k) for k in ("kind", "channel", "platform", "pos", "t")}
+    for c in range(8):
+        for k in range(7):
+            if P.RANKERS[k] in P.COMEBACK_NONE:
+                W.comeback_counts[(c, k)] = 0
+                continue
+            m = int(((cell == c) & (arm == k)).sum())
+            n = int(np.floor(P.COMEBACK_PER_1000[c] * m / 1000 + 0.5))
+            rng = P.stream(f"comeback{c}-{k}")
+            g = cand[(cand.cell == c) & (cand.arm == k)]
+            first = g[g.pref == 0]
+            pool = first if len(first) >= n else g
+            if len(pool) < n:
+                raise AssertionError(f"come-back: group {c},{k} has {len(pool)} candidate sessions for {n}")
+            pick = pool.iloc[np.sort(rng.choice(len(pool), size=n, replace=False))]
+            for r_, s in zip(pick.row.to_numpy(), pick.sid.to_numpy()):
+                free = [p for p in range(6) if not W.ordered[s, p] and W.role[s, p] < 0]
+                O.iat[r_, ci["kind"]] = "comeback"
+                O.iat[r_, ci["channel"]] = "carousel"
+                O.iat[r_, ci["platform"]] = S.platform.iat[s]
+                O.iat[r_, ci["pos"]] = int(free[int(rng.integers(len(free)))])
+                O.iat[r_, ci["t"]] = int(end[s] + rng.integers(120, P.COMEBACK_MAX_S + 1))
+            W.comeback_counts[(c, k)] = n
+
+
 def finish_orders(W, new_ids):
     """Order-only listings get ids; watched listings and tiles carry theirs; orders get ids in time
     order."""
     O = W.O
     WL = W.WL
-    ins = (O.kind == "insession_new").to_numpy()
+    ins = O.kind.isin(["insession_new", "comeback"]).to_numpy()
     O.loc[ins, "listing_id"] = W.tile_ids[O.sid.to_numpy()[ins], O.pos.to_numpy()[ins]]
     wl = (O.wid >= 0).to_numpy()
     O.loc[wl, "listing_id"] = WL.listing_id.to_numpy()[O.wid.to_numpy()[wl]]
@@ -431,7 +498,7 @@ def order_only_creation_times(W):
     """Creation times for the listings bought outside the watch lists and tiles (before the order)."""
     O = W.O
     rng = P.stream("order-listing-age")
-    need = ((O.listing_id < 0) & (O.wid < 0) & (O.kind != "insession_new")).to_numpy()
+    need = ((O.listing_id < 0) & (O.wid < 0) & ~O.kind.isin(["insession_new", "comeback"])).to_numpy()
     t = O.loc[need, "t"].to_numpy().astype(float)
     age = 3600 * (2 + np.exp(rng.normal(np.log(180), 1.0, len(t))))
     return t - age
@@ -457,9 +524,12 @@ def build_offers_payments(W):
     F.sort_values(["offered", "listing_id"], kind="stable", inplace=True)
     F["offer_id"] = 7_200_000 + np.cumsum(rng.integers(1, 6, size=len(F)))
     W.F = F
-    # payments: every order not paid in person at a pickup
-    paid_mask = ~O.inperson.to_numpy().astype(bool)
-    PM = O[paid_mask][["order_id", "t", "paid", "delivery", "category"]].copy()
+    # payments: every order paid through checkout and captured by the payment provider; an order collected
+    # and paid in person carries no payment, and one paid from a Vouwlijn balance is settled inside the
+    # platform, so neither reaches the provider's capture file
+    prot_mask = ~O.inperson.to_numpy().astype(bool)
+    psp_mask = prot_mask & ~O.wallet.to_numpy().astype(bool)
+    PM = O[psp_mask][["order_id", "t", "paid", "delivery", "category"]].copy()
     PM["captured"] = PM.t + rng.integers(3, 51, size=len(PM))
     cap_dates = [(EPOCH + timedelta(seconds=int(x))).date() for x in PM.captured]
     fixed = np.array([70 if d < P.TARIFF_CHANGE else 80 for d in cap_dates])
@@ -471,6 +541,15 @@ def build_offers_payments(W):
     PM["payment_id"] = [f"pay_{v:012x}" for v in rngp.integers(16 ** 11, 16 ** 12, size=len(PM), dtype=np.int64)]
     assert PM.payment_id.is_unique
     W.PM = PM
+    # every protected purchase as Finance books it: provider captures at their capture time, balance
+    # purchases at the order time; the fee at the tariff in force then, VAT included
+    WB = O[prot_mask & O.wallet.to_numpy().astype(bool)][["order_id", "t", "paid", "platform"]].copy()
+    WB["booked"] = WB.t
+    wdates = [(EPOCH + timedelta(seconds=int(x))).date() for x in WB.booked]
+    WB["fee_cents"] = np.array([70 if d < P.TARIFF_CHANGE else 80 for d in wdates]) + 5 * WB.paid.to_numpy().astype(int)
+    pm = PM[["order_id", "captured", "paid", "fee_cents"]].rename(columns={"captured": "booked"})
+    pm["platform"] = pm.order_id.map(O.set_index("order_id").platform)
+    W.PROT = pd.concat([pm, WB[["order_id", "booked", "paid", "fee_cents", "platform"]]], ignore_index=True)
 
 
 def build_records(W):

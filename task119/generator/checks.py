@@ -47,33 +47,50 @@ GOLDEN_RECORD = {A: (438, 126, 8), B: (104, 29, 0), C: (351, 104, 5), D_: (275, 
                  F_: (140, 40, 6), G_: (221, 63, 46), H: (75, 22, 3), "total": (2163, 629, 148)}
 GOLDEN_Y3 = {A: (150, 44, 2), B: (36, 10, 0), C: (118, 35, 0), D_: (92, 27, 27), E: (190, 56, 0), F_: (46, 13, 0),
              G_: (74, 21, 15), H: (25, 7, 0)}
-NATURAL = {A: (445, 131, 13), B: (109, 34, 0), C: (356, 109, 8), D_: (280, 87, 87), E: (567, 168, 0),
-           F_: (145, 45, 0), G_: (226, 68, 53), H: (80, 27, 0), "total": (2208, 669, 161)}
+NATURAL = {A: (452, 135, 35), B: (115, 36, 0), C: (363, 113, 14), D_: (289, 91, 91), E: (575, 172, 0),
+           F_: (152, 49, 0), G_: (232, 72, 57), H: (87, 32, 0), "total": (2265, 700, 197)}
 # each device mishandled alone: change against the golden per trust, (3a, 3b, 3c)
 DELTAS = {
-    "DV4": {A: (2, 2, 0), B: (2, 2, 0), C: (2, 2, 0), D_: (2, 2, 2), E: (2, 2, 0), F_: (2, 2, 0), G_: (2, 2, 0),
-            H: (2, 2, 2)},
+    "DV1": {A: (4, 2, 7), B: (2, 2, 0), C: (2, 2, 3), D_: (2, 2, 2), E: (4, 2, 0), F_: (2, 2, 2), G_: (2, 2, 4),
+            H: (2, 2, 0)},
     "DV2": {A: (1, -1, -1), B: (1, -1, 0), C: (1, -1, -1), D_: (1, -1, -1), E: (2, -3, 0), F_: (1, -1, -1),
             G_: (1, -1, -1), H: (1, -1, -1)},
     "DV3": {A: (0, 0, 0), B: (0, 0, 0), C: (0, 0, 0), D_: (0, 0, 0), E: (0, 0, 0), F_: (0, 0, -6), G_: (0, 0, 0),
             H: (0, 0, -3)},
-    "DV1": {A: (4, 2, 4), B: (2, 2, 0), C: (2, 2, 2), D_: (2, 2, 2), E: (4, 2, 0), F_: (2, 2, 2), G_: (2, 2, 4),
-            H: (2, 2, 0)},
+    "DV4": {A: (2, 2, 0), B: (2, 2, 0), C: (2, 2, 0), D_: (2, 2, 2), E: (2, 2, 0), F_: (2, 2, 0), G_: (2, 2, 0),
+            H: (2, 2, 2)},
+    "DV5": {A: (2, 2, 0), B: (2, 0, 0), C: (2, 2, 0), D_: (4, 4, 4), E: (2, 2, 0), F_: (3, 2, 2), G_: (2, 2, 0),
+            H: (3, 3, 2)},
+    "DV6": {A: (0, 0, 20), B: (0, 0, 0), C: (0, 0, 5), D_: (0, 0, 0), E: (0, 0, 0), F_: (0, 0, 0), G_: (0, 0, 2),
+            H: (0, 0, 0)},
+    "DV7": {A: (3, 2, 0), B: (3, 2, 0), C: (3, 2, 0), D_: (1, 0, 0), E: (4, 2, 0), F_: (3, 2, 0), G_: (3, 2, 0),
+            H: (3, 2, 0)},
     "HZ1": {A: (0, 0, 2), B: (0, 0, 0), C: (0, 0, 2), D_: (0, 0, 0), E: (0, 0, 0), F_: (0, 0, 0), G_: (0, 0, 4),
             H: (0, 0, 0)},
-    "HZ2": {A: (0, 2, 0), B: (0, 2, 0), C: (0, 2, 0), D_: (0, 4, 4), E: (0, 2, 0), F_: (0, 2, 0), G_: (0, 2, 0),
-            H: (0, 2, 0)},
+    "HZ2": {A: (0, 4, 0), B: (0, 4, 0), C: (0, 4, 0), D_: (0, 4, 4), E: (0, 4, 0), F_: (0, 4, 0), G_: (0, 4, 0),
+            H: (0, 4, 0)},
 }
-GRID_NAMES = {("none", "own", "ignored"): A, ("none", "own", "read"): A, ("none", "network", "ignored"): E,
-              ("none", "network", "read"): E, ("0800", "own", "ignored"): C, ("0800", "own", "read"): C,
-              ("0800", "network", "ignored"): C, ("0800", "network", "read"): C, ("census", "own", "ignored"): G_,
-              ("census", "network", "ignored"): G_, ("census", "own", "read"): D_, ("census", "network", "read"): D_}
+PLANTED = {"DV1": CODES, "DV2": CODES, "DV3": [F_, H], "DV4": CODES, "DV5": CODES, "DV6": [A, C, G_],
+           "DV7": [A, B, C, E, F_, G_, H], "HZ1": [A, C, G_], "HZ2": CODES}
+# eighteen cells: basis by scope by allocation reading -> the trust named (None: two wrong trusts within 1.2x)
+GRID_NAMES = {}
+for _al in ("ignored", "any", "placed"):
+    GRID_NAMES[("none", "own", _al)] = A
+    GRID_NAMES[("none", "network", _al)] = E
+GRID_NAMES.update({("0800", "own", "ignored"): C, ("0800", "own", "any"): None, ("0800", "own", "placed"): C,
+                   ("0800", "network", "ignored"): C, ("0800", "network", "any"): E, ("0800", "network", "placed"): E,
+                   ("census", "own", "ignored"): G_, ("census", "own", "any"): A, ("census", "own", "placed"): D_,
+                   ("census", "network", "ignored"): G_, ("census", "network", "any"): E,
+                   ("census", "network", "placed"): E})
 GRID_RULE = {("none", "own"): "own care at the hour: the wait passed with the own unit full",
              ("none", "network"): "own care: the trust holds no level-3 beds of its own",
              ("0800", "own"): "own care at the hour of the wait: the 08:00 return describes the morning",
-             ("0800", "network"): "its own beds: another trust's vacancy is not this trust's care",
-             ("census", "own"): "methodology note: decisions about the use of its own beds are own care",
-             ("census", "network"): "methodology note: decisions about the use of its own beds are own care"}
+             ("0800", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
+             ("census", "own"): "the bed bureau allocates every transfer's bed (field guide): a transfer is not the "
+                                "trust's own decision",
+             ("census", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
+             ("census", "own", "ignored"): "the methodology note: a full unit's own placements during the wait are the "
+                                           "trust's decisions about the use of its own beds"}
 
 
 def run_all(S, target, meta_path, F, distractors):
@@ -83,7 +100,7 @@ def run_all(S, target, meta_path, F, distractors):
     meta = json.loads(Path(meta_path).read_text())
     ladder_checks(K, D)
     grid_checks(K, D)
-    census_checks(K, D, S)
+    census_checks(K, D, S, target, F)
     window_checks(K, D)
     corpus_checks(K, target, F)
     gate_g_checks(K, D, target, F)
@@ -99,43 +116,48 @@ def run_all(S, target, meta_path, F, distractors):
 # ===================================================================================== main ladder
 def ladder_checks(K, D):
     R, cl = G.ladder(D)
-    want = [(E, 1.20), (A, 1.20), (C, 1.20), (G_, 1.20), (D_, 1.50)]
+    want = [(E, 1.20), (C, 1.20), (G_, 1.20), (A, 1.20), (D_, 1.50)]
     leaders = []
     for k, (who, m) in enumerate(want):
         l, v1, l2, v2, ratio = G.leader(R[k])
         leaders.append(l)
-        K.check("rung %d leader %s, margin >= %.2f" % (k, LET[who], m), l == who and ratio >= m,
+        K.check("rung %d (%s) leader %s, margin >= %.2f" % (k, G.RUNGS[k], LET[who], m), l == who and ratio >= m,
                 "%s %d over %s %d (%.2fx)" % (LET[l], v1, LET[l2], v2, ratio))
     K.check("rung figures exactly as designed",
-            (R[0][E], R[0][A], R[1][A], R[1][C], R[2][C], R[2][G_], R[3][G_], R[3][A], R[4][D_], R[4][G_]) ==
-            (56, 44, 44, 35, 34, 4, 15, 2, 27, 15), [R[k][x] for k, x in ((0, E), (1, A), (2, C), (3, G_), (4, D_))])
+            (R[0][E], R[0][A], R[1][C], R[1][G_], R[2][G_], R[2][A], R[3][A], R[3][D_], R[4][D_], R[4][G_]) ==
+            (56, 44, 34, 4, 15, 2, 37, 27, 27, 15), [R[k][x] for k, x in ((0, E), (1, C), (2, G_), (3, A), (4, D_))])
     K.check("five distinct rung leaders", len(set(leaders)) == 5, [LET[x] for x in leaders])
     r0 = sorted(R[0].items(), key=lambda kv: -kv[1])
     rank = [t for t, v in r0].index(D_) + 1
     K.check("D 4th on rung 0, behind the leader by >= 1.5x", rank == 4 and R[0][E] / R[0][D_] >= 1.5,
             "rank %d, %.2fx" % (rank, R[0][E] / R[0][D_]))
+    pos, second = [], []
     ok = True
-    pos = []
     for k in (1, 2, 3):
-        s = sorted(R[k].items(), key=lambda kv: (-kv[1], kv[0]))
-        order = [t for t, v in s if t in (A, C, D_, G_)] if k >= 1 else [t for t, v in s]
+        s_ = sorted(R[k].items(), key=lambda kv: (-kv[1], kv[0]))
+        order = [t for t, v in s_ if t in (A, C, D_, G_)]
         rk = order.index(D_) + 1
         pos.append(rk)
-        if rk <= 2 and R[k][D_] > 0:
+        if rk == 1 and R[k][D_] > 0:
             ok = False
-    K.check("D never first or second on rungs 1 to 3 (ranked among trusts holding level-3 beds)", ok,
-            "ranks %s, D counts %s" % (pos, [R[k][D_] for k in (1, 2, 3)]))
-    margins = []
-    for k in range(5):
-        margins.append(G.leader(R[k])[4])
+        if rk == 2 and R[k][D_] > 0:
+            second.append((k, R[k][order[0]] / R[k][D_]))
+    K.check("D leads no intermediate rung; second on at most one (rung 3), behind by >= 1.20x",
+            ok and len(second) <= 1 and all(m >= 1.2 for k, m in second),
+            "ranks %s, D counts %s, second %s" % (pos, [R[k][D_] for k in (1, 2, 3)], second))
+    margins = [G.leader(R[k])[4] for k in range(5)]
     K.check("no rung margin under 1.15x; thinnest stated", min(margins) >= 1.15, "thinnest %.3f (rung %d)" %
             (min(margins), margins.index(min(margins))))
     # discriminator dominance: D's decisive edge against each decoy's carried advantage
     edge_g = R[4][D_] / R[4][G_]
-    carried_g = R[3][G_] / max(R[3][D_], 1)
     raw_g = R[0][G_] / R[0][D_]
     K.check("dominance over G: decisive edge >= 1.2 x carried raw advantage", edge_g >= 1.2 * max(raw_g, 1.0),
             "edge %.2f, G raw %.2f of D" % (edge_g, raw_g))
+    carried_a = R[3][A] / R[3][D_]
+    edge_a = (R[4][D_] / R[3][D_]) / (R[4][A] / R[3][A])
+    K.check("dominance over A at rung 3: survival-share edge >= 1.2 x A's carried advantage", edge_a >= 1.2 * carried_a,
+            "A carried %.2fx; shares %.3f vs %.3f, edge %.1f" % (carried_a, R[4][D_] / R[3][D_], R[4][A] / R[3][A],
+                                                                   edge_a))
     for t in (E, A, C):
         adv = R[0][t] / R[0][D_]
         share_d = R[4][D_] / R[0][D_]
@@ -151,16 +173,21 @@ def grid_checks(K, D):
     named_d = []
     for key, want in GRID_NAMES.items():
         l, v1, l2, v2, ratio = G.leader(cells[key])
-        K.check("grid cell %s/%s/%s names %s (>= 1.2x)" % (key + (LET[want],)), l == want and ratio >= 1.2,
-                "%s %d over %s %d (%.2fx)%s" % (LET[l], v1, LET[l2], v2, ratio,
-                                                 "" if l == D_ else "; violates: " + GRID_RULE[key[:2]]))
+        if want is None:
+            dd = cells[key][D_]
+            K.check("grid cell %s/%s/%s names A or C, D at least 1.2x behind" % key,
+                    l in (A, C) and l2 in (A, C) and v1 >= 1.2 * dd,
+                    "%s %d, %s %d, D %d; violates: %s" % (LET[l], v1, LET[l2], v2, dd, GRID_RULE.get(key, GRID_RULE[key[:2]])))
+        else:
+            K.check("grid cell %s/%s/%s names %s (>= 1.2x)" % (key + (LET[want],)), l == want and ratio >= 1.2,
+                    "%s %d over %s %d (%.2fx)%s" % (LET[l], v1, LET[l2], v2, ratio,
+                                                     "" if l == D_ else "; violates: " + GRID_RULE.get(key, GRID_RULE[key[:2]])))
         if l == D_:
             named_d.append(key)
-    K.check("exactly the two census-and-allocation cells name D",
-            sorted(named_d) == sorted([("census", "own", "read"), ("census", "network", "read")]), named_d)
-    eq = all(cells[("census", "own", a)][t] == cells[("census", "network", a)][t] for a in ("ignored", "read")
-             for t in (A, C, D_, G_))
-    K.check("own-unit and network scope equal per trust at the census basis (C1)", eq)
+    K.check("exactly one cell names D: the census basis, own unit, admissions the trust placed itself",
+            named_d == [("census", "own", "placed")], named_d)
+    eq = all(cells[("census", "own", "ignored")][t] == cells[("census", "network", "ignored")][t] for t in (A, C, D_, G_))
+    K.check("own-unit and network scope equal per trust at the census basis, allocation ignored (C1)", eq)
     # the mixed 08:00 reading: network for trusts holding no level-3 beds
     ws = G.waits(D)
     own = {x["id"]: x for x in G.classify(D, ws, scope="own") if x["year"] == 3 and x["died"]}
@@ -177,45 +204,81 @@ def grid_checks(K, D):
 
 
 # ===================================================================================== census and timing
-def census_checks(K, D, S):
+def census_checks(K, D, S, target, F):
     ws = G.waits(D)
-    cl3 = [x for x in G.classify(D, ws) if x["year"] == 3]
-    adm_all = defaultdict(list)
-    adm_theatre = defaultdict(list)
+    cl_all = G.classify(D, ws)
+    cl3 = [x for x in cl_all if x["year"] == 3]
     adm_planned = defaultdict(list)
-    for u, k, a, b, typ, rid in D.merged:
-        adm_all[u].append(a)
     st = D.stays
     for r in st.itertuples(index=False):
-        a = G.mins(r.admitted_at.to_pydatetime())
-        if r.source_location == "01":
-            adm_theatre[r.unit_code].append(a)
         if r.admission_type == "04":
-            adm_planned[r.unit_code].append(a)
-    for dct in (adm_all, adm_theatre, adm_planned):
-        for v in dct.values():
-            v.sort()
+            adm_planned[r.unit_code].append(G.mins(r.admitted_at.to_pydatetime()))
+    for v in adm_planned.values():
+        v.sort()
+    first_row = {}
+    for r in st.sort_values("admitted_at").itertuples(index=False):
+        first_row.setdefault((r.unit_code, r.patient_key, G.mins(r.admitted_at.to_pydatetime())), r)
+    audit = pd.read_csv(Path(target) / F["transfers"], dtype=str, keep_default_na=False)
+    audit_keys = {(r.patient_key, r.to_unit, r.bed_confirmed_at) for r in audit.itertuples(index=False)}
+    ref_by = {r["id"]: r for r in D.refs}
 
     def inside(lst, a, b):
         i = bisect.bisect_right(lst, a)
         return i < len(lst) and lst[i] < b
 
-    same = True
+    # what fills a referring trust's own unit during its long waits (merged islands)
+    adm = defaultdict(list)
+    for u, k, a, b, typ, rid in D.merged:
+        adm[u].append((a, k, typ, rid))
+    for u in adm:
+        adm[u].sort()
+    kinds_y3, kinds_rec, order_bad, audit_miss = Counter(), Counter(), 0, 0
+    for x in cl_all:
+        if not x["has_own"]:
+            continue
+        u = D.own_units(x["trust"], x["dta"].date())[0]
+        lst = adm[u]
+        i = bisect.bisect_left(lst, (x["a"] + 1,))
+        while i < len(lst) and lst[i][0] < x["b"]:
+            a, k, typ, rid = lst[i]
+            if D.is_transfer_op(u, rid):
+                kind = "transfer"
+                r = ref_by[rid]
+                dta = G.utc_to_local(r["dta"]) if r["legacy"] else r["dta"]
+                order_bad += dta >= x["dta"]
+                when = (G.EPOCH + dt.timedelta(minutes=a)).strftime("%Y-%m-%d %H:%M")
+                audit_miss += (D.temp.get(k, k), u, when) not in audit_keys
+            else:
+                row = first_row.get((u, k, a))
+                kind = "planned own-theatre" if (typ == "04" and row is not None and row.source_location == "01") \
+                    else "other own"
+            kinds_rec[kind] += 1
+            if x["year"] == 3:
+                kinds_y3[(LET[x["trust"]], kind, typ)] += 1
+            i += 1
+    y3_ok = set(kinds_y3) <= {("A", "transfer", "02"), ("C", "transfer", "02"), ("G", "transfer", "02"),
+                              ("D", "planned own-theatre", "04")}
+    K.check("(Y3) inside every long wait the own unit admitted only bureau transfers (A, C, G, coded 02) or planned "
+            "own-theatre patients (D)", y3_ok, dict(kinds_y3))
+    K.check("(record) inside every long wait an own-unit admission is a bureau transfer or a planned own-theatre "
+            "admission: own placement, planned and planned own-theatre select the same waits",
+            set(kinds_rec) <= {"transfer", "planned own-theatre"}, dict(kinds_rec))
+    K.check("every transfer inside a long wait was decided before the waiting patient's decision (record)",
+            order_bad == 0, order_bad)
+    K.check("every transfer inside a long wait is in the bureau's transfer audit at its bed time", audit_miss == 0,
+            audit_miss)
+    R, _ = G.ladder(D)
+    K.check("any admission and the trust's own placements part only at A, C and G (Y3 deaths)",
+            all(R[3][t] == R[4][t] for t in (B, D_, E, F_, H)) and all(R[3][t] > R[4][t] for t in (A, C, G_)),
+            {LET[t]: (R[3][t], R[4][t]) for t in CODES})
     first4 = True
     for x in cl3:
         own = D.own_units(x["trust"], x["dta"].date())
         if not own:
             continue
         u = own[0]
-        s_any = inside(adm_all[u], x["a"], x["b"])
-        s_th = inside(adm_theatre[u], x["a"], x["b"])
-        s_pl = inside(adm_planned[u], x["a"], x["b"])
-        if not (s_any == s_th == s_pl):
-            same = False
-        if s_pl and not inside(adm_planned[u], x["a"], min(x["b"], x["a"] + 240)):
+        if inside(adm_planned[u], x["a"], x["b"]) and not inside(adm_planned[u], x["a"], min(x["b"], x["a"] + 240)):
             first4 = False
-    K.check("any admission, any theatre admission and planned own-theatre admission select the same waits (Y3)",
-            same)
     K.check("every allocation wait holds a planned admission inside its first four hours (Y3)", first4)
     ok_own, ok_cap, n_own, n_cap = True, True, 0, 0
     for x in cl3:
@@ -310,10 +373,25 @@ def window_checks(K, D):
     K.check("no patient holds two long waits in the latest four quarters", max(per.values()) == 1)
     perr = Counter(x["person"] for x in cl)
     rep = [p for p, n in perr.items() if n > 1]
-    hz2 = {x["person"] for x in cl if not x["legacy"] and x["id"].startswith("R2402") or x["id"].startswith("R2403")}
-    rep_non_device = [p for p in rep if p not in hz2 and not any(y["key"] in D.temp for y in cl if y["person"] == p)]
-    K.check("in the record, repeat long-wait patients are only identity-device or parallel-run rows",
-            not rep_non_device, "%d repeat persons" % len(rep))
+    hz2 = {x["person"] for x in cl if x["id"] in D.copies}
+    temp = {x["person"] for x in cl if x["key"] in D.temp}
+    dv7 = []
+    st_out = dict(zip(D.stays["referral_id"], D.stays["discharged_at"]))
+    for p in rep:
+        if p in hz2 or p in temp:
+            continue
+        xs = sorted((x for x in cl if x["person"] == p), key=lambda x: x["dta"])
+        out1 = st_out.get(xs[0]["id"])
+        ok = (len(xs) == 2 and xs[0]["trust"] == xs[1]["trust"] and {x["year"] for x in xs} == {2}
+              and 8 <= (xs[1]["dta"].date() - xs[0]["dta"].date()).days <= 13 and all(x["died"] for x in xs)
+              and D.dod.get(p) is not None and (D.dod[p] - xs[0]["dta"].date()).days <= 21
+              and out1 is not None and not pd.isna(out1) and out1 < xs[1]["dta"])
+        dv7.append((p, ok))
+    per_trust = Counter(next(x["trust"] for x in cl if x["person"] == p) for p, ok in dv7)
+    K.check("repeat long-wait patients are identity-device rows, parallel-run copies or the designed repeat patients "
+            "(two at each trust but D, year 2, discharged alive, referred again 8 to 13 days after, dead inside 21 days)",
+            all(ok for p, ok in dv7) and set(per_trust.values()) == {2} and len(per_trust) == 7 and D_ not in per_trust,
+            "%d repeat persons, %d designed repeats" % (len(rep), len(dv7)))
     # register static through Y3; staffed equals commissioned beds at the four units
     ch = [r for r in D.reg_rows if (r[4] > dt.date(2025, 7, 1) and r[4] <= dt.date(2026, 6, 30)) or
           (r[5] is not None and dt.date(2025, 7, 1) <= r[5] < dt.date(2026, 6, 30))]
@@ -348,14 +426,21 @@ def window_checks(K, D):
     K.check("every stand-down falls within four hours of the decision", not sd, len(sd))
     dst = [dt.datetime(2023, 10, 29, 1, 0), dt.datetime(2024, 3, 31, 1, 0), dt.datetime(2024, 10, 27, 1, 0),
            dt.datetime(2025, 3, 30, 1, 0), dt.datetime(2025, 10, 26, 1, 0), dt.datetime(2026, 3, 29, 1, 0)]
-    cross = 0
+    cross = []
     for w in ws:
-        if w["end"] is None or w["legacy"]:
+        if w["end"] is None:
             continue
         for t in dst:
             if w["dta"] <= t <= w["end"]:
-                cross += 1
-    K.check("no platform-era referral wait spans a clock change", cross == 0, cross)
+                night = (w["dta"] - dt.timedelta(hours=12)).date().isoformat()     # the evening the night began
+                cross.append((w["id"], night, G.wait_minutes(w, set()) - G.wait_minutes(w, set(G.DEVICES))))
+    days = Counter(c[1] for c in cross)
+    K.check("the only waits across a clock change are the designed spring-night waits (11 on 30 March 2024, 9 on "
+            "29 March 2025), none in the latest four quarters, each an hour longer on the clock than elapsed",
+            days == Counter({"2024-03-30": 11, "2025-03-29": 9}) and all(c[2] == 60 for c in cross),
+            dict(days))
+    long_cross = [c for c in cross if c[0] in {x["id"] for x in cl}]
+    K.check("no wait across a clock change is a long wait (elapsed 3h10 to 3h50)", not long_cross, len(long_cross))
     # the 08:00 return read on the decision's date equals the latest return before the decision
     night = [x for x in cl if x["dta"].hour < 8]
     K.check("no long-wait decision between 00:00 and 08:00 (decision-date and latest 08:00 return readings converge)",
@@ -630,8 +715,7 @@ def device_checks(K, D, S, target, F):
     thin = {k: v for k, v in cover.items() if v < 3 and not (k[1] == "3c" and k[0] in ("B", "E"))}
     K.check("at least three devices on every graded figure but B's and E's 3c", not thin, thin)
     # necessity: every device moves a figure at every trust it is planted at
-    planted = {"DV4": CODES, "DV2": CODES, "DV3": [F_, H], "DV1": CODES, "HZ1": [A, C, G_], "HZ2": CODES}
-    ok = all(any(DELTAS[dv][t][i] != 0 for i in range(3)) for dv, ts in planted.items() for t in ts)
+    ok = all(any(DELTAS[dv][t][i] != 0 for i in range(3)) for dv, ts in PLANTED.items() for t in ts)
     K.check("necessity matrix: each device moves a figure at every trust it is planted at", ok)
     # no-cancel over every subset of mishandlings, per trust and figure and per total
     cache = {}
@@ -655,7 +739,7 @@ def device_checks(K, D, S, target, F):
                     touched = any(DELTAS[dv][t][i] != 0 for dv in sub)
                 if touched and v[t][i] == gold[t][i]:
                     land.append((sub, t, i))
-    K.check("no-cancel: no subset of mishandled devices lands any touched figure on its golden (64 subsets)",
+    K.check("no-cancel: no subset of mishandled devices lands any touched figure on its golden (511 subsets)",
             not land, land[:3])
     # census path: no subset lands on the golden at A, C, D, G
     landc = []
@@ -665,6 +749,14 @@ def device_checks(K, D, S, target, F):
             if v[t][2] == gold[t][2]:
                 landc.append((sub, LET[t]))
     K.check("census path: no subset of mishandlings lands on the golden 3c at A, C, D or G", not landc, landc[:3])
+    landa = []
+    for sub in subsets(G.DEVICES):
+        v = run(sub, "any")
+        for t in (A, C, G_):
+            if v[t][2] == gold[t][2]:
+                landa.append((sub, LET[t]))
+    K.check("any-admission path: no subset of mishandlings lands on the golden 3c at A, C or G", not landa,
+            landa[:3])
     # over-corrections: each a distinct stop off the golden
     overs = {}
     for dv in G.DEVICES:
@@ -693,8 +785,15 @@ def device_checks(K, D, S, target, F):
     lb = D.stays[D.stays["stay_id"].str.startswith("LB") & (D.stays["discharged_at"] >= pd.Timestamp("2025-06-01"))]
     par = [r for r in D.refs if r["id"][:5] in ("R2402", "R2403") and r["dta"].date() >= dt.date(2025, 6, 1)]
     multi = D.stays[D.stays["admitted_at"] >= pd.Timestamp("2025-06-01")].groupby(["unit_code", "patient_key"]).size()
+    dst_y3 = [w for w in G.waits(D) if w["end"] is not None and G.year_of(w["dta"].date()) == 3 and
+              G.wait_minutes(w, set()) != G.wait_minutes(w, set(G.DEVICES))]
+    st_y3 = D.stays[D.stays["admitted_at"] >= pd.Timestamp("2025-06-01")]
+    miscoded = sum(1 for r in st_y3.itertuples(index=False) if r.referral_id and
+                   D.is_transfer_op(r.unit_code, r.referral_id) != (r.admission_type in G.TRANSFER_TYPES))
+    rep_y3 = [p for p, n in Counter(x["person"] for x in G.classify(D, G.waits(D)) if x["year"] == 3).items() if n > 1]
     counts = {"DV1/DV4 legacy rows": len(legacy_y3), "DV2 temporary keys": len(temp_y3), "DV4 level entries": len(lev_y3),
-              "HZ1 bed-episode rows": len(lb), "HZ2 copies": len(par)}
+              "DV5 waits across a clock change": len(dst_y3), "DV6 transfers coded as local": miscoded,
+              "DV7 repeat long-wait patients": len(rep_y3), "HZ1 bed-episode rows": len(lb), "HZ2 copies": len(par)}
     K.check("zero device and hazard rows inside the main call's declared population, per device",
             all(v == 0 for v in counts.values()), counts)
     # hygiene battery on the natural path
@@ -709,11 +808,14 @@ def device_checks(K, D, S, target, F):
             ref["referral_id"].is_unique and st["stay_id"].is_unique and exact_dupes == 0 and unmatched == 0 and
             fan == 1 and keys == 1, (exact_dupes, unmatched, fan, keys))
     # the pair simulation at planning weights: 38 / 7 / 55 over 32 ask criteria
-    pair, single_double, triple = pair_simulation(D, gold, run)
-    K.check("pair simulation at or under 40 (cracker files D, mirror files G, battery applied)", pair <= 40,
-            "%.1f" % pair)
+    pair, single_double, triple, census_pair, prof = pair_simulation(D, gold, run)
+    K.check("pair simulation at or under 40 (cracker files D, mirror stops at the any-admission rung, battery applied)",
+            pair <= 40 and census_pair <= 40, "%.1f (census mirror %.1f)" % (pair, census_pair))
     K.check("every single and double device catch leaves the pair at or under 40", max(single_double) <= 40,
             "max %.1f; thinnest triple %s" % (max(single_double), triple))
+    K.check("round-1 profiles (its six catches, the three new devices missed or DV6 caught) leave the pair under 50",
+            prof["round 1, transfers by type"] < 50 and prof["round 1, transfers by referral"] < 50,
+            "; ".join("%s %.1f" % kv for kv in prof.items()))
     # the referee: byte-clean, transfers only, local decision times, verified keys
     tx = pd.read_csv(Path(target) / F["transfers"], dtype=str, keep_default_na=False)
     own_ok = all(not t.startswith(f[:3]) for f, t in zip(tx["from_trust"], tx["to_unit"]))
@@ -733,18 +835,24 @@ def device_checks(K, D, S, target, F):
               "DV1": ("transfers", "legacyspec", "held in UTC"),
               "DV2": ("links", "apcspec", "temporary registration"),
               "DV3": ("register", "boardpaper", "level 2 care only"),
+              "DV5": ("capacity", "legacyspec", "records local time"),
+              "DV6": ("transfers", "boardpaper", "bed bureau"),
+              "DV7": ("referrals", "apcspec", "verified key"),
               "HZ1": ("stays", "legacyspec", "one row per bed episode"),
               "HZ2": ("referrals", "thread", "on both CCRS and the platform")}
     main_docs = ("remit", "guide", "capacity")
     ok = True
+    bad_org = []
     for dv, (struct, doc, phrase) in organs.items():
         if struct == doc or doc in main_docs or phrase.lower() not in docs_txt[doc].lower():
             ok = False
-    prim = {"DV4": "legacyspec", "DV2": "apcspec", "DV3": "boardpaper"}
+            bad_org.append(dv)
+    prim = {"DV7": "apcspec", "DV5": "legacyspec", "DV6": "boardpaper"}
     K.check("each device's two organs in two files, the documentary one off the main path; one primary per file",
-            ok and len(set(prim.values())) == 3)
+            ok and len(set(prim.values())) == 3, bad_org)
     vocab = ["UTC", "requested by", "temporary", "bed episode", "both CCRS", "pilot ward", "parallel run",
-             "level 2 care only", "winter bank", "moved to another bed"]
+             "level 2 care only", "winter bank", "moved to another bed", "clock change", "clocks", "summer time",
+             "BST", "GMT", "daylight", "repatriat"]
     prompt = (HERE.parent / "prompt.md").read_text()
     def has(w, t):
         return re.search(r"\b" + re.escape(w) + r"\b", t, re.I) is not None
@@ -755,14 +863,15 @@ def device_checks(K, D, S, target, F):
     spans = {"3a": ["referrals", "stays", "levels", "links", "legacyspec", "apcspec", "remit", "guide"],
              "3b": ["referrals", "stays", "levels", "links", "legacyspec", "apcspec", "remit", "guide", "episodes"],
              "3c": ["referrals", "stays", "levels", "links", "legacyspec", "apcspec", "remit", "guide", "episodes",
-                    "register", "returns", "boardpaper"]}
+                    "register", "returns", "boardpaper", "transfers"]}
     cols = {"3a": ["referral_id", "received_at", "referring_trust", "patient_key", "dta_at", "level_of_care", "outcome",
                    "outcome_at", "stays.referral_id", "stays.admitted_at", "levels.entry", "levels.level",
                    "links.temporary_key", "links.verified_key"],
             "3b": ["+3a", "episodes.patient_key", "episodes.date_of_death"],
             "3c": ["+3b", "stays.unit_code", "stays.patient_key", "stays.discharged_at", "stays.admission_type",
-                   "register.valid_from", "register.valid_to", "register.care_level", "returns.beds_open"]}
-    ncol = {"3a": len(cols["3a"]), "3b": len(cols["3a"]) + 2, "3c": len(cols["3a"]) + 2 + 8}
+                   "stays.source_location", "register.trust_code", "register.valid_from", "register.valid_to",
+                   "register.care_level", "returns.beds_open", "transfers.to_unit", "transfers.bed_confirmed_at"]}
+    ncol = {"3a": len(cols["3a"]), "3b": len(cols["3a"]) + 2, "3c": len(cols["3a"]) + 2 + 13}
     K.check("span: 3a, 3b, 3c each touch >= 8 files and >= 10 columns on the golden's code path",
             all(len(v) >= 8 for v in spans.values()) and all(v >= 10 for v in ncol.values()),
             {k: (len(v), ncol[k]) for k, v in spans.items()})
@@ -778,16 +887,25 @@ def pair_simulation(D, gold, run):
         chart = 5 if cracker else 1
         return (w_rec if cracker else 5.0) + w_if + per * (hits + chart)
 
-    def pair_for(handled):
+    def pair_for(handled, mirror="any"):
         mish = tuple(x for x in G.DEVICES if x not in handled)
         vc = run(mish, "decisive")
-        vm = run(mish, "census")
+        vm = run(mish, mirror)
         return (score(vc, True) + score(vm, False)) / 2
 
     base = pair_for(())
-    sd = [pair_for(c) for k in (1, 2) for c in itertools.combinations(G.DEVICES, k)]
+    census = pair_for((), "census")
+    sd = [max(pair_for(c), pair_for(c, "census")) for k in (1, 2) for c in itertools.combinations(G.DEVICES, k)]
     tri = max(((pair_for(c), c) for c in itertools.combinations(G.DEVICES, 3)), key=lambda x: x[0])
-    return base, sd, "%.1f on %s" % tri
+    # named profiles, both top responses making the same catches (the higher of the two mirrors)
+    old6 = ("DV1", "DV2", "DV3", "DV4", "HZ1", "HZ2")
+    named = {"round 1, transfers by type": old6, "round 1, transfers by referral": old6 + ("DV6",),
+             "round 1 and elapsed time": old6 + ("DV5",)}
+    for dv in ("DV5", "DV6", "DV7"):
+        named["all but " + dv] = tuple(x for x in G.DEVICES if x != dv)
+    named["all handled"] = G.DEVICES
+    prof = {k: max(pair_for(h), pair_for(h, "census")) for k, h in named.items()}
+    return base, sd, "%.1f on %s" % tri, census, prof
 
 
 def doc_texts(target, F):
@@ -889,7 +1007,9 @@ def pack_checks(K, D, S, target, F, meta, distractors):
             "one row per bed episode": "legacyspec",
             "temporary registration": "apcspec",
             "on both CCRS and the platform": "thread",
-            "level 2 care only": "boardpaper"}
+            "level 2 care only": "boardpaper",
+            "bed bureau allocated the bed": "guide",
+            "records local time": "legacyspec"}
     bad = []
     for phrase, home in pins.items():
         where = [k for k, t in txt.items() if phrase.lower() in t.lower()]

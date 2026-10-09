@@ -18,8 +18,8 @@ PANELS = {"CP-N": "CCN", "CP-S": "CCS"}
 LIGHT_KW = {"CP-N": 2.4, "CP-S": 2.1}
 METER = {"CP-N": "SM-2231", "CP-S": "SM-2232"}
 R0 = {"CP-N": 41206.3, "CP-S": 38917.8}
-# reads are logged to the minute as the meter displays it; no read falls on a quarter-hour boundary
-READ_CANDIDATES = [(h, m) for h in (6, 7, 8, 9) for m in range(60) if (6, 46) <= (h, m) <= (9, 29) and m % 15]
+# reads are taken at the close of a 15-minute demand interval on the meter's clock, so every read falls on a quarter-hour
+READ_CANDIDATES = [(h, m) for h in (6, 7, 8, 9, 10) for m in (0, 15, 30, 45) if (6, 30) <= (h, m) <= (10, 0)]
 # the quarter-hour a read falls inside: all before the read, all after it, pro rata, or the read moved to the nearest
 # quarter-hour boundary
 SPLITS = ("qb", "qa", "lin", "qn")
@@ -124,8 +124,12 @@ def span(c, a, b):
 
 # ------------------------------------------------------------------------------------- reads
 READ_DATES = [date(2023, 12, 29)] + [last_weekday_of_month(y, m) for y in (2024, 2025, 2026) for m in range(1, 13)]
-DEC31_2025 = (7, 38)
-DEC31_2026_SOUTH = ((7, 34), (9, 52))   # first read (register misread), later read stands
+DEC31_2025 = (7, 45)
+DEC31_2026_SOUTH = ((7, 30), (9, 45))   # first read (register misread), later read stands
+# reads the electricians logged wrongly and corrected on the log's Corrections sheet after checking the read photos:
+# (panel, index of the 2026 read, 1 to 12); the correction itself is chosen with the read times
+CORR_READS = {"CP-N": (2, 5, 8, 11), "CP-S": (1, 4, 7, 10)}
+SLIPS = [9.0, -9.0, 18.0, -18.0, 27.0, -27.0, 36.0, -36.0, 45.0, -45.0, 54.0, -54.0, 63.0, -63.0, 90.0, -90.0]
 
 
 def month_start(y, m):
@@ -230,12 +234,15 @@ def displayed(x: float) -> float:
     return math.floor(x * 10 + 1e-9) / 10
 
 
-def b1_values(books, panel, reads_true, reads_civil, k, regs, subset, first_reg=None, first_t=None):
-    """Unaccounted kWh for 2026 reading k (1..12) under a subset of mishandlings."""
+def b1_values(books, panel, reads_true, reads_civil, k, regs, subset, first_reg=None, first_t=None, corr=None):
+    """Unaccounted kWh for 2026 reading k (1..12) under a subset of mishandlings. corr: the logged-minus-corrected
+    error of each corrected read, by read index (cx reads the Reads sheet as logged, missing the Corrections sheet)."""
     a_t, b_t = reads_true[k - 1], reads_true[k]
     if "clk" in subset:
         a_t, b_t = reads_civil[k - 1], reads_civil[k]
     reg_a, reg_b = regs[k - 1], regs[k]
+    if "cx" in subset and corr:
+        reg_a, reg_b = reg_a + corr.get(k - 1, 0.0), reg_b + corr.get(k, 0.0)
     if "first" in subset and first_reg is not None and k == 12:
         reg_b = first_reg
         b_t = first_t if "clk" not in subset else first_t
@@ -247,7 +254,7 @@ def b1_values(books, panel, reads_true, reads_civil, k, regs, subset, first_reg=
     return (reg_b - reg_a) - s
 
 
-B1_MISHANDLINGS = ("ct", "clk", "rd", "bf", "dd", "cal", "first") + SPLITS
+B1_MISHANDLINGS = ("cx", "ct", "clk", "rd", "bf", "dd", "cal", "first")
 
 
 def b1_subsets(appl):
@@ -276,29 +283,22 @@ def straddle_ok(books: PanelBooks, panel: str, t: int) -> bool:
 
 
 def choose_read_times(rng, books: PanelBooks):
-    """Meter-clock read times for every read of each meter, none on a quarter-hour (the two decks' meters are read on
-    the same day, each at its own minute). The 2026 times are searched, panel by panel, so the meter clock moves
-    readings 3 to 11 by at least 2 kWh, every split of the quarter-hour a read falls inside moves every reading, and
-    every subset of mishandlings lands on a different whole kWh from the golden (at least 1.5 kWh away unless the
-    subset carries the pro rata split, at least 0.76 kWh then)."""
+    """Meter-clock read times for every read of each meter, each at the close of a 15-minute demand interval (the two
+    decks' meters are read on the same day, each at its own time). The 2026 times are searched, panel by panel, so the
+    meter clock moves readings 3 to 11 by at least 2 kWh and every subset of mishandlings lands on a different whole kWh
+    from the golden, at least 1.5 kWh away. Then each corrected read gets the slip the electricians made, again so every
+    subset with the Corrections sheet missed lands 1.5 kWh or more away; then the goldens are put mid-bin."""
     times = {}
     for d in READ_DATES:
         if d.year == 2026:
             continue
         for panel in PANELS:
-            for _ in range(500):
-                hmv = READ_CANDIDATES[int(rng.integers(len(READ_CANDIDATES)))]
-                if straddle_ok(books, panel, meter_instant(d, *hmv)):
-                    break
-            else:
-                raise AssertionError(("straddle", d, panel))
-            times[(d, panel)] = hmv
+            times[(d, panel)] = READ_CANDIDATES[int(rng.integers(len(READ_CANDIDATES)))]
     for panel in PANELS:
         times[(date(2025, 12, 31), panel)] = DEC31_2025
-        assert straddle_ok(books, panel, meter_instant(date(2025, 12, 31), *DEC31_2025))
-    assert straddle_ok(books, "CP-S", meter_instant(date(2026, 12, 31), *DEC31_2026_SOUTH[0]))
     reads26 = [d for d in READ_DATES if d.year == 2026]
     report = {k: {} for k in range(1, 13)}
+    corr = {p: {} for p in PANELS}
     for panel in PANELS:
         orders = {k: [READ_CANDIDATES[i] for i in rng.permutation(len(READ_CANDIDATES))] for k in range(1, 13)}
         if panel == "CP-S":
@@ -314,8 +314,6 @@ def choose_read_times(rng, books: PanelBooks):
                 if budget[0] < 0:
                     return False
                 times[(d, panel)] = hmv
-                if not straddle_ok(books, panel, meter_instant(d, *hmv)):
-                    continue
                 ok, info = check_reading(books, times, prev, d, k, panel, bin_test=False)
                 if ok:
                     path.append(hmv)
@@ -325,6 +323,20 @@ def choose_read_times(rng, books: PanelBooks):
             times.pop((d, panel), None)
             return False
         assert dfs(1), ("no read-time path", panel)
+        for c in CORR_READS[panel]:
+            for e in [SLIPS[i] for i in rng.permutation(len(SLIPS))]:
+                corr[panel][c] = e
+                ok = True
+                for k in (c, c + 1):
+                    if k > 12:
+                        continue
+                    prev = reads26[k - 2] if k > 1 else date(2025, 12, 31)
+                    ok &= check_reading(books, times, prev, reads26[k - 1], k, panel, bin_test=False,
+                                        corr=corr[panel])[0]
+                if ok:
+                    break
+            else:
+                raise AssertionError(("no slip", panel, c))
     # put every 2026 golden off a whole kWh and inside its bin by moving one evening's switch-on inside the span;
     # the registers display to 0.1 kWh, so the trim is repeated until the golden lands
     for panel in PANELS:
@@ -348,12 +360,11 @@ def choose_read_times(rng, books: PanelBooks):
     for panel in PANELS:
         prev = date(2025, 12, 31)
         for k, d in enumerate(reads26, start=1):
-            ok, info = check_reading(books, times, prev, d, k, panel, bin_test=True)
+            ok, info = check_reading(books, times, prev, d, k, panel, bin_test=True, corr=corr[panel])
             assert ok, (k, d, panel, info)
-            assert straddle_ok(books, panel, meter_instant(d, *times[(d, panel)]))
             report[k][panel] = info
             prev = d
-    return times, report
+    return times, report, corr
 
 
 def read_pair(times, prev, d, panel):
@@ -362,7 +373,7 @@ def read_pair(times, prev, d, panel):
     return tt, tc
 
 
-def check_reading(books, times, prev, d, k, panel, bin_test=True):
+def check_reading(books, times, prev, d, k, panel, bin_test=True, corr=None):
     tt, tc = read_pair(times, prev, d, panel)
     regs = {k - 1: displayed(register_at(books, panel, tt[0])), k: displayed(register_at(books, panel, tt[1]))}
     rt = {k - 1: tt[0], k: tt[1]}
@@ -375,20 +386,21 @@ def check_reading(books, times, prev, d, k, panel, bin_test=True):
     frac = gold - math.floor(gold)
     if bin_test and not (0.06 <= frac <= 0.24 or 0.76 <= frac <= 0.94):
         return False, ("bin", panel, gold)
+    touched = bool(corr) and (corr.get(k - 1) or corr.get(k))
     appl = ["ct", "rd", "bf", "dd", "cal"] + (["clk"] if 3 <= k <= 11 else []) + (["first"] if first_reg else []) \
-        + list(SPLITS)
+        + (["cx"] if touched else [])
     worst = 99.0
-    for sub in b1_subsets(appl):
-        v = b1_values(books, panel, rt, rc, k, regs, sub, first_reg, first_t)
-        dv = abs(v - gold)
-        if dv < 1e-9:
-            if not set(sub) <= {"rd", "bf", "dd", "first"} or "ct" in sub:
-                return False, ("inert", panel, sub)
-            continue
-        worst = min(worst, dv)
-        lim = 0.76 if "lin" in sub else 1.5
-        if dv < lim or (bin_test and round_half(v) == round_half(gold)):
-            return False, ("near", panel, sub, v - gold)
+    for r in range(1, len(appl) + 1):
+        for sub in itertools.combinations(appl, r):
+            v = b1_values(books, panel, rt, rc, k, regs, sub, first_reg, first_t, corr)
+            dv = abs(v - gold)
+            if dv < 1e-9:
+                if not set(sub) <= {"rd", "bf", "dd", "first"} or "ct" in sub:
+                    return False, ("inert", panel, sub)
+                continue
+            worst = min(worst, dv)
+            if dv < 1.5 or (bin_test and round_half(v) == round_half(gold)):
+                return False, ("near", panel, sub, v - gold)
     if 3 <= k <= 11:
         clk = b1_values(books, panel, rt, rc, k, regs, ("clk",))
         if abs(clk - gold) < 2.0:
@@ -396,8 +408,7 @@ def check_reading(books, times, prev, d, k, panel, bin_test=True):
     whole = (regs[k] - regs[k - 1]) - books.whole_by_plugin(panel, rt[k - 1], rt[k])
     if abs(whole - gold) < 1.5 or (bin_test and round_half(whole) == round_half(gold)):
         return False, ("whole", panel, whole - gold)
-    splits = {x: b1_values(books, panel, rt, rc, k, regs, (x,)) - gold for x in SPLITS}
-    return True, {"golden": gold, "nearest_wrong": worst, "splits": splits}
+    return True, {"golden": gold, "nearest_wrong": worst}
 
 
 CONFUSED = {"0": "8", "1": "7", "2": "7", "3": "8", "4": "9", "5": "6", "6": "8", "7": "9", "8": "9"}
@@ -414,9 +425,13 @@ def misread(reg: float) -> float:
     raise ValueError(reg)
 
 
-def build_log(books: PanelBooks, times: dict, rng) -> pd.DataFrame:
+def build_log(books: PanelBooks, times: dict, rng, corr: dict):
+    """The electricians' log: the Reads sheet as written (kwh), with the register each read truly showed (kwh_true),
+    and the Corrections sheet listing the 2026 reads they wrote wrongly and later corrected."""
     rows = []
     readers = ["AC", "AC", "AC", "RM", "AC", "RM"]
+    reads26 = [d for d in READ_DATES if d.year == 2026]
+    slip = {(reads26[c - 1], p): e for p in PANELS for c, e in corr[p].items()}
     for j, d in enumerate(READ_DATES):
         for panel in PANELS:
             t = meter_instant(d, *times[(d, panel)])
@@ -425,19 +440,27 @@ def build_log(books: PanelBooks, times: dict, rng) -> pd.DataFrame:
             if panel == "CP-S" and d == date(2026, 12, 31):
                 t1 = meter_instant(d, *DEC31_2026_SOUTH[0])
                 qd1 = demand_max(books, panel, prev_t, t1)
+                k1 = misread(displayed(register_at(books, panel, t1)))
                 rows.append({"read_date": d, "read_time": "%02d:%02d" % DEC31_2026_SOUTH[0], "meter": METER[panel],
-                             "panel": panel, "kwh": misread(displayed(register_at(books, panel, t1))),
-                             "max_kw": qd1, "reset": "Y", "by": "RM"})
+                             "panel": panel, "kwh": k1, "kwh_true": k1, "max_kw": qd1, "reset": "Y", "by": "RM"})
                 qd2 = demand_max(books, panel, t1, t)
+                k2 = displayed(register_at(books, panel, t))
                 rows.append({"read_date": d, "read_time": "%02d:%02d" % times[(d, panel)], "meter": METER[panel],
-                             "panel": panel, "kwh": displayed(register_at(books, panel, t)), "max_kw": qd2,
-                             "reset": "Y", "by": "AC"})
+                             "panel": panel, "kwh": k2, "kwh_true": k2, "max_kw": qd2, "reset": "Y", "by": "AC"})
                 continue
             qd = demand_max(books, panel, prev_t, t) if prev_t else None
+            true = displayed(register_at(books, panel, t))
+            logged = round(true + slip.get((d, panel), 0.0), 1)
             rows.append({"read_date": d, "read_time": "%02d:%02d" % times[(d, panel)], "meter": METER[panel],
-                         "panel": panel, "kwh": displayed(register_at(books, panel, t)), "max_kw": qd, "reset": "Y",
-                         "by": by})
-    return pd.DataFrame(rows)
+                         "panel": panel, "kwh": logged, "kwh_true": true, "max_kw": qd, "reset": "Y",
+                         "by": "RM" if (d, panel) in slip else by})
+    log = pd.DataFrame(rows)
+    fixes = log[log["kwh"] != log["kwh_true"]].copy()
+    fixes = fixes.sort_values(["read_date", "meter"], kind="mergesort").reset_index(drop=True)
+    fixes = pd.DataFrame({"read_date": fixes["read_date"], "meter": fixes["meter"], "panel": fixes["panel"],
+                          "kwh_logged": fixes["kwh"], "kwh_corrected": fixes["kwh_true"],
+                          "corrected_on": date(2027, 1, 6), "by": "AC", "note": "Checked against read photo"})
+    return log, fixes
 
 
 def demand_max(books, panel, a, b):

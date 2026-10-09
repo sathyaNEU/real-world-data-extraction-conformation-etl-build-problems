@@ -41,11 +41,48 @@ def load_main(tgt):
     return M
 
 
+def tile_orders(M, timed=False, hours=None):
+    """Orders placed from the tiles each logged session served: carousel orders by the session's buyer
+    whose listing was on one of the session's six tiles, placed after the session started (the charter's
+    carousel order rate; a listing shown on a buyer's carousel stays off it in later sessions for seven
+    days, so the listing names the tile). timed=True keeps only those placed before the session ended,
+    which is what the render log's ordered_tiles counts; hours keeps those placed no later than that many
+    hours after the session ended."""
+    S, O = M.S, M.O
+    tiles = S.melt(id_vars=["session_id", "buyer_id", "started_at", "ended_at"],
+                   value_vars=[f"tile_{i}" for i in range(1, 7)], value_name="listing_id")
+    c = O[O.channel == "carousel"][["buyer_id", "listing_id", "ordered_at"]].merge(
+        tiles[["session_id", "buyer_id", "listing_id", "started_at", "ended_at"]], on=["buyer_id", "listing_id"],
+        how="inner")
+    c = c[c.ordered_at >= c.started_at]
+    if timed:
+        c = c[c.ordered_at <= c.ended_at]
+    elif hours is not None:
+        c = c[(c.ordered_at - c.ended_at).dt.total_seconds() <= hours * 3600]
+    n = c.groupby("session_id").size()
+    return S.session_id.map(n).fillna(0).astype(int).to_numpy()
+
+
+def session_orders(M):
+    """Carousel orders the orders extract credits to each logged session (the session they were placed in)."""
+    S, O = M.S, M.O
+    n = O[O.channel == "carousel"].groupby("home_session_id").size()
+    return S.session_id.map(n).fillna(0).astype(int).to_numpy()
+
+
 def in_session_from_orders(M):
-    """In-session carousel orders per logged session, from the orders extract."""
-    O = M.O
-    c = O[O.channel == "carousel"].groupby("home_session_id").size()
-    return M.S.session_id.map(c).fillna(0).astype(int).to_numpy()
+    """In-session carousel orders per logged session, from the orders extract (placed in the session)."""
+    return session_orders(M)
+
+
+def carousel_window(M, days):
+    """Carousel orders (any home session) each logged session's buyer placed from the session start to
+    `days` days after it: the reading that counts tiles the arm never served."""
+    S, O = M.S, M.O
+    m = O[O.channel == "carousel"][["buyer_id", "ordered_at"]].merge(S[["buyer_id", "started_at"]], on="buyer_id")
+    dt = (m.ordered_at - m.started_at).dt.total_seconds()
+    cnt = m[(dt >= 0) & (dt <= days * 86400)].groupby("buyer_id").size()
+    return S.buyer_id.map(cnt).fillna(0).astype(int).to_numpy()
 
 
 def followup(M, hours=None, calendar_days=None):
@@ -148,11 +185,11 @@ def per_cell(S, y, weighted_by_renders=False):
     return out
 
 
-def guardrail(S, y_basis, y_in, weighted_by_renders=False, coarse=None):
-    """Per cent change in each cell against the incumbent's in-session carousel order rate there.
-    coarse: None for the eight cells, or 'platform' / 'tenure' / 'pooled' for a coarser cut."""
-    base = per_cell(S, y_in, weighted_by_renders)
-    val = per_cell(S, y_basis, weighted_by_renders)
+def guardrail(S, y_count, weighted_by_renders=False, coarse=None):
+    """Per cent change in each cell against the incumbent's carousel order rate there, both counted on
+    y_count (per session). coarse: None for the eight cells, or 'platform' / 'tenure' / 'pooled'."""
+    base = per_cell(S, y_count, weighted_by_renders)
+    val = base
     Nc = np.array([(S.cell == c).sum() for c in range(8)], float)
     if coarse is None:
         groups = {c: [c] for c in range(8)}
@@ -202,14 +239,15 @@ def leader(values, eligible):
     return first, second, margin
 
 
-def conditions(S, y_basis, y_in, values, est_kind, guard_read, floor_grain):
-    """Which policies clear the three launch conditions under one reading."""
+def conditions(S, y_guard, values, est_kind, guard_read, floor_grain):
+    """Which policies clear the three launch conditions under one reading; y_guard is the per-session
+    carousel order count the guardrail is read on."""
     rw = est_kind in ("replay_rows", "render_weights")
     if guard_read == "eight":
-        g = guardrail(S, y_basis, y_in, weighted_by_renders=rw)
+        g = guardrail(S, y_guard, weighted_by_renders=rw)
         guard_ok = {r: all(g[(r, c)] >= -1.5 for c in range(8)) for r in P.POLICIES}
     else:
-        g = guardrail(S, y_basis, y_in, weighted_by_renders=rw, coarse="platform")
+        g = guardrail(S, y_guard, weighted_by_renders=rw, coarse="platform")
         guard_ok = {r: all(g[(r, k)] >= -1.5 for k in ("app", "web")) for r in P.POLICIES}
     fl = floors(S)
     key = {"rendered": "rendered_tiles" if est_kind == "replay_rows" else "rendered_tiles_ipw",

@@ -5,7 +5,8 @@ import datetime as dt
 from collections import defaultdict
 
 from common import (SPINE_FIRST, EXTRACT_DATE, LINE_PCT, MARCH_CENSUSES, SEPT_CENSUS, qend, fyq,
-                    fy_q4, natural_end, prev_census, strike_rate, offer_for, pct1, FLOOR, CAP)
+                    fy_q4, natural_end, prev_census, strike_rate, offer_for, pct1, FLOOR, CAP,
+                    fpos, is_final)
 
 
 def eod(d):
@@ -58,22 +59,31 @@ class Book:
 
 DEFAULT = dict(unit="org", basis="held", stepback="T", q4src="register", reg_at="census",
                inclusive=True, prior="stepped", step_bal=None, drop_unfiled=False, require8=True,
-               latest_for_held=False, recency="on")
+               latest_for_held=False, recency="on", labels="returns", scope="term", cutoff_days=0)
 # recency: rule 4.1, twelve-month income at a census is for twelve months ending on or after the census
 # before it ("on"); "off" ignores the sentence (R4, the stop); "strict" reads it as after, not on;
 # "year" takes the census before as the March a year earlier.
+# labels: "returns" places each quarter in the financial year its own return runs within (the answer);
+# "app" keys every year to one balance date per organisation, the balance date of its latest annual
+# return as held (R5): a year other than four quarters then reads as an ordinary year.
+# scope (hardening loop 3): "term" holds an organisation in scope only where a term of its operating grant
+# was in force at the census (rule 3.1), so a grant between a lapsed term and its renewal is out (the
+# answer); "dates" reads the grants register's start of the grant and end of its current term as the
+# span of a current grant (the stop, R6, and every rung below it).
 
 
-def current_at(o, c, unit_kind="op"):
+def current_at(o, c, unit_kind="op", scope="term"):
     if unit_kind == "op":
-        return o.og_start <= c <= o.og_end
+        if not o.og_start <= c <= o.og_end:
+            return False
+        return scope == "dates" or not any(end < c < restart for end, restart, _ in o.gaps)
     return o.pg_start <= c <= o.pg_end
 
 
-def units_for(book, c, unit):
+def units_for(book, c, unit, scope="term"):
     out = []
     for o in book.orgs.values():
-        if not current_at(o, c, "op"):
+        if not current_at(o, c, "op", scope):
             continue
         if unit == "org":
             out.append((o.key, o.key, "op"))
@@ -89,13 +99,14 @@ def units_for(book, c, unit):
 def row_for(book, c, ukey, okey, opt):
     o = book.orgs[okey]
     unit = opt["unit"]
-    cutoff = eod(EXTRACT_DATE) if opt["basis"] == "latest" else eod(c)
-    reg_date = EXTRACT_DATE if opt["reg_at"] == "extract" else c
+    cutoff = eod(EXTRACT_DATE) if opt["basis"] == "latest" else eod(c + dt.timedelta(days=opt["cutoff_days"]))
+    reg_date = EXTRACT_DATE if opt["reg_at"] == "extract" else c + dt.timedelta(days=opt["cutoff_days"])
     n_end = natural_end(c)
     step_ok = opt["step_bal"] is None or o.bal in opt["step_bal"]
+    lab = opt["labels"]
 
     def admissible(q):
-        if fyq(q, o.bal) != 4:
+        if not is_final(o, q, lab):
             return True
         sb = opt["stepback"]
         if not step_ok or sb == "none":
@@ -136,7 +147,7 @@ def row_for(book, c, ukey, okey, opt):
         return book.ytd(ukey, q, cutoff, bunit, opt["basis"] if opt["basis"] == "first" else "held")
 
     def disc(q):
-        k = fyq(q, o.bal)
+        k = fpos(o, q, lab)
         y = ytd(q)
         if y is None:
             return None
@@ -146,8 +157,8 @@ def row_for(book, c, ukey, okey, opt):
             base = ytd(q - 1)
             if base is None:
                 return None
-        if k == 4 and opt["q4src"] == "register" and book.received(okey, q, reg_date,
-                                                                    opt["inclusive"]):
+        if is_final(o, q, lab) and opt["q4src"] == "register" and book.received(okey, q, reg_date,
+                                                                                 opt["inclusive"]):
             return book.annual_total(okey, q) - base
         return y - base
 
@@ -170,19 +181,21 @@ def row_for(book, c, ukey, okey, opt):
 
 
 def due_date(o, q4):
+    """An annual return is due six months after the year it covers ends (the year's own end, so a
+    balance-date mover's nine-month year is due like any 31 March year)."""
     fye = qend(q4)
-    if o.bal == 3:
-        return dt.date(fye.year, 9, 30)
-    if o.bal == 6:
-        return dt.date(fye.year, 12, 31)
-    return dt.date(fye.year + 1, 6, 30)
+    y, m = fye.year, fye.month + 6
+    if m > 12:
+        y, m = y + 1, m - 12
+    import calendar as _cal
+    return dt.date(y, m, _cal.monthrange(y, m)[1])
 
 
 def screen(book, c, pot, **kw):
     opt = dict(DEFAULT)
     opt.update(kw)
     rows = []
-    for ukey, okey, _ in units_for(book, c, opt["unit"]):
+    for ukey, okey, _ in units_for(book, c, opt["unit"], opt["scope"]):
         r = row_for(book, c, ukey, okey, opt)
         if r is not None:
             rows.append(r)
@@ -197,12 +210,12 @@ def screen(book, c, pot, **kw):
             "offered": sorted({r["org"] for r in elig}), "n_offers": len(elig)}
 
 
-def filed_year_screen(book, c, pot, reg_at="census"):
+def filed_year_screen(book, c, pot, reg_at="census", scope="dates"):
     """R0: twelve-month income is the latest annual return on the register, against the one before."""
     rows = []
     reg_date = EXTRACT_DATE if reg_at == "extract" else c
     for o in book.orgs.values():
-        if not current_at(o, c, "op"):
+        if not current_at(o, c, "op", scope):
             continue
         recs = sorted(q4 for (k, q4), ar in book.annual.items()
                       if k == o.key and ar.received is not None and ar.received <= reg_date)

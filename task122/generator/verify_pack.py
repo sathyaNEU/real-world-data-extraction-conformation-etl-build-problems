@@ -2,10 +2,12 @@
 """task122 independent verifier.
 
 Reads only the shipped bytes under target/ and recomputes, on its own code path (no import from the
-generator), every rung of the ladder, the rival-killers (the archive back-test and the twin tests),
-the guardrail, floor and bar conditions, the decomposition by both routes, and every graded figure:
-the call, the runner-up and the gap, the 48 fee cells of ask 1 and the 12 slot totals of ask 2.
-The constants it needs (thresholds, tariff, slot dates, gating) are read from the shipped documents.
+generator), every rung of the ladder, the rival-killers (the archive back-test and the twin tests), the
+guardrail on every count a reader can take (the render log's ordered tiles, the orders credited to the
+session, every order placed from the session's tiles, the buyer's carousel orders over a window), the
+floor and bar conditions, the decomposition by both routes, and every graded figure: the call, the
+runner-up and the gap, the 48 fee cells of ask 1 and the 12 slot totals of ask 2, with the referee tie.
+The constants it needs (thresholds, tariff, VAT, slot dates, gating) are read from the shipped documents.
 
     python3 task122/generator/verify_pack.py <task folder or target folder> [--record build_record.json] [--out v.json]
 
@@ -68,7 +70,7 @@ def read_rules(tgt):
     m = re.search(r"at least (\d+) of every 100 tiles it serves go to listings under (\d+) hours old", cm)
     r["floor"], r["fresh_h"] = float(m.group(1)), float(m.group(2))
     r["floor_unit"] = "per served ranking" if "count per served ranking" in cm else "rendered"
-    cap = re.sub(r"\s+", " ", open(find(tgt, "test_capacity_and_release_gating", ".md"), encoding="utf-8").read())
+    cap = re.sub(r"\s+", " ", open(find(tgt, "slot_capacity_and_release_gating", ".md"), encoding="utf-8").read())
     m = re.search(r"slot runs from (\d+) (\w+) to (\d+) (\w+) (\d{4})", cap)
     r["slot_start"] = datetime.strptime(f"{m.group(1)} {m.group(2)} {m.group(5)}", "%d %B %Y").date()
     r["cell_by_cell"] = "cell by cell" in cap
@@ -95,6 +97,15 @@ def read_rules(tgt):
     terms = pdf_text(find(tgt, "buyer_protection_terms", ".pdf"))
     r["fee_on_price_paid"] = "percentage of the price you pay for the item, after any accepted offer" in terms
     r["in_person_no_fee"] = "pay the seller directly, the purchase is not covered and no Buyer Protection fee" in terms
+    r["balance_is_a_method"] = "your Vouwlijn balance" in terms
+    r["rate_from_tiles"] = "orders placed from the carousel tiles it served" in ch
+    fields = re.sub(r"\s+", " ", open(find(tgt, "carousel_logger_field_reference", ".md"), encoding="utf-8").read())
+    r["seven_day_rule"] = "kept off it in their later sessions for seven days" in fields
+    r["provider_captures_only"] = "card and iDEAL payment the payment provider captured" in fields
+    fin = pd.read_excel(find(tgt, "finance_buyer_protection_fee_income", ".xlsx"), header=None)
+    head = " ".join(str(x) for x in fin[0].iloc[:5])
+    r["vat"] = float(re.search(r"includes (\d+) per cent VAT", head).group(1)) / 100
+    r["income_excl_vat"] = "Fee income excl. VAT" in head
     rl = open(find(tgt, "analytics_release_log", ".md"), encoding="utf-8").read()
     r["r2_replaces"] = "R2 replaces the first release" in rl
     reg = json.load(open(find(tgt, "ranking_policy_register", ".json"), encoding="utf-8"))
@@ -186,9 +197,9 @@ def cell_rates(S, y, rankers, render_weighted=False):
     return out
 
 
-def guard(S, y_basis, y_in, inc, pol, grain, render_weighted):
-    base = cell_rates(S, y_in, [inc], render_weighted)
-    val = cell_rates(S, y_basis, [inc] + pol, render_weighted)
+def guard(S, y_count, inc, pol, grain, render_weighted):
+    """Per cent change in each cell's carousel order rate against the incumbent's, both on y_count."""
+    val = cell_rates(S, y_count, [inc] + pol, render_weighted)
     Nc = np.array([(S.cell == c).sum() for c in range(8)], float)
     groups = {"eight": {c: [c] for c in range(8)}, "platform": {"app": [0, 1, 2, 3], "web": [4, 5, 6, 7]},
               "tenure": {b: [b, b + 4] for b in range(4)}, "pooled": {"all": list(range(8))}}[grain]
@@ -197,9 +208,29 @@ def guard(S, y_basis, y_in, inc, pol, grain, render_weighted):
         for key, cs in groups.items():
             w = Nc[cs] / Nc[cs].sum()
             d = sum(wi * (val[(r, c)] - val[(inc, c)]) for wi, c in zip(w, cs))
-            b = sum(wi * base[(inc, c)] for wi, c in zip(w, cs))
+            b = sum(wi * val[(inc, c)] for wi, c in zip(w, cs))
             out[(r, key)] = 100 * d / b
     return out
+
+
+def tile_orders(S, O, hours=None, before_end=False):
+    """Orders placed from each session's tiles: the buyer's carousel orders of a listing the session showed."""
+    t = S.melt(id_vars=["session_id", "buyer_id", "started_at", "ended_at"],
+               value_vars=[f"tile_{i}" for i in range(1, 7)], value_name="listing_id")
+    c = O[O.channel == "carousel"].merge(t, on=["buyer_id", "listing_id"], how="inner")
+    c = c[c.ordered_at >= c.started_at]
+    if before_end:
+        c = c[c.ordered_at <= c.ended_at]
+    if hours is not None:
+        c = c[(c.ordered_at - c.ended_at).dt.total_seconds() <= hours * 3600]
+    return S.session_id.map(c.groupby("session_id").size()).fillna(0).astype(int).to_numpy()
+
+
+def buyer_carousel(S, O, days):
+    m = O[O.channel == "carousel"].merge(S[["buyer_id", "session_id", "started_at"]].rename(
+        columns={"session_id": "sid"}), on="buyer_id")
+    dt = (m.ordered_at - m.started_at).dt.total_seconds()
+    return S.session_id.map(m[(dt >= 0) & (dt <= days * 86400)].groupby("sid").size()).fillna(0).to_numpy()
 
 
 def floors(S, rankers, fresh_h):
@@ -215,10 +246,10 @@ def floors(S, rankers, fresh_h):
     return out
 
 
-def screen(S, y_basis, y_in, how, grain, floor_key, rules, inc, pol):
+def screen(S, y_basis, y_count, how, grain, floor_key, rules, inc, pol):
     val = lifts(S, y_basis, how, inc, pol)
     rw = how in ("replay_rows", "render_weights")
-    g = guard(S, y_basis, y_in, inc, pol, grain, rw)
+    g = guard(S, y_count, inc, pol, grain, rw)
     keys = range(8) if grain == "eight" else ("app", "web")
     fl = floors(S, pol, rules["fresh_h"])
     ok = {r: all(g[(r, k)] >= -rules["guard_pct"] for k in keys) and fl[(r, floor_key)] >= rules["floor"]
@@ -254,29 +285,46 @@ def main():
     out["rules"] = {k: (str(x) if isinstance(x, date) else x) for k, x in rules.items() if k != "names"}
     inc, pol = rules["incumbent"], rules["policies"]
     v.check(all(rules[k] for k in ("cell_by_cell", "one_year_before", "fee_on_price_paid", "in_person_no_fee",
-                                   "r2_replaces")) and rules["tariff_id"] == "KB-2026-02" and len(pol) == 6,
-            "rules.read_from_documents", {k: rules[k] for k in ("tariff_id", "app_start", "slot_start")})
+                                   "r2_replaces", "balance_is_a_method", "rate_from_tiles", "seven_day_rule",
+                                   "provider_captures_only", "income_excl_vat"))
+            and rules["tariff_id"] == "KB-2026-02" and len(pol) == 6 and abs(rules["vat"] - 0.21) < 1e-12,
+            "rules.read_from_documents", {k: rules[k] for k in ("tariff_id", "app_start", "slot_start", "vat")})
     R, S, O, PM, OF = load(tgt, rules)
     v.check(len(R) >= 25_000 and len(S) == R.session_id.nunique(), "data.render_rows", len(R))
     v.check((S.ynuniq == 1).all() and (S.pnuniq == 1).all() and (S.rnuniq == 1).all(), "data.one_draw_per_session")
     v.check(S.buyer_id.is_unique, "data.one_session_per_buyer")
-    # the render log's ordered tiles tie to the orders extract's carousel orders by session
+    # the render log's ordered tiles tie to the carousel orders the orders extract credits to the session
     ins = O[O.channel == "carousel"].groupby("home_session_id").size()
     v.check((S.session_id.map(ins).fillna(0).astype(int) == S.y).all(), "tie.render_log_orders")
     y_in = S.y.to_numpy().astype(float)
+    y_tiles = tile_orders(S, O).astype(float)
+    v.check((tile_orders(S, O, before_end=True) == S.y.to_numpy()).all(), "tie.tile_orders_before_the_end")
     W21 = window_orders(S, O, 21)
     y_k = per_session(S, W21)
+    # orders placed from a session's tiles after it closed: carousel orders in an unlogged home session,
+    # within 4 hours of the end, never in the session-sequence model's arm; no shown listing reaches its
+    # buyer through a carousel tile later than that (the seven-day rule)
+    t_all = S.melt(id_vars=["session_id", "buyer_id", "ranker", "ended_at"],
+                   value_vars=[f"tile_{i}" for i in range(1, 7)], value_name="listing_id")
+    aft = O.merge(t_all, on=["buyer_id", "listing_id"])
+    aft = aft[(aft.ordered_at > aft.ended_at) & (aft.channel == "carousel")]
+    hrs = (aft.ordered_at - aft.ended_at).dt.total_seconds() / 3600
+    v.check(len(aft) == int((y_tiles - y_in).sum()) > 0 and hrs.max() <= 4.0 and
+            not aft.home_session_id.isin(S.session_id).any() and (aft.ranker != "HC-34").all(),
+            "tiles.orders_after_the_end", (len(aft), round(float(hrs.max()), 2)))
+    out["tile_orders_after_the_end"] = {"orders": int(len(aft)), "by_ranker": aft.ranker.value_counts().to_dict()}
     # ------------------------------------------------------------------ rungs
     L = rules["names"]
-    rung_def = [("replay_rows", "platform", "rendered", y_in),
-                ("render_weights", "platform", "rendered_w", y_in),
-                ("session_weights", "platform", "per_ranking", y_in),
-                ("session_weights", "eight", "per_ranking", y_in),
-                ("session_weights", "eight", "per_ranking", y_k)]
+    rung_def = [("replay_rows", "platform", "rendered", y_in, y_in),
+                ("render_weights", "platform", "rendered_w", y_in, y_in),
+                ("session_weights", "eight", "per_ranking", y_in, y_in),
+                ("session_weights", "eight", "per_ranking", y_in, y_tiles),
+                ("session_weights", "eight", "per_ranking", y_k, y_tiles)]
     rungs = []
-    for how, grain, fk, yb in rung_def:
-        val, ok, first, second, margin = screen(S, yb, y_in, how, grain, fk, rules, inc, pol)
-        rungs.append(dict(estimator=how, guardrail=grain, basis="kept" if yb is y_k else "in-session",
+    for how, grain, fk, yb, yc in rung_def:
+        val, ok, first, second, margin = screen(S, yb, yc, how, grain, fk, rules, inc, pol)
+        rungs.append(dict(estimator=how, guardrail=grain, count="tiles" if yc is y_tiles else "ordered_tiles",
+                          basis="kept" if yb is y_k else "in-session",
                           values={r: round(x, 4) for r, x in val.items()}, leader=first, runner_up=second,
                           margin=round(margin, 4), qualifiers=[r for r in pol if ok[r]]))
     out["rungs"] = rungs
@@ -290,18 +338,38 @@ def main():
                    "filed": [round(e, 1), round(b, 1), round(e - b, 1)]}
     for nm, x in (("E", e), ("B", b), ("gap", e - b)):
         v.check(bin_clear(x, 0.1) >= 0.03, f"bin.{nm}", (x, bin_clear(x, 0.1)))
-    # the session-grain estimators agree; the call holds under each
     for how in ("session_weights_selfnorm", "session_weights_clipped", "within_cell"):
         lv = lifts(S, y_k, how, inc, pol)
         v.check(all(abs(lv[r] - E_[r]) < 1e-9 for r in pol), f"session_grain.{how}")
+    # the stump: the lift over the test with the guardrail read on the render log's ordered tiles
+    val, ok, first, second, margin = screen(S, y_k, y_in, "session_weights", "eight", "per_ranking", rules, inc, pol)
+    out["stump"] = {"call": first, "lift": val[first], "runner_up": second, "runner_up_lift": val[second]}
+    v.check(first == "HC-34" and second == "HC-37" and margin >= 1.5, "stump.logger_guardrail_files_C",
+            (first, second, round(margin, 3)))
     # ------------------------------------------------------------------ conditions in detail
-    g8 = guard(S, y_in, y_in, inc, pol, "eight", False)
-    out["guardrail_pct"] = {f"{r}|{CELL_LABELS[c]}": round(x, 3) for (r, c), x in g8.items()}
-    breaches = sorted((r, c) for (r, c), x in g8.items() if x < -rules["guard_pct"])
-    v.check(breaches == [("HC-31", 7), ("HC-34", 0)], "guardrail.breaches", breaches)
-    gk = guard(S, y_k, y_in, inc, pol, "eight", False)
-    v.check(sorted((r, c) for (r, c), x in gk.items() if x < -rules["guard_pct"]) == breaches,
-            "guardrail.same_on_kept")
+    counts = {"ordered_tiles": y_in, "tiles": y_tiles,
+              "credited": S.session_id.map(ins).fillna(0).to_numpy().astype(float),
+              "tiles_within_4h": tile_orders(S, O, hours=4).astype(float),
+              "tiles_within_1h": tile_orders(S, O, hours=1).astype(float),
+              "buyer_7d": buyer_carousel(S, O, 7), "buyer_21d": buyer_carousel(S, O, 21)}
+    br = {}
+    for nm, yc in counts.items():
+        g = guard(S, yc, inc, pol, "eight", False)
+        br[nm] = sorted((r, c) for (r, c), x in g.items() if x < -rules["guard_pct"])
+        out[f"guardrail_{nm}"] = {f"{r}|{CELL_LABELS[c]}": round(x, 3) for (r, c), x in g.items()
+                                  if r in ("HC-31", "HC-34") and c in (0, 7)}
+    out["guardrail_breaches"] = {k: [f"{r}|{CELL_LABELS[c]}" for r, c in x] for k, x in br.items()}
+    v.check(br["tiles"] == [("HC-31", 7), ("HC-34", 0)], "guardrail.breaches_on_the_tiles", br["tiles"])
+    v.check(br["ordered_tiles"] == [("HC-31", 7)] and br["credited"] == br["ordered_tiles"],
+            "guardrail.logger_count_passes_C", br["ordered_tiles"])
+    v.check(br["tiles_within_4h"] == br["tiles"] and ("HC-34", 0) not in br["tiles_within_1h"],
+            "guardrail.time_limits", (br["tiles_within_4h"], br["tiles_within_1h"]))
+    v.check(("HC-34", 0) not in br["buyer_7d"] and ("HC-34", 0) not in br["buyer_21d"], "guardrail.buyer_windows_pass_C")
+    gt = guard(S, y_tiles, inc, pol, "eight", False)
+    out["guardrail_pct"] = {f"{r}|{CELL_LABELS[c]}": round(x, 3) for (r, c), x in gt.items()}
+    for coarse in ("platform", "tenure", "pooled"):
+        gc = guard(S, y_tiles, inc, pol, coarse, False)
+        v.check(min(gc.values()) > -rules["guard_pct"], f"guardrail.coarse_{coarse}_passes_everyone")
     fl = floors(S, pol, rules["fresh_h"])
     out["floors"] = {f"{r}|{k}": round(x, 3) for (r, k), x in fl.items()}
     v.check(fl[("HC-36", "per_ranking")] < rules["floor"] <= fl[("HC-36", "rendered")], "floor.D_counting_unit")
@@ -335,7 +403,7 @@ def main():
     v.check(all(abs(r2[r] - E_[r]) < 0.005 for r in pol), "route2.equals_route1",
             {r: (round(r2[r], 4), round(E_[r], 4)) for r in pol})
     # ------------------------------------------------------------------ the archive
-    xa = pd.read_excel(find(tgt, "carousel_test_archive", ".xlsx"), sheet_name=None)
+    xa = pd.read_excel(find(tgt, "carousel_experiment_archive", ".xlsx"), sheet_name=None)
     T, AS = xa["tests"], xa["logged_sessions"]
     arch = {}
     for _, t in T.iterrows():
@@ -369,31 +437,31 @@ def main():
     v.check(abs(arch["T7"]["session"] - arch["T7"]["realised"]) <= tol and
             abs(arch["T7"]["render"] - arch["T7"]["realised"]) > tol and
             abs(arch["T7"]["replay"] - arch["T7"]["realised"]) > tol, "archive.twin_T7_session_only")
-    # ------------------------------------------------------------------ ask 1: fee per 1,000 sessions, per policy and cell
+    # ------------------------------------------------------------------ ask 1: fee income per 1,000 sessions
     o = W21.merge(PM, on="order_id", how="left")
-    paid_through = o.payment_id.notna().to_numpy()
-    price_paid = (o.amount_eur - o.shipping_eur - o.buyer_protection_fee_eur).round(2).to_numpy()
-    fee = np.where(paid_through, rules["tariff_fixed"] + rules["tariff_pct"] * np.nan_to_num(price_paid), 0.0)
-    o["fee"] = fee
-    fee_s = S.session_id.map(o.groupby("sid").fee.sum()).fillna(0.0).to_numpy()
-    ord_s = y_k
-    cells_fee, cells_ord = {}, {}
-    for c in range(8):
-        cm = (S.cell == c).to_numpy()
-        b0f = fee_s[cm & (S.ranker == inc).to_numpy()].mean()
-        b0o = ord_s[cm & (S.ranker == inc).to_numpy()].mean()
-        for r in pol:
-            gm = cm & (S.ranker == r).to_numpy()
-            cells_fee[(r, c)] = (fee_s[gm].mean() - b0f) * 1000
-            cells_ord[(r, c)] = (ord_s[gm].mean() - b0o) * 1000
-    out["ask1"] = {f"{r}|{CELL_LABELS[c]}": round(x, 4) for (r, c), x in cells_fee.items()}
-    out["ask1_filed"] = {f"{r}|{CELL_LABELS[c]}": round(x, 1) for (r, c), x in cells_fee.items()}
-    v.check(min(bin_clear(x, 0.1) for x in cells_fee.values()) >= 0.03, "ask1.mid_bin",
-            min(bin_clear(x, 0.1) for x in cells_fee.values()))
-    # every way of mishandling the three fee devices (pricing in-person pickups, the asking price, the
-    # January tariff row) moves every cell out of its bin; so does the natural read (all three, in-session
-    # orders only)
+    captured = o.payment_id.notna().to_numpy()
+    pickup = (o.delivery == "pickup").to_numpy()
+    in_person = ~captured & pickup                     # collected and paid to the seller: no fee
+    on_balance = ~captured & ~pickup                   # shipped, paid from a Vouwlijn balance: fee charged
+    x = o.merge(OF, on=["buyer_id", "listing_id"], how="left")
+    live = ((x.accepted_at <= x.ordered_at) & (x.expires_at >= x.ordered_at)).to_numpy()
+    off_price = np.where(live, x.offer_eur, x.asking_price_eur)
+    any_offer = np.where(x.offer_eur.notna(), x.offer_eur, x.asking_price_eur)
+    pay_price = (o.amount_eur - o.shipping_eur - o.buyer_protection_fee_eur).round(2).to_numpy()
+    v.check(np.allclose(off_price[captured], pay_price[captured], atol=0.004), "ask1.price_paid_two_routes")
+    price_paid = np.where(captured, pay_price, off_price)
     asking = o.asking_price_eur.to_numpy()
+    vat = 1 + rules["vat"]
+    insess = ((o.channel == "carousel") & (o.home_session_id == o.sid)).to_numpy()
+
+    def fee_vec(vat_out=True, charge_balance=True, free_in_person=True, price=None, fixed=None):
+        p_ = price_paid if price is None else price
+        f = (rules["tariff_fixed"] if fixed is None else fixed) + rules["tariff_pct"] * np.round(p_)
+        if free_in_person:
+            f = np.where(in_person, 0.0, f)
+        if not charge_balance:
+            f = np.where(on_balance, 0.0, f)
+        return f / vat if vat_out else f
 
     def grid_for(fees, mask=None):
         f = pd.Series(np.where(mask, fees, 0.0) if mask is not None else fees, index=o.index)
@@ -405,34 +473,65 @@ def main():
             for r in pol:
                 out_[(r, c)] = (fs[cm & (S.ranker == r).to_numpy()].mean() - base) * 1000
         return out_
-    big = list(cells_fee)          # every cell, the two under EUR 1.00 included
-    combos = {}
-    for p1 in (False, True):
-        for hz2 in (False, True):
-            for hz1 in (False, True):
-                if not (p1 or hz2 or hz1):
-                    continue
-                fixed = rules["tariff_jan_fixed"] if hz1 else rules["tariff_fixed"]
-                price = asking if hz2 else np.where(paid_through, np.nan_to_num(price_paid), asking)
-                f_ = fixed + rules["tariff_pct"] * price
-                if not p1:
-                    f_ = np.where(paid_through, f_, 0.0)
-                g_ = grid_for(f_)
-                stay = [k for k in big if nbin(g_[k], 0.1) == nbin(cells_fee[k], 0.1)]
-                combos[f"{int(p1)}{int(hz2)}{int(hz1)}"] = len(stay)
-                v.check(not stay, f"ask1.devices_{int(p1)}{int(hz2)}{int(hz1)}_move_every_cell", stay)
-                if p1 and hz2 and hz1:
-                    insess = ((o.channel == "carousel") & (o.home_session_id == o.sid)).to_numpy()
-                    gn = grid_for(f_, insess)
-                    stay_n = [k for k in cells_fee if nbin(gn[k], 0.1) == nbin(cells_fee[k], 0.1)]
-                    v.check(not stay_n, "ask1.natural_read_moves_every_cell", stay_n)
-    out["ask1_cells_under_one_euro"] = [f"{r}|{CELL_LABELS[c]}" for (r, c), x in cells_fee.items() if abs(x) < 1.0]
-    # the price paid read from the offers export agrees with the payments ledger
-    x = o[paid_through].merge(OF, on=["buyer_id", "listing_id"], how="left")
-    live = (x.accepted_at <= x.ordered_at) & (x.expires_at >= x.ordered_at)
-    pp_off = np.where(live, x.offer_eur, x.asking_price_eur)
-    pp_pay = (x.amount_eur - x.shipping_eur - x.buyer_protection_fee_eur).round(2)
-    v.check(np.allclose(pp_off, pp_pay, atol=0.004), "ask1.price_paid_two_routes")
+    cells_fee = grid_for(fee_vec())
+    cells_ord = {}
+    for c in range(8):
+        cm = (S.cell == c).to_numpy()
+        b0o = y_k[cm & (S.ranker == inc).to_numpy()].mean()
+        for r in pol:
+            cells_ord[(r, c)] = (y_k[cm & (S.ranker == r).to_numpy()].mean() - b0o) * 1000
+    out["ask1"] = {f"{r}|{CELL_LABELS[c]}": round(x_, 4) for (r, c), x_ in cells_fee.items()}
+    out["ask1_filed"] = {f"{r}|{CELL_LABELS[c]}": round(x_, 1) for (r, c), x_ in cells_fee.items()}
+    v.check(min(bin_clear(x_, 0.1) for x_ in cells_fee.values()) >= 0.03, "ask1.mid_bin",
+            min(bin_clear(x_, 0.1) for x_ in cells_fee.values()))
+    # every way of mishandling the five fee devices (VAT kept in, balance purchases uncharged, pickups paid
+    # in person charged, the asking price, the January tariff row) moves every cell out of its bin; so does
+    # the natural read (every order priced on the formula, VAT in, asking price, January row, in-session)
+    fee_sets = {}
+    for f1, f2, p1, hz2, hz1 in [k for k in np.ndindex(2, 2, 2, 2, 2) if any(k)]:
+        fv = fee_vec(vat_out=not f1, charge_balance=not f2, free_in_person=not p1,
+                     price=asking if hz2 else None, fixed=rules["tariff_jan_fixed"] if hz1 else None)
+        g_ = grid_for(fv)
+        fee_sets[(f1, f2, p1, hz2, hz1)] = g_
+        stay = [k for k in cells_fee if nbin(g_[k], 0.1) == nbin(cells_fee[k], 0.1)]
+        v.check(not stay, f"ask1.devices_{f1}{f2}{p1}{hz2}{hz1}_move_every_cell", stay)
+    gn = grid_for(fee_vec(vat_out=False, free_in_person=False, price=asking, fixed=rules["tariff_jan_fixed"]), insess)
+    v.check(not [k for k in cells_fee if nbin(gn[k], 0.1) == nbin(cells_fee[k], 0.1)], "ask1.natural_read_moves_every_cell")
+    gv = grid_for(np.round(fee_vec(vat_out=False) * 100 / vat) / 100)
+    v.check(all(nbin(gv[k], 0.1) == nbin(cells_fee[k], 0.1) for k in cells_fee), "ask1.vat_per_order_same_grid")
+    for nm, fv in (("every_offer", fee_vec(price=any_offer)), ("drop_pickups", np.where(pickup, 0.0, fee_vec())),
+                   ("payments_as_charged", np.where(captured, o.buyer_protection_fee_eur.fillna(0).to_numpy(), 0.0))):
+        g_ = grid_for(fv)
+        moved = sum(nbin(g_[k], 0.1) != nbin(cells_fee[k], 0.1) for k in cells_fee)
+        out[f"ask1_{nm}_cells_moved"] = int(moved)
+        v.check(moved >= 36, f"ask1.over_cleaner_{nm}", moved)
+    out["ask1_cells_under_one_euro"] = [f"{r}|{CELL_LABELS[c]}" for (r, c), x_ in cells_fee.items() if abs(x_) < 1.0]
+    # ------------------------------------------------------------------ the referee: Finance's fee income, Q3
+    allo = O.merge(PM, on="order_id", how="left")
+    cap_all = allo.payment_id.notna().to_numpy()
+    allx = allo.merge(OF, on=["buyer_id", "listing_id"], how="left")
+    live_all = ((allx.accepted_at <= allx.ordered_at) & (allx.expires_at >= allx.ordered_at)).to_numpy()
+    pp_all = np.where(cap_all, (allo.amount_eur - allo.shipping_eur - allo.buyer_protection_fee_eur).round(2),
+                      np.where(live_all, allx.offer_eur, allx.asking_price_eur))
+    covered = cap_all | (allo.delivery != "pickup").to_numpy()
+    booked = np.where(cap_all, allo.captured_at, allo.ordered_at)
+    tar = pd.read_csv(find(tgt, "kopersbescherming", ".csv"))
+    starts = pd.to_datetime(tar.ingangsdatum).to_numpy()
+    k_ = np.searchsorted(starts, booked.astype("datetime64[ns]"), side="right") - 1
+    fee_all = np.round(tar.vast_bedrag_eur.to_numpy()[k_] * 100) + tar.percentage_van_artikelprijs.to_numpy()[k_] * np.round(pp_all)
+    ref = pd.DataFrame({"m": pd.to_datetime(booked).strftime("%Y-%m"), "platform": allo.platform, "fee": fee_all,
+                        "item": pp_all, "covered": covered})
+    ref = ref[ref.covered & ref.m.isin(["2026-07", "2026-08", "2026-09"])]
+    gq = ref.groupby(["m", "platform"]).agg(n=("fee", "size"), fee=("fee", "sum"), item=("item", "sum"))
+    fin = pd.read_excel(find(tgt, "finance_buyer_protection_fee_income", ".xlsx"), header=None)
+    h = int(np.flatnonzero(fin[0].astype(str).str.strip() == "Month")[0])
+    months = {"July 2026": "2026-07", "August 2026": "2026-08", "September 2026": "2026-09"}
+    ok_ = True
+    for row in fin.iloc[h + 1:h + 7].itertuples(index=False):
+        g = gq.loc[(months[row[0]], row[1])]
+        ok_ &= int(g.n) == int(row[2]) and abs(g["item"] - float(row[3])) < 0.005 and \
+            abs(round(g.fee / 100 / vat, 2) - float(row[4])) < 0.005
+    v.check(ok_, "referee.ties_excl_vat_with_balance_purchases")
     # ------------------------------------------------------------------ ask 2: slot totals
     wk1 = pd.read_csv(find(tgt, "home_carousel_sessions_weekly_2025", ".csv"))
     wk2 = pd.read_csv(find(tgt, "home_carousel_sessions_weekly_R2", ".csv"))
@@ -443,40 +542,62 @@ def main():
               if rules["slot_start"] + timedelta(weeks=i) + timedelta(days=6) >= rules["app_start"]]
     prev = rules["slot_start"].year - 1
     band_lab = ["0-29", "30-179", "180-729", "730+"]
-    arm = np.zeros(8)
-    for c in range(8):
-        plat = "app" if c < 4 else "web"
-        wks = app_wk if plat == "app" else slot_wk
-        labels = [f"{prev}-W{w:02d}" for w in wks]
-        m = cur.iso_week.isin(labels) & (cur.platform == plat) & (cur.tenure_band == band_lab[c % 4])
-        arm[c] = rules["slot_share"] * cur.loc[m, "logged_in_sessions"].sum()
+
+    def arm_of(table, app_weeks):
+        a_ = np.zeros(8)
+        for c in range(8):
+            plat = "app" if c < 4 else "web"
+            wks = app_weeks if plat == "app" else slot_wk
+            m = table.iso_week.isin([f"{prev}-W{w:02d}" for w in wks]) & (table.platform == plat) & \
+                (table.tenure_band == band_lab[c % 4])
+            a_[c] = rules["slot_share"] * table.loc[m, "logged_in_sessions"].sum()
+        return a_
+    arm = arm_of(cur, app_wk)
     out["arm_sessions"] = arm.tolist()
     out["app_weeks"], out["web_weeks"] = app_wk, slot_wk
-    tot_o = {r: sum(cells_ord[(r, c)] * arm[c] / 1000 for c in range(8)) for r in pol}
-    tot_f = {r: sum(cells_fee[(r, c)] * arm[c] / 1000 for c in range(8)) for r in pol}
+    tot = lambda g_, a_: {r: sum(g_[(r, c)] * a_[c] / 1000 for c in range(8)) for r in pol}
+    tot_o, tot_f = tot(cells_ord, arm), tot(cells_fee, arm)
     out["ask2"] = {"orders": tot_o, "fee": tot_f,
-                   "orders_filed": {r: int(nbin(x, 100) * 100) for r, x in tot_o.items()},
-                   "fee_filed": {r: int(nbin(x, 100) * 100) for r, x in tot_f.items()}}
-    v.check(min(bin_clear(x, 100) for x in list(tot_o.values()) + list(tot_f.values())) >= 20, "ask2.mid_bin")
-    # stops: the first release, all weeks on the app, the pooled lift
-    arm_r1 = np.zeros(8)
-    for c in range(8):
-        plat = "app" if c < 4 else "web"
-        wks = app_wk if plat == "app" else slot_wk
-        m = wk1.iso_week.isin([f"{prev}-W{w:02d}" for w in wks]) & (wk1.platform == plat) & \
-            (wk1.tenure_band == band_lab[c % 4])
-        arm_r1[c] = rules["slot_share"] * wk1.loc[m, "logged_in_sessions"].sum()
+                   "orders_filed": {r: int(nbin(x_, 100) * 100) for r, x_ in tot_o.items()},
+                   "fee_filed": {r: int(nbin(x_, 100) * 100) for r, x_ in tot_f.items()}}
+    v.check(min(bin_clear(x_, 100) for x_ in list(tot_o.values()) + list(tot_f.values())) >= 20, "ask2.mid_bin")
+    arms = {"first_release": arm_of(wk1, app_wk), "all_weeks_app": arm_of(cur, slot_wk), "both": arm_of(wk1, slot_wk)}
+    pooled_in = lifts(S, y_in, "session_weights", inc, pol)
+    inside = []
     for r in pol:
-        t_r1 = sum(cells_ord[(r, c)] * arm_r1[c] / 1000 for c in range(8))
-        v.check(nbin(t_r1, 100) != nbin(tot_o[r], 100), f"ask2.stop_first_release.{r}", (t_r1, tot_o[r]))
-        t_pool = E_[r] * arm.sum() / 1000
-        v.check(nbin(t_pool, 100) != nbin(tot_o[r], 100), f"ask2.stop_pooled.{r}", (t_pool, tot_o[r]))
+        reads = [(nm, tot(cells_ord, a_)[r], tot_o[r], True) for nm, a_ in arms.items()]
+        reads.append(("natural", pooled_in[r] * arms["both"].sum() / 1000, tot_o[r], True))
+        reads.append(("orders_pooled", E_[r] * arm.sum() / 1000, tot_o[r], False))
+        nc = np.array([(S.cell == c).sum() for c in range(8)], float)
+        reads.append(("fee_pooled", sum(nc[c] / nc.sum() * cells_fee[(r, c)] for c in range(8)) * arm.sum() / 1000,
+                      tot_f[r], False))
+        for key_, g_ in [((0, 0, 0, 0, 0), cells_fee)] + list(fee_sets.items()):
+            for an, a_ in [("planned", arm)] + list(arms.items()):
+                if an == "planned" and key_ == (0, 0, 0, 0, 0):
+                    continue
+                reads.append((f"fee_{''.join(map(str, key_))}_{an}", tot(g_, a_)[r], tot_f[r], False))
+        worst = None
+        for nm, x_, g0, stop in reads:
+            k0 = nbin(g0, 100)
+            o_ = max((k0 - 0.5) * 100 - x_, x_ - (k0 + 0.5) * 100)
+            score = abs(o_) if (o_ > 0 or not stop) else -abs(o_)
+            if worst is None or score < worst[0]:
+                worst = (score, nm, round(x_, 1), round(g0, 1))
+            if o_ < 0:
+                inside.append(f"{r}|{nm}")
+        v.check(worst[0] >= 5 and len(reads) == 133, f"ask2.every_reading_clear.{r}", worst)
+    out["ask2_readings_inside_the_hundred"] = inside
+    v.check(len([z for z in inside if "pooled" not in z]) <= 3, "ask2.device_readings_out", inside)
     # ------------------------------------------------------------------ device separation from the call
     O2 = O.copy()
     O2["asking_price_eur"] = O2.asking_price_eur.sample(frac=1.0, random_state=7).to_numpy()
+    O2["delivery"] = "shipped"
     y2 = per_session(S, window_orders(S, O2, 21))
     l2 = lifts(S, y2, "session_weights", inc, pol)
-    v.check(all(abs(l2[r] - E_[r]) < 1e-12 for r in pol), "separation.prices_do_not_move_the_call")
+    g2 = guard(S, tile_orders(S, O2).astype(float), inc, pol, "eight", False)
+    v.check(all(abs(l2[r] - E_[r]) < 1e-12 for r in pol) and
+            sorted((r, c) for (r, c), x_ in g2.items() if x_ < -rules["guard_pct"]) == [("HC-31", 7), ("HC-34", 0)],
+            "separation.prices_and_delivery_do_not_move_the_call")
     # ------------------------------------------------------------------ pack gates
     files = sorted(os.listdir(tgt))
     v.check(len(files) >= 10 and len({os.path.splitext(f)[1] for f in files}) >= 3, "gates.files_formats",

@@ -16,6 +16,13 @@ DRAW  (independent draws, checked with ../fingerprint/guard.py)
     the census before) composed with rule 2's census list and applied to the stepped-back windows; it never
     binds in a March round and removes the 14 stepped-back 31 March grantees at the first September census
     (measured traps #13 and #11); the step-back above is now the stop (R4)
+  Decisive mechanism after hardening loop 2: each return's own financial year (the portal's year_end on
+    every return) against one balance date per organisation; three grantees moved their balance date
+    from 30 June to 31 March in 2025-26, so their year ran nine months and March 2026 is its last
+    quarter, with no annual return on the register; on one balance date the stop scores them on twelve
+    months to March 2026 and rule 4.1 keeps them (R5, 34.11 cents on 11 names); on their own year they
+    stop at December 2025 like the other 31 March grantees and rule 4.1 removes them (measured trap #13,
+    behind #11); rule 4.1 against rule 2's list is now a lower rung
   Repeats from prior builds: none on a banned axis; the (time, B, method_or_model_selection) signature repeats task62's tempo lineage and task85, differentiated on the card
 As-of date: 2026-10-08
 ```
@@ -73,6 +80,17 @@ GATE G  (design stage)
     constraint (task58 v3, v4). The answer on file: the clause defines the measure at this census and
     is composed with the corpus-recovered window rather than inferred; the excluded windows are correct
     figures that the March 2026 round scored, and no voice or file reads them as wrong.
+  Hardening loop 2 (R6, each return's own financial year): no suspect file carries it (the year end is a
+    field on every return, correct on every return); A41 to A43 re-run on four screens (the answer, R3,
+    R4 and the stop R5): each repair leaves all four unchanged and all four different, and a fourth
+    repair, supplying the movers' June 2026 returns, leaves the answer and the stop unchanged (A43).
+    Lens-swap: the stop and the answer agree on all 132 rows the answer scores (A56); the three rows the
+    stop adds are twelve months to March 2026, a different period from the December 2025 the movers' own
+    year leaves, not one figure read two ways (A42). Instrument: the year end each return states is the
+    decision's own calendar; no better instrument exists short of the nine-month year's annual return,
+    which was not due until the census day and is not in the extract. The grants register carries no
+    balance date since this loop (a stale balance date there would have been a planted defect,
+    Tried and rejected).
   Pre-draw identity test: the allocation's arithmetic (offers = clamp(rate x fall), sum = pot) closes
     over falls the pack does not ship; every fall is constructed, and the decisive input (which quarters
     are admissible) is neither filed nor visibly forced. Passed.
@@ -80,11 +98,21 @@ GATE G  (design stage)
 
 ## Stump sentence
 
-A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, recovers the step-back from Ledgerwood's ten residue rows (or reaches it directly through the twelve-month identity on the register as held), gives back all 797 published rows, every offer and every rate, and strikes the offers at 17.76 cents on 14 names (R4), because it scores the 14 grantees balancing at 31 March whose 2025-26 annual return was not on the register on twelve months to December 2025, reading rule 4.1's "census before it" as a year back, which is what it meant in every March round the corpus shows, when rule 2 makes 31 March 2026 the census before the first September census, those twelve months end before it, and the answer scores 132 grantees and strikes 42.55 cents on nine.
+A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, recovers the step-back from Ledgerwood's residue rows or the twelve-month identity on the register as held, gives back all 815 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 14 grantees balancing at 31 March whose 2025-26 annual return was not on the register, and strikes the offers at 34.11 cents on 11 names (R5), because it places every quarter on one balance date per organisation, the balance date of its latest annual return, which for the three grantees that moved from 30 June to 31 March during 2025-26 is still 30 June, so it scores them on twelve months to March 2026 and offers two of them, when each return's own year end makes March 2026 the last quarter of their nine-month year, which has no annual return on the register, so their twelve months stop at December 2025 like the other 31 March grantees', rule 4.1 removes them, and the answer scores 132 grantees and strikes 42.55 cents on nine.
+
+(Hardening loop 2. The loop 1 sentence had the solver stop at the step-back without rule 4.1, 17.76 cents on 14 names; solver round 2 read the clause against rule 2 on its first pass over the rules, see Tried and rejected.)
 
 (Hardening loop 1. The stage 2 sentence had the solver stop at R3, scoring the 32 unfiled grantees on twelve months to June 2026 with their management fourth quarters; solver round 1 climbed past it, see Tried and rejected.)
 
 ## Decisive rung
+
+**Hardening loop 2: the decisive rung is R6, each return's own financial year.** Measured trap #13, validates on one population and applies to another (3 of 64, 2 under 0.50), behind #11 (beats the headline trap, misses the quiet one): one balance date per organisation fits every row the corpus can check, and the September population differs on one axis, the length of three grantees' 2025-26 year. Each portal return carries `year_end`, "the last day of the organisation's financial year that the year-to-date figures run within" (field guide), and the grants register carries no balance date. Three grantees (BC1 Timaru Volunteer Exchange Trust, BC2 Hornby Adult Literacy Project, BC3 Governors Bay Heritage Society) balanced at 30 June to 2025 and moved to 31 March: their returns from September 2025 carry 31 March 2026, so the year ran nine months, July 2025 to March 2026, and March 2026 is its last quarter. Its annual return was due on the census day and is not in the extract, and none of the three has filed a June 2026 return by the extract. Placing each quarter in the year its own return runs within (the answer) makes March 2026 a year end with no annual return, so their twelve months stop at December 2025 and rule 4.1 removes them with the 14 other 31 March grantees; keying every quarter to one balance date per organisation, the balance date of its latest annual return as held (30 June 2025 for all three; the stop, R5), reads March 2026 as the third quarter of a year to 30 June 2026, scores them on twelve months to March 2026, which rule 4.1 admits, and offers BC1 and BC2 (15.04 and 14.71 per cent). The stop strikes 34.11 cents on 11 names; the answer 42.55 on nine.
+
+Why the corpus cannot see it (L1, asserted case by case and structurally, A57 and the verifier): the movers' new year began in July 2025, so the only March window that holds any of its quarters is March 2026's, which ends at December 2025, the nine-month year's second quarter, at the same position on both calendars; and every year-end quarter inside every March window falls at the same place on both calendars, so the screen on one balance date per organisation gives back all six packs (the movers' 18 published rows among them, none near the line). Why the stop's step still completes: the identity on the register as held (the latest annual return, here the year to 30 June 2025, plus the year to date at March 2026 less the year to date at March 2025) returns a true twelve months to March 2026 for each mover; every count, offer, rate and join ties; nothing in the pack names a change of balance date, a short year or a transition. What decides it is whether the solver asks of each return whether its own period is a year end (period_end against year_end) or carries one balance month per organisation, and the latest annual return, all seven of each mover's register rows and 28 of its 31 returns say 30 June.
+
+Exposure, stated: once a solver keys year ends to each return's own `year_end`, the rung is one comparison per return, and with the grants register's balance date gone that field is the nearest source of a calendar; the defence is that the one-balance-date reading is the one the LTM identity and the register suggest, it fits the corpus exactly, and no symptom asks the question. Two more exposures, stated for the next round. A solver who takes each quarter's position from its own `year_end` month on a twelve-month year (position counted from the month after the year end's month) gets each mover's September 2025 quarter as a second quarter and a negative quarter of about nine months' income, a symptom that leads straight to the rung; the stop's implementation (one balance month per organisation) has none. And the corpus cannot separate "a year's last quarter" from "a year's fourth quarter", because every corpus year has four: the step-back's reach to a nine-month year rests on its rationale (a year end's figures come from the annual return, and the movers' March 2026 return is a year-end management return like any other, to be trued up once that return is filed) and on the field guide's `year_end`; a screen that steps back only at a fourth quarter on the returns calendar lands on the stop's rate (34.11) and is the rival a determinism judge would test. Survival properties for R6: 1 yes (no sentence names a balance-date change or a short year; the field guide defines a field, the same sentence true of every return); 2 yes (blind by construction, A57); 3 yes (the stop's figures are correct twelve-month sums); 4 partial (one comparison per return once suspected); 5 yes (three organisations); 6 partial (the change is dated at the September 2025 return, but no series steps at it); 7 yes (no wrong number to delete).
+
+The hardening loop 1 description of the rung that is now R5, rule 4.1 against rule 2's census list, follows as designed.
 
 **Hardening loop 1: the decisive rung is R5.** Measured trap #13, validates on one population and applies to another (3 of 64, 2 under 0.50), behind #11 (beats the headline trap, misses the quiet one; 4 of 64, 2 under 0.50): the stepped-back window is the construction that fits all 797 published rows, and the population it is applied to in September differs on one axis, the distance to the census before. Rule 4.1 says twelve-month income at a census is for twelve months ending on or after the census before it; rule 2, amended 16 June 2026, adds 30 September to the census dates from 2026. In every March round the census before was a year back and every window, stepped back or not, ended on or after it: no published window ends before it, two end exactly on it (J1 2023 and J2 2024, the 30-June residue rows), which pins the inclusive reading, and the screen with the clause switched off, or read against the census a year back, gives back all six packs (A54). So the clause has never bound and no back-test can see it. At the first September census the census before is 31 March 2026: the 17 scored 30-June grantees end exactly on it and the 14 unfiled 31 March grantees, whose twelve months stop at December 2025, fall before it and are not scored (rule 3.2). The forward rows' difference is filed (rules 2 and 4.1), not left to inference, and it changes the decision: R4 strikes 17.76 cents on 14 names, the answer 42.55 on nine.
 
@@ -115,85 +143,85 @@ Exactly one rate for the September 2026 round (census 30 September 2026), with t
 ## Answer
 
 ```
-ANSWER (built, hardening loop 1)
+ANSWER (built, hardening loop 2; unchanged from loop 1)
   The rate: 42.55 cents per dollar of fall (target band 36.00 to 48.00, asserted), struck as the
     highest hundredth of a cent whose whole-dollar offers do not exceed NZ$560,000: NZ$559,969
     offered, NZ$31 left in the Fund, the next hundredth NZ$66 over (both at least NZ$25 from the
     step edges, so no per-offer rounding convention moves the struck rate)
   Offered: 9 grantees by name: F1 to F7 (filed 31 March grantees, F3 the dual-grant organisation)
     and A5 and A6 (30-June grantees scored on twelve months to March 2026)
-  Scored: 132 of the 150 organisations holding an operating grant at the census; the 14 unfiled
-    31 March grantees are out under rule 4.1 and four newer grantees under rule 3.2
-  Cap binds for exactly one offer (F1); no offer sits at the floor; neither R3 nor R4 caps an offer
+  Scored: 132 of the 153 organisations holding an operating grant at the census; the 17 whose
+    2025-26 year ended on 31 March 2026 without an annual return on the register (14 balancing at
+    31 March, three that moved there from 30 June) are out under rule 4.1, and four newer grantees
+    under rule 3.2
+  Cap binds for exactly one offer (F1); no offer sits at the floor; neither R3, R4 nor R5 caps an offer
   First grantee outside the line: L_dual, Amberley Tenancy Advocacy Service, 6.4 per cent (6.39;
-    the next 5.40); R4's first outside is Y4 at 7.72
+    the next 4.01), and the first not offered in screen order too (fall NZ$33,728 against G_R2's
+    NZ$28,861, A13); R4's first outside is Y4 at 7.72
   Line clearance: no scored grantee's fall within 1.5 points of 10.0 per cent
 MARGIN: an allocation has no runner-up; the guard that binds is grid separation on the rate (every
-  rung and single-violation cell at least 14.5 per cent below the answer, R0 nearest) and on names
-  (R4 differs by five names and 55.2 per cent of the pot, R3 by seven and 46.2 per cent)
+  rung and single-violation cell at least 14.5 per cent below the answer, R0 nearest, the stop R5 at
+  19.8 per cent) and on names (R5 differs by two names and 17.9 per cent of the pot, R4 by seven and
+  58.6, R3 by seven and 46.2)
 ```
 
 ## Ladder
 
-Six rungs since hardening loop 1. Candidates are offer sets with their rates; each rung's set differs from every other rung's by name, asserted after every parameter change (A6). Built values at the September census in brackets: rate; the answer's rate as a multiple of the rung's; offers; names differing from the answer; share of the pot re-placed.
+Seven rungs since hardening loop 2. Candidates are offer sets with their rates; each rung's set differs from every other rung's by name, asserted after every parameter change (A6). Built values at the September census in brackets: rate; the answer's rate as a multiple of the rung's; offers; names differing from the answer; share of the pot re-placed.
 
-- **R0, the filed-year basis (gap: rule, what "twelve-month income" is).** Twelve-month income is total gross income on the grantee's latest annual return in the register extract, the fall is against the return before. Candidate O0 [36.37 cents, 1.170x, 10 offered, 5 differ, 31.4 per cent]. Killed by: the six packs, whose twelve-month figures are sums of four portal quarters and match no filed financial year (a filed-year rebuild gives back 10 of the 797 rows). Why a careful analyst stops here: the annual return is the audited statutory figure, two filed years is how a funder reads a grantee's trend, and nothing in the register looks incomplete.
+- **R0, the filed-year basis (gap: rule, what "twelve-month income" is).** Twelve-month income is total gross income on the grantee's latest annual return in the register extract, the fall is against the return before. Candidate O0 [36.37 cents, 1.170x, 10 offered, 5 differ, 31.4 per cent]. Killed by: the six packs, whose twelve-month figures are sums of four portal quarters and match no filed financial year (a filed-year rebuild gives back 10 of the 815 rows). Why a careful analyst stops here: the annual return is the audited statutory figure, two filed years is how a funder reads a grantee's trend, and nothing in the register looks incomplete.
 - **R1, the natural portal build (gap: population, the unit).** Today's portal (extract 7 October 2026), each return's latest accepted version, year to date differenced into quarters, twelve months to June 2026 against the twelve months before, one row per grant return. Candidate O1 [23.94, 1.777x, 14 offers on 154 rows, 9 differ, 51.1 per cent]. Killed by: the packs carry one row per organisation, and the grants register maps the seven dual-grant organisations' two references to one charity number, so R1's row count exceeds every pack's. Why stop: it is the textbook ETL build, each grant return is a separate filing under its own reference, and every figure ties to a return.
 - **R2, one row per organisation (gap: time, the version basis).** The latest accepted version across each organisation's grants, today's portal. Candidate O2 [26.54, 1.603x, 13 offered, 8 differ, 51.9 per cent]. Killed by: the twin pair and 94 corpus rows touched by amendments accepted after their census, which reproduce only on the versions accepted by each census (R2 also misses the offers and rate in four rounds). Why stop: dual grants are collapsed, every row pairs one-for-one with a pack row, and "the latest accepted version is the record" is the warehouse's own convention.
-- **R3, as held at the census (gap: time, knowledge time; the stage 2 stump).** Versions accepted by the census (inclusive), the fourth quarter as held, which is the trued-up figure wherever the annual return was on the register and the management figure otherwise. Candidate O3 [29.83, 1.426x, 12 offered, 7 differ, 46.2 per cent]. Killed by: the ten residue rows (D1 in all six rounds, D2 in two, two 30-June late filers), which reproduce only with the window stopped at the quarter before a year-end whose annual return had not reached the register by that census. Why stop: it beats look-ahead, gives back every offer and every rate in all six rounds and 787 of 797 rows, and the ten misses are small non-offered rows that read as amendment noise.
-- **R4, the step-back (gap: time, then rule; the stage 2 decisive rung, now the stop).** A year's final quarter exists only as the filed annual return's income less the nine-month year to date, admissible from the register's date received; the trailing window is the latest four consecutive admissible quarters and the prior window steps back with it. At 30 September 2026 the 14 unfiled 31 March grantees' twelve months stop at December 2025 and the 17 scored 30-June grantees' at March 2026. Candidate O4 [17.76, 2.396x, 14 offered, 5 differ, 55.2 per cent]. Killed by: rule 4.1's recency clause with rule 2's census list (R5). Why stop: it gives back all 797 published rows, every offer and every rate; it is the analyst's own twelve-month identity on the register as held (solver round 1 reached it that way, Tried and rejected); and the clause it breaks has never bound in a round the corpus shows, because every March census before had its previous census a year back.
-- **R5, decisive (gap: population, through time).** Twelve-month income at a census must end on or after the census before it (rule 4.1), and the census before 30 September 2026 is 31 March 2026 (rule 2). The 14 unfiled 31 March grantees (twelve months to December 2025) are not scored; the 17 30-June grantees (twelve months to March 2026, ending on that census) are; one new 30-June grantee still lacks the quarters rule 3.2 requires. Candidate O*, the answer [42.55, 9 offered, 132 scored].
+- **R3, as held at the census (gap: time, knowledge time; the stage 2 stump).** Versions accepted by the census (inclusive), the fourth quarter as held, which is the trued-up figure wherever the annual return was on the register and the management figure otherwise. Candidate O3 [29.83, 1.426x, 12 offered, 7 differ, 46.2 per cent]. Killed by: the ten residue rows (D1 in all six rounds, D2 in two, two 30-June late filers), which reproduce only with the window stopped at the quarter before a year-end whose annual return had not reached the register by that census. Why stop: it beats look-ahead, gives back every offer and every rate in all six rounds and 805 of 815 rows, and the ten misses are small non-offered rows that read as amendment noise. (R1 to R3 do not score the three movers at all: their natural window ends at June 2026, for which none has filed a return.)
+- **R4, the step-back on one balance date (gap: time, then rule).** A year's final quarter exists only as the filed annual return's income less the year to date at the quarter before, admissible from the register's date received; the trailing window is the latest four consecutive admissible quarters and the prior window steps back with it; every quarter is placed on one balance date per organisation, the balance date of its latest annual return as held. At 30 September 2026 the 14 unfiled 31 March grantees' twelve months stop at December 2025, the 17 scored 30-June grantees' and the three movers' at March 2026. Candidate O4 [16.14, 2.636x, 16 offered on 149 rows, 7 differ, 58.6 per cent]. Killed by: rule 4.1's recency clause with rule 2's census list (R5). Why stop: it gives back all 815 published rows, every offer and every rate; it is the analyst's own twelve-month identity on the register as held (solver rounds 1 and 2 reached it that way); and the clause it breaks has never bound in a round the corpus shows. (The loop 1 stop, the same step-back on each return's own year without rule 4.1, is a grid cell: 17.76, 2.396x, 14 offers, 5 differ, 55.2 per cent.)
+- **R5, rule 4.1 on one balance date (gap: population, through time; the loop 1 decisive rung, now the stop).** Twelve-month income at a census must end on or after the census before it (rule 4.1), and the census before 30 September 2026 is 31 March 2026 (rule 2): the 14 unfiled 31 March grantees (twelve months to December 2025) drop out; the 17 30-June grantees and the three movers (twelve months to March 2026 on one balance date, ending on that census) stay. Candidate O5 [34.11, 1.247x, 11 offered on 135 rows, 2 differ, 17.9 per cent]. Killed by: the movers' own returns, whose `year_end` makes March 2026 the last quarter of a nine-month year with no annual return on the register (R6). Why stop: it reads every filed rule, gives back all 815 published rows on the one-balance-date calendar too (A57), and every figure it scores is a true twelve-month sum; the movers' latest annual return, all their register rows and 28 of their 31 returns say 30 June.
+- **R6, decisive (gap: population, through the calendar).** Each quarter sits in the financial year its own return runs within, a year starting the day after the year end before it: the three movers' 2025-26 year ran nine months to 31 March 2026, so March 2026 is a year end, inadmissible without the annual return, their windows stop at December 2025, and rule 4.1 removes them with the other 14 31 March grantees. Candidate O*, the answer [42.55, 9 offered, 132 scored].
 
-"A solver who does everything right up to rung 4 commits to O4": the stump sentence above.
+"A solver who does everything right up to rung 5 commits to O5": the stump sentence above.
 
 ```
 Every rung names a different candidate? yes (asserted by name, A6)
-Which rung carries the stump: R5 (R4 is the stop; R3 was the stage 2 stop)
-Seven survival properties for R5:
-  1 written in no shipped sentence ............ no: rule 4.1's second sentence files it, and rule 2 files the
-                                                calendar it is read against; the exposure, stated under Decisive rung
-  2 no sweepable corpus nominates it .......... yes: blind by construction, every March window ends on or after the
-                                                census a year back (A54, structurally and case by case)
-  3 no arithmetic symptom ...................... yes: R4 gives back every published figure; counts, offers, rates
-                                                and joins all tie on the wrong path
-  4 not a per-row predicate .................... partial: once suspected it is one date comparison per row, but its
-                                                right-hand side (the census before) needs rule 2's new calendar
-  5 enumeration is arithmetic .................. yes: the affected class is the step-back's own output
-  6 no cutover date ............................ partial: rule 2's June 2026 amendment is a dated event, but no
-                                                series steps at it
-  7 survives the deletion ...................... yes: no wrong number exists to delete
-Worth on the graded quantity (the rate, built): R1 to R2 +10.9 per cent, R2 to R3 +12.4, R3 to R4 -40.5,
-  R4 to R5 +139.6
-Sign direction: the corrections walk the rate up through R3, the step-back cuts it by two fifths, and the
-  decisive rung more than doubles it, past every lower rung: the answer is the highest rate on the grid.
-  R0 sits off the chain (a different measure).
+Which rung carries the stump: R6 (R5 is the stop; R4 was the loop 1 stop, R3 the stage 2 stop)
+Seven survival properties for R6 (stated under Decisive rung): 1 yes · 2 yes, blind by construction (A57)
+  · 3 yes · 4 partial (one comparison per return once suspected) · 5 yes (three organisations)
+  · 6 partial (the change is dated at the September 2025 return; no series steps at it) · 7 yes
+Seven survival properties for R5 (loop 1, now a lower rung): 1 no, rule 4.1 files it; 2 yes; 3 yes;
+  4 partial; 5 yes; 6 partial; 7 yes. Solver round 2 took exposure 1 (Tried and rejected).
+Worth on the graded quantity (the rate, built): R1 to R2 +10.9 per cent, R2 to R3 +12.4, R3 to R4 -45.9,
+  R4 to R5 +111.3, R5 to R6 +24.7
+Sign direction: the corrections walk the rate up through R3, the step-back cuts it by more than two
+  fifths, rule 4.1 doubles it, and the decisive rung lifts it a quarter again, past every lower rung: the
+  answer is the highest rate on the grid. R0 sits off the chain (a different measure).
 ```
 
 ## Position table (adapted to an allocation)
 
-The skill's position rule is written for a ranking; here the answer is a rate and a set, so each row carries the answer's rate as a multiple of the rung's, the names that differ, the share of the pot that goes to different grantees, and the rank by dollar fall of two markers: A5 (Woolston Sports Education Trust, the answer's largest uncapped offer, a 30-June grantee scored on twelve months to March 2026) and M (Geraldine Carer Respite Network, R4's largest offer, an unfiled 31 March grantee the answer does not score).
+The skill's position rule is written for a ranking; here the answer is a rate and a set, so each row carries the answer's rate as a multiple of the rung's, the names that differ, the share of the pot that goes to different grantees, and the rank by dollar fall of three markers: A5 (Woolston Sports Education Trust, the answer's largest uncapped offer, a 30-June grantee scored on twelve months to March 2026), M (Geraldine Carer Respite Network, R4's largest offer, an unfiled 31 March grantee the answer does not score) and BC1 (Timaru Volunteer Exchange Trust, the stop's largest own offer, a balance-date mover the answer does not score).
 
-| Rung | Answer's rate as a multiple | Names differing from the answer | Pot re-placed | A5 by fall | M by fall |
-|---|---|---|---|---|---|
-| R0 | 1.170x | 5 | 31.4% | 14th, not offered | 7th, not offered |
-| R1 | 1.777x | 9 | 51.1% | 145th | 153rd |
-| R2 | 1.603x | 8 | 51.9% | 138th | 146th |
-| R3 | 1.426x | 7 | 46.2% | 138th | 146th |
-| R4 | 2.396x | 5 | 55.2% | 4th, offered | 1st, offered |
-| R5 | 1.00x | 0 | 0 | 2nd, offered | not scored |
+| Rung | Answer's rate as a multiple | Names differing from the answer | Pot re-placed | A5 by fall | M by fall | BC1 by fall |
+|---|---|---|---|---|---|---|
+| R0 | 1.170x | 5 | 31.4% | 14th, not offered | 7th, not offered | 96th, not offered |
+| R1 | 1.777x | 9 | 51.1% | 145th | 153rd | not scored |
+| R2 | 1.603x | 8 | 51.9% | 138th | 146th | not scored |
+| R3 | 1.426x | 7 | 46.2% | 138th | 146th | not scored |
+| step-back on each return's own year, no rule 4.1 (grid cell, the loop 1 stop) | 2.396x | 5 | 55.2% | 4th, offered | 1st, offered | 13th, not offered |
+| R4 | 2.636x | 7 | 58.6% | 4th, offered | 1st, offered | 8th, offered |
+| R5 (the stop) | 1.247x | 2 | 17.9% | 2nd, offered | not scored | 3rd, offered |
+| R6 (the answer) | 1.00x | 0 | 0 | 2nd, offered | not scored | not scored |
 
-No rung sits within 1.15x of the answer's rate (nearest R0 at 1.170x; A5 asserts the floors 1.15, 1.40, 1.40, 1.30 and 2.00). The answer's offers are R4's less the five R4 makes to grantees the answer does not score (M, A2, A3, A4, C1; A7).
+No rung sits within 1.15x of the answer's rate (nearest R0 at 1.170x, the stop at 1.247x; A5 asserts the floors 1.15, 1.40, 1.40, 1.30, 2.00 and 1.20). The answer's offers are the stop's less the two movers it does not score (BC1, BC2); the stop's are R4's less the five rule 4.1 removes on either calendar (M, A2, A3, A4, C1; A7).
 
 ## Discriminator dominance (adapted)
 
-- R4 against the answer (hardening loop 1): R4's five own offers (M, A2, A3, A4 and C1, 31 March grantees that fell in 2025 and recovered in 2026, scored by R4 on twelve months to December 2025) hold 56.4 per cent of R4's eligible falls (A18, floor 45). The answer's edge is the removal itself: no answer name changes window between R4 and the answer (A45 holds every offered grantee on the answer's windows under R4), so the rate moves only through the five removed falls, which is why the move is 2.40x.
+- The stop (R5) against the answer (hardening loop 2): the stop's two own offers (BC1 and BC2, balance-date movers that fell 15.04 and 14.71 per cent over the twelve months to March 2026) hold 17.9 per cent of the stop's eligible falls (A18, floor 15). The answer's edge is the removal of the movers, nothing else: the stop and the answer agree on all 132 rows the answer scores (A56), so the rate moves only through the two removed falls, which is why the move is 1.247x. BC3 sits under the stop at -1.34 per cent, unoffered on either calendar.
+- R4 against R5 (hardening loop 1's rung, now below the stop): R4's five own offers against the stop (M, A2, A3, A4 and C1, 31 March grantees that fell in 2025 and recovered in 2026, scored by R4 on twelve months to December 2025) hold 56.4 per cent of the eligible falls of the step-back on each return's own year (A18, floor 45).
 - R3 against the answer: R3's own names (the four decoys and C1) hold 46.4 per cent of R3's eligible falls; the answer's own names against R3 (A5 and A6) hold 25.6 per cent of the answer's (A18, floors 20 each).
-- Band check, both directions: every decoy is unscored by the answer and sits on R4 at -1.45, -1.27, -1.58 and 7.72 per cent, on R3 at 15.81 to 18.43; every step-back mover sits at 14.21 to 22.08 per cent on R4 or the answer and at -9.09 to -2.92 on R3 (A19).
+- Band check, both directions: every decoy is unscored by the answer and sits on R4 at -1.45, -1.27, -1.58 and 7.72 per cent, on R3 at 15.81 to 18.43; every step-back mover sits at 14.21 to 22.08 per cent on R4 or the answer and at -9.09 to -2.92 on R3 (A19); the offered movers at 15.04 and 14.71 under the stop (A56).
 - Disagreement constructed, not drawn: the generator builds each mover's quarterly path deterministically (the seed decides texture only) and asserts both windows' falls per name.
 
 ## Correction grid
 
-Built values at the September census, rate against the answer's 42.55 cents. Every cell runs with rule 4.1 unless the row says otherwise.
+Built values at the September census, rate against the answer's 42.55 cents. Every cell runs with rule 4.1 and on each return's own financial year unless the row says otherwise.
 
 | Cell | Rate vs the answer | Rule it violates |
 |---|---|---|
@@ -205,9 +233,15 @@ Built values at the September census, rate against the answer's 42.55 cents. Eve
 | per return, as held, step-back | -16.1% | packs: one row per organisation |
 | per organisation, latest, step-back | -16.4% | packs: versions accepted by each census |
 | filed-year basis (R0) | -14.5% | packs: trailing quarters, not financial years |
-| step-back without rule 4.1's clause (R4) | -58.3% | rules 2 and 4.1 |
-| R4 per return, as held | -61.5% | rules 2 and 4.1; one row per organisation |
-| R4 latest versions | -61.2% | rules 2 and 4.1; versions accepted by each census |
+| step-back without rule 4.1's clause (the loop 1 stop) | -58.3% | rules 2 and 4.1 |
+| the same, per return, as held | -61.5% | rules 2 and 4.1; one row per organisation |
+| the same, latest versions | -61.2% | rules 2 and 4.1; versions accepted by each census |
+| one balance date, step-back, no rule 4.1 (R4) | -62.1% | the movers' own year ends; rules 2 and 4.1 |
+| one balance date, rule 4.1 (R5, the stop) | -19.8% | the movers' own year ends (field guide: `year_end` is the year the year-to-date figures run within) |
+| one balance date, per return, as held | -29.6% | the movers' own year ends; one row per organisation |
+| one balance date, latest versions | -29.8% | the movers' own year ends; versions accepted by each census |
+| one balance date, census day exclusive | -19.8% (equals the stop on the rate) | the movers' own year ends; three census-day receipts |
+| one balance date, register at the extract | -19.8% (equals the stop on the rate) | the movers' own year ends; the residue rows |
 | answer | 0 | |
 | partial: 30-June grantees not stepped back | +55.8% | packs: the two 30-June residue rows |
 | partial: only 30-June grantees stepped back | -41.0% | packs: the eight 31 December residue rows |
@@ -215,11 +249,11 @@ Built values at the September census, rate against the answer's 42.55 cents. Eve
 | partial: overdue only (V1) | -29.9% (equals R3) | packs: D1 and D2 rows, not yet due when stepped back |
 | partial: register fallback, no step-back | -29.9% (equals R3, by construction) | packs: the ten residue rows |
 | rule 4.1 read strictly (after the census before, not on it) | +55.8% | packs: J1 2023 and J2 2024 end on the census before |
-| rule 4.1 against the census a year back | -58.3% (equals R4) | rule 2: the census before is the previous date in its list |
+| rule 4.1 against the census a year back | -58.3% (equals the step-back without the clause) | rule 2: the census before is the previous date in its list |
 | partial: register read as at the extract | 0 on the rate and every offer; 138 scored, not 132 | packs: all ten residue returns appear in the extract |
 | partial: census day exclusive | 0 on the rate and every offer; 118 scored, not 132 | packs: three census-day receipts counted as received |
 
-Separation: the nearest single-violation cell sits 14.5 per cent from the answer (R0, a different measure), the nearest on the main chain 16.1 per cent (per return, as held, step-back); target at least 8. The three +55.8 cells coincide because each takes A5 and A6 out of the offered set (their June-window falls are under the line, or they are not scored), leaving F1 to F7. The two converging cells (register at the extract, census day exclusive) leave the rate and every offer unchanged by construction and move only the count scored, which the corpus pins (T-extract misses 10 rows, T-strict 3).
+Separation: the nearest single-violation cell sits 14.5 per cent from the answer (R0, a different measure), the nearest on the main chain 16.1 per cent (per return, as held, step-back), the stop 19.8 per cent; target at least 8. The three +55.8 cells coincide because each takes A5 and A6 out of the offered set (their June-window falls are under the line, or they are not scored), leaving F1 to F7. The two converging cells (register at the extract, census day exclusive) leave the rate and every offer unchanged by construction and move only the count scored, which the corpus pins (T-extract misses 10 rows, T-strict 3). The calendar axis composes with the others without a new collision: on one balance date the census-day and register-at-extract variants land on the stop's rate, because the movers' March 2026 quarter is read the same way under both.
 
 ## Calibration corpus
 
@@ -230,12 +264,13 @@ Form: parallel_run_overlap. Ledgerwood's six published March-round runs (census 
   and a round sheet (census date, pot, rate, offers made, total offered). No window column, no window
   in any header, no method text. The cutover standard makes giving back every figure in all six the
   condition of using the in-house screen.
-Cases: 797 rows (118, 124, 131, 137, 142, 145); 71 offers (9, 10, 11, 12, 13, 16); six rates;
+Cases: 815 rows (121, 127, 134, 140, 145, 148; 797 until hardening loop 2 added the three balance-date
+  movers, scored in every round); 71 offers (9, 10, 11, 12, 13, 16); six rates;
   pots NZ$540,000, 575,000, 610,000, 650,000, 690,000, 720,000.
-Correct rule (T) reproduces 797 of 797 rows to the dollar (fall per cent to the decimal), 71 of 71
+Correct rule (T) reproduces 815 of 815 rows to the dollar (fall per cent to the decimal), 71 of 71
   offers to the dollar and 6 of 6 rates to the hundredth of a cent. Zero tolerance.
 Rival family, 12 rules, each scored row by row (misses asserted by name, worst stated):
-  R0 filed-year basis ..................... misses at least 760 rows
+  R0 filed-year basis ..................... misses 805 rows (10 given back)
   R1 per grant return ...................... row counts fail all six rounds (5 to 7 extra rows each);
                                              offers and rate fail where a dual organisation was offered (2023, 2025)
   R2 latest versions ....................... misses at least 40 rows, offers and rate in at least 4 rounds
@@ -253,7 +288,8 @@ Rival family, 12 rules, each scored row by row (misses asserted by name, worst s
      management Q4 otherwise) .............. misses 10 (identical to R3 by construction)
   Worst rival miss among the T variants: 3 rows (T-strict); no rival misses fewer than 3.
 Twin pair: two 31 March grantees in the March 2025 round, identical on every grants-register column
-  (sector, region, programme, grant amount, start date, balance date) and identical to the dollar on
+  (sector, district, programme, grant amount, start date; the register carries no balance date since
+  hardening loop 2, and both twins' returns carry 31 March year ends) and identical to the dollar on
   twelve-month income, prior twelve months and fall under today's latest versions (both 11.6 per cent);
   published falls 5.9 and 11.6 per cent (1.97x), because one restated its October to December 2024
   quarter after the census. Only the versions accepted by 31 March 2025 reproduce both; under R2
@@ -279,7 +315,7 @@ What the corpus is blind to, and why (asserted twice, structurally and case by c
   months (31 March balance dates) or three months (30 June) before the census, so it was on the
   register except for two 30-June grantees that filed very late; the only balance date whose return
   is not yet due at a March census is 31 December (three grantees, two filing after March in some
-  years). So T and R3 agree on 787 of 797 rows, every offer and every rate. At the September census
+  years). So T and R3 agree on 805 of 815 rows, every offer and every rate. At the September census
   the census falls on the filing deadline itself for 31 March balance dates and three months before
   it for 30 June, so 32 grantees step back.
 Residue rows, named for the generator: D1 (31 December balance date, files each May) in all six
@@ -294,14 +330,22 @@ Rule 4.1's recency clause (hardening loop 1), blind by construction: at every Ma
   switched off, or read against the census a year back, gives back all six packs (A54, asserted per
   round in the generator and in the verifier). So the corpus scores the window construction and is
   arithmetically incapable of scoring the clause, which binds for the first time at 30 September 2026.
+One balance date per organisation (hardening loop 2), blind by construction: the three movers' nine-month
+  year began in July 2025, so the only March window holding any of its quarters is March 2026's, which
+  ends at December 2025, the year's second quarter on both calendars; no year-end quarter inside any
+  March window differs between the two calendars (A57, structural), and the screen keyed to one balance
+  date per organisation, the balance date of its latest annual return as held, gives back all six packs
+  (A57 per round, and the verifier). The movers' 18 published rows sit far from the line in every round.
+  So the corpus is blind to the calendar question, which bites for the first time at 30 September 2026,
+  the first census after a shortened year ended.
 ```
 
 ## Pins and counter-pins
 
-- **Filed pins, by authority.** Level 1, the cutover standard (the reproduction clause: the in-house screen may be used only once it gives back every grantee row, every offer and each round's rate in all six published March runs). Level 1, the round rules (the census dates in rule 2: 31 March each year and, from 2026, 30 September; rule 4.1's second sentence: twelve-month income at a census is for twelve months ending on or after the census before it; rule 7's pay day: the 20th of the month before the month an instalment is for, or the Friday before; scope: organisations holding a current operating grant at the census with returns covering both twelve-month periods the screen compares; one row per organisation; the 10 per cent line on the prior twelve months; offers at the common rate on the fall in dollars, floor NZ$15,000, cap NZ$150,000, whole dollars; the rate struck to the hundredth of a cent as the highest that keeps offers within the pot, any remainder staying in the Fund; offers paid in twelve monthly instalments from the December after the census). Level 3, the trustees' 2026-27 budget minute (September pot NZ$560,000). Level 4, the warehouse field guide (field semantics only: version status values, accepted_at in New Zealand time, line codes on both forms, the register extract's date_received). Level 5, the portal's November 2024 form-change notice, effective from the December 2024 return (ask layer only: "Government grants" becomes "Government grants and contracts" and keeps its code, fees and sales lose the contracts, the Trust-money memo, comparatives shown for information). Above all of them, since stage 3, the prompt states the pot (NZ$560,000 since hardening loop 1), the floor (NZ$15,000) and the cap (NZ$150,000), the same values the budget minute and rule 5.2 file; nothing in the pack states another, so the top of the hierarchy and the filed pin agree and no counter-pin exists.
+- **Filed pins, by authority.** Level 1, the cutover standard (the reproduction clause: the in-house screen may be used only once it gives back every grantee row, every offer and each round's rate in all six published March runs). Level 1, the round rules (the census dates in rule 2: 31 March each year and, from 2026, 30 September; rule 4.1's second sentence: twelve-month income at a census is for twelve months ending on or after the census before it; rule 7's pay day: the 20th of the month before the month an instalment is for, or the Friday before; scope: organisations holding a current operating grant at the census with returns covering both twelve-month periods the screen compares; one row per organisation; the 10 per cent line on the prior twelve months; offers at the common rate on the fall in dollars, floor NZ$15,000, cap NZ$150,000, whole dollars; the rate struck to the hundredth of a cent as the highest that keeps offers within the pot, any remainder staying in the Fund; offers paid in twelve monthly instalments from the December after the census). Level 3, the trustees' 2026-27 budget minute (September pot NZ$560,000). Level 4, the warehouse field guide (field semantics only: version status values, accepted_at in New Zealand time, each return's `year_end` as the last day of the financial year its year-to-date figures run within, line codes on both forms, the register extract's date_received, the Variations sheet as each change to a grant's annual amount). Level 5, the portal's November 2024 form-change notice, effective from the December 2024 return (ask layer only: "Government grants" becomes "Government grants and contracts" and keeps its code, fees and sales lose the contracts, the Trust-money memo, comparatives shown for information). Above all of them, since stage 3, the prompt states the pot (NZ$560,000 since hardening loop 1), the floor (NZ$15,000) and the cap (NZ$150,000), the same values the budget minute and rule 5.2 file; nothing in the pack states another, so the top of the hierarchy and the filed pin agree and no counter-pin exists.
 - **Empirical pins (corpus, C2).** Trailing four quarters; one row per organisation; as held at the census; T (Q4 only from a received annual return; the window steps back; the prior window with it); census day inclusive; fall per cent on the prior twelve months; rounding and integerisation paths.
-- **No pin, deliberately.** Nothing states knowledge time, the fourth-quarter source, the window or that a management return is provisional. Rule 4.1's recency clause is a pin of a different kind: it is filed, it is quiet at every natural window, and nothing points at the step-back's output it acts on.
-- **Counter-pin sweep (asserted by grep over the cut pack).** No header or cell says "twelve months to"; no document defines twelve-month income as "the four quarters to the census"; no field-guide line calls the management Q4 "final"; no social-layer line endorses a basis or quotes a figure; the round rules' "twelve-month income at the census" is neutral between R3 and R4, and rule 4.1's second sentence ("for twelve months ending on or after the census before it") decides R4 against the answer; by admitting that twelve-month income can end before the latest quarter it points toward the step-back (R4, the stop), never past it. Andrew Knox's handover note says the six packs are the record and that Ledgerwood will not run September; nothing about method.
+- **No pin, deliberately.** Nothing states knowledge time, the fourth-quarter source, the window or that a management return is provisional. Since hardening loop 2 nothing states a balance date either: the grants register's balance-date column is gone, no document names a change of balance date, a short year or a transition (asserted by grep over the cut pack), and the calendar lives only in each return's `year_end` and the register's year ends. Rule 4.1's recency clause is a pin of a different kind: it is filed, it is quiet at every natural window, and nothing points at the step-back's output it acts on.
+- **Counter-pin sweep (asserted by grep over the cut pack).** No header or cell says "twelve months to"; no document defines twelve-month income as "the four quarters to the census"; no field-guide line calls the management Q4 "final"; no social-layer line endorses a basis or quotes a figure; the round rules' "twelve-month income at the census" is neutral between R3 and R4, and rule 4.1's second sentence ("for twelve months ending on or after the census before it") decides R4 against R5; by admitting that twelve-month income can end before the latest quarter it points toward the step-back, never past it, and it is neutral between the stop (R5) and the answer, which differ only in where a year ends. Since hardening loop 2 no document names a balance date, a change of balance date or a short year (A39 and the verifier). Andrew Knox's handover note says the six packs are the record and that Ledgerwood will not run September; nothing about method.
 - **Licensed wrong belief.** Tony Hughes (grants adviser), in the team thread and once in the prompt: the round is for the groups the March 2026 government cut hit. A belief about purpose, not a basis and not a figure; it points at the June window (R3), which is where the decoy's four names come from.
 
 ## Fork grid, cell by cell
@@ -313,6 +357,7 @@ Rule 4.1's recency clause (hardening loop 1), blind by construction: at every Ma
 | Version basis | latest; accepted by the census; first filed | latest violates the packs (twin pair, 40+ rows); first filed violates the packs (amendments accepted before a census are used) |
 | Q4 source | management as held; register less nine months; T | management as held and register-fallback violate the ten residue rows |
 | Window end for an unfiled year | natural; step back | natural violates the residue rows |
+| Financial-year calendar (hardening loop 2) | each return's own `year_end`; one balance date per organisation (its latest annual return's, or its usual one) | one balance date violates the movers' own returns (the field guide's `year_end`: the year their year-to-date figures run within ended on 31 March 2026); the corpus is blind to both (A57); the stop sits 19.8 per cent from the answer (C4) |
 | Prior window under step-back | stepped; unstepped | unstepped violates the residue rows' prior and fall figures |
 | Census day | inclusive; exclusive | exclusive violates three census-day receipts |
 | Rule 4.1, the census before | the previous date in rule 2's list; a year back; clause ignored | a year back and ignored violate rule 2's list (both equal R4); the corpus is blind to all three (A54) |
@@ -328,9 +373,9 @@ Rule 4.1's recency clause (hardening loop 1), blind by construction: at every Ma
 
 | # | Axis | Reading chosen | Closure |
 |---|---|---|---|
-| 1 | Population | organisations holding a current operating grant at 30 Sep 2026 with an admissible window under rule 4.1 and returns covering both compared windows (150 in scope, 132 scored) | filed (round rules) + C2 (each pack lists exactly its in-scope organisations) + C1 (no operating grant starts or ends within 20 days of any census) |
+| 1 | Population | organisations holding a current operating grant at 30 Sep 2026 with an admissible window under rule 4.1 and returns covering both compared windows (153 in scope, 132 scored) | filed (round rules) + C2 (each pack lists exactly its in-scope organisations) + C1 (no operating grant starts or ends within 20 days of any census) |
 | 2 | Unit of account | the organisation (charity registration number), not the grant return | C2 (packs one row per organisation; R1 fails every round's count) + grants register mapping |
-| 3 | Attribution window | a quarter is the calendar quarter its period ends in; asks: Trust money in the quarter it reaches the grantee's account, Steady Ground instalments on rule 7's pay day | C2 (main); for K2, the QFR-24 memo "received from" the Trust ties to the payment run by value date on all 884 new-form returns and to no other attribution (A53), and rule 7 files the pay day the rebuilt instalments take |
+| 3 | Attribution window | a quarter is the calendar quarter its period ends in; asks: Trust money, and the government co-funding inside it, in the quarter it reaches the grantee's account; Steady Ground instalments on rule 7's pay day | C2 (main); for the asks, the QFR-24 memo "received from" the Trust ties to the payment run by value date on all 902 new-form returns, co-funding inside on 186, and to no other attribution (A53); rule 7 files the pay day the rebuilt instalments take |
 | 4 | As-of dating | portal versions accepted by the census, register returns received by the census, both inclusive, New Zealand time | C2 (twin pair, 40+ amended rows, three census-day receipts) + C1 (no portal version accepted within a day either side of any census, so the time zone cannot move a version) |
 | 5 | Version basis | the latest accepted version as held at the census | C2 (twin pair 1.97x; R2 misses 40+ rows) |
 | 6 | Divisor | fall per cent = fall over the prior twelve months | C2 (every published fall per cent) |
@@ -339,7 +384,7 @@ Rule 4.1's recency clause (hardening loop 1), blind by construction: at every Ma
 | 9 | Boundary inclusivity | census day inclusive; the line at "at least 10 per cent"; rule 4.1's "on or after" | C2 (three census-day receipts; J1 2023 and J2 2024 for 4.1); C1 (no September fall within 1.5 points of the line) |
 | 10 | Rounding path | sums of whole-dollar quarters, fall per cent unrounded for the line and shown to one decimal, offers rounded per grantee to whole dollars, rate to the hundredth of a cent | filed + C2 (every pack); graded fall percentages at least 0.02 from a x.x5 edge |
 | 11 | Tie-break | the CSV sorts by fall in dollars; the first outside the line is the largest fall per cent under 10 | C1 (no two scored grantees share a dollar fall; the first outside clears the next by at least 0.3 points) |
-| 12 | Maturity and censoring | quarters due by the census only; a year whose annual return is not received is censored at its last admissible quarter | C1 (no July to September 2026 return in the extract) + C2 (T) |
+| 12 | Maturity and censoring | quarters due by the census only; a year whose annual return is not received is censored at its last admissible quarter; a year's last quarter is the one ending on its returns' own `year_end`, a nine-month year included | C1 (no July to September 2026 return in the extract) + C2 (T) + filed (the field guide's `year_end`); the calendar's two readings are blind on the corpus (A57) and 19.8 per cent apart at September (C4) |
 | 13 | Order of operations | rate times fall, rounded, then floor and cap; the rate struck after clamping | filed + C2 (floor and cap offers in four rounds); C1 for round-then-clamp against clamp-then-round |
 | 14 | Row order | irrelevant | C1 (six file orders give identical outputs, asserted) |
 | 15 | Duplicate resolution | dual-grant returns collapse to the latest accepted version across the organisation's grants; rejected versions never count | C2 (March 2023 dual case) + C1 (rejected versions carry the accepted version's total income) |
@@ -357,8 +402,8 @@ Nineteen files, six formats (csv, xlsx, pdf, docx, md, txt). Names in the Trust'
 
 | # | File (working name) | Role | Main call | Asks |
 |---|---|---|---|---|
-| 1 | `portal_return_lines_2018q3_2026q2.csv` | spine: one row per return version, income line and column (year to date, prior-year comparative), quarters ending Sep 2018 to Jun 2026; at least 60,000 rows | total-income rows | line and memo rows |
-| 2 | `grants_register.xlsx` | dimension: grant reference, programme, charity number, organisation, dates, amounts, variations, and the Steady Ground offers sheet (offer, first instalment month, monthly instalment) | scope, unit | dual mapping; K2's rebuilt instalments |
+| 1 | `portal_return_lines_2018q3_2026q2.csv` | spine: one row per return version, income line and column (year to date, prior-year comparative), quarters ending Sep 2018 to Jun 2026, each version carrying the year end its figures run within; at least 60,000 rows (85,178 built) | total-income rows and `year_end` | line and memo rows |
+| 2 | `grants_register.xlsx` | dimension: grant reference, programme, charity number, organisation, dates, amounts (no balance date since hardening loop 2), the Variations sheet (renewals, and since hardening loop 2 the government co-funding paid with operating instalments from October 2024 to March 2026), and the Steady Ground offers sheet (offer, first instalment month, monthly instalment) | scope, unit | dual mapping; K1's and K2's co-funding; K2's rebuilt instalments |
 | 3 | `charities_register_returns_extract_20261007.csv` | operating extract: the warehouse's register match, one row per annual return, date received, total gross income, revenue lines | date received, total gross income | referee (revenue lines) |
 | 4 to 9 | six `SGF_screen_run_20YY-03.xlsx` | calibration corpus | method | method |
 | 10 | round rules (pdf) | governing: scope, line, offer rule, floor, cap, rate precision | yes | population |
@@ -399,120 +444,137 @@ Over-determination sweep: no ask names, requests or implies a window, and no req
 
 ## Ask ledger (supplemental-stumping)
 
-**The main call's declared row population.** Portal rows whose line code is total income (old form `TOT_INC`, new form `TOT_REV`), year-to-date column only, for the 147 in-scope organisations, quarters ending September 2018 to June 2026, every version and status; the register extract's `date_received` and `total_gross_income` for those organisations' year-ends in that span; the grants register's scope columns; the six packs; the round rules; the cutover standard; the budget minute; the field guide's definitions of those fields. **Zero device rows and zero hazard rows inside it** (asserted counts: 0 and 0). Texture allowed inside it, asserted inert: a rejected version's total-income row equals its accepted version's; the comparative column on total-income rows equals the prior year's own total as held at every census.
+**The main call's declared row population.** Portal rows whose line code is total income (old form `TOT_INC`, new form `TOT_REV`), year-to-date column only, for the 153 in-scope organisations, quarters ending September 2018 to June 2026, every version and status; the register extract's `date_received` and `total_gross_income` for those organisations' year-ends in that span; the grants register's scope columns; the six packs; the round rules; the cutover standard; the budget minute; the field guide's definitions of those fields. **Zero device rows and zero hazard rows inside it** (asserted counts: 0 and 0). Texture allowed inside it, asserted inert: a rejected version's total-income row equals its accepted version's; the comparative column on total-income rows equals the prior year's own total as held at every census.
 
-**Pools.** Pool A (coupled to the main call, sitting in the recommendation and critical-components block): the rate, the nine offers (14 at stage 2), the first outside the line and its fall, the count scored, the six rounds' rows given back, the CSV's screen columns and the chart. Pool B (device-carried asks): K1 and K2. No inheriting ask is built in the ask block.
+**Pools.** Pool A (coupled to the main call, sitting in the recommendation and critical-components block): the rate, the nine offers (14 at stage 2, nine since hardening loop 1), the first outside the line and its fall, the count scored, the six rounds' rows given back, the CSV's screen columns and the chart. Pool B (device-carried asks): K1 and K2. No inheriting ask is built in the ask block.
 
 | | K1, government money inside each fall | K2, the Trust's own money inside each fall |
 |---|---|---|
-| Asked as | for every grantee offered, the part of the fall it is struck on that was government grants and contracts, whole dollars; the same column for every scored grantee in the CSV (left empty for short-form filers) | for every grantee offered, the part of its fall that was money from the Trust itself (operating and project grants and Steady Ground instalments from earlier rounds), whole dollars, negative where the Trust's money rose; the same CSV column, from the payment run and the rebuilt instalments for short-form filers |
-| Construction layer | the answer's windows per organisation as held; R3's June windows miss both 30-June offerees, and R4 holds every offeree on the answer's windows, so against the stop only the devices decide | same windows |
-| Primary device | D7, a code reissued with a new meaning (hardening loop 1): on the old form (returns to September 2024) `GOV_GRT` is government grants only, with government service contracts inside `FEE_SVC` and visible only as the memo `FEE_SVC_GOV`; from the December 2024 return the same code carries grants and contracts (the notice: the line "keeps its code"). Reading `GOV_GRT` as one series across both forms leaves the old-form contracts out. Silent: the code joins across the forms with no mapping step at all, every total ties, and each financial year's government total ties to the register under either reading (a year's final quarter is the register's figure less the nine-month year to date, so the misread cancels over the year); the screen's windows cut the year, so the error survives in every window holding an old-form quarter | D4, an absent channel (hardening loop 1): Steady Ground instalments are the Trust's own money and stay in reported income (rule 5.4), but they are in neither the grants payment run (operating and project grants only) nor the QFR-24 memo "of which received from Ashworth Pascoe Trust", which ties to that run; they are rebuilt from the grants register's Steady Ground offers sheet (first instalment month, monthly instalment, the twelfth carrying the balance) and rule 7. Silent: the memo equals the run to the dollar on all 884 new-form returns, so the reconciliation a careful solver runs passes on the wrong path; the absence shows only at a cross-file cut, offers sheet against run. Stacked with D8, the clock: each rebuilt instalment falls in the quarter of its pay day (the 20th of the month before the month it is for, or the Friday before), the basis the memo ties to; by the month it is for, one instalment crosses each window boundary |
-| Organ pair | structural: the old-form `FEE_SVC_GOV` memo rows and the form column (spine); documentary: the notice ("keeps its code", contracts reported on it, fees and sales lose them) and the field guide's line codes for both forms | structural: the offers sheet (offer, first instalment month, instalment) beside the run's programme column, and the run's `value_date` beside `instalment_for`; documentary: rules 5.4 and 7 and the field guide's description of the run (operating or project grant payments) |
-| Hazards stacked | H1, H2, H4; H3 on the CSV column | H1, H5; H3 on the CSV column |
-| Aim (lazy delta) | the lazy path (`GOV_GRT` as one series) moves all 9 offered figures by at least 8 per cent or NZ$2,000 (A45) | the lazy path (the payment run alone, which the memo confirms) moves all 9 by at least 8 per cent or NZ$1,000 (A45) |
-| Stops (each asserted outside the bin) | S1 `GOV_GRT` on both forms (D7) · S2 re-presented comparatives for old-form quarters (H2) · S3 over-corrected: the whole old fees line moved to government · S4 the right reading on R3's windows (both 30-June offerees) · golden | S0 the payment run alone (D4) · S1 by the month the instalment is for (D8) · S2 rejected payments summed with their reissues (H5) · S3 over-corrected: payments within ten days of a quarter end dropped as in transit · S4 one grant reference for the dual organisation (H1) · S5 R3's windows · golden |
-| Files on the causal path | spine, form-change notice, field guide, grants register, register extract, round rules, cutover standard, the six packs (counted once: only the set pins the window) = 8 | spine (the memo), payment run, grants register (the offers sheet), round rules (rules 5.4 and 7), field guide, register extract, cutover standard, the packs, form-change notice = 9 |
-| Columns | line_code, form, column, amount, version_status, accepted_at, period_end, grant_ref, charity_no, year_end, date_received, govt_grants_contracts = 12 | the memo amount, value_date, instalment_for, payment_status, reissue_of, amount, programme, grant_ref, offer_amount, first_instalment_for, instalment, charity_no = 12 |
-| Separation line | no K1 device or hazard row is a total-income row; the old-form memo and line rows never enter the main computation (count 0) | the payment run and the offers sheet are read by no step of the main call (count 0); memo rows are not total-income rows |
-| Use, and how it enters the call (H18) | Wiremu Roberts and the trustees, deciding whether the round is backfilling government: a component of each offer's case | the trustees, seeing where a fall is their own grant or an earlier offer stepping down: a component of each offer's case |
-| Reused device | task65's codes reissued (D7 on the silent list), re-skinned as a form code that keeps its name and changes its meaning | task65's and task80's absent channel (D4) with task80 and task83's clock against a filed cutoff (D8), re-skinned |
+| Asked as | for every grantee offered, the part of the fall it is struck on that was government money, whole dollars; the same column for every scored grantee in the CSV (left empty for short-form filers) | for every grantee offered, the part of its fall that was the Trust's own money, whole dollars, negative where it rose; the same CSV column, from the payment run, the rebuilt instalments and the co-funding for short-form filers |
+| Construction layer | the answer's windows per organisation as held; R3's June windows miss both 30-June offerees, and the stop (R5) holds every offeree on the answer's windows, so against the stop only the devices decide | same windows |
+| Primary device | D5, government money outside the government lines (hardening loop 2): from the instalment for October 2024 to the instalment for March 2026 the Trust paid central government's co-funding with 36 grantees' operating instalments (every offered grantee among them; NZ$1,200 to NZ$2,400 a month each); the Variations sheet records it as a change to each grant's annual amount ("Government co-funding", effective 1 October 2024, and "Government co-funding ended", effective 1 April 2026, with the note "Central government co-funding, paid by the Trust with the operating instalments"). Grantees report the whole instalment as money from the Trust, so the co-funding is in no government line and in the register's government figure for no year (A49, 53 co-funded financial years), and it sits inside the QFR-24 memo and the run, which tie to each other (A53, 186 returns). Silent: both habitual reconciliations pass on the lazy path (government lines against the register's year totals; the memo against the run); the money shows only at a cross-file cut, the Variations sheet against the run's instalment months. Stacked with D8, its clock: the co-funding counts in the quarter the instalment reached the grantee, not the month it was for | D4, an absent channel (hardening loop 1): Steady Ground instalments are the Trust's own money and stay in reported income (rule 5.4), but they are in neither the grants payment run (operating and project grants only) nor the QFR-24 memo, which ties to that run; they are rebuilt from the grants register's Steady Ground offers sheet and rule 7. Silent: the memo equals the run on all 902 new-form returns. Stacked with D5 (the co-funding inside the run is government money, not the Trust's own, hardening loop 2) and D8 (each rebuilt instalment and each co-funding sum falls in the quarter of its pay day) |
+| Organ pair | structural: the Variations sheet's co-funding rows (annual amount before and after, effective dates) beside the run's `instalment_for` and `value_date`; documentary: the Variations note and the field guide's description of the Variations sheet | structural: the offers sheet beside the run's programme column, the Variations sheet beside the run's instalment months, and `value_date` beside `instalment_for`; documentary: rules 5.4 and 7, the field guide's description of the run, the Variations note |
+| Hazards stacked | H6 (the old-form code reading, D7 until hardening loop 2), H1, H2, H4; H3 on the CSV column | H1, H5; H3 on the CSV column |
+| Aim (lazy delta) | the lazy path (the government lines alone) moves at least 8 of 9 offered figures by 4 per cent or NZ$2,000 (A45; all 9 move) | the lazy path (the payment run alone, which the memo confirms) moves all 9 by 8 per cent or NZ$1,000 (A45) |
+| Stops (each asserted outside the bin) | S1 the government lines alone (D5) · S2 the co-funding by instalment month (D8) · S3 `GOV_GRT` on both forms (H6) · S4 re-presented comparatives for old-form quarters (H2) · S5 over-corrected: the whole old fees line moved to government · R3's windows (both 30-June offerees) · golden | S0 the payment run alone (D4 and D5) · S1 run and instalments, co-funding left in (D5) · S2 run less co-funding, no instalments (D4) · S3 by the month the instalment is for (D8) · S4 rejected payments summed with their reissues (H5) · S5 over-corrected: payments within ten days of a quarter end dropped as in transit · S6 one grant reference for the dual organisation (H1) · R3's windows · golden |
+| Files on the causal path | spine (government lines and the memo), grants register (Variations), payment run, form-change notice, field guide, register extract, round rules, cutover standard, the packs (counted once) = 9 | spine (the memo), payment run, grants register (the offers sheet and Variations), round rules (rules 5.4 and 7), field guide, register extract, cutover standard, the packs, form-change notice = 9 |
+| Columns | line_code, form, column, amount, version_status, accepted_at, period_end, year_end, govt_grants_contracts, variation, annual_amount_before, annual_amount_after, effective_date, instalment_for, value_date = 15 | the memo amount, value_date, instalment_for, payment_status, reissue_of, amount, programme, grant_ref, offer_amount, first_instalment_for, instalment, variation, annual_amount_before, annual_amount_after = 14 |
+| Separation line | no K1 device or hazard row is a total-income row; the old-form memo and line rows never enter the main computation, and the Variations sheet and the run are read by no step of the main call (count 0) | the payment run, the offers sheet and the Variations sheet are read by no step of the main call (count 0); memo rows are not total-income rows |
+| Use, and how it enters the call (H18) | Wiremu Roberts and the trustees, deciding whether the round is backfilling government (Tony Hughes's belief): a component of each offer's case | the trustees, seeing where a fall is their own grant or an earlier offer stepping down: a component of each offer's case |
+| Reused device | an absent channel reached only through a register of variations (the D4 family, task65 and task80), re-skinned as government money carried inside another payer's payments; task80 and task83's clock (D8) | task65's and task80's absent channel (D4) with task80 and task83's clock against a filed cutoff (D8), re-skinned |
 
 **Hazard table.**
 
 | Hazard | What it is | Asks it moves | Per-ask delta target |
 |---|---|---|---|
 | H1 | dual-grant organisations file line detail and receive payments under both references; the project-grant return's lines lag one amendment behind | K1, K2 (the offered dual organisation; the seven dual CSV rows) | at least NZ$1,500 on the offered dual organisation |
-| H2 | new-form returns re-present the prior year under the new lines (comparative column), and the re-presentation differs from the old-form returns as held; the field guide says a quarter's record is its own return | K1 (every offered grantee whose windows hold an old-form quarter) | 7 of 9 offered move by 5 per cent or more (asserted at least 6) |
+| H2 | new-form returns re-present the prior year under the new lines (comparative column), and the re-presentation differs from the old-form returns as held; the field guide says a quarter's record is its own return | K1 (every offered grantee whose windows hold an old-form quarter) | 7 of 9 offered move by 5 per cent or more (asserted at least 5) |
 | H3 | short-form filers (small grantees) report total income and two lines only; government lines and the Trust memo are absent, meaning not reported, not zero | K1 and K2 CSV columns (25 scored rows, no offered grantee) | K1 empty, never zero; K2 from the payment run and the rebuilt instalments by pay day, never zero |
 | H4 | three returns whose latest delivered version was rejected for line coding (same total); only accepted versions count | K1 (F2 on the June 2025 quarter, F4 on the June 2024 quarter, both offered) | at least NZ$1,000 each (built: NZ$21,866 and NZ$13,004) |
 | H5 | two Trust payments rejected by the bank and reissued; the rejected lines stay in the run with a status | K2 (F5, offered, one CSV row) | one instalment (NZ$6,200) |
+| H6 | the old-form code reading (D7 until hardening loop 2): on QFR-16 `GOV_GRT` is government grants only, contracts sit in `FEE_SVC` with the memo `FEE_SVC_GOV`; from the December 2024 return the same code carries both | K1 (every offered grantee whose windows hold an old-form quarter) | at least 8 of 9 offered move (asserted at least n - 1) |
 
-Composed deltas: every subset of {primary, hazards} mishandled on a K1 or K2 figure lands outside the whole-dollar bin and at least NZ$500 from the golden (asserted per figure). Referee (one per pack): the register extract's revenue lines, filed financial-year totals by category, byte-clean; it arbitrates H2 (re-presented comparatives against the figures as filed) and hands over no window's split. Off path in prose too: the form-change notice, the payment run and the offers sheet are read by no step of the main call, and no document the main call reads mentions government contracts or memo lines. Rule 7's pay day sits in the round rules, which the main call reads; it is the rules' own payment clause, says nothing about income or windows, and acts only on the K2 rebuild.
+Composed deltas: every subset of {primary, hazards} mishandled on a K1 or K2 figure lands outside the whole-dollar bin and at least NZ$500 from the golden (asserted per figure; 214 checks, nearest NZ$1,025). Referee (one per pack): the register extract's revenue lines, filed financial-year totals by category, byte-clean; it arbitrates H2 (re-presented comparatives against the figures as filed) and H6 (the old-form code reading, on every old-form year end) and hands over no window's split; it is blind to D5 by construction, since its government figure carries none of the co-funding (A49), so the year-end tie confirms the lazy path. The co-funding amounts per offeree are set so that no composed mishandling lands within NZ$500 (Tried and rejected: the tiered flat sums). Off path in prose too: the form-change notice, the payment run, the Variations sheet and the offers sheet are read by no step of the main call, and no document the main call reads mentions government contracts or memo lines. Rule 7's pay day sits in the round rules, which the main call reads; it is the rules' own payment clause, says nothing about income or windows, and acts only on the K2 rebuild.
 
 **Pair arithmetic (Part 0), at the planning weights 38 / 7 / 55.**
 
 ```
-Hardening loop 1. r (recommendation criteria that survive R4): about 3 (method credit for as-held
-  versions, the dual collapse and the full replay); R4 misses the rate (2.40x), five of 14 names and
-  every offer amount, the first outside the line and the count scored.
-Cracker (lands the answer, habitual battery, D7 and D4 missed): every offered K1 and K2 figure moves
+Hardening loop 2. r (recommendation criteria that survive the stop R5): about 3 (method credit for
+  as-held versions, the dual collapse, the full replay and rule 4.1); R5 misses the rate (1.247x), two of
+  11 names and every offer amount and the count scored (135 against 132); its first outside the line is
+  the answer's (Amberley, 6.4 per cent), a criterion the mirror keeps.
+Cracker (lands the answer, habitual battery, D5 and D4 missed): every offered K1 and K2 figure moves
   (A45, A46)  ->  Lc = 0.00  ->  C = 38 + 7 + 0 = 45.0
-Mirror (stops at R4): the same windows on all nine answer offerees (A45), so only the devices decide;
-  with D7 and D4 missed  ->  Ls = 0.00  ->  S = 3 + 7 + 0 = 10.0
+Mirror (stops at R5): the same windows on all nine answer offerees (A45), so only the devices decide;
+  with D5 and D4 missed  ->  Ls = 0.00  ->  S = 3 + 7 + 0 = 10.0 (about 12 with the first outside)
 Pair average 27.5 (A50, the generator's simulation); check 55 x (Lc + Ls) = 0 <= 28 - r = 25.
-Sensitivity: a cracker that also catches D7 keeps K1 (about half the ask weight): Lc = 0.5, C = 72.5,
+Sensitivity: a cracker that also catches D5 keeps K1 (about half the ask weight): Lc = 0.5, C = 72.5,
   pair 41.3; one that catches both devices keeps the asks and the pair reaches about 55, which is the
-  case the main ladder has to prevent (one response on the call, the other off it). If the generated
-  rubric files the CSV screen columns and the chart labels (about 12 points) under the asks, where
-  the cracker holds 0.9 of them and the mirror 0.45, the pair rises by about 7; the repair is the
-  denominator (more K1 and K2 criteria) or trimming the CSV's device-free columns, decided when the
-  rubric generates.
+  case the main ladder has to prevent. The Variations sheet states the co-funding in words ("Central
+  government co-funding, paid by the Trust with the operating instalments"), so D5 is legible to a
+  solver who reads that sheet for the asks; its defence is that both reconciliations a careful solver
+  runs (register year totals, memo against run) pass without it. If the generated rubric files the
+  CSV screen columns and the chart labels (about 12 points) under the asks, where the cracker holds 0.9
+  of them and the mirror 0.45, the pair rises by about 7.
 Reachability: c (ask weight reachable from the landed call alone) is 0 for K1 and K2.
-The two sheets differ in pool A only: against R4 the asks' construction layer is identical (R4 holds
+The two sheets differ in pool A only: against R5 the asks' construction layer is identical (R5 holds
   every answer offeree on the same windows), so the devices carry K1 and K2 alone; against R3 the two
   30-June offerees also miss on both asks (A45). Neither ask is keyed to the rate.
 ```
 
 ## Prompt (stage 2)
 
-`prompt.md`, number-first (the move on the card), 288 words (276 at stage 2), 19.2 words a sentence, context 29 per cent of the prompt, longest paragraph 84 words, two rounding tags under a block convention, no "because"; `voice-check.py 123` flags nothing and the opening move is unique in the batch so far (task117 calendar-first, task118 stakes-first, task120 evidence-first). Hierarchy reads: the call stands alone at the seam ("What I need is the rate the September offers are struck at, in cents per dollar of fall to two decimal places."); the docx clause names one quantity ("That rate opens ..."); the CSV and PNG paragraphs open on the rate. One belief clause (Tony Hughes's view, unattributed by name). The constraint sentence, second in the context since stage 3 (the author's decision at the leak review, below): "The pot is $560,000, with a $15,000 floor and a $150,000 cap on each offer." (NZ$820,000 until hardening loop 1; the figure is the only prompt edit of the loop, and `voice-check.py 123` re-ran clean.) It states the filed constants as the round's furniture, closes no fork (no reading of the pack uses another pot, floor or cap), agrees with the round rules and the budget minute, which keep them as the filed pin, and gives the chart's "the floor and the cap" its antecedent; "It is the first round" became "This is the first round" so the pronoun cannot read as the pot. Deliberately absent: the line, any window, any input file, the register, the management returns, the word "census". Figure walk: the rate (cents, two decimals), 9 offers and 18 parts since hardening loop 1 (whole dollars, block), the first outside the line and its fall (one decimal, block), the count scored, six replay counts, the CSV's seven figure columns and order, five chart parts; unchanged by the stage 3 sentence, which adds constants and no ask, so the criteria arithmetic stands.
+`prompt.md`, number-first (the move on the card), 288 words (276 at stage 2), 19.2 words a sentence, context 29 per cent of the prompt, longest paragraph 84 words, two rounding tags under a block convention, no "because"; `voice-check.py 123` flags nothing and the opening move is unique in the batch so far (task117 calendar-first, task118 stakes-first, task120 evidence-first). Hierarchy reads: the call stands alone at the seam ("What I need is the rate the September offers are struck at, in cents per dollar of fall to two decimal places."); the docx clause names one quantity ("That rate opens ..."); the CSV and PNG paragraphs open on the rate. One belief clause (Tony Hughes's view, unattributed by name). The constraint sentence, second in the context since stage 3 (the author's decision at the leak review, below): "The pot is $560,000, with a $15,000 floor and a $150,000 cap on each offer." (NZ$820,000 until hardening loop 1; the figure is the only prompt edit of the loop, and `voice-check.py 123` re-ran clean.) It states the filed constants as the round's furniture, closes no fork (no reading of the pack uses another pot, floor or cap), agrees with the round rules and the budget minute, which keep them as the filed pin, and gives the chart's "the floor and the cap" its antecedent; "It is the first round" became "This is the first round" so the pronoun cannot read as the pot. Deliberately absent: the line, any window, any input file, the register, the management returns, the word "census". Figure walk: the rate (cents, two decimals), 9 offers and 18 parts since hardening loop 1 (whole dollars, block), the first outside the line and its fall (one decimal, block), the count scored, six replay counts, the CSV's seven figure columns and order, five chart parts; unchanged by the stage 3 sentence, which adds constants and no ask, so the criteria arithmetic stands. Hardening loop 2 changed no word of the prompt: "government money" and "our own" now carry the co-funding device, and the calendar rung needs no prompt support.
 
 ## Assertion plan
 
-Every line is an assertion in the generator and a recomputation in an independent verifier that reads only the shipped bytes (its own xlsx parser and plain dictionaries). As built after hardening loop 1: 299 generator assertions across 57 ids (A1 to A51, A53 to A55, SS, TELL, H1), A52 in `ship.py`, 163 verifier checks.
+Every line is an assertion in the generator and a recomputation in an independent verifier that reads only the shipped bytes (its own xlsx parser and plain dictionaries). As built after hardening loop 2: 480 generator assertions across 59 ids (A1 to A51, A53 to A57, SS, TELL, H1), A52 in `ship.py`, 198 verifier checks.
 
 ```
 September census (the call)
   A1  the answer's rate in [36.00, 48.00] cents, struck as the highest hundredth of a cent within NZ$560,000
   A2  the remainder and the next-step overshoot each at least NZ$25 (built 31 and 66)
   A3  the answer offers exactly the 9 designed grantees, the offered set equals the round rules applied to
-      its falls, and the stop (R4) offers its designed 14
-  A4  scored: the answer 132, R4 146, R2 and R3 147; R1 produces 154 rows
-  A5  the answer's rate at least 1.15x R0's, 1.40x R1's and R2's, 1.30x R3's, 2.00x R4's
+      its falls; the stop (R5) offers its designed 11, R4 its 16, the step-back without rule 4.1 on each
+      return's own year its 14
+  A4  scored: the answer 132, R5 135, R4 149, R2 and R3 147, the step-back without rule 4.1 149; R1 154 rows
+  A5  the answer's rate at least 1.15x R0's, 1.40x R1's and R2's, 1.30x R3's, 2.00x R4's, 1.20x R5's
   A6  every rung's offered set differs from every other rung's, by name (rung-collision guard)
-  A7  names differing and pot re-placed per rung (R0 4 and 25%, R1 and R2 3 and 25%, R3 6 and 35%,
-      R4 5 and 45%); the answer's offers are R4's less the five it does not score
+  A7  names differing and pot re-placed per rung (floors: R0 4 and 25%, R1 and R2 3 and 25%, R3 6 and 35%,
+      R4 7 and 45%, R5 2 and 15%; built 5/31.4, 9/51.1, 8/51.9, 7/46.2, 7/58.6, 2/17.9); the answer's
+      offers are the stop's less the two movers it does not score; rule 4.1 takes the same five offers out
+      on either calendar
   A8  partial cells (30-June unstepped, prior window unstepped, rule 4.1 read strictly) at least 1.10x
       the answer's rate; only 30-June stepped at most 0.80x
-  A9  single-violation cells with the step-back (dual returns twice; latest versions; both) and R4's
-      two variants at least 8 per cent below the answer's rate
+  A9  single-violation cells at least 8 per cent below the answer's rate: dual returns twice, latest
+      versions, both; the step-back without rule 4.1 and its two variants; the four one-balance-date
+      variants (per return, latest versions, census day exclusive, register at the extract)
   A10 census day exclusive and register read at the extract: identical rate and offers, 14 fewer and
       6 more scored
   A11 register fallback and overdue-only equal R3 on every row; rule 4.1 read against the census a year
-      back equals R4
+      back equals the step-back without the clause
   A12 no scored grantee's fall within 1.5 points of 10.0 per cent
   A13 the first outside the line is the designed grantee (L_dual) at 6.0 to 8.5 per cent, at least 0.3
-      points clear of the next, and R4's first outside is a different grantee
-  A14 the cap binds for F1 only and no offer sits at the floor; neither R3 nor R4 caps an offer
+      points clear of the next, R4's first outside a different grantee, and in screen order (largest
+      dollar fall first) the first grantee not offered is the same grantee, its fall at least 1.10x the
+      next (hardening loop 2: both readings of "first outside the line" converge)
+  A14 the cap binds for F1 only and no offer sits at the floor; neither R3, R4 nor R5 caps an offer
   A15 no two scored grantees share a dollar fall
   A16 every graded fall per cent at least 0.02 from a x.x5 edge
-  A17 unfiled at the census: 14 (31 March) + 18 (30 June); deadline-day receipts 14; receipts 1 to 7
-      October 6
-  A55 the answer leaves out exactly the 14 unfiled 31 March grantees, each scored by R4 on the twelve
-      months to December 2025 that the March 2026 round published for it; every scored window ends on
-      or after 31 March 2026 and the 17 scored 30-June grantees end on it
-  A18 dominance: R4's five own offers hold at least 45 per cent of R4's eligible falls; R3's own names
-      and the answer's own names against R3 at least 20 per cent each
+  A17 unfiled at the census: 17 (31 March, the three movers among them) + 18 (30 June); deadline-day
+      receipts 14; receipts 1 to 7 October 6
+  A55 the answer leaves out exactly the 17 unfiled 31 March grantees, each scored by the step-back
+      without rule 4.1 on the twelve months to December 2025 that the March 2026 round published for it;
+      every scored window ends on or after 31 March 2026 and the 17 scored 30-June grantees end on it
+  A56 the three movers: a nine-month year to 31 March 2026 on their own returns, no annual return for it
+      and no June 2026 return by the extract; the stop scores them on twelve months to March 2026
+      (BC1 15.04, BC2 14.71, BC3 -1.34 per cent), the answer not at all; the stop and the answer agree on
+      all 132 rows the answer scores
+  A18 dominance: the stop's two own offers hold at least 15 per cent of its eligible falls (17.9); rule
+      4.1's five removed offers at least 45 per cent of the step-back's (56.4); R3's own names and the
+      answer's own names against R3 at least 20 per cent each (46.4, 25.6)
   A19 each mover's fall by name (decoys unscored by the answer, at most 8.0 per cent on R4 and at least
       15.0 on R3; step-back movers at least 11.5 per cent on R4 or the answer and at most 8.5 on R3)
 Corpus
-  A20 the six packs written as computed: 797 rows, 71 offers, six rates; T gives back all of them
-  A21 R3 gives back 787 of 797 rows, every offer and every rate; the ten misses by name
+  A20 the six packs written as computed: 815 rows, 71 offers, six rates; T gives back all of them
+  A21 R3 gives back 805 of 815 rows, every offer and every rate; the ten misses by name
   A22 each residue miss within 1.2 per cent of income and 1.0 point of fall; none offered; none near the line
   A23 R2 misses at least 40 rows and the offers and rate of at least 4 rounds (built 94 and 4)
-  A24 R1's row count fails every round; R0 gives back under 5 per cent of rows (built 10 of 797)
+  A24 R1's row count fails every round; R0 gives back under 5 per cent of rows (built 10 of 815)
   A25 twin pair identical on every grants-register column and on today's versions; published falls
       1.8x to 2.2x apart; both reproduce only as held
   A26 rival family: twelve rules scored, each one's misses asserted by count, none under 3
   A27 blindness, structural: every year-end quarter inside a March window on the register except the
       ten residue rows
-  A28 blindness, case by case: T and R3 identical on the other 787 rows, every offer and rate
+  A28 blindness, case by case: T and R3 identical on the other 805 rows, every offer and rate
   A29 three census-day receipts, each reproduced only inclusive
   A30 every rule the golden composes breaks at least one corpus case when flipped (15 flips, rule 4.1's
       "on or after" among them, 4 cases)
   A54 rule 4.1's clause is blind on the corpus: no published window ends before the census before, J1
       2023 and J2 2024 end on it, and the screen without the clause gives back every pack
+  A57 the calendar is blind on the corpus: no year-end quarter inside a March window differs between
+      each return's own year and one balance date per organisation; the screen on one balance date
+      gives back every pack; the movers are scored in all six rounds (18 rows), never near the line
 Convergence and Gate G
   A31 every return on the register by a census has a trued-up or exact fourth quarter held
   A32 accepted after submitted; version numbers in submission order; no version accepted within a day
@@ -523,31 +585,37 @@ Convergence and Gate G
   A36 six row orders of every input give identical outputs
   A37 no July to September 2026 return in the extract
   A38 the six 1-to-7-October filers carry exact management fourth quarters
-  A39 no pack header, cell or document line states a window end, a fourth-quarter source or knowledge
-      time (grep over the cut pack)
+  A39 no pack header, cell or document line states a window end, a fourth-quarter source, knowledge
+      time, a balance date or a short year (grep over the cut pack)
   A40 no shipped artifact scores September's grantees; only the six March packs carry offers
-  A41 clean-data test, portal cut to the census: the answer, R3 and R4 unchanged, all three different
-  A42 clean-data test, register completed with every outstanding return: all three unchanged; lens-swap:
+  A41 clean-data test, portal cut to the census: the answer, R3, R4 and the stop unchanged, all four
+      different
+  A42 clean-data test, register completed with every outstanding return: all four unchanged; lens-swap:
       the 115 filed grantees identical under the answer and R3, the 17 scored 30-June grantees on
-      different periods, R4 adds 14 rows on twelve months already scored
-  A43 clean-data test, management fourth quarters replaced by audited ones: all three unchanged
+      different periods, the step-back without rule 4.1 adds 17 rows on twelve months already scored,
+      the stop adds the three movers on a different period from the one their own year leaves
+  A43 clean-data test, management fourth quarters replaced by audited ones: all four unchanged; the
+      movers' June 2026 returns supplied: the answer and the stop unchanged
 Ask layer
-  A44 zero device rows and zero hazard rows inside the main call's 5,725 total-income rows; the payment
-      run and the offers sheet read by no step of the main call
-  A45 every stop's value per offered grantee untouched or at least NZ$500 from the golden; R4 holds
+  A44 zero device rows and zero hazard rows inside the main call's 5,833 total-income rows; the payment
+      run, the offers sheet and the Variations sheet's co-funding read by no step of the main call
+  A45 every stop's value per offered grantee untouched or at least NZ$500 from the golden; the stop holds
       every offered grantee on the answer's windows; R3's windows miss both 30-June offerees on both
-      asks; the lazy paths move at least 8 of 9
-  A46 necessity: D7 moves at least 8 of 9 K1 figures, D4 all 9 K2 figures, D8 at least 7; H1 F3 only
-      (K1 by NZ$23,270); H4 F2 and F4 only, each by NZ$1,000 or more; H5 F5 only; H2 at least 6 of 9 by
-      5 per cent or more; H3 25 short-form rows, K1 empty, none offered
+      asks; the lazy paths move at least 8 of 9 (K1) and 9 of 9 (K2)
+  A46 necessity: D5 moves all 9 K1 and all 9 K2 figures, D4 all 9 K2, D8 at least 2 K1 and at least 7
+      K2, H6 at least 8 K1; H1 F3 only (K1 by NZ$23,270); H4 F2 and F4 only, each by NZ$1,000 or more;
+      H5 F5 only; H2 at least 5 of 9 by 5 per cent or more (built 7); H3 25 short-form rows, K1 empty,
+      none offered; the co-funding on 36 grantees, every offered grantee among them
   A47 composed mishandlings: every subset of the devices touching a figure lands at least NZ$500 away
-      (74 checks, nearest NZ$1,050)
+      (214 checks, nearest NZ$1,025, F7's K1)
   A48 over-cleaner: the whole fees line and the ten-day transit rule fail every offered figure
   A49 the referee ties to the golden's financial-year totals (18 offered-grantee years) and to no
-      re-presented comparative (9)
-  A50 pair simulation: cracker and mirror scored with the habitual battery; pair at or under 40
-  A53 the QFR-24 Trust memo equals the payment run by value date on every new-form return (884), and
-      Steady Ground money sits outside both on at least 100 (159)
+      re-presented comparative (9); on 53 co-funded financial years the register's government figure
+      equals the government lines and carries none of the co-funding
+  A50 pair simulation: cracker and mirror scored with the habitual battery; pair at or under 40 (27.5)
+  A53 the QFR-24 Trust memo equals the payment run by value date on every new-form return (902), Steady
+      Ground money sits outside both on at least 100 (159), and the co-funding inside both on at least
+      150 (186)
 Pack and generator
   A51 input gates: 19 files, 6 formats, spine at least 60,000 rows, 2 distractors in metadata.json only
   A52 two consecutive builds byte-identical; generator and verifier agree on every graded figure, rung
@@ -569,6 +637,8 @@ Pack and generator
 - **A round pot of NZ$560,000.** A filed appropriation, round by nature; no computed total is round (asserted). It sits inside the range of the six March pots (NZ$540,000 to NZ$720,000), which suits a half-year round.
 - **A rule amended three months before the round.** Rule 2 gained the September census on 16 June 2026; rule 4.1's recency sentence is part of the adopted rules and bound for the first time at that census. Realistic: a fund that moves to two rounds a year amends its calendar and nothing else.
 - **Six bureau workbooks with one layout.** One bureau, one template, six years.
+- **Three grantees change balance date in the same year, and none files a June 2026 return by the extract (hardening loop 2).** Forced: the decisive rung needs a shortened year that ends at March 2026 with its annual return outstanding, and a June 2026 return would put a quarter the two calendars place differently in front of every natural-window rung. Motivated: small charities move to 31 March to line up with a funder's or a parent body's year, a change of balance date in New Zealand produces a transitional return of under twelve months, and a quarterly return can lag a balance-date change while the treasurer resets the books. Their nine-month year's annual return was due on the census day itself; none is in the extract.
+- **Thirty-six grantees carried government co-funding through the Trust from October 2024 to March 2026 (hardening loop 2).** A central government programme that pays through an established funder is ordinary in the sector; the Trust records it where it records every change to a grant's annual amount, and grantees report what reaches them from the Trust as Trust money. The co-funding ended on 31 March 2026, the month of the government cut Tony Hughes holds the round is for; no document links the two, and his belief still points at the June window (R3), not at the co-funding. Exposure: a solver who chases the belief into the grants register meets the Variations sheet's co-funding rows.
 
 ## Stopping rule
 
@@ -577,6 +647,7 @@ Written before any round or portal result.
 - **At ceiling, re-root at stage 1 with this architecture moved to the card's lineage:** two in-house solver rounds in which a plain solver files T's rate (or two portal responses land the call), or two consecutive solves reaching T by different routes. Hardening loop 1 spent one: solver round 1 filed the stage 2 answer through the twelve-month identity. One more plain solve that files 42.55 re-roots; three hardening loops on this architecture is build-pipeline's limit, and a fourth is a re-root.
 - **One more repair licensed, at stage 3:** solvers stop at R3 but the pair clears 40 on the asks (a K1/K2 repair or the denominator lever, never a ladder change); or a solver lands T through a route that never touches the corpus residue (find that route, close it, re-run); or a solver files R3 without ever running the replay (the trap fired by omission: keep it, and check the replay ask still reads as a disclosure item).
 - **Not a repair:** making the residue louder or quieter after a result. Its size is fixed by Gates C and D, not by difficulty.
+- **Hardening loop 2 ran against the first bullet.** Solver round 2 was a plain solve that filed 42.55, which this rule said re-roots; the build-pipeline orchestrator ordered a second hardening loop on the same architecture instead, inside build-pipeline's limit of three loops. Recorded here rather than resolved: the loop moved the decisive rung onto the calendar (R6) and re-rooted K1's device, and if the next round lands the call, this architecture re-roots at stage 1 with its lineage on the card, whatever the loop count.
 
 ## Nearest exemplars
 
@@ -590,6 +661,7 @@ Written before any round or portal result.
 - BLOCKs cleared at the draw: shape 01 (the note's own) is held by task116, so 05; patterns A, C and D are held by task114 to task116, so B; (rule, B, etl_conformance) is blocked by task98 v4 in the window and (rule, B, method_or_model_selection) is spent in 14 builds, so gap time leads, which is honest because the hidden rule is a window rule; closed_decision_corpus is held by task121 and task122 in the batch, so parallel_run_overlap, the cutover's replay; register is held by task122, so filed_standard; the furniture (trustees_or_governors, foundation_or_funder) is clear of task114 to task116 and of task120 to task122; the forcing event moved from cutover_or_migration to budget_or_appropriation at batch registration, because ban.forcing_event blocked cutover_or_migration against task117: the September 2026 stabilisation round is itself the allocation round that forces the call, and the in-house cutover stays in the world as background.
 - People WARNs cleared by redrawing from the same seed: Patrick Mitchell (task103) and David Eaton (task104) out, Wiremu Roberts in; Benjamin Thompson, Andrea Brown and Jason Smith skipped against task118 and task119.
 - WARN repeat.gate_g at batch registration (method_or_model_selection, against task120): answered as before, etl_conformance is the only other honest label and it is blocked by task98 v5 lineage; the two builds share the label, not the mechanism (task120 recovers a filing unit, this build recovers a window rule).
+- Hardening loop 2 (2026-10-09): the card's answer_source, driver, driver_concrete, stump, notes, spine rows (85,178) and generators (G4, attribution at transition, added for the calendar rung) rewritten; `guard.py heart task123`: WARN, no BLOCK (people.first Marie against task67, an older build; the same-driver signature differentiated against task62 and task85; nearest stump 0.07, task76 v2; nearest driver 0.07, task101); `guard.py validate task123`: 0 invalid. `guard.py check` on the redrafted card reports BLOCKs against the card's own filed version (test.own_lineage, driver.text 0.43 "this slot"), which is the script treating a same-architecture harden as a re-root draw; heart, which excludes the slot itself, is the gate the pipeline runs.
 - Hardening loop 1 (2026-10-09): the card's answer, answer_source, driver, driver_concrete and stump rewritten for R5 (no other field moved); `guard.py heart task123`: WARN, no BLOCK (people.first Marie against task67, an older build; the same-driver signature differentiated against task62 and task85; nearest driver 0.08, task70 v2 and task101; nearest stump 0.07, task107); `guard.py validate`: 119 cards, 0 invalid.
 
 ## Changes from the source note
@@ -613,53 +685,60 @@ Stage 2 (design) changes, every draw decision kept (pairing, shape 05, the three
 
 ## Build record
 
-Stage 3, build, 2026-10-09; rebuilt for hardening loop 1 the same day. Generator `generator/build.py` (seeded, deterministic; modules roster, identity, movers, world, plan, screen, lines, asks, tune, design, writers_data, writers_docs, asserts_world, asserts_asks), independent verifier `generator/verify.py` (reads only `target/` and `metadata.json`, parses the xlsx bytes itself, shares no code with the generator), golden script `generator/golden.py` (reads only `target/`, shares no code with either), ship script `generator/ship.py` (two scratch builds, the task-folder build, the verifier, the generator against verifier comparison). Rebuild: `python3 task123/generator/ship.py --task task123 --scratch <scratch dir>` from the repo root, then `python3 task123/generator/golden.py task123/target task123/golden`.
+Stage 3, build, 2026-10-09; rebuilt for hardening loops 1 and 2 the same day. Generator `generator/build.py` (seeded, deterministic; modules common, roster, identity, movers, world, plan, screen, lines, asks, tune, design, writers_data, writers_docs, asserts_world, asserts_asks), independent verifier `generator/verify.py` (reads only `target/` and `metadata.json`, parses the xlsx bytes itself, shares no code with the generator), golden script `generator/golden.py` (reads only `target/`, shares no code with either), ship script `generator/ship.py` (two scratch builds, the task-folder build, the verifier, the generator against verifier comparison). Rebuild: `python3 task123/generator/ship.py --task task123 --scratch <scratch dir>` from the repo root, then `python3 task123/generator/golden.py task123/target task123/golden`.
 
 ```
-GATES (hardening loop 1)
-  generator: 299 assertions green across 57 assertion ids (A1 to A51, A53 to A55, SS single-statement,
-    TELL generation tells, H1 container audit); verifier: 163 checks green from the shipped bytes (rule
-    4.1's blindness per round, the 14 removed grantees against the March 2026 pack, the Steady Ground
-    instalments rebuilt from the offers sheet and rule 7, the memo against the run)
+GATES (hardening loop 2)
+  generator: 480 assertions green across 59 assertion ids (A1 to A51, A53 to A57, SS single-statement,
+    TELL generation tells, H1 container audit); verifier: 198 checks green from the shipped bytes (each
+    return's own year read from `year_end`, one balance date per organisation read from the register as
+    held, both calendars' blindness per round, the 17 removed grantees against the March 2026 pack, the
+    three movers, the co-funding read from the Variations sheet, the memo against the run)
   two consecutive scratch builds byte-identical (20 files: target/ and metadata.json); the task-folder pack
-    byte-identical to both; generator and verifier agree on 967 figures (every scored row's income, prior,
-    fall, fall per cent, offer, K1 and K2; every corpus round; every rival's miss count; every rung's rate;
-    every grid cell)
+    byte-identical to both; generator and verifier agree on 974 figures (every scored row's income, prior,
+    fall, fall per cent, offer, K1 and K2; every corpus round; every rival's miss count; every rung's rate,
+    R5 included; every grid cell, the calendar cells included, the key sets asserted equal)
   input gates: 19 files, 6 formats (csv, xlsx, pdf, docx, md, txt), spine portal_return_lines_2018q3_2026q2.csv
-    83,450 rows, register match 1,098 rows, payment run 14,618 rows (operating and project grants only);
+    85,178 rows, register match 1,119 rows, payment run 14,915 rows (operating and project grants only);
     distractors canterbury_community_income_survey_2025.xlsx and grantee_capacity_ratings_2026.csv named in
     metadata.json only; deleting both leaves the call unchanged
   containers: house scrub audit clean on target/ and golden/; zip entries at a fixed time; mtimes 7 October
     2026 09:00; leak.py --asof 2026-10-08: REVIEW, no LEAK (Leak review)
 ```
 
-**The answer.** 42.55 cents per dollar of fall (4,255 hundredths of a cent); 9 offers totalling NZ$559,969, NZ$31 left in the Fund, the next hundredth NZ$66 over the pot; 132 scored of 150 in scope. First outside the line: Amberley Tenancy Advocacy Service (L_dual), 6.4 per cent (6.39; next 5.40). Replay: every round's published rows given back, 118, 124, 131, 137, 142 and 145.
+**The answer.** 42.55 cents per dollar of fall (4,255 hundredths of a cent); 9 offers totalling NZ$559,969, NZ$31 left in the Fund, the next hundredth NZ$66 over the pot; 132 scored of 153 in scope. First outside the line: Amberley Tenancy Advocacy Service (L_dual), 6.4 per cent (6.39; next 4.01), and the first grantee not offered in screen order (NZ$33,728 against G_R2's NZ$28,861). Replay: every round's published rows given back, 121, 127, 134, 140, 145 and 148.
 
-| Key | Grantee | Offer | Fall | Fall % | K1 government part | K2 Trust part |
+| Key | Grantee | Offer | Fall | Fall % | K1 government money | K2 Trust's own money |
 |---|---|---|---|---|---|---|
-| F1 | Mayfield Kai Share Cooperative | 150,000 (cap) | 383,743 | 13.2 | 258,337 | -19,966 |
-| A5 | Woolston Sports Education Trust | 109,687 | 257,783 | 18.3 | 103,487 | 36,866 |
-| F3 | Tai Tapu Kai Share Cooperative (dual) | 65,770 | 154,572 | 13.2 | 94,431 | -71,516 |
-| F2 | Waikari After School Care Society | 59,426 | 139,661 | 13.3 | 73,145 | -8,408 |
-| F4 | Papanui Neighbourhood Hub Trust | 51,797 | 121,733 | 14.1 | 41,328 | -6,402 |
-| F5 | St Albans Newcomers Network | 41,503 | 97,539 | 14.2 | 54,616 | -6,718 |
-| A6 | Sydenham Play Resource Library Society | 37,183 | 87,387 | 14.2 | 34,351 | 2,078 |
-| F6 | Shirley Kai Share Cooperative | 26,129 | 61,407 | 13.5 | 28,381 | -4,300 |
-| F7 | Kaiapoi Newcomers Network | 18,474 | 43,416 | 13.6 | 22,709 | -2,500 |
+| F1 | Mayfield Kai Share Cooperative | 150,000 (cap) | 383,743 | 13.2 | 259,239 | -19,966 |
+| A5 | Woolston Sports Education Trust | 109,687 | 257,783 | 18.3 | 100,513 | 36,866 |
+| F3 | Tai Tapu Kai Share Cooperative (dual) | 65,770 | 154,572 | 13.2 | 98,216 | -71,516 |
+| F2 | Waikari After School Care Society | 59,426 | 139,661 | 13.3 | 76,381 | -8,408 |
+| F4 | Papanui Neighbourhood Hub Trust | 51,797 | 121,733 | 14.1 | 44,036 | -6,402 |
+| F5 | St Albans Newcomers Network | 41,503 | 97,539 | 14.2 | 56,279 | -6,718 |
+| A6 | Sydenham Play Resource Library Society | 37,183 | 87,387 | 14.2 | 31,534 | 2,078 |
+| F6 | Shirley Kai Share Cooperative | 26,129 | 61,407 | 13.5 | 30,567 | -4,300 |
+| F7 | Kaiapoi Newcomers Network | 18,474 | 43,416 | 13.6 | 25,633 | -2,500 |
 
-The CSV's K1 column is empty for the 25 short-form scored grantees; K2 for them comes from the payment run and the rebuilt instalments. Every scored row's figures are in the verifier's JSON output (`verify.py --json`), which the submission stage reads rather than this note.
+The offers, falls and K2 figures are loop 1's; every K1 figure moved by the co-funding in the fall (NZ$2,400 to NZ$6,400 either way). The CSV's K1 column is empty for the 25 short-form scored grantees; K2 for them comes from the payment run, the rebuilt instalments and the co-funding. Every scored row's figures are in the verifier's JSON output (`verify.py --json`), which the submission stage reads rather than this note.
 
-**Rungs (September; the answer's rate as a multiple of each).** R0 filed year 36.37 cents (1.170x, 10 offers, 5 names differ, 31.4% of the pot re-placed); R1 per grant return, latest 23.94 (1.777x, 154 rows, 14 offers, 9 differ, 51.1%); R2 one row per organisation, latest 26.54 (1.603x, 13 offers, 8 differ, 51.9%); R3 as held 29.83 (1.426x, 12 offers, 7 differ, 46.2%); R4 the step-back, the stop, 17.76 (2.396x, 146 scored, 14 offers, 5 differ, 55.2%); R5 the answer 42.55. R4 offers the answer's nine plus M Geraldine Carer Respite Network (its largest, NZ$117,289), A2 Heathcote Adult Literacy Project, A3 Burwood Environmental Restoration Trust, A4 Beckenham Music School Trust and C1 Beckenham Carer Respite Network, all on the twelve months to December 2025 the March 2026 pack published for them. R3 offers C1, F1 to F7 and the decoys Y1 Bryndwr Household Budgeting Trust, Y2 Aranui Heritage Society, Y3 Shirley After School Care Society and Y4 Pegasus Community Transport Trust; R2 adds G_R2 Diamond Harbour Whanau Support Services (June 2026 return restated on 5 October); R1 adds L_dual Amberley Tenancy Advocacy Service (project-grant copy left low). R3 floors F7 and R4 floors F6 and F7; only the answer caps an offer.
+**Rungs (September; the answer's rate as a multiple of each).** R0 filed year 36.37 cents (1.170x, 10 offers, 5 names differ, 31.4% of the pot re-placed); R1 per grant return, latest 23.94 (1.777x, 154 rows, 14 offers, 9 differ, 51.1%); R2 one row per organisation, latest 26.54 (1.603x, 13 offers, 8 differ, 51.9%); R3 as held 29.83 (1.426x, 12 offers, 7 differ, 46.2%); R4 the step-back on one balance date without rule 4.1, 16.14 (2.636x, 149 scored, 16 offers, 7 differ, 58.6%); R5 rule 4.1 on one balance date, the stop, 34.11 (1.247x, 135 scored, 11 offers, 2 differ, 17.9%); R6 the answer 42.55. The stop offers the answer's nine plus BC1 Timaru Volunteer Exchange Trust (NZ$67,898 on a fall of NZ$199,057, 15.04 per cent) and BC2 Hornby Adult Literacy Project (NZ$32,335; NZ$94,796, 14.71 per cent), both on twelve months to March 2026; BC3 Governors Bay Heritage Society falls -1.34 per cent. R4 adds M Geraldine Carer Respite Network, A2 Heathcote Adult Literacy Project, A3 Burwood Environmental Restoration Trust, A4 Beckenham Music School Trust and C1 Beckenham Carer Respite Network, all on the twelve months to December 2025 the March 2026 pack published for them. The step-back on each return's own year without rule 4.1 (the loop 1 stop, a grid cell) strikes 17.76 on 14 names and scores the three movers on December 2025, unoffered. R3 offers C1, F1 to F7 and the decoys Y1 Bryndwr Household Budgeting Trust, Y2 Aranui Heritage Society, Y3 Shirley After School Care Society and Y4 Pegasus Community Transport Trust; R2 adds G_R2 Diamond Harbour Whanau Support Services (June 2026 return restated on 5 October); R1 adds L_dual Amberley Tenancy Advocacy Service (project-grant copy left low). R1 to R3 do not score the movers (no June 2026 return); only the answer caps an offer.
 
-**Dominance.** R4's five own offers hold 56.4% of R4's eligible falls; R3's own names 46.4% of R3's; the answer's own names against R3 (A5, A6) 25.6% of the answer's. Movers: decoys on R4 -1.45, -1.27, -1.58 and 7.72 per cent, on R3 15.81 to 18.43; step-back movers on R4 or the answer 14.21 to 22.08, on R3 -9.09 to -2.92.
+**Dominance.** The stop's two own offers hold 17.9% of its eligible falls; rule 4.1's five removed offers 56.4% of the step-back's; R3's own names 46.4% of R3's; the answer's own names against R3 (A5, A6) 25.6% of the answer's. Movers: decoys on R4 -1.45, -1.27, -1.58 and 7.72 per cent, on R3 15.81 to 18.43; step-back movers on R4 or the answer 14.21 to 22.08, on R3 -9.09 to -2.92; the balance-date movers under the stop 15.04, 14.71 and -1.34.
 
-**Grid.** See Correction grid (built values). Nearest single-violation cell R0 at -14.5%, nearest on the main chain -16.1% (per return, as held, step-back); census day exclusive and register at the extract leave the rate and offers unchanged and score 118 and 138.
+**Grid.** See Correction grid (built values). Nearest single-violation cell R0 at -14.5%, nearest on the main chain -16.1% (per return, as held, step-back), the stop -19.8%; census day exclusive and register at the extract leave the rate and offers unchanged and score 118 and 138; on one balance date both land on the stop's rate.
 
-**Corpus.** 797 rows (118, 124, 131, 137, 142, 145), 71 offers (9, 10, 11, 12, 13, 16), rates 29.77, 38.40, 33.83, 26.54, 30.81 and 20.16 cents, totals offered NZ$539,966, 574,924, 609,983, 649,960, 689,979 and 719,890. Rival misses: R3 10 (787 given back, every offer and rate); V1 overdue only 8; V2 December balance dates 12; V3 Q4 amended after the census 10; V4 current window only 10; V5 unfiled unscored 10; T-strict 3; T-extract 10; register fallback 10; R2 94 rows with offers and rates failing in 4 rounds; R1 119 rows, count failing all 6 rounds; R0 787 (10 given back). Rule 4.1: no published window ends before the census before; J1 Papanui Environmental Restoration Trust 2023 and J2 Rakaia Community Rooms Trust 2024 end on it; the screen without the clause gives back all six packs. Residue rows: D1 Rangiora Family Support Trust in all six rounds, D2 Diamond Harbour After School Care Society in 2022 and 2024, J1 2023, J2 2024; each within 0.79% of income and 0.69 points of fall, none offered. Census-day receipts: J3 Prebbleton Arts Trust (31 March 2023), D2 (31 March 2025), J4 Oxford Community Transport Trust (31 March 2026). Twin pair: Amberley Mental Wellbeing Collective (TA) and Waikari Mental Wellbeing Collective (TB), 11.60 per cent each on today's versions, published 5.9 and 11.6 (1.97x). Rule flips: 15, each breaking at least one corpus case (the latest-across-grants rule exactly one, DU2 St Albans Heritage Society 2023; rule 4.1 read strictly four).
+**Corpus.** 815 rows (121, 127, 134, 140, 145, 148), 71 offers (9, 10, 11, 12, 13, 16), rates 29.77, 38.40, 33.83, 26.54, 30.81 and 20.16 cents, totals offered NZ$539,966, 574,924, 609,983, 649,960, 689,979 and 719,890. Rival misses: R3 10 (805 given back, every offer and rate); V1 overdue only 8; V2 December balance dates 12; V3 Q4 amended after the census 10; V4 current window only 10; V5 unfiled unscored 10; T-strict 3; T-extract 10; register fallback 10; R2 94 rows with offers and rates failing in 4 rounds; R1 119 rows, count failing all 6 rounds; R0 805 (10 given back). Rule 4.1: no published window ends before the census before; J1 Papanui Environmental Restoration Trust 2023 and J2 Rakaia Community Rooms Trust 2024 end on it; the screen without the clause gives back all six packs. Calendar: no year-end quarter inside a March window differs between the two calendars, the screen on one balance date gives back all six packs, and the movers' 18 published rows sit far from the line. Residue rows: D1 Rangiora Family Support Trust in all six rounds, D2 Diamond Harbour After School Care Society in 2022 and 2024, J1 2023, J2 2024; each within 0.79% of income and 0.69 points of fall, none offered. Census-day receipts: J3 Prebbleton Arts Trust (31 March 2023), D2 (31 March 2025), J4 Oxford Community Transport Trust (31 March 2026). Twin pair: Amberley Mental Wellbeing Collective (TA) and Waikari Mental Wellbeing Collective (TB), 11.60 per cent each on today's versions, published 5.9 and 11.6 (1.97x). Rule flips: 15, each breaking at least one corpus case (the latest-across-grants rule exactly one, DU2 St Albans Heritage Society 2023; rule 4.1 read strictly four).
 
-**Ask layer.** Lazy paths: K1 by `GOV_GRT` as one series moves 9 of 9 offered figures by 8% or NZ$2,000; K2 by the payment run alone moves 9 of 9 by 8% or NZ$1,000. Every stop (K1: `GOV_GRT` on both forms, comparatives, whole fees line, project copy, latest delivered; K2: the run alone, instalment month, returned payments, ten-day transit, one grant reference) leaves each offered figure untouched or at least NZ$500 away; R4 holds all nine offerees on the answer's windows; R3's windows miss both 30-June offerees on both asks (K1 by NZ$159,670 and NZ$33,665, K2 by NZ$7,564 and NZ$4,646). Necessity: D7 moves 9 K1 figures, D4 9 K2 figures (F3 by NZ$50,816, A5 by NZ$36,866), D8 9 K2 figures; H1 moves F3 only (K1 NZ$23,270, K2 NZ$20,700); H4 F2 and F4 only (NZ$21,866 and NZ$13,004); H5 F5 only (NZ$6,200); H2 7 of 9 K1 figures by 5% or more; H3 25 short-form scored rows, none offered. Composed mishandlings: 74 subset checks, nearest NZ$1,050 (F6, K2, instalment month). Referee: 18 offered-grantee years tie to the register, 9 re-presented comparative years do not. Memo against run: equal on 884 new-form returns; Steady Ground money outside both on 159. Pair simulation (habitual battery, D7 and D4 missed): cracker 45.0, mirror 10.0, average 27.5. Separation: 0 device or hazard rows in the main call's 5,725 total-income YTD rows of accepted, rejected and withdrawn versions; the payment run and the offers sheet are read by no step of the main call.
+**Ask layer.** Lazy paths: K1 from the government lines alone moves 9 of 9 offered figures (8 by 4% or NZ$2,000); K2 from the payment run alone moves 9 of 9 by 8% or NZ$1,000. Every stop (K1: the government lines alone, the co-funding by instalment month, `GOV_GRT` on both forms, comparatives, the whole fees line, project copy, latest delivered; K2: the run alone, run and instalments with the co-funding left in, run less the co-funding without the instalments, instalment month, returned payments, ten-day transit, one grant reference) leaves each offered figure untouched or at least NZ$500 away; the stop holds all nine offerees on the answer's windows; R3's windows miss both 30-June offerees on both asks (K1 by NZ$155,878 and NZ$29,350, K2 by NZ$7,564 and NZ$4,646). Necessity: D5 moves all 9 K1 figures (NZ$2,400 to NZ$6,400) and all 9 K2 figures by the same amounts the other way; D4 moves all 9 K2 figures (F3 by NZ$50,816, A5 by NZ$36,866); D8 moves all 9 K1 and all 9 K2 figures; H6 moves all 9 K1 figures (NZ$10,105 to NZ$149,731); H1 F3 only (K1 NZ$23,270, K2 NZ$20,700); H4 F2 and F4 only (NZ$21,866 and NZ$13,004); H5 F5 only (NZ$6,200); H2 7 of 9 K1 figures by 5% or more; H3 25 short-form scored rows, none offered. Co-funding: 36 grantees, every offeree among them at NZ$1,200 to NZ$2,400 a month. Composed mishandlings: 214 subset checks, nearest NZ$1,025 (F7, K1, the co-funding left out with the comparatives). Referee: 18 offered-grantee years tie to the register, 9 re-presented comparative years do not, and on 53 co-funded years the register's government figure carries none of the co-funding. Memo against run: equal on 902 new-form returns; Steady Ground money outside both on 159; the co-funding inside both on 186. Pair simulation (habitual battery, D5 and D4 missed): cracker 45.0, mirror 10.0, average 27.5. Separation: 0 device or hazard rows in the main call's 5,833 total-income YTD rows of accepted, rejected and withdrawn versions; the payment run, the offers sheet and the Variations sheet are read by no step of the main call.
 
-**Cast (design keys, never shipped).** Unfiled at the census and filed 1 to 7 October: A2, A4 and four steady grantees; not in the extract: M, A3, C1, Y1 to Y4 and one steady grantee; 14 steady 31 March grantees filed on 30 September 2026. New 30-June grantee not scored: N Bryndwr Community Transport Trust. 31 December grantees: D1, D2, D3 St Albans Neighbourhood Hub Trust. Dual grantees: F3, L_dual, DU1 Governors Bay Community Rooms Trust, DU2 and three steady.
+**Cast (design keys, never shipped).** Unfiled at the census and filed 1 to 7 October: A2, A4 and four steady grantees; not in the extract: M, A3, C1, Y1 to Y4 and one steady grantee; 14 steady 31 March grantees filed on 30 September 2026. Balance-date movers (hardening loop 2): BC1 Timaru Volunteer Exchange Trust, BC2 Hornby Adult Literacy Project, BC3 Governors Bay Heritage Society, 30 June to 2025, nine-month year to 31 March 2026, no annual return for it and no June 2026 return in the extract, names and charity numbers drawn after the book's so every earlier identity held. New 30-June grantee not scored: N Bryndwr Community Transport Trust. 31 December grantees: D1, D2, D3 St Albans Neighbourhood Hub Trust. Dual grantees: F3, L_dual, DU1 Governors Bay Community Rooms Trust, DU2 and three steady. Government co-funding: the nine offerees at fixed sums (F1 NZ$1,200, F2 2,000, F3 2,400, F4 1,600, F5 1,200, F6 1,600, F7 2,400, A5 1,600, A6 1,200 a month) and 27 others drawn by the seed.
+
+**Hardening loop 2, what moved and what held.** Main call: `common.py` gained a per-organisation fiscal calendar (`fiscal`, `fpos`, `fend`, `fstart`, `is_final`) with a returns reading and a one-balance-date reading; `roster.py` added the three movers (bal 31 March, latest annual return's 30 June, the nine-month year, no June 2026 return); `identity.py` draws their names and numbers after the book's; `world.py` builds each return's year end, the nine-month year's annual return (eventual receipt after the extract) and the true-ups on the returns calendar; `screen.py` takes `labels` (returns for the answer, app for R4 and R5) and a generic due date; the grants register lost its balance-date column and the field guide its row. G_R2's held fall moved to 1.6 per cent (its income stays NZ$1,800,000, Tried and rejected), so both readings of "first outside the line" name Amberley (A13). Ask layer: `lines.py` adds the co-funding to the operating instalments for October 2024 to March 2026 (reissues carry it) and the Variations sheet records it; `asks.py` adds it to K1 and takes it out of K2; D7 became H6. Assertions moved with the design: A3, A4, A5, A7, A9, A13, A14, A17, A18, A55 reworked; A56 and A57 new; A41 to A43 run on four screens; A45 to A50 and A53 on the new devices; A39 also bans a balance date or a short year. Held: the answer (rate, offers, falls, K2), the pack's 19 files and formats, the corpus's rates and offers (rows 797 to 815 with the movers' 18), the twin pair, the residue rows, every rival's miss count, the persona set, the prompt.
+
+**Write-up and ship checks (hardening loop 2).** `golden.py` now reads each return's `year_end` and places every quarter in the year its own return runs within (a year starting the day after the year end before it), reads the co-funding off the Variations sheet and the run, and writes the paper with the movers in the step-back paragraph's sequel (17 with a year to 31 March 2026, three of them movers) and the co-funding in the offers paragraph and note 2; the CSV's parts are `fall_government_money` and `fall_trust_own_money`. It asserts the replay (815 of 815 rows, 71 of 71 offers, 6 of 6 rates), every stepped-back scored window a year to 30 June 2026's to March 2026, the 17 not scored under rule 4.1 each equal to its March 2026 pack row (H6, the stated rule back-tested), the movers' positions (June 2025 a year end, September 2025 a first quarter, March 2026 the third and last), the memo against the run on 902 QFR-24 returns, and every offeree among the co-funded. All 132 CSV rows agree with `verify.py --json` on all seven figures; every figure in `submission.md` recomputes from it (the answer block is written from the verifier's output and diffed). Golden-realism pass after the figures froze: the movers moved to their own short paragraph (the decision paragraph stays the longest), the table headers name government money and the Trust's own money, the chart reopened (unchanged); two golden builds byte-identical. Register pass: H1 audit clean on `target/` and `golden/`; H4 the golden folder holds exactly the three declared files; H6 as above; H8 every rule, clause, sheet, field and line code cited in the paper and the submission resolves (the Variations sheet, `year_end`); H11 one `submission.md`, one `prompt.md`; H16 forward dates confined to the two allow-listed columns; H21 the movers' names are place-and-kind inventions like the rest; H22 the extract record declares the register match constructed. leak.py REVIEW, no LEAK; `guard.py surface` the same two promoted pairs and people lines as loop 1; `guard.py heart` WARN (nearest stump 0.07, task76 v2; nearest driver 0.07, task101; people.first Marie against task67); `guard.py validate` 0 invalid.
+
+**Stage 3 re-run on the rebuilt pack after hardening loop 2 (2026-10-09).** `ship.py` rebuilt the pack byte-identical to the shipped `target/` and `metadata.json` (480 generator assertions, 198 verifier checks, 974 figures agreed); `golden.py` run twice into scratch reproduced the three shipped goldens byte for byte and printed the same figures (42.55 cents, nine offers, NZ$559,969 of NZ$560,000, NZ$31 left, 132 scored, 17 at 30 June scored to March 2026, 17 with a year to 31 March 2026 not scored, three of them movers, 815 of 815 rows, 71 offers, six rates, Amberley at 6.4 per cent). The write-up holds as written: all 132 CSV lines in block 4 match the golden CSV and `verify.py --json` on all nine fields, and every figure in blocks 1 to 3 is one `golden.py` prints. Realism pass after the figures froze: the chart and the paper read cold again, nothing warranted an edit, so the goldens are the frozen build. Register: H1 audit clean on `target/` and `golden/`; H4 the golden folder holds exactly the three declared files; H6 back-test asserted in `golden.py`; H8 every rule (1, 2, 3.2, 3.3, 4.1, 4.3, 5.1 to 5.3, 7, 8) and cutover clause (4, 5) cited in the paper and the submission resolves, and every field, line code and sheet named (`year_end`, `date_received`, `total_gross_income`, `value_date`, QFR-16, QFR-24, `GOV_GRT`, `FEE_SVC_GOV`, Variations, Steady Ground offers) is in the pack; H11 one `submission.md`, one `prompt.md`, no backup or snapshot. leak.py REVIEW, no LEAK; `guard.py surface` the same two promoted pairs and people lines; `guard.py heart` WARN, no BLOCK (nearest stump 0.07, task76 v2; nearest driver 0.07, task101; people.first Marie against task67); card `answer_source` refreshed; `guard.py validate` 119 cards, 0 invalid.
 
 **Hardening loop 1, what moved and what held.** Main call: rule 4.1 gained its second sentence and rule 7 its pay day in `writers_docs.py`; `common.py` gained the census calendar (`prev_census`); `screen.py` reads the clause (on, off for R4, strict and year-back for the grid). The budget minute's September pot moved from NZ$820,000 to NZ$560,000 with the prompt's constraint sentence (Tried and rejected). Ask layer: the QFR-24 government line keeps the code `GOV_GRT` (it was `GOV_GRC`), the notice's sentence on counting Trust money by receipt is gone, the payment run carries operating and project grants only, the offers sheet gained the monthly instalment, the field guide describes both, and H4 and H5 moved onto offered grantees (F2 and F4; F5). Assertions moved with the design: A14 keeps the cap to the answer alone (at NZ$560,000 R3 floors F7 and R4 floors F6 and F7, so the stage 2 "no floor on R3" clause was dropped); A18 keeps both 20 per cent floors and drops the ratio between them (25.6 against 46.4 per cent is 0.55, under the stage 2 ratio of 0.6, and the decisive rung's dominance is R4's 56.4 per cent); A54 and A55 are new. Held: the pack's 19 files and formats, the corpus (rates, rows and offers; the March 2026 total moved from NZ$719,997 to NZ$719,890 with the tuned falls), the twin pair, the residue rows, every rival's miss count, the persona set and the register match's 1 July 2018 horizon.
 
@@ -670,6 +749,10 @@ The CSV's K1 column is empty for the 25 short-form scored grantees; K2 for them 
 **Earlier stage 3 changes that still stand.** The author's leak-review decision put the pot, the floor and the cap in the prompt's constraint sentence; the register match covers financial years ending on or after 1 July 2018 (1,213 to 1,098 rows), so no row count in the extract record collides with a graded figure (TELL and a verifier check); the head of grants was redrawn as Marie Griffin after the surface screen (Tried and rejected).
 
 ## Leak review
+
+`leak.py task123 --asof 2026-10-08 --quiet` on the stage 3 re-run after hardening loop 2: **REVIEW, no LEAK**, 20 REVIEW lines (630 golden figures, 133 candidate names, the same 25 stump terms), each in a class answered below: rule numbers 3.3 and 4.1 and the CC BY 4.0 licence read as figures; the round rules' fund vocabulary (8 of 10 words of the call, no rate, no count); stump terms in the rules, thread, notice, extract record and field guide (rule 2's dates, rule 7's December, the form change, "balance" as the final instalment's payment word); the six packs and the organisation-keyed files naming grantees without ranking September's; forward dates in the grants register's term ends and the portal's `year_end`. `guard.py surface task123`: the same two promoted pairs (task81 on the shared New Zealand geography and an out-of-window calibration form; task85 on the same-driver signature, differentiated on the card) and the same people lines (Linwood, Shirley, Mental, Tai Tapu and the like are organisation-name fragments, not personas).
+
+`leak.py task123 --asof 2026-10-08` after hardening loop 2 (the rebuilt pack, the new goldens and write-up, and this note's new stump paragraph, whose 25 swept terms now include balance, movers and hardening): **REVIEW, no LEAK**, the same classes of line as loop 1, each answered as below. New in the sweep: the field guide carries "balance" (the offers sheet's twelfth instalment "carries any balance", a payment word, not a balance date; A39 and the verifier assert no document names a balance date or a short year), and the team thread carries return, register, returns and extract (the handover messages about the warehouse pull). The co-funding rows live only on the grants register's Variations sheet, a file the main call reads for scope and the unit, on a sheet it never reads. `guard.py surface task123` after hardening loop 2: the same two promoted pairs (task81 on the shared New Zealand, task85 on the same-driver signature) and the same organisation-name fragments as people lines; the movers' names (Timaru, Hornby, Governors Bay) raise none.
 
 `leak.py task123 --asof 2026-10-08` after hardening loop 1 (the rebuilt pack, the new goldens and write-up, and this note's new stump paragraph): **REVIEW, no LEAK**, 20 REVIEW lines (19 files read, 631 golden figures and 133 candidate names from submission.md, 25 stump terms). At stage 3 the run after the goldens, the write-up and the persona rename returned **LEAK** on four lines and was held for the author, because no honest pack edit cleared the first three. The author's decision (2026-10-09) cleared all four:
 
@@ -729,3 +812,13 @@ The stage 3 re-run on the rebuilt pack (2026-10-09) returned **REVIEW, no LEAK**
 - Hardening loop 1, the stage 2 ask devices: rejected after solver round 1 cracked 8 of 9 ask items, because each was narrated in prose a solver reads for the asks (the notice's "count Trust money in the quarter it reaches your bank account" handed over D8; the new code `GOV_GRC` announced the line move and made D3 a mapping; Steady Ground lines in the payment run made the memo check a confirmation); the solver's own step 7 reads "Government money is GOV_GRT + FEE_SVC_GOV on QFR-16, GOV_GRC on QFR-24 ... The Trust's own money is the paid lines in trust_payment_run, by value_date, ... which matches the QFR-24 GRT_NGO_APT memo exactly". Replaced by D7 (`GOV_GRT` keeps its code with a new meaning), D4 (Steady Ground instalments in no run and no memo, rebuilt from the offers sheet and rule 7) and D8 on those instalments.
 - Hardening loop 1, H4 on A4's December 2024 quarter and H5 on A3: rejected at the rebuild, because rule 4.1 leaves neither grantee scored; H4 moved to F2 (June 2025 quarter) and F4, first on F4's December 2024 quarter, which sits in neither of F4's windows (31 March balance date, windows ending June) and moved nothing, then on its June 2024 quarter, which the prior window reads; H5 moved to F5.
 - Solver round 2 (plain, 2026-10-09, after hardening loop 1; proxy 80.2, main call landed, 5 of 9 asks; grade.py's token match read missed at 4 of 7 and was re-graded landed by the main thread): R5 as a filed clause is rejected as the stump, because the plain solver reached the stop on the same LTM identity as round 1 (step 3, "Twelve-month income = latest annual return ... date_received on or before the census + YTD of the latest accepted Q1-Q3 return ... - YTD of the same quarter a year earlier"), replayed 797 of 797, and then read rule 4.1 against rule 2's list on its first pass over the rules (step 1, "rule 4.1: twelve-month income runs for twelve months ending on or after the census before") and executed it at step 5, "14 March-year-end organisations had no FY2026 annual return on the register by 30 Sep. Their only window ends 31 Dec 2025, before the 31 Mar 2026 census, and repeats their March windows, so rules 4.1 and 5.4 exclude them"; the exposure this note stated (survival property 1, written in a shipped sentence) is the one a plain solver takes, and it named R4 itself as the rival ("Ignoring the window rule gives 146 scored and 17.76c"). Asks: D7 fell (K1 government parts match on all nine, via "GOV_GRT + FEE_SVC_GOV on QFR-16 and GOV_GRT on QFR-24 (this matches register govt on 100% of full-form year-end returns)"), D4 held (K2 from the payment run alone, "The value-date basis matches every GRT_NGO_APT YTD memo line"), and the first-outside ask held only because the solver read it in screen order (it named Amberley at 6.4 per cent as the alternative in its notes).
+- Hardening loop 2, reading D7's death (2026-10-09): the code-reissue device on the government lines is rejected for this pack, because its silence claim (the misread cancels over each financial year) was false at the grain the solver checked: an old-form year-end return's year to date is itself the whole year, so the register's `govt_grants_contracts` arbitrates the mapping on every old-form year end, and the notice's line-code table narrates the meaning change besides; the solver's step 7 reads "quarterly YTD from GOV_GRT + FEE_SVC_GOV on QFR-16 and GOV_GRT on QFR-24 (this matches register govt on 100% of full-form year-end returns)". Any device on the meaning of a government line is a computation here; K1's next device has to put government money outside the government lines altogether.
+- Hardening loop 2, a lengthened transitional year for the balance-date movers (31 March to 30 June, fifteen months to 30 June 2026): rejected because the long year's June 2026 return carries fifteen months of year to date, which every no-step-back rung on one balance date reads as a single first quarter, a jump in income no other grantee shows; that symptom sends the solver to `year_end` below the decisive step. The shortened year leaves every rung's arithmetic clean: its quarters before March 2026 sit at the same positions on both calendars.
+- Hardening loop 2, the movers filing their June 2026 return: rejected for the same reason the other way round: on one balance date (30 June) June 2026 is a fourth quarter, and a no-step-back rung differences its three-month year to date against the nine-month year to date at March 2026 into a negative quarter. The movers file no June 2026 return by the extract (A56), and A43 asserts that supplying it leaves the answer and the stop unchanged.
+- Hardening loop 2, a short transitional year earlier in the spine (inside a March window): rejected, because the corpus would stop being blind (a March window holding a short year's final quarter places it differently on the two calendars, so the one-balance-date screen misses published rows and the replay teaches the answer's calendar), against L1; the movers' short year starts in July 2025 and ends at March 2026, after every March window it could touch has closed on positions both calendars share (A57).
+- Hardening loop 2, keeping the grants register's balance-date column, stale (30 June) for the three movers: rejected as a planted defect, since repairing the column moves the stop onto the answer, which turns sole_data_defect to yes; the column went for every grantee, so the calendar lives only in each return's `year_end` and the register's year ends, all of them correct.
+- Hardening loop 2, shrinking G_R2's income to NZ$560,000 so that "first outside the line" names Amberley in screen order too: rejected at the build, because the cell "per organisation, latest, step-back" fell to -6.8 per cent, under the 8 per cent separation floor (A9); G_R2 keeps NZ$1,800,000 and its held fall moved to 1.6 per cent instead (A13).
+- Hardening loop 2, an over-cleaner on K1 that counts every operating instalment as government money: rejected as a designed stop, because it lands on the golden wherever an offeree's operating level is the same in both windows (the non-co-funded part cancels in the fall), so it separates nothing (A48 failed on it).
+- Hardening loop 2, tiered flat co-funding sums for the offerees (NZ$2,400 a month over NZ$1 million of income, NZ$1,600 under): rejected at the build, because the comparatives hazard's delta moves with the co-funding through the current year's shares, so the co-funding left out composed with the comparatives landed NZ$407 from the answer on F1 and NZ$218 on F7, under A47's NZ$500 floor; the offerees' sums were set by a scan over NZ$1,200 to NZ$3,600 a month, nearest composed miss now NZ$1,025.
+- Solver round 3 (plain, 2026-10-09, after hardening loop 2; proxy 86.0, main call landed, 6 of 9 asks; token match read landed at 7 of 7, confirmed by the main thread): R6, each return's own financial year, is rejected as the stump, because the plain solver executed it as a work order inside the LTM identity at its step 3, "Twelve-month income at quarter q = YTD(q) + the previous financial year's total + YTD from the same quarter a year earlier, each taken from that quarter's own return; the PY column is not used. Changed financial years are handled through short years (CC23995, CC29520, CC36026)", then replayed 815 of 815 (step 5), read rule 4.1 against 31 March 2026 (step 6) and struck 42.55 on the nine; the exposure this note stated (once a solver keys year ends to each return's own `year_end`, the rung is one comparison per return) is not a later step but the identity's natural implementation, because an analyst who differences year to date reads each return's `year_end` to know which annual return it adds, so the one-balance-date stop is the less natural build and no step reaches it. Asks: K1 fell on all nine (the co-funding found through the Variations sheet and the payment run, step 8, "plus the fall in central government co-funding the Trust passed on"); K2 held on all nine (the solver's own parts, all payment-run lines net of co-funding, miss the Steady Ground instalments rebuilt from the offers sheet and rule 7). This is the third landing on one architecture after two loops; the solver-round rule leaves one hardening loop before re-root, and it has to move a figure the per-return LTM identity cannot see.
+- Hardening loop 3, reading R6's and D5's deaths (2026-10-09): every rung this architecture has carried (the step-back, rule 4.1 against rule 2's list, each return's own year) acts on the inputs of the twelve-month identity, which quarters, which year and which annual return, and the identity's own bookkeeping runs each of them as a by-product, in the solver's words at step 3, "Twelve-month income at quarter q = YTD(q) + the previous financial year's total + YTD from the same quarter a year earlier, each taken from that quarter's own return; the PY column is not used. Changed financial years are handled through short years (CC23995, CC29520, CC36026)"; so no further rung on the calendar, the register's dates or the window can carry the stump, and the loop 3 rung has to change a figure after the identity has produced every twelve-month income correctly. D5 died the same way at the ask layer: the Variations sheet's note ("Central government co-funding, paid by the Trust with the operating instalments") named the money and its carrier, so a solver reading the grants register for the asks executed it at step 8, "plus the fall in central government co-funding the Trust passed on. That co-funding is the Variations 'Government co-funding' amount divided by 12"; a K1 device whose organ names the money is a work order.

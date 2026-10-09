@@ -88,24 +88,60 @@ def tune_losses(T, K, log):
     return K
 
 
+def balance_aov_sets(T, K, log):
+    """Close the order-value fork on "those customers": for P1, P3 and P4 the August orders of the
+    review-window accounts that are not in the latest week's population are rescaled to the latest
+    week's accounts' mean, so both account sets give one order value."""
+    sk = T["sk"]
+    oidx = {o: int(i) for i, o in zip(sk.index, sk.order_id) if isinstance(o, str)}
+    for it in range(4):
+        pk = A.assemble(T, K)
+        s = N.enrich(pk)
+        val = N.finance_values(pk)
+        b = s[s.week.isin(P.BASE) & s.conv & s.signed_in]
+        worst = 0.0
+        for p in ("P1", "P3", "P4"):
+            col = "chain_account" if p == "P4" else "account_id"
+            a4 = set(s[(s.week == "W4") & s[p]][col].dropna())
+            aw = N.pop_accounts(s, p)
+            m4 = b[b.account_id.isin(a4)].order_id.map(val).mean()
+            ox = b[b.account_id.isin(aw - a4)].order_id
+            mx = ox.map(val).mean()
+            f = m4 / mx
+            for o in ox:
+                i = oidx[o]
+                K["oscale"][i] = round(K["oscale"].get(i, 1.0) * f, 6)
+            worst = max(worst, abs(f - 1))
+        log.append(f"order-value balance round {it}: worst factor {worst:.5f}")
+        if worst < 2e-4:
+            break
+    return K
+
+
+def _r(x):
+    return float(np.floor(x + 0.5))
+
+
 def tune_aov(T, K, log):
+    """Centre each sales cell so that unrounded and rounded lost orders land in one EUR 100 bin."""
     for p in ("P1", "P3", "P4", "P2", "P5"):
         key = AOV_KEY[p]
-        for it in range(6):
+        for it in range(8):
             pk = A.assemble(T, K)
             s = N.enrich(pk)
             base = N.baselines(s)
             L = N.losses(s, base)
             av = N.aovs(pk, s)
-            l3 = L[p]["W4"] * av[p]
-            tgt = round(l3 / 100.0) * 100.0
-            if abs(l3 - tgt) <= 12 or abs(L[p]["W4"]) < 0.4:
+            lw = L[p]["W4"]
+            mid = (lw + _r(lw)) / 2 * av[p]
+            tgt = round(mid / 100.0) * 100.0
+            if abs(mid - tgt) <= 8 or abs(lw) < 0.4:
                 break
-            want = tgt / L[p]["W4"]
+            want = tgt / ((lw + _r(lw)) / 2)
             f = K["scale"].get(key, 1.0) * (1 + (want - av[p]) / av[p] * (1.0 if p != "P5" else 1.6))
             assert 0.75 < f < 1.3, (p, f)
             K["scale"][key] = round(f, 4)
-        log.append(f"aov {p}: scale {K['scale'].get(key, 1.0)}, sales lost {l3:.1f}")
+        log.append(f"aov {p}: scale {K['scale'].get(key, 1.0)}, sales lost {lw * av[p]:.1f}")
     return K
 
 
@@ -192,6 +228,7 @@ def tune(T):
     K = A.empty_knobs()
     log = []
     tune_losses(T, K, log)
+    balance_aov_sets(T, K, log)
     tune_aov(T, K, log)
     tune_shares(T, K, log)
     tune_cohorts(T, K, log)

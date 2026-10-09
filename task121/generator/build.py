@@ -35,6 +35,7 @@ F = {
     "tokens_aug": "cdm_token_billing_2026-08.csv",
     "tokens_sep": "cdm_token_billing_2026-09.csv",
     "profiles": "loyalty_profiles_2026-09-28.csv",
+    "promo": "promo_redemptions_2025-07-01_2026-06-30.csv",
     "address": "address_book_history_2026-09-28.csv",
     "flags": "checkout_flags_export_2026-09-28.json",
     "cards": "saved_cards_2026-09-28.csv",
@@ -116,21 +117,29 @@ def register_rows(sizes):
         (F["tokens_sep"], "CD Monteralto (club)", "2026-09-28", "2026-09-01", "2026-09-27",
          "As received; the club sent the September report early, to 27 September."),
         (F["profiles"], "CRM / loyalty", "2026-09-28", "", "", "Snapshot at extract."),
-        (F["address"], "customer accounts", "2026-09-28", "2014-01-01", "2026-09-27", "Full history of saved addresses."),
+        (F["promo"], "promotions engine", "2026-09-28", "2025-07-01", "2026-06-30",
+         "2025/26 season, every code redeemed at checkout."),
+        (F["address"], "customer accounts", "2026-09-28", "2014-01-01", "2026-09-27",
+         "Full history of saved addresses. changed_at is UTC."),
         (F["flags"], "feature flag service", "2026-09-28", "", "", "One flag."),
-        (F["cards"], "payments vault", "2026-09-28", "", "", "Snapshot at extract."),
-        (F["card_changes"], "payments vault", "2026-09-28", "2026-07-27", "2026-09-27", ""),
-        (F["auth"], "Tagus Payments", "2026-09-28", "2026-08-31", "2026-09-27", "Card payments only."),
+        (F["cards"], "payments vault", "2026-09-28", "", "", "Snapshot at extract, is_default as at extract."),
+        (F["card_changes"], "payments vault", "2026-09-28", "2026-07-27", "2026-09-27",
+         "Change history over the window; previous_default_card_id is filled on set_default events."),
+        (F["auth"], "Tagus Payments", "2026-09-28", "2026-08-31", "2026-09-27",
+         "Card payments only. attempt_ref is one payment attempt."),
         (F["psp"], "Tagus Payments", "2026-09-29", "2026-08-31", "2026-09-27", "Provider's monthly report as issued."),
         (F["finance"], "finance (ERP)", "2026-09-28", "2026-07-27", "2026-09-27",
-         "Daily exports concatenated, including the 17 August re-export."),
+         "Daily exports concatenated, including the 17 August re-export. One row per shipment; order_total_eur "
+         "repeats the order total on each shipment row of the order, and the latest export of the order is the one "
+         "of record. Amounts are net of VAT on rows exported from the 10 August 2026 finance release and include "
+         "VAT at 23% on rows exported before it."),
         (F["catalogue"], "catalogue service", "2026-09-28", "", "", "Status changes for SKUs on sale in 2026."),
         (F["dashboard"], "trading dashboard", "2026-09-28", "2026-07-27", "2026-09-27", "As distributed."),
         (F["shortlist"], "product", "2026-09-28", "", "", ""),
         (F["agreement"], "partnerships", "2026-07-16", "", "", "Extract of the signed agreement."),
         (F["closeout_margens"], "growth", "2025-06-24", "2025-03-31", "2025-06-08", "Close-out as filed."),
         (F["closeout_kaiju"], "growth", "2025-12-16", "2025-10-06", "2025-11-30", "Close-out as filed."),
-        (F["release_log"], "checkout squad", "2026-09-01", "2026-01-26", "2026-10-26", ""),
+        (F["release_log"], "checkout squad", "2026-09-01", "2026-01-26", "2026-09-01", "Releases logged to 1 September."),
         (F["field_reference"], "analytics engineering", "2026-09-28", "", "", ""),
         (F["thread"], "team chat", "2026-09-30", "2026-09-28", "2026-09-30", "Channel export."),
         (F["carrier"], "Lusolog Expresso", "2026-07-15", "", "", "Carrier notice as received."),
@@ -158,7 +167,7 @@ def main():
     p = lambda k: os.path.join(tgt, F[k])
     # data files
     WR.write_parquet(pk["sessions"], p("sessions"))
-    for k in ("edge", "tokens_aug", "tokens_sep", "profiles", "address", "cards", "card_changes", "auth",
+    for k in ("edge", "tokens_aug", "tokens_sep", "profiles", "promo", "address", "cards", "card_changes", "auth",
               "finance", "catalogue"):
         WR.write_csv(pk[k], p(k))
     with open(p("flags"), "w", encoding="utf-8", newline="\n") as f:
@@ -174,7 +183,8 @@ def main():
     D.write_closeout(p("closeout_kaiju"), "kaiju", C.CLOSEOUTS["kaiju"], cos["kaiju"], books["kaiju"])
     D.write_release_log(p("release_log"), rels, effs)
     # documents
-    wk, bs, st = dashboard_figures(s)
+    # the dashboard as published each Monday, before that week's edge verdicts were applied
+    wk, bs, st = dashboard_figures(N.enrich(pk, N.opts(keep_bots=True)))
     D.write_dashboard(p("dashboard"), wk, bs, st)
     D.write_psp_report(p("psp"), psp_weekly(pk["auth"]))
     D.write_shortlist(p("shortlist"))
@@ -184,7 +194,7 @@ def main():
     D.write_text(p("thread"), D.THREAD)
     stock = stock_table(rng, T["cat"])
     WR.write_csv(stock, p("stock"))
-    sizes = {F[k]: len(pk[k]) for k in ("sessions", "edge", "tokens_aug", "tokens_sep", "profiles", "address",
+    sizes = {F[k]: len(pk[k]) for k in ("sessions", "edge", "tokens_aug", "tokens_sep", "profiles", "promo", "address",
                                         "cards", "card_changes", "auth", "finance", "catalogue")}
     sizes[F["stock"]] = len(stock)
     WR.write_csv(register_rows(sizes), p("register"))

@@ -78,6 +78,17 @@ class Org:
     # filing habits
     sept_status: str = "filed"     # filed | deadline | oct | later (31 March balance dates only)
     notes: list = field(default_factory=list)
+    # financial-year calendar: a balance-date change (hardening loop 2). bal is the balance date the
+    # organisation keeps now; bal_app the one its latest annual return on the register shows at the
+    # census; cal_change the old balance date, the last year end on it and the short year's end.
+    bal_app: int = None
+    cal_change: dict = None
+    no_june26: bool = False        # no return for the quarter ending 30 June 2026 by the extract
+    cofund: int = 0                # government co-funding a month, Jan 2025 to Mar 2026 (paid quarterly in advance)
+    # operating-grant terms that lapsed before the grant was renewed (hardening loop 3): each gap is
+    # (last day of the lapsed term, first day of the renewed term, the day the renewal was approved);
+    # no term is in force between the two, and no instalment is paid for a month inside the gap
+    gaps: list = field(default_factory=list)
     # identity (filled later)
     cc: str = ""
     name: str = ""
@@ -297,4 +308,36 @@ def build_roster():
                         role="steady", growth=float(np.clip(rng.normal(0.028, 0.02), -0.02, 0.07))))
     for o in orgs:
         o.income = float(min(max(o.income, 140_000), 4_800_000))
+    orgs.extend(balance_movers())
+    orgs.append(gap_grantee())
     return orgs
+
+
+def gap_grantee():
+    """Hardening loop 3: a filed 31 March grantee whose operating-grant term lapsed on 31 July 2026 and was
+    renewed from 1 November 2026 (approved 16 September 2026), so that no term was in force at the 30
+    September census. Its income fell from late 2025. Appended after the movers so that no earlier draw
+    moves; its grant dates and the gap are set in identity.py."""
+    d = {Q(2025, 9): 0.90, Q(2025, 12): 0.87, Q(2026, 3): 0.85, Q(2026, 6): 0.83}
+    o = Org(key="GT", bal=3, income=1_900_000, role="gap", growth=0.02, dips=d)
+    o.sigma = 0.006
+    return o
+
+
+def balance_movers():
+    """Hardening loop 2: three 30 June grantees that moved to a 31 March balance date during 2025-26.
+    Their 2025-26 financial year ran nine months, 1 July 2025 to 31 March 2026; its annual return is
+    due on 30 September 2026 and none reached the register by the extract; none had filed a return for
+    the quarter ending 30 June 2026 by then. Two lost income from late 2025, one is steady. Appended
+    after the steady book so that no earlier draw moves."""
+    out = []
+    for key, inc, d_dec, d_mar in (("BC1", 1_320_000, 0.72, 0.62), ("BC2", 640_000, 0.70, 0.64),
+                                   ("BC3", 470_000, 1.0, 1.0)):
+        dips = {} if d_dec == 1.0 else {Q(2025, 12): d_dec, Q(2026, 3): d_mar, Q(2026, 6): d_mar}
+        o = Org(key=key, bal=3, income=inc, role="bal_change", growth=0.02, dips=dips)
+        o.sigma = 0.006
+        o.bal_app = 6
+        o.cal_change = {"old_bal": 6, "old_end": Q(2025, 6), "short_end": Q(2026, 3)}
+        o.no_june26 = True
+        out.append(o)
+    return out

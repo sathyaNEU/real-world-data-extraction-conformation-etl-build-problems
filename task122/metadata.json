@@ -59,6 +59,15 @@
    "license": "CC0-1.0 (original work)"
   },
   {
+   "path": "carousel_experiment_archive.xlsx",
+   "format": "xlsx",
+   "bytes": 3617682,
+   "rows": 99200,
+   "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
    "path": "carousel_logger_field_reference.md",
    "format": "md",
    "bytes": 4065,
@@ -68,16 +77,7 @@
    "license": "CC0-1.0 (original work)"
   },
   {
-   "path": "carousel_test_archive.xlsx",
-   "format": "xlsx",
-   "bytes": 3617682,
-   "rows": 99200,
-   "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
-   "date": "2026-10-14",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "experimentation_charter_home_surfaces_v4.pdf",
+   "path": "experimentation_charter_home_surfaces.pdf",
    "format": "pdf",
    "bytes": 3856,
    "rows": null,
@@ -88,7 +88,7 @@
   {
    "path": "extract_register_slot_review.md",
    "format": "md",
-   "bytes": 3650,
+   "bytes": 3653,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -230,7 +230,7 @@
    "license": "CC0-1.0 (original work)"
   },
   {
-   "path": "test_capacity_and_release_gating.md",
+   "path": "slot_capacity_and_release_gating.md",
    "format": "md",
    "bytes": 1249,
    "rows": null,

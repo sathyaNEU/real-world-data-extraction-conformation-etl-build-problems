@@ -100,6 +100,24 @@ def ladder(c, ctx, g, s):
     c.ok(0.5 <= share <= 0.75, f"R3 killer: {share:.1%} of W4 club sessions resolve to store accounts")
     rec["p4_share_w4"] = share
     rec["dominance"] = dom
+    # R4p, the visible-key chain: token to member number to the loyalty profile alone. The step completes
+    # and still names F3, the stump, with the club sessions it cannot resolve read as new fans.
+    sp = N.enrich(pk, N.opts(identity="profile"))
+    gp = N.figures(pk, sp)
+    r4p = {N.FIX[p]: gp["W4"][p] for p in N.POPS}
+    op = N.rank(r4p)
+    mp = r4p[op[0]] / r4p[op[1]]
+    c.ok(op[0] == "F3", f"R4p (profile-only chain) names F3 (got {op[0]})")
+    c.ok(r4p["F3"] >= 1.3 * r4p["F4"], f"R4p: F3 {r4p['F3']:.2f} clears F4 {r4p['F4']:.2f} by {r4p['F3'] / r4p['F4']:.2f}x >= 1.3")
+    pshare = float(sp[(sp.week == "W4") & sp.club].P4.mean())
+    c.ok(pshare <= 0.22, f"R4p: the profile-only chain resolves {pshare:.1%} of W4 club sessions")
+    c.ok(gp["call"] == "F3" and not same(gp["L1"]["P4"], g["L1"]["P4"], "orders"),
+         "R4p files F3 and a wrong F4 four-week cell")
+    four_p = {N.FIX[p]: gp["L1"][p] for p in N.POPS}
+    c.ok(N.rank(four_p)[0] != "F4", f"R4p over the four weeks names {N.rank(four_p)[0]}, not F4")
+    rec["R4p"] = {"figures": {k: round(v, 2) for k, v in r4p.items()}, "leader": op[0], "margin": round(mp, 2),
+                  "club_share_w4": round(pshare, 4), "four_week_leader": N.rank(four_p)[0],
+                  "cells": {k: {p: round(gp[k][p], 3) for p in N.POPS} for k in ("L1", "L2", "L3", "L4")}}
     return R, rec
 
 
@@ -223,9 +241,8 @@ def twin_pair(c, ctx, s, g):
     ds = (mix("traffic_source", 6) - mix("traffic_source", 8)).abs().max()
     c.ok(dd < 0.03 and ds < 0.03, f"twin cohorts match on device mix ({dd:.3f}) and source mix ({ds:.3f})")
     cp4 = cp4_at(pk, live[6])
-    cur = {d["account_id"]: d["cohort"] for d in fl["assignments"]}
-    mv = {d["account_id"]: d["from_cohort"] for d in fl["assignment_moves"]}
-    coh = {a: mv.get(a, cc) for a, cc in cur.items()}
+    at = N.cohort_reader(fl)
+    coh = {d["account_id"]: at(d["account_id"], pd.Timestamp(live[6])) for d in fl["assignments"]}
     n6 = sum(1 for a in cp4 if coh.get(a) == 6)
     n8 = sum(1 for a in cp4 if coh.get(a) == 8)
     loss = {}
@@ -310,8 +327,30 @@ def convergence(c, ctx, g, s):
     pr = pk["profiles"].dropna(subset=["club_member_no"])
     c.ok(pr.club_member_no.is_unique, "every member number sits on at most one loyalty profile")
     T = ctx["T"]
-    mem = T["acc"][T["acc"].klass == "MEMBER"].account_id
-    c.ok(mem.isin(pr.account_id).all(), "every member with a store account carries the member number on the profile")
+    acc = T["acc"]
+    truth = {int(m): a for a, m in zip(acc.account_id, acc.member_no) if pd.notna(m)}
+    m_prof = N.member_accounts(pk, "profile")
+    m_union = N.member_accounts(pk, "union")
+    pm = pk["promo"].dropna(subset=["account_id"])
+    socio = pm[pm.promo_code.str.fullmatch(r"SOCIO\d{7}")]
+    m_code = {}
+    clash = 0
+    for code, a in zip(socio.promo_code, socio.account_id):
+        m = int(code[5:])
+        if m_code.setdefault(m, a) != a:
+            clash += 1
+    c.ok(clash == 0, "no member's code was redeemed on two different accounts")
+    c.ok(all(m_code[m] == a for m, a in m_prof.items() if m in m_code),
+         "the profile and the code redemptions agree wherever both link a member")
+    c.ok(m_union == truth, f"every member with a store account is linked to it by the profile or a code redemption, "
+         f"and nothing else is linked ({len(m_union)} members)")
+    mem = acc[acc.klass == "MEMBER"]
+    kept = float(mem.member_no.astype(int).isin(set(m_prof)).mean())
+    c.ok(0.15 <= kept <= 0.35, f"the loyalty profile carries the member number for {kept:.1%} of Shop-tab members")
+    c.ok(int(pk["promo"].account_id.isna().sum()) > 0 and not pk["promo"][pk["promo"].account_id.isna()]
+         .promo_code.str.startswith("SOCIO").any(), "guest redemptions exist, none of them a members' code")
+    rec["links"] = {"profile_share_members": round(kept, 4), "members_linked": len(m_union),
+                    "code_redemptions": int(len(socio)), "promo_rows": int(len(pk["promo"]))}
     sig = signatures_cell(ctx, s, g)["club"]
     obs = sig[sig.sig.notna() | sig.address_fp.notna()]
     dis = int(((obs.sig != obs.chain_account) & (obs.sig.notna() | obs.chain_account.notna())
@@ -319,6 +358,25 @@ def convergence(c, ctx, g, s):
     p2obs = int((obs.P2 & obs.sig.notna()).sum())
     p4obs_bad = int((obs.P4 & obs.address_fp.notna() & (obs.sig != obs.chain_account)).sum())
     c.ok(p2obs == 0 and p4obs_bad == 0, f"signatures agree with the token chain on every observable session ({len(obs)})")
+    # the signature route: a typed address or card that matches a saved one, carried to every session of the
+    # same member number. A deeper route to the right name with an incomplete enumeration.
+    sp = N.enrich(pk, N.opts(identity="profile"))
+    unres = sig[sig.sig.notna() & ~sig.session_id.isin(set(sp.session_id[sp.P4]))]
+    c.ok(len(unres) > 0, f"signatures find existing accounts among {len(unres)} club sessions the profile-only chain "
+         "leaves unresolved")
+    m2s = {}
+    for m, a in zip(sig.member_no, sig.sig):
+        if pd.notna(a) and pd.notna(m):
+            m2s.setdefault(int(m), set()).add(a)
+    c.ok(all(len(v) == 1 and next(iter(v)) == m_union.get(m) for m, v in m2s.items()),
+         "every account the signatures reach is the account the two links give")
+    w4 = s[(s.week == "W4") & s.club].copy()
+    w4["prop"] = w4.member_no.map(lambda m: next(iter(m2s.get(int(m), {None}))) if pd.notna(m) else None)
+    accs = set(w4.prop.dropna())
+    bb = s[s.week.isin(P.BASE) & s.signed_in & s.account_id.isin(accs)].conv.mean()
+    x = w4[w4.prop.notna()]
+    prop_f4 = float(len(x) * bb - x.conv.sum())
+    rec["signature_route"] = {"members": len(m2s), "W4_sessions": int(len(x)), "F4_W4": round(prop_f4, 2)}
     return rec
 
 
@@ -393,6 +451,7 @@ DEVICES = {  # device: (enrich options, finance flags, auth flags, fold club, as
     "DV10 catalogue status read as current": (dict(catalogue_current=True), (), (), False, {"A1"}),
     "DV11 first export kept": ({}, ("pre_correction",), (), False, {"A2"}),
     "DV13 club sessions folded into cohorts": ({}, (), (), True, {"A4"}),
+    "DV15 one move kept per account": (dict(cohort_lastmove=True), (), (), False, {"A4"}),
 }
 
 
@@ -446,7 +505,8 @@ def asks(c, ctx, g, cache):
                 au = tuple(f for n in combo for f in DEVICES[n][2])
                 _, fc = sheet(pk, cache.get({}), fin, au)
                 c.ok(len(moved(base, fc, ask)) > 0, f"{ask} composed {' + '.join(x.split()[0] for x in combo)} stays off the golden")
-    for combo in (("DV1", "DV8"), ("DV1", "DV13"), ("DV8", "DV13"), ("DV1", "DV8", "DV13")):
+    for combo in (("DV1", "DV8"), ("DV1", "DV13"), ("DV8", "DV13"), ("DV1", "DV8", "DV13"), ("DV1", "DV15"),
+                  ("DV13", "DV15"), ("DV1", "DV13", "DV15")):
         names = [n for n in DEVICES if n.split()[0] in combo]
         o = {}
         fold = False
@@ -477,30 +537,36 @@ def asks(c, ctx, g, cache):
 
 
 def pair_simulation(c, ctx, g, cache, base):
-    """Cracker and mirror sheets, both swept with the habitual battery: duplicate keys removed
-    (shipment rows, re-sent messages, first export kept), unmatched joins chased (both token
-    reports), nothing beyond that."""
+    """Two models. Battery model (the skill's): the habitual battery applied and the rule it points at
+    executed, nothing beyond; the dashboard's tie points at keeping the automated sessions (DV14).
+    Round-1 model: every filed rule executed, as round 1's plain solver did. In both, the cracker
+    resolves club sessions through both links and the mirror stops at the profile-only chain (R4p)."""
     pk = ctx["pk"]
-    o = dict(keep_bots=True, clock_raw=True, cards_current=True, catalogue_current=True, cohort_current=True)
-    _, crack = sheet(pk, cache.get(o), ("gross_kept", "pre_correction"), ("C_only",))
-    s_m = cache.get(o)
-    gm = N.figures(pk, s_m, fin_mode=("gross_kept", "pre_correction"), auth_mode=("C_only",))
-    mirror = dict(crack)
-    for k in list(mirror):
-        if k[0] in ("A1", "A2", "A3") and k[2] in ("P2", "P4"):
-            mirror[k] = (-999.0, mirror[k][1])
+    models = {"battery": (dict(keep_bots=True, clock_raw=True, cards_current=True, catalogue_current=True,
+                               cohort_current=True), ("gross_kept", "pre_correction"), ("C_only",)),
+              "round1_dashboard": (dict(keep_bots=True), (), ()),
+              "round1_habit": (dict(cohort_lastmove=True), (), ()),
+              "round1_rules": ({}, (), ())}
+    out = {}
     n = len(base)
-    lc = sum(1 for k in base if same(base[k][0], crack[k][0], base[k][1])) / n
-    lm = sum(1 for k in base if same(base[k][0], mirror[k][0], base[k][1])) / n
-    chart_free = 5
-    lc_w = (lc * n + chart_free) / (n + chart_free + 2)
-    lm_w = (lm * n + 2) / (n + chart_free + 2)
-    cracker = 38 + 7 + 55 * lc_w
-    mirror_s = 5 + 7 + 55 * lm_w
-    pair = (cracker + mirror_s) / 2
-    c.ok(pair <= 45, f"pair simulation: cracker {cracker:.1f}, mirror {mirror_s:.1f}, pair {pair:.1f}")
-    return {"cracker": round(cracker, 1), "mirror": round(mirror_s, 1), "pair": round(pair, 1),
-            "leak_cracker": round(lc, 3), "leak_mirror": round(lm, 3)}
+    for name, (o, fin, au) in models.items():
+        _, crack = sheet(pk, cache.get(o), fin, au)
+        _, mirror = sheet(pk, cache.get(dict(o, identity="profile")), fin, au)
+        lc = sum(1 for k in base if same(base[k][0], crack[k][0], base[k][1])) / n
+        lm = sum(1 for k in base if same(base[k][0], mirror[k][0], base[k][1])) / n
+        chart_free = 5
+        lc_w = (lc * n + chart_free) / (n + chart_free + 2)
+        lm_w = (lm * n + 2) / (n + chart_free + 2)
+        cracker = 38 + 7 + 55 * lc_w
+        mirror_s = 5 + 7 + 55 * lm_w
+        out[name] = {"cracker": round(cracker, 1), "mirror": round(mirror_s, 1), "pair": round((cracker + mirror_s) / 2, 1),
+                     "two_mirrors": round(mirror_s, 1), "leak_cracker": round(lc, 3), "leak_mirror": round(lm, 3)}
+        moved_pm = [k for k in base if k[2] in ("P2", "P4") and k[0] in ("A1", "A2", "A3")
+                    and same(base[k][0], mirror[k][0], base[k][1])]
+        c.ok(len(moved_pm) <= 2, f"{name} model: the R4p mirror keeps {len(moved_pm)} of the 16 F2 and F4 grid cells")
+    c.ok(out["battery"]["pair"] <= 45, f"pair simulation, battery model: {out['battery']}")
+    c.log.append(f"RECORD two R4p mirrors, round-1 model: {out['round1_rules']['two_mirrors']}")
+    return out
 
 
 def battery_and_markers(c, ctx, cache):
@@ -575,7 +641,13 @@ def pack_gates(c, ctx):
              "net from the release": "net of VAT on rows exported from the 10 August",
              "cohort as of the session": "latest assignment at or before the session",
              "attempt key": "attempt_ref is one payment",
-             "token to member number": "with the member number it was issued to"}
+             "token to member number": "with the member number it was issued to",
+             "members' code": "SOCIO followed by their seven-digit member number"}
+    # the device organs sit off the main call's prose: none of them in the field reference
+    fr = re.sub(r"\s+", " ", texts[F["field_reference"]]).lower()
+    for k in ("address book in UTC", "latest export of record", "net from the release", "cohort as of the session",
+              "attempt key"):
+        c.ok(facts[k].lower() not in fr, f"organ off the main call's prose: '{k}' is not in the field reference")
     for k, ph in facts.items():
         hits = [f for f, t in texts.items() if ph.lower() in re.sub(r"\s+", " ", t).lower()]
         c.ok(len(hits) == 1, f"single statement: '{k}' in exactly one file ({hits})")
@@ -585,8 +657,12 @@ def pack_gates(c, ctx):
         hits = [f for f, t in texts.items() if ph in t.lower()]
         c.ok(not hits, f"anti-signpost: '{ph}' appears in no shipped file ({hits})")
     fixes = ["postcode lookup", "landing page", "sdk", "one-time-code", "split dispatch"]
-    rankers = [f for f, t in texts.items() if sum(x in t.lower() for x in fixes) >= 3 and f != F["shortlist"]]
-    c.ok(not rankers, f"no shipped artifact other than the shortlist names three or more fixes ({rankers})")
+    rankers = [f for f, t in texts.items() if sum(x in t.lower() for x in fixes) >= 3
+               and f not in (F["shortlist"], F["thread"])]
+    c.ok(not rankers, f"no shipped artifact other than the shortlist and the thread names three or more fixes ({rankers})")
+    body = "\n".join(re.sub(r"^\[[^\]]*\]", "", l) for l in texts[F["thread"]].splitlines()[1:])
+    body = re.sub(r"\bQ[14]\b|\b\d{1,2} (September|October|November)\b|Friday's", "", body)
+    c.ok(not re.search(r"\d", body), "the thread quotes no figure: its voices hold beliefs, not numbers")
     sl = texts[F["shortlist"]]
     c.ok(not re.search(r"\b\d{2,}\s*(orders|%|eur)", sl.lower()), "the shortlist carries no figure that ranks the fixes")
     # container hygiene: no writer signature, every embedded date inside the fiction's band
@@ -600,15 +676,23 @@ def pack_gates(c, ctx):
             continue
         low = raw.lower()
         c.ok(not any(x.encode() in low for x in sigs), f"container of {f} names no writer")
+        if f.endswith(".pdf"):
+            import pypdf
+            try:
+                pypdf.PdfReader(os.path.join(tgt, f), strict=True).metadata
+                strict_ok = True
+            except Exception:
+                strict_ok = False
+            c.ok(strict_ok, f"{f} parses strictly, its info dictionary well formed")
         ds_ = [m.decode()[:10] for m in re.findall(rb"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", raw)]
         ds_ += [f"{m.decode()[2:6]}-{m.decode()[6:8]}-{m.decode()[8:10]}" for m in re.findall(rb"D:\d{14}", raw)]
         c.ok(all("2025-06-01" <= d <= "2026-09-30" for d in ds_), f"container dates of {f} inside the fiction {sorted(set(ds_))}")
-    sc = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+    sc = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                       ".claude", "skills", "reduce-house-fixes", "scripts", "scrub_producer_metadata.py")
-    r = subprocess.run([sys.executable, sc, tgt], capture_output=True, text=True)
-    c.ok(r.returncode == 0 and not re.search(r"(?i)openpyxl|python-docx|reportlab", r.stdout.split("producer")[-1] if False else
-                                              "\n".join(l for l in r.stdout.splitlines() if "signature" in l.lower() and "none" not in l.lower())),
-         "scrub_producer_metadata audit finds no producer signature")
+    r = subprocess.run([sys.executable, sc, tgt, "--floor", "2025-06-01", "--ceiling", "2026-09-30"],
+                       capture_output=True, text=True)
+    c.ok(r.returncode == 0 and "clean, no producer signature and no out-of-band timestamp" in r.stdout,
+         "scrub_producer_metadata audit: clean, no producer signature and no out-of-band timestamp")
     # the register knows every file (H9) and no record runs past the export (H16)
     reg = pd.read_csv(os.path.join(tgt, F["register"]))
     c.ok(set(reg.file) == set(files) - {F["register"]}, "the extract register lists exactly the shipped files")
@@ -627,11 +711,18 @@ def pack_gates(c, ctx):
     rows = [r for r in wb["Weekly"].iter_rows(min_row=6, values_only=True) if r[0]]
     wk = ctx["dash"][0]
     c.ok([tuple(r[:4]) for r in rows] == [(w["week"], w["sessions"], w["orders"], w["conversion"]) for w in wk],
-         "the trading dashboard's weekly table reproduces from the session log")
+         "the trading dashboard's weekly table reproduces from the session log as published")
+    # DV14, the false clean: the dashboard ties with the automated sessions kept, and only in the weeks
+    # that carried them does excluding them break the tie
+    sx = ctx["s"]
+    tie_ex = {w: (int((sx.week == w).sum()), int(sx[sx.week == w].conv.sum())) for w in P.WEEK_NAMES}
+    tie_pub = {P.WEEK_STARTS[P.WEEK_NAMES.index(w)].date().isoformat(): w for w in P.WEEK_NAMES}
+    off = sorted(tie_pub[r[0]] for r in rows if (r[1], r[2]) != tie_ex[tie_pub[r[0]]])
+    c.ok(off == ["W1", "W3"], f"DV14: excluding the automated sessions breaks the dashboard's tie in exactly {off}")
     lab = " ".join(str(x) for x in next(wb["Weekly"].iter_rows(min_row=3, max_row=3, values_only=True)))
     c.ok("does not size causes" in lab, "the dashboard is labelled in-file for the question it answers")
-    counts = [x for x in (len(ctx["pk"][k]) for k in ("edge", "tokens_aug", "tokens_sep", "profiles", "address", "cards",
-                                                        "card_changes", "auth", "finance"))]
+    counts = [x for x in (len(ctx["pk"][k]) for k in ("edge", "tokens_aug", "tokens_sep", "profiles", "promo", "address",
+                                                        "cards", "card_changes", "auth", "finance"))]
     c.ok(len(set(counts)) == len(counts), "no two extracts share a row count")
     return {"files": len(files), "formats": sorted(fmts), "rows": int(nrows)}
 
@@ -651,6 +742,29 @@ def mid_bins(c, g, coh):
     c.ok(all(abs(v * 10 - round(v * 10)) > 1e-6 for v in g["L4"].values()), "no challenge share is an exact round figure")
 
 
+def sales_fork(c, ctx, g):
+    """The F4 sales cell that round 1 filed one bin up: lost orders rounded or not, and "those customers"
+    read as the latest week's accounts or the review window's, all land in the golden's EUR 100 bin."""
+    pk, s = ctx["pk"], ctx["s"]
+    val = N.finance_values(pk)
+    b = s[s.week.isin(P.BASE) & s.conv & s.signed_in]
+    rec = {}
+    for p in N.POPS:
+        lw = g["W4"][p]
+        vals = {"unrounded, window accounts": lw * g["aov"][p], "rounded, window accounts": rnd(lw, "orders") * g["aov"][p]}
+        if p in ("P1", "P3", "P4"):
+            col = "chain_account" if p == "P4" else "account_id"
+            a4 = set(s[(s.week == "W4") & s[p]][col].dropna())
+            av4 = b[b.account_id.isin(a4)].order_id.map(val).mean()
+            vals["unrounded, W4 accounts"] = lw * av4
+            vals["rounded, W4 accounts"] = rnd(lw, "orders") * av4
+        for k, v in vals.items():
+            c.ok(same(v, g["L3"][p], "eur") and dist(v, "eur") >= MID["eur"],
+                 f"{p} sales cell {k}: {v:.1f} in the golden's bin with {dist(v, 'eur'):.0f} euros clearance")
+        rec[p] = {k: round(v, 2) for k, v in vals.items()}
+    return rec
+
+
 def run(ctx):
     c = Chk()
     s = ctx["s"]
@@ -666,13 +780,15 @@ def run(ctx):
                                                      ("current saved card", dict(cards_current=True)),
                                                      ("September-only token", dict(tokens_sep_only=True)),
                                                      ("current catalogue", dict(catalogue_current=True)),
-                                                     ("current cohort", dict(cohort_current=True)))}
+                                                     ("current cohort", dict(cohort_current=True)),
+                                                     ("one move per account", dict(cohort_lastmove=True)))}
     separation(c, ctx, g, s, variants)
     rec_a, base = asks(c, ctx, g, cache)
     rec_p = pair_simulation(c, ctx, g, cache, base)
     rec_b = battery_and_markers(c, ctx, cache)
     coh = N.cohort_sheet(s)
     mid_bins(c, g, coh)
+    rec_f = sales_fork(c, ctx, g)
     rec_k = pack_gates(c, ctx)
     c.ok(c.n >= 40, f"{c.n} assertions")
     chart = {N.FIX[p]: {w: round(g["L"][p][w], 3) for w in P.WEEK_NAMES[1:]} for p in N.POPS}
@@ -684,6 +800,6 @@ def run(ctx):
         "W4": g["W4"], "base": {k: v for k, v in g["base"].items() if not isinstance(v, dict)},
         "cohorts": {str(k): [n, v] for k, (n, v) in coh.items()},
         "chart": chart, "ladder": rec_l, "grid": rec_g, "calibration": rec_c, "convergence": rec_v,
-        "clean_lens": rec_x, "asks": rec_a, "pair": rec_p, "referee": rec_b, "pack": rec_k,
+        "clean_lens": rec_x, "asks": rec_a, "pair": rec_p, "referee": rec_b, "pack": rec_k, "sales_fork": rec_f,
         "tune_log": ctx["tlog"], "log": c.log,
     }

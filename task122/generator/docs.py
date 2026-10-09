@@ -25,7 +25,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 import params as P
 
-F_CHARTER = "experimentation_charter_home_surfaces_v4.pdf"
+F_CHARTER = "experimentation_charter_home_surfaces.pdf"
 F_COMMIT = "fresh_listing_commitment_2026.docx"
 F_REGISTER = "ranking_policy_register.json"
 F_FIELDS = "carousel_logger_field_reference.md"
@@ -33,13 +33,13 @@ F_TERMS = "buyer_protection_terms_2026-09.pdf"
 F_TARIFF = "kopersbescherming_tarieven.csv"
 F_MINUTES = "pricing_committee_minutes_2026-10-06.docx"
 F_RELEASES = "analytics_release_log.md"
-F_CAPACITY = "test_capacity_and_release_gating.md"
+F_CAPACITY = "slot_capacity_and_release_gating.md"
 F_ICS = "app_release_calendar_2026-2027.ics"
 F_FINANCE = "finance_buyer_protection_fee_income_2026Q3.xlsx"
 F_THREAD = "planning_thread_carousel_slot.txt"
 F_SEARCH = "search_ranking_tests_2026H1.xlsx"
 F_SURVEY = "seller_survey_fresh_listings_2026Q2.csv"
-F_ARCHIVE = "carousel_test_archive.xlsx"
+F_ARCHIVE = "carousel_experiment_archive.xlsx"
 F_INDEX = "extract_register_slot_review.md"
 
 STYLE = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=13.2, alignment=TA_LEFT, spaceAfter=5)
@@ -92,8 +92,8 @@ def charter(path):
                    "carousel sessions, against the incumbent.", STYLE),
          Paragraph("2.3 The <b>incumbent</b> is the ranker in production on the home carousel when the test "
                    "starts.", STYLE),
-         Paragraph("2.4 An arm's <b>carousel order rate</b> in a cell is its orders placed from a home carousel "
-                   "tile per 1,000 carousel sessions in that cell.", STYLE),
+         Paragraph("2.4 An arm's <b>carousel order rate</b> in a cell is the number of orders placed from the "
+                   "carousel tiles it served, per 1,000 of its carousel sessions in that cell.", STYLE),
          Paragraph("3. Cells", H2),
          Paragraph("Every guardrail on the home surfaces is read in the eight cells below: platform by the buyer's "
                    "tenure at the start of the session, as the account service reports it.", STYLE),
@@ -149,9 +149,9 @@ def terms(path):
          Paragraph("We change the fee only after the change has been approved by the Vouwlijn pricing committee, "
                    "and we announce it at least 30 days before it applies.", STYLE),
          Paragraph("5. Refunds and disputes", H2),
-         Paragraph("Refunds go back to the payment method you used. If you and the seller disagree, our support "
-                   "team decides on the evidence both of you provide. Reports made after the two-day window are "
-                   "handled as goodwill cases.", STYLE),
+         Paragraph("Refunds go back to the payment method you used: your card, your bank account or your Vouwlijn "
+                   "balance. If you and the seller disagree, our support team decides on the evidence both of you "
+                   "provide. Reports made after the two-day window are handled as goodwill cases.", STYLE),
          Paragraph("6. Contact", H2),
          Paragraph("Questions about Buyer Protection go to Vouwlijn support through the Help Centre in the app.",
                    STYLE)]
@@ -316,7 +316,7 @@ buyer from its buyer slice and draws one ranker for that session.
 | pool_id | The candidate pool the session's ranking was drawn from. |
 | ranker | Policy id of the ranker drawn for the session (see the ranking policy register). |
 | propensity | Probability with which the logger draws that ranker for a session in the session's cell. |
-| ordered_tiles | Positions (1 to 6) of the session's tiles the buyer ordered from before the session ended, space separated; blank if none. |
+| ordered_tiles | Positions (1 to 6) of the session's tiles the buyer ordered from in the session, space separated; blank if none. |
 
 The session is the draw unit: one ranker and one propensity per session. Every render repeats the session's
 ranking, so ordered_tiles is the same on every row of a session. The logger fills each cell's quota for each
@@ -332,7 +332,7 @@ One row per logged session.
 | buyer_id | The buyer. A buyer has one logged session in the window. |
 | started_at, ended_at | First render; end of the session (30 minutes without activity closes a session). |
 | buyer_region | Province code of the buyer's address. |
-| tile_1 to tile_6 | Listing ids of the ranking served, by position. |
+| tile_1 to tile_6 | Listing ids of the ranking served, by position. A listing shown on a buyer's carousel is kept off it in their later sessions for seven days. |
 | tile_1_age_h to tile_6_age_h | Hours since each listing went live, when the ranking was served. |
 | watchlist_at_start | Listing ids on the buyer's watch list when the session started (live listings only), space separated. |
 
@@ -345,7 +345,7 @@ Every order placed by the buyers in the logger slice from 1 June to 11 October 2
 | order_id, buyer_id, listing_id | One row per order; one listing per order. |
 | ordered_at | When the order was placed. |
 | channel | Where the buyer placed it: carousel (a home carousel tile), search, favourites (the watch list tab), alerts (a price-drop or almost-gone alert), shop (a seller's shop page or a shared link). |
-| home_session_id | For carousel orders, the home session the tile was in, logged or not. Blank for other channels. |
+| home_session_id | For carousel orders, the home session the order was placed in, logged or not. Blank for other channels. |
 | platform | app or web. |
 | category | Listing category. |
 | asking_price_eur | The listing's price as shown when the order was placed. |
@@ -353,13 +353,13 @@ Every order placed by the buyers in the logger slice from 1 June to 11 October 2
 
 ## payments_buyer_protection
 
-Every payment captured through Vouwlijn checkout for those orders, 1 June to 11 October 2026.
+Every card and iDEAL payment the payment provider captured for those orders, 1 June to 11 October 2026.
 
 | field | meaning |
 |---|---|
-| payment_id, order_id | One payment per order paid through checkout. |
+| payment_id, order_id | The capture and the order it pays; an order has at most one. |
 | captured_at | When the payment was captured. |
-| amount_eur | What the buyer was charged: the item price paid, shipping and the buyer-protection fee. |
+| amount_eur | What the card or bank account was charged: the item price paid, shipping and the buyer-protection fee. |
 | shipping_eur | Shipping charged; 0 for pickup. |
 | buyer_protection_fee_eur | The fee charged, at the tariff in force on the capture date. |
 
@@ -547,12 +547,12 @@ def _workbook(path, author, created):
     return wb
 
 
-def finance_statement(path, PM, order_platform):
-    """Fee income booked on the logger slice's orders, by month of capture and order platform; it ties
-    to the payments export."""
-    df = PM.copy()
-    df["platform"] = order_platform
-    df["month"] = [d[:7] for d in df.captured_iso]
+def finance_statement(path, PROT):
+    """Fee income booked on the logger slice's protected purchases, by month and order platform:
+    provider captures at their capture time, balance purchases at the order time, excluding VAT."""
+    import params as P
+    df = PROT.copy()
+    df["month"] = [str(np.datetime64("2025-01-01T00:00:00") + np.timedelta64(int(x), "s"))[:7] for x in df.booked]
     df = df[df.month.isin(["2026-07", "2026-08", "2026-09"])]
     g = df.groupby(["month", "platform"]).agg(orders=("order_id", "size"), item=("paid", "sum"),
                                                fee=("fee_cents", "sum")).reset_index()
@@ -562,28 +562,31 @@ def finance_statement(path, PM, order_platform):
     money = wb.add_format({"num_format": "#,##0.00"})
     num = wb.add_format({"num_format": "#,##0"})
     ws.write(0, 0, "Buyer-protection fee income, July to September 2026", b)
-    ws.write(1, 0, "Orders placed by buyers in the home-carousel logger slice; booked by month of capture and the "
-                   "platform the order was placed on. Ledger account 8120.")
-    ws.write(2, 0, "Prepared for Marketplace Science by Esila Stichter, Finance, 9 October 2026.")
-    hdr = ["Month", "Platform", "Protected orders", "Item value paid (EUR)", "Fee income (EUR)"]
+    ws.write(1, 0, "Purchases covered by Buyer Protection, placed by buyers in the home-carousel logger slice, every "
+                   "payment method; booked by month of payment and the platform the order was placed on. Ledger "
+                   "account 8120.")
+    ws.write(2, 0, "Fee income excl. VAT. The fee buyers pay includes 21 per cent VAT, which is booked to account 1630.")
+    ws.write(3, 0, "Prepared for Marketplace Science by Esila Stichter, Finance, 9 October 2026.")
+    hdr = ["Month", "Platform", "Protected orders", "Item value paid (EUR)", "Fee income excl. VAT (EUR)"]
     for j, h in enumerate(hdr):
-        ws.write(4, j, h, b)
-    r = 5
+        ws.write(5, j, h, b)
+    r = 6
     names = {"2026-07": "July 2026", "2026-08": "August 2026", "2026-09": "September 2026"}
+    vat = 1.0 + P.VAT_RATE
     for _, row in g.iterrows():
         ws.write(r, 0, names[row.month])
         ws.write(r, 1, row.platform)
         ws.write_number(r, 2, int(row.orders), num)
         ws.write_number(r, 3, float(row["item"]), money)
-        ws.write_number(r, 4, round(row.fee / 100.0, 2), money)
+        ws.write_number(r, 4, round(row.fee / 100.0 / vat, 2), money)
         r += 1
     ws.write(r, 0, "Total", b)
     ws.write_number(r, 2, int(g.orders.sum()), num)
     ws.write_number(r, 3, float(g["item"].sum()), money)
-    ws.write_number(r, 4, round(g.fee.sum() / 100.0, 2), money)
+    ws.write_number(r, 4, round(g.fee.sum() / 100.0 / vat, 2), money)
     ws.set_column(0, 0, 16)
     ws.set_column(1, 1, 10)
-    ws.set_column(2, 4, 22)
+    ws.set_column(2, 4, 24)
     wb.close()
     return g
 
@@ -655,7 +658,7 @@ def archive_workbook(path, tests_df, sessions_df):
         "logging window's renders, the method then in use.",
         "logged_sessions: every session of each test's logging window. arm is control (the incumbent of the time) "
         "or test; propensity is the logger's probability for that arm in the session's cell; in_session_orders "
-        "counts orders from the session's carousel tiles before the session ended.",
+        "counts the orders the buyer placed from the session's carousel tiles in the session.",
     ]
     for i, n in enumerate(notes):
         ws3.write(i, 0, n)

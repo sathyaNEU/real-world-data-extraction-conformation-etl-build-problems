@@ -17,7 +17,7 @@ import pandas as pd
 
 CLAIMS = {
     "call": "STN", "call_figure": 27, "runner_up": "PRW", "runner_up_figure": 15, "gap": 12,
-    "rungs": [("LAT", 56, "RIS", 44), ("RIS", 44, "BRK", 35), ("BRK", 34, "PRW", 4), ("PRW", 15, "RIS", 2),
+    "rungs": [("LAT", 56, "RIS", 44), ("BRK", 34, "PRW", 4), ("PRW", 15, "RIS", 2), ("RIS", 37, "STN", 27),
               ("STN", 27, "PRW", 15)],
     "y3": {"RIS": (150, 44, 2), "TAN": (36, 10, 0), "BRK": (118, 35, 0), "STN": (92, 27, 27), "LAT": (190, 56, 0),
            "ELL": (46, 13, 0), "PRW": (74, 21, 15), "PEL": (25, 7, 0)},
@@ -25,7 +25,7 @@ CLAIMS = {
                "LAT": (559, 165, 0), "ELL": (140, 40, 6), "PRW": (221, 63, 46), "PEL": (75, 22, 3)},
     "record_total": (2163, 629, 148),
     "by_year_total": {1: (695, 204, 54), 2: (737, 212, 50), 3: (731, 213, 44)},
-    "natural_total": (2208, 669, 161),
+    "natural_total": (2265, 700, 197),
     "corpus_reviews": 34, "corpus_confirmed": 412, "corpus_attempts": 41, "rules": 216, "min_rival_misses": 4,
     "twin": (("Ormerleby", 2022, 24), ("Selarwell", 2023, 11)),
 }
@@ -40,6 +40,7 @@ F = {
     "capacity": "wenmarsh_acc_capacity_report_2024-04_to_2026-06.xlsx",
     "reviewlog": "nrr_escalation_reviews_closed_2021-2025.xlsx",
     "reviewdb": "nrr_review_records.sqlite",
+    "transfers": "interhospital_transfer_audit_202307_202606.csv",
 }
 YEAR_STARTS = {1: "2023-07-01", 2: "2024-07-01", 3: "2025-07-01"}
 YEAR_ENDS = {1: "2024-06-30", 2: "2025-06-30", 3: "2026-06-30"}
@@ -91,7 +92,15 @@ def build_waits(con, natural=False):
     dod = con.execute("SELECT patient_key, MIN(date_of_death) dod FROM ep WHERE date_of_death IS NOT NULL "
                       "GROUP BY patient_key").df()
     ref = ref.merge(dod.rename(columns={"patient_key": "person"}), on="person", how="left")
-    ref["mins"] = (ref["end_t"] - ref["dta_t"]).dt.total_seconds() / 60
+    if natural:
+        ref["mins"] = (ref["end_t"] - ref["dta_t"]).dt.total_seconds() / 60          # the clock readings
+    else:
+        # elapsed time: CCRS decision and outcome times are UTC, the platform and the unit feed local
+        raw = {c: pd.to_datetime(ref[c].replace("", None), format="%Y-%m-%d %H:%M") for c in ("dta_at", "outcome_at")}
+        lon = lambda x: x.dt.tz_localize("Europe/London", ambiguous="raise", nonexistent="raise").dt.tz_convert("UTC")
+        dta_u = raw["dta_at"].dt.tz_localize("UTC").where(leg, lon(ref["dta_t"]))
+        out_u = raw["outcome_at"].dt.tz_localize("UTC").where(leg & ~adm_leg, lon(ref["end_t"]))
+        ref["mins"] = (out_u - dta_u).dt.total_seconds() / 60
     ref["long"] = (ref["lvl"] == 3) & (ref["outcome"] != "Stood down") & (ref["mins"] > 240)
     ref["dday"] = ref["dta_t"].dt.normalize()
     off = (pd.to_datetime(ref["dod"]) - ref["dday"]).dt.days
@@ -114,16 +123,33 @@ def own_unit_table(con, current_only=False):
 def islands(con, merge=True):
     """Stays as islands of contiguous rows of one patient in one unit (or every row, merge=False)."""
     if not merge:
-        return con.execute("SELECT unit_code, patient_key, admitted_at a, discharged_at b, admission_type t FROM st").df()
+        return con.execute("SELECT unit_code, patient_key, admitted_at a, discharged_at b, admission_type t, "
+                           "referral_id r FROM st").df()
     q = """
-    WITH s AS (SELECT unit_code, patient_key, admitted_at, discharged_at, admission_type,
+    WITH s AS (SELECT unit_code, patient_key, admitted_at, discharged_at, admission_type, referral_id,
                       LAG(discharged_at) OVER (PARTITION BY unit_code, patient_key ORDER BY admitted_at, stay_id) prev
                FROM st),
     g AS (SELECT *, SUM(CASE WHEN prev = admitted_at THEN 0 ELSE 1 END)
                      OVER (PARTITION BY unit_code, patient_key ORDER BY admitted_at ROWS UNBOUNDED PRECEDING) grp FROM s)
     SELECT unit_code, patient_key, MIN(admitted_at) a, MAX(discharged_at) b,
-           ARG_MIN(admission_type, admitted_at) t FROM g GROUP BY unit_code, patient_key, grp"""
+           ARG_MIN(admission_type, admitted_at) t, ARG_MIN(referral_id, admitted_at) r
+    FROM g GROUP BY unit_code, patient_key, grp"""
     return con.execute(q).df()
+
+
+def placed_by_unit(con, isl, by_type=False):
+    """Admission minutes per unit of stays the unit's own trust placed: not referred by another trust (or, by_type,
+    not coded as a transfer in)."""
+    rt = dict(con.execute("SELECT referral_id, referring_trust FROM ref").fetchall())
+    ut = dict(con.execute("SELECT DISTINCT unit_code, trust_code FROM reg").fetchall())
+    out = {}
+    for u, g in isl.groupby("unit_code"):
+        if by_type:
+            keep = ~g["t"].isin(["02", "03", "06"])
+        else:
+            keep = g["r"].fillna("").map(lambda x: rt.get(x, ut.get(u)) == ut.get(u)) if "r" in g else True
+        out[u] = np.sort(g[keep]["a"].values.astype("datetime64[m]").astype(np.int64))
+    return out
 
 
 class Census:
@@ -151,13 +177,14 @@ class Census:
         return min(vals) < beds
 
 
-def classify(con, W, current_register=False, merge=True, hourly=False):
+def classify(con, W, current_register=False, merge=True, hourly=False, by_type=False):
     reg = own_unit_table(con, current_register)
     isl = islands(con, merge)
     ret = con.execute("SELECT * FROM ret").df()
     cen = Census(islands(con, True), ret)
-    plan = {u: np.sort(g["a"].values.astype("datetime64[m]").astype(np.int64)) for u, g in isl[isl.t == "04"].groupby("unit_code")}
-    own, emp, alloc, v08 = [], [], [], []
+    plan = placed_by_unit(con, isl, by_type)
+    anyadm = {u: np.sort(g["a"].values.astype("datetime64[m]").astype(np.int64)) for u, g in isl.groupby("unit_code")}
+    own, emp, alloc, alloc_any, v08 = [], [], [], [], []
     for r in W.itertuples():
         d = str(r.dday)[:10]
         rows = reg[(reg.trust_code == r.referring_trust) & (reg.valid_from <= d) &
@@ -166,7 +193,7 @@ def classify(con, W, current_register=False, merge=True, hourly=False):
         units = sorted(rows.unit_code.unique())
         a = np.datetime64(r.dta_t, "m").astype(np.int64)
         b = np.datetime64(r.end_t, "m").astype(np.int64)
-        e = al = v = False
+        e = al = an = v = False
         for u in units:
             beds = cen.beds.get((u, d))
             if beds is not None:
@@ -181,17 +208,22 @@ def classify(con, W, current_register=False, merge=True, hourly=False):
                     e = True
                 if cen.occ08.get((u, d), beds) < beds:
                     v = True
-            p = plan.get(u)
-            if p is not None:
-                k = np.searchsorted(p, a, side="right")
-                if k < len(p) and p[k] < b:
-                    al = True
+            for arr, flag in ((plan.get(u), "al"), (anyadm.get(u), "an")):
+                if arr is None:
+                    continue
+                k = np.searchsorted(arr, a, side="right")
+                if k < len(arr) and arr[k] < b:
+                    if flag == "al":
+                        al = True
+                    else:
+                        an = True
         own.append(bool(units))
         emp.append(e)
         alloc.append(al)
+        alloc_any.append(an)
         v08.append(v)
     W = W.copy()
-    W["own"], W["empty"], W["alloc"], W["v08"] = own, emp, alloc, v08
+    W["own"], W["empty"], W["alloc"], W["alloc_any"], W["v08"] = own, emp, alloc, alloc_any, v08
     return W
 
 
@@ -243,9 +275,9 @@ def main(T):
     y3 = W["year"] == 3
     # the rungs on the latest four quarters
     r0 = per_trust(W, y3 & died)
-    r1 = per_trust(W, y3 & died & W["own"])
-    r2 = per_trust(W, y3 & died & W["own"] & W["v08"])
-    r3 = per_trust(W, y3 & died & W["own"] & W["empty"])
+    r1 = per_trust(W, y3 & died & W["own"] & W["v08"])
+    r2 = per_trust(W, y3 & died & W["own"] & W["empty"])
+    r3 = per_trust(W, y3 & died & W["own"] & (W["empty"] | W["alloc_any"]))
     r4 = per_trust(W, y3 & died & W["own"] & (W["empty"] | W["alloc"]))
     for k, (rk, want) in enumerate(zip((r0, r1, r2, r3, r4), CLAIMS["rungs"])):
         rk = {t: rk.get(t, 0) for t in CLAIMS["y3"]}
@@ -259,11 +291,34 @@ def main(T):
     ris_days = W[y3 & (W.referring_trust == "RIS")]["dday"].dt.strftime("%Y-%m-%d").unique()
     ret = con.execute("SELECT unit_code, CAST(d AS VARCHAR) d, beds, occ FROM ret").df()
     rr = ret[(ret.unit_code == "RIS-ACC") & ret.d.isin(ris_days)]
-    claim("killer of rung 1: RIS-ACC reported no empty bed at 08:00 on any day RIS referrals waited",
+    claim("killer of the structural reading: RIS-ACC reported no empty bed at 08:00 on any day RIS referrals waited",
           len(rr) > 0 and (rr.occ >= rr.beds).all(), "%d days" % len(rr))
     brk = W[y3 & (W.referring_trust == "BRK")]
-    claim("killer of rung 2: BRK-ACC full at every moment of every BRK long wait", not brk["empty"].any(), len(brk))
+    claim("killer of rung 1: BRK-ACC full at every moment of every BRK long wait", not brk["empty"].any(), len(brk))
+    ris = W[y3 & (W.referring_trust == "RIS")]
     stn = W[y3 & (W.referring_trust == "STN")]
+    claim("killer of rung 2: the full units admitted other patients inside most RIS and every STN long wait",
+          stn["alloc_any"].all() and (ris["alloc_any"] & ~ris["empty"]).mean() > 0.5,
+          "RIS %.0f%%" % (100 * (ris["alloc_any"] & ~ris["empty"]).mean()))
+    # killer of rung 3: every admission inside a RIS long wait is another trust's patient in the bureau's audit
+    isl = islands(con, True)
+    rt = dict(con.execute("SELECT referral_id, referring_trust FROM ref").fetchall())
+    tx = pd.read_csv(Path(T) / F["transfers"], dtype=str, keep_default_na=False)
+    lk = dict(con.execute("SELECT temporary_key, verified_key FROM links").fetchall())
+    audit = {(r.patient_key, r.to_unit, r.bed_confirmed_at) for r in tx.itertuples(index=False)}
+    ri = isl[isl.unit_code == "RIS-ACC"].copy()
+    ri["m"] = ri["a"].values.astype("datetime64[m]").astype(np.int64)
+    bad = n_in = 0
+    for r in ris.itertuples():
+        a = np.datetime64(r.dta_t, "m").astype(np.int64)
+        b = np.datetime64(r.end_t, "m").astype(np.int64)
+        for x in ri[(ri.m > a) & (ri.m < b)].itertuples():
+            n_in += 1
+            when = pd.Timestamp(x.a).strftime("%Y-%m-%d %H:%M")
+            if rt.get(x.r or "", "RIS") == "RIS" or (lk.get(x.patient_key, x.patient_key), "RIS-ACC", when) not in audit:
+                bad += 1
+    claim("killer of rung 3: every admission inside a RIS long wait is a patient referred by another trust, in the "
+          "bed bureau's transfer audit", n_in > 0 and bad == 0, "%d admissions" % n_in)
     claim("decisive fact: STN-ACC admitted planned post-operative patients through every STN long wait",
           stn["alloc"].all() and not stn["empty"].any(), len(stn))
     # the graded figures
@@ -289,10 +344,9 @@ def main(T):
     rh = per_trust(Wh, (Wh.year == 3) & Wh.died30 & Wh["own"] & Wh["empty"])
     claim("clean-data test: hourly return names PRW, the call stays STN", top2({t: rh.get(t, 0) for t in CLAIMS["y3"]})[0] == "PRW")
     # the natural path: every field as it stands, current register, rows as admissions, deaths per referral row
-    Wn = classify(con, build_waits(con, natural=True), current_register=True, merge=False)
-    nat = (Wn["person"].nunique() if False else sum(Wn[Wn.referring_trust == t]["person"].nunique() for t in CLAIMS["record"]),
-           int(Wn["died30"].sum()), int((Wn["died30"] & (Wn["empty"] | Wn["alloc"])).sum()))
-    claim("natural path totals 2208 / 669 / 161", nat == CLAIMS["natural_total"], nat)
+    Wn = classify(con, build_waits(con, natural=True), current_register=True, merge=False, by_type=True)
+    nat = (len(Wn), int(Wn["died30"].sum()), int((Wn["died30"] & (Wn["empty"] | Wn["alloc"])).sum()))
+    claim("natural path totals %d / %d / %d" % CLAIMS["natural_total"], nat == CLAIMS["natural_total"], nat)
     # the calibration corpus
     out, log, att, rets, cr = corpus(T)
     filed = out[("decision_to_bed", "30d", "decided_3", "kept", 240)].reindex(log.index, fill_value=0)
@@ -325,14 +379,21 @@ def main(T):
           conf[ra.name] == ca and conf[rb.name] == cb and filed[ra.name] == ca and filed[rb.name] == cb)
     # the capacity report's referral waits from the referral log
     cap = pd.read_excel(Path(T) / F["capacity"], sheet_name="Referral waits")
-    q = """SELECT strftime(CAST(received_at AS TIMESTAMP), '%Y-%m') m, referring_trust t,
-                  COUNT(*) n, SUM(CASE WHEN outcome_at <> '' AND date_diff('minute', CAST(received_at AS TIMESTAMP),
-                  CAST(outcome_at AS TIMESTAMP)) > 240 THEN 1 ELSE 0 END) k
-           FROM ref WHERE level_of_care = '3' AND received_at >= '2024-04-01' AND received_at < '2026-07-01'
-           GROUP BY 1, 2"""
-    g = con.execute(q).df().set_index(["m", "t"])
-    ok = all(g.loc[(r.Month, r._2), "k"] == r._4 if (r.Month, r._2) in g.index else r._4 == 0 for r in cap.itertuples())
-    claim("capacity report: referral waits reproduce from the referral log", ok)
+    rf = con.execute("SELECT referral_id, referring_trust t, received_at, outcome_at FROM ref WHERE level_of_care = '3' "
+                     "AND received_at >= '2024-04-01' AND received_at < '2026-07-01'").df()
+    rf["m"] = rf["received_at"].str[:7]
+    rc = pd.to_datetime(rf["received_at"], format="%Y-%m-%d %H:%M")
+    oc = pd.to_datetime(rf["outcome_at"].replace("", None), format="%Y-%m-%d %H:%M")
+    cc = rf["referral_id"].str.startswith("CC")
+    z = lambda x: x.dt.tz_localize("Europe/London", ambiguous="raise", nonexistent="raise").where(
+        ~cc, x.dt.tz_localize("UTC").dt.tz_convert("Europe/London"))
+    rf["k"] = ((z(oc) - z(rc)).dt.total_seconds() > 240 * 60).astype(int)
+    g = rf.groupby(["m", "t"])["k"].sum()
+    ok = all(g.get((r.Month, r._2), 0) == r._4 for r in cap.itertuples())
+    naive = rf.assign(kn=((oc - rc).dt.total_seconds() > 240 * 60).astype(int)).groupby(["m", "t"])["kn"].sum()
+    differ = sum(1 for r in cap.itertuples() if naive.get((r.Month, r._2), 0) != r._4)
+    claim("capacity report: referral waits reproduce from the referral log in elapsed time", ok,
+          "%d trust-months differ on the clock readings" % differ)
     n = len(RESULTS)
     print("\n%d claims, %d failed" % (n, n - sum(RESULTS)))
     return 0 if all(RESULTS) else 1

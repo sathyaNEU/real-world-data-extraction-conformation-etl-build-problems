@@ -5,8 +5,11 @@ from collections import defaultdict
 import numpy as np
 
 from common import (LETTERS, CODE, TRUSTS, HDU, FEED_UNITS, RECORD0, RECORD1, PARALLEL0, PARALLEL1, EXTRACT, lm,
-                    day_of, to_dt, own_unit, crosses_dst, DST_WINDOWS, is_bst, rng, year_of, DAY)
+                    day_of, to_dt, own_unit, crosses_dst, clear_of_dst, DST_WINDOWS, is_bst, rng, year_of, DAY)
 from world import LEGACY_END, BST_LEGACY_END, daterange
+import plan
+
+GO_MIN = lm(dt.date(2024, 4, 2), 0, 0)
 
 WARDS = {
     "A": ["ED", "AMU", "W12", "W14", "W21", "W23", "SAU", "CCU", "W30", "W31"],
@@ -33,9 +36,11 @@ def ward_for(L, r, pilot=False, avoid_pilot=False):
     return str(r.choice(w, p=p / p.sum()))
 
 
-def short_wait(r, t_end, bst_legacy):
+def short_wait(r, t_end, bst_legacy, cap=None):
     """A wait that stays clear of four hours on every clock and of the clock changes."""
     hi = 170 if bst_legacy else 225
+    if cap is not None:
+        hi = min(hi, cap)
     for _ in range(50):
         w = int(np.clip(np.exp(r.normal(np.log(55), 0.75)), 8, hi))
         if not crosses_dst(t_end - w - 5, t_end):
@@ -67,7 +72,7 @@ def build_referrals(world, P, stays):
     for w in sorted(world.waits, key=lambda w: w["dta"]):
         L = w["letter"]
         bst = w["dta"] < lm(BST_LEGACY_END, 23, 59) and is_bst(w["dta"])
-        rec = w["dta"] - receipt_delay(r)
+        rec = clear_of_dst(w["dta"] - receipt_delay(r))
         stay = None
         if w["outcome"] == "admitted":
             cand = [i for i in stay_of[w["pid"]] if stays[i]["admit"] == w["end"] and stays[i]["unit"] == w["unit"]]
@@ -87,18 +92,50 @@ def build_referrals(world, P, stays):
         L = p["letter"]
         t = s["admit"]
         bst = t < lm(dt.date(2024, 4, 2)) and is_bst(t)
-        wt = short_wait(r, t, bst)
+        legacy_tx = t < GO_MIN and own_unit(L, day_of(t)) != s["unit"]
+        wt = short_wait(r, t, bst, cap=plan.LEGACY_TX_MAX_WAIT if legacy_tx else None)
+        ward = None
         if p.get("tx_for") is not None:
-            # placed by the bed bureau inside a waiting patient's wait: referred before that patient
-            lo = t - world.waits_by_id[p["tx_for"]]["dta"] + 10
-            hi = min(171 if bst else 226, lo + 81)
-            assert lo < hi, ("transfer wait", t, lo, hi)
-            wt = int(r.integers(lo, hi))
+            wdta = world.waits_by_id[p["tx_for"]]["dta"]
+            if p.get("planned_tx"):
+                # a planned post-operative transfer the bureau booked: referred from the sending trust's theatre
+                # recovery after the waiting patient, the bed the next that freed here
+                hi = min(120, t - wdta - 5)
+                wt = int(r.integers(15, max(16, hi + 1)))
+                ward = "REC"
+            else:
+                # placed by the bed bureau inside a waiting patient's wait: referred before that patient
+                lo = t - wdta + 10
+                hi = min(171 if bst else 226, lo + 81)
+                if legacy_tx:
+                    hi = min(hi, plan.LEGACY_TX_MAX_WAIT + 1)
+                assert lo < hi, ("transfer wait", t, lo, hi)
+                wt = int(r.integers(lo, hi))
             assert not crosses_dst(t - wt - 5, t)
         dta = t - wt
-        rec = dta - receipt_delay(r)
-        add(pid=s["pid"], letter=L, ward=ward_for(L, r), received=rec, dta=dta, level_req=p["level"],
+        rec = clear_of_dst(dta - receipt_delay(r))
+        add(pid=s["pid"], letter=L, ward=ward or ward_for(L, r), received=rec, dta=dta, level_req=p["level"],
             level_dec=p["level"], outcome="admitted", end=t, unit=s["unit"], stay=i, pilot=False)
+    # Stennock's planned post-operative patients, referred from its elective centre's recovery
+    re_ = rng("ec")
+    for i, s in enumerate(stays):
+        p = P.p[s["pid"]]
+        if not p.get("ec"):
+            continue
+        t = s["admit"]
+        lo, hi = plan.EC_WAIT
+        if p.get("inside_wid") is not None:
+            hi = min(hi, t - world.waits_by_id[p["inside_wid"]]["dta"] - 5)
+        assert hi > lo, ("elective centre referral", t, hi)
+        for attempt in range(40):
+            wt = int(re_.integers(lo, hi + 1))
+            if not crosses_dst(t - wt - 40, t + 5):
+                break
+        else:
+            raise RuntimeError("elective centre referral across a clock change")
+        dta = t - wt
+        add(pid=s["pid"], letter="D", ward="REC", received=clear_of_dst(dta - int(re_.integers(5, 26))), dta=dta,
+            level_req=3, level_dec=3, outcome="admitted", end=t, unit=s["unit"], stay=i, pilot=False)
     # free rows: stood down, died before admission (short), level-2 admitted to the trust's high dependency unit
     for L in LETTERS:
         rs = rng("free", L)
@@ -125,7 +162,7 @@ def build_referrals(world, P, stays):
                         continue
                     lvl = 2 if kind == "hdu" else (3 if (kind == "died" or rs.random() < 0.55) else 2)
                     pid = P.new(kind="free", letter=L, level=lvl)
-                    add(pid=pid, letter=L, ward=ward_for(L, rs), received=dta - receipt_delay(rs), dta=dta,
+                    add(pid=pid, letter=L, ward=ward_for(L, rs), received=clear_of_dst(dta - receipt_delay(rs)), dta=dta,
                         level_req=lvl, level_dec=lvl, outcome={"stood_down": "stood_down", "died": "died",
                                                                "hdu": "admitted"}[kind],
                         end=dta + wt, unit=HDU.get(L) if kind == "hdu" else None, pilot=False)
@@ -135,7 +172,7 @@ def build_referrals(world, P, stays):
         first_dta = ref["received"] - int(rs.integers(160, 300))
         sd_at = first_dta + int(rs.integers(40, 110))
         assert sd_at < ref["received"] - 20 and day_of(first_dta) == day_of(ref["dta"])
-        add(pid=ref["pid"], letter=ref["letter"], ward=ref["ward"], received=first_dta - receipt_delay(rs),
+        add(pid=ref["pid"], letter=ref["letter"], ward=ref["ward"], received=clear_of_dst(first_dta - receipt_delay(rs)),
             dta=first_dta, level_req=3, level_dec=3, outcome="stood_down", end=sd_at, unit=None,
             tags={"HZ2oc_first"}, pilot=False)
     # the extract holds decisions to admit inside the record; stays admitted earlier keep their referral number
@@ -195,7 +232,7 @@ def assign_identities(world, P, refs, death):
                 death[a] = death[b]
     # temporary identities on migrated legacy referrals from the emergency department
     temp = {}
-    picked = [ref for ref in refs if ref["tags"] & {"DV2a", "DV2b1"}]
+    picked = [ref for ref in refs if ref["tags"] & {"DV9", "DV2b1"}]
     benign = [ref for ref in refs if ref["legacy"] and ref["wid"] is None and not ref["tags"]
               and P.p[ref["pid"]]["kind"] in ("bg", "free") and ref["ward"] == "ED"
               and P.p[ref["pid"]]["person"] == ref["pid"] and ref["pid"] not in taken]
@@ -223,7 +260,14 @@ def assign_deaths(world, P, refs, stays):
         ref = wref[w["wid"]]
         pid = w["pid"]
         dta_day = day_of(w["dta"])
-        if w["tags"] & {"DV2b1", "DV2b2", "DV7a", "DV7b"}:
+        if w["tags"] & {"DV2b1", "DV2b2", "DV7a"}:
+            continue
+        if "DV7b" in w["tags"]:
+            # the repeat patient dies in the unit at the end of the second stay
+            s = stays[ref["stay"]]
+            first = world.waits_by_id[w["pair"]]
+            assert day_of(s["discharge"]) <= day_of(first["dta"]) + dt.timedelta(days=21), ("dv7 death", w["wid"])
+            death[pid], where[pid] = day_of(s["discharge"]), "icu"
             continue
         if not w["died"]:
             if r.random() < 0.12:
@@ -237,10 +281,9 @@ def assign_deaths(world, P, refs, stays):
         s = stays[ref["stay"]]
         off = (day_of(s["discharge"]) - dta_day).days
         assert off <= 20, ("designed death after the deadline", w["wid"], off)
-        if "DV2a" in w["tags"]:
-            death[pid], where[pid] = None, "readmission"
-            continue
         u = r.random()
+        if "DV9" in w["tags"] and u >= 0.78:
+            u = 0.6              # never identified: the death is in hospital, on the temporary-key spell
         if u < 0.55 or off >= 19:
             death[pid], where[pid] = day_of(s["discharge"]), "icu"
         elif u < 0.78:
@@ -248,8 +291,14 @@ def assign_deaths(world, P, refs, stays):
             where[pid] = "ward"
         else:
             death[pid], where[pid] = None, "after_discharge"
+    re_ = rng("ec_deaths")
     for ref in refs:
         pid = ref["pid"]
+        if P.p[pid].get("ec") and pid not in where:
+            if re_.random() < 0.015:
+                death[pid] = day_of(ref["dta"]) + dt.timedelta(days=int(re_.integers(32, 90)))
+                where[pid] = "later"
+            continue
         if P.p[pid]["kind"] not in ("bg", "free") or pid in where:
             continue
         if ref["outcome"] == "died":
@@ -307,6 +356,9 @@ def build_episodes(world, P, refs, stays, death, where, temp):
         lst = sorted(persons[person], key=lambda x: (x["dta"], x["rid"]))
         vkey = P.p[person]["key"]
         verified[person] = vkey
+        never = [temp[x["rid"]] for x in lst if "DV9" in x["tags"] and x["rid"] in temp]
+        if never:
+            vkey = never[0]      # never identified: every spell keeps the temporary key, no date of death links
         dday, how = death.get(person), where.get(person)
         for ref in lst:
             if ref["pid"] in where:
@@ -323,13 +375,23 @@ def build_episodes(world, P, refs, stays, death, where, temp):
             L = ref["letter"]
             dta_day = day_of(ref["dta"])
             key = temp.get(first["rid"], temp.get(ref["rid"], vkey))
-            a_date = dta_day if first["ward"] == "ED" else dta_day - dt.timedelta(days=int(r.integers(0, 10)))
+            if first["ward"] == "ED":
+                a_date = dta_day
+            elif first["ward"] == "REC":
+                a_date = dta_day - dt.timedelta(days=int(r.integers(0, 2)))      # admitted for surgery
+            else:
+                a_date = dta_day - dt.timedelta(days=int(r.integers(0, 10)))
             if last_out is not None and a_date <= last_out:
                 a_date = last_out + dt.timedelta(days=1)
             if a_date > dta_day:
                 a_date = dta_day
             first_in = first_in or a_date
-            a_method = "21" if first["ward"] == "ED" else str(r.choice(ADM_METHOD_WARD))
+            if first["ward"] == "ED":
+                a_method = "21"
+            elif first["ward"] == "REC":
+                a_method = str(r.choice(["11", "12"]))
+            else:
+                a_method = str(r.choice(ADM_METHOD_WARD))
             is_last = gi == len(groups) - 1
             died_here = is_last and dday is not None and how in ("icu", "ward", "waiting")
             if ref["outcome"] == "admitted" and ref["stay"] is not None:
@@ -337,6 +399,11 @@ def build_episodes(world, P, refs, stays, death, where, temp):
                 icu_out = day_of(st["discharge"])
                 transfer = own_unit(L, dta_day) != st["unit"]
                 hosp_out = icu_out + dt.timedelta(days=int(r.integers(2, 13)))
+                if not is_last:
+                    # the hospital spell ends before the patient's next referral
+                    nxt = day_of(groups[gi + 1][0]["dta"])
+                    if hosp_out >= nxt:
+                        hosp_out = max(icu_out, nxt - dt.timedelta(days=2))
                 if died_here:
                     hosp_out = dday
                 elif is_last and how == "after_discharge":
@@ -348,8 +415,8 @@ def build_episodes(world, P, refs, stays, death, where, temp):
                 if transfer:
                     moved = day_of(st["admit"])
                     spell(person, key, L, a_date, a_method, moved, "1", "49")
-                    spell(person, key, trust_of_unit(st["unit"]), moved, "2B", hosp_out, "4" if died_here else "1",
-                          "79" if died_here else "19")
+                    spell(person, key, trust_of_unit(st["unit"]), moved, "81" if ref["ward"] == "REC" else "2B",
+                          hosp_out, "4" if died_here else "1", "79" if died_here else "19")
                 else:
                     spell(person, key, L, a_date, a_method, hosp_out, "4" if died_here else "1",
                           "79" if died_here else "19")

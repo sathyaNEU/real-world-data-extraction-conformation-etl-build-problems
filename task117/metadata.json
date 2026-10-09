@@ -21,7 +21,7 @@
     {
       "path": "charger_status_events_2026.csv",
       "format": "csv",
-      "bytes": 72518
+      "bytes": 72154
     },
     {
       "path": "city_fleet_roster.csv",
@@ -31,7 +31,7 @@
     {
       "path": "civic_center_campus_electric_statements_2024-2026.csv",
       "format": "csv",
-      "bytes": 4865
+      "bytes": 4858
     },
     {
       "path": "civic_center_ev_service_agreement_draft.docx",
@@ -41,7 +41,7 @@
     {
       "path": "curbline_courtesy_sessions_civic_decks_2024-2026.csv",
       "format": "csv",
-      "bytes": 52160
+      "bytes": 52295
     },
     {
       "path": "curbline_export_field_notes.txt",
@@ -56,7 +56,7 @@
     {
       "path": "deck_panel_meter_log_2024-2026.xlsx",
       "format": "xlsx",
-      "bytes": 9039
+      "bytes": 9902
     },
     {
       "path": "deck_submeter_nameplates.csv",
@@ -66,7 +66,7 @@
     {
       "path": "ev_permit_charging_statements_2026.csv",
       "format": "csv",
-      "bytes": 49620
+      "bytes": 49641
     },
     {
       "path": "ev_permit_registry.csv",
@@ -76,22 +76,22 @@
     {
       "path": "facilities_work_orders_2026.csv",
       "format": "csv",
-      "bytes": 2605
+      "bytes": 2806
     },
     {
       "path": "fes-07_load_forecasting_standard_rev4.pdf",
       "format": "pdf",
-      "bytes": 3559
+      "bytes": 3584
     },
     {
       "path": "fleet_card_ev_transactions_2024-2026.csv",
       "format": "csv",
-      "bytes": 836544
+      "bytes": 836050
     },
     {
       "path": "gateway_b_sessions_jan-apr2024.csv",
       "format": "csv",
-      "bytes": 24310
+      "bytes": 24173
     },
     {
       "path": "nspl_new_service_planning_guide_2026_sec7.pdf",
@@ -116,17 +116,17 @@
     {
       "path": "restatement_decisions_2025.csv",
       "format": "csv",
-      "bytes": 2403
+      "bytes": 3027
     },
     {
       "path": "session_intervals_2024-2026.parquet",
       "format": "parquet",
-      "bytes": 2577058
+      "bytes": 2577494
     },
     {
       "path": "settled_sessions_2024-2026.csv",
       "format": "csv",
-      "bytes": 13504144
+      "bytes": 13558234
     },
     {
       "path": "station_register.csv",
