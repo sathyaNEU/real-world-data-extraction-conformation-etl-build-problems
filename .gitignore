@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 *.tmp
+# Each task's generator rebuilds its pack and goldens, so in-flight builds are not committed;
+# the delivered copies are added with git add -f at delivery.
+task*/target/
+task*/golden/
+task*/target.zip
