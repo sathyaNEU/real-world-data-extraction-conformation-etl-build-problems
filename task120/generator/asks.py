@@ -25,22 +25,27 @@ NOMINAL = {1: "2025-04-15", 2: "2025-06-15", 3: "2025-09-15", 4: "2026-01-15"}
 
 CFG = dict(
     # wage statements
-    n_employers=9_400, paper_only_share=0.085, both_share=0.026, both_paper_p=0.30,
-    mis_w2=0.0175, resolve_p=0.83, nonfiler_statements=13_850,
+    n_employers=9_400, paper_only_share=0.15, both_share=0.085, both_paper_p=0.34,
+    w2_mis_resolved=0.0155, w2_mis_open=0.0030, resolve_p=0.83, nonfiler_statements=13_850,
     # estimated payments
-    es_p=[(0, 0.012), (50_000, 0.02), (100_000, 0.05), (200_000, 0.27), (318_000, 0.43), (742_000, 0.62), (3_000_000, 0.72)],
+    es_p=[(0, 0.012), (50_000, 0.02), (100_000, 0.05), (200_000, 0.25), (260_000, 0.33), (300_000, 0.47), (742_000, 0.62), (3_000_000, 0.72)],
     due_day_p=0.24, evening_due_p=0.27, evening_other_p=0.11, late_p=0.04,
-    credit_p=0.30, credit_scale=(0.9, 2.6), misapplied_p=0.026,
-    dishonour_p=0.050, represent_p=0.36, mis_es=0.019,
-    # capital gains
+    credit_scale=(0.6, 1.7), credit_early=0.136, credit_late=0.021,
+    cell_misapplied=0.021, cell_notpaid=0.031, cell_repaid=0.0105, cell_mis_resolved=0.0152, cell_mis_open=0.0028,
+    # capital gains (tier targets are shares of the tier's golden gain)
     schd_p=[(0, 0.07), (50_000, 0.13), (100_000, 0.22), (214_000, 0.52), (742_000, 0.86), (5_000_000, 0.93)],
     gain_share=[(0, 0.04), (100_000, 0.05), (214_000, 0.075), (318_000, 0.13), (742_000, 0.30), (5_000_000, 0.42)],
-    loss_p=[(0, 0.26), (214_000, 0.17), (742_000, 0.12)], loss_scale=0.11,
-    amend_p=0.024, amend_big_p=0.118, big_gain=150_000, unacc_share=0.47, acc_up=(0.22, 0.65),
-    unacc_cut=(0.40, 0.95), accepted_then_unacc=0.18,
+    # tier 2 tilted so its share of AGI sits off the round one-decimal value (determinism-check A.6)
+    gain_tilt={0: 1.0, 1: 1.0, 2: 1.0023, 3: 1.0},
+    loss_p=[(0, 0.24), (214_000, 0.15), (742_000, 0.11)],
+    h3_target={0: 0.030, 1: 0.026, 2: 0.029, 3: 0.044},
+    d2_target={0: 0.050, 1: 0.056, 2: 0.058, 3: 0.063},
+    acc_target={0: 0.030, 1: 0.032, 2: 0.032, 3: 0.034},
+    acc_up=(0.22, 0.65), unacc_cut=(0.40, 0.95), amend_other=0.011,
 )
 
 EXTRACT = pd.Timestamp("2026-10-22")
+OPEN_SEASON = pd.Timestamp("2026-01-21")       # TY2025 e-filing opened
 
 
 def interp_steps(x, table):
@@ -113,6 +118,14 @@ def instalment_of_local(local):
 
 # ------------------------------------------------------------------ build
 
+def _take_until(keys, amounts, target):
+    """Indices, in key order, whose amounts first reach target (stratified device selection)."""
+    order = np.argsort(keys, kind="stable")
+    cum = np.cumsum(amounts[order])
+    k = int(np.searchsorted(cum, target)) + 1
+    return order[:min(k, len(order))]
+
+
 def build(W, R25, R24):
     A = {}
     rng = stream("asks")
@@ -123,13 +136,19 @@ def build(W, R25, R24):
     agi = r.federal_agi.to_numpy()
     status = r.filing_status.to_numpy()
     n = len(r)
-    tier = np.where(ent >= 0, tier_e[np.maximum(ent, 0)], 0)
+    tier = np.where(ent >= 0, tier_e[np.maximum(ent, 0)], 0).astype(np.int8)
     bset = set()
     for F in Wm.ANSWER_PINS:
         bset.update(W.boundary[F])
     boundary_ret = np.isin(ent, list(bset)) & (role != "N")
     special_hh = np.where(ent >= 0, W.special[2025][np.maximum(ent, 0)] != "", False)
     taken = set(r.filer_tin.tolist()) | set(r.spouse_tin[r.spouse_tin > 0].tolist())
+    # a misreported TIN never lands on anyone in the files: every filer, spouse and listed dependent
+    # of any year (a nonfiling dependent included), so no reported number joins a schedule by accident
+    every = [W.tin_p, W.tin_s[W.tin_s > 0], W.dep_tin, W.nonres_dep_pool]
+    for yy in sorted(W.nonres):
+        every += [W.nonres[yy]["tin"], W.nonres[yy]["spouse"][W.nonres[yy]["spouse"] > 0]]
+    taken.update(np.concatenate(every).astype(np.int64).tolist())
     A["tier_ret"] = tier
     A["boundary_ret"] = boundary_ret
 
@@ -139,16 +158,40 @@ def build(W, R25, R24):
     kid_special = is_kid & special_hh
     schd_p = np.where(is_kid, np.where(kid_special, 0.92, 0.03), schd_p)
     has_schd = (rng.random(n) < schd_p) & ~boundary_ret
-    gshare = interp_steps(np.maximum(agi, 0), CFG["gain_share"]) * rng.lognormal(0, 0.55, n)
+    tilt = np.array([CFG["gain_tilt"][int(t)] for t in range(4)])[tier]
+    gshare = interp_steps(np.maximum(agi, 0), CFG["gain_share"]) * rng.lognormal(0, 0.55, n) * tilt
     gshare = np.where(kid_special, rng.uniform(0.25, 0.55, n), gshare)
     gshare = np.clip(gshare, 0.0, 0.88)
     is_loss = has_schd & (rng.random(n) < interp_steps(np.maximum(agi, 0), CFG["loss_p"])) & ~kid_special
-    net = np.where(has_schd, np.round(np.maximum(agi, 0) * gshare), 0).astype(np.int64)
-    loss_amt = np.round(np.exp(rng.normal(np.log(np.maximum(agi, 20_000) * CFG["loss_scale"]), 1.05, n))).astype(np.int64)
-    net = np.where(is_loss, -np.maximum(loss_amt, 600), net)
-    in_agi = np.where(net < 0, np.maximum(net, -np.where(status == 3, 1_500, 3_000)), net)
-    in_agi = np.where(has_schd, in_agi, 0).astype(np.int64)
+    gain = np.where(has_schd & ~is_loss, np.round(np.maximum(agi, 0) * gshare), 0).astype(np.int64)
+    cap = np.where(status == 3, 1_500, 3_000)
+    base_loss = np.exp(rng.normal(0.0, 0.9, n)) * np.maximum(agi, 25_000) * 0.03
+    net = gain.copy()
+    in_agi = gain.copy()
+    floor_loss = rng.integers(140, 2_400, n)
+    loss_in_agi = -np.minimum(cap, np.maximum(floor_loss, np.round(base_loss * 0.2)).astype(np.int64))
+    # the loss limit: each tier's excess of net loss over the amount entering AGI is a set share of
+    # that tier's gain (H3); a multiplier on the loss sizes per tier
+    for t in (0, 1, 2, 3):
+        sel = is_loss & (tier == t)
+        G = gain[tier == t].sum() + loss_in_agi[sel].sum()
+        tgt = CFG["h3_target"][t] * G
+
+        def excess(mult):
+            lo = np.maximum(floor_loss[sel], np.round(base_loss[sel] * mult)).astype(np.int64)
+            return float((lo - np.minimum(cap[sel], lo)).sum())
+        a, b = 0.01, 400.0
+        for _ in range(80):
+            mid = math.sqrt(a * b)
+            if excess(mid) < tgt:
+                a = mid
+            else:
+                b = mid
+        lo = np.maximum(floor_loss[sel], np.round(base_loss[sel] * b)).astype(np.int64)
+        net[sel] = -lo
+        in_agi[sel] = -np.minimum(cap[sel], lo)
     net = np.where(has_schd, net, 0).astype(np.int64)
+    in_agi = np.where(has_schd, in_agi, 0).astype(np.int64)
     wshare = np.interp(np.maximum(agi, 0), [0, 30_000, 100_000, 300_000, 1_000_000, 5_000_000, 50_000_000],
                        [0.80, 0.86, 0.84, 0.70, 0.42, 0.20, 0.07]) * rng.uniform(0.72, 1.12, n)
     room = np.clip(1.0 - np.where(in_agi > 0, in_agi / np.maximum(agi, 1), 0) - 0.04, 0, 1)
@@ -160,9 +203,9 @@ def build(W, R25, R24):
     wages = np.where(boundary_ret, 0, wages)
     A["ret_wages"], A["ret_net"], A["ret_in_agi"], A["ret_has_schd"] = wages, net, in_agi, has_schd
 
-    A.update(_wage_statements(W, r, wages, status, taken))
-    A.update(_estimated_payments(W, r, tier_e, tot_e, role, ent, agi, wages, boundary_ret, special_hh, taken, R24))
-    A.update(_versions(r, has_schd, net, in_agi, status, agi))
+    A.update(_wage_statements(W, r, wages, status, taken, tier))
+    A.update(_estimated_payments(W, r, tier_e, tot_e, tier, role, ent, agi, wages, boundary_ret, special_hh, taken, R24))
+    A.update(_versions(r, tier, has_schd, net, in_agi, status, agi))
     A.update(_register(A))
     A.update(_deposits(A))
     return A
@@ -170,7 +213,7 @@ def build(W, R25, R24):
 
 # ------------------------------------------------------------------ wage statements
 
-def _wage_statements(W, r, wages, status, taken):
+def _wage_statements(W, r, wages, status, taken, tier):
     rng = stream("w2")
     n = len(r)
     rng_e = stream("employers")
@@ -179,9 +222,11 @@ def _wage_statements(W, r, wages, status, taken):
     size = rng_e.pareto(1.05, E) + 0.2
     order = np.argsort(size)
     chan = np.full(E, "E", dtype="<U1")
-    po = rng_e.choice(order[: int(E * 0.55)], int(E * CFG["paper_only_share"]), replace=False)
+    # small and mid-sized employers file on paper through the capture vendor; some mid-sized
+    # employers file most statements on the platform and a share on paper
+    po = rng_e.choice(order[int(E * 0.25): int(E * 0.92)], int(E * CFG["paper_only_share"]), replace=False)
     chan[po] = "P"
-    mid = np.setdiff1d(order[int(E * 0.35): int(E * 0.97)], po)
+    mid = np.setdiff1d(order[int(E * 0.50): int(E * 0.99)], po)
     bo = rng_e.choice(mid, int(E * CFG["both_share"]), replace=False)
     chan[bo] = "B"
     p_emp = size / size.sum()
@@ -213,27 +258,34 @@ def _wage_statements(W, r, wages, status, taken):
     emp = rng.choice(E, m, p=p_emp)
     ch = chan[emp]
     paper = (ch == "P") | ((ch == "B") & (rng.random(m) < CFG["both_paper_p"]))
-    mis = (rng.random(m) < CFG["mis_w2"]) & (st_ret >= 0)
+    # H4: a set share of each tier's withholding sits on statements whose TIN was keyed wrong
+    st_tier = np.where(st_ret >= 0, tier[np.maximum(st_ret, 0)], 0)
+    mis = np.zeros(m, bool)
+    openc = np.zeros(m, bool)
+    keys = stream("w2_mis_keys").random(m)
+    for t in (0, 1, 2, 3):
+        idx = np.where((st_tier == t) & (st_ret >= 0))[0]
+        tot = st_wh[idx].sum()
+        pick_r = idx[_take_until(keys[idx], st_wh[idx], CFG["w2_mis_resolved"] * tot)]
+        rest = np.setdiff1d(idx, pick_r)
+        pick_o = rest[_take_until(keys[rest] * 7.31 % 1, st_wh[rest], CFG["w2_mis_open"] * tot)]
+        mis[pick_r] = True
+        mis[pick_o] = True
+        openc[pick_o] = True
     rep = st_tin.copy()
     rep[mis] = typo(st_tin[mis], stream("typo_w2"), taken)
     w2 = pd.DataFrame({"true_tin": st_tin, "reported_tin": rep, "wages": st_wage, "withheld": st_wh,
-                       "ein": eins[emp], "paper": paper, "mis": mis, "ret": st_ret, "emp": emp})
-    # e-file: submissions per employer, statement ids in submission order
+                       "ein": eins[emp], "paper": paper, "mis": mis, "open": openc, "ret": st_ret, "emp": emp, "tier": st_tier})
     ef = w2[~w2.paper].copy()
     ef["sub_day"] = stream("w2_days").integers(0, 31, len(ef))
     ef = ef.sort_values(["sub_day", "ein", "true_tin"], kind="stable").reset_index(drop=True)
-    sub_of = {}
-    sid = []
-    rs = stream("w2_sub")
-    base = 26_400_000
-    for e, d in zip(ef.ein.to_numpy(), ef.sub_day.to_numpy()):
-        key = (int(e), int(d))
-        if key not in sub_of:
-            base += int(rs.integers(1, 9))
-            sub_of[key] = base
-        sid.append(sub_of[key])
-    ef["submission_id"] = sid
-    ef["received_date"] = (pd.Timestamp("2026-01-05") + pd.to_timedelta(ef.sub_day * 1, unit="D")).dt.date
+    key = ef.ein.to_numpy() * 100 + ef.sub_day.to_numpy()
+    uniq, first = np.unique(key, return_index=True)
+    order_first = np.argsort(first)
+    sub_ids = np.empty(len(uniq), np.int64)
+    sub_ids[order_first] = 26_400_000 + np.cumsum(stream("w2_sub").integers(1, 9, len(uniq)))
+    ef["submission_id"] = sub_ids[np.searchsorted(uniq, key)]
+    ef["received_date"] = (pd.Timestamp("2026-01-05") + pd.to_timedelta(ef.sub_day, unit="D")).dt.date
     ef["statement_id"] = 410_000_000 + np.cumsum(stream("w2_sid").integers(1, 4, len(ef)))
     pp = w2[w2.paper].copy()
     rk = stream("w2_paper")
@@ -242,7 +294,7 @@ def _wage_statements(W, r, wages, status, taken):
     seq = np.zeros(len(pp), np.int64)
     bno, cnt = 512, 0
     for i in range(len(pp)):
-        if cnt == 0 or cnt >= 250 or (i > 0 and rk.random() < 0.004):
+        if cnt == 0 or cnt >= 250 or rk.random() < 0.004:
             bno += int(rk.integers(1, 3))
             cnt = 0
         cnt += 1
@@ -250,15 +302,14 @@ def _wage_statements(W, r, wages, status, taken):
         seq[i] = cnt
     pp["batch"] = batch
     pp["seq"] = seq
-    keyed = pd.Timestamp("2026-02-02") + pd.to_timedelta((batch - batch.min()) // 6, unit="D")
-    pp["keyed_date"] = keyed
+    pp["keyed_date"] = pd.Timestamp("2026-02-02") + pd.to_timedelta((batch - batch.min()) // 6, unit="D")
     emp_tab = pd.DataFrame({"ein": eins, "chan": chan, "size": size})
     return {"w2": w2, "w2_efile": ef, "w2_paper": pp, "employers": emp_tab}
 
 
 # ------------------------------------------------------------------ estimated payments
 
-def _estimated_payments(W, r, tier_e, tot_e, role, ent, agi, wages, boundary_ret, special_hh, taken, R24):
+def _estimated_payments(W, r, tier_e, tot_e, tier, role, ent, agi, wages, boundary_ret, special_hh, taken, R24):
     rng = stream("es")
     n = len(r)
     filer = r.filer_tin.to_numpy()
@@ -276,8 +327,8 @@ def _estimated_payments(W, r, tier_e, tot_e, role, ent, agi, wages, boundary_ret
     r24 = R24[(R24.residency_code == 1) & (R24.processed_date <= np.datetime64("2025-05-29"))]
     r24 = r24.drop_duplicates("filer_tin").set_index("filer_tin")
     due = {k: pd.Timestamp(v) for k, v in DUE.items()}
-    pay = []          # tin, tax_year, amount, local, channel, instalment_intended, misapplied
-    credits = []      # TY2024 return_id, amount, tin, posted local
+    pay = []
+    credits = []
     for i in idx:
         tin = int(filer[i])
         qi = int(q[i])
@@ -285,17 +336,6 @@ def _estimated_payments(W, r, tier_e, tot_e, role, ent, agi, wages, boundary_ret
         if rng.random() < 0.06:
             inst.remove(int(rng.integers(1, 5)))
         amount = {k: qi for k in inst}
-        if tin in r24.index and rng.random() < CFG["credit_p"]:
-            rr = r24.loc[tin]
-            c = int(round(qi * rng.uniform(*CFG["credit_scale"]) / 10.0) * 10)
-            post = pd.Timestamp(rr.processed_date) + pd.Timedelta(hours=1, minutes=int(rng.integers(5, 50)), seconds=int(rng.integers(0, 60)))
-            credits.append((int(rr.return_id), c, tin, post))
-            left = c
-            for k in (1, 2):
-                if k in amount and left > 0:
-                    take = min(left, amount[k])
-                    amount[k] -= take
-                    left -= take
         for k, a in amount.items():
             if a <= 0:
                 continue
@@ -317,116 +357,176 @@ def _estimated_payments(W, r, tier_e, tot_e, role, ent, agi, wages, boundary_ret
                 secs = int(rng.integers(19 * 3600, 24 * 3600 - 1))
             else:
                 secs = int(rng.integers(6 * 3600, 19 * 3600))
-            pay.append((tin, 2025, a, day + pd.Timedelta(seconds=secs), chn, k, False))
-    pay = pd.DataFrame(pay, columns=["tin", "tax_year", "amount", "local", "channel", "inst_intended", "misapplied"])
+            pay.append((tin, 2025, a, day + pd.Timedelta(seconds=secs), chn, int(tier[i])))
+    pay = pd.DataFrame(pay, columns=["tin", "tax_year", "amount", "local", "channel", "tier"])
     pay["inst"] = instalment_of_local(pay.local)
-    # payments keyed to tax year 2024 by mistake, moved to 2025 by transfer; an April payment's
-    # transfer posts in May or June, every other one inside its own instalment window
+    # overpayments credited from TY2024 returns: per tier, those posted by the April due date come
+    # to a set share of April's receipts and those posted later to a set share of June's
+    rc = stream("credits")
+    cand = [(int(i), int(filer[i]), int(tier[i])) for i in idx if int(filer[i]) in r24.index]
+    ckeys = rc.random(len(cand))
+    for t in (0, 1, 2, 3):
+        cell1 = pay.amount[(pay.tier == t) & (pay.inst == 1)].sum()
+        cell2 = pay.amount[(pay.tier == t) & (pay.inst == 2)].sum()
+        early, late = [], []
+        for (i, tin, tt_), kk in zip(cand, ckeys):
+            if tt_ != t:
+                continue
+            rr = r24.loc[tin]
+            pdt = pd.Timestamp(rr.processed_date)
+            c = int(round(q[i] * (0.6 + 1.1 * kk) / 10.0) * 10)
+            post = pdt + pd.Timedelta(hours=1, minutes=int(5 + 44 * ((kk * 13.7) % 1)), seconds=int(60 * ((kk * 31.3) % 1)))
+            (early if pdt <= pd.Timestamp("2025-04-15") else late).append((kk, int(rr.return_id), c, tin, post))
+        for lst, tgt in ((early, CFG["credit_early"] * cell1), (late, CFG["credit_late"] * cell2)):
+            lst.sort()
+            acc = 0
+            for kk, rid, c, tin, post in lst:
+                if acc >= tgt:
+                    break
+                credits.append((rid, c, tin, post))
+                acc += c
+    pay["misapplied"] = False
+    pay["ret_code"] = ""
+    pay["mis"] = False
+    pay["open"] = False
+    lead = (pay.local.dt.normalize() <= pay.inst.map(lambda k: due[k]) - pd.Timedelta(days=12)).to_numpy() | (pay.inst == 4).to_numpy()
+    keys = stream("es_keys").random(len(pay))
+    amt = pay.amount.to_numpy().astype(float)
+    chn = pay.channel.to_numpy()
+    used = np.zeros(len(pay), bool)
+    rep_pick = {}
+    for t in (0, 1, 2, 3):
+        for k in (1, 2, 3, 4):
+            cell = np.where((pay.tier == t).to_numpy() & (pay.inst == k).to_numpy())[0]
+            tot = amt[cell].sum()
+            # payments keyed to tax year 2024 by mistake, moved back by transfer
+            c = cell[lead[cell] & (chn[cell] != "ACH_CREDIT") & ~used[cell]]
+            s = c[_take_until(keys[c], amt[c], CFG["cell_misapplied"] * tot)]
+            pay.loc[s, "misapplied"] = True
+            pay.loc[s, "tax_year"] = 2024
+            used[s] = True
+            # returned items: early NSF items re-presented and paid; the rest not paid
+            c = cell[lead[cell] & (chn[cell] == "EPAY_ACH_DEBIT") & ~used[cell]]
+            s = c[_take_until((keys[c] * 3.7) % 1, amt[c], CFG["cell_repaid"] * tot)]
+            pay.loc[s, "ret_code"] = "R01"
+            for i in s:
+                rep_pick[int(i)] = "PAID"
+            used[s] = True
+            c = cell[(chn[cell] != "ACH_CREDIT") & ~used[cell]]
+            s = c[_take_until((keys[c] * 5.3) % 1, amt[c], CFG["cell_notpaid"] * tot)]
+            used[s] = True
+            rr = stream(f"ret_codes{t}{k}")
+            for i in s:
+                if chn[i] == "CARD":
+                    code = "CB"
+                else:
+                    code = rr.choice(["R01", "R02", "R03", "R08", "R16", "R29"], p=[0.5, 0.17, 0.11, 0.09, 0.05, 0.08])
+                pay.loc[i, "ret_code"] = code
+                if code == "R01" and lead[i] and rr.random() < 0.3:
+                    rep_pick[int(i)] = "RETURNED"
+            # TINs keyed wrong on the voucher or card form: resolved, and open cases
+            c = cell[~used[cell]]
+            s = c[_take_until((keys[c] * 7.9) % 1, amt[c], CFG["cell_mis_resolved"] * tot)]
+            pay.loc[s, "mis"] = True
+            used[s] = True
+            c = cell[~used[cell]]
+            s = c[_take_until((keys[c] * 9.1) % 1, amt[c], CFG["cell_mis_open"] * tot)]
+            pay.loc[s, "mis"] = True
+            pay.loc[s, "open"] = True
+            used[s] = True
+    # transfer postings: an April payment's transfer posts in May or June; every other one inside
+    # its own instalment window
     rm = stream("misapplied")
-    lead = (pay.local.dt.normalize() <= pay.inst.map(lambda k: due[k]) - pd.Timedelta(days=12)).to_numpy()
-    cand = np.where(lead & (pay.channel != "ACH_CREDIT").to_numpy())[0]
-    mis_i = cand[rm.random(len(cand)) < CFG["misapplied_p"] * len(pay) / max(len(cand), 1)]
-    pay.loc[mis_i, "misapplied"] = True
-    pay.loc[mis_i, "tax_year"] = 2024
     xfer_post = []
-    for i in mis_i:
+    for i in np.where(pay.misapplied.to_numpy())[0]:
         k = int(pay.inst[i])
         loc = pay.local[i]
         if k == 1:
             post = pd.Timestamp("2025-05-05") + pd.Timedelta(days=int(rm.integers(0, 38)))
+        elif k == 4:
+            post = loc.normalize() + pd.Timedelta(days=int(rm.integers(4, 40)))
+            post = min(post, pd.Timestamp("2026-01-28"))
         else:
-            hi = due[k] - pd.Timedelta(days=2)
             lo = loc.normalize() + pd.Timedelta(days=3)
-            span = max(1, (hi - lo).days)
-            post = lo + pd.Timedelta(days=int(rm.integers(0, span)))
+            hi = due[k] - pd.Timedelta(days=2)
+            post = lo + pd.Timedelta(days=int(rm.integers(0, max(1, (hi - lo).days))))
         post = post + pd.Timedelta(hours=1, minutes=int(rm.integers(5, 50)), seconds=int(rm.integers(0, 60)))
         xfer_post.append((int(i), post))
+    rd = stream("returned")
+    ret = []
+    for i in np.where(pay.ret_code.to_numpy() != "")[0]:
+        loc = pay.local[i]
+        k = int(pay.inst[i])
+        rdate = business_days_after(loc, int(rd.integers(2, 5)))
+        rep_date, rep_res = None, rep_pick.get(int(i))
+        if rep_res:
+            rep_date = business_days_after(rdate, int(rd.integers(1, 3)))
+            assert k == 4 or rep_date <= due[k], (k, loc, rep_date)
+        ret.append((int(i), pay.ret_code[i], rdate, rep_date, rep_res))
     # TY2024 fourth-instalment payments received in January 2025 (another tax year in the file)
     r2 = stream("es_ty2024")
     old = []
     for i in idx[r2.random(len(idx)) < 0.86]:
-        day = pd.Timestamp("2025-01-15") - pd.Timedelta(days=int(min(25, r2.gamma(1.3, 4.0))))
+        day = pd.Timestamp("2025-01-15") - pd.Timedelta(days=int(min(14, r2.gamma(1.3, 4.0))))
         if r2.random() < 0.05:
             day = day + pd.Timedelta(days=int(r2.integers(18, 40)))
         old.append((int(filer[i]), 2024, int(q[i] * r2.uniform(0.8, 1.15) // 10 * 10),
                     day + pd.Timedelta(seconds=int(r2.integers(6 * 3600, 23 * 3600))),
                     r2.choice(["EPAY_ACH_DEBIT", "CARD", "ACH_CREDIT"], p=[0.6, 0.2, 0.2])))
-    # returned items: ACH debits and card payments of TY2025; NSF items may be re-presented
-    rd = stream("returned")
-    elig = np.where((pay.channel != "ACH_CREDIT").to_numpy() & ~pay.misapplied.to_numpy())[0]
-    ret_i = elig[rd.random(len(elig)) < CFG["dishonour_p"]]
-    ret = []
-    for i in ret_i:
-        loc = pay.local[i]
-        code = rd.choice(["R01", "R02", "R03", "R08", "R16", "R29"], p=[0.62, 0.12, 0.08, 0.07, 0.04, 0.07])
-        if pay.channel[i] == "CARD":
-            code = "CB"
-        rdate = business_days_after(loc, int(rd.integers(2, 5)))
-        k = int(pay.inst[i])
-        early = k == 4 or loc.normalize() <= due[k] - pd.Timedelta(days=12)
-        rep_date, rep_res = None, None
-        if code == "R01" and early and rd.random() < CFG["represent_p"] / 0.62:
-            rep_date = business_days_after(rdate, int(rd.integers(1, 3)))
-            assert k == 4 or rep_date <= due[k]
-            rep_res = "PAID" if rd.random() < 0.86 else "RETURNED"
-        ret.append((int(i), code, rdate, rep_date, rep_res))
-    # ES misreports (TIN keyed wrong on the voucher or the card form)
-    rt = stream("typo_es")
-    mis = (rt.random(len(pay)) < CFG["mis_es"]) & ~pay.misapplied.to_numpy()
+    mis = pay.mis.to_numpy()
     pay["reported_tin"] = pay.tin.to_numpy()
-    pay.loc[mis, "reported_tin"] = typo(pay.tin.to_numpy()[mis], rt, taken)
-    pay["mis"] = mis
+    pay.loc[mis, "reported_tin"] = typo(pay.tin.to_numpy()[mis], stream("typo_es"), taken)
     return {"es_pay": pay, "es_credits": credits, "es_xfer": xfer_post, "es_old": old, "es_returned": ret}
 
 
 # ------------------------------------------------------------------ versions
 
-def _versions(r, has_schd, net, in_agi, status, agi):
+def _versions(r, tier, has_schd, net, in_agi, status, agi):
     """Every version of an amended return. The returns file carries the version of record (latest
-    accepted); the Schedule D extract carries the latest version received."""
+    accepted); the Schedule D extract carries the latest version received. Per tier, unaccepted
+    latest versions cut a set share of the tier's gain (D2) and accepted amendments raised it by a
+    set share over the originals."""
     rng = stream("versions")
     n = len(r)
-    big = has_schd & (net > CFG["big_gain"])
-    p = np.where(big, CFG["amend_big_p"], np.where(has_schd, CFG["amend_p"], 0.011))
-    amended = (rng.random(n) < p) & (agi > 0)
     pdate = pd.to_datetime(r.processed_date.to_numpy())
     rid = r.return_id.to_numpy()
     cap = np.where(status == 3, 1_500, 3_000)
-    vers = []        # return_id, seq, received, disposition, disp_date, agi, net, in_agi, has_schd
-    latest = {}      # return index -> (seq, received, net, in_agi)
-    for i in np.where(amended)[0]:
+    keys = stream("version_keys").random(n)
+    cut = rng.uniform(*CFG["unacc_cut"], n)
+    up = rng.uniform(*CFG["acc_up"], n)
+    unacc = np.zeros(n, bool)
+    acc = np.zeros(n, bool)
+    for t in (0, 1, 2, 3):
+        gsel = has_schd & (tier == t) & (net > 0)
+        G = float(in_agi[(tier == t) & has_schd].sum())
+        c = np.where(gsel)[0]
+        drop = np.round(net[c] * cut[c])
+        s = c[_take_until(keys[c], drop.astype(float), CFG["d2_target"][t] * G)]
+        unacc[s] = True
+        rise = np.round(net[c] - net[c] / (1 + up[c]))
+        s2 = c[_take_until((keys[c] * 4.7) % 1, rise.astype(float), CFG["acc_target"][t] * G)]
+        acc[s2] = True
+    # amendments to returns without a schedule (other items): texture
+    other = (~has_schd) & (agi > 0) & (rng.random(n) < CFG["amend_other"])
+    vers = []
+    latest = {}
+    for i in np.where(unacc | acc | other)[0]:
         rec_net, rec_in, rec_agi = int(net[i]), int(in_agi[i]), int(agi[i])
         sch = bool(has_schd[i])
-        u = rng.random()
-        unacc = u < CFG["unacc_share"]
-        acc_then = unacc and rng.random() < CFG["accepted_then_unacc"]
+        t0 = max(pdate[i] - pd.Timedelta(days=int(rng.integers(6, 30))), OPEN_SEASON)
         seqs = []
-        t0 = pdate[i] - pd.Timedelta(days=int(rng.integers(6, 30)))
-        if not unacc or acc_then:
-            # an accepted amendment is the version of record; the original differs from it
-            if sch and rec_net > 0:
-                up = rng.uniform(*CFG["acc_up"])
-                o_net = int(round(rec_net / (1 + up)))
-            elif sch:
-                o_net = int(round(rec_net * rng.uniform(0.55, 0.95)))
-            else:
-                o_net = 0
+        if acc[i] or (other[i] and rng.random() < 0.55):
+            o_net = int(round(rec_net / (1 + up[i]))) if sch else 0
             o_in = (max(o_net, -int(cap[i])) if o_net < 0 else o_net) if sch else 0
             d_other = 0 if sch else int(rng.integers(-9_000, 9_000))
             o_agi = rec_agi - (rec_in - o_in) - d_other
-            a1 = pdate[i] + pd.Timedelta(days=int(rng.integers(25, 200)))
-            a1 = min(a1, pd.Timestamp("2026-09-30"))
+            a1 = min(pdate[i] + pd.Timedelta(days=int(rng.integers(25, 200))), pd.Timestamp("2026-08-15"))
             seqs.append((0, t0, "ACCEPTED", pdate[i], o_agi, o_net, o_in))
             seqs.append((1, a1, "ACCEPTED", a1 + pd.Timedelta(days=int(rng.integers(12, 60))), rec_agi, rec_net, rec_in))
         else:
             seqs.append((0, t0, "ACCEPTED", pdate[i], rec_agi, rec_net, rec_in))
-        if unacc:
-            if sch and rec_net > 0:
-                c_net = int(round(rec_net * (1 - rng.uniform(*CFG["unacc_cut"]))))
-            elif sch:
-                c_net = int(round(rec_net * rng.uniform(1.4, 3.0)))
-            else:
-                c_net = 0
+        if unacc[i] or (other[i] and len(seqs) == 1):
+            c_net = int(round(rec_net * (1 - cut[i]))) if sch else 0
             c_in = (max(c_net, -int(cap[i])) if c_net < 0 else c_net) if sch else 0
             d_other = 0 if sch else int(rng.integers(-12_000, 2_000))
             c_agi = rec_agi - (rec_in - c_in) + d_other
@@ -434,25 +534,23 @@ def _versions(r, has_schd, net, in_agi, status, agi):
             recv = max(last, pdate[i]) + pd.Timedelta(days=int(rng.integers(20, 160)))
             if recv > pd.Timestamp("2026-10-19"):
                 recv = pd.Timestamp("2026-10-19") - pd.Timedelta(days=int(rng.integers(0, 30)))
+            if recv <= last:
+                recv = last + pd.Timedelta(days=5)
             pending = recv > pd.Timestamp("2026-08-20") or rng.random() < 0.3
             if pending:
                 disp, ddate = "PENDING", None
-                if recv <= last:
-                    recv = last + pd.Timedelta(days=5)
             else:
-                disp, ddate = "REJECTED", recv + pd.Timedelta(days=int(rng.integers(14, 70)))
-                if ddate > EXTRACT - pd.Timedelta(days=1):
-                    ddate = EXTRACT - pd.Timedelta(days=2)
+                disp, ddate = "REJECTED", min(recv + pd.Timedelta(days=int(rng.integers(14, 70))), EXTRACT - pd.Timedelta(days=2))
             seqs.append((len(seqs), recv, disp, ddate, c_agi, c_net, c_in))
         for s in seqs:
             vers.append((int(rid[i]), s[0], s[1], s[2], s[3], s[4], s[5], s[6], sch))
         latest[int(i)] = seqs[-1]
     log = pd.DataFrame(vers, columns=["return_id", "amendment_seq", "received_date", "disposition", "disposition_date",
                                       "federal_agi", "net_gain_loss", "amount_in_agi", "has_schd"])
-    # the Schedule D extract: every return with a schedule, its latest version received
     sidx = np.where(has_schd)[0]
     seq = np.zeros(len(sidx), np.int64)
     rcv = (pdate[sidx] - pd.to_timedelta(stream("schd_rcv").integers(6, 30, len(sidx)), unit="D")).to_numpy().copy()
+    rcv = np.maximum(rcv, np.datetime64(OPEN_SEASON))
     xn = net[sidx].copy()
     xi = in_agi[sidx].copy()
     for j, i in enumerate(sidx):
@@ -461,7 +559,7 @@ def _versions(r, has_schd, net, in_agi, status, agi):
             seq[j], rcv[j], xn[j], xi[j] = s[0], np.datetime64(s[1]), s[5], s[6]
     ext = pd.DataFrame({"return_id": rid[sidx], "amendment_seq": seq, "received_date": rcv,
                         "net_gain_loss": xn, "amount_in_agi": xi})
-    return {"versions": log, "schd_extract": ext, "amended": amended}
+    return {"versions": log, "schd_extract": ext, "amended": unacc | acc | other}
 
 
 def _register(A):
@@ -471,16 +569,18 @@ def _register(A):
     w2 = A["w2"]
     pay = A["es_pay"]
     rows = []
-    for rep, true in zip(w2.reported_tin[w2.mis].to_numpy(), w2.true_tin[w2.mis].to_numpy()):
-        rows.append((int(rep), int(true), "W2"))
-    for rep, true in zip(pay.reported_tin[pay.mis].to_numpy(), pay.tin[pay.mis].to_numpy()):
-        rows.append((int(rep), int(true), "ES"))
-    reg = pd.DataFrame(rows, columns=["reported_tin", "true_tin", "source"]).drop_duplicates("reported_tin")
-    resolved = rng.random(len(reg)) < CFG["resolve_p"]
+    for rep, true, op in zip(w2.reported_tin[w2.mis].to_numpy(), w2.true_tin[w2.mis].to_numpy(), w2.open[w2.mis].to_numpy()):
+        rows.append((int(rep), int(true), "W2", bool(op)))
+    for rep, true, op in zip(pay.reported_tin[pay.mis].to_numpy(), pay.tin[pay.mis].to_numpy(), pay.open[pay.mis].to_numpy()):
+        rows.append((int(rep), int(true), "ES", bool(op)))
+    reg = pd.DataFrame(rows, columns=["reported_tin", "true_tin", "source", "open"]).drop_duplicates("reported_tin")
+    resolved = ~reg.open.to_numpy()
     reg["status"] = np.where(resolved, "RESOLVED", "OPEN")
     reg["resolved_tin"] = np.where(resolved, reg.true_tin, 0)
-    opened = np.where(reg.source == "W2", pd.Timestamp("2026-03-02").value, pd.Timestamp("2025-05-12").value)
-    opened = pd.to_datetime(opened) + pd.to_timedelta(rng.integers(0, 150, len(reg)), unit="D")
+    first_pay = pay[pay.mis].groupby("reported_tin").local.min().dt.normalize()
+    base = np.where(reg.source == "W2", pd.Timestamp("2026-02-16").value,
+                    first_pay.reindex(reg.reported_tin).fillna(pd.Timestamp("2025-04-01")).astype("int64").to_numpy())
+    opened = pd.to_datetime(base) + pd.to_timedelta(np.where(reg.source == "W2", rng.integers(0, 70, len(reg)), rng.integers(9, 45, len(reg))), unit="D")
     reg["opened_date"] = opened
     reg["closed_date"] = np.where(resolved, opened + pd.to_timedelta(rng.integers(8, 120, len(reg)), unit="D"), pd.NaT)
     reg["closed_date"] = pd.to_datetime(reg["closed_date"])
@@ -519,6 +619,8 @@ def _deposits(A):
                 rec = pe + pd.Timedelta(days=int(rng.integers(8, 16)))
             else:
                 rec = pe + pd.Timedelta(days=int(rng.integers(20, 31)))
+            while rec.weekday() >= 5:
+                rec = rec + pd.Timedelta(days=1)
             if rec.year != 2025:
                 continue
             dep_id += int(rng.integers(1, 6))

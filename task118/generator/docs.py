@@ -71,7 +71,7 @@ def write_pdf(path, title, blocks, footer, when, author="Bightline News", subjec
 
     doc = SimpleDocTemplate(str(path), pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
                             bottomMargin=18 * mm, title=title, author=author, subject=subject or title,
-                            creator=author, producer=author, keywords="", invariant=1)
+                            creator="Bightline News", producer="Bightline News", keywords="", invariant=1)
     doc.build(flow, onFirstPage=on_page, onLaterPages=on_page)
     # invariant mode stamps 2000-01-01; give the file its own date, at equal length so the xref holds
     b = open(path, "rb").read()
@@ -269,7 +269,7 @@ def policy_blocks():
               "The note appears at the foot of the article. Where a second error is found later, a further note is "
               "added above the first."),
         ("h", "7.4 Headlines"),
-        ("p", "A headline correction is logged on the revision that changes the headline."),
+        ("p", "A headline correction is logged on the revision that publishes the corrected headline."),
         ("h", "7.5 Live blogs"),
         ("p", "An error in a live blog entry is fixed in the entry and the correction note is added to the live blog."),
         ("h", "7.6 Speed"),
@@ -290,24 +290,29 @@ File: cms_revisions_web_desks_2025-10_2026-09.csv
 Prepared by Audience data at the request of Standards, 16 October 2026
 
 Scope
-One row per saved revision of each document first saved between 1 October 2025 and 30 September 2026
-(AEST) by the web desks: Politics·national, Business·national, Sport·national,
-Culture·national, Politics·metro, Sport·metro and Local·metro. The national and Brisbane
-CMS instances are combined. Saves after 30 September 2026 are not included.
+One row per saved revision of each web-desk document that first went live between 1 October 2025 and
+30 September 2026 (AEST), and of documents first saved in that period that never went live. Web desks:
+Politics·national, Business·national, Sport·national, Culture·national, Politics·metro,
+Sport·metro and Local·metro. The national and Brisbane CMS instances are combined. Saves after
+30 September 2026 are not included.
 
 Fields
 doc_id             CMS document id.
 desk_code          Owning desk (desk register codes).
-doc_type           story, liveblog or post. A post is an entry in the live blog named in parent_doc.
+doc_type           story, liveblog or post. A post is an entry in the live blog named in parent_doc,
+                   with a headline of its own.
 parent_doc         For posts, the doc_id of the live blog.
 revision           Revision number within the document, from 1.
 saved_at           Time of the save, UTC, to the minute.
-status             draft, scheduled, live or withdrawn.
+status             Status recorded with the save: draft, scheduled, live or withdrawn.
+publish_at         On a scheduled revision, the time set for the CMS to publish the document, UTC.
 headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
 correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
                    note to every later revision until an editor clears it.
 restored_from_doc  Set on documents recreated when the Brisbane instance was restored on 14 November 2025;
                    holds the doc_id of the document it was recreated from.
+migrated_from      Set on documents moved from the previous CMS at the migration on 1 October 2025; holds the
+                   previous system's document id.
 
 Headline and body text are not part of this export.
 """
@@ -335,7 +340,7 @@ def bulletin_paras(h, b):
 def agreement_blocks():
     return [
         ("title", "Content syndication agreement"),
-        ("meta", "Bightline News Pty Ltd (ABN 47 618 204 395) and Newsfold Pty Ltd (ABN 83 641 772 018)"),
+        ("meta", "Between Bightline News Pty Ltd (Bightline) and Newsfold Pty Ltd (Newsfold)"),
         ("meta", "Dated 1 July 2024 | Variation 1, 1 July 2025"),
         ("space", 3),
         ("h", "1. Definitions"),
@@ -391,7 +396,8 @@ Content-Transfer-Encoding: 8bit
     body = """Thanks all. Natalie, that folder is what I'll work from. I'll take one recommendation to the 4 November
 meeting with a number against it. Lisa's office is bringing the dashboard view as usual.
 
-Corey
+Corey Cox
+Managing editor
 
 On Thu, 15 Oct 2026 at 16:05, Natalie Benjamin <natalie.benjamin@bightline.com.au> wrote:
 > Exports are in the 2027 planning folder: pageviews by source and age band for October to September,

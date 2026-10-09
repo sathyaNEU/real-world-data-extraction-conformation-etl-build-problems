@@ -1,0 +1,52 @@
+{
+  "task": "task120",
+  "title": "TY2025 household-income tier floors for the Revenue Estimating Conference",
+  "domain": "Economics",
+  "subdomain": "public-finance",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "14 (cuts of a distribution)",
+  "deliverables": [
+    "tier_schedule.xlsx",
+    "tier_floors.png"
+  ],
+  "as_of": "2026-11-09",
+  "distractor_files": [
+    "returns_processed_by_agi_class_ty2025.xlsx",
+    "withholding_deposits_2025.csv"
+  ],
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "synthetic: constructed by task120/generator/build.py (seed 120) for a fictional US state; return microdata is confidential, so the shape is calibrated to public IRS Statistics of Income state AGI-class aggregates and no real record is used",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (author-generated)"
+    }
+  ],
+  "files": {
+    "amended_returns_log_ty2025.csv": 57896,
+    "dependents_schedule_ty2022.parquet": 471238,
+    "dependents_schedule_ty2023.parquet": 473630,
+    "dependents_schedule_ty2024.parquet": 473072,
+    "dependents_schedule_ty2025.parquet": 466638,
+    "employer_reconciliations_ty2025.xlsx": "",
+    "estimated_payments_ledger_2025.parquet": 344144,
+    "household_income_tables_ty2022.xlsx": "",
+    "household_income_tables_ty2023.xlsx": "",
+    "household_income_tables_ty2024.xlsx": "",
+    "income_tax_tier_methodology.pdf": "",
+    "intake_log.csv": 24,
+    "re_ty2025_tier_rebase.txt": 66,
+    "research_extract_record_layouts.txt": 132,
+    "returned_items_2025.csv": 11148,
+    "returns_processed_by_agi_class_ty2025.xlsx": "",
+    "returns_processed_ty2022.parquet": 817929,
+    "returns_processed_ty2023.parquet": 830396,
+    "returns_processed_ty2024.parquet": 842445,
+    "returns_processed_ty2025.parquet": 852947,
+    "schedule_d_extract_ty2025.csv": 159450,
+    "tin_match_cases.csv": 25771,
+    "w2_paper_keyed_ty2025.txt": 73102,
+    "wage_statements_efile_ty2025.parquet": 1083466,
+    "withholding_deposits_2025.csv": 84696
+  }
+}

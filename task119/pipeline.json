@@ -3,9 +3,9 @@
   "domain": "policy-education",
   "objective": "anomaly-detection",
   "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-08",
-  "stump": "A competent solver rebuilds the funnel on the remit's non-elective adult medical spells, removes the palliative and hospice-unit spells, runs a risk-adjusted CUSUM over the latest twelve months, back-tests it at 23 of the 34 closed rapid reviews, treats the misses as review noise and sends the engagement to the trust running the weekend stroke diversion (C); the step that lands it there is crediting every death to the trust of the patient's last spell, the indicator's own convention and the episode file's grain, so it never self-joins spells across trusts on the patient key and never sees that the deaths the late-transferring district general hospital (E) exports to four receivers belong to the chains it begins.",
+  "stage_name": "draw (re-root)",
+  "updated": "2026-10-09",
+  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those waits D's own care and D's deaths after them the largest number the review can confirm.",
   "harden_loops": 0,
   "solver_rounds": [],
   "judge": {

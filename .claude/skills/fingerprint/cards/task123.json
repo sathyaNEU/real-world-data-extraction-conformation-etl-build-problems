@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Strike the September 2026 Steady Ground offers at 27.47 cents per dollar of fall: 14 offers totalling $819,939 of the $820,000 pot.",
+  "answer_source": "task123/submission.md, block 1 (Final Recommendation), 2026-10-09",
   "gap": [
     "time",
     "rule",
@@ -33,11 +33,11 @@
   "role_family": "programme_officer",
   "scoring_unit": "per boarded entity",
   "spine": {
-    "file": "portal_return_lines_2020q3_2026q3.csv",
-    "rows": 140000,
+    "file": "portal_return_lines_2018q3_2026q2.csv",
+    "rows": 83450,
     "entity": "one reported income figure on one version of one grantee's quarterly financial return (a year-to-date or prior-year comparative column on one income line)",
     "grain": "grantee x return quarter x version x income line x column",
-    "source": "synthetic (constructed pack: a fictional New Zealand trust's grants-portal export and register extract, provenance declared in the pack; row count planned, set when the pack is cut)"
+    "source": "synthetic (constructed pack: a fictional New Zealand trust's grants-portal export and register extract, provenance declared in the pack)"
   },
   "forum": "trustees_or_governors",
   "forcing_event": "budget_or_appropriation",
@@ -52,7 +52,7 @@
       "Ledgerwood Analytics"
     ],
     "people": [
-      "Rebecca Anderson",
+      "Marie Griffin",
       "Liam Bryant",
       "Andrew Knox",
       "Wiremu Roberts",

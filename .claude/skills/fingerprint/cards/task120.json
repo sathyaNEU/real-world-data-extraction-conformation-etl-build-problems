@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "dial_setting",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Adopt TY2025 tier floors of $214,000, $318,000 and $742,000 for the top 10, 5 and 1 per cent of full-year resident household units.",
+  "answer_source": "task120/submission.md, 1. Final Recommendation",
   "gap": [
     "population",
     "objective"
@@ -32,8 +32,8 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "returns_processed_ty2025.csv",
-    "rows": 3412000,
+    "file": "returns_processed_ty2025.parquet",
+    "rows": 852947,
     "entity": "one processed state individual income tax return for tax year 2025, with its residency code, filing status and federal primary filer TIN",
     "grain": "return",
     "source": "synthetic (a fictional state's processed-return extract; return microdata is confidential, so the shape is calibrated to public IRS SOI state AGI-class aggregates)"
@@ -64,7 +64,7 @@
   ],
   "opening_move": "evidence-first",
   "driver": "The unit the percentile cuts are drawn on is a group of records that no file stores, formed by two links, one carried on every member as a shared key and one carried only on the claiming record's roster of the people it claims, so attaching a claimed person's own record is a two-hop join that nothing on that record invites; grouping on the visible key alone reproduces most cells of a published control table with every miss one-sided in one band, only the full grouping reproduces all of them, and it both shrinks the unit count and carries near-threshold units past the top cut, raising every floor.",
-  "driver_concrete": "A household unit is a federal filing unit (separately filed state returns recombined through the federal primary TIN) together with the own returns of the people its dependents schedule claims, and nothing on a dependent's return names the claimant; federal filing units reproduce 58 of the 69 published Household Income Table cells with every miss short in the $500,000 to $1M class, only households reproduce all 69, and attaching the 380,000 dependents' returns cuts 2,708,000 units to 2,328,000 and carries 3,900 households past the top-1% mark on their children's trust and investment income, so the TY2025 floors rise from $197,000 / $293,000 / $594,000 to $214,000 / $318,000 / $742,000.",
+  "driver_concrete": "A household unit is a federal filing unit (separately filed state returns recombined through the federal primary TIN) together with the own returns of the people its dependents schedule claims, and nothing on a dependent's return names the claimant; federal filing units reproduce 58 of the 69 published Household Income Table cells with every miss short in the $500,000 to $1M class and five county cells, only households reproduce all 69, and attaching the 94,807 dependents' returns cuts 677,351 units to 582,544 and carries 976 households past the top-1% mark on their children's trust and investment income, so the TY2025 floors rise from $197,000 / $293,000 / $594,000 to $214,000 / $318,000 / $742,000.",
   "stump": "A competent solver filters to full-year residents, recombines separately filed state returns into federal filing units through the federal primary TIN (the textbook tax unit), sees that construction reproduce 58 of the 69 published cells with every miss a few per cent short in one class, and files the schedule $197,000 / $293,000 / $594,000 against $214,000 / $318,000 / $742,000, because the dependents' own returns join their claimants only through the claimant's dependents schedule, a link no column on the dependent's return invites.",
   "mechanism_source": "design_note",
   "differentiation": {

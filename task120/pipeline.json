@@ -2,8 +2,8 @@
   "task": "task120",
   "domain": "economics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "built",
   "updated": "2026-10-09",
   "stump": "A competent solver filters to full-year residents, recombines separately filed state returns into federal filing units through the federal primary TIN (the textbook tax unit), sees that construction reproduce 58 of the 69 published cells with every miss a few per cent short in one class, and files the schedule $197,000 / $293,000 / $594,000 against $214,000 / $318,000 / $742,000, because the dependents' own returns join their claimants only through the claimant's dependents schedule, a link no column on the dependent's return invites.",
   "harden_loops": 0,
@@ -13,7 +13,7 @@
     "disposition": "",
     "report": ""
   },
-  "approved": null,
+  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/03_descriptive_distribution/DA01_revenue-tiers-household-unit-dependent-returns.md"

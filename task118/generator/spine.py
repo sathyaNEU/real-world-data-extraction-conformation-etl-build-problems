@@ -104,6 +104,9 @@ def build_articles(desk):
     elif desk == P.OPEN_EMBEDDING["desk"]:
         n_tests = P.OPEN_EMBEDDING["n"]
         elig = np.array([(dt.date(2026, 1, 5) <= d <= dt.date(2026, 9, 25)) for d in A.date])
+    elif desk == "WEL-A":
+        n_tests = P.EMB7_IN_WINDOW
+        elig = np.array([(dt.date(2025, 10, 2) <= d <= dt.date(2025, 12, 11)) for d in A.date])
     else:
         n_tests = 0
         elig = np.zeros(n, bool)
@@ -135,14 +138,14 @@ def build_articles(desk):
 def scale_tested(A, rng):
     """Scale tested articles so they carry the desk's target share of in-window clicks, month by month."""
     desk = A.desk
-    if desk == P.OPEN_EMBEDDING["desk"]:
-        A.w[A.tested] *= 4.0          # the squad tests the day's lead puzzle
+    if desk in P.APP:
+        A.w[A.tested] *= 4.0          # the squad tests the day's lead item
         return
     if desk not in P.WEB:
         return
     A.w[A.tested] = A.w[A.tested] ** 0.5
     s_old = P.OLD_CLICK_SHARE[desk]
-    a_in = P.A_TESTED[desk] / (1 - s_old)
+    a_in = shares(desk)[3] / (1 - s_old)
     for m in range(12):
         sel = A.month == m
         T = sel & A.tested
@@ -156,13 +159,24 @@ def scale_tested(A, rng):
     A.w[A.tested] *= g
 
 
+def shares(desk):
+    """The desk's class and tested shares, each moved a few tenths of a point off its round design value."""
+    r = rng_for(150, list(P.DESK).index(desk)).uniform(-1, 1, size=5)
+    f = P.F_PLAT[desk] + 0.0035 * r[0]
+    q = P.Q_PART[desk] + (0.0035 * r[1] if P.Q_PART[desk] > 0 else 0.0)
+    t = P.T_TESTED[desk] + (0.0030 * abs(r[2]) if desk == "CUL-N" else 0.0035 * r[2])
+    a = P.A_TESTED[desk] + 0.0030 * r[3]
+    qt = P.QT_TESTED[desk] + (0.0030 * r[4] if P.QT_TESTED[desk] > 0 else 0.0)
+    return f, q, t, a, qt
+
+
 def class_targets(desk):
     """Platform / partner / other shares for the tested group, the untested in-window group and old articles."""
     old_mix = np.array([0.05, 0.10 if P.Q_PART.get(desk, 0) > 0 else 0.0, 0.0])
     old_mix[2] = 1 - old_mix[0] - old_mix[1]
     if desk in P.APP:
         return {"T": np.array([1.0, 0, 0]), "U": np.array([1.0, 0, 0])}, np.array([1.0, 0, 0])
-    f, q, t, a, qt = P.F_PLAT[desk], P.Q_PART[desk], P.T_TESTED[desk], P.A_TESTED[desk], P.QT_TESTED[desk]
+    f, q, t, a, qt = shares(desk)
     s = P.OLD_CLICK_SHARE[desk]
     ft = t * f / a
     ot = 1 - ft - qt
@@ -191,7 +205,8 @@ def build_mixes(A, rng):
     groups = np.where(A.tested, "T", "U")
     base = np.vstack([tg[g] for g in groups])
     S = dirichlet_rows(rng, 30 * base)
-    S = ipf_rows(S, A.w, groups, tg)
+    monthly = np.array(["%s%02d" % (g, m) for g, m in zip(groups, A.month)])
+    S = ipf_rows(S, A.w, monthly, {k: tg[k[0]] for k in set(monthly)})
     inst = P.DESK[desk][5] or "app"
     plat = dirichlet_rows(rng, np.tile(40 * np.array(P.PLAT_SPLIT[inst]), (n, 1)))
     if desk in P.APP:

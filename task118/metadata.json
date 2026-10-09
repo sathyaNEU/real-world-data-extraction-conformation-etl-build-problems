@@ -1,0 +1,203 @@
+{
+ "task": "task118",
+ "domain": "Marketing & Consumer Research",
+ "subdomain": "media-audience-measurement",
+ "objective": "Opportunity Sizing & Decision Support",
+ "as_of": "2026-10-19",
+ "deliverables": [
+  "squad_placement_2027.docx",
+  "squad_placement_2027.xlsx"
+ ],
+ "distractor_files": [
+  "newsfold_syndication_agreement.pdf",
+  "newsletter_performance_2026-07_2026-09.csv"
+ ],
+ "input_gates": {
+  "files": 19,
+  "formats": [
+   "csv",
+   "docx",
+   "eml",
+   "md",
+   "parquet",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file_rows": 2324291,
+  "largest_file": "pageviews_by_source_age_2025-10_2026-09.parquet"
+ },
+ "files": [
+  {
+   "path": "pageviews_by_source_age_2025-10_2026-09.parquet",
+   "format": "parquet",
+   "bytes": 5432241,
+   "rows": 2324291,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "headline_tests_archive_2019-2026.csv",
+   "format": "csv",
+   "bytes": 1556099,
+   "rows": 14131,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "newsroom_staff_list_2026-10-12.xlsx",
+   "format": "xlsx",
+   "bytes": 16431,
+   "rows": 207,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "audience_plan_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 7015,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "headline_squad_change_log.xlsx",
+   "format": "xlsx",
+   "bytes": 7053,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "audience_warehouse_field_reference.md",
+   "format": "md",
+   "bytes": 3805,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "headline_squad_2027_placement_brief.pdf",
+   "format": "pdf",
+   "bytes": 3682,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "desk_register.csv",
+   "format": "csv",
+   "bytes": 579,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "experimentation_dashboard_export_2026-10-01.csv",
+   "format": "csv",
+   "bytes": 489,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cms_revisions_web_desks_2025-10_2026-09.csv",
+   "format": "csv",
+   "bytes": 19098230,
+   "rows": 266549,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cms_revisions_export_fields.txt",
+   "format": "txt",
+   "bytes": 1878,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "editorial_standards_s7_corrections.pdf",
+   "format": "pdf",
+   "bytes": 2827,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "panel_monthly_audience_2025-10_2026-09.csv",
+   "format": "csv",
+   "bytes": 6754,
+   "rows": 171,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "panel_reference_workbook.xlsx",
+   "format": "xlsx",
+   "bytes": 8910,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "standards_bulletin_2026-04.docx",
+   "format": "docx",
+   "bytes": 37012,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "squad_placement_thread.eml",
+   "format": "eml",
+   "bytes": 2557,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "newsfold_syndication_agreement.pdf",
+   "format": "pdf",
+   "bytes": 3252,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "newsletter_performance_2026-07_2026-09.csv",
+   "format": "csv",
+   "bytes": 5122,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "audience_data_export_log.csv",
+   "format": "csv",
+   "bytes": 2884,
+   "rows": null,
+   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (original work)"
+  }
+ ]
+}

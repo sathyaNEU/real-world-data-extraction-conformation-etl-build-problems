@@ -8,7 +8,7 @@ from the note is listed in `## Changes from the source note`.
 
 ```
 DRAW  (independent draws, checked with ../fingerprint/guard.py)
-  Card filed: pending registration (scratchpad cards/task122.json, drawn 2026-10-09; the author registers approved redraws in draw order)
+  Card filed: yes, registered 2026-10-09 after checkpoint A (go on the redraw) (scratchpad cards/task122.json, drawn 2026-10-09; the author registers approved redraws in draw order)
   Verdict: PASS on the filed corpus; WARN with no BLOCK in batch order, behind task119 and task121
   Shape: 07, grid of cells   Gate G mechanism: decomposition_attribution
   Gap: time (decisive), then rule, then population   Pattern: none at the decisive rung (G9), B for the estimator the archive pins

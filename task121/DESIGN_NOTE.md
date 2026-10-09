@@ -4,7 +4,7 @@ Source note: `analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-
 
 ```
 DRAW  (independent draws, checked with ../fingerprint/guard.py)
-  Card filed: pending registration (the coordinator registers approved redraws in draw order)   Verdict: WARN
+  Card filed: yes, registered 2026-10-09 after checkpoint A (go on the redraw) (the coordinator registers approved redraws in draw order)   Verdict: WARN
   Shape: 18 hypotheses versus evidence   Gate G mechanism: decomposition_attribution
   Gap: population (decisive), then time   Pattern: none of A to E carries the decisive rung (G3 decisive); A behind it for the demoted self-healing rung
   Domain: Product Analytics   Subdomain (enumerated): onboarding-activation (the checkout funnel)   Objective: Root-Cause Analysis

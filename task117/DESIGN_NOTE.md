@@ -35,15 +35,15 @@ Similarity claim: no prior build is this puzzle, because none commits a forward 
 
 ## Stump sentence
 
-A competent solver rebuilds the tariff's on-peak billing maximum from the interval readings, replays every closed session on the new pedestals at 11.5 kW until its delivered energy (a model that reproduces all 36 closed on-peak maxima to the kWh), scales by the filed 1.12 growth factor and files 115 kW (116 unrounded); the step that lands it there is never asking whether each car can take 11.5 kW, which only the join from session to permit to registered model to the state list's onboard charger rating answers, putting 78 per cent of the decks' cars at 7.2 to 7.7 kW and stretching their sessions past noon into the billed window, for a contracted demand of 150 kW.
+Restated at harden loop 1 (2026-10-09). The stage-1 stump (115 kW from the rated replay, 150 kW per car) died in round 1 and its record is in `## Tried and rejected`.
+
+A competent solver rebuilds the tariff's billing maximum from the interval readings, replays every 2026 deck session on the new units at the smaller of 11.5 kW and its car's onboard charger rating (a model that reproduces every closed reading at 6.6 kW), takes each session's car from the permit's vehicle check in force on the session date, grows by the filed 1.12 and files 150 kW (148.5 unrounded, set in February); the step that lands it there is reading the car as of the session rather than as of the contract year: at the January 2027 renewal 18 Larch County Fleet Services permits moved from 2020 Bolt EVs at 7.2 kW to 2023 Bolt EVs at 11.0 kW, which finish before noon on the new units, so the contracted demand is 130 kW, set in December by the cars that were not renewed.
 
 ## Decisive rung
 
-Measured trap #13, validates on one population, applies to another (`.claude/skills/stumping/references/traps/_measured.md`): established, decided 3 of the 64 measured client tasks, 2 of them under 0.50 (Capital Grant Drawdown Forecasting 0.34, CDFI Award Compliance 0.39, the operator-weighted non-conformance claim 0.62). Here the session model (a session draws the pedestal rating until its energy is delivered, then nothing) fits every closed session it can be checked on, all 36 closed on-peak maxima at the decks to the kWh, and a solver applies it to forward sessions that differ on one axis: which limit binds. The difference is evidenced in the pack and stated nowhere: the Library pedestal (11.5 kW, used only by enforcement vans whose chargers stop at 11.0 kW) and the state list's charger ratings behind the permit registry.
+Measured trap #5, takes the population a flag or filter suggests (`.claude/skills/stumping/references/traps/_measured.md`): established, decided 5 of the 64 measured client tasks, 3 of them under 0.50; its recipe is to apply the rule as of the governing date, the date that defines which records belong to the window being decided. Here the population is the set of cars that will charge on the new service, the governing date is the contract year (the permits as renewed in January 2027), and the filter a solver applies is the session date, the natural as-of join for a historical replay, which agrees with the governing date for 55 of 73 permits and not for the 18 renewed ones, whose sessions carry the February peak. The renewal is evidenced record by record (each renewal check row names the new plate, VIN and model year) and the governing register is filed once (the data-sources note: each permit names one vehicle, checked at issue and at every January renewal).
 
-The corpus law it rests on is L1 of `proven-in-production.md`, and its sentence can be written: in every closed session at the decks the car's onboard limit did not bind, because every closed pedestal was rated 6.6 kW and every registered vehicle accepts at least 7.2 kW. Below it, per the note: #7 uses the ready-made measure (rung 0) and #14 coarsens the segment (rung 1).
-
-Part 6.1 checks against `proven-in-production.md`. Nothing in this draw is on the What-is-dead list: the committed figure is not the output of a filed formula (only the 1.12 growth factor is filed), the decisive rule is a per-car limit behind a join rather than one scannable parameter, the corpus is built blind rather than to refute the naive read, the graded quantity is what the city commits next rather than what the utility will invoice, and no status word gates anything. The discriminators are buildable in this world: L1's sentence above; S8's conditioning property sits on the state list three joins from the session, on no column the ledger carries; O1's twin pair is the North and South decks, identical on every ledger-visible column and about 2x apart once replayed per car (99.6 against 50.8 kW in the note); O3's free training instance is the Library pedestal; L3's priced partial is the fleet-average limit, which lands at 110 kW, further off than the rung it corrects.
+Trap #13 (validates on one population, applies to another) stays as the frame and as rung 4's own trap: the per-car replay with each session's own car reproduces every 2026 reading, and its forward population differs on one axis, which cars hold the permits. Below them: #7 uses the ready-made measure (rung 0), the rated replay and the Library vans' measured draw (rungs 2 and 3), and the per-car onboard limit, which round 1 showed is executed as a work order once the solver is replaying a charger swap (rung 4, now a stop rather than the answer).
 
 ## Nearest exemplars
 
@@ -425,6 +425,247 @@ Pack:
 
 About 19 files in six formats; the dataset stage may merge the two notes or fold the social layer into the agreement's cover email to sit nearer the median.
 
+## Build record (stage 3, 2026-10-09)
+
+Rebuild from the repo root with `python3 task117/generator/build_pack.py --out task117/target --meta task117/metadata.json` (seed 1172027 in `pipeline.py`) and verify with `python3 task117/generator/verify_pack.py task117/target --meta task117/metadata.json`. Generator modules: `common.py` (clock, tariff calendar, quarter-hour load arithmetic), `world.py` (garages, unit identifiers and their history, vehicles, permits, checks, fleet, reference list), `sessions.py` (background days, the twelve binding days, the rung-2 day, the 24 back-test days, the Library unit, the public garages), `ledger.py` (identifiers, versions, deliveries, re-deliveries, the gateway B split, readings), `meters.py` (roof lighting, panel energy, read times, the electricians' log), `analysis.py` and `checks.py` (goldens and assertions), `documents.py`, `writers.py`, `build_pack.py`. `verify_pack.py` shares no code with them.
+
+### Gates
+
+- **Generator green:** 180 named assertions (main call and ladder 34, corpus and twins 24, back-test 69, panel audit 23, separation and Gate G tests 8, register referee 3, pack gates 14, container scrub 5), all passing.
+- **Independent verifier green:** 33 checks, 0 failures. It reads only `target/` (and `metadata.json` for the gates), parses the billing window, the holiday dates, the factor table, the accuracy clause, the diversity table and Exhibit A's 11.5 kW out of the documents, rebuilds every car through permit, check and reference rows, replays on its own quarter-hour code, and recomputes the answer, the split, the twelve months, rungs 0 to 3 and their kill facts, the rival cells, the five-rule family, the Library unit, the session model, the twins, every 2026 maximum-demand register, all 24 back-test figures and all 24 panel figures. The two distractors are outside its read list.
+- **Byte-identical:** two consecutive scratch builds agree on all 23 outputs by sha256 (21 pack files, `metadata.json`, the build record), and the task-folder build matches them on its 22 (the pack and `metadata.json`); a third build after the last code edit matched again.
+- **Input gates:** 21 files in six formats (csv, parquet, xlsx, pdf, docx, txt); the spine holds 1,568,086 rows; two distractors named in `metadata.json`; the word appears nowhere under `target/`.
+- **metadata.json clean:** domain, subdomain, objective, as-of date, deliverables, the two distractors, source, licence and file list; no answer figure (asserted).
+- **Containers:** the house scrub audit is clean on `target/` (no writer name, no timestamp outside 2023-01-01 to 2027-01-25); OOXML entries carry fixed in-fiction timestamps; the Parquet footer carries no pandas schema.
+- **leak.py** (as-of 2027-01-25): REVIEW, six lines, all sweep 4. Each is ordinary vocabulary of an EV charging service overlapping the stump paragraph (charging, vehicle, rating, session, monthly, measured, decision, closed, utility); none names the move, and the generator's signpost grep (G06) is green. Sweeps 1 to 3 and 5 to 11 clean.
+- **guard.py surface:** three pairs promoted on card axes only (task37, task97, task44: decisive gap time and pattern E with forecasting and a quantity figure), the collisions the Guard section above already answers; surface similarity 0.075 to 0.093, ordinary for the corpus; only drawn personas appear in the pack (Shelley Tanner, Ricardo Moore, Paul Henderson, A. Warner, T. Pierce, log initials AC and RM).
+
+### The answer
+
+**150 kW** (149.072 kW unrounded, 1.572 kW above the 147.5 edge; nearest 5 kW and rounded up agree). Binding quarter-hour 12:00 on Tuesday 17 February 2026, contract month February 2028; the 11:45 quarter-hour equals it and 12:15 is lower; each deck's own per-car maximum falls in it. North 88.4 and South 44.7 kW unscaled, **99.0 against 50.1 kW** after growth (99.008 and 50.064), 1.98 to 1.
+
+### The ladder as built
+
+| Rung | Construction | Unrounded | Filed | Against the answer | Where it is set |
+|---|---|---|---|---|---|
+| 0 | panel log, highest month's two registers (105.6 + 105.6) × 1.12 × 11.5/6.6 | 412.16 | 410 | +176.5% | both registers at 105.6 in several months |
+| 1 | closed billing-hours maximum 158.4 × 1.12 × 11.5/6.6 | 309.12 | 310 | +107.4% | 12:00, 17 February 2026 |
+| 2 | replay at 11.5 kW | 115.92 | 115 | -22.2% | 12:00, 10 June 2026, nine sessions |
+| 3 | replay at the Library vans' 11.0 kW | 110.88 | 110 | -25.6% | same June quarter-hour |
+| 4 | per car | 149.072 | **150** | answer | 12:00, 17 February 2026 |
+
+Rung 2's twelve monthly figures: 12.88, 19.84, 24.69, 25.76, 12.88, 115.92, 25.76, 25.76, 25.76, 25.76, 12.88, 13.69 kW (one or two late arrivals a month, June the rung-2 day). Rung 3: the same months at 11.0 kW, June 110.88. The unchanged-draw monthly figures run 103.5 to 177.4 kW.
+
+### The correction grid as built
+
+Draw 6.6 kW 177.408 (175, +19.0%); fleet-average ratio 217.21 (215, +45.7%); replay at the fleet average 8.081 kW 212.793 (215, +42.7%); replay at each deck's average (7.242 / 9.692) 97.328 (95, -34.7%); per car with growth left off 133.10 (135, -10.7%); per car on North with rating on South 99.008 (-33.6%); per car on South with rating on North 100.912 (-32.3%); ratings only for the county pool cars 100.912 (-32.3%); the planners' sizing 225 (32 × 11.5 × 0.60 = 220.8, to the next 5 kW above; gap 75 kW); every all-hours cell 236.5 to 404.3 (at least +58.7%). Two-error cells: draw 6.6 with growth left off 158.40 (+6.3%, violations opposite in sign); fleet-average replay with growth left off 189.99 (+27.4%). Convergent readings, all 149.072: the decks' own maxima summed, all 36 months, vehicles as renewed in January 2027, stamps read as interval ends (every monthly figure unchanged), rounding up.
+
+### Corpus, twins, separation
+
+- Every deck vehicle 2024 to 2026 is listed at 7.2 kW or more; the closed replay under the rated and the per-car rule is identical reading by reading on all 72 deck-months.
+- Five-rule family over 26,493 measurable sessions with an identified vehicle (127 too short to show a full quarter-hour): the smaller of rating and onboard rating misses 0; rating misses 713 (every van session on the Library unit); onboard rating misses 25,780 (every 6.6 kW session and the pickup); the 0.957 derate misses 25,780; a fixed 11.0 kW on 11.5 kW units misses 13 (every pickup session).
+- Library unit: 713 van sessions at 11.0 kW and 13 pickup sessions at 11.5 kW.
+- Twins: 3,607 North and 3,600 South sessions in 2026; KS statistic 0.020 on arrival, 0.010 on dwell, 0.013 on energy; each deck's closed billing maximum 79.2 kW, equal at the binding quarter-hour; 1.98 to 1 per car.
+- Fleet shares 57 of 73 at 7.2 to 7.7 kW (78.1%), 44 of 48 North permits held by Larch County Fleet Services, 16 of 25 South vehicles at 11.0 kW; fleet average 8.081, deck averages 7.242 and 9.692.
+- Every 2026 deck session finished delivery at least 28 minutes before plug-out, so no replay at 6.6 kW or faster is cut short.
+- Zero device and zero hazard rows in the main population (re-delivered rows, restated versions, gateway B rows, reissued identifiers: 0 each). Clean-data test per suspect file (gateway B merged, re-deliveries kept, latest restated version kept, identifiers by latest assignment): the answer and rung 2 are unchanged in every repair and stay in different bins; identifiers by first assignment leave the answer unchanged. Lens swap: the closed replay is identical under both rules. Neither audit reads a vehicle.
+- Register referee: re-deliveries and the back-feed never change a panel's maximum-demand register, keeping either non-accepted restated version never changes a South register, and every one of the 73 maximum-demand readings in the log (each meter's first read has no earlier reset) equals the sessions-only maximum (the roof lights are off in every maximum quarter-hour), so the context artifact reproduces to the last digit.
+
+### Ask A1 and A2 (the contract year)
+
+Whole kW: April 2027 115, May 106, June 98, July 90, August 91, September 108, October 116, November 124, December 130, January 2028 132, February 2028 149, March 2028 123; every unrounded figure at least 0.24 kW from a half-kW edge. Deck split 99 and 50. Planners 225, gap 75. Chart: 17 February 2026 by quarter-hour, the 150 kW line, the 12:00 quarter-hour at 149 kW.
+
+### Ask B3 (the standard's 2025 record), as built
+
+Filed path, pinned by FES-07 section 4: the forecast stated in whole kW against the recorded billing demand in whole kW.
+
+| 2025 month | 2024 base | Forecast at 1.08 | Recorded 2025 | Miss |
+|---|---|---|---|---|
+| Jan | 105.380 | 113.810 → 114 | 115.200 → 115 | -0.9 |
+| Feb | 112.164 | 121.137 → 121 | 119.192 → 119 | +1.7 |
+| Mar | 99.884 | 107.875 → 108 | 110.124 → 110 | -1.8 |
+| Apr | 95.472 | 103.110 → 103 | 101.916 → 102 | +1.0 |
+| May | 89.104 | 96.232 → 96 | 96.864 → 97 | -1.0 |
+| Jun | 81.544 | 88.068 → 88 | 85.852 → 86 | +2.3 |
+| Jul | 76.112 | 82.201 → 82 | 83.888 → 84 | -2.4 |
+| Aug | 83.168 | 89.821 → 90 | 88.780 → 89 | +1.1 |
+| Sep | 93.716 | 101.213 → 101 | 103.812 → 104 | -2.9 |
+| Oct | 102.856 | 111.084 → 111 | 109.904 → 110 | +0.9 |
+| Nov | 105.484 | 113.923 → 114 | 113.180 → 113 | +0.9 |
+| Dec | 101.140 | 109.231 → 109 | 110.128 → 110 | -0.9 |
+
+Six over, six under; every forecast and recorded demand 0.06 to 0.24 kW off a whole kW; every miss 0.015 to 0.046 points inside its bin and never an exact one-decimal share. Devices: reissued identifiers (primary, D7) move all 24 figures; the 1.09 revision moves all 24; gateway B moves January to April; the restated versions move the May to July misses; the re-delivered batches move the October and December misses. Under all 47 subsets of mishandlings the misses stay two-signed and their mean stays between -1.44 and +1.10 points. The coincident maximum equals the sum of each deck's own in all 24 months.
+
+### Ask B1 (the 2026 basis against the panel meters), as built
+
+Whole kWh, readings 1 to 12. North (SM-2231, CP-N): 1069, 909, 910, 725, 594, 592, 599, 691, 791, 914, 1065, 1130. South (SM-2232, CP-S): 933, 800, 794, 633, 520, 517, 523, 606, 693, 799, 932, 990. Every golden is 0.06 to 0.24 kWh off a whole kWh. Read times (meter clock, standard time): 30 Jan 07:00, 27 Feb 08:30, 31 Mar 07:45, 30 Apr 07:00, 29 May 09:00, 30 Jun 08:30, 31 Jul 09:15, 31 Aug 07:00, 30 Sep 08:45, 30 Oct 07:00, 30 Nov 08:30, 31 Dec 09:45 (South also 07:30). Devices: the meter clock (primary, D8) moves readings 3 to 11 on both panels by 4.5 to 59.9 kWh and leaves 1, 2 and 12 alone; the re-delivered December 2025 rows move reading 1 by 40.5 (North) and 32.9 kWh (South); the unit on the temporary house-panel feed moves North 6 and 7 by 168.8 and 71.6 kWh; keeping the first 31 December South read (hundreds digit misread) moves South 12 by 99.1 kWh; over-deduping the same-day repeats and calendar-month spans move further readings. Every subset of mishandlings lands at least 2.5 kWh from the golden on every reading; whole-session attribution by plug-in lands at least 2.5 kWh away. North 12 carries no device.
+
+### Span
+
+Main call, 12 files (session header, readings, station register, permit registry, vehicle checks, reference list, fleet roster, rate schedule, standard, agreement, field notes, data-sources note). B3, 9 files (session header, readings, station register, restatement decisions, gateway B export, standard, rate schedule, field notes, data-sources note). B1, 7 causal files (panel log, nameplates, session header, readings, station register, circuit schedule, field notes) plus the work orders as the documentary second antidote to the back-feed: the stage-2 debt of one file is closed by moving circuit assignments into the facilities schedule, and the work orders are corroborating rather than strictly necessary, since the schedule alone dates the temporary feed.
+
+### Pack manifest
+
+| File | Format | Rows | Role |
+|---|---|---|---|
+| session_intervals_2024-2026.parquet | parquet | 1,568,086 | spine |
+| settled_sessions_2024-2026.csv | csv | 98,623 | operating extract, calibration ledger |
+| restatement_decisions_2025.csv | csv | 45 | operating extract (version of record) |
+| gateway_b_sessions_jan-apr2024.csv | csv | 302 | operating extract (legacy gateway) |
+| station_register.csv | csv | 164 | dimension (identifier history) |
+| deck_panel_circuit_schedule.csv | csv | 51 | dimension (circuit assignments) |
+| deck_panel_meter_log_2024-2026.xlsx | xlsx | 75 reads | context artifact (rung 0), B1 |
+| deck_submeter_nameplates.csv | csv | 2 | dimension (meter clock) |
+| facilities_work_orders_2026.csv | csv | 20 | operating extract |
+| ev_permit_registry.csv | csv | 75 | dimension |
+| permit_vehicle_checks.csv | csv | 425 | dimension |
+| vehicle_reference_list.csv | csv | 22 | dimension |
+| city_fleet_roster.csv | csv | 19 | dimension |
+| nspl_schedule_26_ev_charging_service.pdf | pdf | 2 pages | governing (billing window, holidays, 5 kW steps, ratchet) |
+| fes-07_load_forecasting_standard_rev4.pdf | pdf | 1 page | governing (base months, factor table, accuracy record) |
+| civic_center_ev_service_agreement_draft.docx | docx | 2 pages | governing (scope, one meter, contract year, Exhibit A) |
+| nspl_new_service_planning_guide_2026_sec7.pdf | pdf | 1 page | licensed wrong basis |
+| curbline_export_field_notes.txt | txt | | dictionary |
+| parking_services_data_sources.txt | txt | | provenance, permit rules, version of record |
+| civic_center_campus_electric_statements_2024-2026.csv | csv | 35 | distractor |
+| charger_status_events_2026.csv | csv | 1,212 | distractor |
+
+### Changes from the stage 2 design, made at stage 3
+
+1. The back-test's rounding path is pinned in the standard: FES-07 section 4 now files that forecast demand is stated in whole kW and that a forecast's error is the stated forecast less the recorded billing demand in whole kW, as a percentage of that demand. The misses are computed on that path, and every forecast and recorded demand sits off a whole kW.
+2. Back-test device magnitudes are smaller than the stage-2 targets (0.66 to 2.2 kW at the 12:00 quarter-hour against "1.5 kW or more"), sized so the mean condition holds under every subset; each still moves every figure its ledger row names (asserted). The "current-identifier filter" is the same silent path as the raw join here (a lookup reduced to each identifier's latest assignment); filtering to assignments still open is loud (26 retired identifiers stop joining) and is not a stop.
+3. Assertion 29 is restated: plug-out after delivery at 6.6 kW (minimum slack 28 minutes) replaces "two hours after delivery at 7.2 kW", which the lunch-time unplug-and-replug sessions and the late arrivals do not meet; the property it protects, that no replay is cut short by departure, is unchanged.
+4. Assertion 48 (the pair simulation from the generated rubric) waits for the rubric; the stage-2 pair arithmetic stands until then.
+5. The social-layer thread is not built: the prompt carries the facilities engineer's expectation and the planners' method is filed in their guide, so a thread would restate both. The pack has 21 files, two above the 19-file target.
+6. Open item for the realism pass (H21): "North Sound" is a real regional name used by real Washington organisations; the utility's name is in the prompt, so any rename is an author decision.
+
+## Write-up and ship checks (stage 3, 2026-10-09)
+
+Goldens from `python3 task117/generator/golden.py` (reads only `target/` through `verify_pack.py`'s readers and quarter-hour code, so the goldens and the verifier cannot drift). It asserts every figure against the build record before writing anything (`verify_pack.EXPECTED`: the answer, the binding quarter-hour, the split, the twelve months, rung 2, the planners' 225, all 24 back-test and all 24 panel figures), then writes the three deliverables and prints the critical components. Two consecutive runs are byte-identical on all three files and print identical figures.
+
+- **`contract_demand_note.pdf`**, one page, memo from the energy manager to Mayor and Council dated 25 January 2027: title states the call; 150 kW; February 2028 at 149 kW (149.1 unrounded, 150 nearest and rounded up); North 99, South 50; the planners' 225 kW and the 75 kW gap (worth $10,260 a year at Schedule 26's $11.40); the twelve contract months in a table; Ricardo Moore's expectation answered from the record (78 per cent of 2026 permit vehicles at 7.2 or 7.7 kW, computed in the script); a source line and a footnote quoting the billing-demand definition and the factor's adoption date.
+- **`deck_load_day.png`**, rendered by the script (dataviz palette blue and orange, validated): 17 February 2026 by quarter-hour, the 6.6 kW day as drawn and the February 2028 forecast as step series, the 150 kW line labelled, the 12:00 quarter-hour marked at 149 kW with the deck split, the billing window shaded as presentation, a finding title and a source strip.
+- **`civic_service_demand.xlsx`**, written by the script: `2025 back-test` (base, factor 1.08, forecast, recorded, over or under, error to 0.1 per cent), `2026 panel check` (meter, read, meter-clock time, civil-time span, metered, session and unaccounted kWh), `Contract year` (each month's binding quarter-hour, 2026 replay, factor, forecast) and `Notes`.
+- **`submission.md`**: the five blocks; block 4 carries all 1 + 12 + 1 + 2 + 2 figures of the note, the five chart parts and all 48 workbook figures in the prompt's order. A scratch cross-check matched every block-4 figure to the PDF and the workbook cell by cell.
+- **golden-realism pass** (figures frozen first, then re-run and unchanged): memo genre rather than the four-heading spine, lopsided sections with the method longest, precision by quantity (whole kW, 149.1, $11.40, 0.1 per cent), named sheets, frozen headers, set widths, number formats, print areas, a notes sheet; the chart legend moved off the forecast line; an invented agenda item number removed because the pack carries none.
+- **reduce-house-fixes register**: H1 goldens and inputs audited clean (PDF and workbook producer "City of Larch Harbor", stamps 25 January 2027; PNG carries no Software chunk); H4 `golden/` holds exactly the three named files, every visual opened; H6 every rule the golden states back-tests on the record (the draw composition misses 0 of 26,493 sessions, the 6.6 kW replay regenerates every deck reading, both 2026 panel maxima 105.6 kW, the meter clock's March to October offset); H7 two runs byte-identical; H8 every citation resolves (FES-07 sections 2 and 4 and Table 1, Schedule 26 sections 3, 4 and 7, agreement section 4 and Exhibit A, guide 7.3, WO-26-0418, circuit 33); H11 one `submission.md`, one `prompt.md`; H20 the prompt carries all four institutional nouns and none of the banned three. `verify_pack.py` 0 failures after the passes.
+- **guard.py surface**: the three pairs promoted at stage 3 cut (task37, task97, task44) are promoted on card mechanism axes only, already differentiated on the card; surface similarity 0.075 to 0.089; no byte, schema, name or prompt-wording overlap, so nothing to rename or regenerate. Personas in the pack: Shelley Tanner, Ricardo Moore, Paul Henderson.
+- **guard.py heart**: PASS (nearest driver 0.08, task59 v2; nearest stump 0.04); card `driver_concrete` restated with the as-built figures, answer, spine rows, deliverables and opening move filled; `guard.py validate` 116 cards, 0 invalid.
+
+## Leak review
+
+leak.py, as-of 2027-01-25, run at the stage-3 rebuild after harden loop 1 (2026-10-09): REVIEW, 8 lines, no LEAK; sweeps 1, 2 and 5 to 11 clean.
+
+- Sweep 3, agreement, 11.5: Exhibit A's unit rating is the filed equipment specification every rung from 2 up uses; it states no rule about what a session draws or which car a permit carries.
+- Sweep 3, agreement, 6.6: the rating of the units being removed, also in the station register; context for the switchover, not an answer figure.
+- Sweep 3, agreement, 6 of 7 words of the call: the agreement is where the figure is filed (Schedule 1 is a blank), so it shares the call's nouns (contract demand, first contract year) and carries no figure.
+- Sweep 4, field notes (session, charging, record): export field definitions (FLEET is listed as an account type, nothing more); nothing on draw, the car or the renewal.
+- Sweep 4, FES-07 (session, closed, record): the base-months and accuracy clauses, filed pins; preparing the forecast at the equipment the service will supply kills rung 1 and says nothing about which cars charge.
+- Sweep 4, Schedule 26 (monthly, charging, measured): the tariff's billing-demand definition, the pin that kills rung 0; filed, not the decisive step.
+- Sweep 4, data-sources note (session, decision, monthly, rating, charging, record): a folder description that files the permit rule once (one vehicle per permit, checked at issue and every January renewal), a register the pack would carry without the trap; it never says the forecast should use the renewed car.
+- Sweep 4, prompt, panel-meter sentence (session, charging): the B1 ask in the requester's words; it names the quantity, not the read-time split or any device.
+
+## Harden loop 1: design (2026-10-09)
+
+Round 1's plain solver landed 150 kW (proxy 88.1) by executing the stage-2 decisive rung as a work order at its path step 4, and executed every ask device as the ask's own files state it (`## Tried and rejected`, the two round-1 lines). The repair keeps every rung the solver climbed and adds one after it: the solver's step 4 still completes, still joins every session to one car, still applies the smaller of 11.5 kW and the onboard rating, and still returns 150 kW, which is now wrong.
+
+### What changed
+
+1. **Rung 5, the car each permit carries in the contract year.** At the January 2027 renewal (check rows dated 5 to 13 January 2027, before the as-of date) Larch County Fleet Services renewed 18 of its 24 permits held by 2020 Bolt EVs (7.2 kW) onto 2023 Bolt EVs (11.0 kW): same make and model, new plate and VIN. The vehicle reference list gains the 2022 to 2023 Bolt EV row at its published 11.0 kW. No other permit changes car at the renewal and none changed during 2026 (asserted R03, B20).
+2. **The binding days are recomposed** so the two readings of the car put the peak in different months. With each session's own car the year peaks at 12:00 on Tuesday 17 February 2026 (ten renewed cars still charging at noon), 148.512 kW, filed 150. With the contract-year car it peaks at 12:00 on Tuesday 8 December 2026 (six county cars that were not renewed and the four Teslas on North), 129.136 kW, filed 130. Every other month's binding day mixes kept and renewed pool cars so the two readings differ at whole kW in eleven months of twelve.
+3. **The permit registry loses its plate column.** It held each permit's current plate, which after the renewal hands the contract-year car to any plate join; the car now comes only from the dated check rows, where the solver chooses the date.
+4. **Fresh primary devices on both pool-B asks** (below). The stage-3 devices stay as hazards.
+5. **No prompt change and no new clause anywhere.** The governing register (each permit names one vehicle, checked at issue and at every January renewal) was already filed once, in the data-sources note, and FES-07 already prepares the forecast for the service the decks will be supplying. Nothing is pinned louder.
+
+### Gate G, restated
+
+- **Litmus.** No. Every figure in the pack is correct, the renewal check rows included, and nothing a stakeholder states about their own figures is overturned. The difficulty is that the cars that will charge in the contract year are not the cars that made the base year's sessions.
+- **Primary mechanism:** `forecasting`, `method_or_model_selection` supporting. **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
+- **Deletion test.** Delete the panel log, the planners' guide and both distractors: the closed record still certifies the per-car replay with each session's own car on every 2026 reading, and it still files 150.
+- **Clean-data test.** The checks file is complete and correct, so there is nothing on the main path to repair. The off-path suspect files (gateway B, the fleet card file, restated versions, re-deliveries, reissued identifiers) are repaired one at a time and the answer, rung 4 and rung 2 stay put and in three different bins (E02).
+- **Lens swap.** Rung 4 and the answer replay the same sessions under the same physics with two fleets at two moments, 2026 and the contract year. The closed replay is identical under both (E04); they differ only through the forward fleet. Not a lens swap.
+- **Pre-draw identity.** Contracted demand = 1.12 x the maximum over billing quarter-hours of the sum over concurrently charging sessions of min(11.5 kW, the onboard rating of the car the session's permit carries in the contract year), each 2026 session re-timed from plug-in at that draw.
+
+**Rung 5 against the seven survival properties.** 1 Written nowhere: no document says the forecast uses the renewed fleet; the renewal is data in rows the solver already joins. 2 No corpus nominates it: every 2026 session was made by its 2026 car, the session-date join reproduces every closed reading, and the renewal is dated after the last 2026 session (R05). 3 No arithmetic symptom: both joins resolve every session to exactly one car and one reference row. 4 Not a row predicate on anything the solver holds: it is a property of a different entity (the permit's car) at a date nothing names. 5 The solver's own step completes and returns the wrong answer. 6 No cutover in a closed series: the renewal steps nothing in 2026. 7 Survives deletion. **The accepted weak point:** a solver who takes each permit's latest check without thinking about dates lands on the contract-year car by accident. That reading is the right one for a forward forecast, round 1 took the session-date join, and the plate column that would have made the latest car the default join is gone.
+
+### The ladder
+
+| Rung | Construction | Unrounded (kW) | Filed | Against the answer | Set at |
+|---|---|---|---|---|---|
+| 0 | panel log, the highest month's two registers x 1.12 x 11.5/6.6 | 412.16 | 410 | +219.2% | registers at 105.6 in several months |
+| 1 | closed billing maximum 158.4 x 1.12 x 11.5/6.6 | 309.12 | 310 | +139.4% | 12:00, 17 February 2026 |
+| 2 | replay at 11.5 kW | 103.04 | 105 | -20.2% | 12:00, 10 June 2026 (eight late sessions) |
+| 3 | replay at the Library vans' 11.0 kW | 98.56 | 100 | -23.7% | same quarter-hour |
+| 4 | per car, each session's car on its own date | 148.512 | 150 | +15.0% | 12:00, 17 February 2026 |
+| 5 | **per car, the car each permit carries in the contract year** | **129.136** | **130** | answer | 12:00, 8 December 2026 |
+
+Kill facts: rung 0 the billing-demand clause (Schedule 26); rung 1 the readings themselves (a faster unit shortens a session); rung 2 the Library unit's van sessions at 11.0 kW; rung 3 the pickup at 11.5 kW on the same unit; rung 4 the January 2027 renewal rows under the filed permit rule (a replaced car holds no permit in the contract year).
+
+Worth of each rung on the graded figure: 0 to 1 -25.0%, 1 to 2 -66.7%, 2 to 3 -4.3%, 3 to 4 +50.7%, 4 to 5 -13.0%. The answer is bracketed by rungs 3 and 4.
+
+"A solver who does everything right up to rung 4 commits to 150 kW and names February 2028 as the month that sets it."
+
+### Position table (asserted)
+
+| Rung | Unrounded | Filed | Month that sets it | North / South at its binding quarter-hour, scaled (kW) |
+|---|---|---|---|---|
+| 0 | 412.16 | 410 | several | 206.1 / 206.1 |
+| 1 | 309.12 | 310 | February 2028 | 180.3 / 128.8 |
+| 2 | 103.04 | 105 | June 2027 | 51.5 / 51.5 |
+| 3 | 98.56 | 100 | June 2027 | 49.3 / 49.3 |
+| 4 | 148.512 | 150 | February 2028 | 115.1 / 33.4 |
+| 5 | 129.136 | **130** | **December 2027** | **82.9 / 46.3** |
+
+Contract months, whole kW: answer April 2027 90, May 85, June 79, July 72, August 75, September 87, October 94, November 103, December 129, January 2028 109, February 68, March 98; rung 4 the same months 114, 109, 103, 88, 99, 119, 126, 119, 129, 125, 149, 114. The twin decks carry equal closed load at the answer's binding quarter-hour (66.0 kW each) and split 1.79 to 1 per car; rung 4 splits its own quarter-hour 3.45 to 1.
+
+### Separation and dominance
+
+The answer is a figure in 5 kW bins with no ranking, so the separation floor binds. Nearest single-error cells: growth left off 115.3 kW (-10.7%, files 115), the deck-average replay on 2026 vehicles 113.549 kW (-12.1%, files 115), rung 4 148.512 kW (+15.0%, files 150). Nearest two-error cell: each session's own car with growth left off, 132.6 kW (+2.7%), which files 135 under both roundings and needs two violations of opposite sign (L4). Bins: 129.136 sits 1.636 kW above the 127.5 edge and 0.864 below 130; at whole kW it is 0.364 from 129.5. Flip conditions, unscaled at the binding quarter-hour: rounding up files 135 only on a gain of 0.771 kW; to the nearest 5 kW a gain of 3.004 kW or a loss of 1.461 kW moves the bin.
+
+### The correction grid (as built, every cell asserted by name)
+
+Single-error cells: draw 6.6 kW 177.408 (175, +37.4%); rating ratio 309.12 (310, +139.4%); fleet-average ratio on 2026 vehicles 217.212 (215, +68.2%) and on contract-year vehicles 242.399 (240, +87.7%); replay at 11.5 kW 103.04 (105, -20.2%) and at 11.0 kW 98.56 (100, -23.7%); replay at the fleet average on 2026 vehicles 213.188 (215, +65.1%), at each deck's average on 2026 vehicles 113.549 (115, -12.1%), at the fleet average on contract-year vehicles 80.800 (80, -37.4%), at each deck's average on contract-year vehicles 89.613 (90, -30.6%); each session's own car 148.512 (150, +15.0%); growth left off 115.300 (115, -10.7%); the planners' sizing 225 (+74.2%); per car on North with rating on South 95.760 (95, -25.8%); per car on South with rating on North and ratings only for the county pool cars 92.848 each (95, -28.1%); every all-hours cell 236.544 to 396.404 (at least +83.2%). Two-error cells: own-date cars with growth left off 132.600 (135, +2.7%, opposite signs); draw 6.6 with growth left off 158.400 (160, +22.7%); deck averages on 2026 vehicles with growth left off 101.383 (100, -21.5%); fleet average on 2026 vehicles with growth left off 190.347 (190, +47.4%); the rated replay scaled by the old units' ratio 59.136 (60, -54.2%). Convergent readings, all 129.136: the decks' own maxima summed (both peak in the binding quarter-hour), all 36 months, each permit's latest check (as of energization, 1 April 2027), vehicles as of the council vote, stamps read as interval ends (all twelve months), rounding up.
+
+### Closure table, the axes that moved
+
+| # | Axis | Reading chosen | Closed by |
+|---|---|---|---|
+| 4 | As-of dating (now the decisive axis) | The car each permit carries in the contract year: its January 2027 renewal check, the latest on or before the forecast date | The forward window (the forecast is for April 2027 to March 2028) + the filed permit rule (one vehicle per permit, checked at issue and at every January renewal, so a replaced car holds no permit) + C1 (every as-of date from the renewal through the council vote and energization returns the same cars; no later check is on file) + C4 (the session-date reading files 150, +15.0%) |
+| 16 | Identity normalisation | Make, model, trim and model year as written on the check row | C1 (every check row resolves to exactly one reference row, B21); the registry carries no plate to join on |
+| 22 | Forward window contents | The 73 active permits as renewed in January 2027: 18 cars changed, no pedestal added or removed | Filed (agreement scope) + R01 to R03 |
+| + | The draw on the new units | min(11.5 kW, onboard rating) per session | C2 (unique survivor of the five-rule family: 0 misses over 24,192 measurable sessions; rating 419, onboard 23,773, the derate 23,773, a fixed 11.0 kW 13) + C4 |
+
+Every other axis keeps its stage-2 line.
+
+### The ask ledger, re-hardened
+
+**Pool A (the contract year, the month, the split, the chart).** Device-free and carried by rung 5: a solver at rung 4 files eleven of twelve months wrong (December alone agrees), names February, and gets both split figures, the chart's day and its marked value wrong; a solver at rung 2 or 3 gets every month wrong.
+
+**B3, the standard's 2025 record. Primary device (new): fleet-card charges outside the export.** Before the April 2025 platform move a fleet card charge was authorised and settled through the fleet card processor, not through Curbline settlement, so it is absent from the settlement export; every fleet card charge at a Curbline station from 2024 to 2026 ships in `fleet_card_ev_transactions_2024-2026.csv` (START, END, KWH, STATION and NETWORK_REF, the charge's network reference). One fleet-card top-up ends inside the 12:00 quarter-hour on every back-test day (0.70 kW). Left out, it moves all 24 figures (C07, asserted in the parameter search). Added wholesale on top of the export, it double counts April to December 2025 and moves seven misses (C08). Silent: the export reconciles to itself and the field notes list FLEET as an account type; the only symptom is that FLEET rows begin at the platform move, visible to a solver who tabulates account type by month or matches the fleet file to the export on NETWORK_REF. Off path: 43 such charges at the decks, all before 1 April 2025 (C13), none in the 2026 population (E01). Hazards kept: reissued identifiers (all 24 figures), the 1.09 vintage (all 24), gateway B (January to April), restated versions (May to July misses), re-deliveries (October and December misses). Under all 143 subsets of mishandlings the misses stay two-signed with a mean between -1.47 and +1.70 points.
+
+**B1, the 2026 basis against the panel meters. Primary device (new): reads inside a quarter-hour.** Every read is logged to the minute, none falls on a quarter-hour, and each meter is read at its own minute (the decks are read separately). The session energy between two reads is the readings for every whole quarter-hour plus, in the quarter-hour a read falls inside, each session's constant 6.6 kW draw up to the read time, which the closed readings certify (V17a). Rival splits and their moves on every reading: the straddling quarter-hour all before the read (what filtering readings by start time does) 1.51 to 11.77 kWh; all after it 1.51 to 11.84; the read moved to the nearest quarter-hour 1.52 to 16.76; pro rata inside the quarter-hour 0.76 to 1.69, always onto a different whole kWh (D13). Silent: every split completes and every total ties. Hazards kept: the meter clock on standard time (readings 3 to 11, 19.4 to 77.2 kWh), the re-delivered December 2025 batch (reading 1, 45.3 and 38.3 kWh), the back-fed unit (North 6 and 7, 176.7 and 57.0 kWh), the double read (South 12, 99.2 kWh), repeats over-deduped, calendar spans. Every subset of mishandlings lands on a different whole kWh on every reading, at least 1.5 kWh away unless it carries the pro rata split (D09, 24 readings).
+
+**Pair arithmetic.** Planning weights 38 / 7 / 55. If rung 5 holds the field off the call, as it is built to, each top response scores about r + 7 + 55 L and the pair stays under 40 while each keeps under about half the pool-B weight, so both fresh primaries have to fall before the asks alone lift the pair over the target. If one top response lands the call, the pair reaches 40 only when the two together keep under about 0.47 of the ask weight, which needs at least one of the two primaries to hold against both. What the pass condition rests on: the session-date join at rung 4 (the step round 1 took) keeping every response but one off the call, then the fleet-card device, which has no symptom inside the export, holding against both top responses.
+
+### Stopping rule for the next round
+
+At ceiling: two consecutive rounds in which a response files 130 kW through the contract-year car by different routes; re-root at stage 1 and move this architecture into the card's lineage. One more repair: a response files 130 by taking each permit's latest check with no regard to dates and says nothing about the renewal (a determinism note, not a difficulty repair), or the pair clears 40 with at most one response on the call (a pool-B repair, one device per repair). Working as built: responses that stop at rung 4 (150 kW) or below.
+
+## Build record (harden loop 1, 2026-10-09)
+
+Rebuild and verify exactly as the stage-3 record says (`build_pack.py` with seed 1172027, then `verify_pack.py`), then `golden.py` for the deliverables.
+
+- **Generator green:** 306 named assertions (main call and ladder 40, the renewal 7, corpus and twins 23, back-test 168 of which 143 are subsets of mishandlings, panel audit 37 of which 24 are readings, separation and Gate G tests 9, register referee 3, container scrub 5, pack gates 14), all passing.
+- **Independent verifier green:** 39 checks, 0 failures. It reads only `target/` and `metadata.json`; it rebuilds each permit's car from the check rows at both dates, recomputes the answer, rung 4 and the renewal from the checks alone, adds the fleet card charges the export does not carry by NETWORK_REF, and splits every read's quarter-hour on the sessions' own draw.
+- **Byte-identical:** two consecutive scratch builds agree on all 24 outputs by sha256 (22 pack files, `metadata.json`, the build record); the task-folder build matches them on its 23. `golden.py` run twice: the three deliverables byte-identical and the printout identical.
+- **Input gates:** 22 files in six formats (csv, parquet, xlsx, pdf, docx, txt); the spine holds 1,534,415 rows; two distractors named in `metadata.json` and unread by the verifier.
+- **Containers:** the scrub audit is clean on `target/` and on `golden/`.
+- **Pack changes:** `fleet_card_ev_transactions_2024-2026.csv` added (5,108 charges, 2,015 of them before 1 April 2025 and outside the export, 43 at the decks); `ev_permit_registry.csv` without its plate column (75 permits); `permit_vehicle_checks.csv` 425 rows with the January 2027 renewal; `vehicle_reference_list.csv` 23 rows; `settled_sessions_2024-2026.csv` 96,708 rows; `gateway_b_sessions_jan-apr2024.csv` 301 rows; the data-sources note registers the new file (every shipped file listed).
+- **Asks as built.** A1: the contract months above; the split 82.88 and 46.256 kW (83 and 46); the planners' 225 kW and the gap of 95. B3, forecast and miss: January 112 (-0.9%), February 117 (+2.6%), March 107 (-1.8%), April 106 (+1.9%), May 88 (-1.1%), June 88 (+2.3%), July 82 (-1.2%), August 90 (+2.3%), September 106 (-0.9%), October 114 (+1.8%), November 113 (+0.9%), December 111 (-0.9%). B1, unaccounted kWh: North 1,069, 908, 910, 725, 594, 592, 599, 691, 791, 914, 1,065, 1,130; South 934, 798, 794, 633, 520, 517, 523, 606, 693, 799, 932, 990; every golden 0.06 to 0.24 kWh off a whole kWh.
+- **Write-up:** `submission.md` rewritten through `submission-writeup` (five blocks; block 4 matched to the PDF and the workbook cell by cell by a scratch cross-check); `golden-realism` pass after the figures froze (the legend moved off the 130 kW line, the source strip rewrapped, the memo held to one page); `reduce-house-fixes` register run (H3: one memo sentence corrected to "most of December's peak is theirs", since one 11.0 kW car also charges through the binding quarter-hour; H1, H4, H8, H9, H11, H16 clean).
+- **leak.py** (as-of 2027-01-25): REVIEW, 8 lines, no LEAK. Sweep 3: the agreement's Exhibit A rating (11.5 kW), the removed units' 6.6 kW and the call's nouns (contract demand, first contract year), as at stage 3. Sweep 4: ordinary vocabulary of the service in the field notes, FES-07, Schedule 26, the data-sources note and the prompt's panel-meter sentence. A hand sweep of the new rung's and devices' own vocabulary over every shipped document (renewal, contract year, replacement car, fleet card, platform move, quarter-hour, read time) finds the permit rule filed once in the data-sources note, the checks' provenance line and the field notes' FLEET account type, and no sentence that names a move.
+- **guard.py:** card restated (answer, stump, driver, driver_concrete, generators with G6 added, spine rows, differentiation against task37, task44 and task97 rewritten for the renewal rung, notes); `validate` 116 cards, 0 invalid; `check` PASS (the same three older builds noted, differentiated); `heart` PASS (nearest driver 0.07, task64 v2; nearest stump 0.03); `surface` promotes task37, task97 and task44 on card axes only, surface similarity 0.075 to 0.089, the pairs the card already answers; personas in the pack: Shelley Tanner, Ricardo Moore, Paul Henderson.
+
 ## Tried and rejected
 
 - Stage 2, the source note's figures as one set (twins within 1 kW closed, 99.6 against 50.8 kW per car, rung 2 at 116, answer 150.4): infeasible, because a session replayed at 7.2 kW or more charges only inside its 6.6 kW span, so a deck's replayed load in a quarter-hour is at most its closed load times the draw ratio; North's 99.6 breaks that bound.
@@ -437,3 +678,29 @@ About 19 files in six formats; the dataset stage may merge the two notes or fold
 - Stage 2, the 2024 legacy export on standard time as the back-test's device: it shifts every daylight-time month the same way, so the naive back-test reads as a one-signed bias a solver could carry into the 2027 growth step; replaced by reissued pedestal identifiers.
 - Stage 2, a sixth rung on the county's EV registration mix (trap #14, the coarsened segment): it needs a registration file only that rung uses and is a weaker stop than the permit registry a solver opens anyway; not built as a rung.
 - Stage 2, the fleet-average replay as a rung: its kill fact is the same per-session join that reaches the answer, so it is a priced partial (L3) in the grid, not a rung.
+- Stage 3, back-test forecasts and 2025 actuals tuned to within 0.01 kW of a whole kW so every rounding path filed the same miss: twelve forecasts landing on round values under the 1.08 factor (and off them under 1.09, the raw identifier join or gateway B left out) is a receipt that confirms the intended handling; replaced by filing the accuracy record in FES-07 (whole-kW forecast against whole-kW recorded demand) and placing every forecast and actual 0.06 to 0.24 kW off a whole kW.
+- Stage 3, back-test partials in 6-second steps (0.044 kW) with both the forecast and the actual held near a whole kW: almost no month had a candidate; replaced by partials at 0.004 kW resolution, still exact at 0.001 kWh, chosen by a seeded search.
+- Stage 3, back-test misses landing exactly on -1.0 and -2.0 per cent (a recorded demand of exactly 100 kW): an exact round share is a generation tell; misses within 0.004 of a one-decimal value are excluded.
+- Stage 3, panel-audit read times searched with the whole-kWh bin test as a hard filter: each golden is the roof lighting in the span plus display truncation, so it barely moves with the read time and most months had no passing time; read times are now chosen on the meter-clock and mishandling tests alone and one evening's photocell switch-on inside each span is trimmed, repeatedly because the registers truncate to 0.1 kWh, until the golden lands 0.06 to 0.24 kWh off a whole kWh.
+- Stage 3, panel goldens trimmed to 0.05 kWh from a whole kWh: 24 near-whole goldens is the same receipt as the near-whole forecasts; the trim targets 0.11 to 0.19 kWh off a whole kWh.
+- Stage 3, the unit on the temporary house-panel feed left empty for the six weeks of the feed (the day builders skip a blocked unit): the back-feed then moves nothing; the unit takes afternoon arrivals only, so it never charges in a panel's morning maximum and still moves North readings 6 and 7.
+- Stage 3, the April 2024 back-test day drawn after the legacy gateway's retirement on 22 April: its gateway partial sat in the settlement export and the gateway device moved January to March only; the April day is now drawn before the 18th.
+- Stage 3, fleet sessions assigned to fleet cards at random: one vehicle could charge at two garages at once; every fleet card carries its own occupancy.
+- Stage 3, the restatement referee asserted as "no restated session charges in the panel's maximum quarter-hour": too strict, since the versions of a session differ only in their last quarter-hour; replaced by asserting that keeping the latest or the first version changes no register.
+- Stage 3, the 31 December misread as an upward digit transposition with a +90 kWh fallback: the register's digits rarely allowed the transposition and the fallback is not a misreading; replaced by the hundreds digit read as a digit it is often mistaken for.
+- Stage 3, a load-management clause in the planning guide (a system that caps the units' total draw): a shipped sentence about a limit on draw, and a question the agreement never answers; replaced by a construction clause.
+- Stage 3, a provenance sentence saying a restated version replaces the earlier one once Parking Services "accepts" it: the word is the stump's vocabulary and failed the signpost grep; reworded to the ACCEPTED and REJECTED codes the decisions file carries.
+- Stage 3, the design's departure assertion (every closed plug-out at least two hours after delivery at 7.2 kW): the lunch-time unplug-and-replug sessions and the late arrivals end their visits sooner; the operative property, delivery finished before plug-out, is asserted instead.
+- Stage 3, the briefing-thread social layer: the prompt already carries the facilities engineer's expectation and the planners' method is filed in their guide, so the thread would only restate both; not built.
+- Stage 3, the house scrub script given "North Sound Power & Light" for an OOXML file: it writes the producer into docProps unescaped and the bare ampersand broke the DOCX; the build passes an XML-escaped producer for OOXML.
+- Stage 3, a note sentence saying no forecast month comes within 1 kW of the contract: February 2028 sits 0.93 kW under 150, so the sentence was false of the record; replaced by the ratchet's own wording.
+- Stage 3, the golden workbook saved through openpyxl without repacking core.xml: `dcterms:modified` carried the build clock, inside the audit band so the scrub passed it, and made two runs differ; the repack now pins created and modified to the note's date.
+- Stage 3, an agenda item number in the note's footer: the pack carries no agenda, so the number was invented texture; removed.
+- Stage 4, round 1 (plain solver, proxy 88.1, call landed at 150 kW, every ask figure matched): the five-rung ladder as built, with rung 4 (the per-car onboard limit) silent in the documents. The solver skipped rungs 0 to 3 outright, reading Schedule 26's billing window and replaying sessions from the start, then executed rung 4 as a work order at path step 4: "Vehicle limits: matched each permit session to the vehicle on its latest permit_vehicle_checks entry on or before the session date, and fleet cards to city_fleet_roster. Looked up onboard_charger_kw in vehicle_reference_list by make, model, trim and model year ... The new rate is min(11.5, onboard)." A shipped onboard_charger_kw column sitting one join from the sessions is not a silent rung, because a solver replaying a charger swap asks what the car accepts by default. Every ask device also fell (gateway B in the 2024 base, 1.08 in force at the forecast date, standard-time meter clock, the N-11 back-feed, the later 31 December read). Harden loop 1 of 3 on this architecture.
+- Harden loop 1, diagnosis of round 1 (the min(11.5, onboard) replay as the decisive rung, and five ask devices each adjudicated by a filed rule on the ask's own path): the decisive property was itself a shipped column (onboard_charger_kw), which is the way Pattern E degrades into a two-column lookup, so the solver's "Looked up onboard_charger_kw in vehicle_reference_list by make, model, trim and model year ... The new rate is min(11.5, onboard)" was a work order, not a discovery; and every ask device's organ sat in a file the ask path already opens, so the battery executed each one as written ("mapped station_id to garage using station_register in-service dates, because six old Civic IDs were reused", "Converted meter times from fixed PST (DST disabled)", "moving N-11 to HP-N for 1 Jun to 12 Jul 2026 per the circuit schedule and WO-26-0418", "keeping the later read when a meter has two reads on one day"). Dead: any rung whose answer is the listed onboard kW, and any ask device whose rule is filed where the ask's own files state it.
+- Harden loop 1, February's binding day held at the stage-3 rung-4 figure of 149.072 kW (five renewed cars, six South 7.2 kW cars, the only composition whose contract-year February sat mid-bin): South's February load then exceeded any December South the answer could carry, so summing each deck's own maximum stopped converging; February moved to ten renewed cars and two South 7.2 kW cars (148.512 kW, still filed 150) and December carries both decks' maxima.
+- Harden loop 1, the twins' closed loads equal at the rung-4 binding quarter-hour and both decks' 2026 closed maxima within 1 kW (the stage-3 twin assertions): incompatible with a December answer day, a February rung-4 day and the deck-maxima convergence at once; equality is kept at the answer's binding quarter-hour only (66.0 kW each).
+- Harden loop 1, February's early car drawn from the renewed pool under the 9.75 kW bound alone: at its contract-year 11.0 kW it finished at 11:46, inside the 11:45 quarter-hour, so the end-stamp reading moved February's contract month by 0.67 kW; the early kind now also finishes by 11:44 at 11.0 kW.
+- Harden loop 1, one read minute shared by both deck meters with reads off the quarter-hour: the pro rata split moves a reading by under a kWh at most instants, and no single minute moved both panels' readings far enough; each meter now has its own read minute, searched panel by panel with backtracking.
+- Harden loop 1, the fleet-card device sized at 0.70 kW with only the twelve forecasts required to move: January and March held their one-decimal misses because the forecast and the recorded demand both dropped a whole kW; the parameter search now requires the device to move all 24 figures.
+- Harden loop 1, a growth-factor regex matching any 1.12 in a shipped CSV: the fleet card file's dollar amounts tripped the single-statement gate on a currency cell; the rule's regex excludes CSV cell context.

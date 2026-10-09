@@ -10,8 +10,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "File 130 kW as the contracted demand for the first contract year, April 2027 to March 2028.",
+  "answer_source": "task117/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "time",
     "population"
@@ -21,6 +21,7 @@
     "A"
   ],
   "generators": [
+    "G6",
     "G14",
     "G16",
     "G7"
@@ -33,7 +34,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "session_intervals_2024-2026.parquet",
-    "rows": 1500000,
+    "rows": 1534415,
     "entity": "one 15-minute energy reading on one settled charging session at one of the city's eight garages",
     "grain": "session x 15-minute interval",
     "source": "synthetic (fictional city's charging network settlement export, January 2024 to December 2026)"
@@ -63,20 +64,20 @@
     ]
   },
   "deliverables": [
-    "civic_service_demand.xlsx",
+    "contract_demand_note.pdf",
     "deck_load_day.png",
-    "contract_demand_note.pdf"
+    "civic_service_demand.xlsx"
   ],
   "opening_move": "calendar-first",
-  "driver": "The forward peak of a summed load turns on a per-unit draw rate that every closed period shows equal to the supplying equipment's rating, because the outgoing equipment was slower than every unit it served; on the faster replacement each unit draws only up to its own limit, a property of a different entity reached through a three-hop join, so a unit-level replay at the new rating, which reproduces every closed period, understates the forward peak inside the window the charge is measured in, and a pooled or average limit misses as well, because the slowest units run longest into that window.",
-  "driver_concrete": "Every closed session at the Civic Center decks drew exactly the old pedestals' 6.6 kW because every permit holder's car accepts at least 7.2 kW, so replaying each session at the new 11.5 kW until its delivered energy reproduces all 36 closed on-peak maxima; on the new pedestals a session draws the smaller of 11.5 kW and the car's onboard charger limit, reachable only through session to permit to registered model to the state vehicle list, and 78 per cent of the decks' cars stop at 7.2 or 7.7 kW, so their sessions run past noon into the first billed hour and the year's billed maximum is 150.4 kW, against 116 kW for the certified replay and 110 kW for a replay at the fleet-average limit.",
-  "stump": "A competent solver rebuilds the tariff's on-peak billing maximum from the interval readings, replays every closed session on the new pedestals at 11.5 kW until its delivered energy (a model that reproduces all 36 closed on-peak maxima to the kWh), scales by the filed 1.12 growth factor and files 115 kW (116 unrounded); the step that lands it there is never asking whether each car can take 11.5 kW, which only the join from session to permit to registered model to the state list's onboard charger rating answers, putting 78 per cent of the decks' cars at 7.2 to 7.7 kW and stretching their sessions past noon into the billed window, for a contracted demand of 150 kW.",
+  "driver": "The forward peak of a summed load turns on a per-unit draw cap that is an attribute of a different entity reached through a dated join; the closed record certifies a unit-level replay that takes that attribute as of each closed event, with every unit's cap correctly applied, but the population that will carry the forward window was re-registered after the last closed event, so the certified replay carries units that will no longer be there, overstates the forward peak and places it in the wrong period.",
+  "driver_concrete": "Every 2026 session at the Civic Center decks drew the old pedestals' 6.6 kW; on the new 11.5 kW units each session draws the smaller of 11.5 kW and its car's onboard charger rating, reached through session, permit, vehicle check and the Parking Services reference list. Replayed with the car that made each 2026 session, the billed maximum is 148.5 kW (150 filed) on 17 February 2026, carried by Larch County Fleet Services' 2020 Bolt EVs still charging at noon; at the January 2027 renewal 18 of those permits moved to 2023 Bolt EVs at 11.0 kW, which finish before noon, so the contract year's billed maximum is 129.1 kW (130 filed), set on 8 December 2026's basis by the cars that were not renewed, against 103.0 kW for the replay at the rating and 98.6 kW at the Library vans' 11.0 kW.",
+  "stump": "A competent solver replays every 2026 deck session on the new units at the smaller of 11.5 kW and its car's onboard charger rating, takes each session's car from the permit's vehicle check in force on the session date, grows by the filed 1.12 and files 150 kW (148.5 unrounded, set in February); the step that lands it there is reading the car as of the session rather than as of the contract year: at the January 2027 renewal 18 county permits moved from 2020 Bolt EVs at 7.2 kW to 2023 Bolt EVs at 11.0 kW, which finish before noon, so the contracted demand is 130 kW, set in December.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task37": "task37 conditions a forward count on a linked entity still holding its authorisation when the qualifying step ends, an absolute split recovered from a closed roll that cuts the total; here the condition is a per-unit draw cap (each car's onboard charger limit) that bound in no closed session because the old pedestals were slower than every car, so no closed record at the decks shows the split, and applying it raises the figure by re-timing sessions into the billed window.",
-    "task44": "task44 measures a behavioural moderator over a prior instance of the forward window to split a pilot's pooled effect into opposite-signed item effects and count the gainers; here nothing is re-measured over another window: each forward session draws the smaller of the new rating and a fixed attribute of a different entity, and the graded quantity is a coincident 15-minute maximum inside a billing window, not a count of items.",
-    "task97": "task97 forecasts renewals from a place's cumulative history across every occupant, carried through a retired system's account conversion; here the forward quantity is a coincident peak set by a per-unit draw cap that is a fixed attribute of the car behind a three-hop join and never bound under the old equipment, a change in which limit binds rather than a history count at a place."
+    "task37": "task37 conditions a forward count on a linked entity still holding its authorisation when the qualifying step ends, an absolute split recovered from a closed roll that cuts a count; here the linked entity is the car behind a permit, the date that matters is the contract year after a dated renewal, and the graded quantity is a coincident 15-minute maximum re-timed by each car's charging limit, which the renewal moves to a different month rather than cutting a total.",
+    "task44": "task44 measures a behavioural moderator over a prior instance of the forward window to split a pilot's pooled effect into opposite-signed item effects and count the gainers; here nothing is re-measured over another window: each forward session draws the smaller of the new rating and a fixed attribute of the car its permit carries after a dated renewal, and the graded quantity is a billed quarter-hour maximum, not a count of items.",
+    "task97": "task97 forecasts renewals from a place's cumulative history across every occupant, carried through a retired system's account conversion; here the history is not cumulated at all: each closed session is replayed with the car its permit will carry in the contract year, a re-registration dated after the last closed session, and the forward quantity is a coincident peak set by which cars still charge into the billed window."
   },
   "lineage": [],
-  "notes": "Realises analytical_tasks note FC01 (analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md), its first realisation. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (decided 3 of 64, 2 under 0.50). Pattern E is recorded decisive (the forward draw conditioned on each car's own onboard limit; the rated draw and the Library pedestal's measured 11.0 kW are each correct and apply to no deck car; the North and South decks are the twin pair split by fleet mix), with A (a forward regime the closed window never reached, corpus blind) listed second as the frame. A as decisive is banned against task114, and (time, A) is spent in task107 and nine older builds. Context artifact redrawn from the network operator's monthly peak report (monitoring_export, banned against task116) to the facilities electricians' monthly sub-meter log for the two deck charging panels (operations_log). Forum and forcing event redrawn from the utility (customer_or_counterparty) and its contract deadline (purchase_order_or_contract), both banned against task114, to city council approval of the service agreement and the switchover onto the new dedicated service. Subdomain sourcing-procurement: committing purchased service capacity to a single supplier under a ratchet. answer_unit rate_or_share because the figure is in kW. Spine rows, invented names, deliverables and opening move are provisional until the pack is cut and the prompt written."
+  "notes": "Realises analytical_tasks note FC01 (analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md), its first realisation. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (decided 3 of 64, 2 under 0.50). Pattern E is recorded decisive (the forward draw conditioned on each car's own onboard limit; the rated draw and the Library pedestal's measured 11.0 kW are each correct and apply to no deck car; the North and South decks are the twin pair split by fleet mix), with A (a forward regime the closed window never reached, corpus blind) listed second as the frame. A as decisive is banned against task114, and (time, A) is spent in task107 and nine older builds. Context artifact redrawn from the network operator's monthly peak report (monitoring_export, banned against task116) to the facilities electricians' monthly sub-meter log for the two deck charging panels (operations_log). Forum and forcing event redrawn from the utility (customer_or_counterparty) and its contract deadline (purchase_order_or_contract), both banned against task114, to city council approval of the service agreement and the switchover onto the new dedicated service. Subdomain sourcing-procurement: committing purchased service capacity to a single supplier under a ratchet. answer_unit rate_or_share because the figure is in kW. Spine rows, deliverables, opening move and answer updated from the cut pack and submission.md at stage 3 (2026-10-09); driver_concrete restated with the as-built figures. Harden loop 1 (2026-10-09), same architecture: round 1's plain solver executed the per-car onboard limit as a work order and landed 150 kW, so a rung was added after it: the car each permit carries in the contract year (the January 2027 renewal), from the measured catalogue's #5 (population as of the governing date) with #13 as the frame; G6 (composition shift) added to the generators; the registry's plate column dropped; answer, stump, driver, driver_concrete and spine rows restated from the rebuilt pack."
 }

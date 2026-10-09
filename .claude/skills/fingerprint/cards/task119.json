@@ -1,0 +1,113 @@
+{
+  "task": "task119",
+  "architecture": "v2 (redraw at checkpoint A: a full unit that filled itself with planned admissions)",
+  "drawn": "2026-10-09",
+  "slot_note": "realises analytical_tasks note AD01; the first draft (transfer-chain origin, drafted 2026-10-08) was rejected at checkpoint A on 2026-10-09 and this redraw replaces it; not registered here, the coordinator registers approved redraws in draw order",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "a regional health board placing its one twelve-month external review of deaths after delayed escalation to critical care at one of eight acute trusts, where the trust whose unit looks full through every wait kept it full with planned post-operative admissions from its own theatres",
+  "objective": "anomaly-detection",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G3",
+    "G8",
+    "G2"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "retry_or_revision_log",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "head of quality surveillance at a regional health board",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "critical_care_referrals_202307_202606.csv",
+    "rows": 42000,
+    "entity": "one referral of an adult ward or emergency department patient for a critical care bed, with the referring trust and ward, the decision-to-admit time, the level of care, the admitting unit and the admission time",
+    "grain": "referral (patient x decision to admit)",
+    "source": "synthetic (regional critical care referral log; row count planned, set when the pack is cut)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "United Kingdom, England",
+    "currency": "GBP",
+    "org_type": "regional health board that commissions and oversees eight acute hospital trusts and their adult critical care network",
+    "invented_names": [
+      "Kellow Bridge",
+      "Sandmere",
+      "Fenwold"
+    ],
+    "people": [
+      "Andrea Davey",
+      "Norman Scott",
+      "Maria Reynolds",
+      "Diana Smith",
+      "Sharon Banks",
+      "Benjamin Davies"
+    ]
+  },
+  "deliverables": [
+    "external_review_placement_2027-28.docx",
+    "review_placement_workings.xlsx",
+    "review_placement_by_trust.png"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is each unit's failed waits that the unit itself could have shortened, which counts waits through which its own resource stood free and also waits through which a resource full throughout was being filled with planned work the unit had scheduled, a fact no measure of how full the resource was carries and only the sequence of other intakes to the resource during each wait reveals; a morning snapshot of fill blames the unit with morning vacancies, an hour-by-hour rebuild blames the unit that left places empty, and only the intake sequence finds the unit that kept itself full, whose failed waits are the largest set the intervention can attribute to it.",
+  "driver_concrete": "A death after a wait of more than four hours for a level-3 bed counts toward the review only where the referring trust's own care could have shortened the wait, which covers waits with an empty staffed bed in its own unit and also waits through which its full unit admitted planned post-operative patients from its own theatres; the 08:00 bed returns blame C, whose unit empties overnight, the hour-level census rebuilt from the units' admission and discharge times blames G, whose unit held empty staffed beds through afternoon waits, and only the admissions made to D's unit during each of D's waits show that D kept its unit full with planned surgery while its ward referrals waited, which gives D the most deaths the review can confirm.",
+  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those waits D's own care and D's deaths after them the largest number the review can confirm.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task25": "task25 places one mobile eligibility team by recoverable lift against a timeliness standard after adding records a second source holds, and its worst-measured office cannot be lifted at any capacity; here nothing is added or lifted: each trust's correctly recorded long waits are split by what its own unit was doing during each wait, and the unit full throughout turns out to have filled itself with planned admissions.",
+    "task26": "task26 turns on a delegated rule engine's unsanctioned cells and a concluded engagement that does not continue; here there is no engine and nothing ends: the waits a trust could have shortened are read from the sequence of its unit's other admissions during each wait.",
+    "task28": "task28 v2 reaches the share of a flagged excess sitting in single-source batch events, and only that basis reproduces its closed outcomes; here the corpus reproduces under every attribution, and the attributable share is the waits through which the trust's own full unit admitted planned patients, which no occupancy figure shows.",
+    "task35": "task35 v1 prices an election by per-order value above a filed floor and the share expected to certify; here no floor or certification enters: a wait is attributed to a trust's own care by its unit's admissions while the patient waited.",
+    "task38": "task38 v3 removes concentration falling due inside a filed window on credits the member leads, a rule recovered from 33 closed directions; here nothing is recovered from the corpus, which every construction reproduces, and the share the review can attribute comes from planned admissions made during each wait.",
+    "task53": "task53 v1 removes a size leader's volume locked inside multi-year commitments by joining term end dates to the window; here no term locks anything: a unit full through every wait is shown to have kept itself full with planned surgery.",
+    "task111": "task111 v1 excuses an apparent conduct failure by finding the outside cause behind it and was solved once a clause made that cause askable; here the capacity question is askable by design, every occupancy measure answers it wrongly, and the decisive move runs the other way, finding that a unit that looked full had filled itself with its own planned work.",
+    "task88": "task88 prices a booking that displaces full-rate demand in a period that would have filled anyway; here nothing is priced and nothing is displaced in the closed record: a trust's long waits are attributed to its own care because its unit admitted planned patients while they ran."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (transfer-chain origin)",
+      "drawn": "2026-10-08",
+      "domain": "policy-education",
+      "subdomain": "public-administration",
+      "objective": "anomaly-detection",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G2",
+        "G16",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "retry_or_revision_log",
+      "context_artifact": "published_series",
+      "driver": "The decisive quantity is each unit's excess of failures over expected, counted over whole paths that cross units and credited to the unit where the path began, built by linking one key's records across units at a hand-over gap the data leaves empty and setting each path against the risk its first record carried; every per-unit screen counts a failure where the path ended, so a unit that passes its failing cases on late exports them a few to each receiver and looks ordinary, and only the origin-credited path construction reproduces a closed corpus of confirmed outcome counts that every per-unit screen misses.",
+      "driver_concrete": "Every death is credited to the trust holding the patient's last spell, so the district general hospital without level-3 critical care, which transfers deteriorating non-elective medical patients late, exports its avoidable deaths a handful at a time to the regional centre and three neighbours and sits fifth on the funnel; linking spells across trusts on the regional patient key wherever an emergency admission follows a discharge elsewhere within hours (no inter-trust gap falls between 4 and 47 hours), crediting each chain's death to its first trust and setting it against the first spell's modelled risk gives that trust 38 excess deaths in the latest four quarters against 17 at the next trust, and only that construction reproduces all 34 closed rapid reviews in the national retry log, against 23 for the best trust-level screen.",
+      "stump": "A competent solver rebuilds the funnel on the remit's non-elective adult medical spells, removes the palliative and hospice-unit spells, runs a risk-adjusted CUSUM over the latest twelve months, back-tests it at 23 of the 34 closed rapid reviews, treats the misses as review noise and sends the engagement to the trust running the weekend stroke diversion (C); the step that lands it there is crediting every death to the trust of the patient's last spell, the indicator's own convention and the episode file's grain, so it never self-joins spells across trusts on the patient key and never sees that the deaths the late-transferring district general hospital (E) exports to four receivers belong to the chains it begins.",
+      "fate": "drafted 2026-10-08 at stage 1 and never registered; redrawn at checkpoint A on 2026-10-09 on the author's reading: its decisive move (recover the real unit, chains of spells linked across trusts, gated by reproducing the published reviews) repeats the architecture of task109 and task120 and cleared the guard only because Gate G was relabelled to decomposition_attribution; its retry log refuted every trust-level screen (best 23 of 34), so the corpus showed a back-tester where to look; the risk-adjusted CUSUM and case-mix framing read as epidemiology; its asks risked H18 and its chart named the construction"
+    }
+  ],
+  "notes": "Realises analytical_tasks note AD01 (analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md). Redraw made on 2026-10-09 at checkpoint A; the first draft is in lineage with its fate. Not registered here: the coordinator registers approved redraws in draw order. Decisive rung: a long wait counts against the trust only where its own care could have shortened it, and the rung finds the waits through which a full unit was being filled with planned post-operative admissions from the trust's own theatres. Pattern C frames the ladder and the decisive computation (the share of each trust's long waits the review can attribute to it, reached through a join to the unit's other admissions); G3 names the decisive insight (the occupancy record says capacity, the admissions made during the wait say allocation), G8 supports and G2 carries the morning-return rung. Filed with C first because C carries the decisive computation and because G3 first would put this card on the structural signature of the unregistered sibling task121 v2 (population, G3, decomposition_attribution, pick_one_of_n); the C signature repeats six older builds, each differentiated here. Gate G decomposition_attribution: each trust's correctly recorded waits are assigned to network capacity or to the trust's own care. Context artifact capacity_report: the critical care network's monthly capacity report (occupancy at 08:00 by unit, referrals waiting over four hours by trust), correct and ranking no trust. Calibration form retry_or_revision_log: the national rapid-review programme's log of thematic escalation reviews in four neighbouring regions, with retries; every attribution reproduces it because those networks never ran full. Furniture: board_of_directors (the regional health board's board places the engagement), audit_or_inspection (the engagement's fieldwork opens 1 April 2027), hospital_or_health_provider. Calibration form, context artifact, role family, forum, forcing event and organisation family are all clear of the unregistered sibling cards task121 and task122 as they stand on 2026-10-09, so neither blocks on this one. Shape other: 8 trusts x 3 figures + 4 decision figures + 5 chart parts + 3 files = 36 criteria; not 01, because nothing is ranked under a cap. Decisive rung from the measured catalogue: #17 guesses an attribution the data can settle, behind #11 beats the headline trap, misses the quiet one, and #7 uses the ready-made measure at the morning-return rung. Spine rows are planned and set when the pack is cut. People drawn with guard.py names --geo 'United Kingdom, England' --seed 119."
+}

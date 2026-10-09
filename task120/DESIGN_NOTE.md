@@ -49,7 +49,7 @@ A competent solver filters to full-year residents, recombines separately filed s
 
 Measured trap #2, counts file rows instead of the real unit: decided 11 of the client's 64 tasks, 7 of them under 0.50 (established). The decisive step takes the form of #18, joins only on the visible key (2 of 64, 1 under 0.50, emerging): the federal primary TIN is the visible key, and the dependents' link is a two-hop chain through the claimant's schedule. Behind it, #3 stops at a close but inexact match (8 of 64, 5 under 0.50) and #1 reports a failed back-test, ships anyway (11 of 64, 9 under 0.50) hold a solver at the federal-filing-unit rung; #14 coarsens the segment (3 of 64, 1 under 0.50) sits under rung 1 as the Department's all-filer table.
 
-Proven-in-production checks (stumping Part 6.1). Dead shapes (Part 4): no match; the nearest is a corpus built to refute the naive read, because the tables refute the return grain (3 of 69) and the federal-filing-unit grain (58 of 69, misses one-sided), which is the bet the measured catalogue's #1 and #3 take. Discriminators: the two units disagree in shape at the top and not only in level (the children's trust income carries 3,900 households past the top-1% mark); membership is computed through a join and never a column; the construction has no menu. L5 (the answer is the extreme cell of the grid) and L8 (every construction is a complete partition, so every total ties) are met. L1 is not (the corpus pins the decisive rung instead of being blind to it), and L3 only in part (the literature's partial, dropping dependent filers, lands at $657,000, -11.5 per cent, nearer than rung 2).
+Proven-in-production checks (stumping Part 6.1). Dead shapes (Part 4): no match; the nearest is a corpus built to refute the naive read, because the tables refute the return grain (3 of 69) and the federal-filing-unit grain (58 of 69, misses one-sided), which is the bet the measured catalogue's #1 and #3 take. Discriminators: the two units disagree in shape at the top and not only in level (the children's trust income carries 3,900 households past the top-1% mark at the draw's scale, 976 at the build's); membership is computed through a join and never a column; the construction has no menu. L5 (the answer is the extreme cell of the grid) and L8 (every construction is a complete partition, so every total ties) are met. L1 is not (the corpus pins the decisive rung instead of being blind to it), and L3 only in part (the literature's partial, dropping dependent filers, lands at $657,000, -11.5 per cent, nearer than rung 2).
 
 ## Nearest exemplars
 
@@ -99,7 +99,9 @@ asserts as realised; rounded floors and hit counts are asserted exactly. A desig
 not shipped) confirmed the structure: with the stop rung pinned at $197,100 / $293,100 / $594,200 and the household
 tail at $214,100 / $318,100, 1,475 trust households lift the top floor to $741,819 with 972 crossers against the 976
 the target needs, the dropped-dependent cell lands at $657,500, the trust income is 3.55 per cent of the $500,000 to $1M
-class's AGI and dependents' returns hold 2.00 per cent of resident AGI.
+class's AGI and dependents' returns hold 2.00 per cent of resident AGI. Those are the model's figures; the built pack's
+are in the Build record (floor units $214,063 / $318,081 / $742,043, 976 crossers, the dropped-dependent floor unit
+$657,057, dependents' returns 2.019 per cent of resident AGI).
 
 ### Changes made at design (on top of "Changes from the source note")
 
@@ -107,12 +109,12 @@ class's AGI and dependents' returns hold 2.00 per cent of resident AGI.
    3,412,000, because four tax years of returns and dependents schedules have to ship for the corpus to be rerunnable.
    Every count in the note is non-round; the source note's round thousands were a generation tell.
 7. **Trust group.** Own AGI $520,000 to $742,000 (not $620,000 to $740,000) and $30,000 to $130,000 per return (not up
-   to $90,000), so the group is 34 per cent of the household heads in its band instead of nearly all of them.
+   to $90,000; realised at build as $30,804 to $99,500, see the Build record), so the group is 34 per cent of the household heads in its band instead of nearly all of them.
 8. **Twin pair.** Kessler and Abington published at 301 against 287 (4.7 per cent apart) instead of 117 against 58,
    because a 2.02x pair makes the stop rung miss one county by 50 per cent, which contradicts the stump sentence's
    "every miss a few per cent short" and turns the corpus into a loud alarm.
 9. **Rung figures from the model.** Rung 0 $520,000 and rung 1 $562,000 at the top floor (the source note's $504,000
-   and $565,000), and the all-filer grid cells moved down because commuters now sit below the floors.
+   and $565,000; realised at build as $531,000 and $551,000), and the all-filer grid cells moved down because commuters now sit below the floors.
 10. **Ladder** extended to five rungs (the dropped-dependent partial is rung 3). **Asks** re-cut to per-tier figures
     (H18). **Chart** re-cut: no rival-construction series; each tier's band carries its capital-gain share of AGI.
 11. **Published classes fixed:** $100K to $200K, $200K to $300K, $300K to $500K, $500K to $1M, $1M to $1.5M, $1.5M to
@@ -125,7 +127,7 @@ class's AGI and dependents' returns hold 2.00 per cent of resident AGI.
   units.
 - 94,807 resident returns are filed by people another resident return claims (2.0 per cent of resident AGI), each TIN
   on exactly one schedule, every one a child of its claimant. Attached, they stop being units: 582,544 household units.
-- Trust group: 2,350 of those returns carry $30,000 to $130,000 of trust and investment income (about $170M in all),
+- Trust group: 2,350 of those returns carry $30,804 to $99,500 of trust and investment income ($171,703,020 in all),
   claimed by 1,475 households whose own AGI is $520,000 to $742,000. Attached, 976 of them cross $742,000; with the 4,850
   households whose own AGI is already above it, exactly 5,826 (the top 1 per cent) sit at or above it. No household total
   reaches $1M.
@@ -134,8 +136,9 @@ class's AGI and dependents' returns hold 2.00 per cent of resident AGI.
   stay in the class balances the boundary flows to the dollar, so the stop rung ties every class cell outside
   $500K to $1M. No household of $1M or more holds attached income. Other filing dependents sit in households under
   $100,000 and stay under it.
-- Commuters (codes 2 and 3): AGI mostly $35,000 to $180,000 (median about $72,000), about 1 per cent above $500,000.
-- Dependents schedule: about 420,000 rows (every claimed dependent, filer or not); 94,807 of the claimed TINs file.
+- Commuters (codes 2 and 3): 133,734 returns, median AGI $69,185 realised, 899 of them (0.67 per cent) at $500,000 or
+  more.
+- Dependents schedule: 466,638 rows realised (every claimed dependent, filer or not); 94,807 of the claimed TINs file.
 - Ranks: households k = 58,255 / 29,128 / 5,826; federal filing units k = 67,736 / 33,868 / 6,774.
 
 ### Gate G
@@ -189,8 +192,8 @@ no forecast is graded, and the objective stays Descriptive & Distribution Analys
 
 ### Answer
 
-**$214,000 / $318,000 / $742,000.** On the natural pipeline (rung 0, $168,000 / $243,000 / $520,000) the answer sits
-27.4, 30.9 and 42.7 per cent higher, and it is the extreme (maximum) cell of the 12-cell grid at every floor (L5). Margin
+**$214,000 / $318,000 / $742,000.** On the natural pipeline (rung 0, $166,000 / $243,000 / $531,000) the answer sits
+28.9, 30.9 and 39.7 per cent higher, and it is the extreme (maximum) cell of the 12-cell grid at every floor (L5). Margin
 over the nearest wrong cell: 11.5 per cent at the top floor (dropped dependents). At the 10 and 5 per cent floors the
 dropped-dependent cell coincides by design (no published class from $100,000 to $500,000 separates the two), and the
 nearest differing cell is the stop rung, 7.9 per cent below. **The guard that binds is the separation floor**, not the
@@ -200,8 +203,8 @@ nearest differing cell is the stop rung, 7.9 per cent below. **The guard that bi
 
 | Rung | Gap | Construction | Floors (10 / 5 / 1 per cent) | Cells reproduced | Killed by (one shipped fact) |
 |---|---|---|---|---|---|
-| 0 | objective | every return is a unit, all filers | $168,000 / $243,000 / $520,000 | 0 of 69 | the methodology's "full-year resident" with the codebook's residency codes |
-| 1 | population (scope) | full-year residents, each return a unit | $179,000 / $265,000 / $562,000 | 3 of 69 | the published class cells: only the three totals tie |
+| 0 | objective | every return is a unit, all filers | $166,000 / $243,000 / $531,000 | 0 of 69 | the methodology's "full-year resident" with the codebook's residency codes |
+| 1 | population (scope) | full-year residents, each return a unit | $179,000 / $262,000 / $551,000 | 3 of 69 | the published class cells: only the three totals tie |
 | 2 | population (unit, G10) | federal filing units: separate returns recombined on the federal primary TIN | $197,000 / $293,000 / $594,000 | 58 of 69 | the dependents schedule: only attaching the dependents' own returns reproduces the 11 missed cells |
 | 3 | population (partial) | filing units with dependents' own returns dropped | $214,000 / $318,000 / $657,000 | 55 of 69 | the three published total-AGI cells, which every complete partition ties and this one misses by 2.0 per cent |
 | 4 | decisive (G2, selected by G16) | households: each filing unit plus the own returns of the dependents its schedule claims | **$214,000 / $318,000 / $742,000** | 69 of 69 | (none) |
@@ -221,8 +224,8 @@ nearest differing cell is the stop rung, 7.9 per cent below. **The guard that bi
 the decisive move is rung 4. Rung 3 is the priced partial (L3): the first step toward the dependents is punished by the
 gate (55 against 58).
 
-**Worth of each move on the graded floors** (10 / 5 / 1 per cent): rung 0 to 1 +6.5 / +9.1 / +8.1 per cent; 1 to 2
-+10.1 / +10.6 / +5.7; 2 to 3 +8.6 / +8.5 / +10.6; 3 to 4 0.0 / 0.0 / +12.9; 2 to 4 +8.6 / +8.5 / +24.9. **Sign
+**Worth of each move on the graded floors** (10 / 5 / 1 per cent): rung 0 to 1 +7.8 / +7.8 / +3.8 per cent; 1 to 2
++10.1 / +11.8 / +7.8; 2 to 3 +8.6 / +8.5 / +10.6; 3 to 4 0.0 / 0.0 / +12.9; 2 to 4 +8.6 / +8.5 / +24.9. **Sign
 direction:** every correction raises every floor or leaves it; the answer is the extreme cell, so no partial application
 can overshoot or cancel onto it.
 
@@ -241,15 +244,15 @@ separate filing and dependents' returns run unchanged through all four years. (7
 misses one-sided and small. Move 4, the literature's treatment of dependent filers, dropping them: 55 of 69, worse.
 No first move lands on the answer. The residual risk is a solver who reads "household" the way distributional
 analysts do (all income of the people the unit supports), joins the schedule's TINs to filers before running the
-corpus, and lands; that solver is the one response the bar allows. The schedule's own shape works against it: about
-420,000 listed dependents of whom 94,807 file, so it reads as a list of children rather than a list of returns.
+corpus, and lands; that solver is the one response the bar allows. The schedule's own shape works against it:
+466,638 listed dependents of whom 94,807 file, so it reads as a list of children rather than a list of returns.
 
 ### Position table (figure form)
 
 | Rung | Floors | Distance from the answer (10 / 5 / 1) | Cells |
 |---|---|---|---|
-| 0 | $168,000 / $243,000 / $520,000 | -21.5 / -23.6 / -29.9 per cent | 0 |
-| 1 | $179,000 / $265,000 / $562,000 | -16.4 / -16.7 / -24.3 | 3 |
+| 0 | $166,000 / $243,000 / $531,000 | -22.4 / -23.6 / -28.4 per cent | 0 |
+| 1 | $179,000 / $262,000 / $551,000 | -16.4 / -17.6 / -25.7 | 3 |
 | 2 | $197,000 / $293,000 / $594,000 | -7.9 / -7.9 / -19.9 | 58 |
 | 3 | $214,000 / $318,000 / $657,000 | 0.0 / 0.0 / -11.5 | 55 |
 | 4 | $214,000 / $318,000 / $742,000 | answer | 69 |
@@ -260,7 +263,8 @@ priced by the gate). No rung sits within 6 per cent of the answer at a floor whe
 ### Discriminator dominance (figure form)
 
 The decisive move is worth +8.6 / +8.5 / +24.9 per cent on the graded floors against a separation floor of 6 per cent and
-a quantile-convention spread under $100 (0.05 per cent at the top floor). The count effect (14.0 per cent fewer units)
+a quantile-convention spread of at most $129 at the answer's floors ($125 / $129 / $117, 0.02 per cent at the top
+floor). The count effect (14.0 per cent fewer units)
 carries all three floors; the shape effect (976 households crossing on their children's income) carries the top
 floor's extra 12.9 per cent over the dropped-dependent cell. The stop rung's only carried advantage is its fit (58 of 69,
 84 per cent of cells), and the gate converts any fit short of 69 into a refusal, so nothing it carries can outweigh
@@ -276,40 +280,42 @@ attached): 12 cells. Floors rounded; distance at the top floor; cells reproduced
 | code 1 | filing unit | attached | $214,000 / $318,000 / $742,000 | answer | 69 | |
 | code 1 | filing unit | dropped | $214,000 / $318,000 / $657,000 | -11.5% | 55 | total cells |
 | code 1 | filing unit | separate | $197,000 / $293,000 / $594,000 | -19.9% | 58 | $500K to $1M and county cells |
-| code 1 | return | attached | $195,000 / $287,000 / $620,000 | -16.4% | 3 | class cells (spouses split) |
-| code 1 | return | dropped | $195,000 / $287,000 / $601,000 | -19.0% | 0 | totals and class cells |
-| code 1 | return | separate | $179,000 / $265,000 / $562,000 | -24.3% | 3 | class cells |
-| all | filing unit | attached | $195,000 / $286,000 / $589,000 | -20.6% | stage 3 | totals, class cells (residency) |
-| all | filing unit | dropped | $195,000 / $286,000 / $580,000 | -21.8% | stage 3 | residency, totals |
-| all | filing unit | separate | $182,000 / $266,000 / $550,000 | -25.9% | stage 3 | residency |
-| all | return | attached | $179,000 / $260,000 / $556,000 | -25.1% | stage 3 | residency, spouses |
-| all | return | dropped | $179,000 / $260,000 / $549,000 | -26.0% | stage 3 | residency, spouses, totals |
-| all | return | separate | $168,000 / $243,000 / $520,000 | -29.9% | 0 | residency |
+| code 1 | return | attached | $196,000 / $283,000 / $618,000 | -16.7% | 3 | class cells (spouses split) |
+| code 1 | return | dropped | $195,000 / $282,000 / $592,000 | -20.2% | 0 | totals and class cells |
+| code 1 | return | separate | $179,000 / $262,000 / $551,000 | -25.7% | 3 | class cells |
+| all | filing unit | attached | $194,000 / $289,000 / $640,000 | -13.7% | 0 | totals, class cells, county cells (residency) |
+| all | filing unit | dropped | $194,000 / $289,000 / $600,000 | -19.1% | 0 | residency, totals |
+| all | filing unit | separate | $180,000 / $268,000 / $565,000 | -23.9% | 0 | residency |
+| all | return | attached | $179,000 / $259,000 / $573,000 | -22.8% | 0 | residency, spouses |
+| all | return | dropped | $179,000 / $259,000 / $560,000 | -24.5% | 0 | residency, spouses, totals |
+| all | return | separate | $166,000 / $243,000 / $531,000 | -28.4% | 0 | residency |
 
 **Partial applications, swept separately:** dependents' income attached while their returns stay units (income counted
-twice): $197,000 / $293,000 / $613,000 (-17.4 per cent), 66 of 69, refused by the three totals; attachment to the
+twice): $197,000 / $293,000 / $639,000 (-13.9 per cent), 66 of 69, refused by the three totals; attachment to the
 claiming spouse's own return without recombining spouses is the (code 1, return, attached) cell. The all-filer cells
-reproduce at most the 12 county cells (commuters carry an out-of-state county code); their exact counts are computed and
-asserted at stage 3. Nearest wrong cell where it differs: 11.5 per cent at the top floor and 7.9 per cent at the two
+reproduce none of the 69 (realised at build: each appendix county holds a part-year resident at $500,000 or more, so
+no all-filer construction ties a county cell). Nearest wrong cell where it differs: 11.5 per cent at the top floor and 7.9 per cent at the two
 lower floors.
 
 ### Calibration corpus
 
 - **Form.** The conference's Household Income Tables for TY2022 to TY2024: for the nine classes from $100,000 up,
   household units and AGI ($ thousands), plus total AGI, 19 cells a year, 57 in all; the TY2024 table's appendix gives
-  household units above $500,000 in the 12 largest counties. 69 cells.
+  household units at $500,000 or more in the twelve largest counties. 69 cells.
 - **Back-test.** Households reproduce 69 of 69 exactly at the published precision (rebuilt from whole dollars, so no
   rounding path splits). Rivals: income attached with units kept 66, filing units 58, dropped dependents 55, residents
-  by return 3, attached to a return 3, all filers by return 0. Charitable scoring: the smallest rival miss is 2 units on
-  a county cell, 2.0 per cent on a total-AGI cell (the two partials) or 3.1 per cent on a class AGI cell, all outside
-  anything the published rounding (whole counts, $ thousands) excuses.
+  by return 3, attached to a return 3, every all-filer construction 0. Charitable scoring: the smallest rival miss is
+  1 unit on a county cell (the all-filer households, whose part-year residents add one to each appendix county and
+  whose totals run 17.5 to 17.7 per cent over), 2 units on a county cell for the stop rung, 2.0 per cent on a
+  total-AGI cell (the two partials) or 3.1 per cent on a class AGI cell, all outside anything the published rounding
+  (whole counts, $ thousands) excuses.
 - **Stop rung's misses, exactly 11.** $500,000 to $1M household units short by 23, 10 and 30 (TY2022 to TY2024, all
   under 0.5 per cent); that class's AGI short by 3.4, 3.1 and 3.6 per cent; five county cells short (Kessler 14 of
   301, 4.7 per cent; four others 2 to 4 each, under 1 per cent). Every class cell outside $500,000 to $1M ties to the
   dollar.
-- **Twin pair.** Kessler and Abington hold 287 federal filing units above $500,000 each and the same count of resident
-  returns above $500,000, with dependents' own returns within 2 per cent of each other; published household units above
-  $500,000 are 301 against 287. Kessler's 14 are households just under $500,000 whose children's custodial-account
+- **Twin pair.** Kessler and Abington hold 287 federal filing units at $500,000 or more each and the same count of
+  resident returns at $500,000 or more, with dependents' own returns within 2 per cent of each other (3,031 and 3,001);
+  published household units at $500,000 or more are 301 against 287. Kessler's 14 are households just under $500,000 whose children's custodial-account
   income carries them over; Abington's comparable dependents are claimed lower down. The pair's job here is to show
   that the extra count lives in who claims whom, which no county aggregate carries; its gap is sized to the stump
   sentence, not to the 2x lookup-killing form (no candidate is transferred by resemblance in this build).
@@ -349,7 +355,7 @@ lower floors.
 - **Codebook (authority 4, field semantics only):** federal_agi is federal adjusted gross income as reported on the state return and the only AGI the extract carries (state taxable income is a separate, plainly named column); residency codes 1 to 3; the federal primary TIN field (equal to the
   filer's own TIN except on a spouse's separate state return); the schedule as "dependents claimed for the exemption
   credit"; ledger timestamps in UTC; instalment due dates with the weekend and holiday rule; the Schedule D extract as
-  the latest version received; the TIN-resolution register; the two wage-statement channels.
+  the latest version received; the TIN register (TIN match cases); the two wage-statement channels.
 - **Empirical pin:** the household construction, the unique survivor at 69 of 69.
 - **Counter-pins: none.** The Department's table header ("Returns processed, all filers") names a different
   population correctly; the fiscal office's basis is attributed, never endorsed; every voice holds a belief. Sweep: the
@@ -454,7 +460,7 @@ ordinary revenue accounting.
 
 | Hazard | Family | Moves | Delta when mishandled |
 |---|---|---|---|
-| H1 transfers: credits elected on TY2024 returns posted Feb to May 2025 as transfer rows citing the TY2024 return are not receipts; transfer rows citing a payment misapplied to another year are cash, dated by the original payment | D5 with D7 linkage | A1 | April cells +8 to +15% if credits counted; every cell -1 to -3% if all transfers dropped |
+| H1 transfers: credits elected on TY2024 returns posted late January to May 2025 as transfer rows citing the TY2024 return are not receipts; transfer rows citing a payment misapplied to another year are cash, dated by the original payment | D5 with D7 linkage | A1 | April cells +8 to +15% if credits counted; every cell -1 to -3% if all transfers dropped |
 | H2 dishonoured items: the ledger records payments as received and the returned-items file reverses them; items re-presented and paid stay | D4 | A1 | every cell +1.5 to +3%; -0.3 to -1% if re-presented items are dropped too |
 | H3 loss limitation: the extract carries net gain or loss and the amount entering AGI ($3,000 limit, $1,500 on a separate return) | D3 | A2 and the chart's share labels | -1 to -4% per tier |
 | H4 TIN resolution: wage statements and payments keep the TIN as reported; the register links a reported number to its filer (resolved rows only) | D7 | A1, A3 | A1 -1 to -2.5% per cell; A3 -1 to -2% per tier |
@@ -481,8 +487,9 @@ ordinary revenue accounting.
   the main call never opens; asserted by deleting every ask-path file and recomputing the schedule and all rung hit
   counts unchanged. The TY2024 credit-elect column is a read-only antidote in an off-path column and carries no device.
 - **Independence:** three primaries from three families (D8, D2, D4), no family repeated; every graded figure sits under
-  at least two devices; composed deltas asserted for every subset of mishandlings (15 subsets on April cells, 7 on the
-  other A1 cells, 3 on each A2 and A3 figure), none within 1 per cent of the golden.
+  at least two devices; composed deltas asserted for every subset of mishandlings (all 15 on every A1 cell, the
+  transfers-alone subset leaving September and January untouched as built; 3 on each A2 and A3 figure), none within 1
+  per cent of the golden (192 assertions at build, nearest 1.39 per cent).
 - **Pair arithmetic (Part 0).** Rubric plan: recommendation block 38 (the floors and their three components), instruction
   following 7 (files, sheets, format), asks 55 over 30 criteria (A1 12, A2 6, A3 3, chart share labels 3, all
   device-carried; reproduction table 1 and chart floor lines and title 4, construction-only; log-scale plot 1, format).
@@ -507,7 +514,7 @@ floors round to $214,000 / $318,000 / $742,000. (3) Units at or above each adopt
 (6) Stop rung $197,000 / $293,000 / $594,000. (7) Rung 3 $214,000 / $318,000 / $657,000. (8) Rungs 0 and 1 realised,
 recorded here at stage 3, each at least 15 per cent below the answer at every floor. (9) Floors non-decreasing rung by
 rung at every floor, strictly increasing at the top floor. (10) Hit counts 0, 3, 58, 55, 69. (11) Partials: 66 hits at
-$197,000 / $293,000 / $613,000; 3 hits at $195,000 / $287,000 / $620,000. (12) All 12 grid cells computed; the answer is
+$197,000 / $293,000 / $639,000; 3 hits at $196,000 / $283,000 / $618,000. (12) All 12 grid cells computed; the answer is
 the maximum at every floor. (13) Every losing cell mapped to the shipped rule it violates. (14) Trust group: 1,475
 households, 2,350 returns, own AGI in [$520,000, $742,000), 976 crossing, no total at $1M. (15) Dependents' returns hold
 2.0 to 2.1 per cent of resident AGI; rung 3 misses each total by -1.9 to -2.2 per cent. (16) Households reproduce 69 of
@@ -548,7 +555,7 @@ no graded figure.
    after the two-hop join, so only to a solver who already holds the answer; stated cause, working students from
    lower-income families filing to recover withholding.
 2. **Income shifting is concentrated:** 34 per cent of household heads with own AGI $520,000 to $742,000 claim children
-   with $30,000 to $130,000 of their own trust and investment income, and 976 households (17 per cent of the top 1 per
+   with $30,804 to $99,500 of their own trust and investment income, and 976 households (17 per cent of the top 1 per
    cent) cross the mark on it. Forced by the top floor's 12.9 per cent shape effect over the dropped-dependent cell.
    Mitigation: the state taxes each return on its own brackets with no child-income rule, the same cause that drives
    separate filing; invisible before the join.
@@ -558,6 +565,9 @@ no graded figure.
    wages.
 5. Separately filing couples are 6.2 per cent of filing units, plausible for a state that allows separate returns on
    one schedule. Two counties equal at 287 filing units above $500,000 is a coincidence of one count.
+6. **Returned items are 3.5 per cent of estimated payments** (11,148 of 320,087; 2.6 per cent not paid), above a
+   typical dishonour rate. Forced by the ask layer: the hazard has to move every A1 cell by more than its 1 per cent
+   floor alone and in every composed subset (the nearest, with the clock, is 1.39 per cent). Added at build.
 
 ### Stopping rule (written before any round)
 
@@ -577,8 +587,187 @@ no graded figure.
 
 Invoked while the ladder was designed (section A walked: litmus, mechanism, flags, no ranking artifact, the 22 axes,
 bins centred off the round value with the flip condition stated, pins filed once, one committed call, no planted
-metric in the prompt's voice, stump sentence). Verdict: pending stage 3 (generator assertions) and stage 6 (judge
-rehearsal).
+metric in the prompt's voice, stump sentence). Section B at stage 3, asserted in the generator (2,158 assertions):
+every C1 convergence on the figure and on the row and unit counts, the C2 back-test (69 of 69 against 66, 58, 55, 3,
+3 and 0), the quantile-convention corridor, every grid cell with the rule it violates and the nearest cell (7.9 and
+11.5 per cent), every graded figure's distance from its rounding edge and every share's distance from its round
+value, the clean-data test on the claimant-field repair, the lens-swap counts and the input gates. The independent
+verifier (99 checks, 0 failed) recomputes from the shipped bytes every construction's reproduction count and floors,
+the quantile conventions, the stop rung's misses and every graded figure; two builds came out byte-identical. Judge
+rehearsal pending stage 6.
+
+## Build record
+
+Stage 3, 2026-10-09. The generator is `task120/generator/` (seed 120, every random stream keyed by name): `build.py`
+writes `task120/target/` and `task120/metadata.json` and runs every assertion; `verify_pack.py` is the independent
+verifier, DuckDB SQL over the shipped bytes with no generator import. From the repo root:
+`python3 task120/generator/build.py` (about five minutes), then `python3 task120/generator/verify_pack.py task120/target`.
+The design figures above now carry the realised values where the build moved them (listed under Changes made at build).
+
+- **Assertions: 2,158, all holding.** m01 to m33 the main call (1,200 of them the sweep that no shipped file carries any
+  floor of any construction), a34 to a47 the asks, p48, p51 and p52 the pack, h1, h9 and h16 the container, intake and
+  date sweeps, with the six row-order replays. Plan items (49) and (50) are the verifier and the double build.
+- **Independent verifier: 99 checks, 0 failed** on `task120/target/`: every construction's reproduction count and exact
+  floors, the quantile conventions, the stop rung's 11 misses, the unit counts and the units at each floor, every A1,
+  A2 and A3 figure, each share's bin, every stop off its golden, the referee, the Department's table, both antidotes,
+  and no reported TIN on a listed dependent who does not file.
+- **Byte-identical:** two full builds from nothing into separate scratch directories gave equal sha256 on all 25 files
+  and `metadata.json`, and equal build records; the build into the task folder matches them. File times are set to
+  2026-11-06 08:30.
+- **Input gates:** 25 files in five formats (csv, parquet, pdf, txt, xlsx); the largest is
+  `wage_statements_efile_ty2025.parquet` at 1,083,466 rows (the TY2025 return file holds 852,947); 102.4 MB in all. The
+  two distractors are named in `metadata.json` and nowhere under `target/`: `returns_processed_by_agi_class_ty2025.xlsx`
+  and `withholding_deposits_2025.csv`.
+- **Leak preview** (leak.py on a scratch copy, so no report sits in the task folder yet): REVIEW, no LEAK; the four
+  REVIEW lines are design vocabulary in the methodology, the thread, the record layouts and the prompt's opening
+  sentence, for the reader's pass at the leak-check stage.
+
+**Main call, TY2025.** 852,947 returns, 719,213 resident, 677,351 federal filing units, 582,544 household units; ranks
+k = 58,255 / 29,128 / 5,826 (households) and 67,736 / 33,868 / 6,774 (filing units).
+
+| Residency | Unit | Dependents' returns | Floor unit's AGI | Floors | Distance from the answer (10 / 5 / 1) | Cells |
+|---|---|---|---|---|---|---|
+| code 1 | filing unit | attached | $214,063 / $318,081 / $742,043 | $214,000 / $318,000 / $742,000 | answer | 69 |
+| code 1 | filing unit | dropped | $214,063 / $318,081 / $657,057 | $214,000 / $318,000 / $657,000 | +0.0 / +0.0 / -11.5 | 55 |
+| code 1 | filing unit | separate | $197,042 / $293,068 / $594,090 | $197,000 / $293,000 / $594,000 | -7.9 / -7.9 / -19.9 | 58 |
+| code 1 | return | attached | $195,594 / $283,211 / $618,397 | $196,000 / $283,000 / $618,000 | -8.4 / -11.0 / -16.7 | 3 |
+| code 1 | return | dropped | $195,388 / $282,266 / $592,013 | $195,000 / $282,000 / $592,000 | -8.9 / -11.3 / -20.2 | 0 |
+| code 1 | return | separate | $179,405 / $261,583 / $551,318 | $179,000 / $262,000 / $551,000 | -16.4 / -17.6 / -25.7 | 3 |
+| all | filing unit | attached | $194,429 / $288,579 / $640,396 | $194,000 / $289,000 / $640,000 | -9.3 / -9.1 / -13.7 | 0 |
+| all | filing unit | dropped | $194,429 / $288,579 / $600,218 | $194,000 / $289,000 / $600,000 | -9.3 / -9.1 / -19.1 | 0 |
+| all | filing unit | separate | $179,741 / $268,213 / $565,112 | $180,000 / $268,000 / $565,000 | -15.9 / -15.7 / -23.9 | 0 |
+| all | return | attached | $178,907 / $259,351 / $573,175 | $179,000 / $259,000 / $573,000 | -16.4 / -18.6 / -22.8 | 0 |
+| all | return | dropped | $178,756 / $258,646 / $559,725 | $179,000 / $259,000 / $560,000 | -16.4 / -18.6 / -24.5 | 0 |
+| all | return | separate | $166,425 / $242,863 / $531,325 | $166,000 / $243,000 / $531,000 | -22.4 / -23.6 / -28.4 | 0 |
+| code 1 | filing unit | income attached, returns kept | $197,042 / $293,068 / $639,318 | $197,000 / $293,000 / $639,000 | -7.9 / -7.9 / -13.9 | 66 |
+
+- **Answer** $214,000 / $318,000 / $742,000 (rung 4); stop rung (rung 2) $197,000 / $293,000 / $594,000; rung 3
+  $214,000 / $318,000 / $657,000; rung 1 $179,000 / $262,000 / $551,000; rung 0 $166,000 / $243,000 / $531,000.
+- **Quantile conventions:** nearest rank at k - 1, k and k + 1, Hyndman-Fan types 1 to 9 and the midpoint round to the
+  same floors under the answer and the stop rung; the spread across them is $125 / $129 / $117 at the answer and
+  $138 / $155 / $176 at the stop rung, inside the $250 window on each side of every floor.
+- **Nearest wrong cell:** 7.9 per cent at the 10 and 5 per cent floors (the stop rung and the double-counting partial,
+  both $197,000 / $293,000) and 11.5 per cent at the top floor (dependents' returns dropped). The answer is the maximum
+  cell at every floor.
+- **Corpus:** households 69 of 69; the double-counting partial 66; filing units 58; dropped dependents 55; resident
+  returns 3; resident returns with dependents attached 3; every other cell 0. The stop rung's 11 misses, every one short:
+  $500,000 to $1M units by 23, 10 and 30 (TY2022 to TY2024), that class's AGI by 3.41, 3.11 and 3.59 per cent, and the
+  county cells of Marston (071) by 4, Corwin (089) by 3, Fenwick (113) by 3, Hollowell (097) by 2 and Kessler (061) by
+  14 of 301. Twin pair: 287 and 287 filing units at $500,000 or more, published 301 and 287, dependents' own returns
+  3,031 and 3,001. TY2025's class shares sit nearest TY2023's table, the year of the smallest stop-rung miss.
+- **World:** dependents' own returns 94,807, holding 2.019 per cent of resident AGI; trust group 1,475 households and
+  2,350 returns of $30,804 to $99,500 ($171,703,020 in all), 976 households crossing $742,000, the largest household
+  total $960,808; conveyor 23, 10, 30 and 30 households a year; 41,862 couples filing separate state returns;
+  commuters 133,734 returns, median AGI $69,185, 899 at $500,000 or more.
+- **Separation (37):** zeroing the two off-path return columns (state taxable income and the credit election) and
+  reading no ask file leaves 582,544 households and the same floors; device rows and hazard rows on the main call's row
+  population: 0 and 0, since every device lives in an ask file.
+
+**Asks, golden (whole dollars).**
+
+| Tier | Instalment 1 | Instalment 2 | Instalment 3 | Instalment 4 |
+|---|---|---|---|---|
+| 1 | $57,100,430 | $60,982,470 | $59,690,330 | $62,279,690 |
+| 2 | $27,130,950 | $28,344,190 | $28,273,480 | $29,413,200 |
+| 3 | $12,597,420 | $13,026,520 | $13,083,940 | $13,625,350 |
+
+| Tier | Household AGI | Net capital gain | Share of AGI, exact | Share, graded | Withholding |
+|---|---|---|---|---|---|
+| 1 | $10,356,865,342 | $3,147,270,635 | 30.3883 | 30.4 | $135,364,253 |
+| 2 | $9,837,059,854 | $995,783,766 | 10.1228 | 10.1 | $229,035,640 |
+| 3 | $7,492,715,926 | $339,052,645 | 4.5251 | 4.5 | $184,720,391 |
+
+**Stops, per cent from the golden (A2 shares in brackets).**
+
+| Ask | S1 natural path | S2 half-handled | S3 over-cleaned | S4 filing-unit tiers |
+|---|---|---|---|---|
+| A1 | April +8.1 to +9.2, June -13.6 to -15.0, September +21.1 to +22.3, January +6.5 to +6.7 | April +13.5 to +13.9, June +5.9, September and January +1.6 to +1.7 | -3.3 to -3.4 every cell | tier 1 +3.0 to +3.1, tier 2 +2.4 to +3.0, tier 3 -8.9 to -9.5 |
+| A2 | -8.2 / -8.7 / -10.7 (27.9 / 9.2 / 4.0) | -2.6 / -2.9 / -4.4 (29.6 / 9.8 / 4.3) | -3.2 / -3.2 / -3.4 (29.4 / 9.8 / 4.4) | +2.5 / -6.0 / -9.2 (29.7 / 8.8 / 3.9) |
+| A3 | -7.5 / -7.6 / -7.9 | -1.6 / -1.6 / -1.6 | -2.3 / -2.3 / -2.3 | +10.1 / +9.3 / +7.1 |
+
+- **Each device alone:** clock -4.57 to -5.38 (April), -19.01 to -20.68 (June), +19.07 to +20.45 (September), +4.72 to
+  +4.95 (January); transfers +11.90 to +12.13 (April) and +4.24 to +4.29 (June), nothing elsewhere; returned items
+  +3.21 to +3.39 every cell; register -1.58 to -1.60 every A1 cell and -1.56 to -1.57 every A3 tier; versions -5.60 /
+  -5.80 / -6.30; loss limit -2.60 / -2.90 / -4.42; paper channel -5.99 / -6.11 / -6.45.
+- **Composed subsets:** the nearest any mishandled figure comes to its golden is 1.39 per cent on A1 (clock and returned
+  items, tier 1 April), 2.60 per cent on A2 (the loss limit alone, tier 1) and 1.56 per cent on A3 (the register alone,
+  tier 3); every A2 share under every subset rounds off the golden share.
+- **Device sizes:** 11,148 returned items on 320,087 estimated payments (8,330 not paid); 25,771 TIN match cases (21,493
+  resolved, 4,278 open; 20,876 on wage statements, 4,895 on payments); 13,035 transfers citing a TY2024 return and 11,022
+  citing a payment; 73,102 paper statements carrying 6.29 per cent of withholding beside 1,083,466 e-filed; a Schedule D
+  extract of 159,450 rows and an amended-return log of 57,896 rows on 27,664 returns.
+
+**Changes made at build** (each also has its line under Tried and rejected where an approach died).
+
+12. **Rung and grid figures realised:** rung 0 $166,000 / $243,000 / $531,000 and rung 1 $179,000 / $262,000 / $551,000
+    (designed $168,000 / $243,000 / $520,000 and $179,000 / $265,000 / $562,000); the double-counting partial $639,000
+    at the top floor (designed $613,000); no all-filer construction reproduces any of the 69 cells, because every
+    appendix county holds a part-year resident at $500,000 or more.
+13. **Trust children's returns run $30,804 to $99,500** (designed up to $130,000), so under filing units a trust
+    child's own return never enters a published class and every class outside $500,000 to $1M still ties.
+14. **The dependents schedule ships every claimed dependent:** 466,638 rows in TY2025 (designed about 420,000).
+15. **Commuters** median $69,185 with 0.67 per cent at $500,000 or more (designed about $72,000 and 1 per cent).
+16. **The appendix counties** are the twelve with the most full-year resident returns in TY2024, at least 15 per cent
+    clear of the thirteenth (asserted), so the appendix's "twelve largest counties" reads one way.
+17. **The TIN register ships as `tin_match_cases.csv`.**
+18. **Stops against the ask sheet:** A1's natural path moves June by -13.6 to -15.0 and September by +21.1 to +22.3 per
+    cent (the sheet expected cells other than April within -4 to +6), because 15 June 2025 is a Sunday and receipts on
+    the rolled due date fall to September under a calendar-date reading; returned items run +3.2 to +3.4 per cent a cell
+    (sheet +1.5 to +3), A3's over-cleaner -2.3 (sheet -0.5 to -2) and A2's loss limit -4.4 on tier 3 (sheet -1 to -4).
+    Every stop clears its floor: 1 per cent a figure, 4 per cent and 0.3 share points on A2's natural path, 3 per cent on
+    A3's.
+19. **Realism debt 6 added** (returned items at 3.5 per cent of estimated payments, under Realism debts).
+
+## Write-up and ship checks (stage 3)
+
+- **Golden.** `task120/generator/golden.py` reads only `target/` (DuckDB over the shipped bytes) and writes
+  `task120/golden/tier_schedule.xlsx` (sheets Schedule, Reproduction, Tier base 2025, Notes) and
+  `task120/golden/tier_floors.png`; run from the repo root as `python3 task120/generator/golden.py` (about a minute). It
+  asserts every graded figure against the Build record and reads the workbook's graded cells back after writing. Printed:
+  floors $214,000 / $318,000 / $742,000 (k-th household AGI $214,063 / $318,081 / $742,043), 582,544 household units,
+  69 of 69 cells, and the tier base exactly as in the Build record's asks tables.
+- **Submission.** `task120/submission.md`, five blocks. Block 2's counts (41,862 couples recombined, 94,807 dependents'
+  returns attached) recompute from the TY2025 return and schedule files; block 1's rival clauses were checked on the
+  bytes (resident returns match only the three totals; filing units miss the $500,000 to $1M class all three years and
+  five counties; dropping dependents' returns misses all three totals).
+- **golden-realism**, run after the figures froze: chart floor labels moved above the plot (the 10 and 5 per cent
+  labels collided), band labels shortened with a key in the subtitle (tier 3's band is too narrow for a three-line
+  label), the subtitle's unit count taken from the data; workbook header alignment by column type, Basis labels
+  top-aligned, column A widened, every sheet fitted to one page wide (Reproduction and Notes had split across pages).
+  Both files rendered and read. Figures unchanged on the re-run.
+- **reduce-house-fixes register.** H1: golden container carries the Office of Revenue Research and 9 November 2026
+  (the as-of date), no writer signature; the scrub audit is clean on `golden/` (band 2026-10-23 to 2026-11-09) and on
+  `target/`. H2 and H3: every figure in the submission is printed or asserted by `golden.py` or `verify_pack.py`; the
+  workbook's and chart's prose is built from the same variables as their figures. Thinnest margin on file: the
+  quantile-convention spread of $129 at the 5 per cent floor against the $250 window either side of it. H4: `golden/`
+  holds exactly the two files the prompt names (sha256 prefixes: tier_floors.png dfec0216b3411fb6,
+  tier_schedule.xlsx a28fd97fca202b7f). H6: the golden's stated rules back-test on the record with zero mispredictions:
+  tier membership by adopted floor (units at or above each floor equal k), the household's county as its primary
+  filer's (all twelve appendix counties reproduce), the version of record (0 accepted-version AGI mismatches), the
+  credit-election transfer rule (0 transfers off their TY2024 election). H7: two builds of the golden byte-identical.
+  H8: every citation resolves (methodology s.2, s.3, s.4; record layouts s.3; every file name is in the pack). H11: one
+  `submission.md`, one `prompt.md` in the tree. H16: no date in either golden after 9 November 2026. `verify_pack.py`
+  after the pass: 99 checks, 0 failed.
+- **Surface** (`guard.py surface task120`): 0 promoted pairs; nearest neighbour task72 at 0.101 (97th percentile),
+  proximity only.
+- **Heart** (`guard.py heart task120`): WARN, no BLOCK. Nearest heart text 0.06 (task109's driver, differentiated on
+  the card). WARN `repeat.gate_g` against task123 (method_or_model_selection in one of the last two builds): answered,
+  the mechanism is the same label on a different move (here a unit built through a roster link, selected by exact
+  reproduction), and the batch's other furniture differs; the card's driver_concrete was refreshed to build scale and
+  its answer, answer_source, spine and deliverables filled.
+
+## Leak review
+
+leak.py, as of 2026-11-09: REVIEW, no LEAK. One line per REVIEW line.
+- `household_income_tables_ty2022.xlsx`, 500,000: a published class boundary ($500,000 under $1,000,000), not an answer; it reaches the sweep only through block 1's rival clause.
+- `household_income_tables_ty2023.xlsx`, 500,000: the same class boundary.
+- `household_income_tables_ty2024.xlsx`, 500,000: the same class boundary, plus the Appendix A threshold the tables publish.
+- `returns_processed_by_agi_class_ty2025.xlsx`, 500,000: the Department's own class boundary on the distractor table; it carries no floor.
+- `income_tax_tier_methodology.pdf`, 8 of 9 words of the committed call: that is pin P1 (full-year resident household units, the 10, 5 and 1 per cent marks, the nearest $1,000), stated once as determinism requires; it carries no floor and does not say what a household holds.
+- `income_tax_tier_methodology.pdf`, 11 stump terms: the pins' own vocabulary (household, federal, filing, construction); the filing-unit basis is attributed to the Legislative Fiscal Office and the dependents' link is not named.
+- `re_ty2025_tier_rebase.txt`, 4 stump terms: the delivery note lists the files it delivers (returns, the dependents schedule); no sentence points at attaching them.
+- `research_extract_record_layouts.txt`, 12 stump terms: field semantics only; the schedule is described as dependents claimed for the exemption credit and the dependent's return carries no claimant field, which is the design.
+- `prompt.md`, opening sentence with two stump terms ("returns", "income-tax"): the evidence-first opening names the processed-return year, the forcing fact; it fixes no unit, population or basis.
 
 ## Tried and rejected
 - Twin pair at 117 against 58 (2.02x, the source note's form): dropped because the stop rung would miss Kessler by 50 per cent, which breaks "every miss a few per cent short" and makes the corpus a loud alarm; there is no lookup transfer to kill in this build, so the pair only needs a nonzero gap in an exact count.
@@ -590,3 +779,21 @@ rehearsal).
 - The full-scale state (3,412,000 returns a year): with four years of returns and schedules shipping for the corpus, the pack would run to several hundred megabytes; scaled to 852,947.
 - Publishing AGI cells only for the top classes so dependents could sit realistically in the middle classes: it changes the 69-cell corpus the stump sentence is written on; the middle-class concentration is carried as realism debt 1 instead.
 - Commuter incomes spread to $400,000 (median about $105,000): the all-filer household cell's 10 per cent floor landed 0.3 per cent from the answer's; commuters moved below the floors (median about $72,000).
+- Trust group drawn by random tuning of households and children (build): the search reached 885 crossers of $742,000 against the 976 the top floor needs; replaced by an allocation that picks the 976 crossers first and gives the other 499 households children that leave them under the mark.
+- Trust children's returns up to $130,000 (the design's range): under filing units a child's own return of $100,000 or more is a unit in the $100,000 to $200,000 class, which breaks the stop rung's tie on every class outside $500,000 to $1M; capped at $99,500.
+- Abington's comparable dependents claimed by households anywhere under $500,000: the attached income could carry a claimant to the class top (the generator stopped on it), which would hand Abington a crosser the twin pair does not allow; the claimants sit under $440,000.
+- Filing dependents drawn from the first household composition (fewer, younger children): only 77,314 of the 91,281 needed in a year could be placed; child ages now run 0 to 26 on a smooth profile with a Poisson(0.9) child count, child and head-of-household rates are higher at low incomes, and each year has its own target.
+- Twin pair equalised by moving one separately filing couple between Kessler and Abington: after the year factors were retuned no couple fitted and the build stopped ("no couple to adjust"); the equaliser now has four moves, in both directions.
+- Commuter AGI with a long tail: the all-filer household cell sat 6.7 / 7.8 / 6.9 per cent below the answer, nearer than the designed nearest cell at the top floor (11.5 per cent); with the tail cut to 0.68 per cent of commuters (Pareto shape 3.4) and the median at $69,000 it sits 9.3 / 9.1 / 13.7 per cent below.
+- Prior-year trust groups at the first planned sizes (1,391, 1,342 and 1,436 households): the own-AGI band seated only 1,262, 1,224 and 1,317 in the lower-income prior years, and the group size is what sets the stop rung's $500,000 to $1M AGI miss; resized to 1,066, 1,163 and 1,552 so the misses land at 3.41, 3.11 and 3.59 per cent.
+- Prior-year tables left to coincidence: some return-grain constructions tied a published class or county cell by chance (separate spouses moving in and out of a class netting to zero), which moved their hit counts off 3 and 0; such ties are broken by moving one couple's split share (return-grain cells only), and every appendix county holds a part-year resident at $500,000 or more so no all-filer construction ties a county cell.
+- Rival cells' floors left where they fell: six grid cells' floors sat within $53 of a half-thousand rounding edge (two of them $3 away), so quantile conventions could round them two ways; unit AGIs within $70 of such an edge are moved out of the window, and every cell's floor is asserted at least $70 from an edge under every convention.
+- First prior-year income factors (0.952, 0.981 and 1.043): TY2025's class shares sat nearest TY2024's table, the year of the largest stop-rung miss, instead of TY2023's; retuned to 0.948, 0.992 and 1.061.
+- Ask devices drawn as one share of all rows: the transfers alone moved April by 56 to 57 per cent and the loss limit moved tier 3 by 34 per cent, while composed mishandlings cancelled to within 0.24 to 0.58 per cent of a golden cell; every device, the credit elections included, is now drawn per tier and instalment cell to its own target, and the worst composed subset is 1.39 per cent.
+- The first estimated-payment participation curve: under filing-unit tiers (stop S4) tier 2's receipts came within 0.4 to 1.6 per cent of the golden; the curve now rises through 0.25 at $200,000, 0.33 at $260,000 and 0.47 at $300,000, and S4 moves tier 2 by 2.4 to 3.0 per cent.
+- A paper channel carrying about 1 per cent of withholding: A3's natural path (e-file only, no register) landed 2.3 to 2.5 per cent from the golden, under the ask sheet's 3 per cent floor; the channel was enlarged to 6.29 per cent of withholding and the natural path now lands 7.5 to 7.9 per cent off.
+- Realism defects in the first full build, each fixed: TY2025 original returns received in December 2025 (e-filing now opens 21 January 2026), capital losses piled at exactly -$600 (random floors now), register cases opened before the payment they cite, deposits dated on weekends, TY2024 ledger rows dated in December 2024 (outside the ledger's stated window), accepted amendment dispositions after the extract (all now by 15 August 2026), and the reconciliation summary's all-channel employer count summed across channels (now distinct employers).
+- Parquet with byte_stream_split on integer columns (to shrink the return files): DuckDB refuses it ("BYTE_STREAM_SPLIT encoding is only supported for FLOAT or DOUBLE data"), so a solver's likeliest engine could not read the spine; dropped, the bundle is 102.4 MB, and the build asserts that DuckDB and pyarrow agree on every Parquet file's row count.
+- The TIN register named tin_resolution_register.csv: leak.py read "solution" inside "resolution" as author vocabulary (LEAK); renamed tin_match_cases.csv, with the record layouts, the thread and the verifier following.
+- Tier 2's capital-gain share of AGI at 10.10005 per cent (within 0.0001 points of the round one-decimal value, the receipt determinism-check A.6 names): tier 2's gains carry a 1.0023 tilt in the generator (share 10.1228), and every share is asserted at least 0.01 points from its round value and 0.02 points from its rounding edge.
+- Misreported TINs drawn clear of TY2025 filers and spouses only: 10 landed on dependents listed on a schedule who do not file (3 e-filed statements kept such a dependent as their owner after the register), so attaching records through the schedule would have moved A3 off the filer-and-spouse resolution; a misreported TIN now avoids every TIN in the files, asserted in the generator and the verifier.

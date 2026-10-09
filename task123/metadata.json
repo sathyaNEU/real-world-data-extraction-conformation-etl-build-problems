@@ -1,0 +1,99 @@
+{
+  "task": "task123",
+  "title": "Steady Ground Fund, September 2026 stabilisation offers",
+  "domain": "Nonprofit & Grant-making",
+  "subdomain": "grantee financial health",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "as_of": "2026-10-08",
+  "deliverables": [
+    "steady_ground_sep2026_offers.docx",
+    "steady_ground_sep2026_screen.csv",
+    "steady_ground_sep2026_offers.png"
+  ],
+  "input_files": [
+    {
+      "path": "SGF_round_rules_rev2026-06.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "SGF_screen_run_2021-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "SGF_screen_run_2022-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "SGF_screen_run_2023-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "SGF_screen_run_2024-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "SGF_screen_run_2025-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "SGF_screen_run_2026-03.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "canterbury_community_income_survey_2025.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "charities_register_returns_extract_20261007.csv",
+      "format": "csv"
+    },
+    {
+      "path": "grantee_capacity_ratings_2026.csv",
+      "format": "csv"
+    },
+    {
+      "path": "grants_register_20261007.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "grants_team_thread_oct2026.txt",
+      "format": "txt"
+    },
+    {
+      "path": "portal_form_change_notice_2024-11.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "portal_return_lines_2018q3_2026q2.csv",
+      "format": "csv"
+    },
+    {
+      "path": "screen_cutover_standard_2026.docx",
+      "format": "docx"
+    },
+    {
+      "path": "trust_payment_run_2018-07_to_2026-09.csv",
+      "format": "csv"
+    },
+    {
+      "path": "trustees_budget_minute_2026-27_extract.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "warehouse_extract_record_2026-10-07.md",
+      "format": "md"
+    },
+    {
+      "path": "warehouse_field_guide.md",
+      "format": "md"
+    }
+  ],
+  "large_file": {
+    "path": "portal_return_lines_2018q3_2026q2.csv",
+    "rows": 83450
+  },
+  "distractor_files": [
+    "canterbury_community_income_survey_2025.xlsx",
+    "grantee_capacity_ratings_2026.csv"
+  ]
+}

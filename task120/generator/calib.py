@@ -23,13 +23,15 @@ EXPECTED_HITS = {
 }
 
 
-def appendix_codes(W):
-    """The twelve counties with the most full-year resident households in TY2024, largest first."""
-    y = 2024
-    act = Wm.active_mask(W, y)
-    codes, cnt = np.unique(W.county[act], return_counts=True)
-    order = sorted(zip(cnt, codes), reverse=True)
-    return [str(c) for _, c in order[:12]], [int(n) for n, _ in order[:13]]
+def appendix_codes(R2024):
+    """The twelve counties with the most full-year resident returns processed for TY2024, largest
+    first (the order the appendix prints them in)."""
+    r = R2024[R2024.residency_code == 1]
+    cnt = r.county_code.value_counts()
+    cnt = cnt.sort_values(ascending=False, kind="stable")
+    codes = [str(c) for c in cnt.index[:13]]
+    assert cnt.iloc[11] > 1.15 * cnt.iloc[12], "twelfth and thirteenth counties too close"
+    return codes[:12], [int(x) for x in cnt.iloc[:13]]
 
 
 def published(R, S, app):
@@ -64,7 +66,7 @@ def settle_ties(W, frames_fn, max_rounds=12):
     rng = stream("ties")
     for rnd in range(max_rounds):
         R, S = frames_fn(W, (2022, 2023, 2024))
-        app, _ = appendix_codes(W)
+        app, _ = appendix_codes(R[2024])
         pub = published(R, S, app)
         cells = all_cells(R, S, app)
         hits, misses = hit_table(cells, pub)

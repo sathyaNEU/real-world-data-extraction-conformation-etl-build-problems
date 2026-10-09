@@ -24,7 +24,7 @@ Fiction's calendar: census 30 September 2026 (the statutory annual return deadli
 
 **Planned deliverables.** `steady_ground_sep2026_offers.docx` (the trustees' paper that commits the offers), `steady_ground_sep2026_screen.csv` (every scored grantee on the conformed screen), `steady_ground_sep2026_offers.png` (the offers read at a glance).
 
-**World.** Ashworth Pascoe Trust (Canterbury, New Zealand, NZD), its Steady Ground Fund, and Ledgerwood Analytics, the bureau whose contract ended after the March 2026 round. Personas drawn with `guard.py names --geo "New Zealand, Canterbury" --seed 123`: Rebecca Anderson (head of grants, the requester), Liam Bryant (data lead, built the warehouse), Andrew Knox (Ledgerwood's lead analyst), Wiremu Roberts (chair of trustees), Mia Hart (finance manager), Tony Hughes (grants adviser, holds the decoy belief that the round exists for the March 2026 funding cut).
+**World.** Ashworth Pascoe Trust (Canterbury, New Zealand, NZD), its Steady Ground Fund, and Ledgerwood Analytics, the bureau whose contract ended after the March 2026 round. Personas drawn with `guard.py names --geo "New Zealand, Canterbury" --seed 123`: Marie Griffin (head of grants, the requester; redrawn at stage 3, see Tried and rejected), Liam Bryant (data lead, built the warehouse), Andrew Knox (Ledgerwood's lead analyst), Wiremu Roberts (chair of trustees), Mia Hart (finance manager), Tony Hughes (grants adviser, holds the decoy belief that the round exists for the March 2026 funding cut).
 
 **Gate G.** Litmus: no. Every figure the task overturns is correct: today's portal holds each grantee's quarters as now known, the management fourth-quarter returns are what the grantees reported, and the bureau's packs are what the bureau computed; the difficulty is constructing a window rule no document states, not catching a wrong number. Mechanism method_or_model_selection, with etl_conformance as the frame. surface_read_dependency: no. stumping_family: analytical_non_defect. sole_data_defect: no (repair every file and the rule still has to be recovered; the naive read and the answer are different windows, not one window under two lenses).
 
@@ -330,7 +330,7 @@ Nineteen files, six formats (csv, xlsx, pdf, docx, md, txt). Names in the Trust'
 | 14 | `trust_payment_run_2018-07_to_2026-09.csv` | operating extract: the Trust's own payments to grantees | no | K2 |
 | 15 | warehouse field guide (md) | dictionary: field semantics, codes, statuses, the register match | yes | yes |
 | 16 | pack provenance record (md) | provenance for every constructed file | no | no |
-| 17 | grants team thread, October 2026 (txt) | social layer: Rebecca Anderson, Liam Bryant, Tony Hughes, Mia Hart, Wiremu Roberts, Andrew Knox | no | no |
+| 17 | grants team thread, October 2026 (txt) | social layer: Marie Griffin, Liam Bryant, Tony Hughes, Mia Hart, Wiremu Roberts, Andrew Knox | no | no |
 | 18 | `canterbury_community_income_survey_2025.xlsx` | distractor: a regional survey of community-sector income by sector | no | no |
 | 19 | `grantee_capacity_ratings_2026.csv` | distractor: the grants team's governance and capacity ratings (no filing fields) | no | no |
 
@@ -545,6 +545,85 @@ Stage 2 (design) changes, every draw decision kept (pairing, shape 05, the three
 - The spine starts at the quarter ending September 2018, not 2020, because D1's stepped-back windows at the March 2021 census reach October 2018; the card's planned spine name changes with it when the pack is cut.
 - The ask layer is K1 (government money inside each fall) and K2 (the Trust's own money inside each fall), both keyed to the offered set and carried into the CSV; the docx asks for no fall figure. The draw's two figures per offered grantee (offer, fall) become three (offer, government part, own-money part), and the fall lives in the CSV only, so the arithmetic moves from about 42 to 64 before compression.
 
+## Build record
+
+Stage 3, build, 2026-10-09. Generator `generator/build.py` (seeded, deterministic; modules roster, identity, movers, world, plan, screen, lines, asks, tune, design, writers_data, writers_docs, asserts_world, asserts_asks), independent verifier `generator/verify.py` (reads only `target/` and `metadata.json`, parses the xlsx bytes itself, shares no code with the generator), ship script `generator/ship.py` (two scratch builds, the task-folder build, the verifier, the generator against verifier comparison). Rebuild: `python3 task123/generator/ship.py --task task123 --scratch <scratch dir>` from the repo root.
+
+```
+GATES
+  generator: 313 assertions green across 55 assertion ids (A1 to A53 as planned, plus SS single-statement,
+    TELL generation tells, H1 container audit); verifier: 118 checks green from the shipped bytes
+  two consecutive scratch builds byte-identical (20 files: target/ and metadata.json); the task-folder pack
+    byte-identical to both; generator and verifier agree on 1,050 figures (every scored row's income, prior,
+    fall, fall per cent, offer, K1 and K2; every corpus round; every rival's miss count; every rung's rate)
+  input gates: 19 files, 6 formats (csv, xlsx, pdf, docx, md, txt), spine portal_return_lines_2018q3_2026q2.csv
+    83,450 rows (card still carries the planned 2020q3_2026q3 name and 140,000 rows; /approve updates it),
+    register match 1,213 rows, payment run 15,358 rows; distractors canterbury_community_income_survey_2025.xlsx
+    and grantee_capacity_ratings_2026.csv named in metadata.json only; deleting both leaves the call unchanged
+  containers: house scrub audit clean (no writer signature, no out-of-band date); zip entries at a fixed time;
+    mtimes 7 October 2026 09:00; leak.py --asof 2026-10-08: REVIEW, no LEAK (generic register vocabulary in five
+    documents; forward dates are the grants register's current-term end dates and the portal's year_end column,
+    both forward by design)
+```
+
+**The answer.** 27.47 cents per dollar of fall (2,747 hundredths of a cent); 14 offers totalling NZ$819,939, NZ$61 left in the Fund, the next hundredth NZ$178 over the pot; 146 scored. First outside the line: Pegasus Community Transport Trust (Y4), 7.7 per cent (7.72; next 6.39). Replay: every round's published rows given back, 118, 124, 131, 137, 142 and 145.
+
+| Key | Grantee | Offer | Fall | Fall % | K1 government part | K2 Trust part |
+|---|---|---|---|---|---|---|
+| M | Geraldine Carer Respite Network | 150,000 (cap) | 660,409 | 20.3 | 302,510 | -10,800 |
+| A2 | Heathcote Adult Literacy Project | 106,458 | 387,542 | 22.1 | 125,528 | 13,877 |
+| F1 | Mayfield Kai Share Cooperative | 105,414 | 383,743 | 13.2 | 258,337 | -19,966 |
+| A5 | Woolston Sports Education Trust | 70,813 | 257,783 | 18.3 | 103,487 | 36,866 |
+| A3 | Burwood Environmental Restoration Trust | 68,195 | 248,253 | 21.0 | 89,049 | 15,122 |
+| C1 | Beckenham Carer Respite Network | 63,848 | 232,427 | 14.9 | 138,951 | -61,032 |
+| A4 | Beckenham Music School Trust | 58,277 | 212,147 | 18.5 | 115,965 | -36,728 |
+| F3 | Tai Tapu Kai Share Cooperative (dual) | 42,461 | 154,572 | 13.2 | 94,431 | -71,516 |
+| F2 | Waikari After School Care Society | 38,365 | 139,661 | 13.3 | 73,145 | -8,408 |
+| F4 | Papanui Neighbourhood Hub Trust | 33,440 | 121,733 | 14.1 | 41,328 | -6,402 |
+| F5 | St Albans Newcomers Network | 26,794 | 97,539 | 14.2 | 54,616 | -6,718 |
+| A6 | Sydenham Play Resource Library Society | 24,005 | 87,387 | 14.2 | 34,351 | 2,078 |
+| F6 | Shirley Kai Share Cooperative | 16,869 | 61,407 | 13.5 | 28,381 | -4,300 |
+| F7 | Kaiapoi Newcomers Network | 15,000 (floor) | 43,416 | 13.6 | 22,709 | -2,500 |
+
+The CSV's K1 column is empty for the 25 short-form scored grantees; K2 for them comes from the payment run. Every scored row's figures are in the verifier's JSON output (`verify.py --json`), which the submission stage reads rather than this note.
+
+**Rungs (September, rate against the answer's).** R0 filed year 58.85 cents (2.142x, 10 offers, 6 names differ, 51.2% of the pot re-placed); R1 per grant return, latest 35.35 (1.287x, 154 rows, 15 offers on 14 names, 12 differ, 58.3%); R2 one row per organisation, latest 39.08 (1.423x, 13 offers, 11 differ, 58.3%); R3 as held, the stop 45.03 (1.639x, 12 offers, 10 differ, 58.3%); R4 the answer 27.47. Marker (M) ranks 153rd, 146th and 146th by dollar fall on R1 to R3 and first on T; offered on no lower rung. R3 offers C1, F1 to F7 and the decoys Y1 Bryndwr Household Budgeting Trust, Y2 Aranui Heritage Society, Y3 Shirley After School Care Society and Y4; R2 adds G_R2 Diamond Harbour Whanau Support Services (June 2026 return restated on 5 October); R1 adds L_dual Amberley Tenancy Advocacy Service (project-grant copy of the June 2026 return left low) and F3's second row. R3's cap-bound offer (F1) is NZ$44,586 under the cap on T.
+
+**Dominance.** Decoys hold 28.9% of R3's eligible falls, the six answer names 60.0% of T's, ratio 2.07. Movers: decoys on T -1.41, -1.18, -1.58 and 7.72 per cent, on R3 15.86 to 18.43; answer names on T 14.21 to 22.08, on R3 -9.09 to -2.92.
+
+**Grid (rate against the answer's).** Per return, as held, no step-back +42.7%; per return, latest, step-back -15.9%; per return, as held, step-back -8.5% (nearest single-violation cell); per organisation, latest, step-back -8.7%; 30-June grantees not stepped back +16.9%; only 30-June grantees stepped back +34.7%; current window stepped back, prior not +58.6%; register read at the extract +33.4%; overdue only and register fallback both equal R3 (+63.9%); census day exclusive: identical rate and offers, 14 CSV rows differ.
+
+**Corpus.** 797 rows (118, 124, 131, 137, 142, 145), 71 offers (9, 10, 11, 12, 13, 16), rates 29.77, 38.40, 33.83, 26.54, 30.81 and 20.16 cents, totals offered NZ$539,966, 574,924, 609,983, 649,960, 689,979 and 719,997; floor or cap offers in 2021, 2022, 2024 and 2026. Rival misses: R3 10 (787 given back, every offer and rate); V1 overdue only 8; V2 December balance dates 12; V3 Q4 amended after the census 10; V4 current window only 10; V5 unfiled unscored 10; T-strict 3; T-extract 10; register fallback 10; R2 94 rows with offers and rates failing in 4 rounds; R1 119 rows, count failing all 6 rounds; R0 787 (10 given back, 1.25%). Residue rows: D1 Rangiora Family Support Trust in all six rounds, D2 Diamond Harbour After School Care Society in 2022 and 2024, J1 Papanui Environmental Restoration Trust 2023, J2 Rakaia Community Rooms Trust 2024; each within 0.79% of income and 0.69 points of fall, none offered, all falls between -1.17 and 0.31 per cent. Census-day receipts: J3 Prebbleton Arts Trust (31 March 2023), D2 (31 March 2025), J4 Oxford Community Transport Trust (31 March 2026). Twin pair: Amberley Mental Wellbeing Collective (TA) and Waikari Mental Wellbeing Collective (TB), identical on every grants-register column and at 11.60 per cent each on today's versions, published 5.9 and 11.6 (1.97x). Dual organisation whose two returns differed as held: St Albans Heritage Society (DU2), March 2023. Rule flips: 14 composed rules each break at least one corpus case (the latest-across-grants rule breaks exactly one, DU2 2023).
+
+**Ask layer.** Lazy paths: K1 by label mapping moves 14 of 14 offered figures by 8% or NZ$2,000; K2 by the month the instalment is for moves 14 of 14 by 8% or NZ$1,000. Every stop (K1: label mapping, comparatives, whole fees line; K2: instalment month, returned payments, ten-day transit, one grant reference) leaves each offered figure either untouched or at least NZ$500 away; R3's windows miss all seven unfiled offerees on both asks. Necessity: D3 moves K1 only, D8 K2 only; H1 moves K1 (NZ$23,270) and K2 for F3 only; H4 moves K1 and K2 for A4 and F2 (each by NZ$1,000 or more); H5 moves K2 for A3 only; H2 moves 12 of 14 K1 figures by 5% or more; H3 covers 25 short-form scored rows, none offered. Composed mishandlings: 112 subset checks, nearest NZ$942 (F7, K2, comparatives). Referee: 30 offered-grantee years tie to the register, all 14 re-presented comparative years do not. Pair simulation (habitual battery, D3 and D8 missed): cracker 45.0, mirror 10.0, average 27.5. Separation: 0 device or hazard rows in the main call's 5,725 total-income YTD rows of accepted, rejected and withdrawn versions; the payment run is read by no step of the main call.
+
+**Cast (design keys, never shipped).** Unfiled at the census and filed 1 to 7 October: A2, A4 and four steady grantees; not in the extract: M, A3, C1, Y1 to Y4 and one steady grantee; 14 steady 31 March grantees filed on 30 September 2026. New 30-June grantee dropped by T: Bryndwr Community Transport Trust (N). 31 December grantees: D1, D2, D3 St Albans Neighbourhood Hub Trust. Dual grantees: F3, L_dual, DU1 Governors Bay Community Rooms Trust (offered March 2023), DU2 and three steady.
+
+**Built against the plan, where it moved.** Paper run to build: T 28.26 to 27.47 cents; R3 1.85x to 1.64x, R2 1.50x to 1.42x, R1 1.28x to 1.29x, R0 2.59x to 2.14x; nearest single-violation cell 10.2% to 8.5%; A9's 8% floor held on both cells. The K2 lazy aim is asserted as 8% of the figure or NZ$1,000; most offered grantees move by exactly one Steady Ground instalment (the March 2026 offers paid from 20 May 2026 sit inside the filed grantees' windows), M by one operating-grant renewal step (NZ$1,200). The pair simulation is a proxy on the planning weights 38/7/55 with r = 3; rerun it on the generated rubric.
+
+**Write-up and ship checks (stage 3, 2026-10-09).** `python3 task123/generator/golden.py` reads only `target/` (shares no code with the generator or the verifier) and writes `golden/steady_ground_sep2026_offers.docx` (the trustees' paper from Marie Griffin: recommendation, the rate, the step-back in prose, the offers table with both parts, the first outside the line, the replay table, the purpose answer to the decoy belief, two notes), `golden/steady_ground_sep2026_screen.csv` (146 rows, nine columns, largest fall first, K1 empty for the 25 short-form rows) and `golden/steady_ground_sep2026_offers.png` (matplotlib, one series, floor and cap labelled at their values, rate in the title). It asserts the replay (797 of 797 rows, 71 of 71 offers, 6 of 6 rates), the struck rate against the next hundredth, distinct falls, every stepped-back window ending December 2025 (31 March) or March 2026 (30 June) with that year's return not received by the census (H6, the stated rule back-tested row by row), every unscored organisation a grantee from mid-2024 or later, and the Trust memo against the payment run on 884 QFR-24 returns. It prints 27.47 cents, 14 offers, $819,939 of $820,000 with $61 left, 146 scored, Pegasus Community Transport Trust 7.7 per cent and the 14 offers with both parts; all 146 CSV rows agree with the generator record and `verify.py --json` on all seven figures. Two counts are stated more exactly than the plan above: 150 organisations hold a current operating grant at the census (rule 3.1), 146 are scored and the four not scored are newer grantees (N, dropped by the step-back, and three too new under any window; the plan's "147 in scope" counted organisations with eight natural quarters), and 31 scored grantees step back (14 at 31 March, 17 at 30 June; the plan's 32 includes N). The golden-realism pass ran after the figures froze (title block and threshold labels on the chart, table grid widths, the header block and keep-with-next headings in the paper, the cap and floor sentence and the unscored count derived from the data); the printed figures were re-diffed unchanged after every edit and two golden builds are byte-identical. Container: docProps carry Marie Griffin and 28 October 2026, the zip entries a fixed time, the PNG no Software chunk; the house audit is clean on `target/` and `golden/`. Register pass: H1 clean, H4 the golden folder holds exactly the three declared files and every visual was opened, H6 as above, H8 every cited file, field, line code and rule number resolves, H11 one submission.md and one prompt.md, no em dash in the write-up or the paper. The persona rename (below) moved exactly three pack files (the thread, the cutover standard, the budget minute); ship.py green after it (313 assertions, 118 verifier checks, two scratch builds byte-identical, generator and verifier agree on 1,050 figures). `guard.py heart task123`: WARN, no BLOCK (people.first Marie against task67, an older build; repeat.gate_g against task120, answered under Guard; nearest stump 0.06, nearest driver 0.07 task101). `guard.py validate`: 116 cards, 0 invalid.
+
+## Leak review
+
+`leak.py task123 --asof 2026-10-08`, stage 3 after the goldens, the write-up and the persona rename: **LEAK**, held for the author rather than cleared, because no honest edit clears it. Each line answered:
+
+- LEAK, `SGF_round_rules_rev2026-06.pdf` 150,000 and 15,000: the cap and floor of rule 5.2, a governing pin the screen cannot run without; they match graded figures only because one offer is capped and one floored by construction (A14). The skill's own "What is not a leak" covers a filed cap; the script exempts only figures the prompt states, and the prompt omits them by design (Prompt, stage 2). Not fixable without dropping the pin or gaming the screen.
+- LEAK, `trustees_budget_minute_2026-27_extract.pdf` 820,000: the September pot, the filed appropriation the rate is struck against; same class as above.
+- LEAK, `warehouse_extract_record_2026-10-07.md` 1,213: the register match's true row count, colliding by chance with one non-offered grantee's government part (Darfield Men's Workshop Collective, $1,213); neither figure points at the other.
+- REVIEW, round rules 5.4 and 3.3: clause numbers matching two fall percentages in the CSV block; harmless.
+- REVIEW, payment run 10,800: the regex joins "2018-10" and an instalment of 800 across a comma; harmless.
+- REVIEW, extract record 4.0: the CC BY 4.0 licence; harmless.
+- REVIEW, round rules carry 8 of 10 words of the call: the fund's own vocabulary (Steady Ground, offers, cents per dollar of fall); no rate, no count.
+- REVIEW, round rules (return, census, annual, december): rule 2's census dates and rule 7's December first instalment; nothing about windows or filing.
+- REVIEW, grants team thread (return, register, extract): Liam Bryant listing what the extract holds; no method.
+- REVIEW, portal form-change notice (return, quarter, received, december): the K1 and K2 organ (lines from the December 2024 return, Trust money in the quarter it reaches the account); read by no step of the main call.
+- REVIEW, extract record and field guide (register, annual, quarter, version, accepted): field and coverage definitions; neither states knowledge time, the fourth-quarter source or a window end (counter-pin sweep, A39).
+- REVIEW, the six screen packs: the calibration corpus, ranking March rounds' grantees on March windows; none ranks September's (A40).
+- REVIEW, register match, grants register, payment run, capacity ratings: organisation-keyed data and a declared distractor; none ranks grantees on the September question.
+- REVIEW, dates after the setting: the grants register's current-term end dates and the portal's year_end column, forward by design (recorded at the build stage).
+
+`guard.py surface task123`: two promoted pairs and people lines, each answered. task81: the shared "invented name" is New Zealand, the real geography, and the shared calibration form is outside the three-build ban window. task85: the same-driver signature, differentiated on the card at the draw. people.last Anderson against task118 was real and is fixed by the rename. people.inside (Geraldine, Linwood, Shirley, Carer, Mental) and "not on the card" (Shirley Kai, Tai Tapu and the like): fragments of organisation names (Canterbury places plus "Carer Respite Network", "Mental Wellbeing Collective", "Kai Share Cooperative"), not personas; renaming organisations to satisfy the name parser would game the screen.
+
 ## Tried and rejected
 
 - The blueprint's stated-memo architecture (a methodology memo fixing knowledge time, the latest visible submission, tag priority and the year-to-date derivation): rejected because a strong solver implements every stated clause, so the screen becomes a computation; the decisive rule now lives in no shipped sentence.
@@ -567,3 +646,8 @@ Stage 2 (design) changes, every draw decision kept (pairing, shape 05, the three
 - A window-end column in the CSV ("twelve months to"): rejected as a leak; asking for each grantee's window end raises exactly the question the decisive rung depends on nobody asking.
 - Pack headers reading "twelve months to 31 December": rejected as a counter-pin against every stepped-back row.
 - Any device or hold tied to annual-return filing status in the ask layer (for example instalments withheld from late filers): rejected because it would send a solver to the register's dates, the decisive rung's own evidence.
+- Build, first population: R1 at 1.222x and the dual-returns cell at -7.8% at once, because both turn on the same dual additions (the offered dual grantee's second row and the lagging project-grant row); repaired by shrinking the common filed decliners and the decoys and lifting two answer names, which widens the gap between T's falls and R2's before the duals are added (R1 1.29x, dual cell -8.5%).
+- Build: the offered dual grantee's line lag first ran the same way as the re-presented comparatives and the two cancelled on its K1 (NZ$67 apart composed); the lag now runs the other way, so every subset of mishandlings lands at least NZ$942 off.
+- Build: project grants at a flat level made the one-grant-reference stop inert on K2 (a constant flow cancels in a fall); project grants now renew three-yearly at a new level, F3's in May 2025.
+- Build: government income spread evenly across quarters left the re-presented comparatives NZ$436 from the answer on one grantee's K1; government grants now arrive lumpily (two strong quarters a year), every comparative stop at least NZ$500 off.
+- Rebecca Anderson as head of grants: the surface screen blocked the surname against task118's Jason Anderson (people.last, both in the last twelve builds, drawn concurrently); redrawn from the same seed as Marie Griffin, the first draw not already rejected at the draw stage, renamed in the generator and the golden script.

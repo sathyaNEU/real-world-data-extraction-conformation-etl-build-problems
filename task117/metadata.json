@@ -1,0 +1,132 @@
+{
+  "task": "task117",
+  "domain": "Supply Chain & Logistics",
+  "subdomain": "sourcing-procurement",
+  "objective": "Forecasting & Predictive Modeling",
+  "as_of": "2027-01-25",
+  "deliverables": [
+    "contract_demand_note.pdf",
+    "deck_load_day.png",
+    "civic_service_demand.xlsx"
+  ],
+  "distractor_files": [
+    "civic_center_campus_electric_statements_2024-2026.csv",
+    "charger_status_events_2026.csv"
+  ],
+  "source": "Every file is constructed for this task around a fictional city (Larch Harbor, Washington), utility (North Sound Power & Light), charging network (Curbline Charging) and county. No real person, account or record is depicted. Vehicle makes, models and onboard charger ratings in the reference list follow the manufacturers' published specifications.",
+  "license": "CC BY 4.0",
+  "created": "2026-10-09",
+  "generator": "task117/generator/build_pack.py (seeded, deterministic)",
+  "files": [
+    {
+      "path": "charger_status_events_2026.csv",
+      "format": "csv",
+      "bytes": 68334
+    },
+    {
+      "path": "city_fleet_roster.csv",
+      "format": "csv",
+      "bytes": 1918
+    },
+    {
+      "path": "civic_center_campus_electric_statements_2024-2026.csv",
+      "format": "csv",
+      "bytes": 4739
+    },
+    {
+      "path": "civic_center_ev_service_agreement_draft.docx",
+      "format": "docx",
+      "bytes": 38090
+    },
+    {
+      "path": "curbline_export_field_notes.txt",
+      "format": "txt",
+      "bytes": 2254
+    },
+    {
+      "path": "deck_panel_circuit_schedule.csv",
+      "format": "csv",
+      "bytes": 2108
+    },
+    {
+      "path": "deck_panel_meter_log_2024-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9017
+    },
+    {
+      "path": "deck_submeter_nameplates.csv",
+      "format": "csv",
+      "bytes": 446
+    },
+    {
+      "path": "ev_permit_registry.csv",
+      "format": "csv",
+      "bytes": 5415
+    },
+    {
+      "path": "facilities_work_orders_2026.csv",
+      "format": "csv",
+      "bytes": 2605
+    },
+    {
+      "path": "fes-07_load_forecasting_standard_rev4.pdf",
+      "format": "pdf",
+      "bytes": 3559
+    },
+    {
+      "path": "fleet_card_ev_transactions_2024-2026.csv",
+      "format": "csv",
+      "bytes": 795555
+    },
+    {
+      "path": "gateway_b_sessions_jan-apr2024.csv",
+      "format": "csv",
+      "bytes": 24310
+    },
+    {
+      "path": "nspl_new_service_planning_guide_2026_sec7.pdf",
+      "format": "pdf",
+      "bytes": 3081
+    },
+    {
+      "path": "nspl_schedule_26_ev_charging_service.pdf",
+      "format": "pdf",
+      "bytes": 4590
+    },
+    {
+      "path": "parking_services_data_sources.txt",
+      "format": "txt",
+      "bytes": 3804
+    },
+    {
+      "path": "permit_vehicle_checks.csv",
+      "format": "csv",
+      "bytes": 36159
+    },
+    {
+      "path": "restatement_decisions_2025.csv",
+      "format": "csv",
+      "bytes": 2403
+    },
+    {
+      "path": "session_intervals_2024-2026.parquet",
+      "format": "parquet",
+      "bytes": 2391145
+    },
+    {
+      "path": "settled_sessions_2024-2026.csv",
+      "format": "csv",
+      "bytes": 11715513
+    },
+    {
+      "path": "station_register.csv",
+      "format": "csv",
+      "bytes": 9958
+    },
+    {
+      "path": "vehicle_reference_list.csv",
+      "format": "csv",
+      "bytes": 1183
+    }
+  ]
+}

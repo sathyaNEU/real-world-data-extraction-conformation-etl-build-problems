@@ -15,6 +15,8 @@ WINDOW_END = dt.date(2026, 9, 30)
 MIGRATION = dt.date(2025, 10, 1)         # web CMS migration; web testing history begins here
 RESTORE_AT = dt.datetime(2025, 11, 14, 7, 40)   # UTC, Brisbane instance restore
 RESTORE_LOOKBACK_DAYS = 14
+MIGRATION_AT = dt.datetime(2025, 9, 30, 16, 5)   # UTC: 02:05 AEST on 1 October 2025
+MIGRATION_LOOKBACK_DAYS = 14
 AEST = dt.timedelta(hours=10)
 MONTHS = [(2025, m) for m in range(10, 13)] + [(2026, m) for m in range(1, 10)]
 
@@ -92,10 +94,10 @@ SOURCE_DESC = {
 PLAT_SPLIT = {"national": [0.30, 0.15, 0.30, 0.10, 0.15], "brisbane": [0.25, 0.15, 0.35, 0.10, 0.15],
               "app": [0.0, 0.0, 0.55, 0.35, 0.10]}
 OTHER_SPLIT = {  # search, discover, social, newsletter, alerts
-    "POL-N": [0.40, 0.20, 0.20, 0.12, 0.08], "BUS-N": [0.45, 0.15, 0.12, 0.22, 0.06],
-    "SPT-N": [0.35, 0.25, 0.25, 0.05, 0.10], "CUL-N": [0.45, 0.25, 0.18, 0.10, 0.02],
-    "SPT-M": [0.30, 0.20, 0.35, 0.05, 0.10], "LOC-M": [0.35, 0.15, 0.30, 0.15, 0.05],
-    "POL-M": [0.35, 0.15, 0.25, 0.15, 0.10]}
+    "POL-N": [0.44, 0.21, 0.22, 0.05, 0.08], "BUS-N": [0.52, 0.17, 0.17, 0.08, 0.06],
+    "SPT-N": [0.36, 0.26, 0.25, 0.03, 0.10], "CUL-N": [0.48, 0.26, 0.18, 0.06, 0.02],
+    "SPT-M": [0.31, 0.21, 0.35, 0.03, 0.10], "LOC-M": [0.38, 0.17, 0.33, 0.07, 0.05],
+    "POL-M": [0.38, 0.17, 0.29, 0.06, 0.10]}
 AGE_BANDS = ["0-2h", "2-6h", "6-24h", "1-3d", "3-7d", "7d+"]
 AGE_START_H = [0, 2, 6, 24, 72, 168]
 AGE_PROFILE = {
@@ -135,6 +137,7 @@ EMBEDDINGS = [
     dict(no=7, year=2025, desk="WEL-A", n=58, npk=3800, planned_m=27.6),
 ]
 OPEN_EMBEDDING = dict(year=2026, desk="PZL-A", n=47, npk=4000)
+EMB7_IN_WINDOW = 12            # embedding #7 tests that ran on base-year Wellness items (Oct to Dec 2025)
 APP_KP = [0.0, 0.30, 0.50, 0.20]
 APP_CTR = 0.061
 EMBED_SUBSEED = {1: 58, 2: 1, 3: 216, 4: 14, 5: 10, 6: 20, 7: 9}   # chosen by the back-test search
@@ -142,13 +145,27 @@ CUL_SUBSEED = 103
 REALISED_NOISE = 0.014
 
 # ---------------------------------------------------------------------------------- the ask layer
-# headline corrections over the base year: total, second corrections (corrected articles = total - second)
-HEADLINE_CORR = {"POL-N": (47, 4), "BUS-N": (39, 2), "SPT-N": (42, 3), "CUL-N": (14, 1), "POL-M": (14, 1),
-                 "SPT-M": (18, 1), "LOC-M": (34, 3)}
+# a desk's own headline corrections over the base year: total, second corrections on an article
+HEADLINE_CORR = {"POL-N": (44, 4), "BUS-N": (36, 2), "SPT-N": (38, 3), "CUL-N": (13, 1), "POL-M": (13, 1),
+                 "SPT-M": (16, 1), "LOC-M": (32, 3)}
+# headline corrections to live-blog entries (the entry's headline fixed, the note added to the live blog), one
+# per live blog, none between QUIET_FROM and QUIET_TO; and entry text corrections made the same way
+ENTRY_CORR = {"POL-N": 3, "BUS-N": 3, "SPT-N": 4, "CUL-N": 1, "POL-M": 1, "SPT-M": 2, "LOC-M": 2}
+ENTRY_BODY = {"POL-N": 4, "BUS-N": 2, "SPT-N": 6, "CUL-N": 1, "POL-M": 1, "SPT-M": 2, "LOC-M": 3}
+QUIET_FROM = (2026, 2, 26)     # AEST: no autosave-ahead headline fix and no entry headline fix in this span
+QUIET_TO = (2026, 4, 3)
+# scheduling: share of articles saved as scheduled; of those, the share an editor published by hand first
+SCHED_SHARE = 0.36
+EARLY_SHARE = 0.25
+# autosaves of a live document: before a headline correction, (A) the new headline only, (B) headline and note
+AUTO_A, AUTO_B = 0.34, 0.20
+AUTO_B_QUIET = 0.25
+AUTO_BODY, AUTO_UPD, AUTO_UPD_LB = 0.30, 0.22, 0.08
+CMS_SUBSEED = {"POL-N": 4, "BUS-N": 0, "SPT-N": 4, "CUL-N": 5, "POL-M": 27, "SPT-M": 10, "LOC-M": 9}
 BODY_PER_HEADLINE = 1.55
 LIVEBLOG_SHARE = {"POL-N": 0.035, "BUS-N": 0.015, "SPT-N": 0.055, "CUL-N": 0.008, "POL-M": 0.03,
                   "SPT-M": 0.05, "LOC-M": 0.025}
-POSTS_PER_LIVEBLOG = {"POL-N": 18, "BUS-N": 24, "SPT-N": 21, "CUL-N": 48, "POL-M": 16, "SPT-M": 13,
+POSTS_PER_LIVEBLOG = {"POL-N": 18, "BUS-N": 28, "SPT-N": 21, "CUL-N": 48, "POL-M": 16, "SPT-M": 13,
                       "LOC-M": 15}
 PULLED_SHARE = 0.012
 MEDIAN_MIN_GUIDE = {"POL-N": 70, "BUS-N": 95, "SPT-N": 48, "CUL-N": 150, "POL-M": 80, "SPT-M": 37,
@@ -162,3 +179,10 @@ PANEL_REMAINDER = {"POL-N": 260, "BUS-N": 310, "SPT-N": 720, "CUL-N": 240, "POL-
                    "LOC-M": 760, "BLN-HOME": 200, "BLB-HOME": 330}
 RESTATED_PERIODS = ["2026-04", "2026-05", "2026-06"]
 RESTATE_FACTOR = 1.176          # the duplication fault inflated the original releases by this factor
+# the history release: November 2025 to February 2026 rerun on the 2026 content taxonomy
+HISTORY_PERIODS = ["2025-11", "2025-12", "2026-01", "2026-02"]
+HISTORY_PUBLISHED = (2026, 4, 24)
+# a section's audience on the 2024 content taxonomy against the 2026 one (content moved between sections in 2026)
+OLD_BASIS = {("BLN", "Home and other"): 1.052, ("BLN", "Politics"): 0.957, ("BLN", "Sport"): 1.031,
+             ("BLN", "Culture"): 0.968, ("BLN", "Business"): 0.979, ("BLB", "Home and other"): 0.934,
+             ("BLB", "Politics"): 1.083, ("BLB", "Local"): 0.946, ("BLB", "Sport"): 1.012}

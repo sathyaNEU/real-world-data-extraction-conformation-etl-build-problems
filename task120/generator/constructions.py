@@ -32,7 +32,8 @@ NAMES = {("code1", "ffu", "attached"): "households (answer)",
 def units(ret, sched, residency, unit, deps):
     """Units of one construction: DataFrame with key, agi, county."""
     r = ret if residency == "all" else ret[ret.residency_code == 1]
-    r = r[["return_id", "filer_tin", "federal_primary_tin", "county_code", "federal_agi"]]
+    r = r[["return_id", "filer_tin", "federal_primary_tin", "county_code", "federal_agi"]].copy()
+    r["federal_agi"] = r.federal_agi.astype(np.int64)
     # dependents' own returns: a filed return whose filer TIN sits on a schedule of a return in r
     s = sched[["claimant_return_id", "dependent_tin"]]
     s = s[s.claimant_return_id.isin(r.return_id)]

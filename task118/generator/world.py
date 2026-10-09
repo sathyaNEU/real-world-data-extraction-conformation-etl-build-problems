@@ -37,6 +37,7 @@ SQUAD_HISTORY = [  # role, start, end (None = current); Jason Anderson is the pe
     ("Headline editor", dt.date(2021, 4, 12), None),
     ("Producer", dt.date(2023, 1, 16), dt.date(2025, 6, 20)),
     ("Headline editor", dt.date(2023, 8, 7), None),
+    ("Headline editor", dt.date(2024, 2, 12), None),
     ("Data analyst", dt.date(2024, 10, 8), None),
     ("Producer", dt.date(2025, 7, 21), None),
 ]
@@ -117,10 +118,8 @@ def make_staff(W):
                     W.testers[desk].append(add(name(), desk, r, BASE[desk], rs))
         # earlier leavers, before the window, so the list carries its history
         for _ in range(int(rng.integers(1, 4))):
-            start = dt.date(2015, 5, 4) + dt.timedelta(days=int(rng.integers(0, 2500)))
-            end = start + dt.timedelta(days=int(rng.integers(300, 1500)))
-            if end >= P.WINDOW_START:
-                end = P.WINDOW_START - dt.timedelta(days=int(rng.integers(30, 400)))
+            end = dt.date(2019, 1, 18) + dt.timedelta(days=int(rng.integers(0, 2400)))
+            start = end - dt.timedelta(days=int(rng.integers(300, 2500)))
             add(name(), desk, ["Producer", "Reporter"][int(rng.integers(2))], BASE[desk], start, end)
     W.staff = sorted(rows, key=lambda r: r["staff_id"])
     W.squad = [r for r in W.staff if r["team_code"] == "AUD-HS"]
@@ -205,22 +204,44 @@ def make_tests(W):
     # the squad: seven closed embeddings and the open one
     W.emb_tests = {}
     rng = AR.rng_for(30)
+    used = set(int(x) for d in P.APP for x in W.art[d].old_ids) | set(int(x) for d in P.APP for x in W.art[d].ids)
     for e in P.EMBEDDINGS:
         sim = AR.simulate_tests(AR.rng_for(900 + e["no"], P.EMBED_SUBSEED[e["no"]]), e["n"], P.APP_KP, e["npk"],
                                 P.APP_CTR, P.GATE["app"])
         y = e["year"]
-        days = sorted(rng.choice(np.arange(5, 360), size=len(sim), replace=False))
-        base_id = 30418820 - int((dt.date(2025, 10, 1) - dt.date(y, 1, 1)).days * 9)
-        ids = sorted(rng.choice(np.arange(base_id, base_id + 3000), size=len(sim), replace=False))
+        A = W.art[e["desk"]]
+        tidx = np.where(A.tested)[0] if e["no"] == 7 else np.array([], int)
+        n_in = len(tidx)
+        last = 360 if y < 2025 else (dt.date(2025, 9, 30) - dt.date(2025, 1, 1)).days
+        days = sorted(rng.choice(np.arange(5, last), size=len(sim) - n_in, replace=False))
+        by_size = np.argsort(-np.array([t["cs"].sum() for t in sim]), kind="stable")
+        in_tests = list(by_size[:n_in])
+        if n_in:
+            early = A.w[tidx] * (A.src[tidx, :5] * A.age[tidx, :5, 0]).sum(1)
+            items = list(tidx[np.argsort(-early, kind="stable")])
         out = []
+        k_out = 0
         for k, t in enumerate(sim):
-            day = dt.date(y, 1, 1) + dt.timedelta(days=int(days[k]))
-            start = dt.datetime(day.year, day.month, day.day, int(rng.integers(19, 23)), int(rng.integers(0, 60))) \
-                - dt.timedelta(days=1)
+            if k in in_tests:
+                ai = items[in_tests.index(k)]
+                pub_aest = SP.to_dt(A.pub[ai])
+                start = pub_aest - P.AEST + dt.timedelta(minutes=int(rng.integers(3, 15)))
+                art_index, aid = int(ai), int(A.ids[ai])
+                when = pub_aest.date()
+            else:
+                day = dt.date(y, 1, 1) + dt.timedelta(days=int(days[k_out]))
+                k_out += 1
+                start = dt.datetime(day.year, day.month, day.day, int(rng.integers(19, 23)), int(rng.integers(0, 60))) \
+                    - dt.timedelta(days=1)
+                aid = 30418820 - int((dt.date(2025, 10, 1) - day).days * 9) - int(rng.integers(0, 9))
+                while aid in used:
+                    aid -= 1
+                art_index, when = -1, day
+            used.add(aid)
             end = start + dt.timedelta(minutes=int(rng.integers(25, 70)))
-            owners = [r for r in active(W.squad, day) if r["role"] != "Data analyst"]
+            owners = [r for r in active(W.squad, when) if r["role"] != "Data analyst"]
             owner = owners[int(rng.integers(len(owners)))]
-            rec = dict(engine="app", desk=e["desk"], art_index=-1, article_id=int(ids[k]), owner=owner["staff_id"],
+            rec = dict(engine="app", desk=e["desk"], art_index=art_index, article_id=aid, owner=owner["staff_id"],
                        start=start, end=end, group="emb%d" % e["no"], **t)
             out.append(rec)
             W.tests.append(rec)
