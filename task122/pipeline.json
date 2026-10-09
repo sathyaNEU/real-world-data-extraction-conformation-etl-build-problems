@@ -1,0 +1,20 @@
+{
+ "task": "task122",
+ "domain": "product-analytics",
+ "objective": "experiment-causal",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-08",
+ "stump": "A competent solver who reads the guardrail at the charter's eight platform-by-tenure cells and adopts the one-weight-per-session estimator that alone reproduces the nine archived tests finds that no proposal clears all three launch conditions and files the session-sequence model (C), the largest reproduced lift on the slate, with its fresh-listing shortfall carried as a risk; the step that lands it there is treating the three proposals as the whole choice set and never applying the test-calendar procedure, under which an unqualified slot is filled from the policy library on the same conditions and only the fresh-listing interleave ranker (E) clears all three.",
+ "harden_loops": 0,
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "analytical_tasks/05_decision_support/DS01_carousel-slot-library-fill-off-slate.md"
+}

@@ -71,6 +71,7 @@ Verdict against the existing corpus: **WARN** (exit 0), card at `<scratchpad>/ca
 - WARN overuse.org_family (retailer_or_ecommerce in 16 builds): an online merchandise store is a retailer and no other family is honest; none of the last three builds is a retailer, and the furniture around it (a release review board, a regression incident) is fresh.
 - Furniture: committee_or_panel, incident_or_complaint and retailer_or_ecommerce are each clear of task114 to task116; the honest alternative forum (the head of product's own call, line_manager_or_team) is banned against task116. People: no findings on the seven drawn names.
 - Nearest drivers: task43 iteration A at 0.11 (under the 0.12 WARN line), task83 at 0.07.
+- Batch preview, not binding: against the sibling pilot drafts in the scratch folder, if task117, task119 and task120 register first, this card BLOCKs on ban.pattern E, ban.artifact and test.same_puzzle against task117 (the same (time, E, quantity_figure) signature) and on ban.forum against task119 and task120. A variant tested in that order clears them: C first (the note's own join label, the rollback's recoverable share), monitoring_export, line_manager_or_team, plus one differentiation line against task98's v2 lineage. In the current corpus order those three choices are each banned by task116.
 
 ## Changes from the source note
 
