@@ -131,7 +131,15 @@ WARN answered:
   builds turned on a ranking-experiment slot, and the nearest alternative family, software_or_platform, is banned against task116.
 
 Batch note: DS17, DS33 and DS50 carry the same off-slate driver as DS01. If any of them is among the seven pilots, its card has to
-be read against this one when the batch registers.
+be read against this one when the batch registers. The sibling drafts on 2026-10-08 (task117, task119, task120, task121) change
+task122's recent three to task119, task120 and task121 at batch registration, and task116 drops out. A simulated check
+(`FINGERPRINT_CARDS` pointed at a scratch copy of the corpus plus those four drafts) returns BLOCK on ban.forum
+(committee_or_panel: task119, task120, task121), ban.calibration (closed_decision_corpus: task121), ban.role (product_manager:
+task121) and ban.org_family (retailer_or_ecommerce: task121), with WARNs on repeat.gate_g (method_or_model_selection: task120) and
+repeat.deliverables (png+xlsx: task120). Under that ordering the note's own pilot_log and monitoring_export become legal again,
+and task106 leaves the twelve-build window, so a binding_constraint card would meet test.same_driver_older against task106 and 13
+older builds (cleared only by fourteen differentiation lines, or by the method_or_model_selection key the card carries). Those
+redraws belong to the batch step, because each of them is banned against the corpus as it stands today.
 
 ## Changes from the source note
 
