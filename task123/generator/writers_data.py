@@ -179,6 +179,12 @@ REG_COLS = ["match_id", "charity_no", "registered_name", "year_end", "date_recei
             "return_tier", "total_gross_income", "govt_grants_contracts", "donations_bequests",
             "trading_sales", "grants_other", "investment_income", "other_income"]
 
+# The warehouse matches annual returns for financial years ending on or after 1 July 2018, the
+# horizon of every other extract. The years it leaves out (31 March and 30 June 2018 year-ends) end
+# before the portal's first quarter, so no window, rung, rival or ask reads them; the filter acts at
+# write time only, after W["annual"] and every random stream drawn over it are fixed.
+REG_FIRST_YEAR_END = dt.date(2018, 7, 1)
+
 
 def register_name(o, r):
     n = o.name
@@ -196,6 +202,8 @@ def write_register(path, W):
     rows = []
     for (key, q4), ar in sorted(W["annual"].items(), key=lambda kv: (by[kv[0][0]].cc, kv[0][1])):
         if ar.received is None or ar.received > dt.date(2026, 10, 7):
+            continue
+        if qend(q4) < REG_FIRST_YEAR_END:
             continue
         o = by[key]
         r = rng_for("reg", key, q4)

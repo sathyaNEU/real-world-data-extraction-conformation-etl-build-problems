@@ -176,6 +176,16 @@ def check_files(W, C, target, info):
             if r["offer"] and (W["corpus"][c]["rate"] * r["fall"]) % 10000 == 5000]
     half += [(2026, r["org"]) for r in W["sept"]["rows"] if r["offer"] and (W["sept"]["rate"] * r["fall"]) % 10000 == 5000]
     C.ok("TELL", not half, "no offer lands exactly on a half dollar, so every rounding convention agrees")
+    # the extract record's row counts collide with no graded figure (a count that equals a screen
+    # figure reads as a leaked answer however unrelated the two are)
+    G = W["golden_asks"]
+    graded = {abs(v) for r in W["sept"]["rows"] for v in (r["cur"], r["prior"], r["fall"], r["offer"],
+                                                          G[r["org"]]["K1"], G[r["org"]]["K2"])
+              if v is not None}
+    graded |= {sep_total, W["sept"]["rate"], len(W["sept"]["rows"]), W["sept"]["n_offers"]}
+    stated = {k: info[k] for k in ("spine", "register", "payrun", "ratings")}
+    clash = {k: v for k, v in stated.items() if v in graded}
+    C.ok("TELL", not clash, f"no row count in the extract record equals a graded figure ({stated}; clash {clash})")
     # container hygiene: the house audit finds no writer signature and no out-of-band date
     import subprocess
     r = subprocess.run([sys.executable, SCRUB, target, "--floor", "2018-07-01", "--ceiling", "2026-10-08"],

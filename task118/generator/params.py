@@ -170,6 +170,18 @@ POSTS_PER_LIVEBLOG = {"POL-N": 18, "BUS-N": 28, "SPT-N": 21, "CUL-N": 48, "POL-M
 PULLED_SHARE = 0.012
 MEDIAN_MIN_GUIDE = {"POL-N": 70, "BUS-N": 95, "SPT-N": 48, "CUL-N": 150, "POL-M": 80, "SPT-M": 37,
                     "LOC-M": 62}
+# the note follows the fix: a story's corrected headline published on one live save and its note added on the
+# next save (stories), and an entry fixed with the blog's note added minutes later (live blogs); never in the
+# quiet span, so the bulletin's March figures read the same either way
+LAG_SHARE = {"POL-N": 0.32, "BUS-N": 0.32, "SPT-N": 0.32, "CUL-N": 0.36, "POL-M": 0.30, "SPT-M": 0.34, "LOC-M": 0.32}
+LAG_MINUTES = (1, 9)            # the save that publishes the corrected headline to the save that adds its note
+ENTRY_LAG = {"POL-N": 2, "BUS-N": 2, "SPT-N": 2, "CUL-N": 1, "POL-M": 1, "SPT-M": 1, "LOC-M": 1}
+ENTRY_LAG_MINUTES = (2, 9)      # an entry's fix to the note on its live blog
+ENTRY_BODY_LAG = 0.5            # entry text fixes whose note also arrives minutes later
+PAIR_GUARD = 60                 # minutes before a note on an unchanged headline in which no other headline change falls
+LAG_WINDOW = 10                 # the golden pairing of a note with the headline fix it records, minutes
+ENTRY_WINDOW = 30               # the golden pairing of a live blog's note with its entry's fix, minutes
+LAG_SUBSEED = {"POL-N": 55, "BUS-N": 57, "SPT-N": 51, "CUL-N": 63, "POL-M": 0, "SPT-M": 50, "LOC-M": 57}   # chosen so every partial reading misses every median
 
 # panel: average monthly unique audience the version of record should carry (people)
 PANEL_TARGET = {"POL-N": 3_180_000, "BUS-N": 1_760_000, "SPT-N": 2_930_000, "CUL-N": 1_412_000,
@@ -179,10 +191,16 @@ PANEL_REMAINDER = {"POL-N": 260, "BUS-N": 310, "SPT-N": 720, "CUL-N": 240, "POL-
                    "LOC-M": 760, "BLN-HOME": 200, "BLB-HOME": 330}
 RESTATED_PERIODS = ["2026-04", "2026-05", "2026-06"]
 RESTATE_FACTOR = 1.176          # the duplication fault inflated the original releases by this factor
-# the history release: November 2025 to February 2026 rerun on the 2026 content taxonomy
+# the history release: November 2025 to February 2026 rerun on the 2026 content taxonomy, for the national
+# sections whose content moved; the other sections were renumbered with their content unchanged and keep the
+# figures first published
 HISTORY_PERIODS = ["2025-11", "2025-12", "2026-01", "2026-02"]
 HISTORY_PUBLISHED = (2026, 4, 24)
-# a section's audience on the 2024 content taxonomy against the 2026 one (content moved between sections in 2026)
-OLD_BASIS = {("BLN", "Home and other"): 1.052, ("BLN", "Politics"): 0.957, ("BLN", "Sport"): 1.031,
-             ("BLN", "Culture"): 0.968, ("BLN", "Business"): 0.979, ("BLB", "Home and other"): 0.934,
-             ("BLB", "Politics"): 1.083, ("BLB", "Local"): 0.946, ("BLB", "Sport"): 1.012}
+HISTORY_SECTIONS = {("BLN", "Politics"), ("BLN", "Culture"), ("BLN", "Home and other")}
+# the cross-device duplication fault was in the Brisbane edition site's processing; only its rows are restated
+RESTATED_SITES = {"BLB"}
+# a section's audience on the 2024 content taxonomy against the 2026 one (content moved between three national
+# sections in 2026; the rest were renumbered only)
+OLD_BASIS = {("BLN", "Home and other"): 1.052, ("BLN", "Politics"): 0.957, ("BLN", "Sport"): 1.0,
+             ("BLN", "Culture"): 0.968, ("BLN", "Business"): 1.0, ("BLB", "Home and other"): 1.0,
+             ("BLB", "Politics"): 1.0, ("BLB", "Local"): 1.0, ("BLB", "Sport"): 1.0}

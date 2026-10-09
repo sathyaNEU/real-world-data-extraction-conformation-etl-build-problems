@@ -2,8 +2,8 @@
   "task": "task117",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "hardened",
+  "stage": 4,
+  "stage_name": "solver round 1 (after harden loop 1): landed, harden",
   "updated": "2026-10-09",
   "stump": "A competent solver replays every 2026 deck session on the new units at the smaller of 11.5 kW and its car's onboard charger rating, takes each session's car from the permit's vehicle check in force on the session date, grows by the filed 1.12 and files 150 kW (148.5 unrounded, set in February); the step that lands it there is reading the car as of the session rather than as of the contract year: at the January 2027 renewal 18 county permits moved from 2020 Bolt EVs at 7.2 kW to 2023 Bolt EVs at 11.0 kW, which finish before noon, so the contracted demand is 130 kW, set in December.",
   "harden_loops": 1,
@@ -14,6 +14,14 @@
       "score": 88.1,
       "landed": true,
       "cracked": 5,
+      "items": 12
+    },
+    {
+      "label": "round 2, plain",
+      "date": "2026-10-09",
+      "score": 89.2,
+      "landed": true,
+      "cracked": 6,
       "items": 12
     }
   ],

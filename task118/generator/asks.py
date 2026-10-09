@@ -41,7 +41,13 @@ ENTRY_NOTES = [
     "Correction: we have amended an entry that misstated {x}.",
 ]
 ENTRY_HEAD_NOTE = "Correction: an entry in this live blog misstated {x} in its headline."
-HEAD_GENERIC_SHARE = 0.40       # headline corrections written with a general note that does not name the headline
+# the note an editor adds on the save after the one that published the corrected headline: it always says so
+LAG_NOTES = [
+    "Correction: an earlier headline on this article misstated {x}.",
+    "Correction: the headline on this story has been amended. It previously misstated {x}.",
+    "Correction: an earlier version of this story gave {x} incorrectly in its headline.",
+]
+HEAD_GENERIC_SHARE = 0.45       # headline corrections written with a general note that does not name the headline
 SUBJECTS = {
     "POL-N": ["the date of the Senate vote", "the minister's portfolio", "the size of the funding package",
               "the number of crossbench votes", "the year the scheme began", "the name of the electorate",
@@ -63,8 +69,8 @@ SUBJECTS = {
               "the location of the fire", "the cost of the upgrade"],
 }
 # order of events saved in the same minute
-ORDER = {"draft": 0, "scheduled": 1, "live": 2, "auto": 3, "upd": 4, "hc": 5, "bc": 6, "ec": 7, "eb": 8,
-         "clear": 9}
+ORDER = {"draft": 0, "scheduled": 1, "live": 2, "auto": 3, "upd": 4, "hc": 5, "hf": 5, "hn": 5, "bc": 6, "ec": 7,
+         "eb": 8, "clear": 9}
 
 
 def fmt(t):
@@ -112,6 +118,9 @@ def build_cms(W, desks=None):
         k = P.WEB.index(d)
         rng = rng_for(600 + k)
         rng_m = rng_for(650 + k, P.CMS_SUBSEED[d])        # the minutes to each correction
+        rng_l = rng_for(670 + k, P.LAG_SUBSEED[d])        # which story corrections arrive as a fix then a note
+        rng_e = rng_for(680 + k)                          # which entry notes arrive minutes after the entry's fix
+        guard = mins(P.PAIR_GUARD)
         A = W.art[d]
         n = len(A.pub)
         go = [SP.to_dt(m) - P.AEST for m in A.pub]          # UTC go-live
@@ -185,6 +194,8 @@ def build_cms(W, desks=None):
         entry_lbs = set(int(x) for x in rng.choice(lb_pool, size=P.ENTRY_CORR[d], replace=False))
         lb_pool2 = [i for i in lb_pool if i not in entry_lbs]
         entry_body_lbs = set(int(x) for x in rng.choice(lb_pool2, size=P.ENTRY_BODY[d], replace=False))
+        lagged_lbs = set(int(x) for x in rng_e.choice(sorted(entry_lbs), size=P.ENTRY_LAG[d], replace=False))
+        lagged_lbs |= {i for i in sorted(entry_body_lbs) if rng_e.random() < P.ENTRY_BODY_LAG}
         # scheduling
         sched_type = [""] * n
         for i in range(n):
@@ -194,7 +205,7 @@ def build_cms(W, desks=None):
             if u < P.SCHED_SHARE:
                 sched_type[i] = "early" if v < P.EARLY_SHARE else "sched"
         truth = dict(chosen=list(chosen), hc_first=dict(hc_first), hc_second=dict(hc_second),
-                     entry=set(), entry_body=set(), sched={}, variants={})
+                     entry=set(), entry_body=set(), sched={}, variants={}, lag={}, entry_lag={})
         W.cms_truth[d] = truth
 
         # ------------------------------------------------------------ documents carried across at the migration
@@ -287,17 +298,22 @@ def build_cms(W, desks=None):
                         continue
                     p = cands[int(rng.integers(len(cands)))]
                     t_post = p["t"] + mins(rng.integers(8, 91))
-                    t_note = t_post                 # one action: the entry is saved and the blog's note added
+                    # the entry is saved first; the blog's note goes on in the same minute or a few minutes later
+                    t_note = t_post + (mins(rng_e.integers(P.ENTRY_LAG_MINUTES[0], P.ENTRY_LAG_MINUTES[1] + 1))
+                                       if i in lagged_lbs else dt.timedelta(0))
                     p["fix"] = (t_post, kind == "ec")
+                    p["note_t"] = t_note
                     ev.append(Ev(t_note, kind, note=entry_note(kind == "ec"), tag=p["j"]))
                     (truth["entry"] if kind == "ec" else truth["entry_body"]).add(i)
+                    truth["entry_lag"][i] = (t_post, t_note)
 
             ev = [e for e in ev if e.t <= end_utc]
             ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
 
             # a scheduled article goes live at publish_at with no save; its first live save is a later edit
             if st == "sched":
-                t_c = min([e.t for e in ev if e.t > g and e.kind in ("hc", "bc", "ec", "eb", "clear")], default=None)
+                t_c = min([e.t for e in ev if e.t > g and e.kind in ("hc", "hf", "hn", "bc", "ec", "eb", "clear")],
+                          default=None)
                 t_u = min([e.t for e in ev if e.t > g and e.kind == "upd"], default=None)
                 if t_c is None and t_u is None:
                     ev.append(Ev(min(g + mins(rng.integers(10, 241)), end_utc), "upd"))
@@ -312,6 +328,32 @@ def build_cms(W, desks=None):
             if st:
                 truth["sched"][i] = st
 
+            # a story's headline correction saved in two steps: the corrected headline published on one live save
+            # and the note, which says the headline was corrected, added on the next save a few minutes later
+            if dtyp == "story" and not restored_flag[i] and i not in forced:
+                split = []
+                for e in sorted([e for e in ev if e.kind == "hc"], key=lambda e: e.t):
+                    u = rng_l.random()
+                    lag_m = int(rng_l.integers(P.LAG_MINUTES[0], P.LAG_MINUTES[1] + 1))
+                    form = LAG_NOTES[int(rng_l.integers(len(LAG_NOTES)))]
+                    x = subjects[int(rng_l.integers(len(subjects)))]
+                    t_n = e.t + mins(lag_m)
+                    clear_of = all(not (e.t - mins(1) <= o.t <= t_n + mins(1)) for o in ev if o is not e)
+                    if (u < P.LAG_SHARE[d] and clear_of and not quiet(e.t - mins(P.PAIR_GUARD))
+                            and not quiet(t_n + mins(P.PAIR_GUARD)) and t_n <= end_utc):
+                        split.append((e, Ev(e.t, "hf", tag=e.tag), Ev(t_n, "hn", note=form.format(x=x), tag=e.tag)))
+                for e, hf, hn in split:
+                    ev.remove(e)
+                    ev += [hf, hn]
+                    truth["lag"][(i, e.tag)] = (hf.t, hn.t)
+                ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
+            # no ordinary headline change in the hour before a note that leaves the headline as it was, so a note is
+            # read against the one fix it records whatever pairing window a reader uses
+            note_on_same = [e.t for e in ev if e.kind in ("bc", "hn", "ec", "eb")]
+            for e in ev:
+                if e.kind == "upd" and e.ch and any(tn - guard <= e.t < tn for tn in note_on_same):
+                    e.ch = False
+
             # autosaves of an editor's unpublished changes while the article is live
             restored = bool(restored_flag[i])
             if not restored:
@@ -319,16 +361,18 @@ def build_cms(W, desks=None):
                 prev_t = None
                 added = []
                 for e in ev:
-                    if e.t > golive and e.kind in ("upd", "hc", "bc"):
+                    if e.t > golive and e.kind in ("upd", "hc", "hf", "bc"):
                         lo = max(prev_t if prev_t is not None else golive, golive) + mins(1)
                         a_t = e.t - mins(rng.integers(1, 7))
                         variant = ""
-                        if e.kind == "hc":
+                        if e.kind in ("hc", "hf"):
                             u = rng.random()
                             if quiet(e.t):
                                 variant = "B" if u < P.AUTO_B_QUIET else ""
                             else:
                                 variant = "A" if u < P.AUTO_A else ("B" if u < P.AUTO_A + P.AUTO_B else "")
+                            if e.kind == "hf" and variant == "B":
+                                variant = ""        # the note is not written until after the fix is live
                         elif e.kind == "bc":
                             variant = "Bb" if rng.random() < P.AUTO_BODY else ""
                         else:
@@ -336,24 +380,24 @@ def build_cms(W, desks=None):
                             variant = "U" if rng.random() < p_u else ""
                         if variant and a_t > lo:
                             added.append(Ev(a_t, "auto", ch=e.ch, note=e.note, variant=variant))
-                            if e.kind == "hc":
+                            if e.kind in ("hc", "hf"):
                                 truth["variants"][(i, e.tag)] = variant
                     prev_t = e.t
                 ev += added
                 ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
 
-            # entries: an ordinary headline change never falls in the half hour before a note on the blog
+            # entries: an ordinary headline change never falls in the hour before a note on the blog
             if posts:
-                note_ts = [e.t for e in ev if e.kind in ("hc", "bc", "ec", "eb")]
+                note_ts = [e.t for e in ev if e.kind in ("hc", "hn", "bc", "ec", "eb")]
                 for p in posts:
                     if p["upd"] is not None and p["upd"][1]:
                         tu = p["upd"][0]
-                        if any(tn - dt.timedelta(minutes=30) <= tu <= tn for tn in note_ts):
+                        if any(tn - guard <= tu <= tn for tn in note_ts):
                             p["upd"] = (tu, False)
                     if p["fix"] is not None:
                         tf = p["fix"][0]
-                        own = [tn for tn in note_ts if tn == tf]
-                        other = [tn for tn in note_ts if tn not in own and tn - dt.timedelta(minutes=30) <= tf <= tn]
+                        own = [tn for tn in note_ts if tn == p["note_t"]]
+                        other = [tn for tn in note_ts if tn != p["note_t"] and tn - guard <= tf <= tn]
                         assert own and not other, (d, i)
 
             # the article's revisions
@@ -383,7 +427,10 @@ def build_cms(W, desks=None):
                     status = "live"
                     hv += 1
                     note = e.note if not note else e.note + " " + note
-                elif e.kind in ("bc", "ec", "eb"):
+                elif e.kind == "hf":
+                    status = "live"
+                    hv += 1
+                elif e.kind in ("bc", "hn", "ec", "eb"):
                     status = "live"
                     note = e.note if not note else e.note + " " + note
                 elif e.kind == "clear":
@@ -475,25 +522,31 @@ def cms_rows(docs):
 
 
 def read_corrections(rows, published=True, scheduled=True, entries=True, merge=True, migrated=False, posts=False,
-                     never_live=False, blank_start=False, s1=True, s2=True, entry_any=False, entry_tol=2,
-                     by_text=None, scheduled_always=False):
+                     never_live=False, blank_start=False, s1=True, s2=True, entry_any=False, entry_tol=None,
+                     by_text=None, scheduled_always=False, lag=True, lag_struct=None, entry_from_entry=False):
     """Headline and text corrections per article document from cms_rows tuples.
 
     The golden reading (every flag at its default): a correction is a new note on a revision that publishes the
     article (live saves, and a scheduled revision the CMS published at publish_at), compared with the previously
-    published state; it is a headline correction when that revision publishes a changed headline, or when one of
-    a live blog's entries published a changed headline in the two minutes up to the note (logged on the entry's
-    revision). The article went live when it was first published. Flags switch one handling off at a time:
-    published=False compares every saved revision with the one before it (drafts included), scheduled=False
-    takes the first live save as going live, entries=False ignores entries, merge=False keeps restored copies
-    as separate documents, migrated/posts/never_live=True keep those documents as articles, and
-    blank_start=True reads a document's first revision against an empty one (a note it opens with counts),
-    s1=False counts a note on every revision that carries one, s2=False counts every new note as a headline
-    correction, entry_any=True pairs a blog's note with any entry save in the two minutes before it, entry_tol
-    sets that window in minutes, by_text (a tuple of words) classes a new note as a headline correction
-    when its new text names one of them, and scheduled_always=True takes publish_at as going live whenever a
-    scheduled revision precedes the first live save, earlier or not."""
+    published state. It is a headline correction when that revision publishes a changed headline; when the note
+    says the headline was corrected and the headline it records was published, with no note, on a save up to
+    LAG_WINDOW minutes before (logged on that save); or when one of a live blog's entries published a changed
+    headline in the ENTRY_WINDOW minutes up to the note (logged on the entry's revision). The article went live
+    when it was first published. Flags switch one handling off at a time: published=False compares every saved
+    revision with the one before it (drafts included), scheduled=False takes the first live save as going live,
+    entries=False ignores entries, entry_tol sets the entry window in minutes (0 pairs the same minute only),
+    lag=False reads a note on an unchanged headline as a text correction whatever it says, lag_struct=N pairs any
+    such note with a headline published without a note in the N minutes before it whatever the note says,
+    merge=False keeps restored copies as separate documents, migrated/posts/never_live=True keep those documents
+    as articles, blank_start=True reads a document's first revision against an empty one, s1=False counts a note
+    on every revision that carries one, s2=False counts every new note as a headline correction, entry_any=True
+    pairs a blog's note with any entry save in the window, by_text (a tuple of words) classes a new note as a
+    headline correction when its new text names one of them, scheduled_always=True takes publish_at as going
+    live whenever a scheduled revision precedes the first live save, and entry_from_entry=True times an
+    article's first headline correction from the entry's own going live when that correction is an entry's."""
     from collections import defaultdict
+    if entry_tol is None:
+        entry_tol = P.ENTRY_WINDOW
     by_doc, info = defaultdict(list), {}
     for r in rows:
         did, desk, typ, parent, rev, saved, status, pub, sha, note, rest, mig = r
@@ -501,7 +554,7 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         info[did] = (desk, typ, parent, rest, mig)
     copy_of = {v[3]: k for k, v in info.items() if v[3]}
     t = lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%MZ")     # noqa: E731
-    fixes = defaultdict(list)       # live blog (original id) -> times an entry published a changed headline
+    fixes = defaultdict(list)       # live blog (original id) -> (time an entry published a changed headline, entry live)
     for did, (desk, typ, parent, rest, mig) in info.items():
         if typ != "post" or rest:
             continue
@@ -509,10 +562,12 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         if did in copy_of:
             chain += sorted(by_doc[copy_of[did]])
         pub_states = [r for r in chain if r[2] == "live"]
+        if not pub_states:
+            continue
         blog = info[parent][3] or parent
         for prev, cur in zip(pub_states, pub_states[1:]):
             if cur[4] != prev[4] or entry_any:
-                fixes[blog].append(t(cur[1]))
+                fixes[blog].append((t(cur[1]), t(pub_states[0][1])))
     out = {}
     for did, (desk, typ, parent, rest, mig) in info.items():
         if (typ == "post" and not posts) or (mig and not migrated) or (rest and merge):
@@ -523,7 +578,7 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         live = [r for r in chain if r[2] == "live"]
         if not live:
             if never_live and any(r[2] != "draft" for r in chain):
-                out[did] = dict(desk=desk, type=typ, go=t(chain[0][1]), heads=[], texts=[])
+                out[did] = dict(desk=desk, type=typ, go=t(chain[0][1]), go_first=t(chain[0][1]), heads=[], texts=[])
             continue
         go = t(live[0][1])
         states = live
@@ -535,23 +590,45 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         seq = states if published else chain
         if blank_start:
             seq = [(0, seq[0][1], "", "", "", "")] + list(seq)
-        heads, texts = [], []
+        heads, texts, entry_go = [], [], {}
+        last_h = None       # a headline published with no new note, since the last change of note
         for prev, cur in zip(seq, seq[1:]):
-            if cur[5] and (cur[5] != prev[5] or not s1):
-                tc = t(cur[1])
-                if by_text is not None:
-                    new_text = cur[5][:len(cur[5]) - len(prev[5])] if prev[5] and cur[5].endswith(prev[5]) else cur[5]
-                    (heads if any(w in new_text.lower() for w in by_text) else texts).append(tc)
-                    continue
-                if cur[4] != prev[4] or not s2:
-                    heads.append(tc)
-                    continue
-                hit = [f for f in fixes.get(did, []) if tc - dt.timedelta(minutes=entry_tol) <= f <= tc] if entries else []
-                if hit:
-                    heads.append(min(hit))
+            tc = t(cur[1])
+            if not (cur[5] and (cur[5] != prev[5] or not s1)):
+                if cur[5] != prev[5]:
+                    last_h = None
+                elif cur[4] != prev[4]:
+                    last_h = tc
+                continue
+            new_text = cur[5][:len(cur[5]) - len(prev[5])] if prev[5] and cur[5].endswith(prev[5]) else cur[5]
+            if by_text is not None:
+                (heads if any(w in new_text.lower() for w in by_text) else texts).append(tc)
+                last_h = None
+                continue
+            if cur[4] != prev[4] or not s2:
+                heads.append(tc)
+                last_h = None
+                continue
+            if last_h is not None:
+                if lag_struct is not None:
+                    paired = tc - last_h <= dt.timedelta(minutes=lag_struct)
                 else:
-                    texts.append(tc)
-        out[did] = dict(desk=desk, type=typ, go=go, heads=sorted(heads), texts=sorted(texts))
+                    paired = lag and tc - last_h <= dt.timedelta(minutes=P.LAG_WINDOW) and "headline" in new_text.lower()
+                if paired:
+                    heads.append(last_h)
+                    last_h = None
+                    continue
+            hit = [f for f in fixes.get(did, []) if tc - dt.timedelta(minutes=entry_tol) <= f[0] <= tc] if entries else []
+            if hit:
+                f = min(hit)
+                heads.append(f[0])
+                entry_go[f[0]] = f[1]
+            else:
+                texts.append(tc)
+            last_h = None
+        heads, texts = sorted(heads), sorted(texts)
+        go_first = entry_go.get(heads[0], go) if (heads and entry_from_entry) else go
+        out[did] = dict(desk=desk, type=typ, go=go, go_first=go_first, heads=heads, texts=texts)
     return out
 
 
@@ -569,15 +646,20 @@ SECTION_NEW = [("BLN", 101, "Politics", "POL-N"), ("BLN", 102, "Culture", "CUL-N
 PERIODS = ["%d-%02d" % ym for ym in P.MONTHS]
 CUTOVER = "2026-03"
 HISTORY_RELEASE = "R26-04H"
-SEASON_PANEL = {"SPT-N": [0.93, 0.97, 1.04, 1.02, 0.95, 0.92, 1.0, 1.04, 1.03, 1.05, 1.03, 1.02],
+SEASON_PANEL = {"SPT-N": [0.93, 0.9, 0.95, 0.94, 0.89, 1.0, 1.05, 1.07, 1.06, 1.07, 1.08, 1.08],
                 "SPT-M": [0.92, 0.95, 1.0, 0.97, 0.9, 0.95, 1.03, 1.06, 1.05, 1.08, 1.05, 1.04],
                 "POL-N": [1.0, 1.02, 0.86, 0.9, 1.02, 1.0, 1.0, 1.12, 1.06, 1.0, 1.03, 0.99],
-                "POL-M": [1.0, 1.0, 0.85, 0.9, 1.0, 1.02, 1.0, 1.04, 1.18, 0.98, 1.02, 1.01]}
+                "POL-M": [1.0, 1.0, 0.85, 0.9, 1.0, 1.02, 1.0, 1.04, 1.18, 0.98, 1.02, 1.01],
+                "BUS-N": [1.02, 1.03, 0.86, 0.91, 1.04, 1.02, 0.99, 1.08, 1.09, 1.0, 0.99, 0.98],
+                "CUL-N": [1.0, 0.98, 0.94, 0.91, 1.03, 1.06, 0.97, 1.03, 1.09, 1.0, 1.01, 0.98],
+                "LOC-M": [1.03, 0.93, 0.78, 0.8, 0.94, 1.06, 1.05, 1.06, 1.07, 1.08, 1.06, 1.06]}
 
 
 def build_panel(W):
-    """Monthly section audiences in every release. The version of record for a month is the latest release
-    carrying it; a release's section codes are those of the taxonomy it was issued on."""
+    """Monthly section audiences in every release. The version of record for a section's month is the latest
+    release carrying that section's figure for the month; a release's section codes are those of the taxonomy it
+    was issued on. The history release reruns only the national sections whose content moved in 2026, and the
+    restated release carries only the Brisbane edition site, whose processing the duplication fault was in."""
     rng = rng_for(700)
     base = {}          # audience on the 2026 taxonomy, every month
     oct_old = {}       # October 2025 as first published, on the 2024 taxonomy (never rerun)
@@ -588,7 +670,7 @@ def build_panel(W):
         season = np.array(SEASON_PANEL.get(desk, [1.0] * 12))
         vals = tgt * season / season.mean() * (1 + rng.normal(0, 0.025, 12))
         vals = np.round(vals).astype(np.int64)
-        o = int(round(vals[0] * P.OLD_BASIS[(site, name)]))
+        o = int(round(vals[0] * P.OLD_BASIS[(site, name)])) if (site, name) in P.HISTORY_SECTIONS else int(vals[0])
         want = (tgt // 1000) * 1000 + rem
         vals[-1] += want * 12 - (o + vals[1:].sum())
         base[(site, name)] = vals
@@ -608,12 +690,14 @@ def build_panel(W):
         rel_pub[rel] = dt.date(ny, nm, 9 + int(rng.integers(0, 6)))
         sec = SECTION_OLD if per < CUTOVER else SECTION_NEW
         for site, code, name, desk in sec:
-            if per < CUTOVER:
-                ua = oct_old[(site, name)] if k == 0 else \
-                    int(round(base[(site, name)][k] * P.OLD_BASIS[(site, name)] * (1 + rng.normal(0, 0.003))))
+            if per < CUTOVER and k == 0:
+                ua = oct_old[(site, name)]
+            elif per < CUTOVER and (site, name) in P.HISTORY_SECTIONS:
+                ua = int(round(base[(site, name)][k] * P.OLD_BASIS[(site, name)] * (1 + rng.normal(0, 0.003))))
             else:
                 ua = int(base[(site, name)][k])
-            ua_pub = int(round(ua * P.RESTATE_FACTOR * (1 + rng.normal(0, 0.004)))) if per in P.RESTATED_PERIODS else ua
+            restated = per in P.RESTATED_PERIODS and site in P.RESTATED_SITES
+            ua_pub = int(round(ua * P.RESTATE_FACTOR * (1 + rng.normal(0, 0.004)))) if restated else ua
             visits = int(round(ua_pub * rng.uniform(2.6, 4.4)))
             rows.append((rel, per, site, code, ua_pub, visits))
     rel_pub[HISTORY_RELEASE] = dt.date(*P.HISTORY_PUBLISHED)
@@ -621,6 +705,8 @@ def build_panel(W):
         if per not in P.HISTORY_PERIODS:
             continue
         for site, code, name, desk in SECTION_NEW:
+            if (site, name) not in P.HISTORY_SECTIONS:
+                continue
             ua = int(base[(site, name)][k])
             rows.append((HISTORY_RELEASE, per, site, code, ua, int(round(ua * rng.uniform(2.6, 4.4)))))
     rel_b = "R26-07B"
@@ -629,6 +715,8 @@ def build_panel(W):
         if per not in P.RESTATED_PERIODS:
             continue
         for site, code, name, desk in SECTION_NEW:
+            if site not in P.RESTATED_SITES:
+                continue
             ua = int(base[(site, name)][k])
             rows.append((rel_b, per, site, code, ua, int(round(ua * rng.uniform(2.6, 4.4)))))
     rows.sort(key=lambda r: (r[1], r[0], r[2], r[3]))

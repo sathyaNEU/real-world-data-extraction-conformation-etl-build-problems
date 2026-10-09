@@ -49,6 +49,8 @@ SHORTLIST = ["POL-N", "SPT-M", "BUS-N", "SPT-N", "LOC-M", "CUL-N"]
 PLATFORM = ("home_web", "section_web", "feed_app", "section_app", "related_links")
 WINDOW_START = dt.date(2025, 10, 1)
 BACKTEST_TOL = 0.02
+NOTE_AFTER_FIX = 10     # minutes: a note on the save after a headline fix records that fix
+ENTRY_NOTE = 30         # minutes: a live blog's note and the entry fix it records
 
 
 def r50k(x):
@@ -250,15 +252,29 @@ for did, revs in docs.items():
     scheduled = [r for r in revs if r[2] == "scheduled" and r[0] < live[0][0]]
     if scheduled and scheduled[-1][3] and when(scheduled[-1][3]) < went_live:
         published, went_live = [scheduled[-1]] + live, when(scheduled[-1][3])
-    first = None
+    first, fixed_alone = None, None     # a corrected headline published before its note, since the last note change
     for prev, cur in zip(published, published[1:]):
+        t = when(cur[1])
         # a note carries forward until cleared, so a correction is a new note on a published version
         if not cur[5] or cur[5] == prev[5]:
+            if cur[5] != prev[5]:
+                fixed_alone = None
+            elif cur[4] != prev[4]:
+                fixed_alone = t
             continue
-        t = when(cur[1])
-        entries = [f for f in entry_fixed.get(did, []) if t - dt.timedelta(minutes=2) <= f <= t]
-        if cur[4] != prev[4] or entries:
-            at = t if cur[4] != prev[4] else min(entries)
+        added = cur[5][:len(cur[5]) - len(prev[5])] if prev[5] and cur[5].endswith(prev[5]) else cur[5]
+        entries = [f for f in entry_fixed.get(did, []) if t - dt.timedelta(minutes=ENTRY_NOTE) <= f <= t]
+        if cur[4] != prev[4]:
+            at = t
+        elif (fixed_alone is not None and t - fixed_alone <= dt.timedelta(minutes=NOTE_AFTER_FIX)
+              and "headline" in added.lower()):
+            at = fixed_alone        # the note records the headline published on the save before it (7.4)
+        elif entries:
+            at = min(entries)
+        else:
+            at = None
+        fixed_alone = None
+        if at is not None:
             corr[desk] += 1
             corr_at.append(at)
             first = at if first is None else min(first, at)
@@ -486,12 +502,17 @@ def write_xlsx(path):
          "in the archive; a desk's lift is the mean over its tests.".format(N_PACKAGES)),
         ("Average monthly readers", "Panel unique audience for the desk's section, mean of October 2025 to September "
          "2026. Each release's section codes are read on the section list it was issued on, so the November 2025 to "
-         "February 2026 history release uses the 2026 list; a later release of a month replaces the earlier one."),
+         "February 2026 history release uses the 2026 list. A section's figure for a month is the latest release "
+         "that carries it: the history release covers three national sections and the April to June restatement "
+         "the Brisbane edition site, so the other sections keep the figures first published."),
         ("Extra clicks per reader", "Extra article clicks 2027 over average monthly readers."),
         ("Headline corrections", "A new correction note on a version readers saw that published a corrected headline, "
-         "the article's own or a live-blog entry's (editorial standards 7.4 and 7.5). Versions readers saw are live "
-         "saves and a scheduled version the CMS published; drafts saved while an article is live are not published. "
-         "Notes carry forward on later saves and are not counted again; body-text corrections are excluded."),
+         "the article's own or a live-blog entry's (editorial standards 7.4 and 7.5). Where the corrected headline "
+         "went live first and the note saying so followed on the next save, the correction is counted on the save "
+         "that published the headline; a blog's note is matched to the entry fixed in the minutes before it. "
+         "Versions readers saw are live saves and a scheduled version the CMS published; drafts saved while an "
+         "article is live are not published. Notes carry forward on later saves and are not counted again; "
+         "body-text corrections are excluded."),
         ("Articles", "Articles first published October 2025 to September 2026 that went live. Live-blog posts, "
          "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
          "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
@@ -719,10 +740,11 @@ def write_docx(path, png):
         "Source codes as defined in the audience warehouse field reference. The 2027 plan holds every desk at its "
         "October 2025 to September 2026 clicks, with no change in where they come from.",
         "Readers are the panel's unique audience for the desk's section, each release read on the section list it "
-        "was issued on; the history release for November 2025 to February 2026 and the restated April to June "
-        "release replace the earlier ones. A headline correction is counted on the version that published the "
-        "corrected headline, a live-blog entry's included (editorial standards 7.4 and 7.5); an article goes live "
-        "when it is first published, at its publish time if the CMS published it.",
+        "was issued on, and each section's month taken from the latest release that carries it (the November 2025 "
+        "to February 2026 history release covers three national sections, the April to June restatement the "
+        "Brisbane edition site). A headline correction is counted on the version that published the corrected "
+        "headline, a live-blog entry's included, also where the note followed on a later save (editorial standards "
+        "7.4 and 7.5); an article goes live when it is first published, at its publish time if the CMS published it.",
     ]
     for i, n in enumerate(notes, 1):
         para(doc, "{}  {}".format(i, n), size=8.5, color="404040", space_after=3)

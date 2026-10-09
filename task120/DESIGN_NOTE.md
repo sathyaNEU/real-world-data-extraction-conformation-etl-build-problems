@@ -755,6 +755,20 @@ k = 58,255 / 29,128 / 5,826 (households) and 67,736 / 33,868 / 6,774 (filing uni
   the mechanism is the same label on a different move (here a unit built through a roster link, selected by exact
   reproduction), and the batch's other furniture differs; the card's driver_concrete was refreshed to build scale and
   its answer, answer_source, spine and deliverables filled.
+- **Stage 3 re-run, 2026-10-09 (after harden loop 1).** The pack was not rebuilt: harden loop 1 found no repair
+  inside the driver, so `generator/` (other than `golden.py`), `target/` and `metadata.json` are as they passed stage 3
+  and solver round 1's landing applies to this pack unchanged. `golden.py` now also asserts against the record and
+  prints the two counts block 2 owes beyond the schedule (41,862 couples recombined on the federal primary TIN, 94,807
+  dependents' returns attached); the outputs are byte-identical to the first stage 3 (tier_floors.png dfec0216b3411fb6,
+  tier_schedule.xlsx a28fd97fca202b7f), so the golden-realism pass stands and both files were re-read (chart labels
+  clear, workbook sheets Schedule, Reproduction, Tier base 2025, Notes as filed). `submission.md` is unchanged: every
+  figure in it is printed by `golden.py`. `verify_pack.py`: 99 checks, 0 failed. Metadata audit clean on `golden/` (band
+  2026-10-23 to 2026-11-09) and on `target/` (no signature; its in-fiction dates are the tables' and the methodology's
+  publication dates). One `submission.md` and one `prompt.md` in the tree, no em dash in any written file. leak.py:
+  REVIEW, no LEAK, the same nine REVIEW lines answered under Leak review. Surface: 0 promoted pairs, nearest task72 at
+  0.101 (97th percentile), proximity only. Heart: **PASS** (nearest heart text 0.05, task109; the earlier
+  `repeat.gate_g` WARN no longer fires); card fields (answer, answer_source, spine.rows 852,947, deliverables,
+  opening_move) already match the submission and the pack; `guard.py validate` 119 cards, 0 invalid.
 
 ## Leak review
 
@@ -768,6 +782,49 @@ leak.py, as of 2026-11-09: REVIEW, no LEAK. One line per REVIEW line.
 - `re_ty2025_tier_rebase.txt`, 4 stump terms: the delivery note lists the files it delivers (returns, the dependents schedule); no sentence points at attaching them.
 - `research_extract_record_layouts.txt`, 12 stump terms: field semantics only; the schedule is described as dependents claimed for the exemption credit and the dependent's return carries no claimant field, which is the design.
 - `prompt.md`, opening sentence with two stump terms ("returns", "income-tax"): the evidence-first opening names the processed-return year, the forcing fact; it fixes no unit, population or basis.
+- Re-run at the stage 3 re-run (2026-10-09, as of 2026-11-09): REVIEW, no LEAK, the same nine lines on unchanged files, each answered above.
+
+## Harden loop 1
+
+Solver round 1 (plain, proxy 96.8, 2026-10-09; graded output in `task120/solver_rounds/round-1-plain.md`)
+landed the call at its step 2 and kept every ask item but one chart label. The loop was worked on paper against
+the registered driver before any generator change, as the hardening loop directs: a rung after which the solver's
+step still completes and still returns a wrong answer, from the measured catalogue first, and never a louder pin,
+a planted defect or a second decoy.
+
+**Diagnosis.** The corpus-direction line kept a corpus that refutes the stop rung (58 of 69, every miss short in
+one class) on the record of measured traps #1 and #3. Those traps stump when the construction that reproduces
+every control is one the solver fails to find. Here it is the household's other link, the dependents schedule,
+so the refutation tells the solver where to look and the look is one join. The registered driver is that
+structure, and stumping Part 4 lists it as dead (a corpus built to refute the naive read is quoted back as the
+evidence for the rung it hides).
+
+**Every repair the skills direct, worked against this driver** (one line each under Tried and rejected):
+1. A corpus blind to the attachment, so the filing unit reproduces every cell and returns the wrong floors.
+   Buildable, since every attachment into a household of $100,000 or more in the closed years is a designed one,
+   but the household then rests on a sentence that is either missing (Gate C) or executed (Part 4, a filed
+   formula).
+2. Households as the confirmed stop rung, with a decisive move only TY2025 carries. No TY2025-only structure in
+   this world is at once silent on the battery, unfiled, and a construction rather than an instrument repair.
+3. A harder household behind the same refuting corpus. Every extra membership rule is a filter or a join over
+   shipped columns, inside the search the refutation starts.
+
+The escalation list (stumping Part 10) adds nothing here: the discriminator already sits behind a join, there is
+no filed pin to split, an advocate for the runner-up is a second decoy to a solver that test-benches, and the
+corpus is the leak rather than too weak.
+
+**Ask layer.** Every device was cleared because its rule sat in the ask's own layout or governing section, or a
+control total confirmed it. The fresh-device redesign is not built: while the call is landed, two responses bank
+about 45 each before any ask, and no ask layer brings that pair under 40.
+
+**Disposition: re-root recommended, no rebuild.** Nothing in the generator, `target/`, `golden/` or
+`submission.md` changed, and the build stands as it passed stage 3. The stopping rule asks for a second
+consecutive landing through the schedule before the household architecture is called measured out; that round
+is not run, because no repair exists to put in front of it and the unchanged pack falls to the same step. The
+next move is the stopping rule's own: re-root the graded quantity at stage 1, a new draw through checkpoint A,
+with this architecture moved into the card's lineage. The re-draw can carry the world and its tables, whose
+class-by-class balance can certify households outright (the L1 form) if the new call puts its decisive move
+where the tables cannot see, and the ask-layer finding above.
 
 ## Tried and rejected
 - Twin pair at 117 against 58 (2.02x, the source note's form): dropped because the stop rung would miss Kessler by 50 per cent, which breaks "every miss a few per cent short" and makes the corpus a loud alarm; there is no lookup transfer to kill in this build, so the pair only needs a nonzero gap in an exact count.
@@ -797,3 +854,9 @@ leak.py, as of 2026-11-09: REVIEW, no LEAK. One line per REVIEW line.
 - The TIN register named tin_resolution_register.csv: leak.py read "solution" inside "resolution" as author vocabulary (LEAK); renamed tin_match_cases.csv, with the record layouts, the thread and the verifier following.
 - Tier 2's capital-gain share of AGI at 10.10005 per cent (within 0.0001 points of the round one-decimal value, the receipt determinism-check A.6 names): tier 2's gains carry a 1.0023 tilt in the generator (share 10.1228), and every share is asserted at least 0.01 points from its round value and 0.02 points from its rounding edge.
 - Misreported TINs drawn clear of TY2025 filers and spouses only: 10 landed on dependents listed on a schedule who do not file (3 e-filed statements kept such a dependent as their owner after the register), so attaching records through the schedule would have moved A3 off the filer-and-spouse resolution; a misreported TIN now avoids every TIN in the files, asserted in the generator and the verifier.
+- Stop rung at federal filing units (rung 2) held by its 58-of-69 fit, as built (solver round 1, plain, 96.8, main call landed, 8 of 9 asks): the solver used the reproduction clause as a test bench, saw the federal unit fall short ("federal units (filer_tin grouped with federal_primary_tin) matched 17/19") and went straight to "Federal units plus each dependent's own return, joined through dependents_schedule dependent_tin = filer_tin (union-find), matched 19/19 in every year", so the corpus that refutes the stop rung (the alarm the corpus-direction line kept) works as a search signal and the dependents schedule is the next table on the bench; rung 3 was never visited, and every ask device (Sunday roll to 16 June, returned items, misapplied transfers, TY2024 credits, latest accepted amendment, paper W-2s) was cleared.
+- Harden loop 1, diagnosis of round 1 (the corpus-direction line's decision to keep a corpus that refutes the stop rung, on the record of measured traps #1 and #3): those recipes stump only when the reproducing construction is one the solver fails to find, and here it is the household's own second link, so the refutation is a search signal with a one-step search, in the solver's words "federal units (filer_tin grouped with federal_primary_tin) matched 17/19. Federal units plus each dependent's own return, joined through dependents_schedule dependent_tin = filer_tin (union-find), matched 19/19 in every year"; that is the shape stumping Part 4 lists as dead (a corpus built to refute the naive read is quoted back as the evidence for the rung it hides), and the registered driver ("grouping on the visible key alone reproduces most cells ... only the full grouping reproduces all of them") is that shape, so no magnitude, threshold or wording change inside the driver repairs it.
+- Harden loop 1, repair on paper, the corpus made blind to the attachment so federal filing units reproduce every published cell and still return $197,000 / $293,000 / $594,000 (the brief's form, and stumping L1's): buildable, because every attachment into a household of $100,000 or more in TY2022 to TY2024 comes from the designed groups (1,915, 1,544 and 2,690 households, crossings exactly the conveyor's 23, 10 and 30 a boundary), so dropping the prior-year trust groups and the conveyor's crossings ties all 69 cells under both units; but then two constructions reproduce 69 of 69 and the methodology already reads "The Legislative Fiscal Office draws its household tiers on federal filing units", which licenses the filing unit as a household reading, so households need an added sentence (a claimed dependent is a member of the claimant's household); unstated the floors are underspecified (Gate C), stated it defines the graded quantity's unit in the layouts or the methodology, which round 1's solver read at its step 1, and it is stumping Part 4's dead shape (a committed figure that is the output of a filed formula: unstated fails Gate C, stated hands it over). Dead.
+- Harden loop 1, repair on paper, households kept as the corpus-confirmed stop rung with a decisive move above them that only TY2025 carries (a corpus blind to the decisive move for a structural reason): every structure this world can hold in TY2025 alone either surfaces on the habitual battery or as a year-on-year step (a dependent TIN on two schedules under a split credit, against the layouts' "The Department accepts one claim for a dependent TIN in a tax year"; households mixing residency codes, which the solver checked in its own words, "no unit mixes residencies"; a narrower TY2025 schedule or new code values; separate returns reporting the couple's joint AGI), or has to be filed and is then executed (a dependent-income threshold for membership, a co-residence rule for code 05 parents), or is a completeness or identifier repair the judge's instrument test bans (returns held in process at the extract, a second schedule channel, an ITIN converted to an SSN, non-filing households counted in the base). Dead.
+- Harden loop 1, repair on paper, a harder household behind the same refuting corpus (attach-all scoring below the filing unit, with membership by relationship code, by the dependent's county against the claimant's, or a subfamily split needed for 69 of 69): each added rule is a filter or a join over columns the schedule and the return already carry, which is the next search a solver runs on a refutation, so the corpus stays the search signal round 1 used. Dead.
+- Harden loop 1, diagnosis of the ask layer (D8 clock, D2 version of record, D4 paper channel, hazards H1 to H4): every device's rule sat in the ask's own record layout or governing section, or a control total confirmed it, and the solver executed each in its own words: "Both channels tie to the employer reconciliations ($1,394,690,352 + $93,587,882)" (the referee confirmed the paper channel the layouts' section 8 names instead of arbitrating a disagreement), "UTC was converted to Central time and compared against due dates of 2025-04-15, 2025-06-16 (June 15 is a Sunday)" (layouts section 3), "the latest ACCEPTED amended version's AGI equals the processed AGI on all 27,664 amended returns. Capital gain uses amount_in_agi from the version of record" (layouts sections 6 and 7, methodology s.4), "I excluded the 13,035 overpayment-credit transfers ... I removed 11,148 returned items unless they were re-presented PAID" (methodology s.4, layouts section 4), "plus RESOLVED WAGE_STATEMENT TIN cases" (layouts section 5). Dead at this layer: a device whose rule sits in the ask's own layout or governing section, a channel with its own control total, and a hazard resolved by a register the layouts describe; and no ask layer rescues the pair while the call is landed, since two responses on the call bank about 45 each before any ask.

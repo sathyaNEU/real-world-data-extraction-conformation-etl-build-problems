@@ -3,8 +3,9 @@
 Reads only the shipped files in target_dir. It imports nothing from the generator, reads no seed, parameter
 or side file, and recomputes every rung, every rival the change log refutes, every calibration outcome and
 every graded figure on its own code path (DuckDB over the parquet, a profile-likelihood prior fit, a walk of
-each document's published states in the CMS revisions, each panel release read on the section list it was
-issued on). The CLAIMS block is the answer key it checks.
+each document's published states in the CMS revisions that pairs a note with the bare headline change or the
+entry fix in the 20 minutes before it, each panel release read on the section list it was issued on and each
+section's month taken from the latest release carrying it). The CLAIMS block is the answer key it checks.
 """
 import csv
 import datetime as dt
@@ -357,14 +358,18 @@ def main(target):
         sched = [r for r in chain if r[2] == "scheduled" and r[0] < live[0][0]]
         if sched and sched[-1][3] and ts(sched[-1][3]) < golive:
             states, golive = [sched[-1]] + live, ts(sched[-1][3])
-        first = None
+        first, bare = None, None        # bare: a headline change published with no new note
         for a, b in zip(states, states[1:]):
-            if not b[5] or b[5] == a[5]:
-                continue
             when = ts(b[1])
-            fixes = sorted(f for f in entry_fix.get(did, ()) if when - dt.timedelta(minutes=2) <= f <= when)
-            if b[4] != a[4] or fixes:
-                at = when if b[4] != a[4] else fixes[0]
+            if not b[5] or b[5] == a[5]:
+                bare = None if b[5] != a[5] else (when if b[4] != a[4] else bare)
+                continue
+            fixes = sorted(f for f in entry_fix.get(did, ()) if when - dt.timedelta(minutes=20) <= f <= when)
+            # a note on an unchanged headline records the bare headline change just before it, or an entry's fix
+            at = when if b[4] != a[4] else (bare if bare is not None and when - bare <= dt.timedelta(minutes=20)
+                                             else (fixes[0] if fixes else None))
+            bare = None
+            if at is not None:
                 count[desk] += 1
                 march[0] += m_lo <= at < m_hi
                 first = at if first is None or at < first else first

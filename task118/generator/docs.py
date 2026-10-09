@@ -265,9 +265,9 @@ def policy_blocks():
               "confirmed by the desk editor or the duty editor. Changes of style, spelling of common words or "
               "updates to a developing story are not corrections."),
         ("h", "7.3 How a correction is made"),
-        ("p", "The editor making the correction adds a correction note in the CMS and saves the corrected article. "
-              "The note appears at the foot of the article. Where a second error is found later, a further note is "
-              "added above the first."),
+        ("p", "The editor making the correction fixes the error and adds a correction note in the CMS. The note "
+              "appears at the foot of the article. Where a second error is found later, a further note is added "
+              "above the first."),
         ("h", "7.4 Headlines"),
         ("p", "A headline correction is logged on the revision that publishes the corrected headline."),
         ("h", "7.5 Live blogs"),

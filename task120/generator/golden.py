@@ -43,6 +43,7 @@ SCRUB = REPO / ".claude/skills/reduce-house-fixes/scripts/scrub_producer_metadat
 # The build record's figures; the golden must land on them exactly.
 RECORD = {
     "floors": (214_000, 318_000, 742_000), "units": 582_544, "hits": 69,
+    "couples": 41_862, "attached": 94_807,
     "receipts": {1: (57_100_430, 60_982_470, 59_690_330, 62_279_690),
                  2: (27_130_950, 28_344_190, 28_273_480, 29_413_200),
                  3: (12_597_420, 13_026_520, 13_083_940, 13_625_350)},
@@ -133,6 +134,17 @@ def rebuild(con, y, key):
     cond = f"agi >= {lo}" + (f" and agi < {hi}" if hi else "")
     n, s = con.execute(f"select count(*), coalesce(sum(agi), 0) from ({sql}) where {cond}").fetchone()
     return int(n) if key[0] == "units" else thousands_half_up(s)
+
+
+def components(con):
+    """TY2025: couples whose separate returns join on the federal primary TIN, and dependents' own returns
+    attached to a claiming household."""
+    couples = con.execute(f"""select count(distinct federal_primary_tin) from r{TY}
+                              where residency_code = 1 and filer_tin <> federal_primary_tin""").fetchone()[0]
+    attached = con.execute(f"""with r as (select * from r{TY} where residency_code = 1)
+                               select count(*) from r join s{TY} s on r.filer_tin = s.dependent_tin
+                               join r c on c.return_id = s.claimant_return_id""").fetchone()[0]
+    return int(couples), int(attached)
 
 
 # --------------------------------------------------------------------------------------------- the schedule
@@ -555,6 +567,7 @@ def main():
         corpus.append((y, label, measure, pub, key, rebuild(con, y, key)))
     hits = sum(1 for c in corpus if c[3] == c[5])
 
+    couples, attached = components(con)
     n_units, sched = schedule(con)
     floors = tuple(s[3] for s in sched)
     tier_rows = tiers(con, floors)
@@ -566,6 +579,7 @@ def main():
 
     # control totals against the build record
     assert floors == RECORD["floors"], floors
+    assert (couples, attached) == (RECORD["couples"], RECORD["attached"]), (couples, attached)
     assert n_units == RECORD["units"] and hits == RECORD["hits"] == len(corpus), (n_units, hits, len(corpus))
     for t in (1, 2, 3):
         assert tuple(rec[(t, k)] for k in (1, 2, 3, 4)) == RECORD["receipts"][t], (t, rec)
@@ -600,6 +614,8 @@ def main():
     print(f"SCHEDULE  ${floors[0]:,} / ${floors[1]:,} / ${floors[2]:,}  (top 10 / 5 / 1 per cent)")
     for p, k, agi, f in sched:
         print(f"  top {p:>2}%  k = {k:>6,}  k-th household AGI ${agi:,}  floor ${f:,}")
+    print(f"COUPLES RECOMBINED  {couples:,} separate-return couples joined on the federal primary TIN")
+    print(f"DEPENDENTS' RETURNS ATTACHED  {attached:,}")
     print(f"HOUSEHOLD UNITS  {n_units:,}")
     print(f"REPRODUCTION  {hits} of {len(corpus)} published cells")
     print("TIER BASE (whole dollars)")

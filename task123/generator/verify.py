@@ -730,6 +730,19 @@ def main():
               "with both distractors deleted the call is unchanged")
     finally:
         shutil.rmtree(tmp)
+    # the extract record: every row count it states is the file's own, and none equals a screen figure
+    rec = open(os.path.join(target, "warehouse_extract_record_2026-10-07.md"), encoding="utf-8").read()
+    stated = {m.group(1): int(m.group(2).replace(",", "")) for m in
+              re.finditer(r"^\| (\S+\.csv) \|[^|\n]*\(([\d,]+) rows\)", rec, re.M)}
+    check(len(stated) == 4, f"the extract record states row counts for {sorted(stated)}")
+    for fn, n in sorted(stated.items()):
+        with open(os.path.join(target, fn), newline="", encoding="utf-8") as fh:
+            have = sum(1 for _ in csv.DictReader(fh))
+        check(have == n, f"the extract record's {n:,} rows for {fn} match the file ({have:,})")
+    figs = {abs(v) for r in TS["rows"] for v in (r["cur"], r["prior"], r["fall"], r["offer"],
+                                                 G[r["cc"]]["K1"], G[r["cc"]]["K2"]) if v is not None}
+    figs |= {TS["rate"], sum(r["offer"] for r in TS["rows"]), len(TS["rows"]), len(off)}
+    check(not (set(stated.values()) & figs), "no row count in the extract record equals a figure of the screen")
     out["golden"] = {"rate_cents": TS["rate"] / 100, "offers": [
         dict(name=P.name[r["cc"]], cc=r["cc"], offer=r["offer"], fall=r["fall"], pct=pct1(r["pct"]),
              K1=G[r["cc"]]["K1"], K2=G[r["cc"]]["K2"]) for r in sorted(off, key=lambda r: -r["fall"])],
