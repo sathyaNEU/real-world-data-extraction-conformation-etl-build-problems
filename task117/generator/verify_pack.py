@@ -30,6 +30,7 @@ EXPECTED = {
     "monthly": [109.088, 67.872, 97.888, 90.272, 84.896, 79.072, 72.128, 74.816, 87.136, 94.080, 103.264, 129.136],
     "rung0": 412.16, "rung1": 309.12, "rung2": 103.04, "rung3": 98.56, "rung4": 148.512,
     "rung4_binding": "2026-02-17T12:00:00-08:00", "planners": 225,
+    "rung4_records": 162.243, "rung5_records": 155.357, "rung5_records_binding": "2026-12-08T12:00:00-08:00",
     "b3_forecast": [112, 117, 107, 106, 88, 88, 82, 90, 106, 114, 113, 111],
     "b3_miss": [-0.9, 2.6, -1.8, 1.9, -1.1, 2.3, -1.2, 2.3, -0.9, 1.8, 0.9, -0.9],
     "b1": {"CP-N": [1069, 908, 910, 725, 594, 592, 599, 691, 791, 914, 1065, 1130],
@@ -99,7 +100,8 @@ def factor_on(factors, d):
 READ_LIST = ["settled_sessions_2024-2026.csv", "restatement_decisions_2025.csv", "station_register.csv",
              "session_intervals_2024-2026.parquet", "gateway_b_sessions_jan-apr2024.csv", "ev_permit_registry.csv",
              "permit_vehicle_checks.csv", "vehicle_reference_list.csv", "city_fleet_roster.csv",
-             "fleet_card_ev_transactions_2024-2026.csv",
+             "fleet_card_ev_transactions_2024-2026.csv", "curbline_courtesy_sessions_civic_decks_2024-2026.csv",
+             "ev_permit_charging_statements_2026.csv",
              "deck_panel_circuit_schedule.csv", "deck_submeter_nameplates.csv", "deck_panel_meter_log_2024-2026.xlsx",
              "nspl_schedule_26_ev_charging_service.pdf", "fes-07_load_forecasting_standard_rev4.pdf",
              "nspl_new_service_planning_guide_2026_sec7.pdf", "civic_center_ev_service_agreement_draft.docx"]
@@ -125,6 +127,12 @@ def load(tdir):
     sp["q"] = epoch_s(sp["interval_start"])
     gw = pd.read_csv(j("gateway_b_sessions_jan-apr2024.csv"))
     fc = pd.read_csv(j("fleet_card_ev_transactions_2024-2026.csv"))
+    ct = pd.read_csv(j("curbline_courtesy_sessions_civic_decks_2024-2026.csv"), dtype={"Permit": str})
+    ct["t0"] = [int(datetime.strptime(x, "%Y-%m-%d %H:%M:%S").replace(tzinfo=LA).timestamp()) for x in ct["Connected"]]
+    ct["t1"] = [int(datetime.strptime(x, "%Y-%m-%d %H:%M:%S").replace(tzinfo=LA).timestamp()) for x in ct["Disconnected"]]
+    ct["d"] = [datetime.strptime(x, "%Y-%m-%d %H:%M:%S").date() for x in ct["Connected"]]
+    ct["station_id"] = ct["Station"]
+    stm = pd.read_csv(j("ev_permit_charging_statements_2026.csv"))
     permits = pd.read_csv(j("ev_permit_registry.csv"))
     checks = pd.read_csv(j("permit_vehicle_checks.csv"), dtype={"trim": str})
     checks["trim"] = checks["trim"].fillna("")
@@ -140,7 +148,8 @@ def load(tdir):
     hi = [i for i, r in enumerate(rows) if r and r[0] == "Read date"][0]
     log = pd.DataFrame([r for r in rows[hi + 1:] if r and r[0] is not None], columns=list(rows[hi]))
     log["Read date"] = pd.to_datetime(log["Read date"]).dt.date
-    return dict(hdr=hdr, dec=dec, reg=reg, sp=sp, gw=gw, fc=fc, permits=permits, checks=checks, ref=ref, fleet=fleet,
+    return dict(hdr=hdr, dec=dec, reg=reg, sp=sp, gw=gw, fc=fc, ct=ct, stm=stm, permits=permits, checks=checks, ref=ref,
+                fleet=fleet,
                 sched=sched, plates=plates, log=log, log_path=j("deck_panel_meter_log_2024-2026.xlsx"))
 
 
@@ -169,6 +178,21 @@ def of_record(P):
     r = h[sel]
     r = r.sort_values(["session_id"]).drop_duplicates("auth_code", keep="first")
     return r
+
+
+def charges(fr):
+    """One row per charge: records at one station on one permit or card that meet end to start are one charge."""
+    fr = fr.sort_values(["station_id", "t0"], kind="mergesort").copy()
+    who = fr["permit_no"].where(fr["permit_no"] != "", fr["fleet_card"])
+    cont = (fr["t0"] == fr["t1"].shift()) & (fr["station_id"] == fr["station_id"].shift()) & (who == who.shift())
+    cid = (~cont).cumsum().to_numpy()
+    g = fr.groupby(cid, sort=False)
+    first = g.head(1).copy()
+    first["t0"] = g["t0"].min().to_numpy()
+    first["t1"] = g["t1"].max().to_numpy()
+    first["kwh_delivered"] = np.round(g["kwh_delivered"].sum().to_numpy(), 3)
+    first["n_rec"] = g.size().to_numpy()
+    return first
 
 
 # ------------------------------------------------------------------------------ cars
@@ -268,9 +292,15 @@ def main():
     rec = rec.copy()
     rec["garage"], rec["position"] = dated_join(P, rec)
     decks = ["Civic Center North Deck", "Civic Center South Deck"]
-    pop = rec[rec["garage"].isin(decks) & (pd.to_datetime(rec["plug_in"].str[:10]).dt.year == 2026)].copy()
+    recs = rec[rec["garage"].isin(decks) & (pd.to_datetime(rec["plug_in"].str[:10]).dt.year == 2026)].copy()
+    pop = charges(recs)
+    check("V01a the 2026 deck records join into charges: every record meeting another end to start at its station on "
+          "the same permit or card is one charge, and no record overlaps another at a station",
+          int((pop["n_rec"] > 1).sum()) > 2000 and int(pop["n_rec"].max()) == 2, (len(recs), len(pop)))
     pop["car"] = car_ratings(P, pop)
     pop["car27"] = car_ratings(P, pop, as_of=AS_OF)
+    recs["car"] = car_ratings(P, recs)
+    recs["car27"] = car_ratings(P, recs, as_of=AS_OF)
     old_kw = float(P["reg"].loc[P["reg"]["garage"].isin(decks), "rating_kw"].unique()[0])
     check("V02 every deck unit is rated 6.6 kW today and the new units 11.5 kW", old_kw == 6.6 and R["new_kw"] == 11.5)
 
@@ -320,6 +350,39 @@ def main():
     check("V07c rung 4 recomputes: 148.512 kW at 12:00 on 17 February 2026, filed 150",
           near(growth * v4, EXPECTED["rung4"], 1e-6) and iso(t4) == EXPECTED["rung4_binding"]
           and int(math.floor(growth * v4 / 5 + 0.5) * 5) == 150, (growth * v4, iso(t4)))
+    # the natural path replays settlement records: rung 4 (own-date cars) and rung 5 (contract-year cars)
+    def replay_rec(rate):
+        rate = pd.Series(rate, index=recs.index)
+        return {g: G.blocks(recs.loc[recs["garage"] == g, "t0"], recs.loc[recs["garage"] == g, "kwh_delivered"],
+                            rate[recs["garage"] == g]) for g in decks}
+    r5 = replay_rec(np.minimum(R["new_kw"], recs["car27"]))
+    v5, t5 = G.peak(r5[decks[0]] + r5[decks[1]])
+    r4 = replay_rec(np.minimum(R["new_kw"], recs["car"]))
+    v4r, t4r = G.peak(r4[decks[0]] + r4[decks[1]])
+    OUT["rung5_records"], OUT["rung4_records"] = growth * v5, growth * v4r
+    check("V07d record by record, rung 5 lands 155.357 kW at 12:00 on 8 December 2026 and rung 4 162.243 kW: the "
+          "settlement records the run closed and carried on restart at the run on the new units",
+          near(growth * v5, EXPECTED["rung5_records"], 1e-6) and iso(t5) == EXPECTED["rung5_records_binding"]
+          and near(growth * v4r, EXPECTED["rung4_records"], 1e-6), (growth * v5, iso(t5), growth * v4r))
+    mon5 = [growth * G.peak(r5[decks[0]] + r5[decks[1]], month=m)[0] for m in range(1, 13)]
+    check("V07e rung 5 differs from the answer at whole kW in every month", all(round(a) != round(b) for a, b in
+                                                                              zip(mon5, mon)), mon5)
+    # the statements bill per charge: only the joined charges reproduce every permit-month
+    stm = P["stm"].set_index(["permit_no", "period"])
+    pr = recs[recs["permit_no"] != ""].copy()
+    pr["period"] = pr["plug_in"].str[:7]
+    pc = charges(pr)
+    n_rec = pr.groupby(["permit_no", "period"]).size()
+    n_chg = pc.groupby(["permit_no", "period"]).size()
+    n_over = pr.groupby(["permit_no", "period"]).apply(lambda g: g.groupby(["station_id", "d"]).ngroups)
+    kwh = pr.groupby(["permit_no", "period"])["kwh_delivered"].sum().round(3)
+    idx = stm.index
+    check("V07f the permit statements reproduce on every permit-month from the joined charges (counts and kWh); "
+          "records as charges miss most months, merging every same-day record at a unit misses some",
+          (n_chg.reindex(idx).fillna(0).astype(int) == stm["charges"]).all()
+          and (np.abs(kwh.reindex(idx).fillna(0) - stm["kwh"]) < 0.0005).all()
+          and int((n_rec.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 0.5 * len(idx)
+          and int((n_over.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 10, len(idx))
     # rungs
     log = P["log"]
     l26 = log[pd.to_datetime(log["Read date"]).dt.year == 2026]
@@ -327,9 +390,9 @@ def main():
     r0 = float(per_m.max()) * growth * R["new_kw"] / old_kw
     check("V08 rung 0 recomputes from the panel log: 412.16", near(r0, EXPECTED["rung0"], 1e-6), r0)
     sp = P["sp"]
-    deck_ids = set(pop["session_id"])
+    deck_ids = set(recs["session_id"])
     closed_rows = sp[sp["session_id"].isin(deck_ids)]
-    vkey = pop.set_index("session_id")["version"]
+    vkey = recs.set_index("session_id")["version"]
     closed_rows = closed_rows[closed_rows["version"] == closed_rows["session_id"].map(vkey)]
     closed = G.readings_load(closed_rows["q"], closed_rows["kwh"])
     c_peak, c_t = G.peak(closed)
@@ -414,8 +477,9 @@ def main():
     ks = {n: ks2(x[pop["garage"] == decks[0]], x[pop["garage"] == decks[1]])
           for n, x in (("arrival", arr), ("dwell", dw), ("energy", pop["kwh_delivered"]))}
     cnt = pop.groupby("garage").size()
-    cl_n = G.readings_load(closed_rows.loc[closed_rows["session_id"].isin(pop.loc[pop["garage"] == decks[0], "session_id"]), "q"],
-                           closed_rows.loc[closed_rows["session_id"].isin(pop.loc[pop["garage"] == decks[0], "session_id"]), "kwh"])
+    north_ids = recs.loc[recs["garage"] == decks[0], "session_id"]
+    cl_n = G.readings_load(closed_rows.loc[closed_rows["session_id"].isin(north_ids), "q"],
+                           closed_rows.loc[closed_rows["session_id"].isin(north_ids), "kwh"])
     check("V18 twin decks matched on counts and distributions, equal closed load at the binding quarter-hour (66.0 kW "
           "each), 1.79 to 1 apart per car",
           abs(cnt.iloc[0] / cnt.iloc[1] - 1) <= 0.02 and max(ks.values()) < 0.05 and 1.7 <= split[0] / split[1] <= 1.9
@@ -510,9 +574,15 @@ def backtest_load(P, G, rec):
     gw = gw[g_gar.isin(decks)]
     load = load + G.blocks(gw["t0"], gw["Energy (Wh)"] / 1000.0, np.full(len(gw), 6.6))
     fc = P["fc"].copy()
+    fc["t0"] = [int(datetime.strptime(x, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).timestamp())
+                for x in fc["START"]]
+    both = fc[fc["NETWORK_REF"].isin(set(P["hdr"]["auth_code"]))]
+    t_exp = P["hdr"].drop_duplicates("auth_code").set_index("auth_code")["t0"]
+    check("V19b the fleet card file stamps START in UTC: on every charge both files carry, START is the export's start "
+          "to the second", len(both) > 1000 and (both["t0"].to_numpy() == both["NETWORK_REF"].map(t_exp).to_numpy()).all(),
+          len(both))
     fc = fc[~fc["NETWORK_REF"].isin(set(P["hdr"]["auth_code"]))].copy()
-    fc["t0"] = [int(datetime.strptime(x, "%Y-%m-%d %H:%M:%S").replace(tzinfo=LA).timestamp()) for x in fc["START"]]
-    fc["d"] = [datetime.strptime(x, "%Y-%m-%d %H:%M:%S").date() for x in fc["START"]]
+    fc["d"] = [datetime.fromtimestamp(int(t), LA).date() for t in fc["t0"]]
     fc["station_id"] = fc["STATION"]
     f_gar, _ = dated_join(P, fc)
     fd = fc[f_gar.isin(decks)]
@@ -591,6 +661,15 @@ def panel_spans(P, G, rec):
             whole = cq[np.searchsorted(qi, q0)]
             lo, hi = np.maximum(st, q0), np.minimum(en, t)
             return whole + float(np.sum(np.where(hi > lo, 6.6 * (hi - lo), 0.0)) / 3600.0)
+        cts = P["ct"].copy()
+        cts["garage"], cts["position"] = dated_join(P, cts)
+        cts = cts.merge(evp[["pos", "effective_from", "to"]], left_on="position", right_on="pos")
+        cts = cts[(cts["effective_from"].dt.date <= cts["d"]) & (cts["to"].dt.date >= cts["d"])]
+        ct_t0, ct_t1, ct_e = cts["t0"].to_numpy(), cts["t1"].to_numpy(), cts["Energy (kWh)"].to_numpy(float)
+
+        def courtesy_in(a, b):
+            assert not ((ct_t0 < a) & (ct_t1 > a)).any() and not ((ct_t0 < b) & (ct_t1 > b)).any()
+            return float(ct_e[(ct_t0 >= a) & (ct_t0 < b)].sum())
         lg = log[log["Panel"] == panel].copy()
         lg = lg.groupby("Read date").last().reset_index()
         lg["t"] = [int(datetime.combine(d, datetime.strptime(tm, "%H:%M").time(), tzinfo=PST).timestamp())
@@ -600,7 +679,7 @@ def panel_spans(P, G, rec):
         spans = []
         for i in range(1, len(lg)):
             a, b = lg.loc[i - 1], lg.loc[i]
-            sess = energy_to(b["t"]) - energy_to(a["t"])
+            sess = energy_to(b["t"]) - energy_to(a["t"]) + courtesy_in(a["t"], b["t"])
             metered = float(b["kWh register"] - a["kWh register"])
             spans.append({"read": i, "meter": b["Meter"], "date": b["Read date"], "time": b["Read time (meter)"],
                           "start": datetime.fromtimestamp(int(a["t"]), LA), "end": datetime.fromtimestamp(int(b["t"]), LA),
