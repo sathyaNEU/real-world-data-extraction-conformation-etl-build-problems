@@ -357,11 +357,12 @@ def choose_traffic_adjust(W, orders_g, fee_g):
     gof = np.array(golden_of)
     kd = np.array(kind)
     is_g = gof < 0
-    # a wrong reading that sits under 40 from its golden total on the unadjusted traffic cannot be carried
-    # out of the hundred while the golden sits 20 from the edges: it is placed at least 5 from the edges
-    # on whichever side it falls, and the record names it
+    # a wrong reading that sits under 56 from its golden total on the unadjusted traffic cannot always be carried
+    # out of the hundred while the golden sits 20 from the edges (two readings 52 above and 55 below one golden
+    # cannot both clear a hundred-wide bin by 5): it is placed at least 5 from the edges on whichever side it
+    # falls, and the record names it
     t0 = V.sum(axis=1)
-    near = (kd == STOP) & (np.abs(t0 - t0[np.where(is_g, np.arange(len(gof)), gof)]) < 40)
+    near = (kd == STOP) & (np.abs(t0 - t0[np.where(is_g, np.arange(len(gof)), gof)]) < 56)
     kd[near] = EITHER
     W.traffic_near = [int(i) for i in np.flatnonzero(near)]
     is_s, is_e = kd == STOP, kd == EITHER

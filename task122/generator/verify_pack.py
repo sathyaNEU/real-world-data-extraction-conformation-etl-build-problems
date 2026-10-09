@@ -7,7 +7,8 @@ guardrail on every count a reader can take (the render log's ordered tiles, the 
 session, every order placed from the session's tiles, the buyer's carousel orders over a window), the
 floor and bar conditions, the decomposition by both routes, and every graded figure: the call, the
 runner-up and the gap, the 48 fee cells of ask 1 and the 12 slot totals of ask 2, with the referee tie.
-The constants it needs (thresholds, tariff, VAT, slot dates, gating) are read from the shipped documents.
+The constants it needs (thresholds, tariff, VAT, slot dates, gating) are read from the shipped documents, and the
+checkout the slot runs on from the records: the date from which every pickup order carries a provider capture.
 
     python3 task122/generator/verify_pack.py <task folder or target folder> [--record build_record.json] [--out v.json]
 
@@ -73,9 +74,6 @@ def read_rules(tgt):
     cap = re.sub(r"\s+", " ", open(find(tgt, "slot_capacity_and_release_gating", ".md"), encoding="utf-8").read())
     m = re.search(r"slot runs from (\d+) (\w+) to (\d+) (\w+) (\d{4})", cap)
     r["slot_start"] = datetime.strptime(f"{m.group(1)} {m.group(2)} {m.group(5)}", "%d %B %Y").date()
-    m2 = re.search(r"checkout change of (\d+) (\w+) (\d{4})", cap)
-    r["cover_change"] = datetime.strptime(" ".join(m2.groups()), "%d %B %Y").date()
-    r["handover_ends"] = "sellers no longer take payment at the handover" in cap
     r["cell_by_cell"] = "cell by cell" in cap
     r["one_year_before"] = "same ISO weeks one year before the slot" in cap
     ics = open(find(tgt, "app_release_calendar", ".ics"), encoding="utf-8").read()
@@ -85,18 +83,18 @@ def read_rules(tgt):
         if re.search(r"SUMMARY:App release", ev):
             rel.append(datetime.strptime(d, "%Y%m%d").date())
     r["app_start"] = min(d for d in rel if d >= r["slot_start"])
-    # the tariff in force for the slot: the newest register row the pricing committee approved
+    # the tariff in force on the slot's dates: the register row whose effective date is the latest on or before the
+    # slot's start, provided no row takes effect inside the slot; the register's newest row is a later proposal
     tar = pd.read_csv(find(tgt, "kopersbescherming", ".csv"))
-    minutes = docx_text(find(tgt, "pricing_committee_minutes", ".docx"))
-    deferred = {m.group(1) for m in re.finditer(r"(KB-\d{4}-\d{2})", minutes)
-                if "deferred" in minutes[m.end():m.end() + 600]}
     tar["start"] = pd.to_datetime(tar.ingangsdatum).dt.date
-    live = tar[(tar.start <= r["slot_start"]) & ~tar.tarief_id.isin(deferred)].sort_values("start")
-    row = live.iloc[-1]
+    m3 = re.search(r"to (\d+) (\w+) (\d{4}), twelve weeks", cap)
+    r["slot_end"] = datetime.strptime(" ".join(m3.groups()), "%d %B %Y").date()
+    row = tar[tar.start <= r["slot_start"]].sort_values("start").iloc[-1]
     r["tariff_fixed"], r["tariff_pct"] = float(row.vast_bedrag_eur), float(row.percentage_van_artikelprijs) / 100
     r["tariff_id"] = row.tarief_id
-    jan = tar[tar.start <= r["slot_start"]].sort_values("start").iloc[-1]
-    r["tariff_jan_fixed"] = float(jan.vast_bedrag_eur)
+    r["tariff_changes_inside_slot"] = int(((tar.start > r["slot_start"]) & (tar.start <= r["slot_end"])).sum())
+    newest = tar.sort_values("start").iloc[-1]
+    r["tariff_latest_fixed"], r["tariff_latest_start"] = float(newest.vast_bedrag_eur), newest.start
     terms = pdf_text(find(tgt, "buyer_protection_terms", ".pdf"))
     r["fee_on_price_paid"] = "percentage of the price you pay for the item, after any accepted offer" in terms
     r["in_person_no_fee"] = "pay the seller directly, the purchase is not covered and no Buyer Protection fee" in terms
@@ -111,6 +109,8 @@ def read_rules(tgt):
     r["income_excl_vat"] = "Fee income excl. VAT" in head
     rl = open(find(tgt, "analytics_release_log", ".md"), encoding="utf-8").read()
     r["r2_replaces"] = "R2 replaces the first release" in rl
+    thread = open(find(tgt, "planning_thread_carousel_slot", ".txt"), encoding="utf-8").read()
+    r["checkout3_named"] = "Checkout 3" in thread
     reg = json.load(open(find(tgt, "ranking_policy_register", ".json"), encoding="utf-8"))
     r["incumbent"] = [p["policy_id"] for p in reg["policies"] if p["status"] == "production"][0]
     r["policies"] = [p["policy_id"] for p in reg["policies"] if p["status"] == "registered"]
@@ -289,8 +289,9 @@ def main():
     inc, pol = rules["incumbent"], rules["policies"]
     v.check(all(rules[k] for k in ("cell_by_cell", "one_year_before", "fee_on_price_paid", "in_person_no_fee",
                                    "r2_replaces", "balance_is_a_method", "rate_from_tiles", "seven_day_rule",
-                                   "provider_captures_only", "income_excl_vat", "handover_ends"))
-            and rules["tariff_id"] == "KB-2026-02" and len(pol) == 6 and abs(rules["vat"] - 0.21) < 1e-12,
+                                   "provider_captures_only", "income_excl_vat", "checkout3_named"))
+            and rules["tariff_id"] == "KB-2026-02" and rules["tariff_changes_inside_slot"] == 0
+            and rules["tariff_latest_start"] > rules["slot_end"] and len(pol) == 6 and abs(rules["vat"] - 0.21) < 1e-12,
             "rules.read_from_documents", {k: rules[k] for k in ("tariff_id", "app_start", "slot_start", "vat")})
     R, S, O, PM, OF = load(tgt, rules)
     v.check(len(R) >= 25_000 and len(S) == R.session_id.nunique(), "data.render_rows", len(R))
@@ -448,37 +449,41 @@ def main():
     week_starts = [rules["slot_start"] + timedelta(weeks=i) for i in range(rules["slot_weeks"])]
     slot_wk = [d.isocalendar()[1] for d in week_starts]
     app_wk = [d.isocalendar()[1] for d in week_starts if d + timedelta(days=6) >= rules["app_start"]]
-    before = {d.isocalendar()[1] for d in week_starts if d + timedelta(days=6) < rules["cover_change"]}
     prev = rules["slot_start"].year - 1
     band_lab = ["0-29", "30-179", "180-729", "730+"]
 
-    def split_of(table, app_weeks):
-        pre_, post_ = np.zeros(8), np.zeros(8)
+    def arm_of(table, app_weeks):
+        a_ = np.zeros(8)
         for c in range(8):
             plat = "app" if c < 4 else "web"
             for w_ in (app_weeks if plat == "app" else slot_wk):
                 m = (table.iso_week == f"{prev}-W{w_:02d}") & (table.platform == plat) & \
                     (table.tenure_band == band_lab[c % 4])
-                s_ = rules["slot_share"] * table.loc[m, "logged_in_sessions"].sum()
-                if w_ in before:
-                    pre_[c] += s_
-                else:
-                    post_[c] += s_
-        return pre_, post_
-    pre, post = split_of(cur, app_wk)
-    arm = pre + post
-    share = pre / arm
-    by_weeks = np.array([sum(1 for w_ in (app_wk if c < 4 else slot_wk) if w_ in before) /
-                         len(app_wk if c < 4 else slot_wk) for c in range(8)])
-    out["pre_change_share"] = share.tolist()
-    v.check(np.abs(share - by_weeks).max() < 5e-4, "slot.pre_change_share_by_sessions_equals_by_weeks",
-            (share.round(6).tolist(), by_weeks.round(6).tolist()))
+                a_[c] += rules["slot_share"] * table.loc[m, "logged_in_sessions"].sum()
+        return a_
+    arm = arm_of(cur, app_wk)
     # ------------------------------------------------------------------ ask 1: fee income per 1,000 sessions
     o = W21.merge(PM, on="order_id", how="left")
     captured = o.payment_id.notna().to_numpy()
     pickup = (o.delivery == "pickup").to_numpy()
-    in_person = ~captured & pickup                     # collected and paid to the seller: no fee before 1 March
+    in_person = ~captured & pickup                     # collected and paid to the seller at the handover
     on_balance = ~captured & ~pickup                   # shipped, paid from a Vouwlijn balance: fee charged
+    # the checkout the slot runs on, from the records: the last pickup paid at the handover, and every pickup after it
+    # (to the extract's end) paid at checkout
+    pk = O[O.delivery == "pickup"].merge(PM[["order_id", "payment_id"]], on="order_id", how="left")
+    hand = pk[pk.payment_id.isna()]
+    switch = hand.ordered_at.max().normalize() + pd.Timedelta(days=1)
+    after = pk[pk.ordered_at >= switch]
+    before = pk[pk.ordered_at < switch]
+    out["checkout3"] = dict(switch=str(switch.date()), after_pickups=len(after),
+                            after_handover=int(after.payment_id.isna().sum()), before_pickups=len(before),
+                            before_handover=int(before.payment_id.isna().sum()),
+                            days_to_extract=int((O.ordered_at.max().normalize() - switch).days))
+    v.check(len(after) >= 5000 and after.payment_id.notna().all() and out["checkout3"]["days_to_extract"] >= 14 and
+            before.payment_id.isna().mean() >= 0.4 and switch.date() < rules["slot_start"] and rules["checkout3_named"],
+            "checkout.every_pickup_paid_at_checkout_before_the_slot", out["checkout3"])
+    v.check(not ((o.channel == "carousel") & (o.home_session_id == o.sid) & (o.ordered_at >= switch)).any(),
+            "checkout.in_session_orders_predate_the_switch")
     x = o.merge(OF, on=["buyer_id", "listing_id"], how="left")
     live = ((x.accepted_at <= x.ordered_at) & (x.expires_at >= x.ordered_at)).to_numpy()
     off_price = np.where(live, x.offer_eur, x.asking_price_eur)
@@ -509,16 +514,13 @@ def main():
             for r in pol:
                 out_[(r, c)] = (fs[cm & (S.ranker == r).to_numpy()].mean() - base) * 1000
         return out_
-
-    def blend(g_old, g_new, sh=share):
-        return {k: sh[k[1]] * g_old[k] + (1 - sh[k[1]]) * g_new[k] for k in g_old}
     covers = {}
     for f1, f2, hz2, hz1 in np.ndindex(2, 2, 2, 2):
-        for cv in ("old", "new"):
+        for cv in ("new", "old"):
             covers[(f1, f2, hz2, hz1, cv)] = grid_for(fee_vec(vat_out=not f1, charge_balance=not f2, cover=cv,
                                                               price=asking if hz2 else None,
-                                                              fixed=rules["tariff_jan_fixed"] if hz1 else None))
-    cells_fee = blend(covers[(0, 0, 0, 0, "old")], covers[(0, 0, 0, 0, "new")])
+                                                              fixed=rules["tariff_latest_fixed"] if hz1 else None))
+    cells_fee = covers[(0, 0, 0, 0, "new")]           # every order charged: the slot runs on the new checkout
     cells_ord = {}
     for c in range(8):
         cm = (S.cell == c).to_numpy()
@@ -529,30 +531,25 @@ def main():
     out["ask1_filed"] = {f"{r}|{CELL_LABELS[c]}": round(x_, 1) for (r, c), x_ in cells_fee.items()}
     v.check(min(bin_clear(x_, 0.1) for x_ in cells_fee.values()) >= 0.03, "ask1.mid_bin",
             min(bin_clear(x_, 0.1) for x_ in cells_fee.values()))
-    # every way of mishandling the cover change (the logged cover, or full cover, through the whole slot) and the
-    # four hazards (VAT kept in, balance purchases uncharged, the asking price, the January tariff row) moves every
-    # cell out of its bin; so does the natural read (every order priced on the formula, VAT in, asking price,
-    # January row, in-session)
+    # every way of mishandling the checkout (the logged window's, where a pickup with no capture carries no fee) and
+    # the four hazards (VAT kept in, balance purchases uncharged, the asking price, the register's newest row) moves
+    # every cell out of its bin; so does the natural read (every order priced on the formula, VAT in, asking price,
+    # the newest row, in-session)
     fee_sets = {}
     for f1, f2, hz2, hz1 in np.ndindex(2, 2, 2, 2):
-        for fx in ("blend", "old", "new"):
-            if fx == "blend" and not any((f1, f2, hz2, hz1)):
+        for cv in ("new", "old"):
+            if cv == "new" and not any((f1, f2, hz2, hz1)):
                 continue
-            g_old, g_new = covers[(f1, f2, hz2, hz1, "old")], covers[(f1, f2, hz2, hz1, "new")]
-            g_ = blend(g_old, g_new) if fx == "blend" else (g_old if fx == "old" else g_new)
-            fee_sets[(f1, f2, fx, hz2, hz1)] = g_
+            g_ = covers[(f1, f2, hz2, hz1, cv)]
+            fee_sets[(f1, f2, cv, hz2, hz1)] = g_
             stay = [k for k in cells_fee if nbin(g_[k], 0.1) == nbin(cells_fee[k], 0.1)]
-            v.check(not stay, f"ask1.devices_{f1}{f2}{fx}{hz2}{hz1}_move_every_cell", stay)
-    v.check(len(fee_sets) == 47, "ask1.readings_47", len(fee_sets))
-    gn = grid_for(fee_vec(vat_out=False, cover="new", price=asking, fixed=rules["tariff_jan_fixed"]), insess)
+            v.check(not stay, f"ask1.devices_{f1}{f2}{cv}{hz2}{hz1}_move_every_cell", stay)
+    v.check(len(fee_sets) == 31, "ask1.readings_31", len(fee_sets))
+    gn = grid_for(fee_vec(vat_out=False, cover="new", price=asking, fixed=rules["tariff_latest_fixed"]), insess)
     v.check(not [k for k in cells_fee if nbin(gn[k], 0.1) == nbin(cells_fee[k], 0.1)], "ask1.natural_read_moves_every_cell")
-    gv = blend(grid_for(np.round(fee_vec(vat_out=False, cover="old") * 100 / vat) / 100),
-               grid_for(np.round(fee_vec(vat_out=False, cover="new") * 100 / vat) / 100))
+    gv = grid_for(np.round(fee_vec(vat_out=False, cover="new") * 100 / vat) / 100)
     v.check(all(nbin(gv[k], 0.1) == nbin(cells_fee[k], 0.1) for k in cells_fee), "ask1.vat_per_order_same_grid")
-    gw = blend(covers[(0, 0, 0, 0, "old")], covers[(0, 0, 0, 0, "new")], by_weeks)
-    v.check(all(nbin(gw[k], 0.1) == nbin(cells_fee[k], 0.1) for k in cells_fee), "ask1.blend_by_weeks_same_grid")
-    for nm, g_ in (("every_offer", blend(grid_for(fee_vec(cover="old", price=any_offer)),
-                                         grid_for(fee_vec(cover="new", price=any_offer)))),
+    for nm, g_ in (("every_offer", grid_for(fee_vec(price=any_offer))),
                    ("drop_pickups", grid_for(np.where(pickup, 0.0, fee_vec()))),
                    ("payments_as_charged", grid_for(np.where(captured, o.buyer_protection_fee_eur.fillna(0).to_numpy(),
                                                              0.0)))):
@@ -595,17 +592,14 @@ def main():
     out["arm_sessions"] = arm.tolist()
     out["app_weeks"], out["web_weeks"] = app_wk, slot_wk
     tot = lambda g_, a_: {r: sum(g_[(r, c)] * a_[c] / 1000 for c in range(8)) for r in pol}
-
-    def tot_fee(g_old, g_new, sp):
-        return {r: sum(g_old[(r, c)] * sp[0][c] + g_new[(r, c)] * sp[1][c] for c in range(8)) / 1000 for r in pol}
-    tot_o, tot_f = tot(cells_ord, arm), tot_fee(covers[(0, 0, 0, 0, "old")], covers[(0, 0, 0, 0, "new")], (pre, post))
+    tot_o, tot_f = tot(cells_ord, arm), tot(cells_fee, arm)
     out["ask2"] = {"orders": tot_o, "fee": tot_f,
                    "orders_filed": {r: int(nbin(x_, 100) * 100) for r, x_ in tot_o.items()},
                    "fee_filed": {r: int(nbin(x_, 100) * 100) for r, x_ in tot_f.items()}}
     v.check(min(bin_clear(x_, 100) for x_ in list(tot_o.values()) + list(tot_f.values())) >= 20, "ask2.mid_bin")
-    splits = {"planned": (pre, post), "first_release": split_of(wk1, app_wk), "all_weeks_app": split_of(cur, slot_wk),
-              "both": split_of(wk1, slot_wk)}
-    arms = {k: sp[0] + sp[1] for k, sp in splits.items() if k != "planned"}
+    arms_all = {"planned": arm, "first_release": arm_of(wk1, app_wk), "all_weeks_app": arm_of(cur, slot_wk),
+                "both": arm_of(wk1, slot_wk)}
+    arms = {k: a_ for k, a_ in arms_all.items() if k != "planned"}
     pooled_in = lifts(S, y_in, "session_weights", inc, pol)
     inside = []
     for r in pol:
@@ -616,13 +610,12 @@ def main():
         reads.append(("fee_pooled", sum(nc[c] / nc.sum() * cells_fee[(r, c)] for c in range(8)) * arm.sum() / 1000,
                       tot_f[r], False))
         for (f1, f2, hz2, hz1) in np.ndindex(2, 2, 2, 2):
-            for fx in ("blend", "old", "new"):
-                g_old, g_new = covers[(f1, f2, hz2, hz1, "old")], covers[(f1, f2, hz2, hz1, "new")]
-                a_g, b_g = {"blend": (g_old, g_new), "old": (g_old, g_old), "new": (g_new, g_new)}[fx]
-                for an, sp in splits.items():
-                    if an == "planned" and fx == "blend" and not any((f1, f2, hz2, hz1)):
+            for cv in ("new", "old"):
+                for an, a_ in arms_all.items():
+                    if an == "planned" and cv == "new" and not any((f1, f2, hz2, hz1)):
                         continue
-                    reads.append((f"fee_{f1}{f2}{fx}{hz2}{hz1}_{an}", tot_fee(a_g, b_g, sp)[r], tot_f[r], False))
+                    reads.append((f"fee_{f1}{f2}{cv}{hz2}{hz1}_{an}", tot(covers[(f1, f2, hz2, hz1, cv)], a_)[r],
+                                  tot_f[r], False))
         worst = None
         for nm, x_, g0, stop in reads:
             k0 = nbin(g0, 100)
@@ -632,9 +625,11 @@ def main():
                 worst = (score, nm, round(x_, 1), round(g0, 1))
             if o_ < 0:
                 inside.append(f"{r}|{nm}")
-        v.check(worst[0] >= 5 and len(reads) == 3 + 1 + 1 + 1 + 191, f"ask2.every_reading_clear.{r}", worst)
+        v.check(worst[0] >= 5 and len(reads) == 3 + 1 + 1 + 1 + 127, f"ask2.every_reading_clear.{r}", worst)
     out["ask2_readings_inside_the_hundred"] = inside
     v.check(len([z for z in inside if "pooled" not in z]) <= 6, "ask2.device_readings_out", inside)
+    v.check(not [z for z in inside if z.split("|", 1)[1].startswith("fee_00old00_planned")],
+            "ask2.logged_checkout_alone_moves_every_fee_total")
     # ------------------------------------------------------------------ device separation from the call
     O2 = O.copy()
     O2["asking_price_eur"] = O2.asking_price_eur.sample(frac=1.0, random_state=7).to_numpy()

@@ -425,8 +425,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_(off_round >= 0.0049, "ask1.cells_off_the_round_value", round(off_round, 4))
     small = [k for k, v in gold.items() if abs(v) < 1.0]
     K_(len(small) <= 4, "ask1.small_cells", [(L[r], c, round(gold[(r, c)], 2)) for r, c in small])
-    # FX's three states by every reading of the four hazards (47 wrong readings), and the natural read, carry
-    # every cell out of its bin
+    # the checkout's two states by every reading of the four hazards (31 wrong readings), and the natural read,
+    # carry every cell out of its bin
     gen_gold, gen_combos = W.fee_grid_gen
     K_(max(abs(gen_gold[k] / 100 - gold[(P.RANKERS[k[0]], k[1])]) for k in gen_gold) < 1e-6,
        "ask1.generator_and_files_agree.golden")
@@ -441,32 +441,39 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     nat_stay = [k for k in gold if same_bin(res["fee_natural"][k], gold[k])]
     K_(not nat_stay, "ask1.natural_read_moves_every_cell", nat_stay)
     clear += [outside(res["fee_natural"][k], gold[k]) for k in gold]
-    K_(len(res["fee_combos"]) == 47, "ask1.readings_47", len(res["fee_combos"]))
+    K_(len(res["fee_combos"]) == 31, "ask1.readings_31", len(res["fee_combos"]))
     K_(min(clear) >= 0.02, "ask1.devices_clear_by_0.02", round(min(clear), 4))
     rec["ask1_device_min_clearance"] = round(float(min(clear)), 4)
     nearest = min((outside(g[k], gold[k]), "-".join(key), L[k[0]], P.CELL_NAMES[k[1]])
                   for key, g in res["fee_combos"].items() for k in gold)
     rec["ask1_nearest_reading"] = [round(float(nearest[0]), 4)] + list(nearest[1:])
-    # FX: the slot runs on the logged window's cover before 1 March and on full cover from it; each cell's share
-    # of the arm's planned sessions before the change is its share of the slot's weeks (and days), so the blends
-    # by planned sessions, by weeks and by days file one grid
-    shares = res["pre_change_share"]
-    K_(max(abs(shares[c] - (0.6 if c < 4 else 2 / 3)) for c in range(8)) < 5e-4, "FX.pre_change_shares",
-       [round(float(x_), 6) for x_ in shares])
-    wb = res["fee_week_blend"]
-    K_(all(same_bin(wb[k], gold[k]) for k in gold) and max(abs(wb[k] - gold[k]) for k in gold) < 0.002,
-       "FX.C1_blend_by_weeks_days_sessions", max(abs(wb[k] - gold[k]) for k in gold))
-    for nm, key in (("logged_cover_throughout", ("right", "right", "old", "right", "right")),
-                    ("full_cover_throughout", ("right", "right", "new", "right", "right"))):
-        g = res["fee_combos"][key]
-        K_(all(not same_bin(g[k], gold[k]) for k in gold), f"FX.{nm}_moves_every_cell")
-        rec[f"FX_{nm}_min_clear"] = round(float(min(outside(g[k], gold[k]) for k in gold)), 4)
-    jan = res["fee_app_from_january"]
-    rec["FX_app_blend_from_january_cells_moved"] = int(sum(not same_bin(jan[k], gold[k]) for k in gold))
-    K_(all(same_bin(jan[k], gold[k]) for k in gold if k[1] >= 4), "FX.app_weeks_touch_app_cells_only")
-    rec["FX_pre_change_share"] = [round(float(x_), 6) for x_ in shares]
+    # FC: Checkout 3 (21 September 2026) has every order paid at checkout, pickups included. The records show it:
+    # before it a pickup could be paid to the seller at the handover, with no provider capture; from that day every
+    # pickup carries one. The slot runs under it, so the golden charges every order; the logged window's checkout
+    # (a pickup with no capture uncharged), the basis Finance's statement reproduces, moves every cell.
+    c3 = res["checkout3"]
+    K_(c3["after_pickups"] >= 5000 and c3["after_handover"] == 0 and c3["before_handover"] >= 0.4 * c3["before_pickups"]
+       and c3["last_handover"] < P.CHECKOUT3.isoformat(), "FC.records_show_checkout3", c3)
+    rec["checkout3"] = c3
+    old_c = res["fee_old_cover"]
+    K_(all(not same_bin(old_c[k], gold[k]) for k in gold), "FC.logged_checkout_moves_every_cell")
+    rec["FC_logged_checkout_min_clear"] = round(float(min(outside(old_c[k], gold[k]) for k in gold)), 4)
+    K_(all(abs(res["fee_full_cover"][k] - gold[k]) < 1e-9 for k in gold), "FC.golden_is_every_order_charged")
+    # every order a policy adds in the session, or from a tile after it, predates Checkout 3
+    sess_ids = set(S.session_id)
+    added = O[(O.channel == "carousel") & O.home_session_id.isin(sess_ids)]
+    K_(added.ordered_at.max() < pd.Timestamp(P.CHECKOUT3), "FC.in_session_orders_predate_checkout3",
+       str(added.ordered_at.max()))
+    # the slot's tariff is the register row in force on its dates; the newest row is a proposal dated after it
+    tar_ = pd.read_csv(os.path.join(tgt, D.F_TARIFF))
+    tar_["start"] = pd.to_datetime(tar_.ingangsdatum).dt.date
+    in_force = tar_[tar_.start <= P.SLOT_START].sort_values("start")
+    newest = tar_.sort_values("start").iloc[-1]
+    K_(in_force.iloc[-1].tarief_id == "KB-2026-02" and
+       tar_[(tar_.start > P.SLOT_START) & (tar_.start <= P.SLOT_END)].empty and
+       round(float(newest.vast_bedrag_eur) * 100) == P.LATEST_FIXED_CENTS and newest.start > P.SLOT_END and
+       pd.isna(newest.besluit), "HZ1.slot_tariff_by_date_newest_row_after_the_slot", tar_.astype(str).to_dict("records"))
     rec["fee_old_cover"] = {f"{L[r]}|{P.CELL_NAMES[c]}": round(v, 3) for (r, c), v in res["fee_old_cover"].items()}
-    rec["fee_full_cover"] = {f"{L[r]}|{P.CELL_NAMES[c]}": round(v, 3) for (r, c), v in res["fee_full_cover"].items()}
     # VAT taken off order by order to the cent files the same grid
     vp = res["fee_vat_per_order"]
     inside = [-outside(vp[k], gold[k]) for k in gold]
@@ -505,24 +512,24 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
             clr.append((abs(o_), nm, round(x_, 1), round(g_, 1)))
             if o_ < 0:
                 inside_readings.append(f"{L[r]}|{nm}")
-        K_(min(clr)[0] >= 5 and len(clr) == 5 + 2 + 191, f"ask2.every_reading_clear_of_the_edges.{L[r]}", min(clr))
+        K_(min(clr)[0] >= 5 and len(clr) == 5 + 2 + 127, f"ask2.every_reading_clear_of_the_edges.{L[r]}", min(clr))
         K_(abs(res["tot_orders_r1"][r] - res["tot_orders"][r]) >= 100, f"ask2.P2_moves_100.{L[r]}",
            res["tot_orders_r1"][r] - res["tot_orders"][r])
     pooled_inside = [z for z in inside_readings if "pooled" in z]
     device_inside = [z for z in inside_readings if "pooled" not in z]
     K_(len(device_inside) <= 6 and not any("tot_orders" in z for z in device_inside),
        "ask2.device_readings_out_of_the_hundred", device_inside)
-    fx_alone = [z for z in device_inside if z.split("|", 1)[1] in ("fee|False|False|right|right|old|right|right",
-                                                                  "fee|False|False|right|right|new|right|right")]
-    K_(len(fx_alone) <= 1, "ask2.FX_alone_moves_five_fee_totals_of_six", fx_alone)
-    rec["ask2_FX_alone_inside"] = fx_alone
+    fc_alone = [z for z in device_inside if z.split("|", 1)[1] == "fee|False|False|right|right|old|right|right"]
+    K_(not fc_alone, "ask2.FC_alone_moves_every_fee_total", fc_alone)
+    tf_old = res["tot_fee_subsets"][(False, False, "right", "right", "old", "right", "right")]
+    rec["ask2_FC_alone_fee_totals"] = {L[r]: round(v, 1) for r, v in tf_old.items()}
     rec["ask2_readings_inside_the_hundred"] = dict(pooled=pooled_inside, devices=device_inside)
     tot_in = K.totals(res["orders_insession"], res["arm_sessions"])
     K_(not same_bin(tot_in[B_], res["tot_orders"][B_], 100) and
        all(abs(tot_in[r] - res["tot_orders"][r]) < 1e-6 for r in P.POLICIES if r != B_),
        "ask2.in_session_basis_moves_B_only", {L[r]: round(tot_in[r], 1) for r in P.POLICIES})
     rec["ask2_orders_in_session_basis"] = {L[r]: round(tot_in[r], 1) for r in P.POLICIES}
-    K_(len(res["tot_fee_subsets"]) == 191, "ask2.fee_readings_191", len(res["tot_fee_subsets"]))
+    K_(len(res["tot_fee_subsets"]) == 127, "ask2.fee_readings_127", len(res["tot_fee_subsets"]))
     rec["ask2"] = {"orders": {L[r]: round(v, 1) for r, v in res["tot_orders"].items()},
                    "fee": {L[r]: round(v, 1) for r, v in res["tot_fee"].items()},
                    "arm_sessions": [int(round(x_)) for x_ in res["arm_sessions"]],
@@ -569,8 +576,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     stated = float(body[4].astype(float).sum())
     K_(abs(gross_pay / stated - 1) > 0.10 and abs(gross_pay / 1.21 / stated - 1) > 0.05,
        "referee.payments_alone_do_not_tie", (round(gross_pay, 2), round(stated, 2)))
-    # the statement certifies the logged window's cover: charging every pickup, as the slot does from 1 March,
-    # overstates it
+    # the statement certifies the logged window's checkout: charging every pickup, as the slot does under Checkout
+    # 3, overstates it, so the statement does not tie under the golden fee basis
     allp = o.copy()
     allp["booked"] = np.where(allp.paid_through, allp.captured_at, allp.ordered_at)
     idx_a = np.searchsorted(starts, allp.booked.to_numpy(), side="right") - 1
@@ -594,7 +601,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_(bal.between(0.06, 0.08).all(), "hygiene.balance_share_steady_by_month", bal.round(4).to_dict())
     K_(not o[o.inperson].paid_through.any() and (o[o.balance].delivery == "shipped").all(),
        "hygiene.no_payment_is_pickup_in_person_or_shipped_on_balance")
-    # a watched listing is never paid at the handover, so no brought-forward order changes cover on 1 March
+    # a watched listing is never paid at the handover, so a brought-forward order and the one it replaces share a
+    # checkout
     wl = S[["buyer_id", "watchlist_at_start"]].copy()
     wl["listing_id"] = wl.watchlist_at_start.str.split()
     wl = wl.explode("listing_id").dropna(subset=["listing_id"])
@@ -605,8 +613,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     # ---------------------------------------------------------------- separation and necessity
     declared_main = {Wr.F_RENDER, Wr.F_RANKINGS, Wr.F_ORDERS, D.F_ARCHIVE, D.F_CHARTER, D.F_COMMIT, D.F_REGISTER,
                      D.F_FIELDS}
-    device_files = {Wr.F_PAYMENTS, K.offers_file(tgt), D.F_TARIFF, D.F_TERMS, D.F_MINUTES, K.F_WEEKLY, K.F_R2,
-                    D.F_RELEASES, D.F_CAPACITY, D.F_ICS, D.F_FINANCE}
+    device_files = {Wr.F_PAYMENTS, K.offers_file(tgt), D.F_TARIFF, D.F_TERMS, K.F_WEEKLY, K.F_R2,
+                    D.F_RELEASES, D.F_CAPACITY, D.F_ICS, D.F_FINANCE, D.F_THREAD}
     K_(not (declared_main & device_files), "separation.files")
     main_cols = {"order_id", "buyer_id", "listing_id", "ordered_at", "channel", "home_session_id"}
     K_(not ({"asking_price_eur", "delivery", "platform", "category"} & main_cols), "separation.columns")
@@ -670,7 +678,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         "cell_table": r"730 days and over",
         "floor": r"at least 12 of every 100 tiles",
         "slot_share": r"10 per cent of logged-in carousel sessions",
-        "tariff_deferral": r"deferred to the Q2 2027 review",
+        "checkout3": r"Checkout 3",
         "app_gating": r"first app release on or after",
         "r2_replaces": r"R2 replaces the first release",
         "cell_by_cell_planning": r"cell by cell, in the cells of the experimentation charter",
@@ -679,7 +687,6 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         "vat_in_the_fee": r"includes 21 per cent VAT",
         "balance_payment": r"your Vouwlijn balance",
         "provider_captures_only": r"card and iDEAL payment the payment provider captured",
-        "checkout_change": r"checkout change of 1 March 2027",
         "in_person_cover": r"pay the seller directly, the purchase is not covered",
     }
     single = {}
@@ -715,13 +722,12 @@ def pair_simulation(res, gold):
     """Two answer sheets at the planning weights (38 / 7 / 55 over 4 call, 4 file and 64 ask criteria): the
     response that lands the call and the best one that misses it on the guardrail count (it files the
     session-sequence model). Both run the habitual battery, net the velocity boost's brought-forward orders,
-    take the restatement and the app release gate, and price the fee the way round 2 did, reconciled to the cent
+    take the restatement and the app release gate, and price the fee the way round 3 did, reconciled to the cent
     with Finance's Q3 statement (slot tariff, price paid, VAT out, balance purchases charged, pickups paid in person
-    uncharged) and carried through the slot; a fee cell or total counts only where that path lands in the golden
-    bin. Full cover through the whole slot (the 1 March line found, its date not) is priced beside it."""
+    uncharged) and carried into the slot; a fee cell or total counts only where that path lands in the golden bin.
+    The exposure is a top response that finds Checkout 3 and charges every order."""
     w_call, w_if, w_ask = 38 / 4, 7 / 4, 55 / 64
-    paths = {"reconciled_basis_carried": ("right", "right", "old", "right", "right"),
-             "full_cover_throughout": ("right", "right", "new", "right", "right")}
+    paths = {"reconciled_basis_carried": ("right", "right", "old", "right", "right")}
     kept = {}
     for nm, key in paths.items():
         g = res["fee_combos"][key]
@@ -738,4 +744,4 @@ def pair_simulation(res, gold):
     exposure = 4 * w_call + 4 * w_if + (4 + 6 + 48 + 6) * w_ask
     return dict(cracker=round(cracker, 1), mirror=round(mirror, 1), pair=round((cracker + mirror) / 2, 1),
                 fee_kept_by_path=kept,
-                exposure_if_one_top_response_blends=round((exposure + mirror) / 2, 1))
+                exposure_if_one_top_response_finds_checkout3=round((exposure + mirror) / 2, 1))
