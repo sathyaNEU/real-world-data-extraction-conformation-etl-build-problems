@@ -15,7 +15,7 @@ NONAPT = ["gov_grant", "gov_contract", "trading", "donations", "other_grants", "
           "other"]
 OLD_CODES = ["TOT_INC", "GOV_GRT", "FEE_SVC", "FEE_SVC_GOV", "DON_BEQ", "GRT_OTH", "INV_INC",
              "OTH_INC"]
-NEW_CODES = ["TOT_REV", "GOV_GRC", "TRD_SAL", "DON_BEQ", "GRT_NGO", "GRT_NGO_APT", "INV_REV",
+NEW_CODES = ["TOT_REV", "GOV_GRT", "TRD_SAL", "DON_BEQ", "GRT_NGO", "GRT_NGO_APT", "INV_REV",
              "OTH_REV"]
 OLD_SHORT = ["TOT_INC", "DON_BEQ", "OTH_INC"]
 NEW_SHORT = ["TOT_REV", "DON_BEQ", "OTH_REV"]
@@ -135,12 +135,15 @@ def build_payments(orgs, corpus_offers, reissues):
     return pays, terms_by, sgf_refs, pg_level
 
 
-def apt_by_quarter(pays, orgs, how="value", statuses=("paid",), refs=None):
+def apt_by_quarter(pays, orgs, how="value", statuses=("paid",), refs=None, progs=("OG", "PG", "SGF")):
     """Trust money each grantee received, by quarter. how='value' is the quarter the payment reached
-    its account; how='for' is the quarter of the month the instalment was for."""
+    its account; how='for' is the quarter of the month the instalment was for. progs limits the
+    programmes counted (the operating account's payment run carries OG and PG only)."""
     out = {o.key: np.zeros(NQ, dtype=np.int64) for o in orgs}
     for p in pays:
         if p["status"] not in statuses:
+            continue
+        if p["prog"] not in progs:
             continue
         if refs is not None and p["ref"] not in refs.get(p["org"], {p["ref"]}):
             continue
@@ -192,8 +195,10 @@ def alloc(total, weights):
     return {k: int(v) for k, v in zip(keys, base)}
 
 
-def true_lines(orgs, tot, apt, ref_tot):
-    """Discrete quarterly income by true line, summing to the total each quarter."""
+def true_lines(orgs, tot, apt, ref_tot, apt_og):
+    """Discrete quarterly income by true line, summing to the total each quarter. apt is all Trust
+    money by quarter received; apt_og the operating and project grant part of it (the rest is
+    Steady Ground instalments, which grantees report inside other grants but not in the Trust memo)."""
     out = {}
     for o in orgs:
         r = rng_for("mix", o.key)
@@ -228,7 +233,9 @@ def true_lines(orgs, tot, apt, ref_tot):
                         big = max(lines, key=lambda x: lines[x])
                         lines[big] += lines[k]
                         lines[k] = 0
-            lines["apt"] = a
+            a_og = int(apt_og[o.key][q])
+            lines["apt"] = a_og
+            lines["apt_sgf"] = a - a_og
             assert sum(lines.values()) == t, (o.key, q)
             assert all(v >= 0 for v in lines.values()), (o.key, q, lines)
             L[q] = lines
@@ -253,15 +260,15 @@ def form_lines(true_ytd, q, short):
     if is_new_form(q):
         if short:
             return {"TOT_REV": total, "DON_BEQ": t["donations"], "OTH_REV": total - t["donations"]}
-        return {"TOT_REV": total, "GOV_GRC": t["gov_grant"] + t["gov_contract"],
+        return {"TOT_REV": total, "GOV_GRT": t["gov_grant"] + t["gov_contract"],
                 "TRD_SAL": t["trading"], "DON_BEQ": t["donations"],
-                "GRT_NGO": t["other_grants"] + t["apt"], "GRT_NGO_APT": t["apt"],
+                "GRT_NGO": t["other_grants"] + t["apt"] + t["apt_sgf"], "GRT_NGO_APT": t["apt"],
                 "INV_REV": t["investment"], "OTH_REV": t["other"]}
     if short:
         return {"TOT_INC": total, "DON_BEQ": t["donations"], "OTH_INC": total - t["donations"]}
     return {"TOT_INC": total, "GOV_GRT": t["gov_grant"],
             "FEE_SVC": t["trading"] + t["gov_contract"], "FEE_SVC_GOV": t["gov_contract"],
-            "DON_BEQ": t["donations"], "GRT_OTH": t["other_grants"] + t["apt"],
+            "DON_BEQ": t["donations"], "GRT_OTH": t["other_grants"] + t["apt"] + t["apt_sgf"],
             "INV_INC": t["investment"], "OTH_INC": t["other"]}
 
 

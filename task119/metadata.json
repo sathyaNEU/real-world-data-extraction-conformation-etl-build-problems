@@ -1,0 +1,217 @@
+{
+  "task": "task119",
+  "title": "Placing the Wenmarsh external review of deaths after delayed escalation to critical care, 2027-28",
+  "domain": "Policy & Education",
+  "subdomain": "public-administration",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "other",
+  "as_of": "2026-10-02",
+  "deliverables": [
+    "external_review_placement_2027-28.docx",
+    "review_placement_workings.xlsx",
+    "review_placement_by_trust.png"
+  ],
+  "distractor_files": [
+    "level2_unit_bed_return_0800_2025-26.csv",
+    "ambulance_handovers_hourly_2025-26.csv"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "docx",
+      "eml",
+      "parquet",
+      "pdf",
+      "sqlite",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "apc_episodes_referred_patients_2022-2026.parquet",
+    "largest_file_rows": 78908,
+    "database_file": "nrr_review_records.sqlite"
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task119/generator/build.py (seeded, deterministic) around a fictional English region (Wenmarsh), its eight acute trusts, its adult critical care network and a national review programme; no real patient, trust or record is depicted. Code lists follow the published NHS Critical Care Minimum Data Set and Hospital Episode Statistics conventions.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task119/generator/build.py",
+  "files": [
+    {
+      "path": "critical_care_referrals_202307_202606.csv",
+      "format": "csv",
+      "bytes": 2958451,
+      "rows": 30259,
+      "source": "Constructed: regional critical care referral log, platform and migrated legacy rows",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "acc_unit_stays_202306_202606.parquet",
+      "format": "parquet",
+      "bytes": 946802,
+      "rows": 22618,
+      "source": "Constructed: network level-3 unit feed",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "acc_bed_return_0800_202306_202606.csv",
+      "format": "csv",
+      "bytes": 122284,
+      "rows": 4928,
+      "source": "Constructed: daily 08:00 bed returns computed from the unit feed",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apc_episodes_referred_patients_2022-2026.parquet",
+      "format": "parquet",
+      "bytes": 2032209,
+      "rows": 78908,
+      "source": "Constructed: admitted patient care episodes with linked date of death",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "acc_unit_register.csv",
+      "format": "csv",
+      "bytes": 1121,
+      "rows": 13,
+      "source": "Constructed: effective-dated unit register",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wenmarsh_acc_capacity_report_2024-04_to_2026-06.xlsx",
+      "format": "xlsx",
+      "bytes": 13865,
+      "rows": 324,
+      "source": "Constructed: network monthly capacity report computed from the returns and referral log",
+      "date": "2026-08-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_terms_of_reference_2027-28.docx",
+      "format": "docx",
+      "bytes": 39344,
+      "rows": null,
+      "source": "Constructed: board terms of reference for the review",
+      "date": "2026-09-17",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wenmarsh_acc_extract_field_guide.pdf",
+      "format": "pdf",
+      "bytes": 7871,
+      "rows": null,
+      "source": "Constructed: extract field guide and folder contents",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nrr_escalation_reviews_closed_2021-2025.xlsx",
+      "format": "xlsx",
+      "bytes": 11340,
+      "rows": 34,
+      "source": "Constructed: national programme log of closed reviews, computed from the review records",
+      "date": "2026-03-31",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nrr_review_records.sqlite",
+      "format": "sqlite",
+      "bytes": 12730368,
+      "rows": 48755,
+      "source": "Constructed: national programme review records (SQLite)",
+      "date": "2026-03-31",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ccrs_referral_levels_202307_202604.csv",
+      "format": "csv",
+      "bytes": 615889,
+      "rows": 15557,
+      "source": "Constructed: legacy referral level entries",
+      "date": "2024-04-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ccrs_migration_export_specification_rel2.3.pdf",
+      "format": "pdf",
+      "bytes": 3426,
+      "rows": null,
+      "source": "Constructed: legacy export specification",
+      "date": "2024-02-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pas_patient_key_links_2023-2026.csv",
+      "format": "csv",
+      "bytes": 6646,
+      "rows": 169,
+      "source": "Constructed: patient key links",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rds_apc_extract_specification.txt",
+      "format": "txt",
+      "bytes": 2034,
+      "rows": null,
+      "source": "Constructed: episode extract specification",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "accn_board_paper_2023-11-21_level3_capacity.pdf",
+      "format": "pdf",
+      "bytes": 2679,
+      "rows": null,
+      "source": "Constructed: network board paper",
+      "date": "2023-11-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "interhospital_transfer_audit_202307_202606.csv",
+      "format": "csv",
+      "bytes": 433193,
+      "rows": 3419,
+      "source": "Constructed: inter-hospital transfer audit",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_placement_correspondence.eml",
+      "format": "eml",
+      "bytes": 4171,
+      "rows": null,
+      "source": "Constructed: correspondence",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "level2_unit_bed_return_0800_2025-26.csv",
+      "format": "csv",
+      "bytes": 33631,
+      "rows": 1460,
+      "source": "Constructed: level-2 unit bed returns",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ambulance_handovers_hourly_2025-26.csv",
+      "format": "csv",
+      "bytes": 3950897,
+      "rows": 70080,
+      "source": "Constructed: ambulance handover extract",
+      "date": "2026-08-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

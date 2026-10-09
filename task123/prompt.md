@@ -1,4 +1,4 @@
-The number the trustees vote on 11 November is a rate: the cents in every dollar of lost income that the September stabilisation offers replace. The pot is $820,000, with a $15,000 floor and a $150,000 cap on each offer. This is the first round we have run ourselves since Ledgerwood's contract ended, and as head of grants I put the offers in front of the trustees. One of my advisers sees the round as relief for the groups the March government cut hit.
+The number the trustees vote on 11 November is a rate: the cents in every dollar of lost income that the September stabilisation offers replace. The pot is $560,000, with a $15,000 floor and a $150,000 cap on each offer. This is the first round we have run ourselves since Ledgerwood's contract ended, and as head of grants I put the offers in front of the trustees. One of my advisers sees the round as relief for the groups the March government cut hit.
 
 What I need is the rate the September offers are struck at, in cents per dollar of fall to two decimal places.
 

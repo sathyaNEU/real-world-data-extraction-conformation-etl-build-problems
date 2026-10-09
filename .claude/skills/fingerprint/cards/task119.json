@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place the 2027-28 external review at Stennock University Hospitals NHS Foundation Trust, where a year of review could confirm 27 deaths.",
+  "answer_source": "task119/submission.md, block 1",
   "gap": [
     "objective",
     "population"
@@ -32,10 +32,10 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "critical_care_referrals_202307_202606.csv",
-    "rows": 42000,
+    "rows": 30259,
     "entity": "one referral of an adult ward or emergency department patient for a critical care bed, with the referring trust and ward, the decision-to-admit time, the level of care, the admitting unit and the admission time",
     "grain": "referral (patient x decision to admit)",
-    "source": "synthetic (regional critical care referral log; row count planned, set when the pack is cut)"
+    "source": "synthetic (regional critical care referral log, platform rows and migrated legacy rows; cut at stage 3)"
   },
   "forum": "board_of_directors",
   "forcing_event": "audit_or_inspection",
@@ -45,9 +45,36 @@
     "currency": "GBP",
     "org_type": "regional health board that commissions and oversees eight acute hospital trusts and their adult critical care network",
     "invented_names": [
-      "Kellow Bridge",
-      "Sandmere",
-      "Fenwold"
+      "Wenmarsh",
+      "Ristenholm",
+      "Tannerby",
+      "Brackenford",
+      "Stennock",
+      "Lathingbury",
+      "Ellerdyke",
+      "Prideswick",
+      "Pellowham",
+      "Thornleholm",
+      "Haskminster",
+      "Isterdale",
+      "Tevermouth",
+      "Morrowcombe",
+      "Feningby",
+      "Barlewick",
+      "Calesgate",
+      "Ashenstow",
+      "Ormerleby",
+      "Elmowbury",
+      "Rookerholm",
+      "Vellesford",
+      "Selarwell",
+      "Frithleton",
+      "Lestowe",
+      "Cranerby",
+      "Morrerford",
+      "Tamarwell",
+      "Esklecombe",
+      "Kirkenstead"
     ],
     "people": [
       "Andrea Davey",
@@ -76,7 +103,8 @@
     "task38": "task38 v3 removes concentration falling due inside a filed window on credits the member leads, a rule recovered from 33 closed directions; here nothing is recovered from the corpus, which every construction reproduces, and the share the review can attribute comes from planned admissions made during each wait.",
     "task53": "task53 v1 removes a size leader's volume locked inside multi-year commitments by joining term end dates to the window; here no term locks anything: a unit full through every wait is shown to have kept itself full with planned surgery.",
     "task111": "task111 v1 excuses an apparent conduct failure by finding the outside cause behind it and was solved once a clause made that cause askable; here the capacity question is askable by design, every occupancy measure answers it wrongly, and the decisive move runs the other way, finding that a unit that looked full had filled itself with its own planned work.",
-    "task88": "task88 prices a booking that displaces full-rate demand in a period that would have filled anyway; here nothing is priced and nothing is displaced in the closed record: a trust's long waits are attributed to its own care because its unit admitted planned patients while they ran."
+    "task88": "task88 prices a booking that displaces full-rate demand in a period that would have filled anyway; here nothing is priced and nothing is displaced in the closed record: a trust's long waits are attributed to its own care because its unit admitted planned patients while they ran.",
+    "task118": "task118 removes from each desk's reachable volume the items it already treats itself, found by joining its tests to their owners, and sizes a forward gain on what is left; here nothing is removed as already treated: waits are added to a trust's own care because its full unit admitted planned patients while they ran, read from the sequence of the unit's other admissions during each wait."
   },
   "lineage": [
     {

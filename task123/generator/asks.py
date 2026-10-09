@@ -30,18 +30,20 @@ def pick_version(W, o, q, cutoff, how="held"):
 
 
 def gov_ytd(W, o, q, cutoff, mapping="correct", vhow="held", comps=False):
+    """Government money, year to date. GOV_GRT is reissued on the December 2024 form: government grants
+    on QFR-16 (contracts sit in FEE_SVC with the FEE_SVC_GOV memo), grants and contracts on QFR-24."""
     if o.short_form:
         return None
     if comps and not is_new_form(q) and is_new_form(q + 4):
         nv = pick_version(W, o, q + 4, cutoff, vhow)
         if nv is not None:
-            return nv.lines["GOV_GRC"][1]
+            return nv.lines["GOV_GRT"][1]
     v = pick_version(W, o, q, cutoff, vhow)
     if v is None:
         return None
     L = v.lines
-    if "GOV_GRC" in L:
-        return L["GOV_GRC"][0]
+    if is_new_form(q):
+        return L["GOV_GRT"][0]
     if mapping == "correct":
         return L["GOV_GRT"][0] + L["FEE_SVC_GOV"][0]
     if mapping == "label":
@@ -81,8 +83,11 @@ def k1(W, key, cur_q, prior_q, census, q4src="register", **kw):
     return sum(vals[q] for q in prior_q) - sum(vals[q] for q in cur_q)
 
 
-def apt_series(W, how="value", statuses=("paid",), drop_pg=False):
-    key = (how, statuses, drop_pg)
+def apt_series(W, how="value", statuses=("paid",), drop_pg=False, progs=("OG", "PG", "SGF")):
+    """Trust money by quarter. The golden counts every programme by the quarter the money reached the
+    grantee: operating and project grants from the payment run, Steady Ground instalments rebuilt from
+    the offers sheet and rule 7 (they are paid from the Fund's own account and appear in no run)."""
+    key = (how, statuses, drop_pg, progs)
     cache = W.setdefault("_apt_cache", {})
     if key not in cache:
         refs = None
@@ -92,7 +97,7 @@ def apt_series(W, how="value", statuses=("paid",), drop_pg=False):
                 if o.dual:
                     refs[o.key] = {r for r in W["refs_of"][o.key] if r != o.pg_ref}
         cache[key] = apt_by_quarter(W["payments"], W["orgs"], how=how, statuses=statuses,
-                                    refs=refs)
+                                    refs=refs, progs=progs)
     return cache[key]
 
 
@@ -118,9 +123,9 @@ def memo_quarter(W, o, q, cutoff, run, vhow="held", comps=False):
 
 
 def k2(W, key, cur_q, prior_q, census, how="value", statuses=("paid",), drop_pg=False,
-       memo=None):
+       memo=None, progs=("OG", "PG", "SGF")):
     o = W["by"][key]
-    s = apt_series(W, how, statuses, drop_pg)
+    s = apt_series(W, how, statuses, drop_pg, progs)
     if memo is not None:
         cutoff = eod(census)
         vals = {q: memo_quarter(W, o, q, cutoff, s, **memo) for q in cur_q + prior_q}

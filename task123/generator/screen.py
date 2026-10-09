@@ -5,7 +5,7 @@ import datetime as dt
 from collections import defaultdict
 
 from common import (SPINE_FIRST, EXTRACT_DATE, LINE_PCT, MARCH_CENSUSES, SEPT_CENSUS, qend, fyq,
-                    fy_q4, natural_end, strike_rate, offer_for, pct1, FLOOR, CAP)
+                    fy_q4, natural_end, prev_census, strike_rate, offer_for, pct1, FLOOR, CAP)
 
 
 def eod(d):
@@ -58,7 +58,10 @@ class Book:
 
 DEFAULT = dict(unit="org", basis="held", stepback="T", q4src="register", reg_at="census",
                inclusive=True, prior="stepped", step_bal=None, drop_unfiled=False, require8=True,
-               latest_for_held=False)
+               latest_for_held=False, recency="on")
+# recency: rule 4.1, twelve-month income at a census is for twelve months ending on or after the census
+# before it ("on"); "off" ignores the sentence (R4, the stop); "strict" reads it as after, not on;
+# "year" takes the census before as the March a year earlier.
 
 
 def current_at(o, c, unit_kind="op"):
@@ -118,6 +121,11 @@ def row_for(book, c, ukey, okey, opt):
             return None
     if opt["drop_unfiled"] and e != n_end:
         return None
+    rc = opt["recency"]
+    if rc != "off":
+        pc = dt.date(c.year - 1, c.month, c.day) if rc == "year" else prev_census(c)
+        if qend(e) < pc or (rc == "strict" and qend(e) == pc):
+            return None
     cur_q = list(range(e - 3, e + 1))
     pe = e if opt["prior"] == "stepped" else n_end
     prior_q = list(range(pe - 7, pe - 3))

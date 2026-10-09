@@ -20,7 +20,7 @@ EXTRACT_DATE = dt.date(2026, 10, 7)
 FORM_CHANGE_Q = None         # set below: first new-form quarter (Dec 2024)
 
 POTS = {2021: 540000, 2022: 575000, 2023: 610000, 2024: 650000, 2025: 690000, 2026: 720000}
-SEPT_POT = 820000
+SEPT_POT = 560000
 LINE_PCT = 10.0
 FLOOR = 15000
 CAP = 150000
@@ -59,6 +59,15 @@ def census_q(c):
 
 def natural_end(c):
     return census_q(c) - 1
+
+
+def prev_census(c):
+    """The census before census c (rule 2: 31 March each year and, from 2026, 30 September)."""
+    if c.month == 9:
+        return dt.date(c.year, 3, 31)
+    if c.year >= 2027:
+        return dt.date(c.year - 1, 9, 30)
+    return dt.date(c.year - 1, 3, 31)
 
 
 def round_half_up_div(num, den):

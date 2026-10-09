@@ -127,11 +127,36 @@ with open(TARGET / "charities_register_returns_extract_20261007.csv", newline=""
                                                    govt=int(r["govt_grants_contracts"]))
 assert all(cc in NAME for cc, _ in register), "every register row joins after trimming and upper-casing"
 
-trust_paid = defaultdict(int)         # (charity_no, quarter the money reached the account) -> dollars
+run_paid = defaultdict(int)           # (charity_no, quarter the money reached the account) -> dollars
 with open(TARGET / "trust_payment_run_2018-07_to_2026-09.csv", newline="") as fh:
     for r in csv.DictReader(fh):
         if r["payment_status"] == "paid":          # a returned line is reissued under its own row
-            trust_paid[(r["charity_no"], q_of(iso(r["value_date"])))] += int(r["amount"])
+            run_paid[(r["charity_no"], q_of(iso(r["value_date"])))] += int(r["amount"])
+
+
+def rule7_pay_day(y, m):
+    """Rule 7: paid on the 20th of the month before the month the instalment is for, or the Friday before."""
+    y, m = (y, m - 1) if m > 1 else (y - 1, 12)
+    d = date(y, m, 20)
+    while d.weekday() >= 5:
+        d -= timedelta(days=1)
+    return d
+
+
+# Steady Ground instalments are not in the payment run; they are rebuilt from the offers sheet.
+sgf_paid = defaultdict(int)
+offer_rows = list(wb["Steady Ground offers"].iter_rows(values_only=True))
+for x in (dict(zip(offer_rows[0], r)) for r in offer_rows[1:]):
+    y0, m0 = int(x["first_instalment_for"][:4]), int(x["first_instalment_for"][5:7])
+    n, each = int(x["instalments"]), int(x["instalment"])
+    for k in range(n):
+        t = y0 * 12 + m0 - 1 + k
+        amt = each if k < n - 1 else int(x["offer_amount"]) - (n - 1) * each
+        sgf_paid[(x["charity_no"], q_of(rule7_pay_day(t // 12, t % 12 + 1)))] += amt
+trust_paid = defaultdict(int)
+for d_ in (run_paid, sgf_paid):
+    for k, v in d_.items():
+        trust_paid[k] += v
 
 packs = {}
 for y in range(2021, 2027):
@@ -186,24 +211,34 @@ def ytd_total(cc, q, census):
 
 def ytd_govt(cc, q, census):
     v = held(cc, q, census)
-    if v is None:
-        return None
+    if v is None or "GOV_GRT" not in v["ytd"]:
+        return None                                      # short form: not reported
     y = v["ytd"]
-    if "GOV_GRC" in y:                                   # QFR-24
-        return y["GOV_GRC"]
-    if "GOV_GRT" in y:                                   # QFR-16: contracts sat in fees, shown on the memo
-        return y["GOV_GRT"] + y["FEE_SVC_GOV"]
-    return None                                          # short form: not reported
+    if v["form"] == "QFR-24":                            # GOV_GRT: grants and contracts
+        return y["GOV_GRT"]
+    return y["GOV_GRT"] + y["FEE_SVC_GOV"]               # QFR-16: grants only; contracts sat in fees, on the memo
 
 
 def admissible(cc, q, census):
     return fy_q(q, BAL[cc]) != 4 or received(cc, q, census)
 
 
+def census_before(census):
+    """Rule 2: 31 March each year and, from 2026, 30 September."""
+    days = [date(y, 3, 31) for y in range(2015, census.year + 1)]
+    days += [date(y, 9, 30) for y in range(2026, census.year + 1)]
+    return max(d for d in days if d < census)
+
+
+def quarter_end(q):
+    return date(q[0] + (q[1] == 12), q[1] % 12 + 1, 1) - timedelta(days=1)
+
+
 def windows(cc, census):
-    """Latest eight consecutive admissible quarters before the census quarter: (current four, prior four)."""
+    """Latest eight consecutive admissible quarters before the census quarter: (current four, prior four).
+    Rule 4.1: the twelve months must end on or after the census before this one."""
     end = q_shift(q_of(census), -1)
-    for _ in range(9):                                   # no admissible run within two years: not scored
+    while quarter_end(end) >= census_before(census):
         if all(admissible(cc, q_shift(end, -k), census) for k in range(8)):
             return [q_shift(end, -k) for k in range(4)], [q_shift(end, -k) for k in range(4, 8)], end
         end = q_shift(end, -1)
@@ -275,8 +310,17 @@ assert all(r["end"] == {3: (2025, 12), 6: (2026, 3)}[BAL[r["cc"]]] for r in step
 assert all(not received(r["cc"], {3: (2026, 3), 6: (2026, 6)}[BAL[r["cc"]]], CENSUS) for r in stepped)
 unscored = S["in_scope"] - len(rows)
 scored_cc = {r["cc"] for r in rows}
-assert all(s >= date(2024, 7, 1) for cc, (s, e) in OPERATING.items() if s <= CENSUS <= e and cc not in scored_cc), \
-    "every organisation not scored is a grantee from mid-2024 or later"
+not_scored = [cc for cc, (s, e) in OPERATING.items() if s <= CENSUS <= e and cc not in scored_cc]
+# Rule 4.1: a 31 March organisation without its 2025-26 return on the register would be scored on twelve months
+# to December 2025, which end before the census before (31 March 2026), so it is not scored this round.
+late31 = sorted(cc for cc in not_scored if BAL[cc] == 3 and not received(cc, (2026, 3), CENSUS))
+newer = [cc for cc in not_scored if cc not in late31]
+assert all(OPERATING[cc][0] >= date(2024, 7, 1) for cc in newer), "the rest are grantees from mid-2024 or later"
+assert census_before(CENSUS) == date(2026, 3, 31) and not any(BAL[r["cc"]] == 3 for r in stepped)
+for cc in late31:                                        # ... on the same twelve months as in March 2026
+    qs = [q_shift((2025, 12), -k) for k in range(8)]
+    a = [quarter_amount(cc, q, CENSUS, ytd_total, lambda c, q: register[(c, q)]["total"]) for q in qs]
+    assert None not in a and (sum(a[:4]), sum(a[4:])) == packs[2026]["rows"][cc][:2], cc
 assert S["total"] <= POT < sum(offer_at(S["rate"] + 1, r["fall"]) for r in offered)
 assert len({r["fall"] for r in rows}) == len(rows), "no two falls equal, so the sort is stable"
 
@@ -294,7 +338,7 @@ for (cc, q), lst in accepted.items():
     if v is None or "GRT_NGO_APT" not in v["ytd"]:
         continue
     k = fy_q(q, BAL[cc])
-    assert v["ytd"]["GRT_NGO_APT"] == sum(trust_paid[(cc, q_shift(q, -j))] for j in range(k)), (cc, q)
+    assert v["ytd"]["GRT_NGO_APT"] == sum(run_paid[(cc, q_shift(q, -j))] for j in range(k)), (cc, q)
     memo_checked += 1
 assert memo_checked > 800
 assert all(r["govt"] is not None for r in offered), "every offered grantee files the full form"
@@ -314,10 +358,12 @@ with open(OUT / CSV_OUT, "w", newline="") as fh:
                     "" if r["govt"] is None else r["govt"], r["trust"]])
 
 rate_txt = f"{Decimal(S['rate']) / 100:.2f}"
-COUNT_WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+COUNT_WORD = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+              8: "eight", 9: "nine"}
+in_words = lambda n: COUNT_WORD[n] if 0 < n < 10 else str(n)    # the Trust's house style in prose
 n_cap = sum(1 for r in offered if r["offer"] == CAP)
 n_floor = sum(1 for r in offered if r["offer"] == FLOOR)
-assert n_cap in COUNT_WORD and n_floor in COUNT_WORD
+assert n_cap in COUNT_WORD and n_floor in COUNT_WORD and n_cap >= 1
 
 # Chart: one series, bars in order of offer, floor and cap as labelled reference lines.
 INK, INK2, GRID, SURFACE, BAR = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb", "#2a78d6"
@@ -468,39 +514,44 @@ para(doc, after=2)
 
 para(doc, "Recommendation", bold=True, size=11.5, after=4)
 p = para(doc, f"That the trustees set the rate for the September 2026 round at {rate_txt} cents per dollar of "
-              f"fall and approve the {len(offered)} offers below, together {money(S['total'])} against the "
+              f"fall and approve the {in_words(len(offered))} offers below, together {money(S['total'])} against the "
               f"{money(POT)} pot in the 2026-27 budget, with {money(POT - S['total'])} left in the Fund. "
               "Each offer is paid in twelve monthly instalments, the first for December 2026.")
 
 para(doc, "The rate", bold=True, size=11.5, after=4)
 para(doc, f"This is the first round the Trust has screened itself. Of the {S['in_scope']} organisations holding an "
-          f"operating grant at the 30 September census, the screen scored {len(rows)}. Of these, {len(offered)} had a "
+          f"operating grant at the 30 September census, the screen scored {len(rows)}. Of these, {in_words(len(offered))} had a "
           f"fall in twelve-month income of {LINE} per cent or more of the twelve months before, and the rate is the "
           "highest, to the hundredth of a cent, at which their offers fit inside the pot (rule 5.3). "
           f"{COUNT_WORD[n_cap].capitalize()} offer{'s' if n_cap > 1 else ''} {'is' if n_cap == 1 else 'are'} held at "
-          f"the cap and {COUNT_WORD[n_floor]} {'is' if n_floor == 1 else 'are'} raised to the floor.")
+          + ("the cap; none needed raising to the floor." if n_floor == 0 else
+             f"the cap and {COUNT_WORD[n_floor]} {'is' if n_floor == 1 else 'are'} raised to the floor."))
 p = para(doc, "A September census falls on the filing deadline for organisations with a 31 March balance date, "
-              "and three months before it for those balancing at 30 June, so for "
-              f"{len(stepped)} of the scored organisations the 2025-26 annual return was not yet on the register. "
-              "The screen takes a year's last quarter only from the filed annual return (its total gross income "
-              "less the nine-month year to date), so those organisations' twelve months end at the quarter before "
-              "that year-end: December 2025 for a 31 March balance date, March 2026 for 30 June, with the twelve "
-              "months before stepping back with them. Their management fourth-quarter returns are not used. This "
-              "is the method that gives back Ledgerwood's six March packs, below.")
+              "and three months before the deadline for those balancing at 30 June, so a good number had no "
+              "2025-26 annual return on the register at the census. The screen takes a year's last quarter only "
+              "from the filed annual return (its total gross income less the nine-month year to date), so for "
+              "those organisations the twelve months end at the quarter before that year-end, with the twelve "
+              f"months before stepping back with them. For the {len(stepped)} balancing at 30 June that is March "
+              "2026, and they are scored on it. For the "
+              f"{len(late31)} balancing at 31 March it is December 2025, which ends before 31 March 2026, the census "
+              "before this one, so under rule 4.1 they cannot be scored this round; each was scored on those same "
+              "twelve months in the March 2026 round. This is the method that gives back Ledgerwood's six March "
+              "packs, below. Rule 4.1 never bound in a March round, where the census before was a year earlier.")
 note_ref(p, 1)
 
 para(doc, "Offers", bold=True, size=11.5, after=4)
 p = para(doc, "Each offer, with the part of the fall it is struck on that was government grants and contracts "
-              "and the part that was money from the Trust itself (operating and project grants and earlier "
-              "Steady Ground instalments). A negative part means that income rose over the year while total "
-              "income fell.", after=4)
+              "and the part that was money from the Trust itself (operating and project grants, and Steady "
+              "Ground instalments from earlier rounds). A negative part means that income rose over the year "
+              "while total income fell.", after=4)
 note_ref(p, 2)
 body = [[NAME[r["cc"]], money(r["offer"]) + (" (cap)" if r["offer"] == CAP else " (floor)" if r["offer"] == FLOOR else ""),
          money(r["govt"]), money(r["trust"])] for r in offered]
 table(doc, ["Organisation", "Offer", "Government part of fall", "Trust part of fall"], body,
       [7.4, 3.2, 3.3, 2.7], total=["Total", money(S["total"]), "", ""])
 para(doc, "Source: in-house screen at 30 September 2026 (steady_ground_sep2026_screen.csv); portal returns, "
-          "register match and payment run as at 7 October 2026.", italic=True, size=8, after=8, color="52514E")
+          "register match, grants register and payment run as at 7 October 2026.", italic=True, size=8, after=8,
+     color="52514E")
 
 para(doc, "Just outside the line", bold=True, size=11.5, after=4)
 para(doc, f"The first organisation outside the line is {NAME[outside['cc']]}, with a fall of {outside['pct']:.1f} "
@@ -525,12 +576,16 @@ para(doc, "It has been put to me that the round is for the groups hit by the Mar
 
 para(doc, "Notes", bold=True, size=9.5, after=2)
 for n, txt in ((1, "Annual returns are read from the register match as received by the end of the census day. "
-                   f"The {COUNT_WORD[unscored]} organisations not scored are newer grantees whose returns do not "
-                   "yet cover both twelve-month periods (rule 3.2)."),
-               (2, "Government grants and contracts: QFR-24 'government grants and contracts'; on QFR-16 returns "
-                   "(to September 2024), 'government grants' plus the memo 'of which government service contracts'. "
-                   "Trust money is counted in the quarter it reached the organisation's account (portal notice, "
-                   "November 2024), paid lines only. Whole dollars throughout; fall percentages to one decimal.")):
+                   f"Of the {unscored} organisations in scope and not scored, {len(late31)} are the 31 March "
+                   f"organisations above and {COUNT_WORD[len(newer)]} are newer grantees whose returns do not yet "
+                   "cover both twelve-month periods (rule 3.2)."),
+               (2, "Government grants and contracts: on QFR-24 returns the 'Government grants and contracts' line; "
+                   "on QFR-16 returns (to September 2024) 'Government grants' plus the memo 'of which government "
+                   "service contracts', as the line kept its code when contracts moved onto it. Trust money is "
+                   "counted in the quarter it reached the organisation's account: operating and project grant "
+                   "payments from the payment run (paid lines, so a returned payment counts once, through its "
+                   "reissue), and Steady Ground instalments, which are not in the payment run, from the offers "
+                   "sheet on the pay day rule 7 sets. Whole dollars throughout; fall percentages to one decimal.")):
     p = para(doc, after=2, size=8)
     r1 = p.add_run(f"{n}  ")
     r1.font.size = Pt(8)
@@ -561,14 +616,14 @@ for f in (DOCX, CSV_OUT, PNG):
 # --------------------------------------------------------------------------- what the paper rests on
 print(f"Rate: {rate_txt} cents per dollar of fall ({len(offered)} offers, {money(S['total'])} of {money(POT)}, "
       f"{money(POT - S['total'])} left in the Fund)")
-print(f"In scope {S['in_scope']}, scored {len(rows)}; twelve months stepped back for {len(stepped)} "
-      f"({sum(1 for r in stepped if BAL[r['cc']] == 3)} at 31 March to Dec 2025, "
-      f"{sum(1 for r in stepped if BAL[r['cc']] == 6)} at 30 June to Mar 2026)")
+print(f"In scope {S['in_scope']}, scored {len(rows)}; twelve months to March 2026 for {len(stepped)} at 30 June; "
+      f"{len(late31)} at 31 March not scored under rule 4.1; {len(newer)} newer grantees not scored")
 print("Replay: " + "; ".join(f"{y} {v['back']} of {v['published']} rows, {v['offers_back']} of {v['offers']} offers, "
                              f"rate {'given back' if v['rate_back'] else 'MISSED'}" for y, v in replay.items()))
 print(f"Replay totals: {sum(v['back'] for v in replay.values())} of {sum(v['published'] for v in replay.values())} "
       f"rows, {sum(v['offers_back'] for v in replay.values())} offers, {sum(v['rate_back'] for v in replay.values())} rates")
 print(f"First outside the line: {NAME[outside['cc']]} at {outside['pct']:.1f} per cent")
-print(f"Trust memo agrees with the payment run on {memo_checked} QFR-24 returns held at the census")
+print(f"Trust memo agrees with the payment run on {memo_checked} QFR-24 returns held at the census; "
+      f"Steady Ground instalments rebuilt: {sum(sgf_paid.values()):,} dollars")
 for r in offered:
     print(f"  {NAME[r['cc']]:<42} offer {money(r['offer']):>9}  govt {money(r['govt']):>9}  trust {money(r['trust']):>8}")

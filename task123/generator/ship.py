@@ -86,11 +86,24 @@ def main():
                "fallback register Q4 else management": "fallback"}.get(k, k)
         assert v["rivals"][key]["rows"] == m["rows"], (k, m, v["rivals"][key])
         n += 1
-    for k in ("R1", "R2", "R3", "R0"):
+    for k in ("R0", "R1", "R2", "R3", "R4"):
         assert v["september"]["rungs"][k] == g["rungs"][k]["rate_hc"], k
         n += 1
+    cell_names = {"per return, as held, step-back": "dual twice", "per organisation, latest, step-back": "latest",
+                  "per return, latest, step-back": "dual twice, latest",
+                  "30-June grantees not stepped back": "30 June unstepped",
+                  "only 30-June grantees stepped back": "only 30 June stepped",
+                  "current window stepped back, prior not": "prior natural",
+                  "register read as at the extract": "register at extract",
+                  "census day exclusive": "census exclusive", "4.1 read strictly (after, not on)": "4.1 strict",
+                  "4.1 against the census a year before": "4.1 a year before",
+                  "R4, per return, as held": "R4 dual twice", "R4, latest versions": "R4 latest",
+                  "register fallback, no step-back": "fallback", "overdue only": "overdue"}
+    for gk, vk in cell_names.items():
+        assert v["september"]["cells"][vk] == g["cells"][gk], (gk, v["september"]["cells"][vk], g["cells"][gk])
+        n += 1
     print(f"A52: generator and verifier agree on {n} figures (every scored row, offer, K1, K2, rate, "
-          f"corpus round and rival)")
+          f"corpus round, rival, rung and grid cell)")
 
 
 if __name__ == "__main__":

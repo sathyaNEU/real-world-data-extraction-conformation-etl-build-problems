@@ -56,6 +56,22 @@ def iso(s):
     return date(int(s[:4]), int(s[5:7]), int(s[8:10]))
 
 
+def census_before(c):
+    """Rule 2: census dates are 31 March each year and, from 2026, 30 September."""
+    days = [date(y, 3, 31) for y in range(2015, c.year + 1)] + [date(y, 9, 30) for y in range(2026, c.year + 1)]
+    return max(d for d in days if d < c)
+
+
+def rule7_pay_day(y, m):
+    """Rule 7: an instalment is paid on the 20th of the month before the month it is for, or on the
+    Friday before when the 20th falls at a weekend."""
+    py, pm = (y, m - 1) if m > 1 else (y - 1, 12)
+    d = date(py, pm, 20)
+    while d.weekday() >= 5:
+        d -= timedelta(days=1)
+    return d
+
+
 # ----------------------------------------------------------------------------- reading the pack
 
 def xlsx_sheets(path):
@@ -136,7 +152,8 @@ class Pack:
             self.name[d["charity_no"]] = d["organisation"]
             self.bal[d["charity_no"]] = bal
         self.variations = [dict(zip(sh["Variations"][0], r)) for r in sh["Variations"][1:]]
-        self.sgf = {r[0]: r[2] for r in sh["Steady Ground offers"][1:]}
+        so = sh["Steady Ground offers"]
+        self.sgf_offers = [dict(zip(so[0], r)) for r in so[1:]]
         self.op_ref = {cc: next(r for r in refs if self.grant[r]["prog"] == "Operating grant")
                        for cc, refs in self.org_refs.items()}
         self.pg_ref = {cc: next((r for r in refs if self.grant[r]["prog"] == "Project grant"), None)
@@ -197,6 +214,7 @@ class Pack:
                                      status=row["payment_status"], prog=row["programme"]))
         # documents: the rules' line, floor and cap; the budget minute's September pot
         rules = pdf_text(f("SGF_round_rules_rev2026-06.pdf"))
+        self.rules = rules
         self.line = float(re.search(r"fall is (\d+) per cent or more", rules).group(1))
         self.floor = int(re.search(r"raised to \$([\d,]+)", rules).group(1).replace(",", ""))
         self.cap = int(re.search(r"held to \$([\d,]+)", rules).group(1).replace(",", ""))
@@ -281,6 +299,11 @@ class Screen:
             e = q_add(e, -1)
             steps += 1
             if steps > 8:
+                return None
+        rc = o.get("recency", "on")
+        if rc != "off":
+            before = date(c.year - 1, c.month, c.day) if rc == "year" else census_before(c)
+            if q_last_day(e) < before or (rc == "strict" and q_last_day(e) == before):
                 return None
         pe = nat if o.get("prior_natural") else e
         cur = [q_add(e, -k) for k in range(4)]
@@ -378,18 +401,16 @@ class Asks:
         self.cache = {}
 
     def gov(self, cc, q, cut, mapping="correct", how="held", comps=False):
-        P, S = self.P, self.S
-        newform = q >= (2024, 12)
-        if comps and not newform and q_add(q, 4) >= (2024, 12):
+        if comps and q < (2024, 12) and q_add(q, 4) >= (2024, 12):
             nv = self.pick(cc, q_add(q, 4), cut, how)
-            if nv is not None and "GOV_GRC" in nv["py"]:
-                return nv["py"]["GOV_GRC"]
+            if nv is not None and "GOV_GRT" in nv["py"]:
+                return nv["py"]["GOV_GRT"]
         v = self.pick(cc, q, cut, how)
-        if v is None or ("GOV_GRC" not in v["ytd"] and "GOV_GRT" not in v["ytd"]):
+        if v is None or "GOV_GRT" not in v["ytd"]:
             return None
         y = v["ytd"]
-        if "GOV_GRC" in y:
-            return y["GOV_GRC"]
+        if v["form"] == "QFR-24":
+            return y["GOV_GRT"]
         if mapping == "correct":
             return y["GOV_GRT"] + y["FEE_SVC_GOV"]
         if mapping == "label":
@@ -430,13 +451,27 @@ class Asks:
             return None
         return sum(tot[q] for q in pri) - sum(tot[q] for q in cur)
 
-    def run_series(self, how="value", statuses=("paid",), drop_pg=False):
-        key = (how, statuses, drop_pg)
+    def instalments(self):
+        """Steady Ground instalments, rebuilt from the offers sheet and rule 7 (they are in no run)."""
+        out = []
+        for x in self.P.sgf_offers:
+            y0, m0 = int(x["first_instalment_for"][:4]), int(x["first_instalment_for"][5:7])
+            n, each, amt = int(x["instalments"]), int(x["instalment"]), int(x["offer_amount"])
+            for k in range(n):
+                t = y0 * 12 + m0 - 1 + k
+                y, m = t // 12, t % 12 + 1
+                out.append(dict(cc=x["charity_no"], ref=x["offer_ref"], value=rule7_pay_day(y, m),
+                                inst=f"{y}-{m:02d}", amount=each if k < n - 1 else amt - (n - 1) * each,
+                                status="paid", prog="Steady Ground Fund"))
+        return out
+
+    def run_series(self, how="value", statuses=("paid",), drop_pg=False, sgf=True):
+        key = (how, statuses, drop_pg, sgf)
         if key in self.cache:
             return self.cache[key]
         out = defaultdict(int)
         P = self.P
-        for p in self.P.pay:
+        for p in self.P.pay + (self.instalments() if sgf else []):
             if p["status"] not in statuses:
                 continue
             if drop_pg and p["ref"] == P.pg_ref.get(p["cc"]):
@@ -454,31 +489,12 @@ class Asks:
         self.cache[key] = out
         return out
 
-    def k2(self, r, c, memo=None, **kw):
-        cc, bal = r["cc"], self.P.bal[r["cc"]]
+    def k2(self, r, c, **kw):
+        cc = r["cc"]
         run = self.run_series(**kw)
         cur = [q_add(r["end"], -k) for k in range(4)]
         pri = [q_add(r["pend"], -k) for k in range(4, 8)]
-        if memo is None:
-            v = {q: run[(cc, q)] for q in cur + pri}
-        else:
-            cut = cutoff_str(c)
-            short = self.S.version(cc, (2025, 6), cut)["form"].endswith("S") if self.S.version(cc, (2025, 6), cut) else False
-
-            def ytd(q):
-                if memo.get("comps") and q < (2024, 12) and q_add(q, 4) >= (2024, 12) and not short:
-                    nv = self.pick(cc, q_add(q, 4), cut, memo.get("how", "held"))
-                    if nv is not None and "GRT_NGO_APT" in nv["py"]:
-                        return nv["py"]["GRT_NGO_APT"]
-                if q >= (2024, 12) and not short:
-                    return self.pick(cc, q, cut, memo.get("how", "held"))["ytd"]["GRT_NGO_APT"]
-                k = fy_pos(q, bal)
-                return sum(run[(cc, q_add(q, -j))] for j in range(k))
-
-            v = {}
-            for q in cur + pri:
-                k = fy_pos(q, bal)
-                v[q] = ytd(q) if k == 1 else ytd(q) - ytd(q_add(q, -1))
+        v = {q: run[(cc, q)] for q in cur + pri}
         return sum(v[q] for q in pri) - sum(v[q] for q in cur)
 
 
@@ -612,25 +628,48 @@ def main():
     lo, hi = sorted([px, py])
     check(1.8 <= hi / lo <= 2.2, f"twins published at {lo} and {hi} per cent ({hi/lo:.2f}x), {lat[tx]['pct']:.2f} each today")
 
+    # rule 4.1's recency clause is blind on the corpus: switched off, or read against the census a
+    # year before, every March round gives back the same rows, offers and rate
+    check(re.search(r"ending\s+on\s+or\s+after\s+the\s+census\s+before\s+it", P.rules) is not None and
+          re.search(r"31 March each year and, from 2026, 30\s+September", P.rules) is not None,
+          "rule 4.1 ties twelve-month income to the census before; rule 2 adds 30 September from 2026")
+    for c in MARCH:
+        for rc in ("off", "year"):
+            s_ = S.run(c, P.packs[c.year]["pot"], recency=rc)
+            back, ok_o, ok_r, ok_c = replay(P, c.year, s_)
+            check(back == len(P.packs[c.year]["rows"]) and ok_o and ok_r and ok_c,
+                  f"recency {rc}: {c.year} given back in full (the corpus cannot see rule 4.1's clause)")
+    for c in MARCH:
+        ends = [r["end"] for r in T[c.year]["rows"]]
+        before = census_before(c)
+        check(all(q_last_day(e) >= before for e in ends), f"{c.year}: no scored window ends before {before}")
+    on_it = sorted((P.name[r["cc"]], c.year) for c in MARCH for r in T[c.year]["rows"]
+                   if q_last_day(r["end"]) == census_before(c))
+    check(len(on_it) == 2, f"windows ending on the census before: {on_it} (the inclusive reading is pinned)")
+
     # --- September: the call
     pot = P.sept_pot
+    check(pot == 560000, f"the September pot from the budget minute: {pot}")
     TS = S.run(SEPT, pot)
     el = [r for r in TS["rows"] if r["pct"] >= P.line]
     nxt = sum(offer(P, TS["rate"] + 1, r["fall"]) for r in el)
     check(TS["total"] <= pot < nxt and pot - TS["total"] >= 25 and nxt - pot >= 25,
           f"rate {TS['rate']/100:.2f} cents: offers {TS['total']}, remainder {pot - TS['total']}, next step {nxt - pot} over")
-    check(2600 <= TS["rate"] <= 3400, "rate inside 26.00 to 34.00 cents")
-    check(len(TS["rows"]) == 146 and len(el) == 14, f"{len(TS['rows'])} scored, {len(el)} offered")
+    check(3600 <= TS["rate"] <= 4800, "rate inside 36.00 to 48.00 cents")
+    check(len(TS["rows"]) == 132 and len(el) == 9, f"{len(TS['rows'])} scored, {len(el)} offered")
+    check(all(q_last_day(r["end"]) >= date(2026, 3, 31) for r in TS["rows"]) and
+          sum(1 for r in TS["rows"] if r["end"] == (2026, 3)) == 17,
+          "every scored window ends on or after 31 March 2026; 17 end on it")
     check(not any(8.5 < r["pct"] < 11.5 for r in TS["rows"]), "no September fall within 1.5 points of the line")
     check(min(edge_gap(r["pct"]) for r in TS["rows"]) >= 0.02, "every September fall per cent mid-bin")
     check(len({r["fall"] for r in TS["rows"]}) == len(TS["rows"]), "no two dollar falls equal")
     under = sorted([r for r in TS["rows"] if r["pct"] < P.line], key=lambda r: -r["pct"])
-    check(under[0]["pct"] - under[1]["pct"] >= 0.3 and 7.0 <= under[0]["pct"] <= 8.5,
+    check(under[0]["pct"] - under[1]["pct"] >= 0.3 and 6.0 <= under[0]["pct"] <= 8.5,
           f"first outside the line {P.name[under[0]['cc']]} at {pct1(under[0]['pct'])} per cent")
     check(sum(1 for r in TS["rows"] if r["offer"] == P.cap) == 1 and
-          1 <= sum(1 for r in TS["rows"] if r["offer"] == P.floor) <= 2, "one capped offer, one or two at the floor")
+          not any(r["offer"] == P.floor for r in TS["rows"]), "one capped offer, none at the floor")
     # the rungs and the cells
-    rungs = {"R1": rivals["R1"], "R2": rivals["R2"], "R3": rivals["R3"]}
+    rungs = {"R1": rivals["R1"], "R2": rivals["R2"], "R3": rivals["R3"], "R4": dict(recency="off")}
     RS = {k: S.run(SEPT, pot, **o) for k, o in rungs.items()}
     names = {k: {r["cc"] for r in s["rows"] if r["offer"]} for k, s in RS.items()}
     names["T"] = {r["cc"] for r in el}
@@ -648,25 +687,45 @@ def main():
     r0rate, _ = strike(P, [r["fall"] for r in r0el], pot)
     RS["R0"] = dict(rate=r0rate)
     names["R0"] = {r["cc"] for r in r0el}
-    for k, lo_ in (("R0", 1.25), ("R1", 1.25), ("R2", 1.25), ("R3", 1.40)):
-        check(RS[k]["rate"] >= lo_ * TS["rate"], f"{k} at {RS[k]['rate']/TS['rate']:.3f}x the answer's rate")
+    for k, lo_ in (("R0", 1.15), ("R1", 1.40), ("R2", 1.40), ("R3", 1.30), ("R4", 2.00)):
+        check(TS["rate"] >= lo_ * RS[k]["rate"], f"the answer at {TS['rate']/RS[k]['rate']:.3f}x {k}'s rate")
     ks = sorted(names)
     for x, y in combinations(ks, 2):
         check(names[x] != names[y], f"{x} and {y} name different offer sets")
-    check(len(names["R3"] ^ names["T"]) >= 8, f"R3 and T differ by {len(names['R3'] ^ names['T'])} names")
-    cells = {"dual twice": dict(unit="ref"), "latest": dict(latest=True), "30 June unstepped": dict(bals={3, 12}),
-             "only 30 June stepped": dict(bals={6}), "prior natural": dict(prior_natural=True),
-             "register at extract": dict(reg_extract=True), "census exclusive": dict(strict=True)}
+    check(len(names["R3"] ^ names["T"]) >= 6, f"R3 and T differ by {len(names['R3'] ^ names['T'])} names")
+    check(names["T"] < names["R4"] and len(names["R4"] - names["T"]) == 5,
+          "the answer's offers are R4's less five it does not score")
+    check(len(RS["R4"]["rows"]) == 146 and len(RS["R3"]["rows"]) == 147 and len(RS["R2"]["rows"]) == 147 and
+          len(RS["R1"]["rows"]) == 154, "R4 scores 146, R3 and R2 147, R1 154 rows")
+    gone = {r["cc"] for r in RS["R4"]["rows"]} - {r["cc"] for r in TS["rows"]}
+    m26 = P.packs[2026]["rows"]
+    r4map = {r["cc"]: r for r in RS["R4"]["rows"]}
+    check(len(gone) == 14 and all(r4map[cc]["end"] == (2025, 12) and P.bal[cc] == 3 and
+                                  (r4map[cc]["cur"], r4map[cc]["prior"]) == m26[cc][:2] for cc in gone),
+          "the fourteen R4 scores and the answer does not: 31 March grantees on the March 2026 round's own twelve months")
+    cells = {"dual twice": dict(unit="ref"), "latest": dict(latest=True), "dual twice, latest": dict(unit="ref", latest=True),
+             "30 June unstepped": dict(bals={3, 12}), "only 30 June stepped": dict(bals={6}),
+             "prior natural": dict(prior_natural=True), "register at extract": dict(reg_extract=True),
+             "census exclusive": dict(strict=True), "4.1 strict": dict(recency="strict"),
+             "4.1 a year before": dict(recency="year"), "R4 dual twice": dict(unit="ref", recency="off"),
+             "R4 latest": dict(latest=True, recency="off"), "fallback": dict(stepback="none"),
+             "overdue": dict(stepback="overdue")}
     CS = {k: S.run(SEPT, pot, **o) for k, o in cells.items()}
-    for k in ("30 June unstepped", "only 30 June stepped", "prior natural", "register at extract"):
+    for k in ("30 June unstepped", "prior natural", "4.1 strict"):
         check(CS[k]["rate"] >= 1.10 * TS["rate"], f"cell {k} at {CS[k]['rate']/TS['rate']:.3f}x")
-    for k in ("dual twice", "latest"):
+    check(CS["only 30 June stepped"]["rate"] <= 0.80 * TS["rate"],
+          f"cell only 30 June stepped at {CS['only 30 June stepped']['rate']/TS['rate']:.3f}x")
+    for k in ("dual twice", "latest", "dual twice, latest", "R4 dual twice", "R4 latest"):
         check(CS[k]["rate"] <= 0.92 * TS["rate"], f"cell {k} {100*(CS[k]['rate']/TS['rate']-1):+.1f}%")
-    tmap = {r["cc"]: r for r in TS["rows"]}
-    cx = CS["census exclusive"]
-    ndiff = sum(1 for r in cx["rows"] if (r["cur"], r["prior"]) != (tmap[r["cc"]]["cur"], tmap[r["cc"]]["prior"]))
-    check(cx["rate"] == TS["rate"] and ndiff == 14 and {r["cc"]: r["offer"] for r in cx["rows"]} ==
-          {r["cc"]: r["offer"] for r in TS["rows"]}, "census day exclusive: same call, 14 rows differ")
+    toffers = {r["cc"]: r["offer"] for r in TS["rows"] if r["offer"]}
+    for k, dn in (("census exclusive", -14), ("register at extract", 6)):
+        x = CS[k]
+        check(x["rate"] == TS["rate"] and {r["cc"]: r["offer"] for r in x["rows"] if r["offer"]} == toffers and
+              len(x["rows"]) - len(TS["rows"]) == dn, f"{k}: the same rate and offers, {len(x['rows'])} scored")
+    sig = lambda s_: sorted((r["cc"], r["cur"], r["prior"], r["offer"]) for r in s_["rows"])
+    check(sig(CS["fallback"]) == sig(RS["R3"]) and sig(CS["overdue"]) == sig(RS["R3"]),
+          "the register fallback and the overdue-only step-back both equal R3 at September")
+    check(sig(CS["4.1 a year before"]) == sig(RS["R4"]), "rule 4.1 read against the census a year before equals R4")
     out["september"] = dict(rate=TS["rate"], total=TS["total"], scored=len(TS["rows"]),
                             first_outside=[P.name[under[0]["cc"]], pct1(under[0]["pct"])],
                             rungs={k: RS[k]["rate"] for k in RS}, cells={k: v["rate"] for k, v in CS.items()})
@@ -675,36 +734,39 @@ def main():
     for r in TS["rows"]:
         G[r["cc"]] = dict(K1=A.k1(r, SEPT), K2=A.k2(r, SEPT))
     off = [r for r in TS["rows"] if r["offer"]]
+    n = len(off)
     r3map = {r["cc"]: r for r in RS["R3"]["rows"]}
-    stops = {"K1 label": lambda r: A.k1(r, SEPT, mapping="label"),
+    stops = {"K1 GOV_GRT on both forms": lambda r: A.k1(r, SEPT, mapping="label"),
              "K1 comparatives": lambda r: A.k1(r, SEPT, comps=True),
              "K1 whole fees": lambda r: A.k1(r, SEPT, mapping="over"),
+             "K1 project copy": lambda r: A.k1(r, SEPT, how="pg"),
+             "K1 delivered": lambda r: A.k1(r, SEPT, how="delivered"),
+             "K2 payment run alone": lambda r: A.k2(r, SEPT, sgf=False),
              "K2 instalment month": lambda r: A.k2(r, SEPT, how="for"),
              "K2 returned": lambda r: A.k2(r, SEPT, statuses=("paid", "returned")),
              "K2 ten-day transit": lambda r: A.k2(r, SEPT, how="transit"),
-             "K2 one reference": lambda r: A.k2(r, SEPT, drop_pg=True),
-             "K1 project copy": lambda r: A.k1(r, SEPT, how="pg"),
-             "K1 delivered": lambda r: A.k1(r, SEPT, how="delivered"),
-             "K2 memo comparatives": lambda r: A.k2(r, SEPT, memo={"comps": True}),
-             "K2 memo delivered": lambda r: A.k2(r, SEPT, memo={"how": "delivered"})}
+             "K2 one reference": lambda r: A.k2(r, SEPT, drop_pg=True)}
     moved = {}
     for name, fn in stops.items():
         ask = name[:2]
         d = [(r["cc"], fn(r) - G[r["cc"]][ask]) for r in off]
         check(all(x == 0 or abs(x) >= 500 for _, x in d), f"stop {name}: no offered figure within NZ$500 of the answer")
         moved[name] = sum(1 for _, x in d if x)
-    for name in ("K1 label", "K1 comparatives", "K1 whole fees", "K2 instalment month", "K2 ten-day transit"):
-        check(moved[name] >= 10, f"stop {name} moves {moved[name]} of 14 offered figures")
-    for name in ("K2 returned", "K2 one reference", "K1 project copy"):
-        check(moved[name] >= 1, f"stop {name} moves {moved[name]} offered figure(s)")
-    check(moved["K1 delivered"] == 2 and moved["K2 memo delivered"] == 2, "a rejected latest delivery moves two offered grantees")
-    mir = [(r["cc"], A.k1(r3map[r["cc"]], SEPT, q4="portal") - G[r["cc"]]["K1"]) for r in off
-           if r["cc"] in r3map and r3map[r["cc"]]["end"] != r["end"]]
-    check(len(mir) == 7 and all(abs(x) >= 500 for _, x in mir), "the right mapping on R3's windows misses every unfiled offeree")
-    # the new-form memo equals the payment run by value date
-    run = A.run_series()
-    bad = 0
-    nchk = 0
+    for name, lo_ in (("K1 GOV_GRT on both forms", n - 1), ("K1 comparatives", n - 3), ("K1 whole fees", n),
+                      ("K2 payment run alone", n), ("K2 instalment month", n - 2), ("K2 ten-day transit", n)):
+        check(moved[name] >= lo_, f"stop {name} moves {moved[name]} of {n} offered figures")
+    for name, want in (("K2 returned", 1), ("K2 one reference", 1), ("K1 project copy", 1), ("K1 delivered", 2)):
+        check(moved[name] == want, f"stop {name} moves {moved[name]} offered figure(s)")
+    same = [r["cc"] for r in off if (r4map[r["cc"]]["end"], r4map[r["cc"]]["pend"]) == (r["end"], r["pend"])]
+    check(len(same) == n, "R4 holds every offered grantee on the answer's windows (only the devices separate it)")
+    mir = [(r["cc"], A.k1(r3map[r["cc"]], SEPT, q4="portal") - G[r["cc"]]["K1"],
+            A.k2(r3map[r["cc"]], SEPT) - G[r["cc"]]["K2"]) for r in off if r3map[r["cc"]]["end"] != r["end"]]
+    check(len(mir) == 2 and all(abs(x) >= 500 and abs(y) >= 500 for _, x, y in mir),
+          "R3's windows miss both 30 June offerees on K1 and K2")
+    # the new-form Trust memo equals the payment run by value date; Steady Ground money is in neither
+    run = A.run_series(sgf=False)
+    full = A.run_series()
+    bad = nchk = outside = 0
     for (cc, q), lst in S.by_org.items():
         if q < (2024, 12):
             continue
@@ -713,9 +775,13 @@ def main():
             continue
         k = fy_pos(q, P.bal[cc])
         nchk += 1
-        if v["ytd"]["GRT_NGO_APT"] != sum(run[(cc, q_add(q, -j))] for j in range(k)):
+        want = sum(run[(cc, q_add(q, -j))] for j in range(k))
+        if v["ytd"]["GRT_NGO_APT"] != want:
             bad += 1
+        if sum(full[(cc, q_add(q, -j))] for j in range(k)) != want:
+            outside += 1
     check(bad == 0 and nchk > 800, f"Trust memo equals the payment run on {nchk} returns")
+    check(outside >= 100, f"Steady Ground instalments sit outside the memo and the run on {outside} returns")
     # distractors: delete them and the answer does not move
     tmp = tempfile.mkdtemp()
     try:

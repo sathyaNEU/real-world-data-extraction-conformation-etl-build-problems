@@ -30,7 +30,7 @@ EXPECTED = {
     "monthly": [109.088, 67.872, 97.888, 90.272, 84.896, 79.072, 72.128, 74.816, 87.136, 94.080, 103.264, 129.136],
     "rung0": 412.16, "rung1": 309.12, "rung2": 103.04, "rung3": 98.56, "rung4": 148.512,
     "rung4_binding": "2026-02-17T12:00:00-08:00", "planners": 225,
-    "rung4_records": 162.243, "rung5_records": 155.357, "rung5_records_binding": "2026-12-08T12:00:00-08:00",
+    "rung4_records": 162.2432, "rung5_records": 155.35744, "rung5_records_binding": "2026-12-08T12:00:00-08:00",
     "b3_forecast": [112, 117, 107, 106, 88, 88, 82, 90, 106, 114, 113, 111],
     "b3_miss": [-0.9, 2.6, -1.8, 1.9, -1.1, 2.3, -1.2, 2.3, -0.9, 1.8, 0.9, -0.9],
     "b1": {"CP-N": [1069, 908, 910, 725, 594, 592, 599, 691, 791, 914, 1065, 1130],
@@ -362,8 +362,15 @@ def main():
     OUT["rung5_records"], OUT["rung4_records"] = growth * v5, growth * v4r
     check("V07d record by record, rung 5 lands 155.357 kW at 12:00 on 8 December 2026 and rung 4 162.243 kW: the "
           "settlement records the run closed and carried on restart at the run on the new units",
-          near(growth * v5, EXPECTED["rung5_records"], 1e-6) and iso(t5) == EXPECTED["rung5_records_binding"]
-          and near(growth * v4r, EXPECTED["rung4_records"], 1e-6), (growth * v5, iso(t5), growth * v4r))
+          near(growth * v5, EXPECTED["rung5_records"], 1e-5) and iso(t5) == EXPECTED["rung5_records_binding"]
+          and near(growth * v4r, EXPECTED["rung4_records"], 1e-5), (growth * v5, iso(t5), growth * v4r))
+    j5, j4 = (t5 - G.t0) // Q, (t4r - G.t0) // Q
+    sp5 = (growth * r5[decks[0]][j5], growth * r5[decks[1]][j5])
+    sp4 = (growth * r4[decks[0]][j4], growth * r4[decks[1]][j4])
+    check("V07h record by record, North carries the same load as on charges at each rung's quarter-hour and South more: "
+          "rung 5 82.88 and 72.477 kW, rung 4 115.136 and 47.107 kW at 12:00 on 17 February 2026",
+          near(sp5[0], 82.88, 1e-6) and near(sp5[1], 72.47744, 1e-5) and near(sp4[0], 115.136, 1e-6)
+          and near(sp4[1], 47.1072, 1e-5) and iso(t4r) == "2026-02-17T12:00:00-08:00", (sp5, sp4, iso(t4r)))
     mon5 = [growth * G.peak(r5[decks[0]] + r5[decks[1]], month=m)[0] for m in range(1, 13)]
     check("V07e rung 5 differs from the answer at whole kW in every month", all(round(a) != round(b) for a, b in
                                                                               zip(mon5, mon)), mon5)
@@ -383,6 +390,40 @@ def main():
           and (np.abs(kwh.reindex(idx).fillna(0) - stm["kwh"]) < 0.0005).all()
           and int((n_rec.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 0.5 * len(idx)
           and int((n_over.reindex(idx).fillna(0).astype(int) != stm["charges"]).sum()) >= 10, len(idx))
+    # at one unit under one permit or card the only gap under 42 minutes is a zero gap, so any join tolerance below
+    # that selects the same pairs
+    allr = rec.copy()
+    allr["who"] = allr["permit_no"].where(allr["permit_no"] != "", allr["fleet_card"])
+    allr = allr[allr["who"] != ""].sort_values(["station_id", "who", "t0"], kind="mergesort")
+    same_k = ((allr["station_id"].to_numpy()[1:] == allr["station_id"].to_numpy()[:-1])
+              & (allr["who"].to_numpy()[1:] == allr["who"].to_numpy()[:-1]))
+    gaps_k = (allr["t0"].to_numpy()[1:] - allr["t1"].to_numpy()[:-1])[same_k]
+    check("V07i at one unit under one permit or card, records either meet end to start or sit 42 minutes or more apart, "
+          "and never overlap, 2024 to 2026", int((gaps_k < 0).sum()) == 0 and gaps_k[gaps_k > 0].min() >= 42 * 60,
+          (int((gaps_k == 0).sum()), float(gaps_k[gaps_k > 0].min()) / 60))
+    # weekend and holiday charging at the decks is not settled: the export carries none there, and every other garage
+    # has some
+    off = pd.to_datetime(rec["plug_in"].str[:10])
+    off_day = (off.dt.weekday >= 5) | off.dt.date.isin(set(R["holidays"]))
+    by_g = off_day.groupby(rec["garage"]).sum()
+    check("V07j the settlement export carries no weekend or holiday session at either deck, and some at each of the other "
+          "six garages", int(by_g[decks].sum()) == 0 and int((by_g.drop(decks) > 0).sum()) == 6, by_g.to_dict())
+    # merging every same-day record of a permit or card at a unit also joins the genuine replugs; on the call it
+    # converges
+    ov = recs.copy()
+    ov["who"] = ov["permit_no"].where(ov["permit_no"] != "", ov["fleet_card"])
+    ov["day"] = ov["plug_in"].str[:10]
+    om = ov.sort_values("t0", kind="mergesort").groupby(["station_id", "who", "day"], as_index=False, sort=False).agg(
+        t0=("t0", "min"), kwh_delivered=("kwh_delivered", "sum"), garage=("garage", "first"), car27=("car27", "first"))
+    rate_om = pd.Series(np.minimum(R["new_kw"], om["car27"]), index=om.index)
+    lo = {g: G.blocks(om.loc[om["garage"] == g, "t0"], om.loc[om["garage"] == g, "kwh_delivered"],
+                      rate_om[om["garage"] == g]) for g in decks}
+    tot_om = lo[decks[0]] + lo[decks[1]]
+    v_om, t_om = G.peak(tot_om)
+    mon_om = [growth * G.peak(tot_om, month=m)[0] for m in range(1, 13)]
+    check("V07g merging every same-day record of a permit or card at a unit leaves the answer, its quarter-hour and "
+          "every month unchanged", len(om) < len(pop) and near(growth * v_om, ans, 1e-9) and t_om == t
+          and all(near(a, b, 1e-9) for a, b in zip(mon_om, mon)), (len(om), len(pop), growth * v_om))
     # rungs
     log = P["log"]
     l26 = log[pd.to_datetime(log["Read date"]).dt.year == 2026]

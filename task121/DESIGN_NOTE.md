@@ -113,6 +113,350 @@ Verdict against the registered corpus (task117, task118, task120 and task123 inc
 7. **Shape 18 and two deliverables.** The note's `regression_case.xlsx`, `forward_cost.png` and `sprint_decision.pdf` become `q4_sprint_call.html` and `checkout_fall_workings.xlsx`; the note's ask C (the forward cost under each rung basis) is dropped because it names the ladder, and its asks A and B are candidates for the device layer.
 8. **Furniture.** The note's platform review board is dropped: the head of product assigns the sprint herself (line_manager_or_team), the forcing event is the conversion-fall incident, and eight personas are drawn (the first draft's seven, with the review board chair's role removed, plus Raquel Pires).
 
+## Design (stage 2)
+
+Every number below is a target the generator computes forward from the records and asserts; none is authored into a file. Weekly figures are per Monday-to-Sunday week in Lisbon local time.
+
+### Settlements made at design (on top of "Changes from the source note")
+
+1. **Calendar.** As-of date moves from 2026-10-05 to **Monday 2026-09-28**, so the four review weeks open with the launch week: W1 31 Aug to 6 Sep, W2 7 to 13 Sep, W3 14 to 20 Sep, W4 21 to 27 Sep (the latest complete week). The four baseline weeks are 3 to 30 August, and the eight-week chart runs 3 August to 27 September with no gap. The dashboard's first down week is W1, so "since the fall began" resolves to W1 on the weekly grain without any date in the prompt.
+2. **Five rungs, not four.** The sketch's four rungs (0 to 3) become five (0 to 4): F5 now leads a rung (R2, the standing gap read against visitor-type baselines), so every fix leads exactly one rung and the ladder meets the pipeline's five-to-six floor. The sketch's line "F5 never leads" is withdrawn.
+3. **The grid's lines are re-cut for the ask layer.** The draw's four lines (four-week loss, latest-week loss, affected-against-unaffected gap, onset) left fifteen of twenty cells on the main call's own rows, which the pair arithmetic cannot carry (a mirror stopping at F3 would bank every F1, F3 and F5 cell). The lines are now: (L1) orders lost over the four review weeks, (L2) orders lost in W1, (L3) sales lost in W4 in euros, (L4) the share of W4 card payment attempts that met a 3-D Secure challenge. The latest-week loss moves into the call furniture (the call's own figure and the gap to the runner-up); the onset survives as L2 against L1 and in the chart; the affected-against-unaffected test survives as each population against its own baseline (the sizing line) and as L4. A single "unaffected" control group was rejected because no shipped fact pins which sessions belong in it.
+4. **The partition check is dropped.** The draw's sixth decision figure (the five populations partition the fall's total) needs a precedence for sessions two causes touch (a mixed basket on an account whose saved card is from a challenging issuer), and a precedence is a fork the pack cannot pin. Each population is defined on its own, overlaps count in both, and the call does not need a partition. The grid's completeness (twenty cells, every one a figure) is the shape's completeness check.
+5. **Volume.** Club-app basket sessions are about a tenth of W4's (2,520 of about 24,900), not a fifth: a fifth would need members to be a fifth of signed-in traffic, which makes their move off the web an arithmetic symptom (Realism debts 3). They still convert at about a third of the rest of the store (1.23 against 3.39 per cent).
+6. **Shortlist lines name populations.** Each fix's line in the sprint shortlist names the customers it is aimed at in its owner's words (Pins). That is what makes every decoy cell determinate and what rules out the step-attribution reading after re-attachment.
+7. **The decision furniture** is the call, the cause it removes, its W4 lost orders, the runner-up and the gap (five figures).
+8. **The forward reason.** The call commits the quarter's sprint (forward) and rests on the latest complete week's loss, a closed window: the decision is which cause to remove, and the current weekly loss is the quantity the sizing line files for that. No forecast enters the call and the objective stays Root-Cause Analysis.
+
+### Gate G
+
+**Gate G line:** decomposition_attribution over correct data; surface_read_dependency no; stumping_family analytical_non_defect; sole_data_defect no; no shipped artifact ranks the five fixes.
+
+- **Litmus, in a sentence.** No: every reported figure (the dashboard's weekly conversion, the step counts, the issuers' challenge rates, the close-outs' booked figures) is correct, every voice is right about its own numbers, and the difficulty is attributing a correctly reported fall to the population it happened to, whose identity no file carries on the session.
+- **Primary mechanism:** `decomposition_attribution`, with `method_or_model_selection` support (the close-outs pin the booking convention by back-test).
+- **Flags:** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
+- **Deletion test.** Delete every voice and the shortlist's beliefs: the session log, the token report and the loyalty profiles still lead a competent solver to the stage table (F1), the store-base shortfall (F2) and the issuers' challenges (F3). No wrong number exists to delete.
+- **Clean-data test at three depths (asserted per suspect file).** The suspect file is the session log (its account key is empty on every club-app session). (1) Fill the gap: nothing is missing, the key is empty because nobody signed in. (2) Correct the semantics: the key means the account signed in during the session, which is what it carries. (3) Replace the instrument with one that records the account behind every session: R0 still names F1 and R1 still names F2 on the same figures, and the remaining step, booking a signed-out account holder's lost orders to the sign-in state rather than to the step where they surface (address, payment), is the decomposition the shortlist's population lines and the sizing line force; the generator asserts answer(repaired) = F4 = answer(shipped), naive(repaired) = F1 = naive(shipped), answer differs from naive. Residual risk, stated: the third repair collapses R2 to R4 into one step, so a stricter judge may read the population gap as the instrument's; the mitigation is that the shipped log is right at its meaning and no file in the pack is incomplete.
+- **Lens-swap test.** The naive read (F3 on P3, club traffic as new visitors) and the answer (F4 on P4) are different populations: P4 is a set of accounts reached through a three-file chain, not the club sessions under a second lens. Asserted: P4 is a strict subset of club sessions (about 63 per cent of them in W4) and no single column of the session log separates it.
+
+### Entity, unit of value, decision
+
+- **Entity.** An online store in Portugal selling licensed football, music and gaming merchandise, scored on orders (the head of product's KPI is basket-session conversion, orders over basket sessions).
+- **Two quantities that both read as the size of a cause:** the exits a checkout step gained against its old exit rate (the stage table), and the orders a population lost against its own conversion before the fall. They rank the fixes differently because a signed-out account holder's lost order surfaces at whichever step lost them their saved state (address, payment), so the step view hands it to F1 or F3 and the population view hands it to F4.
+- **Decision.** Exactly one fix from {F1 inline postcode lookup, F2 club landing page, F3 card SDK upgrade with in-page 3-D Secure, F4 one-time-code sign-in, F5 split dispatch} for the Q4 engineering sprint, named with the cause it removes.
+
+### Answer
+
+**F4, the one-time-code sign-in**, removing the cause "existing customers landing signed out in the club app's own browser". W4 lost orders **52** (target 52.4, P4: about 1,588 sessions at 1.30 per cent against the accounts' own 4.60 per cent). Runner-up **F3** at **22** (target 22.1). Gap **30** orders (unrounded 30.3; the rounded and unrounded gaps agree, asserted). Natural-pipeline rank of F4: **4th of 5** (R0). Margin on the correct basis: **2.37x**.
+
+### World targets (weekly, bots excluded; the generator asserts each within the stated band)
+
+| Segment | Baseline week (3 to 30 Aug, flat) | Review weeks W1 / W2 / W3 / W4 |
+|---|---|---|
+| Signed-in web basket sessions | 16,000 at 4.60% (736 orders) | members' accounts move to the app, so 16,000 less the P4 sessions each week |
+| of which club members' accounts (P4 accounts) | 1,600 at 4.60% | web about 12 a week by W4; nearly all their sessions move to the app |
+| of which CP4-pool accounts (P1 pool) | 1,900 at 4.60% | exposed by cohort waves on Tue 1 Sep (cohorts 1 to 4), Thu 3 Sep (5 to 8), Tue 8 Sep (9 to 12) |
+| of which digital-bank default cards (P3 pool) | 1,800 at 4.60% | issuer Y stops honouring the exemption from Thu 3 Sep, issuer X from Mon 7 Sep |
+| Web new-visitor sessions | 5,600 at 1.40% | flat |
+| Web returning-cookie guest sessions | 2,400 at 2.20% | flat |
+| Club-app sessions (signed out, new-visitor cookie, token on every link) | none | 1,200 / 1,900 / 2,300 / 2,520 |
+| of which P4 (token resolves to a store account) | | about 61, 61, 61, 63 per cent (732 / 1,159 / 1,403 / 1,588) at 1.30% |
+| of which P2 (no store account) | | the rest (468 / 741 / 897 / 932) at 1.10% |
+| Mixed pre-order baskets (P5) | 9% of every web segment, at half the segment's single-basket rate | unchanged share and rate; none in genuine club sessions (members' catalogue is in-stock kits only) |
+
+**Population losses (whole orders, own baseline, the generator's ground truth).**
+
+| Population (fix) | W1 | W2 | W3 | W4 | Four weeks (L1) |
+|---|---|---|---|---|---|
+| P1, CP4 saved address, flag live (F1); sessions 2,800 / 2,100 / 600 / 222 at 1.00% | 100.8 | 75.6 | 21.6 | 8.0 | 206.0 |
+| P2, club-app new fans (F2) | 1.4 | 2.2 | 2.7 | 2.8 | 9.1 |
+| P3, digital-bank default card (F3) | 5.0 (issuer Y only, 4 days) | 22.1 | 22.1 | 22.1 | 71.3 |
+| P4, club-app account holders (F4) | 24.2 | 38.2 | 46.3 | 52.4 | 161.1 |
+| P5, mixed baskets (F5) | within plus or minus 0.4 every week | | | 0.3 | 0 |
+
+Store W4: about 24,930 basket sessions, about 795 orders, conversion 3.19 per cent against 3.61 per cent before the fall. Every graded figure is tuned to sit at least 0.2 of an order (or 20 euros, or 0.05 points) inside its bin, asserted.
+
+### Populations (each named by its fix's line in the shortlist; overlaps count in both)
+
+- **P1 (F1):** signed-in sessions whose account's flag cohort was live and whose saved delivery address was postcode-four-digits only at session start (address book as of the session, its times converted from UTC to Lisbon).
+- **P2 (F2):** club-app sessions whose members'-price token does not resolve to a store account (no member number on any loyalty profile). Own baseline: the web new-visitor conversion before the fall (the close-outs' convention for partner new visitors).
+- **P3 (F3):** signed-in sessions whose account's default saved card, as of the session, was issued by issuer X or issuer Y.
+- **P4 (F4):** club-app sessions whose token resolves through the club's token report (token to member number) and a loyalty profile (member number to account) to a store account. Own baseline: those accounts' basket-session conversion over the four baseline weeks (4.60 per cent, equal to the signed-in rate by construction, C1).
+- **P5 (F5):** sessions whose basket held a pre-order line and an in-stock line at the furthest step reached (pre-order status as of the session).
+- Every population is computed after excluding the sessions the edge export flags as automated.
+
+### Ladder
+
+| Rung | Construction (what the solver builds) | Names | W4 figures (or the window stated) | Killed by (one shipped fact) |
+|---|---|---|---|---|
+| R0 | Stage table: exits at each checkout step over W1 to W4 against the sessions reaching it times its baseline exit rate, each step mapped to the fix that works there | **F1** (address step) | address 280, payment 122, checkout start 38 (F2), contact 27 (F4), delivery about 0 (F5) | The flag cohorts: losses are first failures that stop once an account re-saves, so by W4 the check costs 8 orders |
+| R1 | F1 measured on its cohorts (drained); every other population's W4 shortfall against the store's pre-fall conversion (3.61%) | **F2** (club landing page) | F2 60.1, F5 35.5, F4 33.9 (web returning guests), F1 5.8, F3 5.3 | The two partner close-outs: booking partner traffic by visitor type reproduces both close-outs' booked zero; booking it against the store's conversion misses both |
+| R2 | Visitor-type baselines (the close-outs' convention), club sessions all new visitors because none carries an account; the largest remaining shortfall against each visitor type's pre-fall conversion | **F5** (split dispatch) | F5 34.1, F3 22.1, F1 8.0, F2 4.4, F4 0 | Mixed baskets' own pre-fall conversion: they converted at the same half rate in August, so against their own baseline they lost nothing |
+| R3 | Every population against its own pre-fall conversion, club sessions still read as new visitors | **F3** (card SDK upgrade) | F3 22.1, F1 8.0, F2 4.4, F5 0.3, F4 0 | The club's token report joined to the loyalty profiles: about 63 per cent of W4 club sessions belong to store accounts that converted at 4.60 per cent signed in |
+| R4 | **Decisive:** club sessions re-attached to accounts through token, member number and loyalty profile; P4 against its own accounts' baseline | **F4** | F4 52.4, F3 22.1, F1 8.0, F2 2.8, F5 0.3 | |
+
+**Gaps, rung by rung (each rung's killing move draws from a different gap or generator).** R0 to R1: gap 1, time (G13 horizon and G14 conditioned yield: the check's losses are first failures that drain, so the window the sizing line names sees almost none). R1 to R2: gap 4, rule (the close-outs' back-test recovers the visitor-type booking, G16). R2 to R3: gap 1, time again but on a different object (G6 composition: a standing gap is not a change, read against the population's own August). R3 to R4: gap 2, population (G3 record versus operation: the session is filed as a new signed-out visitor and belongs to an existing account), the decisive gap. The stump sits in the population gap, behind two joins, below a time rung and a rule rung.
+
+**Why each rung is a place to stop.**
+- R0: the address step carries the largest rise, it lines up with the check's rollout on 1 September, and the checkout lead says the check is still costing orders; a stage table is the incident review's own first exhibit.
+- R1: with the check drained, the club app is the one new thing in September, its sessions convert at about a third of the rest, and its shortfall against the store's conversion is the largest left; the partnership manager's landing page is the obvious remedy.
+- R2: the close-outs say partner traffic is new fans and costs nothing, so the solver books the club app that way and looks at the rest of the store by visitor type, where mixed pre-order baskets convert at half the rate of their type and are a tenth of sessions; split dispatch is a named fix.
+- R3: measured properly against its own past, every population is flat except the issuers' challenges, which are new, dated, confirmed by both issuers' notices and fixed by the industry-standard SDK; it is the only real loss left and it beats the drained check by 2.8x.
+- "A solver who does everything right up to R3 commits to F3."
+
+**The stump carrier** is R3 to R4 (gap 2, population; G3 record versus operation). It clears the seven survival properties: (1) no shipped sentence says the club app opens its own browser, that its sessions are existing customers, or that a token resolves to an account (the agreement says the club invoices per token with member numbers, a billing fact); (2) the close-outs are blind by construction (both partners linked to the open web, so their returning visitors arrived signed in at the store's base share; booking by visitor type on the account key reproduces both exactly, asserted); (3) no arithmetic symptom: every total ties on the naive path, the club sessions convert like web new visitors (1.23 against 1.40 per cent, inside the spread of the store's new-visitor weeks), and the members' move off the web sits inside a seasonal volume dip (Realism debts 3); (4) not a row predicate: it is a two-hop join through two files nothing signposts, the token sitting inside the landing URL's query string; (5) the enumeration is a join, not a column; (6) no cutover date carries it (the club tab's launch date is the same date the dilution reading uses); (7) it survives deletion.
+
+**Worth of each rung on the graded quantity (the named fix).** Each rung moves the name; on the call's figure, R4 moves F4's W4 loss from 0 to 52.4 orders.
+
+### Position table (asserted by name at every rung)
+
+| Rung | Leader, margin over 2nd | F4's rank, and its distance from the leader |
+|---|---|---|
+| R0 | F1 280 over F3 122, 2.30x | 4th (contact step 27), 10.4x behind |
+| R1 | F2 60.1 over F5 35.5, 1.69x | 3rd (33.9), 1.77x behind |
+| R2 | F5 34.1 over F3 22.1, 1.54x | 5th (0) |
+| R3 | F3 22.1 over F1 8.0, 2.76x | 5th (0) |
+| R4 | F4 52.4 over F3 22.1, 2.37x | 1st |
+
+F4 leads no intermediate rung and is never 2nd; no adjacent rungs share a leader; no rung margin is under 1.54x. The ground-truth rank on the natural pipeline is 4th of 5.
+
+### Discriminator dominance
+
+The decoy F3 arrives at R4 carrying 22.1 orders that R4 does not touch (P3 is signed-in and outside the token chain). The decisive move adds 52.4 orders to F4 that every lower rung reads as zero. Edge 52.4 / 22.1 = **2.37x**, against the 1.2x floor; asserted as a product (52.4 >= 1.2 x 22.1 = 26.5). The strongest carried advantage any partial reading can hand F3 is the step-attribution cell below (40.4), and that cell violates a shipped population line rather than reading a defensible one.
+
+### Correction grid (three toggles, eight cells, W4)
+
+Toggles: D (F1 measured on its cohorts, drained, against the stage table), V (club traffic booked by visitor type as the close-outs do, against the store's conversion), T (club sessions re-attached through the token chain). Every population is read against its own baseline wherever the toggle set allows it.
+
+| D | V | T | Names | Why it is wrong, or the rule it violates |
+|---|---|---|---|---|
+| off | off | off | F1 | R0 |
+| on | off | off | F2 | R1 |
+| off | on | off | F1 (stage table over W1 to W4 with club exits booked as dilution: address 206) | the sizing line's latest complete week |
+| on | on | off | F3 (own baseline) or F5 (visitor-type gap) | R3 or R2 |
+| off | off | on | F1 (stage table, re-attached sessions still booked by step) | the shortlist's population lines and the latest week |
+| on | off | on | F4 (P2 booked against the store's conversion: F2 23.4, F3 22.1); the name is right and every F2 cell is wrong | the close-outs' booking; V is not needed for the name once T is on, asserted |
+| off | on | on | F1 over the four weeks (206 against F4 161.1, 1.28x) | the sizing line's latest complete week |
+| on | on | on | **F4** | the answer |
+
+**Partial-application cells, swept and asserted.**
+- Re-attached, then booked by step (P4's address losses to F1, payment losses to F3, contact to F4; P4 loses 55, 35 and 10 per cent at those steps): F3 40.4, F1 36.8, F4 5.2, names F3. Violates the shortlist's population lines (F3's line names saved cards from two issuers, F1's names saved addresses the check rejects; P4 sessions carry neither).
+- Re-attached through the visible signatures only (typed address equals a saved address, typed card fingerprint equals a saved card), which see only sessions that submitted an address: F4 about 19, names F3. The chain is the only complete enumerator; the signatures agree with it on every session where they are observable (C1, asserted).
+- Re-attached through the September token report only: W4 unaffected (every W4 token is in the September report); W1 loses 31 August's tokens (the August report is a one-day file), which moves L1 and L2 only.
+- P4 against the store's conversion instead of its accounts' own: 1,588 x (3.61 minus 1.30) = 36.7, still names F4 (1.66x over F3), asserted as a cell that lands on the right name with a wrong figure.
+
+### Calibration corpus
+
+Two organs, each scoring one rung.
+
+**(a) The partner close-outs (the decisive rung's organ; blind by construction).** Form: prior-period close-outs of two closed partner campaigns that linked to the open web, a music-festival app (6 weeks, spring 2025) and a gaming streamer's link page (4 weeks, November 2025). Each close-out workbook carries its weekly table (partner and non-partner sessions and orders by visitor type: signed-in, returning-cookie guest, new visitor) and its booked figures (incremental orders, lost orders booked zero).
+- Back-test: booking partner traffic by visitor type against each type's pre-campaign conversion reproduces both close-outs' booked lost orders (zero) within 1 order and their incremental orders exactly (2 of 2). Booking against the store's pre-campaign conversion misses both by 100 per cent of the booked figure (+178 and +96 orders against a booked zero), and booking all partner traffic as new visitors misses both the other way (-61 and -34), because the partners' returning visitors arrived signed in.
+- What it certifies: the visitor-type convention (kills R1). What it is blind to: a returning customer arriving signed out. Both partners linked to the open web, so 73.8 and 74.4 per cent of their returning visitors arrived signed in against the store's base 74.1 per cent, and the account key alone identifies every returning visitor (asserted: re-running both close-outs with any identity rule that agrees with the account key changes no figure).
+- Corpus-direction line: under the naive path (club sessions booked by visitor type on the account key) the corpus **reproduces**; it nominates the decoy reading for the club app and refutes nothing on the naive path.
+- Resemblance: the club app resembles both partners on every visible column (a partner link, a new-visitor-cookie majority, a lower blended conversion), so lookup transfer books it as dilution, the decoy.
+
+**(b) The release log's two prior flagged releases and the current check's cohorts (rung R0's organ).** The basket redesign (February 2026) and the delivery-options change (May 2026) were each rolled out by flag cohort with measured effects over eight follow-on weeks. Measuring by cohort exposure reproduces both measured effects within 2 per cent; measuring by calendar date misses both by 30 per cent or more. Both releases touched no saved customer state, so they cannot show self-repair, and an event study by weeks since exposure on the current check is what finds the drain (meant to be found).
+- **Twin pair:** address-check cohorts 6 and 8, identical on exposure date (Thursday 3 September), device mix, traffic-source mix and account-age distribution, with losses in their first exposed week 2.3x apart (cohort 6 about 14.6 orders, cohort 8 about 6.3), reproduced only by counting accounts that held a four-digit saved postcode at exposure (cohort 6 holds 2.4x as many). Any lookup on session-side columns transfers one rate to both and misses one by at least 40 per cent.
+- Every rule the golden composes has a case that breaks if flipped: cohort exposure (the releases), the drain (cohorts 7 and 9), visitor-type booking (the close-outs), and the own-baseline sizing (P5's August conversion, R2's killer). The token chain itself has no corpus case by design; it is enumerated by join, not selected by back-test.
+
+### Pins and counter-pins
+
+- **Filed (level 3, the sprint shortlist, Júlia Machado):** "The sprint goes to the fix whose cause is costing us the most orders now: the latest complete week, each cause's customers against what those same customers converted at over the four weeks before the fall, and a lost order valued at what those customers' orders averaged then." Stated once, unjustified. Below it, one line per fix in its owner's words naming the customers it is aimed at: F1 "accounts whose saved address the new check rejects"; F2 "fans who are new to the store and land from the club app"; F3 "saved-card payments that issuers X and Y began challenging"; F4 "customers with an account who check out without signing in"; F5 "baskets that mix pre-order and in-stock lines".
+- **Filed (level 2, the club partnership agreement):** each Shop-tab link carries a members'-price token; the club invoices the store monthly per token it issued, listing token, member number and issue time; the members' price applies to in-stock licensed kits.
+- **Filed (level 4, the analytics guide and the event dictionary):** conversion is orders over basket sessions; sessions the edge export flags as automated are excluded from every conversion figure; session times are Lisbon local; `account_id` is the account signed in during the session; a payment attempt is one `attempt_ref`.
+- **Filed (level 5, export notes):** the address book's change times are UTC; the flag tool's cohort membership is the latest assignment at or before a session and applies to signed-in sessions; the stored-card export is a snapshot at extract time with its change history in a second file; the finance order export carries one row per shipment with the order total repeated on each, net of VAT from the 10 August finance release and gross before it; the payment provider's code list counts a decoupled challenge (`D`) as a challenge.
+- **Empirical pins:** the visitor-type booking (close-outs, 2 of 2); cohort-exposure measurement (two releases and the twin pair).
+- **Licensed wrong basis:** the close-out template's note, signed by Luciana Castro (growth lead), records that partner traffic is booked as new-fan dilution in every close-out and that she will present the club app on that basis at the review. A belief about a basis, never a ranking.
+- **Counter-pins:** none. The dashboard reports correct weekly conversion and step completion and is labelled in-file as a trading view, not a sizing; no voice quotes a ranking of the fixes.
+
+### Fork grid, cell by cell (main call; every losing cell mapped to the shipped rule it breaks)
+
+| Axis | Cells | Winner per cell | Losing cell and the rule it breaks |
+|---|---|---|---|
+| Window of the call | latest complete week; four review weeks; W3 and W4 | F4; F1 (206 against 161); F4 | four weeks breaks the sizing line ("now: the latest complete week") |
+| Baseline of P4 | its accounts' own four-week conversion (4.60); the signed-in store rate (4.60); the store rate (3.61); web guests' rate (2.20) | F4 52.4; F4 52.4 (C1); F4 36.7; F4 14.3 (F3 22.1 wins) | the guest-rate cell breaks the sizing line ("what those same customers converted at") because these accounts placed their August orders signed in |
+| Baseline window length | four weeks; three; five (with 27 July) | F4 in every cell, figure within its bin (conversion flat by construction, C1) | none |
+| Pooled against mean of weekly rates | pooled; mean of four weekly rates | F4 52.4 in both (weekly rates equal by construction, C1) | none |
+| Identity route for club sessions | token chain; signatures only; none | F4; F3 (F4 about 19); F3 | signatures-only breaks completeness: the chain resolves sessions the signatures cannot observe, and both agree wherever both are observable (asserted) |
+| Booking of P4 losses | by population (shortlist lines); by exit step | F4; F3 40.4 | by-step breaks F1's and F3's shortlist lines (P4 carries no saved address and no saved card) |
+| Automated sessions | excluded; kept | F4 in both (no edge-flagged session in the baseline weeks or W4, asserted) | none on the call |
+| Unit | per basket session; per account-week | F4 52.4; F4 within 1 order (P4 accounts' total basket sessions unchanged by construction, C1) | none |
+| Maturity | orders in-session | one reading: an order is placed inside its basket session (dictionary), no late orders exist | none |
+
+### Convention axes (determinism-check A.5, one line per axis)
+
+| # | Axis | Reading chosen | Closure |
+|---|---|---|---|
+| 1 | Population | each fix's customers as its shortlist line names them; P4 through token, member number, loyalty profile | filed (shortlist lines) plus C1: the typed-address and card-fingerprint signatures fire on exactly the chain-resolved sessions wherever observable, and every member with a store account has the member number on the profile (asserted) |
+| 2 | Unit of account | the basket session (orders over basket sessions) | filed (analytics guide) plus C1: per-account-week loss for P4 within 1 order of per-session (asserted) |
+| 3 | Attribution window | the latest complete week, 21 to 27 Sep, for the call and L3, L4; W1 to W4 for L1 and the cohort table; W1 for L2 | filed (sizing line, dashboard's Monday weeks); C1: sessions dated by start, no basket session starts within 2 minutes of a week edge |
+| 4 | As-of dating | saved address, default card, cohort and pre-order status each as of the session | filed (export notes); C1 for W4 and the baseline weeks (no state change in those weeks alters any classification, asserted); the W1 to W3 changes are ledgered devices |
+| 5 | Version basis | one vintage of every main-path file; two monthly token reports (August is one day) | C1 on the main path; the August file is device DV9 on W1 only |
+| 6 | Divisor | conversion over basket sessions; challenge share over payment attempts (`attempt_ref`) | filed (guide, dictionary) |
+| 7 | Weighting | pooled four-week baseline | C1: every segment's weekly baseline rate equal, pooled and mean-of-weeks agree to 0.01 points (asserted) |
+| 8 | Window length | four baseline weeks | C1: three- and five-week baselines put every graded figure in the same bin (asserted) |
+| 9 | Boundary inclusivity | Monday 00:00 Lisbon opens a week | C1 (axis 3) |
+| 10 | Rounding path | lost orders unrounded to the end; L1 from unrounded weeks; sales from unrounded orders times unrounded order value | asserted: rounded-then-summed equals summed-then-rounded for every L1 cell; every figure at least 0.2 orders, 20 euros or 0.05 points inside its bin |
+| 11 | Tie-break | none needed | C4: adjacent ranks at least 1.54x apart at every rung |
+| 12 | Maturity and censoring | orders placed inside the basket session; the review weeks are complete | C1 (no late orders; extract after 27 Sep 23:59) |
+| 13 | Order of operations | exclude edge-flagged sessions, then classify, then compute baselines | C1: no flagged session in the baseline weeks, so the order cannot move a baseline |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | session_id unique; one attempt per `attempt_ref`; one order per `order_id` over shipment rows | filed keys; C1 on the main path (no duplicates); retries and shipment rows are ledgered devices |
+| 16 | Identity normalisation | tokens and member numbers share one format across the session log, the token report and the profiles | C1 (no casefolding, padding or prefix differences on the main path, asserted) |
+| 17 | Netting | each population's loss stands alone and may be negative (a gain); no netting across populations | C1: no population's graded loss is negative outside its bin except P5 at plus or minus 0.4 (rounds to 0) |
+| 18 | Dimensional units | euros net of VAT; percentages | filed (finance notes); the gross-before-10-August rows are device DV5 |
+| 19 | Code semantics | `traffic_source = club_app`; `signed_in`; authentication outcomes C and D are challenges, Y and A frictionless, N and U failed before a decision | filed (dictionary, provider code list) |
+| 20 | Integerisation | none | C1 |
+| 21 | Scope of a stated clause | the sizing line governs the call and L1 to L3 valuations; the flag notes govern the cohort table (signed-in sessions only) | filed |
+| 22 | Forward window contents | the sprint is forward; the call rests on the latest complete week; no forecast enters it | filed (sizing line); reason in Settlements 8 |
+| + | P4's own baseline | the accounts' own August conversion | C1: equal to the signed-in store rate to 0.01 points, so the type-level and account-level readings agree (asserted) |
+| + | P2's own baseline | the web new-visitor conversion before the fall | C2: the close-outs book partner new visitors at the new-visitor rate (2 of 2) |
+| + | Lost-order valuation (L3) | each population's average net order value over the baseline weeks, one order per `order_id` | filed (sizing line, finance notes) |
+| + | Challenge share population (L4) | each population's W4 card payment attempts, one per `attempt_ref`, with decoupled challenges counted | filed (dictionary, code list) |
+
+### Deliverables and criteria arithmetic
+
+Prompt shape 18 (hypotheses versus evidence), opening move options-first, two files.
+
+1. `q4_sprint_call.html` (the page the incident review reads): the call at the top (the fix, the cause it removes, its W4 lost orders, the runner-up and the gap); the grid, five fixes by four lines, each cell a figure (L1 orders lost over the four weeks, L2 orders lost in W1, L3 sales lost in W4 to the nearest 100 euros, L4 the W4 share of card payment attempts challenged, one decimal); one script-rendered chart of orders lost each week from 3 August, one line per cause, W4 marked, the chosen fix labelled, the call in the title.
+2. `checkout_fall_workings.xlsx` (script-written, for the checkout squad): the cohort sheet, every one of the twelve flag cohorts with its basket sessions and its conversion over W1 to W4 (two decimals); unrequested sheets carry each population's weekly losses, baselines and order values.
+
+**Criteria.** Decision 5 (call, cause, W4 lost orders, runner-up, gap) + grid 20 + chart parts 5 (one line per cause, weekly from August, W4 marked, the chosen fix labelled, the call in the title) + cohort sheet 24 (12 cohorts by 2 figures) + files 2 = **56**, over the 25 floor. Distinct findings: the current loss by cause (the call), the trajectory (L1 against L2, the chart), the money (L3), the mechanism at payment (L4), the drain by cohort (the sheet). Named-parts visual: yes. Breakdown at an explicit grain: one row per cohort, one cell per fix and line. Validity check: L4 against the call (the challenge share is high in P3 and P4 alike, which is why the challenge is a symptom in P4) and the cohort sheet against F1's cell.
+
+**Each ask fails under a wrong path.** Grid: every rung below R4 files wrong F4 and F2 cells on all four lines; every line also crosses its devices (ledger). Chart: a rung-0 to rung-3 response labels the wrong fix and titles the wrong call. Cohort sheet: the snapshot cohort membership, kept automated sessions, or club sessions re-attached into cohorts each move every cohort.
+
+**Over-determination.** No ask names a token, a member, a sign-in state or a baseline, and no figure set lets a solver solve back for P4's share: P4's W4 loss is asked once, and L3 and L4 carry it only through device-carried order values and challenge shares.
+
+### Prompt (stage 2)
+
+`prompt.md`, 256 words, options-first (unused in the batch), two files, the call stated whole at the end of the second paragraph and the first deliverable paragraph opening on it. One stakeholder belief (Duarte, the address check). Rounding by one convention sentence ("Counts are whole numbers throughout, lost orders included"), with explicit pins on the derived figures: euros to the nearest 100, the challenge share to one decimal, conversion to two. No input file, basis, window, population or method named; "the four weeks since the fall began" and "the week your call rests on" leave the weeks to the dashboard and the sizing line. `voice-check.py 121`: no flags. Six realism tests: each ask has a user (the review reads the grid and chart, Duarte's squad tests the cohort sheet), sits in its file's genre, uses the store's words, and asks nothing the store already holds.
+
+### Ask ledger (supplemental-stumping)
+
+**The main call's declared row population.** Session log rows dated 3 to 30 August and 21 to 27 September (all segments); the token report rows for tokens on those club sessions; the loyalty profiles; the flag log's exposure rows; the address book and stored-card states at those sessions; the sprint shortlist; the close-outs; the partnership agreement; the analytics guide and event dictionary. **Device and hazard rows inside it: zero**, asserted per file: no edge-flagged session in those weeks; no address re-save within two hours before a session in those weeks; no default-card change in those weeks; the August token report covers 31 August only (W1); the flag rebalance of 14 September changes no exposure status of any session in those weeks (every cohort is live from 8 September); the finance order export and the authentication log are not read by the main call at all.
+
+| Ask | Figures, unit, rounding | Construction layer | Device layer: primary; hazards | File path (causal) | Use, and how it enters the call (H18) |
+|---|---|---|---|---|---|
+| A1 grid L1 and L2 | 10: orders lost over W1 to W4 and in W1, per fix, whole orders | R4 populations (F4, F2 cells need the chain) | **DV1 automated sessions (D5)**; DV2 address-book clock (D8), DV3 stored-card as-of (D2), DV9 one-day August token report (D4), DV10 pre-order status as of the session (D2) | session log, edge export, analytics guide, token reports (Aug, Sep), loyalty profiles, partnership agreement, flag log, address book and its notes, stored cards and their history, catalogue status history, event dictionary: 12 files | component: the size and the onset of each cause, which is the case for and against each fix |
+| A2 grid L3 | 5: W4 sales lost per fix, nearest 100 euros | R4 W4 losses | **DV4 shipment rows repeat the order total (D6)**; DV5 gross-of-VAT rows before 10 August (D3), DV11 orders re-exported on 17 August after a refund correction, latest accepted wins (D2) | as A1's main-path files plus the finance order export, its notes, the finance release log: 11 files | component: what each cause costs in money, beside the orders the call turns on |
+| A3 grid L4 | 5: W4 share of card payment attempts challenged, per fix, one decimal | R4 populations | **DV6 decoupled challenges coded D (D3 code semantics)**; DV7 3-D Secure retries under a new row with the same `attempt_ref` (D1, with genuine second attempts kept), DV12 BIN ranges moved between issuers on 1 August (D7), relevant only to a solver who joins issuers through BINs | authentication log, provider code list, BIN table and its history, the stored cards, session log, token report, loyalty profiles, event dictionary: 9 files | qualifier of the call: it shows the challenge is a symptom of signed-out checkout in P4 and a cause only in P3 |
+| A4 cohort sheet | 24: per cohort, basket sessions (whole) and conversion (two decimals) over W1 to W4 | none (F1's own measurement, independent of the call) | **DV8 cohort rebalance on 14 September, membership as of the session (D2)**; DV1 credential-stuffing sessions 16 to 18 September in every cohort, DV13 club-app sessions of cohort accounts (signed out, outside the flag's scope by the flag notes) | flag log, flag notes, session log, edge export, analytics guide, token report, loyalty profiles, event dictionary: 8 files | audit trail of the drain that rules F1 out |
+
+Primaries: D5, D6, D3, D2, no family repeated. Every graded figure sits under at least two devices.
+
+**Devices, organs and root causes.**
+- **DV1 (D5, silent).** A launch-day scraper replayed 14 harvested Shop-tab links (valid tokens, 11 of which resolve to accounts) about 300 times on 31 August and 1 September, adding the third kit's pre-order and an in-stock shirt to the basket to read dispatch dates; a credential-stuffing run signed into about 380 real accounts across all twelve cohorts on 16 to 18 September and added gift cards. None ordered. Organs: the analytics guide's exclusion sentence (documentary) and the edge export listing flagged session ids (structural); the session log has no bot column. Over-cleaning half: the harvested members' own genuine sessions on the same tokens, and the attacked customers' genuine sessions on the same days after their password resets. Wrong paths: keep all (P4 W1 up about 10.9 orders, P2 W1 up about 0.9, P5 W1 up about 6.0, P3 W3 up about 2.5, P1 W3 up about 0.5, every cohort's sessions up and conversion down); drop every session on a touched token or account (loses the genuine half). Root cause: the kit launch and a leaked credential list, both real system events.
+- **DV2 (D8, silent).** The address book's change times are UTC and session times Lisbon local (UTC+1 in September). Customers re-save 1 to 48 hours after a failure; about 310 failing sessions start within the hour before their account's re-save, all in W1 to W3. Read raw, the re-save appears to precede those sessions, so they fall out of P1 (P1's L1 down about 14 orders, L2 down about 8). Organs: the address book notes (UTC) and the event dictionary (Lisbon local).
+- **DV3 (D2, silent).** About 140 P3 accounts switched their default card away from issuer X or Y after a challenge in W1 to W3; the stored-card file is a snapshot at extract. Read as current, their earlier sessions drop out of P3 (F3's L1 down about 4, L2 down about 1). Organs: the export notes (snapshot) and the change history file.
+- **DV4 (D6, silent).** The finance export has one row per shipment and repeats the order total on each; every order with a pre-order line ships twice. Summing rows inflates each population's baseline order value by its split share (P4 accounts about 9 per cent, P1 about 7, P3 about 10). Organs: the export notes and the shipment ids. Over-cleaning half: genuine separate orders by one customer on one day keep distinct `order_id`s.
+- **DV5 (D3, hazard).** Rows dated 3 to 9 August carry gross amounts (VAT 23 per cent), rows from 10 August net; read raw, the baseline order value rises by about 5.8 per cent. Organs: the export notes and the finance release log entry for 10 August.
+- **DV6 (D3, silent).** Issuer X uses app-based decoupled authentication, coded `D`; counting only `C` drops most of P3's challenges and part of P4's. Organs: the provider's code list and the outcome column.
+- **DV7 (D1, hazard).** The 3-D Secure server re-sends about 4 per cent of challenges, logging a second row with the same `attempt_ref`; customers who retry with another card create a new `attempt_ref` and are genuine. Organ: the dictionary's key (`attempt_ref` is one payment attempt).
+- **DV8 (D2, silent).** The flag tool rebalanced the twelve cohorts on 14 September, moving 2 to 4 per cent of accounts between neighbouring cohorts; the assignment file is current, the flag log carries the moves. Read as current, every cohort's sessions move.
+- **DV9 (D4, silent).** The club invoices monthly; tokens issued on 31 August sit in a one-day August report. A solver loading September only loses those sessions from P4 (F4's L1 and L2 down about 4.1).
+- **DV10 (D2, hazard).** The third kit moved from pre-order to in stock on 21 September; the catalogue file is current. Read as current, W1 to W3 mixed baskets look single (P5's cells stay about 0 either way; the device moves the over-cleaned and bot paths).
+- **DV11 (D2, hazard).** The 17 August re-export replaced 412 order rows after a refund correction; latest accepted wins (finance notes).
+- **DV12 (D7, hazard).** BIN ranges moved between issuers on 1 August; inert for a solver who takes the issuer from the stored card, live for one who joins the authentication log to issuers through BINs (the BIN history pins it).
+- **DV13 (D5, hazard).** Club-app sessions of cohort accounts are signed out and outside the flag's scope (flag notes); a cracker who folds them into cohorts moves every cohort's figures.
+
+**Hazard table (asserted per ask).**
+
+| Hazard | Asks it moves |
+|---|---|
+| DV1 automated sessions | A1 (every fix's L1; F2, F4, F5 L2), A4 (every cohort) |
+| DV5 gross rows | A2 (F1, F2, F3, F4) |
+| DV7 retried challenges | A3 (every fix) |
+| DV10 pre-order status | A1 (F5, with DV1) |
+| DV13 club sessions in cohorts | A4 (every cohort; cracker path only) |
+
+**Referee (exactly one).** The payment provider's September authentication summary by issuer group (attempts and challenges, `D` counted), byte-clean. It arbitrates DV6 and DV7 at issuer grain without handing over any population's share.
+
+**Pair arithmetic (Part 0; planning weights 38 / 7 / 55; 49 ask criteria at about 1.12 points each).**
+- Free blocks: the cracker keeps the chart's five parts and F5's L3 (zero lost orders value at zero whatever the devices) = 6 criteria; the mirror (R3, F3) keeps about two chart parts and F5's L3 = 3. Every other ask criterion is device-carried, and the mirror's F2 and F4 cells are also construction-wrong.
+- Device leakage at 10 per cent: cracker 45 + (6 + 4.3) x 1.12 = 56.6; mirror (r about 5) 12 + (3 + 3.5) x 1.12 = 19.3; **pair 37.9**. At 15 per cent: 59.0 and 21.3, pair **40.1**. At 20 per cent: 61.4 and 23.2, pair 42.3. With no cracker in the top two, the pair is two mirrors at about 19 to 23.
+- Reachability: 6 of 49 ask criteria (0.12) are reachable from the landed call.
+- What the pass condition rests on: the ladder holding the field to at most one response on F4. If the generated rubric folds the cohort sheet's 24 figures into a few criteria, the ask weight concentrates on the grid and the pair rises by about 3 points at each leakage level; recomputed after the rubric generates.
+
+**Per-ask stops (the generator computes each from the golden's own code path and asserts it outside the golden's bin).**
+- A1: the natural read (bots kept, raw clock, current cards, September tokens only); bots dropped by token or account wholesale (over-cleaned); bots excluded but the clock raw; the clock fixed but cards current; the answer.
+- A2: shipment rows summed; orders de-duplicated but gross rows kept; net throughout but the pre-correction rows of 17 August kept; every order valued at the store-wide average (wrong population); the answer.
+- A3: only `C` counted, rows not attempts; `C` and `D` counted on rows; attempts but `D` dropped; issuer joined through current BINs (for the P3 cell); the answer.
+- A4: current cohort file with bots kept; current file with bots excluded; as-of membership with bots kept; club sessions of cohort accounts folded in; the answer.
+
+### Assertion plan (generator, then an independent verifier that reads only the shipped bundle)
+
+1. R0 to R4 winners by name (F1, F2, F5, F3, F4).
+2. Each rung's margin: 2.30, 1.69, 1.54, 2.76, 2.37, each at least 1.2.
+3. F4's rank at every rung (4th, 3rd, 5th, 5th, 1st); never 1st or 2nd below R4.
+4. No adjacent rungs share a leader, rechecked after every parameter change.
+5. Dominance: 52.4 >= 1.2 x 22.1.
+6. All eight correction-grid cells by name; the off-on-on cell at 1.28x for F1.
+7. The four partial-application cells (by step: F3 40.4; signatures only: F3; September tokens only: W4 unchanged; store-rate baseline: F4 36.7).
+8. Close-outs: visitor-type booking reproduces both booked figures within 1 order; store-base misses by +178 and +96; all-new misses by -61 and -34.
+9. Close-outs blind: their partners' returning visitors signed in at 73.8 and 74.4 per cent against the base 74.1; any identity rule agreeing with the account key changes no close-out figure.
+10. Prior releases: cohort exposure reproduces both measured effects within 2 per cent; calendar date misses both by at least 30 per cent.
+11. Twin pair: cohorts 6 and 8 identical on every session-side column; first-week losses 2.3x apart; reproduced by the CP4 count.
+12. Token chain: every W4 club token found in the September report; every member number found on at most one profile; P4 share of W4 club sessions about 63 per cent.
+13. Signatures agree with the chain on every session where either is observable (zero disagreements).
+14. Every member with a store account carries the member number on the profile.
+15. P4 accounts' own baseline equals the signed-in rate to 0.01 points.
+16. P4 per-account-week loss within 1 order of per-session loss.
+17. Every segment's weekly baseline rate equal to its pooled rate to 0.01 points; three- and five-week baselines leave every graded figure in its bin.
+18. Clean-data test: the session log repaired with the account on every club session leaves the answer F4 and the naive F1.
+19. Lens-swap test: P4 is a strict subset of club sessions and no single session-log column separates it (best column accuracy under 70 per cent).
+20. No genuine club session holds a pre-order line.
+21. P5's loss within plus or minus 0.4 orders every week.
+22. Separation: zero edge-flagged sessions in the baseline weeks and W4.
+23. Separation: zero address re-saves within two hours before any baseline-week or W4 session.
+24. Separation: zero default-card changes in the baseline weeks and W4.
+25. Separation: the flag rebalance changes no session's exposure status in the baseline weeks or W4.
+26. The finance order export, the authentication log, the BIN table and the catalogue history are never read by the main call (the call recomputed without them).
+27. Decoupling: the whole ask set recomputed with the token chain cleared leaves every F1, F3 and F5 cell and the cohort sheet unchanged.
+28. Necessity matrix: each of DV1 to DV13 mishandled alone moves at least one graded ask figure out of its bin, and the ledger's ask list for each device matches the moves exactly.
+29. Composed mishandlings: every subset of an ask's devices lands outside the bin (no cancellation onto the golden).
+30. Lazy sweep: the natural read of each ask lands on its stop 1.
+31. Over-cleaner: dropping every session on a touched token or account lands on A1's and A4's over-cleaned stops.
+32. Hygiene battery on each wrong path: no duplicate session ids, no unmatched joins on the main keys, counts tie (the devices stay silent).
+33. No marker: no single column isolates the bot sessions inside the session log (best column accuracy under 60 per cent).
+34. Referee: the provider summary's issuer totals tie on the correct path only, and no population's share can be read from it.
+35. Pair simulation: cracker and mirror sheets scored; pair at most 40 at 10 per cent leakage.
+36. Every graded figure at least 0.2 orders, 20 euros or 0.05 points inside its bin.
+37. Rounded and unrounded gaps agree (30); rounded-then-summed equals summed-then-rounded for L1.
+38. Generation tells: no headline total on a round number; no share an exact round figure; L4 shares at least 0.3 points apart across fixes.
+39. Anti-signpost: no file states that the club app opens its own browser, that club sessions are existing customers, or that a token maps to an account; the words "in-app browser" and "signed out" appear in no shipped document.
+40. Each load-bearing fact appears in exactly one file (the sizing line, the visitor-type booking note, the edge exclusion, the UTC note, the code list's `D`).
+41. No shipped artifact ranks the five fixes; the dashboard carries its in-file label.
+42. Input gates: at least 10 files, at least 3 formats, the session log at 25,000 rows or more, at least two distractors named in `metadata.json`.
+43. Two consecutive builds byte-identical.
+
+### Pack plan (dataset-generation builds against this; names in the organisation's idiom, settled at build)
+
+Spine: the basket-session export (8 weeks, about 200,000 rows plus the club sessions; landing URL with its query string, traffic source, signed-in flag, account, new-visitor flag, furthest step, basket composition, order id). Around it: the club's token reports (August, September), the loyalty profiles, the address book with notes, the flag log and notes, the stored-card snapshot and its history, the BIN table and its history, the authentication log, the provider's code list and its September summary (referee), the finance order export with notes and the release log, the catalogue status history, the edge export, the weekly trading dashboard (context artifact), the sprint shortlist, the partnership agreement, the two partner close-outs, the release log with the two prior flagged releases, the analytics guide and event dictionary, and a short incident-channel export (the social layer). Distractors (named only in `metadata.json`): the carrier's full-postcode label notice (background, looks like F1's evidence), the September stock-availability snapshot (looks like F2's evidence), and the email campaign calendar (a September send that looks like a traffic cause). The file count is trimmed toward the median at build by folding notes into the files they describe.
+
+### Realism debts (stated)
+
+1. Every member with a store account carries the member number on the loyalty profile. Forced by the identity closure (C1 on axis 1). Mitigation: last season's web members' discount required the number on the profile, stated in the partnership agreement's background clause.
+2. Members move nearly all their basket sessions to the app. Forced by the per-account and per-session convergence (axis 2). Mitigation: the members' price exists only in the app.
+3. Signed-in web basket sessions fall about 10 per cent in September as members leave the web. Forced by axis 2; it is a second route to the decisive population for a solver who segments accounts by member number, which still needs the profiles. Mitigation: a seasonal volume dip after the August kit launch across every segment (about 6 per cent), so the members' move sits inside a general decline.
+4. Conversion is flat across the four baseline weeks in every segment. Forced by axes 7 and 8. Mitigation: volume varies by week; only rates are flat.
+5. No genuine club session holds a pre-order line. Forced to keep P5 off the club populations. Mitigation: the agreement's members'-catalogue clause.
+6. Two automated bursts in four weeks. Mitigation: each has its own real-world cause (the kit launch, a credential list).
+
+### Stopping rule (written before any round)
+
+- At ceiling, re-root: two consecutive rounds (or portal results) in which the top response files F4 with the token chain by two different routes, or one round in which a plain solver files F4 by segmenting accounts by member number without being stumped at R3.
+- One more repair is licensed by: a solver landing F3 at R3 with the trace showing it read the token report and set it aside (a loudness repair on nothing; the repair is in the ask layer or the club-side documents), or a pair over 40 with one response on the call (an ask-layer repair).
+- Three harden loops on this architecture is the limit; the fourth is a re-root at stage 1 with this architecture in the card's lineage.
+
+### Portal log and determinism check
+
+- Portal log: none yet.
+- determinism-check section A run at this stage: the litmus, the mechanism, the flags, the 22 axes and the stump sentence are in this note; section B runs while the generator is written.
+
 ## Tried and rejected
 
 - v1 (first draft, 2026-10-08, never registered): the address check's forward weekly cost, decisive on the self-healing pool (an account holding a CP4-only saved address fails once, re-saves and never fails again). Rejected at checkpoint A on 2026-10-09: it cleared the guard only by relabelling the note's pattern A to E, as E it still collides with task117 on (time, E, quantity_figure) while A stays blocked by task107's v4 lineage; its forward-cost figure read as Forecasting; the staggered flag cohorts let an event study by weeks since exposure show the fade (an arithmetic symptom, task75's dead shape) and the vendor's published address rules pointed at the address book; both nearest exemplars sat above 0.50 because the model names the cause and loses only on sizing; and rolling back a flag-gated release is a flag flip, not a sprint. The self-healing pool survives in v2 as rung 1.
+- v2 grid as drawn (stage 2, 2026-10-09): lines of four-week loss, latest-week loss, affected-against-unaffected gap and onset. Rejected because fifteen of twenty cells sat on the main call's own rows, so a mirror stopping at F3 banks every F1, F3 and F5 cell and the pair cannot reach 40 at any device leakage; re-cut to L1 four-week loss, L2 first-week loss, L3 sales lost, L4 challenge share (Settlements 3).
+- A single "unaffected" control group for the gap line (stage 2): rejected because no shipped fact pins which sessions belong in it (signed-out web sessions in or out, mixed baskets in or out), so every gap cell would be a fork.
+- The partition check (stage 2): rejected because sessions two causes touch need a precedence, and a precedence is a fork the pack cannot pin; populations stand alone and overlaps count in both.
+- First tuning of the review weeks (stage 2): club-app sessions 1,700 / 2,150 / 2,400 / 2,520 with P1 at 2,300 / 1,700 / 520 / 222 put the four-week cell (D off, V on, T on) at F4 178 against F1 171, a 1.04x knife edge for a solver who re-attaches but reads the four weeks; retuned to a slower club ramp and a heavier first exposure wave (F1 206 against F4 161.1, 1.28x, naming the wrong fix).

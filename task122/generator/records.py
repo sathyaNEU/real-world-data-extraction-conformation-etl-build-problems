@@ -1,0 +1,366 @@
+"""task122 generator: turn the world's outcomes into the records the platform's systems hold.
+
+Identities, dates and clock times, the ranking served in each logged session (six tiles, the age
+of each listing, the buyer's watch list at the start), the render log, and every order, accepted
+offer and payment for the enrolled buyers from 1 June to 11 October 2026.
+"""
+from datetime import date, datetime, timedelta
+
+import numpy as np
+import pandas as pd
+
+import params as P
+import world as Wm
+
+REGIONS = ["NH", "ZH", "UT", "NB", "GE", "OV", "LI", "GR", "FR", "DR", "FL", "ZE"]
+REGION_P = [0.17, 0.21, 0.08, 0.15, 0.12, 0.07, 0.06, 0.03, 0.04, 0.03, 0.03, 0.01]
+WEEKDAY_W = np.array([1.00, 0.92, 0.95, 1.00, 0.90, 1.06, 1.24])   # Monday .. Sunday
+EPOCH = datetime(2025, 1, 1)
+
+
+def _days(d0, d1):
+    out = []
+    d = d0
+    while d <= d1:
+        out.append(d)
+        d += timedelta(days=1)
+    return out
+
+
+def assign_identities(W):
+    S = W.S
+    rng = P.stream("ids")
+    N = len(S)
+    bid = rng.choice(np.arange(11_000_000, 69_000_000), size=N, replace=False)
+    S["buyer_id"] = bid
+    hexs = rng.integers(0, 16 ** 10, size=N, dtype=np.int64)
+    sids = np.array([f"hc{h:010x}" for h in hexs])
+    assert len(set(sids)) == N
+    S["session_id"] = sids
+    lo = np.array([P.BAND_DAYS[c % 4][0] for c in S.cell])
+    hi = np.array([P.BAND_DAYS[c % 4][1] for c in S.cell])
+    u = rng.random(N)
+    span = hi - lo
+    # tenure within band: more mass at the young end of each band
+    S["tenure"] = (lo + np.floor(span * u ** 1.35)).astype(int)
+    S["platform"] = np.where(S.cell < 4, "app", "web")
+    S["region"] = rng.choice(REGIONS, size=N, p=REGION_P)
+    S["pool_id"] = np.array([f"cp{v:07d}" for v in rng.integers(1_000_000, 9_999_999, size=N)])
+
+
+def assign_dates(W):
+    """Halves first, stratified within each (cell, ranker) on everything an estimator reads, so each
+    half of the window carries the same outcomes; then a day inside the half (weekday weighted), a
+    start time, render gaps and an end time."""
+    S, WL = W.S, W.WL
+    rng = P.stream("dates")
+    b = WL[WL.bought]
+    S["_wb"] = np.bincount(b.sid, minlength=len(S))
+    S["_wbi"] = np.bincount(b[b.intent].sid, minlength=len(S))
+    half = np.zeros(len(S), int)
+    for (c, k), g in S.groupby(["cell", "arm"]):
+        g = g.sort_values(["_wbi", "_wb", "nw_orders", "n", "fresh", "w", "sid"], kind="stable")
+        flip = int(rng.integers(2))
+        idx = g.index.to_numpy()
+        half[idx] = (np.arange(len(idx)) + flip) % 2
+    S["half"] = half
+    first = _days(P.LOG_START, P.HALF_SPLIT - timedelta(days=1))
+    second = _days(P.HALF_SPLIT, P.LOG_END)
+    out = np.empty(len(S), dtype=object)
+    for h, days in ((0, first), (1, second)):
+        w = WEEKDAY_W[[d.weekday() for d in days]]
+        idx = np.flatnonzero(half == h)
+        pick = rng.choice(len(days), size=len(idx), p=w / w.sum())
+        out[idx] = [days[i] for i in pick]
+    S["date"] = out
+    N = len(S)
+    mix = rng.random(N)
+    t = np.where(mix < 0.30, rng.normal(12.6, 1.4, N), np.where(mix < 0.80, rng.normal(20.4, 1.3, N),
+                                                                    rng.uniform(7.0, 22.5, N)))
+    start = np.clip(t * 3600, 6 * 3600, 22.75 * 3600).astype(int)
+    S["start_s"] = start
+    # render offsets: first at 0, then gaps of 12-75 seconds
+    nmax = S.n.max()
+    gaps = rng.integers(12, 76, size=(N, nmax))
+    gaps[:, 0] = 0
+    offs = np.cumsum(gaps, axis=1)
+    W.render_offsets = offs
+    last = offs[np.arange(N), S.n.to_numpy() - 1]
+    S["end_s"] = start + last + rng.integers(20, 241, size=N)
+
+
+def _age_fresh(rng, k):
+    return np.round(rng.uniform(0.6, 45.4, k), 1)
+
+
+def _age_old(rng, k):
+    return np.round(50.5 + np.exp(rng.normal(np.log(210), 0.95, k)), 1)
+
+
+def assign_tiles(W):
+    """Six tiles per served ranking: pinned watched listings at tiles 1 and 2 for the velocity boost,
+    an organically shown watched listing anywhere for the others, fresh listings (E prefers tiles
+    3 and 6), and the ordered positions."""
+    S, WL = W.S, W.WL
+    rng = P.stream("tiles")
+    N = len(S)
+    role = np.zeros((N, 6), dtype=np.int64)      # -1 new listing, >=0 watched-listing wid
+    role[:] = -1
+    fresh = np.zeros((N, 6), bool)
+    ordered = np.zeros((N, 6), bool)
+    shown = WL[WL.shown].sort_values(["sid", "bought"], ascending=[True, False], kind="stable")
+    arms = S.arm.to_numpy()
+    for sid, g in shown.groupby("sid"):
+        wids = g.wid.to_numpy()
+        if arms[sid] == Wm.B_IDX:
+            for i, w in enumerate(wids[:2]):
+                role[sid, i] = w
+        else:
+            pos = int(rng.integers(6))
+            role[sid, pos] = wids[0]
+    # fresh tiles on new-listing tiles
+    f = S.fresh.to_numpy()
+    pref_e = [2, 5, 4, 1, 3, 0]
+    for sid in np.flatnonzero(f > 0):
+        free = [p for p in range(6) if role[sid, p] < 0]
+        if arms[sid] == Wm.E_IDX:
+            order = [p for p in pref_e if p in free]
+        else:
+            order = list(rng.permutation(free))
+        for p in order[: f[sid]]:
+            fresh[sid, p] = True
+        assert fresh[sid].sum() == f[sid], (sid, f[sid], free)
+    # ordered positions
+    bought = WL[WL.bought]
+    for sid, w in zip(bought.sid.to_numpy(), bought.wid.to_numpy()):
+        p = np.flatnonzero(role[sid] == w)
+        assert len(p) == 1
+        ordered[sid, p[0]] = True
+    nw = S.nw_orders.to_numpy()
+    for sid in np.flatnonzero(nw > 0):
+        free = [p for p in range(6) if role[sid, p] < 0 and not ordered[sid, p]]
+        pick = rng.choice(free, size=nw[sid], replace=False)
+        ordered[sid, pick] = True
+    W.role, W.fresh, W.ordered = role, fresh, ordered
+    # ages at serve time
+    age = np.where(fresh, 0.0, 0.0)
+    nf = int(fresh.sum())
+    age[fresh] = _age_fresh(rng, nf)
+    newmask = (role < 0) & ~fresh
+    age[newmask] = _age_old(rng, int(newmask.sum()))
+    wmask = role >= 0
+    age[wmask] = WL.listed_h.to_numpy()[role[wmask]]
+    W.age = age
+
+
+def assign_listing_ids(W, extra_created):
+    """Listing ids are allocated in creation order. Every listing in the pack (tiles, watch lists,
+    orders) gets an id from its creation time; extra_created are creation times of order-only
+    listings, returned ids in the same order."""
+    S, WL = W.S, W.WL
+    rng = P.stream("listing-ids")
+    serve = np.array([(datetime(d.year, d.month, d.day) - EPOCH).total_seconds() for d in S.date]) + S.start_s.to_numpy()
+    # tile listings that are not watched
+    newmask = W.role < 0
+    t_new = (serve[:, None] - W.age * 3600)[newmask]
+    t_w = serve[WL.sid.to_numpy()] - WL.listed_h.to_numpy() * 3600
+    t_all = np.concatenate([t_new, t_w, np.asarray(extra_created, float)])
+    order = np.argsort(t_all, kind="stable")
+    base = 4_310_000_000 + (t_all[order] * 0.21).astype(np.int64)
+    ids = np.empty(len(t_all), np.int64)
+    gaps = rng.integers(1, 9, size=len(t_all))
+    run = np.maximum.accumulate(base + np.cumsum(gaps))
+    ids[order] = run
+    assert len(np.unique(ids)) == len(ids)
+    n1 = int(newmask.sum())
+    tile_ids = np.zeros(W.role.shape, np.int64)
+    tile_ids[newmask] = ids[:n1]
+    WL["listing_id"] = ids[n1:n1 + len(WL)]
+    wmask = ~newmask
+    tile_ids[wmask] = WL.listing_id.to_numpy()[W.role[wmask]]
+    W.tile_ids = tile_ids
+    return ids[n1 + len(WL):]
+
+
+# ------------------------------------------------------------------ orders
+
+ORDER_COLS = ["kind", "sid", "t", "channel", "session_id", "platform", "cat", "asking", "offer", "otype", "paid",
+              "delivery", "inperson", "wid", "pos"]
+
+
+def _frame(kind, sid, t, channel, session_id, platform, a, wid=None, pos=None):
+    k = len(sid)
+    return pd.DataFrame(dict(kind=kind, sid=np.asarray(sid, np.int64), t=np.asarray(t, np.int64),
+                             channel=np.asarray(channel, object), session_id=np.asarray(session_id, object),
+                             platform=np.asarray(platform, object), cat=np.asarray(a["cat"], int),
+                             asking=np.asarray(a["asking"], int), offer=np.asarray(a["offer"], int),
+                             otype=np.asarray(a["otype"], object), paid=np.asarray(a["paid"], int),
+                             delivery=np.asarray(a["delivery"], object), inperson=np.asarray(a["inperson"], bool),
+                             wid=np.full(k, -1, np.int64) if wid is None else np.asarray(wid, np.int64),
+                             pos=np.full(k, -1, np.int64) if pos is None else np.asarray(pos, np.int64)))[ORDER_COLS]
+
+
+def build_orders(W):
+    S, WL, BG = W.S, W.WL, W.BG
+    rng = P.stream("orders")
+    N = len(S)
+    day0 = np.array([(datetime(d.year, d.month, d.day) - EPOCH).total_seconds() for d in S.date], np.int64)
+    start = day0 + S.start_s.to_numpy()
+    end = day0 + S.end_s.to_numpy()
+    plat = S.platform.to_numpy()
+    sess = S.session_id.to_numpy()
+    arms = S.arm.to_numpy()
+    frames = []
+    # --- in-session orders, one per ordered tile
+    sid, pos = np.nonzero(W.ordered)
+    n = S.n.to_numpy()[sid]
+    j = (rng.random(len(sid)) * n).astype(int)
+    t = start[sid] + W.render_offsets[sid, j] + rng.integers(5, 40, size=len(sid))
+    t = np.minimum(t, end[sid] - 3)
+    w = W.role[sid, pos]
+    iw = w >= 0
+    a = {key: WL[key].to_numpy()[w[iw]] for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
+    frames.append(_frame("insession_watched", sid[iw], t[iw], np.full(iw.sum(), "carousel"), sess[sid[iw]],
+                         plat[sid[iw]], a, wid=w[iw], pos=pos[iw]))
+    nsid, npos, nt = sid[~iw], pos[~iw], t[~iw]
+    for k in range(7):
+        sel = arms[nsid] == k
+        if not sel.any():
+            continue
+        for c in range(8):
+            sc = sel & (S.cell.to_numpy()[nsid] == c)
+            if not sc.any():
+                continue
+            a = Wm.stratified_attrs(P.stream(f"insession-attrs{k}-{c}"), int(sc.sum()), P.RANKERS[k])
+            frames.append(_frame("insession_new", nsid[sc], nt[sc], np.full(sc.sum(), "carousel"),
+                                 sess[nsid[sc]], plat[nsid[sc]], a, pos=npos[sc]))
+    # --- watched listings their watcher buys later (not bought in the session)
+    later = WL[WL.intent & ~WL.bought]
+    sd = later.sid.to_numpy()
+    u = rng.random(len(later))
+    et, st = S.end_s.to_numpy()[sd], S.start_s.to_numpy()[sd]
+    clock = np.where(later.alate.to_numpy(), et + 60 + u * (86_399 - 60 - et), u * (st - 60)).astype(np.int64)
+    t = day0[sd] + later.aday.to_numpy() * 86400 + clock
+    a = {key: later[key].to_numpy() for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
+    frames.append(_frame("anyway", sd, t, Wm.LATER_CHANNELS[later.achan.to_numpy()], np.full(len(sd), None), plat[sd],
+                         a, wid=later.wid.to_numpy()))
+    # --- background orders in the 21 days either side (identical in every block copy)
+    sd = BG.sid.to_numpy()
+    u = rng.random(len(BG))
+    et, st = S.end_s.to_numpy()[sd], S.start_s.to_numpy()[sd]
+    clock = np.where(BG.late.to_numpy(), et + 60 + u * (86_399 - 60 - et), u * (st - 60)).astype(np.int64)
+    t = day0[sd] + BG.day.to_numpy() * 86400 + clock
+    oth = np.where(plat[sd] == "app", "web", "app")
+    bplat = np.where(BG.same_platform.to_numpy(), plat[sd], oth)
+    a = {key: BG[key].to_numpy() for key in ("cat", "asking", "offer", "otype", "paid", "delivery", "inperson")}
+    frames.append(_frame("bg_window", sd, t, Wm.BG_CHANNELS[BG.chan.to_numpy()], np.full(len(sd), None), bplat, a))
+    # --- other orders across the extract, away from the 43-day window around the session
+    t0 = int((datetime(P.ORDERS_FROM.year, P.ORDERS_FROM.month, P.ORDERS_FROM.day) - EPOCH).total_seconds())
+    t1 = int((datetime(P.EXTRACT.year, P.EXTRACT.month, P.EXTRACT.day) - EPOCH).total_seconds()) + 86399
+    lo_a = np.full(N, t0)
+    hi_a = day0 - P.WINDOW_DAYS * 86400            # before the start of day -21
+    lo_b = day0 + (P.WINDOW_DAYS + 1) * 86400      # from the start of day +22
+    hi_b = np.full(N, t1)
+    wa = np.maximum(0, hi_a - lo_a)
+    wb = np.maximum(0, hi_b - lo_b)
+    rate = P.BG_RATE[S.cell.to_numpy()]
+    k = rng.poisson(rate * (wa + wb) / 86400)
+    sd = np.repeat(np.arange(N), k)
+    x = rng.random(len(sd)) * (wa[sd] + wb[sd])
+    t = np.where(x < wa[sd], lo_a[sd] + x, lo_b[sd] + (x - wa[sd])).astype(np.int64)
+    a = Wm.draw_order_attrs(rng, len(sd), offer_share=P.BG_OFFER_SHARE)
+    chan = Wm.BG_CHANNELS[rng.choice(len(Wm.BG_CHANNELS), size=len(sd), p=Wm.BG_P)]
+    oth = np.where(plat[sd] == "app", "web", "app")
+    pl = np.where(rng.random(len(sd)) < 0.82, plat[sd], oth)
+    frames.append(_frame("bg_outside", sd, t, chan, np.full(len(sd), None), pl, a))
+    O = pd.concat(frames, ignore_index=True)
+    # carousel orders outside the logged session come from other, unlogged home sessions
+    m = ((O.channel == "carousel") & O.session_id.isna()).to_numpy()
+    hx = rng.integers(0, 16 ** 10, size=int(m.sum()), dtype=np.int64)
+    other = np.array([f"hc{h:010x}" for h in hx], dtype=object)
+    assert not (set(other) & set(sess))
+    O.loc[m, "session_id"] = other
+    O["listing_id"] = np.int64(-1)
+    W.O = O
+    return O
+
+
+def finish_orders(W, new_ids):
+    """Order-only listings get ids; watched listings and tiles carry theirs; orders get ids in time
+    order."""
+    O = W.O
+    WL = W.WL
+    ins = (O.kind == "insession_new").to_numpy()
+    O.loc[ins, "listing_id"] = W.tile_ids[O.sid.to_numpy()[ins], O.pos.to_numpy()[ins]]
+    wl = (O.wid >= 0).to_numpy()
+    O.loc[wl, "listing_id"] = WL.listing_id.to_numpy()[O.wid.to_numpy()[wl]]
+    need = (O.listing_id < 0).to_numpy()
+    O.loc[need, "listing_id"] = new_ids
+    assert (O.listing_id > 0).all()
+    O.sort_values(["t", "sid", "listing_id"], kind="stable", inplace=True)
+    O.reset_index(drop=True, inplace=True)
+    rng = P.stream("order-ids")
+    O["order_id"] = 30_418_000_000 + np.cumsum(rng.integers(3, 40, size=len(O)))
+    O["category"] = np.array(P.CATEGORIES, dtype=object)[O.cat.to_numpy()]
+    W.O = O
+
+
+def order_only_creation_times(W):
+    """Creation times for the listings bought outside the watch lists and tiles (before the order)."""
+    O = W.O
+    rng = P.stream("order-listing-age")
+    need = ((O.listing_id < 0) & (O.wid < 0) & (O.kind != "insession_new")).to_numpy()
+    t = O.loc[need, "t"].to_numpy().astype(float)
+    age = 3600 * (2 + np.exp(rng.normal(np.log(180), 1.0, len(t))))
+    return t - age
+
+
+def build_offers_payments(W):
+    O = W.O
+    rng = P.stream("offers")
+    rows = []
+    has = O.otype.isin(["used", "lapsed"]).to_numpy()
+    sub = O[has]
+    tt = sub.t.to_numpy()
+    lapsed = (sub.otype == "lapsed").to_numpy()
+    # accepted offers are valid for 48 hours; a lapsed one expired before the checkout
+    acc = np.where(lapsed, tt - rng.integers(49 * 3600, 140 * 3600, len(sub)),
+                   tt - rng.integers(4 * 60, 46 * 3600, len(sub)))
+    offered = acc - rng.integers(60, 20 * 3600, len(sub))
+    expires = acc + 48 * 3600
+    assert (expires[lapsed] < tt[lapsed]).all() and (expires[~lapsed] > tt[~lapsed]).all()
+    F = pd.DataFrame(dict(listing_id=sub.listing_id.to_numpy(), buyer_sid=sub.sid.to_numpy(),
+                          offered=offered, accepted=acc, expires=expires, offer_eur=sub.offer.to_numpy(),
+                          order_row=np.flatnonzero(has)))
+    F.sort_values(["offered", "listing_id"], kind="stable", inplace=True)
+    F["offer_id"] = 7_200_000 + np.cumsum(rng.integers(1, 6, size=len(F)))
+    W.F = F
+    # payments: every order not paid in person at a pickup
+    paid_mask = ~O.inperson.to_numpy().astype(bool)
+    PM = O[paid_mask][["order_id", "t", "paid", "delivery", "category"]].copy()
+    PM["captured"] = PM.t + rng.integers(3, 51, size=len(PM))
+    cap_dates = [(EPOCH + timedelta(seconds=int(x))).date() for x in PM.captured]
+    fixed = np.array([70 if d < P.TARIFF_CHANGE else 80 for d in cap_dates])
+    PM["fee_cents"] = fixed + 5 * PM.paid.to_numpy().astype(int)
+    PM["ship_cents"] = np.where(PM.delivery == "shipped",
+                                [int(round(P.SHIPPING[c] * 100)) for c in PM.category], 0)
+    PM["amount_cents"] = PM.paid.to_numpy().astype(int) * 100 + PM.fee_cents + PM.ship_cents
+    rngp = P.stream("payment-ids")
+    PM["payment_id"] = [f"pay_{v:012x}" for v in rngp.integers(16 ** 11, 16 ** 12, size=len(PM), dtype=np.int64)]
+    assert PM.payment_id.is_unique
+    W.PM = PM
+
+
+def build_records(W):
+    assign_identities(W)
+    Wm.tune_main(W)
+    assign_dates(W)
+    assign_tiles(W)
+    build_orders(W)
+    extra = order_only_creation_times(W)
+    new_ids = assign_listing_ids(W, extra)
+    finish_orders(W, new_ids)
+    import place
+    place.place_fee_cells(W)
+    build_offers_payments(W)
+    return W

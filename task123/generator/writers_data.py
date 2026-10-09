@@ -158,16 +158,22 @@ def write_grants_register(path, W):
     # Steady Ground offers
     wo = wb.create_sheet("Steady Ground offers")
     wo.append(["offer_ref", "round", "charity_no", "organisation", "offer_amount",
-               "first_instalment_for", "instalments"])
+               "first_instalment_for", "instalments", "instalment"])
     orows = []
     for (ry, key), ref in sorted(W["sgf_refs"].items()):
         o = by[key]
-        orows.append([ref, f"March {ry}", o.cc, o.name, W["offers_by_round"][ry][key],
-                      f"{ry}-06", 12])
+        amt = W["offers_by_round"][ry][key]
+        orows.append([ref, f"March {ry}", o.cc, o.name, amt, f"{ry}-06", 12, int(round(amt / 12.0))])
     orows.sort(key=lambda r: r[0])
     for r in orows:
         wo.append(r)
-    for col, wdt in zip("ABCDEFG", [14, 12, 11, 44, 13, 20, 11]):
+    for row in wo.iter_rows(min_row=2, min_col=5, max_col=5):
+        for cell in row:
+            cell.number_format = "#,##0"
+    for row in wo.iter_rows(min_row=2, min_col=8, max_col=8):
+        for cell in row:
+            cell.number_format = "#,##0"
+    for col, wdt in zip("ABCDEFGH", [14, 12, 11, 44, 13, 20, 11, 11]):
         wo.column_dimensions[col].width = wdt
     wb.save(path)
     return len(rows)
@@ -299,6 +305,8 @@ def write_payrun(path, W):
     for p in W["payments"]:
         if not (dt.date(2018, 7, 1) <= p["value"] <= dt.date(2026, 9, 30)):
             continue
+        if p["prog"] == "SGF":
+            continue            # paid from the Fund's own account, outside the finance system's run
         o = by[p["org"]]
         y, m = p["inst_for"]
         batch = f"B{p['value'].strftime('%y%m%d')}"
@@ -358,7 +366,7 @@ def write_survey(path):
 def write_ratings(path, W):
     r = np.random.default_rng([SEED, 42])
     rows = []
-    reviewers = ["RA", "TH", "LB", "TH", "RA"]
+    reviewers = ["MG", "TH", "LB", "TH", "MG"]
     for o in sorted(W["orgs"], key=lambda o: o.cc):
         if o.role == "exit":
             continue

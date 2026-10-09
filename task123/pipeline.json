@@ -2,11 +2,11 @@
   "task": "task123",
   "domain": "nonprofit-grant-making",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "solver round 1",
+  "stage": 3,
+  "stage_name": "hardened",
   "updated": "2026-10-09",
-  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, gives back every offer and every rate in Ledgerwood's six March-round packs and all but ten non-offered rows, which it writes off as noise, and strikes the offers at a rate at least 1.4 times the answer's on a set that differs by ten names, because it scores the 32 grantees whose 2025-26 annual return was not yet on the register on twelve months to June 2026 built with their management fourth quarter, when the standing method takes a year's fourth quarter only from the filed annual return and stops those grantees' twelve months at the quarter before that year-end (December 2025 for a 31 March balance date, March 2026 for 30 June).",
-  "harden_loops": 0,
+  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, recovers the step-back from Ledgerwood's residue rows or the twelve-month identity on the register as held, gives back all 797 published rows, every offer and every rate, and strikes the offers at 17.76 cents on 14 names, because it scores the 14 grantees balancing at 31 March whose 2025-26 annual return was not on the register on twelve months to December 2025, reading rule 4.1's census before as a year back the way every March round had it, when rule 2 makes 31 March 2026 the census before the first September census and those twelve months end before it, so the answer scores 132 grantees and strikes 42.55 cents on nine.",
+  "harden_loops": 1,
   "solver_rounds": [
     {
       "label": "round 1, plain",

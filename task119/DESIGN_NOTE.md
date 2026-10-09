@@ -713,6 +713,140 @@ the transfer audit (csv, referee); a short G unit note; correspondence (eml); th
 units' daily returns and an ambulance handover extract. Stage 3 consolidates into the 10-to-19 band in the organisations' own idiom,
 without merging any device's two organs into one file and without one file holding two primaries' documentary organs.
 
+## Build record
+
+Stage 3, 2026-10-09. Generator `task119/generator/`, seed 119: `build.py` (entry point), `world.py` (day roles and every
+designed wait on the clock), `sim.py` (each unit's events into stays), `people.py` (referrals, deaths, episodes), `legacy.py`
+(migrated rows, level entries, parallel-run copies, bed-episode rows, transfer audit, key links), `corpus.py` (review
+records), `docs.py` and `texts.py` (papers), `golden.py` (every figure from the shipped files), `checks.py` (assertions).
+`verify.py` is the independent verifier (DuckDB joins, pandas UTC conversion, numpy census over islands of contiguous rows;
+imports nothing from the generator). `reproduce.py` builds twice and compares bytes.
+
+**Gates.** Generator: 120 assertions, 0 failed, on the build into the task folder. Verifier: 22 claims, 0 failed, on
+`task119/target`. Two consecutive builds into the scratchpad byte-identical (20 files: 19 under `target/` plus
+`metadata.json`, file times equal), and the task folder's pack byte-identical to them. Input gates: 19 files; 8 formats (csv,
+docx, eml, parquet, pdf, sqlite, txt, xlsx); referral log 30,259 rows; review database a 12.7 MB SQLite file with five tables;
+distractors `level2_unit_bed_return_0800_2025-26.csv` and `ambulance_handovers_hourly_2025-26.csv`, named in `metadata.json`
+only and each asserted unused (every figure unchanged with it deleted). `leak.py` on a scratch copy: REVIEW only (sweep 4,
+generic domain words in five papers), no LEAK, container metadata clean.
+
+**The answer.** STN (D), Stennock University Hospitals NHS Foundation Trust: 27 deaths a year of review could confirm;
+runner-up PRW (G) 15; gap 12 deaths; margin 1.80x. D ranks 4th on the natural pipeline, 2.07x behind E.
+
+| Rung | Leader | Runner-up | Margin |
+|---|---|---|---|
+| 0 | LAT (E) 56 | RIS (A) 44 | 1.27x |
+| 1 | RIS (A) 44 | BRK (C) 35 | 1.26x |
+| 2 | BRK (C) 34 | PRW (G) 4 | 8.50x |
+| 3 | PRW (G) 15 | RIS (A) 2 | 7.50x |
+| 4 | STN (D) 27 | PRW (G) 15 | 1.80x |
+
+Position: D 4th on rung 0, 3rd of the four trusts holding level-3 beds on rung 1, last on rungs 2 and 3; thinnest margin
+1.257 (rung 1). Grid: every cell names the trust the design table names; the 08:00/network/allocation-ignored cell's
+runner-up is D 22 (C 34, 1.55x), not E 21; the mixed 08:00 reading names C 34 over E 21. Clean-data test (hourly return):
+rung names G 15, call D, naive E. Lens swap: no referral-log column or pair reproduces the confirmable counts.
+
+**The asks (record, July 2023 to June 2026; patients / deaths / confirmable).** A 438 / 126 / 8; B 104 / 29 / 0;
+C 351 / 104 / 5; D 275 / 80 / 80; E 559 / 165 / 0; F 140 / 40 / 6; G 221 / 63 / 46; H 75 / 22 / 3; total 2,163 / 629 / 148.
+By four-quarter year: 695 / 204 / 54, 737 / 212 / 50, 731 / 213 / 44 (D 25, 28, 27; G 14, 17, 15). Confirmable split:
+empty-bed waits A 6, C 1, F 6, G 45, H 3; allocation waits A 2, C 4, D 80, G 1. The latest four quarters match the stage-2
+table trust by trust (731 / 213 / 44).
+
+**Device layer (measured).** Natural path (every device mishandled): A 445 / 131 / 13, B 109 / 34 / 0, C 356 / 109 / 8,
+D 280 / 87 / 87, E 567 / 168 / 0, F 145 / 45 / 0, G 226 / 68 / 53, H 80 / 27 / 0, total 2,208 / 669 / 161. Census path 3c,
+devices handled / not: A 6 / 6, C 1 / 2, D 0 / 0, F 6 / 0, G 45 / 47, H 3 / 0, total 61 / 55. Each device alone moves its
+designed deltas exactly (asserted per trust per figure); no subset of the 64 lands a touched figure or total on its golden;
+no census-path subset lands on the golden at A, C, D or G; zero device and hazard rows inside the main call's declared
+population. Over-correction stops (totals): DV1 every legacy time shifted -32 / -9 / -8; DV2 temporary keys dropped
+-10 / -10 / -6; DV3 F and H level 3 throughout 3c +46 (F +30, H +16; the call is unchanged); DV4 level changes dropped
+-9 / -3 / 0; HZ1 stays within 24 hours merged 3c -2; HZ2 one referral per patient per day -6 / -2 / 0. Hygiene battery
+clean on the natural path. Pair simulation 37.1; every single and double catch 37.1; thinnest triple (DV1, DV2, DV4) 52.6.
+Referee: 3,419 transfers, verified keys, local decision times, 36 per cent of long waits. Spans from the golden's code path:
+3a 8 files / 14 columns, 3b 9 / 16, 3c 12 / 24.
+
+**The corpus.** The filed rule reproduces 34 of 34 (412 confirmed, 41 attempts, 7 zero reviews retried on a doubled sample
+and zero again). 216 rules swept; the nearest rival (requested level 3) misses 19 reviews; every one-directional rival
+misses the 412 total by 14.8 per cent or more (deaths before assignment dropped: 351). Every widening rival is non-zero on
+all seven zero reviews. Blind: no reviewed unit was ever full, so all five constructions equal the rule on every review.
+Twin pair Ormerleby 2022 and Selarwell 2023: district general, 14 beds, 1,184 referrals, screen 71, 8.6 beds occupied at
+08:00, 96 deaths; confirmed 24 and 11; the receipt clock gives both 24. Feningby 2021 counts three post-discharge deaths
+inside 30 days and not five between days 31 and 60.
+
+**Deviations from stage 2, each forced at build.**
+
+1. Names, after the H21 sweep (a 5,617-place GB gazetteer, an NHS organisation list and every other card's invented names;
+   edit distance two or containment fails): region Wenmarsh; A Ristenholm (RIS), B Tannerby (TAN), C Brackenford (BRK),
+   D Stennock (STN), E Lathingbury (LAT), F Ellerdyke (ELL), G Prideswick (PRW), H Pellowham (PEL); provider Thornleholm
+   Clinical Review LLP; corpus regions Haskminster, Isterdale, Tevermouth, Morrowcombe; the twin pair Ormerleby and
+   Selarwell (were Kellow Bridge and Sandmere); the window case Feningby (was Fenwold).
+2. Nineteen files. One CCRS migration specification carries DV4's documentary organ with the DV1 and HZ1 hazards' (one
+   primary per file holds); the go-live notice, the network manager's notes and G's weekend rule sit in the correspondence;
+   provenance and dictionary are one field guide. Spans fall from the planned 10 / 12 / 15 to 8 / 9 / 12, at the skill floor.
+3. HZ2 at D is four duplicated deaths, not two: with two, {DV2, DV4, HZ2} cancelled on the 3c total. HZ2 counts per
+   referral row on 3b and 3c alike, so the natural path is 2,208 / 669 / 161, not 2,208 / 667 / 157.
+4. The capacity report covers April 2024 to June 2026, not 36 months (`## Tried and rejected`).
+5. C runs 16 staffed beds day and night, so one staffed figure per day holds and physical equals staffed.
+6. The 08:00 return is read on the decision's date; no long wait has its decision between midnight and 08:00, so the
+   latest-return reading converges.
+
+## Write-up and ship checks
+
+Stage 3 close, 2026-10-09. `generator/golden.py` run as a script reads only `target/` (the referral log, unit stays,
+bed returns, episodes, register, CCRS level entries and key links) and writes the three deliverables into `golden/`:
+`external_review_placement_2027-28.docx` (the board paper: the call, 27, Prideswick at 15, a gap of 12; why each other
+trust is not it; the record totals; the chart), `review_placement_workings.xlsx` (Record by trust, Placement year,
+Notes) and `review_placement_by_trust.png` (deaths inside the remit by trust, July 2025 to June 2026, the confirmable
+part shaded, ordered by it, the gap bracketed, titled on Stennock). It prints the critical components and the rungs,
+and asserts the paper's worded rules on the record: all 92 of Stennock's long waits in the placement year are
+allocation waits and fall on weekdays, no Stennock weekend referral waited more than four hours, no other trust's
+long wait holds a planned admission outside an empty-bed wait, every Brackenford long wait began at 18:00 or later
+with its unit full, and Brackenford's 08:00 return showed an empty staffed bed on 206 of 365 mornings.
+
+- **Figures.** Every figure in `submission.md` and the goldens recomputes from the engine the checks use: rungs 56,
+  44, 34, 15, 27; the placement year 731 / 213 / 44; the record 2,163 / 629 / 148 with the eight trust rows as the
+  build record states; Stennock 25, 28, 27 and Prideswick 14, 17, 15 by year. The chart's zero-confirmable trusts tie,
+  so block 4 states the order only for the three with a confirmable part.
+- **Golden realism.** Board-paper identifying block, a title stating the finding, lopsided sections, the decision in
+  prose and the trusts in a table with a source line, one footnote on the death linkage and its completeness, page
+  footer; workbook with named sheets, frozen panes, set widths, number formats, a tied total row and a Notes sheet;
+  chart with a deliberate two-tone palette (validated blue against a neutral remainder), direct labels and the gap
+  bracket. Figures frozen before the pass and unchanged after it (printed output identical across four runs).
+- **Container.** `golden.py` scrubs both OOXML files through `writers.scrub_ooxml` (producer "Quality surveillance,
+  Wenmarsh Regional Health Board", stamped 2 October 2026, fixed entry times) and sets the file times; the H1 audit
+  reads `golden/` and `target/` clean, and two golden runs are byte-identical.
+- **Reduce-house-fixes.** H4: `golden/` holds exactly the three named files, one `submission.md` and one `prompt.md`
+  in the tree. H6: the rules above are back-tested in code. H8: every file, column and clause the write-up and
+  paper cite resolves (WRHB/26/097 sections 3, 4 and 5). H3: Ristenholm's two empty-bed deaths are named in block 1
+  rather than folded into "units full".
+- **Pack rebuild.** The correspondence sign-offs now carry a `-- ` signature delimiter (see `## Tried and rejected`);
+  the rebuild passes 120 of 120 assertions, the verifier 22 of 22 claims, and two scratch builds are byte-identical
+  to each other and to the task folder's pack. No figure moved.
+- **Surface screen** (`guard.py surface`): no byte-identical file, same-seed table, shared name or prompt wording
+  promoted; the five promoted pairs are on the mechanism layer only (task118 back to back on gap and decision type;
+  task25, task26, task28 and task38 on gap, pattern and decision type), which no rename or regeneration moves. Each
+  is answered by a differentiation line on the card (task118's added at this stage). People in the cut pack: the six
+  drawn personas and nobody else.
+- **Heart check** (`guard.py heart task119`): **WARN**, exit 0. Nearest heart text 0.06 (task89 lineage), under the
+  WARN line; the WARNs are repeat.gate_g (task121, task122) and repeat.decision (task122), answered under `## Guard`.
+  Card updated with the answer, its source, the spine's 30,259 rows, the deliverables and the opening move;
+  `guard.py validate` 119 cards, 0 invalid.
+
+## Leak review
+
+`leak.py task119 --asof 2026-10-02`: **REVIEW**, no LEAK; sweeps 1 to 3 and 5 to 11 clean. The five REVIEW lines are
+sweep 4 (generic stump-paragraph words), each read in full:
+
+- `accn_board_paper_2023-11-21_level3_capacity.pdf`: the 2023 consolidation paper (Ellerdyke to level 2, Pellowham's
+  winter beds); it says nothing about planned admissions, waits or Stennock, and is DV3's documentary organ.
+- `ccrs_migration_export_specification_rel2.3.pdf`: the legacy export's clock, level and bed-episode semantics, the
+  ask layer's organs; no sentence touches the platform era or the order in which a unit fills.
+- `rds_apc_extract_specification.txt`: the episode extract's fields and its temporary-key linkage, DV2's organ;
+  "admission" there is the hospital spell, not the unit.
+- `review_terms_of_reference_2027-28.docx`: the remit's scope, judging rule and methodology note, the filed pins; it
+  names no planned admission, occupancy or order of admission.
+- `wenmarsh_acc_extract_field_guide.pdf`: the field definitions, where "planned" sits only in the admission_type
+  code list beside the five other codes and "staffed" in beds_open; it states no rule about either.
+
 ## Tried and rejected
 
 - v1 (first draft, 2026-10-08, never registered): chains of spells linked across trusts on the regional patient key at a
@@ -737,3 +871,19 @@ without merging any device's two organs into one file and without one file holdi
   contradicted the stump sentence approved at checkpoint A ("through every one of D's long waits D's unit was full only because it
   was admitting planned post-operative patients"). D's long waits now fall only on weekdays during the elective lists (27 of 27),
   and C's morning count rose to 34 so the 08:00-plus-allocation cells keep C ahead of D by 1.26x.
+- Stage 3, the provisional names: Ostlebury, Brenhythe, Lessington, Gorrington, Pevenham, Kellow Bridge and Sandmere sat
+  within two edits of, or contained, a real place (Owslebury, Hythe, Essington, Dorrington, Pavenham, Kelloe, Tangmere);
+  Corringwell contained another card's Orrin and Fenwold sat two edits from another card's Keswold Road. Renamed from a
+  screened pool.
+- Stage 3, a 36-month capacity report: its legacy months recounted from the shipped log would miss the report by exactly
+  the UTC-clock and parallel-run rows, verifying both repairs for free, and its 2023-24 occupancy rows would list the
+  Ellerdyke and Pellowham level-3 units in a main-path paper. Cut to April 2024 onwards.
+- Stage 3, HZ2 at two duplicated deaths for D: DV2 (-6), DV4 (+4) and HZ2 (+2) cancelled to zero on the confirmable total.
+  Four duplicated deaths at D.
+- Stage 3, separate organ files (legacy form guide, legacy export specification, legacy unit export note, go-live notice,
+  G unit note, provenance note): 23 files, over the band. Consolidated to 19 with one primary's documentary organ per file.
+- Stage 3, a CCRS specification stating every CCRS time as UTC with the unit rows inside it: it would read the legacy
+  bed-management rows as UTC too and open a fork on the legacy census. The bed-management feed is described as local time.
+- Stage 3, email sign-offs as a bare first name above the signature block: the persona sweep in `guard.py surface`
+  read "Maria Maria", "Diana Diana", "Andrea Andrea" and "Sharon Sharon" across the blank line and blocked on
+  people.inside. A `-- ` signature delimiter now separates the sign-off from the signature, in `docs.thread`.

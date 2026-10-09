@@ -21,7 +21,7 @@
     {
       "path": "charger_status_events_2026.csv",
       "format": "csv",
-      "bytes": 68334
+      "bytes": 72518
     },
     {
       "path": "city_fleet_roster.csv",
@@ -31,7 +31,7 @@
     {
       "path": "civic_center_campus_electric_statements_2024-2026.csv",
       "format": "csv",
-      "bytes": 4739
+      "bytes": 4865
     },
     {
       "path": "civic_center_ev_service_agreement_draft.docx",
@@ -39,9 +39,14 @@
       "bytes": 38090
     },
     {
+      "path": "curbline_courtesy_sessions_civic_decks_2024-2026.csv",
+      "format": "csv",
+      "bytes": 52160
+    },
+    {
       "path": "curbline_export_field_notes.txt",
       "format": "txt",
-      "bytes": 2254
+      "bytes": 2338
     },
     {
       "path": "deck_panel_circuit_schedule.csv",
@@ -51,12 +56,17 @@
     {
       "path": "deck_panel_meter_log_2024-2026.xlsx",
       "format": "xlsx",
-      "bytes": 9017
+      "bytes": 9039
     },
     {
       "path": "deck_submeter_nameplates.csv",
       "format": "csv",
       "bytes": 446
+    },
+    {
+      "path": "ev_permit_charging_statements_2026.csv",
+      "format": "csv",
+      "bytes": 49620
     },
     {
       "path": "ev_permit_registry.csv",
@@ -76,7 +86,7 @@
     {
       "path": "fleet_card_ev_transactions_2024-2026.csv",
       "format": "csv",
-      "bytes": 795555
+      "bytes": 836544
     },
     {
       "path": "gateway_b_sessions_jan-apr2024.csv",
@@ -96,7 +106,7 @@
     {
       "path": "parking_services_data_sources.txt",
       "format": "txt",
-      "bytes": 3804
+      "bytes": 4286
     },
     {
       "path": "permit_vehicle_checks.csv",
@@ -111,12 +121,12 @@
     {
       "path": "session_intervals_2024-2026.parquet",
       "format": "parquet",
-      "bytes": 2391145
+      "bytes": 2577058
     },
     {
       "path": "settled_sessions_2024-2026.csv",
       "format": "csv",
-      "bytes": 11715513
+      "bytes": 13504144
     },
     {
       "path": "station_register.csv",

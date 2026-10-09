@@ -70,7 +70,8 @@ def write_round_rules(path):
                              "3.3 An organisation is scored once, whatever the number of grants it holds with "
                              "the Trust."]),
         ("4 The screen", ["4.1 For each organisation the screen compares its twelve-month income at the census "
-                          "with the twelve months before.",
+                          "with the twelve months before. Twelve-month income at a census is for twelve months "
+                          "ending on or after the census before it.",
                           "4.2 The fall is the twelve months before less twelve-month income. It is stated in "
                           "dollars and as a percentage of the twelve months before.",
                           "4.3 An organisation whose fall is 10 per cent or more is offered. An organisation "
@@ -86,7 +87,9 @@ def write_round_rules(path):
                                    "round does not change an organisation's screen or its offer."]),
         ("6 The pot", ["The trustees set the pot for each round in the annual budget."]),
         ("7 Payment", ["Offers are paid in twelve monthly instalments. The first instalment is for June after a "
-                       "March census and for December after a September census."]),
+                       "March census and for December after a September census. Each instalment is paid on the "
+                       "20th of the month before the month it is for, or on the Friday before when the 20th falls "
+                       "at a weekend."]),
         ("8 Approval", ["The head of grants puts each round to the trustees. The trustees approve the rate and "
                         "the offers. An offer is made to the organisation, not to a grant, and is not "
                         "transferable."]),
@@ -111,7 +114,7 @@ def write_budget_minute(path):
             "line. The head of grants confirmed the September round would come to the November meeting."),
           P("6.2 <b>Resolved</b> that the 2026-27 budget be approved as tabled, with grants expenditure as follows:")]
     tbl = Table([["Operating grants", "$7,450,000"], ["Project grants", "$310,000"],
-                 ["Steady Ground Fund, September 2026 round", "$820,000"],
+                 ["Steady Ground Fund, September 2026 round", "$560,000"],
                  ["Steady Ground Fund, March 2027 round", "to be set at the February 2027 meeting"],
                  ["Grants administration and data", "$265,000"]], colWidths=[105 * mm, 55 * mm])
     tbl.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 9.5),
@@ -131,22 +134,21 @@ def write_notice(path):
           P("From the return for the quarter ending 31 December 2024 the quarterly financial return changes in "
             "three ways. Your financial year and the year-to-date basis of the return do not change."),
           P("1 Government grants and contracts", h2),
-          P("Income under contracts with central or local government, which you have reported inside "
-            "‘Fees, sales and service contracts’ and shown on the memo line ‘of which government "
-            "service contracts’, is now reported with government grants on one line, ‘Government grants "
-            "and contracts’. ‘Fees and sales’ then holds fees and sales from everyone else."),
+          P("‘Government grants’ becomes ‘Government grants and contracts’ and keeps its code. Report income "
+            "under contracts with central or local government on it. ‘Fees, sales and service contracts’ "
+            "becomes ‘Fees and sales’."),
           P("2 Money from the Trust", h2),
           P("‘Grants from non-government sources’ now carries a memo line, ‘of which received from "
-            "Ashworth Pascoe Trust’. Count Trust money in the quarter it reaches your bank account."),
+            "Ashworth Pascoe Trust’."),
           P("3 Last year's figures", h2),
           P("The return now shows last year's figures for the same period beside this year's, under the new "
             "lines. They are shown for information."),
           P("Line codes", h2)]
     rows = [["Until the September 2024 return (QFR-16)", "From the December 2024 return (QFR-24)"],
             ["TOT_INC  Total income", "TOT_REV  Total revenue"],
-            ["GOV_GRT  Government grants", "GOV_GRC  Government grants and contracts"],
+            ["GOV_GRT  Government grants", "GOV_GRT  Government grants and contracts"],
             ["FEE_SVC  Fees, sales and service contracts", "TRD_SAL  Fees and sales"],
-            ["FEE_SVC_GOV  of which government service contracts", "now inside GOV_GRC"],
+            ["FEE_SVC_GOV  of which government service contracts", "not on the new form"],
             ["DON_BEQ  Donations and bequests", "DON_BEQ  Donations and bequests"],
             ["GRT_OTH  Other grants and sponsorship", "GRT_NGO  Grants from non-government sources"],
             ["", "GRT_NGO_APT  of which received from Ashworth Pascoe Trust"],
@@ -240,7 +242,7 @@ A quarter's record is its own return.
 
 Line codes, QFR-16: TOT_INC total income; GOV_GRT government grants; FEE_SVC fees, sales and service contracts; FEE_SVC_GOV of which government service contracts (memo, inside FEE_SVC); DON_BEQ donations and bequests; GRT_OTH other grants and sponsorship; INV_INC investment income; OTH_INC other income.
 
-Line codes, QFR-24: TOT_REV total revenue; GOV_GRC government grants and contracts; TRD_SAL fees and sales; DON_BEQ donations and bequests; GRT_NGO grants from non-government sources; GRT_NGO_APT of which received from Ashworth Pascoe Trust (memo, inside GRT_NGO); INV_REV investment revenue; OTH_REV other revenue.
+Line codes, QFR-24: TOT_REV total revenue; GOV_GRT government grants and contracts; TRD_SAL fees and sales; DON_BEQ donations and bequests; GRT_NGO grants from non-government sources; GRT_NGO_APT of which received from Ashworth Pascoe Trust (memo, inside GRT_NGO); INV_REV investment revenue; OTH_REV other revenue.
 
 Short forms (QFR-16S, QFR-24S): the total line, DON_BEQ, and OTH_INC or OTH_REV for all other income. A line the form does not carry was not reported.
 
@@ -260,7 +262,7 @@ Memo lines are part of the line above them and are not added to the total.
 | annual_amount | Annual amount for the current term. |
 | status | Active or Ended. |
 
-Variations lists each renewal with its effective date and the annual amount before and after. Steady Ground offers lists every offer made in a round, with the month its first instalment pays for.
+Variations lists each renewal with its effective date and the annual amount before and after. Steady Ground offers lists every offer made in a round, with the month its first instalment pays for and the monthly instalment; the twelfth instalment carries any balance.
 
 ## charities_register_returns_extract (register match)
 
@@ -279,7 +281,7 @@ One row per annual return received by Charities Services for an organisation in 
 
 ## trust_payment_run (Trust bank payments)
 
-One row per payment line from the finance system.
+One row per payment line in the grants payment run, from the finance system.
 
 | Field | Meaning |
 |---|---|
@@ -287,9 +289,9 @@ One row per payment line from the finance system.
 | batch | Payment batch, named by its date. |
 | value_date | Date the payment reached the payee's bank account. |
 | charity_no, payee | The organisation paid. |
-| grant_ref | The operating grant, project grant or Steady Ground offer the payment is made under. |
-| programme | Operating grant, Project grant or Steady Ground Fund. |
-| instalment_for | The month the instalment pays for under the grant or offer letter. |
+| grant_ref | The operating or project grant the payment is made under. |
+| programme | Operating grant or Project grant. |
+| instalment_for | The month the instalment pays for under the grant letter. |
 | amount | Whole New Zealand dollars. |
 | payment_status | paid, or returned: the payee's bank returned the payment and it was reissued. |
 | reissue_of | For a reissue, the payment_id it replaces. |
@@ -362,7 +364,7 @@ This folder is a constructed case. The Ashworth Pascoe Trust, its Steady Ground 
 | screen_cutover_standard_2026.docx | Cutover standard for the in-house screen | Version 1.0, 18 May 2026 | Data team document |
 | trustees_budget_minute_2026-27_extract.pdf | Extract of the trustees' minute of 16 June 2026 | Item 6, the 2026-27 budget | Copy supplied by the finance manager |
 | portal_form_change_notice_2024-11.pdf | Notice to grantees of the December 2024 return changes | Issued 12 November 2024 | Copy of the portal notice |
-| trust_payment_run_2018-07_to_2026-09.csv | The Trust's payments to grantees ({rows_info['payrun']:,} rows) | Value dates 1 July 2018 to 30 September 2026 | Finance system export, 7 October 2026 |
+| trust_payment_run_2018-07_to_2026-09.csv | The Trust's grant payments to grantees ({rows_info['payrun']:,} rows) | Value dates 1 July 2018 to 30 September 2026 | Finance system export, 7 October 2026 |
 | warehouse_field_guide.md | Field meanings for the warehouse extracts | As at 6 October 2026 | Data team document |
 | grants_team_thread_oct2026.txt | Grants team messages about the round | 6 and 7 October 2026 | Message export, 8 October 2026 |
 | canterbury_community_income_survey_2025.xlsx | Canterbury Funders' Data Group community sector income survey 2025 | Financial years ending in 2025 | Copy of the published workbook |

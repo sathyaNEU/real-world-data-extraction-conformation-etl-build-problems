@@ -821,3 +821,23 @@ passes (the call closes the context, the notebook opens on that answer, each lat
   because replay and per-render weights both named A, so the two refused estimators were one rung. Split by giving
   the logger's D allocation to the pickup cities (replay over the render rows names D) and A its gain in long
   sessions (render weights name A); every leader is still a different policy.
+- Build stage, 2026-10-09, the design's render-weights figures for B (8.31 in-session, 7.70 kept): infeasible.
+  With B's session-weighted borrowing at 4.73, the render-weighted borrowing cannot fall below 4.73 x 150,400 /
+  404,990 = 1.76 even with every borrowed order in a single-render session, so B's render-weighted kept could
+  not exceed 6.55 and the render/eight-cells/kept grid cell would not name B by 1.15x over E. Repaired in the
+  data rather than the ladder: B's added new-listing orders rise with session length in the new-buyer cells, so
+  B's render-weighted in-session figure is about 9.0 and its render-weighted kept about 7.0 (1.20x over E), and
+  A's render-weighted figure rises to about 11.0 to keep rung 1's margin at 1.22x over B.
+- Build stage, 2026-10-09, the design's 90 per cent bound check (a bound above zero passes B, D and E and fails F):
+  dropped. On the kept basis every policy's per-session outcome includes three weeks of orders, so a delta-method
+  bound straddles zero for every policy and the sentence would be false; the charter's conditions are point rules
+  and the charter says so, which is the closure, and no assertion claims a variance result.
+- Build stage, 2026-10-09, organic watched-listing exposure for the five rankers that do not read saves (the design's
+  "plus 0.03 of organic watched exposure" and borrowed 0.06 to 0.30 for A, C, D, E, F): dropped. Route 1 and route 2
+  agree to the order and to the cent only if each (cell, ranker) group's in-session watched purchases are a
+  multiple of eight with five in eight bought anyway; at an organic purchase rate of 0.1 to 2.3 per 1,000 a group
+  of 400 to 3,000 sessions can only hold 0 or 8, so one octet put 3 borrowed orders per 1,000 into a single cell
+  (F, web 30-179) and erased F's young-to-old spread that the restatement device needs. Now only the velocity
+  boost's build shows a buyer's watched listings (every other ranker, archived ones included, draws from a pool
+  that leaves them out, which is also why no archived test could see the borrowing); the other five policies' kept
+  and in-session figures are equal, and the decomposition applied to B alone files E at 5.7, a cracker.

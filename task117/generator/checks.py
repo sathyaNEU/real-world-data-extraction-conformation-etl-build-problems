@@ -129,6 +129,14 @@ def main_call(a: Analysis, r: dict) -> dict:
           out["rung5_rec_at"], [round(x, 1) for x in out["rung5_rec_split"]])
     ck("A43 rung 4 record by record: own-date cars, at least 20 per cent above the answer and filed apart from rung 5",
        r4 >= 1.20 * ans and nearest5(r4) not in (nearest5(r5), 130, 150), (r4, iso_local(rec["percar26"]["at"])))
+    ld4 = a.rec_loads["percar26"]
+    j4 = (rec["percar26"]["at"] - GRID_T0) // QH
+    out["rung4_rec_at"] = iso_local(rec["percar26"]["at"])
+    out["rung4_rec_split"] = (GROWTH * ld4["CCN"][j4], GROWTH * ld4["CCS"][j4])
+    ck("A44 rung 4 record by record is set where rung 4 on charges is, at 12:00 on 17 February 2026, and its North Deck "
+       "load there is the same (115.136 kW): the records the run split add to South",
+       out["rung4_rec_at"] == "2026-02-17T12:00:00-08:00" and near(out["rung4_rec_split"][0], out["rung4_split"][0], 1e-6)
+       and out["rung4_rec_split"][1] > out["rung4_split"][1] + 10, out["rung4_rec_split"])
     ck("A22 rung figures all different when filed (410, 310, 105, 100, rung 4, 155, 130)",
        len({nearest5(v) for v in (out["rung0"], out["rung1"], out["rung2"], out["rung3"], r4, r5, ans)}) == 7
        and [nearest5(v) for v in (out["rung0"], out["rung1"], out["rung2"], out["rung3"], r5, ans)]
@@ -332,6 +340,18 @@ def charges(a: Analysis) -> dict:
     out["long_split_share"] = float((long26["n_rec"] == 2).mean())
     ck("S08 the run closes most of the binding days' long sessions (at least 70 per cent are pairs)",
        out["long_split_share"] >= 0.70, out["long_split_share"])
+    # the over-merge (every same-day record of one permit or card at one station as one block from the first start)
+    # also joins the genuine replugs; it fails the statements (S06) and converges on the call
+    r26 = a.rec26.copy()
+    r26["who"] = r26["permit_no"].where(r26["permit_no"] != "", r26["fleet_card"])
+    om = r26.sort_values("start", kind="mergesort").groupby(["station_id", "who", "day"], sort=False).agg(
+        start=("start", "min"), energy=("energy", "sum"), garage=("garage", "first"), car27=("car27", "first"))
+    om = om.reset_index(drop=True)
+    mo, mc = a.monthly(a.load(om, np.minimum(11.5, om["car27"]))), a.monthly(a.loads["percar"])
+    out["overmerge_blocks"] = len(om)
+    ck("S09 the over-merge converges on the call: the answer, its quarter-hour and all twelve months are unchanged",
+       len(om) < len(a.pop26) and all(abs(mo[m][0] - mc[m][0]) < 1e-9 and mo[m][1] == mc[m][1] for m in range(1, 13)),
+       (len(om), len(a.pop26)))
     return out
 
 

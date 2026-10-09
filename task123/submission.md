@@ -3,54 +3,49 @@
 ## Tags
 
 **Domain:** Nonprofit & Grant-making (grantee financial health: a community trust's stabilisation offers scored on its grantees' falls in income).
-**Analytical objective:** Data Extraction & Conformation (ETL) (versioned quarterly grantee returns, dual-grant filings, a form revision and a charities register match conformed into one screen that reproduces the bureau's published runs).
+**Analytical objective:** Data Extraction & Conformation (ETL) (versioned quarterly grantee returns, dual-grant filings, a form revision, a charities register match and an offers schedule conformed into one screen that reproduces the bureau's published runs).
 
 ## 1. Final Recommendation
 
-**Strike the September 2026 Steady Ground offers at 27.47 cents per dollar of fall: 14 offers totalling $819,939 of the $820,000 pot.**
+**Strike the September 2026 Steady Ground offers at 42.55 cents per dollar of fall: 9 offers totalling $559,969 of the $560,000 pot.**
 
-The rate comes from the screen that gives back all 797 rows of Ledgerwood's six March runs. Not the rate from twelve months to June 2026 built on management fourth quarters, which scores grantees whose annual return was not yet on the register and misses Ledgerwood's rows wherever a grantee's annual return had not reached the register by a March census. Not the rate from the latest versions in today's portal, which uses restatements accepted after a census and misses published offers and rates. Not one row per grant return, which scores dual-grant organisations twice against rule 3.3. Not the filed financial years on the register, which match almost none of the published twelve-month figures.
+The rate comes from the screen that gives back all 797 rows of Ledgerwood's six March runs, read with rule 4.1 against 31 March 2026, the census before this one. Not the screen that also scores the 14 grantees balancing at 31 March on twelve months to December 2025, which end before that census. Not the rate from twelve months to June 2026 built on management fourth quarters, which scores grantees whose annual return was not yet on the register and misses Ledgerwood's rows wherever a return had not reached the register by a March census. Not the rate from the latest versions in today's portal, which uses restatements accepted after a census. Not one row per grant return, which scores dual-grant organisations twice against rule 3.3. Not the filed financial years on the register, which match almost none of the published twelve-month figures.
 
 ## 2. Critical Components
 
 1. The in-house screen gives back **797 of 797** published rows, every offer and all six rates of Ledgerwood's March runs
-2. **31** scored grantees had no 2025-26 annual return on the register at 30 September 2026, so their twelve months end at **December 2025** (31 March balance date) or **March 2026** (30 June)
-3. **146** grantees are scored and **14** fall by 10 per cent or more
-4. The 14 offers total **$819,939**, leaving **$61** of the **$820,000** pot in the Fund
+2. Twelve-month income must end on or after **31 March 2026** (rules 2 and 4.1), so the **14** grantees balancing at 31 March with no 2025-26 annual return on the register, whose twelve months stop at **December 2025**, are not scored, while the **17** balancing at 30 June are scored to **March 2026**
+3. **132** grantees are scored and **9** fall by 10 per cent or more
+4. The 9 offers total **$559,969**, leaving **$31** of the **$560,000** pot in the Fund
 
 ## 3. Step-by-Step Solution
 
 1. Took each organisation's quarters from `portal_return_lines_2018q3_2026q2.csv` as held at each census (accepted versions by `accepted_at`, census day included), pooled across its grants in `grants_register_20261007.xlsx` (rule 3.3), year to date differenced into quarters.
 2. Admitted a year's final quarter only as `total_gross_income` in `charities_register_returns_extract_20261007.csv` less the nine-month year to date, from its `date_received`, stepping both twelve-month windows back where the return was not yet received.
 3. Replayed the six March censuses at each pack's pot (`SGF_screen_run_2021-03.xlsx` to `SGF_screen_run_2026-03.xlsx`): 797 of 797 rows, every offer and all six rates given back, as the cutover standard's clause 4 requires.
-4. At 30 September 2026, 31 scored grantees had no 2025-26 annual return on the register and stop at December 2025 or March 2026; newer grantees without both twelve-month periods are not scored (rule 3.2): 146 scored.
-5. Applied the 10 per cent line in `SGF_round_rules_rev2026-06.pdf` (rule 4.3): 14 grantees are offered, and the first outside the line is Pegasus Community Transport Trust at 7.7%.
-6. Struck the highest rate to the hundredth of a cent whose rounded, floored and capped offers fit the $820,000 pot in `trustees_budget_minute_2026-27_extract.pdf` (rules 5.1 to 5.3): 27.47 cents, $819,939 offered, $61 left.
-7. Split each fall over the same windows into government grants and contracts (QFR-16 `GOV_GRT` plus the memo `FEE_SVC_GOV`, QFR-24 `GOV_GRC`, `govt_grants_contracts` for a final quarter) and Trust money (paid lines of `trust_payment_run_2018-07_to_2026-09.csv` by `value_date`, per `portal_form_change_notice_2024-11.pdf`).
-8. Recommendation: offer the 14 grantees at 27.47 cents per dollar of fall.
+4. At 30 September 2026 the census before is 31 March 2026 (`SGF_round_rules_rev2026-06.pdf`, rules 2 and 4.1): the 17 grantees balancing at 30 June without a 2025-26 return are scored to March 2026, the 14 balancing at 31 March would stop at December 2025 and are not scored, nor are newer grantees without both periods (rule 3.2): 132 scored.
+5. Applied the 10 per cent line (rule 4.3): 9 grantees are offered, and the first outside the line is Amberley Tenancy Advocacy Service at 6.4%.
+6. Struck the highest rate to the hundredth of a cent whose rounded, floored and capped offers fit the $560,000 pot in `trustees_budget_minute_2026-27_extract.pdf` (rules 5.1 to 5.3): 42.55 cents, $559,969 offered, $31 left.
+7. Split each fall over the same windows into government grants and contracts (QFR-24 `GOV_GRT`, QFR-16 `GOV_GRT` plus the memo `FEE_SVC_GOV`, `govt_grants_contracts` for a final quarter) and Trust money by the quarter it reached the grantee, the basis the QFR-24 memo `GRT_NGO_APT` ties to: paid lines of `trust_payment_run_2018-07_to_2026-09.csv` by `value_date`, plus the Steady Ground instalments in the grants register's Steady Ground offers sheet on rule 7's pay day, which are in no run and which rule 5.4 leaves in income.
+8. Recommendation: offer the 9 grantees at 42.55 cents per dollar of fall.
 
 ## 4. Deliverable Answers
 
 ### steady_ground_sep2026_offers.docx
 
-1. 27.47 cents per dollar of fall
+1. 42.55 cents per dollar of fall
 2. Grantees offered, with the government money and the Trust's own money in the fall each offer is struck on, whole NZ$ (negative where that income rose):
-   - Geraldine Carer Respite Network: offer $150,000, government money $302,510, Trust money -$10,800
-   - Heathcote Adult Literacy Project: offer $106,458, government money $125,528, Trust money $13,877
-   - Mayfield Kai Share Cooperative: offer $105,414, government money $258,337, Trust money -$19,966
-   - Woolston Sports Education Trust: offer $70,813, government money $103,487, Trust money $36,866
-   - Burwood Environmental Restoration Trust: offer $68,195, government money $89,049, Trust money $15,122
-   - Beckenham Carer Respite Network: offer $63,848, government money $138,951, Trust money -$61,032
-   - Beckenham Music School Trust: offer $58,277, government money $115,965, Trust money -$36,728
-   - Tai Tapu Kai Share Cooperative: offer $42,461, government money $94,431, Trust money -$71,516
-   - Waikari After School Care Society: offer $38,365, government money $73,145, Trust money -$8,408
-   - Papanui Neighbourhood Hub Trust: offer $33,440, government money $41,328, Trust money -$6,402
-   - St Albans Newcomers Network: offer $26,794, government money $54,616, Trust money -$6,718
-   - Sydenham Play Resource Library Society: offer $24,005, government money $34,351, Trust money $2,078
-   - Shirley Kai Share Cooperative: offer $16,869, government money $28,381, Trust money -$4,300
-   - Kaiapoi Newcomers Network: offer $15,000, government money $22,709, Trust money -$2,500
-3. First grantee outside the line: Pegasus Community Transport Trust, fall of 7.7%
-4. 146 grantees scored
+   - Mayfield Kai Share Cooperative: offer $150,000, government money $258,337, Trust money -$19,966
+   - Woolston Sports Education Trust: offer $109,687, government money $103,487, Trust money $36,866
+   - Tai Tapu Kai Share Cooperative: offer $65,770, government money $94,431, Trust money -$71,516
+   - Waikari After School Care Society: offer $59,426, government money $73,145, Trust money -$8,408
+   - Papanui Neighbourhood Hub Trust: offer $51,797, government money $41,328, Trust money -$6,402
+   - St Albans Newcomers Network: offer $41,503, government money $54,616, Trust money -$6,718
+   - Sydenham Play Resource Library Society: offer $37,183, government money $34,351, Trust money $2,078
+   - Shirley Kai Share Cooperative: offer $26,129, government money $28,381, Trust money -$4,300
+   - Kaiapoi Newcomers Network: offer $18,474, government money $22,709, Trust money -$2,500
+3. First grantee outside the line: Amberley Tenancy Advocacy Service, fall of 6.4%
+4. 132 grantees scored
 5. Published grantee rows given back exactly:
    - March 2021: 118
    - March 2022: 124
@@ -61,23 +56,17 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
 
 ### steady_ground_sep2026_screen.csv
 
-1. 146 rows, one per scored grantee, largest fall in dollars first, whole NZ$ and percentages to one decimal:
-   - CC50315 Geraldine Carer Respite Network: twelve-month income $2,592,554, twelve months before $3,252,963, fall $660,409, 20.3%, offer $150,000, government part $302,510, Trust part -$10,800
-   - CC40435 Heathcote Adult Literacy Project: twelve-month income $1,367,700, twelve months before $1,755,242, fall $387,542, 22.1%, offer $106,458, government part $125,528, Trust part $13,877
-   - CC23552 Mayfield Kai Share Cooperative: twelve-month income $2,519,857, twelve months before $2,903,600, fall $383,743, 13.2%, offer $105,414, government part $258,337, Trust part -$19,966
-   - CC20936 Woolston Sports Education Trust: twelve-month income $1,150,133, twelve months before $1,407,916, fall $257,783, 18.3%, offer $70,813, government part $103,487, Trust part $36,866
-   - CC47102 Burwood Environmental Restoration Trust: twelve-month income $932,904, twelve months before $1,181,157, fall $248,253, 21.0%, offer $68,195, government part $89,049, Trust part $15,122
-   - CC42717 Beckenham Carer Respite Network: twelve-month income $1,324,833, twelve months before $1,557,260, fall $232,427, 14.9%, offer $63,848, government part $138,951, Trust part -$61,032
-   - CC49381 Beckenham Music School Trust: twelve-month income $933,184, twelve months before $1,145,331, fall $212,147, 18.5%, offer $58,277, government part $115,965, Trust part -$36,728
-   - CC45658 Tai Tapu Kai Share Cooperative: twelve-month income $1,018,170, twelve months before $1,172,742, fall $154,572, 13.2%, offer $42,461, government part $94,431, Trust part -$71,516
-   - CC45324 Waikari After School Care Society: twelve-month income $911,515, twelve months before $1,051,176, fall $139,661, 13.3%, offer $38,365, government part $73,145, Trust part -$8,408
-   - CC34513 Papanui Neighbourhood Hub Trust: twelve-month income $743,031, twelve months before $864,764, fall $121,733, 14.1%, offer $33,440, government part $41,328, Trust part -$6,402
-   - CC27360 St Albans Newcomers Network: twelve-month income $589,578, twelve months before $687,117, fall $97,539, 14.2%, offer $26,794, government part $54,616, Trust part -$6,718
+1. 132 rows, one per scored grantee, largest fall in dollars first, whole NZ$ and percentages to one decimal:
+   - CC23552 Mayfield Kai Share Cooperative: twelve-month income $2,519,857, twelve months before $2,903,600, fall $383,743, 13.2%, offer $150,000, government part $258,337, Trust part -$19,966
+   - CC20936 Woolston Sports Education Trust: twelve-month income $1,150,133, twelve months before $1,407,916, fall $257,783, 18.3%, offer $109,687, government part $103,487, Trust part $36,866
+   - CC45658 Tai Tapu Kai Share Cooperative: twelve-month income $1,018,170, twelve months before $1,172,742, fall $154,572, 13.2%, offer $65,770, government part $94,431, Trust part -$71,516
+   - CC45324 Waikari After School Care Society: twelve-month income $911,515, twelve months before $1,051,176, fall $139,661, 13.3%, offer $59,426, government part $73,145, Trust part -$8,408
+   - CC34513 Papanui Neighbourhood Hub Trust: twelve-month income $743,031, twelve months before $864,764, fall $121,733, 14.1%, offer $51,797, government part $41,328, Trust part -$6,402
+   - CC27360 St Albans Newcomers Network: twelve-month income $589,578, twelve months before $687,117, fall $97,539, 14.2%, offer $41,503, government part $54,616, Trust part -$6,718
    - CC58287 Diamond Harbour Whanau Support Services: twelve-month income $1,706,427, twelve months before $1,803,834, fall $97,407, 5.4%, offer $0, government part $5,849, Trust part -$8,100
-   - CC30757 Sydenham Play Resource Library Society: twelve-month income $527,761, twelve months before $615,148, fall $87,387, 14.2%, offer $24,005, government part $34,351, Trust part $2,078
-   - CC54322 Shirley Kai Share Cooperative: twelve-month income $394,008, twelve months before $455,415, fall $61,407, 13.5%, offer $16,869, government part $28,381, Trust part -$4,300
-   - CC28177 Pegasus Community Transport Trust: twelve-month income $700,887, twelve months before $759,522, fall $58,635, 7.7%, offer $0, government part $37,773, Trust part -$1,500
-   - CC56509 Kaiapoi Newcomers Network: twelve-month income $275,267, twelve months before $318,683, fall $43,416, 13.6%, offer $15,000, government part $22,709, Trust part -$2,500
+   - CC30757 Sydenham Play Resource Library Society: twelve-month income $527,761, twelve months before $615,148, fall $87,387, 14.2%, offer $37,183, government part $34,351, Trust part $2,078
+   - CC54322 Shirley Kai Share Cooperative: twelve-month income $394,008, twelve months before $455,415, fall $61,407, 13.5%, offer $26,129, government part $28,381, Trust part -$4,300
+   - CC56509 Kaiapoi Newcomers Network: twelve-month income $275,267, twelve months before $318,683, fall $43,416, 13.6%, offer $18,474, government part $22,709, Trust part -$2,500
    - CC59225 Amberley Tenancy Advocacy Service: twelve-month income $493,685, twelve months before $527,413, fall $33,728, 6.4%, offer $0, government part $16,613, Trust part -$1,500
    - CC31839 Mount Somers Older Persons Club: twelve-month income $795,044, twelve months before $818,126, fall $23,082, 2.8%, offer $0, government part $5,382, Trust part $0
    - CC30956 Linwood Carer Respite Network: twelve-month income $846,136, twelve months before $859,000, fall $12,864, 1.5%, offer $0, government part -$5,509, Trust part $0
@@ -96,7 +85,6 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC51360 Diamond Harbour After School Care Society: twelve-month income $432,261, twelve months before $430,463, fall -$1,798, -0.4%, offer $0, government part -$589, Trust part -$600
    - CC20427 Temuka Surplus Kai Network: twelve-month income $1,670,866, twelve months before $1,668,831, fall -$2,035, -0.1%, offer $0, government part $15,701, Trust part -$900
    - CC28323 Mount Somers Village Hall Society: twelve-month income $187,080, twelve months before $184,872, fall -$2,208, -1.2%, offer $0, government part -$2,921, Trust part $0
-   - CC58843 Oxford Adult Literacy Project: twelve-month income $283,516, twelve months before $280,979, fall -$2,537, -0.9%, offer $0, government part $4,816, Trust part $0
    - CC32792 Hornby Mental Wellbeing Collective: twelve-month income $153,077, twelve months before $150,507, fall -$2,570, -1.7%, offer $0, government part $895, Trust part $0
    - CC26869 Linwood Community Gardens Society: twelve-month income $147,339, twelve months before $144,018, fall -$3,321, -2.3%, offer $0, government part not reported (short form), Trust part -$300
    - CC36807 Halswell Community Rooms Trust: twelve-month income $157,330, twelve months before $153,945, fall -$3,385, -2.2%, offer $0, government part not reported (short form), Trust part -$300
@@ -120,7 +108,6 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC32163 Halswell Adult Literacy Project: twelve-month income $336,596, twelve months before $329,003, fall -$7,593, -2.3%, offer $0, government part -$2,963, Trust part $0
    - CC49741 Belfast Sports Education Trust: twelve-month income $470,748, twelve months before $462,829, fall -$7,919, -1.7%, offer $0, government part $1,913, Trust part $0
    - CC51093 Temuka Household Budgeting Trust: twelve-month income $194,846, twelve months before $186,845, fall -$8,001, -4.3%, offer $0, government part not reported (short form), Trust part $0
-   - CC40084 Sydenham Adult Literacy Project: twelve-month income $294,692, twelve months before $286,660, fall -$8,032, -2.8%, offer $0, government part -$6,076, Trust part -$900
    - CC25820 Opawa Learning Centre Trust: twelve-month income $456,162, twelve months before $448,075, fall -$8,087, -1.8%, offer $0, government part -$2,645, Trust part -$600
    - CC36141 Addington Youth Collective: twelve-month income $328,071, twelve months before $319,815, fall -$8,256, -2.6%, offer $0, government part not reported (short form), Trust part -$900
    - CC40147 Amberley Music School Trust: twelve-month income $377,328, twelve months before $368,756, fall -$8,572, -2.3%, offer $0, government part -$7,057, Trust part $0
@@ -133,11 +120,9 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC34384 New Brighton Tenancy Advocacy Service: twelve-month income $319,139, twelve months before $309,482, fall -$9,657, -3.1%, offer $0, government part $973, Trust part $0
    - CC41812 Prebbleton Music School Trust: twelve-month income $439,143, twelve months before $429,276, fall -$9,867, -2.3%, offer $0, government part -$5,512, Trust part -$300
    - CC51555 Waikari Environmental Restoration Trust: twelve-month income $240,001, twelve months before $230,064, fall -$9,937, -4.3%, offer $0, government part not reported (short form), Trust part $0
-   - CC42711 Aranui Heritage Society: twelve-month income $868,077, twelve months before $857,935, fall -$10,142, -1.2%, offer $0, government part $4,178, Trust part $0
    - CC46230 Ilam Parenting Network: twelve-month income $385,979, twelve months before $375,791, fall -$10,188, -2.7%, offer $0, government part -$4,324, Trust part $0
    - CC22217 Rangiora Carer Respite Network: twelve-month income $542,589, twelve months before $532,355, fall -$10,234, -1.9%, offer $0, government part -$14,616, Trust part $0
    - CC21428 Spreydon Parenting Network: twelve-month income $152,857, twelve months before $142,578, fall -$10,279, -7.2%, offer $0, government part not reported (short form), Trust part -$900
-   - CC50140 Shirley After School Care Society: twelve-month income $672,448, twelve months before $662,013, fall -$10,435, -1.6%, offer $0, government part -$14,554, Trust part $0
    - CC54654 Ilam Newcomers Network: twelve-month income $709,581, twelve months before $699,123, fall -$10,458, -1.5%, offer $0, government part -$18,021, Trust part $31,769
    - CC48564 Woodend Mental Wellbeing Collective: twelve-month income $153,537, twelve months before $142,801, fall -$10,736, -7.5%, offer $0, government part not reported (short form), Trust part -$300
    - CC59393 Aranui Day Programme Trust: twelve-month income $384,461, twelve months before $373,681, fall -$10,780, -2.9%, offer $0, government part -$12,968, Trust part $0
@@ -148,11 +133,9 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC50679 Cheviot Family Support Trust: twelve-month income $377,256, twelve months before $365,824, fall -$11,432, -3.1%, offer $0, government part -$7,250, Trust part -$600
    - CC33844 Prebbleton Arts Trust: twelve-month income $536,638, twelve months before $525,118, fall -$11,520, -2.2%, offer $0, government part -$5,192, Trust part $0
    - CC48347 Lincoln Community Rooms Trust: twelve-month income $541,968, twelve months before $530,379, fall -$11,589, -2.2%, offer $0, government part -$16,271, Trust part $28,467
-   - CC42047 Waimate Sports Education Trust: twelve-month income $428,660, twelve months before $416,479, fall -$12,181, -2.9%, offer $0, government part -$1,012, Trust part -$2,700
    - CC30060 Papanui Tenancy Advocacy Service: twelve-month income $338,023, twelve months before $325,400, fall -$12,623, -3.9%, offer $0, government part -$7,181, Trust part $0
    - CC52688 Mairehau Men's Workshop Collective: twelve-month income $386,492, twelve months before $373,768, fall -$12,724, -3.4%, offer $0, government part -$5,943, Trust part -$1,800
    - CC47128 Dunsandel Neighbourhood Hub Trust: twelve-month income $331,724, twelve months before $318,983, fall -$12,741, -4.0%, offer $0, government part not reported (short form), Trust part -$1,800
-   - CC39012 Bryndwr Household Budgeting Trust: twelve-month income $937,971, twelve months before $924,965, fall -$13,006, -1.4%, offer $0, government part $1,646, Trust part -$5,400
    - CC29258 Pegasus Learning Centre Trust: twelve-month income $463,380, twelve months before $450,245, fall -$13,135, -2.9%, offer $0, government part -$9,198, Trust part $0
    - CC42823 Riccarton Sports Education Trust: twelve-month income $225,888, twelve months before $212,450, fall -$13,438, -6.3%, offer $0, government part not reported (short form), Trust part $0
    - CC51077 Mairehau Mental Wellbeing Collective: twelve-month income $494,296, twelve months before $480,797, fall -$13,499, -2.8%, offer $0, government part -$1,532, Trust part -$900
@@ -181,7 +164,6 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC57912 Governors Bay Environmental Restoration Trust: twelve-month income $456,397, twelve months before $431,340, fall -$25,057, -5.8%, offer $0, government part -$14,890, Trust part -$2,700
    - CC29457 Lyttelton Household Budgeting Trust: twelve-month income $393,559, twelve months before $368,196, fall -$25,363, -6.9%, offer $0, government part -$11,658, Trust part $0
    - CC54071 Shirley Mental Wellbeing Collective: twelve-month income $694,547, twelve months before $669,160, fall -$25,387, -3.8%, offer $0, government part -$2,523, Trust part -$4,500
-   - CC28841 Lincoln Tenancy Advocacy Service: twelve-month income $964,530, twelve months before $938,946, fall -$25,584, -2.7%, offer $0, government part -$15,416, Trust part -$5,400
    - CC22489 Governors Bay Community Rooms Trust: twelve-month income $981,807, twelve months before $955,841, fall -$25,966, -2.7%, offer $0, government part $5,297, Trust part -$3,000
    - CC38639 Lincoln Learning Centre Trust: twelve-month income $448,781, twelve months before $420,527, fall -$28,254, -6.7%, offer $0, government part -$5,958, Trust part -$2,700
    - CC22206 West Melton Volunteer Exchange Trust: twelve-month income $406,023, twelve months before $375,561, fall -$30,462, -8.1%, offer $0, government part -$16,536, Trust part $0
@@ -191,7 +173,6 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
    - CC58501 Little River Community Rooms Trust: twelve-month income $2,143,408, twelve months before $2,107,479, fall -$35,929, -1.7%, offer $0, government part -$30,664, Trust part $124,938
    - CC24524 Heathcote Arts Trust: twelve-month income $432,241, twelve months before $396,120, fall -$36,121, -9.1%, offer $0, government part -$7,064, Trust part $0
    - CC56367 Kaikoura Carer Respite Network: twelve-month income $1,315,396, twelve months before $1,278,449, fall -$36,947, -2.9%, offer $0, government part -$11,064, Trust part -$3,300
-   - CC23645 Ilam Tenancy Advocacy Service: twelve-month income $1,514,493, twelve months before $1,477,296, fall -$37,197, -2.5%, offer $0, government part $3,938, Trust part -$10,800
    - CC32588 Heathcote Village Hall Society: twelve-month income $482,762, twelve months before $442,798, fall -$39,964, -9.0%, offer $0, government part -$22,961, Trust part -$600
    - CC23960 Diamond Harbour Kai Share Cooperative: twelve-month income $887,761, twelve months before $839,224, fall -$48,537, -5.8%, offer $0, government part -$31,367, Trust part $40,246
    - CC39881 Lincoln Neighbourhood Hub Trust: twelve-month income $1,406,284, twelve months before $1,357,250, fall -$49,034, -3.6%, offer $0, government part -$36,326, Trust part $61,034
@@ -211,6 +192,6 @@ The rate comes from the screen that gives back all 797 rows of Ledgerwood's six 
 
 ### steady_ground_sep2026_offers.png
 
-1. One bar per offer for the 14 grantees, largest first, each labelled with its amount
+1. One bar per offer for the 9 grantees, largest first, each labelled with its amount
 2. Floor drawn at $15,000 and cap drawn at $150,000, each labelled with its value
-3. Title carries the rate, 27.47 cents per dollar of fall
+3. Title carries the rate, 42.55 cents per dollar of fall

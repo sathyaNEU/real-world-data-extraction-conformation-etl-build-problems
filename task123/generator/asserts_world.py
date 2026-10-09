@@ -5,13 +5,16 @@ import random
 from collections import Counter
 
 from common import (MARCH_CENSUSES, SEPT_CENSUS, EXTRACT_DATE, POTS, SEPT_POT, FLOOR, CAP, LINE_PCT,
-                    natural_end, fyq, qend, pct1, offer_for, strike_rate)
+                    natural_end, prev_census, fyq, qend, pct1, offer_for, strike_rate)
 from roster import Q
 from screen import Book, screen, replay, filed_year_screen, published_row, eod
 from world import CENSUS_DATES
 
-T_SET = {"M", "A2", "A3", "A4", "A5", "A6", "C1", "F1", "F2", "F3", "F4", "F5", "F6", "F7"}
-ANSWER = {"M", "A2", "A3", "A4", "A5", "A6"}
+T_SET = {"A5", "A6", "F1", "F2", "F3", "F4", "F5", "F6", "F7"}
+R4_SET = {"M", "A2", "A3", "A4", "A5", "A6", "C1", "F1", "F2", "F3", "F4", "F5", "F6", "F7"}
+R4_OWN = {"M", "A2", "A3", "A4", "C1"}          # offered by the stop, unscored by the answer
+JUNE30 = {"A5", "A6"}                          # offered by the answer and the stop, not by R3
+ANSWER = {"M", "A2", "A3", "A4", "A5", "A6"}   # the movers the step-back turns (R4's edge over R3)
 DECOYS = {"Y1", "Y2", "Y3", "Y4"}
 RESIDUE = {("D1", y) for y in range(2021, 2027)} | {("D2", 2022), ("D2", 2024), ("J1", 2023),
                                                    ("J2", 2024)}
@@ -21,6 +24,7 @@ RUNGS = {
     "R1": dict(unit="ref", basis="latest", q4src="portal", stepback="none"),
     "R2": dict(basis="latest", q4src="portal", stepback="none"),
     "R3": dict(q4src="portal", stepback="none"),
+    "R4": dict(recency="off"),
 }
 RIVALS = {
     "R1": RUNGS["R1"], "R2": RUNGS["R2"], "R3": RUNGS["R3"],
@@ -98,10 +102,19 @@ def sept_screens(W):
         "overdue only": dict(stepback="overdue"),
         "register fallback, no step-back": dict(stepback="none"),
         "census day exclusive": dict(inclusive=False),
+        "4.1 read strictly (after, not on)": dict(recency="strict"),
+        "4.1 against the census a year before": dict(recency="year"),
+        "R4, per return, as held": dict(unit="ref", recency="off"),
+        "R4, latest versions": dict(basis="latest", recency="off"),
     }
     for k, opt in cells.items():
         S[k] = screen(book, c, SEPT_POT, **opt)
     return S
+
+
+def first_outside(s):
+    under = sorted([r for r in s["rows"] if r["pct"] < LINE_PCT], key=lambda r: -r["pct"])
+    return under[0], under[1]
 
 
 def check_world(W, C):
@@ -116,71 +129,72 @@ def check_world(W, C):
     tot_n = sum(offer_for(rate + 1, r["fall"]) for r in elig)
 
     # A1-A4: the call
-    C.ok("A1", 2600 <= rate <= 3400, f"T rate {rate/100:.2f} cents in [26.00, 34.00]")
-    C.ok("A1", tot_r <= SEPT_POT < tot_n, f"highest hundredth within the pot: {tot_r} <= 820000 < {tot_n}")
+    C.ok("A1", 3600 <= rate <= 4800, f"answer rate {rate/100:.2f} cents in [36.00, 48.00]")
+    C.ok("A1", tot_r <= SEPT_POT < tot_n, f"highest hundredth within the pot: {tot_r} <= {SEPT_POT} < {tot_n}")
     C.ok("A2", SEPT_POT - tot_r >= 25 and tot_n - SEPT_POT >= 25,
          f"remainder {SEPT_POT - tot_r} and next-step overshoot {tot_n - SEPT_POT} both >= 25")
-    C.ok("A3", offered_names(T) == T_SET, f"T offers the 14 designed grantees: {sorted(offered_names(T))}")
+    C.ok("A3", offered_names(T) == T_SET, f"the answer offers the 9 designed grantees: {sorted(offered_names(T))}")
     C.ok("A3", all((r["offer"] > 0) == (r["pct"] >= 10.0) for r in T["rows"]),
-         "offered set equals the round rules applied to T's falls")
-    C.ok("A4", len(T["rows"]) == 146 and len(S["R2"]["rows"]) == 147 and len(S["R3"]["rows"]) == 147
-         and len(S["R1"]["rows"]) == 154,
-         f"scored: T {len(T['rows'])}, R2 {len(S['R2']['rows'])}, R3 {len(S['R3']['rows'])}, R1 rows {len(S['R1']['rows'])}")
-    # A5-A7: the ladder
-    for k, lo in (("R0", 1.25), ("R1", 1.25), ("R2", 1.25), ("R3", 1.40)):
-        C.ok("A5", S[k]["rate"] >= lo * rate, f"{k} rate {S[k]['rate']/100:.2f} is {S[k]['rate']/rate:.3f}x T (>= {lo})")
-    names = {k: offered_names(S[k]) for k in ("T", "R0", "R1", "R2", "R3")}
+         "offered set equals the round rules applied to the answer's falls")
+    C.ok("A3", offered_names(S["R4"]) == R4_SET, f"the stop (R4) offers its 14: {sorted(offered_names(S['R4']))}")
+    C.ok("A4", len(T["rows"]) == 132 and len(S["R4"]["rows"]) == 146 and len(S["R2"]["rows"]) == 147
+         and len(S["R3"]["rows"]) == 147 and len(S["R1"]["rows"]) == 154,
+         f"scored: answer {len(T['rows'])}, R4 {len(S['R4']['rows'])}, R2 {len(S['R2']['rows'])}, "
+         f"R3 {len(S['R3']['rows'])}, R1 rows {len(S['R1']['rows'])}")
+    # A5-A7: the ladder (the answer is the highest rate on the grid)
+    for k, lo in (("R0", 1.15), ("R1", 1.40), ("R2", 1.40), ("R3", 1.30), ("R4", 2.00)):
+        C.ok("A5", rate >= lo * S[k]["rate"], f"answer at {rate/S[k]['rate']:.3f}x {k} ({S[k]['rate']/100:.2f}; floor {lo})")
+    names = {k: offered_names(S[k]) for k in ("T", "R0", "R1", "R2", "R3", "R4")}
     ks = list(names)
     for i in range(len(ks)):
         for j in range(i + 1, len(ks)):
             C.ok("A6", names[ks[i]] != names[ks[j]], f"{ks[i]} and {ks[j]} offer different names")
-    for k, lo_n, lo_p in (("R0", 4, 0.30), ("R1", 8, 0.40), ("R2", 8, 0.40), ("R3", 8, 0.40)):
+    for k, lo_n, lo_p in (("R0", 4, 0.25), ("R1", 3, 0.25), ("R2", 3, 0.25), ("R3", 6, 0.35), ("R4", 5, 0.45)):
         dn = len(names[k] ^ names["T"])
         rp = replaced(S[k], T, SEPT_POT)
-        C.ok("A7", dn >= lo_n and rp >= lo_p, f"{k}: {dn} names differ from T, {rp:.1%} of the pot re-placed")
-    # position table: the marker
-    for k in ("R1", "R2", "R3"):
-        rk = rank_by_fall(S[k], "M")
-        C.ok("A7", rk is not None and rk >= 76, f"marker ranks {rk} by dollar fall on {k}")
-    C.ok("A7", rank_by_fall(T, "M") == 1, "marker ranks first by dollar fall on T")
-    C.ok("A7", "M" not in names["R0"] and "M" not in names["R1"] and "M" not in names["R2"]
-         and "M" not in names["R3"], "marker offered on no lower rung")
+        C.ok("A7", dn >= lo_n and rp >= lo_p, f"{k}: {dn} names differ from the answer, {rp:.1%} of the pot re-placed")
+    C.ok("A7", not (names["T"] - names["R4"]) and names["R4"] - names["T"] == R4_OWN,
+         "the answer's offers are the stop's less the five it no longer scores")
     # A8-A11: the grid
-    for k in ("30-June grantees not stepped back", "only 30-June grantees stepped back",
-              "current window stepped back, prior not", "register read as at the extract"):
-        C.ok("A8", S[k]["rate"] >= 1.10 * rate, f"partial cell '{k}' at {S[k]['rate']/rate:.3f}x T")
-    for k in ("per return, as held, step-back", "per organisation, latest, step-back"):
-        C.ok("A9", S[k]["rate"] <= 0.92 * rate, f"single-violation cell '{k}' {100*(S[k]['rate']/rate-1):+.1f}%")
+    for k in ("30-June grantees not stepped back", "current window stepped back, prior not",
+              "4.1 read strictly (after, not on)"):
+        C.ok("A8", S[k]["rate"] >= 1.10 * rate, f"partial cell '{k}' at {S[k]['rate']/rate:.3f}x the answer")
+    C.ok("A8", S["only 30-June grantees stepped back"]["rate"] <= 0.80 * rate,
+         f"partial cell 'only 30-June grantees stepped back' (the June window for the fourteen) at "
+         f"{S['only 30-June grantees stepped back']['rate']/rate:.3f}x")
+    for k in ("per return, as held, step-back", "per organisation, latest, step-back",
+              "per return, latest, step-back", "R4, per return, as held", "R4, latest versions"):
+        C.ok("A9", S[k]["rate"] <= 0.92 * rate, f"cell '{k}' {100*(S[k]['rate']/rate-1):+.1f}%")
     ce = S["census day exclusive"]
-    diff = sum(1 for r in ce["rows"] if (r["cur"], r["prior"]) != (rows[r["org"]]["cur"], rows[r["org"]]["prior"]))
-    C.ok("A10", ce["rate"] == rate and alloc_map(ce) == alloc_map(T) and diff == 14,
-         f"census day exclusive: same rate and offers, {diff} CSV rows differ")
+    C.ok("A10", ce["rate"] == rate and alloc_map(ce) == alloc_map(T) and len(ce["rows"]) == len(T["rows"]) - 14,
+         f"census day exclusive: same rate and offers, {len(ce['rows'])} scored against {len(T['rows'])}")
+    rx = S["register read as at the extract"]
+    C.ok("A10", rx["rate"] == rate and alloc_map(rx) == alloc_map(T) and len(rx["rows"]) == len(T["rows"]) + 6,
+         f"register read as at the extract: same rate and offers, {len(rx['rows'])} scored against {len(T['rows'])}")
     r3rows = {r["org"]: published_row(r) for r in S["R3"]["rows"]}
     fb = {r["org"]: published_row(r) for r in S["register fallback, no step-back"]["rows"]}
     ov = {r["org"]: published_row(r) for r in S["overdue only"]["rows"]}
+    yr = S["4.1 against the census a year before"]
     C.ok("A11", fb == r3rows, "register fallback equals R3 on every row")
     C.ok("A11", ov == r3rows, "overdue-only equals R3 at September")
+    C.ok("A11", published_rows(yr) == published_rows(S["R4"]), "4.1 read against the census a year before equals R4")
     # A12-A16: the line and the bins
     band = [r["org"] for r in T["rows"] if 8.5 < r["pct"] < 11.5]
-    C.ok("A12", not band, f"no T fall within 1.5 points of the line ({band})")
-    under = sorted([r for r in T["rows"] if r["pct"] < 10.0], key=lambda r: -r["pct"])
-    first, second = under[0], under[1]
-    r3y4 = {r["org"]: r for r in S["R3"]["rows"]}[first["org"]]
-    C.ok("A13", first["org"] == "Y4" and 7.0 <= first["pct"] <= 8.0 and first["pct"] - second["pct"] >= 0.3
-         and r3y4["pct"] >= 15.0,
-         f"first outside the line {first['org']} at {first['pct']:.2f} (next {second['pct']:.2f}); R3 fall {r3y4['pct']:.2f}")
+    C.ok("A12", not band, f"no answer fall within 1.5 points of the line ({band})")
+    first, second = first_outside(T)
+    f4, _ = first_outside(S["R4"])
+    C.ok("A13", first["org"] == "L_dual" and 6.0 <= first["pct"] <= 8.5 and first["pct"] - second["pct"] >= 0.3
+         and f4["org"] != first["org"],
+         f"first outside the line {first['org']} at {first['pct']:.2f} (next {second['pct']:.2f}); R4's is {f4['org']} at {f4['pct']:.2f}")
     capped = [r["org"] for r in T["rows"] if r["offer"] == CAP]
     floored = [r["org"] for r in T["rows"] if r["offer"] == FLOOR]
-    r3capped = [r["org"] for r in S["R3"]["rows"] if r["offer"] == CAP]
-    r3floor = [r["org"] for r in S["R3"]["rows"] if r["offer"] == FLOOR]
-    C.ok("A14", capped == ["M"] and "M" not in names["R3"], f"cap binds under T for {capped} only")
-    C.ok("A14", 1 <= len(floored) <= 2 and not r3floor, f"floor binds under T for {floored}; R3 floor-bound {r3floor}")
-    C.ok("A14", r3capped == ["F1"] and CAP - rows["F1"]["offer"] >= 8000,
-         f"R3 cap-bound {r3capped}; on T it is NZ${CAP - rows['F1']['offer']} under the cap")
+    C.ok("A14", capped == ["F1"] and not floored, f"cap binds for {capped} only; no offer at the floor ({floored})")
+    C.ok("A14", not any(r["offer"] == CAP for k in ("R4", "R3") for r in S[k]["rows"]),
+         "the cap binds under the answer only: neither the stop nor R3 caps an offer")
     falls = [r["fall"] for r in T["rows"]]
     C.ok("A15", len(set(falls)) == len(falls), "no two scored grantees share a dollar fall")
     gaps = [(edge_gap(r["pct"]), r["org"]) for r in T["rows"]]
-    C.ok("A16", min(gaps)[0] >= 0.02, f"every T fall per cent at least 0.02 from an x.x5 edge (min {min(gaps)[0]:.4f}, {min(gaps)[1]})")
+    C.ok("A16", min(gaps)[0] >= 0.02, f"every answer fall per cent at least 0.02 from an x.x5 edge (min {min(gaps)[0]:.4f}, {min(gaps)[1]})")
     # A17: filing counts at the census
     in_scope = {r["org"] for r in S["R3"]["rows"]}
     unf31 = sorted(k for k in in_scope if by[k].bal == 3 and not book.received(k, Q(2026, 3), SEPT_CENSUS))
@@ -190,20 +204,36 @@ def check_world(W, C):
                   and SEPT_CENSUS < W["annual"][(k, Q(2026, 3))].received <= EXTRACT_DATE)
     C.ok("A17", len(unf31) == 14 and len(unf30) == 18, f"unfiled at the census: {len(unf31)} (31 March) + {len(unf30)} (30 June)")
     C.ok("A17", len(dday) == 14 and len(octs) == 6, f"deadline-day receipts {len(dday)}; 1 to 7 October receipts {len(octs)}")
+    # A55: the fourteen the answer does not score are exactly the 31 March grantees unfiled at the census,
+    # each scored by the stop on the twelve months to December 2025 the March 2026 round scored
+    gone = sorted({r["org"] for r in S["R4"]["rows"]} - set(rows))
+    c26 = dt.date(2026, 3, 31)
+    m26 = {r["org"]: r for r in W["corpus"][c26]["rows"]}
+    r4 = {r["org"]: r for r in S["R4"]["rows"]}
+    C.ok("A55", gone == unf31 and all(r4[k]["end"] == Q(2025, 12) == m26[k]["end"] and
+                                       published_row(r4[k])[:4] == published_row(m26[k])[:4] for k in gone),
+         f"the answer leaves out exactly the {len(gone)} unfiled 31 March grantees, each on the March 2026 round's own twelve months")
+    C.ok("A55", all(qend(r["end"]) >= prev_census(SEPT_CENSUS) for r in T["rows"]) and
+         sum(1 for r in T["rows"] if qend(r["end"]) == prev_census(SEPT_CENSUS)) == 17,
+         "every scored window ends on or after 31 March 2026; the 17 scored 30 June grantees end on it")
     # A18-A19: dominance and the movers
     r3 = {r["org"]: r for r in S["R3"]["rows"]}
+    r4_elig = sum(r["fall"] for r in S["R4"]["rows"] if r["offer"])
     r3_elig = sum(r["fall"] for r in S["R3"]["rows"] if r["offer"])
     t_elig = sum(r["fall"] for r in T["rows"] if r["offer"])
-    adv = sum(r3[k]["fall"] for k in DECOYS) / r3_elig
-    edge = sum(rows[k]["fall"] for k in ANSWER) / t_elig
-    C.ok("A18", adv >= 0.20 and edge >= 0.50 and edge / adv >= 1.5,
-         f"decoys hold {adv:.1%} of R3's eligible falls, answer names {edge:.1%} of T's, ratio {edge/adv:.2f}")
+    own4 = sum(r4[k]["fall"] for k in R4_OWN) / r4_elig
+    own3 = sum(r3[k]["fall"] for k in DECOYS | {"C1"}) / r3_elig
+    own5 = sum(rows[k]["fall"] for k in JUNE30) / t_elig
+    C.ok("A18", own4 >= 0.45, f"the stop's five own offers hold {own4:.1%} of its eligible falls")
+    C.ok("A18", own3 >= 0.20 and own5 >= 0.20,
+         f"R3's own names hold {own3:.1%} of its eligible falls; the answer's (the two 30 June) {own5:.1%} of its")
     for k in sorted(DECOYS):
-        C.ok("A19", rows[k]["pct"] <= 8.0 and r3[k]["pct"] >= 15.0,
-             f"decoy {k}: T {rows[k]['pct']:.2f}, R3 {r3[k]['pct']:.2f}")
+        C.ok("A19", k not in rows and r4[k]["pct"] <= 8.0 and r3[k]["pct"] >= 15.0,
+             f"decoy {k}: unscored by the answer, R4 {r4[k]['pct']:.2f}, R3 {r3[k]['pct']:.2f}")
     for k in sorted(ANSWER):
-        C.ok("A19", rows[k]["pct"] >= 11.5 and r3[k]["pct"] <= 8.5,
-             f"answer {k}: T {rows[k]['pct']:.2f}, R3 {r3[k]['pct']:.2f}")
+        src = rows if k in rows else r4
+        C.ok("A19", src[k]["pct"] >= 11.5 and r3[k]["pct"] <= 8.5,
+             f"step-back mover {k}: {'answer' if k in rows else 'R4'} {src[k]['pct']:.2f}, R3 {r3[k]['pct']:.2f}")
     return S
 
 
@@ -313,6 +343,24 @@ def corpus_checks(W, C):
          f"census-day receipts {sorted(cday)}")
     ts = misses["T-strict census day exclusive"]
     C.ok("A29", set(ts["names"]) == CDAY, "each census-day receipt reproduces only with the census day inclusive")
+    # A54: rule 4.1's census-before sentence is silent on the corpus. Every published window ends on or
+    # after the census before it (J1 in 2023 and J2 in 2024 exactly on it), so the screen with the
+    # sentence ignored gives back the same rows, offers and rates in all six rounds.
+    on, before = [], []
+    for c in MARCH_CENSUSES:
+        pc = prev_census(c)
+        for r in W["corpus"][c]["rows"]:
+            e = qend(r["end"])
+            if e < pc:
+                before.append((r["org"], c.year))
+            elif e == pc:
+                on.append((r["org"], c.year))
+    C.ok("A54", not before and sorted(on) == [("J1", 2023), ("J2", 2024)],
+         f"no published window ends before the census before it; exactly on it: {sorted(on)}")
+    for c in MARCH_CENSUSES:
+        off = screen(book, c, POTS[c.year], recency="off")
+        C.ok("A54", published_rows(off) == published_rows(W["corpus"][c]),
+             f"March {c.year}: the screen without rule 4.1's sentence gives back the same pack")
     return misses
 
 
@@ -330,6 +378,7 @@ def flips_check(W, C):
         "census day inclusive": dict(inclusive=False),
         "eight quarters required": dict(require8=False),
         "the latest accepted version, not the first filed": dict(basis="first"),
+        "rule 4.1 on or after the census before, not strictly after": dict(recency="strict"),
     }
     for name, opt in flips.items():
         broken = 0
@@ -442,17 +491,21 @@ def convergence_checks(W, C):
 
 
 def clean_data_checks(W, C):
-    """A41-A43, and the lens-swap test."""
+    """A41-A43, and the lens-swap test, run on the answer, the stop (R4) and R3."""
     import copy
     book, c = W["book"], SEPT_CENSUS
     T0 = published_rows(W["sept"])
     R30 = published_rows(screen(book, c, SEPT_POT, **RUNGS["R3"]))
+    R40 = published_rows(screen(book, c, SEPT_POT, **RUNGS["R4"]))
+
+    def trio(b):
+        return (published_rows(screen(b, c, SEPT_POT)), published_rows(screen(b, c, SEPT_POT, **RUNGS["R3"])),
+                published_rows(screen(b, c, SEPT_POT, **RUNGS["R4"])))
+    distinct = T0 != R30 and T0 != R40 and R30 != R40
     # portal as held at the census
     vs = [v for v in W["versions"] if v.accepted is None or v.accepted <= eod(c)]
-    b1 = Book(W["orgs"], vs, W["annual"])
-    T1 = published_rows(screen(b1, c, SEPT_POT))
-    R31 = published_rows(screen(b1, c, SEPT_POT, **RUNGS["R3"]))
-    C.ok("A41", T1 == T0 and R31 == R30 and T0 != R30, "portal cut to the census: T and R3 unchanged, T != R3")
+    C.ok("A41", trio(Book(W["orgs"], vs, W["annual"])) == (T0, R30, R40) and distinct,
+         "portal cut to the census: the answer, R3 and R4 unchanged and all three different")
     # register completed with the eventual returns
     ann = copy.copy(W["annual"])
     for key, ar in W["annual"].items():
@@ -460,10 +513,8 @@ def clean_data_checks(W, C):
             a2 = copy.copy(ar)
             a2.received = ar.eventual
             ann[key] = a2
-    b2 = Book(W["orgs"], W["versions"], ann)
-    C.ok("A42", published_rows(screen(b2, c, SEPT_POT)) == T0 and
-         published_rows(screen(b2, c, SEPT_POT, **RUNGS["R3"])) == R30,
-         "register completed with every outstanding 2025-26 return: T and R3 unchanged")
+    C.ok("A42", trio(Book(W["orgs"], W["versions"], ann)) == (T0, R30, R40),
+         "register completed with every outstanding 2025-26 return: the answer, R3 and R4 unchanged")
     # management fourth quarters replaced by the audited figure where the extract holds the return
     vs3 = []
     for v in W["versions"]:
@@ -473,19 +524,20 @@ def clean_data_checks(W, C):
             v = copy.copy(v)
             v.ytd = ar.total
         vs3.append(v)
-    b3 = Book(W["orgs"], vs3, W["annual"])
-    C.ok("A43", published_rows(screen(b3, c, SEPT_POT)) == T0 and
-         published_rows(screen(b3, c, SEPT_POT, **RUNGS["R3"])) == R30,
-         "management fourth quarters replaced by audited ones: T and R3 unchanged")
-    # lens swap: identical on the filed grantees, different periods on the unfiled
+    C.ok("A43", trio(Book(W["orgs"], vs3, W["annual"])) == (T0, R30, R40),
+         "management fourth quarters replaced by audited ones: the answer, R3 and R4 unchanged")
+    # lens swap: not one population read two ways
     T = {r["org"]: r for r in W["sept"]["rows"]}
     R3 = {r["org"]: r for r in screen(book, c, SEPT_POT, **RUNGS["R3"])["rows"]}
-    same = [k for k in T if T[k]["end"] == R3[k]["end"]]
-    diffp = [k for k in T if T[k]["end"] != R3[k]["end"]]
-    C.ok("A42", len(same) == 115 and all(published_row(T[k])[:4] == published_row(R3[k])[:4] for k in same),
-         "lens-swap: the 115 filed grantees are identical under T and R3")
-    C.ok("A42", len(diffp) == 31 and all(T[k]["end"] < R3[k]["end"] for k in diffp),
-         "lens-swap: the 31 scored unfiled grantees are different periods, not one figure read twice")
+    R4 = {r["org"]: r for r in screen(book, c, SEPT_POT, **RUNGS["R4"])["rows"]}
+    same3 = [k for k in T if T[k]["end"] == R3[k]["end"]]
+    diff3 = [k for k in T if T[k]["end"] != R3[k]["end"]]
+    C.ok("A42", len(same3) == 115 and all(published_row(T[k])[:4] == published_row(R3[k])[:4] for k in same3),
+         "lens-swap: the 115 filed grantees are identical under the answer and R3")
+    C.ok("A42", len(diff3) == 17 and all(T[k]["end"] < R3[k]["end"] for k in diff3),
+         "lens-swap: the 17 scored 30 June grantees are different periods, not one figure read twice")
+    C.ok("A42", all(published_row(T[k])[:4] == published_row(R4[k])[:4] for k in T) and len(R4) - len(T) == 14,
+         "the answer and the stop agree on all 132 rows the answer scores; the stop adds 14 rows on twelve months already scored")
 
 
 def published_rows(s):

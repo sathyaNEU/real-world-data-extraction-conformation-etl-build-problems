@@ -154,9 +154,10 @@ def check_files(W, C, target, info):
          "no file pairs the September census with offers")
     # single-statement invariant: each load-bearing fact in exactly one document
     docs = [f for f in files if os.path.splitext(f)[1] in (".pdf", ".docx", ".md", ".txt")]
-    facts = {"the September pot": r"\$?820,000", "the floor": r"\$15,000", "the cap": r"\$150,000",
+    facts = {"the September pot": r"\$?560,000", "the floor": r"\$15,000", "the cap": r"\$150,000",
              "the line": r"10 per cent or more", "the reproduction clause": r"gives back every grantee row",
-             "Trust money by receipt": r"quarter it reaches your bank account",
+             "the pay day": r"20th\s+of\s+the\s+month\s+before\s+the\s+month\s+it\s+is\s+for",
+             "the recency clause": r"ending\s+on\s+or\s+after\s+the\s+census\s+before\s+it",
              "a quarter's own return": r"quarter's record is its own return",
              "accepted versions only": r"Only accepted versions are part of the record"}
     for name, pat in facts.items():
@@ -165,7 +166,7 @@ def check_files(W, C, target, info):
     # social layer quotes no figure; no em dash in any document
     thread = texts[WDOC.THREAD]
     C.ok("SS", "$" not in thread and not re.search(r"\d{1,3},\d{3}", thread), "no figure quoted in the thread")
-    C.ok("SS", not any("—" in texts[f] for f in docs), "no em dash in any document")
+    C.ok("SS", not any("\u2014" in texts[f] for f in docs), "no em dash in any document")
     # generation tells
     totals = [sum(r["offer"] for r in W["corpus"][c]["rows"]) for c in MARCH_CENSUSES]
     sep_total = sum(r["offer"] for r in W["sept"]["rows"])
@@ -227,8 +228,8 @@ def record(W, C, info, path):
         "offers": [x for x in rows if x["offer"]], "rows": rows,
         "rungs": {k: {"rate_hc": S[k]["rate"], "offered": sorted(W["by"][o].name for o in
                                                                  {r["org"] for r in S[k]["rows"] if r["offer"]}),
-                      "n_rows": len(S[k]["rows"])} for k in ("R0", "R1", "R2", "R3")},
-        "cells": {k: S[k]["rate"] for k in S if k not in ("T", "R0", "R1", "R2", "R3")},
+                      "n_rows": len(S[k]["rows"])} for k in ("R0", "R1", "R2", "R3", "R4")},
+        "cells": {k: S[k]["rate"] for k in S if k not in ("T", "R0", "R1", "R2", "R3", "R4")},
         "corpus": {c.year: {"rows": len(W["corpus"][c]["rows"]), "offers": W["corpus"][c]["n_offers"],
                             "rate_hc": W["corpus"][c]["rate"],
                             "total": sum(r["offer"] for r in W["corpus"][c]["rows"])} for c in MARCH_CENSUSES},

@@ -176,17 +176,19 @@ def complete(W):
         refs_of[key].add(ref)
     W["refs_of"] = refs_of
     apt = apt_by_quarter(pays, orgs)
+    apt_og = apt_by_quarter(pays, orgs, progs=("OG", "PG"))
     W["apt"] = apt
+    W["apt_og"] = apt_og
     ref_tot = {}
     for o in orgs:
         ref_tot[o.key] = np.array([int(round(tot[o.key][q] / o.dips.get(q, 1.0)))
                                    for q in range(len(tot[o.key]))], dtype=np.int64)
-    W["true_lines"] = true_lines(orgs, tot, apt, ref_tot)
+    W["true_lines"] = true_lines(orgs, tot, apt, ref_tot, apt_og)
     for (key, q4), ar in W["annual"].items():
         L = W["true_lines"][key]
         s = {k: sum(L[q][k] for q in range(q4 - 3, q4 + 1)) for k in L[q4]}
         ar.lines = {"gov": s["gov_grant"] + s["gov_contract"], "donations": s["donations"],
-                    "trading": s["trading"], "grants_other": s["other_grants"] + s["apt"],
+                    "trading": s["trading"], "grants_other": s["other_grants"] + s["apt"] + s["apt_sgf"],
                     "investment": s["investment"], "other": s["other"]}
         assert sum(ar.lines.values()) == ar.total
     attach_lines(W)
@@ -197,7 +199,7 @@ DEFAULT_PARAMS = {
     "twin_a_pct": 5.9,
     "g_r2_held_pct": 5.4,
     "l_dual_pg_pct": 12.7,
-    "reissues": [("A3", dt.date(2025, 2, 20)), ("B020", dt.date(2025, 8, 20))],
+    "reissues": [("F5", dt.date(2025, 2, 20)), ("B020", dt.date(2025, 8, 20))],
 }
 
 
@@ -271,7 +273,7 @@ def make_plan(orgs, tot, annual, params):
         W_v3.append((key, ry))
     params["_v3"] = W_v3
     # H4: three returns whose latest delivery was rejected for line coding (same total)
-    h4 = [("F2", Q(2025, 6), dt.date(2025, 11, 18)), ("A4", Q(2024, 12), dt.date(2025, 6, 10)),
+    h4 = [("F2", Q(2025, 6), dt.date(2025, 11, 18)), ("F4", Q(2024, 6), dt.date(2024, 11, 12)),
           ("B031", Q(2025, 9), dt.date(2026, 2, 24))]
     for key, q, d in h4:
         amt = int(round(tot[key][q] * 0.05))
