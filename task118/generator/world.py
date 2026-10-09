@@ -1,6 +1,8 @@
 """Builds the world in memory: staff, articles, the test archive and the spine allocation."""
 import datetime as dt
 import hashlib
+import re
+import unicodedata
 
 import numpy as np
 from faker import Faker
@@ -8,6 +10,87 @@ from faker import Faker
 import params as P
 import archive as AR
 import spine as SP
+
+# Staff names come from Faker's own locale pools, mixed the way an Australian newsroom's surnames run. Faker has
+# no en_AU person provider (en_AU falls back to en_US's pools), so en_NZ carries the Australasian base.
+# (pool, share, where the given name comes from: the pool's own, or en_NZ's, with that probability of the pool's own)
+STAFF_POOLS = (("en_NZ", 0.48, 1.0), ("en_GB", 0.22, 1.0), ("en_IE", 0.10, 0.2), ("zh_CN", 0.07, 0.4),
+               ("en_IN", 0.05, 0.8), ("vi_VN", 0.04, 0.0), ("de_DE", 0.04, 0.2))
+# it_IT is left out: its surname list is drawn from notable Italians (Berlusconi came up in the first draw).
+NOT_STAFF_NAMES = {  # placeholder identities, a fast-food mascot and public figures a reader would recognise
+    "john smith", "jane smith", "john doe", "jane doe", "joe bloggs", "fred bloggs", "john citizen", "jane citizen",
+    "ronald mcdonald", "david jones", "steve smith", "steven smith", "scott morrison", "john howard", "kevin rudd",
+    "julia gillard", "tony abbott", "malcolm turnbull", "anthony albanese", "paul keating", "bob hawke",
+    "peter dutton", "penny wong", "jim chalmers", "chris bowen", "barnaby joyce", "pauline hanson", "clive palmer",
+    "rupert murdoch", "james packer", "kerry packer", "gina rinehart", "andrew forrest", "jacinda ardern",
+    "john key", "cathy freeman", "ian thorpe", "shane warne", "ricky ponting", "david warner", "pat cummins",
+    "steve irwin", "hugh jackman", "nicole kidman", "kylie minogue", "cate blanchett", "michael clarke"}
+NOT_STAFF_SURNAMES = {"Murdoch", "Packer", "Fairfax", "Stokes",   # Australian media dynasties, in a newsroom's list
+                      "O'Loughlinn"}                                 # a misspelling in Faker's en_IE pool
+GAELIC_MAC = {"donald", "kenzie", "leod", "intosh", "gregor", "lean", "millan", "neil", "pherson", "arthur",
+              "laren", "farlane", "kinnon", "dougall", "innes", "kay", "gill", "rae", "ewan", "allister", "aulay",
+              "lachlan", "queen", "nab", "nair", "iver", "kinlay", "bride", "callum", "ritchie", "fadyen", "diarmid",
+              "gillivray", "donnell", "namara", "manus", "carthy", "guire", "grath", "mahon", "cormack", "kenna",
+              "mullen", "cann", "auley"}
+NAME_RE = re.compile(r"^[A-Z][a-z]+(?:[-'][A-Z][a-z]+)?$|^(?:Mc|Mac|O')[A-Z][a-z]+$")
+
+
+def recase(surname):
+    """Mc and the Gaelic Mac names take a capital after the prefix (McDonald, MacLeod), as do O' names."""
+    s = re.sub(r"^Mc([a-z])", lambda m: "Mc" + m.group(1).upper(), surname)
+    m = re.match(r"^Mac([a-z]+)$", s)
+    if m and m.group(1) in GAELIC_MAC:
+        s = "Mac" + m.group(1).capitalize()
+    s = re.sub(r"^O'([a-z])", lambda m: "O'" + m.group(1).upper(), s)
+    return re.sub(r"-([a-z])", lambda m: "-" + m.group(1).upper(), s)
+
+
+def deaccent(s):
+    s = s.replace("Đ", "D").replace("đ", "d")
+    return "".join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c))
+
+
+class StaffNames:
+    """Seeded draws from the pools above; never typed, never the en_US fallback."""
+
+    def __init__(self, avoid_first, avoid_last, used):
+        self.fk = {}
+        for k, (loc, _, _) in enumerate(STAFF_POOLS):
+            self.fk[loc] = Faker(loc)
+            self.fk[loc].seed_instance(P.SEED * 100 + k)
+        self.rng = AR.rng_for(11)           # its own stream: ids and dates keep drawing from rng_for(10)
+        self.share = np.array([s for _, s, _ in STAFF_POOLS])
+        self.share = self.share / self.share.sum()
+        self.avoid_first, self.avoid_last, self.used = avoid_first, avoid_last, used
+        self.n_last, self.n_first = {}, {}
+
+    def one(self):
+        loc, _, own = STAFF_POOLS[int(self.rng.choice(len(STAFF_POOLS), p=self.share))]
+        fk = self.fk[loc]
+        if loc == "zh_CN":
+            last = fk.last_romanized_name()
+            first = fk.first_romanized_name() if self.rng.random() < own else self.fk["en_NZ"].first_name()
+        else:
+            last = deaccent(fk.last_name()) if loc == "vi_VN" else fk.last_name()
+            first = fk.first_name() if self.rng.random() < own else self.fk["en_NZ"].first_name()
+        return first.strip(), recase(last.strip()), loc
+
+    def __call__(self):
+        while True:
+            first, last, loc = self.one()
+            nm = "%s %s" % (first, last)
+            if not (NAME_RE.match(first) and NAME_RE.match(last)) or nm in self.used:
+                continue
+            if nm.lower() in NOT_STAFF_NAMES or last in NOT_STAFF_SURNAMES or first in self.avoid_first \
+                    or last in self.avoid_last:
+                continue
+            if self.n_last.get(last, 0) >= 2 or self.n_first.get(first, 0) >= 3:
+                continue
+            self.used.add(nm)
+            self.n_last[last] = self.n_last.get(last, 0) + 1
+            self.n_first[first] = self.n_first.get(first, 0) + 1
+            return nm
+
 
 PERSONAS = {
     "Lisa Jennings": ("EDT", "Editor-in-chief", "Sydney", dt.date(2019, 3, 4)),
@@ -52,20 +135,11 @@ class World:
 
 
 def make_staff(W):
-    fk = Faker("en_AU")
-    fk.seed_instance(P.SEED)
     rng = AR.rng_for(10)
     used = set(PERSONAS)
     persona_first = {n.split()[0] for n in PERSONAS}
     persona_last = {n.split()[-1] for n in PERSONAS}
-
-    def name():
-        while True:
-            nm = "%s %s" % (fk.first_name(), fk.last_name())
-            f, l = nm.split()[0], nm.split()[-1]
-            if nm not in used and f not in persona_first and l not in persona_last and len(nm.split()) == 2:
-                used.add(nm)
-                return nm
+    name = StaffNames(persona_first, persona_last, used)
 
     ids = set()
 

@@ -12,7 +12,8 @@
  ],
  "distractor_files": [
   "search_ranking_tests_2026H1.xlsx",
-  "seller_survey_fresh_listings_2026Q2.csv"
+  "seller_survey_fresh_listings_2026Q2.csv",
+  "pricing_committee_minutes_2026-10-06.docx"
  ],
  "input_gates": {
   "files": 23,
@@ -97,7 +98,7 @@
   {
    "path": "finance_buyer_protection_fee_income_2026Q3.xlsx",
    "format": "xlsx",
-   "bytes": 6108,
+   "bytes": 6107,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -142,7 +143,7 @@
   {
    "path": "home_carousel_sessions_weekly_R2_2026W01_2026W26.csv",
    "format": "csv",
-   "bytes": 7784,
+   "bytes": 7783,
    "rows": 208,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -151,7 +152,7 @@
   {
    "path": "kopersbescherming_tarieven.csv",
    "format": "csv",
-   "bytes": 318,
+   "bytes": 305,
    "rows": 3,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -169,7 +170,7 @@
   {
    "path": "orders_enrolled_buyers_2026-06-01_2026-10-11.parquet",
    "format": "parquet",
-   "bytes": 6748352,
+   "bytes": 6747332,
    "rows": 366056,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -178,8 +179,8 @@
   {
    "path": "payments_buyer_protection_2026-06-01_2026-10-11.parquet",
    "format": "parquet",
-   "bytes": 5288511,
-   "rows": 312722,
+   "bytes": 5374594,
+   "rows": 317519,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
    "license": "CC0-1.0 (original work)"
@@ -187,7 +188,7 @@
   {
    "path": "planning_thread_carousel_slot.txt",
    "format": "txt",
-   "bytes": 2254,
+   "bytes": 2319,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -196,7 +197,7 @@
   {
    "path": "pricing_committee_minutes_2026-10-06.docx",
    "format": "docx",
-   "bytes": 37351,
+   "bytes": 37145,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -232,7 +233,7 @@
   {
    "path": "slot_capacity_and_release_gating.md",
    "format": "md",
-   "bytes": 1500,
+   "bytes": 1159,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",

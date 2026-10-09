@@ -64,12 +64,17 @@ def true_table(adjust=None):
     return df
 
 
-def first_release(true):
+def first_release(true, base=None):
     """The first release: up to 2026-W26, a share of each platform-week's sessions sits in the two
-    younger bands that the account service puts in the two older ones."""
+    younger bands that the account service puts in the two older ones. The sessions moved in each band are
+    counted on `base` (the table before the slot weeks' placement factors, by default `true` itself), so the
+    first release of a placed table is the placed table plus fixed moves and every platform-week total is
+    unchanged."""
     rng = P.stream("traffic-r1")
+    base = true if base is None else base
+    assert (base.index == true.index).all()
     out = true.copy()
-    for (y, w, plat), g in true.groupby(["year", "week", "platform"], sort=True):
+    for (y, w, plat), g in base.groupby(["year", "week", "platform"], sort=True):
         if (y, w) >= FIX_WEEK:
             continue
         tot = g.sessions.sum()

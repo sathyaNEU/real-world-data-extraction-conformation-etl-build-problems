@@ -6,11 +6,14 @@ checks.py against the files as written. Exit status 0 only when every assertion 
 import argparse
 import csv
 import datetime as dt
+import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -54,7 +57,80 @@ F = dict(
 )
 # The dashboard export is the licensed wrong basis's instrument (rung 0): declared as a wrong-basis distractor.
 DISTRACTORS = ["agreement", "newsletter", "dashboard"]
-EXPORT_STAMP = dt.datetime(2026, 10, 16, 9, 0)      # AEST wall clock of the export
+EXPORT_STAMP = dt.datetime(2026, 10, 16, 9, 0)      # AEST: the folder as handed over; no file is later than this
+# AEST wall clock at which each file was last written: its mtime, a workbook's last save, a document's own date.
+# The six extract runs are the export log's; every other file keeps the date its own owner gave it. The change
+# log's save is computed from its rows (changelog_saved).
+STAMP = dict(
+    dashboard=dt.datetime(2026, 10, 1, 9, 14), newsletter=dt.datetime(2026, 10, 2, 10, 38),
+    fieldref=dt.datetime(2026, 10, 2, 16, 52), plan=dt.datetime(2026, 10, 9, 14, 5),
+    staff=dt.datetime(2026, 10, 12, 8, 46), charter=dt.datetime(2026, 10, 12, 16, 20, 41),
+    panel=dt.datetime(2026, 10, 15, 16, 18), panelwb=dt.datetime(2026, 10, 15, 16, 40),
+    spine=dt.datetime(2026, 10, 16, 6, 31), archive=dt.datetime(2026, 10, 16, 6, 44),
+    desks=dt.datetime(2026, 10, 16, 6, 46), cms=dt.datetime(2026, 10, 16, 7, 19),
+    cmsnotes=dt.datetime(2026, 10, 16, 7, 52), exportlog=dt.datetime(2026, 10, 16, 7, 56),
+    thread=dt.datetime(2026, 10, 16, 8, 41), policy=dt.datetime(2025, 1, 28, 11, 0, 37),
+    bulletin=dt.datetime(2026, 4, 8, 11, 30), agreement=dt.datetime(2025, 6, 24, 15, 0, 12),
+)
+# Audience data's export log: the extract runs behind the files it produced (run id, source, run by, requested by,
+# coverage). Workbooks and documents from other owners are not extract runs and carry their own provenance.
+EXTRACT_RUNS = [
+    ("newsletter", "EXT-26-1187", "Email platform", "Natalie Benjamin", "Kayla Torres",
+     "Weeks starting 29 Jun to 21 Sep 2026"),
+    ("panel", "EXT-26-1239", "Audience warehouse", "Kayla Torres", "Kayla Torres",
+     "Periods Oct 2025 to Sep 2026, every release"),
+    ("spine", "EXT-26-1244", "Audience warehouse", "Natalie Benjamin", "Corey Cox",
+     "Pageviews 1 Oct 2025 to 30 Sep 2026 (AEST), all desks"),
+    ("archive", "EXT-26-1245", "Audience warehouse", "Natalie Benjamin", "Corey Cox",
+     "App engine from 2019; web CMS engine from 1 Oct 2025; concluded to 30 Sep 2026"),
+    ("desks", "EXT-26-1246", "Audience warehouse", "Natalie Benjamin", "Corey Cox", "Current desks"),
+    ("cms", "EXT-26-1248", "Web CMS (national and Brisbane instances)", "Natalie Benjamin", "Standards",
+     "Documents first live 1 Oct 2025 to 30 Sep 2026, and never-live documents first saved then"),
+]
+# Each input workbook's Excel properties: (creator, last saved by, first created, AEST); the last save is STAMP's.
+WORKBOOK_PROPS = dict(
+    staff=("People and Culture", "People and Culture", dt.datetime(2026, 10, 12, 8, 30)),
+    plan=("Kayla Torres", "Kayla Torres", dt.datetime(2026, 9, 18, 11, 20)),
+    changelog=("Nina Franklin", "Nina Franklin", None),     # created the working day after embedding 1's sign-off
+    panelwb=("Kayla Torres", "Kayla Torres", dt.datetime(2025, 11, 11, 10, 5)),
+)
+AUDIT_FLOOR = "2019-01-01"      # the squad's first year: the change log was started when embedding 1 closed
+
+
+def utc(t):
+    return (t - P.AEST).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def epoch(t):
+    return (t - P.AEST - dt.datetime(1970, 1, 1)).total_seconds()
+
+
+def workbook_props(path, creator, last_by, created, modified):
+    """Excel's own record in docProps/core.xml: who made the workbook, who saved it last, and when (UTC). Every
+    other entry is carried over byte for byte, at the 1980-01-01 entry time Excel writes."""
+    with zipfile.ZipFile(path) as z:
+        infos = z.infolist()
+        data = {i.filename: z.read(i.filename) for i in infos}
+    core = data["docProps/core.xml"].decode("utf-8")
+    core = re.sub(r"<dc:creator>[^<]*</dc:creator>", "<dc:creator>%s</dc:creator>" % creator, core)
+    core = re.sub(r"<cp:lastModifiedBy>[^<]*</cp:lastModifiedBy>",
+                  "<cp:lastModifiedBy>%s</cp:lastModifiedBy>" % last_by, core)
+    core = re.sub(r"(<dcterms:created[^>]*>)[^<]*", lambda m: m.group(1) + utc(created), core)
+    core = re.sub(r"(<dcterms:modified[^>]*>)[^<]*", lambda m: m.group(1) + utc(modified), core)
+    data["docProps/core.xml"] = core.encode("utf-8")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zout:
+        for i in infos:
+            zi = zipfile.ZipInfo(i.filename, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = i.external_attr
+            zi.create_system = i.create_system
+            zout.writestr(zi, data[i.filename])
+    Path(path).write_bytes(buf.getvalue())
+    with zipfile.ZipFile(path) as z:
+        for i in infos:
+            if i.filename != "docProps/core.xml":
+                assert z.getinfo(i.filename).CRC == i.CRC, i.filename
 
 
 def write_csv(path, header, rows):
@@ -264,8 +340,7 @@ def write_dashboard(path, dash):
         w.writerow(["Window", "2025-10-01 to 2026-09-30 (trailing 12 months, AEST)"])
         w.writerow(["Refreshed", "2026-10-01 06:00 AEST"])
         w.writerow(["Owner", "Experimentation"])
-        w.writerow(["Description", "Average winning lift across the concluded tests in the window. Describes those "
-                                   "tests."])
+        w.writerow(["Filters", "Test status is Concluded; concluded date in window"])
         w.writerow([])
         w.writerow(["vertical", "tests_concluded", "tests_with_variant_shipped", "avg_winning_lift_pct"])
         for v, n, s, lift in dash:
@@ -379,47 +454,13 @@ def write_newsletter(W, path):
                      "clicks", "unsubscribes"], rows)
 
 
-def write_exportlog(path, counts, changelog_on):
-    rows = [
-        (F["spine"], "Article pageviews by source surface and age band", "Audience warehouse", "2026-10-16",
-         "Natalie Benjamin", "Pageviews 1 Oct 2025 to 30 Sep 2026 (AEST), all desks", counts["spine"]),
-        (F["archive"], "Concluded headline tests, one row per package", "Audience warehouse", "2026-10-16",
-         "Natalie Benjamin", "App engine from 2019; web CMS engine from 1 Oct 2025; concluded to 30 Sep 2026",
-         counts["archive"]),
-        (F["staff"], "Newsroom staff list with leavers", "HR system", "2026-10-12", "People team",
-         "Newsroom teams; leavers since 1 Jan 2019", counts["staff"]),
-        (F["plan"], "Audience plan 2027 (version P2)", "Audience shared drive", "2026-10-09", "Kayla Torres",
-         "Desk clicks, plan year 2027", ""),
-        (F["changelog"], "Headline squad change log of closed embeddings", "Experimentation shared drive",
-         changelog_on.date().isoformat(), "Nina Franklin", "Embeddings 2019 to 2025", 7),
-        (F["fieldref"], "Field reference for the audience warehouse tables", "Audience data wiki", "2026-10-02",
-         "Natalie Benjamin", "Articles, pageviews, headline tests, desks", ""),
-        (F["charter"], "Headline squad 2027 placement brief", "Newsroom planning", "2026-10-12", "Corey Cox",
-         "Version 2", ""),
-        (F["desks"], "Desk register", "Audience warehouse", "2026-10-16", "Natalie Benjamin", "Current desks",
-         len(P.DESKS)),
-        (F["dashboard"], "Experimentation dashboard, concluded tests by vertical", "Experimentation dashboard",
-         "2026-10-01", "Experimentation", "Trailing 12 months to 30 Sep 2026", ""),
-        (F["cms"], "Web CMS saved revisions for the web desks", "Web CMS (national and Brisbane instances)",
-         "2026-10-16", "Natalie Benjamin", "Documents first live 1 Oct 2025 to 30 Sep 2026, and never-live documents first saved then",
-         counts["cms"]),
-        (F["cmsnotes"], "Field notes for the CMS revision export", "Audience data", "2026-10-16",
-         "Natalie Benjamin", "", ""),
-        (F["policy"], "Editorial standards, section 7 (corrections)", "Standards handbook", "2025-01-28",
-         "Standards desk", "Version 3.2", ""),
-        (F["panel"], "Industry audience panel, monthly section estimates", "Panel data portal", "2026-10-15",
-         "Kayla Torres", "Periods Oct 2025 to Sep 2026, every release", counts["panel"]),
-        (F["panelwb"], "Panel reference workbook: sections, history, releases", "Panel data portal", "2026-10-15",
-         "Kayla Torres", "", ""),
-        (F["bulletin"], "Standards bulletin, April 2026", "Standards desk", "2026-04-08", "Standards desk",
-         "Issue 31", ""),
-        (F["thread"], "Planning thread on squad placement", "Mail", "2026-10-16", "Corey Cox", "", ""),
-        (F["agreement"], "Content syndication agreement with Newsfold", "Commercial contracts register",
-         "2025-06-24", "Commercial team", "Dated 1 Jul 2024, Variation 1", ""),
-        (F["newsletter"], "Newsletter performance by week", "Email platform", "2026-10-02", "Audience",
-         "Weeks starting 29 Jun to 21 Sep 2026", 78),
-    ]
-    write_csv(path, ["file", "contents", "source_system", "extracted_on", "extracted_by", "coverage", "rows"], rows)
+def write_exportlog(path, counts):
+    rows = []
+    for key, run, source, by, asked, coverage in EXTRACT_RUNS:
+        n = {"newsletter": 78, "desks": len(P.DESKS)}.get(key, counts.get(key))
+        rows.append((run, STAMP[key].strftime("%Y-%m-%d %H:%M"), F[key], source, by, asked, coverage, n))
+    write_csv(path, ["run_id", "run_at_aest", "file", "source_system", "run_by", "requested_by", "coverage", "rows"],
+              rows)
 
 
 # ---------------------------------------------------------------------------------- derived numbers for the files
@@ -471,25 +512,18 @@ def bulletin_counts(W):
 
 # ---------------------------------------------------------------------------------- normalisation
 
-def normalise(target):
-    # producer metadata: audit, repair what the audit flags, audit again
-    r = subprocess.run([sys.executable, str(SCRUB), str(target), "--floor", "2024-01-01", "--ceiling",
+def normalise(target, stamps):
+    # producer metadata: every writer is given its in-fiction application at write time, so the audit has nothing
+    # to repair; it runs as a check, and a flagged file stops the build rather than being patched here
+    r = subprocess.run([sys.executable, str(SCRUB), str(target), "--floor", AUDIT_FLOOR, "--ceiling",
                         P.AS_OF.isoformat()], capture_output=True, text=True)
     if r.returncode != 0:
-        r2 = subprocess.run([sys.executable, str(SCRUB), str(target), "--apply", "--producer", "Bightline News",
-                             "--stamp", P.EXPORT_DATE.isoformat(), "--floor", "2024-01-01", "--ceiling",
-                             P.AS_OF.isoformat()], capture_output=True, text=True)
-        if r2.returncode != 0:
-            raise SystemExit("scrub failed:\n" + r2.stdout + r2.stderr)
-    r3 = subprocess.run([sys.executable, str(SCRUB), str(target), "--floor", "2024-01-01", "--ceiling",
-                         P.AS_OF.isoformat()], capture_output=True, text=True)
-    if r3.returncode != 0:
-        raise SystemExit("scrub audit still flags files:\n" + r3.stdout + r3.stderr)
-    # one in-fiction export time on every file
-    ts = (EXPORT_STAMP - P.AEST - dt.datetime(1970, 1, 1)).total_seconds()
-    for p in sorted(Path(target).iterdir()):
-        os.utime(p, (ts, ts))
-    return r3.stdout.strip()
+        raise SystemExit("producer audit flags files:\n" + r.stdout + r.stderr)
+    # each file carries the time it was written: an extract its run, a workbook its last save, a document its date
+    for key, name in F.items():
+        ts = epoch(stamps[key])
+        os.utime(Path(target) / name, (ts, ts))
+    return r.stdout.strip()
 
 
 # ---------------------------------------------------------------------------------- main
@@ -510,35 +544,42 @@ def build(out):
     write_plan(W, target / F["plan"])
     W.changelog = changelog_rows(W)
     write_changelog(W, target / F["changelog"], W.changelog)
+    W.stamp = dict(STAMP, changelog=changelog_saved(W.changelog))
+    first = min(W.changelog, key=lambda r: r["no"])["closed"] + dt.timedelta(days=1)
+    while first.weekday() >= 5:
+        first += dt.timedelta(days=1)
+    W.wb_created = {k: (v[2] if v[2] else dt.datetime.combine(first, dt.time(9, 40))) for k, v in WORKBOOK_PROPS.items()}
     (target / F["fieldref"]).write_text(docs.field_reference_md(), encoding="utf-8")
     docs.write_pdf(target / F["charter"], "Headline squad: 2027 placement brief", docs.charter_blocks(),
-                   "Bightline News | Internal. Not for circulation outside the newsroom.", dt.datetime(2026, 10, 12, 16, 20),
-                   author="Corey Cox")
+                   "Bightline News | Internal. Not for circulation outside the newsroom.", STAMP["charter"],
+                   author="Corey Cox", app="word2010")
     write_desks(target / F["desks"])
     W.dashboard = dashboard_rows(W)
     write_dashboard(target / F["dashboard"], W.dashboard)
     counts["cms"] = write_cms(W, target / F["cms"])
     (target / F["cmsnotes"]).write_text(docs.cms_fields_txt(), encoding="utf-8")
     docs.write_pdf(target / F["policy"], "Editorial standards: corrections", docs.policy_blocks(),
-                   "Bightline News editorial standards | Section 7", dt.datetime(2025, 1, 28, 11, 0),
-                   author="Bightline News Standards")
+                   "Bightline News editorial standards | Section 7", STAMP["policy"],
+                   author="Bightline News Standards", app="word2010")
     counts["panel"] = write_panel(W, target / F["panel"])
     write_panelwb(W, target / F["panelwb"])
+    for key, (creator, last_by, _) in WORKBOOK_PROPS.items():
+        workbook_props(target / F[key], creator, last_by, W.wb_created[key], W.stamp[key])
     W.bulletin = bulletin_counts(W)
-    docs.write_docx(target / F["bulletin"], docs.bulletin_paras(*W.bulletin), dt.datetime(2026, 4, 8, 9, 30),
+    docs.write_docx(target / F["bulletin"], docs.bulletin_paras(*W.bulletin), STAMP["bulletin"] - dt.timedelta(hours=2),
                     author="Standards desk", title="Standards bulletin, April 2026")
     (target / F["thread"]).write_text(docs.thread_eml(), encoding="utf-8")
     docs.write_pdf(target / F["agreement"], "Content syndication agreement", docs.agreement_blocks(),
                    "Bightline News Pty Ltd and Newsfold Pty Ltd | Commercial in confidence",
-                   dt.datetime(2025, 6, 24, 15, 0), author="Bightline News Commercial")
+                   STAMP["agreement"], author="Bightline News Commercial", app="pdfmaker")
     write_newsletter(W, target / F["newsletter"])
-    write_exportlog(target / F["exportlog"], counts, changelog_saved(W.changelog))
-    W.scrub_audit = normalise(target)
-    write_metadata(out, target, counts)
+    write_exportlog(target / F["exportlog"], counts)
+    W.scrub_audit = normalise(target, W.stamp)
+    write_metadata(out, target, counts, W.stamp)
     return W, target
 
 
-def write_metadata(out, target, counts):
+def write_metadata(out, target, counts, stamps):
     fmt = {}
     files = []
     for key, name in F.items():
@@ -548,7 +589,7 @@ def write_metadata(out, target, counts):
         files.append({"path": name, "format": ext, "bytes": p.stat().st_size,
                       "rows": counts.get(key, None),
                       "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-                      "date": P.EXPORT_DATE.isoformat(), "license": "CC0-1.0 (original work)"})
+                      "date": stamps[key].date().isoformat(), "license": "CC0-1.0 (original work)"})
     meta = {
         "task": "task118",
         "domain": "Marketing & Consumer Research",

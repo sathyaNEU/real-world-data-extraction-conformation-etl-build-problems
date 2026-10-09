@@ -16,7 +16,9 @@ from scipy.optimize import minimize
 
 import params as P
 import asks as asks_mod
-from build_pack import F, DISTRACTORS, EXPORT_STAMP
+from build_pack import F, DISTRACTORS, EXPORT_STAMP, EXTRACT_RUNS
+import docs as docs_mod
+import world as world_mod
 
 SL = P.SHORTLIST
 CUL = "CUL-N"
@@ -1412,40 +1414,164 @@ def run(W, target, out):
     L_.check("metadata.json: valid, deliverables two, every file listed with source, date and licence",
              len(meta["deliverables"]) == 2 and sorted(x["path"] for x in meta["files"]) == files
              and all(x["license"] and x["source"] and x["date"] for x in meta["files"]))
+    # ----- provenance: the export log is Audience data's record of its extract runs; every other file states its own
     log = pd.read_csv(Path(target) / F["exportlog"])
-    L_.check("export log covers every shipped file but itself (set equality)", sorted(log["file"]) == sorted(f for f in files if f != F["exportlog"]))
-    # timestamps: nothing is dated before an event it records, and nothing after the export stamp it ships under
-    on = dict(zip(log["file"], log["extracted_on"]))
+    run_files = {F[k]: k for k, *_ in EXTRACT_RUNS}
+    L_.check("export log: one row per Audience data extract run, each logged file shipped (H9, scoped to the runs)",
+             sorted(log["file"]) == sorted(run_files) and set(log["file"]) <= set(files) and log["run_id"].is_unique,
+             str(sorted(log["file"])))
+    L_.check("export log: no workbook, document, thread or contract logged as an extract",
+             not set(log["file"]) & {F[k] for k in ("plan", "changelog", "panelwb", "fieldref", "charter", "cmsnotes",
+                                                      "policy", "bulletin", "thread", "agreement", "staff", "dashboard")})
+    nrows = {"spine": len(D["spine"]), "archive": len(D["arch"]), "desks": len(D["desks"]), "cms": len(D["cms"]),
+             "panel": len(D["panel"]), "newsletter": len(pd.read_csv(Path(target) / F["newsletter"]))}
+    L_.check("export log: each run's row count is its file's",
+             all(int(r["rows"]) == nrows[run_files[r["file"]]] for _, r in log.iterrows()))
+    own = {"staff": r"extracted from the HR system on 12 October 2026",
+           "plan": r"Audience plan 2027, version P2, 9 October 2026\. Owner: Kayla Torres",
+           "changelog": r"Kept by Experimentation \(Nina Franklin\)",
+           "fieldref": r"Maintained by Audience data \(Natalie Benjamin\)\. Revised 2 October 2026\.",
+           "charter": r"Owner: Corey Cox, Managing editor \| Version 2, 12 October 2026",
+           "dashboard": r"Refreshed,2026-10-01 06:00 AEST\nOwner,Experimentation",
+           "cmsnotes": r"Prepared by Audience data at the request of Standards, 16 October 2026",
+           "policy": r"Version 3\.2, effective 1 February 2025 \| Owner: Standards editor",
+           "bulletin": r"April 2026 \| Issue 31 \| From the standards desk",
+           "thread": r"Date: Fri, 16 Oct 2026 08:38:10 \+1000",
+           "agreement": r"Dated 1 July 2024 \| Variation 1, 1 July 2025"}
+    outside = [k for k, f in F.items() if f not in run_files and k not in ("exportlog", "panelwb")]
 
-    def created(name):
+    def core(name):
         with zipfile.ZipFile(Path(target) / name) as z:
-            x = re.search(r"<dcterms:created[^>]*>([^<]+)<", z.read("docProps/core.xml").decode()).group(1)
-        return dt.datetime.strptime(x[:16], "%Y-%m-%dT%H:%M")
+            x = z.read("docProps/core.xml").decode()
+            entry_times = {i.date_time for i in z.infolist()}
+        get = lambda tag: re.search(r"<%s[^>]*>([^<]*)<" % tag, x).group(1)
+        aest = lambda v: dt.datetime.strptime(v, "%Y-%m-%dT%H:%M:%SZ") + P.AEST
+        return dict(creator=get("dc:creator"), last=get("cp:lastModifiedBy"), created=aest(get("dcterms:created")),
+                    modified=aest(get("dcterms:modified")), entries=entry_times)
+
+    def mtime(name):
+        return dt.datetime(1970, 1, 1) + dt.timedelta(seconds=(Path(target) / name).stat().st_mtime) + P.AEST
+
+    pw = core(F["panelwb"])
+    L_.check("provenance: every file outside the export log states its owner and date in its own content (the panel "
+             "workbook in its Excel properties)",
+             sorted(outside) == sorted(own) and all(re.search(own[k], T[F[k]]) for k in own)
+             and pw["creator"] == "Kayla Torres" and pw["modified"] == W.stamp["panelwb"],
+             str([k for k in own if not re.search(own[k], T[F[k]])]))
+
+    # ----- timestamps: each file carries the time it was written, nothing predates the records it holds or postdates
+    # the handover, and every container agrees with its file
+    mt = {k: mtime(f) for k, f in F.items()}
+    L_.check("mtimes: every file carries its own write time (an extract its run, a workbook its last save, a document "
+             "its date), all distinct and none after the handover",
+             all(abs((mt[k] - W.stamp[k]).total_seconds()) < 1 for k in F) and len(set(mt.values())) == len(F)
+             and max(mt.values()) <= EXPORT_STAMP, str(sorted((v, k) for k, v in mt.items())[-3:]))
+    runs_at = {r["file"]: dt.datetime.strptime(r["run_at_aest"], "%Y-%m-%d %H:%M") for _, r in log.iterrows()}
+    L_.check("export log: each run's time is its file's write time, and the log was saved after its last run",
+             all(runs_at[f] == mt[k] for f, k in run_files.items()) and mt["exportlog"] > max(runs_at.values()))
+    utc_aest = lambda col: pd.to_datetime(col.str.slice(0, 16)) + pd.Timedelta(hours=10)
+    news = pd.read_csv(Path(target) / F["newsletter"])
+    last_rec = {
+        "spine": pd.Timestamp(D["spine"]["published_date"].max()) + pd.Timedelta(days=1),
+        "archive": utc_aest(D["arch"]["concluded_at"]).max(),
+        "cms": utc_aest(D["cms"]["saved_at"]).max(),
+        "panel": pd.to_datetime(D["rel"]["published_on"]).max(),
+        "newsletter": pd.to_datetime(news["week_starting"]).max() + pd.Timedelta(days=7),
+        "dashboard": pd.Timestamp(2026, 10, 1, 6, 0),
+        "staff": pd.to_datetime(D["staff"]["end_date"]).max(),
+        "changelog": pd.to_datetime(D["chg"]["closed_on"]).max() + pd.Timedelta(days=1),
+        "panelwb": pd.to_datetime(D["rel"]["published_on"]).max(),
+    }
+    L_.check("mtimes: no file is stamped before the latest record it carries",
+             all(mt[k] >= last_rec[k].to_pydatetime() for k in last_rec),
+             str({k: (str(mt[k]), str(last_rec[k])) for k in last_rec if mt[k] < last_rec[k].to_pydatetime()}))
+    stated = {"plan": "9 October 2026", "charter": "12 October 2026", "fieldref": "2 October 2026",
+              "cmsnotes": "16 October 2026"}
+    L_.check("mtimes: a document that states its date was written on that date",
+             all(mt[k].date() == dt.datetime.strptime(v, "%d %B %Y").date() for k, v in stated.items()))
+    wbs = {k: core(F[k]) for k in ("staff", "plan", "changelog", "panelwb")}
+    L_.check("containers: every input workbook was created before its last save, saved at its file's time, by a person "
+             "or team rather than the organisation, with Excel's 1980-01-01 entry times",
+             all(c["created"] < c["modified"] == W.stamp[k] for k, c in wbs.items())
+             and all(c["creator"] != "Bightline News" and c["last"] != "Bightline News" for c in wbs.values())
+             and all(c["entries"] == {(1980, 1, 1, 0, 0, 0)} for c in wbs.values()),
+             str({k: (str(c["created"]), str(c["modified"]), c["creator"]) for k, c in wbs.items()}))
+    bl = core(F["bulletin"])
+    L_.check("containers: the bulletin was created before its last save, saved at its file's time, Word's entry times",
+             bl["created"] < bl["modified"] == W.stamp["bulletin"] and bl["entries"] == {(1980, 1, 1, 0, 0, 0)})
+    from pypdf import PdfReader
+    pdfmeta = {k: PdfReader(str(Path(target) / F[k])).metadata for k in ("charter", "policy", "agreement")}
+    apps = {(c, p) for c, p, _ in docs_mod.PDF_APPS.values()}
+    pdf_when = {k: dt.datetime.strptime(m["/CreationDate"][2:16], "%Y%m%d%H%M%S") for k, m in pdfmeta.items()}
+    raw = b"".join((Path(target) / F[k]).read_bytes() for k in pdfmeta)
+    L_.check("containers: each PDF names the application it was written with (Word 2010, Acrobat PDFMaker), dated at "
+             "its file's time, with no writing library's name anywhere in the file",
+             all((m.creator, m.producer) in apps for m in pdfmeta.values())
+             and all(pdf_when[k] == W.stamp[k] for k in pdfmeta) and b"ReportLab" not in raw
+             and b"reportlab" not in raw.lower(), str({k: (m.creator, m.producer) for k, m in pdfmeta.items()}))
+
     closed = pd.to_datetime(D["chg"]["closed_on"]).max().date()
-    chg_saved = created(F["changelog"])
-    L_.check("dates: the change log was saved after its last embedding was signed off, on the date the export log records",
-             closed < chg_saved.date() and chg_saved.date().isoformat() == on[F["changelog"]] <= P.AS_OF.isoformat(),
-             "closed %s, saved %s, logged %s" % (closed, chg_saved, on[F["changelog"]]))
+    chg_saved = wbs["changelog"]["modified"]
+    L_.check("dates: the change log was saved after its last embedding was signed off, and started when the first was",
+             closed < chg_saved.date() <= P.AS_OF and wbs["changelog"]["created"].date()
+             > pd.to_datetime(D["chg"]["closed_on"]).min().date(),
+             "closed %s, saved %s, created %s" % (closed, chg_saved, wbs["changelog"]["created"]))
     rel_last = pd.to_datetime(D["rel"]["published_on"]).max()
     ends = pd.to_datetime(D["staff"]["end_date"]).dropna()
     L_.check("dates: the panel workbook postdates its last release and the staff list its last leaver",
-             created(F["panelwb"]) >= rel_last and (ends.empty or created(F["staff"]) >= ends.max()),
-             "%s %s" % (created(F["panelwb"]), created(F["staff"])))
+             wbs["panelwb"]["modified"] >= rel_last and (ends.empty or wbs["staff"]["modified"] >= ends.max()),
+             "%s %s" % (wbs["panelwb"]["modified"], wbs["staff"]["modified"]))
     th = T[F["thread"]]
     when_last = dt.datetime.strptime(re.search(r"^Date: \w{3}, (.+?) \+1000$", th, re.M).group(1), "%d %b %Y %H:%M:%S")
     nb = re.search(r"On \w{3}, (\d+ \w{3} \d{4}) at (\d\d:\d\d), Natalie Benjamin", th)
     when_nb = dt.datetime.strptime("%s %s" % nb.groups(), "%d %b %Y %H:%M")
-    named = [F[k] for k in ("spine", "archive", "staff", "plan", "changelog", "panel", "panelwb", "cms", "fieldref")]
-    L_.check("dates: the thread announces the exports no earlier than the day each named file was extracted, after every "
-             "named workbook was saved, and its last message predates the export stamp",
-             all(when_nb.date().isoformat() >= on[f] for f in named)
-             and all(created(f) <= when_nb for f in named if f.endswith(".xlsx"))
-             and when_last <= EXPORT_STAMP and when_last.date().isoformat() == on[F["thread"]],
-             "announced %s, last message %s, stamp %s" % (when_nb, when_last, EXPORT_STAMP))
+    named = ("spine", "archive", "staff", "plan", "changelog", "panel", "panelwb", "cms", "fieldref")
+    L_.check("dates: the thread announces the exports after each named file was written, and was saved after its last "
+             "message and before the handover",
+             all(mt[k] <= when_nb for k in named) and when_last <= mt["thread"] <= EXPORT_STAMP
+             and mt["thread"].date() == when_last.date(),
+             "announced %s, last message %s, saved %s" % (when_nb, when_last, mt["thread"]))
     prep = re.search(r"Prepared by Audience data at the request of Standards, (\d+ \w+ \d{4})", T[F["cmsnotes"]])
-    L_.check("dates: the CMS field notes are dated the day the CMS export was extracted",
-             prep is not None and dt.datetime.strptime(prep.group(1), "%d %B %Y").date().isoformat() == on[F["cms"]]
-             == on[F["cmsnotes"]])
+    L_.check("dates: the CMS field notes are dated the day of the CMS export run, and written after it",
+             prep is not None and dt.datetime.strptime(prep.group(1), "%d %B %Y").date() == runs_at[F["cms"]].date()
+             and mt["cmsnotes"] > runs_at[F["cms"]])
+
+    # ----- the staff list's names (judge pass 3): drawn from Faker's own pools, recased, no placeholder or public name
+    names = list(D["staff"]["full_name"])
+    sur = pd.Series([n.split()[-1] for n in names])
+    fst = pd.Series([n.split()[0] for n in names])
+    persona_rows = [n for n in names if n in world_mod.PERSONAS]
+    L_.check("staff names: 207 rows, the six personas on the card among them, every other name two words",
+             len(names) == 207 and sorted(persona_rows) == sorted(world_mod.PERSONAS)
+             and all(len(n.split()) == 2 for n in names))
+    L_.check("staff names: Mc, Gaelic Mac and O' surnames carry their capital (no Mcdonald, Macleod or O'brien)",
+             not any(re.match(r"^Mc[a-z]|^O'[a-z]", x) for x in sur)
+             and not any(re.match(r"^Mac([a-z]+)$", x) and re.match(r"^Mac([a-z]+)$", x).group(1) in world_mod.GAELIC_MAC
+                         for x in sur), str([x for x in sur if re.match(r"^M(a)?c[a-z]", x)]))
+    L_.check("staff names: no placeholder identity, mascot, public figure or media-dynasty surname",
+             not any(n.lower() in world_mod.NOT_STAFF_NAMES for n in names)
+             and not set(sur) & world_mod.NOT_STAFF_SURNAMES)
+    L_.check("staff names: no surname more than twice and no given name more than three times outside the personas",
+             sur.value_counts().max() <= 2 and fst[~pd.Series(names).isin(list(world_mod.PERSONAS))].value_counts().max() <= 3,
+             "%s %s" % (sur.value_counts().head(2).to_dict(), fst.value_counts().head(2).to_dict()))
+    pools = set()
+    from faker import Faker
+    for loc, _, _ in world_mod.STAFF_POOLS:
+        fk = Faker(loc)
+        prov = [pp for pp in fk.providers if type(pp).__module__.startswith("faker.providers.person")][0]
+        pool = getattr(prov, "last_romanized_names", None) if loc == "zh_CN" else prov.last_names
+        pools |= {world_mod.recase(world_mod.deaccent(str(x))) for x in (pool.keys() if hasattr(pool, "keys") else pool)}
+    others = [x for x, n in zip(sur, names) if n not in world_mod.PERSONAS]
+    L_.check("staff names: every surname outside the personas comes from the declared pools (en_NZ, en_GB, en_IE, "
+             "romanized zh_CN, de-accented vi_VN, en_IN, de_DE), none from the en_US fallback alone",
+             all(x in pools for x in others), str([x for x in others if x not in pools][:8]))
+
+    # ----- the authored asides the judge read as tells are gone; the dashboard still says what it records
+    L_.check("no authored aside: the brief's 'view the room will have' and the dashboard's 'Describes those tests' are "
+             "gone, and the dashboard's own filter line says it records concluded tests",
+             "room will have" not in re.sub(r"\s+", " ", T[F["charter"]]) and "Describes those tests" not in T[F["dashboard"]]
+             and re.search(r"^Filters,Test status is Concluded; concluded date in window$", T[F["dashboard"]], re.M)
+             and "will present that view at the meeting" in re.sub(r"\s+", " ", T[F["charter"]]))
     thumbs, words = [], []
     for f in files:
         if f.endswith(".docx"):

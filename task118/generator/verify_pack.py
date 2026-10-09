@@ -283,8 +283,9 @@ def main(target):
     hdrc = crow[0]
     emb = [dict(zip(hdrc, r)) for r in crow[1:] if r[0] is not None]
     with zipfile.ZipFile(changelog) as z:
-        saved = re.search(r"<dcterms:created[^>]*>(\d{4}-\d\d-\d\d)", z.read("docProps/core.xml").decode()).group(1)
-    check("the change log was saved after its last embedding was signed off",
+        saved = re.search(r"<dcterms:modified[^>]*>(\d{4}-\d\d-\d\dT\d\d:\d\d)", z.read("docProps/core.xml").decode())
+    saved = (dt.datetime.strptime(saved.group(1), "%Y-%m-%dT%H:%M") + dt.timedelta(hours=10)).date().isoformat()
+    check("the change log was last saved after its last embedding was signed off",
           saved > max(e["closed_on"] for e in emb).date().isoformat(), saved)
     app_tests = defaultdict(list)
     for x, m in meta.items():
@@ -487,6 +488,47 @@ def main(target):
     check("the bulletin's March figures reproduce under the standards rule",
           mm is not None and (int(mm.group(1)), int(mm.group(2))) == tuple(march) == CLAIMS["bulletin_march"],
           "%s %s" % (mm.groups() if mm else None, march))
+
+    # ------------------------------------------------------------------ the bundle as a record (house checks)
+    aest = dt.timedelta(hours=10)
+    handover = dt.datetime(2026, 10, 16, 9, 0)
+    mt = {n: dt.datetime(1970, 1, 1) + dt.timedelta(seconds=p.stat().st_mtime) + aest for n, p in files.items()}
+    log = list(csv.DictReader(open(find("audience_data_export_log"), encoding="utf-8")))
+
+    def nrows(n):
+        if n.endswith(".parquet"):
+            return con.execute("SELECT count(*) FROM pv").fetchone()[0]
+        with open(files[n], encoding="utf-8") as fh:
+            return sum(1 for _ in fh) - 1
+    check("every run in the export log names a shipped file, with that file's row count and write time",
+          log and all(r["file"] in files and int(r["rows"]) == nrows(r["file"])
+                      and mt[r["file"]] == dt.datetime.strptime(r["run_at_aest"], "%Y-%m-%d %H:%M") for r in log),
+          str([r["file"] for r in log]))
+    last_cms = max(r["saved_at"] for r in csv.DictReader(open(cms_f, encoding="utf-8")))
+    last_test = max(m[5] for m in meta.values())
+    last_pub = con.execute("SELECT max(published_date) FROM pv").fetchone()[0]
+    check("no file is written after the handover, and none of the three big extracts before its latest record",
+          max(mt.values()) <= handover
+          and mt[cms_f.name] >= dt.datetime.strptime(last_cms[:16], "%Y-%m-%dT%H:%M") + aest
+          and mt[archive.name] >= dt.datetime.strptime(last_test[:16], "%Y-%m-%dT%H:%M") + aest
+          and mt[spine.name].date() > last_pub, "%s %s %s" % (last_cms, last_test, last_pub))
+    bad_wb = []
+    for n in files:
+        if n.endswith(".xlsx"):
+            with zipfile.ZipFile(files[n]) as z:
+                core = z.read("docProps/core.xml").decode()
+            c = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+            m_ = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+            if not c < m_ or "openpyxl" in core or "xlsxwriter" in core.lower():
+                bad_wb.append(n)
+    raw_pdf = b"".join(files[n].read_bytes() for n in files if n.endswith(".pdf"))
+    producers = set(re.findall(rb"/Producer \(([^)]*)\)", raw_pdf))
+    check("every input workbook was created before its last save; every PDF names a real producer and no writing "
+          "library", not bad_wb and b"ReportLab" not in raw_pdf and producers
+          and not any(b"Bightline" in x for x in producers), "%s %s" % (bad_wb, producers))
+    surnames = [str(r[1]).split()[-1] for r in srows[1:] if r[1]]
+    check("staff surnames carry their capitals (McDonald, O'Brien), none lowercased after Mc or O'",
+          not any(re.match(r"^Mc[a-z]|^O'[a-z]", x) for x in surnames), str([x for x in surnames if x[:2] == "Mc"][:6]))
 
     n_ok = sum(1 for r in results if r[1])
     for name, ok, det in results:

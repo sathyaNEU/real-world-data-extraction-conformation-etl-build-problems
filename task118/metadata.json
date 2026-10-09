@@ -50,28 +50,28 @@
   {
    "path": "newsroom_staff_list_2026-10-12.xlsx",
    "format": "xlsx",
-   "bytes": 16431,
+   "bytes": 16514,
    "rows": 207,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-12",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "audience_plan_2027.xlsx",
    "format": "xlsx",
-   "bytes": 7015,
+   "bytes": 7024,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-09",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "headline_squad_change_log.xlsx",
    "format": "xlsx",
-   "bytes": 7053,
+   "bytes": 7062,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-02-11",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -80,16 +80,16 @@
    "bytes": 3827,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-02",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "headline_squad_2027_placement_brief.pdf",
    "format": "pdf",
-   "bytes": 3682,
+   "bytes": 3481,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-12",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -104,10 +104,10 @@
   {
    "path": "experimentation_dashboard_export_2026-10-01.csv",
    "format": "csv",
-   "bytes": 489,
+   "bytes": 450,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-01",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -131,10 +131,10 @@
   {
    "path": "editorial_standards_s7_corrections.pdf",
    "format": "pdf",
-   "bytes": 2829,
+   "bytes": 2667,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2025-01-28",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -143,25 +143,25 @@
    "bytes": 6858,
    "rows": 174,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-15",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "panel_reference_workbook.xlsx",
    "format": "xlsx",
-   "bytes": 8905,
+   "bytes": 8914,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-15",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "standards_bulletin_2026-04.docx",
    "format": "docx",
-   "bytes": 35400,
+   "bytes": 35402,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-04-08",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -176,10 +176,10 @@
   {
    "path": "newsfold_syndication_agreement.pdf",
    "format": "pdf",
-   "bytes": 3252,
+   "bytes": 3097,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2025-06-24",
    "license": "CC0-1.0 (original work)"
   },
   {
@@ -188,13 +188,13 @@
    "bytes": 5122,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
+   "date": "2026-10-02",
    "license": "CC0-1.0 (original work)"
   },
   {
    "path": "audience_data_export_log.csv",
    "format": "csv",
-   "bytes": 2884,
+   "bytes": 1131,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",

@@ -29,16 +29,16 @@ PNG_NAME = "carousel_slot_q1_2027_cells.png"
 # notebook from target/ and checked here.
 REC_CALL = {"answer": "HC-37", "lift": 5.697, "runner_up": "HC-33", "runner_up_lift": 3.303, "gap": 2.394}
 REC_FEE = {   # EUR per 1,000 carousel sessions, cells app 0-29 ... web 730+
-    "HC-31": [9.394, 9.693, 9.090, 8.291, 10.788, 7.687, 10.308, -1.590],
-    "HC-33": [4.509, 9.389, 3.207, 3.186, 1.913, 6.614, 1.192, 2.092],
-    "HC-34": [-0.814, 14.192, 14.608, 15.212, 8.111, 13.106, 10.513, 14.494],
-    "HC-36": [-1.614, -3.893, -4.090, -5.787, -4.607, -4.813, -6.494, -9.012],
-    "HC-37": [7.814, 9.314, 7.811, 6.009, 6.610, 9.907, 7.688, 5.189],
-    "HC-39": [4.591, 1.886, 1.913, 0.692, 0.786, -1.412, 1.008, 1.786],
+    "HC-31": [9.685, 10.786, 10.586, 10.113, 10.913, 9.212, 11.187, -1.607],
+    "HC-33": [4.291, 9.112, 2.493, 3.113, 1.594, 8.411, 1.289, 2.086],
+    "HC-34": [-0.714, 15.007, 15.408, 15.807, 9.415, 13.311, 12.892, 15.894],
+    "HC-36": [6.388, 8.688, 7.512, 7.414, 2.395, 7.408, 6.109, 4.486],
+    "HC-37": [8.588, 9.808, 7.389, 7.412, 6.287, 9.693, 7.913, 6.513],
+    "HC-39": [4.490, 2.592, 2.292, 0.812, 0.513, 1.914, 1.713, 1.889],
 }
 REC_TOTALS = {   # extra orders, extra fee income (EUR), over the twelve weeks
-    "HC-31": (16576.1, 19808.7), "HC-33": (8608.7, 10326.2), "HC-34": (25809.9, 33222.5),
-    "HC-36": (12980.6, -14012.0), "HC-37": (14873.9, 19217.0), "HC-39": (3612.2, 3516.7),
+    "HC-31": (16474.2, 22511.0), "HC-33": (8518.6, 10111.7), "HC-34": (25716.0, 35609.0),
+    "HC-36": (12924.6, 17513.5), "HC-37": (14789.8, 20520.0), "HC-39": (3584.5, 4984.4),
 }
 REC_RUNGS = ["HC-36", "HC-31", "HC-34", "HC-33", "HC-37"]
 
@@ -73,6 +73,7 @@ FRESH_FLOOR, FRESH_HOURS = 12, 48
 
 # Test capacity note: Q1 2027 slot, 4 January to 28 March, traffic planned on the same ISO weeks one year earlier
 SLOT_START, SLOT_WEEKS = date(2027, 1, 4), 12
+SLOT_END = SLOT_START + timedelta(weeks=SLOT_WEEKS, days=-1)
 
 # Lift is orders placed during the test (charter 2.2), not the orders placed from a tile in the session. Each session
 # is scored on every order its buyer places in the 21 days after it starts; the orders extract runs to
@@ -314,14 +315,12 @@ screen.rename(index=LABEL).round(1)
 '''
 
 PLAN_MD = r'''
-## The slot's traffic, and the cover change inside it
+## The slot's traffic
 
 Traffic is planned cell by cell on the same ISO weeks one year earlier (capacity note). Restatement R2 replaces
 the first release of the weekly table for 2026-W01 to W26 (release log, 14 August). The web arm starts on
 4 January; the app arm starts with the first app release on or after that date, because assignment ships in the
-app build. The same note lists the checkout change of 1 March 2027: from that day every pickup order is paid at
-checkout, so the weeks from 1 March run on a different cover from the logged window's. Each cell's planned
-sessions are split at that date.
+app build.
 '''
 
 PLAN = r'''
@@ -329,8 +328,6 @@ ics = (REVIEW_DIR / "app_release_calendar_2026-2027.ics").read_text(encoding="ut
 releases = sorted(datetime.strptime(re.search(r"DTSTART;VALUE=DATE:(\d{8})", ev).group(1), "%Y%m%d").date()
                   for ev in ics.split("BEGIN:VEVENT")[1:] if "SUMMARY:App release" in ev)
 app_start = min(d for d in releases if d >= SLOT_START)
-capacity = re.sub(r"\s+", " ", (REVIEW_DIR / "slot_capacity_and_release_gating.md").read_text(encoding="utf-8"))
-COVER_CHANGE = datetime.strptime(re.search(r"checkout change of (\d+ \w+ \d{4})", capacity).group(1), "%d %B %Y").date()
 
 first = pd.read_csv(REVIEW_DIR / "home_carousel_sessions_weekly_2025W01_2026W39.csv")
 r2 = pd.read_csv(REVIEW_DIR / "home_carousel_sessions_weekly_R2_2026W01_2026W26.csv")
@@ -340,49 +337,42 @@ assert len(weekly) == len(first)
 
 slot_weeks = [SLOT_START + timedelta(weeks=i) for i in range(SLOT_WEEKS)]
 plan = []
-for c, cell in enumerate(CELLS):
+for cell in CELLS:
     platform, band = cell.split()
     weeks = [w for w in slot_weeks if platform == "web" or w + timedelta(days=6) >= app_start]
-    in_cell = (weekly.platform == platform) & (weekly.tenure_band == band)
-    def sessions(ws):
-        labels = [f"{w.year - 1}-W{w.isocalendar()[1]:02d}" for w in ws]
-        return int(weekly.loc[in_cell & weekly.iso_week.isin(labels), "logged_in_sessions"].sum())
-    before = [w for w in weeks if w < COVER_CHANGE]
+    labels = [f"{w.year - 1}-W{w.isocalendar()[1]:02d}" for w in weeks]
+    in_cell = (weekly.platform == platform) & (weekly.tenure_band == band) & weekly.iso_week.isin(labels)
     plan.append({"cell": cell, "weeks": f"W{weeks[0].isocalendar()[1]:02d} to W{weeks[-1].isocalendar()[1]:02d}",
-                 "sessions, same weeks 2026": sessions(weeks),
-                 f"before {COVER_CHANGE:%-d %B}": sessions(before), "weeks before": len(before)})
+                 "sessions, same weeks 2026": int(weekly.loc[in_cell, "logged_in_sessions"].sum())})
 plan = pd.DataFrame(plan).set_index("cell")
 arm = SLOT_SHARE * plan["sessions, same weeks 2026"].to_numpy()
 plan["arm sessions"] = np.floor(arm + 0.5).astype(int)
-share_before = plan[f"before {COVER_CHANGE:%-d %B}"] / plan["sessions, same weeks 2026"]
-# the 2026 weeks are level enough that the share by sessions is the share by weeks (and by days)
-assert np.allclose(share_before, plan["weeks before"] / [len([w for w in slot_weeks if c.startswith("web") or
-                                                              w + timedelta(days=6) >= app_start]) for c in CELLS],
-                   atol=5e-4)
-print(f"App arm from {app_start:%d %B %Y}; cover change {COVER_CHANGE:%d %B %Y}; {arm.sum():,.0f} arm sessions in all.")
-plan.assign(**{"share before the change": share_before.round(3)})
+print(f"Slot {SLOT_START:%-d %B} to {SLOT_END:%-d %B %Y}; app arm from {app_start:%-d %B %Y}; "
+      f"{arm.sum():,.0f} arm sessions in all.")
+plan
 '''
 
 FEE_MD = r'''
 ## Buyer-protection fee income by cell while the slot runs
 
 Every covered purchase carries the fee: a fixed amount plus 5% of the price paid after any accepted offer
-(terms 3). In the logged window an item collected and paid to the seller in person was not covered (terms 2). The
-payments file is the provider's card and iDEAL captures, so purchases paid from a Vouwlijn balance are not in it,
-but they are covered and charged; their price paid comes from the accepted-offer export. The register's January
-2027 row (KB-2027-01) was deferred to the Q2 2027 review on 6 October, so the September 2026 tariff stays in force
-through the slot. Fee income is booked without the 21% VAT in the fee (Finance, account 8120). Check before using
-it: these rules reproduce Finance's July to September statement to the cent.
+(terms 3). The payments file is the provider's card and iDEAL captures, so purchases paid from a Vouwlijn balance
+are not in it, but they are covered and charged; their price paid comes from the accepted-offer export. Fee income
+is booked without the 21% VAT in the fee (Finance, account 8120). The slot is priced at the register row in force on
+its dates: the newest row, KB-2027-01, starts on 5 April 2027, after the slot ends, and has no committee decision
+against it.
 
-That statement describes the logged window's cover, not the slot's. From 1 March every pickup is paid at checkout
-and covered, so each cell is the logged window's cover for its planned sessions before 1 March and full cover for
-the rest.
+Two controls before using any of it: each register row, from its start date, reproduces every fee the provider
+captured, and these rules reproduce Finance's July to September statement to the cent, with a pickup collected and
+paid to the seller in person left uncovered (terms 2).
 '''
 
 FEE = r'''
 tariffs = pd.read_csv(REVIEW_DIR / "kopersbescherming_tarieven.csv")
-SLOT_TARIFF = "KB-2026-02"          # in force from 1 Sep 2026; KB-2027-01 deferred (pricing committee, 6 Oct)
-slot_row = tariffs.set_index("tarief_id").loc[SLOT_TARIFF]
+tariffs["start"] = pd.to_datetime(tariffs.ingangsdatum).dt.date
+assert not tariffs.start.between(SLOT_START + timedelta(days=1), SLOT_END).any()   # no row starts inside the slot
+slot_row = tariffs[tariffs.start <= SLOT_START].sort_values("start").iloc[-1]
+SLOT_TARIFF = slot_row.tarief_id
 fixed_eur, pct = float(slot_row.vast_bedrag_eur), float(slot_row.percentage_van_artikelprijs) / 100
 finance_book = pd.read_excel(REVIEW_DIR / "finance_buyer_protection_fee_income_2026Q3.xlsx", header=None)
 VAT = float(re.search(r"includes (\d+) per cent VAT", " ".join(finance_book[0].iloc[:5].fillna(""))).group(1)) / 100
@@ -401,7 +391,7 @@ assert np.allclose(chk.vast_bedrag_eur + chk.percentage_van_artikelprijs / 100 *
                    chk.buyer_protection_fee_eur, atol=0.005)
 
 def priced(o):
-    """Price paid and cover for orders joined to their capture (if any)."""
+    # Price paid and cover for orders joined to their capture (if any).
     captured = o.payment_id.notna().to_numpy()
     x = o.merge(offers, on=["buyer_id", "listing_id"], how="left", validate="many_to_one")
     live = ((x.accepted_at <= x.ordered_at) & (x.expires_at >= x.ordered_at)).to_numpy()
@@ -431,15 +421,37 @@ assert np.allclose(ours.loc[stmt.index, "fee income excl. VAT"], stmt["Fee incom
 total_row = finance_book.iloc[head + 7]
 ours_total = round(q3.fee_cents.sum() / 100 / (1 + VAT), 2)
 assert total_row[0] == "Total" and int(total_row[2]) == len(q3) and abs(ours_total - float(total_row[4])) < 0.005
-print(f"Finance's July to September fee income reproduced to the cent, every row and the total: EUR "
+print(f"Tariff {SLOT_TARIFF}, in force from {slot_row.start:%-d %B %Y}: EUR {fixed_eur:.2f} + {pct:.0%} of price paid. "
+      f"Finance's July to September fee income reproduced to the cent, every row and the total: EUR "
       f"{ours_total:,.2f} on {len(q3):,} covered purchases, {(~q3.payment_id.notna()).mean():.1%} of them paid "
       "from a Vouwlijn balance.")
+'''
 
-# the slot: every order in each session's 21 days at the slot tariff, excl. VAT, on each cover
+CHECKOUT_MD = r'''
+That statement describes the checkout of its quarter, and the slot will not run on it. In the orders extract a
+pickup paid to the seller at the handover is a pickup with no capture. Those stop on 20 September: from 21
+September, when Checkout 3 went live, every pickup is paid when it is placed, and pickups stay at about 15% of
+orders. The slot runs on Checkout 3, so in the slot every order carries the fee, pickups included.
+'''
+
+CHECKOUT = r'''
+pickups = allo[allo.delivery == "pickup"]
+at_handover = pickups.payment_id.isna()
+CHECKOUT3 = (pickups.ordered_at[at_handover].max().normalize() + pd.Timedelta(days=1)).date()
+since = (pickups.ordered_at >= pd.Timestamp(CHECKOUT3)).to_numpy()
+assert since.sum() > 0 and not at_handover[since].any() and CHECKOUT3 < SLOT_START
+week = allo.ordered_at.dt.to_period("W-SUN").dt.start_time.dt.date
+by_week = pd.DataFrame({"orders": allo.groupby(week).size(), "pickup orders": pickups.groupby(week).size(),
+                        "paid at the handover": at_handover.groupby(week).sum()})
+by_week["pickups, % of orders"] = (100 * by_week["pickup orders"] / by_week["orders"]).round(1)
+by_week["paid at the handover, % of pickups"] = (100 * by_week["paid at the handover"]
+                                                 / by_week["pickup orders"]).round(1)
+by_week.index.name = "week from"
+
+# the slot: every order in each session's 21 days at the slot tariff, excl. VAT, every order charged
 o = follow.merge(payments, on="order_id", how="left", validate="one_to_one")
-price, covered, _ = priced(o)
-fee_logged_cover = per_session(o, np.where(covered, fixed_eur + pct * price, 0.0) / (1 + VAT))
-fee_full_cover = per_session(o, (fixed_eur + pct * price) / (1 + VAT))
+price, _, _ = priced(o)
+fee_slot = per_session(o, (fixed_eur + pct * price) / (1 + VAT))
 
 def by_cell(v):
     out = {}
@@ -449,14 +461,14 @@ def by_cell(v):
         out[CELLS[c]] = {r: (v[cm & (sess.ranker == r).to_numpy()].mean() - base) * 1000 for r in POLICIES}
     return pd.DataFrame(out)
 
-grid_logged, grid_full = by_cell(fee_logged_cover), by_cell(fee_full_cover)
-# EUR per 1,000 carousel sessions, policy x cell: the planned sessions before 1 March on the logged cover
-fee_grid = grid_logged.mul(share_before, axis=1) + grid_full.mul(1 - share_before, axis=1)
+fee_grid = by_cell(fee_slot)           # EUR per 1,000 carousel sessions, policy x cell
 orders_grid = by_cell(y_test)          # extra orders per 1,000 carousel sessions, policy x cell
 fee_grid_view = fee_grid.rename(index=LABEL).round(1)
-print(f"Tariff {SLOT_TARIFF}: EUR {fixed_eur:.2f} + {pct:.0%} of price paid, excl. {VAT:.0%} VAT; pickups paid in "
-      f"person uncharged until {COVER_CHANGE:%-d %B %Y}. Change in fee income per 1,000 carousel sessions while the "
-      "slot runs, EUR, against Blend v7:")
+print(f"Last pickup paid at the handover on {CHECKOUT3 - timedelta(days=1):%-d %B %Y}; {int(since.sum()):,} pickup "
+      f"orders since, every one paid at checkout. Orders by week, around the change:")
+print(by_week.loc[CHECKOUT3 - timedelta(weeks=4):CHECKOUT3 + timedelta(weeks=3)].to_string())
+print(f"\nChange in fee income per 1,000 carousel sessions while the slot runs, EUR excl. {VAT:.0%} VAT, against "
+      f"Blend v7, at tariff {SLOT_TARIFF} on every order:")
 fee_grid_view
 '''
 
@@ -567,11 +579,10 @@ fig.legend(handles=[Patch(facecolor="#f0efec", hatch="///", edgecolor="#3a3936",
                     Patch(facecolor="none", edgecolor=INK, linewidth=2.2, label="Policy taking the slot")],
            loc="lower left", bbox_to_anchor=(0.585, 0.128), frameon=False, fontsize=9.5, labelcolor=INK_2)
 fig.text(0.035, 0.014, f"Orders over the {FOLLOW_UP_DAYS} days after each logged session, 22 Jun to 20 Sep 2026. "
-         f"Fee income excl. VAT at tariff {SLOT_TARIFF} (EUR {fixed_eur:.2f} + {pct:.0%} of price paid).\n"
-         f"Pickups paid to the seller in person carry no fee until the checkout change of {COVER_CHANGE:%-d %B %Y}; "
-         "each cell is weighted by its planned sessions either side of that date.\n"
-         "Guardrail counted on every order placed from the tiles an arm served, including orders placed after the "
-         "session closed. Marketplace Science, October 2026.", fontsize=8.5, color=INK_2, linespacing=1.5,
+         f"Fee income excl. VAT at tariff {SLOT_TARIFF} (EUR {fixed_eur:.2f} + {pct:.0%} of price paid) on every "
+         f"order.\nPickups included: since Checkout 3 went live on {CHECKOUT3:%-d %B %Y}, every order is paid when it "
+         "is placed.\nGuardrail counted on every order placed from the tiles an arm served, including orders placed "
+         "after the session closed. Marketplace Science, October 2026.", fontsize=8.5, color=INK_2, linespacing=1.5,
          va="bottom")
 fig.savefig("carousel_slot_q1_2027_cells.png", dpi=150, facecolor=SURFACE, metadata={"Software": None})
 plt.show()
@@ -595,10 +606,11 @@ def summary_md(ns):
         "to sellers, and the seller-diversity re-ranker is under the 2.0 bar. The velocity boost clears all three "
         "on its in-session orders, but most of what it adds there is listings its buyers were already watching and "
         "would have bought within days, so over the test it keeps a little over two fifths of that lift.\n\n"
-        "Fee income is net of VAT and includes purchases paid from a Vouwlijn balance; those rules reproduce "
-        "Finance's July to September statement to the cent. That statement covers the logged window, when a pickup "
-        "paid to the seller in person carried no fee. From 1 March every pickup is paid at checkout and charged, so "
-        "each cell's sessions from that date carry the fee on pickups as well.\n\n"
+        "Fee income is net of VAT and includes purchases paid from a Vouwlijn balance, at the September 2026 "
+        "tariff, which is the one in force on every day of the slot. Those rules reproduce Finance's July to "
+        "September statement to the cent, but until 20 September a buyer could still pay the seller at the handover "
+        "for a pickup, which carried no fee. Since Checkout 3 went live on 21 September every order is paid when it "
+        "is placed, so in the slot every order carries the fee, pickups included.\n\n"
         "Saar Dries, Marketplace Science. Prepared for the product leadership team's planning meeting on "
         "28 October 2026 from the slot review folder (extracts pulled 12 October). Set `SLOT_REVIEW_DIR` to rerun "
         "against another copy of the folder; a full run takes about a minute."
@@ -608,7 +620,8 @@ def summary_md(ns):
 CELLS_SRC = [("md", None), ("code", SETUP), ("code", SESSIONS), ("md", ARCHIVE_MD), ("code", ARCHIVE),
              ("md", INSESSION_MD), ("code", INSESSION), ("md", WINDOW_MD), ("code", WINDOW), ("md", WATCH_MD),
              ("code", WATCH), ("md", CONDITIONS_MD), ("code", CONDITIONS), ("md", PLAN_MD), ("code", PLAN),
-             ("md", FEE_MD), ("code", FEE), ("md", TOTALS_MD), ("code", TOTALS), ("md", CHART_MD), ("code", CHART)]
+             ("md", FEE_MD), ("code", FEE), ("md", CHECKOUT_MD), ("code", CHECKOUT), ("md", TOTALS_MD),
+             ("code", TOTALS), ("md", CHART_MD), ("code", CHART)]
 
 
 def run_in_process(review_dir):

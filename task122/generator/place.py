@@ -306,8 +306,8 @@ def choose_traffic_adjust(W, orders_g, fee_g):
     natural read, and for the fee every subset of the five fee devices under each of those traffic
     readings. The pooled readings (one lift on the logged mix times the planned total, which the capacity
     note's cell-by-cell line refuses) sit at least 5 from the golden hundred's edges on whichever side
-    they fall. Every total is linear in the factors, so 200,000 candidate factor vectors are scored at
-    once."""
+    they fall. Every total is affine in the factors (a total on the first release is the placed table's plus
+    the restatement's fixed moves), so 200,000 candidate factor vectors are scored at once."""
     tt = Tr.true_table()
     r1 = Tr.first_release(tt)
     tabs = {"cur": (tt, P.APP_WEEKS), "r1": (r1, P.APP_WEEKS), "cur12": (tt, P.ISO_WEEKS_SLOT),
@@ -320,40 +320,54 @@ def choose_traffic_adjust(W, orders_g, fee_g):
     gold_c, combos_c = combo_grids(W)
     G = W.fee_cover_grids
     STOP, EITHER = 0, 1
-    rows, golden_of, kind, names = [], [], [], []
+    rows, consts, golden_of, kind, names = [], [], [], [], []
+    # the first release of the placed table is the placed table plus moves counted before placement, so a total on
+    # it is the factors times the current table's coefficients plus a constant
+    on = {"cur": "cur", "r1": "cur", "cur12": "cur12", "r1_12": "cur12"}
 
-    def add(v, g, k, nm=""):
+    def add(v, g, k, nm="", c0=0.0):
         rows.append(v)
+        consts.append(c0)
         golden_of.append(g)
         kind.append(k)
         names.append(nm)
 
+    def traffic_row(coef, tk):
+        """Per-cell coefficients and the constant of a total: coef (per session) times the planned sessions on the
+        reading's traffic."""
+        return coef * arm[on[tk]], float(coef @ (arm[tk] - arm[on[tk]]))
+
     def fee_row(k, key, tk):
-        """Per-cell coefficients (EUR) of a fee total: the planned sessions on the reading's traffic times the
-        reading's fee per session in the cell."""
+        """A fee total: the planned sessions on the reading's traffic times the reading's fee per session (EUR)."""
         A_ = np.array([reading_grid(G, key)[(k, c)] for c in range(8)]) / 100 / 1000
-        return arm[tk] * A_
+        return traffic_row(A_, tk)
     for k in range(1, 7):
         lo = np.array([orders_g[(k, c)] for c in range(8)]) / 1000
         g_idx = len(rows)
         add(lo * arm["cur"], -1, -1, f"{k}|orders")
         pooled_in = float((wlog * np.array([in_g[(k, c)] for c in range(8)]) / 1000).sum())
-        for nm, v in (("r1", lo * arm["r1"]), ("cur12", lo * arm["cur12"]), ("r1_12", lo * arm["r1_12"]),
-                      ("natural", pooled_in * arm["r1_12"])):
-            add(v, g_idx, STOP, f"{k}|orders|{nm}")
+        for nm in ("r1", "cur12", "r1_12"):
+            v_, c_ = traffic_row(lo, nm)
+            add(v_, g_idx, STOP, f"{k}|orders|{nm}", c_)
+        v_, c_ = traffic_row(np.full(8, pooled_in), "r1_12")
+        add(v_, g_idx, STOP, f"{k}|orders|natural", c_)
         add(float((wlog * lo).sum()) * arm["cur"], g_idx, EITHER, f"{k}|orders|pooled")
         fg = np.array([fee_g[(k, c)] for c in range(8)]) / 1000
         g_idx = len(rows)
-        add(fee_row(k, GOLD, "cur"), -1, -1, f"{k}|fee")
+        v_, c_ = fee_row(k, GOLD, "cur")
+        add(v_, -1, -1, f"{k}|fee", c_)
         add(float((wlog * fg).sum()) * arm["cur"], g_idx, EITHER, f"{k}|fee|pooled")
         nat = np.array([combos_c["natural"][(k, c)] for c in range(8)]) / 100 / 1000
-        add(nat * arm["r1_12"], g_idx, STOP, f"{k}|fee|natural")
+        v_, c_ = traffic_row(nat, "r1_12")
+        add(v_, g_idx, STOP, f"{k}|fee|natural", c_)
         for tk in ("cur", "r1", "cur12", "r1_12"):
             for key in [GOLD] + READ_KEYS:
                 if tk == "cur" and key == GOLD:
                     continue
-                add(fee_row(k, key, tk), g_idx, STOP, f"{k}|fee|{tk}|{'-'.join(key)}")
+                v_, c_ = fee_row(k, key, tk)
+                add(v_, g_idx, STOP, f"{k}|fee|{tk}|{'-'.join(key)}", c_)
     V = np.array(rows)                                   # (readings, 8)
+    C0 = np.array(consts)                                # (readings,)
     gof = np.array(golden_of)
     kd = np.array(kind)
     is_g = gof < 0
@@ -361,7 +375,7 @@ def choose_traffic_adjust(W, orders_g, fee_g):
     # out of the hundred while the golden sits 20 from the edges (two readings 52 above and 55 below one golden
     # cannot both clear a hundred-wide bin by 5): it is placed at least 5 from the edges on whichever side it
     # falls, and the record names it
-    t0 = V.sum(axis=1)
+    t0 = V.sum(axis=1) + C0
     near = (kd == STOP) & (np.abs(t0 - t0[np.where(is_g, np.arange(len(gof)), gof)]) < 56)
     kd[near] = EITHER
     W.traffic_near = [int(i) for i in np.flatnonzero(near)]
@@ -369,7 +383,7 @@ def choose_traffic_adjust(W, orders_g, fee_g):
     rng = P.stream("place-traffic")
 
     def scored(Fc):
-        tot = Fc @ V.T                                   # (cands, readings)
+        tot = Fc @ V.T + C0                              # (cands, readings)
         G = tot[:, is_g]
         edge = 50 - np.abs(np.mod(G + 50, 100) - 50)
         sg = np.minimum(edge - 20, 45 - edge).min(axis=1)
@@ -398,7 +412,7 @@ def choose_traffic_adjust(W, orders_g, fee_g):
             if b[0] > best[0]:
                 best = b
     W.traffic_score = best
-    tot = best[1] @ V.T
+    tot = best[1] @ V.T + C0
     gl = np.floor(tot / 100 + 0.5) * 100 - 50
     ref = gl[np.where(is_g, np.arange(len(gof)), gof)]
     out = np.maximum(ref - tot, tot - (ref + 100))

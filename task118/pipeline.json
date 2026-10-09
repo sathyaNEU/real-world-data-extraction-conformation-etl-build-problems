@@ -90,9 +90,9 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC, SOLUTION_WRONG; pass 2",
-  "disposition": "FIX_NOW; fix cycle 2 applied 2026-10-09 (generator rebuilt, stage 3 gates green: 428/428 assertions, verifier 87/87, two builds byte-identical to each other and to the task folder, goldens byte-identical), judge re-run pending",
-  "report": "task118/determinism_check_report_pass2.md (pass 2; pass 1 in task118/determinism_check_report.md); fixes in DESIGN_NOTE.md, Changes 49 to 54 and Build record, Stage 6 fix cycle 2"
+  "verdict": "DETERMINISTIC; pass 3",
+  "disposition": "FIX_NOW; fix cycle 3 applied 2026-10-09 (submission step 7 and the paper's note 3 state the rate denominator; staff names redrawn from Australasian pools and recased; export log scoped to Audience data's six extract runs; per-file write times; PDF and workbook containers; the two authored asides removed; golden chart re-encoded; stage 3 gates green: 444/444 assertions, verifier 91/91, two builds byte-identical to each other and to the task folder, goldens byte-identical, leak.py REVIEW no LEAK, heart WARN no BLOCK), judge re-run pending",
+  "report": "task118/determinism_check_report_pass3.md (pass 3; passes 1 and 2 in task118/determinism_check_report.md and task118/determinism_check_report_pass2.md); fixes in DESIGN_NOTE.md, Changes 55 to 63 and Build record, Stage 6 fix cycle 3"
  },
  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
  "delivered": null,

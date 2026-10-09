@@ -87,7 +87,7 @@ def write_all(W, tests_df, arch_sessions, adj, tgt):
     name, n = Wr.offers(W, str(tgt))
     out[name] = n
     tt = Tr.true_table(adj)
-    r1 = Tr.first_release(tt)
+    r1 = Tr.first_release(tt, base=Tr.true_table())
     r2 = Tr.r2_table(tt)
     Wr.write_csv(Tr.weekly_frame(r1), str(tgt / K.F_WEEKLY))
     Wr.write_csv(Tr.weekly_frame(r2), str(tgt / K.F_R2))

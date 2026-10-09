@@ -25,8 +25,8 @@ It leads the velocity boost (HC-33), the only other policy that clears all three
 2. Scored each session on its buyer's orders in every channel of `orders_enrolled_buyers_2026-06-01_2026-10-11.parquet` over the 21 days after it started (lift is orders during the test, charter 2.2): every policy's lift is flat from day 6, and the velocity boost falls from 8.0 to 3.3 because its pinned tiles sell watched listings the buyer buys within days anyway.
 3. Counted the carousel order rate (charter 2.4) on every order placed from the tiles each arm served, joining the buyer's carousel orders to the session's six tiles by listing (a shown listing stays off that buyer's carousel for seven days, `carousel_logger_field_reference.md`), which adds the orders placed after the session closed: the session-sequence model is 3.8% below Blend v7 in app 0-29 and the two-tower personaliser 2.5% below in web 730+.
 4. Applied the fresh-listing commitment per served ranking (the local pickup boost serves 8.8 per 100) and the 2.0 bar (the seller-diversity re-ranker is at 1.4), leaving HC-37 at 5.7 ahead of HC-33 at 3.3, a gap of 2.4.
-5. Planned each cell's arm sessions as 10% of its 2026-W01 to W12 sessions in `home_carousel_sessions_weekly_2025W01_2026W39.csv`, with `home_carousel_sessions_weekly_R2_2026W01_2026W26.csv` replacing those weeks and app cells from W03 (first app release on 18 January 2027 in `app_release_calendar_2026-2027.ics`, per `slot_capacity_and_release_gating.md`), and split them at the checkout change of 1 March 2027 in the same note: six of the app arm's ten weeks and eight of the web arm's twelve fall before it.
-6. Priced every 21-day order at tariff KB-2026-02 in `kopersbescherming_tarieven.csv` (EUR 0.80 plus 5% of the price paid after any accepted offer; the January row was deferred in `pricing_committee_minutes_2026-10-06.docx`), net of the 21% VAT as `finance_buyer_protection_fee_income_2026Q3.xlsx` books it, with the balance-paid purchases `payments_buyer_protection_2026-06-01_2026-10-11.parquet` does not capture: leaving pickups paid to the seller in person uncharged reproduces Finance's Q3 statement to the cent, and as pickups are paid at checkout and covered from 1 March (`buyer_protection_terms_2026-09.pdf` s.2), each cell's difference against Blend v7 weights the two covers by its planned sessions either side, the 48 cells below.
+5. Planned each cell's arm sessions as 10% of its 2026-W01 to W12 sessions in `home_carousel_sessions_weekly_2025W01_2026W39.csv`, with `home_carousel_sessions_weekly_R2_2026W01_2026W26.csv` replacing those weeks (`analytics_release_log.md`, 14 August) and the app cells counted from W03, because the first app release on or after 4 January in `app_release_calendar_2026-2027.ics` is 18 January 2027 (`slot_capacity_and_release_gating.md`): ten weeks on the app and twelve on the web.
+6. Priced every 21-day order at KB-2026-02, the `kopersbescherming_tarieven.csv` row in force on the slot's dates (EUR 0.80 plus 5% of the price paid after any accepted offer), net of the 21% VAT `finance_buyer_protection_fee_income_2026Q3.xlsx` books, balance-paid purchases included, and charged every pickup, since every pickup in `orders_enrolled_buyers_2026-06-01_2026-10-11.parquet` from 21 September (Checkout 3) has a capture in `payments_buyer_protection_2026-06-01_2026-10-11.parquet` and pickups paid through checkout are covered (`buyer_protection_terms_2026-09.pdf` s.2): the 48 cells below.
 7. Multiplied each cell's order and fee lift by its planned arm sessions and summed the eight cells: the twelve-week totals below.
 8. Recommendation: the sequence ranker with fresh-listing interleave (HC-37) takes the Q1 2027 slot at 5.7 extra orders per 1,000 carousel sessions.
 
@@ -37,19 +37,19 @@ It leads the velocity boost (HC-33), the only other policy that clears all three
 1. Sequence ranker with fresh-listing interleave (HC-37), 5.7 extra orders per 1,000 carousel sessions
 2. Closest policy clearing the launch conditions: velocity boost (HC-33), 3.3; gap 2.4
 3. Change in buyer-protection fee income per 1,000 carousel sessions while the slot runs, EUR, against Blend v7:
-   - Two-tower personaliser (HC-31): app 0-29 9.4, app 30-179 9.7, app 180-729 9.1, app 730+ 8.3, web 0-29 10.8, web 30-179 7.7, web 180-729 10.3, web 730+ -1.6
-   - Velocity boost (HC-33): app 0-29 4.5, app 30-179 9.4, app 180-729 3.2, app 730+ 3.2, web 0-29 1.9, web 30-179 6.6, web 180-729 1.2, web 730+ 2.1
-   - Session-sequence model (HC-34): app 0-29 -0.8, app 30-179 14.2, app 180-729 14.6, app 730+ 15.2, web 0-29 8.1, web 30-179 13.1, web 180-729 10.5, web 730+ 14.5
-   - Local pickup boost (HC-36): app 0-29 -1.6, app 30-179 -3.9, app 180-729 -4.1, app 730+ -5.8, web 0-29 -4.6, web 30-179 -4.8, web 180-729 -6.5, web 730+ -9.0
-   - Sequence ranker with fresh-listing interleave (HC-37): app 0-29 7.8, app 30-179 9.3, app 180-729 7.8, app 730+ 6.0, web 0-29 6.6, web 30-179 9.9, web 180-729 7.7, web 730+ 5.2
-   - Seller-diversity re-ranker (HC-39): app 0-29 4.6, app 30-179 1.9, app 180-729 1.9, app 730+ 0.7, web 0-29 0.8, web 30-179 -1.4, web 180-729 1.0, web 730+ 1.8
+   - Two-tower personaliser (HC-31): app 0-29 9.7, app 30-179 10.8, app 180-729 10.6, app 730+ 10.1, web 0-29 10.9, web 30-179 9.2, web 180-729 11.2, web 730+ -1.6
+   - Velocity boost (HC-33): app 0-29 4.3, app 30-179 9.1, app 180-729 2.5, app 730+ 3.1, web 0-29 1.6, web 30-179 8.4, web 180-729 1.3, web 730+ 2.1
+   - Session-sequence model (HC-34): app 0-29 -0.7, app 30-179 15.0, app 180-729 15.4, app 730+ 15.8, web 0-29 9.4, web 30-179 13.3, web 180-729 12.9, web 730+ 15.9
+   - Local pickup boost (HC-36): app 0-29 6.4, app 30-179 8.7, app 180-729 7.5, app 730+ 7.4, web 0-29 2.4, web 30-179 7.4, web 180-729 6.1, web 730+ 4.5
+   - Sequence ranker with fresh-listing interleave (HC-37): app 0-29 8.6, app 30-179 9.8, app 180-729 7.4, app 730+ 7.4, web 0-29 6.3, web 30-179 9.7, web 180-729 7.9, web 730+ 6.5
+   - Seller-diversity re-ranker (HC-39): app 0-29 4.5, app 30-179 2.6, app 180-729 2.3, app 730+ 0.8, web 0-29 0.5, web 30-179 1.9, web 180-729 1.7, web 730+ 1.9
 4. Totals over the twelve weeks, extra orders and extra fee income, nearest hundred:
-   - Two-tower personaliser (HC-31): 16,600 orders, EUR 19,800
-   - Velocity boost (HC-33): 8,600 orders, EUR 10,300
-   - Session-sequence model (HC-34): 25,800 orders, EUR 33,200
-   - Local pickup boost (HC-36): 13,000 orders, EUR -14,000
-   - Sequence ranker with fresh-listing interleave (HC-37): 14,900 orders, EUR 19,200
-   - Seller-diversity re-ranker (HC-39): 3,600 orders, EUR 3,500
+   - Two-tower personaliser (HC-31): 16,500 orders, EUR 22,500
+   - Velocity boost (HC-33): 8,500 orders, EUR 10,100
+   - Session-sequence model (HC-34): 25,700 orders, EUR 35,600
+   - Local pickup boost (HC-36): 12,900 orders, EUR 17,500
+   - Sequence ranker with fresh-listing interleave (HC-37): 14,800 orders, EUR 20,500
+   - Seller-diversity re-ranker (HC-39): 3,600 orders, EUR 5,000
 
 ### carousel_slot_q1_2027_cells.png
 

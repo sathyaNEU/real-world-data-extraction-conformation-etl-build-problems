@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: already, decisive, dashboard, archive, change, shrunk, mechanism, realised, experimentation, decision, newsroom, closed, incremental, family, construction, export, defect, source, decomposition, attribution, pattern, opportunity-sizing-decision, platform-drawn, requester, surface
+Stump terms swept: already, decisive, dashboard, archive, mechanism, change, family, shrunk, defect, realised, experimentation, construction, decision, decomposition, attribution, newsroom, closed, incremental, surface, export, reading, source, analytical, pattern, opportunity-sizing-decision
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `editorial_standards_s7_corrections.pdf`: golden figure 7.3 appears: ...pdates to a developing story are not corrections. 7.3 How a correction is made The editor making the co...
 - **REVIEW** `headline_squad_2027_placement_brief.pdf`: carries 6 of 9 distinctive words of the committed call: 'Place the headline squad with Culture·national for 2027, where it adds 1,250,000 extra article clicks.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `audience_warehouse_field_reference.md`: 5 of 25 stump-paragraph terms appear (dashboard, archive, experimentation, source, surface); read whether the document names the move
+- **REVIEW** `audience_warehouse_field_reference.md`: 5 of 25 stump-paragraph terms appear (dashboard, archive, experimentation, surface, source); read whether the document names the move
 - **REVIEW** `headline_squad_2027_placement_brief.pdf`: 7 of 25 stump-paragraph terms appear (dashboard, change, experimentation, decision, newsroom, closed); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)

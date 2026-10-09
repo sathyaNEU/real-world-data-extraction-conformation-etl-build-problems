@@ -36,7 +36,71 @@ def _styles():
     }
 
 
-def write_pdf(path, title, blocks, footer, when, author="Bightline News", subject=""):
+# The application each in-fiction PDF was written with: (Creator, Producer, PDF version it writes).
+PDF_APPS = {"word2010": ("Microsoft\xae Word 2010", "Microsoft\xae Word 2010", b"1.5"),
+            "pdfmaker": ("Acrobat PDFMaker 15 for Word", "Adobe PDF Library 15.0", b"1.6")}
+
+
+def pdf_literal(s):
+    """A PDF literal string in PDFDocEncoding (Latin-1 for every character used here), escaped."""
+    out = b""
+    for ch in s.encode("latin-1"):
+        c = bytes([ch])
+        if c in b"()\\":
+            out += b"\\" + c
+        elif ch > 126 or ch < 32:
+            out += b"\\%03o" % ch
+        else:
+            out += c
+    return b"(" + out + b")"
+
+
+def finish_pdf(path, when, author, title, app):
+    """Give the file the information dictionary and header its application writes, drop the writing library's
+    comments, and rebuild the cross-reference offsets. Asserts the result parses strictly with unchanged text."""
+    import logging
+    from pypdf import PdfReader
+    creator, producer, version = PDF_APPS[app]
+    before = [p.extract_text() for p in PdfReader(str(path)).pages]
+    b = open(path, "rb").read()
+    head = re.match(rb"%PDF-1\.\d\n%[^\n]*\n", b)
+    b = b"%PDF-" + version + b"\n%\xe2\xe3\xcf\xd3\n" + b[head.end():]
+    info_no = int(re.search(rb"/Info (\d+) 0 R", b).group(1))
+    stamp = when.strftime("D:%Y%m%d%H%M%S").encode() + b"+10'00'"
+    info = (b"<<\n/Author " + pdf_literal(author) + b" /CreationDate (" + stamp + b") /Creator " + pdf_literal(creator)
+            + b" /ModDate (" + stamp + b") /Producer " + pdf_literal(producer) + b" /Title " + pdf_literal(title)
+            + b"\n>>")
+    m = re.search(rb"\n%d 0 obj\n(<<.*?\n>>)\nendobj" % info_no, b, re.S)
+    b = b[:m.start(1)] + info + b[m.end(1):]
+    b = re.sub(rb"\n%[^\n]*ReportLab[^\n]*\n", b"\n", b)
+    xref_at = b.rfind(b"\nxref\n") + 1
+    hdr = re.match(rb"xref\n0 (\d+)\n", b[xref_at:])
+    n = int(hdr.group(1))
+    offs, pos = [], 0
+    for k in range(1, n):
+        mo = re.compile(rb"\n%d 0 obj\n" % k).search(b, pos)
+        offs.append(mo.start() + 1)
+        pos = mo.end()
+    table = hdr.group(0) + b"0000000000 65535 f \n" + b"".join(b"%010d 00000 n \n" % o for o in offs)
+    b = b[:xref_at] + table + b[xref_at + len(hdr.group(0)) + 20 * n:]
+    b = re.sub(rb"startxref\n\d+\n", b"startxref\n%d\n" % xref_at, b)
+    assert b"reportlab" not in b.lower() and b"ReportLab" not in b
+    open(path, "wb").write(b)
+    cap = io.StringIO()
+    h = logging.StreamHandler(cap)
+    logging.getLogger("pypdf").addHandler(h)
+    try:
+        r = PdfReader(str(path), strict=True)
+        after = [p.extract_text() for p in r.pages]
+        meta = r.metadata
+    finally:
+        logging.getLogger("pypdf").removeHandler(h)
+    assert not cap.getvalue().strip(), "%s: %s" % (path, cap.getvalue())
+    assert after == before, path
+    assert meta.producer == producer and meta.creator == creator and meta.author == author, meta
+
+
+def write_pdf(path, title, blocks, footer, when, author="Bightline News", app="word2010"):
     """blocks: list of (kind, payload): title/meta/h/p/small/bullets/table/space."""
     st = _styles()
     flow = []
@@ -72,17 +136,11 @@ def write_pdf(path, title, blocks, footer, when, author="Bightline News", subjec
         canv.restoreState()
 
     doc = SimpleDocTemplate(str(path), pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, subject=subject or title,
-                            creator="Bightline News", producer="Bightline News", keywords="", invariant=1)
+                            bottomMargin=18 * mm, title=title, author=author, subject=title,
+                            creator=author, producer=author, keywords="", invariant=1)
     doc.build(flow, onFirstPage=on_page, onLaterPages=on_page)
-    # invariant mode stamps 2000-01-01; give the file its own date, at equal length so the xref holds
-    b = open(path, "rb").read()
-    stamp = when.strftime("D:%Y%m%d%H%M%S") + "+10'00'"
-    old = b"D:20000101000000+00'00'"
-    assert len(stamp.encode()) == len(old)
-    assert old in b
-    b = b.replace(old, stamp.encode())
-    open(path, "wb").write(b)
+    # invariant mode stamps 2000-01-01 and the library's own name; give the file its application's dictionary
+    finish_pdf(path, when, author, title, app)
 
 
 def write_docx(path, paras, when, author="Bightline News", title=""):
@@ -112,8 +170,8 @@ def write_docx(path, paras, when, author="Bightline News", title=""):
     cp.keywords = ""
     cp.category = ""
     cp.revision = 3
-    cp.created = when
-    cp.modified = when + dt.timedelta(hours=2)
+    cp.created = when - P.AEST                      # Word records UTC
+    cp.modified = when + dt.timedelta(hours=2) - P.AEST
     d.save(str(path))
     repack_ooxml(path, when)
 
@@ -156,10 +214,9 @@ def repack_ooxml(path, when, pages=1):
     if "word/document.xml" in data:
         word_container(data, pages)
     infos = [i for i in infos if i.filename in data]
-    stamp = (when.year, when.month, when.day, when.hour, when.minute, 0)
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zout:
         for i in infos:
-            zi = zipfile.ZipInfo(i.filename, date_time=stamp)
+            zi = zipfile.ZipInfo(i.filename, date_time=(1980, 1, 1, 0, 0, 0))     # the entry time Word writes
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
             zi.create_system = 0
@@ -195,7 +252,7 @@ def charter_blocks():
         ("p", "The planning meeting takes one recommendation from the managing editor: the desk, and the clicks the "
               "squad is expected to add there in 2027. The editor-in-chief's office reviews squad placement on the "
               "experimentation dashboard's average winning lift by vertical, and Lisa Jennings's office will present "
-              "that view at the meeting. It is the view the room will have in front of it."),
+              "that view at the meeting."),
         ("p", "Papers: a short paper and its workbook to Corey Cox by Friday 30 October, for circulation with the "
               "agenda on Monday 2 November."),
         ("h", "Moving in January"),

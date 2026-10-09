@@ -30,6 +30,7 @@ from scipy.optimize import minimize_scalar
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import FuncFormatter, NullFormatter  # noqa: E402
 
 from docx import Document  # noqa: E402
@@ -331,11 +332,14 @@ for d in SHORTLIST:
 
 # ============================================================================ the chart
 INK, INK2, MUTED, GRID, SURF = "#0b0b0b", "#52514e", "#8a8984", "#e4e3df", "#fcfcfb"
-STAGES = [("planned", "2027 clicks (plan)", "#86b6ef"),
-          ("platform", "from Bightline's own surfaces", "#3987e5"),
-          ("untested", "on headlines the desk does not test", "#1c5cab"),
-          ("extra", "extra clicks from the squad", "#0d366b")]
-HILITE = "#fdf0e8"
+# The plan is the recessive start of each row; the two stages that narrow it are ticks in categorical slots 1 and 2,
+# which stay apart where two stages sit a few per cent apart on the log axis; the squad's clicks are the slot-3 dot,
+# labelled with its value (slot 3 is under 3:1 on the surface, so the label and the paper's table carry it too).
+STAGES = [("planned", "2027 clicks (plan)", "ring", INK2),
+          ("platform", "from Bightline's own surfaces", "tick", "#2a78d6"),
+          ("untested", "on headlines the desk does not test", "tick", "#eb6834"),
+          ("extra", "extra clicks from the squad", "dot", "#1baf7a")]
+HILITE = "#f1f0ec"
 
 
 def tick(x, _):
@@ -353,11 +357,15 @@ def chart_png():
     for d in (CALL, RUNNER):
         ax.axhspan(ys[d] - 0.42, ys[d] + 0.42, color=HILITE, zorder=0, lw=0)
     for d in order:
-        xs = [chain[d][k] for k, _, _ in STAGES]
+        xs = [chain[d][k] for k, _, _, _ in STAGES]
         ax.plot(xs, [ys[d]] * 4, color="#c9c8c2", lw=1.6, zorder=1, solid_capstyle="round")
-        for (k, label, col), x in zip(STAGES, xs):
-            ax.scatter([x], [ys[d]], s=46, color=col, edgecolor=SURF, linewidth=1.6, zorder=3,
-                       label=label if d == order[0] else None)
+        for (k, label, kind, col), x in zip(STAGES, xs):
+            if kind == "ring":
+                ax.scatter([x], [ys[d]], s=52, facecolor=SURF, edgecolor=col, linewidth=1.4, zorder=2)
+            elif kind == "tick":
+                ax.scatter([x], [ys[d]], s=170, marker="|", color=col, linewidth=2.6, zorder=3)
+            else:
+                ax.scatter([x], [ys[d]], s=64, color=col, edgecolor=SURF, linewidth=1.6, zorder=4)
         ax.text(chain[d]["extra"] / 1.22, ys[d], "{:,}".format(asks[d]["extra"]), ha="right", va="center",
                 fontsize=8.5, color=INK, fontweight="bold" if d == CALL else "normal")
     labels = []
@@ -389,8 +397,16 @@ def chart_png():
     ax.spines["bottom"].set_color(GRID)
     ax.tick_params(axis="y", length=0)
     ax.tick_params(axis="x", which="both", colors=INK2, length=0)
-    ax.legend(loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=2, frameon=False, fontsize=7.5,
-              handletextpad=0.2, columnspacing=1.0)
+    keys = []
+    for k, label, kind, col in STAGES:
+        if kind == "ring":
+            keys.append(Line2D([], [], ls="none", marker="o", ms=6.5, mfc=SURF, mec=col, mew=1.4, label=label))
+        elif kind == "tick":
+            keys.append(Line2D([], [], ls="none", marker="|", ms=10, mec=col, mew=2.6, label=label))
+        else:
+            keys.append(Line2D([], [], ls="none", marker="o", ms=7.5, mfc=col, mec=SURF, mew=1.2, label=label))
+    ax.legend(handles=keys, loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=2, frameon=False, fontsize=7.5,
+              handletextpad=0.3, columnspacing=1.2)
     fig.suptitle("{} gains most from the squad: {:,} extra article clicks in 2027"
                  .format(NAME[CALL], asks[CALL]["extra"]),
                  x=0.02, ha="left", y=0.985, fontsize=10.5, fontweight="bold", color=INK)
@@ -777,7 +793,9 @@ def write_docx(path, png):
         "section's month taken from the latest of those releases. A headline correction is a new note on a published "
         "version that went up with a corrected headline, on the same save or on a save within ten minutes either side "
         "as the CMS export's field notes allow, a live-blog entry's headline included (editorial standards 7.4 and "
-        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. An article "
+        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. Rates are "
+        "per 1,000 stories and live blogs first published October 2025 to September 2026; live-blog posts, restored "
+        "copies and documents carried across at the 1 October 2025 migration are not separate articles. An article "
         "goes live at its first published version, its publish time if the CMS published it; a restored copy keeps "
         "its original's.",
     ]
@@ -821,28 +839,45 @@ def word_stats(data, pages):
             b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
 
 
-def repack(path, when=dt.datetime(2026, 10, 19, 9, 0)):
-    """Fixed entry times and the paper's own date in docProps, so a rebuild is byte-identical."""
+AEST = dt.timedelta(hours=10)
+# (creator, last saved by, first created, last saved), AEST: each file was started after the folder was handed over
+# on 16 October and last saved on the morning of the 19th, the date the paper carries.
+GOLDEN_PROPS = {
+    "squad_placement_2027.xlsx": ("Newsroom planning", "Corey Cox", dt.datetime(2026, 10, 16, 14, 20),
+                                  dt.datetime(2026, 10, 19, 8, 52)),
+    "squad_placement_2027.docx": ("Corey Cox", "Corey Cox", dt.datetime(2026, 10, 16, 15, 5),
+                                  dt.datetime(2026, 10, 19, 9, 0)),
+}
+
+
+def repack(path):
+    """Office's own record: who made the file and who saved it last, created and last saved in UTC, the
+    1980-01-01 entry time Office writes, and the file dated at its last save, so a rebuild is byte-identical."""
+    creator, last_by, created, modified = GOLDEN_PROPS[Path(path).name]
     with zipfile.ZipFile(path) as z:
         infos = z.infolist()
         data = {i.filename: z.read(i.filename) for i in infos}
     if "word/document.xml" in data:
         word_stats(data, PAPER_PAGES)
         infos = [i for i in infos if i.filename in data]
-    iso = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    data["docProps/core.xml"] = re.sub(rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*", rb"\g<1>" + iso,
-                                       data["docProps/core.xml"])
+    core = data["docProps/core.xml"]
+    for tag, val in ((rb"dcterms:created", created - AEST), (rb"dcterms:modified", modified - AEST)):
+        core = re.sub(rb"(<" + tag + rb"[^>]*>)[^<]*", lambda m: m.group(1) + val.strftime("%Y-%m-%dT%H:%M:%SZ").encode(), core)
+    core = re.sub(rb"(<dc:creator[^>]*>)[^<]*", lambda m: m.group(1) + creator.encode(), core)
+    core = re.sub(rb"(<cp:lastModifiedBy[^>]*>)[^<]*", lambda m: m.group(1) + last_by.encode(), core)
+    data["docProps/core.xml"] = core
     # openpyxl writes its own version as AppVersion; the paper's Office 14 build number instead
     if "docProps/app.xml" in data:
         data["docProps/app.xml"] = re.sub(rb"<AppVersion>\d\.\d{1,2}</AppVersion>", b"<AppVersion>14.0300</AppVersion>",
                                           data["docProps/app.xml"])
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for i in infos:
-            zi = zipfile.ZipInfo(i.filename, date_time=when.timetuple()[:6])
+            zi = zipfile.ZipInfo(i.filename, date_time=(1980, 1, 1, 0, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
             z.writestr(zi, data[i.filename])
-    os.utime(path, (when.timestamp(), when.timestamp()))
+    ts = (modified - AEST - dt.datetime(1970, 1, 1)).total_seconds()
+    os.utime(path, (ts, ts))
 
 
 def main():
@@ -853,11 +888,11 @@ def main():
     scrub = HERE.parents[1] / ".claude/skills/reduce-house-fixes/scripts/scrub_producer_metadata.py"
     subprocess.run([sys.executable, str(scrub), str(OUT), "--apply", "--producer", "Bightline News",
                     "--stamp", "2026-10-19"], capture_output=True, text=True)
+    for f in ("squad_placement_2027.xlsx", "squad_placement_2027.docx"):
+        repack(OUT / f)
     audit = subprocess.run([sys.executable, str(scrub), str(OUT), "--floor", "2026-01-01", "--ceiling", "2026-10-19"],
                            capture_output=True, text=True)
     assert audit.returncode == 0, audit.stdout + audit.stderr
-    for f in ("squad_placement_2027.xlsx", "squad_placement_2027.docx"):
-        repack(OUT / f)
 
     print("prior: maximum likelihood on %d packages, mean %.3f%%, sd %.3f%%" % (N_PACKAGES, 100 * MU, 100 * TAU2 ** .5))
     print("\nCALL  %s  %s extra article clicks in 2027 (unrounded %s)"

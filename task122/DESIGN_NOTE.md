@@ -791,7 +791,7 @@ passes (the call closes the context, the notebook opens on that answer, each lat
 
 ## Build record
 
-The stage 3 build's record; `## Harden loop 1: build record` supersedes every figure in it.
+The stage 3 build's record. The current figures are in `## Harden loop 3: build record`, which supersedes this section and both earlier loops' records.
 
 Stage 3, 2026-10-09. `python3 task122/generator/build.py` (seeded throughout) writes `target/` and `metadata.json`,
 asserts every check in `checks.py` on the files as written, normalises container metadata and mtimes, and fails
@@ -1089,13 +1089,14 @@ before the chart code).
 
 ## Leak review
 
-Answers to `leak.py --asof 2026-10-28` as re-run at stage 3 after harden loop 2 (REVIEW, no LEAK, 16 REVIEW lines;
-stump terms from the current stump sentence).
+Answers to `leak.py --asof 2026-10-28` as re-run after harden loop 3 and again at stage 3 on the same pack (REVIEW, no
+LEAK, the same 18 REVIEW lines both times; stump terms from the current stump sentence).
 
 - Charter, golden figures 179, 180, 729, 730: the cell table's tenure band edges, which the golden uses as cell labels, not as answers.
 - Charter, golden figure 2.1: the section number of definition 2.1 (a carousel session), which only coincides with the B web 730+ fee cell.
-- Charter, golden figure 2.4: the section number of definition 2.4, which only coincides with the gap.
-- Charter, golden figure 5.2: the section number of the reproduction clause, which only coincides with the E web 730+ fee cell.
+- Charter, golden figure 2.3: the section number of definition 2.3 (the incumbent), which only coincides with the F app 180-729 fee cell.
+- Charter, golden figure 2.4: the section number of definition 2.4, which only coincides with the gap and the D web 0-29 fee cell.
+- Field reference and extract register, golden figure 4.3: the logger's release number, which only coincides with the B app 0-29 fee cell.
 - Extract register, 11 of 17 words of the call: the folder's own subject line (Q1 2027 home carousel test slot and its dates); it names no policy.
 - Planning thread, 12 of 17 words of the call: the slot's vocabulary; the one voice on the interleave argues against it, so nothing points at the answer.
 - Field reference, 7 stump terms: the logger's field definitions; "in the session" and the seven-day rule are its scope statement and a serving rule (realism debts on file), and no sentence says a tile can be ordered from after its session.
@@ -1104,8 +1105,8 @@ stump terms from the current stump sentence).
 - Fresh-listing commitment, 3 stump terms: the counting rule per served ranking, a pin.
 - Planning thread, 6 stump terms: the voices hold beliefs (the pinned tiles convert, the archive never misses with session weights, fee income by cell) and none names the tile count or the guardrail basis.
 - Prompt, two stump terms in the question: the question itself (registered policies, carousel sessions), no method or basis.
-- Tariff register, 2027-01-04: the deferred January row, a forward-dated entry by design (HZ1); the minutes defer it.
-- Capacity note (no REVIEW line, read anyway as loop 2's carrier): the 1 March 2027 sentence carries the date and no cover or fee word, and terms 2 carries the cover and no date, so no single shipped sentence ties the checkout change to the fee.
+- Tariff register, 2027-04-05: KB-2027-01, a Finance proposal entered on 22 September for 5 April 2027 with no committee decision, dated after the slot by design (HZ1).
+- Planning thread (no REVIEW line, read anyway as FC's one mention): "Sellers have had Checkout 3 to get used to this autumn" names the launch and nothing it changed; no shipped sentence ties Checkout 3 to payment, cover or the fee, and the capacity note no longer carries a checkout sentence.
 
 ## Harden loop 1: design (2026-10-09)
 
@@ -1833,6 +1834,192 @@ Loop 3 of 3 on this architecture, the last before a re-root. Round 1 is re-run o
 at or over 40 with the call missed (a response that finds Checkout 3, or a fee path no loop has seen), sends the build to
 stage 1 with this architecture moved into the card's lineage.
 
+## Harden loop 3: build record (2026-10-09)
+
+Supersedes `## Harden loop 2: build record` for every figure below. `submission.md` block 3 steps 5 and 6 and block 4
+items 3 and 4 are rewritten in this loop (the traffic plan with no split; every order charged at the tariff row in force
+on the slot's dates; the 48 cells and 12 totals); blocks 1 and 2 stand.
+
+### Gates
+
+- **Generator:** 316 assertions passed (`checks.py`), on the files as written (349 in loop 2: the device grid now has 31
+  readings where FX's three states gave 47).
+- **Independent verifier:** `verify_pack.py` 107 of 107 on the task folder, on its own code path, every figure agreeing
+  with the build record. It reads the checkout the slot runs on from the records (the day after the last pickup with no
+  capture: 21 September 2026, with 7,033 pickups from then to the extract's end and none without a capture), the tariff
+  from the register's dates and the slot's end from the capacity note.
+- **Determinism of the build:** two builds (the task folder and a scratch root), 23 target files and `metadata.json`
+  byte-identical; the records differ only in the scrub log's output path.
+- **Input gates:** 23 files, 9 formats, the render log at 404,100 rows, three distractors named in `metadata.json` only
+  (the search ranking tests, the seller survey and now the pricing committee minutes).
+- **Metadata:** containers clean on `target/` and `golden/`; the one forward ISO date is the tariff register's
+  KB-2027-01 row (2027-04-05), a proposal dated after the slot.
+- **Golden:** `golden.py` executes the notebook top to bottom, writes the PNG and agrees with the record; two runs
+  byte-identical (notebook 77debf38, PNG 79a06228). Sections changed: the slot's traffic (the plan, no split), fee income
+  (the tariff by the register's dates and the two controls, the provider's captures and Finance's statement), and a new
+  Checkout 3 cell (orders, pickups and pickups paid at the handover by week around 21 September) above the slot grid.
+- **golden-realism (dataviz loaded first):** the PNG footer rewrapped onto three lines (the two-line version ran to the
+  canvas edge); the summary's fee paragraph rewritten around Checkout 3; the weekly table's index named. No figure moved.
+- **reduce-house-fixes:** H1 clean on both trees. H4: `golden/` holds the two named files; the manifest equals the 23
+  shipped files. H6: the switch back-tested on every pickup in the extract (none of the 7,033 from 21 September without a
+  capture; 25,785 of the 48,995 before it), and the seven-day rule on all 902,400 served tiles (no buyer and listing pair
+  twice). H8: terms 2 and 3, charter 2.2, 2.4, 4(b) and 5.2, the release log's 14 August entry and ledger account 8120
+  all resolve. H11: one `submission.md`, one `prompt.md`. Block 4 diffed against `verify_pack.py --out`, 14 of 14 lines
+  equal (48 cells, 12 totals). No em dashes.
+- **Leak sweep:** `leak.py --asof 2026-10-28` REVIEW, no LEAK, 18 REVIEW lines, each answered under `## Leak review`.
+- **Fingerprint:** `surface` 0 promoted pairs (nearest task121 at 0.096); `heart` WARN, no BLOCK, the same three WARNs
+  as at the draw (driver.near 0.13 against this slot's first draft, repeat.gate_g, repeat.decision). Card unchanged: the
+  call, the stump, the driver and the deliverables did not move.
+
+### The answer and the stump, as built (unchanged)
+
+E 5.697 (5.7), runner-up B 3.303 (3.3), gap 2.394 (2.4); the stump path files C at 9.845 with E at 5.697, gap 4.148. The
+ladder re-asserted: rung 0 D (margin 1.259), rung 1 A (1.212), rung 2 C (1.237), rung 3 B over E (1.397), rung 4 E over
+B (1.725); E ranks 5th, 4th, 4th and 4th, then leads. Dominance: carried 1.397, edge 2.409, product 1.725. The guardrail
+by count as before (C app 0-29 -0.957 on `ordered_tiles`, -3.771 on every order placed from the tiles; A web 730+
+-2.736 and -2.512); 205 come-back orders. The archive: the per-session weight 9 of 9, per render 6, replay 3.
+
+The headline on the slot's planned cell mix: E 5.679, B 3.271, gap 2.408, the same bins as the logged window's (C1).
+**The thinnest boundary in the pack is here:** B on the slot mix sits 0.021 above the 3.25 edge, against an asserted
+floor of 0.02; it is a rival reading (charter 5.1 scores policies on the logged window) and it files 3.3 either way. C
+reads 9.874 on the slot mix, so a stump filed there carries 9.9 rather than 9.8.
+
+### Checkout 3 in the records, as built
+
+- 48,995 pickup orders before 21 September 2026, 25,785 of them with no capture (paid to the seller at the handover);
+  7,033 from 21 September to 11 October, every one with a capture. Pickups stay at 14.8 to 16.1 per cent of orders in
+  the four weeks before and the three after, so the switch moves payment and not demand.
+- The records step converts the 4,812 handover pickups dated on or after 21 September to checkout payments; every
+  carousel order credited to a logged session predates 21 September (asserted), so no order the call reads moves.
+- No document names the switch beyond the thread's one mention; the release calendar shows 26.19 on 21 September with
+  its standard release line.
+
+### Ask 1, the fee grid, as built
+
+As `submission.md` block 4 item 3, recomputed by the verifier. Every cell 0.035 to 0.045 from its bin's edges and at
+least 0.005 off the round value; three cells under EUR 1.00 (C app 0-29, F app 730+, F web 0-29).
+
+- All 31 device readings (FC's two states by the four hazards, less the golden) and the natural read carry every cell
+  out of its bin. The nearest is C app 0-29 with only the register's newest row applied, 0.0321 outside; the floor is
+  asserted at 0.02.
+- FC alone: the logged window's checkout carried into the slot (round 3's path, the one the statement confirms) moves all
+  48 cells, the nearest 0.0532 outside.
+- C1: VAT taken off order by order to the cent files every cell in the golden bin (at least 0.0134 inside).
+- Over-cleaners: fees as charged move 46 cells, every pickup dropped 47, every accepted offer 44, the pre-September
+  tariff 47, VAT off the gross 45; the in-session basis moves B's four cells over 180 days and no other.
+- D's row changes sign against loop 2. The local pickup boost adds pickups, which the logged window's checkout left
+  uncharged when paid at the handover; in the slot they carry the fee, so its cells run 2.4 to 8.7.
+
+### Ask 2, the twelve-week totals, as built
+
+| Policy | Extra orders | Extra fee income, EUR |
+|---|---|---|
+| A two-tower personaliser | 16,474.2 | 22,511.0 |
+| B velocity boost | 8,518.6 | 10,111.7 |
+| C session-sequence model | 25,716.0 | 35,609.0 |
+| D local pickup boost | 12,924.6 | 17,513.5 |
+| E sequence ranker, fresh-listing interleave | 14,789.8 | 20,520.0 |
+| F seller-diversity re-ranker | 3,584.5 | 4,984.4 |
+
+Every total at least 24.2 from the edges of its hundred (A's orders the nearest; E's fee 30.0). Placement factors 0.985
+to 1.014 per cell on the 2026 slot weeks; R2 moves 6.18 per cent of sessions and keeps every platform-week total. Per
+policy, 134 readings (five order readings, the pooled and natural fee reads, and 127 fee device readings: FC's two states
+by the four hazards by the four traffic readings, less the golden), each at least 5 from the golden hundred's edges; the
+nearest stop reading is B's fee on the first release with balance purchases uncharged and the logged checkout, 8.98
+outside. FC alone moves every fee total (the nearest F, 32.8 outside; D's carried checkout gives -33,827.9). Inside the
+hundred, recorded: B's fee with only the asking price, B's fee with the logged checkout and the newest tariff row, E's
+fee on all twelve app weeks with the logged checkout and the asking price, and F's fee on the first release with the
+logged checkout; the pooled reads, refused by the capacity note, sit inside for E's and F's orders and F's fee. No order
+reading sits inside.
+
+### Referee, pair and exposure, as built
+
+- **Referee.** Finance's statement, EUR 336,558.64 on its total row, reproduced to the cent only on the logged window's
+  checkout with VAT out and balance purchases charged (the captures alone are 379,059.20 gross and 313,272.07 net of VAT;
+  balance-paid purchases are 6.7 per cent of protected ones). Charging every pickup, the golden's basis, overshoots it by
+  7.67 per cent, so the statement does not tie under the golden fee basis (asserted in the generator and the verifier).
+- **Device rows in the main call's population:** 0 (asserted).
+- **Pair arithmetic (as built):** cracker 53.6, mirror 16.0, pair 34.8 on round 3's fee path (the reconciled basis
+  carried into the slot keeps no fee cell and no fee total), as designed. Exposure: one top response that finds Checkout
+  3 and lands the call puts the pair at 58.0.
+
+## Stage 3 after harden loop 3: write-up and ship checks (2026-10-09)
+
+Skills run in order: submission-writeup, golden-realism (dataviz loaded before the chart was reviewed), reduce-house-fixes,
+leak-check, fingerprint. One edit, to `submission.md` step 5's wording; the generator, the pack and the goldens did not change.
+Every check was re-run.
+
+- **Rebuild.** `build.py` into the scratchpad: 316 assertions passed. All 23 target files and `metadata.json` are
+  byte-identical to the shipped ones. `verify_pack.py` passes 107 of 107 on the task folder against that build record (call
+  HC-37 5.6966, runner-up HC-33 3.3028, gap 2.3938).
+- **Golden.** `golden.py` re-run into the scratchpad. It executes the notebook top to bottom, and both files are byte-identical
+  to `golden/` (notebook 77debf38, PNG 79a06228). Every figure agrees with the loop 3 record: E 5.7, B 3.3, gap 2.4; 48 fee
+  cells; 12 totals; breaches A web 730+ -2.5% and C app 0-29 -3.8%; archive 9, 6 and 3 of 9; D 8.8; F 1.4; B 8.0 in session
+  against 3.3 over the test.
+- **submission.md.** Five blocks. Block 4's 48 cells and 12 totals were diffed mechanically against `verify_pack.py --out`:
+  60 of 60 equal at the filed rounding. The figures in blocks 2 and 3 agree with the executed notebook's outputs (9 of 9,
+  -3.8% and -2.5%, 8.8, 1.4, 8.0 and 3.3 flat from day 6, 5.7, ten app weeks from 18 January and twelve web weeks). Step 5
+  was reworded so the R2 restatement cites the file that pins it (`analytics_release_log.md`, 14 August), with the app gate
+  stated as a reason rather than as a list item; no figure moved. No em dashes.
+- **golden-realism.** The PNG and the notebook were read cold. The PNG has a finding title, a diverging red to blue scale
+  with a grey zero (poles re-validated: CVD 23.3, normal 30.3; the blue pole's 2.91 contrast is covered by the value label in
+  every cell), labelled hatching, the outlined chosen row, a status column and a three-line source footer, with no
+  collisions. The notebook opens on the call, carries its argument in markdown and keeps 15 control assertions. No hedge
+  words. No edit, so the figures are unchanged.
+- **reduce-house-fixes.** H1: the audit is clean on `target/` and `golden/` (band 2026-01-01 to 2026-10-28). H4: `golden/`
+  holds exactly the two named files, and the `metadata.json` manifest equals the 23 shipped files. H6: the seven-day rule
+  holds on all 902,400 served tiles (no buyer and listing pair twice), the Checkout 3 switch and the fee rule are back-tested
+  in the notebook's assertions, and every capture reproduces at its register row. H8: charter 2.2, 2.4 and 5.2, terms 2 and 3,
+  the release log's 14 August entry, the field reference's seven-day rule and the capacity note's gating sentences all
+  resolve, and all 14 file names cited in the submission ship. H11: one `submission.md` and one `prompt.md`; no backup or
+  snapshot.
+- **Leak.** `leak.py --asof 2026-10-28`: REVIEW, no LEAK. Its 18 REVIEW lines are the 18 answered under `## Leak review`,
+  on an unchanged pack.
+- **Fingerprint.** `surface`: 0 promoted pairs (nearest task121 at 0.096); the 12 personas in the cut pack are all on the
+  card. `heart`: WARN, no BLOCK. The nearest heart text is 0.05 (task121's stump), and the three WARNs (driver.near 0.13
+  against this slot's first draft, repeat.gate_g, repeat.decision) are the ones answered at the draw and at loop 1. The card
+  was already current (answer, answer_source, spine rows 404,100, deliverables, opening move deliverable-first).
+  `guard.py validate`: 119 cards, 0 invalid.
+
+## Solver round 4, plain, after harden loop 3 (2026-10-09)
+
+Graded with `grade.py` as "round 4, plain": token proxy 46.8, call missed, 2 of 8 items by token. The token match is right on
+the call (the solver files C, HC-34, at 9.8, with E, HC-37, at 5.7 as its runner-up) and wrong on the asks: notebook items 1
+and 2 and image items 2 to 4 were credited on HC-37, 5.7, HC-34 and app 0-29 named in the solver's runner-up and screen-out
+sentences. Read by hand it keeps instruction-following, the heatmap's form and the six order totals (16,500, 8,500, 25,700,
+12,900, 14,800, 3,600, all in the golden hundreds, as the pair arithmetic always counted them) and nothing else: the runner-up
+(HC-37 at a gap of 4.1 against the golden HC-33 at 2.4), all 48 fee cells, all six fee totals, the hatching (one cell against
+two), the outline and the title all missed. Read-corrected proxy about 14 to 22, under 40 with the call missed: **round 1
+passes**, and the build goes to round 2 (plain and skeptic).
+
+Path against the ladder: rungs 0 to 2 executed (step 2 rejects replay and render weights against the archive, 9 of 9 on
+session weights), and rung 4's netting run on B alone (step 7, "only 45 of its 120 in-session watchlist orders are
+incremental. Its net lift is 3.30"), so it stood at rung 2 with C exactly where the stump sentence puts it. It left the
+ladder at step 3 and step 5, "The outcome is in-session carousel orders from ordered_tiles" and "HC-34's worst cell is app
+0-29 at -0.96%, which passes": rung 3, the come-back orders from a tile left on screen, was never seen (the silent shape),
+for the third round running. FC held: step 8 reconciled to Finance's statement and carried the logged checkout into the slot
+("Unpaid pickup orders are paid directly to the seller and carry no fee"), which is why its HC-36 row runs -7.0 to -15.8
+against the golden 2.4 to 8.7. P2, HZ3, HZ1 and VAT were read and executed as stated exposures, and they cost only the order
+totals the arithmetic already conceded.
+
+## Solver round 5, plain and skeptic, after harden loop 3 (2026-10-09)
+
+Graded with `grade.py` as "round 5, plain" (token proxy 48.0, call missed, 2 of 8 items by token) and "round 5, skeptic" (45.6,
+call missed, 2 of 8). Both file C, HC-34, at 9.9 on the slot mix (9.8 on the logged window), with E, HC-37, at 5.7 as runner-up
+at a gap of 4.2. The token match is right on the call and wrong on the asks, the same way as round 4: notebook item 1 and image
+item 2 were credited on HC-37, 5.7, HC-34 and app 0-29 appearing in the runner-up and screen-out sentences. Read by hand each
+keeps instruction-following, the heatmap's form and the six order totals (16,500, 8,500, 25,700, 12,900, 14,800, 3,600) and
+nothing else: the runner-up (HC-37 at 4.2 against the golden HC-33 at 2.4), all 48 fee cells, all six fee totals, the hatching
+(one cell against two), the outline and the title all missed. Read-corrected proxy about 22 for each, average under 40 and
+both under 25: **round 2 passes**, and the build goes to the judge rehearsal.
+
+Path against the ladder, both solvers alike: rungs 0 to 2 executed (session weights reproduce 9 of 9 archived tests, render
+weights refused), rung 4's netting run on B alone (plain step 5, skeptic step 6, B net 3.3), and the ladder left at rung 3:
+plain step 4, "in-session carousel orders from ordered_tiles ... HC-34's worst cell is app 0-29 at -0.96%, which passes", and
+skeptic step 4 in the same words. The come-back orders from a tile left on screen were never seen (the silent shape), now four
+rounds running and under the skeptic lens too. FC held on both (plain step 7, "Unpaid pickup orders carry no fee"), which
+carries HC-36's fee row negative and every fee cell and total out of its bin.
+
 ## Tried and rejected
 
 - First draft (v1, drafted 2026-10-08, never registered): every proposal failed a different launch condition and the test-calendar
@@ -2031,3 +2218,13 @@ stage 1 with this architecture moved into the card's lineage.
   window (whatever changes for the slot, the statement hands over every logged-window device at once), and any device whose
   rule is a dated, named sentence in a document the ask path opens (the minutes, the release log, the capacity note), because
   the solver reads every note on its path and carries out what it says. Harden loop 3 of 3.
+- Harden loop 3 build, the either-side band at 40 (a wrong total under 40 from its golden placed on whichever side of the
+  edge it falls): infeasible on this pack. E's fee total has two compound readings on the twelve-week app traffic, one 52
+  above the golden and one 55 below, and no placement keeps the golden 20 from the edges while carrying both out of a
+  hundred-wide bin by 5 (best score -0.03 after refinement). The band is 56, which adds only those two readings.
+- Harden loop 3 build, the traffic placement with every first-release total scaled linearly by the placement factors: the
+  restatement's moves were counted on the placed table, so a placed cell's first-release sessions were not the factor times
+  the unplaced cell's, and B's fee total on the first release with balance purchases uncharged and the logged checkout
+  landed 0.21 inside its hundred's edge in the files against at least 5 predicted (the build stopped on
+  ask2.every_reading_clear_of_the_edges.B). The moves are now counted on the unplaced table and added to the placed one, so
+  a first-release total is the placed table's plus a constant and the placement is exact.

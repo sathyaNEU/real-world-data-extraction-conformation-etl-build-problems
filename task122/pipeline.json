@@ -2,11 +2,11 @@
  "task": "task122",
  "domain": "product-analytics",
  "objective": "experiment-causal",
- "stage": 3,
- "stage_name": "round 3 graded: harden (loop 3 of 3, ask layer)",
+ "stage": 5,
+ "stage_name": "solver round 2 passed (round 5, plain and skeptic: both missed the call on HC-34; token proxies 48.0 and 45.6, read-corrected about 22 each); next judge rehearsal",
  "updated": "2026-10-09",
  "stump": "A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine archived carousel tests, takes the charter's lift as the orders the arm's buyers place over the test (which nets the velocity boost's brought-forward watch-list orders), reads condition (b) in the eight platform-by-tenure cells on the render log's ordered_tiles and commits the Q1 2027 slot to C, the session-sequence model, at 9.8 extra orders per 1,000 carousel sessions; the step that lands it there is taking the logger's in-session tile orders as the charter's carousel order rate, when the charter counts every order placed from the tiles an arm served and buyers under every other ranker come back to order from a tile left on screen after the session closes (credited to the new session, so only the listing ties the order to its tile), which puts C's rate in app 0-29 3.8 per cent below the incumbent's, so C fails (b) and E, at 5.7, is the largest lift that clears every condition.",
- "harden_loops": 2,
+ "harden_loops": 3,
  "solver_rounds": [
   {
    "label": "round 1, plain",
@@ -30,6 +30,30 @@
    "score": 51.1,
    "landed": false,
    "cracked": 4,
+   "items": 8
+  },
+  {
+   "label": "round 4, plain",
+   "date": "2026-10-09",
+   "score": 46.8,
+   "landed": false,
+   "cracked": 2,
+   "items": 8
+  },
+  {
+   "label": "round 5, plain",
+   "date": "2026-10-09",
+   "score": 48.0,
+   "landed": false,
+   "cracked": 2,
+   "items": 8
+  },
+  {
+   "label": "round 5, skeptic",
+   "date": "2026-10-09",
+   "score": 45.6,
+   "landed": false,
+   "cracked": 2,
    "items": 8
   }
  ],
