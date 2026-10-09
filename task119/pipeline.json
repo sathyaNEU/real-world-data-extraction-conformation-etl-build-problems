@@ -1,0 +1,20 @@
+{
+  "task": "task119",
+  "domain": "policy-education",
+  "objective": "anomaly-detection",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-08",
+  "stump": "A competent solver rebuilds the funnel on the remit's non-elective adult medical spells, removes the palliative and hospice-unit spells, runs a risk-adjusted CUSUM over the latest twelve months, back-tests it at 23 of the 34 closed rapid reviews, treats the misses as review noise and sends the engagement to the trust running the weekend stroke diversion (C); the step that lands it there is crediting every death to the trust of the patient's last spell, the indicator's own convention and the episode file's grain, so it never self-joins spells across trusts on the patient key and never sees that the deaths the late-transferring district general hospital (E) exports to four receivers belong to the chains it begins.",
+  "harden_loops": 0,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
+}
