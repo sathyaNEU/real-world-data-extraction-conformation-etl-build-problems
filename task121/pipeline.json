@@ -1,0 +1,20 @@
+{
+  "task": "task121",
+  "domain": "product-analytics",
+  "objective": "root-cause",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-08",
+  "stump": "A competent solver nets out the partner-referral mix, measures the release's per-session effect from the staggered flag cohorts balanced on channel and account age (the construction that reproduces both prior releases' reviewed effects), and applies that pooled effect to the quarter's planned sessions, filing a weekly cost about a quarter too high, because it never follows sessions through accounts to their saved addresses, where only four-digit-postcode addresses fail and an account that fails once re-saves and never fails again, so the share of checkouts still exposed falls week by week.",
+  "harden_loops": 0,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md"
+}

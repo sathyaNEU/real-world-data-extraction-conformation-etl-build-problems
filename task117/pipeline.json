@@ -1,0 +1,20 @@
+{
+  "task": "task117",
+  "domain": "supply-chain-logistics",
+  "objective": "forecasting",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-08",
+  "stump": "A competent solver rebuilds the tariff's on-peak billing maximum from the interval readings, replays every closed session on the new pedestals at 11.5 kW until its delivered energy (a model that reproduces all 36 closed on-peak maxima to the kWh), scales by the filed 1.12 growth factor and files 115 kW (116 unrounded); the step that lands it there is never asking whether each car can take 11.5 kW, which only the join from session to permit to registered model to the state list's onboard charger rating answers, putting 78 per cent of the decks' cars at 7.2 to 7.7 kW and stretching their sessions past noon into the billed window, for a contracted demand of 150 kW.",
+  "harden_loops": 0,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md"
+}
