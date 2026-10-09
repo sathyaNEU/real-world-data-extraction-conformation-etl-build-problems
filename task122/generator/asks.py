@@ -3,10 +3,13 @@
 Ask 1: each policy's change in buyer-protection fee income per 1,000 carousel sessions in each of the
 eight cells while the slot runs (euros, one decimal). Ask 2: each policy's extra orders and extra fee
 income over the twelve weeks (nearest hundred). The golden path and every wrong path the ask ledger
-names: fee income booked with the VAT in it (F1), purchases paid from a Vouwlijn balance left without a
-fee because they have no provider payment (F2), pickups paid in person charged (P1), the asking price
-(HZ2), the January tariff row (HZ1), the first release of the weekly table (P2), all twelve weeks on the
-app (HZ3), the in-session basis, the pooled lift, and the over-cleaners.
+names: the checkout the slot runs on (FC: Checkout 3, in force since 21 September 2026, has every order paid
+at checkout, so every logged order carries the fee in the slot; the logged window's checkout, where a pickup
+paid to the seller in person carries none and which Finance's Q3 statement reproduces, is its wrong path), fee
+income booked with the VAT in it (F1), purchases paid from a Vouwlijn balance left without a fee because they
+have no provider payment (F2), the asking price (HZ2), the tariff register's newest row (HZ1), the first
+release of the weekly table (P2), all twelve weeks on the app (HZ3), the in-session basis, the pooled lift,
+and the over-cleaners.
 """
 import itertools
 import os
@@ -24,9 +27,12 @@ F_R2 = "home_carousel_sessions_weekly_R2_2026W01_2026W26.csv"
 F_TARIFF = "kopersbescherming_tarieven.csv"
 
 VAT = 1.0 + P.VAT_RATE
-DEVICES = ("f1", "f2", "p1", "hz2", "hz1")       # VAT, balance-paid, in person, price paid, January row
-SUBSETS = [s for s in itertools.product(("right", "wrong"), repeat=5) if "wrong" in s]
-NATURAL = ("wrong", "right", "wrong", "wrong", "wrong")   # every order priced on the formula, gross, asking, January
+DEVICES = ("f1", "f2", "fc", "hz2", "hz1")       # VAT, balance-paid, the checkout in force, price paid, newest row
+HAZ = list(itertools.product(("right", "wrong"), repeat=4))          # (f1, f2, hz2, hz1)
+FC = ("new", "old")        # Checkout 3 (every order charged, the golden's); the logged window's checkout
+GOLD = ("right", "right", "new", "right", "right")
+READ_KEYS = [(h[0], h[1], fc, h[2], h[3]) for fc in FC for h in HAZ if (h[0], h[1], fc, h[2], h[3]) != GOLD]
+NATURAL = ("wrong", "right", "new", "wrong", "wrong")   # every order priced on the formula, gross, asking, newest row
 
 
 def offers_file(tgt):
@@ -66,14 +72,15 @@ def fee_cents(price, fixed, pct=5):
     return fixed + pct * np.round(np.asarray(price, float)).astype(int)
 
 
-def variant_fees(w, f1="right", f2="right", p1="right", hz2="right", hz1="right", special=None):
-    """Fee income in cents per order in the window under one reading of the five fee devices: f1 wrong
-    keeps the VAT in; f2 wrong charges nothing on a purchase paid from a balance (no provider payment);
-    p1 wrong charges a pickup paid in person; hz2 wrong prices on the asking price; hz1 wrong takes the
-    register's January 2027 row. special: the over-cleaners and the other conventions the ledger prices."""
+def variant_fees(w, f1="right", f2="right", cover="new", hz2="right", hz1="right", special=None):
+    """Fee income in cents per order in the window under one checkout and one reading of the four hazards: cover
+    new charges every order (Checkout 3, the slot's), cover old leaves a pickup paid in person uncharged (the logged
+    window's checkout); f1 wrong keeps the VAT in; f2 wrong charges nothing on a purchase paid from a balance (no
+    provider payment); hz2 wrong prices on the asking price; hz1 wrong takes the register's newest row.
+    special: the over-cleaners and the other conventions the ledger prices."""
     if special == "charged":
         return np.where(w.paid_through, np.round(w.buyer_protection_fee_eur.to_numpy() * 100), 0).astype(float)
-    fixed = {"right": 80, "wrong": 95}[hz1]
+    fixed = {"right": P.SLOT_FIXED_CENTS, "wrong": P.LATEST_FIXED_CENTS}[hz1]
     if special == "old_tariff":
         fixed = 70
     if hz2 == "wrong":
@@ -84,7 +91,7 @@ def variant_fees(w, f1="right", f2="right", p1="right", hz2="right", hz1="right"
         price = w.price_paid.to_numpy()
     f = fee_cents(price, fixed).astype(float)
     inperson, balance = w.inperson.to_numpy(), w.balance.to_numpy()
-    if p1 == "right":
+    if cover == "old":
         f = np.where(inperson, 0.0, f)
     if f2 == "wrong":
         f = np.where(balance, 0.0, f)
@@ -165,15 +172,35 @@ def compute(tgt, M=None):
     ones = np.ones(len(w))
     res["orders_kept"] = grid(S, w, ones)
     res["orders_insession"] = grid(S, w, ones, in_session_only=True)
-    gold = to_euros(grid(S, w, variant_fees(w)))
+    # the checkout in the records: before Checkout 3 (21 September 2026) a pickup could be paid to the seller at the
+    # handover, with no provider capture; from that day every pickup carries one
+    t3 = pd.Timestamp(P.CHECKOUT3)
+    pk = o[o.delivery == "pickup"]
+    res["checkout3"] = dict(before_pickups=int((pk.ordered_at < t3).sum()),
+                            before_handover=int((pk.inperson & (pk.ordered_at < t3)).sum()),
+                            after_pickups=int((pk.ordered_at >= t3).sum()),
+                            after_handover=int((pk.inperson & (pk.ordered_at >= t3)).sum()),
+                            last_handover=str(pk[pk.inperson].ordered_at.max()))
+    G = {}
+    for h in HAZ:
+        for cov in FC:
+            G[(h, cov)] = to_euros(grid(S, w, variant_fees(w, h[0], h[1], cov, h[2], h[3])))
+    res["fee_cover_grids"] = G
+
+    def reading(key):
+        f1, f2, cov, hz2, hz1 = key
+        return G[((f1, f2, hz2, hz1), cov)]
+    gold = reading(GOLD)
     res["fee"] = gold
-    # every subset of the five fee devices mishandled
-    combos = {key: to_euros(grid(S, w, variant_fees(w, *key))) for key in SUBSETS}
+    res["fee_old_cover"], res["fee_full_cover"] = G[(HAZ[0], "old")], G[(HAZ[0], "new")]
+    # the checkout's two states by every reading of the four hazards
+    combos = {key: reading(key) for key in READ_KEYS}
     res["fee_combos"] = combos
     res["fee_natural"] = to_euros(grid(S, w, variant_fees(w, *NATURAL), in_session_only=True))
     res["fee_insession_right"] = to_euros(grid(S, w, variant_fees(w), in_session_only=True))
-    for nm in ("charged", "drop_pickups", "every_offer", "old_tariff", "vat_off_gross", "vat_per_order"):
+    for nm in ("drop_pickups", "every_offer", "old_tariff", "vat_off_gross", "vat_per_order"):
         res[f"fee_{nm}"] = to_euros(grid(S, w, variant_fees(w, special=nm)))
+    res["fee_charged"] = to_euros(grid(S, w, variant_fees(w, special="charged")))
     # traffic
     r1n, r2n, cur = load_traffic(tgt)
     arm = Tr.arm_sessions(cur)
@@ -185,7 +212,11 @@ def compute(tgt, M=None):
     res["arm_sessions_12wk"] = arm_12
     res["arm_sessions_r1_12wk"] = arm_r1_12
     res["tot_orders"] = totals(res["orders_kept"], arm)
-    res["tot_fee"] = totals(gold, arm)
+    arms = {(False, False): arm, (True, False): arm_r1, (False, True): arm_12, (True, True): arm_r1_12}
+
+    def fee_total(key, a_):
+        return totals(reading(key), a_)
+    res["tot_fee"] = fee_total(GOLD, arm)
     res["tot_orders_r1"] = totals(res["orders_kept"], arm_r1)
     res["tot_orders_12wk"] = totals(res["orders_kept"], arm_12)
     res["tot_orders_r1_12wk"] = totals(res["orders_kept"], arm_r1_12)
@@ -201,14 +232,13 @@ def compute(tgt, M=None):
     res["tot_orders_pooled"] = {r: res["headline_logged_mix"][r] * arm.sum() / 1000 for r in P.POLICIES}
     res["tot_fee_pooled"] = {r: float(sum(lm[c] * gold[(r, c)] for c in range(8))) * arm.sum() / 1000
                              for r in P.POLICIES}
-    # fee totals under every subset of the fee devices and the two traffic devices
+    # fee totals under the checkout's two states by every reading of the four hazards, on each traffic reading
     fee_subsets = {}
-    arms = {(False, False): arm, (True, False): arm_r1, (False, True): arm_12, (True, True): arm_r1_12}
-    for (p2, hz3), a in arms.items():
-        for key, g in [(("right",) * 5, gold)] + list(combos.items()):
-            if not p2 and not hz3 and key == ("right",) * 5:
+    for (p2, hz3), a_ in arms.items():
+        for key in [GOLD] + READ_KEYS:
+            if not p2 and not hz3 and key == GOLD:
                 continue
-            fee_subsets[(p2, hz3) + key] = totals(g, a)
+            fee_subsets[(p2, hz3) + key] = fee_total(key, a_)
     res["tot_fee_subsets"] = fee_subsets
     res["tot_fee_natural"] = totals(res["fee_natural"], arm_r1_12)
     return res

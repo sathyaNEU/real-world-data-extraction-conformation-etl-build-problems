@@ -1,37 +1,45 @@
 {
- "task": "task119",
- "domain": "policy-education",
- "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "solver round 1 (second run after loop 1): landed, harden",
- "updated": "2026-10-09",
- "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays and writes the remit's methodology sentence as its test, a death being the trust's own care when its own unit held an empty staffed bed during the wait or gave a bed to another patient during it, and sends the engagement to A, 37 deaths over D's 27; the step that lands it there is reading every admission during a wait as the trust's own decision about its beds without asking who placed the patient: every admission inside one of A's long waits was a patient transferred from a trust without level-3 beds, on a bed the network's bed bureau allocated (the transfer audit's `bed_confirmed_at`, which the field guide defines as the bureau's allocation), so those waits are the network's capacity and A keeps 2 deaths of its own, while through every one of D's long waits D's unit admitted planned post-operative patients from D's own theatres, which makes D's 27 the largest number the review can confirm. A solver who stops one step earlier, at the census, files G at 15.",
- "harden_loops": 1,
- "solver_rounds": [
-  {
-   "label": "round 1, plain",
-   "date": "2026-10-09",
-   "score": 83.8,
-   "landed": true,
-   "cracked": 4,
-   "items": 11
+  "task": "task119",
+  "domain": "policy-education",
+  "objective": "anomaly-detection",
+  "stage": "retired",
+  "stage_name": "retired under the author's standing rule; AD11 takes the slot",
+  "updated": "2026-10-09",
+  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as its test, declines the any-admission reading by setting aside every transfer into a unit as the bed bureau's placement by its admission type, and files G at 15 over A's 2; the step that lands it there is reading the admission type as who placed the patient: every planned transfer into D's unit during D's long waits was D's own surgical patient, referred by D from theatre recovery at its other hospital (the referral log's referring trust; none is in the bureau's audit), which makes D's 27 the largest number the review can confirm, while the planned transfers into A's unit were patients of trusts without level-3 beds on beds the bureau booked, so a solver who keeps planned admissions as the trust's choice instead files A at 37.",
+  "harden_loops": 2,
+  "solver_rounds": [
+    {
+      "label": "round 1, plain",
+      "date": "2026-10-09",
+      "score": 83.8,
+      "landed": true,
+      "cracked": 4,
+      "items": 11
+    },
+    {
+      "label": "round 2, plain",
+      "date": "2026-10-09",
+      "score": 82.3,
+      "landed": true,
+      "cracked": 4,
+      "items": 11
+    },
+    {
+      "label": "round 3, plain",
+      "date": "2026-10-09",
+      "score": 72.6,
+      "landed": true,
+      "cracked": 3,
+      "items": 11
+    }
+  ],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
-  {
-   "label": "round 2, plain",
-   "date": "2026-10-09",
-   "score": 82.3,
-   "landed": true,
-   "cracked": 4,
-   "items": 11
-  }
- ],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
- "delivered": null,
- "portal": null,
- "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
+  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
+  "delivered": null,
+  "portal": null,
+  "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
 }

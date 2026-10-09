@@ -40,7 +40,7 @@ SCRUB = REPO / ".claude/skills/reduce-house-fixes/scripts/scrub_producer_metadat
 EPOCH = datetime(2025, 1, 1)
 FLOOR, CEILING = "2023-01-01", P.PACK_DATE.isoformat()
 
-DISTRACTORS = [D.F_SEARCH, D.F_SURVEY]
+DISTRACTORS = [D.F_SEARCH, D.F_SURVEY, D.F_MINUTES]
 
 
 def archive_frames(tests, meta, A):
@@ -241,7 +241,10 @@ def main():
     print(f"written {time.time() - t0:.0f}s", flush=True)
     record = {"scrub": scrub_rc,
               "fee_moves": {f"{P.LETTER[P.RANKERS[k]]}|{c}": list(v) for (k, c), v in W.fee_moves.items()},
+              "vat_fixes": {f"{P.LETTER[P.RANKERS[k]]}|{c}": list(v) for (k, c), v in W.vat_fixes.items()},
               "traffic_adjust": [round(float(x), 6) for x in adj], "traffic_margin": round(float(margin), 2),
+              "checkout3_orders_moved": int(W.checkout3_moved),
+              "traffic_binding": W.traffic_binding, "traffic_near": W.traffic_near_names,
               "traffic_score": [round(float(W.traffic_score[0]), 2), round(float(W.traffic_score[3]), 2)],
               "half_gaps": {P.LETTER[r]: [round(float(x), 4) for x in v] for r, v in W.half_gaps.items()}}
     if not a.skip_checks:

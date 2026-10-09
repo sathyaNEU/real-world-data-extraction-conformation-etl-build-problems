@@ -327,7 +327,8 @@ def write_log(w, path):
     log = w.log.copy()
     wb = xlsxwriter.Workbook(path, {"constant_memory": False})
     wb.set_properties({"title": "Civic Center deck charging panels, monthly reads", "author": "Facilities Electrical",
-                       "company": "City of Larch Harbor", "created": datetime(2027, 1, 4, 8, 12, 0)})
+                       "company": "City of Larch Harbor",
+                       "created": datetime(2027, 1, 6, 22, 47, 0)})   # UTC: saved 2:47 p.m. on January 6, after the corrections
     ws = wb.add_worksheet("Reads")
     bold = wb.add_format({"bold": True})
     hdr = wb.add_format({"bold": True, "bottom": 1, "text_wrap": True, "valign": "bottom"})

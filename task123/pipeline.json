@@ -2,8 +2,8 @@
   "task": "task123",
   "domain": "nonprofit-grant-making",
   "objective": "etl",
-  "stage": 3,
-  "stage_name": "hardened",
+  "stage": "retired",
+  "stage_name": "retired under the author's standing rule; ET11 takes the slot",
   "updated": "2026-10-09",
   "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
   "harden_loops": 3,
@@ -39,6 +39,17 @@
       "decision": "harden",
       "report": "solver_rounds/round-3-plain.md",
       "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path reached R6 at step 3 (each LTM term taken from its own return, short years for the three movers), R4 at step 4, R5 at step 6. K1 government parts cracked on all nine (co-funding via Variations and the payment run); K2 own money held on all nine (Steady Ground instalments missing)."
+    },
+    {
+      "label": "round 4, plain",
+      "date": "2026-10-09",
+      "score": 91.7,
+      "landed": true,
+      "cracked": 7,
+      "items": 9,
+      "decision": "reroot",
+      "report": "solver_rounds/round-4-plain.md",
+      "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path executed R4, R5 and R6 inside the replay at steps 3 and 4 and R7 (scope from the register dates plus the Term ended/Renewal variations) at step 4 as part of the same replay, then reproduced 821 of 821 rows. K2 own money held on all nine (Steady Ground instalments missing); K1 government parts cracked. Three hardening loops spent on this architecture, so the decision is re-root, not a fourth patch."
     }
   ],
   "judge": {

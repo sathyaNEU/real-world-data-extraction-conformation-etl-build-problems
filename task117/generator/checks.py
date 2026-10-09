@@ -88,6 +88,18 @@ def main_call(a: Analysis, r: dict) -> dict:
     mshift = a.monthly(ld, shift=True)
     ck("A12 stamps read as interval ends return every monthly figure",
        all(near(GROWTH * mshift[m][0], mon[m - 1], 1e-6) for m in range(1, 13)))
+    base26 = [R["percar"]["monthly"][m][0] for m in range(1, 13)]
+    once = [int(math.floor(x + 0.5)) for x in mon]
+    twice = [int(math.floor(GROWTH * math.floor(b + 0.5) + 0.5)) for b in base26]
+    twice_even = [int(math.floor(GROWTH * round(b) + 0.5)) for b in base26]
+    out["double_round_moves"] = [m + 1 for m in range(12) if twice[m] != once[m]]
+    out["double_round_moves_half_even"] = [m + 1 for m in range(12) if twice_even[m] != once[m]]
+    ck("A48 rounding path, pinned in FES-07 section 4 (the base month carried unrounded, the forecast rounded once): "
+       "rounding each 2026 base month to whole kW before the factor moves July and November 2027 (December's 86.5 kW "
+       "base is a half-kW tie) and leaves the call at 110",
+       out["double_round_moves"] == [7, 11] and out["double_round_moves_half_even"] in ([7, 11], [7, 11, 12])
+       and near(base26[11], 86.5, 1e-6) and nearest5(max(twice)) == 110 and up5(max(twice)) == 110,
+       (out["double_round_moves"], out["double_round_moves_half_even"], base26[11]))
     bind = {tg[1]: d for d, tg in a.w.cal.items() if tg[0] == "bind"}
     ck("A47 every month's figure is set at 12:00 on that month's binding day, with the hand-offs re-timed and held",
        all(iso_local(R["percar"]["monthly"][m][1]) == iso_local(lt_date(bind[m], 12))
@@ -531,6 +543,20 @@ def rotation(a: Analysis, r: dict) -> dict:
        and near(out["december_noon"][1], 86.5, 1e-6)
        and int(a.prev26[p.index[p["day"] == bind[1]]].notna().sum()) == 0
        and near(held["CCN"][jj] + held["CCS"][jj], rot["CCN"][jj] + rot["CCS"][jj], 1e-9), out["december_noon"])
+    fol26 = p[a.prev26.notna()]
+    head_ids = [int(x) for x in a.prev26.dropna()]
+    fp, hp = set(fol26["permit_no"]), set(p.loc[head_ids, "permit_no"])
+    out["handoff_permits_2026"] = (len(fp), len(hp), len(fp | hp))
+    idle_h = (p["plug_out"].astype(float) - (p["start"].astype(float) + p["energy"].astype(float) / 6.6 * 3600.0)) / 3600.0
+    readings = {"all but the cars ahead": idle_h.drop(index=head_ids), "every charge": idle_h,
+                "all but both sides": idle_h.drop(index=list(set(head_ids) | set(fol26.index)))}
+    out["other_idle_median_h"] = {k: float(np.median(v)) for k, v in readings.items()}
+    ck("T09 the 2026 hand-offs: the cars going on are on 39 county permits and the cars ahead on 39 (43 together, of "
+       "the registry's 44 pool permits); the decks' other 2026 charges stay plugged in a median 6.7 hours after their "
+       "last charging second, however the other charges are read, against 6 to 20 minutes for the car ahead",
+       out["handoff_permits_2026"] == (39, 39, 43) and len(a.pool) == 44 and len(head_ids) == len(set(head_ids)) == 101
+       and all(round(v, 1) == 6.7 for v in out["other_idle_median_h"].values()),
+       (out["handoff_permits_2026"], out["other_idle_median_h"]))
     up = p[(p["role"] == "chain_up_b")]
     up_fwd = np.array([clock(t) for t in newst[up.index]])
     up_end = newst[up.index].to_numpy() + up["energy"].to_numpy() / 7.2 * 3600.0
@@ -800,6 +826,15 @@ def b3(a: Analysis):
        all(0.06 - 1e-9 <= f <= 0.24 + 1e-9 or 0.76 - 1e-9 <= f <= 0.94 + 1e-9 for f in fr), [round(f, 3) for f in fr])
     ck("C04 every miss at least 0.015 inside its one-decimal bin and never an exact one-decimal share",
        all(0.004 <= abs(v - round(v, 1)) <= 0.035 for v in vals), vals)
+    NA = {m: int(math.floor(A[m] + 0.5)) for m in A}
+    twice = {m: int(math.floor(1.08 * math.floor(F[m] / 1.08 + 0.5) + 0.5)) for m in F}
+    out["double_round_moves"] = [m for m in F if twice[m] != out["forecast"][m]]
+    out["double_round_miss"] = {m: round(100 * (twice[m] - NA[m]) / NA[m], 1) for m in out["double_round_moves"]}
+    ck("C19 rounding path, pinned in FES-07 section 4 (the base month carried unrounded, the forecast rounded once): "
+       "rounding each 2024 base month to whole kW before the factor moves April 2025 (103, +2.0) and December 2025 "
+       "(113, -1.7) and no other month", out["double_round_moves"] == [4, 12]
+       and twice[4] == 103 and twice[12] == 113 and out["double_round_miss"] == {4: 2.0, 12: -1.7},
+       (out["double_round_moves"], out["double_round_miss"]))
     rows = a.w.rows
     s = rows[rows["garage"].isin(DECKS) & rows["true_row"] & ~rows["redelivered"]]
     ld = a.load(s, pd.Series(6.6, index=s.index))

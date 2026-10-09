@@ -16,7 +16,7 @@ from scipy.optimize import minimize
 
 import params as P
 import asks as asks_mod
-from build_pack import F, DISTRACTORS
+from build_pack import F, DISTRACTORS, EXPORT_STAMP
 
 SL = P.SHORTLIST
 CUL = "CUL-N"
@@ -201,7 +201,7 @@ def cell(L, c, d, base, net):
 
 
 def lift_bases(D, tests):
-    dash = dict(zip(D["dash"]["vertical"], D["dash"]["avg_winning_lift_pct"] / 100))
+    """Every lift basis on the grid; the dashboard basis (rung 0) only when the dashboard export is loaded."""
     desks = D["desks"].set_index("desk_code")
     web = tests[tests["engine"] == "web"]
     raw = web.groupby("desk_code")["raw"].mean().to_dict()
@@ -212,7 +212,11 @@ def lift_bases(D, tests):
     for d in P.WEB:
         ds = [x for x in P.WEB if vert[x] == vert[d]]
         pooled[d] = sum(n[x] * shr[x] for x in ds) / sum(n[x] for x in ds)
-    return {"dash": {d: dash[vert[d]] for d in P.WEB}, "raw": raw, "shr": shr, "pool": pooled}
+    out = {"raw": raw, "shr": shr, "pool": pooled}
+    if "dash" in D:
+        dash = dict(zip(D["dash"]["vertical"], D["dash"]["avg_winning_lift_pct"] / 100))
+        out = {"dash": {d: dash[vert[d]] for d in P.WEB}, **out}
+    return out
 
 
 def rank(vals):
@@ -266,9 +270,10 @@ def off_median(m, g):
 
 def panel_readers(D, mode="golden"):
     """Average monthly unique audience per desk, and the number of section-months it averages over.
-    golden: a release's codes read on the section list it was issued on (the first release on the 2026 content
-    taxonomy and every later release on the 2026 list), each release counted only for the months the release log
-    lists for it, then the latest release per period and section. echo: the same without the release log's months,
+    golden: releases before the release log's first release on the 2026 content taxonomy read on the earlier section
+    list, that release and every later one (the history release included) on the 2026 list, each release counted only
+    for the months the release log lists for it, then the latest release per period and section. issue_date: the same,
+    each release read on the list in force on its issue date (the 2026 list from 1 March 2026, so R26-03 on it). echo: the same without the release log's months,
     so the July release's file supplies April to June as first published (the round-5 path).
     per_period: the rows of the latest release carrying each period (the round-3 path); per_site: the rows of the
     latest release carrying each period and site; per_code: the latest release per period, site and section code,
@@ -281,7 +286,7 @@ def panel_readers(D, mode="golden"):
     rel = D["rel"].copy()
     pub = dict(zip(rel["release"], pd.to_datetime(rel["published_on"])))
     months = {r: {m.strip() for m in str(v).split(",")} for r, v in zip(rel["release"], rel["periods"])}
-    if mode in ("golden", "nohist", "norestate", "national"):
+    if mode in ("golden", "nohist", "norestate", "national", "issue_date"):
         p = p[[per in months[r] for r, per in zip(p["release"], p["period"])]]
     first26 = pub[rel.loc[rel["note"].str.startswith("First release on the 2026"), "release"].iloc[0]]
     h = D["sec_hist"].copy()
@@ -295,13 +300,15 @@ def panel_readers(D, mode="golden"):
         p = p[p["release"] != asks_mod.HISTORY_RELEASE]
     if mode == "norestate":
         p = p[p["release"] != "R26-07B"]
-    by_issue = mode in ("golden", "echo", "nohist", "norestate", "national", "per_period", "per_site", "per_code")
+    by_issue = mode in ("golden", "echo", "nohist", "norestate", "national", "per_period", "per_site", "per_code",
+                        "issue_date")
     if by_issue:
-        lst = np.where(p["pub"] >= first26, "new", "old")
+        cut = h.loc[h["valid_to"].isna(), "valid_from"].min() if mode == "issue_date" else first26
+        lst = np.where(p["pub"] >= cut, "new", "old")
         p["section"] = [lists[l].loc[(s, c), "section_name"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
         p["desk"] = [lists[l].loc[(s, c), "bightline_desk"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
     p = p.sort_values("pub", kind="stable")
-    if mode in ("golden", "echo", "nohist", "norestate", "national"):
+    if mode in ("golden", "echo", "nohist", "norestate", "national", "issue_date"):
         p = p.drop_duplicates(["period", "site_code", "section"], keep="last")
     elif mode == "per_period":
         p = p[p["pub"] == p.groupby("period")["pub"].transform("max")]
@@ -494,6 +501,31 @@ def run(W, target, out):
                  "edge %.3f carried %.3f ratio %.3f" % (edge, carried, edge / carried))
         rec.setdefault("dominance", {})[rival] = dict(edge=round(edge, 3), carried=round(carried, 3), ratio=round(edge / carried, 3))
 
+    # ----- the stored-headline line (stage 6 fix 2): the canonical_headline row names every surface that carries the
+    # stored headline, Discover-style cards included; the reading it rules out counts discover as a Bightline surface
+    canon_ = re.search(r"\| `canonical_headline` \|([^|\n]*)\|", T[F["fieldref"]])
+    named_ = {"search": "search", "discover": "Discover-style cards", "partner_apps": "partner feeds",
+              "social": "social metadata", "newsletter": "newsletters", "alerts": "alerts"}
+    L_.check("the field reference's canonical_headline row names every stored-headline surface, Discover-style cards "
+             "included, and no Bightline surface",
+             canon_ is not None and set(named_) == set(P.SOURCES_STORED) and all(w in canon_.group(1) for w in named_.values())
+             and not any(w in canon_.group(1).lower() for w in ("home", "section", "related")),
+             canon_.group(1).strip() if canon_ else "no row")
+    sp_d = D["spine"]
+    m_d = sp_d["source_code"].isin(PLATFORM | {"discover"}) & ~sp_d["article_id"].isin(set(tests["article_id"]))
+    unt_d = sp_d[m_d].groupby("desk_code")["pageviews"].sum()
+    r4_disc = {d: LB["shr"][d] * float(unt_d[d]) for d in SL}
+    o4d = rank(r4_disc)
+    share_d = float(sp_d[(sp_d["desk_code"] == CUL) & sp_d["source_code"].isin(PLATFORM | {"discover"})]["pageviews"].sum()
+                    / c[CUL]["total"])
+    rec["discover_ruled_out_by_field_reference"] = dict(order=[(d, round(r4_disc[d])) for d in o4d],
+                                                        gap=round(r4_disc[o4d[0]] - r4_disc[o4d[1]]),
+                                                        culture_platform_share=round(share_d, 4))
+    L_.check("the reading the canonical_headline line rules out is a live fork without it: discover counted as a "
+             "Bightline surface moves the call figure out of its bin and changes the runner-up",
+             bin_round(r4_disc[CUL]) != bin_round(r4[CUL]) and o4d[1] != o4[1],
+             str(rec["discover_ruled_out_by_field_reference"]))
+
     # ----- the grid, cell by cell
     grid = {}
     for lb in ("dash", "raw", "shr", "pool"):
@@ -633,19 +665,64 @@ def run(W, target, out):
         shp = g[g["shipped"] == "Y"].set_index("test_id")["ctr"]
         absp[e["no"]] = float((shp - ctl).mean()) * e["planned"]
     rivals["absolute click-through points x clicks"] = absp
+    # the estimator's form and the prior's population (stage 6 fix 2): lift as the click-through ratio minus one with
+    # the delta-method variance, one prior over every variant package of both engines; the rivals each change one part
+    rr_ = pk["L"] + 1
+    v0_ = pk["S2"] / rr_ ** 2           # the variance without the ratio-squared term, which is also the log ratio's
+
+    def winning_from(col):
+        """Per-test winning lift from a per-package shrunk lift; a kept control counts as zero."""
+        shp = col[pk["shipped"] == "Y"]
+        return pd.Series(shp.values, index=pk.loc[pk["shipped"] == "Y", "test_id"].values).reindex(tests.index).fillna(0.0)
+
+    pr_log = prior_ml(np.log(rr_), v0_)
+    w_log = winning_from(np.exp(pr_log[0] + pr_log[1] / (pr_log[1] + v0_) * (np.log(rr_) - pr_log[0])) - 1)
+    pr_nr = prior_ml(pk["L"], v0_)
+    w_nr = winning_from(pr_nr[0] + pr_nr[1] / (pr_nr[1] + v0_) * (pk["L"] - pr_nr[0]))
+    rivals["log-scale shrinkage (prior and shrinkage on the log click-through ratio)"] = \
+        {e["no"]: w_log.loc[e["ids"]].mean() * e["planned"] for e in emb}
+    rivals["delta-method variance without the ratio-squared term"] = \
+        {e["no"]: w_nr.loc[e["ids"]].mean() * e["planned"] for e in emb}
+    eng_pk = pk["test_id"].map(tests["engine"])
+    pr_app = prior_ml(pk.loc[eng_pk == "app", "L"], pk.loc[eng_pk == "app", "S2"])
+    pr_web = prior_ml(pk.loc[eng_pk == "web", "L"], pk.loc[eng_pk == "web", "S2"])
+    rivals["prior fitted on the app engine's packages only"] = {e["no"]: lift_of(e["ids"], pr_app) * e["planned"] for e in emb}
+    rivals["prior fitted on the web engine's packages only (convergent)"] = \
+        {e["no"]: lift_of(e["ids"], pr_web) * e["planned"] for e in emb}
+    squad_pool = float(tests.loc[tests["engine"] == "app", "shr"].mean())
+    rivals["the squad's pooled shrunk lift (%.2f%%) for every embedding" % (100 * squad_pool)] = \
+        {e["no"]: squad_pool * e["planned"] for e in emb}
     rec["backtest"]["rivals"] = {}
     for name, pred in rivals.items():
         h, m3, worst, err = score(pred)
         rec["backtest"]["rivals"][name] = (h, m3, round(100 * worst, 1))
-        if name.startswith("DerSimonian"):
-            L_.check("back-test: %s reproduces 7 of 7 within 2%%" % name, h == 7, "%d/7" % h)
+        if "(convergent)" in name:
+            L_.check("back-test: %s reproduces 7 of 7 within 2%%" % name, h == 7, "%d/7 worst %.2f%%" % (h, 100 * worst))
         elif name == "post-test clicks only":
             L_.check("back-test: post-test reading misses all 7 by at least 8%", (np.abs(err) >= 0.08).all(), "min %.1f%%" % (100 * np.abs(err).min()))
         else:
             L_.check("back-test refutes %s (at least 2 of 7 missed by more than 3%%)" % name, m3 >= 2, "%d hits, %d misses >3%%, worst %.1f%%" % (h, m3, 100 * worst))
         if name.startswith("per-desk"):
             L_.check("back-test: %s reproduces at most 3 of 7" % name, h <= 3, "%d/7" % h)
-    L_.check("back-test: rival family swept", len(rivals) >= 12, "%d rules" % len(rivals))
+    L_.check("back-test: rival family swept", len(rivals) >= 17, "%d rules" % len(rivals))
+    # what the forms the back-test refutes would file, and the convergent web-only prior against every graded bin
+    tw_ = test_table(D["arch"], pk, pr_web)
+    lw_ = tw_[tw_["engine"] == "web"].groupby("desk_code")["shr"].mean()
+    r4_web = {d: lw_[d] * (c[d]["plat"] - c[d]["t_plat"]) for d in SL}
+    o4w = rank(r4_web)
+    rec["web_engine_prior"] = dict(prior=pr_web, culture_lift_pct=round(100 * lw_[CUL], 4),
+                                   order=[(d, round(r4_web[d])) for d in o4w])
+    L_.check("the web-only prior converges on the call: Culture·national first, runner-up Local·metro, the call figure, "
+             "the gap and every desk's extra clicks in their golden bins",
+             o4w[:2] == o4[:2] and bin_round(r4_web[o4w[0]] - r4_web[o4w[1]]) == bin_round(r4[o4[0]] - r4[o4[1]])
+             and all(bin_round(r4_web[d]) == bin_round(r4[d]) for d in SL), str(rec["web_engine_prior"]))
+    rec["refuted_forms_call_figure"] = {}
+    for nm_, ws_ in (("log-scale shrinkage", w_log), ("variance without the ratio-squared term", w_nr)):
+        lx_ = ws_[tests["engine"] == "web"].groupby(tests.loc[tests["engine"] == "web", "desk_code"]).mean()
+        cul_ = lx_[CUL] * (c[CUL]["plat"] - c[CUL]["t_plat"])
+        rec["refuted_forms_call_figure"][nm_] = (round(100 * lx_[CUL], 4), round(cul_), bin_round(cul_))
+        L_.check("%s files Culture·national outside the call figure's bin, so the back-test that refutes it decides the "
+                 "figure" % nm_, bin_round(cul_) != bin_round(r4[CUL]), "%.0f" % cul_)
     twins = [e for e in emb if e["no"] in (3, 6)]
     t3, t6 = twins
     same = (t3["n"] == t6["n"] and t3["lift"] == t6["lift"] and t3["planned"] == t6["planned"]
@@ -711,9 +788,17 @@ def run(W, target, out):
     L_.check("CMS articles equal the spine's articles published in the window, desk by desk",
              all(arts[d] == c[d]["n_art_win"] for d in P.WEB), str({P.SHORT[d]: (arts[d], c[d]["n_art_win"]) for d in P.WEB}))
     PR = {m: panel_readers(D, m) for m in ("golden", "echo", "per_period", "per_site", "per_code", "careful", "lazy",
-                                            "nohist", "first", "norestate", "national")}
+                                            "nohist", "first", "norestate", "national", "issue_date")}
     readers = {d: v[0] for d, v in PR["golden"].items()}
     L_.check("readers: every desk's average runs over twelve months of record", all(v[1] == 12 for v in PR["golden"].values()))
+    iss = PR["issue_date"]
+    moved = sorted(d for d in SL if abs(iss[d][0] / readers[d] - 1) > 0.005)
+    rec["readers_issue_date"] = {P.SHORT[d]: round(iss[d][0], -3) for d in SL}
+    L_.check("readers: each release read on the list in force on its issue date (R26-03, issued 10 March 2026, on the "
+             "2026 list; the judge's rival, which the release log's R26-04 note rules out) moves Business·national, "
+             "Sport·national, Local·metro and Sport·metro by more than half a per cent, over twelve months each",
+             moved == sorted(["BUS-N", "SPT-N", "LOC-M", "SPT-M"]) and all(iss[d][1] == 12 for d in SL),
+             str(rec["readers_issue_date"]))
     asks = {}
     for d in SL:
         cnt = G[d]["count"]
@@ -740,6 +825,10 @@ def run(W, target, out):
 
     def one(v):
         return np.floor(v * 10 + 0.5) / 10
+
+    L_.check("the web-only prior converges on every desk's extra clicks per reader",
+             all(one(r4_web[d] / asks[d]["readers"]) == one(asks[d]["per_reader"]) for d in SL),
+             " ".join("%s %.4f" % (P.SHORT[d], r4_web[d] / asks[d]["readers"]) for d in SL))
 
     # every reading that misses one or more of the corrections devices
     views = {name: ask_corrections(rows, **kw) for name, kw in READ.items()}
@@ -1054,6 +1143,43 @@ def run(W, target, out):
         v = ask_corrections(rows, entry_tol=tol)
         L_.check("entry pairing in the same minute (window %d) misses a lagged entry fix at every desk" % tol,
                  all(v[d]["count"] < G[d]["count"] for d in SL))
+    # the pairing line in the CMS field notes (stage 6 fix): a fix and its note go on the same save, or on two saves
+    # within ten minutes of each other
+    for N in (9, 10):
+        v = ask_corrections(rows, lag_struct=N, entry_tol=N, entry_after=N)
+        L_.check("the field notes' pairing line read literally (a new note matched to a headline change on its own save "
+                 "or on a save up to %d minutes either side, a live-blog entry's included, whatever the note says, and "
+                 "a note put back the earlier notice as the line before it says) files the golden count, articles and "
+                 "median at every desk" % N,
+                 all((v[d]["count"], v[d]["articles"], v[d]["median"]) == (G[d]["count"], G[d]["articles"], G[d]["median"])
+                     for d in P.WEB))
+    # the put-back line in the CMS field notes (stage 6 fix 2): a note put back after a save that left it off is the
+    # earlier notice, not a new correction. Every note put back comes back on a save that also changes the headline,
+    # so without the line the pairing line read literally takes that save as a fix and its note.
+    v = ask_corrections(rows, lag_struct=10, entry_tol=10, entry_after=10, readd=False)
+    rec["put_back_ruled_out_by_field_notes"] = {P.SHORT[d]: (v[d]["count"], round(1000 * v[d]["count"] / v[d]["articles"], 2),
+                                                             v[d]["median"]) for d in SL}
+    L_.check("the reading the field notes' put-back line rules out is a live fork without it: the pairing line read "
+             "literally with a note put back taken as a fix's note moves the count and the rate at every shortlisted desk",
+             all(v[d]["count"] != G[d]["count"] for d in SL)
+             and all(one(1000 * v[d]["count"] / v[d]["articles"]) != one(asks[d]["rate"]) for d in SL),
+             str(rec["put_back_ruled_out_by_field_notes"]))
+    for tol in (9, 10, 15, 20):
+        v = ask_corrections(rows, entry_tol=tol, entry_after=tol)
+        L_.check("entry pairing converges either side of the note: a %d-minute window before and after files the "
+                 "golden count and median at every desk" % tol,
+                 all(v[d]["count"] == G[d]["count"] and v[d]["median"] == G[d]["median"] for d in P.WEB))
+    wide = {}
+    for tol in (30, 60):
+        v = ask_corrections(rows, entry_tol=tol, entry_after=tol)
+        wide[tol] = {P.SHORT[d]: v[d]["count"] for d in SL if v[d]["count"] != G[d]["count"]}
+    v = ask_corrections(rows, lag_struct=10 ** 6, entry_tol=10, entry_after=10)
+    nolimit = {P.SHORT[d]: v[d]["count"] for d in SL}
+    rec["pairing_ruled_out_by_field_notes"] = dict(entry_either_side=wide, no_time_limit=nolimit)
+    L_.check("the readings the field notes' ten minutes rule out are live forks without it: a note paired with a "
+             "headline change at any distance moves the count at every shortlisted desk, and a 30-minute entry window "
+             "either side moves it at a desk", all(v[d]["count"] != G[d]["count"] for d in SL) and bool(wide[30]),
+             str(rec["pairing_ruled_out_by_field_notes"]))
     ef = set(entry_fix)
     sl_ = set(story_lag)
     PU = asks_mod.read_corrections(rows, published=False, lag=False)
@@ -1207,9 +1333,11 @@ def run(W, target, out):
     single = {
         "pin": "judged on incremental article clicks in the twelve months after it embeds",
         "licensed basis": "average winning lift by vertical",
-        "stored headline": "newsletters and alerts. Not included",
+        "stored headline": "Discover-style cards, newsletters and alerts. Not included",
         "plan basis": "held at the twelve months to September 2026",
         "note persistence": "copies the\nnote to every later revision",
+        "note put back": "is the earlier notice, not a new correction",
+        "fix and note pairing": "on two saves within ten minutes of each other",
         "headline rule": "logged on the revision that publishes the corrected headline",
         "entry headline": "with a headline of its own",
         "publish time": "the time set for the CMS to publish the document",
@@ -1252,7 +1380,26 @@ def run(W, target, out):
     L_.check("gate: the word distractor appears nowhere in target/ or its file names",
              not any("distractor" in t.lower() for t in T.values()) and not any("distractor" in f for f in files))
     nod = golden_figures(without(target, {F[k] for k in DISTRACTORS}))
-    L_.check("gate: the distractors are unused (every graded figure recomputes unchanged with both deleted)", full == nod)
+    L_.check("gate: the distractors are unused (every graded figure recomputes unchanged with all three deleted)", full == nod)
+    L_.check("gate: metadata.json names exactly the declared distractors",
+             sorted(meta["distractor_files"]) == sorted(F[k] for k in DISTRACTORS), str(meta["distractor_files"]))
+    # the dashboard export: the licensed basis's instrument (rung 0), declared as a wrong-basis distractor
+    top_v = D["dash"].sort_values("avg_winning_lift_pct", ascending=False).iloc[0]["vertical"]
+    dash_pick = [d for d in SL if P.DESK[d][2] == top_v]
+    L_.check("wrong-basis distractor: the dashboard export is declared in metadata.json", F["dashboard"] in meta["distractor_files"])
+    L_.check("wrong-basis distractor: the dashboard's top vertical carries rung 0's leader on the shortlist (the licensed "
+             "basis, by design) and neither the answer nor the stump's wrong answer",
+             dash_pick == [rank(rv[0])[0]] and CUL not in dash_pick and rank(rv[3])[0] not in dash_pick,
+             "%s %s" % (top_v, dash_pick))
+    L_.check("wrong-basis distractor: ruled out by shipped facts (the brief counts at the owning desk; raw lift 0 of 7 "
+             "on the change log)", "counted at the owning desk" in re.sub(r"\s+", " ", T[F["charter"]])
+             and rec["backtest"]["raw"][0] == 0)
+    L_.check("wrong-basis distractor: its basis on the plan files Culture·national outside the answer's bin",
+             bin_round(rv[0][CUL]) != bin_round(rv[4][CUL]), "%.0f" % rv[0][CUL])
+    nodash = golden_figures(without(target, {F["dashboard"]}))
+    L_.check("wrong-basis distractor: never the stump (with the dashboard deleted every graded figure recomputes "
+             "unchanged, rung 3 still names Local·metro and rung 4 Culture·national)",
+             nodash == full and nodash["leaders"] == {"rung 3": "LOC-M", "rung 4": CUL}, str(nodash.get("leaders")))
     try:
         golden_figures(without(target, {F["cms"], F["cmsnotes"], F["policy"], F["bulletin"]}), part="panel")
         golden_figures(without(target, {F["panel"], F["panelwb"]}), part="cms")
@@ -1267,6 +1414,46 @@ def run(W, target, out):
              and all(x["license"] and x["source"] and x["date"] for x in meta["files"]))
     log = pd.read_csv(Path(target) / F["exportlog"])
     L_.check("export log covers every shipped file but itself (set equality)", sorted(log["file"]) == sorted(f for f in files if f != F["exportlog"]))
+    # timestamps: nothing is dated before an event it records, and nothing after the export stamp it ships under
+    on = dict(zip(log["file"], log["extracted_on"]))
+
+    def created(name):
+        with zipfile.ZipFile(Path(target) / name) as z:
+            x = re.search(r"<dcterms:created[^>]*>([^<]+)<", z.read("docProps/core.xml").decode()).group(1)
+        return dt.datetime.strptime(x[:16], "%Y-%m-%dT%H:%M")
+    closed = pd.to_datetime(D["chg"]["closed_on"]).max().date()
+    chg_saved = created(F["changelog"])
+    L_.check("dates: the change log was saved after its last embedding was signed off, on the date the export log records",
+             closed < chg_saved.date() and chg_saved.date().isoformat() == on[F["changelog"]] <= P.AS_OF.isoformat(),
+             "closed %s, saved %s, logged %s" % (closed, chg_saved, on[F["changelog"]]))
+    rel_last = pd.to_datetime(D["rel"]["published_on"]).max()
+    ends = pd.to_datetime(D["staff"]["end_date"]).dropna()
+    L_.check("dates: the panel workbook postdates its last release and the staff list its last leaver",
+             created(F["panelwb"]) >= rel_last and (ends.empty or created(F["staff"]) >= ends.max()),
+             "%s %s" % (created(F["panelwb"]), created(F["staff"])))
+    th = T[F["thread"]]
+    when_last = dt.datetime.strptime(re.search(r"^Date: \w{3}, (.+?) \+1000$", th, re.M).group(1), "%d %b %Y %H:%M:%S")
+    nb = re.search(r"On \w{3}, (\d+ \w{3} \d{4}) at (\d\d:\d\d), Natalie Benjamin", th)
+    when_nb = dt.datetime.strptime("%s %s" % nb.groups(), "%d %b %Y %H:%M")
+    named = [F[k] for k in ("spine", "archive", "staff", "plan", "changelog", "panel", "panelwb", "cms", "fieldref")]
+    L_.check("dates: the thread announces the exports no earlier than the day each named file was extracted, after every "
+             "named workbook was saved, and its last message predates the export stamp",
+             all(when_nb.date().isoformat() >= on[f] for f in named)
+             and all(created(f) <= when_nb for f in named if f.endswith(".xlsx"))
+             and when_last <= EXPORT_STAMP and when_last.date().isoformat() == on[F["thread"]],
+             "announced %s, last message %s, stamp %s" % (when_nb, when_last, EXPORT_STAMP))
+    prep = re.search(r"Prepared by Audience data at the request of Standards, (\d+ \w+ \d{4})", T[F["cmsnotes"]])
+    L_.check("dates: the CMS field notes are dated the day the CMS export was extracted",
+             prep is not None and dt.datetime.strptime(prep.group(1), "%d %B %Y").date().isoformat() == on[F["cms"]]
+             == on[F["cmsnotes"]])
+    thumbs, words = [], []
+    for f in files:
+        if f.endswith(".docx"):
+            with zipfile.ZipFile(Path(target) / f) as z:
+                thumbs += [f] if any("thumbnail" in n for n in z.namelist()) or b"thumbnail" in z.read("_rels/.rels") else []
+                words.append(int(re.search(rb"<Words>(\d+)</Words>", z.read("docProps/app.xml")).group(1)))
+    L_.check("container: no Word file carries the template's thumbnail, and each records its own word count",
+             not thumbs and words and min(words) > 0, "%s %s" % (thumbs, words))
     names = re.compile(r"(trap|decoy|distractor|naive|rung|stump|ladder|golden|answer|truth|hidden|secret|solution|"
                        r"clean(ed)?_|_fixed|correct(ed)?_|synthetic|generated|_seed|placeholder|dummy|sample_|test_|_v\d+\b|"
                        r"\bcopy\b|backup)", re.I)
@@ -1306,13 +1493,16 @@ def golden_figures(target, part="all"):
     t = Path(target)
     out = {}
     if part in ("all", "main"):
+        # the main call never reads the dashboard export (a declared wrong-basis distractor)
         D = {"spine": pd.read_parquet(t / F["spine"]), "arch": pd.read_csv(t / F["archive"]),
-             "desks": pd.read_csv(t / F["desks"]), "dash": pd.read_csv(t / F["dashboard"], skiprows=6)}
+             "desks": pd.read_csv(t / F["desks"])}
         pk = packages(D["arch"])
         tests = test_table(D["arch"], pk, prior_ml(pk["L"], pk["S2"]))
         c = desk_click_tables(D, tests)
         LB = lift_bases(D, tests)
         out["extra"] = {d: round(cell(LB["shr"], c, d, "plat", "click")) for d in SL}
+        out["leaders"] = {k: rank({d: cell(LB["shr"], c, d, "plat", n) for d in SL})[0] for k, n in
+                          (("rung 3", "none"), ("rung 4", "click"))}
     if part in ("all", "panel"):
         D = {"panel": pd.read_csv(t / F["panel"]),
              "sec_cur": pd.read_excel(t / F["panelwb"], sheet_name="Sections (current)", keep_default_na=False),

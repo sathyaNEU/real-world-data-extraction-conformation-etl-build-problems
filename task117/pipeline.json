@@ -2,8 +2,8 @@
   "task": "task117",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "solver round 2",
+  "stage": 8,
+  "stage_name": "delivered",
   "updated": "2026-10-09",
   "stump": "A competent solver joins the settlement run's record pairs into charges (the reading the 2026 charging statements reproduce), replays every 2026 deck charge on the new units at the smaller of 11.5 kW and the onboard rating of the car its permit carries in the contract year, grows by the filed 1.12 and files 130 kW (129.136 unrounded, set at 12:00 on 8 December 2026); the step that lands it there is replaying each charge from the minute it started in 2026: at the North Deck the county's attendant swaps pool cars on a unit, the car ahead coming off 6 to 20 minutes after it finishes and the next pool car going on 1 to 5.4 minutes later (101 hand-offs in 2026), so on the new units the car ahead finishes sooner and the next car goes on sooner; re-timed that way, December's four kept pool cars finish before noon and the contracted demand is 110 kW (109.088), set at 12:00 on 21 January 2026.",
   "harden_loops": 3,
@@ -58,12 +58,31 @@
     }
   ],
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 2)",
+    "disposition": "APPROVE; in-house fixes 1 and 2 applied at stage 7 (memo cites Schedule 26 Section 4, submission step 6), fix 3 cosmetic left",
+    "report": "task117/determinism_check_report_pass2.md"
   },
   "approved": "2026-10-09 (checkpoint B waived by the author; heart PASS)",
-  "delivered": null,
+  "delivered": "2026-10-09",
   "portal": null,
-  "source_note": "analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md"
+  "source_note": "analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md",
+  "leak_read": {
+    "date": "2026-10-09",
+    "q1": "none outright (nearest sentences answered harmless)",
+    "q2": "none",
+    "q3": "parking_services_data_sources.txt, borderline, harmless",
+    "q4": "none",
+    "leak_py": "REVIEW, 8 lines, no LEAK"
+  },
+  "heart": {
+    "verdict": "PASS",
+    "nearest_stump": "task107 0.05",
+    "nearest_driver": "task110 0.07"
+  },
+  "zip": {
+    "path": "task117/target.zip",
+    "members": 24,
+    "bytes": 6016662,
+    "sha256": "859b27a9287280b13c7fb68e04e67f8e047d07709d0fb90da924c2364166689c"
+  }
 }

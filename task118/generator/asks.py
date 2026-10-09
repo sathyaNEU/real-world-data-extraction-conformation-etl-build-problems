@@ -577,7 +577,7 @@ def cms_rows(docs):
 def read_corrections(rows, published=True, scheduled=True, entries=True, merge=True, migrated=False, posts=False,
                      never_live=False, blank_start=False, s1=True, s2=True, entry_any=False, entry_tol=None,
                      by_text=None, scheduled_always=False, lag=True, lag_struct=None, entry_from_entry=False,
-                     lead=True, readd=True, readd_desk=False, after_first=False):
+                     lead=True, readd=True, readd_desk=False, after_first=False, entry_after=0):
     """Headline and text corrections per article document from cms_rows tuples.
 
     The golden reading (every flag at its default): a correction is a new note on a revision that publishes the
@@ -603,7 +603,8 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
     saved revision of any document on the desk showed). A note that names the headline on a save that leaves the
     headline unchanged records the headline published without a new note on a save within LAG_WINDOW minutes
     before it or, failing that, after it (lead=False looks before it only; after_first=True tries the save after it
-    first); lag_struct pairs the same way."""
+    first); lag_struct pairs the same way. entry_after=N also pairs a blog's note with an entry whose headline changed
+    up to N minutes after it (the field notes' pairing line read symmetrically)."""
     from collections import defaultdict
     if entry_tol is None:
         entry_tol = P.ENTRY_WINDOW
@@ -716,7 +717,8 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
                 heads.append(paired)
                 last_h = None
                 continue
-            hit = [f for f in fixes.get(did, []) if tc - dt.timedelta(minutes=entry_tol) <= f[0] <= tc] if entries else []
+            hit = [f for f in fixes.get(did, []) if tc - dt.timedelta(minutes=entry_tol) <= f[0]
+                   <= tc + dt.timedelta(minutes=entry_after)] if entries else []
             if hit:
                 f = min(hit)
                 heads.append(f[0])

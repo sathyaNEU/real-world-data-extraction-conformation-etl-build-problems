@@ -3,7 +3,11 @@ standard, the draft service agreement, the network's export field notes and Park
 data-sources note. Short, functional, written in each organisation's own voice."""
 from __future__ import annotations
 
-from datetime import date
+import re
+import zipfile
+from datetime import date, datetime, timezone
+from xml.sax.saxutils import escape
+from zoneinfo import ZoneInfo
 
 from reportlab import rl_config
 
@@ -42,7 +46,33 @@ def _table(data, widths, header=True):
     return t
 
 
-def _doc(path, title, author, subject, story, footer):
+LA = ZoneInfo("America/Los_Angeles")
+INVARIANT_PDF_DATE = b"D:20000101000000+00'00'"   # what reportlab writes for both dates under rl_config.invariant
+
+# the local clock time each filed PDF was produced on its issue date
+PDF_MADE = {"rates": datetime(2025, 11, 14, 10, 47, 23), "standard": datetime(2026, 9, 15, 15, 29, 6),
+            "guide": datetime(2026, 3, 2, 9, 31, 18)}
+
+
+def pdf_date(when: datetime) -> bytes:
+    """A PDF date for a local civil time, with the Pacific offset in force that day."""
+    off = int(when.replace(tzinfo=LA).utcoffset().total_seconds() // 60)
+    sign, off = ("-" if off < 0 else "+"), abs(off)
+    return f"D:{when:%Y%m%d%H%M%S}{sign}{off // 60:02d}'{off % 60:02d}'".encode()
+
+
+def stamp_pdf(path, when: datetime):
+    """Creation and modification dates set to the time the document was produced. Same byte length as the invariant
+    date, so the cross-reference table stays valid."""
+    new = pdf_date(when)
+    assert len(new) == len(INVARIANT_PDF_DATE), new
+    b = open(path, "rb").read()
+    assert b.count(INVARIANT_PDF_DATE) == 2, path
+    with open(path, "wb") as f:
+        f.write(b.replace(INVARIANT_PDF_DATE, new))
+
+
+def _doc(path, title, author, subject, story, footer, when=None):
     def on_page(canvas, doc):
         canvas.saveState()
         canvas.setFont("Helvetica", 7.5)
@@ -54,6 +84,8 @@ def _doc(path, title, author, subject, story, footer):
                             topMargin=0.8 * inch, bottomMargin=0.85 * inch, title=title, author=author,
                             subject=subject, creator=author)
     doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
+    if when is not None:
+        stamp_pdf(path, when)
 
 
 def _ds(d: date) -> str:
@@ -126,7 +158,7 @@ def rate_schedule(path):
         "Service under this schedule is subject to the Company's General Rules and Regulations and to the "
         "Company's Rule 16, Line and Service Extensions.", base))
     _doc(path, "Schedule 26 Electric Vehicle Charging Service", "North Sound Power & Light", "Tariff Book",
-         s, "NSPL Tariff Book  |  Schedule 26  |  Issued November 14, 2025")
+         s, "NSPL Tariff Book  |  Schedule 26  |  Issued November 14, 2025", when=PDF_MADE["rates"])
 
 
 # ------------------------------------------------------------------------------ forecasting standard
@@ -172,7 +204,8 @@ def forecasting_standard(path):
     s.append(Spacer(1, 6))
     s.append(Paragraph("4. Records and accuracy", h2))
     s.append(Paragraph(
-        "Forecast demand is stated in whole kilowatts. The forecast workbook, the base-month records as they stood on "
+        "Forecast demand is stated in whole kilowatts. The base-month demand is carried unrounded; the forecast is "
+        "rounded once, after the factor is applied. The forecast workbook, the base-month records as they stood on "
         "the day the forecast was made, and the factor used are kept with the filing for six years; a forecast is not "
         "restated when a base-month record is later restated. Forecasts presented to Council state the base months "
         "and the factor.", base))
@@ -185,7 +218,8 @@ def forecasting_standard(path):
                      ["3", "September 2025", "Base months set at the equipment the service will supply"],
                      ["4", "September 2026", "2027 factor added"]], [0.8 * inch, 1.4 * inch, 4.6 * inch]))
     _doc(path, "FES-07 Facilities Electrical Load Forecasting Standard", "City of Larch Harbor",
-         "Energy & Facilities Division", s, "City of Larch Harbor  |  FES-07 Rev. 4  |  Internal standard")
+         "Energy & Facilities Division", s, "City of Larch Harbor  |  FES-07 Rev. 4  |  Internal standard",
+         when=PDF_MADE["standard"])
 
 
 # ------------------------------------------------------------------------------ planning guide
@@ -227,7 +261,7 @@ def planning_guide(path):
         "The customer's electrician installs the service equipment and the customer-side distribution. NSPL "
         "sets the meter after the jurisdiction's electrical inspection is approved.", base))
     _doc(path, "New Service Planning Guide, Section 7", "North Sound Power & Light", "Distribution Planning", s,
-         "NSPL New Service Planning Guide  |  2026 Edition  |  Section 7")
+         "NSPL New Service Planning Guide  |  2026 Edition  |  Section 7", when=PDF_MADE["guide"])
 
 
 # ------------------------------------------------------------------------------ service agreement (docx)
@@ -268,8 +302,8 @@ def service_agreement(path):
     p("NSPL will energize the service on or about April 1, 2027, after the Customer's contractor removes the "
       "existing charging units and installs the units in Exhibit A.")
     p("4. Contract Year and Contract Demand", bold=True)
-    p("The first Contract Year is the twelve billing months beginning with the first full billing month after "
-      "energization. The Customer states in Schedule 1 the maximum Billing Demand it expects in the first Contract "
+    p("The first Contract Year is the twelve billing months beginning April 1, 2027. The Customer states in "
+      "Schedule 1 the maximum Billing Demand it expects in the first Contract "
       "Year, and that figure is the Contract Demand for the first Contract Year. The Customer shall return "
       "Schedule 1 to NSPL no later than March 1, 2027. Contract Demand for later Contract Years is set under "
       "Schedule 26.")
@@ -297,9 +331,89 @@ def service_agreement(path):
     p("SCHEDULE 1. CONTRACT DEMAND, FIRST CONTRACT YEAR", bold=True)
     p("Contract Demand for the first Contract Year (whole multiples of 5 kW): ____________ kW")
     p("Signed for the Customer: ______________________   Date: ____________", space=14)
-    doc.core_properties.title = "Electric Service Agreement, New Service, Schedule 26"
+    title = "Electric Service Agreement, New Service, Schedule 26"
+    doc.core_properties.title = title
     doc.core_properties.author = "North Sound Power & Light"
     doc.save(path)
+    texts = [x.text for x in doc.paragraphs]
+    cells = [[c.text for c in row.cells] for t in doc.tables for row in t.rows]
+    _finish_docx(path, texts, cells, title)
+
+
+# NSPL's draft as last saved: started January 8, last saved 3:40 p.m. on January 12, 2027 (the draft date)
+DOCX_SAVED = {"created": datetime(2027, 1, 8, 17, 22, tzinfo=timezone.utc),
+              "modified": datetime(2027, 1, 12, 23, 40, tzinfo=timezone.utc),
+              "by": "Paul Henderson", "revision": 6, "minutes": 74}
+# characters per line of body text and of an Exhibit A cell at Calibri 10.5 on the template's 6-inch text width, and
+# lines per page once the headings' spacing is allowed for (a render of the draft runs onto a second page)
+DOCX_LINE_CHARS, DOCX_CELL_CHARS, DOCX_PAGE_LINES = 92, 22, 40
+
+
+def docx_stats(texts, cells):
+    """Word's document statistics for the text: words, characters with and without spaces, paragraphs, lines."""
+    flat = [t for t in texts if t.strip()] + [c for row in cells for c in row if c.strip()]
+    words = sum(len(t.split()) for t in flat)
+    chars = sum(len(re.sub(r"\s", "", t)) for t in flat)
+    spaced = sum(len(t) for t in flat)
+    lines = sum(-(-len(t) // DOCX_LINE_CHARS) for t in texts if t.strip())
+    lines += sum(max(-(-len(c) // DOCX_CELL_CHARS) for c in row) for row in cells)
+    return {"words": words, "chars": chars, "spaced": spaced, "paragraphs": len(flat), "lines": lines,
+            "pages": 1 + (lines - 1) // DOCX_PAGE_LINES}
+
+
+def _finish_docx(path, texts, cells, title):
+    """Package properties as Word writes them on save (document statistics, author, revision, save times), and no
+    preview picture: the template's own thumbnail is a blank page."""
+    st = docx_stats(texts, cells)
+    iso = lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")  # noqa: E731
+    org = escape("North Sound Power & Light")
+    core = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            f'<dc:title>{escape(title)}</dc:title><dc:subject></dc:subject><dc:creator>{org}</dc:creator>'
+            f'<cp:keywords></cp:keywords><dc:description></dc:description>'
+            f'<cp:lastModifiedBy>{DOCX_SAVED["by"]}</cp:lastModifiedBy><cp:revision>{DOCX_SAVED["revision"]}</cp:revision>'
+            f'<dcterms:created xsi:type="dcterms:W3CDTF">{iso(DOCX_SAVED["created"])}</dcterms:created>'
+            f'<dcterms:modified xsi:type="dcterms:W3CDTF">{iso(DOCX_SAVED["modified"])}</dcterms:modified>'
+            '</cp:coreProperties>')
+    app = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+           '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+           'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+           f'<Template>Normal.dotm</Template><TotalTime>{DOCX_SAVED["minutes"]}</TotalTime>'
+           f'<Pages>{st["pages"]}</Pages><Words>{st["words"]}</Words><Characters>{st["chars"]}</Characters>'
+           '<Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity>'
+           f'<Lines>{st["lines"]}</Lines><Paragraphs>{st["paragraphs"]}</Paragraphs><ScaleCrop>false</ScaleCrop>'
+           '<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Title</vt:lpstr></vt:variant>'
+           '<vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts>'
+           f'<vt:vector size="1" baseType="lpstr"><vt:lpstr>{escape(title)}</vt:lpstr></vt:vector></TitlesOfParts>'
+           f'<Company>{org}</Company><LinksUpToDate>false</LinksUpToDate>'
+           f'<CharactersWithSpaces>{st["spaced"]}</CharactersWithSpaces><SharedDoc>false</SharedDoc>'
+           '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>14.0000</AppVersion></Properties>')
+    with zipfile.ZipFile(path) as z:
+        infos = [i for i in z.infolist() if i.filename != "docProps/thumbnail.jpeg"]
+        data = {i.filename: z.read(i.filename) for i in infos}
+    data["docProps/core.xml"] = core.encode()
+    data["docProps/app.xml"] = app.encode()
+    rels = data["_rels/.rels"].decode()
+    rels, n = re.subn(r'<Relationship Id="rId\d+" Type="[^"]*/metadata/thumbnail" Target="docProps/thumbnail\.jpeg"/>',
+                      "", rels)
+    assert n == 1, rels
+    data["_rels/.rels"] = rels.encode()
+    ct = data["[Content_Types].xml"].decode()
+    ct, n = re.subn(r'<Default Extension="jpeg" ContentType="image/jpeg"/>', "", ct)
+    assert n == 1, ct
+    data["[Content_Types].xml"] = ct.encode()
+    stg = data["word/settings.xml"].decode()
+    stg, n = re.subn(r"<w:savePreviewPicture/>", "", stg)
+    assert n == 1
+    data["word/settings.xml"] = stg.encode()
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for i in infos:
+            zi = zipfile.ZipInfo(i.filename, date_time=i.date_time)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data[i.filename])
+    return st
 
 
 # ------------------------------------------------------------------------------ field notes (txt)

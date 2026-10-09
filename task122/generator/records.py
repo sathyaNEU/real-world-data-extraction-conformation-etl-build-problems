@@ -472,6 +472,20 @@ def comeback(W, O, end):
             W.comeback_counts[(c, k)] = n
 
 
+def checkout3(W):
+    """Checkout 3 (21 September 2026): every order is paid when it is placed, pickups included. A pickup
+    placed from that day that the order template had collected and paid to the seller is paid at checkout
+    instead, so it reaches the provider's capture file and carries the fee. Only orders after the logger window
+    are touched (every in-session and come-back order is earlier), the order keeps every other attribute, and no
+    order enters or leaves any window, so no lift, half or count moves."""
+    O = W.O
+    t3 = int((datetime(P.CHECKOUT3.year, P.CHECKOUT3.month, P.CHECKOUT3.day) - EPOCH).total_seconds())
+    late = (O.t.to_numpy() >= t3) & O.inperson.to_numpy().astype(bool)
+    assert not np.isin(O.kind.to_numpy()[late], ["insession_new", "insession_watched", "comeback"]).any()
+    O.loc[late, "inperson"] = False
+    W.checkout3_moved = int(late.sum())
+
+
 def finish_orders(W, new_ids):
     """Order-only listings get ids; watched listings and tiles carry theirs; orders get ids in time
     order."""
@@ -555,11 +569,17 @@ def build_records(W):
     Wm.tune_main(W)
     assign_dates(W)
     assign_tiles(W)
+    # a watched listing is never collected and paid to the seller at the handover (a buyer who saves a listing
+    # pays for it through checkout, pickup or not), so a brought-forward purchase and the purchase it replaces sit
+    # on the same cover under either checkout
+    W.WL["inperson"] = False
     build_orders(W)
+    checkout3(W)
     extra = order_only_creation_times(W)
     new_ids = assign_listing_ids(W, extra)
     finish_orders(W, new_ids)
     import place
     place.place_fee_cells(W)
+    place.fix_vat_rounding(W)
     build_offers_payments(W)
     return W

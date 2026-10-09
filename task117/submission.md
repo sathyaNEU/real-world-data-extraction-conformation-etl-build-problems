@@ -15,7 +15,7 @@ January 2028 sets it at 109.1 kW of forecast billing demand, ahead of December 2
 
 1. On the new units each 2026 deck charge, its settlement records joined end to start, draws the lower of **11.5 kW** and its car's onboard charger rating until its delivered energy
 2. The car is the one the permit carries in the contract year: **18** county permits moved from 7.2 kW to 11.0 kW Bolt EVs at the January 2027 renewal
-3. Each of the **101** county pool cars put on a North Deck unit behind another pool car in 2026 starts once the car ahead finishes at its new draw, after the same wait
+3. At each of the **101** pool-car hand-offs on North Deck units in 2026, the next car starts once the car ahead finishes at its new draw, after the same wait
 4. The replay's highest billing-hours quarter-hour in 2026 is **97.4 kW**, at 12:00 on Wednesday 21 January 2026
 5. Grown by the **1.12** factor in force, January 2028's forecast billing demand is **109.1 kW**, the highest contract month
 
@@ -24,9 +24,9 @@ January 2028 sets it at 109.1 kW of forecast billing demand, ahead of December 2
 1. Kept the sessions of record in `settled_sessions_2024-2026.csv` (the ACCEPTED version in `restatement_decisions_2025.csv`, one row per `auth_code`) and placed each on its unit by the `station_register.csv` assignment in service that day.
 2. Joined each record that starts at its unit the second another ends there, on the same permit or card, into one charge (the pairs meet at the daily 10 a.m. settlement run in `curbline_export_field_notes.txt`), which reproduces every permit-month's charge count in `ev_permit_charging_statements_2026.csv`.
 3. Took each permit's car from its January 2027 renewal row in `permit_vehicle_checks.csv` and its `onboard_charger_kw` from `vehicle_reference_list.csv` (fleet cards through `city_fleet_roster.csv`): 18 county permits now carry 2023 Bolt EVs at 11.0 kW where 2020 Bolt EVs at 7.2 kW made their 2026 sessions.
-4. Replayed each 2026 deck charge at the lower of 11.5 kW (Exhibit A of `civic_center_ev_service_agreement_draft.docx`) and that car's rating until its delivered energy, summing both decks per quarter-hour, each from its 2026 start except the 101 county pool cars (`ev_permit_registry.csv`) put on a North Deck unit within ten minutes of another coming off it (the attendant's swaps in `facilities_work_orders_2026.csv`), which start once the car ahead finishes at its new rate, after the same wait.
-5. Took each month's highest quarter-hour beginning 12:00 to 19:45 on the billing days of `nspl_schedule_26_ev_charging_service.pdf` and grew it by the 1.12 in Table 1 of `fes-07_load_forecasting_standard_rev4.pdf`: 97.4 kW at 12:00 on 21 January 2026 makes January 2028 109.1 kW, which files 110 kW in Schedule 26's 5 kW steps whether rounded to the nearest step or up.
-6. Back-tested FES-07 on 2025 from the 2024 deck billing demand as its records stood when that forecast was made (FES-07 section 4, so the twelve 2024 sessions restated in March 2025 count at their earlier version), including `gateway_b_sessions_jan-apr2024.csv` and the fleet card charges in `fleet_card_ev_transactions_2024-2026.csv` the export does not carry (stamped in UTC, placed in local time), times the 1.08 factor in force then, in whole kW against 2025's recorded whole kW: errors run from -1.9% to +2.5%, six over and six under.
+4. Replayed each 2026 deck charge from its 2026 start at the lower of 11.5 kW (Exhibit A of `civic_center_ev_service_agreement_draft.docx`) and that car's rating until its delivered energy, summing both decks per quarter-hour, except at the 101 pool-car hand-offs, where the attendant put a county pool car on a North Deck unit within ten minutes of another coming off (cars going on under 39 county permits in `ev_permit_registry.csv`; swaps noted on WO-26-0529 in `facilities_work_orders_2026.csv`): in every one the car ahead came off 6 to 20 minutes after finishing, while the decks' other charges stayed plugged in a median 6.7 hours after finishing, so the next car starts once the car ahead finishes at its new rate, after the same wait.
+5. Took each month's highest quarter-hour beginning 12:00 to 19:45 on the billing days of `nspl_schedule_26_ev_charging_service.pdf` and grew it, unrounded, by the 1.12 in Table 1 of `fes-07_load_forecasting_standard_rev4.pdf` (one rounding, per its section 4): 97.4 kW at 12:00 on 21 January 2026 makes January 2028 109.1 kW, which files 110 kW in Schedule 26's 5 kW steps whether rounded to the nearest step or up.
+6. Back-tested FES-07 on 2025 from the 2024 deck billing demand as its records stood when that forecast was made (FES-07 section 4, so the twelve 2024 sessions restated in March 2025 count at their earlier version), including `gateway_b_sessions_jan-apr2024.csv` and the fleet card charges in `fleet_card_ev_transactions_2024-2026.csv` the export does not carry (stamped in UTC, placed in local time), times the 1.08 factor in force then and rounded once, in whole kW against 2025's actual billing demand in whole kW, built the same way from the accepted 2025 versions in `restatement_decisions_2025.csv` with the January to March 2025 fleet card charges included: errors run from -1.9% to +2.5%, six over and six under.
 7. Set each 2026 read span in `deck_panel_meter_log_2024-2026.xlsx`, its Corrections sheet applied, on the meters' standard-time clock (`deck_submeter_nameplates.csv`), the later 31 December South read standing, against the energy of the sessions on the units `deck_panel_circuit_schedule.csv` places on each panel, the weekend and holiday sessions in `curbline_courtesy_sessions_civic_decks_2024-2026.csv` included: 517 to 1,133 kWh unaccounted per read.
 8. Recommendation: file 110 kW as the contracted demand for April 2027 to March 2028.
 
@@ -49,8 +49,8 @@ January 2028 sets it at 109.1 kW of forecast billing demand, ahead of December 2
    - February 2028: 76 kW
    - March 2028: 82 kW
 3. The month that sets the figure: January 2028
-4. In the quarter-hour that sets it: North Deck 56 kW, South Deck 53 kW
-5. North Sound's planners' figure: 225 kW, 115 kW above ours
+4. In the quarter-hour that sets it, forecast on the new units for January 2028: North Deck 56 kW, South Deck 53 kW
+5. North Sound's planners' figure: 225 kW, 115 kW above our 110 kW
 
 ### deck_load_day.png
 

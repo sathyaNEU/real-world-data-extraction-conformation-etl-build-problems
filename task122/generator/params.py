@@ -122,9 +122,14 @@ SHIPPING = {"womenswear": 4.65, "menswear": 4.65, "kids": 3.25, "shoes": 6.95, "
 TARIFFS = [  # (effective from, fixed EUR, per cent)
     (date(2024, 3, 1), 0.70, 5.0),
     (date(2026, 9, 1), 0.80, 5.0),
-    (date(2027, 1, 4), 0.95, 5.0),
+    (date(2027, 4, 5), 0.95, 5.0),     # a Finance proposal for the second-quarter review, no committee decision
 ]
-SLOT_FIXED_CENTS, SLOT_PCT = 80, 5     # the tariff in force for the slot (the January row was deferred)
+SLOT_FIXED_CENTS, SLOT_PCT = 80, 5     # the tariff in force on every day of the slot (KB-2026-02)
+LATEST_FIXED_CENTS = 95                # the register's newest row, the hazard
+# Checkout 3 (app release 26.19 and the website, 21 September 2026, the day after the logger window closed): every
+# order is paid when it is placed, pickups included, so from that day no pickup is paid to the seller at the handover.
+# The slot runs under it, so every logged order carries the fee in the slot.
+CHECKOUT3 = date(2026, 9, 21)
 OFFER_SHARE = 0.38                     # carousel orders bought on an accepted offer
 OFFER_LAPSE = 0.22                     # accepted offers that lapsed before checkout (asking paid)
 OFFER_DISC = (0.12, 0.30)              # discount range on accepted offers
@@ -134,7 +139,6 @@ BG_OFFER_SHARE = 0.24                  # orders away from the carousel bought on
 
 # ------------------------------------------------------------------ slot traffic
 SLOT_SHARE = 0.10
-JAN_SURGE = (0.020, 0.010)             # extra share of the two younger bands at the January peak
 ISO_WEEKS_SLOT = list(range(1, 13))    # 2027-W01..W12, planned on the same weeks of 2026
 APP_WEEKS = list(range(3, 13))         # app arm starts with the 18 January release (W03)
 R2_MOVED_SHARE = 0.062                 # sessions R2 moves from the two younger bands to the two older

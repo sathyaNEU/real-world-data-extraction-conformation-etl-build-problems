@@ -395,6 +395,17 @@ def main():
     check("V06 the twelve contract months recompute", all(near(a, b, 1e-6) for a, b in zip(mon, EXPECTED["monthly"])), mon)
     check("V07 the month that sets the figure is January (contract month January 2028)",
           max(range(12), key=lambda i: mon[i]) == 0)
+    from docx import Document
+    agr = re.sub(r"\s+", " ", " ".join(x.text for x in Document(os.path.join(tdir, "civic_center_ev_service_agreement_draft.docx")).paragraphs))
+    st_txt = re.sub(r"\s+", " ", pdf_text(os.path.join(tdir, "fes-07_load_forecasting_standard_rev4.pdf")))
+    base26 = [G.peak(tot, month=m)[0] for m in range(1, 13)]
+    once = [int(math.floor(x + 0.5)) for x in mon]
+    twice = [int(math.floor(growth * math.floor(b + 0.5) + 0.5)) for b in base26]
+    check("V07p the agreement starts the first contract year with April 2027 and the standard rounds a forecast once, "
+          "the base month carried unrounded; rounding each 2026 base month first would move July and November",
+          "The first Contract Year is the twelve billing months beginning April 1, 2027." in agr
+          and "The base-month demand is carried unrounded; the forecast is rounded once, after the factor is applied." in st_txt
+          and [m + 1 for m in range(12) if twice[m] != once[m]] == [7, 11], [m + 1 for m in range(12) if twice[m] != once[m]])
     # the hand-offs, read from the export and the permit registry alone
     allc = charges(rec[rec["garage"].isin(decks)].copy())
     prev_all = handoff_prev(allc, pool)
@@ -437,6 +448,19 @@ def main():
           near(growth * vh, EXPECTED["held"], 1e-6) and iso(tth) == EXPECTED["held_binding"]
           and near(hsplit[0], 82.88, 1e-6) and near(hsplit[1], 46.256, 1e-6)
           and near(th[jd], 115.3, 1e-6) and near(tot[jd], 86.5, 1e-6), (growth * vh, iso(tth), th[jd], tot[jd]))
+    fol26 = pop.loc[list(prev)]
+    ahead26 = pop.loc[[prev[i] for i in prev]]
+    fp26, hp26 = set(fol26["permit_no"]), set(ahead26["permit_no"])
+    idle26 = (ahead26["t1"].to_numpy() - (ahead26["t0"].to_numpy() + ahead26["kwh_delivered"].to_numpy() / old_kw * 3600)) / 60
+    idle_h = (pop["t1"] - (pop["t0"] + pop["kwh_delivered"] / old_kw * 3600)) / 3600
+    med = [float(np.median(idle_h.drop(index=list(ahead26.index)))), float(np.median(idle_h)),
+           float(np.median(idle_h.drop(index=list(set(ahead26.index) | set(fol26.index)))))]
+    OUT["handoff_permits"] = (len(fp26), len(hp26), len(fp26 | hp26))
+    check("V07o the 2026 hand-offs: the cars going on are on 39 county permits and the cars ahead on 39 (43 together, of "
+          "44 pool permits); the car ahead came off 6 to 20 minutes after finishing, while the decks' other charges stay "
+          "plugged in a median 6.7 hours after finishing, however the other charges are read",
+          OUT["handoff_permits"] == (39, 39, 43) and len(pool) == 44 and idle26.min() >= 6.0 and idle26.max() <= 20.0
+          and all(round(x, 1) == 6.7 for x in med), (OUT["handoff_permits"], [round(x, 3) for x in med]))
     closed_fwd = replay_fwd(np.full(len(pop), old_kw))
     closed_held = replay(np.full(len(pop), old_kw))
     check("V07n the closed record is blind to the hand-offs: at 6.6 kW every re-timed charge starts when it started",
@@ -804,8 +828,10 @@ def b3(P, R, G, rec):
     fac = factor_on(R["factors"], date(2025, 1, 31))
     check("V20 the factor in force for a forecast made from 2024 is 1.08", fac == 1.08, fac)
     st = re.sub(r"\s+", " ", pdf_text(os.path.join(os.path.dirname(P["log_path"]), "fes-07_load_forecasting_standard_rev4.pdf")))
-    check("V19 the standard files the accuracy record: whole-kW forecast less whole-kW recorded demand",
-          "Forecast demand is stated in whole kilowatts" in st and "recorded billing demand in whole kilowatts" in st)
+    check("V19 the standard files the accuracy record: whole-kW forecast less whole-kW recorded demand, the base month "
+          "carried unrounded and the forecast rounded once",
+          "Forecast demand is stated in whole kilowatts" in st and "recorded billing demand in whole kilowatts" in st
+          and "base-month demand is carried unrounded; the forecast is rounded once" in st)
     F = {m: fac * G.peak(load24, year=2024, month=m)[0] for m in range(1, 13)}
     A = {m: G.peak(load, year=2025, month=m)[0] for m in range(1, 13)}
     Fq = {m: int(math.floor(fac * G.peak(load, year=2024, month=m)[0] + 0.5)) for m in range(1, 13)}
@@ -825,6 +851,10 @@ def b3(P, R, G, rec):
     print("     B3 misses   ", ms)
     check("V22a the 24 back-test figures match the key", [fc[m] for m in range(1, 13)] == EXPECTED["b3_forecast"]
           and [ms[m] for m in range(1, 13)] == EXPECTED["b3_miss"])
+    tw = {m: int(math.floor(fac * math.floor(G.peak(load24, year=2024, month=m)[0] + 0.5) + 0.5)) for m in range(1, 13)}
+    moved = {m: (tw[m], round(100 * (tw[m] - ac[m]) / ac[m], 1)) for m in range(1, 13) if tw[m] != fc[m]}
+    check("V22b the rounding path the standard rules out (each 2024 base month rounded to whole kW before the factor) "
+          "would move April to 103 (+2.0) and December to 113 (-1.7)", moved == {4: (103, 2.0), 12: (113, -1.7)}, moved)
     return {"forecast": fc, "miss": ms}
 
 

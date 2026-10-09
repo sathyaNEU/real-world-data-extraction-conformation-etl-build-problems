@@ -145,8 +145,10 @@ def register_rows(sizes):
         (F["carrier"], "Lusolog Expresso", "2026-07-15", "", "", "Carrier notice as received."),
         (F["stock"], "warehouse management", "2026-09-25", "2026-09-25", "2026-09-25", "Snapshot, 06:00."),
     ]
-    return pd.DataFrame([r + (sizes.get(r[0]),) for r in reg],
-                        columns=["file", "source_system", "extracted_on", "covers_from", "covers_to", "notes", "rows"])
+    out = pd.DataFrame([r + (sizes.get(r[0]),) for r in reg],
+                       columns=["file", "source_system", "extracted_on", "covers_from", "covers_to", "notes", "rows"])
+    out["rows"] = out["rows"].astype("Int64")      # a row count, never a float
+    return out
 
 
 def main():

@@ -52,7 +52,8 @@ F = dict(
     newsletter="newsletter_performance_2026-07_2026-09.csv",
     exportlog="audience_data_export_log.csv",
 )
-DISTRACTORS = ["agreement", "newsletter"]
+# The dashboard export is the licensed wrong basis's instrument (rung 0): declared as a wrong-basis distractor.
+DISTRACTORS = ["agreement", "newsletter", "dashboard"]
 EXPORT_STAMP = dt.datetime(2026, 10, 16, 9, 0)      # AEST wall clock of the export
 
 
@@ -200,8 +201,16 @@ def write_plan(W, path):
     wb.close()
 
 
+def changelog_saved(rows):
+    """Experimentation saves the log on the working day after the latest embedding is signed off."""
+    d = max(r["closed"] for r in rows) + dt.timedelta(days=1)
+    while d.weekday() >= 5:
+        d += dt.timedelta(days=1)
+    return dt.datetime.combine(d, dt.time(10, 15))
+
+
 def write_changelog(W, path, rows):
-    wb = xlsx_book(path, "Headline squad change log", dt.datetime(2026, 2, 6, 10, 15))
+    wb = xlsx_book(path, "Headline squad change log", changelog_saved(rows))
     ws = wb.add_worksheet("Embeddings")
     hd = wb.add_format({"bold": True, "bottom": 1})
     df = wb.add_format({"num_format": "yyyy-mm-dd"})
@@ -370,7 +379,7 @@ def write_newsletter(W, path):
                      "clicks", "unsubscribes"], rows)
 
 
-def write_exportlog(path, counts):
+def write_exportlog(path, counts, changelog_on):
     rows = [
         (F["spine"], "Article pageviews by source surface and age band", "Audience warehouse", "2026-10-16",
          "Natalie Benjamin", "Pageviews 1 Oct 2025 to 30 Sep 2026 (AEST), all desks", counts["spine"]),
@@ -382,7 +391,7 @@ def write_exportlog(path, counts):
         (F["plan"], "Audience plan 2027 (version P2)", "Audience shared drive", "2026-10-09", "Kayla Torres",
          "Desk clicks, plan year 2027", ""),
         (F["changelog"], "Headline squad change log of closed embeddings", "Experimentation shared drive",
-         "2026-02-06", "Nina Franklin", "Embeddings 2019 to 2025", 7),
+         changelog_on.date().isoformat(), "Nina Franklin", "Embeddings 2019 to 2025", 7),
         (F["fieldref"], "Field reference for the audience warehouse tables", "Audience data wiki", "2026-10-02",
          "Natalie Benjamin", "Articles, pageviews, headline tests, desks", ""),
         (F["charter"], "Headline squad 2027 placement brief", "Newsroom planning", "2026-10-12", "Corey Cox",
@@ -404,7 +413,7 @@ def write_exportlog(path, counts):
          "Kayla Torres", "", ""),
         (F["bulletin"], "Standards bulletin, April 2026", "Standards desk", "2026-04-08", "Standards desk",
          "Issue 31", ""),
-        (F["thread"], "Planning thread on squad placement", "Mail", "2026-10-15", "Corey Cox", "", ""),
+        (F["thread"], "Planning thread on squad placement", "Mail", "2026-10-16", "Corey Cox", "", ""),
         (F["agreement"], "Content syndication agreement with Newsfold", "Commercial contracts register",
          "2025-06-24", "Commercial team", "Dated 1 Jul 2024, Variation 1", ""),
         (F["newsletter"], "Newsletter performance by week", "Email platform", "2026-10-02", "Audience",
@@ -523,7 +532,7 @@ def build(out):
                    "Bightline News Pty Ltd and Newsfold Pty Ltd | Commercial in confidence",
                    dt.datetime(2025, 6, 24, 15, 0), author="Bightline News Commercial")
     write_newsletter(W, target / F["newsletter"])
-    write_exportlog(target / F["exportlog"], counts)
+    write_exportlog(target / F["exportlog"], counts, changelog_saved(W.changelog))
     W.scrub_audit = normalise(target)
     write_metadata(out, target, counts)
     return W, target

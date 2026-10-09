@@ -2,12 +2,15 @@
 
 Reads only the shipped files in target_dir. It imports nothing from the generator, reads no seed, parameter
 or side file, and recomputes every rung, every rival the change log refutes, every calibration outcome and
-every graded figure on its own code path (DuckDB over the parquet, a profile-likelihood prior fit, a walk of
-each document's published states in the CMS revisions that skips a note the document had already shown and pairs
-a note on an unchanged headline with the bare headline change in the 20 minutes before it, else in the 20 minutes
-after it, else with the entry fix in the 20 minutes before it, each panel release read on the section list it was
-issued on and counted only for the months the release log lists for it, each section's month taken from the latest
-such release). The CLAIMS block is the answer key it checks.
+every graded figure on its own code path (DuckDB over the parquet with the surfaces that carry the stored headline
+read from the field reference's canonical_headline row, a profile-likelihood prior fit, a walk of each document's
+published states in the CMS revisions that skips a note put back after a save that left it off when the CMS field
+notes say it is the earlier notice, and pairs a note on an unchanged headline with the bare headline change within
+the window the field notes give for a fix and its note (ten minutes) before it, else after it, else with an entry's
+headline change within that window either side, each panel release read on the earlier section list up to the
+release before the release log's first on the 2026 content taxonomy and on the 2026 list from that release on,
+counted only for the months the release log lists for it, each section's month taken from the latest such release).
+The CLAIMS block is the answer key it checks.
 """
 import csv
 import datetime as dt
@@ -125,6 +128,32 @@ def main(target):
     prior = (mu, tau2)
     mom = (float(L.mean()), float(L.var() - S2.mean()))
 
+    def fit_profile(Lx, Sx):
+        def neg(t2):
+            wx = 1 / (t2 + Sx)
+            return 0.5 * np.sum(np.log(t2 + Sx) + (Lx - np.sum(wx * Lx) / np.sum(wx)) ** 2 * wx)
+        t2 = float(minimize_scalar(neg, bounds=(1e-7, 0.05), method="bounded", options={"xatol": 1e-13}).x)
+        wx = 1 / (t2 + Sx)
+        return float(np.sum(wx * Lx) / np.sum(wx)), t2
+
+    # rival forms of the estimator: the log of the click-through ratio, and the ratio minus one with the
+    # ratio-squared term dropped from its variance (both use the same variance, which is the log ratio's)
+    V0 = S2 / (1 + L) ** 2
+    pkg_engine = np.array([meta[x][0] for x in pkg_test])
+    prior_log = fit_profile(np.log1p(L), V0)
+    prior_nr = fit_profile(L, V0)
+    prior_app = fit_profile(L[pkg_engine == "app"], S2[pkg_engine == "app"])
+    prior_web = fit_profile(L[pkg_engine == "web"], S2[pkg_engine == "web"])
+
+    def win_form(tid, pr, form):
+        for l, s2, shipped, _ in per_test[tid]:
+            if shipped:
+                v0 = s2 / (1 + l) ** 2
+                if form == "log":
+                    return math.exp(pr[0] + pr[1] / (pr[1] + v0) * (math.log1p(l) - pr[0])) - 1
+                return pr[0] + pr[1] / (pr[1] + v0) * (l - pr[0])
+        return 0.0
+
     def win(tid, pr, shrink=True):
         for l, s2, shipped, _ in per_test[tid]:
             if shipped:
@@ -143,6 +172,23 @@ def main(target):
     check("every app-desk test is owned by the headline squad",
           all(team.get(m[3]) == "AUD-HS" for m in meta.values() if desks[m[1]]["distribution"] == "app only"))
 
+    # ------------------------------------------------------------------ the surfaces that carry the stored headline
+    fr = find("audience_warehouse_field_reference").read_text(encoding="utf-8")
+    canon = re.search(r"\| `canonical_headline` \|([^|\n]*)\|", fr)
+    canon = canon.group(1).lower() if canon else ""
+    src_table = fr.split("| Source code | Surface |", 1)[1].split("\n\n", 1)[0]
+    src_codes = re.findall(r"^\| `([a-z_]+)` \|", src_table, re.M)
+    stored_words = {"search": "search", "discover": "discover", "partner_apps": "partner", "social": "social",
+                    "newsletter": "newsletter", "alerts": "alert"}
+    # a source code carries the stored headline when the canonical_headline row names its surface; the rest are
+    # Bightline's own surfaces, where a tested headline shows
+    stored_named = {code for code, word in stored_words.items() if word in canon}
+    plat_codes = sorted(set(src_codes) - stored_named)
+    check("the field reference's canonical_headline row names every surface the verifier reads as carrying the "
+          "stored headline", bool(canon) and stored_named == set(stored_words), canon.strip())
+    check("every other source code in the field reference is a Bightline surface the row does not name",
+          plat_codes == sorted(PLATFORM) and set(stored_words) <= set(src_codes), str(plat_codes))
+
     # ------------------------------------------------------------------ the spine, through DuckDB
     con = duckdb.connect()
     con.execute("CREATE TABLE pv AS SELECT * FROM read_parquet('%s')" % str(spine).replace("'", "''"))
@@ -150,7 +196,7 @@ def main(target):
     won = {meta[x][2] for x in meta if any(sh for _, _, sh, _ in per_test[x])}
     con.execute("CREATE TABLE tested AS SELECT unnest(?::BIGINT[]) AS article_id", [sorted(tested)])
     con.execute("CREATE TABLE won AS SELECT unnest(?::BIGINT[]) AS article_id", [sorted(won)])
-    plat_list = ",".join("'%s'" % s for s in PLATFORM)
+    plat_list = ",".join("'%s'" % s for s in plat_codes)
     q = """
       SELECT p.desk_code,
              sum(pageviews) AS total,
@@ -236,6 +282,10 @@ def main(target):
     crow = list(wb["Embeddings"].iter_rows(values_only=True))
     hdrc = crow[0]
     emb = [dict(zip(hdrc, r)) for r in crow[1:] if r[0] is not None]
+    with zipfile.ZipFile(changelog) as z:
+        saved = re.search(r"<dcterms:created[^>]*>(\d{4}-\d\d-\d\d)", z.read("docProps/core.xml").decode()).group(1)
+    check("the change log was saved after its last embedding was signed off",
+          saved > max(e["closed_on"] for e in emb).date().isoformat(), saved)
     app_tests = defaultdict(list)
     for x, m in meta.items():
         if m[0] == "app":
@@ -277,6 +327,11 @@ def main(target):
         preds["post-test"][e["embedding"]] = g * plan_c * (1 - first2h[e["desk_code"]])
         preds["absolute points"][e["embedding"]] = np.mean(
             [next((dp for _, _, sh, dp in per_test[x] if sh), 0.0) for x in ids]) * plan_c
+        preds["log-scale shrinkage"][e["embedding"]] = np.mean([win_form(x, prior_log, "log") for x in ids]) * plan_c
+        preds["variance without the ratio-squared term"][e["embedding"]] = \
+            np.mean([win_form(x, prior_nr, "nr") for x in ids]) * plan_c
+        preds["app-engine prior"][e["embedding"]] = np.mean([win(x, prior_app) for x in ids]) * plan_c
+        preds["web-engine prior (convergent)"][e["embedding"]] = np.mean([win(x, prior_web) for x in ids]) * plan_c
     rawv = np.array([preds["raw"][k] for k in sorted(real)])
     realv = np.array([real[k] for k in sorted(real)])
     kcut = float(np.sum(rawv * realv) / np.sum(rawv ** 2))
@@ -287,6 +342,9 @@ def main(target):
         miss = sum(e > 0.03 for e in err)
         if name == "golden":
             check("back-test: the golden method gets %d of 7 within 2%%" % CLAIMS["backtest_hits"],
+                  hits == CLAIMS["backtest_hits"], "worst %.2f%%" % (100 * max(err)))
+        elif "(convergent)" in name:
+            check("back-test: %s gets %d of 7 within 2%%" % (name, CLAIMS["backtest_hits"]),
                   hits == CLAIMS["backtest_hits"], "worst %.2f%%" % (100 * max(err)))
         else:
             check("back-test refutes %s (2 or more of 7 missed by over 3%%)" % name, miss >= 2,
@@ -350,6 +408,14 @@ def main(target):
         for a, b in zip(shown, shown[1:]):
             if b[4] != a[4]:
                 entry_fix[blog].add(ts(b[1]))
+    # the CMS field notes: a fix and its note go on the same save, or on two saves within ten minutes of each other
+    notes_f = find("cms_revisions_export_fields")
+    notes_txt = re.sub(r"\s+", " ", notes_f.read_text())
+    pair = re.search(r"on two saves within (\w+) minutes of each other", notes_txt)
+    check("the CMS field notes state the window a fix and its note are saved within", pair is not None)
+    put_back = "A note put back after a save that left it off is the earlier notice, not a new correction" in notes_txt
+    check("the CMS field notes say a note put back after a save that left it off is not a new correction", put_back)
+    W_ = dt.timedelta(minutes={"five": 5, "ten": 10, "fifteen": 15, "twenty": 20}[pair.group(1)])
     count, arts, mins, march = defaultdict(int), defaultdict(int), defaultdict(list), [0, 0]
     m_lo, m_hi = dt.datetime(2026, 2, 28, 14), dt.datetime(2026, 3, 31, 14)      # March 2026, AEST
     for did, revs in docs.items():
@@ -372,16 +438,16 @@ def main(target):
         for i in range(1, len(states)):
             a, b = states[i - 1], states[i]
             when = ts(b[1])
-            repeat = b[5] in shown      # a note the document had already shown, put back
+            repeat = put_back and b[5] in shown     # a note the document had already shown, put back
             shown.add(b[5])
             if not b[5] or b[5] == a[5] or repeat:
                 bare = None if b[5] != a[5] else (when if b[4] != a[4] and i not in taken else bare)
                 continue
-            fixes = sorted(f for f in entry_fix.get(did, ()) if when - dt.timedelta(minutes=20) <= f <= when)
+            fixes = sorted(f for f in entry_fix.get(did, ()) if when - W_ <= f <= when + W_)
             after = None
-            if b[4] == a[4] and not (bare is not None and when - bare <= dt.timedelta(minutes=20)):
+            if b[4] == a[4] and not (bare is not None and when - bare <= W_):
                 for j in range(i + 1, len(states)):
-                    if ts(states[j][1]) - when > dt.timedelta(minutes=20) or states[j][5] != states[j - 1][5]:
+                    if ts(states[j][1]) - when > W_ or states[j][5] != states[j - 1][5]:
                         break
                     if states[j][4] != states[j - 1][4]:
                         after = j
@@ -390,7 +456,7 @@ def main(target):
             # an entry's fix
             if b[4] != a[4]:
                 at = when
-            elif bare is not None and when - bare <= dt.timedelta(minutes=20):
+            elif bare is not None and when - bare <= W_:
                 at = bare
             elif after is not None:
                 at = ts(states[after][1])

@@ -7,6 +7,7 @@ squad_placement_2027.xlsx to out_dir. Prints the figures the paper rests on.
 """
 import csv
 import datetime as dt
+import html
 import io
 import math
 import os
@@ -49,8 +50,7 @@ SHORTLIST = ["POL-N", "SPT-M", "BUS-N", "SPT-N", "LOC-M", "CUL-N"]
 PLATFORM = ("home_web", "section_web", "feed_app", "section_app", "related_links")
 WINDOW_START = dt.date(2025, 10, 1)
 BACKTEST_TOL = 0.02
-NOTE_AND_FIX = 10       # minutes: a note on an unchanged headline records the headline fix on the save before or after it
-ENTRY_NOTE = 30         # minutes: a live blog's note and the entry fix it records
+FIX_AND_NOTE = 10       # minutes: a fix and its note go on one save or two saves this far apart (CMS field notes)
 
 
 def r50k(x):
@@ -138,6 +138,15 @@ for tid, m in meta.items():
 raw = {d: float(np.mean([win(t, False) for t in by_desk[d]])) for d in SHORTLIST}
 shr = {d: float(np.mean([win(t) for t in by_desk[d]])) for d in SHORTLIST}
 
+
+def vertical_lift(v):
+    """The experimentation dashboard's figure for a vertical, from the archive: the mean winning lift over the
+    vertical's tests concluded in the twelve months to September 2026 (AEST)."""
+    lo, hi = "2025-09-30T14:00:00Z", "2026-09-30T14:00:00Z"
+    ids = [t for t, pk in tests.items()
+           if desks[pk[0]["desk_code"]]["vertical"] == v and lo <= pk[0]["concluded_at"] < hi]
+    return 100 * float(np.mean([win(t, False) for t in ids]))
+
 # Every test at a shortlisted desk was created by that desk's own editors (staff list team), never the squad.
 assert all(team[meta[t][3]] == meta[t][1] for d in SHORTLIST for t in by_desk[d])
 assert len({m[2] for m in meta.values()}) == len(meta), "one test per article"
@@ -190,9 +199,10 @@ RAW_HITS = sum(abs(float(np.mean([win(t, False) for t in app_tests[(e["desk_code
                for e in emb)
 
 # --------------------------------------------------------------------------- readers (panel)
-# A release's section codes belong to the section list it was issued on: the first release on the 2026 content
-# taxonomy and every release after it use the 2026 list. A release publishes the months the release log lists for it,
-# and the latest release that published a month carrying a section is the record for that section's month.
+# Releases before the release log's first release on the 2026 content taxonomy carry the earlier section codes; that
+# release and every release after it, the history release included, carry the 2026 codes. A release publishes the
+# months the release log lists for it, and the latest release that published a month carrying a section is the
+# record for that section's month.
 pwb = load_workbook(find("panel_reference_workbook"), read_only=True, data_only=True)
 hist = list(pwb["Section history"].iter_rows(values_only=True))[1:]
 rlog = [r for r in list(pwb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
@@ -271,26 +281,25 @@ for did, revs in docs.items():
             elif cur[4] != prev[4] and k not in paired_later:
                 fixed_alone = t
             continue
-        added = cur[5][:len(cur[5]) - len(prev[5])] if prev[5] and cur[5].endswith(prev[5]) else cur[5]
-        entries = [f for f in entry_fixed.get(did, []) if t - dt.timedelta(minutes=ENTRY_NOTE) <= f <= t]
+        apart = dt.timedelta(minutes=FIX_AND_NOTE)
+        entries = [f for f in entry_fixed.get(did, []) if t - apart <= f <= t + apart]
         later = None
-        if cur[4] == prev[4] and "headline" in added.lower():
+        if cur[4] == prev[4]:
             for j in range(k + 1, len(published)):
-                if when(published[j][1]) - t > dt.timedelta(minutes=NOTE_AND_FIX) or published[j][5] != published[j - 1][5]:
+                if when(published[j][1]) - t > apart or published[j][5] != published[j - 1][5]:
                     break
                 if published[j][4] != published[j - 1][4]:
                     later = j
                     break
         if cur[4] != prev[4]:
             at = t
-        elif (fixed_alone is not None and t - fixed_alone <= dt.timedelta(minutes=NOTE_AND_FIX)
-              and "headline" in added.lower()):
-            at = fixed_alone        # the note records the headline published on the save before it (7.4)
+        elif fixed_alone is not None and t - fixed_alone <= apart:
+            at = fixed_alone        # the corrected headline went up on a save just before its note (7.4)
         elif later is not None:
-            at = when(published[later][1])      # or the headline published on the save after it (7.4)
+            at = when(published[later][1])      # or on a save just after it (7.4)
             paired_later.add(later)
         elif entries:
-            at = min(entries)
+            at = min(entries)       # an entry's corrected headline, its note on the live blog (7.5)
         else:
             at = None
         fixed_alone = None
@@ -521,25 +530,28 @@ def write_xlsx(path):
          "(field reference). Shrunk with one normal prior fitted by maximum likelihood on all {:,} variant packages "
          "in the archive; a desk's lift is the mean over its tests.".format(N_PACKAGES)),
         ("Average monthly readers", "Panel unique audience for the desk's section, mean of October 2025 to September "
-         "2026. Each release is read on the section list it was issued on (the November 2025 to February 2026 history "
-         "release on the 2026 list) and only for the months the release log lists for it. A section's figure for a "
-         "month is the latest of those releases that carries it, so the history release replaces three national "
-         "sections, the April to June restatement replaces both sites, and the April to June rows in the July file "
-         "are set aside."),
+         "2026. Releases up to R26-03 are read on the earlier section list; R26-04, the release log's first release "
+         "on the 2026 content taxonomy, and every release after it, the R26-04H history release included, are read on "
+         "the 2026 list. Each release counts only for the months the release log lists for it, and a section's figure "
+         "for a month is the latest of those releases that carries it, so the history release replaces three national "
+         "sections, the R26-07B restatement replaces both sites, and the April to June rows in the July file are set "
+         "aside."),
         ("Extra clicks per reader", "Extra article clicks 2027 over average monthly readers."),
-        ("Headline corrections", "A new correction note on a version readers saw that published a corrected headline, "
-         "the article's own or a live-blog entry's (editorial standards 7.4 and 7.5). Where the note saying the "
-         "headline was corrected and the corrected headline went up on two saves a few minutes apart, in either "
-         "order, the correction is counted on the save that published the headline; a blog's note is matched to the "
-         "entry fixed in the minutes before it. Versions readers saw are live saves and a scheduled version the CMS "
-         "published; drafts saved while an article is live are not published. Notes carry forward on later saves and "
-         "are not counted again, nor is a note put back after a save that left it off; body-text corrections are "
-         "excluded."),
+        ("Headline corrections", "A new correction note on a version readers saw, where a corrected headline went up "
+         "with it: on the same version, or, where the fix and the note went on separate saves (at most ten minutes "
+         "apart, CMS export field notes), on a version within those ten minutes before or after it that changed the "
+         "headline with no new note of its own. A live blog's note is matched to the entry whose headline changed "
+         "within the ten minutes (editorial standards 7.4 and 7.5). The correction is counted once, on the version "
+         "that published the headline. Versions readers saw are live saves and a scheduled version the CMS published; "
+         "drafts are not published. Notes carry forward on later saves and are not counted again, nor is a note put "
+         "back after a save that left it off; every other new note is a correction to text."),
         ("Articles", "Articles first published October 2025 to September 2026 that went live. Live-blog posts, "
          "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
          "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
-        ("Median minutes", "Minutes from an article going live (for a scheduled article the CMS published, its "
-         "publish time; for a live blog, the blog's) to its first headline correction, over corrected articles."),
+        ("Median minutes", "Minutes from an article going live to its first headline correction, over corrected "
+         "articles. An article goes live at its first published version: its publish time when the CMS published a "
+         "scheduled article, otherwise its first live save. A restored copy keeps its original's time, and an entry's "
+         "correction counts for its live blog."),
         ("Sources", "2027 audience plan; pageviews by source and age, Oct 2025 to Sep 2026; headline test archive "
          "2019 to 2026; newsroom staff list; headline squad change log; panel monthly audience and reference "
          "workbook; CMS revisions for the web desks."),
@@ -626,11 +638,6 @@ def write_docx(path, png):
     pct = lambda x, k=1: ("{:.%df}%%" % k).format(100 * x)  # noqa: E731
     tested_share = {d: chain[d]["platform_tested"] / chain[d]["platform"] for d in SHORTLIST}
     plat_share = {d: chain[d]["platform"] / chain[d]["planned"] for d in SHORTLIST}
-    dash = {}
-    lines = open(find("experimentation_dashboard_export"), encoding="utf-8").read().splitlines()
-    h = lines.index("vertical,tests_concluded,tests_with_variant_shipped,avg_winning_lift_pct")
-    for row in csv.reader(lines[h + 1:]):
-        dash[row[0]] = float(row[3])
 
     doc = Document()
     st = doc.styles["Normal"]
@@ -701,7 +708,7 @@ def write_docx(path, png):
         "SPT-N": "a large audience, but a modest lift ({}) and half its platform clicks already on tested "
                  "headlines.".format(pct(shr["SPT-N"], 2)),
         "POL-N": "leads on the dashboard's Politics figure ({:.2f}%), but that average is pulled up by Politics·metro's "
-                 "small Brisbane tests; Politics·national's own tests shrink to {}.".format(dash["Politics"],
+                 "small Brisbane tests; Politics·national's own tests shrink to {}.".format(vertical_lift("Politics"),
                                                                                           pct(shr["POL-N"], 2)),
         "SPT-M": "the highest raw winning lift in the archive ({}), drawn from very small tests; shrunk, it is "
                  "{}.".format(pct(raw["SPT-M"]), pct(shr["SPT-M"], 2)),
@@ -749,8 +756,11 @@ def write_docx(path, png):
                 pp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
             if d == CALL:
                 shade(cells[j], "FDF0E8")
-    for row in t.rows:
-        row.cells[0].width = Cm(3.6)
+    t.autofit = False
+    for j, w in enumerate([Cm(3.9)] + [Cm(2.1)] * (len(cols) - 1)):     # desk names on one line
+        t.columns[j].width = w
+        for row in t.rows:
+            row.cells[j].width = w
     para(doc, "Source: 2027 audience plan; pageviews by source; headline test archive; panel monthly audience "
          "(restated releases); CMS revisions for the web desks. Readers, corrections and minutes cover October 2025 "
          "to September 2026.", size=8, italic=True, color="595959", space_after=10)
@@ -761,14 +771,15 @@ def write_docx(path, png):
         "lift. Embedding-by-embedding results are on the workbook's Back-test sheet.".format(N_PACKAGES),
         "Source codes as defined in the audience warehouse field reference. The 2027 plan holds every desk at its "
         "October 2025 to September 2026 clicks, with no change in where they come from.",
-        "Readers are the panel's unique audience for the desk's section, each release read on the section list it "
-        "was issued on and only for the months the release log lists for it, and each section's month taken from the "
-        "latest of those releases (the November 2025 to February 2026 history release covers three national "
-        "sections, the April to June restatement both sites). A headline correction is counted on the version that "
-        "published the corrected headline, a live-blog entry's included, whether its note went up on the same save, "
-        "the one before or the one after (editorial standards 7.4 and 7.5); a note put back after a save that left it "
-        "off is not a new correction. An article goes live when it is first published, at its publish time if the "
-        "CMS published it.",
+        "Readers are the panel's unique audience for the desk's section: releases up to R26-03 on the earlier section "
+        "list and R26-04, the first on the 2026 content taxonomy, and every later release (the R26-04H history release "
+        "included) on the 2026 list, each counted only for the months the release log lists for it, with each "
+        "section's month taken from the latest of those releases. A headline correction is a new note on a published "
+        "version that went up with a corrected headline, on the same save or on a save within ten minutes either side "
+        "as the CMS export's field notes allow, a live-blog entry's headline included (editorial standards 7.4 and "
+        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. An article "
+        "goes live at its first published version, its publish time if the CMS published it; a restored copy keeps "
+        "its original's.",
     ]
     for i, n in enumerate(notes, 1):
         para(doc, "{}  {}".format(i, n), size=8.5, color="404040", space_after=3)
@@ -784,11 +795,40 @@ def write_docx(path, png):
     doc.save(path)
 
 
+PAPER_PAGES = 2     # the paper prints on two A4 pages
+
+
+def word_stats(data, pages):
+    """Word's own statistics in docProps/app.xml, counted from the body text; the template's thumbnail dropped."""
+    body = data["word/document.xml"].decode("utf-8")
+    paras = []
+    for p in re.findall(r"<w:p[ >].*?</w:p>", body, flags=re.S):
+        txt = html.unescape("".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p)))
+        if txt.strip():
+            paras.append(txt)
+    stats = (("Pages", pages), ("Words", sum(len(p.split()) for p in paras)),
+             ("Characters", sum(len(re.sub(r"\s", "", p)) for p in paras)),
+             ("Lines", sum(max(1, math.ceil(len(p) / 92)) for p in paras)), ("Paragraphs", len(paras)),
+             ("CharactersWithSpaces", sum(len(p) for p in paras)))
+    app = data["docProps/app.xml"].decode("utf-8")
+    for tag, val in stats:
+        app = re.sub(r"<%s>\d+</%s>" % (tag, tag), "<%s>%d</%s>" % (tag, val, tag), app)
+    data["docProps/app.xml"] = app.encode("utf-8")
+    data.pop("docProps/thumbnail.jpeg", None)
+    data["_rels/.rels"] = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail.jpeg"/>', b"", data["_rels/.rels"])
+    if not any(n.endswith((".jpeg", ".jpg")) for n in data):
+        data["[Content_Types].xml"] = data["[Content_Types].xml"].replace(
+            b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+
+
 def repack(path, when=dt.datetime(2026, 10, 19, 9, 0)):
     """Fixed entry times and the paper's own date in docProps, so a rebuild is byte-identical."""
     with zipfile.ZipFile(path) as z:
         infos = z.infolist()
         data = {i.filename: z.read(i.filename) for i in infos}
+    if "word/document.xml" in data:
+        word_stats(data, PAPER_PAGES)
+        infos = [i for i in infos if i.filename in data]
     iso = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
     data["docProps/core.xml"] = re.sub(rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*", rb"\g<1>" + iso,
                                        data["docProps/core.xml"])

@@ -18,6 +18,7 @@ import sys
 import tempfile
 import zipfile
 from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -39,7 +40,7 @@ FLOOR, CEILING = "2023-01-01", "2027-01-25"
 
 # in-fiction author and date of every binary input
 PRODUCERS = {
-    Wr.LOG: ("City of Larch Harbor Facilities", "2027-01-04", (2027, 1, 4, 8, 12, 0)),
+    Wr.LOG: ("City of Larch Harbor Facilities", "2027-01-06", (2027, 1, 6, 14, 47, 0)),   # saved after the corrections
     Wr.AGREEMENT: ("North Sound Power & Light", "2027-01-12", (2027, 1, 12, 15, 40, 0)),
     Wr.RATES: ("North Sound Power & Light", "2025-11-14", None),
     Wr.STANDARD: ("City of Larch Harbor", "2026-09-15", None),
@@ -152,6 +153,55 @@ def doc_texts(out):
     return texts
 
 
+def container_stamps(out, files):
+    """Save times inside every binary input, and anything about them a reader of the properties would query."""
+    from docx import Document
+    stamps, bad = {}, []
+    for f in files:
+        p = os.path.join(out, f)
+        if f.endswith(".pdf"):
+            b = open(p, "rb").read()
+            got = re.findall(rb"/(CreationDate|ModDate) \(D:(\d{8})(\d{6})([+-]\d\d)'(\d\d)'\)", b)
+            stamps[f] = [(k.decode(), d.decode(), t.decode(), o.decode()) for k, d, t, o, _ in got]
+            if len(got) != 2 or any(t == b"000000" or o not in (b"-08", b"-07") for _, _, t, o, _ in got):
+                bad.append(f)
+        elif f.endswith((".docx", ".xlsx")):
+            with zipfile.ZipFile(p) as z:
+                core = z.read("docProps/core.xml").decode()
+                app = z.read("docProps/app.xml").decode()
+                names = z.namelist()
+            got = re.findall(r"<dcterms:(created|modified)[^>]*>(\d{4}-\d\d-\d\d)T(\d\d:\d\d:\d\d)Z<", core)
+            stamps[f] = got
+            if len(got) != 2 or any(t == "00:00:00" for _, _, t in got):
+                bad.append(f)
+            if f.endswith(".xlsx"):
+                # saved on or after the latest date its own sheets record (a read, a correction)
+                from openpyxl import load_workbook
+                wb = load_workbook(p, read_only=True)
+                latest = max(c for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row
+                             if isinstance(c, datetime))
+                saved = max(datetime.fromisoformat(f"{d}T{t}+00:00").astimezone(ZoneInfo("America/Los_Angeles")).date()
+                            for k, d, t in got if k == "modified")
+                stamps[f + " latest entry"] = (str(latest.date()), str(saved))
+                if saved < latest.date():
+                    bad.append(f + " saved before its own entries")
+            if f.endswith(".docx"):
+                d = Document(p)
+                txt = [x.text for x in d.paragraphs] + [c.text for t in d.tables for r in t.rows for c in r.cells]
+                words = sum(len(t.split()) for t in txt if t.strip())
+                stat = {k: int(v) for k, v in re.findall(r"<(Words|Characters|Pages|Lines|Paragraphs|TotalTime)>(\d+)<", app)}
+                stamps[f + " statistics"] = stat
+                if (stat.get("Words") != words or min(stat.values() or [0]) <= 0
+                        or "docProps/thumbnail.jpeg" in names or "thumbnail" in z_rels(p)):
+                    bad.append(f + " statistics")
+    return stamps, bad
+
+
+def z_rels(p):
+    with zipfile.ZipFile(p) as z:
+        return z.read("_rels/.rels").decode()
+
+
 SIGNPOST = [r"\bon-?board\b", r"\bvehicle'?s? (charger|charging (rate|speed|power))", r"\baccepts?\b",
             r"\b(limit|limits|limited|capped)\b[^.]{0,50}\b(draw|charging power|charging rate)",
             r"\bdraws?\b[^.]{0,60}\b(vehicle|car)\b", r"\b(vehicle|car)\b[^.]{0,60}\bdraws?\b"]
@@ -207,7 +257,9 @@ def pack_gates(out, meta, prompt_path, answer_figures):
              "permit-only decks": r"permit-only", "settlement run time": r"settlement run is daily",
              "free courtesy charging": r"free to permit holders",
              "records as they stood": r"as they stood on the day the forecast was made",
-             "corrected reads": r"corrected reading replaces the reading logged"}
+             "corrected reads": r"corrected reading replaces the reading logged",
+             "one rounding": r"base-month demand is carried unrounded",
+             "first contract year": r"twelve billing months beginning April 1, 2027"}
     alltext = dict(texts)
     for f in files:
         if f.endswith(".csv"):
@@ -217,6 +269,10 @@ def pack_gates(out, meta, prompt_path, answer_figures):
          all(len(v) == 1 for v in counts.values()), counts)
     rows = {f: sum(1 for _ in open(os.path.join(out, f))) - 1 for f in files if f.endswith(".csv")}
     C.ck("G13 generation tell: no two data files share a row count", len(set(rows.values())) == len(rows), rows)
+    stamps, bad = container_stamps(out, files)
+    C.ck("G15 H1 container: every PDF and OOXML input carries the local clock time it was saved (Pacific offset on the "
+         "PDFs, no stamp at midnight UTC), each workbook saved on or after the latest date its sheets record, and the "
+         "agreement's document statistics its own text's with no blank preview picture", not bad, (bad, stamps))
     return {"files": files, "formats": fmts, "spine_rows": n, "rule_homes": counts, "csv_rows": rows}
 
 

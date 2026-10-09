@@ -9,7 +9,7 @@
 
 **Place the headline squad with Culture·national for 2027, where it adds 1,250,000 extra article clicks.**
 
-That is 450,000 ahead of the runner-up, Local·metro, at 800,000. Not Local·metro, whose own editors already test the headlines behind most of its platform clicks. Not Business·national, whose clicks mostly arrive on surfaces that show the stored headline. Not Politics·national, which leads only on the dashboard's vertical lift. Not Sport·metro, whose raw lift is small tests that shrink to almost nothing. Not Sport·national, with a modest lift on a base its own tests already cover in large part. Not on readers, which do not change which headlines the squad can still move.
+That is 450,000 ahead of the runner-up, Local·metro, at 800,000. Not Local·metro, whose own editors already test the headlines behind most of its platform clicks. Not Business·national, whose clicks mostly arrive on surfaces that show the stored headline. Not Politics·national, which leads on readers, planned clicks and the dashboard's Politics figure, but that figure is pulled up by Politics·metro's small tests and its own tests shrink to a modest lift. Not Sport·metro, whose raw lift comes from small tests that shrink to almost nothing. Not Sport·national, with a modest lift on a base its own tests already cover in large part. Not on readers, which do not change which headlines the squad can still move.
 
 ## 2. Critical Components
 
@@ -20,13 +20,13 @@ That is 450,000 ahead of the runner-up, Local·metro, at 800,000. Not Local·met
 
 ## 3. Step-by-Step Solution
 
-1. Shrank each test's shipped variant in `headline_tests_archive_2019-2026.csv` toward one normal prior fitted by maximum likelihood on every package (kept control counts as zero) and averaged by desk: Culture·national's lift is 1.78%.
+1. Took each variant's lift in `headline_tests_archive_2019-2026.csv` as its click-through ratio to the control minus one, with delta-method variance, shrank each test's shipped variant toward one normal prior fitted by maximum likelihood on every variant package of both engines (a kept control counts as zero) and averaged by desk: Culture·national's lift is 1.78%.
 2. Back-tested shrunk lift x planned clicks on `headline_squad_change_log.xlsx`: 7 of 7 embeddings within 2%, against 0 of 7 for raw lift.
 3. Classed source codes by where the tested headline renders (`audience_warehouse_field_reference.md`, `canonical_headline`) in `pageviews_by_source_age_2025-10_2026-09.parquet`, which ties to `audience_plan_2027.xlsx`: 50.2% of Culture·national's clicks are platform-drawn.
 4. Joined each test's `owner_staff_id` to `newsroom_staff_list_2026-10-12.xlsx`: every shortlisted-desk test was run by that desk's own staff, on articles carrying 8.6% of Culture·national's platform clicks and 71.1% of Local·metro's, gains already inside the plan.
-5. Dropped those articles: Culture·national keeps 70,300,000 platform clicks on untested headlines.
-6. Multiplied by each desk's shrunk lift: Culture·national 1,250,000, runner-up Local·metro 800,000, gap 450,000.
-7. Read each `panel_monthly_audience_2025-10_2026-09.csv` release on the `panel_reference_workbook.xlsx` section list it was issued on and only for the months its release log lists, taking each section's month from the latest such release, and counted headline corrections in `cms_revisions_web_desks_2025-10_2026-09.csv` on the published version that changed the headline, whether its note came with it, on the save before or on the save after, and not again for a note put back after a save that left it off, under `editorial_standards_s7_corrections.pdf` 7.4 and 7.5: Culture·national has 1,412,000 monthly readers and 14 headline corrections.
+5. Multiplied each desk's shrunk lift by its platform clicks on the articles it did not test: Culture·national's 70,300,000 give 1,250,000, runner-up Local·metro 800,000, gap 450,000.
+6. Averaged each desk's section in `panel_monthly_audience_2025-10_2026-09.csv` over the twelve months, reading R26-03 and earlier releases on the earlier section list and R26-04 onward, R26-04H included, on the 2026 list as the `panel_reference_workbook.xlsx` release log sets out, each release only for its logged months and each month from the latest such release: Culture·national has 1,412,000 monthly readers.
+7. Counted headline corrections in `cms_revisions_web_desks_2025-10_2026-09.csv` as new notes on published versions that went up with a corrected headline on the same save or on a save within ten minutes either side, a live-blog entry's included (`cms_revisions_export_fields.txt`; `editorial_standards_s7_corrections.pdf` 7.4 and 7.5), with carried and put-back notes not counted again, and timed each article's first correction from its going live, its publish time when the CMS published a scheduled article and otherwise its first live save (a restored copy keeping its original's, an entry's correction counting for its live blog): Culture·national has 14, median 119 minutes.
 8. Recommendation: the squad joins Culture·national for 2027.
 
 ## 4. Deliverable Answers

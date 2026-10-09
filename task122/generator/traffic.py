@@ -38,28 +38,30 @@ def true_table(adjust=None):
     rows = []
     for (y, w) in weeks():
         mon = iso_monday(y, w)
-        doy = (mon - date(y, 1, 1)).days
-        season = (1.0 + 0.10 * np.exp(-((w - 2.5) / 2.2) ** 2) - 0.09 * np.exp(-((w - 31) / 4.5) ** 2)
-                  + 0.11 * np.exp(-((w - 48.5) / 2.0) ** 2) + 0.06 * np.exp(-((w - 51) / 1.2) ** 2))
+        season = (1.0 - 0.09 * np.exp(-((w - 31) / 4.5) ** 2) + 0.11 * np.exp(-((w - 48.5) / 2.0) ** 2)
+                  + 0.06 * np.exp(-((w - 51) / 1.2) ** 2))
         growth = 1.0 if y == 2026 else 0.935
         total = 2.43e6 * season * growth * (1 + rng.normal(0, 0.012))
         app = 0.647 if y == 2026 else 0.622
         app += rng.normal(0, 0.004)
-        # new buyers arrive after the holidays: the two younger bands swell a little in January
-        jan = np.exp(-((w - 2.5) / 3.5) ** 2)
-        t1 = 0.112 + P.JAN_SURGE[0] * jan + 0.010 * np.exp(-((w - 48.5) / 2.5) ** 2)
-        t2 = 0.221 + P.JAN_SURGE[1] * jan
+        t1 = 0.112 + 0.010 * np.exp(-((w - 48.5) / 2.5) ** 2)
+        t2 = 0.221
         shares = np.array([t1, t2, 0.303, 1 - t1 - t2 - 0.303])
         for pi_, plat in enumerate(P.PLATFORMS):
             pt = total * (app if plat == "app" else 1 - app)
             sh = shares * (1 + rng.normal(0, 0.01, 4))
             sh = sh / sh.sum()
             for b in range(4):
-                v = pt * sh[b]
-                if adjust is not None and y == 2026 and w in P.ISO_WEEKS_SLOT:
-                    v *= adjust[pi_ * 4 + b]
-                rows.append((y, w, mon, plat, b, int(round(v))))
-    return pd.DataFrame(rows, columns=["year", "week", "week_start", "platform", "band", "sessions"])
+                rows.append([y, w, mon, plat, b, pt * sh[b]])
+    df = pd.DataFrame(rows, columns=["year", "week", "week_start", "platform", "band", "sessions"])
+    if adjust is not None:
+        m = ((df.year == 2026) & df.week.isin(P.ISO_WEEKS_SLOT)).to_numpy()
+        cell = (np.where(df.platform == "app", 0, 4) + df.band).to_numpy()
+        v = df.sessions.to_numpy().copy()
+        v[m] = v[m] * np.asarray(adjust, float)[cell[m]]
+        df["sessions"] = v
+    df["sessions"] = [int(round(x)) for x in df.sessions.to_numpy()]
+    return df
 
 
 def first_release(true):

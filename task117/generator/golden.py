@@ -42,6 +42,11 @@ DECKS = ["Civic Center North Deck", "Civic Center South Deck"]
 FORECAST_MADE = date(2027, 1, 25)      # the note's date; FES-07 s.3 takes the factor in force that day
 BACKTEST_MADE = date(2025, 1, 31)      # the 2025 forecast, made once December 2024 had closed
 NOTE_DATE = datetime(2027, 1, 25, 16, 40)
+# when each deliverable was made: the workbook begun on January 21 and last saved 8:40 a.m. on the 25th (stamps in UTC),
+# the note exported to PDF at 4:38 p.m. that afternoon (Pacific Standard Time)
+BOOK_CREATED, BOOK_SAVED = datetime(2027, 1, 21, 18, 5), datetime(2027, 1, 25, 16, 40)
+NOTE_PDF_MADE = b"D:20270125163851-08'00'"
+INVARIANT_PDF_DATE = b"D:20000101000000+00'00'"   # what reportlab writes for both dates under invariant=1
 PST = timezone(timedelta(hours=-8))    # the deck sub-meters' clock (nameplate record)
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
           "October", "November", "December"]
@@ -107,6 +112,12 @@ def compute():
     idle = (ahead["t1"].to_numpy() - (ahead["t0"].to_numpy() + ahead["kwh_delivered"].to_numpy() / old_kw * 3600)) / 60
     wait = (fol["t0"].to_numpy() - ahead["t1"].to_numpy()) / 60
     dec8 = [i for i in prev if pop.at[i, "plug_in"].startswith("2026-12-08")]
+    # the permits on each side of a hand-off, and how long every other charge stays plugged in after finishing
+    ho_permits = (len(set(fol["permit_no"])), len(set(ahead["permit_no"])), len(set(fol["permit_no"]) | set(ahead["permit_no"])))
+    idle_all = (pop["t1"] - (pop["t0"] + pop["kwh_delivered"] / old_kw * 3600)) / 3600
+    other_idle = {"all but the cars ahead": float(np.median(idle_all.drop(index=list(ahead.index)))),
+                  "every charge": float(np.median(idle_all)),
+                  "all but both sides": float(np.median(idle_all.drop(index=list(set(ahead.index) | set(fol.index)))))}
     # the note's "the 11 kW cars nearly always are" charged before noon: their morning sessions on the new units
     start_new = forward_starts(pop, draw, prev, old_kw)
     end = start_new + pop["kwh_delivered"] / draw * 3600
@@ -161,6 +172,8 @@ def compute():
         "renewal": renewal, "slow_share": slow_load / base, "fast_done": fast_done, "kw_2027": sorted(set(jan_kw)),
         "pairs": int((pop["n_rec"] > 1).sum()), "charges_2026": len(pop), "records_2026": len(recs),
         "handoffs": len(prev), "idle_max": float(idle.max()), "wait_max": float(wait.max()),
+        "idle_min": float(idle.min()), "wait_min": float(wait.min()), "handoff_permits": ho_permits,
+        "other_idle": other_idle, "pool_permits": len(pool),
         "held": growth * held_peak, "held_at": datetime.fromtimestamp(t6, LA),
         "held_drop_dec8": float(tot_held[j6] - tot[j6]), "dec8_handoffs": len(dec8),
     }
@@ -209,6 +222,11 @@ def assert_record(F):
     assert abs(F["own_date"] - EXPECTED["own_date"]) < 1e-6 and F["renewed"] == 18
     # the note's wording about the hand-offs, the renewal and the rivals, back-tested on the record
     assert F["handoffs"] == 101 and F["idle_max"] <= 20.0 and F["wait_max"] <= 6.0, (F["idle_max"], F["wait_max"])
+    # submission step 4: the car ahead off 6 to 20 minutes after finishing, the decks' other charges a median 6.7 hours,
+    # the cars going on under 39 county permits (39 behind them too, 43 together, 44 pool permits in the registry)
+    assert F["idle_min"] >= 6.0 and F["wait_min"] >= 1.0, (F["idle_min"], F["wait_min"])
+    assert F["handoff_permits"] == (39, 39, 43) and F["pool_permits"] == 44, F["handoff_permits"]
+    assert all(round(v, 1) == 6.7 for v in F["other_idle"].values()), F["other_idle"]
     assert abs(F["held"] - EXPECTED["held"]) < 1e-6 and F["held_at"].isoformat() == EXPECTED["held_binding"]
     assert F["dec8_handoffs"] == 4 and abs(F["held_drop_dec8"] - 4 * 7.2) < 1e-6, (F["dec8_handoffs"], F["held_drop_dec8"])
     rn = F["renewal"]
@@ -375,8 +393,8 @@ def note(F, path):
         f"planning guide: {F['units']} units at 11.5 kW times {F['diversity']:.2f}, to the next 5 kW above, is "
         f"<b>{F['planners']} kW</b>, which I expect Paul Henderson to propose. Ours is <b>{gap} kW lower</b>, worth "
         f"${gap * rate * 12:,.0f} a year at Schedule 26's ${rate:.2f} a month per contracted kW. Section 4 of the "
-        f"agreement asks for the maximum billing demand we expect, and a month above {filed} kW would reset the "
-        f"contract to that month's demand, rounded up to the next 5 kW, for twelve months.", body))
+        f"agreement asks for the maximum billing demand we expect, and under Section 4 of Schedule 26 a month above "
+        f"{filed} kW would reset the contract to that month's demand, rounded up to the next 5 kW, for twelve months.", body))
     rows = [["Contract month", "Built from", "Forecast billing demand (kW)"]]
     for m, y in CONTRACT:
         v = F["monthly"][m]
@@ -407,6 +425,10 @@ def note(F, path):
                             author="Shelley Tanner", subject="Schedule 1 contract demand", creator="City of Larch Harbor",
                             invariant=1)
     doc.build(s, onFirstPage=foot)
+    b = open(path, "rb").read()
+    assert b.count(INVARIANT_PDF_DATE) == 2 and len(NOTE_PDF_MADE) == len(INVARIANT_PDF_DATE)
+    with open(path, "wb") as f:
+        f.write(b.replace(INVARIANT_PDF_DATE, NOTE_PDF_MADE))   # equal length, so the xref table stays valid
 
 
 # ------------------------------------------------------------------------------ the workbook
@@ -444,8 +466,15 @@ def workbook(F, path):
         ws.row_dimensions[r0].height = 42
         ws.freeze_panes = ws.cell(r0 + 1, 2)
         last = r0 + len(rows)
+        # each note wraps across the table's width, so the printed page carries the whole line
+        per_line = 1.35 * sum(widths)
         for k, line in enumerate(note_lines):
-            ws.cell(last + 2 + k, 1, line).font = note_font
+            r = last + 2 + k
+            cell = ws.cell(r, 1, line)
+            cell.font = note_font
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+            ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=len(headers))
+            ws.row_dimensions[r].height = 12.5 * math.ceil(len(line) / per_line)
         ws.print_title_rows = f"{r0}:{r0}"
         ws.page_setup.orientation = "landscape"
         ws.page_setup.fitToWidth = 1
@@ -466,8 +495,8 @@ def workbook(F, path):
           rows, [15, 11, 13, 8, 10, 14, 13, 12], [None, None, "0.0", "0.00", "0", "0", '+0;-0;0', '+0.0%;-0.0%;0.0%'],
           ["Factor 1.08 is the FES-07 Table 1 factor in force when the 2025 forecast was made from the closed 2024 "
            "months (adopted September 10, 2024); the 1.09 revision of April 8, 2025 came later.",
-           "Forecast and recorded demand in whole kW and error as forecast less recorded, as a percentage of recorded, "
-           "per FES-07 Section 4.",
+           "Forecast and recorded demand in whole kW (the forecast rounded once, from the unrounded base month) and error "
+           "as forecast less recorded, as a percentage of recorded, per FES-07 Section 4.",
            "2024 base includes the January to April sessions at the units that reported through gateway B, and each "
            "station identifier is placed by its dated register assignment (identifiers changed April 1, 2025).",
            "Fleet card charges at the decks before the April 1, 2025 platform move settled through the fleet card "
@@ -530,9 +559,10 @@ def workbook(F, path):
                  ["Replay: each 2026 deck charge until its delivered kWh, at the lower of 11.5 kW and the onboard "
                   "charger rating of the car its permit carries in 2027 (January 2027 vehicle check, vehicle reference "
                   "list). A charge the 10 a.m. settlement run split into two session records is replayed as one.",
-                  f"Start: as in 2026, except the {F['handoffs']} county pool cars the attendant put on a North Deck unit "
-                  "behind another pool car, which start once the car ahead finishes at its new rate, after the same "
-                  "wait as in 2026.",
+                  f"Start: as in 2026, except at the {F['handoffs']} pool-car hand-offs on North Deck units, where the "
+                  f"attendant put a county pool car on behind another (cars on {F['handoff_permits'][0]} county "
+                  "permits): the next car starts once the car ahead finishes at its new rate, after the same wait as "
+                  "in 2026.",
                   f"Contract demand: the highest month ({whole(top['forecast'])} kW, {MONTHS[mb - 1]} {yb}) in "
                   f"whole multiples of 5 kW: {F['filed']} kW."])
     dec_row = 5 + CONTRACT.index((mb, yb))
@@ -567,7 +597,8 @@ def workbook(F, path):
                              "clock per deck_submeter_nameplates.csv."),
              ("Growth", "FES-07 Rev. 4, Table 1: 1.12 for forecasts made from September 15, 2026; 1.08 for the 2025 "
                         "forecast."),
-             ("Rounding", "kW and kWh to whole numbers in the filed figures; errors to one decimal of a percent.")]
+             ("Rounding", "kW and kWh to whole numbers in the filed figures, each forecast rounded once, after the factor "
+                          "(FES-07 Section 4); errors to one decimal of a percent.")]
     ws["A1"], ws["A1"].font = "Notes and sources", title_font
     for i, (k, v) in enumerate(notes, 3):
         ws.cell(i, 1, k).font = Font(name="Calibri", bold=True, size=10)
@@ -580,21 +611,54 @@ def workbook(F, path):
     wb.properties.creator = "Shelley Tanner"
     wb.properties.lastModifiedBy = "Shelley Tanner"
     wb.properties.title = "Civic Center decks service demand"
-    wb.properties.created = NOTE_DATE
-    wb.properties.modified = NOTE_DATE
+    wb.properties.created = BOOK_CREATED
+    wb.properties.modified = BOOK_SAVED
     wb.active = 0
     wb.save(path)
 
 
+def book_props(wbxml):
+    """The workbook's package properties as Excel writes them on save: author, save times, sheets and named ranges."""
+    iso = lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")  # noqa: E731
+    core = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            '<dc:title>Civic Center decks service demand</dc:title><dc:creator>Shelley Tanner</dc:creator>'
+            '<cp:lastModifiedBy>Shelley Tanner</cp:lastModifiedBy>'
+            f'<dcterms:created xsi:type="dcterms:W3CDTF">{iso(BOOK_CREATED)}</dcterms:created>'
+            f'<dcterms:modified xsi:type="dcterms:W3CDTF">{iso(BOOK_SAVED)}</dcterms:modified></cp:coreProperties>')
+    sheets = re.findall(r'<sheet [^>]*?name="([^"]+)"', wbxml)
+    names = []
+    for m in re.finditer(r"<definedName ([^>]*)>", wbxml):
+        at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
+        if at.get("hidden") == "1" or at["name"].startswith("_xlnm._"):
+            continue
+        n = at["name"].replace("_xlnm.", "")
+        names.append(f"'{sheets[int(at['localSheetId'])]}'!{n}" if "localSheetId" in at else n)
+    names.sort()
+    parts = "".join(f"<vt:lpstr>{x}</vt:lpstr>" for x in sheets + names)
+    app = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+           '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+           'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+           '<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
+           '<HeadingPairs><vt:vector size="4" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant>'
+           f'<vt:variant><vt:i4>{len(sheets)}</vt:i4></vt:variant><vt:variant><vt:lpstr>Named Ranges</vt:lpstr>'
+           f'</vt:variant><vt:variant><vt:i4>{len(names)}</vt:i4></vt:variant></vt:vector></HeadingPairs>'
+           f'<TitlesOfParts><vt:vector size="{len(sheets) + len(names)}" baseType="lpstr">{parts}</vt:vector>'
+           '</TitlesOfParts><Company>City of Larch Harbor</Company><LinksUpToDate>false</LinksUpToDate>'
+           '<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>'
+           '</Properties>')
+    return core.encode(), app.encode()
+
+
 def repack(path, when):
-    """Fixed entry times so two runs are byte-identical (H7)."""
+    """Fixed entry times so two runs are byte-identical (H7), and the package properties Excel would have written
+    (openpyxl stamps dcterms:modified with the build clock and names itself as the application)."""
     with zipfile.ZipFile(path) as z:
         infos = z.infolist()
         data = {i.filename: z.read(i.filename) for i in infos}
-    # openpyxl stamps dcterms:modified with the build clock on save; the workbook is the note's
-    iso = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    data["docProps/core.xml"] = re.sub(rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*", rb"\g<1>" + iso,
-                                       data["docProps/core.xml"])
+    data["docProps/core.xml"], data["docProps/app.xml"] = book_props(data["xl/workbook.xml"].decode())
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for i in infos:
             zi = zipfile.ZipInfo(i.filename, date_time=when.timetuple()[:6])
@@ -639,6 +703,11 @@ def main():
           f"contract month")
     print(f"  hand-offs re-timed         {F['handoffs']} in 2026; held at their 2026 starts the call is "
           f"{F['held']:.3f} kW, set {F['held_at']:%d %b %Y %H:%M} (rival)")
+    print(f"  hand-off permits           cars going on under {F['handoff_permits'][0]} county permits, cars ahead under "
+          f"{F['handoff_permits'][1]} ({F['handoff_permits'][2]} together, {F['pool_permits']} pool permits)")
+    print(f"  car ahead off              {F['idle_min']:.1f} to {F['idle_max']:.1f} min after finishing, next on "
+          f"{F['wait_min']:.1f} to {F['wait_max']:.1f} min later; other charges plugged in a median "
+          + ", ".join(f"{v:.2f} h ({k})" for k, v in F["other_idle"].items()))
     print(f"\ndeck split after growth     North {F['north']:.3f} ({whole(F['north'])}), South {F['south']:.3f} "
           f"({whole(F['south'])})")
     print(f"NSPL planners' sizing       {F['units']} x {F['new_kw']} x {F['diversity']:.2f} = "

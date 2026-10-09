@@ -20,7 +20,7 @@ That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Tr
 
 ## 3. Step-by-Step Solution
 
-1. Took referrals in `critical_care_referrals_202307_202606.csv` with a level 3 decision to admit from July 2025 to June 2026 (the placement basis in `review_terms_of_reference_2027-28.docx`, section 5) that waited more than four hours from `dta_at` to the bed's assignment: 731 patients.
+1. Took referrals in `critical_care_referrals_202307_202606.csv` with a level 3 decision to admit from July 2025 to June 2026 (the placement basis in `review_terms_of_reference_2027-28.docx`, section 5) that waited more than four hours from `dta_at` to the bed's assignment, the remit's population for the placement year.
 2. Linked `date_of_death` from `apc_episodes_referred_patients_2022-2026.parquet` within 30 days of the decision: 213 deaths, Lathingbury the most at 56.
 3. Read each referring trust's own level 3 unit from `acc_unit_register.csv` on the decision date: Lathingbury, Tannerby, Ellerdyke and Pellowham held none, so none of their deaths is their own care.
 4. Rebuilt each unit's census minute by minute from `acc_unit_stays_202306_202606.parquet` against `beds_open` in `acc_bed_return_0800_202306_202606.csv`: Prideswick 15 and Ristenholm 2 deaths followed waits beside the trust's own empty staffed bed, and every other wait passed with the own unit full.

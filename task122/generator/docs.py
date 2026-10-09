@@ -2,10 +2,11 @@
 
 Each load-bearing rule is stated once, in the document that owns it: the lift definition, the
 reproduction clause, the cell table and the slot share in the charter; the fresh-listing floor in
-the commitment; the fee basis and the change clause in the buyer terms; the tariff rows in the
-tariff register; the January deferral in the pricing committee minutes; the R2 replacement in the
-analytics release log; the cell-by-cell planning rule and the app release gating in the capacity
-note. People hold views in the thread and quote no figure.
+the commitment; the fee basis, the cover and the change clause in the buyer terms; the tariff rows and
+their effective dates in the tariff register; the R2 replacement in the analytics release log; the
+cell-by-cell planning rule and the app release gating in the capacity note. Checkout 3 is named once, in
+the thread, and its effect shows only in the orders and payments from 21 September 2026. People hold views
+in the thread and quote no figure. The pricing committee minutes carry no rule any ask needs.
 """
 import json
 from datetime import date, datetime
@@ -233,19 +234,13 @@ def minutes(path):
         ("h", "1. Buyer-protection fee income, third quarter"),
         ("p", "Esila Stichter took the committee through the Q3 statement. Income moved with the September tariff "
               "change as planned. Refund costs were flat on the second quarter. No action."),
-        ("h", "2. Buyer-protection tariff from 4 January 2027 (KB-2027-01)"),
-        ("p", "Finance proposed raising the fixed part of the buyer-protection fee to EUR 0.95 from 4 January 2027, "
-              "with the percentage unchanged. Seller Experience asked for the January bundle-shipping change to "
-              "settle first, and Product asked for a quarter of data on the September tariff before another "
-              "change. Decision: the revision is deferred to the Q2 2027 review. The tariff of 1 September 2026 "
-              "stays in force until a revision is approved."),
-        ("h", "3. Seller listing promotions"),
+        ("h", "2. Seller listing promotions"),
         ("p", "No change to the price of listing bumps. Stef Steenbakkers will bring bump take-up by category to "
               "the January meeting."),
-        ("h", "4. Bundle shipping from January"),
+        ("h", "3. Bundle shipping from January"),
         ("p", "Approved: bundles of three or more items from one seller ship at the single-parcel rate from "
               "11 January 2027. Seller Experience will brief sellers in December."),
-        ("h", "5. Any other business"),
+        ("h", "4. Any other business"),
         ("p", "None. Next meeting: 12 January 2027."),
     ]
     _docx(path, "Zoey Joosten", datetime(2026, 10, 6, 16, 40), paras, "Pricing committee minutes, 6 October 2026")
@@ -444,10 +439,9 @@ A web arm starts on the test's start date. An app arm begins with the first app 
 start date, because test assignment ships inside the app build. Release dates are in the app release calendar
 kept by Mobile Platform.
 
-## Overlaps and holdouts
+## Overlaps
 
-No other home-carousel test runs during a slot. Search tests may run alongside a slot. The 1 per cent
-long-term holdout on recommendations stays out of every test.
+No other home-carousel test runs during a slot. Search tests may run alongside a slot.
 
 ## Ramp and stop rules
 
@@ -473,7 +467,7 @@ def tariff_register(path):
     rows = [
         ("KB-2024-01", "2024-03-01", "0.70", "5.0", "Rik Breugelensis", "2024-02-14", "PC 2024-02-13"),
         ("KB-2026-02", "2026-09-01", "0.80", "5.0", "Esila Stichter", "2026-07-09", "PC 2026-07-07"),
-        ("KB-2027-01", "2027-01-04", "0.95", "5.0", "Esila Stichter", "2026-09-22", "PC 2026-10-06"),
+        ("KB-2027-01", "2027-04-05", "0.95", "5.0", "Esila Stichter", "2026-09-22", ""),
     ]
     df = pd.DataFrame(rows, columns=["tarief_id", "ingangsdatum", "vast_bedrag_eur", "percentage_van_artikelprijs",
                                      "ingevoerd_door", "ingevoerd_op", "besluit"])
@@ -518,8 +512,9 @@ and I would not put it up against the velocity boost for this slot. Happy to wai
 From: Amélie Middelkoop
 Date: Tue 6 Oct 2026, 09:30 CEST
 
-Whatever goes in, the fresh-listing commitment holds for test arms as well. Please don't make me explain to
-sellers in January why we dropped it for twelve weeks.
+Whatever goes in, the fresh-listing commitment holds for test arms as well. Sellers have had Checkout 3 to get
+used to this autumn; please don't make me explain to them in January why we dropped the commitment for twelve
+weeks.
 
 ----------------------------------------------------------------------
 From: Livia Verhaar

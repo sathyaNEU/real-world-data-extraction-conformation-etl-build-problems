@@ -97,7 +97,7 @@
   {
    "path": "finance_buyer_protection_fee_income_2026Q3.xlsx",
    "format": "xlsx",
-   "bytes": 6109,
+   "bytes": 6108,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -142,7 +142,7 @@
   {
    "path": "home_carousel_sessions_weekly_R2_2026W01_2026W26.csv",
    "format": "csv",
-   "bytes": 7788,
+   "bytes": 7784,
    "rows": 208,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -169,7 +169,7 @@
   {
    "path": "orders_enrolled_buyers_2026-06-01_2026-10-11.parquet",
    "format": "parquet",
-   "bytes": 6746540,
+   "bytes": 6748352,
    "rows": 366056,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
@@ -178,8 +178,8 @@
   {
    "path": "payments_buyer_protection_2026-06-01_2026-10-11.parquet",
    "format": "parquet",
-   "bytes": 5119079,
-   "rows": 302413,
+   "bytes": 5288511,
+   "rows": 312722,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",
    "license": "CC0-1.0 (original work)"
@@ -232,7 +232,7 @@
   {
    "path": "slot_capacity_and_release_gating.md",
    "format": "md",
-   "bytes": 1249,
+   "bytes": 1500,
    "rows": null,
    "source": "Constructed for this task: fictional platform Vouwlijn; no third-party data",
    "date": "2026-10-14",

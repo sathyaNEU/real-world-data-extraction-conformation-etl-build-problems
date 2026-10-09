@@ -229,7 +229,7 @@
   {
    "path": "warehouse_extract_register.csv",
    "format": "csv",
-   "bytes": 3158,
+   "bytes": 3132,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",

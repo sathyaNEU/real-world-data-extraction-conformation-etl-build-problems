@@ -1,6 +1,8 @@
 """In-fiction documents for the task118 pack: texts and their PDF, DOCX, EML, MD and TXT writers."""
 import datetime as dt
+import html
 import io
+import math
 import re
 import zipfile
 
@@ -116,8 +118,31 @@ def write_docx(path, paras, when, author="Bightline News", title=""):
     repack_ooxml(path, when)
 
 
-def repack_ooxml(path, when):
-    """Rewrite an OOXML zip with fixed entry times and the in-fiction application name."""
+def word_container(data, pages):
+    """Word's own statistics in docProps/app.xml, counted from the body text, and the template's thumbnail dropped."""
+    body = data["word/document.xml"].decode("utf-8")
+    paras = []
+    for p in re.findall(r"<w:p[ >].*?</w:p>", body, flags=re.S):
+        txt = html.unescape("".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p)))
+        if txt.strip():
+            paras.append(txt)
+    stats = (("Pages", pages), ("Words", sum(len(p.split()) for p in paras)),
+             ("Characters", sum(len(re.sub(r"\s", "", p)) for p in paras)),
+             ("Lines", sum(max(1, math.ceil(len(p) / 92)) for p in paras)), ("Paragraphs", len(paras)),
+             ("CharactersWithSpaces", sum(len(p) for p in paras)))
+    app = data["docProps/app.xml"].decode("utf-8")
+    for tag, val in stats:
+        app = re.sub(r"<%s>\d+</%s>" % (tag, tag), "<%s>%d</%s>" % (tag, val, tag), app)
+    data["docProps/app.xml"] = app.encode("utf-8")
+    data.pop("docProps/thumbnail.jpeg", None)
+    data["_rels/.rels"] = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail.jpeg"/>', b"", data["_rels/.rels"])
+    if not any(n.endswith((".jpeg", ".jpg")) for n in data):
+        data["[Content_Types].xml"] = data["[Content_Types].xml"].replace(
+            b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+
+
+def repack_ooxml(path, when, pages=1):
+    """Rewrite an OOXML zip with fixed entry times, the in-fiction application name and Word's own statistics."""
     zin = zipfile.ZipFile(path)
     infos = zin.infolist()
     data = {i.filename: zin.read(i.filename) for i in infos}
@@ -128,6 +153,9 @@ def repack_ooxml(path, when):
     if "docProps/core.xml" in data:
         data["docProps/core.xml"] = re.sub(rb"<dc:description>[^<]*</dc:description>", b"<dc:description></dc:description>",
                                            data["docProps/core.xml"])
+    if "word/document.xml" in data:
+        word_container(data, pages)
+    infos = [i for i in infos if i.filename in data]
     stamp = (when.year, when.month, when.day, when.hour, when.minute, 0)
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zout:
         for i in infos:
@@ -201,7 +229,7 @@ in the planning folder carries the fields described here, in the same names.
 | `article_id` | Bightline article number. One per published article or live blog. Web articles share one sequence across both editions; app items are numbered in their own block. |
 | `desk_code` | The owning desk, recorded at publication. An article has one owning desk. Codes are listed in the desk register. |
 | `published_date` | Date the article was first published, Australian Eastern Standard Time. |
-| `canonical_headline` | The headline stored with the article at publication. It is the headline carried in the article's RSS and partner feeds, its search and social metadata, newsletters and alerts. Not included in the pageview extracts. |
+| `canonical_headline` | The headline stored with the article at publication. It is the headline carried in the article's RSS and partner feeds, its search and social metadata, Discover-style cards, newsletters and alerts. Not included in the pageview extracts. |
 
 ## Pageviews by source and age
 
@@ -308,7 +336,9 @@ status             Status recorded with the save: draft, scheduled, live or with
 publish_at         On a scheduled revision, the time set for the CMS to publish the document, UTC.
 headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
 correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
-                   note to every later revision until an editor clears it.
+                   note to every later revision until an editor clears it. A note put back after a save that
+                   left it off is the earlier notice, not a new correction. A fix and its note go on the same
+                   save, or on two saves within ten minutes of each other.
 restored_from_doc  Set on documents recreated when the Brisbane instance was restored on 14 November 2025;
                    holds the doc_id of the document it was recreated from.
 migrated_from      Set on documents moved from the previous CMS at the migration on 1 October 2025; holds the
@@ -385,7 +415,7 @@ To: Kayla Torres <kayla.torres@bightline.com.au>, Nina Franklin <nina.franklin@b
  Jason Anderson <jason.anderson@bightline.com.au>, Natalie Benjamin <natalie.benjamin@bightline.com.au>
 Cc: Lisa Jennings <lisa.jennings@bightline.com.au>
 Subject: Re: Squad placement 2027
-Date: Thu, 15 Oct 2026 17:42:10 +1000
+Date: Fri, 16 Oct 2026 08:38:10 +1000
 Message-ID: <CAB7q2kx4Lr8T@mail.bightline.com.au>
 In-Reply-To: <CAB7q2kx3Vn1P@mail.bightline.com.au>
 MIME-Version: 1.0
@@ -399,7 +429,7 @@ meeting with a number against it. Lisa's office is bringing the dashboard view a
 Corey Cox
 Managing editor
 
-On Thu, 15 Oct 2026 at 16:05, Natalie Benjamin <natalie.benjamin@bightline.com.au> wrote:
+On Fri, 16 Oct 2026 at 08:05, Natalie Benjamin <natalie.benjamin@bightline.com.au> wrote:
 > Exports are in the 2027 planning folder: pageviews by source and age band for October to September,
 > the full headline test archive (app engine since 2019, web since the migration), the staff list as at
 > Monday, the 2027 plan, the squad change log, the panel monthly file with its reference workbook, and
