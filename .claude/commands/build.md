@@ -11,7 +11,7 @@ not restated here.
 
 **Resolve the arguments.**
 
-- `<domain> <objective>` starts a new build. Both must be one of the six domains and one of the
+- `<domain> <objective>` starts a new build. Both must be one of the nine domains and one of the
   eight objectives in `guide-to-prompt`; map plain words to the vocabulary keys (`supply chain`
   to `supply-chain-logistics`, `forecasting` to `forecasting`). The task number is the next free
   `taskNN` under the repo root unless one is given.

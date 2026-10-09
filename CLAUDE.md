@@ -242,8 +242,9 @@ LLM-generated is sent back even when every figure recomputes. Using an LLM to dr
 shipping its first draft is not, so every golden gets an editing pass. The `golden-realism` skill
 carries the per-format passes and the tells a reviewer reads.
 
-**Six accepted domains.** Product Analytics, Supply Chain & Logistics, Economics, Policy &
-Education, Demographic & Social Science, Nonprofit & Grant-making. Biology, Biostatistics,
+**Nine accepted domains.** Product Analytics, Supply Chain & Logistics, Economics, Policy &
+Education, Demographic & Social Science, Nonprofit & Grant-making, Marketing & Consumer Research,
+Business & Operations Analytics, and Accounting, Audit & Forensic Analytics. Biology, Biostatistics,
 Epidemiology & Bioinformatics is not an accepted domain, so do not start a build there.
 
 **Eight Axis 1 objectives.** Forecasting & Predictive Modeling (most wanted), Root-Cause Analysis,

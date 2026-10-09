@@ -15,7 +15,7 @@ description: Build the evidence pack that carries a designed trap. Covers the in
 
 ## 1. The scope rule (non-negotiable)
 
-Every task sits in **exactly one** of the six accepted domains (Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them), with a subdomain enumerated in `guidelines/scope_of_project.md`. Subdomains outside the enumerated lists are out of scope, not a browsing suggestion.
+Every task sits in **exactly one** of the nine accepted domains (Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them), with a subdomain enumerated in `guidelines/scope_of_project.md`. Subdomains outside the enumerated lists are out of scope, not a browsing suggestion.
 
 1. Product Analytics
 2. Supply Chain & Logistics
@@ -23,6 +23,9 @@ Every task sits in **exactly one** of the six accepted domains (Biology, Biostat
 4. Policy & Education
 5. Demographic & Social Science
 6. Nonprofit & Grant-making
+7. Marketing & Consumer Research
+8. Business & Operations Analytics
+9. Accounting, Audit & Forensic Analytics
 
 Write the domain, the subdomain **and the Axis 1 objective** at the top of `DATASET_NOTES.md` before generating anything. If your trap needs a subdomain that is not listed, change the trap rather than drifting. The domain files in `guide-to-prompt/references/domains/` carry the enumerated subdomains and the two boundary rules, one file per domain.
 
