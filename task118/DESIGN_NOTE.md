@@ -6,7 +6,7 @@ Source note: `analytical_tasks/04_opportunity_sizing/OS01_headline-squad-rendera
 
 ```
 DRAW  (independent draws, checked with ../fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? pending batch registration   Verdict: PASS
+  Card filed with guard.py register before the ladder was written? yes, registered 2026-10-09 after checkpoint A (go)   Verdict: PASS
   Shape: 09, funnel or chain of stages   Gate G mechanism: decomposition_attribution
   Gap: objective (Gap 3) decisive; rule (Gap 4) at rung 2 and population (Gap 2) at rung 1 below it
   Pattern: none at the decisive rung (G5 carries it); C carries rung 3, B rung 2

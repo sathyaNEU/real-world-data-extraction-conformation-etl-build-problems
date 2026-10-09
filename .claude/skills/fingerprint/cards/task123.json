@@ -1,0 +1,79 @@
+{
+  "task": "task123",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "realises analytical_tasks note ET01, redesigned as a stump on a fully constructed pack; pilot batch card, registered with the other six in draw order",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grantee-financial-health",
+  "niche": "a philanthropic trust's stabilisation offers to grantees whose income is falling, scored on twelve months of income built from the grantees' quarterly portal returns and their filed annual returns, run in-house for the first time after the bureau that computed six March rounds left",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G12",
+    "G13",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of grants at a New Zealand philanthropic trust, owner of its stabilisation fund",
+  "role_family": "programme_officer",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "portal_return_lines_2020q3_2026q3.csv",
+    "rows": 140000,
+    "entity": "one reported income figure on one version of one grantee's quarterly financial return (a year-to-date or prior-year comparative column on one income line)",
+    "grain": "grantee x return quarter x version x income line x column",
+    "source": "synthetic (constructed pack: a fictional New Zealand trust's grants-portal export and register extract, provenance declared in the pack; row count planned, set when the pack is cut)"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "New Zealand, Canterbury",
+    "currency": "NZD",
+    "org_type": "independent philanthropic trust holding multi-year operating grants with community organisations",
+    "invented_names": [
+      "Ashworth Pascoe Trust",
+      "Steady Ground Fund",
+      "Ledgerwood Analytics"
+    ],
+    "people": [
+      "Rebecca Anderson",
+      "Liam Bryant",
+      "Andrew Knox",
+      "Wiremu Roberts",
+      "Mia Hart",
+      "Tony Hughes"
+    ]
+  },
+  "deliverables": [
+    "steady_ground_sep2026_offers.docx",
+    "steady_ground_sep2026_screen.csv",
+    "steady_ground_sep2026_offers.png"
+  ],
+  "opening_move": "number-first",
+  "driver": "A trailing four-period total is admissible at a cut-off only over periods whose year is closed by an annual filing on record at that cut-off, because a year's final period exists only as the annual total less the cumulative to its third period; where that filing was not yet on record the window stops at the period before the year-end, while the interim final-period return a natural build uses instead reproduces every published result except a handful, because every earlier cut-off fell long after the filing deadline.",
+  "driver_concrete": "The Steady Ground screen scores each grantee on twelve months of income as held at the census, and Ledgerwood's standing method takes a year's final quarter only as the filed annual return's income less the nine-month year-to-date, admissible from the date the return reached the charities register; at the 30 September 2026 census about a fifth of grantees had not yet filed their 2025-26 annual return, so their twelve months stop at December 2025, while a rebuild that uses the management fourth-quarter return gives back every figure in the six March-round packs except a handful of late-filer rows and sends the money to the wrong grantees.",
+  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, gives back every figure in Ledgerwood's six March-round packs except a handful of late-filer rows it writes off as noise, and files offers that score the grantees whose 2025-26 annual return was not yet on the register on twelve months to June 2026 built with their management fourth quarter, when the standing method takes a year's fourth quarter only from the filed annual return and stops those grantees' twelve months at December 2025.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task62": "task62's tempo lineage fits a timing adjustment to a period rate from closed determinations; here nothing is fitted, the corpus fixes which trailing window a cut-off may use, ending it before any year whose annual filing was not yet on record.",
+    "task85": "task85 builds each unit's observation window from a recovered lead-time constant and a third-party start date to decide a hold; here there is no constant to recover, the window is the trailing four quarters a census may use, cut short only where the year's annual filing had not reached the register, and it re-places money in an allocation to a fixed total."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note ET01 (analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md), redesigned as a stump on a fully constructed pack with declared provenance: the note's stated methodology memo (as-of rule, tag priority, YTD derivation) is dropped, the scenario is moved from capital markets (out of scope for Economics) to Nonprofit & Grant-making grantee financial health, and the decisive rule (a year's fourth quarter exists only from the filed annual return, so the trailing window steps back where that return was not on the register at the census) is written in no shipped sentence and recovered from the bureau's published round packs. Decisive rung from the measured catalogue: #3 stops at a close but inexact match (8 of 64, 5 under 0.50), gated by #1's reproduction clause (11 of 64, 9 under 0.50), with look-ahead as the headline rung a solver beats first (#11 frame). Shape 05 rather than the note's 01, which task116 holds. Calibration form parallel_run_overlap: the cutover standard replays the in-house screen against Ledgerwood's published runs on the same six March censuses; closed_decision_corpus also describes the packs and is held by task121 and task122 in this batch. Context artifact filed_standard (the fund's round rules and the cutover standard), register being held by task122. Gap time leads because the hidden rule is a window rule; (time, B, method_or_model_selection) differentiated against task62 and task85. Personas drawn with guard.py names --geo 'New Zealand, Canterbury' --seed 123; Benjamin Thompson, Andrea Brown and Jason Smith skipped against the batch's task118 and task119 names, and Patrick Mitchell and David Eaton skipped for first names already in task103 and task104 (Wiremu Roberts taken from the same seed's longer draw, --n 16). Not registered here: the seven pilot cards register together in draw order. Batch registration: forcing event moved from cutover_or_migration (blocked by task117) to budget_or_appropriation: the September 2026 stabilisation round is itself the allocation round that forces the call; the in-house cutover stays in the world as background."
+}

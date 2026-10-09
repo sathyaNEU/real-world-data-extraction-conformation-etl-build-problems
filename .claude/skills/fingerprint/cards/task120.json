@@ -1,0 +1,75 @@
+{
+  "task": "task120",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "first realisation of analytical_tasks note DA01, drawn in the seven-card pilot batch; registration pending (the author registers the seven cards together in draw order)",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "re-basing the household-income tier floors a state revenue estimating conference's income-tax forecast carries for its top 10, 5 and 1 per cent, from the processed-return file and the dependents schedule",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G10",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "certified_matrix",
+  "context_artifact": "published_series",
+  "stakeholder_role": "director of the state's nonpartisan revenue research office, which staffs the Revenue Estimating Conference and re-bases its income-tax tiers",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "returns_processed_ty2025.csv",
+    "rows": 3412000,
+    "entity": "one processed state individual income tax return for tax year 2025, with its residency code, filing status and federal primary filer TIN",
+    "grain": "return",
+    "source": "synthetic (a fictional state's processed-return extract; return microdata is confidential, so the shape is calibrated to public IRS SOI state AGI-class aggregates)"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States, a fictional state (invented counties)",
+    "currency": "USD",
+    "org_type": "a state's nonpartisan revenue research office that staffs its Revenue Estimating Conference",
+    "invented_names": [
+      "Household Income Tables",
+      "Returns Processed by AGI Class",
+      "Kessler County",
+      "Abington County"
+    ],
+    "people": [
+      "Stephanie Reid",
+      "Manuel Stevenson",
+      "Brittany Shepard",
+      "Jeffrey King"
+    ]
+  },
+  "deliverables": [
+    "tier_schedule.xlsx",
+    "tier_floors.png"
+  ],
+  "opening_move": "evidence-first",
+  "driver": "The unit the percentile cuts are drawn on is a group of records that no file stores, formed by two links, one carried on every member as a shared key and one carried only on the claiming record's roster of the people it claims, so attaching a claimed person's own record is a two-hop join that nothing on that record invites; grouping on the visible key alone reproduces most cells of a published control table with every miss one-sided in one band, only the full grouping reproduces all of them, and it both shrinks the unit count and carries near-threshold units past the top cut, raising every floor.",
+  "driver_concrete": "A household unit is a federal filing unit (separately filed state returns recombined through the federal primary TIN) together with the own returns of the people its dependents schedule claims, and nothing on a dependent's return names the claimant; federal filing units reproduce 58 of the 69 published Household Income Table cells with every miss short in the $500,000 to $1M class, only households reproduce all 69, and attaching the 380,000 dependents' returns cuts 2,708,000 units to 2,328,000 and carries 3,900 households past the top-1% mark on their children's trust and investment income, so the TY2025 floors rise from $197,000 / $293,000 / $594,000 to $214,000 / $318,000 / $742,000.",
+  "stump": "A competent solver filters to full-year residents, recombines separately filed state returns into federal filing units through the federal primary TIN (the textbook tax unit), sees that construction reproduce 58 of the 69 published cells with every miss a few per cent short in one class, and files the schedule $197,000 / $293,000 / $594,000 against $214,000 / $318,000 / $742,000, because the dependents' own returns join their claimants only through the claimant's dependents schedule, a link no column on the dependent's return invites.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task109": "task109 is stumped by a corpus search that two compilation conventions defeat, each reproducing fewer published means alone than neither; here the published cells respond monotonically (3, then 58, then 69 of 69) and the stump is a member record that joins its unit only through another record's roster, which no visible key reaches."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note DA01 (03_descriptive_distribution/DA01_revenue-tiers-household-unit-dependent-returns.md); design note task120/DESIGN_NOTE.md. Decisive rung from the measured catalogue: #2 counts file rows instead of the real unit (11 of 64, 7 under 0.50), in the form of #18 joins only on the visible key, with #3 and #1 holding a solver at the federal-filing-unit rung. Pattern recorded as the note's own 'S1 gated by Pattern B': the decisive rung is the G2 unit construction and B is its gate; B written first repeats task109 inside the window (test.same_driver, test.same_puzzle) and task66, task67 and task86 lineage, so the author may instead keep B first with --force (task109's precedent). Furniture redrawn against task115: role research_desk to statistical_office_head, forcing event vote_or_meeting to statutory_or_regulatory_filing; organisation family research_or_statistics_office (never used) instead of government_agency. scoring_unit other: the tiers are counted in household units. Batch registration: forum moved from committee_or_panel (blocked by task118) to minister_or_cabinet (line_manager_or_team is also blocked, by task116): the state finance secretary adopts the re-based floors on the office recommendation; planned opening moved from calendar-first (repeats task117) to evidence-first."
+}

@@ -6,7 +6,7 @@ Source note: `analytical_tasks/03_descriptive_distribution/DA01_revenue-tiers-ho
 
 ```
 DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? pending batch registration   Verdict: PASS (no WARN)
+  Card filed with guard.py register before the ladder was written? yes, registered 2026-10-09 after checkpoint A (go)   Verdict: PASS (no WARN)
   Shape: 14 cuts of a distribution   Gate G mechanism: method_or_model_selection
   Gap: population (decisive), objective   Pattern: none of A to E carries the decisive rung (the note's S1, a G2 unit construction), gated by B
   Domain: Economics   Subdomain (enumerated): public-finance   Objective: Descriptive & Distribution Analysis
@@ -21,7 +21,7 @@ DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
   Repeats from prior builds: none on a banned axis after the redraws under Guard; the reproduction gate is a device reused from
                       task109, differentiated on the driver
   Generators: G2, G10, G16   Answer unit: currency (USD)
-  Forum: committee_or_panel (the conference adopts the schedule)
+  Forum: minister_or_cabinet (the state finance secretary adopts the re-based floors on the office recommendation; the conference certifies its estimate on them and does not vote on the floors)
   Forcing event: statutory_or_regulatory_filing (the conference certifies the income-tax estimate under statute, and the estimate runs on the re-based tiers)
   Organisation family: research_or_statistics_office
   Spine: TY2025 processed-return file, 3,412,000 rows planned, one processed state individual income tax return per row, return grain,
@@ -32,7 +32,7 @@ DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
          Manuel Stevenson, the office's chief economist (the belief that every return is a taxpayer)
          Brittany Shepard, the Department of Revenue's statistics chief (her all-filer table ties to the file)
          Jeffrey King, the legislative fiscal office (the licensed federal-filing-unit basis)
-  Deliverables: tier_schedule.xlsx, tier_floors.png   Opening move: calendar-first
+  Deliverables: tier_schedule.xlsx, tier_floors.png   Opening move: evidence-first
   Prompt shape arithmetic: three floors under each of four constructions with each one's published-cell hit count (16), the
          household-unit and twin-county counts (3), 24 wage-month and 12 instalment cells on the device-carried asks (36), four
          named chart parts and two files (6): 61 distinct criteria (the note's s.11 counts 64, its committed floors counted twice)
@@ -72,11 +72,12 @@ WARN answered: `overuse.org_family` (government_agency, 21 builds) on the draft,
 ## Changes from the source note
 
 1. **Requester.** The note's staff analyst (research_desk) is now the director of the revenue research office that staffs the conference (statistical_office_head), because ban.role blocks research_desk against task115.
-2. **Forcing event.** The note's "the conference sits on 14 November" (vote_or_meeting) is now the conference's statutory certification of the income-tax estimate, which runs on the re-based tiers (statutory_or_regulatory_filing), because ban.forcing_event blocks vote_or_meeting against task115. The conference still adopts the schedule.
+2. **Forcing event.** The note's "the conference sits on 14 November" (vote_or_meeting) is now the conference's statutory certification of the income-tax estimate, which runs on the re-based tiers (statutory_or_regulatory_filing), because ban.forcing_event blocks vote_or_meeting against task115. The finance secretary, not the conference, now adopts the schedule (see change 5).
 3. **Organisation family.** A nonpartisan legislative revenue research office (research_or_statistics_office), the same institution as the note's conference staff, recorded in its own family rather than as a generic agency, which 21 builds already use.
 4. **Decisive pattern on the card.** Recorded as the note's S1 (a G2 unit construction) with Pattern B as its gate, not B as the decisive pattern, because B first repeats task109 inside the twelve-build window on both structural tests, which no differentiation clears. No rung, figure, file or ask changes.
 
 Added where the note was silent: the personas (drawn with guard.py names), the geography (a fictional state, to keep the note's invented counties), the spine as synthetic, and the as-of date.
+5. **Forum and opening (batch registration).** The forum moves from committee_or_panel to minister_or_cabinet, because ban.forum blocked committee_or_panel against task118 in this batch and line_manager_or_team against task116: the state finance secretary adopts the re-based floors on the revenue research office recommendation, and the conference certifies its estimate on them. The planned opening moves from calendar-first to evidence-first, because calendar-first repeats task117.
 
 ## Open items for the design stage
 

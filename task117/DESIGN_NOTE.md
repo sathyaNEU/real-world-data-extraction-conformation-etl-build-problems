@@ -6,7 +6,7 @@ Stage 1 (draw), drawn 2026-10-08. This is the build's one design note; the desig
 
 ```
 DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? pending batch registration   Verdict: WARN
+  Card filed with guard.py register before the ladder was written? yes, registered 2026-10-09 after checkpoint A (go)   Verdict: WARN
   Shape: 02 forecast across many periods   Gate G mechanism: forecasting (method_or_model_selection supporting)
   Gap: time (decisive), population   Pattern: E (decisive), A (frame)
   Domain: supply-chain-logistics   Subdomain (enumerated): sourcing-procurement   Objective: forecasting

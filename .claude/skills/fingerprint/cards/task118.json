@@ -1,0 +1,76 @@
+{
+  "task": "task118",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "pilot realising analytical_tasks note OS01; the note's decisive rung (pattern C, platform-drawn click share) is kept as rung 3 and a new decisive rung, the gain the desks already bank through their own tests, sits above it",
+  "domain": "marketing-consumer-research",
+  "subdomain": "media-audience-measurement",
+  "niche": "a national news publisher choosing which of six shortlisted desks its one headline-testing squad embeds with for 2027, sized by the extra article clicks the squad's winning headlines add beyond the tests each desk already runs itself",
+  "objective": "opportunity-sizing-decision",
+  "shape": "09",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "C",
+    "B"
+  ],
+  "generators": [
+    "G5",
+    "G8",
+    "G16",
+    "G2"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "realised_outcome_roster",
+  "context_artifact": "filed_model",
+  "stakeholder_role": "managing editor of a national news publisher, who places the newsroom's one headline-testing squad",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "pageviews_by_source_age_2025-10_2026-09.parquet",
+    "rows": 2500000,
+    "entity": "the article pageviews counted for one article, one click-source surface and one band of article age at the click",
+    "grain": "article x click-source surface x age band",
+    "source": "synthetic (fictional publisher's audience export); real Australian public holidays and sport fixture calendars"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "media_or_publishing",
+  "world": {
+    "geography": "Australia (national edition and a Brisbane metro edition)",
+    "currency": "AUD",
+    "org_type": "national digital news publisher with a Brisbane metro edition, funded by subscriptions and advertising",
+    "invented_names": [
+      "Bightline News",
+      "Bightline Brisbane"
+    ],
+    "people": [
+      "Corey Cox",
+      "Kayla Torres",
+      "Nina Franklin",
+      "Lisa Jennings",
+      "Jason Anderson",
+      "Natalie Benjamin"
+    ]
+  },
+  "deliverables": [
+    "squad_placement_2027.docx",
+    "squad_placement_2027.xlsx"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
+  "driver_concrete": "Desk editors already test headlines through the self-serve tool and every winner they ship is already in the clicks the audience plan carries forward, so the squad adds only on the platform-drawn clicks of headlines the desk does not test itself; the squad's seven closed embeddings were all in app-exclusive desks that had never run a test of their own, so shrunk lift times platform-drawn clicks reproduces every one, while Local·metro, which leads on that basis, already tests the headlines that carry most of its platform clicks.",
+  "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines that carry most of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Realises analytical_tasks note OS01 (analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md). The note's own decisive rung, shrunk lift times platform-drawn clicks (pattern C, G8), cannot carry the stump: ban.pattern C against task116 is an axis ban that no differentiation clears, test.same_puzzle_older finds gap objective + C + pick_one_of_n spent in six older builds (task25, task26, task28, task35, task38, task53), test.same_driver_older matches task38 v3, and the driver itself repeats task38 v3 and task28 v2 (a reachable share of each candidate's magnitude certified by closed interventions). A second candidate, a G7 operating window (a winner earns only after its fixed test window closes), was blocked by test.same_puzzle against task105 v1, a timing driver the portal already solved. The labels are kept honest: the note's ladder stays whole as rungs 0 to 3 (vertical coarsening, desk raw lift, change-log shrinkage, platform-drawn share) and the decisive rung 4 is G5, the gain each desk already banks through its own self-serve tests, so the note's answer Local·metro becomes the stump's wrong answer. Pattern opens with none because no A to E pattern carries rung 4; C carries rung 3 and B rung 2. The G5 driver overlaps unbuilt note OS42 (self-serve residual). Domain moved from product-analytics/experimentation-measurement to marketing-consumer-research/media-audience-measurement because ban.pairing blocks product-analytics x opportunity-sizing-decision against task116. Calibration form realised_outcome_roster: the change log of seven closed embeddings with realised incremental clicks against matched desks, labelled as task28 v2 labelled its closed set of realised intervention outcomes. Context artifact filed_model: the stakeholder works from the 2027 audience plan; the experimentation dashboard export also ships and is a monitoring export. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (3 decided, 2 under 0.50), with #11 beats the headline trap, misses the quiet one (4 decided, 2 under 0.50) behind it. Spine planned only; the real Upworthy Research Archive is a candidate source for the package-level test archive, licence to be confirmed at dataset-generation. Personas from guard.py names --geo Australia --seed 118, taken in draw order: Jennifer White (first) skipped for a people.first WARN against task101 and Willie Smith (sixth) skipped because sibling pilot task119 carries the surname Smith, so the seventh and eighth names fill in. Not registered: the pilot batch registers all seven cards in draw order."
+}
