@@ -31,7 +31,7 @@ def opts(**kw):
 def enrich(pack, o=GOLD):
     """One row per basket session with every classification the ladder and the asks need."""
     s = pack["sessions"].copy()
-    s["t"] = pd.to_datetime(s.started_at)
+    s["t"] = pd.to_datetime(s.started_at).astype("datetime64[ns]")
     s["week"] = weeks_of(s.t)
     s["conv"] = s.order_id.notna()
     bots = set(pack["edge"].session_id)
@@ -74,7 +74,8 @@ def enrich(pack, o=GOLD):
     # default delivery address as of the session (address book times are UTC)
     ab = pack["address"]
     ab = ab[ab.is_default].copy()
-    ab["tl"] = pd.to_datetime(ab.changed_at) + (pd.Timedelta(0) if o["clock_raw"] else pd.Timedelta(hours=1))
+    ab["tl"] = (pd.to_datetime(ab.changed_at) + (pd.Timedelta(0) if o["clock_raw"] else pd.Timedelta(hours=1))
+                ).astype("datetime64[ns]")
     ab = ab.sort_values("tl")
     si = s[s.signed_in].sort_values("t")
     m = pd.merge_asof(si[["session_id", "t", "account_id"]], ab[["account_id", "tl", "postcode"]],

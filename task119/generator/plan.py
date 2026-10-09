@@ -96,6 +96,29 @@ DV1_SPURIOUS = [("A", "empty", True), ("A", "planned", True), ("A", "any", False
                 ("E", "any", False), ("E", "any", False), ("F", "empty", True), ("F", "empty", True),
                 ("G", "empty", True), ("G", "empty", True), ("H", "any", True), ("H", "any", True)]
 
+# bureau transfers admitted to the referring trust's own full unit inside its capacity waits, per year and
+# trust: (waits ending in a death, waits survived). Untagged capacity waits only. The year-3 deaths at C sit
+# on days C's own 08:00 return showed a vacancy.
+TX_INSIDE = {1: {"A": (24, 74), "C": (6, 16), "G": (0, 2)},
+             2: {"A": (32, 80), "C": (6, 16), "G": (1, 3)},
+             3: {"A": (35, 82), "C": (6, 17), "G": (2, 4)}}
+
+# DV5: waits across the spring clock change, 3h10 to 3h50 elapsed and 4h10 to 4h50 on the wall clock. The
+# decision falls on the evening before the change. kind: 'own' an empty staffed bed at the own unit from before
+# the decision to the bed; 'cap' the own unit full; 'none' no own level-3 unit (admitted elsewhere).
+DV5_NIGHTS = {
+    "2024-03-30": [("A", "cap", True), ("B", "none", False), ("C", "cap", True), ("D", "own", True),
+                   ("E", "none", True), ("F", "own", True), ("F", "own", True), ("G", "cap", True),
+                   ("H", "own", True), ("H", "own", True)],
+    "2025-03-29": [("A", "cap", True), ("B", "none", False), ("C", "cap", True), ("D", "own", True),
+                   ("E", "none", True), ("F", "none", False), ("G", "cap", True), ("H", "none", True)],
+}
+# tagged capacity waits that also carry a bureau transfer inside: (year, letter, tag) -> deaths
+TX_TAGGED = {(1, "G", "HZ2"): 2}
+
+# DV7: genuine repeat patients, two long waits under one verified key at one trust, both in year 2, alive.
+DV7_PER_TRUST = 2
+
 # deaths before a bed was assigned among the golden waits, by year (others die after admission)
 DIED_WAITING = {3: {"E": 10, "A": 3, "C": 2, "B": 2, "F": 2, "H": 1},
                 2: {"E": 9, "A": 3, "C": 2, "B": 1, "F": 2, "H": 1},

@@ -314,7 +314,7 @@ def write_panelwb(W, path):
         ws.write(0, j, c, hd)
     i = 1
     for rel in sorted(W.panel_rel_pub, key=lambda r: (W.panel_rel_pub[r], r)):
-        pers = sorted({r[1] for r in W.panel_rows if r[0] == rel})
+        pers = sorted(W.panel_rel_per[rel])
         note = ""
         if rel == "R26-04":
             note = "First release on the 2026 content taxonomy."
@@ -322,8 +322,8 @@ def write_panelwb(W, path):
             note = ("History release: November 2025 to February 2026 rerun on the 2026 content taxonomy. These "
                     "figures replace the earlier releases for those months.")
         if rel == "R26-07B":
-            note = ("Restated April, May and June 2026 after a cross-device duplication fault was found in "
-                    "processing for those months. These figures replace those published in R26-05, R26-06 and R26-07.")
+            note = ("Restated April, May and June 2026 after a processing fault undercounted mobile audiences for "
+                    "those months. These figures replace those published in R26-05, R26-06 and R26-07.")
         ws.write_string(i, 0, rel)
         ws.write_datetime(i, 1, dt.datetime.combine(W.panel_rel_pub[rel], dt.time()), df)
         ws.write_string(i, 2, ", ".join(pers))
@@ -333,7 +333,7 @@ def write_panelwb(W, path):
     ws.set_column(2, 2, 26)
     ws.set_column(3, 3, 100)
     ws = wb.add_worksheet("Definitions")
-    defs = [("release", "Panel release that published the row."),
+    defs = [("release", "Panel release the row was loaded from."),
             ("period", "Calendar month measured."),
             ("site_code", "BLN is bightline.com.au (national edition); BLB is the Brisbane edition site."),
             ("section_code", "Panel section code."),

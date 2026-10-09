@@ -4,6 +4,7 @@ Identities, dates and clock times, the ranking served in each logged session (si
 of each listing, the buyer's watch list at the start), the render log, and every order, accepted
 offer and payment for the enrolled buyers from 1 June to 11 October 2026.
 """
+from collections import defaultdict
 from datetime import date, datetime, timedelta
 
 import numpy as np
@@ -48,21 +49,143 @@ def assign_identities(W):
     S["pool_id"] = np.array([f"cp{v:07d}" for v in rng.integers(1_000_000, 9_999_999, size=N)])
 
 
+def _split_group(x1, x2, key, m0, t1, t2, rng):
+    """Two halves of one (cell, ranker) group, m0 sessions in half 0, with the half-0 sum minus the
+    half-1 sum of x1 and of x2 equal to t1 and t2: sort, alternate, then swap pairs of sessions across
+    the halves until both hold."""
+    m = len(x1)
+    order = np.lexsort((key, x1, x2))
+    flip = 0 if m0 == (m + 1) // 2 else 1
+    if m % 2 == 0:
+        flip = int(rng.integers(2))
+    h = np.empty(m, int)
+    h[order] = (np.arange(m) + flip) % 2
+    assert (h == 0).sum() == m0
+    for _ in range(400):
+        d1 = int(x1[h == 0].sum() - x1[h == 1].sum())
+        d2 = int(x2[h == 0].sum() - x2[h == 1].sum())
+        cost = abs(d1 - t1) + abs(d2 - t2)
+        if cost == 0:
+            return h
+        types = [defaultdict(list), defaultdict(list)]
+        for i in range(m):
+            types[h[i]][(int(x1[i]), int(x2[i]))].append(i)
+        best = None
+        for a, I in types[0].items():
+            for b, J in types[1].items():
+                n1 = d1 - 2 * (a[0] - b[0])
+                n2 = d2 - 2 * (a[1] - b[1])
+                c = abs(n1 - t1) + abs(n2 - t2)
+                if c < cost and (best is None or c < best[0]):
+                    best = (c, I, J)
+        if best is None:
+            break
+        i = best[1][int(rng.integers(len(best[1])))]
+        j = best[2][int(rng.integers(len(best[2])))]
+        h[i], h[j] = 1, 0
+    raise AssertionError("halves: no exact split")
+
+
+def _parity_near(x, parity):
+    """The two integers of the given parity nearest x."""
+    lo = int(np.floor(x))
+    if lo % 2 != parity:
+        lo -= 1
+    return [lo, lo + 2] if abs(x - lo) > 1e-12 else [lo]
+
+
+def _half_options(m, T1, T2):
+    """Per group: (sessions in half 0, d1, d2) choices that keep both half means level to within one
+    order, d = half-0 sum minus half-1 sum."""
+    out = []
+    for dm in ((0,) if m % 2 == 0 else (1, -1)):
+        for d1 in _parity_near(T1 * dm / m, T1 % 2):
+            for d2 in _parity_near(T2 * dm / m, T2 % 2):
+                out.append(((m + dm) // 2, d1, d2))
+    return out
+
+
+def _half_gap(pi, groups, choice):
+    """First-half minus second-half level (per 1,000 sessions, self-normalised session weights) of
+    one ranker on both readings, for one choice of option per cell."""
+    num = np.zeros((2, 2))
+    den = np.zeros(2)
+    for c, (m, T1, T2, opts) in groups.items():
+        m0, d1, d2 = opts[choice[c]]
+        w = 1.0 / pi[c]
+        den += w * np.array([m0, m - m0])
+        num[0] += w * np.array([(T1 + d1) / 2, (T1 - d1) / 2])
+        num[1] += w * np.array([(T2 + d2) / 2, (T2 - d2) / 2])
+    lv = num / den
+    return (lv[:, 0] - lv[:, 1]) * 1000
+
+
+def _choose_half_options(pi, groups, ref, rng):
+    """Local search over the per-cell options for the choice that brings this ranker's gap on both
+    readings nearest the incumbent's (ref), from several starts."""
+    cells = sorted(groups)
+    best = None
+    for start in range(12):
+        ch = {c: (0 if start == 0 else int(rng.integers(len(groups[c][3])))) for c in cells}
+        cur = np.abs(_half_gap(pi, groups, ch) - ref).max()
+        improved = True
+        while improved:
+            improved = False
+            for c in cells:
+                for o in range(len(groups[c][3])):
+                    if o == ch[c]:
+                        continue
+                    trial = dict(ch)
+                    trial[c] = o
+                    v = np.abs(_half_gap(pi, groups, trial) - ref).max()
+                    if v < cur - 1e-12:
+                        ch, cur, improved = trial, v, True
+        if best is None or cur < best[0]:
+            best = (cur, ch)
+    return best[1], _half_gap(pi, groups, best[1])
+
+
 def assign_dates(W):
-    """Halves first, stratified within each (cell, ranker) on everything an estimator reads, so each
-    half of the window carries the same outcomes; then a day inside the half (weekday weighted), a
+    """Halves first: inside each (cell, ranker) the two halves of the window hold the same mean
+    in-session orders and the same mean orders within 21 days per session (to one order, the odd
+    ones placed so the halves' levels match the incumbent's across cells), so each half of the window
+    carries the same outcomes on either reading; then a day inside the half (weekday weighted), a
     start time, render gaps and an end time."""
-    S, WL = W.S, W.WL
+    S, WL, BG = W.S, W.WL, W.BG
     rng = P.stream("dates")
     b = WL[WL.bought]
-    S["_wb"] = np.bincount(b.sid, minlength=len(S))
-    S["_wbi"] = np.bincount(b[b.intent].sid, minlength=len(S))
+    wb = np.bincount(b.sid, minlength=len(S))
+    wbi = np.bincount(b[b.intent].sid, minlength=len(S))
+    n_int = np.bincount(WL[WL.intent].sid, minlength=len(S))
+    day, late = BG.day.to_numpy(), BG.late.to_numpy()
+    inwin = ((day >= 1) & (day <= P.WINDOW_DAYS - 1)) | ((day == 0) & late) | ((day == P.WINDOW_DAYS) & ~late)
+    bg_in = np.bincount(BG.sid.to_numpy()[inwin], minlength=len(S))
+    y_in = S.nw_orders.to_numpy() + wb
+    y_kept = y_in - wbi + n_int + bg_in
+    W.mem_y_in, W.mem_y_kept = y_in, y_kept
+    cell, arm = S.cell.to_numpy(), S.arm.to_numpy()
+    plan = {}
+    ref = np.zeros(2)
+    W.half_gaps = {}
+    for k in range(7):
+        groups = {}
+        for c in range(8):
+            g = (cell == c) & (arm == k)
+            m, T1, T2 = int(g.sum()), int(y_in[g].sum()), int(y_kept[g].sum())
+            groups[c] = (m, T1, T2, _half_options(m, T1, T2))
+        ch, gap = _choose_half_options(P.PI[:, k], groups, ref, rng)
+        if k == 0:
+            ref = gap
+        W.half_gaps[P.RANKERS[k]] = gap - (ref if k else 0)
+        for c in range(8):
+            plan[(c, k)] = groups[c][3][ch[c]]
     half = np.zeros(len(S), int)
-    for (c, k), g in S.groupby(["cell", "arm"]):
-        g = g.sort_values(["_wbi", "_wb", "nw_orders", "n", "fresh", "w", "sid"], kind="stable")
-        flip = int(rng.integers(2))
-        idx = g.index.to_numpy()
-        half[idx] = (np.arange(len(idx)) + flip) % 2
+    key = S.n.to_numpy() * 16 + np.minimum(S.w.to_numpy(), 15)
+    for c in range(8):
+        for k in range(7):
+            idx = np.flatnonzero((cell == c) & (arm == k))
+            m0, d1, d2 = plan[(c, k)]
+            half[idx] = _split_group(y_in[idx], y_kept[idx], key[idx], m0, d1, d2, rng)
     S["half"] = half
     first = _days(P.LOG_START, P.HALF_SPLIT - timedelta(days=1))
     second = _days(P.HALF_SPLIT, P.LOG_END)
@@ -99,8 +222,7 @@ def _age_old(rng, k):
 
 def assign_tiles(W):
     """Six tiles per served ranking: pinned watched listings at tiles 1 and 2 for the velocity boost,
-    an organically shown watched listing anywhere for the others, fresh listings (E prefers tiles
-    3 and 6), and the ordered positions."""
+    fresh listings (E prefers tiles 3 and 6), and the ordered positions."""
     S, WL = W.S, W.WL
     rng = P.stream("tiles")
     N = len(S)

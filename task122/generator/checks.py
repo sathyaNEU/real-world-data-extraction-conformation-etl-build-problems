@@ -32,6 +32,9 @@ class Checks:
         ok = bool(cond)
         self.items.append((name, ok, str(detail)[:300]))
         if not ok:
+            if os.environ.get("CHECKS_SOFT") == "1":       # survey mode: report every failure, then stop
+                print(f"FAIL [{name}] {str(detail)[:300]}", flush=True)
+                return ok
             raise AssertionError(f"[{name}] {detail}")
         return ok
 
@@ -81,8 +84,10 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
              ("session_ipw", "eight", y_in, "ranking", B_, 1.20),
              ("session_ipw", "eight", y_kept, "ranking", E_, 1.50)]
     rec["rungs"] = []
+    raw = []
     for i, (ek, gr, yb, fg, want, mmin) in enumerate(rungs):
         vals, ok, first, second, margin = reading(M, yb, y_in, ek, gr, fg)
+        raw.append({L[r]: float(v) for r, v in vals.items()})
         K_(first == want and margin >= mmin, f"rung{i}.leader",
            (i, L[first], L[second], round(margin, 3), {L[r]: round(v, 3) for r, v in vals.items()}))
         rank_all = sorted(P.POLICIES, key=lambda r: -vals[r])
@@ -96,8 +101,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_(all(r["leader"] != "E" for r in rec["rungs"][:4]), "position.E_leads_no_intermediate_rung")
     second_at = [i for i, r in enumerate(rec["rungs"][:4]) if r["runner_up"] == "E"]
     K_(second_at == [3], "position.E_second_only_at_rung3", second_at)
-    v3 = rec["rungs"][3]["values"]
-    v4 = rec["rungs"][4]["values"]
+    v3, v4 = raw[3], raw[4]          # unrounded; the record carries them to three decimals
     K_(v3["B"] / v3["E"] >= 1.20, "position.rung3_gap", v3["B"] / v3["E"])
     # discriminator dominance
     carried = v3["B"] / v3["E"]
@@ -263,7 +267,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
         h1 = A.est(S[half].reset_index(drop=True), yb[half], "session_snipw")
         h2 = A.est(S[~half].reset_index(drop=True), yb[~half], "session_snipw")
         dmax = max(abs(h1[r] - h2[r]) for r in P.POLICIES)
-        K_(dmax <= 0.25, f"halves.{nm}", round(dmax, 3))
+        K_(dmax <= 0.10, f"halves.{nm}", round(dmax, 3))
         rec[f"halves_{nm}_max_diff"] = round(dmax, 3)
 
     # ---------------------------------------------------------------- the archive
@@ -337,11 +341,20 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     K_(min(dists.values()) >= 0.03, "ask1.cells_mid_bin", min(dists.values()))
     small = [k for k, v in gold.items() if abs(v) < 1.0]
     K_(len(small) <= 4, "ask1.small_cells", [(L[r], c, round(gold[(r, c)], 2)) for r, c in small])
+    def outside(x, ref):
+        """How far x sits outside ref's one-decimal bin (negative when inside it)."""
+        k = np.floor(ref / 0.1 + 0.5)
+        return max((k - 0.5) * 0.1 - x, x - (k + 0.5) * 0.1)
+    clear = []
     for key, g in res["fee_combos"].items():
-        stay = [k for k in gold if same_bin(g[k], gold[k]) and k not in small]
+        stay = [k for k in gold if same_bin(g[k], gold[k])]
         K_(not stay, f"ask1.subset.{'-'.join(key)}", stay)
+        clear += [outside(g[k], gold[k]) for k in gold]
     nat_stay = [k for k in gold if same_bin(res["fee_natural"][k], gold[k])]
     K_(not nat_stay, "ask1.natural_read_moves_every_cell", nat_stay)
+    clear += [outside(res["fee_natural"][k], gold[k]) for k in gold]
+    K_(min(clear) >= 0.03, "ask1.devices_clear_by_0.03", round(min(clear), 4))
+    rec["ask1_device_min_clearance"] = round(float(min(clear)), 4)
     for nm in ("fee_charged", "fee_drop_pickups", "fee_every_offer", "fee_old_tariff"):
         moved = sum(not same_bin(res[nm][k], gold[k]) for k in gold)
         K_(moved >= 36, f"ask1.over_cleaner.{nm}", moved)
@@ -362,6 +375,12 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
                (res[nm][r], res["tot_orders"][r]))
         K_(abs(res["tot_orders_r1"][r] - res["tot_orders"][r]) >= 100, f"ask2.P2_moves_100.{L[r]}",
            res["tot_orders_r1"][r] - res["tot_orders"][r])
+    # the in-session basis: only the velocity boost's totals move (no other ranker shows a watched listing)
+    tot_in = K.totals(res["orders_insession"], res["arm_sessions"])
+    K_(not same_bin(tot_in[B_], res["tot_orders"][B_], 100) and
+       all(abs(tot_in[r] - res["tot_orders"][r]) < 1e-6 for r in P.POLICIES if r != B_),
+       "ask2.in_session_basis_moves_B_only", {L[r]: round(tot_in[r], 1) for r in P.POLICIES})
+    rec["ask2_orders_in_session_basis"] = {L[r]: round(tot_in[r], 1) for r in P.POLICIES}
     stay = [(k, L[r]) for k, v in res["tot_fee_subsets"].items() for r in P.POLICIES
             if same_bin(v[r], res["tot_fee"][r], 100)]
     K_(not stay and len(res["tot_fee_subsets"]) == 31, "ask2.fee_31_subsets", stay[:5])
@@ -456,7 +475,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
                      r"python-docx|openpyxl|reportlab|matplotlib|xlsxwriter|pyarrow|seed)\b", re.I)
     hits_ = {f: bad.findall(t) for f, t in blob.items() if bad.search(t)}
     K_(not hits_, "leak.author_vocabulary", hits_)
-    K_("—" not in alltext, "leak.no_em_dash")
+    K_("\u2014" not in alltext, "leak.no_em_dash")
     # no shipped table carries a per-policy lift, guardrail or ranking
     for f, t in blob.items():
         ids = [r for r in P.POLICIES if r in t]
@@ -506,6 +525,9 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     rec["personas"] = drawn
     named = set(re.findall(r"\b([A-Z][a-zé]+ (?:[A-Z][a-z]+))\b", alltext))
     K_(all(n in alltext for n in drawn[:6]), "personas.core_present")
+    failed = [n for n, ok, _ in K_.items if not ok]
+    if failed:
+        raise AssertionError(f"{len(failed)} assertions failed: {failed}")
     rec["assertions"] = len(K_.items)
     rec["assertion_names"] = [n for n, _, _ in K_.items]
     return rec

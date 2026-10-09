@@ -826,6 +826,154 @@ with this architecture moved into the card's lineage. The re-draw can carry the 
 class-by-class balance can certify households outright (the L1 form) if the new call puts its decisive move
 where the tables cannot see, and the ask-layer finding above.
 
+## Re-root v2: DRAW
+
+Drawn 2026-10-09 at stage 1, after solver round 1 (plain, 96.8) and harden loop 1, which closed every repair inside the
+v1 driver. The v1 sections above stay as the record of the architecture that died; the card moves it into `lineage`.
+Nothing in the generator, `target/`, `golden/` or `submission.md` changes at this stage, and no ladder is designed
+until the author answers at checkpoint A.
+
+```
+DRAW  (re-root v2, independent draws, checked with .claude/skills/fingerprint/guard.py)
+  Card filed: pending re-registration (candidate card checked in the scratchpad, not registered; the author registers after checkpoint A)
+  Verdict: BLOCK on one rule (test.same_driver inside the window, see Guard); no WARN
+  Shape: 14 cuts of a distribution   Gate G mechanism: binding_constraint
+  Gap: objective (decisive), time   Pattern: none of A to E; G11 (a per-return loss limit that does not commute with the
+       joint return) over G13 (the TY2026 regime no closed year reached)
+  Domain: Economics   Subdomain (enumerated): public-finance   Objective: Descriptive & Distribution Analysis
+  Pairing repeated from the last three builds? no (task119 Policy & Education x Anomaly Detection, task121 Product
+       Analytics x Root-Cause, task122 Product Analytics x Experiment & Causal)
+  Stakeholder role: director of the state's nonpartisan revenue research office, which staffs the Revenue Estimating
+       Conference (statistical_office_head), kept from v1
+  Context-artifact type: published_series (the Department's Returns Processed by AGI Class), kept
+  Calibration form: certified_matrix (the Household Income Tables for TY2022 to TY2024, 69 cells), kept as the organ and
+       turned round: it now certifies the stop rung instead of refuting it
+  Decision type: dial_setting (three AGI floors for the top 10, 5 and 1 per cent of full-year resident household units on
+       the TY2026 current-law base, each to the nearest $1,000)
+  Decisive mechanism: the 2026 session's flat-rate restructuring repeals the married-filing-separately state return from
+       TY2026, so a couple filing a joint federal return files one joint state return starting from that return's federal
+       AGI, and the conference strikes its TY2026 estimate on TY2025 returns as that law computes them; on a TY2025
+       separate return a spouse's net capital loss counted only to $1,500 and a passive loss only against that spouse's own
+       passive income, so a couple whose separate returns held such a loss beside the other spouse's gains carries less AGI
+       on the joint return than the sum of its filed returns, a class no column marks
+  Generators: G11, G13   Answer unit: currency (USD)
+  Forum: minister_or_cabinet (the state finance secretary adopts the re-based floors on the office recommendation), kept
+  Forcing event: statutory_or_regulatory_filing (the conference certifies the TY2026 income-tax estimate under statute), kept
+  Organisation family: research_or_statistics_office, kept
+  Spine: TY2025 processed-return file, return grain, synthetic, 852,947 rows at the v1 scale (set at build)
+  World: United States, a fictional state with invented counties (Kessler, Abington); USD; kept
+  People (guard.py names --geo "United States" --seed 120 still draws all four): Stephanie Reid (requester), Manuel
+       Stevenson, Brittany Shepard, Jeffrey King, kept; their lines are rewritten at design
+  Deliverables: ty2026_tier_schedule.xlsx, ty2026_tier_floors.png   Opening move: calendar-first
+  Prompt shape arithmetic: the three committed floors (3), household units and AGI in each tier (6), households above the
+       top floor in each of the twelve appendix counties (12), four named chart parts and two files (6): about 27 before
+       the ask sheet, which supplemental-stumping sizes
+  As-of date: 2026-11-09
+```
+
+**Similarity claim.** No build on file cuts a distribution on a forward law's base where a limit that sat on each
+member's record stops applying when two records become one. task58 v15 applies a floor at the sub-unit grain after a
+split (the opposite direction), task64 v4 lets a filed capacity bind for the first time against a forward book, and
+task114 (inside the window) merges two sites so that demand appears; here the merger removes AGI through the grain of
+a loss limit, and where the parties are plays no part.
+
+**Stump sentence.** A competent solver builds household units (all 69 published cells reproduce), reads the TY2026
+repeal of the separate state return as the pairing of spouses its households already perform, and files the summed
+TY2025 household floors as the TY2026 current-law schedule (in the v1 pack, $214,000 / $318,000 / $742,000), because the
+joint return nets a loss one spouse's separate return could only limit or suspend (capital or passive) against the other
+spouse's income of the same kind before one limit applies, so the couples holding such a loss carry less AGI under the
+law the estimate is struck on and the top floors fall.
+
+**Litmus and Gate G line.** No number in the pack is wrong and no reading is overturned: the filed returns, the
+published tables and the Department's table are right about what they record, and the summed household AGI is the
+correct TY2025 figure. The difficulty is a limit whose grain the forward law changes. surface_read_dependency: no;
+stumping_family: analytical_non_defect; sole_data_defect: no (no file is incomplete, and no instrument could have recorded the
+joint return the answer needs, because TY2025 had none). Lens-swap test: the naive read is the households' AGI under the regime
+their returns were filed under, the answer the same households under the regime the estimate is struck on, and the two
+differ only where a per-return limit bound; this is the line Gate G will test hardest (see Concerns).
+
+**Decisive rung.** Measured trap #13, validates on one population, applies to another: decided 3 of the client's 64
+tasks, 2 of them under 0.50 (established). The summed household AGI is validated on every closed separate-return year
+(69 of 69) and applied to the joint-return base. Behind it, #7 uses the ready-made measure (5 of 64, 2 under 0.50): each
+separate return's reported federal AGI, summed, in place of the AGI the joint return defines. Corpus direction: the
+tables reproduce under the naive path, because every published cell was struck on filed returns. L1 sentence: in every
+published cell the joint netting is absent, because no couple's separate returns were ever combined before TY2026; the
+compulsory joint return first combines them in the year the estimate is struck on.
+
+**Ladder sketch.**
+- Rung 0, every return a unit: ties the Department's all-filer table; killed by the residency code list and the tables.
+- Rung 1, full-year residents with each return a unit: the methodology's population; the tables refute it (3 of 69).
+- Rung 2, federal filing units: the textbook tax unit; the tables refute it (short in one class).
+- Rung 3, household units (filing units plus the dependents' own returns): 69 of 69, the construction the tables
+  certify, given away on purpose (L1).
+- Rung 4, the stop: households on the TY2026 base with AGI summed from the filed returns; the repeal reads as the
+  pairing households already perform and 69 of 69 confirms it. Killed only by the per-return limits in the Schedule D
+  and passive-loss detail, which net on the joint return.
+- Rung 5, the partial: capital losses re-netted under the joint limit, passive losses left on their returns; lands
+  between the stop rung and the answer, so it is priced as a wrong cell rather than a farther one.
+- Rung 6, decisive: every per-return-limited loss netted across the couple under one limit. The answer is the lowest
+  cell of the grid (L5).
+
+**Nearest exemplars.**
+- **0.34**, Nonprofit & Grant-making, Capital Grant Drawdown Forecasting: every one of 1,632 paid certificates falls on
+  its scheduled date, and the schedule is stale for the unpaid stages the forecast runs on (#13: the closed record
+  certifies a basis the forward set breaks).
+- **0.39**, Nonprofit & Grant-making, CDFI Award Compliance: the single-family posting lag that fits the ledger, applied
+  to commercial draws (#13).
+
+Same-domain neighbour, for voice: 0.41, Economics, Treasury Cash Flow Forecasting (#7, the ready-made QA scorecard
+over the certified loss).
+
+**Guard.** BLOCK on one rule against the existing corpus (last three task119, task121, task122; window of twelve from
+task111), nearest driver at 0.05.
+- `test.same_driver` inside the window: (objective, G11, binding_constraint) against task122's v1 lineage, a draft drawn
+  2026-10-08, redrawn at checkpoint A and never registered (a pick under filed conditions with a library fallback). It
+  is not differentiable inside the window, and no honest relabel exists: every cap build on file records its gap
+  objective-first under G11, and the decisive miss here is the limit, not the date. Registering needs the author's
+  `--force` with that reason, or a redraw.
+- `test.same_driver_older` and `test.same_puzzle_older`: the signature is the non-commuting-cap family in 13 older
+  builds (task32, task36, task37, task43, task50, task57, task58, task64, task73, task76, task79, task87, task106); each
+  carries a differentiation line on the card, and task114 carries one although the guard did not ask for it. Reusing
+  the device is legitimate; the driver differs from each.
+- No WARN. The split-residency variant (the out-of-state spouse the joint return brings in, time over population, G4)
+  passes clean and is rejected under Tried and rejected.
+
+**What changes from v1.**
+1. Graded quantity: the TY2025 floors become the floors on the TY2026 current-law base.
+2. The household construction falls from the decisive rung to a shallow rung the tables certify, so the reproduction
+   clause becomes a certification and the corpus confirms the stop rung; round 1's search signal is gone.
+3. Decisive move: per-return loss limits that the joint return nets across spouses (objective over time, G11 and G13,
+   binding_constraint), where v1's was the household unit (population, G2 gated by B, method_or_model_selection).
+4. Kept: world, people, forum, forcing event, organisation family, role, context artifact, calibration organ, shape 14.
+5. Deliverables renamed for TY2026; opening move calendar-first (v1's was evidence-first).
+6. Ask layer rebuilt at design so that no device's rule sits in the ask's own layout or governing section and no
+   control total confirms it (the harden-loop finding).
+
+**What changes from the source note.** The note's decision (the conference's top-tier floors) and its world stay. Its
+decisive rung (S1 gated by Pattern B) becomes a certified shallow rung, its committed call moves from the TY2025
+schedule to the TY2026 current-law schedule, and the repeal of the separate state return is added: the note's
+"two-earner couples file separate state returns" is the practice the repeal ends. The reproduction clause turns from a
+gate the stop rung fails into a certification it passes.
+
+**Concerns for checkpoint A.**
+- The household-tier world is close to exhausted for a Descriptive call under the four standing rules. Harden loop 1
+  closed every TY2025 move, the forward-population and completeness moves are on the dead list, and the joint-return
+  base is the one place the tables cannot see; its honest signature is the non-commuting-cap family.
+- Stump power: a tax-literate solver that builds each joint return from its items, rather than summing the filed AGIs,
+  lands the answer. Determinism needs the layouts to say that a separate return's AGI is figured as on a federal
+  married-filing-separately return, and that sentence is the question the stump depends on nobody asking.
+- Separation: at realistic shares of couples holding a limited or suspended loss beside the other spouse's gains, the
+  top floor moves a few per cent; a wider gap needs a stranded-loss class large enough to be realism debt.
+- Gate G: the answer recomputes the same households under the forward law, close to the lens-swap line.
+- Every Descriptive exemplar under 0.25 is the reproduction-gated hidden unit, which the rule against a refuting corpus
+  removes, so a world redraw carries the same constraint. The realistic alternatives are a world whose L1 corpus covers
+  only segments without the decisive property (task71's form), or a Forecasting retag of this decision; either needs
+  the author's word.
+
+## Retired
+
+The author retired this build on 2026-10-09 after solver round 1 (plain, 96.8, landed at step 2) and a re-root draw that could not carry a strong stump under the standing rules. It is not submitted. The v1 pack, goldens and submission stay as the record of what was built and solved.
+
 ## Tried and rejected
 - Twin pair at 117 against 58 (2.02x, the source note's form): dropped because the stop rung would miss Kessler by 50 per cent, which breaks "every miss a few per cent short" and makes the corpus a loud alarm; there is no lookup transfer to kill in this build, so the pair only needs a nonzero gap in an exact count.
 - Trust group with own AGI $620,000 to $740,000 and $30,000 to $90,000 a return (the source note's figures): the feasibility model needs about 976 crossers into the top 1 per cent, which would be about 98 per cent of the household heads in that band; widened to $520,000 to $742,000 and up to $130,000 a return (34 per cent).
@@ -860,3 +1008,11 @@ where the tables cannot see, and the ask-layer finding above.
 - Harden loop 1, repair on paper, households kept as the corpus-confirmed stop rung with a decisive move above them that only TY2025 carries (a corpus blind to the decisive move for a structural reason): every structure this world can hold in TY2025 alone either surfaces on the habitual battery or as a year-on-year step (a dependent TIN on two schedules under a split credit, against the layouts' "The Department accepts one claim for a dependent TIN in a tax year"; households mixing residency codes, which the solver checked in its own words, "no unit mixes residencies"; a narrower TY2025 schedule or new code values; separate returns reporting the couple's joint AGI), or has to be filed and is then executed (a dependent-income threshold for membership, a co-residence rule for code 05 parents), or is a completeness or identifier repair the judge's instrument test bans (returns held in process at the extract, a second schedule channel, an ITIN converted to an SSN, non-filing households counted in the base). Dead.
 - Harden loop 1, repair on paper, a harder household behind the same refuting corpus (attach-all scoring below the filing unit, with membership by relationship code, by the dependent's county against the claimant's, or a subfamily split needed for 69 of 69): each added rule is a filter or a join over columns the schedule and the return already carry, which is the next search a solver runs on a refutation, so the corpus stays the search signal round 1 used. Dead.
 - Harden loop 1, diagnosis of the ask layer (D8 clock, D2 version of record, D4 paper channel, hazards H1 to H4): every device's rule sat in the ask's own record layout or governing section, or a control total confirmed it, and the solver executed each in its own words: "Both channels tie to the employer reconciliations ($1,394,690,352 + $93,587,882)" (the referee confirmed the paper channel the layouts' section 8 names instead of arbitrating a disagreement), "UTC was converted to Central time and compared against due dates of 2025-04-15, 2025-06-16 (June 15 is a Sunday)" (layouts section 3), "the latest ACCEPTED amended version's AGI equals the processed AGI on all 27,664 amended returns. Capital gain uses amount_in_agi from the version of record" (layouts sections 6 and 7, methodology s.4), "I excluded the 13,035 overpayment-credit transfers ... I removed 11,148 returned items unless they were re-presented PAID" (methodology s.4, layouts section 4), "plus RESOLVED WAGE_STATEMENT TIN cases" (layouts section 5). Dead at this layer: a device whose rule sits in the ask's own layout or governing section, a channel with its own control total, and a hazard resolved by a register the layouts describe; and no ask layer rescues the pair while the call is landed, since two responses on the call bank about 45 each before any ask.
+- Re-root at stage 1, the v1 architecture retired (household units as the decisive rung, gated by the 69-cell reproduction clause): solver round 1 (plain, 96.8) landed it at its step 2 by reproducing the published tables, in its words "federal units (filer_tin grouped with federal_primary_tin) matched 17/19. Federal units plus each dependent's own return, joined through dependents_schedule dependent_tin = filer_tin (union-find), matched 19/19 in every year"; a corpus that refutes the stop rung is a search signal and the reproducing construction sat one join away, so the architecture moves to the card's lineage and v2 keeps households only as a certified shallow rung.
+- Re-root candidate, the out-of-state spouse the TY2026 joint return brings into a resident household (split-residency couples) as the decisive rung: guard-clean (time over population, G4), but the class is one group-by on federal_primary_tin and residency_code, which round 1's solver already ran ("no unit mixes residencies"), and the joint-return clause names the move.
+- Re-root candidate, a forward roll of the TY2025 households into the TY2026 population (2026 departures, 2025 part-year arrivals, dependents ageing out): stumping Part 4's dead "forward population named by a filed clause" (task100 v1), with every limb on a register, a residency code or a birth year.
+- Re-root candidate, completing an earlier TY2025 extract for the returns still to come (extension filers, top-heavy): the judge's instrument repair, and Part 4's "recovery of what an instrument could not observe".
+- Re-root candidate, floors for the top 10, 5 and 1 per cent of residents rather than of household units (person-weighted): a lens swap on the same households at the same moment (single_conceptual_flip).
+- Re-root candidate, holding the TY2024 schedule while the TY2025 floors sit inside a revision band: a figure computed to see which side of a line it falls (stumping Part 2's exhausted shape), with its rule filed and so executed.
+- Re-root label, the joint-return netting recorded time-first (time, G13) to clear the in-window collision with task122's v1 draft: a relabel, because every cap build on file is recorded objective-first under G11 and the decisive miss is the limit.
+- 2026-10-09, re-root v2 (TY2026 current-law floors, joint-return loss netting across spouses) drafted and not built: test.same_driver blocked it on (objective, G11, binding_constraint), a tax-literate solver who rebuilds the joint return from its items lands it, and the effect on the top floor is a few per cent. The author retired DA01 rather than force it; DA11 takes the Descriptive slot in a later wave.

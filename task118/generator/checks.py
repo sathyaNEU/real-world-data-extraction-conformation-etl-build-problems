@@ -225,6 +225,11 @@ CMS_COLS = ["doc_id", "desk_code", "doc_type", "parent_doc", "revision", "saved_
             "headline_sha1", "correction_note", "restored_from_doc", "migrated_from"]
 
 
+def defaultdict_list():
+    from collections import defaultdict
+    return defaultdict(list)
+
+
 def cms_frames(D):
     c = D["cms"].copy()
     c["revision"] = c["revision"].astype(int)
@@ -262,7 +267,9 @@ def off_median(m, g):
 def panel_readers(D, mode="golden"):
     """Average monthly unique audience per desk, and the number of section-months it averages over.
     golden: a release's codes read on the section list it was issued on (the first release on the 2026 content
-    taxonomy and every later release on the 2026 list), then the latest release per period and section.
+    taxonomy and every later release on the 2026 list), each release counted only for the months the release log
+    lists for it, then the latest release per period and section. echo: the same without the release log's months,
+    so the July release's file supplies April to June as first published (the round-5 path).
     per_period: the rows of the latest release carrying each period (the round-3 path); per_site: the rows of the
     latest release carrying each period and site; per_code: the latest release per period, site and section code,
     then codes read on the list each release was issued on. careful: the latest release per period and code,
@@ -273,6 +280,9 @@ def panel_readers(D, mode="golden"):
     p = D["panel"].copy()
     rel = D["rel"].copy()
     pub = dict(zip(rel["release"], pd.to_datetime(rel["published_on"])))
+    months = {r: {m.strip() for m in str(v).split(",")} for r, v in zip(rel["release"], rel["periods"])}
+    if mode in ("golden", "nohist", "norestate", "national"):
+        p = p[[per in months[r] for r, per in zip(p["release"], p["period"])]]
     first26 = pub[rel.loc[rel["note"].str.startswith("First release on the 2026"), "release"].iloc[0]]
     h = D["sec_hist"].copy()
     h["valid_from"] = pd.to_datetime(h["valid_from"])
@@ -285,13 +295,13 @@ def panel_readers(D, mode="golden"):
         p = p[p["release"] != asks_mod.HISTORY_RELEASE]
     if mode == "norestate":
         p = p[p["release"] != "R26-07B"]
-    by_issue = mode in ("golden", "nohist", "norestate", "national", "per_period", "per_site", "per_code")
+    by_issue = mode in ("golden", "echo", "nohist", "norestate", "national", "per_period", "per_site", "per_code")
     if by_issue:
         lst = np.where(p["pub"] >= first26, "new", "old")
         p["section"] = [lists[l].loc[(s, c), "section_name"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
         p["desk"] = [lists[l].loc[(s, c), "bightline_desk"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
     p = p.sort_values("pub", kind="stable")
-    if mode in ("golden", "nohist", "norestate", "national"):
+    if mode in ("golden", "echo", "nohist", "norestate", "national"):
         p = p.drop_duplicates(["period", "site_code", "section"], keep="last")
     elif mode == "per_period":
         p = p[p["pub"] == p.groupby("period")["pub"].transform("max")]
@@ -317,6 +327,35 @@ def panel_readers(D, mode="golden"):
         x = p[(p["site_code"] == "BLN") & (p["section"] == "Sport")]
         out["SPT-M"] = (float(x["unique_audience"].mean()), len(x))
     return out
+
+
+# ---------------------------------------------------------------------------------- the corrections readings
+
+R1 = "round-1 path (every revision against the last, first live save, entries ignored, each note read on its own save)"
+R3 = "round-3 path (published states and scheduling handled, entries paired in the same minute, each note read on its own save)"
+R5 = ("round-5 path (a headline note paired with the headline fix up to 10 minutes before it, entries within 10 minutes, "
+      "a note put back read as new)")
+EF = "both loop-3 devices caught, an entry's fix timed from the entry going live"
+READ = {
+    R1: dict(published=False, scheduled=False, entries=False, lag=False, readd=False),
+    R3: dict(lag=False, entry_tol=0, readd=False),
+    "round-3 path with an entry's fix timed from the entry going live": dict(lag=False, entry_tol=0, readd=False,
+                                                                             entry_from_entry=True),
+    R5: dict(lead=False, readd=False, entry_tol=10),
+    "round-5 path with an entry's fix timed from the entry going live": dict(lead=False, readd=False, entry_tol=10,
+                                                                             entry_from_entry=True),
+    "the note before its fix caught, a note put back read as new": dict(readd=False),
+    "a note put back caught, the note before its fix missed (pairing looks before the note only)": dict(lead=False),
+    EF: dict(entry_from_entry=True),
+    "every note on an unchanged headline read on its own save, otherwise golden": dict(lag=False),
+    "a live blog's note paired with its entry's fix only in the same minute, otherwise golden": dict(entry_tol=0),
+    "published states, scheduling and both pairings handled, entries ignored": dict(entries=False),
+    "published states, entries and both pairings handled, first live save": dict(scheduled=False),
+    "published states handled only": dict(scheduled=False, entries=False, lag=False, readd=False),
+    "scheduling, entries and both pairings handled, every revision against the last": dict(published=False),
+    "scheduling handled only": dict(published=False, entries=False, lag=False, readd=False),
+    "entries handled only": dict(published=False, scheduled=False, lag=False, readd=False),
+}
 
 
 # ---------------------------------------------------------------------------------- run
@@ -671,8 +710,8 @@ def run(W, target, out):
     arts = {d: G[d]["articles"] for d in P.WEB}
     L_.check("CMS articles equal the spine's articles published in the window, desk by desk",
              all(arts[d] == c[d]["n_art_win"] for d in P.WEB), str({P.SHORT[d]: (arts[d], c[d]["n_art_win"]) for d in P.WEB}))
-    PR = {m: panel_readers(D, m) for m in ("golden", "per_period", "per_site", "per_code", "careful", "lazy", "nohist",
-                                            "first", "norestate", "national")}
+    PR = {m: panel_readers(D, m) for m in ("golden", "echo", "per_period", "per_site", "per_code", "careful", "lazy",
+                                            "nohist", "first", "norestate", "national")}
     readers = {d: v[0] for d, v in PR["golden"].items()}
     L_.check("readers: every desk's average runs over twelve months of record", all(v[1] == 12 for v in PR["golden"].values()))
     asks = {}
@@ -703,33 +742,22 @@ def run(W, target, out):
         return np.floor(v * 10 + 0.5) / 10
 
     # every reading that misses one or more of the corrections devices
-    R1 = "round-1 path (every revision against the last, first live save, entries ignored, each note read on its own save)"
-    R3 = "round-3 path (published states and scheduling handled, entries paired in the same minute, each note read on its own save)"
-    READ = {
-        R1: dict(published=False, scheduled=False, entries=False, lag=False),
-        R3: dict(lag=False, entry_tol=0),
-        "round-3 path with an entry's fix timed from the entry going live": dict(lag=False, entry_tol=0, entry_from_entry=True),
-        "the story lag caught, entries paired in the same minute": dict(entry_tol=0),
-        "the entry lag caught, each note read on its own save": dict(lag=False),
-        "published states, scheduling and the story lag handled, entries ignored": dict(entries=False),
-        "published states, entries and the story lag handled, first live save": dict(scheduled=False),
-        "published states handled only": dict(scheduled=False, entries=False, lag=False),
-        "scheduling, entries and the story lag handled, every revision against the last": dict(published=False),
-        "scheduling handled only": dict(published=False, entries=False, lag=False),
-        "entries handled only": dict(published=False, scheduled=False, lag=False),
-    }
     views = {name: ask_corrections(rows, **kw) for name, kw in READ.items()}
     rec["corrections_readings"] = {}
     for name, v in views.items():
         kw = READ[name]
-        counts_same = kw.get("published", True) and kw.get("entries", True) and kw.get("lag", True) \
+        counts_same = all(kw.get(k_, True) for k_ in ("published", "entries", "lag", "lead", "readd")) \
             and kw.get("entry_tol", P.ENTRY_WINDOW) >= max(P.ENTRY_LAG_MINUTES)
         cm = [d for d in SL if v[d]["count"] != G[d]["count"]]
         rm = [d for d in SL if one(1000 * v[d]["count"] / v[d]["articles"]) != one(asks[d]["rate"])]
         mm = [d for d in SL if off_median(v[d]["median"], G[d]["median"])]
         rec["corrections_readings"][name] = {P.SHORT[d]: (v[d]["count"], round(1000 * v[d]["count"] / v[d]["articles"], 2),
                                                           v[d]["median"]) for d in SL}
-        L_.check("reading lands off the golden median at every desk: %s" % name, len(mm) == len(SL), str(mm))
+        if name == EF:
+            L_.check("timing an entry's fix from the entry, not the live blog, moves the median at five or more desks "
+                     "(%s)" % name, len(mm) >= 5, str(mm))
+        else:
+            L_.check("reading lands off the golden median at every desk: %s" % name, len(mm) == len(SL), str(mm))
         if counts_same:
             L_.check("reading keeps every count and rate (it moves minutes only): %s" % name, not cm and not rm, str(cm))
         else:
@@ -739,12 +767,6 @@ def run(W, target, out):
                  all(min(v[d]["mins"]) >= 1 for d in P.WEB if v[d]["mins"]))
         L_.check("reading counts the same articles as the spine (the article check passes on it): %s" % name,
                  all(v[d]["articles"] == c[d]["n_art_win"] for d in P.WEB))
-    ef_view = ask_corrections(rows, entry_from_entry=True)
-    mm = [d for d in SL if off_median(ef_view[d]["median"], G[d]["median"])]
-    rec["corrections_readings"]["golden with an entry's fix timed from the entry going live"] = {
-        P.SHORT[d]: (ef_view[d]["count"], ef_view[d]["median"]) for d in SL}
-    L_.check("timing an entry's fix from the entry, not the live blog, moves the median at five or more desks",
-             len(mm) >= 5 and all(ef_view[d]["count"] == G[d]["count"] for d in SL), str(mm))
 
     # the other stops, ask by ask
     stops = {}
@@ -758,7 +780,8 @@ def run(W, target, out):
                    ("count: every new note a headline correction", dict(s2=False)),
                    ("count: an entry save of any kind pairs with the note", dict(entry_any=True)),
                    ("count: per document, restored and migrated copies kept", dict(merge=False, migrated=True, blank_start=True)),
-                   ("count: migrated documents kept", dict(migrated=True, blank_start=True))):
+                   ("count: migrated documents kept", dict(migrated=True, blank_start=True)),
+                   ("count: any note a document on the desk showed before read as carried (over-cleaned)", dict(readd_desk=True))):
         v = ask_corrections(rows, **kw)
         stops[nm] = {d: v[d]["count"] for d in SL}
     for name, s_ in stops.items():
@@ -794,16 +817,18 @@ def run(W, target, out):
         off = [d for d in SL if off_median(s_[d], asks[d]["median"])]
         L_.check("ask stop moves the median at %d or more desks: %s" % (need_m.get(name, 6), name),
                  len(off) >= need_m.get(name, 6), str(off))
-    pnames = {"per_period": ("readers: the rows of the latest release carrying each month (the round-3 path)", set(SL)),
-              "per_site": ("readers: the rows of the latest release carrying each month and site", {"BUS-N", "SPT-N"}),
+    pnames = {"echo": ("readers: the latest release carrying each section's month, its release's published months "
+                       "unchecked (the round-5 path)", set(SL)),
+              "per_period": ("readers: the rows of the latest release carrying each month (the round-3 path)", set(SL)),
+              "per_site": ("readers: the rows of the latest release carrying each month and site", set(SL)),
               "per_code": ("readers: the latest release per month and section code, codes read on each release's own list",
-                           {"BUS-N", "CUL-N"}),
+                           set(SL)),
               "careful": ("readers: latest release per code, codes read through the section history by period (the round-1 path)",
-                          {"POL-N", "BUS-N", "CUL-N"}),
+                          set(SL)),
               "lazy": ("readers: latest release per code, read on the current section list", set(SL)),
               "nohist": ("readers: the history release left out", {"POL-N", "CUL-N"}),
-              "first": ("readers: first release per code, read by period", {"POL-N", "SPT-M", "LOC-M", "CUL-N"}),
-              "norestate": ("readers: the restated release left out", {"SPT-M", "LOC-M"}),
+              "first": ("readers: first release per code, read by period", set(SL)),
+              "norestate": ("readers: the restated release left out", set(SL)),
               "national": ("readers: national site for Sport-metro", {"SPT-M"})}
     for m, (name, need) in pnames.items():
         s_ = {d: PR[m][d][0] for d in SL}
@@ -823,6 +848,8 @@ def run(W, target, out):
 
     # necessity matrix: each device alone mishandled, everything else read the golden way
     dev = {
+        "a note before its headline fix read on its own save (pairing looks before the note only)": dict(lead=False),
+        "a note put back after a save that left it off read as a new correction": dict(readd=False),
         "a note on the save after its headline fix read on its own save (story lag)": dict(lag=False),
         "a live blog's note paired with its entry's fix only in the same minute (entry lag)": dict(entry_tol=0),
         "autosave drafts read as published states": dict(published=False),
@@ -835,7 +862,9 @@ def run(W, target, out):
         "posts as articles": dict(posts=True),
         "never-live documents kept": dict(never_live=True),
     }
-    need = {"a note on the save after its headline fix read on its own save (story lag)": (6, 6, 6),
+    need = {"a note before its headline fix read on its own save (pairing looks before the note only)": (6, 6, 6),
+            "a note put back after a save that left it off read as a new correction": (6, 6, 0),
+            "a note on the save after its headline fix read on its own save (story lag)": (6, 6, 6),
             "a live blog's note paired with its entry's fix only in the same minute (entry lag)": (6, 6, 6),
             "autosave drafts read as published states": (6, 6, 6), "scheduled articles live at their first live save": (0, 0, 6),
             "entries ignored": (6, 6, 6), "carried notes counted again": (6, 6, 0), "every new note a headline correction": (6, 6, 6),
@@ -907,12 +936,17 @@ def run(W, target, out):
     H3 = asks_mod.read_corrections(rows, **READ[R3])
     EN = asks_mod.read_corrections(rows, entries=False)
     NL = asks_mod.read_corrections(rows, lag=False)
+    LB = asks_mod.read_corrections(rows, lead=False)
     entry_fix = [(k, t_) for k, a in GA.items() for t_ in a["heads"] if t_ not in EN[k]["heads"]]
-    story_lag = [(k, t_) for k, a in GA.items() for t_ in a["heads"] if t_ not in NL[k]["heads"]]
+    lead_fix = [(k, t_) for k, a in GA.items() for t_ in a["heads"] if t_ not in LB[k]["heads"]]
+    lead_set = set(lead_fix)
+    story_lag = [(k, t_) for k, a in GA.items() for t_ in a["heads"] if t_ not in NL[k]["heads"] and (k, t_) not in lead_set]
     L_.check("quiet span: no entry headline fix between %s and %s AEST" % (P.QUIET_FROM, P.QUIET_TO),
              not [x for x in entry_fix if quiet_lo <= x[1] < quiet_hi])
     L_.check("quiet span: no headline fix whose note arrived on a later save, in the quiet span",
              not [x for x in story_lag if quiet_lo - pd.Timedelta(hours=1) <= x[1] < quiet_hi + pd.Timedelta(hours=1)])
+    L_.check("quiet span: no headline fix whose note came on an earlier save, in the quiet span",
+             not [x for x in lead_fix if quiet_lo - pd.Timedelta(hours=1) <= x[1] < quiet_hi + pd.Timedelta(hours=1)])
     per_desk_entry = {d: sum(1 for k, t_ in entry_fix if GA[k]["desk"] == d) for d in P.WEB}
     L_.check("entries: each desk's entry headline fixes equal its planned number", per_desk_entry == P.ENTRY_CORR, str(per_desk_entry))
     same_min = asks_mod.read_corrections(rows, entry_tol=0)
@@ -926,34 +960,92 @@ def run(W, target, out):
              "have their note on the save after the fix", all(0.15 <= v <= 0.4 for v in lag_share.values()),
              str({P.SHORT[d]: round(v, 3) for d, v in lag_share.items()}))
     # the note and the fix it records, read from the shipped saves
-    lag_gaps, lag_named, stray_named = [], [], []
+    lag_gaps, lag_named, stray_named, lead_gaps, lead_named = [], [], [], [], []
     sl_set = set(story_lag)
+    readd_found, readd_bad, readd_near, readd_gaps = defaultdict_list(), [], [], []
     for k, a in GA.items():
         g_ = by_doc[k].sort_values("revision")
-        pubd = g_[g_.status == "live"]
-        prev = None
-        for _, r in pubd.iterrows():
-            if prev is not None and r["correction_note"] and r["correction_note"] != prev["correction_note"] \
-                    and r["headline_sha1"] == prev["headline_sha1"]:
-                old_ = prev["correction_note"]
-                nt = r["correction_note"][:len(r["correction_note"]) - len(old_)] if old_ and r["correction_note"].endswith(old_) else r["correction_note"]
-                named_ = "headline" in nt.lower()
-                if (k, prev["t"].to_pydatetime()) in sl_set:
-                    lag_gaps.append(int((r["t"] - prev["t"]).total_seconds() // 60))
-                    lag_named.append(named_)
-                elif named_ and a["type"] != "liveblog":
-                    stray_named.append(k)
-            prev = r
+        pubd = [r for _, r in g_[g_.status == "live"].iterrows()]
+        shown = set()
+        for idx_ in range(len(pubd)):
+            r = pubd[idx_]
+            prev = pubd[idx_ - 1] if idx_ else None
+            if prev is not None and r["correction_note"] and r["correction_note"] != prev["correction_note"]:
+                if r["correction_note"] in shown:
+                    # a note put back: the save before it showed no note and kept the headline; this save updates it
+                    readd_found[a["desk"]].append(k)
+                    readd_gaps.append(int((r["t"] - prev["t"]).total_seconds() // 60))
+                    if not (prev["correction_note"] == "" and r["headline_sha1"] != prev["headline_sha1"]
+                            and idx_ >= 2 and pubd[idx_ - 2]["correction_note"] == r["correction_note"]
+                            and pubd[idx_ - 2]["headline_sha1"] == prev["headline_sha1"]):
+                        readd_bad.append(k)
+                    lo_, hi_ = prev["t"] - pd.Timedelta(minutes=60), r["t"] + pd.Timedelta(minutes=60)
+                    others = [x for x in pubd if x is not r and x is not prev and lo_ <= x["t"] <= hi_]
+                    if others or (quiet_lo - pd.Timedelta(days=1) <= r["t"] and prev["t"] <= quiet_hi + pd.Timedelta(days=1)):
+                        readd_near.append(k)
+                elif r["headline_sha1"] == prev["headline_sha1"]:
+                    old_ = prev["correction_note"]
+                    nt = r["correction_note"][:len(r["correction_note"]) - len(old_)] if old_ and r["correction_note"].endswith(old_) else r["correction_note"]
+                    named_ = "headline" in nt.lower()
+                    nxt = pubd[idx_ + 1] if idx_ + 1 < len(pubd) else None
+                    if (k, prev["t"].to_pydatetime()) in sl_set:
+                        lag_gaps.append(int((r["t"] - prev["t"]).total_seconds() // 60))
+                        lag_named.append(named_)
+                    elif nxt is not None and (k, nxt["t"].to_pydatetime()) in lead_set:
+                        lead_gaps.append(int((nxt["t"] - r["t"]).total_seconds() // 60))
+                        lead_named.append(named_ and nxt["correction_note"] == r["correction_note"]
+                                          and nxt["headline_sha1"] != r["headline_sha1"])
+                    elif named_ and a["type"] != "liveblog":
+                        stray_named.append(k)
+            if r["correction_note"]:
+                shown.add(r["correction_note"])
     L_.check("story lag: every note that follows its fix comes 1 to 9 minutes after it, on the very next published save, "
              "and names the headline", lag_gaps and len(lag_gaps) == len(story_lag) and min(lag_gaps) >= 1 and max(lag_gaps) <= 9
              and all(lag_named), "%d notes, %s to %s minutes" % (len(lag_gaps), min(lag_gaps or [0]), max(lag_gaps or [0])))
+    L_.check("note before its fix: every note that comes before its fix names the headline, and the very next published "
+             "save, 1 to 9 minutes later, publishes the corrected headline with the note unchanged",
+             lead_gaps and len(lead_gaps) == len(lead_fix) and min(lead_gaps) >= 1 and max(lead_gaps) <= 9 and all(lead_named),
+             "%d notes, %s to %s minutes" % (len(lead_gaps), min(lead_gaps or [0]), max(lead_gaps or [0])))
+    per_desk_lead = {d: sum(1 for k, t_ in lead_fix if GA[k]["desk"] == d) for d in P.WEB}
+    L_.check("note before its fix: at least two at every shortlisted desk, and never as many as the notes put back",
+             all(per_desk_lead[d] >= 2 for d in SL) and all(per_desk_lead[d] != len(readd_found[d]) for d in SL),
+             str({P.SHORT[d]: (per_desk_lead[d], len(readd_found[d])) for d in SL}))
     L_.check("story lag: no other new note on a story save that leaves the headline unchanged names the headline",
              not stray_named, str(stray_named[:3]))
+    per_desk_readd = {d: len(readd_found[d]) for d in P.WEB}
+    L_.check("note put back: each desk's notes put back equal its planned number, each on a text-corrected story",
+             per_desk_readd == P.READD_N and all(not GA[k]["heads"] for d in P.WEB for k in readd_found[d]),
+             str(per_desk_readd))
+    L_.check("note put back: the save before it left the note off and kept the headline, the save that puts it back "
+             "updates the headline, and the note is the one shown before the save that left it off", not readd_bad,
+             str(readd_bad[:3]))
+    L_.check("note put back: no other published save within an hour of either save, and none within a day of the quiet span",
+             not readd_near, str(readd_near[:3]))
+    L_.check("note put back: each note comes back %d to %d minutes after the save that left it off" % P.READD_GAP,
+             readd_gaps and min(readd_gaps) >= P.READD_GAP[0] and max(readd_gaps) <= P.READD_GAP[1],
+             "%d notes, %s to %s minutes" % (len(readd_gaps), min(readd_gaps or [0]), max(readd_gaps or [0])))
+    tr_readd = sum(len(W.cms_truth[d]["readd"]) for d in P.WEB)
+    L_.check("note put back: the shipped saves show exactly the notes the generator put back, and no genuine new note "
+             "repeats one its article showed before", tr_readd == sum(per_desk_readd.values()), "%d %d" % (tr_readd, sum(per_desk_readd.values())))
     for N in (9, 10, 15, 20, 30, 45, 60):
         v = ask_corrections(rows, lag_struct=N)
         L_.check("note pairing converges: a note on an unchanged headline paired with the headline published without a "
-                 "note up to %d minutes before it files the golden count and median at every desk" % N,
+                 "new note up to %d minutes before it, else after it, files the golden count and median at every desk" % N,
                  all(v[d]["count"] == G[d]["count"] and v[d]["median"] == G[d]["median"] for d in P.WEB))
+    for N in (9, 10, 15, 20, 30, 45, 60):
+        v = ask_corrections(rows, lag_struct=N, after_first=True)
+        L_.check("note pairing converges the other way round: a note on an unchanged headline paired with the headline "
+                 "published without a new note up to %d minutes after it, else before it, files the golden count and "
+                 "median at every desk" % N,
+                 all(v[d]["count"] == G[d]["count"] and v[d]["median"] == G[d]["median"] for d in P.WEB))
+    v = ask_corrections(rows, after_first=True)
+    L_.check("the standards rule trying the save after a headline note before the save before it files the golden "
+             "count and median at every desk",
+             all(v[d]["count"] == G[d]["count"] and v[d]["median"] == G[d]["median"] for d in P.WEB))
+    for N in (10, 30, 60):
+        v = ask_corrections(rows, lag_struct=N, lead=False)
+        L_.check("note pairing that looks before the note only (%d minutes) misses a fix published after its note, at "
+                 "every desk" % N, all(v[d]["count"] < G[d]["count"] for d in SL))
     for tol in (9, 10, 15, 20, 30, 45, 60):
         v = ask_corrections(rows, entry_tol=tol)
         L_.check("entry pairing converges: a %d-minute window files the golden count and median at every desk" % tol,
@@ -994,8 +1086,8 @@ def run(W, target, out):
     L_.check("battery on the readers path: every code joins the current section list, no fan-out",
              (cur["_merge"] == "both").all() and len(cur) == len(p_))
     rep = int(p_.duplicated(["period", "site_code", "section_code"]).sum())
-    L_.check("battery: the history and restated releases show as repeated period-site-code keys (24), which the "
-             "latest-release rule resolves", rep == 24, str(rep))
+    L_.check("battery: the history release, the restatement and the July file's earlier months show as repeated "
+             "period-site-code keys (66), which the latest-release rule resolves, wrongly for April to June", rep == 66, str(rep))
     hist_ = D["sec_hist"].copy()
     hist_["valid_from"] = pd.to_datetime(hist_["valid_from"])
     hist_["valid_to"] = pd.to_datetime(hist_["valid_to"].replace("", pd.NaT))
@@ -1008,9 +1100,24 @@ def run(W, target, out):
              joined == len(p_))
     sites_of = p_.groupby("release")["site_code"].apply(lambda x: sorted(set(x))).to_dict()
     secs_of = p_[p_.release == asks_mod.HISTORY_RELEASE].groupby("period").size()
-    L_.check("partial releases: the history release carries three national sections a month and the restated release "
-             "the Brisbane edition site only", sites_of.get(asks_mod.HISTORY_RELEASE) == ["BLN"] and (secs_of == 3).all()
-             and sites_of.get("R26-07B") == ["BLB"], str({k: v for k, v in sites_of.items() if k in (asks_mod.HISTORY_RELEASE, "R26-07B")}))
+    L_.check("partial releases: the history release carries three national sections a month and the restatement both "
+             "sites", sites_of.get(asks_mod.HISTORY_RELEASE) == ["BLN"] and (secs_of == 3).all()
+             and sites_of.get("R26-07B") == ["BLB", "BLN"], str({k: v for k, v in sites_of.items() if k in (asks_mod.HISTORY_RELEASE, "R26-07B")}))
+    logm = {r: sorted(m.strip() for m in str(v).split(",")) for r, v in zip(D["rel"]["release"], D["rel"]["periods"])}
+    echo_rows = p_[(p_.release == P.ECHO_RELEASE) & (p_.period != "2026-07")]
+    firsts = p_[p_.release.isin(["R26-05", "R26-06", "R26-07"])]
+    same = echo_rows.merge(firsts, on=["period", "site_code", "section_code"], suffixes=("", "_f"))
+    L_.check("the July release's file: its April to June rows, both sites, repeat the figures first published "
+             "(audience and visits) that the restatement replaced, and the release log lists July only for it",
+             len(echo_rows) == 27 and len(same) == 27 and (same.unique_audience == same.unique_audience_f).all()
+             and (same.visits == same.visits_f).all() and logm.get(P.ECHO_RELEASE) == ["2026-07"],
+             "%d rows, log %s" % (len(echo_rows), logm.get(P.ECHO_RELEASE)))
+    L_.check("release log: every other release's rows fall in the months the log lists for it",
+             all(set(p_[p_.release == r_].period) == set(m_) for r_, m_ in logm.items() if r_ != P.ECHO_RELEASE))
+    rs_ = p_[(p_.release == "R26-07B")].merge(firsts, on=["period", "site_code", "section_code"], suffixes=("", "_f"))
+    infl = (rs_.unique_audience_f / rs_.unique_audience)
+    L_.check("restatement: the figures first published for April to June ran 5 to 9 per cent under the restated ones "
+             "at every section of both sites", len(rs_) == 27 and infl.between(0.91, 0.95).all(), "%.3f to %.3f" % (infl.min(), infl.max()))
     L_.check("battery on the CMS: (doc_id, revision) unique, every parent and restored source resolves",
              not cms.duplicated(["doc_id", "revision"]).any()
              and set(cms.loc[cms.parent_doc != "", "parent_doc"]) <= set(cms["doc_id"])
@@ -1040,7 +1147,9 @@ def run(W, target, out):
              m and (int(m.group(1)), int(m.group(2))) == gm, "%s vs %s" % (m.groups() if m else None, gm))
     L_.check("referee: the round-1 path ties to the bulletin's March figures as well (it validates on March)", hm == gm, "%s" % (hm,))
     L_.check("referee: the round-3 path ties to the bulletin's March figures as well (it validates on March)", h3 == gm, "%s" % (h3,))
-    for nm_, name_ in (("round-1", R1), ("round-3", R3)):
+    h5 = march(asks_mod.read_corrections(rows, **READ[R5]))
+    L_.check("referee: the round-5 path ties to the bulletin's March figures as well (it validates on March)", h5 == gm, "%s" % (h5,))
+    for nm_, name_ in (("round-1", R1), ("round-3", R3), ("round-5", R5)):
         outside = {d: (G[d]["count"], views[name_][d]["count"]) for d in SL}
         L_.check("referee: outside March the %s path and the standards rule part at every desk" % nm_,
                  all(a_ != b_ for a_, b_ in outside.values()), str(outside))
@@ -1053,17 +1162,25 @@ def run(W, target, out):
     full = golden_figures(target)
     # pair simulation
     readings = {
+        "round-5 path": (views[R5], "echo"),
         "round-3 path": (views[R3], "per_period"),
         "round-1 path": (views[R1], "careful"),
-        "catches the story lag only": (views["the story lag caught, entries paired in the same minute"], "per_period"),
-        "catches the entry lag only": (views["the entry lag caught, each note read on its own save"], "per_period"),
-        "catches the partial releases only": (views[R3], "golden"),
-        "catches both lags, not the partial releases": (G, "per_period"),
+        "round-5 path, catches the note before its fix": (views["the note before its fix caught, a note put back read as new"], "echo"),
+        "round-5 path, catches the note put back": (views["a note put back caught, the note before its fix missed (pairing looks before the note only)"], "echo"),
+        "round-5 path, catches the July file's earlier months": (views[R5], "golden"),
+        "catches both corrections devices, not the July file": (G, "echo"),
+        "catches everything": (G, "golden"),
     }
     pair = pair_simulation(asks, rv, r4, readings, PR, golden_bins)
     rec["pair"] = pair
-    caps = {"round-3 path": 40, "round-1 path": 45, "catches the story lag only": 40, "catches the entry lag only": 40,
-            "catches the partial releases only": 50}
+    # with every device holding the cracker keeps only extra per reader (one-decimal bins absorb any silent readers
+    # shift) and the 12 free criteria, which puts the layer's floor at 40.6
+    caps = {"round-5 path": 41, "round-3 path": 41, "round-1 path": 45, "round-5 path, catches the note before its fix": 41,
+            "round-5 path, catches the note put back": 41, "round-5 path, catches the July file's earlier months": 50}
+    x5 = pair["round-5 path"]
+    L_.check("pair simulation (round-5 path): the device layer holds whole against both sheets, the cracker keeping "
+             "extra per reader only and the mirror nothing", int(x5["cracker"]["device_hits"]) == 6
+             and int(x5["mirror"]["device_hits"]) == 0, "%s %s" % (x5["cracker"]["device_hits"], x5["mirror"]["device_hits"]))
     for label, x in pair.items():
         if label in caps:
             L_.check("pair simulation (%s): top-two average at or under %d" % (label, caps[label]), x["pair"] <= caps[label],
@@ -1221,10 +1338,11 @@ def without(target, drop):
 
 def pair_simulation(asks, rv, r4, readings, PR, golden_bins):
     """Two answer sheets per reading. The cracker lands the call; the mirror stops at rung 3 (Local-metro).
-    Each reading is a way a strong response reads the ask files, as (corrections view, readers mode): the round-3
-    path (published states and scheduling handled, entries paired in the same minute, each note read on its own
-    save; the rows of the latest release carrying each month), the round-1 path, and the paths that catch one
-    primary. Planning weights 38 / 7 / 55 over 42 ask criteria; r = 3 survives a wrong call."""
+    Each reading is a way a strong response reads the ask files, as (corrections view, readers mode): the round-5
+    path (a headline note paired with the fix before it only, a note put back read as new; the latest release
+    carrying each section's month), the round-3 and round-1 paths, the round-5 path with one loop-3 device caught,
+    and the paths that catch everything on one side. Planning weights 38 / 7 / 55 over 42 ask criteria; r = 3
+    survives a wrong call."""
     w_ask = 55 / 42
     one = lambda v: np.floor(v * 10 + 0.5) / 10      # noqa: E731
     gold = {d: dict(extra=golden_bins[d], readers=round(asks[d]["readers"], -3), per_reader=one(asks[d]["per_reader"]),

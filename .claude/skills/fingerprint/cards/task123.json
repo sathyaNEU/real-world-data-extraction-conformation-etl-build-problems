@@ -11,7 +11,7 @@
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
   "answer": "Strike the September 2026 Steady Ground offers at 42.55 cents per dollar of fall: 9 offers totalling $559,969 of the $560,000 pot.",
-  "answer_source": "task123/submission.md, block 1 (Final Recommendation), 2026-10-09 (hardening loop 1)",
+  "answer_source": "task123/submission.md, block 1 (Final Recommendation), 2026-10-09 (stage 3 write-up after hardening loop 1)",
   "gap": [
     "time",
     "rule",

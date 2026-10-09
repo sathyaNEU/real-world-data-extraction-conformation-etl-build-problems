@@ -1,20 +1,29 @@
 {
-  "task": "task119",
-  "domain": "policy-education",
-  "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "built",
-  "updated": "2026-10-09",
-  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those waits D's own care and D's deaths after them the largest number the review can confirm.",
-  "harden_loops": 0,
-  "solver_rounds": [],
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
-  "delivered": null,
-  "portal": null,
-  "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
+ "task": "task119",
+ "domain": "policy-education",
+ "objective": "anomaly-detection",
+ "stage": 4,
+ "stage_name": "solver round 1: harden",
+ "updated": "2026-10-09",
+ "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, rebuilds every unit's staffed occupancy hour by hour from its admission and discharge times, sets aside every wait that passed while the unit was full, and sends the engagement to G, whose ward referrals waited while its own unit held empty staffed beds; the step that lands it there is taking a full unit as the end of the question, so it never asks how the unit filled: through every one of D's long waits D's unit was full only because it was admitting planned post-operative patients from D's own theatres, which makes those waits D's own care and D's deaths after them the largest number the review can confirm.",
+ "harden_loops": 0,
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-09",
+   "score": 83.8,
+   "landed": true,
+   "cracked": 4,
+   "items": 11
+  }
+ ],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
+ "delivered": null,
+ "portal": null,
+ "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
 }

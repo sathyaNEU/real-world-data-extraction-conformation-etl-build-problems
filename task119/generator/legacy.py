@@ -146,6 +146,8 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
             if p["kind"] == "theatre_emerg":
                 typ, src = "01", "01"
         legacy = s["admit"] < GO
+        if legacy and typ == "02":
+            typ = "01"              # the CCRS-era bed-management list had one code for every unplanned admission
         seg = s["rows"] if legacy else [(s["admit"], s["discharge"])]
         for j, (a, b) in enumerate(seg):
             if legacy:

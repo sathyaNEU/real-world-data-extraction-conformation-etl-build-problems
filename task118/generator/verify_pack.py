@@ -3,9 +3,11 @@
 Reads only the shipped files in target_dir. It imports nothing from the generator, reads no seed, parameter
 or side file, and recomputes every rung, every rival the change log refutes, every calibration outcome and
 every graded figure on its own code path (DuckDB over the parquet, a profile-likelihood prior fit, a walk of
-each document's published states in the CMS revisions that pairs a note with the bare headline change or the
-entry fix in the 20 minutes before it, each panel release read on the section list it was issued on and each
-section's month taken from the latest release carrying it). The CLAIMS block is the answer key it checks.
+each document's published states in the CMS revisions that skips a note the document had already shown and pairs
+a note on an unchanged headline with the bare headline change in the 20 minutes before it, else in the 20 minutes
+after it, else with the entry fix in the 20 minutes before it, each panel release read on the section list it was
+issued on and counted only for the months the release log lists for it, each section's month taken from the latest
+such release). The CLAIMS block is the answer key it checks.
 """
 import csv
 import datetime as dt
@@ -300,11 +302,16 @@ def main(target):
     hist = list(wb["Section history"].iter_rows(values_only=True))[1:]
     rlog = [r for r in list(wb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
     rel = {r[0]: r[1] for r in rlog}
+    rel_months = {r[0]: {x.strip() for x in str(r[2]).split(",")} for r in rlog}
     first_2026 = [r[1] for r in rlog if (r[3] or "").startswith("First release on the 2026 content taxonomy")][0]
     later_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None}
     earlier_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}
     best = {}
+    off_log = 0
     for r in csv.DictReader(open(panel_f, encoding="utf-8")):
+        if r["period"] not in rel_months[r["release"]]:
+            off_log += 1        # a row a release's file carried for a month that release did not publish
+            continue
         lst = later_list if rel[r["release"]] >= first_2026 else earlier_list
         name, desk = lst[(r["site_code"], int(r["section_code"]))]
         key = (r["period"], r["site_code"], name)
@@ -315,6 +322,8 @@ def main(target):
         if desk:
             monthly[desk][period] = int(r["unique_audience"])
     readers = {d: statistics.mean(monthly[d].values()) for d in SHORTLIST}
+    check("panel rows outside their release's published months are set aside (the July file's April to June rows)",
+          off_log == 27, str(off_log))
     for d in SHORTLIST:
         check("readers %s (12 months)" % d, len(monthly[d]) == 12 and round(readers[d], -3) == CLAIMS["readers"][d],
               "%.1f" % readers[d])
@@ -359,15 +368,35 @@ def main(target):
         if sched and sched[-1][3] and ts(sched[-1][3]) < golive:
             states, golive = [sched[-1]] + live, ts(sched[-1][3])
         first, bare = None, None        # bare: a headline change published with no new note
-        for a, b in zip(states, states[1:]):
+        shown, taken = {states[0][5]}, set()
+        for i in range(1, len(states)):
+            a, b = states[i - 1], states[i]
             when = ts(b[1])
-            if not b[5] or b[5] == a[5]:
-                bare = None if b[5] != a[5] else (when if b[4] != a[4] else bare)
+            repeat = b[5] in shown      # a note the document had already shown, put back
+            shown.add(b[5])
+            if not b[5] or b[5] == a[5] or repeat:
+                bare = None if b[5] != a[5] else (when if b[4] != a[4] and i not in taken else bare)
                 continue
             fixes = sorted(f for f in entry_fix.get(did, ()) if when - dt.timedelta(minutes=20) <= f <= when)
-            # a note on an unchanged headline records the bare headline change just before it, or an entry's fix
-            at = when if b[4] != a[4] else (bare if bare is not None and when - bare <= dt.timedelta(minutes=20)
-                                             else (fixes[0] if fixes else None))
+            after = None
+            if b[4] == a[4] and not (bare is not None and when - bare <= dt.timedelta(minutes=20)):
+                for j in range(i + 1, len(states)):
+                    if ts(states[j][1]) - when > dt.timedelta(minutes=20) or states[j][5] != states[j - 1][5]:
+                        break
+                    if states[j][4] != states[j - 1][4]:
+                        after = j
+                        break
+            # a note on an unchanged headline records the bare headline change just before it, or just after it, or
+            # an entry's fix
+            if b[4] != a[4]:
+                at = when
+            elif bare is not None and when - bare <= dt.timedelta(minutes=20):
+                at = bare
+            elif after is not None:
+                at = ts(states[after][1])
+                taken.add(after)
+            else:
+                at = fixes[0] if fixes else None
             bare = None
             if at is not None:
                 count[desk] += 1

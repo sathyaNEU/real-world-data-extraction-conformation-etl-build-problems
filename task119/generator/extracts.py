@@ -7,6 +7,9 @@ from collections import defaultdict
 import numpy as np
 
 from common import (BEDS, FEED_UNITS, FEED0, RECORD1, TRUSTS, CODE, LETTERS, lm, day_of, unit_open, rng, fmt)
+import zoneinfo
+
+LONDON = zoneinfo.ZoneInfo("Europe/London")
 from world import daterange
 
 
@@ -109,7 +112,10 @@ def capacity_figures(returns, referrals):
         waits[key][0] += 1
         if r["outcome_at"]:
             out = dt.datetime.strptime(r["outcome_at"], "%Y-%m-%d %H:%M")
-            if (out - rec).total_seconds() > 4 * 3600:
+            # elapsed time: CCRS rows hold UTC, platform rows the local clock
+            z = dt.timezone.utc if r["referral_id"].startswith("CC") else LONDON
+            u = lambda t: t.replace(tzinfo=z).astimezone(dt.timezone.utc)
+            if (u(out) - u(rec)).total_seconds() > 4 * 3600:
                 waits[key][1] += 1
     wait_rows = []
     for (y, m) in month_iter(REPORT_FROM, REPORT_TO):

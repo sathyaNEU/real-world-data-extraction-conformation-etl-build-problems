@@ -12,7 +12,7 @@ into golden/, and prints the figures the critical components name.
 import bisect
 import datetime as dt
 import zoneinfo
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -23,7 +23,8 @@ LETTER_OF = {"RIS": "A", "TAN": "B", "BRK": "C", "STN": "D", "LAT": "E", "ELL": 
 CODES = ["RIS", "TAN", "BRK", "STN", "LAT", "ELL", "PRW", "PEL"]
 YEARS = {1: (dt.date(2023, 7, 1), dt.date(2024, 6, 30)), 2: (dt.date(2024, 7, 1), dt.date(2025, 6, 30)),
          3: (dt.date(2025, 7, 1), dt.date(2026, 6, 30))}
-DEVICES = ("DV1", "DV2", "DV3", "DV4", "HZ1", "HZ2")
+DEVICES = ("DV1", "DV2", "DV3", "DV4", "DV5", "DV6", "DV7", "HZ1", "HZ2")
+TRANSFER_TYPES = ("02", "03", "06")
 EPOCH = dt.datetime(2023, 1, 1)
 
 
@@ -37,6 +38,10 @@ def p_ts(s):
 
 def utc_to_local(t):
     return t.replace(tzinfo=UTC).astimezone(TZ).replace(tzinfo=None)
+
+
+def local_to_utc(t):
+    return t.replace(tzinfo=TZ).astimezone(UTC).replace(tzinfo=None)
 
 
 def year_of(d):
@@ -76,6 +81,8 @@ class Data:
         self.reg_rows = [(r.unit_code, r.trust_code, int(r.care_level), int(r.commissioned_beds),
                           dt.date.fromisoformat(r.valid_from), dt.date.fromisoformat(r.valid_to) if r.valid_to else None)
                          for r in self.reg.itertuples()]
+        self.unit_trust = {r[0]: r[1] for r in self.reg_rows}
+        self.ref_trust = dict(zip(self.ref["referral_id"], self.ref["referring_trust"]))
         self._prep_stays()
         self._prep_refs()
 
@@ -176,6 +183,27 @@ class Data:
             v.sort()
         return by
 
+    def is_transfer_op(self, u, rid):
+        """A stay is a transfer between trusts when another trust referred the patient."""
+        t = self.ref_trust.get(rid) if rid else None
+        return t is not None and t != self.unit_trust.get(u)
+
+    def adm_index(self, rows):
+        """Per unit: admission minutes of every stay, of stays the unit's trust placed (by operation: not
+        referred by another trust), and of stays not coded as a transfer (by the admission type)."""
+        idx = {}
+        tmp = defaultdict(lambda: ([], [], []))
+        for u, k, a, b, typ, rid in rows:
+            al, op, ty = tmp[u]
+            al.append(a)
+            if not self.is_transfer_op(u, rid):
+                op.append(a)
+            if typ not in TRANSFER_TYPES:
+                ty.append(a)
+        for u, (al, op, ty) in tmp.items():
+            idx[u] = (sorted(al), sorted(op), sorted(ty))
+        return idx
+
     # ------------------------------------------------------------------------ referrals
     def _prep_refs(self):
         R = self.ref
@@ -186,6 +214,19 @@ class Data:
                         "key": r.patient_key, "level": int(r.level_of_care), "outcome": r.outcome,
                         "out": p_ts(r.outcome_at), "unit": r.admitting_unit})
         self.refs = out
+        # parallel-run pairs: a platform row a few minutes after a CCRS row for the same patient and trust
+        cc = defaultdict(list)
+        for x in out:
+            if x["legacy"] and x["dta"] is not None:
+                cc[(x["key"], x["trust"])].append(x["dta"])
+        self.copies = set()
+        for x in out:
+            if x["legacy"] or x["dta"] is None or not (dt.date(2024, 2, 19) <= x["dta"].date() <= dt.date(2024, 4, 1)):
+                continue
+            for t0 in cc.get((x["key"], x["trust"]), []):
+                if dt.timedelta(0) <= x["dta"] - t0 <= dt.timedelta(minutes=30):
+                    self.copies.add(x["id"])
+                    break
 
     def own_units(self, trust, d, current_only=False, any_date=False):
         res = []
@@ -209,6 +250,12 @@ class Data:
 
 
 # ================================================================================ the pipeline
+CHANGE_EVES = {dt.date(2023, 10, 28), dt.date(2023, 10, 29), dt.date(2024, 3, 30), dt.date(2024, 3, 31),
+               dt.date(2024, 10, 26), dt.date(2024, 10, 27), dt.date(2025, 3, 29), dt.date(2025, 3, 30),
+               dt.date(2025, 10, 25), dt.date(2025, 10, 26), dt.date(2026, 3, 28), dt.date(2026, 3, 29)}
+GO_MIN = mins(dt.datetime(2024, 4, 2))
+
+
 def waits(D, handle=None, over=None):
     """One record per referral that could be a long wait: decision level, local decision time, end,
     patient, death. handle: devices handled (default all). over: one over-correction name or None."""
@@ -217,6 +264,7 @@ def waits(D, handle=None, over=None):
     shift_all = over == "DV1"
     for r in D.refs:
         dta, rec, end = r["dta"], r["rec"], r["out"]
+        dta_utc = end_utc = None
         if r["legacy"]:
             if "DV1" in handle:
                 if shift_all:
@@ -224,22 +272,27 @@ def waits(D, handle=None, over=None):
                     rec = rec + dt.timedelta(hours=1)
                     end = end + dt.timedelta(hours=1) if end is not None else None
                 else:
+                    dta_utc, end_utc = dta, end
                     dta, rec = utc_to_local(dta), utc_to_local(rec)
                     end = utc_to_local(end) if end is not None else None
             if r["outcome"] == "Admitted":
                 a = D.assign_of.get(r["id"])
                 end = (EPOCH + dt.timedelta(minutes=a[1])) if a else None
+                end_utc = None
             level = D.dec_level.get(r["id"], r["level"]) if "DV4" in handle else r["level"]
             if over == "DV4" and D.levels_seen.get(r["id"], 1) > 1:
                 continue
         else:
             level = r["level"]
+        if over == "DV5" and dta is not None and dta.date() in CHANGE_EVES:
+            continue
         key = r["key"]
         if over == "DV2" and key in D.temp:
             continue
         person = D.temp.get(key, key) if "DV2" in handle else key
         out.append({"id": r["id"], "legacy": r["legacy"], "trust": r["trust"], "dta": dta, "rec": rec, "end": end,
-                    "level": level, "outcome": r["outcome"], "person": person, "key": key, "unit": r["unit"]})
+                    "dta_utc": dta_utc, "end_utc": end_utc, "level": level, "outcome": r["outcome"],
+                    "person": person, "key": key, "unit": r["unit"]})
     if over == "HZ2":
         seen = set()
         keep = []
@@ -253,22 +306,41 @@ def waits(D, handle=None, over=None):
     return out
 
 
+def wait_minutes(w, handle):
+    """Length of the wait: elapsed time (DV5 handled) or the difference of the clock readings."""
+    if "DV5" in handle:
+        sa = w["dta_utc"] if w["dta_utc"] is not None else local_to_utc(w["dta"])
+        sb = w["end_utc"] if w["end_utc"] is not None else local_to_utc(w["end"])
+        return mins(sb) - mins(sa)
+    return mins(w["end"]) - mins(w["dta"])
+
+
+def _inside(lst, a, b):
+    i = bisect.bisect_right(lst, a)
+    return i < len(lst) and lst[i] < b
+
+
 def classify(D, ws, handle=None, over=None, construction="decisive", scope="own", basis="census"):
-    """Mark each long wait with its death and own-care reading."""
+    """Mark each long wait with its death and own-care readings: an empty staffed bed (census), any admission
+    to the unit during the wait (alloc_any), an admission the unit's trust placed itself (alloc)."""
     handle = set(DEVICES if handle is None else handle)
-    if "HZ1" in handle:
-        rows = D.merged if over != "HZ1" else D.merge_rows(D.stay_rows, gap=24 * 60)
-    else:
-        rows = D.stay_rows
-    adm = D.admissions(rows)
+    hz1 = ("HZ1" in handle, over == "HZ1")
+    cache = D.__dict__.setdefault("_idx_cache", {})
+    if hz1 not in cache:
+        if "HZ1" in handle:
+            rows = D.merged if over != "HZ1" else D.merge_rows(D.stay_rows, gap=24 * 60)
+        else:
+            rows = D.stay_rows
+        cache[hz1] = D.adm_index(rows)
+    idx = cache[hz1]
     census = D.census
     res = []
     for w in ws:
         if w["level"] != 3 or w["outcome"] == "Stood down" or w["end"] is None:
             continue
-        a, b = mins(w["dta"]), mins(w["end"])
-        if b - a <= 240:
+        if wait_minutes(w, handle) <= 240:
             continue
+        a, b = mins(w["dta"]), mins(w["end"])
         d = w["dta"].date()
         death = D.dod.get(w["person"])
         died = False
@@ -287,6 +359,7 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
             units = own
         empty = False
         alloc = False
+        alloc_any = False
         v0800 = False
         for u in units:
             if u not in census:
@@ -296,16 +369,33 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
             fb = D.reg_beds(u) if over == "DV3" else None
             if D.empty_during(u, a, b, fallback=fb):
                 empty = True
-            ad = adm.get((u, "04"), [])
-            i = bisect.bisect_right(ad, a)
-            if i < len(ad) and ad[i] < b:
+            al, op, ty = idx.get(u, ([], [], []))
+            if _inside(al, a, b):
+                alloc_any = True
+            placed = op if "DV6" in handle else ty
+            if over == "DV6":
+                placed = [t for t in op if t >= GO_MIN]
+            if _inside(placed, a, b):
                 alloc = True
             k = (u, d.isoformat())
             if k in D.occ0800 and D.occ0800[k] < D.beds_on[k]:
                 v0800 = True
-        res.append(dict(w, died=died, has_own=bool(own), empty=empty, alloc=alloc, v0800=v0800, a=a, b=b,
-                        year=year_of(d)))
+        res.append(dict(w, died=died, has_own=bool(own), empty=empty, alloc=alloc, alloc_any=alloc_any,
+                        v0800=v0800, a=a, b=b, year=year_of(d)))
     return res
+
+
+CLS_DEV = frozenset(("DV1", "DV2", "DV3", "DV4", "DV5", "DV6", "HZ1"))
+
+
+def classified(D, handle, over=None):
+    """classify() over waits(), cached on the devices that change either (the counting devices DV7 and HZ2
+    act in asks())."""
+    key = (frozenset(set(handle) & CLS_DEV), over)
+    cache = D.__dict__.setdefault("_cl_cache", {})
+    if key not in cache:
+        cache[key] = classify(D, waits(D, handle, over), handle, over)
+    return cache[key]
 
 
 def confirmable(x, construction):
@@ -313,17 +403,22 @@ def confirmable(x, construction):
         return x["empty"] or x["alloc"]
     if construction == "census":
         return x["empty"]
+    if construction == "any":
+        return x["empty"] or x["alloc_any"]
     raise ValueError(construction)
 
 
 def asks(D, handle=None, over=None, construction="decisive", per_referral_deaths=None, years=(1, 2, 3)):
     """3a, 3b, 3c per trust (and total) over the given years. per_referral_deaths: count deaths per
-    referral row (HZ2 mishandled) instead of per patient; defaults to HZ2 not handled."""
+    referral row (HZ2 mishandled) instead of per patient; defaults to HZ2 not handled. DV7 mishandled counts
+    referral rows as patients (parallel-run copies dropped where HZ2 is handled)."""
     handle = set(DEVICES if handle is None else handle)
     if per_referral_deaths is None:
         per_referral_deaths = "HZ2" not in handle
-    ws = waits(D, handle, over)
-    cl = classify(D, ws, handle, over, construction)
+    cl = classified(D, handle, over)
+    if over == "DV7":
+        n = Counter((x["trust"], x["person"]) for x in cl if x["id"] not in D.copies)
+        cl = [x for x in cl if n[(x["trust"], x["person"])] == 1]
     a3 = defaultdict(set)
     b3 = defaultdict(set)
     c3 = defaultdict(set)
@@ -331,7 +426,10 @@ def asks(D, handle=None, over=None, construction="decisive", per_referral_deaths
         if x["year"] not in years:
             continue
         t = x["trust"]
-        a3[t].add(x["person"])
+        if "DV7" in handle:
+            a3[t].add(x["person"])
+        elif not ("HZ2" in handle and x["id"] in D.copies):
+            a3[t].add(x["id"])
         tag = x["id"] if per_referral_deaths else x["person"]
         if x["died"]:
             b3[t].add(tag)
@@ -342,11 +440,16 @@ def asks(D, handle=None, over=None, construction="decisive", per_referral_deaths
     return out
 
 
+RUNGS = ("raw", "0800", "census", "any", "decisive")
+
+
 def ladder(D, year=3):
-    """The main call's rungs on the latest four quarters: deaths per trust."""
+    """The main call's rungs on the latest four quarters: deaths per trust. 0 every long-wait death; 1 the own
+    unit's 08:00 return showed an empty staffed bed that day; 2 the census shows an empty staffed bed during the
+    wait; 3 an empty bed or any admission to the own unit during the wait; 4 an empty bed or an admission the
+    trust placed itself (the decisive construction)."""
     ws = waits(D)
     cl = [x for x in classify(D, ws) if x["year"] == year]
-    deaths = defaultdict(set)
     rung = {k: defaultdict(set) for k in range(5)}
     for x in cl:
         if not x["died"]:
@@ -354,10 +457,11 @@ def ladder(D, year=3):
         t, p = x["trust"], x["person"]
         rung[0][t].add(p)
         if x["has_own"]:
-            rung[1][t].add(p)
             if x["v0800"]:
-                rung[2][t].add(p)
+                rung[1][t].add(p)
             if x["empty"]:
+                rung[2][t].add(p)
+            if x["empty"] or x["alloc_any"]:
                 rung[3][t].add(p)
             if x["empty"] or x["alloc"]:
                 rung[4][t].add(p)
@@ -378,24 +482,26 @@ def year_table(D, year=3):
 
 
 def grid(D, year=3):
-    """Twelve cells: occupancy basis by unit scope by allocation reading."""
+    """Eighteen cells: occupancy basis (none, 08:00, census) by unit scope (own, network) by allocation
+    reading (ignored, any admission, an admission the trust placed itself)."""
     ws = waits(D)
     cells = {}
     cl_own = [x for x in classify(D, ws, scope="own") if x["year"] == year and x["died"]]
     cl_net = [x for x in classify(D, ws, scope="network") if x["year"] == year and x["died"]]
     for basis in ("none", "0800", "census"):
         for scope, cl in (("own", cl_own), ("network", cl_net)):
-            for alloc in ("ignored", "read"):
+            for alloc in ("ignored", "any", "placed"):
                 cnt = defaultdict(set)
                 for x in cl:
                     if scope == "own" and not x["has_own"]:
                         continue
+                    extra = (alloc == "any" and x["alloc_any"]) or (alloc == "placed" and x["alloc"])
                     if basis == "none":
                         ok = True
                     elif basis == "0800":
-                        ok = x["v0800"] or (alloc == "read" and x["alloc"])
+                        ok = x["v0800"] or extra
                     else:
-                        ok = x["empty"] or (alloc == "read" and x["alloc"])
+                        ok = x["empty"] or extra
                     if ok:
                         cnt[x["trust"]].add(x["person"])
                 cells[(basis, scope, alloc)] = {t: len(cnt[t]) for t in CODES}
@@ -441,7 +547,7 @@ def figures(D):
     by_year = {y: asks(D, years=(y,)) for y in (1, 2, 3)}
     call, cv, run, rv, _ = leader(R[4])
     # what held each latest-year long wait behind a death, per trust
-    held = {t: {"empty": 0, "alloc": 0, "capacity": 0, "no_l3": 0} for t in CODES}
+    held = {t: {"empty": 0, "alloc": 0, "bureau": 0, "capacity": 0, "no_l3": 0} for t in CODES}
     waits_l3 = {t: 0 for t in CODES}
     for x in cl:
         if not x["has_own"]:
@@ -450,11 +556,13 @@ def figures(D):
             continue
         waits_l3[x["trust"]] += 1
         if x["died"]:
-            held[x["trust"]]["empty" if x["empty"] else "alloc" if x["alloc"] else "capacity"] += 1
+            k = ("empty" if x["empty"] else "alloc" if x["alloc"] else "bureau" if x["alloc_any"] else "capacity")
+            held[x["trust"]][k] += 1
     stn_waits_alloc = sum(1 for x in cl if x["trust"] == call and x["alloc"] and not x["empty"])
     # the statements the paper makes in words, back-tested on the record
     assert stn_waits_alloc == y3[call][0] and all(x["dta"].weekday() < 5 for x in cl if x["trust"] == call)
     assert not any(x["alloc"] for x in cl if x["trust"] != call and not x["empty"])
+    assert R[3]["RIS"] == held["RIS"]["empty"] + held["RIS"]["bureau"] and R[3]["RIS"] > R[3][call]
     assert all(x["dta"].hour >= 18 and not x["empty"] for x in cl if x["trust"] == "BRK")
     ret = D.ret[(D.ret.unit_code == "BRK-ACC") & (D.ret.return_date >= "2025-07-01") &
                 (D.ret.return_date <= "2026-06-30")]
@@ -615,10 +723,14 @@ def write_xlsx(fx, path):
             "data service episodes.",
             "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either held "
             "an empty staffed bed or assigned a bed to a planned surgical admission from the trust's own theatres "
-            "(sections 3 and 4).",
+            "(sections 3 and 4). Beds the network's bed bureau allocated to patients transferred from other trusts "
+            "are not the trust's own decision.",
+            "Waits are elapsed time, so the two March nights when the clocks went forward are measured an hour "
+            "shorter than the clock readings. A patient with two long waits at a trust is one patient.",
             "Before 2 April 2024 the record is migrated CCRS data: decision level from the CCRS level entries, "
             "CCRS times converted from UTC, temporary patient keys resolved through the key links, parallel-run "
-            "copies counted once, unit levels as registered on the date of the wait."]):
+            "copies counted once, transfers identified by the referring trust (the CCRS-era feed coded every "
+            "unplanned admission 01), unit levels as registered on the date of the wait."]):
         c = ws.cell(row=note + k, column=1, value=line)
         c.font = Font(name="Arial", size=8, color="595959")
 
@@ -651,16 +763,18 @@ def write_xlsx(fx, path):
         ("Record", "Decisions to admit 1 July 2023 to 30 June 2026"),
         ("Placement basis", "Latest four complete quarters, 1 July 2025 to 30 June 2026 (terms of reference, "
                             "section 5)"),
-        ("Long wait", "More than four hours from dta_at to the assignment of a level 3 bed (the stay's admitted_at), "
-                      "or to death before a bed was assigned"),
+        ("Long wait", "More than four hours of elapsed time from dta_at to the assignment of a level 3 bed (the "
+                      "stay's admitted_at), or to death before a bed was assigned"),
         ("Death", "Date of death within 30 days of the decision to admit; registrations reach the regional data "
                   "service within 14 days, so decisions to 30 June 2026 are complete"),
         ("Own unit", "The level 3 unit the referring trust ran on the date of the decision, per the unit "
                      "register's effective dates"),
         ("Empty staffed bed", "Census rebuilt minute by minute from admitted_at and discharged_at against the day's "
                               "staffed beds (beds_open)"),
-        ("Planned admission", "Unit feed admission_type 04 (planned local surgical admission); contiguous bed "
-                              "rows of one patient in one unit read as one stay"),
+        ("Own placement", "An admission the referring trust made to its own unit: admission_type 04 (planned local "
+                          "surgical admission) from its own theatres. A patient referred by another trust is a "
+                          "transfer whose bed the network's bed bureau allocated. Contiguous bed rows of one patient in "
+                          "one unit read as one stay"),
         ("Counting", "Whole patients; a patient appears once per trust in each column"),
     ]
     for i, (k, v) in enumerate(notes, 1):
@@ -785,9 +899,9 @@ def write_docx(fx, path, png):
              "waits the unit was assigning beds to planned surgical admissions from Stennock's own theatres, on "
              "weekdays during the elective lists. At weekends, with no lists running, no Stennock referral waited "
              "more than four hours.".format(fx["stn_waits_alloc"])])
-    para("The order in which a unit fills its beds is the trust's decision about the use of its own beds. Under the "
-         "methodology note every one of those {:,} deaths therefore falls inside Stennock's own care, and they are "
-         "the deaths a review can examine and confirm.".format(y3[call][2]), after=6)
+    para("A bed the trust gives to a planned patient from its own theatres is the trust's decision about the use of "
+         "its own beds. Under the methodology note every one of those {:,} deaths therefore falls inside Stennock's "
+         "own care, and they are the deaths a review can examine and confirm.".format(y3[call][2]), after=6)
     para("The pattern is not a one-year effect. Across the network's record Stennock has the most confirmable "
          "deaths in each four-quarter year ({:,}, {:,} and {:,}, against Prideswick's {:,}, {:,} and {:,}), so the "
          "latest year is a fair guide to 2027-28."
@@ -808,8 +922,9 @@ def write_docx(fx, path, png):
         "STN": "Own unit admitting planned surgical patients from Stennock's theatres throughout each wait",
         "PRW": "{:,} deaths after waits beside its own empty staffed beds; {:,} after waits with its unit full"
                .format(held["PRW"]["empty"], held["PRW"]["capacity"]),
-        "RIS": "{:,} deaths after waits with its unit full and no planned admission during the wait; {:,} after "
-               "waits beside an empty staffed bed".format(held["RIS"]["capacity"], held["RIS"]["empty"]),
+        "RIS": "{:,} deaths after waits through which its full unit took patients transferred from other trusts on "
+               "beds the network's bed bureau allocated; {:,} with its unit full and no admission; {:,} beside an "
+               "empty staffed bed".format(held["RIS"]["bureau"], held["RIS"]["capacity"], held["RIS"]["empty"]),
         "LAT": "No level 3 beds: every wait was for another trust's bed",
         "BRK": "Empty beds at 08:00 on most mornings, but full at every hour of each long wait, all of which began "
                "in the evening",
@@ -857,10 +972,13 @@ def write_docx(fx, path, png):
          "staffed beds. That is a smaller yield than Stennock's, {:,} deaths fewer, and the Board can raise the "
          "weekend rule with Prideswick through the network without a twelve-month review."
          .format(rv, gap), after=6)
-    para("Brackenford's morning returns show empty beds most days, which is what the network manager has in mind, "
-         "but its unit was full at every hour of each of its long waits, all of which began in the evening. "
-         "Ristenholm's long waits pass with its unit full and taking no planned admissions. In both cases the wait is the "
-         "network's capacity, not the trust's own decision.", after=6)
+    para("Ristenholm's unit gave beds to other patients during most of its own patients' long waits ({:,} of its "
+         "{:,} deaths in the placement year), which can read as Ristenholm putting other patients first. Every one of "
+         "those beds went to a patient transferred from a trust without level 3 beds, and the network's bed bureau "
+         "allocates the bed for each transfer between trusts, so those waits are the network's capacity rather than "
+         "Ristenholm's own decisions. Brackenford's morning returns show empty beds most days, which is what the "
+         "network manager has in mind, but its unit was full at every hour of each of its long waits, all of which "
+         "began in the evening.".format(held["RIS"]["bureau"], y3["RIS"][1]), after=6)
 
     heading("The record behind the placement")
     para("Across the network's whole record, July 2023 to June 2026, {:,} patients waited inside the remit and "

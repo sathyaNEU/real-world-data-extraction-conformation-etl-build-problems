@@ -112,8 +112,8 @@
   {
    "path": "cms_revisions_web_desks_2025-10_2026-09.csv",
    "format": "csv",
-   "bytes": 19103066,
-   "rows": 266593,
+   "bytes": 19109238,
+   "rows": 266630,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",
    "license": "CC0-1.0 (original work)"
@@ -139,8 +139,8 @@
   {
    "path": "panel_monthly_audience_2025-10_2026-09.csv",
    "format": "csv",
-   "bytes": 5206,
-   "rows": 132,
+   "bytes": 6858,
+   "rows": 174,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",
    "license": "CC0-1.0 (original work)"
@@ -148,7 +148,7 @@
   {
    "path": "panel_reference_workbook.xlsx",
    "format": "xlsx",
-   "bytes": 8909,
+   "bytes": 8905,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",

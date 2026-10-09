@@ -232,6 +232,22 @@ class World:
                     for i in range(n - nd - na):
                         specs.append({"letter": L, "year": y, "cls": cls, "died": False, "tags": set()})
         assert not dev, dev
+        # capacity waits through which the own unit admitted a transfer the bed bureau allocated
+        for y, m in plan.TX_INSIDE.items():
+            for L, (kd, ka) in m.items():
+                dead = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
+                        and not s["tags"] and s["died"]]
+                alive = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
+                         and not s["tags"] and not s["died"]]
+                assert len(dead) >= kd and len(alive) >= ka, (y, L, len(dead), len(alive))
+                for s in dead[:kd] + alive[:ka]:
+                    s["tx"] = True
+        for (y, L, tag), kd in plan.TX_TAGGED.items():
+            dead = [s for s in specs if s["year"] == y and s["letter"] == L and s["cls"] == "cap"
+                    and s["tags"] == {tag} and s["died"]]
+            assert len(dead) >= kd, (y, L, tag, len(dead))
+            for s in dead[:kd]:
+                s["tx"] = True
         # deaths before a bed was assigned
         for y, m in plan.DIED_WAITING.items():
             for L, k in m.items():
@@ -248,6 +264,8 @@ class World:
         by = defaultdict(list)
         for s in specs:
             by[(s["year"], s["letter"], s["cls"])].append(s)
+        # 0. the spring clock-change nights (DV5), registered before any designed wait
+        self.place_dst()
         # 1. own-empty waits on role days
         for y in (1, 2, 3):
             for L, role in (("G", "G"), ("A", "A"), ("F", "F"), ("H", "H"), ("C", "C")):
@@ -270,6 +288,8 @@ class World:
         for key in sorted(by, key=lambda k: (k[0], k[1])):
             caps.extend(by[key])
         self.place_caps(caps)
+        # 4. genuine repeat patients (DV7): a second long wait months later under the same verified key
+        self.place_dv7()
 
     # ------------------------------------------------------------------ own-empty waits (role days)
     def place_own(self, ss, days, y, L):
@@ -681,6 +701,21 @@ class World:
                 U.add_event(ts)
                 U.swaps.append({"t": ts, "need": "planned", "ref": w["wid"]})
                 w["swap_at"] = ts
+            if s.get("tx"):
+                # a bed frees inside the wait and the bed bureau allocates it to a patient from another trust
+                # who had been waiting longer
+                U = self.units[ou]
+                for k in range(40):
+                    tt = dta + int(r.integers(20, 151))
+                    if U.busy(tt) or crosses_dst(dta - 250, tt + 5):
+                        continue
+                    break
+                else:
+                    self.undo(w)
+                    continue
+                U.add_event(tt)
+                U.slots.append({"t": tt, "kind": "tx_in", "ref": w["wid"]})
+                w["tx_at"] = tt
             return w
         return None
 
@@ -839,6 +874,110 @@ class World:
                 break
             else:
                 raise RuntimeError("spurious %s" % L)
+
+    # ------------------------------------------------------------------ DV5: the spring clock-change nights
+    def place_dst(self):
+        """One wait per trust on the evening before each spring clock change in the record outside the
+        latest four quarters. The wall clock reads 4h10 to 4h50, the elapsed wait is an hour shorter. Nothing
+        is timed inside the change window itself; the waits span it."""
+        r = rng("dv5")
+        for day_s, rows in plan.DV5_NIGHTS.items():
+            d0 = dt.date.fromisoformat(day_s)
+            d1 = d0 + dt.timedelta(days=1)
+            night = {}            # this night's DV5 waits per trust: two may share an own unit's empty beds
+            for L, kind, died in rows:
+                ou = own_unit(L, d0)
+                assert (ou is None) == (kind == "none"), (L, kind, d0)
+                mine = night.setdefault(L, [])
+                mine_ev = {t for w0 in mine for t in (w0["gap_open"], w0["end"]) if t is not None}
+                for attempt in range(400):
+                    dta = lm(d0, 22, 30) + int(r.integers(0, 100))
+                    end = dta + int(r.integers(250, 291))
+                    if any(a0 <= x < b0 for a0, b0 in DST_WINDOWS for x in (dta, end)):
+                        continue
+                    g0 = dta - int(r.integers(20, 61)) if kind == "own" else dta
+                    # waits outside the remit: only the own unit's state matters to any reading of them
+                    if ou is not None and any(u == ou and g0 - 5 < c and end + 5 > o and not
+                                              any(o == w0["gap_open"] for w0 in mine)
+                                              for (u, o, c) in self.gap_windows):
+                        continue
+                    if self.golden_overlap(g0, end):
+                        continue
+                    if ou is not None:
+                        U0 = self.units[ou]
+                        others = [x for x in U0.events if g0 - 4 < x < end + 4 and x not in mine_ev]
+                        clash = [x for x in (g0, end) for y in mine_ev if abs(x - y) <= 3]
+                        if others or clash:
+                            continue
+                        if any(a - 10 < end and b + 10 > g0 for (a, b, wid) in self.trust_iv[L]
+                               if wid not in {w0["wid"] for w0 in mine}):
+                            continue
+                    if kind == "none":
+                        unit = self.pick_unit(end, d1)
+                        if unit is None:
+                            continue
+                    else:
+                        unit = ou
+                        if self.units[unit].busy(end) or self.units[unit].busy(g0):
+                            continue
+                    break
+                else:
+                    raise RuntimeError("dv5 %s %s" % (L, day_s))
+                w = self.new_wait(letter=L, year=year_of(d0), cls="own" if kind == "own" else "cap", died=died,
+                                  tags={"DV5", "DV5_" + kind}, dta=dta, end=end, unit=unit,
+                                  gap_open=g0 if kind == "own" else None, golden=False, outcome="admitted")
+                self.commit(w)
+                mine.append(w)
+                U = self.units[unit]
+                if kind == "own":
+                    U.gaps.append({"open": g0, "close": end, "close_kind": "wait", "ref": w["wid"], "kind": "dv5"})
+                    U.frozen.append((g0, end))
+                    U.add_event(g0)
+                    U.add_event(end)
+                    U.slots.append({"t": end, "kind": "gap_close_wait", "ref": w["wid"]})
+                    self.gap_windows.append((unit, g0, end))
+                else:
+                    if ou is not None:
+                        self.units[ou].frozen.append((dta, end))
+                    U.add_event(end)
+                    U.slots.append({"t": end, "kind": "wait_end", "ref": w["wid"]})
+
+    # ------------------------------------------------------------------ DV7: genuine repeat patients
+    def place_dv7(self):
+        """Two year-2 survivors per trust come back months later with a second long wait at the same trust,
+        under the same verified key, and survive it."""
+        r = rng("dv7")
+        a2, b2 = YEARS[2]
+        for L in LETTERS:
+            firsts = [w for w in self.waits if w["letter"] == L and w["year"] == 2 and w["golden"] and not w["tags"]
+                      and not w["died"] and w["outcome"] == "admitted" and "tx_at" not in w
+                      and w["cls"] in ("cap", "alloc") and day_of(w["dta"]) <= b2 - dt.timedelta(days=120)]
+            firsts.sort(key=lambda w: w["dta"])
+            picked = 0
+            for w1 in firsts[::7]:
+                if picked == plan.DV7_PER_TRUST:
+                    break
+                d1 = day_of(w1["dta"])
+                pool = [d for d in daterange(d1 + dt.timedelta(days=45), b2 - dt.timedelta(days=1))
+                        if not crosses_dst(lm(d, 0, 0), lm(d + dt.timedelta(days=1), 9, 0))]
+                if w1["cls"] == "alloc":
+                    used = {day_of(w["dta"]) for w in self.waits if w["cls"] == "alloc"}
+                    pool = [d for d in pool if self.days[d]["list"] and d not in used]
+                r.shuffle(pool)
+                s2 = {"letter": L, "year": 2, "cls": w1["cls"], "died": False, "tags": {"DV7b"}}
+                for d in pool[:300]:
+                    if w1["cls"] == "alloc":
+                        w2 = self.try_alloc(s2, d, w1["unit"])
+                    else:
+                        w2 = self.try_cap(s2, d)
+                    if w2 is not None:
+                        break
+                else:
+                    continue
+                w1["tags"] = {"DV7a"}
+                w1["pair"], w2["pair"] = w2["wid"], w1["wid"]
+                picked += 1
+            assert picked == plan.DV7_PER_TRUST, ("dv7", L, picked)
 
     # ------------------------------------------------------------------ planned lists
     def build_planned(self):

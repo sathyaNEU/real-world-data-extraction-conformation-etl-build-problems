@@ -58,9 +58,9 @@ PI = np.array([
     [.32, .15, .12, .11, .07, .08, .15],
     [.32, .15, .12, .11, .07, .08, .15],
 ])
-# pooled borrowed orders per 1,000 sessions each policy's watched-listing exposure carries, against
-# the incumbent: the velocity boost's pinned listings, and the small organic exposure of the rest
-BORROWED_TARGET = {"HC-31": 0.11, "HC-33": 4.73, "HC-34": 0.30, "HC-36": 0.09, "HC-37": 0.09, "HC-39": 0.06}
+# pooled borrowed orders per 1,000 sessions the velocity boost's pinned watched listings carry, against
+# the incumbent (no other ranker reads saves, so no other ranker shows a watched listing)
+BORROWED_TARGET = {"HC-33": 4.73}
 
 # incumbent in-session carousel orders per 1,000 sessions by cell, and its profile over renders
 KAPPA = np.array([57, 61, 70, 74, 42, 47, 53, 57], float)
@@ -86,10 +86,6 @@ G_OF_N = {1: 1.0, 2: 0.3}              # pinned purchases happen in one- and two
 WATCH_LAMBDA = np.array([0.08, 0.45, 0.95, 1.30] * 2)
 ANYWAY_NUM, ANYWAY_DEN = 5, 8          # share of watched listings their watcher buys within 6 days
 ANYWAY_DAY_P = np.array([0.12, 0.17, 0.20, 0.30, 0.13, 0.08])   # calendar day 1..6 after the session
-# organic exposure (a ranker that does not read saves still shows a watched listing now and then)
-ORGANIC_SHOWN = np.array([0.004, 0.025, 0.060, 0.090] * 2)       # watched listings shown per session
-ORGANIC_BUY = 0.025                                               # in-session purchase rate when shown
-ORGANIC_MULT = {"HC-24": 1.00, "HC-31": 1.12, "HC-34": 1.30, "HC-36": 1.05, "HC-37": 1.05, "HC-39": 1.03}
 
 # background orders per buyer per day, by tenure band
 BG_RATE = np.array([0.010, 0.012, 0.014, 0.016] * 2)

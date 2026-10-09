@@ -263,10 +263,6 @@ def pinned_rate(c, n):
     return P.B_R * _pinned_per_session(c) * P.G_OF_N.get(int(n), 0.0)
 
 
-def organic_rate(c, k):
-    return P.ORGANIC_SHOWN[c] * P.ORGANIC_BUY * 1000 * P.ORGANIC_MULT.get(P.RANKERS[k], 1.0)
-
-
 def group_size(c, k):
     return int(round(P.N_CELL[c] * P.PI[c, k]))
 
@@ -604,27 +600,6 @@ def pin_velocity(W, c, k, sids, rng):
     WL.loc[sel, "shown"] = flag[sel] | WL.loc[sel, "bought"].to_numpy()
     shown = WL[sel & WL.shown.to_numpy()]
     assert len(shown) % 8 == 0 and shown.intent.sum() * P.ANYWAY_DEN == len(shown) * P.ANYWAY_NUM
-
-
-def organic_show(W, c, k, rng):
-    """A ranker that does not read saves shows one watched listing in a few sessions; the shown
-    total is a multiple of 8, five in eight of them ones their watchers buy anyway."""
-    WL = W.WL
-    sel = (WL.cell.to_numpy() == c) & (WL.arm.to_numpy() == k)
-    m = int(((W.S.cell == c) & (W.S.arm == k)).sum())
-    target = max(round8(P.ORGANIC_SHOWN[c] * P.ORGANIC_MULT.get(P.RANKERS[k], 1.0) * m),
-                 int(WL.loc[sel, "bought"].sum()))
-    have = WL[sel & WL.bought.to_numpy()]
-    extra = target - len(have)
-    assert extra % 8 == 0
-    ei = extra * P.ANYWAY_NUM // P.ANYWAY_DEN
-    en = extra - ei
-    pool = WL[sel & ~WL.bought.to_numpy() & ~WL.sid.isin(have.sid).to_numpy()]
-    pool = pool.iloc[rng.permutation(len(pool))].drop_duplicates("sid")
-    pi = pool[pool.intent].wid.to_numpy()[:ei]
-    pn = pool[~pool.intent].wid.to_numpy()[:en]
-    assert len(pi) == ei and len(pn) == en, (c, k, ei, en, len(pi), len(pn))
-    WL.loc[np.concatenate([pi, pn]), "shown"] = True
 
 
 def fresh_tiles(W, c, k, sids, ns, rng):

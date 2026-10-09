@@ -182,6 +182,17 @@ PAIR_GUARD = 60                 # minutes before a note on an unchanged headline
 LAG_WINDOW = 10                 # the golden pairing of a note with the headline fix it records, minutes
 ENTRY_WINDOW = 30               # the golden pairing of a live blog's note with its entry's fix, minutes
 LAG_SUBSEED = {"POL-N": 55, "BUS-N": 57, "SPT-N": 51, "CUL-N": 63, "POL-M": 0, "SPT-M": 50, "LOC-M": 57}   # chosen so every partial reading misses every median
+# the note before its fix: a story's headline correction saved note first, the note (which says the headline was
+# corrected) on one live save and the corrected headline published on the next save a few minutes later
+LEAD_SHARE = {"POL-N": 0.12, "BUS-N": 0.12, "SPT-N": 0.12, "CUL-N": 0.20, "POL-M": 0.15, "SPT-M": 0.17, "LOC-M": 0.13}
+LEAD_MINUTES = (1, 9)
+LEAD_SUBSEED = {"POL-N": 0, "BUS-N": 47, "SPT-N": 1, "CUL-N": 2, "POL-M": 0, "SPT-M": 0, "LOC-M": 1}
+# a note dropped and restored: a live save that left an article's correction note off, and the later save that put the
+# same note back while updating the headline (text-corrected stories only)
+READD_N = {"POL-N": 2, "BUS-N": 2, "SPT-N": 2, "CUL-N": 1, "POL-M": 1, "SPT-M": 1, "LOC-M": 2}
+READD_GAP = (6, 180)            # minutes between the save that dropped the note and the save that restored it
+READD_SUBSEED = {"POL-N": 0, "BUS-N": 0, "SPT-N": 0, "CUL-N": 0, "POL-M": 0, "SPT-M": 0, "LOC-M": 0}
+NOTE_GUARD_AFTER = 60           # minutes after a note on an unchanged headline in which no other headline change falls
 
 # panel: average monthly unique audience the version of record should carry (people)
 PANEL_TARGET = {"POL-N": 3_180_000, "BUS-N": 1_760_000, "SPT-N": 2_930_000, "CUL-N": 1_412_000,
@@ -190,15 +201,18 @@ PANEL_TARGET = {"POL-N": 3_180_000, "BUS-N": 1_760_000, "SPT-N": 2_930_000, "CUL
 PANEL_REMAINDER = {"POL-N": 260, "BUS-N": 310, "SPT-N": 720, "CUL-N": 240, "POL-M": 180, "SPT-M": 290,
                    "LOC-M": 760, "BLN-HOME": 200, "BLB-HOME": 330}
 RESTATED_PERIODS = ["2026-04", "2026-05", "2026-06"]
-RESTATE_FACTOR = 1.176          # the duplication fault inflated the original releases by this factor
+RESTATE_FACTOR = 0.93           # the processing fault left the original releases at this share of the restated figures
 # the history release: November 2025 to February 2026 rerun on the 2026 content taxonomy, for the national
 # sections whose content moved; the other sections were renumbered with their content unchanged and keep the
 # figures first published
 HISTORY_PERIODS = ["2025-11", "2025-12", "2026-01", "2026-02"]
 HISTORY_PUBLISHED = (2026, 4, 24)
 HISTORY_SECTIONS = {("BLN", "Politics"), ("BLN", "Culture"), ("BLN", "Home and other")}
-# the cross-device duplication fault was in the Brisbane edition site's processing; only its rows are restated
-RESTATED_SITES = {"BLB"}
+# the processing fault (mobile audiences undercounted) affected both sites; the restatement carries both
+RESTATED_SITES = {"BLN", "BLB"}
+# the July release's file also carried April to June for both sites as first published (before the restatement);
+# the warehouse loaded those rows under the July release
+ECHO_RELEASE = "R26-08"
 # a section's audience on the 2024 content taxonomy against the 2026 one (content moved between three national
 # sections in 2026; the rest were renumbered only)
 OLD_BASIS = {("BLN", "Home and other"): 1.052, ("BLN", "Politics"): 0.957, ("BLN", "Sport"): 1.0,

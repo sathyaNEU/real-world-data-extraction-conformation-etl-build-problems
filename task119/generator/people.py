@@ -88,6 +88,13 @@ def build_referrals(world, P, stays):
         t = s["admit"]
         bst = t < lm(dt.date(2024, 4, 2)) and is_bst(t)
         wt = short_wait(r, t, bst)
+        if p.get("tx_for") is not None:
+            # placed by the bed bureau inside a waiting patient's wait: referred before that patient
+            lo = t - world.waits_by_id[p["tx_for"]]["dta"] + 10
+            hi = min(171 if bst else 226, lo + 81)
+            assert lo < hi, ("transfer wait", t, lo, hi)
+            wt = int(r.integers(lo, hi))
+            assert not crosses_dst(t - wt - 5, t)
         dta = t - wt
         rec = dta - receipt_delay(r)
         add(pid=s["pid"], letter=L, ward=ward_for(L, r), received=rec, dta=dta, level_req=p["level"],
@@ -216,7 +223,7 @@ def assign_deaths(world, P, refs, stays):
         ref = wref[w["wid"]]
         pid = w["pid"]
         dta_day = day_of(w["dta"])
-        if w["tags"] & {"DV2b1", "DV2b2"}:
+        if w["tags"] & {"DV2b1", "DV2b2", "DV7a", "DV7b"}:
             continue
         if not w["died"]:
             if r.random() < 0.12:

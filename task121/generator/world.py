@@ -85,7 +85,7 @@ def make_accounts(rng):
 
     spec = [("MEMBER", 2150, 0.744, 1.6), ("CP4", 2860, 1.40, 0.55), ("XY", 1850, 0.97, 1.0),
             ("OTHER", 9400, 0.915, 1.0)]
-    cp4_cohort_w = np.array([1.15, 0.92, 1.10, 0.82, 1.02, 1.62, 0.95, 0.675, 1.08, 0.9, 1.0, 0.86])
+    cp4_cohort_w = np.array([1.15, 0.92, 1.10, 0.82, 1.02, 1.78, 0.95, 0.60, 1.08, 0.9, 1.0, 0.86])
     cp4_cohort_w = cp4_cohort_w / cp4_cohort_w.sum()
     for klass, n, mean, shape in spec:
         lam = rng.gamma(shape, mean / shape, size=n)
@@ -110,8 +110,13 @@ def make_accounts(rng):
     c1 = []
     for c in acc.cohort0:
         if rng.random() < 0.031:
-            c1.append(int(min(12, max(1, c + (1 if rng.random() < 0.5 else -1)))) if c not in (1, 12)
-                      else (2 if c == 1 else 11))
+            step_ = 1 if rng.random() < 0.5 else -1
+            pos = (c - 1) % 4
+            if pos == 0:
+                step_ = 1
+            elif pos == 3:
+                step_ = -1
+            c1.append(int(c + step_))
         else:
             c1.append(int(c))
     acc["cohort1"] = c1
@@ -342,6 +347,10 @@ def allocate_outcomes(rng, sk, acc, switches):
         elif isinstance(f, tuple) and len(f) == 2:
             fam[i] = (f[0], "B0" if w == "B0" else ("base" if w in P.BASE else "rev"))
             fam_mx[i] = f[1]
+    # review-week signed-in cells are allocated per flag cohort as of the session
+    for i, (seg, w, a, t) in enumerate(zip(sk.seg, sk.week, sk.acct, sk.t)):
+        if seg == "SI" and w in P.REVIEW and isinstance(fam[i], tuple):
+            fam[i] = fam[i] + (int(cohort_asof(A.cohort0[a], A.cohort1[a], t)),)
     rates = {"P3": ("P3", P.R_P3), "P4": ("P4", P.R_P4), "P2": ("P2", P.R_P2), "NV": ("NV", P.R_NV),
              "RG": ("RG", P.R_RG)}
     car = Carry()
@@ -398,6 +407,11 @@ def simulate_cp4(rng, sk, acc):
     step = sk.step.to_numpy().copy()
     order = sk.order.to_numpy().copy()
     cp4_state = {a: True for a in acc.account_id[acc.klass == "CP4"]}
+    lr_exp, lr_got = {}, {}
+    w4_sessions = {}
+    for a_, t_, w_, sg_ in zip(sk.acct, sk.t, sk.week, sk.seg):
+        if w_ == "W4" and sg_ == "SI" and a_ in cp4_state:
+            w4_sessions.setdefault(a_, []).append(t_)
     m = ((sk.klass == "CP4") & sk.week.isin(P.REVIEW) & sk.seg.isin(["SI", "BOTI"])).to_numpy()
     acct, tt, wk, mxd, sg = (sk.acct.to_numpy(), sk.t.to_numpy(), sk.week.to_numpy(), sk.mixed.to_numpy(),
                              sk.seg.to_numpy())
@@ -414,18 +428,31 @@ def simulate_cp4(rng, sk, acc):
             continue
         ex, conv = exit_probs("SI", rs_single, mx, addr_factor=(0.208 if p1[i] else 1.0))
         probs = np.append(ex, conv)
-        s_ = P.STEPS[int(rng.choice(6, p=probs / probs.sum()))]
+        probs = probs / probs.sum()
+        key = (coh, w, bool(p1[i]), bool(mx))
+        e = lr_exp.setdefault(key, np.zeros(6))
+        gt = lr_got.setdefault(key, np.zeros(6))
+        e += probs
+        j = int(np.argmax(e - gt))
+        gt[j] += 1
+        s_ = P.STEPS[j]
         step[i] = s_
         order[i] = s_ == "confirmation"
         if p1[i] and a not in resave:
             reached = P.STEPS.index(s_) >= 2
             if rng.random() < (0.9 if reached else 0.82):
                 trig[i] = True
-                if w != "W4" and rng.random() < 0.08:
-                    d = dt.timedelta(minutes=int(rng.integers(12, 56)))
+                for _try in range(40):
+                    if w != "W4" and rng.random() < 0.08:
+                        d = dt.timedelta(minutes=int(rng.integers(12, 56)))
+                    else:
+                        d = dt.timedelta(minutes=int(rng.integers(130, 48 * 60)))
+                    r_ = t + d
+                    if not any(r_ - dt.timedelta(hours=2) <= x < r_ for x in w4_sessions.get(a, [])):
+                        break
                 else:
-                    d = dt.timedelta(minutes=int(rng.integers(130, 48 * 60)))
-                resave[a] = t + d
+                    raise AssertionError(("no clear re-save time", a, t))
+                resave[a] = r_
     sk["step"] = step
     sk["order"] = order
     sk["p1"] = p1
@@ -890,6 +917,7 @@ def build_truth(seed=P.SEED):
     switches = xy_switches(rng, sk, acc)
     sk = allocate_outcomes(rng, sk, acc, switches)
     sk, resave = simulate_cp4(rng, sk, acc)
+    bal, bal_it = balance_baseline(rng, sk, switches)
     cat, cat_hist = make_catalogue(rng)
     make_baskets(rng, sk, cat)
     tk, harvested, nonacct = make_tokens(rng, sk, acc, used)
@@ -955,4 +983,80 @@ def build_truth(seed=P.SEED):
     flags = make_flags(acc)
     return dict(acc=acc, sk=sk, victims=victims, switches=switches, resave=resave, cat=cat, cat_hist=cat_hist,
                 tokens=tk, harvested=harvested, nonacct=nonacct, profiles=prof, address=ab, cards=cards,
-                card_changes=cch, refund=refund, attempts=att, edge=edge, flags=flags)
+                card_changes=cch, refund=refund, attempts=att, edge=edge, flags=flags, balance=bal, balance_it=bal_it)
+
+
+# --------------------------------------------------------------------------- baseline balance
+
+def balance_baseline(rng, sk, switches, tol=0.3):
+    """Swap baseline-week conversions between sessions of the same account class, week and basket
+    type until every account set a population can be read through converts at the signed-in rate.
+    Totals per class, week and basket type are unchanged by construction."""
+    nb = (sk.bot == "")
+    si = sk[(sk.seg == "SI") & nb]
+    base = sk[(sk.seg == "SI") & sk.week.isin(P.BASE)]
+    r_si = base.order.mean()
+    sets = {}
+    for w in P.REVIEW:
+        sets[("P1", w)] = set(si.acct[si.p1 & (si.week == w)])
+        sets[("P3", w)] = set(si.acct[si.p3 & (si.week == w)])
+        sets[("P3cur", w)] = sets[("P3", w)] - set(switches)
+        c4 = sk[(sk.seg == "CLUB4") & (sk.week == w)]
+        sets[("P4", w)] = set(c4.acct)
+    rv = P.REVIEW
+    sets[("P1", "win")] = set().union(*[sets[("P1", w)] for w in rv])
+    sets[("P3", "win")] = set().union(*[sets[("P3", w)] for w in rv])
+    sets[("P3cur", "win")] = sets[("P3", "win")] - set(switches)
+    sets[("P4", "win")] = set().union(*[sets[("P4", w)] for w in rv])
+    c4 = sk[sk.seg == "CLUB4"]
+    late = set(c4.acct[c4.t >= dt.datetime(2026, 9, 1)])
+    sets[("P4sep", "win")] = sets[("P4", "win")] & late
+    sets[("P4sep", "W1")] = sets[("P4", "W1")] & set(c4.acct[(c4.week == "W1") & (c4.t >= dt.datetime(2026, 9, 1))])
+    keys = sorted(sets, key=str)
+    idx = base.index.to_numpy()
+    acct = base.acct.to_numpy()
+    member = np.array([[a in sets[k] for k in keys] for a in acct], dtype=np.int8)
+    order = sk.order.to_numpy().copy()
+    step = sk.step.to_numpy().copy()
+    o = order[idx].astype(float)
+    target = member.T.astype(float) @ np.full(len(idx), r_si)
+    dev = member.T.astype(float) @ o - target
+    grp = (base.klass + "|" + base.week + "|" + base.mixed.astype(str)).to_numpy()
+    groups = {}
+    for j, gname in enumerate(grp):
+        groups.setdefault(gname, []).append(j)
+    gnames = sorted(groups)
+    M = member.astype(float)
+    nrm = (M ** 2).sum(axis=1)
+    it, stall = 0, 0
+    best_obj = (dev ** 2).sum()
+    while it < 8000 and stall < 400:
+        it += 1
+        gname = gnames[int(rng.integers(0, len(gnames)))]
+        js = np.array(groups[gname])
+        conv = js[o[js] == 1]
+        non = js[o[js] == 0]
+        if len(conv) == 0 or len(non) == 0:
+            stall += 1
+            continue
+        xs = rng.choice(conv, size=min(150, len(conv)), replace=False)
+        ys = rng.choice(non, size=min(300, len(non)), replace=False)
+        Mx, My = M[xs], M[ys]
+        gain = (-(nrm[xs][:, None] + nrm[ys][None, :] - 2 * Mx @ My.T)
+                - 2 * (My @ dev)[None, :] + 2 * (Mx @ dev)[:, None])
+        i, j = np.unravel_index(int(np.argmax(gain)), gain.shape)
+        if gain[i, j] <= 1e-9:
+            stall += 1
+            continue
+        bx, by = xs[i], ys[j]
+        dev = dev - M[bx] + M[by]
+        o[bx], o[by] = 0.0, 1.0
+        ix, iy = idx[bx], idx[by]
+        order[ix], order[iy] = False, True
+        step[ix], step[iy] = step[iy], step[ix]
+        obj = (dev ** 2).sum()
+        stall = 0 if obj < best_obj - 1e-9 else stall + 1
+        best_obj = min(best_obj, obj)
+    sk["order"] = order
+    sk["step"] = step
+    return {str(k): round(float(v), 3) for k, v in zip(keys, dev)}, it

@@ -55,14 +55,15 @@ def assign_admissions(world, P):
     """Decide who is admitted at every slot before the simulation runs."""
     r = rng("admissions")
     wait_pid = {}
+    second = {"DV2b2", "DV7b"}          # a patient's second long wait carries the first wait's patient
     for w in world.waits:
-        if "DV2b2" in w["tags"]:
+        if w["tags"] & second:
             continue
         pid = P.new(kind="wait", letter=w["letter"], wid=w["wid"])
         wait_pid[w["wid"]] = pid
         w["pid"] = pid
     for w in world.waits:
-        if "DV2b2" in w["tags"]:
+        if w["tags"] & second:
             w["pid"] = world.waits_by_id[w["pair"]]["pid"]
     readmit = {}
     adm = {u: [] for u in FEED_UNITS}
@@ -71,6 +72,17 @@ def assign_admissions(world, P):
                                      "F": "ELL-ACC", "H": "PEL-W3"}.items() if v == u][0]
         for s in U.slots:
             t = s["t"]
+            if s["kind"] == "tx_in":
+                # a patient from a trust without its own level-3 unit, placed here by the bed bureau
+                d = day_of(t)
+                pool = ["E", "B"] + (["F"] if own_unit("F", d) is None else []) + \
+                       (["H"] if own_unit("H", d) is None else [])
+                pp = np.array([{"E": 0.5, "B": 0.22, "F": 0.16, "H": 0.12}[x] for x in pool])
+                letter = str(r.choice(pool, p=pp / pp.sum()))
+                pid = P.new(kind="bg", letter=letter, level=3, unit=u, tx_for=s["ref"])
+                adm[u].append({"t": t, "pid": pid, "type": "02", "src": "06" if r.random() < 0.74 else "04",
+                               "mode": "turn", "wid": None, "leaver": None, "bg": True})
+                continue
             if s["kind"] in ("wait_end", "gap_close_wait"):
                 w = world.waits_by_id[s["ref"]]
                 adm[u].append({"t": t, "pid": w["pid"], "type": "01" if w["letter"] == own_letter else "02",
@@ -131,7 +143,7 @@ def assign_admissions(world, P):
         adm["PEL-W3"].append({"t": t, "pid": None, "mode": "gap_open"})
     for u, U in world.units.items():
         for g in U.gaps:
-            if g["kind"] in ("cmorning", "own", "spe", "dv4"):
+            if g["kind"] in ("cmorning", "own", "spe", "dv4", "dv5"):
                 adm[u].append({"t": g["open"], "pid": None, "mode": "gap_open"})
         for s in U.swaps:
             adm[u].append({"t": s["t"], "pid": None, "mode": "swap", "need": s["need"], "ref": s["ref"]})

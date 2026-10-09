@@ -778,6 +778,258 @@ and "over the twelve weeks" carry the forcing event's period only. voice-check: 
 per cent, longest paragraph 81 words, one rounding tag, no carrier flagged, no shared six-word run; hierarchy read
 passes (the call closes the context, the notebook opens on that answer, each later paragraph ties back to it).
 
+## Build record
+
+Stage 3, 2026-10-09. `python3 task122/generator/build.py` (seeded throughout) writes `target/` and `metadata.json`,
+asserts every check in `checks.py` on the files as written, normalises container metadata and mtimes, and fails
+loudly at the first assertion that does not hold. `task122/generator/verify_pack.py` is the independent verifier: it
+reads only the bytes under `target/` (and `metadata.json` for the distractor list), imports nothing from the
+generator, and reads every constant it needs (lift bar, guardrail, reproduction clause, cell bands, floor, slot
+share and dates, app gating, tariff in force, R2 replacement) from the shipped documents.
+
+### Gates
+
+- **Generator green:** 240 assertions, all pass, on the task-folder build.
+- **Independent verifier green:** 70 of 70 checks pass on the task folder, including agreement with the
+  build record on the call (to 0.0006), all 48 fee cells (to 0.0006), all 12 slot totals (to 0.06) and every rung's leader.
+- **Byte-identical:** two consecutive builds into separate scratch roots and every build into the task folder (the last
+  on the final generator) produce the same SHA-256 for all 24 files (23 under `target/` plus `metadata.json`); every
+  `target/` mtime is 2026-10-14 17:30.
+- **Input gates:** 23 files; 9 formats (csv, docx, ics, json, md, parquet, pdf, txt, xlsx); the render log carries
+  404,100 rows; two distractors named in `metadata.json` only (search_ranking_tests_2026H1.xlsx, seller_survey_fresh_listings_2026Q2.csv),
+  and the word appears nowhere under `target/` (asserted).
+- **Containers:** `scrub_producer_metadata.py` repaired the two PDFs (writer's name, invariant 2000-01-01 date) to
+  Vouwlijn and 2026-10-14; the audit then reads the whole folder clean (asserted, H1). The OOXML containers are rewritten
+  with fixed entry dates and order.
+- **metadata.json:** task, title (no policy named), domain, subdomain, objective, shape, as-of 2026-10-28, the two
+  deliverables, the distractor list, the input gates, and source, date and licence for every file. No answer, no rung,
+  no device name.
+
+### The answer
+
+E, HC-37 (Sequence ranker with fresh-listing interleave): kept lift 5.697 extra orders per 1,000 carousel
+sessions, filed 5.7. Runner-up B, HC-33 (Velocity boost): 3.303, filed 3.3. Gap 2.394, filed 2.4;
+E over B 1.725x. Bin clearances: E 0.047 (from 5.65), B 0.053 (from 3.25), gap 0.044 (from 2.35).
+
+### The ladder as built (asserted leader and margin per rung)
+
+| Rung | Estimator | Guardrail read | Basis | A | B | C | D | E | F | Leader | Next | Margin | E's place of six |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | replay_rows | platform | in-session | 6.956 | 7.676 | 7.200 | 9.661 | 3.323 | 0.318 | D | B | 1.259 | 5 |
+| 1 | render_weights | platform | in-session | 11.018 | 9.087 | 7.975 | 5.552 | 5.780 | 1.910 | A | B | 1.212 | 4 |
+| 2 | session_ipw | platform | in-session | 6.563 | 7.957 | 9.784 | 5.074 | 5.697 | 1.389 | C | B | 1.230 | 4 |
+| 3 | session_ipw | eight | in-session | 6.563 | 7.957 | 9.784 | 5.074 | 5.697 | 1.389 | B | E | 1.397 | 4 |
+| 4 | session_ipw | eight | kept | 6.563 | 3.303 | 9.784 | 5.074 | 5.697 | 1.389 | E | B | 1.725 | 3 |
+
+Qualifiers: rungs 0 and 1 A, B, C, D, E (F under the bar); rung 2 A, B, C, E (D fails the floor per served ranking);
+rungs 3 and 4 B and E (A fails web 730+, C fails app under 30). At rung 4 E is third of six by value and first of the
+two qualifiers. Position: E 5th, 4th, 4th, then second behind B at rung 3 only, then the leader. Dominance: B's carried
+advantage at rung 3 1.397, E's kept-share edge 2.409, product 1.725 (at least 1.2 asserted).
+
+### Correction grid (12 cells, each asserted by name at 1.15x or better)
+
+| Estimator | Guardrail | Basis | Leader | Value | Next qualifier | Margin |
+|---|---|---|---|---|---|---|
+| replay_rows | platform | in | D | 9.661 | B | 1.259 |
+| replay_rows | platform | kept | D | 77.933 | none | only qualifier |
+| replay_rows | eight | in | D | 9.661 | B | 1.259 |
+| replay_rows | eight | kept | D | 77.933 | none | only qualifier |
+| render_weights | platform | in | A | 11.018 | B | 1.212 |
+| render_weights | platform | kept | A | 11.018 | C | 1.382 |
+| render_weights | eight | in | B | 9.087 | E | 1.572 |
+| render_weights | eight | kept | B | 7.355 | E | 1.272 |
+| session_ipw | platform | in | C | 9.784 | B | 1.230 |
+| session_ipw | platform | kept | C | 9.784 | A | 1.491 |
+| session_ipw | eight | in | B | 7.957 | E | 1.397 |
+| session_ipw | eight | kept | E | 5.697 | B | 1.725 |
+
+Replay over render rows on the kept basis returns 77.9 for D because replay carries no propensity weights and three
+weeks of every buyer's other orders differ by cell; it is the unweighted estimator failing visibly, not a figure any
+filed rule licenses.
+
+### Partial readings and the windows
+
+- Flat haircut of every policy at B's borrowed share (58.5 per cent): B 3.303 against E
+  2.365, names B. Flat haircut at the pooled share of all in-session orders (0.75 per cent): names B.
+- Follow-up windows of 1, 2 and 3 days name B (B 7.647, 6.960, 6.206 against E 5.697); 4 and 5 days
+  name E with B at 5.031 and 4.023, outside B's bin; every window from 6 to 21 days returns E 5.697 and
+  B 3.303 for all six policies, and calendar-day windows of 7, 10, 14 and 21 days match to 1e-9.
+
+### Route 2, the anyway rate and its comparison sets
+
+- Watched listings the session did not show are bought by their watcher within the window at exactly 62.5 per cent
+  (five in eight) in every cell, every arm, every cell by arm, both platforms and every tenure band; route 2 equals
+  route 1 for every policy (within 0.005) and every cell (1e-6).
+- Other segments (renders, watch-list size, weekday, ISO week, half) run 61.79 to 63.26 per cent. Netting each
+  segmentation stratum by stratum files E 5.697 and B 3.3011 to 3.3028; each natural sub-population's rate
+  applied to every session (incumbent arm, velocity arm, each platform, each half, one-render and up-to-two-render
+  sessions) runs 62.45 to 62.55 per cent and files B 3.2990 to 3.3065; E never moves.
+- Thinnest boundary in the pack, recorded rather than asserted: the most extreme single segment applied to every
+  session moves B to 3.2462 (four-render sessions, 63.26 per cent), across the 3.25 edge, or 3.3556 (61.79
+  per cent). No reading applies one segment's rate to everyone; every stratified and sub-population reading files 3.3.
+
+### Conditions
+
+- Guardrail breaches exactly A web 730+ (-2.736 per cent) and C app under 30 (-2.392); every other
+  policy-cell at +1.20 per cent or better; the same pass and fail on in-session and kept bases, session and render
+  weighting, and every coarse cut (platform, tenure, pooled) at -0.8 or better, asserted.
+- Floor, per served ranking: D 8.84 (fails), incumbent 13.00, every other policy 13.60 to
+  21.40. Over rendered tiles D reads 15.59 (17.01 render-weighted) and passes, which is why the
+  render-row rungs keep D.
+- Bar: F 1.389 on every session-grain estimator (fails); B's kept 3.303 clears it by 1.30.
+- Halves: each policy's first-half and second-half lifts agree within 0.085 (in-session) and 0.050 (kept).
+
+### The archive (calibration corpus)
+
+| Test | Realised | Session weights | Render weights | Replay rows | Published |
+|---|---|---|---|---|---|
+| T1 | 7.9 | 7.727 | 7.993 | 7.993 | 8.0 |
+| T2 | 4.1 | 4.185 | 4.993 | 5.253 | 5.3 |
+| T3 | 5.6 | 5.522 | 5.779 | 6.333 | 6.3 |
+| T4 | 7.1 | 7.010 | 7.179 | 7.776 | 7.8 |
+| T5 | 3.6 | 3.643 | 3.667 | 3.667 | 3.7 |
+| T6 | 4.4 | 4.394 | 4.441 | 4.441 | 4.4 |
+| T7 | 2.5 | 2.621 | 5.153 | 6.294 | 6.3 |
+| T8 | 6.8 | 6.713 | 6.998 | 8.149 | 8.1 |
+| T9 | 3.2 | 3.352 | 4.282 | 5.141 | 5.1 |
+
+Session weights reproduce 9 of 9 within the charter's 0.25 (worst 0.173, T1), and the three other session-grain
+readings agree to 0.001. Render weights 6 of 9 (T2, T7, T9 miss), replay 3 of 9 (T1, T5, T6 hit); every miss overstates;
+summed over the nine tests render weights overstate by 11.7 per cent and replay by 21.8 per cent. The published
+column is replay to one decimal on all nine. Twins T3 and T7 are identical on every archive column (published 6.3 both)
+and realised 5.6 and 2.5 (2.24x); session weights reproduce both, render weights and replay miss T7. Lookup transfer by
+policy family names A (7.27, the two-tower personaliser), a decoy. Blindness and the clean-data test are asserted
+per test on the hidden layers: no archived arm moves watched-listing orders by more than 0.1 per 1,000, and with each
+archived session's follow-up orders added the kept construction reproduces all nine.
+
+### Ask 1: change in buyer-protection fee income per 1,000 carousel sessions (EUR, filed to one decimal)
+
+| Cell | A | B | C | D | E | F |
+|---|---|---|---|---|---|---|
+| app <30 | 11.004 | 5.593 | 1.392 | -8.687 | 8.896 | 5.994 |
+| app 30-179 | 10.810 | 11.605 | 16.500 | -14.906 | 10.995 | 1.893 |
+| app 180-729 | 9.792 | 4.501 | 17.005 | -14.388 | 9.798 | 1.813 |
+| app 730+ | 8.510 | 3.709 | 17.914 | -17.688 | 6.097 | 1.112 |
+| web <30 | 12.709 | 1.902 | 8.989 | -9.810 | 7.615 | 1.489 |
+| web 30-179 | 8.297 | 6.814 | 15.698 | -13.100 | 12.085 | -2.799 |
+| web 180-729 | 11.900 | 0.991 | 11.294 | -15.614 | 9.108 | 0.701 |
+| web 730+ | -2.215 | 2.410 | 16.691 | -19.209 | 5.409 | 1.686 |
+
+Every cell sits at least 0.035 inside its bin. Every one of the seven combinations of the three fee devices (pickups
+paid in person priced, the asking price for the price paid, the deferred January tariff row) and the natural read (all
+three, in-session orders only) moves all 48 cells out of their bins, the nearest by 0.051; two cells sit under
+EUR 1.00 (B|web 180-729, F|web 180-729) and move under every reading too. Over-cleaners move
+43 (fee as charged), 45 (every pickup dropped), 44 (any accepted offer as the price) and
+48 (the pre-September tariff) cells. The in-session basis moves the four cells where B's figures carry
+borrowed orders (app and web, 180-729 and 730+); in the four younger cells B buys no watched listing in the session
+and its two bases agree. The price paid read from the offers export and from the payments ledger agree on every paid
+order.
+
+### Ask 2: the twelve-week slot totals (filed to the nearest hundred)
+
+| Policy | Extra orders | Filed | Extra fee income (EUR) | Filed | First release | All 12 weeks on app | Pooled lift | Natural read |
+|---|---|---|---|---|---|---|---|---|
+| A | 17,107.6 | 17,100 | 22,592.5 | 22,600 | 17,380.4 | 19,718.2 | 17,321.7 | 19,530.8 |
+| B | 8,910.8 | 8,900 | 12,709.7 | 12,700 | 9,411.3 | 10,113.1 | 8,716.7 | 23,678.6 |
+| C | 25,326.4 | 25,300 | 38,272.8 | 38,300 | 24,789.3 | 28,250.3 | 25,823.4 | 29,116.8 |
+| D | 13,227.7 | 13,200 | -39,578.3 | -39,600 | 13,426.2 | 15,287.7 | 13,392.3 | 15,100.2 |
+| E | 15,286.4 | 15,300 | 22,778.2 | 22,800 | 15,622.0 | 17,296.4 | 15,034.6 | 16,952.0 |
+| F | 3,807.3 | 3,800 | 3,726.4 | 3,700 | 4,010.7 | 4,350.9 | 3,664.6 | 4,132.0 |
+
+Planned arm sessions by cell (10 per cent of the R2-current 2026 weeks; web W01 to W12, app W03 to W12 from the
+18 January 2027 release): 216,093, 370,206, 475,592, 514,023, 155,100, 256,384, 320,701, 331,120 (2,639,219 in all). Every golden total sits
+22.35 or more from its bin's edges; every wrong reading of every total (the first release, all twelve
+weeks on the app, both, the pooled lift, the natural read, and on the fee every one of the 31 subsets of the five
+devices) lands outside its hundred, the nearest by 5.67 (F's fee total on the first release alone; the nearest order
+stop is F's pooled-lift total, 85.4 outside). R2 keeps every platform-week total and moves
+6.19 per cent of sessions; the in-session basis moves only B's total (20,286.3).
+
+### Referee, pair and separation
+
+- The Q3 finance statement ties to the payments ledger by month and platform to the cent; pricing every Q3 order by
+  the formula on its asking price overstates it by 20.7 per cent.
+- Pair simulation (planning weights 38 / 7 / 55, hygiene battery applied): cracker 48.4, mirror 11.7, pair
+  30.1 (at most 40 asserted); a cracker that handles every fee device would bring the pair to
+  50.7, the stated exposure.
+- Zero device rows in the main call's declared population; scrambling the device columns of the orders extract moves
+  neither E nor B (1e-12). Hygiene battery clean: unique keys, every payment and every offer has its order, no
+  duplicate purchase.
+- Each load-bearing fact stands in exactly one file: lift definition (experimentation_charter_home_surfaces_v4.pdf); reproduction clause (experimentation_charter_home_surfaces_v4.pdf); cell table (experimentation_charter_home_surfaces_v4.pdf); floor (fresh_listing_commitment_2026.docx); slot share (experimentation_charter_home_surfaces_v4.pdf); tariff deferral (pricing_committee_minutes_2026-10-06.docx); app gating (test_capacity_and_release_gating.md); r2 replaces (analytics_release_log.md); cell by cell planning (test_capacity_and_release_gating.md); fee basis (buyer_protection_terms_2026-09.pdf); change clause (buyer_protection_terms_2026-09.pdf).
+
+### Placement, for the record
+
+- Fee cells: whole-euro moves on the cell's own in-session orders, plain-order prices -10 to +2, accepted-offer
+  asking prices -13 to +7, in-person prices -1 to +5 per cell.
+- Slot traffic: per-cell factors 0.9850 to 1.0091 on 2026-W01 to W12, inside the 1.5 per cent box.
+- Halves: per-group option search; the largest gap between a policy's half difference and the incumbent's is
+  0.086 per 1,000.
+
+### Assertion plan against what was built
+
+The design planned 46 assertions; the build carries 240 in `checks.py` and 70 in `verify_pack.py`. Where the build
+departs from the plan:
+- #13 (every comparison set files the same figures) is replaced by stratified netting on ten segmentations and eight
+  natural sub-population rates, all filing E 5.7 and B 3.3; see Tried and rejected.
+- #18 (a 90 per cent bound check) is dropped; see Tried and rejected.
+- #29 is stronger than planned: every device combination moves all 48 cells, not 44, and no cell is carried by the
+  construction layer alone.
+- #30 and #34 narrow to B: since only the velocity boost shows watched listings, the other five policies' kept and
+  in-session figures are equal, and the in-session basis moves B's four borrowing cells and B's total only
+  (asserted).
+- #38 is asserted for the call (no device column moves E or B); each device's reach on the asks is covered by the
+  subset assertions (7 on ask 1 plus the natural read, 31 fee subsets and 5 order stops on ask 2).
+- #39 (over-determination) is not built as a sweep: the ask figures are computed from the window orders and carry
+  neither the anyway rate nor the watched share, and no shipped file states either constant.
+- #46 belongs to the golden stage.
+- Figures that moved from the design's targets: rung margins 1.259, 1.212, 1.230, 1.397, 1.725 (design 1.224, 1.249,
+  1.209, 1.387, 1.726); E 5.697 and B 3.303 (design 5.698 and 3.302); guardrail breaches -2.74 and -2.39 (design
+  -2.7 and -2.3); D's floor 8.84 per served ranking and 15.59 over rendered tiles (design 8.9 and 12.4); archive
+  overstatement +11.7 and +21.8 per cent (design +11.4 and +27.2); borrowing complete by day 6, so the E-named partial
+  windows are 4 and 5 days (design 4 to 6); F's lift 1.389 against the bar (design 1.37); the anyway rate 62.5 per
+  cent (design 62.0). The design's comparison sets by category and price band cannot be formed, because a watched
+  listing nobody bought carries no category or price in the pack; the sets a reader can form are the session's own
+  cuts, listed above.
+
+### Realism debts added at build
+
+- The two halves of the logged window agree to 0.09 per 1,000 for every policy, closer than a randomised window would;
+  forced by the stability axis (#8), stated.
+- The anyway rate is exactly five in eight in every cell, arm and charter cut; segments outside the charter's cuts
+  scatter 61.8 to 63.3 per cent.
+- Prices of a few in-session orders per cell are moved by whole euros to place the fee cells; every move keeps asking,
+  paid, offer and payment records consistent.
+- Q1 tenure mix: a January new-buyer surge in the weekly table (both years), which is what separates the pooled and
+  cell-by-cell slot totals.
+
+### Files
+
+| File | Format | Rows | Bytes |
+|---|---|---|---|
+| analytics_release_log.md | md |  | 1,503 |
+| app_release_calendar_2026-2027.ics | ics |  | 11,403 |
+| buyer_protection_terms_2026-09.pdf | pdf |  | 2,731 |
+| carousel_logger_field_reference.md | md |  | 4,065 |
+| carousel_test_archive.xlsx | xlsx | 99,200 | 3,617,682 |
+| experimentation_charter_home_surfaces_v4.pdf | pdf |  | 3,856 |
+| extract_register_slot_review.md | md |  | 3,650 |
+| finance_buyer_protection_fee_income_2026Q3.xlsx | xlsx |  | 6,018 |
+| fresh_listing_commitment_2026.docx | docx |  | 37,365 |
+| home_carousel_render_log_2026-06-22_2026-09-20.csv | csv | 404,100 | 26,227,263 |
+| home_carousel_served_rankings_2026-06-22_2026-09-20.parquet | parquet | 150,400 | 10,212,573 |
+| home_carousel_sessions_weekly_2025W01_2026W39.csv | csv | 728 | 27,165 |
+| home_carousel_sessions_weekly_R2_2026W01_2026W26.csv | csv | 208 | 7,790 |
+| kopersbescherming_tarieven.csv | csv | 3 | 318 |
+| offers_accepted_2026-05-25_2026-10-11.csv | csv | 96,904 | 9,074,235 |
+| orders_enrolled_buyers_2026-06-01_2026-10-11.parquet | parquet | 366,052 | 6,751,197 |
+| payments_buyer_protection_2026-06-01_2026-10-11.parquet | parquet | 325,156 | 5,503,229 |
+| planning_thread_carousel_slot.txt | txt |  | 2,254 |
+| pricing_committee_minutes_2026-10-06.docx | docx |  | 37,351 |
+| ranking_policy_register.json | json |  | 3,488 |
+| search_ranking_tests_2026H1.xlsx | xlsx |  | 6,541 |
+| seller_survey_fresh_listings_2026Q2.csv | csv | 1,612 | 86,853 |
+| test_capacity_and_release_gating.md | md |  | 1,249 |
+
+
 ## Tried and rejected
 
 - First draft (v1, drafted 2026-10-08, never registered): every proposal failed a different launch condition and the test-calendar
@@ -841,3 +1093,35 @@ passes (the call closes the context, the notebook opens on that answer, each lat
   boost's build shows a buyer's watched listings (every other ranker, archived ones included, draws from a pool
   that leaves them out, which is also why no archived test could see the borrowing); the other five policies' kept
   and in-session figures are equal, and the decomposition applied to B alone files E at 5.7, a cracker.
+
+- Build stage, 2026-10-09, the design's assertion 13 as written (any segment's anyway rate, applied to every
+  session, files the same kept figures): infeasible. B's kept lift moves about 7.5 per 1,000 per unit of the rate, so
+  a segment 0.008 off the pooled 62.5 per cent (four-render sessions, 63.3) nets B to 3.25, across its bin edge, and
+  no position of B inside its bin survives a spread of 0.01 either way. Replaced by the readings a solver actually
+  runs: every segmentation netted stratum by stratum (cell, ranker, cell by ranker, platform, tenure band, renders,
+  watch-list size, weekday, ISO week, half) and each natural sub-population's rate (incumbent arm, velocity arm,
+  each platform, each half, one-render and up-to-two-render sessions) applied to every session, all filing E 5.7
+  and B 3.3; the most extreme single segment applied everywhere is recorded as the thinnest boundary, not asserted.
+- Build stage, 2026-10-09, the two halves of the logged window stratified on in-session outcomes only: each
+  policy's kept lift differed between the halves by up to 12 per 1,000 (B 9.4 against -2.8), because three weeks of
+  background orders per session fell at random between the halves, which hands a solver who checks stability a
+  reason to distrust route 1. Equal half sums of in-session and 21-day orders per (cell, ranker) then still left C
+  and D 0.4 to 0.5 apart on the kept basis, because a group with an odd session count puts one more session in one
+  half and a kept base of about 1.8 orders a session moves that half's mean. Now each group's halves hold the same
+  mean of both counts to within one order, the odd orders and sessions placed by a search that matches each
+  ranker's half gap to the incumbent's; every policy's halves agree within 0.09 on either basis.
+- Build stage, 2026-10-09, placing the fee cells by whole-euro price moves on plain orders alone: could not carry
+  the price-paid device out of the bin where the arm's accepted-offer discount per session matched the
+  incumbent's (shifts of -0.008 to 0.034 in five cells), and in two cells the January row and the asking price
+  cancelled. Replaced by three levers on the cell's own in-session orders, searched together: a plain order's price
+  moves the figure and every reading alike, the asking price of an order bought on an accepted offer moves only the
+  asking-price readings, and the price of an order paid in person moves only the readings that charge it; every
+  one of the seven device combinations and the natural read now clears all 48 cells, the two under EUR 1.00 included.
+- Build stage, 2026-10-09, the slot-total placement as first written scored distance from the round hundred, which
+  pushed the totals toward the bin edges (A's orders sat 14 from one). Now scored on distance to the edges, 20 to
+  45, with every wrong reading of every total at least 5 outside its hundred.
+- Build stage, 2026-10-09, the pooled-lift stop on ask 2 (one pooled kept lift times the planned total) against a
+  planned Q1 cell mix that matched the logged summer mix: it filed the same hundred as the cell-by-cell total for
+  B, C, E and F (4 to 23 orders apart). The weekly table now carries a January new-buyer surge in both years (the
+  0-29 band peaks 8 points above its base share in early January, the 30-179 band 4 points), which puts the pooled
+  and cell-by-cell totals at least 138 orders apart for every policy before placement.

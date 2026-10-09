@@ -239,7 +239,11 @@ def main():
     normalise_containers(tgt)
     scrub_rc = scrub(tgt)
     print(f"written {time.time() - t0:.0f}s", flush=True)
-    record = {"scrub": scrub_rc}
+    record = {"scrub": scrub_rc,
+              "fee_moves": {f"{P.LETTER[P.RANKERS[k]]}|{c}": list(v) for (k, c), v in W.fee_moves.items()},
+              "traffic_adjust": [round(float(x), 6) for x in adj], "traffic_margin": round(float(margin), 2),
+              "traffic_score": [round(float(W.traffic_score[0]), 2), round(float(W.traffic_score[3]), 2)],
+              "half_gaps": {P.LETTER[r]: [round(float(x), 4) for x in v] for r, v in W.half_gaps.items()}}
     if not a.skip_checks:
         import checks
         record.update(checks.run_all(W, meta, A_hidden, tgt, root, DISTRACTORS, scrub_rc))

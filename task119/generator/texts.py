@@ -102,7 +102,7 @@ GUIDE_FIELDS = {
         ("from_trust, from_site", "Sending trust and hospital."),
         ("to_unit", "Receiving critical care unit."),
         ("decision_at", "Time of the decision to admit at the sending hospital."),
-        ("bed_confirmed_at", "Time the receiving unit confirmed the bed."),
+        ("bed_confirmed_at", "Time the network bed bureau allocated the bed at the receiving unit."),
         ("departed_at, arrived_at", "Times recorded by the transfer team."),
     ],
 }

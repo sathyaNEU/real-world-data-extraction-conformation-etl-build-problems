@@ -49,7 +49,7 @@ SHORTLIST = ["POL-N", "SPT-M", "BUS-N", "SPT-N", "LOC-M", "CUL-N"]
 PLATFORM = ("home_web", "section_web", "feed_app", "section_app", "related_links")
 WINDOW_START = dt.date(2025, 10, 1)
 BACKTEST_TOL = 0.02
-NOTE_AFTER_FIX = 10     # minutes: a note on the save after a headline fix records that fix
+NOTE_AND_FIX = 10       # minutes: a note on an unchanged headline records the headline fix on the save before or after it
 ENTRY_NOTE = 30         # minutes: a live blog's note and the entry fix it records
 
 
@@ -191,16 +191,20 @@ RAW_HITS = sum(abs(float(np.mean([win(t, False) for t in app_tests[(e["desk_code
 
 # --------------------------------------------------------------------------- readers (panel)
 # A release's section codes belong to the section list it was issued on: the first release on the 2026 content
-# taxonomy and every release after it use the 2026 list. The latest release for a month and section is the record.
+# taxonomy and every release after it use the 2026 list. A release publishes the months the release log lists for it,
+# and the latest release that published a month carrying a section is the record for that section's month.
 pwb = load_workbook(find("panel_reference_workbook"), read_only=True, data_only=True)
 hist = list(pwb["Section history"].iter_rows(values_only=True))[1:]
 rlog = [r for r in list(pwb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
 rel = {r[0]: r[1] for r in rlog}
+published_months = {r[0]: {m.strip() for m in str(r[2]).split(",")} for r in rlog}
 issued_2026 = min(r[1] for r in rlog if (r[3] or "").startswith("First release on the 2026 content taxonomy"))
 sections = {"2026": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None},
             "2024": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}}
 latest = {}
 for r in csv.DictReader(open(find("panel_monthly_audience"), encoding="utf-8")):
+    if r["period"] not in published_months[r["release"]]:
+        continue        # the July file also carried April to June as first published; July is all it published
     name, desk = sections["2026" if rel[r["release"]] >= issued_2026 else "2024"][(r["site_code"], int(r["section_code"]))]
     key = (r["period"], r["site_code"], name)
     if key not in latest or rel[r["release"]] > rel[latest[key][0]["release"]]:
@@ -253,22 +257,38 @@ for did, revs in docs.items():
     if scheduled and scheduled[-1][3] and when(scheduled[-1][3]) < went_live:
         published, went_live = [scheduled[-1]] + live, when(scheduled[-1][3])
     first, fixed_alone = None, None     # a corrected headline published before its note, since the last note change
-    for prev, cur in zip(published, published[1:]):
+    shown, paired_later = {published[0][5]}, set()
+    for k in range(1, len(published)):
+        prev, cur = published[k - 1], published[k]
         t = when(cur[1])
-        # a note carries forward until cleared, so a correction is a new note on a published version
-        if not cur[5] or cur[5] == prev[5]:
+        # a note carries forward until cleared, so a correction is a new note on a published version; a note the
+        # article had already shown, put back after a save that left it off, is not a new one
+        put_back = cur[5] in shown
+        shown.add(cur[5])
+        if not cur[5] or cur[5] == prev[5] or put_back:
             if cur[5] != prev[5]:
                 fixed_alone = None
-            elif cur[4] != prev[4]:
+            elif cur[4] != prev[4] and k not in paired_later:
                 fixed_alone = t
             continue
         added = cur[5][:len(cur[5]) - len(prev[5])] if prev[5] and cur[5].endswith(prev[5]) else cur[5]
         entries = [f for f in entry_fixed.get(did, []) if t - dt.timedelta(minutes=ENTRY_NOTE) <= f <= t]
+        later = None
+        if cur[4] == prev[4] and "headline" in added.lower():
+            for j in range(k + 1, len(published)):
+                if when(published[j][1]) - t > dt.timedelta(minutes=NOTE_AND_FIX) or published[j][5] != published[j - 1][5]:
+                    break
+                if published[j][4] != published[j - 1][4]:
+                    later = j
+                    break
         if cur[4] != prev[4]:
             at = t
-        elif (fixed_alone is not None and t - fixed_alone <= dt.timedelta(minutes=NOTE_AFTER_FIX)
+        elif (fixed_alone is not None and t - fixed_alone <= dt.timedelta(minutes=NOTE_AND_FIX)
               and "headline" in added.lower()):
             at = fixed_alone        # the note records the headline published on the save before it (7.4)
+        elif later is not None:
+            at = when(published[later][1])      # or the headline published on the save after it (7.4)
+            paired_later.add(later)
         elif entries:
             at = min(entries)
         else:
@@ -501,18 +521,20 @@ def write_xlsx(path):
          "(field reference). Shrunk with one normal prior fitted by maximum likelihood on all {:,} variant packages "
          "in the archive; a desk's lift is the mean over its tests.".format(N_PACKAGES)),
         ("Average monthly readers", "Panel unique audience for the desk's section, mean of October 2025 to September "
-         "2026. Each release's section codes are read on the section list it was issued on, so the November 2025 to "
-         "February 2026 history release uses the 2026 list. A section's figure for a month is the latest release "
-         "that carries it: the history release covers three national sections and the April to June restatement "
-         "the Brisbane edition site, so the other sections keep the figures first published."),
+         "2026. Each release is read on the section list it was issued on (the November 2025 to February 2026 history "
+         "release on the 2026 list) and only for the months the release log lists for it. A section's figure for a "
+         "month is the latest of those releases that carries it, so the history release replaces three national "
+         "sections, the April to June restatement replaces both sites, and the April to June rows in the July file "
+         "are set aside."),
         ("Extra clicks per reader", "Extra article clicks 2027 over average monthly readers."),
         ("Headline corrections", "A new correction note on a version readers saw that published a corrected headline, "
-         "the article's own or a live-blog entry's (editorial standards 7.4 and 7.5). Where the corrected headline "
-         "went live first and the note saying so followed on the next save, the correction is counted on the save "
-         "that published the headline; a blog's note is matched to the entry fixed in the minutes before it. "
-         "Versions readers saw are live saves and a scheduled version the CMS published; drafts saved while an "
-         "article is live are not published. Notes carry forward on later saves and are not counted again; "
-         "body-text corrections are excluded."),
+         "the article's own or a live-blog entry's (editorial standards 7.4 and 7.5). Where the note saying the "
+         "headline was corrected and the corrected headline went up on two saves a few minutes apart, in either "
+         "order, the correction is counted on the save that published the headline; a blog's note is matched to the "
+         "entry fixed in the minutes before it. Versions readers saw are live saves and a scheduled version the CMS "
+         "published; drafts saved while an article is live are not published. Notes carry forward on later saves and "
+         "are not counted again, nor is a note put back after a save that left it off; body-text corrections are "
+         "excluded."),
         ("Articles", "Articles first published October 2025 to September 2026 that went live. Live-blog posts, "
          "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
          "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
@@ -740,11 +762,13 @@ def write_docx(path, png):
         "Source codes as defined in the audience warehouse field reference. The 2027 plan holds every desk at its "
         "October 2025 to September 2026 clicks, with no change in where they come from.",
         "Readers are the panel's unique audience for the desk's section, each release read on the section list it "
-        "was issued on, and each section's month taken from the latest release that carries it (the November 2025 "
-        "to February 2026 history release covers three national sections, the April to June restatement the "
-        "Brisbane edition site). A headline correction is counted on the version that published the corrected "
-        "headline, a live-blog entry's included, even where the note was added on a later save (editorial standards "
-        "7.4 and 7.5); an article goes live when it is first published, at its publish time if the CMS published it.",
+        "was issued on and only for the months the release log lists for it, and each section's month taken from the "
+        "latest of those releases (the November 2025 to February 2026 history release covers three national "
+        "sections, the April to June restatement both sites). A headline correction is counted on the version that "
+        "published the corrected headline, a live-blog entry's included, whether its note went up on the same save, "
+        "the one before or the one after (editorial standards 7.4 and 7.5); a note put back after a save that left it "
+        "off is not a new correction. An article goes live when it is first published, at its publish time if the "
+        "CMS published it.",
     ]
     for i, n in enumerate(notes, 1):
         para(doc, "{}  {}".format(i, n), size=8.5, color="404040", space_after=3)

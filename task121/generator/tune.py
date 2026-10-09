@@ -41,7 +41,8 @@ def reservoir(T, s, pop, week, removed):
         win = s[s.week.isin(P.REVIEW) & s[pop]]
         cnt = win.groupby(col).size().to_dict()
         acct = dict(zip(win.session_id, win[col]))
-        ids = [i for i in ids if cnt[acct[i]] >= 3]
+        wk = win[win.week == week].groupby(col).size().to_dict()
+        ids = [i for i in ids if cnt[acct[i]] >= 3 and wk.get(acct[i], 0) >= 2]
     return sorted(ids)
 
 
@@ -67,13 +68,15 @@ def tune_losses(T, K, log):
                 b = base[p]
                 v = L[p][w]
                 ids = reservoir(T, s, p, w, K["remove"])
-                r = 0
-                while r <= len(ids):
-                    d = abs(frac(v - r * b - tgt + 0.5) - 0.5)
-                    if d <= max(0.03, b / 2 + 1e-9):
+                r = None
+                for tol in (max(0.03, b / 2 + 1e-9), 0.1, 0.2):
+                    for rr in range(0, len(ids) + 1):
+                        if abs(frac(v - rr * b - tgt + 0.5) - 0.5) <= tol:
+                            r = rr
+                            break
+                    if r is not None:
                         break
-                    r += 1
-                assert r <= len(ids), (p, w, v, len(ids))
+                assert r is not None, (p, w, v, len(ids))
                 if r == 0:
                     continue
                 K["remove"].update(ids[:r])
@@ -135,21 +138,19 @@ def tune_shares(T, K, log):
         dn = a[(a.authorised == "Y") & a.outcome.isin(["C", "D"]) & ~a.attempt_ref.isin(K["flip"])]
         best = None
         for dk in range(-3, 4):
-            for dn_ in range(0, 3):
-                for chal in (0, 1):
-                    if dn_ == 0 and chal:
-                        continue
-                    kk, nn = k + dk + (dn_ if chal else 0), n + dn_
+            for dn_ in range(0, 6):
+                for ce in range(0, dn_ + 1):
+                    kk, nn = k + dk + ce, n + dn_
                     if (dk > 0 and dk > len(up)) or (dk < 0 and -dk > len(dn)):
                         continue
                     if _ok_share(kk, nn):
                         cost = abs(dk) + dn_
                         dist = abs(frac(1000.0 * kk / nn + 0.5) - 0.5)
-                        cand = (cost, dist, dk, dn_, chal)
+                        cand = (cost, dist, dk, dn_, ce)
                         if best is None or cand < best:
                             best = cand
-        assert best, p
-        _, _, dk, dn_, chal = best
+        assert best, (p, k, n, len(up), len(dn))
+        _, _, dk, dn_, ce = best
         if dk > 0:
             for r in up.attempt_ref[:dk]:
                 iss = a.issuer[a.attempt_ref == r].iloc[0]
@@ -159,11 +160,11 @@ def tune_shares(T, K, log):
                 K["flip"][r] = "Y"
         hosts = sorted(set(a.sidx))
         for j in range(dn_):
-            h = hosts[j]
+            h = hosts[j % len(hosts)]
             iss = a.issuer[a.sidx == h].iloc[0]
-            code = ("D" if iss == P.ISSUER_X else "C") if chal else "N"
+            code = ("D" if iss == P.ISSUER_X else "C") if j < ce else "N"
             K["extra"][f"PA{(0x5a3c00 + h * 7 + j):012x}"[:14]] = (int(h), code)
-        log.append(f"share {p}: {k}/{n} -> dk {dk}, extra {dn_} ({'challenge' if chal else 'declined'})")
+        log.append(f"share {p}: {k}/{n} -> dk {dk}, extra {dn_} ({ce} challenged)")
     return K
 
 
