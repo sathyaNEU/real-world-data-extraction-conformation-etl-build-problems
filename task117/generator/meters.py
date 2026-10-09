@@ -134,7 +134,8 @@ def month_start(y, m):
 
 class PanelBooks:
     """Cumulative quarter-hour energy on each panel under each combination of the B1 mishandlings
-    that act on sessions: rd (re-deliveries kept), bf (back-feed missed), dd (repeats over-deduped)."""
+    that act on sessions: rd (re-deliveries kept), bf (back-feed missed), dd (repeats over-deduped), ct (the
+    courtesy sessions, which are not in the settlement export, left out)."""
 
     def __init__(self, led: pd.DataFrame, rd: pd.DataFrame, light: dict):
         deck = led["garage"].isin(["CCN", "CCS"])
@@ -155,19 +156,22 @@ class PanelBooks:
         self.c = {}
         self.sess = {}
         rdd = rd[rd["lrow"].isin(sub.index)]
-        for rdf, bf, dd in itertools.product((False, True), repeat=3):
+        courtesy = sub["courtesy"].fillna(False).astype(bool)
+        for rdf, bf, dd, ct in itertools.product((False, True), repeat=4):
             inc = (true | (sub["redelivered"] & rdf)) & sub["version"].ge(1)
             inc = inc & (sub["true_row"] | sub["redelivered"])
             if dd:
                 inc = inc & keep_dd
+            if ct:
+                inc = inc & ~courtesy
             panel = p_deck if bf else p_true
             kwh = panel_kwh(rdd[rdd["lrow"].isin(inc.index[inc.to_numpy()])], panel.where(inc))
-            self.c[(rdf, bf, dd)] = {p: cum(kwh[p]) for p in PANELS}
+            self.c[(rdf, bf, dd, ct)] = {p: cum(kwh[p]) for p in PANELS}
             for p in PANELS:
                 rr = sub[inc & (panel == p)].sort_values("start")
                 st = rr["start"].to_numpy(np.float64)
                 en = rr["end_charge"].to_numpy(np.float64)
-                self.sess[(rdf, bf, dd, p)] = (st, en, rr["rate"].to_numpy(np.float64), float((en - st).max()))
+                self.sess[(rdf, bf, dd, ct, p)] = (st, en, rr["rate"].to_numpy(np.float64), float((en - st).max()))
         gold = panel_kwh(rdd[rdd["lrow"].isin(true.index[true.to_numpy()])], p_true.where(true))
         self.gold_qh = gold
 
@@ -185,7 +189,7 @@ class PanelBooks:
         hi = np.minimum(e, t)
         return float(np.sum(np.where(hi > lo, r * (hi - lo), 0.0)) / 3600.0)
 
-    def energy_to(self, panel, t, variant=(False, False, False), split="exact"):
+    def energy_to(self, panel, t, variant=(False, False, False, False), split="exact"):
         """Session kWh through the panel from the grid start to instant t. Readings give every whole quarter-hour;
         the quarter-hour holding t is split by the split rule (exact: the sessions' own constant draw)."""
         c = self.c[variant][panel]
@@ -201,13 +205,19 @@ class PanelBooks:
             return float(c[q] + (t - q0) / QH * (c[q + 1] - c[q]))
         return float(c[q]) + self.partial(panel, variant, q0, t)
 
+    def whole_by_plugin(self, panel, a, b):
+        """Session kWh in [a, b) attributing every record wholly to the span its start falls in (a rival split)."""
+        st, en, rate, _ = self.sess[(False, False, False, False, panel)]
+        m = (st >= a) & (st < b)
+        return float(np.sum(rate[m] * (en[m] - st[m])) / 3600.0)
+
     def light_to(self, panel, t):
         q = int((t - GRID_T0) // QH)
         q0 = GRID_T0 + q * QH
         return float(self.light[panel][q]) + (self.lighting[panel].partial(q0, t) if t > q0 else 0.0)
 
-    def sessions(self, panel, a, b, rdf=False, bf=False, dd=False, split="exact"):
-        v = (rdf, bf, dd)
+    def sessions(self, panel, a, b, rdf=False, bf=False, dd=False, ct=False, split="exact"):
+        v = (rdf, bf, dd, ct)
         return self.energy_to(panel, b, v, split) - self.energy_to(panel, a, v, split)
 
 
@@ -232,11 +242,12 @@ def b1_values(books, panel, reads_true, reads_civil, k, regs, subset, first_reg=
     if "cal" in subset:
         a_t, b_t = month_start(2026, k), month_start(2026 + (k == 12), 1 if k == 12 else k + 1)
     split = next((x for x in subset if x in SPLITS), "exact")
-    s = books.sessions(panel, a_t, b_t, rdf="rd" in subset, bf="bf" in subset, dd="dd" in subset, split=split)
+    s = books.sessions(panel, a_t, b_t, rdf="rd" in subset, bf="bf" in subset, dd="dd" in subset, ct="ct" in subset,
+                       split=split)
     return (reg_b - reg_a) - s
 
 
-B1_MISHANDLINGS = ("clk", "rd", "bf", "dd", "cal", "first") + SPLITS
+B1_MISHANDLINGS = ("ct", "clk", "rd", "bf", "dd", "cal", "first") + SPLITS
 
 
 def b1_subsets(appl):
@@ -364,14 +375,14 @@ def check_reading(books, times, prev, d, k, panel, bin_test=True):
     frac = gold - math.floor(gold)
     if bin_test and not (0.06 <= frac <= 0.24 or 0.76 <= frac <= 0.94):
         return False, ("bin", panel, gold)
-    appl = ["rd", "bf", "dd", "cal"] + (["clk"] if 3 <= k <= 11 else []) + (["first"] if first_reg else []) \
+    appl = ["ct", "rd", "bf", "dd", "cal"] + (["clk"] if 3 <= k <= 11 else []) + (["first"] if first_reg else []) \
         + list(SPLITS)
     worst = 99.0
     for sub in b1_subsets(appl):
         v = b1_values(books, panel, rt, rc, k, regs, sub, first_reg, first_t)
         dv = abs(v - gold)
         if dv < 1e-9:
-            if not set(sub) <= {"rd", "bf", "dd", "first"}:
+            if not set(sub) <= {"rd", "bf", "dd", "first"} or "ct" in sub:
                 return False, ("inert", panel, sub)
             continue
         worst = min(worst, dv)
@@ -382,6 +393,9 @@ def check_reading(books, times, prev, d, k, panel, bin_test=True):
         clk = b1_values(books, panel, rt, rc, k, regs, ("clk",))
         if abs(clk - gold) < 2.0:
             return False, ("clk", panel, clk - gold)
+    whole = (regs[k] - regs[k - 1]) - books.whole_by_plugin(panel, rt[k - 1], rt[k])
+    if abs(whole - gold) < 1.5 or (bin_test and round_half(whole) == round_half(gold)):
+        return False, ("whole", panel, whole - gold)
     splits = {x: b1_values(books, panel, rt, rc, k, regs, (x,)) - gold for x in SPLITS}
     return True, {"golden": gold, "nearest_wrong": worst, "splits": splits}
 

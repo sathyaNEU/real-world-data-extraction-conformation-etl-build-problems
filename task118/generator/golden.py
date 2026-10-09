@@ -517,7 +517,7 @@ def write_xlsx(path):
          "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
          "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
         ("Median minutes", "Minutes from an article going live (for a scheduled article the CMS published, its "
-         "publish time) to its first headline correction, over corrected articles."),
+         "publish time; for a live blog, the blog's) to its first headline correction, over corrected articles."),
         ("Sources", "2027 audience plan; pageviews by source and age, Oct 2025 to Sep 2026; headline test archive "
          "2019 to 2026; newsroom staff list; headline squad change log; panel monthly audience and reference "
          "workbook; CMS revisions for the web desks."),
@@ -743,7 +743,7 @@ def write_docx(path, png):
         "was issued on, and each section's month taken from the latest release that carries it (the November 2025 "
         "to February 2026 history release covers three national sections, the April to June restatement the "
         "Brisbane edition site). A headline correction is counted on the version that published the corrected "
-        "headline, a live-blog entry's included, also where the note followed on a later save (editorial standards "
+        "headline, a live-blog entry's included, even where the note was added on a later save (editorial standards "
         "7.4 and 7.5); an article goes live when it is first published, at its publish time if the CMS published it.",
     ]
     for i, n in enumerate(notes, 1):
@@ -768,6 +768,10 @@ def repack(path, when=dt.datetime(2026, 10, 19, 9, 0)):
     iso = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
     data["docProps/core.xml"] = re.sub(rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*", rb"\g<1>" + iso,
                                        data["docProps/core.xml"])
+    # openpyxl writes its own version as AppVersion; the paper's Office 14 build number instead
+    if "docProps/app.xml" in data:
+        data["docProps/app.xml"] = re.sub(rb"<AppVersion>\d\.\d{1,2}</AppVersion>", b"<AppVersion>14.0300</AppVersion>",
+                                          data["docProps/app.xml"])
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for i in infos:
             zi = zipfile.ZipInfo(i.filename, date_time=when.timetuple()[:6])

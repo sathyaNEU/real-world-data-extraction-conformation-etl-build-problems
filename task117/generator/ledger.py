@@ -10,6 +10,15 @@ import pandas as pd
 from common import QH, TZ, lt_date
 from world import GATEWAY_B_END, GATEWAY_B_POS, MIGRATION, RESTATED_POS
 
+DECKS = ("CCN", "CCS")
+# Curbline's daily settlement run starts at 10:00 local time and reaches each garage at its own step
+# (36-second steps, so every cut keeps the readings exact at 0.001 kWh); the run's start drifts by up to two
+# steps from day to day. A session still delivering energy when the run reaches its garage is closed there and
+# the charge carries on as a new session record under a new authorization code.
+RUN_HOUR = 10
+RUN_STEP = {"FTG": 1, "MSG": 2, "LIB": 3, "CCN": 4, "CCS": 5, "CSG": 6, "SWG": 7, "ETG": 8}
+RUN_SEED = 2026_1000
+
 H = 3600.0
 _AUTH = "ACDEFGHJKLMNPQRTUVWXY34679"
 
@@ -111,6 +120,11 @@ def build_ledger(rng, df: pd.DataFrame, pos: pd.DataFrame, read_dec2025: int):
     # system, not through Curbline settlement, so those charges never reached the settlement export
     df["fleet_pre"] = (df["acct"] == "FLEET") & (df["day"] < MIGRATION)
     assert not (df["gateway_b"] & df["fleet_pre"]).any(), "a fleet charge on a gateway B unit"
+    # charging at the decks on weekends and Schedule 26 holidays is free to permit holders and is not settled:
+    # those sessions ship in Curbline's courtesy-session report, not in the settlement export
+    # (the legacy gateway's archive keeps every session on its units, so those stay in the gateway B export)
+    df["courtesy"] = df["garage"].isin(DECKS) & (df["role"] == "wkend") & ~df["gateway_b"]
+    assert not (df["courtesy"] & df["fleet_pre"]).any()
 
     vers = build_restatements(rng, df)
     # restated versions settle later and are decided by the parking office
@@ -136,8 +150,8 @@ def build_ledger(rng, df: pd.DataFrame, pos: pd.DataFrame, read_dec2025: int):
 
     # the ledger rows: one per session (version 1) unless restated, then one per version
     restated = set(vers["row"])
-    assert not df.loc[list(restated), "fleet_pre"].any()
-    base = df[~df["gateway_b"] & ~df["fleet_pre"]].copy()
+    assert not df.loc[list(restated), "fleet_pre"].any() and not df.loc[list(restated), "courtesy"].any()
+    base = df[~df["gateway_b"] & ~df["fleet_pre"] & ~df["courtesy"]].copy()
     base["version"] = 1
     base["true_row"] = True
     rows = [base[~base.index.isin(restated)].assign(row=lambda x: x.index)]
@@ -152,19 +166,78 @@ def build_ledger(rng, df: pd.DataFrame, pos: pd.DataFrame, read_dec2025: int):
         row["row"] = i
         rows.append(row)
     led = pd.concat(rows, ignore_index=True)
+    led = split_at_run(led)
     led["delivered"] = [delivery_of(s) for s in led["settled_on"]]
     led["redelivered"] = False
     led["in_ledger"] = True
     # sessions from the units on the legacy gateway, and fleet-card charges before the platform move, never
     # reached the settlement extract
-    gwb = df[df["gateway_b"] | df["fleet_pre"]].copy()
+    gwb = df[df["gateway_b"] | df["fleet_pre"] | df["courtesy"]].copy()
     gwb["version"] = 1
     gwb["true_row"] = True
     gwb["row"] = gwb.index
+    gwb["frag"] = 0
     gwb["delivered"] = None
     gwb["redelivered"] = False
     gwb["in_ledger"] = False
     return df, led, gwb, decisions
+
+
+def run_cut(day, garage, jitter) -> int:
+    """Instant the settlement run reaches a garage on a local date."""
+    return lt_date(day, RUN_HOUR) + 36 * (RUN_STEP[garage] + jitter[day])
+
+
+def split_at_run(led: pd.DataFrame) -> pd.DataFrame:
+    """Close every export record still delivering energy when the day's settlement run reaches its garage, and carry
+    the charge on as a new record from that second, at the same station and on the same permit or card, under a new
+    authorization code. A restated charge is restated in the record that carries its end. frag: 0 a charge in one
+    record, 1 the record the run closed, 2 the record the charge carried on in."""
+    rng = np.random.default_rng(RUN_SEED)
+    days = sorted(set(led["day"]))
+    jitter = {d: int(x) for d, x in zip(days, rng.integers(0, 3, len(days)))}
+    cut = np.array([run_cut(d, g, jitter) for d, g in zip(led["day"], led["garage"])], dtype=np.int64)
+    st = led["start"].to_numpy(np.int64)
+    v1 = led["version"].to_numpy() == 1
+    en1 = led["end_charge"].to_numpy(np.float64)
+    # whether a charge is cut is decided on its first version (versions differ only in the last quarter-hour)
+    first_end = pd.Series(en1[v1], index=led.loc[v1, "row"].to_numpy())
+    first_end = first_end[~first_end.index.duplicated()]
+    end_v1 = led["row"].map(first_end).to_numpy(np.float64)
+    hit = (st < cut) & (end_v1 > cut + 1.0)
+    led = led.copy()
+    led["frag"] = 0
+    keep = led[~hit]
+    cutrows = led[hit].copy()
+    cutrows["cut"] = cut[hit]
+    rate = cutrows["rate"].to_numpy(np.float64)
+    e1 = np.round(rate * (cutrows["cut"].to_numpy() - cutrows["start"].to_numpy()) / H, 3)
+    cutrows["e1"] = e1
+    used = set(led["auth_code"])
+    new_codes = {}
+    for r in sorted(set(cutrows["row"])):
+        while True:
+            c = "".join(rng.choice(np.array(list(_AUTH)), 10))
+            c = c[:4] + "-" + c[4:]
+            if c not in used:
+                used.add(c)
+                new_codes[r] = c
+                break
+    f1 = cutrows[cutrows["version"] == 1].copy()
+    f1["energy"] = f1["e1"]
+    f1["plug_out"] = f1["cut"]
+    f1["end_charge"] = f1["cut"].astype(np.float64)
+    f1["settled_on"] = f1["day"]
+    f1["true_row"] = True
+    f1["frag"] = 1
+    f2 = cutrows.copy()
+    f2["energy"] = np.round(f2["energy"].to_numpy() - f2["e1"].to_numpy(), 3)
+    f2["start"] = f2["cut"]
+    f2["auth_code"] = f2["row"].map(new_codes)
+    f2["frag"] = 2
+    assert (f2["energy"] >= 0.001).all() and (f1["energy"] >= 0.066).all()
+    out = pd.concat([keep, f1.drop(columns=["cut", "e1"]), f2.drop(columns=["cut", "e1"])], ignore_index=True)
+    return out
 
 
 def add_redeliveries(rng, led: pd.DataFrame, read_dec2025: int, exclude_rows: set):
@@ -174,7 +247,7 @@ def add_redeliveries(rng, led: pd.DataFrame, read_dec2025: int, exclude_rows: se
     December 2025: the delivery holding December's D session, and the delivery holding the
     sessions plugged in on 31 December after the panel read."""
     out = []
-    dk = led[led["role"] == "D"].sort_values("start")
+    dk = led[(led["role"] == "D") & (led["frag"] != 1)].sort_values("start")
     assert len(dk) == 2
     groups = []
     for _, r in dk.iterrows():
@@ -214,10 +287,11 @@ def assign_session_ids(rng, led: pd.DataFrame) -> pd.DataFrame:
         ids[idx] = sid
     led["session_id"] = pd.Series(ids, dtype="Int64")
     # restated versions share the identifier of their first version
-    key = led[led["version"] == 1].set_index("row")["session_id"]
-    key = key[~key.index.duplicated(keep="first")]
+    v1 = led[led["version"] == 1]
+    key = dict(zip(zip(v1["row"], v1["frag"]), v1["session_id"]))
     m = led["version"] > 1
-    led.loc[m, "session_id"] = led.loc[m, "row"].map(key).astype("Int64")
+    led.loc[m, "session_id"] = pd.Series([key[(r, f)] for r, f in zip(led.loc[m, "row"], led.loc[m, "frag"])],
+                                         index=led.index[m], dtype="Int64")
     assert led["session_id"].notna().all()
     return led
 

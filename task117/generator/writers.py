@@ -9,6 +9,8 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from datetime import timezone
+
 from common import PST, QH, TZ, daterange, iso_local, lt_date
 from world import BACKFED_POS, BACKFEED, GARAGES, N_UNITS, POS_PREFIX
 
@@ -26,6 +28,8 @@ CHECKS = "permit_vehicle_checks.csv"
 REFERENCE = "vehicle_reference_list.csv"
 FLEET = "city_fleet_roster.csv"
 FLEETCARD = "fleet_card_ev_transactions_2024-2026.csv"
+COURTESY = "curbline_courtesy_sessions_civic_decks_2024-2026.csv"
+STATEMENTS = "ev_permit_charging_statements_2026.csv"
 RATES = "nspl_schedule_26_ev_charging_service.pdf"
 STANDARD = "fes-07_load_forecasting_standard_rev4.pdf"
 GUIDE = "nspl_new_service_planning_guide_2026_sec7.pdf"
@@ -91,7 +95,8 @@ def write_spine(w, path):
 
 def write_decisions(w, path, rng):
     led = w.rows[w.rows["in_ledger"]]
-    sid_of = led[led["version"] == 1].drop_duplicates("row").set_index("row")["session_id"]
+    v1 = led[(led["version"] == 1) & (led["frag"] != 1)]
+    sid_of = v1.drop_duplicates("row").set_index("row")["session_id"]
     d = w.decisions.copy()
     reviewers = ["T. Pierce", "T. Pierce", "A. Warner"]
     out = pd.DataFrame({
@@ -292,7 +297,8 @@ def write_fleet_card(w, path, rng):
     tid = 50318000 + np.cumsum(rng.integers(3, 41, len(f)))
 
     def ts(t):
-        return datetime.fromtimestamp(int(t), TZ).strftime("%Y-%m-%d %H:%M:%S")
+        # the processor posts START and END on its own clock, UTC
+        return datetime.fromtimestamp(int(t), timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     price = np.where(f["day"].to_numpy() < date(2025, 7, 1), 0.214, 0.229)
     out = pd.DataFrame({
         "TRANS_ID": tid,
@@ -368,8 +374,8 @@ def write_campus(w, path, rng):
     rows = []
     for a, b in zip(reads[:-1], reads[1:]):
         ta, tb = lt_date(a, 7), lt_date(b, 7)
-        deck = sum(float(books.c[(False, False, False)][p][(tb - books_t0()) // QH]
-                         - books.c[(False, False, False)][p][(ta - books_t0()) // QH]) for p in PANELS)
+        deck = sum(float(books.c[(False, False, False, False)][p][(tb - books_t0()) // QH]
+                         - books.c[(False, False, False, False)][p][(ta - books_t0()) // QH]) for p in PANELS)
         days = (b - a).days
         winter = b.month in (11, 12, 1, 2, 3)
         base = days * (5650 if winter else 6100) * float(rng.uniform(0.96, 1.04))
@@ -397,7 +403,7 @@ def books_t0():
 def write_status(w, path, rng):
     """Station status events, 2026: overnight firmware windows by garage, communication drops, and a few
     faults, all at times the station had no vehicle charging."""
-    rows = w.rows[w.rows["in_ledger"] & w.rows["true_row"]]
+    rows = w.rows[(w.rows["in_ledger"] | w.rows["courtesy"].fillna(False).astype(bool)) & w.rows["true_row"]]
     busy = {}
     for sid, st, en in zip(rows["station_id"], rows["start"], rows["plug_out"]):
         busy.setdefault(int(sid), []).append((int(st), int(en)))
@@ -445,5 +451,45 @@ def write_status(w, path, rng):
     out = pd.DataFrame({"event_id": np.arange(880211, 880211 + len(ev)), "station_id": ev["station_id"].to_numpy(),
                         "event_time": [iso_local(t) for t in ev["t"]], "status": ev["status"].to_numpy(),
                         "reason": ev["reason"].to_numpy()})
+    _csv(out, path)
+    return out
+
+
+# ------------------------------------------------------------------------------ courtesy sessions and statements
+def write_courtesy(w, path, rng):
+    """Curbline's courtesy-session report for the two decks: charging on Saturdays, Sundays and the Schedule 26
+    holidays, which is free to permit holders and is not settled, so it never reaches the settlement export."""
+    c = w.rows[w.rows["courtesy"].fillna(False).astype(bool)].sort_values(["start", "garage", "position"])
+    ref = 61200400 + np.cumsum(rng.integers(1, 6, len(c)))
+
+    def ts(t):
+        return datetime.fromtimestamp(int(t), TZ).strftime("%Y-%m-%d %H:%M:%S")
+    out = pd.DataFrame({"Courtesy Ref": [f"CT{x}" for x in ref], "Station": c["station_id"].astype("int64").to_numpy(),
+                        "Permit": c["permit_no"].to_numpy(), "Connected": [ts(t) for t in c["start"]],
+                        "Disconnected": [ts(t) for t in c["plug_out"]],
+                        "Energy (kWh)": c["energy"].map(lambda x: f"{x:.3f}").to_numpy()})
+    _csv(out, path)
+    return out
+
+
+SESSION_FEE, ENERGY_RATE = 0.50, 0.218
+
+
+def write_statements(w, path):
+    """Parking Services' monthly EV charging statements to Civic Center permit holders, 2026: each charge billed
+    a session fee plus the energy delivered."""
+    r = w.rows
+    t = r[r["in_ledger"] & r["true_row"] & ~r["redelivered"] & r["garage"].isin(["CCN", "CCS"])
+          & (r["acct"] == "PERMIT") & (r["day"] >= date(2026, 1, 1)) & (r["day"] <= date(2026, 12, 31))].copy()
+    t["period"] = [f"{d.year}-{d.month:02d}" for d in t["day"]]
+    g = t.groupby(["permit_no", "period"]).agg(charges=("row", "nunique"), kwh=("energy", "sum")).reset_index()
+    g = g.sort_values(["period", "permit_no"], kind="mergesort").reset_index(drop=True)
+    fees = np.round(SESSION_FEE * g["charges"].to_numpy() + 1e-9, 2)
+    energy = np.round(ENERGY_RATE * g["kwh"].to_numpy() + 1e-9, 2)
+    out = pd.DataFrame({"statement_no": [f"EVP-26{p[5:]}-{i:04d}" for i, p in enumerate(g["period"], start=1)],
+                        "permit_no": g["permit_no"], "period": g["period"], "charges": g["charges"].astype(int),
+                        "kwh": g["kwh"].map(lambda x: f"{x:.3f}"), "session_fees": [f"{x:.2f}" for x in fees],
+                        "energy_charge": [f"{x:.2f}" for x in energy],
+                        "amount_due": [f"{a + b:.2f}" for a, b in zip(fees, energy)]})
     _csv(out, path)
     return out

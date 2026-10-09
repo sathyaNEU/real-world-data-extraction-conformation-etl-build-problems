@@ -70,6 +70,10 @@ SOURCES = [
     (Wr.FLEETCARD, "Fleet Services: EV charging transactions on city fleet cards at Curbline stations, January 2024 to "
                    "December 2026, from the fleet card processor's monthly statement files. NETWORK_REF is the "
                    "charging network's reference for the charge."),
+    (Wr.COURTESY, "Curbline courtesy-session report for the Civic Center decks, January 2024 to December 2026: "
+                  "charging on weekends and Schedule 26 holidays, when it is free to permit holders."),
+    (Wr.STATEMENTS, "Parking Services monthly EV charging statements to Civic Center permit holders, 2026: per permit "
+                    "and month, the charges billed (a session fee of $0.50 each) and the energy (21.8 cents per kWh)."),
     (Wr.LOG, "Facilities Electrical: monthly reads of the two deck charging panel sub-meters, December 2023 to "
              "December 2026, as kept by the electricians."),
     (Wr.NAMEPLATES, "Facilities Electrical: nameplate and configuration record of the two deck sub-meters."),
@@ -200,7 +204,8 @@ def pack_gates(out, meta, prompt_path, answer_figures):
              "meter on standard time": r"Pacific Standard Time", "nameplate sizing": r"Table 7-2",
              "accuracy record": r"recorded billing demand in whole kilowatts",
              "version of record": r"marked ACCEPTED replaces", "gateway B coverage": r"not in the settlement export",
-             "permit-only decks": r"permit-only"}
+             "permit-only decks": r"permit-only", "settlement run time": r"settlement run is daily",
+             "free courtesy charging": r"free to permit holders"}
     alltext = dict(texts)
     for f in files:
         if f.endswith(".csv"):
@@ -233,6 +238,8 @@ def write_all(w, out, rng):
     Wr.write_reference(j(Wr.REFERENCE))
     Wr.write_fleet(w, j(Wr.FLEET))
     Wr.write_fleet_card(w, j(Wr.FLEETCARD), rng)
+    Wr.write_courtesy(w, j(Wr.COURTESY), rng)
+    Wr.write_statements(w, j(Wr.STATEMENTS))
     Wr.write_campus(w, j(Wr.CAMPUS), rng)
     Wr.write_status(w, j(Wr.STATUS), rng)
     D.rate_schedule(j(Wr.RATES))
@@ -264,6 +271,7 @@ def main():
     r = an.ladder()
     main_res = C.main_call(an, r)
     renewal_res = C.renewal(an)
+    charges_res = C.charges(an)
     corpus_res = C.corpus(an, r)
     b3_res = C.b3(an)
     b1_res = C.b1(an)
@@ -296,7 +304,7 @@ def main():
             "132.6"]
     gates = pack_gates(a.out, meta, os.path.abspath(a.prompt), figs)
     heads = [main_res["answer"], main_res["rung0"], main_res["rung1"], main_res["rung2"], main_res["rung3"],
-             main_res["rung4"]]
+             main_res["rung4"], main_res["rung4_rec"], main_res["rung5_rec"]]
     C.ck("G14 generation tell: no headline figure sits on a round boundary",
          all(abs(x / 5 - round(x / 5)) > 0.02 for x in heads), heads)
     with open(a.meta, "w") as f:
@@ -312,6 +320,12 @@ def main():
         "rungs": {"0": round(main_res["rung0"], 3), "1": round(main_res["rung1"], 3), "2": round(main_res["rung2"], 3),
                   "3": round(main_res["rung3"], 3), "4": round(main_res["rung4"], 3)},
         "rung4_split": [round(x, 3) for x in main_res["rung4_split"]],
+        "records": {"rung4": round(main_res["rung4_rec"], 3), "rung5": round(main_res["rung5_rec"], 3),
+                    "rung5_at": main_res["rung5_rec_at"],
+                    "rung5_split": [round(x, 3) for x in main_res["rung5_rec_split"]],
+                    "rung5_monthly": [round(x, 3) for x in main_res["rung5_rec_monthly"]],
+                    "rung4_monthly": [round(x, 3) for x in main_res["rung4_rec_monthly"]]},
+        "charges": charges_res,
         "rung4_monthly": [round(x, 3) for x in main_res["rung4_monthly"]],
         "renewal": {k: v for k, v in renewal_res.items()},
         "cells": {k: round(v, 3) for k, v in main_res["cells"].items()},
@@ -325,6 +339,7 @@ def main():
         "b1_clock_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["clock_moves"].items()},
         "b1_redelivery_moves": b1_res["redelivery_moves"], "b1_backfeed_moves": b1_res["backfeed_moves"],
         "b1_double_read_move": b1_res["double_read_move"], "b1_nearest_wrong": b1_res["nearest_wrong"],
+        "b1_courtesy_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["courtesy_moves"].items()},
         "b1_split_moves": {f"{p} {k:02d}": v for (p, k), v in b1_res["split_moves"].items()},
         "b3_moves": b3_res["moves"],
         "separation_counts": counts, "pack": {k: v for k, v in gates.items() if k != "rule_homes"},

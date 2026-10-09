@@ -17,6 +17,22 @@ AS_OF = date(2027, 1, 25)
 DECKS = ("CCN", "CCS")
 
 
+def merge_charges(s: pd.DataFrame) -> pd.DataFrame:
+    """One row per charge: the records of a charge (the same row id) joined end to start into one block."""
+    s = s.sort_values(["row", "start"], kind="mergesort")
+    first = s.groupby("row", sort=False).head(1)
+    agg = s.groupby("row", sort=False).agg(start=("start", "min"), energy=("energy", "sum"), plug_out=("plug_out", "max"),
+                                           n_rec=("start", "size"))
+    out = first.set_index("row", drop=False).copy()
+    out["start"] = agg["start"]
+    out["energy"] = np.round(agg["energy"], 3)
+    out["plug_out"] = agg["plug_out"]
+    out["n_rec"] = agg["n_rec"]
+    out["end_charge"] = out["start"] + out["energy"] / out["rate"] * 3600.0
+    out.index = first.index
+    return out
+
+
 def local_dates(t):
     return pd.to_datetime(np.asarray(t, dtype=np.int64), unit="s", utc=True).tz_convert(TZ)
 
@@ -35,10 +51,15 @@ class Analysis:
         self.rows = rows
         true = rows["true_row"] & ~rows["redelivered"]
         self.deck_true = rows[true & rows["garage"].isin(DECKS)]
-        self.pop26 = self.deck_true[(self.deck_true["ly"] == 2026) & self.deck_true["in_ledger"]].copy()
+        # whole charges: a charge the settlement run closed and carried on is one block from its first start
+        self.deck_charges = merge_charges(self.deck_true)
+        self.rec26 = self.deck_true[(self.deck_true["ly"] == 2026) & self.deck_true["in_ledger"]].copy()
+        self.pop26 = merge_charges(self.rec26)
         # the car behind each 2026 session on its own date, and the car its permit carries into the contract year
         self.pop26["car"] = self.car_by_join(self.pop26)
         self.pop26["car27"] = self.car_by_join(self.pop26, as_of=AS_OF)
+        self.rec26["car"] = self.car_by_join(self.rec26)
+        self.rec26["car27"] = self.car_by_join(self.rec26, as_of=AS_OF)
         veh26 = self.vehicles_at(date(2026, 12, 31), date(2026, 1, 1))
         veh27 = self.vehicles_at(AS_OF, AS_OF)
         self.favg = float(np.mean(np.minimum(11.5, veh26["rating"])))
@@ -163,6 +184,13 @@ class Analysis:
         for r, ld in loads.items():
             v, t = self.annual(ld)
             res[r] = {"peak": v, "at": t, "filed": GROWTH * v}
+        # the same replays run record by record, each settlement record as if it were a charge of its own
+        rec = self.rec26
+        self.rec_loads = {r: self.load(rec, self.rate_rule(r, rec)) for r in ("percar", "percar26", "r115", "r110")}
+        res["records"] = {}
+        for r, ld in self.rec_loads.items():
+            v, t = self.annual(ld)
+            res["records"][r] = {"peak": v, "at": t, "filed": GROWTH * v, "monthly": self.monthly(ld)}
         # rung 0: the log's highest month, both registers summed
         log = self.w.log
         l26 = log[(pd.to_datetime(log["read_date"]).dt.year == 2026)]

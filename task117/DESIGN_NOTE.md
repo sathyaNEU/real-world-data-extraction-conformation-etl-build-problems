@@ -35,7 +35,44 @@ Similarity claim: no prior build is this puzzle, because none commits a forward 
 
 ## Stump sentence
 
-Restated at harden loop 1 (2026-10-09). The stage-1 stump (115 kW from the rated replay, 150 kW per car) died in round 1 and its record is in `## Tried and rejected`.
+Restated at harden loop 1 (2026-10-09). The stage-1 stump (115 kW from the rated replay, 150 kW per car) died in round 1 and its record is in `## Harden loop 2: design (2026-10-09)
+
+Round 2's plain solver landed 130 kW (proxy 89.2) by running rung 5 as the last link of the chain it was already building, and handled both fresh pool-B primaries as their own files state them (`## Tried and rejected`, the harden loop 2 line). The repair keeps every rung and adds one after the solver's step: its step 4 ("Re-simulated each 2026 session at min(11.5 kW, OBC), using the vehicle on the permit at the January 2027 renewal") still completes, still joins every record to one car at the right date, and now returns 150 kW, which is wrong.
+
+**Re-root weighed.** The note's own stopping rule licenses this repair (one round, not two, has filed 130 through the contract-year car), and the orchestrator assigned loop 2. The repair moves the decisive step off the car chain entirely, onto the unit the replay runs on, which is trap #2 of the measured catalogue (counts file rows instead of the real unit, 11 of 64, 7 under 0.50) with trap #4 behind it (never tests its reading against the control). If round 3 lands 130 through the charge merge, loop 3 is the last on this architecture and a re-root at stage 1 is the default.
+
+### The new rung
+
+**Rung 6, the charge, not the settlement record.** Curbline's settlement run is daily at about 10:00 a.m. local time (the run reaches each garage at its own minute, with a day-to-day jitter of under two minutes). A session still delivering energy at the run is closed at the run and its charge continues as a new session record under a new authorization code, at the same station and permit, starting the second the first record ends. The decks' long morning sessions are all charging at the run, so on every binding day the export carries them as pairs. The closed record cannot tell a pair from one charge: at 6.6 kW the second record draws from its first second, so the readings, the energy and the session model are identical either way. Replayed on the new units record by record, the second record restarts at the run at the car's full new rate, and the cars the answer has finished before noon are back on the meter at noon. Replayed charge by charge (each zero-gap chain at one station under one permit or card merged into one block from its first start), the answer is unchanged at 129.136 kW.
+
+- **What pins it (determinism).** Structural: every pair is a zero-gap chain (end of one record equals the start of the next to the second, same station, same permit or card) and no other record touches either. Documentary: the field notes now define plug_in and plug_out as the start and end of the session record and file the settlement run's time once, under settled_on. Corpus (C2): Parking Services' 2026 permit charging statements bill each permit per charge; the charge counts reproduce on every permit-month only when chains are merged, records-as-charges misses most permit-months, and merging every same-day record by permit and station (the over-merge) misses the permit-months with a genuine unplug-and-replug.
+- **Why it is silent.** Unique keys, unique codes, no orphan, no fan-out, readings sum to energy, the session model validates on every record. The tell exists only at the row level (records ending and starting at the run minute) and in a billing file nothing in the call asks for.
+- **Litmus and Gate G.** No. Every record is correct at its stated grain (a settlement record), the statements are correct, nothing is overturned. Gap 2 (population: the file is not the thing), mechanism `forecasting` with `method_or_model_selection` supporting; flags unchanged (`surface_read_dependency: no`, `analytical_non_defect`, `sole_data_defect: no`). Clean-data test: the export is complete and correct; repairing the off-path files moves nothing. Lens swap: no, records and charges are two grains of the same correct data, and the closed replay is identical on both.
+
+### The ladder (the natural path runs on records)
+
+| Rung | Construction | Lands (target) | Killed by |
+|---|---|---|---|
+| 0 | panel log registers x 1.12 x 11.5/6.6 | 412.16, files 410 | Schedule 26 billing window |
+| 1 | closed billing maximum x 1.12 x ratio | 309.12, files 310 | the readings (a faster unit shortens a session) |
+| 2 | replay at 11.5 kW | 103.04, files 105 (records and charges agree) | Library vans at 11.0 kW |
+| 3 | replay at 11.0 kW | 98.56, files 100 | the pickup at 11.5 kW |
+| 4 | per car, each record's car on its own date | about 160, February | the January 2027 renewal |
+| 5 | per car, contract-year car, each record replayed | about 151, files 150 (155 rounded up), December | the run's pairs and the statements' charge counts |
+| 6 | **per car, contract-year car, each charge replayed** | **129.136, files 130**, December | none |
+
+Cells: per car on charges with own-date cars 148.512 (150); the growth left off 115.3; the planners 225. The answer is bracketed (rungs 2, 3 and growth-left-off below, rungs 4 and 5 above); every single-error cell at least 10 per cent away, asserted.
+
+### Asks, re-hardened
+
+- **B1 primary (new, D4 absent channel): weekend and holiday courtesy charging.** Charging at the decks on Saturdays, Sundays and the Schedule 26 holidays is free to permit holders and Curbline does not settle it, so those sessions are not in the settlement export; they ship in Curbline's courtesy-session report. They charged through the panels, so every 2026 reading's unaccounted energy drops by that span's courtesy energy; leaving them out moves all 24 readings by tens of kWh. Off the main path by construction: no weekend or holiday quarter-hour is a billing quarter-hour (asserted zero courtesy load in the billing window), and no courtesy row is in the export. Hazards kept: the meter clock, the December 2025 re-delivery, the back-fed unit, the double read, the read-straddling quarter-hour (demoted from primary), repeats over-deduped, calendar spans.
+- **B3 primary (new, D8 clock): the fleet card file stamps START and END in UTC.** The pre-April 2025 fleet charges the export does not carry must be added at their local times; read as local, the top-up on every back-test day lands about eight hours late, outside the noon quarter-hour, and all 24 figures move exactly as if the charges were left out. Recoverable without any sentence: every fleet charge after the April 2025 move is in both files, and START less the export's start is exactly the UTC offset on all of them (C2). Hazards kept: fleet charges left out (demoted from primary), the whole file added, reissued identifiers, the 1.09 vintage, gateway B, restated versions, re-deliveries.
+
+### Pair arithmetic, restated
+
+A solver who stops at rung 5 files 150 or 155 and loses every contract month, the South split, the gap and the chart's marked value; it keeps the month (December), the day, North's 83 and the planners' 225. With the main call missed, the pass condition rests on B1's courtesy channel (about half the ask weight) and B3's clock, each of which moves every figure in its ask.
+
+## Tried and rejected`.
 
 A competent solver rebuilds the tariff's billing maximum from the interval readings, replays every 2026 deck session on the new units at the smaller of 11.5 kW and its car's onboard charger rating (a model that reproduces every closed reading at 6.6 kW), takes each session's car from the permit's vehicle check in force on the session date, grows by the filed 1.12 and files 150 kW (148.5 unrounded, set in February); the step that lands it there is reading the car as of the session rather than as of the contract year: at the January 2027 renewal 18 Larch County Fleet Services permits moved from 2020 Bolt EVs at 7.2 kW to 2023 Bolt EVs at 11.0 kW, which finish before noon on the new units, so the contracted demand is 130 kW, set in December by the cars that were not renewed.
 

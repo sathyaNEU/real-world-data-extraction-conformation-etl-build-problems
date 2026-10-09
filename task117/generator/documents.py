@@ -318,13 +318,14 @@ settled_sessions
                   from the network pool, and an identifier freed when a station is retired may
                   be assigned to another station. The station register lists each assignment
                   with its in-service dates.
-  plug_in         Time the vehicle was connected, local civil time with UTC offset.
-  plug_out        Time the vehicle was disconnected, local civil time with UTC offset.
+  plug_in         Start of the session, local civil time with UTC offset.
+  plug_out        End of the session, local civil time with UTC offset.
   kwh_delivered   Energy delivered to the vehicle in the session, metered at the station.
   account_type    PERMIT, FLEET or PUBLIC.
   permit_no       Parking permit presented at the station (PERMIT sessions).
   fleet_card      Fleet card presented at the station (FLEET sessions).
-  settled_on      Date the session settled.
+  settled_on      Date of the settlement run that settled the session. The settlement run
+                  is daily, starting at 10:00 a.m. local time.
   delivered_on    Date of the weekly delivery that carried the row.
 
 session_intervals

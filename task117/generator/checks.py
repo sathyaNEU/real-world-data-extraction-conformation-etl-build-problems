@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import itertools
 import math
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import numpy as np
 import pandas as pd
 
 import meters as M
-from analysis import AS_OF, DECKS, GROWTH, RATIO, Analysis, ks
+from analysis import AS_OF, DECKS, GROWTH, RATIO, Analysis, ks, merge_charges
 from common import (CITY_HOLIDAYS, GRID_T0, HOLIDAYS, QH, TZ, iso_local, load_curve, lt_date, nearest5, up5)
 from world import (BACKFED_POS, BACKFEED, GATEWAY_B_END, GATEWAY_B_POS, MIGRATION, REISSUED_POS, RESTATED_POS)
 
@@ -103,11 +103,36 @@ def main_call(a: Analysis, r: dict) -> dict:
     ck("A20 rung 4 differs from the answer at whole kW in eleven of twelve months (December alone agrees)",
        [m + 1 for m in range(12) if round(monx[m]) == round(mon[m])] == [12])
     months = {k: datetime.fromtimestamp(r[k]["at"], TZ).month for k in ("percar", "percar26", "r115", "r110", "draw66")}
-    ck("A21 month that sets each rung: answer December, rung 4 and the closed maximum February, rungs 2 and 3 June",
-       months == {"percar": 12, "percar26": 2, "r115": 6, "r110": 6, "draw66": 2}, months)
-    ck("A22 rung figures all different when filed (410, 310, 105, 100, 150, 130)",
-       [nearest5(v) for v in (out["rung0"], out["rung1"], out["rung2"], out["rung3"], x, ans)]
-       == [410, 310, 105, 100, 150, 130])
+    ck("A21 month that sets each rung: answer December, own-date cars and the closed maximum February, rungs 2 and 3 "
+       "June", months == {"percar": 12, "percar26": 2, "r115": 6, "r110": 6, "draw66": 2}, months)
+    # the natural path replays settlement records: rungs 2 and 3 agree, rungs 4 and 5 do not
+    rec = r["records"]
+    out["rec"] = {k: v["filed"] for k, v in rec.items()}
+    ck("A40 record by record, rungs 2 and 3 are unchanged (103.04 and 98.56): no record the run closed charges into "
+       "their binding quarter-hour", near(rec["r115"]["filed"], r["r115"]["filed"], 1e-6)
+       and near(rec["r110"]["filed"], r["r110"]["filed"], 1e-6), out["rec"])
+    r4, r5 = rec["percar26"]["filed"], rec["percar"]["filed"]
+    out["rung4_rec"], out["rung5_rec"] = r4, r5
+    out["rung5_rec_at"] = iso_local(rec["percar"]["at"])
+    out["rung5_rec_monthly"] = [GROWTH * rec["percar"]["monthly"][m][0] for m in range(1, 13)]
+    out["rung4_rec_monthly"] = [GROWTH * rec["percar26"]["monthly"][m][0] for m in range(1, 13)]
+    ldr = a.rec_loads["percar"]
+    jr = (rec["percar"]["at"] - GRID_T0) // QH
+    out["rung5_rec_split"] = (GROWTH * ldr["CCN"][jr], GROWTH * ldr["CCS"][jr])
+    ck("A41 rung 5, the contract-year car on every settlement record: at least 15 per cent above the answer, 155 kW to "
+       "the nearest 5 kW (160 rounded up), set at 12:00 on 8 December 2026",
+       r5 >= 1.15 * ans and nearest5(r5) == 155 and up5(r5) == 160
+       and out["rung5_rec_at"] == "2026-12-08T12:00:00-08:00", (r5, out["rung5_rec_at"]))
+    ck("A42 rung 5 differs from the answer at whole kW in every contract month",
+       all(round(u) != round(v) for u, v in zip(out["rung5_rec_monthly"], mon)), out["rung5_rec_monthly"])
+    print("     rung 4 and rung 5 record by record:", round(r4, 3), iso_local(rec["percar26"]["at"]), round(r5, 3),
+          out["rung5_rec_at"], [round(x, 1) for x in out["rung5_rec_split"]])
+    ck("A43 rung 4 record by record: own-date cars, at least 20 per cent above the answer and filed apart from rung 5",
+       r4 >= 1.20 * ans and nearest5(r4) not in (nearest5(r5), 130, 150), (r4, iso_local(rec["percar26"]["at"])))
+    ck("A22 rung figures all different when filed (410, 310, 105, 100, rung 4, 155, 130)",
+       len({nearest5(v) for v in (out["rung0"], out["rung1"], out["rung2"], out["rung3"], r4, r5, ans)}) == 7
+       and [nearest5(v) for v in (out["rung0"], out["rung1"], out["rung2"], out["rung3"], r5, ans)]
+       == [410, 310, 105, 100, 155, 130])
     # grid cells
     closed = r["rung1"]["closed"]
     cells = {
@@ -127,6 +152,8 @@ def main_call(a: Analysis, r: dict) -> dict:
         "per car on North, rating on South": GROWTH * r["N_percar_S_rating"]["peak"],
         "per car on South, rating on North": GROWTH * r["S_percar_N_rating"]["peak"],
         "ratings only for the county pool cars": GROWTH * r["pool_rating"]["peak"],
+        "per car, contract-year car, each settlement record replayed": rec["percar"]["filed"],
+        "per car, own-date car, each settlement record replayed": rec["percar26"]["filed"],
     }
     for k, v in r["allhours"].items():
         cells[f"all hours, {k}"] = GROWTH * v
@@ -149,21 +176,26 @@ def main_call(a: Analysis, r: dict) -> dict:
            "draw 6.6 and growth left off": r["draw66"]["peak"],
            "deck averages on 2026 vehicles and growth left off": r["davg"]["peak"],
            "fleet average on 2026 vehicles and growth left off": r["favg"]["peak"],
-           "replay at 11.5 with the 6.6 kW units' ratio": r["r115"]["peak"] * GROWTH * 6.6 / 11.5}
+           "replay at 11.5 with the 6.6 kW units' ratio": r["r115"]["peak"] * GROWTH * 6.6 / 11.5,
+           "settlement records replayed and growth left off": rec["percar"]["peak"]}
     out["two_error"] = two
     nearest_two = min(two, key=lambda k: abs(two[k] / ans - 1))
     ck("A30 nearest two-error cell: own-date cars with growth left off, 132.6 kW, files 135 not 130, its two "
        "violations opposite in sign", nearest_two == "own-date cars and growth left off"
        and near(two[nearest_two], 132.6, 1e-6) and nearest5(two[nearest_two]) == 135 and up5(two[nearest_two]) == 135
        and x > ans > r["percar"]["peak"], (nearest_two, two[nearest_two]))
-    ck("A31 every other two-error cell at least 10 per cent from the answer",
-       all(abs(v / ans - 1) >= 0.10 for k, v in two.items() if k != nearest_two), two)
+    near_pairs = {k: v for k, v in two.items() if abs(v / ans - 1) < 0.10}
+    ck("A31 every two-error cell under 10 per cent from the answer is two violations of opposite sign and files "
+       "neither 130 nor anything rounding up to it", set(near_pairs) <= {"own-date cars and growth left off",
+                                                                         "settlement records replayed and growth left off"}
+       and all(nearest5(v) != 130 and up5(v) != 130 for v in near_pairs.values())
+       and rec["percar"]["filed"] > ans > r["percar"]["peak"], two)
     ck("A32 the utility planners' figure 225 kW, gap 95 kW", up5(32 * 11.5 * 0.6) == 225 and 225 - nearest5(ans) == 95,
        32 * 11.5 * 0.6)
     # convergent readings
     conv = {}
     conv["decks' own maxima summed"] = GROWTH * (r["deck_own"]["CCN"][0] + r["deck_own"]["CCS"][0])
-    full = a.deck_true.copy()
+    full = a.deck_charges.copy()
     full["car27"] = a.car_by_join(full, as_of=AS_OF)
     ld36 = a.load(full, np.minimum(11.5, full["car27"]))
     conv["all 36 months"] = GROWTH * max(a.annual(ld36, year=y)[0] for y in (2024, 2025, 2026))
@@ -224,6 +256,82 @@ def renewal(a: Analysis) -> dict:
     v27 = a.veh27
     out["shares27"] = (int((v27["rating"] <= 7.7).sum()), len(v27))
     ck("R07 contract-year fleet: 39 of 73 permit vehicles at 7.2 to 7.7 kW", out["shares27"] == (39, 73), out["shares27"])
+    return out
+
+
+# ====================================================================================== the settlement run's pairs
+def charges(a: Analysis) -> dict:
+    """A charge still delivering energy when the daily settlement run reaches its garage is closed there and carried on
+    as a new record. What links the two, what the closed record cannot see, and what reproduces the statements."""
+    w = a.w
+    rows = w.rows
+    led = rows[rows["in_ledger"] & rows["true_row"] & ~rows["redelivered"]].copy()
+    led["who"] = led["permit_no"].where(led["permit_no"] != "", led["fleet_card"])
+    f1 = led[led["frag"] == 1].set_index("row")
+    f2 = led[led["frag"] == 2].set_index("row")
+    out = {"pairs": len(f1), "pairs_deck_2026": int(((f1["garage"].isin(DECKS)) & (f1["day"] >= date(2026, 1, 1))).sum())}
+    same = (set(f1.index) == set(f2.index))
+    g2 = f2.loc[f1.index]
+    ck("S01 every record the run closed pairs with exactly one record the charge carried on in: same station, same permit "
+       "or card, the second starting the second the first ends", same and len(f1) > 1000
+       and (f1["plug_out"].to_numpy() == g2["start"].to_numpy()).all()
+       and (f1["station_id"].to_numpy() == g2["station_id"].to_numpy()).all()
+       and (f1["who"].to_numpy() == g2["who"].to_numpy()).all(), out)
+    loc = pd.to_datetime(f1["plug_out"], unit="s", utc=True).dt.tz_convert(TZ)
+    mins = loc.dt.hour * 60 + loc.dt.minute + loc.dt.second / 60
+    inst = f1.groupby(["garage", "day"])["plug_out"].nunique()
+    ck("S02 the run closes records between 10:00 and 10:07 local time, at one instant per garage per day",
+       bool(mins.between(600.5, 607).all()) and int(inst.max()) == 1, (float(mins.min()), float(mins.max())))
+    m = merge_charges(led)
+    gen = w.sessions.loc[m["row"].to_numpy()]
+    ck("S03 joining every pair end to start reproduces the charges as generated: start, energy and plug-out",
+       (m["start"].to_numpy() == gen["start"].to_numpy()).all()
+       and np.abs(m["energy"].to_numpy() - gen["energy"].to_numpy()).max() < 0.0005
+       and (m["plug_out"].to_numpy() == gen["plug_out"].to_numpy()).all())
+    # nothing else at the station touches a pair: no other record ends where the second starts or starts where the first
+    # ends, and no record overlaps either
+    st = led.sort_values(["station_id", "start"])
+    sid, s0, s1, rr = (st["station_id"].to_numpy(), st["start"].to_numpy(np.int64), st["plug_out"].to_numpy(np.int64),
+                       st["row"].to_numpy())
+    same_st = sid[1:] == sid[:-1]
+    touch = same_st & (s0[1:] == s1[:-1])
+    overlap = same_st & (s0[1:] < s1[:-1])
+    ck("S04 every zero gap at a station is a pair of one charge, and no two records at a station overlap",
+       bool((rr[1:][touch] == rr[:-1][touch]).all()) and int(overlap.sum()) == 0 and int(touch.sum()) == len(f1),
+       (int(touch.sum()), len(f1), int(overlap.sum())))
+    gaps = []
+    rep = led[led["frag"] == 0].sort_values("start")
+    for (who, sta, d), g in rep[rep["who"] != ""].groupby(["who", "station_id", "day"]):
+        if len(g) > 1:
+            t0, t1 = g["start"].to_numpy(np.int64), g["plug_out"].to_numpy(np.int64)
+            gaps.extend((t0[1:] - t1[:-1]).tolist())
+    out["repeat_min_gap_min"] = min(gaps) / 60 if gaps else None
+    ck("S05 a genuine unplug and replug never makes a zero gap: the shortest gap between two charges of one permit or "
+       "card at one station on one day is 30 minutes or more", bool(gaps) and min(gaps) >= 1800, out["repeat_min_gap_min"])
+    # the statements bill per charge: chains reproduce every permit-month, the rivals do not
+    p26 = led[led["garage"].isin(DECKS) & (led["acct"] == "PERMIT") & (led["day"] >= date(2026, 1, 1))].copy()
+    p26["period"] = [f"{d.year}-{d.month:02d}" for d in p26["day"]]
+    billed = p26.groupby(["permit_no", "period"])["row"].nunique()
+    rec = p26.groupby(["permit_no", "period"]).size()
+    over = p26.groupby(["permit_no", "period"]).apply(lambda g: g.groupby(["station_id", "day"]).ngroups)
+    chain = p26.groupby(["permit_no", "period"]).apply(
+        lambda g: len(g) - int(g["start"].isin(set(g["plug_out"])).sum()))
+    out["statements"] = {"permit_months": len(billed), "records_miss": int((rec != billed).sum()),
+                         "overmerge_miss": int((over != billed).sum()), "chains_miss": int((chain != billed).sum())}
+    ck("S06 the permit statements' charge counts: zero-gap chains reproduce every permit-month; records as charges miss "
+       "most; merging every same-day record at a station misses the months with a genuine replug",
+       out["statements"]["chains_miss"] == 0 and out["statements"]["records_miss"] >= 0.5 * len(billed)
+       and out["statements"]["overmerge_miss"] >= 10, out["statements"])
+    # what the closed record cannot see: at 6.6 kW the pair and the charge give the same readings and the same draw
+    ck("S07 the closed record is blind to the pairs: every record's readings follow the constant draw from its own start, "
+       "and the closed replay of records equals the closed replay of charges in every quarter-hour",
+       np.allclose(sum(a.load(a.rec26, pd.Series(6.6, index=a.rec26.index)).values()),
+                   sum(a.load(a.pop26, pd.Series(6.6, index=a.pop26.index)).values()), atol=1e-9))
+    bind = [d for d, tg in w.cal.items() if tg[0] == "bind"]
+    long26 = a.pop26[a.pop26["day"].isin(bind) & a.pop26["role"].str.startswith("long")]
+    out["long_split_share"] = float((long26["n_rec"] == 2).mean())
+    ck("S08 the run closes most of the binding days' long sessions (at least 70 per cent are pairs)",
+       out["long_split_share"] >= 0.70, out["long_split_share"])
     return out
 
 
@@ -365,7 +473,20 @@ def observed_draw(w, rows):
 
 
 # ====================================================================================== B3
-B3_SUBSET_DEVICES = ("F", "Fx", "D7", "H6", "H2", "H3l", "H3f", "H1")
+B3_SUBSET_DEVICES = ("F", "U", "Fx", "D7", "H6", "H2", "H3l", "H3f", "H1")
+
+
+def _skip_b3(subset):
+    """Alternatives that cannot be taken together: the first or the latest restated version; the fleet card charges
+    left out or added at the processor's stamps read as local time."""
+    return ("H3l" in subset and "H3f" in subset) or ("F" in subset and "Fx" in subset) or \
+        ("F" in subset and "U" in subset)
+
+
+def utc_misread(t):
+    """The instant a reader gets by taking the fleet card file's UTC stamp as local time."""
+    wall = datetime.fromtimestamp(int(t), timezone.utc).replace(tzinfo=None)
+    return int(wall.replace(tzinfo=TZ).timestamp())
 
 
 def b3_values(a: Analysis, sub=()):
@@ -394,6 +515,12 @@ def b3_values(a: Analysis, sub=()):
     if "D7" in sub:
         sel = sel & ~(rows["position"].isin(REISSUED_POS) & (rows["day"] < MIGRATION))
     s = rows[sel]
+    if "U" in sub:
+        # the charges outside the export, added at the processor's UTC stamps read as local time
+        s = s.copy()
+        fp = s["fleet_pre"].fillna(False).astype(bool)
+        shift = np.array([utc_misread(t) - int(t) for t in s.loc[fp, "start"]], dtype=np.float64)
+        s.loc[fp, "start"] = s.loc[fp, "start"].to_numpy(np.float64) + shift
     if "Fx" in sub:
         dup = rows[base & rows["true_row"] & ~rows["redelivered"] & rows["in_ledger"] & (rows["acct"] == "FLEET")]
         if "D7" in sub:
@@ -447,7 +574,7 @@ def b3(a: Analysis):
     moves = {}
     for k in range(1, len(B3_SUBSET_DEVICES) + 1):
         for subset in itertools.combinations(B3_SUBSET_DEVICES, k):
-            if ("H3l" in subset and "H3f" in subset) or ("F" in subset and "Fx" in subset):
+            if _skip_b3(subset):
                 continue
             F2, A2, m2 = b3_values(a, subset)
             v2 = list(m2.values())
@@ -463,6 +590,9 @@ def b3(a: Analysis):
     allm = list(range(1, 13))
     ck("C07 the fleet-card charges left out move all twelve forecasts and every miss",
        moves["F"][0] == allm and moves["F"][1] == allm, moves["F"])
+    ck("C16 the fleet card file's stamps read as local time put every charge outside the export about eight hours late, "
+       "and all 24 figures land where leaving the charges out lands them", moves["U"] == moves["F"]
+       and b3_values(a, ("U",))[2] == b3_values(a, ("F",))[2], (moves["U"], moves["F"]))
     ck("C08 the whole fleet card file added to the export moves the April to December misses it double counts",
        moves["Fx"][0] == [] and set(moves["Fx"][1]) <= set(range(4, 13)) and len(moves["Fx"][1]) >= 6, moves["Fx"])
     ck("C09 the reissued identifiers move all twelve forecasts", moves["D7"][0] == allm, moves["D7"])
@@ -517,6 +647,23 @@ def b1(a: Analysis):
     ck("D03 the meter clock moves readings 3 to 11 on both panels, each by at least 2 kWh",
        moved == sorted((p, k) for p in M.PANELS for k in range(3, 12)), moved)
     ck("D04 the meter clock leaves readings 1, 2 and 12 alone", all(abs(clk[(p, k)]) < 1e-9 for p in M.PANELS for k in (1, 2, 12)))
+    ctm = {}
+    for panel in M.PANELS:
+        prev = date(2025, 12, 31)
+        for k, d in enumerate(r26, start=1):
+            ta, _, _ = instant(prev, panel)
+            tb, _, _ = instant(d, panel)
+            ctm[(panel, k)] = books.sessions(panel, ta, tb) - books.sessions(panel, ta, tb, ct=True)
+            prev = d
+    out["courtesy_moves"] = {k: round(v, 1) for k, v in ctm.items()}
+    ck("D15 the courtesy sessions, which are not in the settlement export, move every 2026 reading on both panels by at "
+       "least 20 kWh when left out", all(v >= 20 for v in ctm.values()), min(ctm.values()))
+    cr = w.rows[w.rows["courtesy"].fillna(False).astype(bool)]
+    cl = a.load(cr, pd.Series(6.6, index=cr.index))
+    inwin = float(((cl["CCN"] + cl["CCS"]) * a.bill).max())
+    ck("D16 no courtesy session charges in any billing quarter-hour (weekends and Schedule 26 holidays only), and none is "
+       "in the settlement export", inwin <= 0.0 and not cr["in_ledger"].any() and len(cr) >= 600,
+       (inwin, len(cr)))
     ta, _, ra = instant(date(2025, 12, 31), "CP-N")
     rd_moves = {p: books.sessions(p, instant(date(2025, 12, 31), p)[0], instant(r26[0], p)[0], rdf=True)
                 - books.sessions(p, instant(date(2025, 12, 31), p)[0], instant(r26[0], p)[0]) for p in M.PANELS}
@@ -572,7 +719,7 @@ def b1(a: Analysis):
             if panel == "CP-S" and k == 12:
                 rb = rf
             a0, a1 = M.month_start(2026, k), M.month_start(2026 + (k == 12), 1 if k == 12 else k + 1)
-            lazy[(panel, k)] = (rb - ra) - books.sessions(panel, a0, a1, rdf=True, bf=True, dd=True)
+            lazy[(panel, k)] = (rb - ra) - books.sessions(panel, a0, a1, rdf=True, bf=True, dd=True, ct=True)
             prev = d
     ck("D10 the lazy path lands away from the golden on every reading",
        all(abs(lazy[k] - gold[k]) >= 1.5 for k in gold), min(abs(lazy[k] - gold[k]) for k in gold))
@@ -610,11 +757,12 @@ def separation(a: Analysis, r: dict, ans: float):
         "reissued identifiers": int(p26["station_id"].isin(w.pos["reissued_id"].dropna().astype(int)).sum()),
         "rows outside the decks": int((~p26["garage"].isin(DECKS)).sum()),
         "rows outside the export": int((~p26["in_ledger"]).sum()),
+        "courtesy sessions": int(p26["courtesy"].fillna(False).astype(bool).sum()),
     }
     ck("E01 zero device and zero hazard rows inside the main call's population", all(v == 0 for v in counts.values()), counts)
 
     def three(s):
-        s = s.copy()
+        s = merge_charges(s)
         s["car"] = a.car_by_join(s)
         s["car27"] = a.car_by_join(s, as_of=AS_OF)
         return (GROWTH * a.annual(a.load(s, np.minimum(11.5, s["car27"])))[0],
@@ -640,7 +788,7 @@ def separation(a: Analysis, r: dict, ans: float):
            all(near(x, y, 1e-6) for x, y in zip(v, base)) and len({nearest5(x) for x in v}) == 3, v)
     other = rows[rows["in_ledger"] & rows["true_row"] & ~rows["redelivered"]
                  & rows["station_id"].isin(w.pos["reissued_id"].dropna().astype(int)) & (rows["day"] >= date(2026, 1, 1))]
-    s = pd.concat([a.pop26.drop(columns=["car", "car27"]), other.assign(garage="CCN")])
+    s = pd.concat([a.pop26.drop(columns=["car", "car27"]), merge_charges(other).assign(garage="CCN")])
     car27 = a.car_by_join(a.pop26, as_of=AS_OF).reindex(s.index).fillna(11.5)
     v_first = GROWTH * a.annual(a.load(s, np.minimum(11.5, car27)))[0]
     ck("E03 identifiers by first assignment leave the answer unchanged", near(v_first, base[0], 1e-6), v_first)
@@ -684,7 +832,7 @@ def referee(a: Analysis):
     for panel in M.PANELS:
         inst = _instants(log, panel)
         for which, kw in (("re-deliveries", dict(rdf=True)), ("back-feed", dict(bf=True))):
-            naive = np.diff(books.c[(kw.get("rdf", False), kw.get("bf", False), False)][panel])
+            naive = np.diff(books.c[(kw.get("rdf", False), kw.get("bf", False), False, False)][panel])
             gold = books.gold_qh[panel]
             light = books.light_raw[panel]
             for (d0, t0), (d1, t1) in zip(inst[:-1], inst[1:]):
