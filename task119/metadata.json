@@ -28,7 +28,7 @@
       "xlsx"
     ],
     "largest_file": "apc_episodes_referred_patients_2022-2026.parquet",
-    "largest_file_rows": 81013,
+    "largest_file_rows": 88342,
     "database_file": "nrr_review_records.sqlite"
   },
   "sources": [
@@ -45,8 +45,8 @@
     {
       "path": "critical_care_referrals_202307_202606.csv",
       "format": "csv",
-      "bytes": 3010744,
-      "rows": 30785,
+      "bytes": 3300136,
+      "rows": 33739,
       "source": "Constructed: regional critical care referral log, platform and migrated legacy rows",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -54,8 +54,8 @@
     {
       "path": "acc_unit_stays_202306_202606.parquet",
       "format": "parquet",
-      "bytes": 970498,
-      "rows": 23169,
+      "bytes": 989103,
+      "rows": 23100,
       "source": "Constructed: network level-3 unit feed",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -72,8 +72,8 @@
     {
       "path": "apc_episodes_referred_patients_2022-2026.parquet",
       "format": "parquet",
-      "bytes": 2080490,
-      "rows": 81013,
+      "bytes": 2264719,
+      "rows": 88342,
       "source": "Constructed: admitted patient care episodes with linked date of death",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -90,7 +90,7 @@
     {
       "path": "wenmarsh_acc_capacity_report_2024-04_to_2026-06.xlsx",
       "format": "xlsx",
-      "bytes": 13907,
+      "bytes": 13912,
       "rows": 324,
       "source": "Constructed: network monthly capacity report computed from the returns and referral log",
       "date": "2026-08-20",
@@ -108,7 +108,7 @@
     {
       "path": "wenmarsh_acc_extract_field_guide.pdf",
       "format": "pdf",
-      "bytes": 7892,
+      "bytes": 7860,
       "rows": null,
       "source": "Constructed: extract field guide and folder contents",
       "date": "2026-09-28",
@@ -135,8 +135,8 @@
     {
       "path": "ccrs_referral_levels_202307_202604.csv",
       "format": "csv",
-      "bytes": 622918,
-      "rows": 15734,
+      "bytes": 690883,
+      "rows": 17447,
       "source": "Constructed: legacy referral level entries",
       "date": "2024-04-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -144,7 +144,7 @@
     {
       "path": "ccrs_migration_export_specification_rel2.3.pdf",
       "format": "pdf",
-      "bytes": 3426,
+      "bytes": 3452,
       "rows": null,
       "source": "Constructed: legacy export specification",
       "date": "2024-02-12",
@@ -153,8 +153,8 @@
     {
       "path": "pas_patient_key_links_2023-2026.csv",
       "format": "csv",
-      "bytes": 6646,
-      "rows": 169,
+      "bytes": 6256,
+      "rows": 159,
       "source": "Constructed: patient key links",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -162,7 +162,7 @@
     {
       "path": "rds_apc_extract_specification.txt",
       "format": "txt",
-      "bytes": 2034,
+      "bytes": 2113,
       "rows": null,
       "source": "Constructed: episode extract specification",
       "date": "2026-08-14",
@@ -171,7 +171,7 @@
     {
       "path": "accn_board_paper_2023-11-21_level3_capacity.pdf",
       "format": "pdf",
-      "bytes": 2679,
+      "bytes": 2707,
       "rows": null,
       "source": "Constructed: network board paper",
       "date": "2023-11-21",
@@ -180,8 +180,8 @@
     {
       "path": "interhospital_transfer_audit_202307_202606.csv",
       "format": "csv",
-      "bytes": 487736,
-      "rows": 3852,
+      "bytes": 480904,
+      "rows": 3797,
       "source": "Constructed: inter-hospital transfer audit",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"

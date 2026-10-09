@@ -54,6 +54,11 @@ FIXES = [
 ]
 FIX_NAME = {f: n for f, n, _, _, _ in FIXES}
 POP = {f: p for f, _, _, p, _ in FIXES}
+
+
+def lc(name):
+    """A fix name inside a sentence: lower case, acronyms kept."""
+    return " ".join(w if w.isupper() and len(w) > 1 else w.lower() for w in name.split())
 CAUSE = {f: c for f, _, _, _, c in FIXES}
 
 
@@ -355,8 +360,8 @@ def write_workbook(r, path):
     # 1. the cohort view Duarte's squad asked for
     ws = sheet("Address check cohorts",
                "Address check (checkout.address.full_postcode): flag cohorts, 31 Aug to 27 Sep 2026",
-               "Signed-in basket sessions by the cohort the account was in at the session (14 Sep rebalance "
-               "applied as of the session); edge-flagged sessions excluded. Conversion = orders / basket sessions.",
+               "Signed-in basket sessions by the cohort the account was in at the session (the 14 and 16 Sep "
+               "assignment moves applied as of the session); edge-flagged sessions excluded. Conversion = orders / basket sessions.",
                ["Cohort", "Flag live from", "Basket sessions", "Orders", "Conversion"],
                [10, 18, 16, 10, 13], first=True)
     row = 5
@@ -601,6 +606,9 @@ def backtest_statements(r):
     b = s[s.wk.isin(BEFORE)]
     half = b[b.mixed].ordered.mean() / b[~b.mixed].ordered.mean()
     assert 0.4 < half < 0.6                            # mixed baskets at about half the rest, in August too
+    flags = json.loads(one("checkout_flags_export", ".json").read_text())
+    moves = {m["moved_at"][:10] for m in flags["assignment_moves"]}
+    assert moves == {"2026-09-14", "2026-09-16"}, moves   # "the 14 and 16 Sep assignment moves"
 
 
 def write_page(r, path):
@@ -613,7 +621,7 @@ def write_page(r, path):
     backtest_statements(r)
     cw = r["s"][(r["s"].wk == CALL_WEEK) & r["s"].club]
     share_prof, share_both = 100 * cw.acct_profile_only.mean(), 100 * cw.acct.mean()
-    title = (f"Q4 sprint to {FIX_NAME[c].lower()}: account holders arriving from the club app signed out cost "
+    title = (f"Q4 sprint to {lc(FIX_NAME[c])}: account holders arriving from the club app signed out cost "
              f"{whole(w4[c])} orders in the week of 21 September, {whole(r['gap'])} more than the next cause")
     e = html.escape
     rows = []
@@ -639,9 +647,9 @@ def write_page(r, path):
 <div class="strip"><span>Ventania Merch · Product · INC-0914 checkout conversion review</span>
 <span>For the review on Friday 2 October 2026 · Júlia Machado, head of product</span></div>
 
-<h1>The Q4 sprint goes to {e(FIX_NAME[c].lower())} at checkout</h1>
+<h1>The Q4 sprint goes to {e(lc(FIX_NAME[c]))} at checkout</h1>
 
-<p>Both checkout squads go on {e(FIX_NAME[c].lower())} for the sprint (12 October to 6 November). The cause it
+<p>Both checkout squads go on {e(lc(FIX_NAME[c]))} for the sprint (12 October to 6 November). The cause it
 removes is customers who already hold a Ventania account arriving from the Shop tab in the Monteralto+ app without
 being signed in. Checkout has none of their saved address, saved card or card-on-file exemption, so they type a
 postcode the new check can reject and pay with a card that gets challenged, and many give up. In the week of 21 to
@@ -649,7 +657,7 @@ postcode the new check can reject and pay with a card that gets challenged, and 
 <strong>{whole(w4[c])} orders</strong>. A code by text or email at the contact step signs them in inside the app
 without a password, which is the only fix on the list that reaches them.</p>
 
-<p>The closest fix is the {e(FIX_NAME[g].lower())}: saved-card payments that Bankora and Finvo began challenging
+<p>The closest fix is the {e(lc(FIX_NAME[g]))}: saved-card payments that Bankora and Finvo began challenging
 in September cost {whole(w4[g])} orders the same week. That loss is real and stays on the Q1 list, but it is
 {whole(r['gap'])} orders a week smaller.</p>
 

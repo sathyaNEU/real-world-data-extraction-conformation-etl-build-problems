@@ -97,7 +97,9 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
        (secs.min(), secs.max()))
     K_(not cb.home_session_id.isin(S.session_id).any() and cb.home_session_id.notna().all(),
        "comeback.credited_to_an_unlogged_home_session")
-    K_((cb.ranker != C_).all(), "comeback.none_for_the_session_sequence_model")
+    K_(cnt.loc[[(0, C_)]].sum() > 0 and int((cb[cb.cell == 0].ranker == C_).sum()) == 0 and
+       1000 * int((cb.ranker == C_).sum()) / int(cnt.xs(C_, level=1).sum()) < 0.3,
+       "comeback.session_sequence_model_rarely_none_in_app_0_29", int((cb.ranker == C_).sum()))
     wl_hit = [str(l) in (w or "").split() for l, w in zip(cb.listing_id, cb.watchlist_at_start)]
     K_(not any(wl_hit), "comeback.never_a_watched_listing")
     per = cb.groupby(["cell", "ranker"]).size()
@@ -419,6 +421,8 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
     gold = res["fee"]
     dists = {k: bin_dist(v) for k, v in gold.items()}
     K_(min(dists.values()) >= 0.035, "ask1.cells_mid_bin", min(dists.values()))
+    off_round = min(abs(v - round(v, 1)) for v in gold.values())
+    K_(off_round >= 0.0049, "ask1.cells_off_the_round_value", round(off_round, 4))
     small = [k for k, v in gold.items() if abs(v) < 1.0]
     K_(len(small) <= 4, "ask1.small_cells", [(L[r], c, round(gold[(r, c)], 2)) for r, c in small])
     # every subset of the five fee devices, and the natural read, carries every cell out of its bin
@@ -604,7 +608,7 @@ def run_all(W, meta, A_hidden, tgt, root, distractors, scrub_rc):
                      r"python-docx|openpyxl|reportlab|matplotlib|xlsxwriter|pyarrow|seed|come-back|comeback)\b", re.I)
     hits_ = {f: bad.findall(t) for f, t in blob.items() if bad.search(t)}
     K_(not hits_, "leak.author_vocabulary", hits_)
-    K_("—" not in alltext, "leak.no_em_dash")
+    K_("\u2014" not in alltext, "leak.no_em_dash")
     for f, t in blob.items():
         ids = [r for r in P.POLICIES if r in t]
         if len(ids) >= 3:

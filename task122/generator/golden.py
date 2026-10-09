@@ -29,16 +29,16 @@ PNG_NAME = "carousel_slot_q1_2027_cells.png"
 # notebook from target/ and checked here.
 REC_CALL = {"answer": "HC-37", "lift": 5.697, "runner_up": "HC-33", "runner_up_lift": 3.303, "gap": 2.394}
 REC_FEE = {   # EUR per 1,000 carousel sessions, cells app 0-29 ... web 730+
-    "HC-31": [11.004, 10.810, 9.792, 8.510, 12.709, 8.297, 11.900, -2.215],
-    "HC-33": [5.593, 11.605, 4.501, 3.709, 1.902, 6.814, 0.991, 2.410],
-    "HC-34": [1.392, 16.500, 17.005, 17.914, 8.989, 15.698, 11.294, 16.691],
-    "HC-36": [-8.687, -14.906, -14.388, -17.688, -9.810, -13.100, -15.614, -19.209],
-    "HC-37": [8.896, 10.995, 9.798, 6.097, 7.615, 12.085, 9.108, 5.409],
-    "HC-39": [5.994, 1.893, 1.813, 1.112, 1.489, -2.799, 0.701, 1.686],
+    "HC-31": [9.094, 8.888, 8.093, 7.214, 10.592, 6.813, 9.885, -1.906],
+    "HC-33": [4.591, 9.607, 3.692, 3.111, 1.406, 5.687, 0.714, 1.991],
+    "HC-34": [-0.914, 13.690, 14.092, 14.794, 7.490, 12.913, 9.311, 13.794],
+    "HC-36": [-7.286, -12.291, -11.891, -14.606, -8.108, -11.115, -12.688, -15.810],
+    "HC-37": [7.306, 9.086, 8.185, 5.010, 6.710, 10.014, 7.590, 4.413],
+    "HC-39": [5.011, 1.512, 1.485, 0.909, 1.487, -2.288, 0.613, 1.393],
 }
 REC_TOTALS = {   # extra orders, extra fee income (EUR), over the twelve weeks
-    "HC-31": (17107.6, 22592.5), "HC-33": (8910.8, 12709.7), "HC-34": (25326.4, 38272.8),
-    "HC-36": (13227.7, -39578.3), "HC-37": (15286.4, 22778.2), "HC-39": (3807.3, 3726.4),
+    "HC-31": (16876.4, 18318.0), "HC-33": (8818.7, 10376.5), "HC-34": (26123.6, 32114.4),
+    "HC-36": (13223.6, -33520.5), "HC-37": (15212.9, 18788.4), "HC-39": (3720.5, 3076.7),
 }
 REC_RUNGS = ["HC-36", "HC-31", "HC-34", "HC-33", "HC-37"]
 
@@ -74,7 +74,7 @@ FRESH_FLOOR, FRESH_HOURS = 12, 48
 # Test capacity note: Q1 2027 slot, 4 January to 28 March, traffic planned on the same ISO weeks one year earlier
 SLOT_START, SLOT_WEEKS = date(2027, 1, 4), 12
 
-# Lift is orders placed during the test (charter 2.2), not orders placed before the session ends. Each session
+# Lift is orders placed during the test (charter 2.2), not the orders placed from a tile in the session. Each session
 # is scored on every order its buyer places in the 21 days after it starts; the orders extract runs to
 # 11 October, 21 days past the last logged session on 20 September.
 FOLLOW_UP_DAYS = 21
@@ -160,7 +160,8 @@ Only the per-session weight reproduces all nine (T7, a sequence model whose logg
 the test the per-render weight misses by the widest margin). Every lift below is the per-session estimator: each
 session counts once, weighted by the inverse of the propensity its ranker was drawn with.
 
-On the render log's own outcome, orders placed before the session ends, the six policies read as follows.
+On the render log's own outcome, the orders placed from the session's tiles in the session, the six policies read
+as follows.
 '''
 
 INSESSION = r'''
@@ -185,8 +186,8 @@ WINDOW_MD = r'''
 ## Orders over the test, not orders in the session
 
 The charter's lift (2.2) is the change in orders the arm's buyers place during the test. The render log only sees
-orders placed from a tile before the session ends. Following each buyer through the orders extract, every channel,
-for 1 to 21 days after the session starts:
+orders placed from a tile in the session. Following each buyer through the orders extract, every channel, for 1 to
+21 days after the session starts:
 '''
 
 WINDOW = r'''
@@ -329,7 +330,8 @@ tariffs = pd.read_csv(REVIEW_DIR / "kopersbescherming_tarieven.csv")
 SLOT_TARIFF = "KB-2026-02"          # in force from 1 Sep 2026; KB-2027-01 deferred (pricing committee, 6 Oct)
 slot_row = tariffs.set_index("tarief_id").loc[SLOT_TARIFF]
 fixed_eur, pct = float(slot_row.vast_bedrag_eur), float(slot_row.percentage_van_artikelprijs) / 100
-VAT = 0.21                          # in the fee buyers pay; booked to account 1630, not to fee income
+finance_book = pd.read_excel(REVIEW_DIR / "finance_buyer_protection_fee_income_2026Q3.xlsx", header=None)
+VAT = float(re.search(r"includes (\d+) per cent VAT", " ".join(finance_book[0].iloc[:5].fillna(""))).group(1)) / 100
 
 payments = pd.read_parquet(REVIEW_DIR / "payments_buyer_protection_2026-06-01_2026-10-11.parquet")
 offers = pd.read_csv(REVIEW_DIR / "offers_accepted_2026-05-25_2026-10-11.csv",
@@ -367,13 +369,17 @@ fin["month"] = fin.booked.dt.strftime("%B %Y")
 q3 = fin[fin.booked.dt.strftime("%Y-%m").isin(["2026-07", "2026-08", "2026-09"])]
 ours = q3.groupby(["month", "platform"]).agg(orders=("order_id", "size"), fee_cents=("fee_cents", "sum"))
 ours["fee income excl. VAT"] = (ours.fee_cents / 100 / (1 + VAT)).round(2)
-stmt = pd.read_excel(REVIEW_DIR / "finance_buyer_protection_fee_income_2026Q3.xlsx", header=5).iloc[:6]
-stmt = stmt.set_index(["Month", "Platform"])
+head = int(np.flatnonzero(finance_book[0].fillna("").to_numpy() == "Month")[0])
+stmt = finance_book.iloc[head + 1:head + 7].set_axis(list(finance_book.iloc[head]), axis=1)
+stmt = stmt.set_index(["Month", "Platform"]).astype(float)
 assert (ours.loc[stmt.index, "orders"].to_numpy() == stmt["Protected orders"].to_numpy()).all()
 assert np.allclose(ours.loc[stmt.index, "fee income excl. VAT"], stmt["Fee income excl. VAT (EUR)"], atol=0.005)
-print(f"Finance's July to September fee income reproduced to the cent: EUR "
-      f"{stmt['Fee income excl. VAT (EUR)'].sum():,.2f} on {int(stmt['Protected orders'].sum()):,} covered "
-      f"purchases, {(~captured_all[covered_all]).mean():.1%} of them paid from a Vouwlijn balance.")
+total_row = finance_book.iloc[head + 7]
+ours_total = round(q3.fee_cents.sum() / 100 / (1 + VAT), 2)
+assert total_row[0] == "Total" and int(total_row[2]) == len(q3) and abs(ours_total - float(total_row[4])) < 0.005
+print(f"Finance's July to September fee income reproduced to the cent, every row and the total: EUR "
+      f"{ours_total:,.2f} on {len(q3):,} covered purchases, {(~q3.payment_id.notna()).mean():.1%} of them paid "
+      "from a Vouwlijn balance.")
 
 # the slot: every covered order in each session's 21 days, at the slot tariff, excl. VAT
 o = follow.merge(payments, on="order_id", how="left", validate="one_to_one")
@@ -478,7 +484,7 @@ for r in POLICIES:
                  f"Lift under {LIFT_BAR:.1f}")
 
 fig = plt.figure(figsize=(13.33, 7.5), dpi=150, facecolor=SURFACE)
-ax = fig.add_axes([0.255, 0.20, 0.535, 0.56], facecolor=SURFACE)
+ax = fig.add_axes([0.255, 0.225, 0.535, 0.535], facecolor=SURFACE)
 vals = fee_grid.loc[POLICIES].to_numpy()
 ax.pcolormesh(vals, cmap=fee_cmap, norm=norm, edgecolors=SURFACE, linewidth=3)
 ax.set_xlim(0, 8)
@@ -521,7 +527,7 @@ fig.text(0.035, 0.935, f"Q1 2027 carousel slot: {LABEL[CALL]}, +{call_lift:.1f} 
 fig.text(0.035, 0.895, "Change in buyer-protection fee income per 1,000 carousel sessions while the slot runs, "
          "EUR, against Blend v7, by platform and buyer tenure", fontsize=11.5, color=INK_2)
 
-cax = fig.add_axes([0.255, 0.115, 0.30, 0.025])
+cax = fig.add_axes([0.255, 0.145, 0.30, 0.025])
 cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=fee_cmap), cax=cax, orientation="horizontal",
                   ticks=[-20, -10, 0, 10, 20])
 cb.ax.set_xticklabels(["-20", "-10", "0", "+10", "+20"], fontsize=9.5, color=INK_2)
@@ -531,11 +537,12 @@ cb.set_label("EUR per 1,000 carousel sessions", fontsize=9.5, color=INK_2, label
 fig.legend(handles=[Patch(facecolor="#f0efec", hatch="///", edgecolor="#3a3936", linewidth=0,
                           label=f"Carousel order rate more than {GUARDRAIL_PCT}% below Blend v7 (charter 4b)"),
                     Patch(facecolor="none", edgecolor=INK, linewidth=2.2, label="Policy taking the slot")],
-           loc="lower left", bbox_to_anchor=(0.585, 0.075), frameon=False, fontsize=9.5, labelcolor=INK_2)
-fig.text(0.035, 0.02, f"Orders over the {FOLLOW_UP_DAYS} days after each logged session, 22 Jun to 20 Sep 2026; "
-         f"fee income excl. VAT at tariff {SLOT_TARIFF} (EUR {fixed_eur:.2f} + {pct:.0%} of price paid), none on "
-         "items paid for in person. Guardrail on every order placed from an arm's tiles. Marketplace Science, "
-         "October 2026.", fontsize=8.5, color=INK_2)
+           loc="lower left", bbox_to_anchor=(0.585, 0.105), frameon=False, fontsize=9.5, labelcolor=INK_2)
+fig.text(0.035, 0.014, f"Orders over the {FOLLOW_UP_DAYS} days after each logged session, 22 Jun to 20 Sep 2026. "
+         f"Fee income excl. VAT at tariff {SLOT_TARIFF} (EUR {fixed_eur:.2f} + {pct:.0%} of price paid), none on items "
+         "paid for in person.\nGuardrail counted on every order placed from the tiles an arm served, including orders "
+         "placed after the session closed. Marketplace Science, October 2026.", fontsize=8.5, color=INK_2,
+         linespacing=1.5, va="bottom")
 fig.savefig("carousel_slot_q1_2027_cells.png", dpi=150, facecolor=SURFACE, metadata={"Software": None})
 plt.show()
 '''
@@ -551,8 +558,9 @@ def summary_md(ns):
         f"The closest policy that still clears our launch conditions is the {lab[ru][0].lower() + lab[ru][1:]} at "
         f"{ns['runner_lift']:.1f}, {ns['gap']:.1f} behind.\n\n"
         "The session-sequence model has the largest lift but fails the guardrail in app 0-29 once every order "
-        "placed from its tiles is counted. The render log only sees orders placed in the session, and buyers who "
-        "leave the home screen open come back to order from the incumbent's tiles but not from its. The two-tower "
+        "placed from its tiles is counted. The render log only sees orders placed in the session; buyers who leave "
+        "the home screen open come back and order from a tile still on screen under every other ranker, but "
+        "hardly ever under this one. The two-tower "
         "personaliser fails it in web 730+, the local pickup boost serves too few fresh listings for our commitment "
         "to sellers, and the seller-diversity re-ranker is under the 2.0 bar. The velocity boost clears all three "
         "on its in-session orders, but most of what it adds there is listings its buyers were already watching and "

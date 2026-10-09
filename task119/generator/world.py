@@ -605,7 +605,13 @@ class World:
                 if "DV2b" in s["tags"]:
                     self.place_dv2b_second(w, s)
                 return w
-        raise RuntimeError("cap placement failed %s" % ({k: v for k, v in s.items() if k != 'tags'}, s["tags"]))
+        if s.get("tx") == "planned" and not s["died"]:
+            # a survivor's bureau placement no list-day evening can carry: an unplanned transfer instead (no graded
+            # figure reads a survivor's transfer type)
+            s["tx"] = "emergency"
+            return self.place_cap(s)
+        raise RuntimeError("cap placement failed %r %r (pool %d)" % ({k: v for k, v in s.items() if k != 'tags'},
+                                                                     s["tags"], len(pool)))
 
     def place_dv2b_second(self, w, s):
         r = self.r
@@ -755,13 +761,15 @@ class World:
             if w["end"] in U.events:
                 U.events.remove(w["end"])
 
-    def pick_unit(self, t, d):
-        """A unit to admit a patient from a trust without its own level-3 beds at minute t."""
+    def pick_unit(self, t, d, exclude=None):
+        """A unit to admit a patient from a trust without its own level-3 beds (or from a full unit) at minute t."""
         r = self.r
         units = ["RIS-ACC", "STN-ACC", "BRK-ACC", "PRW-ACC"]
         p = np.array([0.45, 0.2, 0.2, 0.15])
         order = list(r.choice(units, size=4, replace=False, p=p))
         for u in order:
+            if u == exclude:
+                continue
             U = self.units[u]
             if U.in_frozen(t) or U.busy(t):
                 continue
@@ -1008,8 +1016,9 @@ class World:
 
     # ------------------------------------------------------------------ DV8: legacy transfers placed after the bed
     def place_dv8(self):
-        """Legacy referrals at trusts without level-3 beds whose bed the bureau allocated 3h10 to 3h52 after the
-        decision, at another trust's unit, and who arrived in it more than 4h15 after the decision. The legacy bed
+        """Legacy referrals whose bed the bureau allocated 3h10 to 3h52 after the decision, at another trust's unit,
+        and who arrived in it more than 4h15 after the decision: patients of trusts without level-3 beds, and
+        patients of trusts whose own unit was full, held full with no admission until the arrival. The legacy bed
         list dates the stay from the arrival; the remit's wait ends at the allocation."""
         r = rng("dv8")
         lo_w, hi_w = plan.DV8_ALLOC_WAIT
@@ -1031,7 +1040,14 @@ class World:
                 lim = self.morning_limit(d + dt.timedelta(days=1))
                 if arr > lim or self.gap_overlap(dta - 5, arr + 5) or crosses_dst(dta - 70, arr + 10):
                     continue
-                unit = self.pick_unit(end, d)
+                ou = own_unit(L, d)
+                if ou is not None:
+                    # the own unit full from the decision to the arrival, nothing admitted or discharged
+                    OU = self.units[ou]
+                    if (OU.events_inside(dta - 4, arr + 4) or any(a < arr + 5 and b > dta - 5 for a, b in OU.frozen)
+                            or self.own_overlap(L, dta, arr)):
+                        continue
+                unit = self.pick_unit(end, d, exclude=ou)
                 if unit is None:
                     continue
                 U = self.units[unit]
@@ -1045,6 +1061,9 @@ class World:
                 U.slots.append({"t": end, "kind": "wait_end", "ref": w["wid"]})
                 # nothing else happens in the unit while the allocated bed waits for the patient
                 U.frozen.append((end, arr))
+                if ou is not None:
+                    self.units[ou].frozen.append((dta, arr))
+                    self.trust_iv[L] = [x for x in self.trust_iv[L] if x[2] != w["wid"]] + [(dta, arr, w["wid"])]
                 break
             else:
                 raise RuntimeError("dv8 %s" % L)

@@ -60,7 +60,8 @@ GUIDE_FIELDS = {
         ("referral_id", "Platform reference (R, year and month, sequence) or migrated CCRS reference (CC and seven digits)."),
         ("received_at", "Time the critical care outreach team received the referral."),
         ("referring_trust", "Trust code of the referring hospital."),
-        ("referred_from", "Ward or department code at the referring hospital (ED is the emergency department)."),
+        ("referred_from", "Ward or department code at the referring hospital (ED is the emergency department, REC "
+                          "theatre recovery)."),
         ("patient_key", "Regional patient key."),
         ("dta_at", "Time of the decision to admit to critical care."),
         ("level_of_care", "Level of critical care on the referral, 2 or 3."),
@@ -119,15 +120,15 @@ LEGACY = [
     ("p", "All CCRS timestamps are held in UTC."),
     ("p", "level_of_care holds the level of care requested by the referring team, as entered on the referral form. "
           "The critical care decision, and any later change, is held in the referral level entries."),
-    ("p", "The referral record holds no admission time. For an admitted referral, the time the bed was assigned is "
-          "held in the bed-management feed."),
+    ("p", "The referral record holds no admission time. Admissions are held in the bed-management feed."),
     ("h", "3. Referral level entries (CCRS)"),
     ("p", "One row for each entry made against a referral: REQUEST, REVISED REQUEST, DECISION and LEVEL CHANGE, each "
           "with the time recorded and the level entered."),
     ("h", "4. Bed-management feed"),
-    ("p", "The network bed-management feed records local time. Until switch-off it held one row per bed episode: a "
-          "patient moved to another bed starts a new row, which repeats the admission type and source location of "
-          "the admission. The CCRS referral number is held on the first row of an admission."),
+    ("p", "The network bed-management feed records local time. Until switch-off it held one row per bed episode, "
+          "from the time the patient was placed in the bed to the time the patient left it: a patient moved to "
+          "another bed starts a new row, which repeats the admission type and source location of the admission. "
+          "The CCRS referral number is held on the first row of an admission."),
     ("h", "5. Field mapping"),
     ("table", [["Source field", "Platform field"],
                ["REF_NO", "referral_id"], ["RECV_DTTM", "received_at"], ["TRUST", "referring_trust"],
@@ -153,7 +154,8 @@ Fields (apc_episodes_referred_patients_2022-2026.parquet)
   provider_code           Trust code.
   admission_date          Start of the hospital spell.
   admission_method        11 elective waiting list, 12 elective booked, 21 emergency via A&E, 22 emergency via GP,
-                          28 other emergency, 2B emergency transfer from another hospital.
+                          28 other emergency, 2B emergency transfer from another hospital, 81 transfer from
+                          another hospital, not an emergency.
   episode_order           Order of the episode within the spell.
   episode_start           Start of the consultant episode.
   episode_end             End of the consultant episode (blank while the episode is open).
@@ -190,8 +192,9 @@ BOARD_PAPER = [
     ("p", "Pellowham Hospitals NHS Trust will open three level 3 beds alongside its high dependency unit from "
           "4 December 2023 to 31 March 2024, staffed by the winter bank. They will report as a separate unit."),
     ("h", "3. Network arrangements"),
-    ("p", "Transfers will continue to be agreed through the network's bed bureau. The register and the daily bed "
-          "returns will be updated from the dates above. The network will review both changes in summer 2024."),
+    ("p", "Transfers between trusts will continue to be agreed through the network's bed bureau. The register and "
+          "the daily bed returns will be updated from the dates above. The network will review both changes in "
+          "summer 2024."),
     ("h", "Recommendation"),
     ("p", "The board approves both changes. Approved at the meeting on 21 November 2023."),
 ]

@@ -41,7 +41,7 @@ FILE_TABLE = {
     "links": ("Regional data service", "Patient key links"),
     "levels": ("CCRS, exported at switch-off", "Referral level entries"),
     "legacyspec": ("CCRS application support", "Export specification used for the migration"),
-    "transfers": ("Network transfer audit", "Every inter-hospital transfer to a critical care unit"),
+    "transfers": ("Network transfer audit", "Every transfer between trusts to a critical care unit"),
     "capacity": ("Network manager", "Monthly capacity report as refreshed on 20 August 2026"),
     "boardpaper": ("Network board", "Paper ACCN/23/41, November 2023"),
     "remit": ("Wenmarsh Regional Health Board", "Paper WRHB/26/097, terms of reference"),

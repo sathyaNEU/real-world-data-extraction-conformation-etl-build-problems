@@ -23,8 +23,11 @@ LETTER_OF = {"RIS": "A", "TAN": "B", "BRK": "C", "STN": "D", "LAT": "E", "ELL": 
 CODES = ["RIS", "TAN", "BRK", "STN", "LAT", "ELL", "PRW", "PEL"]
 YEARS = {1: (dt.date(2023, 7, 1), dt.date(2024, 6, 30)), 2: (dt.date(2024, 7, 1), dt.date(2025, 6, 30)),
          3: (dt.date(2025, 7, 1), dt.date(2026, 6, 30))}
-DEVICES = ("DV1", "DV2", "DV3", "DV4", "DV5", "DV6", "DV7", "HZ1", "HZ2")
+DEVICES = ("DV1", "DV2", "DV3", "DV4", "DV5", "DV7", "DV8", "DV9", "HZ1", "HZ2")
 TRANSFER_TYPES = ("02", "03", "06")
+# readings of "an admission the trust placed itself": the admitted patient's referring trust (the golden), the bureau's
+# audit, and the admission-type and queue readings the construction layer prices
+READINGS = ("referral", "audit", "local", "t04", "planned", "not02", "queue")
 EPOCH = dt.datetime(2023, 1, 1)
 
 
@@ -71,6 +74,16 @@ class Data:
         dod = ep.dropna(subset=["date_of_death"]).groupby("patient_key")["date_of_death"].min()
         self.dod = {k: v for k, v in dod.items()}
         self.temp = dict(zip(self.links["temporary_key"], self.links["verified_key"]))
+        self.merged_verified = set(self.links["verified_key"])
+        # deaths recorded only as a spell ending in death (discharge method 4), per key as linked
+        died = ep[ep["discharge_method"] == "4"].dropna(subset=["discharge_date"])
+        dm = {}
+        for k, d in zip(died["patient_key"], died["discharge_date"]):
+            for kk in {k, self.temp.get(k, k)}:
+                if kk not in dm or d < dm[kk]:
+                    dm[kk] = d
+        self.dmeth = dm
+        self.tx = pd.read_csv(T / F["transfers"], dtype=str, keep_default_na=False)
         # decision level and the set of levels entered, per migrated referral
         dec = self.lev[self.lev["entry"] == "DECISION"]
         self.dec_level = dict(zip(dec["referral_id"], dec["level"].astype(int)))
@@ -89,19 +102,61 @@ class Data:
     # ------------------------------------------------------------------------ stays and census
     def _prep_stays(self):
         st = self.stays.sort_values(["unit_code", "patient_key", "admitted_at", "stay_id"]).reset_index(drop=True)
-        rows = []
+        raw, legacy = [], []
         for r in st.itertuples(index=False):
-            rows.append((r.unit_code, r.patient_key, mins(r.admitted_at.to_pydatetime()),
-                         mins(r.discharged_at.to_pydatetime()), r.admission_type, r.referral_id))
-        self.stay_rows = rows
-        # first row per referral number: the time the bed was assigned
-        self.assign_of = {}
-        for u, k, a, b, typ, rid in rows:
-            if rid and (rid not in self.assign_of or a < self.assign_of[rid][1]):
-                self.assign_of[rid] = (u, a)
-        self.units = sorted({r[0] for r in rows})
-        self.merged = self.merge_rows(rows, gap=0)
-        self.census = {u: self.occ_series(self.merged, u) for u in self.units}
+            raw.append((r.unit_code, r.patient_key, mins(r.admitted_at.to_pydatetime()),
+                        mins(r.discharged_at.to_pydatetime()), r.admission_type, r.referral_id))
+            legacy.append(r.stay_id.startswith("LB"))
+        res = lambda k: self.temp.get(k, k)
+        # the bureau's audit: a legacy transfer's row begins at the arrival, its bed was allocated earlier
+        held, self.audit_at = {}, set()
+        transit = []
+        for r in self.tx.itertuples(index=False):
+            conf, arr = mins(p_ts(r.bed_confirmed_at)), mins(p_ts(r.arrived_at))
+            self.audit_at.add((r.to_unit, res(r.patient_key), conf))
+            if conf < GO_MIN:
+                held[(r.to_unit, res(r.patient_key), arr)] = conf
+                transit.append(arr - conf)
+        self.median_transit = int(pd.Series(transit).median()) if transit else 0
+        handled, over = [], []
+        prev_end = {}
+        for (u, k, a, b, typ, rid), lg in zip(raw, legacy):
+            a2 = held.get((u, res(k), a), a) if (lg and rid) else a
+            handled.append((u, k, a2, b, typ, rid))
+            start = lg and prev_end.get((u, k)) != a          # an admission, not a move to another bed
+            over.append((u, k, a - self.median_transit if start else a, b, typ, rid))
+            prev_end[(u, k)] = b
+        self.n_held = sum(1 for x, y in zip(raw, handled) if x[2] != y[2])
+        self.units = sorted({r[0] for r in raw})
+        self.views = {}
+        for name, rows in (("handled", handled), ("raw", raw), ("over", over)):
+            assign_of = {}
+            for u, k, a, b, typ, rid in rows:
+                if rid and (rid not in assign_of or a < assign_of[rid][1]):
+                    assign_of[rid] = (u, a)
+            merged = self.merge_rows(rows, gap=0)
+            self.views[name] = {"rows": rows, "assign_of": assign_of, "merged": merged,
+                                "census": {u: self.occ_series(merged, u) for u in self.units}}
+        V = self.views["handled"]
+        self.stay_rows, self.assign_of, self.merged, self.census = V["rows"], V["assign_of"], V["merged"], V["census"]
+
+    def view(self, handle, over=None):
+        """The unit feed as read: legacy transfers dated from the bureau's allocation (DV8 handled), as shipped
+        (from the arrival), or every legacy admission moved back by the audit's median transit (over-correction)."""
+        if over == "DV8":
+            return self.views["over"]
+        return self.views["handled" if "DV8" in handle else "raw"]
+
+    def death(self, person, handle=None, over=None):
+        """Date of death: the linked date of death; where none is linked, a spell ending in death (DV9 handled);
+        the over-correction reads every death from the discharge method alone."""
+        handle = DEVICES if handle is None else handle
+        if over == "DV9":
+            return self.dmeth.get(person)
+        d = self.dod.get(person)
+        if d is None and "DV9" in handle:
+            d = self.dmeth.get(person)
+        return d
 
     @staticmethod
     def merge_rows(rows, gap=0):
@@ -189,20 +244,34 @@ class Data:
         return t is not None and t != self.unit_trust.get(u)
 
     def adm_index(self, rows):
-        """Per unit: admission minutes of every stay, of stays the unit's trust placed (by operation: not
-        referred by another trust), and of stays not coded as a transfer (by the admission type)."""
-        idx = {}
-        tmp = defaultdict(lambda: ([], [], []))
+        """Per unit: admission minutes of every stay ("all") and of the stays each reading takes as the trust's own
+        placement: not referred by another trust (referral, the golden), not in the bureau's audit (audit), by
+        the admission type (local 01/04/05, t04, planned 03/04/05, not02), and the queue reading's pairs
+        (admission minute, the admitted patient's decision or None)."""
+        res = lambda k: self.temp.get(k, k)
+        tmp = defaultdict(lambda: {k: [] for k in ("all",) + READINGS})
         for u, k, a, b, typ, rid in rows:
-            al, op, ty = tmp[u]
-            al.append(a)
+            m = tmp[u]
+            m["all"].append(a)
             if not self.is_transfer_op(u, rid):
-                op.append(a)
-            if typ not in TRANSFER_TYPES:
-                ty.append(a)
-        for u, (al, op, ty) in tmp.items():
-            idx[u] = (sorted(al), sorted(op), sorted(ty))
-        return idx
+                m["referral"].append(a)
+            if (u, res(k), a) not in self.audit_at:
+                m["audit"].append(a)
+            if typ in ("01", "04", "05"):
+                m["local"].append(a)
+            if typ == "04":
+                m["t04"].append(a)
+            if typ in ("03", "04", "05"):
+                m["planned"].append(a)
+            if typ != "02":
+                m["not02"].append(a)
+            m["queue"].append((a, self.ref_dta_local.get(rid) if rid else None))
+        for m in tmp.values():
+            for k in m:
+                m[k].sort(key=lambda v: v if isinstance(v, int) else (v[0], -1 if v[1] is None else v[1]))
+            m["queue_t"] = [t for t, q in m["queue"]]
+            m["queue_q"] = [q for t, q in m["queue"]]
+        return dict(tmp)
 
     # ------------------------------------------------------------------------ referrals
     def _prep_refs(self):
@@ -214,6 +283,8 @@ class Data:
                         "key": r.patient_key, "level": int(r.level_of_care), "outcome": r.outcome,
                         "out": p_ts(r.outcome_at), "unit": r.admitting_unit})
         self.refs = out
+        self.ref_dta_local = {x["id"]: mins(utc_to_local(x["dta"]) if x["legacy"] else x["dta"]) for x in out
+                              if x["dta"] is not None}
         # parallel-run pairs: a platform row a few minutes after a CCRS row for the same patient and trust
         cc = defaultdict(list)
         for x in out:
@@ -260,6 +331,7 @@ def waits(D, handle=None, over=None):
     """One record per referral that could be a long wait: decision level, local decision time, end,
     patient, death. handle: devices handled (default all). over: one over-correction name or None."""
     handle = set(DEVICES if handle is None else handle)
+    V = D.view(handle, over)
     out = []
     shift_all = over == "DV1"
     for r in D.refs:
@@ -276,7 +348,7 @@ def waits(D, handle=None, over=None):
                     dta, rec = utc_to_local(dta), utc_to_local(rec)
                     end = utc_to_local(end) if end is not None else None
             if r["outcome"] == "Admitted":
-                a = D.assign_of.get(r["id"])
+                a = V["assign_of"].get(r["id"])
                 end = (EPOCH + dt.timedelta(minutes=a[1])) if a else None
                 end_utc = None
             level = D.dec_level.get(r["id"], r["level"]) if "DV4" in handle else r["level"]
@@ -287,8 +359,8 @@ def waits(D, handle=None, over=None):
         if over == "DV5" and dta is not None and dta.date() in CHANGE_EVES:
             continue
         key = r["key"]
-        if over == "DV2" and key in D.temp:
-            continue
+        if over == "DV2" and (key in D.temp or key in D.merged_verified):
+            continue              # every referral of a patient whose identity was ever merged, dropped
         person = D.temp.get(key, key) if "DV2" in handle else key
         out.append({"id": r["id"], "legacy": r["legacy"], "trust": r["trust"], "dta": dta, "rec": rec, "end": end,
                     "dta_utc": dta_utc, "end_utc": end_utc, "level": level, "outcome": r["outcome"],
@@ -322,18 +394,21 @@ def _inside(lst, a, b):
 
 def classify(D, ws, handle=None, over=None, construction="decisive", scope="own", basis="census"):
     """Mark each long wait with its death and own-care readings: an empty staffed bed (census), any admission
-    to the unit during the wait (alloc_any), an admission the unit's trust placed itself (alloc)."""
+    to the unit during the wait (alloc_any), an admission the unit's trust placed itself (alloc: the admitted
+    patient's referring trust), and the other readings of own placement (alloc_<reading>)."""
     handle = set(DEVICES if handle is None else handle)
-    hz1 = ("HZ1" in handle, over == "HZ1")
+    V = D.view(handle, over)
+    vname = "over" if over == "DV8" else ("handled" if "DV8" in handle else "raw")
+    hz1 = (vname, "HZ1" in handle, over == "HZ1")
     cache = D.__dict__.setdefault("_idx_cache", {})
     if hz1 not in cache:
         if "HZ1" in handle:
-            rows = D.merged if over != "HZ1" else D.merge_rows(D.stay_rows, gap=24 * 60)
+            rows = V["merged"] if over != "HZ1" else D.merge_rows(V["rows"], gap=24 * 60)
         else:
-            rows = D.stay_rows
+            rows = V["rows"]
         cache[hz1] = D.adm_index(rows)
     idx = cache[hz1]
-    census = D.census
+    census = V["census"]
     res = []
     for w in ws:
         if w["level"] != 3 or w["outcome"] == "Stood down" or w["end"] is None:
@@ -342,7 +417,7 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
             continue
         a, b = mins(w["dta"]), mins(w["end"])
         d = w["dta"].date()
-        death = D.dod.get(w["person"])
+        death = D.death(w["person"], handle, over)
         died = False
         if death is not None:
             off = (death - d).days
@@ -358,8 +433,8 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
         if over == "DV3" and scope == "own":
             units = own
         empty = False
-        alloc = False
         alloc_any = False
+        flags = {rd: False for rd in READINGS}
         v0800 = False
         for u in units:
             if u not in census:
@@ -367,25 +442,33 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
                     empty = True
                 continue
             fb = D.reg_beds(u) if over == "DV3" else None
-            if D.empty_during(u, a, b, fallback=fb):
+            if D.empty_during(u, a, b, census=census, fallback=fb):
                 empty = True
-            al, op, ty = idx.get(u, ([], [], []))
-            if _inside(al, a, b):
-                alloc_any = True
-            placed = op if "DV6" in handle else ty
-            if over == "DV6":
-                placed = [t for t in op if t >= GO_MIN]
-            if _inside(placed, a, b):
-                alloc = True
+            m = idx.get(u)
+            if m is not None:
+                if _inside(m["all"], a, b):
+                    alloc_any = True
+                for rd in READINGS:
+                    if rd == "queue":
+                        j = bisect.bisect_right(m["queue_t"], a)
+                        while j < len(m["queue_t"]) and m["queue_t"][j] < b:
+                            q = m["queue_q"][j]
+                            if q is None or q > a:
+                                flags["queue"] = True
+                                break
+                            j += 1
+                    elif _inside(m[rd], a, b):
+                        flags[rd] = True
             k = (u, d.isoformat())
             if k in D.occ0800 and D.occ0800[k] < D.beds_on[k]:
                 v0800 = True
-        res.append(dict(w, died=died, has_own=bool(own), empty=empty, alloc=alloc, alloc_any=alloc_any,
-                        v0800=v0800, a=a, b=b, year=year_of(d)))
+        res.append(dict(w, died=died, has_own=bool(own), empty=empty, alloc=flags["referral"], alloc_any=alloc_any,
+                        v0800=v0800, a=a, b=b, year=year_of(d),
+                        **{"alloc_" + rd: flags[rd] for rd in READINGS[1:]}))
     return res
 
 
-CLS_DEV = frozenset(("DV1", "DV2", "DV3", "DV4", "DV5", "DV6", "HZ1"))
+CLS_DEV = frozenset(("DV1", "DV2", "DV3", "DV4", "DV5", "DV8", "DV9", "HZ1"))
 
 
 def classified(D, handle, over=None):
@@ -405,6 +488,8 @@ def confirmable(x, construction):
         return x["empty"]
     if construction == "any":
         return x["empty"] or x["alloc_any"]
+    if construction in READINGS[1:]:
+        return x["empty"] or x["alloc_" + construction]
     raise ValueError(construction)
 
 
@@ -510,6 +595,21 @@ def grid(D, year=3):
     return cells
 
 
+def readings(D, year=3):
+    """Deaths per trust on the latest four quarters under each reading of own placement (an empty staffed bed in
+    the own unit during the wait, or an admission the reading takes as the trust's own), and under any admission."""
+    cl = [x for x in classify(D, waits(D)) if x["year"] == year and x["died"] and x["has_own"]]
+    out = {}
+    for rd in ("any",) + READINGS:
+        cnt = defaultdict(set)
+        for x in cl:
+            ok = x["empty"] or (x["alloc_any"] if rd == "any" else x["alloc"] if rd == "referral" else x["alloc_" + rd])
+            if ok:
+                cnt[x["trust"]].add(x["person"])
+        out[rd] = {t: len(cnt[t]) for t in CODES}
+    return out
+
+
 def leader(counts):
     s = sorted(((v, k) for k, v in counts.items()), reverse=True)
     (v1, k1), (v2, k2) = s[0], s[1]
@@ -518,6 +618,7 @@ def leader(counts):
 
 # ================================================================================ the deliverables
 FILES = dict(
+    transfers="interhospital_transfer_audit_202307_202606.csv",
     referrals="critical_care_referrals_202307_202606.csv",
     stays="acc_unit_stays_202306_202606.parquet",
     returns="acc_bed_return_0800_202306_202606.csv",
@@ -572,12 +673,30 @@ def figures(D):
     # no level 3 beds on that date (the paper says so)
     rows = sorted((u, a, rid) for u, k, a, b, typ, rid in D.merged if u == "RIS-ACC")
     ref_by = {r["id"]: r for r in D.refs}
+    typ_at = {(u, a): typ for u, k, a, b, typ, rid in D.merged}
+    key_at = {(u, a): k for u, k, a, b, typ, rid in D.merged}
+    n_planned = 0
     for x in cl:
         if x["trust"] != "RIS" or not x["alloc_any"] or x["empty"]:
             continue
-        inside = [rid for u, a, rid in rows if x["a"] < a < x["b"]]
+        inside = [(a, rid) for u, a, rid in rows if x["a"] < a < x["b"]]
         assert inside and all(D.is_transfer_op("RIS-ACC", rid) and
-                              not D.own_units(ref_by[rid]["trust"], ref_by[rid]["dta"].date()) for rid in inside)
+                              not D.own_units(ref_by[rid]["trust"], ref_by[rid]["dta"].date()) for a, rid in inside)
+        if x["died"] and any(typ_at[("RIS-ACC", a)] == "03" for a, rid in inside):
+            n_planned += 1
+    # "many of those patients came in as planned transfers"
+    assert 2 * n_planned > held["RIS"]["bureau"], (n_planned, held["RIS"]["bureau"])
+    # "the unit feed codes these patients as planned transfers in, but each was referred by Stennock itself and none
+    # passed through the network's bed bureau"
+    stn_rows = sorted((a, rid) for u, k, a, b, typ, rid in D.merged if u == "STN-ACC")
+    for x in cl:
+        if x["trust"] != call:
+            continue
+        inside = [(a, rid) for a, rid in stn_rows if x["a"] < a < x["b"]]
+        assert inside and all(typ_at[("STN-ACC", a)] == "03" and rid and ref_by[rid]["trust"] == call and
+                              ref_by[rid]["ward"] == "REC" and
+                              ("STN-ACC", D.temp.get(key_at[("STN-ACC", a)], key_at[("STN-ACC", a)]), a)
+                              not in D.audit_at for a, rid in inside)
     assert all(x["dta"].hour >= 18 and not x["empty"] for x in cl if x["trust"] == "BRK")
     ret = D.ret[(D.ret.unit_code == "BRK-ACC") & (D.ret.return_date >= "2025-07-01") &
                 (D.ret.return_date <= "2026-06-30")]
@@ -741,15 +860,16 @@ def write_xlsx(fx, path):
             "Deaths: death within 30 days of the decision to admit, from the linked date of death on the regional "
             "data service episodes.",
             "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either held "
-            "an empty staffed bed or assigned a bed to a planned surgical admission from the trust's own theatres "
-            "(sections 3 and 4). Beds the network's bed bureau allocated to patients transferred from other trusts "
-            "are not the trust's own decision.",
+            "an empty staffed bed or assigned a bed to a patient the trust referred itself (sections 3 and 4). Beds "
+            "the network's bed bureau allocated to patients referred by other trusts are not the trust's own decision, "
+            "planned transfers included.",
             "Waits are elapsed time: a wait across a night when the clocks went forward is an hour shorter than "
             "its clock readings. A patient with two long waits at a trust is one patient.",
             "Before 2 April 2024 the record is migrated CCRS data: decision level from the CCRS level entries, "
-            "CCRS times converted from UTC, temporary patient keys resolved through the key links, parallel-run "
-            "copies counted once, transfers identified by the referring trust (the CCRS-era feed coded every "
-            "unplanned admission 01), unit levels as registered on the date of the wait."]):
+            "CCRS times converted from UTC, a transfer's bed from the audit's bed_confirmed_at (the CCRS bed list "
+            "started the row when the patient arrived), temporary patient keys resolved through the key links, "
+            "parallel-run copies counted once, unit levels as registered on the date of the wait. A death that no "
+            "registration links to a temporary key is dated by the spell that ended in death."]):
         c = ws.cell(row=note + k, column=1, value=line)
         c.font = Font(name="Arial", size=8, color="595959")
 
@@ -783,17 +903,20 @@ def write_xlsx(fx, path):
         ("Placement basis", "Latest four complete quarters, 1 July 2025 to 30 June 2026 (terms of reference, "
                             "section 5)"),
         ("Long wait", "More than four hours of elapsed time from dta_at to the assignment of a level 3 bed (the "
-                      "stay's admitted_at), or to death before a bed was assigned"),
+                      "stay's admitted_at; for a CCRS-era transfer the audit's bed_confirmed_at), or to death before "
+                      "a bed was assigned"),
         ("Death", "Date of death within 30 days of the decision to admit; registrations reach the regional data "
-                  "service within 14 days, so decisions to 30 June 2026 are complete"),
+                  "service within 14 days, so decisions to 30 June 2026 are complete. Where no date of death links "
+                  "to a temporary key, the discharge date of the spell that ended in death (discharge method 4)"),
         ("Own unit", "The level 3 unit the referring trust ran on the date of the decision, per the unit "
                      "register's effective dates"),
         ("Empty staffed bed", "Census rebuilt minute by minute from admitted_at and discharged_at against the day's "
                               "staffed beds (beds_open)"),
-        ("Own placement", "An admission the referring trust made to its own unit: admission_type 04 (planned local "
-                          "surgical admission) from its own theatres. A patient referred by another trust is a "
-                          "transfer whose bed the network's bed bureau allocated. Contiguous bed rows of one patient in "
-                          "one unit read as one stay"),
+        ("Own placement", "An admission to the referring trust's own unit of a patient the trust referred itself "
+                          "(the admitted patient's referring_trust). Stennock's planned patients from theatre "
+                          "recovery count, though the unit feed codes them 03. A patient referred by another trust "
+                          "is a transfer whose bed the network's bed bureau allocated, whatever the admission type. "
+                          "Contiguous bed rows of one patient in one unit read as one stay"),
         ("Counting", "Whole patients; a patient appears once per trust in each column"),
     ]
     for i, (k, v) in enumerate(notes, 1):
@@ -915,12 +1038,14 @@ def write_docx(fx, path, png):
              "of them died within 30 days of the decision to admit.".format(y3[call][0], y3[call][1]),
              ("1",), " Stennock's unit was full at every hour of every one of those waits, which is consistent with "
              "the network's view that it is full every morning. What filled it matters. Through each of the {:,} "
-             "waits the unit was assigning beds to planned surgical admissions from Stennock's own theatres, on "
-             "weekdays during the elective lists. At weekends, with no lists running, no Stennock referral waited "
-             "more than four hours.".format(fx["stn_waits_alloc"])])
-    para("A bed the trust gives to a planned patient from its own theatres is the trust's decision about the use of "
-         "its own beds. Under the methodology note every one of those {:,} deaths therefore falls inside Stennock's "
-         "own care, and they are the deaths a review can examine and confirm.".format(y3[call][2]), after=6)
+             "waits the unit was assigning beds to Stennock's own planned surgical patients, referred by Stennock "
+             "from theatre recovery on weekdays during the elective lists. At weekends, with no lists running, no "
+             "Stennock referral waited more than four hours.".format(fx["stn_waits_alloc"])])
+    para("The unit feed codes these patients as planned transfers in, but each was referred by Stennock itself and "
+         "none passed through the network's bed bureau. A bed the trust gives to a planned patient of its own is the "
+         "trust's decision about the use of its own beds. Under the methodology note every one of those {:,} deaths "
+         "therefore falls inside Stennock's own care, and they are the deaths a review can examine and confirm."
+         .format(y3[call][2]), after=6)
     para("The pattern is not a one-year effect. Across the network's record Stennock has the most confirmable "
          "deaths in each four-quarter year ({:,}, {:,} and {:,}, against Prideswick's {:,}, {:,} and {:,}), so the "
          "latest year is a fair guide to 2027-28."
@@ -938,7 +1063,7 @@ def write_docx(fx, path, png):
     tb.style = "Table Grid"
     hdr = ["Trust", "Deaths inside the remit", "Confirmable in own care", "What held the waits"]
     reason = {
-        "STN": "Own unit admitting planned surgical patients from Stennock's theatres throughout each wait",
+        "STN": "Own unit admitting Stennock's own planned surgical patients from theatre recovery throughout each wait",
         "PRW": "{:,} after waits beside its own empty staffed beds; {:,} after waits through which its full unit "
                "took transfers the bed bureau placed; {:,} with the unit full and no admission".format(
                    held["PRW"]["empty"], held["PRW"]["bureau"], held["PRW"]["capacity"]),
@@ -993,8 +1118,8 @@ def write_docx(fx, path, png):
          "weekend rule with Prideswick through the network without a twelve-month review."
          .format(rv, gap), after=6)
     para("Ristenholm's unit gave beds to other patients during the waits behind {:,} of its {:,} deaths in the "
-         "placement year, which can read as Ristenholm putting other patients first. Every one of "
-         "those beds went to a patient transferred from a trust without level 3 beds, and the network's bed bureau "
+         "placement year, many of them planned transfers, which can read as Ristenholm putting other patients first. "
+         "Every one of those patients was referred by a trust without level 3 beds, and the network's bed bureau "
          "allocates the bed for each transfer between trusts, so those waits are the network's capacity rather than "
          "Ristenholm's own decisions. Brackenford's morning returns show empty beds most days, which is what the "
          "network manager has in mind, but its unit was full at every hour of each of its long waits, all of which "
@@ -1061,7 +1186,7 @@ def main():
     print("  deaths inside the remit, all trusts      %d" % fx["y3_total"][1])
     print("  most deaths inside the remit             %s %d (confirmable %d)"
           % (SHORT["LAT"], fx["y3"]["LAT"][1], fx["y3"]["LAT"][2]))
-    print("  %s long waits with planned own-theatre admissions  %d of %d; deaths %d"
+    print("  %s long waits with its own planned admissions  %d of %d; deaths %d"
           % (SHORT[call], fx["stn_waits_alloc"], fx["y3"][call][0], fx["y3"][call][1]))
     print("  recommended                              %s, %d confirmable deaths" % (NAME[call], fx["cv"]))
     print("  runner-up                                %s, %d" % (NAME[run], fx["rv"]))

@@ -95,12 +95,12 @@ WINDOW_DAYS = 21                       # template-balanced orders sit within 21 
 # activity), and the buyer comes back and orders straight from a tile still on screen. The order is placed
 # in the new home session the return opened, so the orders extract credits it there and the render log's
 # ordered_tiles (orders placed in the session) never sees it; only the listing ties it to the tile the
-# logged session served. Per 1,000 sessions, by cell, for the incumbent and every policy but the
-# session-sequence model, whose buyers come back to the item through favourites or search instead. They
+# logged session served. Per 1,000 sessions, by cell, for the incumbent and every policy; the session-sequence
+# model's buyers mostly come back to the item through favourites or search instead (scaled). They
 # are drawn from background orders the block template already places on the session's own day after it
 # ends, so no order enters or leaves any window.
 COMEBACK_PER_1000 = np.array([1.6, 1.5, 1.6, 1.7, 1.2, 1.2, 1.3, 1.4])
-COMEBACK_NONE = ("HC-34",)
+COMEBACK_SCALE = {"HC-34": 0.15}      # the session-sequence model's buyers rarely come back to a tile
 COMEBACK_MAX_S = 4 * 3600              # come-back orders land 2 minutes to 4 hours after the session closed
 
 # purchases paid from a Vouwlijn balance: covered and charged the fee, but not captured by the payment

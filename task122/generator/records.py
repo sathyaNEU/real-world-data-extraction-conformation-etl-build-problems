@@ -429,7 +429,7 @@ def build_orders(W):
 
 
 def comeback(W, O, end):
-    """Come-back tile orders. In every (cell, ranker) group but the session-sequence model's, a fixed
+    """Come-back tile orders. In every (cell, ranker) group a fixed
     count of the group's sessions (COMEBACK_PER_1000 per 1,000 sessions, nearest whole order) have one of
     their background orders from the session's own evening, or failing that the next morning, become an
     order the buyer placed from a tile still on screen after the session closed: channel carousel, the
@@ -437,7 +437,8 @@ def comeback(W, O, end):
     hours after the session ended, placed in the new (unlogged) home session the buyer's return opened.
     The order keeps every attribute it had (price, offer, delivery, payment), so no order enters or leaves
     any window and no lift, half or fee figure moves; only its channel, its listing and its clock change.
-    The session-sequence model's buyers come back to the item through favourites or search."""
+    The session-sequence model's buyers mostly come back to the item through favourites or search
+    (COMEBACK_SCALE), so its groups get a fraction of the count."""
     S, BG = W.S, W.BG
     bg = (O.kind == "bg_window").to_numpy()
     rows = np.flatnonzero(bg)
@@ -452,11 +453,8 @@ def comeback(W, O, end):
     ci = {k: O.columns.get_loc(k) for k in ("kind", "channel", "platform", "pos", "t")}
     for c in range(8):
         for k in range(7):
-            if P.RANKERS[k] in P.COMEBACK_NONE:
-                W.comeback_counts[(c, k)] = 0
-                continue
             m = int(((cell == c) & (arm == k)).sum())
-            n = int(np.floor(P.COMEBACK_PER_1000[c] * m / 1000 + 0.5))
+            n = int(np.floor(P.COMEBACK_PER_1000[c] * P.COMEBACK_SCALE.get(P.RANKERS[k], 1.0) * m / 1000 + 0.5))
             rng = P.stream(f"comeback{c}-{k}")
             g = cand[(cand.cell == c) & (cand.arm == k)]
             first = g[g.pref == 0]

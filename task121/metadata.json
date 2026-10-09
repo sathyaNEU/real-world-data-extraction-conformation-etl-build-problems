@@ -13,7 +13,7 @@
   "stock_availability_2026-09-25.csv"
  ],
  "input_gates": {
-  "files": 24,
+  "files": 25,
   "formats": [
    "csv",
    "docx",
@@ -24,7 +24,7 @@
    "txt",
    "xlsx"
   ],
-  "largest_file_rows": 214457,
+  "largest_file_rows": 214465,
   "largest_file": "basket_sessions_2026-07-27_2026-09-27.parquet"
  },
  "files": [
@@ -40,8 +40,8 @@
   {
    "path": "basket_sessions_2026-07-27_2026-09-27.parquet",
    "format": "parquet",
-   "bytes": 5227787,
-   "rows": 214457,
+   "bytes": 5229350,
+   "rows": 214465,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
    "license": "CC0-1.0 (original work)"
@@ -58,7 +58,7 @@
   {
    "path": "cdm_partnership_agreement_2026-27_extract.pdf",
    "format": "pdf",
-   "bytes": 3291,
+   "bytes": 3324,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -85,7 +85,7 @@
   {
    "path": "checkout_flags_export_2026-09-28.json",
    "format": "json",
-   "bytes": 925853,
+   "bytes": 947592,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -121,7 +121,7 @@
   {
    "path": "finance_order_export_2026-07-27_2026-09-27.csv",
    "format": "csv",
-   "bytes": 551049,
+   "bytes": 551022,
    "rows": 8101,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -139,7 +139,7 @@
   {
    "path": "loyalty_profiles_2026-09-28.csv",
    "format": "csv",
-   "bytes": 394413,
+   "bytes": 382581,
    "rows": 10246,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -150,6 +150,15 @@
    "format": "pdf",
    "bytes": 2479,
    "rows": null,
+   "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "promo_redemptions_2025-07-01_2026-06-30.csv",
+   "format": "csv",
+   "bytes": 843750,
+   "rows": 13549,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
    "license": "CC0-1.0 (original work)"
@@ -220,7 +229,7 @@
   {
    "path": "warehouse_extract_register.csv",
    "format": "csv",
-   "bytes": 2547,
+   "bytes": 3158,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -229,7 +238,7 @@
   {
    "path": "warehouse_field_reference.md",
    "format": "md",
-   "bytes": 3724,
+   "bytes": 3391,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",
@@ -238,7 +247,7 @@
   {
    "path": "weekly_trading_dashboard_2026-w39.xlsx",
    "format": "xlsx",
-   "bytes": 8309,
+   "bytes": 8313,
    "rows": null,
    "source": "Constructed for this task: fictional store Ventania Merch and club CD Monteralto; no third-party data",
    "date": "2026-09-30",

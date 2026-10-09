@@ -11,8 +11,9 @@ import datetime as dt
 import numpy as np
 
 from common import (BEDS, FEED_UNITS, FEED0, RECORD1, WINTER0, WINTER1, lm, day_of, own_unit, unit_open,
-                    is_bst, rng, LETTERS)
+                    is_bst, rng, LETTERS, DST_WINDOWS)
 from world import LEGACY_END
+import plan
 
 PEL_OPEN = lm(dt.date(2023, 12, 4), 0, 0)
 PEL_FILL = [lm(dt.date(2023, 12, 4), 9, 20), lm(dt.date(2023, 12, 4), 10, 5), lm(dt.date(2023, 12, 4), 11, 40)]
@@ -49,6 +50,28 @@ class Patients:
         d.update(kw)
         self.p[pid] = d
         return pid
+
+
+GO = lm(dt.date(2024, 4, 2), 0, 0)
+
+
+def legacy_transit_room(world, u, t, kind):
+    """Room after a legacy bed allocation at minute t for the patient's arrival (plan.TRANSIT) before 08:00, the
+    next frozen interval at the unit and any clock-change window."""
+    if kind != "bg":
+        return False
+    hi = plan.TRANSIT[1]
+    d8 = lm(day_of(t), 8, 0)
+    nxt8 = d8 if t < d8 else d8 + 1440
+    hi = min(hi, nxt8 - t - 1)
+    for a, b in sorted(world.units[u].frozen):
+        if a > t:
+            hi = min(hi, a - t - 1)
+            break
+    for a, b in DST_WINDOWS:
+        if t < b and t + hi > a:
+            hi = min(hi, a - t - 1)
+    return hi >= plan.TRANSIT[0] + 8
 
 
 def assign_admissions(world, P):
@@ -107,6 +130,10 @@ def assign_admissions(world, P):
                     pp = np.array([{"E": 0.45, "B": 0.2, "F": 0.2, "H": 0.15}[x] for x in pool])
                     letter = str(r.choice(pool, p=pp / pp.sum()))
             own = (own_unit(letter, d) == u)
+            if not own and t < GO and not legacy_transit_room(world, u, t, s["kind"]):
+                # a legacy transfer here would arrive after 08:00 or into a wait at this unit's own trust: the bed
+                # goes to one of the trust's own patients instead
+                letter, own = own_letter, True
             level = 3 if (not own or r.random() < 0.6) else 2
             if u == "PEL-W3":
                 level = 3

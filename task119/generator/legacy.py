@@ -133,7 +133,10 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         if ref["stay"] is not None:
             ref_of_stay[ref["stay"]] = ref
     rt = rng("transit")
-    frozen = {u: sorted(U.frozen) for u, U in world.units.items()}
+    # a held bed may run into the opening of a morning vacancy at the receiving unit (an empty bed beside an empty
+    # bed), never into a wait or any other frozen interval
+    morning = {u: {g["open"] for g in U.gaps if g.get("kind") == "cmorning"} for u, U in world.units.items()}
+    frozen = {u: sorted(f for f in U.frozen if f[0] not in morning[u]) for u, U in world.units.items()}
     transit = {}
     for i in sorted(ref_of_stay, key=lambda i: (stays[i]["admit"], i)):
         ref = ref_of_stay[i]

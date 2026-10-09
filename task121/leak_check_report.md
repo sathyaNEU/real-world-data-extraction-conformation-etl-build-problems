@@ -1,16 +1,16 @@
 # leak check, task121
 
-**Verdict: REVIEW.** 24 files read, 31 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 25 files read, 34 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, population, attribution, account, session, self-healing, carries, close-outs, signed-out, baseline, traffic, partner, existing, members, largest, retailer, decision, online, manager, builds, browser, inside, window, quarter, closed
+Stump terms swept: decisive, population, account, attribution, session, self-healing, carries, close-outs, signed-out, members, baseline, traffic, partner, existing, largest, retailer, decision, online, manager, builds, browser, inside, window, accounts, quarter
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `cdm_partnership_agreement_2026-27_extract.pdf`: 4 of 25 stump-paragraph terms appear (account, carries, partner, members); read whether the document names the move
+- **REVIEW** `cdm_partnership_agreement_2026-27_extract.pdf`: 4 of 25 stump-paragraph terms appear (account, carries, members, partner); read whether the document names the move
 - **REVIEW** `inc-0914-checkout-conversion_export.txt`: 5 of 25 stump-paragraph terms appear (session, traffic, partner, inside, quarter); read whether the document names the move
-- **REVIEW** `q4_sprint_shortlist.docx`: 3 of 25 stump-paragraph terms appear (account, members, inside); read whether the document names the move
-- **REVIEW** `warehouse_field_reference.md`: 6 of 25 stump-paragraph terms appear (account, session, carries, traffic, inside, window); read whether the document names the move
+- **REVIEW** `q4_sprint_shortlist.docx`: 4 of 25 stump-paragraph terms appear (account, members, inside, accounts); read whether the document names the move
+- **REVIEW** `warehouse_field_reference.md`: 6 of 25 stump-paragraph terms appear (account, session, carries, traffic, inside, accounts); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `lusolog_cp7_label_notice_2026-07.pdf`: The locality line must match the postcode's locality.

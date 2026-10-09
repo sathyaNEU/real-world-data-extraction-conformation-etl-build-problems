@@ -943,10 +943,27 @@ def main():
     check(all(pubrow(r6map[cc])[:4] == pubrow(t6[cc])[:4] for cc in t6) and set(r6map) - set(t6) == {gcc},
           "the stop and the answer agree on all 132 rows the answer scores")
     paid_g = {p["inst"] for p in P.pay if p["ref"] == gref}
-    check({"2026-08", "2026-09"}.isdisjoint(paid_g) and "2026-07" in paid_g,
+    check({"2026-08", "2026-09", "2026-10"}.isdisjoint(paid_g) and "2026-07" in paid_g,
           "no instalment was paid for the months of the lapse")
     check(len(lapsed) == 4 and all(not (d1 <= c < d2) for _, d1, d2 in lapsed for c in MARCH),
           f"four lapses in the register, none at a March census")
+
+    # the main call reads the Variations sheet's term rows (renewals and term ends) only: scope read from
+    # them alone equals scope read from every row at every census, and no co-funding row sets an annual
+    # amount to nil, so the co-funding rows (K1's and K2's organ) stay outside the main call's rows
+    def in_force_terms(ref, c):
+        g = P.grant[ref]
+        lst = [x for x in P.var_by_ref.get(ref, []) if x[3] in ("Renewal", "Term ended")]
+        before = [x for x in lst if x[0] <= c]
+        amt = before[-1][2] if before else (lst[0][1] if lst else int(g["amount"]))
+        return g["start"] <= c <= g["end"] and amt > 0
+    ops = [ref for ref in P.grant if P.grant[ref]["prog"] == "Operating grant"]
+    nil_cf = [v for v in P.variations
+              if v["variation"].startswith("Government co-funding") and int(v["annual_amount_after"]) == 0]
+    check(all(in_force_terms(ref, c) == in_force(P, ref, c) for ref in ops for c in list(MARCH) + [SEPT])
+          and not nil_cf,
+          "scope from the Variations sheet's term rows alone equals scope from every row at every census; "
+          "no co-funding row sets an annual amount to nil")
     for c in MARCH:
         s_ = S.run(c, P.packs[c.year]["pot"], scope="dates")
         back, ok_o, ok_r, ok_c = replay(P, c.year, s_)

@@ -125,8 +125,12 @@ PLANNED_TX_LATEST = 22 * 60 + 10                 # the planned transfer's bed by
 
 # DV8: legacy transfers between trusts, whose bed the bureau allocated (bed_confirmed_at) before the patient arrived;
 # the legacy feed dates the stay from the arrival. Near misses: allocation wait 3h10 to 3h52, arrival past 4h15.
-# (letter, died) rows in the winter legacy months (GMT, so the UTC device cannot touch them).
-DV8_NEAR = [("E", True), ("E", True), ("E", False), ("E", False), ("B", True), ("B", False), ("H", True), ("H", False)]
+# (letter, died) rows in the winter legacy months (GMT, so the UTC device cannot touch them): patients of trusts
+# without level-3 beds, and two dead patients at each trust whose own unit was full (transferred out), so the device
+# moves 3a and 3b at every trust; its 3b move (+2 or more) never meets DV9's (-1) on a cancellation.
+DV8_NEAR = [("E", True), ("E", True), ("E", False), ("E", False), ("B", True), ("B", False), ("H", True), ("H", False),
+            ("A", True), ("A", True), ("C", True), ("C", True), ("D", True), ("D", True), ("F", True), ("F", True),
+            ("G", True), ("G", True)]
 DV8_ALLOC_WAIT = (190, 232)
 DV8_PLACED_MIN = 255
 TRANSIT = (40, 110)                              # legacy transfer: minutes from allocation to arrival

@@ -25,7 +25,10 @@ CLAIMS = {
                "LAT": (559, 165, 0), "ELL": (140, 40, 6), "PRW": (221, 63, 46), "PEL": (75, 22, 3)},
     "record_total": (2163, 629, 148),
     "by_year_total": {1: (695, 204, 54), 2: (737, 212, 50), 3: (731, 213, 44)},
-    "natural_total": (2265, 700, 197),
+    "natural_total": (2363, 720, 204),
+    "readings": {"referral": ("STN", 27, "PRW", 15), "local": ("PRW", 15, "RIS", 2), "t04": ("PRW", 15, "RIS", 2),
+                 "planned": ("RIS", 37, "STN", 27), "not02": ("RIS", 37, "STN", 27)},
+    "held_legacy_transfers_min": 900, "never_linked": 10,
     "corpus_reviews": 34, "corpus_confirmed": 412, "corpus_attempts": 41, "rules": 216, "min_rival_misses": 4,
     "twin": (("Ormerleby", 2022, 24), ("Selarwell", 2023, 11)),
 }
@@ -62,7 +65,24 @@ def load(T):
     con.execute("CREATE TABLE ret AS SELECT unit_code, CAST(return_date AS DATE) d, CAST(beds_open AS INT) beds, "
                 "CAST(beds_occupied_0800 AS INT) occ FROM read_csv('%s', header=true, all_varchar=true)" % p("returns"))
     con.execute("CREATE TABLE st AS SELECT * FROM read_parquet('%s')" % p("stays"))
-    con.execute("CREATE TABLE ep AS SELECT patient_key, date_of_death FROM read_parquet('%s')" % p("episodes"))
+    con.execute("CREATE TABLE ep AS SELECT patient_key, date_of_death, discharge_method, discharge_date "
+                "FROM read_parquet('%s')" % p("episodes"))
+    con.execute("CREATE TABLE tx AS SELECT * FROM read_csv('%s', header=true, all_varchar=true)" % p("transfers"))
+    # the unit feed with each legacy transfer dated from the bureau's allocation: the legacy bed list began the row at
+    # the patient's arrival (the audit's arrived_at), the platform at the allocation (bed_confirmed_at)
+    con.execute("""
+        CREATE TABLE st2 AS
+        WITH s AS (SELECT st.*, COALESCE(l.verified_key, st.patient_key) vk
+                   FROM st LEFT JOIN links l ON l.temporary_key = st.patient_key),
+             t AS (SELECT tx.to_unit, CAST(tx.arrived_at AS TIMESTAMP) arr, CAST(tx.bed_confirmed_at AS TIMESTAMP) conf,
+                          COALESCE(l.verified_key, tx.patient_key) vk
+                   FROM tx LEFT JOIN links l ON l.temporary_key = tx.patient_key
+                   WHERE tx.bed_confirmed_at < '2024-04-02')
+        SELECT s.stay_id, s.unit_code, s.referral_id, s.patient_key,
+               CASE WHEN s.stay_id LIKE 'LB%' AND s.referral_id <> '' AND t.conf IS NOT NULL THEN t.conf
+                    ELSE s.admitted_at END AS admitted_at,
+               s.discharged_at, s.admission_type, s.source_location
+        FROM s LEFT JOIN t ON t.to_unit = s.unit_code AND t.arr = s.admitted_at AND t.vk = s.vk""")
     return con
 
 
@@ -77,8 +97,8 @@ def build_waits(con, natural=False):
             loc = ts.dt.tz_localize("UTC").dt.tz_convert("Europe/London").dt.tz_localize(None)
             ts = ts.where(~leg, loc)
         ref[name] = ts
-    first = con.execute("SELECT referral_id, MIN(admitted_at) a FROM st WHERE referral_id IS NOT NULL AND "
-                        "referral_id <> '' GROUP BY referral_id").df()
+    first = con.execute("SELECT referral_id, MIN(admitted_at) a FROM %s WHERE referral_id IS NOT NULL AND "
+                        "referral_id <> '' GROUP BY referral_id" % ("st" if natural else "st2")).df()
     ref = ref.merge(first, on="referral_id", how="left")
     adm_leg = leg & (ref["outcome"] == "Admitted")
     ref["end_t"] = ref["outcome_at_t"].where(~adm_leg, ref["a"])
@@ -92,6 +112,13 @@ def build_waits(con, natural=False):
     dod = con.execute("SELECT patient_key, MIN(date_of_death) dod FROM ep WHERE date_of_death IS NOT NULL "
                       "GROUP BY patient_key").df()
     ref = ref.merge(dod.rename(columns={"patient_key": "person"}), on="person", how="left")
+    if not natural:
+        # a death no registration links: the spell under the patient's key that ended in death
+        dm = con.execute("SELECT COALESCE(l.verified_key, ep.patient_key) person, MIN(discharge_date) dm FROM ep "
+                         "LEFT JOIN links l ON l.temporary_key = ep.patient_key WHERE discharge_method = '4' "
+                         "GROUP BY 1").df()
+        ref = ref.merge(dm, on="person", how="left")
+        ref["dod"] = pd.to_datetime(ref["dod"]).fillna(pd.to_datetime(ref["dm"]))
     if natural:
         ref["mins"] = (ref["end_t"] - ref["dta_t"]).dt.total_seconds() / 60          # the clock readings
     else:
@@ -120,32 +147,36 @@ def own_unit_table(con, current_only=False):
     return reg
 
 
-def islands(con, merge=True):
+def islands(con, merge=True, table="st2"):
     """Stays as islands of contiguous rows of one patient in one unit (or every row, merge=False)."""
     if not merge:
         return con.execute("SELECT unit_code, patient_key, admitted_at a, discharged_at b, admission_type t, "
-                           "referral_id r FROM st").df()
+                           "referral_id r FROM " + table).df()
     q = """
     WITH s AS (SELECT unit_code, patient_key, admitted_at, discharged_at, admission_type, referral_id,
                       LAG(discharged_at) OVER (PARTITION BY unit_code, patient_key ORDER BY admitted_at, stay_id) prev
-               FROM st),
+               FROM TABLE_NAME),
     g AS (SELECT *, SUM(CASE WHEN prev = admitted_at THEN 0 ELSE 1 END)
                      OVER (PARTITION BY unit_code, patient_key ORDER BY admitted_at ROWS UNBOUNDED PRECEDING) grp FROM s)
     SELECT unit_code, patient_key, MIN(admitted_at) a, MAX(discharged_at) b,
            ARG_MIN(admission_type, admitted_at) t, ARG_MIN(referral_id, admitted_at) r
     FROM g GROUP BY unit_code, patient_key, grp"""
-    return con.execute(q).df()
+    return con.execute(q.replace("TABLE_NAME", table)).df()
 
 
-def placed_by_unit(con, isl, by_type=False):
-    """Admission minutes per unit of stays the unit's own trust placed: not referred by another trust (or, by_type,
-    not coded as a transfer in)."""
+TYPE_READINGS = {"local": ["01", "04", "05"], "t04": ["04"], "planned": ["03", "04", "05"],
+                 "not02": ["01", "03", "04", "05", "06"]}
+
+
+def placed_by_unit(con, isl, reading="referral"):
+    """Admission minutes per unit of stays the unit's own trust placed: not referred by another trust (or, under a
+    type reading, coded with one of that reading's admission types)."""
     rt = dict(con.execute("SELECT referral_id, referring_trust FROM ref").fetchall())
     ut = dict(con.execute("SELECT DISTINCT unit_code, trust_code FROM reg").fetchall())
     out = {}
     for u, g in isl.groupby("unit_code"):
-        if by_type:
-            keep = ~g["t"].isin(["02", "03", "06"])
+        if reading != "referral":
+            keep = g["t"].isin(TYPE_READINGS[reading])
         else:
             keep = g["r"].fillna("").map(lambda x: rt.get(x, ut.get(u)) == ut.get(u)) if "r" in g else True
         out[u] = np.sort(g[keep]["a"].values.astype("datetime64[m]").astype(np.int64))
@@ -177,12 +208,12 @@ class Census:
         return min(vals) < beds
 
 
-def classify(con, W, current_register=False, merge=True, hourly=False, by_type=False):
+def classify(con, W, current_register=False, merge=True, hourly=False, reading="referral", table="st2"):
     reg = own_unit_table(con, current_register)
-    isl = islands(con, merge)
+    isl = islands(con, merge, table)
     ret = con.execute("SELECT * FROM ret").df()
-    cen = Census(islands(con, True), ret)
-    plan = placed_by_unit(con, isl, by_type)
+    cen = Census(islands(con, True, table), ret)
+    plan = placed_by_unit(con, isl, reading)
     anyadm = {u: np.sort(g["a"].values.astype("datetime64[m]").astype(np.int64)) for u, g in isl.groupby("unit_code")}
     own, emp, alloc, alloc_any, v08 = [], [], [], [], []
     for r in W.itertuples():
@@ -319,8 +350,42 @@ def main(T):
                 bad += 1
     claim("killer of rung 3: every admission inside a RIS long wait is a patient referred by another trust, in the "
           "bed bureau's transfer audit", n_in > 0 and bad == 0, "%d admissions" % n_in)
-    claim("decisive fact: STN-ACC admitted planned post-operative patients through every STN long wait",
+    claim("decisive fact: STN-ACC admitted patients Stennock referred itself through every STN long wait",
           stn["alloc"].all() and not stn["empty"].any(), len(stn))
+    # who placed each patient: the admission code says one thing at STN and RIS, the referring trust another
+    sti = isl[isl.unit_code == "STN-ACC"].copy()
+    sti["m"] = sti["a"].values.astype("datetime64[m]").astype(np.int64)
+    codes_stn, codes_ris, n_audit_stn = set(), set(), 0
+    for r in stn.itertuples():
+        a = np.datetime64(r.dta_t, "m").astype(np.int64)
+        b = np.datetime64(r.end_t, "m").astype(np.int64)
+        for x in sti[(sti.m > a) & (sti.m < b)].itertuples():
+            codes_stn.add((x.t, rt.get(x.r or "", "")))
+            n_audit_stn += (lk.get(x.patient_key, x.patient_key), "STN-ACC",
+                            pd.Timestamp(x.a).strftime("%Y-%m-%d %H:%M")) in audit
+    for r in ris[ris.died30].itertuples():
+        a = np.datetime64(r.dta_t, "m").astype(np.int64)
+        b = np.datetime64(r.end_t, "m").astype(np.int64)
+        for x in ri[(ri.m > a) & (ri.m < b)].itertuples():
+            codes_ris.add((x.t, rt.get(x.r or "", "")))
+    claim("STN's in-wait admissions are coded 03 (a planned transfer in) and referred by STN, none in the audit; "
+          "RIS's include planned transfers in (03) referred by other trusts",
+          codes_stn == {("03", "STN")} and n_audit_stn == 0 and any(c[0] == "03" and c[1] != "RIS" for c in codes_ris),
+          (sorted(codes_stn), sorted(codes_ris)[:6]))
+    for rd, want in CLAIMS["readings"].items():
+        Wr = W if rd == "referral" else classify(con, build_waits(con), reading=rd)
+        rr_ = per_trust(Wr, (Wr.year == 3) & Wr.died30 & Wr["own"] & (Wr["empty"] | Wr["alloc"]))
+        got = top2({t: rr_.get(t, 0) for t in CLAIMS["y3"]})
+        claim("own placement read as %s: %s %d over %s %d" % ((rd,) + want), got == want, got)
+    # the device organs the record leans on: legacy transfers dated from the arrival, deaths only by discharge method
+    held = con.execute("SELECT COUNT(*) FROM st JOIN st2 USING (stay_id) "
+                       "WHERE st.admitted_at <> st2.admitted_at").fetchone()[0]
+    claim("legacy transfers: %d bed rows re-dated from the arrival to the bureau's allocation" % held,
+          held >= CLAIMS["held_legacy_transfers_min"], held)
+    nl = con.execute("SELECT COUNT(DISTINCT patient_key) FROM ref WHERE patient_key LIKE 'U%' AND patient_key NOT IN "
+                     "(SELECT temporary_key FROM links)").fetchone()[0]
+    claim("temporary keys the links never resolve: %d, each death on a spell ending in death" % nl,
+          nl == CLAIMS["never_linked"])
     # the graded figures
     y3t = {t: (W[y3 & (W.referring_trust == t)]["person"].nunique(),
                W[y3 & died & (W.referring_trust == t)]["person"].nunique(),
@@ -344,7 +409,7 @@ def main(T):
     rh = per_trust(Wh, (Wh.year == 3) & Wh.died30 & Wh["own"] & Wh["empty"])
     claim("clean-data test: hourly return names PRW, the call stays STN", top2({t: rh.get(t, 0) for t in CLAIMS["y3"]})[0] == "PRW")
     # the natural path: every field as it stands, current register, rows as admissions, deaths per referral row
-    Wn = classify(con, build_waits(con, natural=True), current_register=True, merge=False, by_type=True)
+    Wn = classify(con, build_waits(con, natural=True), current_register=True, merge=False, table="st")
     nat = (len(Wn), int(Wn["died30"].sum()), int((Wn["died30"] & (Wn["empty"] | Wn["alloc"])).sum()))
     claim("natural path totals %d / %d / %d" % CLAIMS["natural_total"], nat == CLAIMS["natural_total"], nat)
     # the calibration corpus

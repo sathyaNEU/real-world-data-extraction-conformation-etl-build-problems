@@ -65,18 +65,26 @@ score 0.07 (task60 v2's filed netting of outcomes units already hold, task44 v2'
 
 ## Stump sentence
 
-A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine archived
-carousel tests, reads every guardrail at the charter's eight platform-by-tenure cells, checks the fresh-listing floor and commits the
-Q1 2027 slot to B, the velocity-boost policy, as the largest lift that clears all three conditions; the step that lands it there is
-taking the render log's in-session orders as the policy's effect, when most of B's in-session orders are listings already on the
-buyer's watch list that the buyer buys within days anyway, so over the twelve-week test B keeps a fraction of its lift and E, fourth
-on the natural estimate, is the largest lift that clears every condition.
+A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine
+archived carousel tests, takes the charter's lift as the orders the arm's buyers place over the test (which nets the velocity
+boost's brought-forward watch-list orders), reads condition (b) in the eight platform-by-tenure cells on the render log's
+ordered_tiles and commits the Q1 2027 slot to C, the session-sequence model, at 9.8 extra orders per 1,000 carousel sessions;
+the step that lands it there is taking the logger's in-session tile orders as the charter's carousel order rate, when the
+charter counts every order placed from the tiles an arm served and buyers under every other ranker come back to order from a
+tile left on screen after the session closes (credited to the new session, so only the listing ties the order to its tile),
+which puts C's rate in app 0-29 3.8 per cent below the incumbent's, so C fails (b) and E, at 5.7, is the largest lift that
+clears every condition.
 
-Shallower stops, each a different name (five rungs, set at the design stage): replay over the render rows files D; one
-propensity weight per render row files A; the session-weighted estimator with the guardrail read on the platform split
-files C; the eight cells and the floor file B, which is the stump.
+Shallower stops, each a different name (harden loop 1's ladder): replay over the render rows files D; one propensity weight per
+render row files A; session weights with the guardrail on ordered_tiles file C, on in-session orders and on the lift over the
+test alike (the second is the stump); the tile count on in-session orders files B. The draw's sentence (B on in-session orders)
+was cracked in round 1; it is in `## Tried and rejected`.
 
 ## Decisive rung
+
+**Harden loop 1: the decisive rung is now the guardrail count** (measured trap #7 inside #11, generator G13; see
+`## Harden loop 1: design`). The text below describes the borrowed-order netting the draw made decisive, which round 1
+executed as a default and which is now the ladder's last rung.
 
 **Measured trap #13, "Validates on one population, applies to another": decided 3 of the client's 64 accepted tasks, 2 of them
 under 0.50 (established; Halls and Meeting Places Fund 0.34, Rapid Response Program 0.39).** The in-session order measure fits all
@@ -212,6 +220,9 @@ redrawn.
 10. **People and dates.** Guard-drawn names and the dates above; none of the companies in the note's Mirrors line appears anywhere in
     the build.
 ## Stage 2: design (2026-10-09)
+
+Harden loop 1 supersedes this section's ladder, position table, dominance, correction grid, guardrail figures and
+ask ledger (`## Harden loop 1: design`); the rest stands.
 
 Skills run in order: build-pipeline (stage 2 row), stumping (Parts 1 to 5 and 13), determinism-check (section A),
 supplemental-stumping, guide-to-prompt (shape 07, prompt-voice, prompt-economy). Every number below is a target the
@@ -780,6 +791,8 @@ passes (the call closes the context, the notebook opens on that answer, each lat
 
 ## Build record
 
+The stage 3 build's record; `## Harden loop 1: build record` supersedes every figure in it.
+
 Stage 3, 2026-10-09. `python3 task122/generator/build.py` (seeded throughout) writes `target/` and `metadata.json`,
 asserts every check in `checks.py` on the files as written, normalises container metadata and mtimes, and fails
 loudly at the first assertion that does not hold. `task122/generator/verify_pack.py` is the independent verifier: it
@@ -1090,6 +1103,314 @@ before the chart code).
 - Prompt, two stump terms in the question: the question itself (registered policies, carousel sessions), no method or basis.
 - Tariff register, 2027-01-04: the deferred January row, a forward-dated entry by design (HZ1); the minutes defer it.
 
+## Harden loop 1: design (2026-10-09)
+
+Skills run in order: build-pipeline (the hardening loop), stumping (Parts 1, 6.1, 10 and 13), supplemental-stumping (Parts
+0 to 6, the device book and the pair arithmetic), dataset-generation (section 12), determinism-check (sections A and B).
+This section is the build's current design. In `## Stage 2: design` the ladder, the position table, the dominance line,
+the correction grid, the guardrail figures and the ask ledger are superseded by the ones below; the world, the
+archive, the pins and the rest of the fork grid stand.
+
+### What round 1 showed, and the repair
+
+Round 1's solver never had to see borrowing: charter 2.2 defines lift as the orders the arm's buyers place over the test,
+the orders extract holds every order by buyer, so "all orders by the buyer (any channel) within 7 days of session start"
+was the default and the netting of B fell out of it. What its trace held fixed without checking was that the logger's
+in-session columns measure the charter's other quantities: "Carousel order rate (from ordered_tiles) by cell vs HC-24".
+The repair attacks that assumption with a rung after which the solver's own step (lift over the test, guardrail off the
+logger) still completes and still files a wrong name.
+
+**The physics change.** A buyer can leave the home screen open, let the session close (30 minutes without activity) and
+come back to order straight from a tile still on screen. The order is placed in the new home session the return opens,
+so the orders extract credits it there, and the render log's `ordered_tiles` (orders placed in the session) never sees
+it. Under the incumbent and five policies these come-back orders run at 1.2 to 1.7 per 1,000 sessions by cell; under the
+session-sequence model (C) they almost never happen (rate scaled to 0.15: 3 orders in 16,544 sessions, none in app
+0-29). They are background orders the block template already places on the session's evening or next morning, moved to
+2 minutes to 4 hours after the session closed and onto a tile listing, so no order enters or leaves any window and no
+lift, half, fee or total moves.
+
+**What the pack says.** Charter 2.4 now reads "the number of orders placed from the carousel tiles it served, per 1,000 of
+its carousel sessions in that cell" (it read "its orders placed from a home carousel tile", which also admits every
+carousel order by the arm's buyers). The field reference says `ordered_tiles` counts the tiles ordered from in the
+session, `home_session_id` is the home session the order was placed in, and a listing shown on a buyer's carousel is
+kept off it in their later sessions for seven days. The archive's notes say the same of `in_session_orders`. Nothing
+says an order can be placed from a tile after its session.
+
+**What it does to the call.** C, the largest lift over the test (9.8), clears the eight cells on `ordered_tiles` (app
+0-29 at -0.96 per cent against Blend v7) and fails them once the rate counts every order placed from its tiles (-3.77
+per cent). C's in-session lift in app 0-29 moved from -1.30 to -0.20 per 1,000 so that the logger count passes it;
+nothing else in the world moved.
+
+### Gate G
+
+**Gate G line.** decomposition_attribution (each order attributed to the tiles and the test that produced it: the orders
+a session's tiles take after the session closes, and the orders a session brings forward from the buyer's own next
+days), with method_or_model_selection at rungs 1 and 2 · surface_read_dependency: no · stumping_family:
+analytical_non_defect · sole_data_defect: no · deletion test passes · not a lens swap.
+
+- **Litmus.** No reported number or stakeholder conclusion is overturned. `ordered_tiles` is right for what it says
+  (orders placed in the session), the orders extract credits every order to the session it was placed in, and no
+  shipped artifact computes a guardrail, a lift or a ranking of the six policies. The miss is the solver taking a
+  correct in-session count as the charter's rate.
+- **Instrument repair.** A logger that counted every order placed from a session's tiles would observe the charter's
+  rate directly and close rung 3. No such instrument is withheld: the orders extract (every order, channel and listing)
+  and the served tiles ship complete, so the rate is computed from shipped records. The render log is not a suspect
+  file in the clean-data sense (it is complete for its stated scope).
+- **Lens swap.** The two counts are different populations: the tile count adds 205 orders placed in other sessions,
+  which `ordered_tiles` and the session credit both leave out. Not two lenses on the same rows.
+- **Deletion.** Delete every voice: nothing in the thread touches the guardrail or C, and the task stays hard.
+
+### The decisive rung
+
+**Measured trap #7, "Uses the ready-made measure"** (5 of the client's 64, 2 under 0.50): the render log's
+`ordered_tiles` is the prominent ready-made count, it ties to the orders extract session by session, and it answers a
+nearby question. **Inside measured trap #11, "Beats the headline trap, misses the quiet one"** (4 of 64, 2 under 0.50): the
+headline fight is the velocity boost's watch-list orders, which the thread argues over and the charter's lift settles;
+the quiet one is the guardrail count. Generator G13 (horizon mismatch, gap 1: the logger's count ends with the session,
+the charter's rate does not), so the card's decisive generator moved from G9 to G13; G9 stays on the ladder as the
+borrowed-order netting.
+
+The seven survival properties (`stumping` Part 1):
+
+1. Written in no sentence: no document says a tile can be ordered from after its session. The seven-day rule is a
+   serving rule about impressions, and "in the session" is the logger's scope statement (both carried as realism debts).
+2. No corpus nominates it: the archive is a lift corpus on in-session orders and carries no guardrail count.
+3. No arithmetic symptom: `ordered_tiles` equals the carousel orders credited to each session in all 150,400 sessions;
+   the 205 come-back orders are carousel orders credited to unlogged home sessions, among 56,068 such orders.
+4. Not a per-row predicate: it needs each buyer's later orders joined to a different entity (the logged session's six
+   tiles) by listing, with the seven-day rule to attribute them.
+5. Its enumeration is a construction, not a menu.
+6. No cutover date.
+7. It survives the deletion.
+
+Dead shapes checked: the call is still argmax under the charter over the six registered policies, and the stump still
+applies the rule exactly to a wrong count (the defence the draw recorded). The first crediting (orders credited to the
+tile's session) carried an arithmetic symptom on the wrong path and died (Tried and rejected).
+
+### The ladder (five rungs)
+
+| Rung | Construction | Leader | Margin | Killed by (one shipped fact) |
+|---|---|---|---|---|
+| 0 | Replay over the render rows, unweighted; in-session orders; guardrail on the platform split; floor over rendered tiles | **D** | 1.259 over B | The reproduction clause: replay returns 3 of the 9 archived lifts |
+| 1 | One propensity weight per render row | **A** | 1.212 over B | The twins T3 and T7 and the clause: render weights 6 of 9 |
+| 2 | One weight per session (9 of 9); the eight cells read on the render log's `ordered_tiles`; floor per served ranking | **C** | 1.237 over B | Charter 2.4 with the orders extract and the served tiles: counting every order placed from C's tiles puts app 0-29 at -3.77 per cent |
+| 3 | The guardrail on every order placed from the tiles each arm served (the listing join; A out in web 730+, C out in app 0-29, D out on the floor, F under the bar) | **B** | 1.397 over E | Charter 2.2 with the orders extract and the watch list: 58.5 per cent of B's in-session gain is watch-list purchases its buyers would have made within six days anyway |
+| 4 | Lift over the test (orders by the buyer in every channel, 7 to 21 days, or route 2's netting) | **E** | 1.725 over B | |
+
+Every rung names a different candidate (D, A, C, B, E). Gaps: rungs 0 to 2 are the rule gap (the archive-pinned
+estimator, Pattern B, #1, with #2 at rung 1); rung 3 is the time gap at the guardrail (G13, #7 inside #11); rung 4 is
+the time gap at the lift (G9, #13). The stump is carried by rung 3. A solver who takes rung 4's construction first, as
+round 1 did, stands at rung 2 with C (9.845 over E 5.697, 1.728x) until the tile count; a solver who counts the tiles
+but stays on in-session orders files B.
+
+**Worth on the committed lift:** 9.661 (D) to 11.018 (A) to 9.845 (C) to 7.957 (B) to 5.697 (E).
+
+### Position table (asserted)
+
+| Rung | E's rank of six | Leader | Runner-up |
+|---|---|---|---|
+| 0 | 5 | D | B |
+| 1 | 4 | A | B |
+| 2 | 4 | C | B |
+| 3 | 4 (second of the two that clear) | B | E, 1.397x behind |
+| 4 | first of the two that clear | E | B |
+
+E leads no intermediate rung and is runner-up only at rung 3.
+
+### Discriminator dominance
+
+At rung 4: B's carried in-session advantage 7.957 / 5.697 = **1.397**; E's edge on the share of its gain it keeps,
+(5.697 / 5.697) / (3.303 / 7.957) = **2.409**; required 1.2 x 1.397 = 1.676, held; product 1.725. At rung 3 the move is a
+pass or fail: C sits 0.54 points inside the threshold on the logger count and 2.27 points outside it on the tile count.
+
+### Correction grid (24 cells, each asserted by name at 1.15x or better)
+
+Three estimators x four guardrail counts (platform split on `ordered_tiles`; the eight cells on `ordered_tiles`, on the
+orders placed from the tiles, and on the buyer's carousel orders within 7 days) x two outcomes (in-session, lift over
+the test).
+
+| Estimator | Guardrail count | In-session | Over the test |
+|---|---|---|---|
+| replay over render rows | any of the four | D (1.259 over B; 1.389 over A on the buyer window) | D, the only policy clearing all three |
+| render weights | platform split | A, 1.212 over B | A, 1.359 over C |
+| render weights | eight cells, `ordered_tiles` | B, 1.572 over E | B, 1.272 over E |
+| render weights | eight cells, orders from the tiles | B, 1.572 over E | B, 1.272 over E |
+| render weights | eight cells, buyer's carousel orders 7 days | A, 1.906 over E | A, 1.906 over E |
+| session weights | platform split | C, 1.237 over B | C, 1.500 over A |
+| session weights | eight cells, `ordered_tiles` | C, 1.237 over B | **C, 1.728 over E (the stump)** |
+| session weights | eight cells, orders from the tiles | B, 1.397 over E | **E, 1.725 over B (the answer)** |
+| session weights | eight cells, buyer's carousel orders 7 days | C, 1.500 over A | C, 1.500 over A |
+
+E leads one cell of 24. Each wrong cell violates one filed rule: replay and render weights the reproduction clause
+(5.2); the platform split the cell table (3); `ordered_tiles` and the buyer window charter 2.4 (orders placed in the
+session only; carousel orders from tiles the arm never served); in-session orders charter 2.2.
+
+### Partial readings (asserted where named)
+
+- **Time limits on the tile count.** Any limit of 4 hours or more after the session files exactly the tile count (C1);
+  limits under 1.5 hours pass C (-0.96), 1.5 to 3 hours fail it at -2.10, 3 hours or more at -3.77. A limit has no
+  footing in 2.4.
+- **Buyer windows** (every carousel order by the arm's buyers within 1, 7 or 21 days): C passes in all three (-0.83,
+  -0.54, -0.42), so they file C with the lift over the test.
+- **Follow-up windows on the lift** (tile count): 1 to 3 days name B (7.6, 7.0, 6.2); 4 and 5 days name E with B at 5.0
+  and 4.0 (a wrong runner-up figure); from day 6 every policy is flat (C1 over 7 to 21 days and calendar days).
+- **Flat haircuts on in-session lifts** at B's borrowed share (58.5 per cent) or the pooled share (0.75 per cent) name B.
+- **The headline on the slot's planned cell mix** (R2, app from W03): E 5.716, B 3.314, gap 2.402, the same bins as the
+  logged window's 5.697, 3.303 and 2.394 (C1; round 1's 5.8 came from the January surge, now cut, see Tried and
+  rejected). On the first release's mix (P2 mishandled) E reads 5.844: the device reaches the headline only through a
+  reading that is wrong twice (reweighting the charter's offline score, 5.1, and the superseded release).
+
+### Fork grid: the axes this loop changed (the Stage 2 table stands for the rest)
+
+| # | Axis | Reading chosen | Closure |
+|---|---|---|---|
+| 1 | Population (guardrail) | orders placed from the tiles the arm served | C4: the buyer windows add tiles the arm never served and file C; violate 2.4 |
+| 3 | Attribution window (guardrail) | no limit after the session | C1 from 4 hours; shorter limits violate 2.4 (priced above) |
+| 9 | Boundary inclusivity | "more than 1.5 per cent below" | C4: failing cells A web 730+ -2.51, C app 0-29 -3.77; every other policy-cell at +1.2 or better on either count; coarse cuts +1.3 or better |
+| 13 | Order of operations | the guardrail count is independent of the lift basis | C1: the breaches are the same under in-session and over-the-test lifts |
+| 16 | Identity normalisation | listing ids shared by orders and served tiles | C1: every come-back resolves to one tile of one logged session |
+| 19 | Code semantics | channel carousel = ordered from a home carousel tile; `home_session_id` = the session placed in | filed (field reference); C1: `ordered_tiles` equals the carousel orders credited to each session |
+| 21 | Scope of a stated clause | the seven-day rule governs carousel serving across sessions | filed; asserted in the data (no shown listing reaches its buyer through a carousel tile more than 4 hours after the session) |
+| + | Headline cell mix | the logged window (5.1) | C1 with the slot's planned mix |
+| + | VAT (F1) | fee income excluding the 21 per cent VAT, as Finance books it | filed (statement); C1: VAT taken off order by order to the cent files every cell in the same bin (min 0.015 inside); C4: VAT kept in moves all 48 cells, 21 per cent taken off the gross 44 |
+| + | Balance purchases (F2) | covered and charged | filed (terms 1, 2 and 5; field reference: the payments file is card and iDEAL captures); C4 |
+| + | Fee totals, pooled | refused (capacity note: cell by cell) | placed at least 5 from the golden hundred's edges either side, recorded |
+
+### Ask ledger (supersedes Stage 2's; asks unchanged in wording)
+
+**Main call's declared row population.** The render log, the served rankings (now including the six tile listing ids,
+which the tile count joins on), the orders extract (order id, buyer, listing, ordered at, channel, home session; never
+price, delivery, platform or category), the archive, the charter, the commitment, the register, the field reference.
+Zero device rows in it: the fee devices live in the price, delivery and payment columns and in files the main call
+never opens, and the call and the guardrail breaches are asserted unchanged with every price scrambled and every
+delivery set to shipped.
+
+| Ask | Figures | Construction layer | Device layer: primaries; hazards | Use (H18) |
+|---|---|---|---|---|
+| 1 Grid | 48: each policy's change in buyer-protection fee income per 1,000 carousel sessions by cell, EUR, one decimal | orders over the test by cell (rung 4) | **F1 fee income net of VAT; F2 purchases paid from a balance**; P1 pickups paid in person, HZ1 the January tariff row, HZ2 the price paid | what each option is worth in each cell beside the call |
+| 2 Totals | 12: extra orders and extra fee income over the twelve weeks, nearest hundred | the lift over the test by cell on the slot's planned cell traffic | fee half: F1, F2, P1, HZ1, HZ2; both halves: P2 the R2 restatement, HZ3 the app release gate | what the quarter buys beside the call |
+
+**Primaries, fresh this loop (both silent: nothing on the ask path states that they matter).**
+- **F1, fee income net of VAT (D3, units set by agreement).** The tariff is what buyers pay, VAT included; Finance books
+  fee income excluding the 21 per cent (statement header, account 1630). The careless path (tariff fee per order) files
+  gross figures 21 per cent high in every cell. Organs split: the statement's header (documentary) and its figures, which
+  tie only under the division (structural).
+- **F2, purchases paid from a Vouwlijn balance (D4, an absent channel).** 7 per cent of shipped purchases are paid from a
+  balance, covered and charged, and absent from the payments file, which is the provider's card and iDEAL captures. The
+  careless path (no capture, no fee) drops them. The over-cleaning half is P1: charging every order without a capture
+  also charges pickups paid in person. Organs: terms 1, 2 and 5 (documentary), the field reference's payments line and
+  the statement's covered-purchase count (structural).
+
+**Hazards** (P1, HZ1, HZ2 on both asks' fee figures; P2 and HZ3 on both totals) keep their Stage 2 definitions.
+
+**Referee (exactly one, byte-clean).** Finance's July to September fee-income statement by month and platform. It ties
+to the cent only when every covered purchase is charged (captures at the capture-date tariff, balance purchases at the
+order date), in-person pickups are left out and the VAT is taken out: the six rows sum to EUR 320,877.16 against EUR
+360,097.35 for the provider's captured fees as charged and EUR 297,601.12 for those net of VAT. It gives no policy or
+cell a level and says nothing about January.
+
+**Per-ask stops** (asserted). Ask 1: all 31 subsets of the five fee devices and the natural read (every order priced on
+the formula, VAT in, asking price, January row, in-session orders) carry every cell out of its bin by at least 0.0456;
+the over-cleaners move 43 to 47 cells (fees as charged 47, every pickup dropped 43, every accepted offer 43, the old
+tariff 46, VAT taken off the gross 44); the in-session basis moves B's four older cells and nothing else. Ask 2: the
+first release, all twelve weeks on the app, both, and the natural read sit at least 5 outside the golden hundred on
+every order total; 760 of the 762 fee readings (127 per policy) do, and B with only P1 mishandled and F on the first
+release alone sit inside it (single devices whose effect on that total is under 30, placed at least 5 from the edges); the pooled readings sit at
+least 5 from the edges, five of twelve inside (B, E and F orders, D and E fees).
+
+**Pair arithmetic (planning weights 38 / 7 / 55; 4 call, 4 file, 64 ask criteria at 0.86).**
+- Cracker (lands E): the call block, the files, the heatmap's four parts and the six order totals (it handles P2 and HZ3,
+  as round 1 did); on round 1's fee path (captures re-priced at the slot tariff, price paid, in-person pickups free, VAT
+  kept in) it keeps 0 cells and 0 fee totals, and 0 if it also drops balance purchases or drops only those. **53.6**.
+- Mirror (files C on the logger count): 3 call criteria (the exclusions it names), the files, the euro scale, the six
+  order totals, the same fee path. **16.0**.
+- **Pair 34.8**, under 40: 55 x (Lc + Ls) = 55 x (10 + 7) / 64 = 14.6, inside 28 - r = 25.
+- **Exposure, stated:** a cracker that reads Finance's statement and handles F1 and F2 keeps the grid and the fee totals:
+  pair 58.0. The ask layer rests on the referee going unread, which round 1's trace supports (its path never opened it).
+- The order half (6 criteria) keeps its Stage 2 devices only; no fresh silent device fits the traffic path without a new
+  organ (Tried and rejected), so it leaks to both sheets and the arithmetic above counts it.
+
+### Realism debts added
+
+- C's buyers hardly ever come back to a stale tile; the register says C re-ranks after every render, which a reader may
+  take as the reason, and no document says so.
+- "In the session" (field reference, archive notes) and the seven-day rule are true, needed sentences that a sharp
+  reader could turn into the question.
+- The statement's header states the VAT and "every payment method": the referee is the organ for F1 and F2.
+- The first-release slot-mix headline (5.8) is a compound wrong path that reaches a graded figure through P2.
+
+### Stopping rule
+
+Loop 1 of 3 on this architecture. Round 1 is re-run on this build. A landed main call through the tile count, or a
+proxy at or over 40 with the call missed, is loop 2's brief; a loop that has to move the guardrail count's physics again
+is the signal to re-root at stage 1 with this architecture moved to the card's lineage rather than to spend loop 3.
+
+## Harden loop 1: build record (2026-10-09)
+
+Supersedes `## Build record` for every figure below; Stage 3's write-up section is superseded by `submission.md` as
+rewritten in this loop.
+
+### Gates
+
+- **Generator:** 306 assertions passed (`checks.py`), on the files as written.
+- **Independent verifier:** `verify_pack.py` 102 of 102 on the task folder, on its own code path, every figure agreeing
+  with the build record.
+- **Determinism of the build:** two builds into different roots, 23 target files and `metadata.json` byte-identical (the
+  records differ only in the scrub log's output path).
+- **Input gates:** 23 files, 9 formats, the render log at 404,100 rows, two distractors named in `metadata.json` only.
+- **Metadata:** containers clean (`scrub_producer_metadata.py`, target and golden), forward dates on the allow-list only.
+- **Golden:** `golden.py` executes the notebook top to bottom, writes the PNG, and every figure agrees with the record;
+  realism pass done (footer split onto two lines, colour bar and legend lifted, VAT read from the statement).
+- **Leak sweep:** `leak.py` REVIEW, no LEAK (the cell table's figures in the charter, the call's ordinary words in the
+  index and the thread, the deferred January tariff row's date, generic stump vocabulary). No shipped text names the
+  come-back orders or says a tile can be ordered from after its session.
+- **Fingerprint:** card updated (stump, driver, decisive generator G13 first); `guard.py validate` clean, `check` and
+  `heart` WARN with no BLOCK (repeat.gate_g, repeat.decision, as answered at the draw), `surface` 0 pairs promoted.
+
+### The answer and the stump, as built
+
+E, lift over the test **5.697** (5.7); runner-up B **3.303** (3.3); gap **2.394** (2.4). The stump path (session weights,
+eight cells on `ordered_tiles`, lift over the test) files C at **9.845** with E runner-up at 5.697, gap 4.148.
+
+### Guardrail by count (per cent against Blend v7)
+
+| Count | C app 0-29 | A web 730+ | Breaches |
+|---|---|---|---|
+| `ordered_tiles`, and the orders credited to the session | -0.957 | -2.736 | A |
+| every order placed from the tiles (no limit, or any limit of 4 hours or more) | -3.771 | -2.512 | A, C |
+| tiles within 1 hour | -0.957 | -2.679 | A |
+| tiles within 1.5 or 2 hours | -2.102 | -2.623, -2.914 | A, C |
+| buyer's carousel orders within 1 day | -0.826 | -2.111 | A |
+| buyer's carousel orders within 7 or 21 days | -0.535, -0.423 | -1.229, -0.927 | B in every cell (its shown listings never come back through a carousel), C passes |
+
+Come-back orders: 205, 2 minutes to 4.0 hours after the session (incumbent 72, A 23, B 26, C 3, D 29, E 23, F 29).
+
+### Asks, as built
+
+Fee grid (EUR per 1,000 carousel sessions; cells app 0-29 to web 730+): as `submission.md` block 4, item 3, recomputed
+by the verifier to the cent. Every cell at least 0.035 inside its bin and at least 0.005 off the round value; four cells
+under EUR 1.00 (C app 0-29, F app 730+, B web 180-729, F web 180-729).
+
+| Policy | Extra orders | Extra fee income, EUR |
+|---|---|---|
+| A two-tower personaliser | 16,876.4 | 18,318.0 |
+| B velocity boost | 8,818.7 | 10,376.5 |
+| C session-sequence model | 26,123.6 | 32,114.4 |
+| D local pickup boost | 13,223.6 | -33,520.5 |
+| E sequence ranker, fresh-listing interleave | 15,212.9 | 18,788.4 |
+| F seller-diversity re-ranker | 3,720.5 | 3,076.7 |
+
+Every total 20 to 45 from the edges of its hundred, on 2,661,486 arm sessions (app cells from W03).
+
+### Files changed
+
+Generator: `params.py` (come-back rates, the C scale, VAT, the wallet share, the January surge cut to 2 and 1 points, C's
+app 0-29 lift), `world.py` (balance-paid flags), `records.py` (come-back orders, balance purchases, the shown-listing
+channel rule, protected purchases for Finance), `place.py` (five fee devices, off-round placement, either-side traffic
+readings), `traffic.py`, `analysis.py` (the tile count), `asks.py`, `docs.py` (charter 2.4, field reference, archive
+notes, terms 5, the statement), `build.py`, `checks.py`, `verify_pack.py`, `golden.py`. Pack: every data file
+regenerated. Write-up: `submission.md` blocks 1 to 4. Card: `cards/task122.json`.
+
 ## Tried and rejected
 
 - First draft (v1, drafted 2026-10-08, never registered): every proposal failed a different launch condition and the test-calendar
@@ -1206,3 +1527,27 @@ before the chart code).
   reads anyway. What the trace holds fixed without checking is that the logger's in-session columns measure the charter's
   quantities whenever the charter is not about orders over the test (its guardrail is read "from ordered_tiles"), which is
   where loop 1 goes. Harden loop 1 of 3 on this architecture.
+- Harden loop 1, the come-back orders credited to the session the tile was in (home_session_id = the logged session): the
+  habitual tie between ordered_tiles and the carousel orders credited to each session then failed in 202 sessions, every one
+  outside C, an arithmetic symptom on the wrong path that points straight at the device. Now each come-back is credited to
+  the session it was placed in, the tie holds in all 150,400 sessions, and the field reference's seven-day rule lets the
+  listing alone attribute the order to its tile.
+- Harden loop 1, no come-back orders at all under C: one zero in a by-arm count reads as a marker; C now comes back at 0.15
+  of the others' rate (3 orders, none in app 0-29).
+- Harden loop 1, charter 2.4 as written ("its orders placed from a home carousel tile"): it also admits every carousel order
+  by the arm's buyers in a window, a reading under which C passes and is filed; 2.4 now counts the orders placed from the
+  carousel tiles the arm served.
+- Harden loop 1, the January new-buyer surge at 8 and 4 points (built for the pooled stop on ask 2): it put the slot-mix
+  headline at 5.8 against the logged window's 5.7, round 1's determinism finding. Cut to 2 and 1 points, the headline
+  converges (5.716 against 5.697) and the pooled totals fall 14 to 41 orders from the cell-by-cell ones for B and E, which
+  no placement can carry out of the hundred, so the pooled stop is retired: pooled readings are placed at least 5 from the
+  edges on either side and recorded.
+- Harden loop 1, every fee reading as a stop on ask 2: B with only P1 mishandled and F on the first release alone sit 25
+  and 14 euros from their golden totals, under the 25 a stop needs with the golden 20 from its edges; both are carried as
+  either-side readings at least 5 from the edges (both inside) and the placement reached 6.4 of slack.
+- Harden loop 1, fee cells placed anywhere from 0.35 to 0.65 of the bin: 7 of 48 landed within 0.003 of the round
+  one-decimal value (7.0001, -14.5997 and so on), a receipt; the window now leaves out the middle tenth.
+- Harden loop 1, a fresh silent device for the order totals (the logger slice held out of slot arms, a weekly table
+  counting home sessions rather than carousel sessions, Easter falling in the slot's last week, staff and monitor
+  accounts in the weekly table): each needs a new organ on the traffic path or a rate the pack cannot pin, or reads as
+  sabotage; the order half keeps P2 and HZ3 and the pair arithmetic counts it as leaking to both sheets.

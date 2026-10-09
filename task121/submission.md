@@ -21,10 +21,10 @@ That cause cost 51 orders in the week of 21 to 27 September, 33 more than the ca
 ## 3. Step-by-Step Solution
 
 1. Dropped the sessions in `edge_bot_verdicts_2026-07-27_2026-09-27.csv` from `basket_sessions_2026-07-27_2026-09-27.parquet` per `warehouse_field_reference.md` and cut Monday weeks: the call week is 21 to 27 September, the four weeks before the fall 3 to 30 August.
-2. Followed each club-app session's `mpt` token through `cdm_token_billing_2026-08.csv` and `cdm_token_billing_2026-09.csv` to a member number and through `loyalty_profiles_2026-09-28.csv` to an account: most Shop-tab basket sessions belong to existing accounts.
-3. Built each fix's customers as `q4_sprint_shortlist.docx` names them, with flag cohort, default saved address (UTC moved to Lisbon), default card and pre-order status each taken as of the session.
+2. Followed each club-app session's `mpt` token through `cdm_token_billing_2026-08.csv` and `cdm_token_billing_2026-09.csv` to a member number, then to the account holding it in `loyalty_profiles_2026-09-28.csv` or as a SOCIO code redeemed in `promo_redemptions_2025-07-01_2026-06-30.csv` (recital B of the partnership agreement): most Shop-tab basket sessions belong to existing accounts.
+3. Built each fix's customers as `q4_sprint_shortlist.docx` names them, with flag cohort (every logged move), default saved address (UTC moved to Lisbon), default card and pre-order status each taken as of the session.
 4. Sized each population against the same customers' August conversion per the shortlist's sizing line, new fans at the web new-visitor rate as both close-outs book them: sign-in 51 orders lost in the call week, card SDK 18, postcode lookup 10, club landing page 2.
-5. Valued lost orders at the same customers' August net order value from `finance_order_export_2026-07-27_2026-09-27.csv` (latest export, one value per order, VAT out before 10 August) and counted challenges per `attempt_ref` with C and D in `tagus_3ds_log_2026-08-31_2026-09-27.csv`.
+5. Valued lost orders at the same customers' August net order value from `finance_order_export_2026-07-27_2026-09-27.csv` and counted challenges per `attempt_ref` with C and D in `tagus_3ds_log_2026-08-31_2026-09-27.csv`, each per its note in `warehouse_extract_register.csv`.
 6. Recommendation: the one-time-code sign-in gets the sprint, 33 orders a week ahead of the card SDK upgrade.
 
 ## 4. Deliverable Answers
@@ -51,7 +51,7 @@ That cause cost 51 orders in the week of 21 to 27 September, 33 more than the ca
    - Inline postcode lookup: €600
    - Club landing page: €100
    - Card SDK upgrade: €1,200
-   - One-time-code sign-in: €3,600
+   - One-time-code sign-in: €3,700
    - Split dispatch: -€100
 9. Share of card payment attempts that met a 3-D Secure challenge, 21 to 27 September:
    - Inline postcode lookup: 85.7%
@@ -63,15 +63,15 @@ That cause cost 51 orders in the week of 21 to 27 September, 33 more than the ca
 
 ### checkout_fall_workings.xlsx
 1. Address check flag cohorts, signed-in basket sessions 31 August to 27 September and conversion:
-   - Cohort 1: 4,472 sessions, 4.34%
-   - Cohort 2: 4,583 sessions, 4.30%
-   - Cohort 3: 4,710 sessions, 4.29%
-   - Cohort 4: 4,361 sessions, 4.31%
-   - Cohort 5: 4,723 sessions, 4.30%
-   - Cohort 6: 5,655 sessions, 4.21%
-   - Cohort 7: 4,461 sessions, 4.35%
-   - Cohort 8: 4,080 sessions, 4.34%
-   - Cohort 9: 4,621 sessions, 4.33%
-   - Cohort 10: 4,688 sessions, 4.31%
-   - Cohort 11: 4,641 sessions, 4.31%
-   - Cohort 12: 4,530 sessions, 4.37%
+   - Cohort 1: 4,505 sessions, 4.33%
+   - Cohort 2: 4,547 sessions, 4.29%
+   - Cohort 3: 4,722 sessions, 4.32%
+   - Cohort 4: 4,358 sessions, 4.29%
+   - Cohort 5: 4,721 sessions, 4.28%
+   - Cohort 6: 5,659 sessions, 4.24%
+   - Cohort 7: 4,433 sessions, 4.31%
+   - Cohort 8: 4,107 sessions, 4.36%
+   - Cohort 9: 4,643 sessions, 4.35%
+   - Cohort 10: 4,675 sessions, 4.30%
+   - Cohort 11: 4,637 sessions, 4.25%
+   - Cohort 12: 4,526 sessions, 4.42%

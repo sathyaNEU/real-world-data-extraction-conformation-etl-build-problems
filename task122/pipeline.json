@@ -2,11 +2,11 @@
  "task": "task122",
  "domain": "product-analytics",
  "objective": "experiment-causal",
- "stage": 4,
- "stage_name": "solver round 1",
+ "stage": 3,
+ "stage_name": "hardened",
  "updated": "2026-10-09",
- "stump": "A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine archived carousel tests, reads every guardrail at the charter's eight platform-by-tenure cells, checks the fresh-listing floor and commits the Q1 2027 slot to B, the velocity-boost policy, as the largest lift that clears all three conditions; the step that lands it there is taking the render log's in-session orders as the policy's effect, when most of B's in-session orders are listings already on the buyer's watch list that the buyer buys within days anyway, so over the twelve-week test B keeps a fraction of its lift and E, fourth on the natural estimate, is the largest lift that clears every condition.",
- "harden_loops": 0,
+ "stump": "A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine archived carousel tests, takes the charter's lift as the orders the arm's buyers place over the test (which nets the velocity boost's brought-forward watch-list orders), reads condition (b) in the eight platform-by-tenure cells on the render log's ordered_tiles and commits the Q1 2027 slot to C, the session-sequence model, at 9.8 extra orders per 1,000 carousel sessions; the step that lands it there is taking the logger's in-session tile orders as the charter's carousel order rate, when the charter counts every order placed from the tiles an arm served and buyers under every other ranker come back to order from a tile left on screen after the session closes (credited to the new session, so only the listing ties the order to its tile), which puts C's rate in app 0-29 3.8 per cent below the incumbent's, so C fails (b) and E, at 5.7, is the largest lift that clears every condition.",
+ "harden_loops": 1,
  "solver_rounds": [
   {
    "label": "round 1, plain",

@@ -3,10 +3,10 @@
   "domain": "nonprofit-grant-making",
   "objective": "etl",
   "stage": 3,
-  "stage_name": "built",
+  "stage_name": "hardened",
   "updated": "2026-10-09",
-  "stump": "A competent solver rebuilds the screen as held at the 30 September census, recovers the step-back, gives back all 815 published rows, every offer and every rate, applies rule 4.1 against rule 2's census list, and strikes the offers at 34.11 cents on 11 names, because it places every quarter on one balance date per organisation (its latest annual return's), so it scores the three grantees that moved from 30 June to 31 March in 2025-26 on twelve months to March 2026 and offers two of them, when each return's own year end makes March 2026 the last quarter of their nine-month year, with no annual return on the register, so rule 4.1 removes them and the answer scores 132 grantees and strikes 42.55 cents on nine.",
-  "harden_loops": 2,
+  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
+  "harden_loops": 3,
   "solver_rounds": [
     {
       "label": "round 1, plain",

@@ -92,8 +92,8 @@ READINGS = SUBSETS + ["natural"]
 
 def place_fee_cells(W):
     """Place each policy-cell fee figure (euros per 1,000 sessions, VAT excluded) inside its bin, at least
-    0.035 from both edges, and make every subset of the five fee devices, and the natural read, carry it
-    out of the bin.
+    0.035 from both edges and 0.005 from the round one-decimal value, and make every subset of the five fee
+    devices, and the natural read, carry it out of the bin.
 
     Four levers on the cell's own in-session orders, so the incumbent's figures never move: the price of
     a plain order (no offer, shipped, paid through the provider; asking and paid together) moves the
@@ -153,7 +153,7 @@ def place_fee_cells(W):
         dp = dj * flags[:, 2]
         gj = g0 + J * 5.0 * kk / (1.0 + P.VAT_RATE)
         pos = bin_pos(gj)
-        okj = (pos >= 0.35) & (pos <= 0.65)
+        okj = (pos >= 0.35) & (pos <= 0.65) & (np.abs(pos - 0.5) >= 0.05)   # mid-bin, never on the round value
         best = None
         for ji in np.flatnonzero(okj):
             lo = gj[ji] - pos[ji] / 10

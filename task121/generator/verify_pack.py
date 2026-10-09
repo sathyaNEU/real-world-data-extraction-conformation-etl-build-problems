@@ -66,6 +66,7 @@ def classify(d):
     mem = tok.map(dict(zip(d["tok"].token, d["tok"].member_no)))
     pr = d["prof"].dropna(subset=["club_member_no"])
     owner = dict(zip(pr.club_member_no.astype(int), pr.account_id))
+    owner_prof = dict(owner)
     # last season's members' code: SOCIO and the seven-digit member number, redeemed on an account
     pm = d["promo"].dropna(subset=["account_id"])
     code = pm.promo_code.str.extract(r"^SOCIO(\d{7})$")[0]
@@ -75,6 +76,10 @@ def classify(d):
     s["owner"] = [owner.get(int(m)) if pd.notna(m) else None for m in mem]
     s["acct"] = s.is_club & s.owner.notna()
     s["newfan"] = s.is_club & s.owner.isna()
+    # the visible key alone: member number to the loyalty profile only
+    s["owner_prof"] = [owner_prof.get(int(m)) if pd.notna(m) else None for m in mem]
+    s["acct_prof"] = s.is_club & s.owner_prof.notna()
+    s["newfan_prof"] = s.is_club & s.owner_prof.isna()
     s["vt"] = np.select([s.signed_in, s.is_club, s.new_visitor], ["SI", "CLUB", "NV"], "RG")
     # flag cohort at the session, from the current assignment and the logged moves
     fl = d["flags"]
@@ -279,6 +284,12 @@ def main():
          "R3": {"F1": w4["addr"], "F2": sh(W4.is_club, rate["NV"]), "F3": w4["card"],
                 "F4": sh(W4.vt == "RG", rate["RG"]), "F5": w4["mixed"]},
          "R4": by_fix}
+    # R4p: the chain on the profile alone, the step that still names the card upgrade
+    bw = s[s.wk.isin(BASE) & s.signed_in]
+    who = set(s.loc[s.wk.isin(REV) & s.acct_prof, "owner_prof"].dropna())
+    r_prof = bw.loc[bw.account_id.isin(who), "ordered"].mean()
+    R["R4p"] = {"F1": w4["addr"], "F2": sh(W4.newfan_prof, rate["newfan"]), "F3": w4["card"],
+                "F4": sh(W4.acct_prof, r_prof), "F5": w4["mixed"]}
     out["rungs"] = {}
     for k, v in R.items():
         l1, l2, m, o = top(v)
@@ -325,6 +336,7 @@ def main():
     checks = {f"{k} names {v}": out["rungs"][k]["leader"] == v and out["rungs"][k]["margin"] >= 1.2
               for k, v in want.items()}
     checks["F4 4th or 5th on the natural pipeline"] = out["rungs"]["R0"]["F4_rank"] in (4, 5)
+    checks["R4p (profile-only chain) names F3"] = out["rungs"]["R4p"]["leader"] == "F3" and out["rungs"]["R4p"]["margin"] >= 1.3
     checks["close-outs reproduce on visitor type only"] = all(
         abs(v["visitor_type"] - v["booked"]) < 0.5 and v["store_rate"] > 60 and v["all_new"] < -30
         for v in out["killers"]["R1_closeouts"].values())

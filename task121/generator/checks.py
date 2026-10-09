@@ -403,7 +403,22 @@ def clean_and_lens(c, ctx, g, s, R):
     c.ok(best < 0.70, f"no single session-log column separates P4 (best accuracy {best:.2f})")
     gen = s[s.club & ~s.bot]
     c.ok(int(gen.P5.sum()) == 0, "no genuine club session holds a pre-order line")
-    return {"lens_best_accuracy": round(best, 3)}
+    # clean-data test on the loyalty profiles: every member's number on the profile
+    pk = ctx["pk"]
+    acc = ctx["T"]["acc"]
+    full = dict((a, int(m)) for a, m in zip(acc.account_id, acc.member_no) if pd.notna(m))
+    pr2 = pk["profiles"].copy()
+    pr2["club_member_no"] = [full.get(a) for a in pr2.account_id]
+    pr2["club_member_no"] = pr2.club_member_no.astype("Int64")
+    pk2 = dict(pk, profiles=pr2)
+    s2 = N.enrich(pk2, N.opts(identity="profile"))
+    g2 = N.figures(pk2, s2)
+    R2 = N.rungs(s2, g2["base"], g2["L"])
+    c.ok(g2["call"] == g["call"] == "F4" and all(same(g2["W4"][p], g["W4"][p], "orders") for p in N.POPS)
+         and N.rank(R2["R0"])[0] == "F1",
+         "clean-data test on the loyalty profiles: with every member number on the profile, answer F4 and naive F1 "
+         "unchanged, every W4 figure in its bin")
+    return {"lens_best_accuracy": round(best, 3), "profile_repaired_call": g2["call"]}
 
 
 def separation(c, ctx, g, s, variants):

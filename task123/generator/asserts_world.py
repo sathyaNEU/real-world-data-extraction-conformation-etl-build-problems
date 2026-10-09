@@ -254,8 +254,8 @@ def check_world(W, C):
     C.ok("A17", len(unf31) == 17 and len(unf30) == 18 and MOVERS <= set(unf31),
          f"unfiled at the census: {len(unf31)} (31 March, the three movers among them) + {len(unf30)} (30 June)")
     C.ok("A17", len(dday) == 14 and len(octs) == 6, f"deadline-day receipts {len(dday)}; 1 to 7 October receipts {len(octs)}")
-    # A55: the fourteen the answer does not score are exactly the 31 March grantees unfiled at the census,
-    # each scored by the stop on the twelve months to December 2025 the March 2026 round scored
+    # A55: the seventeen the answer does not score are exactly the 31 March grantees unfiled at the census,
+    # each scored by the step-back without rule 4.1 on the twelve months to December 2025 the March 2026 round scored
     gone = sorted({r["org"] for r in r4r["rows"]} - set(rows))
     c26 = dt.date(2026, 3, 31)
     m26 = {r["org"]: r for r in W["corpus"][c26]["rows"]}
@@ -275,12 +275,12 @@ def check_world(W, C):
                 and not book.by_org.get((k, Q(2026, 6))) and k in r5 and r5[k]["end"] == Q(2026, 3)
                 and r4rm[k]["end"] == Q(2025, 12) and k not in rows for k in MOVERS)
     C.ok("A56", mv_ok, "the three movers: a nine-month year to 31 March 2026, no annual return for it and no June 2026 "
-                       "return by the extract; the stop scores them on twelve months to March 2026, the answer not at all")
+                       "return by the extract; R5 scores them on twelve months to March 2026, the answer not at all")
     falls5 = ", ".join(f"{k} {r5[k]['pct']:.2f}" for k in sorted(MOVERS))
     C.ok("A56", all(r5[k]["pct"] >= 11.5 for k in R5_OWN) and abs(r5["BC3"]["pct"]) <= 8.5,
-         f"under the stop the movers fall {falls5} per cent")
+         f"under R5 the movers fall {falls5} per cent")
     C.ok("A56", all(published_row(r5[k])[:4] == published_row(rows[k])[:4] for k in rows),
-         "the stop and the answer agree on all 132 rows the answer scores")
+         "R5 and the answer agree on all 132 rows the answer scores")
     # A58 (hardening loop 3): the decisive rung. GT's operating-grant term ended on 31 July 2026 and the grant
     # was renewed from 1 November 2026 (approved 16 September 2026), so no term was in force at the census:
     # the register's start of the grant and end of its current term span the census, rule 3.1 leaves GT
@@ -292,7 +292,9 @@ def check_world(W, C):
          f"{GAP}: grant {g.og_start} to {g.og_end}, term ended {g_end}, renewed from {g_restart} (approved {g_appr})")
     C.ok("A58", GAP not in rows and GAP in r6 and r6[GAP]["end"] == Q(2026, 6) and r6[GAP]["pct"] >= 11.5
          and book.received(GAP, Q(2026, 3), SEPT_CENSUS),
-         f"the stop scores {GAP} on twelve months to June 2026 at {r6[GAP]['pct']:.2f} per cent; the answer does not")
+         f"the stop scores {GAP} on twelve months to June 2026 (NZ${r6[GAP]['cur']:,} against NZ${r6[GAP]['prior']:,}, "
+         f"a fall of NZ${r6[GAP]['fall']:,}, {r6[GAP]['pct']:.2f} per cent) and offers it NZ${r6[GAP]['offer']:,}; "
+         f"the answer does not")
     C.ok("A58", all(published_row(r6[k])[:4] == published_row(rows[k])[:4] for k in rows) and set(r6) - set(rows) == {GAP},
          "the stop and the answer agree on all 132 rows the answer scores and differ by the one grantee only")
     gpays = [p["inst_for"] for p in W["payments"] if p["org"] == GAP and p["prog"] == "OG"]
@@ -633,7 +635,7 @@ def convergence_checks(W, C):
 
 
 def clean_data_checks(W, C):
-    """A41-A43, and the lens-swap test, run on the answer, the stop (R5), R4 and R3."""
+    """A41-A43, and the lens-swap test, run on the answer, R3, R4, R5 and the stop (R6)."""
     import copy
     book, c = W["book"], SEPT_CENSUS
     T0 = published_rows(W["sept"])

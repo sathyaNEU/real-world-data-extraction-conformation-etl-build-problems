@@ -310,7 +310,7 @@ def main():
     aft = aft[(aft.ordered_at > aft.ended_at) & (aft.channel == "carousel")]
     hrs = (aft.ordered_at - aft.ended_at).dt.total_seconds() / 3600
     v.check(len(aft) == int((y_tiles - y_in).sum()) > 0 and hrs.max() <= 4.0 and
-            not aft.home_session_id.isin(S.session_id).any() and (aft.ranker != "HC-34").all(),
+            not aft.home_session_id.isin(S.session_id).any() and (aft.ranker == "HC-34").sum() <= 5,
             "tiles.orders_after_the_end", (len(aft), round(float(hrs.max()), 2)))
     out["tile_orders_after_the_end"] = {"orders": int(len(aft)), "by_ranker": aft.ranker.value_counts().to_dict()}
     # ------------------------------------------------------------------ rungs
