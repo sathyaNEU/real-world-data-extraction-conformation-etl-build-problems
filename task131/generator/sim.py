@@ -17,19 +17,19 @@ SIZE_P = [0.58, 0.31, 0.09, 0.02]          # cards per membership: 1, 2, 3, 4
 # Designed rollout effect per active card-week in net margin (CHF), run-rate weeks, by 2027 region.
 # These are the targets the cells of memberships whose cards share one cell are forced to.
 EFFECT = {
-    "SGS": {"A": 0.5704, "B": 0.3121, "C": 0.2266, "D": 0.4229},
-    "FUE": {"A": 0.4178, "B": 0.2018, "C": 0.0830, "D": 0.2524},
-    "RHT": {"A": 0.4114, "B": 0.1883, "C": 0.0871, "D": 0.2824},
-    "TGO": {"A": 0.4670, "B": 0.2382, "C": 0.1470, "D": 0.3024},
-    "TOG": {"A": 0.4510, "B": 0.2681, "C": 0.1333, "D": 0.3224},
-    "APZ": {"A": 0.5873, "B": 0.3383, "C": 0.2474, "D": 0.4170},
+    "SGS": {"A": 0.5678, "B": 0.3133, "C": 0.2300, "D": 0.4227},
+    "FUE": {"A": 0.4178, "B": 0.2030, "C": 0.0864, "D": 0.2522},
+    "RHT": {"A": 0.4088, "B": 0.1895, "C": 0.0905, "D": 0.2822},
+    "TGO": {"A": 0.4670, "B": 0.2394, "C": 0.1504, "D": 0.3022},
+    "TOG": {"A": 0.4484, "B": 0.2693, "C": 0.1367, "D": 0.3222},
+    "APZ": {"A": 0.5873, "B": 0.3395, "C": 0.2508, "D": 0.4168},
     # areas whose members moved region on 1 July: between the region they left and the one they joined
-    "ROR": {"A": 0.4899, "B": 0.2479, "C": 0.1569, "D": 0.3432},
-    "DEG": {"A": 0.5070, "B": 0.2716, "C": 0.1675, "D": 0.3353},
+    "ROR": {"A": 0.4873, "B": 0.2491, "C": 0.1603, "D": 0.3430},
+    "DEG": {"A": 0.5070, "B": 0.2728, "C": 0.0209, "D": 0.3351},
 }
 # Control change from baseline to run-rate weeks per active card-week (summer), by area.
-CONTROL = {"SGS": -2.0137, "FUE": -1.9862, "RHT": -2.0063, "TGO": -1.9938, "TOG": -1.9847, "APZ": -2.0154,
-           "ROR": -2.0091, "DEG": -1.9908}
+CONTROL = {"SGS": -2.1437, "FUE": -1.9262, "RHT": -2.0763, "TGO": -1.8638, "TOG": -1.9147, "APZ": -2.1054,
+           "ROR": -2.1437, "DEG": -2.1054}   # moved areas share the summer pattern of the region they joined
 
 
 def area_of(branch):

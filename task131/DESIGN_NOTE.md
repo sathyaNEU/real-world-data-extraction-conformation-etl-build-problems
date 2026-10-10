@@ -15,7 +15,7 @@ reproduce.
 | Decision type / unit | pick one of four offers (named option), plus its 2027 programme value in CHF thousands |
 | Gap / pattern / generators | population (the randomisation unit is not the economic unit), no A to E pattern; G10 cross-dimensional duplication (moved spend counted as gain on the offer card and as loss on its sibling), G4 attribution at transition |
 | Gate G mechanism | method_or_model_selection (the unit of analysis an interference-affected test has to be read at) |
-| Stump strategy | causal_design; decisive rule filed (the programme standard states the quantity: incremental net margin at a full rollout per active card-week); no official decoy; no validated decoy |
+| Stump strategy | causal_design; decisive rule filed (the programme standard states the quantity, incremental net margin per active card-week under the offer against without it, and the prompt sets the full rollout); no official decoy; no validated decoy |
 | Calibration form | none, because the strategy needs none |
 | Context artifact | register (the offer engine's allocation register) |
 | Stakeholder | head of the member programme, who puts the 2027 offer and its budget line to the executive board (Geschaeftsleitung) |
@@ -59,8 +59,10 @@ measured on memberships whose cards all drew the same arm, the fresh-produce bon
 
 ## The decisive move, and why it survives the opponent
 
-1. **Written in no sentence.** The standard defines the quantity (incremental net margin per active
-   card-week if every card carried the offer) and the windows; nothing says that cards of a membership
+1. **Written in no sentence.** The standard defines the quantity (the change in net margin from the
+   baseline to the run-rate weeks under the offer against the same change without it, per active
+   card-week, every allocated card counting as active) and the windows; the full rollout is set only by
+   the prompt (the offer goes on every member card); nothing says that cards of a membership
    share baskets, that the allocation mixes arms inside memberships, or that same-arm memberships are
    the clean comparison. The programme terms say a membership may carry additional cards, which is
    world furniture, not the move.
@@ -93,12 +95,12 @@ Realised (CHF per active card-week, from the shipped bundle, asserted in `checks
 | Rung | A | B | C | D | Winner, lead |
 |---|---|---|---|---|---|
 | 0 gross sales, whole test | 9.14 | 10.90 | 13.29 | 10.43 | C, 1.22x (A 4th) |
-| 1 net, whole test | 0.66 | 1.70 | 1.29 | 0.77 | B, 1.31x (A 4th) |
-| 2 net, run rate, card level | 0.54 | 0.35 | 0.55 | 0.71 | D, 1.28x (A 3rd) |
-| 3 net, run rate, same-cell memberships | **0.49** | 0.26 | 0.16 | 0.34 | **A, 1.45x over D** |
+| 1 net, whole test | 0.67 | 1.70 | 1.30 | 0.77 | B, 1.31x (A 4th) |
+| 2 net, run rate, card level | 0.54 | 0.35 | 0.56 | 0.71 | D, 1.27x (A 3rd) |
+| 3 net, run rate, same-cell memberships | **0.49** | 0.27 | 0.16 | 0.34 | **A, 1.45x over D** |
 
 The partial correction (membership totals with mixed memberships kept, each in its main card's cell)
-lands on A too but files every figure wrong (A 0.47); it is the decisive insight half applied, and the
+lands on A too but files every figure wrong (A 0.48); it is the decisive insight half applied, and the
 graded figures separate it. Estimators on same-cell memberships converge at the stated rounding: card
 weighted, membership weighted and single-card memberships only (C1, asserted on all four offers, the
 gap and all 24 cells).
@@ -162,8 +164,8 @@ devices touch (four of six regions, 16 of 24 cells) unless it also handles both 
 - Pack: 14 files, 8 formats, spine `card_week_sales_2026w15_w34.parquet` 611,400 rows; 37,298 cards in
   24,000 memberships; two consecutive builds byte-identical (zip entry times, xlsx core and app
   properties, PDF dates, document id and checksum pinned in `postprocess.py`).
-- Golden: A 0.49, D 0.34, B 0.26, C 0.16 per active card-week; 2027 values CHF 966, 666, 516, 316
-  thousand on 37,720 planned active cards; gap 0.15; 24 cells by 1 July 2026 region.
+- Golden: A 0.49, D 0.34, B 0.27, C 0.16 per active card-week; 2027 values CHF 972, 672, 528, 322
+  thousand on 37,920 planned active cards; gap 0.15; 24 cells by 1 July 2026 region.
 - Regional targets are forced per area (core region, the Rorschach group that moved to St. Gallen
   Stadt, the Degersheim group that moved to Appenzellerland), so the 2027 cells are true mixtures and
   both network devices move every cell of the four regions they touch (asserted).
@@ -177,6 +179,21 @@ devices touch (four of six regions, 16 of 24 cells) unless it also handles both 
   (membership, register, engine) and states one fact, that a membership has one main card and up to
   three additional cards, which is world furniture the card master shows anyway. Both harmless.
 - Containers: no writer signature or out-of-band stamp in target/ or golden/ (H1 audit clean).
+
+## Determinism check (stage 5)
+
+Pass 1 (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW; every graded figure reproduced; Gate G
+statistical_rigor / analytical_non_defect, flags as filed. Fixed in the generator in one cycle: the
+design note's description of MP-3 section 4 corrected to what ships (the full rollout is set by the
+prompt); the prompt now rounds programme values to the nearest thousand; docx containers read as Word
+with real counts (the zip normaliser had stamped every container as Excel); the standard and both
+docx files set to A4. The judge's realism note (regional control means implausibly tight against
+their standard errors) answered in the same cycle: the regional summer declines now spread from
+-1.86 to -2.14, the moved areas sharing the decline of the region they joined, which keeps the pooled
+estimators converging; the regional targets were re-placed for bin clearance, so the graded figures
+moved (B 0.27, values CHF 972, 672, 528 and 322 thousand). Residual, recorded rather than fixed: the
+A over D gap is about one standard error, and the same-cell subsets agree to the third decimal by
+construction; a sharper test would need a rebuild on more cards.
 
 ## Tried and rejected
 

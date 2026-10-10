@@ -12,9 +12,10 @@
     "clone_check": "CLEAN (pass 1, clone_check_report_task131.md): no Track A finding; no live Track B finding; one Template-tier history match against the never-built ledger-row-41 draw (no redraw); 6 clean component-sharing pairs; task131 adds to neither capped strategy"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 1)",
+    "disposition": "FIX_NOW; fix cycle 1 applied 2026-10-10 (design note on MP-3 s.4, prompt rounding of programme values, docx app properties, A4, regional control spread), re-judge pending",
+    "report": "task131/determinism_check_report.md",
+    "fix_cycles": 1
   },
   "approved": null,
   "delivered": null,

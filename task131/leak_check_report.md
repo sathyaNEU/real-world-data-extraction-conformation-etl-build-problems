@@ -1,14 +1,14 @@
 # leak check, task131
 
-**Verdict: REVIEW.** 14 files read, 29 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 28 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: pattern, decisive, standard, margin, card-level, consumer, randomisation, membership, rejected, causal, analysis, co-operative, reward, engine, population, method, selection, strategy, quantity, rollout, register, scores, run-rate, devices, per-membership
+Stump terms swept: membership, margin, standard, decisive, memberships, engine, pattern, forcing, card-level, run-rate, consumer, reward, randomisation, quantity, register, baskets, devices, gallen, rejected, causal, analysis, co-operative, population, method, selection
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `MP-3_measuring_offers_rev3.pdf`: 6 of 25 stump-paragraph terms appear (standard, margin, membership, reward, engine, run-rate); read whether the document names the move
-- **REVIEW** `crm_extract_field_notes.md`: 6 of 25 stump-paragraph terms appear (standard, membership, co-operative, reward, engine, register); read whether the document names the move
+- **REVIEW** `MP-3_measuring_offers_rev3.pdf`: 6 of 25 stump-paragraph terms appear (membership, margin, standard, engine, run-rate, reward); read whether the document names the move
+- **REVIEW** `crm_extract_field_notes.md`: 8 of 25 stump-paragraph terms appear (membership, standard, memberships, engine, reward, register); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

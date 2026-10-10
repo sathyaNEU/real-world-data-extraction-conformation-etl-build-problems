@@ -44,7 +44,7 @@
     {
       "path": "card_week_sales_2026w15_w34.parquet",
       "format": "parquet",
-      "bytes": 5226039,
+      "bytes": 5226040,
       "rows": 611400,
       "source": "Constructed: Data platform mart mp_card_week: card x ISO week sales, margin and reward cost, 2026-W15 to W34",
       "date": "2026-09-14",
@@ -89,7 +89,7 @@
     {
       "path": "network_changes_2026-07-01.docx",
       "format": "docx",
-      "bytes": 37393,
+      "bytes": 37413,
       "source": "Constructed: Network planning notice: branch closures and regional changes from 1 July 2026",
       "date": "2026-06-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -97,7 +97,7 @@
     {
       "path": "MP-3_measuring_offers_rev3.pdf",
       "format": "pdf",
-      "bytes": 47354,
+      "bytes": 47002,
       "source": "Constructed: Programme analytics standard MP-3, revision 3: how offers are measured and budgeted",
       "date": "2026-03-18",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -113,7 +113,7 @@
     {
       "path": "programme_plan_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6924,
+      "bytes": 6925,
       "source": "Constructed: Programme finance plan 2027: active cards by region and the budget lines",
       "date": "2026-09-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

@@ -21,6 +21,7 @@ def _doc(author, title, created):
     st.font.name = "Arial"
     st.font.size = Pt(10)
     for s in d.sections:
+        s.page_width, s.page_height = Cm(21.0), Cm(29.7)
         s.left_margin = s.right_margin = Cm(2.2)
         s.top_margin = Cm(1.8)
     cp = d.core_properties
