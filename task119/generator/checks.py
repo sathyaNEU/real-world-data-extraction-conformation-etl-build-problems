@@ -75,9 +75,12 @@ DELTAS = {
 PLANTED = {"DV1": CODES, "DV2": CODES, "DV3": [F_, H], "DV4": CODES, "DV5": CODES, "DV7": [A, B, C, E, F_, G_, H],
            "DV8": CODES, "DV9": CODES, "HZ1": [A, C, G_], "HZ2": CODES}
 # the latest four quarters' deaths per trust under each reading of an admission the trust placed itself
-READING_NAMES = {"referral": (D_, 27, G_, 15), "audit": (D_, 27, G_, 15), "local": (G_, 15, A, 2),
-                 "t04": (G_, 15, A, 2), "planned": (A, 37, D_, 27), "not02": (A, 37, D_, 27),
-                 "queue": (A, 37, D_, 27), "any": (A, 37, D_, 27)}
+# (on the census by bed assignment, round 3's own test is the referral reading; the physical readings re-time each
+# held bed: the trust's own holds only (the golden), or every hold, the bureau's included)
+READING_NAMES = {"referral": (G_, 15, A, 2), "audit": (G_, 15, A, 2), "local": (G_, 15, A, 2),
+                 "t04": (G_, 15, A, 2), "planned": (A, 37, G_, 15), "not02": (A, 37, G_, 15),
+                 "queue": (A, 37, G_, 15), "any": (A, 37, G_, 17), "decisive": (D_, 27, G_, 15),
+                 "phys_any": (A, 37, D_, 27), "phys_placed": (A, 37, D_, 27)}
 # eighteen cells: basis by scope by allocation reading -> the trust named (None: two wrong trusts within 1.2x)
 GRID_NAMES = {}
 for _al in ("ignored", "any", "placed"):
@@ -87,9 +90,15 @@ for _al in ("ignored", "any", "placed"):
 GRID_NAMES.update({("0800", "own", "ignored"): C, ("0800", "own", "any"): frozenset((A, C)),
                    ("0800", "own", "placed"): C, ("0800", "network", "ignored"): C,
                    ("0800", "network", "any"): frozenset((E, A)), ("0800", "network", "placed"): E,
-                   ("census", "own", "ignored"): G_, ("census", "own", "any"): A, ("census", "own", "placed"): D_,
+                   ("census", "own", "ignored"): G_, ("census", "own", "any"): A, ("census", "own", "placed"): G_,
                    ("census", "network", "ignored"): G_, ("census", "network", "any"): frozenset((E, A)),
-                   ("census", "network", "placed"): E})
+                   ("census", "network", "placed"): E,
+                   ("held_own", "own", "ignored"): D_, ("held_own", "own", "any"): A, ("held_own", "own", "placed"): D_,
+                   ("held_own", "network", "ignored"): D_, ("held_own", "network", "any"): frozenset((E, A)),
+                   ("held_own", "network", "placed"): E,
+                   ("held_all", "own", "ignored"): A, ("held_all", "own", "any"): A, ("held_all", "own", "placed"): A,
+                   ("held_all", "network", "ignored"): frozenset((A, E)), ("held_all", "network", "any"): frozenset((E, A)),
+                   ("held_all", "network", "placed"): frozenset((E, A))})
 GRID_RULE = {("none", "own"): "own care at the hour: the wait passed with the own unit full",
              ("none", "network"): "own care: the trust holds no level-3 beds of its own",
              ("0800", "own"): "own care at the hour of the wait: the 08:00 return describes the morning",
@@ -98,7 +107,15 @@ GRID_RULE = {("none", "own"): "own care at the hour: the wait passed with the ow
                                 "trust's own decision",
              ("census", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
              ("census", "own", "ignored"): "the methodology note: a full unit's own placements during the wait are the "
-                                           "trust's decisions about the use of its own beds"}
+                                           "trust's decisions about the use of its own beds",
+             ("census", "own", "placed"): "the theatre extract: a bed assigned to the trust's own patient still in "
+                                          "theatre stood empty, kept by the trust (the methodology note)",
+             ("held_own", "own"): "the bed bureau allocates every transfer's bed (field guide): a transfer is not the "
+                                  "trust's own decision",
+             ("held_own", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
+             ("held_all", "own"): "the bed bureau allocates every transfer's bed (field guide): a bed it holds for an "
+                                  "incoming transfer is not the trust's to give",
+             ("held_all", "network"): "its own beds: another trust's vacancy or admission is not this trust's care"}
 
 
 def run_all(S, target, meta_path, F, distractors):
@@ -132,8 +149,9 @@ def ladder_checks(K, D):
         K.check("rung %d (%s) leader %s, margin >= %.2f" % (k, G.RUNGS[k], LET[who], m), l == who and ratio >= m,
                 "%s %d over %s %d (%.2fx)" % (LET[l], v1, LET[l2], v2, ratio))
     K.check("rung figures exactly as designed",
-            (R[0][E], R[0][A], R[1][C], R[1][G_], R[2][G_], R[2][A], R[3][A], R[3][D_], R[4][D_], R[4][G_]) ==
-            (56, 44, 34, 4, 15, 2, 37, 27, 27, 15), [R[k][x] for k, x in ((0, E), (1, C), (2, G_), (3, A), (4, D_))])
+            (R[0][E], R[0][A], R[1][C], R[1][G_], R[2][G_], R[2][A], R[3][A], R[3][G_], R[3][D_], R[4][D_],
+             R[4][G_]) == (56, 44, 34, 4, 15, 2, 37, 17, 0, 27, 15),
+            [R[k][x] for k, x in ((0, E), (1, C), (2, G_), (3, A), (4, D_))])
     K.check("five distinct rung leaders", len(set(leaders)) == 5, [LET[x] for x in leaders])
     r0 = sorted(R[0].items(), key=lambda kv: -kv[1])
     rank = [t for t, v in r0].index(D_) + 1
@@ -150,8 +168,8 @@ def ladder_checks(K, D):
             ok = False
         if rk == 2 and R[k][D_] > 0:
             second.append((k, R[k][order[0]] / R[k][D_]))
-    K.check("D leads no intermediate rung; second on at most one (rung 3), behind by >= 1.20x",
-            ok and len(second) <= 1 and all(m >= 1.2 for k, m in second),
+    K.check("D leads no intermediate rung; second on none, at zero on rungs 1 to 3",
+            ok and not second,
             "ranks %s, D counts %s, second %s" % (pos, [R[k][D_] for k in (1, 2, 3)], second))
     margins = [G.leader(R[k])[4] for k in range(5)]
     K.check("no rung margin under 1.15x; thinnest stated", min(margins) >= 1.15, "thinnest %.3f (rung %d)" %
@@ -161,11 +179,17 @@ def ladder_checks(K, D):
     raw_g = R[0][G_] / R[0][D_]
     K.check("dominance over G: decisive edge >= 1.2 x carried raw advantage", edge_g >= 1.2 * max(raw_g, 1.0),
             "edge %.2f, G raw %.2f of D" % (edge_g, raw_g))
-    carried_a = R[3][A] / R[3][D_]
-    edge_a = (R[4][D_] / R[3][D_]) / (R[4][A] / R[3][A])
-    K.check("dominance over A at rung 3: survival-share edge >= 1.2 x A's carried advantage", edge_a >= 1.2 * carried_a,
-            "A carried %.2fx; shares %.3f vs %.3f, edge %.1f" % (carried_a, R[4][D_] / R[3][D_], R[4][A] / R[3][A],
-                                                                   edge_a))
+    # against A on the physical, every-hold reading (A 37 over D 27): the share each keeps on the decisive axis
+    RD = G.readings(D)
+    ph = RD["phys_any"]
+    carried_a = ph[A] / ph[D_]
+    edge_a = (R[4][D_] / ph[D_]) / (R[4][A] / ph[A])
+    K.check("dominance over A (every hold read empty): share edge >= 1.2 x A's carried advantage",
+            edge_a >= 1.2 * carried_a,
+            "A carried %.2fx; shares %.3f vs %.3f, edge %.1f" % (carried_a, R[4][D_] / ph[D_], R[4][A] / ph[A], edge_a))
+    K.check("round 3's own test (empty bed by assignment, or an own placement) names G 15 over A 2; D 0",
+            G.leader(RD["referral"])[:4] == (G_, 15, A, 2) and RD["referral"][D_] == 0,
+            G.leader(RD["referral"])[:4])
     for t in (E, A, C):
         adv = R[0][t] / R[0][D_]
         share_d = R[4][D_] / R[0][D_]
@@ -192,8 +216,13 @@ def grid_checks(K, D):
                                                      "" if l == D_ else "; violates: " + GRID_RULE.get(key, GRID_RULE[key[:2]])))
         if l == D_:
             named_d.append(key)
-    K.check("exactly one cell names D: the census basis, own unit, admissions the trust placed itself",
-            named_d == [("census", "own", "placed")], named_d)
+    K.check("only the held-own basis names D (own unit, placement read or ignored; network, ignored: C1)",
+            sorted(named_d) == sorted([("held_own", "own", "ignored"), ("held_own", "own", "placed"),
+                                       ("held_own", "network", "ignored")]), named_d)
+    K.check("held-own cells naming D agree per trust (no own placement and no other unit's vacancy decides one)",
+            cells[("held_own", "own", "ignored")] == cells[("held_own", "own", "placed")]
+            and all(cells[("held_own", "own", "placed")][t] == cells[("held_own", "network", "ignored")][t]
+                    for t in (A, C, D_, G_)))
     eq = all(cells[("census", "own", "ignored")][t] == cells[("census", "network", "ignored")][t] for t in (A, C, D_, G_))
     K.check("own-unit and network scope equal per trust at the census basis, allocation ignored (C1)", eq)
     # the mixed 08:00 reading: network for trusts holding no level-3 beds
@@ -288,22 +317,16 @@ def census_checks(K, D, S, target, F):
         if x["year"] == 3 and x["trust"] == A and x["died"] and not x["empty"] and x["alloc_any"]:
             a_deaths += 1
             a_deaths_planned += planned_bureau
-    K.check("(Y3) inside every long wait the own unit admitted only bureau transfers (A coded 02 and 03, C and G 02) "
-            "or the trust's own planned transfers (D, coded 03)",
+    K.check("(Y3) inside every long wait the own unit admitted only bureau transfers (A coded 02 and 03, C and G 02); "
+            "nothing is admitted to Stennock's unit during any Stennock long wait",
             set(kinds_y3) == {("A", "bureau", "02"), ("A", "bureau", "03"), ("C", "bureau", "02"),
-                              ("G", "bureau", "02"), ("D", "own", "03")}, dict(kinds_y3))
-    K.check("(record) inside long waits own placements are coded 03 (D) or 04 (planned own-theatre at A, C and G), "
-            "bureau transfers 02, 03 or the legacy feed's 01",
+                              ("G", "bureau", "02")}, dict(kinds_y3))
+    K.check("(record) inside long waits own placements are coded 03 (D's legacy months) or 04 (planned own-theatre at "
+            "A, C and G), bureau transfers 02, 03 or the legacy feed's 01",
             set(kinds_rec) <= {("own", "03"), ("own", "04"), ("bureau", "01"), ("bureau", "02"), ("bureau", "03")}
             and ("own", "03") in kinds_rec and ("bureau", "03") in kinds_rec, dict(kinds_rec))
-    K.check("no unit-feed column separates own from bureau placements inside Y3 long waits: every own placement's "
-            "(admission_type, source_location) and referred_from also carries bureau placements",
-            pairs["own"] <= pairs["bureau"] and wards["own"] <= wards["bureau"] and pairs["own"],
-            "own %s, bureau %s; wards own %s" % (sorted(pairs["own"]), sorted(pairs["bureau"]), sorted(wards["own"])))
-    K.check("the admission code disagrees with who placed the patient both ways: D's own placements coded as transfers "
-            "in, a bureau placement coded planned inside every A death-wait the unit filled",
-            all(k[2] == "03" for k in kinds_y3 if k[1] == "own") and a_deaths and a_deaths_planned == a_deaths,
-            "%d of %d A death-waits" % (a_deaths_planned, a_deaths))
+    K.check("a bureau placement coded planned (03) inside every A death-wait the unit filled (Y3)",
+            a_deaths and a_deaths_planned == a_deaths, "%d of %d A death-waits" % (a_deaths_planned, a_deaths))
     K.check("queue: own placements and planned bureau transfers referred after the waiting patient, unplanned ones "
             "before (record)", not queue_bad, queue_bad[:4])
     K.check("every bureau transfer inside a long wait is in the transfer audit at its bed time; no own placement is",
@@ -314,15 +337,16 @@ def census_checks(K, D, S, target, F):
         got = G.leader(rd[k])
         if got[:4] != (l1, v1, l2, v2):
             bad[k] = got[:4]
-    K.check("readings of own placement on the latest four quarters: referral and audit D 27 over G 15; by type local "
-            "or 04 G 15 over A 2; planned, not 02, queue and any admission A 37 over D 27", not bad,
+    K.check("readings on the latest four quarters: by assignment, own placement read by referral, audit, type local "
+            "or 04 G 15 over A 2 (round 3's test); planned, not 02, queue, any admission A 37 over G; every held bed "
+            "empty A 37 over D 27; the trust's own holds empty D 27 over G 15", not bad,
             bad or {k: "%s %d" % (LET[v[0]], v[1]) for k, v in READING_NAMES.items()})
     K.check("referral and audit readings select the same deaths per trust (C1), on the record too",
-            rd["referral"] == rd["audit"] and G.asks(D, construction="audit") == G.asks(D))
-    R, _ = G.ladder(D)
-    K.check("any admission and the trust's own placements part only at A, C and G (Y3 deaths)",
-            all(R[3][t] == R[4][t] for t in (B, D_, E, F_, H)) and all(R[3][t] > R[4][t] for t in (A, C, G_)),
-            {LET[t]: (R[3][t], R[4][t]) for t in CODES})
+            rd["referral"] == rd["audit"] and G.asks(D, construction="audit") == G.asks(D, construction="workorder"))
+    K.check("any admission and the trust's own placements (by assignment) part only at A, C and G (Y3 deaths)",
+            all(rd["any"][t] == rd["referral"][t] for t in (B, D_, E, F_, H))
+            and all(rd["any"][t] > rd["referral"][t] for t in (A, C, G_)),
+            {LET[t]: (rd["any"][t], rd["referral"][t]) for t in CODES})
     first4 = True
     for x in cl3:
         own = D.own_units(x["trust"], x["dta"].date())
@@ -363,12 +387,11 @@ def census_checks(K, D, S, target, F):
     K.check("no long wait at a trust without level-3 beds overlaps an empty bed or a planned own placement (Y3)", ok)
     ok = True
     for x in cl3:
-        if x["trust"] == D_:
-            continue
         for u in D.l3_units(x["dta"].date()):
             if inside(own_planned[u], x["a"], x["b"]):
                 ok = False
-    K.check("no planned own placement at any unit inside any year-3 long wait at a trust other than D", ok)
+    K.check("no planned own placement at any unit inside any year-3 long wait", ok)
+    hold_checks(K, D, cl_all, target, F)
     # D's long waits fall on weekdays during the lists; G's own-empty waits at weekends
     d_days = {x["dta"].weekday() for x in cl3 if x["trust"] == D_}
     K.check("every D long wait falls on a weekday", d_days <= {0, 1, 2, 3, 4}, sorted(d_days))
@@ -394,6 +417,91 @@ def census_checks(K, D, S, target, F):
 
 
 # ===================================================================================== windows
+def hold_checks(K, D, cl_all, target, F):
+    """The trust's own held beds: the morning bookings at Stennock's unit and the theatre extract that dates them."""
+    holds = D.own_hold                        # (unit, key, assigned minute) -> left recovery minute
+    K.check("own holds sit only at STN-ACC, in the platform months, assigned 08:10 or later on a weekday",
+            holds and all(u == "STN-ACC" and a >= G.GO_MIN and 8 * 60 + 10 <= a % 1440 and
+                          (G.EPOCH + dt.timedelta(minutes=a)).weekday() < 5 for (u, k, a) in holds),
+            "%d holds" % len(holds))
+    K.check("no hold spans 08:00 (the 08:00 return is untouched) and each patient leaves recovery the same day",
+            all(((a // 1440) == (left // 1440)) and a % 1440 >= 8 * 60 for (u, k, a), left in holds.items()))
+    # every platform-era Stennock long wait passes beside a hold whose patient leaves recovery inside the wait's first
+    # four hours, at least ten minutes after the decision; no other wait anywhere meets a hold or an own empty bed it
+    # did not already have
+    iv = defaultdict(list)
+    for (u, k, a), left in holds.items():
+        iv[u].append((a, left))
+    d_ok, d_n, other_bad = True, 0, []
+    for x in cl_all:
+        if not x["has_own"]:
+            continue
+        u = D.own_units(x["trust"], x["dta"].date())[0]
+        hs = [(a, l) for a, l in iv.get(u, []) if a < x["a"] and l > x["a"]]
+        if x["trust"] == D_ and x["a"] >= G.GO_MIN:
+            d_n += 1
+            d_ok &= bool(hs) and all(x["a"] + 10 <= l <= x["a"] + 240 and l < x["b"] for a, l in hs)
+        elif hs:
+            other_bad.append((LET[x["trust"]], x["id"]))
+    K.check("every platform-era Stennock long wait passes beside an own hold, its patient leaving recovery 10 to 240 "
+            "minutes after the decision (the four-hour counterfactual converges)", d_ok and d_n > 0, "%d waits" % d_n)
+    K.check("no other long wait at a unit holding beds meets an own hold", not other_bad, other_bad[:4])
+    nonD = all(not x["empty_own"] or x["empty"] for x in cl_all if x["trust"] != D_)
+    K.check("the held-own census changes no wait outside Stennock's (every other own-empty wait is empty by "
+            "assignment too)", nonD)
+    d_plat = [x for x in cl_all if x["trust"] == D_ and x["a"] >= G.GO_MIN and x["has_own"]]
+    K.check("by assignment Stennock's unit is full at every minute of every platform-era Stennock long wait and admits "
+            "no one", d_plat and not any(x["empty"] or x["alloc_any"] for x in d_plat), len(d_plat))
+    # the theatre extract against the feed
+    th = pd.read_parquet(Path(target) / F["theatre"])
+    th_cc = th[th["recovery_destination"] == "Critical care unit"]
+    st = D.stays
+    st2 = st.sort_values(["unit_code", "patient_key", "admitted_at"]).reset_index(drop=True)
+    prev_end = st2.groupby(["unit_code", "patient_key"])["discharged_at"].shift(1)
+    first = st2[~(prev_end == st2["admitted_at"])]          # a bed move continues the stay before it
+    theatre_stays = first[first["source_location"].isin(["01", "02"])]
+    res = lambda k: D.temp.get(k, k)
+    by_key = defaultdict(list)
+    for r in th_cc.itertuples(index=False):
+        by_key[res(r.patient_key)].append((r.provider_code, G.mins(r.left_recovery_at.to_pydatetime())))
+    dep = {}
+    for r in D.tx.itertuples(index=False):
+        dep[(r.to_unit, res(r.patient_key))] = dep.get((r.to_unit, res(r.patient_key)), []) + [G.mins(G.p_ts(r.departed_at))]
+    missing, late = 0, 0
+    for r in theatre_stays.itertuples(index=False):
+        a = G.mins(r.admitted_at.to_pydatetime())
+        cs = [(p, l) for p, l in by_key.get(res(r.patient_key), []) if a - 2880 < l < a + 18 * 60]
+        if not cs:
+            missing += 1
+            continue
+        ut = D.unit_trust[r.unit_code]
+        if (r.unit_code, res(r.patient_key), a) in holds:
+            continue
+        for p, l in cs:
+            if p == ut and l > a:
+                late += 1
+            if p != ut and not any(l <= d for d in dep.get((r.unit_code, res(r.patient_key)), [])):
+                late += 1
+    K.check("every unit stay from theatre has its theatre case; outside the holds every patient left recovery before "
+            "the bed was assigned (own trust) or before the transfer departed (bureau)", missing == 0 and late == 0,
+            "%d stays, %d missing, %d late" % (len(theatre_stays), missing, late))
+    n_cc = len(th_cc)
+    K.check("every critical care destination in the theatre extract meets a unit stay from theatre",
+            n_cc == len(theatre_stays), "%d cases, %d stays" % (n_cc, len(theatre_stays)))
+    # booked beds: requested from the surgical day unit before the list, assigned within minutes
+    booked_refs = [r for r in D.refs if not r["legacy"] and r["id"] in D.assign_of and
+                   (D.assign_of[r["id"]][0], res(r["key"]), D.assign_of[r["id"]][1]) in holds]
+    K.check("every hold's bed was requested from the surgical day unit and assigned within 15 minutes of the decision",
+            len(booked_refs) == len(holds) and all(r["ward"] == "SDU" and r["level"] == 3 and
+                                                   0 <= G.mins(r["out"]) - G.mins(r["dta"]) <= 15 for r in booked_refs),
+            "%d of %d" % (len(booked_refs), len(holds)))
+    wo = G.asks(D, construction="workorder")
+    gold = G.asks(D)
+    K.check("record 3c: round 3's test keeps Stennock's legacy months only; every other trust as the golden",
+            wo[D_][2] < gold[D_][2] and all(wo[t] == gold[t] for t in CODES if t != D_),
+            "D %d against %d" % (wo[D_][2], gold[D_][2]))
+
+
 def window_checks(K, D):
     ws = G.waits(D)
     cl = G.classify(D, ws)

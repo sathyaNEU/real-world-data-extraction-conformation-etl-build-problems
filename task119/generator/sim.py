@@ -163,7 +163,9 @@ def assign_admissions(world, P):
                 # Stennock's planned surgery runs at its elective centre: the patient comes over as a planned transfer
                 # in, referred by Stennock from the centre's recovery
                 pid = P.new(kind="planned", unit=u, letter="D", ec=True,
-                            inside_wid=p.get("wid") if p["tag"] == "inside" else None)
+                            inside_wid=p.get("wid") if p["tag"] == "inside" else None,
+                            booked_wid=p.get("wid") if p["tag"] == "booked" else None,
+                            booked_arrive=p.get("arrive"))
             else:
                 pid = P.new(kind="planned", unit=u)
             typ = "03" if u == "STN-ACC" and not p.get("readmit") else "04"

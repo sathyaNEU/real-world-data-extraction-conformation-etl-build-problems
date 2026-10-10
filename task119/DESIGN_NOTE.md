@@ -934,6 +934,105 @@ changes were forced while cutting the pack:
 5. The two network-scope cells with admissions read any way lead with E by 1.19x and 1.21x over A (A's evening planned waits
    moved the world's random stream); asserted as two wrong trusts with D at least 1.2x behind, like the 08:00, own, any cell.
 
+### Hardening loop 3 (2026-10-10): the design on paper
+
+Brief: round 3 (plain, proxy 72.6, call landed) "at path step 6 read the remit's methodology sentence (a trust's own beds
+and staff are its own care) as a work order: it counted a freed bed given to a patient the trust chose itself (its own
+planned recovery admissions) and set aside every bureau-allocated transfer by joining to the transfer audit, which reached
+D at 27 without stopping at G (rung 2) or A (rung 3)". Path depth: rung 4 reached straight from rung 0. Every refinement of
+who placed an admitted patient is that sentence executed, so loop 3 moves the decisive step off the admissions altogether
+and leaves the solver's own test intact: written exactly as round 3 wrote it, the test still completes and now files G.
+
+**The new rung: a bed the feed shows taken is not always a patient in a bed** (measured trap #13, validates on one
+population, applies to another: established, decided 3 of 64 client tasks, 2 under 0.50; #7, the ready-made measure, behind
+it, as at rung 1). The unit feed dates a stay from the minute the bed was assigned (field guide, unchanged). On every row a
+solver can check, the assigned minute is the occupied minute: the 08:00 returns are computed from the feed and agree with
+the census to the bed, a local admission arrives as its bed is assigned, and a bureau transfer's held bed belongs to the
+bureau, which the audit dates. From the platform's go-live (2 April 2024) Stennock's unit assigns a bed to an elective
+centre patient at its morning bed meeting when one frees, and holds it for the patient, who is still in theatre at the
+elective centre and arrives in the afternoon. Through every platform-era Stennock long wait one or two such beds stand
+assigned and empty: booked between 08:10 and a quarter of an hour before the waiting patient's decision, their patients
+leaving the centre's recovery 10 minutes or more after that decision and arriving inside the first four hours of the wait.
+Read by assignment, Stennock's unit is full at every minute of every wait and admits no one during it; read for who was in
+the bed, it held a staffed bed empty for its own planned patient, which the methodology note makes Stennock's own care,
+exactly as Prideswick's beds held empty until a consultant review are Prideswick's.
+
+1. **Evidence, one new operating file.** The regional data service's theatre extract for the patients in the referral
+   record or the unit feed (`rds_theatre_cases_2023-2026.parquet`, its fields in the RDS specification beside the episode
+   extract's): one row per theatre case, provider, site, case date, urgency, procedure, into theatre, out of theatre,
+   left recovery and the recovery destination. Every unit stay that came from theatre has its case; for every one but the
+   booked holds the patient left recovery before the bed was assigned (a local admission minutes before, a bureau transfer
+   before its departure from the sending trust). The booked holds are the only own-trust stays assigned before the patient
+   left recovery. Nothing in any document says when a bed is assigned to a planned patient or that a bed can be held.
+2. **The legacy months are untouched.** The legacy bed list dates a row from the patient's placement, and Stennock's legacy
+   allocation waits keep their planned admissions inside the wait (each the next bed that freed), so the record's 3c and
+   every device delta stand. Booked patients carry no referral (the platform books a planned bed in its bed module; the
+   elective centre's other patients keep their recovery referrals), so no referral, return or outcome time disagrees with a
+   stay: no negative interval, no stay before its referral, no bed held across 08:00.
+3. **The graded figures do not move.** Rungs 56, 34, 15, 37, 27; the placement year 731 / 213 / 44; the record
+   2,163 / 629 / 148 and its eight rows: the platform-era Stennock waits change how they are Stennock's, not whether.
+
+**Readings of an empty staffed bed on the latest four quarters (deaths).** By assignment (the feed's census), with own
+placement read any way (round 3's own test, the type readings, the queue): G 15 over A 2, D 0. By assignment with any
+admission: A 37 over G 17, D 0. By the patient in the bed with every held bed empty (the bureau's included, from the audit's
+arrival): A 37 over D 27. By the patient in the bed with the bureau's held beds taken and the trust's own holds empty, plus
+own placement (the golden): D 27 over G 15. Only the last names D.
+
+**Ladder (loop 3).**
+
+| Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
+|---|---|---|---|---|
+| 0 | Deaths within 30 days after a wait of more than four hours for a level-3 bed, by referring trust, latest four quarters | E, 56 over A 44 (1.27x) | The remit's own population counted exactly as filed; the corpus reproduces all 34 reviews | The unit register: E holds no level-3 beds |
+| 1 | Waits set aside on days the own 08:00 return showed no empty staffed bed | C, 34 over G 4 (8.50x) | A capacity check on the network's published return | The census from C's stays: C full at every hour of every C long wait |
+| 2 | An empty staffed bed in the own unit's census at some minute of the wait | G, 15 over A 2 (7.50x) | The exact occupancy through each wait, beside the trust's own empty beds | The theatre extract against Stennock's stays: through every Stennock wait its unit held beds assigned to its own elective patients still in theatre, 27 deaths against 15 |
+| 3 | An empty bed or any admission to the own unit during the wait | A, 37 over G 17 (2.18x) | The methodology sentence read literally: a bed given to another patient | The audit and the field guide's `bed_confirmed_at`: every admission inside an A wait was a bureau placement |
+| 4 | **Decisive:** a staffed bed in the own unit with no patient in it and not held by the bureau, at some minute of the wait, or an admission the trust placed itself | **D, 27 over G 15 (1.80x)** | | |
+
+Round 3's test (rung 3 with the bureau's placements set aside) is the grid cell "assignment census, own placement": it lands
+back on G at 15, the stump. The position rule holds: D 4th on rung 0, 0 on rungs 1 to 3 (last of the four trusts holding
+level-3 beds), never second; thinnest rung margin 1.27x (rung 0).
+
+**Dominance.** G carries no raw advantage into rung 4 (21 deaths against D's 27); on the decisive axis D keeps 27 of 27 and
+G 15 of 21, 1.80x. Against A, the rung-3 leader: A carries 37 against D's 0 by assignment; on the decisive axis A keeps 2 of
+44 (0.045) and D 27 of 27, an edge of 22x; against the physical, every-hold cell (A 37 over D 27, 1.37x) the edge is 18.5x
+against the 1.64x required.
+
+**Survival properties.** 1 Written nowhere: the field guide says only that a stay is dated from the bed's assignment; no
+document says a planned bed is assigned early or held. 2 The corpus is blind: no reviewed unit was ever full, so held beds
+never decided a review. 3 No arithmetic symptom: the census reproduces every 08:00 return, every referral's outcome time
+matches its stay, no stay starts before its referral, no booked bed spans 08:00, and the theatre extract's other cases all
+end before their stays begin. 4 Not a row predicate: a stay, the same patient's theatre case and another patient's wait at
+the same unit. 5 The solver's own step completes and returns G. 6 The holds run through all 27 platform months and Stennock's long waits, deaths
+and 08:00 returns run level through the go-live; the legacy months carry the same own care as an admission during the wait.
+7 Delete the theatre extract and the holds cannot be seen, which is the rung's evidence, not a wrong number. **Accepted weak
+points, both on the route the rung is built to be found by:** a solver who joins the theatre extract to the stays, or who
+asks why Stennock's elective centre stays begin before its lists end, finds the holds, and the methodology note then hands
+over the attribution; and round 3's own test counts Stennock's legacy-month waits (each with a planned admission inside)
+and none after the go-live, so a solver who tabulates Stennock's own care by year sees it stop at the platform's go-live and
+can ask why. Option rejected for the second: making Stennock's legacy waits capacity would strip the ask layer's devices from
+Stennock's confirmable column (DV9, DV1oc, DV4 and HZ2 all move it through allocation waits) and move the record's 3c.
+
+**Gate G, restated.** Litmus no: every figure is correct, the assignment minute is the feed's documented meaning and the
+theatre times are the theatre system's. Mechanism decomposition_attribution (each trust's long-wait deaths split into
+network capacity and its own care). surface_read_dependency no; stumping_family analytical_non_defect; sole_data_defect no.
+Clean-data test: an hourly return computed from the feed still shows Stennock full (the bed is assigned); an instrument
+that recorded the patient in the bed would show Stennock's held beds, Ristenholm's bureau holds and Prideswick's empty beds
+alike (the physical, every-hold cell names A), so the attribution of each hold is still the solver's work. The decision's
+own quantity, a bed the trust kept for itself, is a relation between a bed assignment, the assigned patient's theatre record
+and who made the assignment, which no field carries.
+
+**Stump sentence (loop 3).** A competent solver counts each trust's deaths after a wait of more than four hours for a
+level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's
+methodology sentence as its test (an empty staffed bed, or a freed bed given to a patient the trust placed itself, the
+bureau's transfers set aside) and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is reading the
+unit feed's bed assignment as the patient in the bed: through every Stennock long wait since the platform went live its
+unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre
+extract shows were still in theatre and left recovery after the waiting patient's decision, so Stennock kept beds empty for
+its own planned surgery while its emergency patient waited, 27 deaths, the largest number the review can confirm.
+
+**Stopping rule.** Loop 3 is the last loop on this architecture. A solver that files D in round 4 retires the build. A solver
+that files G at 15, A at 37 or any other trust sends it to the determinism judge.
+
 ### Pack plan (provisional; dataset-generation builds against it)
 
 Spine `critical_care_referrals_202307_202606.csv` (about 42,000 referrals, both levels); unit stays (parquet); daily 08:00 bed returns
@@ -1025,11 +1124,7 @@ inside 30 days and not five between days 31 and 60.
    provenance and dictionary are one field guide. Spans fall from the planned 10 / 12 / 15 to 8 / 9 / 12, at the skill floor.
 3. HZ2 at D is four duplicated deaths, not two: with two, {DV2, DV4, HZ2} cancelled on the 3c total. HZ2 counts per
    referral row on 3b and 3c alike, so the stage-3 natural path was 2,208 / 669 / 161, not 2,208 / 667 / 157.
-4. The capacity report covers April 2024 to June 2026, not 36 months (`## Reopened
-
-Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solver rule: the build had used 2 of its three hardening loops, so it gets 1 more. One plain solver follows each loop; any answer other than the golden one sends it to the determinism judge and then to ship.
-
-## Tried and rejected`).
+4. The capacity report covers April 2024 to June 2026, not 36 months (`## Tried and rejected`).
 5. C runs 16 staffed beds day and night, so one staffed figure per day holds and physical equals staffed.
 6. The 08:00 return is read on the decision's date; no long wait has its decision between midnight and 08:00, so the
    latest-return reading converges.
@@ -1169,6 +1264,10 @@ terms of reference 7, field guide 13), each answered by its line below; sweeps 1
   beside the five other codes, "staffed" in beds_open and the bureau in the transfer audit's `bed_confirmed_at`; it states
   no rule about any of them and never says whose care a transfer is.
 
+## Reopened
+
+Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solver rule: the build had used 2 of its three hardening loops, so it gets 1 more. One plain solver follows each loop; any answer other than the golden one sends it to the determinism judge and then to ship.
+
 ## Tried and rejected
 
 - v1 (first draft, 2026-10-08, never registered): chains of spells linked across trusts on the regional patient key at a
@@ -1231,3 +1330,4 @@ terms of reference 7, field guide 13), each answered by its line below; sweeps 1
 - Stage 4 loop 2, the decisive rung as the admitted patient's referring trust with `admission_type` disagreeing with placement in both directions (D's own planned transfers coded 03, the bureau's planned transfers into A coded 03): round 3 plain (proxy 72.6, main call landed by reading, 3 of 11 asks cracked) did the interval join and the audit join without effort and filed D at 27, G 15, gap 12: "A death counts if, during the wait, an open bed sat empty, or a freed bed went to a patient the trust itself chose: its own planned surgical or recovery admissions, or later own-trust patients. Beds the network bureau allocated to transfers from other trusts do not count." It read the methodology sentence as a work order and resolved who placed each patient from the audit (all 3,797 transfers matched), never stopping at G or A. Third consecutive round on D, the stopping rule's ceiling without appeal: the allocation driver is a computation for a plain solver, and the architecture is re-rooted at stage 1 with this card's driver moved into its lineage.
 - 2026-10-09, retired: solved in all three solver rounds (83.8, 82.3, 72.6) after two hardening loops; the grader called a re-root under the design note's stopping rule. Under the author's standing rule a build still being solved after its hardening is retired rather than re-rooted, and the next note in its folder (AD11) takes the slot in a later wave.
 - 2026-10-10, reopened: the retirement came before the three-loop limit, so the build continues under the single-solver rule with 1 hardening loop(s) left.
+- Stage 4 loop 3 (opening line), the decisive rung as loop 2 built it (own placement read from the admitted patient's referring trust and the bureau's audit, the admission type disagreeing with placement in both directions), measured by round 3 plain (proxy 72.6, call landed): at path step 6 the solver wrote the methodology sentence as its test, "A death counts if, during the wait, an open bed sat empty, or a freed bed went to a patient the trust itself chose: its own planned surgical or recovery admissions, or later own-trust patients. Beds the network bureau allocated to transfers from other trusts do not count.", resolved who chose each patient from the audit (all 3,797 transfers matched on verified key and decision time) and filed D at 27 from rung 0, never stopping at G (rung 2) or A (rung 3). It died because the remit's sentence itself names whose decision a bed was, so every rung that only refines who placed the admitted patient is that sentence executed: the admission-type disagreement lengthened the step without leaving a place where the step completes on a wrong answer, and the audit join is schema-visible (key and decision time).

@@ -173,6 +173,22 @@ Linkage
 
 Open episodes on the run date carry no end date and no discharge fields.
 
+Companion extract RDS-THR-02, issue 1 (rds_theatre_cases_2023-2026.parquet)
+  Scope: theatre cases from 1 June 2023 to 13 August 2026 at the eight trusts' hospitals for patients with a
+  referral in the network critical care referral record or a stay in the network unit feed. Times are local, as
+  recorded by the theatre management systems.
+  case_id                 Theatre case identifier.
+  patient_key             Regional patient key, as held by the theatre system on the day.
+  provider_code           Trust code.
+  site_name               Hospital where the operation took place.
+  case_date               Date of the operation.
+  urgency                 Elective, Expedited, Urgent or Immediate (NCEPOD classification).
+  procedure_code          Main procedure, OPCS-4.
+  into_theatre_at         Patient into the operating theatre.
+  out_of_theatre_at       Patient out of the operating theatre.
+  left_recovery_at        Patient left the recovery area.
+  recovery_destination    Where the patient went from recovery: Critical care unit, Ward or Home.
+
 Contact: regional data service, extracts desk.
 """
 

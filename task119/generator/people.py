@@ -118,6 +118,7 @@ def build_referrals(world, P, stays):
             level_dec=p["level"], outcome="admitted", end=t, unit=s["unit"], stay=i, pilot=False)
     # Stennock's planned post-operative patients, referred from its elective centre's recovery
     re_ = rng("ec")
+    rbk = rng("ec_booked")
     for i, s in enumerate(stays):
         p = P.p[s["pid"]]
         if not p.get("ec"):
@@ -134,8 +135,17 @@ def build_referrals(world, P, stays):
         else:
             raise RuntimeError("elective centre referral across a clock change")
         dta = t - wt
-        add(pid=s["pid"], letter="D", ward="REC", received=clear_of_dst(dta - int(re_.integers(5, 26))), dta=dta,
-            level_req=3, level_dec=3, outcome="admitted", end=t, unit=s["unit"], stay=i, pilot=False)
+        received = clear_of_dst(dta - int(re_.integers(5, 26)))
+        ward = "REC"
+        if p.get("booked_arrive") is not None:
+            # a bed booked at the morning bed meeting: requested from the surgical day unit before the list, the bed
+            # assigned within minutes (the patient is still to have the operation)
+            dta = t - int(rbk.integers(3, 13))
+            received = dta - int(rbk.integers(5, 21))
+            ward = "SDU"
+        add(pid=s["pid"], letter="D", ward=ward, received=received, dta=dta,
+            level_req=3, level_dec=3, outcome="admitted", end=t, unit=s["unit"], stay=i, pilot=False,
+            booked=p.get("booked_arrive") is not None)
     # free rows: stood down, died before admission (short), level-2 admitted to the trust's high dependency unit
     for L in LETTERS:
         rs = rng("free", L)
@@ -377,7 +387,7 @@ def build_episodes(world, P, refs, stays, death, where, temp):
             key = temp.get(first["rid"], temp.get(ref["rid"], vkey))
             if first["ward"] == "ED":
                 a_date = dta_day
-            elif first["ward"] == "REC":
+            elif first["ward"] == "REC" or first.get("booked"):
                 a_date = dta_day - dt.timedelta(days=int(r.integers(0, 2)))      # admitted for surgery
             else:
                 a_date = dta_day - dt.timedelta(days=int(r.integers(0, 10)))
@@ -388,7 +398,7 @@ def build_episodes(world, P, refs, stays, death, where, temp):
             first_in = first_in or a_date
             if first["ward"] == "ED":
                 a_method = "21"
-            elif first["ward"] == "REC":
+            elif first["ward"] == "REC" or first.get("booked"):
                 a_method = str(r.choice(["11", "12"]))
             else:
                 a_method = str(r.choice(ADM_METHOD_WARD))

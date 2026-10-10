@@ -182,7 +182,7 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
         if ref is not None:
             key = temp.get(ref["rid"]) if (ref["legacy"] and ref["rid"] in temp) else vkey(s["pid"])
             rid = ref["ref_id"]
-            src = "04" if ref["ward"] == "ED" else ("01" if ref["ward"] == "REC" else "06")
+            src = "04" if ref["ward"] == "ED" else ("01" if (ref["ward"] == "REC" or ref.get("booked")) else "06")
             typ = s["type"]
         else:
             key = p["key"]
@@ -235,6 +235,7 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
             dep = clear_of_dst(s["admit"] + int(r.integers(25, 95)), +1)
             arr = clear_of_dst(dep + int(r.integers(20, 75)), +1)
         key = temp[ref["rid"]] if "DV9" in ref["tags"] else vkey(ref["pid"])
+        out.setdefault("tx_dep", {})[ref["stay"]] = dep
         tx.append({"transfer_ref": "TX%06d" % k, "patient_key": key,
                    "from_trust": CODE[ref["letter"]], "from_site": TRUSTS[ref["letter"]][2], "to_unit": s["unit"],
                    "decision_at": fmt(ref["dta"]), "bed_confirmed_at": fmt(s["admit"]), "departed_at": fmt(dep),

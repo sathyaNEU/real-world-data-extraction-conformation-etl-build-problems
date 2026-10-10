@@ -23,6 +23,7 @@ import extracts               # noqa: E402
 import corpus                 # noqa: E402
 import docs                   # noqa: E402
 import writers as WR          # noqa: E402
+import theatre                # noqa: E402
 
 TASK = HERE.parent
 F = dict(
@@ -42,6 +43,7 @@ F = dict(
     apcspec="rds_apc_extract_specification.txt",
     boardpaper="accn_board_paper_2023-11-21_level3_capacity.pdf",
     transfers="interhospital_transfer_audit_202307_202606.csv",
+    theatre="rds_theatre_cases_2023-2026.parquet",
     thread="review_placement_correspondence.eml",
     l2returns="level2_unit_bed_return_0800_2025-26.csv",
     ambulance="ambulance_handovers_hourly_2025-26.csv",
@@ -57,6 +59,9 @@ STAY_TYPES = ["str", "str", "str", "str", "ts", "ts", "str", "str"]
 EP_COLS = ["episode_id", "spell_id", "patient_key", "provider_code", "admission_date", "admission_method",
            "episode_order", "episode_start", "episode_end", "main_specialty", "discharge_date", "discharge_method",
            "discharge_destination", "date_of_death"]
+TH_COLS = ["case_id", "patient_key", "provider_code", "site_name", "case_date", "urgency", "procedure_code",
+           "into_theatre_at", "out_of_theatre_at", "left_recovery_at", "recovery_destination"]
+TH_TYPES = ["str", "str", "str", "str", "date", "str", "str", "ts", "ts", "ts", "str"]
 EP_TYPES = ["str", "str", "str", "str", "date", "str", "int", "date", "date", "str", "date", "str", "str", "date"]
 
 
@@ -80,6 +85,7 @@ def build_world(log=print):
     temp = people.assign_identities(W, P, refs, death)
     eps, verified = people.build_episodes(W, P, refs, stays, death, where, temp)
     out = legacy.finalize(W, P, stays, refs, death, temp, eps, verified)
+    out["theatre"] = theatre.build_theatre(W, P, stays, refs, out)
     log("  referrals %d, episodes %d (%.1fs)" % (len(out["referrals"]), len(out["episodes"]), time.time() - t0))
     revs = corpus.build_corpus()
     log("  corpus: %d reviews (%.1fs)" % (len(revs), time.time() - t0))
@@ -106,6 +112,7 @@ def write_pack(S, target, log=print):
     n["transfers"] = WR.write_csv(target / F["transfers"], out["transfers"],
                                   ["transfer_ref", "patient_key", "from_trust", "from_site", "to_unit", "decision_at",
                                    "bed_confirmed_at", "departed_at", "arrived_at"])
+    n["theatre"] = WR.write_parquet(target / F["theatre"], TH_COLS, TH_TYPES, out["theatre"])
     n["l2returns"] = WR.write_csv(target / F["l2returns"], extracts.level2_returns(),
                                   ["unit_code", "return_date", "beds_open", "beds_occupied_0800"])
     n["ambulance"] = WR.write_csv(target / F["ambulance"], extracts.ambulance_handovers(),

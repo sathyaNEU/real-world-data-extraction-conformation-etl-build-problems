@@ -606,6 +606,12 @@ def backtest_statements(r):
     b = s[s.wk.isin(BEFORE)]
     half = b[b.mixed].ordered.mean() / b[~b.mixed].ordered.mean()
     assert 0.4 < half < 0.6                            # mixed baskets at about half the rest, in August too
+    v = s[s.wk.isin(REVIEW)]
+    half_now = v[v.mixed].ordered.mean() / v[~v.mixed].ordered.mean()
+    assert 0.4 < half_now < 0.6                        # "do convert at about half the rate of the rest"
+    assert -1.5 < r["w4"]["F5"] < -0.5                 # "gained about one order that week"
+    n, o = r["cells"][r["call"]][CALL_WEEK]
+    assert o / n < r["base"][r["call"]]["rate"] / 3    # "under a third of what the same accounts converted at in August"
     flags = json.loads(one("checkout_flags_export", ".json").read_text())
     moves = {m["moved_at"][:10] for m in flags["assignment_moves"]}
     assert moves == {"2026-09-14", "2026-09-16"}, moves   # "the 14 and 16 Sep assignment moves"
@@ -676,8 +682,7 @@ reaches an account two ways: on the loyalty profile, where some members have typ
 members' discount, the SOCIO code with the member number that members entered at checkout on their own account.
 The profile alone places {share_prof:.0f}% of the week's Shop-tab sessions on an account; with the codes it is
 {share_both:.0f}%, and those accounts converted at
-{100 * r['base'][c]['rate']:.2f}% in August when they shopped signed in. The rest are genuine new fans, and they
-convert like any web new visitor.</p>
+{100 * r['base'][c]['rate']:.2f}% in August when they shopped signed in. The rest are genuine new fans.</p>
 
 <h2>Why not the other three</h2>
 <p><strong>{e(FIX_NAME['F1'])}.</strong> Duarte is right that the address check hurt: it cost {whole(L2['F1'])}

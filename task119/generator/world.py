@@ -23,6 +23,10 @@ WINTER_LEGACY1 = dt.date(2024, 3, 28)
 F_UNIT_END = dt.date(2024, 3, 31)
 
 
+def w_d(d):
+    return d.isoformat()
+
+
 def daterange(a, b):
     d = a
     while d <= b:
@@ -467,12 +471,36 @@ class World:
             U = self.units[unit]
             if any(U.busy(t) for t in tp + [end]):
                 continue
+            # from the platform's go-live Stennock's unit assigns a bed to an elective centre patient at its morning
+            # bed meeting and holds it until the patient arrives from theatre (tp, inside the wait)
+            booked = L == "D" and d > LEGACY_END
+            tbs = []
+            if booked:
+                rb = self.__dict__.setdefault("rb", rng("booked"))
+                b0, b1 = lm(d, 8, 10), dta - plan.BOOK_LEAD
+                for t in tp:
+                    for att in range(400):
+                        tb = b0 + int(rb.integers(0, b1 - b0))
+                        if (U.busy(tb, tol=4) or U.in_frozen(tb) or self.gap_overlap(tb - 1, tb + 1)
+                                or any(abs(tb - x) < 5 for x in tbs)):
+                            continue
+                        tbs.append(tb)
+                        break
+                    else:
+                        raise RuntimeError("booking time %s" % w_d(d))
             w = self.new_wait(letter=L, year=s["year"], cls="alloc", died=s["died"], tags=set(s["tags"]),
                               dta=dta, end=end, unit=unit, outcome="admitted")
             self.commit(w)
             U.frozen.append((dta, end))
             U.add_event(end)
             U.slots.append({"t": end, "kind": "wait_end", "ref": w["wid"]})
+            if booked:
+                for tb, t in zip(tbs, tp):
+                    U.add_event(tb)
+                    U.planned.append({"t": tb, "ref": None, "tag": "booked", "wid": w["wid"], "readmit": False,
+                                      "arrive": t, "hold_until": t + 300})
+                w["booked"] = list(zip(tbs, tp))
+                return w
             for t in tp:
                 U.add_event(t)
                 U.planned.append({"t": t, "ref": None, "tag": "inside", "wid": w["wid"],

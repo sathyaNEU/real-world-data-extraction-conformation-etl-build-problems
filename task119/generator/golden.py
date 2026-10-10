@@ -84,6 +84,12 @@ class Data:
                     dm[kk] = d
         self.dmeth = dm
         self.tx = pd.read_csv(T / F["transfers"], dtype=str, keep_default_na=False)
+        th = pd.read_parquet(T / F["theatre"], columns=["patient_key", "provider_code", "left_recovery_at",
+                                                       "recovery_destination"])
+        th = th[th["recovery_destination"] == "Critical care unit"]
+        self.th_left = defaultdict(list)
+        for k, prov, left in zip(th["patient_key"], th["provider_code"], th["left_recovery_at"]):
+            self.th_left[self.temp.get(k, k)].append((prov, mins(left.to_pydatetime())))
         # decision level and the set of levels entered, per migrated referral
         dec = self.lev[self.lev["entry"] == "DECISION"]
         self.dec_level = dict(zip(dec["referral_id"], dec["level"].astype(int)))
@@ -110,10 +116,12 @@ class Data:
         res = lambda k: self.temp.get(k, k)
         # the bureau's audit: a legacy transfer's row begins at the arrival, its bed was allocated earlier
         held, self.audit_at = {}, set()
+        arrive_of = {}
         transit = []
         for r in self.tx.itertuples(index=False):
             conf, arr = mins(p_ts(r.bed_confirmed_at)), mins(p_ts(r.arrived_at))
             self.audit_at.add((r.to_unit, res(r.patient_key), conf))
+            arrive_of[(r.to_unit, res(r.patient_key), conf)] = arr
             if conf < GO_MIN:
                 held[(r.to_unit, res(r.patient_key), arr)] = conf
                 transit.append(arr - conf)
@@ -128,6 +136,16 @@ class Data:
             prev_end[(u, k)] = b
         self.n_held = sum(1 for x, y in zip(raw, handled) if x[2] != y[2])
         self.units = sorted({r[0] for r in raw})
+        # a bed the unit assigned to one of its own trust's patients who was still in theatre: the patient's theatre
+        # case (destination critical care, at the unit's own trust) left recovery after the bed was assigned and
+        # before the stay ended; the bed stands assigned and empty until then
+        self.own_hold = {}
+        for u, k, a, b, typ, rid in raw:
+            ut = self.unit_trust.get(u)
+            for prov, left in self.th_left.get(res(k), ()):
+                if prov == ut and a < left < min(b, a + 18 * 60):
+                    self.own_hold[(u, res(k), a)] = left
+        self.arrive_of = arrive_of
         self.views = {}
         for name, rows in (("handled", handled), ("raw", raw), ("over", over)):
             assign_of = {}
@@ -135,8 +153,17 @@ class Data:
                 if rid and (rid not in assign_of or a < assign_of[rid][1]):
                     assign_of[rid] = (u, a)
             merged = self.merge_rows(rows, gap=0)
+            # the patient in the bed: the trust's own holds empty until the patient left recovery (own); every held
+            # bed, the bureau's included, empty until the patient arrived (all)
+            own_rows = [(u, k, self.own_hold.get((u, res(k), a), a), b, typ, rid) for u, k, a, b, typ, rid in rows]
+            all_rows = [(u, k, arrive_of.get((u, res(k), a), a2), b, typ, rid)
+                        for (u, k, a, b, typ, rid), (_, _, a2, _, _, _) in zip(rows, own_rows)]
+            m_own = self.merge_rows(own_rows, gap=0)
+            m_all = self.merge_rows(all_rows, gap=0)
             self.views[name] = {"rows": rows, "assign_of": assign_of, "merged": merged,
-                                "census": {u: self.occ_series(merged, u) for u in self.units}}
+                                "census": {u: self.occ_series(merged, u) for u in self.units},
+                                "census_own": {u: self.occ_series(m_own, u) for u in self.units},
+                                "census_all": {u: self.occ_series(m_all, u) for u in self.units}}
         V = self.views["handled"]
         self.stay_rows, self.assign_of, self.merged, self.census = V["rows"], V["assign_of"], V["merged"], V["census"]
 
@@ -433,6 +460,8 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
         if over == "DV3" and scope == "own":
             units = own
         empty = False
+        empty_own = False
+        empty_all = False
         alloc_any = False
         flags = {rd: False for rd in READINGS}
         v0800 = False
@@ -444,6 +473,10 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
             fb = D.reg_beds(u) if over == "DV3" else None
             if D.empty_during(u, a, b, census=census, fallback=fb):
                 empty = True
+            if D.empty_during(u, a, b, census=V["census_own"], fallback=fb):
+                empty_own = True
+            if D.empty_during(u, a, b, census=V["census_all"], fallback=fb):
+                empty_all = True
             m = idx.get(u)
             if m is not None:
                 if _inside(m["all"], a, b):
@@ -462,7 +495,8 @@ def classify(D, ws, handle=None, over=None, construction="decisive", scope="own"
             k = (u, d.isoformat())
             if k in D.occ0800 and D.occ0800[k] < D.beds_on[k]:
                 v0800 = True
-        res.append(dict(w, died=died, has_own=bool(own), empty=empty, alloc=flags["referral"], alloc_any=alloc_any,
+        res.append(dict(w, died=died, has_own=bool(own), empty=empty, empty_own=empty_own, empty_all=empty_all,
+                        alloc=flags["referral"], alloc_any=alloc_any,
                         v0800=v0800, a=a, b=b, year=year_of(d),
                         **{"alloc_" + rd: flags[rd] for rd in READINGS[1:]}))
     return res
@@ -483,7 +517,13 @@ def classified(D, handle, over=None):
 
 def confirmable(x, construction):
     if construction == "decisive":
+        return x["empty_own"] or x["alloc"]
+    if construction == "workorder":
         return x["empty"] or x["alloc"]
+    if construction == "phys_any":
+        return x["empty_all"] or x["alloc_any"]
+    if construction == "phys_placed":
+        return x["empty_all"] or x["alloc"]
     if construction == "census":
         return x["empty"]
     if construction == "any":
@@ -550,7 +590,7 @@ def ladder(D, year=3):
                 rung[2][t].add(p)
             if x["empty"] or x["alloc_any"]:
                 rung[3][t].add(p)
-            if x["empty"] or x["alloc"]:
+            if x["empty_own"] or x["alloc"]:
                 rung[4][t].add(p)
     return {k: {t: len(rung[k][t]) for t in CODES} for k in range(5)}, cl
 
@@ -563,19 +603,20 @@ def year_table(D, year=3):
         pats[x["trust"]].add(x["person"])
         if x["died"]:
             deaths[x["trust"]].add(x["person"])
-            if x["empty"] or x["alloc"]:
+            if x["empty_own"] or x["alloc"]:
                 conf[x["trust"]].add(x["person"])
     return {t: (len(pats[t]), len(deaths[t]), len(conf[t])) for t in CODES}
 
 
 def grid(D, year=3):
-    """Eighteen cells: occupancy basis (none, 08:00, census) by unit scope (own, network) by allocation
-    reading (ignored, any admission, an admission the trust placed itself)."""
+    """Thirty cells: occupancy basis (none, 08:00, the census by bed assignment, the patient in the bed with the
+    trust's own holds empty, the patient in the bed with every held bed empty) by unit scope (own, network) by
+    allocation reading (ignored, any admission, an admission the trust placed itself)."""
     ws = waits(D)
     cells = {}
     cl_own = [x for x in classify(D, ws, scope="own") if x["year"] == year and x["died"]]
     cl_net = [x for x in classify(D, ws, scope="network") if x["year"] == year and x["died"]]
-    for basis in ("none", "0800", "census"):
+    for basis in ("none", "0800", "census", "held_own", "held_all"):
         for scope, cl in (("own", cl_own), ("network", cl_net)):
             for alloc in ("ignored", "any", "placed"):
                 cnt = defaultdict(set)
@@ -587,8 +628,12 @@ def grid(D, year=3):
                         ok = True
                     elif basis == "0800":
                         ok = x["v0800"] or extra
-                    else:
+                    elif basis == "census":
                         ok = x["empty"] or extra
+                    elif basis == "held_own":
+                        ok = x["empty_own"] or extra
+                    else:
+                        ok = x["empty_all"] or extra
                     if ok:
                         cnt[x["trust"]].add(x["person"])
                 cells[(basis, scope, alloc)] = {t: len(cnt[t]) for t in CODES}
@@ -605,6 +650,12 @@ def readings(D, year=3):
         for x in cl:
             ok = x["empty"] or (x["alloc_any"] if rd == "any" else x["alloc"] if rd == "referral" else x["alloc_" + rd])
             if ok:
+                cnt[x["trust"]].add(x["person"])
+        out[rd] = {t: len(cnt[t]) for t in CODES}
+    for rd in ("decisive", "phys_any", "phys_placed"):
+        cnt = defaultdict(set)
+        for x in cl:
+            if confirmable(x, rd):
                 cnt[x["trust"]].add(x["person"])
         out[rd] = {t: len(cnt[t]) for t in CODES}
     return out
@@ -626,6 +677,7 @@ FILES = dict(
     register="acc_unit_register.csv",
     levels="ccrs_referral_levels_202307_202604.csv",
     links="pas_patient_key_links_2023-2026.csv",
+    theatre="rds_theatre_cases_2023-2026.parquet",
 )
 NAME = {"RIS": "Ristenholm Teaching Hospitals NHS Foundation Trust", "TAN": "Tannerby Hospital NHS Trust",
         "BRK": "Brackenford Hospitals NHS Foundation Trust",

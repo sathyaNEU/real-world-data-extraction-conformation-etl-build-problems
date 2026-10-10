@@ -140,6 +140,13 @@ LEGACY_TX_MAX_PLACED = 232                       # and arrival inside 3h52 of th
 # Stennock's elective centre: its planned post-operative patients come to STN-ACC as planned transfers in (03),
 # referred from the centre's recovery 10 to 90 minutes before the bed
 EC_WAIT = (10, 90)
+# from the platform's go-live, the bed for an elective centre patient whose list day carries a Stennock long wait is
+# assigned at the morning bed meeting (08:10 onwards, at least BOOK_LEAD minutes before the waiting patient's decision)
+# and held until the patient arrives (tp, inside the wait); the patient leaves the centre's recovery EC_TRANSIT minutes
+# before arriving and at least HOLD_CLEAR minutes after the waiting patient's decision
+BOOK_LEAD = 15
+EC_TRANSIT = (15, 35)
+HOLD_CLEAR = 10
 
 # DV7: genuine repeat patients, two long waits under one verified key at one trust, both in year 2: discharged
 # alive from the first stay, referred again 8 to 13 days after the first decision, dead after the second stay.

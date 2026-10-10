@@ -2,11 +2,11 @@
   "task": "task121",
   "domain": "product-analytics",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "reopened; hardening loop 2 next (single-solver rule)",
+  "stage": "retired",
+  "stage_name": "retired: no admissible hardening rung; RC11 takes the slot",
   "updated": "2026-10-10",
   "stump": "A competent solver gives the sprint to the card-authentication upgrade: it drains the address check on its flag cohorts, follows each club-app token to a member number and the member number to the loyalty profile alone, finds only about a sixth of Shop-tab sessions on existing accounts losing about 13 orders a week, books the rest as new-fan dilution as both close-outs do, and is left with the 3-D Secure challenge rise (18) as the largest loss, because it never reads last season's SOCIO member codes redeemed on the accounts, which put 63 per cent of those sessions on existing accounts losing 51 orders a week that only the one-time-code sign-in reaches.",
-  "harden_loops": 1,
+  "harden_loops": 2,
   "solver_rounds": [
     {
       "label": "round 1, plain",
@@ -30,7 +30,7 @@
     "disposition": "",
     "report": ""
   },
-  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
+  "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md"
