@@ -2,8 +2,8 @@
   "task": "task119",
   "domain": "policy-education",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "built",
+  "stage": 8,
+  "stage_name": "delivered",
   "updated": "2026-10-10",
   "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as its test (an empty staffed bed, or a freed bed given to a patient the trust placed itself, the bureau's transfers set aside) and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is reading the unit feed's bed assignment as the patient in the bed: through every Stennock long wait since the platform went live its unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had not left recovery when the waiting patient's decision was made, so Stennock kept beds empty for its own planned surgery while its emergency patient waited, 27 deaths, the largest number the review can confirm.",
   "harden_loops": 3,
@@ -43,13 +43,14 @@
   ],
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW",
-    "report": "task119/determinism_check_report_pass2.md",
+    "disposition": "APPROVE",
+    "report": "task119/determinism_check_report_pass3.md",
     "fix_cycles": 2,
-    "gate_g": "mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no"
+    "gate_g": "mechanism: decomposition_attribution, stumping_family: mixed (design note: analytical_non_defect; both pass), surface_read_dependency: no, sole_data_defect: no"
   },
   "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
-  "delivered": null,
+  "delivered": "2026-10-10",
   "portal": null,
-  "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"
+  "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md",
+  "zip": "task119/target.zip"
 }

@@ -138,6 +138,7 @@ def verify(path):
 
     # ---- close-out back-test from the fixed findings
     res["closeout"] = closeout(target)
+    res["crewlog"] = crewlog(target)
     # ---- acknowledgements back-test
     res["acks"] = acks(target)
     res["one_request"] = one_request(target)
@@ -175,43 +176,70 @@ def one_request(target):
 
 
 def closeout(target):
-    rowsby = collections.defaultdict(list)
+    """Back-test the Q3 close-out: every closed finding counted on its CVE's score on the ticket's
+    cut day exactly, against the 12 estate-month cells printed in the close-out PDF."""
+    import re
+    import pypdf
+    day = {}
     t = pq.read_table(os.path.join(target, "epss_score_history_2026.parquet")).to_pydict()
     for cve, d, s in zip(t["cve"], t["score_date"], t["epss"]):
-        rowsby[cve].append((d, s))
-
-    def score_at(cve, day):
-        xs = [s for (dd, s) in rowsby.get(cve, []) if dd <= day]
-        return max(xs) if xs else 0.0
-
-    def latest(cve):
-        xs = rowsby.get(cve, [])
-        return max(xs)[1] if xs else 0.0
-    cells = collections.defaultdict(lambda: collections.defaultdict(int))
-    flags = {}
-    with open(os.path.join(target, "vuln_findings_2026-10-23.csv"), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            flags[r["cve"]] = (r["exploit_available"] == "true", float(r["cvss_base"]))
-    # fixed findings carry their own flag via the spine? close-out fixed are separate cves; read
-    # their flag/cvss is not in spine, so flag rival uses history only here (score_at_export)
+        day[(cve, str(d)[:10])] = s
     rows = rd(target, "cloud_q3_closed_findings.csv")
     truth = collections.defaultdict(int)
-    rivals = {"score_at_export": collections.defaultdict(int),
-              "score_quarter_end": collections.defaultdict(int)}
+    latest = latest_scores(target)
+    rivals = {"score_at_export": collections.defaultdict(int)}
+    missing = 0
     for r in rows:
-        cut = dt.date.fromisoformat(r["cut_date"])
-        cell = (r["estate"], cut.month)
-        if score_at(r["cve"], cut.isoformat()) >= THRESH:
+        cut = r["cut_date"]
+        cell = (r["estate"], int(cut[5:7]))
+        s = day.get((r["cve"], cut))
+        if s is None:
+            missing += 1
+            continue
+        if s >= THRESH:
             truth[cell] += 1
-        if latest(r["cve"]) >= THRESH:
+        if latest.get(r["cve"], 0.0) >= THRESH:
             rivals["score_at_export"][cell] += 1
-        if score_at(r["cve"], "2026-09-30") >= THRESH:
-            rivals["score_quarter_end"][cell] += 1
-    out = {"truth_total": sum(truth.values()), "cells": len(truth)}
+    text = " ".join(pg.extract_text() for pg in
+                    pypdf.PdfReader(os.path.join(target, "q3_2026_remediation_closeout.pdf")).pages)
+    printed = {}
+    for lab, e in LABEL2E.items():
+        if e not in CLOUD:
+            continue
+        m = re.search(re.escape(lab) + r"\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)", text)
+        assert m, f"close-out row {lab} not found"
+        vals = [int(x.replace(",", "")) for x in m.groups()]
+        for mo, v in zip((7, 8, 9), vals[:3]):
+            printed[(e, mo)] = v
+    match = sum(1 for c in printed if printed[c] == truth.get(c, 0))
+    rows_ = len(rows)
+    cves = len({r["cve"] for r in rows})
+    out = {"truth_total": sum(truth.values()), "printed_total": sum(printed.values()),
+           "cells": match, "missing_cut_scores": missing, "rows": rows_, "distinct_cves": cves}
     for nm, fig in rivals.items():
-        allc = set(truth) | set(fig)
-        out[nm + "_misses"] = sum(1 for c in allc if fig.get(c, 0) != truth.get(c, 0))
+        out[nm + "_misses"] = sum(1 for c in printed if fig.get(c, 0) != printed[c])
     return out
+
+
+def crewlog(target):
+    """No host run precedes its ticket's vendor release; every ticket's vendor_first_release is the
+    first_published of one advisory of its package in the feed, and none equals a republish date."""
+    feed = json.load(open(os.path.join(target, "vendor_advisory_feed.json"), encoding="utf-8"))
+    firsts = collections.defaultdict(set)
+    revs = collections.defaultdict(set)
+    for a in feed:
+        firsts[a["package"]].add(a["first_published"])
+        if a["latest_revision"] != a["first_published"]:
+            revs[a["package"]].add(a["latest_revision"])
+    early, unmatched, on_rev = 0, set(), set()
+    for r in rd(target, "crew_deployment_log_2026.csv"):
+        if r["run_date"] < r["vendor_first_release"]:
+            early += 1
+        if r["vendor_first_release"] not in firsts[r["package"]]:
+            unmatched.add(r["ticket_id"])
+        if r["vendor_first_release"] in revs[r["package"]]:
+            on_rev.add(r["ticket_id"])
+    return {"runs_before_release": early, "unmatched": len(unmatched), "on_revision": len(on_rev)}
 
 
 def acks(target):
@@ -237,14 +265,20 @@ def main():
         assert res["split"][e] == meta["answer"]["split"][e], f"split {e}"
         assert res["figs"][e] == meta["answer"]["exposures_taken_out"][e], f"fig {e}"
     assert res["drains"]["payments"] == 96 and res["drains"]["checkout"] == 120, res["drains"]
-    assert res["closeout"]["cells"] == 12, res["closeout"]
+    assert res["closeout"]["cells"] == 12 and res["closeout"]["missing_cut_scores"] == 0, \
+        res["closeout"]
+    assert res["closeout"]["truth_total"] == res["closeout"]["printed_total"], res["closeout"]
+    assert res["closeout"]["score_at_export_misses"] >= 3, res["closeout"]
+    assert res["closeout"]["distinct_cves"] < res["closeout"]["rows"] * 0.6, res["closeout"]
+    assert res["crewlog"] == {"runs_before_release": 0, "unmatched": 0, "on_revision": 0}, \
+        res["crewlog"]
     assert res["acks"]["requests"] >= 400, res["acks"]
     assert res["one_request"]["violations"] == 0 and res["one_request"]["part_accepted"] >= 6, \
         res["one_request"]
     assert (res["split"]["payments"], res["split"]["checkout"]) == (4, 5), res["split"]
     print(f"verifier: answer total {res['total']:,}, split "
           f"{'/'.join(str(res['split'][e]) for e in ESTATES)}, drains {res['drains']}, "
-          f"close-out {res['closeout']['cells']} cells, {res['acks']['requests']} acknowledgements "
+          f"close-out {res['closeout']['cells']} of 12 cells at {res['closeout']['truth_total']:,}, {res['acks']['requests']} acknowledgements "
           "- all match metadata")
     if a.json:
         json.dump(res, open(a.json, "w"), indent=2, default=str)

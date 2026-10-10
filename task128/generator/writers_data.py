@@ -226,7 +226,7 @@ def write_draintool(path):
         "  version: \"4.3.1\"\n"
         "  cycle_minutes: 30\n"
         "  max_parallel_drains: 7        # tool concurrency ceiling per estate\n"
-        "  rebuild_from: current_platform_image\n"
+        "  drain_timeout_minutes: 25\n"
         "  health_gate: true\n"
         "  retries: 2\n"
         "estates:\n"
@@ -260,17 +260,34 @@ def write_coverage(path, coverage):
     return len(coverage)
 
 
-def write_advisory(path, deployments):
-    """Vendor advisory feed: first release and a later republished revision for each package."""
-    seen = {}
+def advisory_records(deployments):
+    """Vendor advisory feed: one record per advisory. A package carries several advisories over the
+    year; every crew ticket was raised against one of them, and its vendor_first_release is that
+    advisory's first_published. A revision date never coincides with another advisory's first
+    release of the same package."""
+    from params import AS_OF
+    rels = {}
     for d in deployments:
-        seen.setdefault(d["package"], d["vendor_first_release"])
+        rels.setdefault(d["package"], set()).add(d["vendor_first_release"])
     out = []
-    for pkg, rel in sorted(seen.items()):
-        y, m, day = map(int, rel.split("-"))
-        rev = dt.date(y, m, day) + dt.timedelta(days=21)
-        out.append({"package": pkg, "first_published": rel, "latest_revision": rev.isoformat(),
-                    "advisory": f"CDG-ADV-{pkg[:4].upper()}-2026"})
+    for pkg in sorted(rels):
+        firsts = sorted(rels[pkg])
+        for k, rel in enumerate(firsts, start=1):
+            y, m, day = map(int, rel.split("-"))
+            d0 = dt.date(y, m, day)
+            h = sum(ord(c) for c in pkg) + 7 * k + d0.toordinal()
+            rev = d0 if h % 3 == 0 else d0 + dt.timedelta(days=6 + h % 23)
+            while rev != d0 and rev.isoformat() in rels[pkg]:
+                rev = rev + dt.timedelta(days=1)
+            if rev > AS_OF:
+                rev = d0
+            out.append({"package": pkg, "first_published": rel, "latest_revision": rev.isoformat(),
+                        "advisory": f"CDG-ADV-{pkg[:4].upper()}-2026-{k:02d}"})
+    return out
+
+
+def write_advisory(path, deployments):
+    out = advisory_records(deployments)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(out, f, indent=2, sort_keys=True)
         f.write("\n")

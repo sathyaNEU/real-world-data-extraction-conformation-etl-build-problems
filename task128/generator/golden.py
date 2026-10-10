@@ -373,9 +373,9 @@ def write_deck(path, cut, pace, cover, chart_png):
         f"{sp['checkout']} on checkout.",
         f"The provider can drain {nh['payments']} payments hosts and {nh['checkout']} checkout hosts "
         "in our November windows, keeping one rack above each window's forecast peak. Each ticket "
-        "goes in as one change request for one window, and a drained host comes back on the current "
-        "platform image, so each drain clears everything open on it. Each ticket names the most "
-        "exposed hosts its window can take.",
+        "goes in as one change request for one window. Every drained host re-entered service on its "
+        "window date with nothing open from before it, so each drain clears everything open on it. "
+        "Each ticket names the most exposed hosts its window can take.",
         "Payments carries more open exposure than any cloud estate, but the drains, not the ticket "
         "count, set what it can give up in November.",
     ], 12)
@@ -389,6 +389,7 @@ def write_deck(path, cut, pace, cover, chart_png):
     text(s, 8.3, 5.2, 4.5, 1.4, "Drains per window: SRE maintenance standard s.2, against the "
          "hourly forecast and the Guadalhorce capacity register. One change request per ticket, one "
          "window per request: Guadalhorce service schedule s.3 and the crew log's change requests. "
+         "Drained hosts: in_service_since in the host inventory against the acknowledgements. "
          "Exploitable: latest score of at least 0.10 (vulnerability management standard v3, s.2).",
          10, muted)
     footer(s, 1)

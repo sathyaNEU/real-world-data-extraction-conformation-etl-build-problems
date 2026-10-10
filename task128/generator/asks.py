@@ -79,10 +79,12 @@ def build_asks(seed, chosts, requests):
                 gap = (last_run - rel).days
             rolled_back = rng.random() < 0.30
             # the first run is earlier; a rollback means it did not land then, the re-deploy did
-            first_run = last_run - dt.timedelta(days=rng.randint(3, 9)) if rolled_back else last_run
+            # no run of a fix can precede the vendor's release of it
+            first_run = max(rel, last_run - dt.timedelta(days=rng.randint(3, 9))) if rolled_back \
+                else last_run
             nhost = rng.randint(3, 20)
             for k in range(nhost):
-                hrun = last_run if k == nhost - 1 else last_run - dt.timedelta(days=rng.randint(0, 4))
+                hrun = last_run if k == nhost - 1 else max(rel, last_run - dt.timedelta(days=rng.randint(0, 4)))
                 deployments.append({"ticket": tid, "estate": est, "package": pkg,
                                     "vendor_first_release": rel.isoformat(),
                                     "run_date": hrun.isoformat(),

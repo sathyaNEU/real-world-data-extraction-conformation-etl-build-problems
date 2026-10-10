@@ -14,7 +14,7 @@ Stump terms swept: decisive, window, colocated, candidate, drains, planner, expo
 - **REVIEW** `extract_provenance_2026-10-23.md`: 8 of 25 stump-paragraph terms appear (window, colocated, export, scanner, office, close-out); read whether the document names the move
 - **REVIEW** `q3_2026_remediation_closeout.pdf`: 5 of 25 stump-paragraph terms appear (colocated, office, close-out, provider, carried); read whether the document names the move
 - **REVIEW** `sre_maintenance_standard.pdf`: 3 of 25 stump-paragraph terms appear (window, colocated, provider); read whether the document names the move
-- **REVIEW** `vulnerability_management_standard.docx`: 6 of 25 stump-paragraph terms appear (colocated, export, scanner, office, provider, carried); read whether the document names the move
+- **REVIEW** `vulnerability_management_standard.docx`: 7 of 25 stump-paragraph terms appear (colocated, export, scanner, carries, office, provider); read whether the document names the move
 - **REVIEW** `warehouse_data_dictionary.md`: 6 of 25 stump-paragraph terms appear (window, colocated, scanner, office, close-out, provider); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)

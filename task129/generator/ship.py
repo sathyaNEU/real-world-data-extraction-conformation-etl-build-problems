@@ -299,7 +299,7 @@ FIXES = [
     ("OPS-FX-244", "2023-09-19", "Edge cache for front-page HTML", "forside", 1.42, 0.0, 6.4),
     ("OPS-FX-251", "2023-11-28", "Stop video player autoload", "artikel, liveblog", 0.47, 212.0, 23.0),
     ("OPS-FX-262", "2024-02-20", "Lazy-load ad slots on puzzle pages", "spil", 2.20, 46.0, 4.6),
-    ("OPS-FX-268", "2024-05-07", "Recompress hero images (quality 72)", "hero templates", 1.01, 180.0, 56.0),
+    ("OPS-FX-268", "2024-05-07", "Recompress hero images (quality 72)", "hero templates", 0.92, 180.0, 56.0),
     ("OPS-FX-275", "2024-08-27", "Inline critical CSS", "all", 0.33, 8.0, 64.0),
     ("OPS-FX-283", "2024-11-12", "Defer analytics tags", "all", 0.29, 22.0, 65.0),
     ("OPS-FX-290", "2025-03-04", "Edge caching of article HTML", "artikel", 0.74, 0.0, 30.5),

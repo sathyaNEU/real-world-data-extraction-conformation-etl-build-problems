@@ -49,8 +49,8 @@ def compute(target):
               for b in BOOKS}
     load = {b: V.pct90(list(replay[b].values())) for b in BOOKS}
     hedges = M["hedges"]
-    before = M["E"]["R5"]
-    lots = M["L"]["R5"]
+    before = M["E"]["R6"]
+    lots = M["L"]["R6"]
     after = M["post"]
     for b in BOOKS:
         assert abs(load[b] - hedges[b] - before[b]) < 1e-9
@@ -76,7 +76,7 @@ def compute(target):
     shift = lots["NCENT"] - M["L"]["R4"]["NCENT"]
     return dict(amend=amend, shift=shift, yrs=yrs, replay=replay, load=load, hedges=hedges, before=before, lots=lots, after=after,
                 sched=sched, nxt=nxt, prem=prem, hp=hp, zones=zones, u=M["u"], cf=M["cf"], centres=M["centres"],
-                base=M["base"], ordinary=M["ordinary"], n_hot=M["n_hot"],
+                base=M["base"], ordinary=M["ordinary"], n_hot=M["n_hot"], shoulder=M["shoulder"],
                 n_centres=31, W=W)
 
 
@@ -165,10 +165,12 @@ def write_xlsx(G, path):
     notes = [
         "P90 by linear interpolation between closest ranks (risk policy s.2), ten closed summers 2017-2026.",
         f"North Central includes the {G['n_centres']} new Harlan Ridge distribution centres ({G['centres']:.1f} MW max demand) at "
-        f"{G['u']:.2f} of max demand ({G['u'] * G['centres']:.1f} MW) in every summer.",
+        f"{G['u']:.4f} of max demand ({G['u'] * G['centres']:.1f} MW) in every summer.",
         f"{G['u']:.2f} is what our cold stores draw in the peak hour on weekdays with no Business Saver window when their zone is as "
         f"hot as on its coolest closed system-peak day ({G['n_hot']} site-days); on ordinary uncalled weekdays they draw "
         f"{G['ordinary']:.2f}, and at every closed peak they were inside a called window and drew {G['cf']:.2f}.",
+        f"On a called day the hours either side of the window are pre-cool and recovery ({G['shoulder']:.2f} on the peak days), "
+        "not an uncalled draw.",
         "New sites are not eligible for Business Saver before a metered summer.",
     ]
     for k, t in enumerate(notes):
@@ -366,7 +368,7 @@ def write_pptx(G, png, path):
 
     # 3. basis
     s = prs.slides.add_slide(blank)
-    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central carries {G['shift']} MW more: uncalled cold stores run near full load on a peak day", 24, True)
+    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central carries {G['shift']} MW more: an uncalled cold store runs harder on a peak-hot day", 24, True)
     text(s, 0.5, 1.2, 12.3, 5.5, [
         "Exposure per the 2027 risk policy: each book's load in the ERCOT summer peak hour at the 1-in-10 summer "
         "(P90 of the ten closed summers 2017-2026, inclusive), less its June to September strips. Lots go 5 MW at a time "
@@ -379,8 +381,9 @@ def write_pptx(G, png, path):
         f"North Central takes on Harlan Ridge's {G['n_centres']} new cold-storage distribution centres, "
         f"{G['centres']:.1f} MW of maximum demand. Our fourteen cold stores and ice plants drew {G['cf']:.2f} of maximum demand at "
         f"every closed system peak, but every one of those peaks fell in a Business Saver window. Uncalled, their peak-hour draw "
-        f"follows the heat: {G['ordinary']:.2f} on an ordinary weekday, {G['u']:.2f} on days as hot as a system peak.",
-        f"The new centres cannot join Business Saver before a metered summer, so they are carried at {G['u']:.2f}: "
+        f"follows the heat: {G['ordinary']:.2f} on an ordinary weekday, {G['u']:.2f} on days as hot as a system peak. "
+        f"The hours around a called window ({G['shoulder']:.2f}) are pre-cool and recovery, so they are not used.",
+        f"The new centres cannot join Business Saver before a metered summer, so they are carried at {G['u']:.4f}: "
         f"{G['u'] * G['centres']:.1f} MW at the peak hour. Carrying them at the programme baseline ({G['base']:.2f}, ordinary "
         f"days) would leave North Central {G['shift']} MW short.",
         f"The largest uncovered exposure left after the block is {W(G['after'][G['nxt']])} MW ({NAME[G['nxt']]}), where the next lot would go.",

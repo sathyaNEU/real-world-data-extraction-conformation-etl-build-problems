@@ -2,8 +2,8 @@
   "task": "task125",
   "domain": "accounting-audit-forensic",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "built",
+  "stage": 4,
+  "stage_name": "solve (round 3 missed, to judge)",
   "updated": "2026-10-10",
   "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 intake off on its 30-instalment term, decomposes every Shared Lives payment into the weekly rates (each joint half as two weeks of them), moves the 60 single carers to 1,464 and the 16 halves of 2,274, 2,388 or 2,514 to 1,484 in cell 14 after the 31 March 2027 closure, carries the 32 halves of 1,522, 1,636 or 1,762 down to 732 under the 1,000-pound floor and files 6,700; the step that lands it there is reading a joint household as two vendors each paid half of whatever it is owed, when the extract's own changed households show a household left with one guest is paid its whole fee by the first vendor, so the 16 band 2 plus step-down households are paid 1,464 once a run in cell 14 and the plan year routes 6,900 (6,914).",
   "harden_loops": 2,
@@ -22,6 +22,14 @@
       "score": 85.1,
       "landed": true,
       "cracked": 4,
+      "items": 8
+    },
+    {
+      "label": "round 3, plain",
+      "date": "2026-10-10",
+      "score": 43.3,
+      "landed": false,
+      "cracked": 1,
       "items": 8
     }
   ],

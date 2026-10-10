@@ -197,6 +197,7 @@ def build_closeout(rng, reg):
     import datetime as dt
     fixed = []       # dicts: ticket_id, estate, month, cut, host, package, cve
     cve_meta = {}    # cve -> (kind, change, cut)
+    co_pool = {}     # (package, month) -> cve ids, shared across the estates' tickets
     tnum = 0
     for est in CLOUD:
         for mo, cut in MONTHS_Q3.items():
@@ -207,10 +208,21 @@ def build_closeout(rng, reg):
                 tnum += 1
                 tid = f"CHG-{est[:3].upper()}-2026{mo:02d}-{tnum:04d}"
                 nf = rng.randint(14, 40)
-                for _ in range(nf):
+                ncve = max(3, nf // rng.randint(3, 6))
+                cves = []
+                for _ in range(ncve):
+                    shared = co_pool.get((pkg, mo), [])
+                    if shared and rng.random() < 0.35:
+                        c = reg.by_id[rng.choice(shared)]
+                        if c not in cves:
+                            cves.append(c)
+                            continue
                     roll = rng.random()
                     kind = "X" if roll < 0.52 else "XN" if roll < 0.72 else "NX" if roll < 0.86 else "N"
+                    # a ticket closes findings already published on its cut day
                     pub = dt.date(2026, rng.randint(1, mo), rng.randint(1, 27))
+                    if pub >= cut:
+                        pub = dt.date(2026, mo - 1, pub.day)
                     # change date lands between the cut and the export for the crossing kinds, so
                     # the cut-day and export readings disagree on exactly those findings
                     if kind in ("XN", "NX"):
@@ -221,11 +233,19 @@ def build_closeout(rng, reg):
                         change = pub + dt.timedelta(days=rng.randint(1, 20))
                     c = reg.make(pkg, kind, pub, change=change)
                     # the scanner's exploit flag is a noisy proxy: it fires on most exploitable
-                    # findings and on some that are not, so it is ~14 per cent off the cut-day truth
+                    # findings and on some that are not, so it is well off the cut-day truth
                     truth_cut = exploitable_on(c, cut)
                     c.flag = rng.random() < (0.73 if truth_cut else 0.22)
                     cve_meta[c.id] = (kind, change, cut)
+                    co_pool.setdefault((pkg, mo), []).append(c.id)
+                    cves.append(c)
+                seen = set()
+                for k in range(nf):
+                    c = cves[k] if k < len(cves) else rng.choice(cves)
                     host = f"{CODE[est].lower()}-{rng.randint(0, CLOUD_HOSTS[est]-1):04d}"
+                    if (host, c.id) in seen:
+                        continue
+                    seen.add((host, c.id))
                     fixed.append({"ticket": tid, "estate": est, "month": mo, "cut": cut,
                                   "host": host, "package": pkg, "cve": c.id})
     def count(rule):

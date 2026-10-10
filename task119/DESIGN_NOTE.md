@@ -1484,6 +1484,22 @@ here; sweeps 1, 2 and 5 to 11 clean.
   beside the five other codes, "staffed" in beds_open and the bureau in the transfer audit's `bed_confirmed_at`; it states
   no rule about any of them and never says whose care a transfer is.
 
+## Ship (stage 8, 2026-10-10)
+
+- Judge pass 3: DETERMINISTIC, APPROVE (`determinism_check_report_pass3.md`). Its optional finding 3 was taken: the board
+  paper's "Why Stennock" paragraph no longer says Stennock's unit admitted nobody during its waits (5 of 92 waits, 2 of the 27
+  deaths, had a Stennock elective given a bed in the same minute as the decision), and "assigned that morning" now reads
+  "assigned earlier that day" (14 of 133 held beds were assigned between 12:00 and 12:52), in `golden.py` and submission step 6.
+  No figure moved. Findings 2 and 4 left as recorded: the family label (mixed against analytical_non_defect) passes Gate G
+  either way, and the realism debts are listed above.
+- Rebuild: two fresh builds into the scratchpad (one with the 180 checks, 0 failed) are byte-identical to `target/` and
+  `metadata.json`; verifier 33 of 33; `golden.py` reproduces byte for byte, and only the docx moved against the judged golden.
+  `leak_check_report.md` stands, since `target/` did not move.
+- Heart PASS (nearest task89 at 0.06 driver, 0.05 card text); card fields already current (answer from block 1, spine rows
+  33,719, three deliverables, question-first); `guard.py validate` 126 cards, 0 invalid.
+- `target.zip`: 20 members at the root, names equal to the `target/` listing, every member byte-equal to `target/` and to the
+  fresh rebuild, no folder or operating-system entries; 6,809,738 bytes, sha256 4b2d996e...72454c.
+
 ## Reopened
 
 Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solver rule: the build had used 2 of its three hardening loops, so it gets 1 more. One plain solver follows each loop; any answer other than the golden one sends it to the determinism judge and then to ship.

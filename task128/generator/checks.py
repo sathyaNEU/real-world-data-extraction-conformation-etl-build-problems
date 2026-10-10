@@ -250,6 +250,58 @@ def run(W, out, info, meta):
         b = W["ans_B"][e]
         C.ok(f"askB.{e}", b["in_service"] > 0 and 0 <= b["unscanned_14d"] <= b["in_service"], str(b))
 
+    # ---- stage 6 fix 1: the judge's integrity findings, asserted on the shipped bytes
+    import csv as _csv, json as _json
+    import pyarrow.parquet as _pq
+    dep = list(_csv.DictReader(open(os.path.join(tdir, "crew_deployment_log_2026.csv"),
+                                    encoding="utf-8")))
+    early = sum(1 for r in dep if r["run_date"] < r["vendor_first_release"])
+    C.ok("crew.no_run_before_release", early == 0, f"{early} runs before release")
+    feed = _json.load(open(os.path.join(tdir, "vendor_advisory_feed.json"), encoding="utf-8"))
+    firsts, revs = {}, {}
+    for a in feed:
+        firsts.setdefault(a["package"], set()).add(a["first_published"])
+        if a["latest_revision"] != a["first_published"]:
+            revs.setdefault(a["package"], set()).add(a["latest_revision"])
+        C.ok("feed.rev_order", a["latest_revision"] >= a["first_published"], str(a))
+    unmatched = {r["ticket_id"] for r in dep
+                 if r["vendor_first_release"] not in firsts.get(r["package"], set())}
+    on_rev = {r["ticket_id"] for r in dep
+              if r["vendor_first_release"] in revs.get(r["package"], set())}
+    C.ok("feed.every_ticket_matches_a_first_release", not unmatched, str(sorted(unmatched)[:5]))
+    C.ok("feed.no_ticket_on_a_revision_date", not on_rev, str(sorted(on_rev)[:5]))
+    C.ok("feed.some_republished", sum(1 for a in feed if a["latest_revision"] != a["first_published"])
+         >= len(feed) // 2, f"{len(feed)} advisories")
+    # close-out: every closed finding has a score on its cut day and the 12 cells are those counts
+    t = _pq.read_table(os.path.join(tdir, "epss_score_history_2026.parquet"),
+                       columns=["cve", "score_date", "epss"]).to_pydict()
+    want = {(r["cve"], r["cut"].isoformat()) for r in W["fixed"]}
+    day = {(c, str(d)[:10]): v for c, d, v in zip(t["cve"], t["score_date"], t["epss"])
+           if (c, str(d)[:10]) in want}
+    C.ok("closeout.cut_scores_present", len(day) == len(want), f"{len(want) - len(day)} missing")
+    cells = {}
+    for r in W["fixed"]:
+        if day[(r["cve"], r["cut"].isoformat())] >= 0.10:
+            cells[(r["estate"], r["month"])] = cells.get((r["estate"], r["month"]), 0) + 1
+    C.ok("closeout.cells_recompute", cells == dict(W["co_truth"]), f"{cells} vs {dict(W['co_truth'])}")
+    ncve = len({r["cve"] for r in W["fixed"]})
+    C.ok("closeout.cves_shared", ncve < 0.6 * len(W["fixed"]), f"{ncve} cves on {len(W['fixed'])} rows")
+    C.ok("closeout.published_before_cut",
+         all(W["reg"].by_id[r["cve"]].published < r["cut"] for r in W["fixed"]), "published")
+    # the declared distractors carry no decisive fact, and the provenance discloses no fiction
+    yml = open(os.path.join(tdir, "drain_orchestrator_config.yaml"), encoding="utf-8").read().lower()
+    C.ok("distractor.yaml_silent_on_rebuild", "rebuild" not in yml and "image" not in yml, "yaml")
+    C.ok("prov.no_disclosure", "constructed" not in prov.lower() and "built for this" not in prov.lower(),
+         "provenance")
+    import zipfile as _zf
+    with _zf.ZipFile(os.path.join(tdir, "vulnerability_management_standard.docx")) as z:
+        app = z.read("docProps/app.xml").decode()
+    C.ok("docx.word_count", "<Words>0</Words>" not in app, "app.xml words")
+    import golden as _G
+    src = open(_G.__file__, encoding="utf-8").read()
+    for d in meta["distractor_files"]:
+        C.ok(f"distractor.unused.{d}", d not in src, d)
+
     # ---- metadata coherence
     C.ok("meta.inputs", meta["input_files"] == files, "metadata lists the shipped inputs")
     C.ok("meta.total", meta["answer"]["total_exposures"] == ans, "metadata total matches")

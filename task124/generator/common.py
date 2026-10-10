@@ -35,7 +35,7 @@ BLOCK, LOT = 400, 5
 
 # uncovered exposure before the block the answer is built to (MW, unrounded targets for the factor scale solve)
 TARGET_EXPOSURE = {"Coast": 251.214, "East": 160.012, "Far West": 113.908, "North": 96.118,
-                   "North Central": 340.204, "South Central": 155.096, "Southern": 147.231, "West": 106.142}
+                   "North Central": 341.154, "South Central": 155.096, "Southern": 147.231, "West": 106.142}
 
 FIRST_YEAR_BOOK = 2008
 READ_HOURS = list(range(11, 21))        # hours ending 11..20 in the IDR extract
@@ -44,7 +44,11 @@ WINDOW_HOURS = [15, 16, 17, 18]          # a called window, 14:00 to 18:00 CPT (
 # a member's uncalled draw rises with its zone's heat: ordinary afternoons at its base level, design-day afternoons
 # (every closed system peak among them) at its full-load level, a linear rise between the two heat marks
 HEAT_LO, HEAT_SAT = 0.68, 0.78
-FULL_LIFT, ORDINARY_DROP = 0.08, 0.22
+FULL_LIFT, ORDINARY_DROP = -0.05, 0.22
+# on a called day a member pre-cools before the window with every compressor stage on (its maximum demand is set in
+# these hours) and recovers after it the same way; shares of maximum demand, whatever the day's heat
+PRECOOL = {11: 0.962, 12: 0.981, 13: 0.988, 14: 0.990}
+RECOVER = 0.989
 TEMP_SCALE, TEMP_NOISE = 30.0, 0.7      # degrees F of zone maximum per unit of the heat index; vendor scatter
 TEMP_BASE = {"Coast": 91, "East": 92, "Far West": 96, "North": 97, "North Central": 95, "South Central": 95,
              "Southern": 94, "West": 95}

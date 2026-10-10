@@ -7,7 +7,8 @@ from datetime import date, timedelta
 import numpy as np
 import pandas as pd
 
-from common import (BOOKS, EXTRACT, FULL_LIFT, HEAT_LO, HEAT_SAT, HEDGES, NC, ORDINARY_DROP, PEAKS, READ_HOURS,
+from common import (BOOKS, EXTRACT, FULL_LIFT, HEAT_LO, HEAT_SAT, HEDGES, NC, ORDINARY_DROP, PEAKS, PRECOOL, READ_HOURS,
+                    RECOVER,
                     SUMMERS, TARGET_EXPOSURE, TEMP_BASE, TEMP_NOISE, TEMP_SCALE, WINDOW_HOURS, billing_holidays, daterange, p90,
                     summer_weekdays)
 from world import CENTRE_TOTAL_KW, MEMBERS, TWIN_COLD
@@ -114,12 +115,13 @@ def member_reads(rng, prem, calls, heat):
                 for h in READ_HOURS:
                     if called and h in WINDOW_HOURS:
                         v = md * phi * (1 + rng.normal(0, 0.0018))
-                    elif called and h in (13, 14):
-                        v = md * min(0.985, s + 0.03) * (1 + rng.normal(0, 0.003))
+                    elif called and h in PRECOOL:
+                        # pre-cool before the window: every compressor stage on, the site's maximum demand set here
+                        v = md * min(0.997, PRECOOL[h] * (1 + rng.normal(0, 0.0025)))
                     elif called and h == 19:
-                        v = md * min(0.985, s + 0.035) * (1 + rng.normal(0, 0.003))
+                        v = md * min(0.997, RECOVER * (1 + rng.normal(0, 0.0025)))
                     elif called and h == 20:
-                        v = md * min(0.985, s + 0.015) * (1 + rng.normal(0, 0.003))
+                        v = md * min(0.997, (s + 0.55 * (RECOVER - s)) * (1 + rng.normal(0, 0.003)))
                     else:
                         v = md * s * (1 + HOUR_MOD[h]) * (1 + rng.normal(0, 0.0022))
                     rows.append((m["esi_id"], d, h, round(v, 1)))

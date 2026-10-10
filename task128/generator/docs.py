@@ -183,7 +183,8 @@ def write_standard(path):
     d.add_heading("3 One ticket, one package", level=1)
     d.add_paragraph("A ticket updates one package. It is raised against the package whose "
                     "highest-scoring open finding on the hosts it names scores highest, and it names "
-                    "the hosts that carry that package below its fixed version.")
+                    "the hosts that carry that package below its fixed version. On a cloud estate "
+                    "those are the hosts where the package carries an exploitable finding.")
     d.add_heading("4 Cloud and colocated estates", level=1)
     d.add_paragraph("A cloud ticket cut on the month's first Monday is closed in place by the crews "
                     "within the month. Colocated work is carried out by the provider under the "
@@ -210,7 +211,7 @@ Message-ID: <nov-round-1@sendalia.example>
 
 All,
 
-November is the first month we split the 300 tickets on exploitable exposure rather than spreading them by band. I sign the split on Friday 30 October and the crews key off it on Monday 2 November. I will bring one rate and the list, with the figures for Santiago.
+November is the first month we split the 300 tickets on exploitable exposure rather than spreading them by band. I sign the split on Friday 30 October and the crews key off it on Monday 2 November. I will bring the split and the ticket list, with the figures Santiago asked for.
 
 Reina
 
@@ -281,10 +282,11 @@ Field meanings for the November round extracts. As at 23 October 2026.
 
 ## crew_deployment_log_2026.csv
 - ticket_id, estate, package, vendor_first_release, run_date, outcome, is_last_host: each host run of a deployment. A fix lands when a host runs it with outcome succeeded; a rolled_back run did not land.
+- vendor_first_release: the first_published date of the vendor advisory the ticket was raised against, keyed by the crew when the ticket is opened. It is the ticket's first release of the fix.
 - change_request: on a colocated estate, the provider change request the ticket was drained under (request_id in the acknowledgements); blank on the cloud estates.
 
 ## vendor_advisory_feed.json
-- advisory, package, first_published, latest_revision: one record per vendor advisory; first_published is the vendor's first release of the fix, latest_revision the date it was last republished.
+- advisory, package, first_published, latest_revision: one record per vendor advisory, several per package over the year; first_published is the vendor's first release of the fix, latest_revision the date it was last republished (equal to first_published when it never was).
 
 ## cloud_asset_register_2026-10-23.csv
 - instance_id: the stable host key. hostname: the current name. power_state: running, standby or stopped.
@@ -303,7 +305,7 @@ Prepared by {PEOPLE['data']} (data platform lead), 23 October 2026.
 
 ## About this folder
 
-This folder is a constructed case. {ORG}, {PROVIDER}, every estate, host, person and figure in it were built for this case. CVE identifiers follow the public CVE format and the exploit-prediction scores follow the shape of FIRST's public EPSS feed; neither identifies a real vulnerability or a real score. All files may be used and shared under CC BY 4.0.
+Extracts and documents pulled for the November patch round planning, 23 October 2026, from the office scanner, the provider's feeds and records, the deployment tooling and the office's own documents, as listed below. CVE identifiers are in the public CVE format and the exploit-prediction scores in the format of FIRST's EPSS feed. Licence: CC BY 4.0.
 
 ## Files
 

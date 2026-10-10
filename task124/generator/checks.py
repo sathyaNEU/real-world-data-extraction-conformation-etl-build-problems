@@ -14,10 +14,12 @@ from common import (BOOKS, HEDGES, NC, PEAKS, SUMMERS, bin_distance, continuous_
 LOG = []
 ANSWER = {"Coast": 120, "East": 30, "Far West": 0, "North": 0, "North Central": 210, "South Central": 25,
           "Southern": 15, "West": 0}
-RUNG3 = {"Coast": 135, "East": 45, "Far West": 0, "North": 0, "North Central": 150, "South Central": 40,
-         "Southern": 30, "West": 0}
+RUNG3 = {"Coast": 130, "East": 40, "Far West": 0, "North": 0, "North Central": 170, "South Central": 35,
+         "Southern": 25, "West": 0}
 RUNG4 = {"Coast": 125, "East": 30, "Far West": 0, "North": 0, "North Central": 195, "South Central": 30,
          "Southern": 20, "West": 0}
+RUNG5 = {"Coast": 115, "East": 25, "Far West": 0, "North": 0, "North Central": 230, "South Central": 20,
+         "Southern": 10, "West": 0}
 
 
 def ck(name, ok, detail=""):
@@ -33,21 +35,26 @@ def vec(a):
 def main_call(an):
     R = an.rungs()
     L = {k: lots(E) for k, E in R.items()}
-    E = R["R5"]
-    a = L["R5"]
+    E = R["R6"]
+    a = L["R6"]
     ck("M01 the answer is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0", a == ANSWER, vec(a))
-    ck("M02 rung 3 (class factor) is 135 / 45 / 0 / 0 / 150 / 40 / 30 / 0", L["R3"] == RUNG3, vec(L["R3"]))
-    ck("M02b rung 4 (the stump: the programme baseline) is 125 / 30 / 0 / 0 / 195 / 30 / 20 / 0", L["R4"] == RUNG4,
+    ck("M02 rung 3 (class factor) is 130 / 40 / 0 / 0 / 170 / 35 / 25 / 0", L["R3"] == RUNG3, vec(L["R3"]))
+    ck("M02b rung 4 (the programme baseline) is 125 / 30 / 0 / 0 / 195 / 30 / 20 / 0", L["R4"] == RUNG4,
        vec(L["R4"]))
-    ck("M03 rungs 0 to 5 file pairwise distinct vectors",
-       len({vec(v) for v in L.values()}) == 6, {k: vec(v) for k, v in L.items()})
+    ck("M02c rung 5 (the stump: the peak days' hours outside the window) is 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0",
+       L["R5"] == RUNG5, vec(L["R5"]))
+    ck("M03 rungs 0 to 6 file pairwise distinct vectors",
+       len({vec(v) for v in L.values()}) == 7, {k: vec(v) for k, v in L.items()})
     nc = {k: v[NC] for k, v in L.items()}
-    ck("M04 rungs 0 to 3 put North Central at least 10 per cent from 210 and rung 4 at least 6 per cent, bracketed "
-       "(rung 2 < rung 3 < rung 4 < answer < rung 1)",
-       all(abs(nc[k] - 210) / 210 >= 0.10 for k in ("R0", "R1", "R2", "R3")) and abs(nc["R4"] - 210) / 210 >= 0.06
-       and nc["R2"] < nc["R3"] < nc["R4"] < 210 < nc["R1"], nc)
+    ck("M04 rungs 0 to 3 put North Central at least 10 per cent from 210 and rungs 4 and 5 at least 6 per cent, "
+       "bracketed (rung 2 < rung 3 < rung 4 < answer < rung 5 < rung 1)",
+       all(abs(nc[k] - 210) / 210 >= 0.10 for k in ("R0", "R1", "R2", "R3"))
+       and all(abs(nc[k] - 210) / 210 >= 0.06 for k in ("R4", "R5"))
+       and nc["R2"] < nc["R3"] < nc["R4"] < 210 < nc["R5"] < nc["R1"], nc)
     ck("M04b rung 4 moves at least four books against the answer", sum(L["R4"][b] != a[b] for b in BOOKS) >= 4,
        vec(L["R4"]))
+    ck("M04c rung 5 moves at least four books against the answer", sum(L["R5"][b] != a[b] for b in BOOKS) >= 4,
+       vec(L["R5"]))
     r0 = sorted(BOOKS, key=lambda b: -L["R0"][b])
     ck("M05 rung 0 (the policy's words on the settled loads) leads with Coast and puts North Central 4th or lower",
        r0[0] == "Coast" and r0.index(NC) >= 3, vec(L["R0"]))
@@ -77,7 +84,8 @@ def main_call(an):
             "centres_mw": round(an.u_star * an.centres / 1000.0, 3), "loads": {b: round(E[b] + HEDGES[b], 3) for b in BOOKS}}
 
 
-PLATEAU = "the members' own reads on uncalled weekdays as hot as the closed peaks (0.97 to 0.99 of maximum demand)"
+PLATEAU = "the members' own reads on uncalled weekdays as hot as the closed peaks (0.83 to 0.87 of maximum demand)"
+PRECOOL = "the credits (the window is hours ending 15 to 18; the hours around it on a called day are pre-cool and recovery) and " + PLATEAU
 VIOLATES = {
     "rows, pooled (rung 1)": "enrolment dictionary: an AMEND row supersedes the enrolment it amends",
     "rows, class factor on the centres": "the same supersession",
@@ -88,15 +96,21 @@ VIOLATES = {
     "premises, programme baseline (rung 4)": "risk policy s.2 (load in the system peak hour) against " + PLATEAU,
     "partial: class factor on every new North Central premise": "premise register: the other new premises are not refrigerated",
     "partial: peak-heat draw on every new North Central premise": "premise register: the other new premises are not refrigerated",
-    "partial: programme baseline on every new North Central premise": "premise register, and " + PLATEAU,
     "settled loads, own book (rung 0)": "the replay table (8 of 80 cells)",
+    "premises, peak-day hours outside the window (rung 5)": PRECOOL,
+    "rows, peak-day hours outside the window on the centres": "the same supersession",
+    "centres at their full maximum demand (1.00)": "the members' maximum demand is set in pre-cool hours; " + PLATEAU,
 }
-CONVERGE = ["premises, peak-heat draw (answer)", "members uncalled in 2027 too", "centres at their full maximum demand (1.00)",
+# readings recorded inside the 6 per cent floor: each differs from the answer, at least 4 per cent off
+RECORDED = {"peak day, hour ending 20 alone": "a single recovery hour taken as the draw; " + PRECOOL,
+            "partial: programme baseline on every new North Central premise":
+                "two opposite violations: the premise register (the other new premises are not refrigerated) and " + PLATEAU}
+CONVERGE = ["premises, peak-heat draw (answer)", "members uncalled in 2027 too",
             "P90 nearest rank", "P90 exclusive (Excel PERCENTILE.EXC)"]
 
 
 def corridor(an, step=0.0005):
-    xs = [round(0.90 + step * k, 4) for k in range(int(0.15 / step) + 1)]
+    xs = [round(0.78 + step * k, 4) for k in range(int(0.15 / step) + 1)]
     ok = [x for x in xs if lots(an.exposures("dedup", centre_factor=x)) == ANSWER]
     lo, hi = min(ok), max(ok)
     ck("G00 the corridor on the centres' factor is one unbroken run", len(ok) == round((hi - lo) / step) + 1, (lo, hi, len(ok)))
@@ -112,6 +126,10 @@ def grid(an):
         out[k] = (vec(a), a[NC])
         if k in CONVERGE:
             ck(f"G conv: '{k}' files the answer", a == ANSWER, vec(a))
+        elif k in RECORDED:
+            far = abs(a[NC] - 210) / 210
+            ck(f"G near: '{k}' differs, North Central {a[NC]} ({far:+.1%}); violates {RECORDED[k]}",
+               a != ANSWER and far >= 0.04, vec(a))
         elif k.startswith("centres at "):
             ck(f"G edge: '{k}' (outside the corridor) differs", a != ANSWER, vec(a))
         else:
@@ -153,13 +171,13 @@ def corpus(an):
     mid = an.middle_estimators()
     m = an._unc()
     py = {y: g["kwh"].sum() / g["md"].sum() for y, g in m.groupby("y")}
-    ck("C08 ordinary afternoons: the uncalled weekday draw at the peak hour sits 0.77 to 0.83 in every summer",
-       all(0.77 <= v <= 0.83 for v in py.values()), {y: round(v, 4) for y, v in py.items()})
+    ck("C08 ordinary afternoons: the uncalled weekday draw at the peak hour sits 0.64 to 0.71 in every summer",
+       all(0.64 <= v <= 0.71 for v in py.values()), {y: round(v, 4) for y, v in py.items()})
     cut = an.w.temp_cut
     hot = m[m["tmax"] >= m["esi_id"].map(an.mem["book"]).map(cut)]
     sh = hot["kwh"] / hot["md"]
-    ck("C08b peak-heat afternoons: every member-day at least as hot as its zone's coolest closed peak drew 0.965 to 0.995, "
-       "at least 100 member-days on at least 8 dates", sh.min() >= 0.965 and sh.max() <= 0.995 and len(hot) >= 100
+    ck("C08b peak-heat afternoons: every member-day at least as hot as its zone's coolest closed peak drew 0.83 to 0.87, "
+       "at least 100 member-days on at least 8 dates", sh.min() >= 0.83 and sh.max() <= 0.87 and len(hot) >= 100
        and hot["date"].nunique() >= 8, (round(sh.min(), 4), round(sh.max(), 4), len(hot), hot["date"].nunique()))
     ck("C08c the golden's peak-heat draw is the generator's centre factor", abs(pe["zone at least as hot as its coolest "
        "closed peak day (golden)"] - an.u_star) < 1e-12)
@@ -191,7 +209,23 @@ def corpus(an):
         midv[k] = (round(v, 4), vec(a))
     ck("D03 the heat readings that stop short of peak-day heat file a split other than the answer, each under " + PLATEAU,
        all(x[1] != vec(ANSWER) and x[0] < lo for x in midv.values()), midv)
+    sh5 = {}
+    for k, v in an.shoulder_estimators().items():
+        a5 = lots(an.exposures("dedup", centre_factor=v))
+        sh5[k] = (round(v, 4), a5[NC])
+    ck("D04 every reading of the hours around a called window files North Central at 225 or more (at least 7 per cent "
+       "over 210), each over the corridor; violates " + PRECOOL,
+       all(n >= 225 and x > hi for x, n in sh5.values()) and len(sh5) == 7, sh5)
+    pk = an.mr[[d == PEAKS[y][0] for d, y in zip(an.mr["date"], an.mr["y"])]]
+    pre = pk[pk["he"].isin((11, 12, 13, 14, 19))]
+    ck("D05 on every closed peak day every member read 0.95 or more of its maximum demand in hours ending 11 to 14 and 19",
+       (pre["kwh"] / pre["md"]).min() >= 0.95, round(float((pre["kwh"] / pre["md"]).min()), 4))
+    mx = an.mr.assign(s=an.mr["kwh"] / an.mr["md"]).groupby("esi_id")["s"].max()
+    ck("D06 each member's highest hourly read is 0.99 to 0.998 of its maximum demand, always on a called day",
+       mx.min() >= 0.99 and mx.max() <= 0.998 and bool(an.mr.loc[an.mr.assign(s=an.mr["kwh"] / an.mr["md"])
+       .groupby("esi_id")["s"].idxmax(), "called"].all()), (round(mx.min(), 4), round(mx.max(), 4)))
     return {"rivals": riv, "estimators": {k: round(v, 5) for k, v in est.items()}, "class_by_summer": cbs,
+            "shoulder": sh5,
             "peak_estimators": {k: round(v, 5) for k, v in pe.items()}, "middle": midv, "corridor": (lo, hi),
             "ordinary_far": far, "peak_heat_days": (len(hot), int(hot["date"].nunique())), "temp_cut": cut,
             "baseline": round(an.baseline, 5),
@@ -228,7 +262,7 @@ def clean_data(an):
     R1rep = lots(an.exposures("rows"))
     an.rows27 = saved
     ck("K01 clean-data test on the enrolment extract: repaired, rung 1 becomes rung 2 while rung 3 and the answer "
-       "stand and differ", R1rep == lots(R["R2"]) and lots(R["R5"]) == ANSWER and lots(R["R3"]) != ANSWER
+       "stand and differ", R1rep == lots(R["R2"]) and lots(R["R6"]) == ANSWER and lots(R["R3"]) != ANSWER
        and lots(R["R4"]) != ANSWER)
     called = {(y, PEAKS[y][0]) for y in SUMMERS}
     unc = {(d.year, d) for d, c in zip(an.mr["date"], an.mr["called"]) if not c}

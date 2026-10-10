@@ -328,7 +328,7 @@ def main():
               "pack": gates, "info": info, "assertions": len(C.LOG)}
     for name, ok, _ in C.LOG:
         print(("PASS " if ok else "FAIL ") + name)
-    print(f"\n{len(C.LOG)} assertions, all green. Split {main_res['rungs']['R5']}.")
+    print(f"\n{len(C.LOG)} assertions, all green. Split {main_res['rungs']['R6']}.")
     if a.record:
         with open(a.record, "w") as f:
             json.dump(record, f, indent=2, default=str)

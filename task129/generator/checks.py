@@ -181,15 +181,20 @@ def run(out, tgt, R, meta):
            (Mw["state"]["C"], Mw["state"]["A"]))
 
     # ------------------------------------------------------------ C1 convergences on the main population
-    main = v[v.ts >= pd.Timestamp(P.FORWARDER_FIX) - pd.Timedelta(hours=2)]
+    # the main call's declared row population: every beacon from the banner's release on (the
+    # first deploy after the forwarder fix and the tag-container fix)
+    t_main = t["D"]
+    REC["main_population_from"] = str(t_main)
+    main = v[v.ts >= t_main]
     allrows = G.views(L, dedup=False, phones=False)
-    mainall = allrows[allrows.ts >= pd.Timestamp(P.FORWARDER_FIX) - pd.Timedelta(hours=2)]
+    mainall = allrows[allrows.ts >= t_main]
     ok("sep.no_tablets_in_main", int((mainall.ff != "phone").sum()) == 0, int((mainall.ff != "phone").sum()))
     sp = L["spine"]
-    m_ts = sp.ts_utc.dt.tz_localize(None) >= pd.Timestamp(P.FORWARDER_FIX) - pd.Timedelta(hours=2)
+    m_ts = sp.ts_utc.dt.tz_convert(None) >= t_main
     ok("sep.no_duplicates_in_main", not sp[m_ts].pv_id.duplicated().any())
     ok("sep.masthead_current_in_main", bool((main.title == main.title_cur).all()))
     ok("axis9.no_lcp_4000", int((sp.lcp_ms == 4000).sum()) == 0)
+    ok("axis14.no_device_time_ties", not v.duplicated(["device_key", "ts"]).any())
     du = G.deploy_utc(L)
     tsv = sp.ts_utc.dt.tz_localize(None).values
     k = np.searchsorted(du, tsv, side="right")
@@ -200,17 +205,17 @@ def run(out, tgt, R, meta):
     ok("axis16.models_resolve", reg.device_model.is_unique and
        set(sp.device_model.unique()) <= set(reg.device_model))
     # state: per device against per device and bundle (puzzles bundle separate)
-    vb = main.assign(bundle=np.where(main.template == "spil", "spil", "platform"))
+    vb = v.assign(bundle=np.where(v.template == "spil", "spil", "platform"))
     vb = vb.sort_values(["device_key", "bundle", "ts"], kind="stable")
     kk = np.searchsorted(du, vb.ts.values, side="right") - 1
     dk = (vb.device_key + "|" + vb.bundle).values
     st_b = np.where(np.r_[True, dk[1:] != dk[:-1]] | np.r_[True, kk[1:] != kk[:-1]], "F", "K")
-    mg = vb.group.isin(["base", "sub", "puz"]).values
+    mg = (vb.group.isin(["base", "sub", "puz"]) & (vb.ts >= t_main)).values
     ok("axis+.state_per_bundle", bool((st_b[mg] == vb.state.values[mg]).all()),
        int((st_b[mg] != vb.state.values[mg]).sum()))
     # state against the simulated truth on the main population
     X = R["X"]
-    tr = X[X.t_local >= np.datetime64(P.FORWARDER_FIX)][["pv_id", "state"]].set_index("pv_id").state
+    tr = X[["pv_id", "state"]].set_index("pv_id").state
     same = (tr.reindex(main.pv_id.values).values == main.state.values)
     ok("truth.state_matches", same.mean() == 1.0, float(same.mean()))
     # subscription status at view time and at the pull date

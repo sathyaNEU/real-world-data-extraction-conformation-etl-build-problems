@@ -59,6 +59,7 @@
   },
   "distractor_files": [
     "drain_orchestrator_config.yaml",
-    "superseded_cvss_band_allocation_memo.pdf"
+    "superseded_cvss_band_allocation_memo.pdf",
+    "vendor_advisory_feed.json"
   ]
 }

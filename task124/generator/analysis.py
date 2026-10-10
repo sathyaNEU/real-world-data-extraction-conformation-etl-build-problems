@@ -58,6 +58,8 @@ class Analysis:
         self.class_factor = float(atpk["kwh"].sum() / atpk["md"].sum())
         self.site_called = (atpk["kwh"] / atpk["md"]).to_numpy()
         self.u_star = w.u_star
+        # the members on the closed system-peak days in the hours outside the called window (pre-cool and recovery)
+        self.shoulder = self.shoulder_draw()
         # the programme's own baseline at each closed peak hour (ten most recent uncalled business days), MD-weighted
         base = w.base_at_peak
         self.baseline = float(sum(base.values()) / sum(mem.at[e, "md_kw"] for (_, e) in base))
@@ -101,7 +103,8 @@ class Analysis:
             "R2": self.exposures("dedup"),
             "R3": self.exposures("dedup", centre_factor=self.class_factor),
             "R4": self.exposures("dedup", centre_factor=self.baseline),
-            "R5": self.exposures("dedup", centre_factor=self.u_star),
+            "R5": self.exposures("dedup", centre_factor=self.shoulder),
+            "R6": self.exposures("dedup", centre_factor=self.u_star),
         }
         return R
 
@@ -119,6 +122,9 @@ class Analysis:
             "premises, pooled (rung 2)": self.exposures("dedup"),
             "premises, class factor (rung 3)": self.exposures("dedup", centre_factor=cf),
             "premises, programme baseline (rung 4)": self.exposures("dedup", centre_factor=bl),
+            "premises, peak-day hours outside the window (rung 5)": self.exposures("dedup", centre_factor=self.shoulder),
+            "rows, peak-day hours outside the window on the centres": self.exposures("rows", centre_factor=self.shoulder),
+            "peak day, hour ending 20 alone": self.exposures("dedup", centre_factor=self.shoulder_draw((20,))),
             "premises, peak-heat draw (answer)": self.exposures("dedup", centre_factor=u),
             "partial: class factor on every new North Central premise": self.exposures("dedup", centre_factor=cf, newgen_factor=cf),
             "partial: peak-heat draw on every new North Central premise": self.exposures("dedup", centre_factor=u, newgen_factor=u),
@@ -235,6 +241,32 @@ class Analysis:
             worst = max(abs(t[c] - tab[c]) / tab[c] for c in tab)
             res[k] = (hits, worst)
         return res
+
+    # -------------------------------------------------------------- the peak days' hours outside the window
+    SHOULDER_HOURS = (11, 12, 13, 14, 19, 20)
+
+    def shoulder_draw(self, hours=SHOULDER_HOURS, every_call=False):
+        """MD-weighted share of maximum demand the members drew on the closed system-peak days (or on every called
+        day) in the given hours outside the called window."""
+        m = self.mr
+        if every_call:
+            sel = m[m["called"] & m["he"].isin(hours)]
+        else:
+            sel = m[[d == PEAKS[y][0] for d, y in zip(m["date"], m["y"])]]
+            sel = sel[sel["he"].isin(hours)]
+        return float(sel["kwh"].sum() / sel["md"].sum())
+
+    def shoulder_estimators(self):
+        """Every way a solver could read the uncalled draw off the hours around a called window."""
+        return {
+            "peak days, hours ending 11-14 and 19-20 (round-2 path)": self.shoulder_draw(),
+            "peak days, the two hours either side of the window (14, 19)": self.shoulder_draw((14, 19)),
+            "peak days, the hours before the window (11-14)": self.shoulder_draw((11, 12, 13, 14)),
+            "peak days, the late morning (11, 12)": self.shoulder_draw((11, 12)),
+            "peak days, the hours after the window (19, 20)": self.shoulder_draw((19, 20)),
+            "every called day, hours ending 11-14 and 19-20": self.shoulder_draw(every_call=True),
+            "the members' highest hourly read over their maximum demand": float((m := self.mr)["kwh"].div(m["md"]).max()),
+        }
 
     # -------------------------------------------------------------- the uncalled draw: two families of estimators
     def _unc(self):

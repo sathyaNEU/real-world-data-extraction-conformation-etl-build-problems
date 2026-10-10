@@ -738,8 +738,8 @@ def figures(D):
             n_planned += 1
     # "many of those patients came in as planned transfers"
     assert 2 * n_planned > held["RIS"]["bureau"], (n_planned, held["RIS"]["bureau"])
-    # "by the unit feed Stennock's unit was full at every minute of every one of those waits and admitted nobody";
-    # "one or two of the beds counted as full had been assigned that morning to Stennock's own planned surgical
+    # "by the unit feed Stennock's unit was full at every minute of every one of those waits";
+    # "one or two of the beds counted as full had been assigned earlier that day to Stennock's own planned surgical
     # patients, not yet out of recovery at the Stennock Treatment Centre when the waiting patient's decision was made"
     stn_rows = sorted(a for u, k, a, b, typ, rid in D.merged if u == "STN-ACC")
     holds = sorted((a, left) for (u, k, a), left in D.own_hold.items() if u == "STN-ACC")
@@ -1101,10 +1101,9 @@ def write_docx(fx, path, png):
     p = para(after=6)
     runs(p, ["In the placement year {:,} Stennock patients waited more than four hours for a level 3 bed and {:,} "
              "of them died within 30 days of the decision to admit.".format(y3[call][0], y3[call][1]),
-             ("1",), " By the unit feed Stennock's unit was full at every minute of every one of those waits and "
-             "admitted nobody while they lasted, which is consistent with the network's view that it is full every "
-             "morning. The feed counts a bed as taken from the minute it is assigned, and on each of the {:,} waits "
-             "one or two of the beds counted as taken had been assigned that morning to Stennock's own planned "
+             ("1",), " By the unit feed Stennock's unit was full at every minute of every one of those waits, which is "
+             "consistent with the network's view that it is full every morning. The feed counts a bed as taken from the minute it is assigned, and on each of the {:,} waits "
+             "one or two of the beds counted as taken had been assigned earlier that day to Stennock's own planned "
              "surgical patients. The regional theatre extract shows that none of those patients had left recovery "
              "at the Stennock Treatment Centre when the waiting patient's decision was made; each left during the "
              "wait. At weekends, with no lists running, no Stennock referral waited more than four hours."

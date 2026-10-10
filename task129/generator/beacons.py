@@ -56,6 +56,17 @@ def annotate(rng, dev, V, dep):
     quiet = ((k >= 0) & (prev_gap < q)) | ((k + 1 < len(du)) & (next_gap < q))
     V = V[~quiet].reset_index(drop=True)
     V = V.sort_values(["dev", "ts"], kind="stable").reset_index(drop=True)
+    # no two views of one device share a second: a tie would leave their order open
+    while True:
+        tsv = V.ts.values
+        d0 = V.dev.values
+        tie = np.r_[False, (d0[1:] == d0[:-1]) & (tsv[1:] <= tsv[:-1])]
+        if not tie.any():
+            break
+        tsv = tsv.copy()
+        tsv[tie] = tsv[np.flatnonzero(tie) - 1] + np.timedelta64(1, "s")
+        V["ts"] = tsv
+        V["t_local"] = V.t_local.values + np.where(tie, np.timedelta64(1, "s"), np.timedelta64(0, "s"))
     # a subscriber's puzzle view never opens a deploy interval (it follows an article view), so
     # the per-device and per-bundle readings of the state agree; drop the rare ones that would
     while True:

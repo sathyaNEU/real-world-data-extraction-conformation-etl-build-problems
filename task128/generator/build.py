@@ -91,6 +91,7 @@ def scrub_and_stamp(target, golden):
                 scrub.scrub_pdf(path, ORG, "2026-10-23", floor, ceiling)
             elif ext in (".docx", ".xlsx", ".pptx"):
                 scrub.scrub_ooxml(path, ORG, "2026-10-23", floor, ceiling)
+    _restamp_documents(target)
     for d in (target, golden):
         for f in sorted(os.listdir(d)):
             if os.path.splitext(f)[1].lower() in (".xlsx", ".docx", ".pptx"):
@@ -99,6 +100,56 @@ def scrub_and_stamp(target, golden):
     for d in (target, golden):
         for f in os.listdir(d):
             os.utime(os.path.join(d, f), (stamp, stamp))
+
+
+# each filed document carries the date and time it was last saved, Madrid local, not the export's
+PDF_SAVED = {"sre_maintenance_standard.pdf": b"D:20260216102241+01'00'",
+             "colocation_service_schedule_and_window_calendar.pdf": b"D:20261014160512+02'00'",
+             "q3_2026_remediation_closeout.pdf": b"D:20261007124803+02'00'",
+             "superseded_cvss_band_allocation_memo.pdf": b"D:20261002091527+02'00'"}
+DOCX_SAVED = {"vulnerability_management_standard.docx": (b"2026-09-28T08:12:44Z",
+                                                         b"2026-10-01T09:30:09Z")}
+
+
+def _restamp_documents(target):
+    import io, zipfile
+    for f, stamp in PDF_SAVED.items():
+        path = os.path.join(target, f)
+        b = open(path, "rb").read()
+        old = b"D:20261023000000+00'00'"
+        assert b.count(old) >= 2 and len(stamp) == len(old), f
+        b2 = b.replace(old, stamp)
+        assert len(b2) == len(b)
+        open(path, "wb").write(b2)
+    for f, (created, modified) in DOCX_SAVED.items():
+        path = os.path.join(target, f)
+        with zipfile.ZipFile(path) as z:
+            infos = z.infolist()
+            data = {i.filename: z.read(i.filename) for i in infos}
+        body = _re.sub(rb"<[^>]+>", b" ", data["word/document.xml"]).decode("utf-8")
+        paras = data["word/document.xml"].count(b"</w:p>")
+        words = len(body.split())
+        chars = len("".join(body.split()))
+        core = data["docProps/core.xml"]
+        core = core.replace(b'W3CDTF">2026-10-23T00:00:00Z</dcterms:created>',
+                            b'W3CDTF">' + created + b"</dcterms:created>")
+        core = core.replace(b'W3CDTF">2026-10-23T00:00:00Z</dcterms:modified>',
+                            b'W3CDTF">' + modified + b"</dcterms:modified>")
+        core = core.replace(b"<cp:revision>1</cp:revision>", b"<cp:revision>4</cp:revision>")
+        assert b"2026-10-23T00:00:00Z" not in core, f
+        data["docProps/core.xml"] = core
+        app = data["docProps/app.xml"]
+        for tag, val in ((b"Words", words), (b"Characters", chars), (b"Paragraphs", paras),
+                         (b"Lines", paras + 6), (b"CharactersWithSpaces", chars + words),
+                         (b"TotalTime", 47)):
+            app = _re.sub(b"<" + tag + b">\\d+</" + tag + b">",
+                          b"<" + tag + b">" + str(val).encode() + b"</" + tag + b">", app)
+        data["docProps/app.xml"] = app
+        tmp = path + ".rs"
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zo:
+            for i in infos:
+                zo.writestr(i, data[i.filename])
+        os.replace(tmp, path)
 
 
 import re as _re
@@ -163,7 +214,7 @@ def write_metadata(out, W, info):
         },
         "input_files": sorted(os.listdir(os.path.join(out, "target"))),
         "large_file": {"path": WD.SPINE, "rows": info["spine"]},
-        "distractor_files": [WD.DRAINTOOL, DOC.MEMO],
+        "distractor_files": [WD.DRAINTOOL, DOC.MEMO, WD.ADVISORY],
     }
     with open(os.path.join(out, "metadata.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
