@@ -854,8 +854,9 @@ def chart_png(fx, path=None):
                  .format(SHORT[call], cv, cv - rv, SHORT[run]),
                  x=0.02, ha="left", y=0.985, fontsize=10.5, fontweight="bold", color=INK)
     fig.text(0.02, 0.015, "Latest four complete quarters, the period the placement rests on (terms of reference, "
-             "section 5). Trusts ordered by confirmable deaths.\nSource: network referral record, unit feed and daily "
-             "bed returns; regional data service episodes (extract of 14 August 2026).", fontsize=6.8, color=MUTED)
+             "section 5). Trusts ordered by confirmable deaths.\nSource: network referral record, unit feed, daily "
+             "bed returns and transfer audit; regional data service episodes and theatre cases (extract of 14 August "
+             "2026).", fontsize=6.8, color=MUTED)
     fig.subplots_adjust(left=0.25, right=0.98, top=0.80, bottom=0.20)
     buf = io.BytesIO()
     fig.savefig(buf, format="png", facecolor=SURF, metadata={"Software": None})
@@ -1181,8 +1182,9 @@ def write_docx(fx, path, png):
     for row in tb.rows:
         for j, w in enumerate(widths):
             row.cells[j].width = w
-    para("Placement year, July 2025 to June 2026. Source: network referral record, unit feed and daily bed returns; "
-         "regional data service episodes.", size=7.5, italic=True, after=8, color="595959")
+    para("Placement year, July 2025 to June 2026. Source: network referral record, unit feed, daily bed returns and "
+         "transfer audit; regional data service episodes and theatre cases.", size=7.5, italic=True, after=8,
+         color="595959")
     para("Prideswick is the real alternative. Its unit still holds weekend admissions until the on-call consultant "
          "intensivist has seen the patient on site, and {:,} of its patients died after waiting beside its own empty "
          "staffed beds. That is a smaller yield than Stennock's, {:,} deaths fewer, and the Board can raise the "
