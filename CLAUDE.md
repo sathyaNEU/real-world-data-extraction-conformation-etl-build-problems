@@ -47,20 +47,21 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  guide-to-prompt  (pairing, then the PROMPT SHAPE, with its criteria arithmetic worked to 25+)
        + the two nearest exemplars (guide-to-prompt/references/exemplars/, the client's measured tasks)
    ->  stumping: the draw, decisive rung from traps/_measured.md  ->  fingerprint check + register
-   ->  CHECKPOINT A: the author reads the draw and the stump sentence
    ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
    ->  /clone-check   (pre-flight, only when the author asks)
-   ->  dataset-generation  ->  build  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
-   ->  leak-check (leak.py)  ->  fingerprint surface
-   ->  CHECKPOINT B: /approve   (guard.py heart: the stump against every card and ledger row)
-   ->  solver round (one plain solver): a missed call passes; a landed call is hardened (three loops, then retired)
-   ->  determinism-check judge rehearsal  ->  /leak-check reader pass  ->  DELIVER to the author
+   ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
+              ->  leak-check (leak.py)  ->  fingerprint surface  ->  guard.py heart
+   ->  SOLVE: one plain solver. It commits to any answer other than the golden one: on to the
+              judge. It lands the golden answer: harden (three loops at most, then retire)
+   ->  determinism-check judge rehearsal: APPROVE ships; FIX_NOW is fixed and re-judged;
+              SEND_BACK retires the build
+   ->  SHIP to the author
    ->  the author tests on the official portal and reports back
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
 `/build <domain> <objective>` runs that loop as a stage machine with `pipeline.json` as its state
-(`build-pipeline`), stopping only at the two checkpoints.
+(`build-pipeline`), without stopping for the author.
 
 The prompt shape is picked **before** the ladder, not after a thin rubric comes back, because it
 decides where the criteria come from and it is the cheapest thing in the build to change. The
@@ -102,8 +103,9 @@ author cannot write that sentence has no stump in it, and no round is run on it.
 
 **`/clone-check` is author-triggered only**: never invoke it on your own initiative, including right
 after applying a patch that seems to want validation, because it spends real tokens in an isolated
-thread. `/approve` runs the cheap mechanical half of the same question (`guard.py heart`) and is
-where a template or duplicate is caught before any solver is paid for.
+thread. The cheap mechanical half of the same question (`guard.py heart`) runs inside the build
+stage, so a template or duplicate is caught before the solver is paid for; `/approve` runs it on
+request.
 
 `/clone-check` also runs on a plain request, so a chat asking for a clone check, a template
 check or a duplicate check invokes it. It compares a build, or the whole batch, against every

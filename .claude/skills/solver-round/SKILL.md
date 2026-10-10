@@ -1,6 +1,6 @@
 ---
 name: solver-round
-description: "Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver first; two solvers (plain and skeptic) only when the first was stumped. The solver sees the prompt and the bundle and nothing else, returns its committed call and every ask figure as structured output, and grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. Invoked by /solve and by the /build pipeline's stages 4 and 5; the result goes back to the builder as the hardening brief. A round is a filter, never an oracle: a build a solver cracks does not go to the portal, and a build no solver cracks still has to."
+description: "Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver sees the prompt and the bundle and nothing else and returns its committed call and every ask figure as structured output; grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. The committed call decides: an answer other than the golden one sends the build to the determinism judge, and the golden answer sends it back to be hardened. Invoked by /solve and by the /build pipeline's stage 4; the plain and skeptic pair runs only when the author asks. A round is a filter, never an oracle: a build the solver cracks does not go to the portal, and a build it does not crack still has to."
 ---
 
 # Solver round
@@ -119,9 +119,8 @@ where it left the ladder. Three shapes recur:
 ## Checklist
 
 - [ ] The build is finished: submission written, goldens recompute, `leak.py` not LEAK
-- [ ] Round 1 run with one plain solver on a fresh scratch copy, path read against the ladder
+- [ ] One plain solver run on a fresh scratch copy, path read against the ladder
 - [ ] Main call read by the main thread, `--landed` passed where the token match misjudged
-- [ ] Round 1 passed (missed, under 40) before round 2 was run
-- [ ] Round 2 run with plain and skeptic together; average under 40, one under 25
+- [ ] Missed (any answer other than the golden one): on to the judge; landed: hardened
 - [ ] Every hardening written to `## Tried and rejected` with the solver's own path sentence
-- [ ] No more than three hardening loops on one architecture
+- [ ] No more than three hardening loops on one architecture, then retire

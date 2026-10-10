@@ -1,14 +1,13 @@
 ---
 name: build-pipeline
-description: "The stage machine that takes a domain and an objective to a delivered task: draw, design, build, solver round 1, solver round 2, judge rehearsal, leak and heart checks, deliver. Owns pipeline.json (the one state file a task folder carries), the gate each stage has to pass, the two author checkpoints, the hardening loop that feeds a solver's path back into the ladder, and the day shape that gets four tasks through. Invoked by /build and whenever a session resumes a build in flight. Costs nothing itself; the stages that spend tokens (solvers, the judge, the leak reader) are the ones the pipeline exists to sequence."
+description: "The stage machine that takes a domain and an objective to a shipped task: draw, design, build (the pack, the write-up and goldens, reduce-house-fixes, the leak check, the surface and heart checks), one solver, the determinism judge, ship. Owns pipeline.json (the one state file a task folder carries), the gate each stage has to pass, the hardening loop that feeds a landed solver's path back into the ladder, and retirement. Invoked by /build and whenever a session resumes a build in flight. Costs nothing itself; the stages that spend tokens (the solver and the judge) are the ones the pipeline exists to sequence."
 ---
 
 # Build pipeline
 
-> One task a day was the cost of two things: every stage waiting on the author, and the portal
-> being the first solver to touch the build. The pipeline removes the waiting (the author decides
-> twice, at the draw and at delivery) and puts two solvers in front of the portal. The build itself
-> is the same skills in the same order; what changes is that nothing idles between them.
+> Design, build, solve, judge, ship. The solver is the filter: when it commits to any answer other
+> than the golden one, the build is stumping and goes to the determinism judge; when it lands the
+> golden answer, the build is hardened. Nothing waits on the author between the draw and the ship.
 
 ## The stages
 
@@ -16,21 +15,19 @@ description: "The stage machine that takes a domain and an objective to a delive
 |---|---|---|---|
 | 0 | intake | `fingerprint` (`recent`, `coverage`) | the next free `taskNN`, the domain and the objective fixed, `pipeline.json` written |
 | 1 | draw | `guide-to-prompt` (pairing, shape), `stumping` Part 6.1, `fingerprint` (`new`, `check`, `register`), exemplars | card registered at PASS or answered WARN; **the stump sentence written**; the decisive rung named from `stumping/references/traps/_measured.md`; the two nearest exemplars read |
-| A | **checkpoint: the author reads the draw** | | the author says go, or redraws an axis |
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check |
-| 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`), `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, `leak.py` not LEAK, surface screen clean |
-| B | **checkpoint: `/approve`** | `fingerprint` (`heart`) | heart verdict not BLOCK; the author has read the stump sentence against the pack |
-| 4 | solver round | `solver-round` (one plain solver) | main call missed: go to stage 6, whatever the proxy score; landed: **harden** (max three loops, then retire) and return to 3 |
-| 5 | solver round 2 | `solver-round` (plain and skeptic) | run only when the author asks (`/solve taskNN 2`) |
-| 6 | judge rehearsal | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC; FIX_NOW findings fixed in the generator and the stage re-run |
-| 7 | leak read and heart | `/leak-check` reader pass, `guard.py heart` | no sentence quoted for question 1; heart not BLOCK |
-| 8 | deliver | card fields updated, zips cut, summary | the author has the bundle, the stump sentence, both rounds' scores and the judge line |
+| 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`), `fingerprint` (`surface`, `heart`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, `leak.py` not LEAK with every REVIEW line answered, surface screen clean, heart not BLOCK |
+| 4 | solve | `solver-round` (one plain solver) | the solver commits to any answer other than the golden one: go to stage 6, whatever its proxy score; it lands the golden answer: **harden** and return to 3; still landed after three loops: **retire** |
+| 5 | second round | `solver-round` (plain and skeptic) | not part of the flow; run only when the author asks (`/solve taskNN 2`) |
+| 6 | determinism judge | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: go to stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 gates and re-run the judge; SEND_BACK: **retire** |
+| 7 | leak reader | `/leak-check` reader pass | not part of the flow; the mechanical leak check runs in stage 3, and the reader pass runs only when the author asks |
+| 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered; the author has the bundle, the stump sentence, the solver's result and the judge line |
 | 9 | portal | the author | the result reported; only then the ledger row, lessons, memory |
 
-**Invoking `/build` is the author's licence for stages 4 to 7.** The solver rounds, the judge
-rehearsal and the leak reader all spend tokens in isolated threads, and each skill's own rule says
-the author asks for them in their own words. A `/build` that names the task and the stage is that
-ask. Outside `/build`, each stays author-triggered as its skill states.
+**Invoking `/build` is the author's licence for stages 4 and 6.** The solver and the judge
+rehearsal spend tokens in isolated threads, and each skill's own rule says the author asks for them
+in their own words. A `/build` that names the task is that ask. Outside `/build`, each stays
+author-triggered as its skill states.
 
 ## `pipeline.json`
 
@@ -72,36 +69,29 @@ re-run the round. Three loops on one architecture is the limit; a build whose so
 call after them is retired, its card kept so the architecture is not drawn again, and the next design
 in the queue takes its slot.
 
-## The two checkpoints, and why only two
+## No author checkpoints in the flow
 
-The draw is the cheapest thing in the build to change and the only thing the author's taste decides,
-so it is shown before anything is built: the pairing, the niche, the stump sentence, the shape, the
-deliverables, the nearest exemplar, the guard verdict, in ten lines. The author answers in one word
-or redraws one axis. `/approve` is the second: the build exists, the heart check has run, and the
-author reads the stump sentence against the pack before tokens are spent on solvers. Everything
-else is gated by a script or a thread, and a human gate between scripted stages is where a day
-goes.
+Every gate is a script's exit status or a thread's verdict. The draw is checked by the fingerprint
+guard and filed with `guard.py register`; the heart check (`guard.py heart`, the mechanical half of
+`/approve`) runs inside stage 3. The author is shown each draw in ten lines when it is filed, reads
+the shipped bundle, and can stop or redraw a build at any point; `/approve` stays available when
+they want to sign a build off by hand.
 
-## The day shape for four tasks
+## Retirement
 
-Stages 4 to 7 run in the background (Workflow and Agent runs return when they finish), so one
-session carries two tasks at different stages, and the author's attention is needed only at the two
-checkpoints.
+A build is retired, not re-rooted, when its solver still lands the golden answer after three
+hardening loops, or when the judge returns SEND_BACK. Write a `## Retired` section in the design
+note and one line in `## Tried and rejected`, set `pipeline.json` to stage `retired`, and keep the
+card (its notes say retired and not submitted) so the architecture is never drawn again. The next
+design in the queue takes the slot.
 
-```
-morning     T1 draw -> checkpoint A -> T1 design and build       (author: 10 min at A)
-            T2 draw -> checkpoint A                               (author: 10 min at A)
-midday      T1 /approve -> rounds 1 and 2 in the background       (author: 15 min reading T1's pack)
-            T2 design and build
-afternoon   T1 judge, leak read, deliver -> portal                 (author: submits T1)
-            T2 /approve -> rounds in the background; T3 draw -> checkpoint A
-evening     T2 judge, leak read, deliver -> portal; T3 build; T4 draw
-```
+## Throughput
 
-What makes the shape hold is that no stage waits on the author except A and B, and that a round
-that fails costs a rebuild rather than a day. What breaks it is a re-root, which is why the draw
-stage reads the measured catalogue and the exemplars first: a decisive rung from the top of that
-list has a measured record of stumping, and a draw with a record is a draw that survives rounds.
+Each build runs as its own background run, so several tasks move at once at different stages. A
+wave's draws are drafted in parallel and registered in task-number order, because the guard's bans
+reach the last three builds and registration has to be serial; the next wave's draws can run while
+the current wave builds. Nothing waits on the author, so the pace is set by the hardening loops: a
+build whose first solver misses the golden answer ships in one pass.
 
 ## Standing rules the pipeline enforces
 
