@@ -137,7 +137,7 @@ class Data:
             prev_end[(u, k)] = b
         self.n_held = sum(1 for x, y in zip(raw, handled) if x[2] != y[2])
         self.units = sorted({r[0] for r in raw})
-        # a bed the unit assigned to one of its own trust's patients who was still in theatre: the patient's theatre
+        # a bed the unit assigned to one of its own trust's patients who had not left theatre recovery: the patient's theatre
         # case (destination critical care, at the unit's own trust) left recovery after the bed was assigned and
         # before the stay ended; the bed stands assigned and empty until then
         self.own_hold = {}
@@ -681,13 +681,9 @@ FILES = dict(
     links="pas_patient_key_links_2023-2026.csv",
     theatre="rds_theatre_cases_2023-2026.parquet",
 )
-NAME = {"RIS": "Ristenholm Teaching Hospitals NHS Foundation Trust", "TAN": "Tannerby Hospital NHS Trust",
-        "BRK": "Brackenford Hospitals NHS Foundation Trust",
-        "STN": "Stennock University Hospitals NHS Foundation Trust", "LAT": "Lathingbury Hospitals NHS Trust",
-        "ELL": "Ellerdyke Hospitals NHS Trust", "PRW": "Prideswick Hospitals NHS Foundation Trust",
-        "PEL": "Pellowham Hospitals NHS Trust"}
 SHORT = {"RIS": "Ristenholm", "TAN": "Tannerby", "BRK": "Brackenford", "STN": "Stennock", "LAT": "Lathingbury",
          "ELL": "Ellerdyke", "PRW": "Prideswick", "PEL": "Pellowham"}
+NAME = SHORT  # the names the shipped files use; the trusts' legal titles appear in no input
 DELIVERABLES = ("external_review_placement_2027-28.docx", "review_placement_workings.xlsx",
                 "review_placement_by_trust.png")
 PAPER_DATE = dt.date(2026, 10, 2)
@@ -744,7 +740,7 @@ def figures(D):
     assert 2 * n_planned > held["RIS"]["bureau"], (n_planned, held["RIS"]["bureau"])
     # "by the unit feed Stennock's unit was full at every minute of every one of those waits and admitted nobody";
     # "one or two of the beds counted as full had been assigned that morning to Stennock's own planned surgical
-    # patients, still in theatre at the Stennock Treatment Centre when the waiting patient's decision was made"
+    # patients, not yet out of recovery at the Stennock Treatment Centre when the waiting patient's decision was made"
     stn_rows = sorted(a for u, k, a, b, typ, rid in D.merged if u == "STN-ACC")
     holds = sorted((a, left) for (u, k, a), left in D.own_hold.items() if u == "STN-ACC")
     n_holds = []
@@ -908,7 +904,7 @@ def write_xlsx(fx, path):
     ws["A2"].font = Font(name="Arial", italic=True, size=8.5, color="595959")
     cols = ["Referring trust", "Code", "Patients inside the remit", "Deaths inside the remit",
             "Deaths the reviewers could have confirmed"]
-    header(ws, 4, cols, [46, 7, 15, 15, 19])
+    header(ws, 4, cols, [18, 7, 15, 15, 19])
     fmts = [None, None, "#,##0", "#,##0", "#,##0"]
     for i, t in enumerate(rows):
         body(ws, 5 + i, [NAME[t], t] + list(rec[t]), fmts, bold=(t == fx["call"]),
@@ -925,8 +921,8 @@ def write_xlsx(fx, path):
             "Deaths: death within 30 days of the decision to admit, from the linked date of death on the regional "
             "data service episodes.",
             "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either had "
-            "a staffed bed with no patient in it, including a bed kept for one of the trust's own patients still in "
-            "theatre, or assigned a bed to a patient the trust referred itself (sections 3 and 4). Beds the network's "
+            "a staffed bed with no patient in it, including a bed kept for one of the trust's own patients who had not "
+            "yet left theatre recovery, or assigned a bed to a patient the trust referred itself (sections 3 and 4). Beds the network's "
             "bed bureau allocated to patients referred by other trusts are not the trust's own decision, planned "
             "transfers included.",
             "Waits are elapsed time: a wait across a night when the clocks went forward is an hour shorter than "
@@ -945,7 +941,7 @@ def write_xlsx(fx, path):
     ws2["A1"].font = Font(name="Arial", bold=True, size=11)
     ws2["A2"] = "Ordered as in review_placement_by_trust.png."
     ws2["A2"].font = Font(name="Arial", italic=True, size=8.5, color="595959")
-    header(ws2, 4, cols, [46, 7, 15, 15, 19])
+    header(ws2, 4, cols, [18, 7, 15, 15, 19])
     for i, t in enumerate(fx["order"]):
         body(ws2, 5 + i, [NAME[t], t] + list(y3[t]), fmts, bold=(t == fx["call"]),
              fill=pick_fill if t == fx["call"] else None)
@@ -1134,8 +1130,8 @@ def write_docx(fx, path, png):
     tb.style = "Table Grid"
     hdr = ["Trust", "Deaths inside the remit", "Confirmable in own care", "What held the waits"]
     reason = {
-        "STN": "Beds in its own unit kept empty for Stennock's planned surgical patients, still in theatre, through "
-               "each wait",
+        "STN": "Beds in its own unit kept empty for Stennock's planned surgical patients, not yet out of theatre "
+               "recovery, through each wait",
         "PRW": "{:,} after waits beside its own empty staffed beds; {:,} after waits through which its full unit "
                "took transfers the bed bureau placed; {:,} with the unit full and no admission".format(
                    held["PRW"]["empty"], held["PRW"]["bureau"], held["PRW"]["capacity"]),

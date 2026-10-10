@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southern 15 and West 0.",
+  "answer_source": "task124/submission.md, block 1",
   "gap": [
     "population",
     "time"
@@ -33,7 +33,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "idr_hourly_reads_summers_2017_2026.parquet",
-    "rows": 1400000,
+    "rows": 1881080,
     "entity": "one hourly read of one interval-metered premise in the book on a June to September weekday, with its ESI ID, weather zone and kWh",
     "grain": "premise x hour",
     "source": "synthetic, shaped on ERCOT's published hourly load by weather zone (public)"
@@ -44,7 +44,7 @@
   "world": {
     "geography": "United States, Texas",
     "currency": "USD",
-    "org_type": "retail electricity provider serving homes and businesses in all eight ERCOT weather zones",
+    "org_type": "retail electricity provider serving commercial and industrial customers in all eight ERCOT weather zones",
     "invented_names": [
       "Sabine Crest Energy",
       "Harlan Ridge Cold Storage Partners",
@@ -64,8 +64,8 @@
   ],
   "opening_move": "constraint-first",
   "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, and every analog's measured value at the deciding hour was held down by the organisation's own dispatch, which a unit cannot join until it has a full season of metered history; carrying the analogs' measured value files the newcomers at the held-down level, the closed record cannot object because the newcomers were never in it and the analogs stay dispatched, and only the analogs' undispatched level, read from their own records outside the dispatch windows, prices the newcomers.",
-  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced at the cold-store class's draw in the system's peak hour, and all fourteen cold stores and ice plants the book holds were held to their firm levels through every closed system peak by Sabine Crest's own Business Saver load-shift programme, which no site can join before it has twelve months of interval data; their measured 0.60 of maximum demand files the centres too low, and their undispatched 0.90, read from their own weekdays and hours outside the dispatch windows, is what the un-enrolled centres will draw.",
-  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report to the megawatt, collapses the enrolment amendments, joins the distribution utility's tariff class and prices North Central's 31 new refrigerated distribution centres at the class's own peak-hour draw measured on the book's fourteen cold stores (0.60 of maximum demand), filing North Central at 195 MW of the 400 MW block (provisional); the step that lands it there is taking those fourteen as what a cold store draws in the system's peak hour, when every one of them was held to its firm level through every closed system peak by the company's own Business Saver load-shift programme, which no site can join before it has a metered summer, so the centres run at the analogs' undispatched 0.90 and North Central takes 230 MW (provisional).",
+  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced at the cold-store class's draw in the system's peak hour, and all fourteen cold stores and ice plants the book holds were held to their firm levels through every closed system peak by Sabine Crest's own Business Saver load-shift programme, which no site can join before its meter has a full June to September of interval reads; their measured 0.60 of maximum demand files the centres too low, and their undispatched 0.90, read from their own reads on uncalled weekdays at the same hour, is what the un-enrolled centres will draw.",
+  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report to the megawatt on all 80 cells, collapses the North Central amendment rows, joins the premise register and prices Harlan Ridge's 31 new refrigerated distribution centres at the refrigerated class's own draw in the system's peak hour, measured on the book's fourteen cold stores and ice plants (0.60 of maximum demand), filing 130 / 40 / 0 / 0 / 165 / 35 / 30 / 0 MW with North Central at 165; the step that lands it there is taking the fourteen as what a cold store draws in the system's peak hour, when each sat inside a Business Saver called window at every closed system peak, held to its committed firm level, and no site can join before its meter has a full June to September, so the centres draw the analogs' uncalled level (0.90) and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task83": "task83 sizes a randomized treatment effect and splits it by each unit's own earlier exposure to that same treatment; here no effect is sized: a separate programme's dispatch held the analogs' measured level down at the very hour the policy reads, the newcomers are barred from that programme, so the analogs' level is restored from their own non-dispatch records before it transports to them, and the cap is levelled by exposure rather than ranked by effect."

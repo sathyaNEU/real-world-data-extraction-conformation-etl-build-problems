@@ -48,7 +48,7 @@ F = dict(
     l2returns="level2_unit_bed_return_0800_2025-26.csv",
     ambulance="ambulance_handovers_hourly_2025-26.csv",
 )
-DISTRACTORS = ["l2returns", "ambulance"]
+DISTRACTORS = ["l2returns", "ambulance", "capacity", "reviewlog", "reviewdb"]
 EXPORT_TIME = dt.datetime(2026, 9, 30, 17, 40)
 
 REF_COLS = ["referral_id", "received_at", "referring_trust", "referred_from", "patient_key", "dta_at",
@@ -146,7 +146,7 @@ def write_metadata(path, target, n):
         "domain": "Policy & Education",
         "subdomain": "public-administration",
         "objective": "Anomaly Detection & Diagnostics",
-        "prompt_shape": "other",
+        "prompt_shape": "07 (grid of cells): eight trusts by three record columns with totals, and the trusts ranked on the confirmable part",
         "as_of": C.AS_OF.isoformat(),
         "deliverables": ["external_review_placement_2027-28.docx", "review_placement_workings.xlsx",
                          "review_placement_by_trust.png"],

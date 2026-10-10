@@ -2,10 +2,10 @@
   "task": "task126",
   "domain": "policy-education",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-10",
-  "stump": "A competent solver chains every CX succession into one application, dates it from its first docket, ends it at its last docket's decision, censors the undecided at the 30 September 2026 extract, reproduces every one of the partner office's acknowledged final decisions to the day with that construction and files the fully chained FY2022 median (31.4 months in the source note's world); the step that lands it there is reading every CX edge as the same application continuing, when a designed share of them (about two in five) carried a refused application's file to a continuing application filed that day, which the examiner production ledger credits as a first action on a new application, so each of those is a new application in its own filing year and its parent was finally decided at its refusal, and the FY2022 median is about 27.9 months (a design target, fixed at stage 2).",
+  "stump": "A competent solver chains every CX succession into one application, dates it from its first docket, ends it at its last docket's final decision notice, censors the undecided at the 30 September 2026 extract, reproduces every one of the Saravel office's 5,358 acknowledged final decisions to the day and files 33.9 months; the step that lands it there is reading every CX edge as the same application continuing, when about one in four of them carried a refused application's file to a continuing application filed on the successor's docketing date, whose first action the examiner production ledger credits as the first action on the merits in an application (1N, credited once per application), so each of those is a new application in its own filing year and its parent was finally decided at its refusal, and the FY2022 median is 28.9 months.",
   "harden_loops": 0,
   "solver_rounds": [],
   "judge": {

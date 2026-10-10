@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place 1,170 of the 1,800 slots in 2027: North Shore 160, Valley 180, Lakes 240, Uplands 170, Riverbend 340, Pinewood 80, with 630 left unallocated.",
+  "answer_source": "task127/submission.md, 1. Final Recommendation",
   "gap": [
     "time",
     "objective",
@@ -36,7 +36,7 @@
   "scoring_unit": "per certified output",
   "spine": {
     "file": "field_orders_2025_2026.csv",
-    "rows": 70000,
+    "rows": 27451,
     "entity": "one field order worked by a co-op's meter crew (heat-pump rate meter set, meter exchange, new service, meter test, disconnect or reconnect) with its order type, co-op, crew, requested date and completed date",
     "grain": "field order",
     "source": "synthetic"
@@ -59,22 +59,24 @@
     ],
     "people": [
       "Stephanie O'Connor",
-      "Anthony Bentley",
+      "Sara Duncan",
       "Elizabeth Villa",
       "Kyle Bean",
       "Larry Woodward",
-      "Brian Robbins"
+      "Brian Robbins",
+      "Sandra Rodriguez",
+      "Christopher Vargas"
     ]
   },
   "deliverables": [
+    "slot_split_board_note_2027.docx",
     "coop_slot_split_2027.csv",
-    "coop_slots_2027.svg",
-    "slot_split_board_note_2027.docx"
+    "coop_slots_2027.svg"
   ],
   "opening_move": "question-first",
   "driver": "The decisive quantity is how many of the period's placeable units a fixed team can finish before the period closes, because each unit counts only once that team performs one last step for it, the team's spare weekly capacity is visible only as the ceiling it held through an earlier unrelated surge, and the decision's own volume, bunched by its filed calendar into weeks no closed period approached, queues the later units past the close; the closed record's lag and an annual capacity check both pass, so the placeable count overstates the in-period total wherever the team is small and the units are many.",
-  "driver_concrete": "A rebated heat pump earns its rebate only when the member's co-op crew sets its heat-pump rate meter, and slots still unset on 31 December lapse, so each co-op's rebated installs are the meter sets its crew completes in the year; Lakes' and Uplands' crews have about ten sets a week left after standing work (the ceiling each held through the 2025 meter-exchange campaign), the autumn application window bunches their programme-scale meter orders into about six weeks, and the queue carries about 300 of them past 31 December, while Year 1's 412 meters, spread across six rebuilt-feeder neighbourhoods, were all set within three weeks.",
-  "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at Year 1's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside Year 1's three weeks and that each co-op crew's year has room for its meters, and commits about 1,450 rebated installs with Lakes taking the most slots; the step that lands it there is carrying Year 1's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten sets a week left after standing work (the ceiling they held through the 2025 meter-exchange campaign), and the autumn window's orders queue past 31 December, so about 1,150 installs land in the year and Riverbend takes the most slots.",
+  "driver_concrete": "A rebated heat pump earns its rebate only when the member's co-op crew sets its heat-pump rate meter, and slots still unset on 31 December lapse, so each co-op's rebated installs are the meter sets its crew completes in the year; Lakes' and Uplands' crews have about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), the autumn application window puts three quarters of their programme-scale meter orders into the autumn, and the queue carries about 180 and 130 of them past 31 December, while the pilot's 412 meters, spread across six rebuilt-feeder neighbourhoods, were all set within three weeks.",
+  "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task87": "task87 caps a count by a per-unit timetable clash, two owed items meeting in one period; here no single unit clashes with anything, and the cap is an aggregate weekly service capacity that the decision's own seasonal volume overruns before the window closes, recovered from the ceiling of an unrelated past surge."

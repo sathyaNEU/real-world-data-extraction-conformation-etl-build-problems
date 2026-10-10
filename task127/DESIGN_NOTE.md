@@ -34,7 +34,7 @@ Similarity claim: no prior build is this puzzle, because none splits a capped qu
 
 ## Stump sentence
 
-A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at Year 1's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside Year 1's three weeks and that each co-op crew's year has room for its meters, and commits about 1,450 rebated installs with Lakes taking the most slots; the step that lands it there is carrying Year 1's meter-set lag to a programme several times its size, when every rebate waits on the member's co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten sets a week left after standing work (the ceiling they held through the 2025 meter-exchange campaign), and the autumn window's orders queue past 31 December, so about 1,150 installs land in the year and Riverbend takes the most slots.
+A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340). (Rewritten at stage 2 with the design's figures.)
 
 ## Decisive rung
 
@@ -46,20 +46,11 @@ Gate G. Litmus: every figure in the pack is correct (the survey and its publishe
 
 The seven survival properties: (1) no shipped sentence says the crews queue, names their capacity or compares the programme with anything they have set; (2) Year 1's book reproduces under any crew capacity above its own weekly volume, blind because Year 1 sold 412 heat pumps across six rebuilt-feeder neighbourhoods; (3) the wrong path ties every closed lag and every control total; (4) the move is a queue over weeks per co-op crew, not a row predicate; (5) which installs lapse is set by queue arithmetic, not by a column; (6) the 2025 campaign is the evidence of the ceiling, not the cause, and no outcome series steps at a date the answer turns on; (7) delete every voice and every wrong basis and the pack still certifies an unqueued split.
 
-Open for the design stage: the 2027 standing work per crew (filed in each co-op's 2027 field plan, or flat across 2025 and 2026 so any forecast converges); the order of work between standing orders and programme meter orders, pinned by the 2025 record (standing work held its weekly level through the campaign) rather than by a sentence; proof that the four other crews never bind (their observed weekly maxima exceed their forward peak load, so their capacity need not be known); the forward arrival calendar (Year 1's two application windows, filed or left to Year 1's purchase dates); and a fluid queue with an overload large enough that a stochastic reading lands in the same tens.
+The draw's open items (forward standing work, the order of work, proof that the other four crews never bind, the forward arrival calendar, a queue robust to a stochastic reading) are closed under `## Stage 2 design`, in the closure table and the bins.
 
 ## Ladder sketch
 
-Targets, to be fixed in the generator and asserted rung by rung. The candidate at each rung is the co-op taking the most slots, with the year's rebated installs.
-
-- **Rung 0.** Year 1's pooled install rate (412 installs over Year 1's qualifying households, about 5.6 per cent) times each co-op's qualifying households from the survey; demand exceeds 1,800, so all 1,800 slots are shared by largest remainder. Candidate: **Uplands** (the most propane and electric homes), 1,800 installs. Why a careful analyst stops: it is the programme's own measured result and it reproduces Year 1's total exactly. Killed by: Year 1's book read by heating system against the survey's denominators (ducted propane about 8.0, electric resistance about 3.0, hydronic propane about 1.0 per cent); the pooled rate misses every Year 1 neighbourhood, because their heating mix differs.
-- **Rung 1.** The survey's joint counts of qualifying households by heating system times Year 1's rate for each system; demand still exceeds 1,800, all slots shared. Candidate: **North Shore** (the most ducted propane), 1,800 installs. Why a careful analyst stops: the rates reproduce every Year 1 neighbourhood within 4 per cent and the survey reproduces the published two-way tables. Killed by: the hosting capacity map joined through the neighbourhood-to-feeder map under the connection standard's 5 kW per heat pump; most North Shore and Valley buyers sit on feeders with fewer slots than buyers.
-- **Rung 2.** Per feeder, the smaller of expected buyers and hosting slots, summed to co-ops. Candidate: **Lakes** (roomy feeders and a large pool), about 1,450 installs, about 350 slots unplaced. Why a careful analyst stops: every placeable buyer's meter would be set within Year 1's three weeks, so the 31 December lapse takes nothing; each crew's year has room for its co-op's meters; the installers say their crews can fit every rebated install. Killed by: the field order history; Lakes' and Uplands' crews held a ceiling through the 2025 meter-exchange campaign while their standing work never moved, which leaves each about ten sets a week, and the autumn window's programme-scale orders outrun it.
-- **Rung 3, decisive.** Each co-op's meter orders, arriving as Year 1's calendar spreads its placeable buyers, worked through the crew's weekly capacity left after standing work; the year's rebated installs are the sets completed by 31 December and each co-op's slots are those installs in tens. Candidate: **Riverbend** (fifth of six at rung 0, roomy feeders and a crew that keeps up), about 1,150 installs, about 650 slots unplaced.
-
-Partial corrections priced, each to be asserted at least the separation floor from the answer: (a) the year-end check on Year 1's lag returns rung 2 unchanged; (b) the crews' annual capacity check returns rung 2 unchanged (Lakes' spare capacity over the year, about 520, exceeds its placeable 420); (c) the queue without the feeder cap gets Lakes and Uplands near the answer and North Shore and Valley far above it; (d) the queue on an even year-round arrival never builds Lakes' backlog; (e) the queue against the full ceiling, ignoring standing work, clears by mid-December. Every correction walks the installs down and the answer is the grid's minimum cell, so no partial reading reaches it by cancellation.
-
-Position and dominance targets: Riverbend fifth at rung 0, never leading rungs 1 or 2, second only at rung 2 behind Lakes by at least 1.20x, leading rung 3 by at least 1.2x. Lakes' carried advantage over Riverbend at rung 2 is about 1.24x (420 against 340); Riverbend's edge on the decisive axis, the share of its placeable installs its crew sets by 31 December, is about 1.63x (1.0 against 0.61), above 1.2 x 1.24 = 1.49. Twin pair for the decisive rung (stage 2): two co-ops matched on every book and survey column and on placeable installs whose 2027 meter sets differ about twofold only through their crews' spare capacity; the note's Elm Park and Birchwood twins stay at rung 2.
+The draw's four-rung sketch (targets of about 1,450 and 1,150 installs, spare of about ten sets a week at both crews) is superseded by the five-rung ladder under `## Stage 2 design`, which carries every target the generator asserts.
 
 ## Why it survives the solver
 
@@ -99,6 +90,282 @@ Registration (coordinator, 2026-10-10, after task124, task125 and task126 were f
 11. **Deliverables** are kept in kind (CSV, SVG, DOCX) and renamed in the fund's idiom. The chart becomes stacked bars per co-op of installs set by year-end, buyers still waiting on meters at 31 December and buyers the feeders turn away, with each co-op's slots as a marker and the 1,800 cap as a reference line.
 12. **Twin pairs.** The note's Elm Park and Birchwood twins (matched on every survey column and on total slots, split by feeder) are kept at rung 2; the design stage adds a pair for the decisive rung (see the ladder sketch).
 
+## Stage 2 design (2026-10-10)
+
+Every figure in this section is a target the generator asserts; nothing here has been computed from data yet. Where a target moved from the draw's sketch, the reason is in the next list and, where an approach died, in `## Tried and rejected`.
+
+### What the design stage changed from the draw sketch
+
+1. **Five rungs, not four.** The draw names G16 (the survey's joint counts over a product of published shares) as a lower rung; it becomes rung 0, so the ladder runs product of published shares, joint counts, rates by heating system, feeder cap, crew queue, with a different leader at each (Valley, Uplands, North Shore, Lakes, Riverbend).
+2. **Spare capacity is about ten sets a week at Lakes and about seven at Uplands**, so each crew's annual spare (about 500 and 350) clears its co-op's placeable meters (420 and 300) and the annual check passes, while the autumn window still overruns both crews.
+3. **Lakes and Uplands crews work four ten-hour days, Monday to Thursday**, visible in the field orders (no completions on a Friday). The 2027 holidays that fall on a Friday (24 and 31 December observed) then cost those crews nothing, and the only holiday inside the binding queue is Thanksgiving Thursday.
+4. **The pilot's spring and autumn split is 25 and 75 per cent in every pilot neighbourhood**, so per-co-op and pooled readings of the forward calendar agree exactly; pilot installs are North Shore 100, Valley 88, Lakes 40, Uplands 32, Riverbend 92, Pinewood 60 (412).
+5. **The graded total is the sum of the co-ops' slots**, not the unrounded installs rounded once, because the two constrained co-ops' convention spreads add across a ten (see Tried and rejected).
+6. **The ask layer is re-cut.** The draw's per-co-op figures (meters still unset on 31 December, buyers the feeders turn away) and its chart parts (the year-end queue annotated, the stacked series) name rungs 3 and 4 in the prompt, so they are gone. The asks are now two device-carried audits of the 2026 pilot per co-op (the ask sheet below), and the chart compares 2027 slots with 2026 pilot installs.
+7. **The spine is about 31,000 rows**, not 70,000: six crews' field orders over 104 weeks at their standing volumes, plus the pilot's 412 meter sets and the 2025 exchange batches. It clears the 25,000-row gate.
+8. **The 2025 meter-exchange campaign is a one-day batch** (Lakes 120 and Uplands 84 exchange orders requested on Monday 7 July 2025), which the crews worked off at their spare capacity for twelve weeks, so the ceiling is visible over twelve weeks including Labor Day week.
+
+### Gate G
+
+Litmus, in a sentence: every figure in the pack is correct (the survey and its published tables, the pilot's rebate log, the hosting capacity filings, the field orders, the payment records), no stakeholder's read of their own numbers is overturned, and what defeats the model is a forward queue that no closed period ever formed, so the reported numbers are not wrong and catching a wrong read is not the difficulty: the answer is **no**.
+
+Primary mechanism: `binding_constraint` (the co-op crews' spare weekly meter-set capacity against the autumn window's orders, before 31 December), with `forecasting` supporting (the forward arrival calendar and the forward standing work). `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
+
+Delete every wrong number and every misleading claim (the outreach director's belief, the installers' group chair's belief, the state's licensed basis, both distractors): the survey, the pilot log, the hosting filings and the field orders still certify an unqueued split of 1,480 placed slots led by Lakes, and nothing in the remaining pack says the crews queue.
+
+Clean-data test, per suspect file, to be asserted in the generator: (a) the survey is a weighted sample; replace it with a census whose joint counts equal the weighted ones and every rung moves by nothing; (b) the field orders are complete for both years; extend them to a third clean year and the recovered spare and standing levels do not move; (c) the hosting filings are a dated snapshot; the reinforcement schedule finishes no saturated feeder in 2027, so a 31 December snapshot is the same snapshot. Instrument repair: no instrument in the pack, repaired or replaced, observes the 2027 queue, because the queue exists only once the programme's own 2027 volume arrives. Lens swap: no; the naive read is the placeable installs and the answer is the installs set by year-end, which are different forward quantities built by different constructions, not one population read two ways. Pre-draw identity: the governing arithmetic (slots = expected meter sets by 31 December, in tens) closes over arrivals and a capacity, neither of which ships. Corpus direction: under the naive path the pilot log reproduces exactly (every pilot meter set inside three weeks, no closed week near a crew's spare capacity), so the corpus never refutes the stop rung.
+
+The constraint removes installs and re-places none: lapsing meter sets are not moved to another co-op, because every other co-op already receives every slot its placeable buyers can use, and the slots they would have used stay unallocated.
+
+### Entity, unit of value and decision
+
+The Minnesota Clean Heat Fund pays heat-pump rebates through six participating co-operatives and is scored on rebates earned, one per heat-pump rate meter the member's co-op crew sets in the programme year (per certified output). Two quantities both read as the size of a co-op's 2027 programme: the buyers its qualifying households will produce, and the meters its crew will set before 31 December. They rank the co-ops differently because the largest pools sit behind full feeders (North Shore, Valley) and the two co-ops whose feeders have room (Lakes, Uplands) have the crews with least spare capacity.
+
+Decision: allocation to a fixed total (shape 05), 1,800 funded slots across North Shore, Valley, Lakes, Uplands, Riverbend and Pinewood, in tens, with the slots no co-op can use left unallocated. Forward-facing: the window is programme year 2027, which has not opened.
+
+**Answer (targets): North Shore 160 · Valley 180 · Lakes 240 · Uplands 170 · Riverbend 340 · Pinewood 80; 1,170 placed, 630 unallocated; Riverbend takes the most, 100 slots ahead of Lakes.** Riverbend ranks fifth of six on the natural pipeline. Margin on the correct basis 1.42x (340 against 240).
+
+### The ladder (five rungs)
+
+Rungs 0 to 2 share all 1,800 slots by largest remainder in tens because expected buyers exceed 1,800; rungs 3 and 4 place fewer and leave the rest unallocated under the filed allocation rule's other branch. Order in every row: North Shore, Valley, Lakes, Uplands, Riverbend, Pinewood.
+
+| Rung | Gap | Construction | Slots (targets) | Placed | Leader, margin |
+|---|---|---|---|---|---|
+| 0 | population | published one-way shares multiplied (propane or electric heat x owner-occupied x detached x income band) x households x the pilot's pooled install rate (412 over the pilot's 7,350 qualifying households, 5.61 per cent) | 310 · 450 · 260 · 350 · 230 · 200 | 1,800 | Valley, 1.29x |
+| 1 | population | the survey's weighted joint counts of qualifying households x the pooled rate | 350 · 340 · 250 · 450 · 220 · 190 | 1,800 | Uplands, 1.29x |
+| 2 | population (G14) | joint counts by heating system x the pilot's rate for each system (ducted propane 8.0, electric resistance 3.0, hydronic propane 1.0 per cent); expected buyers 572 · 432 · 438 · 420 · 350 · 220 | 420 · 320 · 330 · 310 · 260 · 160 | 1,800 | North Shore, 1.27x |
+| 3 | objective (G8) | neighbourhoods grouped onto feeders through the feeder map, each feeder's buyers capped at its hosting slots (headroom over 5 kW), summed to co-ops; placeable 161.4 · 181.8 · 420 · 300 · 340 · 79.6 | 160 · 180 · 420 · 300 · 340 · 80 | 1,480 | Lakes, 1.24x |
+| 4, decisive | time (G7) | each co-op's placeable meter orders arriving on the pilot's calendar (a quarter in the spring window, three quarters in the autumn window), worked through its crew's weekly capacity left after standing work, standing work first; slots are the meters set by 31 December, in tens; sets 161.4 · 181.8 · 239.0 · 169.5 · 340 · 79.6 | **160 · 180 · 240 · 170 · 340 · 80** | **1,170** | **Riverbend, 1.42x** |
+
+Why a careful analyst stops at each rung, and the one shipped fact that kills it:
+
+- **Rung 0.** The published tables are the survey office's own release and the product reproduces Table H1's propane-and-electric counts exactly. Killed by Tables H2 (fuel x tenure) and H3 (tenure x structure): the product misses every two-way cell by 18 to 45 per cent, and the microdata's weighted joint counts reproduce all three tables to the household.
+- **Rung 1.** The joint counts reproduce every published table and the pooled rate reproduces the pilot's 412 exactly. Killed by the pilot log read by heating system against the survey's denominators: the system rates reproduce all six pilot neighbourhoods within 4 per cent, the pooled rate misses every one by at least 15 per cent, because the pilot neighbourhoods are ducted-heavy and their mixes differ.
+- **Rung 2.** Survey and pilot both certify it, and the outreach director's belief is answered (Uplands drops to fourth). Killed by the hosting capacity filings joined through the neighbourhood-to-feeder map under the connection standard's 5 kW per heat pump: about three quarters of North Shore's and Valley's expected buyers (470.6 of 572 and 290.2 of 432) sit on feeders whose slots (60 and 40 in all) are at most half their buyers.
+- **Rung 3.** Every placeable buyer's meter would be set inside the pilot's three weeks, so the 31 December lapse takes nothing; each crew's year has spare room for its co-op's meters (Lakes about 500 against 420, Uplands about 350 against 300); the installers' group chair says installers can fit every rebated install, which is true. Killed by the field orders: Lakes' and Uplands' crews held a flat weekly ceiling for twelve weeks after the July 2025 exchange batches while their standing work kept its usual weekly level and lag, which leaves about 10 and 7 sets a week, and the autumn window's 315 and 225 programme meter orders outrun that from late September to the year-end.
+- **Rung 4.** The answer.
+
+"A solver who does everything right up to rung 3 commits to Lakes 420, Riverbend 340, Uplands 300, Valley 180, North Shore 160, Pinewood 80, 1,480 placed and 320 unallocated."
+
+Worth of each rung on the graded quantity (placed slots): rungs 0 to 2 hold it at the cap (1,800); rung 3 moves it -17.8 per cent; rung 4 moves it a further -20.9 per cent (1,480 to 1,170). Sign direction: every correction walks placed slots down or holds them, and the answer is the minimum cell of the grid, so no partial reading reaches it by cancellation. The separation floor that binds on the graded figure is the placed total (1,170 against the nearest wrong cell, below); the ranking floors bind on the leader.
+
+### Position, dominance and twins
+
+| Rung | Riverbend's rank | Behind the leader by |
+|---|---|---|
+| 0 | 5th of 6 | 1.96x (450 against 230) |
+| 1 | 5th | 2.05x |
+| 2 | 5th | 1.62x |
+| 3 | 2nd | 1.24x (420 against 340) |
+| 4 | 1st | leads Lakes by 1.42x |
+
+Leads no intermediate rung; second on one, at 1.24x (at or over the 1.20x floor); no leader margin under 1.15x anywhere.
+
+Discriminator dominance. Lakes' carried advantage over Riverbend into rung 4 is 420 / 340 = 1.235x placeable installs. Riverbend's edge on the decisive axis, the share of its placeable meters its crew sets by 31 December, is 1.000 / (239.0 / 420 = 0.569) = 1.757x. Required 1.2 x 1.235 = 1.482; 1.757 clears it, product 1.757 / 1.235 = 1.42x, the answer's margin.
+
+Twin pairs. Rung 3 keeps the source note's Elm Park (North Shore) and Birchwood (Valley): identical on every survey column, on expected buyers (160) and on total hosting slots (160); Elm Park's buyers sit 140 on a feeder with 25 slots and 20 on one with 135 (places 45), Birchwood's 100 on a feeder with 35 and 60 on one with 125 (places 95), 2.1x. Rung 4 adds Loon Point (Lakes) and Sauk Flats (Riverbend): identical on every survey column, on the pilot's heating-system rates, on feeder room (each 64 expected buyers on a roomy feeder) and on the forward calendar; Loon Point's 2027 meter sets are about 36 and Sauk Flats' 64, 1.75x apart, and only the crew queue separates them. Neither pair is graded; each defeats a lookup that transfers a neighbourhood-type rate.
+
+### Correction grid and partial corrections
+
+Independent toggles: shares (product, joint) x rate (pooled, by system) x feeder cap (none, co-op total, feeder) x queue (none, decisive) gives 24 cells. Every cell without both the feeder cap and the queue shares all 1,800 (product x pooled names Valley, joint x pooled Uplands, joint x system North Shore, product x system Valley); the co-op-total hosting check finds headroom above demand in every co-op and returns its uncapped cell. Every capped cell without the queue places 1,400 to 1,520 and names Lakes. Queue cells without the feeder cap overflow 1,800 and name North Shore or Valley. Only joint x system x feeder x queue gives the answer.
+
+Partial readings of the decisive rung, each asserted with its distance from the answer:
+
+| Reading | Leader | Placed | Shipped fact it violates |
+|---|---|---|---|
+| (a) the year-end lapse on the pilot's lag | Lakes | 1,480 (+26.5%) | the 2025 record: the crews' ceiling; the pilot never loaded a crew |
+| (b) each crew's annual spare against its placeable meters | Lakes | 1,480 | the filed windows bunch 75 per cent of meters into the autumn |
+| (c) the queue on rung 2's buyers, no feeder cap | North Shore | 1,800 shared | the hosting filings and the connection standard |
+| (d) the queue on an even year-round arrival | Lakes | 1,480 | the filed application windows and the pilot's dates |
+| (e) the queue against the full ceiling, standing work ignored | Lakes | 1,480 | the 2025 record: standing completions held their level and lag through the ceiling weeks |
+| (f) first come first served across standing and programme orders | Lakes | about 1,450 | the same: under one queue the standing orders would have aged in 2025, and they did not |
+| (g) standing work forecast from averages that carry the July 2025 exchange batches as weekly run-rate | Riverbend | 1,150 (-1.7%) | the batches are one-day bulk requests of a co-op-initiated order type, served after standing work; the 2026 level and every 2025 week outside the batch agree at the same weekly standing level |
+| (h) weekly instead of daily capacity, Thanksgiving ignored, start week rounded | Riverbend | 1,170 | none: convergent, inside every bin |
+
+Cell (g) is the nearest wrong cell and sits under the 6 per cent floor on the placed total, so it is closed by the argument rather than by distance: carrying a one-day bulk batch forward as weekly standing work forecasts a 2027 exchange batch that no record or filed document schedules, and the same 2025 record that recovers the ceiling shows the batch orders served after standing work, so the batch was never standing work. It still misses three graded slot figures (Lakes 230, Uplands 160, the placed total 1,150 and the unallocated 650). The generator asserts its values and the verifier reproduces them.
+
+### The seven survival properties, against the pilot lessons
+
+1. **No shipped sentence describes it.** The programme rules say a rebate is earned when the co-op sets the heat-pump rate meter and that unset slots lapse on 31 December; a solver executes that with the pilot's lag and lands on rung 3. No document mentions crew capacity, standing work, the 2025 exchange batches, a backlog or a comparison of the programme with any crew. The participation agreement says the co-ops share field orders so the fund can verify each rebated meter set, which gives the file a verification job, not a capacity one.
+2. **No sweepable corpus nominates it.** The pilot log reproduces under any spare capacity above the pilot's own weekly volume: the pilot's peak weekly meter orders were 6 at Lakes and 4 at Uplands against spares of 10 and 7, and every pilot meter was set inside 15 working days. Asserted twice: on the structural property (pilot weekly orders at most 0.6 of spare in every crew-week) and by re-running the pilot under the queue model and under no queue, case for case.
+3. **No arithmetic symptom.** On the wrong path every count ties: 412 pilot rows match 412 heat-pump meter-set orders, survey weights sum to co-op households, the published tables reproduce, each co-op's placeable sum stays under its feeders' slots, and every annual crew total has room.
+4. **Not a per-row predicate.** Which meters lapse is a queue over weeks per crew: arrivals spread on the calendar, a capacity recovered as a plateau, standing work served first, the backlog read at a date. No column marks a meter order as late.
+5. **The enumeration is arithmetic.** It is a construction (a fluid queue over a recovered constant), not a selection from a menu; no corpus scores it.
+6. **No cutover date on the answer's path.** The July 2025 batch is evidence of the ceiling, not a cause; no outcome series the answer turns on steps at it, and the 2026 record is flat.
+7. **Survives deletion.** Delete every voice, the licensed wrong basis and both distractors, and the pack still certifies the rung 3 split.
+
+Against the lessons file in particular: no schema-visible join hands it over (the heat-pump orders join to the pilot log on premises, which verifies the pilot and stops there); no reproduction check refutes rung 3 (the pilot reproduces exactly); no stated definition carries it (the capacity is a recovered plateau). A solver replaying at the finest grain replays each 2027 meter set at the pilot's lag and never re-times it to its place in a queue the programme's own volume creates, which is FC01's held form. Aging orders are ordinary texture in the field orders, not a capacity flag: Valley's meter tests aged through a three-week meter-supply hold in March 2026 while its completions dipped, and Pinewood's reconnects spiked after the June 2026 storm while its completions rose to its highest week, so only a plateau of completions under a standing queue reads as a ceiling. The residual risk is a solver that checks the forward programme against each crew at a weekly or monthly grain as a habit; nothing in the pack or the prompt prompts that check, and the stopping rule says what a landed round means.
+
+### The calibration corpus
+
+Form: the 2026 pilot's rebate log, one row per rebated install (412) with premises, co-op, neighbourhood, heating system replaced, purchase, install and meter-set dates; open only in the six neighbourhoods on the feeders rebuilt under the co-ops' undergrounding programmes. Qualifying households in the pilot neighbourhoods, from the survey: about 4,440 ducted propane, 1,410 electric resistance and 1,500 hydronic propane (7,350).
+
+Back-test: the system rates reproduce 6 of 6 neighbourhoods within 4 per cent; the pooled rate misses every one by at least 15 per cent and the swept family (pooled, by tenure, by structure, by income band, by system) has every rival but the system rates missing at least two neighbourhoods by 12 per cent or more. The pooled rate ties the pilot total exactly, so the refusal is per case and the aggregate gap is carried by the forward co-ops' mixes (rung 1 against rung 2 moves every co-op's slots by 10 to 110).
+
+Blind by construction: to the feeder cap (every pilot feeder had at least three times the slots the pilot used) and to the crew queue (above). Resemblance points at the decoy: the pilot neighbourhoods are ducted-heavy and most resemble North Shore, rung 2's leader.
+
+Every rule the golden composes has a case that breaks if it flips: rates by system (each pilot neighbourhood), standing work first (the 2025 batch weeks, standing lag unchanged), the ceiling (the twelve plateau weeks at each of the two crews), holiday handling (Labor Day 2025 inside the plateau: three working days, three quarters of a week's completions), Friday holidays not taken on Thursday (Lakes and Uplands crews worked Thursday 24 and 31 December 2026), the calendar split (25 and 75 per cent in each pilot neighbourhood).
+
+### Pins, voices, the licensed wrong basis and the distractors
+
+Filed pins, each stated once: the 2027 programme rules (eligibility: owner-occupied detached homes heated by ducted propane, hydronic propane or electric resistance, inside the income band; a rebate is earned when the member's co-op sets the heat-pump rate meter; slots unspent on 31 December lapse; application windows 1 March to 30 April and 1 September to 15 October; the allocation rule: each co-op receives the slots equal to the rebated installs expected in its territory in the programme year, to the nearest ten, and where those together exceed 1,800 they are shared in proportion by largest remainder in tens); the connection standard (each heat pump assessed at 5 kW against the co-op's filed hosting capacity, and an install proceeds only where the feeder has room); the participation agreement (monthly field-order sharing for verification). Empirical pins: rates by heating system (pilot log), feeder slots (filings), each binding crew's ceiling, standing level and order of work (2025 to 2026 field orders), the forward calendar shape (pilot dates). Counter-pins: none; the generator greps every document for crew, capacity, backlog, keep up, queue and spare.
+
+Voices (the trustees' paper for the 17 December meeting): Anthony Bentley, outreach director, believes Uplands has more propane and electric homes than any other co-op (true; rung 1's leader); Larry Woodward, chair of the participating installers' group, says installers can fit every rebated install the fund pays for in 2027 (true, and about installers); Kyle Bean, field operations superintendent at Lakes, reports Lakes members asked about the heat-pump rate more than any other service this year (true; points at rung 3's leader). Elizabeth Villa chairs; Brian Robbins's covering note says every co-op's hosting filing is current to 30 November 2026. No voice mentions any crew's capacity or the 2025 batches, and none endorses carrying a figure forward.
+
+Licensed wrong basis: the programme rules record that the state energy office apportions its 2027 match across the co-ops on Table H1's propane- and electric-heated household counts and will present that apportionment at the meeting. Basis and endorsement only, no figures; it points at Valley, rung 0's leader.
+
+Distractors (named in `metadata.json`, never in a file name): the fund's 2026 weatherization grants register (same co-ops and neighbourhoods, a related programme the split never reads) and the co-ops' 2027 to 2028 feeder reinforcement schedule (it raises hosting on four saturated feeders, every one finishing in 2028).
+
+### The 22-axis closure table (determinism-check A5)
+
+| # | Axis | Reading chosen | Closure |
+|---|---|---|---|
+| 1 | Population | qualifying households as the filed eligibility defines them; standing work is every order type except heat-pump meter sets and the July 2025 exchange batches | filed pin plus C1: survey columns map one to one onto the eligibility clause; the standing level is equal (to 0.05 a week) over 2026, over 2025 outside the batch weeks and over the 52 weeks before the as-of date |
+| 2 | Unit of account | one slot is one rebated install, one outdoor unit and the indoor units it serves, one per premises | C1: the pilot log has one row per premises (asserted), so install and premises counts agree |
+| 3 | Attribution window | an install counts in the year its meter is set | filed pin; C1: every pilot purchase, install and meter set falls inside 2026 |
+| 4 | As-of dating | hosting filings current to 30 November 2026 | C1: the reinforcement schedule finishes no saturated feeder in 2027, so any as-of date in 2027 returns the same slots |
+| 5 | Version basis | one release of the published tables, one vintage of each filing | C1: no file on the main path carries a second version |
+| 6 | Divisor | install rates over the pilot neighbourhoods' qualifying households from the survey | C2: only the survey denominators with system rates reproduce 6 of 6 neighbourhoods within 4 per cent |
+| 7 | Weighting | survey weights | C2: the unweighted counts miss Tables H1 to H3 by 9 to 30 per cent; the weighted counts reproduce them to the household |
+| 8 | Measurement window length | spare capacity from the plateau weeks; standing level from any window not containing the batch | C1 by construction (equal means and medians); cell (g) above is the one reading that differs, closed by argument |
+| 9 | Boundary inclusivity | meter set on or before 31 December | C1: 31 December 2027 is a Friday and the two binding crews do not work Fridays; the unbound co-ops finish by early December |
+| 10 | Rounding path | each co-op's expected sets rounded to the nearest ten; placed = sum of the rounded slots; unallocated = 1,800 minus placed | filed allocation rule; every unrounded figure at least 1.5 from its bin edge under every convention in row 22 (bins below) |
+| 11 | Tie-break | largest remainder in tens at rungs 0 to 2 | C4: no remainder tie at any sharing rung, asserted; no two co-ops share a slot figure in the answer, so the chart order is unique |
+| 12 | Maturity and censoring | the pilot is complete | C1: the last pilot meter set is 9 December 2026, before the as-of date of 11 December; no pilot install is open |
+| 13 | Order of operations | feeder cap before the queue; standing work before programme orders | filed (an install proceeds only where the feeder has room, so a blocked buyer never raises a meter order) and C2 (the 2025 batch weeks); cell (f) |
+| 14 | Row order | none | C1: the figure is invariant to the field-order file's row order, asserted on six shuffles |
+| 15 | Duplicate resolution | none needed on the main path | C1: zero duplicate keys and zero duplicate rows in every main-path file, asserted |
+| 16 | Identity normalisation | neighbourhood and feeder keys identical across survey, map, filings and pilot log | C1, asserted; co-op names written one way on the main path |
+| 17 | Netting | none; each heat pump assessed at 5 kW gross | filed pin (the connection standard) |
+| 18 | Dimensional units | hosting headroom in kW; slots = headroom / 5 | C1: every feeder's filed headroom is a multiple of 5 kW, so floor and round agree |
+| 19 | Code semantics | order types defined in the dictionary (heat-pump rate meter set, meter exchange, new service, meter test, disconnect, reconnect, relocation) | dictionary pin for field semantics; which orders are standing work is read off the 2025 record (C2), not stated |
+| 20 | Integerisation | nearest ten per co-op; no sharing at rung 4 because placed is under 1,800 | filed rule; the sharing branch does not fire, asserted |
+| 21 | Scope of a stated clause | the 31 December lapse governs every slot in every co-op | filed pin |
+| 22 | Forward window contents | 2027 meter orders arrive on the pilot's calendar: a quarter of each co-op's placeable installs in the spring window, three quarters in the autumn window, at the pilot's install-to-order lags | C1: the 25 and 75 per cent split is identical in every pilot neighbourhood; the binding crews' queues never empty between the first autumn order (week of 27 September 2027) and the year-end, so their year-end sets depend only on the queue's start date and capacity, not on the within-window shape; spring orders clear by August at both crews under every spring shape |
+
+Two forward readings of how 2027's meter orders arrive converge by construction, and the generator asserts both. Read as one pass, every placeable buyer raises an order and the crew sets what it can; read as a fixed point, only buyers holding a slot install, slots go first come first served, and a co-op's useful slots are those whose meters get set. Because the binding crews' autumn queues run from the first autumn order to the year-end either way, sets(S) equals S up to Lakes' 242.5 (spring 105 plus 137.5 autumn sets at 2.5 a working day over 55 days, before the bin tuning above) and is flat beyond it, so both readings give Lakes the same 240 and Uplands the same 170. The pilot measured demand rather than rationed it: its 600 slots (100 per neighbourhood) were never exhausted in any neighbourhood, which the pilot rules' allotments and the log's counts show, so the system rates are not censored by a cap.
+
+### Bins and flip conditions
+
+The two figures that carry convention spread are the binding co-ops' sets. Lakes, golden convention (daily capacity of 2.5 sets on each Monday-to-Thursday working day, Thanksgiving Thursday lost, queue from the first autumn order's day): 239.0. Variants: weekly capacity with Thanksgiving ignored +2.5, start day taken as the Monday of its week up to +2.5, start day taken as the following Monday -2.5: band 236.5 to 244.0, inside the 235 to 245 bin for 240 by 1.0 at the top. Uplands at 1.75 a day: 169.5, band 167.75 to 173.0 inside 165 to 175. Flip conditions: Lakes' slots move to 250 only if its spare reached 10.5 a week (11 more sets by 31 December), and to 230 only if it fell to 9.6; Uplands' move only outside 6.6 to 7.4. The unbound co-ops' placeable figures are fractional expected buyers and sit at least 1.4 from a bin edge and off the round value (North Shore 161.4, Valley 181.8, Riverbend 341.6, Pinewood 79.6); the rung 3 and rung 4 tables above carry Riverbend as 340 for readability, and the generator's target is 341.6. Rebate shares in the asks sit at least 0.02 points from a one-decimal edge; dollar figures at least 0.2 from a whole-dollar edge.
+
+### The evidence pack (plan for stage 3)
+
+Nineteen files, six formats (CSV, XLSX, PDF, DOCX, JSON, TXT), each name in the fund's or the co-ops' own idiom, none naming a role.
+
+| # | File (provisional) | Role | Path |
+|---|---|---|---|
+| 1 | `field_orders_2025_2026.csv` | spine, about 31,000 rows: one field order per row (co-op, crew, order type, premises, requested and completed dates) | main (rungs 3 and 4) |
+| 2 | `heat_survey_2025_households.csv` | survey microdata, about 6,200 weighted households with neighbourhood, heating system, tenure, structure, income band | main (rungs 0 to 2) |
+| 3 | `heat_survey_2025_tables.xlsx` | the survey office's published Tables H1 to H4 by co-op | main (certification) |
+| 4 | `pilot_rebates_2026.xlsx` | calibration corpus, 412 rows; also the ask referee | main, and the asks' key |
+| 5 | `hosting_capacity_nov2026.xlsx` | context artifact (capacity_report): every feeder's remaining hosting capacity in kW, by co-op, compiled by the grid liaison | main (rung 3) |
+| 6 | `area_feeder_map.csv` | neighbourhood to feeder, each neighbourhood on exactly one feeder | main (rung 3) |
+| 7 | `heat_pump_programme_rules_2027.pdf` | governing: eligibility, the meter-set trigger, the 31 December lapse, the windows, the allocation rule, the state's licensed basis | main |
+| 8 | `cooperative_participation_terms.pdf` | governing: the 5 kW connection standard, monthly field-order sharing for verification, assigned rebates paid in two legs | main, ask B |
+| 9 | `installer_invoices_2026.csv` | every invoice version installers delivered for pilot jobs | ask A |
+| 10 | `rebate_payments_2026.csv` | the fund's payment ledger | asks A and B |
+| 11 | `bank_returns_2026.json` | the bank's returned-payment notices with UTC timestamps, as its API delivers them | asks A and B |
+| 12 | `finance_procedures.pdf` | the invoice of record; a payment counts on the Central-time date it clears; a returned payment is not a payment | asks A and B |
+| 13 | `installer_price_guide_2026.pdf` | the installers' group price guide: a multi-head ductless system is priced and rebated as one install | ask A |
+| 14 | `trustees_paper_17dec2026.docx` | social layer: the three voices, the meeting's agenda | none |
+| 15 | `coops_and_installers.xlsx` | dimension tables: co-ops, crews and working pattern, installers | both |
+| 16 | `field_definitions.txt` | the dictionary for every file's columns and order-type codes | both |
+| 17 | `weatherization_grants_2026.csv` | distractor | none |
+| 18 | `feeder_upgrades_2027_2028.pdf` | distractor | none |
+| 19 | `about_these_files.txt` | provenance: source, date and licence per file | none |
+
+Gates: 19 files, 6 formats, a 31,000-row file, two distractors. All data synthetic and generated (provenance says so); the published-table layout follows the American Community Survey's heating-fuel tables in form only.
+
+### The ask sheet and ledger (supplemental-stumping)
+
+The main call's declared row population: every row of files 1 to 6, the pilot log's columns premises, co-op, neighbourhood, heating system and the three dates, and the sentences of files 7 and 8 the call reads. Device and hazard rows live only in files 9 to 11; the generator asserts zero device rows and zero hazard rows inside the main population. Neither ask opens the field orders, the survey, the filings or the map.
+
+**Ask A, the pilot's installed cost by co-op** (12 criteria). For each co-op, the 2026 pilot's average installed cost per rebated install (whole dollars) and the rebate as a share of that cost (per cent, one decimal). Use: the trustees set each slot's 2027 budget line against what an install cost there; it is the second measure the note and the CSV carry for every co-op, on which the split does not turn (H18: a component of each co-op's case, decoupled). Path, 9 files: 9, 4, 10, 11, 12, 13, 15, 16, 8; columns job, invoice and version ids, delivered and accepted timestamps, line amount, head serial, installer, premises, rebate id, payment id, amount, payee type, return notice id, return timestamp (14).
+- Primary device A1 (D2, version of record): 9 per cent of pilot jobs carry more than one invoice version; the invoice of record is the latest version the fund accepted (finance procedures). On about a third of multi-version jobs the latest delivered version is a re-send the fund rejected at a higher price; on about two fifths an accepted change order genuinely raised the price, so "first version" and "lowest price" both fail (interior handling). Stops: first version, latest delivered, lowest price, all versions summed, latest accepted.
+- Hazards: HZ1 on the cost, HZ1 and HZ2 on the share (below).
+- Target answers (unrounded set mid-bin at stage 3): average cost North Shore about 17,840, Valley 16,920, Lakes 18,310, Uplands 15,760, Riverbend 17,130, Pinewood 16,480 dollars; rebate share 23.4, 24.1, 22.6, 25.8, 23.9 and 24.7 per cent. Lazy delta (latest delivered, lines summed, ledger summed): every co-op's cost at least 2.5 per cent high and every share at least 0.6 points off.
+
+**Ask B, the pilot rebates paid in 2026 by co-op** (12 criteria). For each co-op, the rebate dollars paid in the 2026 programme year (whole dollars) and the number of pilot installs those payments cover. Use: the trustees close the pilot's books on it, and it audits the 412 installs the rates are built on back to what the fund paid (H18: the audit trail of an input the call consumes). Path, 8 files: 10, 11, 4, 12, 7, 8, 15, 16; columns payment id, rebate id, amount, payee type, release timestamp, clearing timestamp (UTC), return notice id, return timestamp, reissue reference, premises, co-op, meter-set date (12).
+- Primary device B1 (D8, a clock against a filed cutoff): the bank's clearing timestamps are UTC; a payment counts in the programme year of its Central-time clearing date (finance procedures). The 31 December 2026 evening payment run (22 payments) clears on 1 January UTC and belongs to 2026; reading UTC drops it. Over-correction stop: counting January 2027 clearings for December meter sets as 2026 (they are 2027 under the same rule).
+- Hazard HZ2 on both figures. Over-cleaning half: assigned rebates are paid in two legs, installer and member (participation terms), so "one payment per rebate" deletes genuine legs.
+- Target answers: installs covered North Shore 96 of 100, Valley 85 of 88, Lakes 38 of 40, Uplands 31 of 32, Riverbend 89 of 92, Pinewood 57 of 60 (396 of 412); dollars at about 4,100 a rebate, set at stage 3. Lazy stop (ledger summed, UTC dates): dollars at least 4 per cent off in every co-op and counts off by at least 2 in four co-ops and 1 in the other two.
+
+Hazard table:
+
+| Hazard | Family | What it is | Asks and figures it moves | Per-figure delta (target) |
+|---|---|---|---|---|
+| HZ1 | D6, a quantity repeated on every line | one installer firm's billing export lists a multi-head ductless system one line per indoor head with the system price on every line; the price guide prices and rebates the system as one install, and the pilot log (the referee) has one install per premises | A cost, A share | cost +4 to +11 per cent in the four co-ops where the firm works; share -1.0 to -2.4 points |
+| HZ2 | D4, an absent channel | 6 per cent of pilot payments by bank transfer were returned (closed accounts); the return lives only in the bank's notices, and the fund reissued each by cheque under a new payment id in the ledger | A share, B dollars, B count | share +0.5 to +1.5 points; dollars +3 to +7 per cent; count +1 or +2 where a reissue cleared in 2027 |
+
+Two hazards rather than three to five, because the set has two asks; each graded figure sits under at least two independent devices (A cost: A1, HZ1; A share: A1, HZ1, HZ2; B dollars and count: B1, HZ2). Composed deltas for every subset of mishandlings are asserted outside the bin, and no subset cancels back onto the golden. The one referee is the pilot log: byte-clean, never trapped, it settles the one-install-per-premises question for HZ1 and carries no cost or payment level. No oracle: nothing in the pack states a paid total, a cost total or a cleared count.
+
+Pair arithmetic, on paper. Planning weights 38 / 7 / 55, `r` about 4 (the chart's 2026 pilot series and the CSV's shape survive a wrong call). Leakage of a top solver that runs the hygiene battery and executes every filed rule it is pointed at: A1 about 0.6, HZ1 about 0.35, HZ2 about 0.5, B1 about 0.35, split legs kept about 0.85, so A cost 0.21, A share 0.105, B dollars 0.149, B count 0.149, mean L = 0.153 on both sheets (the asks are decoupled, so the cracker and the mirror leak alike). Cracker 38 + 7 + 55 x 0.153 = 53.4; mirror 4 + 7 + 8.4 = 19.4; pair 36.4, under 40 with 13.6 points to the bar. Check: 55 x (0.153 + 0.153) = 16.8 against 28 - 4 = 24. This holds only if at most one response lands the main call, which is the ladder's job.
+
+### Criteria arithmetic (shape 05)
+
+The committed split: 6 co-op slot figures, the placed total, the unallocated figure, the co-op taking the most and its lead in slots = 10. Ask A 12, ask B 12. The chart's named parts: the bar pair per co-op, the order by 2027 slots, every bar labelled, the unallocated bar with its value, the placed total in the title = 5. The CSV's total row matching the note = 1. Three files = 3. Total 43, of which 24 are asks (56 per cent of criteria). Distinct findings: the forward split (placed slots by co-op), the pilot's cost by co-op, the pilot's paid audit by co-op.
+
+### Realism debts
+
+- The pilot's spring share is exactly 25 per cent in all six neighbourhoods (25, 22, 10, 8, 23 and 15 installs). Forced: the binding co-ops' sets move 4.2 a point of spring share, so any spread between per-co-op and pooled shares would open a fork worth a ten. Mitigation: both pilot windows ran on the same dates in every neighbourhood with the same installer pool, and the counts are small.
+- Standing work at the binding crews is stationary to 0.05 a week across both years. Forced by axis 8; mitigation: weekly counts still vary (Lakes 28 to 36, Uplands 24 to 32) with the holiday dips real data shows.
+- The binding crews' plateau is flat within one order a week for twelve weeks. Mitigation: that is what a fully booked four-day crew looks like; Labor Day week shows the lost Monday.
+
+### Stopping rule (written before any round)
+
+One plain solver. It commits to the split, the placed total or the leader other than the golden (Riverbend at 340, 1,170 placed): the build goes to the judge. It lands Riverbend with every slot figure: harden, at most three loops, each written into Tried and rejected with the solver's own sentence. It lands Riverbend but misses the slot figures by convention: that is a determinism finding before it is a difficulty finding, and the bins are re-centred first. A round that reaches the crew queue by a weekly or monthly check of the forward programme against each crew confirms the residual risk named above, and the hardening rung goes off that chain.
+
+### The prompt
+
+`prompt.md`, 248 words, question-first (the last three builds open constraint-first, other and number-first), the role in the fourth sentence, three files commissioned in the order the trustees meet them. The call is one whole sentence closing the context: the slots each co-op receives in 2027, in tens, and how many of the 1,800 are left unallocated. One belief, Anthony Bentley's on Uplands (rung 1's leader). One block convention (whole dollars) and one pin (the rebate share to one decimal place); slots carry their tens in the call. Nothing names a file, a feeder, a crew, a meter, a window, a lag or a deadline, and no sentence fixes the basis, the window or the population; "place" and "unallocated" are the allocation rule's own branches. `voice-check.py 127`: no flag in ECONOMY, no calcified carrier, no shared six-word run.
+
+## Build record
+
+Stage 3a, 2026-10-10. Generator `generator/build.py` (modules params, world, orders, asks, docs, writers; ladder.py and askcalc.py compute from the written files; checks.py asserts), independent verifier `generator/verify_pack.py` (csv, json and openpyxl only, no generator module). Every figure below is printed by the build record or the verifier and recomputes from `target/`.
+
+**Gate.** Generator green, 415 assertions. Verifier green, 72 checks, and its figures agree with the generator's to the cent. Two scratch builds byte-identical (20 files with `metadata.json`), and the task-folder build matches them byte for byte. Input gates: 19 files, 6 formats (csv, docx, json, pdf, txt, xlsx), `field_orders_2025_2026.csv` 27,451 rows, distractors `weatherization_grants_2026.csv` and `feeder_upgrades_2027_2028.pdf` named in `metadata.json` and nowhere in `target/` (golden and asks unchanged with both deleted). Producer scrub clean (audit exit 0, no writer name, container dates inside 2025-06-01 to 2026-12-11); file mtimes set per file to in-fiction write times, the latest 11 December 2026 08:10. `guard.py people`: clear (one NOTE, "Red Pine" read from a place name). `guard.py surface`: one promoted pair, task87, the same-driver signature already differentiated on the card.
+
+**Changes at build, each with its reason in Tried and rejected.** The outreach director is Sara Duncan, and her belief is "more qualifying homes"; ask B reads paid through the end of November (the prompt's two edits); the B1 cutoff is the 30 November month end; ask A's rebate comes from Schedule B, so HZ2 sits on ask B only and ask A's share carries A1 and HZ1.
+
+**Rates.** Ducted propane 7.8947, electric resistance 3.1250, hydronic propane 1.0526 per cent (3/38, 1/32, 1/95); pooled 4.8717 (412 over 8,457). System rates reproduce 6 of 6 pilot neighbourhoods exactly; pooled misses every one by 26.5 per cent or more; income-band rates by 26.6 or more; system by income band and each co-op's own system rates equal the pooled system rates (4 rules swept).
+
+**The ladder (order NS, VA, LA, UP, RB, PW).**
+
+| Rung | Figures | Split | Leader, margin | Riverbend |
+|---|---|---|---|---|
+| 0 product x pooled | 592.06, 766.47, 476.51, 498.17, 411.73, 380.69 | 340, 440, 270, 290, 240, 220 | Valley 1.295 | 5th |
+| 1 joint x pooled | 469.63, 447.22, 370.25, 560.25, 306.92, 272.82 | 350, 330, 270, 420, 230, 200 | Uplands 1.193 | 5th |
+| 2 joint x system | 573.28, 435.27, 438.11, 420.26, 350.03, 220.03 | 420, 320, 330, 310, 260, 160 | North Shore 1.309 | 5th |
+| 3 feeder cap | 161.43, 181.77, 418.00, 296.78, 341.62, 79.64 | 160, 180, 420, 300, 340, 80 (1,480) | Lakes 1.224 | 2nd |
+| 4 meter sets | 161.43, 181.77, 238.75, 170.69, 341.62, 79.64 | **160, 180, 240, 170, 340, 80** | **Riverbend 1.417** | 1st |
+
+Answer: 1,170 placed, 630 unallocated, Riverbend ahead of Lakes by 100. Dominance: Riverbend's set share edge 1.751 against 1.2 x 1.224. Product over joint counts 1.261, 1.714, 1.287, 0.889, 1.342, 1.395.
+
+**Crews.** Lakes: ceiling 10.500 a working day over 50 plateau days, standing 8.047 (2026), 8.013 (2025 outside the plateau), 8.059 (52 weeks to the as-of date), spare 2.4409. Uplands: ceiling 8.745 over 47 days, standing 6.990, 7.006, 6.990, spare 1.7545. Pilot peak four and three heat-pump orders a week; every pilot meter set inside 15 working days, the last on 7 December. Five-day crews' best three-week means against standing plus the 2027 peak programme week: North Shore 93.3 against 67.4, Valley 102.3 against 73.6, Riverbend 116.0 against 78.9, Pinewood 69.7 against 41.9. Variants (Thanksgiving ignored, weekday mapping, weekly capacity, per-co-op calendar) all give the golden split.
+
+**Partial readings.** (a), (b), (d), (e) Lakes 420, 1,480; (c) North Shore 510, 1,800 shared; (f) one queue in request order: Lakes 390, 1,440; (g) batch carried as run-rate: Riverbend, 1,140 (Lakes 220, Uplands 160). Grid: 24 cells, only joint x system x feeder x queue gives the answer; three wrong cells also name Riverbend, at 1,490, 1,430 and 1,200 placed. Twins: Loon Point 36.2 sets against Sauk Flats 63.4.
+
+**Asks (golden; NS, VA, LA, UP, RB, PW).** A: average installed cost 16,962; 16,952; 14,786; 15,062; 16,794; 14,263 dollars; rebate share 23.6, 23.8, 29.7, 29.2, 24.0, 31.7 per cent. B: paid through 30 November 326,400; 295,200; 143,800; 121,000; 290,800; 219,000 dollars, covering 82, 74, 32, 27, 72 and 49 installs. 24 returned payments; 34 payments clear on 30 November Central and 1 December UTC. Every B stop misses the dollars in all six co-ops; A's version stops miss in every co-op, the head-line stop in the four co-ops where Boreal Mini-Split works.
+
+## Stage 3b, write-up and ship checks (2026-10-10)
+
+`generator/golden.py` reads only `target/` and writes the three deliverables to `golden/`; two runs are byte-identical and its printed figures match `verify_pack.py` (72 checks green) and the build record: rates 3 in 38, 1 in 32, 1 in 95; feeder-capped installs 161.43, 181.77, 418.00, 296.78, 341.62, 79.64; Lakes spare 2.44 (ceiling 10.50, standing 8.06), Uplands 1.75 (8.74, 6.99); meter sets by 31 December Lakes 238.75, Uplands 170.69, the five-day crews every meter by 1 December; split 160, 180, 240, 170, 340, 80, 1,170 placed, 630 unallocated; both asks as the build record. Five-day crews are queued at the spare their best 15 working days on record leave, a floor under their ceiling, and set every meter. The note's prose claims (spring share, full feeders, Uplands' heating mix and rank, longest pilot lag of 11 days, the pull date) are asserted or derived in the script. `submission.md` carries the five blocks. golden-realism pass after the figures froze: CSV and SVG byte-identical across the pass, the note's printed figures unchanged; the orphaned "Decision sought" section was cut and the intermediate-column totals dropped so the note states no second total beside 1,170. Container: target audit clean; the golden SVG carries matplotlib's structural ids, left as an honest script-rendered output with no timestamp; the note's core properties carry the director and 11 December 2026. reduce-house-fixes: one `submission.md` and one `prompt.md` in the tree, golden holds exactly the three named files, every cited section resolves (rules 2, 4, 5; terms 3; finance procedures 2, 4, 5; Schedule B; the price guide). leak.py: one LEAK (file name `clean_`) fixed in the generator by renaming the rules file, rebuild 415 assertions green and byte-identical to a scratch build, then REVIEW. Surface: one promoted pair, task87, on the card signature already differentiated (surface 0.089), no rename or regeneration needed; "Red Pine" is the place name Red Pine Hollow. Heart: PASS.
+
+## Leak review
+
+- `installer_price_guide_2026.pdf`, figure 240: a 240 V circuit, not a slot figure.
+- `heat_pump_programme_rules_2027.pdf`, 8 of 11 call words: the six co-operatives' names and the slot vocabulary the allocation rule has to carry; no split, no figure.
+- `cooperative_participation_terms.pdf`, 7 of 11 call words: the parties' names in the signature line and the rebate schedule; no split.
+- `trustees_paper_17dec2026.docx`, 8 of 11 call words: the agenda item names the six co-operatives and the 1,800 slots the prompt states; "the split itself will be tabled", no figure.
+- `about_these_files.txt`, stump terms: the provenance list's file descriptions (hosting filings, survey, participating co-operatives); no sentence on crews or timing.
+- `heat_pump_programme_rules_2027.pdf`, stump terms: the filed pins (windows, hosting, survey's Table H1 for the licensed basis); nothing on crew capacity, queues or the 2025 batch.
+- `cooperative_participation_terms.pdf`, stump terms: the connection standard and the verification purpose of field-order sharing, both designed pins; no capacity sentence.
+- `feeder_upgrades_2027_2028.pdf`, stump terms: the declared distractor's own subject (feeder hosting reinforcement); finishes in 2028, moves no slot.
+- `field_definitions.txt`, stump terms: column semantics only; "crew" appears as the meter crew code and the completion field, with no capacity, standing-work or ordering statement.
+- `installer_price_guide_2026.pdf`, stump terms: "system" and "orders" in the multi-zone and change-order lines, ask A's pin.
+- `trustees_paper_17dec2026.docx`, stump terms: the three voices and the hosting note as designed; no voice names a crew, a queue or the 2025 batch.
+
 ## Tried and rejected
 
 - The note's decisive rung, per feeder the smaller of expected buyers and hosting slots: a stated connection standard, a per-feeder hosting map and a neighbourhood-to-feeder join whose keys line up hand it to any solver who reads them, its driver sits nearest task106's, and as labelled it BLOCKs on ban.pattern C (task119), ban.calibration pilot_log (task122) and test.same_driver_older (a signature spent in nine builds); kept as rung 2.
@@ -116,3 +383,23 @@ Registration (coordinator, 2026-10-10, after task124, task125 and task126 were f
 - A field operations voice saying the 2025 meter-exchange backlog is behind us: true, but it names the backlog and sends a reader to the weeks the crews ran at their ceiling; dropped.
 - A filed field-procedure line on the order of work (standing orders first, then orders in date order): read beside the programme's volume it gives a solver a reason to ask whether the crews keep up; the order is to be pinned by the 2025 record instead, and the line stays out unless the determinism check needs it.
 - Keeping one co-op as the requester at registration, relabelled cooperative_or_member_body to clear ban.org_family: the key is honest for a member-owned co-op, but two United States power-company allocation builds would then sit side by side with task124, the calibration and artifact bans would still need redrawing, and the business-operations-analytics x opportunity-sizing-decision pairing would still block task128; the requester moved to the fund instead.
+- The draw's per-co-op ask figures (meters still unset on 31 December, qualifying buyers the feeders turn away) and its chart parts (the stacked series, the year-end queue annotated): each names rung 3 or rung 4 in the prompt, which outranks every file, so a solver is told the queue and the feeder cap exist before opening anything; replaced by two device-carried pilot audits and a 2027-against-2026 chart.
+- Spare capacity of about six sets a week at Lakes: the autumn queue bites harder, but each crew's annual spare (about 300) then falls below Lakes' 420 placeable meters, so a crude annual check hands Riverbend the lead without the queue; spare set back to about ten (annual about 500).
+- Lakes and Uplands crews on a Monday-to-Friday week: the 2027 Friday holidays (Christmas observed 24 December, New Year observed 31 December) and Thanksgiving Friday open a holiday-handling fork worth up to a full ten on Lakes' slots; moved both crews to four ten-hour days, Monday to Thursday, with the 2026 record showing they worked the Thursdays before Friday holidays.
+- Grading the year's rebated installs as the unrounded co-op sets rounded once to the nearest ten: the two binding co-ops' convention spreads (about 5 and 3.5 sets) add across a ten on the total; the graded total is the sum of the co-ops' slots, with the unallocated figure its complement.
+- A spring queue left to run continuously into the autumn at the binding crews: year-end sets then depend on the spring start week and every holiday from Memorial Day on, a spread of more than ten; spring volumes sized so both crews clear by August.
+- Pilot spring shares that differ by neighbourhood: per-co-op and pooled readings of the forward calendar then differ by 4.2 sets a point at Lakes; set to exactly 25 per cent in every pilot neighbourhood.
+- A 2027 slot-release rule (a quarter of each co-op's slots in the spring window): it makes arrivals depend on the allocation itself and its fixed point (Lakes about 183) disagrees with the one-pass queue (about 240), a fork created by a filed sentence; no release rule, so both readings give 240.
+- A per-co-op ask on the pilot's days from claim to payment: a staffing decision that the split never reads, so it fails H18; re-cut to the rebate dollars paid in 2026 and the installs they cover, the audit trail of the pilot the rates are built on.
+- A pilot close-out stating the total rebates paid: an oracle that verifies ask B's handling for free; the pack states no paid, cost or cleared total.
+- Field-order volumes at the draw's 70,000 rows: six crews' standing work over 104 weeks is about 31,000 orders at realistic crew sizes, and padding the file to 70,000 would need order types nothing reads; 31,000 clears the gate.
+- Ask B's clock device on the 31 December 2026 evening payment run: the pack's as-of date is 11 December and the trustees meet on 17 December, so no December run exists to cross the year; the cutoff moved to the fund's November month end (the 30 November run clears on 1 December UTC) and the prompt asks for rebate dollars paid through the end of November.
+- Anthony Bentley as the outreach director: the name is not in the seed-127 draw (`guard.py names --geo "United States, Minnesota" --seed 127 --n 200`); Anne Garcia from the draw then took BLOCK people.first against task125; Sara Duncan from the same draw is clear.
+- The outreach director's belief that Uplands has more propane and electric homes than any other co-op: Table H1 puts Valley first on propane and electricity, so the belief would be a stakeholder read the pack refutes; reworded to more qualifying homes, which the survey's joint counts make true (rung 1's leader).
+- The rung 3 twins with each neighbourhood's buyers split across two feeders: the map puts each neighbourhood on exactly one feeder, so Elm Park and Birch Hollow are identical on the survey and sit on a full and a roomy feeder respectively.
+- A Lakes ceiling cycle averaging 10.45 a day over twenty days: the plateau's 50 days start mid-cycle and recover 10.57, which moves Lakes across a ten; the ceiling is a four-day 11, 10, 11, 10 pattern (42 a week) and standing work a twenty-day block averaging 8.05, so spare is 2.44 a day in any window.
+- Pilot install rates with neighbourhood-level noise: rates by system and income band, or each co-op's own pilot rates, would each give a different forward figure (H14); every pilot neighbourhood is built from unit blocks (38 ducted-propane households to 3 installs, 32 electric to 1, 95 hydronic to 1), so every finer grain returns the system rates exactly.
+- Pilot purchase dates spread evenly with a random installer lead time: autumn installs clustered to six orders a week at Uplands (0.86 of its spare); installs are spread evenly over each season's install span instead, peak four a week at Lakes and three at Uplands.
+- The rebate amount as a pilot-log column: it would let a per-rebate reconciliation of the ledger find every returned payment for free; the amounts live in Schedule B of the participation terms instead (still a reconciliation route, recorded as HZ2's leakage).
+- The rules file named `clean_heat_programme_rules_2027.pdf` after the fund: leak.py's file-name sweep reads `clean_` as the author's cleaned-data noun (LEAK); renamed `heat_pump_programme_rules_2027.pdf` in the generator.
+- A "Decision sought" closing section and totals for expected installs, feeder room and meter sets in the note's line-by-line table: the section restated the split on an orphaned page, and a meter-set total of 1,174 beside 1,170 placed is a second statement of the year's installs by another rounding path (H3); both cut.

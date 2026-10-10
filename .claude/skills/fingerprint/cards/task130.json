@@ -10,8 +10,8 @@
   "shape": "03",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "The 2027 order should designate six sections: 0301401008, 0301402014, 4625001005, 4625002007, 4625011004 and 4625012009.",
+  "answer_source": "task130/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "time",
     "population"
@@ -33,10 +33,10 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "large_holder_dwelling_returns_2024q3_2026q2.csv",
-    "rows": 68000,
+    "file": "declaracions_grans_tenidors_2024T3_2026T2.csv",
+    "rows": 45746,
     "entity": "one dwelling on one version of one large holder's quarterly dwelling return (a held dwelling, or a dwelling under a scheduled sale agreement or an option)",
-    "grain": "holder x return quarter x version x dwelling",
+    "grain": "holder x return quarter x version x dwelling (x parcel for returns lodged before 1 April 2026)",
     "source": "synthetic (constructed pack: a fictional regional observatory's return extract, a land register deed extract and the housing agency's budget ledger, provenance declared in the pack)"
   },
   "forum": "minister_or_cabinet",
@@ -55,18 +55,21 @@
       "Aurora Roig",
       "Leandro Sacristán",
       "Celestina Gallart",
-      "Amaro Peláez"
+      "Amaro Peláez",
+      "Flor Segarra",
+      "Jose Nevado",
+      "Rosaura Rodrigo"
     ]
   },
   "deliverables": [
+    "designation_brief_2027.pdf",
     "designation_annex_2027.csv",
-    "section_bridge_2027.png",
-    "designation_brief_2027.pdf"
+    "section_bridge_2027.png"
   ],
   "opening_move": "calendar-first",
   "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot; carrying every scheduled transfer to its agreed counterparty on its agreed date reproduces the closed period exactly, because no scheduled transfer had ever been displaced before it, but a third party has since taken over some scheduled transfers under a right whose exercises are recorded only in its own spending commitments, and it completes each a fixed interval after committing, an interval only its settled cases show, so on the effective date some units have left the holder population that their agreed dates keep in it and others are still with the seller although their agreed dates have passed.",
   "driver_concrete": "The 2027 designation counts the dwellings large holders will hold on 1 January 2027; rolling the 30 June 2026 returns forward with the deeds registered to 30 September and the sale agreements the returns schedule, each to its agreed buyer on its agreed deed date, reproduces the 2026 designation section for section, because the housing agency's first-offer right began only with that designation; but the agency's budget ledger shows it has taken over some of the scheduled agreements (portfolio sales between large holders among them), and every first-offer purchase it has completed was signed 120 days after its budget commitment, so a dwelling committed by early September is the agency's on 1 January whatever date the original agreement named, and one committed later stays with its seller into January even where the agreed sale to a private buyer fell in December.",
-  "stump": "A competent solver conforms the 30 June 2026 returns (corrections replace, supplementary returns add, pre-migration building rows become dwellings, option and reservation rows drop, cadastral references are repaired by their control letters), rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and the scheduled sale agreements at their agreed buyers and deed dates, reproduces the 2026 designation exactly and files a designation that keeps two sections over the line and leaves a third under it; the step that lands it there is carrying each scheduled agreement to its agreed buyer and date, when the housing agency's budget ledger shows it took over several of those agreements under its first-offer right and signed every purchase it has completed 120 days after committing, so on 1 January the agency holds the dwellings it committed to by early September (the two sections fall under the line) and a seller still holds the dwellings committed later, among them a December sale to a private buyer that the agency now completes in January (the third section stays over it).",
+  "stump": "A competent solver conforms the 30 June 2026 returns, reproduces the 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and every scheduled sale at its agreed buyer and date, reproduces the 2026 annex on all fourteen sections and files seven sections (A1 to A4, P, S and U); the step that lands it there is carrying each scheduled sale to its agreed buyer and date, when the housing agency's budget ledger shows it committed to 84 of those dwellings under its first-offer right after 30 June and its settled purchases were all signed 120 days after commitment, so P and S fall under the line and Q stays over it, and the order designates six sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014 and 4625012009.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task62": "task62's forward base grows because a closed-window exclusion lapses with its instrument at the boundary and its whole population enters; here nothing lapses: a third party's commitments, recorded only in its spending ledger, displace transfers already scheduled and complete on a clock recovered from its settled cases, so units leave the holder population before their agreed dates and stay in it after them.",

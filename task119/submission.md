@@ -7,14 +7,14 @@
 
 ## 1. Final Recommendation
 
-**Place the 2027-28 external review at Stennock University Hospitals NHS Foundation Trust, where a year of review could confirm 27 deaths.**
+**Place the 2027-28 external review at Stennock (STN), where a year of review could confirm 27 deaths.**
 
-That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Trust, at 15. Not Lathingbury, which has the most deaths inside the remit but runs no level 3 beds, so every wait was for another trust's bed. Not Ristenholm, whose full unit gave beds to other patients through most of its long waits: each went to a patient referred by another trust, planned transfers included, on a bed the network's bed bureau allocated, so only its 2 deaths after a wait beside its own empty staffed bed are its own care. Not Brackenford, whose unit was full at every hour of each of its long waits. Not Prideswick, whose waits beside its own empty staffed beds account for fewer deaths. Not Ellerdyke, Tannerby or Pellowham, which held no level 3 beds in the placement year.
+That is 12 deaths ahead of the runner-up, Prideswick (PRW), at 15. Not Lathingbury, which has the most deaths inside the remit but runs no level 3 beds, so every wait was for another trust's bed. Not Ristenholm, whose full unit gave beds to other patients through most of its long waits: each went to a patient referred by another trust, planned transfers included, on a bed the network's bed bureau allocated, so only its 2 deaths after a wait beside its own empty staffed bed are its own care. Not Brackenford, whose unit was full at every hour of each of its long waits. Not Prideswick, whose waits beside its own empty staffed beds account for fewer deaths. Not Ellerdyke, Tannerby or Pellowham, which held no level 3 beds in the placement year.
 
 ## 2. Critical Components
 
 1. Lathingbury has the most deaths inside the remit in July 2025 to June 2026, **56**, and holds no level 3 beds
-2. All **27** of Stennock's deaths inside the remit followed waits through which its unit kept staffed beds assigned to its own planned surgical patients who were still in theatre
+2. All **27** of Stennock's deaths inside the remit followed waits through which its unit kept staffed beds assigned to its own planned surgical patients who had not left theatre recovery when the waiting patient's decision was made
 3. Prideswick's deaths after waits beside its own empty staffed beds are **15**
 4. Stennock leads Prideswick by **12** deaths
 
@@ -27,15 +27,15 @@ That is 12 deaths ahead of the runner-up, Prideswick Hospitals NHS Foundation Tr
 5. Joined each admission to the own unit during those waits to the admitted patient's referral, a patient the trust referred itself being its own care: in the placement year every one at Ristenholm, Brackenford and Prideswick was a patient referred by another trust, Ristenholm's planned transfers included, on a bed the network bed bureau allocated (`interhospital_transfer_audit_202307_202606.csv`, `bed_confirmed_at` in the field guide), not the trust's decision.
 6. Matched each Stennock stay to its patient's case in `rds_theatre_cases_2023-2026.parquet`: through every Stennock long wait its unit held one or two beds assigned that morning to Stennock's own planned surgical patients whose `left_recovery_at` falls after the waiting patient's decision, empty staffed beds Stennock kept, which the methodology note (section 4) makes its own care: 27 deaths, against Prideswick's 15, a gap of 12.
 7. Repeated steps 1 to 6 from July 2023 in elapsed time across the March clock changes, conforming the migrated CCRS rows per `ccrs_migration_export_specification_rel2.3.pdf` (times from UTC, decision level from `ccrs_referral_levels_202307_202604.csv`, a transfer's bed from the audit's `bed_confirmed_at` since the CCRS bed list starts at the patient's placement in the bed, contiguous bed rows as one stay), with verified keys from `pas_patient_key_links_2023-2026.csv`, an unresolved key's death from its spell ending in death, each patient once and unit levels as registered on the date: 2,163 patients, 629 deaths, 148 confirmable.
-8. Recommendation: place the review at Stennock University Hospitals NHS Foundation Trust.
+8. Recommendation: place the review at Stennock.
 
 ## 4. Deliverable Answers
 
 ### external_review_placement_2027-28.docx
 
-1. Stennock University Hospitals NHS Foundation Trust
+1. Stennock (STN)
 2. 27 deaths a year of review there could confirm
-3. Runner-up Prideswick Hospitals NHS Foundation Trust, at 15
+3. Runner-up Prideswick (PRW), at 15
 4. Gap of 12 deaths
 
 ### review_placement_workings.xlsx

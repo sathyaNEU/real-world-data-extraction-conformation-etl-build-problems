@@ -1,0 +1,100 @@
+{
+  "task": "task130",
+  "title": "2027 large-holder designation of census sections",
+  "domain": "Demographic & Social Science",
+  "subdomain": "housing",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "as_of": "2026-09-30",
+  "deliverables": [
+    "designation_brief_2027.pdf",
+    "designation_annex_2027.csv",
+    "section_bridge_2027.png"
+  ],
+  "input_files": [
+    {
+      "path": "EPPR_execucio_pressupost_2026_gen-set.csv",
+      "format": "csv"
+    },
+    {
+      "path": "annex_designacio_2026.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "path": "avis_portal_canvi_format_2026-03.eml",
+      "format": "eml"
+    },
+    {
+      "path": "butlleti_parc_residencial_2026T1.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "butlleti_parc_residencial_2026T2.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "cadastre_habitatges_extracte_20260928.csv",
+      "format": "csv"
+    },
+    {
+      "path": "codis_grup.csv",
+      "format": "csv"
+    },
+    {
+      "path": "declaracions_grans_tenidors_2024T3_2026T2.csv",
+      "format": "csv"
+    },
+    {
+      "path": "escriptures_inscrites_2024-07_2026-09.csv",
+      "format": "csv"
+    },
+    {
+      "path": "fiances_lloguer_seccions_2025.csv",
+      "format": "csv"
+    },
+    {
+      "path": "guia_presentacio_declaracio_trimestral_2024-01.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "index_expedient_designacio_2027.csv",
+      "format": "csv"
+    },
+    {
+      "path": "inspeccions_habitatge_buit_2025.csv",
+      "format": "csv"
+    },
+    {
+      "path": "nota_intercanvi_padro_rev2.txt",
+      "format": "txt"
+    },
+    {
+      "path": "notes_annex_2026_CGallart.docx",
+      "format": "docx"
+    },
+    {
+      "path": "ordre_designacio_seccions_grans_tenidors.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "padro_lliurament_2026-06.csv",
+      "format": "csv"
+    },
+    {
+      "path": "padro_lliurament_2026-09.csv",
+      "format": "csv"
+    },
+    {
+      "path": "registre_grans_tenidors_20261001.xlsx",
+      "format": "xlsx"
+    }
+  ],
+  "large_file": {
+    "path": "declaracions_grans_tenidors_2024T3_2026T2.csv",
+    "rows": 45746
+  },
+  "distractor_files": [
+    "butlleti_parc_residencial_2026T1.pdf",
+    "fiances_lloguer_seccions_2025.csv",
+    "inspeccions_habitatge_buit_2025.csv"
+  ]
+}

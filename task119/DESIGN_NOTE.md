@@ -1045,7 +1045,7 @@ methodology sentence as its test (an empty staffed bed, or a freed bed given to 
 bureau's transfers set aside) and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is reading the
 unit feed's bed assignment as the patient in the bed: through every Stennock long wait since the platform went live its
 unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre
-extract shows were still in theatre and left recovery after the waiting patient's decision, so Stennock kept beds empty for
+extract shows had not left recovery when the waiting patient's decision was made, so Stennock kept beds empty for
 its own planned surgery while its emergency patient waited, 27 deaths, the largest number the review can confirm.
 
 **Stopping rule.** Loop 3 is the last loop on this architecture. A solver that files D in round 4 retires the build. A solver
@@ -1307,6 +1307,67 @@ began at 18:00 or later with its unit full, and Brackenford's 08:00 return showe
   task28 and task38 on gap, pattern and decision type), nothing on the surface layer; people in the cut pack the six drawn
   personas.
 
+- **Stage 3b re-run after loop 3 (2026-10-10).** Pack: two scratch builds at 175 of 175 assertions, byte-identical to each
+  other and to `target/` and `metadata.json`; the verifier passes 33 of 33 on `target/`. `golden.py` from the shipped pack: every
+  figure unchanged (rungs 56, 34, 15, 37, 27; placement year 731 / 213 / 44; record 2,163 / 629 / 148 and its eight rows; Stennock
+  92 of 92 waits beside a hold). H3/H6 found one worded rule looser than the generator: the rule counts a held bed empty until the
+  patient's `left_recovery_at`, and on 34 hold-wait pairs the patient was out of theatre and in recovery at the decision, so "still
+  in theatre" was false as written. Component 2, the paper's table reason for Stennock, the workbook's "could have confirmed"
+  definition, the card's `driver_concrete` and the stump sentence now say the patients had not left theatre recovery; the paper's
+  prose already said so. Only the docx and xlsx moved; goldens regenerated twice byte-identical. Reduce-house-fixes: H1 audit clean
+  on `golden/` (August to November 2026) and `target/` (to 2 October 2026); H4 and H11 three files in `golden/`, one
+  `submission.md` and one `prompt.md`; H8 every file the write-up names is in `target/`; no em dash in any file written. Surface
+  screen: the same five mechanism-layer pairs, nothing on the surface layer, personas the six drawn. Heart **WARN** (exit 0) on
+  repeat.gate_g against task129 (decomposition_attribution in one of the last two builds; the Gate G label is the honest one for a
+  split of each trust's deaths into network capacity and own care, and the driver texts sit at 0.05 or below), nearest heart text
+  0.05 (task89 lineage); card answer, answer source, spine rows (33,719), deliverables and opening move agree with the submission
+  and the pack; `guard.py validate` 126 cards, 0 invalid.
+
+- **Stage 6, fix cycle 1 (2026-10-10), the judge's FIX_NOW findings** (`determinism_check_report.md`: DETERMINISTIC, FIX_NOW,
+  Gate G line matching this note on all four fields). (1) CCU and SDU were undefined while the remit puts "patients referred
+  from another critical care unit" out of scope: excluding CCU moves BRK and RIS (record 2,086 / 603 / 146, bars BRK 31, RIS 41),
+  and Stennock carries 18 platform-era long waits referred from SDU, which a step-down reading would also drop. The field guide's
+  `referred_from` line now says AMU, SAU, SDU (surgical day unit) and CCU (coronary care unit) are wards, as is each W code, a flat
+  code list in `texts.GUIDE_FIELDS`; no figure moved (only the field guide's bytes and its metadata size changed). (2) The goldens
+  and the write-up used legal trust titles no input carries; `golden.NAME` is now the short names the files use, and blocks 1, 3
+  and 4 say Stennock (STN) and Prideswick (PRW); the card's `answer` follows. The chart was already on short names and is
+  byte-unchanged. (3) `DISTRACTORS` adds the capacity report, the NRR log and the NRR database: each is off the golden's path
+  (asserted: every rung and ask figure unchanged with it deleted), each looks relevant, and none answers the decision on the
+  live trusts (the capacity report counts waits from receipt and ranks nothing; the NRR files cover four neighbouring
+  networks), so none is a wrong-basis distractor and the section 8.3 inequalities do not apply. The capacity report stays this
+  note's context artifact by type; since stage 2 it has been off the solution path (assertion 30), which is what the judge read.
+  (4) `metadata.json` records the prompt shape as 07 (grid of cells), eight trusts by three record columns with totals plus the
+  ranked chart. The card keeps `shape: other`, see `## Tried and rejected`. (5) Lens swap re-run on the loop-3 step and asserted
+  in `checks.grid_checks`: the bed lens alone (every held bed read empty) names Ristenholm in both allocation readings (37), the
+  placement lens alone names Prideswick (census/own/ignored and census/own/placed both G), and only the two together (a hold read
+  empty when the trust that placed the patient is the referring trust) name Stennock; two lenses on two different entities'
+  records, so the mechanism stays decomposition_attribution. The referral-log column test still passes. (6) The two thin forks
+  (died before admission, last CCRS level) are closed by the remit's wording and the level-entry timing as the judge found;
+  unchanged. (7) Realism notes kept as debts: typed workbook totals (see Tried and rejected), constant `beds_open`, RIS and STN
+  at 100 per cent each morning, long waits in fixed windows, the remit-death gap at days 24 to 35 (axis 9's C1 closure), and the
+  board paper's PDF date a week before the meeting that approved it (a paper is circulated before its meeting).
+  Gates: two scratch builds at 179 of 179 assertions (175 plus the lens-swap line and three new distractor lines), byte-identical
+  to each other, and the task build byte-identical to them; verifier 33 of 33 on `target/`; goldens regenerated twice
+  byte-identical, every figure unchanged (rungs 56, 34, 15, 37, 27; placement year 213; record 2,163 / 629 / 148 and its eight
+  rows; Stennock 27, Prideswick 15, gap 12). Reduce-house-fixes: H1 audit clean on `golden/` (August to November 2026) and
+  `target/` (to 2 October 2026); H4 and H11 one `submission.md` and one `prompt.md`, no snapshot or backup; H8 every file the
+  write-up names is in `target/`; H3 the renamed sentences read cleanly with the short names; no em dash. Golden-realism:
+  presentation only (the workbook's name column narrowed to fit the short names). Surface screen: the same five mechanism-layer
+  pairs, nothing on the surface layer, personas the six drawn. Heart **WARN** (exit 0), the same repeat.gate_g against task129.
+
+- **Stage 3b re-run after fix cycle 1 (2026-10-10).** Pack: a scratch build at 179 of 179 assertions, byte-identical to
+  `target/` and `metadata.json`; the verifier passes 33 of 33 on `target/`. `golden.py` from the shipped pack into the scratchpad:
+  every figure unchanged (rungs 56, 34, 15, 37, 27; placement year 213; record 2,163 / 629 / 148 and its eight rows; Stennock 92 of
+  92 waits beside a hold, 27, Prideswick 15, gap 12) and all three goldens byte-identical to `golden/`. `submission.md` (after
+  `submission-writeup`): no change, every figure recomputes and the short names hold in blocks 1, 3 and 4. `golden-realism`: the
+  paper, workbook and chart read again cold, no legal title left, nothing moved. Reduce-house-fixes: H1 audit clean on `golden/`
+  and `target/`; H4 and H11 three files in `golden/`, one `submission.md` and one `prompt.md`, no backup or snapshot; H8 every file
+  the write-up names is in `target/`; H9 `metadata.json` lists exactly the 20 shipped files and five distractors; no em dash.
+  Leak check REVIEW (the same six lines, answered below), surface screen the same five mechanism-layer pairs and nothing on the
+  surface layer, personas the six drawn, heart **WARN** (exit 0) on repeat.gate_g against task129, nearest heart text 0.05
+  (task89 lineage); the card's answer, answer source, spine rows (33,719), deliverables and opening move agree; `guard.py
+  validate` 126 cards, 0 invalid.
+
 ## Leak review
 
 `leak.py task119 --asof 2026-10-02`, re-run in hardening loop 2 against the loop-2 stump sentence on the rebuilt pack
@@ -1332,6 +1393,19 @@ elective, arrive, empty) finds only "held" for where a record is stored, the fie
 ("the minute the bed was assigned to the patient") and `outcome_at` line, the REC and source-location code lists, the episode
 specification's admission methods, the terms of reference's scope sentence, and the network manager's existing belief about
 Brackenford holding on to its beds; no document says a bed can be assigned ahead of a patient or names Stennock's lists.
+
+Stage 3b re-run (2026-10-10, `--quiet`, pack byte-identical to loop 3): **REVIEW**, no LEAK; the same five sweep-4 lines at
+the same term counts (board paper 4, CCRS specification 8, RDS specification 5, terms of reference 7, field guide 11), each
+answered by its line below; sweeps 1 to 3 and 5 to 11 clean.
+
+Stage 6 fix cycle 1 (2026-10-10, `--quiet`): **REVIEW**, no LEAK; sweeps 1, 2 and 5 to 11 clean; sweep 4's five lines the same
+five documents (the field guide's new code list adds no stump term); one new sweep-3 line: the terms of reference carry 5 of 8
+distinctive words of the shortened call ("place", "2027-28", "external review", "confirm", "deaths"), all the remit's own
+title and judging vocabulary; it names no trust, code or count (Stennock and STN 0 times), so harmless.
+
+Stage 3b re-run after fix cycle 1 (2026-10-10, `--quiet`, pack byte-identical): **REVIEW**, no LEAK; the same sweep-3 line on
+the terms of reference and the same five sweep-4 lines at the same term counts (board paper 4, CCRS specification 8, RDS
+specification 5, terms of reference 7, field guide 11), each answered by its line here; every other sweep clean.
 
 - `accn_board_paper_2023-11-21_level3_capacity.pdf`: the 2023 consolidation paper (Ellerdyke to level 2, Pellowham's
   winter beds, transfers continuing through the network's bed bureau); it says nothing about planned admissions, waits,
@@ -1415,3 +1489,8 @@ Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solve
 - 2026-10-09, retired: solved in all three solver rounds (83.8, 82.3, 72.6) after two hardening loops; the grader called a re-root under the design note's stopping rule. Under the author's standing rule a build still being solved after its hardening is retired rather than re-rooted, and the next note in its folder (AD11) takes the slot in a later wave.
 - 2026-10-10, reopened: the retirement came before the three-loop limit, so the build continues under the single-solver rule with 1 hardening loop(s) left.
 - Stage 4 loop 3 (opening line), the decisive rung as loop 2 built it (own placement read from the admitted patient's referring trust and the bureau's audit, the admission type disagreeing with placement in both directions), measured by round 3 plain (proxy 72.6, call landed): at path step 6 the solver wrote the methodology sentence as its test, "A death counts if, during the wait, an open bed sat empty, or a freed bed went to a patient the trust itself chose: its own planned surgical or recovery admissions, or later own-trust patients. Beds the network bureau allocated to transfers from other trusts do not count.", resolved who chose each patient from the audit (all 3,797 transfers matched on verified key and decision time) and filed D at 27 from rung 0, never stopping at G (rung 2) or A (rung 3). It died because the remit's sentence itself names whose decision a bed was, so every rung that only refines who placed the admitted patient is that sentence executed: the admission-type disagreement lengthened the step without leaving a place where the step completes on a wrong answer, and the audit join is schema-visible (key and decision time).
+- Stage 6 fix cycle 1, workbook totals as SUM formulas (golden-realism): openpyxl writes a formula with no cached value, so any
+  reader on cached values (pandas, the verifier, a grader) sees a blank total row; kept as typed totals computed from the rows.
+- Stage 6 fix cycle 1, the card's shape moved from other to 07 to match metadata.json: task122, registered after this card, is
+  shape 07, so the change would retro-fire the last-two shape ban on task122's card; the card keeps `other` and metadata.json
+  names the shape.

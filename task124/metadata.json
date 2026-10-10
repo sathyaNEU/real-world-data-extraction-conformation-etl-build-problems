@@ -1,0 +1,165 @@
+{
+  "task": "task124",
+  "domain": "Business & Operations Analytics",
+  "subdomain": "other (an energy retailer's summer supply planning)",
+  "objective": "Forecasting & Predictive Modeling",
+  "as_of": "2027-04-12",
+  "deliverables": [
+    "summer_block_committee.pptx",
+    "summer_block_split.xlsx"
+  ],
+  "distractor_files": [
+    "zone_daily_temps_2017_2026.csv",
+    "ercot_zone_peak_outlook_2027.xlsx"
+  ],
+  "distractor_notes": {
+    "zone_daily_temps_2017_2026.csv": "Weather by zone. The risk policy's exposure replays settled load at the system peak hour; no step reads temperature.",
+    "ercot_zone_peak_outlook_2027.xlsx": "Wrong-basis distractor: ERCOT's zone outlook is the input to the lenders' zone-share basis, which the risk policy (section 6) names as the lenders' view and not the exposure it defines. On that basis the split is Coast-led and is neither the answer nor rung 0."
+  },
+  "source": "Every file is constructed for this task around a fictional Texas retail electricity provider (Sabine Crest Energy), its customers, brokers and counterparties. ESI ID prefixes, ERCOT weather zone and load profile codes, NAICS codes and NERC holidays follow the published conventions; load series and the summer system peaks are synthetic, shaped on ERCOT's public hourly load by weather zone, and are not a transcription. No real person, account or record is depicted.",
+  "license": "CC BY 4.0",
+  "created": "2026-10-10",
+  "generator": "task124/generator/build_pack.py (seeded, deterministic)",
+  "files": [
+    {
+      "path": "billing_accounts.csv",
+      "format": "csv",
+      "bytes": 46350
+    },
+    {
+      "path": "book_zone_map.csv",
+      "format": "csv",
+      "bytes": 294
+    },
+    {
+      "path": "bsaver_credits_2017_2026.csv",
+      "format": "csv",
+      "bytes": 106337
+    },
+    {
+      "path": "bsaver_roster_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 6160
+    },
+    {
+      "path": "business_saver_terms.pdf",
+      "format": "pdf",
+      "bytes": 2965
+    },
+    {
+      "path": "confirm_match_log.csv",
+      "format": "csv",
+      "bytes": 2857
+    },
+    {
+      "path": "desk_counterparties.csv",
+      "format": "csv",
+      "bytes": 691
+    },
+    {
+      "path": "desk_procedures.docx",
+      "format": "docx",
+      "bytes": 36154
+    },
+    {
+      "path": "enrollment_extract_20270409.csv",
+      "format": "csv",
+      "bytes": 12245289
+    },
+    {
+      "path": "ercot_summer_system_peaks.csv",
+      "format": "csv",
+      "bytes": 293
+    },
+    {
+      "path": "ercot_zone_peak_outlook_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 6035
+    },
+    {
+      "path": "extract_log.md",
+      "format": "md",
+      "bytes": 2821
+    },
+    {
+      "path": "field_notes.md",
+      "format": "md",
+      "bytes": 3601
+    },
+    {
+      "path": "hedge_positions_20270409.xlsx",
+      "format": "xlsx",
+      "bytes": 7680
+    },
+    {
+      "path": "idr_hourly_reads_summers_2017_2026.parquet",
+      "format": "parquet",
+      "bytes": 3928713
+    },
+    {
+      "path": "option_quotes_s27.csv",
+      "format": "csv",
+      "bytes": 5798
+    },
+    {
+      "path": "pecos_quote_sheet_apr2027.xlsx",
+      "format": "xlsx",
+      "bytes": 7442
+    },
+    {
+      "path": "portfolio_books.csv",
+      "format": "csv",
+      "bytes": 504
+    },
+    {
+      "path": "premise_register_20270409.csv",
+      "format": "csv",
+      "bytes": 8902058
+    },
+    {
+      "path": "quote_decisions.csv",
+      "format": "csv",
+      "bytes": 4369
+    },
+    {
+      "path": "rc_minute_2027-03-19.pdf",
+      "format": "pdf",
+      "bytes": 2563
+    },
+    {
+      "path": "summer_2026_risk_report.pdf",
+      "format": "pdf",
+      "bytes": 3689
+    },
+    {
+      "path": "summer_risk_policy_2027.docx",
+      "format": "docx",
+      "bytes": 36146
+    },
+    {
+      "path": "switch_confirms_spring_2027.csv",
+      "format": "csv",
+      "bytes": 264280
+    },
+    {
+      "path": "trade_blotter_s27.csv",
+      "format": "csv",
+      "bytes": 7300
+    },
+    {
+      "path": "trading_calendar_2027.csv",
+      "format": "csv",
+      "bytes": 6700
+    },
+    {
+      "path": "zone_daily_temps_2017_2026.csv",
+      "format": "csv",
+      "bytes": 272688
+    },
+    {
+      "path": "zone_settled_load_s17_s26.csv",
+      "format": "csv",
+      "bytes": 2465639
+    }
+  ]
+}

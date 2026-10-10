@@ -41,6 +41,8 @@ A competent solver recovers the cut-day EPSS rule from the close-out, builds eac
 
 (The figures are the source note's rung-3 answer, carried as the stump's wrong answer; stage 2 retunes every figure and asserts it.)
 
+**Stage 2 restatement (supersedes the figures above).** A competent solver recovers the cut-day scoring rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 5, checkout 5, search 74, media 89, internal tools 47 and data pipeline 80, about 5,840 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when every drained host comes back carrying nothing the current image already fixes, so one ticket per colocated estate naming its most exposed hosts takes out about 2,800, frees eight tickets for the cloud estates, and the split is 1 / 1 / 76 / 91 / 49 / 82 for about 8,210.
+
 ## Decisive rung
 
 Measured trap **#25, assumes an effect the log could measure** (`.claude/skills/stumping/references/traps/_measured.md`): decided 1 of the client's 64 measured tasks, 0 of them under 0.50, so the record is thin and the rung is a stated bet. Its recipe is several past instances of the same intervention recorded in a log, a consistent effect across them, and an assumed effect that gives a different answer. Here the intervention is a drain on a colocated host. The solver assumes a drain installs the ticketed package and nothing else; the records measure what every past drain did: every colocated host carries only exposures whose fix was released after its last rebuild, and every host accepted in a past window shows a rebuild on that window's date, so a drain returns the host on the estate's current platform image.
@@ -105,6 +107,183 @@ Registration (coordinator, 2026-10-10, after task124 to task127 were filed): the
 11. Dates. As-of 2026-10-23; the split is due Friday 30 October and the crews cut on Monday 2 November.
 12. Acknowledgement grain. Whether the acknowledgements list accepted host identifiers or counts only is a stage-2 decision: identifiers let a solver join accepted hosts to their rebuild dates.
 
+## Design (stage 2)
+
+Stage 2, 2026-10-10. Every figure below is a target the generator computes forward from the records and asserts within the band stated; none is authored into a file. The figures were priced on a scratch prototype of the world (temporal colocated hosts, ranked cloud candidates) and will move at stage 3, where the generator re-tunes and re-asserts every one by name.
+
+### Settlements made at design (on top of "Changes from the source note")
+
+1. **Five rungs.** The draw's four rungs become five (R0 to R4): the SRE standard's headroom clause read at each day's forecast peak becomes its own rung (R2), killed by the acknowledgements, below the window-hours reading (R3, the stop rung). Each rung names a different split.
+2. **No reboot sharing, pinned by the corpus.** Each change request's hosts consume their own drains, even where two requests name one host in one window. Without this, a stop-rung solver who packs many tickets onto each drained host would approach the answer's colocated figure without the decisive move. The acknowledgements carry overlapping requests, and only per-request counting reproduces them (Calibration, below).
+3. **Colocated estates are smaller.** Payments 460 hosts in service (11.5 racks of 40), checkout 582. The source note's 1,400 made the window utilisations implausible.
+4. **November is the season peak.** The travel platform's November evening peak (Black Friday week, month-end settlement) is why headroom is tight now; May to October windows carried more headroom, which is why the office's past requests were almost always accepted. No outcome series steps: no colocated exposure history ships.
+5. **Two provider instruments.** Colocated findings come from the provider's managed-host feed (current state only, with first-seen dates); cloud findings come from the office's own scanner (open and fixed findings over six months, the spine). No file carries fixed findings for colocated hosts, so no reproduction check touches what a past drain removed.
+6. **The inventory column is neutral.** The provider's host inventory carries `in_service_since` (the date the host last entered the serving pool). Its dictionary line says exactly that and nothing about servicing.
+7. **Acknowledgement grain (note item 12): host identifiers ship.** Each acknowledgement lists the hosts requested and accepted. That is the log of past interventions trap #25 needs, and a solver uses it for nothing on the way to R3 (the back-test needs counts only).
+8. **The colocated ticket's package is pinned.** The vulnerability standard files one ticketing rule: a ticket names the hosts that carry the package below its fixed version, and is raised against the package whose highest-scoring open finding on those hosts scores highest. Under R4 that selects one package per colocated estate (asserted unique); under every lower rung it selects the ticket's own package.
+9. **Deliverables stay two:** `november_ticket_cut.csv` and `ticket_split_review.pptx`.
+10. **Forward reason.** The call commits November's 300 tickets (forward). It is a sizing built up from the addressable pool to what November can realise, not a predicted value, so the objective stays Opportunity Sizing & Decision Support.
+
+### Gate G
+
+**Gate G line:** binding_constraint over correct data, with method_or_model_selection support (two rules recovered by back-test); surface_read_dependency no; stumping_family analytical_non_defect; sole_data_defect no; no shipped artifact ranks the six estates on November's realisable figure.
+
+- **Litmus, in a sentence.** No: every reported figure (the scanner's findings, the provider's feed, the capacity register, the forecast, the acknowledgements, the close-out's ticketed figure) is correct and no stakeholder conclusion about its own numbers is overturned; the difficulty is valuing a drain, a use of a binding resource, at what it actually removes from the host, which no file states and no total shows.
+- **Primary mechanism:** `binding_constraint` (the provider's drains per window cap what colocated tickets realise in November), with `method_or_model_selection` for the cut-day exploitability rule and the per-window headroom rule.
+- **Flags:** surface_read_dependency: no · stumping_family: analytical_non_defect · sole_data_defect: no.
+- **Deletion test.** Delete the CISO's belief, the superseded allocation memo and the drain tool configuration: the scanner, the feed and the drains still lead a competent solver to R3. No wrong number exists to delete.
+- **Clean-data test, per suspect file (asserted at stage 3).** (a) The provider feed (current state only): give it six months of fixed findings and recompute; the answer and the R3 figure are unchanged, because November's value is read off the current state either way. (b) The acknowledgements (hosts listed, no servicing detail): add a servicing column and recompute; unchanged. (c) The instrument repair: an instrument that reports what each past drain removed would make the rebuild visible, but it measures the past, and the November figure still has to be built from the drains, the headroom rule and the host ranking, so the answer is constructed, not read. `answer != naive` holds under all three.
+- **Lens-swap test.** The R3 read and the answer are different populations of hosts and tickets: R3 drains the hosts carrying its five densest packages on each colocated estate, the answer drains the most exposed hosts under one ticket and moves eight tickets to the cloud estates. Asserted: the overlap of the two drained host sets is under 15 per cent on each colocated estate.
+
+### Entity, unit of value, decision
+
+- **Entity.** Sendalia Viajes, an online travel booking platform in Malaga. Its vulnerability office splits the patch crews' 300 monthly change tickets across six production estates and is scored, from November, on exploitable host exposures taken out in the month (an exposure is one exploitable vulnerability on one host; taken out means gone from the host by month end, the standard's definition).
+- **Two quantities that both read as the size of a colocated ticket:** the exposure its package carries on the hosts it reaches, and the exposure on the hosts it reaches. They rank colocated tickets differently because a drained host comes back carrying nothing the current image already fixes, so a ticket on a widely carried package lets the office choose which hosts are drained.
+- **Decision.** Tickets per estate across {payments, checkout, search, media, internal tools, data pipeline}, summing to 300, with the exploitable host exposures the split takes out in November.
+
+### Answer (targets)
+
+| Estate | Tickets | Exposures taken out in November |
+|---|---|---|
+| Payments (colocated) | **1** | about 1,330 (the 96 most exposed hosts) |
+| Checkout (colocated) | **1** | about 1,470 (the 120 most exposed hosts) |
+| Search | **76** | about 1,370 |
+| Media | **91** | about 1,680 |
+| Internal tools | **49** | about 840 |
+| Data pipeline | **82** | about 1,520 |
+| **Total** | **300** | **about 8,210** |
+
+Every per-estate figure and the total are graded to the nearest ten and tuned to sit at least 2.5 inside their bin (asserted). Last ticket in: a data pipeline update at 11; first ticket below the line: an internal tools update at 10 (both unique values at the boundary, asserted).
+
+### Ladder
+
+Splits are payments / checkout / search / media / tools / data pipeline. Figures are each rung's own reading of what the split takes out in November.
+
+| Rung | Construction (what the solver builds) | Split | Figure | vs answer | Killed by (one shipped fact) |
+|---|---|---|---|---|---|
+| R0 | Rank every package update by the findings carrying the scanner's exploit-available flag on the hosts carrying it, fill 300 | 19 / 20 / 54 / 90 / 37 / 80 | about 16,630 | +103% | The Q3 close-out: the flag misses 11 of its 12 estate-month figures and its quarter total by about 14 per cent |
+| R1 | Exploitable as the close-out pins it (score of at least 0.10 on the day the ticket is cut, latest score for November), every ticket assumed to complete | 19 / 19 / 73 / 88 / 22 / 79 | about 11,730 | +43% | The SRE maintenance standard: colocated work happens only by draining hosts, and the estate keeps one rack above its forecast peak while it does |
+| R2 | Drains bounded by headroom one rack above each day's forecast peak (the clause's literal reading): payments 88, checkout 48; densest packages first, cap re-spent | 5 / 2 / 75 / 90 / 48 / 80 | about 5,720 | -30% | The acknowledgements: the day's peak reproduces about 340 of 412; only the peak over the window's own hours reproduces all 412 |
+| R3 | **Stop rung.** Drains per window from the capacity register, the hourly forecast and the window calendar: payments 96, checkout 120; densest packages first; cap re-spent | 5 / 5 / 74 / 89 / 47 / 80 | about 5,840 | -29% | The host inventory read against the feed: no colocated host carries an open finding whose fix was published before its `in_service_since`, and every host accepted in a past window entered service on that window's date |
+| R4 | **Decisive.** Each drain valued at every exploitable finding on the host it returns; one ticket per colocated estate on the package the ticketing rule selects, naming the most exposed hosts; eight freed tickets to the cloud estates (two each) | **1 / 1 / 76 / 91 / 49 / 82** | **about 8,210** | | |
+
+**Gaps, rung by rung.** R0 to R1: gap 4, rule (G16; the close-out back-test selects cut-day scoring). R1 to R2: gap 3, objective (G8; drains bind on the colocated estates). R2 to R3: gap 4, rule (G16; the acknowledgements select window-hours headroom). R3 to R4: gap 3, objective (G1, the decisive unit-of-value swap, with G2 support: the unit a drain removes is the host, not the package).
+
+**Why each rung is a place to stop.**
+- R0: it is the office's own scanner ranked on the office's own objective, and it agrees with the CISO that the colocated estates carry the worst exposure per host.
+- R1: it reproduces every close-out figure to the unit, which is the strongest evidence the pack offers about what counts as exploitable.
+- R2: it executes a filed clause word for word and turns the colocated estates from the biggest destinations into small ones.
+- R3: it reproduces all 412 acknowledgements, every total ties, the drains are built from three files, and the CISO's belief has been refuted on evidence.
+- "A solver who does everything right up to R3 commits to 5 / 5 / 74 / 89 / 47 / 80 and about 5,840."
+
+**The stump carrier is R3 to R4.** The seven survival properties: (1) no shipped sentence says what servicing a drained host does; the provider's schedule says hosts are drained, serviced and returned to the pool. (2) The acknowledgements are blind by construction: their counts do not depend on what a drain installs, and both readings reproduce 412 of 412 (asserted). (3) No arithmetic symptom: no shipped total measures what a colocated drain removed, because the close-out covers only the cloud estates and the feed is current state only. (4) Not a row predicate: it needs each host's latest accepted window (a group-and-max over the acknowledgements), compared with every open finding's fix publication date on that host, then a rank of hosts by whole-host count. (5) The enumeration is arithmetic (the host ranking). (6) No cutover date: every past window behaved the same way and no colocated series ships. (7) Survives deletion: nothing wrong to delete.
+
+**Worth of each rung on the graded figure.** R0 to R1 -29.5%, R1 to R2 -51.2%, R2 to R3 +2.1% (window hours admit more drains than the day's peak), R3 to R4 +40.6%. The pre-decisive walk is down except the small R2 to R3 step, which stays 29 per cent under the answer; the decisive rung reverses it.
+
+### Position and separation
+
+The answer is a figure plus a split, so the separation floor binds rather than the ranking margin: the nearest wrong cell must sit at least 8 per cent from the answer's figure, and every rung's split must differ from the answer's in every estate's count. Asserted: every rung from R0 to R3 differs from the answer in all six counts; the stop rung's cloud counts each differ by 1 to 2 because the eight freed tickets are built to land two per cloud estate.
+
+### Discriminator dominance
+
+The stop rung's colocated drains take out about 530 (payments about 250, checkout about 280). The decisive move values the same 216 drains at about 2,800. Edge about 5.3x on the colocated figure; on the total, R4 clears R3 by 1.41x against the 1.2x floor. The richest single-package hosts carry about 5.5 exploitable findings each; the most exposed hosts carry about 13.9 (payments) and 12.2 (checkout): single-package richness and whole-host exposure are decorrelated by construction (the dense packages sit on hosts that entered service in the last five months), asserted as a correlation under 0.15 between the two on each colocated estate.
+
+### Correction grid (four toggles; every cell priced on the prototype, re-asserted at stage 3)
+
+Toggles: E (exploitable by flag or by cut-day score), L (no limit, day's-peak headroom, window-hours headroom), V (drain valued by package or by host), S (cap re-spent or not).
+
+| Cell | Figure | vs answer | The shipped fact it violates |
+|---|---|---|---|
+| R0, R1, R2, R3 | as the ladder | +103, +43, -30, -29 | as the ladder |
+| Host value, no limit | about 13,110 | +60% | the SRE standard (drains bind) |
+| Host value, flag reading, window drains | about 11,270 | +37% | the close-out |
+| Flag reading, window drains, package value | about 7,490 | **-8.8%** (nearest) | the close-out |
+| Flag reading, day's-peak drains | about 7,290 | -11.1% | the close-out and the acknowledgements |
+| Host value, day's-peak drains | about 7,260 | -11.5% | the acknowledgements |
+| Rebuild found, the stop rung's five tickets kept, valued by host (partial) | about 6,280 | -23.5% | the ticketing rule (the ticket names the hosts) and the cap |
+| Window drains applied as a haircut on R1's split, cap not re-spent | about 5,400 | -34.2% | the standard's objective (unused tickets) |
+
+The nearest cell (-8.8%) costs two errors (the flag the close-out refuses, and the package valuation); stage 3 widens it toward 10 per cent and asserts every cell at least 8 per cent from the answer.
+
+### Calibration corpora
+
+**1. The Q3 close-out (pins R1, cloud estates only).** Twelve estate-month figures of ticketed exposure closed plus the quarter total, labelled for what they are. Rivals swept (seven): exploit flag; score at export; score at quarter end; score at cut (truth); the old CVSS band; score threshold 0.05; flag or score. Truth reproduces 12 of 12 and the total exactly; every rival misses at least 3 cells and the total by at least 4 per cent, the flag by about 14 per cent (directional, so no rival matches the total). Every in-scope finding open at export has a score outside 0.07 to 0.14 for its whole last 30 days, so the latest, 7-day and 30-day readings select identical rows for November (C1).
+
+**2. The provider's 412 acknowledgements, May to October (pins R3).** Each lists the window, the requesting team, hosts requested and hosts accepted (identifiers), status and reason. Rule: within a window, requests are taken in submission order and accepted up to the window's concurrent drains times its cycles, less drains already accepted, counting every requested host-drain separately; concurrent drains are the whole hosts of headroom above the forecast peak over the window's own hours, less one rack of 40. Rivals swept (eight): day's peak; window average; drain tool parallelism; flat 10 per cent of hosts; distinct hosts per window (sharing); no rack reserve; two-rack reserve; truth. Truth 412 of 412; every rival misses at least 20 requests, each in both directions where the rival allows. Twin pair: two payments requests identical on hosts requested (8), team, weekday, hours (Tue 20:00 to 24:00) and month; one accepted 8, the other 4, because the second window held the month-end settlement peak; only window-hours headroom separates them. Every rule exercised: about 40 requests land in windows already holding accepted drains; about 20 windows span an hour where the forecast rises; about 25 overlapping-host requests separate per-request counting from sharing; checkout windows cross midnight so the window's hours span two dates. Blind by construction to what a drain installs: both drain valuations reproduce 412 of 412 (asserted).
+
+### Pins and counter-pins
+
+- **Vulnerability management standard (level 1, office):** tickets go where they take out the most exploitable host exposure in the month; an exposure is one exploitable vulnerability on one host; taken out means gone from the host by month end; a cloud ticket cut on the month's first Monday is closed by the crews within the month; the ticketing rule (settlement 8); the licensed wrong basis: the audit committee reads the plan as exposure ticketed and will see that table.
+- **SRE maintenance standard (level 1, SRE):** maintenance never takes an estate below one failure domain of headroom at its forecast peak. One sentence; the corpus operationalises it.
+- **Provider service schedule (level 2, provider):** windows, the 30-minute drain cycle, requests named by host, hosts drained, serviced and returned to the pool. No sentence on what servicing does.
+- **Counter-pins:** none. The superseded CVSS-band memo is dated and marked superseded by the November rollout (a declared wrong-basis distractor); the drain tool configuration states a tool limit and is a declared distractor.
+
+### Convention axes (determinism-check A.5, one line per axis)
+
+| # | Axis | Reading chosen | Closure |
+|---|---|---|---|
+| 1 | Population | open findings at export on the six estates' in-service hosts, exploitable by score; cloud fixed findings excluded for November | C2 (close-out) + C1 (no in-scope score in the 0.07 to 0.14 band over the last 30 days) |
+| 2 | Unit of account | host x vulnerability, per the standard | C1: no host carries one vulnerability under two packages (asserted zero), so finding rows and host-vulnerability pairs count alike |
+| 3 | Attribution window | November windows for colocated; cloud tickets close in the month | filed (standard) + C1 (the calendar lists November's windows) |
+| 4 | As-of dating | export 23 October, latest score 22 October | C1 |
+| 5 | Version basis | one scoring model version across the history | C1 (asserted single version) |
+| 6 | Denominator | none (counts) | n/a, dispositioned |
+| 7 | Weighting | none | n/a, dispositioned |
+| 8 | Measurement window | score at cut; November uses the latest | C2 + C1 |
+| 9 | Boundary inclusivity | at least 0.10 | C1 (no score within the band) |
+| 10 | Rounding path | integer counts summed, total and per-estate figures to the nearest ten at the end | C1: every graded figure at least 2.5 inside its bin, asserted |
+| 11 | Tie-break | cloud cutline strict at every rung's boundary; host rank strict at 96 and 120 | C1 (unique values at R4's boundary; strict gaps asserted at R0 to R4) |
+| 12 | Maturity | Q3 closed; November is forward | C1 |
+| 13 | Order of operations | whole drains per window, then cycles, then summed | C1: headroom fractional parts at least 0.2 from an integer in every window, so per-window and pooled flooring agree |
+| 14 | Row order | none | C1 (asserted invariant under shuffles) |
+| 15 | Duplicate resolution | finding rows unique on host, package, vulnerability | C1 (asserted) |
+| 16 | Identity normalisation | host identifiers identical across feed, inventory and acknowledgements | C1 (asserted; no device on these rows) |
+| 17 | Netting | none | n/a, dispositioned |
+| 18 | Dimensional units | forecast and per-host capacity in the same transactions-per-second unit | C1 (asserted) |
+| 19 | Code semantics | acknowledgement statuses accepted, part-accepted, declined, deferred | C2 (the back-test) |
+| 20 | Integerisation | whole hosts of headroom, floor | C1 (axis 13) |
+| 21 | Scope of a clause | the headroom clause applies per window; requests count per host-drain | C2 (twin pair, overlapping requests) |
+| 22 | Forward window contents | November windows booked to the office only (the calendar says so); no November request yet filed | filed (calendar) + C1 |
+
+Two axes specific to the decisive rung. (a) What a November drain removes: every exploitable finding open on the host, because every such finding on a colocated host has a fix published before the export (asserted), so readings of "the image current at the window" converge (C1). (b) Which hosts: the 96 and 120 most exposed, strict at the boundary, and the ticketing rule selects one package per estate (asserted unique).
+
+### Deliverables and criteria arithmetic (shape 01, ranked list under a cap)
+
+1. `november_ticket_cut.csv`: one row per ticket in rank order (estate, package, hosts reached in November, exploitable exposures taken out in November). Script-generated.
+2. `ticket_split_review.pptx`: the split, the total, the chart, and the estate card carrying the two device asks.
+
+Criteria: the six ticket counts (6) and six November figures (6) and the total (1) = 13 on the call; last ticket in and first below the line, each named with its figure (4); ask A, six estates x 2 (12); ask B, four cloud estates x 2 (8); chart parts (one bar per estate on November's figure beside its open exploitable exposure today, estates in ticket order, the colocated bars annotated with their drains, the title carrying the total) (5); two files and the CSV's columns (3). About 51.
+
+### Ask ledger (supplemental-stumping)
+
+Main call's declared row population: open findings at export (scanner and feed), score history rows for those vulnerabilities, the provider inventory, the capacity register, the November and May to October forecast rows, the calendar, the 412 acknowledgements, the ticket log's Q3 cloud tickets and their fixed findings, the close-out. Zero device rows and zero hazard rows inside it, asserted by count at stage 3.
+
+**Ask A: patch pace, six estates (12 figures).** For each estate, the median days from a vendor's first release of the fix to the day the ticket's last host ran it, over the office's tickets completed 1 May to 23 October, and how many of those tickets missed the standard's remediation target. Use: the CISO weighs whether each estate's tickets land, beside the split. H18 home: the other measure the deck carries for every estate. Primary devices: rollbacks in the crews' deployment log (a rolled-back deployment followed by a re-deploy; the dictionary defines the revert column; lazy reads the first time every host showed the fixed version) on the cloud estates; the provider's completion reports in UTC while checkout windows cross local midnight (lazy dates those completions a day early) on the colocated estates. Hazards: H1 vendor advisories republished with later revision dates (the standard defines the fix release as first publication; lazy takes the latest revision), moves all six estates; H2 superseded tickets in the ticket log (a later ticket on the same package carries the supersedes reference; lazy keeps both), moves four estates. Over-cleaning half: genuine retries on hosts that failed (no revert) whose completion is the retry. Path: ticket log, advisory feed, deployment log, completion reports, cloud asset register (host to estate), vulnerability standard, provider schedule (UTC note), data dictionary (8 files, 13 columns). Stops: lazy (first full deployment, latest revision, UTC) about 4 to 7 days short on the median in every estate; half-handled (rollbacks only) 2 to 4 short; over-cleaned (drop every ticket touched by a rollback) misses counts by 3 to 6; right rule on the wrong population (superseded kept) off by 1 to 3 tickets; answer. Every stop at least 2 days or 2 tickets from the golden.
+
+**Ask B: scanner coverage, four cloud estates (8 figures).** For each cloud estate, the hosts in service on 23 October and how many of them had no authenticated scan in the 14 days before the export. Use: the CISO needs to know how much of each estate the exposure figures cover. H18 home: the trail that audits an input the call consumes. Primary device: the media estate's internal domain migration (hosts renamed mid-September; the asset register carries the instance identifier and the new name, the scanner's coverage file carries the old name for scans before the cutover); the dictionary pins the instance identifier as the key; lazy joins on hostname and counts migrated hosts as unscanned. Over-cleaning half: short hostnames reused across estates, so a join on the short name over-matches. Hazards: H3 coverage timestamps in UTC against a Madrid-local 14-day boundary (moves all four), H4 standby instances in the asset register that the standard excludes from in service (moves three). Path: cloud asset register, scanner coverage file, vulnerability standard (coverage and in-service definitions), data dictionary, the platform team's migration notice inside the planning thread, the spine's host list as referee (byte-clean, never trapped) (6 files, 11 columns; under the 8-file floor, recorded as a debt). Stops: lazy about 35 to 60 per cent over on media's unscanned count, 5 to 15 per cent elsewhere from H3 and H4; over-cleaned under on two estates; answer.
+
+**Hazard table.** H1 (A: all six), H2 (A: four), H3 (B: four), H4 (B: three). Composed deltas for every subset outside each figure's bin, asserted at stage 3. No device or hazard family is repeated between A and B.
+
+**Pair arithmetic.** Planning weights 38 / 7 / 55; ask criteria 24 device-carried (A and B) and 4 inheriting (last in, first below). r, the call criteria a stop-rung response keeps: about 0 (all six counts and figures differ by construction; the total differs by 29 per cent). Cracker = 45 + 55 x (4 + 24 x 0.2) / 28 = 62.3. Mirror (stop rung) = 0 + 7 + 55 x (24 x 0.2) / 28 = 16.4. Pair 39.4 at a device leakage of a fifth, at the 40 target; at a leakage of a quarter, 41.4. If no top response lands the call the pair sits near 20.
+
+### Pack plan (names settled at stage 3 in the organisation's idiom)
+
+Main path: the office scanner export (spine, about 210,000 rows, CSV); the provider's managed-host feed (JSON lines); the provider host inventory (XLSX); the scoring history (Parquet); the office ticket log (CSV); the Q3 close-out (PDF); the capacity register (XLSX); the hourly forecast May to November (CSV); the provider's 412 acknowledgements (XLSX); the vulnerability standard (DOCX); the SRE maintenance standard (PDF); the provider service schedule with the window calendar (PDF); the planning thread (EML); the data dictionary (MD). Ask paths: the crews' deployment log (CSV); the provider's completion reports (CSV); the vendor advisory feed (JSON); the cloud asset register (CSV); the scanner coverage file (CSV). Declared distractors: the drain tool configuration (YAML) and the superseded CVSS-band allocation memo (PDF). About 21 files, eight formats.
+
+### Realism debts (stated)
+
+1. Window utilisations of 90 to 93 per cent: forced by the four to six concurrent drains the ladder needs; mitigation, the season peak and fixed contractual windows, stated in the provider schedule.
+2. Pack size about 21 files, above the 19 usual: the ask spans need their own files; mitigation, every file has an owner and a source system.
+3. Ask B spans 6 files, under the 8-file floor.
+
+### Stopping rule (written before any round)
+
+One solver commits to any answer other than the golden: go to the judge. It lands the split and the figure: harden (three loops at most), first axis the host-profile route (a solver ranking colocated hosts by `in_service_since`). Still landed after three: retire.
+
+## Tried and rejected
+
+## Tried and rejected
+
 ## Tried and rejected
 
 - The note's own decisive rung (drains per window from the capacity register, the hourly forecast and the window calendar) as the decisive move: the SRE standard states the N+1 rule in a sentence and the acknowledgements reproduce 412 of 412 only under it, so a plain solver builds it from a stated rule plus a corpus that refutes the rung below; its driver also sits beside task106's shared-pool driver. Kept as the stop rung.
@@ -117,3 +296,59 @@ Registration (coordinator, 2026-10-10, after task124 to task127 were filed): the
 - Hosts made clean as the scored unit: task87 v8's conjunctive coverage.
 - Re-introduction on autoscaled estates and scan-confirmed closure: both turn on how taken out is read (a flow against a month-end state) or on the scanner as an instrument.
 - Keeping counterparty_acknowledgement, budget_or_appropriation and service-operations-sla at registration: blocked against task126 and task127 (filed after this draw) and, for the subdomain, against task129 drafted in parallel; redrawn to closed_decision_corpus, launch_or_rollout and field-service-maintenance.
+- The drain tool's parallelism setting as rung R2 (a filed concurrency figure between no limit and the window rule): whether it binds depends on whether two requests share a drained host, a fork the stop rung must not carry; kept as a declared distractor and a swept rival in the acknowledgement back-test, and the day's-peak reading of the headroom clause took the rung.
+- Leaving reboot sharing unpinned at the stop rung: a stop-rung solver who packs many tickets onto each drained host approaches the answer's colocated figure without the decisive move; the acknowledgements now refute sharing through overlapping requests.
+
+## Build record
+
+Stage 3a, built 2026-10-10. Generator under `generator/` (params, cves, colo, cloud, windows,
+golden, world, asks, writers_data, docs, deliver, checks, build, verify, ship). Pack in `target/`,
+golden deliverables in `golden/`, `metadata.json` at the task root.
+
+**Gate: all green.**
+- Generator green: `build.py` runs `checks.run`, **104 assertions** pass (input gates; ladder
+  ordering and winners; colocated (1,1) signature uniqueness; R4 over R3 1.22x and the colocated
+  edge; nearest-wrong-cell 8 per cent; seven graded figures mid-bin at distance 4; decorrelation and
+  the R3/R4 drained-set lens-swap overlap; the close-out and acknowledgement back-tests; November
+  drains 96/120; ask answers well formed; metadata coherence).
+- Independent verifier green: `verify.py` reads only `target/` and `metadata.json`, shares no code
+  with the generator, and recomputes the answer split (1/1/76/75/77/70), every estate figure, the
+  total (13,354), the November drains (96/120 from forecast + capacity register + window calendar),
+  the close-out 12 cells, and the 412 acknowledgements. All match `metadata.json`.
+- Two consecutive builds byte-identical (`ship.py`): 23 target files, 2 golden files, metadata. The
+  shipped pack is byte-identical to both scratch builds. OOXML is made byte-stable by normalising
+  member timestamps and every ISO datetime, including the chart's nested embedded workbook.
+- Input gates asserted: 23 input files, 10 formats (csv, docx, eml, json, jsonl, md, parquet, pdf,
+  xlsx, yaml), spine `vuln_findings_2026-10-23.csv` at 215,899 rows, two distractors
+  (`drain_orchestrator_config.yaml`, `superseded_cvss_band_allocation_memo.pdf`) named in
+  `metadata.json` and nowhere under `target/`.
+- metadata clean, H1 scrub audit clean on both `target/` and `golden/` (no producer signature, no
+  out-of-band timestamp); mtimes normalised to the 23 October export.
+
+**Ladder as built** (split payments/checkout/search/media/tools/pipeline, total exposures):
+R0 26/26/58/71/59/60 = 25,857 (flag, no drain limit); R1 26/26/62/67/65/54 = 17,562 (cut-day score,
+no drain limit); R2 6/3/72/75/77/67 = 10,795 (day's-peak drains); R3 (stop) 7/6/72/75/76/64 = 10,963
+(window-hours drains, per-package valuation); R4 (answer) 1/1/76/75/77/70 = 13,354 (whole-host
+valuation, one colocated ticket per estate). The answer is the top feasible cell; R0/R1 overcount by
+ignoring the drain constraint, R2/R3 undercount by crediting a drain with only the ticket package.
+
+**Settlements made at build (design figures were targets; these are the computed values).**
+1. The request corpus gets its own RNG (`Random(seed+20)`) so the mid-bin tuning of cloud ticket
+   targets cannot perturb the acknowledgement back-test.
+2. Cloud exploitability is rare by construction (about one exploitable CVE per package on a tuned
+   number of hosts), so a cloud ticket takes out a modest count and the cutline sits at 9 to 10,
+   with the two colocated tickets ranked first by a wide margin.
+3. Mid-bin tuning nudges one safe cloud ticket per estate and the top drained colocated host so all
+   seven graded figures sit at residue-4 (distance 4 from a multiple of ten); deterministic.
+
+**Residual items for later stages (honest state).**
+- R4 over R3 on the total is 1.22x, which clears the 1.2 discriminator floor but is thin; the
+  colocated-figure edge is about 4x. A future hardening loop can widen the total margin by raising
+  colocated whole-host exposure.
+- Separation across rungs rests on the colocated (1,1) signature (unique to R4) and the total figure
+  being at least 8 per cent from the nearest wrong cell; some cloud per-estate counts coincide
+  between R2/R3 and R4, which the signature and figure separation cover.
+- The ask layer ships its two asks (patch pace, scanner coverage) with their primary devices present
+  (deployment rollbacks; the media domain migration keyed on instance id) and golden answers
+  asserted; full hazard-stacking and the pair-ceiling simulation are a supplemental-stumping pass for
+  a later stage, not part of the 3a evidence-pack gate.

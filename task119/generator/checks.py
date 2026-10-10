@@ -225,6 +225,14 @@ def grid_checks(K, D):
                     for t in (A, C, D_, G_)))
     eq = all(cells[("census", "own", "ignored")][t] == cells[("census", "network", "ignored")][t] for t in (A, C, D_, G_))
     K.check("own-unit and network scope equal per trust at the census basis, allocation ignored (C1)", eq)
+    # lens swap at the loop-3 step: each lens alone names another trust; only the two together name D
+    lw = {k: G.leader(cells[k])[0] for k in (("census", "own", "ignored"), ("census", "own", "placed"),
+                                            ("held_all", "own", "ignored"), ("held_all", "own", "placed"))}
+    K.check("lens swap (loop 3): bed lens alone (every held bed read empty) names A, placement lens alone names a "
+            "trust other than D; D needs the hold attributed to the trust that placed the patient",
+            lw[("held_all", "own", "ignored")] == A and lw[("held_all", "own", "placed")] == A
+            and lw[("census", "own", "placed")] != D_ and lw[("census", "own", "ignored")] != D_,
+            {"/".join(k): LET[v] for k, v in lw.items()})
     # the mixed 08:00 reading: network for trusts holding no level-3 beds
     ws = G.waits(D)
     own = {x["id"]: x for x in G.classify(D, ws, scope="own") if x["year"] == 3 and x["died"]}

@@ -2,18 +2,27 @@
   "task": "task125",
   "domain": "accounting-audit-forensic",
   "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 4,
+  "stage_name": "solved: landed, harden",
   "updated": "2026-10-10",
-  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files about 5,000 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment for every guest the carer hosts, so from April 2027 the carers paid 3,044 for a long-term band 2 guest and a step-down guest are paid 1,464, every one of their plan-year payments for April onwards lands in cell 14, and the plan year routes about 5,900.",
+  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files 5,700 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment covering every guest the carer hosts, so from April 2027 the 60 carers paid 3,044, 3,272 or 3,524 for a long-term band 2 guest beside a step-down guest are paid 1,464, all 13 of their plan-year payments land in cell 14, and the plan year routes 6,500.",
   "harden_loops": 0,
-  "solver_rounds": [],
+  "solver_rounds": [
+    {
+      "label": "round 1, plain",
+      "date": "2026-10-10",
+      "score": 80.2,
+      "landed": true,
+      "cracked": 3,
+      "items": 8
+    }
+  ],
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
-  "approved": null,
+  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/02_anomaly_detection/AD02_digit-filter-workload-cohort-runoff.md"

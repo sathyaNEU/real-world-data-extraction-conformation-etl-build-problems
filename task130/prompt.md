@@ -1,0 +1,7 @@
+On 13 November the 2027 large-holder order goes to Amaro Peláez, so it is in the gazette before the programme year opens, and as head of the observatory I sign its annex. Celestina, who built last year's, sees no reason to build this one any differently. I want a list, not a shortlist. The call I have to make is which of the fourteen sections on our watch list the 2027 order designates.
+
+Three files. `designation_brief_2027.pdf` is what Amaro reads first, so it opens on that list and how many sections are on it, then names the designated section closest to the designation line and the undesignated one closest to it, each with its large-holder share as a percentage to one decimal and its distance from the line in percentage points to one decimal.
+
+The annex itself is `designation_annex_2027.csv`, one row per watch-list section: the dwellings large holders hold, their share of the section's dwellings to one decimal, the largest large-holder group as the register names it, the dwellings that group holds, and how many large-holder dwellings have nobody on the municipal register. Counts are whole dwellings.
+
+Those two closest sections also go in `section_bridge_2027.png`. Walk each from its large-holder dwellings in our 30 June bulletin to its annex figure, one bar for every calendar month in between labelled with its net change in dwellings, the designation line drawn at its value in dwellings for that section, and the number of designated sections in the title.

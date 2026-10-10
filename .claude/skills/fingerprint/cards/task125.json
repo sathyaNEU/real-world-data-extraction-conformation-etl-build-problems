@@ -10,8 +10,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Order 6,500 routed payments from Fernhollow for April 2027 to March 2028.",
+  "answer_source": "task125/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "population",
     "time",
@@ -34,11 +34,11 @@
   "role_family": "finance_controller",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "spending_over_500_2021-04_to_2027-02.csv",
-    "rows": 420000,
-    "entity": "one published spending line over 500 pounds: an invoice or payment-request line on a council payment, with its department, service area, supplier, transaction reference, payment date, net amount and VAT",
-    "grain": "invoice line within a payment (remittance)",
-    "source": "synthetic (fictional county council's transparency spending publication, April 2021 to February 2027; planned row count, cut at stage 3)"
+    "file": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
+    "rows": 405108,
+    "entity": "one published payment over 500 pounds on the council's transparency spending file, with its department, service area, expense type, supplier, vendor number, transaction reference, payment date, net amount and VAT",
+    "grain": "payment (one transaction reference)",
+    "source": "synthetic (fictional county council's transparency spending publication, April 2023 to February 2027)"
   },
   "forum": "customer_or_counterparty",
   "forcing_event": "purchase_order_or_contract",
@@ -59,7 +59,12 @@
       "Pauline Pollard",
       "Douglas Harris",
       "Wendy Lyons",
-      "Abigail McDonald"
+      "Abigail McDonald",
+      "Adam White",
+      "Lynda Donnelly",
+      "Bethan Carpenter",
+      "Shaun Collins",
+      "Anne McKenzie"
     ]
   },
   "deliverables": [
@@ -68,10 +73,12 @@
   ],
   "opening_move": "stakes-first",
   "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and a unit holding that class beside another is carried for the other alone from then on, which moves its amounts into the selected band; a forecast that follows the band's current members, checks the filed ending against them and finds no member touched, falls short by every such unit, and only decomposing each unit's amount into the filed component rates and re-summing what survives the date returns the answer, after the shallower forward correction (a fixed-term cohort run off on a term recovered from an earlier cohort that has completed) has been made and reads as final.",
-  "driver_concrete": "Adult Social Care's flagged cell 14 is the four-weekly 1,464-pound payment Shared Lives makes to a carer for one long-term band 2 guest (four weeks at 366 a week), and a carer is paid one four-weekly amount for every guest they host, so the 70 carers hosting a long-term band 2 guest beside a Home First Step-Down guest are paid 3,044 (cell 30) in every closed period; the step-down places close on 31 March 2027, so from the first payment for April those carers are paid 1,464 and every later plan-year payment of theirs lands in the flagged cell, which a forecast that carries the cell's current carers forward, and finds no step-down payment in any flagged cell, never counts. Provisional targets, re-derived at the design stage: about 5,900 routed payments against about 5,000 at the stop rung (Housing Support's 2024-25 instalment intake run off on its 30-instalment term, Adult Social Care carried forward whole, 15 per cent low), 7,100 for the closed year carried forward (20 per cent high), 9,400 on the published amounts and 21,500 on the full published range.",
-  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files about 5,000 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment for every guest the carer hosts, so from April 2027 the carers paid 3,044 for a long-term band 2 guest and a step-down guest are paid 1,464, every one of their plan-year payments for April onwards lands in cell 14, and the plan year routes about 5,900.",
+  "driver_concrete": "Adult Social Care's flagged cell 14 holds the four-weekly 1,464-pound payment Shared Lives makes to a carer for one long-term band 2 guest (four weeks at 366 a week), and a carer is paid one four-weekly amount for every guest they host, so the 60 carers hosting a long-term band 2 guest beside a Home First step-down guest (standard, enhanced or complex) are paid 3,044, 3,272 or 3,524 in cells 30, 32 and 35 in every closed period; the step-down places close on 31 March 2027, so from the first 2027/28 run those carers are paid 1,464 and all 13 of their plan-year payments land in the flagged cell, which a forecast that carries the cell's current 102 carers forward, and finds no step-down payment in any flagged cell, never counts: 6,522 routed payments (filed 6,500) against 5,742 at the stop rung (Housing Support's 2024-25 Tenancy Sustainment round run off on its 30-instalment term, Adult Social Care carried whole) and 7,632 for the closed year carried forward on the 2025/26 cells.",
+  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files 5,700 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment covering every guest the carer hosts, so from April 2027 the 60 carers paid 3,044, 3,272 or 3,524 for a long-term band 2 guest beside a step-down guest are paid 1,464, all 13 of their plan-year payments land in cell 14, and the plan year routes 6,500.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task126": "Both turn on a population gap and file a quantity, but task125's move is a forward composition inside a forecast (one periodic amount summed over components, a filed closure ends one class, and re-summing what survives puts units into the counted band in the plan year), while task126's is a historical succession link that over-joins units and is split by a separate classification ledger inside a descriptive median; the decisive generator (G2 against G3), Gate G mechanism (forecasting against method_or_model_selection), shape (02 against 14), calibration form, domain and objective all differ."
+  },
   "lineage": [],
   "notes": "Realises analytical_tasks note AD02 (analytical_tasks/02_anomaly_detection/AD02_digit-filter-workload-cohort-runoff.md), its first realisation, drawn 2026-10-10; registered after task124 in task-number order. The note's decisive move, Housing Support's fixed-term cohort run off on a term recovered from the completed 2021 intake, is kept as rung 3: the pilot's plain solver replays records at the finest grain and runs cohort studies unprompted, and the 2021 intake's full rise and run-off sits in the same flagged-cell series, so that rung is constructed rather than missed. A first redraw (re-pricing Adult Social Care's stream at a filed 2027/28 tariff) reads honestly as (time, A) or (time, G13) and the guard blocks both (task121 v1 lineage in the window, ten older builds, task122's decisive G13), so the decisive rung moved to the population gap: the forward composition of each carer's single four-weekly payment. Requester moved from the head of internal audit (compliance_or_audit, banned against task119) to the head of exchequer services (finance_controller); internal audit keeps publishing the conformity statements. Context artifact redrawn at registration from close_out_summary (BLOCK ban.artifact against task124) to operations_log, the filter's 2025/26 run log."
 }

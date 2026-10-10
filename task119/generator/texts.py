@@ -60,8 +60,9 @@ GUIDE_FIELDS = {
         ("referral_id", "Platform reference (R, year and month, sequence) or migrated CCRS reference (CC and seven digits)."),
         ("received_at", "Time the critical care outreach team received the referral."),
         ("referring_trust", "Trust code of the referring hospital."),
-        ("referred_from", "Ward or department code at the referring hospital (ED is the emergency department, REC "
-                          "theatre recovery)."),
+        ("referred_from", "Ward or department code at the referring hospital. ED is the emergency department and REC "
+                          "theatre recovery. AMU (acute medical unit), SAU (surgical assessment unit), SDU (surgical "
+                          "day unit) and CCU (coronary care unit) are wards, as is each W code."),
         ("patient_key", "Regional patient key."),
         ("dta_at", "Time of the decision to admit to critical care."),
         ("level_of_care", "Level of critical care on the referral, 2 or 3."),

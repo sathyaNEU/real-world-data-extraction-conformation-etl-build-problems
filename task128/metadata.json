@@ -1,0 +1,64 @@
+{
+  "task": "task128",
+  "title": "Sendalia Viajes, November 2026 patch ticket split across six estates",
+  "domain": "Business & Operations Analytics",
+  "subdomain": "field-service-maintenance",
+  "objective": "Opportunity Sizing & Decision Support",
+  "as_of": "2026-10-23",
+  "deliverables": [
+    "november_ticket_cut.csv",
+    "ticket_split_review.pptx"
+  ],
+  "answer": {
+    "split": {
+      "payments": 1,
+      "checkout": 1,
+      "search": 76,
+      "media": 75,
+      "tools": 77,
+      "pipeline": 70
+    },
+    "exposures_taken_out": {
+      "payments": 1404,
+      "checkout": 1734,
+      "search": 2614,
+      "media": 2654,
+      "tools": 2434,
+      "pipeline": 2514
+    },
+    "total_exposures": 13354
+  },
+  "input_files": [
+    "cloud_asset_register_2026-10-23.csv",
+    "cloud_patch_ticket_log_q3_2026.csv",
+    "cloud_q3_fixed_findings.csv",
+    "colocation_capacity_register_2026-10.xlsx",
+    "colocation_change_acknowledgements_may_oct_2026.xlsx",
+    "colocation_host_inventory_2026-10-23.xlsx",
+    "colocation_managed_host_findings_2026-10-23.jsonl",
+    "colocation_service_schedule_and_window_calendar.pdf",
+    "crew_deployment_log_2026.csv",
+    "drain_orchestrator_config.yaml",
+    "epss_score_history_2026.parquet",
+    "estate_transaction_forecast_2026.csv",
+    "extract_provenance_2026-10-23.md",
+    "november_round_planning_thread.eml",
+    "november_window_calendar.csv",
+    "q3_2026_remediation_closeout.pdf",
+    "scanner_coverage_2026-10.csv",
+    "sre_maintenance_standard.pdf",
+    "superseded_cvss_band_allocation_memo.pdf",
+    "vendor_advisory_feed.json",
+    "vuln_findings_2026-10-23.csv",
+    "vulnerability_management_standard_v3.docx",
+    "warehouse_data_dictionary.md"
+  ],
+  "large_file": {
+    "path": "vuln_findings_2026-10-23.csv",
+    "rows": 215899
+  },
+  "distractor_files": [
+    "drain_orchestrator_config.yaml",
+    "superseded_cvss_band_allocation_memo.pdf"
+  ]
+}

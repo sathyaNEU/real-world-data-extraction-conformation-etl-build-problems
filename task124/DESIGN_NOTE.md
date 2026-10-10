@@ -384,6 +384,64 @@ About 27 files and five formats (parquet, csv, xlsx, docx, pdf, md). Stage 3 may
 
 `prompt.md`, 249 words, constraint-first ("We can only buy 400 MW of summer firm capacity."), two files, `voice-check.py 124` clean (24.9 words a sentence, context 40.2 per cent, one rounding tag beside the "whole MW" convention, no "because"). The call closes the context as one quotable sentence (the megawatts each of the eight named books gets, adding to exactly 400), and both later paragraphs open on "the split". One belief, the head of trading's, as one clause. Nothing names an input file, the developer, the programme, the replay, the percentile, the window of summers or the hedge source; the policy carries all of them.
 
+## Build record
+
+Stage 3a (evidence pack), 2026-10-10. Generator `generator/build_pack.py` (modules `common`, `world`, `loads`, `desk`, `analysis`, `checks`, `writers`, `documents`, `docs2`, `pipeline`), seed 1242027. Independent verifier `generator/verify_pack.py` reads only `target/` (and `metadata.json` for the distractor gate) on its own code path.
+
+**Gate outcomes.** Generator: 91 assertions, all green. Verifier: 37 checks, 0 failed, every graded figure equal to the generator's to the last digit (post-block exposures, 1-in-10 loads, 32 premiums, 8 hedge prices). Two consecutive builds into the scratchpad: all 28 files, `metadata.json` and the build record byte-identical (sha256), mtimes identical; the task-folder build matches the scratch builds byte for byte. `scrub_producer_metadata.py` audit over `target/`: clean, no producer signature, no stamp outside 2024-01-01 to 2027-04-12.
+
+**Input gates.** 28 files, 6 formats (parquet, csv, xlsx, docx, pdf, md). Spine `idr_hourly_reads_summers_2017_2026.parquet`, 1,881,080 rows (the IDR premises and the fourteen members, weekdays June to September, hours ending 11 to 20). Distractors in `metadata.json` and nowhere in `target/`: `zone_daily_temps_2017_2026.csv` and `ercot_zone_peak_outlook_2027.xlsx` (the declared wrong-basis distractor). No two CSVs share a row count; every in-file date on or before the 9 April 2027 extract (calendar and delivery periods excepted); every file's mtime an in-fiction write time; the extract log names every file but itself.
+
+**The answer and the ladder, as built (MW, Coast · East · Far West · North · North Central · South Central · Southern · West).**
+
+| Rung | Split | North Central against 210 |
+|---|---|---|
+| 0 settled loads, own book | 115 · 65 · 35 · 15 · 40 · 45 · 60 · 25 | -81.0% (5th of the receiving books; Coast leads) |
+| 1 per-kW replay, every row | 110 · 20 · 0 · 0 · 255 · 10 · 5 · 0 | +21.4% |
+| 2 replay, one row per premise | 135 · 45 · 0 · 0 · 145 · 40 · 35 · 0 | -31.0% |
+| 3 class factor 0.599 on the centres (stump) | 130 · 40 · 0 · 0 · 165 · 35 · 30 · 0 | -21.4% |
+| 4 uncalled draw 0.900 on the centres (answer) | **120 · 30 · 0 · 0 · 210 · 25 · 15 · 0** | |
+
+- 1-in-10 loads (answer): 725.9 · 304.2 · 208.9 · 176.1 · 705.0 · 433.2 · 267.1 · 241.1 MW. Exposure before the block 250.9 · 159.2 · 113.9 · 96.1 · 340.0 · 153.2 · 147.1 · 106.1. Uncovered after the block 130.9 · 129.2 · 113.9 · 96.1 · 130.0 · 128.2 · 132.1 · 106.1; the next lot would go to Southern at 132.1 MW. The centres add 167.5 MW (0.90048 × 186.0).
+- Thinnest margins: lowest value a lot was taken at 133.19 (South Central) against the highest left 132.09 (Southern), 1.10 MW; every post-block exposure at least 0.29 MW from a half-MW edge (Coast 130.907 is the nearest whole-MW call at 0.41). Continuous water level 130.07, which rounds (nearest 5, largest remainder) to the same split.
+- Corridor on the centres' factor, scanned at 0.0001: [0.8848, 0.9175] files the answer; 0.88 files 205 on North Central and 0.92 files 215. All twelve estimators of the uncalled draw lie in [0.9003, 0.9008].
+- Grid cells as built: rows with the class factor 270, rows with the uncalled draw 310, partial class factor on every new North Central premise 175 (-16.7%), partial uncalled draw on every new North Central premise 250 (+19.0%); converging: members uncalled in 2027 too, P90 nearest rank, P90 exclusive, a class replay with every class at its own summer factor, a NAICS-level replay of the IDR premises.
+- Corpus: the per-kW replay reproduces 80 of 80 cells of the close-out's replay table (every cell at least 0.1 MW from a half-MW edge). Rivals: settled unscaled 8 of 80 (2026's cells only, worst miss 37.7%), divisor at year end 1 of 80, at 1 June 17 of 80, summer-average enrolled MD 47 of 80, the zone's own peak hour 58 of 80. Class factor 0.599 at the closed peaks (0.597 to 0.601 by summer), uncalled draw 0.900 (0.895 to 0.905 by summer); members at most 0.91 per cent of any book-summer; every closed peak day credited to every member account; 4 to 6 uncalled weekdays in each summer's hottest decile.
+- Twin pair (North Central, 2,400 kW, identical on every enrolment column): the cold store drew 1,437.3 kW at the 2026 peak, the dry-goods warehouse 910.0 kW (1.58x); the pooled factor gives both 1.154 MW.
+- Lenders' zone-share basis (declared distractor): 110 · 75 · 0 · 15 · 60 · 70 · 60 · 10, Coast-led, neither the answer nor rung 0.
+
+**Asks as built.** Ask A (premium, USD per MW-month, 32 book-cells over 16 zone-month values, since books sharing a load zone share a price): Pecos holds the lowest valid quote in 10 of 16 zone-months; the natural path is wrong on 32 of 32 cells (nearest 21.3% off); holidays missed moves 14 (2.6% or more); the over-corrector moves 12 (2.5% or more); the 2026 map moves East's 4 (2.0%). Every winning quote at least 2% under the next valid one; every premium at least 6 cents from a half-dollar edge. Ask B (USD/MWh): 78.92 · 75.91 · 75.52 · 75.91 · 75.80 · 72.74 · 77.93 · 76.88; each of the four stops is $0.05 or more off on 8 of 8 books; blotter MW ties the position report and every amendment is price-only. Separation: no device file is on the main call's declared population (the position report is the byte-clean referee shared with ask B).
+
+**Where the build departs from the stage 2 targets (recorded, no design change).**
+1. Post-block exposures sit at 130.9 / 130.0 / 132.1 for Coast, North Central and Southern (targets 131.2 / 130.1 / 132.2): the two summers that set each book's 1-in-10 pin their replay-table cells to the target, so clearing those cells off half-MW edges moved three targets by up to 0.31 MW. The split, the stump vector and every rung's North Central distance are unchanged; the tie margin widened to 1.10 MW.
+2. Rung 0 is 115 · 65 · 35 · 15 · 40 · 45 · 60 · 25 (target 130 · 85 · 0 · 0 · 50 · 60 · 75 · 0); still Coast-led with North Central fifth.
+3. The amendment run is 2,713 rows restating 275.0 MW (target 2,300 rows); the new general North Central premises are 113.1 MW (target 90), so the partials sit at 175 and 250.
+4. The replay-table blindness is asserted on what the closed books cannot hold (no AMEND row and no centre in any closed book, so rungs 1 to 4 return the same 80 cells); the members are inside every closed book, so a variant that sets them at 0.90 there is refuted by the table rather than blind to it.
+5. The 15-minute settlement rival is not built: the settled file is hourly at true-up.
+6. The book is commercial and industrial only (premises are small and large commercial sites), because a residential book would put the enrolment extract near 600,000 rows; the premise file is Sabine Crest's `premise_register_20270409.csv` (ERCOT load profile and the NAICS code from the service application), and the refrigerated class is NAICS 493120 and 312113.
+7. The close-out report is dated 2 February 2027, after true-up for the 2026 peak, and carries Table 1 (enrolled maximum demand and settled load at the 2026 peak) and the replay table, with no 2026 block split.
+8. Product codes fold into the procedures (the 5x16 and 7x16 definitions); 28 files rather than 27.
+
+## Leak review
+
+`leak.py task124 --asof 2027-04-12`: REVIEW, no LEAK. Each REVIEW line, answered:
+
+- Sweep 3, `summer_2026_risk_report.pdf` carries 251: Southern's 2019 cell in the closed replay table (at the 2026 book), not Coast's 2027 exposure; a coincidence of magnitude, no 2027 figure is in the report.
+- Sweep 3, `field_notes.md`, `summer_2026_risk_report.pdf` and `summer_risk_policy_2027.docx` carry most words of the committed call: the words are the eight book names, "summer", "block" and "MW", which every document of this organisation uses; none states a 2027 lot figure.
+- Sweep 4, `extract_log.md` and `field_notes.md` (closed, premise, system, window, settled): the dictionary's own field descriptions; neither mentions the members' peak-hour draw, called windows at the system peak or eligibility, so neither names the move.
+- Sweep 4, `summer_2026_risk_report.pdf` (replay, closed, system, settled, summers): the report states the per-kW replay at the 2026 book, which is rung 1's certification by design (the corpus), not the decisive step.
+- Sweep 4, `summer_risk_policy_2027.docx` (closed, premise, system, settled, method, summers): the policy's pins (1-in-10 definition, the coming book, the peak hour); the policy says nothing about classes, the programme or the centres.
+- Sweep 6, `summer_2026_risk_report.pdf` names books beside numbers: Table 1 and the replay table are the closed 2026 book's peak-hour loads, with no block split and no 2027 figure, so nothing ranks the books on the 2027 question.
+- Sweep 9, `hedge_positions_20270409.xlsx` and `trade_blotter_s27.csv` dates after the as-of: delivery periods of booked strips (June to September 2027, Q4-27, Cal-28), forward by nature.
+- Sweep 9, `trading_calendar_2027.csv` dates after the as-of: the desk's 2027 calendar, forward by design.
+
+## Stage 3b: write-up and ship checks (2026-10-10)
+
+- **Goldens.** `generator/golden.py` reads only `target/` through the independent verifier's code path (`verify_pack.py`, all its main-call, corpus and ask checks asserted before anything is written) and writes `summer_block_committee.pptx` (three slides: the split with the levelling chart, the premium and hedge prices, the basis) and `summer_block_split.xlsx` (Split, Replay, Lots, Premium, Hedge price, Notes). Figures printed before and after `golden-realism` and `reduce-house-fixes` are identical; two runs are byte-identical; the container audit is clean (in-fiction author, 14 April 2027 stamp). Every block-4 line of `submission.md` was matched against the workbook by script.
+- **Whole MW.** Load less hedges and exposure less lots agree in whole MW on every book. The Split sheet's total row carries hedges and lots only, because the rounded load and exposure columns sum to 1 MW less than their unrounded totals.
+- **Surface screen** (`guard.py surface`): three promoted pairs, none a rename or regeneration case. task63 shares the string "North Central", ERCOT's real weather-zone name, which task63 carries inside its own invented "North Central certification district" (North Dakota, a different fiction). task89 shares only the pptx+xlsx deliverable species (no file name, schema, prompt wording or mechanism overlap, mechanism 0.03). task83 is the differentiated older same-puzzle note already on the card. The people note flags "Sabine Crest", which is the company.
+- **Heart** (`guard.py heart`): **BLOCK**, from `ban.pattern` (E), `ban.artifact` (close_out_summary) and `ban.forum` (committee_or_panel), all against task129, with a WARN on the pptx+xlsx set against task129. The guard orders cards by draw date then task number, and task125 to task130 were all drawn on 2026-10-10, so the "last three" for task124 is now task128 to task130, builds drawn after it. Run against its draw-order predecessors only (a scratch copy of the cards without task125 to task130), the same card is PASS with one NOTE (task83, differentiated), nearest driver 0.06. The axes on the card are the build's true ones and were not recoded to clear the ban. Either the coordinator rules on the window order, or one of task124 and task129 redraws the colliding furniture; this stage does not touch task129's card. Coordinator ruling (2026-10-10): the window order was the guard's fault, not the draw's. `guard.py` now checks a filed card against its own draw-order predecessors (a build drawn later met this one in its own registration check), and `guard.py heart task124` is **PASS** with one NOTE (task83, differentiated).
+
 ## Tried and rejected
 
 - Draw, the note's tariff-class replay as the decisive rung: a schema-visible join (ESI ID to the premise file's class) that a finest-grain replay of the interval data also hands over, both default moves for the pilot solver; demoted to rung 3.
@@ -406,3 +464,8 @@ About 27 files and five formats (parquet, csv, xlsx, docx, pdf, md). Stage 3 may
 - Design, ask A's primary device as two brokers quoting per MWh of different notional shapes: the same insight as ask B's 5x16 against 7x16 weighting, so one discovery would pay twice; demoted to hazard H4 across both asks and replaced by the third broker's absent channel.
 - Design, hedge prices in USD per MW-month beside USD/MWh in the blotter: a magnitude 300 times apart is loud and gets fixed by reflex; replaced by price-only amendments with a matching log.
 - Design, a counterparty novation or a re-delivered blotter batch as an ask B device: either moves hedge MW for a solver who builds hedges from the blotter, which puts a device on the main call's path.
+- Build, clearing every replay-table cell off its half-MW edge by moving that summer's swing alone: the two summers that set the 1-in-10 are pinned by the exposure target, so the factor solve pulled them straight back and the loop oscillated; they are cleared by a small target shift checked against both pinned cells and the post-block bins.
+- Build, a 2026 block split in the close-out report: its figures cannot recompute from a pack that starts at summer 2017 and it reads as a split artifact; replaced by Table 1 (enrolled maximum demand and settled load at the 2026 peak).
+- Build, the close-out dated October 2026: true-up for the 2026 peak was not available until late January 2027, so the report would cite settlement it could not have had; dated 2 February 2027.
+- Build, residential premises in the book: the enrolment extract would run near 600,000 rows; the book is commercial and industrial.
+- Build, a credit line whose account total lands on a half kWh: rounding conventions split on it; the member's first window-hour read is entered 0.1 kWh higher so every total has no half to round.
