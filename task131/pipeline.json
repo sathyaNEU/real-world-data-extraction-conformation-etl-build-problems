@@ -1,0 +1,31 @@
+{
+  "task": "task131",
+  "domain": "marketing-consumer-research",
+  "objective": "experiment-causal",
+  "stage": 6,
+  "stage_name": "delivered",
+  "updated": "2026-10-10",
+  "stump": "A competent solver takes each card's change in net margin after reward cost from the spring baseline weeks to the six run-rate weeks, differences each offer against the control cards as randomised, and commits to the personalised weekly coupons; the step that lands it there is reading each card as an independent shopper, when the cards of one membership share a household's baskets and a card carrying an offer pulls them off its sibling cards, so the lift on the card is partly spend that only moved, and on memberships whose cards all drew the same arm the fresh-produce bonus leads.",
+  "duplicate_check": {
+    "heart": "PASS (no near driver or stump on file)",
+    "nearest": "task109 surface 0.096, 0 promoted",
+    "clone_check": "CLEAN (pass 1, clone_check_report_task131.md): no Track A finding; no live Track B finding; one Template-tier history match against the never-built ledger-row-41 draw (no redraw); 6 clean component-sharing pairs; task131 adds to neither capped strategy"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC (pass 3)",
+    "disposition": "APPROVE",
+    "report": "task131/determinism_check_report_pass3.md",
+    "fix_cycles": 1,
+    "history": "pass 1 DETERMINISTIC/FIX_NOW, fixed in one cycle; pass 2 did not run (no judge thread); pass 3 APPROVE"
+  },
+  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS, clone-check CLEAN, judge APPROVE)",
+  "delivered": "2026-10-10",
+  "portal": null,
+  "replaces": "task130",
+  "target_zip": {
+    "path": "task131/target.zip",
+    "bytes": 6122513,
+    "members": 14,
+    "sha256": "2f364fb2edf0905e2d5ea76a2711c429000c038db702cb31e6e10dc2a33d3ceb"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "task": "task131",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "replaces task130 (failed on the portal 2026-10-10, both top models filed the golden); drawn bespoke under the template caps, no calibration organ",
+  "domain": "marketing-consumer-research",
+  "subdomain": "crm-loyalty-retention",
+  "niche": "a regional consumer co-operative supermarket choosing which of four member-card reward offers its 2027 member programme runs for every card, from a summer test the offer engine randomised card by card although the cards of one membership share one household's shopping",
+  "objective": "experiment-causal",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Put the Frischbonus (fresh bonus) on every member card in 2027; its 2027 programme value is CHF 972 thousand.",
+  "answer_source": "task131/submission.md, 1. Final Recommendation (the first line of golden/programme_offer_2027.docx carries the same call)",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G10",
+    "G4"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "head of the member programme at a regional consumer co-operative, who puts the 2027 programme offer and its budget line to the executive board",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "card_week_sales_2026w15_w34.parquet",
+    "rows": 611400,
+    "entity": "one member card in one ISO week in which it was used, with its gross sales, gross margin and reward cost",
+    "grain": "card x ISO week",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Switzerland, eastern cantons",
+    "currency": "CHF",
+    "org_type": "regional consumer co-operative supermarket chain with a household membership and several cards per membership",
+    "invented_names": [
+      "Talwerk"
+    ],
+    "people": [
+      "Patrice Keller",
+      "Hansjürg Wolf",
+      "Norah Burri",
+      "Marta Braun",
+      "Francis Amrein",
+      "Mirjana Felder",
+      "Amelie Peter",
+      "Nemanja Scheidegger",
+      "Enis Stutz",
+      "Ursula Wehrli",
+      "Ludwig Gfeller",
+      "Aline Baur"
+    ]
+  },
+  "deliverables": [
+    "programme_offer_2027.docx",
+    "offer_grid_2027.png"
+  ],
+  "opening_move": "question-first",
+  "driver": "The treatment was randomised at a sub-unit that shares one budget with its sibling sub-units inside a parent unit, so each treated sub-unit's measured lift carries outcomes moved onto it from differently assigned siblings, which nets to zero once every sub-unit is treated; the at-scale effect is read only on parent units whose sub-units all drew the same arm, and the lift read at the randomisation unit ranks the options in a different order.",
+  "driver_concrete": "The offer engine randomised member cards, but the cards of one membership carry one household's shopping, and a card holding an offer pulls the household's baskets off its membership's other cards, so every offer's card-level lift includes spend that only moved between cards of the same membership and would not exist once every card carries the offer; measured on memberships whose cards all drew the same arm, the fresh-produce bonus leads, while the card-level run-rate reading files the weekly coupons.",
+  "stump": "A competent solver takes each card's change in net margin after reward cost from the spring baseline weeks to the six run-rate weeks, differences each offer against the control cards as randomised, and commits to the personalised weekly coupons; the step that lands it there is reading each card as an independent shopper, when the cards of one membership share a household's baskets and a card carrying an offer pulls them off its sibling cards, so the lift on the card is partly spend that only moved, and on memberships whose cards all drew the same arm the fresh-produce bonus leads.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Bespoke draw: the stump comes from how a co-operative's household memberships carry several cards while the offer engine targets cards. No calibration corpus, no licensed wrong basis, no certified record."
+}

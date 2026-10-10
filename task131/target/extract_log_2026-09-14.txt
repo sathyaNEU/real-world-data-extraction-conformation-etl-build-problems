@@ -1,0 +1,10 @@
+TALWERK DATA PLATFORM  extract log  job=mp_analytics_handover  requested_by=Mirjana Felder
+
+2026-09-14 06:12:44  OK   card_week_sales_2026w15_w34.parquet      rows=  611400  source=mart.mp_card_week (weeks 2026-W15..2026-W34)  run_by=f.amrein
+2026-09-14 06:14:02  OK   st26_offer_allocation.csv                rows=   37298  source=offer_engine.allocation (test_code = ST26)  run_by=f.amrein
+2026-09-14 06:14:31  OK   member_cards.csv                         rows=   37298  source=crm.card  run_by=f.amrein
+2026-09-14 06:14:49  OK   memberships.csv                          rows=   24000  source=crm.membership  run_by=f.amrein
+2026-09-14 06:15:03  OK   branches_2026-01.csv                     rows=      42  source=ref.branch (edition 2026-01)  run_by=f.amrein
+2026-09-14 06:15:20  OK   branch_footfall_2026w15_w34.csv          rows=     826  source=stores.door_counter_week  run_by=f.amrein
+
+2026-09-14 06:15:31  INFO  handover folder sealed; next scheduled refresh 2026-10-12
