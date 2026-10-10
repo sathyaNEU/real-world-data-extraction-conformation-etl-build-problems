@@ -368,7 +368,7 @@ def write_pptx(G, png, path):
 
     # 3. basis
     s = prs.slides.add_slide(blank)
-    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central carries {G['shift']} MW more: an uncalled cold store runs harder on a peak-hot day", 24, True)
+    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central takes {G['shift']} MW more than at the Business Saver baseline: uncalled cold stores run harder on peak-hot days", 24, True)
     text(s, 0.5, 1.2, 12.3, 5.5, [
         "Exposure per the 2027 risk policy: each book's load in the ERCOT summer peak hour at the 1-in-10 summer "
         "(P90 of the ten closed summers 2017-2026, inclusive), less its June to September strips. Lots go 5 MW at a time "
