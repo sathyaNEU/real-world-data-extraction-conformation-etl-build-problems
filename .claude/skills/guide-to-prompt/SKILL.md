@@ -107,9 +107,9 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 > the ladder on the critical path of the average as well as of the stump condition.
 > - **The rubric weights:** 30 to 40 percent on the recommendation and its critical components, 5
 > to 10 percent on instruction-following, about 55 to 60 percent on the asks.
-> - **The roster and the input gates:** six domains, eight objectives, 10 or more files, 3 or more
-> formats, a file of 25,000 or more rows in any format, or a large database file, at least one
-> distractor named in `metadata.json`, real and license-clean with source, date and license
+> - **The roster and the input gates:** nine domains, eight objectives, 10 or more files, 3 or more
+> formats, a file of 25,000 or more rows in any format, or a large database file, two or more
+> distractors (unused by the solution, relevant-looking) named in `metadata.json`, real and license-clean with source, date and license
 > recorded, nothing that reads as LLM generated.
 >
 > The eight objectives include **Opportunity Sizing & Decision Support**, which the client's
@@ -154,7 +154,7 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 >
 > The announcement's example questions are in `guidelines/prompt_guide.md`. Read them as
 > **shapes** and instantiate them, they are not asks to lift, and several of them sit in domains
-> outside the six.
+> outside the nine.
 
 
 > Every task carries **one domain** and **one Axis 1 analytical objective**, chosen before you write a word of the prompt. Work the four steps in order, save the pairing, and the rest of the build carries it.
@@ -195,7 +195,7 @@ per-objective files carry each objective's definition and its shapes.
 
 ## Step 1. Choose one domain
 
-Six accepted domains. Pick the one whose **decision-maker would actually own the call**, which is a better test than which sector the data came from, because a census extract can sit under Demographic & Social Science or under Policy & Education depending on who is deciding.
+Nine accepted domains. Pick the one whose **decision-maker would actually own the call**, which is a better test than which sector the data came from, because a census extract can sit under Demographic & Social Science or under Policy & Education depending on who is deciding.
 
 1. Product Analytics
 2. Supply Chain & Logistics
@@ -203,8 +203,11 @@ Six accepted domains. Pick the one whose **decision-maker would actually own the
 4. Policy & Education
 5. Demographic & Social Science
 6. Nonprofit & Grant-making
+7. Marketing & Consumer Research
+8. Business & Operations Analytics
+9. Accounting, Audit & Forensic Analytics
 
-Anything outside these six does not qualify, however good the data is, and that includes Biology, Biostatistics, Epidemiology & Bioinformatics. Open the domain file, pick one **enumerated subdomain**, and if your trap needs a subdomain that is not listed, change the trap rather than stretching the scope.
+Anything outside these nine does not qualify, however good the data is, and that includes Biology, Biostatistics, Epidemiology & Bioinformatics. Open the domain file (for domains 7 to 9, which have no file in `references/domains/`, the enumerated subdomains are the keys under `subdomains` in `.claude/skills/fingerprint/vocab.json`), pick one **enumerated subdomain**, and if your trap needs a subdomain that is not listed, change the trap rather than stretching the scope.
 
 ## Step 2. Choose one Axis 1 objective
 
@@ -237,7 +240,7 @@ health of the data or of the pipeline that delivers it (freshness, volume, compl
 contract or SLA breach, check coverage, alert routing) and the committed call is a monitoring or
 alerting decision: if the prompt could be retagged Anomaly Detection or Forecasting without changing
 a word, it does not earn the tag. Both are objectives, never domains, so the build still draws its
-domain from the six.
+domain from the nine.
 
 The eight cover more than their names suggest. A like-for-like comparison, a binding constraint, a
 sizing exercise and a monitoring rule can each be the substance of a task; they just sit under one

@@ -82,8 +82,9 @@ Read its `verdict.md`. Then do two things it could not.
 - 10 or more files in the pack
 - 3 or more distinct file formats
 - either a file of 25,000 or more rows in any format, or a large database file
-- `metadata.json` names at least one distractor, distractors are no more than 20 per cent of the input files, and no file name or file under `target/` labels one as such
-- each declared distractor reproduces arithmetically, and a shipped fact (a clause, an effective date, a definition or a control total) rules it out
+- `metadata.json` names two or more distractors, and no file name or file under `target/` labels one as such
+- each declared distractor is unused by the solution yet looks relevant (same world as the decision, something a solver has to weigh); a file unrelated to the question does not count
+- any declared distractor that answers the decision question or a graded quantity reproduces arithmetically, and a shipped fact (a clause, an effective date, a definition or a control total) rules it out
 - **the prompt requests 1 to 3 deliverables, three being the ceiling**, so a four-file build is a spec failure
 - **no format family is assigned and none is required.** The four families describe what a file is for (Data: CSV/TSV/JSON/XLSX/Parquet · Visual: PPTX/PNG/SVG/HTML/JPG · Text: PDF/DOCX · Code: PY/IPYNB/SQL/R) but nothing requires the set to span two of them, so do not fail a build for its family spread
 - the asks are multi-dimensional rather than stacked lookups, and no count of asks per file is required

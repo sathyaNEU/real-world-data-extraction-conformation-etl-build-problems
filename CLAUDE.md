@@ -47,20 +47,21 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  guide-to-prompt  (pairing, then the PROMPT SHAPE, with its criteria arithmetic worked to 25+)
        + the two nearest exemplars (guide-to-prompt/references/exemplars/, the client's measured tasks)
    ->  stumping: the draw, decisive rung from traps/_measured.md  ->  fingerprint check + register
-   ->  CHECKPOINT A: the author reads the draw and the stump sentence
    ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
    ->  /clone-check   (pre-flight, only when the author asks)
-   ->  dataset-generation  ->  build  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
-   ->  leak-check (leak.py)  ->  fingerprint surface
-   ->  CHECKPOINT B: /approve   (guard.py heart: the stump against every card and ledger row)
-   ->  solver round 1 (one plain solver)  ->  harden or pass  ->  solver round 2 (plain + skeptic)
-   ->  determinism-check judge rehearsal  ->  /leak-check reader pass  ->  DELIVER to the author
+   ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
+              ->  leak-check (leak.py)  ->  fingerprint surface  ->  guard.py heart
+   ->  SOLVE: one plain solver. It commits to any answer other than the golden one: on to the
+              judge. It lands the golden answer: harden (three loops at most, then retire)
+   ->  determinism-check judge rehearsal: APPROVE ships; FIX_NOW is fixed and re-judged;
+              SEND_BACK retires the build
+   ->  SHIP to the author
    ->  the author tests on the official portal and reports back
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
 `/build <domain> <objective>` runs that loop as a stage machine with `pipeline.json` as its state
-(`build-pipeline`), stopping only at the two checkpoints.
+(`build-pipeline`), without stopping for the author.
 
 The prompt shape is picked **before** the ladder, not after a thin rubric comes back, because it
 decides where the criteria come from and it is the cheapest thing in the build to change. The
@@ -91,10 +92,10 @@ write-up prose, and the two are run together as the last block before the bundle
 
 **The portal is the stump oracle; the solver rounds are the filter in front of it.** The author
 tests the build on the official portal and reports the result, and that report is the only stump
-evidence the ledger records. Before it, a finished build goes through two in-house solver rounds
-(`solver-round`): one plain solver that sees only the prompt and the bundle, then plain and skeptic
-together. A build a plain solver cracks never goes to the portal; a build no solver cracks still has
-to. Rounds run only through `/solve` or the `/build` pipeline, never as an ad hoc "quick sanity
+evidence the ledger records. Before it, a finished build goes through one in-house solver round
+(`solver-round`): a plain solver that sees only the prompt and the bundle. A build whose solver lands
+the call never goes to the portal; a build whose solver commits to a different answer goes straight
+on to the judge rehearsal, and still has to face the portal. Rounds run only through `/solve` or the `/build` pipeline, never as an ad hoc "quick sanity
 solve" in the main thread, because a solve that has read the design note measures nothing. The
 written test of stump power stays: **name the stump in the design note** before the pack is cut, the
 wrong committed answer a competent solver files and the step that lands them there. A ladder whose
@@ -102,8 +103,9 @@ author cannot write that sentence has no stump in it, and no round is run on it.
 
 **`/clone-check` is author-triggered only**: never invoke it on your own initiative, including right
 after applying a patch that seems to want validation, because it spends real tokens in an isolated
-thread. `/approve` runs the cheap mechanical half of the same question (`guard.py heart`) and is
-where a template or duplicate is caught before any solver is paid for.
+thread. The cheap mechanical half of the same question (`guard.py heart`) runs inside the build
+stage, so a template or duplicate is caught before the solver is paid for; `/approve` runs it on
+request.
 
 `/clone-check` also runs on a plain request, so a chat asking for a clone check, a template
 check or a duplicate check invokes it. It compares a build, or the whole batch, against every
@@ -242,8 +244,9 @@ LLM-generated is sent back even when every figure recomputes. Using an LLM to dr
 shipping its first draft is not, so every golden gets an editing pass. The `golden-realism` skill
 carries the per-format passes and the tells a reviewer reads.
 
-**Six accepted domains.** Product Analytics, Supply Chain & Logistics, Economics, Policy &
-Education, Demographic & Social Science, Nonprofit & Grant-making. Biology, Biostatistics,
+**Nine accepted domains.** Product Analytics, Supply Chain & Logistics, Economics, Policy &
+Education, Demographic & Social Science, Nonprofit & Grant-making, Marketing & Consumer Research,
+Business & Operations Analytics, and Accounting, Audit & Forensic Analytics. Biology, Biostatistics,
 Epidemiology & Bioinformatics is not an accepted domain, so do not start a build there.
 
 **Eight Axis 1 objectives.** Forecasting & Predictive Modeling (most wanted), Root-Cause Analysis,
@@ -260,7 +263,7 @@ task tagged outside the eight is rejected on the tag alone.
 
 **Gate G (determinism judge v3) bans surface-read rejection at any depth.** Ship no artifact that
 ranks the candidates on the decision question and gets it wrong, however many rungs sit above it.
-The one exception is the declared distractor: wrong on a basis a shipped fact rules out, named in
+The one exception is a declared wrong-basis distractor: wrong on a basis a shipped fact rules out, named in
 `metadata.json`, and never the stump. Depth is not a defence. The difficulty has to survive deleting every wrong number from the pack.
 `.claude/skills/stumping/SKILL.md` Parts 1 and 2 carry the four gaps and the five patterns that
 pass.
@@ -271,6 +274,7 @@ written into the design note. This is an ask-shape rule and not a tag rule, so a
 objective, and retagging as Forecasting because the window is open is itself a rejection risk.
 
 **Input gates:** 10 or more files, 3 or more distinct formats, either a file of 25,000 or more
-rows in any format or a large database file, at least one distractor (no more than 20 per cent of
-the input files, named in `metadata.json` and never in a file name), files real and license-clean with source, date and license recorded, nothing that reads as
+rows in any format or a large database file, two or more distractors (files the solution does not use
+that look relevant enough that the solver has to weigh them; a completely unrelated file does not
+count; named in `metadata.json` and never in a file name), files real and license-clean with source, date and license recorded, nothing that reads as
 LLM generated.

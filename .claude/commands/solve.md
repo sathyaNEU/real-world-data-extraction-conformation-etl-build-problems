@@ -6,7 +6,7 @@ argument-hint: taskNN [1|2] [--label "..."]
 # /solve
 
 Run one solver round on the task named in `$ARGUMENTS`. Resolve a bare number or `taskN` to
-`/Users/saa/Developer/Projects/handshake/taskN/`; if nothing is named, ask and stop. The second
+`taskN/` at the repository root (the folder holding `CLAUDE.md`); if nothing is named, ask and stop. The second
 argument is the number of solvers: `1` (default) runs the plain lens, `2` runs plain and skeptic
 together. The round number `k` is one more than the rounds already recorded in `<task>/pipeline.json`.
 

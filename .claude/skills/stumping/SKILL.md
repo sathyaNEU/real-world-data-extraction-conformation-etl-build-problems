@@ -13,7 +13,7 @@ description: Design, build and harden the trap architecture for a deterministic 
 
 **Scenarios are the one thing that never transfers.** Every worked shape in this skill is structural, meaning it shows the form an argument or a file request takes, with the nouns left as blanks. Fill the blanks fresh on every build. Lifting a scenario, an entity, a metric, a file name or an ask's wording out of here, out of a reference file or out of a prior build is a clone tell, and the mechanisms are the only part that carries over.
 
-**Prerequisite.** The domain and the Axis 1 objective are fixed and saved before this skill opens. Run `guide-to-prompt` first. Eight objectives are valid (the six of the taxonomy plus Opportunity Sizing & Decision Support and Data Quality Monitoring & Alerting, defined in `guide-to-prompt`), and a task tagged outside them, Comparative analysis and explanation included, is rejected on the tag alone. Six domains are accepted; Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them, so no build starts there.
+**Prerequisite.** The domain and the Axis 1 objective are fixed and saved before this skill opens. Run `guide-to-prompt` first. Eight objectives are valid (the six of the taxonomy plus Opportunity Sizing & Decision Support and Data Quality Monitoring & Alerting, defined in `guide-to-prompt`), and a task tagged outside them, Comparative analysis and explanation included, is rejected on the tag alone. Nine domains are accepted (the roster is in `guide-to-prompt` Step 1); Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them, so no build starts there.
 
 **Trap catalogs.** `references/traps/<objective>.md` for your objective, plus `references/traps/_cross-objective.md`, which carries the constraint, comparison and monitoring families that belong to no single objective. Read both after Part 1 and before you pick a mechanism.
 
@@ -690,11 +690,11 @@ This is social pressure the solver has to overcome with evidence, and it makes t
 
 **The licensed wrong basis.** The same governing document that carries the pin also states, as a matter of record, that a named authority works from a different basis and will present it at the review. The basis is real, it is legitimately available in writing, and the evidence still refutes it. That is what separates a fair hard task from a gotcha. Keep it to the basis and the endorsement. Do not let the document compute the ranking. A licensed wrong basis is graded wherever an ask asks for it, so the governing document names its population in words that exclude the other reading, the advocate's belief language selects the same group, and the rejected reading is separated so it does not land on the main answer (task43, two readings of one committee basis 14 per cent apart).
 
-### 4.4 The distractor
+### 4.4 The distractors
 
-Every pack ships at least one distractor, no more than 20 per cent of the input files: a file that looks authoritative (official, internal, already done, or recent), gives a clean wrong answer (correct arithmetic, wrong basis: an outdated year or business unit, a superseded or amended rule, a changed definition), and is ruled out by a shipped fact a careful analyst can quote (a clause, an effective date, a definition, a control total). It is named in the task's `metadata.json`; no file name or line in the pack calls it a distractor, and the file that rules it out may name it outright. It is the one licensed exception to the ban on shipping a wrong answer to the decision question, and only because it is never the stump: delete it and the build still stumps, its wrongness is a matter of record rather than an error in its numbers, and its answer is neither the correct answer nor the decoy rung 0 lands on. Build rules: `dataset-generation` §8.3.
+Every pack ships two or more distractors: files the solution never reads that look relevant, so a solver has to open them and decide whether they bear on the question (same organisation, entities, keys or period, an adjacent measure, a related programme, an out-of-scope register). A completely unrelated file is padding, not a distractor, because nothing about it has to be weighed. Each is named in the task's `metadata.json`; no file name or line in the pack calls it a distractor. A distractor may also be the stronger wrong-basis kind: it looks authoritative, gives a clean wrong answer (correct arithmetic, wrong basis: an outdated year or business unit, a superseded or amended rule, a changed definition) and is ruled out by a shipped fact a careful analyst can quote (a clause, an effective date, a definition, a control total). That kind is the one licensed exception to the ban on shipping a wrong answer to the decision question, and only because it is never the stump: delete it and the build still stumps, its wrongness is a matter of record rather than an error in its numbers, and its answer is neither the correct answer nor the decoy rung 0 lands on. Build rules: `dataset-generation` §8.3.
 
-A large genuine reference document shipped for authenticity is a different thing and is disclaimed in the governing document: *"[Document] is in the folder as background on [topic]; it is not one of our documents and it does not speak to this decision."* It offers no wrong path, so it never counts as the distractor.
+A large genuine reference document shipped for authenticity is a different thing and is disclaimed in the governing document: *"[Document] is in the folder as background on [topic]; it is not one of our documents and it does not speak to this decision."* The disclaimer leaves the solver nothing to weigh, so it never counts as a distractor.
 
 ---
 
@@ -1285,7 +1285,7 @@ Write the asks **after** the golden exists, never before.
 - **Ten or more files.**
 - **Either a file of 25,000 or more rows in any format, or a large database file.**
 - **Three or more distinct file formats** (four is the working target).
-- **At least one distractor, no more than 20 per cent of the input files**, named in the task's `metadata.json` and never in a file name (Part 4.4).
+- **Two or more distractors**, files the solution does not use that look relevant enough to need weighing (never an unrelated file), named in the task's `metadata.json` and never in a file name (Part 4.4).
 - Nothing that reads as LLM generated. Obvious artifacts get the task rejected outright.
 
 Assert all five in the generator. They are cheap to check and expensive to discover late.
@@ -1344,7 +1344,7 @@ Cheap de-risking first. Do not build data before the ladder is written down.
 4. **Settle the arithmetic on paper.** Discriminator dominance, the correction grid, the fork grid. All three are decidable before a single row exists, and no amount of data work rescues a rung that fails them. Then design the ask layer on paper via `supplemental-stumping`, every ask's devices and eight-file span and the device ledger, because the spans are schema decisions the pack build has to honour and a device retrofitted into a cut pack breaks mess neutrality silently.
 5. **Choose the spine dataset.** Pick something whose subject is the market the entity operates in, not the entity's own product data. Check it clears the volume gate (25,000 or more rows in any format, or a large database file).
 6. **Build the calibration corpus first**, then the operating extracts around it. Build its underlying records and compute the outcomes from them. Include the twin pair from the start; retrofitting it later means rebuilding the extracts anyway.
-7. **Write the governing document**: pin, licensed wrong basis, background disclaimer, realistic logistics. Build the distractor (Part 4.4) and name it in `metadata.json`.
+7. **Write the governing document**: pin, licensed wrong basis, background disclaimer, realistic logistics. Build the distractors (Part 4.4) and name them in `metadata.json`.
 8. **Write the social layer**: two voices for wrong bases, one voice arguing against the right answer, all of them holding beliefs rather than quoting rankings.
 9. **Solve it cold from the ZIP alone.** Every number must recompute. Write the golden with the robustness sweep and explicit counts.
 10. **Wire the assertion regime** and ship the independent verifier **before** the build is called finished. The assertions are the only thing that catches a collapsed rung, because nothing in house solves the build for you, so a defect an assertion would have caught for free is a defect the portal charges a whole submission for.
@@ -1466,7 +1466,7 @@ The build is genuinely analytical but the design note does not say so unarguably
 - [ ] The litmus answered in writing: the reported numbers in this task are **correct**, and the difficulty is not catching that a read is wrong
 - [ ] Primary mechanism named from the pass list, not `planted_defect_flip` and not `single_conceptual_flip`
 - [ ] `surface_read_dependency`, `stumping_family` and `sole_data_defect` written into the design note
-- [ ] **No shipped artifact ranks the candidates on the decision question and gets it wrong**, the declared distractor excepted (Part 4.4), and the build still stumps with the distractor deleted
+- [ ] **No shipped artifact ranks the candidates on the decision question and gets it wrong**, a declared wrong-basis distractor excepted (Part 4.4), and the build still stumps with it deleted
 - [ ] No advocate quotes a computed ranking of the candidates on the decision question, and no voice holds a position the shipped data contradicts
 - [ ] No reliance on depth as a defence: a two, three or four rung correction chain is banned exactly as a one rung flip is
 - [ ] If the mechanism is `binding_constraint`, `decomposition_attribution` or `method_or_model_selection`, the reported figures are demonstrably correct so it cannot read as a rejection in disguise
@@ -1548,7 +1548,7 @@ The build is genuinely analytical but the design note does not say so unarguably
 - [ ] I can name at least 2 defensible wrong answers, each failing for a **different** business reason
 
 **Pack**
-- [ ] **10 or more files**, **3 or more formats** (4 target), **a file of 25,000 or more rows in any format or a large database file**, **at least one distractor (no more than 20 per cent of files) named in `metadata.json`**, all five asserted
+- [ ] **10 or more files**, **3 or more formats** (4 target), **a file of 25,000 or more rows in any format or a large database file**, **two or more distractors (unused by the solution, relevant-looking) named in `metadata.json`**, all five asserted
 - [ ] Authentic mess that cannot change the answer
 - [ ] Real code vocabularies, real geography, no placeholder identities
 - [ ] Nothing reads as LLM generated, fictional documents short and functional

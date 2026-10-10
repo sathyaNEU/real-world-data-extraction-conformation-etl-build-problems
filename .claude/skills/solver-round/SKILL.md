@@ -1,6 +1,6 @@
 ---
 name: solver-round
-description: "Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver first; two solvers (plain and skeptic) only when the first was stumped. The solver sees the prompt and the bundle and nothing else, returns its committed call and every ask figure as structured output, and grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. Invoked by /solve and by the /build pipeline's stages 4 and 5; the result goes back to the builder as the hardening brief. A round is a filter, never an oracle: a build a solver cracks does not go to the portal, and a build no solver cracks still has to."
+description: "Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver sees the prompt and the bundle and nothing else and returns its committed call and every ask figure as structured output; grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. The committed call decides: an answer other than the golden one sends the build to the determinism judge, and the golden answer sends it back to be hardened. Invoked by /solve and by the /build pipeline's stage 4; the plain and skeptic pair runs only when the author asks. A round is a filter, never an oracle: a build the solver cracks does not go to the portal, and a build it does not crack still has to."
 ---
 
 # Solver round
@@ -38,18 +38,21 @@ plain solver cracks will not.
 
 ## The rounds, and the decision rule
 
-**Round 1: one plain solver.** Pass when the main call is missed **and** the proxy score is under
-40. Otherwise the build is hardened, not sent on. The round's report says which step of the path
+**The round: one plain solver.** Pass when the main call is missed: a solver that commits to a
+different answer from the golden one is the stump, and the build goes straight on to the judge
+rehearsal. The proxy score is recorded for the author, not gated, and a missed call is never
+hardened or solved again. A landed call is hardened, not sent on. The round's report says which step of the path
 landed the solver on the call, and that step is the hardening brief: the next rung is built so that
 exact step completes and still returns the wrong answer, and the attempt is written into the
 design note's `## Tried and rejected` with the solver's own sentence.
 
-**Round 2: two solvers, plain and skeptic, run together.** Only after round 1 passes. Pass when the
-two proxy scores average under 40 and at least one is under 25. Both solvers landing the call is a
-re-root, not a hardening: the mechanism is readable.
+**No second round by default.** The plain and skeptic pair runs only when the author asks for it
+(`/solve taskNN 2`).
 
-**Three hardening loops per architecture, then re-root.** A ladder that has been patched three times
-against the same solver is being tuned to that solver, and the portal is a different one.
+**Three hardening loops per architecture, then retire.** A ladder that has been patched three times
+against the same solver is being tuned to that solver, and the portal is a different one. A build
+whose solver still lands the call after three loops is retired, and the next design in the queue
+takes its slot.
 
 **Rounds are run on a finished build**, after the submission is written and the goldens recompute,
 because the grader reads block 1 and block 4 of `submission.md`. A round on an unfinished build
@@ -116,9 +119,8 @@ where it left the ladder. Three shapes recur:
 ## Checklist
 
 - [ ] The build is finished: submission written, goldens recompute, `leak.py` not LEAK
-- [ ] Round 1 run with one plain solver on a fresh scratch copy, path read against the ladder
+- [ ] One plain solver run on a fresh scratch copy, path read against the ladder
 - [ ] Main call read by the main thread, `--landed` passed where the token match misjudged
-- [ ] Round 1 passed (missed, under 40) before round 2 was run
-- [ ] Round 2 run with plain and skeptic together; average under 40, one under 25
+- [ ] Missed (any answer other than the golden one): on to the judge; landed: hardened
 - [ ] Every hardening written to `## Tried and rejected` with the solver's own path sentence
-- [ ] No more than three hardening loops on one architecture
+- [ ] No more than three hardening loops on one architecture, then retire

@@ -6,7 +6,7 @@ argument-hint: taskNN [--asof YYYY-MM-DD]
 # /leak-check
 
 Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `taskN` means
-`/Users/saa/Developer/Projects/handshake/taskN/`. If no task is named, ask which one and stop.
+`taskN/` at the repository root (the folder holding `CLAUDE.md`). If no task is named, ask which one and stop.
 
 1. **Invoke the `leak-check` skill** so the sweeps and the four questions come from the current file.
 2. **Resolve `--asof`.** If the argument does not carry it, read the fiction's as-of date from the

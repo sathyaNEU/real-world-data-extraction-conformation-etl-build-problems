@@ -37,7 +37,7 @@ and the current one is the only one that matters.
 | 3 answer figures | every file, against block 1 and block 4 of `submission.md` | a golden figure (four or more digits) in a document is LEAK; a candidate name beside decision vocabulary in a document is REVIEW; a long figure in a data file is REVIEW |
 | 4 design-note vocabulary | documents and the prompt, against the stump and driver paragraphs of `DESIGN_NOTE.md` | a document carrying three or more of the stump's distinctive terms; a prompt sentence carrying two |
 | 5 announcements | prompt and documents | `make sure`, `note that`, `must ... exclude`, `the correct basis`, `instead of ... counting rows`: the sentence that announces the decisive step |
-| 6 ranking artifacts | every file | a file naming most of the answer-set candidates beside numbers, which the reader checks against Gate G's loud-artifact ban; the distractor declared in `metadata.json` is the one licensed exception |
+| 6 ranking artifacts | every file | a file naming most of the answer-set candidates beside numbers, which the reader checks against Gate G's loud-artifact ban; a wrong-basis distractor declared in `metadata.json` is the one licensed exception |
 | 7 hidden content | xlsx, docx, pdf containers | hidden sheets, rows and columns, defined names, comments, tracked changes, hidden text, annotations, embedded files, nested zips |
 | 8 column names | delimited and workbook headers | `_true`, `is_`, `flag`, `seed`, `planted`, `debug`; Python nulls and booleans in the first rows |
 | 9 dates after the setting | every file, with `--asof` | ISO dates later than the as-of date that the prompt does not itself carry |
