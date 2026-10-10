@@ -17,7 +17,7 @@ import pandas as pd
 
 CLAIMS = {
     "call": "STN", "call_figure": 27, "runner_up": "PRW", "runner_up_figure": 15, "gap": 12,
-    "rungs": [("LAT", 56, "RIS", 44), ("BRK", 34, "PRW", 4), ("PRW", 15, "RIS", 2), ("RIS", 37, "STN", 27),
+    "rungs": [("LAT", 56, "RIS", 44), ("BRK", 34, "PRW", 4), ("PRW", 15, "RIS", 2), ("RIS", 37, "PRW", 17),
               ("STN", 27, "PRW", 15)],
     "y3": {"RIS": (150, 44, 2), "TAN": (36, 10, 0), "BRK": (118, 35, 0), "STN": (92, 27, 27), "LAT": (190, 56, 0),
            "ELL": (46, 13, 0), "PRW": (74, 21, 15), "PEL": (25, 7, 0)},
@@ -25,9 +25,10 @@ CLAIMS = {
                "LAT": (559, 165, 0), "ELL": (140, 40, 6), "PRW": (221, 63, 46), "PEL": (75, 22, 3)},
     "record_total": (2163, 629, 148),
     "by_year_total": {1: (695, 204, 54), 2: (737, 212, 50), 3: (731, 213, 44)},
-    "natural_total": (2363, 720, 204),
-    "readings": {"referral": ("STN", 27, "PRW", 15), "local": ("PRW", 15, "RIS", 2), "t04": ("PRW", 15, "RIS", 2),
-                 "planned": ("RIS", 37, "STN", 27), "not02": ("RIS", 37, "STN", 27)},
+    "natural_total": (2368, 720, 205),
+    "readings": {"referral": ("PRW", 15, "RIS", 2), "local": ("PRW", 15, "RIS", 2), "t04": ("PRW", 15, "RIS", 2),
+                 "planned": ("RIS", 37, "PRW", 15), "not02": ("RIS", 37, "PRW", 15)},
+    "every_hold_empty": ("RIS", 37, "STN", 27),
     "held_legacy_transfers_min": 900, "never_linked": 10,
     "corpus_reviews": 34, "corpus_confirmed": 412, "corpus_attempts": 41, "rules": 216, "min_rival_misses": 4,
     "twin": (("Ormerleby", 2022, 24), ("Selarwell", 2023, 11)),
@@ -44,6 +45,7 @@ F = {
     "reviewlog": "nrr_escalation_reviews_closed_2021-2025.xlsx",
     "reviewdb": "nrr_review_records.sqlite",
     "transfers": "interhospital_transfer_audit_202307_202606.csv",
+    "theatre": "rds_theatre_cases_2023-2026.parquet",
 }
 YEAR_STARTS = {1: "2023-07-01", 2: "2024-07-01", 3: "2025-07-01"}
 YEAR_ENDS = {1: "2024-06-30", 2: "2025-06-30", 3: "2026-06-30"}
@@ -83,7 +85,39 @@ def load(T):
                     ELSE s.admitted_at END AS admitted_at,
                s.discharged_at, s.admission_type, s.source_location
         FROM s LEFT JOIN t ON t.to_unit = s.unit_code AND t.arr = s.admitted_at AND t.vk = s.vk""")
+    con.execute("CREATE TABLE th AS SELECT * FROM read_parquet('%s')" % p("theatre"))
+    for base in ("st2", "st"):
+        held_tables(con, base)
     return con
+
+
+def held_tables(con, base):
+    """<base>_own: a bed the unit assigned to its own trust's patient who had not yet left theatre recovery (the theatre
+    extract's case at the unit's trust, destination critical care, left_recovery_at after the assignment) stands empty
+    until the patient left recovery. <base>_all: every held bed empty, a transfer's bed until the audit's arrival too."""
+    con.execute("""
+        CREATE TABLE %s_own AS
+        WITH s AS (SELECT b.*, COALESCE(l.verified_key, b.patient_key) vk, r.trust_code ut
+                   FROM %s b LEFT JOIN links l ON l.temporary_key = b.patient_key
+                   LEFT JOIN (SELECT DISTINCT unit_code, trust_code FROM reg) r USING (unit_code)),
+             h AS (SELECT COALESCE(l.verified_key, th.patient_key) vk, th.provider_code, th.left_recovery_at lft
+                   FROM th LEFT JOIN links l ON l.temporary_key = th.patient_key
+                   WHERE th.recovery_destination = 'Critical care unit')
+        SELECT s.stay_id, s.unit_code, s.referral_id, s.patient_key,
+               COALESCE((SELECT MIN(h.lft) FROM h WHERE h.vk = s.vk AND h.provider_code = s.ut
+                         AND h.lft > s.admitted_at AND h.lft < LEAST(s.discharged_at, s.admitted_at + INTERVAL 18 HOUR)),
+                        s.admitted_at) AS admitted_at,
+               s.discharged_at, s.admission_type, s.source_location FROM s""" % (base, base))
+    con.execute("""
+        CREATE TABLE %s_all AS
+        WITH s AS (SELECT b.*, COALESCE(l.verified_key, b.patient_key) vk FROM %s_own b
+                   LEFT JOIN links l ON l.temporary_key = b.patient_key),
+             t AS (SELECT tx.to_unit, CAST(tx.arrived_at AS TIMESTAMP) arr, CAST(tx.bed_confirmed_at AS TIMESTAMP) conf,
+                          COALESCE(l.verified_key, tx.patient_key) vk
+                   FROM tx LEFT JOIN links l ON l.temporary_key = tx.patient_key)
+        SELECT s.stay_id, s.unit_code, s.referral_id, s.patient_key, COALESCE(t.arr, s.admitted_at) AS admitted_at,
+               s.discharged_at, s.admission_type, s.source_location
+        FROM s LEFT JOIN t ON t.to_unit = s.unit_code AND t.conf = s.admitted_at AND t.vk = s.vk""" % (base, base))
 
 
 def build_waits(con, natural=False):
