@@ -65,6 +65,20 @@ WINDOW = 12
 # rebuild (0.88). Text similarity separates same-mechanism pairs only weakly (AUC about 0.6), so it
 # is a near-duplicate catcher; the mechanism check is the structural signature in test.same_puzzle.
 BLOCK_SIM = 0.30
+# The client rejects templated tasks and names one architecture in particular: the rule that decides
+# the answer is left unstated while a plausible official rule is filed as the decoy. A build carrying
+# it is blocked when any of the last RECENT builds carried it, and when it already appears
+# TEMPLATE_CAP times in the last WINDOW. Any one stump strategy is blocked against the last RECENT
+# builds and warned at STRATEGY_WARN uses in the last WINDOW.
+TEMPLATE_STRATEGY = "withheld_rule_official_decoy"
+TEMPLATE_CAP = 2
+STRATEGY_WARN = 3
+# The second recurring architecture on the cards: the natural method reproduces every closed,
+# published or certified figure in the pack, and only a condition that first appears in the forward
+# window breaks it, so the certified record works as the official decoy. It carried 27 of 30
+# consecutive builds (task99 to task130), so it is capped too: never in consecutive builds, and at
+# most VALIDATED_CAP of the last WINDOW.
+VALIDATED_CAP = 3
 WARN_SIM = 0.12
 NICHE_SIM = 0.50
 
@@ -93,7 +107,10 @@ SHAPE_DECISIONS = {
 # Gate G mechanisms that only make sense under one objective.
 GATE_OBJECTIVE = {"etl_conformance": {"etl"}, "forecasting": {"forecasting"}}
 
-LIVE_DOMAINS = None      # filled from vocab: the six, without the legacy keys
+LIVE_DOMAINS = None      # filled from vocab: the nine, without the legacy keys
+# Two vocab keys are objectives that early cards filed as domains (task104, task105). They stay in the
+# vocabulary so those cards validate, and are never a legal domain for a new draw.
+OBJECTIVE_NOT_DOMAIN = {"opportunity-sizing", "data-quality-monitoring-alerting"}
 LIVE_OBJECTIVES = None
 DRAWABLE_GATE_G = ["forecasting", "method_or_model_selection", "binding_constraint",
                    "decomposition_attribution", "signal_vs_noise_or_hold", "confirm_surface_read",
@@ -107,7 +124,7 @@ EM_DASH = chr(0x2014)
 def load_vocab():
     global LIVE_DOMAINS, LIVE_OBJECTIVES
     v = json.loads(VOCAB_PATH.read_text())
-    LIVE_DOMAINS = [k for k in v["domains"] if not k.startswith("legacy")]
+    LIVE_DOMAINS = [k for k in v["domains"] if not k.startswith("legacy") and k not in OBJECTIVE_NOT_DOMAIN]
     LIVE_OBJECTIVES = [k for k in v["objectives"] if not k.startswith("legacy")]
     return v
 
@@ -233,6 +250,12 @@ def decisive_mech(c):
     return first(c.get("generators")) or (first(pats) if pats else None)
 
 
+def is_template(c):
+    """True when the card's decisive move is the withheld rule with an official decoy, by label or by flags."""
+    return c.get("stump_strategy") == TEMPLATE_STRATEGY or (
+        c.get("decisive_rule_filed") is False and c.get("official_decoy") is True)
+
+
 def label(c):
     arch = c.get("architecture")
     show = arch not in (None, "", "only") and (c.get("lineage") or arch not in ("v1",))
@@ -318,6 +341,13 @@ def validate_card(c, vocab, strict=False):
     enum("forum", vocab["forums"], c.get("forum"), required=strict)
     enum("forcing_event", vocab["forcing_events"], c.get("forcing_event"), required=strict)
     enum("org_family", vocab["org_families"], c.get("org_family"), required=strict)
+    enum("stump_strategy", vocab["stump_strategies"], c.get("stump_strategy"), required=strict)
+    for f in ("decisive_rule_filed", "official_decoy", "validated_decoy"):
+        if c.get(f) is None:
+            if strict:
+                errs.append("%s is empty: true or false, see fingerprint SKILL.md Part 1" % f)
+        elif not isinstance(c.get(f), bool):
+            errs.append("%s must be true or false, got %r" % (f, c.get(f)))
     if strict and not ((c.get("world") or {}).get("people")):
         errs.append("world.people is empty: draw the personas with guard.py names before the pack exists")
     for g in c.get("gap") or []:
@@ -417,11 +447,11 @@ def check(cand, cards, vocab, status=None):
 
     # Legality, which is spec rather than taste.
     if cand.get("domain") not in (LIVE_DOMAINS or []):
-        add("BLOCK", "legal.domain", "domain %r is not one of the six accepted domains" % cand.get("domain"),
-            fix="draw one of the six")
+        add("BLOCK", "legal.domain", "domain %r is not one of the nine accepted domains" % cand.get("domain"),
+            fix="draw one of the nine")
     if cand.get("objective") not in (LIVE_OBJECTIVES or []):
-        add("BLOCK", "legal.objective", "objective %r is not one of the six Axis 1 objectives" % cand.get("objective"),
-            fix="draw one of the six")
+        add("BLOCK", "legal.objective", "objective %r is not one of the eight Axis 1 objectives" % cand.get("objective"),
+            fix="draw one of the eight")
     if cand.get("gate_g") in ("legacy_surface_read",):
         add("BLOCK", "legal.gate_g", "a surface-read rejection is banned at any depth (Gate G v3)",
             fix="draw one of the seven FINE-numbers mechanisms")
@@ -477,6 +507,42 @@ def check(cand, cards, vocab, status=None):
     if hit:
         add("BLOCK", "ban.shape", "prompt shape %s repeats one of the last two builds" % sh, tasks(hit),
             "pick a different shape, the shape is visible in the prompt and the deliverables")
+
+    # Strategy-level bans. Every axis above can rotate while one stumping strategy carries build
+    # after build, which is the templating the client rejects, so the strategy is banned on its own.
+    st = cand.get("stump_strategy")
+    hit = [c for c in recent if st and st != "other" and c.get("stump_strategy") == st]
+    if hit:
+        add("BLOCK", "ban.strategy", "stump strategy %s repeats a recent build" % st, tasks(hit),
+            "pick the stump this dataset's own analytic structure produces, see stumping Part 2")
+    n_st = sum(1 for c in window if st and st != "other" and c.get("stump_strategy") == st)
+    if n_st >= STRATEGY_WARN:
+        add("WARN", "overuse.strategy", "stump strategy %s used in %d of the last %d builds" % (st, n_st, len(window)),
+            fix="prefer a strategy the coverage view shows under-used")
+    if cand.get("validated_decoy") is True:
+        hit = [c for c in last if c.get("validated_decoy") is True]
+        if hit:
+            add("BLOCK", "template.validated_decoy", "the wrong method reproduces every certified figure and breaks "
+                "only forward, as in the last build", tasks(hit),
+                "build a stump the closed record does not bless, or one it already refutes")
+        hit = [c for c in window if c.get("validated_decoy") is True]
+        if len(hit) >= VALIDATED_CAP:
+            add("BLOCK", "template.validated_cap", "a certified record that blesses the wrong method already carries %d "
+                "of the last %d builds (cap %d)" % (len(hit), len(window), VALIDATED_CAP), tasks(hit),
+                "draw a different stump architecture")
+    if is_template(cand):
+        hit = [c for c in recent if is_template(c)]
+        if hit:
+            add("BLOCK", "template.withheld_rule_decoy",
+                "withheld decisive rule with an official decoy repeats a recent build", tasks(hit),
+                "file the decisive rule or drop the official decoy, or draw a different strategy")
+        hit = [c for c in window if is_template(c)]
+        if len(hit) >= TEMPLATE_CAP:
+            add("BLOCK", "template.cap", "withheld decisive rule with an official decoy already carries %d of the "
+                "last %d builds (cap %d)" % (len(hit), len(window), TEMPLATE_CAP), tasks(hit),
+                "draw a different stump strategy")
+        add("WARN", "template.flagged", "the client names this architecture as templated: the design note says "
+            "in one line why this dataset, and not the habit, calls for a withheld rule")
 
     # Two structural signatures. The first is Part 6.1's similarity test: gap, pattern and decision
     # type all repeating is the same puzzle in new clothes. The second is clone-check's Template
@@ -649,9 +715,10 @@ def verdict(findings):
 
 def print_check(cand, findings, nearest):
     v = verdict(findings)
-    print("%s  %s  %s/%s  shape %s  gap %s  pattern %s  gate_g %s  decision %s" % (
+    print("%s  %s  %s/%s  shape %s  gap %s  pattern %s  gate_g %s  decision %s  strategy %s%s" % (
         v, cand.get("task"), cand.get("domain"), cand.get("objective"), cand.get("shape"),
-        first(cand.get("gap")), decisive_mech(cand), cand.get("gate_g"), cand.get("decision_type")))
+        first(cand.get("gap")), decisive_mech(cand), cand.get("gate_g"), cand.get("decision_type"),
+        cand.get("stump_strategy") or "-", "  [withheld rule + official decoy]" if is_template(cand) else ""))
     for lvl in ("BLOCK", "WARN", "NOTE"):
         for f in [f for f in findings if f["level"] == lvl]:
             ag = (" against " + ", ".join(f["against"])) if f["against"] else ""
@@ -673,11 +740,11 @@ def cmd_recent(args):
     print("last %d builds in draw order (oldest first). Bans reach the last %d, overuse the last %d.\n"
           % (args.n, RECENT, WINDOW))
     for c in cards[-args.n:]:
-        print("%-7s %-10s %-26s %-24s sh %-12s gap %-10s pat %-4s %-26s %-24s %-20s %s" % (
+        print("%-7s %-10s %-26s %-24s sh %-12s gap %-10s pat %-4s %-26s %-24s %-20s %-30s %s" % (
             c.get("task"), c.get("drawn") or "?", "%s/%s" % (c.get("domain"), c.get("subdomain")),
             c.get("objective"), c.get("shape"), first(c.get("gap")) or "-", decisive_mech(c) or "-",
             c.get("gate_g") or "-", c.get("calibration_form") or "-", c.get("role_family") or "-",
-            status.get(c.get("task"), "")))
+            (c.get("stump_strategy") or "-") + (" *T" if is_template(c) else ""), status.get(c.get("task"), "")))
     return 0
 
 
@@ -686,7 +753,7 @@ def cmd_coverage(args):
     cards = [c for c in load_cards() if c.get("domain")]
     live = [c for c in cards if not str(c.get("domain")).startswith("legacy")]
     window = cards[-WINDOW:]
-    print("%d cards on file, %d in the six live domains. Counts are over every card; the bracket is the last %d.\n"
+    print("%d cards on file, %d in the nine live domains. Counts are over every card; the bracket is the last %d.\n"
           % (len(cards), len(live), WINDOW))
     objs = LIVE_OBJECTIVES
     short = {"forecasting": "FCST", "root-cause": "RCA", "anomaly-detection": "ANOM",
@@ -735,6 +802,13 @@ def cmd_coverage(args):
     axis("Gate G mechanism", "gate_g", vocab["gate_g"])
     axis("decision type", "decision_type", vocab["decision_types"])
     axis("calibration form", "calibration_form", vocab["calibration_forms"])
+    axis("stump strategy", "stump_strategy", vocab["stump_strategies"])
+    tagged = [c for c in cards if c.get("stump_strategy") or c.get("decisive_rule_filed") is not None]
+    print("\nwithheld rule with an official decoy (the flagged template): %d of %d tagged builds, %d of the last %d"
+          % (sum(1 for c in tagged if is_template(c)), len(tagged), sum(1 for c in window if is_template(c)), len(window)))
+    print("certified record blesses the wrong method: %d of %d tagged builds, %d of the last %d"
+          % (sum(1 for c in tagged if c.get("validated_decoy") is True), len(tagged),
+             sum(1 for c in window if c.get("validated_decoy") is True), len(window)))
     axis("context-artifact type", "context_artifact", vocab["context_artifacts"])
     axis("stakeholder role family", "role_family", vocab["role_families"])
     axis("opening move", "opening_move", vocab["opening_moves"])
@@ -816,14 +890,19 @@ def cmd_suggest(args):
         rf = pick(roles, weights("role_family", roles))
         dts = sorted(SHAPE_DECISIONS.get(sh) or vocab["decision_types"])
         dt = pick(dts, weights("decision_type", dts))
+        sts = [k for k in vocab["stump_strategies"] if k not in ("other", TEMPLATE_STRATEGY)]
+        st = pick(sts, weights("stump_strategy", sts))
+        if st not in ("withheld_rule_corpus_fit", "forecast_method_backtest"):
+            cf = "none"   # an organ ships only where the strategy needs one (stumping Part 4.1)
         draw = {"domain": d, "subdomain": sub, "objective": o, "shape": sh, "gap": gp, "pattern": pt,
                 "gate_g": gg, "calibration_form": cf, "context_artifact": ca, "role_family": rf,
-                "decision_type": dt}
+                "decision_type": dt, "stump_strategy": st}
         bad = False
         for c in recent:
             if (c.get("domain"), c.get("objective")) == (d, o) or decisive_mech(c) == pt \
-                    or c.get("calibration_form") == cf or c.get("role_family") == rf \
-                    or c.get("context_artifact") == ca or (c.get("domain"), c.get("subdomain")) == (d, sub):
+                    or (cf != "none" and c.get("calibration_form") == cf) or c.get("role_family") == rf \
+                    or c.get("context_artifact") == ca or (c.get("domain"), c.get("subdomain")) == (d, sub) \
+                    or c.get("stump_strategy") == st:
                 bad = True
         if any(c.get("shape") == sh for c in cards[-2:]):
             bad = True
@@ -849,7 +928,8 @@ def cmd_suggest(args):
         print("   gap         %s      pattern %s (%s)" % (d["gap"], d["pattern"], vocab["patterns"][d["pattern"]]))
         print("   gate_g      %s" % d["gate_g"])
         print("   decision    %s      calibration %s" % (d["decision_type"], d["calibration_form"]))
-        print("   role        %s      context artifact %s\n" % (d["role_family"], d["context_artifact"]))
+        print("   role        %s      context artifact %s" % (d["role_family"], d["context_artifact"]))
+        print("   strategy    %s (%s)\n" % (d["stump_strategy"], vocab["stump_strategies"][d["stump_strategy"]]))
     if len(out) < args.n:
         print("only %d draws satisfied the bans after %d tries" % (len(out), tries))
     return 0
@@ -858,8 +938,8 @@ def cmd_suggest(args):
 TEMPLATE_KEYS = ["task", "architecture", "drawn", "slot_note", "domain", "subdomain", "niche", "objective",
                  "forum", "forcing_event", "org_family",
                  "shape", "decision_type", "answer_unit", "answer", "answer_source", "gap", "pattern",
-                 "generators", "gate_g", "calibration_form", "context_artifact", "stakeholder_role",
-                 "role_family", "scoring_unit", "spine", "world", "deliverables", "opening_move", "driver",
+                 "generators", "gate_g", "calibration_form", "stump_strategy", "decisive_rule_filed",
+                 "official_decoy", "validated_decoy", "context_artifact", "stakeholder_role", "role_family", "scoring_unit", "spine", "world", "deliverables", "opening_move", "driver",
                  "driver_concrete", "stump", "mechanism_source", "differentiation", "lineage", "notes"]
 
 
@@ -874,7 +954,12 @@ def cmd_new(args):
         "answer": "", "answer_source": "",
         "gap": ["<decisive gap first>"], "pattern": ["<decisive pattern first, or none>"],
         "generators": ["<decisive G-code first>"], "gate_g": "<vocab gate_g key>",
-        "calibration_form": "<vocab calibration_forms key>", "context_artifact": "<vocab context_artifacts key>",
+        "calibration_form": "<vocab calibration_forms key>",
+        "stump_strategy": "<vocab stump_strategies key, chosen from the dataset's own analytic structure>",
+        "decisive_rule_filed": "<true when a shipped sentence states the rule that decides the answer>",
+        "official_decoy": "<true when a filed, official-looking rule, basis or metric gives the wrong answer>",
+        "validated_decoy": "<true when the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it>",
+        "context_artifact": "<vocab context_artifacts key>",
         "stakeholder_role": "<as the prompt will state it>", "role_family": "<vocab role_families key>",
         "scoring_unit": "<vocab scoring_units item>",
         "spine": {"file": "", "rows": 0, "entity": "<one row is one ...>", "grain": "<e.g. member x month>",

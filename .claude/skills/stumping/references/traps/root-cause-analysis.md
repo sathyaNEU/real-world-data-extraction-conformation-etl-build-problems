@@ -31,7 +31,7 @@ different gaps (`stumping` Part 1) and different families (`stumping` Part 6.3).
 
 ## Start here: the two structural traps
 
-- **No governance document to anchor on**. The pack deliberately ships no rule to quote, so the criterion has to be earned from the data. This is the shape that most often separates a real analyst from a model looking for a sentence to cite.
+- **No governance document to anchor on**. The pack deliberately ships no rule to quote, so the criterion has to be earned from the data. This is the shape that most often separates a real analyst from a model looking for a sentence to cite. It is one shape among many, not the default: paired with a filed official-looking rule as the decoy it is the withheld-rule template the client rejects when it recurs, and `../../SKILL.md` Part 2 caps it.
 - **Insufficient evidence to name one driver**. *Not enough information to make a decision* is now an acceptable final answer, but only when it is forced by the evidence and reproduces like any other answer. See `stumping` Part 6.4 before building one.
 
 ## The traps

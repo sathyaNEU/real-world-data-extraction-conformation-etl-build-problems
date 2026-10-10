@@ -100,9 +100,9 @@ The `stumping` skill Part 8 lists these. Here is how to actually build each one.
 | 2 | **Publisher documentation** | 0–1 | Genuine PDF. If it is not decisive, disclaim it in the governing document (§8). |
 | 3 | **Operating extracts** | 2–4 | The entity's telemetry. **The trap lives here.** Give each a plausible export cadence and a `pull_date`-style column. |
 | 4 | **Context artifact** | 1–2 | §5. Correct numbers, about a question that is not the decision question |
-| 5 | **Calibration file** | 1 | §4, build this first |
-| 6 | **Governing document** | 1–2 | §8, carries the pin and the licensed wrong basis |
-| 7 | **Social layer** | 1 | Thread or notes; named people holding wrong beliefs, never quoting a computed ranking |
+| 5 | **Calibration file** | 0–1 | §4, only where the stump strategy needs one (a withheld rule, an honest back-test); then build it first |
+| 6 | **Governing document** | 1–2 | §8, carries the pin; a licensed wrong basis only where `stumping` Part 4.3 allows it |
+| 7 | **Social layer** | 0–1 | Only where the decision really has advocates; at most two people holding beliefs, never a roll call, never quoting a computed ranking |
 | 8 | **Dimension / lookup tables** | 3–6 | Small, boring, essential. They force joins and make the warehouse look real. |
 | 9 | **Data dictionary / codebook** | 1 | §6.5, where grain statements live |
 | 10 | **Provenance note** | 1 | §9 |
@@ -141,9 +141,9 @@ Never name a file after the trap. `data_quality_notes.md`, `known_issues.txt`, `
 
 ---
 
-## 4. The calibration file, build this first
+## 4. The calibration file, when the strategy needs one
 
-This is the hardest artifact to make convincing and the one that decides whether your task is deterministic. Everything else is easier, so build it while you still have freedom.
+Ship one only when the stump strategy needs it (a withheld rule recovered from settled cases, a forecast chosen by honest back-test). A pack that ships a calibration file, a twin pair or a published control set on every build is the habit the client reads as a template (`stumping` Part 2). When it is needed it is the hardest artifact to make convincing and the one that decides whether your task is deterministic, so build it first, while you still have freedom.
 
 **What it is:** a record of **outcomes the decision does not cover but the method must explain.** The solver computes each candidate basis, then checks which basis reproduces these known outcomes. The right one fits; the rivals do not.
 
@@ -689,7 +689,7 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 **Structure**
 - [ ] 10+ files, 4+ formats, every file does work
 - [ ] All ten roles present or deliberately omitted with reason
-- [ ] Calibration file present, gap dramatic, test threshold-free if possible
+- [ ] Calibration file, only where the stump strategy needs one: gap dramatic, test threshold-free if possible
 - [ ] Context artifact reproduces to the last digit and is labelled in-file for the question it answers
 - [ ] Dictionary pins the grain statements the generators depend on
 - [ ] No file name, column name, or note broadcasts the trap
@@ -711,7 +711,7 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 **Determinism**
 - [ ] Fork grid enumerated, including maturity/censoring, answer wins every cell or the choice is pinned, **asserted cell by cell** with each losing cell mapped to the rule it violates
 - [ ] Pin sits at or above every counter-pin in the pack, and is stated in exactly one file
-- [ ] Twin pair shipped: two calibration cases identical on every lookup-visible column, outcomes ~2× apart
+- [ ] Twin pair, where a calibration file ships: two calibration cases identical on every lookup-visible column, outcomes ~2× apart
 - [ ] Lookup transfer run by hand and lands on the **decoy**
 - [ ] The decisive convention is pinned empirically, not as a labelled column
 - [ ] Mess neutrality verified for every complication, scoped by the ask ledger: each ledgered device moves only its named asks, and no device or hazard row sits inside the main call's declared row population
@@ -723,9 +723,9 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 
 **Governing layer**
 - [ ] Pin is one unjustified sentence in the highest-authority document
-- [ ] Licensed wrong **basis** present with a named advocate, and no file computes the ranking that basis would produce
+- [ ] Any licensed wrong **basis** is there because `stumping` Part 4.3 allows it, and no file computes the ranking that basis would produce
 - [ ] Large non-decisive documents disclaimed
-- [ ] Social layer holds wrong beliefs; nobody advocates the right answer; nobody quotes a computed ranking
+- [ ] Social layer, if any: at most two people holding beliefs, never a roll call, nobody quotes a computed ranking
 
 **Input gates (pass/fail, asserted in the generator)**
 - [ ] 10 or more files
@@ -741,5 +741,5 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 - [ ] Identifiers structured and realistic; scale varies naturally
 - [ ] No generation tells: no total on a round boundary, no exactly-round shares, no uniform row counts
 - [ ] Any forced-implausible parameter stated in `DATASET_NOTES.md` with its arithmetic and its mitigation
-- [ ] Spine, artifact type, and calibration form are not repeats of a prior build
+- [ ] Spine, artifact type, calibration form and stump strategy are not repeats of a prior build, and no organ ships out of habit
 

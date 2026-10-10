@@ -14,8 +14,9 @@ and driving force of each stump, with the numbers a generated data pack must hit
 
 * **One deterministic recommendation** per task.
   * **Set 1** fixes it with a written memo of rules that ships with the inputs.
-  * **Set 2** fixes it by construction: filed pins, a calibration corpus, and conventions that are pinned or converge. The
-    decisive rule itself is never stated.
+  * **Set 2** notes were written to one construction: filed pins, a calibration corpus, conventions that are pinned or
+    converge, and the decisive rule never stated. **That construction is the template the client now rejects when it
+    recurs** (see "Using the Set 2 notes" below).
 * **One to three deliverables**, preferring a visual from which the stakeholder can read the decision at a glance.
 * **25+ rubric criteria** derived from the structure of the answer, weighted roughly 30–40% on the recommendation, 5–10% on
   instruction following and about 55% on the supplementary asks.
@@ -199,6 +200,20 @@ Every note meets these rules:
   5. Its enumeration is arithmetic.
   6. It has no cutover date.
   7. It is still hard after every voice and wrong number is deleted.
+### Using the Set 2 notes
+
+The client rejects templated tasks, and the architecture it names first (the decisive rule left unstated while a
+plausible official rule is filed as the decoy) is the one every Set 2 note shares: each carries a calibration corpus, a
+twin pair, a licensed wrong basis and a roll call of voices. So a note is an **idea seed, never a build plan**. A build
+that starts from a note keeps its world and its decision only if the stump is redesigned from the dataset's own analytic
+structure, with the corpus, the licensed basis and the voices dropped unless that redesign needs them, and it passes the
+fingerprint guard's strategy bans and template caps (`.claude/skills/stumping/SKILL.md` Part 2). The Set 1 blueprints
+state their rules in a memo and carry almost none of this architecture, so they are the safer seeds, with one caution:
+a memo that paraphrases the trap ("never sum parent and children") hands it over, so the memo cites the external
+standard instead.
+
+The fields below describe the notes as written.
+
 * **Calibration corpus and twin pair.** Every note has a closed record that certifies the shallow rungs. It also has a twin
   pair: two cases identical on every visible column, with outcomes about 2× apart, separated only by the right rule.
 * **Pins, voices and determinism.**

@@ -13,6 +13,14 @@ description: Design, build and harden the trap architecture for a deterministic 
 
 **Scenarios are the one thing that never transfers.** Every worked shape in this skill is structural, meaning it shows the form an argument or a file request takes, with the nouns left as blanks. Fill the blanks fresh on every build. Lifting a scenario, an entity, a metric, a file name or an ask's wording out of here, out of a reference file or out of a prior build is a clone tell, and the mechanisms are the only part that carries over.
 
+**Strategies do not transfer by default either.** The client rejects templated tasks: a build that
+replicates an approved task's stumping strategy onto a new dataset is sent back, because it teaches
+the model nothing new. Every build is bespoke in its traps, its solution method, its data, its
+questions and its stump, chosen with an analyst's judgement of what this dataset's real difficulty
+is. Part 2 carries the rule, the data-native sentence every design note writes, and the cap on the
+one architecture the client names (the decisive rule withheld while an official-looking rule is filed
+as the decoy).
+
 **Prerequisite.** The domain and the Axis 1 objective are fixed and saved before this skill opens. Run `guide-to-prompt` first. Eight objectives are valid (the six of the taxonomy plus Opportunity Sizing & Decision Support and Data Quality Monitoring & Alerting, defined in `guide-to-prompt`), and a task tagged outside them, Comparative analysis and explanation included, is rejected on the tag alone. Nine domains are accepted (the roster is in `guide-to-prompt` Step 1); Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them, so no build starts there.
 
 **Trap catalogs.** `references/traps/<objective>.md` for your objective, plus `references/traps/_cross-objective.md`, which carries the constraint, comparison and monitoring families that belong to no single objective. Read both after Part 1 and before you pick a mechanism.
@@ -150,7 +158,7 @@ No governing document, no method note, no dictionary line. The rule exists, it i
 
 Gate G label: `method_or_model_selection`, by construction.
 
-**This is the strongest single move available under v3** and it is the one the approved builds kept reaching for. It is discussed as the empirical pin in Part 4 and as the calibration corpus, and it is why the calibration file is the load-bearing organ of the whole architecture.
+**Gap 4 is one family among the four, and it is the one the client names as over-used.** It is discussed as the empirical pin in Part 4 and as the calibration corpus. Paired with a filed official rule that gives the wrong answer it is the withheld-rule-with-official-decoy architecture Part 2 caps, so a Gap 4 build files no authoritative rival rule unless the guard's cap allows it, and it is drawn only when the dataset genuinely carries a rule that is unwritten in the real world (an operator's practice no manual records, a settlement convention only the settled cases show).
 
 *The question that opens this gap:* if I delete every document that states a method, is the answer still forced? If yes, the pack does not need those documents and they were signposts.
 
@@ -158,7 +166,7 @@ Gate G label: `method_or_model_selection`, by construction.
 
 The four gaps say where difficulty can live. The opponent model in Part 0 says what a decisive move has to look like to survive contact. Check every candidate mechanism against all seven before committing to it, because each one was learned by losing rounds:
 
-1. **It is written in no shipped sentence.** Not in a clause, not in a dictionary line, not in a labelled column. The strong solver reads everything. Whatever the pack states, the pack has already conceded. **A clause does not have to state the answer to concede it. It only has to make the solver ask the question.** "The clause names the concept and leaves the join to be built" is not a defence, because a join forced by a key column the solver is already holding is one line of code, and a clause the solver cannot avoid reading (the one that defines the quantity being computed) sends it looking whether or not the sentence names a file. Run the test on the wording you actually shipped: if a solver who has read this clause now has a reason to go looking, the rung is free, and burying the join deeper only changes how long the free step takes.
+1. **The decisive step is written in no shipped sentence.** This is about the step the solver skips, not the rule: a filed rule (a formula, a definition, an eligibility clause, a forecasting standard) is legal and is often the better build, when the difficulty is the construction it demands (the forecast, the constraint applied at the right grain, the population it names but no file stores). What may not be written is the move that turns the rule into the answer. Not in a clause, not in a dictionary line, not in a labelled column. The strong solver reads everything. Whatever the pack states, the pack has already conceded. **A clause does not have to state the answer to concede it. It only has to make the solver ask the question.** "The clause names the concept and leaves the join to be built" is not a defence, because a join forced by a key column the solver is already holding is one line of code, and a clause the solver cannot avoid reading (the one that defines the quantity being computed) sends it looking whether or not the sentence names a file. Run the test on the wording you actually shipped: if a solver who has read this clause now has a reason to go looking, the rung is free, and burying the join deeper only changes how long the free step takes.
 2. **No sweepable corpus nominates it.** Either the corpus is structurally blind to the decisive rule (built so that, over the corpus's own cases, every candidate rule returns the same result, which you assert), or every rival that also reproduces the corpus provably converges on the same answer.
 3. **It has no arithmetic symptom.** Row counts reconcile, control totals tie, grain assertions pass, the general reconciliation is identical under the wrong reading and the right one. If the wrong path trips any check a diligent solver writes, the solver is alerted and climbs for free. That includes the default hygiene sweeps (duplicate keys, exact-duplicate rows, unmatched joins, fan-out, a count that does not tie): a symptom one of them surfaces is found, and the adjudicating rule then says what to do. A surviving device leaves the wrong path clean and complete and parks its inconsistency at a cross-file or cross-grain cut nothing invites (task73 world six).
 4. **It is not a per-row predicate.** It needs a group and a rank inside the group, a constant recovered from closed cases, a property of a *different entity* reached through a join nothing signposts, or a fit run within units. A condition that can be attached to a row as a column is a filter, and the solver is a filter machine. The form that has satisfied this against live solvers is a group-and-rank on the spine itself: a unit filed by two filers, one statewide group-by on the entity, then a rank inside the group under a filed two-level tie-break, with no single column separating the affected units (task60 v5, the best column running 0.09 to 0.57 duplicated).
@@ -255,19 +263,54 @@ These are the mechanisms that carried the approved builds. They are stated as pa
 
 Pick one as the decisive rung. Pick a second, from a different gap, as the rung below it.
 
-**Draw the decisive rung from the measured catalogue first.** `references/traps/_measured.md` ranks
-26 traps by how many of the client's 64 accepted tasks each one decided, with the build recipe and
-the way each goes wrong for authors. The top four (a failed back-test shipped anyway, the file's row
-grain taken for the unit, a close but inexact match accepted, a reading never tested against the
-control) decided 37 of the 64 and share one architecture: a published control set produced by a
-method the documents do not spell out, a governing clause that makes exact reproduction the condition
-of using a method, a unit or population the governing document defines but no file stores, an obvious
-construction that reproduces most but not all of the controls, and exactly one construction that
-reproduces all of them and changes the decision. That architecture is Pattern B with the reproduction
-clause as its gate, and it is the one with a measured record. A decisive rung drawn from outside the
-catalogue is a bet, and the design note says in one line why the bet is taken. The client's own
-records of those tasks, prompt and solution and the model's miss, are in
-`../guide-to-prompt/references/exemplars/`.
+**Choose the decisive move from the data, never from a ranking.** The client rejects templated
+tasks: a build that takes an architecture that worked once and re-skins it onto another dataset is
+sent back however well it is executed. Every build is designed from the ground up, so its traps, its
+solution method, its questions and its stumping strategy come from the analytic structure of its own
+dataset (how the data is generated, what its grain and calendar are, where its censoring, selection,
+identity or capacity problems really sit). The design note carries one line, the **data-native
+sentence**: *what about this dataset makes this the stump a real analyst would trip on here*. A
+decisive move that would read the same on any other dataset has no data-native sentence and is not
+built.
+
+**The withheld rule with an official decoy is capped.** The client has named one architecture as
+the template it sees most, about 40 per cent of what it receives: the rule that decides the answer
+is deliberately left unstated, recovered from a calibration corpus, and a plausible official rule
+(a governing clause, a licensed wrong basis, a house method) is filed as the decoy. It is Gap 4 and
+Pattern B paired with the licensed wrong basis of Part 4.3, and it is also the architecture the top
+of `references/traps/_measured.md` describes (a published control set produced by a method the
+documents do not spell out, a reproduction clause, an obvious construction that matches most
+controls). It is legal and it is still a strategy, not a default: the fingerprint guard blocks it
+when any of the last three builds carried it and when it already carries two of the last twelve,
+and every build that uses it writes why this dataset, and not the habit, calls for a withheld rule.
+The card's `stump_strategy`, `decisive_rule_filed` and `official_decoy` fields are what the guard
+reads, so they are filled honestly at the draw.
+
+**So is the certified record that blesses the wrong method.** The commonest stump on our own cards
+is a close cousin of the flagged one: the natural method reproduces every closed, published or
+certified figure in the pack, and only a condition that first appears in the forward window breaks
+it, so the certified record does the official decoy's work. It carried 27 of 30 consecutive builds
+(task99 to task130), which is a monoculture whatever the surfaces. The card's `validated_decoy` field
+marks it, and the guard blocks it in consecutive builds and above three of the last twelve. A stump
+that the closed record does not bless (or already refutes, for a reader who looks) is the default.
+
+**The measured catalogue is evidence of what the model misses, not a recipe list.**
+`references/traps/_measured.md` ranks the failures the current model made on 64 of the client's
+accepted tasks. Read it to know which analytical habits fail (a failed back-test reported and used
+anyway, file rows counted for the real unit, a close match accepted), then build the failure the
+dataset itself invites, under whatever strategy fits. The client's own records of those tasks are in
+`../guide-to-prompt/references/exemplars/`; they are idea seeds and never architectures to copy.
+
+**Strategy families.** The fingerprint vocabulary lists fifteen (`stump_strategies` in
+`../fingerprint/vocab.json`): a filed rule whose construction is hard, forecast or model selection
+on honest history, maturity and censoring, a binding constraint, grain or unit, population and
+selection (survivorship, attrition, exposure), composition and mix (Simpson's reversal,
+standardisation), time semantics (as-of, fiscal and service calendars, time zones, effective dating),
+identity resolution, decomposition, causal design (confounding, spillover, regression to the mean,
+control choice), uncertainty and the hold, the corpus-fit withheld rule, the capped withheld rule
+with an official decoy, and other. Survivorship, multiple comparisons, power, censoring, regression
+to the mean and calendar or time-zone grain are almost absent from the corpus so far, and each can be
+decided by a filed rule and shipped data with no calibration corpus and no licensed decoy.
 
 **The five patterns are where difficulty can live. They are not by themselves a stump.** Each one has been solved at least once in this corpus with its pattern label intact, because what fires a pattern is a property underneath it: whether the recovered rule is scannable, whether the two grains disagree in shape or only in level, whether the conditioning property is also a column name. Those properties are collected per strategy in `references/proven-in-production.md` Part A, and picking a pattern here without checking its discriminator there is the single most common way a build reaches the portal and does not stump.
 
@@ -552,9 +595,9 @@ the ladder as same-sign constructions, so no partial reading lands near the answ
 
 Four supports. No artifact computes a wrong answer to the decision (Part 3, rung 0), and the sanctioned decoy is a belief rather than a computation.
 
-### 4.1 The calibration corpus, the load-bearing organ
+### 4.1 The calibration corpus, when the mechanism needs one
 
-**This is the highest-leverage artifact in the build and the one most often missing or half-built.**
+**A calibration corpus is an organ of particular strategies, not of every build.** A withheld rule needs one, because without it the rule is unrecoverable; a forecasting build may need an honest back-test history; a filed rule whose construction is hard, a binding constraint, a grain or time-semantics trap usually needs none, and shipping one anyway is the habit the client reads as a template. When the strategy needs it, it is the highest-leverage artifact in the build and the one most often half-built.
 
 A calibration corpus is a shipped record of **outcomes the decision does not cover but the method must explain.** The solver computes each candidate basis, then checks which basis reproduces the known outcomes. The right basis fits. The rivals do not.
 
@@ -666,7 +709,7 @@ Solvers accept a model that is off by 1.2x to 3x in magnitude if it **ranks** th
 - **Never justified.** A justified rule reads as arguable and reopens the fork you just closed.
 - Buried in operational noise so it does not read as the thesis of the document.
 
-**When not to have one.** Gap 4 builds deliberately ship no pin for the decisive rule, because the absence is the mechanism: the rule is recoverable only from the corpus. That is legal and it is strong. What is never legal is a decisive rule that is neither filed nor empirically recoverable, because then each solver fits its own and the round comes back split on the figure. **Every convention is either pinned in a file or pinned by the corpus. There is no third option.**
+**When not to have one.** Gap 4 builds deliberately ship no pin for the decisive rule, because the absence is the mechanism: the rule is recoverable only from the corpus. That is legal and it is strong. What is never legal is a decisive rule that is neither filed nor empirically recoverable, because then each solver fits its own and the round comes back split on the figure. **Every convention is pinned in a file, pinned by a corpus, or shown to converge** (`determinism-check` C1 and C3: every admissible reading lands on the same answer, asserted). A decisive rule pinned nowhere and not convergent is never legal.
 
 Scope rules, eligibility, grain and unit-of-work definitions usually want a filed pin. Method and parameter choices usually want an empirical one.
 
@@ -680,7 +723,7 @@ Scope rules, eligibility, grain and unit-of-work definitions usually want a file
 
 ### 4.3 The advocate structure, and the licensed wrong basis
 
-**Every human voice in the pack points somewhere else.** The prompt names a stakeholder holding a wrong position. In-pack notes carry two to four named people arguing for wrong options. **The correct answer has zero support anywhere in the materials.** The sharpest version is the owner of the correct answer arguing against it.
+**The social layer is optional, and it is never a roll call.** Where the decision really has advocates, one or two named people may hold wrong positions as beliefs, and the correct answer need not be anyone's; where it does not, the pack ships no voices at all. A note carrying two to four quoted colleagues on every build is a house habit the client reads as templated, and a roll call of opinions hands the solver a rung to refute per name (`CLAUDE.md`).
 
 This is social pressure the solver has to overcome with evidence, and it makes the correct answer feel like a contrarian call rather than a default.
 
@@ -688,7 +731,7 @@ This is social pressure the solver has to overcome with evidence, and it makes t
 
 **A voice may hold a belief about what the data is like and may argue for a rule, never endorse carrying a particular quantity forward**, because on a build whose answer is a figure the quantity is the decision: a voice that says to carry the measured effect as-is converts an honest transport problem into an endorsed read the task overturns (task43), and a voice that endorses carrying a count forward is a counter-pin the judge quotes back (task57 v20). A factual statement about the past ("the line has filled its places in every cycle it has run") points at the decoy and contradicts nothing. On a build whose answer is a residual, no voice states the naive residual at all, even correctly, because that is the surface read (task56).
 
-**The licensed wrong basis.** The same governing document that carries the pin also states, as a matter of record, that a named authority works from a different basis and will present it at the review. The basis is real, it is legitimately available in writing, and the evidence still refutes it. That is what separates a fair hard task from a gotcha. Keep it to the basis and the endorsement. Do not let the document compute the ranking. A licensed wrong basis is graded wherever an ask asks for it, so the governing document names its population in words that exclude the other reading, the advocate's belief language selects the same group, and the rejected reading is separated so it does not land on the main answer (task43, two readings of one committee basis 14 per cent apart).
+**The licensed wrong basis, optional.** It is one way to make a wrong answer respectable, and it is half of the capped architecture of Part 2: a licensed wrong basis filed beside a withheld decisive rule is the withheld rule with an official decoy, and the guard counts it as such. With a filed decisive rule it is an ordinary rival. Where it is used, the same governing document that carries the pin also states, as a matter of record, that a named authority works from a different basis and will present it at the review. The basis is real, it is legitimately available in writing, and the evidence still refutes it. That is what separates a fair hard task from a gotcha. Keep it to the basis and the endorsement. Do not let the document compute the ranking. A licensed wrong basis is graded wherever an ask asks for it, so the governing document names its population in words that exclude the other reading, the advocate's belief language selects the same group, and the rejected reading is separated so it does not land on the main answer (task43, two readings of one committee basis 14 per cent apart).
 
 ### 4.4 The distractors
 
@@ -869,7 +912,8 @@ Every approved build in this repo opens its design note with a draw table checke
 | Monetisation or scoring unit | per active unit per period · per accepted item · per settled transaction · per boarded entity · per episode · per certified output · per covered member · per resolved case · index points · units served · flat per seat · take-rate on flow |
 | Decision type | which one of N to fund · which to launch · which to fix · renew, replace or lapse · which root cause · which template to standardise on · which to deprioritise · a structural verdict with no candidate list at all |
 | Stakeholder role | an operations director · a capacity planner · a portfolio manager · a research desk · a statistical office head · a field unit lead · a programme officer |
-| Calibration form | settled-transaction ledger · counterparty acknowledgement · pilot log · existing-book actuals · prior-period close-out · retry or revision log · parallel-run overlap · gold-standard verification subsample |
+| Calibration form (or none) | settled-transaction ledger · counterparty acknowledgement · pilot log · existing-book actuals · prior-period close-out · retry or revision log · parallel-run overlap · gold-standard verification subsample |
+| Stump strategy | one of the fifteen `stump_strategies` in `../fingerprint/vocab.json`, chosen from the dataset's own analytic structure; the withheld rule with an official decoy and the certified-record decoy are capped by the guard |
 | Context-artifact type | monitoring export · operations log · register · published series · capacity report · close-out summary |
 | Generator pair | two from 6.2 in **different** families, optionally a third |
 | Rival-killer | one from 6.2 that is not in your main pair |
@@ -879,7 +923,7 @@ Every approved build in this repo opens its design note with a draw table checke
 **Standing bans.**
 - Do not reuse the **domain plus objective pairing** from your last build. Either axis alone may repeat, both together is the same task shape.
 - Do not reuse the **pattern that carried the decisive rung**.
-- Do not reuse the **calibration form**.
+- Do not reuse the **calibration form** or the **stump strategy**, and ship no calibration organ the strategy does not need.
 - Do not reuse the stakeholder role or the context-artifact type.
 - Do not reuse a spine dataset across consecutive builds.
 - Do not reuse the **prompt shape** of either of the last two builds, because the shape shows in the prompt's wording and in the deliverables.
@@ -1343,9 +1387,9 @@ Cheap de-risking first. Do not build data before the ladder is written down.
 3. **Write the ladder** into the worked skeleton (Part 13). Do not proceed until every blank is filled, every rung names a different candidate, every rung has the one shipped fact that kills it, and every rung has a written sentence explaining why a careful analyst would stop there and file.
 4. **Settle the arithmetic on paper.** Discriminator dominance, the correction grid, the fork grid. All three are decidable before a single row exists, and no amount of data work rescues a rung that fails them. Then design the ask layer on paper via `supplemental-stumping`, every ask's devices and eight-file span and the device ledger, because the spans are schema decisions the pack build has to honour and a device retrofitted into a cut pack breaks mess neutrality silently.
 5. **Choose the spine dataset.** Pick something whose subject is the market the entity operates in, not the entity's own product data. Check it clears the volume gate (25,000 or more rows in any format, or a large database file).
-6. **Build the calibration corpus first**, then the operating extracts around it. Build its underlying records and compute the outcomes from them. Include the twin pair from the start; retrofitting it later means rebuilding the extracts anyway.
-7. **Write the governing document**: pin, licensed wrong basis, background disclaimer, realistic logistics. Build the distractors (Part 4.4) and name them in `metadata.json`.
-8. **Write the social layer**: two voices for wrong bases, one voice arguing against the right answer, all of them holding beliefs rather than quoting rankings.
+6. **Build the organ the strategy needs, and only that one.** A withheld rule needs a calibration corpus built first, with its underlying records and the twin pair from the start; a forecasting build needs honest history long enough to back-test; a filed rule whose construction is hard needs the filed rule and the records it ranges over. Do not ship a corpus, a twin pair or a control set because earlier builds did.
+7. **Write the governing document** where the organisation would have one: the pin, a background disclaimer, realistic logistics, and a licensed wrong basis only where Part 4.3 allows it. Build the distractors (Part 4.4) and name them in `metadata.json`.
+8. **Write a social layer only if the decision really has advocates**: at most two named people holding beliefs, never quoting rankings, never a roll call.
 9. **Solve it cold from the ZIP alone.** Every number must recompute. Write the golden with the robustness sweep and explicit counts.
 10. **Wire the assertion regime** and ship the independent verifier **before** the build is called finished. The assertions are the only thing that catches a collapsed rung, because nothing in house solves the build for you, so a defect an assertion would have caught for free is a defect the portal charges a whole submission for.
 11. **Write the prompt**, then delete every noun naming a metric, input file or method. Write the deliverable asks last, after the golden, against Part 7's five levers and the ask sheet fixed via `supplemental-stumping` before the data was cut, and sweep the set for over-determination.
@@ -1492,19 +1536,25 @@ The build is genuinely analytical but the design note does not say so unarguably
 - [ ] Each rung's worth computed **on the graded quantity**, and the graded quantity does not absorb the decisive rung
 - [ ] Where the answer is a figure, the correction chain has a direction and only the decisive rung reverses it, per-rung percentage moves stated
 
-**Organs**
-- [ ] Calibration corpus present, fit gap dramatic, test threshold-free if possible
+**Bespoke, never templated**
+- [ ] The data-native sentence written: what about this dataset makes this the stump a real analyst would trip on here
+- [ ] `stump_strategy`, `decisive_rule_filed` and `official_decoy` filled honestly on the card, and the guard passes the strategy bans and the template cap
+- [ ] If the decisive rule is withheld and an official-looking rule is filed as the rival, the design note says why this dataset calls for it
+- [ ] No organ shipped out of habit: every corpus, twin pair, control set, licensed basis and voice in the pack is there because this strategy needs it
+
+**Organs** (where the strategy uses them)
+- [ ] Calibration corpus, where the strategy needs one: fit gap dramatic, test threshold-free if possible
 - [ ] The corpus's power stated: which rungs it settles, and what it is structurally blind to, asserted
 - [ ] Corpus resemblance points at the **decoy**, never at the answer
-- [ ] **Twin pair shipped**: two cases identical on every lookup-visible column, outcomes about 2x apart
+- [ ] **Twin pair**, where a corpus ships: two cases identical on every lookup-visible column, outcomes about 2x apart
 - [ ] **Every calibration outcome recomputes from shipped records** under the correct rule, and no rival rule reproduces the set
 - [ ] Every rule the golden composes is exercised by at least one calibration case
 - [ ] Wrong models get the calibration **order** wrong, not merely the levels
-- [ ] Every convention is either pinned in a file or pinned by the corpus, with no third option
+- [ ] Every convention is pinned in a file, pinned by a corpus, or shown to converge
 - [ ] Pin is one sentence, in a shipped file, unjustified, unrepeated, at or above every counter-pin, naming the observable
 - [ ] **No sentence in the prompt fixes the basis, window, convention or population**
-- [ ] Licensed wrong basis present with a named advocate, stated as a basis rather than a ranking
-- [ ] No voice anywhere advocates the correct answer
+- [ ] Any licensed wrong basis stated as a basis rather than a ranking, and counted toward the template cap when the decisive rule is withheld
+- [ ] Voices, if any, are at most two, hold beliefs, and never form a roll call
 - [ ] Large reference documents disclaimed if not decisive
 
 **Determinism**
@@ -1594,7 +1644,9 @@ DRAW  (independent draws, checked with ../fingerprint/guard.py)
   Domain: ______   Subdomain (enumerated): ______   Objective: ______
   Pairing repeated from last build? ____
   Stakeholder role: ______   Context-artifact type: ______
-  Calibration form: ______   Decision type: ______   Decisive mechanism: ______
+  Calibration form (or none): ______   Decision type: ______   Decisive mechanism: ______
+  Stump strategy: ______   Decisive rule filed? ____   Official decoy filed? ____
+  Data-native sentence (why THIS dataset produces this stump): ______
   Repeats from prior builds: ______   (must be none)
 
 GATE G  (answer before anything else)
@@ -1646,7 +1698,7 @@ CORRECTION GRID
   Independent toggles: ______  ->  ____ cells
   Every non-decisive cell lands on a named wrong candidate? ____
 
-CALIBRATION CORPUS
+CALIBRATION CORPUS  (only where the strategy needs one; otherwise write "none, because ______")
   Form: ______   Cases: ____
   Correct rule reproduces ____ of ____ within ____ %
   Worst rival miss across ____ swept rules: ____ %

@@ -30,6 +30,14 @@ actually rides on, the single insight a solver has to reach and keeps failing to
 that is the only part of a build a reviewer remembers and the only part a solver can be primed
 against.
 
+**The stumping strategy is not a component.** Two builds with different drivers can still share the
+strategy that carries them (the decisive rule withheld while an official-looking rule is the decoy,
+or a certified record that blesses the wrong method until a forward condition breaks it), and the
+client counts that as templating: it has named the first one as about 40 per cent of what it
+receives and rejects tasks that replicate an approved task's approach onto a new dataset. So a
+strategy that carries a large share of a batch is a finding even when every pair is clean (the
+Strategy monoculture tier below), and devices are reused only where the dataset itself calls for them.
+
 So a path that runs through familiar moves in an unfamiliar order, with an unfamiliar move
 carrying the decisive step, is a new task. A path that runs through unfamiliar moves in an
 unfamiliar order but arrives at the same decisive insight is the old task in new clothes, and it
@@ -118,6 +126,13 @@ role that appears in most builds under the same name, a construction the ask sen
 reaching for, a deliverable pairing that never varies. A reviewer holding one package cannot see
 this and a reviewer holding a batch sees nothing else, which is why it is checked corpus wide and
 reported separately from the pairs.
+
+**Strategy monoculture.** One stumping strategy carries a large share of the batch, across drivers
+the pair check passes: read each card's `stump_strategy`, `decisive_rule_filed`, `official_decoy`
+and `validated_decoy` (and the design notes where the card predates them) and report the share. The
+withheld rule with an official decoy above two in any twelve builds, the certified-record decoy above
+three, or any one strategy in a third of the batch, is a finding with the builds named, because it is
+what the client's template review counts. It is corpus wide like Idiom and reported beside it.
 
 **Clean, shares components by design.** This is a verdict and not an absence of one. Say it
 explicitly when two builds share devices and the drivers differ, because an author who is told

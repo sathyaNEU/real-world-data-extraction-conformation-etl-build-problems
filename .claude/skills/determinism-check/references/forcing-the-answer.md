@@ -158,6 +158,11 @@ closed record outranks all of them in practice, for two reasons: a document pin 
 or outranked by another document, and a corpus pin cannot be argued with, because the rival does not
 merely lose an argument, it contradicts the record. And a corpus pin leaves nothing in the prompt.
 
+Its frequency is also its cost. A withheld rule recovered from a corpus, with an official rule filed
+as the rival, is the architecture the client rejects as templated when it recurs, and the guard caps
+it (`stumping` Part 2). Where the stump strategy does not need a withheld rule, close the fork with C1,
+C3 or C4 and file the rule.
+
 The shape is always the same. The governing document states the quantity and is silent on the method.
 A closed record of settled cases ships in the pack. Candidate methods are run forward against it, and
 exactly one reproduces every case.

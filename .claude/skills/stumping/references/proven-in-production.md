@@ -28,7 +28,9 @@ Every one of these was paid for. They are stated as tests you run against your o
 
 ### L1. The corpus must certify the shallow rungs and be blind to the decisive one, for a computable reason
 
-This is the single most-used structure in the corpus and the one the strongest responses die on. The
+This is the single most-used structure in the corpus and the one the strongest responses die on, and
+that frequency is now the problem: the client rejects the withheld-rule architecture when it recurs,
+so this law applies to builds whose strategy needs a corpus, not to every build (`../SKILL.md` Part 2). The
 calibration corpus refutes every rung below the answer, so a solver who back-tests is *confirmed*,
 and it cannot see the last move because of a stated structural fact about the corpus window.
 
@@ -278,7 +280,8 @@ commissioning year, invisible in an unworked cohort (76) · a closed referral th
 (81's sibling shape).
 
 **S3. The rule is written nowhere and only a closed corpus settles it.** The strongest determinism
-story available. 38 · 39 · 40 · 51 · 59 · 63 · 66 · 68 · 71 · 78 · 45. **Its two deaths: a rule whose
+story available, and the most reused one in the corpus, so it is capped by the guard and never
+paired by habit with a filed official decoy (`../SKILL.md` Part 2). 38 · 39 · 40 · 51 · 59 · 63 · 66 · 68 · 71 · 78 · 45. **Its two deaths: a rule whose
 content is one scannable parameter** (40 round 2, one threshold scan; 38, four rounds) and **a linear
 rule in a rate-times-exposure world**, absorbed when the rate is re-struck (59 measured it at 0.2 to
 2.7 per cent).

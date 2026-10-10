@@ -795,7 +795,7 @@ The commit demand stays exactly as strict, because hold is one of the committed 
 
 ## Checklist
 
-- [ ] Exactly one domain, from the **six** accepted, and it is the one whose decision-maker owns the call
+- [ ] Exactly one domain, from the **nine** accepted, and it is the one whose decision-maker owns the call
 - [ ] Exactly one enumerated subdomain, written into `DATASET_NOTES.md`
 - [ ] Exactly one Axis 1 objective, one of the **eight** live labels, unchanged, and for Opportunity Sizing & Decision Support or Data Quality Monitoring & Alerting its discriminating test passed. "Comparative analysis and explanation" appears on the client's example page and is **not** a valid tag here
 - [ ] The objective's reference file read before drafting, and the evidence pack can actually support the ask

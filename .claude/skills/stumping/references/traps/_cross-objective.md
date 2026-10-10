@@ -222,10 +222,11 @@ history that contradicts the snapshot has to be in the pack.
 ### No governing document to anchor on
 
 The pack deliberately ships no rule to quote, so the criterion has to be earned from the data,
-usually from a calibration corpus of settled cases. This is the shape that most reliably separates
-an analyst from a model looking for a sentence to cite, and under Gate G v3 it is the strongest
-single move available, because a rule recovered empirically is `method_or_model_selection` by
-construction. See `SKILL.md` on the empirical pin.
+usually from a calibration corpus of settled cases. A rule recovered empirically is `method_or_model_selection` by
+construction, which makes it legal; it is not the default. Filed beside an official-looking rule
+that gives the wrong answer it is the withheld-rule template the client rejects when it recurs, and
+`../../SKILL.md` Part 2 caps it. Draw it only when the dataset really carries a rule that is unwritten
+in the world it comes from.
 
 ### The answer is hold
 
