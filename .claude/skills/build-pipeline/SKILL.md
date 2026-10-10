@@ -20,8 +20,8 @@ description: "The stage machine that takes a domain and an objective to a delive
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check |
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`), `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, `leak.py` not LEAK, surface screen clean |
 | B | **checkpoint: `/approve`** | `fingerprint` (`heart`) | heart verdict not BLOCK; the author has read the stump sentence against the pack |
-| 4 | solver round 1 | `solver-round` (one plain solver) | main call missed and proxy under 40; else **harden** (max three loops) and return to 3 |
-| 5 | solver round 2 | `solver-round` (plain and skeptic) | average under 40, one under 25; both landing is a re-root to stage 1; with the three loops spent, both missing the call and the pair under 40 passes on the author's standing waiver (`solver-round`) |
+| 4 | solver round | `solver-round` (one plain solver) | main call missed: go to stage 6, whatever the proxy score; landed: **harden** (max three loops, then retire) and return to 3 |
+| 5 | solver round 2 | `solver-round` (plain and skeptic) | run only when the author asks (`/solve taskNN 2`) |
 | 6 | judge rehearsal | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC; FIX_NOW findings fixed in the generator and the stage re-run |
 | 7 | leak read and heart | `/leak-check` reader pass, `guard.py heart` | no sentence quoted for question 1; heart not BLOCK |
 | 8 | deliver | card fields updated, zips cut, summary | the author has the bundle, the stump sentence, both rounds' scores and the judge line |
@@ -59,7 +59,7 @@ A session that opens a task folder with a `pipeline.json` reads `stage`, reads t
 new work, because a stage left green can have been edited since. A folder with no `pipeline.json`
 and a finished submission is at stage 3 complete; write the file and go to checkpoint B.
 
-## The hardening loop (stage 4 or 5 fails)
+## The hardening loop (the solver lands the call)
 
 The solver's report carries its path. The hardening brief is one sentence: *the solver reached the
 call by doing X at step k*. The repair is a rung after which doing X still completes and still
@@ -68,8 +68,9 @@ traps decided 37 of 64 client tasks and share one architecture, a published cont
 reproduction clause, a hidden unit, an obvious construction that matches most controls). Not a
 louder pin, not a defect, not a second decoy. Write the attempt into `## Tried and rejected` with
 the solver's own sentence, rebuild (stage 3 gates in full, because a new rung moves figures), and
-re-run the round that failed. Three loops on one architecture is the limit; the fourth is a re-root
-at stage 1 with the old architecture moved into the card's `lineage`.
+re-run the round. Three loops on one architecture is the limit; a build whose solver still lands the
+call after them is retired, its card kept so the architecture is not drawn again, and the next design
+in the queue takes its slot.
 
 ## The two checkpoints, and why only two
 

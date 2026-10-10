@@ -53,7 +53,7 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  dataset-generation  ->  build  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
    ->  leak-check (leak.py)  ->  fingerprint surface
    ->  CHECKPOINT B: /approve   (guard.py heart: the stump against every card and ledger row)
-   ->  solver round 1 (one plain solver)  ->  harden or pass  ->  solver round 2 (plain + skeptic)
+   ->  solver round (one plain solver): a missed call passes; a landed call is hardened (three loops, then retired)
    ->  determinism-check judge rehearsal  ->  /leak-check reader pass  ->  DELIVER to the author
    ->  the author tests on the official portal and reports back
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
@@ -91,10 +91,10 @@ write-up prose, and the two are run together as the last block before the bundle
 
 **The portal is the stump oracle; the solver rounds are the filter in front of it.** The author
 tests the build on the official portal and reports the result, and that report is the only stump
-evidence the ledger records. Before it, a finished build goes through two in-house solver rounds
-(`solver-round`): one plain solver that sees only the prompt and the bundle, then plain and skeptic
-together. A build a plain solver cracks never goes to the portal; a build no solver cracks still has
-to. Rounds run only through `/solve` or the `/build` pipeline, never as an ad hoc "quick sanity
+evidence the ledger records. Before it, a finished build goes through one in-house solver round
+(`solver-round`): a plain solver that sees only the prompt and the bundle. A build whose solver lands
+the call never goes to the portal; a build whose solver commits to a different answer goes straight
+on to the judge rehearsal, and still has to face the portal. Rounds run only through `/solve` or the `/build` pipeline, never as an ad hoc "quick sanity
 solve" in the main thread, because a solve that has read the design note measures nothing. The
 written test of stump power stays: **name the stump in the design note** before the pack is cut, the
 wrong committed answer a competent solver files and the step that lands them there. A ladder whose

@@ -38,23 +38,21 @@ plain solver cracks will not.
 
 ## The rounds, and the decision rule
 
-**Round 1: one plain solver.** Pass when the main call is missed **and** the proxy score is under
-40. Otherwise the build is hardened, not sent on. The round's report says which step of the path
+**The round: one plain solver.** Pass when the main call is missed: a solver that commits to a
+different answer from the golden one is the stump, and the build goes straight on to the judge
+rehearsal. The proxy score is recorded for the author, not gated, and a missed call is never
+hardened or solved again. A landed call is hardened, not sent on. The round's report says which step of the path
 landed the solver on the call, and that step is the hardening brief: the next rung is built so that
 exact step completes and still returns the wrong answer, and the attempt is written into the
 design note's `## Tried and rejected` with the solver's own sentence.
 
-**Round 2: two solvers, plain and skeptic, run together.** Only after round 1 passes. Pass when the
-two proxy scores average under 40 and at least one is under 25. Both solvers landing the call is a
-re-root, not a hardening: the mechanism is readable. **The author's standing waiver:** when the
-three hardening loops are spent, both solvers of the last round 2 missed the main call and the pair
-averages under 40, the build goes on to the judge rehearsal without the one-under-25 condition. That
-condition is the one most often missed for a reason the proxy cannot see (a block 4 with few items,
-where one kept ask outweighs the whole device layer), and a pair that held the call twice over sits
-well inside the portal bar of 50. Record the waiver in `pipeline.json` and the design note.
+**No second round by default.** The plain and skeptic pair runs only when the author asks for it
+(`/solve taskNN 2`).
 
-**Three hardening loops per architecture, then re-root.** A ladder that has been patched three times
-against the same solver is being tuned to that solver, and the portal is a different one.
+**Three hardening loops per architecture, then retire.** A ladder that has been patched three times
+against the same solver is being tuned to that solver, and the portal is a different one. A build
+whose solver still lands the call after three loops is retired, and the next design in the queue
+takes its slot.
 
 **Rounds are run on a finished build**, after the submission is written and the goldens recompute,
 because the grader reads block 1 and block 4 of `submission.md`. A round on an unfinished build
