@@ -441,7 +441,15 @@ Every FIX_NOW finding closed in the generator, a filed document it writes, the p
 8. Hygiene: provenance drops the fiction disclosure (keeps sources and CC BY 4.0); each PDF and the docx carry their own save stamp, Madrid local; the docx records its word count; the planning email's stray phrase rewritten. Kept by design: two requests naming one host in one window (the overlapping requests are the corpus that refutes reboot sharing, settlement 2).
 9. Rubric caution: block 4 grades only the colocated estate sums and the 24-host reach, unchanged.
 
-Gates: `ship.py` double build byte-identical (23 target files, 2 golden, metadata), shipped pack identical; **413 assertions** green; verifier green (split 4/5/72/75/77/67, 13,302, drains 96/120, close-out 12 of 12 at 926, 412 acknowledgements, crew log 0 early runs, 0 unmatched, 0 on a revision date). Main answer, cut list (byte-identical to pass 1), card and coverage figures unchanged. `leak.py --asof 2026-10-23`: REVIEW on the lines answered below, no LEAK. `guard.py surface`: 0 promoted; `guard.py heart`: WARN (answered under Guard). Container audit clean on `target/` and `golden/`; deck slide 1 rendered and read.
+Gates (fix cycle 1): `ship.py` double build byte-identical (23 target files, 2 golden, metadata), shipped pack identical; **413 assertions** green; verifier green (split 4/5/72/75/77/67, 13,302, drains 96/120, close-out 12 of 12 at 926, 412 acknowledgements, crew log 0 early runs, 0 unmatched, 0 on a revision date). Main answer, cut list (byte-identical to pass 1), card and coverage figures unchanged. `leak.py --asof 2026-10-23`: REVIEW on the lines answered below, no LEAK. `guard.py surface`: 0 promoted; `guard.py heart`: WARN (answered under Guard). Container audit clean on `target/` and `golden/`; deck slide 1 rendered and read.
+
+### Stage 3b after fix cycle 1 (2026-10-10)
+
+- Rebuild: `ship.py` double build byte-identical, 413 assertions, verifier green (split 4/5/72/75/77/67, 13,302, drains 96/120, close-out 12 of 12 at 926, 412 acknowledgements). `target/`, `metadata.json` and both goldens hash-identical to the fix-cycle-1 pack. `golden.py` run standalone prints the same figures (1,412 / 1,742 / 2,582 / 2,652 / 2,432 / 2,482, 13,302; last in Data pipeline libjpeg-turbo8 at 10, first below Search libunistring2 at 9; card and coverage rows unchanged); its unscrubbed deck was replaced by a `build.py` run, goldens hash-identical again.
+- `submission.md`: five blocks, every figure matches `golden.py`'s print; no edit owed.
+- `golden-realism`: deck slides and the chart PNG read cold, no figure or chart code changed; container audit clean on `golden/` and `target/`.
+- `reduce-house-fixes`: clause citations resolve (standard s.2, s.3, s.5, s.6; SRE s.2; schedule s.3); one `submission.md` and one `prompt.md`; `target/` and `golden/` equal the declared lists; no em dashes.
+- `leak.py --asof 2026-10-23`: REVIEW, the same nine lines, no LEAK. `guard.py surface`: 0 promoted. `guard.py heart`: WARN (driver.near 0.17 against this slot's own v1, repeat.gate_g and repeat.decision against task127, answered under Guard and Harden loop 1). Card already current; `guard.py validate` 0 invalid.
 
 ## Leak review
 
@@ -455,3 +463,4 @@ Gates: `ship.py` double build byte-identical (23 target files, 2 golden, metadat
 - REVIEW sweep 9, `estate_transaction_forecast_2026.csv`: forward forecast through November is the input the drains are built from, forward by design.
 - REVIEW sweep 9, `november_window_calendar.csv`: the November windows booked to the office, forward by design.
 - Stage 3b re-run (2026-10-10): the same nine REVIEW lines and nothing new; the SRE standard's s.2 now names the window's hours, which is the stop rung's rule executed by design and says nothing about servicing or the ticket's reach.
+- Stage 3b re-run after fix cycle 1 (2026-10-10): the same nine REVIEW lines (sweeps 3, 4 and 9), nothing new; each answer above still holds.

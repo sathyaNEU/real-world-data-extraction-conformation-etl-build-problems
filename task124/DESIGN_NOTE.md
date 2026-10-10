@@ -432,6 +432,57 @@ A competent solver rebuilds the per-kW replay that ties all 80 cells of last yea
 - **Harden again (loop 2):** it lands the answer by conditioning the members' uncalled draw on heat; the next repair moves after that step, never by burying the temperature file.
 - **Retire:** landed after loop 3.
 
+## Harden loop 2: pre-cool and recovery around the window (2026-10-10)
+
+The round-2 solver skipped the programme baseline and the heat-matched weekdays and read the fourteen's uncalled hours on the system-peak days themselves (hours ending 11-14 and 19-20), which in the loop-1 world sat at full load. The repair keeps every rung the solver climbed and makes that step complete and return a wrong split: on a called day a member pre-cools before the window and recovers after it with every compressor stage on, so the hours around the window read the site's own maximum demand, above what an uncalled cold store draws on a peak-hot afternoon. This section supersedes the loop-1 ladder, corridor, estimators and stump sentence where they disagree.
+
+### What changed in the world
+
+- **Called days, outside the window.** Hours ending 11 to 14 read 0.962, 0.981, 0.988 and 0.990 of maximum demand, hour ending 19 reads 0.989 and hour ending 20 halfway back to the day's uncalled level, whatever the heat. Each member's maximum demand on file is set in these hours (its highest hourly read is 0.995 to 0.997 of it, always on a called day, D06).
+- **Uncalled full load is 0.85 of maximum demand** (FULL_LIFT -0.05 on each site's level), ordinary afternoons 0.63 to 0.69, the programme baseline at the closed peak hours 0.755. The heat ramp, the temperature file and the call pattern are unchanged.
+- **North Central's target exposure moves from 340.204 to 341.154 MW**, so the corridor sits centred on the new factor. The answer split is unchanged; North Central's exposure before the block is 340.8 MW (341 whole) and 130.8 after (131).
+- **Nothing filed changes.** No document mentions pre-cooling, recovery or a member's maximum demand; the product sheet still states the commitment, the baseline and eligibility only.
+- **Measured trap.** #14 (coarsens the segment it was asked about: the policy names the system peak hour, the solver reads the uncalled part of the peak day) with #13 behind it (a level that fits the hours it can see, applied to the hour it cannot).
+
+### Stump sentence (loop 2)
+
+A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks, sees that the fourteen cold stores' 0.60 is their called draw, and reads their uncalled draw off the peak days' own hours outside the window (0.973 of maximum demand), filing 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0 with North Central at 230 MW; the step that lands it there is taking a called day's pre-cool and recovery hours as an uncalled draw, when on uncalled weekdays as hot as a closed peak the fourteen drew 0.850, so the centres add 158.2 MW and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0. A solver who skips the peak days and rebuilds the uncalled level from the programme baseline files rung 4 (195 on North Central) instead.
+
+### The ladder (as built)
+
+| Rung | Construction | Lands on (MW) | North Central against 210 | Killed by (one shipped fact) |
+|---|---|---|---|---|
+| 0 | P90 of each book's settled peak-hour load, less hedges | 115 · 65 · 35 · 15 · 50 · 45 · 55 · 20 | -76.2% | the replay table (8 of 80 cells) |
+| 1 | per-kW replay, every enrolment row | 105 · 15 · 0 · 0 · 265 · 10 · 5 · 0 | +26.2% | the dictionary: AMEND supersedes |
+| 2 | the replay on one row per premise | 135 · 40 · 0 · 0 · 155 · 40 · 30 · 0 | -26.2% | the premise register: the centres are NAICS 493120 |
+| 3 | class factor: the centres at the fourteen's closed-peak draw (0.599) | 130 · 40 · 0 · 0 · 170 · 35 · 25 · 0 | -19.0% | credits on every closed peak date, the eligibility clause |
+| 4 | the centres at the programme baseline (0.755) | 125 · 30 · 0 · 0 · 195 · 30 · 20 · 0 | -7.1% | risk policy s.2 against the fourteen's reads on uncalled weekdays as hot as a closed peak (143 member-days on 25 dates, every one 0.83 to 0.87) |
+| 5 | the centres at the peak days' hours outside the window (0.973) | 115 · 25 · 0 · 0 · 230 · 20 · 10 · 0 | +9.5% | the credits' window (hours ending 15 to 18) makes those hours part of a called day; the same heat-matched uncalled reads at 0.83 to 0.87 |
+| 6 | **Decisive:** the centres at the heat-matched uncalled draw (0.850) | **120 · 30 · 0 · 0 · 210 · 25 · 15 · 0** | answer | |
+
+- **Why rung 5 is a place to stop.** It is the members' own reads, on the very days the policy replays, in hours the credits do not cover; it needs no weather file and no baseline arithmetic, and it is what round 2's solver built. Nothing in the pack says a member pre-cools.
+- **Why rung 6 is the answer.** A called day is not an uncalled day in any hour: the site's operation around the window is part of the call. The uncalled draw at the peak hour is only on days with no call, and the policy's peak hour is a design-day afternoon, so the heat-matched uncalled weekdays are the only measurement of what an un-enrolled cold store draws then.
+- **Sign.** Bracketed twice: rungs 2 to 4 below the answer, rungs 5 and 1 above it. Every reading that uses called-day hours lands above (225 to 230), every reading that averages ordinary days lands below (180 to 195).
+- **Worth on North Central's lots:** 4 to 6 +7.7% (17.7 MW of exposure), 5 to 6 -8.7% (22.7 MW). Rung 5 moves five books against the answer (Coast -5, East -5, North Central +20, South Central -5, Southern -5).
+- **Position.** The call is the vector, so the separation floor binds: 10 per cent on North Central for rungs 0 to 3 and 6 per cent for rungs 4 and 5, each asserted (M04, M04b, M04c). Rung 0 puts North Central 4th of the receiving books behind Coast, East and Southern.
+
+### Determinism of the new step
+
+- **Corridor (C3), scanned at 0.0005:** any centre factor in [0.8305, 0.8715] files the answer; 0.829 files 205 on North Central and 0.874 files 215. The golden's factor (0.8503) sits 0.020 from the low edge and 0.021 from the high.
+- **Peak-heat estimators, all inside the corridor by at least 0.004 (D01):** zone as hot as its coolest closed peak (golden, 0.8503), as hot as its median closed peak (0.8506), hottest-decile weekdays by settled load (0.8490), hottest tenth of each site-summer (0.8388), each site-summer's highest uncalled peak-hour draw (0.8530), each site's highest over ten summers (0.8546).
+- **Same-day readings (C4, D04, V13c), every one at 225 or more:** hours ending 11-14 and 19-20 on the peak days (0.9726, 230), 14 and 19 (0.9890, 230), 11-14 (0.9800, 230), 11-12 (0.9713, 230), 19-20 (0.9577, 225), every called day's hours outside the window (0.9698, 230), the members' highest read over maximum demand (0.997, 230); full maximum demand (1.00) files 230 too and is a wrong cell now, refuted by the same heat-matched reads.
+- **Ordinary-afternoon estimators (C4, D02):** pooled, by summer, by site, median, 2026 only (0.632 to 0.689, North Central 180 to 185), the programme baseline at the closed peak hours (0.755, 195) and over every called day (0.726, 190).
+- **Recorded inside the 6 per cent floor (each asserted to differ and to sit at least 4 per cent off):** hour ending 20 alone on the peak days (0.927, 220), a single recovery hour taken as the draw; the programme baseline on every new North Central premise (220), two opposite violations (the general premises are not refrigerated, and the baseline averages ordinary days). The loop-1 near cells stand: the hottest fifth of each site-summer (0.793, 200) and the straight line on zone maximum (0.802, 205).
+- **Lens swap.** Rung 5 and the answer read the same fourteen sites under two operating conditions (a called day outside its window against an uncalled day at the peak hour), not one population at one moment under two lenses; a perfect meter on every member still shows 0.97 around the window and 0.85 on heat-matched uncalled afternoons.
+- **Survival properties for rung 6.** 1 written nowhere (no document mentions pre-cooling or a member's maximum demand); 2 the swept corpora point away from it (the credits reproduce the baseline, the replay table is blind to the centres); 3 no symptom (every credit, count and replay cell ties under rungs 4 and 5); 4 not a row predicate (a condition on a joined temperature statistic per member-day, excluding every called day whole); 5 the enumeration is arithmetic; 6 no cutover date; 7 survives deleting every wrong number.
+- **Realism debt.** A refrigerated warehouse whose 12-month maximum demand is set by its pre-cool runs, about 17 per cent above its uncalled design-day draw, is a large but recognised demand-response pattern (pre-cooling creates new peaks); forced so the same-day read clears the 6 per cent floor (at 0.90 full load it filed 220, Tried and rejected).
+
+### Stopping rule (loop 2)
+
+- **Ship:** the round-3 solver files any vector other than 120 · 30 · 0 · 0 · 210 · 25 · 15 · 0.
+- **Harden again (loop 3, the last):** it lands the answer by excluding called days whole and conditioning on heat; the next repair moves after that step.
+- **Retire:** landed after loop 3.
+
 ## Build record
 
 Stage 3a (evidence pack), 2026-10-10. Generator `generator/build_pack.py` (modules `common`, `world`, `loads`, `desk`, `analysis`, `checks`, `writers`, `documents`, `docs2`, `pipeline`), seed 1242027. Independent verifier `generator/verify_pack.py` reads only `target/` (and `metadata.json` for the distractor gate) on its own code path.
@@ -480,6 +531,16 @@ Stage 3a (evidence pack), 2026-10-10. Generator `generator/build_pack.py` (modul
 
 **Write-up and goldens.** `golden.py` reran on the shipped bundle (verifier path, every check asserted first); the Replay sheet's notes and the basis slide now carry the peak-heat draw, the ordinary-afternoon level and the baseline. `submission.md` blocks 1 to 4 revised: the 0.98 factor and 182.3 MW, step 5 on the temperature file, East 160 and South Central 155 before the block, East 130 and South Central 130 after; every block-4 line matched against the Split sheet. Golden containers audited clean.
 
+### Harden loop 2 rebuild (2026-10-10)
+
+**Gate outcomes.** Generator: 109 assertions, all green (new: M02c rung 5's vector, M04 widened to seven rungs with rung 5 at least 6 per cent above, M04c rung 5 moves four or more books, D04 every same-day reading at 225 or more and over the corridor, D05 every member at 0.95 or more of maximum demand in hours ending 11-14 and 19 on every closed peak day, D06 each member's highest read 0.99 to 0.998 of maximum demand and always on a called day, and the recorded near cells under G near). Verifier: 40 checks, 0 failed, on its own code path (V05 rebuilt for the new levels, V08 rung 5, V11 corridor below the same-day read and below 1.00, V13c the same-day family). Two consecutive scratch builds byte-identical on all 29 files, `metadata.json` and the build record, mtimes identical; the task-folder build matches them byte for byte. `scrub_producer_metadata.py` over `target/` (band 2024-01-01 to 2027-04-12) and `golden/`: clean. `leak.py`: REVIEW, the same twelve lines answered under `## Leak review`. `guard.py surface`: the same three promoted pairs (task63 "North Central", task89 deliverable species, task83 the differentiated older same-puzzle note), none a rename or regeneration case. Card brought to loop 2 (loop-1 architecture moved into `lineage`, driver, driver_concrete, stump and own-lineage differentiation rewritten); `guard.py heart task124`: PASS; `guard.py validate`: 126 cards, 0 invalid.
+
+**Input gates.** 29 files, 6 formats; spine 1,881,080 rows; distractors `loadfcst_da_s26.csv` and `ercot_zone_peak_outlook_2027.xlsx` unchanged.
+
+**As built (MW, Coast · East · Far West · North · North Central · South Central · Southern · West).** Answer 120 · 30 · 0 · 0 · 210 · 25 · 15 · 0 (unchanged). 1-in-10 loads 725.9 · 304.9 · 208.9 · 176.1 · 705.8 · 435.1 · 267.1 · 241.1; exposure before the block 250.9 · 159.9 · 113.9 · 96.1 · 340.8 · 155.1 · 147.1 · 106.1; uncovered after 130.9 · 129.9 · 113.9 · 96.1 · 130.8 · 130.1 · 132.1 · 106.1; the next lot to Southern at 132.1. The centres add 158.2 MW (0.8503 x 186.0). Thinnest margins: lowest value a lot was taken at 134.87 (East) against the highest left 132.09 (Southern), 2.78 MW; continuous water level 130.76. Class factor 0.599, programme baseline 0.755, peak-day hours outside the window 0.973. Replay rivals: settled unscaled 8 of 80, divisor at year end 1, at 1 June 19, summer-average MD 48, the zone's own peak hour 58. Lenders' basis 110 · 75 · 0 · 10 · 70 · 70 · 55 · 10 (Coast-led, neither the answer nor rung 0). Asks unchanged: every premium and hedge price identical to loop 1 (neither ask reads a load figure).
+
+**Write-up and goldens.** `golden.py` reran on the shipped bundle (verifier path, every check asserted first), two runs and the task-folder run byte-identical; the Replay notes and the basis slide carry the 0.85 draw (0.8503 beside the 158.2 MW), the 0.67 ordinary level, the 0.60 called draw and one line that the hours around a called window (0.97) are pre-cool and recovery; slide 3's title states the 15 MW over the baseline. `golden-realism` pass on the changed text (findings as titles, precision by quantity, no new caveat); container audit clean. `submission.md` keeps its five blocks: block 1 at 341 against 251 with one clause for the same-day read, CC2 and step 5 at 0.85, CC3 drops the MW figure (0.85 x 186.0 would read 158.1 against the exact 158.2), CC4 and step 6 at 341, block 4 North Central at 341 before and 131 after; every block-4 line matched against the Split, Premium and Hedge price sheets by script.
+
 ## Leak review
 
 `leak.py task124 --asof 2027-04-12`: REVIEW, no LEAK. Each REVIEW line, answered:
@@ -494,6 +555,8 @@ Stage 3a (evidence pack), 2026-10-10. Generator `generator/build_pack.py` (modul
 - Sweep 9, `trading_calendar_2027.csv` dates after the as-of: the desk's 2027 calendar, forward by design.
 - Harden loop 1 re-run: the same twelve REVIEW lines and no LEAK. The new `field_notes.md` entries (the temperature file and the day-ahead forecasts) state field semantics only and say nothing about heat, full load or the baseline.
 - Stage 3b re-run after loop 1 (`--asof 2027-04-12`): REVIEW, the same twelve lines (sweeps 3, 4, 6 and 9), each answered above; no LEAK.
+- Harden loop 2 re-run (`--asof 2027-04-12`): REVIEW, the same twelve lines (sweeps 3, 4, 6 and 9), each answered above; no LEAK. No shipped document gained a word: pre-cool and recovery live only in the interval reads.
+- Stage 3b re-run after loop 2 (`--asof 2027-04-12`): REVIEW, the same twelve lines (sweep 3: 251 in the 2026 report, the call's words in three documents; sweep 4: four documents; sweep 6: the 2026 report; sweep 9: three forward-dated files), each answered above; no LEAK.
 
 ## Stage 3b: write-up and ship checks (2026-10-10)
 

@@ -3,10 +3,10 @@
  "domain": "business-operations-analytics",
  "objective": "forecasting",
  "stage": 3,
- "stage_name": "built",
+ "stage_name": "hardened",
  "updated": "2026-10-10",
- "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks and rebuilds the fourteen cold stores' uncalled level with the programme's own baseline (0.885 at the closed peak hours, which reproduces every credit), filing 125 / 30 / 0 / 0 / 195 / 30 / 20 / 0; the step that lands it there is taking an average of ordinary afternoons as the draw in a system peak hour, when on every uncalled weekday as hot as a closed peak the fourteen drew 0.98 of maximum demand, so the centres draw 0.98 and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
- "harden_loops": 1,
+ "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks, sees the fourteen cold stores' 0.60 is their called draw and reads their uncalled draw off the peak days' own hours outside the window (0.973 of maximum demand), filing 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0; the step that lands it there is taking a called day's pre-cool and recovery hours as an uncalled draw, when on uncalled weekdays as hot as a closed peak the fourteen drew 0.850, so the centres add 158.2 MW and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
+ "harden_loops": 2,
  "solver_rounds": [
   {
    "label": "round 1, plain",
@@ -41,6 +41,12 @@
    "date": "2026-10-10",
    "change": "rung 5 added: a member's uncalled draw follows its zone's heat (full load on design-day afternoons); the programme baseline becomes rung 4; temperatures on the main path, day-ahead forecast file as the new distractor",
    "gates": "generator 101 green, verifier 39/0, two builds byte-identical, task build matches, scrub clean, leak REVIEW (answered), heart PASS"
+  },
+  {
+   "loop": 2,
+   "date": "2026-10-10",
+   "change": "rung 5 added: on a called day the members pre-cool and recover around the window at their own maximum demand (0.973 over hours ending 11-14 and 19-20 on the peak days), uncalled full load lowered to 0.85, so the peak days' same-day read files North Central at 230; the heat-matched uncalled weekdays (0.850) are the answer",
+   "gates": "generator 109 green, verifier 40/0, two builds byte-identical, task build matches, goldens byte-identical, scrub clean, leak REVIEW (answered), surface unchanged, heart PASS, validate 126/0"
   }
  ]
 }

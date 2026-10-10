@@ -1,6 +1,6 @@
 {
   "task": "task124",
-  "architecture": "v1",
+  "architecture": "v3",
   "drawn": "2026-10-10",
   "slot_note": "Realises analytical_tasks note FC02 (summer firm-capacity block split, cold-store coincidence). The note's decisive move, the tariff-class replay, is demoted to rung 3 and a new decisive rung is drawn after it.",
   "domain": "business-operations-analytics",
@@ -63,13 +63,13 @@
     "summer_block_committee.pptx"
   ],
   "opening_move": "constraint-first",
-  "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; the intervention's own counterfactual, an average of recent ordinary days that reproduces every settlement record, restores the analogs only to their ordinary level, and only conditioning the analogs' unintervened records on the deciding hour's own extreme condition, read from a separately joined condition file, recovers the saturated level the newcomers will run at.",
-  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced from the book's fourteen cold stores and ice plants, which sat in a Business Saver called window at every closed system peak (0.60 of maximum demand) and which no site can join before a metered summer; the programme's baseline, the ten most recent uncalled business days, puts their uncalled level at 0.885 and reproduces every credit, but a system peak hour is a design-day afternoon, and on uncalled weekdays as hot as a closed peak in their zone's daily temperatures the fourteen drew 0.98, which is what the un-enrolled centres will draw.",
-  "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks and rebuilds the fourteen cold stores' uncalled level with the programme's own baseline (0.885 at the closed peak hours, which reproduces every credit), filing 125 / 30 / 0 / 0 / 195 / 30 / 20 / 0; the step that lands it there is taking an average of ordinary afternoons as the draw in a system peak hour, when on every uncalled weekday as hot as a closed peak the fourteen drew 0.98 of maximum demand, so the centres draw 0.98 and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
+  "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; on the deciding days the hours either side of the intervention show the analogs pre-loading and recovering at their own maximum, and the intervention's own counterfactual averages ordinary days, so the same-day read overshoots and the counterfactual undershoots, and only the analogs' unintervened records on days matching the deciding hour's extreme condition, read from a separately joined condition file, recover the level the newcomers will run at.",
+  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced from the book's fourteen cold stores and ice plants, which sat in a Business Saver called window at every closed system peak (0.60 of maximum demand) and which no site can join before a metered summer; on those peak days the fourteen pre-cool before the window and recover after it with every compressor stage on (0.97 of maximum demand over hours ending 11-14 and 19-20), the programme baseline puts them at 0.755, and only their uncalled weekdays as hot as a closed peak in their zone's daily temperatures show the 0.85 the un-enrolled centres will draw.",
+  "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks, sees the fourteen cold stores' 0.60 is their called draw and reads their uncalled draw off the peak days' own hours outside the window (0.97 of maximum demand), filing 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0; the step that lands it there is taking a called day's pre-cool and recovery hours as an uncalled draw, when on uncalled weekdays as hot as a closed peak the fourteen drew 0.85, so the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task83": "task83 sizes a randomized treatment effect and splits it by each unit's own earlier exposure to that same treatment; here no effect is sized: a separate programme's dispatch held the analogs' measured level down at the very hour the policy reads, the newcomers are barred from that programme, so the analogs' level is restored from their own non-dispatch records before it transports to them, and the cap is levelled by exposure rather than ranked by effect.",
-    "task124": "Harden loop 0 (lineage) restored the analogs to their ordinary uncalled level, read from the credit dates and the programme baseline, which the in-house solver landed; this architecture keeps that as the stop rung and turns on conditioning the analogs' uncalled reads on the deciding hour's design-day heat from a separately joined zone temperature file, which reaches a saturated full-load level (0.98) that the baseline (0.885) never shows, so the decisive step sits after the solved one rather than replacing it."
+    "task124": "Harden loops 0 and 1 (lineage) restored the analogs to their ordinary uncalled level (the programme baseline, solved in round 1) and then to their heat-conditioned level, which the peak days' own hours around the window also showed (solved in round 2); this architecture keeps both as stop rungs and makes the same-day hours read the analogs' pre-cool and recovery at their own maximum demand (0.97), above the heat-conditioned uncalled level (0.85), so the solved same-day read now overshoots and only the heat-matched uncalled weekdays recover the answer."
   },
   "lineage": [
     {
@@ -87,6 +87,22 @@
       "gate_g": "forecasting",
       "decision_type": "allocation_to_total",
       "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, and every analog's measured value at the deciding hour was held down by the organisation's own dispatch, which a unit cannot join until it has a full season of metered history; carrying the analogs' measured value files the newcomers at the held-down level, the closed record cannot object because the newcomers were never in it and the analogs stay dispatched, and only the analogs' undispatched level, read from their own records outside the dispatch windows, prices the newcomers."
+    },
+    {
+      "architecture": "v2 (harden loop 1): the analogs' uncalled draw conditioned on design-day heat, with uncalled full load (0.98) visible in the peak days' own hours around the window",
+      "fate": "solved by the in-house plain solver in round 2 (2026-10-10), by reading the members' hours ending 11-14 and 19-20 on the system-peak days themselves; the heat-conditioned construction is kept and the peak days' other hours now read pre-cool and recovery",
+      "domain": "business-operations-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; the intervention's own counterfactual, an average of recent ordinary days that reproduces every settlement record, restores the analogs only to their ordinary level, and only conditioning the analogs' unintervened records on the deciding hour's own extreme condition, read from a separately joined condition file, recovers the saturated level the newcomers will run at."
     }
   ],
   "notes": "Realises analytical_tasks note FC02 (analytical_tasks/01_forecasting/FC02_summer-block-split-cold-store-coincidence.md); this build is its first realisation. Drawn 2026-10-10 as a candidate for task-number-order registration by the coordinator, not registered here. Decisive move redrawn at the draw: the note's tariff-class replay is a schema-visible join (ESI ID to the distribution utility's premise file) that a finest-grain replay of the premise interval data also hands over, so it is rung 3, and the decisive rung is the analogs' dispatch. Domain moved from the note's Economics to Business & Operations Analytics because a retail provider's hedge-block placement sits in the Economics boundary's out-of-scope markets-trading class; subdomain other (an energy retailer's summer supply planning), since no enumerated business-operations subdomain fits. Figures in the stump are provisional from the draw-stage sketch and are re-solved at stage 2."
