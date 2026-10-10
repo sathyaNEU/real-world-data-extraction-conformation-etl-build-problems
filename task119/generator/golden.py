@@ -59,6 +59,7 @@ class Data:
 
     def __init__(self, target, F):
         T = Path(target)
+        self.target = T
         self.F = F
         self.ref = pd.read_csv(T / F["referrals"], dtype=str, keep_default_na=False)
         self.lev = pd.read_csv(T / F["levels"], dtype=str, keep_default_na=False)
@@ -756,6 +757,10 @@ def figures(D):
                                          left < x["b"] for a, left in hs)
         n_holds.append(len(hs))
     assert len(n_holds) == y3[call][0]
+    th = pd.read_parquet(Path(D.target) / D.F["theatre"], columns=["patient_key", "site_name", "left_recovery_at"])
+    sites = {(D.temp.get(k, k), mins(t.to_pydatetime())): site for k, site, t in
+             zip(th["patient_key"], th["site_name"], th["left_recovery_at"])}
+    assert all(sites.get((k, left)) == "Stennock Treatment Centre" for (u, k, a), left in D.own_hold.items())
     assert all(x["dta"].hour >= 18 and not x["empty"] for x in cl if x["trust"] == "BRK")
     ret = D.ret[(D.ret.unit_code == "BRK-ACC") & (D.ret.return_date >= "2025-07-01") &
                 (D.ret.return_date <= "2026-06-30")]
@@ -1102,12 +1107,12 @@ def write_docx(fx, path, png):
              "admitted nobody while they lasted, which is consistent with the network's view that it is full every "
              "morning. The feed counts a bed as taken from the minute it is assigned, and on each of the {:,} waits "
              "one or two of the beds counted as taken had been assigned that morning to Stennock's own planned "
-             "surgical patients. The regional theatre extract shows those patients still in theatre at the "
-             "Stennock Treatment Centre when the waiting patient's decision was made; they reached the unit later "
-             "in the wait. At weekends, with no lists running, no Stennock referral waited more than four hours."
+             "surgical patients. The regional theatre extract shows that none of those patients had left recovery "
+             "at the Stennock Treatment Centre when the waiting patient's decision was made; each left during the "
+             "wait. At weekends, with no lists running, no Stennock referral waited more than four hours."
              .format(fx["stn_waits_hold"])])
     para("Those beds were staffed and empty, kept by Stennock for its own elective patients while its own emergency "
-         "patient waited on a ward. Keeping a bed for a planned patient of its own is the trust's decision about the "
+         "patient waited for a bed. Keeping a bed for a planned patient of its own is the trust's decision about the "
          "use of its own beds, and no bed bureau was involved. Under the methodology note every one of those {:,} "
          "deaths therefore falls inside Stennock's own care, and they are the deaths a review can examine and "
          "confirm.".format(y3[call][2]), after=6)
