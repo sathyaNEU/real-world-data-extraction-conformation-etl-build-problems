@@ -213,7 +213,7 @@ BOARD_PAPER = [
           "the daily bed returns will be updated from the dates above. The network will review both changes in "
           "summer 2024."),
     ("h", "Recommendation"),
-    ("p", "The board approves both changes. Approved at the meeting on 21 November 2023."),
+    ("p", "The board is asked to approve both changes."),
 ]
 
 CAPACITY_NOTES = [

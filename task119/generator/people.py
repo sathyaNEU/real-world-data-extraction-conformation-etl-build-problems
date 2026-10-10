@@ -41,8 +41,15 @@ def short_wait(r, t_end, bst_legacy, cap=None):
     hi = 170 if bst_legacy else 225
     if cap is not None:
         hi = min(hi, cap)
+    band = max(30, hi - 100)
     for _ in range(50):
-        w = int(np.clip(np.exp(r.normal(np.log(55), 0.75)), 8, hi))
+        # one draw per attempt; the tails fold back inside [8, hi] instead of piling up on either bound
+        x = float(np.exp(r.normal(np.log(55), 0.75)))
+        if x > hi:
+            x = hi - (x - hi) % band
+        if x < 8:
+            x = 16 - x
+        w = int(x)
         if not crosses_dst(t_end - w - 5, t_end):
             return w
     return 8
