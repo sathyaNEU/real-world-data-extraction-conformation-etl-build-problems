@@ -18,7 +18,7 @@ from docx.shared import Pt
 from params import ORG, PROVIDER, PEOPLE, LABEL, CLOUD, COLO, AS_OF, TARGET_DAYS, THRESH, RACK
 from cloud import MONTHS_Q3
 
-STANDARD = "vulnerability_management_standard_v3.docx"
+STANDARD = "vulnerability_management_standard.docx"
 SRE = "sre_maintenance_standard.pdf"
 SCHEDULE = "colocation_service_schedule_and_window_calendar.pdf"
 CLOSEOUT = "q3_2026_remediation_closeout.pdf"
@@ -190,7 +190,12 @@ def write_standard(path):
                     "service schedule.")
     d.add_heading("5 Remediation target", level=1)
     d.add_paragraph(f"A ticket should run on its last host within {TARGET_DAYS} days of the vendor's "
-                    "first release of the fix.")
+                    "first release of the fix. A ticket counts as completed on the day its last "
+                    "host ran it successfully.")
+    d.add_heading("6 Scan coverage", level=1)
+    d.add_paragraph("A cloud host is in service when its power state is running; standby and stopped "
+                    "instances are not in service. A host is covered when it has an authenticated scan "
+                    "dated on or after the export date less 14 days.")
     for p in d.paragraphs:
         for r in p.runs:
             r.font.size = r.font.size or Pt(10.5)
@@ -261,6 +266,9 @@ Field meanings for the November round extracts. As at 23 October 2026.
 - failure_domain_hosts: hosts in one rack (one failure domain).
 - drain_cycles_per_window: drain cycles in one window.
 
+## november_window_calendar.csv
+- estate, window_date, window_hours_local, drain_cycles: each November window booked to the office; window_hours_local is the local start and end, and a window ending after midnight runs into the next date.
+
 ## estate_transaction_forecast_2026.csv
 - estate, date, hour, tps: forecast transactions per second, by hour.
 
@@ -268,11 +276,14 @@ Field meanings for the November round extracts. As at 23 October 2026.
 - request_id, estate, window_date, window_hours_local, team, submission_order, hosts_requested, hosts_accepted, status, reason: the provider's record of each change request and what it accepted.
 - host_ids: the hosts requested. accepted_host_ids: the hosts the provider accepted and drained in that window.
 
-## cloud_patch_ticket_log_q3_2026.csv / cloud_q3_fixed_findings.csv
+## cloud_patch_ticket_log_q3_2026.csv / cloud_q3_closed_findings.csv
 - the Q3 cloud tickets and the findings each closed. The close-out figures recompute from the fixed findings against the score on each ticket's cut date.
 
 ## crew_deployment_log_2026.csv
 - ticket_id, estate, package, vendor_first_release, run_date, outcome, is_last_host: each host run of a deployment. A fix lands when a host runs it with outcome succeeded; a rolled_back run did not land.
+
+## vendor_advisory_feed.json
+- advisory, package, first_published, latest_revision: one record per vendor advisory; first_published is the vendor's first release of the fix, latest_revision the date it was last republished.
 
 ## cloud_asset_register_2026-10-23.csv
 - instance_id: the stable host key. hostname: the current name. power_state: running, standby or stopped.
@@ -304,11 +315,12 @@ This folder is a constructed case. {ORG}, {PROVIDER}, every estate, host, person
 | colocation_capacity_register_2026-10.xlsx | Serving capacity and drain cycles | Capacity planning extract |
 | estate_transaction_forecast_2026.csv | Hourly transaction forecast ({info['fc']:,} rows) | Forecasting export |
 | colocation_change_acknowledgements_may_oct_2026.xlsx | Provider change acknowledgements ({info['acks']:,} rows) | Provider record |
-| cloud_patch_ticket_log_q3_2026.csv / cloud_q3_fixed_findings.csv | Q3 cloud tickets and their fixed findings | Ticketing export |
+| cloud_patch_ticket_log_q3_2026.csv / cloud_q3_closed_findings.csv | Q3 cloud tickets and the findings each closed | Ticketing export |
 | q3_2026_remediation_closeout.pdf | Q3 close-out, cloud estates only | Office report |
-| vulnerability_management_standard_v3.docx | The office standard | Office document |
+| vulnerability_management_standard.docx | The office standard | Office document |
 | sre_maintenance_standard.pdf | SRE maintenance standard | SRE document |
 | colocation_service_schedule_and_window_calendar.pdf | Provider schedule and November calendar | Provider document |
+| november_window_calendar.csv | November windows booked to the office, with drain cycles | Provider booking export |
 | november_round_planning_thread.eml | Planning thread | Mail export |
 | crew_deployment_log_2026.csv | Crew deployment log ({info['dep']:,} rows) | Deployment tooling export |
 | cloud_asset_register_2026-10-23.csv | Cloud asset register ({info['asset']:,} rows) | Asset inventory export |

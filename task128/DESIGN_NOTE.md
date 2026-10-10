@@ -282,10 +282,6 @@ One solver commits to any answer other than the golden: go to the judge. It land
 
 ## Tried and rejected
 
-## Tried and rejected
-
-## Tried and rejected
-
 - The note's own decisive rung (drains per window from the capacity register, the hourly forecast and the window calendar) as the decisive move: the SRE standard states the N+1 rule in a sentence and the acknowledgements reproduce 412 of 412 only under it, so a plain solver builds it from a stated rule plus a corpus that refutes the rung below; its driver also sits beside task106's shared-pool driver. Kept as the stop rung.
 - A data-cluster maintenance cycle (each November ticket reaches only the nodes recommissioned inside the month): task50 v4's insight (a forward service order truncated by the funded window) under new nouns although text similarity read 0.06, and guard BLOCK test.same_driver_older against task87 v9 on (time, G7, binding_constraint).
 - Exempting standby or idle-colour colocated hosts from the drain limit: constructible from the capacity register's serving-capacity definition and the SRE standard, and it is a class of honest records excluded from a constraint, the shape task58 v3 and v4 lost on Gate G.
@@ -298,6 +294,8 @@ One solver commits to any answer other than the golden: go to the judge. It land
 - Keeping counterparty_acknowledgement, budget_or_appropriation and service-operations-sla at registration: blocked against task126 and task127 (filed after this draw) and, for the subdomain, against task129 drafted in parallel; redrawn to closed_decision_corpus, launch_or_rollout and field-service-maintenance.
 - The drain tool's parallelism setting as rung R2 (a filed concurrency figure between no limit and the window rule): whether it binds depends on whether two requests share a drained host, a fork the stop rung must not carry; kept as a declared distractor and a swept rival in the acknowledgement back-test, and the day's-peak reading of the headroom clause took the rung.
 - Leaving reboot sharing unpinned at the stop rung: a stop-rung solver who packs many tickets onto each drained host approaches the answer's colocated figure without the decisive move; the acknowledgements now refute sharing through overlapping requests.
+- The 3a colocated answer as built (one ticket per colocated estate on the package most drained hosts carry): no package was open on every top-96 or top-120 host, so under standard s.3 one ticket could not name the hosts it was credited with; replaced at 3b by an October glibc advisory on the C library every el9 host carries, the highest-scoring colocated finding.
+- Acknowledgement host lists drawn at random from the drain pools (3a): accepted hosts did not share their latest window with in_service_since, which argued against the rebuild the decisive rung rests on; replaced at 3b by binding every host's in_service_since to its latest accepted window.
 
 ## Build record
 
@@ -352,3 +350,31 @@ ignoring the drain constraint, R2/R3 undercount by crediting a drain with only t
   (deployment rollbacks; the media domain migration keyed on instance id) and golden answers
   asserted; full hazard-stacking and the pair-ceiling simulation are a supplemental-stumping pass for
   a later stage, not part of the 3a evidence-pack gate.
+
+### Stage 3b, write-up and ship checks (2026-10-10)
+
+Repairs made in the generator before the goldens were frozen, each asserted in `checks.py` (114 assertions, all green; double build byte-identical; verifier green):
+1. Graded figures sat at residue 4, one count from the nearest-ten flip; retuned to residue 2 (2.5 or more inside the bin, off the round value). The `bin.*` assertions now measure distance from the x5 edge.
+2. The colocated ticket was not legal under standard s.3 (no package open on every drained host). glibc is now on every colocated host and carries one October advisory (published 13 October, score 0.9712), the only package open on every drained host and the highest-scoring; `ticket.*` asserts coverage 96 of 96 and 120 of 120.
+3. The rebuild evidence now holds in the pack: every accepted host's `in_service_since` is its latest accepted window (new `accepted_host_ids` column, registered in the dictionary), hosts never accepted keep a pre-May build date, and every feed finding's `first_seen` follows its fix publication. `rebuild.bind`, `rebuild.identity`, `rebuild.no_future` assert zero exceptions.
+4. Thirteen synthetic tuning identifiers (letters inside the CVE number) removed; colocated tuning now adds installed packages to the most exposed host, which keeps the identity.
+5. The cloud cutline tied nine tickets at 9 across the line, so the split depended on a tie-break; `_tune_cutline` now leaves one ticket at the last value in (search sudo, 9) and one at the first value out (media libc6, 8), `cut.strict` asserts it.
+6. Ask A counted 13 tickets completed before 1 May; filtered. Ask B's 14-day edge carried 171 scans on 9 October and 28 on 8 October; no scan now falls on either date, and standard s.6 pins in service (running) and covered (scan on or after export less 14 days). Standard s.5 pins completed as the last successful host run.
+7. Dates after the as-of removed (two `in_service_since` of 26 October, base advisories clamped to 19 October).
+8. Two file names renamed for leak.py sweep 1 (`cloud_q3_closed_findings.csv`, `vulnerability_management_standard.docx`); `november_window_calendar.csv` and `vendor_advisory_feed.json` registered in provenance and dictionary (H9), with `reg.*` assertions.
+
+As built after 3b: answer 1/1/76/75/77/70 for 13,362 (13,360 to the nearest ten); estate figures 1,412 / 1,742 / 2,612 / 2,652 / 2,432 / 2,512. Stop rung R3 6/6/75/75/74/64 for 11,093; R4 over R3 1.20x on the total, the thinnest margin in the pack. Host ranks at the drain boundary tie on value (11 and 11 on payments, 12 and 12 on checkout), which moves no graded figure because the sum is the same whichever tied host is drained. `generator/golden.py` reads only `target/` and writes both deliverables; `build.py` asserts its split, figures and ask answers equal the world's. `deliver.py` retired, the ladder lives in `ladder.py`.
+
+Residual risks for the judge and solver: the R4 over R3 margin is at the 1.2 floor; ask A's rollback device does not bite (a rolled-back run always precedes the successful re-run, so the latest-run reading lands the same median) and the advisory feed's revision dates never enter the answer because the log carries `vendor_first_release`; the chart's "ticket order" ties payments and checkout at one ticket each, ordered by their cut-list rank.
+
+## Leak review
+
+- REVIEW sweep 3, `q3_2026_remediation_closeout.pdf`: matches the call on the estate names only; it carries Q3 cloud figures and no November figure or split.
+- REVIEW sweep 3, `superseded_cvss_band_allocation_memo.pdf`: estate names and the prior percentage shares of the declared wrong-basis distractor; no ticket count or exposure figure of the answer.
+- REVIEW sweep 4, `extract_provenance_2026-10-23.md`: the world's nouns (window, colocated, scanner, close-out) in file descriptions; nothing says what a drain does to a host.
+- REVIEW sweep 4, `q3_2026_remediation_closeout.pdf`: states its own scope (cloud only, provider closes colocated); silent on rebuilds.
+- REVIEW sweep 4, `sre_maintenance_standard.pdf`: the headroom clause the stop rung executes, by design; nothing on servicing.
+- REVIEW sweep 4, `vulnerability_management_standard.docx`: the allocation, exploitability, ticketing, target and coverage rules (pins, not the move); no sentence on rebuilds.
+- REVIEW sweep 4, `warehouse_data_dictionary.md`: field meanings, `in_service_since` neutral and `accepted_host_ids` as hosts accepted and drained; does not link the two.
+- REVIEW sweep 9, `estate_transaction_forecast_2026.csv`: forward forecast through November is the input the drains are built from, forward by design.
+- REVIEW sweep 9, `november_window_calendar.csv`: the November windows booked to the office, forward by design.

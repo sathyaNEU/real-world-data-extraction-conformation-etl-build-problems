@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 import params as P
+from knobs_lab import LAB_ADJ
 
 CRAWL_DATES = [date(2026, 2, 18), date(2026, 3, 18), date(2026, 4, 15), date(2026, 5, 20),
                date(2026, 6, 17), date(2026, 7, 15), date(2026, 8, 19)]
@@ -112,9 +113,12 @@ def page_requests(rng, title, tpl, pid, d, prof):
     req.append(("stylesheet", H_STATIC, "/css/site-2026.css", 41.3 + prof["css"]))
     req.append(("script", H_ANALYTICS, "/rum/v2.js", 18.6))
     req.append(("xhr", H_ANALYTICS, "/collect", 0.9))
+    tl = title.lower()
+    adj = LAB_ADJ[title]
     if live["E"]:
         for i, kb in enumerate([88.4, 91.2, 86.7, 94.1]):
             req.append(("font", H_STATIC, f"/fonts/brand/sondera-sans-{i}.woff2", kb))
+        req.append(("font", H_STATIC, f"/fonts/brand/{tl}-display.woff2", 24.0 + adj["E"]))
     else:
         req.append(("font", H_STATIC, "/fonts/legacy/georgia-sub.woff2", 31.5))
         req.append(("font", H_STATIC, "/fonts/legacy/arial-sub.woff2", 28.0))
@@ -123,6 +127,8 @@ def page_requests(rng, title, tpl, pid, d, prof):
         base = prof["img"][i]
         if live["B"]:
             req.append(("image", H_PIX, f"/r/{pid}-{i}-w1080.avif", base * prof["pipe"]))
+            if i == 0:
+                req.append(("image", H_PIX, f"/r/{tl}-masthead-w1080.avif", 9.0 + adj["B"]))
         else:
             req.append(("image", H_IMG_OLD, f"/billeder/{pid}-{i}.jpg", base))
     if live["C"]:
@@ -130,12 +136,14 @@ def page_requests(rng, title, tpl, pid, d, prof):
         req.append(("script", H_PUBCDN, "/npm/@sonderaa/boelge-ui@4.8.2/dist/ui.min.js", 26.3))
         req.append(("script", H_STATIC, f"/boelge/{tpl}.chunk.js", prof["chunk"]))
         req.append(("script", H_STATIC, "/boelge/runtime.js", 172.4 + prof["c_extra"]))
+        req.append(("stylesheet", H_STATIC, f"/boelge/theme-{tl}.css", 18.0 + adj["C"]))
     else:
         req.append(("script", H_STATIC, "/js/legacy/app.js", 104.8))
     if tpl != "tjenester" and tpl != "arkiv" or live["A"]:
         if live["A"]:
             req.append(("script", H_STATIC, "/hb/prebid-8.52.0.min.js", 64.2))
             req.append(("script", H_STATIC, "/hb/adapters-2026.06.js", 48.5))
+            req.append(("script", H_STATIC, f"/hb/config-{tl}.js", 6.0 + adj["A"]))
             req.append(("script", H_GPT, "/tag/js/gpt.js", 48.9))
             for j, h in enumerate(H_SSP):
                 req.append(("xhr", h, "/openrtb2/auction", 9.6 + 1.3 * j))
@@ -150,7 +158,7 @@ def page_requests(rng, title, tpl, pid, d, prof):
                 req.append(("image", H_GPT, f"/pagead/creative/{pid % 997}-{k}", prof["cre"]))
     if live["D"]:
         req.append(("script", H_CMP, "/v3/cmp.js", 47.7))
-        req.append(("xhr", H_CMP, "/v3/vendor-list.json", 12.9 + prof["cmp"]))
+        req.append(("xhr", H_CMP, f"/v3/vendor-list-{tl}.json", 12.9 + prof["cmp"] + adj["D"]))
     return req
 
 

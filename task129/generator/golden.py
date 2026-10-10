@@ -51,9 +51,13 @@ def deploy_utc(L):
 
 def switch_times(L):
     ro = L["rollout"]
-    sw = {row.template_group: _utc(pd.Series([row.switched_on])).iloc[0] for row in ro.itertuples()}
+    ads = ro[ro.layout == "ad-supported"]
+    sw = {row.template_groups: _utc(pd.Series([row.switched_on])).iloc[0] for row in ads.itertuples()}
     r = L["release"]
     t = {}
+    af = ro[ro.layout != "ad-supported"]
+    assert len(af) == 1
+    t["SUB"] = _utc(af.switched_on).iloc[0]
     for letter in "EBD":
         m = r.notes.str.contains(P.CHG[letter][0])
         assert m.sum() == 1
@@ -78,6 +82,7 @@ def views(L, dedup=True, phones=True):
         "lcp": s.lcp_ms.values, "w": s.sample_weight.values.astype(float),
         "nav": s.navigation_type.values, "ref": s.referrer_class.values,
         "ect": s.effective_connection_type.values, "browser": s.browser.values,
+        "pv_id": s.pv_id.values,
     })
     if phones:
         v = v[v.ff == "phone"].reset_index(drop=True)
@@ -150,9 +155,10 @@ def _cells(df, by):
 def windows(v, group, sw, t, win=WIN):
     d = v[v.group == group]
     pre, post = [], []
-    if group == "puz":
-        pre.append(d[(d.ts >= t["PUZ"] - win) & (d.ts < t["PUZ"])])
-        post.append(d[(d.ts >= t["PUZ"]) & (d.ts < t["PUZ"] + win)])
+    if group in ("puz", "sub"):
+        k = "PUZ" if group == "puz" else "SUB"
+        pre.append(d[(d.ts >= t[k] - win) & (d.ts < t[k])])
+        post.append(d[(d.ts >= t[k]) & (d.ts < t[k] + win)])
     else:
         for c in P.COHORTS:
             x = d[d.template == c]
@@ -170,11 +176,13 @@ def august(v):
     return v[(v.month == 8) & v.scored]
 
 
-def apply(aug, eff, by):
+def apply(aug, eff, by, fill=None):
     if not by:
         return float(aug.w.sum() * eff.iloc[0])
     w = aug.groupby(by).w.sum()
     e = eff.reindex(w.index)
+    if fill is not None and e.isna().any():
+        e = e.fillna(pd.Series(fill.reindex(w.index.get_level_values(0)).values, index=w.index))
     assert not e.isna().any(), "cell without an effect"
     return float((w * e).sum())
 
@@ -191,8 +199,12 @@ def main_call(v, L, by_state="state", win=WIN):
             A = apply(base, eA, []) + apply(puz, eA, [])
             C = apply(base, eC, []) + apply(sub, eC, [])
         else:
-            A = apply(base, eA, by) + apply(puz, eA, by)
-            C = apply(base, eC, by) + apply(sub, eC, by)
+            fA = fC = None
+            if name == "state":
+                fA = effects(v, "puz", sw, t, ["pclass"], win)
+                fC = effects(v, "sub", sw, t, ["pclass"], win)
+            A = apply(base, eA, by, fA) + apply(puz, eA, by, fA)
+            C = apply(base, eC, by, fC) + apply(sub, eC, by, fC)
         out[name] = {"A": A, "C": C, "eA": eA, "eC": eC}
     by = ["pclass", by_state]
     eA, eC = out["state"]["eA"], out["state"]["eC"]

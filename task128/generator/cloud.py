@@ -68,10 +68,11 @@ def build_cloud_hosts(rng):
                 h.last_scan = None
             else:
                 r = rng.random()
+                # nothing is scanned on 8 or 9 October, so the 14-day edge reads one way
                 if r < 0.84:
-                    h.last_scan = _dt.date(2026, 10, rng.randint(9, 22))
+                    h.last_scan = _dt.date(2026, 10, max(10, rng.randint(9, 22)))
                 elif r < 0.95:
-                    h.last_scan = _dt.date(2026, 10, rng.randint(1, 8))
+                    h.last_scan = _dt.date(2026, 10, min(7, rng.randint(1, 8)))
                 else:
                     h.last_scan = None
             base = [p for p in CLOUD_PKGS if rng.random() < 0.14]

@@ -107,6 +107,8 @@ def release_log(rng, dep, path):
             c = tag[4:]
             wave = P.COHORTS.index(c) + 1
             note = f"Bølge wave {wave}: {c} templates ({P.CHG['C'][0]}, {P.CHG['A'][0]})"
+            if wave == 1:
+                note += "; ad-free layout on all six template groups"
         else:
             k = int(rng.integers(1, 3))
             note = "; ".join(rng.choice(GENERIC_NOTES, k, replace=False))
@@ -125,11 +127,14 @@ def rollout_log(rel, path):
     for i, c in enumerate(P.COHORTS):
         m = rel.notes.str.startswith(f"Bølge wave {i + 1}:")
         r = rel[m].iloc[0]
-        rows.append({"wave": i + 1, "template_group": c, "release_id": r.release_id,
-                     "switched_on": r.deployed_at,
-                     "front_end": "Bølge (all views of the group's templates)",
-                     "ads_on_ad_supported_layout": "Prebid header-bidding wrapper",
-                     "ads_on_subscriber_layout": "none (ad-free layout)",
+        if i == 0:
+            rows.append({"wave": 1, "layout": "ad-free (signed-in subscribers)",
+                         "template_groups": "; ".join(P.COHORTS), "release_id": r.release_id,
+                         "switched_on": r.deployed_at, "front_end": "Bølge", "ad_stack": "none",
+                         "signed_off_by": "Finn Thygesen"})
+        rows.append({"wave": i + 1, "layout": "ad-supported", "template_groups": c,
+                     "release_id": r.release_id, "switched_on": r.deployed_at,
+                     "front_end": "Bølge", "ad_stack": "Prebid header-bidding wrapper",
                      "signed_off_by": "Finn Thygesen"})
     csv(pd.DataFrame(rows), path)
 
@@ -183,7 +188,8 @@ def change_register(rel, path):
         ("D", "All templates, all titles", P.DATED["D"].isoformat(), ", ".join(rid(P.CHG["D"][0]))),
         ("A", "Ad-supported layout: spil pages, then the Bølge template groups wave by wave",
          P.PUZZLE_AD_SWITCH.isoformat(), ", ".join(rid(P.CHG["A"][0]))),
-        ("C", "Bølge template groups, wave by wave (see the rollout log)",
+        ("C", "Bølge template groups: ad-free layout on all six at once, ad-supported layout wave "
+              "by wave (see the rollout log)",
          P.COHORT_SWITCH["sektion"].isoformat(), ", ".join(rid(P.CHG["C"][0]))),
     ]
     for i, (k, scope, live, rels) in enumerate(rows):

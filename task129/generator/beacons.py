@@ -35,6 +35,7 @@ def change_times(dep):
         return dep.utc.values[m][0]
     ct = {k: at(d) for k, d in P.DATED.items()}
     ct["PUZ"] = at(P.PUZZLE_AD_SWITCH)
+    ct["SUB"] = at(P.SUB_FRONTEND)
     for c, d in P.COHORT_SWITCH.items():
         ct["COH:" + c] = at(d)
     return ct
@@ -105,7 +106,7 @@ def groups(V, ct):
     for c in P.COHORTS:
         sw[tpl == c] = ct["COH:" + c]
     on = coh & (ts >= sw)
-    V["fx_C"] = on & np.isin(g, ["base", "sub"])
+    V["fx_C"] = (on & (g == "base")) | (coh & (g == "sub") & (ts >= ct["SUB"]))
     V["fx_A"] = (on & (g == "base")) | ((g == "puz") & (ts >= ct["PUZ"]))
     V["fx_E"] = ts >= ct["E"]
     V["fx_B"] = (ts >= ct["B"]) & np.isin(tpl, list(P.HERO))

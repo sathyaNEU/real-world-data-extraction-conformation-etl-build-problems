@@ -9,8 +9,7 @@ import lab
 POPS = {"CPH": 0.46, "AMS": 0.22, "FRA": 0.15, "ARN": 0.08, "OSL": 0.06, "HEL": 0.03}
 FALLBACK = (date(2026, 6, 9), date(2026, 7, 21))
 FALLBACK_SHARE = 0.22
-IPV = {2: 11.07, 3: 11.41, 4: 12.18, 5: 12.36, 6: 12.47, 7: 12.29, 8: 12.52}
-KBPR = {2: 45.9, 3: 46.3, 4: 58.7, 5: 61.2, 6: 61.9, 7: 62.4, 8: 62.8}
+from knobs_lab import IPV, KBPR
 MISS = {"smartphone": 0.071, "tablet": 0.083, "desktop": 0.064, "other": 0.41}
 UA = {"smartphone": {"Chrome Mobile": 0.46, "Mobile Safari": 0.38, "Samsung Internet": 0.08,
                      "Sønderå app": 0.08},

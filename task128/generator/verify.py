@@ -160,7 +160,7 @@ def closeout(target):
             flags[r["cve"]] = (r["exploit_available"] == "true", float(r["cvss_base"]))
     # fixed findings carry their own flag via the spine? close-out fixed are separate cves; read
     # their flag/cvss is not in spine, so flag rival uses history only here (score_at_export)
-    rows = rd(target, "cloud_q3_fixed_findings.csv")
+    rows = rd(target, "cloud_q3_closed_findings.csv")
     truth = collections.defaultdict(int)
     rivals = {"score_at_export": collections.defaultdict(int),
               "score_quarter_end": collections.defaultdict(int)}

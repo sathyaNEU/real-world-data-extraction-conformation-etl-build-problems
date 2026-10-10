@@ -26,7 +26,7 @@
       "xlsx"
     ],
     "largest_file": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
-    "largest_file_rows": 405108
+    "largest_file_rows": 406646
   },
   "sources": [
     {
@@ -42,8 +42,8 @@
     {
       "path": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
       "format": "csv",
-      "bytes": 53549767,
-      "rows": 405108,
+      "bytes": 53741941,
+      "rows": 406646,
       "source": "constructed for this task (see sources)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -60,7 +60,7 @@
     {
       "path": "digit_conformity_statements_2023-24_to_2025-26.pdf",
       "format": "pdf",
-      "bytes": 4487,
+      "bytes": 4493,
       "rows": null,
       "source": "constructed for this task (see sources)",
       "date": "2026-07-10",
@@ -78,7 +78,7 @@
     {
       "path": "digit_filter_run_log_2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 11963,
+      "bytes": 11974,
       "rows": 154,
       "source": "constructed for this task (see sources)",
       "date": "2026-04-07",
@@ -105,7 +105,7 @@
     {
       "path": "shared_lives_carer_rates_2023-24_to_2027-28.pdf",
       "format": "pdf",
-      "bytes": 2724,
+      "bytes": 2763,
       "rows": null,
       "source": "constructed for this task (see sources)",
       "date": "2023-03-31",
@@ -159,8 +159,8 @@
     {
       "path": "fernhollow_invoice_lines_2025-26.csv",
       "format": "csv",
-      "bytes": 7292,
-      "rows": 75,
+      "bytes": 7079,
+      "rows": 73,
       "source": "constructed for this task (see sources)",
       "date": "2026-06-04",
       "license": "CC0-1.0 (original work)"

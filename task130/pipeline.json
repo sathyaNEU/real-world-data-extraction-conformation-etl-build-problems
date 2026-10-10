@@ -2,12 +2,21 @@
  "task": "task130",
  "domain": "demographic-social-science",
  "objective": "etl",
- "stage": 3,
- "stage_name": "built",
+ "stage": 4,
+ "stage_name": "solved: landed, harden",
  "updated": "2026-10-10",
  "stump": "A competent solver conforms the 30 June 2026 returns, reproduces the 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and every scheduled sale at its agreed buyer and date, reproduces the 2026 annex on all fourteen sections and files seven sections (A1 to A4, P, S and U); the step that lands it there is carrying each scheduled sale to its agreed buyer and date, when the housing agency's budget ledger shows it committed to 84 of those dwellings under its first-offer right after 30 June and its settled purchases were all signed 120 days after commitment, so P and S fall under the line and Q stays over it, and the order designates six sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014 and 4625012009.",
  "harden_loops": 0,
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-10",
+   "score": 88.8,
+   "landed": true,
+   "cracked": 5,
+   "items": 8
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",

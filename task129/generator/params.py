@@ -46,12 +46,13 @@ CHG = {
     "D": ("CHG-2583", "Consent banner (new CMP)"),
     "E": ("CHG-2529", "Brand web fonts"),
 }
-DATED = {"E": date(2026, 3, 3), "B": date(2026, 4, 7), "D": date(2026, 5, 12)}
+DATED = {"E": date(2026, 3, 3), "B": date(2026, 4, 7), "D": date(2026, 5, 5)}
+SUB_FRONTEND = date(2026, 6, 30)                # ad-free layout: all six groups in one release
 PUZZLE_AD_SWITCH = date(2026, 6, 24)
 
 # dated steps in points of over-line share (uniform across groups, states, phones)
 STEP = {"E": 0.46, "B": 0.68, "D": 0.72}
-STEP_T = {k: {t: v for t in ["ST", "LA", "KD"]} for k, v in STEP.items()}  # tuned per title
+from knobs import STEP_T, KEEP  # noqa: E402  (tuned per title and per landing template)
 TABLET_STEP_MULT = 0.40
 # per-state effects at phone multiplier 1 (points): first load / cached load
 EFF_C = {"F": 4.0, "K": 1.0}
@@ -72,17 +73,17 @@ BASE_APP = 3.0
 EXTRACT_START = date(2026, 2, 1)                # local dates, inclusive
 EXTRACT_END = date(2026, 8, 31)
 SIM_START = date(2026, 1, 12)                   # warm-up so state is defined at extract start
-COLLECTOR_V2 = datetime(2026, 6, 10, 0, 0)      # local: new sampling rates
-FORWARDER_FIX = datetime(2026, 5, 8, 0, 0)      # local: tablets filtered, single forwarding
-TAG_GAP = (date(2026, 4, 20), date(2026, 5, 7))  # LA and KD local-edition pages not firing
-DUP_WINDOW = (date(2026, 3, 16), date(2026, 5, 7))  # ST app-webview beacons forwarded twice
+COLLECTOR_V2 = datetime(2026, 6, 3, 0, 0)       # local: new sampling rates
+FORWARDER_FIX = datetime(2026, 5, 4, 0, 0)      # local: tablets filtered, single forwarding
+TAG_GAP = (date(2026, 4, 23), date(2026, 5, 3))  # LA and KD local-edition pages not firing
+DUP_WINDOW = (date(2026, 3, 16), date(2026, 5, 3))  # ST app-webview beacons forwarded twice
 DEPLOY_QUIET_MIN = 10
 EXTRACT_PULLED = date(2026, 9, 5)
 AS_OF = date(2026, 9, 7)
 REVIEW = date(2026, 9, 17)
 
 # ---------------------------------------------------------------- sampling
-W_V1 = 300
+W_V1 = 200
 W_V2_ANON = 600
 W_V2_SIGNED = 50
 
@@ -90,9 +91,9 @@ W_V2_SIGNED = 50
 # phone mixes (low, mid, high)
 MIX = {"base": (0.42, 0.41, 0.17), "sub": (0.30, 0.40, 0.30), "puz": (0.30, 0.42, 0.28)}
 # devices simulated (sampled devices only); hashed share present under collector v1
-N_DEV = {"anon": 51000, "free": 15500, "sub": 8500, "puz": 3800, "tablet": 4400}
-V1_SHARE = {"anon": 1.0, "free": 1 / 6, "sub": 1 / 6, "puz": 1 / 6, "tablet": 1.0}
-V2_ANON_SHARE = 0.5                             # anonymous devices kept by collector v2
+N_DEV = {"anon": 76500, "free": 15500, "sub": 8500, "puz": 3800, "tablet": 6600}
+V1_SHARE = {"anon": 1.0, "free": 1 / 4, "sub": 1 / 4, "puz": 1 / 4, "tablet": 1.0}
+V2_ANON_KEEP = 3                               # collector v2 keeps every third v1 anonymous device
 APP_SHARE_ST = {"anon": 0.06, "free": 0.10, "sub": 0.22}
 LOCAL_READER = 0.38                             # share of devices with a local edition
 

@@ -1,0 +1,175 @@
+{
+ "task": "task126",
+ "domain": "Policy & Education",
+ "subdomain": "public-administration",
+ "objective": "Descriptive & Distribution Analysis",
+ "as_of": "2026-11-23",
+ "deliverables": [
+  "fy2022_pendency_headline.docx",
+  "fy2022_time_to_decision.svg"
+ ],
+ "distractor_files": [
+  "examiner_roster_2026-09-30.csv",
+  "international_pendency_comparison_2025.xlsx"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "docx",
+   "eml",
+   "md",
+   "parquet",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file_rows": 3580785,
+  "largest_file": "office_actions_FY2016_FY2026.parquet"
+ },
+ "files": [
+  {
+   "path": "annual_report_2025_tables_P1_P2.xlsx",
+   "format": "xlsx",
+   "bytes": 7485,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2025-12-18",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "art_unit_groups.csv",
+   "format": "csv",
+   "bytes": 5604,
+   "rows": 96,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "docket_links.csv",
+   "format": "csv",
+   "bytes": 13851307,
+   "rows": 407390,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "docket_transfers.csv",
+   "format": "csv",
+   "bytes": 3764679,
+   "rows": 121440,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "docketing_codebook.md",
+   "format": "md",
+   "bytes": 4216,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "examination_dockets_FY2016_FY2026.parquet",
+   "format": "parquet",
+   "bytes": 5902323,
+   "rows": 1020138,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "examiner_production_ledger_FY2016_FY2026.parquet",
+   "format": "parquet",
+   "bytes": 13586562,
+   "rows": 1819133,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "examiner_production_standard_2019.pdf",
+   "format": "pdf",
+   "bytes": 3642,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2018-09-14",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "examiner_roster_2026-09-30.csv",
+   "format": "csv",
+   "bytes": 33202,
+   "rows": 721,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-09-30",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "extract_notes.md",
+   "format": "md",
+   "bytes": 3207,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-15",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "headline_section_thread.eml",
+   "format": "eml",
+   "bytes": 3310,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-13",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "international_pendency_comparison_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 6117,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2025-11-20",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "office_actions_FY2016_FY2026.parquet",
+   "format": "parquet",
+   "bytes": 28689770,
+   "rows": 3580785,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "performance_reporting_charter.pdf",
+   "format": "pdf",
+   "bytes": 3257,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2024-09-09",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "report_table_notes.docx",
+   "format": "docx",
+   "bytes": 38009,
+   "rows": null,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2024-10-11",
+   "license": "CC BY 4.0 (original synthetic work)"
+  },
+  {
+   "path": "saravel_ipo_acknowledgements_FY2019-FY2022.xlsx",
+   "format": "xlsx",
+   "bytes": 245977,
+   "rows": 6300,
+   "source": "Constructed for this task: fictional Morvane Patent Office and Saravel Intellectual Property Office; synthetic records, no third-party data",
+   "date": "2026-10-14",
+   "license": "CC BY 4.0 (original synthetic work)"
+  }
+ ]
+}

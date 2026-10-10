@@ -53,7 +53,8 @@ def build_asks(seed, chosts):
                                     "vendor_first_release": rel.isoformat(),
                                     "run_date": first_run.isoformat(),
                                     "outcome": "rolled_back", "is_last_host": False})
-            tickets.append((tid, est, pkg, rel, gap, gap > TARGET_DAYS))
+            if last_run >= dt.date(2026, 5, 1):     # the ask covers tickets completed since 1 May
+                tickets.append((tid, est, pkg, rel, gap, gap > TARGET_DAYS))
     # ---- answer A: median gap and miss count per estate (gap = last successful host run - release)
     ans_A = {}
     for est in ESTATES:

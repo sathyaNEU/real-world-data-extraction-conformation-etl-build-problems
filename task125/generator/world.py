@@ -35,7 +35,8 @@ FLAGGED_2526 = {("ASC", 14), ("HS", 14), ("HT", 49), ("HT", 99), ("PF", 12)}
 SHAPE = {d: {} for d in DEPTS}
 for c in range(26, 39):
     SHAPE["ASC"][c] = 0.50
-SHAPE["ASC"].update({13: 0.62, 15: 0.80, 16: 0.62, 18: 0.90, 20: 0.90, 30: 0.42, 32: 0.36, 35: 0.42, 45: 0.80})
+SHAPE["ASC"].update({13: 0.62, 15: 0.80, 16: 0.62, 18: 0.90, 20: 0.90, 22: 0.74, 23: 0.76, 30: 0.42, 32: 0.36, 35: 0.42,
+                     45: 0.80})
 SHAPE["WE"][11] = 1.15
 SHAPE["PF"].update({15: 0.30, 16: 0.30, 18: 0.25, 19: 0.60})
 for dept, c in FLAGGED_2526:
@@ -165,11 +166,23 @@ class World:
             for _ in range(n):
                 self.carers.append((self.new_vendor("ind"), combo))
         rng.shuffle(self.carers)
+        # joint carer households: two vendor records set up together, each paid half the household's fee
+        self.joint = []         # (vendor_a, vendor_b, combo)
+        for combo, n in PR.JOINT:
+            for _ in range(n):
+                va = self.new_vendor("ind")
+                vb = "%06d" % (int(va) + 1)
+                self.vendor_seq["ind"] += 1
+                self.joint.append((va, vb, combo))
         self.sl_runs = PR.sl_runs(a, b)
         for d in self.sl_runs:
             for ven, combo in self.carers:
                 self.add("ASC", "Shared Lives", "Shared Lives carer payments", REDACTED, ven, d,
                          100 * PR.carer_amount(combo, d), 0.0, "SL")
+            for va, vb, combo in self.joint:
+                for ven in (va, vb):
+                    self.add("ASC", "Shared Lives", "Shared Lives carer payments", REDACTED, ven, d,
+                             100 * PR.joint_half(combo, d), 0.0, "SLJ")
         # Shared Lives short-break claims: nights x nightly rate, kept out of cell 14
         rng = self.stream("short-breaks")
         self.sb_vendors = [self.new_vendor("ind") for _ in range(140)]
@@ -392,9 +405,14 @@ class World:
         out = []
         for d in PR.sl_runs(a, b):
             for ven, combo in self.carers:
-                amt = PR.carer_amount(combo, d) if sl_rule == "closure" else PR.carer_amount(combo)
+                amt = PR.carer_amount(combo, d) if sl_rule in ("closure", "carer") else PR.carer_amount(combo)
                 if amt:
                     out.append(("ASC", 100 * amt, d, "SL"))
+            for va, vb, combo in self.joint:
+                # sl_rule "carer" is rung 4: every carer row re-summed on its own, the joint halves held
+                half = PR.joint_half(combo, d) if sl_rule == "closure" else PR.joint_half(combo)
+                for _ in (va, vb):
+                    out.append(("ASC", 100 * half, d, "SLJ"))
         for (y, m) in PR.months(a, b):
             for ven, p in self.dp14:
                 out.append(("ASC", p, PR.dp_date(y, m), "DP14"))

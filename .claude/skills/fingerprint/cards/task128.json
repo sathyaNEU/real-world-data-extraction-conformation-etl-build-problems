@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Give payments 1 ticket, checkout 1, search 76, media 75, internal tools 77 and the data pipeline 70, which takes out 13,360 exploitable host exposures in November.",
+  "answer_source": "task128/submission.md, block 1",
   "gap": [
     "objective",
     "rule"
@@ -35,10 +35,10 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "vuln_findings_2026-10-23.csv",
-    "rows": 210000,
+    "rows": 215871,
     "entity": "one open vulnerability finding, one CVE on one installed package on one host",
     "grain": "host x package x CVE",
-    "source": "synthetic (fictional scanner export over real CVE identifiers; EPSS scores from FIRST's public EPSS feed, licence and date recorded at stage 3)"
+    "source": "synthetic (fictional scanner export over CVE-format identifiers; exploit-prediction scores shaped on FIRST's public EPSS feed, constructed case under CC BY 4.0 as the pack's provenance record states)"
   },
   "forum": "operations_desk",
   "forcing_event": "launch_or_rollout",
@@ -64,10 +64,10 @@
     "november_ticket_cut.csv",
     "ticket_split_review.pptx"
   ],
-  "opening_move": "deliverable-first",
+  "opening_move": "calendar-first",
   "driver": "The decisive quantity is what one use of the binding resource removes, which is everything on the member that the current baseline fixes rather than the single item the request names, because each use rebuilds the member from that baseline; a ledger that credits each request with its own item reproduces every closed period, so per-item valuation spends the scarce uses on the members with the richest single item instead of the members carrying the most in total, and the constrained candidates need far fewer requests for far more removal than the per-item reading allows.",
   "driver_concrete": "The colocation provider rebuilds every host it drains from the estate's current platform image, so a drain on payments or checkout takes out every exploitable exposure the November image fixes on that host, not only the ticketed package's; the office's close-out credits each closed ticket with its own package and reproduces every closed quarter, so the per-package valuation spends payments' 96 drains and checkout's 120 on the hosts with the richest single package, when one ticket on a package every host carries lets the provider drain the most exposed hosts and frees nine tickets for the cloud estates.",
-  "stump": "A competent solver recovers the cut-day EPSS rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 of the provider's acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 5, checkout 6, search 71, media 102, internal tools 31 and data pipeline 85, taking out 4,050 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when the provider rebuilds every drained host from the estate's current platform image, so one ticket on a package every host carries lets it drain the most exposed hosts and take out everything on them the November image fixes, which roughly quadruples what the two colocated estates' drains take out and frees nine tickets for the cloud estates.",
+  "stump": "A competent solver recovers the cut-day scoring rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 6, checkout 6, search 75, media 75, internal tools 74 and data pipeline 64, about 11,090 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when every drained host comes back carrying nothing the current image already fixes, so one glibc ticket per colocated estate naming its most exposed hosts takes out 1,410 and 1,740, frees ten tickets for the cloud estates, and the split is 1 / 1 / 76 / 75 / 77 / 70 for 13,360.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],

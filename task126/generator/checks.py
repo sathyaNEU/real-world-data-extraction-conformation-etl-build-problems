@@ -327,7 +327,7 @@ def gates(R, ctx):
     R.ok("no input file named in any document beside the codebook and the extract notes", not named, named)
     for n in texts:
         texts[n] = texts[n]
-    R.ok("no em dash in any shipped text", not any("—" in t for t in texts.values()), None)
+    R.ok("no em dash in any shipped text", not any("\u2014" in t for t in texts.values()), None)
     # generation tells
     rows = [r for r in ctx["rows"].values() if r]
     R.ok("no uniform row counts across the data files", len(set(rows)) == len(rows), sorted(rows))

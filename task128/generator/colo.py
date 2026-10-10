@@ -28,12 +28,12 @@ ROLE_X = {"openjdk-11-jre-headless": ["2025-12", "2026-06"], "postgresql15": ["2
           "nginx": ["2026-07"], "memcached": ["2026-02"], "python3.9": ["2026-01", "2026-08"]}
 # exploitable base-package events: (month, package); no package carries more than two
 BASE_X = [("2025-11", "openssl"), ("2025-11", "sudo"), ("2025-12", "kernel"), ("2025-12", "curl"),
-          ("2026-01", "glibc"), ("2026-01", "libxml2"), ("2026-02", "openssh"),
+          ("2026-01", "zlib"), ("2026-01", "libxml2"), ("2026-02", "openssh"),
           ("2026-02", "expat"), ("2026-03", "kernel"), ("2026-03", "polkit"),
           ("2026-04", "libssh2"), ("2026-04", "sqlite-libs"), ("2026-05", "git-core"),
           ("2026-05", "python3"), ("2026-06", "libtiff"), ("2026-06", "nss"),
           ("2026-07", "curl"), ("2026-08", "systemd"), ("2026-08", "libnghttp2"),
-          ("2026-09", "gnupg2"), ("2026-09", "glibc"), ("2026-10", "openssl")]
+          ("2026-09", "gnupg2"), ("2026-09", "bash"), ("2026-10", "openssl")]
 TEAMS = ["SRE platform", "Database operations", "Network engineering", "Payments engineering"]
 
 

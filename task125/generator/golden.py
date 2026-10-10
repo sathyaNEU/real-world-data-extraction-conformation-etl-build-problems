@@ -213,14 +213,28 @@ DECOMP = defaultdict(list)
 for n in (1, 2, 3):
     for ms in itertools.combinations_with_replacement(sorted(RATES), n):
         DECOMP[400 * sum(RATES[x] for x in ms)].append(ms)
-assert all(len(DECOMP[a]) == 1 for a in CARER.values())     # four weeks of one set of placements, uniquely
+# a carer's amount is four weeks of one set of placements, uniquely; the amounts that are not are each half of
+# a household's fee, paid to two consecutive vendor numbers on the same runs (a household approved jointly)
+HALF = {v for v, a in CARER.items() if not DECOMP[a]}
+assert all(len(DECOMP[a]) == 1 for v, a in CARER.items() if v not in HALF)
+assert all(len(DECOMP[2 * CARER[v]]) == 1 for v in HALF)
+_hv = sorted(HALF)
+assert len(_hv) % 2 == 0 and all(int(_hv[i + 1]) == int(_hv[i]) + 1 and CARER[_hv[i]] == CARER[_hv[i + 1]]
+                                 for i in range(0, len(_hv), 2))
+JOINT_HH = len(_hv) // 2
 AFTER = {}
 for ven, a in CARER.items():
-    keep = [x for x in DECOMP[a][0] if not x.startswith("Home First")]
-    AFTER[ven] = 400 * sum(RATES[x] for x in keep)
+    ms = DECOMP[2 * a][0] if ven in HALF else DECOMP[a][0]
+    keep = 400 * sum(RATES[x] for x in ms if not x.startswith("Home First"))
+    AFTER[ven] = keep // 2 if ven in HALF else keep
 SL14_NOW = sum(1 for a in CARER.values() if cell(a) == 14)
 SL14_AFTER = sum(1 for a in AFTER.values() if a and cell(a) == 14)
-SL_MOVED = sum(1 for v in CARER if cell(CARER[v]) != 14 and AFTER[v] and cell(AFTER[v]) == 14)
+SL_MOVED = sum(1 for v in CARER if v not in HALF and cell(CARER[v]) != 14 and AFTER[v] and cell(AFTER[v]) == 14)
+HALF_MOVED = sum(1 for v in HALF if cell(CARER[v]) != 14 and AFTER[v] and cell(AFTER[v]) == 14)
+HALF_HH = HALF_MOVED // 2
+HALF_AMTS = sorted({CARER[v] for v in HALF if AFTER[v] and cell(AFTER[v]) == 14})
+HALF_AFTER = sorted({AFTER[v] for v in HALF if AFTER[v] and cell(AFTER[v]) == 14})
+assert SL_MOVED + HALF_MOVED + SL14_NOW == SL14_AFTER
 SL_RUNS = [(pd_, sd) for typ, pd_, sd in CAL_ROWS["2027-28"] if typ == "Shared Lives carers"]
 assert len(SL_RUNS) == 13 and all(PLAN0 <= p <= PLAN1 for p, _ in SL_RUNS)
 
@@ -237,6 +251,7 @@ for (d, c), n in BY_CELL.items():
     BY_DEPT[d] += n
 TOP_DEPT, TOP_N = max(BY_DEPT.items(), key=lambda x: x[1])
 RUNG3 = ORDER_U - len(SL_RUNS) * (SL14_AFTER - SL14_NOW)
+RUNG4 = ORDER_U - len(SL_RUNS) * HALF_MOVED
 
 # by run month (ask A): the month each payment's BACS file is submitted
 PLAN_BY = {m: Counter() for m in PLAN_MONTHS}
@@ -363,11 +378,14 @@ assert WE_2526 == sum(B1_BY[m][d] for m in M2526 for (d, c) in LOG_CELLS - PLAN_
 HS_DELTA = BY_CELL[("Housing Support", 14)] - Y2526[("Housing Support", 14)]
 SL_DELTA = BY_CELL[("Adult Social Care", 14)] - Y2526[("Adult Social Care", 14)]
 assert FERN - WE_2526 + HS_DELTA + SL_DELTA == ORDER_U
-assert SL_DELTA == len(SL_RUNS) * SL_MOVED
+assert SL_DELTA == len(SL_RUNS) * (SL_MOVED + HALF_MOVED)
+SL_DELTA_SINGLE, SL_DELTA_JOINT = len(SL_RUNS) * SL_MOVED, len(SL_RUNS) * HALF_MOVED
 HS_INST_2526 = Y2526[("Housing Support", 14)] - HS_OTHER
-DUAL_NOW = sorted({CARER[v] // 100 for v in CARER if cell(CARER[v]) != 14 and AFTER[v] and cell(AFTER[v]) == 14})
-DUAL_AFTER = sorted({AFTER[v] // 100 for v in CARER if cell(CARER[v]) != 14 and AFTER[v] and cell(AFTER[v]) == 14})
-assert len(DUAL_AFTER) == 1
+DUAL_NOW = sorted({CARER[v] // 100 for v in CARER if v not in HALF and cell(CARER[v]) != 14 and AFTER[v]
+                   and cell(AFTER[v]) == 14})
+DUAL_AFTER = sorted({AFTER[v] // 100 for v in CARER if v not in HALF and cell(CARER[v]) != 14 and AFTER[v]
+                     and cell(AFTER[v]) == 14})
+assert len(DUAL_AFTER) == 1 and len(HALF_AFTER) == 1
 
 
 def fmt(n):
@@ -540,17 +558,22 @@ def write_docx(path, png):
          "themselves never sat in a flagged cell, but a Shared Lives carer is paid one four-weekly amount for "
          "every guest they host, and %d carers host a long-term band 2 guest alongside a step-down guest. They "
          "are paid %s pounds today; from the first 2027/28 run they are paid %s pounds for the band 2 guest "
-         "alone, which is cell 14. That puts %d carers in cell 14 (%d now) across the %d runs in the 2027/28 "
-         "payment calendar. Wendy's point that Shared Lives has paid the same carers the same amounts for three "
-         "years holds for every year up to this one."
+         "alone, which is cell 14. The same happens one step removed for %d households approved as joint carers. "
+         "We pay a joint household's fee in two equal halves, one to each carer's vendor number, so the halves "
+         "of %s, %s and %s pounds are half of a fee for a band 1 guest, a band 3 guest and a step-down guest. "
+         "Without the step-down guest each half is %s pounds, also cell 14. That puts %d payments in cell 14 on "
+         "every carer run (%d now) across the %d runs in the 2027/28 payment calendar. Wendy's point that Shared "
+         "Lives has paid the same carers the same amounts for three years holds for every year up to this one."
          % (SL_MOVED, ", ".join(fmt(a) for a in DUAL_NOW[:-1]) + " or " + fmt(DUAL_NOW[-1]), fmt(DUAL_AFTER[0]),
-            SL14_AFTER, SL14_NOW, len(SL_RUNS)))
+            HALF_HH, fmt(HALF_AMTS[0] // 100), fmt(HALF_AMTS[1] // 100), fmt(HALF_AMTS[2] // 100),
+            fmt(HALF_AFTER[0] // 100), SL14_AFTER, SL14_NOW, len(SL_RUNS)))
 
     rows = [("", "Payments"),
             ("Routed in 2025/26 (run log), Fernhollow's basis", fmt(FERN)),
             ("Waste & Environment cell 11, not flagged on the 2025/26 screen", "-" + fmt(WE_2526)),
             ("Housing Support cell 14, Tenancy Sustainment instalments running off", "-" + fmt(-HS_DELTA)),
-            ("Adult Social Care cell 14, Shared Lives carers after the step-down closure", "+" + fmt(SL_DELTA)),
+            ("Adult Social Care cell 14, Shared Lives carers after the step-down closure", "+" + fmt(SL_DELTA_SINGLE)),
+            ("Adult Social Care cell 14, joint carer households' halves after the closure", "+" + fmt(SL_DELTA_JOINT)),
             ("Forecast routed in 2027/28", fmt(ORDER_U)),
             ("Order, to the nearest hundred", fmt(ORDER))]
     para("From Fernhollow's figure to the order", bold=True, size=10, after=2)
@@ -712,7 +735,9 @@ def write_xlsx(path):
              ("Tenancy Sustainment", "Each household paid %d monthly instalments from the month of approval, as "
                                      "every 2021 household was." % TERM),
              ("Shared Lives", "Each carer's four-weekly amount re-summed over the placements left after the Home "
-                              "First step-down closure on 31 March 2027, at the scheduled weekly rates.")]
+                              "First step-down closure on 31 March 2027, at the scheduled weekly rates. A jointly "
+                              "approved household is paid in two equal halves, one to each carer's vendor number; "
+                              "its fee is re-summed the same way and halved again.")]
     for i, (k, v) in enumerate(notes):
         ws.write(i, 0, k, F["hdr"])
         ws.write(i, 1, v, F["note"])
@@ -733,12 +758,14 @@ if __name__ == "__main__":
     print("2025/26 cells applied in 2027/28: %s" % ", ".join("%s %d" % (SHORT[d], c) for d, c in sorted(PLAN_CELLS)))
     print("Housing Support: term %d instalments (2021 round %s); 2027/28 instalments %s; cell 14 %s"
           % (TERM, dict(TERMS_SEEN), fmt(HS_INSTAL), fmt(BY_CELL[("Housing Support", 14)])))
-    print("Shared Lives: %d carers in cell 14 now, %d after the closure (%d moving in), %d runs; ASC cell 14 %s"
-          % (SL14_NOW, SL14_AFTER, SL_MOVED, len(SL_RUNS), fmt(BY_CELL[("Adult Social Care", 14)])))
+    print("Shared Lives: %d carer payments a run in cell 14 now, %d after the closure (%d single carers and %d "
+          "halves of %d joint households moving in), %d runs; ASC cell 14 %s"
+          % (SL14_NOW, SL14_AFTER, SL_MOVED, HALF_MOVED, HALF_HH, len(SL_RUNS), fmt(BY_CELL[("Adult Social Care", 14)])))
+    print("Joint households %d; halves moving in %s, after the closure %s" % (JOINT_HH, HALF_AMTS, HALF_AFTER))
     print("Routed 2027/28: %s, order %s; largest share %s %s (%s)" % (fmt(ORDER_U), fmt(ORDER), TOP_DEPT,
                                                                       fmt(TOP_N), fmt(int(round(TOP_N, -2)))))
-    print("Fernhollow's figure %s (%s), gap %s; stop rung (carers at current amounts) %s"
-          % (fmt(FERN), fmt(FERN_H), fmt(GAP), fmt(RUNG3)))
+    print("Fernhollow's figure %s (%s), gap %s; rung 3 (carers at current amounts) %s; rung 4 (halves held) %s"
+          % (fmt(FERN), fmt(FERN_H), fmt(GAP), fmt(RUNG3), fmt(RUNG4)))
     print("A " + json.dumps(A))
     print("B1 " + json.dumps(B1))
     print("B2 " + json.dumps(B2))

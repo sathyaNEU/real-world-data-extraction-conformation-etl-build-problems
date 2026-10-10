@@ -2,12 +2,21 @@
  "task": "task124",
  "domain": "business-operations-analytics",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "built",
+ "stage": 4,
+ "stage_name": "solved: landed, harden",
  "updated": "2026-10-10",
  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report on all 80 cells, collapses the North Central amendment rows, joins the distribution utilities' premise file and prices Harlan Ridge's 31 new refrigerated distribution centres at the refrigerated class's draw in the system's peak hour measured on the book's fourteen cold stores (0.60 of maximum demand), filing 130 / 40 / 0 / 0 / 165 / 35 / 30 / 0 MW with North Central at 165; the step that lands it there is taking the fourteen as what a cold store draws at the peak, when each sat inside a Business Saver called window at every closed system peak and no site can join before its meter has a summer, so the centres draw the uncalled 0.90 and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
  "harden_loops": 0,
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-10",
+   "score": 89.7,
+   "landed": true,
+   "cracked": 5,
+   "items": 8
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",

@@ -92,7 +92,11 @@ Registration (coordinator, 2026-10-10, after task124, task125 and task126 were f
 
 ## Stage 2 design (2026-10-10)
 
-Every figure in this section is a target the generator asserts; nothing here has been computed from data yet. Where a target moved from the draw's sketch, the reason is in the next list and, where an approach died, in `## Tried and rejected`.
+Every figure in this section is a target the generator asserts; nothing here has been computed from data yet. Where a target moved from the draw's sketch, the reason is in the next list and, where an approach died, in `## Retired
+
+2026-10-10. The determinism judge sent the build back (mechanism binding_constraint, stumping family analytical_non_defect, no surface-read dependency, no sole data defect; matches this note, binding_constraint with forecasting supporting, and neither declared distractor was named as the surface read). Retired under build-pipeline's retirement rule and not submitted. The pack, goldens and submission stay in the folder as the record.
+
+## Tried and rejected`.
 
 ### What the design stage changed from the draw sketch
 
@@ -403,3 +407,4 @@ Answer: 1,170 placed, 630 unallocated, Riverbend ahead of Lakes by 100. Dominanc
 - The rebate amount as a pilot-log column: it would let a per-rebate reconciliation of the ledger find every returned payment for free; the amounts live in Schedule B of the participation terms instead (still a reconciliation route, recorded as HZ2's leakage).
 - The rules file named `clean_heat_programme_rules_2027.pdf` after the fund: leak.py's file-name sweep reads `clean_` as the author's cleaned-data noun (LEAK); renamed `heat_pump_programme_rules_2027.pdf` in the generator.
 - A "Decision sought" closing section and totals for expected installs, feeder room and meter sets in the note's line-by-line table: the section restated the split on an orphaned page, and a meter-set total of 1,174 beside 1,170 placed is a second statement of the year's installs by another rounding path (H3); both cut.
+- 2026-10-10: the crew meter-set queue as decisive rung under a hosting-slot cap; the determinism judge returned SEND_BACK and the build was retired, not submitted.

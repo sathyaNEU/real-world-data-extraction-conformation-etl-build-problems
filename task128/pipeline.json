@@ -3,9 +3,9 @@
  "domain": "business-operations-analytics",
  "objective": "opportunity-sizing-decision",
  "stage": 3,
- "stage_name": "build",
+ "stage_name": "built",
  "updated": "2026-10-10",
- "stump": "A competent solver recovers the cut-day scoring rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 5, checkout 5, search 74, media 89, internal tools 47 and data pipeline 80, about 5,840 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when every drained host comes back carrying nothing the current image already fixes, so one ticket per colocated estate naming its most exposed hosts takes out about 2,800, frees eight tickets for the cloud estates, and the split is 1 / 1 / 76 / 91 / 49 / 82 for about 8,210.",
+ "stump": "A competent solver recovers the cut-day scoring rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 6, checkout 6, search 75, media 75, internal tools 74 and data pipeline 64, about 11,090 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when every drained host comes back carrying nothing the current image already fixes, so one glibc ticket per colocated estate naming its most exposed hosts takes out 1,410 and 1,740, frees ten tickets for the cloud estates, and the split is 1 / 1 / 76 / 75 / 77 / 70 for 13,360.",
  "harden_loops": 0,
  "solver_rounds": [],
  "judge": {
@@ -13,7 +13,7 @@
   "disposition": "",
   "report": ""
  },
- "approved": null,
+ "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
  "delivered": null,
  "portal": null,
  "source_note": "analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md"

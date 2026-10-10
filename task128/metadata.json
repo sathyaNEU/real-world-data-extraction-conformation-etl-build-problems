@@ -19,19 +19,19 @@
       "pipeline": 70
     },
     "exposures_taken_out": {
-      "payments": 1404,
-      "checkout": 1734,
-      "search": 2614,
-      "media": 2654,
-      "tools": 2434,
-      "pipeline": 2514
+      "payments": 1412,
+      "checkout": 1742,
+      "search": 2612,
+      "media": 2652,
+      "tools": 2432,
+      "pipeline": 2512
     },
-    "total_exposures": 13354
+    "total_exposures": 13362
   },
   "input_files": [
     "cloud_asset_register_2026-10-23.csv",
     "cloud_patch_ticket_log_q3_2026.csv",
-    "cloud_q3_fixed_findings.csv",
+    "cloud_q3_closed_findings.csv",
     "colocation_capacity_register_2026-10.xlsx",
     "colocation_change_acknowledgements_may_oct_2026.xlsx",
     "colocation_host_inventory_2026-10-23.xlsx",
@@ -50,12 +50,12 @@
     "superseded_cvss_band_allocation_memo.pdf",
     "vendor_advisory_feed.json",
     "vuln_findings_2026-10-23.csv",
-    "vulnerability_management_standard_v3.docx",
+    "vulnerability_management_standard.docx",
     "warehouse_data_dictionary.md"
   ],
   "large_file": {
     "path": "vuln_findings_2026-10-23.csv",
-    "rows": 215899
+    "rows": 215871
   },
   "distractor_files": [
     "drain_orchestrator_config.yaml",

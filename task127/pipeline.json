@@ -2,8 +2,8 @@
  "task": "task127",
  "domain": "nonprofit-grant-making",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "solver round 1",
+ "stage": "retired",
+ "stage_name": "retired",
  "updated": "2026-10-10",
  "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
  "harden_loops": 0,
@@ -18,12 +18,13 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "SEND_BACK",
+  "disposition": "retired",
   "report": ""
  },
  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
  "delivered": null,
  "portal": null,
- "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md"
+ "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md",
+ "retired_reason": "Determinism judge SEND_BACK (binding_constraint, analytical_non_defect); retired under build-pipeline's retirement rule, not submitted."
 }

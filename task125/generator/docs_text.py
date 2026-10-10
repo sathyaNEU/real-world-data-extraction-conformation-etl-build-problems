@@ -115,7 +115,8 @@ def rate_schedule(path, when):
               "agreed with the Wealdmoor Shared Lives Carers' Forum in March 2023. They apply from 1 April 2023 "
               "and are held at these levels to 31 March 2028."),
         ("table", {"rows": rows, "widths": [250, 120]}),
-        ("p", "Carer payments are made four-weekly in arrears by BACS."),
+        ("p", "Carer payments are made four-weekly in arrears by BACS. Each run pays the four weeks ending on its "
+              "payment date."),
         ("table", {"rows": sb, "widths": [250, 120]}),
         ("p", "Short-break claims are paid on the next creditor run after the claim is approved."),
         ("small", "Adult Social Care, Shared Lives scheme. Scheme manager: %s. Issued 31 March 2023." %

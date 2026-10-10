@@ -4,7 +4,7 @@ input gate is asserted here, loudly, so a later parameter tweak fails the build 
 import os
 import statistics
 
-from params import ESTATES, COLO, CLOUD
+from params import ESTATES, COLO, CLOUD, DENSE
 import ladder as G
 import windows as WIN
 
@@ -89,7 +89,9 @@ def run(W, out, info, meta):
     wh, _ = WIN.nov_drains()
     for e in COLO:
         hs = W["hosts"][e]
-        xs = [max((h.pkg_count(p) for p in h.pkgs), default=0) for h in hs]
+        # richness on the packages the stop rung tickets (the estate's dense role packages)
+        dense = {pk for _, pk, _ in DENSE[e]}
+        xs = [sum(h.pkg_count(p) for p in dense) for h in hs]
         ys = [h.whole() for h in hs]
         C.ok(f"decorr.{e}", abs(_corr(xs, ys)) < 0.25, f"corr {_corr(xs, ys):.3f}")
         r4d = set(G.golden_drained(W, e, wh[e]))
@@ -124,6 +126,53 @@ def run(W, out, info, meta):
         C.ok(f"closeout.{name}.cells", d["cell_misses"] >= 3, str(d))
         C.ok(f"closeout.{name}.pct", d["pct_off"] >= 4.0, str(d))
 
+    # ---- every shipped file registered in the provenance record, every extract in the dictionary
+    tdir = os.path.join(out, "target")
+    prov = open(os.path.join(tdir, "extract_provenance_2026-10-23.md"), encoding="utf-8").read()
+    dic = open(os.path.join(tdir, "warehouse_data_dictionary.md"), encoding="utf-8").read()
+    shipped = sorted(os.listdir(tdir))
+    C.ok("reg.provenance", all(f in prov for f in shipped if not f.startswith("extract_provenance")),
+         "provenance lists every file")
+    C.ok("reg.dictionary", all(f in dic for f in shipped
+                               if f.endswith((".csv", ".jsonl", ".parquet", ".xlsx", ".json"))),
+         "dictionary covers every extract")
+
+    # ---- strict cutline under the answer: the last ticket in and the first below are unique
+    n_cl = 300 - sum(W["rungs"]["r4c"][e][0] for e in COLO)
+    cv = [x[0] for x in G._cloud_sorted(W["scorev"])]
+    C.ok("cut.strict", cv[n_cl - 2] > cv[n_cl - 1] > cv[n_cl] > cv[n_cl + 1],
+         f"{cv[n_cl-2]}/{cv[n_cl-1]}/{cv[n_cl]}/{cv[n_cl+1]}")
+
+    # ---- the rebuild identity the decisive rung reads, and the colocated ticket's legality
+    import datetime as _d
+    latest = {}
+    for rq in W["requests"]:
+        for hid in rq["hosts"][:rq["accepted"]]:
+            latest[hid] = max(latest.get(hid, rq["date"]), rq["date"])
+    bad_bind = bad_fix = future = 0
+    for e in COLO:
+        for h in W["hosts"][e]:
+            if h.in_service > _d.date(2026, 10, 22):
+                future += 1
+            if h.hid in latest and latest[h.hid] != h.in_service:
+                bad_bind += 1
+            if h.hid not in latest and h.in_service >= _d.date(2026, 5, 1):
+                bad_bind += 1
+            for pkg, cve in h.findings:
+                if W["reg"].by_id[cve].published <= h.in_service:
+                    bad_fix += 1
+    C.ok("rebuild.bind", bad_bind == 0, f"{bad_bind} hosts disagree with their latest accepted window")
+    C.ok("rebuild.identity", bad_fix == 0, f"{bad_fix} findings whose fix predates in_service")
+    C.ok("rebuild.no_future", future == 0, f"{future} in_service dates after 22 October")
+    for e in COLO:
+        drained = G.golden_drained(W, e, wh[e])
+        pkg, cov = G.colo_ticket_package(W["hosts"], drained, e, W["reg"])
+        C.ok(f"ticket.{e}", pkg is not None and cov == len(drained), f"{pkg} covers {cov}/{len(drained)}")
+        ranked = sorted(W["hosts"][e], key=lambda h: (-h.whole(), h.hid))
+        b = wh[e]
+        C.ok(f"host_rank_edge.{e}", ranked[b - 1].whole() >= ranked[b].whole(),
+             f"{ranked[b-1].whole()} vs {ranked[b].whole()}")
+
     # ---- acknowledgements back-test
     C.ok("acks.count", len(W["requests"]) >= 400, str(len(W["requests"])))
     for name, miss in W["req_rivals"].items():
@@ -144,5 +193,5 @@ def run(W, out, info, meta):
 
 
 def DEL_FILES():
-    import deliver as DEL
-    return [DEL.CUT, DEL.DECK]
+    import golden as GOLD
+    return [GOLD.CUT, GOLD.DECK]

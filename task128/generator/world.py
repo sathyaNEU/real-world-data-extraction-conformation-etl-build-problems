@@ -73,6 +73,35 @@ def _safe_cloud_ticket(scorev, est, n_cloud):
     return None
 
 
+def _tune_cutline(pool, scorev, n_cloud):
+    """Shift pool targets so that exactly n_cloud - 1 cloud tickets take out at least a + 1, one
+    takes out a (the last ticket in), one takes out a - 1 (the first below the line) and every other
+    takes out at most a - 2, where a is the value at the line before tuning."""
+    cs = G._cloud_sorted(scorev)
+    a = cs[n_cloud - 1][0]
+    above = [x for x in cs if x[0] > a]
+    at = [x for x in cs if x[0] == a]
+    below = [x for x in cs if x[0] < a]
+    need = (n_cloud - 1) - len(above)          # tickets lifted from a and a - 1 to a + 1
+    lift_a = at[:-1][:need] if need > 0 else []
+    rest_a = [x for x in at if x not in lift_a]
+    last_in = rest_a[0]
+    others = rest_a[1:]
+    lifts = [(x, a + 1 - x[0]) for x in lift_a]
+    short = need - len(lift_a)
+    nxt = [x for x in below if x[0] == a - 1]
+    if short > 0:
+        lifts += [(x, 2) for x in nxt[:short]]
+        nxt = nxt[short:]
+    # the first below: one ticket at a - 1; everything else at a, or at a - 1, drops to a - 2
+    first_below = (others + nxt)[0]
+    drops = [(x, (a - 1) - x[0]) for x in [first_below] if x[0] != a - 1]
+    drops += [(x, (a - 2) - x[0]) for x in (others + nxt)[1:]]
+    for (v, _, e, p), d in lifts + drops:
+        pool[(e, p)]["target"] += d
+    return last_in
+
+
 def build_world(seed=SEED):
     rng = random.Random(seed)
     reg = Registry(rng)
@@ -90,8 +119,14 @@ def build_world(seed=SEED):
     rungs = _rungs(hosts, spine, pool, flagv, scorev)
     figs, chosen_cloud, split = _estate_figs(hosts, spine, pool, scorev, rungs["r4c"])
 
-    # ---- tune the seven graded figures to sit mid-bin, by nudging safe tickets/hosts ----
+    # ---- make the answer's cutline strict: one ticket at the last value in, one at the first
+    # value out, every other ticket clear of both ----
     n_cloud = 300 - sum(rungs["r4c"][e][0] for e in COLO)
+    _tune_cutline(pool, scorev, n_cloud)
+    W0 = _rebuild(seed, pool, {})
+    pool, scorev, figs = W0["_pool_final"], W0["scorev"], W0["figs"]
+
+    # ---- tune the seven graded figures to sit mid-bin, by nudging safe tickets/hosts ----
     # cloud: shrink one safe (high-value, far above the cutline) selected ticket per estate so its
     # estate figure reaches residue 2; shrinking always has headroom on a top ticket
     for e in CLOUD:

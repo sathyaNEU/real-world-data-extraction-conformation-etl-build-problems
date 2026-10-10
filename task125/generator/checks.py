@@ -36,10 +36,13 @@ def bin_margin(x):
 
 # ---------------------------------------------------------------------------------------- plan-year model
 def plan_components(W, D, cells, sl="b2dec", hs="runoff", runs=13, hs_term=30, tiers=("SDs", "SDe", "SDc"),
-                    lag=False):
+                    lag=False, joint="household"):
     """The routed count for 2027/28 under a forward model, built from the shipped records (the generator's
     path): flat streams carried at their 2025/26 count, Housing Support's instalments per household on a term,
-    Shared Lives carers' plan-year amounts under a reading of the closure."""
+    Shared Lives carers' plan-year amounts under a reading of the closure. joint: how the halves paid to the two
+    carers of a joint household are carried ("held" at their current amounts, "household": the household's fee
+    re-summed, the step-down placements dropped and halved again, "one": re-summed and paid as one payment,
+    "every": every joint household with a step-down guest moved into cell 14)."""
     pays = D["pays"]
     _, by = S.routed_in(pays, cells, S.CORRECT)
     comp = dict(by)
@@ -59,16 +62,32 @@ def plan_components(W, D, cells, sl="b2dec", hs="runoff", runs=13, hs_term=30, t
             comp[("HS", 14)] = 0
     if ("ASC", 14) in cells:
         k = 0
-        for ven, combo in W.carers:
+
+        def after(combo):
             if sl == "carried":
-                amt = PR.carer_amount(combo)
-            elif sl == "b2dec":
-                amt = 4 * sum(PR.RATES[g] for g in combo if g not in tiers)
-            elif sl == "every":
-                amt = 1464 if any(g.startswith("SD") for g in combo) and len(combo) > 1 else PR.carer_amount(combo)
+                return 4 * sum(PR.RATES[g] for g in combo)
+            if sl == "b2dec":
+                return 4 * sum(PR.RATES[g] for g in combo if g not in tiers)
+            if sl == "every":
+                return 1464 if any(g.startswith("SD") for g in combo) and len(combo) > 1 else PR.carer_amount(combo)
+
+        for ven, combo in W.carers:
+            amt = after(combo)
             if amt and PR.cell_of(amt) == 14:
                 # a one-period arrears lag pays the first plan-year run at the pre-closure amount
                 k += (runs - 1) if (lag and amt != PR.carer_amount(combo)) else runs
+        for va, vb, combo in W.joint:
+            if joint == "held" or sl == "carried":
+                halves = [PR.joint_half(combo)] * 2
+            elif joint == "household":
+                halves = [after(combo) // 2] * 2
+            elif joint == "one":
+                halves = [after(combo)]
+            elif joint == "every":
+                halves = [1464] * 2 if any(g.startswith("SD") for g in combo) else [PR.joint_half(combo)] * 2
+            for h in halves:
+                if h and PR.cell_of(h) == 14:
+                    k += (runs - 1) if (lag and h != PR.joint_half(combo)) else runs
         comp[("ASC", 14)] = 12 * PR.STREAMS["ASC_DP14"]["n"] + k
     return sum(comp.values()), comp
 
@@ -83,12 +102,17 @@ def grid(W, D):
             base, by = S.routed_in(D["pays"], cells, basis)
             for hs in ("carried", "runoff"):
                 for sl in ("carried", "b2dec", "every"):
-                    v = base
-                    if ("HS", 14) in cells and hs == "runoff":
-                        v += plan_components(W, D, {("HS", 14)}, hs="runoff")[1][("HS", 14)] - by[("HS", 14)]
-                    if ("ASC", 14) in cells:
-                        v += plan_components(W, D, {("ASC", 14)}, sl=sl)[1][("ASC", 14)] - by[("ASC", 14)]
-                    out[(amt + "-" + rng, cs, hs, sl)] = v
+                    for jt in ("held", "household"):
+                        if sl == "carried" and jt == "household":
+                            continue
+                        v = base
+                        if ("HS", 14) in cells and hs == "runoff":
+                            v += plan_components(W, D, {("HS", 14)}, hs="runoff")[1][("HS", 14)] - by[("HS", 14)]
+                        if ("ASC", 14) in cells:
+                            j = "every" if (sl == "every" and jt == "household") else jt
+                            v += plan_components(W, D, {("ASC", 14)}, sl=sl, joint=j)[1][("ASC", 14)] - \
+                                by[("ASC", 14)]
+                        out[(amt + "-" + rng, cs, hs, sl, jt)] = v
     return out
 
 
@@ -142,12 +166,15 @@ def check_main(W, D, F):
     REC["flag_margins"] = (round(lo_f, 3), round(hi_u, 3))
     # ---- rungs
     r2, by2 = S.routed_in(pays, D["cells2526"], S.CORRECT)
-    ok("rung 2: 2025/26 flagged-cell payments carried forward = 7,632", r2 == 7632, dict(by2))
+    ok("rung 2: 2025/26 flagged-cell payments carried forward = 7,608", r2 == 7608, dict(by2))
     ok("twin pair: ASC 14 and HS 14 each 2,706 in 2025/26", by2[("ASC", 14)] == 2706 and by2[("HS", 14)] == 2706)
     r3, c3 = plan_components(W, D, D["cells2526"], sl="carried")
-    r4, c4 = plan_components(W, D, D["cells2526"], sl="b2dec")
-    ok("rung 3 (HS run off on 30 instalments, Shared Lives carried) = 5,742", r3 == 5742, r3)
-    ok("answer (rung 4) = 6,522 from the shipped records", r4 == 6522, {"%s %d" % k: v for k, v in c4.items()})
+    r4s, c4s = plan_components(W, D, D["cells2526"], sl="b2dec", joint="held")
+    r4, c4 = plan_components(W, D, D["cells2526"], sl="b2dec", joint="household")
+    ok("rung 3 (HS run off on 30 instalments, Shared Lives carried) = 5,718", r3 == 5718, r3)
+    ok("rung 4 (each carer row decomposed, the joint halves held) = 6,498", r4s == 6498, r4s)
+    ok("answer (rung 5, joint households re-summed and halved again) = 6,706 from the shipped records",
+       r4 == 6706, {"%s %d" % k: v for k, v in c4.items()})
     sim = W.plan_year()
     routed_sim = Counter()
     for dept, g, d, kind in sim:
@@ -155,46 +182,52 @@ def check_main(W, D, F):
             routed_sim[(dept, S.cell_p(g))] += 1
     ok("answer equals the world's own forward simulation of 2027/28", sum(routed_sim.values()) == r4 and
        routed_sim == Counter(c4), sum(routed_sim.values()))
-    ok("components: ASC 3,486, HS 816, HT 49 792, HT 99 432, PF 12 996",
-       c4 == {("ASC", 14): 3486, ("HS", 14): 816, ("HT", 49): 792, ("HT", 99): 432, ("PF", 12): 996})
-    ok("answer bin: 6,522 files 6,500, 72 above and 28 below the edges", hundred(r4) == 6500 and
-       r4 - 6450 == 72 and 6550 - r4 == 28)
+    ok("components: ASC 3,694, HS 816, HT 49 792, HT 99 432, PF 12 972",
+       c4 == {("ASC", 14): 3694, ("HS", 14): 816, ("HT", 49): 792, ("HT", 99): 432, ("PF", 12): 972})
+    ok("answer bin: 6,706 files 6,700, 56 above and 44 below the edges", hundred(r4) == 6700 and
+       r4 - 6650 == 56 and 6750 - r4 == 44)
+    ok("rung 4 bin: 6,498 files 6,500, a different hundred from the answer", hundred(r4s) == 6500)
     r1, _ = S.routed_in(pays, S.flagged_cells(D["counts"][("net", "dec", "excl")], "2025/26", DEPT_ORDER),
                         ("net", "dec", "excl"))
     r0, _ = S.routed_in(pays, S.flagged_cells(D["counts"][("net", "pub", "excl")], "2025/26", DEPT_ORDER),
                         ("net", "pub", "excl"))
     side = sum(D["b1"].values())
-    REC.update(r0=r0, r1=r1, r2=r2, r3=r3, r4=r4, side=side)
-    hund = {"r0": hundred(r0), "r1": hundred(r1), "r2": hundred(r2), "r3": hundred(r3), "r4": hundred(r4),
-            "side": hundred(side)}
-    ok("every rung and the side cell file a different hundred", len(set(hund.values())) == 6, hund)
+    REC.update(r0=r0, r1=r1, r2=r2, r3=r3, r4=r4s, r5=r4, side=side)
+    hund = {"r0": hundred(r0), "r1": hundred(r1), "r2": hundred(r2), "r3": hundred(r3), "r4": hundred(r4s),
+            "r5": hundred(r4), "side": hundred(side)}
+    ok("every rung and the side cell file a different hundred", len(set(hund.values())) == 7, hund)
     ok("rung 0 and rung 1 sit at least 25 per cent above the answer", r0 > 1.25 * r4 and r1 > 1.25 * r4,
        (r0, r1))
-    ok("bracket: rung 3 is 12.0 per cent low and rung 2 17.0 per cent high",
-       round(100 * (r3 / r4 - 1), 1) == -12.0 and round(100 * (r2 / r4 - 1), 1) == 17.0)
+    ok("bracket: rung 3 is 14.7 per cent low, rung 4 3.1 per cent low and rung 2 13.5 per cent high",
+       round(100 * (r3 / r4 - 1), 1) == -14.7 and round(100 * (r4s / r4 - 1), 1) == -3.1 and
+       round(100 * (r2 / r4 - 1), 1) == 13.5)
     ok("cohort drop worth more than a sixth of the closed-year figure (L4)", (r2 - r3) / r2 > 1 / 6,
        round((r2 - r3) / r2, 3))
-    return dict(r0=r0, r1=r1, r2=r2, r3=r3, r4=r4, side=side, c4=c4)
+    return dict(r0=r0, r1=r1, r2=r2, r3=r3, r4=r4, r4s=r4s, side=side, c4=c4)
 
 
 def check_grid(W, D, M):
     r4 = M["r4"]
     G = grid(W, D)
-    ans = ("gross-dec", "2526", "runoff", "b2dec")
-    ok("grid: 36 cells computed, the answer cell is 6,522", len(G) == 36 and G[ans] == r4)
+    ans = ("gross-dec", "2526", "runoff", "b2dec", "household")
+    stop4 = ("gross-dec", "2526", "runoff", "b2dec", "held")
+    ok("grid: 60 cells computed, the answer cell is 6,706", len(G) == 60 and G[ans] == r4)
     same = [k for k, v in G.items() if hundred(v) == hundred(r4)]
-    ok("grid: only the answer cell files 6,500", same == [ans], same)
+    ok("grid: only the answer cell files 6,700", same == [ans], same)
     single = {k: v for k, v in G.items() if sum(1 for x, y in zip(k, ans) if x != y) == 1}
-    near = sorted((abs(v / r4 - 1), k, v) for k, v in single.items())
-    ok("grid: every single-violation cell sits at least 6 per cent from the answer", near[0][0] >= 0.06,
+    near = sorted((abs(v / r4 - 1), k, v) for k, v in single.items() if k != stop4)
+    ok("grid: every single-violation cell but rung 4 sits at least 6 per cent from the answer", near[0][0] >= 0.06,
        [(k, v, round(100 * d, 1)) for d, k, v in near[:3]])
+    ok("grid: rung 4 (the joint halves held) files 6,500, 208 below the answer", G[stop4] == M["r4s"] and
+       r4 - G[stop4] == 208 and hundred(G[stop4]) == 6500)
     multi = sorted((abs(v / r4 - 1), k, v) for k, v in G.items() if k != ans and k not in single)
     close = [(k, v, round(100 * (v / r4 - 1), 1)) for d, k, v in multi if d < 0.06]
-    ok("grid: multi-violation cells within 6 per cent are opposite-direction pairs in another hundred",
-       all(hundred(v) != 6500 for k, v, _ in close), close)
+    ok("grid: multi-violation cells within 6 per cent file another hundred",
+       all(hundred(v) != hundred(r4) for k, v, _ in close), close)
     REC["grid_close_multi"] = [(list(k), v) for k, v, _ in close]
     net_far = min(v for k, v in G.items() if k[0] != "gross-dec")
-    ok("grid: every net-basis and published-range cell sits at least 6 per cent high", net_far >= 1.06 * r4,
+    ok("grid: every net-basis and published-range cell sits at least 5 per cent high, in another hundred",
+       net_far >= 1.05 * r4 and all(hundred(v) != hundred(r4) for k, v in G.items() if k[0] != "gross-dec"),
        net_far)
     REC["grid_nearest_single"] = [(list(k), v) for d, k, v in near[:4]]
     # separation table
@@ -203,24 +236,32 @@ def check_grid(W, D, M):
         "lag12": plan_components(W, D, cells, lag=True)[0],
         "run14": plan_components(W, D, cells, runs=14)[0],
         "std_only": plan_components(W, D, cells, tiers=("SDs",))[0],
-        "every": plan_components(W, D, cells, sl="every")[0],
+        "every": plan_components(W, D, cells, sl="every", joint="every")[0],
         "term24": plan_components(W, D, cells, hs_term=24)[0],
         "term36": plan_components(W, D, cells, hs_term=36)[0],
         "hs_drop": plan_components(W, D, cells, hs="drop")[0],
         "no_runoff": plan_components(W, D, cells, hs="carried")[0],
-        "cells2324": G[("gross-dec", "2324", "runoff", "b2dec")],
+        "cells2324": G[("gross-dec", "2324", "runoff", "b2dec", "household")],
+        "joint_held": plan_components(W, D, cells, joint="held")[0],
+        "joint_one": plan_components(W, D, cells, joint="one")[0],
+        "joint_every": plan_components(W, D, cells, joint="every")[0],
     }
     for t in (("SDs", "SDe"), ("SDs", "SDc"), ("SDe", "SDc")):
         sep["two_tier_" + "_".join(t)] = plan_components(W, D, cells, tiers=t)[0]
-    want = dict(lag12=6462, run14=6684, std_only=6028, every=7055, term24=5928, term36=7656, hs_drop=5706,
-                no_runoff=8412)
+    want = SEP_WANT
     ok("separation table figures as designed", all(sep[k] == v for k, v in want.items()),
-       {k: sep[k] for k in want})
-    ok("one-period arrears lag (12 runs) converges on 6,500", hundred(sep["lag12"]) == 6500)
-    ok("every other separation cell lands outside the answer's hundred",
-       all(hundred(v) != 6500 for k, v in sep.items() if k != "lag12"), {k: v for k, v in sep.items()})
+       {k: sep[k] for k in sep})
+    ok("one-period arrears lag (12 runs) files 6,600, against the rate schedule's four weeks ending on the "
+       "payment date", hundred(sep["lag12"]) == 6600)
+    ok("every separation cell lands outside the answer's hundred",
+       all(hundred(v) != 6700 for k, v in sep.items()), {k: v for k, v in sep.items()})
     REC["separation"] = sep
     return G, sep
+
+
+SEP_WANT = dict(lag12=6630, run14=6884, std_only=6082, every=7317, term24=6112, term36=7840, hs_drop=5890,
+                no_runoff=8596, cells2324=7198, joint_held=6498, joint_one=6524, joint_every=6784,
+                two_tier_SDs_SDe=6420, two_tier_SDs_SDc=6368, two_tier_SDe_SDc=6342)
 
 
 def check_world(W, D, M):
@@ -262,14 +303,47 @@ def check_world(W, D, M):
     sdonly = {PR.cell_of(PR.carer_amount(c)) for v, c in W.carers if all(g.startswith("SD") for g in c)}
     ok("first-order closure check finds no step-down payment in a flagged cell (step-down-only carers in 15, 18, 20)",
        sdonly == {15, 18, 20})
+    # joint households: the halves are the record, nothing states them
+    halves = {PR.joint_half(c) for a, b, c in W.joint}
+    ok("no joint half is four times a multiset of up to three weekly rates (no single-carer reading exists)",
+       not any(amts.get(h) for h in halves), sorted(halves))
+    ok("twice every joint half decomposes uniquely into four weeks of placement rates",
+       all(len(amts.get(2 * h, [])) == 1 for h in halves))
+    ok("every carer amount is either a single carer's fee or a joint half, never both",
+       not halves & carer_amts)
+    jv = {}
+    for p in W.pay:
+        if p[8] == "SLJ":
+            jv.setdefault(p[4], set()).add((p[5], p[6]))
+    pairs_ok = all(jv[a] == jv[b] and int(b) == int(a) + 1 for a, b, c in W.joint)
+    ok("each joint household's two vendors are consecutive numbers paid the identical amount on every run",
+       pairs_ok and len(jv) == 2 * len(W.joint))
+    single_guest = [c for a, b, c in W.joint if len(c) == 1]
+    ok("the split holds with one guest: joint households with a single long-term guest are paid in halves",
+       single_guest and all(PR.cell_of(PR.joint_half(c)) == 73 for c in single_guest))
+    entr = [(a, b, c) for a, b, c in W.joint if PR.cell_of(PR.joint_half(c, dt.date(2027, 4, 28)) or 1) == 14]
+    ok("8 joint households (16 vendors) outside cell 14 in every closed period enter it after the closure",
+       len(entr) == 8 and all(PR.cell_of(PR.joint_half(c)) != 14 for a, b, c in entr))
+    ok("the entrants are the band 1 plus band 3 households with a step-down guest, halves 2,274, 2,388, 2,514",
+       {PR.joint_half(c) for a, b, c in entr} == {2274, 2388, 2514} and
+       all(set(c[:2]) == {"B1", "B3"} for a, b, c in entr))
+    look = [(a, b, c) for a, b, c in W.joint if any(g.startswith("SD") for g in c) and (a, b, c) not in entr]
+    ok("the other joint households with a step-down guest land in cell 13 after the closure",
+       look and {PR.cell_of(PR.joint_half(c, dt.date(2027, 4, 28))) for a, b, c in look} == {13})
+    held = sum(1 for a, b, c in W.joint if PR.cell_of(PR.joint_half(c)) in (14,))
+    ok("no joint half sits in cell 14 in any closed period", held == 0)
+    nohalf = [h for h in (PR.joint_half(c) for a, b, c in entr) if amts.get(h - 1464) or amts.get(h - 1484)]
+    ok("subtracting a band 2 fee (1,464) or the post-closure half (1,484) from an entrant's half leaves no "
+       "four-week rate multiset", not nohalf, nohalf)
     # flatness and one payment per run
-    sl = Counter((p[4], p[5]) for p in W.pay if p[8] == "SL")
+    sl = Counter((p[4], p[5]) for p in W.pay if p[8] in ("SL", "SLJ"))
     runs = PR.sl_runs(PR.SPINE_FROM, PR.SPINE_TO)
-    ok("every Shared Lives carer has exactly one payment in every four-weekly run of the extract",
-       len(sl) == 333 * len(runs) and set(sl.values()) == {1})
+    nv = 333 + 2 * len(W.joint)
+    ok("every Shared Lives carer vendor has exactly one payment in every four-weekly run of the extract",
+       len(sl) == nv * len(runs) and set(sl.values()) == {1}, nv)
     amt_by = collections.defaultdict(set)
     for p in W.pay:
-        if p[8] in ("SL", "DP14", "TSP"):
+        if p[8] in ("SL", "SLJ", "DP14", "TSP"):
             amt_by[p[4]].add(p[6] + p[7])
     ok("every carer, direct payment recipient and household is paid one constant amount throughout the extract",
        all(len(v) == 1 for v in amt_by.values()))
@@ -284,7 +358,7 @@ def check_world(W, D, M):
     ok("each flat stream has the same count in every month of the extract",
        all(len(v) == 1 for v in flat.values()), flat)
     # no background in flagged cells; short breaks out of cell 14
-    bg = sum(1 for p in W.pay if p[8] not in ("SL", "DP14", "TSP", "HS_FS14", "HT_V49", "HT_S99", "PF_C12")
+    bg = sum(1 for p in W.pay if p[8] not in ("SL", "SLJ", "DP14", "TSP", "HS_FS14", "HT_V49", "HT_S99", "PF_C12")
              and p[6] + p[7] >= 100000 and (p[0], S.cell_p(p[6] + p[7])) in FLAGGED_2526)
     ok("no payment outside the recurring streams falls in a 2025/26 flagged cell", bg == 0, bg)
     sb14 = sum(1 for p in W.pay if p[8] == "SB" and S.cell_p(p[6] + p[7]) == 14)
@@ -332,6 +406,8 @@ def check_asks(W, D, M):
     ok("ask A stop: payment-date months move December and March", diff_months(A, pay) == 2, pay)
     r3m = monthly(W.plan_year(sl_rule="carried"), cells)
     ok("ask A stop: rung 3 misses every month", diff_months(A, r3m) == 12)
+    r4m = monthly(W.plan_year(sl_rule="carer"), cells)
+    ok("ask A stop: rung 4 (joint halves held) misses every month", diff_months(A, r4m) == 12, r4m)
     ok("ask A: the busiest plan-year month is unique (December 2027)", A.count(max(A)) == 1 and
        PLAN_MONTHS[A.index(max(A))] == "2027-12", max(A))
     REC["A"] = dict(zip(PLAN_MONTHS, A))
@@ -428,7 +504,7 @@ def check_asks(W, D, M):
     ok("graded hundreds sit at least 20 from a bin edge (order, ASC count, Fernhollow figure, gap)",
        min(bin_margin(M["r4"]), bin_margin(M["c4"][("ASC", 14)]), bin_margin(fh), bin_margin(fh - M["r4"])) >= 20,
        (bin_margin(M["r4"]), bin_margin(M["c4"][("ASC", 14)]), bin_margin(fh), bin_margin(fh - M["r4"])))
-    ok("Adult Social Care carries the largest share (3,486 of 6,522, no near tie)",
+    ok("Adult Social Care carries the largest share (3,694 of 6,706, no near tie)",
        M["c4"][("ASC", 14)] > 4 * M["c4"][("HS", 14)])
     REC.update(fernhollow=fh, gap=fh - M["r4"], asc=M["c4"][("ASC", 14)])
 
@@ -470,7 +546,9 @@ def check_pack(W, D, target, meta_path, F, distractors):
     ok("the working papers index names every other shipped file (H9)",
        all(F[k] in idx for k in F if k != "index"))
     ok("no em dash anywhere under target/", not any("\u2014" in t for t in texts.values()))
-    leak = ["1,464", "1464.00", "3,044", "3044.00", "6,522", "6,500", "5,742", "3,486", "per carer", "re-sum"]
+    leak = ["1,464", "1464.00", "3,044", "3044.00", "6,522", "6,500", "5,742", "3,486", "per carer", "re-sum",
+            "6,706", "6,700", "6,498", "5,718", "3,694", "1,484", "1484.00", "2,274", "2274.00", "jointly",
+            "joint carer", "joint household", "halves", "half of the", "split between", "each carer"]
     hits = [(n, w) for n, t in texts.items() for w in leak if w in t and n != F["spine"]]
     ok("no document states a carer's amount, the answer or a rung figure", not hits, hits)
     closure = texts[F["closure"]].split("\n\n", 1)[1]

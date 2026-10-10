@@ -15,6 +15,7 @@ import sys
 from decimal import Decimal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.dont_write_bytecode = True
 sys.path.insert(0, HERE)
 import verify as V  # noqa: E402  the pack's parsing and conformance, which read target/ only
 

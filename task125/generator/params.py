@@ -151,6 +151,13 @@ COMBOS = [
     (("B2", "B2", "SDs"), 4),
     (("B1", "B2"), 10), (("B2", "B2"), 8), (("B1", "B1"), 6),
 ]
+# Carer households approved jointly: the household's four-weekly fee is paid in two equal halves, one to each
+# carer's vendor record (consecutive vendor numbers). Nothing in the pack states it; the halves are the record.
+JOINT = [
+    (("B1", "B3", "SDs"), 3), (("B1", "B3", "SDe"), 3), (("B1", "B3", "SDc"), 2),   # 1,484 a half after the closure
+    (("B1", "B2", "SDs"), 1), (("B1", "B2", "SDe"), 1), (("B1", "B2", "SDc"), 1),   # 1,392 a half after it
+    (("B1", "B2"), 3), (("B2",), 2),
+]
 SHORT_BREAK_NIGHTLY = [68.50, 74.00, 88.50]
 CLOSURE = dt.date(2027, 3, 31)
 
@@ -158,6 +165,11 @@ CLOSURE = dt.date(2027, 3, 31)
 def carer_amount(combo, when=None):
     keep = combo if (when is None or when <= CLOSURE) else tuple(g for g in combo if not g.startswith("SD"))
     return 4 * sum(RATES[g] for g in keep)
+
+
+def joint_half(combo, when=None):
+    """Each carer's half of a joint household's four-weekly fee (whole pounds: four weeks of rates is even)."""
+    return carer_amount(combo, when) // 2
 
 
 # ---------------------------------------------------------------------------------------- Tenancy Sustainment
@@ -172,7 +184,7 @@ STREAMS = {
     "HS_FS14": dict(dept="HS", n=14, lo=14000.0, hi=15000.0, vat=0.0, day=18),
     "HT_V49": dict(dept="HT", n=66, lo=4900.0, hi=5000.0, vat=0.20, day=18),
     "HT_S99": dict(dept="HT", n=36, lo=9900.0, hi=10000.0, vat=0.20, day=20),
-    "PF_C12": dict(dept="PF", n=83, lo=12000.0, hi=13000.0, vat=0.20, day=16),
+    "PF_C12": dict(dept="PF", n=81, lo=12000.0, hi=13000.0, vat=0.20, day=16),
 }
 WE_HAULAGE_END = dt.date(2024, 9, 30)
 

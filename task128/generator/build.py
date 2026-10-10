@@ -21,7 +21,7 @@ SCRUB = os.path.join(REPO, ".claude/skills/reduce-house-fixes/scripts/scrub_prod
 import world as WORLD
 import writers_data as WD
 import docs as DOC
-import deliver as DEL
+import golden as GOLD
 from params import SEED, ESTATES, COLO, CLOUD, AS_OF, EXPORT_TIME, ORG
 import checks as CHECKS
 
@@ -66,9 +66,17 @@ def write_all(W, out):
     DOC.write_thread(p(DOC.THREAD))
     DOC.write_dict(p(DOC.DICT))
     DOC.write_provenance(p(DOC.PROVENANCE), info)
-    # golden deliverables
-    rows = DEL.write_cut(g(DEL.CUT), W)
-    DEL.write_deck(g(DEL.DECK), W, rows)
+    # golden deliverables, computed by golden.py from target/ alone, and held to the world
+    cut, pace, cover = GOLD.build(out)
+    assert cut["split"] == {e: W["answer_split"][e] for e in ESTATES}, "golden split"
+    assert cut["taken"] == {e: W["figs"][e] for e in ESTATES}, "golden figures"
+    assert cut["total"] == W["figs"]["_total"], "golden total"
+    for e in ESTATES:
+        assert (pace[e]["median_days"], pace[e]["missed"]) == (
+            W["ans_A"][e]["median_days"], W["ans_A"][e]["tickets_missed"]), f"ask A {e}"
+    for e in CLOUD:
+        assert (cover[e]["in_service"], cover[e]["unscanned"]) == (
+            W["ans_B"][e]["in_service"], W["ans_B"][e]["unscanned_14d"]), f"ask B {e}"
     return target, golden, info
 
 
@@ -139,7 +147,6 @@ def _fix_zip_times(path):
 
 
 def write_metadata(out, W, info):
-    tickets = DEL.G.answer_tickets(W)
     split = W["answer_split"]
     meta = {
         "task": "task128",
@@ -148,7 +155,7 @@ def write_metadata(out, W, info):
         "subdomain": "field-service-maintenance",
         "objective": "Opportunity Sizing & Decision Support",
         "as_of": AS_OF.isoformat(),
-        "deliverables": [DEL.CUT, DEL.DECK],
+        "deliverables": [GOLD.CUT, GOLD.DECK],
         "answer": {
             "split": {e: split[e] for e in ESTATES},
             "exposures_taken_out": {e: W["figs"][e] for e in ESTATES},

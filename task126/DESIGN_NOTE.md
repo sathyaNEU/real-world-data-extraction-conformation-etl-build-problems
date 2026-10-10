@@ -397,6 +397,47 @@ The card's opening move is now `other` (situation-first, which the vocabulary do
 
 Gradability walk after compression: the median (months, one decimal, in the call); per group the lower quartile and the median (months) and the 36-month share (per cent), all under the convention sentence; the undecided share (per cent, convention); five chart parts (title stating the median, step curve of the share decided by month, the 50 per cent line, the median marked and labelled, the undecided share annotated). Criteria re-counted off shape 14: 24 + 2 + 5 + 2 = 33.
 
+## Build record
+
+Stage 3a, 2026-10-10. Generator `generator/build.py <out>` (modules params, world, analysis, tables, workbooks, docs, writers, checks) writes `<out>/target/` and `<out>/metadata.json` and fails on any of its 74 assertions. Independent verifier `generator/verify_pack.py <target>` reads only the shipped files (plus `metadata.json` beside `target/` for the distractor gate), rebuilds every construction with pandas and its own Kaplan-Meier, and checks 47 claims against its CLAIMS block.
+
+**Gate outcomes.** Generator 74 of 74 green. Two scratch builds byte-identical (16 files plus `metadata.json`, sha256). Task-folder build identical to the scratch build, verifier 47 of 47 green on it. Producer-metadata audit (`scrub_producer_metadata.py`, band 2018-01-01 to 2026-11-23) clean. Input gates: 16 files, 7 formats (parquet, csv, xlsx, pdf, docx, md, eml), largest file `office_actions_FY2016_FY2026.parquet` at 3,580,785 rows, two distractors in `metadata.json` (`examiner_roster_2026-09-30.csv`, `international_pendency_comparison_2025.xlsx`), nothing under `target/` names either. Bundle 64 MB.
+
+**Tuning.** First-docket median duration 677 to 673.5 days, the one parameter moved, to put the answer's crossing on day 880.
+
+**Realised figures against the stage-2 targets.**
+
+| Quantity | Target | Realised |
+|---|---|---|
+| Rungs 0 / 1 / 2 / 3 / 4 (months) | 23.2 / 20.9 / 25.7 / 33.9 / 28.9 | 23.1 / 20.8 / 25.4 / 34.0 / 28.9 (rung 2 -12.0%, rung 3 +17.6%, decisive rung worth 15.0% of rung 3) |
+| Answer | 28.9 | 28.912 (880 days); lower quartile 19.7 (600 days) |
+| Undecided at the extract | 11.4% | 10.6% (6,994 of 66,186; 10.567 unrounded) |
+| Decided within 36 months | 65.9% | 65.6% (43,431 of 66,186; 65.620) |
+| FY2022 dockets / CX successors / continuing | 82,125 / 29,845 / 7,986 | 90,884 / 33,466 / 8,768 (26.2%) |
+| Rung-3 applications / answer applications | 52,280 / 60,266 | 57,418 / 66,186 |
+| Grid: chains grant end, split grant end | 37.49, 32.10 | 37.49, 32.03 |
+| Partials: left out, parents chained, benefit dated | 30.95, 31.51, 32.69 | 30.95 (+7.0%), 31.51 (+9.0%), 32.76 (+13.3%) |
+| Decided only, family chain, any-docket cohort | 26.74, 34.76, 39.46 | 26.84 (-7.2%), 34.83 (+20.5%), 39.56 (+36.8%) |
+| Parent at close, plain median, calendar year 2022 | converge | 28.91, 28.91, 28.91 (all converge) |
+| Corpus cases / decided / open / re-examined | 5,760 / 5,358 / 402 / 2,165 decided | 6,300 / 5,921 / 379 / 2,658 |
+
+Corpus back-test (verifier, from the shipped workbook): rungs 3 and 4 reproduce 6,300 of 6,300 cases (decisions to the day, opens as open) and all 16 quarterly medians; rung 0 matches 906, rung 1 3,642, rung 2 3,927. Every allowed single-docket case is missed by rung 0 by 97 to 182 days (2,709 cases with a grant by the extract). On the quarterly medians rung 0 and rung 1 sit below the partner on all 16 quarters and rung 2 above on all 16 (it never decides a re-examined case). Decided-only medians miss all four FY2022 quarters. Zero continuing successors in any programme chain; rungs 3 and 4 agree case by case.
+
+Ledger: one 1N or 1R credit on every first action on the merits and on no other action; continuing share of CX successors 0.261 to 0.276 in every docketing year FY2016 to FY2026. No route tell: successor first-action timing KS p 0.096, successor decision timing KS p 0.62, successor end-code mix chi-square p 0.20, every successor docketed to the examiner holding the refused docket. Twin pair: 22-138479 then 23-160047 (1R, 29.3 months) and 22-138427 then 23-159894 (1N, parent decided at 14.5 months), identical on every docket, action and link column.
+
+Ask cells (answer): 1600 16.2 / 23.4 / 79.6; 1700 17.5 / 25.7 / 74.1; 2100 18.4 / 26.8 / 71.6; 2400 19.8 / 28.6 / 66.1; 2600 20.6 / 30.0 / 63.0; 2800 21.0 / 30.6 / 62.5; 3600 21.8 / 31.9 / 58.6; 3700 24.0 / 35.2 / 51.6. Cells moved of 24: S1 tg column 23, S2 as-of join on the docketing art unit 23 (identical to S1, the false clean), S2b as-of join on the art_unit column 24, S3 current group of the art unit at close (hazard alone) 20, S4 roster home art unit 23, rung-3 applications on the answer's groups 24. Table P2 ties exactly to a count of the tg column. Table P1 reports FY2006 to FY2020 and FY2016 to FY2020 reproduce from the 2026 extract to the tenth.
+
+**Departures from the stage-2 plan, each with its reason.**
+
+1. The production ledger ships as Parquet, not CSV: 1,819,133 rows would have been about 90 MB as CSV. The docket, action and ledger extracts are Parquet with zstd compression.
+2. The world is simulated from FY2003 and shipped from FY2016, so the FY2016 docket year carries successors of earlier filings and P1's counts carry no burn-in ramp (asserted). Links whose parent was opened before 1 October 2015 are kept; the codebook and the extract notes say so. No FY2022 application's chain touches a pre-2016 docket.
+3. "No decision within three days of any graded crossing" and "no FY2022 decision 1,090 to 1,102 days after filing" are replaced. With about 40 decisions a day both are a visible hole in the distribution. The closures shipped: the headline crossing sits on day 880, so 879 and 881 file 28.9 too; every quantile definition (Kaplan-Meier at or below and strictly below, lower, higher, midpoint, linear) files the same tenth on the headline and on all 16 group month cells; no FY2022 application is finally decided 1,095 or 1,096 days after filing (88 decisions moved one to four days later), so the day count, calendar 36 months and inclusive counting select the same applications for every 36-month share.
+4. The thinnest margins in the pack, stated: the 1700 lower quartile is 534 days, 17.5441 months, 0.006 under the 17.55 edge, and the 3700 median is 1,070 days, 35.154 months, 0.004 over the 35.15 edge. Both hold under the charter's divisor however it is rounded (30.437 to 30.44); under a 365/12-day month the 1700 lower quartile would file 17.6. The charter's "a month being 30.4375 days" is the pin that closes it.
+5. The successor first-action timing test is asserted at KS p above 0.05, not 0.2: both routes draw successor timing from one distribution, and the realised p is 0.096.
+6. A transfer on an FY2022 application whose successor would have no first action by the extract is not made (the refusal stands), so every FY2022 application's status is determined by the ledger (verifier: zero unclassified successors on FY2022 chains). Elsewhere a successor with no first action yet chains to its parent: the split is made only on a positive 1N.
+7. Successor dockets are never abandoned (allowed 58 per cent, refused 42 per cent), carried from the paper model; it is the same on both routes.
+8. Table P1 carries its in-file label as one line ("A production measure: it describes dockets, not applications"). It points away from rungs 0 to 2 and towards chaining, which is rung 3.
+
 ## Tried and rejected
 
 - The note's chaining of dockets along CX edges as the decisive rung: a plain solver constructs it from the charter's "application", the CX gloss and the continuity table (pilot lessons: a charter definition and a join whose keys line up are executed), and its driver repeats task90; kept as rung 3.
@@ -417,3 +458,5 @@ Gradability walk after compression: the median (months, one decimal, in the call
 - The group restatement rule in the performance reporting charter: the charter is on the main call's path, so the ask's organ would sit in a document the main call reads (off path in prose); it lives in the report's table notes.
 - A second device-carried ask beside the group table: every candidate either ran on the main call's rows (decision dates, the cohort, decision types) or was a figure for another period or decision (H18); one wide ask on the group path carries the layer.
 - The number-first opening drafted at the draw: task123 opened number-first inside the last three builds; situation-first instead.
+- No decision within three days of any graded crossing, and no FY2022 decision 1,090 to 1,102 days after filing (stage 2's closure plan): about 40 FY2022 decisions land on every day, so both carve a visible hole in the duration distribution; replaced by the day-880 crossing, quantile-definition convergence and a two-day hole at 1,095 and 1,096 days (Build record, departure 3).
+- Every group month cell at least 0.02 months from its rounding edge: 16 integer-day quantiles each have about a 60 per cent chance of clearing it, so no single parameter set does; the day count and the 30.4375 divisor are pinned in the charter instead and every cell is asserted under every quantile definition.

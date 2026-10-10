@@ -21,8 +21,8 @@ T = TASK / "target"
 OUT = []
 
 # the figures the build claims (the golden values this verifier must reproduce from the bytes)
-CLAIM = dict(order=6522, order_h=6500, asc=3486, hs=816, r2=7632, r3=5742, fernhollow=8126, gap_h=1600,
-             A=[620, 602, 584, 566, 548, 530, 512, 494, 638, 476, 476, 476])
+CLAIM = dict(order=6706, order_h=6700, asc=3694, hs=816, r2=7608, r3=5718, r4=6498, fernhollow=8102, gap_h=1400,
+             A=[634, 616, 598, 580, 562, 544, 526, 508, 668, 490, 490, 490])
 
 
 def check(name, cond, detail=""):
@@ -160,7 +160,7 @@ c2526, c2324 = flagged(G, "2025/26"), flagged(G, "2023/24")
 check("2025/26 screen flags five department-cells", len(c2526) == 5, sorted(c2526))
 r2by = routed(c2526, "gross")
 r2 = sum(r2by.values())
-check("rung 2: 2025/26 flagged-cell payments = 7,632", r2 == CLAIM["r2"], r2)
+check("rung 2: 2025/26 flagged-cell payments = 7,608", r2 == CLAIM["r2"], r2)
 r1 = sum(routed(flagged(cnts[("net", "dec", "excl")], "2025/26"), "net").values())
 r0 = sum(routed(flagged(cnts[("net", "pub", "excl")], "2025/26"), "net").values())
 check("rungs 0 and 1 (net bases) land in hundreds of their own", len({round(x, -2) for x in (r0, r1, r2)}) == 3,
@@ -214,17 +214,37 @@ for k in (1, 2, 3):
     for ms in itertools.combinations_with_replacement(sorted(rates), k):
         decomp[400 * sum(rates[g] for g in ms)].append(ms)
 amts = Counter(next(iter(v)) for v in carer_amt.values())
-check("every carer amount decomposes uniquely as four weeks of a set of placement rates",
-      all(len(decomp[a]) == 1 for a in amts), sorted(a // 100 for a in amts))
+single = {a for a in amts if len(decomp[a]) == 1}
+rest = {a for a in amts if a not in single}
+check("every carer amount that is not four weeks of a set of placement rates is half of one, uniquely",
+      all(not decomp[a] and len(decomp[2 * a]) == 1 for a in rest), sorted(a // 100 for a in rest))
+# the halves come in pairs: consecutive vendor numbers paid the same amount on the same runs
+pay_runs = defaultdict(set)
+for dept, d, net, vat, exp, ven in pays:
+    if exp == "Shared Lives carer payments" and next(iter(carer_amt[ven])) in rest:
+        pay_runs[ven].add((d, net + vat))
+hv = sorted(pay_runs)
+paired = all(pay_runs[hv[i]] == pay_runs[hv[i + 1]] and int(hv[i + 1]) == int(hv[i]) + 1
+             for i in range(0, len(hv), 2)) and len(hv) % 2 == 0
+check("the halves are paid to consecutive vendor numbers in pairs, identical on every run", paired, len(hv))
+
+
+def keep_after(ms):
+    return 400 * sum(rates[g] for g in ms if not g.startswith("Home First"))
+
+
 after = {}
-for a in amts:
-    keep = [g for g in decomp[a][0] if not g.startswith("Home First")]
-    after[a] = 400 * sum(rates[g] for g in keep)
+for a in single:
+    after[a] = keep_after(decomp[a][0])
+for a in rest:
+    after[a] = keep_after(decomp[2 * a][0]) // 2
 in14_now = sum(n for a, n in amts.items() if cell(a) == 14)
-in14_after = sum(n for a, n in amts.items() if after[a] and cell(after[a]) == 14)
+in14_after = sum(n for a, n in amts.items() if after[a] and after[a] >= 100000 and cell(after[a]) == 14)
 moved = sum(n for a, n in amts.items() if cell(a) != 14 and after[a] and cell(after[a]) == 14)
-check("after the closure 162 carers are paid in cell 14 (102 now, 60 moving in)",
-      (in14_now, in14_after, moved) == (102, 162, 60), (in14_now, in14_after, moved))
+moved_halves = sum(n for a, n in amts.items() if a in rest and after[a] and cell(after[a]) == 14)
+check("after the closure 178 carer payments a run sit in cell 14 (102 now, 60 single carers and 16 halves "
+      "moving in)", (in14_now, in14_after, moved, moved_halves) == (102, 178, 76, 16),
+      (in14_now, in14_after, moved, moved_halves))
 cal = openpyxl.load_workbook(find("bacs_payment_calendar*.xlsx"), read_only=True)
 ws = cal["2027-28"]
 plan_rows = [r for r in ws.iter_rows(min_row=4, values_only=True) if r[0]]
@@ -234,13 +254,16 @@ check("2027/28 carries 13 Shared Lives runs", len(sl_plan) == 13)
 asc_other = sum(1 for p in pays if p[0] == "Adult Social Care" and fy(p[1]) == "2025/26" and p[2] + p[3] >= 100000
                 and cell(p[2] + p[3]) == 14 and p[4] != "Shared Lives carer payments")
 asc_plan = asc_other + len(sl_plan) * in14_after
-check("Adult Social Care cell 14 in 2027/28 = 3,486", asc_plan == CLAIM["asc"], (asc_other, in14_after))
+check("Adult Social Care cell 14 in 2027/28 = 3,694", asc_plan == CLAIM["asc"], (asc_other, in14_after))
 flat = {k: v for k, v in r2by.items() if k[0] not in ("Adult Social Care", "Housing Support")}
 order = asc_plan + hs_plan + sum(flat.values())
-check("the order: 6,522 routed payments, filed 6,500", order == CLAIM["order"] and round(order, -2) == 6500,
+check("the order: 6,706 routed payments, filed 6,700", order == CLAIM["order"] and round(order, -2) == 6700,
       order)
 r3 = order - len(sl_plan) * (in14_after - in14_now)
-check("rung 3 (Shared Lives carried at current amounts) = 5,742", r3 == CLAIM["r3"], r3)
+check("rung 3 (Shared Lives carried at current amounts) = 5,718", r3 == CLAIM["r3"], r3)
+r4 = order - len(sl_plan) * moved_halves
+check("rung 4 (every carer row decomposed on its own, the halves held) = 6,498, filed 6,500",
+      r4 == CLAIM["r4"] and round(r4, -2) == 6500, r4)
 check("Adult Social Care carries the largest share", asc_plan == max(asc_plan, hs_plan, *flat.values()))
 
 # ---------------------------------------------------------------------------------------- plan-year months
@@ -286,9 +309,9 @@ for r in rows:
         continue
     B1[r["run_month"]] += int(r["payments_routed"])
 fern = sum(B1.values())
-check("Fernhollow's figure: the run log's 2025/26 routed total = 8,126", fern == CLAIM["fernhollow"], fern)
+check("Fernhollow's figure: the run log's 2025/26 routed total = 8,102", fern == CLAIM["fernhollow"], fern)
 gap_u, gap_h = round(fern - order, -2), round(fern, -2) - round(order, -2)
-check("gap to Fernhollow's figure: 1,600 on unrounded and on rounded figures", gap_u == gap_h == CLAIM["gap_h"],
+check("gap to Fernhollow's figure: 1,400 on unrounded and on rounded figures", gap_u == gap_h == CLAIM["gap_h"],
       (gap_u, gap_h))
 # screened counts tie to the spending file by BACS file month (the calendar's submission dates)
 sub_of = {}
