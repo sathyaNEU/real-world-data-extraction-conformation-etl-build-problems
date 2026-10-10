@@ -6,7 +6,7 @@ Stage 1 (draw), drawn 2026-10-10. This is the build's one design note; the desig
 
 ```
 DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? Card filed: pending registration
+  Card filed with guard.py register before the ladder was written? Card filed: registered 2026-10-10 by the coordinator after task125 (WARN, answered under ## Guard)
     (drafted at scratchpad/cards/task126.json; the coordinator registers the batch in task-number order)
     Verdict: WARN (exit 0), checked against the corpus with task124 and task125 already filed
   Shape: 14 cuts of a distribution   Gate G mechanism: method_or_model_selection

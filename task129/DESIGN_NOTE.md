@@ -6,7 +6,7 @@ Stage 1 (draw), drawn 2026-10-10. This is the build's one design note; the desig
 
 ```
 DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? pending registration (the coordinator registers in task-number order)   Verdict: WARN
+  Card filed with guard.py register before the ladder was written? registered by the coordinator in task-number order after task128, with the registration redraws recorded under ## Guard   Verdict: see ## Guard (registration)
   Shape: 11 before and after with a control   Gate G mechanism: decomposition_attribution (method_or_model_selection supporting)
   Gap: population (decisive), objective, time   Pattern: E (decisive), D (the transport)
   Domain: business-operations-analytics   Subdomain (enumerated): service-operations-sla   Objective: root-cause
@@ -14,8 +14,8 @@ DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
     and task122 (product-analytics x experiment-causal); business-operations-analytics x root-cause was last drawn at task111
   Stakeholder role: head of digital operations at a regional news group, who owns the internal page-delivery service level and assigns the
     operations squad's quarter (operations_director)
-  Context-artifact type: published_series, the monthly page-delivery service report to the three titles and ad sales (share of mobile views over
-    the line by month and title, correct, ranking no change)
+  Context-artifact type: close_out_summary, digital operations' Q3 service close-out, the pack the quarterly service review reads (share of mobile
+    views over the line by month and title through September, correct, ranking no change)
   Calibration form: realised_outcome_roster, the operations squad's register of the eleven fixes it closed since 2023, each with the change it
     addressed and the over-budget views it brought back as measured over the four weeks after it landed
   Decision type: root_cause_named, the one shipped change the Q4 squad fixes, with the mobile views a month its fix brings back under the line
@@ -29,7 +29,7 @@ DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
     gets the operations squad's next quarter, when the header-bidding ad stack and the redesign's client-side front end only ever switched on together,
     template cohort by template cohort
   Forum: committee_or_panel (the quarterly service review: the three titles' editors-in-chief, ad sales and digital operations)
-  Forcing event: budget_or_appropriation (the review allocates the operations squad's Q4, which opens on 1 October)   Organisation family: media_or_publishing
+  Forcing event: vote_or_meeting (the quarterly service review meets and allocates the operations squad's Q4, which opens on 1 October)   Organisation family: media_or_publishing
   Scoring unit: units served (mobile page views delivered inside the line)
   World: Denmark; DKK; Sønderå Medier (invented), a regional news group running three daily titles on one web platform, metered paywall with an
     ad-free subscriber layout; Bølge, the redesign programme (invented)
@@ -38,7 +38,7 @@ DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
     director), Gunnar Paulsen (head of ad operations, presents the lab-weight basis), Gunhild Lund (data engineer, owns the view export), Mette Johansen
     (release manager, keeps the release train log), Simone Thorsen (performance engineer, keeps the closed-fix roster)
   Spine (planned): rum_mobile_views_2026.parquet, about 1,200,000 rows, one sampled mobile page view (a field timing beacon), grain page view, synthetic
-  Deliverables (planned): q4_squad_call.pptx (the service-review slides: the call, the cohort chart), q4_squad_call_cohort_effects.csv (the cohort grid)
+  Deliverables (planned): q4_squad_call.pptx (the service-review slides: the call, the cohort chart), q4_squad_call_cohort_effects.xlsx (the cohort grid)
   Opening move (provisional): symptom-first, filed as other (the vocabulary has no symptom-first key)
   Criteria arithmetic (shape 11): 6 redesign cohorts x 3 figures (the ad stack's views a month on the cohort's ad-supported views, the framework's, the
     cohort's pre-switch gap against the not-yet-switched cohorts in points) = 18, plus the ad stack's views on the puzzles pages and the framework's on
@@ -112,6 +112,8 @@ WARN answered:
 
 The sibling drafts task124 to task128 are unregistered, so the check above did not see them; registration re-runs it against whatever the coordinator has filed first.
 
+Registration (coordinator, 2026-10-10, after task124 to task128 were filed): the draft card took **BLOCK** on ban.artifact published_series against task126 and ban.forcing_event budget_or_appropriation against task127, with a repeat.deliverables WARN (csv+pptx) against task128. Each axis was redrawn without touching the decisive rung: the requester works from digital operations' Q3 service close-out, the quarter's pack for the review, carrying the same monthly figures by title (close_out_summary; monitoring_export is task128's and published_series task126's); the call is forced by the quarterly service review's meeting, the key the draw first wanted and lost to task122, which has left the window (vote_or_meeting); and the cohort grid ships as a workbook (pptx+xlsx). The draw's subdomain, service-operations-sla, is kept: task128 moved to field-service-maintenance at its registration.
+
 ## Changes from the source note
 
 1. Decisive rung redrawn. The note's decisive move, standardising each partial-exposure group to the base's CPU class through the device registry, is a one-hop schema-visible join (device model to benchmark band) followed by a composition check this solver runs by reflex; RC01 died on a schema-visible join (task121 round 1 and 2). It stays as the correction inside rung 2, which closes the joint ramp and leaves the ad stack in front. The new decisive rung conditions each change's cost on a per-view state built from the order of each device's views against the release train (first load after a deploy, or a cached reload), with the two changes costing opposite states.
@@ -135,3 +137,4 @@ The sibling drafts task124 to task128 are unregistered, so the check above did n
 - A commercial weather portal as the world (draw): its free users check daily too, so the ad-supported views would not be first-load heavy and the contrast the decisive rung needs would not exist.
 - Keeping Product Analytics with pilot_log, monitoring_export, product_manager, shape 07 or 18, executive_team and vote_or_meeting (draw): each is BLOCK against task121 or task122 on the corpus as filed.
 - Pattern D first, or pick_one_of_n (draw): test.same_puzzle_older and test.same_driver_older collide with five to seven older builds; E with root_cause_named is the honest reading of the decisive move and needs three differentiation lines.
+- Keeping published_series and budget_or_appropriation at registration: blocked against task126 and task127, filed after this draw; redrawn to the Q3 service close-out (close_out_summary) and the review's meeting (vote_or_meeting).

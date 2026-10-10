@@ -4,8 +4,8 @@ Source note: `analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-inst
 
 ```
 DRAW  (independent draws, checked with ../fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? pending registration (the coordinator
-    registers the wave in task-number order)   Verdict: PASS against the filed corpus (no WARN; one NOTE,
+  Card filed with guard.py register before the ladder was written? registered 2026-10-10 by the coordinator
+    after task129, the wave's last   Verdict: PASS against the filed corpus (no WARN; one NOTE,
     test.same_driver_older against task62, differentiated on the card)
   Card filed: pending registration
   Shape: 03 bridge between two totals   Gate G mechanism: etl_conformance

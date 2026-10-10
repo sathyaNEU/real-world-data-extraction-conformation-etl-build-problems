@@ -189,7 +189,7 @@
     {
       "path": "rds_theatre_cases_2023-2026.parquet",
       "format": "parquet",
-      "bytes": 388266,
+      "bytes": 383803,
       "rows": 8026,
       "source": "Constructed: theatre case extract for referred and unit patients",
       "date": "2026-08-14",

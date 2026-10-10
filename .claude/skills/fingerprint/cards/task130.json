@@ -1,0 +1,78 @@
+{
+  "task": "task130",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "realises analytical_tasks note ET02, redesigned as a stump on a fully constructed pack; wave card drafted for the coordinator, not registered here (cards register in task-number order)",
+  "domain": "demographic-social-science",
+  "subdomain": "housing",
+  "niche": "a regional housing observatory's yearly designation of the census sections where large residential holders will own more than a quarter of the dwellings on the first day of the programme year, conformed from the holders' quarterly dwelling returns, the land register's deed extract and the public housing agency's first-offer purchase commitments",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G4",
+    "G3",
+    "G13",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "prior_period_close_out",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of the regional housing observatory that prepares the large-holder designation order for the housing minister",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "large_holder_dwelling_returns_2024q3_2026q2.csv",
+    "rows": 68000,
+    "entity": "one dwelling on one version of one large holder's quarterly dwelling return (a held dwelling, or a dwelling under a scheduled sale agreement or an option)",
+    "grain": "holder x return quarter x version x dwelling",
+    "source": "synthetic (constructed pack: a fictional regional observatory's return extract, a land register deed extract and the housing agency's budget ledger, provenance declared in the pack)"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Spain, Valencian Community",
+    "currency": "EUR",
+    "org_type": "regional government housing observatory with a sister public housing agency",
+    "invented_names": [
+      "Observatori del Parc Residencial",
+      "Ens Públic de Patrimoni Residencial",
+      "Programa Primera Oferta"
+    ],
+    "people": [
+      "Aurora Roig",
+      "Leandro Sacristán",
+      "Celestina Gallart",
+      "Amaro Peláez"
+    ]
+  },
+  "deliverables": [
+    "designation_annex_2027.csv",
+    "section_bridge_2027.png",
+    "designation_brief_2027.pdf"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot; carrying every scheduled transfer to its agreed counterparty on its agreed date reproduces the closed period exactly, because no scheduled transfer had ever been displaced before it, but a third party has since taken over some scheduled transfers under a right whose exercises are recorded only in its own spending commitments, and it completes each a fixed interval after committing, an interval only its settled cases show, so on the effective date some units have left the holder population that their agreed dates keep in it and others are still with the seller although their agreed dates have passed.",
+  "driver_concrete": "The 2027 designation counts the dwellings large holders will hold on 1 January 2027; rolling the 30 June 2026 returns forward with the deeds registered to 30 September and the sale agreements the returns schedule, each to its agreed buyer on its agreed deed date, reproduces the 2026 designation section for section, because the housing agency's first-offer right began only with that designation; but the agency's budget ledger shows it has taken over some of the scheduled agreements (portfolio sales between large holders among them), and every first-offer purchase it has completed was signed 120 days after its budget commitment, so a dwelling committed by early September is the agency's on 1 January whatever date the original agreement named, and one committed later stays with its seller into January even where the agreed sale to a private buyer fell in December.",
+  "stump": "A competent solver conforms the 30 June 2026 returns (corrections replace, supplementary returns add, pre-migration building rows become dwellings, option and reservation rows drop, cadastral references are repaired by their control letters), rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and the scheduled sale agreements at their agreed buyers and deed dates, reproduces the 2026 designation exactly and files a designation that keeps two sections over the line and leaves a third under it; the step that lands it there is carrying each scheduled agreement to its agreed buyer and date, when the housing agency's budget ledger shows it took over several of those agreements under its first-offer right and signed every purchase it has completed 120 days after committing, so on 1 January the agency holds the dwellings it committed to by early September (the two sections fall under the line) and a seller still holds the dwellings committed later, among them a December sale to a private buyer that the agency now completes in January (the third section stays over it).",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task62": "task62's forward base grows because a closed-window exclusion lapses with its instrument at the boundary and its whole population enters; here nothing lapses: a third party's commitments, recorded only in its spending ledger, displace transfers already scheduled and complete on a clock recovered from its settled cases, so units leave the holder population before their agreed dates and stay in it after them.",
+    "task100": "task100 rolls a designation's members across a scheduled transition whose exits, movers and entrants sit on filed sentences, labelled columns or a prior snapshot; here that roll is the stop rung, and the decisive move is a third party's takeover of scheduled transfers, evidenced only in its spending commitments and timed by a clock no file states.",
+    "task117": "task117 re-times follow-on operations whose start is endogenous to the one ahead under faster equipment; here no record's timing is endogenous to another record: a different party displaces the agreed counterparty and completes on its own administrative clock, so the move is who completes as well as when."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note ET02 (analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md), redesigned as a stump on a fully constructed pack with declared provenance. The scenario keeps the note's spine (an ownership-concentration flag over a watchlist, computed from holders' periodic position returns with restating and additive amendments, a unit change keyed to the lodgement date, exposure rows and identifier repair, against each unit's total, with the top holder and a bridge) and moves it from capital-markets ownership analytics (out of scope for Economics) to large-holder ownership of housing by census section. The note's stated method memo is dropped; its honest-data traps become the lower rungs. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (3 of 64, 2 under 0.50; the client's Halls and Meeting Places drawdown task, mean 0.34, is the same move on a scheduled-date field), with #11 beats the headline trap, misses the quiet one behind it. Pattern A is recorded decisive (the 30 June holdings are a correct statement about the past and the designation buys the programme year; sections the agency is buying out are resolving). Generator G4 leads (attribution at transition: who holds each dwelling on the named date), with G3 (the return records the agreed buyer, the agency's commitment decides who completes and when). Personas drawn with guard.py names --geo 'Spain, Valencian Community' --seed 130. Deliverables and opening move provisional until the prompt is written. Not registered here: the coordinator registers the wave's cards in task-number order."
+}

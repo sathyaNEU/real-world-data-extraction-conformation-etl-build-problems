@@ -76,19 +76,26 @@ patient's wait.
 
 ## Stump sentence
 
-Hardening loop 2's sentence, the build's current one (loop 1's, A at 37 by the any-admission reading, is now where one of
-the admission-type readings lands):
+Hardening loop 3's sentence, the build's current one (loop 2's, G at 15 by the admission type, and loop 1's, A at 37 by the
+any-admission reading, are now grid cells):
 
 A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the
 trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as
-its test, declines the any-admission reading by setting aside every transfer into a unit as the bed bureau's placement by
-its admission type, and files G at 15 over A's 2; the step that lands it there is reading the admission type as who placed
-the patient: every planned transfer into D's unit during D's long waits was D's own surgical patient, referred by D from
-theatre recovery at its other hospital (the referral log's referring trust; none is in the bureau's audit), which makes
-D's 27 the largest number the review can confirm, while the planned transfers into A's unit were patients of trusts without
-level-3 beds on beds the bureau booked, so a solver who keeps planned admissions as the trust's choice instead files A at 37.
+its test (an empty staffed bed, or a freed bed given to a patient the trust placed itself, the bureau's transfers set
+aside) and files Prideswick (G) at 15 over Ristenholm's 2; the step that lands it there is reading the unit feed's bed
+assignment as the patient in the bed: through every Stennock long wait since the platform went live its unit held one or
+two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had
+not left recovery when the waiting patient's decision was made, so Stennock kept beds empty for its own planned surgery
+while its emergency patient waited, 27 deaths, the largest number the review can confirm. A solver who re-times every held
+bed, the bureau's included, files Ristenholm (A) at 37 instead.
 
 ## Decisive rung
+
+**Hardening loop 3 puts #13 Validates on one population, applies to another** (`_measured.md`: decided 3 of 64 client tasks,
+2 under 0.50, established) **at the decisive step**: the feed's assignment minute is the occupied minute on every row a
+solver can check, and not for the beds Stennock assigns to its elective centre patients at the morning bed meeting, which
+only the regional theatre extract dates (`### Hardening loop 3`). The admission-type and who-placed readings below (#5, #17)
+now decide only whose hold each held bed was. The rest of this section is the frame as written at the draw and in loop 2.
 
 **Hardening loop 2 puts #5 Takes the population a flag or filter suggests** (`_measured.md`: decided 5 of 64 client tasks,
 3 under 0.50, established) **at the decisive step.** The admissions a trust placed itself are defined through a join, the
@@ -216,6 +223,14 @@ with task121 and task122 now registered, it returns **WARN** (exit 0) on repeat.
   sentence stands (the intakes during each wait, read for whose decision placed them). `guard.py validate task119` 1 card, 0
   invalid; `guard.py heart task119` **WARN** (exit 0) on repeat.gate_g and repeat.decision, nearest heart text 0.05 (task89
   lineage), nearest driver 0.06, under the 0.12 WARN line.
+- Hardening loop 3 (2026-10-10): the card's stump, driver and concrete driver now carry the held beds (#13), spine rows
+  33,719; `guard.py validate task119` 1 card, 0 invalid. `guard.py heart task119` returns **BLOCK** on ban.subdomain against
+  task126, a card drawn and registered on 2026-10-10, after this one, with the same domain and subdomain
+  (policy-education/public-administration); the heart window is the last three cards by draw date, so a later draw now sits in
+  it. The ban belongs to task126's draw, which this build cannot change (its card and folder are outside this build's scope);
+  run as of this card's draw date (cards drawn to 2026-10-09 only, a scratch copy), the heart is **WARN** (repeat.gate_g,
+  repeat.decision), nearest heart text 0.05 (task89 lineage) on the full corpus and nearest driver 0.07, under the 0.12 WARN
+  line. Raised to the coordinator rather than answered here.
 - Variants checked and not taken: crediting delays to a unit only when a bed stood free anywhere in the network forks between
   own-unit and network readings, needs a pin that names the question, and repeats task111 v1's frame and task88's full-period
   blindness as the decisive move; a fixed random review sample that makes the yield a density is C on reach and reads as
@@ -435,35 +450,42 @@ grid cells that re-time every hold (A 37 over D 27) D is second at 1.37x, a wron
 
 ### Correction grid (asserted cell by cell)
 
-Toggles: occupancy basis (none, 08:00 return, hourly census) by unit scope (own unit, whole network) by the reading of the unit's
-admissions during the wait (ignored, any admission, admissions the trust placed itself), eighteen cells.
+Toggles, since hardening loop 3: occupancy basis (none, 08:00 return, the census by bed assignment, the census with the
+trust's own held beds empty until the patient left theatre recovery, the census with every held bed empty including the
+bureau's) by unit scope (own unit, whole network) by the reading of the unit's admissions during the wait (ignored, any
+admission, admissions the trust placed itself), thirty cells, measured on the shipped pack.
 
 | Basis | Scope | Admissions | Names | Violates |
 |---|---|---|---|---|
 | none | own | any of the three | A 44 over C 35 (1.26x) | own care at the hour (A's unit full through every A wait) |
 | none | network | any of the three | E 56 over A 44 (1.27x) | own care (E holds no level-3 beds) |
-| 08:00 | own | ignored | C 34 over G 4 (8.50x) | own care at the hour of the wait (the 08:00 return describes the morning) |
-| 08:00 | own | any | A 35, C 34, D 27 | as above; two wrong trusts within 1.2x of each other, D 1.30x behind |
-| 08:00 | own | placed | C 34 over D 27 (1.26x) | as above |
+| 08:00 | own | ignored or placed | C 34 over G 4 (8.50x) | own care at the hour of the wait (the 08:00 return describes the morning) |
+| 08:00 | own | any | A 35, C 34; two wrong trusts within 1.2x, D 0 | as above |
 | 08:00 | network | ignored | C 34 over D 24 (1.42x) | "its own beds" |
-| 08:00 | network | any | E 51 over A 42 (1.21x) | "its own beds" |
-| 08:00 | network | placed | E 49 over C 34 (1.44x) | "its own beds" |
-| census | own | ignored | G 15 over A 2 (7.50x) | the methodology note: a full unit's own placements during the wait are the trust's decisions about its beds |
-| census | own | any | A 37 over D 27 (1.37x) | the bed bureau allocates every transfer's bed (field guide, transfer audit): a transfer is not the trust's decision |
-| census | own | placed | **D 27 over G 15 (1.80x)** | |
-| census | network | ignored | G 15 over A 2 (7.50x), equal per trust to the own-unit cell (C1) | "its own beds" |
-| census | network | any | E 50, A 42 (1.19x); two wrong trusts within 1.2x, D 1.85x behind | "its own beds" |
-| census | network | placed | E 46 over A 28 (1.64x) | "its own beds" |
+| 08:00 | network | any | E 54 over A 43 (1.26x) | "its own beds" |
+| 08:00 | network | placed | E 51 over C 34 (1.50x) | "its own beds" |
+| assignment census | own | ignored | G 15 over A 2 (7.50x) | the methodology note and the theatre extract: a bed kept for the trust's own patient still in theatre is an empty staffed bed the trust kept |
+| assignment census | own | any | A 37 over G 17 (2.18x) | the bed bureau allocates every transfer's bed (field guide, transfer audit) |
+| assignment census | own | placed (round 3's test) | **G 15 over A 2 (7.50x)**, the stump | as for ignored |
+| assignment census | network | ignored | G 15 over A 2 (7.50x), equal per trust to the own-unit cell (C1) | "its own beds" |
+| assignment census | network | any | E 52, A 43 (1.21x), D 27 | "its own beds" |
+| assignment census | network | placed | E 44 over D 27 (1.63x) | "its own beds" |
+| own holds empty | own | ignored or placed | **D 27 over G 15 (1.80x)** (equal per trust, C1) | |
+| own holds empty | own | any | A 37 over D 27 (1.37x) | the bureau allocates every transfer's bed |
+| own holds empty | network | ignored | D 27 over G 15 (1.80x), equal per trust to the own-unit cell (C1) | |
+| own holds empty | network | any | E 52, A 43 (1.21x), D 27 | "its own beds" |
+| own holds empty | network | placed | E 44 over D 27 (1.63x) | "its own beds" |
+| every hold empty | own | any of the three | A 37 over D 27 (1.37x) | a bed the bureau holds for an incoming transfer is not the trust's to give |
+| every hold empty | network | ignored | A 41, E 40; two wrong trusts within 1.2x, D 27 | "its own beds" |
+| every hold empty | network | any or placed | E 54 over A 43 (1.26x) | "its own beds" |
 
-Only the census, own-unit, own-placement cell names D. Partial applications: admissions read on the 08:00 basis name A or C;
-own placement read from each admitted patient's referring trust and from the bureau's audit select the same admissions in the
-latest four quarters and on the record (C1, asserted: D's 133 own planned transfers, type 03, none in the audit; A's 117
-transfers, 66 coded 03 and 51 coded 02, C's 23 and G's 6, all 02, every one in the audit); own placement read from the
-admission type does not (loop 2, asserted both ways): types 01, 04 and 05 or 04 alone name G 15 over A 2, types 03, 04 and 05,
-anything but 02 and the queue order name A 37 over D 27; any admission and own placement part only at A (37 against 2), C (6
-against 0) and G (17 against 15), by bureau transfers. The two network cells with admissions read any way lead with E by
-1.19x and 1.21x over A; they are asserted as wrong-trust cells with D at least 1.2x behind, like the 08:00, own, any cell. Window cells: the latest eight quarters (D 55 over G 32) and the whole
-record (D 80 over G 46) name D, so no window moves the name; the counts are pinned by the remit's placement clause (C4).
+Only the own-holds basis names D, and its three D cells select the same deaths per trust (no own placement inside any
+latest-year wait and no other unit's vacancy inside any Stennock wait). The admission-type and queue readings of own placement
+(loop 2) sit on the assignment census and name G 15 over A 2 (types 01, 04 and 05, or 04) or A 37 over G 15 (types 03, 04
+and 05, anything but 02, the queue order). The four-hour counterfactual converges: each held patient left recovery 10 to 215
+minutes after the waiting patient's decision, inside the first four hours, so "the bed was free in time" and "the bed was free
+at some minute" select the same waits. Window cells: the record (D 80 over G 46) names D, so no window moves the name; the
+counts are pinned by the remit's placement clause (C4).
 
 ### The calibration corpus
 
@@ -1141,6 +1163,35 @@ inside 30 days and not five between days 31 and 60.
    "Transfers between trusts". The referral log grew to 33,739 rows and the audit fell to 3,797 (the bureau transfers that moved
    with the random stream); every golden figure, every rung and the call keep their figures.
 
+9. Hardening loop 3 (the decisive rung reads the patient in the bed): from the platform's go-live each Stennock allocation
+   wait's planned admissions become morning bookings (`world.try_alloc`, `plan.BOOK_LEAD`, `EC_TRANSIT`, `HOLD_CLEAR`; booking
+   times on their own stream, `rng("booked")`, so the world's stream is untouched): the bed is assigned between 08:10 and a
+   quarter of an hour before the waiting patient's decision and held (`hold_until`) until the patient, whose booking referral
+   comes from the surgical day unit (`SDU`, `rng("ec_booked")`), leaves the treatment centre's recovery inside the wait. The
+   legacy months keep their in-wait admissions. New operating file `rds_theatre_cases_2023-2026.parquet` (`theatre.py`): one case
+   per unit stay from theatre, the patient leaving recovery before the bed was assigned (own trust) or before the transfer
+   departed (bureau), except the 301 holds; 2,744 ward cases of referred patients as texture; elective cases inside list
+   hours. The RDS specification gains the companion extract's fields; the field guide's file table lists it. Legacy transit:
+   an allocation at exactly 08:00 now counts as spanning the return (`sim.legacy_transit_room`, `legacy.finalize`), which the
+   rebuild exposed. Every graded figure, every rung figure but rung 3's runner-up (G 17, D 0) and the call keep their values.
+
+**Gates (loop 3, 2026-10-10).** Generator: 175 assertions, 0 failed (25 new or rewritten: the ladder with rung 3 at A 37 over
+G 17 and D 0; the thirty-cell grid; round 3's own test naming G 15 over A 2; dominance on the every-hold reading, edge 18.5
+against 1.64; the hold checks: 301 holds, only at STN-ACC, platform months, assigned 08:21 at the earliest on weekdays, none
+across 08:00, every one of the 206 platform-era Stennock long waits beside a hold whose patient left recovery 10 to 215 minutes
+after the decision, no other wait meeting one, by assignment Stennock full and admitting no one through each; the theatre
+extract: 5,282 critical care cases for 5,282 stays from theatre, none missing, none late outside the holds; every hold's bed
+requested from SDU and assigned within 15 minutes; the record's 3c under round 3's test keeps Stennock's legacy months only,
+20 against 80). Verifier: 33 claims, 0 failed (new DuckDB tables `st2_own` and `st2_all` re-time the holds from the theatre
+extract). Two scratch builds byte-identical (21 files) and the task folder's pack identical to them. Input gates: 20 files
+(over the 19-file target, a stated debt: the theatre extract is the rung's only evidence and no organ file could carry it);
+8 formats; referral log 33,719 rows, episode extract 88,202, theatre extract 8,026; distractors unchanged. Natural path (every
+device mishandled) 2,368 / 720 / 205 (was 2,363 / 720 / 204, background moved with the booking events); every device alone
+moves exactly its ledgered deltas; no-cancel, over-correction stops, battery, organs and spans green; pair simulation 37.1
+with nine mirrors (round 3's own test and the every-hold reading added), worst single and double catch 37.1, round 2's profile
+38.8, round 3's catches (UTC, decision level, key links, pilot copies, one patient once, CCRS beds from the audit, the
+discharge-method fallback) 38.8.
+
 ## Write-up and ship checks
 
 Stage 3 close, 2026-10-09, redone in hardening loop 1. `generator/golden.py` run as a script reads only `target/` and writes the
@@ -1230,6 +1281,32 @@ began at 18:00 or later with its unit full, and Brackenford's 08:00 return showe
   (33,739), deliverables and opening move already agree with the submission and the pack; `guard.py validate` 119 cards, 0
   invalid.
 
+- **Hardening loop 3 (2026-10-10).** No graded figure moved: rungs 56, 34, 15, 37, 27 (rung 3's runner-up is now G at 17,
+  D 0); placement year 731 / 213 / 44; record 2,163 / 629 / 148 and its eight rows; Stennock 25, 28, 27 and Prideswick 14, 17, 15
+  by year. `submission.md` (after `submission-writeup`): component 2 now says Stennock's unit kept staffed beds assigned to its
+  own planned surgical patients who were still in theatre; step 4 reads the census by assignment, step 5 states the
+  own-placement rule and keeps the bureau's placements out, step 6 matches each Stennock stay to its case in
+  `rds_theatre_cases_2023-2026.parquet` (`left_recovery_at` after the decision) and ranks 27, 15, gap 12; step 7 repeats steps 1
+  to 6. Blocks 1 and 4 unchanged. Goldens (`golden-realism`, figures frozen first): the paper's Stennock paragraphs say the
+  feed counts a bed as taken from its assignment, that on each of the 92 waits one or two such beds had been assigned that
+  morning to Stennock's own planned surgical patients, that none of them had left recovery at the Stennock Treatment Centre when
+  the waiting patient's decision was made and each left during the wait, and that those staffed empty beds are Stennock's
+  decision; the table's Stennock reason, the source lines (paper table and chart, transfer audit and theatre cases added; the
+  chart's source line wrapped after the render showed it clipped) and the workbook's notes (could have confirmed, empty staffed
+  bed, own placement, extract) follow. `figures()` asserts every new sentence on the record: all 92 Stennock waits beside a hold,
+  one or two holds each, assigned the same day, the held patient leaving recovery inside the wait, no admission inside any
+  Stennock wait, every hold's case at the Stennock Treatment Centre, no own placement inside any latest-year wait. Goldens
+  regenerated twice byte-identical and equal to the shipped copies. Reduce-house-fixes: H1 the scrub audit clean on `golden/`
+  (band August to November 2026) and `target/` (to the as-of date); H3 each new sentence's count word, population and
+  comparator read against the assertion that backs it; H4 and H11 three files in `golden/`, one `submission.md` and one
+  `prompt.md` in the tree; H8 every file, field and section the write-up and paper name resolves (the theatre extract and its
+  `left_recovery_at`, WRHB/26/097 section 4); H9 the field guide's file table lists every shipped file, the new extract
+  included, and `metadata.json` lists exactly the shipped files; H16 the theatre extract's latest date is 2 July 2026, before
+  the 14 August extract; H21 the new site name passes the invented-name sweep. No em dash in any file written.
+- **Surface screen** (`guard.py surface`, loop 3): the same five mechanism-layer pairs (task118 back to back; task25, task26,
+  task28 and task38 on gap, pattern and decision type), nothing on the surface layer; people in the cut pack the six drawn
+  personas.
+
 ## Leak review
 
 `leak.py task119 --asof 2026-10-02`, re-run in hardening loop 2 against the loop-2 stump sentence on the rebuilt pack
@@ -1244,6 +1321,17 @@ every transfer between trusts, field semantics that state no rule about own care
 The loop-1 reading of each document, below, still holds. Stage 3 re-run (2026-10-09, `--quiet`): **REVIEW**, no LEAK, the
 same five sweep-4 lines on the same unchanged documents (board paper 5 terms, CCRS specification 7, extract specification 5,
 terms of reference 7, field guide 13), each answered by its line below; sweeps 1 to 3 and 5 to 11 clean.
+
+Hardening loop 3 (2026-10-10, against the loop-3 stump sentence on the rebuilt pack): **REVIEW**, no LEAK; sweeps 1 to 3 and 5
+to 11 clean, sweep 4's five REVIEW lines the same five documents as before (board paper 4 terms, CCRS specification 8, RDS
+specification 5, terms of reference 7, field guide 11). The RDS specification now carries the theatre extract's field list
+(into theatre, out of theatre, left recovery, destination) and the field guide one file-table row for it: field semantics that
+say nothing about when a unit assigns a bed, about planned patients' beds or about holding a bed. A hand sweep of every
+document for the rung's own vocabulary (hold, held, book, assigned, bed meeting, reserve, Treatment Centre, theatre, recovery,
+elective, arrive, empty) finds only "held" for where a record is stored, the field guide's existing `admitted_at` definition
+("the minute the bed was assigned to the patient") and `outcome_at` line, the REC and source-location code lists, the episode
+specification's admission methods, the terms of reference's scope sentence, and the network manager's existing belief about
+Brackenford holding on to its beds; no document says a bed can be assigned ahead of a patient or names Stennock's lists.
 
 - `accn_board_paper_2023-11-21_level3_capacity.pdf`: the 2023 consolidation paper (Ellerdyke to level 2, Pellowham's
   winter beds, transfers continuing through the network's bed bureau); it says nothing about planned admissions, waits,

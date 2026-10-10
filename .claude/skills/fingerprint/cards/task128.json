@@ -1,0 +1,75 @@
+{
+  "task": "task128",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "first realisation of analytical_tasks note DS02; the note's decisive rung (drains per window built from the capacity register, the hourly forecast and the window calendar) is kept as the stop rung, and a new decisive rung, what one drain of a colocated host actually takes out when the provider rebuilds the host from the estate's current platform image, sits above it",
+  "domain": "business-operations-analytics",
+  "subdomain": "field-service-maintenance",
+  "niche": "an online travel platform's vulnerability office splitting the patch crews' monthly change tickets across two colocated and four cloud production estates, sized by the exploitable host exposures the tickets take out in November when the colocation provider can drain only so many hosts a window and rebuilds every host it drains",
+  "objective": "opportunity-sizing-decision",
+  "shape": "01",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "C",
+    "B"
+  ],
+  "generators": [
+    "G1",
+    "G2",
+    "G8",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "remediation planner in the vulnerability management office of an online travel platform, who splits the patch crews' 300 monthly change tickets across six production estates",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "vuln_findings_2026-10-23.csv",
+    "rows": 210000,
+    "entity": "one open vulnerability finding, one CVE on one installed package on one host",
+    "grain": "host x package x CVE",
+    "source": "synthetic (fictional scanner export over real CVE identifiers; EPSS scores from FIRST's public EPSS feed, licence and date recorded at stage 3)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospitality_or_tourism",
+  "world": {
+    "geography": "Spain (Malaga)",
+    "currency": "EUR",
+    "org_type": "online travel booking platform with a colocated payments platform and four cloud estates",
+    "invented_names": [
+      "Sendalia Viajes",
+      "Centro de Datos Guadalhorce"
+    ],
+    "people": [
+      "Reina Guzmán",
+      "Santiago Vidal",
+      "Prudencio Cañete",
+      "Fabio Montalbán",
+      "Felicia Infante",
+      "Eva Mas"
+    ]
+  },
+  "deliverables": [
+    "november_ticket_cut.csv",
+    "ticket_split_review.pptx"
+  ],
+  "opening_move": "deliverable-first",
+  "driver": "The decisive quantity is what one use of the binding resource removes, which is everything on the member that the current baseline fixes rather than the single item the request names, because each use rebuilds the member from that baseline; a ledger that credits each request with its own item reproduces every closed period, so per-item valuation spends the scarce uses on the members with the richest single item instead of the members carrying the most in total, and the constrained candidates need far fewer requests for far more removal than the per-item reading allows.",
+  "driver_concrete": "The colocation provider rebuilds every host it drains from the estate's current platform image, so a drain on payments or checkout takes out every exploitable exposure the November image fixes on that host, not only the ticketed package's; the office's close-out credits each closed ticket with its own package and reproduces every closed quarter, so the per-package valuation spends payments' 96 drains and checkout's 120 on the hosts with the richest single package, when one ticket on a package every host carries lets the provider drain the most exposed hosts and frees nine tickets for the cloud estates.",
+  "stump": "A competent solver recovers the cut-day EPSS rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 of the provider's acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 5, checkout 6, search 71, media 102, internal tools 31 and data pipeline 85, taking out 4,050 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when the provider rebuilds every drained host from the estate's current platform image, so one ticket on a package every host carries lets it drain the most exposed hosts and take out everything on them the November image fixes, which roughly quadruples what the two colocated estates' drains take out and frees nine tickets for the cloud estates.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-10, not registered (the coordinator registers the wave in task-number order). Realises analytical_tasks note DS02 (analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md); the note is the idea and this build is its first realisation. The note's decisive rung (drains per window from the capacity register, the hourly forecast and the window calendar, pinned by an SRE standard sentence and by acknowledgements that reproduce 412 of 412 only under that rule) fails the pilot test: the filed N+1 sentence is a work order and the acknowledgement corpus refutes the stop rung below it, so a plain solver builds it; it is kept as the stop rung (rung 2), certified by the acknowledgements, and its driver also sits beside task106's shared-pool driver. First redraw rejected: a data-cluster maintenance cycle that lands each ticket on only the nodes recommissioned inside November is task50 v4's insight (how much of each candidate's exposure a forward service order reaches inside the funded window) under new nouns, although driver similarity read 0.06. Decisive rung: G1 unit-of-value swap, never before the decisive generator on any card: the provider rebuilds every colocated host it drains from the estate's current platform image, so the unit that takes exposure out is the drained host, not the ticket's package; evidence lives only in the host inventory's last-rebuilt dates and the scanner (no colocated host carries an exposure whose fix predates its last rebuild), and no document states it. Pattern none (G1 carries it), C carries rung 2 (drains), B carries rung 1 (the cut-day EPSS rule from the close-out). G2 supports (host rather than package as the unit of removal). Measured trap #25 assumes an effect the log could measure (1 of 64, emerging, thin record; the bet is stated in the design note), with #11 beats the headline trap, misses the quiet one (4 of 64, 2 under 0.50) behind it and #10 notes a binding limit as a risk at the stop rung. Domain moved from the note's Product Analytics to business-operations-analytics/service-operations-sla: the remediation planner owns an operations call on change capacity, product-analytics has no honest subdomain for it, and business-operations x opportunity-sizing is a never-built pairing. Geography Spain (Malaga) rather than Portugal, which repeats task121 inside the last three. Personas from guard.py names --geo Spain --seed 128, the first six in draw order: Reina Guzmán (requester, remediation planner), Santiago Vidal (CISO, the prompt's one belief), Prudencio Cañete (SRE lead for the colocated estates), Fabio Montalbán (data platform lead), Felicia Infante (provider's service delivery manager), Eva Mas (patch crews' dispatch lead). Calibration form counterparty_acknowledgement (the provider's acknowledgements of change requests against windows). Context artifact monitoring_export: the planner (and the CISO's belief) works from the vulnerability scanner's exploitable-exposure export; the office's quarterly close-out (covering only the four cloud estates the crews patch, because the provider closes colocated tickets) still ships as rung 1's corpus. Keys tried first and banned as siblings registered during the draw: close_out_summary (task124) and operations_log (task125); monitoring_export was itself banned against task121 when the draw opened and left the window as task124 and task125 registered. Role family capacity_planner: the requester plans the crews' monthly ticket capacity; compliance_or_audit would also read true and was blocked by ban.role against task119 at draw time. Forum operations_desk (the crews' dispatch desk keys the cut list on Monday 2 November); forcing event budget_or_appropriation (the first monthly allocation of the crews' 300 tickets on exploitable exposure); org family hospitality_or_tourism (an online travel booking platform), never used before. Shape 01 (ranked list under a cap): the 300 tickets are every candidate package update ranked by what it takes out in November and cut at 300, with the colocated tickets trimmed by the drain budget; shape 05 was the first key and is banned against task124. Spine planned synthetic over real CVE identifiers with FIRST EPSS scores, licence and date to be recorded at stage 3. Answer, answer_source and spine rows are filled at stage 3. Registration redraws (coordinator, 2026-10-10): calibration counterparty_acknowledgement to closed_decision_corpus (BLOCK against task126), forcing event budget_or_appropriation to launch_or_rollout (BLOCK against task127), subdomain service-operations-sla to field-service-maintenance (would block task129); decisive rung unchanged."
+}

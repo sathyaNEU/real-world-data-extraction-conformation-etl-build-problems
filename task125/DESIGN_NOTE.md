@@ -4,7 +4,7 @@ Stage 1 (draw), drawn 2026-10-10. This is the build's one design note; the desig
 
 ```
 DRAW  (independent draws, checked with .claude/skills/fingerprint/guard.py)
-  Card filed: pending registration (drafted at scratchpad/cards/task125.json; the coordinator registers the wave task124 to task130 in task-number order)   Verdict: WARN (repeat.geography only)
+  Card filed: registered 2026-10-10 by the coordinator after task124, with the context artifact redrawn at registration (## Guard)   Verdict: WARN (repeat.geography only)
   Shape: 02 forecast across many periods   Gate G mechanism: forecasting (method_or_model_selection supporting at the screen rungs)
   Gap: population (decisive), time (rung 3), rule (rungs 0 to 2)
   Pattern: none of A to E carries the decisive rung (G2 decisive); A frames the build (past exceedance against forward yield) and carries rung 3; B carries the screen rungs

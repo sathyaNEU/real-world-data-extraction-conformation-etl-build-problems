@@ -1,0 +1,107 @@
+{
+  "task": "task126",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "realises analytical_tasks note DA02 (first realisation); drafted at stage 1 and not registered here, because the coordinator registers the batch's cards in task-number order",
+  "domain": "policy-education",
+  "subdomain": "public-administration",
+  "niche": "a national patent office's statutory headline pendency for one fiscal year's filings, where the examination docket hands a refused application's file to a new docket both when the same application is re-examined and when the applicant files a continuing application on the transferred file",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "quantity_figure",
+  "answer_unit": "date_or_period",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "D"
+  ],
+  "generators": [
+    "G3",
+    "G2",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
+  "context_artifact": "published_series",
+  "stakeholder_role": "head of performance statistics at the national patent office, who drafts the headline section of the statutory annual performance report",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "examination_dockets_FY2016_FY2026.parquet",
+    "rows": 820000,
+    "entity": "one examination docket: one examiner's file on one application from docketing to close, with its end code and end date",
+    "grain": "docket",
+    "source": "synthetic (the office's examination production system extract, FY2016 to the 30 September 2026 extract; the note's 2.9 million rows rescaled at stage 2)"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "fictional country (Republic of Morvane)",
+    "currency": "none",
+    "org_type": "national patent office that files a statutory annual performance report with the ministry and runs a work-sharing programme with one partner office",
+    "invented_names": [
+      "Morvane",
+      "Morvane Patent Office",
+      "Saravel",
+      "Saravel Intellectual Property Office",
+      "Morvane Patent Examiners' Association"
+    ],
+    "people": [
+      "Stephen Brewer",
+      "Thomas Kennedy",
+      "Cristina Turner",
+      "Erica Ryan",
+      "Michael Cannon",
+      "Lauren Mendoza"
+    ]
+  },
+  "deliverables": [
+    "fy2022_pendency_headline.docx",
+    "fy2022_time_to_decision.svg"
+  ],
+  "opening_move": "number-first",
+  "driver": "The decisive move splits units the natural build has already joined: the succession link it follows records only that a work file was carried to a new record, which happens both when the same unit continues and when a new unit is opened on the carried file, a certifying corpus drawn from a population in which every link continues the same unit confirms joining them all, and only a classification on a separate output-credit ledger marks the links that opened new units, so the joined build starts some units too early, ends others too late and overstates the median duration.",
+  "driver_concrete": "A CX edge in the continuity table records that a refused application's examination file moved to a new docket, which happens both for a re-examination of the same application and for a continuing application filed after refusal on the transferred file; the partner office's acknowledgements certify chaining every CX edge because programme applications are only ever re-examined, and only the examiner production ledger, which credits the first action on a continuing application as a first action on a new application, tells the two apart, so the FY2022 cohort gains the continuing applications filed that year as new applications, loses the later continuations of its own applications, ends those parents at their refusals, and its median falls below the fully chained figure.",
+  "stump": "A competent solver chains every CX succession into one application, dates it from its first docket, ends it at its last docket's decision, censors the undecided at the 30 September 2026 extract, reproduces every one of the partner office's acknowledged final decisions to the day with that construction and files the fully chained FY2022 median (31.4 months in the source note's world); the step that lands it there is reading every CX edge as the same application continuing, when a designed share of them (about two in five) carried a refused application's file to a continuing application filed that day, which the examiner production ledger credits as a first action on a new application, so each of those is a new application in its own filing year and its parent was finally decided at its refusal, and the FY2022 median is about 27.9 months (a design target, fixed at stage 2).",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task82": "task82 joins orphan purchase records to the member a second system's credit ledger assigned them, adding volume that carries members over a count threshold; here the natural build has already joined docket successions into applications, and the decisive move splits the successions an examiner-credit class marks as new applications, which re-dates starts and ends in a duration distribution and lowers its median, with no record attributed to a different holder."
+  },
+  "lineage": [
+    {
+      "architecture": "v0 (the source note DA02's own decisive rung, redrawn at the draw before any build)",
+      "drawn": "2026-10-10",
+      "domain": "policy-education",
+      "subdomain": "public-administration",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "quantity_figure",
+      "answer_unit": "date_or_period",
+      "gap": [
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "generators": [
+        "G2",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "counterparty_acknowledgement",
+      "context_artifact": "published_series",
+      "driver": "The unit the published figure is defined on is a chain of work records linked only through a separate succession table, so measuring each record as a unit splits the slow units into short spells and moves their later records into the cohort of the year they were opened, and every record-level construction files a shorter median than the chained one, while a corpus whose units never have a second record certifies every record-level end date.",
+      "driver_concrete": "Dockets closed on CX are chained into applications along CX edges in the continuity table before Kaplan-Meier, each application dated by its first docket and ended at its last docket's decision, lifting the FY2022 median from 23.8 months (CX dockets censored) to 31.4.",
+      "stump": "A competent solver runs Kaplan-Meier on FY2022 dockets ending at the decision notice and censoring CX dockets at the CX date, and files 23.8 months; it never chains dockets into applications along the continuity table's CX edges.",
+      "fate": "redrawn at the draw on 2026-10-10, never built or registered: the charter's 'application', the CX end code glossed as continued examination and the schema-visible continuity table hand the chaining to a plain solver (pilot lessons: a charter definition and a join whose keys line up are executed), and the move repeats task90's chaining of work records into the customer's unit; it survives as rung 3, now certified by the corpus"
+    }
+  ],
+  "notes": "Realises analytical_tasks note DA02 (analytical_tasks/03_descriptive_distribution/DA02_pendency-median-docket-versus-application-grain.md), first realisation; drafted at stage 1 on 2026-10-10 and not registered (the coordinator registers the batch in task-number order). The note's decisive rung (chaining dockets into applications along CX edges) is kept as rung 3 and certified by the corpus; the decisive rung is redrawn (lineage v0 carries the reason). Decisive generator G3 record versus operation, read the way the generator list files it under gap 2: the CX edge is correct at its stated meaning (the examination file moved to a new docket) and the decision needs the legal unit behind it; no A to E pattern carries it, so pattern reads none first, with D behind it for rung 3. Measured trap #13 (validates on one population, applies to another), with #12 and #5 behind it. Subdomain public-administration: a public patent office's examination pendency is a public-service outcome read from its own administrative records (task119, the last policy-education/public-administration card, sits outside the three-build window once task124 and task125 are filed). Geography is a fictional country because a national patent office is unique to its country and a real one would carry fabricated records; personas drawn with guard.py names --geo 'fictional country (Republic of Morvane)' --seed 126 (locale en_US), the first six in draw order with Connie Davis (people.first WARN against task100) replaced by the next drawn name, Cristina Turner. Currency none: the asks report shares and counts. Context artifact published_series: last year's annual performance report's pendency table, examiner docket pendency, the licensed wrong basis; the production system's monthly report (monitoring_export) is banned against task121. Calibration organ: the partner office's acknowledgement file, redesigned from the note so programme applications can be re-examined (CX) but never continued on the transferred file, so it certifies chaining on every case and is blind to the split. Decisive evidence: the examiner production ledger's credit class on each docket's first action; every ask is kept off that ledger at stage 2."
+}

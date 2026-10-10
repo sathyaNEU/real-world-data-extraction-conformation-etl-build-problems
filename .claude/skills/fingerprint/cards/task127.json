@@ -1,0 +1,84 @@
+{
+  "task": "task127",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "giving-strategy-program-funding",
+  "niche": "a nonprofit clean-heat fund splitting its year's funded heat-pump rebate slots across the six rural electric co-operatives it pays rebates through, where a rebate is earned only once the member's co-op crew sets the heat pump's separately metered rate meter before year-end, and part of the demand sits on feeders with no hosting headroom",
+  "objective": "opportunity-sizing-decision",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none",
+    "C",
+    "E"
+  ],
+  "generators": [
+    "G7",
+    "G8",
+    "G14",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "pilot_log",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "programme director of a nonprofit clean-heat fund, who takes the 2027 split of the fund's heat-pump rebate slots across its six participating co-operatives to the fund's trustees",
+  "role_family": "programme_officer",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "field_orders_2025_2026.csv",
+    "rows": 70000,
+    "entity": "one field order worked by a co-op's meter crew (heat-pump rate meter set, meter exchange, new service, meter test, disconnect or reconnect) with its order type, co-op, crew, requested date and completed date",
+    "grain": "field order",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "United States, Minnesota",
+    "currency": "USD",
+    "org_type": "a nonprofit clean-heat fund, part-funded by a state appropriation, paying heat-pump rebates through six participating rural electric co-operatives",
+    "invented_names": [
+      "Minnesota Clean Heat Fund",
+      "North Shore",
+      "Valley",
+      "Lakes",
+      "Uplands",
+      "Riverbend",
+      "Pinewood"
+    ],
+    "people": [
+      "Stephanie O'Connor",
+      "Anthony Bentley",
+      "Elizabeth Villa",
+      "Kyle Bean",
+      "Larry Woodward",
+      "Brian Robbins"
+    ]
+  },
+  "deliverables": [
+    "coop_slot_split_2027.csv",
+    "coop_slots_2027.svg",
+    "slot_split_board_note_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is how many of the period's placeable units a fixed team can finish before the period closes, because each unit counts only once that team performs one last step for it, the team's spare weekly capacity is visible only as the ceiling it held through an earlier unrelated surge, and the decision's own volume, bunched by its filed calendar into weeks no closed period approached, queues the later units past the close; the closed record's lag and an annual capacity check both pass, so the placeable count overstates the in-period total wherever the team is small and the units are many.",
+  "driver_concrete": "A rebated heat pump earns its rebate only when the member's co-op crew sets its heat-pump rate meter, and slots still unset on 31 December lapse, so each co-op's rebated installs are the meter sets its crew completes in the year; Lakes' and Uplands' crews have about ten sets a week left after standing work (the ceiling each held through the 2025 meter-exchange campaign), the autumn application window bunches their programme-scale meter orders into about six weeks, and the queue carries about 300 of them past 31 December, while Year 1's 412 meters, spread across six rebuilt-feeder neighbourhoods, were all set within three weeks.",
+  "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at Year 1's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside Year 1's three weeks and that each co-op crew's year has room for its meters, and commits about 1,450 rebated installs with Lakes taking the most slots; the step that lands it there is carrying Year 1's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten sets a week left after standing work (the ceiling they held through the 2025 meter-exchange campaign), and the autumn window's orders queue past 31 December, so about 1,150 installs land in the year and Riverbend takes the most slots.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task87": "task87 caps a count by a per-unit timetable clash, two owed items meeting in one period; here no single unit clashes with anything, and the cap is an aggregate weekly service capacity that the decision's own seasonal volume overruns before the window closes, recovered from the ceiling of an unrelated past surge."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note OS02 (analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md); this build is the note's first realisation. Decisive move redrawn at the draw: the note's per-feeder minimum of buyers and hosting slots is built from a stated connection standard, a per-feeder hosting map and a schema-visible neighbourhood-to-feeder join, so it fails the pilot test and is kept as rung 2; the decisive rung is the district crews' meter-set queue at programme scale. Calibration organ redrawn from the note's pilot log of every qualifying household (pilot_log, banned against task122) to Year 1's install book, the existing book of rebated installs, whose rates take the survey's qualifying households as denominators. Heating fuel moved from oil to propane for Minnesota co-op territory; four districts became six. Personas drawn with guard.py names --geo 'United States, Minnesota' --seed 127 (en_US pool), Oconnor recased to O'Connor. Targets in driver_concrete and stump (about 1,450, about 1,150, about 300, ten a week) are design targets for stage 2, not computed figures. Not registered: the batch coordinator registers cards in task-number order. Registration re-set (coordinator, 2026-10-10): BLOCK on ban.calibration existing_book_actuals, ban.artifact close_out_summary and ban.org_family utility_or_infrastructure against task124, and a pairing that would block task128; the requester moved from one co-op to the clean-heat fund that pays the rebates (nonprofit-grant-making, foundation_or_funder, trustees_or_governors), the six districts became the six co-operatives it pays through, the calibration organ became the 2026 pilot's rebate log (pilot_log) and the context artifact the co-ops' hosting capacity filings (capacity_report); the decisive rung is unchanged."
+}
