@@ -342,7 +342,7 @@ The judge holds every supplemental answer to the main call's bar: it must recomp
 
 ## Part 8. The audit loop
 
-Nothing outside the generator audits this layer before a solver round does, and a round grades the asks without explaining them, so the ask layer is audited by construction. Seven sweeps, all mechanical, all asserted:
+Nothing outside the generator audits this layer before the portal does, and the portal grades the asks without explaining them, so the ask layer is audited by construction. Seven sweeps, all mechanical, all asserted:
 
 1. **The lazy sweep.** For each ask, code the most natural competent path, the obvious files, no device handling, no organ read, and assert it lands on stop 1 of that ask's ladder, outside the bin. If the lazy path reaches the golden, the ask is a free criterion and the device is inert on it.
 2. **The necessity matrix.** For each device, handle everything else correctly and mishandle only it, and record which ask answers move and by how much. A device that moves nothing is dead weight and comes out; a file whose misreading moves nothing on some ask's path is decoration and the span claim shrinks. The hazard table is this matrix's output, and it is rerun in full after every parameter change, because a tuning edit that silently kills a device costs exactly what a rung collision costs the main ladder.

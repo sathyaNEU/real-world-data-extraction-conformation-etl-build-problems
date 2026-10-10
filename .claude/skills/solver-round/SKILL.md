@@ -1,9 +1,14 @@
 ---
 name: solver-round
-description: "Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver sees the prompt and the bundle and nothing else and returns its committed call and every ask figure as structured output; grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. The committed call decides: an answer other than the golden one sends the build to the determinism judge, and the golden answer sends it back to be hardened. Invoked by /solve and by the /build pipeline's stage 4; the plain and skeptic pair runs only when the author asks. A round is a filter, never an oracle: a build the solver cracks does not go to the portal, and a build it does not crack still has to."
+description: "PAUSED, not part of the workflow (see build-pipeline); runs only if the author lifts the pause in their own words. Run an independent solve of a built task in-house, before the portal, and grade it against submission.md with the rubric's weights. One plain solver sees the prompt and the bundle and nothing else and returns its committed call and every ask figure as structured output; grade.py turns that into a proxy score, a landed-or-missed flag on the main call and a per-ask hit table, written to <task>/solver_rounds/ and pipeline.json. The committed call decides: an answer other than the golden one sends the build to the determinism judge, and the golden answer sends it back to be hardened. Invoked only by /solve, after the author lifts the pause; /build never runs it. A round is a filter, never an oracle: a build the solver cracks does not go to the portal, and a build it does not crack still has to."
 ---
 
 # Solver round
+
+> **Paused.** The workflow is design, build, duplicate check, determinism check, ship. No solver
+> round runs in `/build` or on the model's own initiative, and no build is hardened or re-rooted
+> because a solver reached the golden answer. This skill stays in the repo so the author can lift
+> the pause; it is read only after they do, and the rest of this file is written for that case.
 
 > The portal is the oracle and it costs a day per answer. A solver round costs a quarter of an hour
 > and answers the one question the author most needs before spending that day: does a competent

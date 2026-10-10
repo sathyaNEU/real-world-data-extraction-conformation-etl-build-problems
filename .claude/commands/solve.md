@@ -1,9 +1,14 @@
 ---
-description: Run an in-house solver round on a built task before the portal. One plain solver by default; "2" runs plain and skeptic together. Each solver sees only the prompt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md.
+description: PAUSED, not part of the workflow; runs only if the author asks for it in their own words. Run an in-house solver round on a built task before the portal. One plain solver by default; "2" runs plain and skeptic together. Each solver sees only the prompt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md.
 argument-hint: taskNN [1|2] [--label "..."]
 ---
 
 # /solve
+
+**This command is paused.** Solver rounds are not part of the workflow (see `build-pipeline`), and
+`/build` never runs them. If the author has not lifted the pause in this conversation in their own
+words (for example "run a solver round on task108"), do nothing except say the command is paused
+and stop. The remainder of this file applies only after the author has lifted the pause.
 
 Run one solver round on the task named in `$ARGUMENTS`. Resolve a bare number or `taskN` to
 `taskN/` at the repository root (the folder holding `CLAUDE.md`); if nothing is named, ask and stop. The second

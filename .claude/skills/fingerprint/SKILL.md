@@ -124,8 +124,8 @@ rename or a regeneration before the bundle is called ready.
 **4b. When the author types `/approve`**, `guard.py heart taskNN` compares the card's `driver`,
 `driver_concrete` and `stump` text with every card's driver, every lineage driver, every card's
 stump and every shipped-ledger row, then runs the full check. It is the cheap half of
-`/clone-check` and exits 1 on BLOCK, so a template or duplicate is caught before a solver round is
-paid for. A card with an empty `stump` cannot be checked and is filled from the design note first.
+`/clone-check` and exits 1 on BLOCK, so a template or duplicate is caught before the adjudicated
+`/clone-check` is paid for. A card with an empty `stump` cannot be checked and is filled from the design note first.
 
 **5. When the submission is final**, update the card's `answer`, `answer_source`, `spine.rows`,
 `deliverables` and `opening_move` so the corpus stays true. That is part of delivering the build,
