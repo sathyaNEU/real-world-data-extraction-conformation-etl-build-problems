@@ -380,6 +380,10 @@ About 27 files and five formats (parquet, csv, xlsx, docx, pdf, md). Stage 3 may
 - **One more repair licensed:** the solver lands the call by a route other than the designed one (for example a generic "add back demand response" step applied to the analogs), which says the route is a habit, not a discovery; the repair moves the evidence, never deletes it.
 - **Ship:** the solver files any other vector, rung 3 or not.
 
+### Prompt
+
+`prompt.md`, 249 words, constraint-first ("We can only buy 400 MW of summer firm capacity."), two files, `voice-check.py 124` clean (24.9 words a sentence, context 40.2 per cent, one rounding tag beside the "whole MW" convention, no "because"). The call closes the context as one quotable sentence (the megawatts each of the eight named books gets, adding to exactly 400), and both later paragraphs open on "the split". One belief, the head of trading's, as one clause. Nothing names an input file, the developer, the programme, the replay, the percentile, the window of summers or the hedge source; the policy carries all of them.
+
 ## Tried and rejected
 
 - Draw, the note's tariff-class replay as the decisive rung: a schema-visible join (ESI ID to the premise file's class) that a finest-grain replay of the interval data also hands over, both default moves for the pilot solver; demoted to rung 3.
