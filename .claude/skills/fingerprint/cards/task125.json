@@ -1,0 +1,77 @@
+{
+  "task": "task125",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "accounting-audit-forensic x anomaly-detection; first realisation of analytical_tasks note AD02; wave task124 to task130, drafted in parallel and registered in task-number order by the coordinator",
+  "domain": "accounting-audit-forensic",
+  "subdomain": "audit-testing-sampling",
+  "niche": "sizing the plan-year call-off of post-payment examinations for a council's first-two-digit payment filter, whose flagged cells are carried by fixed-amount streams: a fixed-term household instalment scheme, and a carer scheme that pays one four-weekly amount for every guest a carer hosts",
+  "objective": "anomaly-detection",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time",
+    "rule"
+  ],
+  "pattern": [
+    "none",
+    "A",
+    "B"
+  ],
+  "generators": [
+    "G2",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "certified_matrix",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "head of exchequer services at a shire county council, who places the year's call-off for post-payment examination of the payments the council's digit filter routes",
+  "role_family": "finance_controller",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "spending_over_500_2021-04_to_2027-02.csv",
+    "rows": 420000,
+    "entity": "one published spending line over 500 pounds: an invoice or payment-request line on a council payment, with its department, service area, supplier, transaction reference, payment date, net amount and VAT",
+    "grain": "invoice line within a payment (remittance)",
+    "source": "synthetic (fictional county council's transparency spending publication, April 2021 to February 2027; planned row count, cut at stage 3)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United Kingdom, England",
+    "currency": "GBP",
+    "org_type": "a shire county council's exchequer service, which runs a first-two-digit filter that routes payments for post-payment examination by a framework assurance provider",
+    "invented_names": [
+      "Wealdmoor County Council",
+      "Tenancy Sustainment Payments",
+      "Fernhollow Assurance",
+      "Home First Step-Down"
+    ],
+    "people": [
+      "Tina Rogers",
+      "Julia Burgess",
+      "Pauline Pollard",
+      "Douglas Harris",
+      "Wendy Lyons",
+      "Abigail McDonald"
+    ]
+  },
+  "deliverables": [
+    "examination_calloff_2027-28.docx",
+    "examination_calloff_2027-28.xlsx"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and a unit holding that class beside another is carried for the other alone from then on, which moves its amounts into the selected band; a forecast that follows the band's current members, checks the filed ending against them and finds no member touched, falls short by every such unit, and only decomposing each unit's amount into the filed component rates and re-summing what survives the date returns the answer, after the shallower forward correction (a fixed-term cohort run off on a term recovered from an earlier cohort that has completed) has been made and reads as final.",
+  "driver_concrete": "Adult Social Care's flagged cell 14 is the four-weekly 1,464-pound payment Shared Lives makes to a carer for one long-term band 2 guest (four weeks at 366 a week), and a carer is paid one four-weekly amount for every guest they host, so the 70 carers hosting a long-term band 2 guest beside a Home First Step-Down guest are paid 3,044 (cell 30) in every closed period; the step-down places close on 31 March 2027, so from the first payment for April those carers are paid 1,464 and every later plan-year payment of theirs lands in the flagged cell, which a forecast that carries the cell's current carers forward, and finds no step-down payment in any flagged cell, never counts. Provisional targets, re-derived at the design stage: about 5,900 routed payments against about 5,000 at the stop rung (Housing Support's 2024-25 instalment intake run off on its 30-instalment term, Adult Social Care carried forward whole, 15 per cent low), 7,100 for the closed year carried forward (20 per cent high), 9,400 on the published amounts and 21,500 on the full published range.",
+  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files about 5,000 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment for every guest the carer hosts, so from April 2027 the carers paid 3,044 for a long-term band 2 guest and a step-down guest are paid 1,464, every one of their plan-year payments for April onwards lands in cell 14, and the plan year routes about 5,900.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Realises analytical_tasks note AD02 (analytical_tasks/02_anomaly_detection/AD02_digit-filter-workload-cohort-runoff.md), its first realisation, drawn 2026-10-10; registered after task124 in task-number order. The note's decisive move, Housing Support's fixed-term cohort run off on a term recovered from the completed 2021 intake, is kept as rung 3: the pilot's plain solver replays records at the finest grain and runs cohort studies unprompted, and the 2021 intake's full rise and run-off sits in the same flagged-cell series, so that rung is constructed rather than missed. A first redraw (re-pricing Adult Social Care's stream at a filed 2027/28 tariff) reads honestly as (time, A) or (time, G13) and the guard blocks both (task121 v1 lineage in the window, ten older builds, task122's decisive G13), so the decisive rung moved to the population gap: the forward composition of each carer's single four-weekly payment. Requester moved from the head of internal audit (compliance_or_audit, banned against task119) to the head of exchequer services (finance_controller); internal audit keeps publishing the conformity statements. Context artifact redrawn at registration from close_out_summary (BLOCK ban.artifact against task124) to operations_log, the filter's 2025/26 run log."
+}

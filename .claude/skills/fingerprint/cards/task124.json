@@ -1,0 +1,75 @@
+{
+  "task": "task124",
+  "architecture": "v1",
+  "drawn": "2026-10-10",
+  "slot_note": "Realises analytical_tasks note FC02 (summer firm-capacity block split, cold-store coincidence). The note's decisive move, the tariff-class replay, is demoted to rung 3 and a new decisive rung is drawn after it.",
+  "domain": "business-operations-analytics",
+  "subdomain": "other",
+  "niche": "a Texas retail electricity provider splitting its risk committee's capped summer firm-capacity block across its eight weather-zone books in 5 MW lots, the season a cold-storage developer's 31 new distribution centres arrive in North Central and the book's only refrigerated analogs have only ever been metered under its own summer load-shift dispatch",
+  "objective": "forecasting",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G16",
+    "G10"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "head of supply portfolio at a Texas retail electricity provider, who takes the summer block split to the risk committee",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "idr_hourly_reads_summers_2017_2026.parquet",
+    "rows": 1400000,
+    "entity": "one hourly read of one interval-metered premise in the book on a June to September weekday, with its ESI ID, weather zone and kWh",
+    "grain": "premise x hour",
+    "source": "synthetic, shaped on ERCOT's published hourly load by weather zone (public)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, Texas",
+    "currency": "USD",
+    "org_type": "retail electricity provider serving homes and businesses in all eight ERCOT weather zones",
+    "invented_names": [
+      "Sabine Crest Energy",
+      "Harlan Ridge Cold Storage Partners",
+      "Business Saver programme"
+    ],
+    "people": [
+      "Tammy Ochoa",
+      "Gregory Sheppard",
+      "Craig Stewart",
+      "Susan Kelley",
+      "Donald Lee"
+    ]
+  },
+  "deliverables": [
+    "summer_block_split.xlsx",
+    "summer_block_committee.pptx"
+  ],
+  "opening_move": "constraint-first",
+  "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, and every analog's measured value at the deciding hour was held down by the organisation's own dispatch, which a unit cannot join until it has a full season of metered history; carrying the analogs' measured value files the newcomers at the held-down level, the closed record cannot object because the newcomers were never in it and the analogs stay dispatched, and only the analogs' undispatched level, read from their own records outside the dispatch windows, prices the newcomers.",
+  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced at the cold-store class's draw in the system's peak hour, and all fourteen cold stores and ice plants the book holds were held to their firm levels through every closed system peak by Sabine Crest's own Business Saver load-shift programme, which no site can join before it has twelve months of interval data; their measured 0.60 of maximum demand files the centres too low, and their undispatched 0.90, read from their own weekdays and hours outside the dispatch windows, is what the un-enrolled centres will draw.",
+  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report to the megawatt, collapses the enrolment amendments, joins the distribution utility's tariff class and prices North Central's 31 new refrigerated distribution centres at the class's own peak-hour draw measured on the book's fourteen cold stores (0.60 of maximum demand), filing North Central at 195 MW of the 400 MW block (provisional); the step that lands it there is taking those fourteen as what a cold store draws in the system's peak hour, when every one of them was held to its firm level through every closed system peak by the company's own Business Saver load-shift programme, which no site can join before it has a metered summer, so the centres run at the analogs' undispatched 0.90 and North Central takes 230 MW (provisional).",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task83": "task83 sizes a randomized treatment effect and splits it by each unit's own earlier exposure to that same treatment; here no effect is sized: a separate programme's dispatch held the analogs' measured level down at the very hour the policy reads, the newcomers are barred from that programme, so the analogs' level is restored from their own non-dispatch records before it transports to them, and the cap is levelled by exposure rather than ranked by effect."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note FC02 (analytical_tasks/01_forecasting/FC02_summer-block-split-cold-store-coincidence.md); this build is its first realisation. Drawn 2026-10-10 as a candidate for task-number-order registration by the coordinator, not registered here. Decisive move redrawn at the draw: the note's tariff-class replay is a schema-visible join (ESI ID to the distribution utility's premise file) that a finest-grain replay of the premise interval data also hands over, so it is rung 3, and the decisive rung is the analogs' dispatch. Domain moved from the note's Economics to Business & Operations Analytics because a retail provider's hedge-block placement sits in the Economics boundary's out-of-scope markets-trading class; subdomain other (an energy retailer's summer supply planning), since no enumerated business-operations subdomain fits. Figures in the stump are provisional from the draw-stage sketch and are re-solved at stage 2."
+}
