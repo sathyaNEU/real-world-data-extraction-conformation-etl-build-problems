@@ -387,10 +387,13 @@ def census_checks(K, D, S, target, F):
     K.check("no long wait at a trust without level-3 beds overlaps an empty bed or a planned own placement (Y3)", ok)
     ok = True
     for x in cl3:
+        if x["trust"] == D_:
+            continue
         for u in D.l3_units(x["dta"].date()):
             if inside(own_planned[u], x["a"], x["b"]):
                 ok = False
-    K.check("no planned own placement at any unit inside any year-3 long wait", ok)
+    K.check("no planned own placement at any unit inside any year-3 long wait at a trust other than D (D's own unit "
+            "admits no one during its waits: hold checks)", ok)
     hold_checks(K, D, cl_all, target, F)
     # D's long waits fall on weekdays during the lists; G's own-empty waits at weekends
     d_days = {x["dta"].weekday() for x in cl3 if x["trust"] == D_}

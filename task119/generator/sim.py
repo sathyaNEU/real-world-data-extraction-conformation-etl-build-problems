@@ -62,7 +62,7 @@ def legacy_transit_room(world, u, t, kind):
         return False
     hi = plan.TRANSIT[1]
     d8 = lm(day_of(t), 8, 0)
-    nxt8 = d8 if t < d8 else d8 + 1440
+    nxt8 = d8 if t <= d8 else d8 + 1440
     hi = min(hi, nxt8 - t - 1)
     for a, b in sorted(world.units[u].frozen):
         if a > t:

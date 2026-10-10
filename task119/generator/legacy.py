@@ -159,7 +159,7 @@ def finalize(world, P, stays, refs, death, temp, eps, verified):
             hi = min(hi, plan.LEGACY_TX_MAX_PLACED - wt)
         hi = min(hi, st["rows"][0][1] - t - 15)
         day8 = lm(day_of(t), 8, 0)
-        nxt8 = day8 if t < day8 else day8 + DAY
+        nxt8 = day8 if t <= day8 else day8 + DAY
         hi = min(hi, nxt8 - t - 1)
         for a, b in frozen[u]:
             if a > t:
