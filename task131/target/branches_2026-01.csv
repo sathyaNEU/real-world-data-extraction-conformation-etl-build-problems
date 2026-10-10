@@ -1,0 +1,43 @@
+branch_no,branch_name,town,postcode,region_code,region_name,format,opened_on,area_manager
+1102,St. Gallen Bahnhof,St. Gallen,9000,SGS,St. Gallen Stadt,M,1998-03-02,Amelie Peter
+1104,St. Gallen Lachen,St. Gallen,9014,SGS,St. Gallen Stadt,M,1987-10-05,Amelie Peter
+1107,St. Gallen Neudorf,St. Gallen,9008,SGS,St. Gallen Stadt,L,2004-04-19,Amelie Peter
+1109,St. Gallen Rotmonten,St. Gallen,9010,SGS,St. Gallen Stadt,S,1979-06-11,Amelie Peter
+1111,St. Gallen Winkeln,St. Gallen,9015,SGS,St. Gallen Stadt,M,2011-09-26,Amelie Peter
+1113,St. Gallen St. Fiden,St. Gallen,9008,SGS,St. Gallen Stadt,S,1992-02-17,Amelie Peter
+1116,Wittenbach Dorf,Wittenbach,9300,SGS,St. Gallen Stadt,M,2001-11-12,Amelie Peter
+2203,Gossau Zentrum,Gossau SG,9200,FUE,Fürstenland,L,1995-05-08,Nemanja Scheidegger
+2205,Gossau Mettendorf,Gossau SG,9200,FUE,Fürstenland,S,1983-08-29,Nemanja Scheidegger
+2207,Flawil,Flawil,9230,FUE,Fürstenland,M,1990-03-12,Nemanja Scheidegger
+2209,Degersheim,Degersheim,9113,FUE,Fürstenland,M,1976-04-05,Nemanja Scheidegger
+2211,Uzwil,Uzwil,9240,FUE,Fürstenland,M,2006-10-16,Nemanja Scheidegger
+2214,Oberuzwil,Oberuzwil,9242,FUE,Fürstenland,S,1999-01-25,Nemanja Scheidegger
+2216,Niederbüren,Niederbüren,9246,FUE,Fürstenland,S,1985-07-01,Nemanja Scheidegger
+3101,Altstätten,Altstätten SG,9450,RHT,Rheintal,L,1993-09-20,Enis Stutz
+3104,Heerbrugg,Heerbrugg,9435,RHT,Rheintal,M,2008-03-31,Enis Stutz
+3107,Rorschach Hafen,Rorschach,9400,RHT,Rheintal,M,1989-05-22,Enis Stutz
+3109,Widnau,Widnau,9443,RHT,Rheintal,M,2002-06-03,Enis Stutz
+3112,Goldach,Goldach,9403,RHT,Rheintal,S,1981-11-30,Enis Stutz
+3115,Thal,Thal,9425,RHT,Rheintal,S,1997-08-18,Enis Stutz
+3118,Oberriet,Oberriet SG,9463,RHT,Rheintal,S,2010-02-08,Enis Stutz
+4101,Arbon,Arbon,9320,TGO,Thurgau Ost,L,1994-10-03,Ursula Wehrli
+4103,Romanshorn,Romanshorn,8590,TGO,Thurgau Ost,M,2000-05-15,Ursula Wehrli
+4105,Egnach,Egnach,9322,TGO,Thurgau Ost,S,1978-09-04,Ursula Wehrli
+4107,Amriswil,Amriswil,8580,TGO,Thurgau Ost,M,2005-03-21,Ursula Wehrli
+4109,Bischofszell,Bischofszell,9220,TGO,Thurgau Ost,M,1991-12-09,Ursula Wehrli
+4111,Roggwil TG,Roggwil TG,9325,TGO,Thurgau Ost,S,2013-06-24,Ursula Wehrli
+4113,Sulgen,Sulgen,8583,TGO,Thurgau Ost,S,1986-02-03,Ursula Wehrli
+5102,Wattwil,Wattwil,9630,TOG,Toggenburg,L,1996-04-29,Ludwig Gfeller
+5104,Lichtensteig,Lichtensteig,9620,TOG,Toggenburg,S,1980-10-20,Ludwig Gfeller
+5106,Ebnat-Kappel,Ebnat-Kappel,9642,TOG,Toggenburg,M,2003-07-07,Ludwig Gfeller
+5108,Bütschwil,Bütschwil,9606,TOG,Toggenburg,S,1988-01-18,Ludwig Gfeller
+5110,Nesslau,Nesslau,9650,TOG,Toggenburg,S,2009-05-04,Ludwig Gfeller
+5112,Bazenheid,Bazenheid,9602,TOG,Toggenburg,M,1997-11-24,Ludwig Gfeller
+6101,Herisau,Herisau,9100,APZ,Appenzellerland,L,1990-08-13,Aline Baur
+6103,Appenzell,Appenzell,9050,APZ,Appenzellerland,M,2001-03-05,Aline Baur
+6105,Teufen,Teufen AR,9053,APZ,Appenzellerland,M,1995-09-11,Aline Baur
+6107,Gais,Gais,9056,APZ,Appenzellerland,S,1984-06-25,Aline Baur
+6109,Heiden,Heiden,9410,APZ,Appenzellerland,S,2007-01-29,Aline Baur
+6111,Urnäsch,Urnäsch,9107,APZ,Appenzellerland,S,1982-04-12,Aline Baur
+6113,Speicher,Speicher,9042,APZ,Appenzellerland,S,2012-10-01,Aline Baur
+6115,Trogen,Trogen,9043,APZ,Appenzellerland,S,1977-05-30,Aline Baur

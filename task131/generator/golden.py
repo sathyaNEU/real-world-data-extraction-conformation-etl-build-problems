@@ -201,7 +201,8 @@ def write_docx(fig, path):
     para("Source: as above, by the membership's home branch.", size=8, italic=True, after=10)
 
     para("¹ Net margin is gross margin less reward cost. Baseline weeks 2026-W15 to W22, run-rate weeks W29 to W34. "
-         "Every allocated card is an active card, and a week without a purchase counts as zero. Annual value is "
+         "Figures are per active card-week (every allocated card is active, a week without a purchase counts as zero), "
+         "measured on the cards of memberships whose cards all drew the same cell. Annual value is "
          "the per card-week figure times 52 times the plan's active cards, rounded once.", size=8, after=2)
     para("² Regions of the network from 1 July 2026: Rorschach Hafen, Goldach and Thal in St. Gallen Stadt; "
          "Degersheim members with Herisau in Appenzellerland; Egnach members with Arbon.", size=8, after=2)

@@ -10,7 +10,7 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Put the Frischbonus (fresh bonus) on every member card in 2027; its 2027 programme value is CHF 966 thousand.",
+  "answer": "Put the Frischbonus (fresh bonus) on every member card in 2027; its 2027 programme value is CHF 972 thousand.",
   "answer_source": "task131/submission.md, 1. Final Recommendation (the first line of golden/programme_offer_2027.docx carries the same call)",
   "gap": [
     "population",
