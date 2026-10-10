@@ -1,5 +1,5 @@
 {
-  "_about": "Controlled vocabulary for fingerprint cards. Every enumerated field on a card must use a key from here, so two builds that made the same choice collide on the same string. Sources: guide-to-prompt/references/domains and shapes, stumping Parts 1, 2, 6.1 and 6.2, determinism-check Gate G, prompt-voice.md section 3. Add a value only when no existing one fits, and add it here before using it on a card.",
+  "_about": "Controlled vocabulary for fingerprint cards. Every enumerated field on a card must use a key from here, so two builds that made the same choice collide on the same string. Sources: guide-to-prompt/references/domains and shapes, stumping Parts 1, 2, 6.1 and 6.2, determinism-check Gate G, prompt-voice.md section 3. Add a value only when no existing one fits, and add it here before using it on a card. stump_strategies is the family of the decisive move independent of the gap and pattern labels, and decisive_rule_filed plus official_decoy on a card mark the withheld-rule-with-official-decoy architecture whatever family label it carries; validated_decoy marks the build whose wrong method reproduces every closed, published or certified figure in the pack and breaks only on a forward condition.",
   "domains": {
     "product-analytics": "Product Analytics",
     "supply-chain-logistics": "Supply Chain & Logistics",
@@ -373,5 +373,22 @@
     "media_or_publishing": "media or publishing",
     "professional_services": "professional services",
     "other": "other"
+  },
+  "stump_strategies": {
+    "withheld_rule_official_decoy": "the decisive rule is in no shipped sentence and is recovered from settled cases, while a filed, official-looking rule or basis gives the wrong answer (the architecture the client flags as templated; capped by the guard)",
+    "withheld_rule_corpus_fit": "the decisive rule is in no shipped sentence and is recovered by fitting settled cases, with no official-looking rival rule filed",
+    "stated_rule_hard_construction": "the rule is filed in full and the difficulty is building the quantity it defines across files and grains",
+    "forecast_method_backtest": "forecast or model selection on honest history: structural break, seasonality, regime or horizon makes the natural fit wrong out of sample",
+    "maturity_censoring": "open periods are not fully developed: right-censoring, lag triangles, run-off or late arrival",
+    "binding_constraint": "a capacity, budget, eligibility or service limit binds and removes the natural pick",
+    "grain_or_unit": "the file's row grain or unit is not the decision's unit: episodes, members, households, per-unit normalisation, conversion",
+    "population_selection": "who is in the denominator: survivorship, selection, attrition, exposure, scope",
+    "composition_mix": "mix shift, Simpson's reversal, standardisation or reweighting changes the comparison",
+    "time_semantics": "point-in-time, as-of, fiscal or service calendars, time zones, effective dating, supersession",
+    "identity_resolution": "entity matching: reused, merged or split identifiers, many-to-many crosswalks, hierarchy roll-up",
+    "decomposition_attribution": "an outcome split across causes, components or periods, where overlap or interaction decides the split",
+    "causal_design": "confounding, spillover or interference, regression to the mean, control or comparison choice, pre-trends",
+    "uncertainty_hold": "signal against noise, multiple comparisons, power or sample size; holding can be the answer",
+    "other": "none of the above, named in the card's notes (never counts as a collision)"
   }
 }

@@ -116,7 +116,8 @@ other build, the way the final_verdict reviewer does, and it separates what a re
 (prompt wording, file names, schemas, the data itself) from what only the design notes show
 (the gap, the pattern, the decisive rung). Reusing a proven trap device is legitimate and the
 check says so out loud. What it hunts is a repeated driver, meaning the same insight carrying
-the stump twice, which is a clone however far apart the two surfaces sit. Run it in pre-flight
+the stump twice, which is a clone however far apart the two surfaces sit, and a strategy
+monoculture, one stumping strategy carrying a large share of the batch across different drivers. Run it in pre-flight
 on a build whose draw is fixed and whose data is not yet cut, because a mechanism finding caught
 then costs a redraw and the same finding caught later costs the build.
 
@@ -199,6 +200,22 @@ that rewriting an opening does not fix. Then run
 bare over the batch before submission. Self-report does not catch a calcified voice; `grep` does.
 
 ## Current spec
+
+**Every build is bespoke, never templated.** The client rejects templated tasks: replicating an
+approved task's traps, solution method, questions or stumping strategy onto another dataset teaches
+the model nothing and is sent back. Each build picks the stump its own dataset's analytic structure
+produces, and its design note says why in one line (the data-native sentence, `stumping` Part 2).
+Two architectures are capped by the fingerprint guard because they carry most of our corpus:
+
+- the decisive rule left unstated while a plausible official rule is filed as the decoy (the one the
+  client names, about 40 per cent of what it receives), blocked within three builds of another and
+  above two in any twelve;
+- a certified record that blesses the wrong method until a forward condition breaks it (27 of
+  task99 to task130), blocked in consecutive builds and above three in any twelve.
+
+A calibration corpus, a twin pair, a licensed wrong basis and colleague voices are organs a strategy
+may need, never furniture every build ships. The 300 notes under `analytical_tasks/01` to `06` were
+all written to the first architecture, so they are idea seeds and never build plans (`README.md`).
 
 **One to three deliverables, and three is the ceiling**, so a four-file build is a spec failure.
 **No format family is assigned.** The four families (Data: CSV, TSV, JSON, XLSX, Parquet · Visual:

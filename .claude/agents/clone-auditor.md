@@ -173,6 +173,13 @@ Track B findings cost a rebuild, so each one states plainly whether the data sur
 <Pairs that overlap on devices and differ on the driver, with the driver difference named. Not
 padding. This is the section that keeps proven traps in circulation.>
 
+## Strategy monoculture
+<The share of the batch each stump strategy carries, from the cards' stump_strategy,
+decisive_rule_filed, official_decoy and validated_decoy fields (design notes where a card predates
+them). Name the builds behind any share over the caps in clone-check Part 3: the withheld rule with
+an official decoy above two in twelve, the certified-record decoy above three in twelve, any one
+strategy in a third of the batch. This is what the client's template review counts.>
+
 ## Corpus habits
 <Idiom visible only across the whole set: file roles named the same way in most builds, ask
 constructions the prompts keep reaching for, deliverable pairings that never vary. One reviewer

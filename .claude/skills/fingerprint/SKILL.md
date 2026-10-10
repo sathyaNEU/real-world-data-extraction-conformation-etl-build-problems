@@ -43,7 +43,10 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 | `decision_type`, `answer_unit` | what kind of call, and in what unit | enum |
 | `gap`, `pattern`, `generators` | the decisive gap, pattern and G-code, **decisive first** | enum lists |
 | `gate_g` | the FINE-numbers mechanism that carries the stump | enum |
-| `calibration_form`, `context_artifact` | the calibration organ, and the type of file the stakeholder works from | enum |
+| `calibration_form`, `context_artifact` | the calibration organ (`none` when the strategy needs none), and the type of file the stakeholder works from | enum |
+| `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 2) | enum |
+| `decisive_rule_filed`, `official_decoy` | whether a shipped sentence states the rule that decides the answer, and whether a filed, official-looking rule, basis or metric gives the wrong answer; `false` plus `true` is the withheld rule with an official decoy, the architecture the client names as templated, whatever `stump_strategy` says | true or false |
+| `validated_decoy` | whether the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it | true or false |
 | `stakeholder_role`, `role_family` | the role as the prompt states it, and its family | free plus enum |
 | `scoring_unit` | the unit the decision is scored or paid on | enum |
 | `spine` | the spine file, its rows, what one row is, its grain, and its source dataset | mixed |
@@ -151,6 +154,11 @@ is 1 on BLOCK, so the check can sit in a script.
 | `ban.spine` | BLOCK | spine entity and grain, last three | Part 6.1, `dataset-generation` §13 |
 | `ban.source` | BLOCK, else WARN | the same real source dataset, last three, else anywhere | `dataset-generation` §13 |
 | `ban.shape` | BLOCK | prompt shape, last two | `clone-check` Part 1 |
+| `ban.strategy` | BLOCK | the same `stump_strategy`, last three | the client's template note, `stumping` Part 2 |
+| `overuse.strategy` | WARN | one strategy in three or more of the last twelve | the same |
+| `template.withheld_rule_decoy`, `template.cap` | BLOCK | the withheld rule with an official decoy in any of the last three, or already in two of the last twelve | the same |
+| `template.flagged` | WARN | every build carrying it, so the design note says why this dataset calls for it | the same |
+| `template.validated_decoy`, `template.validated_cap` | BLOCK | the certified-record decoy in the last build, or already in three of the last twelve | the same, from the card audit (27 of task99 to task130) |
 | `test.same_puzzle` | BLOCK | gap, pattern and decision type all equal, last twelve, lineage included | Part 6.1 similarity test |
 | `test.same_puzzle_older` | BLOCK unless differentiated | the same, older than twelve | Part 6.1 similarity test |
 | `test.same_driver` | BLOCK | gap, pattern and Gate G mechanism all equal, last twelve, lineage included | `clone-check` Template tier |

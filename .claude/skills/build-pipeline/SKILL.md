@@ -14,7 +14,7 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | # | Stage | Skills invoked | Gate (the stage is not left until this holds) |
 |---|---|---|---|
 | 0 | intake | `fingerprint` (`recent`, `coverage`) | the next free `taskNN`, the domain and the objective fixed, `pipeline.json` written |
-| 1 | draw | `guide-to-prompt` (pairing, shape), `stumping` Part 6.1, `fingerprint` (`new`, `check`, `register`), exemplars | card registered at PASS or answered WARN; **the stump sentence written**; the decisive rung named from `stumping/references/traps/_measured.md`; the two nearest exemplars read |
+| 1 | draw | `guide-to-prompt` (pairing, shape), `stumping` Part 6.1, `fingerprint` (`new`, `check`, `register`), exemplars | card registered at PASS or answered WARN, with `stump_strategy`, `decisive_rule_filed`, `official_decoy` and `validated_decoy` filled; **the stump sentence and the data-native sentence written** (`stumping` Part 2); the two nearest exemplars read as idea seeds, never as architectures |
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check |
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`, mechanical, free), `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, `leak.py` not LEAK with every REVIEW line answered, surface screen clean |
 | 4 | duplicate check | `fingerprint` (`heart`), `clone-check` (the `clone-auditor` agent, pre-flight mode on this build) | `guard.py heart` not BLOCK, and the adjudicated pre-flight returns no Exact, Same seed, Dataset or Template finding (`clone-check` Part 3); a Shape echo or Idiom finding is reported to the author, not looped on; a reject-tier finding sends the build back to stage 1 once with the colliding axis redrawn, or retires it |
@@ -83,8 +83,11 @@ the current wave builds. Nothing waits on the author, so the pace is set by the 
 
 ## Standing rules the pipeline enforces
 
-- The decisive rung is named from the measured catalogue, or the design note says in one line why
-  it is not. A rung with no measured record is a bet; the ledger carries the cost of those bets.
+- Every build is bespoke. The stump is chosen from the dataset's own analytic structure and the
+  design note says so in the data-native sentence; the measured catalogue says which habits fail and
+  never which architecture to copy. The guard's strategy bans and its two template caps (the
+  withheld rule with an official decoy, and the certified record that blesses the wrong method) are
+  gates, not advice.
 - The stump is argued on paper: the design note names the wrong committed answer a competent solver
   files and the step that lands them there, and the determinism check recomputes the golden. No
   in-house solve stands in for either.
