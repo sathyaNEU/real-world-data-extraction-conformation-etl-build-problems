@@ -402,6 +402,11 @@ def check(cand, cards, vocab, status=None):
             seen_txt.add(txt)
             own_entries.append((who, txt, e))
     ordered = sorted(others, key=draw_key)
+    # The bans reach the builds drawn before this one. A filed card checked again later (heart,
+    # /approve) meets its own predecessors in draw order, never the builds drawn after it, which
+    # met it in their own check when they were filed.
+    if cand.get("drawn"):
+        ordered = [c for c in ordered if draw_key(c) < draw_key(cand)]
     recent = ordered[-RECENT:]
     window = ordered[-WINDOW:]
     last = ordered[-1:] if ordered else []

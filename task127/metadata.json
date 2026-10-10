@@ -1,0 +1,204 @@
+{
+ "task": "task127",
+ "title": "2027 heat-pump rebate slots split across six participating co-operatives",
+ "domain": "Nonprofit & Grant-making",
+ "subdomain": "giving-strategy-program-funding",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "05 (allocation to a fixed total)",
+ "as_of": "2026-12-11",
+ "deliverables": [
+  "slot_split_board_note_2027.docx",
+  "coop_slot_split_2027.csv",
+  "coop_slots_2027.svg"
+ ],
+ "distractor_files": [
+  "weatherization_grants_2026.csv",
+  "feeder_upgrades_2027_2028.pdf"
+ ],
+ "input_gates": {
+  "files": 19,
+  "formats": [
+   "csv",
+   "docx",
+   "json",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "field_orders_2025_2026.csv",
+  "largest_file_rows": 27451
+ },
+ "files": [
+  {
+   "path": "about_these_files.txt",
+   "format": "txt",
+   "bytes": 2402,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "area_feeder_map.csv",
+   "format": "csv",
+   "bytes": 1392,
+   "rows": 47,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "bank_returns_2026.json",
+   "format": "json",
+   "bytes": 8822,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "cooperative_participation_terms.pdf",
+   "format": "pdf",
+   "bytes": 3377,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "coops_and_installers.xlsx",
+   "format": "xlsx",
+   "bytes": 7172,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "feeder_upgrades_2027_2028.pdf",
+   "format": "pdf",
+   "bytes": 2743,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "field_definitions.txt",
+   "format": "txt",
+   "bytes": 4690,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "field_orders_2025_2026.csv",
+   "format": "csv",
+   "bytes": 1725492,
+   "rows": 27451,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "finance_procedures.pdf",
+   "format": "pdf",
+   "bytes": 2741,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "heat_pump_programme_rules_2027.pdf",
+   "format": "pdf",
+   "bytes": 3765,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "heat_survey_2025_households.csv",
+   "format": "csv",
+   "bytes": 764999,
+   "rows": 7581,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "heat_survey_2025_tables.xlsx",
+   "format": "xlsx",
+   "bytes": 9975,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "hosting_capacity_nov2026.xlsx",
+   "format": "xlsx",
+   "bytes": 6703,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "installer_invoices_2026.csv",
+   "format": "csv",
+   "bytes": 310725,
+   "rows": 2903,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "installer_price_guide_2026.pdf",
+   "format": "pdf",
+   "bytes": 2794,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "pilot_rebates_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 28937,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "rebate_payments_2026.csv",
+   "format": "csv",
+   "bytes": 49255,
+   "rows": 584,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "trustees_paper_17dec2026.docx",
+   "format": "docx",
+   "bytes": 37762,
+   "rows": null,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "weatherization_grants_2026.csv",
+   "format": "csv",
+   "bytes": 65169,
+   "rows": 872,
+   "source": "Constructed for this task: fictional fund and co-operatives; no third-party data",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work)"
+  }
+ ]
+}
