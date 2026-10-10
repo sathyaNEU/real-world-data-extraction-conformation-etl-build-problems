@@ -1,6 +1,6 @@
 # Decision Support — 50 tasks (DS01–DS50)
 
-Each file is a stump design note. It covers the decision and the committed call; why the stump is legal under Gate G; the driving force; a ladder of defensible wrong answers on correct data; why the decisive move survives a strong solver; the calibration corpus and its twin pair; pins, voices and the licensed wrong basis; determinism; the prompt and deliverables; the ask layer; rubric arithmetic; and the numbers the data generator must hit. `analytical_tasks_index.csv` at the repository root carries the header fields for all 300 tasks.
+Each file is a stump design note. It covers the decision and the committed call; why the stump is legal under Gate G; the driving force; a ladder of defensible wrong answers on correct data; why the decisive move survives a strong solver; the calibration corpus and its twin pair; pins, voices and the licensed wrong basis; determinism; the prompt and deliverables; the ask layer; rubric arithmetic; and the numbers the data generator must hit. `analytical_tasks_index.csv` at the repository root carries the header fields for all 350 tasks.
 
 | ID | Decision | Domain | Decision shape | Gate G mechanism |
 |---|---|---|---|---|
