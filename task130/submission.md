@@ -14,7 +14,7 @@ Of the 170 households in Tenter House on 30 September, 46 are still there on 31 
 
 ## 2. Critical Components
 
-1. Households living in Tenter House on 30 September 2026: **170** (28 one-bed, 66 two-bed, 50 three-bed, 26 four-bed need)
+1. Households living in Tenter House at the end of 30 September 2026: **170** (28 one-bed, 66 two-bed, 50 three-bed, 26 four-bed need)
 2. Households expected still living there on 31 March 2027: **46**
 
 ## 3. Step-by-Step Solution
@@ -30,7 +30,7 @@ Of the 170 households in Tenter House on 30 September, 46 are still there on 31 
 
 ## 4. Deliverable Answers
 
-### tenter_house_calloff_2027.xlsx
+### tenter_house_replacement_units.xlsx
 
 1. Units to call off for 1 April 2027, whole units:
    - One-bed: 0

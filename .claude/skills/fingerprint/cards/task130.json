@@ -11,7 +11,7 @@
   "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.",
-  "answer_source": "task130/submission.md, 1. Final Recommendation (the Call-off sheet of golden/tenter_house_calloff_2027.xlsx carries the same units)",
+  "answer_source": "task130/submission.md, 1. Final Recommendation (the Call-off sheet of golden/tenter_house_replacement_units.xlsx carries the same units)",
   "gap": [
     "rule",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "ta_placements_2018-04_2026-09.csv",
-    "rows": 28016,
+    "rows": 27981,
     "entity": "one temporary-accommodation placement of one homeless household (a household's stay runs across one or more placements)",
     "grain": "placement",
     "source": "synthetic"
@@ -72,7 +72,10 @@
   "stump": "A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 136 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 46 households (no one-bed, 7 two-bed, 20 three-bed, 19 four-bed).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task80": "task80 dates a fixed-term status from the criterion event that conferred it rather than from when it was first observed operating; here nothing is dated or certified: a closed group's departures are a rank inside a borough-wide priority list against a planned supply, read per size class, and the wrong readings are rates and survival curves, not a mis-dated status."
+    "task80": "task80 dates a fixed-term status from the criterion event that conferred it rather than from when it was first observed operating; here nothing is dated or certified: a closed group's departures are a rank inside a borough-wide priority list against a planned supply, read per size class, and the wrong readings are rates and survival curves, not a mis-dated status.",
+    "task86": "task86 files the list order and works it as a low rung; its decisive move is an earlier hidden draw on the same pool that empties the front of the list. Here the list order itself is the decisive rung, filed nowhere and recovered only from the lets log, and nothing draws on the supply before the list.",
+    "task50": "task50 shares a component (a supply worked against demand) on a different driver; here departures from a closed group are a rank inside a borough-wide list against planned lets, which no rate or curve reproduces.",
+    "task125": "task125 sizes a council call-off for April 2027 too (shape 02, purchase order, local government), but its driver is unrelated; the deliverable stem was renamed from calloff_2027 to replacement_units so the two do not share a file name."
   },
   "lineage": [
     {

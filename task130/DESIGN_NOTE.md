@@ -46,9 +46,9 @@ Tenter House is where the council has put, since April 2023, the household that 
 
 ## Stump sentence
 
-A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 140 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 48 households (no one-bed, 8 two-bed, 21 three-bed, 19 four-bed).
+A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 136 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 46 households (no one-bed, 7 two-bed, 20 three-bed, 19 four-bed).
 
-## The ladder (stage 2 measurements on the simulation core; the build re-measures and asserts)
+## The ladder (stage 2 measured on the simulation core; the shipped values are in the build record below)
 
 | Rung | Construction | 1 / 2 / 3 / 4-bed on 31 March | Total | Killed by |
 |---|---|---|---|---|
@@ -63,7 +63,7 @@ A competent solver rebuilds each household's stay from its placements, measures 
 | R6' | the queue right, accepted October lets taken out and the full October plan applied on top | to measure | | the plan's notes: October counts include lets already accepted |
 | **Answer** | the queue: every open main-duty case, current need, duty date then case reference, against the revised plan | **0 / 8 / 21 / 19** | **48** | |
 
-Every rung files a different set of four counts, and none equals the answer in more than one size (asserted). The answer's total is at least 12 per cent from every rung's total (asserted), and both directions occur across rungs (R0 to R2 far above, R3 below).
+Every rung files a different set of four counts, and none equals the answer in more than two sizes (asserted; R6 and R6' share the one-bed zero and one other size with it). The answer's total is at least 12 per cent from every rung's total (asserted), and both directions occur across rungs (R0 to R2 far above, R3 below).
 
 **Survival properties.** (1) No shipped sentence states the order; the plan, the procedure and the dictionary describe their own fields. (2) The lets log nominates the order only to a solver who asks who got each let; nothing a rate model computes touches it. (3) No arithmetic symptom: rates, curves and plan shares all compute cleanly, every join closes. (4) Not a per-row predicate: a household's fate is its rank inside its size's list, which needs every other open case, including households not in TA. (5) Its enumeration is arithmetic: cumulative plan against rank. (6) No cutover date steps a series; the Brook Meadow handover is in the forward plan. (7) It survives the deletion.
 
@@ -100,7 +100,7 @@ Every rung files a different set of four counts, and none equals the answer in m
 
 Shape 02. Two files, the visual first-class:
 
-1. `tenter_house_calloff_2027.xlsx`: the call-off (units by bedroom size and in total for 1 April 2027) and the weekly cost at the Lot 3 rates in force on the start date; the month-end run-off of households still in the block, October 2026 to March 2027, by bedroom size.
+1. `tenter_house_replacement_units.xlsx`: the call-off (units by bedroom size and in total for 1 April 2027) and the weekly cost at the Lot 3 rates in force on the start date; the month-end run-off of households still in the block, October 2026 to March 2027, by bedroom size.
 2. `tenter_house_runoff.png`: the month-end households by size, with the call-off marked at March.
 
 Criteria arithmetic: the call-off by size and total (5), the weekly cost (1), 24 month-end cells, the chart and its named parts (about 4): about 34.
@@ -132,6 +132,28 @@ Criteria arithmetic: the call-off by size and total (5), the weekly cost (1), 24
 ## Prompt
 
 Evidence-first: opens on Corvane's notice. Prose, first person, the two files, units inside the sentences. Nothing about lets, order, the list or rates.
+
+## Build record
+
+Stage 3, 2026-10-10. Generator `generator/build.py` (modules `world`, `sim`, `extracts`, `docs`, `distract`, `xlcalc`, `postprocess`), estimators `generator/estimators.py`, goldens `generator/golden.py` (reads `target/` only), assertions `generator/checks.py` (108, green), independent verifier `generator/verify.py` (plain pandas and loops, shares no code with the generator, green). Seed 130. Two scratch builds and the task-folder build byte-identical; goldens byte-identical across runs; containers audit clean on `target/` and `golden/`.
+
+**Pack as built.** 13 files, 5 formats (csv, xlsx, pdf, docx, txt). `ta_placements_2018-04_2026-09.csv` 27,981 rows (spine); `homelessness_cases_2026-09-30.csv` 13,997 cases; `moveon_lets_2018-04_2026-09.csv` 5,280 lets (5,262 started, 18 accepted with October starts); `bedroom_need_reviews.csv` 204 reviews. Distractors in `metadata.json`: `housing_register_lets_2025-26.csv`, `ta_spend_monitoring_2026-27_q1.xlsx`, `ta_weekly_position_2026-09-28.xlsx`.
+
+**Departures from the stage 2 plan.** The random history shifted with every generator change, so the move-on plan's monthly phasing is settled in `build.tune_plans`: single lets moved between adjacent months (half-year totals fixed) until no monthly cut falls inside a same-day tie that mixes Tenter House and other households; the March original plan is given its own front-loaded phasing with the one- and two-bed totals unchanged. Revised plan totals 89, 117, 56 and 19 lets.
+
+**The answer as built.** 170 households in Tenter House on 30 September (28 / 66 / 50 / 26 by need). Call off 46 units: 0 / 7 / 20 / 19. Month ends: one-bed 20, 13, 8, 0, 0, 0; two-bed 57, 46, 42, 32, 21, 7; three-bed 46, 42, 38, 34, 29, 20; four-bed 26, 25, 24, 23, 21, 19. Weekly cost at the Lot 3 2027/28 rates GBP 21,615.23, filed as GBP 21,615.
+
+**The ladder as built (31 March, one- to four-bed, total).** R0 none 28 / 66 / 50 / 26, 170. R1 rate 22 / 47 / 43 / 24, 136. R2 plan share 23 / 50 / 44 / 24, 141. R3 survival 3 / 0 / 4 / 14, 21. R4 TA households only 0 / 0 / 17 / 17, 34. R5 need at decision 2 / 11 / 29 / 10, 52. R5' TA start order 3 / 17 / 26 / 19, 65. R6 original plan 0 / 7 / 26 / 23, 56. R6' accepted lets counted twice 0 / 3 / 17 / 19, 39. Every rung distinct, none matching the answer in more than two sizes, every total at least 12 per cent from 46 (nearest R5, 52), rungs both above and below.
+
+**C2 on the lets log.** Duty date then case reference within current need, every open main-duty case wherever living: 5,262 of 5,262 lets. TA start date 308; application date 306; households in TA only 4,434; need at decision 2,229. No main-duty case has closed after day 120 other than by a let since April 2018; every household the plan reaches is past day 120 on 1 October; the accepted October lets are the front of each list.
+
+**Checks run.** `leak.py --asof 2026-09-30`: REVIEW, no LEAK (answered below). `guard.py heart`: PASS (two NOTEs against task80, differentiated). `guard.py surface`: three promoted pairs (task100, task87, task80), adjudicated by the clone pre-flight. Clone pre-flight (`clone_check_report_task130.md`): shape echo only, against task86 (a bedroom-size waiting list in the same domain, different driver) and task125 (an English council's April 2027 call-off); no reject-tier finding. The deliverable stem was renamed from `calloff_2027` to `replacement_units` and the card's differentiation now names task86, task50 and task125.
+
+**Determinism judge, pass 1 (2026-10-10):** DETERMINISTIC, FIX_NOW. Every figure reproduced (170, 46 and 0 / 7 / 20 / 19, all 24 month-end cells, GBP 21,615.23, the 5,262-let replay). The one fix: the price schedule, last modified 22 September 2026, cited September 2026 CPI, which is published in October; it now cites August 2026 CPI in the schedule and the golden note, no rate moved. Also taken: critical component 1 reads "at the end of 30 September"; this note's stage 2 answer and ladder claims brought up to the build. Not taken: the judge's low note that a lets log following the order without exception is tidier than a real one (the exceptions would make the order a judgment call, which Gate C forbids).
+
+## Leak review
+
+`leak.py task130 --asof 2026-09-30`, REVIEW, no LEAK. The dictionary and the closure procedure share ordinary words with the call (call off, replacement units, bedrooms) and carry no figure. Corvane's letter shares three generic stump terms (housing, register, repair). The procedure's point 5 is flagged as an announcement: it is the bedroom-need pin for the call-off, a convention the procedure would state anyway, and it says nothing about how households leave. The 18 dates after 30 September are the accepted October lets' tenancy start dates, forward by design.
 
 ## Tried and rejected
 

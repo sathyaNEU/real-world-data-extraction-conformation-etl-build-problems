@@ -3,20 +3,21 @@
   "domain": "demographic-social-science",
   "objective": "forecasting",
   "architecture": "v2",
-  "stage": 4,
-  "stage_name": "duplicate check",
+  "stage": 5,
+  "stage_name": "determinism check (re-judge after FIX_NOW)",
   "updated": "2026-10-10",
   "stump": "A competent solver runs the borough's recent monthly rate of main-duty households leaving TA (or a survival curve, or the plan shared over the lists) over the Tenter House households and calls off about 136 units; the step that lands it there is forecasting departures as a rate, when move-on lets go in duty-date order within each bedroom size against the move-on plan and the block's households sit near the front of those lists, so 46 remain: 0, 7, 20, 19.",
   "duplicate_check": {
     "heart": "PASS (two NOTEs vs task80, differentiated)",
     "nearest": "task98 lineage 0.06",
     "surface": "3 promoted (task100 0.147, task87 0.143, task80 card signature)",
-    "clone_check": ""
+    "clone_check": "shape echo only (task86, task125); no reject tier; clone_check_report_task130.md"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW",
+    "report": "task130/determinism_check_report.md",
+    "pass1": "CPI month wording in the price schedule; fixed"
   },
   "approved": null,
   "delivered": null,

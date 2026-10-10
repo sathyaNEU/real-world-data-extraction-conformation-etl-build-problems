@@ -82,7 +82,7 @@ def workbook(fig, path):
         "Move-on lets go to every household owed the main duty, in or out of TA, by duty date within the bedroom "
         "need, case reference breaking ties; the lets log since April 2018 follows that order without exception.",
         "October lets already accepted are inside the plan's October figures and are not counted again.",
-        "Rates: DPS price schedule, Lot 3, 2027/28 column (September 2026 CPI uplift of 3.8 per cent).",
+        "Rates: DPS price schedule, Lot 3, 2027/28 column (August 2026 CPI uplift of 3.8 per cent).",
     ]
     r += 2
     for t in notes:
@@ -170,7 +170,7 @@ def main(target=None, outdir=None):
     outdir = outdir or os.path.join(TASK, "golden")
     os.makedirs(outdir, exist_ok=True)
     fig = figures(target)
-    workbook(fig, os.path.join(outdir, "tenter_house_calloff_2027.xlsx"))
+    workbook(fig, os.path.join(outdir, "tenter_house_replacement_units.xlsx"))
     chart(fig, os.path.join(outdir, "tenter_house_runoff.png"))
     print("call-off", fig["units"], "total", fig["total"], "weekly cost %.2f" % fig["cost"])
     print("run-off", fig["run"])

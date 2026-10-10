@@ -74,7 +74,7 @@ def main(target=None, golden=None):
     print("lets reproduced by the duty-date list: %d of %d" % (ok, n))
 
     good = ok == n
-    wb = openpyxl.load_workbook(os.path.join(g, "tenter_house_calloff_2027.xlsx"))
+    wb = openpyxl.load_workbook(os.path.join(g, "tenter_house_replacement_units.xlsx"))
     co = wb["Call-off"]
     for r in range(5, 9):
         s = {"1 bed": 1, "2 bed": 2, "3 bed": 3, "4+ bed": 4}[co.cell(row=r, column=1).value]

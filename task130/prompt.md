@@ -2,6 +2,6 @@ Corvane's letter came in on 15 September: the owner of Tenter House has sold the
 
 I run temporary accommodation and procurement, and the call-off is mine to size. Tell me how many replacement units to call off, one-bed, two-bed, three-bed and four-bed (four meaning four or more), each household matched on its current assessed bedroom need, and the total. Households and units are whole numbers throughout.
 
-That goes in `tenter_house_calloff_2027.xlsx`, with the weekly cost of the call-off at the Lot 3 rates we will actually be paying from the start date, in pounds to the nearest pound. Next to it I need the number of households you expect still to be living in Tenter House at the end of each month from October 2026 to March 2027, by bedroom size, because Declan's team books the moves off that table.
+That goes in `tenter_house_replacement_units.xlsx`, with the weekly cost of the call-off at the Lot 3 rates we will actually be paying from the start date, in pounds to the nearest pound. Next to it I need the number of households you expect still to be living in Tenter House at the end of each month from October 2026 to March 2027, by bedroom size, because Declan's team books the moves off that table.
 
 Then `tenter_house_runoff.png` for Irene: the same month-end households by size, the call-off marked against March, and a title that gives her the number of units.

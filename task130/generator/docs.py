@@ -16,7 +16,7 @@ import world as W
 MONTHS = ["Oct 2026", "Nov 2026", "Dec 2026", "Jan 2027", "Feb 2027", "Mar 2027"]
 LOT2_2627 = {1: 64.00, 2: 78.50, 3: 92.00, 4: 109.50}       # nightly-paid, per night
 LOT3_2627 = {1: 296.10, 2: 361.20, 3: 427.80, 4: 512.60}    # self-contained leased, per week
-UPLIFT = 1.038                                            # September 2026 CPI, applied from 1 April 2027
+UPLIFT = 1.038                                            # August 2026 CPI, applied from 1 April 2027
 LOT2_2728 = {s: round(v * UPLIFT, 2) for s, v in LOT2_2627.items()}
 LOT3_2728 = {s: round(v * UPLIFT, 2) for s, v in LOT3_2627.items()}
 
@@ -197,7 +197,7 @@ def prices_xlsx(out_path):
     ws["A1"] = "Kent and Medway temporary accommodation DPS: price schedule"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("Rates per unit, excluding VAT (not chargeable). 2027/28 rates apply to units starting on or after "
-                "1 April 2027 and to every unit from that date; uplift by September 2026 CPI, 3.8 per cent.")
+                "1 April 2027 and to every unit from that date; uplift by August 2026 CPI, 3.8 per cent.")
     ws["A2"].font = Font(italic=True, size=9)
     _hdr(ws, 4, ["Lot", "Description", "Charging basis", "Bedrooms", "2026/27 rate (GBP)", "2027/28 rate (GBP)"],
          [6, 46, 16, 10, 18, 18])
