@@ -1,0 +1,20 @@
+{
+ "task": "task130",
+ "domain": "demographic-social-science",
+ "objective": "etl",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-10",
+ "stump": "A competent solver conforms the 30 June 2026 returns (corrections replace, supplementary returns add, pre-migration building rows become dwellings, option and reservation rows drop, cadastral references are repaired by their control letters), rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and the scheduled sale agreements at their agreed buyers and deed dates, reproduces the 2026 designation exactly and files a designation that keeps two sections over the line and leaves a third under it; the step that lands it there is carrying each scheduled agreement to its agreed buyer and date, when the housing agency's budget ledger shows it took over several of those agreements under its first-offer right and signed every purchase it has completed 120 days after committing, so on 1 January the agency holds the dwellings it committed to by early September (the two sections fall under the line) and a seller still holds the dwellings committed later, among them a December sale to a private buyer that the agency now completes in January (the third section stays over it).",
+ "harden_loops": 0,
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md"
+}

@@ -32,6 +32,13 @@ def case_times(r, left, not_before=None, urgency="Elective"):
     op = int(r.integers(70, 320)) if urgency in ("Elective", "Expedited") else int(r.integers(45, 200))
     out_th = left - rec
     into = out_th - op
+    if urgency in ("Elective", "Expedited"):
+        # planned lists start at 08:00: a long case finishing early in the day started on the list's first slot
+        floor = lm(day_of(left), 8, 0) + 20
+        if into < floor and left - floor >= 90:
+            into = floor
+            rec = max(20, min(rec, (left - into) // 3))
+            out_th = left - rec
     if not_before is not None and into < not_before + 10:
         span = left - (not_before + 10)
         rec = max(10, span // 3)
@@ -97,6 +104,8 @@ def build_theatre(world, P, stays, refs, out):
             nb = [x for x in forced[s["unit"]] if x < t0 and t0 - x < 2880]
             not_before = max(nb) if nb else None
             kind = "local"
+        if urg == "Elective" and left % 1440 < 9 * 60 + 50:
+            urg = "Urgent"                     # finished before a morning list could have: an out-of-hours case
         if site is None:
             site = [v[2] for v in TRUSTS.values() if v[0] == prov][0]
         assert left <= t0 - 2 or kind in ("held", "transfer"), ("left recovery after the bed", i, kind)

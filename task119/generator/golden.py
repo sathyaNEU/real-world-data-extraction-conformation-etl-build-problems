@@ -855,9 +855,9 @@ def chart_png(fx, path=None):
                  x=0.02, ha="left", y=0.985, fontsize=10.5, fontweight="bold", color=INK)
     fig.text(0.02, 0.015, "Latest four complete quarters, the period the placement rests on (terms of reference, "
              "section 5). Trusts ordered by confirmable deaths.\nSource: network referral record, unit feed, daily "
-             "bed returns and transfer audit; regional data service episodes and theatre cases (extract of 14 August "
+             "bed returns and transfer audit;\nregional data service episodes and theatre cases (extract of 14 August "
              "2026).", fontsize=6.8, color=MUTED)
-    fig.subplots_adjust(left=0.25, right=0.98, top=0.80, bottom=0.20)
+    fig.subplots_adjust(left=0.25, right=0.98, top=0.80, bottom=0.22)
     buf = io.BytesIO()
     fig.savefig(buf, format="png", facecolor=SURF, metadata={"Software": None})
     plt.close(fig)
