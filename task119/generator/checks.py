@@ -826,14 +826,15 @@ def ask_checks(K, D):
     K.check("every graded figure is an integer count", all(isinstance(v, int) for v in flat))
     tots = [a["total"][0], a["total"][1], a["total"][2]]
     K.check("generation tells: no headline total on a round boundary", all(v % 10 != 0 and v % 25 != 0 for v in tots), tots)
-    split = defaultdict(lambda: [set(), set()])
+    split = defaultdict(lambda: [set(), set(), set()])
     ws = G.waits(D)
     for x in G.classify(D, ws):
-        if x["died"] and (x["empty"] or x["alloc"]):
-            split[x["trust"]][0 if x["empty"] else 1].add(x["person"])
-    sp = {LET[t]: (len(v[0]), len(v[1])) for t, v in split.items()}
-    K.check("confirmable split: empty-bed waits A6 C1 F6 G45 H3, allocation waits A2 C4 D80 G1",
-            sp == {"A": (6, 2), "C": (1, 4), "D": (0, 80), "F": (6, 0), "G": (45, 1), "H": (3, 0)}, sp)
+        if x["died"] and (x["empty_own"] or x["alloc"]):
+            split[x["trust"]][0 if x["empty"] else 1 if x["empty_own"] else 2].add(x["person"])
+    sp = {LET[t]: tuple(len(s_) for s_ in v) for t, v in split.items()}
+    K.check("confirmable split: empty-bed waits A6 C1 F6 G45 H3, own-hold waits D60, own-placement waits A2 C4 D20 G1",
+            sp == {"A": (6, 0, 2), "C": (1, 0, 4), "D": (0, 60, 20), "F": (6, 0, 0), "G": (45, 0, 1), "H": (3, 0, 0)},
+            sp)
     # E also leads the deaths before a bed was assigned
     dw = defaultdict(set)
     for w in ws:
@@ -929,7 +930,7 @@ def device_checks(K, D, S, target, F):
     cl = [x for x in G.classify(D, ws, handle=()) if x["year"] == 3 and x["died"]]
     r4 = defaultdict(set)
     for x in cl:
-        if x["empty"] or x["alloc"]:
+        if x["empty_own"] or x["alloc"]:
             r4[x["trust"]].add(x["person"])
     r4n = {t: len(r4[t]) for t in CODES}
     K.check("main call identical with every device mishandled (D 27 over G 15)", r4n == R[4], r4n)
