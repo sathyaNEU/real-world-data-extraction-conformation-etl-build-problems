@@ -573,7 +573,8 @@ RUNGS = ("raw", "0800", "census", "any", "decisive")
 def ladder(D, year=3):
     """The main call's rungs on the latest four quarters: deaths per trust. 0 every long-wait death; 1 the own
     unit's 08:00 return showed an empty staffed bed that day; 2 the census shows an empty staffed bed during the
-    wait; 3 an empty bed or any admission to the own unit during the wait; 4 an empty bed or an admission the
+    wait; 3 an empty bed or any admission to the own unit during the wait; 4 a bed with no patient in it and not
+    held by the bureau (the trust's own holds empty until the patient left theatre recovery), or an admission the
     trust placed itself (the decisive construction)."""
     ws = waits(D)
     cl = [x for x in classify(D, ws) if x["year"] == year]
@@ -702,7 +703,7 @@ def figures(D):
     by_year = {y: asks(D, years=(y,)) for y in (1, 2, 3)}
     call, cv, run, rv, _ = leader(R[4])
     # what held each latest-year long wait behind a death, per trust
-    held = {t: {"empty": 0, "alloc": 0, "bureau": 0, "capacity": 0, "no_l3": 0} for t in CODES}
+    held = {t: {"empty": 0, "hold": 0, "alloc": 0, "bureau": 0, "capacity": 0, "no_l3": 0} for t in CODES}
     waits_l3 = {t: 0 for t in CODES}
     for x in cl:
         if not x["has_own"]:
@@ -711,16 +712,18 @@ def figures(D):
             continue
         waits_l3[x["trust"]] += 1
         if x["died"]:
-            k = ("empty" if x["empty"] else "alloc" if x["alloc"] else "bureau" if x["alloc_any"] else "capacity")
+            k = ("empty" if x["empty"] else "hold" if x["empty_own"] else "alloc" if x["alloc"] else
+                 "bureau" if x["alloc_any"] else "capacity")
             held[x["trust"]][k] += 1
-    stn_waits_alloc = sum(1 for x in cl if x["trust"] == call and x["alloc"] and not x["empty"])
+    stn_waits_hold = sum(1 for x in cl if x["trust"] == call and x["empty_own"] and not x["empty"])
     # the statements the paper makes in words, back-tested on the record
-    assert stn_waits_alloc == y3[call][0] and all(x["dta"].weekday() < 5 for x in cl if x["trust"] == call)
-    assert not any(x["alloc"] for x in cl if x["trust"] != call and not x["empty"])
+    assert stn_waits_hold == y3[call][0] and all(x["dta"].weekday() < 5 for x in cl if x["trust"] == call)
+    assert not any(x["empty_own"] and not x["empty"] for x in cl if x["trust"] != call)
+    assert not any(x["alloc"] for x in cl)
     assert R[3]["RIS"] == held["RIS"]["empty"] + held["RIS"]["bureau"] and R[3]["RIS"] > R[3][call]
     # the paper's table splits these trusts' deaths into what held the waits: the parts tie to the row
     for t in ("RIS", "PRW"):
-        assert sum(held[t][k] for k in ("empty", "alloc", "bureau", "capacity")) == y3[t][1]
+        assert sum(held[t][k] for k in ("empty", "hold", "alloc", "bureau", "capacity")) == y3[t][1]
     # every bed the full unit gave away during a Ristenholm wait went to a patient referred by a trust that held
     # no level 3 beds on that date (the paper says so)
     rows = sorted((u, a, rid) for u, k, a, b, typ, rid in D.merged if u == "RIS-ACC")
@@ -738,17 +741,21 @@ def figures(D):
             n_planned += 1
     # "many of those patients came in as planned transfers"
     assert 2 * n_planned > held["RIS"]["bureau"], (n_planned, held["RIS"]["bureau"])
-    # "the unit feed codes these patients as planned transfers in, but each was referred by Stennock itself and none
-    # passed through the network's bed bureau"
-    stn_rows = sorted((a, rid) for u, k, a, b, typ, rid in D.merged if u == "STN-ACC")
+    # "by the unit feed Stennock's unit was full at every minute of every one of those waits and admitted nobody";
+    # "one or two of the beds counted as full had been assigned that morning to Stennock's own planned surgical
+    # patients, still in theatre at the Stennock Treatment Centre when the waiting patient's decision was made"
+    stn_rows = sorted(a for u, k, a, b, typ, rid in D.merged if u == "STN-ACC")
+    holds = sorted((a, left) for (u, k, a), left in D.own_hold.items() if u == "STN-ACC")
+    n_holds = []
     for x in cl:
         if x["trust"] != call:
             continue
-        inside = [(a, rid) for a, rid in stn_rows if x["a"] < a < x["b"]]
-        assert inside and all(typ_at[("STN-ACC", a)] == "03" and rid and ref_by[rid]["trust"] == call and
-                              ref_by[rid]["ward"] == "REC" and
-                              ("STN-ACC", D.temp.get(key_at[("STN-ACC", a)], key_at[("STN-ACC", a)]), a)
-                              not in D.audit_at for a, rid in inside)
+        assert not any(x["a"] < a < x["b"] for a in stn_rows) and not x["empty"]
+        hs = [(a, left) for a, left in holds if a < x["a"] < left]
+        assert 1 <= len(hs) <= 2 and all((EPOCH + dt.timedelta(minutes=a)).date() == x["dta"].date() and
+                                         left < x["b"] for a, left in hs)
+        n_holds.append(len(hs))
+    assert len(n_holds) == y3[call][0]
     assert all(x["dta"].hour >= 18 and not x["empty"] for x in cl if x["trust"] == "BRK")
     ret = D.ret[(D.ret.unit_code == "BRK-ACC") & (D.ret.return_date >= "2025-07-01") &
                 (D.ret.return_date <= "2026-06-30")]
@@ -768,7 +775,7 @@ def figures(D):
     assert rec["total"] == tuple(sum(rec[t][i] for t in CODES) for i in range(3))
     assert all(by_year[3][t] == y3[t] for t in CODES)
     return dict(R=R, y3=y3, rec=rec, by_year=by_year, call=call, cv=cv, run=run, rv=rv, gap=cv - rv,
-                held=held, waits=y3, stn_waits_alloc=stn_waits_alloc, order=order,
+                held=held, waits=y3, stn_waits_hold=stn_waits_hold, order=order,
                 y3_total=tuple(sum(y3[t][i] for t in CODES) for i in range(3)))
 
 
@@ -911,10 +918,11 @@ def write_xlsx(fx, path):
             "more than four hours from the decision to admit to the assignment of a bed (terms of reference, section 2).",
             "Deaths: death within 30 days of the decision to admit, from the linked date of death on the regional "
             "data service episodes.",
-            "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either held "
-            "an empty staffed bed or assigned a bed to a patient the trust referred itself (sections 3 and 4). Beds "
-            "the network's bed bureau allocated to patients referred by other trusts are not the trust's own decision, "
-            "planned transfers included.",
+            "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either had "
+            "a staffed bed with no patient in it, including a bed kept for one of the trust's own patients still in "
+            "theatre, or assigned a bed to a patient the trust referred itself (sections 3 and 4). Beds the network's "
+            "bed bureau allocated to patients referred by other trusts are not the trust's own decision, planned "
+            "transfers included.",
             "Waits are elapsed time: a wait across a night when the clocks went forward is an hour shorter than "
             "its clock readings. A patient with two long waits at a trust is one patient.",
             "Before 2 April 2024 the record is migrated CCRS data: decision level from the CCRS level entries, "
@@ -949,8 +957,8 @@ def write_xlsx(fx, path):
     notes = [
         ("Prepared by", "Quality surveillance, Wenmarsh Regional Health Board, for the placement paper to the "
                         "Board meeting of 26 November 2026"),
-        ("Extract", "Network referral record, unit feed, daily bed returns, unit register and regional data "
-                    "service episodes, extract of 14 August 2026"),
+        ("Extract", "Network referral record, unit feed, daily bed returns, unit register and transfer audit, and "
+                    "the regional data service's episodes and theatre cases, extract of 14 August 2026"),
         ("Record", "Decisions to admit 1 July 2023 to 30 June 2026"),
         ("Placement basis", "Latest four complete quarters, 1 July 2025 to 30 June 2026 (terms of reference, "
                             "section 5)"),
@@ -963,11 +971,13 @@ def write_xlsx(fx, path):
         ("Own unit", "The level 3 unit the referring trust ran on the date of the decision, per the unit "
                      "register's effective dates"),
         ("Empty staffed bed", "Census rebuilt minute by minute from admitted_at and discharged_at against the day's "
-                              "staffed beds (beds_open)"),
+                              "staffed beds (beds_open). A bed assigned to one of the trust's own patients who had "
+                              "not yet left theatre recovery (regional theatre extract, left_recovery_at) has no "
+                              "patient in it until then; a bed the bureau allocated to an incoming transfer is taken "
+                              "from the allocation"),
         ("Own placement", "An admission to the referring trust's own unit of a patient the trust referred itself "
-                          "(the admitted patient's referring_trust). Stennock's planned patients from theatre "
-                          "recovery count, though the unit feed codes them 03. A patient referred by another trust "
-                          "is a transfer whose bed the network's bed bureau allocated, whatever the admission type. "
+                          "(the admitted patient's referring_trust). A patient referred by another trust is a "
+                          "transfer whose bed the network's bed bureau allocated, whatever the admission type. "
                           "Contiguous bed rows of one patient in one unit read as one stay"),
         ("Counting", "Whole patients; a patient appears once per trust in each column"),
     ]
@@ -1088,16 +1098,19 @@ def write_docx(fx, path, png):
     p = para(after=6)
     runs(p, ["In the placement year {:,} Stennock patients waited more than four hours for a level 3 bed and {:,} "
              "of them died within 30 days of the decision to admit.".format(y3[call][0], y3[call][1]),
-             ("1",), " Stennock's unit was full at every hour of every one of those waits, which is consistent with "
-             "the network's view that it is full every morning. What filled it matters. Through each of the {:,} "
-             "waits the unit was assigning beds to Stennock's own planned surgical patients, referred by Stennock "
-             "from theatre recovery on weekdays during the elective lists. At weekends, with no lists running, no "
-             "Stennock referral waited more than four hours.".format(fx["stn_waits_alloc"])])
-    para("The unit feed codes these patients as planned transfers in, but each was referred by Stennock itself and "
-         "none passed through the network's bed bureau. A bed the trust gives to a planned patient of its own is the "
-         "trust's decision about the use of its own beds. Under the methodology note every one of those {:,} deaths "
-         "therefore falls inside Stennock's own care, and they are the deaths a review can examine and confirm."
-         .format(y3[call][2]), after=6)
+             ("1",), " By the unit feed Stennock's unit was full at every minute of every one of those waits and "
+             "admitted nobody while they lasted, which is consistent with the network's view that it is full every "
+             "morning. The feed counts a bed as taken from the minute it is assigned, and on each of the {:,} waits "
+             "one or two of the beds counted as taken had been assigned that morning to Stennock's own planned "
+             "surgical patients. The regional theatre extract shows those patients still in theatre at the "
+             "Stennock Treatment Centre when the waiting patient's decision was made; they reached the unit later "
+             "in the wait. At weekends, with no lists running, no Stennock referral waited more than four hours."
+             .format(fx["stn_waits_hold"])])
+    para("Those beds were staffed and empty, kept by Stennock for its own elective patients while its own emergency "
+         "patient waited on a ward. Keeping a bed for a planned patient of its own is the trust's decision about the "
+         "use of its own beds, and no bed bureau was involved. Under the methodology note every one of those {:,} "
+         "deaths therefore falls inside Stennock's own care, and they are the deaths a review can examine and "
+         "confirm.".format(y3[call][2]), after=6)
     para("The pattern is not a one-year effect. Across the network's record Stennock has the most confirmable "
          "deaths in each four-quarter year ({:,}, {:,} and {:,}, against Prideswick's {:,}, {:,} and {:,}), so the "
          "latest year is a fair guide to 2027-28."
@@ -1115,7 +1128,8 @@ def write_docx(fx, path, png):
     tb.style = "Table Grid"
     hdr = ["Trust", "Deaths inside the remit", "Confirmable in own care", "What held the waits"]
     reason = {
-        "STN": "Own unit admitting Stennock's own planned surgical patients from theatre recovery throughout each wait",
+        "STN": "Beds in its own unit kept empty for Stennock's planned surgical patients, still in theatre, through "
+               "each wait",
         "PRW": "{:,} after waits beside its own empty staffed beds; {:,} after waits through which its full unit "
                "took transfers the bed bureau placed; {:,} with the unit full and no admission".format(
                    held["PRW"]["empty"], held["PRW"]["bureau"], held["PRW"]["capacity"]),
@@ -1238,8 +1252,8 @@ def main():
     print("  deaths inside the remit, all trusts      %d" % fx["y3_total"][1])
     print("  most deaths inside the remit             %s %d (confirmable %d)"
           % (SHORT["LAT"], fx["y3"]["LAT"][1], fx["y3"]["LAT"][2]))
-    print("  %s long waits with its own planned admissions  %d of %d; deaths %d"
-          % (SHORT[call], fx["stn_waits_alloc"], fx["y3"][call][0], fx["y3"][call][1]))
+    print("  %s long waits beside a bed kept for its own planned patient  %d of %d; deaths %d"
+          % (SHORT[call], fx["stn_waits_hold"], fx["y3"][call][0], fx["y3"][call][1]))
     print("  recommended                              %s, %d confirmable deaths" % (NAME[call], fx["cv"]))
     print("  runner-up                                %s, %d" % (NAME[run], fx["rv"]))
     print("  gap                                      %d deaths" % fx["gap"])

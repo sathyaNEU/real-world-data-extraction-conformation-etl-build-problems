@@ -1,0 +1,20 @@
+{
+ "task": "task127",
+ "domain": "business-operations-analytics",
+ "objective": "opportunity-sizing-decision",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-10",
+ "stump": "A competent solver builds each district's qualifying households from the survey's joint counts, converts them at Year 1's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside Year 1's three weeks and that each district crew's year has room for its meters, and commits about 1,450 rebated installs with Lakes taking the most slots; the step that lands it there is carrying Year 1's meter-set lag to a programme several times its size, when every rebate waits on the district crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten sets a week left after standing work (the ceiling they held through the 2025 meter-exchange campaign), and the autumn window's orders queue past 31 December, so about 1,150 installs land in the year and Riverbend takes the most slots.",
+ "harden_loops": 0,
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md"
+}
