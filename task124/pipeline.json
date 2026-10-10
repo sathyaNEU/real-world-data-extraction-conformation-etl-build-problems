@@ -2,10 +2,10 @@
   "task": "task124",
   "domain": "business-operations-analytics",
   "objective": "forecasting",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-10",
-  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report to the megawatt, collapses the enrolment amendments, joins the distribution utility's tariff class and prices North Central's 31 new refrigerated distribution centres at the class's own peak-hour draw measured on the book's fourteen cold stores (0.60 of maximum demand), filing North Central at 195 MW of the 400 MW block (provisional); the step that lands it there is taking those fourteen as what a cold store draws in the system's peak hour, when every one of them was held to its firm level through every closed system peak by the company's own Business Saver load-shift programme, which no site can join before it has a metered summer, so the centres run at the analogs' undispatched 0.90 and North Central takes 230 MW (provisional).",
+  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report on all 80 cells, collapses the North Central amendment rows, joins the distribution utilities' premise file and prices Harlan Ridge's 31 new refrigerated distribution centres at the refrigerated class's draw in the system's peak hour measured on the book's fourteen cold stores (0.60 of maximum demand), filing 130 / 40 / 0 / 0 / 165 / 35 / 30 / 0 MW with North Central at 165; the step that lands it there is taking the fourteen as what a cold store draws at the peak, when each sat inside a Business Saver called window at every closed system peak and no site can join before its meter has a summer, so the centres draw the uncalled 0.90 and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
   "harden_loops": 0,
   "solver_rounds": [],
   "judge": {
