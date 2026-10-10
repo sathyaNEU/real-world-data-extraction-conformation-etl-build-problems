@@ -2,8 +2,8 @@
   "task": "task130",
   "domain": "demographic-social-science",
   "objective": "etl",
-  "stage": 8,
-  "stage_name": "delivered",
+  "stage": "backlog",
+  "stage_name": "backlog: failed on the portal, both top models filed the golden answer",
   "updated": "2026-10-10",
   "stump": "A competent solver conforms the 30 June 2026 returns, reproduces the 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September, finds the housing agency's first-offer commitments in its budget ledger and completes each taken-over sale 120 days after commitment as its 27 settled purchases show, and files six sections (A1 to A4, Q and U); the step that lands it there is taking the large holders on 1 January to be the holders that lodged the 30 June returns, when the register lists four holders inscribed after 30 June with no return yet, and the deed extract shows one of them holding 18 dwellings in 4625011016 bought from private owners before 30 June, so that section stays over the line and the order designates seven sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014, 4625011016 and 4625012009.",
   "harden_loops": 1,
@@ -32,7 +32,11 @@
   },
   "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
   "delivered": "2026-10-10",
-  "portal": null,
+  "portal": {
+    "date": "2026-10-10",
+    "result": "failed",
+    "note": "both top models found the ground truth (author report); moved to backlog, replacement build task131"
+  },
   "source_note": "analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md",
   "target_zip": {
     "path": "task130/target.zip",

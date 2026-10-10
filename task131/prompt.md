@@ -1,0 +1,7 @@
+Which of the four summer test offers goes on every member card next year, and what is it worth to the co-op in 2027? The executive board takes one offer and one figure in the November budget round, and the figure becomes the member offer line in the 2027 budget. So what I need is the offer that goes on every card in 2027 and its 2027 programme value, as a single amount in CHF thousands.
+
+The board reads `programme_offer_2027.docx`, and its first line is that offer and its 2027 programme value. Under it, rank all four offers, each with its value per active card-week, measured the way the programme measures offers, and its 2027 programme value in CHF thousands. Then name the runner-up and how far behind the pick it sits per card-week. Per card-week figures are in CHF to two decimals throughout. The regional managers set their 2027 targets from the same memo, so it also needs the per card-week figure for every region and every offer.
+
+That regional table goes on a slide as `offer_grid_2027.png`: a heatmap with regions down the side and offers across, a chain-wide row on top, every cell labelled with its value, the recommended offer's column outlined and the runner-up marked. The title should be a sentence the board could quote back as the decision.
+
+Hansjürg's team expects the monthly target voucher to win, because it moved more spend than any other offer in the test. I run the member programme.
