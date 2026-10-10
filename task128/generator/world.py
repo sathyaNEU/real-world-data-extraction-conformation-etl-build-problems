@@ -22,18 +22,23 @@ def _rungs(hosts, spine, pool, flagv, scorev):
     r3c = {e: G.colo_drains_per_package(hosts, wh[e])[e] for e in COLO}
     r4raw = {e: G.colo_whole_host(hosts, wh[e])[e] for e in COLO}
     r4c = {e: (r4raw[e][0], r4raw[e][1]) for e in COLO}
+    r5raw = G.colo_per_window(hosts, WIN.nov_windows())
+    r5c = {e: (r5raw[e][0], r5raw[e][1]) for e in COLO}
     R0 = G.assemble_unbounded(colo_pkg, flagv)
     R1 = G.assemble_unbounded(colo_pkg, scorev)
     R2 = G.assemble_bounded(r2c, scorev)
     R3 = G.assemble_bounded(r3c, scorev)
     R4 = G.assemble_bounded(r4c, scorev)
-    return {"R0": R0, "R1": R1, "R2": R2, "R3": R3, "R4": R4,
+    R5 = G.assemble_bounded(r5c, scorev)
+    return {"R0": R0, "R1": R1, "R2": R2, "R3": R3, "R4": R4, "R5": R5,
             "colo_pkg": colo_pkg, "r2c": r2c, "r3c": r3c, "r4c": r4c, "r4raw": r4raw,
+            "r5c": r5c, "r5raw": r5raw,
             "drains": {"wh": wh, "day": day}}
 
 
 def _estate_figs(hosts, spine, pool, scorev, r4c):
-    """The six graded November figures under the answer (R4): colocated whole-host exposure plus the
+    """The six graded November figures under the answer (R5, passed as r4c): colocated whole-host
+    exposure plus the
     selected cloud ticket exposure per estate. Returns {estate: figure} and the per-estate ticket
     lists needed to tune."""
     split, total, boundary = G.assemble_bounded(r4c, scorev)
@@ -102,6 +107,41 @@ def _tune_cutline(pool, scorev, n_cloud):
     return last_in
 
 
+def _tune_two_lines(pool, scorev, n_ans, n_r4):
+    """Shift pool targets so the answer's line (n_ans cloud tickets) and the stop rung's line (n_r4)
+    are both strict: n_ans - 1 tickets at a + 1 or more, the last in at a, the first below at a - 1,
+    the next n_r4 - n_ans - 1 at a - 2 (the stop rung takes them), everything else at a - 3 or less.
+    The seven tickets the stop rung adds over the answer are drawn round-robin over the four cloud
+    estates, so every cloud count differs between the two rungs."""
+    cs = G._cloud_sorted(scorev)
+    a = cs[n_ans - 1][0]
+    above = [x for x in cs if x[0] > a]
+    mid = [x for x in cs if a - 2 <= x[0] <= a]
+    need = (n_ans - 1) - len(above)
+    k_extra = n_r4 - n_ans                      # first below plus the stop rung's other extras
+    # pick the extras round-robin over estates from the bottom of the near-line pool
+    by_e = {e: [x for x in reversed(mid) if x[2] == e] for e in CLOUD}
+    extras, i = [], 0
+    while len(extras) < k_extra:
+        e = CLOUD[i % len(CLOUD)]
+        if by_e[e]:
+            extras.append(by_e[e].pop(0))
+        i += 1
+        if i > 400:
+            raise SystemExit("not enough near-line cloud tickets to spread the stop rung's extras")
+    rest = [x for x in mid if x not in extras]
+    last_in = [x for x in rest if x[0] == a][-1] if any(x[0] == a for x in rest) else rest[-1]
+    rest = [x for x in rest if x is not last_in]
+    lifts = rest[:need]
+    drops = rest[need:]
+    plan = [(x, a + 1 - x[0]) for x in lifts] + [(last_in, a - last_in[0])]
+    plan += [(extras[0], a - 1 - extras[0][0])] + [(x, a - 2 - x[0]) for x in extras[1:]]
+    plan += [(x, a - 3 - x[0]) for x in drops]
+    for (v, _, e, p), d in plan:
+        pool[(e, p)]["target"] += d
+    return last_in
+
+
 def build_world(seed=SEED):
     rng = random.Random(seed)
     reg = Registry(rng)
@@ -111,18 +151,20 @@ def build_world(seed=SEED):
     pool = CLOUDM.build_cve_pool(rng, reg)
     spine = CLOUDM.build_spine(rng, chosts, pool)
     requests, req_rivals = WIN.build_requests(random.Random(seed + 20), hosts)
+    WIN.mark_office(requests, seed)
     COLOM.bind_acceptances(requests, hosts, base_adv, role_adv)
     fixed, co_truth, co_rivals, co_meta = CLOUDM.build_closeout(rng, reg)
 
     scorev = G.cloud_values(spine, pool, "score")
     flagv = G.cloud_values(spine, pool, "flag")
     rungs = _rungs(hosts, spine, pool, flagv, scorev)
-    figs, chosen_cloud, split = _estate_figs(hosts, spine, pool, scorev, rungs["r4c"])
+    figs, chosen_cloud, split = _estate_figs(hosts, spine, pool, scorev, rungs["r5c"])
 
     # ---- make the answer's cutline strict: one ticket at the last value in, one at the first
     # value out, every other ticket clear of both ----
-    n_cloud = 300 - sum(rungs["r4c"][e][0] for e in COLO)
-    _tune_cutline(pool, scorev, n_cloud)
+    n_cloud = 300 - sum(rungs["r5c"][e][0] for e in COLO)
+    n_r4 = 300 - sum(rungs["r4c"][e][0] for e in COLO)
+    _tune_two_lines(pool, scorev, n_cloud, n_r4)
     W0 = _rebuild(seed, pool, {})
     pool, scorev, figs = W0["_pool_final"], W0["scorev"], W0["figs"]
 
@@ -171,6 +213,7 @@ def _rebuild(seed, pool_targets, colo_tune, extra_cloud=None):
         pool[(e, p)]["target"] += extra
     spine = CLOUDM.build_spine(rng, chosts, pool)
     requests, req_rivals = WIN.build_requests(random.Random(seed + 20), hosts)
+    WIN.mark_office(requests, seed)
     COLOM.bind_acceptances(requests, hosts, base_adv, role_adv)
     fixed, co_truth, co_rivals, co_meta = CLOUDM.build_closeout(rng, reg)
     # colocated host nudges: add `d` exploitable findings to the most-exposed drained host
@@ -188,13 +231,13 @@ def _rebuild(seed, pool_targets, colo_tune, extra_cloud=None):
     scorev = G.cloud_values(spine, pool, "score")
     flagv = G.cloud_values(spine, pool, "flag")
     rungs = _rungs(hosts, spine, pool, flagv, scorev)
-    figs, chosen_cloud, split = _estate_figs(hosts, spine, pool, scorev, rungs["r4c"])
-    n_cloud = 300 - sum(rungs["r4c"][e][0] for e in COLO)
+    figs, chosen_cloud, split = _estate_figs(hosts, spine, pool, scorev, rungs["r5c"])
+    n_cloud = 300 - sum(rungs["r5c"][e][0] for e in COLO)
     cs = G._cloud_sorted(scorev)
     fb = cs[n_cloud] if len(cs) > n_cloud else cs[-1]
     first_below = {"estate": fb[2], "package": fb[3], "exposures": fb[0]}
     import asks as ASKM
-    deployments, coverage, assets, ans_A, ans_B = ASKM.build_asks(seed, chosts)
+    deployments, coverage, assets, ans_A, ans_B = ASKM.build_asks(seed, chosts, requests)
     out = {"rng": rng, "reg": reg, "base_adv": base_adv, "role_adv": role_adv,
            "deployments": deployments, "coverage": coverage, "assets": assets,
            "ans_A": ans_A, "ans_B": ans_B, "first_below": first_below,

@@ -243,9 +243,10 @@ def write_draintool(path):
 
 def write_deploylog(path, deployments):
     rows = [[d["ticket"], d["estate"], d["package"], d["vendor_first_release"], d["run_date"],
-             d["outcome"], "true" if d["is_last_host"] else "false"] for d in deployments]
+             d["outcome"], "true" if d["is_last_host"] else "false", d["change_request"]]
+            for d in deployments]
     _w(path, ["ticket_id", "estate", "package", "vendor_first_release", "run_date", "outcome",
-              "is_last_host"], rows)
+              "is_last_host", "change_request"], rows)
     return len(rows)
 
 

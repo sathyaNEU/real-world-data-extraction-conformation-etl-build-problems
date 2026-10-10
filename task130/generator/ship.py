@@ -84,7 +84,7 @@ def main():
     for s, c in v["annex2026"].items():
         assert int(g["annex26"][s][1]) == c, s
         n += 1
-    print(f"generator and verifier agree on {n} figures (answer, 14 annex rows x 5 columns, 7 rungs x 14 sections, "
+    print(f"generator and verifier agree on {n} figures (answer, 14 annex rows x 5 columns, 8 rungs x 14 sections, "
           f"both nearest sections, both bridges, the corpus counts and the 2026 close-out)")
 
 

@@ -153,3 +153,20 @@ SETTLED_COMMITS = [D(2026, 1, 13), D(2026, 1, 21), D(2026, 1, 28), D(2026, 2, 10
                    D(2026, 4, 7), D(2026, 4, 14), D(2026, 4, 15), D(2026, 4, 21), D(2026, 4, 28),
                    D(2026, 4, 29), D(2026, 5, 5), D(2026, 5, 6), D(2026, 5, 12), D(2026, 5, 13),
                    D(2026, 5, 19), D(2026, 5, 20), D(2026, 5, 21)]
+
+# four more settled first-offer purchases of privately owned dwellings whose notified deed date lay
+# beyond commitment plus 120 days: the agency still executed on day 120, before the date the parties
+# had agreed (deeds July to September 2026)
+SETTLED_EARLY = [D(2026, 3, 12), D(2026, 4, 2), D(2026, 4, 23), D(2026, 5, 14)]
+
+# holders inscribed in the register after 30 June 2026, with no return lodged by the extract: their
+# watch-list dwellings, all bought from private owners between July 2024 and June 2026 (never in July
+# to December 2025 and never after 30 June 2026), and the inscription day
+REGISTRANTS = [
+    dict(key="RX", name="Habitatges Cornisa SL", prov="46", inscribed=D(2026, 9, 17),
+         holds={"4625011016": 18}, early=5),
+    dict(key="RW", name="Pòrtic Residencial SL", prov="46", inscribed=D(2026, 7, 23),
+         holds={"4625001005": 5, "4625013021": 6}, early=4),
+    dict(key="RV", name="Inversions Mènsula SL", prov="03", inscribed=D(2026, 8, 27), holds={}, early=0),
+    dict(key="RZ", name="Riostra Lloguers SL", prov="12", inscribed=D(2026, 7, 9), holds={}, early=0),
+]

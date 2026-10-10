@@ -2,11 +2,11 @@
   "task": "task125",
   "domain": "accounting-audit-forensic",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "solved: landed, harden",
+  "stage": 3,
+  "stage_name": "built",
   "updated": "2026-10-10",
-  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, checks the Home First step-down closure on 31 March 2027 against the flagged cells, finds no step-down payment in any of them, carries Adult Social Care's cell 14 forward whole and files 5,700 routed payments; the step that lands it there is holding each Shared Lives carer's four-weekly payment at its current amount, when it is one payment covering every guest the carer hosts, so from April 2027 the 60 carers paid 3,044, 3,272 or 3,524 for a long-term band 2 guest beside a step-down guest are paid 1,464, all 13 of their plan-year payments land in cell 14, and the plan year routes 6,500.",
-  "harden_loops": 0,
+  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 intake off on its 30-instalment term, decomposes every Shared Lives payment into the weekly rates (each joint half as two weeks of them), moves the 60 single carers to 1,464 and the 16 halves of 2,274, 2,388 or 2,514 to 1,484 in cell 14 after the 31 March 2027 closure, carries the 32 halves of 1,522, 1,636 or 1,762 down to 732 under the 1,000-pound floor and files 6,700; the step that lands it there is reading a joint household as two vendors each paid half of whatever it is owed, when the extract's own changed households show a household left with one guest is paid its whole fee by the first vendor, so the 16 band 2 plus step-down households are paid 1,464 once a run in cell 14 and the plan year routes 6,900 (6,914).",
+  "harden_loops": 2,
   "solver_rounds": [
     {
       "label": "round 1, plain",
@@ -15,6 +15,14 @@
       "landed": true,
       "cracked": 3,
       "items": 8
+    },
+    {
+      "label": "round 2, plain",
+      "date": "2026-10-10",
+      "score": 85.1,
+      "landed": true,
+      "cracked": 4,
+      "items": 8
     }
   ],
   "judge": {
@@ -22,7 +30,7 @@
     "disposition": "",
     "report": ""
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
+  "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/02_anomaly_detection/AD02_digit-filter-workload-cohort-runoff.md"

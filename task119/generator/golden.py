@@ -917,7 +917,8 @@ def write_xlsx(fx, path):
     note = tr + 2
     for k, line in enumerate([
             "Inside the remit: an adult referred from a ward or the emergency department for a level 3 bed who waited "
-            "more than four hours from the decision to admit to the assignment of a bed (terms of reference, section 2).",
+            "more than four hours from the decision to admit to the assignment of a bed, or died still waiting more "
+            "than four hours after it (terms of reference, section 2).",
             "Deaths: death within 30 days of the decision to admit, from the linked date of death on the regional "
             "data service episodes.",
             "Could have confirmed: deaths after a wait during which the referring trust's own level 3 unit either had "

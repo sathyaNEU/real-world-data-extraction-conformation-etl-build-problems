@@ -438,6 +438,28 @@ Ask cells (answer): 1600 16.2 / 23.4 / 79.6; 1700 17.5 / 25.7 / 74.1; 2100 18.4 
 7. Successor dockets are never abandoned (allowed 58 per cent, refused 42 per cent), carried from the paper model; it is the same on both routes.
 8. Table P1 carries its in-file label as one line ("A production measure: it describes dockets, not applications"). It points away from rungs 0 to 2 and towards chaining, which is rung 3.
 
+**Stage 3b, 2026-10-10 (write-up and ship checks).** `generator/golden.py` reads only `target/` and writes `golden/fy2022_pendency_headline.docx` (one A4 page: the headline sentence, Table 1.1 with the eight groups and an all-filings row, the undecided share, three notes citing the charter, the production standard and the table notes) and `golden/fy2022_time_to_decision.svg` (monthly step curve with every FY2022 filing in the denominator, the 50 per cent line, the median marked and labelled, the 10.6 per cent undecided bracketed where the curve stops at the extract, a title stating 28.9). It asserts every first action on the merits has one 1N or 1R credit, one decision notice per docket, and that every undecided application has waited at least 1,461 days, above every graded quantile and 36 months. Printed figures equal the verifier's CLAIMS: 66,186 applications (57,418 new filings, 8,768 continuing), median 880 days (28.9), lower quartile 600 days (19.7), 65.6 per cent within 36 months, 10.6 per cent undecided, and all 24 group cells. Two runs byte-identical; the scrub audit runs inside the script (band 2026-11-01 to 2026-11-23). The golden-realism pass ran after the figures froze (table widths, one page, footer with page number, signature-free SVG ids, house font) and moved no figure. One pack regeneration in this stage: the thread's sign-offs repeated each first name above the full signature, which the surface screen read as two personas per name (`Stephen Stephen`, `Michael Michael`); the first-name sign-off lines were dropped in `docs.py`, the pack rebuilt (74 of 74 assertions), and only `headline_section_thread.eml` and its byte count in `metadata.json` changed.
+
+## Leak review
+
+leak.py at as-of 2026-11-23: REVIEW (no LEAK). Each REVIEW line, answered:
+- `performance_reporting_charter.pdf` carries 4 of 5 words of the call: it is the pin that defines the headline (median, pendency, filings, fiscal year); a definition, not the figure, and no number of the answer is in it.
+- `report_table_notes.docx` carries 3 of 5 words of the call: standing notes defining the tables under the headline; no FY2022 figure.
+- `docketing_codebook.md`, 10 stump terms: field glosses (application, ledger, examiner, production are the extract's own nouns); the CX gloss says only that the file passed to a new docket, true on both routes, and nothing names a continuing application on a transferred file.
+- `examiner_production_standard_2019.pdf`, 8 stump terms: defines the credit classes, which is the decisive pin by design; it says nothing about dockets, transfers or continuing applications.
+- `extract_notes.md`, 10 stump terms: the file list and provenance record; names files, sources and dates, no method.
+- `performance_reporting_charter.pdf`, 4 stump terms: the headline pins (application, filing date, still waiting at the extract) and the licensed docket measure; no split.
+- `report_table_notes.docx`, 6 stump terms: the group restatement and table rules for the ask layer; nothing on applications versus dockets beyond P1's own label.
+- `annual_report_2025_tables_P1_P2.xlsx` names the group codes beside numbers: P1 is docket pendency by docketing year and P2 dockets opened by group; neither ranks or files any FY2022 application figure.
+- `art_unit_groups.csv` names the group codes beside numbers: an effective-dated reference table (art unit, group, dates); the numbers are art unit codes and dates, no pendency.
+
+## Surface review
+
+`guard.py surface task126` after the regeneration: personas clean (six, all on the card). Three promoted pairs, none a rename or regeneration finding:
+- task125 (back to back, gap population and decision quantity_figure): mechanism axes, not surface; the pattern differs (none with G3 against task125's) and the shared decision type is the WARN answered under Guard.
+- task73 (surface 0.143, corpus pct 99): driven by the shared pairing and subdomain on the cards, the flat layout and the docx plus svg deliverable species; zero shared file names, schemas, same-seed tables, entities or prompt wording. task73 is a retired build on a different mechanism (a capped slate under a binding processing allocation); nothing in the generator can be renamed to move it, and the deliverable pair is the prompt's.
+- task82 (gap, pattern and decision family): the older same_puzzle signature, cleared by the differentiation line on the card at the draw.
+
 ## Tried and rejected
 
 - The note's chaining of dockets along CX edges as the decisive rung: a plain solver constructs it from the charter's "application", the CX gloss and the continuity table (pilot lessons: a charter definition and a join whose keys line up are executed), and its driver repeats task90; kept as rung 3.

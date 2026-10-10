@@ -386,6 +386,13 @@ under the account.
 Business Saver credits as billed: one row per account and called window. credited_kwh and credit_usd are the
 account's totals for the window across its enrolled sites; bill_month is the bill the credit posted to.
 
+## zone_daily_temps_2017_2026.csv
+The weather vendor's daily maximum and minimum temperature for each weather zone, whole degrees F, June to September;
+cdd is cooling degree days on a 65 F base.
+
+## loadfcst_da_s26.csv
+Load Planning's day-ahead forecast of the book's load by weather zone and hour for summer 2026, MWh, as issued.
+
 ## Trading files
 option_quotes_s27.csv: quotes received from brokers on the desk's quote line, one row per quote revision; premium in
 the broker's convention. quote_decisions.csv: the desk's decision on each quote revision (ACCEPTED, DECLINED,

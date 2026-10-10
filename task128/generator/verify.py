@@ -94,6 +94,7 @@ def verify(path):
         for r in csv.DictReader(f):
             fc[(r["estate"], r["date"])][int(r["hour"])] = float(r["tps"])
     drains = {e: 0 for e in COLO}
+    per_window = collections.defaultdict(list)
     for r in rd(target, "november_window_calendar.csv"):
         e = r["estate"]
         n, per, rack = cap[e]
@@ -104,8 +105,10 @@ def verify(path):
         needed = math.ceil(peak / per)
         concurrent = n - needed - rack
         drains[e] += concurrent * int(r["drain_cycles"])
+        per_window[e].append((r["window_date"], concurrent * int(r["drain_cycles"])))
 
-    # ---- the answer: colo whole-host top drains + cloud top (300 - 2)
+    # ---- the answer: one colocated ticket per window (each its share of the top hosts), then the
+    # cloud tickets that take out the most
     split = {e: 0 for e in ESTATES}
     figs = {}
     total = 0
@@ -113,9 +116,9 @@ def verify(path):
         ranked = sorted(colo_hosts[e], key=lambda h: (-whole[h], h))
         dr = ranked[:drains[e]]
         figs[e] = sum(whole[h] for h in dr)
-        split[e] = 1
+        split[e] = sum(1 for _, c in per_window[e] if c > 0)
         total += figs[e]
-    n_cloud = 300 - 2
+    n_cloud = 300 - split["payments"] - split["checkout"]
     cs = sorted(((v, RANK[e], e, p) for (e, p), v in cloudv.items() if v > 0),
                 key=lambda x: (-x[0], x[1], x[3]))
     chosen = cs[:n_cloud]
@@ -137,7 +140,38 @@ def verify(path):
     res["closeout"] = closeout(target)
     # ---- acknowledgements back-test
     res["acks"] = acks(target)
+    res["one_request"] = one_request(target)
     return res, meta
+
+
+def one_request(target):
+    """Every colocated ticket in the crew log rode exactly one office change request, ran only on
+    that request's window dates, on exactly the hosts the provider accepted."""
+    wb = openpyxl.load_workbook(os.path.join(target,
+                               "colocation_change_acknowledgements_may_oct_2026.xlsx"))
+    ws = wb["Acknowledgements"]
+    hdr = [c.value for c in ws[1]]
+    acks_ = {r[0]: dict(zip(hdr, r)) for r in ws.iter_rows(min_row=2, values_only=True)}
+    tk = collections.defaultdict(list)
+    for r in rd(target, "crew_deployment_log_2026.csv"):
+        if r["estate"] in COLO:
+            tk[r["ticket_id"]].append(r)
+    bad, part = 0, 0
+    for t, rs in tk.items():
+        crs = {r["change_request"] for r in rs}
+        if len(crs) != 1:
+            bad += 1
+            continue
+        a = acks_[next(iter(crs))]
+        wd = dt.date.fromisoformat(str(a["window_date"])[:10])
+        days = {r["run_date"] for r in rs}
+        ok = [r for r in rs if r["outcome"] == "succeeded"]
+        if not days <= {wd.isoformat(), (wd + dt.timedelta(days=1)).isoformat()} or \
+                len(ok) != int(a["hosts_accepted"]):
+            bad += 1
+        if int(a["hosts_accepted"]) < int(a["hosts_requested"]):
+            part += 1
+    return {"tickets": len(tk), "violations": bad, "part_accepted": part}
 
 
 def closeout(target):
@@ -205,6 +239,9 @@ def main():
     assert res["drains"]["payments"] == 96 and res["drains"]["checkout"] == 120, res["drains"]
     assert res["closeout"]["cells"] == 12, res["closeout"]
     assert res["acks"]["requests"] >= 400, res["acks"]
+    assert res["one_request"]["violations"] == 0 and res["one_request"]["part_accepted"] >= 6, \
+        res["one_request"]
+    assert (res["split"]["payments"], res["split"]["checkout"]) == (4, 5), res["split"]
     print(f"verifier: answer total {res['total']:,}, split "
           f"{'/'.join(str(res['split'][e]) for e in ESTATES)}, drains {res['drains']}, "
           f"close-out {res['closeout']['cells']} cells, {res['acks']['requests']} acknowledgements "

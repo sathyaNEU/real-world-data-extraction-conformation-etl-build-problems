@@ -47,7 +47,7 @@ WRITTEN = {
     Wr.PECOS: (2027, 4, 9, 15, 2), Wr.DECISIONS: (2027, 4, 9, 17, 21), Wr.CPTYS: (2027, 4, 8, 11, 37),
     Wr.BOOKMAP: (2027, 1, 4, 10, 2), Wr.BLOTTER: (2027, 4, 9, 18, 40), Wr.MATCHLOG: (2027, 4, 9, 18, 41),
     Wr.PORTFOLIOS: (2026, 11, 12, 13, 26), Wr.CALENDAR: (2026, 12, 1, 9, 48), Wr.PROCEDURES: (2027, 1, 15, 16, 7),
-    Wr.TEMPS: (2026, 10, 5, 8, 55), Wr.OUTLOOK: (2026, 12, 18, 10, 30), Wr.NOTES: (2027, 4, 12, 11, 20),
+    Wr.TEMPS: (2026, 10, 5, 8, 55), Wr.DAYAHEAD: (2026, 10, 6, 14, 12), Wr.OUTLOOK: (2026, 12, 18, 10, 30), Wr.NOTES: (2027, 4, 12, 11, 20),
     Wr.LOG: (2027, 4, 12, 16, 45),
 }
 PRODUCERS = {Wr.TERMS: ("Sabine Crest Energy", "2025-03-03"), Wr.MINUTE: ("Sabine Crest Energy", "2027-03-22"),
@@ -82,12 +82,13 @@ SOURCES = [
     (Wr.CALENDAR, "Trading calendar for 2027."),
     (Wr.PROCEDURES, "Trading desk procedures, Rev. 3."),
     (Wr.TEMPS, "Daily temperatures by weather zone, June to September 2017 to 2026, from the weather vendor feed."),
+    (Wr.DAYAHEAD, "Load Planning's day-ahead forecasts of the book by weather zone, summer 2026, as issued at 10:00 the day before."),
     (Wr.OUTLOOK, "ERCOT summer 2027 outlook by weather zone, December 2026 release."),
     (Wr.NOTES, "Load Planning field notes for the extracts."),
 ]
 
 MAIN_FILES = [Wr.SPINE, Wr.SETTLED, Wr.PEAKLIST, Wr.ENROL, Wr.PREMISES, Wr.SWITCHES, Wr.POSITIONS, Wr.CREDITS,
-              Wr.ACCOUNTS, Wr.ROSTER, Wr.TERMS, Wr.POLICY, Wr.MINUTE, Wr.REPORT, Wr.NOTES]
+              Wr.ACCOUNTS, Wr.ROSTER, Wr.TERMS, Wr.POLICY, Wr.MINUTE, Wr.REPORT, Wr.NOTES, Wr.TEMPS]
 DEVICE_FILES = [Wr.QUOTES, Wr.PECOS, Wr.DECISIONS, Wr.CPTYS, Wr.BOOKMAP, Wr.BLOTTER, Wr.MATCHLOG, Wr.PORTFOLIOS,
                 Wr.CALENDAR, Wr.PROCEDURES]
 
@@ -150,7 +151,8 @@ def write_all(w, an, out):
     Wr.write_matchlog(w, j(Wr.MATCHLOG))
     Wr.write_portfolios(j(Wr.PORTFOLIOS))
     Wr.write_calendar(j(Wr.CALENDAR))
-    Wr.write_temps(w, j(Wr.TEMPS), rng)
+    Wr.write_temps(w, j(Wr.TEMPS))
+    Wr.write_dayahead(w, j(Wr.DAYAHEAD), np.random.default_rng(SEED + 98))
     D.terms(j(Wr.TERMS))
     D.minute(j(Wr.MINUTE))
     D.report(j(Wr.REPORT), an)
@@ -290,7 +292,8 @@ def main():
         "deliverables": ["summer_block_committee.pptx", "summer_block_split.xlsx"],
         "distractor_files": list(Wr.DISTRACTORS),
         "distractor_notes": {
-            Wr.TEMPS: "Weather by zone. The risk policy's exposure replays settled load at the system peak hour; no step reads temperature.",
+            Wr.DAYAHEAD: "Last summer's day-ahead forecasts of the book. The risk policy's exposure replays ten closed summers "
+                         "at the coming book; no step reads a forecast of a closed summer.",
             Wr.OUTLOOK: "Wrong-basis distractor: ERCOT's zone outlook is the input to the lenders' zone-share basis, which "
                         "the risk policy (section 6) names as the lenders' view and not the exposure it defines. On that "
                         "basis the split is Coast-led and is neither the answer nor rung 0.",
@@ -325,7 +328,7 @@ def main():
               "pack": gates, "info": info, "assertions": len(C.LOG)}
     for name, ok, _ in C.LOG:
         print(("PASS " if ok else "FAIL ") + name)
-    print(f"\n{len(C.LOG)} assertions, all green. Split {main_res['rungs']['R4']}.")
+    print(f"\n{len(C.LOG)} assertions, all green. Split {main_res['rungs']['R5']}.")
     if a.record:
         with open(a.record, "w") as f:
             json.dump(record, f, indent=2, default=str)

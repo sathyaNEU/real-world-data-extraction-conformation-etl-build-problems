@@ -151,12 +151,24 @@ COMBOS = [
     (("B2", "B2", "SDs"), 4),
     (("B1", "B2"), 10), (("B2", "B2"), 8), (("B1", "B1"), 6),
 ]
-# Carer households approved jointly: the household's four-weekly fee is paid in two equal halves, one to each
-# carer's vendor record (consecutive vendor numbers). Nothing in the pack states it; the halves are the record.
+# Carer households approved jointly: while the household hosts two or more guests its four-weekly fee is paid in two
+# equal halves, one to each carer's vendor record (consecutive vendor numbers); while it hosts one guest the whole fee
+# is paid to the first carer's record and the second record is not paid. Nothing in the pack states either rule; the
+# halves are the record, and the households that lost a guest inside the extract (JOINT_CHANGES) are the record of
+# the one-guest rule.
 JOINT = [
     (("B1", "B3", "SDs"), 3), (("B1", "B3", "SDe"), 3), (("B1", "B3", "SDc"), 2),   # 1,484 a half after the closure
     (("B1", "B2", "SDs"), 1), (("B1", "B2", "SDe"), 1), (("B1", "B2", "SDc"), 1),   # 1,392 a half after it
-    (("B1", "B2"), 3), (("B2",), 2),
+    (("B1", "B2"), 3),
+    (("B2", "SDs"), 5), (("B2", "SDe"), 5), (("B2", "SDc"), 6),                     # one guest after it: 1,464 whole
+    (("B1", "SDe"), 1), (("B1", "SDc"), 1), (("B3", "SDs"), 1), (("B3", "SDe"), 1), # one guest after it: 1,320 / 1,648
+]
+# Joint households that lost a long-term guest inside the extract: (before, after, first Shared Lives run on or after)
+JOINT_CHANGES = [
+    (("B1", "B2"), ("B1",), dt.date(2023, 11, 1)),
+    (("B2", "B3"), ("B3",), dt.date(2024, 8, 1)),
+    (("B1", "B1", "B2"), ("B1", "B2"), dt.date(2025, 2, 1)),
+    (("B1", "B2"), ("B1",), dt.date(2025, 9, 1)),
 ]
 SHORT_BREAK_NIGHTLY = [68.50, 74.00, 88.50]
 CLOSURE = dt.date(2027, 3, 31)
@@ -170,6 +182,22 @@ def carer_amount(combo, when=None):
 def joint_half(combo, when=None):
     """Each carer's half of a joint household's four-weekly fee (whole pounds: four weeks of rates is even)."""
     return carer_amount(combo, when) // 2
+
+
+def guests_at(combo, when=None):
+    return combo if (when is None or when <= CLOSURE) else tuple(g for g in combo if not g.startswith("SD"))
+
+
+def joint_pay(combo, when=None):
+    """What the two vendor records of a joint household are paid on one run: halves while two or more guests
+    remain, the whole fee to the first record (and nothing to the second) while one remains."""
+    g = guests_at(combo, when)
+    fee = 4 * sum(RATES[x] for x in g)
+    if not g:
+        return (0, 0)
+    if len(g) == 1:
+        return (fee, 0)
+    return (fee // 2, fee // 2)
 
 
 # ---------------------------------------------------------------------------------------- Tenancy Sustainment

@@ -44,6 +44,10 @@ NOV_OFFICE = {"payments": [dt.date(2026, 11, 3), dt.date(2026, 11, 10), dt.date(
                            dt.date(2026, 11, 16), dt.date(2026, 11, 18)]}
 NOV_C = {"payments": [3, 3, 3, 3], "checkout": [3, 3, 3, 3, 3]}
 NOV_C_DAY = {"payments": [3, 3, 2, 3], "checkout": [1, 1, 2, 1, 1]}
+# the office's own change requests in the May to October corpus (one request per colocated ticket)
+OFFICE_TEAM = "Vulnerability management"
+OFFICE_N = {"payments": 25, "checkout": 23}
+OFFICE_PART = {"payments": 4, "checkout": 4}
 
 # host pools on the colocated estates: (pool, role, size, kind)
 POOLS = {

@@ -5,6 +5,7 @@ import os
 import statistics
 
 from params import ESTATES, COLO, CLOUD, DENSE
+import datetime as _d
 import ladder as G
 import windows as WIN
 
@@ -52,30 +53,53 @@ def run(W, out, info, meta):
             txt = open(os.path.join(target, f), encoding="utf-8", errors="ignore").read().lower()
             C.ok("gate.noword_text", "distractor" not in txt, f)
 
-    # ---- the ladder
+    # ---- the ladder (R5 is the answer; R4, one ticket spending the month's drains, the stop rung)
     r = W["rungs"]
-    tot = {k: r[k][1] for k in ("R0", "R1", "R2", "R3", "R4")}
-    ans = tot["R4"]
+    tot = {k: r[k][1] for k in ("R0", "R1", "R2", "R3", "R4", "R5")}
+    ans = tot["R5"]
     C.ok("ladder.R0_above", tot["R0"] > ans, f"R0 {tot['R0']} vs {ans}")
     C.ok("ladder.R1_above", tot["R1"] > ans, f"R1 {tot['R1']} vs {ans}")
     C.ok("ladder.R2_below", tot["R2"] < ans, f"R2 {tot['R2']}")
     C.ok("ladder.R3_below", tot["R3"] < ans, f"R3 {tot['R3']}")
-    C.ok("ladder.R4_feasible_max", ans > tot["R2"] and ans > tot["R3"], "R4 top feasible")
-    C.ok("ladder.R4_over_R3", ans / tot["R3"] >= 1.20, f"ratio {ans/tot['R3']:.3f}")
-    # nearest wrong cell at least 8 per cent from the answer
+    C.ok("ladder.R4_above", tot["R4"] > ans, f"R4 {tot['R4']} vs {ans}")
+    C.ok("ladder.R5_feasible_max", ans > tot["R2"] and ans > tot["R3"], "R5 top feasible")
+    C.ok("ladder.R5_over_R3", ans / tot["R3"] >= 1.15, f"ratio {ans/tot['R3']:.3f}")
+    # nearest wrong cell below the stop rung at least 8 per cent from the answer
     nearest = min(abs(ans - tot[k]) / ans for k in ("R0", "R1", "R2", "R3"))
     C.ok("sep.nearest_8pct", nearest >= 0.08, f"nearest {nearest:.3f}")
-    # colocated signature (1,1) is unique to the answer
+    # the stop rung differs from the answer in every count and every rounded figure
+    s4, s5 = r["R4"][0], r["R5"][0]
+    for e_ in ESTATES:
+        C.ok(f"sep.R4_count.{e_}", s4[e_] != s5[e_], f"{e_} {s4[e_]} vs {s5[e_]}")
+    ten = lambda x: int(x / 10 + 0.5) * 10
+    C.ok("sep.R4_total_bin", ten(tot["R4"]) != ten(ans), f"{tot['R4']} vs {ans}")
+    n5 = 300 - sum(r["r5c"][e_][0] for e_ in COLO)
+    n4 = 300 - sum(r["r4c"][e_][0] for e_ in COLO)
+    cs_ = G._cloud_sorted(W["scorev"])
+    for e_ in CLOUD:
+        f4 = sum(v for v, _, ee, _ in cs_[:n4] if ee == e_)
+        f5 = sum(v for v, _, ee, _ in cs_[:n5] if ee == e_)
+        C.ok(f"sep.R4_fig_bin.{e_}", ten(f4) != ten(f5), f"{e_} {f4} vs {f5}")
+    # the colocated signature (4, 5) is unique to the answer
     sig = (W["answer_split"]["payments"], W["answer_split"]["checkout"])
-    C.ok("sep.answer_sig", sig == (1, 1), str(sig))
-    for k in ("R0", "R1", "R2", "R3"):
+    C.ok("sep.answer_sig", sig == (4, 5), str(sig))
+    for k in ("R0", "R1", "R2", "R3", "R4"):
         s = r[k][0]
-        C.ok(f"sep.{k}_sig", (s["payments"], s["checkout"]) != (1, 1),
+        C.ok(f"sep.{k}_sig", (s["payments"], s["checkout"]) != (4, 5),
              f"{s['payments']}/{s['checkout']}")
-    # colocated discriminator dominance
-    colo_r4 = sum(W["rungs"]["r4c"][e][1] for e in COLO)
-    colo_r3 = sum(W["rungs"]["r3c"][e][1] for e in COLO)
-    C.ok("disc.colo_edge", colo_r4 / colo_r3 >= 1.2, f"{colo_r4}/{colo_r3}")
+    # the same hosts are drained at R4 and R5: the decisive move changes tickets, not hosts
+    for e_ in COLO:
+        C.ok(f"r5.same_hosts.{e_}", r["r4c"][e_][1] == r["r5c"][e_][1],
+             f"{r['r4c'][e_][1]} vs {r['r5c'][e_][1]}")
+    # colocated discriminator dominance over the package-valued stop of the old ladder
+    colo_r5 = sum(r["r5c"][e_][1] for e_ in COLO)
+    colo_r3 = sum(r["r3c"][e_][1] for e_ in COLO)
+    C.ok("disc.colo_edge", colo_r5 / colo_r3 >= 1.2, f"{colo_r5}/{colo_r3}")
+    # partial cell: one ticket per window but each drain credited with the ticket's package only
+    part = sum(len(h) for e_ in COLO for _, h in r["r5raw"][e_][2])
+    part_total = ans - colo_r5 + part
+    C.ok("grid.window_package_only", abs(part_total - ans) / ans >= 0.08,
+         f"{part_total} vs {ans}")
 
     # ---- mid-bin
     for e in ESTATES:
@@ -138,10 +162,12 @@ def run(W, out, info, meta):
          "dictionary covers every extract")
 
     # ---- strict cutline under the answer: the last ticket in and the first below are unique
-    n_cl = 300 - sum(W["rungs"]["r4c"][e][0] for e in COLO)
+    n_cl = 300 - sum(W["rungs"]["r5c"][e][0] for e in COLO)
     cv = [x[0] for x in G._cloud_sorted(W["scorev"])]
     C.ok("cut.strict", cv[n_cl - 2] > cv[n_cl - 1] > cv[n_cl] > cv[n_cl + 1],
          f"{cv[n_cl-2]}/{cv[n_cl-1]}/{cv[n_cl]}/{cv[n_cl+1]}")
+    n_r4 = 300 - sum(W["rungs"]["r4c"][e][0] for e in COLO)
+    C.ok("cut.strict_R4", cv[n_r4 - 1] > cv[n_r4], f"{cv[n_r4-1]}/{cv[n_r4]}")
 
     # ---- the rebuild identity the decisive rung reads, and the colocated ticket's legality
     import datetime as _d
@@ -172,6 +198,44 @@ def run(W, out, info, meta):
         b = wh[e]
         C.ok(f"host_rank_edge.{e}", ranked[b - 1].whole() >= ranked[b].whole(),
              f"{ranked[b-1].whole()} vs {ranked[b].whole()}")
+
+    for e in COLO:
+        for d, hids in W["rungs"]["r5raw"][e][2]:
+            pkg, cov = G.colo_ticket_package(W["hosts"], hids, e, W["reg"])
+            C.ok(f"ticket_window.{e}.{d}", pkg == "glibc" and cov == len(hids) == 24,
+                 f"{pkg} covers {cov}/{len(hids)}")
+        C.ok(f"windows.{e}", W["rungs"]["r5c"][e][0] == len(WIN.nov_windows()[e]),
+             str(W["rungs"]["r5c"][e]))
+
+    # ---- one colocated ticket, one change request, one window (the corpus R5 reads)
+    from collections import defaultdict
+    office = {rq["rid"]: rq for rq in W["requests"] if rq.get("office")}
+    tk = defaultdict(list)
+    for dep in W["deployments"]:
+        if dep["estate"] in COLO:
+            tk[dep["ticket"]].append(dep)
+    span_miss = 0
+    for e in COLO:
+        ts = {t: rs for t, rs in tk.items() if rs[0]["estate"] == e}
+        crs = {t: {x["change_request"] for x in rs} for t, rs in ts.items()}
+        C.ok(f"corpus.one_cr.{e}", all(len(v) == 1 for v in crs.values()), "one request per ticket")
+        used = [next(iter(v)) for v in crs.values()]
+        C.ok(f"corpus.cr_unique.{e}", len(used) == len(set(used)), "no request carries two tickets")
+        C.ok(f"corpus.cr_office.{e}", all(u in office for u in used) and
+             len(used) == sum(1 for q in office.values() if q["estate"] == e), "office requests")
+        part = 0
+        for t, rs in ts.items():
+            q = office[rs[0]["change_request"]]
+            ok_runs = [x for x in rs if x["outcome"] == "succeeded"]
+            C.ok(f"corpus.runs.{t}", len(ok_runs) == q["accepted"], f"{len(ok_runs)} vs {q['accepted']}")
+            days = {x["run_date"] for x in rs}
+            allowed = {q["date"].isoformat(), (q["date"] + _d.timedelta(days=1)).isoformat()}
+            C.ok(f"corpus.window.{t}", days <= allowed, f"{days}")
+            if q["accepted"] < q["requested"]:
+                part += 1
+                span_miss += 1
+        C.ok(f"corpus.part.{e}", part >= 3, f"{part} part-accepted office tickets")
+    C.ok("corpus.span_rival", span_miss >= 6, f"spanning reading misses {span_miss} tickets")
 
     # ---- acknowledgements back-test
     C.ok("acks.count", len(W["requests"]) >= 400, str(len(W["requests"])))

@@ -26,7 +26,7 @@
       "xlsx"
     ],
     "largest_file": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
-    "largest_file_rows": 406646
+    "largest_file_rows": 408795
   },
   "sources": [
     {
@@ -42,8 +42,8 @@
     {
       "path": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
       "format": "csv",
-      "bytes": 53741941,
-      "rows": 406646,
+      "bytes": 54012919,
+      "rows": 408795,
       "source": "constructed for this task (see sources)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -60,7 +60,7 @@
     {
       "path": "digit_conformity_statements_2023-24_to_2025-26.pdf",
       "format": "pdf",
-      "bytes": 4493,
+      "bytes": 4496,
       "rows": null,
       "source": "constructed for this task (see sources)",
       "date": "2026-07-10",
@@ -78,7 +78,7 @@
     {
       "path": "digit_filter_run_log_2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 11974,
+      "bytes": 11970,
       "rows": 154,
       "source": "constructed for this task (see sources)",
       "date": "2026-04-07",

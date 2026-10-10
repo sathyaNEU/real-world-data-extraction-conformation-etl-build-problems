@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import math
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import numpy as np
 import pandas as pd
@@ -37,10 +37,11 @@ PORTFOLIOS = "portfolio_books.csv"
 CALENDAR = "trading_calendar_2027.csv"
 PROCEDURES = "desk_procedures.docx"
 TEMPS = "zone_daily_temps_2017_2026.csv"
+DAYAHEAD = "loadfcst_da_s26.csv"
 OUTLOOK = "ercot_zone_peak_outlook_2027.xlsx"
 NOTES = "field_notes.md"
 LOG = "extract_log.md"
-DISTRACTORS = [TEMPS, OUTLOOK]
+DISTRACTORS = [DAYAHEAD, OUTLOOK]
 
 ACCT_WORDS = ["Arrowhead", "Caliche", "Dalworth", "Flatrock", "Gulfgate", "Ironbridge", "Kingsway", "Pinecrest",
               "Quarry Hill", "Ridgeline", "Stonegate", "Upland", "Westfork", "Brushy Creek", "Cotton Belt",
@@ -288,17 +289,20 @@ def write_calendar(path):
     _csv(pd.DataFrame(rows), path)
 
 
-def write_temps(w, path, rng):
-    rows = []
-    base = {"Coast": 93, "East": 94, "Far West": 98, "North": 99, "North Central": 97, "South Central": 97,
-            "Southern": 96, "West": 97}
-    for y in SUMMERS:
-        days = w.heat[y]["days"]
-        for b in BOOKS:
-            hb = w.heat[y]["book"][b]
-            for d, h in zip(days, hb):
-                tmax = base[b] + 14 * (h - 0.62) + rng.normal(0, 1.1)
-                tmin = tmax - 20 - rng.normal(0, 2.0)
-                rows.append({"date": d.isoformat(), "weather_zone": CODE[b], "tmax_f": f"{tmax:.0f}",
-                             "tmin_f": f"{tmin:.0f}", "cdd": f"{max(0.0, (tmax + tmin) / 2 - 65):.1f}"})
+def write_temps(w, path):
+    t = w.temps
+    rows = [{"date": d.isoformat(), "weather_zone": CODE[b], "tmax_f": str(hi), "tmin_f": str(lo),
+             "cdd": f"{max(0.0, (hi + lo) / 2 - 65):.1f}"} for d, b, hi, lo in zip(t["date"], t["book"], t["tmax"], t["tmin"])]
     _csv(pd.DataFrame(rows), path)
+
+
+def write_dayahead(w, path, rng):
+    """Load Planning's day-ahead forecast of the book by zone for summer 2026, issued 10:00 the day before."""
+    s = w.settled[[d.year == 2026 for d in w.settled["date"]]]
+    bias = {b: rng.normal(0.004, 0.006) for b in BOOKS}
+    rows = []
+    for b, d, h, v in zip(s["book"], s["date"], s["he"], s["mwh"]):
+        f = v * (1 + bias[b] + rng.normal(0, 0.028))
+        rows.append({"oper_day": d.isoformat(), "hour_ending": h, "weather_zone": CODE[b], "da_forecast_mwh": f"{f:.1f}",
+                     "issued": f"{(d - timedelta(days=1)).isoformat()} 10:00"})
+    _csv(pd.DataFrame(rows).sort_values(["oper_day", "hour_ending", "weather_zone"], kind="stable"), path)

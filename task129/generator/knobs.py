@@ -3,9 +3,19 @@
 KEEP_AUG keeps a share of August cached-load views by audience and template, chosen by a hash of
 the page-view key (a cached view's removal changes no other view's state, and the windows that
 measure the effects close before August); STEP_T is the dated changes' step by title."""
-KEEP_AUG = {}
-STEP_T = {
-    "E": {"ST": 0.46, "LA": 0.46, "KD": 0.46},
-    "B": {"ST": 0.68, "LA": 0.68, "KD": 0.68},
-    "D": {"ST": 0.72, "LA": 0.72, "KD": 0.72},
-}
+KEEP_AUG = {'base|artikel': 0.8275,
+ 'base|forside': 0.895,
+ 'base|galleri': 0.8175,
+ 'base|liveblog': 1.0,
+ 'base|sektion': 1.0,
+ 'base|sport': 0.9375,
+ 'puz|spil': 0.815,
+ 'sub|artikel': 0.92,
+ 'sub|forside': 0.86,
+ 'sub|galleri': 1.0,
+ 'sub|liveblog': 1.0,
+ 'sub|sektion': 1.0,
+ 'sub|sport': 1.0}
+STEP_T = {'E': {'ST': 0.46, 'LA': 0.4375, 'KD': 0.4906},
+ 'B': {'ST': 0.6824, 'LA': 0.652, 'KD': 0.6472},
+ 'D': {'ST': 0.7369, 'LA': 0.7377, 'KD': 0.6744}}

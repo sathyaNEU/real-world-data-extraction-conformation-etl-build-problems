@@ -181,6 +181,42 @@ def _sweep(requests):
     return miss
 
 
+def nov_windows():
+    """{estate: [(window_date, drains)]} for the November windows booked to the office, in date
+    order: concurrent drains under the window-hours headroom times eight cycles."""
+    from params import NOV_OFFICE, NOV_C
+    return {e: [(d, c * CYCLES) for d, c in zip(NOV_OFFICE[e], NOV_C[e])] for e in COLO}
+
+
+def mark_office(requests, seed):
+    """Relabel some May to October requests as the office's own colocated change tickets: one
+    request per ticket, at most one per window, a few of them part-accepted. Team labels do not
+    enter the capacity rule, so the back-test is unchanged; a separate generator keeps every other
+    draw where it was."""
+    import random
+    from params import OFFICE_TEAM, OFFICE_N, OFFICE_PART
+    rng = random.Random(seed + 60)
+    for est in COLO:
+        rs = [r for r in requests if r["estate"] == est and r["accepted"] > 0]
+        part = [r for r in rs if r["accepted"] < r["requested"]]
+        full = [r for r in rs if r["accepted"] == r["requested"] and r["requested"] <= 20]
+        chosen, days = [], set()
+        for r in rng.sample(part, len(part)):
+            if len([c for c in chosen if c["accepted"] < c["requested"]]) >= OFFICE_PART[est]:
+                break
+            if r["date"] not in days:
+                chosen.append(r); days.add(r["date"])
+        for r in rng.sample(full, len(full)):
+            if len(chosen) >= OFFICE_N[est]:
+                break
+            if r["date"] not in days:
+                chosen.append(r); days.add(r["date"])
+        for r in chosen:
+            r["team"] = OFFICE_TEAM
+            r["office"] = True
+    return requests
+
+
 def nov_office_peaks():
     """Per November office window: (date, window_peak_tps, day_peak_tps). The window-hours peak
     yields the concurrent drains in NOV_C; the day peak yields the lower NOV_C_DAY."""

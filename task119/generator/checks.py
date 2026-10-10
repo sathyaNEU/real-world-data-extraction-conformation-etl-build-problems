@@ -47,8 +47,8 @@ GOLDEN_RECORD = {A: (438, 126, 8), B: (104, 29, 0), C: (351, 104, 5), D_: (275, 
                  F_: (140, 40, 6), G_: (221, 63, 46), H: (75, 22, 3), "total": (2163, 629, 148)}
 GOLDEN_Y3 = {A: (150, 44, 2), B: (36, 10, 0), C: (118, 35, 0), D_: (92, 27, 27), E: (190, 56, 0), F_: (46, 13, 0),
              G_: (74, 21, 15), H: (25, 7, 0)}
-NATURAL = {A: (454, 137, 40), B: (132, 40, 0), C: (365, 115, 17), D_: (291, 93, 91), E: (631, 177, 0),
-           F_: (154, 51, 0), G_: (234, 74, 57), H: (107, 33, 0), "total": (2368, 720, 205)}
+NATURAL = {A: (454, 137, 40), B: (132, 39, 0), C: (365, 115, 17), D_: (291, 93, 91), E: (631, 177, 0),
+           F_: (154, 51, 0), G_: (234, 74, 57), H: (105, 34, 0), "total": (2366, 720, 205)}
 # each device mishandled alone: change against the golden per trust, (3a, 3b, 3c)
 DELTAS = {
     "DV1": {A: (4, 2, 11), B: (2, 2, 0), C: (2, 2, 5), D_: (2, 2, 2), E: (4, 2, 0), F_: (2, 2, 2), G_: (2, 2, 4),
@@ -1303,3 +1303,15 @@ def pack_checks(K, D, S, target, F, meta, distractors):
     # no uniform row counts across the data files
     rows = [f["rows"] for f in meta["files"] if f.get("rows")]
     K.check("generation tells: no two data files share a row count", len(rows) == len(set(rows)), rows)
+    # no wait piled on one minute: the referral log against the unit feed, as shipped (no clamp on either tail)
+    rf = pd.read_csv(target / F["referrals"], usecols=["referral_id", "dta_at"])
+    st = pd.read_parquet(target / F["stays"], columns=["referral_id", "admitted_at"]).dropna(subset=["referral_id"])
+    st = st[st["referral_id"] != ""].sort_values("admitted_at").drop_duplicates("referral_id")
+    mw = rf.merge(st, on="referral_id")
+    wm = ((pd.to_datetime(mw["admitted_at"]) - pd.to_datetime(mw["dta_at"])).dt.total_seconds() // 60).astype(int)
+    vc = wm.value_counts().reindex(range(0, 300), fill_value=0)
+    spikes = [(m, int(vc[m]), float(np.median([vc[k] for k in range(m - 5, m + 6) if k != m])))
+              for m in range(8, 240)]
+    spikes = [x for x in spikes if x[1] > 2 * x[2] + 10]
+    K.check("generation tells: no admitted wait minute (8 to 239) holds more than twice its neighbours' median",
+            not spikes, spikes[:5] or (int(vc[225]), int(vc[8])))

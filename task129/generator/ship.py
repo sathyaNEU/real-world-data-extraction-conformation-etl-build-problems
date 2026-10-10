@@ -101,6 +101,8 @@ def release_log(rng, dep, path):
             note = {"E": f"Brand web fonts live on all templates ({P.CHG['E'][0]})",
                     "B": f"Image pipeline: responsive renditions on hero templates ({P.CHG['B'][0]})",
                     "D": f"Consent banner: new CMP on all templates ({P.CHG['D'][0]})"}[tag]
+        elif tag == "RUM":
+            note = "RUM beacon v2 (collector v2): sampling rate set per property and sign-in"
         elif tag == "PUZ":
             note = f"Spil: header bidding on ad-supported puzzle pages ({P.CHG['A'][0]})"
         elif tag.startswith("COH:"):

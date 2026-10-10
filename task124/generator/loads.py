@@ -7,8 +7,9 @@ from datetime import date, timedelta
 import numpy as np
 import pandas as pd
 
-from common import (BOOKS, EXTRACT, HEDGES, NC, PEAKS, READ_HOURS, SUMMERS, TARGET_EXPOSURE, WINDOW_HOURS,
-                    billing_holidays, daterange, p90, summer_weekdays)
+from common import (BOOKS, EXTRACT, FULL_LIFT, HEAT_LO, HEAT_SAT, HEDGES, NC, ORDINARY_DROP, PEAKS, READ_HOURS,
+                    SUMMERS, TARGET_EXPOSURE, TEMP_BASE, TEMP_NOISE, TEMP_SCALE, WINDOW_HOURS, billing_holidays, daterange, p90,
+                    summer_weekdays)
 from world import CENTRE_TOTAL_KW, MEMBERS, TWIN_COLD
 
 HOUR_MOD = dict(zip(READ_HOURS, [-0.006, -0.004, -0.002, 0.0, 0.001, 0.001, 0.0, 0.0, -0.002, -0.004]))
@@ -87,7 +88,15 @@ def choose_calls(rng, heat):
     return calls
 
 
-def member_reads(rng, prem, calls):
+def member_share(u: float, h: float) -> float:
+    """Share of maximum demand a member draws in an uncalled afternoon hour at zone heat h: its base level on ordinary
+    afternoons, its full-load level once the zone reaches design-day heat, linear between."""
+    full = u + FULL_LIFT
+    t = min(1.0, max(0.0, (h - HEAT_LO) / (HEAT_SAT - HEAT_LO)))
+    return full - ORDINARY_DROP * (1.0 - t)
+
+
+def member_reads(rng, prem, calls, heat):
     """Hourly reads, hours ending 11 to 20, every weekday each member is in the book."""
     mem = prem[(prem["comp"] == "ref") & (prem["record_type"] == "NEW")]
     rows = []
@@ -95,35 +104,56 @@ def member_reads(rng, prem, calls):
         md, phi, u = m["md_kw"], m["phi"], m["u"]
         for y in SUMMERS:
             cs = set(calls[y])
+            di = {d: i for i, d in enumerate(heat[y]["days"])}
+            hb = heat[y]["book"][m["book"]]
             for d in summer_weekdays(y):
                 if d < m["start"]:
                     continue
+                s = member_share(u, hb[di[d]])
                 called = d in cs
                 for h in READ_HOURS:
                     if called and h in WINDOW_HOURS:
                         v = md * phi * (1 + rng.normal(0, 0.0018))
                     elif called and h in (13, 14):
-                        v = md * min(0.97, u + 0.055) * (1 + rng.normal(0, 0.003))
+                        v = md * min(0.985, s + 0.03) * (1 + rng.normal(0, 0.003))
                     elif called and h == 19:
-                        v = md * min(0.97, u + 0.06) * (1 + rng.normal(0, 0.003))
+                        v = md * min(0.985, s + 0.035) * (1 + rng.normal(0, 0.003))
                     elif called and h == 20:
-                        v = md * (u + 0.03) * (1 + rng.normal(0, 0.003))
+                        v = md * min(0.985, s + 0.015) * (1 + rng.normal(0, 0.003))
                     else:
-                        v = md * u * (1 + HOUR_MOD[h]) * (1 + rng.normal(0, 0.0022))
+                        v = md * s * (1 + HOUR_MOD[h]) * (1 + rng.normal(0, 0.0022))
                     rows.append((m["esi_id"], d, h, round(v, 1)))
     return pd.DataFrame(rows, columns=["esi_id", "date", "he", "kwh"])
 
 
-def uncalled_draw(prem, mreads, calls):
-    """The golden's estimator: MD-weighted share of maximum demand the members draw in each summer's system peak hour
-    on weekdays with no called window, pooled over the ten summers."""
-    md = prem[prem["comp"] == "ref"].drop_duplicates("esi_id").set_index("esi_id")["md_kw"]
+def build_temps(rng, heat):
+    """The weather vendor's daily maximum and minimum by zone, whole degrees F."""
+    rows = []
+    for y in SUMMERS:
+        for b in BOOKS:
+            for d, h in zip(heat[y]["days"], heat[y]["book"][b]):
+                tmax = TEMP_BASE[b] + TEMP_SCALE * (h - 0.62) + rng.normal(0, TEMP_NOISE)
+                tmin = tmax - 21 - rng.normal(0, 2.0)
+                rows.append((d, b, int(round(tmax)), int(round(tmin))))
+    return pd.DataFrame(rows, columns=["date", "book", "tmax", "tmin"])
+
+
+def peak_heat_draw(prem, mreads, calls, temps):
+    """The golden's estimator of what a cold store draws in the system peak hour when it is not called: the members'
+    MD-weighted share of maximum demand at each summer's peak hour on weekdays with no called window on which the
+    site's weather zone reached at least the lowest maximum temperature that zone recorded on any closed system-peak
+    day. Returns the share and the number of site-days behind it."""
+    md = prem[prem["comp"] == "ref"].drop_duplicates("esi_id").set_index("esi_id")
+    t = temps.set_index(["date", "book"])["tmax"]
+    cut = {b: min(t[(PEAKS[y][0], b)] for y in SUMMERS) for b in BOOKS}
     r = mreads.copy()
     r["y"] = [d.year for d in r["date"]]
     r = r[r["he"] == r["y"].map(lambda y: PEAKS[y][1])]
-    called = {(y, d) for y in SUMMERS for d in calls[y]}
-    r = r[[(d.year, d) not in called for d in r["date"]]]
-    return float(r["kwh"].sum() / r["esi_id"].map(md).sum())
+    called = {d for y in SUMMERS for d in calls[y]}
+    r = r[[d not in called for d in r["date"]]]
+    bk = r["esi_id"].map(md["book"])
+    r = r[[t[(d, b)] >= cut[b] for d, b in zip(r["date"], bk)]]
+    return float(r["kwh"].sum() / r["esi_id"].map(md["md_kw"]).sum()), len(r), cut
 
 
 def daily_md(prem):
@@ -301,11 +331,12 @@ def settled(rng, prem, heat, f, mreads):
                 if not (d == pkd):
                     g = g * (1 + rng.normal(0, 0.004, 24))
                 act = mem[(mem["book"] == b) & (mem["start"] <= d)]
+                rf0 = float(sum(k * member_share(uu, hb[i]) for k, uu in zip(act["md_kw"], act["u"])))
                 for h in range(1, 25):
                     if not wkend and h in READ_HOURS:
                         rf = refh.get((b, d, h), 0.0)
                     else:
-                        rf = float((act["md_kw"] * act["u"]).sum()) * (1 + rng.normal(0, 0.002))
+                        rf = rf0 * (1 + rng.normal(0, 0.002))
                     rows.append((b, d, h, round((mdg * g[h - 1] + rf) / 1000.0, 3)))
     return pd.DataFrame(rows, columns=["book", "date", "he", "mwh"])
 

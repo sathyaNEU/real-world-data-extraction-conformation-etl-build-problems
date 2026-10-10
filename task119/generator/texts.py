@@ -12,7 +12,8 @@ REMIT = [
     ("h", "2. Scope"),
     ("p", "The review examines adult patients referred from a ward or an emergency department for a level 3 critical "
           "care bed who waited more than four hours from the decision to admit to the assignment of a bed, and who "
-          "died within 30 days of the decision to admit."),
+          "died within 30 days of the decision to admit. A patient who died still waiting more than four hours "
+          "after the decision to admit is inside the scope."),
     ("p", "Patients transferred between hospitals are reviewed with the trust that referred them. Children, maternity "
           "referrals and patients referred from another critical care unit are outside the scope."),
     ("h", "3. How the engagement is judged"),

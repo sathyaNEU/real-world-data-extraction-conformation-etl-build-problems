@@ -17,7 +17,7 @@ def build(rng):
     ct = B.change_times(dep)
     V = B.annotate(rng, dev, V, dep)
     V = B.groups(V, ct)
-    keep, w, gap_rows = B.export(dev, V)
+    keep, w, gap_rows = B.export(dev, V, ct)
     n_gap = int(gap_rows.sum())
     X = V[keep].reset_index(drop=True)
     X["weight"] = w[keep]

@@ -49,8 +49,8 @@ def compute(target):
               for b in BOOKS}
     load = {b: V.pct90(list(replay[b].values())) for b in BOOKS}
     hedges = M["hedges"]
-    before = M["E"]["R4"]
-    lots = M["L"]["R4"]
+    before = M["E"]["R5"]
+    lots = M["L"]["R5"]
     after = M["post"]
     for b in BOOKS:
         assert abs(load[b] - hedges[b] - before[b]) < 1e-9
@@ -73,9 +73,10 @@ def compute(target):
         assert W(load[b]) - hedges[b] == W(before[b]) and W(before[b]) - lots[b] == W(after[b]), b
     am = P.en[P.en["record_type"] == "AMEND"]
     amend = (len(am), am["md"].sum() / 1000.0)
-    shift = lots["NCENT"] - M["L"]["R3"]["NCENT"]
+    shift = lots["NCENT"] - M["L"]["R4"]["NCENT"]
     return dict(amend=amend, shift=shift, yrs=yrs, replay=replay, load=load, hedges=hedges, before=before, lots=lots, after=after,
                 sched=sched, nxt=nxt, prem=prem, hp=hp, zones=zones, u=M["u"], cf=M["cf"], centres=M["centres"],
+                base=M["base"], ordinary=M["ordinary"], n_hot=M["n_hot"],
                 n_centres=31, W=W)
 
 
@@ -165,8 +166,10 @@ def write_xlsx(G, path):
         "P90 by linear interpolation between closest ranks (risk policy s.2), ten closed summers 2017-2026.",
         f"North Central includes the {G['n_centres']} new Harlan Ridge distribution centres ({G['centres']:.1f} MW max demand) at "
         f"{G['u']:.2f} of max demand ({G['u'] * G['centres']:.1f} MW) in every summer.",
-        f"0.90 is the cold-store members' draw at the peak hour on weekdays with no Business Saver window; at every closed "
-        f"system peak they were inside a called window and drew {G['cf']:.2f}. New sites are not eligible before a metered summer.",
+        f"{G['u']:.2f} is what our cold stores draw in the peak hour on weekdays with no Business Saver window when their zone is as "
+        f"hot as on its coolest closed system-peak day ({G['n_hot']} site-days); on ordinary uncalled weekdays they draw "
+        f"{G['ordinary']:.2f}, and at every closed peak they were inside a called window and drew {G['cf']:.2f}.",
+        "New sites are not eligible for Business Saver before a metered summer.",
     ]
     for k, t in enumerate(notes):
         ws.cell(row=r + 1 + k, column=1, value=t).font = ital
@@ -363,7 +366,7 @@ def write_pptx(G, png, path):
 
     # 3. basis
     s = prs.slides.add_slide(blank)
-    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central carries {G['shift']} MW more because the new cold stores cannot be called", 24, True)
+    text(s, 0.5, 0.3, 12.3, 0.6, f"North Central carries {G['shift']} MW more: uncalled cold stores run near full load on a peak day", 24, True)
     text(s, 0.5, 1.2, 12.3, 5.5, [
         "Exposure per the 2027 risk policy: each book's load in the ERCOT summer peak hour at the 1-in-10 summer "
         "(P90 of the ten closed summers 2017-2026, inclusive), less its June to September strips. Lots go 5 MW at a time "
@@ -375,11 +378,12 @@ def write_pptx(G, png, path):
         f"({G['amend'][0]:,} North Central rows restate {G['amend'][1]:.0f} MW already on the book).",
         f"North Central takes on Harlan Ridge's {G['n_centres']} new cold-storage distribution centres, "
         f"{G['centres']:.1f} MW of maximum demand. Our fourteen cold stores and ice plants drew {G['cf']:.2f} of maximum demand at "
-        f"every closed system peak, but every one of those peaks fell in a Business Saver window. On uncalled weekdays at the same "
-        f"hour they draw {G['u']:.2f}.",
+        f"every closed system peak, but every one of those peaks fell in a Business Saver window. Uncalled, their peak-hour draw "
+        f"follows the heat: {G['ordinary']:.2f} on an ordinary weekday, {G['u']:.2f} on days as hot as a system peak.",
         f"The new centres cannot join Business Saver before a metered summer, so they are carried at {G['u']:.2f}: "
-        f"{G['u'] * G['centres']:.1f} MW at the peak hour. Carrying them at the {G['cf']:.2f} the members drew instead would leave North Central {G['shift']} MW short.",
-        f"After the block no book is left above {W(G['after'][G['nxt']])} MW uncovered; the next lot would go to {NAME[G['nxt']]}.",
+        f"{G['u'] * G['centres']:.1f} MW at the peak hour. Carrying them at the programme baseline ({G['base']:.2f}, ordinary "
+        f"days) would leave North Central {G['shift']} MW short.",
+        f"The largest uncovered exposure left after the block is {W(G['after'][G['nxt']])} MW ({NAME[G['nxt']]}), where the next lot would go.",
     ], 15)
     foot(s, 3)
 
@@ -446,7 +450,7 @@ def main():
         os.utime(os.path.join(out, f), (STAMP.timestamp(), STAMP.timestamp()))
     W = G["W"]
     print("Split (MW):", " | ".join(f"{NAME[b]} {G['lots'][b]}" for b in BOOKS))
-    print("North Central centres:", f"{G['n_centres']} sites, {G['centres']:.1f} MW max demand, uncalled draw {G['u']:.3f}, "
+    print("North Central centres:", f"{G['n_centres']} sites, {G['centres']:.1f} MW max demand, peak-heat draw {G['u']:.3f}, baseline {G['base']:.3f}, "
           f"called draw at closed peaks {G['cf']:.3f}, peak-hour draw {G['u'] * G['centres']:.1f} MW")
     print("1-in-10 load (MW):", " | ".join(f"{NAME[b]} {W(G['load'][b])}" for b in BOOKS))
     print("Uncovered before (MW):", " | ".join(f"{NAME[b]} {W(G['before'][b])}" for b in BOOKS))

@@ -12,7 +12,7 @@ import datetime as dt
 import random
 
 from common import D, SEED, CLOCK, workday, dni
-from plan import SECTIONS, SETTLED_COMMITS, Q_AGREED, TWIN_DATE, TWIN_PRICE
+from plan import SECTIONS, SETTLED_COMMITS, SETTLED_EARLY, Q_AGREED, TWIN_DATE, TWIN_PRICE
 
 FREEZE = D(2025, 6, 30)        # carried holders transact nothing after this date
 CARRIED = sorted({h for s in SECTIONS for h in s["carried"]})
@@ -138,9 +138,9 @@ def allocate_june26(stock, people):
     return state, reserved
 
 
-def settled_purchases(book, state, stock, people, rng):
-    """The agency's 23 settled first-offer purchases of privately owned watch dwellings: committed
-    January to May 2026, deed 120 days later. Returns the refs (owned by 'AG' from the deed)."""
+def settled_purchases(book, state, stock, people, rng, reserved=None):
+    """The agency's 27 settled first-offer purchases of privately owned watch dwellings: committed
+    January to May 2026, deed 120 days later (four of them before the notified date). Returns the refs (owned by 'AG' from the deed)."""
     sections, buildings, dwellings = stock
     pool = sorted(r for r, o in state.items() if o.startswith("p:"))
     rng.shuffle(pool)
@@ -160,6 +160,24 @@ def settled_purchases(book, state, stock, people, rng):
         out.append((ref, seller, deed, pr))
         if deed <= D(2026, 6, 30):
             state[ref] = "AG"
+    # settled purchases whose notified date lay beyond day 120: executed on day 120 all the same
+    rng2 = random.Random(SEED * 61 + 17)
+    taken = set((reserved or {}).get("U_building", []))
+    for c in SETTLED_EARLY:
+        ref = pool.pop()
+        while ref in taken:
+            ref = pool.pop()
+        deed = c + dt.timedelta(days=CLOCK)
+        assert not blackout(deed) and deed > D(2026, 6, 30), deed
+        while True:
+            notified = c + dt.timedelta(days=rng2.randrange(131, 178))
+            if not blackout(notified) and (notified - deed).days >= 11:
+                break
+        pr = price(rng2, dwellings[ref]["section"])
+        seller = state[ref]
+        book.commitments.append({"ref": ref, "commit": c, "notified": notified, "price": pr, "seller": seller,
+                                 "lh": False, "deed": deed})
+        out.append((ref, seller, deed, pr))
     return out
 
 
@@ -312,7 +330,8 @@ def forward_2026(book, state, stock, people, reserved, settled, rng):
                     book.commitments.append({"ref": r, "commit": commits[i], "notified": ag, "price": pr,
                                              "seller": seller, "lh": True, "agreement": a["id"]})
     # the agency's commitments to buy privately owned watch dwellings since 30 June (not yet settled)
-    pool = sorted(r for r, o in state.items() if o.startswith("p:") and r not in used)
+    done = {ref for ref, *_ in settled}
+    pool = sorted(r for r, o in state.items() if o.startswith("p:") and r not in used and r not in done)
     rng.shuffle(pool)
     for _ in range(19):
         ref = pool.pop()

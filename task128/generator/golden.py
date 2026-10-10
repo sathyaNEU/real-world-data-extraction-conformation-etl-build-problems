@@ -11,9 +11,11 @@ Rules, each as the pack states it:
   drains         per November window: hosts in service, less the hosts the forecast peak over the
                  window's own hours needs, less one rack, times the window's drain cycles (SRE s.2)
   colocated      a drained host comes back on the current image: every open exploitable finding on
-                 it goes. One ticket per estate on the package the standard's s.3 selects, carried
-                 below its fixed version by every drained host; the drains go to the most exposed hosts
-  the 300        two colocated tickets, then the 298 cloud tickets that take out the most
+                 it goes. A colocated ticket rides one provider change request, and a request is
+                 for one window (provider schedule s.3; every past colocated ticket in the crew log
+                 carries exactly one change request): one ticket per November window, naming the
+                 window's share of the most exposed hosts, on the package the standard's s.3 selects
+  the 300        nine colocated tickets, then the 291 cloud tickets that take out the most
 """
 import csv
 import collections
@@ -128,23 +130,30 @@ def november_drains(target):
     return dict(drains), detail
 
 
-def colocated_ticket(findings, estate_of, e, drains):
-    """The estate's one ticket: drain its `drains` most exposed hosts (ties by host id); the package
-    is the one carried by every drained host whose highest-scoring finding there scores highest."""
+def colocated_tickets(findings, estate_of, e, detail):
+    """One ticket per November window: the window's drains go to the next most exposed hosts (ties
+    by host id); the package is the one carried by every host the ticket names whose highest-scoring
+    finding there scores highest."""
     hosts = sorted((h for h in findings if estate_of[h] == e), key=lambda h: (-len(findings[h]), h))
-    drained = hosts[:drains]
-    cover = collections.Counter()
-    top = {}
-    for h in drained:
-        for pkg in {p for p, _, _ in findings[h]}:
-            cover[pkg] += 1
-        for pkg, _, s in findings[h]:
-            top[pkg] = max(top.get(pkg, 0.0), s)
-    full = sorted((p for p, n in cover.items() if n == len(drained)), key=lambda p: (-top[p], p))
-    if not full:
-        raise SystemExit(f"no package is carried by every drained {e} host")
-    return {"estate": e, "package": full[0], "hosts": len(drained),
-            "exposures": sum(len(findings[h]) for h in drained)}
+    out, i = [], 0
+    for est, wdate, concurrent, cycles in sorted(detail):
+        if est != e or concurrent * cycles <= 0:
+            continue
+        named = hosts[i:i + concurrent * cycles]
+        i += concurrent * cycles
+        cover = collections.Counter()
+        top = {}
+        for h in named:
+            for pkg in {p for p, _, _ in findings[h]}:
+                cover[pkg] += 1
+            for pkg, _, s in findings[h]:
+                top[pkg] = max(top.get(pkg, 0.0), s)
+        full = sorted((p for p, n in cover.items() if n == len(named)), key=lambda p: (-top[p], p))
+        if not full:
+            raise SystemExit(f"no package is carried by every {e} host named for {wdate}")
+        out.append({"estate": e, "package": full[0], "hosts": len(named), "window": wdate,
+                    "exposures": sum(len(findings[h]) for h in named)})
+    return out
 
 
 def ticket_cut(target):
@@ -153,17 +162,17 @@ def ticket_cut(target):
     findings, estate_of = colocated_findings(target)
     for h, e in estate_of.items():
         open_today[e] += len(findings[h])
-    drains, _ = november_drains(target)
-    tickets = [colocated_ticket(findings, estate_of, e, drains[e]) for e in COLO]
+    drains, detail = november_drains(target)
+    tickets = [t for e in COLO for t in colocated_tickets(findings, estate_of, e, detail)]
     rank = {e: i for i, e in enumerate(ESTATES)}
     cloud = sorted(((v, rank[e], e, p, nh) for (e, p), (v, nh) in cands.items()),
                    key=lambda x: (-x[0], x[1], x[3]))
     n_cloud = TICKETS - len(tickets)
     for v, _, e, p, nh in cloud[:n_cloud]:
-        tickets.append({"estate": e, "package": p, "hosts": nh, "exposures": v})
+        tickets.append({"estate": e, "package": p, "hosts": nh, "exposures": v, "window": ""})
     nxt = cloud[n_cloud]
     first_below = {"estate": nxt[2], "package": nxt[3], "hosts": nxt[4], "exposures": nxt[0]}
-    tickets.sort(key=lambda t: (-t["exposures"], rank[t["estate"]], t["package"]))
+    tickets.sort(key=lambda t: (-t["exposures"], rank[t["estate"]], t["package"], t["window"]))
     if not (cloud[n_cloud - 2][0] > cloud[n_cloud - 1][0] > nxt[0] > cloud[n_cloud + 1][0]):
         raise SystemExit("the line is not strict: the last ticket in or the first below is tied")
     split = collections.Counter(t["estate"] for t in tickets)
@@ -220,14 +229,16 @@ def scan_coverage(target):
 def write_cut(path, cut):
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["rank", "estate", "package", "hosts_reached_nov", "exposures_taken_out_nov"])
+        w.writerow(["rank", "estate", "package", "provider_window", "hosts_reached_nov",
+                    "exposures_taken_out_nov"])
         for i, t in enumerate(cut["tickets"], 1):
-            w.writerow([i, LABEL[t["estate"]], t["package"], t["hosts"], t["exposures"]])
+            w.writerow([i, LABEL[t["estate"]], t["package"], t["window"], t["hosts"],
+                        t["exposures"]])
 
 
 def chart_order(cut):
-    """Estates in ticket order: most tickets first; payments and checkout, one ticket each, in the
-    order their tickets sit on the cut list."""
+    """Estates in ticket order: most tickets first, ties in the order their first ticket sits on
+    the cut list."""
     pos = {}
     for i, t in enumerate(cut["tickets"]):
         pos.setdefault(t["estate"], i)
@@ -244,7 +255,7 @@ def render_chart(path, cut):
     nov = [cut["taken"][e] for e in order]
     today = [cut["open_today"][e] for e in order]
     ink, muted, grid = "#1f2933", "#5f6b7a", "#e4e7eb"
-    c_nov, c_open = "#2a78d6", "#a9c8ee"
+    c_nov, c_open = "#1c5cab", "#86b6ef"
     fig, ax = plt.subplots(figsize=(11.2, 4.9), dpi=150)
     x = list(range(len(order)))
     w = 0.38
@@ -253,12 +264,15 @@ def render_chart(path, cut):
     ax.bar([i + w / 2 for i in x], nov, w, color=c_nov, label="Taken out in November",
            zorder=2, edgecolor="white", linewidth=1.2)
     for i, e in enumerate(order):
+        ax.text(i - w / 2, today[i] + 70, f"{today[i]:,}", ha="center", va="bottom",
+                fontsize=9, color=muted)
         ax.text(i + w / 2, nov[i] + 70, f"{nearest_ten(nov[i]):,}", ha="center", va="bottom",
-                fontsize=9.5, color=ink)
+                fontsize=9.5, color=ink, fontweight="bold")
         if e in COLO:
-            t = next(t for t in cut["tickets"] if t["estate"] == e)
-            ax.annotate(f"1 ticket, {t['hosts']} hosts drained\nof {cut['open_today'][e]:,} open",
-                        xy=(i + w / 2, nov[i] + 260), xytext=(i, today[i] + 330),
+            nh = sum(t["hosts"] for t in cut["tickets"] if t["estate"] == e)
+            ax.annotate(f"{cut['split'][e]} tickets\n{nh} hosts drained",
+                        xy=(i + w / 2, nov[i] + 260), xytext=(i + w / 2, today[i] + 380),
+                        va="bottom",
                         ha="center", fontsize=9, color=ink,
                         arrowprops={"arrowstyle": "-", "color": muted, "lw": 0.8})
     ax.set_xticks(x)
@@ -342,11 +356,12 @@ def write_deck(path, cut, pace, cover, chart_png):
     blank = prs.slide_layouts[6]
     sp, tk = cut["split"], cut["taken"]
     pay = next(t for t in cut["tickets"] if t["estate"] == "payments")
-    chk = next(t for t in cut["tickets"] if t["estate"] == "checkout")
+    nh = {e: sum(t["hosts"] for t in cut["tickets"] if t["estate"] == e) for e in COLO}
+    ncol = sp["payments"] + sp["checkout"]
 
     s = prs.slides.add_slide(blank)
-    text(s, 0.5, 0.35, 12.3, 0.8, "November split: one ticket each to payments and checkout, "
-         f"{TICKETS - 2} to cloud", 24, bold=True)
+    text(s, 0.5, 0.35, 12.3, 0.8, f"November split: {sp['payments']} tickets to payments, "
+         f"{sp['checkout']} to checkout, {TICKETS - ncol} to cloud", 24, bold=True)
     text(s, 0.5, 1.1, 12.3, 0.5, f"Takes out {nearest_ten(cut['total']):,} exploitable host "
          "exposures in November. Crews cut on Monday 2 November.", 15, muted)
     rows = [["Estate", "Tickets", "Exposures taken out in Nov (nearest 10)"]]
@@ -354,13 +369,15 @@ def write_deck(path, cut, pace, cover, chart_png):
     rows += [["Total", TICKETS, f"{nearest_ten(cut['total']):,}"]]
     table(s, 0.5, 1.9, 7.4, rows, [2.4, 1.3, 3.7], 13, bold_last=True)
     text(s, 8.3, 1.9, 4.5, 3.2, [
-        f"Payments and checkout get one {pay['package']} ticket each.",
-        f"The provider can drain {pay['hosts']} payments hosts and {chk['hosts']} checkout hosts in "
-        "our November windows, keeping one rack above each window's forecast peak. A drained host "
-        "comes back on the current platform image, so each drain clears everything open on it. The "
-        "ticket names the most exposed hosts; a second ticket there buys no extra drains.",
-        "Payments does carry the worst exposure per host, but the drains, not the ticket count, "
-        "set what it can give up in November.",
+        f"One {pay['package']} ticket per booked window: {sp['payments']} on payments, "
+        f"{sp['checkout']} on checkout.",
+        f"The provider can drain {nh['payments']} payments hosts and {nh['checkout']} checkout hosts "
+        "in our November windows, keeping one rack above each window's forecast peak. Each ticket "
+        "goes in as one change request for one window, and a drained host comes back on the current "
+        "platform image, so each drain clears everything open on it. Each ticket names the most "
+        "exposed hosts its window can take.",
+        "Payments carries more open exposure than any cloud estate, but the drains, not the ticket "
+        "count, set what it can give up in November.",
     ], 12)
     li, fb = cut["last_in"], cut["first_below"]
     rows = [["At the line", "Estate", "Package update", "Hosts", "Takes out"],
@@ -370,8 +387,10 @@ def write_deck(path, cut, pace, cover, chart_png):
              fb["exposures"]]]
     table(s, 0.5, 5.15, 7.4, rows, [2.1, 1.5, 1.6, 0.9, 1.3], 12, left=(0, 1, 2))
     text(s, 8.3, 5.2, 4.5, 1.4, "Drains per window: SRE maintenance standard s.2, against the "
-         "hourly forecast and the Guadalhorce capacity register. Exploitable: latest score of at "
-         "least 0.10 (vulnerability management standard v3, s.2).", 10, muted)
+         "hourly forecast and the Guadalhorce capacity register. One change request per ticket, one "
+         "window per request: Guadalhorce service schedule s.3 and the crew log's change requests. "
+         "Exploitable: latest score of at least 0.10 (vulnerability management standard v3, s.2).",
+         10, muted)
     footer(s, 1)
 
     s = prs.slides.add_slide(blank)
@@ -381,8 +400,10 @@ def write_deck(path, cut, pace, cover, chart_png):
     footer(s, 2)
 
     s = prs.slides.add_slide(blank)
-    text(s, 0.5, 0.35, 12.3, 0.8, "Estate card: checkout is slowest to patch, media has the most "
-         "hosts without a recent scan", 24, bold=True)
+    slow = max(ESTATES, key=lambda e: (pace[e]["median_days"], -ESTATES.index(e)))
+    gaps = max(cover, key=lambda e: (cover[e]["unscanned"], -ESTATES.index(e)))
+    text(s, 0.5, 0.35, 12.3, 0.8, f"Estate card: {LABEL[slow].lower()} is slowest to patch, "
+         f"{LABEL[gaps].lower()} has the most hosts without a recent scan", 24, bold=True)
     rows = [["Estate", "Median days, first fix release to last host",
              f"Tickets over {TARGET_DAYS}-day target", "Hosts in service 23 Oct",
              "No authenticated scan in 14 days"]]
@@ -437,9 +458,10 @@ def build(task):
 
 def report(cut, pace, cover):
     print(f"November drains: payments {cut['drains']['payments']}, checkout {cut['drains']['checkout']}")
-    for t in cut["tickets"][:2]:
-        print(f"  {LABEL[t['estate']]}: one {t['package']} ticket, {t['hosts']} most exposed hosts, "
-              f"{t['exposures']:,} exposures")
+    for t in cut["tickets"]:
+        if t["window"]:
+            print(f"  {LABEL[t['estate']]} {t['window']}: {t['package']} ticket, {t['hosts']} hosts, "
+                  f"{t['exposures']:,} exposures")
     print("Split (tickets / exposures taken out in November, nearest ten):")
     for e in ESTATES:
         print(f"  {LABEL[e]:<14} {cut['split'][e]:>3}  {cut['taken'][e]:>6,}  ~{nearest_ten(cut['taken'][e]):,}")

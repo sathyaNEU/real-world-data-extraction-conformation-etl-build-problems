@@ -78,6 +78,9 @@ def register(W):
         o = holders[h]
         tit.append([o["nif"], o["name"], o["kind"], o["registered"].isoformat(),
                     o.get("left").isoformat() if o.get("left") else ""])
+    for o in W.get("registrants", []):
+        tit.append([o["nif"], o["name"], o["kind"], o["registered"].isoformat(), ""])
+    tit.sort(key=lambda r: r[0])
     links = []
     for h in sorted(MEMBER):
         if h not in holders:

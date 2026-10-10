@@ -17,9 +17,9 @@ import pandas as pd
 
 BOOKS = ["COAST", "EAST", "FWEST", "NORTH", "NCENT", "SCENT", "SOUTH", "WEST"]
 NAMES = ["Coast", "East", "Far West", "North", "North Central", "South Central", "Southern", "West"]
-EXPECT = {"answer": (120, 30, 0, 0, 210, 25, 15, 0), "R0": (115, 65, 35, 15, 40, 45, 60, 25),
-          "R1": (110, 20, 0, 0, 255, 10, 5, 0), "R2": (135, 45, 0, 0, 145, 40, 35, 0),
-          "R3": (130, 40, 0, 0, 165, 35, 30, 0)}
+EXPECT = {"answer": (120, 30, 0, 0, 210, 25, 15, 0), "R0": (115, 70, 35, 20, 30, 45, 60, 25),
+          "R1": (115, 20, 0, 0, 235, 20, 10, 0), "R2": (140, 50, 0, 0, 130, 45, 35, 0),
+          "R3": (135, 45, 0, 0, 150, 40, 30, 0), "R4": (125, 30, 0, 0, 195, 30, 20, 0)}
 REFRIG = {"493120", "312113"}
 RESULTS = []
 
@@ -78,6 +78,9 @@ class Pack:
         self.cr = rd("bsaver_credits_2017_2026.csv")
         self.cr["day"] = pd.to_datetime(self.cr["event_date"]).dt.date
         self.acc = rd("billing_accounts.csv")
+        t = pd.read_csv(os.path.join(d, "zone_daily_temps_2017_2026.csv"))
+        t["day"] = pd.to_datetime(t["date"]).dt.date
+        self.tmax = t.set_index(["day", "weather_zone"])["tmax_f"]
         self.years = sorted(self.peaks)
 
     def active(self, d):
@@ -136,11 +139,21 @@ def main_call(P):
     r["pkh"] = r["y"].map(lambda y: P.peaks[y][1])
     atpk = r[[(d == P.peaks[y][0] and h == P.peaks[y][1]) for d, y, h in zip(r["read_date"], r["y"], r["hour_ending"])]]
     cf = atpk["kwh"].sum() / atpk["md"].sum()
-    unc = r[(r["hour_ending"] == r["pkh"]) & ~r["called"]]
-    u = unc["kwh"].sum() / unc["md"].sum()
+    unc = r[(r["hour_ending"] == r["pkh"]) & ~r["called"]].copy()
+    zone = book27.set_index("esi_id")["book"]
+    unc["zone"] = unc["esi_id"].map(zone)
+    unc["tmax"] = [P.tmax[(d, z)] for d, z in zip(unc["read_date"], unc["zone"])]
+    cut = {z: min(P.tmax[(P.peaks[y][0], z)] for y in yrs) for z in BOOKS}
+    hot = unc[unc["tmax"] >= unc["zone"].map(cut)]
+    u = hot["kwh"].sum() / hot["md"].sum()
+    ordinary = unc["kwh"].sum() / unc["md"].sum()
+    base = programme_baseline(P, r, mem, called, mdm)
     check("V04 every closed system peak day is a credited (called) day", all(P.peaks[y][0] in called[y] for y in yrs))
-    check("V05 class factor at the closed peaks about 0.60, uncalled draw about 0.90",
-          0.595 <= cf <= 0.605 and 0.895 <= u <= 0.905, (round(cf, 5), round(u, 5)))
+    check("V05 the members drew about 0.60 of maximum demand at the closed peaks, 0.975 to 0.985 at the peak hour on "
+          "uncalled weekdays as hot as their zone's coolest closed peak, 0.78 to 0.83 on uncalled weekdays at large, and "
+          "the programme baseline at the closed peak hours sits 0.86 to 0.90",
+          0.595 <= cf <= 0.605 and 0.975 <= u <= 0.985 and 0.78 <= ordinary <= 0.83 and 0.86 <= base <= 0.90,
+          (round(cf, 5), round(u, 5), round(ordinary, 5), round(base, 5), len(hot)))
     share = max(sum(mdm[e] for e in mem if P.active(P.peaks[y][0])["esi_id"].eq(e).any() and
                     book27.set_index("esi_id").at[e, "book"] == b) / mdp[y][b] for b in BOOKS for y in yrs)
     check("V06 members under 1 per cent of every book's maximum demand in every closed summer", share < 0.01, share)
@@ -154,43 +167,41 @@ def main_call(P):
     hedges = hedge_mw(P.d)
     nc_no_c = dict(ded27, NCENT=ded27["NCENT"] - centres * 1000.0)
     R = {"R0": {b: pct90([lp[y][b] for y in yrs]) for b in BOOKS}, "R1": expo(rows27), "R2": expo(ded27),
-         "R3": expo(nc_no_c, cf * centres), "R4": expo(nc_no_c, u * centres)}
+         "R3": expo(nc_no_c, cf * centres), "R4": expo(nc_no_c, base * centres), "R5": expo(nc_no_c, u * centres)}
     E = {k: {b: v[b] - hedges[b] for b in BOOKS} for k, v in R.items()}
     L = {k: level(v) for k, v in E.items()}
-    check("V07 the answer recomputes: 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0", vec(L["R4"]) == EXPECT["answer"], vec(L["R4"]))
-    for k in ("R0", "R1", "R2", "R3"):
+    check("V07 the answer recomputes: 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0", vec(L["R5"]) == EXPECT["answer"], vec(L["R5"]))
+    for k in ("R0", "R1", "R2", "R3", "R4"):
         check(f"V08 rung {k[1]} recomputes to {EXPECT[k]}", vec(L[k]) == EXPECT[k], vec(L[k]))
-    post = {b: E["R4"][b] - L["R4"][b] for b in BOOKS}
-    taken = [E["R4"][b] - 5 * k for b in BOOKS for k in range(L["R4"][b] // 5)]
+    post = {b: E["R5"][b] - L["R5"][b] for b in BOOKS}
+    taken = [E["R5"][b] - 5 * k for b in BOOKS for k in range(L["R5"][b] // 5)]
     check("V09 lot decisions clear of a tie by 0.9 MW and post-block exposures clear of half-MW edges by 0.25 MW",
           min(taken) - max(post.values()) >= 0.9 and min(abs(v % 1 - 0.5) for v in post.values()) >= 0.25,
           (round(min(taken), 3), round(max(post.values()), 3)))
     check("V10 the next lot would have gone to Southern", max(post, key=post.get) == "SOUTH", post)
     # corridor on the centres' factor
-    ok_f = [f / 10000 for f in range(8700, 9301) if vec(level({b: expo(nc_no_c, f / 10000 * centres)[b] - hedges[b]
-                                                                  for b in BOOKS})) == EXPECT["answer"]]
-    check("V11 corridor: every centre factor from 0.885 to 0.916 files the answer; 0.88 and 0.92 do not",
-          min(ok_f) <= 0.885 and max(ok_f) >= 0.916 and 0.88 not in ok_f and 0.92 not in ok_f, (min(ok_f), max(ok_f)))
+    ok_f = [f / 10000 for f in range(9000, 10501, 5) if vec(level({b: expo(nc_no_c, f / 10000 * centres)[b] - hedges[b]
+                                                                    for b in BOOKS})) == EXPECT["answer"]]
+    check("V11 corridor: one unbroken run of centre factors files the answer, full maximum demand (1.00) inside it",
+          len(ok_f) == round((max(ok_f) - min(ok_f)) / 0.0005) + 1 and min(ok_f) < 1.0 < max(ok_f), (min(ok_f), max(ok_f)))
     for kind in ("exclusive", "nearest"):
         e2 = {b: expo(nc_no_c, u * centres, kind)[b] - hedges[b] for b in BOOKS}
         check(f"V12 P90 {kind} converges on the answer", vec(level(e2)) == EXPECT["answer"])
-    ests = estimators(P, r, mem, called, mdm)
-    check("V13 twelve estimators of the uncalled draw all inside [0.894, 0.906] and inside the corridor",
-          len(ests) == 12 and all(0.894 <= v <= 0.906 and min(ok_f) < v < max(ok_f) for v in ests.values()),
-          {k: round(v, 4) for k, v in ests.items()})
+    pk_est, ord_est = estimators(P, r, unc, cut, called, base)
+    check("V13 every peak-heat estimator files the answer, inside the corridor by 0.004",
+          all(min(ok_f) + 0.004 <= v <= max(ok_f) - 0.004 for v in pk_est.values()), {k: round(v, 4) for k, v in pk_est.items()})
+    nc_ord = {k: level({b: expo(nc_no_c, v * centres)[b] - hedges[b] for b in BOOKS})["NCENT"] for k, v in ord_est.items()}
+    check("V13b every ordinary-afternoon estimator and the programme baseline leaves North Central at 195 MW or less",
+          all(n <= 195 for n in nc_ord.values()), {k: (round(ord_est[k], 4), n) for k, n in nc_ord.items()})
+    ests = dict(pk_est, **ord_est)
     return {"pooled": pooled, "mdp": mdp, "lp": lp, "mem": mem, "called": called, "u": u, "cf": cf, "E": E, "L": L,
             "post": post, "centres": centres, "book27": book27, "hedges": hedges, "r": r, "ests": ests,
-            "corridor": (min(ok_f), max(ok_f))}
+            "corridor": (min(ok_f), max(ok_f)), "base": base, "ordinary": ordinary, "n_hot": len(hot), "cut": cut}
 
 
-def estimators(P, r, mem, called, mdm):
-    m = r[(r["hour_ending"] == r["pkh"]) & ~r["called"]].copy()
-    m["s"] = m["kwh"] / m["md"]
-    per_y = {y: g["kwh"].sum() / g["md"].sum() for y, g in m.groupby("y")}
-    per_site = m.groupby("esi_id")["s"].mean()
-    hot = hot_days(P, called)[0]
-    mh = m[[d in hot for d in m["read_date"]]]
-    # programme baseline at the peak hour on each peak day: ten most recent uncalled business days
+def programme_baseline(P, r, mem, called, mdm):
+    """The terms' baseline at each closed peak hour: each member's mean read in that hour on its ten most recent
+    business days without a call before the peak date, MD-weighted."""
     num = den = 0.0
     for y in P.years:
         pkd, he = P.peaks[y]
@@ -203,13 +214,27 @@ def estimators(P, r, mem, called, mdm):
                 continue
             num += s["kwh"].tail(10).mean()
             den += mdm[e]
-    return {"pooled MD-weighted": m["kwh"].sum() / m["md"].sum(), "pooled mean ratio": m["s"].mean(),
-            "pooled median ratio": m["s"].median(), "by summer mean": float(np.mean(list(per_y.values()))),
-            "by summer median": float(np.median(list(per_y.values()))), "by summer max": max(per_y.values()),
-            "by summer min": min(per_y.values()),
-            "by site MD-weighted": float((per_site * mdm[per_site.index]).sum() / mdm[per_site.index].sum()),
-            "by site mean": per_site.mean(), "2026 only": per_y[2026],
-            "hottest-decile uncalled": mh["kwh"].sum() / mh["md"].sum(), "programme baseline": num / den}
+    return num / den
+
+
+def estimators(P, r, unc, cut, called, base):
+    m = unc.copy()
+    m["s"] = m["kwh"] / m["md"]
+    W = lambda g: g["kwh"].sum() / g["md"].sum()  # noqa: E731
+    med = {z: float(np.median([P.tmax[(P.peaks[y][0], z)] for y in P.years])) for z in BOOKS}
+    hot = hot_days(P, called)[0]
+    q90 = m.groupby(["esi_id", "y"])["tmax"].transform(lambda x: x.quantile(0.9))
+    peak = {"zone as hot as its coolest closed peak": W(m[m["tmax"] >= m["zone"].map(cut)]),
+            "zone as hot as its median closed peak": W(m[m["tmax"] >= m["zone"].map(med)]),
+            "hottest-decile weekdays, uncalled": W(m[[d in hot for d in m["read_date"]]]),
+            "hottest tenth of each site-summer": W(m[m["tmax"] >= q90]),
+            "site-summer maximum": m.groupby(["esi_id", "y"])["s"].max().mean()}
+    per_y = {y: W(g) for y, g in m.groupby("y")}
+    per_site = m.groupby("esi_id")["s"].mean()
+    ordinary = {"pooled MD-weighted": W(m), "pooled mean ratio": m["s"].mean(), "pooled median ratio": m["s"].median(),
+                "by summer mean": float(np.mean(list(per_y.values()))), "by summer max": max(per_y.values()),
+                "by site mean": per_site.mean(), "2026 only": per_y[2026], "programme baseline": base}
+    return peak, ordinary
 
 
 def summer_holidays(y):
@@ -481,14 +506,14 @@ def grid_and_lenders(P, M):
     nc1 = dict(nc0, NCENT=nc0["NCENT"] - newgen)
     cells = {
         "partial: class factor on every new NC premise": E(nc1, cf * (centres + newgen / 1000.0)),
-        "partial: uncalled draw on every new NC premise": E(nc1, u * (centres + newgen / 1000.0)),
+        "partial: peak-heat draw on every new NC premise": E(nc1, u * (centres + newgen / 1000.0)),
         "members uncalled in 2027 too": E(nc0, u * centres, {b: (u - cf) * mem_md[b] / 1000.0 for b in BOOKS}),
     }
     lv = {k: vec(level(v)) for k, v in cells.items()}
     nc = {k: v[4] for k, v in lv.items()}
     check("V28 grid: the partials sit at least 6 per cent off on North Central; members uncalled converges",
           abs(nc["partial: class factor on every new NC premise"] - 210) / 210 >= 0.06
-          and abs(nc["partial: uncalled draw on every new NC premise"] - 210) / 210 >= 0.06
+          and abs(nc["partial: peak-heat draw on every new NC premise"] - 210) / 210 >= 0.06
           and lv["members uncalled in 2027 too"] == EXPECT["answer"], lv)
     # lenders' zone-share basis on ERCOT's outlook (the declared wrong-basis distractor)
     ws = load_workbook(os.path.join(P.d, "ercot_zone_peak_outlook_2027.xlsx"), read_only=True)["Weather zones"]
@@ -502,7 +527,7 @@ def grid_and_lenders(P, M):
     rows_rep = book27.groupby("book")["md"].sum().reindex(BOOKS).to_dict()
     r1_rep = vec(level(E(rows_rep, 0.0)))
     check("V30 clean-data test: with the enrolment repaired, rung 1 becomes rung 2; rung 3 and the answer stand",
-          r1_rep == EXPECT["R2"] and vec(M["L"]["R3"]) == EXPECT["R3"] and vec(M["L"]["R4"]) == EXPECT["answer"])
+          r1_rep == EXPECT["R2"] and vec(M["L"]["R3"]) == EXPECT["R3"] and vec(M["L"]["R5"]) == EXPECT["answer"])
     return {"grid": lv, "lenders": la, "new_general_nc_kw": newgen}
 
 
@@ -538,12 +563,12 @@ def main():
     G = grid_and_lenders(P, M)
     gates(d, meta)
     n_fail = sum(1 for _, ok, _ in RESULTS if not ok)
-    print(f"\n{len(RESULTS)} checks, {n_fail} failed. Answer {vec(M['L']['R4'])}; post-block "
+    print(f"\n{len(RESULTS)} checks, {n_fail} failed. Answer {vec(M['L']['R5'])}; post-block "
           f"{ {b: round(v, 1) for b, v in M['post'].items()} }")
     if out_json:
-        json.dump({"checks": RESULTS, "answer": vec(M["L"]["R4"]), "post": {b: round(v, 3) for b, v in M["post"].items()},
-                   "loads": {b: round(M["E"]["R4"][b] + M["hedges"][b], 3) for b in BOOKS},
-                   "exposure": {b: round(M["E"]["R4"][b], 3) for b in BOOKS}, "u": M["u"], "cf": M["cf"],
+        json.dump({"checks": RESULTS, "answer": vec(M["L"]["R5"]), "post": {b: round(v, 3) for b, v in M["post"].items()},
+                   "loads": {b: round(M["E"]["R5"][b] + M["hedges"][b], 3) for b in BOOKS},
+                   "exposure": {b: round(M["E"]["R5"][b], 3) for b in BOOKS}, "baseline": M["base"], "u": M["u"], "cf": M["cf"],
                    "corridor": M["corridor"], "estimators": M["ests"], "rivals": C["rivals"], "asks": A, "grid": G},
                   open(out_json, "w"), indent=1, default=str)
     sys.exit(1 if n_fail else 0)

@@ -36,6 +36,7 @@ def change_times(dep):
     ct = {k: at(d) for k, d in P.DATED.items()}
     ct["PUZ"] = at(P.PUZZLE_AD_SWITCH)
     ct["SUB"] = at(P.SUB_FRONTEND)
+    ct["RUM"] = at(P.COLLECTOR_V2.date())
     for c, d in P.COHORT_SWITCH.items():
         ct["COH:" + c] = at(d)
     return ct
@@ -55,12 +56,18 @@ def annotate(rng, dev, V, dep):
     quiet = ((k >= 0) & (prev_gap < q)) | ((k + 1 < len(du)) & (next_gap < q))
     V = V[~quiet].reset_index(drop=True)
     V = V.sort_values(["dev", "ts"], kind="stable").reset_index(drop=True)
-    k = np.searchsorted(du, V.ts.values, side="right") - 1
-    d = V.dev.values
-    newdev = np.r_[True, d[1:] != d[:-1]]
-    newk = np.r_[True, k[1:] != k[:-1]]
+    # a subscriber's puzzle view never opens a deploy interval (it follows an article view), so
+    # the per-device and per-bundle readings of the state agree; drop the rare ones that would
+    while True:
+        k = np.searchsorted(du, V.ts.values, side="right") - 1
+        d = V.dev.values
+        opens = np.r_[True, d[1:] != d[:-1]] | np.r_[True, k[1:] != k[:-1]]
+        bad = opens & (V.template.values == "spil") & (dev.gtype.values[d] == "sub")
+        if not bad.any():
+            break
+        V = V[~bad].reset_index(drop=True)
     V["deploy_ix"] = k
-    V["state"] = np.where(newdev | newk, "F", "K")
+    V["state"] = np.where(opens, "F", "K")
     # attributes from the device
     gt = dev.gtype.values[d]
     V["gtype"] = gt
@@ -151,7 +158,7 @@ def allocate(V, scored):
                                               for e in V.edition.values], dtype=object),
                    V.title.values)
     keys = pd.DataFrame({
-        "group": V.group.values, "p": np.round(p, 9), "title": cur,
+        "group": V.group.values, "tpl": V.template.values, "title": cur,
         "local": V.local.values, "pc": V.pclass.values, "st": V.state.values, "w": weight,
     })
     over = np.zeros(len(V), bool)
@@ -164,21 +171,23 @@ def allocate(V, scored):
     uvals = np.array([_u(s) for s in labels])
     order = np.lexsort((V.ts.values[idx], sid))
     sid_o = sid[order]
-    starts = np.r_[0, np.flatnonzero(sid_o[1:] != sid_o[:-1]) + 1]
-    ends = np.r_[starts[1:], len(sid_o)]
-    pos = np.arange(len(sid_o)) - np.repeat(starts, ends - starts)
-    u = uvals[sid_o]
     pp = p[idx][order]
-    hit = np.floor(pp * (pos + 1) + u) - np.floor(pp * pos + u)
+    starts = np.r_[0, np.flatnonzero(sid_o[1:] != sid_o[:-1]) + 1]
+    cum = np.cumsum(pp)
+    base = np.repeat(np.r_[0.0, cum[starts[1:] - 1]], np.diff(np.r_[starts, len(sid_o)]))
+    cp = cum - base
+    u = uvals[sid_o]
+    hit = np.floor(cp + u) - np.floor(cp - pp + u)
     over[idx[order]] = hit > 0
     return over, p
 
 
-def export(dev, V):
-    """Collector rules: what each collector version exported, and the weight each row carries."""
+def export(dev, V, ct):
+    """Collector rules: what each collector version exported, and the weight each row carries.
+    The v2 beacon ships with the platform release of 3 June, so it starts at that deploy."""
     d = V.dev.values
     gt = V.gtype.values
-    v2 = V.t_local.values >= np.datetime64(P.COLLECTOR_V2)
+    v2 = V.ts.values >= ct["RUM"]
     day = V.local_day.values
     inwin = (day >= np.datetime64(P.EXTRACT_START)) & (day <= np.datetime64(P.EXTRACT_END))
     keep_v1 = ~v2 & dev.v1.values[d]

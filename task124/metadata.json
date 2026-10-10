@@ -9,11 +9,11 @@
     "summer_block_split.xlsx"
   ],
   "distractor_files": [
-    "zone_daily_temps_2017_2026.csv",
+    "loadfcst_da_s26.csv",
     "ercot_zone_peak_outlook_2027.xlsx"
   ],
   "distractor_notes": {
-    "zone_daily_temps_2017_2026.csv": "Weather by zone. The risk policy's exposure replays settled load at the system peak hour; no step reads temperature.",
+    "loadfcst_da_s26.csv": "Last summer's day-ahead forecasts of the book. The risk policy's exposure replays ten closed summers at the coming book; no step reads a forecast of a closed summer.",
     "ercot_zone_peak_outlook_2027.xlsx": "Wrong-basis distractor: ERCOT's zone outlook is the input to the lenders' zone-share basis, which the risk policy (section 6) names as the lenders' view and not the exposure it defines. On that basis the split is Coast-led and is neither the answer nor rung 0."
   },
   "source": "Every file is constructed for this task around a fictional Texas retail electricity provider (Sabine Crest Energy), its customers, brokers and counterparties. ESI ID prefixes, ERCOT weather zone and load profile codes, NAICS codes and NERC holidays follow the published conventions; load series and the summer system peaks are synthetic, shaped on ERCOT's public hourly load by weather zone, and are not a transcription. No real person, account or record is depicted.",
@@ -34,7 +34,7 @@
     {
       "path": "bsaver_credits_2017_2026.csv",
       "format": "csv",
-      "bytes": 106337
+      "bytes": 105892
     },
     {
       "path": "bsaver_roster_2027.xlsx",
@@ -79,12 +79,12 @@
     {
       "path": "extract_log.md",
       "format": "md",
-      "bytes": 2821
+      "bytes": 2959
     },
     {
       "path": "field_notes.md",
       "format": "md",
-      "bytes": 3601
+      "bytes": 3933
     },
     {
       "path": "hedge_positions_20270409.xlsx",
@@ -94,7 +94,12 @@
     {
       "path": "idr_hourly_reads_summers_2017_2026.parquet",
       "format": "parquet",
-      "bytes": 3928713
+      "bytes": 3950947
+    },
+    {
+      "path": "loadfcst_da_s26.csv",
+      "format": "csv",
+      "bytes": 990037
     },
     {
       "path": "option_quotes_s27.csv",
@@ -129,7 +134,7 @@
     {
       "path": "summer_2026_risk_report.pdf",
       "format": "pdf",
-      "bytes": 3689
+      "bytes": 3690
     },
     {
       "path": "summer_risk_policy_2027.docx",
@@ -154,12 +159,12 @@
     {
       "path": "zone_daily_temps_2017_2026.csv",
       "format": "csv",
-      "bytes": 272688
+      "bytes": 272045
     },
     {
       "path": "zone_settled_load_s17_s26.csv",
       "format": "csv",
-      "bytes": 2465639
+      "bytes": 2465500
     }
   ]
 }

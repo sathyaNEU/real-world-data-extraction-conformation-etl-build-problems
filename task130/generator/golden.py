@@ -50,8 +50,18 @@ def compute():
     assert all(bull[s] == (P.N[s], june_n[s]) for s in W), "30 June picture does not tie to the bulletin"
 
     tk = V.commitments(P, 120)
-    own = V.roll(P, june, SNAPSHOT, EXTRACT_CUT, PROGRAMME_DAY, "R5", tk)
+    rolled = V.roll(P, june, SNAPSHOT, EXTRACT_CUT, PROGRAMME_DAY, "R5", tk)
+    # holders inscribed after 30 June with no return yet: what the deeds show they hold (Article 2.1, 2.4)
+    extra, late = V.late_registrants(P, EXTRACT_CUT)
+    assert not set(extra) & set(rolled), "a registrant dwelling already on the roll"
+    own = dict(rolled, **extra)
     lh = V.per_section(P, own, W)
+    reg_sec = {}
+    for k, h in extra.items():
+        reg_sec.setdefault(h, {}).setdefault(P.sec[k], 0)
+        reg_sec[h][P.sec[k]] += 1
+    reg_info = sorted(((P.name[h], P.tit.loc[P.tit["nif"] == h, "data_inscripcio"].iloc[0], v) for h, v in reg_sec.items()),
+                      key=lambda x: -sum(x[2].values()))
     share = {s: V.pct(lh[s], P.N[s]) for s in W}
     designated = sorted(s for s in W if share[s] >= LINE)
     under = sorted(s for s in W if share[s] < LINE)
@@ -74,6 +84,7 @@ def compute():
             c = V.per_section(P, V.roll(P, june, SNAPSHOT, cut, end.isoformat(), "R5", tk), W)[s]
             steps.append(c - prev)
             prev = c
+        assert not any(P.sec[k] == s for k in extra), f"registrant dwellings in bridge section {s}"
         assert june_n[s] + sum(steps) == lh[s], f"bridge for {s} does not close"
         bridges[s] = (june_n[s], steps, lh[s])
 
@@ -83,10 +94,17 @@ def compute():
         if len(later):
             settled.append((dt.date.fromisoformat(later.iloc[0]["data_atorgament"]) - c).days)
     assert settled and set(settled) == {120}, "settled first-offer purchases off the 120-day interval"
+    early = 0
+    for ref, (c, _, planned) in tk.items():
+        later = P.deeds[(P.deeds["referencia_cadastral"] == ref) & (P.deeds["data_atorgament"] > c.isoformat())]
+        if len(later) and planned > dt.date.fromisoformat(later.iloc[0]["data_atorgament"]):
+            early += 1
+    assert early == 4, early
 
     return dict(P=P, W=W, N=P.N, place=place(P), june=june_n, lh=lh, share=share, designated=designated,
                 near_in=near_in, near_out=near_out, last_year=last_year, group=group, empty=empty,
-                bridges=bridges, settled=len(settled), annex26=P.annex, june_items=june)
+                bridges=bridges, settled=len(settled), early=early, annex26=P.annex, june_items=june,
+                late=late, reg_info=reg_info, rolled_n=V.per_section(P, rolled, W))
 
 
 def d1(x):
@@ -285,9 +303,20 @@ def write_brief(F, path):
     s.append(Paragraph(
         "The exception is the sales the Ens Públic de Patrimoni Residencial has taken over under its first-offer "
         "right. Its budget execution to 30 September records each commitment under programme PPO, and every "
-        "first-offer purchase it has completed so far was executed 120 days after the commitment, never on the date "
-        "the parties had notified. We therefore treat each committed sale as passing to the agency 120 days after "
+        f"first-offer purchase it has completed so far ({F['settled']}) was executed 120 days after the commitment, never "
+        f"on the date the parties had notified, and {WORDS[F['early']]} of them came before that date. We therefore treat each committed sale as passing to the agency 120 days after "
         "its commitment, and the agency, as a public body, is not a large holder (Article 2.1).", body))
+    def held(v):
+        parts = [f"{n} {'dwellings ' if i == 0 else ''}in {c}" for i, (c, n) in enumerate(sorted(v.items(), key=lambda kv: -kv[1]))]
+        return " and ".join(parts)
+    named = [f"{nm} (inscribed {day(dt.date.fromisoformat(d))}) holds {held(v)}" for nm, d, v in F["reg_info"]]
+    rest = len(F["late"]) - len(F["reg_info"])
+    s.append(Paragraph(
+        f"The register also lists {WORDS[len(F['late'])]} holders inscribed after 30 June that have lodged no return "
+        "yet; their first is due with the third quarter. From inscription they are large holders under Article 2.1, "
+        "and the deed extract shows what they own: " + "; ".join(named) + ", all bought from private owners before "
+        f"30 June. The other {WORDS[rest]} hold nothing in the watch list. A roll that starts from the returns "
+        "alone leaves these dwellings out.", body))
     s.append(Paragraph(
         f"This is where the list departs from the 2026 method, which Celestina Gallart's notes describe and which "
         f"reproduces the 2026 annex exactly. Built that way, the 2027 list would carry {WORDS[len(ly)]} sections: "
@@ -304,6 +333,13 @@ def write_brief(F, path):
         why.append(f"In {c} it committed {span(com)} to {n} sales to private buyers agreed for "
                    f"{agreed[0].strftime('%B')}; those complete {span(done)} 2027, so the seller still holds the "
                    "dwellings on 1 January.")
+    for c in des:
+        if V.pct(F["rolled_n"][c], F["N"][c]) < LINE:
+            n, com, done, agreed, lh_buyer = takeovers(F, c)
+            who = [nm for nm, d, v in F["reg_info"] if c in v]
+            why.append(f"In {c} the agency also takes {n} dwellings sold between large holders, {span(done)}, but the "
+                       f"{F['lh'][c] - F['rolled_n'][c]} that {who[0]} holds keep the section over the line at "
+                       f"{d1(sh[c])}%.")
     s.append(Paragraph(" ".join(why), body))
     s.append(Paragraph("The annex", head))
     s.append(Paragraph(

@@ -372,7 +372,8 @@ def write_docx(path):
         "Performance Reporting Charter, section 2. Months are days divided by 30.4375. Quartiles and medians are "
         "Kaplan-Meier estimates with undecided applications counted as still waiting at the extract.",
         "Examiner Production Standard EPD/PS/2019, section 2. The first action on the merits on a docket opened on "
-        "a transferred file carries one of the two classes; continuing applications are timed from their own docketing date, "
+        "a transferred file carries one of the two classes; continuing applications (first action on the merits credited "
+        "1N) are timed from their own docketing date, "
         "which a benefit claim on the parent does not move (Charter, section 2).",
         "Report table notes: each application is counted in the group, at the extract, of the art unit that "
         "docketed it at filing. Group codes recorded on FY2022 dockets predate the 1 October 2023 restatement and "
@@ -397,7 +398,7 @@ def word_stats(data, pages=1):
         txt = html.unescape("".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p)))
         if txt.strip():
             paras.append(txt)
-    stats = (("Pages", pages), ("Words", sum(len(p.split()) for p in paras)),
+    stats = (("TotalTime", 38), ("Pages", pages), ("Words", sum(len(p.split()) for p in paras)),
              ("Characters", sum(len(re.sub(r"\s", "", p)) for p in paras)),
              ("Lines", sum(max(1, math.ceil(len(p) / 90)) for p in paras)), ("Paragraphs", len(paras)),
              ("CharactersWithSpaces", sum(len(p) for p in paras)))
@@ -406,10 +407,16 @@ def word_stats(data, pages=1):
         app = re.sub(r"<%s>\d+</%s>" % (tag, tag), "<%s>%d</%s>" % (tag, val, tag), app)
     data["docProps/app.xml"] = re.sub(r"<AppVersion>[^<]*</AppVersion>", "<AppVersion>16.0000</AppVersion>",
                                       app).encode("utf-8")
-    data.pop("docProps/thumbnail.jpeg", None)
+    # a package as Word 2016 saves it: no template thumbnail, no customXml item, no Word 2010 stylesWithEffects part
+    for n in [n for n in data if n == "docProps/thumbnail.jpeg" or n.startswith("customXml/")
+              or n == "word/stylesWithEffects.xml"]:
+        data.pop(n)
     data["_rels/.rels"] = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail.jpeg"/>', b"", data["_rels/.rels"])
-    data["[Content_Types].xml"] = data["[Content_Types].xml"].replace(
-        b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+    rels = "word/_rels/document.xml.rels"
+    data[rels] = re.sub(rb'<Relationship [^>]*Target="(?:\.\./customXml/[^"]*|stylesWithEffects.xml)"/>', b"", data[rels])
+    ct = data["[Content_Types].xml"].replace(b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+    data["[Content_Types].xml"] = re.sub(rb'<Override PartName="/(?:customXml/[^"]*|word/stylesWithEffects.xml)"[^>]*/>',
+                                         b"", ct)
 
 
 def repack(path):

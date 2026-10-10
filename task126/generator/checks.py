@@ -132,6 +132,18 @@ def corpus(R, ctx):
     R.ok("corpus blind to the split: no successor in a programme chain is a continuing application",
          C["n1n"] == 0, C["n1n"])
     R.ok("rung 3 reproduces every acknowledged decision (decided cases)", int(dec.sum()) > 4000, int(dec.sum()))
+    W = ctx["W"]
+    nfa = []
+    for k, i in enumerate(C["cases"]):
+        j = int(i)
+        while W.child[j] >= 0:
+            j = int(W.child[j])
+            if W.fa[j] > P.EXTRACT:
+                nfa.append(k)
+    nfa = np.array(nfa, dtype=np.int64)
+    R.ok("corpus: every file whose successor has no first action at the extract is waiting on the answer's rule "
+         "(the split is made only on a positive 1N), and there are 4 of them",
+         len(nfa) == 4 and bool((C["e4"][nfa] > X).all()), int(len(nfa)))
     alw = dec & (C["dtype"] == "A") & ~C["reex"] & (C["r0"] < AN.BIG)
     lag = (C["r0"] - C["e3"])[alw]
     R.ok("rung 0 misses every allowed single-docket case by the grant lag (97 to 180 days late)",

@@ -100,6 +100,7 @@ def deploys(rng):
               P.PUZZLE_AD_SWITCH: "PUZ"}
     for c, d in P.COHORT_SWITCH.items():
         pinned[d] = "COH:" + c
+    pinned[P.COLLECTOR_V2.date()] = "RUM"
     days = []
     d = date(2026, 1, 5)
     while d <= date(2026, 8, 31):

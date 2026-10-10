@@ -281,6 +281,7 @@ Field meanings for the November round extracts. As at 23 October 2026.
 
 ## crew_deployment_log_2026.csv
 - ticket_id, estate, package, vendor_first_release, run_date, outcome, is_last_host: each host run of a deployment. A fix lands when a host runs it with outcome succeeded; a rolled_back run did not land.
+- change_request: on a colocated estate, the provider change request the ticket was drained under (request_id in the acknowledgements); blank on the cloud estates.
 
 ## vendor_advisory_feed.json
 - advisory, package, first_published, latest_revision: one record per vendor advisory; first_published is the vendor's first release of the fix, latest_revision the date it was last republished.

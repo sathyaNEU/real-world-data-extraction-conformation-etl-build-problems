@@ -58,6 +58,12 @@ class Analysis:
         self.class_factor = float(atpk["kwh"].sum() / atpk["md"].sum())
         self.site_called = (atpk["kwh"] / atpk["md"]).to_numpy()
         self.u_star = w.u_star
+        # the programme's own baseline at each closed peak hour (ten most recent uncalled business days), MD-weighted
+        base = w.base_at_peak
+        self.baseline = float(sum(base.values()) / sum(mem.at[e, "md_kw"] for (_, e) in base))
+        t = w.temps.set_index(["date", "book"])["tmax"]
+        mr["tmax"] = [t[(d, b)] for d, b in zip(mr["date"], mr["esi_id"].map(mem["book"]))]
+        self.tmax = t
 
     # -------------------------------------------------------------- replay arithmetic
     def pooled(self, b, y):
@@ -94,7 +100,8 @@ class Analysis:
             "R1": self.exposures("rows"),
             "R2": self.exposures("dedup"),
             "R3": self.exposures("dedup", centre_factor=self.class_factor),
-            "R4": self.exposures("dedup", centre_factor=self.u_star),
+            "R4": self.exposures("dedup", centre_factor=self.baseline),
+            "R5": self.exposures("dedup", centre_factor=self.u_star),
         }
         return R
 
@@ -102,26 +109,29 @@ class Analysis:
         E = self.exposures("dedup", centre_factor=self.u_star)
         return {b: E[b] + HEDGES[b] for b in BOOKS}
 
-    def grid(self):
-        cf, u = self.class_factor, self.u_star
+    def grid(self, lo=None, hi=None):
+        cf, u, bl = self.class_factor, self.u_star, self.baseline
         g = {
             "rows, pooled (rung 1)": self.exposures("rows"),
             "rows, class factor on the centres": self.exposures("rows", centre_factor=cf),
-            "rows, uncalled draw on the centres": self.exposures("rows", centre_factor=u),
+            "rows, programme baseline on the centres": self.exposures("rows", centre_factor=bl),
+            "rows, peak-heat draw on the centres": self.exposures("rows", centre_factor=u),
             "premises, pooled (rung 2)": self.exposures("dedup"),
             "premises, class factor (rung 3)": self.exposures("dedup", centre_factor=cf),
-            "premises, uncalled draw (answer)": self.exposures("dedup", centre_factor=u),
+            "premises, programme baseline (rung 4)": self.exposures("dedup", centre_factor=bl),
+            "premises, peak-heat draw (answer)": self.exposures("dedup", centre_factor=u),
             "partial: class factor on every new North Central premise": self.exposures("dedup", centre_factor=cf, newgen_factor=cf),
-            "partial: uncalled draw on every new North Central premise": self.exposures("dedup", centre_factor=u, newgen_factor=u),
+            "partial: peak-heat draw on every new North Central premise": self.exposures("dedup", centre_factor=u, newgen_factor=u),
+            "partial: programme baseline on every new North Central premise": self.exposures("dedup", centre_factor=bl, newgen_factor=bl),
             "members uncalled in 2027 too": self.exposures("dedup", centre_factor=u, members_uncalled=True),
-            "centres at 0.885": self.exposures("dedup", centre_factor=0.885),
-            "centres at 0.916": self.exposures("dedup", centre_factor=0.916),
-            "centres at 0.88": self.exposures("dedup", centre_factor=0.88),
-            "centres at 0.92": self.exposures("dedup", centre_factor=0.92),
+            "centres at their full maximum demand (1.00)": self.exposures("dedup", centre_factor=1.0),
             "P90 nearest rank": self.exposures("dedup", centre_factor=u, method="inverted_cdf"),
             "P90 exclusive (Excel PERCENTILE.EXC)": self.exclusive(),
             "settled loads, own book (rung 0)": self.exposures("settled"),
         }
+        if lo is not None:
+            g[f"centres at {lo:.3f}"] = self.exposures("dedup", centre_factor=lo)
+            g[f"centres at {hi:.3f}"] = self.exposures("dedup", centre_factor=hi)
         return g
 
     def exclusive(self):
@@ -226,17 +236,20 @@ class Analysis:
             res[k] = (hits, worst)
         return res
 
-    # -------------------------------------------------------------- the uncalled draw: twelve estimators
-    def estimators(self):
+    # -------------------------------------------------------------- the uncalled draw: two families of estimators
+    def _unc(self):
         m = self.mr[(self.mr["he"] == self.mr["pkh"]) & ~self.mr["called"]].copy()
         m["s"] = m["kwh"] / m["md"]
-        hot = self.hot_uncalled()
+        return m
+
+    def estimators(self):
+        """The draw on ordinary uncalled weekdays, every way a solver could average it, and the programme baseline."""
+        m = self._unc()
         per_y = {y: g["kwh"].sum() / g["md"].sum() for y, g in m.groupby("y")}
         per_site = m.groupby("esi_id")["s"].mean()
         mds = self.mem["md_kw"]
         base = self.w.base_at_peak
-        bk = sum(v for v in base.values()) / sum(mds[e] for (_, e) in base)
-        mh = m[[(d in hot) for d in m["date"]]]
+        allb = self.all_call_baseline()
         return {
             "pooled, MD-weighted": float(m["kwh"].sum() / m["md"].sum()),
             "pooled, mean of site ratios": float(m["s"].mean()),
@@ -248,9 +261,60 @@ class Analysis:
             "site by site, MD-weighted": float((per_site * mds[per_site.index]).sum() / mds[per_site.index].sum()),
             "site by site, mean": float(per_site.mean()),
             "2026 only": float(per_y[2026]),
-            "uncalled hottest-decile weekdays": float(mh["kwh"].sum() / mh["md"].sum()),
-            "programme baseline at the peak hour": float(bk),
+            "programme baseline at each closed peak hour": float(self.baseline),
+            "programme baseline at the peak hour, every called day": allb,
         }
+
+    def all_call_baseline(self):
+        """The terms' baseline at the summer's peak hour for every called day, MD-weighted over member-days."""
+        from common import billing_holidays, summer_weekdays
+        r = self.mr.set_index(["esi_id", "date", "he"])["kwh"]
+        num = den = 0.0
+        for y in SUMMERS:
+            he = PEAKS[y][1]
+            cs = set(self.w.calls[y])
+            bd = [d for d in summer_weekdays(y) if d not in billing_holidays(y)]
+            for d in self.w.calls[y]:
+                prior = [x for x in bd if x < d and x not in cs]
+                for esi, mm in self.mem.iterrows():
+                    if mm["start"] > d:
+                        continue
+                    pr = [x for x in prior if x >= mm["start"]][-10:]
+                    if not pr:
+                        continue
+                    num += float(np.mean([r[(esi, x, he)] for x in pr]))
+                    den += mm["md_kw"]
+        return num / den
+
+    def peak_estimators(self):
+        """What an uncalled cold store draws in the system peak hour, every way a solver could condition on heat."""
+        m = self._unc()
+        cut = self.w.temp_cut
+        bk = m["esi_id"].map(self.mem["book"])
+        W = lambda g: float(g["kwh"].sum() / g["md"].sum())  # noqa: E731
+        hot = self.hot_uncalled()
+        med = {b: float(np.median([self.tmax[(PEAKS[y][0], b)] for y in SUMMERS])) for b in BOOKS}
+        q90 = m.groupby(["esi_id", "y"])["tmax"].transform(lambda x: x.quantile(0.9))
+        return {
+            "zone at least as hot as its coolest closed peak day (golden)": W(m[m["tmax"] >= bk.map(cut)]),
+            "zone at least as hot as its median closed peak day": W(m[m["tmax"] >= bk.map(med)]),
+            "hottest-decile weekdays (book-wide settled load), uncalled": W(m[[d in hot for d in m["date"]]]),
+            "hottest tenth of each site-summer's uncalled weekdays by zone maximum": W(m[m["tmax"] >= q90]),
+            "each site-summer's highest uncalled peak-hour draw": float(m.groupby(["esi_id", "y"])["s"].max().mean()),
+            "each site's highest uncalled peak-hour draw over ten summers": float(m.groupby("esi_id")["s"].max().mean()),
+        }
+
+    def middle_estimators(self):
+        """Readings that condition on heat but not on peak-day heat: neither the ordinary nor the peak-day draw."""
+        m = self._unc()
+        W = lambda g: float(g["kwh"].sum() / g["md"].sum())  # noqa: E731
+        q80 = m.groupby(["esi_id", "y"])["tmax"].transform(lambda x: x.quantile(0.8))
+        X = np.c_[np.ones(len(m)), m["tmax"].to_numpy(float)]
+        b0, b1 = np.linalg.lstsq(X, m["s"].to_numpy(), rcond=None)[0]
+        bk = m["esi_id"].map(self.mem["book"])
+        pk = np.mean([self.tmax[(PEAKS[y][0], b)] for y in SUMMERS for b in set(bk)])
+        return {"hottest fifth of each site-summer's uncalled weekdays": W(m[m["tmax"] >= q80]),
+                "straight line on zone maximum, read at the mean peak-day maximum": float(min(1.0, b0 + b1 * pk))}
 
     def hot_uncalled(self):
         """Weekdays in each summer's hottest decile (by the book-wide settled daily maximum) without a call."""

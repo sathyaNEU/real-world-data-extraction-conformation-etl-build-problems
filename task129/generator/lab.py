@@ -2,6 +2,8 @@
 web asset register. One cold-cache run per URL per crawl, anonymous (ad-supported) profile."""
 from datetime import date, datetime, timedelta
 
+import hashlib
+
 import numpy as np
 import pandas as pd
 
@@ -109,7 +111,7 @@ def page_requests(rng, title, tpl, pid, d, prof):
     """Requests of one crawled page on one crawl date. prof holds the URL's stable sizes."""
     live = _switch_on(tpl, d)
     req = []
-    req.append(("document", "https://" + P.TITLE_DOMAIN[title], "/", prof["html"]))
+    req.append(("document", P.TITLE_DOMAIN[title], prof["path"], prof["html"]))
     req.append(("stylesheet", H_STATIC, "/css/site-2026.css", 41.3 + prof["css"]))
     req.append(("script", H_ANALYTICS, "/rum/v2.js", 18.6))
     req.append(("xhr", H_ANALYTICS, "/collect", 0.9))
@@ -162,11 +164,17 @@ def page_requests(rng, title, tpl, pid, d, prof):
     return req
 
 
+def _jitter(key):
+    """Stable sub-100-byte remainder per URL, so one file keeps one size across pages."""
+    return int(hashlib.sha256(key.encode()).hexdigest()[:6], 16) % 97
+
+
 def profiles(rng, pages):
     prof = {}
     for r in pages.itertuples():
         n = IMG_N[r.template]
         prof[r.url] = {
+            "path": "/" + r.url.split("/", 3)[3] if r.url.count("/") >= 3 else "/",
             "html": float(np.round(rng.uniform(52, 96), 1)),
             "css": float(np.round(rng.uniform(0, 6), 1)),
             "img": np.round(rng.uniform(28, 64, n) * (1.6 if r.template == "galleri" else 1.0), 1),
@@ -212,8 +220,8 @@ def crawl(rng):
                 for j, (rtype, host, path, kb) in enumerate(rq):
                     rows.append((rid, d.isoformat(), lid, r.url, r.title, status,
                                  (st + timedelta(milliseconds=j * 37)).strftime("%Y-%m-%dT%H:%M:%S"),
-                                 rtype, "https://" + host.replace("https://", "") + path,
-                                 int(round(kb * 1000))))
+                                 rtype, "https://" + host + path,
+                                 int(round(kb * 1000)) + _jitter(host + path)))
     df = pd.DataFrame(rows, columns=["run_id", "crawl_date", "url_list", "page_url", "masthead",
                                      "run_status", "requested_at_utc", "resource_type",
                                      "request_url", "transfer_bytes"])

@@ -20,13 +20,52 @@ PKG_POOL = ["openssl", "nginx", "python3.11", "openjdk-17-jre-headless", "curl",
             "systemd", "redis-server", "kafka", "containerd", "elasticsearch", "ffmpeg"]
 
 
-def build_asks(seed, chosts):
+COLO_PKGS = ["openssl", "kernel", "curl", "libxml2", "openssh", "sudo", "systemd", "zlib",
+             "expat", "nginx", "python3", "polkit", "krb5-libs", "libssh2"]
+
+
+def _colo_tickets(seed, requests, est, tnum, deployments, tickets):
+    """The office's colocated tickets of May to October: each one rode exactly one provider change
+    request, and its hosts ran it in that request's window; hosts the window did not accept never
+    ran it under that ticket. Checkout windows cross midnight, so their later hosts run on the
+    next date."""
+    rng = random.Random(seed + 41 + (0 if est == "payments" else 1))
+    office = sorted((r for r in requests if r["estate"] == est and r.get("office")),
+                    key=lambda r: (r["date"], r["order"]))
+    for r in office:
+        tnum += 1
+        tid = f"DEP-{est[:3].upper()}-{tnum:04d}"
+        pkg = rng.choice(COLO_PKGS)
+        acc = r["accepted"]
+        d0 = r["date"]
+        if est == "checkout":
+            early = max(1, acc // 4)
+            dates = [d0] * early + [d0 + dt.timedelta(days=1)] * (acc - early)
+        else:
+            dates = [d0] * acc
+        done = dates[-1]
+        gap = max(2, int(round(random.Random(tnum * 7 + seed).gauss(24, 11))))
+        rel = done - dt.timedelta(days=gap)
+        for k, hrun in enumerate(dates):
+            deployments.append({"ticket": tid, "estate": est, "package": pkg,
+                                "vendor_first_release": rel.isoformat(),
+                                "run_date": hrun.isoformat(), "outcome": "succeeded",
+                                "is_last_host": k == acc - 1, "change_request": r["rid"]})
+        if done >= dt.date(2026, 5, 1):
+            tickets.append((tid, est, pkg, rel, gap, gap > TARGET_DAYS))
+    return tnum
+
+
+def build_asks(seed, chosts, requests):
     """Return (deployments, coverage_rows, asset_rows, answer_A, answer_B). Deterministic."""
     rng = random.Random(seed + 40)
     deployments = []          # one row per host-run in the crew/completion log
     tickets = []              # (ticket_id, estate, package, vendor_release, gap_days, missed)
     tnum = 0
     for est in ESTATES:
+        if est in ("payments", "checkout"):
+            tnum = _colo_tickets(seed, requests, est, tnum, deployments, tickets)
+            continue
         ntk = rng.randint(22, 34)
         for _ in range(ntk):
             tnum += 1
@@ -47,12 +86,14 @@ def build_asks(seed, chosts):
                 deployments.append({"ticket": tid, "estate": est, "package": pkg,
                                     "vendor_first_release": rel.isoformat(),
                                     "run_date": hrun.isoformat(),
-                                    "outcome": "succeeded", "is_last_host": k == nhost - 1})
+                                    "outcome": "succeeded", "is_last_host": k == nhost - 1,
+                                    "change_request": ""})
             if rolled_back:
                 deployments.append({"ticket": tid, "estate": est, "package": pkg,
                                     "vendor_first_release": rel.isoformat(),
                                     "run_date": first_run.isoformat(),
-                                    "outcome": "rolled_back", "is_last_host": False})
+                                    "outcome": "rolled_back", "is_last_host": False,
+                                    "change_request": ""})
             if last_run >= dt.date(2026, 5, 1):     # the ask covers tickets completed since 1 May
                 tickets.append((tid, est, pkg, rel, gap, gap > TARGET_DAYS))
     # ---- answer A: median gap and miss count per estate (gap = last successful host run - release)

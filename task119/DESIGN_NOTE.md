@@ -1368,6 +1368,57 @@ began at 18:00 or later with its unit full, and Brackenford's 08:00 return showe
   (task89 lineage); the card's answer, answer source, spine rows (33,719), deliverables and opening move agree; `guard.py
   validate` 126 cards, 0 invalid.
 
+- **Stage 6, fix cycle 2 (2026-10-10), the pass 2 judge's FIX_NOW findings** (`determinism_check_report_pass2.md`:
+  DETERMINISTIC, FIX_NOW, Gate G line matching this note on all four flags). (1) `submission.md` step 1 now states the remit's
+  population the way `golden.py` applies it: level 3 referrals from a ward or the emergency department whose elapsed wait from
+  `dta_at` to the bed's assignment, or to death before a bed was assigned, exceeded four hours; step 2 names the 20 deaths before a
+  bed was assigned inside the 213 (recounted from the shipped log). The same convention is now pinned once in a filed document:
+  the terms of reference's scope paragraph adds "A patient who died still waiting more than four hours after the decision to admit
+  is inside the scope." (`texts.REMIT`), closing the died-before-admission fork both judges called thin (excluding them gives bars
+  RIS 41, LAT 46, BRK 33, ELL 11, TAN 8, PEL 6 and a 2,113 / 579 record). (2) The 225-minute clamp: `people.short_wait` drew a
+  lognormal and clipped it to [8, hi], piling 348 admitted waits on minute 225 (and the legacy BST draws on 170, which shows at
+  230 on the raw UTC clock). Each attempt still takes one draw, and the tails now fold back inside the band (above hi to
+  hi minus the excess modulo max(30, hi minus 100); below 8 to 16 minus the value), so the 190 to 225 minutes carry about 20
+  waits a minute, falling to 0 to 4 a minute from 232. Asserted: no admitted wait minute from 8 to 239 holds more than twice
+  its ten neighbours' median plus 10 (`checks.pack_checks`, assertion 180). Remit membership did not move; the folded draws shift
+  the referral stream where a fold changes a clock-change retry, so background rows moved: episode extract 88,145 rows (was
+  88,202), the capacity report's receipt-based screen (still reproduced by the verifier), two wrong grid cells by one death at E
+  (held_all/network: E 39 and 53, D still at least 1.2x behind), DV8's over-correction stop (2,065 / 597 / 140) and the natural
+  path's stop (2,366 / 720 / 205, TAN 132 / 39 / 0, PEL 105 / 34 / 0; `checks.NATURAL` and the verifier's `natural_total`
+  updated). (3) The board paper's last line now reads "The board is asked to approve the changes in sections 1 and 2.", which
+  agrees with its 14 November 2023 date and its future tense; the register still carries the effective dates. (4) The levels
+  file is `ccrs_referral_levels_202307_202404.csv` in `build.F`, the golden's file map and the verifier; the field guide's file
+  list and `metadata.json` follow from `F`, and step 7 cites the new name. (5) The optional field-guide sentence on bureau
+  allocations is not added: the fork is closed by the field guide's `bed_confirmed_at`, ACCN/23/41 s.3, ToR s.2 and the network
+  manager's rule, and the sentence would disarm the Ristenholm lure that carries rung 3. (6) Block 4's chart order now reads
+  "then the five trusts with none in any order", so the generated rubric does not grade the golden's secondary sort. (7) Realism
+  debts kept as stated: constant `beds_open`, RIS and STN full every morning, typed workbook totals (see `## Tried and rejected`).
+  Gates: two scratch builds at 180 of 180 assertions, byte-identical (21 files, file times equal), and the task build at 180 of
+  180 byte-identical to them; verifier 33 of 33 on `target/`; `golden.py` from the shipped pack: every figure unchanged (rungs 56,
+  34, 15, 37, 27; placement year 213; record 2,163 / 629 / 148 and its eight rows; Stennock 27, Prideswick 15, gap 12) and all
+  three goldens byte-identical to `golden/`, so `golden-realism` has nothing new to read. Reduce-house-fixes: H1 audit clean on
+  `target/` (2021-01-01 to 2026-10-02) and `golden/` (August to November 2026); H4 and H11 three files in `golden/`, one
+  `submission.md`, one `prompt.md`, no backup or snapshot; H8 every file the write-up names is in `target/` (the renamed levels
+  file included); H9 `metadata.json` lists exactly the 20 shipped files and five distractors; no em dash. Leak check REVIEW, no
+  LEAK, the same six lines (below). Surface screen the same five mechanism-layer pairs and nothing on the surface layer, personas
+  the six drawn; heart **PASS** (exit 0).
+
+- **Stage 3b re-run after fix cycle 2 (2026-10-10).** Pack: a scratch build at 180 of 180 assertions, byte-identical to
+  `target/` and `metadata.json`; the verifier passes 33 of 33 on `target/`. `golden.py` from the shipped pack: every figure
+  unchanged (rungs 56, 34, 15, 37, 27; placement year 731 / 213 / 44; record 2,163 / 629 / 148 and its eight rows; Stennock 92 of
+  92 waits beside a hold, 27, Prideswick 15, gap 12). H6 found one worded rule looser than the generator: the workbook's
+  "Inside the remit" line on Record by trust stopped at the assignment of a bed and left out the patient who died still waiting,
+  which `golden.py`, step 1 and the terms of reference's scope paragraph all include; it now adds "or died still waiting more
+  than four hours after it", the terms of reference's own wording. Only the xlsx moved (that one line); goldens regenerated twice
+  byte-identical, docx and png byte-unchanged. `submission.md` (after `submission-writeup`): no change, every figure recomputes and
+  block 4 follows the prompt's file and ask order. `golden-realism`: paper, workbook and chart read again cold, nothing else
+  moved. Reduce-house-fixes: H1 audit clean on `golden/` (August to November 2026) and `target/` (2021-01-01 to 2026-10-02); H4
+  and H11 three files in `golden/`, one `submission.md`, one `prompt.md`, no backup or snapshot; H8 all eleven files the write-up
+  names are in `target/`; H9 `metadata.json` names all 20 shipped files; no em dash. Leak check REVIEW, no LEAK, the same six
+  lines (below). Surface screen the same five mechanism-layer pairs and nothing on the surface layer, personas the six drawn;
+  heart **PASS** (exit 0), nearest heart text 0.05 (task89 lineage), nearest driver 0.06; card answer, answer source, spine rows
+  (33,719), deliverables and opening move agree; `guard.py validate` 126 cards, 0 invalid.
+
 ## Leak review
 
 `leak.py task119 --asof 2026-10-02`, re-run in hardening loop 2 against the loop-2 stump sentence on the rebuilt pack
@@ -1406,6 +1457,17 @@ title and judging vocabulary; it names no trust, code or count (Stennock and STN
 Stage 3b re-run after fix cycle 1 (2026-10-10, `--quiet`, pack byte-identical): **REVIEW**, no LEAK; the same sweep-3 line on
 the terms of reference and the same five sweep-4 lines at the same term counts (board paper 4, CCRS specification 8, RDS
 specification 5, terms of reference 7, field guide 11), each answered by its line here; every other sweep clean.
+
+Stage 6 fix cycle 2 (2026-10-10, `--asof 2026-10-02 --quiet`, rebuilt pack): **REVIEW**, no LEAK; the same sweep-3 line on the
+terms of reference and the same five sweep-4 lines at the same term counts. The terms of reference's new scope sentence (a
+patient who died still waiting more than four hours is inside the scope) names no trust, unit, bed state or order of admission;
+the board paper's new closing line ("asked to approve the changes in sections 1 and 2") adds no term. Sweeps 1, 2 and 5 to 11
+clean.
+
+Stage 3b re-run after fix cycle 2 (2026-10-10, `--asof 2026-10-02 --quiet`, pack byte-identical, no document edited):
+**REVIEW**, no LEAK; the same sweep-3 line on the terms of reference and the same five sweep-4 lines at the same term counts
+(board paper 4, CCRS specification 8, RDS specification 5, terms of reference 7, field guide 11), each answered by its line
+here; sweeps 1, 2 and 5 to 11 clean.
 
 - `accn_board_paper_2023-11-21_level3_capacity.pdf`: the 2023 consolidation paper (Ellerdyke to level 2, Pellowham's
   winter beds, transfers continuing through the network's bed bureau); it says nothing about planned admissions, waits,
@@ -1494,3 +1556,9 @@ Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solve
 - Stage 6 fix cycle 1, the card's shape moved from other to 07 to match metadata.json: task122, registered after this card, is
   shape 07, so the change would retro-fire the last-two shape ban on task122's card; the card keeps `other` and metadata.json
   names the shape.
+- Stage 6 fix cycle 2, the wait spike check as each minute against the mean of the 100 to 239 band: the lognormal falls by
+  a factor of four across that band, so the band mean flagged the natural mode (minute 102 at 87 against a mean of 31.7) and
+  passed nothing; replaced by each minute against the median of its ten neighbours.
+- Stage 6 fix cycle 2, the optional field-guide sentence that the bureau allocates a bed and the receiving unit does not choose
+  the patient (judge finding 5): not added, because four shipped facts already close the Ristenholm reading and the sentence
+  would disarm the rung-3 lure.

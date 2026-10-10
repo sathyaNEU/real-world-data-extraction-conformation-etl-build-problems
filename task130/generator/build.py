@@ -123,9 +123,12 @@ def compute(L):
     for m in ("R3", "R4", "R4p", "R5"):
         rolls[m] = A.roll(own, sch, deeds, lh, "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", tk, m)
         C[m] = A.section_counts(rolls[m], cad, WATCH)
+    reg_own = A.registrant_holdings(L["tit"], ret, deeds, "2026-09-30")
+    rolls["R6"] = A.with_registrants(rolls["R5"], reg_own)
+    C["R6"] = A.section_counts(rolls["R6"], cad, WATCH)
     own25, sch25 = A.holdings(A.picture(ret, "2025T2", "2025-08-31", cad, "R2"))
     roll25 = A.roll(own25, sch25, deeds, lh, "2025-06-30", "2025-09-30", "2025-09-30", "2026-01-01")
-    return {"C": C, "own": own, "sch": sch, "tk": tk, "rolls": rolls, "own25": own25, "sch25": sch25,
+    return {"C": C, "own": own, "sch": sch, "tk": tk, "rolls": rolls, "reg_own": reg_own, "own25": own25, "sch25": sch25,
             "roll25": roll25, "c25": A.section_counts(roll25, cad, WATCH)}
 
 
@@ -168,7 +171,8 @@ def write_docs(W, T, L, R):
 def write_padro(W, T, R):
     touched = set(R["tk"]) | {r for a in W["book"].agreements if a["agreed"].isoformat() == "2026-12-10"
                               for r in a["refs"]}
-    rows, status = padro.build(W["stock"], R["rolls"]["R5"], set(R["own"]), touched)
+    touched |= set(R["reg_own"])
+    rows, status = padro.build(W["stock"], R["rolls"]["R6"], set(R["own"]), touched)
     WR.write_csv(os.path.join(T, F["padro06"]), padro.HEADER, rows["06"])
     WR.write_csv(os.path.join(T, F["padro09"]), padro.HEADER, rows["09"])
     return status, touched

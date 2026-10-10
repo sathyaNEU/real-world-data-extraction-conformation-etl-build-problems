@@ -31,7 +31,7 @@
       "xlsx"
     ],
     "largest_file": "apc_episodes_referred_patients_2022-2026.parquet",
-    "largest_file_rows": 88202,
+    "largest_file_rows": 88145,
     "database_file": "nrr_review_records.sqlite"
   },
   "sources": [
@@ -57,7 +57,7 @@
     {
       "path": "acc_unit_stays_202306_202606.parquet",
       "format": "parquet",
-      "bytes": 989883,
+      "bytes": 990071,
       "rows": 23115,
       "source": "Constructed: network level-3 unit feed",
       "date": "2026-08-14",
@@ -75,8 +75,8 @@
     {
       "path": "apc_episodes_referred_patients_2022-2026.parquet",
       "format": "parquet",
-      "bytes": 2260705,
-      "rows": 88202,
+      "bytes": 2261108,
+      "rows": 88145,
       "source": "Constructed: admitted patient care episodes with linked date of death",
       "date": "2026-08-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -93,7 +93,7 @@
     {
       "path": "wenmarsh_acc_capacity_report_2024-04_to_2026-06.xlsx",
       "format": "xlsx",
-      "bytes": 13899,
+      "bytes": 13894,
       "rows": 324,
       "source": "Constructed: network monthly capacity report computed from the returns and referral log",
       "date": "2026-08-20",
@@ -102,7 +102,7 @@
     {
       "path": "review_terms_of_reference_2027-28.docx",
       "format": "docx",
-      "bytes": 39344,
+      "bytes": 39367,
       "rows": null,
       "source": "Constructed: board terms of reference for the review",
       "date": "2026-09-17",
@@ -111,7 +111,7 @@
     {
       "path": "wenmarsh_acc_extract_field_guide.pdf",
       "format": "pdf",
-      "bytes": 8053,
+      "bytes": 8054,
       "rows": null,
       "source": "Constructed: extract field guide and folder contents",
       "date": "2026-09-28",
@@ -136,10 +136,10 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "ccrs_referral_levels_202307_202604.csv",
+      "path": "ccrs_referral_levels_202307_202404.csv",
       "format": "csv",
-      "bytes": 691107,
-      "rows": 17454,
+      "bytes": 691151,
+      "rows": 17455,
       "source": "Constructed: legacy referral level entries",
       "date": "2024-04-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -174,7 +174,7 @@
     {
       "path": "accn_board_paper_2023-11-21_level3_capacity.pdf",
       "format": "pdf",
-      "bytes": 2707,
+      "bytes": 2692,
       "rows": null,
       "source": "Constructed: network board paper",
       "date": "2023-11-21",
@@ -192,7 +192,7 @@
     {
       "path": "rds_theatre_cases_2023-2026.parquet",
       "format": "parquet",
-      "bytes": 383803,
+      "bytes": 383784,
       "rows": 8026,
       "source": "Constructed: theatre case extract for referred and unit patients",
       "date": "2026-08-14",

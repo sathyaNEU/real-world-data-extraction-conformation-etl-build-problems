@@ -14,11 +14,12 @@ from plan import SECTIONS
 WATCH = sorted(s["code"] for s in SECTIONS)
 ROLE = {s["code"]: s["role"] for s in SECTIONS}
 CODE = {s["role"]: s["code"] for s in SECTIONS}
-ANSWER = sorted(CODE[r] for r in ("A1", "A2", "A3", "A4", "Q", "U"))
+ANSWER = sorted(CODE[r] for r in ("A1", "A2", "A3", "A4", "Q", "S", "U"))
 EXPECT = {"R0": ("A1", "A3", "A4", "P", "O4"), "R1": ("A1", "A2", "A3", "A4", "P", "Q", "O4"),
           "R2": ("A1", "A2", "A3", "A4", "P", "S", "Q", "T"), "R3": ("A1", "A2", "A3", "A4", "P", "S", "U"),
           "R4": ("A1", "A2", "A3", "A4", "P", "U"), "R4p": ("A1", "A2", "A3", "A4", "U"),
-          "R5": ("A1", "A2", "A3", "A4", "Q", "U")}
+          "R5": ("A1", "A2", "A3", "A4", "Q", "U"), "R6": ("A1", "A2", "A3", "A4", "Q", "S", "U")}
+REG_RULE = "register: holders inscribed after 30 June hold their deeded dwellings on 1 January (order art. 2.1, 2.4)"
 
 
 class Checks:
@@ -126,12 +127,13 @@ def main_ladder(C, W, L, R):
     for m, exp in EXPECT.items():
         C.ok(names(sets[m]) == sorted(exp), f"rung {m} files {sorted(exp)}")
     C.ok(len({tuple(v) for v in sets.values()}) == len(sets), "every rung files a distinct set")
-    C.ok([m for m in sets if sets[m] == ANSWER] == ["R5"], "only R5 files the answer set")
+    C.ok([m for m in sets if sets[m] == ANSWER] == ["R6"], "only R6 files the answer set")
     pos = {}
     for m in sets:
         dist = len(set(sets[m]) ^ set(ANSWER))
         pos[m] = (len(sets[m]), dist)
-    C.ok(pos == {"R0": (5, 5), "R1": (7, 3), "R2": (8, 4), "R3": (7, 3), "R4": (6, 2), "R4p": (5, 1), "R5": (6, 0)},
+    C.ok(pos == {"R0": (5, 6), "R1": (7, 4), "R2": (8, 3), "R3": (7, 2), "R4": (6, 3), "R4p": (5, 2), "R5": (6, 1),
+                 "R6": (7, 0)},
          f"position table {pos}")
     # bulletin and 2026 annex controls
     c2 = R["C"]["R2"]
@@ -147,8 +149,13 @@ def main_ladder(C, W, L, R):
     C.ok(sorted(ROLE[s] for s in WATCH if not d35[s]) == ["O4", "O5"], "the agency touches neither Castelló section")
     signs = sorted(ROLE[s] for s in touched if d35[s] > 0)
     C.ok(signs == ["A2", "O2", "Q"], f"the decisive move raises exactly A2, O2 and Q {signs}")
+    # R5 to R6: the late registrants' dwellings
+    d56 = {ROLE[s]: R["C"]["R6"][s] - R["C"]["R5"][s] for s in WATCH if R["C"]["R6"][s] != R["C"]["R5"][s]}
+    C.ok(d56 == {"S": 18, "A1": 5, "O2": 6}, f"R5 to R6 adds 18 dwellings in S, 5 in A1 and 6 in O2 {d56}")
+    C.ok(all(r1(A.share(R["C"]["R6"][CODE[k]], cad.N[CODE[k]])) != r1(A.share(R["C"]["R5"][CODE[k]], cad.N[CODE[k]]))
+             for k in d56), "the one-decimal share differs between R5 and R6 in each section the registrants touch")
     # line clearance and bins on the answer
-    sh5 = {s: A.share(R["C"]["R5"][s], cad.N[s]) for s in WATCH}
+    sh5 = {s: A.share(R["C"]["R6"][s], cad.N[s]) for s in WATCH}
     C.ok(all(abs(sh5[s] - 25) >= Decimal("0.5") for s in WATCH), "every answer share at least 0.5 points from 25")
     C.ok(all(bin_margin(sh5[s]) >= Decimal("0.015") for s in WATCH),
          f"every answer share at least 0.015 points inside its bin (min {min(bin_margin(sh5[s]) for s in WATCH)})")
@@ -167,10 +174,14 @@ def main_ladder(C, W, L, R):
              f"gap for {ROLE[s]} mid-bin and equal on both rounding paths ({r1(gap)})")
     # dominance on the line
     sh3 = {s: A.share(R["C"]["R3"][s], cad.N[s]) for s in WATCH}
-    for role in ("P", "S", "Q"):
+    for role in ("P", "Q"):
         s = CODE[role]
         ratio = abs(sh5[s] - sh3[s]) / abs(sh3[s] - 25)
         C.ok(ratio >= Decimal("1.3"), f"dominance {role}: decisive move / clearance = {ratio:.2f}")
+    s_ = CODE["S"]
+    r5s = A.share(R["C"]["R5"][s_], cad.N[s_])
+    ratio = (sh5[s_] - r5s) / (25 - r5s)
+    C.ok(ratio >= Decimal("1.3"), f"dominance S: registrants' move / R5 clearance = {ratio:.2f}")
     return sets, sh5, near_d, near_u
 
 
@@ -184,28 +195,30 @@ ROLL_RULE = {"none": "order art. 4 (holdings on 1 January)", "deeds": "returns' 
 def grid(C, W, L, R):
     cad = L["cad"]
     tk = R["tk"]
+    reg = R["reg_own"]
     cells = {}
     for V, B, X, K in itertools.product((0, 1), repeat=4):
         own, sch = picture_toggles(L["ret"], "2026T2", "2026-08-31", cad, V, B, X, K)
         for variant in ("none", "deeds", "R3", "R4", "R4p", "R5"):
             o = roll_variant(own, sch, L, tk, variant)
-            c = grid_counts(o, cad)
-            st = A.designated(c, cad, WATCH)
-            cells[(V, B, X, K, variant)] = st
-    good = (1, 1, 1, 1, "R5")
+            for G in (0, 1):
+                oo = dict(o, **reg) if G else o
+                cells[(V, B, X, K, variant, G)] = A.designated(grid_counts(oo, cad), cad, WATCH)
+    good = (1, 1, 1, 1, "R5", 1)
     C.ok(cells[good] == ANSWER, "the all-correct grid cell files the answer")
     wrong = {k: v for k, v in cells.items() if k != good}
     C.ok(all(v != ANSWER for v in wrong.values()), f"each of the other {len(wrong)} grid cells files a wrong set")
     mapping = {}
     for k in wrong:
-        missing = [RULE[t] for t, b in zip("VBXK", k[:4]) if not b] + ([ROLL_RULE[k[4]]] if k[4] != "R5" else [])
-        mapping["".join(str(b) for b in k[:4]) + "/" + k[4]] = (names(wrong[k]), missing)
+        missing = [RULE[t] for t, b in zip("VBXK", k[:4]) if not b] + ([ROLL_RULE[k[4]]] if k[4] != "R5" else []) \
+            + ([REG_RULE] if not k[5] else [])
+        mapping["".join(str(b) for b in k[:4]) + "/" + k[4] + "/" + "GR"[k[5]]] = (names(wrong[k]), missing)
         assert missing
-    C.ok(len(mapping) == 95, "every losing grid cell mapped to the shipped rule it violates")
-    C.ok(cells[(1, 1, 1, 1, "R3")] == R_SETS["R3"] and cells[(1, 1, 1, 1, "none")] == R_SETS["R2"],
-         "the grid's R2 and R3 cells agree with the ladder")
-    C.ok(names(cells[(1, 1, 1, 1, "deeds")]) == ["A1", "A2", "A3", "A4", "P", "Q", "S", "U"],
-         f"the deeds-only cell files eight sections {names(cells[(1, 1, 1, 1, 'deeds')])}")
+    C.ok(len(mapping) == 191, "every losing grid cell mapped to the shipped rule it violates")
+    C.ok(cells[(1, 1, 1, 1, "R3", 0)] == R_SETS["R3"] and cells[(1, 1, 1, 1, "none", 0)] == R_SETS["R2"]
+         and cells[(1, 1, 1, 1, "R5", 0)] == R_SETS["R5"], "the grid's R2, R3 and R5 cells agree with the ladder")
+    C.ok(names(cells[(1, 1, 1, 1, "deeds", 0)]) == ["A1", "A2", "A3", "A4", "P", "Q", "S", "U"],
+         f"the deeds-only cell files eight sections {names(cells[(1, 1, 1, 1, 'deeds', 0)])}")
     # partial cells on the decisive rung
     own, sch = R["own"], R["sch"]
     agr = {}
@@ -218,6 +231,7 @@ def grid(C, W, L, R):
             if ref in agr and pred(ref, c, agr[ref]):
                 t[ref] = (c, comp)
         o = A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", t, "R5")
+        o = A.with_registrants(o, reg)
         return A.designated(A.section_counts(o, cad, WATCH), cad, WATCH), A.section_counts(o, cad, WATCH)
     partials = {
         "clock only for large-holder buyers": partial(lambda r, c, a: a[1]),
@@ -226,25 +240,48 @@ def grid(C, W, L, R):
         "clock only for commitments before 1 September": partial(lambda r, c, a: c < "2026-09-01"),
         "clock only in the sections that cross the line": partial(lambda r, c, a: cad.sec.get(r) in (CODE["P"], CODE["S"], CODE["Q"])),
     }
+    # the notified date as a floor on the agency's deed (refused by four settled purchases)
+    mx = {}
+    for ref, (c, comp) in tk.items():
+        if ref in agr:
+            mx[ref] = (c, max(comp, agr[ref][0]))
+    o = A.with_registrants(A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01",
+                                  mx, "R5"), reg)
+    st_mx = A.designated(A.section_counts(o, cad, WATCH), cad, WATCH)
+    C.ok(names(st_mx) == ["A1", "A2", "A3", "A4", "P", "Q", "S", "U"],
+         f"the clock floored at the notified date files {names(st_mx)}")
+    o = A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", mx, "R5")
+    C.ok(names(A.designated(A.section_counts(o, cad, WATCH), cad, WATCH)) == ["A1", "A2", "A3", "A4", "P", "Q", "U"],
+         "the clock floored at the notified date, without the registrants, files A1 to A4, P, Q and U")
     for k, (st, cnt) in partials.items():
         if k.startswith("clock only in the sections"):
-            C.ok(st == ANSWER and sum(cnt[s] != R["C"]["R5"][s] for s in WATCH) >= 8,
+            C.ok(st == ANSWER and sum(cnt[s] != R["C"]["R6"][s] for s in WATCH) >= 8,
                  "taking over only in P, S and Q files the answer set but misses nine sections' counts")
         else:
             C.ok(st != ANSWER, f"partial cell '{k}' files {names(st)}")
     wd = takeovers_with(L, lambda c: add_workdays(c, 120))
-    o = A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", wd, "R5")
-    C.ok(A.designated(A.section_counts(o, cad, WATCH), cad, WATCH) != ANSWER, "120 working days files a wrong set")
+    o = A.with_registrants(A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01",
+                                  wd, "R5"), reg)
+    cw = A.section_counts(o, cad, WATCH)
+    nwd = sum(cw[x] != R["C"]["R6"][x] for x in WATCH)
+    C.ok(A.designated(cw, cad, WATCH) != ANSWER or nwd >= 6,
+         f"120 working days (refused by the settled corpus 27 of 27) files {names(A.designated(cw, cad, WATCH))} "
+         f"and misses the answer's counts in {nwd} sections")
+    o0 = A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", wd, "R5")
+    WD_SETS.update({"wd": names(A.designated(cw, cad, WATCH)), "wd_noreg": names(A.designated(A.section_counts(o0, cad, WATCH), cad, WATCH)),
+                    "wd_count_misses": nwd})
     # the corridor: 110 to 132 calendar days and four calendar months all land on the answer
     for n in list(range(110, 133)) + ["4m"]:
         t = takeovers_with(L, (lambda c, n=n: add_months(c, 4)) if n == "4m" else (lambda c, n=n: c + dt.timedelta(days=n)))
-        o = A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01", t, "R5")
-        assert A.section_counts(o, cad, WATCH) == R["C"]["R5"], n
+        o = A.with_registrants(A.roll(own, sch, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30",
+                                      "2027-01-01", t, "R5"), reg)
+        assert A.section_counts(o, cad, WATCH) == R["C"]["R6"], n
     C.ok(True, "corridor: every day count 110 to 132 and four calendar months give the answer's counts")
     return cells, mapping, partials
 
 
 R_SETS = {}
+WD_SETS = {}
 
 
 def calibration(C, W, L, R):
@@ -264,19 +301,25 @@ def calibration(C, W, L, R):
         if later:
             settled.append((ref, dt.date.fromisoformat(c), dt.date.fromisoformat(later[0]["data_atorgament"]),
                             later[0]["nif_adquirent"]))
-    C.ok(len(settled) == 23, f"23 settled first-offer purchases recovered by joining the ledger to the deeds ({len(settled)})")
+    NS = len(settled)
+    C.ok(NS == 27, f"27 settled first-offer purchases recovered by joining the ledger to the deeds ({NS})")
     agency = {s[3] for s in settled}
     C.ok(len(agency) == 1 and not agency & L["lh"], "every settled purchase was bought by one buyer that is not on the register")
-    C.ok(all((dd - c).days == 120 for _, c, dd, _ in settled), "the deed falls 120 calendar days after the commitment in 23 of 23")
+    C.ok(all((dd - c).days == 120 for _, c, dd, _ in settled), "the deed falls 120 calendar days after the commitment in 27 of 27")
+    early = [r for r, c, dd, _ in settled if notified[r] > dd]
+    C.ok(len(early) == 4 and min((notified[r] - dd).days for r, c, dd, _ in settled if r in early) >= 11,
+         "four settled purchases were executed on day 120, 11 days or more before the date the parties had notified")
+    C.ok(all((notified[r] - c).days > 120 for r, c, dd, _ in settled if r in early),
+         "so the notified date is no floor on the agency's deed")
     misses = {"notified": [abs((notified[r] - dd).days) for r, c, dd, _ in settled],
               "commitment": [(dd - c).days for r, c, dd, _ in settled],
               "4 months": [abs((add_months(c, 4) - dd).days) for r, c, dd, _ in settled],
               "120 working days": [abs((add_workdays(c, 120) - dd).days) for r, c, dd, _ in settled]}
-    C.ok(min(misses["notified"]) >= 9, f"the notified date misses 23 of 23 by 9 days or more (min {min(misses['notified'])})")
-    C.ok(all(x == 120 for x in misses["commitment"]), "the commitment date misses 23 of 23 by 120 days")
+    C.ok(min(misses["notified"]) >= 9, f"the notified date misses 27 of 27 by 9 days or more (min {min(misses['notified'])})")
+    C.ok(all(x == 120 for x in misses["commitment"]), "the commitment date misses 27 of 27 by 120 days")
     n4 = sum(1 for x in misses["4 months"] if x >= 1)
-    C.ok(n4 >= 18, f"four calendar months misses {n4} of 23 by at least a day")
-    C.ok(min(misses["120 working days"]) > 40, "120 working days misses 23 of 23 by more than 40 days")
+    C.ok(n4 >= 20, f"four calendar months misses {n4} of 27 by at least a day")
+    C.ok(min(misses["120 working days"]) > 40, "120 working days misses 27 of 27 by more than 40 days")
     sellers = {deed_by_ref[r][-1]["nif_transmitent"] for r, *_ in settled}
     C.ok(not sellers & L["lh"], "no settled purchase's seller is on the register")
     # large-holder commitments: dates and the gap the corridor needs
@@ -364,7 +407,27 @@ def structure(C, W, L, R):
         for ref, h in o.items():
             t[h] = t.get(h, 0) + 1
         assert min(t.values()) >= 10, m
-    C.ok(True, "every holder holds ten or more dwellings on 1 January 2027 under R3, R4, R4' and R5")
+    C.ok(True, "every holder holds ten or more dwellings on 1 January 2027 under R3, R4, R4', R5 and R6")
+    # the late registrants: inscribed after 30 June 2026, no return lodged, dwellings only in the deed extract
+    declared = {r["nif_declarant"] for r in ret}
+    late = sorted(r["nif"] for r in L["tit"] if not r["data_baixa"] and r["nif"] not in declared)
+    C.ok(len(late) == 4 and all(r["data_inscripcio"] > "2026-06-30" for r in L["tit"] if r["nif"] in late),
+         "exactly four holders on the register have lodged no return, all inscribed after 30 June 2026")
+    C.ok(all(r["data_inscripcio"] <= "2026-06-30" for r in L["tit"] if r["nif"] in declared),
+         "every declarant was inscribed by 30 June 2026")
+    regd = [d for d in L["deeds"] if d["nif_adquirent"] in late or d["nif_transmitent"] in late]
+    C.ok(all(d["nif_transmitent"] not in L["lh"] for d in regd) and not [d for d in regd if d["nif_transmitent"] in late],
+         "the registrants bought every watch dwelling from owners off the register and sold none")
+    C.ok(not [d for d in regd if "2025-07-01" <= d["data_atorgament"] <= "2025-12-31" or d["data_atorgament"] > "2026-06-30"],
+         "no registrant deed falls in July to December 2025 or after 30 June 2026 (so no control and no roll window sees one)")
+    per = {}
+    for ref, h in R["reg_own"].items():
+        per.setdefault(h, {}).setdefault(ROLE[cad.sec[ref]], 0)
+        per[h][ROLE[cad.sec[ref]]] += 1
+    C.ok(sorted(sorted(v.items()) for v in per.values()) == [[("A1", 5), ("O2", 6)], [("S", 18)]],
+         f"registrant holdings in the watch list: {per}")
+    C.ok(all(sum(v.values()) >= 10 for v in per.values()), "each registrant with watch dwellings holds ten or more of them")
+    C.ok(not set(R["reg_own"]) & set(R["own"]), "no registrant dwelling was on a 30 June return")
     nonlh = {}
     for d in sorted(L["deeds"], key=lambda d: d["data_atorgament"]):
         for nif, sgn in ((d["nif_adquirent"], 1), (d["nif_transmitent"], -1)):
@@ -467,21 +530,24 @@ def structure(C, W, L, R):
     f3 = A.section_counts(A.roll(o, s2, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01"), cad, WATCH)
     f5 = A.section_counts(A.roll(o, s2, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30", "2027-01-01",
                                  R["tk"], "R5"), cad, WATCH)
-    C.ok(f3 == R["C"]["R3"] and f5 == R["C"]["R5"] and A.designated(f5, cad, WATCH) != A.designated(f3, cad, WATCH),
-         "clean-data test: the filled returns give the same R3 and answer, and they differ")
+    f6 = A.section_counts(A.with_registrants(A.roll(o, s2, L["deeds"], L["lh"], "2026-06-30", "2026-09-30", "2026-09-30",
+                                                     "2027-01-01", R["tk"], "R5"), R["reg_own"]), cad, WATCH)
+    C.ok(f3 == R["C"]["R3"] and f5 == R["C"]["R5"] and f6 == R["C"]["R6"]
+         and len({tuple(A.designated(x, cad, WATCH)) for x in (f3, f5, f6)}) == 3,
+         "clean-data test: the filled returns give the same R3, R5 and answer, and all three differ")
     C.ok(all(r["data_atorgament"] <= "2026-09-30" for r in L["deeds"]) and
          all(r["data_comptable"] <= "2026-09-30" for r in L["led"]), "deeds and ledger complete to their own cut and no further")
 
 
 def asks(C, W, L, R):
     cad = L["cad"]
-    gold = R["rolls"]["R5"]
+    gold = R["rolls"]["R6"]
     stored = A.stored_codes(L["ret"], "2026T2", "2026-08-31")
     B = {m: A.largest(gold, cad, WATCH, A.ask_b_members(L["links"], stored, L["codes"], m), L["codes"], L["names"])
          for m in ("golden", "stored", "stored_valid", "reissued_stored", "links_else_stored", "latest_links")}
     B["no_roll"] = A.largest(R["own"], cad, WATCH, A.ask_b_members(L["links"], stored, L["codes"], "golden"),
                              L["codes"], L["names"])
-    for m in ("R3", "R4", "R4p"):
+    for m in ("R3", "R4", "R4p", "R5"):
         B[m] = A.largest(R["rolls"][m], cad, WATCH, A.ask_b_members(L["links"], stored, L["codes"], "golden"),
                          L["codes"], L["names"])
     g = B["golden"]
@@ -496,13 +562,13 @@ def asks(C, W, L, R):
     for m in ("stored", "stored_valid", "reissued_stored", "links_else_stored", "latest_links", "no_roll"):
         assert all(B[m][s][0] != g[s][0] or abs(B[m][s][1] - g[s][1]) >= 3 for s in mv[m]), m
     C.ok(True, "every ask B stop that moves a figure moves it by a name or by 3 dwellings or more")
-    C.ok(all(B[m] == g for m in ("R3", "R4", "R4p")), "ask B is identical under R3, R4, R4' and R5")
+    C.ok(all(B[m] == g for m in ("R3", "R4", "R4p", "R5")), "ask B is identical under R3, R4, R4', R5 and R6")
     # ask C
     occ = {m: A.occupied(L["jun"], L["sep"], m) for m in
            ("golden", "sept_only", "sept_only_right", "lapsed_counted", "noneu_empty", "castello_rows")}
     V = {m: A.vacancy(gold, cad, WATCH, occ[m]) for m in occ}
     V["no_roll"] = A.vacancy(R["own"], cad, WATCH, occ["golden"])
-    for m in ("R3", "R4", "R4p"):
+    for m in ("R3", "R4", "R4p", "R5"):
         V[m] = A.vacancy(R["rolls"][m], cad, WATCH, occ["golden"])
     gv = V["golden"]
     plan = {s["code"]: sum(s["vac"]) for s in SECTIONS}
@@ -517,7 +583,7 @@ def asks(C, W, L, R):
     C.ok(all(V[m] != gv for m in ("sept_only", "lapsed_counted", "noneu_empty", "castello_rows", "no_roll")),
          "every ask C stop differs from the golden")
     C.ok(all(V["sept_only"][s] != gv[s] for s in WATCH), "the natural ask C stop misses all fourteen sections")
-    C.ok(all(V[m] == gv for m in ("R3", "R4", "R4p")), "ask C is identical under R3, R4, R4' and R5")
+    C.ok(all(V[m] == gv for m in ("R3", "R4", "R4p", "R5")), "ask C is identical under R3, R4, R4', R5 and R6")
     # lapse dates clear of the window from the June delivery to 1 January 2027
     for rows in (L["jun"], L["sep"]):
         for r in rows:
@@ -542,7 +608,7 @@ def separation(C, W, L, R, F):
     L2 = {k: v for k, v in L.items() if k not in ("links", "codes", "codes_rows", "jun", "sep")}
     import build
     R2_ = build.compute(L2)
-    C.ok(R2_["C"]["R3"] == R["C"]["R3"] and R2_["C"]["R5"] == R["C"]["R5"],
+    C.ok(R2_["C"]["R3"] == R["C"]["R3"] and R2_["C"]["R5"] == R["C"]["R5"] and R2_["C"]["R6"] == R["C"]["R6"],
          "deleting every device (link sheet, code table, padró) moves neither R3 nor the answer")
     # hygiene battery on the ask paths: keys unique, joins land, no fan-out
     C.ok(len({r["codi_grup"] for r in L["codes_rows"]}) == len(L["codes_rows"]), "code table: one row per code (no fan-out)")
@@ -603,7 +669,8 @@ def bridge(C, L, R, s):
         c = A.section_counts(o, L["cad"], WATCH)[s]
         out.append(c - prev)
         prev = c
-    C.ok(start + sum(out) == R["C"]["R5"][s], f"bridge {ROLE[s]}: bulletin {start} + months {out} = annex {R['C']['R5'][s]}")
+    C.ok(R["C"]["R5"][s] == R["C"]["R6"][s] and start + sum(out) == R["C"]["R6"][s],
+         f"bridge {ROLE[s]}: bulletin {start} + months {out} = annex {R['C']['R6'][s]} (no registrant dwelling)")
     return start, out
 
 
@@ -623,7 +690,7 @@ def run(W, T, L, R, Dd, F, meta, info, touched):
     C.ok(set(br) == {"P", "Q"}, "the bridge sections are P and Q")
     golden = {}
     for s in WATCH:
-        golden[s] = {"role": ROLE[s], "N": L["cad"].N[s], "lh": R["C"]["R5"][s], "share": str(r1(sh5[s])),
+        golden[s] = {"role": ROLE[s], "N": L["cad"].N[s], "lh": R["C"]["R6"][s], "share": str(r1(sh5[s])),
                      "share_raw": str(sh5[s]), "group": B["golden"][s][0], "group_n": B["golden"][s][1],
                      "empty": V["golden"][s], "designated": s in ANSWER}
     rec = {"n_assert": C.n, "checks": C.log, "golden": golden, "answer": ANSWER,
@@ -631,7 +698,7 @@ def run(W, T, L, R, Dd, F, meta, info, touched):
            "sets": {m: names(v) for m, v in sets.items()},
            "nearest": {"designated": [ROLE[near_d], str(r1(sh5[near_d])), str(r1(abs(sh5[near_d] - 25)))],
                        "undesignated": [ROLE[near_u], str(r1(sh5[near_u])), str(r1(abs(sh5[near_u] - 25)))]},
-           "bridge": br, "grid": {k: v for k, v in mapping.items()}, "calibration": cal, "closeout": clo,
+           "bridge": br, "working_days": dict(WD_SETS), "grid": {k: v for k, v in mapping.items()}, "calibration": cal, "closeout": clo,
            "askB_moved": {m: names(v) for m, v in mv.items()},
            "askB_stops": {m: {ROLE[s]: list(B[m][s][:2]) for s in WATCH} for m in B},
            "askC_stops": {m: {ROLE[s]: V[m][s] for s in WATCH} for m in V},

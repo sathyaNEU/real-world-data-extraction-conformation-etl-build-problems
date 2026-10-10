@@ -11,22 +11,22 @@
   ],
   "answer": {
     "split": {
-      "payments": 1,
-      "checkout": 1,
-      "search": 76,
+      "payments": 4,
+      "checkout": 5,
+      "search": 72,
       "media": 75,
       "tools": 77,
-      "pipeline": 70
+      "pipeline": 67
     },
     "exposures_taken_out": {
       "payments": 1412,
       "checkout": 1742,
-      "search": 2612,
+      "search": 2582,
       "media": 2652,
       "tools": 2432,
-      "pipeline": 2512
+      "pipeline": 2482
     },
-    "total_exposures": 13362
+    "total_exposures": 13302
   },
   "input_files": [
     "cloud_asset_register_2026-10-23.csv",
@@ -55,7 +55,7 @@
   ],
   "large_file": {
     "path": "vuln_findings_2026-10-23.csv",
-    "rows": 215871
+    "rows": 215867
   },
   "distractor_files": [
     "drain_orchestrator_config.yaml",

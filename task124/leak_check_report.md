@@ -1,13 +1,13 @@
 # leak check, task124
 
-**Verdict: REVIEW.** 28 files read, 40 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 29 files read, 38 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: replay, decisive, closed, programme, analogs, premise, factor, refrigerated, system, measured, premises, window, dispatch, settled, fourteen, stores, cannot, dispatched, allocation, forecasting, method, population, summers, centres, undispatched
 
 ## 3 answer figures in the pack (REVIEW 4)
-- **REVIEW** `summer_2026_risk_report.pdf`: golden figure 251 appears: ...406 415 412 414 423 420 405 423 Southern 257 247 251 260 252 258 260 259 250 260 West 234 222 230 233...
+- **REVIEW** `summer_2026_risk_report.pdf`: golden figure 251 appears: ...408 417 414 415 425 422 407 425 Southern 257 247 251 260 252 258 260 259 250 260 West 234 222 230 233...
 - **REVIEW** `field_notes.md`: carries 10 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'
 - **REVIEW** `summer_2026_risk_report.pdf`: carries 12 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'
 - **REVIEW** `summer_risk_policy_2027.docx`: carries 13 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'

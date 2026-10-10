@@ -80,6 +80,27 @@ def scrub_ooxml(path, producer, when):
 def scrub_pdf(path, producer, when):
     stamp = when.strftime("%Y-%m-%d")
     SCRUB.scrub_pdf(str(path), producer, stamp, FLOOR, CEILING)
+    plain_pdf_comments(path)
+
+
+def plain_pdf_comments(path):
+    """Replace the writer's header comment with the usual binary marker and drop the comment inside the trailer,
+    then shift the cross-reference table by the bytes removed, so the file carries no writer banner at all."""
+    import re
+    b = open(path, "rb").read()
+    assert b.startswith(b"%PDF-1.4\n%")
+    end = b.index(b"\n", 9) + 1
+    marker = b"%\xe2\xe3\xcf\xd3\n"
+    shift = (end - 9) - len(marker)
+    b = b[:9] + marker + b[end:]
+    xref = b.rindex(b"\nxref\n") + 1
+    head, tail = b[:xref], b[xref:]
+    tail = re.sub(rb"(\d{10}) (\d{5}) n ", lambda m: b"%010d %s n " % (int(m.group(1)) - shift, m.group(2)), tail)
+    tail = re.sub(rb"\n%(?!%EOF)[^\n]*\n", b"\n", tail)
+    tail = re.sub(rb"startxref\n(\d+)\n", lambda m: b"startxref\n%d\n" % (int(m.group(1)) - shift), tail)
+    b = head + tail
+    assert b.count(b"\n%") == 2 and b.endswith(b"%%EOF\n"), "a comment line left in the PDF"
+    open(path, "wb").write(b)
 
 
 # ---------------------------------------------------------------------------------------- docx
@@ -140,7 +161,50 @@ def write_docx(path, title, blocks, author, when, producer, org="Morvane Patent 
     cp.created = when - dt.timedelta(days=9, hours=3)
     cp.modified = when
     doc.save(str(path))
-    scrub_ooxml(path, producer, when)
+    SCRUB.scrub_ooxml(str(path), producer, when.strftime("%Y-%m-%d"), FLOOR, CEILING)
+    tidy_word_package(path, minutes=52)
+    repack_ooxml(path, when)
+
+
+def tidy_word_package(path, minutes, pages=1):
+    """A package as Word 2016 saves it: no template thumbnail, no customXml item, no Word 2010 stylesWithEffects
+    part, and docProps/app.xml statistics counted from the body text with a non-zero editing time."""
+    import html
+    import math
+    import re
+    with zipfile.ZipFile(path) as z:
+        infos = z.infolist()
+        data = {i.filename: z.read(i.filename) for i in infos}
+    drop = [n for n in data if n == "docProps/thumbnail.jpeg" or n.startswith("customXml/")
+            or n == "word/stylesWithEffects.xml"]
+    for n in drop:
+        data.pop(n)
+    data["_rels/.rels"] = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail.jpeg"/>', b"", data["_rels/.rels"])
+    rels = "word/_rels/document.xml.rels"
+    data[rels] = re.sub(rb'<Relationship [^>]*Target="(?:\.\./customXml/[^"]*|stylesWithEffects.xml)"/>', b"", data[rels])
+    ct = data["[Content_Types].xml"]
+    ct = ct.replace(b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+    ct = re.sub(rb'<Override PartName="/(?:customXml/[^"]*|word/stylesWithEffects.xml)"[^>]*/>', b"", ct)
+    data["[Content_Types].xml"] = ct
+    body = data["word/document.xml"].decode("utf-8")
+    paras = []
+    for p in re.findall(r"<w:p[ >].*?</w:p>", body, flags=re.S):
+        txt = html.unescape("".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p)))
+        if txt.strip():
+            paras.append(txt)
+    stats = (("TotalTime", minutes), ("Pages", pages), ("Words", sum(len(p.split()) for p in paras)),
+             ("Characters", sum(len(re.sub(r"\s", "", p)) for p in paras)),
+             ("Lines", sum(max(1, math.ceil(len(p) / 90)) for p in paras)), ("Paragraphs", len(paras)),
+             ("CharactersWithSpaces", sum(len(p) for p in paras)))
+    app = data["docProps/app.xml"].decode("utf-8")
+    for tag, val in stats:
+        app = re.sub(r"<%s>\d+</%s>" % (tag, tag), "<%s>%d</%s>" % (tag, val, tag), app)
+    app = re.sub(r"<AppVersion>[^<]*</AppVersion>", "<AppVersion>16.0000</AppVersion>", app)
+    data["docProps/app.xml"] = app.encode("utf-8")
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as out:
+        for i in infos:
+            if i.filename in data:
+                out.writestr(i.filename, data[i.filename])
 
 
 # ---------------------------------------------------------------------------------------- pdf

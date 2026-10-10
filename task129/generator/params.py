@@ -53,19 +53,19 @@ PUZZLE_AD_SWITCH = date(2026, 6, 24)
 # dated steps in points of over-line share (uniform across groups, states, phones)
 STEP = {"E": 0.46, "B": 0.68, "D": 0.72}
 from knobs import STEP_T, KEEP_AUG  # noqa: E402  (tuning knobs)
-TABLET_STEP_MULT = 0.40
+TABLET_STEP_MULT = 2.0
 # per-state effects at phone multiplier 1 (points): first load / cached load
 EFF_C = {"F": 4.0, "K": 1.0}
 EFF_A = {"F": 0.4, "K": 3.4}
 PHONE_MULT = {"low": 1.45, "mid": 0.92, "high": 0.55}
 
 # ---------------------------------------------------------------- baselines (points)
-BASE_PHONE = {"low": 21.0, "mid": 20.4, "high": 19.8, "tablet": 12.0}
+BASE_PHONE = {"low": 21.0, "mid": 20.4, "high": 19.8, "tablet": 22.0}
 BASE_STATE = {"F": 0.0, "K": 0.0}
 BASE_TEMPLATE = {"sektion": 0.0, "galleri": 1.0, "liveblog": 0.5, "artikel": 0.0,
                  "sport": 0.5, "forside": 0.5, "arkiv": -0.5, "tjenester": -1.0, "spil": -1.0}
 BASE_TITLE = {"ST": 0.4, "LA": 0.0, "KD": -0.3}
-BASE_LOCAL = -4.0
+BASE_LOCAL = -7.0
 BASE_ADFREE = -1.0
 BASE_APP = 3.0
 
@@ -75,7 +75,7 @@ EXTRACT_END = date(2026, 8, 31)
 SIM_START = date(2026, 1, 12)                   # warm-up so state is defined at extract start
 COLLECTOR_V2 = datetime(2026, 6, 3, 0, 0)       # local: new sampling rates
 FORWARDER_FIX = datetime(2026, 5, 4, 0, 0)      # local: tablets filtered, single forwarding
-TAG_GAP = (date(2026, 4, 23), date(2026, 5, 3))  # LA and KD local-edition pages not firing
+TAG_GAP = (date(2026, 4, 27), date(2026, 5, 3))  # LA and KD local-edition pages not firing
 DUP_WINDOW = (date(2026, 3, 16), date(2026, 5, 3))  # ST app-webview beacons forwarded twice
 DEPLOY_QUIET_MIN = 10
 EXTRACT_PULLED = date(2026, 9, 5)
@@ -91,7 +91,7 @@ W_V2_SIGNED = 50
 # phone mixes (low, mid, high)
 MIX = {"base": (0.42, 0.41, 0.17), "sub": (0.30, 0.40, 0.30), "puz": (0.30, 0.42, 0.28)}
 # devices simulated (sampled devices only); hashed share present under collector v1
-N_DEV = {"anon": 76500, "free": 15500, "sub": 8500, "puz": 3800, "tablet": 6600}
+N_DEV = {"anon": 76500, "free": 15500, "sub": 8500, "puz": 3800, "tablet": 11000}
 V1_SHARE = {"anon": 1.0, "free": 1 / 4, "sub": 1 / 4, "puz": 1 / 4, "tablet": 1.0}
 V2_ANON_KEEP = 3                               # collector v2 keeps every third v1 anonymous device
 APP_SHARE_ST = {"anon": 0.06, "free": 0.10, "sub": 0.22}

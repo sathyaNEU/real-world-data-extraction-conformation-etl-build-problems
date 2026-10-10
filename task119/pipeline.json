@@ -44,11 +44,11 @@
   "judge": {
     "verdict": "DETERMINISTIC",
     "disposition": "FIX_NOW",
-    "report": "task119/determinism_check_report.md",
-    "fix_cycles": 1,
+    "report": "task119/determinism_check_report_pass2.md",
+    "fix_cycles": 2,
     "gate_g": "mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no"
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
+  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
   "delivered": null,
   "portal": null,
   "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md"

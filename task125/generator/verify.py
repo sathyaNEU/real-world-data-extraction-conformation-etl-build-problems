@@ -21,8 +21,8 @@ T = TASK / "target"
 OUT = []
 
 # the figures the build claims (the golden values this verifier must reproduce from the bytes)
-CLAIM = dict(order=6706, order_h=6700, asc=3694, hs=816, r2=7608, r3=5718, r4=6498, fernhollow=8102, gap_h=1400,
-             A=[634, 616, 598, 580, 562, 544, 526, 508, 668, 490, 490, 490])
+CLAIM = dict(order=6914, order_h=6900, asc=3902, hs=816, r2=7608, r3=5718, r4=6498, r5=6706, fernhollow=8102,
+             gap_h=1200, A=[650, 632, 614, 596, 578, 560, 542, 524, 700, 506, 506, 506])
 
 
 def check(name, cond, detail=""):
@@ -203,48 +203,100 @@ rates = {}
 for m in re.finditer(r"(Long-term, band \d|Home First step-down, \w+)\s*\n?\s*(\d{3})\.00", rt):
     rates[m.group(1)] = int(m.group(2))
 check("rate schedule parsed: six weekly placement rates", len(rates) == 6, rates)
-carer_amt = {}
+hist = defaultdict(dict)
 for dept, d, net, vat, exp, ven in pays:
     if exp == "Shared Lives carer payments":
-        carer_amt.setdefault(ven, set()).add(net + vat)
-check("every Shared Lives carer is paid one amount throughout", all(len(v) == 1 for v in carer_amt.values()),
-      len(carer_amt))
+        hist[ven][d] = net + vat
+run_dates = sorted({d for h in hist.values() for d in h})
+last = run_dates[-1]
+check("every Shared Lives carer vendor is paid at most once a run", sum(len(h) for h in hist.values()) ==
+      sum(1 for p in pays if p[4] == "Shared Lives carer payments"))
 decomp = defaultdict(list)
 for k in (1, 2, 3):
     for ms in itertools.combinations_with_replacement(sorted(rates), k):
         decomp[400 * sum(rates[g] for g in ms)].append(ms)
-amts = Counter(next(iter(v)) for v in carer_amt.values())
+cur = {v: h[last] for v, h in hist.items() if last in h}            # paid on the latest run
+gone = {v: h for v, h in hist.items() if last not in h}             # stopped inside the extract
+amts = Counter(cur.values())
 single = {a for a in amts if len(decomp[a]) == 1}
 rest = {a for a in amts if a not in single}
-check("every carer amount that is not four weeks of a set of placement rates is half of one, uniquely",
+check("every current carer amount that is not four weeks of a set of placement rates is half of one, uniquely",
       all(not decomp[a] and len(decomp[2 * a]) == 1 for a in rest), sorted(a // 100 for a in rest))
-# the halves come in pairs: consecutive vendor numbers paid the same amount on the same runs
-pay_runs = defaultdict(set)
-for dept, d, net, vat, exp, ven in pays:
-    if exp == "Shared Lives carer payments" and next(iter(carer_amt[ven])) in rest:
-        pay_runs[ven].add((d, net + vat))
-hv = sorted(pay_runs)
-paired = all(pay_runs[hv[i]] == pay_runs[hv[i + 1]] and int(hv[i + 1]) == int(hv[i]) + 1
-             for i in range(0, len(hv), 2)) and len(hv) % 2 == 0
-check("the halves are paid to consecutive vendor numbers in pairs, identical on every run", paired, len(hv))
+hv = sorted(v for v, a in cur.items() if a in rest)
+paired = len(hv) % 2 == 0 and all(hist[hv[i]] == hist[hv[i + 1]] and int(hv[i + 1]) == int(hv[i]) + 1
+                                  for i in range(0, len(hv), 2))
+check("the current halves are paid to consecutive vendor numbers in pairs, identical on every run", paired,
+      len(hv) // 2)
+# the record of how a joint household is paid when it loses a guest: every pair whose amounts changed in the extract
+events = []
+for v in sorted(hist):
+    w = "%06d" % (int(v) + 1)
+    if w not in hist:
+        continue
+    first = sorted(set(hist[v]) & set(hist[w]))
+    if not first or hist[v][first[0]] != hist[w][first[0]] or hist[v][first[0]] in single:
+        continue
+    half0 = hist[v][first[0]]
+    if decomp[half0] or len(decomp[2 * half0]) != 1:
+        continue
+    change = [d for d in run_dates if d in hist[v] and hist[v][d] != half0]
+    if not change:
+        continue
+    d0 = change[0]
+    after_v, after_w = hist[v][d0], hist[w].get(d0)
+    if after_w is None:              # the second vendor is no longer paid: the first is paid a whole fee
+        ms = decomp[after_v]
+        events.append(("whole", len(ms[0]) if len(ms) == 1 else None,
+                       all(d not in hist[w] for d in run_dates if d >= d0)))
+    else:
+        ms = decomp[2 * after_v]
+        events.append(("halves", len(ms[0]) if len(ms) == 1 and after_v == after_w else None, True))
+check("the extract's changed joint households: every one left with one guest is paid whole to the first vendor "
+      "(the second never paid again); every one left with two or more is still paid in halves",
+      events and all((k == "whole" and n == 1 and stop) or (k == "halves" and n is not None and n >= 2)
+                     for k, n, stop in events) and {k for k, n, stop in events} == {"whole", "halves"},
+      Counter((k, n) for k, n, stop in events))
+check("every vendor no longer paid stopped on the run its partner's amount changed",
+      all("%06d" % (int(v) - 1) in hist and min(d for d in run_dates if d > max(h)) in hist["%06d" % (int(v) - 1)]
+          for v, h in gone.items()), len(gone))
 
 
-def keep_after(ms):
-    return 400 * sum(rates[g] for g in ms if not g.startswith("Home First"))
+def keep(ms):
+    return [g for g in ms if not g.startswith("Home First")]
 
 
-after = {}
-for a in single:
-    after[a] = keep_after(decomp[a][0])
-for a in rest:
-    after[a] = keep_after(decomp[2 * a][0]) // 2
+def fee(ms):
+    return 400 * sum(rates[g] for g in ms)
+
+
+def plan_pays(rule):
+    """Carer payments on one 2027/28 run. rule: 'answer' (halves while two or more guests remain, whole to one
+    vendor while one remains), 'halves' (every household halved again), 'held' (the halves at today's amounts)."""
+    out = []
+    for v, a in cur.items():
+        if a in single:
+            out.append(fee(keep(decomp[a][0])))
+    for i in range(0, len(hv), 2):
+        a = cur[hv[i]]
+        left = keep(decomp[2 * a][0])
+        if rule == "held":
+            out += [a, a]
+        elif rule == "halves" or len(left) >= 2:
+            out += [fee(left) // 2] * 2
+        elif len(left) == 1:
+            out.append(fee(left))
+    return [x for x in out if x]
+
+
+def in14(lst):
+    return sum(1 for x in lst if x >= 100000 and cell(x) == 14)
+
+
 in14_now = sum(n for a, n in amts.items() if cell(a) == 14)
-in14_after = sum(n for a, n in amts.items() if after[a] and after[a] >= 100000 and cell(after[a]) == 14)
-moved = sum(n for a, n in amts.items() if cell(a) != 14 and after[a] and cell(after[a]) == 14)
-moved_halves = sum(n for a, n in amts.items() if a in rest and after[a] and cell(after[a]) == 14)
-check("after the closure 178 carer payments a run sit in cell 14 (102 now, 60 single carers and 16 halves "
-      "moving in)", (in14_now, in14_after, moved, moved_halves) == (102, 178, 76, 16),
-      (in14_now, in14_after, moved, moved_halves))
+in14_after, in14_halves, in14_held = in14(plan_pays("answer")), in14(plan_pays("halves")), in14(plan_pays("held"))
+check("after the closure 194 carer payments a run sit in cell 14 (102 now; 178 if every joint household were "
+      "halved again; 162 with the halves held)", (in14_now, in14_after, in14_halves, in14_held) == (102, 194, 178, 162),
+      (in14_now, in14_after, in14_halves, in14_held))
 cal = openpyxl.load_workbook(find("bacs_payment_calendar*.xlsx"), read_only=True)
 ws = cal["2027-28"]
 plan_rows = [r for r in ws.iter_rows(min_row=4, values_only=True) if r[0]]
@@ -254,14 +306,17 @@ check("2027/28 carries 13 Shared Lives runs", len(sl_plan) == 13)
 asc_other = sum(1 for p in pays if p[0] == "Adult Social Care" and fy(p[1]) == "2025/26" and p[2] + p[3] >= 100000
                 and cell(p[2] + p[3]) == 14 and p[4] != "Shared Lives carer payments")
 asc_plan = asc_other + len(sl_plan) * in14_after
-check("Adult Social Care cell 14 in 2027/28 = 3,694", asc_plan == CLAIM["asc"], (asc_other, in14_after))
+check("Adult Social Care cell 14 in 2027/28 = 3,902", asc_plan == CLAIM["asc"], (asc_other, in14_after))
 flat = {k: v for k, v in r2by.items() if k[0] not in ("Adult Social Care", "Housing Support")}
 order = asc_plan + hs_plan + sum(flat.values())
-check("the order: 6,706 routed payments, filed 6,700", order == CLAIM["order"] and round(order, -2) == 6700,
+check("the order: 6,914 routed payments, filed 6,900", order == CLAIM["order"] and round(order, -2) == 6900,
       order)
 r3 = order - len(sl_plan) * (in14_after - in14_now)
 check("rung 3 (Shared Lives carried at current amounts) = 5,718", r3 == CLAIM["r3"], r3)
-r4 = order - len(sl_plan) * moved_halves
+r5 = order - len(sl_plan) * (in14_after - in14_halves)
+check("rung 5 (every joint household re-summed and halved again) = 6,706, filed 6,700",
+      r5 == CLAIM["r5"] and round(r5, -2) == 6700, r5)
+r4 = order - len(sl_plan) * (in14_after - in14_held)
 check("rung 4 (every carer row decomposed on its own, the halves held) = 6,498, filed 6,500",
       r4 == CLAIM["r4"] and round(r4, -2) == 6500, r4)
 check("Adult Social Care carries the largest share", asc_plan == max(asc_plan, hs_plan, *flat.values()))
@@ -311,7 +366,7 @@ for r in rows:
 fern = sum(B1.values())
 check("Fernhollow's figure: the run log's 2025/26 routed total = 8,102", fern == CLAIM["fernhollow"], fern)
 gap_u, gap_h = round(fern - order, -2), round(fern, -2) - round(order, -2)
-check("gap to Fernhollow's figure: 1,400 on unrounded and on rounded figures", gap_u == gap_h == CLAIM["gap_h"],
+check("gap to Fernhollow's figure: 1,200 on unrounded and on rounded figures", gap_u == gap_h == CLAIM["gap_h"],
       (gap_u, gap_h))
 # screened counts tie to the spending file by BACS file month (the calendar's submission dates)
 sub_of = {}

@@ -205,6 +205,19 @@ def roll(P, items, start, deed_end, target, mode="R3", tk=None):
     return own
 
 
+def late_registrants(P, cut="2026-09-30"):
+    """Holders on the register's holder sheet (no baixa) with no return at all: what the deed extract
+    says they hold at the cut (the buyer of each dwelling's latest deed)."""
+    filed = set(P.ret["nif_declarant"])
+    late = {n for n in P.reg if n not in filed}
+    d = P.deeds[(P.deeds["data_atorgament"] <= cut) & (P.deeds["data_inscripcio"] <= cut)]
+    d = d.sort_values(["data_atorgament", "num_entrada"])
+    last = {}
+    for ref, buyer in zip(d["referencia_cadastral"], d["nif_adquirent"]):
+        last[ref] = buyer
+    return {ref: b for ref, b in last.items() if b in late}, late
+
+
 def per_section(P, own, watch):
     c = {s: 0 for s in watch}
     for k in own:
@@ -295,10 +308,18 @@ def main():
     for m in ("R3", "R4", "R4p", "R5"):
         rolled[m] = roll(P, pics[2], "2026-06-30", "2026-09-30", "2027-01-01", m, tk)
         C[m] = per_section(P, rolled[m], W)
+    extra, late = late_registrants(P)
+    check(len(late) == 4 and all(P.tit.loc[P.tit["nif"] == n, "data_inscripcio"].iloc[0] > "2026-06-30" for n in late),
+          "four holders inscribed after 30 June 2026 with no return")
+    check(not set(extra) & set(rolled["R5"]), "no registrant dwelling is already held on the roll")
+    rolled["R6"] = dict(rolled["R5"], **extra)
+    C["R6"] = per_section(P, rolled["R6"], W)
     sets = {m: chosen(P, C[m], W) for m in C}
-    check(len({tuple(v) for v in sets.values()}) == 7, "seven rungs, seven distinct sets")
-    ans = sets["R5"]
-    check(len(ans) == 6, "the answer designates six sections")
+    check(len({tuple(v) for v in sets.values()}) == 8, "eight rungs, eight distinct sets")
+    ans = sets["R6"]
+    check(len(ans) == 7, "the answer designates seven sections")
+    moved = {s: C["R6"][s] - C["R5"][s] for s in W if C["R6"][s] != C["R5"][s]}
+    check(sorted(moved.values()) == [5, 6, 18], f"the registrants add 18, 6 and 5 dwellings {moved}")
     # controls
     bull = bulletin_figures(P.bull_text, W)
     check(all(bull[s] == (P.N[s], C["R2"][s]) for s in W), "R2 reproduces the 30 June bulletin on 14 of 14")
@@ -315,7 +336,8 @@ def main():
         later = P.deeds[(P.deeds["referencia_cadastral"] == ref) & (P.deeds["data_atorgament"] > c.isoformat())]
         if len(later):
             settled.append((ref, c, dt.date.fromisoformat(later.iloc[0]["data_atorgament"]), planned))
-    check(len(settled) == 23, "23 settled first-offer purchases")
+    check(len(settled) == 27, "27 settled first-offer purchases")
+    check(sum(1 for _, c, deed, pl in settled if pl > deed) == 4, "four settled deeds came before the notified date")
     gaps = sorted({(deed - c).days for _, c, deed, _ in settled})
     check(gaps == [120], f"deed minus commitment {gaps}")
     check(min(abs((deed - pl).days) for _, c, deed, pl in settled) >= 9, "the notified date misses every settled deed")
@@ -331,20 +353,20 @@ def main():
     # corridor
     for n in range(110, 133):
         t2 = commitments(P, n)
-        assert per_section(P, roll(P, pics[2], "2026-06-30", "2026-09-30", "2027-01-01", "R5", t2), W) == C["R5"], n
+        assert per_section(P, dict(roll(P, pics[2], "2026-06-30", "2026-09-30", "2027-01-01", "R5", t2), **extra), W) == C["R6"], n
     check(True, "corridor 110 to 132 days")
     # asks
     mem = members(P, "2027-01-01")
-    big = biggest(P, rolled["R5"], W, mem)
+    big = biggest(P, rolled["R6"], W, mem)
     check(all(big[s][1] - big[s][2] >= 3 for s in W), "largest group leads by 3 or more")
-    for m in ("R3", "R4", "R4p"):
+    for m in ("R3", "R4", "R4p", "R5"):
         check(biggest(P, rolled[m], W, mem) == big, f"ask B identical under {m}")
     occ = occupied(P)
-    empty = {s: sum(1 for k in rolled["R5"] if P.sec.get(k) == s and k not in occ) for s in W}
-    for m in ("R3", "R4", "R4p"):
+    empty = {s: sum(1 for k in rolled["R6"] if P.sec.get(k) == s and k not in occ) for s in W}
+    for m in ("R3", "R4", "R4p", "R5"):
         e2 = {s: sum(1 for k in rolled[m] if P.sec.get(k) == s and k not in occ) for s in W}
         check(e2 == empty, f"ask C identical under {m}")
-    sh = {s: pct(C["R5"][s], P.N[s]) for s in W}
+    sh = {s: pct(C["R6"][s], P.N[s]) for s in W}
     des = [s for s in W if sh[s] >= 25]
     und = [s for s in W if sh[s] < 25]
     nd, nu = min(des, key=lambda s: sh[s]), max(und, key=lambda s: sh[s])
@@ -360,7 +382,7 @@ def main():
             c = per_section(P, roll(P, pics[2], "2026-06-30", de, end.isoformat(), "R5", tk), W)[s]
             steps.append(c - prev)
             prev = c
-        check(start + sum(steps) == C["R5"][s], f"bridge {s} closes")
+        check(C["R5"][s] == C["R6"][s] and start + sum(steps) == C["R6"][s], f"bridge {s} closes")
         bridge[s] = (start, steps)
     # input gates
     meta = json.load(open(os.path.join(a.task, "metadata.json"), encoding="utf-8"))
@@ -368,7 +390,7 @@ def main():
     check(len(P.ret) >= 25000, f"input gate: {len(P.ret)} return rows")
     check(len(meta["distractor_files"]) >= 2 and set(meta["distractor_files"]) <= set(P.files), "distractors present")
     out = {"answer": ans, "sets": sets, "counts": C,
-           "golden": {s: {"lh": C["R5"][s], "share": str(one_dec(sh[s])), "group": big[s][0], "group_n": big[s][1],
+           "golden": {s: {"lh": C["R6"][s], "share": str(one_dec(sh[s])), "group": big[s][0], "group_n": big[s][1],
                           "empty": empty[s]} for s in W},
            "nearest": {"designated": [nd, str(one_dec(sh[nd])), str(one_dec(sh[nd] - 25))],
                        "undesignated": [nu, str(one_dec(sh[nu])), str(one_dec(25 - sh[nu]))]},

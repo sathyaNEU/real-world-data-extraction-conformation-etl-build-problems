@@ -161,7 +161,7 @@ Sampling is by device key: when a device is sampled, every page view it makes is
 | ts_utc | Navigation start of the page view, UTC |
 | device_key | Hashed device identifier, stable for the life of the device |
 | account_key | Account the device is signed in to; empty when not signed in |
-| title | Masthead the page was published under at the time of the view |
+| title | Masthead the page was published under at the time of the view (ST Sønderå Tidende, LA Lindå Avis, KD Kærby Dagblad) |
 | template | Page template |
 | url_path | Path of the page on the title's site; local-edition pages sit under /lokal/<edition>/ |
 | device_model | Model string as the client reports it; resolve it against the device registry |
@@ -174,8 +174,8 @@ Sampling is by device key: when a device is sampled, every page view it makes is
 | cls | Cumulative layout shift |
 | sample_weight | Page views the row stands for |
 
-Collector v2 replaced the v1 forwarder on 8 May 2026; sampling rates are set per collector and are
-carried row by row in `sample_weight`.
+Collector v2 came with the platform release of 3 June 2026 (see the release train log); sampling
+rates are set per collector and are carried row by row in `sample_weight`.
 
 ## Registers and logs
 

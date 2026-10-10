@@ -205,16 +205,19 @@ def main_call(v, L, by_state="state", win=WIN):
                 fC = effects(v, "sub", sw, t, ["pclass"], win)
             A = apply(base, eA, by, fA) + apply(puz, eA, by, fA)
             C = apply(base, eC, by, fC) + apply(sub, eC, by, fC)
-        out[name] = {"A": A, "C": C, "eA": eA, "eC": eC}
+        out[name] = {"A": A, "C": C, "eA": eA, "eC": eC, "fA": fA if name != "raw" else None,
+                     "fC": fC if name != "raw" else None}
     by = ["pclass", by_state]
     eA, eC = out["state"]["eA"], out["state"]["eC"]
+    fA, fC = out["state"]["fA"], out["state"]["fC"]
     grid = {}
     for c in P.COHORTS:
-        grid[c] = {"A": apply(base[base.template == c], eA, by),
-                   "C": apply(base[base.template == c], eC, by) + apply(sub[sub.template == c], eC, by)}
+        grid[c] = {"A": apply(base[base.template == c], eA, by, fA),
+                   "C": apply(base[base.template == c], eC, by, fC)
+                   + apply(sub[sub.template == c], eC, by, fC)}
     out["grid"] = grid
-    out["A_puz"] = apply(puz, eA, by)
-    out["C_sub"] = apply(sub, eC, by)
+    out["A_puz"] = apply(puz, eA, by, fA)
+    out["C_sub"] = apply(sub, eC, by, fC)
     # joint ramp on the base (phone mix of the base), and its residual against the raw split
     eJ = effects(v, "base", sw, t, ["pclass"], win)
     out["joint"] = apply(base, eJ, ["pclass"])
@@ -305,7 +308,7 @@ def crawl_frame(L, run_of_record=True, rule="register"):
         own[(h == "static.sonderaa-medier.dk") & (rt == "script")] = "C"
         own[np.isin(h, ["cdn.jsdelivr.net", "securepubads.g.doubleclick.net", "ib.adnxs.com",
                         "fastlane.rubiconproject.com", "hbopenbid.pubmatic.com"])] = "A"
-        own[np.char.find(p.astype(str), "/fonts/") >= 0] = "E"
+        own[pd.Series(p).str.contains("/fonts/", regex=False).values] = "E"
         own[np.isin(h, ["img.sonderaa-medier.dk", "pix.sonderaa-medier.dk"])] = "B"
         own[h == "cmp.sonderaa-medier.dk"] = "D"
     c["own"] = own

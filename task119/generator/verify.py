@@ -25,7 +25,7 @@ CLAIMS = {
                "LAT": (559, 165, 0), "ELL": (140, 40, 6), "PRW": (221, 63, 46), "PEL": (75, 22, 3)},
     "record_total": (2163, 629, 148),
     "by_year_total": {1: (695, 204, 54), 2: (737, 212, 50), 3: (731, 213, 44)},
-    "natural_total": (2368, 720, 205),
+    "natural_total": (2366, 720, 205),
     "readings": {"referral": ("PRW", 15, "RIS", 2), "local": ("PRW", 15, "RIS", 2), "t04": ("PRW", 15, "RIS", 2),
                  "planned": ("RIS", 37, "PRW", 15), "not02": ("RIS", 37, "PRW", 15)},
     "every_hold_empty": ("RIS", 37, "STN", 27),

@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "quantity_figure",
   "answer_unit": "date_or_period",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Print 28.9 months as the median pendency of FY2022 filings.",
+  "answer_source": "task126/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "population",
     "rule"
@@ -33,7 +33,7 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "examination_dockets_FY2016_FY2026.parquet",
-    "rows": 820000,
+    "rows": 1020138,
     "entity": "one examination docket: one examiner's file on one application from docketing to close, with its end code and end date",
     "grain": "docket",
     "source": "synthetic (the office's examination production system extract, FY2016 to the 30 September 2026 extract; the note's 2.9 million rows rescaled at stage 2)"
@@ -68,7 +68,7 @@
   "opening_move": "other",
   "driver": "The decisive move splits units the natural build has already joined: the succession link it follows records only that a work file was carried to a new record, which happens both when the same unit continues and when a new unit is opened on the carried file, a certifying corpus drawn from a population in which every link continues the same unit confirms joining them all, and only a classification on a separate output-credit ledger marks the links that opened new units, so the joined build starts some units too early, ends others too late and overstates the median duration.",
   "driver_concrete": "A CX edge in the continuity table records that a refused application's examination file moved to a new docket, which happens both for a re-examination of the same application and for a continuing application filed after refusal on the transferred file; the partner office's acknowledgements certify chaining every CX edge because programme applications are only ever re-examined, and only the examiner production ledger, which credits the first action on a continuing application as a first action on a new application, tells the two apart, so the FY2022 cohort gains the continuing applications filed that year as new applications, loses the later continuations of its own applications, ends those parents at their refusals, and its median falls below the fully chained figure.",
-  "stump": "A competent solver chains every CX succession into one application, dates it from its first docket, ends it at its last docket's decision, censors the undecided at the 30 September 2026 extract, reproduces every one of the partner office's acknowledged final decisions to the day with that construction and files the fully chained FY2022 median (31.4 months in the source note's world); the step that lands it there is reading every CX edge as the same application continuing, when a designed share of them (about two in five) carried a refused application's file to a continuing application filed that day, which the examiner production ledger credits as a first action on a new application, so each of those is a new application in its own filing year and its parent was finally decided at its refusal, and the FY2022 median is about 27.9 months (a design target, fixed at stage 2).",
+  "stump": "A competent solver chains every CX succession into one application, dates it from its first docket, ends it at its last docket's final decision notice, censors the undecided at the 30 September 2026 extract, reproduces every one of the Saravel office's 6,300 work-sharing cases (5,921 acknowledged final decisions) to the day and files 34.0 months; the step that lands it there is reading every CX edge as the same application continuing, when about one in four of them carried a refused application's file to a continuing application filed on the successor's docketing date, whose first action the examiner production ledger credits as the first action on the merits in an application (1N, credited once per application), so each of those is a new application in its own filing year and its parent was finally decided at its refusal, and the FY2022 median is 28.9 months.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task82": "task82 joins orphan purchase records to the member a second system's credit ledger assigned them, adding volume that carries members over a count threshold; here the natural build has already joined docket successions into applications, and the decisive move splits the successions an examiner-credit class marks as new applications, which re-dates starts and ends in a duration distribution and lowers its median, with no record attributed to a different holder."

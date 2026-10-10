@@ -9,6 +9,9 @@ Rungs:
       colocated tickets credited with only the ticket package, densest packages first  [stop rung]
   R4  as R3 for the cloud estates, but each colocated drain valued at the whole host it returns:
       one ticket per colocated estate on a package every host carries, naming the most exposed
+      hosts  [the stop rung after harden loop 1: one ticket spends the whole month's drains]
+  R5  as R4, but a colocated ticket rides one provider change request, and a request is for one
+      window: one ticket per November window, each naming that window's share of the most exposed
       hosts  [decisive]
 
 The estate order is fixed: payments, checkout, search, media, tools, pipeline.
@@ -106,6 +109,25 @@ def colo_whole_host(hosts, budget):
     return res
 
 
+def colo_per_window(hosts, windows):
+    """R5: each November window takes one ticket (one change request), and the window's drains go
+    to the next most exposed hosts in rank order. Returns {estate: (tickets, exposure, [(date,
+    [host ids])])}; hosts ranked by whole-host exposure, ties by host id."""
+    res = {}
+    for est in COLO:
+        ranked = sorted(hosts[est], key=lambda h: (-h.whole(), h.hid))
+        i, exposure, per = 0, 0, []
+        for d, cap in windows[est]:
+            if cap <= 0:
+                continue
+            take = ranked[i:i + cap]
+            i += cap
+            exposure += sum(h.whole() for h in take)
+            per.append((d, [h.hid for h in take]))
+        res[est] = (len(per), exposure, per)
+    return res
+
+
 ERANK = {e: i for i, e in enumerate(ESTATES)}
 
 
@@ -170,21 +192,20 @@ def colo_ticket_package(hosts, drained_ids, est, reg):
 
 
 def answer_tickets(W):
-    """The 300-ticket cut list in rank order (estate, package, hosts_reached, exposures)."""
-    from params import COLO
-    import windows as WIN
-    wh, _ = WIN.nov_drains()
-    r4raw = W["rungs"]["r4raw"]
+    """The 300-ticket cut list in rank order (estate, package, hosts_reached, exposures, window)."""
+    by = {h.hid: h for e in COLO for h in W["hosts"][e]}
     rows = []
     for e in COLO:
-        drained = golden_drained(W, e, wh[e])
-        pkg, cov = colo_ticket_package(W["hosts"], drained, e, W["reg"])
-        rows.append({"estate": e, "package": pkg, "hosts": len(drained),
-                     "exposures": W["rungs"]["r4c"][e][1], "colocated": True})
-    # cloud chosen tickets
+        for d, hids in W["rungs"]["r5raw"][e][2]:
+            pkg, cov = colo_ticket_package(W["hosts"], hids, e, W["reg"])
+            rows.append({"estate": e, "package": pkg, "hosts": len(hids),
+                         "exposures": sum(by[h].whole() for h in hids), "window": d,
+                         "colocated": True})
     for v, _, e, p in W["chosen_cloud"]:
-        rows.append({"estate": e, "package": p, "hosts": v, "exposures": v, "colocated": False})
-    rows.sort(key=lambda r: (-r["exposures"], ERANK[r["estate"]], r["package"]))
+        rows.append({"estate": e, "package": p, "hosts": v, "exposures": v, "window": None,
+                     "colocated": False})
+    rows.sort(key=lambda r: (-r["exposures"], ERANK[r["estate"]], r["package"],
+                             r["window"].isoformat() if r["window"] else ""))
     return rows
 
 

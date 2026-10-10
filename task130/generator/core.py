@@ -7,7 +7,7 @@ import world
 import history
 import nonwatch
 import returns
-from plan import SECTIONS
+from plan import SECTIONS, REGISTRANTS
 
 AGENCY_NIF = cif("Q", 4600731)
 AGENCY_NAME = "Ens Públic de Patrimoni Residencial"
@@ -22,13 +22,15 @@ def make_world():
     book = history.Book()
     rng = random.Random(SEED * 31 + 7)
     state26, reserved = history.allocate_june26(stock, people)
-    settled = history.settled_purchases(book, state26, stock, people, rng)
+    settled = history.settled_purchases(book, state26, stock, people, rng, reserved)
     own0 = history.backward_history(book, state26, stock, people, rng, settled)
     used_tk = history.forward_2026(book, state26, stock, people, reserved, settled, rng)
     own0_nw, nw_sections = nonwatch.build(holders, stock, people, book, used_parcels)
     own0.update(own0_nw)
     add_private_texture(book, own0, stock, people, random.Random(SEED * 37 + 3))
     add_nonresidential(stock, random.Random(SEED * 41 + 5))
+    registrants = add_registrants(book, own0, stock, used, random.Random(SEED * 67 + 9))
+    spread_registrations(holders, random.Random(SEED * 71 + 3))
     timeline = returns.Timeline(own0, book.events)
 
     def nif(o):
@@ -41,7 +43,7 @@ def make_world():
     lodgements, expo = returns.build(holders, stock, timeline, book, nif)
     return {"holders": holders, "stock": stock, "book": book, "own0": own0, "timeline": timeline,
             "lodgements": lodgements, "expo": expo, "nif": nif, "settled": settled, "state26": state26,
-            "nw_sections": nw_sections, "reserved": reserved}
+            "nw_sections": nw_sections, "reserved": reserved, "registrants": registrants}
 
 
 def add_private_texture(book, own0, stock, people, rng, n=72):
@@ -94,3 +96,46 @@ def add_nonresidential(stock, rng):
                                                    "us": rng.choice(["Comercial", "Comercial", "Aparcament"]),
                                                    "floor": "BJ" if j == 1 else "-1", "door": f"{j:02d}",
                                                    "area": rng.randrange(18, 160)})
+
+
+def add_registrants(book, own0, stock, used, rng):
+    """Holders inscribed in the register after 30 June 2026 with no return lodged yet. Their watch-list
+    dwellings were bought one or two at a time from private owners, July 2024 to June 2025 and January to
+    June 2026, on dwellings no other event or commitment touches."""
+    from world import _company_nif
+    sections, buildings, dwellings = stock
+    busy = {r for e in book.events for r in e["refs"]} | {c["ref"] for c in book.commitments}
+    out = []
+    for spec in REGISTRANTS:
+        nif = _company_nif(rng, spec["prov"], used)
+        owner = "p:" + nif
+        refs = []
+        for code, n in sorted(spec["holds"].items()):
+            free = sorted(r for r, d in dwellings.items() if d["section"] == code and r not in busy
+                          and own0.get(r, "").startswith("p:"))
+            rng.shuffle(free)
+            refs += sorted(free[:n])
+            busy.update(free[:n])
+        early = refs[:spec["early"]]
+        late = refs[spec["early"]:]
+        for group, (a, b) in ((early, (D(2024, 7, 15), D(2025, 6, 13))), (late, (D(2026, 1, 12), D(2026, 6, 19)))):
+            i = 0
+            while i < len(group):
+                k = 2 if (len(group) - i >= 2 and rng.random() < 0.3) else 1
+                t = history.rand_day(rng, a, b)
+                for r in group[i:i + k]:
+                    book.event(t, {r: own0[r]}, {r: owner}, history.price(rng, dwellings[r]["section"]))
+                i += k
+        out.append({"key": spec["key"], "nif": nif, "owner": owner, "name": spec["name"], "kind": "J",
+                    "registered": spec["inscribed"], "refs": refs})
+    return out
+
+
+def spread_registrations(holders, rng):
+    """Six standalone holders inscribed in the first half of 2024, so the register's inscriptions do not
+    stop in 2023."""
+    from world import MEMBER
+    cands = sorted(h for h in holders if h not in MEMBER and not h.startswith("old"))
+    rng.shuffle(cands)
+    for h in sorted(cands[:6]):
+        holders[h]["registered"] = D(2024, 1, 8) + dt.timedelta(days=rng.randrange(0, 170))

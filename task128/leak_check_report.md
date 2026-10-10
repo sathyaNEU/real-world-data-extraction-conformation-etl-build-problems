@@ -1,14 +1,14 @@
 # leak check, task128
 
-**Verdict: REVIEW.** 23 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 23 files read, 27 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: decisive, window, colocated, candidate, drains, planner, export, scanner, reproduces, decision, registered, carries, opportunity-sizing-decision, office, close-out, provider, registration, ranked, binding, objective, business-operations-analytics, capacity, monitoring, corpus, carried
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `q3_2026_remediation_closeout.pdf`: carries 10 of 15 distinctive words of the committed call: 'Give payments 1 ticket, checkout 1, search 76, media 75, internal tools 77 and the data pipeline 70, which takes out 13,'
-- **REVIEW** `superseded_cvss_band_allocation_memo.pdf`: carries 11 of 15 distinctive words of the committed call: 'Give payments 1 ticket, checkout 1, search 76, media 75, internal tools 77 and the data pipeline 70, which takes out 13,'
+- **REVIEW** `q3_2026_remediation_closeout.pdf`: carries 10 of 15 distinctive words of the committed call: 'Give payments 4 tickets, checkout 5, search 72, media 75, internal tools 77 and the data pipeline 67, which takes out 13'
+- **REVIEW** `superseded_cvss_band_allocation_memo.pdf`: carries 12 of 15 distinctive words of the committed call: 'Give payments 4 tickets, checkout 5, search 72, media 75, internal tools 77 and the data pipeline 67, which takes out 13'
 
 ## 4 design-note vocabulary (REVIEW 5)
 - **REVIEW** `extract_provenance_2026-10-23.md`: 8 of 25 stump-paragraph terms appear (window, colocated, export, scanner, office, close-out); read whether the document names the move

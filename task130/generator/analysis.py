@@ -3,7 +3,7 @@ returns, the forward roll, every rung of the ladder, the two asks and their stop
 
 Rungs: R0 latest lodgement whole; R1 versions applied; R2 conformed 30 June picture; R3 rolled with
 deeds and agreed sales; R4 takeovers on agreed dates; R4p takeovers from commitment; R5 takeovers on
-the 120-day clock. The independent verifier (verify.py) recomputes all of this on its own code path.
+the 120-day clock; R6 R5 plus the dwellings of holders inscribed after 30 June 2026 with no return yet. The independent verifier (verify.py) recomputes all of this on its own code path.
 """
 import csv
 import datetime as dt
@@ -157,6 +157,25 @@ def roll(own, sch, deeds, lh, start, end_deeds, reg_cut, target, takeover=None, 
         if date <= target:
             cur[ref] = buyer if buyer in lh else None
     return {r: h for r, h in cur.items() if h}
+
+
+def registrant_holdings(tit, returns, deeds, cut):
+    """Holders inscribed in the register (no baixa) that have lodged no return: each dwelling whose last
+    deed executed and registered by `cut` names one of them as buyer."""
+    declared = {r["nif_declarant"] for r in returns}
+    reg = {r["nif"] for r in tit if not r["data_baixa"]} - declared
+    last = {}
+    for d in sorted(deeds, key=lambda d: (d["data_atorgament"], d["num_entrada"])):
+        if d["data_atorgament"] <= cut and d["data_inscripcio"] <= cut:
+            last[d["referencia_cadastral"]] = d["nif_adquirent"]
+    return {ref: h for ref, h in last.items() if h in reg}
+
+
+def with_registrants(own, extra):
+    assert not set(own) & set(extra), "a registrant's dwelling already on a return"
+    out = dict(own)
+    out.update(extra)
+    return out
 
 
 def section_counts(own, cad, sections):

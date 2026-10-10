@@ -270,8 +270,6 @@ Thanks all. I'll take the headline section from here and send a draft to Thomas 
 minister's office asked for the technology group table under the headline again, same three columns as the
 version they saw in the spring briefing, so I'll carry that.
 
-Stephen
-
 Stephen Brewer
 Head of Performance Statistics | Morvane Patent Office
 
@@ -329,8 +327,6 @@ Subject: APR 2026 headline section
 All, the 30 September extract is on the Performance Statistics share: dockets, actions, links, transfers, the
 production ledger, the art unit table and the roster, same layout as last year. Codebook and extract notes
 are alongside. Shout if anything looks off.
-
-Michael
 
 Michael Cannon
 Production Systems Manager | Morvane Patent Office

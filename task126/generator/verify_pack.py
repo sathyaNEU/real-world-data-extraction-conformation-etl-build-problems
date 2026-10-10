@@ -293,6 +293,15 @@ def corpus(pk):
     out["types_ok"] = all(code.get(pk.notice_code.get(pk.chain_last(c["no"]))) == c["decision"]
                           for c in cases if c["status"] == "Decided")
     out["blind"] = all(reading(c, "R3") == reading(c, "R4") for c in cases)
+    # a successor with no first action on the merits at the extract continues the application, which is waiting
+    out["no_first_action"] = []
+    for c in cases:
+        x = c["no"]
+        while x in pk.cx_child:
+            x = pk.cx_child[x]
+            if x not in pk.cls:
+                out["no_first_action"].append((c["no"], c["status"], reading(c, "R4") is None,
+                                               pk.not_.get(c["no"]) is not None))
     out["n1n_in_chains"] = 0
     for c in cases:
         x = c["no"]
@@ -470,6 +479,10 @@ def main():
           all(n - c["match"][k] > 1000 for k in ("R0", "R1", "R2")), c["match"])
     check("corpus: decision types reproduce", c["types_ok"])
     check("corpus: blind to the split", c["blind"] and c["n1n_in_chains"] == 0)
+    nfa = c["no_first_action"]
+    check("corpus: the 4 files whose successor has no first action are open in Saravel and waiting on the split rule,"
+          " and a stop at the refusal would decide them", len(nfa) == 4 and all(st == "Open" and wait and refused
+          for _, st, wait, refused in nfa), [x[0] for x in nfa])
     pq = c["partner_quarters"]
     check("corpus: rung 3 reproduces all 16 quarterly medians",
           len(pq) == 16 and all(c["quarters"]["R3"][q] == pq[q] for q in pq))
