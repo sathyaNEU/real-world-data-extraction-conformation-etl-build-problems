@@ -152,18 +152,21 @@ def assemble_bounded(colo_res, cloud_vals, colo_exposure_key=1):
     return split, total, (last_in, first_out)
 
 
-def colo_ticket_package(hosts, drained_ids, est):
-    """The package the ticketing rule selects for the colocated estate under the whole-host reading:
-    the package carried below its fixed version by the most of the drained hosts, tie-break by name.
-    Returns (package, coverage)."""
+def colo_ticket_package(hosts, drained_ids, est, reg):
+    """The package the standard's ticketing rule selects for the colocated estate under the
+    whole-host reading: of the packages with an open finding on every drained host, the one whose
+    highest-scoring open finding on those hosts scores highest. Returns (package, coverage)."""
     idset = set(drained_ids)
-    cover = {}
+    cover, top = {}, {}
     for h in hosts[est]:
         if h.hid in idset:
+            for pkg, cve in h.findings:
+                top[pkg] = max(top.get(pkg, 0.0), reg.by_id[cve].final)
             for pkg in {p for (p, c) in h.findings}:
                 cover[pkg] = cover.get(pkg, 0) + 1
-    best = sorted(cover.items(), key=lambda x: (-x[1], x[0]))
-    return best[0] if best else (None, 0)
+    full = [p for p, n in cover.items() if n == len(idset)]
+    best = sorted(full, key=lambda p: (-top[p], p))
+    return (best[0], cover[best[0]]) if best else (None, 0)
 
 
 def answer_tickets(W):
@@ -175,7 +178,7 @@ def answer_tickets(W):
     rows = []
     for e in COLO:
         drained = golden_drained(W, e, wh[e])
-        pkg, cov = colo_ticket_package(W["hosts"], drained, e)
+        pkg, cov = colo_ticket_package(W["hosts"], drained, e, W["reg"])
         rows.append({"estate": e, "package": pkg, "hosts": len(drained),
                      "exposures": W["rungs"]["r4c"][e][1], "colocated": True})
     # cloud chosen tickets

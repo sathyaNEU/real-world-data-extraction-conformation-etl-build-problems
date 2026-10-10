@@ -82,6 +82,7 @@ def build_world(seed=SEED):
     pool = CLOUDM.build_cve_pool(rng, reg)
     spine = CLOUDM.build_spine(rng, chosts, pool)
     requests, req_rivals = WIN.build_requests(random.Random(seed + 20), hosts)
+    COLOM.bind_acceptances(requests, hosts, base_adv, role_adv)
     fixed, co_truth, co_rivals, co_meta = CLOUDM.build_closeout(rng, reg)
 
     scorev = G.cloud_values(spine, pool, "score")
@@ -135,6 +136,7 @@ def _rebuild(seed, pool_targets, colo_tune, extra_cloud=None):
         pool[(e, p)]["target"] += extra
     spine = CLOUDM.build_spine(rng, chosts, pool)
     requests, req_rivals = WIN.build_requests(random.Random(seed + 20), hosts)
+    COLOM.bind_acceptances(requests, hosts, base_adv, role_adv)
     fixed, co_truth, co_rivals, co_meta = CLOUDM.build_closeout(rng, reg)
     # colocated host nudges: add `d` exploitable findings to the most-exposed drained host
     wh, _ = WIN.nov_drains()
@@ -143,10 +145,11 @@ def _rebuild(seed, pool_targets, colo_tune, extra_cloud=None):
         if not d:
             continue
         ranked = sorted(hosts[e], key=lambda h: (-h.whole(), h.hid))
-        h0 = ranked[0]
-        for j in range(d):
-            cid = f"CVE-2026-9{e[0].upper()}{j:02d}"
-            h0.findings.append((h0.pkgs[0], cid))
+        for h0 in ranked[:5]:
+            if COLOM.tune_host(h0, d, base_adv, role_adv):
+                break
+        else:
+            raise SystemExit(f"colocated tuning found no package set for {e} delta {d}")
     scorev = G.cloud_values(spine, pool, "score")
     flagv = G.cloud_values(spine, pool, "flag")
     rungs = _rungs(hosts, spine, pool, flagv, scorev)

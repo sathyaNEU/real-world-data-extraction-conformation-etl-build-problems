@@ -265,7 +265,8 @@ Field meanings for the November round extracts. As at 23 October 2026.
 - estate, date, hour, tps: forecast transactions per second, by hour.
 
 ## colocation_change_acknowledgements_may_oct_2026.xlsx
-- request_id, estate, window_date, window_hours_local, team, submission_order, hosts_requested, hosts_accepted, status, reason, host_ids: the provider's record of each change request and what it accepted.
+- request_id, estate, window_date, window_hours_local, team, submission_order, hosts_requested, hosts_accepted, status, reason: the provider's record of each change request and what it accepted.
+- host_ids: the hosts requested. accepted_host_ids: the hosts the provider accepted and drained in that window.
 
 ## cloud_patch_ticket_log_q3_2026.csv / cloud_q3_fixed_findings.csv
 - the Q3 cloud tickets and the findings each closed. The close-out figures recompute from the fixed findings against the score on each ticket's cut date.

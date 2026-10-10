@@ -79,9 +79,10 @@ def write_feed(path, W):
     for est in COLO:
         for h in W["hosts"][est]:
             for pkg, cve in h.findings:
-                c = reg.by_id.get(cve)
-                score = c.final if c else 0.42
-                fs = (h.in_service + dt.timedelta(days=3)).isoformat()
+                c = reg.by_id[cve]
+                score = c.final
+                lag = 1 + (sum(map(ord, h.hid + cve)) % 3)
+                fs = min(max(c.published, h.in_service) + dt.timedelta(days=lag), dt.date(2026, 10, 22)).isoformat()
                 lines.append((est, h.hid, pkg, cve, round(max(score, 0.105), 5), fs))
     lines.sort(key=lambda x: (x[0], x[1], x[2], x[3]))
     with open(path, "w", encoding="utf-8", newline="\n") as f:
@@ -176,13 +177,14 @@ def write_acks(path, W):
             "part-accepted" if r["accepted"] > 0 else "declined")
         reason = "" if status == "accepted" else "window concurrent-drain limit reached"
         hosts = " ".join(r["hosts"][:r["requested"]])
+        acc_hosts = " ".join(r["hosts"][:r["accepted"]])
         rows.append([r["rid"], r["estate"], r["date"].isoformat(), r["hours"], r["team"], r["order"],
-                     r["requested"], r["accepted"], status, reason, hosts])
+                     r["requested"], r["accepted"], status, reason, hosts, acc_hosts])
     rows.sort(key=lambda x: (x[1], x[2], x[5]))
     _xlsx(path, [("Acknowledgements",
                   ["request_id", "estate", "window_date", "window_hours_local", "team",
                    "submission_order", "hosts_requested", "hosts_accepted", "status", "reason",
-                   "host_ids"], rows)])
+                   "host_ids", "accepted_host_ids"], rows)])
     return len(rows)
 
 
