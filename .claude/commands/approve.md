@@ -28,9 +28,9 @@ Run these in order and stop at the first failure:
 4. **The design note's stump sentence.** Grep `DESIGN_NOTE.md` for the one sentence naming the
    wrong committed answer a competent solver files and the step that lands them there. Absent, the
    build has no stump to approve: stop and say so.
-5. **The solver record.** If `<task>/pipeline.json` exists, read `solver_rounds`. Relay the last
-   round's proxy scores. The author decides whether to approve a build no solver round has touched,
-   so state it plainly rather than refusing.
+5. **The determinism record.** If `<task>/pipeline.json` exists, read `judge` and
+   `duplicate_check`. Relay the judge's verdict, disposition and Gate G line and the duplicate-check
+   line. A build with no judge pass is stated plainly, not refused: the author decides.
 
 On PASS:
 

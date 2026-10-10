@@ -601,7 +601,7 @@ For every complication in §7, compute the answer with it handled and ignored. S
 
 ### 11.7 The assertion regime
 
-**Rules that live only in a checklist get broken by a later parameter tweak, and nothing rediscovers it before a solver round or the portal does.** A submission is expensive; assertions are free. Every check in this skill should fail the generator run, loudly, at the moment the tweak lands.
+**Rules that live only in a checklist get broken by a later parameter tweak, and nothing rediscovers it before the portal does.** A submission is expensive; assertions are free. Every check in this skill should fail the generator run, loudly, at the moment the tweak lands.
 
 Assert in the generator, at minimum:
 
