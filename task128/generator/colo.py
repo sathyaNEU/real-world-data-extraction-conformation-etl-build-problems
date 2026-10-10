@@ -8,6 +8,7 @@ window that drained it, and by giving each host every finding whose fix was firs
 that date and nothing else.
 """
 import datetime as dt
+import random
 
 from params import (COLO, CUTS, N_BY_MONTH, NOV_C, NOV_C_DAY, NOV_OFFICE, POOLS, DENSE, RACK,
                     SUMMER_FREEZE, TPS, WINDOWS, SCORE_LAST, CODE)
@@ -76,6 +77,8 @@ def build_colo(rng, reg, base_adv, role_adv):
                 h.role = role
                 h.kind = kind
                 base = [p for p in BASE_PKGS if rng.random() < 0.58]
+                if "glibc" not in base:       # the C library is on every el9 host
+                    base.append("glibc")
                 role_pkgs = ROLE_PKGS[estate].get(pool, [])
                 h.pkgs = sorted(set(base) | set(role_pkgs) | ({dense_pkg} if dense_pkg else set()))
                 # in_service_since: when the host last entered the serving pool
@@ -96,7 +99,7 @@ def build_colo(rng, reg, base_adv, role_adv):
                     elif r < 0.75:
                         h.in_service = _mid(rng.choice(["2026-01", "2026-02", "2026-03"]), rng.randint(1, 27))
                     else:
-                        h.in_service = _mid(rng.choice(["2026-05", "2026-06", "2026-07"]), rng.randint(1, 27))
+                        h.in_service = _mid(rng.choice(["2026-02", "2026-03", "2026-04"]), rng.randint(1, 27))
                 h.in_service = _snap(h.in_service, estate)
                 h.findings = assign_findings(h, base_adv, role_adv, dense_pkg)
                 hs.append(h)
@@ -143,7 +146,7 @@ def build_advisories(rng, reg):
     """
     base_adv = {}
     for ym, pkg in BASE_X:
-        fix = _mid(ym, rng.randint(3, 25))
+        fix = min(_mid(ym, rng.randint(3, 25)), LAST_FIX)
         c = reg.make(pkg, "X", fix, change=fix - T(days=rng.randint(1, 20)))
         base_adv.setdefault(pkg, []).append((c.id, fix))
     role_adv = {}
@@ -161,4 +164,72 @@ def build_advisories(rng, reg):
                 fix = _mid("2026-10", rng.randint(2, 20))
                 c = reg.make(pkg, "X", fix, change=fix - T(days=rng.randint(1, 10)))
                 role_adv.setdefault(pkg, []).append((c.id, fix))
+    # the October glibc advisory: the highest-scoring exploitable finding on both colocated estates,
+    # drawn on its own generator so the rest of the world keeps its draws
+    saved = reg.rng
+    reg.rng = random.Random(GLIBC_SEED)
+    c = reg.make("glibc", "X", GLIBC_FIX, change=GLIBC_FIX)
+    reg.rng = saved
+    c.pre, c.final = GLIBC_SCORE, GLIBC_SCORE
+    base_adv.setdefault("glibc", []).append((c.id, GLIBC_FIX))
     return base_adv, role_adv
+
+
+LAST_FIX = D(2026, 10, 19)       # no advisory in the pack is published after this date
+GLIBC_FIX = D(2026, 10, 13)
+GLIBC_SCORE = 0.9712
+GLIBC_SEED = 128077
+
+
+def bind_acceptances(requests, hosts, base_adv, role_adv):
+    """Make the host inventory agree with the provider's record of past drains.
+
+    A request's accepted hosts are the first `accepted` of its requested hosts. A host the provider
+    accepted in a May to October window last entered service on the latest such window; a host it
+    never accepted keeps a build date from before the window record began. Findings are re-derived
+    from the new date, so the feed still carries exactly what the current image would fix.
+    """
+    latest = {}
+    for r in requests:
+        for hid in r["hosts"][:r["accepted"]]:
+            if hid not in latest or r["date"] > latest[hid]:
+                latest[hid] = r["date"]
+    for est in COLO:
+        for h in hosts[est]:
+            if h.hid in latest:
+                h.in_service = latest[h.hid]
+            elif h.in_service >= D(2026, 5, 1):
+                h.in_service = D(2026, 3, 2) + T(days=int(h.hid[-4:]) % 45)
+            h.findings = assign_findings(h, base_adv, role_adv, None)
+
+
+def tune_host(h, delta, base_adv, role_adv):
+    """Raise host h's open exploitable findings by exactly `delta` by giving it installed packages it
+    lacked, each bringing every advisory published after its in_service date. Returns True on success."""
+    if delta == 0:
+        return True
+    cand = []
+    for pkg in sorted(set(base_adv) | set(role_adv)):
+        if pkg in h.pkgs:
+            continue
+        n = sum(1 for _, f in base_adv.get(pkg, []) + role_adv.get(pkg, []) if f > h.in_service)
+        if n:
+            cand.append((pkg, n))
+    # smallest set of packages whose counts sum to delta (deterministic search)
+    best = None
+    def go(i, left, chosen):
+        nonlocal best
+        if left == 0:
+            if best is None or len(chosen) < len(best):
+                best = list(chosen)
+            return
+        if i >= len(cand) or left < 0 or (best is not None and len(chosen) >= len(best)):
+            return
+        chosen.append(cand[i][0]); go(i + 1, left - cand[i][1], chosen); chosen.pop()
+        go(i + 1, left, chosen)
+    go(0, delta, [])
+    if best is None:
+        return False
+    h.pkgs = sorted(set(h.pkgs) | set(best))
+    h.findings = assign_findings(h, base_adv, role_adv, None)
+    return True
