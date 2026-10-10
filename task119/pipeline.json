@@ -2,9 +2,9 @@
   "task": "task119",
   "domain": "policy-education",
   "objective": "anomaly-detection",
-  "stage": "retired",
-  "stage_name": "retired under the author's standing rule; AD11 takes the slot",
-  "updated": "2026-10-09",
+  "stage": 4,
+  "stage_name": "reopened; hardening loop 3 next (single-solver rule)",
+  "updated": "2026-10-10",
   "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as its test, declines the any-admission reading by setting aside every transfer into a unit as the bed bureau's placement by its admission type, and files G at 15 over A's 2; the step that lands it there is reading the admission type as who placed the patient: every planned transfer into D's unit during D's long waits was D's own surgical patient, referred by D from theatre recovery at its other hospital (the referral log's referring trust; none is in the bureau's audit), which makes D's 27 the largest number the review can confirm, while the planned transfers into A's unit were patients of trusts without level-3 beds on beds the bureau booked, so a solver who keeps planned admissions as the trust's choice instead files A at 37.",
   "harden_loops": 2,
   "solver_rounds": [

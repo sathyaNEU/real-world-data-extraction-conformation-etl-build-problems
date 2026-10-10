@@ -1025,9 +1025,9 @@ inside 30 days and not five between days 31 and 60.
    provenance and dictionary are one field guide. Spans fall from the planned 10 / 12 / 15 to 8 / 9 / 12, at the skill floor.
 3. HZ2 at D is four duplicated deaths, not two: with two, {DV2, DV4, HZ2} cancelled on the 3c total. HZ2 counts per
    referral row on 3b and 3c alike, so the stage-3 natural path was 2,208 / 669 / 161, not 2,208 / 667 / 157.
-4. The capacity report covers April 2024 to June 2026, not 36 months (`## Retired
+4. The capacity report covers April 2024 to June 2026, not 36 months (`## Reopened
 
-Retired on 2026-10-09 under the author's standing rule: solved in all three solver rounds (83.8, 82.3, 72.6) after two hardening loops; the grader called a re-root under the design note's stopping rule. It is not submitted. The pack, goldens and submission stay as the record of what was built and solved; AD11 takes the slot.
+Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solver rule: the build had used 2 of its three hardening loops, so it gets 1 more. One plain solver follows each loop; any answer other than the golden one sends it to the determinism judge and then to ship.
 
 ## Tried and rejected`).
 5. C runs 16 staffed beds day and night, so one staffed figure per day holds and physical equals staffed.
@@ -1230,3 +1230,4 @@ terms of reference 7, field guide 13), each answered by its line below; sweeps 1
   behind, the form the 08:00, own, any cell already had.
 - Stage 4 loop 2, the decisive rung as the admitted patient's referring trust with `admission_type` disagreeing with placement in both directions (D's own planned transfers coded 03, the bureau's planned transfers into A coded 03): round 3 plain (proxy 72.6, main call landed by reading, 3 of 11 asks cracked) did the interval join and the audit join without effort and filed D at 27, G 15, gap 12: "A death counts if, during the wait, an open bed sat empty, or a freed bed went to a patient the trust itself chose: its own planned surgical or recovery admissions, or later own-trust patients. Beds the network bureau allocated to transfers from other trusts do not count." It read the methodology sentence as a work order and resolved who placed each patient from the audit (all 3,797 transfers matched), never stopping at G or A. Third consecutive round on D, the stopping rule's ceiling without appeal: the allocation driver is a computation for a plain solver, and the architecture is re-rooted at stage 1 with this card's driver moved into its lineage.
 - 2026-10-09, retired: solved in all three solver rounds (83.8, 82.3, 72.6) after two hardening loops; the grader called a re-root under the design note's stopping rule. Under the author's standing rule a build still being solved after its hardening is retired rather than re-rooted, and the next note in its folder (AD11) takes the slot in a later wave.
+- 2026-10-10, reopened: the retirement came before the three-loop limit, so the build continues under the single-solver rule with 1 hardening loop(s) left.
