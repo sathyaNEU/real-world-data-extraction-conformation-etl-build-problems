@@ -6,7 +6,7 @@ argument-hint: taskNN
 # /approve
 
 The author is signing off the build named in `$ARGUMENTS` for the portal. Resolve a bare number or
-`taskN` to `/Users/saa/Developer/Projects/handshake/taskN/`; if nothing is named, ask and stop.
+`taskN` to `taskN/` at the repository root (the folder holding `CLAUDE.md`); if nothing is named, ask and stop.
 
 Run these in order and stop at the first failure:
 

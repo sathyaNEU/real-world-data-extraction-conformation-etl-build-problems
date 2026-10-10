@@ -36,7 +36,7 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 
 | Field | What it records | Kind |
 |---|---|---|
-| `domain`, `subdomain` | one of the six domains and one of its enumerated subdomains | enum |
+| `domain`, `subdomain` | one of the nine domains and one of its enumerated subdomains | enum |
 | `niche` | the unusual sub-function inside the subdomain, in the build's own nouns | free, compared by similarity |
 | `objective` | one of the eight Axis 1 objectives | enum |
 | `shape` | the prompt shape the rubric's criteria come from (`01` to `18`, `single-figure`, `other`) | enum |
@@ -141,7 +141,7 @@ is 1 on BLOCK, so the check can sit in a script.
 
 | Rule | Level | Against | Source |
 |---|---|---|---|
-| `legal.domain`, `legal.objective` | BLOCK | the six domains and the eight objectives | the spec |
+| `legal.domain`, `legal.objective` | BLOCK | the nine domains and the eight objectives | the spec |
 | `legal.gate_g` | BLOCK | surface-read rejection, or `statistical_rigor` alone | Gate G v3 |
 | `ban.pairing` | BLOCK | domain plus objective, last three builds | Part 6.1 |
 | `ban.subdomain` | BLOCK | domain and subdomain both, last three | Part 6.1 draw table |

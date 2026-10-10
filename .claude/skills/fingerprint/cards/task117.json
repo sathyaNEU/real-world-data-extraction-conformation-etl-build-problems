@@ -1,0 +1,84 @@
+{
+  "task": "task117",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "supply-chain-logistics x forecasting; first realisation of analytical_tasks note FC01; pilot batch of seven, registration deferred to the batch step",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "niche": "a city's contracted demand for the new dedicated utility service that will feed two permit-only garage decks once their 6.6 kW Level 2 charging pedestals are replaced by 11.5 kW units, committed for the first contract year under a twelve-month demand ratchet",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "rate_or_share",
+  "answer": "File 110 kW as the contracted demand for the first contract year, April 2027 to March 2028.",
+  "answer_source": "task117/submission.md, block 1 (Final Recommendation)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E",
+    "A"
+  ],
+  "generators": [
+    "G14",
+    "G3",
+    "G6",
+    "G16",
+    "G7"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "settled_transaction_ledger",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the city's energy manager, who buys utility service for city facilities and signs the service agreement",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "session_intervals_2024-2026.parquet",
+    "rows": 1537144,
+    "entity": "one 15-minute energy reading on one settled charging session at one of the city's eight garages",
+    "grain": "session x 15-minute interval",
+    "source": "synthetic (fictional city's charging network settlement export, January 2024 to December 2026)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, Washington",
+    "currency": "USD",
+    "org_type": "a city's parking services division that runs Level 2 charging in eight municipal garages, with the city energy manager contracting its utility service",
+    "invented_names": [
+      "Larch Harbor",
+      "Civic Center North Deck",
+      "Civic Center South Deck",
+      "Library Garage",
+      "North Sound Power & Light",
+      "Curbline Charging"
+    ],
+    "people": [
+      "Shelley Tanner",
+      "Ricardo Moore",
+      "Anthony Cantrell",
+      "Paul Henderson",
+      "Timothy Pierce",
+      "Adam Warner"
+    ]
+  },
+  "deliverables": [
+    "contract_demand_note.pdf",
+    "deck_load_day.png",
+    "civic_service_demand.xlsx"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The forward peak of a summed load turns on per-unit draw caps that are attributes of a different entity reached through a dated join, replayed over closed operations whose start times are not all exogenous: the closed record certifies a replay that keeps every operation's start, but one operator moves its own units through a shared slot one after another, each going on minutes after the one ahead finishes, so on faster equipment those follow-on operations start earlier; a replay that keeps their closed start times, with every other step right (the re-registered population, the operations rejoined across a daily settlement cut), files a forward peak in the wrong month and the wrong bin, and only the follow-on operations re-timed behind the forward finish of the operation ahead return the answer.",
+  "driver_concrete": "Every 2026 charge at the Civic Center decks drew the old pedestals' 6.6 kW; on the new 11.5 kW units each charge draws the smaller of 11.5 kW and its car's onboard charger rating, reached through permit, vehicle check and the Parking Services reference list, the car being the one the permit carries in the contract year (18 county permits moved from 7.2 kW to 11.0 kW Bolt EVs at the January 2027 renewal), and Curbline's daily settlement run splits a charge still running into two records that have to be joined (3,096 pairs at the decks in 2026). At the North Deck Larch County Fleet Services' attendant swaps pool cars on a unit: the car ahead comes off 6 to 20 minutes after its last charging second and the next pool car goes on 1 to 5.4 minutes later, 282 times in the export and 101 times in 2026. Replayed with every 2026 start time kept, the contract year's billed maximum is 129.1 kW (130 filed) at noon on 8 December 2026; with each hand-off starting once the car ahead finishes at its new draw, after the same wait, the four kept pool cars that went on behind renewed ones that morning finish before noon and the maximum is 109.1 kW (110 filed) at noon on 21 January 2026, against 155.4 kW with the settlement records replayed as charges, 160.7 kW with each record's car on its own date, 148.5 kW with the 2026 cars on charges, 90.2 kW for the replay at the rating and 86.2 kW at the Library vans' 11.0 kW.",
+  "stump": "A competent solver joins the settlement run's record pairs into charges, replays every 2026 deck charge on the new units at the smaller of 11.5 kW and the onboard rating of the car its permit carries in the contract year, grows by the filed 1.12 and files 130 kW (129.1 unrounded, set at noon on 8 December 2026); the step that lands it there is replaying each charge from the minute it started in 2026: at the North Deck the county's attendant swaps pool cars on a unit, the car ahead coming off 6 to 20 minutes after it finishes and the next pool car going on 1 to 5.4 minutes later (101 hand-offs in 2026), so on the new units the car ahead finishes sooner and the next car goes on sooner; re-timed that way, December's four kept pool cars finish before noon and the contracted demand is 110 kW (109.1), set at noon on 21 January 2026.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task37": "task37 conditions a forward count on a linked entity still holding its authorisation when the qualifying step ends, an absolute split recovered from a closed roll that cuts a count; here the linked entity is the car behind a permit, the date that matters is the contract year after a dated renewal, and the graded quantity is a coincident 15-minute maximum re-timed by each car's charging limit, which the renewal moves to a different month rather than cutting a total.",
+    "task44": "task44 measures a behavioural moderator over a prior instance of the forward window to split a pilot's pooled effect into opposite-signed item effects and count the gainers; here nothing is re-measured over another window: each forward session draws the smaller of the new rating and a fixed attribute of the car its permit carries after a dated renewal, and the graded quantity is a billed quarter-hour maximum, not a count of items.",
+    "task97": "task97 forecasts renewals from a place's cumulative history across every occupant, carried through a retired system's account conversion; here the history is not cumulated at all: each closed session is replayed with the car its permit will carry in the contract year, a re-registration dated after the last closed session, and the forward quantity is a coincident peak set by which cars still charge into the billed window."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note FC01 (analytical_tasks/01_forecasting/FC01_garage-service-demand-vehicle-limited-draw.md), its first realisation. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (decided 3 of 64, 2 under 0.50). Pattern E is recorded decisive (the forward draw conditioned on each car's own onboard limit; the rated draw and the Library pedestal's measured 11.0 kW are each correct and apply to no deck car; the North and South decks are the twin pair split by fleet mix), with A (a forward regime the closed window never reached, corpus blind) listed second as the frame. A as decisive is banned against task114, and (time, A) is spent in task107 and nine older builds. Context artifact redrawn from the network operator's monthly peak report (monitoring_export, banned against task116) to the facilities electricians' monthly sub-meter log for the two deck charging panels (operations_log). Forum and forcing event redrawn from the utility (customer_or_counterparty) and its contract deadline (purchase_order_or_contract), both banned against task114, to city council approval of the service agreement and the switchover onto the new dedicated service. Subdomain sourcing-procurement: committing purchased service capacity to a single supplier under a ratchet. answer_unit rate_or_share because the figure is in kW. Spine rows, deliverables, opening move and answer updated from the cut pack and submission.md at stage 3 (2026-10-09); driver_concrete restated with the as-built figures. Harden loop 1 (2026-10-09), same architecture: round 1's plain solver executed the per-car onboard limit as a work order and landed 150 kW, so a rung was added after it: the car each permit carries in the contract year (the January 2027 renewal), from the measured catalogue's #5 (population as of the governing date) with #13 as the frame; G6 (composition shift) added to the generators; the registry's plate column dropped; answer, stump, driver, driver_concrete and spine rows restated from the rebuilt pack. Harden loop 2 (2026-10-09), same architecture: round 2's plain solver took the contract-year car as the last link of the chain it was already building and landed 130 kW, so a rung was added after it: the charge, not the settlement record (Curbline's daily 10 a.m. settlement run splits a charge still running into two records that meet end to start; Parking Services' 2026 charging statements reproduce only on the joined charges), from the measured catalogue's #2 (counts file rows instead of the real unit) with #4 behind it. G3 (record versus operation) is listed first among the generators and E stays the architecture's pattern; recorded as the decisive mechanism the new rung reads as D (two grains), which test.same_driver blocks against task115, or as a decisive G3, which ban.pattern blocks against task121, so the clone risk sits on this rung and is reported to the author. Stump, driver, driver_concrete and spine rows restated from the rebuilt pack. Harden loop 3 (2026-10-09), same architecture, the last loop under the three-loop rule: round 3's plain solver joined the record pairs at path step 3 and landed 130 kW, so a rung was added after it: the county pool's hand-offs, re-timed on the new units (each follow-on pool car starts once the car ahead finishes at its new draw, after the same wait), from the measured catalogue's #13 (validates on one population, applies to another) with #11 (beats the headline trap, misses the quiet one) behind it. G14 is listed first among the generators (the follow-on start conditioned on the car ahead's forward finish) and E stays the architecture's pattern. Answer, stump, driver, driver_concrete and spine rows restated from the rebuilt pack."
+}

@@ -15,7 +15,7 @@ description: Build the evidence pack that carries a designed trap. Covers the in
 
 ## 1. The scope rule (non-negotiable)
 
-Every task sits in **exactly one** of the six accepted domains (Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them), with a subdomain enumerated in `guidelines/scope_of_project.md`. Subdomains outside the enumerated lists are out of scope, not a browsing suggestion.
+Every task sits in **exactly one** of the nine accepted domains (Biology, Biostatistics, Epidemiology & Bioinformatics is not one of them), with a subdomain enumerated in `guidelines/scope_of_project.md`. Subdomains outside the enumerated lists are out of scope, not a browsing suggestion.
 
 1. Product Analytics
 2. Supply Chain & Logistics
@@ -23,6 +23,9 @@ Every task sits in **exactly one** of the six accepted domains (Biology, Biostat
 4. Policy & Education
 5. Demographic & Social Science
 6. Nonprofit & Grant-making
+7. Marketing & Consumer Research
+8. Business & Operations Analytics
+9. Accounting, Audit & Forensic Analytics
 
 Write the domain, the subdomain **and the Axis 1 objective** at the top of `DATASET_NOTES.md` before generating anything. If your trap needs a subdomain that is not listed, change the trap rather than drifting. The domain files in `guide-to-prompt/references/domains/` carry the enumerated subdomains and the two boundary rules, one file per domain.
 
@@ -114,7 +117,7 @@ assert all five in the generator.
 | File count | **10 or more** |
 | Formats | **3 or more distinct**, four is the working target, across {csv, xlsx, json, parquet, sqlite/db, pdf, md, docx, txt, png} |
 | Volume | **either a file of 25,000 or more rows in any format, or a large database file** (a SQLite or DuckDB `.db`, for example). One or the other is enough, and a pack that carries neither fails |
-| Distractor | **at least one distractor file, and distractors no more than 20 per cent of the input files**, named in the task's `metadata.json` and never in a file name or anywhere under `target/` (§8.3) |
+| Distractor | **two or more distractor files**: files the solution does not use that look relevant enough that a solver has to weigh them, named in the task's `metadata.json` and never in a file name or anywhere under `target/` (§8.3). A file unrelated to the question does not count |
 | Authorship | nothing that reads as LLM generated. Obvious artifacts get the task rejected outright |
 
 **Targets on top of the gates:** 10 to 19 files, median around 13. Each file under the platform's
@@ -128,7 +131,7 @@ format the source system would actually export. A database file meets the gate b
 the bulk records actually live, with real tables a solver has to query, never as an empty or
 one-table wrapper added to tick the box.
 
-**Every file must do work.** A file that could be deleted without changing the answer or the difficulty is padding, and padding is checkable. The distractor (§8.3) earns its place by offering the wrong path, and a disclaimed background document (§8.3) by carrying authenticity.
+**Every file must do work.** A file that could be deleted without changing the answer or the difficulty is padding, and padding is checkable. A distractor (§8.3) earns its place by making the solver weigh a relevant-looking file and set it aside, and a disclaimed background document (§8.3) by carrying authenticity.
 
 ### Naming
 
@@ -434,58 +437,72 @@ writing, and the evidence still refutes it.
 works from. It may not say *which candidate that basis picks*, and no file in the pack may compute
 that ranking. A basis is context. A ranking on the decision question is the banned artifact wearing a memo.
 
-### 8.3 The distractor
+### 8.3 The distractors
 
-**Every pack ships at least one distractor, and distractors are no more than 20 per cent of the
-input files.** A distractor is a file that offers a plausible path to a wrong answer. Solvers rarely
-fail because they cannot compute; they fail because they trust the first plausible basis and never
-check it against the rest of the pack. The distractor is built to be that basis, and a file missing
-any of these three properties is not one:
+**Every pack ships two or more distractors.** A distractor is a file the solution never reads that
+**looks relevant**: a solver who opens the pack has to consider it and decide for themselves whether
+it bears on the question. That act of weighing is the whole point. Solvers rarely fail because they
+cannot compute; they fail because they use whatever looks usable and never ask whether it belongs.
 
-- **It looks authoritative.** Official, internal, already done, or recent: a dashboard or BI extract
-  with a headline KPI that seems to answer the question, a signed-off prior-cycle report, the rule
-  book as it stood before its amendment.
-- **It gives a clean wrong answer.** Its arithmetic is correct and reproduces from its own inputs;
-  its basis is wrong. Data that is outdated or refers to a year or business unit that no longer
-  applies, a rule that has since been amended or superseded, a definition that has changed. Never
-  a planted arithmetic error, which is the banned flip-the-wrong-number shape.
-- **A shipped file rules it out**, by a fact a careful analyst can quote: a clause, an effective
-  date, a definition, or a control total. The design note names that file and that line.
+A file counts as a distractor only while both of these hold:
 
-**Named in the task's metadata, never in the pack.** The distractor is identified in `metadata.json`
-in the task folder, beside `prompt.md` and outside `target/`, with its path as it appears in the
-shipped bundle (use the portal's key names where its template gives them):
+- **The solution does not use it.** No step of the correct path reads it, no graded figure depends on
+  it, and deleting it changes neither the answer nor any ask. Assert this in the generator by
+  recomputing the golden with the file removed.
+- **It looks like it might be useful.** It sits in the same world as the decision: the same
+  organisation, entities, keys, system or period, a measure adjacent to the one asked for, a topic a
+  careful analyst would expect to matter. Good forms: an extract of a neighbouring measure keyed the
+  same way, a prior cycle's working file, a report on a related programme, a register for a scope the
+  question turns out not to cover, a planning note on an option that was never on the slate.
+
+**A completely unrelated file is not a distractor.** Another department's data with no tie to the
+question, a different topic, a file a solver dismisses from its name alone: none of these makes the
+solver weigh anything, they read as padding, and they do not count toward the two. The test is
+whether a competent analyst would open the file and have to think before setting it aside.
+
+**Named in the task's metadata, never in the pack.** Every distractor is identified in
+`metadata.json` in the task folder, beside `prompt.md` and outside `target/`, with its path as it
+appears in the shipped bundle (use the portal's key names where its template gives them):
 
 ```json
-{"distractor_files": ["exports/ops_kpi_dashboard_q4.xlsx"]}
+{"distractor_files": ["exports/ops_kpi_dashboard_q4.xlsx", "planning/fleet_refresh_options_2024.docx"]}
 ```
 
-No file name, sheet name, header or line in the pack calls it a distractor, and the distractor
-itself carries no in-file warning. The fact that rules it out lives in a different file and may name
-the prior report or rule outright, because an amendment notice that names the version it replaces,
-an effective-date line or a control total is exactly what makes the fact quotable. `leak.py` fails
-the word "distractor" anywhere under `target/` and in any file name.
+No file name, sheet name, header or line in the pack calls a file a distractor, and no distractor
+carries an in-file warning that it is out of scope. `leak.py` fails the word "distractor" anywhere
+under `target/` and in any file name.
 
-**The Gate G line.** The distractor is the one file the pack may ship that answers the decision
-question, or a graded quantity, on a wrong basis, and it is licensed only while all three hold:
+**The wrong-basis distractor (optional, stronger).** A distractor may go further and offer a clean
+wrong answer: it looks authoritative (official, internal, already done, or recent), its arithmetic
+reproduces from its own inputs, and its basis is wrong (an outdated year or business unit, a rule
+since amended or superseded, a changed definition), never a planted arithmetic error, which is the
+banned flip-the-wrong-number shape. A shipped file rules it out by a fact a careful analyst can
+quote (a clause, an effective date, a definition, a control total), and the design note names that
+file and line. The ruling-out file may name the distractor outright, because an amendment notice
+that names the version it replaces is exactly what makes the fact quotable.
 
-1. **It is never the stump.** Delete the distractor and the build still stumps a strong solver; the
-   primary difficulty lives in the ladder, and ruling the distractor out takes one quotable fact.
+**The Gate G line.** Any distractor that answers the decision question, or a graded quantity, on a
+wrong basis is the one such file the pack may ship, and it is licensed only while all four hold:
+
+1. **It is never the stump.** Delete it and the build still stumps a strong solver; the primary
+   difficulty lives in the ladder, and ruling it out takes one quotable fact.
 2. **Its wrongness is a matter of record** (a date, a scope, a supersession), not an error in its
    numbers, so the clean-data test is untouched.
 3. **It is declared in `metadata.json`**, so the reviewer reads it as a deliberate distractor rather
    than as the surface read the task turns on.
+4. **Its answer is one the ladder does not need.** It is neither the correct answer nor the decoy
+   rung 0 lands on (`stumping` Part 3): matching the decoy would tell a solver who rules it out that
+   the decoy is wrong, and matching the answer would confirm the answer. Assert both inequalities in
+   the generator, and assert that its figure sits outside the correct answer's bin.
 
-**Its answer is one the ladder does not need.** The distractor's wrong answer is neither the correct
-answer nor the decoy rung 0 lands on (`stumping` Part 3): matching the decoy would tell a solver
-who rules it out that the decoy is wrong, and matching the answer would confirm the answer. Assert
-both inequalities in the generator, and assert that its figure sits outside the correct answer's bin.
+A distractor that answers nothing on the decision question needs none of this; it only has to be
+unused and look relevant.
 
-**Not the context artifact, not a background document.** The context artifact (§5) answers a
-different question and is labelled in-file for it, so it never counts as the distractor. A large
-genuine document shipped for authenticity is disclaimed in the governing document, *"[Document] is in
-the folder as background on [topic]; it is not one of our documents and it does not speak to this
-decision"*, and because it offers no wrong path it never counts as the distractor either.
+**Not the context artifact, not a background document.** The context artifact (§5) is used by the
+solution, so it is never a distractor. A large genuine document shipped for authenticity is
+disclaimed in the governing document, *"[Document] is in the folder as background on [topic]; it is
+not one of our documents and it does not speak to this decision"*, and because the disclaimer tells
+the solver it does not apply, nothing is left to weigh and it never counts as a distractor either.
 
 ### 8.4 The social layer
 
@@ -547,7 +564,7 @@ Match volume to the domain. A national extract is large; a five-account pipeline
 4. **Build the operating extracts** around it, carrying the trap mechanics.
 5. **Build the dimension tables and dictionary**, pinning grain statements (§6.5).
 6. **Compute every rung by script** from the files as built (§6.1). Confirm rung separation, the position table, discriminator dominance and the constructed disagreement (§6.2–§6.4).
-7. **Build the context artifact** from those computed numbers (§5), labelled for the question it answers, then **the distractor** (§8.3), asserting its answer is neither the correct answer nor the decoy, and write the task's `metadata.json`.
+7. **Build the context artifact** from those computed numbers (§5), labelled for the question it answers, then **the distractors** (§8.3), asserting the golden recomputes unchanged with each one deleted (and, for a wrong-basis distractor, that its answer is neither the correct answer nor the decoy), and write the task's `metadata.json`.
 8. **Write the governing document**: pin, licensed wrong basis, background disclaimer, commit demand (§8).
 9. **Write the social layer** (§8.4).
 10. **Add authentic mess** (§7), then re-run step 6 and confirm nothing moved.
@@ -648,7 +665,7 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 
 - **Do not reuse a spine dataset** across consecutive builds.
 - **Do not reuse a context-artifact type.** The loud artifact is banned as an organ (Gate G), so what can repeat is the type of file the stakeholder works from: a monitoring export, an operations log, a register, a published series, a capacity report, a close-out summary.
-- **Rotate the distractor's type.** A stale KPI dashboard in every build is a template: alternate between an outdated vintage, a retired business unit, a superseded rule and a changed definition, and between the ruling-out facts (clause, effective date, definition, control total).
+- **Rotate the distractors' types.** A stale KPI dashboard in every build is a template: vary what the relevant-looking unused files are (a neighbouring measure, a prior cycle's working file, a related programme's report, an out-of-scope register), and for a wrong-basis distractor alternate between an outdated vintage, a retired business unit, a superseded rule and a changed definition, and between the ruling-out facts (clause, effective date, definition, control total).
 - **Do not reuse a calibration form.** If you used an acknowledgement reconciliation, use a retry log or a pilot ledger next.
 - **Do not reuse the operating-extract shape**, a telemetry stream, a certification ledger, a ticket table, and a disbursement extract feel completely different to a solver.
 - **Vary pack size and format mix** so packs are not recognisable by their file manifest.
@@ -684,8 +701,8 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 - [ ] Every calibration outcome reproduces from its own records under the correct rule
 - [ ] Each rung lands on a **different** named candidate, re-checked after the last data edit
 - [ ] Correct answer ranks **4th or 5th** on the natural pipeline, leads no intermediate rung, sits 2nd on at most one (≥1.20×)
-- [ ] **No shipped artifact ranks the candidates on the decision question and gets it wrong**, the declared distractor excepted (§8.3)
-- [ ] Distractor looks authoritative, its arithmetic reproduces, its basis is wrong, a quotable shipped fact rules it out, the build still stumps with it deleted, and its answer is neither the correct answer nor the decoy
+- [ ] **No shipped artifact ranks the candidates on the decision question and gets it wrong**, a declared wrong-basis distractor excepted (§8.3)
+- [ ] Each distractor is unused by the solution (golden unchanged with it deleted) and looks relevant enough to need weighing; none is an unrelated file. Any wrong-basis distractor looks authoritative, its arithmetic reproduces, a quotable shipped fact rules it out, the build still stumps with it deleted, and its answer is neither the correct answer nor the decoy
 - [ ] No rung margin under 1.15×; final margin ≥1.2×
 - [ ] Discriminator dominance holds: decisive edge ≥ 1.2 × the decoy's carried advantage
 - [ ] Any two axes the ladder needs to disagree actually disagree per candidate, by construction
@@ -714,7 +731,7 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 - [ ] 10 or more files
 - [ ] 3 or more distinct formats, 4 target
 - [ ] Either a file of 25,000 or more rows (any format) or a large database file
-- [ ] At least one distractor, no more than 20 per cent of input files, named in `metadata.json` and nowhere in `target/`
+- [ ] Two or more distractors (unused by the solution, relevant-looking), named in `metadata.json` and nowhere in `target/`
 - [ ] Every deliverable the prompt names is present in the requested format
 - [ ] Nothing reads as LLM generated
 

@@ -29,7 +29,7 @@ import sys
 import zipfile
 from collections import Counter, defaultdict
 
-REPO = "/Users/saa/Developer/Projects/handshake"
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 CACHE = os.path.join(REPO, ".claude", "skills", "clone-check", ".cache", "fingerprints.json")
 LEDGER = os.path.join(REPO, ".claude", "skills", "stumping", "references", "shipped-ledger.md")
 # Fingerprint cards (the fingerprint skill): the mechanism layer in one controlled vocabulary,
@@ -466,10 +466,24 @@ def cmd_extract(args):
         sys.stderr.write("  fingerprinting %s\n" % t)
         sys.stderr.flush()
         cards.append(build_card(repo, t, ledger))
+    # Builds fingerprinted on another checkout are not on this disk; keep their cached cards so the
+    # screen still compares a new build against the whole corpus.
+    if os.path.exists(args.out):
+        try:
+            cached = json.load(open(args.out)).get("cards", [])
+        except (OSError, ValueError):
+            cached = []
+        have = {c["task"] for c in cards}
+        cards = sorted(cards + [c for c in cached if c.get("task") not in have],
+                       key=lambda c: c.get("num") or int(re.sub(r"\D", "", c.get("task", "")) or 0))
     out = {"repo": repo, "count": len(cards), "cards": cards}
     os.makedirs(os.path.dirname(os.path.abspath(args.out)) or ".", exist_ok=True)
-    with open(args.out, "w") as fh:
+    # Written to a temporary file and renamed, so two builds screening at once can never leave a
+    # half-written cache behind.
+    tmp = "%s.%d.tmp" % (args.out, os.getpid())
+    with open(tmp, "w") as fh:
         json.dump(out, fh)
+    os.replace(tmp, args.out)
     kept = [c for c in cards if c["has"]["prompt"] or c["target"]["file_count"]]
     print("extracted %d cards (%d with prompt or target) -> %s" % (len(cards), len(kept), args.out))
     return 0

@@ -1,0 +1,81 @@
+{
+  "task": "task123",
+  "architecture": "v1",
+  "drawn": "2026-10-08",
+  "slot_note": "realises analytical_tasks note ET01, redesigned as a stump on a fully constructed pack; pilot batch card, registered with the other six in draw order",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "grantee-financial-health",
+  "niche": "a philanthropic trust's stabilisation offers to grantees whose income is falling, scored on twelve months of income built from the grantees' quarterly portal returns and their filed annual returns, run in-house for the first time after the bureau that computed six March rounds left",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "Strike the September 2026 Steady Ground offers at 42.55 cents per dollar of fall: 9 offers totalling $559,969 of the $560,000 pot.",
+  "answer_source": "task123/submission.md, block 1 (Final Recommendation), 2026-10-09 (stage 3 re-run on the rebuilt pack after hardening loop 3)",
+  "gap": [
+    "time",
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G4",
+    "G11",
+    "G12",
+    "G13",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of grants at a New Zealand philanthropic trust, owner of its stabilisation fund",
+  "role_family": "programme_officer",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "portal_return_lines_2018q3_2026q2.csv",
+    "rows": 85824,
+    "entity": "one reported income figure on one version of one grantee's quarterly financial return (a year-to-date or prior-year comparative column on one income line)",
+    "grain": "grantee x return quarter x version x income line x column",
+    "source": "synthetic (constructed pack: a fictional New Zealand trust's grants-portal export and register extract, provenance declared in the pack)"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "New Zealand, Canterbury",
+    "currency": "NZD",
+    "org_type": "independent philanthropic trust holding multi-year operating grants with community organisations",
+    "invented_names": [
+      "Ashworth Pascoe Trust",
+      "Steady Ground Fund",
+      "Ledgerwood Analytics"
+    ],
+    "people": [
+      "Marie Griffin",
+      "Liam Bryant",
+      "Andrew Knox",
+      "Wiremu Roberts",
+      "Mia Hart",
+      "Tony Hughes"
+    ]
+  },
+  "deliverables": [
+    "steady_ground_sep2026_offers.docx",
+    "steady_ground_sep2026_screen.csv",
+    "steady_ground_sep2026_offers.png"
+  ],
+  "opening_move": "number-first",
+  "driver": "A trailing four-period total at a cut-off runs only over periods whose year is closed by an annual filing on record at that cut-off, each period in the year its own record names, and only units holding a contract in force on the cut-off day are scored; a unit's contract can lapse between terms while the register still carries it from its first start to the renewed term's end, and because no unit was ever between terms at a published cut-off, scope read from the register's dates reproduces every published result, but at the first cut-off that finds a unit between terms that scope scores it on a true fall, offers it and re-splits the fixed pool with it in.",
+  "driver_concrete": "The Steady Ground screen scores the organisations holding an operating grant in force at the census (rule 3.1); Ilam After School Care Society's term ended on 31 July 2026 and its renewal, approved on 16 September, runs from 1 November 2026, so the grants register's Variations sheet carries a nil annual amount on the 30 September census and the answer leaves it out, while the register's start and end dates (August 2017 to July 2029) and its Active status keep it in; a screen that takes scope from those dates scores its true 13.62 per cent fall, offers it and strikes 34.79 cents on 10 names against the answer's 42.55 on nine.",
+  "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task62": "task62's tempo lineage fits a timing adjustment to a period rate from closed determinations; here nothing is fitted, the corpus fixes which trailing window a cut-off may use, ending it before any year whose annual filing was not yet on record.",
+    "task85": "task85 builds each unit's observation window from a recovered lead-time constant and a third-party start date to decide a hold; here there is no constant to recover, the window is the trailing four quarters a census may use, cut short only where the year's annual filing had not reached the register, and it re-places money in an allocation to a fixed total."
+  },
+  "lineage": [],
+  "notes": "Realises analytical_tasks note ET01 (analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md), redesigned as a stump on a fully constructed pack with declared provenance: the note's stated methodology memo (as-of rule, tag priority, YTD derivation) is dropped, the scenario is moved from capital markets (out of scope for Economics) to Nonprofit & Grant-making grantee financial health, and the decisive rule (a year's fourth quarter exists only from the filed annual return, so the trailing window steps back where that return was not on the register at the census) is written in no shipped sentence and recovered from the bureau's published round packs. Decisive rung from the measured catalogue: #3 stops at a close but inexact match (8 of 64, 5 under 0.50), gated by #1's reproduction clause (11 of 64, 9 under 0.50), with look-ahead as the headline rung a solver beats first (#11 frame). Shape 05 rather than the note's 01, which task116 holds. Calibration form parallel_run_overlap: the cutover standard replays the in-house screen against Ledgerwood's published runs on the same six March censuses; closed_decision_corpus also describes the packs and is held by task121 and task122 in this batch. Context artifact filed_standard (the fund's round rules and the cutover standard), register being held by task122. Gap time leads because the hidden rule is a window rule; (time, B, method_or_model_selection) differentiated against task62 and task85. Personas drawn with guard.py names --geo 'New Zealand, Canterbury' --seed 123; Benjamin Thompson, Andrea Brown and Jason Smith skipped against the batch's task118 and task119 names, and Patrick Mitchell and David Eaton skipped for first names already in task103 and task104 (Wiremu Roberts taken from the same seed's longer draw, --n 16). Not registered here: the seven pilot cards register together in draw order. Batch registration: forcing event moved from cutover_or_migration (blocked by task117) to budget_or_appropriation: the September 2026 stabilisation round is itself the allocation round that forces the call; the in-house cutover stays in the world as background. Hardening loop 1 (2026-10-09), same architecture: the decisive rung moved to rule 4.1's recency clause read against rule 2's census calendar (measured #13, validates on one population and applies to another, behind #11); the step-back is now the stop; the September pot is NZ$560,000; the ask devices are a reissued form code (D7), an absent payment channel rebuilt from the offers schedule (D4) and its pay-day clock (D8). Hardening loop 2 (2026-10-09), same architecture: the decisive rung moved to each return's own financial year against one balance date per organisation (measured #13, behind #11): three grantees moved from 30 June to 31 March in 2025-26 with a nine-month year whose annual return is not on the register, the grants register's balance-date column is gone, and rule 4.1 against rule 2 is now a lower rung (R5, the stop); K1's device moved to government co-funding paid with the Trust's operating instalments (D5), the reissued form code became a hazard (H6), and D4 and D8 hold on K2. Hardening loop 3 (2026-10-09), same architecture, the last loop on it: the decisive rung moved off the twelve-month identity onto rule 3.1's scope, a term in force at the census against the grant's span on the grants register (measured #5, the population a flag or filter suggests, behind #13 and #11; generator G11, whose status-word caution the design note answers): one grantee was between terms at the September census, no grantee was at any March census, and each return's own year is now a lower rung (R6, the stop); K1's primary device moved to government co-funding passed on quarterly in advance with the first operating instalment of each quarter (D10), the co-funding's existence (D5) is stacked, and D4 and D8 hold on K2; three portal corrections accepted four days after a March census pin the data cutoff to the census day. Retired on 2026-10-09 and not submitted; this card keeps the architecture in the corpus so later draws do not repeat it."
+}
