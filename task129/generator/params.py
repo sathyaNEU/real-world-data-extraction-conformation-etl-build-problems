@@ -52,7 +52,7 @@ PUZZLE_AD_SWITCH = date(2026, 6, 24)
 
 # dated steps in points of over-line share (uniform across groups, states, phones)
 STEP = {"E": 0.46, "B": 0.68, "D": 0.72}
-from knobs import STEP_T, KEEP  # noqa: E402  (tuned per title and per landing template)
+from knobs import STEP_T, KEEP_AUG  # noqa: E402  (tuning knobs)
 TABLET_STEP_MULT = 0.40
 # per-state effects at phone multiplier 1 (points): first load / cached load
 EFF_C = {"F": 4.0, "K": 1.0}

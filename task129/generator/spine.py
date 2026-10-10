@@ -1,4 +1,6 @@
 """task129 generator: assemble the beacon export (the spine) and keep the truth beside it."""
+import hashlib
+
 import numpy as np
 import pandas as pd
 
@@ -33,6 +35,17 @@ def build(rng):
     pv = np.array(["".join(r) for r in alpha[raw]], dtype=object)
     assert len(set(pv)) == n
     X["pv_id"] = pv
+    # August cached-load views kept by audience and template (tuning knob, hash of the key)
+    if P.KEEP_AUG:
+        h = np.array([int(hashlib.sha256(k.encode()).hexdigest()[:8], 16) / 2 ** 32 for k in pv])
+        drop = np.zeros(n, bool)
+        aug = (X.local_day.values >= np.datetime64("2026-08-01")) & (X.state.values == "K")
+        for key, keep in P.KEEP_AUG.items():
+            grp, tpl = key.split("|")
+            m = aug & (X.group.values == grp) & (X.template.values == tpl)
+            drop |= m & (h >= keep)
+        X = X[~drop].reset_index(drop=True)
+        n = len(X)
     # collector v1 forwarded Sønderå Tidende app-webview beacons twice from 16 March to 7 May
     day = X.local_day.values
     dup = (X.app.values & (X.title.values == "ST") & (day >= np.datetime64(P.DUP_WINDOW[0]))

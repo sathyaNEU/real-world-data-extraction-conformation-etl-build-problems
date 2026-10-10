@@ -186,15 +186,4 @@ def views(rng, dev, ses):
     t_local = ses.t_local.to_numpy()[v_ses] + cum0.astype("timedelta64[s]")
     V = pd.DataFrame({"dev": v_dev, "ses": v_ses, "pos": pos, "landing": landing,
                       "template": tpl, "t_local": t_local})
-    # session thinning by audience and landing template, on its own stream
-    u = np.random.default_rng([P.SEED, 77]).random(ns)
-    aud = np.where(np.isin(g_s, ["anon", "free", "tablet"]), "base", g_s)
-    land_tpl = tpl[landing]
-    land_ses = v_ses[landing]
-    keep_p = np.ones(ns)
-    for a_, d_ in P.KEEP.items():
-        for t_, k_ in d_.items():
-            m = (aud[land_ses] == a_) & (land_tpl == t_)
-            keep_p[land_ses[m]] = k_
-    keep_s = u < keep_p
-    return V[keep_s[v_ses]].reset_index(drop=True)
+    return V
