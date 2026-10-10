@@ -336,6 +336,9 @@ def corpus(T):
 def main(T):
     con = load(T)
     W = classify(con, build_waits(con))
+    W["empty_own"] = classify(con, build_waits(con), table="st2_own")["empty"].values
+    W["empty_all"] = classify(con, build_waits(con), table="st2_all")["empty"].values
+    conf_m = W["empty_own"] | W["alloc"]
     died = W["died30"]
     y3 = W["year"] == 3
     # the rungs on the latest four quarters
@@ -343,7 +346,7 @@ def main(T):
     r1 = per_trust(W, y3 & died & W["own"] & W["v08"])
     r2 = per_trust(W, y3 & died & W["own"] & W["empty"])
     r3 = per_trust(W, y3 & died & W["own"] & (W["empty"] | W["alloc_any"]))
-    r4 = per_trust(W, y3 & died & W["own"] & (W["empty"] | W["alloc"]))
+    r4 = per_trust(W, y3 & died & W["own"] & conf_m)
     for k, (rk, want) in enumerate(zip((r0, r1, r2, r3, r4), CLAIMS["rungs"])):
         rk = {t: rk.get(t, 0) for t in CLAIMS["y3"]}
         claim("rung %d: %s %d over %s %d" % ((k,) + want), top2(rk) == want, top2(rk))
@@ -362,9 +365,9 @@ def main(T):
     claim("killer of rung 1: BRK-ACC full at every moment of every BRK long wait", not brk["empty"].any(), len(brk))
     ris = W[y3 & (W.referring_trust == "RIS")]
     stn = W[y3 & (W.referring_trust == "STN")]
-    claim("killer of rung 2: the full units admitted other patients inside most RIS and every STN long wait",
-          stn["alloc_any"].all() and (ris["alloc_any"] & ~ris["empty"]).mean() > 0.5,
-          "RIS %.0f%%" % (100 * (ris["alloc_any"] & ~ris["empty"]).mean()))
+    claim("killer of rung 2: through every STN long wait STN-ACC held a bed assigned to a Stennock patient still in "
+          "theatre (the theatre extract), full by assignment and admitting no one",
+          stn["empty_own"].all() and not stn["empty"].any() and not stn["alloc_any"].any(), len(stn))
     # killer of rung 3: every admission inside a RIS long wait is another trust's patient in the bureau's audit
     isl = islands(con, True)
     rt = dict(con.execute("SELECT referral_id, referring_trust FROM ref").fetchall())
@@ -384,28 +387,23 @@ def main(T):
                 bad += 1
     claim("killer of rung 3: every admission inside a RIS long wait is a patient referred by another trust, in the "
           "bed bureau's transfer audit", n_in > 0 and bad == 0, "%d admissions" % n_in)
-    claim("decisive fact: STN-ACC admitted patients Stennock referred itself through every STN long wait",
-          stn["alloc"].all() and not stn["empty"].any(), len(stn))
-    # who placed each patient: the admission code says one thing at STN and RIS, the referring trust another
-    sti = isl[isl.unit_code == "STN-ACC"].copy()
-    sti["m"] = sti["a"].values.astype("datetime64[m]").astype(np.int64)
-    codes_stn, codes_ris, n_audit_stn = set(), set(), 0
-    for r in stn.itertuples():
-        a = np.datetime64(r.dta_t, "m").astype(np.int64)
-        b = np.datetime64(r.end_t, "m").astype(np.int64)
-        for x in sti[(sti.m > a) & (sti.m < b)].itertuples():
-            codes_stn.add((x.t, rt.get(x.r or "", "")))
-            n_audit_stn += (lk.get(x.patient_key, x.patient_key), "STN-ACC",
-                            pd.Timestamp(x.a).strftime("%Y-%m-%d %H:%M")) in audit
+    # the holds themselves: own-trust theatre cases leaving recovery after the bed was assigned
+    hold = con.execute("SELECT s.unit_code, COUNT(*) n, MIN(CAST(s.admitted_at AS TIME)) t0 FROM st2 s JOIN st2_own o "
+                       "USING (stay_id) WHERE o.admitted_at <> s.admitted_at GROUP BY 1").df()
+    claim("own holds: only at STN-ACC, every bed assigned at 08:10 or later",
+          list(hold.unit_code) == ["STN-ACC"] and str(hold.t0.iloc[0]) >= "08:10:00", hold.to_dict("records"))
+    codes_ris = set()
     for r in ris[ris.died30].itertuples():
         a = np.datetime64(r.dta_t, "m").astype(np.int64)
         b = np.datetime64(r.end_t, "m").astype(np.int64)
         for x in ri[(ri.m > a) & (ri.m < b)].itertuples():
             codes_ris.add((x.t, rt.get(x.r or "", "")))
-    claim("STN's in-wait admissions are coded 03 (a planned transfer in) and referred by STN, none in the audit; "
-          "RIS's include planned transfers in (03) referred by other trusts",
-          codes_stn == {("03", "STN")} and n_audit_stn == 0 and any(c[0] == "03" and c[1] != "RIS" for c in codes_ris),
-          (sorted(codes_stn), sorted(codes_ris)[:6]))
+    claim("RIS's in-wait admissions include planned transfers in (03) referred by other trusts",
+          any(c[0] == "03" and c[1] != "RIS" for c in codes_ris), sorted(codes_ris)[:6])
+    rr_ = per_trust(W, y3 & died & W["own"] & (W["empty_all"] | W["alloc_any"]))
+    got = top2({t: rr_.get(t, 0) for t in CLAIMS["y3"]})
+    claim("every held bed read empty (the bureau's too): %s %d over %s %d" % CLAIMS["every_hold_empty"],
+          got == CLAIMS["every_hold_empty"], got)
     for rd, want in CLAIMS["readings"].items():
         Wr = W if rd == "referral" else classify(con, build_waits(con), reading=rd)
         rr_ = per_trust(Wr, (Wr.year == 3) & Wr.died30 & Wr["own"] & (Wr["empty"] | Wr["alloc"]))
@@ -423,11 +421,11 @@ def main(T):
     # the graded figures
     y3t = {t: (W[y3 & (W.referring_trust == t)]["person"].nunique(),
                W[y3 & died & (W.referring_trust == t)]["person"].nunique(),
-               W[y3 & died & (W.referring_trust == t) & (W["empty"] | W["alloc"])]["person"].nunique())
+               W[y3 & died & (W.referring_trust == t) & conf_m]["person"].nunique())
            for t in CLAIMS["y3"]}
     claim("latest four quarters: patients, deaths, confirmable per trust", y3t == CLAIMS["y3"])
     rec = {t: (W[W.referring_trust == t]["person"].nunique(), W[died & (W.referring_trust == t)]["person"].nunique(),
-               W[died & (W.referring_trust == t) & (W["empty"] | W["alloc"])]["person"].nunique())
+               W[died & (W.referring_trust == t) & conf_m]["person"].nunique())
            for t in CLAIMS["record"]}
     claim("record: 24 trust figures (3a, 3b, 3c)", rec == CLAIMS["record"], rec)
     tot = tuple(sum(v[i] for v in rec.values()) for i in range(3))
@@ -436,7 +434,7 @@ def main(T):
     for y in (1, 2, 3):
         m = W["year"] == y
         by[y] = (W[m]["person"].nunique(), W[m & died]["person"].nunique(),
-                 W[m & died & (W["empty"] | W["alloc"])]["person"].nunique())
+                 W[m & died & conf_m]["person"].nunique())
     claim("by four-quarter year", by == CLAIMS["by_year_total"], by)
     # the hourly clean-data replacement names G on its rung and leaves the call alone
     Wh = classify(con, build_waits(con), hourly=True)
@@ -444,7 +442,9 @@ def main(T):
     claim("clean-data test: hourly return names PRW, the call stays STN", top2({t: rh.get(t, 0) for t in CLAIMS["y3"]})[0] == "PRW")
     # the natural path: every field as it stands, current register, rows as admissions, deaths per referral row
     Wn = classify(con, build_waits(con, natural=True), current_register=True, merge=False, table="st")
-    nat = (len(Wn), int(Wn["died30"].sum()), int((Wn["died30"] & (Wn["empty"] | Wn["alloc"])).sum()))
+    Wn["empty_own"] = classify(con, build_waits(con, natural=True), current_register=True, merge=False,
+                               table="st_own")["empty"].values
+    nat = (len(Wn), int(Wn["died30"].sum()), int((Wn["died30"] & (Wn["empty_own"] | Wn["alloc"])).sum()))
     claim("natural path totals %d / %d / %d" % CLAIMS["natural_total"], nat == CLAIMS["natural_total"], nat)
     # the calibration corpus
     out, log, att, rets, cr = corpus(T)

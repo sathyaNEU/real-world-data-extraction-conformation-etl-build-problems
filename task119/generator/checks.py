@@ -1001,7 +1001,7 @@ def device_checks(K, D, S, target, F):
             fan == 1 and keys == 1, (exact_dupes, unmatched, fan, keys))
     # the pair simulation at planning weights: 38 / 7 / 55 over 32 ask criteria
     pair, singles, doubles, prof = pair_simulation(D, gold, run)
-    K.check("pair simulation at or under 40 with every device missed (best mirror of seven readings)", pair <= 40,
+    K.check("pair simulation at or under 40 with every device missed (best mirror of nine readings)", pair <= 40,
             "%.1f" % pair)
     K.check("every single device catch leaves the pair at or under 40; the worst double reported",
             max(singles.values()) <= 40, "max single %.1f (%s); worst double %.1f %s" % (
@@ -1077,13 +1077,15 @@ def device_checks(K, D, S, target, F):
             {k: (len(v), ncol[k]) for k, v in spans.items()})
 
 
-MIRRORS = ("census", "any", "planned", "not02", "queue", "local", "t04")
+MIRRORS = ("census", "any", "planned", "not02", "queue", "local", "t04", "workorder", "phys_any")
 OLD8 = ("DV1", "DV2", "DV3", "DV4", "DV5", "DV7", "HZ1", "HZ2")
 PROFILES = {"round 1's catches (six stage-2 devices and the discharge-method fallback)":
             ("DV1", "DV2", "DV3", "DV4", "HZ1", "HZ2", "DV9"),
             "round 2's catches (every device before loop 2)": OLD8,
             "round 2's catches and DV9": OLD8 + ("DV9",),
             "round 2's catches and DV8": OLD8 + ("DV8",),
+            "round 3's catches (UTC, decision level, key links, pilot copies, one patient once, CCRS beds from the "
+            "audit, the discharge-method fallback)": ("DV1", "DV2", "DV4", "DV7", "DV8", "DV9", "HZ2"),
             "every device": None}
 
 

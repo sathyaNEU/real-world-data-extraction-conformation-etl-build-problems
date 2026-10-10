@@ -1,0 +1,20 @@
+{
+  "task": "task124",
+  "domain": "business-operations-analytics",
+  "objective": "forecasting",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-10",
+  "stump": "A competent solver rebuilds the per-kW replay that ties last year's risk report to the megawatt, collapses the enrolment amendments, joins the distribution utility's tariff class and prices North Central's 31 new refrigerated distribution centres at the class's own peak-hour draw measured on the book's fourteen cold stores (0.60 of maximum demand), filing North Central at 195 MW of the 400 MW block (provisional); the step that lands it there is taking those fourteen as what a cold store draws in the system's peak hour, when every one of them was held to its firm level through every closed system peak by the company's own Business Saver load-shift programme, which no site can join before it has a metered summer, so the centres run at the analogs' undispatched 0.90 and North Central takes 230 MW (provisional).",
+  "harden_loops": 0,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "analytical_tasks/01_forecasting/FC02_summer-block-split-cold-store-coincidence.md"
+}
