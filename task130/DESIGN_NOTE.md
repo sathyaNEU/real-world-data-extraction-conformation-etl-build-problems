@@ -1,543 +1,164 @@
-# task130: the 2027 large-holder designation of census sections (realises ET02, the 13F institutional ownership bridge, redesigned as a stump)
+# task130: Tenter House, the replacement units for 1 April 2027 (v2, re-rooted after the v1 portal failure)
 
-Source note: `analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md` (ET02). Stage 1, draw, 2026-10-10. This is the build's one design note. Every count and date below is a draw-stage plan that stage 2 sizes and the generator asserts; nothing here is a measured figure.
+v1 (the 2027 large-holder designation of Valencian census sections) failed on the portal on 2026-10-10: both top models filed the golden seven-section answer. The author asked for the stump to be redesigned in this slot. v1's architecture is kept on the card's lineage and its dead ends are carried into `## Tried and rejected` below. This note is the build's one design note from here on. Every count below is measured by the generator and asserted; the stage 2 figures were measured on the simulation core before the pack was cut, and the build record at the end carries the shipped values.
 
 ```
-DRAW  (independent draws, checked with ../fingerprint/guard.py)
-  Card filed with guard.py register before the ladder was written? registered 2026-10-10 by the coordinator
-    after task129, the wave's last   Verdict: PASS against the filed corpus (no WARN; one NOTE,
-    test.same_driver_older against task62, differentiated on the card)
-  Card filed: pending registration
-  Shape: 03 bridge between two totals   Gate G mechanism: etl_conformance
-  Gap: time (decisive), then population   Pattern: A (past exceedance against forward yield)
-  Domain: Demographic & Social Science   Subdomain (enumerated): housing   Objective: Data Extraction & Conformation (ETL)
-  Pairing repeated from last build? no (registered last three: task119 policy-education x anomaly-detection,
-    task121 product-analytics x root-cause, task122 product-analytics x experiment-causal)
-  Stakeholder role: head of the regional housing observatory (statistical_office_head)
-  Context-artifact type: filed_standard (the designation programme order)
-  Calibration form: prior_period_close_out (the 2026 designation's close-out: every watch-list section's
-    large-holder dwellings and share on 1 January 2026)   Decision type: designation_set
-  Decisive mechanism: holdings on the programme year's first day, where the housing agency has taken over
-    scheduled sale agreements under its first-offer right (recorded only in its budget commitments) and
-    completes each purchase 120 days after committing, a clock only its settled purchases show
-    (G4, G3, G13, G16, G19)
-  Repeats from prior builds: none on a banned axis; the (time, A, etl_conformance) signature repeats
-    task62's seat-billing architectures, differentiated on the card
-As-of date: 2026-09-30
+DRAW  (checked with ../.claude/skills/fingerprint/guard.py; card re-registered 2026-10-10 as v2)
+  Verdict: PASS (two NOTEs, test.same_puzzle_older and test.same_driver_older against task80, differentiated
+    on the card: task80 dates a fixed-term status from its conferring event; here a closed group's
+    departures are a rank inside a borough-wide priority list against a planned supply)
+  Shape: 02 forecast across many periods   Gate G mechanism: method_or_model_selection
+  Gap: rule (decisive), then population   Pattern: none (G16 method selection, G2 grain, G11 eligibility)
+  Domain: Demographic & Social Science   Subdomain (enumerated): housing (homelessness and temporary accommodation)
+  Objective: Forecasting & Predictive Modeling
+  Stump strategy: other (rank-ordered rationing: departures come from a planned supply handed out in
+    a priority order, so survivors are a rank inside a group, not a rate); decisive_rule_filed: no;
+    official_decoy: no; validated_decoy: no
+  Stakeholder role: temporary accommodation and procurement manager (procurement_lead)
+  Context artifact: operations_log (the TA team's weekly position)   Calibration form: none
+  Forum: minister_or_cabinet (the cabinet member for housing signs the call-off)
+  Forcing event: purchase_order_or_contract (the DPS call-off for 1 April 2027)
+  Organisation family: local_government   Opening move: evidence-first
+  Personas (guard.py names --geo "United Kingdom, England" --seed 130): Maria Field (the requester,
+    TA and procurement manager), Irene Roberts (cabinet member for housing), Eileen Nicholls (housing
+    register and lettings manager), Declan Morton (TA placements team leader), Debra Young (finance
+    business partner, housing), Nicola Robinson (Corvane's head of property)
+As-of date: 2026-09-30 (the extracts run to that day); the forecast date is 2027-03-31
 ```
 
-Fiction's calendar: the large holders' quarterly dwelling returns are due 30 days after each quarter end, so the latest on file are those for 30 June 2026 (lodged by 30 July, with corrections and supplementary returns since); the portal moved from building rows to dwelling rows for returns lodged from 1 April 2026; the land register's deed extract and the housing agency's budget ledger run to 30 September 2026; the observatory works the designation in October and the order goes to the housing minister by 13 November 2026 for publication in the regional gazette before the 2027 programme year opens on 1 January 2027. The 2026 designation, the first, was computed in autumn 2025 on the 30 June 2025 returns rolled to 1 January 2026, and the agency's first-offer right began with it.
+**World.** Larkmoor Borough Council (fictional, Kent) houses homeless households it owes the main housing duty in temporary accommodation (TA): bed and breakfast and hostels first, then self-contained flats (private sector leases, nightly-paid flats and Tenter House, a 178-flat converted office block leased from Corvane Property Services since April 2021). On 15 September 2026 Corvane gave notice: the owner has sold the building and wants vacant possession on 31 March 2027. The council stopped placing anyone in Tenter House that day and moves nobody out except into settled housing. Every household still there on 31 March needs a replacement self-contained unit of its bedroom need, called off under the Kent and Medway TA dynamic purchasing system (Lot 3) to start on 1 April 2027. Maria Field has to put the call-off to Irene Roberts in November.
 
-**Similarity claim.** No prior build commits a designation on holdings at a future effective date where a third party has displaced scheduled transfers and completes them on its own administrative clock, a move evidenced only in that party's spending commitments and its settled cases; the nearest driver on file scores 0.06 (task105, task100 and task75 lineages), and the closest mechanisms (task100's forward roll, task117's re-timing, task62's lapsing exclusion) are differentiated on the card.
+**How households leave TA, which is the whole task.** Once a household has been on the main duty for a few months it leaves TA only when a move-on let reaches it: a social housing let through nominations or a private let through the council's lettings agency. Move-on lets go to every household owed the main duty, wherever it is living (in TA, or at home with family), in order of the date the duty was accepted, within the bedroom size it currently needs, case reference breaking ties. The monthly number of lets by size is planned by the lettings team (the move-on plan). Nothing in the pack states the order; the move-on lets log shows it to anyone who asks who got each let.
 
-**Pairing and shape.** The work is ETL: two years of versioned quarterly dwelling returns (corrections that replace, supplementary returns that add, a unit change keyed to the lodgement date, option and reservation rows, cadastral references to repair), a deed extract and an agency ledger conformed into one holdings table per section on the effective date, with the designation falling out of that table. The call faces forward (holdings on 1 January 2027, a date after the extract); every transfer it counts is known at the extract, so nothing is estimated and the tag stays ETL. Shape 03 arithmetic: two section bridges (the sections either side of the line on 1 January), each about 8 reconciling items in dwellings, 16; 14 watch-list sections x (large-holder share on 1 January to one decimal, designated or not) = 28; the largest large-holder group in each designated section with its dwellings, about 6 x 2 = 12; furniture (the designated count, the nearest section on each side with its share and gap to the line, five named chart parts, three files) about 10; about 66 criteria.
+## Data-native sentence
 
-**Planned deliverables.** `designation_annex_2027.csv` (the order's annex: every watch-list section, its dwellings, large-holder dwellings and share on 1 January 2027, designated or not, its largest large-holder group), `section_bridge_2027.png` (the two bridges read at a glance, the 25 per cent line drawn at each section's dwelling count), `designation_brief_2027.pdf` (the brief that commits the designation to the minister). Provisional until the prompt is written.
+Tenter House is where the council has put, since April 2023, the household that had waited longest in a nightly-paid flat, so its families sit near the front of every bedroom size's move-on list, and in a world where a household leaves only when a let reaches its place in that list, the block will empty far faster than any rate the borough's TA population has ever left at.
 
-**World.** The Observatori del Parc Residencial and its sister public housing agency, the Ens Públic de Patrimoni Residencial, which runs the Programa Primera Oferta (Valencian Community, Spain, EUR); a large holder is a person or group of related companies holding ten or more dwellings in the region. Personas drawn with `guard.py names --geo "Spain, Valencian Community" --seed 130`: Aurora Roig (head of the observatory, the requester), Leandro Sacristán (the agency's head of acquisitions, owner of the budget ledger), Celestina Gallart (built the 2026 designation), Amaro Peláez (director general for housing, receives the brief).
+## Gate G
 
-**Gate G.** Litmus: no. The returns, the deeds, the agency ledger, the published 30 June section shares and the 2026 designation are all correct; no file or voice reads a correct number the wrong way, and the difficulty is constructing holdings on a date no instrument has observed yet. Mechanism etl_conformance, framed by pattern A. surface_read_dependency: no. stumping_family: analytical_non_defect. sole_data_defect: no. Clean-data test per suspect file, to be asserted in the generator: the 30 June returns are complete and correct for 30 June (nothing to repair); the deed extract and the ledger are complete to 30 September; the instrument repair has nothing to substitute, because holdings on 1 January 2027 cannot be observed before that day. Lens-swap test: the stop rung and the answer are holdings on the same date with different transfers (who completes each displaced sale, and on which day), not one figure read two ways. Pre-draw identity test: the share closes over holdings on 1 January that the pack does not ship, and the decisive input (which transfers complete by then, and to whom) is neither filed nor visibly forced.
+- **Litmus.** No. Every file is correct: the cases, placements, reviews, lets, the plan, the weekly position and the price schedule. No stakeholder states a number the task overturns. The difficulty is forecasting how a closed group runs off when departures are a rationed supply handed out in an order.
+- **Primary mechanism:** `method_or_model_selection` (a rate or survival model of leaving against a rank-and-supply model; the second is the process the data was generated by and the lets log reproduces it 100 per cent).
+- **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
+- **Clean-data test.** Fill: no file is incomplete; the extracts are complete to 30 September. Semantics: every field means what the dictionary says. Instrument: no instrument can observe who is in Tenter House on 31 March 2027 before that day. The generator asserts the answer is unchanged when the placements are consolidated into one row per household stay (the grain repair) and that the rate reading is unchanged too, and that the two differ.
+- **Lens swap.** No. The rate reading and the answer are not one population under two lenses: they are two models of the same future, and they disagree because of the order the departures follow.
+- **Deletion test.** Delete the weekly position, the distractors and the price schedule: the rate reading is still the natural forecast and still wrong.
+- **No shipped artifact ranks the candidates on the decision question.** The weekly position counts households in TA by type and size on 28 September (past, correct, labelled); nothing forecasts 31 March.
 
 ## Stump sentence
 
-A competent solver conforms the 30 June 2026 returns (corrections replace, supplementary returns add, pre-migration building rows become dwellings, option and reservation rows drop, cadastral references are repaired by their control letters), rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and the scheduled sale agreements at their agreed buyers and deed dates, reproduces the 2026 designation exactly and files a designation that keeps two sections over the line and leaves a third under it; the step that lands it there is carrying each scheduled agreement to its agreed buyer and date, when the housing agency's budget ledger shows it took over several of those agreements under its first-offer right and signed every purchase it has completed 120 days after committing, so on 1 January the agency holds the dwellings it committed to by early September (the two sections fall under the line) and a seller still holds the dwellings committed later, among them a December sale to a private buyer that the agency now completes in January (the third section stays over it).
+A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 140 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 48 households (no one-bed, 8 two-bed, 21 three-bed, 19 four-bed).
 
-## Decisive rung
+## The ladder (stage 2 measurements on the simulation core; the build re-measures and asserts)
 
-Measured trap: **#13 Validates on one population, applies to another**, decided 3 of the client's 64 measured tasks, 2 of them under 0.50. The roll-forward is validated on the 2026 designation, a period in which no scheduled agreement had ever been taken over because the first-offer right began with that designation, and is applied to a year in which the agency has taken over agreements and completes them on its own clock. The client's own instance of the move is the Halls and Meeting Places drawdown task (mean 0.34): a scheduled-date field that fits every closed record is stale for the pending items, whose timing runs from a later event recovered from the paid record. Behind it, **#11 Beats the headline trap, misses the quiet one** (4 of 64, 2 under 0.50): a solver who gets the amendment semantics, the unit change, the exposure rows, the references and the forward roll right treats the last step as routine.
-
-The two layers of the rung, and where each lives:
-
-- **Displacement.** The agency's budget ledger (a spending extract shipped with the agency's records, its first-offer lines a minority among rent-support, repair and acquisition lines, the cadastral reference inside a free-text concept) is the only record of which scheduled agreements the agency has taken over. The returns schedule each agreement with its agreed buyer and deed date, correctly as of 30 June; nothing in them, the deeds or the programme order says an agreement can change hands after notification.
-- **Clock.** Every settled first-offer purchase (in the deed extract, buyer the agency) was signed exactly 120 days after its ledger commitment, and none on its agreed deed date. That regularity is the only pin of when a pending purchase completes; no document states it.
-
-The move runs both ways, so no partial reading lands on the answer: a portfolio sale between large holders agreed for February 2027 but committed by the agency in July completes in November (the section falls under the line, which the roll at agreed dates and agreed buyers misses twice over), while a sale to a private buyer agreed for December but committed in late September completes in January (the seller still holds it on 1 January, so the section stays over the line, which every earlier rung puts under it).
-
-Open for the design stage: whether the programme order names the first-offer programme at all (fairness needs the agency's purchases to be knowable from the ledger and the deeds; a sentence describing their mechanics would make the solver ask the decisive question), and whether the large-holder threshold is reassessed on 1 January (a group that sells to the agency below ten dwellings takes its remaining dwellings out of the count, a cliff that could serve as a lower rung or a hazard).
-
-## Ladder sketch
-
-Candidates are the designated sets of the 14 watch-list sections; P, Q and S name the three sections the top rungs turn on. Counts are plans.
-
-| Rung | Construction | Candidate | Killed by |
-|---|---|---|---|
-| R0 | each holder's latest lodged 30 June return taken whole (a supplementary return read as the full return), every row a dwelling, option and reservation rows counted, malformed references dropped as orphans, no roll-forward | set A, about 5 sections | the return dictionary's version field: a correction replaces the return it corrects, a supplementary return adds to it |
-| R1 | versions applied as filed | set B, about 7 sections | the cadastre: rows lodged before 1 April 2026 are buildings carrying several dwellings each, whatever quarter they report |
-| R2 | building rows expanded to dwellings by lodgement date, option and reservation rows dropped, references repaired by their two control letters; reproduces the observatory's published 30 June shares for 14 of 14 sections | set C, about 8 sections (the 30 June snapshot) | the programme order: a section is designated on the dwellings large holders hold on 1 January of the programme year |
-| R3 (the stop) | every dwelling rolled to 1 January 2027 with the deeds registered to 30 September and each scheduled agreement at its agreed buyer and deed date; reproduces the 2026 designation section for section | set D, about 7 sections, P and S in, Q out | the agency's budget ledger: it has taken over several scheduled agreements under its first-offer right |
-| R4 | the takeovers applied at the agreed deed dates | set E, P in, S out, Q out | the settled first-offer purchases: every one signed 120 days after its commitment, none on its agreed date |
-| R5 (decisive) | the takeovers completed on the agency's clock | the answer, P out, S out, Q in | none |
-
-Why each stop is satisfying: R2 gives back every published 30 June share to the dwelling; R3 is the forward roll the programme order asks for and gives back the only closed designation exactly, with every control tying; R4 has found the agency and applied its purchases on the dates the parties agreed.
-
-## Why it survives the solver
-
-Against `pilot_lessons.md`: the solver reads every document and executes every stated rule, so the version semantics, the lodgement-date unit change, the exposure rows, the reference check and the 1 January basis are all lower rungs it is expected to clear, and none of them carries the stump; it reproduces published tables and treats a mismatch as a search signal, so both controls (the published 30 June shares and the 2026 designation) reproduce exactly at the stop, and they do so for a structural reason (no agreement could be taken over before the first-offer right began with the 2026 designation), leaving no mismatch to search from; it finds any join whose keys line up, so the decisive record carries no key column into the returns (the reference sits inside a budget line's free-text concept, in a spending extract the ownership question never opens) and the deeds of settled agency purchases read to the roll as ordinary deeds; it replays at the finest grain and checks against closed periods, so the dwelling-level forward roll is the stop rung rather than a place it fails; and it applies stated deadlines and scope, which the 1 January basis already is. What held in the pilot is reproduced on both counts: like FC01, the decisive fact is operational and lives in a record the solver has no reason to open for the question asked, and its timing is pinned only by the settled cases' regularity, never by a sentence; like OS01, the step is a judgment the files support but never state, that a commitment in the agency's ledger displaces a sale the returns schedule, where the natural reading (the agreement completes as agreed) is defensible and nothing in the pack contradicts it. Residual exposure, stated so the solver round can test it: task100's forward designation rolls were solved when every limb sat on a filed sentence, a labelled column or a findable prior snapshot, and a solver that audits every file for transfers could read the ledger's first-offer lines; the build keeps the ledger off every ask path and gives no file a sentence on first-offer mechanics.
-
-## Nearest exemplars
-
-- **Budget on the Halls and Meeting Places fund balance running out in 2029-30** (Nonprofit & Grant-making, Capital Grant Drawdown Forecasting, model mean 0.34): every paid certificate falls on its scheduled date and the closed years reproduce from the schedule, but the pending awards run on a clock that starts at a later event recovered from the paid record; the model dated the pending stages from the schedule. The same move as this build's clock layer, on a different object.
-- **Block-contract 899 beds for residents aged 85 and over in 2032/33** (Demographic & Social Science, Adult Social Care Capacity Planning, model mean 0.62): a forward position read on a future date after dated changes recorded in a register (five deregistration notices); the model built the demand model and stopped before the register. The domain's nearest forward-position task, and the warning that a filed register of the changes gets read (the 0.62 is the cost of a visible register).
-
-## Guard
-
-`guard.py check` on the scratchpad card (`cards/task130.json`): PASS. One NOTE, `test.same_driver_older` (decisive gap time, pattern A and Gate G etl_conformance repeat task62's seat-billing architectures), cleared by the card's differentiation line: task62's forward base grows because an exclusion lapses with its instrument and its population enters, while here a third party displaces scheduled transfers and completes them on its own clock. Differentiation lines are also on the card for task100 (forward designation roll) and task117 (re-timing), which the guard did not flag. No WARN. Nearest drivers 0.06 (task105, task100 and task75 lineages, task85). Personas clear of the name index. Not registered: the coordinator registers the wave in task-number order, and the axis bans against task127 to task129 (forum minister_or_cabinet, forcing event statutory_or_regulatory_filing, organisation research_or_statistics_office, pattern A, context artifact filed_standard, calibration prior_period_close_out) are checked then. Fallbacks if one blocks: pattern none with G4 decisive; context artifact close_out_summary; forum executive_team.
-
-## Changes from the source note
-
-- Domain: capital-markets ownership analytics (out of scope for Economics, which excludes markets trading) moved to Demographic & Social Science, housing: large-holder ownership of dwellings by census section, decided by a regional housing observatory.
-- Scenario kept as a structure: 13F filers become large holders' quarterly dwelling returns, issuers become census sections, shares outstanding become dwellings per section from the cadastre, the 80 per cent crowded flag becomes the 25 per cent designation line, the top holder by market value becomes the largest large-holder group by dwellings, and the bridge from the raw sum to the conformed total stays (two sections, either side of the line).
-- The note's honest-data traps become the lower rungs: RESTATEMENT and NEW HOLDINGS become corrections and supplementary returns; the VALUE unit keyed to the filing date becomes building rows against dwelling rows keyed to the lodgement date; option rows become option and reservation rows; the CUSIP check digit becomes the cadastral reference's control letters.
-- The note's methodology memo is dropped: no shipped sentence states a decisive rule.
-- The call moves from a retrospective report-period flag to holdings on the programme year's first day, and a decisive rung the note does not have (the agency's first-offer takeovers on its own clock) sits above the note's traps.
-- Deliverables re-cut from the note's CSV, PNG and DOCX to a CSV annex, a PNG bridge and a PDF brief; the real SEC hosts are replaced by a fully constructed pack with declared provenance (dataset-generation section 2).
-
-## Stage 2: design (2026-10-10)
-
-Every count, share and date below is a target the generator builds forward and asserts; nothing here is a measured figure. Section codes are INE census-section codes (province, municipality, district, section). The fourteen watch-list sections and the roles they play in the ladder:
-
-| Code | Municipality, district | Role |
-|---|---|---|
-| 4625001005 | València, Ciutat Vella | A1, designated at every correct rung |
-| 4625002007 | València, l'Eixample | A2, designated at every correct rung |
-| 4625011004 | València, Poblats Marítims | A3, designated at every correct rung |
-| 0301401008 | Alacant, district 1 | A4, designated at every correct rung |
-| 4625001012 | València, Ciutat Vella | **P**: a portfolio sale between two large holders agreed for February 2027 that the agency committed to on 9 July 2026, completing 6 November 2026 |
-| 4625011016 | València, Poblats Marítims | **S**: a sale between two large holders agreed for 19 November 2026 that the agency committed to on 5 August 2026, completing 3 December 2026 |
-| 0301402014 | Alacant, district 2 | **Q**: a large holder's December 2026 unit sales to private buyers that the agency committed to between 15 and 24 September 2026, completing 13 to 22 January 2027 |
-| 4625002019 | València, l'Eixample | **T**: over the line on 30 June, under it on 1 January through deeds registered July to September (an ordinary roll) |
-| 4625012009 | València, Camins al Grau | **U**: under the line on 30 June, over it on 1 January through a building a large holder bought in August (an ordinary roll) |
-| 4625005013 | València, la Saïdia | O1, never designated at a correct rung; an option-heavy holder lifts it over the line while option rows are counted |
-| 4625013021 | València, Algirós | O2, never designated |
-| 0301405003 | Alacant, district 5 | O3, never designated |
-| 1204001006 | Castelló de la Plana, district 1 | O4, never designated |
-| 1204003011 | Castelló de la Plana, district 3 | O5, never designated |
-
-### What the design stage settled
-
-1. **The agency's takeovers touch twelve of the fourteen sections, not three.** The draw had the first-offer move deciding P, S and Q only, which left eleven sections' 1 January figures identical under the stop rung and handed the mirror response 33 annex cells. The agency has now committed to 84 large-holder dwellings under scheduled agreements across twelve sections, in all seven combinations of agreed date (before or after 1 January), completion date (before or after) and agreed buyer (a large holder or not), including the three that change nothing (benign twins). The large-holder count on 1 January differs between the stop rung and the answer by at least 3 dwellings in each of the twelve, and the one-decimal share differs in each of the twelve. P, S and Q are the only sections where the move crosses the line.
-2. **No large-holder agreement taken over has settled by 30 September, and none has an agreed date on or before it.** Every large-holder commitment is dated after 30 June (6 July to 29 September 2026), so the earliest completion is 3 November; every agreement the agency took over has an agreed date after 30 September. The back-test a solver can run (every scheduled agreement in any return with an agreed date on or before 30 September, checked against the deeds) finds every one completed on its agreed date to its agreed buyer, 100 per cent. Nothing on the stop rung's path fails, is late or is missing.
-3. **The clock is pinned by small owners' sales.** The agency's settled first-offer purchases (27 of them, committed January to May 2026, deeds May to September) are of dwellings whose sellers are not on the register, so they touch no return and no large-holder count. Each was signed exactly 120 calendar days after its commitment, and each commitment's concept quotes the notified sale's planned date, which differs from the deed date in 27 of 27. That one record kills both the agreed-date reading and the commitment-date reading.
-4. **The programme order says nothing about first offer.** The right comes from a decree that is not in the pack. The order defines a large holder (public administrations and their entities are not large holders), the 25 per cent line, the 1 January basis and the annex's contents. The ledger's word for the right (tempteig, with the programme code PPO) and the settled agency deeds are the only traces of the mechanism.
-5. **The large-holder threshold never moves anything.** Every registered holder holds ten or more dwellings in the Community on 30 June 2026 and on 1 January 2027 under every rung, and no buyer off the register reaches ten. The cliff the draw left open is closed by convergence, not used as a rung.
-6. **The 1 January basis and the deed date are pinned in the order**: a dwelling is held on 1 January by whoever holds it under deeds executed on or before that day. No deed, scheduled date or agency completion falls between 28 December 2026 and 4 January 2027, and no deed in the extract was executed in the last ten days of September without being registered by 30 September.
-7. **The deliverables keep the draw's three names, and the annex drops the two columns every response gets free** (each section's dwelling count, which is the cadastre's, and the designated flag, which is the share against the line and would hand the mirror eleven cells). The annex carries the large-holder dwellings and share (the call's components), the largest group and its dwellings, and the large-holder dwellings with nobody on the municipal register (the two device-carried asks). The bridge walks month by month, which is determinate without naming a kind of transfer.
-8. **Kept as drawn:** the pairing, shape 03, the gap and pattern, the calibration form, the context artifact, the forum, the forcing event, the personas, the calendar-first opening move and the as-of date of 30 September 2026.
-
-### Gate G
-
-- **Litmus.** No. The returns, the deeds, the cadastre, the agency's budget ledger, the observatory's 30 June bulletin and the 2026 annex are all correct, and no stakeholder states a figure the task overturns. Each scheduled agreement in a 30 June return is a true record of the agreement as it stood on 30 June. The task exists because the order counts holdings on a day that has not come, and what happens between 30 June and that day is recorded in a party's spending commitments rather than in any ownership record.
-- **Primary mechanism:** `etl_conformance`, framed by `forecasting` (pattern A: a correctly measured past snapshot against a forward position).
-- **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Deletion test.** Delete Celestina's note, the 31 March bulletin, the deposit register and the inspection visits. The bulletin still reproduces at R2 on 14 of 14 sections, the 2026 annex still reproduces at R3 on 14 of 14, the back-test still certifies every agreement completing as agreed, and R3 still files A1 to A4, P, S and U.
-- **Clean-data test, three depths, asserted per suspect file.** The suspect files are the returns (versioned, delta-shaped through supplementary returns and the no-change rule), the deed extract (cut at 30 September) and the ledger (cut at 30 September). Fill: consolidate every holder's 30 June picture into one complete return; R2, R3 and the answer do not move. Semantics: every field means what its dictionary says, and a scheduled-sale row means an agreement in force on 30 June, which it was. Instrument: no instrument can observe holdings on 1 January 2027 before that day; the deeds and the ledger are complete to their own cut, nothing executed or committed by 30 September is missing, and extending either past 30 September would invent records that do not exist at the as-of date. The generator asserts answer(repaired) = answer(shipped), R3(repaired) = R3(shipped) and answer != R3 for the fill repair of the returns.
-- **Lens swap.** R3 and the answer are holdings on the same day built from different transfers (who completes each displaced sale, and on which day). Not one population read two ways.
-- **Pre-draw identity.** Share = large-holder dwellings on 1 January / cadastre dwellings. The numerator closes over transfers that complete between 30 June and 1 January, and the decisive input (which scheduled sales the agency completes instead, and when) is neither filed in any ownership record nor visibly forced: it needs the ledger's free-text reference joined to the returns' scheduled rows and the settled cases' interval recovered.
-- **Corpus direction.** Under the naive path both controls reproduce: the bulletin at R2 (14 of 14 to the dwelling) and the 2026 annex at R3 (14 of 14 to the dwelling), and the agreement back-test certifies R3's completion rule at 100 per cent. None of them refutes R3, because no agreement could be taken over before the right began on 1 January 2026 and none taken over since has an agreed date inside the observed window.
-- **No shipped artifact ranks the candidates on the 2027 question.** The bulletin reports 30 June shares (labelled in-file as holdings on that date from returns lodged by 31 August); the 2026 annex is the closed 2026 designation, labelled as such; the 31 March bulletin is a superseded quarter.
-
-### Entity, unit of value and decision
-
-- **Entity and unit.** The Observatori del Parc Residencial prepares the yearly order that designates census sections for the large-holder programme; it is scored per certified output (one designation set, one annex row per watch-list section).
-- **Two quantities that both read as size.** A section's large-holder dwellings as the returns report them on 30 June (the bulletin's figure) against the dwellings large holders will hold on 1 January. And for a scheduled sale, the agreed buyer and date against the party that will actually complete it and the day it will. They rank the sections differently because the agency's commitments since 30 June move twelve sections' counts, three of them across the line, and the ordinary roll moves two more across it.
-- **Decision.** Exactly one designation set from the 2^14 subsets of the watch list, for the 2027 programme year.
-
-### Stump sentence (re-solved)
-
-A competent solver conforms the 30 June 2026 returns (a correction replaces the return it corrects, a supplementary return adds to it, a holder with no change since its last return is carried on that return, rows lodged before 1 April 2026 are expanded from buildings to dwellings, option and reservation rows are dropped, malformed cadastral references are repaired), reproduces the observatory's 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September and every scheduled sale at its agreed buyer and date, reproduces the 2026 annex on all fourteen sections, and files seven sections (A1 to A4, P, S and U); the step that lands it there is carrying each scheduled sale to its agreed buyer and date, when the housing agency's budget ledger shows it committed to 84 of those dwellings in the watch list under its first-offer right after 30 June and its settled purchases were all signed 120 days after commitment, so P and S fall under the line (the agency holds the dwellings it committed to on 9 July and 5 August by November and December) and Q stays over it (the seller still holds the December sales the agency committed to in late September, which complete in January), and the order designates six sections: A1 to A4, Q and U.
-
-### The answer
-
-Stage 2's answer, now the R5 stop (hardening loop 1 below adds R6 and the answer becomes seven sections): **six sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014 and 4625012009.** Target shares on 1 January 2027 (one decimal; the generator tunes each count so the unrounded share sits at least 0.015 points inside its one-decimal bin and at least 0.5 points from 25.0):
-
-| Section | Role | Cadastre dwellings (target) | Share 30 June (R2) | R3 | R4 (agreed dates) | **Answer (R5)** |
-|---|---|---|---|---|---|---|
-| 4625001005 | A1 | about 810 | 32.4 | 32.1 | 31.9 | **31.6** |
-| 4625002007 | A2 | about 690 | 29.9 | 29.5 | 29.3 | **29.2** |
-| 4625011004 | A3 | about 930 | 33.9 | 33.6 | 33.4 | **33.2** |
-| 0301401008 | A4 | about 560 | 28.9 | 28.6 | 28.6 | **28.4** |
-| 4625001012 | P | about 760 | 27.1 | 26.8 | 26.8 | **24.2** |
-| 4625011016 | S | about 640 | 26.4 | 26.1 | 23.4 | **23.4** |
-| 0301402014 | Q | about 600 | 27.4 | 23.3 | 23.3 | **25.7** |
-| 4625002019 | T | about 720 | 25.9 | 23.2 | 23.0 | **22.8** |
-| 4625012009 | U | about 540 | 23.5 | 26.7 | 26.6 | **26.5** |
-| 4625005013 | O1 | about 880 | 21.4 | 21.2 | 21.1 | **20.9** |
-| 4625013021 | O2 | about 750 | 20.1 | 19.9 | 19.9 | **19.6** |
-| 0301405003 | O3 | about 610 | 18.7 | 18.5 | 18.4 | **18.2** |
-| 1204001006 | O4 | about 690 | 22.6 | 22.3 | 22.3 | **22.1** |
-| 1204003011 | O5 | about 520 | 17.8 | 17.6 | 17.6 | **17.4** |
-
-- **The designated section closest to the line** is Q at about 25.7 (0.7 points over); the next designated section up is U at about 26.5, at least 0.3 points further.
-- **The undesignated section closest to the line** is P at about 24.2 (0.8 points under); the next one down is S at about 23.4, at least 0.3 points further.
-- **The bridge sections are therefore P and Q.** P's walk: the bulletin's 30 June figure, small July to September movements, about minus 20 in November (the agency's portfolio completion), small movements elsewhere. Q's walk: about minus 6 over July to September, about minus 4 in December (the sales the agency did not take over), and no movement for the fourteen deferred sales.
-- **Margin.** A set decision has no runner-up ratio, so the guard that binds is the line clearance: every answer share sits at least 0.5 points from 25.0, and each of the three decisive sections crosses it by at least 1.3 points between R3 and R5 (P 2.6, S 2.7, Q 2.4).
-
-### The ladder
-
-| Rung | Construction | Set filed | Killed by (one shipped fact) | Why a good analyst stops here |
+| Rung | Construction | 1 / 2 / 3 / 4-bed on 31 March | Total | Killed by |
 |---|---|---|---|---|
-| R0 | each holder's latest-lodged 30 June return taken whole (a supplementary return read as the full return), holders with no 30 June lodgement left out, every row one dwelling, option and reservation rows counted, rows whose reference fails the cadastre join dropped as orphans, no roll | A1, A3, A4, P, O4 (5) | the return guidance's version field: a correction replaces, a supplementary adds, and a holder that lodged nothing for a quarter stands on its last return | it is the returns as lodged, summed per section against the cadastre, and every join that lands is clean |
-| R1 | versions and the no-change rule applied as filed | A1 to A4, P, Q, O4 (7) | the portal's notice: returns lodged before 1 April 2026 carry one row per building, whatever quarter they report | the register's own rules are honoured line by line |
-| R2 | building rows expanded to their cadastre dwellings by lodgement date, option and reservation rows dropped, references repaired by their control letters | A1 to A4, P, S, Q, T (8); the 30 June snapshot | the programme order: designation counts the dwellings held on 1 January of the programme year | it reproduces the bulletin's 30 June figures on 14 of 14 sections to the dwelling |
-| R3 (the stop) | every dwelling rolled to 1 January 2027 with the deeds registered to 30 September and each scheduled sale at its agreed buyer and date | A1 to A4, P, S, U (7) | the agency's budget ledger: since 7 July it has committed to 84 watch-list dwellings under scheduled sales | it is the forward roll the order asks for, it reproduces the 2026 annex on 14 of 14 sections, and every agreement in the record with a passed date completed exactly as agreed |
-| R4 | the agency's takeovers applied on the agreed dates | A1 to A4, P, U (6) | the settled first-offer purchases: 27 of 27 signed 120 days after commitment, none on the notified date | it has found the agency and applied its purchases on the dates the parties agreed |
-| R4' (sibling) | the agency's takeovers applied from the commitment date | A1 to A4, U (5) | the same 27 settled cases: title passed at the deed, 120 days after commitment | a commitment of public funds reads as the moment the dwelling is spoken for |
-| R5 (the stop since hardening loop 1) | the takeovers completed 120 days after commitment | A1 to A4, Q, U (6) | the register's holder sheet: four holders inscribed after 30 June have lodged no return, and the deed extract shows what they hold | it found the agency, recovered its clock from 27 of 27 settled purchases and moved P, S and Q in both directions; every control still ties |
-| R6 (decisive) | R5 plus the dwellings of the holders inscribed after 30 June with no return yet, read off the deed extract | **A1 to A4, Q, S, U (7)** | none | |
+| R0 | nobody leaves: a unit for every household in the block on 30 September | 29 / 67 / 51 / 26 | 173 | the lets log: households in Tenter House have been leaving it for settled lets every month |
+| R1 | the borough's monthly rate of main-duty households leaving TA over the last year, by current need, run six months | 22.5 / 47.7 / 44.0 / 24.4 | 139 | the lets log: lets go in duty-date order; Tenter House households are not average members of their lists |
+| R2 | the plan's lets shared out over each size's list in proportion | 24 / 50 / 45 / 24 | 144 | as R1 |
+| R3 | survival curve (Kaplan-Meier on time since the duty was accepted) read at each household's elapsed time | 3 / 0 / 4 / 14 | 21 | the list today is longer than the history's average, and the curve knows no plan; the lets log's order refutes it |
+| R4 | the queue built from households in TA only (homeless-at-home households left out) | 0 / 0 / 18 / 17 | 35 | the lets log: households living at home receive lets in their place in the order |
+| R5 | the queue by bedroom need at the decision, ignoring reviews | 2 / 12 / 30 / 10 | 54 | the reviews file: lets match the need assessed at the let |
+| R5' | the queue ordered by TA start date | 4 / 18 / 27 / 19 | 68 | the lets log: the duty date reproduces every let, the TA start date does not |
+| R6 | the queue right, the original March plan (no Brook Meadow handover) | to measure | | the plan's revised sheet of 14 September |
+| R6' | the queue right, accepted October lets taken out and the full October plan applied on top | to measure | | the plan's notes: October counts include lets already accepted |
+| **Answer** | the queue: every open main-duty case, current need, duty date then case reference, against the revised plan | **0 / 8 / 21 / 19** | **48** | |
 
-"A solver who does everything right up to R5 commits to six sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014 and 4625012009." Every rung files a different set and none equals the answer (asserted by name). Cleaning sits at R0 to R2, never at the decisive rung. The R3 to R5 analysis below is the rung the round-1 solver executed; it is now the stop, and the hardening section after the prompt carries R6.
+Every rung files a different set of four counts, and none equals the answer in more than one size (asserted). The answer's total is at least 12 per cent from every rung's total (asserted), and both directions occur across rungs (R0 to R2 far above, R3 below).
 
-**The rung that carries the stump is R3 to R5, and it clears the seven survival properties.** (1) No shipped sentence describes first offer, displacement or the clock; the ledger's concept text is a budget line's description of what was bought. (2) No sweepable corpus nominates it: the 2026 annex and the agreement back-test are blind to it by construction (no takeover before 2026; no taken-over agreement inside the observed window), asserted case by case. (3) No arithmetic symptom: every agreement with a passed date completed as agreed, both controls tie, no join drops a row. (4) Not a per-row predicate: it needs the reference parsed out of a budget line's free text, joined to the scheduled rows of another file, and a constant recovered from a third population (small owners' settled deeds). (5) Its enumeration is arithmetic: which dwellings the agency completes before 1 January is commitment date plus a recovered interval, and the interval is visible only by joining settled commitments to deeds. (6) No cutover date steps any series: the takeovers run in three waves over July to September and no outcome series in the pack moves at a date. (7) It survives the deletion: with every wrong number and every belief deleted, R3 is still the natural forward roll and still reproduces both controls.
+**Survival properties.** (1) No shipped sentence states the order; the plan, the procedure and the dictionary describe their own fields. (2) The lets log nominates the order only to a solver who asks who got each let; nothing a rate model computes touches it. (3) No arithmetic symptom: rates, curves and plan shares all compute cleanly, every join closes. (4) Not a per-row predicate: a household's fate is its rank inside its size's list, which needs every other open case, including households not in TA. (5) Its enumeration is arithmetic: cumulative plan against rank. (6) No cutover date steps a series; the Brook Meadow handover is in the forward plan. (7) It survives the deletion.
 
-**Worth of each rung on the graded quantity** (the set, and the twelve touched sections' counts): R1 moves 2 sections' membership, R2 moves 3, R3 moves 3, R4 moves 2, R5 moves 3; on the counts, R3 to R5 moves at least 3 dwellings in each of twelve sections (the generator asserts the per-section delta). Sign: the conformance rungs raise the counts in most sections (versions, buildings and references add dwellings back; exposure rows remove a few), the ordinary roll lowers most, and the decisive rung moves both ways (minus in P, S and seven others, plus in Q and two others), so no single-signed partial correction lands on the answer.
-
-### Position table (asserted set by set)
-
-Distance is the number of sections whose membership differs from the answer (the symmetric difference).
-
-| Rung | Set size | Distance from the answer | Sections wrong |
-|---|---|---|---|
-| R0 | 5 | 6 | P, O4 in; A2, Q, S, U out |
-| R1 | 7 | 4 | P, O4 in; S, U out |
-| R2 | 8 | 3 | P, T in; U out |
-| R3 | 7 | 2 | P in; Q out |
-| R4 | 6 | 3 | P in; Q, S out |
-| R4' | 5 | 2 | Q, S out |
-| R5 | 6 | 1 | S out |
-| R6 | 7 | 0 | |
-
-R0's exact membership is tuned in the generator (the five above are the target); the assertion is that every rung's set is distinct from every other and from the answer, and that R2 and R3 each file at least seven sections.
-
-### Separation and dominance
-
-The decisive move has to beat what the decoy carries on the line, section by section. P carries 1.8 points of clearance over the line at R3 (26.8) and the agency's November completion removes 2.6; S carries 1.1 and loses 2.7; Q sits 1.7 under at R3 and regains 2.4. Each decisive move exceeds the clearance it overturns by at least 1.3 times (P 2.6 / 1.8 = 1.44, S 2.7 / 1.1 = 2.45, Q 2.4 / 1.7 = 1.41), asserted, and each lands at least 0.5 points past the line. Since hardening loop 1, S is decided at R6: R5 leaves it 1.60 points under the line and the registrant's 18 dwellings move it 2.81 points (ratio 1.76, asserted); P and Q are unchanged between R5 and R6.
-
-### The correction grid
-
-Four conformance toggles (V versions with the no-change rule, B building rows, X option and reservation rows, K reference repair), each applied or not, crossed with six roll variants (none; deeds only; deeds plus scheduled sales as agreed, R3; takeovers on agreed dates, R4; takeovers from commitment, R4'; takeovers on the 120-day clock, R5): 16 x 6 = 96 cells. Plus seven partial cells on the decisive rung: the clock applied only to sales with a large-holder buyer; only to sales with a private buyer; only to agreements dated before 1 January; only to commitments before 1 September; the clock read as 4 calendar months; the clock read as 120 working days; and the takeovers applied only in the three sections that cross the line under R5 (which a solver cannot know, swept for completeness).
-
-- Only the all-correct R5 cell files the answer set; each of the other 102 cells files a named wrong set, asserted cell by cell, and none files a set a solver could not defend (every cell is a set of sections; no cell produces a negative count or a share over 100).
-- The 4-calendar-month reading and every day count from 110 to 132 return the answer set and the answer's counts on every section (C3 corridor, asserted), because no large-holder commitment falls between 22 August and 11 September and every commitment's completion under any reading in that range stays on the same side of 1 January. The 4-month reading is refused by the corpus (it misses 22 of the 27 settled deeds by at least one day), and 120 working days misses all 27 by more than 40 days.
-- The deeds-only cell (no scheduled sales at all) files A1 to A4, P, S, Q and U (8), distinct from the answer.
-
-### The calibration corpus
-
-Three organs, each blind to the decisive rung by construction.
-
-- **The observatory's 30 June 2026 bulletin** (context artifact and control): large-holder dwellings and share per watch-list section on 30 June, from returns lodged by 31 August. R2 reproduces 14 of 14 to the dwelling; R1 misses at least 8, R0 at least 11, each by at least 4 dwellings. Blind to everything after 30 June.
-- **The 2026 annex** (prior-period close-out, the calibration form drawn): large-holder dwellings and share on 1 January 2026 per section, built in autumn 2025 from the 30 June 2025 returns. R3 run on the 2025 data reproduces 14 of 14 to the dwelling; the 30 June 2025 snapshot misses at least 9; the deeds-only roll misses at least 4 (the corpus scores the scheduled-sale rule). Structurally blind to first offer: the right began on 1 January 2026, the ledger has no line before 2026, and R3 and R5 run on the 2025 data return the same figures case for case (asserted twice, on the ledger being empty before 2026 and by re-running both).
-- **The agreement back-test**: every scheduled sale in any return lodged from Q3 2024 to Q2 2026 with an agreed date on or before 30 September 2026 (target about 1,400 agreements) completes on its agreed date to its agreed buyer, 100 per cent, and none is a takeover. It certifies R3's completion rule over the window it can see and is blind to every takeover, asserted on the count of taken-over agreements with an agreed date on or before 30 September (zero).
-- **The settled first-offer purchases** (the empirical pin of the clock): 27 commitments January to May 2026, 27 agency deeds May to September, deed date minus commitment date equal to 120 calendar days in 27 of 27, the notified planned date different from the deed date in 27 of 27, no seller on the register. Rivals and their misses: notified date 27 of 27 missed by 10 to 82 days; commitment date 27 of 27 missed by 120 days; 4 calendar months 22 of 27 missed by at least one day; 120 working days 27 of 27 missed by more than 40 days.
-- **Twin pair.** Two of Q's December sales and two of T's December sales (T's not taken over) are identical on every column the returns carry (agreed month, private buyer, price band, building, door range, holder); Q's pair is still with the seller on 1 January and T's pair has left the large-holder count. Only the ledger separates them.
-- **Resemblance.** Everything a lookup can see (the returns, the deeds, the 2026 annex) nominates R3's set: Q's December sales look exactly like every December sale that completed as agreed in 2024 and 2025.
-- **Every rule the golden composes has a case that breaks if flipped**: versions (bulletin), no-change carry (bulletin, at least 9 carried holders with watch-list dwellings), building expansion (bulletin and 2026 annex), exposure rows (bulletin), reference repair (bulletin), the scheduled-sale roll (2026 annex and back-test), the takeover (no closed case can carry it; it is pinned by the ledger record itself), the clock (the 27 settled deeds), the deed-date basis (no deed is executed in one month and registered in the next across 31 December, and the order states the deed date).
-
-### Pins and counter-pins
-
-- **Filed pins.** The order (level 1): a large holder is a person or group of related companies holding ten or more dwellings in the Community, public administrations and their entities excluded; a section is designated if large holders hold 25 per cent or more of its dwellings on 1 January of the programme year; holdings follow deeds executed on or before that day; dwellings are counted from the cadastre; the annex lists each watch-list section's large-holder dwellings and share, its largest group as the register names it with that group's dwellings, and its large-holder dwellings with no resident on the latest delivery of the municipal register. The return guidance (level 4, field semantics): version types O, C and S, the no-change rule, the holding codes. The portal notice (level 5): building rows before 1 April 2026, dwelling rows from it. The register's dictionary (level 4): group membership is recorded by declarant with effective dates. The municipal register exchange note (level 5): each delivery replaces the previous one for the districts it contains; registrations past their renewal date have lapsed.
-- **Empirical pins.** The 120-day clock (recoverable only as the unique interval reproducing the 27 settled deeds; any value from 110 to 132 gives the same answer). The scheduled-sale completion rule (the back-test, 100 per cent).
-- **Counter-pins.** None. Celestina's note describes how she built 2026 (the 30 June 2025 returns rolled to 1 January with the deeds and the agreed sales) and says every agreed sale she had checked completed on time; both statements are true of 2025 and of every agreement the record can see, and the note states no rule for 2027.
-- **What no file says.** That the agency can take over a notified sale, that a commitment displaces the agreed buyer, or how long the agency takes to complete.
-
-### Fork grid: the 22-axis closure table (determinism-check A.5)
+## Determinism: the 22 axes
 
 | # | Axis | Reading chosen | Closure |
 |---|---|---|---|
-| 1 | Population | every holder on the register on 1 January; the agency and other public bodies excluded | order pin; C1: no holder crosses ten in either direction, no off-register buyer reaches ten |
-| 2 | Unit of account | the cadastre dwelling (reference plus door) | order and notice pins; C1: no co-owned dwelling in the fourteen sections |
-| 3 | Attribution window | a transfer dates from deed execution | order pin; C1: no agreed date from 20 to 30 September, registration lag at most 10 days, no deed straddles a month end into the next quarter |
-| 4 | As-of dating | holdings on 1 January 2027 | order pin; C1: nothing executed or completed from 28 December to 4 January |
-| 5 | Version basis | O, then S replaces, C adds, in lodgement order; latest 30 June lodgement by 31 August | guidance pin; C2: the bulletin reproduces 14 of 14 |
-| 6 | Denominator | cadastre dwellings per section | order pin; C1: no dwelling added or removed in the fourteen sections from 1 January 2025 to the as-of date |
-| 7 | Weighting | none (a ratio of counts) | n/a, stated |
-| 8 | Measurement window length | the roll runs 30 June to 1 January, fixed by the two dates | n/a; the settled-purchase corpus spans all 27 settled cases, no window choice |
-| 9 | Boundary inclusivity | 25 per cent or more | order pin; C4: no share within 0.5 points of 25.0 at the answer, no deed on 1 January |
-| 10 | Rounding path | share computed from integer counts, rounded once to one decimal; gap from the unrounded share | bin assertion: rounding the share first and then subtracting gives the same gap to one decimal for both nearest sections |
-| 11 | Tie-break | largest group, nearest section on each side | C1: largest group leads the second by at least 3 dwellings in every section; nearest sections separated from the next by at least 0.3 points |
-| 12 | Maturity and censoring | pending commitments completed on the clock | C2 (27 of 27) and C3 (corridor 110 to 132 days) |
-| 13 | Order of operations | versions, then units, then exposure rows, then references, then the roll | C1: all 24 orders of the four conformance steps give the same 30 June picture (asserted) |
-| 14 | Row order | irrelevant | C1: the answer recomputed on three shuffles |
-| 15 | Duplicate resolution | a correction replaces the whole return; a supplementary never repeats a reference of its original | C1: no reference appears twice in any holder's conformed picture |
-| 16 | Identity normalisation | references repaired by control letters to the one cadastre match; NIFs compared case-folded without separators | C2: the bulletin reproduces; C1: each malformed reference has exactly one cadastre candidate whose control letters validate |
-| 17 | Netting against gross | section counts and bridge bars are net | prompt wording asks net change; C1: no month in either bridge has a gross in and out that a gross reading would separate within the same dwelling |
-| 18 | Dimensional units | building rows against dwelling rows | notice pin keyed to the lodgement date; C4: the reporting-quarter reading misses the bulletin on at least 3 sections |
-| 19 | Code and status semantics | holding codes PD counted, OP and RS not; budget phases D (commitment) and O (obligation at deed) | guidance pin; the ledger's own phase column; C2 on the settled cases |
-| 20 | Integerisation | none needed | counts are integers by construction |
-| 21 | Scope of a stated clause | the 1 January clause governs every annex column; the vacancy column reads the latest municipal delivery for each district | order pin and exchange-note pin |
-| 22 | Forward window contents | deeds to 30 September, agreements not taken over as agreed, takeovers on the clock | C2 (back-test 100 per cent, settled cases 27 of 27) and C3 (corridor) |
+| 1 | Population | households in Tenter House on 30 September 2026 (a live placement there) | procedure pin (no placements in, no moves out except settled); C1: no Tenter House placement starts after 15 September |
+| 2 | Unit of account | one household, one replacement unit of its bedroom need | procedure pin |
+| 3 | Attribution window | departures counted by tenancy start month | plan dictionary pin |
+| 4 | As-of dating | need as assessed at the extract (latest review on or before 30 September) | procedure pin |
+| 5 | Version basis | the revised move-on plan of 14 September | plan pin (the original sheet labelled superseded); rung R6 |
+| 6 | Denominator | the list: every open main-duty case of that need, wherever living | C2: the lets log, 100 per cent of lets since April 2018 |
+| 7 | Weighting | none (counts) | stated |
+| 8 | Window length | 1 October 2026 to 31 March 2027 | fixed by the notice |
+| 9 | Boundary | a let starting on 31 March vacates by 31 March | plan pin (by tenancy start month) |
+| 10 | Rounding | none: every figure is a whole count | C1 |
+| 11 | Tie-break | case reference on equal duty dates | C2 on the log; C1: no tie straddles any monthly cumulative cut in any size (asserted) |
+| 12 | Maturity | households on the list are past their first 120 days of the duty, where other departures happen | C1: no main-duty household has left TA other than by a let after day 120 since April 2018 (asserted); every list position reached by the plan is past day 120 by 1 October |
+| 13 | Order of operations | lets applied month by month in plan order | C1: the cumulative cut gives the same counts in any within-month order |
+| 14 | Row order | irrelevant | C1: shuffles |
+| 15 | Duplicate resolution | one household per case reference; a household returning on a new case starts a new duty date | dictionary pin; C2 on the log |
+| 16 | Identity | case reference joins every file | C1: every placement and let joins one case |
+| 17 | Netting | none | n/a |
+| 18 | Units | bedrooms, four meaning four or more | dictionary pin |
+| 19 | Status semantics | "Accepted, tenancy starts" lets are October lets already counted in the plan | plan notes pin; rung R6' |
+| 20 | Integerisation | none needed | counts |
+| 21 | Scope of a clause | the procedure's "need as assessed" governs the call-off and the list | pin |
+| 22 | Forward window contents | the plan's lets only; no new placements into the block; no reviews after the extract | procedure pins; C1: new main-duty cases join behind every Tenter House household |
 
-### Deliverables and the criteria arithmetic
+**Rivals and their misses on the order (C2 on the lets log, April 2018 to September 2026):** duty date with current need, wherever living: 100 per cent of lets reproduced; TA start date: misses; application date: misses; need at decision: misses on every let after a review; households in TA only: misses every let to a household at home. Counts to be asserted at build.
 
-Shape 03, the bridge between two totals: each section's 30 June figure walked to its 1 January figure, with the two sections either side of the line drawn month by month.
+## Deliverables and criteria
 
-1. `designation_brief_2027.pdf`, the brief Amaro Peláez reads: the designated set and its count; the designated section nearest the line and the undesignated section nearest it, each with its share and its gap to the line in points. About 8 criteria.
-2. `designation_annex_2027.csv`, the order's annex, one row per watch-list section (14): large-holder dwellings on 1 January, share to one decimal, largest group as the register names it, that group's dwellings, large-holder dwellings with nobody on the municipal register. 14 x 5 = 70 cells; the generated rubric will compress them, target at least 28 criteria from the annex.
-3. `section_bridge_2027.png`, rendered by the golden script: P and Q, each from the bulletin's 30 June figure through one bar per calendar month July to December (net change in dwellings) to the annex figure, the line drawn at 25 per cent of the section's dwellings with its value, a title carrying the designated count. 2 x (start, six months, end) = 16 values plus about 4 named parts.
+Shape 02. Two files, the visual first-class:
 
-Arithmetic: 8 + 28 (at least) + 20 + 3 files = about 59 criteria off the shape, against the 25 floor. Distinct findings: the designated set (the call), the forward walk for the two marginal sections (the bridge), the group concentration per section, the empty large-holder stock per section. Named-parts visual: yes. Breakdown at an explicit grain: one row per section. Robustness check: the bridge ties the bulletin's published figure to the annex figure, a cross-file reconciliation.
+1. `tenter_house_calloff_2027.xlsx`: the call-off (units by bedroom size and in total for 1 April 2027) and the weekly cost at the Lot 3 rates in force on the start date; the month-end run-off of households still in the block, October 2026 to March 2027, by bedroom size.
+2. `tenter_house_runoff.png`: the month-end households by size, with the call-off marked at March.
 
-Script-generated: the CSV and the PNG come from the golden script; the PDF is typeset from the same figures.
+Criteria arithmetic: the call-off by size and total (5), the weekly cost (1), 24 month-end cells, the chart and its named parts (about 4): about 34.
 
-### The ask ledger (supplemental-stumping)
+## Ask sheet (supplemental-stumping)
 
-**The main call's declared row population.** Return rows for references in the fourteen sections (columns: declarant NIF, return quarter, lodgement date, version type, replaced return, reference, door, holding code, agreed transfer date, agreed buyer NIF, agreed price), cadastre rows of the fourteen sections, deed rows for references in the fourteen sections (2025 and 2026), ledger rows of programme PPO whose concept carries a reference in the fourteen sections, the bulletin, the 2026 annex, the order, the guidance, the portal notice, the register's holder sheet (for who is a large holder). Asserted in the generator: **zero** device rows and zero hazard rows inside it. The device rows live in the register's group-link sheet, the group code table and the municipal register deliveries, which the main call never reads, and the one column of the returns an ask reads that the call does not (the group code stored at lodgement) carries no device by itself.
+- **Ask A, the month-end run-off by size (24 cells).** Use: Declan's team schedules the moves and the Lot 3 starts. Devices, each silent: the October lets already accepted (counted once, in the plan); the plan's September rephasing of one- and two-bed lets across months (half-year totals unchanged, so the call does not move); the Brook Meadow handover in February and March (three- and four-bed). A rate response misses all 24; a queue response on the original plan misses at least 10 cells; a double count misses every October-onward cell in the sizes where accepted lets fall to Tenter House.
+- **Ask B, the weekly cost.** The price schedule carries Lot 2 nightly rates and Lot 3 weekly rates, each for 2026/27 and from 1 April 2027 after the uplift; the call-off starts on 1 April 2027 under Lot 3. Devices: the lot, the rate year.
+- **Pair arithmetic, on paper.** A response that runs a rate files every count wrong: it keeps the chart parts, a few zero cells at most and possibly the cost structure, about r = 4 of the recommendation block and under 0.15 of the asks. A response that builds the queue right lands the call (about 45) and the asks less what the devices take. Both top responses need to miss the queue for the pair to sit near 25; if one lands it, the pair averages about (45 + 0.6 x 55 + 4 + 7) / 2, about 45. The build therefore stands on the main ladder: at most one response in the field may build the borough-wide duty-date queue with homeless-at-home households and current needs.
 
-**Decoupling, asserted.** Recompute both asks under R3, R4, R4' and R5: every ask figure is identical across the four, because no agency-touched dwelling belongs to its section's largest group or the group second to it (sellers and agreed buyers in every takeover are small groups in that section), and every agency-touched dwelling is occupied on both municipal deliveries. The cracker and mirror sheets therefore differ only in the call's components.
-
-**Ask B, the largest large-holder group per section and its dwellings (14 x 2).**
-- Use: the order notifies each designated section's largest group, and the housing inspectorate addresses its first visits there; the annex carries it for every watch-list section so the notice list is ready whatever the minister changes.
-- Primary device, a stored segment taken before a silent switch (D2, proven silent): each return carries the group code the declarant gave at lodgement. Four companies changed group between 1 July and 31 December 2026 (two acquisitions effective 1 October and 16 November, recorded in the register's link sheet in September with those effective dates; two exits effective 1 August and 14 December), and their 30 June returns carry the old code. The register's link sheet, in force on 1 January, is the record. Over-cleaning half: a fifth change is filed with an effective date of 1 March 2027 and must not be applied; reading the register's latest state applies it.
-- Hazard HZ1, codes reissued to a different group (D7, proven silent): two group codes freed when their groups dissolved in early 2026 were reissued in May 2026 to new groups. Holders carried on returns lodged before the dissolution still bear the old code; joined to the code table they land on the new group's name with no orphan. The link sheet by declarant NIF is the record.
-- Magnitudes (asserted): the primary alone moves the largest group or its count in at least 8 of 14 sections; HZ1 alone in at least 5; together in at least 11; every composed mishandling moves each moved figure by at least 3 dwellings, and no subset cancels back onto the golden.
-- Stops: S1 the stored code mapped through the current code table (natural); S2 the link sheet used for the four switches but codes mapped through the current table; S3 the link sheet's latest state, the March 2027 change included (over-cleaned); S4 the right membership on the 30 June holdings (no roll); S5 the answer.
-- Organs: the link sheet (structural) and the register dictionary's sentence that membership is recorded by declarant with its effective dates and that freed codes may be reissued (documentary, filed generally, in a different file from the returns).
-- Path (8 files): returns, return guidance, portal notice, cadastre, deeds, register (holder and link sheets), group code table, order. Columns (12): declarant NIF, version type, replaced return, lodgement date, reference, door, holding code, stored group code, agreed buyer and date, link effective dates, code validity dates, group name.
-
-**Ask C, large-holder dwellings with nobody on the municipal register (14).**
-- Use: the agency's inspection unit plans the empty-dwelling notices the programme sends with the order; the count per section sizes the visits.
-- Primary device, an absent reporter (D4, proven silent): the September 2026 municipal delivery is missing València districts 11 and 12 and Alacant district 2, whose last delivery is June 2026; a dwelling missing from the September file reads as empty. The exchange note's rule (each delivery replaces the previous one for the districts it contains) makes June the record for those districts. Over-cleaning half: genuinely empty dwellings in those districts appear in June with no resident, and some September districts have genuinely empty large-holder dwellings. Sections moved: A3, S and U (València districts 11 and 12) and Q (Alacant district 2), each by at least 6 dwellings (asserted).
-- Hazard HZ2, lapsed registrations (code semantics by date, silent): non-EU residents whose registration passed its two-year renewal date without renewal are still listed with no status change; the exchange note states that such registrations have lapsed. Moves at least 9 of 14 sections by at least 2 dwellings.
-- Hazard HZ3, units set per source (D3, proven silent): Castelló delivers one row per dwelling with a resident count (zeros included), València and Alacant one row per resident; counting rows reads every Castelló dwelling as occupied. Moves O4 and O5.
-- Magnitudes: the primary moves at least 4 sections by at least 6 dwellings each; every section's figure sits under at least two devices; no subset of mishandlings cancels onto the golden in any section.
-- Stops: S1 September file only, rows counted, missing read as empty (natural); S2 June fallback but lapsed residents counted; S3 every dwelling with any non-EU resident treated as empty (over-cleaned); S4 the right rule on the 30 June holdings; S5 the answer.
-- Organs: the June delivery (structural, a second file) and the exchange note (documentary, a third).
-- Path (10 files): returns, guidance, portal notice, cadastre, deeds, register holder sheet, order, municipal delivery September, municipal delivery June, exchange note. Columns (13).
-
-**Referee.** The 2026 annex is byte-clean and never trapped; it arbitrates the scheduled-sale roll and nothing in the ask layer.
-
-**Hazard table.**
-
-| Hazard | Asks moved | Per-ask effect (target) |
-|---|---|---|
-| HZ1 reissued group codes | B | at least 5 sections' group or count |
-| HZ2 lapsed registrations | C | at least 9 sections, at least 2 dwellings each |
-| HZ3 per-source rows | C | O4 and O5, at least 5 dwellings each |
-
-Two asks cannot carry hazards that cross several asks; each ask instead stacks a primary and at least one hazard on every graded figure (B's 28 figures under the primary or HZ1 in at least 11 sections; C's 14 under HZ2 everywhere it moves and the primary or HZ3 in six).
-
-**Pair arithmetic, on paper.** Planning weights 38 / 7 / 55, with the annex's large-holder counts and shares, the brief and the bridge in the recommendation block (they are the call's components and its audit trail) and B and C as the asks. Mirror response (stops at R3): it keeps the large-holder counts and shares of the two untouched sections and a few chart parts, r about 4. Required: 55 x (Lc + Ls) <= 28 - 4 = 24, so Lc + Ls <= 0.44. Estimated leakage with the devices above and the battery applied: about 0.20 each (a top response that reads the register's link sheet by effective date and the exchange note's replacement rule clears the primaries; HZ1 to HZ3 then still hold most figures). Estimated pair: cracker 45 + 55 x 0.20 = 56, mirror 4 + 7 + 11 = 22, average 39. If the generated rubric files the annex's large-holder counts and shares as asks instead, the mirror keeps 4 of 28 of those cells and the cracker all of them, and the estimate moves to about 41; the Part 8 pair simulation reruns this with the real weights after stage 3.
-
-**Separation.** Zero device rows and zero hazard rows in the main call's population, asserted with the counts in the generator; deleting every device from the pack leaves R3 and the answer unchanged (asserted).
-
-### Assertion plan (generator and independent verifier: 26 groups, about 55 assertions)
-
-1. Each rung's set by name (R0, R1, R2, R3, R4, R4', R5), all distinct, none but R5 equal to the answer.
-2. The position table, row by row (set size and distance).
-3. The 103-cell grid, cell by cell, with the set each cell files.
-4. The corridor: every day count from 110 to 132 and the 4-calendar-month reading return the answer set and every annex count.
-5. No large-holder commitment from 22 August to 11 September; every commitment Monday to Thursday; no completion on a Valencian public holiday or weekend.
-6. The settled corpus: 27 of 27 at 120 calendar days; notified date different from deed date in 27 of 27; each rival's miss count and minimum miss.
-7. The back-test: every scheduled sale with an agreed date on or before 30 September completed on that date to that buyer; zero taken-over agreements with an agreed date on or before 30 September; zero large-holder commitments dated on or before 30 June.
-8. The bulletin reproduced by R2 on 14 of 14; R1 and R0 miss counts.
-9. The 2026 annex reproduced by R3 on 2025 data on 14 of 14; R5 on 2025 data identical case for case; the ledger empty before 2026.
-10. The R3 to R5 count delta at least 3 in each of twelve sections, and the one-decimal share different in each of them.
-11. Line clearance: every answer share at least 0.5 points from 25.0; every share at least 0.015 points inside its one-decimal bin; both gap figures mid-bin and equal on both rounding paths.
-12. Nearest-section separation at least 0.3 points on each side; the bridge sections are P and Q.
-13. Dominance ratios for P, S and Q at least 1.3.
-14. The twin pairs identical on every return column and split only by the ledger.
-15. Threshold convergence: every holder at ten or more under every rung on both dates; no off-register buyer at ten or more.
-16. No deed, scheduled date or completion from 28 December to 4 January; no co-owned dwelling in the fourteen sections; no cadastre change in the fourteen since 1 January 2025.
-17. All 24 orders of the conformance steps give the same 30 June picture; three row shuffles give the same answer.
-18. Each malformed reference has exactly one validating cadastre candidate; the reporting-quarter reading of the unit change misses the bulletin on at least 3 sections.
-19. The clean-data fill repair: answer and R3 unchanged, answer different from R3.
-20. Ask B: golden per section, each stop's figures, the primary's and HZ1's moved-section counts, composed-subset deltas, the largest group's lead of at least 3.
-21. Ask C: golden per section, each stop, the primary's, HZ2's and HZ3's moved-section counts, composed-subset deltas.
-22. Decoupling: both asks identical under R3, R4, R4' and R5.
-23. Separation zero-counts inside the main call's population; deleting the devices moves neither R3 nor the answer.
-24. Hygiene battery on each ask's wrong path comes back clean (no duplicate keys, no orphan joins, no fan-out).
-25. Leak sweeps: no shipped sentence contains first offer, tempteig outside the ledger's concept column, displacement or a day count; the programme code PPO appears only in the ledger.
-26. Input gates: at least 10 files, at least 4 formats, the returns file at least 25,000 rows, three distractors named in metadata.json; two consecutive builds byte-identical.
-
-### Pack plan (stage 3 builds against it; names provisional, in the organisations' own idiom)
+## Pack plan
 
 | File | Format | Role |
 |---|---|---|
-| `declaracions_grans_tenidors_2024T3_2026T2.csv` | CSV, about 68,000 rows | spine: every version of every holder's quarterly return, held, scheduled-sale, option and reservation rows |
-| `guia_declaracio_trimestral.pdf` | PDF | return guidance: version types, the no-change rule, holding codes, field list |
-| `avis_portal_canvi_format.eml` | EML | the portal's notice of the change from building to dwelling rows for returns lodged from 1 April 2026 |
-| `registre_grans_tenidors.xlsx` | XLSX | the register: holders (NIF, name, registration), group links with effective dates, dictionary sheet |
-| `codis_grup.csv` | CSV | group code table with validity dates and names |
-| `cadastre_habitatges_extracte.csv` | CSV | every dwelling (reference, door) in the fourteen sections and every dwelling on any return, with its section |
-| `escriptures_inscrites_2025-01_2026-09.csv` | CSV | deeds registered January 2025 to September 2026 for those dwellings: execution and registration dates, seller and buyer NIF, price |
-| `EPPR_execucio_pressupost_2026.csv` | CSV, about 6,500 lines | the agency's budget execution January to September 2026, every programme, phases A, D, O and P, free-text concept |
-| `butlleti_parc_residencial_2026T2.pdf` | PDF | the observatory's 30 June bulletin: watch list and per-section 30 June figures |
-| `annex_designacio_2026.xlsx` | XLSX | the 2026 annex (the close-out) |
-| `ordre_programa_grans_tenidors.pdf` | PDF | the programme order (governing document) |
-| `padro_lliurament_2026-09.csv`, `padro_lliurament_2026-06.csv` | CSV | the two municipal register deliveries |
-| `nota_intercanvi_padro.txt` | TXT | the exchange note |
-| `notes_designacio_2026.docx` | DOCX | Celestina Gallart's working note on the 2026 build (social layer) |
-| `fiances_lloguer_seccions_2025.csv` | CSV | distractor: rental deposit register by section |
-| `atles_renda_seccions_2023.csv` | CSV | distractor: household income by census section |
-| `butlleti_parc_residencial_2026T1.pdf` | PDF | distractor: the superseded 31 March bulletin |
+| `ta_placements_2018-04_2026-09.csv` | CSV, 25,000+ rows | spine: every TA placement live on or after 1 April 2018 |
+| `homelessness_cases_2026-09-30.csv` | CSV | every case open on or after 1 April 2018: dates, decision, need at decision, closure |
+| `bedroom_need_reviews.csv` | CSV | reviews of bedroom need with effective dates |
+| `moveon_lets_2018-04_2026-09.csv` | CSV | every move-on let, offer date, tenancy start, bedrooms, landlord; accepted October lets |
+| `moveon_plan_2026-27.xlsx` | XLSX | revised plan (14 September), original plan (March), notes |
+| `corvane_notice_tenter_house.pdf` | PDF | the owner's notice |
+| `tenter_house_closure_procedure.docx` | DOCX | the TA team's procedure for the closure (the pins) |
+| `dps_lot2_lot3_price_schedule.xlsx` | XLSX | DPS rates, 2026/27 and from 1 April 2027 |
+| `ta_weekly_position_2026-09-28.xlsx` | XLSX | context artifact: households in TA by type and size |
+| `accommodation_register_2026-09.csv` | CSV | TA units: block, unit, bedrooms, type |
+| `housing_needs_extracts_dictionary.txt` | TXT | field definitions |
+| `housing_register_lets_2025-26.csv` | CSV | distractor: every social let in the borough to every register band |
+| `ta_spend_monitoring_2026-27_q1.xlsx` | XLSX | distractor: TA spend monitoring |
 
-18 files, 6 formats. Provenance: a fully constructed pack (dataset-generation section 2); the INE section codes, the municipality codes and the cadastral reference format with its control letters are real conventions.
+## Prompt
 
-### Realism debts
-
-- **The agency's July to September commitments** (84 large-holder dwellings in the watch list and 16 elsewhere, plus 19 small owners', in three months) follow a mid-year credit increase that the ledger shows as a budget modification line in July; on a regional programme that is a plausible scale, stated here because it is concentrated.
-- **The three-week gap with no large-holder commitment** (22 August to 11 September) is forced by the corridor; it sits in the August holiday and the budget cycle and is mirrored by a dip in every other programme's commitments in the same ledger.
-- **Exactly 120 days, every time.** An administrative completion period fixed by the decree that is not shipped; the ledger shows the O phase on the deed date for every settled case, so the regularity reads as procedure rather than coincidence.
-
-### Stopping rule (written before any round)
-
-- One plain solver. If it files any set other than the six sections, the build goes to the determinism judge.
-- If it files the six sections, the route is read: a solver that reached the ledger from the deeds' agency buyers gets a loop that moves the settled clock cases off the deed extract's buyer column (agency purchases registered under the agency's nominee company); a solver that reached it by auditing every file gets a loop that re-roots the ledger as a monthly commitments report keyed by expedient number with the reference in a second file. Three loops, then retire.
-
-### Prompt
-
-`prompt.md`, calendar-first, three files, 255 words at 25.5 words a sentence; voice-check clean (no calcified carrier, no shared six-word run, every ECONOMY gate under its flag). Written below the stump sentence's vocabulary: no input file named, no mention of first offer, the agency, deeds, returns or the 1 January basis, one stakeholder belief (Celestina sees no reason to change last year's method), and the bridge window carried as "every calendar month in between" so the prompt fixes no date.
-
-## Hardening loop 1 (2026-10-10): a rung above the agency's clock
-
-**Brief.** Round 1's plain solver opened the agency's budget ledger unprompted, read the PPO phase D lines as first-offer commitments, recovered the 120-day clock from the settled deeds made out to the agency and moved P, S and Q both ways: it executed R3 to R5 in full and filed the six-section answer (88.8). The repair is a rung after which that whole construction still completes and still returns the wrong set.
-
-**What the solver held fixed.** Its own path sentence: "A buyer counts as a large holder only if it is on the register's Titulars sheet with no baixa", applied to the transfers it rolled, while the population it rolled was the holders that lodged the 30 June returns. Nothing in its construction asks who is a large holder on 1 January that was not one on 30 June without a transfer the roll reads.
-
-**The rung (R6).** Article 2.1 makes a large holder a person holding ten or more dwellings and inscribed in the register. Four holders were inscribed after 30 June (17 September, 23 July, 27 August and 9 July 2026) and have lodged no return: the guidance makes the inscribed declare, and the first return of a holder inscribed in the third quarter is due by 30 October. Two of them hold watch-list dwellings, all bought from private owners between July 2024 and June 2026 (never July to December 2025, never after 30 June 2026): Habitatges Cornisa SL 18 in S (4625011016), Pòrtic Residencial SL 5 in A1 and 6 in O2. On 1 January they are large holders and their dwellings count (Articles 2.1 and 2.4). S goes from 150 (23.4%) to 168 (26.2%) and is designated; A1 goes to 260 (32.0%) and O2 to 155 (20.7%), neither crossing.
-
-**Stump sentence (hardened).** A competent solver conforms the 30 June 2026 returns, reproduces the bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds to 30 September, finds the agency's first-offer commitments and completes each taken-over sale 120 days after commitment as its 27 settled purchases show, and files six sections (A1 to A4, Q and U); the step that lands it there is taking the large holders on 1 January to be the holders that lodged the 30 June returns, when the register lists four holders inscribed after 30 June with no return yet and the deed extract shows one of them holding 18 dwellings in 4625011016, so S stays over the line and the order designates seven sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014, 4625011016 and 4625012009.
-
-**The answer.** Seven sections: A1 to A4, Q, S and U. Nearest designated Q at 25.7 (0.7 over; next S 26.209 and U 26.208, 0.5 further); nearest undesignated P at 24.2 (0.8 under; next T 22.6). The bridges stay P and Q, which hold no registrant dwelling (asserted). Against the 2026 annex P and T leave and U joins.
-
-**Measured trap.** #13, validates on one population and applies to another (3 of 64, 2 under 0.50): the returns-based population is validated by both controls, where it equals the inscribed population because every holder inscribed by 30 June 2026 has lodged (asserted), and applied to 1 January 2027, when four inscribed holders have not. Behind it #5, takes the population a flag suggests: the returns file reads as the list of large holders. Not a louder pin (Article 2.1 is unchanged, word for word, since stage 2), not a defect (every file is complete for what it covers), not a second decoy (no artifact or voice names a set).
-
-**Survival properties.** (1) No shipped sentence: the order defines the holder, the guidance says the inscribed declare; nothing says an inscribed holder can be missing from the returns or where its dwellings are. (2) No corpus nominates it: the bulletin is 30 June and the 2026 annex 1 January 2026, both before any of the four inscriptions, and no registrant deed falls in a window either control's roll reads (July to December 2025), so both controls reproduce with or without R6 (asserted). (3) No arithmetic symptom: every return ties, every join lands, and every registrant purchase is from a private owner, so no holder's count ever moved when it happened. (4) Not a per-row predicate: a registrant's dwellings are the dwellings whose last deed names it as buyer, a group over the whole deed extract keyed by an entity the returns never mention. (5) Enumerated by arithmetic over the extract, not by a column. (6) No cutover steps a series: the registrants' 29 purchases spread over 2024 to 2026 and move no published figure. (7) Survives the deletion: R5 is still the natural forward roll and still reproduces both controls. Residual exposure, stated for the next round: the four registrants are the only holders on the sheet without a return and the newest inscriptions on it (six standalone holders now carry first-half 2024 inscriptions, so inscriptions do not stop in 2023), and a solver that reconciles the register against the returns finds them; whether it then reads their holdings off the deeds is the bet.
-
-**Clock closure in the same loop.** Round 1's own "main risk" was an open fork: all 23 settled purchases had a notified date inside commitment plus 120 days, so "completes on day 120 or on the notified date, whichever is later" reproduced the corpus too and keeps P over the line. Four settled purchases of private dwellings (committed 12 March to 14 May, deeds 10 July to 11 September) now carry notified dates 11 days or more after their deeds, so the floor reading misses 4 of 27 (asserted). That reading with the registrants files A1 to A4, P, Q, S and U; without them A1 to A4, P, Q and U.
-
-**Grid.** The 96 cells become 192 with the registrant toggle; only the all-correct cell files the answer and the other 191 are each mapped to the rule they violate (asserted). Partial cells: every clock partial with the registrants files a wrong set except the clock applied only in P, S and Q, which files the answer set and misses the counts of 8 or more sections. One refused reading lands on the answer set: 120 working days, with or without the registrants, puts S's 3 December completion into late January and files A1 to A4, Q, S and U with 7 sections' counts wrong; the settled corpus misses it 27 of 27 by 50 to 55 days, so it is a refused rival, not a fork, and a solver that back-tests the clock never takes it.
-
-**Clean-data and lens tests.** The returns filled into one complete return per holder give the same R3, R5 and R6, all three different (asserted). No return can be filled for the registrants: none existed for 30 June, when they were not inscribed. The instrument repair still has nothing to substitute: holdings on 1 January 2027 cannot be observed before that day, and the registrants' first returns (30 September holdings) are not due until 30 October. R5 and R6 are different populations on the same day, built from a third file, not one record read two ways.
-
-**Decoupling.** Both asks are identical under R3, R4, R4', R5 and R6 (asserted): no registrant leads a section's group count and every registrant dwelling is occupied on the delivery that governs its district.
-
-**Stopping rule for the next round.** A solver that lands seven sections again by reconciling the register against the returns gets loop 2: the registrants' footprint moved so that no register-to-returns reconciliation isolates them (inscriptions spread so several holders inscribed in 2026 have lodged), or the architecture is retired at loop 3 as the build-pipeline rule says.
-
-## Build record
-
-Stage 3a, the evidence pack, 2026-10-10. Generator: `generator/build.py` (modules `common`, `plan`, `world`, `history`, `nonwatch`, `returns`, `tables`, `ledger`, `padro`, `docs`, `distractors`, `writers`, `analysis`, `asserts`); independent verifier: `generator/verify.py` (pandas, its own parsing, conformance, roll and asks, reads only `target/` and, for the input gates alone, `metadata.json`); `generator/ship.py` runs the double build and the comparison. Seed 130. Every figure below is read off the generator's record or the verifier's report of the shipped files.
-
-**Gate outcomes.**
-
-- Generator green: 120 assertions (the 26 groups of the plan, plus the container audit and the referee checks).
-- Two consecutive builds into the scratchpad byte-identical, file mtimes included (20 files: 19 in `target/` plus `metadata.json`); the task-folder build is byte-identical to both.
-- Independent verifier green on the task folder; generator and verifier agree on 205 figures (the answer, 14 annex rows by 5 columns, 7 rungs by 14 sections, both nearest sections with share and gap, both bridges, the corpus counts, the 2026 close-out).
-- Input gates: 19 files, 6 formats (csv, pdf, eml, xlsx, txt, docx); the returns file carries 45,746 rows; three distractors named in `metadata.json` (`fiances_lloguer_seccions_2025.csv`, `inspeccions_habitatge_buit_2025.csv`, `butlleti_parc_residencial_2026T1.pdf`) and nowhere in `target/`.
-- Containers: `scrub_producer_metadata.py` audits `target/` clean (no writer signature, no timestamp outside 2024-01-01 to 2026-10-10); PDFs scrubbed in place at equal length, OOXML repacked with in-fiction authors and fixed entry times; mtimes set per file to in-fiction write times (the order 3 September 2025 through the file index 6 October 2026).
-
-**The pack as built** (file names in the organisations' own idiom; the documents are in Valencian):
-
-| File | Role | Size |
-|---|---|---|
-| `declaracions_grans_tenidors_2024T3_2026T2.csv` | spine: every version of every return, parcel rows before 1 April 2026, dwelling rows from it | 45,746 rows |
-| `cadastre_habitatges_extracte_20260928.csv` | every unit of the 14 sections (shops and garages included, `us` column) and every dwelling on any return | 24,557 rows |
-| `escriptures_inscrites_2024-07_2026-09.csv` | deeds executed July 2024 to September 2026, registered by 30 September | 2,001 rows |
-| `EPPR_execucio_pressupost_2026_gen-set.csv` | the agency's budget execution, six programmes, phases A, D, O, P | 5,254 lines, 142 first-offer D lines |
-| `registre_grans_tenidors_20261001.xlsx` | holders (143), group links (39) with effective and entry dates, dictionary | |
-| `codis_grup.csv` | current group-code table (one row per code) | |
-| `padro_lliurament_2026-06.csv`, `padro_lliurament_2026-09.csv` | municipal register deliveries for the 14 sections | 21,284 and 15,029 rows |
-| `nota_intercanvi_padro_rev2.txt` | exchange protocol: replacement by district, the renewal rule, the per-dwelling format | |
-| `ordre_designacio_seccions_grans_tenidors.pdf` | the order: definitions, 25 per cent on 1 January, deed execution date, annex contents | |
-| `guia_presentacio_declaracio_trimestral_2024-01.pdf`, `avis_portal_canvi_format_2026-03.eml` | return guidance (O, C, S, no-change rule, codes) and the unit change by lodgement date | |
-| `butlleti_parc_residencial_2026T2.pdf` | the 30 June bulletin (control, R2) | |
-| `annex_designacio_2026.xlsx` | the 2026 close-out (calibration, R3 on 2025 data) | |
-| `notes_annex_2026_CGallart.docx` | Celestina Gallart's method note (social layer) | |
-| `index_expedient_designacio_2027.csv` | the file index (provenance record) | |
-| distractors | deposit register 2025, inspection visits 2025, the 31 March bulletin | |
-
-**The answer as built.** The order designates six sections: 0301401008 (A4, 28.0), 0301402014 (Q, 25.7), 4625001005 (A1, 31.4), 4625002007 (A2, 29.3), 4625011004 (A3, 33.3), 4625012009 (U, 26.2). Nearest designated Q at 25.7 (0.7 over, 155 of 603); nearest undesignated P at 24.2 (0.8 under, 183 of 757); the next ones are U at 26.2 and S at 23.4. Bridges: P 205 then July to December -1, 0, 0, -1, -20, 0 to 183; Q 165 then -2, -2, -2, 0, 0, -4 to 155.
-
-| Section | Role | N | R0 | R1 | R2 | R3 | R4 | R4' | **R5** | share | largest group (dwellings) | empty |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 0301401008 | A4 | 561 | 152 | 154 | 162 | 160 | 160 | 157 | **157** | 28.0 | Grup Cantonera (43) | 8 |
-| 0301402014 | Q | 603 | 142 | 154 | 165 | 141 | 141 | 141 | **155** | 25.7 | Grup Barana (38) | 9 |
-| 0301405003 | O3 | 612 | 92 | 98 | 114 | 113 | 109 | 109 | **109** | 17.8 | Grup Cantonera (28) | 5 |
-| 1204001006 | O4 | 688 | 175 | 180 | 156 | 154 | 154 | 154 | **154** | 22.4 | Grup Porxo (40) | 9 |
-| 1204003011 | O5 | 516 | 83 | 87 | 93 | 92 | 92 | 92 | **92** | 17.8 | Grup Arcada (25) | 6 |
-| 4625001005 | A1 | 812 | 214 | 228 | 263 | 258 | 258 | 255 | **255** | 31.4 | Grup Barana (89) | 14 |
-| 4625001012 | P | 757 | 200 | 201 | 205 | 203 | 203 | 183 | **183** | 24.2 | Grup Xamfrà (75) | 11 |
-| 4625002007 | A2 | 689 | 146 | 179 | 205 | 199 | 199 | 198 | **202** | 29.3 | Grup Finestral (73) | 9 |
-| 4625002019 | T | 722 | 126 | 132 | 187 | 166 | 163 | 163 | **163** | 22.6 | Grup Finestral (50) | 12 |
-| 4625005013 | O1 | 879 | 164 | 172 | 188 | 186 | 186 | 183 | **183** | 20.8 | Grup Escaire (47) | 10 |
-| 4625011004 | A3 | 931 | 255 | 272 | 316 | 313 | 308 | 308 | **310** | 33.3 | Grup Barana (108) | 17 |
-| 4625011016 | S | 641 | 114 | 128 | 169 | 167 | 150 | 150 | **150** | 23.4 | Grup Mitgera (48) | 7 |
-| 4625012009 | U | 538 | 105 | 110 | 126 | 144 | 144 | 141 | **141** | 26.2 | Grup Ràfec (54) | 13 |
-| 4625013021 | O2 | 748 | 132 | 139 | 151 | 146 | 146 | 146 | **149** | 19.9 | Grup Andana (48) | 6 |
-
-Rung sets, asserted by name: R0 A1, A3, A4, P, O4; R1 A1 to A4, P, Q, O4; R2 A1 to A4, P, Q, S, T; R3 A1 to A4, P, S, U; R4 A1 to A4, P, U; R4' A1 to A4, U; R5 A1 to A4, Q, U. The position table holds as designed (distances 5, 3, 4, 3, 2, 1, 0).
-
-**Controls and the calibration corpus, as measured.** R2 reproduces the 30 June bulletin on 14 of 14; R1 and R0 miss it by 4 or more on 14 and 14 sections. R3 on the 2025 data reproduces the 2026 annex on 14 of 14 (designated A1 to A4, P, Q, S, T); the 30 June 2025 snapshot misses it on 13, the deeds-only roll on 8, and R5 on the 2025 data equals R3 case for case. The deeds to 31 December 2025 agree with the annex too, so the close-out is also the outcome. Back-test: 834 of 834 agreed sales with a date to 30 September completed on the agreed date to the agreed buyer. Settled first-offer purchases (stage 3a, before loop 1 added four): 23 of 23 at 120 calendar days; the notified date misses all 23 by 10 to 82 days; four calendar months misses 18 of 23 (0 to 3 days); 120 working days misses all by 50 to 55 days. Corridor: every interval from 110 to 132 days and four calendar months give the answer's counts in all 14 sections. Dominance: P 2.64 against 1.82 points of clearance (1.45), S 2.65 against 1.05 (2.52), Q 2.32 against 1.62 (1.44).
-
-**Grid.** 96 cells (four conformance toggles by six roll variants): only the all-correct R5 cell files the answer, the other 95 file wrong sets, each mapped to the shipped rule it violates. Partial cells: the clock applied only to large-holder buyers, only to private buyers, only to agreements dated before 1 January, or only to commitments before 1 September each file a wrong set; 120 working days files a wrong set; taking the commitments over only in P, S and Q files the answer set but misses the counts of nine sections.
-
-**Asks as measured.** Ask B: the largest group leads by 3 or more everywhere; stored codes (the natural stop) move 13 sections; the switches alone (reissue handled) 9; the reissued codes alone 5; links else stored 8; the latest-state link sheet (over-cleaned) 1 (U); no roll 10; every moved figure moves by a name or by 3 dwellings or more. Ask C: golden 5 to 17 per section; the September file read alone puts every large-holder dwelling of A3, S, U and Q in the count (310, 150, 141, 155); lapsed registrations counted as residents move 12 sections by 2 or 3; per-dwelling rows counted as people zero O4 and O5; reading every non-EU resident as absent overstates all twelve per-person sections. Both asks are identical under R3, R4, R4' and R5, and deleting the link sheet, the code table and both deliveries moves neither R3 nor the answer.
-
-**Departures from the stage 2 plan, all asserted.**
-
-- The agency's commitments touch twelve sections with net R3 to R5 moves of 3 to 20 dwellings; O4 and O5 (Castelló) are untouched, so their figures match the stop rung. The plan's answer table had all fourteen moving; the stage 2 text (twelve) holds.
-- 84 large-holder dwellings in the watch list are under first-offer commitments (the stump sentence said about 64), plus 16 elsewhere in the region; 142 first-offer D lines in all (with 23 settled and 19 pending small-owner purchases).
-- The large-holder commitment gap runs 22 August to 13 September (the corridor's own arithmetic: 1 January minus 110 days is 13 September), not to 11 September.
-- Shares differ from the plan's targets where the bins required: A1 31.4, A2 29.3, A3 33.3, A4 28.0, P 24.2, S 23.4, Q 25.7, T 22.6, U 26.2; every answer share sits 0.015 points or more inside its bin and 0.5 points or more from the line.
-- The reporting-quarter fork on the unit change is closed by convergence rather than measured: every row's shape (parcel and units, or a 20-character reference) follows its lodgement date, asserted, so no reading of the notice can apply the wrong unit to a row. Returns for 2025T4 lodged after 1 April carry dwelling rows, asserted.
-- The reference repair is made load-bearing at the answer: five malformed references sit in Q's 30 June picture (dropping them puts Q under the line), with Q's option rows raised to four so R1 keeps Q over it.
-- To hold every ask B stop at a name or 3 dwellings, the leading group in eight sections buys 4 dwellings from a small holder between July and September (sales between large holders, count-neutral for every section and every rung).
-- The 2026 annex's group column reads membership on 1 January 2026; no group whose code was later reissued leads any section, and the stored-code reading reproduces the column, so the referee arbitrates the roll and nothing in the ask layer.
-- `DATASET_NOTES.md` is not written: this note carries the pairing, the ladder and the ask ledger, and a second note is banned in a task folder.
-
-Stage 3b, the write-up and ship checks, 2026-10-10. `generator/golden.py` reads only `target/` (through the verifier's own parsing and conformance) and writes `golden/designation_brief_2027.pdf` (to Amaro Peláez from Aurora Roig, dated 30 October 2026, before the earliest agency completion it describes), `golden/designation_annex_2027.csv` (14 rows, the 2026 annex's column vocabulary) and `golden/section_bridge_2027.png`; it asserts the bulletin tie, both bridges closing, the settled cases at 120 days (23 at this stage, 27 after hardening loop 1, asserted by `asserts.py` as 27 of 27) and every count word in the brief from its own lists, scrubs the containers with the in-fiction producer and stamps the files 30 October 2026. Its figures equal the verifier's on every annex cell, both nearest sections and both bridges, and two runs are byte-identical. `submission.md` is in the five-block format; golden-realism and the reduce-house-fixes register ran after the figures froze and moved no figure. Two pack changes came out of the leak sweep and were made in the generator: the return guidance is now `guia_presentacio_declaracio_trimestral_2024-01.pdf` (the `_v3` suffix tripped the file-name sweep), and the order's watch list and both bulletins print each section as municipality, district, INE municipality code, district number and section number, with a sentence that the 10-digit code chains the last three (the verifier's bulletin parser rebuilt to match). Rebuilt with `ship.py`: 120 assertions green, two scratch builds and the task folder byte-identical, verifier green (15,031 checks), generator and verifier agreeing on 205 figures, goldens unchanged byte for byte. `leak.py --asof 2026-09-30`: REVIEW, answered below. `guard.py surface`: one promoted pair, task62, promoted on the card-level same-driver signature (gap time, pattern A, etl_conformance) already differentiated on the card at the draw, with surface similarity 0.069 at the corpus's 28th percentile, so there is no rename or regeneration to make; the three exchange-note and notice personas the pack names (Flor Segarra, Jose Nevado, Rosaura Rodrigo) are now on the card. `guard.py heart`: PASS (nearest 0.06; one NOTE, the task62 signature, differentiated). Card updated (stump, answer, deliverables, people) and `guard.py validate` clean.
-
-Hardening loop 1 rebuild, 2026-10-10. Generator changes: `plan.py` (the four early-deed settled purchases and the four registrants), `history.py` (the extra settled purchases on their own random stream, and the pending small-owner commitments drawn clear of every settled dwelling), `core.py` (the registrants' 29 purchases from private owners, and six standalone holders given first-half 2024 inscriptions), `tables.py` (registrants on the holder sheet), `analysis.py` and `build.py` (rung R6), `asserts.py` (R6 throughout: ladder, position table, 192-cell grid, the floor and working-day readings, 27 settled cases, the registrant block, the clean-data test, decoupling under R5), `verify.py` (its own late-registrant reading off the deeds) and `golden.py` (R6, the registrant paragraph and the S sentence in the brief). Gates, all re-run in full with `ship.py`: 134 assertions green; two scratch builds byte-identical, mtimes included (20 files), and the task-folder build byte-identical to both; verifier green (15,093 checks) and agreeing with the generator on 219 figures (the answer, 14 annex rows by 5 columns, 8 rungs by 14 sections, both nearest sections, both bridges, the corpus counts, the 2026 close-out); input gates 19 files, 6 formats, returns 45,070 rows, three distractors in `metadata.json`; container audit clean. Pack as rebuilt: deeds 2,034 rows, ledger 5,278 lines with 146 first-offer D lines, the register's holder sheet 147 holders. Answer as rebuilt: seven sections, A1 to A4, Q, S and U; S 168 of 641 (26.2), A1 260 (32.0), O2 155 (20.7), every other section as in the stage 3a table; nearest designated Q 25.7 (0.7 over), nearest undesignated P 24.2 (0.8 under); bridges unchanged (P 205 to 183, Q 165 to 155). Goldens rebuilt by `golden.py` from `target/` (byte-identical on two runs); `submission.md` rewritten to the seven-section call, with the guidance file now cited by its shipped name. `leak.py --asof 2026-09-30`: REVIEW, the same classes as answered below. `guard.py surface`: the one promoted pair is task62 again (surface 0.069, corpus percentile 27), already differentiated on the card. `guard.py heart`: WARN, not BLOCK: the calendar-first opening move repeats task128's prompt (a build registered after this one's prompt was written), and the task62 NOTE stands. Card updated (answer, stump, a hardening note) and `guard.py validate` clean.
-
-Stage 3b re-run after hardening loop 1, 2026-10-10. `golden.py` re-run on the rebuilt `target/`: all three goldens byte-identical to the files on disk, its printed figures equal to every figure in `submission.md` (seven sections; Q 25.7 and 0.7 over, P 24.2 and 0.8 under; 14 annex rows; both bridges and their lines at 189.25 and 150.75 dwellings), and the verifier green on the task folder (15,093 checks, same answer and nearest sections). `submission.md` kept as written: five blocks, every backticked file, sheet and column it cites resolves in `target/`, and Articles 2.1, 2.3, 2.4, 4, 5 and 6 exist in the order. golden-realism: the brief (letterhead, finding title, lopsided method section, two-page annex table with source line and three notes, count words emitted from the lists that produce them), the annex (the organisation's column vocabulary, the order's annex sort) and the chart (title carrying the count, labelled line at its dwelling value, annotated decisive month, deliberate two-colour palette, the navy total bars under the validator's categorical chroma floor by intent as recessive anchors, not a series) needed no edit; containers audit clean on `golden/` and `target/`. reduce-house-fixes register read through H1 to H22 with nothing to fix (one `submission.md` and one `prompt.md`, three goldens, no stale citation). `leak.py --asof 2026-09-30`: REVIEW, 82 lines in the classes answered below. `guard.py surface`: one promoted pair, task62, on the card signature alone (surface 0.069, percentile 27), differentiated on the card, no rename or regeneration. Card driver and driver_concrete rewritten to the decisive move R6 (they still described the agency clock, now R5), spine rows 45,070. `guard.py heart`: WARN, not BLOCK (the calendar-first opening repeats task128, whose prompt postdates this one; the task62 NOTE stands differentiated; nearest driver 0.07, task100 lineage). `guard.py validate`: 126 cards, 0 invalid.
-
-## Leak review
-
-`leak.py task130 --asof 2026-09-30`, verdict REVIEW, 82 lines, each class answered once with the files it covers (re-run at the stage 3b rebuild after hardening loop 1: same classes, same per-file counts, the returns' forward dates now 179).
-
-- Section codes in `annex_designacio_2026.xlsx` (13 lines), `cadastre_habitatges_extracte_20260928.csv` (13), `padro_lliurament_2026-06.csv` (13), `padro_lliurament_2026-09.csv` (10): the watch-list sections are the row key of every per-section file; a code names a candidate and says nothing about which side of the line it falls on.
-- Section codes in `fiances_lloguer_seccions_2025.csv` (13) and `inspeccions_habitatge_buit_2025.csv` (13): distractors keyed by section like the rest of the pack's registers; neither carries a large-holder share or a designation.
-- `butlleti_parc_residencial_2026T2.pdf`, 205 and 165: the 30 June large-holder counts of 4625001012 and 0301402014, which the bridges start from by design (the bulletin is the control R2 reproduces).
-- `butlleti_parc_residencial_2026T1.pdf`, 165: 0301401008's 31 March count, a coincidence with 0301402014's 30 June figure.
-- `annex_designacio_2026.xlsx` as a ranking artifact: the closed 2026 designation, labelled as holdings on 1 January 2026; it designates eight sections and differs from the 2027 answer on three (P and T designated in 2026 only, U in 2027 only), so it ranks nothing on the 2027 question (the calibration form).
-- `declaracions_grans_tenidors_2024T3_2026T2.csv`, 179 dates after 30 September: every one is `data_transmissio_prevista`, the deed date a signed sale contract schedules, forward by design.
-- `index_expedient_designacio_2027.csv`, 5 dates after 30 September: the file dates of the extracts taken 1 to 5 October of records cut at 30 September.
-- `registre_grans_tenidors_20261001.xlsx`, 5 dates after 30 September: group links annotated in September with effective dates of 1 October, 15 and 16 November, 13 December and 1 March 2027 (the ask B device), plus the extraction date of 1 October.
-
-Stage 8, ship, 2026-10-10. Solver round 2 (plain) missed the call at R5 (six sections, 4625011016 at 150 dwellings, proxy 50.4); the determinism judge returned DETERMINISTIC, APPROVE (`determinism_check_report.md`). Final rebuild with `ship.py`: 134 assertions green, two scratch builds and the task folder byte-identical, verifier 15,093 checks and 219 agreeing figures. `target.zip` cut from `target/`: 19 members, no folder, no system entries, every member equal to the fresh rebuild, 1,464,737 bytes, sha256 b958f673...ef12f3. `guard.py heart`: WARN (opening move against task128; task62 NOTE differentiated; nearest 0.07). Judge's bookkeeping finding fixed here (27 settled cases, the inspection visits in the deletion test). Its non-blocking pack findings (the September register delivery's date maxima, the docx app.xml counts, the chart line's precision, the deposit file's exact multiples, the brief's orphan heading) are left in place, because changing the pack after the judged bundle would ship a bundle the judge never read; fix them only if the pack is regenerated for another reason.
-
-## Retired
-
-Moved to the backlog on 2026-10-10 after the portal result: both top models found the ground truth.
-Not resubmitted. The card stays on file so the architecture (a certified bulletin reproduced on every
-section, then a forward roll the closed record never saw) is not drawn again, and it counts toward the
-guard's certified-record cap. task131 takes the slot.
+Evidence-first: opens on Corvane's notice. Prose, first person, the two files, units inside the sentences. Nothing about lets, order, the list or rates.
 
 ## Tried and rejected
 
+v1 (large-holder designation, failed on the portal), carried over:
+
 - The blueprint's stated-memo architecture (a methodology memo fixing the holdings rows, the amendment semantics, the unit-by-filing-date rule, CUSIP repair and the denominator source): rejected because a strong solver implements every stated clause, so the bridge becomes a computation; its traps are kept only as lower rungs.
-- Capital-markets ownership kept literally (13F holders, issuers, shares outstanding) under an accepted domain label (Accounting, Audit & Forensic, Business & Operations, a nonprofit investor coalition): rejected, markets trading is outside Economics and none of the nine owns a vendor's crowding flag without a relabel a reviewer would not accept.
+- Capital-markets ownership kept literally (13F holders, issuers, shares outstanding) under an accepted domain label: rejected, markets trading is outside Economics and none of the nine owns a vendor's crowding flag without a relabel a reviewer would not accept.
 - Confidentially omitted holdings recovered from another public disclosure as the decisive rung: rejected on the clean-data test, the public returns are a filtered file whose repair hands the natural pipeline the answer (sole_data_defect yes).
 - Denominator timing (dwellings or shares outstanding taken at a later date than the holdings) as the decisive rung: rejected on the clean-data test (a stale file whose repair collapses the task) and as a single-fact flip.
 - Holders whose returns are not yet due completed from the title register: rejected, the incomplete feed is a suspect file under the clean-data test, and the register-to-titles route is a schema-visible two-hop join a strong solver takes.
-- Double reporting under a non-exclusive holding definition (a parent and its vehicle, a trustee and its beneficiary both returning the same dwellings): rejected, the regime text that makes both returns correct concedes the overlap, and dwelling-level returns are deduplicated by reference by default.
-- Agent-filed returns and nominee title holders (the registrant is not the owner) as the decisive rung: rejected as a lens swap, registrant against owner of the same dwellings on the same date.
-- Employer concentration with PEO look-through as the re-skin: rejected, it drops the ownership scenario and co-employment look-through is textbook, announced by the industry code.
-- Passive holders re-derived at a forward date around an index change: rejected, out-of-scope domain and an index deletion's passive selling is textbook.
-- The agency's takeovers evidenced by preventive annotations in the deed extract: rejected, the evidence would sit in the forward roll's own source, and a solver choosing which entry types to apply reads the annotation type.
-- The first-offer move deciding only P, S and Q (the draw's sketch): rejected at design, eleven sections' 1 January figures were then identical under R3 and handed the mirror response 33 annex cells; the agency now touches twelve sections.
-- Settled large-holder takeovers as the clock's evidence: rejected, a taken-over agreement scheduled in an earlier return and completed to the agency on another date is a back-test mismatch that sends the solver to the ledger; the clock is pinned by small owners' sales, which touch no return.
-- The programme order naming the first-offer programme: rejected, a sentence in the document that defines the quantity sends every solver looking for exercises.
-- A bridge from the raw lodged rows to the conformed total (the source note's bridge): rejected, every bar is a lower-rung conformance step both top responses execute, so it is free weight; the bridge now walks the 30 June bulletin figure to 1 January month by month.
-- A bridge with one bar per kind of movement: rejected, the taxonomy of kinds is a Gate C fork two correct solvers split on; calendar months are determinate.
-- The annex's dwelling-count and designated columns: dropped, the cadastre count is free to every response and the flag hands the mirror eleven cells.
-- A region-wide large-holder total on 1 January as an ask, with the agency's effect netted to zero across the region: rejected, it is a figure for another population (H18) and the netting is a construction with no use behind it.
-- Advocate notes from the agency's head of acquisitions: rejected, any voice from the agency about its purchases names the mechanism.
-- Stage 3a: the reporting-quarter reading of the unit change as a measured fork (the plan's assertion that it misses the bulletin on 3 or more sections): dropped, every row's shape (parcel and units, or a 20-character reference) says which unit it carries, so the reading has no purchase on any row; closed by convergence instead, asserting that shape follows lodgement date.
-- Stage 3a: malformed references sitting only in sections far from the line: skipping the repair still filed the answer set at R5, so the repair carried no weight on the call; five malformed references now sit in Q's 30 June picture.
-- Stage 3a: the ask B no-roll stop built on the leading groups' single-dwelling sales: it moved the leading group's count by 1 in eight sections, inside any band a grader would grant; the leading group now buys 4 dwellings from a small holder in July to September, count-neutral for every rung.
-- Stage 3a: the "takeovers only in P, S and Q" partial cell as a wrong-set cell: it files the answer set, because the other nine sections the agency touches never cross the line; it stays in the grid as a counts-only miss (nine sections' figures wrong).
-- Stage 3a: a region total of large-holder dwellings in the bulletin: it landed on a round 2,500, a generation tell; the bulletin now states only the cadastre total of the fourteen sections.
-- Stage 3b: the watch list printed as 10-digit section codes in the order and both bulletins: `leak.py` reads every code in the answer as a golden figure, so three filed documents came back LEAK although a code names a candidate and decides nothing; the printed lists now carry municipality code, district and section, with a sentence that the 10-digit code chains them, and the data files keep the 10-digit key.
-- Round 1 (plain) landed the six-section answer: the agency's first-offer takeovers carried in a budget ledger's PPO phase D lines with a 120-day clock recovered from settled deeds died because the solver audited the ledger for transfers unprompted. Solver's sentence: "In EPPR_execucio_pressupost (PPO programme), every pre-emption commitment (phase D) up to September was deeded to Q4600731F exactly 120 days after its commitment date (23 of 23 cases). I matched the PPO references to the declared pending sales from October onward." The residual exposure the note named (a solver that audits every file for transfers reads the ledger) is what happened; the off-path ledger and silent clock are not enough when the buyer column of the settled deeds names the agency.
-- Hardening loop 1, the stopping rule's pre-registered repair for a ledger-auditing solver (re-root the ledger as a monthly commitments report keyed by expedient, with the cadastral reference in a second file): rejected before building, because it only hides the step the solver completed and leaves its answer right once found, and an expedient key shared by two files is the schema-visible join the solver takes on sight. Solver's sentence: "In EPPR_execucio_pressupost (PPO programme), every pre-emption commitment (phase D) up to September was deeded to Q4600731F exactly 120 days after its commitment date (23 of 23 cases)." The same round also showed the settled corpus never tests a notified date later than commitment plus 120 days (all 23 sit 38 to 110 days out), so the solver's own "main risk" (whether a pre-emption deed can fall before the planned date) was an open fork, not a pin.
-- Portal 2026-10-10, the hardened build (the four post-30 June holders rung): failed, both top models filed the golden seven-section answer. The rung above the agency's clock (holders inscribed after 30 June with no return, found in the register and the deed extract) is a join a diligent solver makes unprompted once the bulletin is reproduced, and the certified-bulletin reproduction that was meant to bless the wrong set blessed the right one's path instead.
+- Double reporting under a non-exclusive holding definition: rejected, the regime text that makes both returns correct concedes the overlap, and dwelling-level returns are deduplicated by reference by default.
+- Agent-filed returns and nominee title holders as the decisive rung: rejected as a lens swap, registrant against owner of the same dwellings on the same date.
+- Employer concentration with PEO look-through as the re-skin: rejected, it drops the ownership scenario and co-employment look-through is textbook.
+- Passive holders re-derived at a forward date around an index change: rejected, out-of-scope domain and textbook.
+- The agency's takeovers evidenced by preventive annotations in the deed extract: rejected, the evidence would sit in the forward roll's own source.
+- Settled large-holder takeovers as the clock's evidence: rejected, a back-test mismatch sends the solver to the ledger.
+- The programme order naming the first-offer programme: rejected, a sentence in the document that defines the quantity sends every solver looking.
+- A bridge from the raw lodged rows to the conformed total, and a bridge with one bar per kind of movement: rejected, free weight and a taxonomy fork.
+- Round 1 (plain) landed v1's six-section answer: the agency's first-offer takeovers in a budget ledger with a 120-day clock recovered from settled deeds died because the solver audited the ledger for transfers unprompted.
+- Hardening loop 1's pre-registered repair (re-key the ledger by expedient in a second file): rejected before building, it only hides a step the solver completed.
+- Portal 2026-10-10, the hardened v1 (holders inscribed after 30 June rung): failed, both top models filed the golden seven sections. Any rung that is a record a diligent solver can find and join is solved; the certified-bulletin reproduction blessed the path instead of hiding it.
+
+Re-root (v2):
+
+- Staying in the large-holder world with a property-against-dwelling grain stump (undivided buildings counted as one return row but holding several flats): rejected, the judge's lens-swap example (rank by logo count when the decision needs seats) is this move, and a dwelling-grain return collapses it.
+- Staying in the large-holder world with any further hidden record (a licence register for new blocks, an inheritance date, a section split): rejected, the portal solvers join every record they can reach.
+- The tensioned-zone rent burden from a deposit register (stock against flow, rents indexed on each anniversary): rejected, the update rules would have to be filed and a filed rule is a computation; the stock-and-flow reading is also close to a semantic fork on "rent".
+- A survival-curve stump on the whole TA population (length-biased stock, pooled leaving rate as the decoy): rejected after simulation, in near steady state the pooled rate and the duration-conditional forecast agree within 4 per cent on the TA total because the stock's slow leavers and the new entrants' fast leavers offset; and "last year's stock survival" lands within 3 per cent.
+- The same survival stump on a closed cohort: rejected, the gap opens (12 per cent against a rate) but a survival curve is the textbook answer to a closed-cohort question and a strong solver fits one; it is kept as a wrong rung (R3) because the departures are rationed, not hazards.
+- Tenter House filled in order of each household's first move out of emergency accommodation: rejected after simulation, the block's positions in the lists were left to chance and swung from front-heavy to back-heavy between seeds, so the call was an accident of the history; the 2023 longest-in-nightly-paid lettings rule makes the positions a property of the world.
