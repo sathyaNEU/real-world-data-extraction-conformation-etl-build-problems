@@ -78,7 +78,11 @@ clears every condition.
 Shallower stops, each a different name (harden loop 1's ladder): replay over the render rows files D; one propensity weight per
 render row files A; session weights with the guardrail on ordered_tiles file C, on in-session orders and on the lift over the
 test alike (the second is the stump); the tile count on in-session orders files B. The draw's sentence (B on in-session orders)
-was cracked in round 1; it is in `## Tried and rejected`.
+was cracked in round 1; it is in `## Retired
+
+Retired on 2026-10-10 under the author's standing rule: it passed both solver rounds after three hardening loops, but the determinism judge sent it back on Gate G: the answer wins only by reading the charter's outcome definitions in place of the logger's in-session reads (a single conceptual flip), and the shipped planning thread ranks the candidates. It is not submitted. The pack, goldens, submission and judge report stay as the record; DS11 takes the slot.
+
+## Tried and rejected`.
 
 ## Decisive rung
 
@@ -2228,3 +2232,4 @@ carries HC-36's fee row negative and every fee cell and total out of its bin.
   landed 0.21 inside its hundred's edge in the files against at least 5 predicted (the build stopped on
   ask2.every_reading_clear_of_the_edges.B). The moves are now counted on the unplaced table and added to the placed one, so
   a first-release total is the placed table's plus a constant and the placement is exact.
+- 2026-10-10, retired: it passed both solver rounds after three hardening loops, but the determinism judge sent it back on Gate G: the answer wins only by reading the charter's outcome definitions in place of the logger's in-session reads (a single conceptual flip), and the shipped planning thread ranks the candidates. Under the author's standing rule a Gate G send-back is retired like a dead build, and DS11 takes the slot in a later wave.
