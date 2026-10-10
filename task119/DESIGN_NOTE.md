@@ -379,42 +379,37 @@ natural pipeline, behind E by 2.07x.
 
 ### The ladder
 
+Current since hardening loop 3 (2026-10-10; the loop-2 ladder, where rung 4 read who placed an admission during the wait, is
+in `## Tried and rejected`). Rungs 0 to 2 are unchanged; rung 3 is now led by A over G with D at zero, and rung 4 reads the
+patient in the bed.
+
 | Rung | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact) |
 |---|---|---|---|---|
 | 0 | Deaths within 30 days after a wait of more than four hours for a level-3 bed, by referring trust, latest four quarters | E, 56 over A 44 (1.27x) | The remit's own population counted exactly as filed, and the corpus reproduces all 34 reviews under it | The unit register: E holds no level-3 beds, so every E wait is for another trust's bed |
-| 1 | Waits set aside on days the trust's own 08:00 return showed no empty staffed bed (trusts without level-3 beds carry none) | C, 34 over G 4 (8.50x) | A capacity check on the network's own published return, and C's waits survive it | The census rebuilt from C's stays: C's unit was full at every hour of every C long wait (it fills by midday, the waits start in the evening) |
-| 2 | Waits set aside where the census shows the own unit full at every hour of the wait | G, 15 over A 2 (7.50x) | The exact occupancy through each wait, and G's waits passed beside its own empty staffed beds | The methodology note counts the trust's decisions about the use of its own beds, and the full units gave beds to other patients through 78 per cent of A's long waits and every one of D's |
-| 3 | Waits through which the own unit held an empty staffed bed or admitted any other patient | A, 37 over D 27 (1.37x) | The methodology sentence applied as written: a bed given to another patient while this one waited | The transfer audit and the field guide's `bed_confirmed_at` line: every admission inside an A long wait was a patient referred by a trust without level-3 beds, planned or unplanned, on a bed the network's bed bureau allocated, not A's decision |
-| 4 | **Decisive:** waits through which the own unit held an empty staffed bed or admitted a patient the trust placed itself (one it referred itself, read from the admitted patient's referral whatever the admission type; never a bureau transfer) | **D, 27 over G 15 (1.80x)** | | |
+| 1 | Waits set aside on days the trust's own 08:00 return showed no empty staffed bed (trusts without level-3 beds carry none) | C, 34 over G 4 (8.50x) | A capacity check on the network's own published return, and C's waits survive it | The census rebuilt from C's stays: C's unit was full at every hour of every C long wait |
+| 2 | An empty staffed bed in the own unit's census (by bed assignment, as the feed dates a stay) at some minute of the wait | G, 15 over A 2 (7.50x) | The exact occupancy through each wait, and G's waits passed beside its own empty staffed beds | The theatre extract against Stennock's stays: through every Stennock wait its unit held beds assigned to its own planned surgical patients still in theatre, 27 deaths against G's 15 |
+| 3 | An empty staffed bed or any admission to the own unit during the wait | A, 37 over G 17 (2.18x); D 0 | The methodology sentence read literally: a bed given to another patient while this one waited | The transfer audit and the field guide's `bed_confirmed_at`: every admission inside an A long wait was a patient referred by a trust without level-3 beds on a bed the bureau allocated |
+| 4 | **Decisive:** a staffed bed in the own unit with no patient in it and not held by the bureau at some minute of the wait (a bed the trust assigned to its own patient who had not left theatre recovery is empty until then), or an admission the trust placed itself | **D, 27 over G 15 (1.80x)** | | |
 
-- A solver who writes the methodology sentence as its test commits to A at rung 3, which is the stump sentence's wrong answer;
-  one who stops at the census commits to G.
+- Round 3's own test (rung 3 with the bureau's placements set aside: an empty bed by assignment, or an admission the trust
+  placed itself) is the grid cell census/own/placed and files G at 15 over A's 2, the stump sentence's wrong answer; a solver
+  who re-times every held bed, the bureau's included, files A at 37 over D's 27 (held_all cells).
 - Every rung names a different trust (E, C, G, A, D), asserted by name after every parameter change.
-- Rung 4 carries the stump (#17, reached through #5 since loop 2), behind #6 at rung 3, #11 at rung 2 and #7 at rung 1.
-- Hardening loop 2: the admission-type readings of own placement sit between rungs 3 and 4 and land on the decoys: types 01,
-  04 and 05, or 04 alone, name G 15 over A 2 (the rung-2 name: D's own planned transfers are coded 03); types 03, 04 and 05,
-  anything but 02, and the queue order (an admission referred after the waiting patient is the unit's choice) name A 37 over
-  D 27 (the rung-3 name: the bureau's planned transfers into A's unit are coded 03 and referred after A's patient). Only the
-  admitted patient's referring trust, or the audit for transfers between trusts, names D.
+- Rung 4 carries the stump: measured trap #13 (validates on one population, applies to another), with #17 and #5 behind it
+  in the attribution of each hold, #11 at rung 2 and #7 at rung 1.
+- The admission-type and queue readings of own placement (loop 2) now all sit on the assignment census and land on the decoys:
+  local types or 04 alone name G 15 over A 2; planned types, anything but 02 and the queue order name A 37 over G 15.
 - The structural reading (the raw count at the four trusts holding level-3 beds, A 44 over C 35, 1.26x) is the none/own cell of
-  the grid, killed by A's 08:00 returns (no empty staffed bed on any of the 135 days A's referrals waited in the latest four
+  the grid, killed by A's 08:00 returns (no empty staffed bed on any of the 139 days A's referrals waited in the latest four
   quarters).
-- Gaps (stumping Part 1). Rung 0 to 1 opens the objective gap: deaths after a long wait are counted correctly and are not what
-  the review is scored on. Rungs 1 and 2 move the moment at which the own unit's capacity is read (its 08:00 state, its state at
-  every hour of the wait), each a measurement-time refinement on correct records; rung 3 reads the full unit's admissions during
-  the wait. Rung 3 to 4 opens the population gap: who placed each admitted patient, a set that exists only as a relation between
-  the waiting patient's interval, the admitted patient's referral and the bureau's audit. Decisive gap objective, reached
-  through population, as the card files it.
-- Survival properties of rung 4: written nowhere (the remit counts "decisions about the use of its own beds and staff" and
-  names no planned admission, occupancy, transfer or order of admission; the field guide defines `bed_confirmed_at` as the
-  bureau's allocation and states no rule about own care); no sweepable corpus nominates it (the corpus is blind, below); no
-  arithmetic symptom (every rung partitions the same deaths, every total ties, the census is exact); not a row predicate (an
-  interval join from each wait to the own unit's other admissions, then a join from each admitted patient to its referral or
-  the transfer audit; since loop 2 no column of the unit feed stands in for that join, because the admission type agrees with
-  it for most admissions and not for D's own planned transfers or the bureau's planned transfers into A's unit); no cutover date in the window (D's practice is steady through 36 months, and the CCRS-era coding of
-  transfers sits in the ask layer before the window); survives deletion.
-- Worth on the graded quantity: the leading count walks 56, 34, 15, 37, then 27. Rungs 1 and 2 set waits aside, rung 3 adds
-  back every wait through which the own unit admitted anyone, and rung 4 keeps only the admissions the trust placed itself.
+- Gaps (stumping Part 1). Rung 0 to 1 opens the objective gap; rungs 1 and 2 move the moment at which the own unit's capacity is
+  read; rung 3 reads the full unit's admissions. Rung 3 to 4 opens the population gap twice over: which beds the feed counts as
+  taken held no patient (a relation between a stay and its patient's theatre case), and whose hold each was (the trust's or the
+  bureau's). Decisive gap objective, reached through population, as the card files it.
+- Survival properties of rung 4 (loop 3 design, `### Hardening loop 3`): written nowhere; the corpus is blind; no arithmetic
+  symptom; not a row predicate; round 3's own step completes and returns G; no cutover in the placement window; the theatre
+  extract is evidence, not a wrong number. Accepted weak points are stated there.
+- Worth on the graded quantity: the leading count walks 56, 34, 15, 37, then 27.
 
 ### Position table (asserted row by row)
 
@@ -423,16 +418,17 @@ natural pipeline, behind E by 2.07x.
 | 0 | E 56 | 4 of 8 overall | 27 | 2.07x |
 | 1 | C 34 | last | 0 | (at zero) |
 | 2 | G 15 | last | 0 | (at zero) |
-| 3 | A 37 | 2 | 27 | 1.37x |
+| 3 | A 37 | last | 0 | (at zero) |
 | 4 | D 27 | 1 | 27 | leads G by 1.80x |
 
-D leads no intermediate rung and is second on one, rung 3, 1.37x behind A (the position rule allows one second place at
-1.20x or more). No rung margin is under 1.15x; the thinnest is 1.27x at rung 0.
+D leads no intermediate rung and is second on none. No rung margin is under 1.15x; the thinnest is 1.27x at rung 0. On the
+grid cells that re-time every hold (A 37 over D 27) D is second at 1.37x, a wrong cell, not a rung.
 
 ### Discriminator dominance
 
-- Against A, the rung-3 decoy: A carries 37 against D's 27 into rung 4 (1.37x). On the decisive axis D keeps all 27 of its rung-3
-  deaths (share 1.000) and A keeps 2 of 37 (0.054), an edge of 18.5x against the 1.64x required (1.2 x 1.37).
+- Against A on the every-hold reading: A carries 37 against D's 27 (1.37x). On the decisive axis D keeps all 27 (share 1.000)
+  and A keeps 2 of 37 (0.054), an edge of 18.5x against the 1.64x required (1.2 x 1.37).
+- Against A at rung 3 (by assignment): A 37 against D 0; on the decisive axis D 27 against A 2.
 - The rung-2 decoy G carries no raw advantage into rung 4 (G 21 against D 27); D's decisive edge is 27 against 15, 1.80x.
 - Against the raw leaders: E (56 against 27, 2.07x; share 0 against D's 1.0), A (44, 1.63x; share 0.045, an edge of 22x against
   the 1.96 required), C (35, 1.30x; share 0). Every product clears the 1.2 floor.

@@ -1,0 +1,20 @@
+{
+ "task": "task128",
+ "domain": "business-operations-analytics",
+ "objective": "opportunity-sizing-decision",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-10",
+ "stump": "A competent solver recovers the cut-day EPSS rule from the close-out, builds each colocated estate's drains per window from the capacity register, the hourly forecast and the window calendar (the only reading that reproduces all 412 of the provider's acknowledgements), spends payments' 96 drains and checkout's 120 on the package updates with the most exploitable exposure per drained host, re-spends the rest of the cap on the cloud estates and files payments 5, checkout 6, search 71, media 102, internal tools 31 and data pipeline 85, taking out 4,050 exposures; the step that lands it there is crediting each colocated drain with only its ticket's package, when the provider rebuilds every drained host from the estate's current platform image, so one ticket on a package every host carries lets it drain the most exposed hosts and take out everything on them the November image fixes, which roughly quadruples what the two colocated estates' drains take out and frees nine tickets for the cloud estates.",
+ "harden_loops": 0,
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md"
+}
