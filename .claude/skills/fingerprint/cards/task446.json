@@ -5,9 +5,9 @@
   "slot_note": "re-root of task446 after architecture 1 (obligor-group house-limit projection on the membership at the projection date) was spent at round 1 as a rule-application stump; same objective and number, new decision, new Layer 2 pitfall. The seed's GLEIF Level 2 hierarchy stays as the join that carries entity-level early-warning signals up to obligor groups, and the bank's booking systems stay as Layer 1 on the exposure asks.",
   "domain": "banking-credit-financial-risk",
   "subdomain": "other",
-  "niche": "a UK commercial bank's credit risk monitoring team forecasting how many obligor groups will move onto the watch list over the next twelve months, to size the 2027 watch-list and workout caseload, from an early-warning system's entity-level monthly signals rolled up to groups through the GLEIF consolidation hierarchy and four closed annual cohorts of watch-list outcomes",
+  "niche": "a UK commercial bank's credit risk monitoring team forecasting how many obligor groups will move onto the watch list over the next twelve months, to size the 2027 watch-list caseload by exposure band, from an early-warning system's entity-level monthly signals rolled up to groups through the GLEIF consolidation hierarchy and four closed annual cohorts of watch-list outcomes",
   "objective": "etl",
-  "shape": "01",
+  "shape": "05",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "",
@@ -58,7 +58,7 @@
   },
   "deliverables": [
     "watchlist_inflow_2027.xlsx",
-    "watchlist_inflow_by_sector_2027.png"
+    "watchlist_inflow_2027.png"
   ],
   "opening_move": "number-first",
   "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it.",
@@ -71,11 +71,10 @@
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:screen-yield-under-a-moved-base-rate",
   "layer1": [
-    "entity-level monthly signals from an early-warning engine keyed by LEI, including entities that do not borrow, to be carried to obligor groups",
-    "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches and fund-management links that are not consolidation",
-    "a credit system's group register and watch-list history in its own customer namespace",
-    "a sector code that was re-issued with new meanings when the credit system moved to a new sector taxonomy, with a crosswalk",
-    "facility extracts from two booking entities with their own currencies and a late-delivered quarter-end file, for the exposure the arriving groups carry"
+    "entity-level monthly signals from an early-warning engine keyed by LEI or by company number, including entities that do not borrow, to be carried to obligor groups",
+    "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches, fund-management links that are not consolidation, and reporting exceptions",
+    "a credit system's group register and watch-list history in its own customer namespace, with two list categories that are one list",
+    "facility extracts from two booking entities: a scheduled run superseded by a rerun, a late-delivered subsidiary file, limits in facility currency against closing rates quoted per pound, and facilities maturing on the extract date still flagged active"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
