@@ -2,8 +2,8 @@
  "task": "task181",
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "leak check (architecture 2: pertussis nowcast by laboratory route)",
+ "stage": 6,
+ "stage_name": "solver round 2 passed; ask layer tied to the call next, then the leak re-read and a confirming round",
  "updated": "2026-10-11",
  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
  "architecture": 2,
@@ -34,6 +34,16 @@
    },
    "decision": "reroot",
    "brief": "The solver ran the pooled screen, explained the co-visited plaza sites away as subsets of the pump's victims, re-screened the 78 victims the pump leaves and found the Lombard PIN pad, then checked the last 31 for a common point: 387 and every ask figure. The next rung would need a site that outranks the PIN pad on the residual and survives the subset check; any such site carries unexplained victims of its own and reads as a compromise (a fork), and any site that does not is dismissed by the subset check this solver already ran. The architecture is spent: re-root."
+  },
+  {
+   "round": 2,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 65.2
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 1): every field and stated rule read correctly (episodes, split postcodes, the extract day, the five-year expected count) and every ask figure right, but the solver set the cases notified so far against PR-07's expected count and sent the team to Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6) without a word on reporting delay. A valid analytical miss under the three rules. The proxy is high (65.2) because every ask is independent of the call: the slide's cluster list becomes the clusters in the area the team goes to (its school visits), so a wrong area carries a wrong list."
   }
  ],
  "judge": {
