@@ -173,7 +173,8 @@ def write_notes(path, counts):
     text = """# Registry extract PV-2026-117: notes on the files
 
 Pharmacovigilance Unit. %(data)s, registry data manager. Delivered by the national health data service on 4 September
-2026, data to 30 June 2026. Ordered for the refinement of the Q3 2026 signals.
+2026, data to 30 June 2026. Ordered on 14 July 2026, after the Q2 screen, for the three products whose pairs the unit
+was following (tasorexant, corinurad and velaglutide), so that refinement can start as soon as a pair is validated.
 
 ## Who is in the extract
 
@@ -281,6 +282,14 @@ SCREEN_ROWS = [
     ("velaglutide", "Gravera", "Nausea", 48, 312, 1904, 28733, "Labelled"),
     ("velaglutide", "Gravera", "Pancreatitis acute", None, 57, 1904, 3880, "Validated signal, to refinement"),
     ("zopiclone", "", "Dysgeusia", 6, 488, 3104, 3011, "Labelled"),
+    ("apixaban", "", "Gastrointestinal haemorrhage", 23, 871, 9126, 6214, "Labelled"),
+    ("dapagliflozin", "", "Diabetic ketoacidosis", 7, 314, 5479, 1961, "Labelled"),
+    ("dupilumab", "", "Conjunctivitis", 12, 643, 4108, 3307, "Labelled"),
+    ("finasteride", "", "Depression", 4, 58, 1283, 9034, "Closed: not confirmed (Q4 2025)"),
+    ("levetiracetam", "", "Aggression", 5, 197, 3315, 2243, "Labelled"),
+    ("metformin", "", "Lactic acidosis", 3, 152, 7806, 401, "Labelled"),
+    ("semaglutide", "", "Cholelithiasis", 26, 417, 15209, 2512, "Labelled"),
+    ("varenicline", "", "Abnormal dreams", 4, 236, 2953, 1118, "Labelled"),
 ]
 DATABASE_REPORTS = 812446
 
@@ -306,13 +315,18 @@ def screen_cases():
                             age=(52, 10, 27, 74), female=0.62),
     }
     rows = []
-    serial = 4180
     q0, q1 = W.day(W.Q3[0]), W.day(W.Q3[1])
+    rc = W.rng("reports", "received")
+    # a case number is given when a case is first received, so numbers follow receipt across products
+    first = [(int(rc.integers(q0, q1 - 20)), sub, k) for sub, sp in spec.items() for k in range(sp["n"])]
+    serial_of, serial = {}, 4180
+    for rec_, sub, k in sorted(first):
+        serial += int(rc.integers(3, 40))
+        serial_of[(sub, k)] = (serial, rec_)
     for sub, sp in spec.items():
         for k in range(sp["n"]):
-            serial += int(r.integers(3, 40))
+            serial, rec = serial_of[(sub, k)]
             case = "DK-PV-26-%05d" % serial
-            rec = int(r.integers(q0, q1 - 20))
             age = int(np.clip(round(r.normal(sp["age"][0], sp["age"][1])), sp["age"][2], sp["age"][3]))
             sex = "F" if r.random() < sp["female"] else "M"
             reporter = str(r.choice(["Physician", "Pharmacist", "Consumer", "Nurse", "Other health professional"],
@@ -338,11 +352,16 @@ def screen_cases():
                              sex, suspect, con, "; ".join(pts), serious, out, s_txt, o_txt if v > 1 or r.random() < 0.7
                              else ""])
     # reports where the medicine was taken but not suspected
+    used = {v[0] for v in serial_of.values()}
     for sub, pt, sus in (("tasorexant", "Fall", "zopiclone"), ("tasorexant", "Fall", "mirtazapine"),
                          ("corinurad", "Acute kidney injury", "ibuprofen"), ("velaglutide", "Pancreatitis acute",
                                                                               "azathioprine")):
-        serial += int(r.integers(3, 40))
         rec = int(r.integers(q0, q1 - 5))
+        prior = [v[0] for v in serial_of.values() if v[1] <= rec]
+        serial = (max(prior) if prior else 4180) + 1
+        while serial in used:
+            serial += 1
+        used.add(serial)
         rows.append(["DK-PV-26-%05d" % serial, 1, W.date_of(rec), "Spontaneous", "Physician",
                      int(r.integers(55, 88)), "F" if r.random() < 0.5 else "M", sus,
                      "%s (%s)" % (sub, W.SUBSTANCES[sub]["brand"]), pt, "Yes", "Recovering", "", ""])
@@ -462,24 +481,32 @@ def write_screen(path):
 
 # ------------------------------------------------------------------ the PSUR summary (the MAH's document)
 
-def write_psur(path):
-    title = "Somnevo (tasorexant) PSUR summary"
-    doc = _doc(path, title, W.MAH, "Periodic safety update report, summary for the national competent authority", W.MAH)
+def write_psur(path, dk_years):
+    """dk_years: the interval's Danish exposure in patient-years, from the tablets dispensed in Denmark."""
+    title = "Somnevo (tasorexant) PSUR 4: executive summary"
+    doc = _doc(path, title, W.MAH, "Periodic safety update report 4, executive summary and exposure", W.MAH)
+    dk = "{:,}".format(int(round(dk_years / 50.0)) * 50)
     s = [Paragraph(W.MAH, SMALL), Paragraph("Somnevo (tasorexant) 25 mg and 50 mg film-coated tablets", H1),
-         Paragraph("Periodic safety update report: summary for the national competent authority", BODY),
+         Paragraph("Periodic safety update report 4: executive summary, with the exposure estimate for Denmark", BODY),
          Spacer(1, 4),
          _table([["Reporting interval", "1 February 2025 to 31 January 2026"],
                  ["Data lock point", "31 January 2026"],
                  ["International birth date", "14 June 2021"],
-                 ["Submitted", "8 April 2026"]], [45 * mm, 90 * mm], header=False),
-         Spacer(1, 6), Paragraph("1  Exposure", H2),
-         Paragraph("Patient exposure is estimated from sales in tablets, at one tablet a day. In the interval it is about "
-                   "151,000 patient-years worldwide, and cumulatively about 318,000 patient-years since the international "
-                   "birth date. In Denmark it is about 6,400 patient-years in the interval.", BODY),
+                 ["Submitted", "8 April 2026 (EU single assessment)"]], [45 * mm, 90 * mm], header=False),
+         Spacer(1, 6), Paragraph("Executive summary", H2),
+         Paragraph("This is the fourth PSUR for Somnevo. Patient exposure in the interval is estimated at about 151,000 "
+                   "patient-years worldwide. No new signal was opened in the interval and no change to the reference "
+                   "safety information is proposed. Falls remain an important potential risk in the risk management "
+                   "plan. The benefit-risk balance of Somnevo is unchanged.", BODY),
+         Paragraph("5.2  Patient exposure from marketing experience", H2),
+         Paragraph("Exposure is estimated from sales in tablets, at one tablet a day: about 151,000 patient-years in the "
+                   "interval and about 318,000 since the international birth date. At the request of the national "
+                   "competent authority the same estimate is given for Denmark: about %s patient-years in the "
+                   "interval." % dk, BODY),
          _table([["Age group", "Interval exposure, patient-years", "Share"],
                  ["18 to 64", "46,800", "31%"], ["65 to 74", "39,300", "26%"], ["75 and over", "64,900", "43%"]],
                 [40 * mm, 60 * mm, 25 * mm], right=(1, 2)),
-         Spacer(1, 4), Paragraph("2  Adverse reactions reported", H2),
+         Spacer(1, 4), Paragraph("6  Summary tabulation, postmarketing reports (extract)", H2),
          Paragraph("Spontaneous and solicited reports received by the marketing authorisation holder, cases counted once.",
                    BODY),
          _table([["Preferred term", "Interval", "Cumulative", "Serious, cumulative"],
@@ -488,21 +515,27 @@ def write_psur(path):
                  ["Sleep paralysis", "19", "52", "2"], ["Hip fracture", "17", "41", "41"],
                  ["Complex sleep behaviour", "6", "15", "9"]],
                 [60 * mm, 25 * mm, 28 * mm, 38 * mm], right=(1, 2, 3)),
-         Spacer(1, 4), Paragraph("3  Signals and risks", H2),
-         Paragraph("No new signal was opened in the interval. Falls remain an important potential risk in the risk "
-                   "management plan; the reporting rate of falls in the interval was 64 per 100,000 patient-years, "
-                   "against 71 in the previous interval. Most fall reports concern patients aged 75 or over, and in "
-                   "about half the patient was taking at least one other medicine with sedative effects.", BODY),
-         Paragraph("4  Conclusion", H2),
-         Paragraph("The benefit-risk balance of Somnevo is unchanged. No change to the reference safety information is "
-                   "proposed. Routine pharmacovigilance continues, with falls followed as an important potential risk.",
-                   BODY),
+         Spacer(1, 4), Paragraph("16  Signal and risk evaluation (extract)", H2),
+         Paragraph("Falls: the reporting rate in the interval was 64 per 100,000 patient-years, against 71 in the "
+                   "previous interval. Most fall reports concern patients aged 75 or over, and in about half the patient "
+                   "was taking at least one other medicine with sedative effects.", BODY),
+         Paragraph("19  Conclusions and actions", H2),
+         Paragraph("Routine pharmacovigilance continues, with falls followed as an important potential risk.", BODY),
          Spacer(1, 6),
          Paragraph("Prepared by the marketing authorisation holder's drug safety department. Confidential: for the "
                    "national competent authority.", SMALL)]
-    doc.build(s, onFirstPage=_frame(W.MAH, "Somnevo PSUR summary", "DLP 31 January 2026"),
-              onLaterPages=_frame(W.MAH, "Somnevo PSUR summary", "DLP 31 January 2026"))
+    doc.build(s, onFirstPage=_frame(W.MAH, "Somnevo PSUR 4", "DLP 31 January 2026"),
+              onLaterPages=_frame(W.MAH, "Somnevo PSUR 4", "DLP 31 January 2026"))
     PP.normalize_pdf(path, b"D:20260408103000+02'00'")
+
+
+def psur_exposure(world):
+    """Tablets of tasorexant dispensed in Denmark, 1 February 2025 to 31 January 2026, as patient-years at one a day."""
+    d = world["disp"]
+    lo, hi = W.day(dt.date(2025, 2, 1)), W.day(dt.date(2026, 1, 31))
+    m = (d["substance"] == "tasorexant") & (d["day"] >= lo) & (d["day"] <= hi)
+    tablets = sum(int(a) * W.PACK[v]["size"] for v, a in zip(d["vnr"][m], d["apk"][m]))
+    return tablets / 365.25
 
 
 # ------------------------------------------------------------------ the July minutes

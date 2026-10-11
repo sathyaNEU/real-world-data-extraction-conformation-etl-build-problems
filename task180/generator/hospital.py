@@ -13,10 +13,23 @@ import world as W
 MIN_DAY = 1440
 
 
-def _hours(r, n, lo=7, hi=23):
-    """Arrival minute of day: mostly daytime and evening."""
-    h = np.clip(r.normal(14.5, 4.0, n), lo, hi - 0.01)
-    return np.floor(h * 60).astype(np.int64)
+def _hours(r, n, lo=None, hi=None):
+    """Minute of day a contact starts. Acute arrivals (lo None) come at any hour, mostly in the day and evening. A
+    planned contact (lo to hi) starts at its booked quarter hour, mornings busier, or a few minutes after it."""
+    if lo is None:
+        h = r.normal(14.5, 4.2, n)
+        night = r.random(n) < 0.12
+        h = np.where(night, r.uniform(0.0, 24.0, n), h)
+        bad = (h < 0) | (h >= 24)
+        while bad.any():
+            h[bad] = r.normal(14.5, 4.2, bad.sum())
+            bad = (h < 0) | (h >= 24)
+        return np.floor(h * 60).astype(np.int64)
+    slots = np.arange(lo * 60, hi * 60 - 14, 15)
+    w = np.linspace(1.5, 0.5, len(slots))
+    k = r.choice(len(slots), size=n, p=w / w.sum())
+    late = np.where(r.random(n) < 0.55, r.integers(1, 13, n), 0)
+    return slots[k] + late
 
 
 class Builder:
@@ -70,9 +83,10 @@ class Builder:
         D = {k: np.concatenate(v) for k, v in self.dx.items()}
         keep = separate_stays(C, death_min)
         # no contact starts after the extract's last day, at or after death, or while the person is abroad
-        dead, away, back = OUT[0]
+        dead, away, back, t_out, t_back = OUT[0]
         pid, st = C["pid"], C["start"]
-        keep &= (st < (W.D_END + 1) * MIN_DAY) & (st < death_min[pid]) & ~((st >= away[pid]) & (st < back[pid]))
+        keep &= (st < (W.D_END + 1) * MIN_DAY) & (st < death_min[pid]) & ~((st >= away[pid]) & (st < back[pid])) & \
+            ~((st >= t_out[pid]) & (st < t_back[pid]))
         # a stay whose contacts would fall on both sides of the change of record structure (4 February 2019) is left out
         sw = W.D_LPR3 * MIN_DAY
         u, inv = np.unique(C["stay"], return_inverse=True)
@@ -165,8 +179,9 @@ def separate_stays(C, death_min):
         C["end"] = C["end"] + shift
     u, inv, pid, lo, hi, ev, fu, acute = stay_spans(C)
     keep_stay = np.ones(len(u), bool)
-    dead, away, back = OUT[0]
-    out = (lo >= dead[pid]) | ((lo >= away[pid]) & (lo < back[pid])) | (lo >= (W.D_END + 1) * MIN_DAY)
+    dead, away, back, t_out, t_back = OUT[0]
+    out = (lo >= dead[pid]) | ((lo >= away[pid]) & (lo < back[pid])) | ((lo >= t_out[pid]) & (lo < t_back[pid])) | \
+        (lo >= (W.D_END + 1) * MIN_DAY)
     keep_stay &= ~out
     # follow-up visits: kept unless within 48 hours of an event stay or of an earlier follow-up
     e = np.where(ev & keep_stay)[0]
@@ -227,7 +242,8 @@ def build(world):
     death_min = np.where(P["death"] < 10 ** 7, P["death"] * MIN_DAY + 12 * 60, 10 ** 12)
     # no stay may start on the day of death or later, or while the person is abroad
     OUT[0] = (np.minimum(P["death"], 10 ** 7) * MIN_DAY, np.minimum(P["emig"], 10 ** 7) * MIN_DAY,
-              np.minimum(P["ret"], 10 ** 7) * MIN_DAY)
+              np.minimum(P["ret"], 10 ** 7) * MIN_DAY, np.minimum(P["trip_out"], 10 ** 7) * MIN_DAY,
+              np.minimum(P["trip_back"], 10 ** 7) * MIN_DAY)
 
     def clip_end(pid, end):
         return np.minimum(end, death_min[pid])
@@ -266,7 +282,7 @@ def build(world):
     fu = r.random(na) < 0.5
     k = np.where(fu, r.integers(1, 3, na), 0)
     rep = np.repeat(np.arange(na), k)
-    fday = (w_end[rep] // MIN_DAY) + r.integers(14, 60, len(rep))
+    fday = W.next_weekday((w_end[rep] // MIN_DAY) + r.integers(14, 60, len(rep)))
     ft = fday * MIN_DAY + _hours(r, len(rep), 8, 15)
     fid = B.add(a_pid[rep], ft, ft + r.integers(15, 45, len(rep)), "Ortopædisk kirurgi", 3, 0, GROUP["followup"])
     B.diag(fid, a_inj[rep], "A")
@@ -303,7 +319,7 @@ def build(world):
     B.diag(n_ids, aki[sec], "A")
     # nephrology outpatient follow-up after discharge, planned, the kidney injury as its action diagnosis
     fu = r.random(n) < 0.33
-    fday = (w_end[fu] // MIN_DAY) + r.integers(21, 57, fu.sum())
+    fday = W.next_weekday((w_end[fu] // MIN_DAY) + r.integers(21, 57, fu.sum()))
     ft = fday * MIN_DAY + _hours(r, fu.sum(), 8, 15)
     f_ids = B.add(pid[fu], ft, ft + r.integers(20, 50, fu.sum()), "Nefrologi", 3, 0, GROUP["followup"])
     B.diag(f_ids, aki[fu], "A")
@@ -399,6 +415,7 @@ def build(world):
     upid = np.r_[fpid, pp[rep]]
     uday = np.r_[fday, fu_lo[rep] + np.floor(r.random(len(rep)) * span[rep]).astype(np.int64)]
     ucond = np.r_[fcond, cc[rep]]
+    uday = W.next_weekday(uday)
     keep = S.resident_mask(P, upid, uday)
     upid, uday, ucond = upid[keep], uday[keep], ucond[keep]
     n = len(upid)
@@ -414,6 +431,7 @@ def build(world):
     r = W.rng("hospital", "outpatient")
     rate = 0.2 * np.exp(0.02 * (age22 - 60))
     pid, d = _process(r, lo, hi, rate)
+    d = W.next_weekday(d)
     pid, d = S.resident(P, pid, d)
     n = len(pid)
     t0 = d * MIN_DAY + _hours(r, n, 8, 16)

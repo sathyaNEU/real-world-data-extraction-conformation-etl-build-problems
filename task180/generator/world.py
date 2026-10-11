@@ -11,7 +11,7 @@ SEED = 1802026
 EPOCH = dt.date(2018, 1, 1)            # first day of the extract
 END = dt.date(2026, 6, 30)             # last day of registry data in the extract
 LPR3_START = dt.date(2019, 2, 4)       # the patient registry records contacts (LPR3) from this date
-CODE_CHANGE = dt.date(2024, 1, 1)      # corinurad moves from M04AX02 to M04AB06
+CODE_CHANGE = dt.date(2024, 1, 1)      # corinurad moves from its provisional M04AX07 to M04AB09
 EXTRACT_DELIVERED = dt.date(2026, 9, 4)
 SCREEN_RUN = dt.date(2026, 10, 6)
 REQUEST = dt.date(2026, 10, 12)
@@ -32,6 +32,61 @@ def date_of(n):
 D_END = day(END)
 D_LPR3 = day(LPR3_START)
 D_CODE = day(CODE_CHANGE)
+
+# ------------------------------------------------------------------ the Danish calendar
+EASTER = {2016: (3, 27), 2017: (4, 16), 2018: (4, 1), 2019: (4, 21), 2020: (4, 12), 2021: (4, 4), 2022: (4, 17),
+          2023: (4, 9), 2024: (3, 31), 2025: (4, 20), 2026: (4, 5), 2027: (3, 28)}
+
+
+def _holidays():
+    """Public holidays on which pharmacies close (duty pharmacies apart): New Year, Maundy Thursday to Easter Monday,
+    Great Prayer Day (abolished from 2024), Ascension, Whitsun, Christmas Eve to Boxing Day."""
+    out = set()
+    for y, (m, d0) in EASTER.items():
+        e = day(dt.date(y, m, d0))
+        out |= {e - 3, e - 2, e, e + 1, e + 39, e + 49, e + 50}
+        if y <= 2023:
+            out.add(e + 26)
+        out |= {day(dt.date(y, 1, 1)), day(dt.date(y, 12, 24)), day(dt.date(y, 12, 25)), day(dt.date(y, 12, 26))}
+    return np.array(sorted(out), np.int64)
+
+
+HOLIDAYS = _holidays()
+
+
+def closed(days):
+    """Sundays and public holidays (1 January 2018 was a Monday)."""
+    days = np.asarray(days, np.int64)
+    return (days % 7 == 6) | np.isin(days, HOLIDAYS)
+
+
+def next_weekday(days):
+    """The day itself if it is a working day (Monday to Friday, not a holiday), else the next one."""
+    d = np.asarray(days, np.int64).copy()
+    need = closed(d) | (d % 7 == 5)
+    for _ in range(8):
+        d = np.where(need, d + 1, d)
+        need = need & (closed(d) | (d % 7 == 5))
+    return d
+
+
+def pharmacy_days(days, stream):
+    """Move dispensing days onto days a pharmacy serves them: a Sunday or holiday goes to one of the next working
+    days (a duty pharmacy serves a few on the day), and part of the Saturday trade comes early in the next week."""
+    d = np.asarray(days, np.int64).copy()
+    r = rng("pharmacy days", stream)
+    u, u2, u3 = r.random(len(d)), r.random(len(d)), r.random(len(d))
+    shut = closed(d) & (u < 0.93)
+    sat = ~closed(d) & (d % 7 == 5) & (u < 0.4)
+    off = np.where(shut, np.where(u2 < 0.45, 1, np.where(u2 < 0.75, 2, 3)), 0)
+    off = np.where(sat, np.where(u3 < 0.5, 2, 3), off)
+    d = d + off
+    need = (shut | sat) & closed(d)
+    for _ in range(8):
+        d = np.where(need, d + 1, d)
+        need = need & closed(d)
+    return d
+
 
 PEOPLE = {
     "head": "Helge Jørgensen",          # head of the pharmacovigilance unit, the requester
@@ -59,7 +114,7 @@ SUBSTANCES = {
     "tasorexant": dict(brand="Somnevo", launch=dt.date(2022, 2, 1), codes=[("N05CJ05", dt.date(2022, 2, 1), None)],
                        ddd=50.0, ddd_unit="mg", route="O", group="Hypnotics and sedatives, orexin receptor antagonists"),
     "corinurad": dict(brand="Uralexa", launch=dt.date(2021, 11, 1),
-                      codes=[("M04AX02", dt.date(2021, 11, 1), dt.date(2023, 12, 31)), ("M04AB06", CODE_CHANGE, None)],
+                      codes=[("M04AX07", dt.date(2021, 11, 1), dt.date(2023, 12, 31)), ("M04AB09", CODE_CHANGE, None)],
                       ddd=200.0, ddd_unit="mg", route="O", group="Preparations increasing uric acid excretion"),
     "velaglutide": dict(brand="Gravera", launch=dt.date(2022, 4, 1), codes=[("A10BJ09", dt.date(2022, 4, 1), None)],
                         ddd=0.3, ddd_unit="mg", route="P", group="Glucagon-like peptide-1 (GLP-1) analogues"),
@@ -101,7 +156,7 @@ PACK = {p[0]: dict(vnr=p[0], substance=p[1], strength=p[2], unit=p[3], size=p[4]
 def atc_on(substance, d):
     """The ATC code the prescription registry carries for a dispensing of the substance on day d."""
     if substance == "corinurad":
-        return "M04AX02" if d < D_CODE else "M04AB06"
+        return "M04AX07" if d < D_CODE else "M04AB09"
     if substance in NSAIDS:
         return NSAIDS[substance][0]
     return SUBSTANCES[substance]["codes"][0][0]
@@ -117,17 +172,17 @@ def ddd_per_pack(vnr):
 # ------------------------------------------------------------------ cohorts
 # n: persons with a first dispensing; ages at the start; uptake by year (relative); latent multipliers
 COHORTS = {
-    "tasorexant": dict(n=16900, age=(74.5, 8.0, 50, 97), female=0.63,
+    "tasorexant": dict(n=16873, age=(74.5, 8.0, 50, 97), female=0.63,
                        uptake={2022: 0.55, 2023: 0.95, 2024: 1.08, 2025: 1.05, 2026: 1.0}),
-    "zopiclone": dict(n=34000, age=(72.0, 10.5, 40, 97), female=0.6,
+    "zopiclone": dict(n=33962, age=(72.0, 10.5, 40, 97), female=0.6,
                       uptake={2022: 1.0, 2023: 1.0, 2024: 0.97, 2025: 0.95, 2026: 0.93}),
-    "corinurad": dict(n=58000, age=(67.0, 10.0, 35, 95), female=0.17,
+    "corinurad": dict(n=57841, age=(67.0, 10.0, 35, 95), female=0.17,
                       uptake={2021: 0.55, 2022: 0.9, 2023: 1.04, 2024: 1.08, 2025: 1.03, 2026: 1.0}),
-    "allopurinol": dict(n=29000, age=(68.0, 10.5, 35, 96), female=0.22,
+    "allopurinol": dict(n=29118, age=(68.0, 10.5, 35, 96), female=0.22,
                         uptake={2022: 1.0, 2023: 0.97, 2024: 0.93, 2025: 0.9, 2026: 0.9}),
-    "velaglutide": dict(n=74000, age=(51.0, 11.0, 20, 85), female=0.66,
-                        uptake={2022: 0.45, 2023: 1.0, 2024: 1.15, 2025: 1.05, 2026: 0.95}),
-    "orlistat": dict(n=74000, age=(49.0, 11.5, 20, 85), female=0.70,
+    "velaglutide": dict(n=73688, age=(51.0, 11.0, 20, 85), female=0.66,
+                        uptake={2022: 0.08, 2023: 0.25, 2024: 0.75, 2025: 1.8, 2026: 2.6}),
+    "orlistat": dict(n=74231, age=(49.0, 11.5, 20, 85), female=0.70,
                      uptake={2022: 1.0, 2023: 0.95, 2024: 0.9, 2025: 0.85, 2026: 0.82}),
 }
 COMPARATOR_PER_USER = 2
@@ -204,10 +259,14 @@ BASE = {
     "aki": dict(a=np.log(0.0080), b=0.035, ref=70.0, male=1.35),
     "pancreatitis": dict(a=np.log(0.0011), b=0.018, ref=50.0, male=1.2),
 }
-RR_CORINURAD = 2.5                      # days 1 to 30 after a new user's first dispensing
+RR_CORINURAD = 1.7                      # days 1 to 30 after a new user's first dispensing
 FALL_START_FACTOR = 1.6                 # a fall raises the chance of starting a sleep medicine (3 to 33 days after)
 AKI_START_FACTOR = 0.3                  # an acute kidney injury lowers the chance of starting corinurad
 AKI_START_DAYS = 30                     # for the 30 days after it
+# velaglutide is not started after a pancreatitis: of the would-be starters with a pancreatitis admission before their
+# start, only this share is prescribed it anyway (the rest of the cohort are people with none before their start), and
+# a user with a pancreatitis while on it is restarted only at this rate
+PANCREATITIS_HISTORY_STARTS = 0.1
 
 
 def base_rate(event, age, female):

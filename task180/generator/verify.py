@@ -191,6 +191,64 @@ def self_controlled(B, substance, subset=None):
     return cond_poisson(a, b, r, c)
 
 
+def spans(B, pnrs, frm=pd.Timestamp("2018-01-01")):
+    """Observed spans of each person from frm: resident, alive, to 30 June 2026 (time abroad left out)."""
+    civ = B["civ"].reindex(pnrs)
+    out = []
+    for p, d, u, i in zip(pnrs, civ["doedsdato"], civ["udvandringsdato"], civ["indvandringsdato"]):
+        end = min(END, d) if not pd.isna(d) else END
+        if not pd.isna(u) and not pd.isna(i) and i > u:      # left and came back
+            out.append((p, frm, min(end, u - pd.Timedelta(days=1))))
+            out.append((p, max(frm, i), end))
+        else:
+            lo = max(frm, i) if not pd.isna(i) else frm
+            hi = min(end, u - pd.Timedelta(days=1)) if not pd.isna(u) else end
+            out.append((p, lo, hi))
+    sp = pd.DataFrame(out, columns=["pnr", "lo", "hi"])
+    return sp[sp["hi"] >= sp["lo"]].reset_index(drop=True)
+
+
+def all_time(B, substance, age=False):
+    """Days 1 to 30 after every start against all other observed time from 1 January 2018: cases only, each person a
+    stratum (age=True: each person and five-year age band a stratum, Mantel-Haenszel)."""
+    st = B["starts"][substance]
+    ev = B["events"][SIGNALS[substance][0]]
+    sp = spans(B, sorted(set(st["pnr"]) & set(ev["pnr"])))
+    hit = sp.reset_index().merge(ev, on="pnr")
+    hit = hit[(hit["day"] >= hit["lo"]) & (hit["day"] <= hit["hi"])]
+    sp = sp[sp["pnr"].isin(set(hit["pnr"]))]
+    st = st[st["pnr"].isin(set(sp["pnr"]))]
+    cut_at = {p: sorted(set(g["start"] + pd.Timedelta(days=1)) | set(g["start"] + pd.Timedelta(days=31)))
+              for p, g in st.groupby("pnr")}
+    years = list(pd.date_range("2018-01-01", "2027-01-01", freq="YS"))
+    pieces = []
+    for p, lo, hi in zip(sp["pnr"], sp["lo"], sp["hi"]):
+        edges = sorted(set(cut_at.get(p, [])) | set(years))
+        pts = [lo] + [e for e in edges if lo < e <= hi] + [hi + pd.Timedelta(days=1)]
+        for a_, b_ in zip(pts[:-1], pts[1:]):
+            pieces.append((p, a_, b_ - pd.Timedelta(days=1)))
+    pc = pd.DataFrame(pieces, columns=["pnr", "lo", "hi"])
+    risk = st.assign(rlo=st["start"] + pd.Timedelta(days=1), rhi=st["start"] + pd.Timedelta(days=30))
+    j = pc.reset_index().merge(risk[["pnr", "rlo", "rhi"]], on="pnr")
+    inrisk = set(j[(j["lo"] >= j["rlo"]) & (j["hi"] <= j["rhi"])]["index"])
+    pc["risk"] = pc.index.isin(inrisk)
+    pc["days"] = (pc["hi"] - pc["lo"]).dt.days + 1
+    e = pc.reset_index().merge(ev, on="pnr")
+    e = e[(e["day"] >= e["lo"]) & (e["day"] <= e["hi"])]
+    pc["n"] = e.groupby("index").size().reindex(pc.index, fill_value=0).to_numpy()
+    civ = B["civ"].reindex(pc["pnr"])
+    pc["band"] = (pc["lo"].dt.year.to_numpy() - civ["foedselsaar"].astype(int).to_numpy()) // 5
+    key = ["pnr", "band"] if age else ["pnr"]
+    g = pc.groupby(key + ["risk"])[["n", "days"]].sum().unstack("risk", fill_value=0)
+    a_, b_ = g[("n", True)].to_numpy(float), g[("n", False)].to_numpy(float)
+    r_, c_ = g[("days", True)].to_numpy(float), g[("days", False)].to_numpy(float)
+    if not age:
+        return cond_poisson(a_, b_, r_, c_)[0]
+    t = r_ + c_
+    use = t > 0
+    return float((a_ * c_ / np.where(use, t, 1))[use].sum() / (b_ * r_ / np.where(use, t, 1))[use].sum())
+
+
 def first_month(B, kind, frame):
     f = frame.reset_index(drop=True).copy()
     f["end"] = obs_end(B, f["pnr"].to_numpy(), f["start"]).to_numpy()
@@ -281,6 +339,25 @@ def main(target, golden):
     pre = dict(tas_matched=pre_rate("fall", B["starts"]["tasorexant"]) / pre_rate("fall", mt),
                tas_zop=pre_rate("fall", B["starts"]["tasorexant"]) / pre_rate("fall", B["starts"]["zopiclone"]),
                cor_all=pre_rate("aki", B["starts"]["corinurad"]) / pre_rate("aki", B["starts"]["allopurinol"]))
+    # rung 2b: all observed time, the years before the start included, names velaglutide
+    at = {s: all_time(B, s) for s in SIGNALS}
+    at_age = {s: all_time(B, s, age=True) for s in SIGNALS}
+    for name, sc in (("unadjusted", at), ("age bands within person", at_age)):
+        order = sorted(sc, key=lambda k: -sc[k])
+        check(order[0] == "velaglutide" and sc[order[0]] / sc[order[1]] >= 1.2, "all-time %s: %s" % (name, sc))
+    # velaglutide is not started after a pancreatitis: its starters' year before, against orlistat starters'
+    vel_pre = pre_rate("pancreatitis", B["starts"]["velaglutide"]) / pre_rate("pancreatitis", B["starts"]["orlistat"])
+    vs = B["starts"]["velaglutide"]
+    os_ = B["starts"]["orlistat"]
+
+    def year_after(frame):
+        f = frame[(frame["start"] >= lo22) & (frame["start"] <= last)].reset_index(drop=True).copy()
+        f["end"] = obs_end(B, f["pnr"].to_numpy(), f["start"]).to_numpy()
+        n, t = counts(B["events"]["pancreatitis"], f, 1, 365)
+        return n.sum() / t.sum()
+    vel_post = year_after(vs) / year_after(os_)
+    check(vel_pre <= 0.25 and 0.75 <= vel_post <= 1.3, "velaglutide year before %.3f, year after %.3f" % (
+        vel_pre, vel_post))
     # the goldens
     doc = Document(os.path.join(golden, "signal_refinement_note.docx"))
     text = "\n".join(p.text for p in doc.paragraphs) + "\n" + "\n".join(
@@ -300,6 +377,9 @@ def main(target, golden):
     check("was %.2f times that of people starting allopurinol" % pre["cor_all"] in text,
           "corinurad against allopurinol %.2f" % pre["cor_all"])
     check("rate ratio is %.2f (95%% CI %.2f to %.2f)" % nf in text, "NSAID-free ratio %.2f" % nf[0])
+    check("acute pancreatitis at %.2f times the rate of people starting orlistat" % vel_pre in text,
+          "velaglutide year before %.2f in the note" % vel_pre)
+    check("their rate is %.2f times orlistat starters'" % vel_post in text, "velaglutide year after %.2f" % vel_post)
     for s in SIGNALS:
         check(str(rep[s]) in text, "%s Q3 cases %d in the note" % (s, rep[s]))
     rows = list(csv.DictReader(open(os.path.join(golden, "new_users_by_year.csv"), encoding="utf-8")))
@@ -310,15 +390,18 @@ def main(target, golden):
             want = int(st[st["start"].dt.year == y]["pnr"].nunique())
             got = [int(r["new_users"]) for r in rows if r["substance"] == s and int(r["calendar_year"]) == y]
             check(got == [want], "%s %d: %s against %d" % (s, y, got, want))
-    out.update(call=call, sccs=sc, ratio=(rr, lo, hi), events_2025=k, caused=caused, nsaid_free=nf, pre=pre, reports=rep)
+    out.update(call=call, sccs=sc, ratio=(rr, lo, hi), events_2025=k, caused=caused, nsaid_free=nf, pre=pre, reports=rep,
+               all_time=at, all_time_age=at_age, vel_pre=vel_pre, vel_post=vel_post)
     if FAIL:
         for f in FAIL:
             print("VERIFY FAIL:", f)
         raise SystemExit(1)
     print("verify OK: call %s, rate ratio %.2f (%.2f to %.2f), 2025 admissions %d, caused %d; tasorexant %.2f, "
-          "velaglutide %.2f; NSAID-free %.2f; rungs %s; new users table and note agree" % (
+          "velaglutide %.2f; NSAID-free %.2f; rungs %s; all observed time %s, within age bands %s; velaglutide year "
+          "before %.2f and after %.2f x orlistat starters; new users table and note agree" % (
               call, rr, lo, hi, k, caused, sc["tasorexant"][0], sc["velaglutide"][0], nf[0],
-              {s: {k_: round(v, 2) for k_, v in r.items()} for s, r in rungs.items()}))
+              {s: {k_: round(v, 2) for k_, v in r.items()} for s, r in rungs.items()},
+              {s: round(v, 2) for s, v in at.items()}, {s: round(v, 2) for s, v in at_age.items()}, vel_pre, vel_post))
     return out
 
 

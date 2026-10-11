@@ -24,8 +24,8 @@
       "xlsx"
     ],
     "largest_file": "patient_registry_diagnoses_2018-2026.parquet",
-    "largest_file_rows": 3725191,
-    "bytes_total": 136398356
+    "largest_file_rows": 3702628,
+    "bytes_total": 137368985
   },
   "sources": [
     {
@@ -59,8 +59,8 @@
     {
       "path": "civil_registration_extract.csv",
       "format": "csv",
-      "bytes": 12995964,
-      "rows": 583700,
+      "bytes": 13497139,
+      "rows": 582415,
       "source": "Constructed: Civil registration: birth year, sex, death, most recent emigration and immigration of every person in the extract",
       "date": "2026-09-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -77,8 +77,8 @@
     {
       "path": "matched_comparators.csv",
       "format": "csv",
-      "bytes": 26254455,
-      "rows": 446700,
+      "bytes": 26157273,
+      "rows": 445053,
       "source": "Constructed: The Agency's standard matched comparator extract: two non-users per first dispensing of tasorexant, corinurad or velaglutide, matched on birth year and sex",
       "date": "2026-09-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -86,8 +86,8 @@
     {
       "path": "patient_registry_contacts_2018-2026.parquet",
       "format": "parquet",
-      "bytes": 62158091,
-      "rows": 2667469,
+      "bytes": 63040508,
+      "rows": 2644739,
       "source": "Constructed: Patient registry: every hospital record of the persons in the extract, 1 January 2018 to 30 June 2026, in both record structures (LPR2 to 3 February 2019, LPR3 from 4 February 2019)",
       "date": "2026-09-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -95,8 +95,8 @@
     {
       "path": "patient_registry_diagnoses_2018-2026.parquet",
       "format": "parquet",
-      "bytes": 15692855,
-      "rows": 3725191,
+      "bytes": 15597231,
+      "rows": 3702628,
       "source": "Constructed: Patient registry: the diagnoses on each hospital record (action and secondary)",
       "date": "2026-09-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -113,8 +113,8 @@
     {
       "path": "prescription_registry_2018-2026.parquet",
       "format": "parquet",
-      "bytes": 19259909,
-      "rows": 3598588,
+      "bytes": 19038380,
+      "rows": 3534818,
       "source": "Constructed: Prescription registry: dispensings and returns of the six substances and of NSAIDs (M01A) for the persons in the extract, 1 January 2018 to 30 June 2026",
       "date": "2026-09-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -122,7 +122,7 @@
     {
       "path": "psur_summary_tasorexant_2026.pdf",
       "format": "pdf",
-      "bytes": 3774,
+      "bytes": 3946,
       "rows": null,
       "source": "Constructed: The marketing authorisation holder's PSUR summary for Somnevo (tasorexant), data lock 31 January 2026",
       "date": "2026-04-08",
@@ -131,7 +131,7 @@
     {
       "path": "pv_signal_screen_2026Q3.xlsx",
       "format": "xlsx",
-      "bytes": 15785,
+      "bytes": 16830,
       "rows": null,
       "source": "Constructed: The Pharmacovigilance Unit's quarterly screen of spontaneous reports, Q3 2026, with the line listing of the quarter's reports for the three validated signals",
       "date": "2026-10-07",
@@ -140,7 +140,7 @@
     {
       "path": "registry_extract_notes.md",
       "format": "md",
-      "bytes": 5044,
+      "bytes": 5199,
       "rows": null,
       "source": "Constructed: The registry data manager's notes on registry extract PV-2026-117 (fields, coverage, record structures)",
       "date": "2026-09-04",

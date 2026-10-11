@@ -532,3 +532,21 @@ slot then retires); a miss that lands anywhere other than rungs 0 to 2 is read f
     starts moved it only from 2.52 to 2.58.
   - **Stopping-rule count:** 1 of 2.
 
+- **Hardening loop 1, the brief's contraindication at the shipped effect size (2026-10-11): rejected on its
+  arithmetic.** Velaglutide starters' pancreatitis before the start thinned to a share q, measured on the simulated
+  world with the self-controlled comparison over all observed time from 2018:
+  - **The adjustment eats the deficit.** Every start sits in the last two years of a person's observation, so age
+    bands (and the solver's age by calendar year) take up most of the step. At q 0.1: 3.02 unadjusted, 2.07 with
+    five-year age bands, 1.97 with age by calendar year. At q 0 (no starter ever admitted with pancreatitis): 3.98,
+    2.79 and 3.18, against corinurad 2.73, 2.59 and 2.55. No margin survives, and from 2022 velaglutide reaches only
+    2.13 to 2.36.
+  - **The alarms.** At q 0.05 and below, the comparison with days -365 to -31 alone reads 15 to 45 for velaglutide,
+    and the 30-day profile shows nothing at all before the start.
+  - **A 2024 to 2026 weight-loss boom helps but not enough.** It puts more of each starter's time before the start:
+    q 0.015 gives 3.10, 2.98 and 2.89 (five-year bands, age by calendar year, bands with half-years), against
+    corinurad 2.59, 2.55 and 2.57, which is 1.13 to 1.20 on an empty pre-start.
+- **A lagged kidney injury to start dependence for corinurad (2026-10-11): rejected.** The idea was that an injury
+  brings on a gout attack, and the attack gets urate lowering started 60 to 365 days later. Three times the start
+  hazard deflated corinurad's all-time ratio only to 2.29, 2.24 and 2.23. It also painted kidney injury admissions
+  before the start at twice the post-start level, the story of a medicine avoided in kidney disease turned upside
+  down. Calendar adjustment still named corinurad.

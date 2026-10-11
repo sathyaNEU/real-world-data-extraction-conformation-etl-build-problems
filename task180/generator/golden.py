@@ -434,7 +434,8 @@ def split_half_years(st, ex, pid, lo, hi, birth_year):
 
 
 def _fit(st, ex, pid, lo, hi, ev, D, adjust, estimator):
-    """adjust: False, 'age' (five-year age bands) or 'age+half' (age bands and calendar half-years)."""
+    """adjust: False, 'age' (five-year age bands), 'age1' (age in whole years by calendar year) or 'age+half' (age
+    bands and calendar half-years)."""
     if not adjust:
         n = count_in(ev, pid, lo, hi)
         days = np.maximum(0, hi - lo + 1)
@@ -445,6 +446,10 @@ def _fit(st, ex, pid, lo, hi, ev, D, adjust, estimator):
         c = np.bincount(st[~ex], weights=days[~ex], minlength=k)
         return cpois(a, b, r, c) if estimator == "cpois" else (mh(a, b, r, c), None, None)
     st2, ex2, pid2, band, h, plo, phi = split_half_years(st, ex, pid, lo, hi, D.birth_year)
+    if adjust == "age1":
+        # age in whole years, by calendar year (no calendar term)
+        band = (h + H0) // 2 - D.birth_year[pid2]
+        h = np.zeros_like(h)
     if adjust == "age":
         h = np.zeros_like(h)
     n = count_in(ev, pid2, plo, phi)
@@ -503,17 +508,13 @@ def sccs(D, substance, risk=(1, 30), control=(61, 180), adjust=False, estimator=
 
 
 RISKS = [(1, 30), (0, 30), (1, 28)]
-CONTROLS = [(61, 180), (31, 180), (61, 365), (31, None), "full"]
+CONTROLS = [(61, 180), (31, 180), (61, 365), (31, None)]
 POPULATIONS = [("all starts", None), ("starts from 2022", Y2022), ("starts from 2023", Y2023)]
 
 
 def adjustments(control, estimator):
-    """The adjustment sets of a cell: none and five-year age bands everywhere; age bands and calendar half-years
-    where the observation runs for years (the full-observation design, conditional Poisson)."""
-    out = [False, "age"]
-    if control == "full" and estimator == "cpois":
-        out.append("age+half")
-    return out
+    """The adjustment sets of a cell: none and five-year age bands."""
+    return [False, "age"]
 
 
 def sccs_grid(D, substance, censor=True, merge=True, populations=POPULATIONS):
@@ -527,6 +528,159 @@ def sccs_grid(D, substance, censor=True, merge=True, populations=POPULATIONS):
                     for adjust in adjustments(control, est):
                         out[(plab, risk, control, adjust, est)] = sccs(D, substance, risk, control, adjust, est, fd,
                                                                       censor, ev)
+    return out
+
+
+# ------------------------------------------------------------------ comparisons that reach before the start
+
+def residence_spans(D, persons, frm, censor=True):
+    """Each person's observed time from day frm: up to two spans (before an emigration, after the latest immigration).
+    Returns (person index, lo, hi) arrays; a span with hi < lo is dropped."""
+    I, U, dth = D.imm[persons], D.emig[persons], D.death[persons]
+    end = np.minimum(dth, END) if censor else np.full(len(persons), END, np.int64)
+    k = np.arange(len(persons))
+    hasI, hasU = I < BIG, U < BIG
+    back = hasI & hasU & (I > U)
+    # one span: from the latest immigration (or frm) to an emigration after it (or the end)
+    lo1 = np.where(hasI & ~back, np.maximum(frm, I), frm)
+    hi1 = np.where(hasU & ~back, np.minimum(end, U - 1), end)
+    # a person back from abroad: before the emigration, and after the return
+    lo_b, hi_b = np.full(len(persons), frm, np.int64), np.minimum(end, U - 1)
+    lo_c, hi_c = np.maximum(frm, I), end
+    q = np.r_[k[~back], k[back], k[back]]
+    lo = np.r_[lo1[~back], lo_b[back], lo_c[back]]
+    hi = np.r_[hi1[~back], hi_b[back], hi_c[back]]
+    ok = hi >= lo
+    return q[ok], lo[ok], hi[ok]
+
+
+def sccs_alltime(D, substance, frm=0, ref="all", adjust=False, estimator="cpois", censor=True, ev=None):
+    """Each new user's days 1 to 30 after every start against a reference that reaches before the start: ref 'all'
+    is all other observed time from day frm (1 January 2018 is day 0); 'pre30' the same with days -30 to 0 set aside;
+    'year' days -365 to -31 only; 'year+61' days -365 to -31 and days 61 to 180. Cases only."""
+    if ev is None:
+        ev = events(D, EVENT[substance])
+    allst = new_users(D, substance)
+    sp, sd = allst["pid"].to_numpy(), allst["day"].to_numpy()
+    persons = np.unique(sp)
+    q, lo, hi = residence_spans(D, persons, frm, censor)
+    o = np.lexsort((lo, q))
+    q, lo, hi = q[o], lo[o], hi[o]
+    first = np.searchsorted(q, np.arange(len(persons)))
+    cnt = np.bincount(q, minlength=len(persons))
+    pi = np.searchsorted(persons, sp)
+    if ref in ("all", "pre30"):
+        # each person a stratum: the risk windows inside the spans, and the rest of the spans less what is set aside
+        n_span = count_in(ev, persons[q], lo, hi)
+        case = np.bincount(q, weights=n_span, minlength=len(persons)) > 0
+        cut_lo = sd - 30 if ref == "pre30" else sd + 1
+        by_p = {}
+        for a, b, c in zip(pi.tolist(), cut_lo.tolist(), sd.tolist()):
+            if case[a]:
+                by_p.setdefault(a, []).append((b, c + 30, c + 1))
+        seg_p, seg_ex, seg_lo, seg_hi = [], [], [], []
+        for k_ in np.where(case)[0].tolist():
+            cuts = sorted(by_p.get(k_, []))
+            for j in range(first[k_], first[k_] + cnt[k_]):
+                a_, b_ = int(lo[j]), int(hi[j])
+                t = a_
+                for c_lo, c_hi, x_lo in cuts:
+                    if c_hi < a_ or c_lo > b_:
+                        continue
+                    if c_lo > t:
+                        seg_p.append(k_), seg_ex.append(False), seg_lo.append(t), seg_hi.append(min(c_lo - 1, b_))
+                    rl_, rh_ = max(x_lo, a_), min(c_hi, b_)
+                    if rh_ >= rl_:
+                        seg_p.append(k_), seg_ex.append(True), seg_lo.append(rl_), seg_hi.append(rh_)
+                    t = max(t, c_hi + 1)
+                if t <= b_:
+                    seg_p.append(k_), seg_ex.append(False), seg_lo.append(t), seg_hi.append(b_)
+        seg_p, seg_ex = np.array(seg_p, np.int64), np.array(seg_ex, bool)
+        seg_lo, seg_hi = np.array(seg_lo, np.int64), np.array(seg_hi, np.int64)
+        return _fit(seg_p, seg_ex, persons[seg_p], seg_lo, seg_hi, ev, D, adjust, estimator)
+    # days -365 to -31 (and days 61 to 180) against days 1 to 30: each start its own stratum, inside the observed spans
+    windows = [(1, 30, True), (-365, -31, False)] + ([(61, 180, False)] if ref == "year+61" else [])
+    parts = []
+    for a, b, isr in windows:
+        for k in (0, 1):
+            j = np.where(cnt[pi] > k)[0]
+            si = first[pi[j]] + k
+            xl, xh = np.maximum(sd[j] + a, lo[si]), np.minimum(sd[j] + b, hi[si])
+            ok = xh >= xl
+            parts.append((j[ok], np.full(ok.sum(), isr), sp[j[ok]], xl[ok], xh[ok]))
+    st_, ex_, pid_, lo_, hi_ = (np.concatenate([x[i] for x in parts]) for i in range(5))
+    n = count_in(ev, pid_, lo_, hi_)
+    tot = np.bincount(st_, weights=n, minlength=len(sp))
+    has_r = np.bincount(st_, weights=ex_.astype(float), minlength=len(sp)) > 0
+    has_c = np.bincount(st_, weights=(~ex_).astype(float), minlength=len(sp)) > 0
+    use = (tot[st_] > 0) & has_r[st_] & has_c[st_]
+    return _fit(st_[use], ex_[use].astype(bool), pid_[use], lo_[use], hi_[use], ev, D, adjust, estimator)
+
+
+ALLTIME_FROM = [("from 2018", 0), ("from 2022", Y2022)]
+ALLTIME_REFS = ["all", "pre30", "year", "year+61"]
+ALLTIME_ADJ = [False, "age", "age1", "age+half"]
+
+
+def alltime_grid(D, censor=True, merge=True):
+    """Rung 2b: every within-person comparison whose reference reaches before the start, for the three signals."""
+    out = {}
+    evs = {s: events(D, EVENT[s], merge=merge) for s in NEW}
+    for flab, frm in ALLTIME_FROM:
+        for ref in ALLTIME_REFS:
+            if ref in ("year", "year+61") and frm != 0:
+                continue
+            for adj in ALLTIME_ADJ:
+                if ref in ("year", "year+61") and adj == "age+half":
+                    continue
+                out[(flab, ref, adj)] = {s: sccs_alltime(D, s, frm, ref, adj, censor=censor, ev=evs[s]) for s in NEW}
+    return out
+
+
+def pre_start_years(D, substance, who, lo_days=-365, hi_days=-1):
+    """Admissions for the event per person-year in days lo_days to hi_days before each start: the new users, the new
+    users of the established medicine, or the matched non-users; starts 2022 to May 2026, resident throughout."""
+    ev = events(D, EVENT[substance])
+    if who == "users":
+        st = new_users(D, substance)
+    elif who == "active":
+        st = new_users(D, ACTIVE[substance])
+    else:
+        m = D.matched[(D.matched["substance"] == substance) & ~D.matched["user"]]
+        st = pd.DataFrame({"pid": m["pid"].to_numpy(), "day": m["day"].to_numpy()})
+    pid, s = st["pid"].to_numpy(), st["day"].to_numpy()
+    keep = (s >= Y2022) & (s <= LAST_START)
+    pid, s = pid[keep], s[keep]
+    ok = resident_through(D, pid, s + lo_days, s + hi_days)
+    n = count_in(ev, pid[ok], s[ok] + lo_days, s[ok] + hi_days)
+    return float(n.sum() / (ok.sum() * (hi_days - lo_days + 1) / 365.25))
+
+
+def after_start_rate(D, substance, who, lo_days=1, hi_days=365):
+    """Admissions for the event per person-year in days lo_days to hi_days after each start (observation cut at death,
+    emigration or the end of the extract): new users or new users of the established medicine, starts 2022 on."""
+    ev = events(D, EVENT[substance])
+    st = new_users(D, substance if who == "users" else ACTIVE[substance])
+    pid, s = st["pid"].to_numpy(), st["day"].to_numpy()
+    keep = (s >= Y2022) & (s <= LAST_START)
+    pid, s = pid[keep], s[keep]
+    n, t, _, _ = window(ev, pid, s, obs_end_after(D, pid, s), lo_days, hi_days)
+    return float(n.sum() / (t.sum() / 365.25))
+
+
+def month_profile(D, substance, lo_block=-12, hi_block=12):
+    """Admissions for the event among all new-user starts by 30-day block around the start (block k: days 30k + 1 to
+    30k + 30), each start's observed time only."""
+    ev = events(D, EVENT[substance])
+    st = new_users(D, substance)
+    pid, s = st["pid"].to_numpy(), st["day"].to_numpy()
+    out = []
+    for k in range(lo_block, hi_block):
+        a, b = s + 30 * k + 1, s + 30 * k + 30
+        ok = resident_through(D, pid, a, np.minimum(b, END)) & (b <= END)
+        e = obs_end_after(D, pid, s)
+        ok &= (b <= e) | (k < 0)
+        out.append((k, int(count_in(ev, pid[ok], a[ok], b[ok]).sum()), int(ok.sum())))
     return out
 
 
@@ -794,4 +948,8 @@ def solve(target):
     nf = nsaid_free(D, "corinurad")
     g["nsaid_free"] = sccs(D, "corinurad", subset=nf)
     g["nsaid_free_share"] = float(nf.mean())
+    # why the comparison stays after the start: velaglutide is not started after a pancreatitis
+    g["vel_pre"] = {w: pre_start_years(D, "velaglutide", w) for w in ("users", "active", "matched")}
+    g["vel_post"] = {w: after_start_rate(D, "velaglutide", w) for w in ("users", "active")}
+    g["alltime"] = {s: sccs_alltime(D, s, 0, "all", "age1") for s in NEW}
     return D, g

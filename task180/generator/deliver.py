@@ -24,7 +24,7 @@ GREY = RGBColor(0x55, 0x5E, 0x69)
 ACCENT = RGBColor(0x8A, 0x2B, 0x1F)
 PRODUCT = {"tasorexant": "Somnevo", "corinurad": "Uralexa", "velaglutide": "Gravera"}
 EVENT_NAME = {"tasorexant": "falls", "corinurad": "acute kidney injury", "velaglutide": "acute pancreatitis"}
-CODES = {"tasorexant": "N05CJ05", "corinurad": "M04AX02; M04AB06", "velaglutide": "A10BJ09"}
+CODES = {"tasorexant": "N05CJ05", "corinurad": "M04AX07; M04AB09", "velaglutide": "A10BJ09"}
 WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
          11: "eleven", 12: "twelve"}
 
@@ -115,6 +115,8 @@ def figures(D, g):
     f["tas_vs_matched"] = pre["tasorexant users"] / pre["tasorexant matched"]
     f["tas_vs_zop"] = pre["tasorexant users"] / pre["zopiclone users"]
     f["cor_vs_all"] = pre["corinurad users"] / pre["allopurinol users"]
+    f["vel_vs_orl_before"] = g["vel_pre"]["users"] / g["vel_pre"]["active"]
+    f["vel_vs_orl_after"] = g["vel_post"]["users"] / g["vel_post"]["active"]
     return f
 
 
@@ -176,7 +178,7 @@ def write_note(path, D, g):
                "6 October). Rate ratio: each new user's admissions in days 1 to 30 after the first dispensing against "
                "the same person's days 61 to 180.", size=8, italic=True, color=GREY, after=6, before=2)
 
-    _heading(doc, "Why the comparison is made within each person")
+    _heading(doc, "Why each new user is compared with their own later time on the medicine")
     _para(doc, "The new medicines are not started by people like everyone else. Tasorexant is prescribed to older "
                "people who already fall: in the year before they started it, new users were admitted for a fall at "
                "%s times the rate of the matched non-users drawn for them and at %s times the rate of people "
@@ -188,15 +190,24 @@ def write_note(path, D, g):
                "that of people starting allopurinol, the gout medicine used in kidney disease. Set against "
                "allopurinol starters, corinurad's excess in the first month all but disappears." % r2(f["cor_vs_all"]),
           after=4)
-    rise = ("about two and a half times" if 2.35 <= f["ratio"] < 2.65 else
-            "more than twofold" if f["ratio"] < 2.35 else "between two and a half and three times")
-    _para(doc, "Comparing each new user's first month with the same person's later months removes everything fixed "
-               "about who is prescribed the medicine. On that comparison falls with tasorexant and pancreatitis with "
-               "velaglutide sit at the level of later time on the medicine, and acute kidney injury with corinurad "
-               "rises " + rise + ". The kidney injury excess is not explained by anti-inflammatory "
-               "cover for gout flares: among corinurad starters with no NSAID dispensed in the first 30 days the "
-               "rate ratio is %s (95%% CI %s to %s)." % (r2(f["nsaid_free"][0]), r2(f["nsaid_free"][1]),
-                                                         r2(f["nsaid_free"][2])), after=6)
+    at = g["alltime"]
+    _para(doc, "Nor can the comparison reach back before the start. Velaglutide is not started after a pancreatitis: "
+               "in the year before their start its new users were admitted with acute pancreatitis at %s times the "
+               "rate of people starting orlistat, while after the start their rate is %s times orlistat starters'. "
+               "Set against all of a person's other time, the years before the start included, the month after "
+               "starting velaglutide therefore looks raised (%s, against %s for corinurad, adjusted for age), "
+               "although it carries no more pancreatitis than later time on the medicine."
+          % (r2(f["vel_vs_orl_before"]), r2(f["vel_vs_orl_after"]), r2(at["velaglutide"][0]), r2(at["corinurad"][0])),
+          after=4)
+    rise = ("by about two thirds" if 1.58 <= f["ratio"] < 1.78 else
+            "by more than half" if f["ratio"] < 1.58 else "by three quarters or more")
+    _para(doc, "Comparing each new user's first month with the same person's later months on the medicine removes "
+               "everything fixed about who is prescribed it and reads no time before the start. On that comparison "
+               "falls with tasorexant and pancreatitis with velaglutide sit at the level of later time on the "
+               "medicine, and acute kidney injury with corinurad rises " + rise + ". The kidney injury excess is not "
+               "explained by anti-inflammatory cover for gout flares: among corinurad starters with no NSAID dispensed "
+               "in the first 30 days the rate ratio is %s (95%% CI %s to %s)." % (
+                   r2(f["nsaid_free"][0]), r2(f["nsaid_free"][1]), r2(f["nsaid_free"][2])), after=6)
 
     _heading(doc, "Corinurad: figures for the committee")
     _table(doc, ["", "Figure"],
@@ -206,7 +217,7 @@ def write_note(path, D, g):
             ["Of which caused by corinurad", str(f["caused"])]],
            [11.0, 5.0], right=(1,))
     _para(doc, "New users, events and observation as SOP-PV-14 sections 4 to 7: new users after 365 days without "
-               "corinurad under either of its ATC codes (M04AX02 to 2023, M04AB06 from 2024), resident for that year, "
+               "corinurad under either of its ATC codes (M04AX07 to 2023, M04AB09 from 2024), resident for that year, "
                "returned dispensings not counted; inpatient admissions with acute kidney injury (DN17) as action "
                "diagnosis, transfers counted once; observation ends at death, emigration or 30 June 2026. Ratio by "
                "conditional Poisson regression, each start its own stratum, Wald interval. Admissions caused = "

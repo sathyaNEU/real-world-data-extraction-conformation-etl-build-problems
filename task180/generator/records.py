@@ -45,7 +45,7 @@ def write_prescriptions(path, world, pnr):
     sub = np.r_[disp["substance"], ns["substance"]].astype(object)
     code = {s: W.atc_on(s, W.D_END) for s in set(sub.tolist())}
     atc = pd.Series(sub).map(code).to_numpy(object)
-    atc = np.where((sub == "corinurad") & (day < W.D_CODE), "M04AX02", atc).astype(object)
+    atc = np.where((sub == "corinurad") & (day < W.D_CODE), W.atc_on("corinurad", 0), atc).astype(object)
     vs = pd.Series(vnr)
     size = vs.map({v: p["size"] for v, p in W.PACK.items()}).to_numpy(np.int32)
     strength = vs.map({v: float(p["strength"]) for v, p in W.PACK.items()}).to_numpy(float)
@@ -201,19 +201,11 @@ def write_civil(path, P, pnr):
     n = len(P["cohort"])
     big = 10 ** 7
     rows = []
-    r = W.rng("records", "old_immigration")
-    old = (r.random(n) < 0.06) & (P["entry"] == 0) & (P["ret"] >= big)
-    old_day = r.integers(W.day(dt.date(1972, 1, 1)), W.day(dt.date(2016, 12, 31)), n)
+    emig_d, imm_d = S.migration_dates(P)
     for i in range(n):
         death = iso(P["death"][i]) if P["death"][i] < big else ""
-        emig = iso(P["emig"][i]) if P["emig"][i] < big else ""
-        imm = ""
-        if P["ret"][i] < big:
-            imm = iso(P["ret"][i])
-        elif P["entry"][i] > 0:
-            imm = iso(P["entry"][i])
-        elif old[i]:
-            imm = iso(old_day[i])
+        emig = iso(emig_d[i]) if emig_d[i] < big else ""
+        imm = iso(imm_d[i]) if imm_d[i] < big else ""
         rows.append((pnr[i], int(P["birth_year"][i]), "K" if P["female"][i] else "M", death, emig, imm))
     rows.sort()
     with open(path, "w", newline="", encoding="utf-8") as fh:

@@ -13,6 +13,7 @@ import numpy as np
 import world as W
 
 YEAR = 365.25
+BIG = 10 ** 7
 COHORT_IDS = {c: i for i, c in enumerate(list(W.COHORTS) + ["comparator"])}
 COHORT_OF = {i: c for c, i in COHORT_IDS.items()}
 EVENTS = ("fall", "aki", "pancreatitis")
@@ -339,10 +340,10 @@ def clear_of_boundaries(t, entry=None, last=None):
     immigration (residence) and a year after the previous dispensing (the washout)."""
     for _ in range(4):
         moved = False
-        if entry is not None and abs(t - 365 - entry) <= 15:
+        if entry is not None and abs(t - 365 - entry) <= 18:
             t += 40
             moved = True
-        if last is not None and 330 <= t - last <= 400:
+        if last is not None and 325 <= t - last <= 405:
             t += 100
             moved = True
         if not moved:
@@ -387,9 +388,11 @@ def simulate():
     imm = r.random(nU) < 0.018
     gap = r.integers(40, 1300, nU)
     gap = np.where((gap >= 330) & (gap <= 400), gap + 90, gap)
-    entry = np.where(imm, np.maximum(1, U["s0"] - gap), 0)
-    imm = imm & (entry > 0)
-    U["entry"] = np.where(imm, entry, 0)
+    arrival = U["s0"] - gap
+    # an arrival before the extract opens is resident throughout; its date stays on the civil record
+    U["old_imm"] = np.where(imm & (arrival < 1), arrival, BIG)
+    imm = imm & (arrival >= 1)
+    U["entry"] = np.where(imm, arrival, 0)
     U["immigrated"] = imm
     # returned-only users (dispensed once, returned, never started): a small share of the new medicines
     r = W.rng("returned_only")
@@ -428,6 +431,14 @@ def simulate():
         U["variant"][cohort] = (best[3], round(best[0], 2))
         p_, d_ = best[1]
         before = d_ < start[p_]
+        if cohort == "velaglutide":
+            # velaglutide is not started after a pancreatitis: of the would-be starters with one before their start,
+            # only a few are prescribed it anyway, and the cohort is otherwise people with none before their start
+            had = np.unique(p_[before])
+            rc = W.rng("contraindication", cohort)
+            gone = had[rc.random(len(had)) >= W.PANCREATITIS_HISTORY_STARTS]
+            before = before & ~np.isin(p_, gone)
+            U["pre_pancreatitis_dropped"] = len(gone)
         base_ev[sig][0].append(p_[before])
         base_ev[sig][1].append(d_[before])
         s_ = start[idx].astype(np.int64)
@@ -449,7 +460,8 @@ def simulate():
     base_ev = {e: (np.concatenate(v[0]), np.concatenate(v[1])) for e, v in base_ev.items()}
     U["start"] = start
     # ---------------- dispensing histories
-    disp = dispensing_histories(U)
+    disp = dispensing_histories(U, base_ev["pancreatitis"])
+    clear_residence_boundaries(U, disp)
     # first dispensing day of each new-medicine user (the matched extract's index): the earliest positive row
     U["index"] = np.full(nU, -1, np.int64)
     for k, cohort in enumerate(W.NEW):
@@ -470,7 +482,7 @@ def simulate():
         C["latent_" + e] = latc[e]
     # ---------------- one people table
     keys = ["cohort", "kind", "birth_year", "female", "birth_day", "present", "rec", "entry", "death", "emig", "ret",
-            "mult_fall", "mult_aki", "mult_pancreatitis", "latent_fall", "latent_aki", "latent_pancreatitis"]
+            "mult_fall", "mult_aki", "mult_pancreatitis", "latent_fall", "latent_aki", "latent_pancreatitis", "old_imm"]
     P = {k: np.concatenate([U[k], C[k]]) for k in keys}
     P["n_users"] = nU
     P["user_of"] = np.r_[U["user_of"], np.full(nC, -1, np.int8)]
@@ -480,6 +492,7 @@ def simulate():
     P["set_substance"] = np.r_[np.full(nU, -1, np.int8), C["set_substance"]]
     P["returned_only"] = np.r_[U["returned_only"], np.zeros(nC, bool)]
     P["immigrated"] = np.r_[U["immigrated"], C["immigrated"]]
+    migrations(P, disp)
     # ---------------- events: users' baseline (kept inside residence) plus comparators', plus the drug effect
     ev = {e: ([base_ev[e][0]], [base_ev[e][1]]) for e in EVENTS}
     variants = dict(U["variant"])
@@ -542,8 +555,103 @@ def resident_mask(P, pid, d):
     pid = np.asarray(pid)
     d = np.asarray(d)
     ok = (d >= P["entry"][pid]) & (d < P["death"][pid]) & (d <= W.D_END)
-    away = (d >= P["emig"][pid]) & (d < P["ret"][pid])
+    away = ((d >= P["emig"][pid]) & (d < P["ret"][pid])) | ((d >= P["trip_out"][pid]) & (d < P["trip_back"][pid]))
     return ok & ~away
+
+
+def migrations(P, disp):
+    """The rest of each person's migration history. A few residents spent a while abroad between 2018 and 2021, ending
+    at least 400 days before their start or index day and touching no dispensing of theirs (the civil record then
+    carries that trip as the most recent emigration and immigration); earlier trips abroad and first arrivals before
+    2018 sit on the civil record only."""
+    n = len(P["cohort"])
+    r = W.rng("migrations")
+    anchor = np.where(P["start"] >= 0, P["start"], P["index"])
+    P["trip_out"] = np.full(n, BIG, np.int64)
+    P["trip_back"] = np.full(n, BIG, np.int64)
+    last_day = W.day(W.dt.date(2021, 12, 31))
+    cand = (P["entry"] == 0) & (P["emig"] >= BIG) & (P["old_imm"] >= BIG) & (r.random(n) < 0.015)
+    dur = r.integers(30, 541, n)
+    hi = np.minimum(anchor - 400, last_day) - dur
+    u = r.random(n)
+    out = 30 + np.floor(u * np.maximum(hi - 30, 0)).astype(np.int64)
+    cand &= hi > 30
+    dk = np.sort(disp["pid"].astype(np.int64) * 10 ** 6 + disp["day"])
+    i = np.where(cand)[0]
+    a = np.searchsorted(dk, i * 10 ** 6 + out[i] - 1)
+    b = np.searchsorted(dk, i * 10 ** 6 + out[i] + dur[i] + 1, side="right")
+    i = i[b == a]
+    P["trip_out"][i] = out[i]
+    P["trip_back"][i] = out[i] + dur[i]
+    # first arrivals before 2018, more of them in later years, never before birth
+    born = W.day(W.dt.date(1960, 1, 1)) + 0 * P["birth_day"]
+    lo = np.maximum(P["birth_day"] + 30, born)
+    top = -1
+    new = (P["entry"] == 0) & (P["old_imm"] >= BIG) & (P["trip_out"] >= BIG) & (r.random(n) < 0.055) & (lo < top)
+    x = r.random(n)
+    k = 0.045
+    span = (top - lo).astype(float)
+    t = np.log1p(x * np.expm1(k * span / 365.25)) / k * 365.25
+    P["old_imm"] = np.where(new, lo + np.floor(t).astype(np.int64), P["old_imm"])
+    # earlier trips abroad, both ends before 2018 and after the person was 18
+    adult = P["birth_day"] + int(18 * 365.25)
+    plain = (P["old_imm"] >= BIG) & (P["trip_out"] >= BIG) & (r.random(n) < 0.04)
+    away = r.integers(180, 2200, n)
+    end_lo = adult + away
+    ok = plain & (end_lo < top - 30)
+    back = end_lo + np.floor(r.random(n) * np.maximum(top - end_lo, 0)).astype(np.int64)
+    P["old_emig"] = np.where(ok, back - away, BIG)
+    P["old_ret"] = np.where(ok & (P["entry"] == 0), back, BIG)
+    settle_residence(P, disp)
+
+
+def migration_dates(P):
+    """The most recent emigration and immigration on each person's civil record (BIG for none)."""
+    n = len(P["cohort"])
+    emig = np.full(n, BIG, np.int64)
+    imm = np.full(n, BIG, np.int64)
+    # before the extract: a first arrival, or a stay abroad and the return
+    imm = np.where(P["old_imm"] < BIG, P["old_imm"], imm)
+    emig = np.where(P["old_emig"] < BIG, P["old_emig"], emig)
+    imm = np.where(P["old_ret"] < BIG, P["old_ret"], imm)
+    # an arrival in the extract's years
+    imm = np.where(P["entry"] > 0, P["entry"], imm)
+    # a stay abroad in 2018 to 2021
+    emig = np.where(P["trip_out"] < BIG, P["trip_out"], emig)
+    imm = np.where(P["trip_back"] < BIG, P["trip_back"], imm)
+    # leaving after the start or index day, and coming back
+    emig = np.where(P["emig"] < BIG, P["emig"], emig)
+    imm = np.where(P["ret"] < BIG, P["ret"], imm)
+    return emig, imm
+
+
+def settle_residence(P, disp):
+    """No new-user start of any of the six medicines sits within a few weeks of a year after the person's latest
+    immigration on the civil record, so every reading of 'resident for the 365 days before' selects the same starts:
+    where one would, the arrival was a little earlier, the return from abroad a little later, or the trip not taken."""
+    st = new_user_starts(disp)
+    pid, day_ = st["pid"].astype(np.int64), st["day"].astype(np.int64)
+    for _ in range(8):
+        _, imm = migration_dates(P)
+        near = (imm[pid] < BIG) & (np.abs(day_ - 365 - imm[pid]) <= 15)
+        if not near.any():
+            return
+        who = np.unique(pid[near])
+        ret = who[P["ret"][who] < BIG]
+        P["ret"][ret] += 45
+        rest = who[P["ret"][who] >= BIG]
+        trip = rest[P["trip_back"][rest] < BIG]
+        P["trip_out"][trip], P["trip_back"][trip] = BIG, BIG
+        rest = rest[P["trip_back"][rest] >= BIG]
+        ent = rest[P["entry"][rest] > 0]
+        P["entry"][ent] += 45
+        rest = rest[P["entry"][rest] <= 0]
+        oret = rest[P["old_ret"][rest] < BIG]
+        P["old_ret"][oret] -= 45
+        P["old_emig"][oret] -= 45
+        oimm = rest[(P["old_ret"][rest] >= BIG) & (P["old_imm"][rest] < BIG)]
+        P["old_imm"][oimm] -= 45
+    raise RuntimeError("residence boundaries did not settle")
 
 
 def resident(P, pid, d):
@@ -552,18 +660,26 @@ def resident(P, pid, d):
     return pid[m][order], d[m][order]
 
 
-def dispensing_histories(U):
+def dispensing_histories(U, panc):
     """Every dispensing and return of the six medicines for the users: the episode the start opens, earlier
-    episodes, switches from the established medicine, restarts, and returned packages."""
-    rows = {"pid": [], "day": [], "vnr": [], "apk": [], "substance": []}
+    episodes, switches from the established medicine, restarts, and returned packages. panc: the pancreatitis events
+    (person, day); a velaglutide user with one after the start is restarted only at the contraindication's rate.
+    Dispensing days fall on the days pharmacies serve them."""
+    rows = {"pid": [], "day": [], "vnr": [], "apk": [], "substance": [], "src": []}
     names = list(W.COHORTS)
+    vel = names.index("velaglutide")
+    pk = np.sort(panc[0].astype(np.int64) * 10 ** 6 + panc[1])
+    rr = W.rng("contraindication", "restarts")
 
-    def add(pid, ds, vs, aps, sub):
+    def add(pid, ds, vs, aps, sub, src=None):
+        """src: for each row, the position in this call of the dispensing a return gives back (-1 for none)."""
+        base = len(rows["day"])
         rows["pid"] += [pid] * len(ds)
         rows["day"] += ds
         rows["vnr"] += vs
         rows["apk"] += aps
         rows["substance"] += [sub] * len(ds)
+        rows["src"] += [-1 if (src is None or x < 0) else base + x for x in (src or [-1] * len(ds))]
 
     r = W.rng("dispensings")
     nU = len(U["cohort"])
@@ -573,7 +689,7 @@ def dispensing_histories(U):
         s = int(U["start"][i])
         if U["returned_only"][i]:
             v = episode(r, sub, s, 1, cut)[1][0]
-            add(i, [s, s + int(r.integers(1, 12))], [v, v], [1, -1], sub)
+            add(i, [s, s + int(r.integers(1, 12))], [v, v], [1, -1], sub, [-1, 0])
             continue
         # a first dispensing returned before the real start (a few users)
         launch = W.SUBSTANCES[sub]["launch"]
@@ -582,7 +698,7 @@ def dispensing_histories(U):
             t = s - int(r.integers(20, 240))
             if t >= max(lo, U["entry"][i]):
                 v = episode(r, sub, t, 1, cut)[1][0]
-                add(i, [t, t + int(r.integers(1, 10))], [v, v], [1, -1], sub)
+                add(i, [t, t + int(r.integers(1, 10))], [v, v], [1, -1], sub, [-1, 0])
         # an earlier episode of the same medicine, long enough ago to leave a clean year before the start
         if sub in ("zopiclone", "allopurinol", "orlistat") and r.random() < 0.22:
             t = int(r.integers(max(U["entry"][i], 0), max(U["entry"][i] + 1, s - 560)))
@@ -594,29 +710,35 @@ def dispensing_histories(U):
         ds, vs, aps = episode(r, sub, s, fills(r, sub), cut)
         # a refill returned now and then (never one whose return would leave about a year between dispensings)
         aps2 = list(aps)
-        extra_d, extra_v, extra_a = [], [], []
+        extra_d, extra_v, extra_a, extra_s = [], [], [], []
         kept = [0]
         for k in range(1, len(ds)):
             if r.random() < 0.006:
                 back = ds[k] + int(r.integers(1, 8))
-                if k + 1 < len(ds) and 330 <= ds[k + 1] - ds[kept[-1]] <= 400:
+                if k + 1 < len(ds) and 325 <= ds[k + 1] - ds[kept[-1]] <= 405:
                     kept.append(k)
                     continue
                 extra_d.append(back)
                 extra_v.append(vs[k])
                 extra_a.append(-aps[k])
+                extra_s.append(k)
             else:
                 kept.append(k)
-        add(i, ds + extra_d, vs + extra_v, aps2 + extra_a, sub)
+        add(i, ds + extra_d, vs + extra_v, aps2 + extra_a, sub, [-1] * len(ds) + extra_s)
         if r.random() < 0.11 and ds:
             g = int(r.integers(70, 1300))
-            if 330 <= g <= 400:
+            if 325 <= g <= 405:
                 g += 100
             t = ds[-1] + g
             t = clear_of_boundaries(t, U["entry"][i] if U["immigrated"][i] else None, ds[kept[-1]])
             if t < cut and t <= W.D_END:
                 ds3, vs3, aps3 = episode(r, sub, t, fills(r, sub), cut)
-                add(i, ds3, vs3, aps3, sub)
+                skip = False
+                if U["user_of"][i] == vel:
+                    a_, b_ = np.searchsorted(pk, [i * 10 ** 6 + s, i * 10 ** 6 + t])
+                    skip = b_ > a_ and rr.random() >= W.PANCREATITIS_HISTORY_STARTS
+                if not skip:
+                    add(i, ds3, vs3, aps3, sub)
         # switchers: long-term use of the established medicine before a new one
         if sub in W.ACTIVE and r.random() < {"tasorexant": 0.25, "corinurad": 0.15, "velaglutide": 0.0}[sub]:
             old = W.ACTIVE[sub]
@@ -632,10 +754,35 @@ def dispensing_histories(U):
             add(i, ds5, vs5[:len(ds5)], aps5[:len(ds5)], "orlistat")
     out = {k: np.array(v) for k, v in rows.items()}
     out["pid"] = out["pid"].astype(np.int64)
-    out["day"] = out["day"].astype(np.int64)
+    day = W.pharmacy_days(np.array(out["day"], np.int64), "medicines")
+    # a return comes back to the pharmacy after the dispensing it gives back, on a day the pharmacy is open
+    src = out.pop("src").astype(np.int64)
+    ret = src >= 0
+    late = ret & (day <= np.where(ret, day[np.maximum(src, 0)], 0))
+    day[late] = day[src[late]] + 1
+    for _ in range(8):
+        shut = late & W.closed(day)
+        if not shut.any():
+            break
+        day[shut] += 1
+    out["day"] = day
     out["apk"] = out["apk"].astype(np.int64)
     ok = (out["day"] >= 0) & (out["day"] <= W.D_END)
     return {k: v[ok] for k, v in out.items()}
+
+
+def clear_residence_boundaries(U, disp):
+    """An immigrant whose start falls within a few weeks of a year after arriving arrived a little later instead: no
+    start sits on the residence boundary, so every reading of 'resident for the 365 days before' selects the same
+    starts."""
+    st = new_user_starts(disp)
+    for _ in range(6):
+        pid = st["pid"].astype(np.int64)
+        near = U["immigrated"][pid] & (np.abs(st["day"].astype(np.int64) - 365 - U["entry"][pid]) <= 15)
+        if not near.any():
+            return
+        U["entry"][np.unique(pid[near])] += 45
+    raise RuntimeError("residence boundaries did not clear")
 
 
 def new_user_starts(disp):
@@ -710,18 +857,23 @@ def comparators(U):
     C["set_substance"] = sub
     C["index"] = U["index"][mt]
     imm = r.random(n) < 0.02
-    entry = np.where(imm, np.maximum(1, C["index"] - r.integers(10, 2400, n)), 0)
-    C["immigrated"] = imm & (entry > 0)
-    C["entry"] = np.where(C["immigrated"], entry, 0)
+    arrival = C["index"] - r.integers(10, 2400, n)
+    C["old_imm"] = np.where(imm & (arrival < 1), arrival, BIG)
+    C["immigrated"] = imm & (arrival >= 1)
+    C["entry"] = np.where(C["immigrated"], arrival, 0)
     C["entry"] = np.minimum(C["entry"], C["index"])
     death, emig, ret = exits_after(C, np.arange(n), C["index"], ["comparator"] * n, W.rng("exits", "comparators"))
     C["death"], C["emig"], C["ret"] = death, emig, ret
     return C
 
 
+# the NSAID stream's salt (chosen, as the corinurad stream's, so that no robustness figure rests on a stray draw)
+NSAID_SALT = (5,)
+
+
 def nsaids(P, starts):
     """NSAID dispensings: each person's own rate, plus flare cover when a uricosuric or allopurinol is started."""
-    r = W.rng("nsaids")
+    r = W.rng("nsaids", *NSAID_SALT)
     n = len(P["cohort"])
     rate = np.where(np.isin(P["cohort"], [COHORT_IDS["corinurad"], COHORT_IDS["allopurinol"]]), 0.75,
                     np.where(P["kind"] == 0, 0.38, 0.3))
@@ -745,6 +897,7 @@ def nsaids(P, starts):
     vnr = np.array([W.NSAID_PACKS[s][0] if len(W.NSAID_PACKS[s]) == 1 or r.random() < 0.6 else W.NSAID_PACKS[s][1]
                     for s in sub], object)
     apk = np.where(r.random(len(pid)) < 0.9, 1, 2)
+    d = W.pharmacy_days(d, "nsaids")
     ok = d <= W.D_END
     return {"pid": pid[ok].astype(np.int64), "day": d[ok].astype(np.int64), "vnr": vnr[ok], "apk": apk[ok],
             "substance": sub[ok]}

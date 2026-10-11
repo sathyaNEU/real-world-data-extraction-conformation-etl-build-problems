@@ -33,12 +33,17 @@ LOG = []
 ASOF = dt.date(2026, 10, 12)
 ANSWER, NAIVE_WINNER = "corinurad", "tasorexant"
 NAIVE_MARGIN, AC_LIMIT, CLOSURE = 1.3, 1.4, 1.25
-SC_MIN, SC_LOWER, RIVAL_MAX, BAND = 2.2, 1.6, 1.25, 0.3
+SC_MIN, SC_LOWER, RIVAL_MAX, BAND = 1.5, 1.1, 1.25, 0.25
+ANSWER_CLOSURE = 1.5            # corinurad against either rival in the golden cell
+ALLTIME_WINNER, ALLTIME_MARGIN = "velaglutide", 1.2
 # the two convention variants (deaths not ending observation, transfers not merged) only have to keep the winner
-VARIANT_MIN = 2.0
+VARIANT_MIN = 1.3
 BANNED = re.compile(r"self[- ]controlled|case[- ]series|\bSCCS\b|\bSCRI\b|risk interval|within[- ]person|"
                     r"within[- ]patient|own time|channel\w*|confound\w*|indication bias|protopathic|\bfrail\w*|"
-                    r"active comparator|propensity", re.I)
+                    r"active comparator|propensity|contraindicat\w*|event[- ]dependent|exposure[- ]anchored|"
+                    r"pre-?exposure|immortal", re.I)
+REAL_ATC = {"M04AX01", "M04AX02", "M04AB01", "M04AB02", "M04AB03", "M04AB04", "M04AB05", "M04AB06", "N05CJ01",
+            "N05CJ02", "N05CJ03", "A10BJ01", "A10BJ02", "A10BJ03", "A10BJ04", "A10BJ05", "A10BJ06", "A10BJ07"}
 TOOLCHAIN = re.compile(r"python-docx|openpyxl|reportlab|matplotlib|pandas|numpy|pyarrow|distractor|\bclaude\b|"
                        r"anthropic|lorem|placeholder|\bseed\b|\bsynthetic\b|\bsimulat\w*", re.I)
 
@@ -104,7 +109,7 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         if s != a:
             r_, l_, h_ = g["sccs"][s]
             ok(r_ <= RIVAL_MAX and l_ < 1 < h_, "%s golden cell %.3f (%.3f to %.3f)" % (s, r_, l_, h_))
-            ok(rr / r_ >= CLOSURE * 1.5, "closure at the answer's rung: %s within reach" % s)
+            ok(rr / r_ >= ANSWER_CLOSURE, "closure at the answer's rung: %s within reach" % s)
     LOG.append("call: %s %.4f (%.4f to %.4f); tasorexant %.4f (%.4f to %.4f); velaglutide %.4f (%.4f to %.4f)" % (
         (a, rr, lo, hi) + g["sccs"]["tasorexant"] + g["sccs"]["velaglutide"]))
     # risk-window events behind the answer
@@ -175,7 +180,8 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
                 if (censor, merge) == (True, True):
                     ok(abs(r_ - rr) <= BAND, "corinurad cell %s outside the band: %.3f" % (k, r_))
                 if v[1] is not None:
-                    ok(v[1] >= SC_LOWER, "corinurad cell %s lower %.3f" % (k, v[1]))
+                    low = SC_LOWER if (censor, merge) == (True, True) else 1.0
+                    ok(v[1] >= low, "corinurad cell %s censor=%s merge=%s lower %.3f" % (k, censor, merge, v[1]))
         else:
             for r_, k, v in lst:
                 ok(r_ <= RIVAL_MAX, "%s cell %s censor=%s merge=%s: %.3f" % (s, k, censor, merge, r_))
@@ -188,13 +194,43 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
             continue
         for (r_a, k_a, _), (r_r, k_r, _) in zip(spread[(ANSWER,) + key[1:]], spread[key]):
             ok(k_a == k_r and r_a / r_r >= CLOSURE, "closure: %s within 25 per cent of corinurad in %s" % (key[0], k_a))
-    ok(main_cells == 3 * 189 and variant_cells == 2 * main_cells,
+    ok(main_cells == 3 * 144 and variant_cells == 2 * main_cells,
        "grid size %d + %d" % (main_cells, variant_cells))
     LOG.append("rung 3 grid: %d cells under the pinned conventions and %d under the two convention variants; misses 0"
                % (main_cells, variant_cells))
     cor_main = [x[0] for x in spread[(ANSWER, True, True)]]
     g["sccs_range"] = (min(cor_main), max(cor_main))
     g["sccs_cells"] = (main_cells, variant_cells)
+
+    # ---------------------------------------------------------------- rung 2b: every comparison reaching before the start
+    ag = G.alltime_grid(D)
+    ok(len(ag) == 22, "all-time grid size %d" % len(ag))
+    thin = None
+    for k, v in ag.items():
+        sc = {s: v[s][0] for s in G.NEW}
+        f, sec, m = G.lead(sc)
+        ok(f == ALLTIME_WINNER and m >= ALLTIME_MARGIN, "rung 2b cell %s: %s" % (k, sc))
+        ok(v[ALLTIME_WINNER][1] > 1.0, "rung 2b cell %s: velaglutide's interval reaches 1 (%.3f)" % (k, v[ALLTIME_WINNER][1]))
+        ok(sc[ANSWER] > sc[NAIVE_WINNER], "rung 2b cell %s: corinurad behind tasorexant" % (k,))
+        if thin is None or m < thin[0]:
+            thin = (m, k, sc)
+    plain = ag[("from 2018", "all", "age1")]
+    g["alltime_plain"] = plain
+    g["alltime_thin"] = thin
+    for k in (("from 2018", "all", False), ("from 2018", "all", "age"), ("from 2018", "all", "age1"),
+              ("from 2018", "all", "age+half"), ("from 2022", "all", "age"), ("from 2018", "year", False)):
+        v = ag[k]
+        LOG.append("rung 2b %s: velaglutide %.3f (%.3f to %.3f), corinurad %.3f, tasorexant %.3f" % (
+            (k,) + v["velaglutide"] + (v["corinurad"][0], v["tasorexant"][0])))
+    LOG.append("rung 2b grid: %d cells, velaglutide first in every one; thinnest margin %.3f (%s; %s)" % (
+        len(ag), thin[0], thin[1], {s: round(x, 3) for s, x in thin[2].items()}))
+    for censor, merge in ((False, True), (True, False)):
+        evs = {s: G.events(D, G.EVENT[s], merge=merge) for s in G.NEW}
+        sc = {s: G.sccs_alltime(D, s, 0, "all", "age1", censor=censor, ev=evs[s])[0] for s in G.NEW}
+        f, sec, m = G.lead(sc)
+        ok(f == ALLTIME_WINNER and m >= ALLTIME_MARGIN, "rung 2b under censor=%s merge=%s: %s" % (censor, merge, sc))
+        LOG.append("rung 2b, deaths end observation=%s transfers merged=%s: %s" % (
+            censor, merge, {s: round(x, 3) for s, x in sc.items()}))
 
     # ---------------------------------------------------------------- the year before the start
     pre = g["pre"]
@@ -208,10 +244,38 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         ok(edge(x) >= 0.05, "pre-start ratio %.4f sits near a two-decimal edge" % x)
     LOG.append("year before the start: tasorexant %.2f x matched non-users, %.2f x zopiclone starters; corinurad %.2f x "
                "allopurinol starters" % (tm, tz, ca))
+    vp, vq = g["vel_pre"], g["vel_post"]
+    vo, vm, va = vp["users"] / vp["active"], vp["users"] / vp["matched"], vq["users"] / vq["active"]
+    ok(vo <= 0.25 and vm <= 0.3, "velaglutide starters' pancreatitis in the year before: %.3f x orlistat starters, %.3f x "
+       "matched non-users" % (vo, vm))
+    ok(0.75 <= va <= 1.3, "velaglutide starters' pancreatitis in the year after against orlistat starters: %.3f" % va)
+    for x in (vo, va):
+        ok(edge(x) >= 0.05, "velaglutide evidence ratio %.4f sits near a two-decimal edge" % x)
+    pa = g["alltime"]
+    ok(pa == {s: plain[s] for s in G.NEW}, "the note's all-time figures are the plain cell's")
+    for x in (pa["velaglutide"][0], pa["corinurad"][0]):
+        ok(edge(x) >= 0.05, "all-time figure %.4f sits near a two-decimal edge" % x)
+    prof = {s: G.month_profile(D, s) for s in G.NEW}
+
+    def block_rate(s, ks):
+        rows = [(n, m) for k, n, m in prof[s] if k in ks]
+        return sum(n for n, m in rows) / sum(m for n, m in rows) * 1e5
+
+    pre_r, first_r, post_r = (block_rate("velaglutide", ks) for ks in (range(-12, 0), [0], range(1, 12)))
+    ok(pre_r < 0.3 * post_r and first_r < 1.4 * post_r, "velaglutide profile per 100,000 starts: %.1f before, %.1f in "
+       "the first month, %.1f in months 2 to 12" % (pre_r, first_r, post_r))
+    c_pre, c_first, c_post = (block_rate("corinurad", ks) for ks in (range(-12, -1), [0], range(1, 12)))
+    ok(c_first > 1.4 * c_post and c_first > 1.4 * c_pre, "corinurad profile: %.1f, %.1f, %.1f" % (c_pre, c_first, c_post))
+    g["profile"] = prof
+    LOG.append("velaglutide: pancreatitis in the year before the start %.2f x orlistat starters' (%.2f x matched "
+               "non-users'), in the year after %.2f x; admissions per 100,000 starts a month: %.1f in months -12 to -1, "
+               "%.1f in the first month, %.1f in months 2 to 12" % (vo, vm, va, pre_r, first_r, post_r))
+    LOG.append("corinurad: kidney injury admissions per 100,000 starts a month: %.1f in months -12 to -2, %.1f in the "
+               "first month, %.1f in months 2 to 12" % (c_pre, c_first, c_post))
 
     # ---------------------------------------------------------------- NSAID independence
     nf = g["nsaid_free"]
-    ok(nf[0] >= 2.0 and nf[1] > 1.0, "corinurad among NSAID-free starters: %.3f (%.3f)" % (nf[0], nf[1]))
+    ok(nf[0] >= 1.5 and nf[1] > 1.0, "corinurad among NSAID-free starters: %.3f (%.3f)" % (nf[0], nf[1]))
     ok(0.6 <= g["nsaid_free_share"] <= 0.85, "NSAID-free share %.3f" % g["nsaid_free_share"])
     pid_n, s_n, _ = G.episodes(D, ANSWER)
     rx = D.rx[D.rx["atc"].str.startswith("M01A") & (D.rx["apk"] > 0)]
@@ -373,7 +437,7 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     # ---------------------------------------------------------------- the world behind the extract
     if world is not None:
         P = world["P"]
-        ok(W.RR_CORINURAD == 2.5 and world["effect_events"] > 0, "the world's one effect")
+        ok(W.RR_CORINURAD == 1.7 and world["effect_events"] > 0, "the world's one effect")
         for col in ("latent_fall", "latent_aki", "latent_pancreatitis"):
             ok(col in P and not any(col.split("_")[0] in x for x in []), "latent multipliers stay in the world")
         lat = {}
@@ -477,6 +541,61 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         ok(pd.Timestamp(mx) <= pd.Timestamp("2026-06-30 23:59:59"), "%s runs past the extract: %s" % (f, mx))
     ok(D.death[D.death < G.BIG].max() <= G.END and D.emig[D.emig < G.BIG].max() <= G.END, "civil dates past the extract")
 
+    # ---------------------------------------------------------------- realism of the extract (the reader's notes)
+    rxd = D.rx["day"].to_numpy()
+    wd, hol = rxd % 7, np.isin(rxd, W.HOLIDAYS)
+    sun_hol, sat = float(((wd == 6) | hol).mean()), float(((wd == 5) & ~hol).mean())
+    ok(sun_hol <= 0.025 and 0.04 <= sat <= 0.13, "dispensing days: %.4f on Sundays and holidays, %.4f on Saturdays" %
+       (sun_hol, sat))
+    week = np.bincount(wd[~hol], minlength=7) / (~hol).sum()
+    ok(all(0.12 <= x <= 0.25 for x in week[:5]) and week[0] > week[3], "weekday shares of dispensing %s" %
+       np.round(week, 3))
+    ct = pq.read_table(os.path.join(target, G.CONTACTS), columns=["kilde", "prioritet", "starttid"]).to_pandas()
+    c3 = ct[ct["kilde"] == "LPR3"]
+    mod = (c3["starttid"].dt.hour * 60 + c3["starttid"].dt.minute).to_numpy()
+    top = np.bincount(mod, minlength=1440) / len(mod)
+    ok(top.max() <= 0.02 and top[15 * 60 + 59] <= 0.002 and top[22 * 60 + 59] <= 0.002,
+       "LPR3 start minutes: busiest %.4f, 15:59 %.4f" % (top.max(), top[15 * 60 + 59]))
+    pday = (c3["starttid"].to_numpy().astype("datetime64[D]") - np.datetime64(G.EPOCH)).astype(np.int64)
+    planned = (c3["prioritet"] == "ATA3").to_numpy()
+    off = float((((pday % 7) >= 5) | np.isin(pday, W.HOLIDAYS))[planned].mean())
+    ok(off <= 0.005, "planned contacts on weekends or holidays: %.4f" % off)
+    civ = pd.read_csv(os.path.join(target, G.CIVIL), dtype=str, keep_default_na=False)
+    imm = civ["indvandringsdato"][civ["indvandringsdato"] != ""]
+    emi = civ["udvandringsdato"][civ["udvandringsdato"] != ""]
+    ok(imm.value_counts().iloc[0] <= max(5, 0.002 * len(imm)), "an immigration date repeated %d times" %
+       imm.value_counts().iloc[0])
+    years_i, years_e = imm.str[:4].astype(int), emi.str[:4].astype(int)
+    ok((years_i == 2017).sum() > 50 and all((years_e == y).sum() > 30 for y in (2018, 2019, 2020, 2021)),
+       "migration years: 2017 arrivals %d; emigrations 2018 to 2021 %s" % (
+           (years_i == 2017).sum(), [int((years_e == y).sum()) for y in (2018, 2019, 2020, 2021)]))
+    by = civ["foedselsaar"].astype(int)
+    ok(not (years_i < by[imm.index]).any(), "an immigration before birth")
+    ok(len(civ) % 100 != 0 and rows_of(os.path.join(target, G.MATCHED)) % 100 != 0, "round person counts")
+    atc = pd.read_csv(os.path.join(target, G.ATC), sep=";", dtype=str)
+    fict = atc[atc["substans"].isin(list(G.NEW))]["atc"]
+    ok(not set(fict) & REAL_ATC, "a fictional product on a real ATC assignment: %s" % (set(fict) & REAL_ATC))
+    psur = texts["psur_summary_tasorexant_2026.pdf"]
+    mo = re.search(r"Denmark: about ([\d,]+) patient-years", psur.replace("\n", " "))
+    lo_p, hi_p = G.day(dt.date(2025, 2, 1)), G.day(dt.date(2026, 1, 31))
+    rxt = D.rx[(D.rx["atc"] == "N05CJ05") & (D.rx["day"] >= lo_p) & (D.rx["day"] <= hi_p)]
+    vs = pd.Series(rxt["vnr"].to_numpy()).map({v: p["size"] for v, p in W.PACK.items()}).to_numpy()
+    reg = float((rxt["apk"].to_numpy() * vs).sum() / 365.25)
+    ok(mo is not None and abs(int(mo.group(1).replace(",", "")) - reg) <= 0.05 * reg, "PSUR Denmark %s against the "
+       "registry's %.0f patient-years" % (mo.group(1) if mo else None, reg))
+    notes_t = texts["registry_extract_notes.md"]
+    ok("Ordered on 14 July 2026" in notes_t and "refinement of the Q3 2026 signals" not in notes_t,
+       "the extract's order date")
+    ll = D.screen.sort_values(["Case number", "Version"]).drop_duplicates("Case number")
+    subs = ll["Suspect"].fillna("").str.extract(r"^(\w+)")[0].to_numpy()
+    switches = int((subs[1:] != subs[:-1]).sum())
+    ok(switches >= 20, "case numbers run in blocks by medicine (%d switches)" % switches)
+    LOG.append("realism: dispensing %.1f per cent on Sundays and holidays, %.1f on Saturdays; LPR3 busiest start minute "
+               "%.2f per cent; planned contacts off working days %.2f per cent; most common immigration date %d times; "
+               "PSUR Denmark %s against %.0f patient-years dispensed; case-number switches %d" % (
+                   100 * sun_hol, 100 * sat, 100 * top.max(), 100 * off, imm.value_counts().iloc[0],
+                   mo.group(1), reg, switches))
+
     # ---------------------------------------------------------------- the documents and the goldens agree with the solve
     note = file_text(os.path.join(golden_dir, "signal_refinement_note.docx"))
     ok("Open the formal assessment on corinurad (Uralexa) and acute kidney injury" in note, "the note names the call")
@@ -488,6 +607,10 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     ok("%.2f times the rate of the matched non-users" % tm in note and "%.2f times the rate of people starting zopiclone"
        % tz in note and "%.2f times that of people starting allopurinol" % ca in note, "the note's year-before figures")
     ok("rate ratio is %.2f (95%% CI %.2f to %.2f)" % nf in note, "the note's NSAID-free figure")
+    ok("acute pancreatitis at %.2f times the rate of people starting orlistat" % vo in note and
+       "their rate is %.2f times orlistat starters'" % va in note, "the note's velaglutide figures")
+    ok("looks raised (%.2f, against %.2f for corinurad" % (pa["velaglutide"][0], pa["corinurad"][0]) in note,
+       "the note's all-time figures")
     rows = list(csv.DictReader(open(os.path.join(golden_dir, "new_users_by_year.csv"), encoding="utf-8")))
     ok([(r["substance"], int(r["calendar_year"])) for r in rows] == [(s, y) for s in G.NEW for y in (2022, 2023, 2024, 2025)],
        "golden table rows")

@@ -41,7 +41,7 @@ def build(out, quiet=False):
     world["screen_q3"], world["screen_rows"] = D.write_screen(p("screen"))
     D.write_sop(p("sop"))
     D.write_notes(p("notes"), counts)
-    D.write_psur(p("psur"))
+    D.write_psur(p("psur"), D.psur_exposure(world))
     D.write_minutes(p("minutes"))
     stamp = W.dt.datetime(2026, 10, 7, 9, 30, tzinfo=W.dt.timezone.utc).timestamp()
     for f in os.listdir(out):
