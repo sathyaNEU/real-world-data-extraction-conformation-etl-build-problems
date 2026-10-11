@@ -223,7 +223,7 @@ def memo(s, path):
     pic = chart_png(s)
     d.add_picture(pic, width=Cm(15.0))
     d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    para("Expected failures by year (one decimal) from the workbook's Outlook sheet; Q4 2026 is October to December.", size=8.5, italic=True, after=8)
+    para("Expected failures by year from the workbook's Outlook sheet; Q4 2026 is October to December.", size=8.5, italic=True, after=8)
     t = d.add_table(rows=1, cols=4)
     t.style = "Table Grid"
 

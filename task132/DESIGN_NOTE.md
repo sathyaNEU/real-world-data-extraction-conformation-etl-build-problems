@@ -118,6 +118,19 @@ Pair arithmetic: a solver on rung 3 (19 lots) keeps the costs (15) and, if it re
 - Round 1 (architecture 1, before loop 1): both solvers landed 17 lots; hardened in loop 1 (module age with renewal).
 - Round 2 (loop 1): both solvers missed the call with 18 lots on 411.9 expected failures, proxy 36.8 each, worth-it gate passed. Each completed every lower rung (module age from the fitted date, support by bay, exposure from January 2021, 14 available modules) and carried each relay's current module forward with no replacement. Both named the renewal reading (about 298, 13 lots) and declined it because the procedure does not spell it out. Read as the stump, not a fork: section 3 ages a module from the date it was fitted and counts it in service only while it is fitted to a relay, so after a failure the module in service is the one fitted in its place, and 6.2 applies the band rates to the module-months expected in each band; their own exposure counts replacement modules from their refit. The determinism judge rules on it.
 
+- Round 3 (one-solver rule, on the repair 3 world, seed 1215): the solver missed the call with 19 lots on 431.4 expected failures, proxy 37.0, worth-it gate passed. It completed every lower rung exactly as the golden does (210 failures, the five band rates over the history's own period, 1,178 supported relays with support by bay, 15 usable modules) and carried each relay's current module forward with no replacement. The judge (pass 1 and pass 2) ruled the renewal forced by sections 1, 3, 6.1 and 6.2: DETERMINISTIC, APPROVE on pass 2.
+
+## PRE-SHIP CHECK (the client's three rules and two layers)
+
+1. Domain: the deciding quantity is expected power-supply failures over each relay's remaining support, from age-banded rates on the maintenance system's exposure projected as a renewal process, with a Poisson cover test on the buy; utility asset-condition and spares work that the swap test breaks.
+2. The inputs take real work (a 2021 go-live with legacy fitted dates, bay ranges and staged schemes, crew-written failure text, a vendor return register, stock by store) and none of it is planted.
+3. The flipping step is a methodological choice: a failed module is replaced from the buy, so the projection is a renewal process. It is not a planted catch, not a field reading and not a stated rule applied.
+4. Analyst test: an analyst who reads AM-PC-014 correctly and keeps today's module in every month expects 431.4 failures and orders 19 lots; solver round 3 did exactly that.
+5. AM-PC-014 defines every quantity (fitted date, module age, in service, module-month, band rates over the history's own period, support by bay, available stock, the Poisson test at 95 per cent); the judge ruled the renewal forced by sections 1, 3, 6.1 and 6.2.
+6. No decoy memo, staff draft or briefing.
+7. No certified or published failure forecast in the pack, so nothing pins the method by replay.
+8. The lesson (a spares forecast is a renewal process once failed parts are replaced) is not one an earlier build teaches: clone pre-flight pass 2 CLEAN, guard heart WARN only.
+
 ## LEAK REVIEW
 
 - Loop 1 `leak.py`: REVIEW. The procedure, dictionary and notice carry six to eight of the call's words (VPR340-PSU-02, lots, modules, last-time buy, Veldtek): the vocabulary of the subject, with no figure from the answer. The dictionary's run date 2026-10-01 is the extract job's stamp. Container audit clean (H1).

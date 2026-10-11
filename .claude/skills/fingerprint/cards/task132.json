@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Order 13 lots (325 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 638,625.",
+  "answer_source": "task132/submission.md, 1. Final Recommendation",
   "gap": [
     "population",
     "time"
@@ -48,7 +48,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "eam_work_orders_protection_2021-01_2026-09.csv",
-    "rows": 0,
+    "rows": 32569,
     "entity": "one work order on one protection and control asset",
     "grain": "work order",
     "source": "synthetic"
@@ -133,7 +133,7 @@
   ],
   "opening_move": "constraint-first",
   "driver": "A spares forecast sums a wear-out failure rate over the remaining horizon for the item in each position, but every failure is replaced by a new item that starts again at the bottom of the curve, so carrying the old item's rate past the point it has probably failed counts failures one position cannot have; the forecast is high by over a third and the buy by several lots.",
-  "driver_concrete": "Expected VPR-340 power-supply failures to each relay's renewal are built by ageing the module now fitted through AM-PC-014's module-age band rates month by month, but a module that fails is replaced from the buy by a new module in the 0-9 band, so the present module's rate applies only while it is likely to survive; ignoring the replacement puts expected failures 44 per cent high and the buy six lots above the 13 the procedure requires.",
+  "driver_concrete": "Expected VPR-340 power-supply failures to each relay's renewal are built by ageing the module now fitted through AM-PC-014's module-age band rates month by month, but a module that fails is replaced from the buy by a new module in the 0-9 band, so the present module's rate applies only weighted by the chance it is still fitted; ignoring the replacement puts expected failures 44 per cent high and the buy six lots above the 13 the procedure requires.",
   "stump": "A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 19 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.",
   "mechanism_source": "design_note",
   "differentiation": {

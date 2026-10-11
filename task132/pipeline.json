@@ -2,21 +2,21 @@
  "task": "task132",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 6,
- "stage_name": "solver round 3 passed; figure-neutral cleanup, then the judge",
+ "stage": 8,
+ "stage_name": "shipped",
  "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
  "stump": "A competent solver completes every lower rung (module age from the fitted date, support by bay to each scheme's commissioning month, exposure over the work-order history's own period, 15 available modules), ages each relay's current module forward with no replacement after a failure, expects 431.4 failures and orders 19 lots; the step that lands it there is projecting failures as if a failed module stayed in service, when it is replaced from the buy by a new one: the answer is 13 lots on 298.6 expected failures.",
  "architecture": 1,
  "loops": 1,
  "leak": {
-  "leak_py": "",
-  "reader": "loop 1 reader: no decisive-step sentence (it took the no-replacement total, 412 and 18 lots, for the answer), no ranking or answer file; realism list (PDF author python-docx, Monday roll-forward, holidays, generic corrective text, serial order, one-day station cutovers, scope mismatches, docx template residue, shared bays, anachronistic rev date) being fixed in the generator"
+  "leak_py": "REVIEW, no LEAK (the call's own vocabulary, procedure terms, run stamps and program months), on the final rebuild",
+  "reader": "round 6: no sentence names the decisive step, no file ranks or states the answer, no file exists only to help; renewal the one open reading (the stump, ruled forced by the judge)"
  },
  "duplicate_check": {
-  "heart": "re-run after loop 1",
-  "nearest": "task46 at 0.08",
-  "clone_check": "pass 2 (clone_check_report_task132_pass2.md): no clone tier; Track B G9 decisive-pattern ban against task133 cleared by moving task132 to G6; Track A 'Ironwood' (task124) renamed Tarrock"
+  "heart": "WARN, no BLOCK (Gate G and deliverable set repeat task130 v3)",
+  "nearest": "task133 stump 0.07; task46 0.05",
+  "clone_check": "pass 2 CLEAN (clone_check_report_task132_pass2.md)"
  },
  "solver_rounds": [
   {
@@ -103,12 +103,14 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on the step 4 wording closed)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical (renewal ruled forced)",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-11",
  "portal": null,
  "three_rules": {
   "domain": "pass (asset-condition and spares forecasting)",
