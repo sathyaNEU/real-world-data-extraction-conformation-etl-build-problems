@@ -35,7 +35,7 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "smart_daily_register_reads_2024-10-01_2026-12-06.parquet",
-    "rows": 0,
+    "rows": 2891687,
     "entity": "one cumulative import register reading of one supply number on one day",
     "grain": "supply number x day",
     "source": "synthetic"
@@ -68,8 +68,8 @@
   ],
   "opening_move": "constraint-first",
   "driver": "The referral test is filed for each metered sub-unit against its own history, but the ready-made series sums the sub-units of an entity, and where an entity holds a second sub-unit carrying one seasonal load, a large fall on that sub-unit moves the entity total by a few per cent, inside ordinary variation, so screening the summed series ranks the candidates differently from screening each sub-unit and counting entities once.",
-  "driver_concrete": "Corran's procedure refers a supply number whose weather-adjusted consumption over the latest eight weeks sits 30 per cent or more under its own two-year history, and storage-heated homes in Caithness carry a second, heating-only supply number; a bypass on the heating meter takes 36 to 58 per cent off that supply while the account's weekly total in the analytics mart falls by 6.5 to 23.9 per cent, so the procedure run on the mart's account totals names Elgin, and run on each supply's daily register reads, counting each premises once, names Caithness.",
-  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, voids and heating changes excluded) on the analytics mart's weekly account consumption and places the team in Elgin; the step that lands it there is treating an account's weekly total as the supply the procedure screens, when storage-heated premises in Caithness hold a second, heating-only supply whose bypassed meter shows a 36 to 58 per cent shortfall that moves the account total by 6.5 to 23.9 per cent, under the 30 per cent band.",
+  "driver_concrete": "Corran's procedure refers a supply number whose weather-adjusted consumption over the latest eight weeks sits 30 per cent or more under its own two-year history, and storage-heated homes in Caithness carry a second, heating-only supply number (a related metering point on its own meter); a bypass on the heating meter takes 36 to 58 per cent off that supply while the analytics mart's weekly import for the metering system, keyed by the primary supply number, falls by 6.5 to 23.9 per cent, so the procedure run on the mart (or on the Supplies sheet's primaries) names Elgin, and run on every supply number from the daily register reads names Caithness.",
+  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, every week below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number, and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row for the supply the procedure screens, when it is a metering system's total and the 42 bypassed heating-only supplies in Caithness, listed as related metering points, fall 36 to 58 per cent while their systems fall 6.5 to 23.9.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task72": "task72 books a correctly measured movement to the owner whose agreement covered each piece of service across a transfer; here nothing is attributed between owners: an anomaly test has to run on each metered component because a summed series dilutes a one-component fall below the referral band.",

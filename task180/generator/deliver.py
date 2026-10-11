@@ -12,8 +12,12 @@ from pptx.dml.color import RGBColor  # noqa: E402
 
 from golden import PATCH_ORDER, PATCH_NAMES  # noqa: E402
 
-NAVY = RGBColor(0x1F, 0x2A, 0x44)
-GREY = RGBColor(0x55, 0x5B, 0x66)
+NAVY = RGBColor(0x1B, 0x2B, 0x48)
+INK2 = RGBColor(0x4A, 0x52, 0x60)
+MUTED = RGBColor(0x7A, 0x82, 0x90)
+PICK, RUNNER, OTHER = "#1d4f91", "#7fa3d1", "#c4cad3"
+SOURCE = ("Source: RP-07 v4 screening run of Monday 7 December 2026 on the smart daily register reads and the CIS "
+          "supply point register; Met Office degree days. Prepared by RP analytics for the planning meeting.")
 
 
 def chart_png(s):
@@ -21,29 +25,41 @@ def chart_png(s):
     order = sorted(PATCH_ORDER, key=lambda p: ref[p])
     names = [PATCH_NAMES[p] for p in order]
     vals = [ref[p] for p in order]
-    colours = ["#1f5fa8" if p == s["pick"] else ("#8fb3dc" if p == s["runner_up"] else "#c9ced6") for p in order]
-    fig, ax = plt.subplots(figsize=(8.6, 4.6), dpi=150)
-    bars = ax.barh(names, vals, color=colours)
+    colours = [PICK if p == s["pick"] else (RUNNER if p == s["runner_up"] else OTHER) for p in order]
+    plt.rcParams["font.family"] = "DejaVu Sans"
+    fig, ax = plt.subplots(figsize=(9.2, 4.4), dpi=160)
+    bars = ax.barh(names, vals, color=colours, height=0.62)
     for b, v, p in zip(bars, vals, order):
         lab = f"{v}"
         if p == s["pick"]:
-            lab += "  team placed here"
+            lab += "   team placed here"
         elif p == s["runner_up"]:
-            lab += "  runner-up"
-        ax.text(v + 0.8, b.get_y() + b.get_height() / 2, lab, va="center", fontsize=9)
-    ax.set_xlabel("Supplies referred by the 7 December 2026 screening run")
-    ax.set_xlim(0, max(vals) * 1.32)
-    ax.spines[["top", "right"]].set_visible(False)
-    gap = ref[s["pick"]] - ref[s["runner_up"]]
-    ax.set_title(f"{PATCH_NAMES[s['pick']]} gets the field team for January to March,\n"
-                 f"{ref[s['pick']]} referrals, {gap} ahead of {PATCH_NAMES[s['runner_up']]}",
-                 fontsize=11, loc="left")
+            lab += "   runner-up"
+        ax.text(v + 0.7, b.get_y() + b.get_height() / 2, lab, va="center", fontsize=9.5, color="#2b2f36")
+    ax.set_xlabel("Supplies referred by the 7 December 2026 screening run", fontsize=9.5, color="#4a5260")
+    ax.set_xlim(0, max(vals) * 1.38)
+    ax.tick_params(axis="both", labelsize=9.5, colors="#4a5260")
+    ax.xaxis.get_major_locator().set_params(integer=True)
+    ax.grid(axis="x", color="#e3e6ea", linewidth=0.8)
+    ax.set_axisbelow(True)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color("#b8bec7")
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png")
     plt.close(fig)
     buf.seek(0)
     return buf
+
+
+def _text(slide, x, y, w, h, text, size, color, bold=False):
+    tf = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h)).text_frame
+    tf.word_wrap = True
+    tf.text = text
+    r = tf.paragraphs[0].runs[0]
+    r.font.size, r.font.bold, r.font.color.rgb = Pt(size), bold, color
+    return tf
 
 
 def write(s, outdir):
@@ -55,33 +71,25 @@ def write(s, outdir):
     pick, ru = s["pick"], s["runner_up"]
 
     sl = prs.slides.add_slide(blank)
-    tb = sl.shapes.add_textbox(Inches(0.6), Inches(0.4), Inches(12), Inches(1.2)).text_frame
-    tb.text = f"Field team, January to March 2027: {PATCH_NAMES[pick]}"
-    tb.paragraphs[0].runs[0].font.size = Pt(26)
-    tb.paragraphs[0].runs[0].font.bold = True
-    tb.paragraphs[0].runs[0].font.color.rgb = NAVY
-    p = tb.add_paragraph()
-    p.text = (f"{ref[pick]} supplies referred by the 7 December screening run. "
-              f"Runner-up {PATCH_NAMES[ru]} on {ref[ru]}, {s['margin']} behind.")
-    p.runs[0].font.size = Pt(15)
-    p.runs[0].font.color.rgb = GREY
-    sl.shapes.add_picture(chart_png(s), Inches(0.9), Inches(1.75), width=Inches(11.3))
-    nt = sl.shapes.add_textbox(Inches(0.6), Inches(7.0), Inches(12), Inches(0.4)).text_frame
-    nt.text = "RP-07 v4 screen: each supply against its own 104 weeks, degree-day adjusted, 30% over the eight weeks to 6 Dec."
-    nt.paragraphs[0].runs[0].font.size = Pt(10)
-    nt.paragraphs[0].runs[0].font.color.rgb = GREY
+    _text(sl, 0.6, 0.35, 12.2, 0.9,
+          f"{PATCH_NAMES[pick]} gets the field team from January to March: {ref[pick]} referrals, "
+          f"{s['margin']} more than {PATCH_NAMES[ru]}", 24, NAVY, bold=True)
+    _text(sl, 0.6, 1.2, 12.2, 0.5,
+          f"Runner-up {PATCH_NAMES[ru]} on {ref[ru]}. Referred supplies by patch, credit-paying premises only, "
+          "after the RP-07 exclusions for changes of occupier and heating changes.", 13, INK2)
+    sl.shapes.add_picture(chart_png(s), Inches(0.9), Inches(1.85), width=Inches(11.0))
+    _text(sl, 0.6, 6.85, 11.6, 0.45, SOURCE, 9, MUTED)
+    _text(sl, 12.4, 6.95, 0.6, 0.3, "1", 9, MUTED)
 
     sl2 = prs.slides.add_slide(blank)
-    tb2 = sl2.shapes.add_textbox(Inches(0.6), Inches(0.4), Inches(12), Inches(0.9)).text_frame
-    tb2.text = "Every patch: this screen, the last three winters, and what the team could do in Q1"
-    tb2.paragraphs[0].runs[0].font.size = Pt(20)
-    tb2.paragraphs[0].runs[0].font.bold = True
-    tb2.paragraphs[0].runs[0].font.color.rgb = NAVY
-    hdr = ["Patch", "Referrals (Dec run)", "Winter visits with access", "Diversions confirmed",
+    _text(sl2, 0.6, 0.35, 12.2, 0.9,
+          "Lochaber has the best confirmation record of the last three winters and the fewest referrals now",
+          22, NAVY, bold=True)
+    hdr = ["Patch", "Referrals, 7 Dec run", "Winter visits with access", "Diversions confirmed",
            "Confirmation rate", "Q1 2027 visit capacity"]
     order = sorted(PATCH_ORDER, key=lambda q: -ref[q])
     rows, cols = len(order) + 1, len(hdr)
-    tbl = sl2.shapes.add_table(rows, cols, Inches(0.6), Inches(1.4), Inches(12.1), Inches(4.6)).table
+    tbl = sl2.shapes.add_table(rows, cols, Inches(0.6), Inches(1.35), Inches(12.1), Inches(4.4)).table
     for j, h in enumerate(hdr):
         tbl.cell(0, j).text = h
     for i, q in enumerate(order, start=1):
@@ -94,15 +102,17 @@ def write(s, outdir):
             for para in tbl.cell(i, j).text_frame.paragraphs:
                 for r in para.runs:
                     r.font.size = Pt(12)
-    ft = sl2.shapes.add_textbox(Inches(0.6), Inches(6.25), Inches(12), Inches(1.0)).text_frame
-    ft.text = ("Winters are October to March, 2023/24 to 2025/26. Confirmation rate is confirmed diversions over "
-               "visits with access, with findings overturned on appeal counted as no fault. Capacity is "
-               f"{s['officer_days']} officer field days in Q1 at each patch's planned visits per day under FW-3.")
-    ft.word_wrap = True
-    ft.paragraphs[0].runs[0].font.size = Pt(10.5)
-    ft.paragraphs[0].runs[0].font.color.rgb = GREY
+    _text(sl2, 0.6, 5.95, 12.1, 0.8,
+          "Winters run October to March, 2023/24 to 2025/26. Confirmation rate is confirmed diversions over visits "
+          "with access (RP-07 section 8); findings overturned on appeal count as no fault found. FieldLink jobs "
+          "re-created in FieldOps in November 2024 are counted once. Capacity is "
+          f"{s['officer_days']} officer field days between 1 January and 31 March 2027 (Scottish public holidays, booked "
+          "absences, the third officer from 15 February) at each patch's FW-3 visits per day.", 10.5, INK2)
+    _text(sl2, 0.6, 6.95, 11.6, 0.4, "Source: FieldLink and FieldOps job extracts, tamper appeals register, "
+          "Q1 2027 field rota, FW-3 issue 6.", 9, MUTED)
+    _text(sl2, 12.4, 6.95, 0.6, 0.3, "2", 9, MUTED)
     prs.core_properties.author = "RP analytics"
-    prs.core_properties.title = "Field team placement Q1 2027"
+    prs.core_properties.title = "Field team placement, January to March 2027"
     prs.save(os.path.join(outdir, "field_team_q1_2027.pptx"))
 
     with open(os.path.join(outdir, "patch_screen_q1_2027.csv"), "w", newline="") as fh:
