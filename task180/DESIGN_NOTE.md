@@ -4,8 +4,8 @@ Seed AD03 (revenue-protection crew). Architecture 1 (revenue protection, the scr
 round 1 and is recorded under Tried and rejected. This is the re-root: same objective, same number, a new draw. The
 seed's idea that carries over is the one AD03 shares with the whole lane: the loudest signal is not all cause.
 
-Figures marked *target* are what the generator is tuned to; `checks.py` asserts the shipped values and the write-up
-uses only those.
+Every figure below is the shipped value. `generator/checks.py` asserts them (146 assertions) and
+`generator/verify.py` recomputes the slate and every graded figure from the shipped bytes alone.
 
 ## DRAW
 
@@ -18,12 +18,14 @@ Domain: energy-systems-utilities / asset-condition-maintenance   Objective: anom
 Pairing repeated from a recent build? task180 architecture 1 only (its own lineage, a different puzzle)
 Stakeholder role: network asset manager (portfolio_manager)   Context artifact: capacity_report (mobile substation bookings)
 Calibration form: none   Decision type: ranked_slate_under_cap   Answer unit: set_of_items
-Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 s4.1 scope and s5 priority)
+Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 1.2 scope and 5.2 priority)
 Official decoy filed? no   Validated decoy? no
 Forum: board_of_directors (28 October 2026)   Forcing event: audit_or_inspection   Org family: utility_or_infrastructure
 People (guard.py names, en_NZ, seed 1802): Donna Carson (network asset manager, the requester), Barry Forbes (zone
   substation engineer, owner of ES-DGA-02 and the oil results), Wendy Godfrey (board chair), Connor McGill (oil sampling
-  technician)
+  technician). Drawn with seed 1803 for the pack: Emma Elliott (general manager network, approves ES-DGA-02), Dennis
+  Trask and Ethan Mason (field services, tap-changer work), Aroha O'Brien (maintenance planning, MSU-2 bookings), Aimee
+  Craig (contract thermographer), Allan Simpson (runs the extract, operator asimpson).
 ```
 
 **Data-native sentence.** Older zone-substation transformers switch load on an in-oil arcing tap changer that sits in a
@@ -32,11 +34,12 @@ the compartment turns up in the main-tank oil the fleet is coded on, rising with
 any fault in the winding.
 
 **Layer 1 (realistic mess and the system that produces it).** A laboratory results file per sampling round (sampling
-date and analysis date, gases in ppm with below-detection values written as `<n`, oxygen and nitrogen, moisture, the oil
-temperature the technician wrote down or left blank); tap-changer compartment results on their own annual schedule; an
-asset register with rewind years and tap-changer types; SCADA daily tap-change counters that roll over at 99,999 and
-reset when a counter is replaced at a tap-changer service; hourly SCADA top-oil temperatures exported from the
-historian in UTC; a maintenance log in free text.
+date and time and a separate analysis date, gases in ppm with below-detection values written as `<n`, oxygen and
+nitrogen, moisture, the label temperature the technician wrote down or left blank, and corrected reports re-issued under
+the same sample ID); tap-changer compartment results on their own annual schedule; an asset register with rewind years
+and tap-changer types whose last-service field stopped being written back in March 2025; SCADA daily tap-change counters
+that roll over at 99,999 and restart at zero when a counter is replaced at a tap-changer service; hourly SCADA top-oil
+temperatures exported from the historian in UTC with no zone marker; a maintenance log in free text.
 
 **Layer 2 (the analytical shortcut).** Coding each transformer on its main-tank gases and ranking the code-3 units by
 severity. The standard's arithmetic is right and every gas really is in the main-tank oil; an expert first asks where
@@ -54,111 +57,161 @@ compete for the same victims; here each unit's own signal has a second, benign o
   inside the main tank.
 - **Primary mechanism:** decomposition_attribution.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
-- **Deletion test.** Delete Barry's note and the mobile substation schedule: coding on main-tank gases still names the
+- **Deletion test.** Delete Barry's notes and the mobile substation schedule: coding on main-tank gases still names the
   two leaking units; attribution still removes them.
 - **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample, every
-  compartment sample and every counter reading ships. A perfect main-tank gas analyser still reads the leaked acetylene,
-  because it is really in the oil; what the decision needs is its origin, which the counters, the tap-changer types and
-  the gas ratios settle.
+  compartment sample and every counter reading ships, and the main call's rows carry no device (asserted, below). A
+  perfect main-tank gas analyser still reads the leaked acetylene, because it is really in the oil; what the decision
+  needs is its origin, which the counters, the tap-changer types and the gas ratios settle.
 - **Lens swap.** Not one population under two lenses: the answer's ranking runs on main-tank gases generated in the main
   tank, a different set of gas volumes from the naive ranking's, built per unit from three files.
 
 ## STUMP SENTENCE
 
 A competent solver codes every transformer under ES-DGA-02 from its main-tank samples (limits by preservation type and
-age, twelve-month increases, code 3 ranked by severity) and names the three highest code-3 units, two of which carry
-acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a
-main-tank fault, when at those two units its increments track the tap-change counts and its ratio to hydrogen is the
-tap changer's, so the slate takes the vacuum-tap-changer unit with the same acetylene, the in-oil unit whose acetylene
-is internal, and the worst thermal fault.
+age, twelve-month increases, code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and
+Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it
+there is reading main-tank acetylene as a main-tank fault, when at Dunsandel T1 and Leeston T2 its increments track the
+tap-change counts (r 0.998 and 0.995) and its twelve-month ratio to hydrogen is 9.8 and 8.2, so the slate takes the
+vacuum-tap-changer unit with the same acetylene (Southbridge T2), the in-oil unit whose acetylene is internal (Rolleston
+T2, 4.98) and the worst thermal fault (Coalgate T1, 4.73).
 
 ## ENTITY AND UNIT OF VALUE
 
 One transformer, one inspection outage. The standard's severity score is a ratio of a gas's twelve-month increase to its
 rate limit; the slate is three transformers in priority order.
 
-## LADDER (targets)
+## LADDER (shipped)
 
-Units (target severities): L2 and L1 (in-oil tap changers, leaking barriers), V (vacuum tap changer, internal arc), A3
-(in-oil tap changer, internal arc, not leaking), T1, T2, T3 (thermal faults).
+Units: L2 = DSL-T1 Dunsandel T1 and L1 = LST-T2 Leeston T2 (in-oil arcing tap changers, barriers weeping from 1 July 2024
+and 17 March 2025), V = SBG-T2 Southbridge T2 (vacuum tap changer, internal arc), A3 = RLS-T2 Rolleston T2 (in-oil tap
+changer, internal arc, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Springston T2, T3 = DFD-T1 Darfield T1
+(thermal faults in oil).
 
 | Rung | Construction | Slate | Why a careful analyst stops | Killed by |
 |---|---|---|---|---|
-| 0 | Highest latest acetylene (arcing read off the Duval triangle) | L2, L1, V | arcing is the most severe fault class | ES-DGA-02 s4 codes on levels and twelve-month increases, not the latest level |
-| 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | L2 (9.6), L1 and V (8.1 each), then A3 (4.9), T1 (4.7) | the filed standard applied exactly | at L1 and L2 the main-tank acetylene increments track tap-change counts (r at least 0.97), C2H2/H2 is 4 or more, the tap changers are in-oil arcing types |
-| 2 | Drop the unit with the clearest leak only | L1 or L2, V, A3 | one contaminated unit found | the other leaking unit carries the same signature |
-| 3 | Drop acetylene at every in-oil tap-changer unit | V, T1, T2 | a rule of thumb about tap changers | A3's acetylene does not track its counter and its C2H2/H2 is 0.6: internal |
-| 4 (answer) | Attribute each unit's acetylene, code what the main tank made | **V, A3, T1** | | |
+| 0 | Highest latest acetylene (arcing read off the Duval triangle) | DSL-T1 (22.5 ppm), LST-T2 and SBG-T2 (12.9 each) | arcing is the most severe fault class | ES-DGA-02 4.4 codes on levels and twelve-month increases, not the latest level |
+| 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | DSL-T1 9.64, LST-T2 and SBG-T2 8.07 each, then RLS-T2 4.98, CGT-T1 4.73 | the filed standard applied exactly | at DSL-T1 and LST-T2 the main-tank acetylene increments track tap-change counts (r 0.998 and 0.995 from the first detectable result; 0.978 and 0.989 from the last below-detection one), twelve-month C2H2/H2 is 9.8 and 8.2, the tap changers are in-oil arcing types |
+| 2 | Drop the unit with the clearest leak only | without DSL-T1: LST-T2, SBG-T2, RLS-T2; without LST-T2: DSL-T1, SBG-T2, RLS-T2 | one contaminated unit found | the other leaking unit carries the same signature |
+| 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene does not track its counter (r 0.110) and its C2H2/H2 is 0.64: internal |
+| 4 (answer) | Attribute each unit's acetylene, code what the main tank made | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
 
-**Twin pair.** L1 and V carry the same main-tank acetylene trajectory (the same levels and the same twelve-month
-increase to 0.1 ppm), the same preservation class and the same age band, so code and severity are identical; L1's tap
-changer is in-oil and its acetylene tracks the counter, V's is vacuum. Any rule on main-tank gases keeps both or drops
-both.
+With their acetylene attributed, DSL-T1 and LST-T2 code 2 (carbon dioxide above its 90th percentile at DSL-T1, carbon
+monoxide at LST-T2; severities 0.81 and 0.38, both from paper gases, so whether the few ppm of leaked ethylene and
+hydrogen are also taken out moves nothing). Code 3 after attribution: SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73, SPN-T2
+4.43, DFD-T1 3.45.
 
-Margins: the answer's third unit (T1, 4.7) clears the fourth (T2, 4.4) by at least 5 per cent of severity; every wrong
-slate differs from the answer by at least one named unit, asserted.
+**Twin pair.** LST-T2 and SBG-T2 are sampled on the same day every round (the route pairs Leeston with Southbridge) and
+carry the same main-tank acetylene at the samples the standard reads: 4.7 ppm on 8 September 2025 and 12.9 ppm on 14
+September 2026, 371 days apart, an increase of 8.2 ppm scaled to 8.07 (also level at 2.8 ppm in June 2025). Both are
+free-breathing on the latest and on the median O2/N2 and both are 10 to 30 years old, so code and severity are
+identical (code 3, 8.0674). LST-T2's tap changer is in-oil and its acetylene tracks the counter; SBG-T2's is vacuum,
+its increments are uncorrelated with its counter (r -0.073 raw, 0.016 per day) and its hydrogen rose 16 ppm (C2H2/H2
+0.51). Any rule on main-tank gases keeps both or drops both.
+
+Margins: SBG-T2 over RLS-T2 1.62; RLS-T2 over CGT-T1 1.053; the slate cut CGT-T1 over SPN-T2 1.068 (6.8 per cent);
+on the naive slate the cut is SBG-T2 8.07 over RLS-T2 4.98. Every wrong slate differs from the answer by at least one
+named unit, asserted.
 
 ## GRID (asserted in checks.py)
 
-Rows: the five rungs above; acetylene dropped for units with C2H2/H2 above 2, 3 and 5; correlation thresholds 0.8, 0.9
-and 0.95; leak judged on increments per sample interval or on cumulative growth. Columns: below-detection values at
-zero, half the limit or the limit; twelve-month base sample at 330, 365 and 400 days; preservation class from the latest
-or the median O2/N2. Asserts: every attribution rule that uses any two of the three signatures (in-oil type, tracking,
-ratio) returns V, A3, T1 in every column; every main-tank-only rule returns a slate with L1 or L2 in it.
+Rows: fourteen attribution rules (all three signatures; each pair of type, tracking and ratio; any two of three;
+acetylene dropped for C2H2/H2 above 2, 3 and 5; tracking r of 0.8, 0.9 and 0.95 on increments per sample interval;
+r of 0.9 per day; cumulative growth fitting the operations better than time, alone and with the tap-changer type), each
+on two tracking windows (from the first detectable result, from the last below-detection result). Columns:
+below-detection values at zero, half the limit or the limit; base sample at 330, 365 and 400 days; preservation class
+from the latest or the median O2/N2 (18 columns). Shipped: all 504 attribution cells return SBG-T2, RLS-T2, CGT-T1 in
+that order; the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
+DSL-T1 and LST-T2 in all three below-detection readings. Attribution is looked for only where acetylene rises faster than
+its rate limit (DSL-T1, LST-T2, SBG-T2, RLS-T2).
 
 ## CLOSURE (the 22 axes)
 
-1 Population: the 44 zone-substation transformers in service (ES-DGA-02 s1). 2 Unit: transformer. 3 Window: twelve
-months to the latest sample (s4.3). 4 As-of: latest main-tank sample on or before 30 September 2026. 5 Version basis: the
-laboratory report of record is the latest issued for a sample ID (s3). 6 Divisor: rate limits per gas (s4.3 table).
-7 Weighting: none. 8 Window length: base sample the earliest at least 330 days before the latest (s4.3); 365 and 400
-converge. 9 Boundary: no severity within 2 per cent of the slate cut. 10 Rounding: severity to two decimals, no unit
-within 0.005 of a rounding edge. 11 Tie-break: the L1/V tie sits inside the naive slate, never at its cut. 12 Maturity:
-the September round complete for every unit. 13 Order of operations: attribute, then code, then rank. 14 Row order:
-irrelevant. 15 Duplicates: re-issued laboratory reports for the same sample ID (D2, ask layer only). 16 Identity:
-transformer IDs stable; tap-changer counters replaced keep the transformer ID. 17 Netting: none. 18 Units: ppm (uL/L).
-19 Code semantics: preservation class by O2/N2 (s4.1). 20 Integerisation: none. 21 Scope: s4.1 gases generated in the
-main tank. 22 Forward window: none in the call.
+1 Population: the 44 zone-substation transformers in service (ES-DGA-02 1.1). 2 Unit: transformer. 3 Window: twelve
+months to the latest sample (4.3). 4 As-of: the September 2026 round, 14 to 30 September 2026, the latest sample of every
+unit. 5 Version basis: the report of record is the latest issue for a sample ID (3.4); the five re-issues change
+moisture or label temperature only, and the first issue leaves every code and severity unchanged (asserted). 6 Divisor:
+rate limits per gas and class (table A3). 7 Weighting: none. 8 Window length: the base sample is the September 2025 round
+sample for every unit (366 to 378 days back); 365 converges (every gap is 366 or more) and 400 takes June 2025 with the
+same slate (grid). 9 Boundary: no severity within 5 per cent of the slate cut (6.8 per cent). 10 Rounding: severity to
+two decimals, every severity at least 0.002 from a two-decimal edge (worst 0.0021, BNM-T1) and at least 0.0003 off the
+round value; relative saturation at least 0.02 from a one-decimal edge and at least 0.5 from 30 per cent (worst 1.51,
+SPF-T1). 11 Tie-break: the LST-T2/SBG-T2 tie sits inside the naive slate, never at its cut. 12 Maturity: the September
+round is complete for every unit. 13 Order of operations: attribute, then code, then rank. 14 Row order: irrelevant.
+15 Duplicates: re-issued laboratory reports for the same sample ID (H1, ask layer only). 16 Identity: transformer IDs
+stable; replaced counters keep the transformer ID. 17 Netting: none. 18 Units: ppm (uL/L). 19 Code semantics:
+preservation class by O2/N2 (4.1), every unit at least 0.09 from 0.2 on the latest and on the median ratio. 20 Integerisation: none. 21 Scope: 1.2, gases
+generated in the main tank. 22 Forward window: none in the call. The analysis date read as the sampling date leaves the
+slate unchanged (asserted).
 
 ## ASK SHEET (devices off the main call's rows)
 
 Main call row population (declared, asserted device-free): main-tank and compartment results for every transformer;
-the daily tap-change counts and the asset register rows of every code-3 transformer.
+the daily tap-change counts and the asset register rows of every code-3 transformer. Zero counts at the seven code-3
+units: 0 counter drops 2021 to 2026, 0 stale register dates, 0 counter replacements, 0 laboratory re-issues.
 
 | Ask | Figures | Primary devices (silent) | Shared hazard |
 |---|---|---|---|
-| A. Tap-changer service: every in-oil tap changer's operations since its last service and whether it is past the interval (ES-DGA-02 annex B) | about 28 x 2 | D7/D2: a counter drop is a rollover at 99,999 unless the counter was replaced at a service that day (maintenance log free text); the asset register's last-service field predates the 2025 and 2026 services, and the maintenance log is the record of service (s6) | H1 laboratory re-issues (a corrected report under the same sample ID supersedes the first) |
-| B. Wet transformers: relative saturation at each unit's latest sample, those above 30 per cent | about 6 | D8: the SCADA historian exports UTC (New Zealand is UTC+13 in October), so joining the hourly top-oil temperature on the local clock reads the wrong half of the day where the technician left the sampling temperature blank; D8: the results file's `date` is the analysis date, the sampling date is `sampled` | H1 |
+| A. Tap-changer service: every in-oil tap changer's operations since its last service and whether it is past the interval (ES-DGA-02 annex B) | 27 x 2 = 54; seven past (DSL-T1 87,322, DYL-T2 87,029, GLT-T1 75,013, TPR-T2 64,224, LST-T1 61,972; GLT-T2 and SHF-T1 on the seven years) | D7: a counter drop is a rollover at 99,999 (LST-T1, DYL-T2, TPR-T2, CGT-T2, GLT-T1, WDS-T1) unless the log has the counter replaced at a service that day (SBG-T1, WDN-T1, GDL-T1, LDB-T2, LIN-T1, KRW-T1, HOR-T1); D2: the register's last-service field predates the services since March 2025 (DSL-T2, HOR-T1, KRW-T1, LIN-T1, LIN-T2, SPF-T2, LDB-T2, WDS-T1, and WDN-T2 among the vacuum units), and the log is the record (6.1) | none (H1 moves ask B only) |
+| B. Wet transformers: relative saturation at each unit's latest sample, those above 30 per cent | 44 in the CSV, six in the board paper (SHF-T1 36.1, GDL-T1 34.9, WDN-T1 34.1, DYL-T1 33.1, TPR-T2 31.7, SPF-T1 31.5) | D8: the historian exports UTC (UTC+12 to 27 September 2026, UTC+13 after), so the hourly top-oil temperature joined on the local clock reads the wrong half of the day for the 15 latest samples with a blank label temperature (12 before and 3 after the change to daylight time); D8: the results file's `date` is the analysis date, `sampled` is the sampling time | H1 laboratory re-issues (five; three on latest samples: SPF-T1 moisture, KRW-T1 and GDL-T2 label temperature) |
+
+Stops (asserted, each moving its figures): ask A, register last-service date: 8 figures and 8 flags move (LIN-T1
+84,026 against 16,064); every drop a rollover: 7 figures and 3 flags (SBG-T1 89,197 against 32,019); every drop a
+reset: 6 figures, no flag (LST-T1 61,948 against 61,972); both together: 11 figures, 11 flags. Counting from the morning
+after the service converges (no load operations on a service day). Ask B, the hourly temperature read on the export's
+own clock: 15 figures move and the wet list falls to four (DYL-T1 22.2, TPR-T2 23.4); a fixed UTC+12: 3 move; a fixed
+UTC+13: 12 move; the analysis date as the sampling date: 15 move and the list grows to seven (CGT-T2 34.1, LIN-T2 30.3);
+the first issue of a re-issued report: 3 move and SPF-T1 (28.6) leaves the list while KRW-T1 (43.0) joins it.
 
 Use test: both are the next two tables of a board paper that asks for three inspection outages (tap-changer backlog,
-wet units for oil processing). Decoupling: clearing the attribution moves no figure in A or B (asserted).
+wet units for oil processing). Decoupling: clearing the attribution moves the slate and no figure in A or B (asserted);
+the ask code reads no code and no slate (asserted).
 
 ## PINS
 
-Filed: ES-DGA-02 Fleet DGA condition standard (governing): scope (s1), sampling and the report of record (s3), coding
-(s4: preservation class, age bands, levels, twelve-month increases, codes, severity), inspection priority (s5: an
-internal inspection is the remedy for a fault in the main tank; the outages go to the transformers whose main-tank gases
-point to the most severe such faults), tap-changer service record (s6), annex A limit tables, annex B service intervals,
-annex C relative saturation. Oil results notes (field semantics). No sentence mentions compartment leakage.
+Filed: ES-DGA-02 Fleet DGA condition standard rev 3 (governing): scope (1.2, gases generated in the main tank),
+sampling and the report of record (3.4, 3.5), coding (4.1 preservation class and age band, 4.2 levels, 4.3 twelve-month
+increase with the base sample the most recent main-tank sample taken 330 days or more before the latest, 4.4 codes and
+severity over the seven fault gases), inspection priority (5.1 an internal inspection is the remedy for a fault in the
+main tank; 5.2 the outages go to the transformers whose main-tank gases point to the most severe such faults), the
+tap-changer service record (6.1 to 6.3), water in oil (7.1), annex A limit tables, annex B service intervals, annex C
+relative saturation. Oil results notes (field semantics only). No sentence anywhere mentions compartment leakage,
+contamination, weeping or barriers (asserted on the standard, the log and the notes).
 
-## PACK GATES (targets)
+## PACK GATES (shipped)
 
-At least 12 files, at least 5 formats; hourly SCADA top-oil temperature parquet above 1,500,000 rows; two distractors
-named in metadata.json: the protection relay event log (fault records on the 11 kV feeders) and the 2026 thermal
-imaging survey of the 11 kV switchboards.
+12 files, 6 formats (csv, xlsx, parquet, pdf, md, txt): main-tank results 1,077 rows (1,072 samples and 5 re-issues),
+compartment results 162, daily counters 93,060, hourly top-oil parquet 2,232,384 rows, asset register 44, maintenance
+log 275, relay events 1,161. Two distractors named in metadata.json: the protection relay event log (feeder and incomer
+relay operations) and the March 2026 thermal imaging survey of the 11 kV switchboards; the golden never reads either
+(asserted). Two consecutive builds byte-identical (sha256 on every file of the pack, the goldens and metadata.json).
 
 ## SIX-POINT CHECK
 
 1. Real work: laboratory formats, detection limits, preservation class from O2/N2, rollovers and counter replacements, a
    free-text maintenance log, UTC historian exports. 2. The flip is a method choice: attributing gases to their source
    before coding. 3. ES-DGA-02 defines the population, the coding, the window and the priority. 4. No decoy memo; Barry's
-   note is true. 5. The method is not recovered from certified figures. 6. No earlier task teaches source attribution of
+   notes are true. 5. The method is not recovered from certified figures. 6. No earlier task teaches source attribution of
    a diagnostic signal before ranking.
 
 ## STOPPING RULE
 
 Two rounds in which both solvers attribute the acetylene unprompted file this architecture as at-ceiling; a miss landing
 anywhere other than rungs 0 to 3 is read for a fork before any hardening.
+
+## LEAK CHECK (leak.py, as-of 2026-10-16)
+
+Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6, 7 and 11 clean; sweep 10 found no writer signature.
+`guard.py surface task180`: 124 builds screened, no pair promoted (nearest task89 at surface 0.104); personas found in the pack all on the card.
+
+- Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries five swept terms (register, manager, network, written,
+  degree): ordinary words of a utility standard (the asset register, the General Manager Network who approves it, the
+  temperature written on the label, degrees C). It names gases, compartments and the main tank as any DGA standard does
+  and says nothing about compartment oil reaching the main tank (asserted).
+- Sweep 8, `oil_temp_c` in the main-tank results: the label temperature column the brief names; "temp" is temperature,
+  not a temporary field.
+- Sweep 9, `mobile_substation_bookings_2027-28.xlsx` carries 18 dates in 2027 and 2028: it is the forward booking sheet
+  for the windows the slate fills, forward by design.
 
 ## Tried and rejected
 
@@ -200,3 +253,23 @@ anywhere other than rungs 0 to 3 is read for a fork before any hardening.
   read. Evaluating a new screen on a verification sample: inverse weighting is reflexive once the sampling is stated.
   Revenue protection was left for a transformer fleet, where the decisive step is a diagnostic attribution no filed
   sentence names.
+
+- **Build of architecture 2 (2026-10-11), approaches dropped on the way to the shipped pack.** Leeston T2's last
+  tap-changer service in February 2022 put both leaking units past their tap-changer interval (72,409 and 87,696
+  operations), so the ask table pointed at the two tap changers the main call turns on; the service moved to May 2023
+  (54,294, not past). Attribution signatures computed for every unit with detectable acetylene swept in stable traces
+  (SBG-T1, GLT-T1) and the thermal units' crumbs, with C2H2/H2 undefined where hydrogen fell; the signatures are now taken
+  only where acetylene rises faster than its rate limit. Thermal survey temperatures to the half degree collided with
+  graded figures (33.1, 34.9, 12.5, 27.0, 28.5) inside a document; whole-degree maxima and fixed rises now, with a sweep
+  asserting no graded figure in any shipped document. The extract log's "first hour 01/01/2021 00:00" against a parquet
+  whose first timestamp reads 2020-12-31 11:00 announced the UTC export in one line; dropped. Interval-length confounding:
+  with quarterly and monthly samples mixed, any steady gas source correlates with tap operations through interval
+  length, so the vacuum unit's increments are designed in bursts and asserted uncorrelated raw and per day.
+- **Severity distance "at least 0.005 from a two-decimal edge" (the build brief).** 0.005 is the half-width of a
+  two-decimal bin, so only an exactly round severity meets it, which determinism-check reads as a receipt. Asserted at
+  least 0.002 from the edge and at least 0.0003 off the round value instead (worst 0.0021, BNM-T1; naive 9.6415 and
+  8.0674).
+- **Personas the guard's people sweep read into the pack (2026-10-11).** The substation at Tai Tapu read as a person
+  (first name Tai) and blocked against task123, and "Karl Fischer" in the water-content method line read as another
+  persona; the substation is Ladbrooks (LDB) and the method line cites IEC 60814. No figure moved (per-unit draws are by
+  fleet position, not by name).

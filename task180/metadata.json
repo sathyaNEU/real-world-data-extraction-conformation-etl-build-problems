@@ -1,0 +1,143 @@
+{
+  "task": "task180",
+  "title": "Choosing the three zone substation transformers for the 2027/28 internal inspection outages from five years of dissolved gas analysis",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "asset condition and maintenance (transformer dissolved gas analysis)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "01 ranked list under a cap: three inspection outages from 44 transformers, with a tap-changer table and a wet-transformer table",
+  "as_of": "2026-10-16",
+  "deliverables": [
+    "inspection_slate_2027-28.docx",
+    "dga_fleet_review.csv"
+  ],
+  "distractor_files": [
+    "protection_relay_events_2025-2026.csv",
+    "thermal_imaging_survey_2026.pdf"
+  ],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "md",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "scada_top_oil_hourly_2021-2026.parquet",
+    "largest_file_rows": 2232384
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task180/generator/build.py (seeded, deterministic) around a fictional New Zealand lines company (Ellesmere Lines) with real Canterbury place names; transformer, tap-changer and laboratory names are invented; no real asset, customer or measurement is depicted.",
+      "date": "2026-10-11",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task180/generator/build.py",
+  "files": [
+    {
+      "path": "ES-DGA-02_fleet_dga_condition_standard.pdf",
+      "format": "pdf",
+      "bytes": 10050,
+      "source": "Constructed: Network standard ES-DGA-02 rev 3, fleet DGA condition standard (governing document)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "asset_register_zone_transformers.xlsx",
+      "format": "xlsx",
+      "bytes": 12015,
+      "source": "Constructed: Asset management system extract: the 44 zone substation transformers and the 22 substations",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dga_main_tank_results_2021-2026.csv",
+      "format": "csv",
+      "bytes": 135125,
+      "rows": 1077,
+      "source": "Constructed: Laboratory dissolved gas, water and oil temperature results for main-tank oil samples, one row per report issue, March 2021 to September 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dga_tap_changer_compartments_2021-2026.csv",
+      "format": "csv",
+      "bytes": 20571,
+      "rows": 162,
+      "source": "Constructed: Laboratory dissolved gas results for in-oil tap-changer diverter compartments, annual March samples 2021 to 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_log_2026-10-16.txt",
+      "format": "txt",
+      "bytes": 1337,
+      "source": "Constructed: Extract job log for the 16 October 2026 pull",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "maintenance_log_2019-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 19752,
+      "source": "Constructed: Closed work orders on zone substation plant, January 2019 to October 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mobile_substation_bookings_2027-28.xlsx",
+      "format": "xlsx",
+      "bytes": 6829,
+      "source": "Constructed: Canterbury mobile substation pool MSU-2 booking sheet, April 2027 to March 2028",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "oil_results_notes.md",
+      "format": "md",
+      "bytes": 2491,
+      "source": "Constructed: Zone substation engineering field notes for the extracts",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "protection_relay_events_2025-2026.csv",
+      "format": "csv",
+      "bytes": 102884,
+      "rows": 1161,
+      "source": "Constructed: Feeder and incomer protection relay operations, January 2025 to October 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "scada_tap_counters_daily_2021-2026.csv",
+      "format": "csv",
+      "bytes": 2227246,
+      "rows": 93060,
+      "source": "Constructed: SCADA tap-changer operations counters at 00:00 daily, 1 January 2021 to 16 October 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "scada_top_oil_hourly_2021-2026.parquet",
+      "format": "parquet",
+      "bytes": 11396663,
+      "rows": 2232384,
+      "source": "Constructed: SCADA historian export of hourly mean top-oil temperature and load per transformer, 2021 to 15 October 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "thermal_imaging_survey_2026.pdf",
+      "format": "pdf",
+      "bytes": 4118,
+      "source": "Constructed: Contractor infrared survey of the 11 kV switchboards, March 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

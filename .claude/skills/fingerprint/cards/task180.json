@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Southbridge T2, Rolleston T2 and Coalgate T1 (SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73), in that order",
+  "answer_source": "task180/golden/inspection_slate_2027-28.docx (slate table) and task180/golden/dga_fleet_review.csv, written by generator/golden.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "population",
     "rule"
@@ -35,7 +35,7 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "dga_main_tank_results_2021-2026.csv",
-    "rows": 0,
+    "rows": 1077,
     "entity": "one laboratory dissolved gas analysis of one main-tank oil sample from one transformer",
     "grain": "transformer x sample",
     "source": "synthetic"
@@ -48,13 +48,30 @@
     "currency": "NZD",
     "org_type": "electricity distribution business (lines company) with 44 zone-substation power transformers",
     "invented_names": [
-      "Ellesmere Lines"
+      "Ellesmere Lines",
+      "Waihora Laboratories",
+      "Weka Thermal Imaging",
+      "Rangitata Lines",
+      "Ashley Valley Networks",
+      "Brannock Electric",
+      "Tullis & Webb",
+      "Morvane Power",
+      "Harcastle",
+      "Ashby Ridley",
+      "Fendale",
+      "Velmora"
     ],
     "people": [
       "Donna Carson",
       "Barry Forbes",
       "Wendy Godfrey",
-      "Connor McGill"
+      "Connor McGill",
+      "Emma Elliott",
+      "Dennis Trask",
+      "Ethan Mason",
+      "Aroha O'Brien",
+      "Aimee Craig",
+      "Allan Simpson"
     ]
   },
   "deliverables": [
@@ -63,8 +80,8 @@
   ],
   "opening_move": "calendar-first",
   "driver": "A monitored signal that the standard reads as the unit's own fault can be carried in from an attached compartment whose ordinary operation produces it, so ranking units on the signal measured in the main body puts units with a leaking neighbour ahead of units with genuine internal faults; only attributing each unit's signal to its source, by its co-movement with the neighbour's operations and its composition, separates them.",
-  "driver_concrete": "Acetylene in a transformer's main-tank oil reads as arcing and the fleet DGA standard codes it most severely; at two zone substations with in-oil arcing tap changers the barrier between the tap-changer compartment and the main tank leaks, so their main-tank acetylene rises with every tap change and their code-3 severity leads the fleet, while a third transformer with a vacuum tap changer carries the same acetylene from a genuine internal arc; a slate built on main-tank codes spends two of its three outages on tap-changer seals.",
-  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names the three highest code-3 units, two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take the vacuum-tap-changer unit and the next two internal faults.",
+  "driver_concrete": "Acetylene in a transformer's main-tank oil reads as arcing and the fleet DGA standard codes it most severely; at two zone substations with in-oil arcing tap changers (Dunsandel T1 and Leeston T2) the barrier between the tap-changer compartment and the main tank weeps, so their main-tank acetylene rises with every tap change (r 0.998 and 0.995, twelve-month C2H2/H2 9.8 and 8.2) and their code-3 severities lead the fleet (9.64 and 8.07), while Southbridge T2, with a vacuum tap changer, carries the same acetylene (8.07) from a genuine internal arc; a slate built on main-tank codes spends two of its three outages on tap-changer seals.",
+  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -79,10 +96,11 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:attribute-a-diagnostic-gas-to-its-source-before-coding-the-unit",
   "layer1": [
-    "laboratory DGA reports with sampling and analysis dates, below-detection values written as <n, and O2 and N2 for the preservation type",
-    "an asset register with rewind years and tap-changer types by make and model",
-    "SCADA daily tap-change counters that roll over at 99,999 and reset when a counter is replaced at tap-changer maintenance",
-    "a maintenance log in free text with oil processing, tap-changer services and seal work",
+    "laboratory DGA reports with sampling and analysis dates, below-detection values written as <n, O2 and N2 for the preservation type, corrected reports re-issued under the same sample ID, and a label oil temperature sometimes left blank",
+    "an asset register with rewind years, tap-changer types by make and model, and a last-service field not written back since March 2025",
+    "SCADA daily tap-change counters that roll over at 99,999 and restart at zero when a counter is replaced at a tap-changer service",
+    "a historian export of hourly top-oil temperature and load with UTC timestamps and no zone marker",
+    "a maintenance log in free text with tap-changer services, oil processing and breather changes",
     "a mobile substation booking schedule for the 2027/28 outages"
   ]
 }
