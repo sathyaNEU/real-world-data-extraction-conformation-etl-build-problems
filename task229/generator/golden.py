@@ -1,0 +1,362 @@
+"""The golden: every graded figure computed from the shipped files under target/ alone.
+
+This module reads only the bundle. It is the first solver: the generator's own world state is never
+consulted here. The grid of wrong readings lives in readings(), so checks.py can assert every cell.
+"""
+import datetime as dt
+import json
+import math
+import os
+
+import numpy as np
+import pandas as pd
+import openpyxl
+
+UTC = dt.timezone.utc
+AEST = dt.timezone(dt.timedelta(hours=10))
+WEEK_START = dt.datetime(2026, 10, 5, tzinfo=AEST)
+WEEK_END = WEEK_START + dt.timedelta(days=7)
+REFERENCE, K = 99.50, 3
+RELEASES = ["EM3.10.9", "EM3.11.4", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"]
+
+
+def nsw_tz(day):
+    y = day.year
+
+    def first_sun(m):
+        x = dt.date(y, m, 1)
+        return x + dt.timedelta(days=(6 - x.weekday()) % 7)
+    off = 11 if (day >= first_sun(10) or day < first_sun(4)) else 10
+    return dt.timezone(dt.timedelta(hours=off))
+
+
+def parse_local(s):
+    t = dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
+    return t.replace(tzinfo=nsw_tz(t.date()))
+
+
+def load(target):
+    D = _load(target)
+    DCUR[0] = D
+    return D
+
+
+def _load(target):
+    p = lambda f: os.path.join(target, f)
+    mdm = pd.read_csv(p("mdm_interval_receipts_20261005_20261011.csv"), dtype={"NMI": str, "READ_DATE": str})
+    mdm["received"] = pd.to_datetime(mdm["RECEIVED_UTC"], utc=True)
+    rd = pd.to_datetime(mdm["READ_DATE"], format="%Y%m%d")
+    # cut-off: 06:00 AEST on the day after the read date = 20:00 UTC on the read date
+    mdm["cutoff"] = (rd + pd.Timedelta(hours=20)).dt.tz_localize("UTC")
+    mdm["expected"] = mdm["QTY_A"] + mdm["QTY_S"] + mdm["QTY_F"] + mdm["QTY_E"]
+    cat = pd.read_csv(p("fw_release_catalogue.csv"))
+    img2rel = dict(zip(cat["hes_image"], cat["release"]))
+    hes = json.load(open(p("hes_meter_firmware_history.json")))
+    parent = {m["meter_id"].replace("MTR-", ""): m.get("comms_parent") for m in hes["meters"]}
+    wb = openpyxl.load_workbook(p("mp_installation_register_20261012.xlsx"), read_only=True)
+    meters = []
+    for row in list(wb["Meters"].iter_rows(values_only=True))[3:]:
+        nmi11, serial, model, module, inst, rem = row
+        meters.append(dict(nmi=str(nmi11)[:10], serial=str(serial).zfill(8), installed=parse_local(inst),
+                           removed=parse_local(rem) if rem else None))
+    meters = pd.DataFrame(meters)
+    streams = []
+    for row in list(wb["Data streams"].iter_rows(values_only=True))[3:]:
+        nmi11, sx, L, uom, since = row
+        streams.append(dict(NMI=str(nmi11)[:10], NMI_SUFFIX=sx, per_day=1440 // int(L)))
+    streams = pd.DataFrame(streams)
+    nmi_parent = {}
+    for nmi, serial in zip(meters["nmi"], meters["serial"]):
+        if parent.get(serial) and nmi not in nmi_parent:
+            nmi_parent[nmi] = parent[serial]
+    return dict(mdm=mdm, img2rel=img2rel, hes=hes, meters=meters, streams=streams, target=target, parent=parent,
+                nmi_parent=nmi_parent)
+
+
+def running_builds(hes, img2rel, dedupe=True, failed_moves=False, staged_moves=False):
+    """Per meter: list of (from_utc, release) build spells, from the HES history."""
+    out = {}
+    for m in hes["meters"]:
+        serial = m["meter_id"].replace("MTR-", "")
+        seen, spells = set(), []
+        for e in sorted(m["events"], key=lambda x: (x["ts_utc"], x["seq"])):
+            if dedupe:
+                if e["event_id"] in seen:
+                    continue
+                seen.add(e["event_id"])
+            t = dt.datetime.strptime(e["ts_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+            moves = e["type"] in ("COMMISSIONED", "FW_ACTIVATED") or (failed_moves and e["type"] == "FW_ACTIVATION_FAILED") \
+                or (staged_moves and e["type"] == "FW_IMAGE_STAGED")
+            if e["type"] == "FW_ROLLBACK_OK" and failed_moves:
+                moves = True
+            if moves and e["image"]:
+                spells.append((t, img2rel[e["image"]]))
+        out[serial] = spells
+    return out
+
+
+def build_at(spells, t):
+    cur = None
+    for (s, rel) in spells:
+        if s <= t:
+            cur = rel
+    return cur
+
+
+def assessed(D, mode="fullweek", spells=None):
+    """Installation -> release, under a population reading.
+    fullweek: one meter all week, on one build all week (the standard).
+    start / end: every installation, on its build at the week start / end."""
+    spells = spells or running_builds(D["hes"], D["img2rel"])
+    mt = D["meters"]
+    out = {}
+    for nmi, g in mt.groupby("nmi"):
+        g = g.sort_values("installed")
+        if mode == "fullweek":
+            ov = g[(g["installed"] < WEEK_END) & (g["removed"].isna() | (g["removed"] > WEEK_START))]
+            if len(ov) != 1:
+                continue
+            m = ov.iloc[0]
+            if m["installed"] > WEEK_START or (m["removed"] is not None and not pd.isna(m["removed"]) and m["removed"] < WEEK_END):
+                continue
+            sp = spells.get(m["serial"], [])
+            b0 = build_at(sp, WEEK_START)
+            if any(WEEK_START < s < WEEK_END for s, _ in sp) or b0 is None:
+                continue
+            out[nmi] = b0
+        else:
+            t = WEEK_START if mode == "start" else WEEK_END - dt.timedelta(seconds=1)
+            live = g[(g["installed"] <= t) & (g["removed"].isna() | (g["removed"] > t))]
+            if len(live) == 0:
+                continue
+            b = build_at(spells.get(live.iloc[0]["serial"], []), t)
+            if b:
+                out[nmi] = b
+    return out
+
+
+def versions(mdm, which="cutoff"):
+    if which == "cutoff":
+        x = mdm[mdm["received"] < mdm["cutoff"]]
+        return x.sort_values("received").groupby(["NMI", "NMI_SUFFIX", "READ_DATE"]).tail(1)
+    if which == "latest":
+        return mdm.sort_values("received").groupby(["NMI", "NMI_SUFFIX", "READ_DATE"]).tail(1)
+    if which == "first":
+        return mdm.sort_values("received").groupby(["NMI", "NMI_SUFFIX", "READ_DATE"]).head(1)
+    raise ValueError(which)
+
+
+DATES = [(WEEK_START + dt.timedelta(days=d)).strftime("%Y%m%d") for d in range(7)]
+
+
+def panel(D, v, pop, denom="register"):
+    """One row per assessed data stream and market day. denom="register": every day of every stream
+    the register lists, an absent register-day holding no actual reads; denom="rows": only the
+    register-days the chosen version set carries."""
+    key = (id(v), id(pop), denom)
+    cache = D.setdefault("_panel", {})
+    if key not in cache:
+        cache[key] = (v, pop, _panel(D, v, pop, denom))
+    return cache[key][2].copy()
+
+
+def _panel(D, v, pop, denom):
+    x = v[v["NMI"].isin(pop.keys())][["NMI", "NMI_SUFFIX", "READ_DATE", "QTY_A", "expected"]]
+    if denom == "rows":
+        out = x.copy()
+    else:
+        st = D["streams"][D["streams"]["NMI"].isin(pop.keys())]
+        grid = st.merge(pd.DataFrame({"READ_DATE": DATES}), how="cross")
+        out = grid.merge(x[["NMI", "NMI_SUFFIX", "READ_DATE", "QTY_A"]], on=["NMI", "NMI_SUFFIX", "READ_DATE"], how="left")
+        out["QTY_A"] = out["QTY_A"].fillna(0).astype(int)
+        out["expected"] = out["per_day"]
+    out["release"] = out["NMI"].map(pop)
+    return out
+
+
+def _se_groups(y, x, groups, R, small=True):
+    """Standard error of R = sum(y) / sum(x) from the groups' summed residuals y - R x."""
+    df = pd.DataFrame({"g": groups, "r": y - R * x})
+    d = df.groupby("g", sort=False)["r"].sum().to_numpy()
+    k = len(d)
+    f = k / (k - 1) if small else 1.0
+    return math.sqrt(f * float((d ** 2).sum())) / float(x.sum())
+
+
+def _se_jack(y, x, groups):
+    """Delete-one-group jackknife standard error of sum(y) / sum(x)."""
+    df = pd.DataFrame({"g": groups, "y": y, "x": x}).groupby("g", sort=False)[["y", "x"]].sum()
+    Y, X = df["y"].sum(), df["x"].sum()
+    th = (Y - df["y"]) / (X - df["x"])
+    k = len(th)
+    return math.sqrt((k - 1) / k * float(((th - th.mean()) ** 2).sum()))
+
+
+def _units(D, v, pop, denom, unit):
+    """Per-unit arrays (value, weight, comms parent, NMI, release) for one reading, cached."""
+    key = (id(v), id(pop), denom, unit)
+    cache = D.setdefault("_units", {})
+    if key in cache:
+        return cache[key][2]
+    x = panel(D, v, pop, denom)
+    x["parent"] = x["NMI"].map(lambda n: D["nmi_parent"].get(n) or ("solo:" + n))
+    if unit in ("installation", "pooled"):
+        inst = x.groupby("NMI").agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
+                                    release=("release", "first")).reset_index()
+        if unit == "installation":
+            y, w = (100.0 * inst["A"] / inst["E"]).to_numpy(), np.ones(len(inst))
+        else:
+            y, w = 100.0 * inst["A"].to_numpy(), inst["E"].to_numpy().astype(float)
+        out = pd.DataFrame({"y": y, "w": w, "parent": inst["parent"], "NMI": inst["NMI"], "release": inst["release"],
+                            "E": inst["E"]})
+    elif unit == "row":
+        out = pd.DataFrame({"y": (100.0 * x["QTY_A"] / x["expected"]).to_numpy(), "w": 1.0, "parent": x["parent"],
+                            "NMI": x["NMI"], "release": x["release"], "E": x["expected"]})
+    elif unit == "stream":
+        st = x.groupby(["NMI", "NMI_SUFFIX"]).agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
+                                                  release=("release", "first")).reset_index()
+        out = pd.DataFrame({"y": (100.0 * st["A"] / st["E"]).to_numpy(), "w": 1.0, "parent": st["parent"],
+                            "NMI": st["NMI"], "release": st["release"], "E": st["E"]})
+    cache[key] = (v, pop, out)
+    return out
+
+
+def score(v, pop, unit="installation", err="collector", denom="register", D=None):
+    """Read health, n, standard error, lower limit and the alert, per release, under one reading.
+    unit: installation (the mean of installation shares, the standard), pooled (reads over reads),
+    row (mean of register-day shares), stream (mean of data-stream shares). err: collector (the
+    installations' comms parents as the units the standard error is built from, n - 1 convention),
+    collector_cr0, collector_jack, installation (each installation its own unit), installation_ddof0,
+    binomial_reads, binomial_installations, none."""
+    D = D or DCUR[0]
+    U = _units(D, v, pop, denom, unit)
+    res = {}
+    for rel in RELEASES:
+        g = U[U["release"] == rel]
+        if len(g) == 0:
+            res[rel] = None
+            continue
+        uy, ux, ug, un = g["y"].to_numpy(), g["w"].to_numpy().astype(float), g["parent"].to_numpy(), g["NMI"].to_numpy()
+        n = len(set(un))
+        rh = float(uy.sum() / ux.sum())
+        if err == "collector":
+            se = _se_groups(uy, ux, ug, rh)
+        elif err == "collector_cr0":
+            se = _se_groups(uy, ux, ug, rh, small=False)
+        elif err == "collector_jack":
+            se = _se_jack(uy, ux, ug)
+        elif err == "installation":
+            se = _se_groups(uy, ux, un, rh)
+        elif err == "installation_ddof0":
+            se = _se_groups(uy, ux, un, rh, small=False)
+        elif err == "binomial_reads":
+            p = rh / 100.0
+            se = 100.0 * math.sqrt(p * (1 - p) / g["E"].sum())
+        elif err == "binomial_installations":
+            p = rh / 100.0
+            se = 100.0 * math.sqrt(p * (1 - p) / n)
+        elif err == "none":
+            se = 0.0
+        lcl = REFERENCE - K * se
+        res[rel] = dict(n=n, k=len(set(ug)), rh=rh, se=se, lcl=lcl, fire=bool(rh < lcl))
+    return res
+
+
+DCUR = [None]
+
+
+def fire_set(res):
+    return tuple(sorted(r for r, v in res.items() if v and v["fire"]))
+
+
+# ------------------------------------------------------------------ the asks
+
+def wave8_moves(D, fire=()):
+    """Installations the Wave 8 schedule moves onto each target once the call is applied: the
+    schedule's meters still in service and not already on the target, none onto a build that fires."""
+    out = wave8_schedule(D)
+    return {k: (0 if k in fire else v) for k, v in out.items()}
+
+
+def wave8_schedule(D):
+    wb = openpyxl.load_workbook(os.path.join(D["target"], "wave8_schedule.xlsx"), read_only=True)
+    rows = []
+    for name in ("Batch A 13-10", "Batch B 14-10"):
+        for r in list(wb[name].iter_rows(values_only=True))[2:]:
+            if r[1] is None:
+                continue
+            rows.append(dict(serial=str(r[1]).zfill(8), target=r[5]))
+    sched = pd.DataFrame(rows).drop_duplicates()
+    spells = running_builds(D["hes"], D["img2rel"])
+    mt = D["meters"]
+    in_service = mt[mt["removed"].isna()].set_index("serial")["nmi"].to_dict()
+    end = dt.datetime(2026, 10, 12, 4, 0, tzinfo=UTC)
+    out = {}
+    for tgt, g in sched.groupby("target"):
+        nmis = set()
+        for s in g["serial"]:
+            if s not in in_service:
+                continue
+            if build_at(spells.get(s, []), end) == tgt:
+                continue
+            nmis.add(in_service[s])
+        out[tgt] = len(nmis)
+    return out
+
+
+def wave7_cost(D, vcut=None, day_clock="AEST"):
+    vcut = vcut if vcut is not None else versions(D["mdm"], "cutoff")
+    mt = D["meters"]
+    serial2nmi = mt.set_index("serial")["nmi"].to_dict()
+    moved = {}
+    for m in D["hes"]["meters"]:
+        serial = m["meter_id"].replace("MTR-", "")
+        seen = set()
+        for e in m["events"]:
+            if e["event_id"] in seen:
+                continue
+            seen.add(e["event_id"])
+            if e["type"] == "FW_ACTIVATED" and (e["job"] or "").startswith("WAVE7"):
+                t = dt.datetime.strptime(e["ts_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+                tz = AEST if day_clock == "AEST" else (dt.timezone(dt.timedelta(hours=11)) if day_clock == "AEDT" else UTC)
+                moved[serial] = (D["img2rel"][e["image"]], t.astimezone(tz).strftime("%Y%m%d"))
+    per = {}
+    held = vcut.groupby(["NMI", "READ_DATE"])["QTY_A"].sum().to_dict()
+    perday = D["streams"].groupby("NMI")["per_day"].sum().to_dict()
+    for serial, (rel, day) in moved.items():
+        nmi = serial2nmi[serial]
+        c = per.setdefault(rel, dict(installations=set(), missing=0))
+        c["installations"].add(nmi)
+        c["missing"] += int(perday[nmi] - held.get((nmi, day), 0))
+    return {k: dict(installations=len(v_["installations"]), missing=v_["missing"]) for k, v_ in per.items()}
+
+
+def running_now(D, at=None):
+    """Installations by the build their in-service meter runs at the extract (3.6)."""
+    at = at or dt.datetime(2026, 10, 12, 4, 40, tzinfo=UTC)
+    spells = running_builds(D["hes"], D["img2rel"])
+    mt = D["meters"]
+    live = mt[mt["removed"].isna() & (mt["installed"] <= at)]
+    out = {}
+    for nmi, ser in zip(live["nmi"], live["serial"]):
+        b = build_at(spells.get(ser, []), at)
+        if b:
+            out[b] = out.get(b, 0) + 1
+    return out
+
+
+def substitution_load(D, fire, at=None):
+    """Installations Settlement Operations is told to expect substitutions on (6.1): every installation
+    running a build the alert fires on."""
+    run = running_now(D, at)
+    return int(sum(run.get(b, 0) for b in fire))
+
+
+def solve(target):
+    D = load(target)
+    pop = assessed(D, "fullweek")
+    vc = versions(D["mdm"], "cutoff")
+    res = score(vc, pop)
+    fs = fire_set(res)
+    return D, dict(scorecard=res, fire=fs, wave8=wave8_moves(D, fs), wave8_schedule=wave8_schedule(D),
+                   load=substitution_load(D, fs))

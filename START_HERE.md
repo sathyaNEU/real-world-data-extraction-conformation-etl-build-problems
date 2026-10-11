@@ -129,7 +129,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task228 | DQ01 | [Which guardrail metric the experiment platform's automated alert watches](task228/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
-| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
+| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | perssathya (developer 3) | shipped |
 | task230 | DQ03 | [Whether an event-volume drop is an instrumentation incident or a mix shift toward a new client version](task230/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
 | task231 | DQ04 | [Whether the network-total shortfall alert fires when the missing reads are multiply imputed](task231/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
 | task232 | DQ05 | [The upstream-lag threshold for a feed SLA alert, when lag is itself measured with error](task232/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
