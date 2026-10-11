@@ -2,15 +2,15 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 3,
- "stage_name": "build (architecture 2, loop 1: rebuilt to the designer brief; next the leak reader, then the duplicate heart check and the solver round)",
+ "stage": 4,
+ "stage_name": "leak check (architecture 2, loop 1)",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver sets the probabilities from the share of flagged and of unflagged groups that reached the list over the four closed cohorts taken together (the hit and miss rates) and files 73, or, seeing that basis fail the standard's leave-one-cohort-out test by 40.6 per cent, trends those rates on the flagged share and files 147; only the basis that backs each year's share reaching out of its flagged share through the capture and false-alarm rates passes the test (worst miss 1.6 per cent) and gives 133.",
  "architecture": 2,
  "loops": 1,
  "leak": {
-  "leak_py": "REVIEW (no LEAK), loop 1 build, every REVIEW line answered in the design note",
+  "leak_py": "REVIEW (no LEAK) on the loop-1 cut d1696c6, lines answered in the design note",
   "reader": "arch 2: Q1 quotes the standard's 4.3 and 5.2 as the procedure; FORK on the main call: 5.2's literal basis (one probability per flag status set from the 4.3 measures, read as the pooled hit rate) gives about 74 against the golden 134; band status fork on the asks; realism tells in the containers",
   "disposition": "loop 1 (designer): the main-call fork closed on paper (5.2 files the estimand and the test that selects the basis, names no basis; literal reading 133); the band-status fork closed by the records (cancelled and closed limits nil); realism tells listed for the rebuild; the reader reads again after it (prompt and documents change)"
  },
