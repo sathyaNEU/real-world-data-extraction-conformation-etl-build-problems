@@ -21,7 +21,7 @@ Of the 170 households in Tenter House on 30 September, 46 are still there on 31 
 
 1. Took the households with a live Tenter House placement on 30 September 2026 from `ta_placements_2018-04_2026-09.csv`: 170, every one owed the main duty in `homelessness_cases_2026-09-30.csv`.
 2. Set each case's current bedroom need from its latest review in `bedroom_need_reviews.csv`, else the need at decision, as the closure procedure (point 5) requires: 28, 66, 50 and 26 households needing one to four bedrooms.
-3. Replayed `moveon_lets_2018-04_2026-09.csv`: every one of the 5,262 lets since April 2018 went to the front of its size's list of open main-duty cases, wherever the household lived, ordered by duty acceptance date and then case reference.
+3. Took the move-on order from `housing_allocations_scheme_2024_part6.pdf` (6.1, 6.3, 6.4): every open main-duty case wherever the household lives, by duty acceptance date then case reference, within the bedroom need at the offer; `moveon_lets_2018-04_2026-09.csv` follows it for 5,262 of 5,262 lets.
 4. Built each size's list on 30 September from every open main-duty case, households at home included, with the October lets already accepted at its front.
 5. Worked the revised move-on plan in `moveon_plan_2026-27.xlsx` (sheet of 14 September, October counting accepted lets) down each list month by month: 89, 117, 56 and 19 lets reach the first that many households of the one- to four-bed lists.
 6. Counted the Tenter House households beyond each month's reach: 46 remain on 31 March 2027.

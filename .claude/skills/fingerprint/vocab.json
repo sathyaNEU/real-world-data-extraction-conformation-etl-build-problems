@@ -1,5 +1,5 @@
 {
-  "_about": "Controlled vocabulary for fingerprint cards. Every enumerated field on a card must use a key from here, so two builds that made the same choice collide on the same string. Sources: guide-to-prompt/references/domains and shapes, stumping Parts 1, 2, 6.1 and 6.2, determinism-check Gate G, prompt-voice.md section 3. Add a value only when no existing one fits, and add it here before using it on a card. stump_strategies is the family of the decisive move independent of the gap and pattern labels, and decisive_rule_filed plus official_decoy on a card mark the withheld-rule-with-official-decoy architecture whatever family label it carries; validated_decoy marks the build whose wrong method reproduces every closed, published or certified figure in the pack and breaks only on a forward condition.",
+  "_about": "Controlled vocabulary for fingerprint cards. Every enumerated field on a card must use a key from here, so two builds that made the same choice collide on the same string. Sources: guide-to-prompt/references/domains and shapes, stumping Parts 1, 2, 6.1 and 6.2, determinism-check Gate G, prompt-voice.md section 3. Add a value only when no existing one fits, and add it here before using it on a card. stump_strategies is the family of the decisive move independent of the gap and pattern labels, and decisive_rule_filed plus official_decoy on a card mark the withheld-rule-with-official-decoy architecture whatever family label it carries; validated_decoy marks the build whose wrong method reproduces every closed, published or certified figure in the pack and breaks only on a forward condition. client_domains is the client's taxonomy (seven groups, twenty-one domains, each with its task types and the Axis 1 objectives each task type serves); house_domains are the nine domains the earlier spec named, still valid for cards and mapped to the client domains they sit in. layer2_families are the five families of the client's two-layer design; a card's layer2_family takes one key and its layer2_pattern names the pattern from stumping/references/client/layer2-rigor-patterns.md as <domain>/<task-type>/<n>, or 'own:<short name>' for a pattern built beyond the library.",
   "domains": {
     "product-analytics": "Product Analytics",
     "supply-chain-logistics": "Supply Chain & Logistics",
@@ -13,7 +13,26 @@
     "business-operations-analytics": "Business & Operations Analytics (author-declared new domain, 2026-10-06)",
     "marketing-consumer-research": "Marketing & Consumer Research (author-declared new domain, 2026-10-08)",
     "legacy-biology": "Biology, Biostatistics, Epidemiology & Bioinformatics (dropped 2026-08-27, legacy cards only, never draw it)",
-    "legacy-other": "A build tagged outside the six (legacy cards only, never draw it)"
+    "legacy-other": "A build tagged outside the six (legacy cards only, never draw it)",
+    "quantitative-finance": "Quantitative Finance",
+    "banking-credit-financial-risk": "Banking, Credit & Financial Risk",
+    "actuarial-science-insurance": "Actuarial Science & Insurance",
+    "general-statistics-data-science": "General Statistics & Data Science",
+    "biomedical-clinical-research": "Biomedical & Clinical Research",
+    "epidemiology-public-health": "Epidemiology & Public Health",
+    "pharmacology-pharmacoepidemiology-safety": "Pharmacology, Pharmacoepidemiology & Safety",
+    "healthcare-delivery-health-economics": "Healthcare Delivery & Health Economics",
+    "economics-econometrics": "Economics & Econometrics",
+    "political-science-public-policy": "Political Science & Public Policy",
+    "sociology-demography": "Sociology & Demography",
+    "psychology-behavioral-science": "Psychology & Behavioral Science",
+    "criminology-justice": "Criminology & Justice",
+    "physical-environmental-sciences": "Physical & Environmental Sciences",
+    "energy-systems-utilities": "Energy Systems & Utilities",
+    "human-factors-ergonomics": "Human Factors & Ergonomics",
+    "survey-research-official-statistics": "Survey Research & Official Statistics",
+    "urban-regional-science": "Urban & Regional Science",
+    "education-learning-sciences": "Education & Learning Sciences"
   },
   "subdomains": {
     "product-analytics": [
@@ -24,6 +43,14 @@
       "retention-risk",
       "trust-safety-support",
       "experimentation-measurement",
+      "online-experimentation-a-b-test-design-readout",
+      "observational-causal-inference",
+      "metric-definition-measurement-science",
+      "retention-cohort-lifetime-value-modeling",
+      "churn-propensity-uplift-modeling",
+      "funnel-journey-analysis",
+      "network-effect-marketplace-experimentation",
+      "feature-adoption-diffusion-modeling",
       "other"
     ],
     "supply-chain-logistics": [
@@ -112,6 +139,11 @@
       "new-product-innovation",
       "shopper-retail-measurement",
       "survey-panel-research",
+      "segmentation-market-structure",
+      "conjoint-choice-willingness-to-pay-analysis",
+      "brand-campaign-ad-effectiveness-measurement",
+      "customer-satisfaction-driver-analysis",
+      "media-reach-frequency-audience-measurement",
       "other"
     ],
     "legacy-biology": [
@@ -124,6 +156,192 @@
       "other"
     ],
     "legacy-other": [
+      "other"
+    ],
+    "quantitative-finance": [
+      "portfolio-construction-risk",
+      "factor-return-attribution",
+      "strategy-backtesting-evaluation",
+      "market-microstructure-execution-cost",
+      "volatility-derivatives-pricing",
+      "event-study",
+      "other"
+    ],
+    "banking-credit-financial-risk": [
+      "credit-scoring-pd-modeling",
+      "expected-credit-loss-provisioning",
+      "stress-testing-capital",
+      "fraud-aml-detection",
+      "deposit-liquidity-behaviour",
+      "collections-recovery",
+      "other"
+    ],
+    "actuarial-science-insurance": [
+      "reserving-development-triangles",
+      "pricing-ratemaking-credibility",
+      "mortality-longevity",
+      "catastrophe-exposure-accumulation",
+      "claims-frequency-severity",
+      "reinsurance-capital",
+      "other"
+    ],
+    "general-statistics-data-science": [
+      "exploratory-data-analysis-distribution-assessment",
+      "regression-classification-model-diagnostics",
+      "resampling-simulation-monte-carlo-methods",
+      "bayesian-modeling-posterior-inference",
+      "missing-data-censoring-measurement-error",
+      "multiple-testing-selective-inference",
+      "data-integration-record-linkage-entity-resolution",
+      "benchmarking-and-ablations",
+      "scaling-laws",
+      "robustness-analysis",
+      "interpretability",
+      "other"
+    ],
+    "biomedical-clinical-research": [
+      "clinical-trial-design-analysis",
+      "survival-time-to-event-analysis",
+      "diagnostic-biomarker-accuracy",
+      "dose-response-pk-pd-modeling",
+      "genomics-gwas-high-dimensional-association",
+      "statistical-genomics",
+      "longitudinal-outcomes-repeated-measures",
+      "adaptive-platform-basket-trial-methods",
+      "real-world-evidence-comparative-effectiveness",
+      "medical-imaging-reader-study-evaluation",
+      "other"
+    ],
+    "epidemiology-public-health": [
+      "observational-study-design-cohort-case-control",
+      "disease-surveillance-outbreak-anomaly-detection",
+      "risk-factor-causal-effect-estimation",
+      "screening-diagnostic-policy-evaluation",
+      "health-burden-impact-modeling",
+      "infectious-disease-transmission-modeling",
+      "cluster-stepped-wedge-community-trials",
+      "health-equity-disparity-decomposition",
+      "other"
+    ],
+    "pharmacology-pharmacoepidemiology-safety": [
+      "population-pharmacokinetics-exposure-response",
+      "drug-utilization-comparative-safety",
+      "safety-signal-detection",
+      "benefit-risk-assessment",
+      "medication-adherence-persistence",
+      "other"
+    ],
+    "healthcare-delivery-health-economics": [
+      "cost-effectiveness-decision-modeling",
+      "utilization-access-demand-forecasting",
+      "provider-quality-risk-adjustment",
+      "patient-flow-beds-workforce-optimization",
+      "payment-claims-health-plan-analytics",
+      "other"
+    ],
+    "economics-econometrics": [
+      "causal-identification-did-iv-rd-synthetic-control",
+      "structural-equilibrium-modeling",
+      "time-series-macro-econometrics",
+      "panel-data-estimation",
+      "elasticity-welfare-policy-impact-estimation",
+      "forecasting-forecast-evaluation",
+      "discrete-choice-limited-dependent-variable-modeling",
+      "spatial-econometrics-spillover-estimation",
+      "other"
+    ],
+    "political-science-public-policy": [
+      "election-polling-forecasting",
+      "policy-evaluation-administrative-data-inference",
+      "legislative-behavior-ideal-point-estimation",
+      "conflict-protest-event-data-analysis",
+      "public-opinion-survey-experimentation",
+      "small-area-public-opinion-estimation-mrp",
+      "other"
+    ],
+    "sociology-demography": [
+      "population-estimation-demographic-projection",
+      "social-mobility-inequality-measurement",
+      "social-network-peer-effect-analysis",
+      "event-history-life-course-analysis",
+      "neighborhood-segregation-contextual-effects",
+      "fertility-mortality-life-table-estimation",
+      "other"
+    ],
+    "psychology-behavioral-science": [
+      "experimental-design-power-analysis",
+      "psychometric-measurement-scale-validation",
+      "statistical-inference-hypothesis-testing",
+      "mediation-moderation-process-modeling",
+      "meta-analysis-evidence-synthesis",
+      "longitudinal-growth-curve-modeling",
+      "decision-making-computational-behavioral-modeling",
+      "experience-sampling-intensive-longitudinal-analysis",
+      "other"
+    ],
+    "criminology-justice": [
+      "crime-incidence-hotspot-analysis",
+      "recidivism-risk-assessment",
+      "sentencing-bail-disparity-analysis",
+      "intervention-policing-policy-evaluation",
+      "other"
+    ],
+    "physical-environmental-sciences": [
+      "environmental-monitoring-exceedance",
+      "climate-weather-extremes",
+      "pollution-source-attribution",
+      "sensor-calibration-measurement",
+      "hydrology-flood-frequency",
+      "emissions-inventory",
+      "other"
+    ],
+    "energy-systems-utilities": [
+      "load-forecasting",
+      "generation-capacity-planning",
+      "grid-reliability-outage-analysis",
+      "tariff-demand-response-evaluation",
+      "asset-condition-maintenance",
+      "efficiency-savings-verification",
+      "other"
+    ],
+    "human-factors-ergonomics": [
+      "usability-task-performance-studies",
+      "workload-fatigue-shift-analysis",
+      "safety-incident-error-analysis",
+      "human-reliability-assessment",
+      "anthropometric-design-fit",
+      "alarm-interface-evaluation",
+      "other"
+    ],
+    "survey-research-official-statistics": [
+      "sample-design-allocation-weighting",
+      "nonresponse-calibration-measurement-error-adjustment",
+      "questionnaire-mode-effects-research",
+      "small-area-estimation",
+      "census-register-administrative-data-quality",
+      "seasonal-adjustment-official-time-series-production",
+      "complex-survey-estimation-variance",
+      "anomaly-detection",
+      "other"
+    ],
+    "urban-regional-science": [
+      "land-use-spatial-development-modeling",
+      "accessibility-agglomeration-location-analysis",
+      "municipal-service-demand-resource-allocation",
+      "regional-input-output-economic-impact",
+      "optimization",
+      "forecasting",
+      "network-analysis",
+      "other"
+    ],
+    "education-learning-sciences": [
+      "student-growth-value-added-modeling",
+      "randomized-quasi-experimental-program-evaluation",
+      "item-response-theory-test-equating",
+      "learning-analytics-early-warning-models",
+      "multilevel-classroom-school-research",
+      "psychometrics",
+      "text-analysis",
       "other"
     ]
   },
@@ -390,5 +608,667 @@
     "causal_design": "confounding, spillover or interference, regression to the mean, control or comparison choice, pre-trends",
     "uncertainty_hold": "signal against noise, multiple comparisons, power or sample size; holding can be the answer",
     "other": "none of the above, named in the card's notes (never counts as a collision)"
+  },
+  "client_domains": {
+    "product-analytics": {
+      "name": "Product Analytics",
+      "group": "Product analytics",
+      "task_types": {
+        "online-experimentation-a-b-test-design-readout": [
+          "experiment-causal"
+        ],
+        "observational-causal-inference": [
+          "experiment-causal"
+        ],
+        "metric-definition-measurement-science": [
+          "descriptive-distribution",
+          "data-quality-monitoring"
+        ],
+        "retention-cohort-lifetime-value-modeling": [
+          "forecasting"
+        ],
+        "churn-propensity-uplift-modeling": [
+          "forecasting",
+          "opportunity-sizing-decision"
+        ],
+        "funnel-journey-analysis": [
+          "descriptive-distribution",
+          "root-cause"
+        ],
+        "network-effect-marketplace-experimentation": [
+          "experiment-causal"
+        ],
+        "feature-adoption-diffusion-modeling": [
+          "forecasting",
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "marketing-consumer-research": {
+      "name": "Marketing & Consumer Research",
+      "group": "Product analytics",
+      "task_types": {
+        "segmentation-market-structure": [
+          "descriptive-distribution"
+        ],
+        "conjoint-choice-willingness-to-pay-analysis": [
+          "opportunity-sizing-decision",
+          "forecasting"
+        ],
+        "brand-campaign-ad-effectiveness-measurement": [
+          "experiment-causal"
+        ],
+        "customer-satisfaction-driver-analysis": [
+          "root-cause"
+        ],
+        "media-reach-frequency-audience-measurement": [
+          "descriptive-distribution",
+          "forecasting"
+        ]
+      }
+    },
+    "general-statistics-data-science": {
+      "name": "General Statistics & Data Science",
+      "group": "Machine learning research",
+      "task_types": {
+        "exploratory-data-analysis-distribution-assessment": [
+          "descriptive-distribution",
+          "anomaly-detection"
+        ],
+        "regression-classification-model-diagnostics": [
+          "forecasting"
+        ],
+        "resampling-simulation-monte-carlo-methods": [
+          "forecasting",
+          "descriptive-distribution"
+        ],
+        "bayesian-modeling-posterior-inference": [
+          "forecasting"
+        ],
+        "missing-data-censoring-measurement-error": [
+          "descriptive-distribution",
+          "data-quality-monitoring"
+        ],
+        "multiple-testing-selective-inference": [
+          "anomaly-detection",
+          "experiment-causal"
+        ],
+        "data-integration-record-linkage-entity-resolution": [
+          "etl"
+        ],
+        "benchmarking-and-ablations": [
+          "experiment-causal"
+        ],
+        "scaling-laws": [
+          "forecasting"
+        ],
+        "robustness-analysis": [
+          "descriptive-distribution"
+        ],
+        "interpretability": [
+          "root-cause"
+        ]
+      }
+    },
+    "biomedical-clinical-research": {
+      "name": "Biomedical & Clinical Research",
+      "group": "Biomedical and health sciences",
+      "task_types": {
+        "clinical-trial-design-analysis": [
+          "experiment-causal"
+        ],
+        "survival-time-to-event-analysis": [
+          "forecasting",
+          "descriptive-distribution"
+        ],
+        "diagnostic-biomarker-accuracy": [
+          "descriptive-distribution"
+        ],
+        "dose-response-pk-pd-modeling": [
+          "forecasting"
+        ],
+        "genomics-gwas-high-dimensional-association": [
+          "anomaly-detection",
+          "descriptive-distribution"
+        ],
+        "statistical-genomics": [
+          "descriptive-distribution"
+        ],
+        "longitudinal-outcomes-repeated-measures": [
+          "experiment-causal"
+        ],
+        "adaptive-platform-basket-trial-methods": [
+          "experiment-causal"
+        ],
+        "real-world-evidence-comparative-effectiveness": [
+          "experiment-causal"
+        ],
+        "medical-imaging-reader-study-evaluation": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "epidemiology-public-health": {
+      "name": "Epidemiology & Public Health",
+      "group": "Biomedical and health sciences",
+      "task_types": {
+        "observational-study-design-cohort-case-control": [
+          "experiment-causal"
+        ],
+        "disease-surveillance-outbreak-anomaly-detection": [
+          "anomaly-detection",
+          "data-quality-monitoring"
+        ],
+        "risk-factor-causal-effect-estimation": [
+          "experiment-causal"
+        ],
+        "screening-diagnostic-policy-evaluation": [
+          "opportunity-sizing-decision"
+        ],
+        "health-burden-impact-modeling": [
+          "opportunity-sizing-decision",
+          "forecasting"
+        ],
+        "infectious-disease-transmission-modeling": [
+          "forecasting"
+        ],
+        "cluster-stepped-wedge-community-trials": [
+          "experiment-causal"
+        ],
+        "health-equity-disparity-decomposition": [
+          "root-cause"
+        ]
+      }
+    },
+    "pharmacology-pharmacoepidemiology-safety": {
+      "name": "Pharmacology, Pharmacoepidemiology & Safety",
+      "group": "Biomedical and health sciences",
+      "task_types": {
+        "population-pharmacokinetics-exposure-response": [
+          "forecasting"
+        ],
+        "drug-utilization-comparative-safety": [
+          "experiment-causal"
+        ],
+        "safety-signal-detection": [
+          "anomaly-detection"
+        ],
+        "benefit-risk-assessment": [
+          "opportunity-sizing-decision"
+        ],
+        "medication-adherence-persistence": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "healthcare-delivery-health-economics": {
+      "name": "Healthcare Delivery & Health Economics",
+      "group": "Biomedical and health sciences",
+      "task_types": {
+        "cost-effectiveness-decision-modeling": [
+          "opportunity-sizing-decision"
+        ],
+        "utilization-access-demand-forecasting": [
+          "forecasting"
+        ],
+        "provider-quality-risk-adjustment": [
+          "descriptive-distribution",
+          "anomaly-detection"
+        ],
+        "patient-flow-beds-workforce-optimization": [
+          "opportunity-sizing-decision",
+          "forecasting"
+        ],
+        "payment-claims-health-plan-analytics": [
+          "etl",
+          "anomaly-detection"
+        ]
+      }
+    },
+    "economics-econometrics": {
+      "name": "Economics & Econometrics",
+      "group": "Economics and quantitative social science",
+      "task_types": {
+        "causal-identification-did-iv-rd-synthetic-control": [
+          "experiment-causal"
+        ],
+        "structural-equilibrium-modeling": [
+          "opportunity-sizing-decision"
+        ],
+        "time-series-macro-econometrics": [
+          "forecasting"
+        ],
+        "panel-data-estimation": [
+          "experiment-causal",
+          "root-cause"
+        ],
+        "elasticity-welfare-policy-impact-estimation": [
+          "opportunity-sizing-decision"
+        ],
+        "forecasting-forecast-evaluation": [
+          "forecasting"
+        ],
+        "discrete-choice-limited-dependent-variable-modeling": [
+          "forecasting"
+        ],
+        "spatial-econometrics-spillover-estimation": [
+          "experiment-causal"
+        ]
+      }
+    },
+    "political-science-public-policy": {
+      "name": "Political Science & Public Policy",
+      "group": "Economics and quantitative social science",
+      "task_types": {
+        "election-polling-forecasting": [
+          "forecasting"
+        ],
+        "policy-evaluation-administrative-data-inference": [
+          "experiment-causal"
+        ],
+        "legislative-behavior-ideal-point-estimation": [
+          "descriptive-distribution"
+        ],
+        "conflict-protest-event-data-analysis": [
+          "anomaly-detection",
+          "descriptive-distribution"
+        ],
+        "public-opinion-survey-experimentation": [
+          "experiment-causal"
+        ],
+        "small-area-public-opinion-estimation-mrp": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "sociology-demography": {
+      "name": "Sociology & Demography",
+      "group": "Economics and quantitative social science",
+      "task_types": {
+        "population-estimation-demographic-projection": [
+          "forecasting"
+        ],
+        "social-mobility-inequality-measurement": [
+          "descriptive-distribution"
+        ],
+        "social-network-peer-effect-analysis": [
+          "experiment-causal"
+        ],
+        "event-history-life-course-analysis": [
+          "descriptive-distribution",
+          "forecasting"
+        ],
+        "neighborhood-segregation-contextual-effects": [
+          "descriptive-distribution"
+        ],
+        "fertility-mortality-life-table-estimation": [
+          "forecasting",
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "psychology-behavioral-science": {
+      "name": "Psychology & Behavioral Science",
+      "group": "Economics and quantitative social science",
+      "task_types": {
+        "experimental-design-power-analysis": [
+          "experiment-causal"
+        ],
+        "psychometric-measurement-scale-validation": [
+          "descriptive-distribution",
+          "data-quality-monitoring"
+        ],
+        "statistical-inference-hypothesis-testing": [
+          "experiment-causal"
+        ],
+        "mediation-moderation-process-modeling": [
+          "root-cause"
+        ],
+        "meta-analysis-evidence-synthesis": [
+          "experiment-causal"
+        ],
+        "longitudinal-growth-curve-modeling": [
+          "descriptive-distribution"
+        ],
+        "decision-making-computational-behavioral-modeling": [
+          "forecasting"
+        ],
+        "experience-sampling-intensive-longitudinal-analysis": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "criminology-justice": {
+      "name": "Criminology & Justice",
+      "group": "Economics and quantitative social science",
+      "task_types": {
+        "crime-incidence-hotspot-analysis": [
+          "anomaly-detection"
+        ],
+        "recidivism-risk-assessment": [
+          "forecasting"
+        ],
+        "sentencing-bail-disparity-analysis": [
+          "root-cause"
+        ],
+        "intervention-policing-policy-evaluation": [
+          "experiment-causal"
+        ]
+      }
+    },
+    "survey-research-official-statistics": {
+      "name": "Survey Research & Official Statistics",
+      "group": "Other",
+      "task_types": {
+        "sample-design-allocation-weighting": [
+          "descriptive-distribution",
+          "opportunity-sizing-decision"
+        ],
+        "nonresponse-calibration-measurement-error-adjustment": [
+          "descriptive-distribution",
+          "data-quality-monitoring"
+        ],
+        "questionnaire-mode-effects-research": [
+          "experiment-causal"
+        ],
+        "small-area-estimation": [
+          "descriptive-distribution"
+        ],
+        "census-register-administrative-data-quality": [
+          "data-quality-monitoring",
+          "etl"
+        ],
+        "seasonal-adjustment-official-time-series-production": [
+          "forecasting",
+          "etl"
+        ],
+        "complex-survey-estimation-variance": [
+          "descriptive-distribution"
+        ],
+        "anomaly-detection": [
+          "anomaly-detection"
+        ]
+      }
+    },
+    "urban-regional-science": {
+      "name": "Urban & Regional Science",
+      "group": "Other",
+      "task_types": {
+        "land-use-spatial-development-modeling": [
+          "forecasting"
+        ],
+        "accessibility-agglomeration-location-analysis": [
+          "opportunity-sizing-decision"
+        ],
+        "municipal-service-demand-resource-allocation": [
+          "opportunity-sizing-decision",
+          "forecasting"
+        ],
+        "regional-input-output-economic-impact": [
+          "opportunity-sizing-decision"
+        ],
+        "optimization": [
+          "opportunity-sizing-decision"
+        ],
+        "forecasting": [
+          "forecasting"
+        ],
+        "network-analysis": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "education-learning-sciences": {
+      "name": "Education & Learning Sciences",
+      "group": "Other",
+      "task_types": {
+        "student-growth-value-added-modeling": [
+          "descriptive-distribution",
+          "experiment-causal"
+        ],
+        "randomized-quasi-experimental-program-evaluation": [
+          "experiment-causal"
+        ],
+        "item-response-theory-test-equating": [
+          "etl",
+          "descriptive-distribution"
+        ],
+        "learning-analytics-early-warning-models": [
+          "forecasting"
+        ],
+        "multilevel-classroom-school-research": [
+          "root-cause"
+        ],
+        "psychometrics": [
+          "descriptive-distribution"
+        ],
+        "text-analysis": [
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "quantitative-finance": {
+      "name": "Quantitative Finance",
+      "group": "Quantitative finance and trading",
+      "task_types": {
+        "portfolio-construction-risk": [
+          "opportunity-sizing-decision"
+        ],
+        "factor-return-attribution": [
+          "root-cause"
+        ],
+        "strategy-backtesting-evaluation": [
+          "forecasting"
+        ],
+        "market-microstructure-execution-cost": [
+          "descriptive-distribution"
+        ],
+        "volatility-derivatives-pricing": [
+          "forecasting"
+        ],
+        "event-study": [
+          "experiment-causal"
+        ]
+      }
+    },
+    "banking-credit-financial-risk": {
+      "name": "Banking, Credit & Financial Risk",
+      "group": "Quantitative finance and trading",
+      "task_types": {
+        "credit-scoring-pd-modeling": [
+          "forecasting"
+        ],
+        "expected-credit-loss-provisioning": [
+          "forecasting",
+          "opportunity-sizing-decision"
+        ],
+        "stress-testing-capital": [
+          "forecasting"
+        ],
+        "fraud-aml-detection": [
+          "anomaly-detection"
+        ],
+        "deposit-liquidity-behaviour": [
+          "forecasting"
+        ],
+        "collections-recovery": [
+          "opportunity-sizing-decision"
+        ]
+      }
+    },
+    "actuarial-science-insurance": {
+      "name": "Actuarial Science & Insurance",
+      "group": "Quantitative finance and trading",
+      "task_types": {
+        "reserving-development-triangles": [
+          "forecasting"
+        ],
+        "pricing-ratemaking-credibility": [
+          "opportunity-sizing-decision",
+          "forecasting"
+        ],
+        "mortality-longevity": [
+          "forecasting"
+        ],
+        "catastrophe-exposure-accumulation": [
+          "opportunity-sizing-decision"
+        ],
+        "claims-frequency-severity": [
+          "descriptive-distribution",
+          "forecasting"
+        ],
+        "reinsurance-capital": [
+          "opportunity-sizing-decision"
+        ]
+      }
+    },
+    "physical-environmental-sciences": {
+      "name": "Physical & Environmental Sciences",
+      "group": "Engineering and physical sciences",
+      "task_types": {
+        "environmental-monitoring-exceedance": [
+          "anomaly-detection",
+          "data-quality-monitoring"
+        ],
+        "climate-weather-extremes": [
+          "forecasting"
+        ],
+        "pollution-source-attribution": [
+          "root-cause"
+        ],
+        "sensor-calibration-measurement": [
+          "data-quality-monitoring"
+        ],
+        "hydrology-flood-frequency": [
+          "forecasting"
+        ],
+        "emissions-inventory": [
+          "etl",
+          "descriptive-distribution"
+        ]
+      }
+    },
+    "energy-systems-utilities": {
+      "name": "Energy Systems & Utilities",
+      "group": "Engineering and physical sciences",
+      "task_types": {
+        "load-forecasting": [
+          "forecasting"
+        ],
+        "generation-capacity-planning": [
+          "opportunity-sizing-decision"
+        ],
+        "grid-reliability-outage-analysis": [
+          "root-cause",
+          "anomaly-detection"
+        ],
+        "tariff-demand-response-evaluation": [
+          "experiment-causal"
+        ],
+        "asset-condition-maintenance": [
+          "forecasting",
+          "opportunity-sizing-decision"
+        ],
+        "efficiency-savings-verification": [
+          "experiment-causal"
+        ]
+      }
+    },
+    "human-factors-ergonomics": {
+      "name": "Human Factors & Ergonomics",
+      "group": "Engineering and physical sciences",
+      "task_types": {
+        "usability-task-performance-studies": [
+          "experiment-causal"
+        ],
+        "workload-fatigue-shift-analysis": [
+          "root-cause"
+        ],
+        "safety-incident-error-analysis": [
+          "root-cause",
+          "anomaly-detection"
+        ],
+        "human-reliability-assessment": [
+          "forecasting"
+        ],
+        "anthropometric-design-fit": [
+          "descriptive-distribution"
+        ],
+        "alarm-interface-evaluation": [
+          "experiment-causal"
+        ]
+      }
+    }
+  },
+  "house_domains": {
+    "product-analytics": {
+      "name": "Product Analytics",
+      "maps_to": [
+        "product-analytics"
+      ]
+    },
+    "supply-chain-logistics": {
+      "name": "Supply Chain & Logistics",
+      "maps_to": [
+        "urban-regional-science",
+        "general-statistics-data-science"
+      ]
+    },
+    "economics": {
+      "name": "Economics",
+      "maps_to": [
+        "economics-econometrics"
+      ]
+    },
+    "policy-education": {
+      "name": "Policy & Education",
+      "maps_to": [
+        "political-science-public-policy",
+        "education-learning-sciences"
+      ]
+    },
+    "demographic-social-science": {
+      "name": "Demographic & Social Science",
+      "maps_to": [
+        "sociology-demography",
+        "survey-research-official-statistics"
+      ]
+    },
+    "nonprofit-grant-making": {
+      "name": "Nonprofit & Grant-making",
+      "maps_to": [
+        "political-science-public-policy",
+        "general-statistics-data-science"
+      ]
+    },
+    "marketing-consumer-research": {
+      "name": "Marketing & Consumer Research (author-declared new domain, 2026-10-08)",
+      "maps_to": [
+        "marketing-consumer-research"
+      ]
+    },
+    "business-operations-analytics": {
+      "name": "Business & Operations Analytics (author-declared new domain, 2026-10-06)",
+      "maps_to": [
+        "general-statistics-data-science",
+        "human-factors-ergonomics",
+        "healthcare-delivery-health-economics"
+      ]
+    },
+    "accounting-audit-forensic": {
+      "name": "Accounting, Audit & Forensic Analytics (author-declared new domain, 2026-10-06)",
+      "maps_to": [
+        "banking-credit-financial-risk",
+        "actuarial-science-insurance",
+        "general-statistics-data-science"
+      ]
+    }
+  },
+  "layer2_families": {
+    "estimand_identification": "the right counterfactual: staggered adoption, contamination and spillover, regression to the mean, selection on the outcome, Simpson's paradox across strata",
+    "estimation_fit": "estimation that fits the data: censoring and truncation, interval-censored or rounded values, survivorship, small-sample bias, clustered errors, weighting and post-stratification, ratio of totals against mean of ratios, chain-linked aggregation, decomposition",
+    "forecast_uncertainty": "forecasting and uncertainty: backtests without leakage, conformal or bootstrap intervals, simultaneous against pointwise bounds, model choice on out-of-sample error",
+    "allocation_constraints": "allocation under real constraints: fixed-point allocations, max-min choices, capacity and queueing, the order a rule applies caps and tests",
+    "field_method": "the field's own method done right: credibility weighting, development triangles, exposure windows, survey construction from microdata, market definition, intention to treat"
   }
 }

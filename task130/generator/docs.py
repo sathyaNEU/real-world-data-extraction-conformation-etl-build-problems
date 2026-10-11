@@ -95,6 +95,42 @@ def notice_pdf(out_path):
     shutil.rmtree(tmp)
 
 
+def scheme_pdf(out_path):
+    """Extract of the council's housing allocations scheme: the part on households owed the main duty."""
+    created = dt.datetime(2024, 3, 28, 10, 0)
+    d = _doc("Eileen Nicholls", "Housing Allocations Scheme 2024: Part 6", created)
+    _para(d, "Larkmoor Borough Council  ·  Housing Allocations Scheme 2024 (approved by Cabinet 21 March 2024, in force 1 April 2024)", size=8, italic=True)
+    _para(d, "Part 6. Households owed the main homelessness duty", bold=True, size=13, space_after=8)
+    items = [
+        ("6.1", "This Part applies to every household the council owes the main housing duty under section 193 of the "
+                "Housing Act 1996, whether the household is living in temporary accommodation the council has arranged "
+                "or elsewhere, for example with family or friends. Such households are not placed in Bands A to C."),
+        ("6.2", "The council ends the main duty by a final offer of suitable accommodation: a social housing tenancy "
+                "through the council's nominations to registered providers, or a private rented tenancy of at least "
+                "twelve months arranged through Larkmoor Lettings. Both are move-on lets for the purposes of this Part."),
+        ("6.3", "Move-on lets are offered to households owed the main duty in the order of the date the duty was accepted, "
+                "the earliest first. Households accepted on the same date are offered in order of case reference."),
+        ("6.4", "A move-on let has the number of bedrooms the household is assessed as needing on the date of the offer, "
+                "under the bedroom standard in Part 3. A household whose need is reassessed keeps its acceptance date."),
+        ("6.5", "The number of move-on lets expected in each month, by number of bedrooms, is set out in the lettings "
+                "team's move-on plan, which is reviewed each quarter and when a handover date changes."),
+        ("6.6", "A household may ask for a review of the suitability of a final offer under section 202. The offer stands "
+                "while the review is decided."),
+    ]
+    for k, t in items:
+        _para(d, "%s  %s" % (k, t), space_after=6)
+    _para(d, "")
+    _para(d, "Extract: Part 6 only. Parts 1 to 5 (eligibility, qualification, the bedroom standard, banding and "
+             "local lettings) and Part 7 (transfers) are not reproduced.", size=8, italic=True)
+    tmp = tempfile.mkdtemp()
+    src = os.path.join(tmp, "scheme.docx")
+    d.save(src)
+    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    shutil.move(os.path.join(tmp, "scheme.pdf"), out_path)
+    shutil.rmtree(tmp)
+
+
 def procedure_docx(out_path):
     created = dt.datetime(2026, 9, 18, 15, 5)
     d = _doc("Declan Morton", "Tenter House closure: placement procedure", created)

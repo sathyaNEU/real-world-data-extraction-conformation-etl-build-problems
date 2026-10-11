@@ -107,7 +107,7 @@ SHAPE_DECISIONS = {
 # Gate G mechanisms that only make sense under one objective.
 GATE_OBJECTIVE = {"etl_conformance": {"etl"}, "forecasting": {"forecasting"}}
 
-LIVE_DOMAINS = None      # filled from vocab: the nine, without the legacy keys
+LIVE_DOMAINS = None      # filled from vocab: the client domains and the nine house domains
 # Two vocab keys are objectives that early cards filed as domains (task104, task105). They stay in the
 # vocabulary so those cards validate, and are never a legal domain for a new draw.
 OBJECTIVE_NOT_DOMAIN = {"opportunity-sizing", "data-quality-monitoring-alerting"}
@@ -328,6 +328,10 @@ def validate_card(c, vocab, strict=False):
     if dom in vocab["subdomains"]:
         enum("subdomain", vocab["subdomains"][dom], c.get("subdomain"))
     enum("objective", vocab["objectives"], c.get("objective"))
+    if c.get("layer2_family") is not None:
+        enum("layer2_family", vocab.get("layer2_families", {}), c.get("layer2_family"))
+    if c.get("client_domain") is not None:
+        enum("client_domain", vocab.get("client_domains", {}), c.get("client_domain"))
     enum("shape", vocab["shapes"], c.get("shape"))
     enum("decision_type", vocab["decision_types"], c.get("decision_type"))
     enum("answer_unit", vocab["answer_units"], c.get("answer_unit"), required=strict)
@@ -447,8 +451,30 @@ def check(cand, cards, vocab, status=None):
 
     # Legality, which is spec rather than taste.
     if cand.get("domain") not in (LIVE_DOMAINS or []):
-        add("BLOCK", "legal.domain", "domain %r is not one of the nine accepted domains" % cand.get("domain"),
-            fix="draw one of the nine")
+        add("BLOCK", "legal.domain", "domain %r is not a domain in vocab.json" % cand.get("domain"),
+            fix="draw a client domain (guide-to-prompt/references/domains/README.md)")
+    house = vocab.get("house_domains", {})
+    if cand.get("domain") in house and not cand.get("client_domain"):
+        add("WARN", "domain.house", "house domain %r with no client_domain on the card" % cand.get("domain"),
+            fix="name the client domain it sits in: %s" % ", ".join(house[cand.get("domain")]["maps_to"]))
+    # The two layers (client two-layer task design): every new draw names its Layer 2 family and pattern
+    # and its Layer 1 techniques, and the same pattern on the same data structure is a duplicate.
+    if (cand.get("drawn") or "") >= "2026-10-11":
+        missing = [f for f in ("layer2_family", "layer2_pattern", "layer1") if not cand.get(f)]
+        if missing:
+            add("BLOCK", "two_layer.fields", "the card does not name %s" % ", ".join(missing),
+                fix="fill layer2_family, layer2_pattern and layer1 from the design note's two-layer lines")
+    lp = cand.get("layer2_pattern")
+    if lp:
+        same = [c for c in cards if c.get("task") != cand.get("task") and c.get("layer2_pattern") == lp]
+        grain = (cand.get("spine") or {}).get("grain")
+        twin = [c for c in same if (c.get("spine") or {}).get("grain") == grain]
+        if twin:
+            add("BLOCK", "two_layer.duplicate", "Layer 2 pattern %s on the same data structure (%s) as an earlier build"
+                % (lp, grain), tasks(twin), "pick another pattern, or a data structure the pattern has not run on")
+        elif same:
+            add("WARN", "two_layer.pattern_reused", "Layer 2 pattern %s already carries a build" % lp, tasks(same),
+                "the design note says in one line how this build's version differs")
     if cand.get("objective") not in (LIVE_OBJECTIVES or []):
         add("BLOCK", "legal.objective", "objective %r is not one of the eight Axis 1 objectives" % cand.get("objective"),
             fix="draw one of the eight")
@@ -763,7 +789,7 @@ def cmd_coverage(args):
     cards = [c for c in load_cards() if c.get("domain")]
     live = [c for c in cards if not str(c.get("domain")).startswith("legacy")]
     window = cards[-WINDOW:]
-    print("%d cards on file, %d in the nine live domains. Counts are over every card; the bracket is the last %d.\n"
+    print("%d cards on file, %d in live domains. Counts are over every card; the bracket is the last %d.\n"
           % (len(cards), len(live), WINDOW))
     objs = LIVE_OBJECTIVES
     short = {"forecasting": "FCST", "root-cause": "RCA", "anomaly-detection": "ANOM",
@@ -879,10 +905,11 @@ def cmd_suggest(args):
     while len(out) < args.n and tries < 5000:
         tries += 1
         d = pick(LIVE_DOMAINS, weights("domain", LIVE_DOMAINS))
-        o = pick(LIVE_OBJECTIVES, weights("objective", LIVE_OBJECTIVES,
-                                          boost=lambda v: 1.5 if v == "forecasting" else 1.0))
         subs = [s for s in vocab["subdomains"][d] if s != "other"]
         sub = pick(subs, [1.0 / (1.0 + sum(1 for c in cards if c.get("domain") == d and c.get("subdomain") == s)) for s in subs])
+        served = (vocab.get("client_domains", {}).get(d, {}).get("task_types", {}) or {}).get(sub)
+        objs = served or LIVE_OBJECTIVES   # a client task type serves named objectives; draw among those
+        o = pick(objs, weights("objective", objs, boost=lambda v: 1.5 if v == "forecasting" else 1.0))
         shapes = [k for k in vocab["shapes"] if re.fullmatch(r"\d\d", k)]
         sh = pick(shapes, weights("shape", shapes, boost=lambda v: 3.0 if SHAPE_OBJECTIVE.get(v) == o else 1.0))
         gaps = list(vocab["gaps"])
@@ -900,7 +927,7 @@ def cmd_suggest(args):
         rf = pick(roles, weights("role_family", roles))
         dts = sorted(SHAPE_DECISIONS.get(sh) or vocab["decision_types"])
         dt = pick(dts, weights("decision_type", dts))
-        sts = [k for k in vocab["stump_strategies"] if k not in ("other", TEMPLATE_STRATEGY)]
+        sts = [k for k in vocab["stump_strategies"] if k not in ("other", TEMPLATE_STRATEGY, "withheld_rule_corpus_fit")]
         st = pick(sts, weights("stump_strategy", sts))
         if st not in ("withheld_rule_corpus_fit", "forecast_method_backtest"):
             cf = "none"   # an organ ships only where the strategy needs one (stumping Part 4.1)

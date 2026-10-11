@@ -47,6 +47,9 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 | `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 2) | enum |
 | `decisive_rule_filed`, `official_decoy` | whether a shipped sentence states the rule that decides the answer, and whether a filed, official-looking rule, basis or metric gives the wrong answer; `false` plus `true` is the withheld rule with an official decoy, the architecture the client names as templated, whatever `stump_strategy` says | true or false |
 | `validated_decoy` | whether the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it | true or false |
+| `client_domain` | the client-taxonomy domain a house domain sits in (blank when `domain` is already a client domain) | enum |
+| `layer2_family`, `layer2_pattern` | the Layer 2 family (five, `vocab.json` `layer2_families`) and the pattern from `stumping/references/client/layer2-rigor-patterns.md` as `<domain>/<task-type>/<n>`, or `own:<name>`; the same pattern on the same spine grain as an earlier build is a BLOCK | enum plus free |
+| `layer1` | the Layer 1 messiness techniques the pack carries, from `dataset-generation/references/layer1-messiness.md` | list |
 | `stakeholder_role`, `role_family` | the role as the prompt states it, and its family | free plus enum |
 | `scoring_unit` | the unit the decision is scored or paid on | enum |
 | `spine` | the spine file, its rows, what one row is, its grain, and its source dataset | mixed |
