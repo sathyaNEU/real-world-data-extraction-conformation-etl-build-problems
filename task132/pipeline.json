@@ -45,6 +45,14 @@
    "mean": 85.2,
    "decision": "harden",
    "brief": "Both solvers clipped exposure to January 2021 from the dictionary's go-live sentence and landed 17 lots; the next rung has to let that exact step complete and still return the wrong lot count."
+  },
+  {
+   "label": "round 2, plain",
+   "date": "2026-10-11",
+   "score": 36.8,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
   }
  ],
  "judge": {
