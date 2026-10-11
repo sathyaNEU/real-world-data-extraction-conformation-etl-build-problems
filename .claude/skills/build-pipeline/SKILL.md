@@ -75,6 +75,20 @@ document under `target/` or the prompt. The solver and the leak
 reader are always isolated threads on fresh scratch copies; no solve or read happens in the main
 thread, which has seen the design.
 
+**Every repair starts in a fresh agent, from what is committed.** The work after a round (a hardening
+rebuild, the stage 6b repair of the reader's deferred findings, a judge's FIX_NOW) is never handed back
+to the agent that built the pack, and a finished agent is never resumed with `SendMessage`, because a
+resumed agent reloads its whole transcript and every repair would then be paid for on top of the
+builds before it. The main session spawns a new agent with a short brief file in the scratchpad that
+names the inputs, each already committed and pushed on the build's branch:
+- the round's log in `solver_rounds/` (the solver's call, answers and path);
+- the round's row and brief in `pipeline.json`, with its `deferred` list;
+- the leak report's deferred findings and the design note, `## Tried and rejected` first.
+
+The new agent reads what the repair needs and nothing more, so a repair costs its own work, not the
+history behind it. That only works if the stage before it committed and pushed everything the next
+agent reads, so no stage ends with work left only in an agent's context.
+
 **Invoking `/build` is the author's licence for every token-spending stage it sequences**: the leak
 reader (stage 4), the adjudicated duplicate check (stage 5), every solver round the loop needs
 (stage 6, one isolated `Agent` spawn as `/solve` sets out) and the judge (stage 7). Outside `/build`, each stays author-triggered
