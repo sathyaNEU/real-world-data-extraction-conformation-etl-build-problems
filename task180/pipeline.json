@@ -13,7 +13,7 @@
   "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 due on the rebuilt pack"
  },
  "duplicate_check": {
-  "heart": "PASS",
+  "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",
   "nearest": "task89 surface 0.104 (not promoted); highest driver overlap 0.093",
   "clone_check": "pre-flight CLEAN: no Track A or B finding, no Shape echo; seven pairs adjudicated in-thread clean (task119, task121, task101, task38, task92, task116, task181); idiom notes acted on (ask sentence rephrased, extract log renamed)"
  },
