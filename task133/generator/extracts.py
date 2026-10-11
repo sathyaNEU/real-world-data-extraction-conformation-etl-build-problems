@@ -85,6 +85,9 @@ def book(S, rng):
         state=np.array(W.STATES)[L["state"][rows]],
         channel=np.array(W.CHANNELS)[L["channel"][rows]],
     ))
+    # a borrower whose residential address on file is overseas has no state (drawn apart from the scores)
+    away = np.random.default_rng(W.SEED + 8).random(n) < W.OVERSEAS_ADDRESS
+    bk.loc[away, "state"] = None
     bk["loan_key"] = rows + 1
     bk["_bal"] = np.round(bal, 2)
     bk = bk.sort_values("loan_no", kind="stable").reset_index(drop=True)
@@ -96,6 +99,9 @@ def hardship(S, rng):
     order requests were received (requests declined at assessment take a number and do not appear)"""
     R = S.R
     L = S.L
+    # arrangement_status as the 1 October extract shows it: Completed only once the weekly batch (Tuesday nights) has run
+    # after the end date, so an arrangement that ended since the last run still shows Active
+    last_run = SM.dn(W.REPORT) - (W.REPORT.weekday() - W.STATUS_RUN_WEEKDAY) % 7
     rows = []
     for x in S.arr:
         if x["received"] > R or x["received"] >= S.close[x["loan"]]:
@@ -120,12 +126,16 @@ def hardship(S, rng):
             else:
                 status, cancel = "Active", None
         else:
-            status = "Approved" if x["start"] > R else ("Active" if x["end"] >= R else "Completed")
+            status = "Approved" if x["start"] > R else ("Active" if x["end"] >= last_run else "Completed")
             cancel = None
         rows.append((x["received"], L["loan_no"][x["loan"]], x["reason"], x["kind"], x["start"], x["end"],
                      x["reduced"], status, cancel))
     rows.sort(key=lambda r: (r[0], r[1]))
     seq = 10230 + np.cumsum(1 + rng.poisson(0.22, len(rows)))
+    # the reason was optional before it became a required field; a few early cases were saved without one
+    gap = np.random.default_rng(W.SEED + 9)
+    rows = [r[:2] + ((None if (SM.dd(r[0]) < W.REASON_REQUIRED and r[2] != "COVID-19" and gap.random() < W.REASON_MISSING)
+                      else r[2]),) + r[3:] for r in rows]
     out = pd.DataFrame(dict(
         case_ref=["HS-%06d" % q for q in seq],
         loan_no=[r[1] for r in rows],

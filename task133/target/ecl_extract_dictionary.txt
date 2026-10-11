@@ -6,8 +6,8 @@ Credit Risk Reporting keeps this dictionary; changes to an extract are recorded 
 
 1. personal_loan_book_2026-09-30.csv
 Every loan open in the loan system at close of business on 30 September 2026, one row per loan, including loans in
-arrears. Loans are written off in the month-end batch once 180 or more days past due, so loans written off in the
-September batch are not in the extract. Sorted by loan number.
+arrears. Loans are written off, and closed, in the month-end batch once 180 or more days past due. Sorted by loan
+number.
 
   loan_no                  loan number, allocated at application: BPL, six digits and a check digit
   product                  PL36 (36-month term) or PL60 (60-month term)
@@ -25,9 +25,9 @@ September batch are not in the extract. Sorted by loan number.
   days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
   origination_score        application score at origination, on the scorecard named in origination_scorecard
   origination_scorecard    v3 (applications before 1 July 2024) or v4
-  current_score_v4         behaviour score at the reporting date, scorecard v4. Until the first repayment has
-                           fallen due it is the origination score, on v4
-  state                    state of the borrower's residential address
+  current_score_v4         behaviour score from the month-end scoring run, scorecard v4. Loans are behaviour-scored from
+                           their first repayment date; before that the field holds the application score on the v4 scale
+  state                    state of the borrower's residential address; blank for an overseas address
   channel                  origination channel: Broker, Online or Direct
 
 
@@ -35,17 +35,21 @@ September batch are not in the extract. Sorted by loan number.
 Every hardship arrangement recorded since the loan system went live in October 2019, one row per arrangement,
 including arrangements on loans since repaid or written off. A loan can have more than one arrangement. Case numbers
 are allocated when a request is received; requests declined at assessment keep their number and are not listed.
-Arrears at the start of an arrangement are capitalised.
+Arrears at the start of an arrangement are capitalised. Under a payment pause nothing is payable on the repayment
+dates in the period, which stay in the loan's schedule: interest keeps accruing at the contract rate and is added to
+the balance on each repayment date, and the maturity date does not change. Under reduced repayments the agreed amount
+is payable on those dates in place of the contracted repayment.
 
   case_ref                 hardship case number
   loan_no                  loan number
   received_date            date the request was received
-  hardship_reason          reason recorded at assessment
-  arrangement_type         Payment pause (no repayments for the period) or Reduced repayments
+  hardship_reason          reason recorded at assessment (a required field from 1 July 2020)
+  arrangement_type         Payment pause or Reduced repayments
   arrangement_start        first day of the varied repayments
   arrangement_end          last day of the varied repayments, as approved
   agreed_repayment_aud     monthly repayment agreed under a reduced repayment arrangement; 0 for a pause
-  arrangement_status       Approved (not yet started), Active, Completed or Cancelled
+  arrangement_status       Approved (not yet started), Active, Completed or Cancelled. Completed is set by the weekly
+                           hardship batch on Tuesday nights, once the end date has passed
   cancelled_date           date the arrangement was cancelled, at the customer's request or after varied repayments
                            were missed; a cancelled arrangement keeps its approved dates
 
@@ -63,7 +67,6 @@ Other files in the run folder (not loan system extracts)
   ifrs9_scenarios_2026Q3.xlsx            Group Finance: this quarter's scenario weights, PD multipliers and economic
                                          assumptions as approved by the Audit and Risk Committee; the prior quarter's
                                          weights and multipliers on a second sheet
-  pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: default curves; described in the file's header lines
-  pd_model_development_sample.parquet    Credit Risk Modelling: the curves' development data; described in the file's
-                                         metadata
+  pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: PLPD-2026.06 default curves for PL36 and PL60
+  pd_model_development_sample.parquet    Credit Risk Modelling: the PLPD-2026.06 development sample
   arrears_roll_rates_fy26.xlsx           Collections MI: month-end roll rates between arrears buckets, FY26

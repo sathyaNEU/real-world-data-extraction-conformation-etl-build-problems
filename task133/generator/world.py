@@ -11,7 +11,7 @@ PRODUCTS = {"PL36": 36, "PL60": 60}
 LGD = {"PL36": 0.70, "PL60": 0.76}     # filed in CRM-ECL-04
 GRADES = ["A", "B", "C", "D", "E"]
 SCENARIOS = [("Base", 0.55, 1.00), ("Downside", 0.30, 1.30), ("Upside", 0.15, 0.80)]
-STAGE2_SCALAR = 2.4                    # filed in CRM-ECL-04 4.2
+STAGE2_SCALAR = 2.4                    # filed in CRM-ECL-04 3.2
 SICR_DROP = 60                         # behaviour score fall (current scorecard points) that triggers stage 2
 SCORE_MAP = (1.12, -18.0)              # v3 -> v4: v4 = 1.12 * v3 - 18, rounded
 SCORECARD_SWITCH = dt.date(2024, 7, 1)  # applications received on or after this date are scored on v4
@@ -86,6 +86,19 @@ HARDSHIP_RATE = [(dt.date(2019, 10, 1), 0.0014), (dt.date(2020, 7, 1), 0.0022), 
                  (dt.date(2022, 7, 1), 0.0024), (dt.date(2023, 1, 1), 0.0040), (dt.date(2024, 1, 1), 0.0050),
                  (dt.date(2025, 1, 1), 0.0054), (dt.date(2026, 1, 1), 0.0058)]
 HARDSHIP_GRADE = {"A": 0.45, "B": 0.70, "C": 1.0, "D": 1.45, "E": 2.0}
+# the 2021 lockdowns in Greater Sydney, Melbourne and Canberra: requests received in each window (borrower state index),
+# as a share of the loans open there
+LOCKDOWNS_2021 = {0: (dt.date(2021, 7, 5), dt.date(2021, 10, 8), 0.016), 1: (dt.date(2021, 8, 9), dt.date(2021, 10, 22), 0.016),
+                  5: (dt.date(2021, 8, 16), dt.date(2021, 10, 15), 0.012)}
+# the hardship register: hardship_reason a required field from this date; arrangement_status moved to Completed by a
+# weekly batch on Tuesday nights once the end date has passed (Monday 0)
+REASON_REQUIRED = dt.date(2020, 7, 1)
+REASON_MISSING = 0.08
+STATUS_RUN_WEEKDAY = 1
+# borrowers whose residential address on file is overseas (no state)
+OVERSEAS_ADDRESS = 0.0012
+# the service account the quarter-end extract job ECL_QE_BOOK runs under
+JOB_ACCOUNT = "svc_crr_batch"
 # agreed repayment under a reduced repayment arrangement: a round amount offered, interest only, a share of the
 # instalment, a token amount, or an amount from the income and expense statement
 REDUCED_MIX = (0.44, 0.24, 0.16, 0.06)

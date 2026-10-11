@@ -103,9 +103,10 @@ def workbook(s, path):
         "after, not cancelled), or a behaviour score 60 or more points below origination on scorecard v4; v3 origination scores "
         "converted as 1.12 x v3 - 18, rounded (section 2 and the June 2024 migration note).",
         "PD(k) is (C(a+k) - C(a+k-1)) / (1 - C(a)) on the PLPD-2026.06 curve for the loan's product, where a is the number of "
-        "monthly repayments fallen due by 30 September: the curve runs from origination, and a performing loan has already come "
-        "through its first a months. A loan past its contractual maturity outside stage 3 has one remaining month (section "
-        "3.2), the last month of its product's curve.",
+        "monthly repayments fallen due by 30 September, repayment dates in a payment pause included: the curve runs from "
+        "origination, and a performing loan has already come through its first a months. A loan past its contractual maturity "
+        "outside stage 3 is in the final month of its term with one month remaining (section 3.2), the last month of its "
+        "product's curve.",
         "EAD re-amortises the current balance over the remaining term at the contract rate; months discounted at the contract rate; "
         "LGD 70 per cent PL36, 76 per cent PL60 (sections 3.3 to 3.5).",
         "Scenario weights 55 / 30 / 15 per cent on PD multipliers 1.00 / 1.30 / 0.80 give a weighted multiplier of %.4f (section 4)." % s["mult"],
@@ -114,7 +115,8 @@ def workbook(s, path):
     for i, t in enumerate(notes, 1):
         ws.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
     ws.column_dimensions["A"].width = 125
-    OX.xlsx_from_openpyxl(wb, path, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 15, 12, 9), PREPARED, seed=1009)
+    # the quarter's workbook is rolled forward (save as) from the one Credit Risk Reporting set up in February 2023
+    OX.xlsx_from_openpyxl(wb, path, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2023, 2, 6, 9, 31, 44), PREPARED, seed=1009)
 
 
 def deck(s, path):

@@ -309,7 +309,49 @@ def simulate(seed=W.SEED):
     defaults(S)
     hardship(S)
     finish(S)
+    lockdowns_2021(S)
     return S
+
+
+def lockdowns_2021(S):
+    """hardship requests during the 2021 lockdowns in Greater Sydney, Melbourne and Canberra: payment pauses of one to
+    three months. They are drawn only on loans repaid or written off before the reporting date, from their own random
+    stream, and are recorded in the register without replaying the loan's repayments, so no loan on the book, and no
+    figure taken from the repayment histories, moves"""
+    cal, R, L = S.cal, S.R, S.L
+    rng = np.random.default_rng(W.SEED + 21)
+    onset_due = np.where(S.j0 > 0, S.due[np.arange(S.N), np.maximum(S.j0 - 1, 0)], BIG)
+    taken = {}
+    for a in S.arr:
+        taken.setdefault(a["loan"], []).append((a["received"], a["end"]))
+    for st, (first, last, rate) in sorted(W.LOCKDOWNS_2021.items()):
+        lo, hi = dn(first), dn(last)
+        days = cal.bdays(lo, hi)
+        elig = (L["state"] == st) & (L["draw"] + 50 <= lo) & (S.close > hi + 150) & (S.close <= R)
+        for i in np.nonzero(elig & (rng.random(S.N) < rate))[0]:
+            i = int(i)
+            x = int(days[int(rng.integers(len(days)))])
+            T = int(S.T[i])
+            dec = int(cal.next_bd[x + int(rng.integers(1, 9))])
+            later = np.nonzero(S.due[i, :T] >= dec + 2)[0]
+            n = int(rng.choice([1, 2, 3], p=[0.35, 0.40, 0.25]))
+            withdrawn = rng.random() < 0.06
+            if len(later) == 0 or T - int(later[0]) < n + 1:
+                continue
+            start = int(S.due[i, later[0]])
+            end = add_months(start, n) - 1
+            if end + 30 >= S.close[i] or end + 60 >= onset_due[i]:
+                continue
+            if any(not (end + 45 < p or x > q + 45) for p, q in taken.get(i, [])):
+                continue
+            taken.setdefault(i, []).append((x, end))
+            rec = dict(loan=i, received=x, start=start, end=end, kind="Payment pause", outcome="complete", reduced=0.0,
+                       reason="COVID-19", cancel=None)
+            if withdrawn:
+                lo_c = int(cal.next_bd[x + 1])
+                c = int(cal.prev_bd[lo_c + int(rng.integers(0, max(1, start - lo_c)))])
+                rec.update(outcome="withdrawn", cancel=min(c, int(cal.prev_bd[start - 1])))
+            S.arr.append(rec)
 
 
 def defaults(S):

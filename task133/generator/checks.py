@@ -1,5 +1,7 @@
-"""Assertions on task133's shipped pack: input gates, the answer, the ladder, rounding margins, and the realism of
-the extracts (repayment calendar, balances, hardship register, default definition, loss flows, pricing, scores)."""
+"""Assertions on task133's shipped pack: input gates, the answer, the ladder, rounding margins, the realism of the
+extracts (repayment calendar, balances, hardship register, default definition, loss flows, pricing, scores), the two
+conventions CRM-ECL-04 3.2 pins (payment pauses, loans past maturity) with what the other reading of each is worth, the
+register's status lag, the extracts' residue and the Office containers."""
 import datetime as dt
 import json
 import os
@@ -12,6 +14,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import estimators as E
+import officex as OX
 import world as W
 
 TASK = os.path.dirname(HERE)
@@ -232,7 +235,7 @@ def realism():
     ok((draw[v3] >= sw).sum() >= 50 and (draw[~v3] >= sw).all(), "loans applied for before 1 July 2024 and funded after it stay on v3 (%d)" % (draw[v3] >= sw).sum())
     luhn = lambda q: (10 - sum((lambda x: x - 9 if x > 9 else x)(int(c) * (2 if i % 2 == 0 else 1)) for i, c in enumerate(q[::-1])) % 10) % 10
     ok(all(int(x[-1]) == luhn(x[3:9]) for x in bk["loan_no"]), "loan numbers carry a Luhn check digit")
-    # 12 nothing falls due under a payment pause in force
+    # 12 nothing is payable under a payment pause in force, so a loan in one carries no arrears
     pz = act.loc[act["arrangement_type"] == "Payment pause", "loan_no"]
     dp = bk.set_index("loan_no").loc[pz, "days_past_due"]
     ok(len(pz) > 50 and (dp == 0).all(), "no arrears on a loan under a payment pause in force on the reporting date (%d pauses)" % len(pz))
@@ -251,13 +254,160 @@ def realism():
     ok("performance to 31 May 2026" in head and "24 June 2026" in head and meta["performance_to"] == "2026-05-31"
        and meta["performance_to"] < meta["extracted"] <= "2026-06-24" and "30 June 2026" not in head + str(meta),
        "development performance ends 31 May 2026, before extraction on %s and approval on 24 June" % meta["extracted"])
+    ex = dt.date.fromisoformat(meta["extracted"])
+    room = sum(is_bd(ex + dt.timedelta(days=i)) for i in range(1, (dt.date(2026, 6, 24) - ex).days))
+    ok(is_bd(ex) and ex <= dt.date(2026, 6, 5) and room >= 14,
+       "the sample is extracted on a business day in the first days of June, leaving %d business days to develop and "
+       "validate the curve before the 24 June approval" % room)
+    ok("pd_model_development_sample" not in head, "the curve header names the development sample, not the shipped file")
+
+
+def docx_text(path):
+    import re
+    import zipfile
+    with zipfile.ZipFile(path) as z:
+        return " ".join(re.sub(r"<[^>]+>", "", p) for p in re.findall(r"<w:p [^>]*>.*?</w:p>", z.read("word/document.xml").decode(), re.S))
+
+
+def readings(s):
+    """the golden's stage 2 set is the one CRM-ECL-04 2.2 gives whatever the register's status labels say; and what the
+    two pinned conventions are worth: staging on the status label alone, and leaving repayment dates inside a payment
+    pause out of months on book"""
+    import hashlib
+    L = s["loans"]
+    ids = sorted(L.loc[L["stage"] == 2, "loan_no"])
+    ok(len(ids) == 3265 and hashlib.sha256("\n".join(ids).encode()).hexdigest()
+       == "a9d1f93ee50eae023bfd0e571d749ad1abe9a8e7f10ebda2ca09fcb3085e1d07", "the stage 2 set is the one built before the "
+       "register carried status lag (%d loans)" % len(ids))
+    bk, curves, hd, scen, mapping = E.load(T)
+    end = hd["arrangement_end"].map(E._d)
+    stale = (hd["arrangement_status"] == "Active") & (end < R)
+    ok(1 <= stale.sum() <= 5, "a few arrangements that ended after the last weekly status run still show Active (%d)" % stale.sum())
+    last_run = R - dt.timedelta(days=(R.weekday() - W.STATUS_RUN_WEEKDAY) % 7)
+    ok((end[stale] >= last_run).all(), "each ended on or after the last Tuesday run, %s" % last_run)
+    start = hd["arrangement_start"].map(E._d)
+    canc = hd["arrangement_status"] == "Cancelled"
+    want = [("Cancelled" if c else "Approved" if a > R else "Active" if b >= last_run else "Completed")
+            for a, b, c in zip(start, end, canc)]
+    ok((hd["arrangement_status"] == want).all(), "every other status agrees with the dates and the weekly run")
+    # staging on the status label alone moves a loan or two in the stage and product table and leaves the allowance
+    # in its bin
+    orig = E.stage
+
+    def by_status(bk_, hd_, mapping_, use_hardship=True, map_v3=True):
+        st = orig(bk_, hd_, mapping_, use_hardship, map_v3)
+        act = set(hd_.loc[hd_["arrangement_status"] == "Active", "loan_no"])
+        st[bk_["loan_no"].isin(act) & (st == 1)] = 2
+        return st
+    E.stage = by_status
+    try:
+        alt = E.solve(T)
+    finally:
+        E.stage = orig
+    g0, g1 = graded(s), graded(alt)
+    by_label = [k for k in g0 if g0[k] != g1[k]]
+    ok(g1["total"] == g0["total"], "staging on the status label alone keeps the allowance in its bin (%s move)" % by_label)
+    # repayment dates inside a payment pause left out of months on book (the reading 3.2 rules out)
+    pz = hd[(hd["arrangement_type"] == "Payment pause") & ~canc].assign(s=start, e=end)
+    book = bk.set_index("loan_no")
+    held = {}
+    for loan, g in pz.groupby("loan_no"):
+        if loan in book.index:
+            f = book.at[loan, "first_rep"]
+            n = sum(1 for d in due_dates(f, E.months_due(f)) if any(a <= d <= min(b, R) for a, b in zip(g["s"], g["e"])))
+            if n:
+                held[loan] = n
+    md, le, cur = E.months_due, E.loan_ecl, {"n": 0}
+    E.months_due = lambda f, report=E.REPORT: md(f, report) - cur["n"]
+
+    def held_out(row, *a, **k):
+        cur["n"] = held.get(row["loan_no"], 0)
+        try:
+            return le(row, *a, **k)
+        finally:
+            cur["n"] = 0
+    E.loan_ecl = held_out
+    try:
+        alt = E.solve(T)
+    finally:
+        E.months_due, E.loan_ecl = md, le
+    g2 = graded(alt)
+    moved = [k for k in g0 if g0[k] != g2[k]]
+    ok(len(held) > 1000 and len(moved) >= 1, "leaving pause dates out of months on book (%d loans, %d dates) moves %d of %d "
+       "graded figures, the allowance to %.0f: the 3.2 pin is load-bearing" % (len(held), sum(held.values()), len(moved),
+                                                                            len(g0), alt["total"]))
+    return (len(held), sum(held.values()), len(moved), alt["total"]), (int(stale.sum()), by_label)
+
+
+def residue_and_pins():
+    import re
+    import zipfile
+    bk = pd.read_csv(os.path.join(T, E.F["book"]))
+    nulls = bk.isna().sum()
+    ok(set(nulls[nulls > 0].index) == {"state"} and 20 <= nulls["state"] <= 100,
+       "the book's only blanks are the state of borrowers with an overseas address (%d), a field the allowance never reads"
+       % nulls["state"])
+    hd = pd.read_excel(os.path.join(T, E.F["hardship"]), sheet_name=0)
+    nr = hd[hd["hardship_reason"].isna()]
+    ok(3 <= len(nr) <= 12 and (nr["received_date"].dt.date < W.REASON_REQUIRED).all(),
+       "a few cases from before the reason became a required field carry none (%d)" % len(nr))
+    lk = hd[(hd["hardship_reason"] == "COVID-19") & (hd["received_date"].dt.year == 2021)]
+    ok(len(lk) > 50 and not lk["loan_no"].isin(set(bk["loan_no"])).any() and (lk["arrangement_end"] < "2022-03-01").all(),
+       "the 2021 lockdown pauses (%d) sit on loans closed before the reporting date" % len(lk))
+    # the pins, in every place that defines them
+    pol = docx_text(os.path.join(T, "CRM-ECL-04_expected_credit_loss_personal_loans.docx"))
+    head = open(os.path.join(T, E.F["curve"])).read().split("product,")[0]
+    import pyarrow.parquet as pq
+    meta = {k.decode(): v.decode() for k, v in pq.read_schema(os.path.join(T, "pd_model_development_sample.parquet")).metadata.items()}
+    dic = " ".join(open(os.path.join(T, "ecl_extract_dictionary.txt")).read().split())
+    ok("Repayment dates during a payment pause count as repayments fallen due" in pol
+       and "treated as being in the final month of its term, with a remaining term of one month" in pol
+       and "repayment dates during a payment pause count" in head
+       and "repayment dates during a payment pause included" in meta["outcome_month_on_book"]
+       and "which stay in the loan's schedule" in dic and "the maturity date does not change" in dic
+       and "Completed is set by the weekly hardship batch on Tuesday nights" in dic,
+       "payment pauses and past-maturity loans are pinned in the policy, the curve header, the sample metadata and the dictionary")
+    ok("more than 30 days past due" in pol and "30 or more days past due" in pol, "2.5 quotes AASB 9 5.5.11 as more than 30 days")
+    # the containers: the Office 2013-2022 theme as Word and Excel write it, a workbook theme version to match, creation
+    # dates before the 2023 theme for workbooks rolled forward, the register written by the job's account
+    for f in sorted(os.listdir(T)):
+        if not f.endswith((".docx", ".xlsx")):
+            continue
+        with zipfile.ZipFile(os.path.join(T, f)) as z:
+            app = "word" if f.endswith(".docx") else "excel"
+            th = z.read("%s/theme/theme1.xml" % ("word" if app == "word" else "xl")).decode("utf-8")
+            core = z.read("docProps/core.xml").decode()
+            ok(th == OX.theme_xml(app), "%s carries the Office 2013-2022 theme as %s writes it" % (f, app.title()))
+            made = re.search(r"<dcterms:created[^>]*>(\d{4}-\d\d-\d\d)", core).group(1)
+            who = re.search(r"<dc:creator>([^<]*)", core).group(1)
+            if app == "excel":
+                ok('defaultThemeVersion="166925"' in z.read("xl/workbook.xml").decode(), "%s: workbook theme version 166925" % f)
+                ok(made < "2023-07-01" or who == W.JOB_ACCOUNT, "%s: created %s, before the 2023 theme, or by the job" % (f, made))
+            if f == E.F["hardship"]:
+                ok(who == W.JOB_ACCOUNT and "<cp:lastModifiedBy>Kayla Stokes<" in core,
+                   "the register is written by the job's account and last saved by Credit Risk Reporting")
+    with zipfile.ZipFile(os.path.join(T, "CRM-ECL-04_expected_credit_loss_personal_loans.docx")) as z:
+        app = z.read("docProps/app.xml").decode()
+        doc = z.read("word/document.xml").decode()
+    st = {k: int(v) for k, v in re.findall(r"<(Lines|Paragraphs|Words|Characters|CharactersWithSpaces)>(\d+)<", app)}
+    ok(st["Lines"] >= 1.25 * st["Paragraphs"] and st["CharactersWithSpaces"] > st["Characters"] > 4 * st["Words"],
+       "the policy's statistics are the word processor's measurement (%s)" % st)
+    from collections import Counter
+    rs = Counter(re.findall(r'<w:p [^>]*w:rsidR="([0-9A-F]{8})"', doc))
+    ok(len(rs) >= 8 and rs.most_common(1)[0][1] >= 0.25 * sum(rs.values()) and doc.count('<w:r w:rsidR="') >= 10,
+       "the policy's revision ids follow its history: %d sessions, the busiest %d of %d paragraphs, %d later edits inside "
+       "paragraphs" % (len(rs), rs.most_common(1)[0][1], sum(rs.values()), doc.count('<w:r w:rsidR="')))
 
 
 def main():
     gates()
     s, rung = answer_and_ladder()
     realism()
+    pause, label = readings(s)
+    residue_and_pins()
     print("CHECKS PASS", n_ok, {k: round(v, 4) for k, v in rung.items()})
+    print("pause dates left out of months on book: %d loans, %d dates, %d graded figures move, allowance %.0f" % pause)
+    print("staging on the status label alone (%d stale Active arrangements): %s move, the allowance keeps its bin" % label)
 
 
 if __name__ == "__main__":

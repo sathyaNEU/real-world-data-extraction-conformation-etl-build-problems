@@ -37,24 +37,25 @@ DISTRACTORS = ["dev", "writeoffs", "rolls"]
 MTIMES = {
     "book": (2026, 10, 1, 7, 34), "curve": (2026, 6, 24, 16, 2), "method": (2026, 5, 26, 13, 58),
     "scen": (2026, 9, 18, 16, 52), "hardship": (2026, 10, 1, 8, 2), "note": (2024, 6, 20, 15, 5),
-    "dictionary": (2026, 10, 1, 7, 31), "dev": (2026, 6, 19, 11, 45), "writeoffs": (2026, 10, 1, 8, 5),
+    "dictionary": (2026, 10, 1, 7, 31), "dev": (2026, 6, 2, 11, 45), "writeoffs": (2026, 10, 1, 8, 5),
     "rolls": (2026, 7, 14, 9, 50),
 }
 CURVE_HEADER = """# Bellbird Personal Finance - Credit Risk Modelling
 # PLPD-2026.06 personal loan default curves, PL36 and PL60; approved by the Model Risk Committee on 24 June 2026
-# Developed on loans drawn October 2019 to September 2023, performance to 31 May 2026 (pd_model_development_sample.parquet)
+# Developed on the PLPD-2026.06 development sample: loans drawn October 2019 to September 2023, performance to 31 May 2026
 # Default: 90 or more days past due at a month end. All risk grades pooled
-# month_on_book: number of monthly repayments fallen due
+# month_on_book: number of monthly repayments fallen due; repayment dates during a payment pause count
 # cumulative_pd: probability that a new loan defaults by the end of that month on book
 """
 DEV_META = {
     "dataset": "PLPD-2026.06 development sample",
     "owner": "Credit Risk Modelling",
-    "extracted": "2026-06-19",
+    "extracted": "2026-06-02",
     "population": "PL36 and PL60 loans drawn October 2019 to September 2023",
     "performance_to": "2026-05-31",
     "outcome": "default (90 or more days past due at a month end), prepaid, matured, or open at 31 May 2026",
-    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity; for open loans, at 31 May 2026",
+    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity, repayment dates during a "
+                             "payment pause included; for open loans, at 31 May 2026",
 }
 
 
@@ -84,7 +85,9 @@ def register_xlsx(hd, path):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A2"
     ws.auto_filter.ref = "A1:%s%d" % (OX.col_letter(len(cols)), n)
-    OX.xlsx_from_openpyxl(wb, path, "Natalie Hanna", "Natalie Hanna", dt.datetime(2026, 10, 1, 7, 36, 5),
+    # written by the job under its service account; an analyst in Credit Risk Reporting added the header fill, the
+    # frozen header row and the filter before the run folder was released
+    OX.xlsx_from_openpyxl(wb, path, W.JOB_ACCOUNT, "Kayla Stokes", dt.datetime(2026, 10, 1, 7, 36, 5),
                           dt.datetime(2026, 10, 1, 8, 2, 44), seed=1001)
 
 

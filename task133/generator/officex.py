@@ -1,6 +1,7 @@
 """Office packages written the way Word and Excel write them: a .docx from a list of blocks, and an .xlsx from an
 openpyxl workbook. Shared strings, Excel's own style and part order, Word's paragraph ids and rsids, document
 properties with UTC instants, zip entries stamped 1980-01-01 as Office stamps them."""
+import collections
 import datetime as dt
 import os
 import random
@@ -31,17 +32,74 @@ def write_zip(path, parts):
             zi.external_attr = 0                 # kept for the central directory, written on close
 
 
-def theme_xml(major="Calibri Light", minor="Calibri"):
-    from openpyxl.writer.theme import theme_xml as base
-    t = base.replace('<a:latin typeface="Cambria"/>', '<a:latin typeface="%s" panose="020F0302020204030204"/>' % major)
-    t = t.replace('<a:latin typeface="Calibri"/>', '<a:latin typeface="%s" panose="020F0502020204030204"/>' % minor)
-    colours = dict(dk2="44546A", lt2="E7E6E6", accent1="4472C4", accent2="ED7D31", accent3="A5A5A5", accent4="FFC000",
-                   accent5="5B9BD5", accent6="70AD47", hlink="0563C1", folHlink="954F72")
-    for k, v in colours.items():
-        t = re.sub(r"(<a:%s><a:srgbClr val=\")[0-9A-Fa-f]{6}" % k, r"\g<1>" + v, t)
-    if not t.startswith("<?xml"):
-        t = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + t
-    return t
+# The Office 2013-2022 "Office Theme" (theme family 62F939B6, Calibri Light and Calibri) as Word and Excel 2016 and
+# later write it into a document that was created before the 2023 Aptos theme: one line after the declaration. Word's
+# copy differs from Excel's only in three script fonts (Thai, and the Japanese body font).
+THEME_COLOURS = [("dk2", "44546A"), ("lt2", "E7E6E6"), ("accent1", "4472C4"), ("accent2", "ED7D31"), ("accent3", "A5A5A5"),
+                 ("accent4", "FFC000"), ("accent5", "5B9BD5"), ("accent6", "70AD47"), ("hlink", "0563C1"),
+                 ("folHlink", "954F72")]
+THEME_SCRIPTS = [("Jpan", "游ゴシック Light", "游ゴシック"), ("Hang", "맑은 고딕", "맑은 고딕"), ("Hans", "等线 Light", "等线"),
+                 ("Hant", "新細明體", "新細明體"), ("Arab", "Times New Roman", "Arial"), ("Hebr", "Times New Roman", "Arial"),
+                 ("Thai", "Tahoma", "Tahoma"), ("Ethi", "Nyala", "Nyala"), ("Beng", "Vrinda", "Vrinda"),
+                 ("Gujr", "Shruti", "Shruti"), ("Khmr", "MoolBoran", "DaunPenh"), ("Knda", "Tunga", "Tunga"),
+                 ("Guru", "Raavi", "Raavi"), ("Cans", "Euphemia", "Euphemia"), ("Cher", "Plantagenet Cherokee", "Plantagenet Cherokee"),
+                 ("Yiii", "Microsoft Yi Baiti", "Microsoft Yi Baiti"), ("Tibt", "Microsoft Himalaya", "Microsoft Himalaya"),
+                 ("Thaa", "MV Boli", "MV Boli"), ("Deva", "Mangal", "Mangal"), ("Telu", "Gautami", "Gautami"),
+                 ("Taml", "Latha", "Latha"), ("Syrc", "Estrangelo Edessa", "Estrangelo Edessa"), ("Orya", "Kalinga", "Kalinga"),
+                 ("Mlym", "Kartika", "Kartika"), ("Laoo", "DokChampa", "DokChampa"), ("Sinh", "Iskoola Pota", "Iskoola Pota"),
+                 ("Mong", "Mongolian Baiti", "Mongolian Baiti"), ("Viet", "Times New Roman", "Arial"),
+                 ("Uigh", "Microsoft Uighur", "Microsoft Uighur"), ("Geor", "Sylfaen", "Sylfaen"), ("Armn", "Arial", "Arial"),
+                 ("Bugi", "Leelawadee UI", "Leelawadee UI"), ("Bopo", "Microsoft JhengHei", "Microsoft JhengHei"),
+                 ("Java", "Javanese Text", "Javanese Text"), ("Lisu", "Segoe UI", "Segoe UI"), ("Mymr", "Myanmar Text", "Myanmar Text"),
+                 ("Nkoo", "Ebrima", "Ebrima"), ("Olck", "Nirmala UI", "Nirmala UI"), ("Osma", "Ebrima", "Ebrima"),
+                 ("Phag", "Phagspa", "Phagspa"), ("Syrn", "Estrangelo Edessa", "Estrangelo Edessa"),
+                 ("Syrj", "Estrangelo Edessa", "Estrangelo Edessa"), ("Syre", "Estrangelo Edessa", "Estrangelo Edessa"),
+                 ("Sora", "Nirmala UI", "Nirmala UI"), ("Tale", "Microsoft Tai Le", "Microsoft Tai Le"),
+                 ("Talu", "Microsoft New Tai Lue", "Microsoft New Tai Lue"), ("Tfng", "Ebrima", "Ebrima")]
+THEME_WORD_SCRIPTS = {("Thai", 0): "Angsana New", ("Thai", 1): "Cordia New", ("Jpan", 1): "游明朝"}
+THEME_FMT = (
+    '<a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1">'
+    '<a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/>'
+    '</a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/>'
+    '<a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/>'
+    '<a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill>'
+    '<a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/>'
+    '<a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/>'
+    '<a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr">'
+    '<a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst>'
+    '<a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst>%s</a:lnStyleLst><a:effectStyleLst>'
+    '<a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst>'
+    '<a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000">'
+    '<a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>'
+    '<a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/>'
+    '<a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0">'
+    '<a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/>'
+    '</a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/>'
+    '<a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr">'
+    '<a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/>'
+    '</a:gradFill></a:bgFillStyleLst></a:fmtScheme>'
+    % "".join('<a:ln w="%d" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill>'
+              '<a:prstDash val="solid"/><a:miter lim="800000"/></a:ln>' % w for w in (6350, 12700, 19050)))
+
+
+def theme_xml(app="excel"):
+    """the Office 2013-2022 theme part, as the application writes it"""
+    def font(k, latin, panose):
+        f = "".join('<a:font script="%s" typeface="%s"/>'
+                    % (s, THEME_WORD_SCRIPTS.get((s, k), fonts[k]) if app == "word" else fonts[k])
+                    for s, *fonts in THEME_SCRIPTS)
+        tag = ("a:majorFont", "a:minorFont")[k]
+        return '<%s><a:latin typeface="%s" panose="%s"/><a:ea typeface=""/><a:cs typeface=""/>%s</%s>' % (tag, latin, panose, f, tag)
+    clr = "".join('<a:%s><a:srgbClr val="%s"/></a:%s>' % (k, v, k) for k, v in THEME_COLOURS)
+    return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements>'
+            '<a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1>'
+            '<a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>%s</a:clrScheme><a:fontScheme name="Office">%s%s</a:fontScheme>%s'
+            '</a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}">'
+            '<thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" '
+            'id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst>'
+            '</a:theme>' % (clr, font(0, "Calibri Light", "020F0302020204030204"), font(1, "Calibri", "020F0502020204030204"),
+                            THEME_FMT))
 
 
 def core_xml(creator, modified_by, created, modified, title=None, revision=None):
@@ -253,21 +311,46 @@ def font_table(names):
 
 
 class Rsid:
-    """editing sessions: each paragraph carries the session that created it, as Word records"""
+    """editing sessions: each paragraph carries the session that created it, as Word records. `sessions` is either a
+    count (paragraphs spread over the sessions at random) or the document's history as (revision, sittings) pairs in
+    the order it was edited, the first sitting of the first revision being the one that created the document; a
+    paragraph tagged with a revision takes one of that revision's sittings, mostly the one before it."""
 
     def __init__(self, seed, sessions):
         self.r = random.Random(seed)
-        self.ids = sorted({"00%06X" % self.r.randrange(0x100000, 0xFFFFFF) for _ in range(sessions)})
-        self.root = self.ids[0]
+        self.by = None
+        if isinstance(sessions, int):
+            self.ids = sorted({"00%06X" % self.r.randrange(0x100000, 0xFFFFFF) for _ in range(sessions)})
+            self.root = self.ids[0]
+            return
+        seen, self.by, self.cur = set(), {}, {}
+        for v, n in sessions:
+            got = []
+            while len(got) < n:
+                x = "00%06X" % self.r.randrange(0x100000, 0xFFFFFF)
+                if x not in seen:
+                    seen.add(x)
+                    got.append(x)
+            self.by[v] = got
+        self.first, self.last = sessions[0][0], sessions[-1][0]
+        self.root = self.by[self.first][0]
+        self.ids = sorted(seen)
 
-    def pick(self):
-        return self.r.choice(self.ids)
+    def pick(self, v=None):
+        if self.by is None or v is None:
+            return self.r.choice(self.ids)
+        got = self.by[v]
+        k = self.cur.get(v, 0)
+        if len(got) > 1 and self.r.random() < 0.3:
+            k = self.r.randrange(len(got))
+        self.cur[v] = k
+        return got[k]
 
     def para_id(self):
         return "%08X" % self.r.randrange(0x01000000, 0x7FFFFFFF)
 
 
-def run_xml(text, bold=False, italic=False, size=None, colour=None):
+def run_xml(text, bold=False, italic=False, size=None, colour=None, rsid=None):
     rpr = ""
     if bold:
         rpr += "<w:b/><w:bCs/>"
@@ -279,18 +362,21 @@ def run_xml(text, bold=False, italic=False, size=None, colour=None):
         rpr += '<w:sz w:val="%d"/><w:szCs w:val="%d"/>' % (size, size)
     rpr = "<w:rPr>%s</w:rPr>" % rpr if rpr else ""
     sp = ' xml:space="preserve"' if text != text.strip() or "  " in text else ""
-    return "<w:r>%s<w:t%s>%s</w:t></w:r>" % (rpr, sp, esc(text))
+    return "<w:r%s>%s<w:t%s>%s</w:t></w:r>" % (' w:rsidR="%s"' % rsid if rsid else "", rpr, sp, esc(text))
 
 
-def para_xml(rs, runs, style=None, ppr_extra=""):
+def para_xml(rs, runs, style=None, ppr_extra="", v=None, vp=None):
+    """v: the revision that created the paragraph; vp: a later revision that changed its formatting"""
     ppr = ""
     if style:
         ppr += '<w:pStyle w:val="%s"/>' % style
     ppr += ppr_extra
     ppr = "<w:pPr>%s</w:pPr>" % ppr if ppr else ""
-    r1 = rs.pick()
+    r1 = rs.pick(v)
+    pid = rs.para_id()
+    rp = rs.pick() if v is None else (rs.pick(vp) if vp else r1)
     return ('<w:p w14:paraId="%s" w14:textId="77777777" w:rsidR="%s" w:rsidRDefault="%s" w:rsidP="%s">%s%s</w:p>'
-            % (rs.para_id(), r1, r1, rs.pick(), ppr, "".join(runs)))
+            % (pid, r1, r1, rp, ppr, "".join(runs)))
 
 
 def field_runs(instr, shown):
@@ -299,7 +385,10 @@ def field_runs(instr, shown):
             '<w:r><w:fldChar w:fldCharType="end"/></w:r>' % (instr, shown))
 
 
-def table_xml(rs, rows, widths, header_fill="E7ECEF", size=None):
+def table_xml(rs, rows, widths, header_fill="E7ECEF", size=None, hist=None):
+    """hist: {"v": revision of the table, "rows": [revision of each row], "cells": {(row, column): revision that last
+    retyped the cell}}"""
+    hist = hist or {}
     grid = "".join('<w:gridCol w:w="%d"/>' % w for w in widths)
     out = ['<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="0" w:type="auto"/><w:tblLook w:val="04A0" '
            'w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr>'
@@ -307,35 +396,56 @@ def table_xml(rs, rows, widths, header_fill="E7ECEF", size=None):
     for k, row in enumerate(rows):
         cells = []
         keep = "<w:keepNext/>" if k < len(rows) - 1 else ""
-        for w, v in zip(widths, row):
+        rv = hist["rows"][k] if "rows" in hist else hist.get("v")
+        for j, (w, v) in enumerate(zip(widths, row)):
             shd = '<w:shd w:val="clear" w:color="auto" w:fill="%s"/>' % header_fill if k == 0 else ""
+            cv = hist.get("cells", {}).get((k, j))
+            run = run_xml(v, bold=(k == 0), size=size, rsid=rs.pick(cv) if cv else None)
             cells.append('<w:tc><w:tcPr><w:tcW w:w="%d" w:type="dxa"/>%s</w:tcPr>%s</w:tc>'
-                         % (w, shd, para_xml(rs, [run_xml(v, bold=(k == 0), size=size)],
-                                             ppr_extra=keep + '<w:spacing w:before="40" w:after="40"/>')))
-        rid = rs.pick()
+                         % (w, shd, para_xml(rs, [run], ppr_extra=keep + '<w:spacing w:before="40" w:after="40"/>', v=rv)))
+        rid = rs.pick(rv)
         out.append('<w:tr w:rsidR="%s" w:rsidTr="%s" w14:paraId="%s" w14:textId="77777777"><w:trPr><w:cantSplit/></w:trPr>%s</w:tr>'
                    % (rid, rid, rs.para_id(), "".join(cells)))
     out.append("</w:tbl>")
     return "".join(out)
 
 
+def split_edits(text, edits):
+    """a paragraph's text cut into (piece, revision) where a later revision typed the piece; None for the rest"""
+    marks = []
+    for sub, v in edits:
+        i = text.find(sub)
+        assert i >= 0, "edit %r not in %r" % (sub[:40], text[:60])
+        marks.append((i, i + len(sub), v))
+    out, pos = [], 0
+    for a, b, v in sorted(marks):
+        assert a >= pos, "overlapping edits in %r" % text[:60]
+        if a > pos:
+            out.append((text[pos:a], None))
+        out.append((text[a:b], v))
+        pos = b
+    if pos < len(text) or not out:
+        out.append((text[pos:], None))
+    return out
+
+
 def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_colour="1F3A4D", seed=0, sessions=9,
-         margins=(1247, 1247, 1247, 1247)):
+         margins=(1247, 1247, 1247, 1247), history=None):
     """blocks: ("title", text) ("h1", text) ("h2", text) ("p", text) ("p", [(text, bold, italic)]) ("small", text)
-    ("table", rows, widths); header and footer: (left text, right text) with {PAGE} and {NUMPAGES} fields allowed"""
+    ("table", rows, widths); header and footer: (left text, right text) with {PAGE} and {NUMPAGES} fields allowed.
+    history: one entry per block, {"v": revision that wrote it, "vp": revision that last changed its formatting,
+    "edits": [(text typed in a later revision, that revision)]} or, for a table, {"v", "rows", "cells"}; sessions is
+    then the list of (revision, sittings) in order"""
     rs = Rsid(seed, sessions)
-    body, texts, paras = [], [], 0
-    plist = []                  # each body paragraph's text in document order; a table row's text on its first cell
-    for b in blocks:
+    body, plist = [], []        # plist: each body paragraph's text in document order; a table row's text on its first cell
+    for b, h in zip(blocks, history or [None] * len(blocks)):
+        h = h or {}
         kind = b[0]
         if kind == "table":
-            body.append(table_xml(rs, b[1], b[2], size=b[3] if len(b) > 3 else None))
-            body.append(para_xml(rs, [], ppr_extra='<w:spacing w:after="60"/>'))
+            body.append(table_xml(rs, b[1], b[2], size=b[3] if len(b) > 3 else None, hist=h))
+            body.append(para_xml(rs, [], ppr_extra='<w:spacing w:after="60"/>', v=h.get("v")))
             for row in b[1]:
                 plist += [" ".join(v for v in row if v.strip())] + [""] * (len(row) - 1)
-                for v in row:
-                    texts.append(v)
-                    paras += 1 if v.strip() else 0
             plist.append("")
             continue
         if isinstance(b[1], str):
@@ -345,16 +455,16 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
         style = {"title": "Title", "h1": "Heading1", "h2": "Heading2"}.get(kind)
         size_ = 17 if kind == "small" else None
         colour = "595959" if kind == "small" else None
-        runs = [run_xml(t, bold=bo, italic=it, size=size_, colour=colour) for t, bo, it in runs_in]
+        runs = []
+        for t, bo, it in runs_in:
+            for piece, ev in split_edits(t, h.get("edits", [])):
+                runs.append(run_xml(piece, bold=bo, italic=it, size=size_, colour=colour, rsid=rs.pick(ev) if ev else None))
         extra = '<w:spacing w:after="40"/>' if kind == "small" else ""
-        body.append(para_xml(rs, runs, style=style, ppr_extra=extra))
-        t = "".join(x[0] for x in runs_in)
-        plist.append(t)
-        texts.append(t)
-        paras += 1 if t.strip() else 0
+        body.append(para_xml(rs, runs, style=style, ppr_extra=extra, v=h.get("v"), vp=h.get("vp")))
+        plist.append("".join(x[0] for x in runs_in))
 
     def hf(tag, left, right):
-        def parts(s):
+        def parts(s, rsid=None):
             out = []
             for piece in re.split(r"(\{PAGE\}|\{NUMPAGES\})", s):
                 if piece == "{PAGE}":
@@ -362,17 +472,21 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
                 elif piece == "{NUMPAGES}":
                     out.append(field_runs("NUMPAGES   \\* MERGEFORMAT", "{NP}"))
                 elif piece:
-                    out.append(run_xml(piece))
+                    out.append(run_xml(piece, rsid=rsid))
             return out
         style = "Header" if tag == "hdr" else "Footer"
-        p = para_xml(rs, parts(left) + ['<w:r><w:tab/></w:r><w:r><w:tab/></w:r>'] + parts(right), style=style)
+        # the footer's version line is retyped at each revision
+        lr = rs.pick(rs.last) if (rs.by and tag == "ftr") else None
+        p = para_xml(rs, parts(left, lr) + ['<w:r><w:tab/></w:r><w:r><w:tab/></w:r>'] + parts(right), style=style,
+                     v=rs.first if rs.by else None)
         return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<w:%s %s>%s</w:%s>' % (tag, WNS, p, tag)
 
     ml, mr, mt, mb = margins
     sect = ('<w:sectPr w:rsidR="%s" w:rsidSect="%s"><w:headerReference w:type="default" r:id="rId4"/>'
             '<w:footerReference w:type="default" r:id="rId5"/><w:pgSz w:w="11906" w:h="16838" w:code="9"/>'
             '<w:pgMar w:top="%d" w:right="%d" w:bottom="%d" w:left="%d" w:header="567" w:footer="567" w:gutter="0"/>'
-            '<w:cols w:space="708"/><w:docGrid w:linePitch="360"/></w:sectPr>' % (rs.pick(), rs.root, mt, mr, mb, ml))
+            '<w:cols w:space="708"/><w:docGrid w:linePitch="360"/></w:sectPr>'
+            % (rs.pick(rs.first if rs.by else None), rs.root, mt, mr, mb, ml))
     document = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<w:document %s><w:body>%s%s</w:body></w:document>'
                 % (WNS, "".join(body), sect))
     settings = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<w:settings %s '
@@ -431,20 +545,18 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
     fonts = [font, "Times New Roman", "Calibri Light"] if font != "Calibri" else ["Calibri", "Times New Roman", "Calibri Light"]
     parts = [("[Content_Types].xml", ct), ("_rels/.rels", pkg_rels), ("word/document.xml", document),
              ("word/_rels/document.xml.rels", rels), ("word/header1.xml", hf("hdr", *header)),
-             ("word/footer1.xml", hf("ftr", *footer)), ("word/theme/theme1.xml", theme_xml()),
+             ("word/footer1.xml", hf("ftr", *footer)), ("word/theme/theme1.xml", theme_xml("word")),
              ("word/settings.xml", settings), ("word/styles.xml", styles_xml(font, size, heading_colour)),
              ("word/webSettings.xml", web), ("word/fontTable.xml", font_table(fonts))]
-    # statistics as Word keeps them: words and characters of the body, pages and lines as laid out
-    text = " ".join(texts)
-    words = len(text.split())
-    chars = len(re.sub(r"\s", "", text))
-    cws = sum(len(t) for t in texts)
+    # statistics as the word processor measures them on the laid-out document: pages, lines, paragraphs, words and
+    # characters
     tmp = tempfile.mkdtemp()
     probe = os.path.join(tmp, "probe.docx")
     write_zip(probe, parts + [("docProps/core.xml", core_xml("x", "x", props["created"], props["modified"])),
                               ("docProps/app.xml", "<Properties/>")])
-    pages, lines, starts = layout(probe)
+    pages, lines, starts, st = layout(probe)
     shutil.rmtree(tmp)
+    words, chars, cws, paras = st["words"], st["chars"], st["cws"], st["paras"]
     # Word keeps where each page began when it last laid the document out, and the page count in the footer field
     document = rendered_breaks(document, plist, starts)
     parts = [(n, document if n == "word/document.xml" else d.replace("{NP}", str(pages))) for n, d in parts]
@@ -470,17 +582,37 @@ def guid(r):
 
 
 def layout(path):
-    """pages and body lines as a word processor lays the document out, and the first body line of each later page
-    (the header is a page's first line and the footer its last)"""
+    """the document as a word processor lays it out and counts it: pages; lines of text, each line of a table cell on
+    its own and the running header and footer once; the first body line of each later page (the header is a page's
+    first line and the footer its last); and the word processor's own paragraph, word and character counts"""
     from pypdf import PdfReader
     out = os.path.dirname(path)
-    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", out, path], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    pdf = os.path.splitext(path)[0] + ".pdf"
-    rd = PdfReader(pdf)
+    for fmt in ("pdf", "odt"):
+        subprocess.run(["soffice", "--headless", "--convert-to", fmt, "--outdir", out, path], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    stem = os.path.splitext(path)[0]
+    rd = PdfReader(stem + ".pdf")
     texts = [[l for l in p.extract_text().split("\n") if l.strip()] for p in rd.pages]
-    lines = sum(max(0, len(t) - 2) for t in texts)
-    return len(rd.pages), lines, [t[1] for t in texts[1:] if len(t) > 2]
+    frags = []                  # (page, y, x) of each piece of text the layout placed
+    for k, p in enumerate(rd.pages):
+        def seen(text, cm, tm, fd, fs, k=k):
+            if text.strip():
+                frags.append((k, round(tm[4] * cm[1] + tm[5] * cm[3] + cm[5], 1), round(tm[4] * cm[0] + tm[5] * cm[2] + cm[4], 1)))
+        p.extract_text(visitor_text=seen)
+    # a line starts at the margin, an indent or a table column's edge, positions that recur down the document; a piece
+    # that starts mid-line (a change of run) does not start a line
+    starts_at = {x for x, n in collections.Counter(x for _, _, x in frags).items() if n >= 3}
+    lines = 2
+    for k in range(len(rd.pages)):
+        ys = sorted({y for kk, y, _ in frags if kk == k})
+        body = set(ys[1:-1])
+        lines += sum(1 for kk, y, x in frags if kk == k and y in body and x in starts_at)
+    with zipfile.ZipFile(stem + ".odt") as z:
+        meta = z.read("meta.xml").decode("utf-8")
+    ds = dict(re.findall(r'meta:([a-z-]+)="(\d+)"', re.search(r"<meta:document-statistic[^>]*>", meta).group(0)))
+    st = dict(words=int(ds["word-count"]), chars=int(ds["non-whitespace-character-count"]), cws=int(ds["character-count"]),
+              paras=int(ds["paragraph-count"]))
+    return len(rd.pages), lines, [t[1] for t in texts[1:] if len(t) > 2], st
 
 
 def rendered_breaks(document, plist, starts):
@@ -511,15 +643,16 @@ def rendered_breaks(document, plist, starts):
     for i, off in reversed(marks):
         m = paras[i]
         px = m.group(0)
-        runs = list(re.finditer(r'<w:r>(<w:rPr>.*?</w:rPr>)?<w:t(?: xml:space="preserve")?>(.*?)</w:t></w:r>', px, re.S))
+        runs = list(re.finditer(r'(<w:r(?: w:rsidR="[0-9A-F]{8}")?>)(<w:rPr>.*?</w:rPr>)?<w:t(?: xml:space="preserve")?>(.*?)</w:t></w:r>',
+                                px, re.S))
         pos = 0
         for r in runs:
-            txt = unescape(r.group(2), {"&quot;": '"'})
+            txt = unescape(r.group(3), {"&quot;": '"'})
             if off < pos + len(txt) or r is runs[-1]:
-                k, rpr = max(0, off - pos), r.group(1) or ""
+                k, ro, rpr = max(0, off - pos), r.group(1), r.group(2) or ""
                 tx = lambda x: '<w:t%s>%s</w:t>' % (' xml:space="preserve"' if x != x.strip() or "  " in x else "", esc(x))
-                new = ('<w:r>%s<w:lastRenderedPageBreak/>%s</w:r>' % (rpr, tx(txt)) if k == 0 else
-                       '<w:r>%s%s</w:r><w:r>%s<w:lastRenderedPageBreak/>%s</w:r>' % (rpr, tx(txt[:k]), rpr, tx(txt[k:])))
+                new = ('%s%s<w:lastRenderedPageBreak/>%s</w:r>' % (ro, rpr, tx(txt)) if k == 0 else
+                       '%s%s%s</w:r>%s%s<w:lastRenderedPageBreak/>%s</w:r>' % (ro, rpr, tx(txt[:k]), ro, rpr, tx(txt[k:])))
                 px = px[:r.start()] + new + px[r.end():]
                 break
             pos += len(txt)
@@ -795,7 +928,7 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
     parts = [("[Content_Types].xml", ct), ("_rels/.rels", pkg_rels), ("xl/workbook.xml", workbook),
              ("xl/_rels/workbook.xml.rels", wrels)]
     parts += [("xl/worksheets/sheet%d.xml" % (k + 1), x) for k, x in enumerate(sheets_xml)]
-    parts += [("xl/theme/theme1.xml", theme_xml(major="Calibri Light", minor="Calibri")), ("xl/styles.xml", styles),
+    parts += [("xl/theme/theme1.xml", theme_xml("excel")), ("xl/styles.xml", styles),
               ("xl/sharedStrings.xml", sst_xml), ("docProps/core.xml", core_xml(creator, modified_by, created, modified)),
               ("docProps/app.xml", app)]
     write_zip(path, parts)
