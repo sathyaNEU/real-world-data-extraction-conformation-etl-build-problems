@@ -1,85 +1,88 @@
 {
   "task": "task130",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-10",
-  "slot_note": "realises analytical_tasks note ET02, redesigned as a stump on a fully constructed pack; wave card drafted for the coordinator, not registered here (cards register in task-number order)",
+  "slot_note": "re-root of task130 after the v1 portal failure (both top models filed the golden); same slot, same domain and subdomain, new graded quantity and a methodological stump",
   "domain": "demographic-social-science",
   "subdomain": "housing",
-  "niche": "a regional housing observatory's yearly designation of the census sections where large residential holders will own more than a quarter of the dwellings on the first day of the programme year, conformed from the holders' quarterly dwelling returns, the land register's deed extract and the public housing agency's first-offer purchase commitments",
-  "objective": "etl",
-  "shape": "03",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "The 2027 order should designate seven sections: 0301401008, 0301402014, 4625001005, 4625002007, 4625011004, 4625011016 and 4625012009.",
-  "answer_source": "task130/submission.md, block 1 (Final Recommendation), bold sentence, as shipped 2026-10-10",
+  "niche": "a borough council's temporary-accommodation team sizing the replacement units it must call off, by bedroom size, for the homeless households still in a leased block on the day the owner takes it back, when those households leave only as move-on offers reach them",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.",
+  "answer_source": "task130/submission.md, 1. Final Recommendation (the Call-off sheet of golden/tenter_house_replacement_units.xlsx carries the same units)",
   "gap": [
-    "time",
+    "rule",
     "population"
   ],
   "pattern": [
-    "A"
+    "none"
   ],
   "generators": [
-    "G4",
-    "G3",
-    "G13",
     "G16",
-    "G19"
+    "G2",
+    "G11"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": true,
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
   "official_decoy": false,
-  "validated_decoy": true,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "head of the regional housing observatory that prepares the large-holder designation order for the housing minister",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per certified output",
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "temporary accommodation and procurement manager at a borough council, who puts the replacement-unit call-off to the cabinet member for housing",
+  "role_family": "procurement_lead",
+  "scoring_unit": "units served",
   "spine": {
-    "file": "declaracions_grans_tenidors_2024T3_2026T2.csv",
-    "rows": 45070,
-    "entity": "one dwelling on one version of one large holder's quarterly dwelling return (a held dwelling, or a dwelling under a scheduled sale agreement or an option)",
-    "grain": "holder x return quarter x version x dwelling (x parcel for returns lodged before 1 April 2026)",
-    "source": "synthetic (constructed pack: a fictional regional observatory's return extract, a land register deed extract and the housing agency's budget ledger, provenance declared in the pack)"
+    "file": "ta_placements_2018-04_2026-09.csv",
+    "rows": 27981,
+    "entity": "one temporary-accommodation placement of one homeless household (a household's stay runs across one or more placements)",
+    "grain": "placement",
+    "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
   "world": {
-    "geography": "Spain, Valencian Community",
-    "currency": "EUR",
-    "org_type": "regional government housing observatory with a sister public housing agency",
+    "geography": "United Kingdom, England (Kent)",
+    "currency": "GBP",
+    "org_type": "borough council housing needs service with a temporary-accommodation portfolio of leased blocks, private-sector leases and nightly-paid units",
     "invented_names": [
-      "Observatori del Parc Residencial",
-      "Ens Públic de Patrimoni Residencial",
-      "Programa Primera Oferta"
+      "Larkmoor Borough Council",
+      "Tenter House",
+      "Corvane Property Services"
     ],
     "people": [
-      "Aurora Roig",
-      "Leandro Sacristán",
-      "Celestina Gallart",
-      "Amaro Peláez",
-      "Flor Segarra",
-      "Jose Nevado",
-      "Rosaura Rodrigo"
+      "Maria Field",
+      "Irene Roberts",
+      "Eileen Nicholls",
+      "Declan Morton",
+      "Debra Young",
+      "Nicola Robinson"
     ]
   },
   "deliverables": [
-    "designation_brief_2027.pdf",
-    "designation_annex_2027.csv",
-    "section_bridge_2027.png"
+    "tenter_house_replacement_units.xlsx",
+    "tenter_house_runoff.png"
   ],
-  "opening_move": "calendar-first",
-  "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it.",
-  "driver_concrete": "The 2027 designation counts the dwellings large holders hold on 1 January 2027; rolling the 30 June 2026 returns forward with the deeds registered to 30 September and the housing agency's first-offer takeovers completed 120 days after commitment reproduces the 30 June bulletin and the 2026 annex, because every holder inscribed by 30 June 2026 had lodged a return; but the register lists four holders inscribed between 9 July and 17 September 2026 whose first return is not due until 30 October, they are large holders from inscription (Article 2.1), and the dwellings whose latest deed names them as buyer count on 1 January, so Habitatges Cornisa SL's 18 dwellings keep 4625011016 over the line.",
-  "stump": "A competent solver conforms the 30 June 2026 returns, reproduces the 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September, finds the housing agency's first-offer commitments in its budget ledger and completes each taken-over sale 120 days after commitment as its 27 settled purchases show, and files six sections (A1 to A4, Q and U); the step that lands it there is taking the large holders on 1 January to be the holders that lodged the 30 June returns, when the register lists four holders inscribed after 30 June with no return yet, and the deed extract shows one of them holding 18 dwellings in 4625011016 bought from private owners before 30 June, so that section stays over the line and the order designates seven sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014, 4625011016 and 4625012009.",
+  "opening_move": "evidence-first",
+  "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it.",
+  "driver_concrete": "Tenter House takes no new placements after the owner's notice, and a household on the main duty leaves temporary accommodation only when a move-on offer reaches it; offers go to every main-duty household in the borough, wherever it lives, in order of the date the duty was accepted within each bedroom size, against the monthly numbers in the move-on plan, so the households still in the block on 31 March 2027 are those whose place in their size's list lies beyond the plan's offers, near the front for some sizes and far back for others.",
+  "stump": "A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 136 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 46 households (no one-bed, 7 two-bed, 20 three-bed, 19 four-bed).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task62": "task62's forward base grows because a closed-window exclusion lapses with its instrument at the boundary and its whole population enters; here nothing lapses: a third party's commitments, recorded only in its spending ledger, displace transfers already scheduled and complete on a clock recovered from its settled cases, so units leave the holder population before their agreed dates and stay in it after them.",
-    "task100": "task100 rolls a designation's members across a scheduled transition whose exits, movers and entrants sit on filed sentences, labelled columns or a prior snapshot; here that roll is the stop rung, and the decisive move is a third party's takeover of scheduled transfers, evidenced only in its spending commitments and timed by a clock no file states.",
-    "task117": "task117 re-times follow-on operations whose start is endogenous to the one ahead under faster equipment; here no record's timing is endogenous to another record: a different party displaces the agreed counterparty and completes on its own administrative clock, so the move is who completes as well as when."
+    "task80": "task80 dates a fixed-term status from the criterion event that conferred it rather than from when it was first observed operating; here nothing is dated or certified: a closed group's departures are a rank inside a borough-wide priority list against a planned supply, read per size class, and the wrong readings are rates and survival curves, not a mis-dated status.",
+    "task86": "task86 files the list order and works it as a low rung; its decisive move is an earlier hidden draw on the same pool that empties the front of the list. Here the list order itself is the decisive rung, filed nowhere and recovered only from the lets log, and nothing draws on the supply before the list.",
+    "task50": "task50 shares a component (a supply worked against demand) on a different driver; here departures from a closed group are a rank inside a borough-wide list against planned lets, which no rate or curve reproduces.",
+    "task125": "task125 sizes a council call-off for April 2027 too (shape 02, purchase order, local government), but its driver is unrelated; the deliverable stem was renamed from calloff_2027 to replacement_units so the two do not share a file name."
   },
-  "lineage": [],
-  "notes": "Realises analytical_tasks note ET02 (analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md), redesigned as a stump on a fully constructed pack with declared provenance. The scenario keeps the note's spine (an ownership-concentration flag over a watchlist, computed from holders' periodic position returns with restating and additive amendments, a unit change keyed to the lodgement date, exposure rows and identifier repair, against each unit's total, with the top holder and a bridge) and moves it from capital-markets ownership analytics (out of scope for Economics) to large-holder ownership of housing by census section. The note's stated method memo is dropped; its honest-data traps become the lower rungs. Decisive rung from the measured catalogue: #13 validates on one population, applies to another (3 of 64, 2 under 0.50; the client's Halls and Meeting Places drawdown task, mean 0.34, is the same move on a scheduled-date field), with #11 beats the headline trap, misses the quiet one behind it. Pattern A is recorded decisive (the 30 June holdings are a correct statement about the past and the designation buys the programme year; sections the agency is buying out are resolving). Generator G4 leads (attribution at transition: who holds each dwelling on the named date), with G3 (the return records the agreed buyer, the agency's commitment decides who completes and when). Personas drawn with guard.py names --geo 'Spain, Valencian Community' --seed 130. Deliverables and opening move provisional until the prompt is written. Not registered here: the coordinator registers the wave's cards in task-number order. Hardening loop 1 (2026-10-10): the round-1 solver executed the first-offer rung in full, so a rung R6 was added above it: holders inscribed in the register after the 30 June snapshot, with no return yet, hold their deeded watch-list dwellings on 1 January (population inside the time frame); the four settled purchases executed before their notified dates close the clock's floor reading. Stage 3b rebuild after hardening loop 1: driver fields rewritten to the decisive move R6 (late-inscribed holders with no return yet), the agency's first-offer clock kept in the sentence as the rung beneath it."
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "failed on the portal 2026-10-10: both top models filed the golden seven-section designation",
+      "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it."
+    }
+  ],
+  "notes": "Re-rooted after the v1 portal failure. The v1 world (large-holder designation from ownership returns) had no analytic stump left: every surviving idea was a hidden record a diligent solver joins or a unit swap the judge reads as a lens flip. The re-root keeps the domain and subdomain and moves to a methodological stump: a closed group's departures forecast as a rank inside a rationed priority list rather than as a rate. stump_strategy 'other': the decisive property is the allocation order (a rank inside a group against a cumulative planned supply), not a limit that removes the natural pick, so binding_constraint (task127, task128) is not the move; the supply limit is common to every reading and the rate readings already respect it. Personas drawn with guard.py names --geo 'United Kingdom, England' --seed 130."
 }

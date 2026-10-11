@@ -1,102 +1,113 @@
 # determinism-check report, task130, 2026-10-10
 
-Run note. This workflow context has no `Agent` tool, so the judge pass could not be spawned as a separate thread. It ran in the orchestrator's own context under the same allow-list instead. That context saw a fresh copy of `target/` at `/tmp/determinism-check-task130-20261010T040957Z-13140/target/`, the inlined submission blocks and the v3 judge system prompt, read in full. `DESIGN_NOTE.md`, `metadata.json`, `golden/`, `generator/`, `solver_rounds/`, `pipeline.json` and `leak_check_report.md` stayed unopened until `verdict.md` had been written to the scratch path. The isolation was therefore procedural, not structural. No retry or second pass was run.
+Pass 1 on the v2 architecture (Tenter House call-off). The judge applied `guidelines/determinism_judge_system_prompt.md` v3. Its verdict file is at `/tmp/determinism-check-task130-1791675610/verdict.md`, and the bundle was copied fresh from `target/` into `/tmp/determinism-check-task130-1791675610/target/`. There is no `target.zip`, so the unzipped `target/` was used.
+
+**How this pass deviates from the protocol.** This runtime has no `Agent` tool, so no separate judge thread could be spawned. I ran the judge pass inline instead, under the same read discipline:
+- Until `verdict.md` was written, the only things read were the scratch copy of the bundle, `prompt.md`, the graded blocks of `submission.md` and the judge system prompt.
+- `DESIGN_NOTE.md`, `metadata.json`, `pipeline.json`, `leak_check_report.md`, `golden/` and `generator/` were opened only after the verdict was fixed. `generator/` was never opened.
+
+The isolation is therefore procedural, not structural. If the author wants a structurally isolated verdict, re-invoke from a runtime that has `Agent`.
 
 ## Verdict
 DETERMINISTIC
-**Disposition:** APPROVE
+**Disposition:** FIX_NOW. One non-decisional wording change in `dps_lot2_lot3_price_schedule.xlsx`, plus one optional clarification in a submission block. No rate, count or decisive artifact changes, and no model rerun is needed.
 **Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-The call is forced. Article 4 of `ordre_designacio_seccions_grans_tenidors.pdf` designates on holdings at 1 January 2027, Article 2.4 defines holdings by deeds executed up to that day, and Article 2.1 counts only inscribed holders and excludes public bodies. Each rung of the 30 June to 1 January projection is pinned by a shipped file. The conformed 30 June base ties to `butlleti_parc_residencial_2026T2.pdf` in 14 of 14 sections. All 27 settled first-offer purchases were executed exactly 120 days after their PPO phase D line and never on the notified date. All 112 declared July to September sales executed as declared. The line is decided by 0301402014 at 25.70% (155/603) and 4625001012 at 24.17% (183/757). Both gaps are definitive, and the list does not move under any later agency commitment.
+The call-off of 46 units (0 one-bed / 7 two-bed / 20 three-bed / 19 four-bed) follows from three things in the pack:
+- **Who is in the block, and at what size.** The 170 live Tenter House placements come from `ta_placements_2018-04_2026-09.csv`. Their current need comes from `bedroom_need_reviews.csv`, which closure procedure point 5 and the prompt make the basis.
+- **The order lets follow.** Nothing in the pack states it, but the history pins it completely. If you replay every one of the 5,262 started lets in `moveon_lets_2018-04_2026-09.csv` at its tenancy start date, each one went to the open main-duty case on that bedroom-size list with the earliest `decision_date` (ties broken by `case_ref`). That list includes households living at home. All 5,262 reproduce. Ordering by application date instead fails 5,011 times. A list limited to households in TA fails all 234 lets that went to households at home.
+- **How many lets there will be.** Working the plan sheet "Revised 14 Sep 2026" down those lists gives exactly the golden month-end table.
+
+Every competing answer is ruled out by a shipped fact. No tie in decision date falls on any month-end cut-off. Households that close for other reasons (own arrangements, moved away, contact lost) have done so only at list position 145 or later, which is behind every Tenter House household still waiting, so attrition does not move the count.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| 30 June LH dwellings, 14 sections (step 1) | tie to bulletin 2026/2 | 162, 165, 114, 156, 93, 263, 205, 205, 187, 188, 316, 169, 126, 151, equal to the bulletin in every section | yes |
-| Settled first-offer purchases, lag (CC 1) | 120 days, 27 purchases | 27 of 27 at D+120, 0 on the notified date, 4 executed before it | yes |
-| Habitatges Cornisa SL in 4625011016 (CC 2) | 18 | 18 (deeds Jan 2025 to Jun 2026; inscribed 2026-09-17; no return) | yes |
-| Pòrtic Residencial SL (step 4) | 5 in 4625001005, 6 in 4625013021 | 5 and 6 | yes |
-| 4625011016 on 1 Jan 2027 (CC 3) | 168, 26.2% | 168, 26.21% | yes |
-| 4625001012 on 1 Jan 2027 (CC 4) | 183, 24.2% | 183, 24.17% | yes |
-| 0301402014 on 1 Jan 2027 (CC 5) | 155, 25.7% | 155, 25.70% | yes |
-| 0301402014 December sales kept (step 3) | complete 13 to 22 January | 14 sales by B28984920, D+120 from 2027-01-13 to 2027-01-22 | yes |
-| Main call | 0301401008, 0301402014, 4625001005, 4625002007, 4625011004, 4625011016, 4625012009 | same seven | yes |
-| designation_brief_2027.pdf: ask 1 | the seven sections | same | yes |
-| designation_brief_2027.pdf: ask 2 | 7 | 7 | yes |
-| designation_brief_2027.pdf: ask 3 | 0301402014, 25.7%, 0.7 pp above | 25.70%, +0.70 pp | yes |
-| designation_brief_2027.pdf: ask 4 | 4625001012, 24.2%, 0.8 pp below | 24.17%, -0.83 pp (0.8 from the rounded or unrounded share) | yes |
-| designation_annex_2027.csv: 0301401008 | 157, 28.0%, Grup Cantonera, 43, 8 | same | yes |
-| designation_annex_2027.csv: 0301402014 | 155, 25.7%, Grup Barana, 38, 9 | same | yes |
-| designation_annex_2027.csv: 0301405003 | 109, 17.8%, Grup Cantonera, 28, 5 | same | yes |
-| designation_annex_2027.csv: 1204001006 | 154, 22.4%, Grup Porxo, 40, 9 | same | yes |
-| designation_annex_2027.csv: 1204003011 | 92, 17.8%, Grup Arcada, 25, 6 | same | yes |
-| designation_annex_2027.csv: 4625001005 | 260, 32.0%, Grup Barana, 89, 14 | same | yes |
-| designation_annex_2027.csv: 4625001012 | 183, 24.2%, Grup Xamfrà, 75, 11 | same | yes |
-| designation_annex_2027.csv: 4625002007 | 202, 29.3%, Grup Finestral, 73, 9 | same | yes |
-| designation_annex_2027.csv: 4625002019 | 163, 22.6%, Grup Finestral, 50, 12 | same | yes |
-| designation_annex_2027.csv: 4625005013 | 183, 20.8%, Grup Escaire, 47, 10 | same | yes |
-| designation_annex_2027.csv: 4625011004 | 310, 33.3%, Grup Barana, 108, 17 | same | yes |
-| designation_annex_2027.csv: 4625011016 | 168, 26.2%, Grup Mitgera, 48, 7 | same | yes |
-| designation_annex_2027.csv: 4625012009 | 141, 26.2%, Grup Ràfec, 54, 13 | same | yes |
-| designation_annex_2027.csv: 4625013021 | 155, 20.7%, Grup Andana, 48, 6 | same | yes |
-| section_bridge_2027.png: 4625001012 | 205; -1, 0, 0, -1, -20, 0; 183; line 189.25 | same (the November -20 is the agency completing on 2026-11-06 a February 2027 sale to 44516779A) | yes |
-| section_bridge_2027.png: 0301402014 | 165; -2, -2, -2, 0, 0, -4; 155; line 150.75 | same | yes |
-| section_bridge_2027.png: title | 7 | 7 | yes |
-
-The golden files in `golden/` carry the same figures. The annex CSV matches cell for cell. The brief opens on the seven-section list, and the chart title reads "7 sections designated".
+| Households in Tenter House, 30 Sep 2026 (CC1) | 170: 28 / 66 / 50 / 26 | 170: 28 / 66 / 50 / 26 (`ta_placements` with no placement_end, accommodation_type Tenter House; need from latest review, otherwise need at decision) | yes |
+| Every household there owed the main duty (step 1) | 170 of 170 | 170 of 170 are Main duty accepted and Open (`homelessness_cases`) | yes |
+| Lets replayed front-of-list (step 3) | 5,262 | 5,262 of 5,262 (`moveon_lets` Tenancy started, ordered by tenancy_start; list = open main-duty cases by `decision_date` then `case_ref`, need at that date) | yes |
+| Accepted October lets at the front of their lists (step 4) | yes | yes in all four sizes (6 / 8 / 3 / 1 accepted; one two-bed starts 3 Nov, which makes no difference) | yes |
+| Oct-Mar plan lets (step 5) | 89 / 117 / 56 / 19 | 89 / 117 / 56 / 19 (`moveon_plan_2026-27.xlsx`, sheet Revised 14 Sep 2026) | yes |
+| Plan Apr-Sep actuals against the lets log | n/a | match cell for cell | yes |
+| Still there 31 Mar 2027 (CC2, Final Recommendation, deliverable answer 1) | 46: 0 / 7 / 20 / 19 | 46: 0 / 7 / 20 / 19 | yes |
+| Weekly cost at Lot 3 2027/28 rates (deliverable answer 2) | GBP 21,615 | 7 x 374.93 + 20 x 444.06 + 19 x 532.08 = 21,615.23, so 21,615 (`dps_lot2_lot3_price_schedule.xlsx`, 2027/28 column) | yes |
+| Month-end one-bed (deliverable answer 3) | 20, 13, 8, 0, 0, 0 | 20, 13, 8, 0, 0, 0 | yes |
+| Month-end two-bed | 57, 46, 42, 32, 21, 7 | 57, 46, 42, 32, 21, 7 | yes |
+| Month-end three-bed | 46, 42, 38, 34, 29, 20 | 46, 42, 38, 34, 29, 20 | yes |
+| Month-end four-bed | 26, 25, 24, 23, 21, 19 | 26, 25, 24, 23, 21, 19 | yes |
+| Chart totals (PNG answer 1) | 170, 149, 126, 112, 89, 71, 46 | 170, 149, 126, 112, 89, 71, 46 | yes |
+| Golden workbook and PNG | same figures | both agree with the submission to the unit and the penny | yes |
 
 ## Competing answers that survived
-None. These forks were tested and each one is closed by a shipped fact:
+None. Each fork below was tested and closed:
 
-| Path | Answer it produces | Closed by |
+| Fork | Answer it produces | What closes it |
 |---|---|---|
-| 30 June bulletin list | 8 sections (adds 4625001012, 4625002019; drops 4625012009) | Art. 4, holdings on 1 January |
-| Last year's method (notified date and buyer), with or without the new holders | 7, with 4625001012 in (26.8%) and 0301402014 out (23.4%) | 27/27 agency deeds at D+120; Art. 2.1 excludes the agency |
-| Agency completing on the notified date | same swap | the same 27/27 history; the 4 completions before the notified date also kill max(notified, D+120) |
-| Returns-only roll with the agency rung | 6, drops 4625011016 (150, 23.4%) | Art. 2.1 + 2.4: Cornisa is inscribed and owns 18 by deed on 1 January |
-| Deeds to 30 September, no projection | 8, adds 4625001012 | 112/112 declared July to September sales executed as declared |
-| OP/RS rows kept as holdings | 1204001006 inflated | guide s.7; the bulletin control total breaks |
-| Group membership at 1 Oct, at 30 Jun, or from the return's codi_grup | 4 to 13 group cells change | Art. 5 frames the annex at 1 January; Vinculacions carries pre-annotated effect dates |
-| Lapse reference date for the padró (delivery day, 1 Oct, 13 Nov, 1 Jan) | no count changes | robust; no registration sits on the two-year boundary |
+| No run-off (a unit for every household now in the block) | 170 | six months of planned lets; the lets log |
+| Proportional share of the plan's lets over each list | about 141 | 100 per cent decision-date order in the lets log |
+| Trailing Apr-Sep 2026 let rate run for six months | 43 (0 / 0 / 22 / 21) | the revised plan is the forward supply and names the Brook Meadow handovers |
+| Queue ordered by application date | 65 (3 / 17 / 26 / 19) | the replay: 5,011 lets go out of order |
+| Queue of households in TA only | 34 (0 / 0 / 17 / 17) | 234 historical lets went to households at home |
+| Need at decision, ignoring reviews | 52 (2 / 11 / 29 / 10) | prompt ("current assessed bedroom need") and procedure point 5 |
+| Original March plan | 56 (0 / 7 / 26 / 23) | the sheet is titled "(superseded)" |
+| Accepted October lets counted again on top of the October plan | 40 (0 / 4 / 17 / 19) | plan Notes: "October 2026 includes lets already offered and accepted" |
+| Flat sizes instead of need | 28 / 67 / 57 / 18 basis | prompt and procedure point 5 |
+| 2026/27 rates | GBP 20,824 | price schedule note: 2027/28 rates apply from 1 April 2027 to every unit; procedure point 6 |
+| 171 households (weekly position, 27 Sep) | starting stock off by one two-bed | `ta_placements`: HPR/24/01511 left TH-234 on 30 Sep 2026 for a social let; no effect on any month-end figure |
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| File count | 10 or more | 19 | PASS |
-| Distinct formats | 3 or more | 6 (csv, pdf, xlsx, docx, eml, txt) | PASS |
-| Largest row count | 25,000+ rows or a large DB | `declaracions_grans_tenidors_2024T3_2026T2.csv`, 45,070 rows | PASS |
-| Distractors declared | 2 or more in metadata.json, none labelled in the pack | 3 (`butlleti_parc_residencial_2026T1.pdf`, `fiances_lloguer_seccions_2025.csv`, `inspeccions_habitatge_buit_2025.csv`); file names and the expedient index describe them neutrally | PASS |
-| Distractors relevant and unused | same world, weighed, not used | all three cover the watch-list sections; none is used by the solution | PASS |
-| Distractor answering a graded quantity | reproduces and is ruled out by a shipped fact | the March bulletin reproduces 14/14 from returns lodged by 31 May and is ruled out by Art. 4; the deposit shares are ruled out by Art. 2.3/4; the inspection vacancies by Art. 5c | PASS |
-| Deliverable count | 1 to 3 | 3 | PASS |
-| Format family | none required | n/a | PASS |
-| Multi-dimensional asks | not stacked lookups | 14 x 5 annex grid, two six-month bridges, list plus the nearest pair | PASS |
-| Deliverables present | every named golden | 3 of 3 in `golden/` | PASS |
-| Units and rounding stated | every ask | stated throughout; the chart's line value "at its value in dwellings" has no precision (189.25, 150.75) | PASS (note) |
-| Prompt shape, 25-criteria floor | identifiable, 25+ | bridge between two totals plus the annex grid; about 100 separately gradable figures | PASS |
-| Realism | nothing reads LLM generated; goldens are real work products | pack and goldens read as real artifacts; three data or metadata tells and one layout nit, listed under Findings | PASS (notes) |
+| File count | 10 or more | 13 | yes |
+| Distinct formats | 3 or more | 5 (csv, xlsx, docx, pdf, txt) | yes |
+| Large file | one file of 25,000+ rows, or a large database | `ta_placements_2018-04_2026-09.csv`, 27,981 rows | yes |
+| Distractors declared | 2 or more in `metadata.json`, none labelled in the pack | 3 (`housing_register_lets_2025-26.csv`, `ta_spend_monitoring_2026-27_q1.xlsx`, `ta_weekly_position_2026-09-28.xlsx`); no file name or content labels them | yes |
+| Distractors relevant but unused | same world, has to be weighed | all three are TA and lettings artefacts for the same borough and period; the solution uses none | yes |
+| A distractor that answers a graded quantity reproduces and is ruled out | arithmetic plus a shipped fact | the weekly position (171; 28 / 67 / 50 / 26; flats 30 / 72 / 58 / 18, occupied 28 / 68 / 57 / 18) reproduces exactly from `ta_placements` and the register at 27 Sep; ruled out by the 30 Sep extract (one two-bed let that day) and by the six months of lets | yes |
+| Deliverables | 1 to 3 | 2 (xlsx, png) | yes |
+| Format family | none required | n/a | n/a |
+| Multi-dimensional asks | not stacked lookups | call-off by four sizes plus total, cost, a 24-cell month-end grid, chart | yes |
+| Golden deliverables present | every file the prompt names | both present in `golden/`, figures agree | yes |
+| Units and rounding stated | inside each ask | "whole numbers throughout", "in pounds to the nearest pound" | yes |
+| Prompt shape and 25-criteria floor | identifiable shape, 25+ | shape 02, forecast across many periods; about 34 (5 call-off + 1 cost + 24 cells + about 4 chart parts) | yes |
+| Realism | nothing reads as LLM-generated | pack reads as council extracts and documents; golden workbook and chart read as a real work product. One temporal flag (Finding 1). The lets log being 100 per cent FIFO is tidier than a real allocation log (Finding 3) | yes, with flags |
 
 ## Gate G reconciliation
-The judge's classification is `forecasting` / `analytical_non_defect` / `surface_read_dependency: no` / `sole_data_defect: no`. DESIGN_NOTE.md (header and Stage 2 Gate G block) records `etl_conformance`, framed by `forecasting` (pattern A), with the same family and both flags `no`.
+| Field | Judge | Design note | Match |
+|---|---|---|---|
+| mechanism | forecasting | method_or_model_selection | label differs, same family |
+| stumping_family | analytical_non_defect | analytical_non_defect | yes |
+| surface_read_dependency | no | no | yes |
+| sole_data_defect | no | no | yes |
 
-The family and both flags agree. The mechanism label differs only in which of two passing FINE-numbers shapes comes first, so no Gate G send-back is predicted. The outside read also agrees with the note's litmus. The 30 June bulletin ties exactly, the 2026 annex agrees with the March bulletin's 31 December 2025 back-cast, and Celestina's back-test passes again in 2026, so no correct number is read the wrong way. The thread did not name any declared distractor as a surface read carrying the task.
+The mechanism labels differ in name only. The design note calls the stump picking a rank-and-supply model over a rate or survival model. The judge calls it a forward run-off the trailing rate does not pin. Both are FINE-numbers shapes that pass Gate G, and both describe the same decisive rung, so this does not predict a send-back. If the portal reviewer has to pick one label, forecasting fits the prompt better (a forward quantity across six periods). Method selection is how the forecast is reached.
 
-One implication is worth knowing. From outside, the decisive rung is a projection on a clock recovered from 27 settled cases. The note's own wording does not quite fit that: it says "every transfer it counts is known at the extract, so nothing is estimated and the tag stays ETL". If a reviewer questions the ETL tag, the defence is the conformance load the annex carries: versioned returns, the April unit change, reference repair, group-code reuse with dated links, and the per-district padró deliveries. Do not retag.
+`metadata.json` check: the judge did not name any declared distractor as the surface read carrying the task. The weekly position is correct and is not the stump; the stump is the rate model a solver would build from `ta_placements` and `homelessness_cases`. The distractor is not too load-bearing.
+
+The design note itself is out of step with the shipped build (Finding 2):
+- Its stump sentence and ladder answer row still say 48 (0 / 8 / 21 / 19), and its R0 still says 173. It also says "the build record at the end carries the shipped values", but there is no build record section.
+- Rungs R6 and R6' are still marked "to measure". Measured here, they are 56 (0 / 7 / 26 / 23) and 40 (0 / 4 / 17 / 19).
+- Both of those rungs break the property the note says is asserted, that no rung matches the answer in more than one size. R6 matches the answer for one-bed and two-bed; R6' matches for one-bed and four-bed.
 
 ## Stump power (Gate F)
-Good. The decisive rung is the agency's first-offer programme. Commitments rose from 27 (January to May) to 119 (July to September) after the 30 June budget supplement. 100 of the 146 sit on sales declared in the 30 June returns, and they complete on a 120-day clock that only the join of the budget ledger to the deed extract shows. Celestina's check ("every declared sale dated before 30 September executed on date and buyer") passes again in 2026, because every pre-empted sale is dated after 30 September. A model that verifies her method is therefore reassured. If it does find the agency, the D line hands it the notified date as the natural completion date, and both routes commit to the same wrong list (4625001012 in, 0301402014 out). The new-holder rung independently costs 4625011016.
+Good. The rung that decides the task is realising that a Tenter House household leaves only when the plan's lets reach its place in a borough-wide queue ordered by decision date, a queue that also holds households living at home. Each wrong path files a far-off answer: a leaving rate or proportional share gives about 140, application-date order 65, a TA-only queue 34, the trailing let rate 43.
 
-The too-easy signals named are mild. The prompt's "sees no reason to build this one any differently" is a light reflex cue. The register Diccionari (code reuse, pre-annotated links) and the padró note (lapse rule) document the ask-level traps, but they are needed for determinism, and the main rung is documented nowhere. No lever is needed.
+Too-easy signals are present but none touches that rung: the March plan sheet is titled superseded, the prompt and procedure point 5 pin the need basis, and the price schedule note pins the 2027/28 year. The deciding rule is not written down anywhere; it is found by asking who got each let. That is computation, not rule-discovery, so the "single derivable fact" warning does not apply.
 
 ## Findings, ranked
-None of these blocks the ship, and none touches a decisive figure.
-1. `target/padro_lliurament_2026-09.csv` (realism, low to medium). Against the June delivery for the same districts, the September file has no `data_alta` after 2026-04-20 and no renewal after 2026-05-18, which are the June maxima. It has zero changed renewals, and 419 registrations appear with alta dates years in the past. Diffed, it reads as a second independent draw. The change belongs in the generator at the next regeneration: carry June forward and add dated June to August altas, bajas and renewals while holding each section's no-registrant count. This changes solver-visible data, so only do it if the pack is being regenerated anyway.
-2. `target/notes_annex_2026_CGallart.docx` (metadata, low). `docProps/app.xml` reports Words, Characters, Paragraphs and TotalTime as 0 on the stock python-docx template. Write the real statistics (about 250 words) in the generator's docx writer. This is a metadata-only edit, with no rerun.
-3. `prompt.md` (Gate E, low). "The designation line drawn at its value in dwellings" is the one ask without a precision; the values are 189.25 and 150.75. If the prompt is ever reopened, add "to two decimals". Not worth a rerun on its own.
-4. `target/fiances_lloguer_seccions_2025.csv` (realism, low, distractor only). `import_fiances_eur` equals exactly 1.0 or 2.0 times `contractes_dipositats` x `renda_mitjana_eur` in all 54 rows, and a section aggregate rarely lands on an integer multiple. At the next regeneration, draw per-contract multiples.
-5. `golden/designation_brief_2027.pdf` (cosmetic). The "The annex" heading is orphaned at the foot of page 1, with its paragraph and table on page 2. Set keep-with-next in the golden writer. Figures are unaffected.
-6. `DESIGN_NOTE.md` (bookkeeping). The stage 3b build record says the golden asserts "the 23 settled cases at 120 days", but the pack has 27 (the clock-closure loop added four). The Stage 2 deletion test also names an "income atlas" that the pack does not ship. Correct both lines, and confirm the generator's assertion counts 27.
+1. **Temporal coherence, `dps_lot2_lot3_price_schedule.xlsx` (FIX_NOW).** The note row reads "uplift by September 2026 CPI, 3.8 per cent", but the file was last modified 22 September 2026, before any September CPI figure could exist (it is published in mid-October).
+   - Fix in the generator: change "September 2026 CPI" to "August 2026 CPI". No rate changes.
+   - Make the same change in the golden workbook's Call-off note ("September 2026 CPI uplift of 3.8 per cent").
+   - The text is not decisional, so the analytic surface stays equivalent.
+2. **Design note out of step with the build (bookkeeping, not shipped).**
+   - Update the stump sentence and ladder to 46 (0 / 7 / 20 / 19) and R0 to 170 (28 / 66 / 50 / 26).
+   - Fill in R6 = 56 (0 / 7 / 26 / 23) and R6' = 40 (0 / 4 / 17 / 19).
+   - Add the build-record section the note promises.
+   - Either drop the "no rung equals the answer in more than one size" claim or note that R6 and R6' break it. If the generator really asserts this, check why it passed.
+   - The ask-pair arithmetic is barely affected: on the 24-cell grid, R6 misses 14 cells and R6' misses 16.
+3. **Realism risk, `moveon_lets_2018-04_2026-09.csv` (low, no change advised).** Every one of 5,262 lets goes exactly to the front of the queue: no refusals, no direct offers, no management moves. A reviewer may read that as too tidy for a real allocation log. Adding exceptions would weaken the determinism the replay gives, so leave it unless a reviewer objects.
+4. **Submission CC1 wording (optional, solution block only).** HPR/24/01511 moved out on 30 September, so "living in Tenter House on 30 September" could be read as 171. Saying "at the end of 30 September 2026" closes the reading. No figure changes.
 
 ## Next action for the author
-Ship task130 to the official portal as built and report the result.
+In the generator, change the price schedule's uplift note to "August 2026 CPI" and make the same change in the golden workbook's Call-off note. Rebuild the pack, then re-judge once, as the FIX_NOW loop allows.

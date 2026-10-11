@@ -1,48 +1,41 @@
 {
   "task": "task130",
   "domain": "demographic-social-science",
-  "objective": "etl",
-  "stage": "backlog",
-  "stage_name": "backlog: failed on the portal, both top models filed the golden answer",
-  "updated": "2026-10-10",
-  "stump": "A competent solver conforms the 30 June 2026 returns, reproduces the 30 June bulletin on all fourteen sections, rolls every dwelling to 1 January 2027 with the deeds registered to 30 September, finds the housing agency's first-offer commitments in its budget ledger and completes each taken-over sale 120 days after commitment as its 27 settled purchases show, and files six sections (A1 to A4, Q and U); the step that lands it there is taking the large holders on 1 January to be the holders that lodged the 30 June returns, when the register lists four holders inscribed after 30 June with no return yet, and the deed extract shows one of them holding 18 dwellings in 4625011016 bought from private owners before 30 June, so that section stays over the line and the order designates seven sections: 4625001005, 4625002007, 4625011004, 0301401008, 0301402014, 4625011016 and 4625012009.",
-  "harden_loops": 1,
-  "solver_rounds": [
-    {
-      "label": "round 1, plain",
-      "date": "2026-10-10",
-      "score": 88.8,
-      "landed": true,
-      "cracked": 5,
-      "items": 8
-    },
-    {
-      "label": "round 2, plain",
-      "date": "2026-10-10",
-      "score": 50.4,
-      "landed": false,
-      "cracked": 4,
-      "items": 8
-    }
-  ],
+  "objective": "forecasting",
+  "architecture": "v2",
+  "stage": 6,
+  "stage_name": "delivered",
+  "updated": "2026-10-11",
+  "stump": "A competent solver runs the borough's recent monthly rate of main-duty households leaving TA (or a survival curve, or the plan shared over the lists) over the Tenter House households and calls off about 136 units; the step that lands it there is forecasting departures as a rate, when move-on lets go in duty-date order within each bedroom size against the move-on plan and the block's households sit near the front of those lists, so 46 remain: 0, 7, 20, 19.",
+  "duplicate_check": {
+    "heart": "PASS (two NOTEs vs task80, differentiated)",
+    "nearest": "task98 lineage 0.06",
+    "surface": "3 promoted (task100 0.147, task87 0.143, task80 card signature)",
+    "clone_check": "shape echo only (task86, task125); no reject tier; clone_check_report_task130.md"
+  },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task130/determinism_check_report.md"
+    "disposition": "FIX_NOW (pass 2, metadata only, applied; no third pass)",
+    "report": "task130/determinism_check_report_pass2.md",
+    "pass1": "DETERMINISTIC, FIX_NOW (CPI month), applied"
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
-  "delivered": "2026-10-10",
-  "portal": {
-    "date": "2026-10-10",
-    "result": "failed",
-    "note": "both top models found the ground truth (author report); moved to backlog, replacement build task131"
-  },
-  "source_note": "analytical_tasks/07_data_extraction_conformation/ET02_sec-13f-institutional-ownership-bridge.md",
+  "approved": null,
+  "delivered": "2026-10-11",
+  "portal": null,
+  "lineage": [
+    {
+      "architecture": "v1",
+      "portal": {
+        "date": "2026-10-10",
+        "result": "failed",
+        "note": "both top models filed the golden seven-section designation"
+      }
+    }
+  ],
   "target_zip": {
     "path": "task130/target.zip",
-    "bytes": 1464737,
-    "members": 19,
-    "sha256": "b958f673be0e6b06e45143862c6bd39b2082724032f126c694342b981bef12f3"
-  },
-  "heart": "WARN (nearest task100 v1 lineage 0.07; repeat.opening against task128; task62 NOTE differentiated)"
+    "bytes": 781402,
+    "members": 13,
+    "sha256": "48249e0a96558440dc28e5306dbe053eb9f8bfaf2f52db1efcf59b626263f16c"
+  }
 }
