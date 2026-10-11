@@ -29,6 +29,6 @@ it.
 When the agent returns, relay its verdict line, the finding counts by track, and the report path. Do
 not apply a redraw, do not edit the shipped ledger, and do not soften a tier.
 
-**This command is author triggered only.** Never invoke it on your own initiative, including right
-after finishing a build that looks like it wants checking. It reads the whole corpus and spends real
-adjudication tokens, so the author decides when that happens.
+**This command is author triggered only**, or run by `/build` at stage 4 as the pre-flight on that one
+build. Never invoke it on your own initiative, including right after finishing a build that looks like
+it wants checking: it reads the whole corpus and spends real adjudication tokens.

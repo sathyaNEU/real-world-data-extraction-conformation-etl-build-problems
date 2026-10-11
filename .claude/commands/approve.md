@@ -13,7 +13,7 @@ Run these in order and stop at the first failure:
 1. **The heart check.** `python3 .claude/skills/fingerprint/guard.py heart <task>`. It reads the
    card's `driver`, `driver_concrete` and `stump` and compares them with every card's driver, every
    lineage driver, every card's stump sentence and every shipped-ledger row, then runs the full
-   structural check (the `stumping` Part 6 bans, the same-puzzle and same-driver tests, names, furniture).
+   structural check (the standing bans in `stumping`, the same-puzzle and same-driver tests, names, furniture).
    Exit 1 is a BLOCK and the command stops there: relay the nearest builds it printed and the axis
    to redraw. A WARN is relayed with the one-line differentiation the design note carries, or the
    lack of one, which is a finding.
