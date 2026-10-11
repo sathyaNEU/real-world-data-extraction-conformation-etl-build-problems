@@ -35,3 +35,16 @@ Stump terms swept: history, cohort, cohorts, decisive, closed, facility, window,
 ## 8 column names (clean)
 
 ## 11 prompt form (clean)
+
+## Solver's-eye read (architecture 2, loop 1)
+
+One isolated reader (Sonnet, medium), 2026-10-11, on a fresh copy of prompt.md and target.zip (cut d1696c6).
+
+- **Q1:** none. Closest: the standard's 5.2 basis test ("on whichever basis predicts those cohorts best ... on the basis set from the other three taken together"), read as a test, not the step.
+- **Q2:** none. **Q3:** none clearly (the field reference and extract log read as ordinary reference-data documents). **Q4:** none.
+- **Q5:** 4.1 (book), 4.2 (outcome, counted once), 2.2 (membership through the credit system and GLEIF consolidation in force at the date), 3.2 (flag: any member AMBER or RED), 5.2 (one probability per flag status, the same across the book; the basis chosen by the leave-one-out test, error the largest share miss, smallest error wins), 6.1 and 6.2 (exposure, bands), 5.3 (rounding). Literal execution: rebuild each cohort's book, membership and flags, compute outcomes, run the leave-one-out test over candidate bases, apply the winner to the 2026 book. Open choice named: the candidate list is not enumerated.
+- **Realism tells (deferred to 6b):** a tidy extract log; standard 1.2's "models, triggers and bands have not changed since" reads convenient; the analyst-capacity fact appears in both the prompt and the agenda.
+- **Forks sized:** the candidate set (largest); flag status for CRN-keyed members (a few flags); exposure at end of date against UTC stamps (band figures).
+- **REVIEW lines:** all harmless.
+
+Main-thread disposition: no Q1 to Q3 finding. Q5's open candidate list is closed by convergence, asserted in the generator: the winning basis (capture and false-alarm, worst miss 1.57 per cent) and the next four bases (2.00 to 2.03 per cent) all give 133; the only bases giving other numbers (147 at 7.97 per cent, 73 at 40.6 per cent) lose the filed test by a wide margin. The CRN-key fork moves ask figures only (separation zero-counts asserted). Realism tells deferred to stage 6b.
