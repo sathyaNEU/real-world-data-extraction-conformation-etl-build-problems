@@ -121,8 +121,9 @@ leave open.
 
 **Determinism is literal.** The judge executes the shipped text word for word. The estimand
 (population, including members not yet observed, outcome, window, unit, comparison) is filed so its
-literal execution is the golden; the method stays open only where a filed criterion forces it and the
-data separates the candidates. **No semantic fork on the main recommendation**: every term and
+literal execution is the golden; the method stays open only where the design, a standard's general
+method or a filed selection criterion forces it, with the data separating the candidates (a filed
+back-test is a recognisable organ, never in consecutive builds; `determinism-check` §1). **No semantic fork on the main recommendation**: every term and
 convention has a row in the design note's fork table, closed by a sentence or `same call`, asserted in
 `checks.py`; `precut.py` refuses an open one. A reading difference is never the stump.
 
