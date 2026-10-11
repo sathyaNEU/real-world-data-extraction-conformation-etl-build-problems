@@ -472,6 +472,8 @@ A device that needs a main-call row, a rule or document the main call reads, or 
 3. Write one line per device in the design note's ask ledger, and one `## Tried and rejected` line for the round.
 4. Re-cut `target.zip` from the final rebuild.
 5. Commit, push to the build's branch, and record the revision and its commit in `pipeline.json`.
+6. Set the build's Status to `shipped` in the root `START_HERE.md` on main, in a commit of its own
+   (`Status: taskNN shipped (<owner>)`).
 
 The author then re-tests on the portal.
 

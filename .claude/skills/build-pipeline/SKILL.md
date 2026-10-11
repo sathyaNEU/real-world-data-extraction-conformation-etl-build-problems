@@ -25,7 +25,7 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 6b | post-round repair | `dataset-generation`, `determinism-check`, `golden-realism`, `reduce-house-fixes` | after a passing round, one repair of the reader's deferred findings (realism tells, forks on ask figures), each fork asserted closed in the checks; `leak.py` re-run; the reader re-runs only if the repair changed a document under `target/` or the prompt; a fresh round only if the repair changed the prompt, a rung or the decisive path. A data-only repair that keeps the method and the ladder goes straight to stage 7 |
 | 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solver read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
 | 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | the client's pre-ship check (the three rules and the two layers) answered in the design note (`stumping/references/client/two-layer-task-design.md`), `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered, Status `shipped` in the root `START_HERE.md`; the author has the bundle, the stump sentence, the leak line, the duplicate-check line, the solver line and the judge line |
-| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory. A result that held the main call (stumped and deterministic) and lost on the asks goes to the ask-only revision (`supplemental-stumping` Part 12) and straight back to the author; no stage above re-runs |
+| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory. A result that held the main call (stumped and deterministic) and lost on the asks goes to the ask-only revision (`supplemental-stumping` Part 12) and straight back to the author, set to `shipped` again on main; no stage above re-runs |
 
 ## The worth-it gate and the hardening loop
 
@@ -177,6 +177,9 @@ registration has to be serial. Nothing waits on the author, so the pace is set b
   device (`supplemental-stumping` Part 2), so a wrong basis fails every figure and a cracker still
   loses the device layer.
 - Every stage's gate is a script's exit status or a thread's verdict, never a sentence in the chat.
+- A build is set to `shipped` in the root `START_HERE.md` on main the moment its bundle is done and handed
+  to the author: at stage 8, and again after every revision the author takes back to the portal. The
+  status goes in a commit of its own (`Status: taskNN shipped (<owner>)`), pushed to main.
 - The design note is the only reasoning record; `pipeline.json` is the only state record; the
   reports (`leak_check_report.md`, `clone_check_report.md`, `solver_rounds/`,
   `determinism_check_report*.md`) are evidence.

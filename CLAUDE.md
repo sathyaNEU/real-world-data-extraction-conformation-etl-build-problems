@@ -100,7 +100,8 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  SHIP to the author
    ->  the author tests on the official portal and reports back
               main call held, asks over the bar: the ask-only revision (`supplemental-stumping`
-              Part 12): ask-path data only, main call byte-identical, commit; no leak read, round or judge
+              Part 12): ask-path data only, main call byte-identical, commit, Status `shipped` on main;
+              no leak read, round or judge
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
