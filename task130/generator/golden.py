@@ -22,9 +22,10 @@ MONTHS = ["31 Oct 2026", "30 Nov 2026", "31 Dec 2026", "31 Jan 2027", "28 Feb 20
 
 
 def figures(target):
-    c, pl, rv, lt = E.load(target)
-    run = E.queue_runoff(c, rv, pl, E.plan(target))
-    start = E.th_by_need(c, rv, pl)
+    c, pl, rv, mb, lt = E.load(target)
+    hh = E.households(mb)
+    run = E.golden(target)
+    start = E.start_counts(pl, hh)
     units = E.callout(run)
     rates = E.lot3_2728(target)
     cost = E.weekly_cost(units, rates)
@@ -76,12 +77,16 @@ def workbook(fig, path):
     ws.cell(row=r, column=6, value=int(round(fig["cost"]))).number_format = "£#,##0"
     ws.cell(row=r, column=6).font = Font(bold=True)
     notes = [
-        "Households and units are whole numbers. Bedrooms are the need as assessed at 18 September 2026 "
-        "(closure procedure, point 5); 4+ means four or more.",
+        "Households and units are whole numbers. Each household is counted under the unit it will need on "
+        "1 April 2027 under Part 3 of the allocations scheme, from the people on its application on 30 September "
+        "2026 (closure procedure, point 5); 4+ means four or more.",
         "Expected households: those the move-on plan's lets (revised 14 September 2026) do not reach by 31 March. "
-        "Move-on lets go to every household owed the main duty, in or out of TA, by duty date within the bedroom "
-        "need, case reference breaking ties; the lets log since April 2018 follows that order without exception.",
-        "October lets already accepted are inside the plan's October figures and are not counted again.",
+        "Each month's homes go in the round held on the third Monday of the month before, to every household owed "
+        "the main duty, in or out of TA, by duty date within the bedrooms it needs on the round day (scheme 3.4 "
+        "and 6.4). Needs are worked out from the household members for each round; the bedroom need on the case "
+        "record is only reassessed at a decision, a reported birth, a move or an offer.",
+        "October's lets were all offered in the round of 21 September and are counted once. No homes with five or "
+        "more bedrooms are planned, so households needing five or more stay on that list.",
         "Rates: DPS price schedule, Lot 3, 2027/28 column (August 2026 CPI uplift of 3.8 per cent).",
     ]
     r += 2
@@ -98,7 +103,8 @@ def workbook(fig, path):
     ro = wb.create_sheet("Run-off")
     ro["A1"] = "Households expected to be living in Tenter House at each month end"
     ro["A1"].font = Font(bold=True, size=13)
-    ro["A2"] = "By bedroom need. 30 September 2026 is the extract position; the months follow the revised move-on plan."
+    ro["A2"] = ("By the size of unit each household will need on 1 April 2027. 30 September 2026 is the extract "
+                "position; the months follow the revised move-on plan.")
     ro["A2"].font = Font(italic=True, size=9)
     hdr = ["Bedrooms", "30 Sep 2026"] + MONTHS
     for j, h in enumerate(hdr, 1):
@@ -155,7 +161,7 @@ def chart(fig, path):
         ax.spines[sp].set_visible(False)
     ax.grid(axis="y", color="#E3E8E6", linewidth=0.8)
     ax.set_axisbelow(True)
-    ax.legend(title="Bedroom need", frameon=False, loc="upper right")
+    ax.legend(title="Unit needed on 1 April", frameon=False, loc="upper right")
     ax.set_title("Call off %d replacement units for 1 April 2027: Tenter House runs down from %d households to %d"
                  % (fig["total"], tot[0], tot[6]), fontsize=12, loc="left", pad=12)
     f.text(0.01, 0.01, "Source: housing needs extracts to 30 Sep 2026; move-on plan revised 14 Sep 2026. "

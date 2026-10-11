@@ -16,35 +16,20 @@ def d(x):
     return "" if pd.isna(x) else pd.Timestamp(x).strftime("%Y-%m-%d")
 
 
-def pending_lets(df, k):
-    """Lets offered and accepted before the cut whose tenancies start in October: the first k_s
-    households of each size's list on 30 September."""
-    A = W.ASOF
-    o = df[df["main"] & (df["duty"] <= A) & (df["exit"].isna() | (df["exit"] > A))].copy()
-    o["cur"] = S.need_at(o, A)
-    rows = []
-    for s in W.SIZES:
-        q = o[o["cur"] == s].sort_values(["duty", "case_ref"], kind="mergesort").head(k[s])
-        for j, (i, r) in enumerate(q.iterrows()):
-            rows.append((i, s, j))
-    return rows
-
-
 def cases_frame(df, rng):
     A, B = W.ASOF, W.START
     keep = (df["app"] <= A) & (df["exit"].isna() | (df["exit"] >= B) | (df["exit"] > A))
     c = df[keep].copy()
     open_ = c["exit"].isna() | (c["exit"] > A)
-    hh_type = np.where(c["need"] == 1, np.where(rng.random(len(c)) < 0.8, "Single person", "Couple, no children"),
-                       np.where(rng.random(len(c)) < 0.62, "Single parent with children", "Couple with children"))
+    need_dec = np.array([a[0][1] for a in c["assess"]])
     out = pd.DataFrame({
         "case_ref": c["case_ref"],
         "household_ref": c["hh"],
         "application_date": c["app"].map(d),
-        "household_type": hh_type,
+        "household_type": c["hh_type"],
         "decision": np.where(c["main"], "Main duty accepted", "Main duty not owed"),
         "decision_date": c["decision"].map(lambda x: d(x) if x <= A else ""),
-        "bedrooms_needed_at_decision": np.where(c["decision"] <= A, c["need"].astype(str), ""),
+        "bedrooms_needed_at_decision": np.where(c["decision"] <= A, need_dec.astype(str), ""),
         "case_status": np.where(open_, "Open", "Closed"),
         "closed_date": np.where(open_, "", c["exit"].map(d)),
         "closure_reason": np.where(open_, "", c["exit_reason"].fillna("")),
@@ -57,22 +42,39 @@ def cases_frame(df, rng):
 
 def reviews_frame(df):
     A = W.ASOF
-    r = df[df["reassess"].notna() & (df["reassess"] <= A) & (df["need"] < 4)]
-    r = r[r["exit"].isna() | (r["reassess"] <= r["exit"])]
-    reasons = ["Birth", "Child joined the household", "Adult child returned", "Medical assessment: separate bedroom"]
-    out = pd.DataFrame({
-        "case_ref": r["case_ref"],
-        "review_date": r["reassess"].map(d),
-        "bedrooms_before": r["need"].astype(int),
-        "bedrooms_after": r["need_after"].astype(int),
-        "reason": [reasons[(int(x[-3:]) * 7) % 4] for x in r["case_ref"]],
-    })
+    rows = []
+    for ref, ex, a in zip(df["case_ref"], df["exit"], df["assess"]):
+        last = pd.Timestamp(A) if pd.isna(ex) else min(ex, A)
+        for (t0, n0, _), (t1, n1, why) in zip(a, a[1:]):
+            if t1 > last:
+                break
+            if n1 != n0:
+                rows.append((ref, d(t1), n0, n1, why))
+    out = pd.DataFrame(rows, columns=["case_ref", "review_date", "bedrooms_before", "bedrooms_after", "reason"])
     return out.sort_values(["review_date", "case_ref"], kind="mergesort").reset_index(drop=True)
 
 
-def lets_frame(df, lt, pend, rng):
+REL = {"Applicant": "Applicant", "Partner": "Partner", "Other adult": "Other relative"}
+
+
+def members_frame(df):
+    """the people in the household of every case open on the cut, as the housing register lists them"""
+    A = W.ASOF
+    o = df[(df["app"] <= A) & (df["exit"].isna() | (df["exit"] > A))]
+    rows = []
+    for ref, mem in zip(o["case_ref"], o["members"]):
+        lead = [m for m in mem if m[0] in ("Applicant", "Partner")]
+        rest = sorted((m for m in mem if m[0] not in ("Applicant", "Partner") and m[2] <= A), key=lambda m: m[2])
+        for k, (rel, sex, dob) in enumerate(lead + rest, 1):
+            r = REL.get(rel) or ("Daughter" if sex == "F" else "Son")
+            rows.append((ref, k, r, sex, d(dob)))
+    out = pd.DataFrame(rows, columns=["case_ref", "member_no", "relationship", "sex", "date_of_birth"])
+    return out.sort_values(["case_ref", "member_no"], kind="mergesort").reset_index(drop=True)
+
+
+def lets_frame(df, lt, rng):
     A, B = W.ASOF, W.START
-    w = lt[(lt["tenancy_start"] >= B) & (lt["tenancy_start"] <= A)].copy()
+    w = lt[lt["tenancy_start"] >= B].copy()
     land = np.where(w["kind"].str.startswith("Settled: social"),
                     np.array(LANDLORDS)[rng.integers(0, len(LANDLORDS), len(w))], PRIVATE)
     rows = pd.DataFrame({
@@ -81,19 +83,9 @@ def lets_frame(df, lt, pend, rng):
         "landlord": land,
         "offer_date": w["offer_date"].map(d).values,
         "tenancy_start": w["tenancy_start"].map(d).values,
-        "let_status": "Tenancy started",
+        "let_status": np.where(w["tenancy_start"] <= A, "Tenancy started", "Accepted, tenancy to start"),
         "_seq": np.arange(len(w)),
     })
-    prow = []
-    for i, s, j in pend:
-        start = pd.Timestamp("2026-10-01") + pd.Timedelta(days=int(1 + 3 * j + (s % 3)))
-        offer = pd.Timestamp("2026-09-14") + pd.Timedelta(days=int(2 * j + s))
-        social = (j + s) % 4 != 0
-        prow.append(dict(case_ref=df.at[i, "case_ref"], bedrooms=s,
-                         landlord=LANDLORDS[(j + 2 * s) % len(LANDLORDS)] if social else PRIVATE,
-                         offer_date=d(offer), tenancy_start=d(start), let_status="Accepted, tenancy to start",
-                         _seq=10 ** 6 + len(prow)))
-    rows = pd.concat([rows, pd.DataFrame(prow)], ignore_index=True)
     rows = rows.sort_values(["tenancy_start", "_seq"], kind="mergesort").drop(columns="_seq").reset_index(drop=True)
     rows.insert(0, "let_ref", ["ML%05d" % (k + 1) for k in range(len(rows))])
     import zlib
@@ -131,11 +123,7 @@ def placements_frame(df, pl):
              "Bed and breakfast": Units("BB", beds=False), "Hostel": Units("HOS", beds=False)}
     # units occupied by placements that ended before the window still exist; the window opens clean
     refs = []
-    rea = df.loc[p["row"].values, "reassess"].values
-    n0 = df.loc[p["row"].values, "need"].values
-    n1 = df.loc[p["row"].values, "need_after"].values
-    st = p["start"].values
-    sizes = np.where(~pd.isna(rea) & (rea <= st), n1, n0)
+    sizes = np.minimum(S.need_on(df, p["row"].values, p["start"].values), 4)
     for (_, r), size in zip(p.iterrows(), sizes):
         if r["type"] == "Tenter House":
             refs.append(r["unit"])

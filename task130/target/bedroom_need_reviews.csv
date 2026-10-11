@@ -1,205 +1,249 @@
 case_ref,review_date,bedrooms_before,bedrooms_after,reason
-HPR/17/00047,2017-07-06,2,3,Child joined the household
-HPR/17/00288,2017-07-15,1,2,Birth
-HPR/16/00673,2017-08-20,3,4,Medical assessment: separate bedroom
-HPR/16/01270,2017-08-23,2,3,Adult child returned
-HPR/17/00425,2018-01-07,3,4,Medical assessment: separate bedroom
-HPR/17/00011,2018-01-29,1,2,Child joined the household
-HPR/17/00839,2018-02-24,2,3,Child joined the household
-HPR/17/00104,2018-03-07,1,2,Birth
-HPR/17/01165,2018-04-20,2,3,Medical assessment: separate bedroom
-HPR/17/00992,2018-06-15,1,2,Birth
-HPR/17/00143,2018-06-16,1,2,Child joined the household
-HPR/18/00328,2018-09-02,1,2,Birth
-HPR/18/00041,2018-09-08,1,2,Medical assessment: separate bedroom
-HPR/18/00261,2018-10-20,2,3,Medical assessment: separate bedroom
-HPR/17/00692,2018-12-02,3,4,Birth
-HPR/18/00702,2018-12-27,3,4,Adult child returned
-HPR/18/00757,2019-01-27,3,4,Medical assessment: separate bedroom
-HPR/18/00096,2019-01-28,1,2,Birth
-HPR/18/00266,2019-05-17,1,2,Adult child returned
-HPR/18/00845,2019-06-17,2,3,Medical assessment: separate bedroom
-HPR/18/00573,2019-06-25,2,3,Medical assessment: separate bedroom
-HPR/18/00326,2019-08-01,2,3,Adult child returned
-HPR/18/01256,2019-08-05,2,3,Birth
-HPR/18/01063,2019-08-20,3,4,Child joined the household
-HPR/18/01184,2019-09-04,1,2,Birth
-HPR/18/01200,2019-09-10,2,3,Birth
-HPR/19/00263,2019-09-10,2,3,Child joined the household
-HPR/19/00196,2019-12-07,3,4,Birth
-HPR/19/00861,2019-12-11,2,3,Medical assessment: separate bedroom
-HPR/19/00946,2019-12-31,2,3,Adult child returned
-HPR/19/00099,2020-02-01,2,3,Child joined the household
-HPR/19/00711,2020-02-09,2,3,Child joined the household
-HPR/19/00489,2020-02-17,1,2,Medical assessment: separate bedroom
-HPR/18/00678,2020-04-06,2,3,Adult child returned
-HPR/18/01010,2020-05-24,2,3,Adult child returned
-HPR/19/00410,2020-06-29,2,3,Adult child returned
-HPR/19/00509,2020-08-16,2,3,Medical assessment: separate bedroom
-HPR/19/00664,2020-08-22,2,3,Birth
-HPR/20/00540,2020-09-07,2,3,Birth
-HPR/19/00420,2020-09-17,1,2,Birth
-HPR/18/01005,2020-09-22,3,4,Medical assessment: separate bedroom
-HPR/19/00644,2020-10-06,3,4,Birth
-HPR/20/00740,2020-12-16,1,2,Birth
-HPR/19/01103,2020-12-29,2,3,Child joined the household
-HPR/20/00039,2021-01-01,2,3,Child joined the household
-HPR/20/00407,2021-01-07,2,3,Child joined the household
-HPR/19/00855,2021-01-10,2,3,Child joined the household
-HPR/20/00794,2021-02-02,2,3,Adult child returned
-HPR/20/00278,2021-04-02,1,2,Adult child returned
-HPR/20/00238,2021-04-03,2,3,Adult child returned
-HPR/20/01226,2021-04-03,2,3,Adult child returned
-HPR/20/00408,2021-05-03,1,2,Birth
-HPR/20/00871,2021-05-15,3,4,Child joined the household
-HPR/20/00996,2021-06-04,3,4,Birth
-HPR/20/00711,2021-06-08,3,4,Child joined the household
-HPR/19/01189,2021-06-15,3,4,Medical assessment: separate bedroom
-HPR/21/00091,2021-06-24,2,3,Child joined the household
-HPR/20/00463,2021-07-09,1,2,Child joined the household
-HPR/21/00185,2021-07-26,1,2,Medical assessment: separate bedroom
-HPR/20/00106,2021-07-31,2,3,Adult child returned
-HPR/20/00774,2021-08-11,2,3,Adult child returned
-HPR/20/01425,2021-08-26,1,2,Medical assessment: separate bedroom
-HPR/21/00106,2021-08-26,2,3,Adult child returned
-HPR/20/01000,2021-09-28,1,2,Birth
-HPR/20/00484,2021-10-16,3,4,Birth
-HPR/19/01297,2021-11-04,1,2,Medical assessment: separate bedroom
-HPR/20/00274,2021-12-22,1,2,Adult child returned
-HPR/21/00376,2022-01-12,1,2,Birth
-HPR/21/00083,2022-01-22,2,3,Child joined the household
-HPR/20/01280,2022-02-13,3,4,Birth
-HPR/21/00263,2022-03-09,3,4,Child joined the household
-HPR/21/01125,2022-03-24,2,3,Medical assessment: separate bedroom
-HPR/20/01174,2022-03-27,1,2,Adult child returned
-HPR/21/00409,2022-03-30,1,2,Medical assessment: separate bedroom
-HPR/21/00391,2022-04-23,2,3,Child joined the household
-HPR/21/00611,2022-06-16,3,4,Child joined the household
-HPR/21/01090,2022-06-16,2,3,Adult child returned
-HPR/20/01400,2022-07-10,2,3,Birth
-HPR/21/00695,2022-07-11,2,3,Child joined the household
-HPR/22/00321,2022-08-02,1,2,Medical assessment: separate bedroom
-HPR/20/01037,2022-08-08,2,3,Medical assessment: separate bedroom
-HPR/21/00129,2022-08-11,1,2,Medical assessment: separate bedroom
-HPR/21/01060,2022-08-14,1,2,Birth
-HPR/22/00366,2022-09-23,2,3,Adult child returned
-HPR/21/00601,2022-09-29,3,4,Medical assessment: separate bedroom
-HPR/22/00670,2022-10-18,1,2,Adult child returned
-HPR/21/01036,2022-10-25,1,2,Birth
-HPR/21/00464,2022-11-24,1,2,Birth
-HPR/21/01012,2022-11-24,3,4,Birth
-HPR/22/00074,2022-11-28,3,4,Adult child returned
-HPR/20/01265,2022-12-05,1,2,Medical assessment: separate bedroom
-HPR/21/00828,2022-12-07,3,4,Birth
-HPR/21/00646,2022-12-14,2,3,Adult child returned
-HPR/22/00812,2022-12-21,2,3,Birth
-HPR/21/00831,2022-12-24,1,2,Child joined the household
-HPR/21/00864,2023-01-22,1,2,Birth
-HPR/22/00604,2023-01-25,3,4,Birth
-HPR/22/00558,2023-01-26,2,3,Adult child returned
-HPR/21/00909,2023-02-14,2,3,Medical assessment: separate bedroom
-HPR/22/00596,2023-03-02,2,3,Birth
-HPR/21/00201,2023-04-23,1,2,Medical assessment: separate bedroom
-HPR/21/00390,2023-05-25,1,2,Adult child returned
-HPR/21/00835,2023-06-15,3,4,Child joined the household
-HPR/22/00026,2023-06-26,1,2,Adult child returned
-HPR/22/00673,2023-06-26,2,3,Medical assessment: separate bedroom
-HPR/22/00682,2023-07-14,3,4,Adult child returned
-HPR/22/00213,2023-07-20,2,3,Medical assessment: separate bedroom
-HPR/22/00346,2023-07-20,1,2,Adult child returned
-HPR/22/01109,2023-08-06,2,3,Medical assessment: separate bedroom
-HPR/22/00312,2023-09-09,2,3,Birth
-HPR/21/01021,2023-09-10,2,3,Medical assessment: separate bedroom
-HPR/22/00903,2023-09-19,2,3,Child joined the household
-HPR/22/00358,2023-10-17,1,2,Adult child returned
-HPR/22/00756,2023-10-19,2,3,Birth
-HPR/23/00245,2023-10-25,3,4,Medical assessment: separate bedroom
-HPR/23/00224,2023-11-05,1,2,Birth
-HPR/22/01016,2023-11-20,1,2,Birth
-HPR/23/00394,2023-12-08,1,2,Adult child returned
-HPR/22/00711,2023-12-09,2,3,Child joined the household
-HPR/22/00891,2023-12-13,3,4,Child joined the household
-HPR/23/00686,2023-12-16,3,4,Adult child returned
-HPR/23/00516,2023-12-31,3,4,Birth
-HPR/22/00805,2024-01-01,1,2,Medical assessment: separate bedroom
-HPR/22/00994,2024-01-20,1,2,Adult child returned
-HPR/22/00459,2024-02-03,3,4,Child joined the household
-HPR/22/01033,2024-02-17,2,3,Medical assessment: separate bedroom
-HPR/22/00991,2024-02-23,1,2,Child joined the household
-HPR/23/01340,2024-02-26,2,3,Birth
-HPR/22/01243,2024-04-19,2,3,Child joined the household
-HPR/23/01605,2024-05-29,3,4,Medical assessment: separate bedroom
-HPR/24/00086,2024-06-17,3,4,Adult child returned
-HPR/22/01417,2024-06-28,1,2,Medical assessment: separate bedroom
-HPR/24/00342,2024-07-22,1,2,Adult child returned
-HPR/23/00661,2024-08-02,1,2,Medical assessment: separate bedroom
-HPR/23/00970,2024-08-05,1,2,Adult child returned
-HPR/23/00043,2024-08-16,2,3,Child joined the household
-HPR/22/01279,2024-08-24,1,2,Child joined the household
-HPR/23/00221,2024-09-06,1,2,Medical assessment: separate bedroom
-HPR/22/01229,2024-09-20,3,4,Medical assessment: separate bedroom
-HPR/23/01600,2024-09-20,2,3,Birth
-HPR/23/00713,2024-10-07,3,4,Medical assessment: separate bedroom
-HPR/23/01426,2024-10-13,3,4,Adult child returned
-HPR/23/01418,2024-10-20,2,3,Adult child returned
-HPR/24/00524,2024-11-04,3,4,Birth
-HPR/23/01068,2024-11-11,1,2,Birth
-HPR/24/00398,2024-11-17,3,4,Adult child returned
-HPR/24/00631,2024-11-26,3,4,Child joined the household
-HPR/24/00847,2024-12-04,1,2,Child joined the household
-HPR/23/00658,2024-12-11,1,2,Adult child returned
-HPR/23/00290,2025-01-05,2,3,Adult child returned
-HPR/24/00762,2025-01-06,2,3,Adult child returned
-HPR/23/00988,2025-01-07,2,3,Birth
-HPR/24/00059,2025-01-13,1,2,Child joined the household
-HPR/24/00034,2025-01-17,1,2,Adult child returned
-HPR/24/00846,2025-01-20,2,3,Adult child returned
-HPR/23/00796,2025-01-28,2,3,Birth
-HPR/22/01075,2025-02-25,3,4,Child joined the household
-HPR/24/00445,2025-03-07,3,4,Medical assessment: separate bedroom
-HPR/23/00922,2025-03-09,1,2,Adult child returned
-HPR/24/00118,2025-03-11,3,4,Adult child returned
-HPR/24/00666,2025-03-18,1,2,Adult child returned
-HPR/24/00787,2025-05-27,2,3,Child joined the household
-HPR/23/00714,2025-05-28,1,2,Adult child returned
-HPR/23/00474,2025-06-04,3,4,Adult child returned
-HPR/24/00889,2025-06-26,3,4,Medical assessment: separate bedroom
-HPR/24/00037,2025-07-04,2,3,Medical assessment: separate bedroom
-HPR/24/00431,2025-07-04,3,4,Child joined the household
-HPR/23/01631,2025-07-14,1,2,Child joined the household
-HPR/23/00747,2025-07-15,3,4,Child joined the household
-HPR/24/01524,2025-08-16,3,4,Birth
-HPR/24/01119,2025-08-29,2,3,Child joined the household
-HPR/24/01377,2025-09-10,1,2,Medical assessment: separate bedroom
-HPR/24/00556,2025-09-14,2,3,Birth
-HPR/23/01469,2025-09-18,3,4,Medical assessment: separate bedroom
-HPR/23/01269,2025-10-23,3,4,Medical assessment: separate bedroom
-HPR/23/00616,2025-10-25,3,4,Birth
-HPR/24/01298,2025-10-28,1,2,Adult child returned
-HPR/25/00571,2025-10-28,2,3,Child joined the household
-HPR/25/00577,2025-11-07,1,2,Medical assessment: separate bedroom
-HPR/24/01492,2025-11-08,1,2,Birth
-HPR/24/00768,2025-11-14,1,2,Birth
-HPR/24/00441,2025-11-19,3,4,Medical assessment: separate bedroom
-HPR/24/00827,2025-11-26,1,2,Child joined the household
-HPR/25/00050,2025-12-06,1,2,Adult child returned
-HPR/23/01232,2025-12-08,3,4,Birth
-HPR/24/00482,2025-12-18,3,4,Adult child returned
-HPR/24/01632,2025-12-23,1,2,Birth
-HPR/25/00936,2025-12-29,2,3,Birth
-HPR/24/01155,2026-01-04,1,2,Child joined the household
-HPR/25/01121,2026-01-11,1,2,Medical assessment: separate bedroom
-HPR/24/00919,2026-01-25,2,3,Child joined the household
-HPR/24/01574,2026-01-27,1,2,Adult child returned
-HPR/25/01153,2026-01-28,1,2,Medical assessment: separate bedroom
-HPR/24/01286,2026-02-03,2,3,Adult child returned
-HPR/24/01361,2026-02-07,1,2,Medical assessment: separate bedroom
-HPR/24/01078,2026-02-15,2,3,Adult child returned
-HPR/25/00195,2026-03-03,2,3,Child joined the household
-HPR/25/00339,2026-04-01,2,3,Child joined the household
-HPR/24/01161,2026-04-02,1,2,Medical assessment: separate bedroom
-HPR/24/01083,2026-05-31,2,3,Child joined the household
-HPR/25/00542,2026-05-31,3,4,Adult child returned
-HPR/26/00026,2026-06-16,1,2,Adult child returned
-HPR/25/00010,2026-08-04,2,3,Adult child returned
-HPR/24/01400,2026-09-15,1,2,Birth
+HPR/15/00767,2016-05-11,3,4,Birth reported
+HPR/16/00488,2016-10-27,3,4,Birth reported
+HPR/16/00724,2017-05-17,3,4,Birth reported
+HPR/17/00632,2018-01-10,3,4,Birth reported
+HPR/15/00904,2018-03-19,3,4,Household checked before an offer
+HPR/16/00512,2018-03-19,4,5,Household checked before an offer
+HPR/16/01014,2018-04-01,2,3,Birth reported
+HPR/16/00743,2018-04-07,3,4,Household checked before a move in TA
+HPR/15/01096,2018-04-16,3,4,Household checked before an offer
+HPR/15/01164,2018-05-21,3,4,Household checked before an offer
+HPR/16/00987,2018-05-21,2,3,Household checked before an offer
+HPR/15/01215,2018-06-18,3,4,Household checked before an offer
+HPR/16/00952,2018-06-18,2,3,Household checked before an offer
+HPR/15/01065,2018-07-16,3,4,Household checked before an offer
+HPR/15/01149,2018-07-16,3,4,Household checked before an offer
+HPR/15/01270,2018-07-16,3,4,Household checked before an offer
+HPR/16/01206,2018-07-16,2,3,Household checked before an offer
+HPR/17/00066,2018-07-16,4,5,Household checked before an offer
+HPR/17/00349,2018-07-26,2,3,Household checked before a move in TA
+HPR/18/00040,2018-08-04,1,2,Birth reported
+HPR/17/00339,2018-08-18,3,4,Birth reported
+HPR/16/01182,2018-08-20,2,3,Household checked before an offer
+HPR/18/00519,2018-08-25,3,4,Birth reported
+HPR/17/00303,2018-08-29,2,3,Household checked before a move in TA
+HPR/16/00284,2018-09-17,3,4,Household checked before an offer
+HPR/17/00021,2018-09-17,2,3,Household checked before an offer
+HPR/17/00274,2018-10-15,2,3,Household checked before an offer
+HPR/17/00621,2019-01-21,2,3,Household checked before an offer
+HPR/17/00693,2019-01-21,2,3,Household checked before an offer
+HPR/17/00711,2019-01-21,2,3,Household checked before an offer
+HPR/17/00933,2019-01-22,2,3,Birth reported
+HPR/18/00288,2019-03-04,1,2,Birth reported
+HPR/17/01015,2019-03-18,2,3,Household checked before an offer
+HPR/19/00255,2019-05-06,2,3,Household checked before a move in TA
+HPR/16/00837,2019-05-20,3,4,Household checked before an offer
+HPR/16/01036,2019-05-20,3,4,Household checked before an offer
+HPR/16/01258,2019-06-17,3,4,Household checked before an offer
+HPR/18/00873,2019-06-28,1,2,Household checked before a move in TA
+HPR/18/00681,2019-06-29,2,3,Birth reported
+HPR/17/00073,2019-08-19,3,4,Household checked before an offer
+HPR/17/00024,2019-09-16,4,5,Household checked before an offer
+HPR/18/00401,2019-10-10,3,4,Birth reported
+HPR/16/01053,2019-10-21,3,4,Household checked before an offer
+HPR/17/00566,2019-10-21,3,4,Household checked before an offer
+HPR/17/00588,2019-11-18,3,4,Household checked before an offer
+HPR/17/00640,2019-11-18,3,4,Household checked before an offer
+HPR/17/00969,2019-12-09,3,4,Household checked before a move in TA
+HPR/17/00526,2019-12-16,4,5,Household checked before an offer
+HPR/19/00730,2019-12-31,2,3,Birth reported
+HPR/17/01125,2020-02-17,4,5,Household checked before an offer
+HPR/17/01145,2020-02-17,3,4,Household checked before an offer
+HPR/18/01170,2020-03-06,4,5,Household checked before a move in TA
+HPR/17/01013,2020-03-16,3,4,Household checked before an offer
+HPR/18/01063,2020-03-17,3,4,Birth reported
+HPR/19/00942,2020-03-31,3,4,Birth reported
+HPR/17/01229,2020-04-20,3,4,Household checked before an offer
+HPR/18/00589,2020-04-20,2,3,Household checked before an offer
+HPR/18/00215,2020-05-18,4,5,Household checked before an offer
+HPR/18/00684,2020-05-18,2,3,Household checked before an offer
+HPR/19/00098,2020-05-18,2,3,Household checked before an offer
+HPR/17/01048,2020-06-15,3,4,Household checked before an offer
+HPR/17/01190,2020-07-20,4,5,Household checked before an offer
+HPR/18/01106,2020-07-20,4,5,Household checked before an offer
+HPR/20/00623,2020-08-13,2,3,Household checked before a move in TA
+HPR/19/01015,2020-08-16,2,3,Birth reported
+HPR/19/00605,2020-08-23,3,4,Birth reported
+HPR/19/00483,2020-08-25,3,4,Birth reported
+HPR/18/00343,2020-09-21,3,4,Household checked before an offer
+HPR/20/00525,2020-09-21,2,3,Birth reported
+HPR/19/00590,2020-10-19,2,3,Household checked before an offer
+HPR/20/00876,2020-10-20,2,3,Household checked before a move in TA
+HPR/19/00836,2020-10-29,2,3,Birth reported
+HPR/18/00385,2020-11-16,3,4,Household checked before an offer
+HPR/20/00675,2020-11-30,3,4,Birth reported
+HPR/18/00462,2020-12-21,3,4,Household checked before an offer
+HPR/18/01049,2020-12-21,4,5,Household checked before an offer
+HPR/19/00577,2020-12-21,2,3,Household checked before an offer
+HPR/20/00978,2021-01-08,2,3,Birth reported
+HPR/18/01133,2021-01-18,3,4,Household checked before an offer
+HPR/18/01217,2021-01-18,4,5,Household checked before an offer
+HPR/20/01321,2021-01-26,2,3,Household checked before a move in TA
+HPR/18/01139,2021-02-15,3,4,Household checked before an offer
+HPR/20/00656,2021-02-22,2,3,Birth reported
+HPR/18/01253,2021-03-11,3,4,Household checked before a move in TA
+HPR/18/00455,2021-03-15,3,4,Household checked before an offer
+HPR/18/00853,2021-04-19,3,4,Household checked before an offer
+HPR/18/01313,2021-05-17,3,4,Household checked before an offer
+HPR/19/00245,2021-05-17,2,3,Household checked before an offer
+HPR/19/01472,2021-05-21,2,3,Household checked before a move in TA
+HPR/21/00032,2021-06-02,2,3,Household checked before a move in TA
+HPR/19/00073,2021-06-08,4,5,Household checked before a move in TA
+HPR/19/00357,2021-06-09,3,4,Household checked before a move in TA
+HPR/19/00674,2021-06-12,3,4,Household checked before a move in TA
+HPR/19/00702,2021-06-12,4,5,Household checked before a move in TA
+HPR/20/00423,2021-07-04,3,4,Household checked before a move in TA
+HPR/20/01427,2021-07-05,1,2,Birth reported
+HPR/18/00617,2021-08-16,3,4,Household checked before an offer
+HPR/19/00351,2021-08-16,3,4,Household checked before an offer
+HPR/19/00421,2021-08-16,3,4,Household checked before an offer
+HPR/19/00832,2021-08-17,4,5,Birth reported
+HPR/19/01262,2021-09-20,2,3,Household checked before an offer
+HPR/21/00308,2021-10-16,1,2,Birth reported
+HPR/19/00500,2021-11-15,3,4,Household checked before an offer
+HPR/20/01106,2021-12-02,2,3,Birth reported
+HPR/21/00982,2021-12-24,2,3,Birth reported
+HPR/20/00309,2022-01-25,3,4,Household checked before a move in TA
+HPR/20/01090,2022-01-31,2,3,Birth reported
+HPR/19/00036,2022-03-21,3,5,Household checked before an offer
+HPR/21/00849,2022-04-05,2,3,Birth reported
+HPR/21/01341,2022-04-27,3,4,Household checked before a move in TA
+HPR/20/01300,2022-06-04,2,3,Household checked before a move in TA
+HPR/20/00020,2022-06-15,3,4,Household checked before a move in TA
+HPR/20/00566,2022-06-20,2,3,Household checked before an offer
+HPR/21/00830,2022-08-11,3,4,Birth reported
+HPR/19/01350,2022-08-15,3,4,Household checked before an offer
+HPR/20/00516,2022-08-15,2,3,Household checked before an offer
+HPR/20/00871,2022-08-15,2,3,Household checked before an offer
+HPR/20/01448,2022-09-09,4,5,Household checked before a move in TA
+HPR/21/00534,2022-10-11,3,4,Birth reported
+HPR/19/00041,2022-10-17,4,5,Household checked before an offer
+HPR/22/00080,2022-10-24,1,2,Birth reported
+HPR/20/01290,2022-11-05,3,4,Birth reported
+HPR/19/00649,2022-11-08,4,5,Household checked before a move in TA
+HPR/20/00082,2022-11-21,3,4,Household checked before an offer
+HPR/20/00271,2022-11-21,3,4,Household checked before an offer
+HPR/20/01104,2022-12-19,2,3,Household checked before an offer
+HPR/21/01267,2022-12-28,2,3,Birth reported
+HPR/20/00387,2023-01-16,3,4,Household checked before an offer
+HPR/20/01089,2023-01-16,2,3,Household checked before an offer
+HPR/19/00843,2023-01-30,4,5,Household checked before a move in TA
+HPR/20/01230,2023-02-20,2,3,Household checked before an offer
+HPR/21/00004,2023-03-20,2,3,Household checked before an offer
+HPR/22/01097,2023-03-25,2,3,Birth reported
+HPR/22/00716,2023-04-15,2,3,Birth reported
+HPR/19/01016,2023-04-17,4,5,Household checked before an offer
+HPR/21/00061,2023-04-17,2,3,Household checked before an offer
+HPR/21/01255,2023-04-17,1,2,Household checked before an offer
+HPR/21/00637,2023-05-05,3,4,Birth reported
+HPR/20/00804,2023-05-15,3,4,Household checked before an offer
+HPR/21/01334,2023-06-11,2,3,Household checked before a move in TA
+HPR/23/00086,2023-07-01,1,2,Birth reported
+HPR/21/00113,2023-07-17,2,3,Household checked before an offer
+HPR/21/00266,2023-07-17,2,3,Household checked before an offer
+HPR/22/00238,2023-07-18,2,3,Birth reported
+HPR/23/00298,2023-08-06,1,2,Birth reported
+HPR/21/00992,2023-08-16,2,3,Birth reported
+HPR/20/00106,2023-08-21,3,4,Household checked before an offer
+HPR/21/00270,2023-08-21,2,3,Household checked before an offer
+HPR/19/00600,2023-09-01,5,6,Household checked before a move in TA
+HPR/21/00071,2023-09-11,3,4,Household checked before a move in TA
+HPR/23/00074,2023-09-16,1,2,Birth reported
+HPR/20/00976,2023-09-18,3,4,Household checked before an offer
+HPR/20/01085,2023-09-18,2,3,Household checked before an offer
+HPR/22/00671,2023-10-09,2,3,Birth reported
+HPR/19/01293,2023-10-16,4,5,Household checked before an offer
+HPR/21/00488,2023-10-16,2,3,Household checked before an offer
+HPR/21/00598,2023-10-16,2,3,Household checked before an offer
+HPR/21/00182,2023-10-18,4,5,Household checked before a move in TA
+HPR/20/00958,2023-11-20,3,4,Household checked before an offer
+HPR/23/00272,2023-12-03,2,3,Household checked before a move in TA
+HPR/21/00628,2023-12-18,2,3,Household checked before an offer
+HPR/21/00781,2023-12-18,2,3,Household checked before an offer
+HPR/21/00908,2024-01-15,2,3,Household checked before an offer
+HPR/23/00653,2024-02-07,3,4,Birth reported
+HPR/23/01378,2024-02-08,4,5,Household checked before a move in TA
+HPR/21/00928,2024-02-19,2,3,Household checked before an offer
+HPR/21/00111,2024-03-18,3,4,Household checked before an offer
+HPR/23/01628,2024-03-20,2,3,Household checked before a move in TA
+HPR/23/01015,2024-04-13,2,3,Birth reported
+HPR/20/00020,2024-04-15,4,5,Household checked before an offer
+HPR/21/00087,2024-04-15,3,4,Household checked before an offer
+HPR/22/01256,2024-04-23,2,3,Household checked before a move in TA
+HPR/23/00916,2024-05-20,2,3,Birth reported
+HPR/22/00237,2024-06-17,2,3,Household checked before an offer
+HPR/23/00835,2024-07-14,1,2,Birth reported
+HPR/23/00508,2024-08-06,2,3,Birth reported
+HPR/21/00300,2024-08-19,3,4,Household checked before an offer
+HPR/22/00194,2024-08-19,2,3,Household checked before an offer
+HPR/22/00240,2024-08-19,2,3,Household checked before an offer
+HPR/22/00251,2024-08-19,2,3,Household checked before an offer
+HPR/22/00311,2024-08-19,2,3,Household checked before an offer
+HPR/24/00612,2024-08-21,2,3,Household checked before a move in TA
+HPR/21/00924,2024-09-01,3,4,Household checked before a move in TA
+HPR/21/00167,2024-09-11,3,4,Household checked before a move in TA
+HPR/21/00365,2024-09-16,3,4,Household checked before an offer
+HPR/21/00397,2024-09-16,3,4,Household checked before an offer
+HPR/23/00311,2024-09-20,2,3,Household checked before a move in TA
+HPR/22/01455,2024-10-02,4,5,Birth reported
+HPR/23/00933,2024-10-02,2,3,Birth reported
+HPR/23/00650,2024-10-06,3,4,Birth reported
+HPR/21/00882,2024-10-08,4,5,Household checked before a move in TA
+HPR/22/00468,2024-10-21,2,3,Household checked before an offer
+HPR/22/00472,2024-10-21,2,3,Household checked before an offer
+HPR/21/00560,2024-11-18,3,4,Household checked before an offer
+HPR/23/01478,2024-11-29,2,3,Birth reported
+HPR/24/00540,2024-12-02,2,3,Birth reported
+HPR/21/00905,2024-12-03,3,4,Household checked before a move in TA
+HPR/22/00842,2025-02-04,2,3,Household checked before a move in TA
+HPR/23/00025,2025-02-17,2,3,Household checked before a move in TA
+HPR/22/00854,2025-03-17,2,3,Household checked before an offer
+HPR/21/00926,2025-03-29,4,5,Household checked before a move in TA
+HPR/24/00124,2025-04-05,2,3,Birth reported
+HPR/23/00654,2025-04-17,2,3,Household checked before a move in TA
+HPR/23/00826,2025-04-21,3,4,Household checked before a move in TA
+HPR/22/00230,2025-07-10,4,5,Household checked before a move in TA
+HPR/21/00835,2025-07-21,3,4,Household checked before an offer
+HPR/22/01224,2025-07-21,2,3,Household checked before an offer
+HPR/23/01244,2025-07-23,3,4,Birth reported
+HPR/22/00325,2025-08-16,4,5,Household checked before a move in TA
+HPR/23/01050,2025-08-17,2,3,Household checked before a move in TA
+HPR/22/00702,2025-08-18,2,3,Household checked before an offer
+HPR/22/01379,2025-08-18,2,3,Household checked before an offer
+HPR/25/00961,2025-09-09,2,3,Household checked before a move in TA
+HPR/20/00528,2025-09-15,4,5,Household checked before an offer
+HPR/22/01255,2025-09-15,2,3,Household checked before an offer
+HPR/25/00589,2025-10-10,1,2,Birth reported
+HPR/23/01496,2025-12-13,3,4,Birth reported
+HPR/20/00706,2025-12-22,3,5,Household checked before a move in TA
+HPR/23/00257,2026-01-19,2,3,Household checked before an offer
+HPR/24/01236,2026-01-29,2,3,Birth reported
+HPR/25/00084,2026-02-06,2,3,Birth reported
+HPR/25/01593,2026-02-12,3,4,Household checked before a move in TA
+HPR/20/00684,2026-02-16,4,5,Household checked before an offer
+HPR/21/00967,2026-02-16,3,4,Household checked before an offer
+HPR/21/01128,2026-02-16,3,4,Household checked before an offer
+HPR/25/00118,2026-03-12,1,2,Birth reported
+HPR/21/01197,2026-03-16,3,4,Household checked before an offer
+HPR/25/01233,2026-03-18,3,4,Birth reported
+HPR/24/00848,2026-03-24,3,4,Birth reported
+HPR/24/00628,2026-04-05,2,3,Birth reported
+HPR/25/00384,2026-04-06,1,2,Birth reported
+HPR/23/00150,2026-04-20,2,3,Household checked before an offer
+HPR/23/00668,2026-04-20,3,4,Birth reported
+HPR/23/00467,2026-05-18,2,3,Household checked before an offer
+HPR/23/00570,2026-05-18,2,3,Household checked before an offer
+HPR/23/00643,2026-05-18,2,3,Household checked before an offer
+HPR/22/00429,2026-05-29,3,4,Household checked before a move in TA
+HPR/22/00314,2026-06-08,3,4,Household checked before a move in TA
+HPR/20/01135,2026-06-15,4,5,Household checked before an offer
+HPR/24/01240,2026-06-15,1,2,Birth reported
+HPR/25/01011,2026-07-14,2,3,Birth reported
+HPR/21/01330,2026-07-20,3,4,Household checked before an offer
+HPR/22/00042,2026-07-20,3,4,Household checked before an offer
+HPR/23/00589,2026-07-24,3,4,Birth reported
+HPR/23/01231,2026-08-11,3,4,Birth reported
+HPR/26/00399,2026-08-12,1,2,Birth reported
+HPR/22/00097,2026-09-21,3,4,Household checked before an offer
+HPR/23/00849,2026-09-21,2,3,Household checked before an offer

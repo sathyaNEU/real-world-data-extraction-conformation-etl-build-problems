@@ -24,10 +24,11 @@ FILES = {
     "placements": "ta_placements_2018-04_2026-09.csv",
     "cases": "homelessness_cases_2026-09-30.csv",
     "reviews": "bedroom_need_reviews.csv",
+    "members": "household_members_2026-09-30.csv",
     "lets": "moveon_lets_2018-04_2026-09.csv",
     "plan": "moveon_plan_2026-27.xlsx",
     "notice": "corvane_notice_tenter_house.pdf",
-    "scheme": "housing_allocations_scheme_2024_part6.pdf",
+    "scheme": "housing_allocations_scheme_2024_parts_3_and_6.pdf",
     "procedure": "tenter_house_closure_procedure.docx",
     "prices": "dps_lot2_lot3_price_schedule.xlsx",
     "position": "ta_weekly_position_2026-09-28.xlsx",
@@ -37,9 +38,9 @@ FILES = {
     "spend": "ta_spend_monitoring_2026-27_q1.xlsx",
 }
 DISTRACTORS = ["reglets", "spend", "position"]
-PENDING = {1: 6, 2: 8, 3: 3, 4: 1}
 MTIMES = {
     "placements": (2026, 10, 1, 7, 42), "cases": (2026, 10, 1, 7, 40), "reviews": (2026, 10, 1, 7, 41),
+    "members": (2026, 10, 1, 7, 43),
     "lets": (2026, 10, 1, 7, 44), "plan": (2026, 10, 1, 9, 25), "notice": (2026, 9, 15, 11, 31), "scheme": (2024, 3, 28, 10, 5),
     "procedure": (2026, 9, 18, 15, 12), "prices": (2026, 9, 22, 12, 10), "position": (2026, 9, 28, 9, 5),
     "register": (2026, 10, 1, 7, 46), "dictionary": (2026, 10, 1, 9, 10), "reglets": (2026, 4, 8, 10, 2),
@@ -47,69 +48,98 @@ MTIMES = {
 }
 
 
-def _lists(df, pl):
-    """each size's list on the cut (truth side) and whether each member is in Tenter House"""
+OCT = pd.Timestamp("2026-10-01")
+FWD = pd.date_range("2026-11-01", "2027-03-01", freq="MS")
+
+
+def _truth_lists(df, lt, pl):
+    """the November to March lists on the truth side: every open main-duty case on the cut except the
+    households with October lets, in duty-date order, with the Part 3 need on each round day from the
+    people on the application on the cut"""
     A = W.ASOF
-    o = df[df["main"] & (df["duty"] <= A) & (df["exit"].isna() | (df["exit"] > A))].copy()
-    o["cur"] = S.need_at(o, A)
+    o = df[df["main"] & (df["duty"] <= A) & (df["exit"].isna() | (df["exit"] > A))]
+    o = o.sort_values(["duty", "case_ref"], kind="mergesort")
+    octl = set(lt.loc[lt["tenancy_start"] >= OCT, "row"])
+    o = o[~o.index.isin(octl)]
     th_rows = set(pl[(pl["type"] == "Tenter House") & (pl["start"] <= A) & (pl["end"] > A)]["row"])
-    out = {}
-    for s in W.SIZES:
-        q = o[o["cur"] == s].sort_values(["duty", "case_ref"], kind="mergesort")
-        out[s] = (q["duty"].values, np.array([i in th_rows for i in q.index]))
-    return out
+    mem = [[m for m in df.at[i, "members"] if m[2] <= A] for i in o.index]
+    needs = [np.array([S.rooms(m, S.round_date(mo)) for m in mem]) for mo in FWD]
+    return o["duty"].values, np.array([i in th_rows for i in o.index]), needs
 
 
-def _clean(vec, duty, isth):
-    """no cumulative cut falls inside a same-day tie that mixes Tenter House and other households"""
-    for k in np.cumsum(vec):
-        if 0 < k < len(duty) and duty[k - 1] == duty[k]:
-            grp = isth[duty == duty[k]]
-            if grp.any() and not grp.all():
-                return False
+def _clean(plan, duty, isth, needs):
+    """no round's cut falls inside a same-day tie that mixes Tenter House and other households"""
+    gone = np.zeros(len(duty), bool)
+    for k in range(5):
+        for s in W.SIZES:
+            idx = np.flatnonzero((needs[k] == s) & ~gone)
+            n = plan[s][k + 1]
+            if 0 < n < len(idx) and duty[idx[n - 1]] == duty[idx[n]]:
+                tie = idx[duty[idx] == duty[idx[n]]]
+                if isth[tie].any() and not isth[tie].all():
+                    return False
+            gone[idx[:n]] = True
     return True
 
 
-def tune_plans(df, pl):
-    """Settle the revised plan's monthly phasing (half-year totals fixed) so no monthly cut splits a
-    mixed tie, and give the superseded March plan its own phasing."""
-    lists = _lists(df, pl)
-    rev, orig = {}, {}
+def tune_plans(df, lt, pl, october):
+    """Settle the revised plan's November to March phasing (half-year totals fixed) so no round's cut
+    splits a mixed tie, and give the superseded March plan its own phasing. October is the September
+    round, already made."""
+    duty, isth, needs = _truth_lists(df, lt, pl)
+    base = {s: [october[s]] + list(W.PLAN_REVISED[s][1:]) for s in W.SIZES}
+    if _clean(base, duty, isth, needs):
+        rev = base
+    else:
+        rev = None
+        moves = [(s, a_, b_) for s in W.SIZES for a_ in range(1, 6) for b_ in range(1, 6) if a_ != b_]
+        for s, a_, b_ in moves:
+            if base[s][a_] == 0:
+                continue
+            v = {k: list(x) for k, x in base.items()}
+            v[s][a_] -= 1
+            v[s][b_] += 1
+            if _clean(v, duty, isth, needs):
+                rev = v
+                break
+        if rev is None:
+            for (s1, a1, b1) in moves:
+                for (s2, a2, b2) in moves:
+                    v = {k: list(x) for k, x in base.items()}
+                    if v[s1][a1] == 0:
+                        continue
+                    v[s1][a1] -= 1
+                    v[s1][b1] += 1
+                    if v[s2][a2] == 0:
+                        continue
+                    v[s2][a2] -= 1
+                    v[s2][b2] += 1
+                    if _clean(v, duty, isth, needs):
+                        rev = v
+                        break
+                if rev is not None:
+                    break
+        if rev is None:
+            raise SystemExit("no phasing clears the ties")
+    orig = {}
     for s in W.SIZES:
-        duty, isth = lists[s]
-        base = list(W.PLAN_REVISED[s])
-        cands = [base]
-        for a in range(6):
-            for b in range(6):
-                if a != b and base[a] > 0:
-                    v = list(base); v[a] -= 1; v[b] += 1
-                    cands.append(v)
-        for a in range(6):
-            for b in range(6):
-                for c2 in range(6):
-                    for d2 in range(6):
-                        if a != b and c2 != d2 and base[a] > 0 and base[c2] > 0:
-                            v = list(base); v[a] -= 1; v[b] += 1; v[c2] -= 1; v[d2] += 1
-                            if min(v) >= 0:
-                                cands.append(v)
-        pick = next((v for v in cands if _clean(v, duty, isth)), None)
-        if pick is None:
-            raise SystemExit("no phasing clears the ties for %d-bed" % s)
-        rev[s] = pick
         o = list(W.PLAN_ORIGINAL[s])
         if s in (1, 2):
-            tot = sum(pick)
+            tot = sum(rev[s])
             o = [int(round(tot * w)) for w in (0.22, 0.19, 0.15, 0.15, 0.14, 0.15)]
             o[-1] += tot - sum(o)
         orig[s] = o
+    rev[5] = [october.get(5, 0), 0, 0, 0, 0, 0]
+    orig[5] = [0] * 6
     return rev, orig
 
 
 def simulate():
     rng = np.random.default_rng(W.SEED)
     df = S.cases(rng)
-    df, lt = S.allocate(df, rng, W.ASOF)
+    df, lt = S.allocate(df, rng, OCT)
     pl = S.placements(df, rng)
+    df = S.record_assessments(df, pl, lt)
     return df, lt, pl
 
 
@@ -126,37 +156,41 @@ def build(out):
     rvf = X.reviews_frame(df)
     rvf = rvf[rvf["case_ref"].isin(set(cases["case_ref"]))]
     rvf.to_csv(p("reviews"), index=False)
-    pend = X.pending_lets(df, PENDING)
-    lets = X.lets_frame(df, lt, pend, rng)
+    X.members_frame(df).to_csv(p("members"), index=False)
+    lets = X.lets_frame(df, lt, rng)
     lets.to_csv(p("lets"), index=False)
     place, units = X.placements_frame(df, pl)
     place.to_csv(p("placements"), index=False)
-    X.register_frame(units).to_csv(p("register"), index=False)
+    reg = X.register_frame(units)
+    reg.to_csv(p("register"), index=False)
 
-    # plan actuals April to September 2026 from the lets log
+    # plan actuals April to September 2026 and the September round's October lets, from the lets log
     started = lets[lets["let_status"] == "Tenancy started"]
     ts = pd.to_datetime(started["tenancy_start"])
-    actuals = {s: [int(((started["bedrooms"] == s) & (ts.dt.to_period("M") == pd.Period("2026-%02d" % m))).sum())
-                   for m in range(4, 10)] for s in W.SIZES}
-    rev, orig = tune_plans(df, pl)
+    b5 = started["bedrooms"].clip(upper=5)
+    actuals = {s: [int(((b5 == s) & (ts.dt.to_period("M") == pd.Period("2026-%02d" % m))).sum())
+                   for m in range(4, 10)] for s in D.ROWS}
+    acc = lets[lets["let_status"] != "Tenancy started"]
+    october = {s: int((acc["bedrooms"].clip(upper=5) == s).sum()) for s in D.ROWS}
+    rev, orig = tune_plans(df, lt, pl, october)
+    W.PLAN_REVISED.clear()
     W.PLAN_REVISED.update(rev)
+    W.PLAN_ORIGINAL.clear()
     W.PLAN_ORIGINAL.update(orig)
     D.plan_xlsx(p("plan"), actuals)
     D.notice_pdf(p("notice"))
     D.scheme_pdf(p("scheme"))
     D.procedure_docx(p("procedure"))
     D.prices_xlsx(p("prices"))
-    # weekly position from the placements extract on Sunday 27 September
+    # weekly position from the placements extract on Sunday 27 September, by the unit each household occupies
     t = pd.Timestamp("2026-09-27")
     ps = pd.to_datetime(place["placement_start"])
     pe = pd.to_datetime(place["placement_end"].replace("", None))
     live = place[(ps <= t) & (pe.isna() | (pe > t))]
-    cs = cases.copy()
-    cs["need0"] = pd.to_numeric(cs["bedrooms_needed_at_decision"].replace("", None))
-    rvw = pd.read_csv(p("reviews"))
-    rvw["review_date"] = pd.to_datetime(rvw["review_date"])
-    nd = E.need_at(cs, rvw, t)
-    counts = live.assign(n=live["case_ref"].map(nd)).groupby(["accommodation_type", "n"]).size().to_dict()
+    beds = dict(zip(reg["unit_ref"], reg["bedrooms"]))
+    size = [0 if typ in ("Bed and breakfast", "Hostel") else int(beds[u])
+            for typ, u in zip(live["accommodation_type"], live["unit_ref"])]
+    counts = live.assign(n=size).groupby(["accommodation_type", "n"]).size().to_dict()
     th_live = live[live["accommodation_type"] == "Tenter House"]
     th_flats = th_live["unit_ref"].str[3].astype(int).value_counts().to_dict()
     D.weekly_position_xlsx(p("position"), counts, th_flats)

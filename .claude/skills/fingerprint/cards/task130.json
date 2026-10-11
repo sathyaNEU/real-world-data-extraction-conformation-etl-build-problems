@@ -10,23 +10,23 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.",
+  "answer": "Call off 52 replacement units for 1 April 2027: no one-bed, 10 two-bed, 18 three-bed and 24 four-bed.",
   "answer_source": "task130/submission.md, 1. Final Recommendation (the Call-off sheet of golden/tenter_house_replacement_units.xlsx carries the same units)",
   "gap": [
-    "rule",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G2",
-    "G11"
+    "G13",
+    "G11",
+    "G16"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
@@ -36,7 +36,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "ta_placements_2018-04_2026-09.csv",
-    "rows": 27981,
+    "rows": 27987,
     "entity": "one temporary-accommodation placement of one homeless household (a household's stay runs across one or more placements)",
     "grain": "placement",
     "source": "synthetic"
@@ -67,15 +67,18 @@
     "tenter_house_runoff.png"
   ],
   "opening_move": "evidence-first",
-  "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it.",
-  "driver_concrete": "Tenter House takes no new placements after the owner's notice, and a household on the main duty leaves temporary accommodation only when a move-on offer reaches it; offers go to every main-duty household in the borough, wherever it lives, in order of the date the duty was accepted within each bedroom size, against the monthly numbers in the move-on plan, so the households still in the block on 31 March 2027 are those whose place in their size's list lies beyond the plan's offers, near the front for some sizes and far back for others.",
-  "stump": "A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 136 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 46 households (no one-bed, 7 two-bed, 20 three-bed, 19 four-bed).",
+  "driver": "A waiting list is split into classes by an attribute the governing rule works out on the day from each member's composition, while the case record keeps that attribute as last assessed; a run-off forecast against a planned supply has to recompute every member's class on each allocation day, because members age across the rule's thresholds and a record assessed years earlier holds the longest-waiting members in classes they have already left.",
+  "driver_concrete": "Move-on lets go in monthly rounds to every main-duty household in the borough by duty date, within the number of bedrooms it needs on the day of the round under the allocations scheme's bedroom standard (a child reaching ten or sixteen can add a room); the case record's bedroom need is reassessed only at the decision, a reported birth, a move in TA or an offer, so the households at the front of each list, which have waited longest, are the ones the record most often has on the wrong list, and the households left in Tenter House on 31 March 2027 depend on lists worked out from the household members on each round day, with the replacement unit sized on the need on 1 April.",
+  "stump": "A competent solver builds the borough-wide duty-date queue the scheme files, takes each household's bedroom need from the case record (the decision and the reviews), works it against the revised plan with the accepted October lets taken out, and calls off 66 units (no one-bed, 19 two-bed, 35 three-bed, 12 four-bed); the step that lands it there is taking the recorded need as the household's need, when the scheme offers each home to the household that needs its bedrooms on the day of the round, worked out from the people on the application, and the record lags children reaching ten and sixteen for the long-waiting households at the front of every list: the lists rebuilt from the household members on each round day leave 52 households (no one-bed, 10 two-bed, 18 three-bed, 24 four-bed).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task80": "task80 dates a fixed-term status from the criterion event that conferred it rather than from when it was first observed operating; here nothing is dated or certified: a closed group's departures are a rank inside a borough-wide priority list against a planned supply, read per size class, and the wrong readings are rates and survival curves, not a mis-dated status.",
     "task86": "task86 files the list order and works it as a low rung; its decisive move is an earlier hidden draw on the same pool that empties the front of the list. Here the list order itself is the decisive rung, filed nowhere and recovered only from the lets log, and nothing draws on the supply before the list.",
     "task50": "task50 shares a component (a supply worked against demand) on a different driver; here departures from a closed group are a rank inside a borough-wide list against planned lets, which no rate or curve reproduces.",
-    "task125": "task125 sizes a council call-off for April 2027 too (shape 02, purchase order, local government), but its driver is unrelated; the deliverable stem was renamed from calloff_2027 to replacement_units so the two do not share a file name."
+    "task125": "task125 sizes a council call-off for April 2027 too (shape 02, purchase order, local government), but its driver is unrelated; the deliverable stem was renamed from calloff_2027 to replacement_units so the two do not share a file name.",
+    "task132": "task132 forecasts failures of replaced modules by module age, renewing the module after a failure; here the forecast is a rank in a rationed list whose classes are recomputed on each round day from household ages, with no hazard and no renewal.",
+    "task133": "task133 conditions a cumulative default curve on survival to date; here no curve or rate is used, and the decisive step is which list a household is on on the day of each round.",
+    "task102": "task102 moves scheduled payments across a fiscal-year boundary by a next-business-day release rule; here nothing is dated into a period: the decisive step is a household attribute, bedroom need, that the filed standard works out on each allocation day from the members' ages, against a case record that holds it as last assessed."
   },
   "lineage": [
     {
@@ -84,16 +87,16 @@
       "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it."
     }
   ],
-  "notes": "Re-rooted after the v1 portal failure. The v1 world (large-holder designation from ownership returns) had no analytic stump left: every surviving idea was a hidden record a diligent solver joins or a unit swap the judge reads as a lens flip. The re-root keeps the domain and subdomain and moves to a methodological stump: a closed group's departures forecast as a rank inside a rationed priority list rather than as a rate. stump_strategy 'other': the decisive property is the allocation order (a rank inside a group against a cumulative planned supply), not a limit that removes the natural pick, so binding_constraint (task127, task128) is not the move; the supply limit is common to every reading and the rate readings already respect it. Personas drawn with guard.py names --geo 'United Kingdom, England' --seed 130. 2026-10-11: the move-on order is filed as the council's allocations scheme extract (client two-layer standard).",
+  "notes": "Re-rooted after the v1 portal failure. The v1 world (large-holder designation from ownership returns) had no analytic stump left: every surviving idea was a hidden record a diligent solver joins or a unit swap the judge reads as a lens flip. The re-root keeps the domain and subdomain and moves to a methodological stump: a closed group's departures forecast as a rank inside a rationed priority list rather than as a rate. stump_strategy 'other': the decisive property is the allocation order (a rank inside a group against a cumulative planned supply), not a limit that removes the natural pick, so binding_constraint (task127, task128) is not the move; the supply limit is common to every reading and the rate readings already respect it. Personas drawn with guard.py names --geo 'United Kingdom, England' --seed 130. 2026-10-11: the move-on order is filed as the council's allocations scheme extract (client two-layer standard). 2026-10-11, hardening loop 1 after the v2 portal failure (the portal model built the filed duty-date queue and filed the golden 46): the queue now runs on the scheme's bedroom standard worked out on each round day from the household members (Part 3, filed), the case record's need lags it, five-or-more households wait for homes that size, and the call-off is sized on need on 1 April. stump_strategy time_semantics: the decisive step is the as-of date of the need. Personas unchanged.",
   "client_domain": "urban-regional-science",
   "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:queue-runoff-against-planned-supply",
+  "layer2_pattern": "own:queue-classes-recomputed-on-the-day",
   "layer1": [
-    "several sources for one picture (cases, placements, reviews, lets, plan, register)",
+    "several sources for one picture (cases, placements, reviews, household members, lets, plan, register)",
+    "the case record's bedroom need assessed at events, beside the household members on the register",
     "a household stay spread across placement rows",
-    "bedroom need revised in a separate reviews file with effective dates",
-    "a superseded plan sheet beside the revised one",
-    "accepted lets with tenancy starts after the extract",
+    "offers in monthly rounds, the October lets already accepted with tenancy starts after the extract",
+    "a superseded plan sheet beside the revised one, and a five-or-more row of zeros",
     "rates in two lots and two rate years"
   ]
 }

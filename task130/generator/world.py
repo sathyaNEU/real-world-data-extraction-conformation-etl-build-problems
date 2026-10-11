@@ -11,8 +11,14 @@ TH_OPEN = pd.Timestamp("2021-04-12")       # first placement into Tenter House
 TH_RULE = pd.Timestamp("2023-04-03")       # from here a vacant flat goes to the longest nightly-paid household
 MONTHS_FWD = pd.date_range("2026-10-01", "2027-03-01", freq="MS")
 
-SIZES = [1, 2, 3, 4]                       # bedroom need; 4 means four or more
-NEED_MIX = [0.35, 0.36, 0.23, 0.06]
+SIZES = [1, 2, 3, 4]                       # reporting sizes; 4 means four or more
+SIZES_LET = [1, 2, 3, 4, 5]                # bedrooms in a home let; a household needs exactly its need
+# household make-up at application (drives bedroom need through the bedroom standard)
+HH_TYPES = {"Single person": 0.25, "Couple, no children": 0.10, "Single parent with children": 0.37,
+            "Couple with children": 0.28}
+N_CHILDREN = {1: 0.38, 2: 0.33, 3: 0.18, 4: 0.08, 5: 0.03}
+OTHER_ADULT = 0.05                         # a family with an adult child or relative living with it
+BIRTH_RATE = 0.03                         # births a year in a household with an adult under 42
 
 # Tenter House: 178 self-contained flats by bedrooms
 TH_UNITS = {1: 30, 2: 72, 3: 58, 4: 18}
@@ -33,6 +39,11 @@ def supply(month, size):
     if size == 1 and y >= 2024.0:
         base = 17.3
     return base
+
+
+def supply5(month):
+    """homes with five or more bedrooms come up a few times a year"""
+    return 0.35
 
 # the move-on plan, October 2026 to March 2027: planned lets by tenancy start month
 PLAN_ORIGINAL = {  # drawn up in March 2026

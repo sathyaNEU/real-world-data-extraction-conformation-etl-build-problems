@@ -1,42 +1,56 @@
 {
-  "task": "task130",
-  "domain": "demographic-social-science",
-  "objective": "forecasting",
-  "architecture": "v2",
-  "stage": 6,
-  "stage_name": "delivered",
-  "updated": "2026-10-11",
-  "stump": "A competent solver runs the borough's recent monthly rate of main-duty households leaving TA (or a survival curve, or the plan shared over the lists) over the Tenter House households and calls off about 136 units; the step that lands it there is forecasting departures as a rate, when move-on lets go in duty-date order within each bedroom size against the move-on plan and the block's households sit near the front of those lists, so 46 remain: 0, 7, 20, 19.",
-  "duplicate_check": {
-    "heart": "PASS (two NOTEs vs task80, differentiated)",
-    "nearest": "task98 lineage 0.06",
-    "surface": "3 promoted (task100 0.147, task87 0.143, task80 card signature)",
-    "clone_check": "shape echo only (task86, task125); no reject tier; clone_check_report_task130.md"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (pass 2, metadata only, applied; no third pass)",
-    "report": "task130/determinism_check_report_pass2.md",
-    "pass1": "DETERMINISTIC, FIX_NOW (CPI month), applied"
-  },
-  "approved": null,
-  "delivered": "2026-10-11",
-  "portal": null,
-  "lineage": [
-    {
-      "architecture": "v1",
-      "portal": {
-        "date": "2026-10-10",
-        "result": "failed",
-        "note": "both top models filed the golden seven-section designation"
-      }
-    }
-  ],
-  "target_zip": {
-    "path": "task130/target.zip",
-    "bytes": 814196,
-    "members": 14,
-    "sha256": "ef3c1e2d9d164357ff04842dd0e7601eeccec94ac69abfa822fc586032a4f325"
-  },
-  "two_layer": "compliant: allocation order filed (scheme Part 6); six-point check in the design note"
+ "task": "task130",
+ "domain": "demographic-social-science",
+ "objective": "forecasting",
+ "architecture": "v2",
+ "stage": 4,
+ "stage_name": "leak check (hardening loop 1 built: lists on Part 3 need on each round day)",
+ "updated": "2026-10-11",
+ "stump": "A competent solver builds the filed duty-date queue on the case record's bedroom need, works it against the revised plan with the accepted October lets out, and calls off 66 units (0 / 19 / 35 / 12); the step that lands it there is taking the recorded need as the household's need, when the scheme offers each home to the household that needs its bedrooms on the day of the round, worked out from the household members, and the record lags the long-waiting households at the front of every list: 52 remain (0 / 10 / 18 / 24).",
+ "duplicate_check": {
+  "heart": "PASS (NOTE vs task102, differentiated)",
+  "nearest": "task119 0.08",
+  "surface": "",
+  "clone_check": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": {
+  "date": "2026-10-11",
+  "result": "failed",
+  "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "portal": {
+    "date": "2026-10-10",
+    "result": "failed",
+    "note": "both top models filed the golden seven-section designation"
+   }
+  }
+ ],
+ "target_zip": null,
+ "two_layer": "compliant: allocation order filed (scheme Part 6); six-point check in the design note",
+ "loops": 1,
+ "branch": "sathya8571/task130-harden",
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "solver_rounds": [
+  {
+   "round": 0,
+   "architecture": "v2",
+   "source": "portal 2026-10-11",
+   "landed": true,
+   "decision": "harden",
+   "brief": "the queue landed once the order was filed; rebuild the lists on Part 3 need on each round day against a case record that lags it"
+  }
+ ]
 }

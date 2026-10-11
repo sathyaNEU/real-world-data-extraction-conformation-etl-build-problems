@@ -31,7 +31,11 @@
       "format": "csv"
     },
     {
-      "path": "housing_allocations_scheme_2024_part6.pdf",
+      "path": "household_members_2026-09-30.csv",
+      "format": "csv"
+    },
+    {
+      "path": "housing_allocations_scheme_2024_parts_3_and_6.pdf",
       "format": "pdf"
     },
     {

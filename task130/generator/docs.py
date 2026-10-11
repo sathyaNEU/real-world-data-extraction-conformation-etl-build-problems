@@ -96,10 +96,28 @@ def notice_pdf(out_path):
 
 
 def scheme_pdf(out_path):
-    """Extract of the council's housing allocations scheme: the part on households owed the main duty."""
+    """Extract of the council's housing allocations scheme: the bedroom standard and the part on households
+    owed the main duty."""
     created = dt.datetime(2024, 3, 28, 10, 0)
-    d = _doc("Eileen Nicholls", "Housing Allocations Scheme 2024: Part 6", created)
+    d = _doc("Eileen Nicholls", "Housing Allocations Scheme 2024: Parts 3 and 6", created)
     _para(d, "Larkmoor Borough Council  ·  Housing Allocations Scheme 2024 (approved by Cabinet 21 March 2024, in force 1 April 2024)", size=8, italic=True)
+    _para(d, "Part 3. The bedroom standard", bold=True, size=13, space_after=8)
+    part3 = [
+        ("3.1", "We assess the number of bedrooms a household needs by allowing one bedroom for each of: the applicant, "
+                "with a partner if there is one; each other person aged 16 or over; each pair of children under 16 of "
+                "the same sex; each pair of children under 10, whatever their sex; and each remaining child. Children "
+                "are paired so that the household needs the fewest bedrooms."),
+        ("3.2", "The household is the applicant and the people who normally live with the applicant as members of the "
+                "family and are listed on the application. An expected child is counted once it is born."),
+        ("3.3", "Applicants must tell us when someone joins or leaves the household or a child is born. We assess the "
+                "household's need again when we are told, and when we check a household before moving it in "
+                "temporary accommodation."),
+        ("3.4", "We check the household against the application before every offer. A home is offered only to a "
+                "household that needs its number of bedrooms on the day of the offer under 3.1."),
+    ]
+    for k, t in part3:
+        _para(d, "%s  %s" % (k, t), space_after=6)
+    _para(d, "", space_after=4)
     _para(d, "Part 6. Households owed the main homelessness duty", bold=True, size=13, space_after=8)
     items = [
         ("6.1", "This Part applies to every household the council owes the main housing duty under section 193 of the "
@@ -109,9 +127,11 @@ def scheme_pdf(out_path):
                 "through the council's nominations to registered providers, or a private rented tenancy of at least "
                 "twelve months arranged through Larkmoor Lettings. Both are move-on lets for the purposes of this Part."),
         ("6.3", "Move-on lets are offered to households owed the main duty in the order of the date the duty was accepted, "
-                "the earliest first. Households accepted on the same date are offered in order of case reference."),
-        ("6.4", "A move-on let has the number of bedrooms the household is assessed as needing on the date of the offer, "
-                "under the bedroom standard in Part 3. A household whose need is reassessed keeps its acceptance date."),
+                "the earliest first. Households accepted on the same date are offered in order of case reference. A "
+                "household whose bedroom need changes keeps its acceptance date on the list for its new number of bedrooms."),
+        ("6.4", "Move-on lets are offered in monthly rounds. The round for tenancies starting in a month is held on the "
+                "third Monday of the month before, and each home offered in it goes to the first household on the list "
+                "for its number of bedrooms on the day of the round (3.4)."),
         ("6.5", "The number of move-on lets expected in each month, by number of bedrooms, is set out in the lettings "
                 "team's move-on plan, which is reviewed each quarter and when a handover date changes."),
         ("6.6", "A household may ask for a review of the suitability of a final offer under section 202. The offer stands "
@@ -120,12 +140,12 @@ def scheme_pdf(out_path):
     for k, t in items:
         _para(d, "%s  %s" % (k, t), space_after=6)
     _para(d, "")
-    _para(d, "Extract: Part 6 only. Parts 1 to 5 (eligibility, qualification, the bedroom standard, banding and "
-             "local lettings) and Part 7 (transfers) are not reproduced.", size=8, italic=True)
+    _para(d, "Extract: Parts 3 and 6 only. Parts 1, 2, 4 and 5 (eligibility, qualification, banding and local "
+             "lettings) and Part 7 (transfers) are not reproduced.", size=8, italic=True)
     tmp = tempfile.mkdtemp()
-    src = os.path.join(tmp, "scheme.docx")
-    d.save(src)
-    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src],
+    src_ = os.path.join(tmp, "scheme.docx")
+    d.save(src_)
+    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src_],
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     shutil.move(os.path.join(tmp, "scheme.pdf"), out_path)
     shutil.rmtree(tmp)
@@ -150,9 +170,9 @@ def procedure_docx(out_path):
         "Nothing about the closure changes how lets are made.",
         "Every household living in Tenter House on 31 March 2027 moves that day to a replacement self-contained unit "
         "called off under Lot 3 of the Kent and Medway TA dynamic purchasing system, starting on 1 April 2027.",
-        "A replacement unit has the number of bedrooms the household needs as assessed at the date of this note: "
-        "the latest bedroom-need review on the system, or the need at the decision where there has been no review. "
-        "Households needing four or more bedrooms get a four-bedroom unit.",
+        "A replacement unit has the number of bedrooms the household will need on 1 April 2027 under Part 3 of the "
+        "allocations scheme, counting the people listed on its application on 30 September 2026. Households needing "
+        "four or more bedrooms get a four-bedroom unit, the largest Lot 3 size.",
         "Lot 3 units are paid weekly at the DPS rate for the year in which the unit starts.",
         "Households owed only the interim duty are not placed in Tenter House; every household there is owed the "
         "main duty.",
@@ -186,9 +206,9 @@ def plan_xlsx(out_path, actuals):
         "Move-on lets: social housing lets through our nominations and private lets through Larkmoor Lettings, "
         "made to households we owe the main housing duty.",
         "Figures are numbers of lets, by the number of bedrooms in the home let and the month the tenancy starts.",
-        "October 2026 includes lets already offered and accepted whose tenancies start in October.",
+        "October 2026 is the round of 21 September 2026: every October let has been offered and accepted.",
         "April to September 2026 columns are lets made (tenancy started), from the move-on lets log.",
-        "Four-bedroom column includes homes with four or more bedrooms.",
+        "No homes with five or more bedrooms are expected to be let before April 2027.",
         "Owner: Eileen Nicholls, housing register and lettings. Updated quarterly or when a handover date moves.",
     ]
     for i, t in enumerate(notes, 1):
@@ -196,6 +216,10 @@ def plan_xlsx(out_path, actuals):
     n.column_dimensions["A"].width = 120
     xlcalc.freeze(wb)
     wb.save(out_path)
+
+
+ROWS = [1, 2, 3, 4, 5]
+LABEL = {1: "1", 2: "2", 3: "3", 4: "4", 5: "5 or more"}
 
 
 def _sheet(ws, title, plan, actuals, note):
@@ -206,18 +230,19 @@ def _sheet(ws, title, plan, actuals, note):
     past = ["Apr 2026", "May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Sep 2026"]
     _hdr(ws, 4, ["Bedrooms"] + ["%s (let)" % m for m in past] + MONTHS + ["Oct-Mar total"],
          [11] + [11] * 12 + [13])
-    for r, s in enumerate(W.SIZES, 5):
-        ws.cell(row=r, column=1, value="4+" if s == 4 else str(s))
+    for r, s in enumerate(ROWS, 5):
+        ws.cell(row=r, column=1, value=LABEL[s])
         for j, v in enumerate(actuals[s]):
             ws.cell(row=r, column=2 + j, value=int(v))
-        for j, v in enumerate(plan[s]):
+        fwd = plan.get(s, [0] * 6)
+        for j, v in enumerate(fwd):
             ws.cell(row=r, column=8 + j, value=int(v))
-        ws.cell(row=r, column=14, value=int(sum(plan[s])))
-    r = 9
+        ws.cell(row=r, column=14, value=int(sum(fwd)))
+    r = 5 + len(ROWS)
     ws.cell(row=r, column=1, value="All").font = Font(bold=True)
     for j in range(2, 15):
         col = openpyxl.utils.get_column_letter(j)
-        ws.cell(row=r, column=j, value="=SUM(%s5:%s8)" % (col, col)).font = Font(bold=True)
+        ws.cell(row=r, column=j, value="=SUM(%s5:%s%d)" % (col, col, r - 1)).font = Font(bold=True)
     ws.freeze_panes = "B5"
 
 
@@ -265,31 +290,33 @@ def weekly_position_xlsx(out_path, counts, th_flats):
     ws.title = "Position"
     ws["A1"] = "Temporary accommodation: weekly position, Monday 28 September 2026"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Households in TA at midnight on Sunday 27 September, by accommodation type and bedrooms needed."
+    ws["A2"] = ("Households in TA at midnight on Sunday 27 September, by accommodation type and the size of the "
+                "unit they occupy (bed and breakfast and hostel households by room).")
     ws["A2"].font = Font(italic=True, size=9)
     types = ["Bed and breakfast", "Hostel", "Nightly-paid self-contained", "Private sector lease", "Tenter House"]
-    _hdr(ws, 4, ["Accommodation type", "1 bed", "2 bed", "3 bed", "4+ bed", "All"], [30, 9, 9, 9, 9, 9])
+    _hdr(ws, 4, ["Accommodation type", "1 bed unit", "2 bed unit", "3 bed unit", "4 bed unit", "Room", "All"],
+         [30, 10, 10, 10, 10, 9, 9])
     r = 5
     for t in types:
         ws.cell(row=r, column=1, value=t)
-        for j, s in enumerate(W.SIZES, 2):
+        for j, s in enumerate(W.SIZES + [0], 2):
             ws.cell(row=r, column=j, value=int(counts.get((t, s), 0)))
-        ws.cell(row=r, column=6, value="=SUM(B%d:E%d)" % (r, r))
+        ws.cell(row=r, column=7, value="=SUM(B%d:F%d)" % (r, r))
         r += 1
     ws.cell(row=r, column=1, value="All TA").font = Font(bold=True)
-    for j in range(2, 7):
+    for j in range(2, 8):
         col = openpyxl.utils.get_column_letter(j)
         ws.cell(row=r, column=j, value="=SUM(%s5:%s%d)" % (col, col, r - 1)).font = Font(bold=True)
     r += 2
     ws.cell(row=r, column=1, value="Tenter House flats").font = Font(bold=True)
     r += 1
-    _hdr(ws, r, ["", "1 bed", "2 bed", "3 bed", "4 bed", "All"])
+    _hdr(ws, r, ["", "1 bed", "2 bed", "3 bed", "4 bed", "", "All"])
     r += 1
     for label, vals in (("Flats", W.TH_UNITS), ("Occupied", th_flats)):
         ws.cell(row=r, column=1, value=label)
         for j, s in enumerate(W.SIZES, 2):
             ws.cell(row=r, column=j, value=int(vals.get(s, 0)))
-        ws.cell(row=r, column=6, value="=SUM(B%d:E%d)" % (r, r))
+        ws.cell(row=r, column=7, value="=SUM(B%d:E%d)" % (r, r))
         r += 1
     ws.cell(row=r, column=1, value="Tenter House: no new placements since 15 September (lease ends 31 March 2027).")
     ws.cell(row=r, column=1).font = Font(italic=True, size=9)
@@ -304,7 +331,6 @@ Prepared by the housing systems team, 1 October 2026. Extracts run to 30 Septemb
 General
   Dates are ISO (YYYY-MM-DD). An empty date means the event had not happened by 30 September 2026.
   case_ref identifies one homelessness application. A household that applies again gets a new case_ref.
-  Bedrooms: 4 means four or more.
 
 homelessness_cases_2026-09-30.csv
   One row per case open at any time from 1 April 2018, or opened since.
@@ -313,14 +339,23 @@ homelessness_cases_2026-09-30.csv
   decision                     Main duty accepted / Main duty not owed / Awaiting decision
   decision_date                date of the main duty decision. For Main duty accepted this is the date
                                the main housing duty was accepted.
-  bedrooms_needed_at_decision  bedroom need assessed at the decision (later reviews are in
-                               bedroom_need_reviews.csv)
+  bedrooms_needed_at_decision  bedroom need assessed under Part 3 of the allocations scheme at the
+                               decision. Later assessments that changed it are in
+                               bedroom_need_reviews.csv.
   case_status                  Open or Closed on 30 September 2026
   closed_date, closure_reason  when and why the case closed. A case owed the main duty closes when the
                                duty ends, normally on the start date of a settled tenancy.
 
 bedroom_need_reviews.csv
-  One row per review that changed a household's bedroom need. The new need applies from review_date.
+  One row per later assessment that changed the bedroom need recorded on a case: after the household
+  reported a birth, or when the TA team checked the household before a move into self-contained TA.
+  bedrooms_after applies from review_date.
+
+household_members_2026-09-30.csv
+  One row per person listed on the application of each case open on 30 September 2026.
+  member_no                    1 is the applicant
+  relationship                 to the applicant
+  sex, date_of_birth           as held on the housing register
 
 ta_placements_2018-04_2026-09.csv
   One row per temporary accommodation placement live at any time from 1 April 2018. A household's
@@ -337,10 +372,10 @@ moveon_lets_2018-04_2026-09.csv
   One row per move-on let (social housing let through our nominations, or a private let through
   Larkmoor Lettings) to a household owed the main duty, tenancy start from 1 April 2018.
   bedrooms                     bedrooms in the home let
-  offer_date                   date the offer was made
+  offer_date                   the day of the offer round the home was offered in
   tenancy_start                first day of the tenancy, the day the household moves in and leaves TA
-  let_status                   Tenancy started, or Accepted, tenancy to start (offer accepted, tenancy
-                               starting after 30 September 2026)
+  let_status                   Tenancy started, or Accepted, tenancy to start (offered in the round of
+                               21 September 2026, tenancy starting in October)
 
 accommodation_register_2026-09.csv
   TA units used since 1 April 2018: unit_ref, type, address or establishment, bedrooms (self-contained
