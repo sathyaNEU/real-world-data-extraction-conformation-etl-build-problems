@@ -2,8 +2,8 @@
  "task": "task133",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "leak check (realism rebuild running)",
+ "stage": 6,
+ "stage_name": "solver round 1 passed; leak read round 3 running, then the judge",
  "updated": "2026-10-11",
  "branch": "sathya8571/task133-same-day-access",
  "stump": "A competent solver stages the book, reads the model team's cumulative default curve from month 1 for every loan's next 12 months or remaining term and books about 44 per cent too much (about AUD 19.8 million against AUD 13,773,000); the step that lands it there is treating a curve that runs from origination as a term structure from the reporting date, when most of the book is past its riskiest months.",
@@ -18,7 +18,41 @@
   "nearest": "",
   "clone_check": ""
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-11",
+   "score": 37.6,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
+  },
+  {
+   "label": "round 1, skeptic",
+   "date": "2026-10-11",
+   "score": 37.6,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "plain": {
+    "landed": false,
+    "proxy": 37.6,
+    "answer": "A$13,318k (shifted curve, no survival division)"
+   },
+   "skeptic": {
+    "landed": false,
+    "proxy": 37.6,
+    "answer": "A$13,318k (shifted curve, no survival division)"
+   },
+   "mean": 37.6,
+   "decision": "pass",
+   "brief": "Both solvers read the curve from each loan's months on book (the decisive starting-point rung) and stopped at the unconditional increment, the -3.3% rung; both named the survival-conditioned reading (A$13,773k) and declined it because CRM-ECL-04 does not spell it out. Read as a stump, not a fork: 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date for a loan performing on that date, and the curve is the probability that a new loan defaults by each month on book. The judge rules on it at stage 7."
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",
