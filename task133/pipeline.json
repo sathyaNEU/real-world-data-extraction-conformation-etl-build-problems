@@ -2,8 +2,8 @@
  "task": "task133",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 6,
- "stage_name": "solver round",
+ "stage": "6b",
+ "stage_name": "post-round repair (deferred items and ask hardening)",
  "updated": "2026-10-11",
  "branch": "sathya8571/task133-harden",
  "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each performing loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000 (10.8 per cent low); the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so loans repaid in full by month a stay in the at-risk base.",
@@ -84,6 +84,29 @@
    "result": "two models: one stumped; the other filed AUD 13,773,000 by dividing the curve's increments by survival to date and scored 100 per cent, banking every ask",
    "decision": "harden",
    "brief": "The landed path divided the curve's increments by 1 - C(a); file the curve as the crude default share of every loan drawn in complete-term development cohorts, so that division becomes a rung and the answer conditions on the share still open and never defaulted, read from the development sample; replace the inheriting asks with two decoupled asks carried by silent devices (realised LGD of the 2023-24 defaults with the debt-sale receipt; the June book's stages at 30 September with the September labels and the next-day run dates); prompt under 1,000 characters."
+  },
+  {
+   "label": "loop 1 round 1",
+   "date": "2026-10-11",
+   "score": 35.3,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
+  },
+  {
+   "round": 3,
+   "architecture": 1,
+   "loop": 1,
+   "label": "loop 1 round 1",
+   "date": "2026-10-11",
+   "solver": {
+    "landed": false,
+    "proxy": 35.3,
+    "answer": "AUD 11,421,000 (R3, the plain difference, no division); it weighed the default-only conditional reading (AUD 11,737,000, R4) and kept R3"
+   },
+   "asks": "both decoupled asks cracked exactly: ask A's eight LGD figures (it split the lump debt-sale receipt at 3.85 cents per loan from the sale schedule) and ask B's sixteen counts (June scores from the 1 July run, hardship in force by dates); the token proxy undercounts this, on the rubric the response sits in the 40s",
+   "decision": "pass",
+   "brief": "6b: the deferred items, plus ask hardening; a careful solver running the hygiene battery cracked both asks, so their devices must survive it (silent devices that reconcile on the wrong path), measured against this round's path"
   }
  ],
  "judge": {
