@@ -29,22 +29,25 @@ The rest of the pipeline routes the same way:
 | Checking a build, or a batch, for cloning, templating or duplication | `clone-check` |
 | Declaring a bundle ready to ship, or recording a fix that came back from submission | `reduce-house-fixes` |
 | Checking a cut pack for anything that hands the solver the answer or the author's intent | `leak-check` |
-| Running an in-house solve of a finished build (paused: only if the author lifts the pause in their own words) | `solver-round` |
+| Running the in-house solver round on a finished build (stage 6 of `/build`, or `/solve`) | `solver-round` |
 | Taking a domain and an objective to a delivered task, or resuming a build in flight | `build-pipeline` |
 
 If two apply, invoke both, in pipeline order.
 
 **Five slash commands, all author-triggered:** `/build` (the pipeline), `/approve` (the heart
 check and sign-off), `/leak-check` (the leak sweeps plus a reader's pass), `/clone-check` (the
-adjudicated corpus comparison) and `/solve` (a solver round, **paused**: it does nothing unless the
-author lifts the pause in their own words). Each spends tokens in isolated threads except
-`/approve`, so none runs on the model's own initiative; `/build` is the author's licence for the
-stages it sequences, which are the adjudicated duplicate check and the determinism judge.
+adjudicated corpus comparison) and `/solve` (a solver round: plain and skeptic solvers, graded).
+Each spends tokens in isolated threads except `/approve`, so none runs on the model's own
+initiative; `/build` is the author's licence for every stage it sequences: the leak reader, the
+adjudicated duplicate check, every solver round its loop needs, and the determinism judge.
 
-**The workflow is design, build, duplicate check, determinism check, ship.** There is no solver
-round and no re-iteration loop: a build is not rebuilt because an in-house solve reached the golden
-answer, and no session runs a solver "to sanity check" a design. The one repair loop between the
-draw and the portal is the determinism judge's FIX_NOW, re-judged once.
+**The workflow is design, build, leak check, duplicate check, solver round, determinism check,
+ship, and it loops.** Two isolated solvers (plain and skeptic) work every finished build cold. A
+round that lands the main call, or lets the pair's mean proxy score above 40, sends the build back
+to design with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three
+loops per architecture, then re-rooted in the same objective and number, three architectures, then
+retired. Only a build that clears that worth-it gate goes to the determinism judge, whose FIX_NOW is
+fixed and re-judged once. No session runs a solve in the main thread, which has read the design.
 
 ## Per-author rules
 
@@ -66,22 +69,29 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  stumping: the draw, decisive rung from traps/_measured.md  ->  fingerprint check + register
    ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
    ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
-              ->  leak-check (leak.py, mechanical)  ->  fingerprint surface
+              ->  fingerprint surface
+   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated solver's-eye pass)
+              (a finding is fixed in the generator and the build re-run)
    ->  DUPLICATE CHECK: guard.py heart (mechanical)  ->  /clone-check pre-flight on this build
               (a reject-tier finding: redraw the colliding axis once, or retire)
-   ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once;
-              SEND_BACK retires the build
+   ->  SOLVER ROUND: /solve, plain and skeptic, graded at the rubric's weights
+              worth-it gate: one solver off the main call, mean proxy <= 40, no fork
+              fail: back to the ladder with the brief (harden, rebuild, leak check, solve again);
+              3 loops per architecture, then re-root; 3 architectures, then retire
+   ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once
+              (a fresh solver round first if the fix moved a figure, a rung or a document);
+              SEND_BACK re-roots or retires
    ->  SHIP to the author
    ->  the author tests on the official portal and reports back
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
-`/build <domain> <objective>` runs that loop as a stage machine with `pipeline.json` as its state
+`/build taskNN` (or `/build <domain> <objective>`) runs that loop as a stage machine with `pipeline.json` as its state
 (`build-pipeline`), without stopping for the author.
 
-The judge rehearsal runs in the background: spawn it as soon as the bundle is cut and keep working
-the stages that do not move a graded figure (the realism pass, the house fixes, the card, the design
-note) while it runs. The portal's own Determinism QC also runs in the background now and no longer
+The judge rehearsal runs once the solver round has passed, in the background: keep working the
+stages that do not move a graded figure (the card, the six-point check, the design note) while it
+runs. The portal's own Determinism QC also runs in the background now and no longer
 blocks submission, so a build is not held waiting on it; the in-house judge still gates the ship.
 
 The prompt shape is picked **before** the ladder, not after a thin rubric comes back, because it
@@ -111,19 +121,21 @@ it edits presentation and a figure that moves afterwards invalidates the pass. I
 deliverable looks like when a human opens it; `reduce-house-fixes` owns the container and the
 write-up prose, and the two are run together as the last block before the bundle is called ready.
 
-**The portal is the stump oracle, and nothing in house stands in for it.** The author tests the
-build on the official portal and reports the result, and that report is the only stump evidence the
-ledger records. Solver rounds are paused: none runs in `/build`, none runs in the main thread as a
-"quick sanity solve" (a solve that has read the design note measures nothing), and none triggers a
-hardening pass. Stump power is argued on paper instead: **name the stump in the design note** before
-the pack is cut, the wrong committed answer a competent solver files and the step that lands them
-there. A ladder whose author cannot write that sentence has no stump in it, and is not built.
+**The portal is the stump oracle; the solver round is the filter in front of it.** The author tests
+the build on the official portal and reports the result, and that report is the only stump evidence
+the ledger records. The in-house round decides what is worth sending: a build its solvers crack is
+hardened, not shipped, and a build they miss still has to face the portal. Solves run only in
+isolated threads on fresh scratch copies, never in the main thread (a solve that has read the design
+note measures nothing). Stump power is argued on paper first: **name the stump in the design note**
+before the pack is cut, the wrong committed answer a competent solver files and the step that lands
+them there. A ladder whose author cannot write that sentence has no stump in it, and is not built;
+the round then tests the sentence. A hardening deepens the analysis and never plants a decoy.
 
 **`/clone-check` is author-triggered only**: never invoke it on your own initiative, including right
 after applying a patch that seems to want validation, because it spends real tokens in an isolated
 thread. The cheap mechanical half of the same question (`guard.py heart`) runs inside the build
 stage, so a template or duplicate is caught before the adjudicated check is paid for; inside
-`/build` the adjudicated pre-flight on that one build is stage 4, and `/approve` runs the mechanical
+`/build` the adjudicated pre-flight on that one build is stage 5, and `/approve` runs the mechanical
 half on request.
 
 `/clone-check` also runs on a plain request, so a chat asking for a clone check, a template
@@ -175,7 +187,7 @@ is nothing to preserve. Banned inside a task folder: `DESIGN_V2.md` and every la
 `_v*_snapshot.zip`, `.bak` files, dated copies of the prompt or the golden, and a second design note
 under any name. If a scratch copy is genuinely needed while an edit is in flight, it goes in the
 scratchpad and is deleted when the edit lands. What a task folder may carry beside the design note:
-`START_HERE.md` (the seed it was numbered from, never edited once the build starts), `pipeline.json` (state, never reasoning), `solver_rounds/` (only if the pause is ever lifted) and the `leak_check_report.md` and
+`START_HERE.md` (the seed it was numbered from, never edited once the build starts), `pipeline.json` (state, never reasoning), `solver_rounds/` (the graded rounds) and the `leak_check_report.md` and
 `determinism_check_report*.md` reports, which are evidence rather than design.
 
 A build that cannot be rebuilt from its generator has a broken generator, and the fix is the
