@@ -2,8 +2,8 @@
  "task": "task133",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "leak check",
+ "stage": 6,
+ "stage_name": "solver round",
  "updated": "2026-10-11",
  "branch": "sathya8571/task133-harden",
  "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each performing loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000 (10.8 per cent low); the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so loans repaid in full by month a stay in the at-risk base.",
@@ -11,7 +11,8 @@
  "loops": 1,
  "leak": {
   "leak_py": "REVIEW, no LEAK on the loop 1 cut (2026-10-11, --asof 2026-10-12): 'the model' team in 3.2, scorecard values 680 and 560 in the migration note's conversion table, the policy's scope sentence, the subject's own vocabulary in the policy and dictionary, forward-scheduled dates; each answered in the design note",
-  "reader": "loop 1 (Sonnet): no sentence names the decisive step, no file states the answer; question 3 named the development sample (fixed: release package filed for the auditors' model-change review); one main-call fork, the payout month (fixed: the sample's outcome month pinned to the curve's by-the-end-of convention); the conditioning reading is the stump, for the judge"
+  "reader": "loop 1 (Sonnet): no sentence names the decisive step, no file states the answer; question 3 named the development sample (fixed: release package filed for the auditors' model-change review); one main-call fork, the payout month (fixed: the sample's outcome month pinned to the curve's by-the-end-of convention); the conditioning reading is the stump, for the judge",
+  "reader_targeted": "loop 1 targeted read (Sonnet) after the pre-round repair: no step named, no figure stated, the repayment month closed; deferred: the filing note is the one 'other files' entry that explains itself and only the two outcome columns carry descriptions (form tells), and 'each stage' never names stage 3 (ask B)"
  },
  "duplicate_check": {
   "heart": "WARN, no BLOCK on the loop 1 card (strategy risk, task134 driver 0.14 differentiated, older first names, Gate G forecasting in the block)",
@@ -114,6 +115,8 @@
   "realism: unsmoothed empirical curve with a step in each product's last month",
   "realism: hardship statuses never stale beyond the two pre-explained Active rows",
   "realism: reconciliations tie almost to the loan (316 departures at 90+ against 317 write-offs)",
-  "realism: CHG-26-0418 and the run_date note read as there so the 30 June score is recovered one way"
+  "realism: CHG-26-0418 and the run_date note read as there so the 30 June score is recovered one way",
+  "realism: the development sample's filing note is the only 'Other files' entry that explains its file, and only outcome and outcome_month_on_book carry column descriptions in the parquet",
+  "ask B: 'the number in each stage' never names stage 3, and the dictionary ties closure only to write-off"
  ]
 }
