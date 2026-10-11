@@ -2,21 +2,21 @@
  "task": "task445",
  "domain": "quantitative-finance",
  "objective": "data-extraction-conformation",
- "stage": 3,
- "stage_name": "build",
+ "stage": 6,
+ "stage_name": "solver round",
  "updated": "2026-10-11",
  "branch": "oviya1301/task445-13f-ownership-bridge",
  "stump": "Solvers flag on the December 13F reports in hand (WHII, JEMS) or one aggregate completion share (WHII, AMRB, TAAV, JEMS, FENN, SAF); the decisive step is completing the open filing window holder by holder (125 managers with a September report and none for December), giving WHII, GLI, OTF, JEMS, SAF.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-11",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK; CUSIP, CIK and vocabulary lines answered in the design note)",
+  "reader": "Q1-Q3 none on the decisive step, no main-call fork; deferred: data_sources.md didactic lines, NOPR CUSIP reads as a hint"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": ""
+  "heart": "WARN (not BLOCK)",
+  "nearest": "task130 v1 (retired; shares a component, not the driver)",
+  "clone_check": "pre-flight CLEAN, 0 findings on either track (task445/clone_check_report.md)"
  },
  "solver_rounds": [],
  "judge": {
