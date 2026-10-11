@@ -197,6 +197,9 @@ def deliveries(insts):
                 base = nxt + dt.timedelta(hours=int(r.integers(9, 15)), minutes=int(r.integers(0, 60)))
                 if rd < W.READ_DATES[-1] and r.random() < 0.35:
                     base = base + dt.timedelta(days=1)
+                if dd in i.recover:
+                    # the day sat in the collector's backlog and came in when the collector came back
+                    base = i.recover[dd]
                 vers.append((base, per - c3, c3, 0, 0))
             # settlement turns substituted and estimated reads final two days on, where the extract reaches it
             last = vers[-1]
@@ -218,33 +221,28 @@ def cutoff_of(rd):
 # ------------------------------------------------------------------ Wave 8 schedule
 
 def wave8(insts):
-    """The schedule as cut on Thursday 1 October from the meters then on each source build."""
+    """The schedule as cut on Thursday 1 October: every meter then on a source image behind the Wave 8
+    collectors and access points, batch A or B by collector."""
     r = S.rng("wave8")
     pool = sorted(insts, key=lambda x: x.nmi)
-    exch = [i for i in pool if i.group == "exch"]
-    w7em = [i for i in pool if i.group == "w7" and i.build_end == "EM3.12.2"]
-    w7px = [i for i in pool if i.group == "w7" and i.build_end == "PX5.3.1"]
-    ex_pick = [exch[j] for j in sorted(r.choice(len(exch), 22, replace=False))]
-    w7_pick = [w7em[j] for j in sorted(r.choice(len(w7em), W.WAVE8_PULLED_FORWARD, replace=False))]
-    w7_pick += [w7px[j] for j in sorted(r.choice(len(w7px), W.WAVE8_PX_PULLED_FORWARD, replace=False))]
-    quota = dict(W.WAVE8_EM_FROM)
-    quota.update(W.WAVE8_PX_FROM)
     rows = []
-    for i in ex_pick + w7_pick:
-        rows.append(dict(inst=i, serial=i.meters[0][0], frm=i.build_start,
-                         tgt="EM3.12.2" if i.build_start.startswith("EM") else "PX5.3.1"))
-        quota[i.build_start] -= 1
-    for frm, n in quota.items():
-        full = [i for i in pool if i.group == "full" and i.build_start == frm]
-        tgt = "EM3.12.2" if frm.startswith("EM") else "PX5.3.1"
-        for j in sorted(r.choice(len(full), n, replace=False)):
-            rows.append(dict(inst=full[j], serial=full[j].meters[0][0], frm=frm, tgt=tgt))
+    for i in pool:
+        if i.net_group != "w8":
+            continue
+        fam = W.MODULE[i.build_start]
+        tgt = "EM3.12.2" if fam == "EM3" else "PX5.3.1"
+        if i.group == "full" and i.build_start not in ("EM3.12.0", "EM3.11.4", "PX5.3.0"):
+            continue            # retiring and hotfix-list meters are not on the wave
+        rows.append(dict(inst=i, serial=i.meters[0][0], frm=i.build_start, tgt=tgt, parent=i.parent))
+    parents = sorted({x["parent"] for x in rows})
+    side = {p_: ("A" if k % 2 == 0 else "B") for k, p_ in enumerate(parents)}
+    for x in rows:
+        x["batch"] = side[x["parent"]]
     order = r.permutation(len(rows))
     rows = [rows[j] for j in order]
-    for k, row in enumerate(rows):
-        row["batch"] = "A" if k % 2 == 0 else "B"
+    rows.sort(key=lambda x: (x["batch"], x["parent"]))
     # the depot re-batch: rows copied onto batch B and never deleted from batch A
     a_em = [x for x in rows if x["batch"] == "A" and x["tgt"] == "EM3.12.2" and x["inst"].group == "full"]
     a_px = [x for x in rows if x["batch"] == "A" and x["tgt"] == "PX5.3.1" and x["inst"].group == "full"]
-    dup = [dict(x, batch="B") for x in a_em[:W.WAVE8_REBATCHED] + a_px[:W.WAVE8_PX_REBATCHED]]
+    dup = [dict(x, batch="B") for x in a_em[-W.WAVE8_REBATCHED:] + a_px[-W.WAVE8_PX_REBATCHED:]]
     return rows + dup

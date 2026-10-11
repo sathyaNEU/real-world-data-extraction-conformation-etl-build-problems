@@ -34,16 +34,18 @@ def payload(g):
         "hold": hold,
         "reference_read_health_pct": 99.50,
         "builds": [{"release": r,
-                    "assessed_installations": int(sc[r]["n"]),
                     "read_health_pct": round(float(sc[r]["rh"]), 2),
+                    "standard_error_pct": round(float(sc[r]["se"]), 2),
                     "lower_limit_pct": round(float(sc[r]["lcl"]), 2),
                     "alert": "FIRE" if sc[r]["fire"] else "HOLD"} for r in order],
-        "wave8_schedule_moves_if_it_goes_ahead": {k: int(v) for k, v in sorted(g["wave8"].items())},
+        "wave8_moves_under_this_call": {k: int(v) for k, v in sorted(g["wave8"].items())},
         "wave7_moves_this_week": [{"onto": k, "installations_moved": int(v["installations"]),
                                    "interval_reads_missing_at_cutoff_on_move_day": int(v["missing"])}
                                   for k, v in sorted(g["wave7"].items())],
         "notes": ["assessed installations ran the build from 00:00 Mon 5 Oct to 24:00 Sun 11 Oct AEST with no meter change (MDS-STD-114 3.7)",
                   "reads counted as actual in the latest MDM delivery received before 06:00 AEST the day after each read date (3.5)",
+                  "standard errors taken over the comms nodes (collectors, access points) the assessed installations report "
+                  "through, since a node that misses a night's collection takes that day from the installations behind it together",
                   "wave 8 counts follow the schedule as cut on 1 Oct, net of meters already on the target image or no longer in service"],
         "raised_by": "Metering Data Services",
         "raised_local": "2026-10-12T17:05:00+11:00",
@@ -57,21 +59,29 @@ HOLD_C, FIRE_C = "#2a78d6", "#d03b3b"
 def chart(g, path):
     sc = g["scorecard"]
     order = ordered(sc)
+    fire = [r for r in order if sc[r]["fire"]]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.edgecolor": MUTED,
                          "xtick.color": INK2, "ytick.color": INK, "axes.labelcolor": INK2})
     fig, ax = plt.subplots(figsize=(9.2, 5.0), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
+    lo = 96.0
     ys = list(range(len(order)))[::-1]
     for y, r in zip(ys, order):
         v = sc[r]
         col = FIRE_C if v["fire"] else HOLD_C
-        ax.plot([v["lcl"], v["rh"]], [y, y], color=col, lw=2, alpha=0.45, solid_capstyle="round", zorder=1)
-        ax.plot([v["lcl"]], [y], marker="|", markersize=15, mew=2.4, color=INK2, zorder=2)
+        tick = max(v["lcl"], lo + 0.06)
+        ax.plot([tick, v["rh"]], [y, y], color=col, lw=2, alpha=0.45, solid_capstyle="round", zorder=1)
+        if v["lcl"] >= lo + 0.06:
+            ax.plot([v["lcl"]], [y], marker="|", markersize=15, mew=2.4, color=INK2, zorder=2)
+            ax.annotate("limit %.2f" % v["lcl"], (v["lcl"], y), xytext=(-5, -13), textcoords="offset points",
+                        fontsize=7.5, color=INK2, ha="right" if v["lcl"] > lo + 0.9 else "left")
+        else:
+            ax.plot([lo + 0.06], [y], marker="<", markersize=7, color=INK2, zorder=2)
+            ax.annotate("limit %.2f (off scale)" % v["lcl"], (lo + 0.06, y), xytext=(6, -13), textcoords="offset points",
+                        fontsize=7.5, color=INK2, ha="left")
         ax.plot([v["rh"]], [y], marker="o", markersize=8.5, color=col, markeredgecolor=SURFACE, mew=2, zorder=3)
         ax.annotate("%.2f%%" % v["rh"], (v["rh"], y), xytext=(7, 6), textcoords="offset points", fontsize=8.5, color=INK)
-        ax.annotate("limit %.2f" % v["lcl"], (v["lcl"], y), xytext=(-5, -13), textcoords="offset points",
-                    fontsize=7.5, color=INK2, ha="right")
         if v["fire"]:
             ax.plot([100.05], [y], marker="o", markersize=7, color=FIRE_C, zorder=3, clip_on=False)
             ax.annotate("FIRE", (100.05, y), xytext=(8, 0), textcoords="offset points", fontsize=8.5,
@@ -80,16 +90,18 @@ def chart(g, path):
     ax.annotate("reference 99.50%", (99.50, len(order) - 0.45), xytext=(5, 0), textcoords="offset points",
                 fontsize=8, color=INK)
     ax.set_yticks(ys)
-    ax.set_yticklabels(["%s  (%s inst.)" % (r, format(sc[r]["n"], ",")) for r in order])
-    ax.set_xlim(96.4, 100.25)
+    ax.set_yticklabels(order)
+    ax.set_xlim(lo, 100.25)
     ax.set_ylim(-0.8, len(order) - 0.2)
     ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, _: "%.1f%%" % x))
-    ax.set_xlabel("read health of the average assessed installation (expected interval reads held as actual at the 06:00 AEST cut-off)",
+    ax.set_xlabel("read health: mean over assessed installations of expected interval reads held as actual at the 06:00 AEST cut-off",
                   fontsize=8)
-    fig.suptitle("Read-health alert fires on EM3.10.9, EM3.12.1 and PX5.2.7; the other five builds hold for Wave 8",
+    names = ", ".join(fire[:-1]) + " and " + fire[-1] if len(fire) > 1 else fire[0]
+    words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven"}
+    fig.suptitle("Read-health alert fires on %s; the other %s builds hold for Wave 8" % (names, words[len(order) - len(fire)]),
                  fontsize=11, x=0.015, ha="left", fontweight="bold", color=INK)
-    ax.set_title("Week of 5 to 11 Oct 2026 (AEST). Dot: read health. Tick: lower limit (reference less three "
-                 "standard errors). Furthest below the limit at the top.", fontsize=7.5, color=INK2, loc="left")
+    ax.set_title("Week of 5 to 11 Oct 2026 (AEST). Dot: read health. Tick: lower limit, the reference less three standard "
+                 "errors. Furthest below its limit at the top.", fontsize=7.5, color=INK2, loc="left")
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     for s_ in ("top", "right"):

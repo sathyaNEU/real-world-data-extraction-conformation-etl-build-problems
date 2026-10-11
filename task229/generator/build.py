@@ -31,7 +31,13 @@ def build(out, quiet=False):
     sched = R.wave8(insts)
     p = lambda k: os.path.join(out, P.FILES[k])
     counts = {}
-    counts["mdm"] = P.write_mdm(p("mdm"), insts, rows)
+    cuts_rows = P.interruptions(insts)
+    cuts = {}
+    for x in cuts_rows:
+        d0 = x["start"].date()
+        if W.READ_DATES[0] <= d0 <= W.READ_DATES[-1]:
+            cuts[(x["nmi"][:10], d0)] = round(0.85 * (x["end"] - x["start"]).total_seconds() / 86400.0, 4)
+    counts["mdm"] = P.write_mdm(p("mdm"), insts, rows, cuts)
     n_m, n_e, n_rep = P.write_hes(p("hes"), insts, {k: list(v) for k, v in ev.items()}, bench)
     counts["hes_meters"] = n_m
     P.write_register(p("register"), insts)
@@ -42,11 +48,12 @@ def build(out, quiet=False):
     counts["wave8"] = len(sched)
     P.write_census(p("census"), insts, ev, bench)
     counts["census"] = sum(1 for _ in open(p("census"))) - 1
-    P.write_telco(p("telco"))
+    P.write_dnsp(p("dnsp"), cuts_rows)
+    counts["dnsp"] = len(cuts_rows)
     D.standard_pdf(p("standard"))
     D.field_reference_md(p("fieldref"))
     P.write_log(p("log"), counts)
-    for k in ("register", "wave8", "telco"):
+    for k in ("register", "wave8", "dnsp"):
         PP.normalize_zip(p(k))
     pdf = open(p("standard"), "rb").read().replace(b"D:20000101000000+00'00'", b"D:20260624101500+10'00'")
     open(p("standard"), "wb").write(pdf)

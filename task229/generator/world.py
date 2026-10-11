@@ -80,16 +80,29 @@ WAVE7 = [
 WAVE7_ROLLBACK_RETRY = 41          # of the Tuesday EM3.12.0 movers: failed Tuesday, rolled back, moved Wednesday
 EXCHANGES = 29                     # installations whose meter was swapped mid-week (EM3.12.0 / EM3.11.4 meters)
 
-# Wave 8 (next week) as the rollout desk cut the schedule on Thursday 1 October
-WAVE8_EM_FROM = {"EM3.12.0": 931, "EM3.11.4": 402}
-WAVE8_PX_FROM = {"PX5.3.0": 118}
-WAVE8_PULLED_FORWARD = 37          # scheduled meters that went in Wave 7 instead
+# Wave 8 (next week) as the rollout desk cut the schedule on Thursday 1 October: every meter then on a
+# source image behind the Wave 8 collectors and access points
+WAVE8_EM_FULL = {"EM3.12.0": 872, "EM3.11.4": 402}   # full-week installations behind the Wave 8 collectors
+WAVE8_PX_FULL = {"PX5.3.0": 109}
+WAVE8_EXCHANGED = 22               # exchanged installations behind Wave 8 collectors (old meter on the sheet)
+WAVE8_PULLED_FORWARD = 37          # meters behind a Wave 8 collector that went in Wave 7 instead
 WAVE8_REBATCHED = 16               # meters listed on both batch sheets after the depot re-batch
 WAVE8_PX_PULLED_FORWARD = 9
 WAVE8_PX_REBATCHED = 5
 
+# the two RF mesh networks: EM3 modules report through collectors, PX5 modules through access points.
+# Firmware waves go out collector by collector (the head-end pushes an image through the collector).
+EM_COLLECTORS = {"pilot": 7, "w7": 12, "w8": 13, "old": 11, "new": 13}
+PX_APS = {"pilot": 3, "w7": 2, "w8": 3, "other": 8}
+# a night on which a collector's backhaul or power fails and its meters' day is not collected before
+# the delivery cut-off: probability per collector per read date, share of its meters caught
+EVENT_P = {"EM3": 0.009, "PX5": 0.005}
+EVENT_SHARE = (0.62, 0.96)
+NET_SALT = 34
+
 COMPANY = "Halvane Metering"
 PEOPLE = {"lead": "Troy Phillips"}
 
-# per-build texture salts, chosen by tune.py so every graded figure sits clear of its rounding edge
-SALT = {"EM3.10.9": 1, "EM3.11.4": 5, "EM3.12.0": 20, "EM3.12.1": 3, "EM3.12.2": 4, "PX5.2.7": 1, "PX5.3.0": 2, "PX5.3.1": 0}
+# per-build texture salts and the network salt, chosen by tune.py so every graded figure sits clear of
+# its rounding edge and every build clear of its limit
+SALT = {"EM3.10.9": 3, "EM3.11.4": 3, "EM3.12.0": 1, "EM3.12.1": 10, "EM3.12.2": 5, "PX5.2.7": 9, "PX5.3.0": 5, "PX5.3.1": 7}

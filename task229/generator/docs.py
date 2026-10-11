@@ -35,13 +35,13 @@ STANDARD = [
     ("h", "4  Measure"),
     ("p", "4.1  An installation's read health is its reads held at cut-off as a percentage of its expected "
           "interval reads for the assessment week."),
-    ("p", "4.2  A build's read health is the read health of its average assessed installation, that is, the "
-          "mean of its assessed installations' read health."),
+    ("p", "4.2  A build's read health is the mean of its assessed installations' read health."),
+    ("p", "4.3  A build's read health and its standard error are computed from that build's assessed "
+          "installations alone."),
     ("h", "5  Alert rule"),
     ("p", "5.1  The reference read health is 99.50 per cent."),
     ("p", "5.2  A build's lower limit sits three standard errors of the build's read health below the "
-          "reference. The standard error treats the week's assessed installations as a sample of how the "
-          "build behaves in the field."),
+          "reference."),
     ("p", "5.3  The alert fires on a build whose read health is below its lower limit. Otherwise the build "
           "holds."),
     ("h", "6  Routing"),
@@ -50,8 +50,9 @@ STANDARD = [
           "the build's installations."),
     ("p", "6.2  <b>Hold</b>: the coming wave proceeds on the build as scheduled."),
     ("h", "7  Reporting"),
-    ("p", "Read health and lower limits are reported in per cent to two decimal places. Standard deviations "
-          "are sample standard deviations."),
+    ("p", "Read health, standard errors and lower limits are reported in per cent to two decimal places. "
+          "Standard deviations are sample standard deviations (divisor one less than the count), and "
+          "standard errors are built from them."),
 ]
 
 
@@ -77,7 +78,7 @@ def standard_pdf(path):
     for kind, text in STANDARD:
         story.append(Paragraph(text, head if kind == "h" else body))
     story += [Spacer(1, 10), Paragraph("Revision history: r3 01/07/2026, cut-off aligned to the MDP service level; "
-                                       "r2 01/02/2025, reference raised from 99.30 per cent; r1 14/08/2023, first issue.", small),
+                                       "r2 01/02/2025, reference raised from 99.20 per cent; r1 14/08/2023, first issue.", small),
               Spacer(1, 4), Paragraph("Uncontrolled when printed. Internal: HVM staff and contracted rollout partners.", small)]
     doc.build(story)
 
@@ -118,6 +119,8 @@ read date replaces the earlier one.
 | meter_id | `MTR-` followed by the 8-digit meter serial |
 | module, model | communications module family and meter model |
 | status | IN_SERVICE, REMOVED, or BENCH (laboratory meters, never at an installation) |
+| comms_parent | the node that collects the meter's reads: a collector (`EMC-`) on the EM3 mesh, an access point (`PXA-`) on the PX5 mesh; empty for bench meters |
+| comms_parent_since | when the meter joined that node, UTC |
 | events[].type | COMMISSIONED, FW_IMAGE_STAGED (image downloaded, not running), FW_ACTIVATED, FW_ACTIVATION_FAILED, FW_ROLLBACK_OK, DECOMMISSIONED |
 | events[].image | HES image id; the release catalogue gives the release name |
 | events[].job | rollout job reference |
@@ -130,7 +133,7 @@ read date replaces the earlier one.
 
 `mp_installation_register_<date>.xlsx`: sheets Installations, Meters and Data streams. NMIs carry the
 11th (checksum) character. Meter serials are 8 digits. Installed and Removed are local time at the
-installation.
+installation. Network is the distributor the installation is connected to.
 
 ## Wave schedules
 

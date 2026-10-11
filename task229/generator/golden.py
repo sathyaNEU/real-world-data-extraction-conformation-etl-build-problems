@@ -52,6 +52,7 @@ def _load(target):
     cat = pd.read_csv(p("fw_release_catalogue.csv"))
     img2rel = dict(zip(cat["hes_image"], cat["release"]))
     hes = json.load(open(p("hes_meter_firmware_history.json")))
+    parent = {m["meter_id"].replace("MTR-", ""): m.get("comms_parent") for m in hes["meters"]}
     wb = openpyxl.load_workbook(p("mp_installation_register_20261012.xlsx"), read_only=True)
     meters = []
     for row in list(wb["Meters"].iter_rows(values_only=True))[3:]:
@@ -64,7 +65,12 @@ def _load(target):
         nmi11, sx, L, uom, since = row
         streams.append(dict(NMI=str(nmi11)[:10], NMI_SUFFIX=sx, per_day=1440 // int(L)))
     streams = pd.DataFrame(streams)
-    return dict(mdm=mdm, img2rel=img2rel, hes=hes, meters=meters, streams=streams, target=target)
+    nmi_parent = {}
+    for nmi, serial in zip(meters["nmi"], meters["serial"]):
+        if parent.get(serial) and nmi not in nmi_parent:
+            nmi_parent[nmi] = parent[serial]
+    return dict(mdm=mdm, img2rel=img2rel, hes=hes, meters=meters, streams=streams, target=target, parent=parent,
+                nmi_parent=nmi_parent)
 
 
 def running_builds(hes, img2rel, dedupe=True, failed_moves=False, staged_moves=False):
@@ -147,6 +153,14 @@ def panel(D, v, pop, denom="register"):
     """One row per assessed data stream and market day. denom="register": every day of every stream
     the register lists, an absent register-day holding no actual reads; denom="rows": only the
     register-days the chosen version set carries."""
+    key = (id(v), id(pop), denom)
+    cache = D.setdefault("_panel", {})
+    if key not in cache:
+        cache[key] = (v, pop, _panel(D, v, pop, denom))
+    return cache[key][2].copy()
+
+
+def _panel(D, v, pop, denom):
     x = v[v["NMI"].isin(pop.keys())][["NMI", "NMI_SUFFIX", "READ_DATE", "QTY_A", "expected"]]
     if denom == "rows":
         out = x.copy()
@@ -160,41 +174,91 @@ def panel(D, v, pop, denom="register"):
     return out
 
 
-def score(v, pop, unit="installation", err="installation", denom="register", D=None):
-    """Read health, n, standard error, lower limit and the alert, per release, under one reading."""
-    x = panel(D or DCUR[0], v, pop, denom)
+def _se_groups(y, x, groups, R, small=True):
+    """Standard error of R = sum(y) / sum(x) from the groups' summed residuals y - R x."""
+    df = pd.DataFrame({"g": groups, "r": y - R * x})
+    d = df.groupby("g", sort=False)["r"].sum().to_numpy()
+    k = len(d)
+    f = k / (k - 1) if small else 1.0
+    return math.sqrt(f * float((d ** 2).sum())) / float(x.sum())
+
+
+def _se_jack(y, x, groups):
+    """Delete-one-group jackknife standard error of sum(y) / sum(x)."""
+    df = pd.DataFrame({"g": groups, "y": y, "x": x}).groupby("g", sort=False)[["y", "x"]].sum()
+    Y, X = df["y"].sum(), df["x"].sum()
+    th = (Y - df["y"]) / (X - df["x"])
+    k = len(th)
+    return math.sqrt((k - 1) / k * float(((th - th.mean()) ** 2).sum()))
+
+
+def _units(D, v, pop, denom, unit):
+    """Per-unit arrays (value, weight, comms parent, NMI, release) for one reading, cached."""
+    key = (id(v), id(pop), denom, unit)
+    cache = D.setdefault("_units", {})
+    if key in cache:
+        return cache[key][2]
+    x = panel(D, v, pop, denom)
+    x["parent"] = x["NMI"].map(lambda n: D["nmi_parent"].get(n) or ("solo:" + n))
+    if unit in ("installation", "pooled"):
+        inst = x.groupby("NMI").agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
+                                    release=("release", "first")).reset_index()
+        if unit == "installation":
+            y, w = (100.0 * inst["A"] / inst["E"]).to_numpy(), np.ones(len(inst))
+        else:
+            y, w = 100.0 * inst["A"].to_numpy(), inst["E"].to_numpy().astype(float)
+        out = pd.DataFrame({"y": y, "w": w, "parent": inst["parent"], "NMI": inst["NMI"], "release": inst["release"],
+                            "E": inst["E"]})
+    elif unit == "row":
+        out = pd.DataFrame({"y": (100.0 * x["QTY_A"] / x["expected"]).to_numpy(), "w": 1.0, "parent": x["parent"],
+                            "NMI": x["NMI"], "release": x["release"], "E": x["expected"]})
+    elif unit == "stream":
+        st = x.groupby(["NMI", "NMI_SUFFIX"]).agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
+                                                  release=("release", "first")).reset_index()
+        out = pd.DataFrame({"y": (100.0 * st["A"] / st["E"]).to_numpy(), "w": 1.0, "parent": st["parent"],
+                            "NMI": st["NMI"], "release": st["release"], "E": st["E"]})
+    cache[key] = (v, pop, out)
+    return out
+
+
+def score(v, pop, unit="installation", err="collector", denom="register", D=None):
+    """Read health, n, standard error, lower limit and the alert, per release, under one reading.
+    unit: installation (the mean of installation shares, the standard), pooled (reads over reads),
+    row (mean of register-day shares), stream (mean of data-stream shares). err: collector (the
+    installations' comms parents as the units the standard error is built from, n - 1 convention),
+    collector_cr0, collector_jack, installation (each installation its own unit), installation_ddof0,
+    binomial_reads, binomial_installations, none."""
+    D = D or DCUR[0]
+    U = _units(D, v, pop, denom, unit)
     res = {}
     for rel in RELEASES:
-        g = x[x["release"] == rel]
+        g = U[U["release"] == rel]
         if len(g) == 0:
             res[rel] = None
             continue
-        inst = g.groupby("NMI")[["QTY_A", "expected"]].sum()
-        share = 100.0 * inst["QTY_A"] / inst["expected"]
-        n = len(inst)
-        if unit == "installation":
-            rh = share.mean()
-        elif unit == "pooled":
-            rh = 100.0 * g["QTY_A"].sum() / g["expected"].sum()
-        elif unit == "row":
-            rh = (100.0 * g["QTY_A"] / g["expected"]).mean()
-        elif unit == "stream":
-            st = g.groupby(["NMI", "NMI_SUFFIX"])[["QTY_A", "expected"]].sum()
-            rh = (100.0 * st["QTY_A"] / st["expected"]).mean()
-        if err == "installation":
-            se = share.std(ddof=1) / math.sqrt(n)
+        uy, ux, ug, un = g["y"].to_numpy(), g["w"].to_numpy().astype(float), g["parent"].to_numpy(), g["NMI"].to_numpy()
+        n = len(set(un))
+        rh = float(uy.sum() / ux.sum())
+        if err == "collector":
+            se = _se_groups(uy, ux, ug, rh)
+        elif err == "collector_cr0":
+            se = _se_groups(uy, ux, ug, rh, small=False)
+        elif err == "collector_jack":
+            se = _se_jack(uy, ux, ug)
+        elif err == "installation":
+            se = _se_groups(uy, ux, un, rh)
         elif err == "installation_ddof0":
-            se = share.std(ddof=0) / math.sqrt(n)
+            se = _se_groups(uy, ux, un, rh, small=False)
         elif err == "binomial_reads":
             p = rh / 100.0
-            se = 100.0 * math.sqrt(p * (1 - p) / g["expected"].sum())
+            se = 100.0 * math.sqrt(p * (1 - p) / g["E"].sum())
         elif err == "binomial_installations":
             p = rh / 100.0
             se = 100.0 * math.sqrt(p * (1 - p) / n)
         elif err == "none":
             se = 0.0
         lcl = REFERENCE - K * se
-        res[rel] = dict(n=n, rh=rh, se=se, lcl=lcl, fire=bool(rh < lcl))
+        res[rel] = dict(n=n, k=len(set(ug)), rh=rh, se=se, lcl=lcl, fire=bool(rh < lcl))
     return res
 
 
@@ -207,7 +271,14 @@ def fire_set(res):
 
 # ------------------------------------------------------------------ the asks
 
-def wave8_moves(D):
+def wave8_moves(D, fire=()):
+    """Installations the Wave 8 schedule moves onto each target once the call is applied: the
+    schedule's meters still in service and not already on the target, none onto a build that fires."""
+    out = wave8_schedule(D)
+    return {k: (0 if k in fire else v) for k, v in out.items()}
+
+
+def wave8_schedule(D):
     wb = openpyxl.load_workbook(os.path.join(D["target"], "wave8_schedule.xlsx"), read_only=True)
     rows = []
     for name in ("Batch A 13-10", "Batch B 14-10"):
@@ -265,4 +336,6 @@ def solve(target):
     pop = assessed(D, "fullweek")
     vc = versions(D["mdm"], "cutoff")
     res = score(vc, pop)
-    return D, dict(scorecard=res, fire=fire_set(res), wave8=wave8_moves(D), wave7=wave7_cost(D, vc))
+    fs = fire_set(res)
+    return D, dict(scorecard=res, fire=fs, wave8=wave8_moves(D, fs), wave8_schedule=wave8_schedule(D),
+                   wave7=wave7_cost(D, vc))

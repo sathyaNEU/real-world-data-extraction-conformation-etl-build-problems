@@ -34,7 +34,7 @@ SOURCES = {
     "fieldref": "MDS analytics field reference for the read-health extracts",
     "log": "Extract log for the pull of 12 October 2026",
     "census": "HES nightly firmware census by image and status, 00:00 on 12 October 2026",
-    "telco": "Carrier IoT network maintenance notices received in October 2026",
+    "dnsp": "Planned supply interruption notifications received from the distributors in October 2026",
 }
 
 
@@ -61,7 +61,7 @@ def metadata():
         "domain": "Energy Systems & Utilities",
         "subdomain": "other: smart-meter interval data delivery quality (metering data provider read performance)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "10 (scorecard against thresholds): eight builds, each with assessed installations, read health, lower limit and fire or hold, plus the Wave 8 exposure and the Wave 7 cost",
+        "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit and fire or hold, plus the Wave 8 moves under the call and the Wave 7 cost",
         "as_of": "2026-10-12",
         "deliverables": ["wave8_read_health_alerts.json", "read_health_by_build_wk41.png"],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
@@ -69,7 +69,7 @@ def metadata():
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "constructed for this task by task229/generator/make.py (seeded, deterministic) around a fictional "
-                               "metering data provider (Halvane Metering) with real New South Wales suburbs and postcodes and the "
+                               "metering data provider (Halvane Metering) with real New South Wales distributor names and the "
                                "AEMO NMI checksum; no real installation, meter, customer or firmware product is depicted.",
                      "date": "2026-10-12", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-11",

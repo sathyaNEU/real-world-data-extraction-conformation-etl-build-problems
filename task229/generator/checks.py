@@ -1,13 +1,12 @@
 """Assertions over the built pack: the ladder, the grid, the asks' stops, separation, gates, bins.
 
 Run after build.py. Everything is computed from target/ through golden.py, plus the simulated world
-where an assertion is about the world itself (separation, the clean-data test)."""
+where an assertion is about the world itself (separation, chronology, the network's events)."""
 import collections
 import datetime as dt
 import itertools
 import json
 import os
-import re
 import shutil
 import sys
 import tempfile
@@ -36,6 +35,10 @@ def edge(x):
     return abs((x * 100) % 1 - 0.5) / 100
 
 
+def margin(v):
+    return v["rh"] - v["lcl"]
+
+
 def run(target, world=None, quiet=False):
     D, g = G.solve(target)
     sc = g["scorecard"]
@@ -43,124 +46,158 @@ def run(target, world=None, quiet=False):
 
     # ---------------------------------------------------------------- the call
     ok(g["fire"] == GOLD_FIRE, "golden fire set moved: %s" % (g["fire"],))
-    hold = tuple(sorted(r for r in G.RELEASES if r not in GOLD_FIRE))
-    ok(len(hold) == 5, "five builds hold")
     for r in G.RELEASES:
         v = sc[r]
-        m = v["rh"] - v["lcl"]
-        ok(abs(m) >= 0.05, "%s sits %.4f from its limit" % (r, m))
-        ok(edge(v["rh"]) >= 0.0015 and edge(v["lcl"]) >= 0.0015, "%s two-decimal edge" % r)
-    margins = sorted(sc[r]["rh"] - sc[r]["lcl"] for r in G.RELEASES)
+        ok(abs(margin(v)) >= 0.05, "%s sits %.4f from its limit" % (r, margin(v)))
+        ok(min(edge(v["rh"]), edge(v["se"]), edge(v["lcl"])) >= 0.0015, "%s two-decimal edge" % r)
+    margins = sorted(margin(sc[r]) for r in G.RELEASES)
     ok(min(b - a for a, b in zip(margins, margins[1:])) >= 0.04, "order by distance to the limit is not a near tie")
 
     # ---------------------------------------------------------------- the ladder
     vers = {w: G.versions(D["mdm"], w) for w in ("cutoff", "latest", "first")}
     pops = {m: G.assessed(D, m) for m in ("fullweek", "start", "end")}
-    rung = {
-        "R0 latest deliveries, every installation on its end-of-week build, pooled reads, read-count error": ("latest", "end", "pooled", "binomial_reads", "register"),
-        "R1 + reads held at the cut-off against every expected interval (a register-day held nowhere counts zero)": ("cutoff", "end", "pooled", "binomial_reads", "register"),
-        "R2 + installations that ran the build all week": ("cutoff", "fullweek", "pooled", "binomial_reads", "register"),
-        "R3 + the average installation": ("cutoff", "fullweek", "installation", "binomial_reads", "register"),
-        "R4 + installation-level error (the answer)": ("cutoff", "fullweek", "installation", "installation", "register"),
-    }
+    rung = collections.OrderedDict([
+        ("R0 latest deliveries, every installation on its end-of-week build, pooled reads, read-count error",
+         ("latest", "end", "pooled", "binomial_reads", "register")),
+        ("R1 + reads held at the cut-off against every expected interval (a register-day held nowhere counts zero)",
+         ("cutoff", "end", "pooled", "binomial_reads", "register")),
+        ("R2 + installations that ran the build all week", ("cutoff", "fullweek", "pooled", "binomial_reads", "register")),
+        ("R3 + the mean of installation read health", ("cutoff", "fullweek", "installation", "binomial_reads", "register")),
+        ("R4 + a standard error with each installation its own unit (sample SD over root n)",
+         ("cutoff", "fullweek", "installation", "installation", "register")),
+        ("R5 + a standard error built over the comms parents the installations share (the answer)",
+         ("cutoff", "fullweek", "installation", "collector", "register")),
+    ])
     expect = [("EM3.10.9", "EM3.12.2", "PX5.3.0", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "PX5.2.7", "PX5.3.1"),
+              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
+              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0"),
+              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.1"),
+              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7"),
               GOLD_FIRE]
     sets = []
     for (name, cell), want in zip(rung.items(), expect):
-        fs = G.fire_set(G.score(vers[cell[0]], pops[cell[1]], cell[2], cell[3], cell[4]))
+        fs = G.fire_set(G.score(vers[cell[0]], pops[cell[1]], cell[2], cell[3], cell[4], D=D))
         ok(fs == tuple(sorted(want)), "%s fires %s" % (name, fs))
         sets.append(fs)
         log.append("%s -> fires %s" % (name, ", ".join(fs)))
     ok(len(set(sets)) == len(sets), "every rung names a different set")
+    right = [sum(1 for r in G.RELEASES if (r in fs) == (r in GOLD_FIRE)) for fs in sets]
+    ok(max(right[:-1]) <= 6 and right[-1] == 8, "no rung below the answer lands the call: %s" % right)
+    log.append("calls right per rung: %s" % right)
 
     # ---------------------------------------------------------------- the grid, cell by cell
     units = ("installation", "pooled", "row", "stream")
-    errs = ("installation", "binomial_reads", "binomial_installations", "none")
+    errs = ("collector", "collector_cr0", "installation", "binomial_reads", "binomial_installations", "none")
     golden_cells = []
     cells = 0
     for v, p, u, e, dn in itertools.product(vers, pops, units, errs, ("register", "rows")):
-        fs = G.fire_set(G.score(vers[v], pops[p], u, e, dn))
+        fs = G.fire_set(G.score(vers[v], pops[p], u, e, dn, D=D))
         cells += 1
         if fs == GOLD_FIRE:
             golden_cells.append((v, p, u, e, dn))
-    ok(cells == 288, "grid size")
-    ok(golden_cells == [("cutoff", "fullweek", "installation", "installation", "register"),
-                        ("first", "fullweek", "installation", "installation", "register"),
-                        ("first", "fullweek", "installation", "installation", "rows")],
-       "only the standard's reading and the first-delivery readings (which move figures, not the call) land the call: %s" % golden_cells)
-    naive_cut = G.score(vers["cutoff"], pops["fullweek"], "installation", "installation", "rows")
-    ok(not naive_cut["PX5.2.7"]["fire"], "dividing by the register-days held at the cut-off holds PX5.2.7")
-    ok(G.fire_set(G.score(vers["cutoff"], pops["end"], "pooled", "binomial_reads", "rows")) == expect[0],
-       "the cut-off filter applied to rows alone leaves the natural pipeline's set unchanged")
+    ok(cells == 432, "grid size")
+    want_cells = [("cutoff", "fullweek", "installation", "collector", "register"),
+                  ("cutoff", "fullweek", "installation", "collector_cr0", "register")]
+    extra = [c for c in golden_cells if c not in want_cells]
+    ok(all(c in golden_cells for c in want_cells), "the standard's reading lands the call under either small-sample convention")
+    ok(all(c[3] in ("collector", "collector_cr0") for c in golden_cells),
+       "every cell that lands the call builds its error over the comms parents: %s" % golden_cells)
+    for c in extra:
+        sc_x = G.score(vers[c[0]], pops[c[1]], c[2], c[3], c[4], D=D)
+        moved = [r for r in G.RELEASES if round(sc_x[r]["rh"], 2) != round(sc[r]["rh"], 2)
+                 or round(sc_x[r]["lcl"], 2) != round(sc[r]["lcl"], 2)]
+        ok(len(moved) >= 4, "a cell %s that lands the call moves at least four builds' graded figures (%d)" % (c, len(moved)))
+    log.append("grid: %d cells; %d land the call, every one on the comms-parent error: %s" % (cells, len(golden_cells), golden_cells))
+
+    # convergence: the call does not depend on the small-sample convention or the estimator family
+    fw = (vers["cutoff"], pops["fullweek"], "installation")
+    for e in ("collector_cr0", "collector_jack"):
+        ok(G.fire_set(G.score(*fw, e, "register", D=D)) == GOLD_FIRE, "%s: same call" % e)
+    jack = G.score(*fw, "collector_jack", "register", D=D)
+    log.append("jackknife over comms parents: same call; standard errors %s" % {r: round(jack[r]["se"], 3) for r in G.RELEASES})
+    # the error built over installations (either divisor) fires EM3.12.0 and EM3.12.2 with margin
+    inst = G.score(*fw, "installation", "register", D=D)
+    inst0 = G.score(*fw, "installation_ddof0", "register", D=D)
+    for r, lim in (("EM3.12.2", -0.2), ("EM3.12.0", -0.5)):
+        ok(margin(inst[r]) <= lim and margin(inst0[r]) <= lim, "%s fires on an installation-level error (%.3f)" % (r, margin(inst[r])))
+    ok(margin(sc["EM3.12.2"]) >= 2.0 and margin(sc["EM3.12.0"]) >= 0.3, "EM3.12.2 and EM3.12.0 hold on the comms-parent error")
+    for r in GOLD_FIRE:
+        ok(margin(inst[r]) <= -0.15, "%s fires on either error" % r)
+    log.append("deciding contrasts: EM3.12.2 %.2f against %.2f (installations as units) or %.2f (comms parents, k=%d); "
+               "EM3.12.0 %.2f against %.2f or %.2f (k=%d)"
+               % (sc["EM3.12.2"]["rh"], inst["EM3.12.2"]["lcl"], sc["EM3.12.2"]["lcl"], sc["EM3.12.2"]["k"],
+                  sc["EM3.12.0"]["rh"], inst["EM3.12.0"]["lcl"], sc["EM3.12.0"]["lcl"], sc["EM3.12.0"]["k"]))
+
+    # the data's own structure: a node-night either loses the day for most of the installations behind
+    # it or for very few of them, nothing between (the hole that makes the node the unit)
+    x = G.panel(D, vers["cutoff"], pops["end"])
+    x["parent"] = x["NMI"].map(D["nmi_parent"])
+    day = x.groupby(["NMI", "READ_DATE"]).agg(A=("QTY_A", "sum"), parent=("parent", "first"))
+    day["lost"] = day["A"] == 0
+    frac = day.groupby(["parent", "READ_DATE"])["lost"].mean()
+    lo, hi = frac[frac < 0.5], frac[frac >= 0.5]
+    ok(float(lo.max()) <= 0.12, "outside a node failure, a node-night loses the day for at most 12 per cent of its installations (%.3f)" % lo.max())
+    ok(float(hi.min()) >= 0.6 and len(hi) == 4, "four node-nights lose the day for 60 per cent or more of their installations: %s" % hi.round(3).to_dict())
+    log.append("node-nights losing the day for most installations: %s; every other node-night at most %.1f per cent"
+               % ({k: round(v_, 3) for k, v_ in hi.items()}, 100 * lo.max()))
+    ok(set(pops["fullweek"]) <= set(D["nmi_parent"]), "every assessed installation has a comms parent")
+    if world is not None:
+        moved_parent = [i for i in world["insts"] if i.group == "full" and i.since.date() >= dt.date(2026, 10, 5)]
+        ok(not moved_parent, "no assessed installation changed comms parent during the week")
+
+    # the cut-off rung: register-days held nowhere at the cut-off, and the partial application
+    naive_rows = G.score(vers["cutoff"], pops["fullweek"], "installation", "collector", "rows", D=D)
+    ok(not naive_rows["PX5.2.7"]["fire"], "dividing by the register-days held at the cut-off holds PX5.2.7")
+    part = G.fire_set(G.score(vers["cutoff"], pops["end"], "pooled", "binomial_reads", "rows", D=D))
+    ok(part != GOLD_FIRE and "PX5.2.7" not in part, "the cut-off filter applied to rows alone holds PX5.2.7: %s" % (part,))
+    ok(naive_rows["EM3.12.2"]["rh"] >= 99.5 and not naive_rows["EM3.12.0"]["fire"],
+       "dividing by held rows drops the node failures' days altogether (EM3.12.2 %.2f)" % naive_rows["EM3.12.2"]["rh"])
+    log.append("cut-off on rows alone fires %s; on held rows the node failures vanish (EM3.12.2 %.2f, EM3.12.0 %.2f)"
+               % (", ".join(part), naive_rows["EM3.12.2"]["rh"], naive_rows["EM3.12.0"]["rh"]))
     held_days = set(map(tuple, vers["cutoff"][["NMI", "NMI_SUFFIX", "READ_DATE"]].values.tolist()))
     pxn = [n for n, b in pops["fullweek"].items() if b == "PX5.2.7"]
     st = D["streams"][D["streams"]["NMI"].isin(pxn)]
     absent = sum(1 for _, r_ in st.iterrows() for d_ in G.DATES if (r_["NMI"], r_["NMI_SUFFIX"], d_) not in held_days)
     ok(absent >= 60, "PX5.2.7 has register-days the MDM held nothing for at the cut-off (%d)" % absent)
     log.append("PX5.2.7: %d register-days held nowhere at the cut-off; dividing by held rows gives %.2f against %.2f, the register gives %.2f"
-               % (absent, naive_cut["PX5.2.7"]["rh"], naive_cut["PX5.2.7"]["lcl"], sc["PX5.2.7"]["rh"]))
-    first = G.score(vers["first"], pops["fullweek"])
+               % (absent, naive_rows["PX5.2.7"]["rh"], naive_rows["PX5.2.7"]["lcl"], sc["PX5.2.7"]["rh"]))
+    late = G.score(vers["latest"], pops["fullweek"], D=D)
+    ok(not late["PX5.2.7"]["fire"], "PX5.2.7 holds on the latest deliveries")
+    first = G.score(vers["first"], pops["fullweek"], D=D)
     moved = [r for r in G.RELEASES if round(first[r]["rh"], 2) != round(sc[r]["rh"], 2)]
     ok(len(moved) >= 4, "the first-delivery reading moves at least four graded read-health figures: %s" % moved)
-    log.append("grid: %d cells; the call lands only on the standard's reading and on first-delivery (which moves %d read-health figures)" % (cells, len(moved)))
+    pooled = G.score(vers["cutoff"], pops["fullweek"], "pooled", "collector", D=D)
+    ok(pooled["PX5.3.0"]["fire"] and not pooled["EM3.12.1"]["fire"], "pooled reads fire PX5.3.0 and hold EM3.12.1")
+    log.append("pooled reads: PX5.3.0 %.2f, EM3.12.1 %.2f against the mean's %.2f and %.2f"
+               % (pooled["PX5.3.0"]["rh"], pooled["EM3.12.1"]["rh"], sc["PX5.3.0"]["rh"], sc["EM3.12.1"]["rh"]))
 
     # convergent readings (C1): same population and same figures
     sp_fail = G.running_builds(D["hes"], D["img2rel"], failed_moves=True)
     sp_raw = G.running_builds(D["hes"], D["img2rel"], dedupe=False)
     ok(G.assessed(D, "fullweek", sp_fail) == pops["fullweek"], "a failed activation read as a move changes no assessed installation")
     ok(G.assessed(D, "fullweek", sp_raw) == pops["fullweek"], "replayed events change no assessed installation")
-    sc0 = G.score(vers["cutoff"], pops["fullweek"], "installation", "installation_ddof0")
-    ok(G.fire_set(sc0) == GOLD_FIRE, "n divisor: same call")
-    dd = [r for r in G.RELEASES if round(sc0[r]["lcl"], 2) != round(sc[r]["lcl"], 2)]
-    ok(dd == ["PX5.3.1"], "the n divisor moves only the 37-installation pilot's limit at two decimals: %s" % dd)
-    # installation-day mean equals the installation mean for every assessed installation
-    x = G.panel(D, vers["cutoff"], pops["fullweek"])
-    day = x.groupby(["NMI", "READ_DATE"])[["QTY_A", "expected"]].sum()
-    day_mean = (100 * day["QTY_A"] / day["expected"]).groupby(level=0).mean()
-    wk = x.groupby("NMI")[["QTY_A", "expected"]].sum()
+    xx = G.panel(D, vers["cutoff"], pops["fullweek"])
+    dd = xx.groupby(["NMI", "READ_DATE"])[["QTY_A", "expected"]].sum()
+    day_mean = (100 * dd["QTY_A"] / dd["expected"]).groupby(level=0).mean()
+    wk = xx.groupby("NMI")[["QTY_A", "expected"]].sum()
     wk_share = 100 * wk["QTY_A"] / wk["expected"]
     ok(float((day_mean - wk_share).abs().max()) < 1e-9, "installation-day mean equals the installation's week share")
     gap = (D["mdm"]["cutoff"] - D["mdm"]["received"]).dt.total_seconds().abs() / 60
     ok(float(gap.min()) >= 8.0, "no delivery lands within 8 minutes of its cut-off")
-    # every row's expected count is the day's interval count
     ok(bool(((D["mdm"]["expected"] * D["mdm"]["INTERVAL_LENGTH"]) == 1440).all()), "every delivered register-day carries a full day of intervals")
 
-    # the deciding contrasts, both directions
-    pooled = G.score(vers["cutoff"], pops["fullweek"], "pooled", "installation")
-    ok(pooled["PX5.3.0"]["rh"] < pooled["PX5.3.0"]["lcl"] - 0.3 and not sc["PX5.3.0"]["fire"], "PX5.3.0: pooled reads fire, the average installation holds")
-    ok(pooled["EM3.12.1"]["rh"] >= 99.52 and sc["EM3.12.1"]["fire"], "EM3.12.1: pooled reads clear the reference, the average installation fires")
-    late = G.score(vers["latest"], pops["fullweek"])
-    ok(not late["PX5.2.7"]["fire"] and late["PX5.2.7"]["rh"] - late["PX5.2.7"]["lcl"] >= 0.2, "PX5.2.7 holds on the latest deliveries")
-    end = G.score(vers["cutoff"], pops["end"])
-    ok(end["EM3.12.2"]["fire"] and not sc["EM3.12.2"]["fire"], "EM3.12.2 fires once the week's movers are counted on it")
-    binom = G.score(vers["cutoff"], pops["fullweek"], "installation", "binomial_reads")
-    ok(binom["EM3.12.0"]["fire"] and binom["PX5.3.1"]["fire"], "a read-count error makes EM3.12.0 and PX5.3.1 breach")
-    heavy_share = None
-    if world is not None:
-        insts = world["insts"]
-        px = [i for i in insts if i.group == "full" and i.build_start == "PX5.3.0"]
-        hv = [i for i in px if i.profile in W.HEAVY]
-        reads = lambda i: len(W.PROFILES[i.profile][0]) * 1440 // W.PROFILES[i.profile][1]
-        heavy_share = sum(reads(i) for i in hv) / sum(reads(i) for i in px)
-        ok(0.70 <= heavy_share <= 0.85 and len(hv) / len(px) < 0.2, "PX5.3.0: under a fifth of installations, most of the reads")
-        e1 = [i for i in insts if i.group == "full" and i.build_start == "EM3.12.1"]
-        h1 = [i for i in e1 if i.profile in W.HEAVY]
-        ok(sum(reads(i) for i in h1) / sum(reads(i) for i in e1) >= 0.75, "EM3.12.1: the healthy heavy installations carry most of the reads")
-    log.append("deciding contrasts: PX5.3.0 pooled %.2f vs average %.2f; EM3.12.1 pooled %.2f vs average %.2f; PX5.2.7 latest %.2f vs cut-off %.2f"
-               % (pooled["PX5.3.0"]["rh"], sc["PX5.3.0"]["rh"], pooled["EM3.12.1"]["rh"], sc["EM3.12.1"]["rh"], late["PX5.2.7"]["rh"], sc["PX5.2.7"]["rh"]))
-
-    # clean-data and lens-swap tests: drop every delivery after its cut-off and every mover; the
-    # pooled read-count pipeline still files a different set, and the populations differ
-    ok(G.fire_set(G.score(vers["cutoff"], pops["fullweek"], "pooled", "binomial_reads")) != GOLD_FIRE, "clean data: pooled still wrong")
-    ok(G.fire_set(G.score(vers["cutoff"], pops["fullweek"], "pooled", "installation")) != GOLD_FIRE, "clean data: pooled with an installation error still wrong")
+    # clean-data and lens-swap tests: repair the Layer 1 mess on the main path; the answer and the
+    # installation-level answer do not move, and they differ
+    ok(G.fire_set(G.score(vers["cutoff"], G.assessed(D, "fullweek", sp_raw), "installation", "collector", D=D)) == GOLD_FIRE,
+       "clean data: replays removed, same call")
+    ok(G.fire_set(G.score(vers["cutoff"], pops["fullweek"], "installation", "installation", "rows", D=D)) != GOLD_FIRE,
+       "clean data: the installation-level error is still wrong on held rows")
     ok(len(pops["end"]) - len(pops["fullweek"]) >= 1100, "the naive population is not the assessed population")
 
-    # ---------------------------------------------------------------- ask A: Wave 8 moves
+    # ---------------------------------------------------------------- ask A: Wave 8 moves under the call
     a = g["wave8"]
     ok(a == {"EM3.12.2": 1274, "PX5.3.1": 109}, "wave 8 moves %s" % a)
+    ok(G.wave8_moves(D, sets[4]) == {"EM3.12.2": 0, "PX5.3.1": 109}, "the installation-level call stops Wave 8 onto EM3.12.2")
     wb = __import__("openpyxl").load_workbook(os.path.join(target, "wave8_schedule.xlsx"), read_only=True)
     raw = []
     for name in ("Batch A 13-10", "Batch B 14-10"):
@@ -177,7 +214,7 @@ def run(target, world=None, quiet=False):
 
     # ---------------------------------------------------------------- ask B: Wave 7 cost
     b = g["wave7"]
-    ok(b == {"EM3.12.2": {"installations": 1109, "missing": 17455}, "PX5.3.1": {"installations": 63, "missing": 933}}, "wave 7 cost %s" % b)
+    ok(b == {"EM3.12.2": {"installations": 1109, "missing": 16907}, "PX5.3.1": {"installations": 63, "missing": 1101}}, "wave 7 cost %s" % b)
     for clock in ("UTC", "AEDT"):
         bb = G.wave7_cost(D, vers["cutoff"], clock)
         ok(bb["EM3.12.2"]["missing"] != b["EM3.12.2"]["missing"], "%s move day lands elsewhere" % clock)
@@ -194,8 +231,9 @@ def run(target, world=None, quiet=False):
                     if e["image"] and e["type"] in ("COMMISSIONED", "FW_ACTIVATED")
                     and e["at"].date() < dt.date.fromisoformat(R.RELEASED[inv[e["image"]]]))
         ok(early == 0, "no meter runs an image before its release date (%d)" % early)
-        late = sum(1 for es in world["ev"].values() for e in es if e["at"] > W.EXTRACT_AT)
-        ok(late == 0, "no event after the extract")
+        late_ev = sum(1 for es in world["ev"].values() for e in es if e["at"] > W.EXTRACT_AT)
+        ok(late_ev == 0, "no event after the extract")
+        ok(all(i.since >= i.meters[0][3] for i in world["insts"]), "no meter joins a node before it was installed")
 
     # ---------------------------------------------------------------- separation
     if world is not None:
@@ -210,7 +248,8 @@ def run(target, world=None, quiet=False):
     fmts = {f.rsplit(".", 1)[1] for f in files}
     ok(len(fmts) >= 3, "three formats: %s" % fmts)
     ok(len(D["mdm"]) >= 25000, "a file of 25,000 rows")
-    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json"))) if os.path.exists(os.path.join(os.path.dirname(target), "metadata.json")) else None
+    meta_p = os.path.join(os.path.dirname(target), "metadata.json")
+    meta = json.load(open(meta_p)) if os.path.exists(meta_p) else None
     if meta:
         ok(len(meta["distractor_files"]) >= 2, "two distractors")
         tmp = tempfile.mkdtemp()
@@ -234,13 +273,11 @@ def run(target, world=None, quiet=False):
         s_ = open(sub).read()
         pj = json.load(open(gj))
         for b_ in pj["builds"]:
-            line = "%s: %s installations, %.2f%%, %.2f%%, %s" % (b_["release"], format(b_["assessed_installations"], ","),
-                                                              b_["read_health_pct"], b_["lower_limit_pct"], b_["alert"].lower())
+            line = "%s: %.2f%%, standard error %.2f, lower limit %.2f%%, %s" % (
+                b_["release"], b_["read_health_pct"], b_["standard_error_pct"], b_["lower_limit_pct"], b_["alert"].lower())
             ok(line in s_, "submission carries %s" % line)
-            ok("**%.2f%%** against a lower limit of **%.2f%%**" % (b_["read_health_pct"], b_["lower_limit_pct"]) in s_
-               or b_["release"] not in ("PX5.2.7", "EM3.12.1", "PX5.3.0", "EM3.12.0", "EM3.10.9"), "critical component %s" % b_["release"])
-        for v_ in list(pj["wave8_schedule_moves_if_it_goes_ahead"].values()) + [x for w_ in pj["wave7_moves_this_week"] for x in
-                                                                               (w_["installations_moved"], w_["interval_reads_missing_at_cutoff_on_move_day"])]:
+        for v_ in list(pj["wave8_moves_under_this_call"].values()) + [x for w_ in pj["wave7_moves_this_week"] for x in
+                                                                      (w_["installations_moved"], w_["interval_reads_missing_at_cutoff_on_move_day"])]:
             ok(format(v_, ",") in s_, "submission carries %s" % v_)
         ok("\u2014" not in s_, "no em dash in the write-up")
     if not quiet:

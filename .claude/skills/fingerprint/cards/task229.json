@@ -1,84 +1,85 @@
 {
- "task": "task229",
- "architecture": "v1",
- "drawn": "2026-10-11",
- "slot_note": "seed DQ02 (release-health alert on the average user's rate); seed's product-analytics pairing redrawn into energy-systems-utilities because task228 (same objective, drawn the same day in parallel) holds the product-analytics experiment-platform world; the seed's Layer 2 pitfall is kept on a smart-meter data provider's firmware rollout",
- "domain": "energy-systems-utilities",
- "subdomain": "other",
- "niche": "a smart-meter data provider's read-health gate on the communications-module firmware builds live in its fleet, deciding which builds the read-health alert fires on before the next rollout wave, from the meter data management system's interval-receipt deliveries and the head-end's firmware activation history",
- "objective": "data-quality-monitoring",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Fire the read-health alert on EM3.10.9, EM3.12.1 and PX5.2.7, and hold EM3.12.0, PX5.3.0, EM3.11.4, EM3.12.2 and PX5.3.1 for Wave 8.",
- "answer_source": "task229/submission.md, 1. Final Recommendation (golden/wave8_read_health_alerts.json fire and hold lists carry the same call)",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "D"
- ],
- "generators": [
-  "G2",
-  "G12",
-  "G7",
-  "G17"
- ],
- "gate_g": "signal_vs_noise_or_hold",
- "calibration_form": "none",
- "stump_strategy": "grain_or_unit",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "client_domain": "energy-systems-utilities",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "product-analytics/metric-definition-measurement-science/2",
- "layer1": [
-  "interval meter reads with quality codes and mixed 5 and 30 minute resolution",
-  "re-delivered register-days (a later delivery replaces an earlier one)",
-  "UTC receipts, AEST market time and AEDT field time against a filed cutoff",
-  "firmware build codes spelled three ways across systems",
-  "effective-dated meter-to-installation assignments with mid-week meter exchanges",
-  "replayed head-end events and failed activations with rollback"
- ],
- "context_artifact": "filed_standard",
- "stakeholder_role": "metering data services lead at a smart-meter metering data provider, who owns the read-health alert the rollout desk gates each firmware wave on",
- "role_family": "other",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "mdm_interval_receipts_20261005_20261011.csv",
-  "rows": 94239,
-  "entity": "one metered register (data stream) of one installation for one market day, as one delivery from the meter data management system carried it, with its interval counts by quality flag",
-  "grain": "register x market day x delivery",
-  "source": "synthetic"
- },
- "forum": "operations_desk",
- "forcing_event": "cutover_or_migration",
- "org_family": "utility_or_infrastructure",
- "world": {
-  "geography": "Australia, New South Wales",
-  "currency": "AUD",
-  "org_type": "accredited metering provider and metering data provider in the National Electricity Market",
-  "invented_names": [
-   "Halvane Metering"
+  "task": "task229",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed DQ02 (release-health alert on the average user's rate); seed's product-analytics pairing redrawn into energy-systems-utilities because task228 (same objective, drawn the same day in parallel) holds the product-analytics experiment-platform world; the seed's Layer 2 pitfall is kept on a smart-meter data provider's firmware rollout",
+  "domain": "energy-systems-utilities",
+  "subdomain": "other",
+  "niche": "a smart-meter data provider's read-health gate on the communications-module firmware builds live in its fleet, deciding which builds the read-health alert fires on before the next rollout wave, from the meter data management system's interval-receipt deliveries and the head-end's firmware activation history",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Fire the read-health alert on PX5.2.7, EM3.12.1 and EM3.10.9, and hold PX5.3.0, EM3.11.4, EM3.12.0, PX5.3.1 and EM3.12.2 for Wave 8.",
+  "answer_source": "task229/submission.md, 1. Final Recommendation (golden/wave8_read_health_alerts.json fire and hold lists carry the same call)",
+  "gap": [
+    "population",
+    "time"
   ],
-  "people": [
-   "Troy Phillips"
-  ]
- },
- "deliverables": [
-  "wave8_read_health_alerts.json",
-  "read_health_by_build_wk41.png"
- ],
- "opening_move": "calendar-first",
- "driver": "The decisive quantity is an average of per-entity shares taken over the entities present for the whole window, with its error drawn from between-entity spread, so a pooled ratio over records that a few high-volume entities dominate, with a record-count error, both reverses which groups breach in each direction and makes small groups breach on noise.",
- "driver_concrete": "The read-health standard scores a firmware build on its average installation that ran the build all week, counting the interval reads the meter data management system held as actual at the next-morning delivery cutoff, with the limit set three standard errors of that average below the reference; pooling interval reads lets the 5-minute, three-register commercial installations (about eighteen times a household's reads) carry PX5.3.0 under the line and lift EM3.12.1 over it, and a read-count error makes the large and the pilot builds breach on noise.",
- "stump": "A competent solver builds each firmware build's read health from the MDM receipts as the share of expected interval reads that came in actual, keeps each register-day's latest delivery, counts every installation on its end-of-week build and sets the limit with the binomial error on those reads, so it fires the alert on EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1 and holds EM3.12.1, PX5.2.7 and EM3.12.0; the step that carries the stump is pooling reads that the 5-minute three-register installations dominate, with a read-count error, instead of averaging the installations that ran the build all week on the reads held at the 06:00 cut-off against every expected interval, with an installation-level error.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task98": "task98 v3 formed units by chaining labelled members within a distance and applied a per-unit threshold to a filed count; here the units are stored and named by the standard, and the move is how a group of units is scored and given an error: the average of per-unit shares with a between-unit standard error against a record-pooled ratio with a record-count error, which reverses breaches in both directions and makes small groups breach on noise"
- },
- "lineage": [],
- "notes": "subdomain other: smart-meter interval data delivery quality (metering data provider read performance), which the energy task-type list does not carry; the task type that serves Data Quality Monitoring in the client taxonomy is the nearest analogue to product-analytics metric-definition, hence the pattern id. context_artifact: redrawn from monitoring_export to filed_standard after task228 (drawn earlier the same day) took monitoring_export; the metering data services lead runs the gate from the filed read-health standard MDS-STD-114, which the pack ships, over the MDM receipts and the head-end history. repeat.gate_g WARN against task228 answered in the design note: task228 picks which metric an alert should watch from a replay of history, task229 constructs one stated measure and its error per build."
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G12",
+    "G7",
+    "G17"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "client_domain": "energy-systems-utilities",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "survey-research-official-statistics/complex-survey-estimation-variance/1",
+  "layer1": [
+    "interval meter reads with quality codes and mixed 5, 15 and 30 minute resolution",
+    "re-delivered register-days (a later delivery replaces an earlier one) and days the MDM held nothing for until its estimation run",
+    "UTC receipts, AEST market time and AEDT field time against a filed cutoff",
+    "firmware build codes spelled three ways across systems",
+    "effective-dated meter-to-installation assignments with mid-week meter exchanges",
+    "replayed head-end events and failed activations with rollback",
+    "each meter's comms parent (mesh collector or access point) carried in the head-end record with the date it joined"
+  ],
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "metering data services lead at a smart-meter metering data provider, who owns the read-health alert the rollout desk gates each firmware wave on",
+  "role_family": "other",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "mdm_interval_receipts_20261005_20261011.csv",
+    "rows": 94912,
+    "entity": "one metered register (data stream) of one installation for one market day, as one delivery from the meter data management system carried it, with its interval counts by quality flag",
+    "grain": "register x market day x delivery",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Australia, New South Wales",
+    "currency": "AUD",
+    "org_type": "accredited metering provider and metering data provider in the National Electricity Market",
+    "invented_names": [
+      "Halvane Metering"
+    ],
+    "people": [
+      "Troy Phillips"
+    ]
+  },
+  "deliverables": [
+    "wave8_read_health_alerts.json",
+    "read_health_by_build_wk41.png"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The decisive quantity is the standard error of a mean over entities that fail together through a shared parent node, so it has to be built over the nodes; an error that takes each entity as an independent unit understates it severalfold for a group concentrated behind few nodes, and the alert fires on what is node noise.",
+  "driver_concrete": "The read-health standard fires on a firmware build whose mean installation read health sits three standard errors below 99.50; firmware waves go out collector by collector, so EM3.12.2's 153 assessed installations sit behind seven mesh collectors, and the one collector that missed Thursday night's collection took that day from 20 of its 23 EM3.12.2 installations at once: the standard error built over the collectors is 1.90 where the installation-level one is 0.41, and EM3.12.0's is 0.56 against 0.09, so both hold instead of stopping Wave 8 onto EM3.12.2.",
+  "stump": "A competent solver executes MDS-STD-114 to the letter (installations that ran a build all week, reads held at the 06:00 AEST cut-off against every expected interval, the mean of installation read health) and takes the textbook standard error of that mean, the sample standard deviation over the square root of the installation count; that fires the alert on EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stops Wave 8's 1,274 moves onto EM3.12.2. The step that carries the stump is the unit of the error: installations behind one mesh collector lose the same nights together when it misses a collection, and a build pushed collector by collector sits behind few of them, so built over the collectors the standard error is 1.90 for EM3.12.2 and 0.56 for EM3.12.0, both hold, and the alert fires on PX5.2.7, EM3.12.1 and EM3.10.9 only.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v3 formed units by chaining labelled members within a distance and applied a per-unit threshold to a filed count; here the units are stored and scored by a filed mean, and the move is the unit the mean's standard error is built over: the shared comms node rather than the installation, which no clause names and which the data's node-night failures force"
+  },
+  "lineage": [],
+  "notes": "subdomain other: smart-meter interval data delivery quality (metering data provider read performance), which the energy task-type list does not carry; the task type that serves Data Quality Monitoring in the client taxonomy is the nearest analogue to product-analytics metric-definition, hence the pattern id. context_artifact: redrawn from monitoring_export to filed_standard after task228 (drawn earlier the same day) took monitoring_export; the metering data services lead runs the gate from the filed read-health standard MDS-STD-114, which the pack ships, over the MDM receipts and the head-end history. repeat.gate_g WARN against task228 answered in the design note: task228 picks which metric an alert should watch from a replay of history, task229 constructs one stated measure and its error per build. Hardening loop 1 (2026-10-11): round 1 had both solvers execute the filed mean and the filed installation-level error (plain 91.3, skeptic 87.4, both landed); the standard now files the measure and three standard errors without naming the unit the error is built over, the head-end export carries each meter's comms parent, and the decisive rung is that unit (Layer 2 pattern moved from metric-definition/2 to complex-survey-estimation-variance/1); world, call shape and ask devices kept, the Wave 8 ask now applies the call."
 }

@@ -2,20 +2,20 @@
  "task": "task229",
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design (hardening loop 1)",
+ "stage": 6,
+ "stage_name": "solver round 2 staged (hardening loop 1); leak reader and pre-flight staged with it",
  "updated": "2026-10-11",
- "stump": "A competent solver pools interval reads per build from the MDM receipts (latest delivery, every installation on its end-of-week build, binomial error) and fires EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1; the standard's average installation that ran the build all week, on reads held at the 06:00 cut-off against every expected interval, with an installation-level error, fires PX5.2.7, EM3.10.9 and EM3.12.1 only.",
+ "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.90 and 0.56, not 0.41 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on PX5.2.7, EM3.12.1 and EM3.10.9 only.",
  "architecture": 1,
  "loops": 1,
  "leak": {
-  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
-  "reader": "round-1 reader: Q1-Q4 none, R1-R3 harmless (it reproduced the call by following the standard)"
+  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK after two fixes in the generator",
+  "reader": "round-1 reader: Q1-Q4 none; re-read staged for round 2 (every document and the prompt changed)"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g vs task228, answered in the design note); ban.artifact vs task228 cleared by redrawing context_artifact to filed_standard",
-  "nearest": "task87 v3 driver 0.06; surface nearest 0.10, 0 promoted",
-  "clone_check": "pre-flight CLEAN (task229/clone_check_report.md); re-runs when the driver changes"
+  "heart": "WARN (repeat.gate_g vs task228, answered); nearest heart text 0.04 (task114); nearest driver 0.06 (task87 v3)",
+  "nearest": "task87 v3 driver 0.06",
+  "clone_check": "round-1 pre-flight CLEAN (task229/clone_check_report.md); the driver changed in hardening loop 1, fresh pre-flight staged"
  },
  "solver_rounds": [
   {
@@ -40,7 +40,7 @@
    "round": 1,
    "architecture": 1,
    "decision": "harden",
-   "brief": "both landed the call by executing the filed formulas; move the decisive step into the error of a pooled share sampled by comms parent"
+   "brief": "both landed by executing the filed mean and the filed installation-level error; the error's unit is now unstated and the data's node-night failures make the comms node the unit, so the habitual sample-SD-over-root-n step completes and fires EM3.12.0 and EM3.12.2"
   }
  ],
  "judge": {

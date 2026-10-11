@@ -31,7 +31,7 @@ def nmi_checksum(nmi):
 
 class Inst:
     __slots__ = ("nmi", "profile", "group", "build_start", "build_end", "meters", "move", "blocks",
-                 "suburb", "postcode", "wave8", "exchange", "rows")
+                 "parent", "since", "recover", "evblocks", "wave8", "exchange", "rows", "net_group", "dnsp")
 
     def __init__(self, nmi, profile, group, b0, b1):
         self.nmi, self.profile, self.group = nmi, profile, group
@@ -41,16 +41,12 @@ class Inst:
         self.blocks = []          # [(start_slot, end_slot, cls)] cls 1 precut, 2 post, 3 never
         self.exchange = None
         self.wave8 = None
+        self.parent = None        # the collector (EM3) or access point (PX5) the meter reports through
+        self.since = None         # when the installation's meter joined that parent (naive local time)
+        self.recover = {}         # read-date index -> AEST time the parent's backlog reached the MDM
+        self.evblocks = []        # network-event blocks, kept apart from the meter's own
+        self.net_group = None
 
-
-SUBURBS = [("Penrith", "2750"), ("Blacktown", "2148"), ("Parramatta", "2150"), ("Liverpool", "2170"),
-           ("Campbelltown", "2560"), ("Hornsby", "2077"), ("Gosford", "2250"), ("Wyong", "2259"),
-           ("Maitland", "2320"), ("Cessnock", "2325"), ("Newcastle West", "2302"), ("Charlestown", "2290"),
-           ("Wollongong", "2500"), ("Shellharbour", "2529"), ("Kiama", "2533"), ("Bathurst", "2795"),
-           ("Orange", "2800"), ("Dubbo", "2830"), ("Goulburn", "2580"), ("Bowral", "2576"),
-           ("Castle Hill", "2154"), ("Rouse Hill", "2155"), ("Kellyville", "2155"), ("Marsden Park", "2765"),
-           ("Oran Park", "2570"), ("Camden", "2570"), ("Richmond", "2753"), ("Windsor", "2756"),
-           ("Katoomba", "2780"), ("Springwood", "2777"), ("Raymond Terrace", "2324"), ("Port Stephens", "2317")]
 
 MODEL = {"EM3": ["M1PH-E3A", "M1PH-E3B", "M3PH-E3"], "PX5": ["M1PH-P5", "M3PH-P5", "MCT-P5"]}
 
@@ -82,8 +78,7 @@ def make_fleet():
 
     def add(profile, group, b0, b1):
         i = Inst(new_nmi(), profile, group, b0, b1)
-        sub = SUBURBS[r.integers(0, len(SUBURBS))]
-        i.suburb, i.postcode = sub
+        i.dnsp = "Ausgrid" if i.nmi.startswith("4103") else "Endeavour Energy"
         module = W.MODULE[b0]
         model = MODEL[module]
         cls = W.PROFILES[profile][2]
@@ -119,8 +114,114 @@ def make_fleet():
     pick = r.choice(len(tue), W.WAVE7_ROLLBACK_RETRY, replace=False)
     for j in sorted(pick):
         tue[j].move["retry"] = True
+    assign_network(insts)
     order = r.permutation(len(insts))
     return [insts[j] for j in order]
+
+
+# ------------------------------------------------------------------ the two mesh networks
+
+def network_ids():
+    """Collector and access point ids, grouped by the wave that takes (or took) their meters."""
+    r = rng("network_ids")
+    out = {}
+    used = set()
+    for fam, groups, pre in (("EM3", W.EM_COLLECTORS, "EMC"), ("PX5", W.PX_APS, "PXA")):
+        for g in groups:
+            ids = []
+            while len(ids) < groups[g]:
+                x = "%s-%04d" % (pre, r.integers(1000, 10000))
+                if x not in used:
+                    used.add(x)
+                    ids.append(x)
+            out[(fam, g)] = ids
+    return out
+
+
+# where each population's installations sit, as group weights (the remainder after any wave takes)
+NET_MIX = {
+    "EM3.10.9": {"old": 0.75, "new": 0.10, "pilot": 0.05, "w7": 0.05, "w8": 0.05},
+    "EM3.12.1": {"old": 1.0},
+    "EM3.12.0": {"new": 0.70, "pilot": 0.20, "old": 0.10},
+    "EM3.11.4": {"old": 0.85, "pilot": 0.10, "new": 0.05},
+    "PX5.3.0": {"other": 0.8, "pilot": 0.2},
+    "PX5.2.7": {"other": 0.7, "pilot": 0.15, "w8": 0.15},
+}
+
+
+def assign_network(insts):
+    r = rng("network")
+    ids = network_ids()
+    pool = sorted(insts, key=lambda x: x.nmi)
+
+    def put(i, fam, g, k=None):
+        lst = ids[(fam, g)]
+        i.parent = lst[k] if k is not None else lst[int(r.integers(0, len(lst)))]
+        i.net_group = g
+
+    def mix(i, fam, weights):
+        gs = sorted(weights)
+        p = np.array([weights[g] for g in gs], float)
+        put(i, fam, gs[int(r.choice(len(gs), p=p / p.sum()))])
+
+    # the Wave 8 sources behind the Wave 8 collectors and access points
+    w8_full = set()
+    for b, n in list(W.WAVE8_EM_FULL.items()) + list(W.WAVE8_PX_FULL.items()):
+        full = [i for i in pool if i.group == "full" and i.build_start == b]
+        for j in sorted(r.choice(len(full), n, replace=False)):
+            w8_full.add(full[j].nmi)
+    w7em = [i for i in pool if i.group == "w7" and W.MODULE[i.build_start] == "EM3"]
+    w7px = [i for i in pool if i.group == "w7" and W.MODULE[i.build_start] == "PX5"]
+    pulled = {w7em[j].nmi for j in r.choice(len(w7em), W.WAVE8_PULLED_FORWARD, replace=False)}
+    pulled |= {w7px[j].nmi for j in r.choice(len(w7px), W.WAVE8_PX_PULLED_FORWARD, replace=False)}
+    exch = [i for i in pool if i.group == "exch"]
+    exch_w8 = {exch[j].nmi for j in r.choice(len(exch), W.WAVE8_EXCHANGED, replace=False)}
+    for i in pool:
+        fam = W.MODULE[i.build_start]
+        if i.group == "w7":
+            if i.nmi in pulled:
+                put(i, fam, "w8", 0)
+            else:
+                put(i, fam, "w7")
+        elif i.group == "exch":
+            put(i, fam, "w8" if i.nmi in exch_w8 else "new")
+        elif i.nmi in w8_full:
+            put(i, fam, "w8")
+        elif i.build_start in ("EM3.12.2", "PX5.3.1"):
+            put(i, fam, "pilot")
+        else:
+            mix(i, fam, NET_MIX[i.build_start])
+        # the meter joined its parent when it was commissioned, or when the parent's area was re-homed
+        inst_t = i.meters[0][3]
+        since = inst_t + dt.timedelta(minutes=int(r.integers(25, 240)))
+        if r.random() < 0.08:
+            lo = max(inst_t.date(), dt.date(2024, 3, 1))
+            span = (dt.date(2026, 6, 30) - lo).days
+            if span > 30:
+                d0 = lo + dt.timedelta(days=int(r.integers(10, span)))
+                since = dt.datetime(d0.year, d0.month, d0.day, int(r.integers(9, 16)), int(r.integers(0, 60)))
+        i.since = since
+
+
+def network_events():
+    """The week's collection failures: (parent, read-date index, share caught, AEST time the backlog
+    cleared). A collector or access point whose backhaul or power failed overnight delivers its meters'
+    day only when it is back, after the delivery cut-off."""
+    r = rng("events:%d" % W.NET_SALT)
+    ids = network_ids()
+    out = []
+    for (fam, g), lst in sorted(ids.items()):
+        for x in lst:
+            for d in range(W.DAYS):
+                if r.random() < W.EVENT_P[fam]:
+                    share = float(r.uniform(*W.EVENT_SHARE))
+                    rd = W.READ_DATES[d]
+                    mins = int(r.integers(22, 340))
+                    # the backlog clears after the MDM's 06:30 estimation run, between 07:05 and 11:40
+                    back = dt.datetime(rd.year, rd.month, rd.day, tzinfo=W.AEST) + dt.timedelta(
+                        days=1, hours=6, minutes=65 + (mins - 22) * 275 // 318)
+                    out.append((x, d, share, back))
+    return out
 
 
 # ------------------------------------------------------------------ the week's communications
@@ -189,42 +290,68 @@ def comms_blocks(r, build, profile):
     return out
 
 
+def own_blocks(i):
+    """The meter's own communications texture for the week (firmware and site), seeded per build salt."""
+    salt = W.SALT.get(i.build_end if i.group != "full" else i.build_start, 0)
+    r = rng("comms:%s:%d" % (i.nmi, salt))
+    ra = rng("act:%s:%d" % (i.nmi, salt))
+    blocks = []
+    if i.group == "full":
+        blocks = comms_blocks(r, i.build_start, i.profile)
+    elif i.group == "w7":
+        t = night_window(ra, "wed" if i.move.get("retry") else i.move["night"])
+        if i.move.get("retry"):
+            t_fail = night_window(ra, "tue")
+            i.move["failed_at"] = t_fail
+            s = slot_of(t_fail)
+            blocks.append((s, s + int(ra.integers(2, 4)), 3))
+        i.move["at"] = t
+        s = slot_of(t)
+        pre = comms_blocks(r, i.build_start, i.profile)
+        post = comms_blocks(r, i.build_end, i.profile)
+        blocks += [b for b in pre if b[0] < s] + [b for b in post if b[0] >= s]
+        blocks.append((s, s + int(ra.integers(150, 300)) // W.SLOT + 1, 3))
+    else:  # exchange
+        s = slot_of(i.exchange)
+        pre = comms_blocks(r, i.build_start, i.profile)
+        post = comms_blocks(r, "EM3.12.2", i.profile)
+        blocks = [b for b in pre if b[0] < s] + [b for b in post if b[0] >= s]
+        blocks.append((s, s + int(ra.integers(90, 170)) // W.SLOT + 1, 3))
+    return blocks
+
+
+PILOT_DROP = 5     # the PX5.3.1 pilot installation (by NMI order) whose module dropped off the mesh
+
+
 def simulate():
     insts = make_fleet()
     for i in insts:
-        salt = W.SALT.get(i.build_end if i.group != "full" else i.build_start, 0)
-        r = rng("comms:%s:%d" % (i.nmi, salt))
-        ra = rng("act:%s:%d" % (i.nmi, salt))
-        if i.group == "full":
-            i.blocks = comms_blocks(r, i.build_start, i.profile)
-        elif i.group == "w7":
-            t = night_window(ra, "wed" if i.move.get("retry") else i.move["night"])
-            if i.move.get("retry"):
-                t_fail = night_window(ra, "tue")
-                i.move["failed_at"] = t_fail
-                s = slot_of(t_fail)
-                i.blocks.append((s, s + int(ra.integers(2, 4)), 3))
-            i.move["at"] = t
-            s = slot_of(t)
-            pre = comms_blocks(r, i.build_start, i.profile)
-            post = comms_blocks(r, i.build_end, i.profile)
-            i.blocks += [b for b in pre if b[0] < s] + [b for b in post if b[0] >= s]
-            i.blocks.append((s, s + int(ra.integers(150, 300)) // W.SLOT + 1, 3))
-        else:  # exchange
-            s = slot_of(i.exchange)
-            pre = comms_blocks(r, i.build_start, i.profile)
-            post = comms_blocks(r, "EM3.12.2", i.profile)
-            i.blocks = [b for b in pre if b[0] < s] + [b for b in post if b[0] >= s]
-            i.blocks.append((s, s + int(ra.integers(90, 170)) // W.SLOT + 1, 3))
-    # the PX5.3.1 pilot site whose cellular modem dropped out for most of the week
+        i.blocks = own_blocks(i)
+    # the PX5.3.1 pilot site whose module dropped off the mesh for most of the week
     pilot = sorted([i for i in insts if i.group == "full" and i.build_start == "PX5.3.1"], key=lambda x: x.nmi)
-    pilot[5].blocks.append((int(2.6 * W.SLOTS_PER_DAY), int(4.9 * W.SLOTS_PER_DAY), 3))
+    pilot[PILOT_DROP].blocks.append((int(2.6 * W.SLOTS_PER_DAY), int(4.9 * W.SLOTS_PER_DAY), 3))
+    apply_events(insts, network_events())
     return insts
+
+
+def apply_events(insts, events):
+    """Every installation behind a failed parent loses that read date at the cut-off with the event's
+    share as its chance (the rest re-routed through a neighbour); its day reaches the MDM when the
+    parent's backlog clears."""
+    r = rng("affect:%d" % W.NET_SALT)
+    by_parent = {}
+    for i in sorted(insts, key=lambda x: x.nmi):
+        by_parent.setdefault(i.parent, []).append(i)
+    for parent, d, share, back in events:
+        for i in by_parent.get(parent, []):
+            if r.random() < share:
+                i.evblocks.append((d * W.SLOTS_PER_DAY, (d + 1) * W.SLOTS_PER_DAY, 2))
+                i.recover[d] = back + dt.timedelta(minutes=int(r.integers(4, 75)), seconds=int(r.integers(0, 60)))
 
 
 def slot_class(inst):
     m = np.zeros(W.WEEK_SLOTS, dtype=np.int8)
-    for s, e, c in inst.blocks:
+    for s, e, c in list(inst.blocks) + list(inst.evblocks):
         s, e = max(0, s), min(W.WEEK_SLOTS, e)
         if e > s:
             m[s:e] = np.maximum(m[s:e], c)

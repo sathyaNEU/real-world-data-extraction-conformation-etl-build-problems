@@ -24,9 +24,9 @@ FILES = {
     "fieldref": "mds_extract_field_reference.md",
     "log": "extract_log_20261012.csv",
     "census": "hes_firmware_census_20261012.csv",
-    "telco": "carrier_maintenance_notices_oct2026.xlsx",
+    "dnsp": "dnsp_planned_interruptions_oct2026.xlsx",
 }
-DISTRACTORS = ["census", "telco"]
+DISTRACTORS = ["census", "dnsp"]
 
 
 def _hex(*parts, n=10):
@@ -38,7 +38,9 @@ def _hex(*parts, n=10):
 BASE_KWH = {"E1": (4.0, 3.1), "E2": (3.0, 2.2), "B1": (3.0, 4.4), "Q1": (4.0, 6.0)}
 
 
-def write_mdm(path, insts, rows):
+def write_mdm(path, insts, rows, cuts=None):
+    """cuts: {(nmi, read date): share of the day's usage lost to a planned supply interruption}."""
+    cuts = cuts or {}
     r = S.rng("kwh")
     prof = {i.nmi: i.profile for i in insts}
     level = {}
@@ -54,7 +56,7 @@ def write_mdm(path, insts, rows):
         dd = (rd - W.READ_DATES[0]).days
         base = level[(nmi, sx)] * day_fx[dd]
         wob = 1.0 + ((int(_hex(nmi, sx, rd, n=4), 16) % 200) - 100) / 4000.0
-        tot = base * wob * (1.0 + 0.004 * vi)
+        tot = base * wob * (1.0 + 0.004 * vi) * (1.0 - cuts.get((nmi, rd), 0.0))
         uom = "KVARH" if sx == "Q1" else "KWH"
         ta = t.astimezone(W.AEST)
         did = "D%s.%s.%02d" % (ta.strftime("%y%m%d"), ta.strftime("%H%M"), (int(_hex(nmi, ta, n=4), 16) % 23) + 1)
@@ -80,10 +82,12 @@ def write_hes(path, insts, ev, bench):
     r = S.rng("hes")
     meta = {}
     for i in insts:
-        for m in i.meters:
-            meta[m[0]] = (m[2], m[1], "REMOVED" if m[4] is not None else "IN_SERVICE")
+        for k, m in enumerate(i.meters):
+            since = i.since if k == 0 else m[3] + dt.timedelta(minutes=int(_hex(m[0], n=2), 16) % 50 + 12)
+            since_utc = R.utc(since.replace(tzinfo=R.local_tz_for(since.date())))
+            meta[m[0]] = (m[2], m[1], "REMOVED" if m[4] is not None else "IN_SERVICE", i.parent, since_utc)
     for serial, (fam, _) in bench.items():
-        meta[serial] = (fam, "M1PH-P5" if fam == "PX5" else "M1PH-E3B", "BENCH")
+        meta[serial] = (fam, "M1PH-P5" if fam == "PX5" else "M1PH-E3B", "BENCH", None, None)
         ev[serial] = bench[serial][1]
     allev = []
     for serial in sorted(ev):
@@ -110,8 +114,9 @@ def write_hes(path, insts, ev, bench):
         per_meter[serial].append(dup)
     meters = []
     for serial in sorted(per_meter):
-        fam, model, status = meta[serial]
+        fam, model, status, parent, since = meta[serial]
         meters.append({"meter_id": "MTR-" + serial, "module": fam, "model": model, "status": status,
+                       "comms_parent": parent, "comms_parent_since": since,
                        "events": sorted(per_meter[serial], key=lambda x: x["seq"])})
     doc = {"export": {"system": "HVM head-end (HES) firmware service", "exported_utc": R.utc(W.EXTRACT_AT - dt.timedelta(minutes=22)),
                       "scope": "every meter registered to the head-end, firmware events since commissioning",
@@ -131,14 +136,15 @@ def _local_str(t_naive):
 def write_register(path, insts):
     wb = openpyxl.Workbook()
     hdr = "Halvane Metering - MP installation register extract - as at 12/10/2026 06:00 (local time)"
+    note = "Customer and site address fields withheld from analytics extracts."
     ws = wb.active
     ws.title = "Installations"
     ws.append([hdr])
-    ws.append([])
-    ws.append(["NMI", "Suburb", "Postcode", "Customer class", "Phases", "Solar", "Controlled load"])
+    ws.append([note])
+    ws.append(["NMI", "Network", "Customer class", "Phases", "Solar", "Controlled load"])
     for i in sorted(insts, key=lambda x: x.nmi):
         suff, L, cls = W.PROFILES[i.profile]
-        ws.append([i.nmi + S.nmi_checksum(i.nmi), i.suburb, int(i.postcode), cls,
+        ws.append([i.nmi + S.nmi_checksum(i.nmi), i.dnsp, cls,
                    3 if cls == "SME" else 1, "Y" if "B1" in suff else "N", "Y" if "E2" in suff else "N"])
     ws2 = wb.create_sheet("Meters")
     ws2.append([hdr])
@@ -176,7 +182,7 @@ CAT_NOTES = {
     "EM3.9.6": "superseded", "EM3.10.2": "superseded",
     "EM3.10.9": "retiring; no new moves onto this image",
     "EM3.11.4": "", "EM3.12.0": "",
-    "EM3.12.1": "hotfix: mesh rejoin timer after a collector restart; deployed to the Feb-26 hotfix list only",
+    "EM3.12.1": "hotfix: mesh rejoin timer; deployed to the Feb-26 hotfix list only",
     "EM3.12.2": "rollout target for EM3 fleet (waves 6 to 9)",
     "PX5.1.9": "superseded", "PX5.2.3": "superseded",
     "PX5.2.7": "", "PX5.3.0": "",
@@ -269,28 +275,41 @@ def write_census(path, insts, ev, bench):
             w.writerow(["12/10/2026 00:00", img, st, counts[(img, st)]])
 
 
-def write_telco(path):
-    r = S.rng("telco")
+def interruptions(insts):
+    """Planned supply interruptions the distributors notified for installations in the fleet: daytime
+    works on the local network. The meter keeps its interval data through them (it records the
+    interrupted intervals as zero usage on restoration), so the reads are unaffected."""
+    r = S.rng("dnsp")
+    pool = sorted(insts, key=lambda x: x.nmi)
+    out = []
+    reasons = ["Pole replacement", "Overhead conductor upgrade", "Pillar box replacement",
+               "Substation maintenance", "Vegetation clearing near mains", "Service main replacement"]
+    for k in range(64):
+        i = pool[int(r.integers(0, len(pool)))]
+        day = dt.date(2026, 10, 1) + dt.timedelta(days=int(r.integers(0, 27)))
+        st = dt.datetime(day.year, day.month, day.day, int(r.choice([7, 8, 9])), int(r.choice([0, 30])))
+        en = st + dt.timedelta(hours=int(r.integers(3, 7)))
+        status = "Completed" if en < dt.datetime(2026, 10, 12, 7, 0) else "Notified"
+        out.append(dict(ref="PI-%s-%05d" % ("EE" if i.dnsp.startswith("End") else "AG", 31200 + k * 13 + int(r.integers(0, 9))),
+                        nmi=i.nmi + S.nmi_checksum(i.nmi), dnsp=i.dnsp, start=st, end=en,
+                        reason=reasons[int(r.integers(0, len(reasons)))], status=status))
+    out.sort(key=lambda x: (x["start"], x["ref"]))
+    return out
+
+
+def write_dnsp(path, rows):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Notices"
-    ws.append(["Carrier planned maintenance - IoT (LTE-M / NB-IoT) - notices received October 2026"])
-    ws.append(["Notice", "Start (local)", "End (local)", "Area", "Service", "Expected impact", "Status"])
-    areas = ["Penrith / St Marys", "Blacktown / Seven Hills", "Parramatta CBD", "Liverpool / Casula", "Gosford / Erina",
-             "Newcastle West", "Wollongong / Unanderra", "Bathurst", "Orange", "Camden / Oran Park", "Hornsby",
-             "Castle Hill / Rouse Hill", "Maitland", "Dubbo"]
-    for k in range(23):
-        day = dt.date(2026, 10, 1) + dt.timedelta(days=int(r.integers(0, 24)))
-        st = dt.datetime(day.year, day.month, day.day, int(r.choice([0, 1, 2, 23])), int(r.choice([0, 30])))
-        en = st + dt.timedelta(hours=int(r.integers(2, 5)))
-        ws.append(["CMN-%06d" % (481200 + k * 7 + int(r.integers(0, 6))), st.strftime("%d/%m/%Y %H:%M"),
-                   en.strftime("%d/%m/%Y %H:%M"), areas[int(r.integers(0, len(areas)))],
-                   str(r.choice(["LTE-M", "LTE-M, NB-IoT", "NB-IoT"])),
-                   str(r.choice(["Intermittent data sessions", "Data sessions may drop up to 20 min",
-                                 "No impact expected", "Brief loss of service during cutover"])),
-                   "Completed" if st < dt.datetime(2026, 10, 12, 7, 55) else "Scheduled"])
+    ws.title = "Notifications"
+    ws.append(["Planned interruption notifications received from distributors - October 2026"])
+    ws.append(["Reference", "NMI", "Distributor", "Start (local)", "End (local)", "Reason", "Status"])
+    for x in rows:
+        ws.append([x["ref"], x["nmi"], x["dnsp"], x["start"].strftime("%d/%m/%Y %H:%M"),
+                   x["end"].strftime("%d/%m/%Y %H:%M"), x["reason"], x["status"]])
     ws["A1"].font = Font(bold=True)
-    wb.properties.creator = "Network Ops"
+    for c in ws[2]:
+        c.font = Font(bold=True)
+    wb.properties.creator = "Market Operations"
     wb.properties.created = dt.datetime(2026, 10, 1, 8, 0)
     wb.properties.modified = dt.datetime(2026, 10, 12, 7, 55)
     wb.save(path)
@@ -306,7 +325,7 @@ def write_log(path, counts):
         (FILES["catalogue"], "Firmware engineering", "09/10/2026 11:30", "releases and the HES image each one ships as", counts["catalogue"]),
         (FILES["wave8"], "Rollout desk", "09/10/2026 16:48", "Wave 8 schedule, both batches", counts["wave8"]),
         (FILES["census"], "HES reporting", "12/10/2026 00:05", "nightly inventory census by image and status", counts["census"]),
-        (FILES["telco"], "Network operations", "12/10/2026 07:55", "carrier maintenance notices received in October", 23),
+        (FILES["dnsp"], "Market operations", "12/10/2026 07:55", "planned interruption notifications received from the distributors in October", counts["dnsp"]),
         (FILES["standard"], "Metering Data Services", "", "controlled document, revision 3", ""),
     ]
     with open(path, "w", newline="") as fh:
