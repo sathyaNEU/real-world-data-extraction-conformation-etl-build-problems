@@ -188,6 +188,16 @@ before any hardening.
 
 ## Tried and rejected
 
+- **Architecture 1 spent at round 1 (2026-10-11): screen grain (metering system against supply number).** Plain
+  solver 81.3 and skeptic 85.6, both on Caithness 54 against Elgin 35. Plain: "rp_mart_weekly_import was rejected for
+  screening because it sums each related point into its primary's metering system: mart = primary + related reads to
+  within 0.2 kWh." Skeptic: "Supplies sheet (2,960 main MPANs) plus Related metering points sheet (699 heating-only
+  MPANs, each with its own supply number) gives 3,659 supplies, matching the 3,659 MPANs in the reads parquet." The
+  grain the procedure screens has to be filed for determinism, and once filed it is a work order: both rebuilt per
+  supply from the reads and reconciled the mart before rejecting it. The ask devices (re-keyed jobs, appeals keyed to
+  the raising system, the Scottish calendar, a mid-quarter start) were each executed off a filed rule. Not hardened:
+  the only rung that would stop this step is a plant (withholding the glossary makes the grain a fork). Re-rooted.
+
 - Seed AD03 as written (register split by each meter's switching regime, recovered from an operator acknowledgement
   corpus): the decisive rule withheld and recovered from a closed corpus is the capped Pattern B pin, and the
   acknowledgement file would refute the whole-house screen case by case (an alarm, not a stump).

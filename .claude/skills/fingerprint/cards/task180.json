@@ -78,8 +78,14 @@
     "task86": "task86 runs an earlier draw on a shared pool forward member by member; here there is no pool or draw, the difficulty is a summed series hiding a component-level anomaly from a filed screen.",
     "task90": "task90 chains supplier asset stays into a buyer-side position for a tariff; here no chaining or re-rating: the summed account series is correct and simply too coarse for a per-supply anomaly test."
   },
-  "lineage": [],
-  "notes": "Subdomain 'other': revenue protection (energy theft detection) at a supplier, an anomaly-detection task type the energy taxonomy does not list. Bespoke draw from how north-of-Scotland storage heating is metered (a related, heating-only supply number). No calibration corpus, no licensed wrong basis, no certified record; the referral procedure is filed in full.",
+  "lineage": [
+    {
+      "architecture": "v1 (screen grain: metering system against supply number)",
+      "fate": "spent at in-house solver round 1 (2026-10-11): plain 81.3 and skeptic 85.6, both landed Caithness 54; the filed glossary and the related metering points sheet made the grain a work order",
+      "driver": "The referral test is filed for each metered sub-unit against its own history, but the ready-made series sums the sub-units of an entity, and where an entity holds a second sub-unit carrying one seasonal load, a large fall on that sub-unit moves the entity total by a few per cent, inside ordinary variation, so screening the summed series ranks the candidates differently from screening each sub-unit and counting entities once."
+    }
+  ],
+  "notes": "Subdomain 'other': revenue protection (energy theft detection) at a supplier, an anomaly-detection task type the energy taxonomy does not list. Bespoke draw from how north-of-Scotland storage heating is metered (a related, heating-only supply number). No calibration corpus, no licensed wrong basis, no certified record; the referral procedure is filed in full. v1 spent at round 1; re-root in progress.",
   "client_domain": "energy-systems-utilities",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:detect-at-the-metered-component-count-at-the-premises",

@@ -2,11 +2,11 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round",
+ "stage": 1,
+ "stage_name": "draw (re-root, architecture 2)",
  "updated": "2026-10-11",
  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, every week below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number, and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row for the supply the procedure screens, when it is a metering system's total and the 42 bypassed heating-only supplies in Caithness, listed as related metering points, fall 36 to 58 per cent while their systems fall 6.5 to 23.9.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "leak": {
   "leak_py": "REVIEW (0 LEAK)",
@@ -17,7 +17,23 @@
   "nearest": "task97 surface 0.102, not promoted",
   "clone_check": "pre-flight CLEAN: no Track A or B finding; task90, task72, task103, task58 v15 adjudicated clean, shares components by design (task180/clone_check_report.md)"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "round": 1,
+   "architecture": 1,
+   "plain": {
+    "landed": true,
+    "proxy": 81.3
+   },
+   "skeptic": {
+    "landed": true,
+    "proxy": 85.6
+   },
+   "mean": 83.5,
+   "decision": "reroot",
+   "brief": "Both solvers read RP-07's glossary (a supply is one supply number and its meter) and the CIS Related metering points sheet, rebuilt weekly kWh for all 3,659 supply numbers from the reads, and reconciled the mart to primary plus related reads within 0.19 kWh before rejecting it; every ask device was executed off a filed rule (legacy_job_no, the appeals register, FW-3's Scottish calendar, the rota's field start). The grain of the screen is announced by the procedure the build has to file, so the architecture is spent: a re-root needs a decisive step that no filed sentence turns into a work order, and an ask layer whose devices are silent."
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",
