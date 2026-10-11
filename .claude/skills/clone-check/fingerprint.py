@@ -428,7 +428,7 @@ def parse_ledger(path):
 
 def build_card(repo, task, ledger):
     d = os.path.join(repo, task)
-    prompt = read_text(os.path.join(d, "prompt.md"))
+    prompt = read_text(os.path.join(d, "prompt.txt")) or read_text(os.path.join(d, "prompt.md"))
     sub = read_text(os.path.join(d, "submission.md"))
     # Design notes ship under several names, and the live one is not always at the
     # root (task40's is REBUILD_DESIGN.md, task64's is build/DESIGN_NOTE.md, task80
@@ -488,7 +488,8 @@ def cmd_extract(args):
                         if re.fullmatch(r"task\d+", d) and os.path.isdir(os.path.join(repo, d))
                         and not EXCLUDE_DIRS.search(d)
                         # a folder holding only its START_HERE.md seed is not a build yet
-                        and os.path.exists(os.path.join(repo, d, "prompt.md"))),
+                        and (os.path.exists(os.path.join(repo, d, "prompt.txt"))
+                             or os.path.exists(os.path.join(repo, d, "prompt.md")))),
                        key=lambda x: int(re.sub(r"\D", "", x)))
     cards = []
     for t in tasks:

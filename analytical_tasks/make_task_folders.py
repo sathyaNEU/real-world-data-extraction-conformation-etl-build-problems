@@ -8,7 +8,8 @@ Writes, from the repo root:
 
 Numbers are fixed by FIRST, BLOCK_ORDER and BUILT, so a re-run never renumbers. Owner and Status in the
 root START_HERE.md are edited by hand on main and survive a re-run. A folder that already holds a
-prompt.md is a build in flight and its START_HERE.md is left alone.
+prompt.txt (or a prompt.md from before the plain-text rule) is a build in flight and its START_HERE.md
+is left alone.
 
   python3 analytical_tasks/make_task_folders.py
 """
@@ -346,7 +347,7 @@ def main():
         blocks.setdefault(key, []).append(t)
     for t, sid, key, obj, owner in plan:
         d = os.path.join(ROOT, t)
-        if os.path.exists(os.path.join(d, "prompt.md")):
+        if os.path.exists(os.path.join(d, "prompt.txt")) or os.path.exists(os.path.join(d, "prompt.md")):
             continue
         os.makedirs(d, exist_ok=True)
         b = blocks[key]

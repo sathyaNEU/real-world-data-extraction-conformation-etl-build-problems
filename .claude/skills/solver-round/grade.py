@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Grade an independent solver's answers against submission.md with the rubric's own weights.
 
-    python3 .claude/skills/solver-round/grade.py task100 <solver_output.json> [--label "round 1, plain"]
+    python3 .claude/skills/solver-round/grade.py task100 <solver_output.json> [--label "round 1"] [--landed yes|no]
 
 The solver output is the StructuredOutput the /solve command collects:
 
@@ -14,9 +14,17 @@ names) being the gradable tokens. Weights: recommendation 35, instruction-follow
 equally across block 4 items. A miss on the main call keeps 5 of the 35 (the rubric's surviving
 components). An item counts as cracked at 80 per cent of its tokens.
 
-The score is a proxy for the portal's grade, read for one purpose: did this solver land the main
-call, and which asks did it keep. Writes <task>/solver_rounds/<label>.md and prints the summary;
-appends one row to <task>/pipeline.json under solver_rounds.
+Two gates read off the result. The main-call gate: the solver did not commit to the golden call
+(`--landed` overrides the token match after the main thread reads both sentences). The ask gate: a
+solver that missed the call keeps under 35 per cent of the ask weight and cracks no item, because a
+response that misses the call and keeps the asks is the second slot of the portal's top two and
+carries the average over the bar (task181 went 65.2 and 59.0 in-house and 52 on the portal).
+
+Numbers match at the golden's own rounding (half a unit in its last decimal place; a relative 0.5 per
+cent only on figures of six or more significant digits), inside the item's own deliverable text.
+
+Exit status: 2 the solver landed the main call; 3 the call was missed and the asks leaked; 0 the round
+passes both gates. Writes <task>/solver_rounds/<label>.md and appends one row to <task>/pipeline.json.
 """
 import argparse
 import json
@@ -27,9 +35,12 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
 W_REC, W_IF, W_ASK, R_SURVIVE = 35.0, 7.0, 58.0, 5.0
+ASK_LEAK_SHARE = 0.35
 LANDED_OVERRIDE = None
 NUM = re.compile(r"(?<![\w.])[-+]?\d{1,3}(?:,\d{3})+(?:\.\d+)?|(?<![\w.,])[-+]?\d+\.\d+|(?<![\w.,])\d+(?![\w.,])")
 STOP = set("the a an and or of to in on at by for with from as is are was were be been not no yes per each every all any both first second third last next out into over under about above below than that this these those which who whom whose where when while because so if then its it their there here they them we our you your up down off back".split())
+# Capitalised words that are verdict verbs or table furniture, never a gradable name on their own.
+NOT_NAMES = {"Fire", "Hold", "Yes", "No", "None", "Total", "Count", "Each", "Per", "All", "Keep", "Release", "Flag", "Pass", "Fail", "Stage", "Row", "Column", "Sheet", "Slide", "Page"}
 
 
 def tokens(text):
@@ -47,14 +58,21 @@ def tokens(text):
         w = m.group(1)
         if w.split()[0].lower() in STOP or len(w) < 4 or w in ("Deliverable Answers", "Final Recommendation"):
             continue
+        if w in NOT_NAMES:
+            continue
         names.append(w)
     return nums, list(dict.fromkeys(names))
 
 
 def num_hit(golden, dp, text):
-    """A number in the solver text equal to the golden within half a unit of its last decimal place,
-    or 0.5 per cent, whichever is wider."""
-    tol = max(0.5 * 10 ** (-dp), 0.005 * abs(golden))
+    """A number in the solver text equal to the golden within half a unit of its last decimal place.
+    A relative 0.5 per cent applies only to figures of six or more significant digits, where a solver
+    may state a large total rounded; on a percentage near 99 or a one-decimal rate it would credit a
+    wrong figure (task229 round 3 read 54.5 by token match against about 44 read honestly)."""
+    digits = len(re.sub(r"\D", "", repr(abs(golden)).rstrip("0").rstrip(".")))
+    tol = 0.5 * 10 ** (-dp)
+    if digits >= 6:
+        tol = max(tol, 0.005 * abs(golden))
     for n in NUM.findall(text):
         try:
             v = float(n.replace(",", "").lstrip("+"))
@@ -133,9 +151,12 @@ def grade(task, out, label):
         ask_pts += per_item * frac
         rows.append((f, i, hits, total, frac))
     score = rec_pts + if_pts + ask_pts
+    ask_share = ask_pts / W_ASK if W_ASK else 0.0
+    asks_leak = (not landed) and (ask_share >= ASK_LEAK_SHARE or cracked > 0)
+    gate = "LANDED" if landed else ("ASKS LEAK" if asks_leak else "PASS")
     lines = ["# solver round: %s" % label, "",
-             "**Proxy score %.1f / 100** (recommendation %.1f of %.0f, instruction %.1f of %.0f, asks %.1f of %.0f). Main call %s. %d of %d ask items cracked (80 per cent of tokens)." % (
-                 score, rec_pts, W_REC, if_pts, W_IF, ask_pts, W_ASK, "LANDED" if landed else "missed", cracked, len(items)),
+             "**Proxy score %.1f / 100** (recommendation %.1f of %.0f, instruction %.1f of %.0f, asks %.1f of %.0f). Main call %s. %d of %d ask items cracked (80 per cent of tokens). Ask share kept %.0f%%. Gate: %s." % (
+                 score, rec_pts, W_REC, if_pts, W_IF, ask_pts, W_ASK, "LANDED" if landed else "missed", cracked, len(items), 100 * ask_share, gate),
              "", "## Main call", "", "golden: %s" % call, "", "solver: %s" % s_call, "",
              "tokens matched %d of %d (%s)" % (c_hits, c_total, ", ".join([n for n, _, _ in c_nums] + c_names)[:300]), "",
              "## Asks", "", "| file | item | tokens hit | of | share |", "|---|---|---|---|---|"]
@@ -155,10 +176,12 @@ def grade(task, out, label):
     state_p = task / "pipeline.json"
     state = json.loads(state_p.read_text()) if state_p.exists() else {"task": task.name}
     state.setdefault("solver_rounds", []).append({"label": label, "date": date.today().isoformat(), "score": round(score, 1),
-                                                   "landed": landed, "cracked": cracked, "items": len(items)})
+                                                   "landed": landed, "cracked": cracked, "items": len(items),
+                                                   "ask_share": round(ask_share, 3), "asks_leak": asks_leak, "gate": gate})
     state_p.write_text(json.dumps(state, indent=1))
-    print("%s: %.1f  main call %s  asks cracked %d/%d  ->  %s" % (label, score, "LANDED" if landed else "missed", cracked, len(items), rdir / ("%s.md" % safe)))
-    return score, landed
+    print("%s: %.1f  main call %s  asks cracked %d/%d  ask share %.0f%%  gate %s  ->  %s" % (
+        label, score, "LANDED" if landed else "missed", cracked, len(items), 100 * ask_share, gate, rdir / ("%s.md" % safe)))
+    return score, landed, asks_leak
 
 
 def main():
@@ -175,8 +198,8 @@ def main():
         t = a.task if a.task.startswith("task") else "task" + a.task
         task = REPO / t
     out = json.loads(Path(a.output).read_text())
-    score, landed = grade(task, out, a.label)
-    return 2 if landed else (1 if score >= 40 else 0)
+    score, landed, asks_leak = grade(task, out, a.label)
+    return 2 if landed else (3 if asks_leak else 0)
 
 
 if __name__ == "__main__":

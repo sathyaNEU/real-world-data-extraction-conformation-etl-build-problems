@@ -3,13 +3,15 @@
 
     python3 .claude/skills/leak-check/leak.py task100 [--asof 2027-05-14] [--quiet]
 
-Reads prompt.md, submission.md, DESIGN_NOTE.md (if present) and target/ (unzipping target.zip into
+Reads prompt.txt (or prompt.md on a build shipped before the plain-text rule), submission.md, DESIGN_NOTE.md
+(if present) and target/ (unzipping target.zip into
 the scratch dir when target/ is absent), and writes <task>/leak_check_report.md. Exit status is 2 on
 LEAK, 1 on REVIEW, 0 on CLEAN. Spawns nothing. The solver's-eye read that only a reader can do is
 the second half of the /leak-check command and is appended to the same report.
 
 Eleven sweeps, each a function below, each tagged LEAK (ship-stopping), REVIEW (a reader decides) or
-INFO. The design of every sweep is the same: the thing it hunts is something the author knows and the
+INFO. Sweep 11 is the prompt gate from guide-to-prompt/references/voice-check.py, run on the prompt the
+solver reads. The design of every sweep is the same: the thing it hunts is something the author knows and the
 solver must not be told, so the sweep takes the author's own text (the submission's answers, the
 design note's stump vocabulary, the generator's library names) and looks for it in the solver's text.
 """
@@ -27,6 +29,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
 SCRUB = REPO / ".claude/skills/reduce-house-fixes/scripts/scrub_producer_metadata.py"
+VOICE = REPO / ".claude/skills/guide-to-prompt/references/voice-check.py"
 
 DOC_EXT = {".md", ".txt", ".docx", ".pdf", ".rtf", ".html", ".htm"}
 DATA_EXT = {".csv", ".tsv", ".json", ".xlsx", ".xls", ".parquet", ".jsonl", ".xml", ".yaml", ".yml"}
@@ -34,7 +37,7 @@ IMG_EXT = {".png", ".jpg", ".jpeg", ".svg"}
 
 # File names an author writes and a solver reads as a map.
 BAD_NAME = re.compile(
-    r"(trap|decoy|distractor|naive|rung|stump|ladder|golden|answer|truth|hidden|secret|solution|answer_key|"
+    r"(?<![a-z])(trap|decoy|distractor|naive|rung|stump|ladder|golden|answer|truth|hidden|secret|solution|answer_key|"
     r"clean(ed)?_|_fixed|correct(ed)?_|quality_note|known_issue|reconcil\w*_needed|synthetic|generated|"
     r"_seed|placeholder|dummy|sample_|test_|_v\d+\b|\bcopy\b|final_final|backup|\.bak$|~$)",
     re.I,
@@ -315,8 +318,8 @@ def sweep_vocab(files, rep):
             rep.add("2 author vocabulary", lv, f["rel"], "%s x%d: ...%s..." % (pat, len(ms), ctx(t, ms[0])))
 
 
-def sweep_answers(files, rep, nums, names, call, prompt_text):
-    given = set(n for n in NUM.findall(prompt_text))
+def sweep_answers(files, rep, nums, names, call, prompt_text, stated=()):
+    given = set(n for n in NUM.findall(prompt_text)) | set(stated)
     for f in files:
         t = f["text"]
         if not t:
@@ -370,11 +373,11 @@ def sweep_design_vocab(files, rep, vocab, prompt_text):
             rep.add("4 design-note vocabulary", "REVIEW", f["rel"], "%d of %d stump-paragraph terms appear (%s); read whether the document names the move" % (len(found), len(vocab), ", ".join(w for w, _ in found[:6])))
     ps = [s for s in re.split(r"(?<=[.!?])\s+", prompt_text) if sum(1 for w in vocab if re.search(r"\b" + re.escape(w), s, re.I)) >= 2]
     for s in ps[:6]:
-        rep.add("4 design-note vocabulary", "REVIEW", "prompt.md", "prompt sentence carries two or more stump terms: %r" % re.sub(r"\s+", " ", s)[:220])
+        rep.add("4 design-note vocabulary", "REVIEW", "prompt", "prompt sentence carries two or more stump terms: %r" % re.sub(r"\s+", " ", s)[:220])
 
 
 def sweep_announce(files, rep, prompt_text):
-    srcs = [("prompt.md", prompt_text)] + [(str(f["rel"]), f["text"]) for f in files if f["ext"] in DOC_EXT and f["text"]]
+    srcs = [("prompt", prompt_text)] + [(str(f["rel"]), f["text"]) for f in files if f["ext"] in DOC_EXT and f["text"]]
     for name, t in srcs:
         for s in re.split(r"(?<=[.!?])\s+", t):
             if len(s) > 400:
@@ -457,19 +460,25 @@ def sweep_metadata(target, rep):
         rep.add("10 container metadata", "INFO", "-", "audit reported no writer signature (%d lines)" % len(out.split("\n")))
 
 
-def sweep_prompt(prompt_text, rep):
-    for pat, what in (
-        (r"\[[^\]]{3,}\]", "bracketed block"),
-        (r"\(\s*(CSV|XLSX|PDF|DOCX|PNG|PPTX|JSON|Parquet)\s*\)", "file.ext (Family) header"),
-        (r"^\s*[-*]\s", "bulleted ask"),
-        (r"\u2014", "em dash"),
-    ):
-        ms = list(re.finditer(pat, prompt_text, re.M))
-        if ms:
-            rep.add("11 prompt form", "REVIEW", "prompt.md", "%s x%d: %r" % (what, len(ms), ctx(prompt_text, ms[0], 40)))
-    for pat in (r"\b(step \d|first,? (compute|calculate|join)|then (compute|calculate|join)|use the following method|the method is)\b",):
-        for m in re.finditer(pat, prompt_text, re.I):
-            rep.add("11 prompt form", "REVIEW", "prompt.md", "prompt enumerates method: ...%s..." % ctx(prompt_text, m, 60))
+def sweep_prompt(prompt_text, rep, task_name="", legacy=False):
+    """The prompt gate: every rule in voice-check.py, on the prompt the solver reads. A FAIL is REVIEW
+    here (the gate's own exit status is what stops the ship, at stage 2); on a prompt.txt a markdown
+    character or a second paragraph is LEAK, because the portal's prompt check reads the file as the
+    solver does. A prompt.md predates the rule, so every finding on it is REVIEW."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("voice_check", str(VOICE))
+    vc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vc)
+    name = "prompt.md" if legacy else "prompt.txt"
+    if not prompt_text:
+        rep.add("11 prompt gate", "LEAK", name, "no prompt.txt in the task folder")
+        return
+    for rule, level, detail in vc.gate(prompt_text, task_name or None, legacy=legacy):
+        if level == "FAIL":
+            lv = "LEAK" if (rule in ("plain text", "one paragraph") and not legacy) else "REVIEW"
+            rep.add("11 prompt gate", lv, name, "%s: %s" % (rule, detail))
+        elif level == "WARN":
+            rep.add("11 prompt gate", "REVIEW", name, "%s: %s" % (rule, detail))
 
 
 # ------------------------------------------------------------------ main
@@ -500,7 +509,11 @@ def main():
         task = REPO / t
     if not task.is_dir():
         sys.exit("no task folder: %s" % task)
-    prompt_text = (task / "prompt.md").read_text(errors="ignore") if (task / "prompt.md").exists() else ""
+    prompt_path = task / "prompt.txt"
+    legacy_prompt = False
+    if not prompt_path.exists() and (task / "prompt.md").exists():
+        prompt_path, legacy_prompt = task / "prompt.md", True
+    prompt_text = prompt_path.read_text(errors="ignore") if prompt_path.exists() else ""
     sub = (task / "submission.md").read_text(errors="ignore") if (task / "submission.md").exists() else ""
     note = (task / "DESIGN_NOTE.md").read_text(errors="ignore") if (task / "DESIGN_NOTE.md").exists() else ""
     target, tmp = load_target(task)
@@ -516,7 +529,14 @@ def main():
     vocab = design_vocab(note, prompt_text)
     sweep_names(files, rep)
     sweep_vocab(files, rep)
-    sweep_answers(files, rep, nums, names, call, prompt_text)
+    stated = ()
+    meta_p = task / "metadata.json"
+    if meta_p.exists():
+        try:
+            stated = tuple(str(x) for x in (json.loads(meta_p.read_text()).get("stated_inputs") or []))
+        except Exception:
+            stated = ()
+    sweep_answers(files, rep, nums, names, call, prompt_text, stated)
     sweep_design_vocab(files, rep, vocab, prompt_text)
     sweep_announce(files, rep, prompt_text)
     sweep_rank_artifact(files, rep, names)
@@ -524,7 +544,7 @@ def main():
     sweep_columns(files, rep)
     sweep_dates(files, rep, a.asof, prompt_text)
     sweep_metadata(target, rep)
-    sweep_prompt(prompt_text, rep)
+    sweep_prompt(prompt_text, rep, task.name, legacy_prompt)
 
     level = rep.level()
     lines = ["# leak check, %s" % task.name, "",
@@ -541,7 +561,7 @@ def main():
             lines.append("- **%s** `%s`: %s" % (lv, f, d))
         lines.append("")
     ran = set(order)
-    for k in ("1 file names", "2 author vocabulary", "3 answer figures in the pack", "4 design-note vocabulary", "5 announcements", "6 ranking artifacts", "7 hidden content", "8 column names", "9 dates after the setting", "10 container metadata", "11 prompt form"):
+    for k in ("1 file names", "2 author vocabulary", "3 answer figures in the pack", "4 design-note vocabulary", "5 announcements", "6 ranking artifacts", "7 hidden content", "8 column names", "9 dates after the setting", "10 container metadata", "11 prompt gate"):
         if k not in ran:
             lines.append("## %s (clean)\n" % k)
     out = task / "leak_check_report.md"
