@@ -13,12 +13,11 @@
 > actually did to make one answer the only survivor, with the counts, so a builder has something to
 > copy rather than a standard to be measured against.
 >
-> **What this file is not.** It does not repeat `stumping` Part 5, which owns the pin authority
-> hierarchy, the fork grid as a concept, the convergence repair, the robustness sweep and the
-> assertion regime. Read Part 5 first. This file adds the four things Part 5 does not have: the
-> corpus as an authority tier of its own, the corridor, the bin arithmetic, and a closed enumeration
-> of the axes that a fork grid has to cover. The twin pair is `stumping/references/proven-in-production.md`
-> organ O1 and is not re-derived here.
+> **How it is organised.** Part 0 counts what fails, Part 1 is the closed enumeration of the axes a
+> fork grid has to cover, Part 2 the four closure moves, Part 3 the bin arithmetic, Part 4 the ways a
+> build loses determinism, Part 5 what to assert and where, and Part 6 the pin hierarchy, the fork grid,
+> convergence construction, the robustness sweep and the assertion regime. The twin pair is
+> `stumping/references/proven-in-production.md` organ O1 and is not re-derived here.
 
 ---
 
@@ -92,9 +91,9 @@ the moment another parameter moves. task65 asserts that resolving the population
 composition and the totals and does not move the fee by a dollar, and that sentence is worth having
 precisely because a reviewer will test it.
 
-**A row you close by pinning in the prompt has not been closed.** The prompt outranks every shipped
-file and no pin may live there, which is `stumping` Part 5.1. A convention stated in the prompt is a
-convention the build did not have to earn.
+**A convention pinned in the prompt has not been closed.** The prompt states the question (the call,
+and each ask's unit and rounding); a convention placed there hands the insight over, so conventions are
+filed in a shipped document at authority (`../SKILL.md` §3).
 
 ---
 
@@ -149,19 +148,16 @@ the two keys differed by USD 20,958.71 on 113 lines, and the review found it. A 
 that turns out to be false is worse than no claim, because it is evidence that the author never
 controlled the fork.
 
-### C2. Recover the rule from a closed corpus
+### C2. Confirm a filed criterion on a closed record
 
-This is the corpus's dominant device, it appears in more than half the 44, and it is a **seventh
-authority tier that `stumping` Part 5.1 does not name.** The hierarchy there ranks documents, from
-the governing standard down to the planning thread. A rule recovered by unique reproduction against a
-closed record outranks all of them in practice, for two reasons: a document pin can be counter-pinned
-or outranked by another document, and a corpus pin cannot be argued with, because the rival does not
-merely lose an argument, it contradicts the record. And a corpus pin leaves nothing in the prompt.
-
-Its frequency is also its cost. A withheld rule recovered from a corpus, with an official rule filed
-as the rival, is the architecture the client rejects as templated when it recurs, and the guard caps
-it (`stumping` Part 2). Where the stump strategy does not need a withheld rule, close the fork with C1,
-C3 or C4 and file the rule.
+C2 is confirmation, never recovery. The governing document files the criterion that selects the method
+("the basis that reproduces the closed cases", "the measure that held steady across the closed
+cohorts"), and a closed record in the pack shows that exactly one reasonable candidate satisfies it, with
+every rival's worst miss stated. A rule that is written nowhere and recovered from a corpus is a hidden
+rule: it is banned as the decisive step (CLAUDE.md, rule 3), the client caps it as templated, and a judge
+reading the shipped text literally treats it as an open fork (`../SKILL.md` §1 and §2). The builds in the
+table below recovered unwritten rules; they are kept as evidence of how wide a separation a closed record
+can give, not as a pattern to copy.
 
 The shape is always the same. The governing document states the quantity and is silent on the method.
 A closed record of settled cases ships in the pack. Candidate methods are run forward against it, and
@@ -260,7 +256,7 @@ is no cushion. A corridor with no slack is a coin flip wearing a proof. State th
 
 The fallback, and the one every build runs whether or not it uses the other three. Enumerate the cross
 product of the independent decisions, compute every cell, and assert each is distinct and each is far.
-`stumping` Part 5.2 owns the method. What the corpus adds is the **distance**, which is the number a
+Part 6.2 owns the method. What the corpus adds is the **distance**, which is the number a
 builder actually needs, because "the grid separates" is not a target.
 
 | Build | Grid size | Nearest wrong cell |
@@ -426,54 +422,148 @@ no build currently has.
 
 ---
 
-## Part 6. Per-build index
+---
 
-The axis that decided each build and how it was closed. Read it as what has been built and where, not
-as a menu.
+## Part 6. Pins, the fork grid, convergence and assertions
 
-| Task | The axis that decided it | Closed by | Nearest wrong |
-|---|---|---|---|
-| 35 | attribution window (endorsement year) | corpus, 1253/1253 | basis table, six rival bases |
-| 36 | population (RDC transfers) plus the day give-back | separation with no overlap, 0.68 to 0.86 against -0.04 to -0.03 | 3.21x lead, holds out every DC and service class |
-| 37 | scope of a clause, and roll survivorship | corpus, 39,753/39,753 | 8.4 per cent over 30 combinations |
-| 38 | what a direction actually removes | corpus, 33 closed directions, plus two twin pairs | 2.25x margin, narrowest variant 1.11x |
-| 39 | population, then reason-code semantics | corpus, 209/209, 1 of 1,024 partitions | 10.8 per cent over 16 |
-| 40 | the ceiling parameter | corridor, 193 to 209 identical to the cent | twelve rows reproduced exactly |
-| 41 | version basis, then certifiability | corpus, 240/240, plus C1 on four readings | 12.50 per cent over 16 |
-| 42 | unit of account (client against period) | corpus 432/432, plus C1 on four period readings | 10.62 per cent over 16 |
-| 43 | the moderator | hole in the distribution, 2 named sources against 22 | sixteen readings return the same partition |
-| 44 | which quarter the property is measured over | prior peak against spring, 132 items differing in both directions | 96 cells all same sign |
-| 45 | the per-van floor | corpus, 9/9 filed purchases | 14.2 per cent |
-| 46 | the rate curve's key | exposure age against build age, plus C1 | thirteen variants inside one 1,000 increment |
-| 48 | the aggregate that can see the population | absolute separation, ordinary max 7 against ring min 10 | identical membership at seven thresholds |
-| 49 | netting against gross | the audit reports both lines separately, so netting cannot reproduce either | 9.6 per cent |
-| 50 | forward window contents | the funded window, five demand readings agreeing | roughly two to one |
-| 51 | the reclassification rule | corpus, 58,374 class samples | 37 per cent |
-| 52 | the unit of the clock | corpus, 200/200 to the day | plus or minus one reproduces 2 |
-| 53 | the composed attach rule | corpus, all 383 outcomes | 1.35x under every variant |
-| 54 | exposure shape against a rate | corpus, 48/48, plus two independent estimators agreeing to 0.076 per cent | 4.7 packs from the bin |
-| 55 | the vat lead | corpus, unique integer over 4,462 lot codes | 11 per cent |
-| 56 | the billing basis for a population the meter never sees | corpus blind by construction, 30 of 31 pipelines refuted | the one survivor sits 55.13 per cent below |
-| 58 | order of operations (divide, set off, floor) | the security agreement, plus a twin pair | 14.77 per cent over 8 |
-| 59 | population grain (worksite against account) | corpus back-test plus a twin pair at 2.59x | 9.0 per cent over 11 cells |
-| 60 | unit of account, and duplicate filings | terms 2.1 plus the criterion filed at 4.2 | 10.8 per cent |
-| 62 | forward window contents, three stops | filed clauses at every stop plus the exit history | 0.59 per cent, two opposite violations |
-| 63 | divisor, then filing grain | corpus, 534/534, plus a twin pair at exactly 2.00x | 6.24 per cent |
-| 64 | a constraint on a grouping no account-level pipeline builds | the meter pinning two sources to their ceilings | 0.9 per cent under full sweep |
-| 65 | unit of assessment, then where activities stand | Chapter 7.6(a) and 7.2(f), plus 7.6(e) on rounding | 1.4 per cent over 216 cells |
-| 66 | what a point of delivery records | corpus, 364/364 decided challenges | 9.7 per cent among permitted cells |
-| 67 | what the minutes column is a share of | zero residual across the whole history | 0.17 of a duty at the boundary |
-| 68 | how activity is measured | corpus, 17 settled assessments | 1.19x on the runner-up |
-| 69 | distinct events against summed columns | the charter's own two sentences | worst swap costs 2 per cent of coverage |
-| 70 | acceptance against label date, then the trunk | the carrier statement, 29/29, plus the rounding path | thresholds exact, closest day 40 clear |
-| 71 | weighting, then code semantics | corpus 32/32, plus a step-grid corridor | 4 days clear of one step, 3 of the other |
-| 72 | where service belongs | corpus reproducing six pieces to three decimals | 0.51 points, 4.5x the runner-up |
-| 74 | identity normalisation, then whose property the scale is | corpus, 347/347 | 12.2 per cent |
-| 75 | maturity, and what consumes an authorisation | the register against the intake extract | 49.7 and 50.3 inside the block |
-| 76 | an absolute class, not a rate | 1,581 referrals, zero engagements | 15.3 per cent, answer is the minimum |
-| 77 | rows against people, and pathway against trend | corpus, 214 reviews | 11.5 per cent over 32 cells |
-| 78 | the period accumulation is measured over | corpus, 2,387/2,387 | 14.3 per cent, answer is the lowest cell |
-| 79 | the capacity ceiling | corpus, three waves on 11.500 exactly | 0.34 per cent each side, flip stated |
-| 80 | the dating of a designation | corpus, 70 settled site-years, signature exact | 9.6 per cent |
-| 81 | unit of account (register unit against firm) | the site-set match, exact and unique on 203 pairs | 18.8 per cent over 8 cells |
-| 83 | conditioning on treatment history | the holdout, a switch rather than a gradient | 5.1 stops on a month worth about 30 |
+### 6.1 Pin authority hierarchy
+
+**Your pin must sit at or above every counter-pin in the pack.** Authority order, highest first:
+
+0. **The prompt.** It states the question (the call, each ask's unit and rounding) and outranks every shipped file, which is why no convention may live there: a convention in the prompt hands the insight over.
+1. Governing standard, policy document, regulatory terms
+2. Signed charter, SOW, contract, rate schedule, product terms
+3. Decision memo from the accountable executive
+4. Data dictionary or codebook, authoritative for **field semantics** only
+5. Method notes attached to an operational export
+6. Planning thread, notes, informal correspondence
+
+**Two fatal patterns.** The **counter-pin**: a different shipped file states the opposite convention, so the pack argues against your own answer. The **outranked pin**: your pin sits at level 5 and a level-1 document implies the opposite, so a solver that follows the governing document is right and your golden is wrong.
+
+**Fix:** move the pin up the hierarchy, relabel any artifact in-file so it explicitly answers a different question, and delete any endorsement of the wrong basis that outranks your pin.
+
+**A rule stated at two authority levels that agree on one side of the calculation and diverge on the other** is not fixed by adding a sentence to the lower document, which puts it in open conflict with the higher one. Make the situation not arise and assert that both readings return the same figure (task60 v8). **Sweep the pack for sentences quotable against the answer**: grep for the constraint's nouns and for *defensible*, *added*, *raised* and *increased* near them, and qualify every absolute claim with its grain, because a hostile judge quotes them (task64).
+
+### 6.2 The fork grid, asserted cell by cell
+
+List every choice a competent analyst could make differently: window, grain, population, counting convention, treatment of missing values, tie-break, maturity. Build the grid. **Your answer must win in every cell, or the choice must be pinned.**
+
+**Assert cell by cell, never in aggregate.** "The answer wins 8 of 12" is a summary, not an assertion. Each losing cell must be named in the build and mapped to the specific shipped rule it violates: the clause it contradicts, the eligibility gate it ignores, the censoring the dictionary excludes. A cell you cannot map is an open fork wearing a count.
+
+**Maturity and censoring is an axis and it is the one most often missed.** Any rate measured over vintages, cohorts or periods that are not fully observed has two defensible populations, all of them or only the mature ones, and the two can differ by 2x on the same candidate. Pin the maturity convention in one flat dictionary sentence, or prove convergence. Check it even when it does not currently change the winner, because it becomes load-bearing the moment any other parameter moves.
+
+**Test:** for each assumption, ask *"would ten competent analysts, given only these files, all make this choice?"* If no, it is not an assumption, it is a decision, and it must be pinned or the answer must change. A model that did 99 percent of the analysis right and diverged only on one of your assumptions is not a valid stump, it is `underspecified_objective`.
+
+**Axes the grid has to carry, each one a measured death:**
+
+- **Rounding paths** (per line, per day, per entity, per period, per total). Every summary artifact the generator emits pins the paths its lines demonstrate, so the emitter and the golden share one arithmetic, asserted (task70, three pence apart on a penny-graded ask). A strata choice that straddles a rounding boundary is closed by a filed rounding convention, never by pinning the strata (task73).
+- **The sign across every window a cohort claim admits**, not only its value under yours (task73, +217 under one window and -72 under the widest natural one).
+- **Window terms.** Any window a graded figure depends on is a filed, nameable date that falls in a gap in the records, so neighbouring cutoffs select identical rows; assert the gap (task55).
+- **Codings of a filed criterion on a real coded field.** Real public data brings its own conventions, so enumerate the codings a competent solver could adopt and measure the set difference before writing the clause (task57 v20, three of seven tests admitting two readings each).
+- **Inclusion readings of a delta or cumulative feed** (latest value, reconciled only, the batch closing the window): assert they converge or violate a shipped sentence, and compute the golden on reconciled values (task44).
+- **Tie-breaks on a duplicate mechanism.** File two levels (a date, then an identifier), ship enough distinct dates that the first level resolves nearly everything, and assert the attribution is unique for every case (task60 v5, 31 of 2,718 pairs reaching the second level).
+- **Mid-period proration.** Day-versus-month proration never converges at month boundaries, so a mid-period convention is either unpinned or pinned by an enumerable test; move whole periods at boundaries instead (task40).
+- **Things never to grade**: the run count of an iteration (a freeze reading and a re-evaluate reading agree on every allocation and disagree on the count, task57 v19), a median on an even-sized set, and a percentage near a one-decimal edge where a count would do (task57 v20).
+- **Pin the nuisance axis, never the decisive one**, and remember that rounding cannot absorb a modelling spread: in a bin of width w the maximum clearance is w/2, so re-centring the answer is not a repair (task47).
+
+### 6.3 Convergence construction
+
+**A semantic pin fixes a meaning, and a meaning still has to be operationalised.** This is the
+failure that survives every other check, because the pin reads as decisive and the design note
+records it as closed. task42 pinned chargeability with "assistance is chargeable for the period
+of the household's enrolment in the Project", which is a clean level-2 filed fact naming no
+join, no table and no field, exactly as a pin should. It still admitted four readings:
+
+| Reading | Figure |
+|---|---|
+| the whole covered period lies inside the enrolment span | 5,746,538.25 |
+| the covered period starts inside the span | 6,631,832.46, the golden |
+| the warrant clears inside the span | 6,610,873.75 |
+| the covered period overlaps the span at all | a fourth |
+
+A 13.35 per cent spread, and a strong solver that reached **every** planted insight still
+diverged on it. That is `underspecified_objective`, not stump power, and the signature is
+exactly that: the solver performs the decisive move and lands somewhere else anyway.
+
+**The repair is convergence, never a second pin.** A clause naming the field ("charged to the
+Project of the enrolment open on the payment's coverage_start") closes it and simultaneously
+turns the decisive rung into a two-line lookup, which trades a Gate C failure for a Gate F one.
+Build the records so every reading selects the same rows instead: in task42 every certifiable
+payment's covered period **and** its warrant date were made to lie wholly inside one enrolment
+span, and all four readings then returned one figure on identical line and household counts.
+
+**The check, and run it on every interval the answer touches.** Enumerate the readings a
+period-shaped clause admits, compute each one, and assert they are equal, in the generator and
+again in the independent verifier. Two specific boundaries generate almost all of these and
+both are easy to miss because the natural join hides them:
+
+- **The far edge.** An as-of join keyed on entry ignores the exit entirely, so a covered period
+  running past the exit still resolves to the exited enrolment. Check the covered period
+  against the span the reading itself selects, not against any span.
+- **The gap.** Between one enrolment closing and the next opening the entity is enrolled in
+  nothing, and a backward as-of join silently attributes that gap to the enrolment that closed.
+
+**And never write "the figure is identical either way" without an assertion behind it.**
+task42's write-up carried exactly that sentence about the warrant key while the two keys
+differed by USD 20,958.71 on 113 lines, and the review found it, which converts a convergence
+claim into evidence that the author never controlled the fork.
+
+
+Where an ambiguity cannot be fully closed, engineer the data so **both defensible handlings give the same answer.** *"Reattributing the transferred units to the party that produced the measurements, or dropping them as unattributable, returns the same winner either way."* This closes the fork by construction rather than by argument and it is unanswerable in review.
+
+**More convergence by construction, each measured:**
+
+- **Integerisation on a forward quantity is unpinnable by any corpus of observed outcomes.** Make every discipline return the same integers by aligning the quantised units with the capacity constants (whole bundles sized from divisors of the conversion constant), and assert that floor, round, largest remainder and no integerisation coincide (task64, six tie-breaks spanning $6,700 before the repair).
+- **Build convergence at the grain of the finest pool a solver could defend.** De-meaning a control side as one group leaves its subsets drifting; de-mean inside each subgroup, and set each group's measure equal across periods so differently weighted aggregations agree (task43, 5.4 per cent between two control pools).
+- **Close silent sweep forks in the data**: the end-day convention and the order of same-day events at a limit converge once no event ends on a day another lands in the same unit and events are unique per day within a unit (task57).
+- **Convention robustness and grid separation are different sensitivities, tuned separately**: convergence is bought with sample density at the quantile, separation with the size of the block each rung moves (task44).
+- **Re-sweep every separation after closing a fork**, because a separation can be borrowed from the defect the fork carried (task44).
+
+### 6.4 The robustness sweep, stated with counts
+
+- "Holds across N of N combinations of choice A x choice B x choice C, narrowest margin 1.16x."
+- "Holds at inclusion floors of 1, 5 and 25."
+- "Holds on both the record basis and the constructed-unit basis."
+- "Holds on both periods, and with the largest rival excluded entirely."
+
+**Sweep the whole family and state the count you actually ran.** Rival-killers are audited as hard as the answer. If you claim seventeen alternative rules were tested, run seventeen, and report the **worst** miss across the family, not the average.
+
+A monotone classifier family (drop addresses held by more than t persons) must cross the answer at some t: put the crossing at an unnatural value, assert every round threshold lands at least 10 per cent off, and make the corpus refuse the whole family; sweep string heuristics on an entity exactly like columns (task58). Before claiming N rival readings, test each against a careful read of the clause, because claiming rivals the wording already excludes is the overclaim a hostile reviewer turns into "the difficulty is semantic" (task44).
+
+### 6.5 Construct the disagreement
+
+If a rung turns on **two axes disagreeing** (measured by date versus by period label, per-record versus per-entity, gross versus net, cohort versus calendar) then the generator must **build the correlation that makes them disagree**, per candidate. Draw the two axes independently and every candidate ends up with near-identical profiles on both: the mechanism is documented, findable and inert.
+
+Build it, then assert it in both directions. The design intent is usually "the winner looks slow on axis A and fast on axis B, the decoy is fast on both", and that sentence has to appear as an assertion, not only as a paragraph. Put decoy instances of the construction where they change nothing as well as where they decide everything, or the constructing field becomes the giveaway column no anti-signpost grep sees (task60 v4, 29 spring executions of which 16 were load-bearing).
+
+### 6.6 The assertion regime
+
+**Rules that live only in prose get broken by a later parameter tweak, and nothing in house rediscovers it.** A submission is expensive, assertions are free.
+
+**Compute forward, never backward.** Build the data, then compute every figure from it by script. Never author a number and reverse-engineer records to hit it.
+
+Assert, at minimum:
+
+- each rung's winner **by name**, and each rung's margin
+- the ground-truth position table, rank and distance from the leader, every rung
+- discriminator dominance, both ratios and their product
+- the calibration back-test, N of N within x percent, each rival missing by at least y percent
+- the fork grid **cell by cell**, each losing cell mapped to the shipped rule it violates
+- the rival sweep count, the number of alternative rules actually tested
+- every graded numeric answer's distance to the nearest rounding boundary
+- the generation tells: no headline total on a round boundary, no share that is an exact round figure
+- the anti-signpost invariants: each load-bearing fact appears in exactly one shipped file
+- the input-pack gates: file count, format count, the row count of the largest dataset
+
+Target **40 or more assertions**. A build that only asserts the answer is not verified.
+
+**Ship an independent verifier** that reads only the shipped bundle and no generator state. If it cannot recompute a figure, that figure does not exist.
+
+**Generator disciplines, each one a build that shipped wrong without it:**
+
+- **Assert agreement between the generator and the golden**, not only within the generator: any structure the design depends on exists in the shipped records, not in a variable (task56), and the extract-date cut is applied at source, never at pack-write time (task60).
+- **The generator's ground truth is the projection a solver can make**, not the realised value it knows (task56 v4). Run the golden deliverable script against the shipped bundle before anything else, because it is the first solver.
+- **Build the verifier first and treat a disagreement as the measurement**: the strongest evidence a stump is live is your own verifier, written before the mechanism existed, falling into it (task60 v5).
+- **Build the ladder by construction and let the seed decide texture only**, because a which-of-N ladder whose decoys are sums of a few hundred random records rides on sampling noise and a seed sweep is a lottery (task56 v4). Use one RNG stream per period, so a parameter change in one period does not re-roll the graded one (task69).
+- **Read shipped constants from the single definition the model implements**, derive parameters from the record rather than stating them, and check the rounding distance and adjacency of every ordered pair on every redraw, not only the top two (task60 v8, task73). Measure a one-decimal figure's distance to x.x5, not to the hundredths (task55).
+- **A column whose rows and whose total row are computed different ways**, and a rank or share that does not say whether it runs on the rounded or the unrounded value, are defects the generated rubric charges for: assert both in the verifier, rebuilt from the unrounded source (task60).
