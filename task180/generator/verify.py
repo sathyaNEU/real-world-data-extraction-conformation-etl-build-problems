@@ -29,7 +29,7 @@ def sheet_rows(path, name):
     ws = openpyxl.load_workbook(path, read_only=True, data_only=True)[name]
     rows = list(ws.iter_rows(values_only=True))
     hi = next(i for i, r in enumerate(rows) if r and r[0] in ("mpan_core", "account_ref", "appeal_ref",
-                                                                 "officer", "date"))
+                                                                 "officer", "date", "related_mpan_core"))
     hdr = rows[hi]
     return [dict(zip(hdr, r)) for r in rows[hi + 1:] if r and r[0] is not None]
 
@@ -40,6 +40,11 @@ def main():
     h0 = a0 - dt.timedelta(728)
     reg = f("supply_point_register")
     sup = sheet_rows(reg, "Supplies")
+    prim = {r["mpan_core"]: r for r in sup}
+    for r in sheet_rows(reg, "Related metering points"):
+        p = prim[r["primary_mpan_core"]]
+        sup.append({"mpan_core": r["related_mpan_core"], "uprn": p["uprn"], "rp_patch": p["rp_patch"],
+                    "payment_method": p["payment_method"]})
     exch = {r["mpan_core"]: r for r in sheet_rows(reg, "Meter exchanges")}
     stations = {}
     import json

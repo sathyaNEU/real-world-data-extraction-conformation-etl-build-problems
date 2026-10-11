@@ -20,23 +20,24 @@ Stump strategy: grain_or_unit   Decisive rule filed? yes (RP-07 sections 2 to 7)
 Forum: operations_desk (the December planning meeting)   Forcing event: season_or_peak   Org family: utility_or_infrastructure
 People (guard.py names, en_GB, seed 180): Gareth Francis (RP manager, RP-07 approver), Judith Jones (field side, prompt
   belief), Christopher Horton (RP analytics, extract owner), Matthew Gill (senior field officer); field officers in the
-  visit logs and rota: Alan Khan, Aaron O'Connor, Justin Davis, Barbara Craig, Kerry Sutherland
+  visit logs and rota: Alan Khan, Aaron O'Connor, Jonathan Gibson, Debra Martin, Chloe Lewis
 ```
 
 **Data-native sentence.** In the north of Scotland storage-heated homes carry a second, heating-only supply number
 (a related metering point on its own meter), so a bypass of the heating meter takes 36.2 to 57.9 per cent off that supply
-while the account's weekly total in the analytics mart, which sums the account's supplies, falls by 6.5 to 23.9
-per cent, below the 30 per cent referral band.
+while the metering system's weekly total in the analytics mart, keyed by the primary supply number, falls by 6.5
+to 23.9 per cent, below the 30 per cent referral band.
 
 **Layer 1 (realistic mess and the system that produces it).** Cumulative midnight register reads from the smart
-metering data service with comms gaps and meter exchanges (bridged by the exchange reads in the CIS register); supply
-numbers to accounts to premises through a three-sheet CIS workbook with an account history; a weekly analytics-mart
-table at account grain; degree days by station with a patch map in JSON; a field-visit system migration (FieldLink to
+metering data service with comms gaps and meter exchanges (bridged by the exchange reads in the CIS register); primary
+supply numbers to premises through a four-sheet CIS workbook whose related metering points (the heating-only supply
+numbers) sit on their own sheet; a weekly analytics-mart table at metering-system grain keyed by the primary supply
+number; degree days by station with a patch map in JSON; a field-visit system migration (FieldLink to
 FieldOps, re-keyed jobs carrying the legacy number) and an appeals register keyed to whichever system raised the
 finding; a group HR holiday calendar that lists both the England and Wales and the Scottish holidays.
 
-**Layer 2 (the analytical shortcut).** Screening the ready-made weekly series. The mart's account total is the natural
-input for a household-level anomaly test, and every count, join and total ties on it; an expert screens each metered
+**Layer 2 (the analytical shortcut).** Screening the ready-made weekly series. The mart's weekly series, keyed by a supply number, is
+the natural input for a supply-level anomaly test, and every count, join and total ties on it; an expert screens each metered
 supply against its own history, because an anomaly confined to one component of an additive total is diluted below
 any sensible referral band in the total.
 
@@ -51,8 +52,8 @@ named option carrying a count. Deliverable format set moved off docx+png and ppt
 
 ## GATE G
 
-- **Litmus.** No reported number is overturned: the mart's weekly account totals are exactly the sum of the account's
-  supplies (the verifier rebuilds them), every register read, degree day, occupier event and visit record is correct,
+- **Litmus.** No reported number is overturned: the mart's weekly totals are exactly the metering system's import, primary
+  plus related supplies (the verifier rebuilds them), every register read, degree day, occupier event and visit record is correct,
   and the difficulty is which series the filed screen runs on.
 - **Primary mechanism:** decomposition_attribution (the anomaly lives in one metered component of an additive total).
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
@@ -62,25 +63,25 @@ named option carrying a count. Deliverable format set moved off docx+png and ppt
   handling converges: linear interpolation, booking a gap to the later week, and spreading it evenly over its days
   (the verifier's route) give identical referral counts in every patch. The mart is complete at its grain; the
   instrument that observes the decision's own quantity, consumption per supply number, already ships (the reads), and
-  the difficulty is choosing it over the account total, not repairing either.
-- **Lens swap.** Not one population under two lenses: the rung's unit is a billing account (2,960 premises, accounts
-  changing at occupier events), the answer's is a supply number (3,659), and a supply-level series has to be built
+  the difficulty is choosing it over the metering-system total, not repairing either.
+- **Lens swap.** Not one population under two lenses: the rung's unit is a metering system (2,960, keyed by the primary
+  supply number), the answer's is a supply number (3,659, 699 of them related heating-only supplies), and a supply-level series has to be built
   from cumulative reads before it can be screened.
 - No shipped artifact ranks the patches on referrals. The distractors answer nothing on the decision.
 
 ## STUMP SENTENCE
 
 A competent solver runs the filed RP-07 screen (own 104-week degree-day line, 30 per cent over eight weeks, every week
-below expected, occupier and heating changes excluded) on the analytics mart's weekly account consumption and places
-the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is treating an account's weekly total
-as the supply the procedure screens, when 42 storage-heated premises in Caithness carry a bypassed heating-only supply
-whose 36.2 to 57.9 per cent shortfall moves the account total by 6.5 to 23.9 per cent.
+below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number,
+and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row
+for the supply the procedure screens, when it is a metering system's total, when 42 storage-heated premises in Caithness carry a bypassed heating-only supply
+whose 36.2 to 57.9 per cent shortfall moves the metering system total by 6.5 to 23.9 per cent.
 
 ## ENTITY AND UNIT OF VALUE
 
 Corran Energy's revenue protection team places one field team per quarter and is judged by referrals worked; RP-07
-places it in the patch with the most referred supplies. Two series both look like "consumption": the account's weekly
-import (mart) and each supply number's weekly import (reads). They rank the patches differently because only some
+places it in the patch with the most referred supplies. Two series both look like a supply's "consumption": the mart's weekly
+import keyed by the primary supply number, and each supply number's weekly import (reads). They rank the patches differently because only some
 patches' premises hold two supplies, and only there does a single-supply anomaly dilute.
 
 ## LADDER
@@ -88,7 +89,7 @@ patches' premises hold two supplies, and only there does a single-supply anomaly
 | Rung | Construction | Names | Why a careful analyst stops | Killed by |
 |---|---|---|---|---|
 | belief | best confirmation rate over three winters | Lochaber, 68.2% (15 of 22) | the field side's own outcome record, computed properly (dedupe, appeals) | RP-07 section 7 places on referrals; Lochaber has the fewest (8) |
-| 0 | RP-07 screen on the mart's account weeks | Elgin and Lossiemouth, 35 | the filed method run on the tidy weekly series; every exclusion applied; totals tie | RP-07 section 6 glossary: a supply is a supply number and its meter; the register shows related heating-only supplies |
+| 0 | RP-07 screen on the mart's weekly import (keyed by primary supply number), or on the Supplies sheet's supply numbers from the reads | Elgin and Lossiemouth, 35 | the filed method run on a series keyed by supply number, every exclusion applied; every key matches the Supplies sheet and every total ties | RP-07 section 6 glossary (a supply is a supply number and its meter) and the register's Related metering points sheet (699 heating-only supply numbers, each with its own meter) |
 | grid | RP-07 per supply, heating changes not excluded | Strathspey, 73 | the decisive grain found, one exclusion missed | RP-07 section 5 and the completions file (heat pumps commissioned June to September 2026) |
 | 1 (decisive) | RP-07 per supply number from the reads, exclusions by premises | **Caithness, 54** | | |
 
@@ -111,8 +112,9 @@ asserted: aggregating before detecting is the same mistake whichever file it sta
 | supply, heating changes kept | Strathspey 73 (1.28x over Caithness 57) | RP-07 s5 |
 | supply, occupier changes kept | Inverness City 91 (1.52x over 60) | RP-07 s5 |
 | supply, neither exclusion | Inverness City 91 (two violations) | RP-07 s5 twice |
-| account, occupier changes kept | Elgin 35 (occupier accounts have no 104-week history, so voids cannot be screened at account grain) | RP-07 s2/s6 |
-| account, heating changes kept | Elgin 35 | RP-07 s2/s6 |
+| mart (metering system), occupier changes kept | Inverness City 91 (2.17x over Elgin 42) | RP-07 s5 and s2/s6 |
+| mart (metering system), heating changes kept | Elgin 35 | RP-07 s2/s6 |
+| Supplies-sheet supply numbers only, from the reads | Elgin 35 (same counts as the mart) | RP-07 s6 and the related sheet |
 | premises sum from reads | Elgin 35 | RP-07 s2/s6 |
 | supply, no weather adjustment (same weeks a year earlier) | Caithness | RP-07 s3; recorded as a rule violation that happens to land on the answer |
 
@@ -161,7 +163,7 @@ cent. The ask layer is the weaker half of this build; the solver round reads it.
 
 Filed: RP-07 v4 (governing, level 1): scope, screening unit, method, referral test, exclusions, glossary, placement,
 reporting. FW-3 (level 1): field day, visit standard, holiday calendar, start dates. Field notes (level 4): field
-semantics only (mart grain, read semantics, re-keyed jobs). No counter-pins: no file states that accounts are screened.
+semantics only (mart grain, read semantics, re-keyed jobs). No counter-pins: no file states that a metering system is screened.
 
 ## PACK GATES
 
@@ -196,3 +198,12 @@ before any hardening.
   degree day): too close to the 30 per cent band for convergence across weather readings; heating sensitivity cut to
   0.42 to 0.62.
 - Strathspey at 9 heating diversions tied Inverness City at 19 referrals, an ordering fork in the ranked chart; cut to 6.
+- First cut of the pack (mart keyed by billing account and described as "the account's metered import", heating-only
+  supply numbers listed inline on the Supplies sheet with a `related_mpan` column): the solver's-eye leak reader's plan
+  of attack, before any solve, was "screen each MPAN separately, including the related heating-only ones" and "use the
+  mart only as a sanity check, since it is per account". The decisive grain was announced by the file layout. The mart
+  is now the metering-system table it would be at a supplier, keyed by the primary supply number, and the related
+  metering points sit on their own CIS sheet, so the natural pipeline (Supplies sheet plus mart, or plus the reads) is
+  keyed by supply number and silent everywhere. The same reader flagged RP-07's revision table (its two lines named the
+  own-history degree days and the occupier window) and the DNO loss file ranking Lochaber top, echoing the belief; both
+  rewritten.

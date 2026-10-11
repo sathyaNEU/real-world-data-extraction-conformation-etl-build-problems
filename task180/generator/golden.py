@@ -39,10 +39,22 @@ def find(prefix):
 # loaders
 def load_register():
     p = tp(find("supply_point_register"))
-    sup = pd.read_excel(p, sheet_name="Supplies", header=4, dtype={"mpan_core": str, "related_mpan": str})
+    sup = pd.read_excel(p, sheet_name="Supplies", header=4, dtype={"mpan_core": str})
+    rel = pd.read_excel(p, sheet_name="Related metering points", header=3,
+                        dtype={"related_mpan_core": str, "primary_mpan_core": str})
     exch = pd.read_excel(p, sheet_name="Meter exchanges", header=3, dtype={"mpan_core": str})
     acct = pd.read_excel(p, sheet_name="Account history", header=3)
-    return sup, exch, acct
+    return sup, exch, acct, rel
+
+
+def all_supplies():
+    """Every supply number in the register: primaries, and related metering points carrying their
+    primary's premises, patch and payment method."""
+    sup, _, _, rel = load_register()
+    base = sup[["mpan_core", "uprn", "rp_patch", "payment_method"]].copy()
+    r = rel.merge(base.rename(columns={"mpan_core": "primary_mpan_core"}), on="primary_mpan_core", how="left")
+    r = r.rename(columns={"related_mpan_core": "mpan_core"})[["mpan_core", "uprn", "rp_patch", "payment_method"]]
+    return pd.concat([base, r], ignore_index=True)
 
 
 def load_stations():
@@ -80,7 +92,7 @@ def supply_weekly_from_reads(alloc="linear"):
     is booked to the week holding the later read ("later").
     """
     reads = pd.read_parquet(tp(find("smart_daily_reads")))
-    _, exch, _ = load_register()
+    _, exch, _, _ = load_register()
     ex = {r.mpan_core: r for r in exch.itertuples()}
     mondays = [HIST_START + dt.timedelta(weeks=k) for k in range(113)]
     m_ord = np.array([d.toordinal() for d in mondays])
@@ -128,8 +140,9 @@ def screen(series, hdd_w, threshold=0.30, every_week=True):
 
 # ---------------------------------------------------------------------------------------------
 def referrals(grain="supply", base=15.5, alloc="linear", use_cot=True, use_heat=True, credit_only=True,
-              threshold=0.30, every_week=True, count="supply"):
-    sup, _, acct = load_register()
+              threshold=0.30, every_week=True, count="supply", related=True):
+    sup, _, _, _ = load_register()
+    allsup = all_supplies() if related else sup[["mpan_core", "uprn", "rp_patch", "payment_method"]]
     st = load_stations()
     hw = weekly_hdd(base)
     cot_u, heat_u = load_exclusions()
@@ -143,7 +156,7 @@ def referrals(grain="supply", base=15.5, alloc="linear", use_cot=True, use_heat=
     hits = {}
     if grain == "supply":
         wk = supply_weekly_from_reads(alloc)
-        for r in sup.itertuples():
+        for r in allsup.itertuples():
             if credit_only and r.uprn not in credit:
                 continue
             if r.uprn in excl:
@@ -151,13 +164,14 @@ def referrals(grain="supply", base=15.5, alloc="linear", use_cot=True, use_heat=
             sf, ok = screen(wk[r.mpan_core], hw[st[r.rp_patch]], threshold, every_week)
             if ok:
                 hits.setdefault(r.rp_patch, set()).add(r.mpan_core if count == "supply" else r.uprn)
-    elif grain == "account":
-        mart = pd.read_csv(tp(find("rp_mart_account_week")), parse_dates=["week_commencing"])
+    elif grain == "system":
+        mart = pd.read_csv(tp(find("rp_mart_weekly_import")), parse_dates=["week_commencing"],
+                           dtype={"mpan_core": str})
         mart = mart[mart["week_commencing"].dt.date >= HIST_START]
-        a2u = dict(zip(acct["account_ref"], acct["uprn"]))
+        u_of = dict(zip(sup["mpan_core"], sup["uprn"]))
         wk_idx = {w: i for i, w in enumerate(week_starts())}
-        for a, g in mart.groupby("account_ref"):
-            u = a2u[a]
+        for m, g in mart.groupby("mpan_core"):
+            u = u_of[m]
             if credit_only and u not in credit:
                 continue
             if u in excl:
@@ -165,15 +179,13 @@ def referrals(grain="supply", base=15.5, alloc="linear", use_cot=True, use_heat=
             s = np.zeros(112)
             for d, v in zip(g["week_commencing"].dt.date, g["kwh_import"]):
                 s[wk_idx[d]] += v
-            if (s[:104] == 0).sum() > 8 or (s[104:] == 0).any():
-                continue        # account not open across the screening weeks
             sf, ok = screen(s, hw[st[patch_of[u]]], threshold, every_week)
             if ok:
-                hits.setdefault(patch_of[u], set()).add(a)
+                hits.setdefault(patch_of[u], set()).add(m)
     elif grain == "premises":
         wk = supply_weekly_from_reads(alloc)
         tot = {}
-        for r in sup.itertuples():
+        for r in allsup.itertuples():
             tot.setdefault(r.uprn, np.zeros(112))
             tot[r.uprn] = tot[r.uprn] + wk[r.mpan_core]
         for u, s in tot.items():
@@ -187,7 +199,7 @@ def referrals(grain="supply", base=15.5, alloc="linear", use_cot=True, use_heat=
 
 # ---------------------------------------------------------------------------------------------
 def history(dedupe=True, appeals=True, local_time=True, access_only=True):
-    sup, _, _ = load_register()
+    sup, _, _, _ = load_register()
     patch_of = dict(zip(sup["uprn"], sup["rp_patch"]))
     fl = pd.read_csv(tp(find("fieldlink_visits")), dtype={"JobNo": str})
     fo = pd.read_csv(tp(find("fieldops_visits")), dtype={"legacy_job_no": str})

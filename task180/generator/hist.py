@@ -29,7 +29,7 @@ HISTORY = {
 }
 OFF_SEASON_VISITS = {"INV": 9, "NRN": 4, "FRS": 4, "ELG": 10, "SPY": 5, "LOC": 3, "CAI": 6, "SKY": 4}
 
-OFFICERS_HIST = ["Alan Khan", "Aaron O'Connor", "Justin Davis", "Barbara Craig"]
+OFFICERS_HIST = ["Alan Khan", "Aaron O'Connor", "Jonathan Gibson", "Debra Martin"]
 
 
 def _rand_day(rng, a, b, weekday_only=True):
@@ -132,7 +132,7 @@ HOLIDAYS = [  # (date, name, region)
 TEAM = [  # name, grade, field start date
     ("Matthew Gill", "Senior Revenue Protection Officer", dt.date(2024, 5, 13)),
     ("Aaron O'Connor", "Revenue Protection Officer", dt.date(2023, 2, 6)),
-    ("Kerry Sutherland", "Revenue Protection Officer", dt.date(2027, 2, 15)),
+    ("Chloe Lewis", "Revenue Protection Officer", dt.date(2027, 2, 15)),
 ]
 LEAVE = [  # name, date, code
     ("Matthew Gill", dt.date(2027, 1, 5), "AL"), ("Matthew Gill", dt.date(2027, 1, 6), "AL"),
@@ -142,9 +142,9 @@ LEAVE = [  # name, date, code
     ("Aaron O'Connor", dt.date(2027, 2, 9), "AL"), ("Aaron O'Connor", dt.date(2027, 2, 10), "AL"),
     ("Aaron O'Connor", dt.date(2027, 2, 11), "AL"), ("Aaron O'Connor", dt.date(2027, 2, 12), "AL"),
     ("Aaron O'Connor", dt.date(2027, 2, 22), "TRN"), ("Aaron O'Connor", dt.date(2027, 3, 29), "AL"),
-    ("Kerry Sutherland", dt.date(2027, 2, 15), "IND"), ("Kerry Sutherland", dt.date(2027, 2, 16), "IND"),
-    ("Kerry Sutherland", dt.date(2027, 2, 17), "IND"), ("Kerry Sutherland", dt.date(2027, 2, 22), "TRN"),
-    ("Kerry Sutherland", dt.date(2027, 3, 12), "STBY"),
+    ("Chloe Lewis", dt.date(2027, 2, 15), "IND"), ("Chloe Lewis", dt.date(2027, 2, 16), "IND"),
+    ("Chloe Lewis", dt.date(2027, 2, 17), "IND"), ("Chloe Lewis", dt.date(2027, 2, 22), "TRN"),
+    ("Chloe Lewis", dt.date(2027, 3, 12), "STBY"),
 ]
 # field working standard FW-3
 SHIFT_MIN = 450

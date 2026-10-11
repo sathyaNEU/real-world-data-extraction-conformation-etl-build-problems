@@ -2,15 +2,15 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "leak check",
+ "stage": 6,
+ "stage_name": "solver round",
  "updated": "2026-10-11",
  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, voids and heating changes excluded) on the analytics mart's weekly account consumption and places the team in Elgin; the step that lands it there is treating an account's weekly total as the supply the procedure screens, when storage-heated premises in Caithness hold a second, heating-only supply whose bypassed meter shows a 36 to 58 per cent shortfall that moves the account total by 6.5 to 23.9 per cent, under the 30 per cent band.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (0 LEAK; 3 vocabulary lines, 1 forward-dated rota)",
-  "reader": ""
+  "leak_py": "REVIEW (0 LEAK)",
+  "reader": "pass 1 on the first cut: no answer, no ranking file; its plan found the supply grain, so the pack was hardened (mart re-keyed to metering system, related metering points on their own sheet); pass 2 running"
  },
  "duplicate_check": {
   "heart": "",

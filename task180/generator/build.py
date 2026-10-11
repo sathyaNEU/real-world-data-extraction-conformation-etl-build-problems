@@ -18,7 +18,7 @@ import docs         # noqa: E402
 
 TARGET = os.path.join(HERE, "..", "target")
 F = {  # shipped file names
-    "mart": "rp_mart_account_week_2023-12-04_2026-11-30.csv",
+    "mart": "rp_mart_weekly_import_2023-12-04_2026-11-30.csv",
     "reads": "smart_daily_reads_2024-10-01_2026-12-07.parquet",
     "register": "supply_point_register_2026-12-07.xlsx",
     "cot": "change_of_occupier_events_2019-2026.csv",
@@ -45,25 +45,20 @@ def fmt_date(d):
 
 
 def write_mart(w):
-    days = w["days"]
+    """Analytics mart rp.weekly_import: one row per metering system per ISO week, keyed by the
+    metering system's primary supply number; kWh is the metering system's import (all its meters)."""
     weeks = [W.MART_START + dt.timedelta(weeks=k) for k in range((W.EXTRACT_DATE - W.MART_START).days // 7)]
     rows = []
     for prem in w["premises"]:
         total = sum(s["kwh"] for s in prem["supplies"])
-        for acct, a, b, kind in prem["accounts"]:
-            ai = max(0, sim.day_index(a))
-            bi = sim.NDAYS if b is None else min(sim.NDAYS, sim.day_index(b) + 1)
-            if bi <= 0 or ai >= sim.NDAYS:
-                continue
-            for wk in weeks:
-                s = sim.day_index(wk)
-                lo, hi = max(s, ai), min(s + 7, bi)
-                if lo < hi:
-                    rows.append((acct, prem["patch"], fmt_date(wk), round(float(total[lo:hi].sum()), 2)))
+        key = prem["supplies"][0]["mpan"]
+        for wk in weeks:
+            s = sim.day_index(wk)
+            rows.append((key, prem["patch"], fmt_date(wk), round(float(total[s:s + 7].sum()), 2)))
     rows.sort(key=lambda r: (r[2], r[0]))
     with open(os.path.join(TARGET, F["mart"]), "w", newline="") as fh:
         wr = csv.writer(fh)
-        wr.writerow(["account_ref", "rp_patch", "week_commencing", "kwh_import"])
+        wr.writerow(["mpan_core", "rp_patch", "week_commencing", "kwh_import"])
         wr.writerows(rows)
     return len(rows)
 

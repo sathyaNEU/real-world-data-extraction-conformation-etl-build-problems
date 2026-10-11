@@ -4,7 +4,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 T = os.path.join(HERE, "..", "target")
 DESC = {
- "rp_mart_account_week": "Analytics mart rp.account_week: weekly metered import per billing account, w/c 2023-12-04 to w/c 2026-11-30",
+ "rp_mart_weekly_import": "Analytics mart rp.weekly_import: weekly metered import per metering system, w/c 2023-12-04 to w/c 2026-11-30",
  "smart_daily_reads": "Smart metering daily midnight register reads per supply number, 2024-10-01 to 2026-12-07",
  "supply_point_register": "CIS supply point register extract: supplies, meter exchanges, account history",
  "change_of_occupier": "CIS change of occupier events by UPRN",

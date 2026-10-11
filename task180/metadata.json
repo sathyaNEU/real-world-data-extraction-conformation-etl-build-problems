@@ -51,7 +51,7 @@
     {
       "path": "RP-07_referral_and_placement.pdf",
       "format": "pdf",
-      "bytes": 3621,
+      "bytes": 3611,
       "source": "Constructed: Revenue Protection procedure RP-07 v4: referral and placement of the field team",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -68,7 +68,7 @@
     {
       "path": "dno_feeder_loss_estimates_2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 7119,
+      "bytes": 7099,
       "source": "Constructed: Network operator feeder loss estimates 2025-26, shared under the data agreement",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -84,7 +84,7 @@
     {
       "path": "fieldlink_visits_2023-10-02_2024-11-17.csv",
       "format": "csv",
-      "bytes": 13696,
+      "bytes": 13770,
       "rows": 199,
       "source": "Constructed: Legacy FieldLink revenue protection visit jobs to 17 November 2024",
       "date": "2026-12-07",
@@ -93,7 +93,7 @@
     {
       "path": "fieldops_visits_2024-11-04_2026-11-30.csv",
       "format": "csv",
-      "bytes": 26435,
+      "bytes": 26541,
       "rows": 271,
       "source": "Constructed: FieldOps revenue protection visit jobs from 4 November 2024",
       "date": "2026-12-07",
@@ -128,7 +128,7 @@
     {
       "path": "rp_extract_field_notes.md",
       "format": "md",
-      "bytes": 1975,
+      "bytes": 2057,
       "source": "Constructed: RP analytics field notes for the December extracts",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -136,17 +136,17 @@
     {
       "path": "rp_field_rota_q1_2027.xlsx",
       "format": "xlsx",
-      "bytes": 7348,
+      "bytes": 7338,
       "source": "Constructed: Field team rota for January to March 2027 with absences and the group holiday calendar",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "rp_mart_account_week_2023-12-04_2026-11-30.csv",
+      "path": "rp_mart_weekly_import_2023-12-04_2026-11-30.csv",
       "format": "csv",
-      "bytes": 15375142,
-      "rows": 464939,
-      "source": "Constructed: Analytics mart rp.account_week: weekly metered import per billing account, w/c 2023-12-04 to w/c 2026-11-30",
+      "bytes": 16762286,
+      "rows": 464720,
+      "source": "Constructed: Analytics mart rp.weekly_import: weekly metered import per metering system, w/c 2023-12-04 to w/c 2026-11-30",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -171,7 +171,7 @@
     {
       "path": "supply_point_register_2026-12-07.xlsx",
       "format": "xlsx",
-      "bytes": 371736,
+      "bytes": 346711,
       "source": "Constructed: CIS supply point register extract: supplies, meter exchanges, account history",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"

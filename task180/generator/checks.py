@@ -38,17 +38,17 @@ def main():
     check("answer margin >= 1.2x", wv / rv >= 1.2, f"{wv}/{rv}={wv / rv:.2f}")
 
     # rung 0: the filed screen on the mart's account totals ------------------------------------
-    acct = G.referrals(grain="account")
+    acct = G.referrals(grain="system")
     RESULTS["rung_account"] = acct
     a, av, a2, a2v = lead(acct)
-    check("rung account names Elgin", a == "ELG", str(acct))
+    check("rung system (mart) names Elgin", a == "ELG", str(acct))
     check("rung account margin >= 1.2x", av / a2v >= 1.2, f"{av}/{a2v}")
-    check("Caithness ranks 4th or 5th on the account rung", rank_of(acct, "CAI") in (4, 5),
+    check("Caithness ranks 4th or 5th on the mart rung", rank_of(acct, "CAI") in (4, 5),
           f"rank {rank_of(acct, 'CAI')}")
     prem = G.referrals(grain="premises")
     RESULTS["rung_premises_summed"] = prem
     check("supplies summed to premises before screening names Elgin", lead(prem)[0] == "ELG", str(prem))
-    check("premises-summed equals the account rung", prem == acct)
+    check("premises-summed equals the mart rung", prem == acct)
 
     # the belief rung: past confirmation rate -----------------------------------------------------
     hist = gold["history"]
@@ -62,12 +62,14 @@ def main():
     cells = {
         "supply_no_heating_exclusion": dict(use_heat=False),
         "supply_no_cot_exclusion": dict(use_cot=False),
-        "account_no_cot_exclusion": dict(grain="account", use_cot=False),
-        "account_no_heating_exclusion": dict(grain="account", use_heat=False),
+        "system_no_cot_exclusion": dict(grain="system", use_cot=False),
+        "system_no_heating_exclusion": dict(grain="system", use_heat=False),
+        "primaries_only_from_reads": dict(related=False),
         "supply_no_exclusions": dict(use_cot=False, use_heat=False),
     }
     expect = {"supply_no_heating_exclusion": "SPY", "supply_no_cot_exclusion": "INV",
-              "account_no_cot_exclusion": "ELG", "account_no_heating_exclusion": "ELG",
+              "system_no_cot_exclusion": "INV", "system_no_heating_exclusion": "ELG",
+              "primaries_only_from_reads": "ELG",
               "supply_no_exclusions": "INV"}
     for k, kw in cells.items():
         res = G.referrals(**kw)

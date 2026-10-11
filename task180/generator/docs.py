@@ -30,9 +30,9 @@ def write_register(path, w, exchanges):
     ws.title = "Supplies"
     r = _header(ws, ["Corran Energy | Supply point register extract (CIS)",
                      "Run 07/12/2026 05:52 | north of Scotland GSP group _P | domestic only",
-                     "One row per supply number (MPAN core) registered to Corran on the run date."], 12)
+                     "One row per metering system registered to Corran on the run date, keyed by its primary supply number."], 11)
     cols = ["mpan_core", "uprn", "rp_patch", "account_ref", "payment_method", "profile_class", "ssc",
-            "ssc_description", "related_mpan", "meter_type", "meter_serial", "energised_on"]
+            "ssc_description", "meter_type", "meter_serial", "energised_on"]
     for j, c in enumerate(cols, 1):
         ws.cell(row=r, column=j, value=c).font = Font(bold=True)
     rng = np.random.default_rng(W.SEED + 23)
@@ -40,43 +40,46 @@ def write_register(path, w, exchanges):
     for p in w["premises"]:
         live = [a for a in p["accounts"] if a[2] is None]
         cur_acct[p["uprn"]] = live[0][0] if live else p["accounts"][-1][0]
-    e7_single = {}
-    for s in w["supplies"]:
-        prem_heat = s.get("related") is not None
-        if s["kind"] == "heat":
-            pc, ssc, desc = 2, "0244", "Heating only, off-peak (related MPAN)"
-        elif prem_heat:
+    rows, rel_rows = [], []
+    for p in w["premises"]:
+        main = p["supplies"][0]
+        if len(p["supplies"]) > 1:
             pc, ssc, desc = 2, "0151", "Economy 7, two rate"
-        else:
-            if s["uprn"] not in e7_single:
-                e7_single[s["uprn"]] = rng.random() < 0.22
-            pc, ssc, desc = (2, "0151", "Economy 7, two rate") if e7_single[s["uprn"]] else (1, "0393", "Unrestricted")
-        prem = next(p for p in w["premises"] if p["uprn"] == s["uprn"]) if False else None
-        s["_pc"] = pc
-    prem_by = {p["uprn"]: p for p in w["premises"]}
-    rows = []
-    for s in w["supplies"]:
-        p = prem_by[s["uprn"]]
-        if s["kind"] == "heat":
-            pc, ssc, desc = 2, "0244", "Heating only, off-peak (related MPAN)"
-        elif s.get("related"):
-            pc, ssc, desc = 2, "0151", "Economy 7, two rate"
-        elif e7_single.get(s["uprn"]):
+        elif rng.random() < 0.22:
             pc, ssc, desc = 2, "0151", "Economy 7, two rate"
         else:
             pc, ssc, desc = 1, "0393", "Unrestricted"
         mt = "SMETS2" if rng.random() < 0.83 else "SMETS1"
         en = dt.date(2004, 1, 1) + dt.timedelta(int(rng.integers(0, 6900)))
-        rows.append([s["mpan"], p["uprn"], p["patch"], cur_acct[p["uprn"]],
-                     "Prepayment" if p["prepay"] else "Credit", pc, ssc, desc, s.get("related", ""),
-                     mt, s["current_serial"], en])
+        rows.append([main["mpan"], p["uprn"], p["patch"], cur_acct[p["uprn"]],
+                     "Prepayment" if p["prepay"] else "Credit", pc, ssc, desc, mt, main["current_serial"], en])
+        for h in p["supplies"][1:]:
+            mt2 = "SMETS2" if rng.random() < 0.8 else "SMETS1"
+            en2 = en + dt.timedelta(int(rng.integers(0, 40)))
+            rel_rows.append([h["mpan"], main["mpan"], 2, "0244", "Heating only, off-peak", mt2,
+                             h["current_serial"], en2])
     rows.sort(key=lambda x: (x[2], x[1], x[0]))
     for i, row in enumerate(rows, start=r + 1):
         for j, v in enumerate(row, 1):
             c = ws.cell(row=i, column=j, value=v)
             if isinstance(v, dt.date):
                 c.number_format = "dd/mm/yyyy"
-            if j in (1, 9):
+            if j == 1:
+                c.number_format = "@"
+    wsr = wb.create_sheet("Related metering points")
+    rr = _header(wsr, ["Related metering points on the run date",
+                       "A related metering point has its own supply number and meter and belongs to the metering system of the primary supply number."], 8)
+    cols_r = ["related_mpan_core", "primary_mpan_core", "profile_class", "ssc", "ssc_description", "meter_type",
+              "meter_serial", "energised_on"]
+    for j, c in enumerate(cols_r, 1):
+        wsr.cell(row=rr, column=j, value=c).font = Font(bold=True)
+    rel_rows.sort(key=lambda x: x[1])
+    for i, row in enumerate(rel_rows, start=rr + 1):
+        for j, v in enumerate(row, 1):
+            c = wsr.cell(row=i, column=j, value=v)
+            if isinstance(v, dt.date):
+                c.number_format = "dd/mm/yyyy"
+            if j in (1, 2):
                 c.number_format = "@"
     ws2 = wb.create_sheet("Meter exchanges")
     r2 = _header(ws2, ["Meter exchanges completed 01/10/2024 to run date",
@@ -219,8 +222,8 @@ def write_rp07(path):
         story.append(Paragraph(txt, body))
     story.append(Spacer(1, 10))
     tbl = Table([["Version", "Date", "Change"],
-                 ["3", "March 2024", "Degree-day adjustment moved from patch averages to each supply's own history"],
-                 ["4", "September 2026", "Change of occupier window widened to cover the history weeks"]],
+                 ["3", "March 2024", "Planning meeting moved from November to December"],
+                 ["4", "September 2026", "Tie-break added to section 7; RP-09 references updated"]],
                 colWidths=[45, 75, 330])
     tbl.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.5),
                              ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.5),
@@ -270,9 +273,9 @@ def write_notes(path, F):
 Pulled for the December planning meeting. Owner: Christopher Horton, RP analytics.
 
 ## {F['mart']}
-Analytics mart table `rp.account_week`. One row per billing account per ISO week (Monday start) in which
-the account was open. `kwh_import` is the account's metered import for the days of that week it was open.
-`rp_patch` is the patch of the premises on the account.
+Analytics mart table `rp.weekly_import`. One row per metering system per ISO week (Monday start), keyed
+by the metering system's primary supply number. `kwh_import` is the metering system's metered import for
+the week. `rp_patch` is the patch of the premises.
 
 ## {F['reads']}
 Daily midnight register reads from the smart metering data service, one row per supply number per day
@@ -281,8 +284,9 @@ read the meter did not return; the next read carries the consumption. After a me
 register restarts on the new serial; the exchange reads are in the register workbook.
 
 ## {F['register']}
-CIS extract on the run date. `related_mpan` is populated where the supply has a related metering point.
-`account_ref` is the account open on the run date. The account history sheet lists earlier accounts.
+CIS extract on the run date. Supplies lists each metering system under its primary supply number; related
+metering points are on their own sheet with the primary supply number they belong to. `account_ref` is the
+account open on the run date. The account history sheet lists earlier accounts.
 
 ## {F['cot']}
 Change of occupier events keyed by UPRN. Dates are the effective dates on the account.
@@ -345,7 +349,7 @@ def write_losses(path, rng):
         for s in ss:
             for k in range(int(rng.integers(3, 6))):
                 uin = float(rng.uniform(4_000, 22_000))
-                loss = float(rng.uniform(0.045, 0.092))
+                loss = float(rng.uniform(0.052, 0.068)) + {"FRS": 0.012, "NRN": 0.006}.get(code, 0.0)
                 vals = [s, f"{s[:3].upper()}-F{k + 1:02d}", code, round(uin, 0), round(uin * (1 - loss), 0),
                         round(loss * 100, 1)]
                 for j, v in enumerate(vals, 1):
@@ -357,7 +361,7 @@ def write_losses(path, rng):
 def write_log(path, F, counts):
     txt = f"""rp_extract run 2026-12-07 06:20:14 GMT  user: chorton
 source            file                                                      rows
-rp.account_week   {F['mart']:<57} {counts['mart']}
+rp.weekly_import  {F['mart']:<57} {counts['mart']}
 sms.daily_reads   {F['reads']:<57} {counts['reads']}
 cis.supply_point  {F['register']:<57} {counts['supplies']}
 cis.cot_events    {F['cot']:<57} {counts['cot']}
