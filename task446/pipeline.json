@@ -2,12 +2,12 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 6,
- "stage_name": "solver round",
+ "stage": 1,
+ "stage_name": "draw (re-root, architecture 2)",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver groups each past quarter-end on the hierarchy archived for that quarter (point in time), so the requesting group's acquisition of an existing borrower enters its history as growth, the projected year-end exposure is overstated and it approves well short of what the house limit allows.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "leak": {
   "leak_py": "REVIEW (no LEAK; agenda amounts, vocabulary hits, maturity dates answered)",
@@ -18,7 +18,27 @@
   "nearest": "task24 (membership attribution, opposite estimand; clean, shares components)",
   "clone_check": "pre-flight CLEAN, 0 findings on either track (task446/clone_check_report.md)"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 93.4,
+   "landed": true,
+   "cracked": 3,
+   "items": 3
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": true,
+    "proxy": 93.4
+   },
+   "decision": "reroot",
+   "brief": "landed 21.8 by executing LMS-03 s.2.3 as a work order (fixed the 30 Sep 2026 membership and applied it to all five quarter-ends, citing the clause); the decisive step is a stated rule applied, so the stump fails the analyst test (rule application) and no honest hardening exists inside this architecture: removing the clause makes it a withheld rule or a fork; every ask device was also caught (asks 3 of 3 at 80 per cent tokens)"
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",

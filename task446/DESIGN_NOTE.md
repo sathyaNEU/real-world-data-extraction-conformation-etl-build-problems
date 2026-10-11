@@ -294,3 +294,4 @@ word "golden" in two GLEIF descriptions were renamed in the generator). REVIEW l
   insight as task229 (the independent unit sits behind a shared parent node).
 - Linkage-error propagation for holdings without LEIs (gold-standard review sample): calibration form
   banned against task228, estimator forks.
+- Architecture 1 (obligor-group house-limit projection, history rebuilt on the membership at the projection date), spent at round 1, 2026-10-11: the solver fixed the 30 Sep 2026 group and applied it to all five quarter-ends citing LMS-03 s.2.3, landing 21.8 and cracking every ask device (proxy 93.4). The decisive step was the stated clause applied, a rule-application stump; un-stating it would be a withheld rule or a fork, so no honest hardening exists. Re-rooted to architecture 2.
