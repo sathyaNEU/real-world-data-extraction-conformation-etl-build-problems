@@ -31,13 +31,14 @@ stage only when its gate holds. Two rules about how:
 2. **This invocation is the author's licence for every token-spending stage**: the leak reader
    (stage 4, `/leak-check`'s one isolated agent, on every loop where a document changed), the
    adjudicated duplicate check (stage 5, the `clone-auditor` agent in pre-flight mode on this build),
-   every solver round the loop needs (stage 6, `/solve taskNN 2` through the Workflow tool, or two
-   isolated `Agent` spawns where it is unavailable) and the determinism judge (stage 7, the
+   every solver round the loop needs (stage 6, `/solve taskNN`: one isolated `Agent` in a sandbox)
+   and the determinism judge (stage 7, the
    `determinism-judge` agent, spawned once per pass). Follow each one's own command or skill text
    for how to spawn.
 
 **The solver round drives the loop.** After the leak check and the duplicate check, run the round
-(`solver-round`); on a pass, go to the judge; on a fail, take the round's brief back to stage 2,
+(`solver-round`); when the solver does not commit to the main call, go to the judge; when it lands
+the call, take the round's brief back to stage 2,
 harden, rebuild, leak-check and solve again, three loops per architecture, then re-root at stage 1
 in the same objective and number, three architectures, then retire (`build-pipeline`, the worth-it
 gate and Retirement). Difficulty is still argued on paper first (the stump sentence, the ladder, the
@@ -49,7 +50,7 @@ re-judged once, with a fresh round first when the fix moved a graded figure, a r
 **At ship**, report to the author in this order: the committed answer, the stump sentence, the
 leak line (`leak.py` verdict and the reader's question-1 answer), the duplicate-check line (heart
 verdict, nearest build and its similarity, the pre-flight verdict), the solver line (rounds run,
-architectures used, the passing round's two proxies, which solver missed the call and where it left
+architectures used, the passing round's proxy, the answer the solver committed to and where it left
 the ladder), the judge's verdict and Gate G line, the zip path. Then stop. The ledger row, the
 skill lessons and memory wait for the portal result. A build retired under `build-pipeline`'s
 retirement rule is reported in one line with the reason.
