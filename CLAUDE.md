@@ -226,6 +226,16 @@ decisive rule deliberately left unstated with a conflicting stated rule as the t
 client counted in about 40 per cent of recent tasks). Prefer filing the rules a real organisation
 would have in writing; the difficulty is the construction they demand, not finding them.
 
+The client's libraries are the working material: `stumping/references/client/two-layer-task-design.md`
+(the standard and its six-point pre-ship check), `stumping/references/client/layer2-rigor-patterns.md`
+(300 rigor patterns by domain and task type: the pitfall, the tempting shortcut, what pins the rigorous
+method) and `dataset-generation/references/layer1-messiness.md` (the universal Layer 1 techniques and
+eight per domain). A pattern is learned, never copied: the build makes its own version on its own data,
+and the same pattern on the same data structure is a duplicate the guard blocks. The answer is pinned by
+the question and a stated standard (the estimand defined precisely: population, outcome, window, unit,
+comparison; the design implying the method; alternatives ruled out by the data's own structure), never
+by a hidden method recovered from certified or published figures, which the client caps at review.
+
 **Every build is bespoke, never templated.** Replicating an approved task's traps, solution method,
 questions or stumping strategy onto another dataset teaches the model nothing and is sent back. Each
 build picks the pitfall its own dataset's analytic structure produces, and its design note says why
@@ -284,10 +294,18 @@ LLM-generated is sent back even when every figure recomputes. Using an LLM to dr
 shipping its first draft is not, so every golden gets an editing pass. The `golden-realism` skill
 carries the per-format passes and the tells a reviewer reads.
 
-**Nine accepted domains.** Product Analytics, Supply Chain & Logistics, Economics, Policy &
-Education, Demographic & Social Science, Nonprofit & Grant-making, Marketing & Consumer Research,
-Business & Operations Analytics, and Accounting, Audit & Forensic Analytics. Biology, Biostatistics,
-Epidemiology & Bioinformatics is not an accepted domain, so do not start a build there.
+**The domains are the client's taxonomy**: seven groups and twenty-one domains, each with its own
+task types (`guide-to-prompt/references/domains/README.md`, the `client_domains` block of
+`fingerprint/vocab.json`). Product Analytics; Marketing & Consumer Research; Quantitative Finance;
+Banking, Credit & Financial Risk; Actuarial Science & Insurance; General Statistics & Data Science;
+Biomedical & Clinical Research; Epidemiology & Public Health; Pharmacology, Pharmacoepidemiology &
+Safety; Healthcare Delivery & Health Economics; Economics & Econometrics; Political Science & Public
+Policy; Sociology & Demography; Psychology & Behavioral Science; Criminology & Justice; Physical &
+Environmental Sciences; Energy Systems & Utilities; Human Factors & Ergonomics; Survey Research &
+Official Statistics; Urban & Regional Science; Education & Learning Sciences. A build picks one domain,
+one task type in it and one objective that task type serves. The nine house domains of the earlier
+spec stay valid for every card on file, and a new draw in one of them names the client domain it sits
+in.
 
 **Eight Axis 1 objectives.** Forecasting & Predictive Modeling (most wanted), Root-Cause Analysis,
 Anomaly Detection & Diagnostics, Experiment & Causal Analysis, Descriptive & Distribution Analysis,

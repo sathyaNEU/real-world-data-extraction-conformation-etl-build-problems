@@ -283,6 +283,27 @@ rung of the ladder is always a Layer 2 move. Name both layers in the design note
 beside the data-native sentence: what the mess is and which real system produces it, and what the
 tempting shortcut is and why an expert would refuse it.
 
+**Draw the pitfall from the Layer 2 library, then make it your own.** `references/client/layer2-rigor-patterns.md`
+holds the client's 300 rigor patterns, twenty per domain, grouped by task type, each with the pitfall,
+the tempting shortcut and what pins the rigorous method; `references/client/two-layer-task-design.md`
+holds the five families they belong to and the six-point pre-ship check. At the draw: pick the domain
+and task type (`guide-to-prompt/references/domains/README.md`), read that task type's patterns, choose
+the one your data's analytic structure actually invites, and write your own version on your own data.
+The card records `layer2_family`, `layer2_pattern` (the library id, or `own:<name>` for a pattern beyond
+the library) and `layer1` (the messiness techniques the pack carries). The guard blocks the same pattern
+on the same data structure as an earlier build and warns on a reused pattern, so the design note says in
+one line how this version differs. The client measures what a model learns from the task: a pitfall the
+corpus has already taught is worth little however well it is built.
+
+**Pin the answer with the question, never with a plant.** Define the estimand precisely in the prompt
+or a supplied standard (population, outcome, window, unit, comparison), let the design imply the method
+(a randomised design means an intention-to-treat difference on the randomised unit; a staggered rollout
+means comparisons against units not yet treated; censored durations mean a survival estimate at the
+stated day), and rule out the reasonable alternatives with the data's own structure, never with a decoy
+document. A method hidden and then recovered by reproducing certified or published figures (Pattern B
+below as a pin, and the C2 corpus recovery of `determinism-check`) is saturated and capped at review: a
+corpus may confirm a stated method, never stand in for stating it.
+
 **Decoys are retired.** The fingerprint guard blocks each of these on a new draw, and none of them
 may carry or frame a stump:
 
@@ -344,6 +365,8 @@ decided by a filed rule and shipped data with no calibration corpus and no licen
 **The off-chain form.** Decomposing a pilot is default behaviour, so the strongest version puts the moderator in how a **period** treats the unit rather than in the unit, and the decision buys a different period (task44 v2: eaches per line is how a quarter orders an item, so the pilot window gives 138 and the decision window 66). Make the flip bidirectional so no haircut or partial correction of the on-chain answer reaches it, assert that no cutoff on any wrong window selects the answer set, and ship the twin pair on the decision set, identical on every visible column and on the pilot window's own measurement.
 
 ### Pattern B. The rule recovered from a closed corpus
+
+**Capped by the client as a pin.** A method left unstated and recovered from settled or certified cases is the saturated architecture the two-layer standard names; do not draw it as the decisive rung on a new build. What survives of it is the idea that a field's own method has to be applied correctly (the `field_method` family), with the method stated.
 
 **Gap 4.** The decisive rule is written down nowhere. What ships instead is a corpus of cases that are already settled, with their inputs and their outcomes, and enough raw material underneath them that a candidate rule can be run forward and scored. Exactly one rule reproduces the whole corpus. Every rival misses at least one case badly.
 

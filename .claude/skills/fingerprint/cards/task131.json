@@ -76,5 +76,15 @@
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "Bespoke draw: the stump comes from how a co-operative's household memberships carry several cards while the offer engine targets cards. No calibration corpus, no licensed wrong basis, no certified record."
+  "notes": "Bespoke draw: the stump comes from how a co-operative's household memberships carry several cards while the offer engine targets cards. No calibration corpus, no licensed wrong basis, no certified record.",
+  "client_domain": "marketing-consumer-research",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "product-analytics/network-effect-marketplace-experimentation/1",
+  "layer1": [
+    "card-week facts in parquet with weeks without a row meaning zero",
+    "cards to memberships to branches through three files",
+    "a branch network change by effective date",
+    "an offer catalogue in JSON",
+    "a superseded plan version"
+  ]
 }

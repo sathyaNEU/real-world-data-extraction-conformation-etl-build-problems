@@ -107,7 +107,7 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 > the ladder on the critical path of the average as well as of the stump condition.
 > - **The rubric weights:** 30 to 40 percent on the recommendation and its critical components, 5
 > to 10 percent on instruction-following, about 55 to 60 percent on the asks.
-> - **The roster and the input gates:** nine domains, eight objectives, 10 or more files, 3 or more
+> - **The roster and the input gates:** the client's twenty-one domains, eight objectives, 10 or more files, 3 or more
 > formats, a file of 25,000 or more rows in any format, or a large database file, two or more
 > distractors (unused by the solution, relevant-looking) named in `metadata.json`, real and license-clean with source, date and license
 > recorded, nothing that reads as LLM generated.
@@ -153,8 +153,7 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 > measured still lives in a shipped file or in the calibration corpus.
 >
 > The announcement's example questions are in `guidelines/prompt_guide.md`. Read them as
-> **shapes** and instantiate them, they are not asks to lift, and several of them sit in domains
-> outside the nine.
+> **shapes** and instantiate them, they are not asks to lift.
 
 
 > Every task carries **one domain** and **one Axis 1 analytical objective**, chosen before you write a word of the prompt. Work the four steps in order, save the pairing, and the rest of the build carries it.
@@ -187,27 +186,19 @@ of an ask. What transfers is the **shape**, and only the shape.
 prompt shape rather than by objective, because the shape is what supplies the 25 criteria. The
 per-objective files carry each objective's definition and its shapes.
 
-**Domains** (`references/domains/`): `product-analytics` · `supply-chain-logistics` · `economics` · `policy-education` · `demographic-social-science` · `nonprofit-grant-making` (Biology, Biostatistics, Epidemiology & Bioinformatics is not an accepted domain)
+**Domains** (`references/domains/README.md`): the client's taxonomy, seven groups and twenty-one domains, each with its task types and the objectives each task type serves. The six older per-domain files in the same folder cover house domains and stay as background.
 
 **Objectives** (`references/objectives/`), eight and only eight: `forecasting-predictive-modeling` · `root-cause-analysis` · `anomaly-detection-diagnostics` · `experiment-causal-analysis` · `descriptive-distribution-analysis` · `data-extraction-conformation-etl` · `opportunity-sizing-decision-support` · and Data Quality Monitoring & Alerting, which has no reference file: its definition and test are in Step 2 below
 
 ---
 
-## Step 1. Choose one domain
+## Step 1. Choose one domain and one task type
 
-Nine accepted domains. Pick the one whose **decision-maker would actually own the call**, which is a better test than which sector the data came from, because a census extract can sit under Demographic & Social Science or under Policy & Education depending on who is deciding.
+The domains are the client's taxonomy in `references/domains/README.md`: seven groups (Product analytics; Quantitative finance and trading; Machine learning research; Biomedical and health sciences; Economics and quantitative social science; Engineering and physical sciences; Other) and twenty-one domains under them, from Product Analytics and Marketing & Consumer Research through Banking, Actuarial Science, Epidemiology, Healthcare Delivery, Economics & Econometrics, Political Science, Sociology & Demography, Psychology, Criminology, Energy Systems, Survey Research & Official Statistics, Urban & Regional Science and Education & Learning Sciences. Pick the one whose **decision-maker would actually own the call**, which is a better test than which sector the data came from.
 
-1. Product Analytics
-2. Supply Chain & Logistics
-3. Economics
-4. Policy & Education
-5. Demographic & Social Science
-6. Nonprofit & Grant-making
-7. Marketing & Consumer Research
-8. Business & Operations Analytics
-9. Accounting, Audit & Forensic Analytics
+Then pick **one task type** in that domain (the card's `subdomain`). The task type is where the pitfall comes from: its Layer 2 rigor patterns are in `../stumping/references/client/layer2-rigor-patterns.md` and the domain's Layer 1 messiness techniques in `../dataset-generation/references/layer1-messiness.md`, and the taxonomy page lists the objectives each task type serves. If your pitfall needs a task type the domain does not list, either the pitfall belongs to another domain or you write a short `other` line on the card naming it.
 
-Anything outside these nine does not qualify, however good the data is, and that includes Biology, Biostatistics, Epidemiology & Bioinformatics. Open the domain file (for domains 7 to 9, which have no file in `references/domains/`, the enumerated subdomains are the keys under `subdomains` in `.claude/skills/fingerprint/vocab.json`), pick one **enumerated subdomain**, and if your trap needs a subdomain that is not listed, change the trap rather than stretching the scope.
+The nine house domains the earlier spec named (Product Analytics, Supply Chain & Logistics, Economics, Policy & Education, Demographic & Social Science, Nonprofit & Grant-making, Marketing & Consumer Research, Business & Operations Analytics, and Accounting, Audit & Forensic Analytics) stay valid and every card on file uses them. A new draw in one of them names the client domain it sits in (`client_domain` on the card); the map is on the taxonomy page.
 
 ## Step 2. Choose one Axis 1 objective
 
@@ -240,7 +231,7 @@ health of the data or of the pipeline that delivers it (freshness, volume, compl
 contract or SLA breach, check coverage, alert routing) and the committed call is a monitoring or
 alerting decision: if the prompt could be retagged Anomaly Detection or Forecasting without changing
 a word, it does not earn the tag. Both are objectives, never domains, so the build still draws its
-domain from the nine.
+domain from the taxonomy.
 
 The eight cover more than their names suggest. A like-for-like comparison, a binding constraint, a
 sizing exercise and a monitoring rule can each be the substance of a task; they just sit under one
@@ -261,7 +252,7 @@ ask until one of them clearly owns it.
 
 Two boundaries decide most disputes, and both are canonical.
 
-**Demographic & Social Science or Biology?** Biology is not an accepted domain, so this boundary matters in one direction only: population characteristics or social conditions read from census, survey, or administrative data belong in Demographic & Social Science, and a study centred on biological mechanisms, biomedical study data, epidemiology, genetics or bioinformatics has no valid domain, so redraw it rather than stretching Demographic & Social Science to hold it.
+**Which health domain?** Biomedical & Clinical Research is study data on treatments, biomarkers and trials; Epidemiology & Public Health is populations, exposures and surveillance; Pharmacology covers drug exposure, utilisation and safety; Healthcare Delivery & Health Economics is the system's operations, costs and claims. Census, survey and administrative reads of social conditions stay in Sociology & Demography or Survey Research & Official Statistics.
 
 **What counts as Economics?** In scope: macro, labor, trade, and fiscal reads. Out of scope: corporate finance, markets trading, and lending underwriting.
 
@@ -795,8 +786,8 @@ The commit demand stays exactly as strict, because hold is one of the committed 
 
 ## Checklist
 
-- [ ] Exactly one domain, from the **nine** accepted, and it is the one whose decision-maker owns the call
-- [ ] Exactly one enumerated subdomain, written into `DATASET_NOTES.md`
+- [ ] Exactly one domain from the client taxonomy (or a house domain with its `client_domain`), the one whose decision-maker owns the call
+- [ ] Exactly one task type in it, the card's `subdomain`, and its Layer 2 pattern and Layer 1 techniques named on the card
 - [ ] Exactly one Axis 1 objective, one of the **eight** live labels, unchanged, and for Opportunity Sizing & Decision Support or Data Quality Monitoring & Alerting its discriminating test passed. "Comparative analysis and explanation" appears on the client's example page and is **not** a valid tag here
 - [ ] The objective's reference file read before drafting, and the evidence pack can actually support the ask
 - [ ] **A prompt shape picked from `references/shapes/`**, with its criteria arithmetic worked on paper and landing at **25 or more** before any file is generated

@@ -34,7 +34,7 @@ a verdict is contested. `references/forcing-the-answer.md` is the evidence for e
    note: the reading chosen and which closure move closed it.
    - **C1 converge**: build the records so every reasonable reading selects the same rows and the
      same figure (the strongest close; assert on the figure and on the row and entity counts).
-   - **C2 corpus recovery**: the rule is the unique survivor of a back-test over a closed corpus;
+   - **C2 corpus recovery** (confirmation only: the client caps a method recovered from certified figures, so C2 may confirm a stated method, never pin a hidden one): the rule is the unique survivor of a back-test over a closed corpus;
      state the family size, N of N, and every rival's worst miss.
    - **C3 corridor**: the parameter is unrecoverable and irrelevant, with the answer identical across
      its whole admissible range.
@@ -79,7 +79,19 @@ verifier that reads only the shipped bytes on a code path sharing nothing with t
   deliverables, every ask with unit and rounding
 - two consecutive builds byte-identical
 
+**Pin without a plant** (`../stumping/references/client/two-layer-task-design.md`): the estimand is
+defined precisely in the prompt or a supplied standard (population, outcome, window, unit, comparison),
+the design implies the method, and every reasonable alternative is ruled out by the data's own structure,
+never by a decoy document.
+
 ## C. When the build is finished
+
+**The client's six-point check comes first**, one line each in the design note: the inputs take real
+work to put in order and none of it is a planted defect; the step that flips the recommendation is a
+methodological choice; the prompt or a supplied standard defines what to measure precisely enough that
+only one method is defensible; there is no decoy memo, staff draft or briefing; the method is not hidden
+and recovered from certified or published figures; the lesson is not one an earlier task already teaches.
+
 
 Run the gates in this order; each is one question.
 
