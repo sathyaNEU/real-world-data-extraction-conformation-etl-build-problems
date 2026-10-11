@@ -1,27 +1,28 @@
 {
   "task": "task230",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-11",
-  "slot_note": "seed DQ03 (an event-volume drop read as an instrumentation incident or a mix shift toward a new client version), drawn in the seed's own territory (product-analytics metric-definition-measurement-science), which the guard allows again since task228 re-rooted to physical-environmental-sciences; the seed's mix driver is carried into the comparison a staggered tracking switch needs: the patients who have not yet updated are a lighter mix whose winter trend is not the updated patients' own. Two earlier drafts were never registered: an errors-in-variables sensor gain (task228's architecture 2 took that pairing and the comparator-error family) and a transport of the switch's effect to the whole base (test.same_driver against task124, and an insight task43, task83 and task129 already spent).",
-  "domain": "product-analytics",
-  "subdomain": "metric-definition-measurement-science",
-  "client_domain": "product-analytics",
-  "niche": "a public hospital group's patient app whose 7.0 build swaps the analytics SDK and reaches frequent users first through in-app update prompts as the winter season builds, deciding which patient-app KPI series carry a series-break flag in the quarterly digital return to the programme that funds the app",
+  "slot_note": "architecture 2 of task230, a re-root of architecture 1 (spent at hardening loop 2 of 3) drawn inside Data Quality Monitoring & Alerting and outside the seed's product-analytics territory: the Drumlee world's organisation family repeats task181, and the author's domain-coupling rule asks for the field's own method, here human factors' detection model; DQ03's event-volume driver is not drawn",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "human-reliability-assessment",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "first-pass human verification of OCR-captured insurance-claim key fields in a BPO capture centre's pooled day and night queues: which client streams get second-pass verification in the month a typed-form client joins the day queue and a handwritten motor stream moves to nights",
   "objective": "data-quality-monitoring",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Designed at the draw, set by the generator: second-pass verification in November for five streams, Brightmoor Comp's claims on the night queue and four day-queue streams the diluted day pool pushes over their limits (Wattlebird extras, Coolabah income protection, Whinfell pet claims and Hollings & Pryce's typed claims); not for Kessington's two streams, Northgate's dental claims or Harbison's pharmacy claims, which the enriched night pool brings under, nor for Thistlecombe's motor claims on their new night queue or Wattlebird's hospital claims.",
+  "answer_source": "task230/DESIGN_NOTE.md, Architecture 2, phase A paper design (replaced from submission.md block 1 at the build)",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
-    "none"
+    "A"
   ],
   "generators": [
-    "G6",
+    "G13",
+    "G14",
     "G17"
   ],
   "gate_g": "method_or_model_selection",
@@ -30,63 +31,104 @@
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "head of digital analytics at a public hospital group, who signs the quarterly digital KPI return to the national programme that funds the patient app",
-  "role_family": "research_desk",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "head of operations at a BPO insurance-claims capture centre, who runs its pooled day and night first-pass queues and signs the monthly second-pass verification plan that the centre's service quality council approves",
+  "role_family": "operations_director",
+  "scoring_unit": "per accepted item",
   "spine": {
-    "file": "app_kpi_weekly_by_account.parquet",
-    "rows": 1301241,
-    "entity": "one app account's recorded KPI events and interactive sign-ins for one ISO week on one tracker",
-    "grain": "account x ISO week x tracker",
-    "source": "synthetic"
+    "file": "first_pass_verifications_2026q3.parquet",
+    "rows": 2100000,
+    "entity": "one first-pass verification event on one captured claim document (the key-field screen a verifier submits)",
+    "grain": "document x verification event (a session timeout writes a second event for the same document)",
+    "source": "synthetic",
+    "note": "row count provisional until the generator cuts the pack; field-level hits sit in the edit log and field-level truth in the blind re-key audit"
   },
-  "forum": "funder_or_donor",
-  "forcing_event": "other",
-  "org_family": "hospital_or_health_provider",
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "professional_services",
   "world": {
-    "geography": "Ireland",
-    "currency": "EUR",
-    "org_type": "public hospital group running its own patient app, funded by a national digital health programme that takes a quarterly KPI return",
+    "geography": "India, West Bengal (Kolkata)",
+    "currency": "INR internally; USD, GBP and AUD by client contract",
+    "org_type": "business-process outsourcing firm's insurance-claims data-capture centre serving US, UK and Australian clients from pooled day and night first-pass verification queues",
     "invented_names": [
-      "Drumlee Hospitals Group",
-      "Drumlee Patient",
-      "Dunnock",
-      "Tallyfield Analytics",
-      "National Patient App Programme"
+      "Tamralipta Data Services",
+      "Kessington Benefit Administrators",
+      "Northgate Dental Services",
+      "Brightmoor Comp",
+      "Harbison Pharmacy Benefits",
+      "Wattlebird Health",
+      "Coolabah Income Protection",
+      "Thistlecombe Motor",
+      "Whinfell Pet Cover",
+      "Hollings & Pryce"
     ],
     "people": [
-      "Sandra Fitzpatrick",
-      "Erica Phayre",
-      "Lesley Ahearne"
+      "Dipta Mukhopadhyay",
+      "Raghav Bajwa",
+      "Vasana Reddy"
     ]
   },
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "product-analytics/observational-causal-inference/1",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:pooled-queue-error-prevalence-sets-human-detection",
   "layer1": [
-    "one warehouse table holding every account the app touched: patients, dependant profiles a carer manages (rows with no sign-in), second-site registrations, staff test accounts, training and store-review logins, new registrations and lapsed patients returning",
-    "two rows for an account in the week it changed tracker, one per tracker",
-    "a patient index that merged second-site registrations in November, some through a chain of two merges",
-    "a service account register whose staff-domain rule sits on its second sheet, apart from the listed logins",
-    "staff beta testers recording on the new tracker three weeks before the release",
-    "a CRM engagement segment snapshot set on 1 October, refreshed monthly",
-    "phones that cannot take the new build, left on the old tracker until the forced update"
+    "a first-pass verification event log that needs sessionising: a session timeout writes a second event for the same document and only the later submission counts, and night shifts cross midnight so the shift-day is not the calendar day (human-factors technique 2)",
+    "verifier identifiers reissued after attrition, resolved through the workforce register's effective-dated assignments",
+    "each client's own audit findings, where capture errors sit beside business rejections (eligibility, coverage, duplicate claim) under client-specific reason codes, and a re-reviewed finding supersedes the first",
+    "client volume forecasts in each client's own unit, calendar and revision cycle (the latest accepted revision, not the latest delivered)",
+    "form specifications whose versions take effect mid-month and change the key fields per document",
+    "a second-pass session log that carries weekly calibration sessions on a fixed calibration set beside production",
+    "contract rate cards with volume tiers set on the client account's total across its streams, and anniversary indexation part-way through a month"
   ],
   "deliverables": [
-    "q4_series_break_prenotice.xlsx",
-    "q4_prenotice_cover_note.pdf"
+    "november_second_pass_plan.xlsx",
+    "second_pass_november.pptx"
   ],
-  "opening_move": "stakes-first",
-  "driver": "A switch reaches heavy users first, so its effect has to be read against users who have not switched yet in the same weeks, but those users are a lighter mix whose seasonal trend runs harder than the switched users' own; taking the whole not-yet-switched pool as the counterfactual books part of the season as the switch's doing, and only a counterfactual built within each usage band, or reweighted to the switched users' band mix, reads the switch alone, which moves units across the tolerance in both directions.",
-  "driver_concrete": "The 7.0 build swaps the analytics SDK and each patient meets the update at their next sign-in, so frequent patients switch first, and each KPI's change has to be measured against patients still on 6.8 in the same weeks; but those patients are mostly occasional users whose appointment, results and notification traffic climbs far faster into the winter than the frequent users' does. Differenced against the whole 6.8 pool the new SDK looks to lose appointment changes, result views and notification opens it does not lose, and to leave appointment views flat when they rise six per cent; differenced within each engagement segment, four series break and those three do not.",
-  "stump": "A competent solver takes each patient's handover week from the first new-tracker row and measures every KPI's settled change against all patients still on 6.8 in the same weeks, the canonical staggered difference-in-differences; the pool is a lighter, more seasonal mix, so it flags appointment change requests, test result views and notification opens, which measure inside the three per cent line, and clears appointment views, which breaks at +6; within engagement segment the flags are appointment views, clinic letter views, waiting list checks and digital check-ins.",
+  "opening_move": "question-first",
+  "driver": "A unit's forward residual depends on a detection step whose hit rate is not a fixed property of the detector, the unit or the shift but falls as targets become rarer in the shared pool the detector works, so a near-clean source joining the pool lowers detection on every other unit's items and a target-rich unit leaving one pool for another raises detection there; every route that carries each unit's measured hit rate forward, stratified by unit, shift, detector or tenure, or ties detection to the unit's own target share, clears units that will breach and keeps units that will not.",
+  "driver_concrete": "Rebuild each shift-day pool's key-field OCR error rate from the blind re-key audit and the first-pass edit log, estimate first-pass detection against it within verifier and field type (signal detection's low-prevalence effect: verifiers miss more as errors in the queue they work become rarer), the one model the closed quarter's shift-days leave standing (every attribute-only model's night and Saturday terms are that rate's gaps), and apply it to the November plan, where the motor claims leaving for nights and Hollings & Pryce's typed claims at about 0.6 per cent cut the day pool from about 4.3 to about 1.9 per cent and the motor claims lift the night pool from about 2.5 to about 5.0 per cent.",
+  "stump": "A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift, workload and day of week, takes the best-fitting of those models on a clean month-by-month back-test, and applies it to the November plan (the motor claims on nights, Hollings & Pryce on days, the roster moves), keeping Kessington's two streams, Northgate, Brightmoor, Harbison and the motor claims on second pass and the day streams off; the step that lands it there is treating detection as a property of the verifier, stream, shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who drops the non-patient accounts, maps the handover weeks, reads the continuity standard correctly and runs the canonical staggered difference-in-differences against patients not yet switched still files six flags, three of them wrong and one series missing, because the not-yet-switched pool is a lighter, more seasonal mix than the frequent patients who switched first.",
-  "domain_test": "The deciding quantity is the change a tracking-SDK swap makes to each patient-app KPI's recorded events per weekly active patient, estimated from an app-update rollout that frequent users take first, against patients not yet updated within the same usage band, which is product analytics measurement science (metric continuity across client releases, engagement-ordered update adoption, per-active-user KPIs); with ward, meter or school nouns there is no app update prompt, no usage band ordering the switch and no tracking SDK, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who sessionises the log, dedupes the timeout re-verifications, resolves reissued verifier IDs, reads QCP-04 and every quality schedule correctly, and models first-pass detection on every visible attribute (verifier, stream, field type, tenure, shift, time on shift, workload, day of week), taking the best-fitting of them on a clean month-by-month back-test, still keeps the four night streams and the motor claims on second pass and leaves the day streams and Hollings & Pryce off, because detection follows the error rate of the pool each verifier works, which no row carries and the November plan lowers on days and raises on nights.",
+  "domain_test": "The deciding quantity is each stream's first-pass residual next month, which human reliability assessment estimates as a verification task's non-detection probability under the conditions it will run in, and the condition that moves is target prevalence (signal detection's low-prevalence effect: observers shift their criterion and miss more when targets are rare, so detection measured in one pool does not travel to a pool with a different error rate); a generalist's corrections (stratify by stream, shift, verifier or tenure, reweight to the new mix, add controls for time on shift, workload and day of week) treat detection as a fixed property of an attribute and never construct the pool's error rate; with an automated validation rule in place of the verifiers there is no criterion shift and the task stops reading the same.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task68": "task68 matches continuing units across identity successions so entrants stop masking a decline, with the qualifying bar recovered from a closed corpus of settled dispositions; here nothing is matched across identities and no rule is recovered: the move is the counterfactual trend for a staggered tracking switch, taken within usage bands because the not-yet-switched pool is a lighter mix whose winter season runs harder than the switched patients' own"
+    "task33": "task33 projects a breach's forward yield, which stops at a filed intervention recovered by back-testing closed actions; here nothing is back-tested or filed: a human detector's hit rate moves with the target prevalence of the pool it works, and the forward pool's prevalence is set by the operating plan",
+    "task114": "task114's demand exists only when two parties share a site on a day, so site records add up short; here every record is exact and the hit rate of a human verification step depends on the error prevalence of the shared queue, which a new near-clean source dilutes",
+    "task46": "task46 reconstructs a cumulative service-exposure clock from a movement log for a wear rate; here there is no clock or accumulation: detection responds to the prevalence of targets in the pool at the time, a perceptual criterion shift that reverses when the pool's mix reverses"
   },
-  "lineage": [],
-  "notes": "Pattern none with G6 decisive: the not-yet-switched comparison pool is a different usage mix from the switched patients and the season runs by usage band, so the counterfactual trend has to be standardised to the switched patients' band mix (G17 confounding as support). stump_strategy causal_design: the decisive move is the comparison group (conditional parallel trends), keyed so because the vocabulary names control choice and pre-trends there. decision_type designation_set repeats task229 (WARN), answered in the design note. layer2_pattern is the closest library entry (adopters were already your best users; condition on pre-adoption engagement with checked pre-trends), applied here to a data-continuity call. forcing_event other: the call is forced by a funding programme's mid-quarter deadline for pre-notifying series breaks ahead of its quarterly KPI return and national bulletin, a funder's reporting deadline rather than a statutory or regulatory filing (re-keyed at the heart check, when task135's regulator filing entered the window)."
+  "lineage": [
+    {
+      "architecture": "v1 (architecture 1 as hardened at loop 1 and cut for round 2; spent at hardening loop 2 of 3)",
+      "fate": "spent 2026-10-11 and re-rooted: solver rounds 1 and 2 landed the call (proxy 80.7 and 79.7), the solver holding the comparison pool to the CRM engagement segment and then to phones that can take 7.0; hardening loop 2 found on paper no rung that deepens the analysis away from the comparison pool, plants nothing and is forced to one flag set (DESIGN_NOTE.md, Hardening loop 2, on paper); the world was not kept because its organisation family (hospital_or_health_provider) repeats task181",
+      "domain": "product-analytics",
+      "subdomain": "metric-definition-measurement-science",
+      "objective": "data-quality-monitoring",
+      "decision_type": "designation_set",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "causal_design",
+      "layer2_pattern": "own:not-yet-switched-pool-held-to-units-able-to-switch",
+      "driver": "A staggered switch reaches heavy users first and only reaches units whose equipment meets its minimum, so its effect is read against units of the same usage band that have not switched yet; but inside each band that pool fills week by week with units that never can switch, whose own seasonal trend runs harder than the switched units' would have, so a counterfactual taken within the band alone books part of their trend as the switch's doing, and only a pool held to units able to switch, inside the band, reads the switch alone, which moves units across the tolerance in both directions.",
+      "driver_concrete": "The 7.0 build swaps the analytics SDK, reaches frequent patients first through the update prompt at sign-in, and needs iOS 16 or Android 10, so the 13 per cent of patients on older phones stay on 6.8; inside every engagement segment the patients still on 6.8 in a settled week are more and more those older handsets, whose appointment, change-request, results and notification traffic climbs 10 to 21 points faster into the winter than other patients' of the same segment. Differenced within segment alone the new SDK looks to lose appointment change requests and notification opens it does not lose and to leave appointment views and test result views flat when they rise five per cent; held within segment and to phones that can take 7.0, five series break: appointment views, test result views, clinic letter views, waiting list checks and digital check-ins.",
+      "stump": "A competent solver maps each patient's handover week and carries each switched patient's reference level by the movement of patients still on 6.8 in the same CRM engagement segment, confirmed by a never-switched control and a group-rate index; inside every segment that pool fills week by week with phones below 7.0's minimum (iOS 16, Android 10), whose winter appointment, change-request, results and notification traffic climbs 10 to 21 points faster, so it flags appointment change requests (-6.0) and notification opens (-4.0) and clears appointment views (+1.0) and test result views (+0.5); held within segment and to phones that can take 7.0, the flags are appointment views, test result views, clinic letter views, waiting list checks and digital check-ins.",
+      "answer": "Flag five series in the Q4 return, appointment views, test result views, clinic letter views, waiting list checks and digital check-ins, and notify the other five as continuous."
+    },
+    {
+      "architecture": "v1 loop 0 (architecture 1 as cut for round 1, before hardening loop 1)",
+      "fate": "hardened 2026-10-11: round 1 landed the call on the solver's step 6, each switched patient's reference level carried by the week-by-week movement of patients still on 6.8 in the same CRM engagement segment, checked against never-switched patients and a group-rate index; that step is now a lower rung that completes and returns the wrong set, because inside every segment the pool still on 6.8 drifts toward phones below 7.0's minimum OS",
+      "driver": "A switch reaches heavy users first, so its effect has to be read against users who have not switched yet in the same weeks, but those users are a lighter mix whose seasonal trend runs harder than the switched users' own; taking the whole not-yet-switched pool as the counterfactual books part of the season as the switch's doing, and only a counterfactual built within each usage band, or reweighted to the switched users' band mix, reads the switch alone, which moves units across the tolerance in both directions.",
+      "layer2_pattern": "product-analytics/observational-causal-inference/1"
+    }
+  ],
+  "notes": "Pattern A decisive (gap time): each stream's measured Q3 residual is a correct statement about Q3's pools, and the November plan moves both pools' error rates outside anything a Q3 month showed (inside the range Q3's shift-days span), so the forward residual has to be built from detection as a function of the pool's rate; G14 supports (detection conditioned on a property of the shift-day pool, a different entity from the stream), G13 supports (retrospective actuals against a prospective month), G17 supports (separating the pool's rate from shift, day of week, tenure and workload). Gate method_or_model_selection: the design forces the method (determinism-check section 1, form 1): QCP-04 files the estimand (4.1), the rule (4.2) and the records with one method for every stream (4.3), never a method or a selection criterion, and the closed quarter's shift-days rule out every attribute-only model (within each queue the misses move with the shift-day pool's error rate, and the night and Saturday terms are its gaps). Strategy causal_design for interference: one client's volume changes other clients' residuals through the shared verifier pool; not forecast_method_backtest: nothing filed selects a method, the textbook monthly back-test is clean on every attribute model, and what decides is constructing the interference channel. Subdomain human-reliability-assessment: the quantity is a verification task's human error probability under next month's conditions; the taxonomy lists the task type under Forecasting, and the build keeps Data Quality Monitoring because the object is the capture pipeline's delivered accuracy and the call is which streams its second verification control covers. validated_decoy false: no certified figure set ships, and the closed record refutes fixed detection at the shift grain. calibration_form none: the blind re-key audit is the primary measurement, not a calibration organ, and no back-test is filed. Deliverables and opening move follow the phase A prompt.txt draft (voice-check PASS), to be re-checked against the golden at the build. The Drumlee world was not kept (task181 holds hospital_or_health_provider in the three-draw window). Furniture redrawn at registration, the draw otherwise unchanged: task229's design 2, registered first, holds compliance_or_audit and operations_log, so the requester is the centre's head of operations (operations_director), who runs both first-pass queues, staffs the second pass from the verification floor and answers for the credits it protects, with the same stakes and the same call; context artifact capacity_report: the November operating plan the head of operations works from (stream routing, daily key fields by stream, the verifier roster, the October list), where the month's change is filed."
 }
