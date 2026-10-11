@@ -553,12 +553,15 @@ class Sim:
             for p in mem:
                 p.end = me
             return
-        # a dependent dropped at an earlier open enrolment comes back on a special enrolment
+        # a dependent dropped at an earlier open enrolment comes back on a special enrolment; a spouse cannot come back
+        # once the employee has married again and the new spouse is on the plan
         for i in fam.members:
             p = self.people[i]
             if p.readd == ms:
                 p.readd = None
-                if p.end is not None and p.death is None and (p.rel != "C" or p.age(ms) < 26):
+                if p.end is not None and p.death is None and (p.rel != "C" or p.age(ms) < 26) and not (
+                        p.rel == "S" and any(self.people[j].rel == "S" and self.people[j].end is None
+                                             for j in fam.members if j != i)):
                     p.reinstate(ms)
                     p.eps = []
         mem = [self.people[i] for i in fam.members if self.people[i].end is None]

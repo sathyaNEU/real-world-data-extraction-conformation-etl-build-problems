@@ -43,6 +43,12 @@ def main(scratch):
     fin = {t: set(pid_of[m] for m in ms) for t, ms in G["members"]["final"].items()}
     an_mm = {t: G["an_detail"][t][1] for t in bid}
     f_mm = {t: G["f26_detail"][t][1] for t in fin}
+    # counting only the bid members enrolled all twelve months (R4c) differs from the baseline only through the members
+    # who were enrolled for part of the year: a baseline cell is kept off R4c's whole dollar and moved on a part-year
+    # member's claim, which leaves R4c where it is
+    part = {t: set(pid_of[m] for m in ms if 0 < F.mm(m, W.ANALOG_START, W.ANALOG_END) < 12)
+            for t, ms in G["members"]["bid"].items()}
+    r4c = G["rung_tiers"]["R4c"]
     used = set()
     table = {}
 
@@ -81,18 +87,18 @@ def main(scratch):
     r0prog = [sum(n[t] * targets[("f26", t, k)] * (W.TREND_MED if k == 0 else W.TREND_RX) ** 1.25 for t in (1, 2, 3, 4)) / 140
               for k in (0, 1)]
 
-    def cands(v, m=21):
-        """points a comfortable distance from a whole dollar, nearest first"""
+    def cands(v, m=21, avoid=None):
+        """points a comfortable distance from a whole dollar, nearest first, none on the whole dollar `avoid`"""
         pts = []
         for k in range(int(v // 1) - 1, int(v // 1) + 3):
             for d in (0.14, 0.18, 0.22, 0.26, 0.30):
                 pts += [k + d, k - d]
-        pts = sorted(set(round(p, 2) for p in pts), key=lambda p: abs(p - v))
+        pts = sorted(set(round(p, 2) for p in pts if avoid is None or round(p) != avoid), key=lambda p: abs(p - v))
         return pts[:m]
 
     def solve(k):
         import itertools
-        opts = [cands(base[t][k]) for t in (1, 2, 3, 4)]
+        opts = [cands(base[t][k], avoid=round(r4c[t][k]) if part[t] else None) for t in (1, 2, 3, 4)]
         sols = []
         for combo in itertools.product(*opts):
             val = sum(n[t] * combo[t - 1] for t in (1, 2, 3, 4)) / 140
@@ -127,8 +133,12 @@ def main(scratch):
         while True:
             if kind == "base":
                 delta = int(round((tv - cur) * an_mm[t] / (TM2 if k == 0 else TR2) * 100))
-                key = pick_med(bid[t], W.ANALOG_START, dt.date(2025, 12, 31), delta) if k == 0 else \
-                    pick_rx(bid[t], W.ANALOG_START, dt.date(2025, 12, 31), delta)
+                pick = pick_med if k == 0 else pick_rx
+                try:
+                    key = pick(part[t] or bid[t], W.ANALOG_START, dt.date(2025, 12, 31), delta)
+                except IndexError:
+                    print("  no part-year claim fits tier %d %s, moving a full-year member's" % (t, "med" if k == 0 else "rx"))
+                    key = pick(bid[t], W.ANALOG_START, dt.date(2025, 12, 31), delta)
             else:
                 delta = int(round((tv - cur) * f_mm[t] * 100))
                 key = pick_med(fin[t], dt.date(2026, 1, 1), dt.date(2026, 10, 31), delta) if k == 0 else \

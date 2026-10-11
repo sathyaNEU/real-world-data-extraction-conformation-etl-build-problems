@@ -44,8 +44,8 @@ place_of_service        CMS place of service code, professional claims only (11 
                         inpatient rehabilitation facility, 81 independent laboratory).
 revenue_code            NUBC revenue code, institutional claims only.
 procedure_code          CPT or HCPCS code. Blank on revenue lines billed without one (room and board, supplies).
-modifier                First procedure modifier, where billed (26 professional component, 95 telehealth, GP therapy
-                        plan of care, AA and QK anesthesia).
+modifier                First procedure modifier, where billed (26 professional component, 76 the same reading repeated
+                        on the same day, 95 telehealth, GP therapy plan of care, AA and QK anesthesia).
 diagnosis_code_1        Principal or first-listed ICD-10-CM diagnosis on the claim (shown with the decimal point).
 diagnosis_code_2        Second diagnosis on the claim, where there is one.
 billing_npi             Billing provider NPI.
@@ -110,8 +110,9 @@ PLAN_PAY_AMT         GROSS_AMT_DUE - PATIENT_PAY_AMT.
 3. eligibility_spans_2027-02.csv
 ---------------------------------------------------------------------------------------------------------------------
 Grain: one row per member per coverage span with Ellery. A new span starts whenever the plan, the coverage tier, the
-employee class or the member's person code changes. Pulled 1 March 2027 from Ellery's eligibility as of 28 February
-2027.
+employee class or the member's person code changes. Coverage that ends and starts again later (an employee rehired, a
+dependent added back at a special enrolment) starts a new span after the gap, under the same member ID. Pulled 1 March
+2027 from Ellery's eligibility as of 28 February 2027.
 
 member_id           Ellery member ID.
 employee_number     District employee number of the subscriber (six digits). Early retirees keep theirs.
@@ -122,27 +123,32 @@ person_code         Person code in effect during the span: 01 subscriber, 02 spo
 relationship        SUB subscriber (employee or early retiree), SPS spouse, DEP dependent child.
 birth_date          Date of birth as Ellery holds it at the pull, after any correction.
 sex                 F or M.
-employee_class      TCH licensed teacher, ESP education support professional, ADM administrator, RET early retiree.
+employee_class      TCH licensed teacher, ESP education support professional, ADM administrator, RET early retiree,
+                    COB continuation coverage under COBRA (a former employee, or a dependent, who elected to keep
+                    Plan coverage; the span starts the day after the employee's own coverage ended).
 coverage_tier       EE employee only, ES employee and spouse, EC employee and child(ren), FAM family.
 plan_code           RCV-PPO (PPO plan) or RCV-HSA (high-deductible plan with HSA).
 span_start          First day of coverage in the span. Spans start no earlier than 1 January 2025, the day Ellery took
                     over; a member covered before then starts on 1 January 2025.
 span_end            Last day of coverage in the span (inclusive). Blank: coverage continuing at the pull.
                     Terminations take effect at month end (31 August for teachers who complete the school year),
-                    except deaths, which end coverage on the date of death. Newborns are covered from the date of
-                    birth; a new spouse from the first of the month after the marriage.
+                    except deaths, which end coverage on the date of death. A dependent dropped at open enrolment
+                    ends on 30 June. Newborns are covered from the date of birth; a new spouse from the first of the
+                    month after the marriage; a rehired employee and a dependent added back from the first of a month.
 
 
 4. tpa_conversion_crosswalk_2025-01-01.csv
 ---------------------------------------------------------------------------------------------------------------------
 Grain: one row per Bramwell member record converted to Ellery on 1 January 2025. Built by Ellery's implementation
-team from Bramwell's final eligibility file. Not updated since.
+team from Bramwell's final eligibility file and loaded once; not updated since. It goes out with every pull because it is
+the only place a Bramwell member number meets an Ellery member ID, and the office still works paper that carries
+Bramwell numbers: appeals and provider refunds on 2024 services, Bramwell's run-out and stop-loss settlement statements,
+2024 audit and records requests.
 
 prior_subscriber_number   Bramwell subscriber number (eight digits).
-prior_member_suffix       Bramwell member suffix. Bramwell's member number is prior_subscriber_number and
-                          prior_member_suffix (shown as NNNNNNNN-SS on Bramwell reports and in the RFP 2025-07 data
-                          book). Bramwell gave dependents suffixes in the order it enrolled them, and the suffixes
-                          were not carried over: compare person_code.
+prior_member_suffix       Bramwell member suffix. Bramwell wrote a member number as the subscriber number and the
+                          suffix, NNNNNNNN-SS, on its cards, reports and data books. Bramwell gave dependents suffixes
+                          in the order it enrolled them, and the suffixes were not carried over: compare person_code.
 member_id                 Ellery member ID issued at conversion.
 employee_number           District employee number of the subscriber.
 person_code               Ellery person code at conversion.

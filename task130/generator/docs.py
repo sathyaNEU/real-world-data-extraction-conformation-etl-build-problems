@@ -3,8 +3,9 @@ page and Schedule C), the consulting actuary's renewal letter, the stop-loss pol
 implementation and outreach plan, Northcourt's three stratification exports, Quarrystone's rebate statement and the
 benefits office's warehouse readme.
 
-Each PDF is written as a Word document and converted by LibreOffice (containers.soffice_pdf); each workbook is
-written by openpyxl and repacked the way Excel saves it (containers.repack)."""
+The District's agreement and the actuary's letter are written as Word documents and converted by LibreOffice
+(containers.soffice_pdf); the carrier's schedule and Northcourt's plan are HTML printed by headless Chromium
+(containers.chromium_pdf); each workbook is left as its exporting system writes it (containers.library_xlsx)."""
 import datetime as dt
 import html
 import os

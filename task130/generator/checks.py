@@ -28,7 +28,7 @@ import estimators as E
 import tune_table
 
 TASK = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)
-CONC_MED, CONC_RX = 0.31, 0.45      # the largest member's share of a bid tier's year, medical and pharmacy
+CONC_MED, CONC_RX = 0.26, 0.24      # the largest member's share of a bid tier's year, medical and pharmacy
 TGT = os.path.join(TASK, "target")
 GLD = os.path.join(TASK, "golden")
 T = (1, 2, 3, 4)
@@ -567,7 +567,8 @@ def main():
     pooled_truth = sim_pmpm(set().union(*fin_pids.values()), W.PROG_START, W.PROG_END)
     check(abs(g / truth - 1) <= 0.15, "golden within 15 per cent of the untreated programme year")
     rep("regression to the mean, bid members (simulation, real terms): medical %.2f, pharmacy %.2f of the 2024 level "
-        "(2024 medical $%.0f, pharmacy $%.0f PMPM)" % (rm, rr, b24[0], b24[1]))
+        "(2024 medical $%.0f, pharmacy $%.0f PMPM); the enrolled members' own pharmacy runs at %.2f of its 2026 level in "
+        "the programme year" % (rm, rr, b24[0], b24[1], frr))
     rep("simulated untreated 2027-28 outcome of the enrolled members: $%.2f by tier weights (medical $%.2f, pharmacy $%.2f); "
         "pooled $%.2f; golden/truth %.3f; persistence/truth %.2f" % (
             truth, sum(n[t] * tru[t][0] for t in T) / 140, sum(n[t] * tru[t][1] for t in T) / 140,

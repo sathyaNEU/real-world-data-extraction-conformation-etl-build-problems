@@ -2,7 +2,7 @@
 design, the provider and drug vocabularies). Everything stochastic lives in sim.py."""
 import datetime as dt
 
-SEED = 102002
+SEED = 102037
 
 D = dt.date
 SIM_START = D(2023, 1, 1)              # a year of history before the first claims anyone uses
@@ -22,7 +22,7 @@ BOARD = D(2027, 3, 25)
 
 TREND_MED, TREND_RX = 1.065, 1.09
 LIST_SIZE = 140
-TIERS = ((1, 48.2), (2, 42.9), (3, 38.8), (4, 0.0))   # tier t holds scores at or above its floor
+TIERS = ((1, 42.2), (2, 37.9), (3, 35.7), (4, 0.0))   # tier t holds scores at or above its floor
 
 DISTRICT = "Red Cedar Valley School District"
 DISTRICT_SHORT = "Red Cedar Valley Schools"
