@@ -138,7 +138,8 @@ def main_call():
         d = E.solve(T, **kw)["total"] / A - 1
         ok(d >= floor, "%s is at least %d per cent high (%+.2f%%)" % (nm, 100 * floor, 100 * d))
     # the readings the closure table keeps land every figure in the answer's bin
-    kept = {"past-maturity loans carry nothing": dict(pm_zero=True), "the curve recomputed from the sample": dict(D_from="sample"),
+    kept = {"past-maturity loans carry nothing": dict(pm_zero=True), "the curve rebuilt from the sample, unsmoothed": dict(D_from="sample"),
+            "the divisor's default share from the sample": dict(S_from="sample"),
             "only early repayment taken off": dict(early_only=True), "the status label stages hardship": dict(stage_fn=by_label)}
     kept_out = {}
     for nm, kw in kept.items():
@@ -187,11 +188,28 @@ def curve_and_sample():
     cv = pd.read_csv(os.path.join(T, E.F["curve"]), comment="#")
     C = {p: g.sort_values("month_on_book")["cumulative_pd"].to_numpy() for p, g in cv.groupby("product")}
     sh = E.sample_shares(T)
+    import extracts as X
+    released = X.smooth_curve({p: sh[p]["D"] for p in sh}, W.CURVE_FIT)
+    rough = {}
     for p in ("PL36", "PL60"):
-        ok(np.abs(C[p] - sh[p]["D"]).max() <= 5e-7, "%s: the curve is the sample's crude default share to six decimals" % p)
+        D = sh[p]["D"]
+        ok(np.abs(C[p][:W.CURVE_FROM] - D[:W.CURVE_FROM]).max() <= 5e-7, "%s: to month on book 3 the curve is the sample's own share" % p)
+        ok(np.abs(C[p] - released[p]).max() <= 5e-7, "%s: the curve is the released spline to six decimals" % p)
+        dev_ = np.abs(C[p][:-1] - D[:-1]).max()
+        ok(dev_ <= 0.001, "%s: smoothed, the curve stays within 0.001 of the sample's share before the term (%.5f)" % (p, dev_))
+        ok(C[p][-1] < D[-1], "%s: the final month's defaults after the last repayment date are not fitted (%.6f against %.6f)"
+           % (p, C[p][-1], D[-1]))
+        inc, raw = np.diff(C[p])[7:-1], np.diff(D)[7:-1]          # past the peak, before the final month
+        rough[p] = float(np.abs(np.diff(inc, 2)).mean() / np.abs(np.diff(raw, 2)).mean())
+        turns = lambda x: int((np.diff(np.sign(np.diff(x))) != 0).sum())
+        ok((np.diff(C[p])[W.CURVE_FROM - 1:] > 0).all() and rough[p] < 0.1 and turns(inc) <= 3 and turns(raw) >= 10,
+           "%s: the released increments are positive and smooth past the peak (roughness %.3f of the sample's, %d turns "
+           "against %d)" % (p, rough[p], turns(inc), turns(raw)))
+        ok(4 <= int(np.argmax(np.diff(C[p]))) <= 6 and 4 <= int(np.argmax(np.diff(D))) <= 6,
+           "%s: curve and sample peak in months on book 5 to 7" % p)
         ok(np.allclose(sh[p]["Cl"][:-1], sh[p]["Cl_early"][:-1]), "%s: nothing matures before its term, so repaid early or "
            "at term is the same share at every month the book uses" % p)
-        S = 1 - sh[p]["D"] - sh[p]["Cl"]
+        S = 1 - D - sh[p]["Cl"]
         ok((S[:-1] > 0).all() and abs(S[-1]) < 1e-12, "%s: every development loan has defaulted or been repaid by the end of its term" % p)
     dev = pd.read_parquet(os.path.join(T, E.F["dev"]))
     ok(set(dev["outcome"]) == {"default", "prepaid", "matured"}, "no development loan is still open")
@@ -207,11 +225,11 @@ def curve_and_sample():
     head = open(os.path.join(T, E.F["curve"])).read().split("product,")[0].lower()
     for w in ("divid", "condition", "surviv", "attrition", "early repay", "prepa", "payout", "still open", "performing"):
         ok(w not in head, "the curve header says nothing about %r" % w)
-    ok("share of the loans drawn in the development window that had defaulted by the end of that month on book" in head,
-       "the header defines the column in plain words")
+    ok("share of the loans drawn in the development window that had defaulted by the end of that month on book, smoothed" in head
+       and "natural cubic spline" in head, "the header defines the column in plain words and says it is smoothed")
     # the sample counts its outcome month the way the header counts defaults, by the end of that month on book, so a loan
     # repaid in full during month on book a is counted at a, as a default recorded in it is (the Cl(a-1) reading in
-    # main_call misses all three figures); and the metadata says nothing about how the curve is read
+    # main_call misses all three figures); every column is described in one form; nothing says how the curve is read
     meta = {k.decode(): v.decode() for k, v in pq.read_schema(os.path.join(T, E.F["dev"])).metadata.items()
             if not k.startswith(b"pandas")}
     om = meta["outcome_month_on_book"].lower()
@@ -219,24 +237,37 @@ def curve_and_sample():
        "the sample's outcome month is the month on book by whose end the loan had defaulted, been repaid in full or matured")
     ok("number of monthly repayments fallen due" in om and "number of monthly repayments fallen due" in head,
        "the sample and the curve header measure month on book the same way")
+    ok(all(c in meta for c in dev.columns), "every column of the sample carries a description")
     mt = " ".join(meta.values()).lower()
     for w in (r"condition", r"surviv", r"\bopen", r"allowance", r"at risk", r"\bstill\b"):
         ok(not re.search(w, mt), "the sample's metadata says nothing about %r" % w)
-    # the run folder's dictionary says why the release package is filed with the run, and nothing about its use
+    # the run folder's dictionary files the curves and the sample as PLPD-2026.06's release package, for the auditors,
+    # in the same form as every other entry, and says nothing about the sample's use
     dic = open(os.path.join(T, "ecl_extract_dictionary.txt")).read()
-    i0 = dic.index("pd_model_development_sample.parquet")
+    i0 = dic.index("pd_curve_personal_loans_2026-06.csv")
     entry = " ".join(dic[i0:dic.index("behaviour_score_runs_2026-03_2026-08.parquet", i0)].split())
     ok(all(w in entry for w in ("approved on 24 June 2026", "first quarter-end run", "release package (the curves and the "
                                 "development sample)", "external auditors' review of the PD model change")),
        "the dictionary files the curves and the sample with the run as PLPD-2026.06's release package, for the auditors")
     for w in (r"allowance", r"\bECL\b", r"PD\(k\)", r"\bstage", r"condition", r"surviv", r"\bopen", r"repaid", r"divid",
               r"\bused?\b", r"\bthe model\b"):
-        ok(not re.search(w, entry, re.I), "the sample's dictionary entry says nothing about %r" % w)
+        ok(not re.search(w, entry, re.I), "the curve and sample entries say nothing about %r" % w)
+    entries = []
+    for line in dic[dic.index("D. OTHER FILES IN THE RUN FOLDER"):].splitlines()[1:]:
+        if line.startswith("      "):
+            entries[-1] += " " + line.strip()
+        elif line.startswith("  "):
+            entries.append("")
+    entries = [e.strip() for e in entries]
+    ok(len(entries) == 8 and all(re.match(r"[A-Z][A-Za-z ]+[:(]", e) and re.search(r"\bfiled\b", e, re.I) for e in entries),
+       "every other file in the run folder is entered in one form: owner, what it holds, why it is filed")
+    named = [f for f in sorted(os.listdir(T)) if f != "ecl_extract_dictionary.txt" and f not in dic]
+    ok(not named, "every shipped file is entered in the run folder's dictionary by name (missing: %s)" % named)
     pol = docx_text(POLICY)
     ok("sample" not in pol.lower(), "CRM-ECL-04 carries no sentence about the development sample")
     ok("not modelled" not in pol and "EAD(k) follows the repayment schedule; extra repayments and hardship variations after "
        "the reporting date do not change it." in pol, "7.4 says what is true of EAD and nothing about payouts")
-    return dict(n=n.to_dict(), D_T={p: float(C[p][-1]) for p in C})
+    return dict(n=n.to_dict(), D_T={p: float(C[p][-1]) for p in C}, rough=rough)
 
 
 # ---------------------------------------------------------------------------------------------------------- realism
@@ -383,11 +414,26 @@ def june_extract():
     ok((pd.to_datetime(new["drawdown_date"]) > pd.Timestamp(JUNE)).all(), "every September loan missing from June was drawn after 30 June (%d)" % len(new))
     up = both[(both["days_past_due_j"] == 0) & (both["days_past_due_s"] == 0)]
     ok((up["current_balance_s"] < up["current_balance_j"]).mean() > 0.95, "up-to-date loans pay their balances down over the quarter")
-    ok(jb["days_past_due"].max() <= 179, "no June loan at 180 or more days past due")
-    r_j, r_s = (jb["days_past_due"] >= 30).mean(), (bk["days_past_due"] >= 30).mean()
+    # the June extract was run at 07:30 on 1 July before CHG-26-0418 and counts days past due to the run: every loan in
+    # arrears sits that many days after a scheduled due date as at 1 July, so at close of business on 30 June it was a day
+    # less (CRM-ECL-04 1.3); counted to 30 June most of the values fall on no due date at all, and the loans the June
+    # batch left at 179 days show 180
+    run = JUNE + dt.timedelta(days=1)
+    late = jb[jb["days_past_due"] > 0]
+    to_run = to_close = 0
+    for f, d, t in zip(late["first_repayment_date"].map(E._d), late["days_past_due"], late["term_months"]):
+        sched = set(due_dates(f, int(t) + 6))
+        to_run += (run - dt.timedelta(days=int(d))) in sched
+        to_close += (JUNE - dt.timedelta(days=int(d))) in sched
+    ok(to_run == len(late) and to_close <= 0.5 * len(late), "June days past due count to the 07:30 run on 1 July: %d of %d sit on a "
+       "due date counted to 1 July, %d counted to 30 June" % (to_run, len(late), to_close))
+    at180 = int((jb["days_past_due"] == 180).sum())
+    ok(jb["days_past_due"].max() == 180 and at180 >= 5, "the June batch wrote off at 180 days; %d loans at 179 then read 180 at the run" % at180)
+    jc = (jb["days_past_due"] - 1).clip(lower=0)
+    r_j, r_s = (jc >= 30).mean(), (bk["days_past_due"] >= 30).mean()
     ok(0.75 <= r_j / r_s <= 1.33, "arrears of 30 days or more run at a like share in June and September (%.4f, %.4f)" % (r_j, r_s))
     closed = jb[~jb["loan_no"].isin(set(bk["loan_no"]))]
-    return len(jb), len(closed), len(new)
+    return len(jb), len(closed), len(new), len(late), to_close, at180
 
 
 # ---------------------------------------------------------------------------------------------------------- the scoring runs
@@ -399,8 +445,9 @@ def scoring_runs():
     ok(runs == [dt.date(2026, m, 1) for m in range(4, 10)], "six runs, made on the first day of April to September 2026")
     ok(not sc.duplicated(["loan_no", "run_date"]).any(), "one score per loan per run")
     meta = {k.decode(): v.decode() for k, v in pq.read_schema(os.path.join(T, E.F["scores"])).metadata.items() if not k.startswith(b"pandas")}
-    ok("first day of the following month" in meta["run_date"] and "position at close of business on the month end" in meta["run_date"],
-       "the file's own description states the run timing")
+    ok(meta["runs"] == "the March, April, May, June, July and August 2026 month ends" and meta["run_date"] == "date the run was made"
+       and all(c in meta for c in sc.columns), "the file names the six month ends it scores, dates each run by the day it was "
+       "made, and describes every column in one form")
     jb = pd.read_csv(os.path.join(T, E.F["june"]))
     jun = sc[sc["run_date"] == dt.date(2026, 7, 1)]
     due = set(jb.loc[pd.to_datetime(jb["first_repayment_date"]) <= pd.Timestamp(JUNE), "loan_no"])
@@ -466,9 +513,43 @@ def collections_files():
     x = led.merge(fy[["loan_no", "default_month", "resolution", "resolution_date"]], on="loan_no", how="inner")
     me = pd.to_datetime(x["default_month"] + "-01") + pd.offsets.MonthEnd(0)
     ok((pd.to_datetime(x["received_date"]) > me).all(), "every receipt on a 2023-24 default falls after its default month end")
+    # Collections closes a default case as cured when it approves a collections arrangement, dated from the arrangement's
+    # start, and does not reopen it when the arrangement is withdrawn: the agency then remits on some of those loans,
+    # because they went on to be written off; on every other loan it remits only after the write-off
+    withdrawn, stale = E.withdrawn_cures(T, fy, led)
     ag = x[x["source"] == "Agency remittance"]
-    ok((ag["resolution"] == "Written off").all() and (ag["received_date"] > ag["resolution_date"]).all(),
-       "agency remittances come only after write-off")
+    wo_ag = ag[ag["resolution"] == "Written off"]
+    ok(ag["loan_no"].isin(set(fy.loc[fy["resolution"] == "Written off", "loan_no"]) | stale).all()
+       and (wo_ag["received_date"] > wo_ag["resolution_date"]).all(),
+       "agency remittances fall on written-off loans only: after the write-off, or on %d loans closed as cured on a "
+       "collections arrangement that was withdrawn before it started" % len(stale))
+    hd = pd.read_excel(os.path.join(T, E.F["hardship"]), sheet_name=0)
+    cur = fy[fy["resolution"] == "Cured"]
+    caught = withdrawn - stale
+    ok(len(stale) >= 16 and len(caught) >= 8 and not cur.loc[~cur["loan_no"].isin(withdrawn), "loan_no"].isin(set(ag["loan_no"])).any(),
+       "%d cases closed as cured on a withdrawn arrangement were written off, %d caught up instead, and no other cure has "
+       "an agency remittance" % (len(stale), len(caught)))
+    cq = fy.assign(q=q)
+    for (p_, q_), g_ in cq.groupby(["product", "q"]):
+        ok(g_["loan_no"].isin(stale).sum() >= 2 and g_["loan_no"].isin(caught).sum() >= 1,
+           "%s Q%d holds written-off and caught-up cases closed on withdrawn arrangements" % (p_, q_))
+    # the ones that caught up: a catch-up receipt between the default month end and the arrangement's planned start
+    rc = led[led["loan_no"].isin(caught)].merge(fy[["loan_no", "default_month", "resolution_date"]], on="loan_no")
+    rc = rc[(pd.to_datetime(rc["received_date"]) > pd.to_datetime(rc["default_month"] + "-01") + pd.offsets.MonthEnd(0))
+            & (rc["received_date"] <= rc["resolution_date"])]
+    big = rc.assign(a=rc["amount_aud"].astype(float)).groupby("loan_no")["a"].max()
+    ok(set(big.index) == caught and big.min() >= 500, "every caught-up case has its catch-up receipt (smallest AUD %.2f)" % big.min())
+    wd = hd[hd["loan_no"].isin(withdrawn) & (hd["arrangement_status"] == "Cancelled") & (hd["cancelled_date"] < hd["arrangement_start"])]
+    ok(wd["loan_no"].nunique() == len(withdrawn) and (wd["arrangement_type"] == "Reduced repayments").all(),
+       "each sits in the register as reduced repayments cancelled before its start")
+    # the rule the golden states, back-tested over every 2023-24 case: a collections arrangement approved after the
+    # default closes the case as cured, dated from the arrangement's start, whatever happened to the arrangement
+    dm = pd.to_datetime(fy["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    post = hd.merge(fy.assign(dme=dm)[["loan_no", "dme", "resolution", "resolution_date"]], on="loan_no")
+    post = post[post["received_date"] > post["dme"]]
+    ok(len(post) >= 100 and (post["resolution"] == "Cured").all()
+       and (post["arrangement_start"] == pd.to_datetime(post["resolution_date"])).all(),
+       "every arrangement approved after a 2023-24 default closed its case as cured, dated from its start (%d)" % len(post))
     cut, settled = W.SALE_CUTOFF, W.SALE_SETTLED
     ok(cut.month == settled.month and cut.year == settled.year, "the sale's cut-off and settlement fall in one month")
     ok(abs(round(float(sale["face_value_aud"].astype(float).sum()) * price, 2) - float(blank["amount_aud"].iloc[0])) < 0.01
@@ -492,14 +573,23 @@ def collections_files():
     ok(mar - float(blank["amount_aud"].iloc[0]) > 0 and other.between(150000, 600000).all(),
        "the March 2026 recoveries carry the sale on top of an ordinary month")
     return dict(defaults=len(fy), receipts=len(led), sold=len(sale), price=price, consideration=float(blank["amount_aud"].iloc[0]),
-                fy_sold=len(fs), reversals=len(neg))
+                fy_sold=len(fs), reversals=len(neg), withdrawn_written_off=len(stale), withdrawn_caught_up=len(caught),
+                cured_label=int((fy["resolution"] == "Cured").sum()))
 
 
 # ---------------------------------------------------------------------------------------------------------- ask A
 
-ASK_A_STOPS = ["s1", "s2", "s3", "s4", "cures_receipts", "excl_cures", "sale_undisc", "all_undisc", "lazy"]
-# discounting by days, or from the start of the month, misreads 3.3's month-end rule; reported, not designed stops
-ASK_A_MISREADINGS = ["days", "month_start"]
+# the ask A ladder: (name, variant, cure rule). The careful path is this round's solver: the sale shared out by face
+# value, receipts discounted monthly from the default month end, dishonours netted, every case closed as cured taken at
+# its word. The habitual stops take the labels at their word too; the over-cleaner doubts every cure on a withdrawn
+# arrangement, the ones that caught up included
+ASK_A_STOPS = [("careful", "gold", "label"), ("s1", "s1", "label"), ("s2", "s2", "label"), ("s3", "s3", "label"),
+               ("s4", "s4", "label"), ("over-cleaner", "gold", "no_withdrawn"), ("cures_receipts", "cures_receipts", "gold"),
+               ("excl_cures", "excl_cures", "label"), ("sale_undisc", "sale_undisc", "label"), ("all_undisc", "all_undisc", "label"),
+               ("lazy", "lazy", "label")]
+# 3.3's pins: by days, from the month start, at the annual rate per whole month, or a cure read as recovering its
+# balance at the cure discounted to the default: each is a misreading the clause rules out, reported, not a designed stop
+ASK_A_MISREADINGS = [("days", "days"), ("month_start", "month_start"), ("annual", "annual"), ("cure_disc", "cure_disc")]
 
 
 def ask_a():
@@ -508,24 +598,27 @@ def ask_a():
     ok(all(40 <= v <= 95 for v in g.values()), "realised losses sit where unsecured personal lending loses")
     for key, v in g.items():
         ok(edge(v, 0.1) >= 0.05, "realised loss %s Q%d clears its rounding edge by 5 per cent of the bin (%.3f)" % (key[0], key[1], edge(v, 0.1)))
+    ok(all(abs(E.lgd_path(T)[k] - g[k]) < 1e-9 for k in g), "the composable path reproduces the answer")
     vg = V.lgd(T)
     ok(all(abs(vg[k] - g[k]) < 1e-9 for k in g), "the independent verifier agrees on all eight")
     stops = {}
-    for v in ASK_A_STOPS:
-        x = E.realised_lgd(T, v)
-        stops[v] = x
-        ok(all(round(x[k], 1) != round(g[k], 1) for k in g),
-           "ask A stop %s misses every figure at one decimal (nearest %.2f points)" % (v, min(abs(x[k] - g[k]) for k in g)))
-    for v in ASK_A_MISREADINGS:
-        x = E.realised_lgd(T, v)
-        stops[v] = x
+    for name, v, c in ASK_A_STOPS:
+        x = E.realised_lgd(T, v, c)
+        stops[name] = x
+        near = min(abs(x[k] - g[k]) for k in g)
+        ok(all(round(x[k], 1) != round(g[k], 1) for k in g) and near >= 0.15,
+           "ask A stop %s misses every figure at one decimal (nearest %.2f points)" % (name, near))
+    for name, v in ASK_A_MISREADINGS:
+        x = E.realised_lgd(T, v, "gold")
+        stops[name] = x
         hit = sum(round(x[k], 1) == round(g[k], 1) for k in g)
-        ok(hit <= 4, "3.3 misread as %s still misses %d of the 8 figures" % (v, 8 - hit))
-    for v in ("s1", "s2", "s3", "s4", "cures_receipts", "sale_undisc"):
-        vx = V.lgd(T, v)
-        ok(all(abs(vx[k] - stops[v][k]) < 1e-9 for k in g), "the verifier reproduces ask A stop %s" % v)
+        ok(hit <= 1, "3.3 misread as %s misses %d of the 8 figures" % (name, 8 - hit))
+    for v, c, vv in (("gold", "label", "label"), ("s1", "label", "s1"), ("s2", "label", "s2"), ("s3", "label", "s3"),
+                     ("s4", "label", "s4"), ("cures_receipts", "gold", "cures_receipts"), ("sale_undisc", "label", "sale_undisc")):
+        x, vx = E.realised_lgd(T, v, c), V.lgd(T, vv)
+        ok(all(abs(vx[k] - x[k]) < 1e-9 for k in g), "the verifier reproduces ask A stop %s (%s cures)" % (v, c))
     for v in ("floor", "face_alloc"):
-        x = E.realised_lgd(T, v)
+        x = E.realised_lgd(T, v, "gold")
         ok(all(round(x[k], 1) == round(g[k], 1) and abs(x[k] - g[k]) < 0.01 for k in g),
            "%s gives the same eight figures (converged)" % v)
     return g, stops
@@ -533,16 +626,19 @@ def ask_a():
 
 # ---------------------------------------------------------------------------------------------------------- ask B
 
-ASK_B_STOPS = [("1 labels, May run", dict(june_rule="label", run="may")),
-               ("2 dates without any cancelled, May run", dict(june_rule="excl_cancel", run="may")),
-               ("3 dates, May run", dict(run="may")),
-               ("4 dates without any cancelled, June run", dict(june_rule="excl_cancel")),
-               ("5 cancellation ignored, June run", dict(june_rule="ignore_cancel")),
-               ("6 September scores for June", dict(run="sept")),
-               ("labels, June run", dict(june_rule="label")),
-               ("labels with start dates, May run", dict(june_rule="label_dated", run="may")),
-               ("July run", dict(run="july")),
-               ("end date excluded", dict(june_rule="end_exclusive"))]
+# the ask B ladder: the careful path is this round's solver (the 1 July run, hardship by 2.2's dates) with June's days past
+# due read as the extract gives them; the habitual stops read them the same way
+ASK_B_STOPS = [("careful: June days past due as extracted", dict(june_dpd="extract")),
+               ("1 labels, May run", dict(june_rule="label", run="may", june_dpd="extract")),
+               ("2 dates without any cancelled, May run", dict(june_rule="excl_cancel", run="may", june_dpd="extract")),
+               ("3 dates, May run", dict(run="may", june_dpd="extract")),
+               ("4 dates without any cancelled, June run", dict(june_rule="excl_cancel", june_dpd="extract")),
+               ("5 cancellation ignored, June run", dict(june_rule="ignore_cancel", june_dpd="extract")),
+               ("6 September scores for June", dict(run="sept", june_dpd="extract")),
+               ("labels, June run", dict(june_rule="label", june_dpd="extract")),
+               ("labels with start dates, May run", dict(june_rule="label_dated", run="may", june_dpd="extract")),
+               ("July run", dict(run="july", june_dpd="extract")),
+               ("end date excluded", dict(june_rule="end_exclusive", june_dpd="extract"))]
 
 
 def ask_b():
@@ -562,18 +658,15 @@ def ask_b():
        "the register at 30 June: %s" % facts)
     rr = pd.Timestamp(R)
     old_rule = set(hd.loc[(hd["arrangement_status"] != "Cancelled") & (s_ <= rr) & (e_ >= rr), "loan_no"])
-    ok(E.in_force(hd, R, "dates") == old_rule, "the rewritten 2.2 changes nothing at 30 September")
+    ok(E.in_force(hd, R, "dates") == old_rule, "2.2 read with or without the cancelled rows gives one set at 30 September")
     stops = {}
     for name, kw in ASK_B_STOPS:
         x = E.migration(T, **kw)
         stops[name] = x
         moved = sum(x[k] != m[k] for k in m)
-        ok(moved >= 1, "ask B stop %s lands off the answer (%d of 16 move)" % (name, moved))
-    devices = {"B1, the label after the switch": stops["labels, June run"], "B1, every cancelled out": stops["4 dates without any cancelled, June run"],
-               "B2, the May run": stops["3 dates, May run"]}
-    for name, x in devices.items():
-        ok(sum(x[k] != m[k] for k in m) >= 12, "device %s moves at least 12 of the 16 counts" % name)
-    for name in ("1 labels, May run", "2 dates without any cancelled, May run", "3 dates, May run", "6 September scores for June"):
+        ok(moved >= 6, "ask B stop %s lands off the answer (%d of 16 move)" % (name, moved))
+    for name in ("careful: June days past due as extracted", "1 labels, May run", "2 dates without any cancelled, May run",
+                 "3 dates, May run", "6 September scores for June"):
         ok(sum(stops[name][k] != m[k] for k in m) >= 12, "stop %s moves at least 12 of the 16 counts" % name)
     names = [n for n, _ in ASK_B_STOPS]
     for a_ in range(len(names)):
@@ -584,10 +677,10 @@ def ask_b():
     hz = E.migration(T, sept_rule="label")
     hz_moved = sum(hz[k] != m[k] for k in m)
     ok(hz_moved <= 2, "staging September on the status label moves %d counts (the status lag, a hazard)" % hz_moved)
-    for nm, kw in (("labels, May run", dict(june="label", run="2026-06-01")), ("every cancelled out, June run", dict(june="excl"))):
-        vx = V.migration(T, **kw)
-        ref = stops["1 labels, May run"] if nm.startswith("labels") else stops["4 dates without any cancelled, June run"]
-        ok(vx == ref, "the verifier reproduces ask B stop %s" % nm)
+    for nm, kw, ref in (("June days past due as extracted", dict(dpd="extract"), "careful: June days past due as extracted"),
+                        ("labels, May run", dict(june="label", run="2026-06-01", dpd="extract"), "1 labels, May run"),
+                        ("every cancelled out, June run", dict(june="excl", dpd="extract"), "4 dates without any cancelled, June run")):
+        ok(V.migration(T, **kw) == stops[ref], "the verifier reproduces ask B stop %s" % nm)
     return m, stops, facts, hz_moved
 
 
@@ -608,7 +701,26 @@ def separation(s):
        "cancelled after June) are in force at 30 September under 2.2 for none and labelled Active for %d (the status lag)"
        % (len(rows), len(canc), len(lab)))
     ok(len(canc[canc["arrangement_status"] == "Active"]) == 0, "none of the post-June cancellations carries an Active label")
-    counts = dict(june_device_rows=len(rows), in_force_at_30_sept=len(in_sept), cancelled_after_june=len(canc))
+    # ask A's device rows: the collections arrangements withdrawn before they started, and the cases Collections closed
+    # on them; ask B's: the June extract's days past due, counted to the 07:30 run; the bulk-loaded COVID-19 statuses
+    fy, led, _, _, _ = E.collections(T)
+    withdrawn, stale = E.withdrawn_cures(T, fy, led)
+    wd = hd[hd["loan_no"].isin(withdrawn) & (hd["arrangement_status"] == "Cancelled") & (hd["cancelled_date"] < hd["arrangement_start"])
+            & (hd["received_date"] >= pd.Timestamp(2023, 7, 1))]
+    bk = pd.read_csv(os.path.join(T, E.F["book"]))
+    jb = pd.read_csv(os.path.join(T, E.F["june"]))
+    covid = hd[(hd["hardship_reason"] == "COVID-19") & (hd["arrangement_status"] == "Active")]
+    in_force = lambda d, x: x[(x["arrangement_start"] <= d) & (x["arrangement_end"] >= d) & (x["cancelled_date"].isna() | (x["cancelled_date"] > d))]
+    on_book = set(s["loans"].loc[s["loans"]["stage"] < 3, "loan_no"])
+    ok(len(in_force(r, wd)) == 0 and len(in_force(j, wd)) == 0 and len(in_force(r, covid)) == 0 and len(in_force(j, covid)) == 0,
+       "no device row is in force at 30 September or 30 June: %d withdrawn collections arrangements, %d bulk COVID-19 rows"
+       % (len(wd), len(covid)))
+    ok(not covid["loan_no"].isin(set(bk["loan_no"]) | set(jb["loan_no"])).any() and not set(stale) & on_book,
+       "no COVID-19 row and no written-off withdrawn cure sits on a loan in either book; the stage 1 and 2 loans hold none")
+    late_june = int((jb["days_past_due"] > 0).sum())
+    counts = dict(june_device_rows=len(rows), in_force_at_30_sept=len(in_sept), cancelled_after_june=len(canc),
+                  withdrawn_arrangement_rows=len(wd), stale_cure_cases=len(stale), covid_bulk_rows=len(covid),
+                  june_dpd_rows=late_june, device_rows_in_main_population=0)
     tmp = tempfile.mkdtemp()
     try:
         cut = os.path.join(tmp, "main")
@@ -646,14 +758,20 @@ def readings(s):
     ok(len(ids) == 3266 and digest == STAGE2_HASH, "the stage 2 set is the one CRM-ECL-04 section 2 gives (%d loans, %s)" % (len(ids), digest[:12]))
     bk, curves, hd, scen, mapping = E.load(T)
     end = hd["arrangement_end"].map(E._d)
+    covid = (hd["hardship_reason"] == "COVID-19").to_numpy()
     stale = (hd["arrangement_status"] == "Active") & (end < R)
-    ok(1 <= stale.sum() <= 5, "a few arrangements that ended after the last weekly status run still show Active (%d)" % stale.sum())
+    ok(1 <= (stale & ~covid).sum() <= 5, "a few arrangements that ended after the last weekly status run still show Active (%d)"
+       % (stale & ~covid).sum())
     last_run = R - dt.timedelta(days=(R.weekday() - W.STATUS_RUN_WEEKDAY) % 7)
-    ok((end[stale] >= last_run).all(), "each ended on or after the last Tuesday run, %s" % last_run)
+    ok((end[stale & ~covid] >= last_run).all(), "each ended on or after the last Tuesday run, %s" % last_run)
+    jb = pd.read_csv(os.path.join(T, E.F["june"]))
+    bulk = stale & covid
+    ok(bulk.sum() >= 300 and not hd.loc[bulk, "loan_no"].isin(set(bk["loan_no"]) | set(jb["loan_no"])).any(),
+       "the bulk-loaded COVID-19 pauses of 2020 and 2021 still read Active (%d), every one on a loan closed before 30 June 2026" % bulk.sum())
     start = hd["arrangement_start"].map(E._d)
     canc = hd["arrangement_status"] == "Cancelled"
-    want = [("Cancelled" if c else "Approved" if a > R else "Active" if b >= last_run else "Completed")
-            for a, b, c in zip(start, end, canc)]
+    want = [("Cancelled" if c else "Active" if cv else "Approved" if a > R else "Active" if b >= last_run else "Completed")
+            for a, b, c, cv in zip(start, end, canc, covid)]
     ok((hd["arrangement_status"] == want).all(), "every other status agrees with the dates and the weekly run as at 30 September")
     pz = hd[(hd["arrangement_type"] == "Payment pause") & ~canc].assign(s=start, e=end)
     book = bk.set_index("loan_no")
@@ -681,7 +799,7 @@ def readings(s):
     moved = [n for n in ("total", "stage1", "stage2") if K(alt[n]) != K(s[n])]
     ok(len(held) > 1000 and len(moved) >= 1, "leaving pause dates out of months on book (%d loans, %d dates) moves %s, the "
        "allowance to %.0f: the 3.2 pin is load-bearing" % (len(held), sum(held.values()), moved, alt["total"]))
-    return (len(held), sum(held.values()), len(moved), alt["total"]), int(stale.sum())
+    return (len(held), sum(held.values()), len(moved), alt["total"]), (int((stale & ~covid).sum()), int(bulk.sum()))
 
 
 STAGE2_HASH = "a8137550bc1822e3a354a8e4c71bfd98045823aa673609028826904547fc6d93"
@@ -711,17 +829,32 @@ def residue_and_pins():
        and "repayment dates during a payment pause count" in head
        and "repayment dates during a payment pause included" in meta["outcome_month_on_book"]
        and "which stay in the loan's schedule" in dic and "the maturity date does not change" in dic
-       and "Completed is set by the weekly hardship batch on Tuesday nights" in dic,
+       and "a weekly batch on Tuesday nights moves an arrangement to Completed once its end date has passed" in dic,
        "payment pauses and past-maturity loans are pinned in the policy, the curve header, the sample metadata and the dictionary")
     ok("more than 30 days past due" in pol and "30 or more days past due" in pol, "2.5 quotes AASB 9 5.5.11 as more than 30 days")
-    ok("in force from its start date to its end date, both included, and stops being in force on the day it is cancelled" in pol,
-       "2.2 is written for any reporting date")
-    ok("behaviour score from the month-end scoring run on the position at the reporting date" in pol, "2.1 names the scoring run")
-    ok("The default is recorded at the first month end at which the loan is 90 or more days past due" in pol, "1.2 dates a default")
-    ok("including proceeds from a sale of the debt" in pol and "counts at the end of the month in which it is received" in pol
-       and "for each whole month between the two" in pol and "treated as recovering its balance at default in full" in pol,
-       "3.3 files the realised loss measure")
-    ok("change CHG-26-0418 added to the extract on 21 July 2026" in dic, "the dictionary says when the score joined the extract")
+    ok("A hardship arrangement is in force from its start date to its end date, unless it has been cancelled." in pol
+       and "last day of the varied repayments, as approved" in dic, "2.2 states the in-force rule; the dictionary dates the end as "
+       "the last day of the varied repayments")
+    ok("its behaviour score is 60 or more points below its score at origination" in pol and "scoring run on the position" not in pol
+       and "the March, April, May, June, July and August 2026 month ends" in str(pq.read_schema(os.path.join(T, E.F["scores"])).metadata),
+       "2.1 reads the behaviour score at the reporting date; the scoring runs name the month ends they score")
+    ok("Days past due are taken from the loan system at close of business on the reporting date." in pol,
+       "1.3 takes days past due at close of business on the reporting date")
+    ok("The default is recorded" not in pol and "month of the first month end at which the loan was 90 or more days past due" in dic,
+       "the default month is a field definition in the Collections file, not a policy clause")
+    ok("including the proceeds of any sale of the debt" in pol and "count at the end of the month in which they are received" in pol
+       and "discounted to the default month end monthly at the contract rate, as in 3.5" in pol
+       and "A loan that returns to performing has lost nothing." in pol and "(1 + contract rate / 12) to the power -k" in pol,
+       "3.3 files the realised loss measure: monthly at the contract rate as 3.5 discounts, and a cure loses nothing")
+    ok("Credit Risk Modelling's current cumulative default curve for the loan's product (PLPD-2026.06)" in pol,
+       "3.2 cites the curve by its model version")
+    ok("Version 4.2" in pol and "Effective 1 September 2026" in pol and "Reporting dates from" not in pol
+       and "PD from the PLPD-2026.06 curves (3.2); the measure for the annual LGD review set out in 3.3" in pol,
+       "v4.2 took effect on 1 September 2026, after the August approval; its history line names the curve and the LGD review")
+    ok("CHG-26-0418 21 Jul 2026 current_score_v4 added" in dic and dic.count("CHG-") == 5,
+       "the dictionary keeps the job's change log, CHG-26-0418 one of five entries")
+    ok("A loan leaves the extract once it closes: repaid in full, settled or written off." in dic,
+       "the dictionary says what closes a loan")
     for f in sorted(os.listdir(T)):
         if not f.endswith((".docx", ".xlsx")):
             continue
@@ -746,61 +879,105 @@ def residue_and_pins():
     rs = Counter(re.findall(r'<w:p [^>]*w:rsidR="([0-9A-F]{8})"', doc))
     ok(len(rs) >= 8 and rs.most_common(1)[0][1] >= 0.25 * sum(rs.values()) and doc.count('<w:r w:rsidR="') >= 10,
        "the policy's revision ids follow its history (%d sessions)" % len(rs))
-    ok("Version 4.2" in pol and "Reporting dates from 30 September 2026" in pol and "25 August 2026" in pol,
-       "the policy is version 4.2, approved in August 2026")
+    ok("Version 4.2" in pol and "25 August 2026" in pol, "the policy is version 4.2, approved in August 2026")
 
 
 # ---------------------------------------------------------------------------------------------------------- ask-layer audits
 
 def audits(s, rungs, g_a, m_b):
     out = {}
+    keys = sorted(g_a)
+    hit_a = lambda x: sum(round(x[k], 1) == round(g_a[k], 1) for k in keys)
+    hit_b = lambda x: sum(x[k] == m_b[k] for k in m_b)
     # lazy sweep: the most natural competent path, no device handled and no organ read
-    lazy_a = E.realised_lgd(T, "lazy")
-    lazy_b = E.migration(T, june_rule="label", run="may")
-    ok(all(round(lazy_a[k], 1) != round(g_a[k], 1) for k in g_a), "the lazy path misses every ask A figure")
-    ok(sum(lazy_b[k] != m_b[k] for k in m_b) >= 12, "the lazy path misses at least 12 ask B counts")
-    out["lazy"] = (8, sum(lazy_b[k] != m_b[k] for k in m_b))
+    lazy_a = E.realised_lgd(T, "lazy", "label")
+    lazy_b = E.migration(T, june_rule="label", run="may", june_dpd="extract")
+    ok(hit_a(lazy_a) == 0, "the lazy path misses every ask A figure")
+    ok(16 - hit_b(lazy_b) >= 12, "the lazy path misses at least 12 ask B counts")
+    out["lazy"] = (8 - hit_a(lazy_a), 16 - hit_b(lazy_b))
     # necessity matrix: each device mishandled alone, everything else right
     mat = {}
-    for name, x in (("A: the sale left out", E.realised_lgd(T, "s3")), ("A: receipts not discounted", E.realised_lgd(T, "all_undisc")),
-                    ("A: cures from their receipts", E.realised_lgd(T, "cures_receipts")),
-                    ("A: the sale receipt spread over every write-off", E.realised_lgd(T, "s4"))):
-        mat[name] = sum(round(x[k], 1) != round(g_a[k], 1) for k in g_a)
+    for name, kw in (("A1 (silent): cases closed as cured taken at their word", dict(cures="label")),
+                     ("A: the sale left out", dict(sale="none")), ("A: receipts not discounted", dict(disc="none")),
+                     ("A: every cure measured on its receipts", dict(cures="receipts")),
+                     ("A: the sale receipt spread over every write-off", dict(sale="spread"))):
+        x = E.lgd_path(T, **kw)
+        mat[name] = 8 - hit_a(x)
         ok(mat[name] == 8, "%s moves all eight ask A figures" % name)
-    for name, kw in (("B1: the label after the switch", dict(june_rule="label")), ("B1: every cancelled out", dict(june_rule="excl_cancel")),
+    for name, kw in (("B3 (silent): June days past due as extracted, to the 07:30 run", dict(june_dpd="extract")),
+                     ("B1: the label after the switch", dict(june_rule="label")),
+                     ("B1: every cancelled out", dict(june_rule="excl_cancel")),
                      ("B2: the run made before the date", dict(run="may"))):
         x = E.migration(T, **kw)
-        mat[name] = sum(x[k] != m_b[k] for k in m_b)
+        mat[name] = 16 - hit_b(x)
         ok(mat[name] >= 12, "%s moves %d of the 16 ask B counts" % (name, mat[name]))
     out["matrix"] = mat
-    # the pair simulation: the strongest solver's habitual path on the asks (the hygiene battery, the filed rules it
-    # points at), once with the main call landed (cracker) and once at the portal's survival-to-date reading (mirror)
+    # composed mishandlings (direction discipline): every path with one or two mishandled devices misses every ask A
+    # figure, the 3.3 misreadings aside; no path with three reaches more than two
+    worst = {1: 0, 2: 0, 3: 0}
+    gold_path = ("gold", "share", "monthly")
+    for c in ("gold", "label", "no_withdrawn", "receipts"):
+        for sl in ("share", "none", "spread", "flat"):
+            for dc in ("monthly", "none", "annual", "days", "month_start"):
+                path = (c, sl, dc)
+                if path == gold_path:
+                    continue
+                n_wrong = sum(x != y for x, y in zip(path, gold_path))
+                h = hit_a(E.lgd_path(T, c, sl, dc))
+                if n_wrong == 1 and dc in ("days",):
+                    ok(h <= 1, "3.3 read by days alone reaches %d of 8" % h)
+                    continue
+                worst[n_wrong] = max(worst[n_wrong], h)
+    ok(worst[1] == 0 and worst[2] == 0 and worst[3] <= 2, "composed ask A paths: one or two mishandlings reach no figure, three "
+       "reach at most %d" % worst[3])
+    out["composed_a"] = worst
+    worst_b = 16
+    for dpd in ("close", "extract"):
+        for rule in ("dates", "label", "excl_cancel", "ignore_cancel", "end_exclusive"):
+            for run in ("june", "may", "july", "sept"):
+                if (dpd, rule, run) == ("close", "dates", "june"):
+                    continue
+                worst_b = min(worst_b, 16 - hit_b(E.migration(T, june_rule=rule, run=run, june_dpd=dpd)))
+    ok(worst_b >= 6, "composed ask B paths: every one moves at least %d of the 16 counts" % worst_b)
+    out["composed_b_min_moved"] = worst_b
+    # the pair simulation. Both top responses are this round's careful solver: the habitual hygiene battery applied and
+    # every filed rule it points at executed (the sale shared out by face value, receipts discounted monthly from the
+    # default month end, dishonours netted, cures as 3.3 files them, the 1 July run, hardship by 2.2's dates), with each
+    # field read as its file describes it. One of them may land the call (cracker); the other stops at the portal's
+    # survival-to-date reading (mirror)
     REC, IF, ASK = 38.0, 7.0, 55.0
-    habit_a = E.realised_lgd(T, "s3")             # per-loan sums: the receipt with no loan drops out of a group-by
-    habit_b = E.migration(T, june_rule="excl_cancel", run="may")   # the September staging code at 30 June: status filter,
-    #                                                                  the last run made on or before the date
-    hits = sum(round(habit_a[k], 1) == round(g_a[k], 1) for k in g_a) + sum(habit_b[k] == m_b[k] for k in m_b)
-    L_ = hits / 24.0
-    mirror_main = rungs["r4"]
     r_keep = 5.0                                  # the stage counts and the scenario multiplier survive a wrong curve reading
+    mirror_main = rungs["r4"]
     ok(all(K(mirror_main[n]) != K(s[n]) for n in ("total", "stage1", "stage2")), "the mirror sheet misses the call")
-    cracker = REC + IF + ASK * L_
-    mirror = r_keep + IF + ASK * L_
+    careful_a = E.realised_lgd(T, "gold", "label")
+    careful_b = E.migration(T, june_dpd="extract")
+    hits = hit_a(careful_a) + hit_b(careful_b)
+    L_ = hits / 24.0
+    cracker, mirror = REC + IF + ASK * L_, r_keep + IF + ASK * L_
     pair = (cracker + mirror) / 2
-    ok(pair <= 40.0, "pair simulation: cracker %.1f, mirror %.1f, pair %.1f on the habitual path" % (cracker, mirror, pair))
-    careful = ((REC + IF + ASK) + (r_keep + IF + ASK)) / 2
-    out["pair"] = dict(cracker=cracker, mirror=mirror, pair=pair, ask_hits=hits, careful_pair=careful)
+    ok(pair <= 40.0, "pair simulation, careful solvers: cracker %.1f, mirror %.1f, pair %.1f (%d of 24 ask figures)" % (cracker, mirror, pair, hits))
+    # the habitual sheet (per-loan sums, the last run made by the date, hardship read off the status label)
+    habit_a = E.realised_lgd(T, "s3", "label")
+    habit_b = E.migration(T, june_rule="excl_cancel", run="may", june_dpd="extract")
+    h_hits = hit_a(habit_a) + hit_b(habit_b)
+    h_pair = (REC + IF + r_keep + IF + 2 * ASK * h_hits / 24.0) / 2
+    ok(h_pair <= 40.0, "pair simulation, habitual solvers: pair %.1f (%d of 24)" % (h_pair, h_hits))
+    out["pair"] = dict(cracker=cracker, mirror=mirror, pair=pair, ask_hits=hits, neither_on_call=mirror,
+                       habitual_pair=h_pair, habitual_hits=h_hits,
+                       both_catch_a_only=(REC + IF + r_keep + IF + 2 * ASK * (8 + hit_b(careful_b)) / 24.0) / 2,
+                       both_catch_b_only=(REC + IF + r_keep + IF + 2 * ASK * (hit_a(careful_a) + 16) / 24.0) / 2,
+                       both_catch_all=(REC + IF + ASK + r_keep + IF + ASK) / 2)
     # over-cleaner: blanket hygiene rules land on their designed over-corrected stops, not the answer
-    oc = {"A: the sale receipt spread over every write-off": E.realised_lgd(T, "s4"),
-          "A: the negative rows dropped as errors": E.realised_lgd(T, "no_reversals")}
-    oc_b = {"B: cancellation ignored": E.migration(T, june_rule="ignore_cancel"), "B: September scores for June": E.migration(T, run="sept")}
-    ok(all(round(oc["A: the sale receipt spread over every write-off"][k], 1) != round(g_a[k], 1) for k in g_a),
-       "spreading the sale receipt over every write-off misses every ask A figure")
-    nr = oc["A: the negative rows dropped as errors"]
-    out["no_reversals_moved"] = sum(round(nr[k], 1) != round(g_a[k], 1) for k in g_a)
+    oc = {"A: every cure on a withdrawn arrangement doubted": E.lgd_path(T, cures="no_withdrawn"),
+          "A: the sale receipt spread over every write-off": E.lgd_path(T, sale="spread")}
+    for name, x in oc.items():
+        ok(hit_a(x) == 0, "%s misses every ask A figure" % name)
+    nr = E.realised_lgd(T, "no_reversals", "gold")
+    out["no_reversals_moved"] = 8 - hit_a(nr)
     ok(out["no_reversals_moved"] == 0, "the dishonour reversals are texture: dropping them as errors moves no ask A figure")
-    for name, x in oc_b.items():
-        ok(sum(x[k] != m_b[k] for k in m_b) >= 1, "%s lands off the answer" % name)
+    for name, x in (("B: cancellation ignored", E.migration(T, june_rule="ignore_cancel")),
+                    ("B: September scores for June", E.migration(T, run="sept"))):
+        ok(16 - hit_b(x) >= 1, "%s lands off the answer" % name)
     # oracle sweep: nothing in the pack states a graded figure or tabulates the asks
     texts = docx_text(POLICY) + open(os.path.join(T, "ecl_extract_dictionary.txt")).read()
     for f in sorted(os.listdir(T)):
@@ -822,7 +999,7 @@ def audits(s, rungs, g_a, m_b):
             cols |= set(pq.read_schema(os.path.join(T, f)).names)
     ok(not any("stage" in c.lower() or "lgd" in c.lower() or "loss" in c.lower() for c in cols),
        "no shipped column carries a stage, a loss rate or an LGD")
-    # the hygiene battery on the wrong paths comes back clean
+    # the hygiene battery on the wrong paths comes back clean: keys unique, no duplicate rows, joins land, counts tie
     led = pd.read_csv(os.path.join(T, E.F["receipts"]), dtype=str)
     ok(led["receipt_ref"].is_unique and not led.duplicated().any(), "receipts: unique references, no exact duplicate rows")
     ok(int(led["loan_no"].isna().sum()) == 1, "receipts: one blank loan number")
@@ -831,6 +1008,10 @@ def audits(s, rungs, g_a, m_b):
         ok(x["loan_no"].is_unique and not x.duplicated().any(), "%s: one row per loan, no duplicates" % E.F[kf])
     fy, _, sale, _, _ = E.collections(T)
     ok(sale["loan_no"].is_unique, "the sale schedule lists each account once")
+    ok(fy["resolution"].isin(["Cured", "Settled", "Written off"]).all() and fy["resolution_date"].notna().all(),
+       "every 2023-24 case carries a resolution and a date")
+    hd = pd.read_excel(os.path.join(T, E.F["hardship"]), sheet_name=0)
+    ok(hd["case_ref"].is_unique and not hd.duplicated().any(), "the register: one row per case, no duplicate rows")
     sc = E.score_runs(T)
     ok(not sc.duplicated(["loan_no", "run_date"]).any(), "the scoring runs carry one row per loan and run")
     jb = pd.read_csv(os.path.join(T, E.F["june"]), dtype=str)
@@ -934,12 +1115,14 @@ def main():
         say("  rung %-7s %14.0f %+7.2f%%" % (v, x["total"], 100 * (x["total"] / s["total"] - 1)))
     say("  kept readings: %s" % {k: round(v) for k, v in kept.items()})
     say("  exits to the start of the month: %s" % {k: "%+.2f%%" % (100 * v) for k, v in starts.items()})
-    say("development sample %s, lifetime default share %s" % (cs["n"], {k: round(v, 4) for k, v in cs["D_T"].items()}))
-    say("June extract %d loans, %d closed by 30 September, %d drawn since; score-fall shares by run %s" % (jn + ({k: round(v, 4) for k, v in shares.items()},)))
+    say("development sample %s, curve's lifetime default share %s, roughness against the sample %s"
+        % (cs["n"], {k: round(v, 4) for k, v in cs["D_T"].items()}, {k: round(v, 3) for k, v in cs["rough"].items()}))
+    say("June extract %d loans, %d closed by 30 September, %d drawn since; %d in arrears, %d of them on a due date counted "
+        "to 30 June, %d at 180 days; score-fall shares by run %s" % (jn + ({k: round(v, 4) for k, v in shares.items()},)))
     say("Collections: %s" % cf)
     keys = sorted(g_a)
     say("ask A  gold          " + " ".join("%6.2f" % g_a[k] for k in keys))
-    for v in ASK_A_STOPS + ASK_A_MISREADINGS:
+    for v in [n for n, _, _ in ASK_A_STOPS] + [n for n, _ in ASK_A_MISREADINGS]:
         say("ask A  %-14s " % v + " ".join("%6.2f" % stops_a[v][k] for k in keys)
             + "   same at one decimal: %d" % sum(round(stops_a[v][k], 1) == round(g_a[k], 1) for k in keys))
     say("ask B  gold          " + " ".join("%6d" % m_b[k] for k in m_b))
@@ -948,7 +1131,8 @@ def main():
         say("ask B  %-40s moves %2d/16" % (name, sum(x[k] != m_b[k] for k in m_b)))
     say("register at 30 June %s; September label staging moves %d counts" % (facts, hz))
     say("separation %s" % sep)
-    say("pause dates out of months on book: %d loans, %d dates, %d main figures move, allowance %.0f; stale labels %d" % (pause + (stale,)))
+    say("pause dates out of months on book: %d loans, %d dates, %d main figures move, allowance %.0f; stale labels %d on the "
+        "Tuesday run, %d bulk COVID-19 rows" % (pause + stale))
     say("audits %s" % au)
     say("deliverables agree with target/; prompt %d characters" % plen)
 

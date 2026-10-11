@@ -134,6 +134,28 @@ SALE_PRICE_CENTS = 3.85
 # September 2026 instalment, so no graded figure sits on a rounding edge
 TUNE = {38209: 4151.3, 42844: 5897.56, 70618: 4782.73, 78469: 3760.64, 78929: 5533.42, 80945: 5639.26, 81228: 4855.47}
 
+# PLPD-2026.06 as Credit Risk Modelling released it: from month on book 4 the log of each month's increment is a natural
+# cubic spline in month on book with these knots and coefficients (truncated power basis, Hastie and Tibshirani); months
+# 1 to 3 are the development sample's own shares, and the final month, which collects the defaults recorded after the
+# last repayment date, is not fitted. tune_curve.py fits the coefficients to the sample's monthly default shares
+# (weighted by the defaults in each month) subject to the allowance and both stage amounts coming out as they do on the
+# sample's unsmoothed shares, read either way in the divisor (closure row 6)
+CURVE_FROM = 4
+CURVE_KNOTS = {"PL36": [4, 5, 7, 10, 14, 20, 27, 35], "PL60": [4, 5, 7, 10, 14, 20, 28, 40, 59]}
+CURVE_FIT = {"PL36": [-6.452902690007774, 0.3259712983836727, -1.3882885785797703, 1.9049587664148009, -0.4308075387717622,
+                      -0.10407652747142933, 0.037741028968568624, -0.029706425387825523],
+             "PL60": [-7.146364148973196, 0.4673099603949415, -4.047989699945275, 6.188526134187412, -2.434275014066228,
+                      0.5203459145460895, -0.33003623312736424, 0.1399717320294233, -0.04470576809844909]}
+
+# the June quarter-end extract was produced by ECL_QE_BOOK before change CHG-26-0418, when the job took days past due
+# as at the run (07:30 on 1 July) rather than at close of business on the quarter end
+JUNE_ARREARS_AT_RUN = True
+# collections hardship arrangements approved on 2023-24 defaults and withdrawn before they started: Collections closes
+# a default case as cured when the arrangement is approved, dated from the arrangement's start, and the case is not
+# reopened when the arrangement is withdrawn (extracts.withdrawn_arrangements sets how many fall in each product and
+# quarter of default)
+WITHDRAWN_SEED = SEED + 61
+
 
 def easter(y):
     a, b, c = y % 19, y // 100, y % 100

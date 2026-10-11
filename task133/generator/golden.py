@@ -139,7 +139,9 @@ def workbook(f, path):
         "Stage 2: 30 or more days past due, a hardship arrangement in force on the date (start to end, both included, not "
         "from the day it is cancelled), or a behaviour score 60 or more points below origination on v4 from the month-end "
         "run on the position at the date; v3 origination scores converted as 1.12 x v3 - 18, rounded. At 30 June the "
-        "June month-end run (made 1 July) supplies the scores.",
+        "June month-end run (made 1 July) supplies the scores, and days past due are put back to close of business on "
+        "30 June: the June extract ran at 07:30 on 1 July, before CHG-26-0418, and counts each loan in arrears a day "
+        "further.",
         "PD(k): the PLPD-2026.06 curve gives, for every loan drawn in the development window, the share defaulted by each "
         "month on book. A loan a months on book that is still open and has not defaulted takes (C(a+k) - C(a+k-1)) / S(a), "
         "where S(a) is the share of the development sample still open and never defaulted at the end of month a "
@@ -150,7 +152,10 @@ def workbook(f, path):
         "1.00 / 1.30 / 0.80 (weighted %.2f)." % s["mult"],
         "Realised loss (3.3): receipts after default to 30 September 2026 from the Collections receipts file, plus each "
         "sold account's share of the March 2026 sale (face value at cut-off x %.2f cents), each taken at the end of the "
-        "month received and discounted to the default month end at the contract rate; cured loans lose nothing." % W.SALE_PRICE_CENTS,
+        "month received and discounted to the default month end monthly at the contract rate; loans back to performing "
+        "lose nothing. Collections closes a case as cured when it approves a hardship arrangement; where the arrangement "
+        "was withdrawn before it started and the loan went on to write-off (agency remittances follow), the loan is "
+        "measured on its receipts." % W.SALE_PRICE_CENTS,
         "Amounts are rounded to the nearest thousand dollars from loan-level results, so stage amounts may not add exactly.",
     ]
     for i, t in enumerate(notes, 1):

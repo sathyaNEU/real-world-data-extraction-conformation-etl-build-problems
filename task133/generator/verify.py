@@ -65,16 +65,20 @@ def allowance(target, how="cond"):
     st = stages(bk, hd, conv, REP, bk["current_score_v4"])
     lgd = bk["product"].map({"PL36": 0.70, "PL60": 0.76}).to_numpy()
     C = {p: g.sort_values("month_on_book")["cumulative_pd"].to_numpy() for p, g in cv.groupby("product")}
-    gone = {}
+    gone, dflt = {}, {}
     for p, g in dev.groupby("product"):
         n = len(g)
         tm = int(g["term_months"].max())
         cnt = np.bincount(g.loc[g["outcome"] != "default", "outcome_month_on_book"].to_numpy(), minlength=tm + 1)
         gone[p] = np.cumsum(cnt) / n                       # repaid in full, early or at term, by the end of each month
+        cd = np.bincount(g.loc[g["outcome"] == "default", "outcome_month_on_book"].to_numpy(), minlength=tm + 1)
+        dflt[p] = np.cumsum(cd) / n                        # the sample's own default share, unsmoothed
     ecl = np.zeros(len(bk))
     for p in ("PL36", "PL60"):
         idx = np.where((bk["product"] == p).to_numpy() & (st < 3))[0]
         c, cl = C[p], gone[p]
+        if how == "samplecurve":                           # the curve rebuilt from the sample, unsmoothed
+            c = dflt[p]
         if how == "clprev":
             cl = np.concatenate([[0.0], cl[:-1]])
         top = len(c) - 1
@@ -84,9 +88,9 @@ def allowance(target, how="cond"):
         mask = kk <= H[:, None]
         m = np.minimum(aa[:, None] + kk, top)
         inc = c[m] - c[m - 1]
-        surv_a = (1 - c[aa] - cl[aa])[:, None]
+        surv_a = (1 - (dflt[p] if how == "sampleS" else c)[aa] - cl[aa])[:, None]
         surv_prev = 1 - c[m - 1] - cl[m - 1]
-        if how in ("cond", "r4b", "clprev"):
+        if how in ("cond", "r4b", "clprev", "sampleS", "samplecurve"):
             mp = inc / surv_a
         elif how == "r4":
             mp = inc / (1 - c[aa])[:, None]
@@ -115,6 +119,30 @@ def allowance(target, how="cond"):
     return out, st, bk
 
 
+def withdrawn_written_off(target, rows, led):
+    """loans Collections closed as cured on a hardship arrangement withdrawn before its start date (the arrangement
+    received after the default month starts on the case's resolution date and was cancelled before it started) that the
+    agency went on to collect from, which it does only on written-off accounts"""
+    ws = openpyxl.load_workbook(os.path.join(target, "hardship_register_2026-09-30.xlsx"), read_only=True).worksheets[0]
+    it = ws.iter_rows(values_only=True)
+    head = list(next(it))
+    col = {h: j for j, h in enumerate(head)}
+    day = lambda v: v.date() if hasattr(v, "date") else dt.date.fromisoformat(str(v)[:10])
+    cured = {x["loan_no"]: x for x in rows if x["resolution"] == "Cured"}
+    hit = set()
+    for r in it:
+        x = cured.get(r[col["loan_no"]])
+        if x is None or r[col["arrangement_status"]] != "Cancelled":
+            continue
+        y, m = int(x["default_month"][:4]), int(x["default_month"][5:7])
+        dme = dt.date(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1)
+        start, cancel = day(r[col["arrangement_start"]]), day(r[col["cancelled_date"]])
+        if day(r[col["received_date"]]) > dme and start == dt.date.fromisoformat(x["resolution_date"]) and cancel < start:
+            hit.add(x["loan_no"])
+    agency = {r["loan_no"] for r in led if r["source"] == "Agency remittance"}
+    return hit & agency
+
+
 def lgd(target, how="gold"):
     """realised loss on the 2023-24 defaults by product and quarter of the default month, in per cent"""
     rows = list(csv.DictReader(open(os.path.join(target, "collections_defaults_2023-24.csv"))))
@@ -126,6 +154,7 @@ def lgd(target, how="gold"):
     face = {r[0]: float(r[3]) for r in vals if r[0] and str(r[0]).startswith("BPL")}
     mi = lambda s: int(s[:4]) * 12 + int(s[5:7])
     loans = {r["loan_no"]: r for r in rows}
+    stale = withdrawn_written_off(target, rows, led)
     got, got_pv = defaultdict(float), defaultdict(float)
     bulk = None
     for r in led:
@@ -146,24 +175,27 @@ def lgd(target, how="gold"):
         lno, B, r = x["loan_no"], float(x["balance_at_default"]), float(x["contract_rate"])
         disc = (1 + r / 12) ** (-(mi(bulk["received_date"]) - mi(x["default_month"])))
         sale = face.get(lno, 0.0) * price
-        cured = x["resolution"] == "Cured"
+        label = x["resolution"] == "Cured"
+        cured = label and lno not in stale
         if how == "gold":
             loss = 0.0 if cured else B - got_pv[lno] - sale * disc
+        elif how == "label":                 # every case closed as cured taken at its word
+            loss = 0.0 if label else B - got_pv[lno] - sale * disc
         elif how == "s1":
             if x["resolution"] != "Written off":
                 continue
             loss = B - got[lno]
         elif how == "s2":
-            loss = 0.0 if cured else B - got[lno]
+            loss = 0.0 if label else B - got[lno]
         elif how == "s3":
-            loss = 0.0 if cured else B - got_pv[lno]
+            loss = 0.0 if label else B - got_pv[lno]
         elif how == "s4":
             spread = cons * B / wo_bal if x["resolution"] == "Written off" else 0.0
-            loss = 0.0 if cured else B - got_pv[lno] - spread * disc
+            loss = 0.0 if label else B - got_pv[lno] - spread * disc
         elif how == "cures_receipts":
             loss = B - got_pv[lno] - sale * disc
         elif how == "sale_undisc":
-            loss = 0.0 if cured else B - got_pv[lno] - sale
+            loss = 0.0 if label else B - got_pv[lno] - sale
         else:
             raise ValueError(how)
         q = ((int(x["default_month"][5:7]) - 7) % 12) // 3 + 1
@@ -172,9 +204,13 @@ def lgd(target, how="gold"):
     return {kq: 100.0 * num[kq] / den[kq] for kq in den}
 
 
-def migration(target, june="dates", run="2026-07-01"):
+def migration(target, june="dates", run="2026-07-01", dpd="close"):
+    """the June extract was run at 07:30 on 1 July and counts days past due to the run: at close of business on 30 June
+    a loan was one day less in arrears ('close'); 'extract' reads the column as it stands"""
     bk, cv, dev, hd, mult, conv = read_inputs(target)
     jb = pd.read_csv(os.path.join(target, "personal_loan_book_2026-06-30.csv"))
+    if dpd == "close":
+        jb["days_past_due"] = np.maximum(jb["days_past_due"].to_numpy() - 1, 0)
     sc = pd.read_parquet(os.path.join(target, "behaviour_score_runs_2026-03_2026-08.parquet"))
     sc["run_date"] = pd.to_datetime(sc["run_date"]).dt.strftime("%Y-%m-%d")
     pick = sc[sc["run_date"] == run]
@@ -228,6 +264,12 @@ def main(target=T, golden=G):
         print(("OK  " if far else "FAIL"), "rung %-7s %14.0f %+7.2f%%" % (how, x["total"], 100 * d))
         if not far:
             fails.append("rung " + how)
+    for how, label in (("sampleS", "divisor's default share from the sample"), ("samplecurve", "curve rebuilt from the sample")):
+        x, _, _ = allowance(target, how)
+        same = all(k(x[n]) == k(fig[n]) and abs((x[n] / 1000.0) % 1 - 0.5) >= 0.05 for n in ("total", "stage1", "stage2"))
+        print(("OK  " if same else "FAIL"), "%s %14.0f, all three figures in their bins" % (label, x["total"]))
+        if not same:
+            fails.append(label)
     x, _, _ = allowance(target, "clprev")
     off = all(k(x[n]) != k(fig[n]) for n in ("total", "stage1", "stage2"))
     print(("OK  " if off else "FAIL"), "payouts in month a at risk %14.0f %+7.2f%%, all three figures off their bins"
@@ -242,7 +284,7 @@ def main(target=T, golden=G):
             seen += 1
             chk("realised loss %s %s" % (r[0], r[1]), r[4], round(L[(r[0], quarter[r[1]])], 1))
     chk("realised loss rows", seen, 8)
-    for how in ("s1", "s2", "s3", "s4", "cures_receipts", "sale_undisc"):
+    for how in ("label", "s1", "s2", "s3", "s4", "cures_receipts", "sale_undisc"):
         x = lgd(target, how)
         apart = all(round(x[q], 1) != round(L[q], 1) for q in L)
         print(("OK  " if apart else "FAIL"), "ask A stop %-15s" % how, " ".join("%.1f" % x[q] for q in sorted(x)))
@@ -255,9 +297,10 @@ def main(target=T, golden=G):
             seen += 1
             chk("migration %s stage %s -> %s" % (r[0], r[1][-1], w), r[2 + j], M[(r[0], int(r[1][-1]), w)])
     chk("migration cells", seen, 16)
-    for name, kw in (("labels, May run", dict(june="label", run="2026-06-01")),
-                     ("cancelled out, May run", dict(june="excl", run="2026-06-01")),
-                     ("dates, May run", dict(run="2026-06-01")), ("cancelled out, June run", dict(june="excl"))):
+    for name, kw in (("days past due as extracted", dict(dpd="extract")),
+                     ("labels, May run", dict(june="label", run="2026-06-01", dpd="extract")),
+                     ("cancelled out, May run", dict(june="excl", run="2026-06-01", dpd="extract")),
+                     ("dates, May run", dict(run="2026-06-01", dpd="extract")), ("cancelled out, June run", dict(june="excl"))):
         x = migration(target, **kw)
         moved = sum(x[c] != M[c] for c in M)
         print(("OK  " if moved >= 12 else "FAIL"), "ask B stop %-24s moves %d of 16" % (name, moved))

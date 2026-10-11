@@ -52,7 +52,8 @@ CURVE_HEADER = """# Bellbird Personal Finance - Credit Risk Modelling
 # Developed on the PLPD-2026.06 development sample, performance to 31 May 2026: every PL36 loan drawn October 2019 to March 2023 and every PL60 loan drawn October 2019 to March 2021, the loan system's go-live to the last complete-term vintages
 # Default: 90 or more days past due at a month end. All risk grades pooled
 # month_on_book: number of monthly repayments fallen due; repayment dates during a payment pause count
-# cumulative_pd: share of the loans drawn in the development window that had defaulted by the end of that month on book
+# cumulative_pd: share of the loans drawn in the development window that had defaulted by the end of that month on book, smoothed
+# Smoothing: from month on book 4 the monthly increments are fitted on the log scale by a natural cubic spline; the final month on book, which also collects every default recorded after the last repayment date, is left out of the fit
 """
 DEV_META = {
     "dataset": "PLPD-2026.06 development sample",
@@ -61,6 +62,11 @@ DEV_META = {
     "population": "every PL36 loan drawn October 2019 to March 2023 and every PL60 loan drawn October 2019 to March 2021: "
                   "the loan system's go-live to the last complete-term vintages",
     "performance_to": "2026-05-31",
+    "loan_key": "sample key",
+    "product": "PL36 or PL60",
+    "risk_grade": "grade at approval, A to E",
+    "drawdown_month": "month the loan was funded (YYYY-MM)",
+    "term_months": "contractual term in months",
     "outcome": "default (90 or more days past due at a month end), prepaid (repaid in full before the end of the term) or "
                "matured",
     "outcome_month_on_book": "month on book of the outcome: the loan had defaulted, been repaid in full or matured by "
@@ -72,9 +78,9 @@ SCORE_META = {
     "owner": "Behaviour Scoring",
     "extracted": "2026-09-02",
     "runs": "the March, April, May, June, July and August 2026 month ends",
-    "run_date": "the day the run was made: each month-end run is made early on the first day of the following month and "
-                "scores every open loan on its position at close of business on the month end",
     "population": "every loan open at the month end, from its first repayment date",
+    "loan_no": "loan number",
+    "run_date": "date the run was made",
     "score_v4": "behaviour score, scorecard v4",
 }
 
@@ -182,9 +188,10 @@ def build(out):
     bk = X.book(S, np.random.default_rng(W.SEED + 1))
     hide = ["loan_key", "_bal", "_dpd"]
     bk.drop(columns=hide).to_csv(p("book"), index=False, lineterminator="\n")
-    jb = X.frame_at(S, SM.dn(W.PRIOR_QE))
+    jb = X.frame_at(S, SM.dn(W.PRIOR_QE), arrears_at_run=W.JUNE_ARREARS_AT_RUN)
     jb.drop(columns=hide).to_csv(p("june"), index=False, lineterminator="\n")
     parquet(score_frame(S, X.score_runs(S, SCORE_RUN_ENDS)), p("scores"), SCORE_META)
+    X.withdrawn_arrangements(S)
     hd = X.hardship(S, np.random.default_rng(W.SEED + 2))
     register_xlsx(hd, p("hardship"))
     dev = X.development_sample(S)

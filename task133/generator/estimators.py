@@ -143,7 +143,7 @@ def ead_path(balance, rate, rem):
     return out
 
 
-def loan_ecl(row, st, C, Cl, mult, variant="cond", disc=True, flat_ead=False, pm_zero=False, a_shift=0):
+def loan_ecl(row, st, C, Cl, mult, variant="cond", disc=True, flat_ead=False, pm_zero=False, a_shift=0, Dsa=None):
     """the loan's ECL under CRM-ECL-04 section 3. variant: 'cond' (the curve's increments from the loan's months on
     book over the share of development loans still open and never defaulted), 'r4' (over one less the curve to date),
     'shift' (no division), 'uncond' (the curve from origination), 'hazard' (the sample's default hazard rolled forward
@@ -161,7 +161,7 @@ def loan_ecl(row, st, C, Cl, mult, variant="cond", disc=True, flat_ead=False, pm
     r = float(row["contract_rate"])
     bal = float(row["current_balance"])
     eads = ead_path(bal, r, rem)
-    Sa = 1.0 - C[a] - Cl[a]
+    Sa = 1.0 - (C if Dsa is None else Dsa)[a] - Cl[a]
     surv = 1.0                       # 'hazard': no default between a and the month before; 'r4b': no payout
     tot = 0.0
     for k in range(1, H + 1):
@@ -209,7 +209,8 @@ def solve(target, **kw):
         C = curves[p] if D_from == "curve" else sh[p]["D"]
         Cl = sh[p]["Cl_early"] if kw.get("early_only") else sh[p]["Cl"]
         ecl.append(loan_ecl(row, s, C, Cl, mult, variant, kw.get("disc", True), kw.get("flat_ead", False),
-                            kw.get("pm_zero", False), kw.get("a_shift", 0)))
+                            kw.get("pm_zero", False), kw.get("a_shift", 0),
+                            sh[p]["D"] if kw.get("S_from") == "sample" else None))
     bk = bk.assign(stage=st.values, ecl=ecl, mob=[months_due(f) for f in bk["first_rep"]])
     inb = bk[bk["stage"] < 3]
     out = dict(total=float(inb["ecl"].sum()), mult=mult, loans=inb[["loan_no", "product", "stage", "current_balance", "ecl"]].copy())
@@ -253,12 +254,32 @@ def _month(s):
     return int(s[:4]) * 12 + int(s[5:7]) - 1
 
 
-def realised_lgd(target, variant="gold"):
+def withdrawn_cures(target, fy, led):
+    """the 2023-24 defaults Collections closed as cured on a collections hardship arrangement that was withdrawn before it
+    started: the register holds an arrangement received after the default month end, starting on the case's resolution
+    date and cancelled before that start. Returns those loans, and the ones among them that went on to be written off
+    (the agency remits only on written-off accounts) rather than catching up"""
+    hd = pd.read_excel(os.path.join(target, F["hardship"]), sheet_name=0)
+    cur = fy[fy["resolution"] == "Cured"][["loan_no", "default_month", "resolution_date"]].copy()
+    cur["dme"] = pd.to_datetime(cur["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    cur["res"] = pd.to_datetime(cur["resolution_date"])
+    x = hd.merge(cur, on="loan_no")
+    w = x[(x["received_date"] > x["dme"]) & (x["arrangement_start"] == x["res"]) & (x["arrangement_status"] == "Cancelled")
+          & (x["cancelled_date"] < x["arrangement_start"])]
+    withdrawn = set(w["loan_no"])
+    agency = set(led.loc[led["source"] == "Agency remittance", "loan_no"].dropna())
+    return withdrawn, withdrawn & agency
+
+
+def realised_lgd(target, variant="gold", cures="gold"):
     """what the 2023-24 defaults have lost, as a share of their balance at default, by product and quarter of the
-    default month, in per cent. 'gold' is CRM-ECL-04 3.3: every amount received after default to the reporting date,
-    the loan's share of the March 2026 sale proceeds (its face value at the cut-off times the price) included, counted
-    at the end of the month it was received and discounted to the default month end at the contract rate for each whole
-    month; a loan back to performing loses nothing. The other variants are the stops on the ask's ladder"""
+    default month, in per cent. 'gold' is CRM-ECL-04 3.3: every amount received after default to the reporting date, the
+    loan's share of the March 2026 sale proceeds (its face value at the cut-off times the price) included, counted at the
+    end of the month it was received and discounted to the default month end monthly at the contract rate; a loan that
+    returned to performing has lost nothing. cures: 'gold' takes a loan as returned to performing when Collections closed
+    it as cured, unless the arrangement it was closed on never started and the loan was written off; 'label' takes every
+    case closed as cured at its word; 'no_withdrawn' takes none closed on a withdrawn arrangement (the over-cleaner).
+    The other variants are the stops on the ask's ladder"""
     fy, led, sale, price, head = collections(target)
     fy = fy.copy()
     fy["B"] = fy["balance_at_default"].astype(float)
@@ -273,9 +294,10 @@ def realised_lgd(target, variant="gold"):
     rec["pv"] = rec["amt"] * (1 + rec["r"] / 12) ** (-rec["n"])
     rec["pv_days"] = rec["amt"] * (1 + rec["r"] / 12) ** (-rec["days"] / (365.25 / 12))
     rec["pv_start"] = rec["amt"] * (1 + rec["r"] / 12) ** (-(rec["n"] - 1))
+    rec["pv_annual"] = rec["amt"] * (1 + rec["r"]) ** (-rec["n"] / 12.0)
     rec["pv_kept"] = np.where(rec["amt"] < 0, 0.0, rec["pv"])
     by = rec.groupby("loan_no")
-    for c in ("amt", "pv", "pv_days", "pv_start", "pv_kept"):
+    for c in ("amt", "pv", "pv_days", "pv_start", "pv_annual", "pv_kept"):
         fy[c] = fy["loan_no"].map(by[c].sum()).fillna(0.0)
     bulk = led[led["loan_no"].isna() & (led["source"] == "Debt sale")]
     sale_m = _month(bulk["received_date"].iloc[0])
@@ -287,12 +309,22 @@ def realised_lgd(target, variant="gold"):
     dme = pd.to_datetime(fy["default_month"] + "-01") + pd.offsets.MonthEnd(0)
     fy["sale_pv_days"] = fy["sale"] * (1 + fy["r"] / 12) ** (-((sale_day - dme).dt.days) / (365.25 / 12))
     fy["sale_pv_start"] = fy["sale"] * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"] - 1))
-    cured = fy["resolution"] == "Cured"
+    fy["sale_pv_annual"] = fy["sale"] * (1 + fy["r"]) ** (-(sale_m - fy["M"]) / 12.0)
+    withdrawn, written_off = withdrawn_cures(target, fy, led)
+    label = fy["resolution"] == "Cured"
+    if cures == "gold":
+        cured = label & ~fy["loan_no"].isin(written_off)
+    elif cures == "label":
+        cured = label
+    elif cures == "no_withdrawn":
+        cured = label & ~fy["loan_no"].isin(withdrawn)
+    else:
+        raise ValueError(cures)
     wo = fy["resolution"] == "Written off"
     pop = None
     if variant == "gold":
         loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale_pv"])
-    elif variant == "s1":            # written-off loans only, undiscounted, the sale left out
+    elif variant == "s1":            # cases closed as written off only, undiscounted, the sale left out
         loss, pop = fy["B"] - fy["amt"], wo
     elif variant == "s2":            # cures in at full recovery, undiscounted, the sale left out
         loss = np.where(cured, 0.0, fy["B"] - fy["amt"])
@@ -315,6 +347,11 @@ def realised_lgd(target, variant="gold"):
         loss = np.where(cured, 0.0, fy["B"] - fy["pv_days"] - fy["sale_pv_days"])
     elif variant == "month_start":
         loss = np.where(cured, 0.0, fy["B"] - fy["pv_start"] - fy["sale_pv_start"])
+    elif variant == "cure_disc":      # a cure read as recovering its balance at the cure, discounted to the default
+        nres = pd.to_datetime(fy["resolution_date"]).dt.year * 12 + pd.to_datetime(fy["resolution_date"]).dt.month - 1
+        loss = np.where(cured, fy["B"] * (1 - (1 + fy["r"] / 12) ** (-(nres - fy["M"]))), fy["B"] - fy["pv"] - fy["sale_pv"])
+    elif variant == "annual":         # the annual contract rate compounded per whole month, (1 + r) ** (-n / 12)
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv_annual"] - fy["sale_pv_annual"])
     elif variant == "lazy":           # every receipt summed as it stands, cures taken from their receipts, no sale
         loss = fy["B"] - fy["amt"]
     elif variant == "no_reversals":   # the negative ledger rows dropped as errors, the dishonoured attempts kept
@@ -332,6 +369,66 @@ def realised_lgd(target, variant="gold"):
     return {(p, int(q)): float(v) for (p, q), v in val.items()}
 
 
+def lgd_path(target, cures="gold", sale="share", disc="monthly"):
+    """the ask A figures along one path, each knob a way of handling one device or hazard: cures 'gold', 'label' (every
+    case closed as cured at its word), 'no_withdrawn' (none closed on a withdrawn arrangement) or 'receipts' (every loan on
+    its receipts); sale 'share' (each sold loan's face value times the price), 'none', 'spread' (the receipt over the
+    2023-24 written-off cases by balance) or 'flat' (shares not discounted); disc 'monthly' (3.3 and 3.5), 'none',
+    'annual' ((1 + r) ** (-n / 12)), 'days' or 'month_start'"""
+    fy, led, sale_sch, price, head = collections(target)
+    fy = fy.copy()
+    fy["B"] = fy["balance_at_default"].astype(float)
+    fy["r"] = fy["contract_rate"].astype(float)
+    fy["M"] = fy["default_month"].map(_month)
+    fy["q"] = [((int(m[5:7]) - 7) % 12) // 3 + 1 for m in fy["default_month"]]
+    rec = led[led["loan_no"].notna()].merge(fy[["loan_no", "M", "r", "default_month"]], on="loan_no", how="inner")
+    rec["amt"] = rec["amount_aud"].astype(float)
+    rec["n"] = rec["received_date"].map(_month) - rec["M"]
+    me = pd.to_datetime(rec["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    days = (pd.to_datetime(rec["received_date"]) - me).dt.days
+
+    def factor(n, r, dd):
+        if disc == "monthly":
+            return (1 + r / 12) ** (-n)
+        if disc == "none":
+            return 1.0 + 0 * n
+        if disc == "annual":
+            return (1 + r) ** (-n / 12.0)
+        if disc == "days":
+            return (1 + r / 12) ** (-dd / (365.25 / 12))
+        if disc == "month_start":
+            return (1 + r / 12) ** (-(n - 1))
+        raise ValueError(disc)
+    rec["pv"] = rec["amt"] * factor(rec["n"], rec["r"], days)
+    fy["pv"] = fy["loan_no"].map(rec.groupby("loan_no")["pv"].sum()).fillna(0.0)
+    bulk = led[led["loan_no"].isna() & (led["source"] == "Debt sale")]
+    sale_m = _month(bulk["received_date"].iloc[0])
+    sale_day = pd.Timestamp(bulk["received_date"].iloc[0])
+    dme = pd.to_datetime(fy["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    f_sale = factor(sale_m - fy["M"], fy["r"], (sale_day - dme).dt.days)
+    face = dict(zip(sale_sch["loan_no"], sale_sch["face_value_aud"].astype(float)))
+    wo = fy["resolution"] == "Written off"
+    if sale == "share":
+        fy["sale_pv"] = fy["loan_no"].map(face).fillna(0.0) * price * f_sale
+    elif sale == "flat":
+        fy["sale_pv"] = fy["loan_no"].map(face).fillna(0.0) * price
+    elif sale == "none":
+        fy["sale_pv"] = 0.0
+    elif sale == "spread":
+        cons = float(bulk["amount_aud"].astype(float).sum())
+        fy["sale_pv"] = np.where(wo, fy["B"] / fy.loc[wo, "B"].sum(), 0.0) * cons * f_sale
+    else:
+        raise ValueError(sale)
+    withdrawn, written_off = withdrawn_cures(target, fy, led)
+    label = fy["resolution"] == "Cured"
+    cured = {"gold": label & ~fy["loan_no"].isin(written_off), "label": label,
+             "no_withdrawn": label & ~fy["loan_no"].isin(withdrawn), "receipts": label & False}[cures]
+    loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale_pv"])
+    g = fy.assign(loss=loss).groupby(["product", "q"])
+    val = 100.0 * g["loss"].sum() / g["B"].sum()
+    return {(p, int(q)): float(v) for (p, q), v in val.items()}
+
+
 # ------------------------------------------------------------------------------------------------- ask B
 
 def score_runs(target):
@@ -340,13 +437,19 @@ def score_runs(target):
     return sc
 
 
-def migration(target, june_rule="dates", run="june", sept_rule="dates"):
+def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd="close"):
     """the loans in stage 1 and stage 2 at 30 June 2026, by product and June stage: how many are in stage 1, 2 and 3
     at 30 September and how many have closed (not in the September extract). 'june' takes the scores of the month-end
     run on the 30 June position (made on 1 July); 'may' the last run made on or before 30 June; 'sept' the September
-    extract's scores"""
+    extract's scores. june_dpd 'close' takes days past due at close of business on 30 June (CRM-ECL-04 1.3): the June
+    extract, run at 07:30 on 1 July before CHG-26-0418, counts them to the run, a day more; 'extract' takes the column
+    as it stands"""
     bk, hd, mapping = load_staging(target)
     jb = pd.read_csv(os.path.join(target, F["june"]))
+    if june_dpd == "close":
+        jb["days_past_due"] = (jb["days_past_due"] - 1).clip(lower=0)
+    elif june_dpd != "extract":
+        raise ValueError(june_dpd)
     sc = score_runs(target)
     if run == "june":
         pick = sc[sc["run_date"] == dt.date(2026, 7, 1)]

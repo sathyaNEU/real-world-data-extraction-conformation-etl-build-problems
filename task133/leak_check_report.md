@@ -4,10 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: sample, survival, asserted, staging, months, reporting, header, reading, status, decisive, development, dividing, construction, forward, performing, conditioning, repayment, cohort, analyst, nothing, arrangement, driver, forecasting, probability, method
-
-## 2 author vocabulary (REVIEW 1)
-- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: \bthe model\b x1: ...of default in the k-th month after the reporting date, comes from the model team's cumulative default curve for the loan's product. Stage...
+Stump terms swept: sample, survival, asserted, nothing, months, performing, reporting, staging, arrangement, status, header, repayment, forward, development, reading, dividing, dictionary, decisive, conditioning, construction, device, register, cohort, analyst, reader
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 560 appears: ...point. Selected scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 78...
@@ -15,8 +12,8 @@ Stump terms swept: sample, survival, asserted, staging, months, reporting, heade
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: carries 8 of 9 distinctive words of the committed call: 'Book a collective expected credit loss allowance of AUD 13,160,000 on the PL36 and PL60 personal loans at 30 September 2'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 10 of 25 stump-paragraph terms appear (staging, months, reporting, status, forward, performing); read whether the document names the move
-- **REVIEW** `ecl_extract_dictionary.txt`: 8 of 25 stump-paragraph terms appear (sample, months, reporting, development, performing, repayment); read whether the document names the move
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 9 of 25 stump-paragraph terms appear (nothing, months, performing, reporting, staging, arrangement); read whether the document names the move
+- **REVIEW** `ecl_extract_dictionary.txt`: 9 of 25 stump-paragraph terms appear (sample, nothing, months, reporting, arrangement, repayment); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `hardship_register_2026-09-30.xlsx`: 742 ISO dates after 2026-10-12, e.g. 2026-10-13, 2026-10-14, 2026-10-15, 2026-10-16, 2026-10-17
@@ -26,6 +23,8 @@ Stump terms swept: sample, survival, asserted, staging, months, reporting, heade
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 1 file names (clean)
+
+## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
 
