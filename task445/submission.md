@@ -9,7 +9,7 @@
 
 **WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.**
 
-The closest calls are OTF at 83.4% and FENN at 77.3%. Not the reports in hand alone, which flag only WHII and JEMS because 125 managers that filed for September had not yet filed for December. Not one aggregate completion share, which flags AMRB, TAAV and FENN and misses GLI and OTF because the managers still to file sit in some registers far more than others. Not September's flags, which miss OTF's rise and FENN's fall.
+The closest calls are OTF at 83.4% and FENN at 77.3%. Not the reports in hand alone, which flag only WHII and JEMS because 125 managers that filed for September had not yet filed for December. Not one aggregate completion share (the prior quarter's share of final 13F value already on file by day 34 of the filing window, 0.820 from the September window), which flags AMRB, TAAV, FENN and SAF (80.3) and misses GLI and OTF because the managers still to file sit in some registers far more than others. Not September's flags, which miss OTF's rise and FENN's fall.
 
 ## 2. Critical Components
 
@@ -23,7 +23,7 @@ The closest calls are OTF at 83.4% and FENN at 77.3%. Not the reports in hand al
 2. Kept SH lines with no put or call, read CUSIPs to nine upper-case characters with leading zeros restored, matched the one failed check digit on issuer name and title, and put VALUE on a dollar basis, including the one December filing still in thousands (OM-4 s.3, s.4, s.6).
 3. Took shares outstanding as the latest cover-page count dated on or before each period end from fsds_cover_extract (OM-4 s.5).
 4. Found 125 managers with a September report and no December report by 3 February, inside the 45-day window, and carried each at its September share position.
-5. Back-tested the completion on the September window at the same day, completing from June: the holder-level carry misses every name by at most 2.6 points, one aggregate completion share by up to 22.3.
+5. Back-tested the completion on the September window at the same day, completing from June: the holder-level carry misses every name by at most 2.6 points, one aggregate completion share (the June window's share of final 13F value on file by day 34, 0.815) by up to 22.3.
 6. December ownership is December shares on file plus carried shares over the October-dated count; the flag is ownership above 80.0% (OM-4 s.7).
 7. Recommendation: flag WHII, GLI, OTF, JEMS and SAF.
 
