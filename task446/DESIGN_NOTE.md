@@ -35,7 +35,37 @@ architecture 1's families, and lists the realism repairs. The builder executes t
 
 **Similarity claim.** No build on file turns on which of a screen's measured properties carries to a year with
 a different base rate. Nearest drivers sit at 0.07 and below (task57 v19 held-out year, task89 v11 forward roll,
-task51 decomposition). Rejected neighbours this draw passed through are recorded in `## Tried and rejected`.
+task51 decomposition). Rejected neighbours this draw passed through are recorded in `## Loop 1 build (builder, 2026-10-11)
+
+Built to the brief; `generator/checks.py` green (9,147 assertions), `solve.py` reproduces every figure from
+`target/`, two builds byte-identical, `target.zip` cut last. Call 133 (133.04); 5.2's test over the 13 bases as the
+table above (capture and false-alarm 1.57 per cent, next 2.00, every non-convergent basis 7.97 or more), the five
+convergent routes in the 133 bin, the mean-of-rates variant on 103.9 / 29.1 and every band arrival figure. Band row:
+201 / 306 / 250 / 120 / 36 groups; committed GBP 475.8m / 3,016.2m / 7,153.8m / 8,213.8m / 6,640.9m (25,500.5m);
+arriving GBP 69.6m / 411.5m / 1,108.6m / 1,121.5m / 1,283.4m (3,994.6m); every figure 0.25 of a bin or more from an
+edge, rounded rows tie to the rounded totals.
+
+- **Devices as built.** A1 and B2 move all 25 band figures (crossers 1/3/1/3 flagged, 3/7/3/7 unflagged at the four
+  edges); A2 20 and 21 (first and last row kept), A3 20 and 20, B1 25, B3 25, B0 24, HZ-C 18; committed-total moves
+  A1 +3,594.7, A2 -509.4 / -412.8, A3 -129.1, B1 and B2 +252.9, B3 +257.7, B0 -237.4, HZ-C -64.6 (GBP m). All 59
+  grid cells miss at least 15 band figures and the committed total by GBP 5m or more. A3's crossers are 2 flagged
+  and 6 unflagged across the four edges, with partners chosen to cross under the last-row order too; B0's are 2
+  flagged and 12 unflagged; HZ-C's 1 flagged and 4 unflagged at GBP 15m, 1 and 2 at GBP 40m, plus 6 non-crossers
+  in four bands. 43 coinciding ledger numbers; 11.6 per cent of facilities carry two to four obligors.
+- **Readings fixed by the build.** B1 and B2 are numerically one stop (nothing is stamped between 23:30Z and the
+  01:15 BST run). The 1 October activations and the facilities maturing on 30 September are inert under every reading
+  that applies 6.1's start and maturity sentence. The not-yet-grouped customers are outside the engine's coverage (no
+  publication rows), so no device writes a September-publication row; the register, the watch list and the September
+  rows are byte-identical with the devices off (asserted). Device-row spacing is asserted at facility grain (no run of
+  more than three device facilities; mean position 0.40 to 0.60), since a four-obligor facility is four rows by itself.
+- **leak.py (REVIEW, no LEAK), answered.** "the model" is the Model Risk Committee in 1.2. "5.2" is the clause number
+  the write-up cites. The standard carries the call's words because it files the estimand (by design, the literal
+  reading). Stump-paragraph terms in the standard, field reference and log are the domain's own nouns; none names the
+  basis. Dates after 2026-10-11 in the facility extract are final maturity dates (forward by design).
+- **Personas.** User ids in the limit history come from the seed-446 name draw (Jade Ali replaces a first name the
+  guard warned on); the secretariat officer on the agenda is Abbie Stevens. Card updated.
+
+## Tried and rejected`.
 
 ## Stump sentence
 

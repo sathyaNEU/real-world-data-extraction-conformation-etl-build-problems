@@ -13,44 +13,67 @@ from openpyxl.utils import get_column_letter
 import world
 from world import D, EXTRACT_DATE
 
-FIXED_ZIP_TIME = (2026, 10, 8, 17, 42, 0)
-MODIFIED = dt.datetime(2026, 10, 8, 16, 55, 0)
+COMPANY = "Halstow Bank plc"
+ORDER = ["[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "word/document.xml",
+         "word/_rels/document.xml.rels"]
 
 
-def normalize_zip(path, modified=MODIFIED, app=b"Microsoft Excel"):
-    """Rewrite an OOXML zip with fixed member times, fixed order and a plausible writer, so two
-    builds are byte-identical and no library signature ships."""
-    with zipfile.ZipFile(path) as z:
-        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
-    out = []
-    created = (modified - dt.timedelta(days=9, hours=3)).strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    stamp = modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    for n, data in items:
-        if n == "docProps/app.xml":
-            data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app + b"</Application>", data)
-            data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>16.0300</AppVersion>", data)
-        if n == "docProps/core.xml":
-            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + created + rb"\g<2>", data)
-            data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
-            data = re.sub(rb"<cp:lastPrinted>[^<]*</cp:lastPrinted>", b"", data)
-        out.append((n, data))
-    first = [x for x in out if x[0] == "[Content_Types].xml"]
-    rest = sorted([x for x in out if x[0] != "[Content_Types].xml"])
+def _iso(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def core_xml(creator, last_by, created, modified, revision=None):
+    rev = "<cp:revision>%d</cp:revision>" % revision if revision else ""
+    return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            '<dc:title></dc:title><dc:subject></dc:subject><dc:creator>%s</dc:creator><cp:keywords></cp:keywords>'
+            '<dc:description></dc:description><cp:lastModifiedBy>%s</cp:lastModifiedBy>%s'
+            '<dcterms:created xsi:type="dcterms:W3CDTF">%s</dcterms:created>'
+            '<dcterms:modified xsi:type="dcterms:W3CDTF">%s</dcterms:modified></cp:coreProperties>'
+            % (creator, last_by, rev, _iso(created), _iso(modified))).encode()
+
+
+def excel_app_xml(sheets):
+    parts = "".join("<vt:lpstr>%s</vt:lpstr>" % html_escape(t) for t in sheets)
+    return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+            'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+            '<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
+            '<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr>'
+            '</vt:variant><vt:variant><vt:i4>%d</vt:i4></vt:variant></vt:vector></HeadingPairs>'
+            '<TitlesOfParts><vt:vector size="%d" baseType="lpstr">%s</vt:vector></TitlesOfParts>'
+            '<Company>%s</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
+            '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>'
+            % (len(sheets), len(sheets), parts, COMPANY)).encode()
+
+
+def html_escape(t):
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def write_container(path, members):
+    """Write an OOXML package the way Office does: fixed member order, 1980 member times."""
+    tail = ["docProps/core.xml", "docProps/app.xml"]
+    names = [n for n in ORDER if n in members] + sorted(n for n in members if n not in ORDER + tail) + \
+        [n for n in tail if n in members]
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, data in first + rest:
-            zi = zipfile.ZipInfo(name, date_time=FIXED_ZIP_TIME)
+        for n in names:
+            zi = zipfile.ZipInfo(n, date_time=(1980, 1, 1, 0, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o600 << 16
-            z.writestr(zi, data)
+            z.writestr(zi, members[n])
 
 
-def set_props(wb, creator):
-    p = wb.properties
-    p.creator = creator
-    p.lastModifiedBy = creator
-    p.created = MODIFIED - dt.timedelta(days=9, hours=3)
-    p.modified = MODIFIED
-    p.title = None
+def finish_xlsx(path, creator, last_by, created, modified):
+    with zipfile.ZipFile(path) as z:
+        members = {i.filename: z.read(i.filename) for i in z.infolist()}
+    wb = openpyxl.load_workbook(path, read_only=True)
+    sheets = wb.sheetnames
+    wb.close()
+    members["docProps/app.xml"] = excel_app_xml(sheets)
+    members["docProps/core.xml"] = core_xml(creator, last_by, created, modified)
+    write_container(path, members)
 
 
 def widths(ws, ws_widths):
@@ -81,9 +104,9 @@ def register_workbook(w, path):
             c.number_format = "dd/mm/yyyy"
     widths(ws, [11, 44, 23, 15, 15, 11, 36, 24, 13])
     ws.freeze_panes = "A5"
-    set_props(wb, "Reference Data")
     wb.save(path)
-    normalize_zip(path)
+    t = dt.datetime(2026, 10, 1, 5, 5, 0)
+    finish_xlsx(path, "Reference Data", "Reference Data", t, t)
 
 
 def ratings_workbook(w, path):
@@ -121,96 +144,224 @@ def ratings_workbook(w, path):
         for c in row:
             c.number_format = "dd/mm/yyyy"
     widths(ws2, [11, 13, 13, 22])
-    set_props(wb, "Credit Risk Models")
     wb.save(path)
-    normalize_zip(path)
+    finish_xlsx(path, "Credit Risk Models", "Credit Risk Models", dt.datetime(2025, 12, 12, 10, 21, 0),
+                dt.datetime(2026, 10, 2, 8, 47, 0))
 
 
-def scenarios_workbook(path):
+def outlook_workbook(path):
     wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Weights"
-    ws.append(["IFRS 9 forward-looking scenarios, 2026 Q3 run. Approved by the Impairment Committee 6 October 2026."])
-    ws["A1"].font = Font(bold=True)
-    ws.append([])
-    ws.append(["scenario", "weight"])
-    for row in [("Upside", 0.15), ("Base", 0.50), ("Downside", 0.25), ("Severe downside", 0.10)]:
-        ws.append(list(row))
-    widths(ws, [18, 10])
-    qs = ["2026Q4", "2027Q1", "2027Q2", "2027Q3", "2027Q4", "2028Q1", "2028Q2", "2028Q3", "2028Q4", "2029Q1",
-          "2029Q2", "2029Q3", "2029Q4"]
+    qs = ["2026 Q4", "2027 Q1", "2027 Q2", "2027 Q3", "2027 Q4", "2028 Q1", "2028 Q2", "2028 Q3", "2028 Q4", "2029 Q1",
+          "2029 Q2", "2029 Q3", "2029 Q4"]
     paths = {
-        "Upside": dict(gdp=[0.5, 0.6, 0.6, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
-                       unemp=[4.8, 4.7, 4.6, 4.5, 4.4, 4.3, 4.3, 4.2, 4.2, 4.2, 4.2, 4.1, 4.1],
-                       rate=[3.75, 3.50, 3.25, 3.25, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00]),
-        "Base": dict(gdp=[0.2, 0.3, 0.3, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
-                     unemp=[5.1, 5.2, 5.2, 5.1, 5.0, 4.9, 4.9, 4.8, 4.8, 4.7, 4.7, 4.7, 4.6],
-                     rate=[3.75, 3.75, 3.50, 3.50, 3.25, 3.25, 3.25, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00]),
+        "Central": dict(gdp=[0.2, 0.3, 0.3, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
+                        unemp=[5.1, 5.2, 5.2, 5.1, 5.0, 4.9, 4.9, 4.8, 4.8, 4.7, 4.7, 4.7, 4.6],
+                        rate=[3.75, 3.75, 3.50, 3.50, 3.25, 3.25, 3.25, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00],
+                        cpi=[3.4, 3.1, 2.8, 2.6, 2.4, 2.2, 2.1, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]),
         "Downside": dict(gdp=[-0.3, -0.4, -0.2, 0.0, 0.2, 0.3, 0.3, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
                          unemp=[5.4, 5.8, 6.1, 6.3, 6.4, 6.3, 6.2, 6.0, 5.9, 5.8, 5.7, 5.6, 5.5],
-                         rate=[3.75, 3.50, 3.00, 2.75, 2.50, 2.50, 2.50, 2.50, 2.75, 2.75, 2.75, 3.00, 3.00]),
+                         rate=[3.75, 3.50, 3.00, 2.75, 2.50, 2.50, 2.50, 2.50, 2.75, 2.75, 2.75, 3.00, 3.00],
+                         cpi=[3.6, 3.5, 3.1, 2.7, 2.3, 2.0, 1.8, 1.7, 1.8, 1.9, 2.0, 2.0, 2.0]),
         "Severe downside": dict(gdp=[-0.9, -1.2, -0.8, -0.3, 0.1, 0.3, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5],
                                 unemp=[5.8, 6.6, 7.3, 7.8, 8.0, 7.9, 7.7, 7.4, 7.1, 6.9, 6.7, 6.5, 6.3],
-                                rate=[3.75, 3.25, 2.50, 2.00, 1.75, 1.75, 1.75, 2.00, 2.00, 2.25, 2.25, 2.50, 2.50]),
+                                rate=[3.75, 3.25, 2.50, 2.00, 1.75, 1.75, 1.75, 2.00, 2.00, 2.25, 2.25, 2.50, 2.50],
+                                cpi=[3.8, 3.9, 3.4, 2.6, 1.9, 1.4, 1.2, 1.3, 1.5, 1.7, 1.9, 2.0, 2.0]),
     }
+    first = True
     for name, p in paths.items():
-        s = wb.create_sheet(name[:28])
-        s.append(["quarter", "real_gdp_qoq_pct", "unemployment_rate_pct", "bank_rate_pct_end_quarter"])
-        for c in s[1]:
+        s = wb.active if first else wb.create_sheet(name)
+        s.title = name
+        first = False
+        s["A1"] = "Group Economics: UK outlook, October 2026. %s path." % name
+        s["A1"].font = Font(bold=True)
+        s.append([])
+        s.append(["Quarter", "Real GDP, % q/q", "Unemployment rate, %", "Bank Rate, % (end quarter)",
+                  "CPI inflation, % y/y"])
+        for c in s[3]:
             c.font = Font(bold=True)
+            c.alignment = Alignment(wrap_text=True, vertical="bottom")
         for i, q in enumerate(qs):
-            s.append([q, p["gdp"][i], p["unemp"][i], p["rate"][i]])
-        widths(s, [10, 18, 22, 26])
-    set_props(wb, "Impairment Analytics")
+            s.append([q, p["gdp"][i], p["unemp"][i], p["rate"][i], p["cpi"][i]])
+            for col in (2, 3, 5):
+                s.cell(row=s.max_row, column=col).number_format = "0.0"
+            s.cell(row=s.max_row, column=4).number_format = "0.00"
+        widths(s, [11, 14, 15, 17, 15])
+        s.freeze_panes = "B4"
+    n = wb.create_sheet("Notes")
+    for row in [
+        ["Notes"],
+        ["Prepared by Group Economics for planning and stress-testing users across the Group."],
+        ["Paths are quarterly. GDP growth is quarter on quarter; unemployment is the quarterly average (ILO, 16+);"],
+        ["Bank Rate is the rate at quarter end; CPI is the quarterly average, year on year."],
+        ["Central reflects the Group's view at 1 October 2026. Downside and Severe downside are narrative paths for"],
+        ["sensitivity analysis and carry no probability."],
+        ["Next update: January 2027."],
+    ]:
+        n.append(row)
+    n["A1"].font = Font(bold=True)
+    widths(n, [110])
     wb.save(path)
-    normalize_zip(path)
+    finish_xlsx(path, "Group Economics", "Group Economics", dt.datetime(2026, 10, 5, 13, 12, 0),
+                dt.datetime(2026, 10, 6, 9, 38, 0))
 
 
 # ------------------------------------------------------------------ docx agenda
+W_NS = ('xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '
+        'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
+        'xmlns:o="urn:schemas-microsoft-com:office:office" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+        'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" '
+        'xmlns:w10="urn:schemas-microsoft-com:office:word" '
+        'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '
+        'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '
+        'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" mc:Ignorable="w14 w15"')
+XML_HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+
+
+def _w_run(text, bold=False, italic=False):
+    props = ("<w:b/>" if bold else "") + ("<w:i/>" if italic else "")
+    rpr = "<w:rPr>%s</w:rPr>" % props if props else ""
+    parts = []
+    for k, piece in enumerate(text.split("\t")):
+        if k:
+            parts.append("<w:tab/>")
+        if piece:
+            sp = ' xml:space="preserve"' if piece != piece.strip() else ""
+            parts.append("<w:t%s>%s</w:t>" % (sp, html_escape(piece)))
+    return "<w:r>%s%s</w:r>" % (rpr, "".join(parts))
+
+
+def _w_par(runs, rsid, style=None, ind=None, after=None):
+    ppr = ""
+    if style or ind or after is not None:
+        ppr = "<w:pPr>%s%s%s</w:pPr>" % ('<w:pStyle w:val="%s"/>' % style if style else "",
+                                         '<w:spacing w:after="%d"/>' % after if after is not None else "",
+                                         '<w:ind w:left="%d"/>' % ind if ind else "")
+    return '<w:p w:rsidR="%s" w:rsidRDefault="%s">%s%s</w:p>' % (rsid, rsid, ppr, "".join(runs))
+
+
 def agenda_docx(path):
-    import docx
-    from docx.shared import Pt
-    doc = docx.Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Arial"
-    st.font.size = Pt(10)
-    p = doc.add_paragraph()
-    r = p.add_run("HALSTOW BANK PLC")
-    r.bold = True
-    doc.add_paragraph("Executive Risk Committee")
-    doc.add_paragraph("Wednesday 4 November 2026, 09:30 to 12:00, Board Room 2, Halstow House")
-    doc.add_paragraph("Chair: Chief Risk Officer. Members: Chief Financial Officer, Chief Credit Officer, Chief "
-                      "Operating Officer. In attendance: Jill Berry (Head of Credit Risk Monitoring), Mathew Long "
-                      "(Head of Restructuring), Head of Business Support, Company Secretary.")
-    p = doc.add_paragraph()
-    p.add_run("Agenda").bold = True
-    items = [
-        "1. Minutes of the meeting of 7 October 2026 and matters arising",
-        "2. Q3 2026 risk appetite dashboard (Chief Risk Officer)",
-        "3. 2027 resourcing budget: credit",
-        "    3.1 Watch-list caseload for the year to 30 September 2027 (Credit Risk Monitoring, paper to follow). "
-        "The caseload standard for Restructuring and Business Support is twelve watch-list groups per analyst.",
-        "    3.2 Restructuring and Business Support headcount for 2027 (Head of Restructuring)",
-        "4. Early-warning system annual performance report: taken at the Credit Risk Committee on 18 November",
-        "5. Operational resilience: third-party data feeds (Chief Operating Officer)",
-        "6. Any other business",
+    rs = ["00A31C58", "00A31C58", "00A31C58", "00A31C58", "00F27D14", "00A31C58", "00F27D14", "00A31C58", "00A31C58",
+          "002B6E90", "00F27D14", "00A31C58", "00A31C58", "002B6E90", "00A31C58"]
+    paras = [
+        ([_w_run("HALSTOW BANK PLC", bold=True)], None, None, 0),
+        ([_w_run("Executive Risk Committee", bold=True)], None, None, 0),
+        ([_w_run("Wednesday 4 November 2026, 09:30 to 12:00, Board Room 2, Halstow House")], None, None, None),
+        ([_w_run("Chair: Chief Risk Officer. Members: Chief Financial Officer, Chief Credit Officer, Chief Operating "
+                 "Officer. In attendance: Jill Berry (Head of Credit Risk Monitoring), Mathew Long (Head of "
+                 "Restructuring), Head of Business Support, Company Secretary.")], None, None, None),
+        ([_w_run("Agenda", bold=True)], None, None, None),
+        ([_w_run("1.\tMinutes of the meeting of 7 October 2026 and matters arising")], None, None, None),
+        ([_w_run("2.\tQ3 2026 risk appetite dashboard (Chief Risk Officer)")], None, None, None),
+        ([_w_run("3.\t2027 resourcing budget: credit")], None, None, 60),
+        ([_w_run("3.1\tWatch-list caseload for the year to 30 September 2027 (Credit Risk Monitoring, paper to "
+                 "follow). The caseload standard for Restructuring and Business Support is twelve watch-list groups "
+                 "per analyst.")], None, 720, 60),
+        ([_w_run("3.2\tRestructuring and Business Support headcount for 2027 (Head of Restructuring)")], None, 720, None),
+        ([_w_run("4.\tEarly-warning system annual performance report: taken at the Credit Risk Committee on 18 "
+                 "November")], None, None, None),
+        ([_w_run("5.\tOperational resilience: third-party data feeds (Chief Operating Officer)")], None, None, None),
+        ([_w_run("6.\tAny other business")], None, None, None),
+        ([_w_run("Papers to the Company Secretary by 12:00 on Wednesday 28 October. Item 3.1 papers carry the "
+                 "committed exposure by caseload band so that 3.2 can be read against them.")], None, None, None),
+        ([_w_run("Internal. Not for onward distribution.", italic=True)], None, None, None),
     ]
-    for it in items:
-        doc.add_paragraph(it)
-    doc.add_paragraph("Papers to the Company Secretary by 12:00 on Wednesday 28 October. Item 3.1 papers carry the "
-                      "committed exposure by caseload band so that 3.2 can be read against them.")
-    p = doc.add_paragraph()
-    p.add_run("Internal. Not for onward distribution.").italic = True
-    cp = doc.core_properties
-    cp.author = "Company Secretariat"
-    cp.last_modified_by = "Company Secretariat"
-    cp.created = MODIFIED - dt.timedelta(days=9, hours=3)
-    cp.modified = MODIFIED
-    cp.revision = 4
-    cp.title = ""
-    cp.comments = ""
-    doc.save(path)
-    normalize_zip(path, app=b"Microsoft Office Word")
+    body = "".join(_w_par(r, rs[k], style, ind, after) for k, (r, style, ind, after) in enumerate(paras))
+    sect = ('<w:sectPr w:rsidR="00A31C58"><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" '
+            'w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/><w:cols w:space="708"/>'
+            '<w:docGrid w:linePitch="360"/></w:sectPr>')
+    document = XML_HEAD + '<w:document %s><w:body>%s%s</w:body></w:document>' % (W_NS, body, sect)
+    styles = (XML_HEAD + '<w:styles %s><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Arial" '
+              'w:eastAsiaTheme="minorHAnsi" w:hAnsi="Arial" w:cs="Arial"/><w:sz w:val="20"/><w:szCs w:val="20"/>'
+              '<w:lang w:val="en-GB" w:eastAsia="en-US" w:bidi="ar-SA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr>'
+              '<w:spacing w:after="160" w:line="259" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>'
+              '<w:latentStyles w:defLockedState="0" w:defUIPriority="99" w:defSemiHidden="0" w:defUnhideWhenUsed="0" '
+              'w:defQFormat="0" w:count="376"><w:lsdException w:name="Normal" w:uiPriority="0" w:qFormat="1"/>'
+              '<w:lsdException w:name="heading 1" w:uiPriority="9" w:qFormat="1"/></w:latentStyles>'
+              '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/>'
+              '</w:style><w:style w:type="character" w:default="1" w:styleId="DefaultParagraphFont"><w:name '
+              'w:val="Default Paragraph Font"/><w:uiPriority w:val="1"/><w:semiHidden/><w:unhideWhenUsed/></w:style>'
+              '<w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/>'
+              '<w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/>'
+              '<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" '
+              'w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style><w:style '
+              'w:type="numbering" w:default="1" w:styleId="NoList"><w:name w:val="No List"/><w:uiPriority w:val="99"/>'
+              '<w:semiHidden/><w:unhideWhenUsed/></w:style></w:styles>' % W_NS)
+    settings = (XML_HEAD + '<w:settings %s><w:zoom w:percent="110"/><w:proofState w:spelling="clean" '
+                'w:grammar="clean"/><w:defaultTabStop w:val="720"/><w:characterSpacingControl w:val="doNotCompress"/>'
+                '<w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word"'
+                ' w:val="15"/><w:compatSetting w:name="overrideTableStyleFontSizeAndJustification" '
+                'w:uri="http://schemas.microsoft.com/office/word" w:val="1"/><w:compatSetting '
+                'w:name="enableOpenTypeFeatures" w:uri="http://schemas.microsoft.com/office/word" w:val="1"/>'
+                '<w:compatSetting w:name="doNotFlipMirrorIndents" w:uri="http://schemas.microsoft.com/office/word" '
+                'w:val="1"/></w:compat><w:rsids><w:rsidRoot w:val="00A31C58"/><w:rsid w:val="002B6E90"/><w:rsid '
+                'w:val="00A31C58"/><w:rsid w:val="00F27D14"/></w:rsids><m:mathPr><m:mathFont m:val="Cambria Math"/>'
+                '</m:mathPr><w:themeFontLang w:val="en-GB"/><w:clrSchemeMapping w:bg1="light1" w:t1="dark1" '
+                'w:bg2="light2" w:t2="dark2" w:accent1="accent1" w:accent2="accent2" w:accent3="accent3" '
+                'w:accent4="accent4" w:accent5="accent5" w:accent6="accent6" w:hyperlink="hyperlink" '
+                'w:followedHyperlink="followedHyperlink"/><w:shapeDefaults><o:shapedefaults v:ext="edit" '
+                'spidmax="1026"/><o:shapelayout v:ext="edit"><o:idmap v:ext="edit" data="1"/></o:shapelayout>'
+                '</w:shapeDefaults><w:decimalSymbol w:val="."/><w:listSeparator w:val=","/>'
+                '<w14:docId w14:val="5E2A7C31"/><w15:chartTrackingRefBased/><w15:docId '
+                'w15:val="{8C4B2F0A-6D1E-4F3B-9A57-2E61C0D4B7A9}"/></w:settings>' % W_NS)
+    fonts = (XML_HEAD + '<w:fonts %s>' % W_NS + "".join(
+        '<w:font w:name="%s"><w:panose1 w:val="%s"/><w:charset w:val="00"/><w:family w:val="%s"/>'
+        '<w:pitch w:val="variable"/></w:font>' % x for x in
+        [("Arial", "020B0604020202020204", "swiss"), ("Times New Roman", "02020603050405020304", "roman"),
+         ("Calibri Light", "020F0302020204030204", "swiss"), ("Calibri", "020F0502020204030204", "swiss")])
+             + '</w:fonts>')
+    web = (XML_HEAD + '<w:webSettings %s><w:optimizeForBrowser/><w:allowPNG/></w:webSettings>' % W_NS)
+    from openpyxl.writer.theme import theme_xml
+    theme = XML_HEAD + re.sub(r">\s+<", "><", theme_xml.split("?>", 1)[1].strip())
+    ct = (XML_HEAD + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+          '<Default Extension="xml" ContentType="application/xml"/>'
+          '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.'
+          'wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/'
+          'vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" '
+          'ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override '
+          'PartName="/word/webSettings.xml" ContentType="application/vnd.openxmlformats-officedocument.'
+          'wordprocessingml.webSettings+xml"/><Override PartName="/word/fontTable.xml" ContentType="application/'
+          'vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml"/><Override PartName="/word/theme/'
+          'theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/><Override PartName='
+          '"/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
+          '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.'
+          'extended-properties+xml"/></Types>')
+    rels = (XML_HEAD + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/'
+            'core-properties" Target="docProps/core.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats'
+            '.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/><Relationship '
+            'Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" '
+            'Target="word/document.xml"/></Relationships>')
+    drels = (XML_HEAD + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+             '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/'
+             'webSettings" Target="webSettings.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/'
+             'officeDocument/2006/relationships/settings" Target="settings.xml"/><Relationship Id="rId1" Type="http://'
+             'schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship '
+             'Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" '
+             'Target="theme/theme1.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/'
+             'officeDocument/2006/relationships/fontTable" Target="fontTable.xml"/></Relationships>')
+    text = " ".join(re.sub("<[^>]+>", " ", body).split())
+    words = len(text.split())
+    chars = len(text.replace(" ", ""))
+    app = (XML_HEAD + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+           'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Template>Normal.dotm'
+           '</Template><TotalTime>38</TotalTime><Pages>1</Pages><Words>%d</Words><Characters>%d</Characters>'
+           '<Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity><Lines>%d</Lines>'
+           '<Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop><Company>%s</Company><LinksUpToDate>false'
+           '</LinksUpToDate><CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc>'
+           '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion></Properties>'
+           % (words, chars, 24, len(paras), COMPANY, len(text)))
+    members = {
+        "[Content_Types].xml": ct.encode(), "_rels/.rels": rels.encode(), "word/document.xml": document.encode(),
+        "word/_rels/document.xml.rels": drels.encode(), "word/styles.xml": styles.encode(),
+        "word/settings.xml": settings.encode(), "word/fontTable.xml": fonts.encode(),
+        "word/webSettings.xml": web.encode(), "word/theme/theme1.xml": theme.encode(), "docProps/app.xml": app.encode(),
+        "docProps/core.xml": core_xml("Company Secretariat", "Abbie Stevens", dt.datetime(2026, 10, 7, 9, 14, 0),
+                                      dt.datetime(2026, 10, 8, 15, 52, 0), revision=4),
+    }
+    write_container(path, members)
 
 
 # ------------------------------------------------------------------ PDF standard
@@ -257,6 +408,7 @@ def standard_pdf(path):
         ("p", "1.2 The early-warning system is release 3.2 of the engine, in production since 10 January 2022. "
               "Its models, triggers and bands have not changed since. A change would be a new release, approved "
               "by the Model Risk Committee before use."),
+        ("p", "1.3 Dates and times in this standard are UK time (GMT or BST, whichever is in force)."),
         ("h", "2 Obligor groups"),
         ("p", "2.1 An obligor group is the set of legal entities under one ultimate accounting-consolidation "
               "parent. The credit system's group register holds each group, the dates its relationship with the "
@@ -265,9 +417,8 @@ def standard_pdf(path):
               "whose GLEIF relationship record shows it accounting-consolidated into the group's ultimate parent "
               "(IS_ULTIMATELY_CONSOLIDATED_BY; where an entity reports only IS_DIRECTLY_CONSOLIDATED_BY, its "
               "direct parents are followed to the top), with the relationship in force at the date in question."),
-        ("p", "2.3 An entity whose LEI registration has lapsed is still the entity its LEI identifies. An "
-              "international branch belongs with its head office. A fund-management link is not consolidation. "
-              "An entity merged into another is carried by its successor from the merger date."),
+        ("p", "2.3 Group structure is read from GLEIF's Level 1 and Level 2 data as GLEIF publishes it, under "
+              "GLEIF's own definitions of its relationship types and registration statuses."),
         ("h", "3 Signals and flags"),
         ("p", "3.1 The engine publishes a signal for every entity it covers at each month-end: GREEN, AMBER or "
               "RED, with a score from 0 to 99 and the triggers behind it. Entities with an LEI are keyed by LEI, "
@@ -279,7 +430,7 @@ def standard_pdf(path):
               "group register at that date and not on the watch list at that date."),
         ("p", "4.2 A group in a cohort reaches the watch list if it is placed on the watch list in the twelve "
               "months after the cohort date. A group that leaves the book in that time without being placed has "
-              "not reached it. A group counts once."),
+              "not reached it. A group counts once. A cohort is closed once its twelve months have ended."),
         ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the last "
               "four closed cohorts taken together:"),
         ("u", "hit rate: groups flagged at the cohort date that reach the watch list, as a share of groups "
@@ -293,18 +444,27 @@ def standard_pdf(path):
               "cohort date will reach the watch list in the following twelve months, and the committed exposure "
               "they will bring, for the resourcing budget. Groups that join the book after the cohort date are "
               "outside the forecast."),
-        ("p", "5.2 The forecast gives each group in the monitored book a probability of reaching the watch list "
-              "that depends only on its flag status at the cohort date and is the same across the book. It is "
-              "set from the performance measures in 4.3. Expected arrivals are the sum of those probabilities; "
-              "expected exposure is the sum of each probability times the group's committed exposure."),
+        ("p", "5.2 The forecast is the number of groups in the monitored book at the cohort date expected to reach "
+              "the watch list in the twelve months after it, with the book, the outcome and the groups left out as "
+              "4.1, 4.2 and 5.1 set them. Each group is given a probability of reaching the list that depends only "
+              "on whether it is flagged at the cohort date and is the same across the book; expected arrivals are "
+              "the sum of the probabilities, and expected exposure the sum of each probability times the group's "
+              "committed exposure at the cohort date. The probabilities are set from the last four closed cohorts "
+              "taken together, on whichever basis predicts those cohorts best: each cohort in turn is predicted "
+              "from its own book and flags at its cohort date, on the basis set from the other three taken "
+              "together; a basis's error is the largest of its four misses, each taken as a share of that cohort's "
+              "actual arrivals; and the basis with the smallest error is the one used."),
         ("p", "5.3 The caseload is reported to the nearest whole group, and expected arrivals within a band to "
               "one decimal."),
         ("h", "6 Committed exposure and caseload bands"),
-        ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits of its members' "
-              "facilities in force at the end of that date, across Halstow Bank plc and Halstow Bank Ireland DAC, "
-              "in sterling at that date's Group Treasury closing rates. A facility whose final maturity date "
-              "falls on or before the date is not in force at the end of it."),
-        ("p", "6.2 The caseload is reported in five bands of committed exposure: under GBP 5m; GBP 5m and under "
+        ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits, as they stood at the "
+              "end of that date, of the facilities on which one or more of its members is an obligor, across "
+              "Halstow Bank plc and Halstow Bank Ireland DAC, in sterling at that date's Group Treasury closing "
+              "rates. Only facilities in force at the end of the date count: a facility whose start date falls "
+              "after the date, or whose final maturity date falls on or before it, is not in force at the end of "
+              "it."),
+        ("p", "6.2 The caseload is reported in five bands of committed exposure at the cohort date: under GBP 5m; "
+              "GBP 5m and under "
               "GBP 15m; GBP 15m and under GBP 40m; GBP 40m and under GBP 100m; GBP 100m and over. Groups of "
               "GBP 40m and over are worked by Restructuring, the rest by Business Support."),
         ("h", "7 Records"),
@@ -339,14 +499,14 @@ Month-end publications of the early-warning engine, one row per covered entity p
 
 ## {files['obligors']}
 
-Every customer the credit system has booked to an obligor group, open or closed.
+Every customer on the credit system, open or closed.
 
 | field | meaning |
 |---|---|
 | customer_id | credit system customer number |
 | lei | the customer's LEI where held |
 | companies_house_no | Companies House number for UK-registered customers |
-| group_id | the obligor group the customer is booked to |
+| group_id | the obligor group the credit system books the customer to; blank until the monthly grouping review books a new customer |
 | customer_status | ACTIVE or CLOSED at the extract date |
 | primary_booking_entity | HB-PLC (Halstow Bank plc) or HB-DAC (Halstow Bank Ireland DAC) |
 
@@ -372,25 +532,40 @@ Every watch-list case opened since 1 January 2020.
 | removed_on | date the case closed; blank while open |
 | removal_reason | CURED, REFINANCED_AWAY or TO_RECOVERY |
 
-## Facility extracts ({files['plc']}, {files['plc_rerun']}, {files['dac']})
+## {files['facilities']}
 
-One row per facility held by the booking entity at the extract date.
+Facilities on the Halstow Bank plc and Halstow Bank Ireland DAC loan ledgers when the quarter-end extract ran, with
+their obligors.
 
 | field | meaning |
 |---|---|
-| booking_entity | HB-PLC or HB-DAC |
+| booking_entity | HB-PLC or HB-DAC, the ledger the facility is booked on |
+| facility_id | the facility number on that ledger |
+| customer_id | the obligor the row is for |
+| product | facility product |
 | currency | facility currency |
-| committed_limit | the facility's committed limit, in the facility currency |
-| drawn_balance | drawn balance at the extract time, in the facility currency |
+| committed_limit | the facility's committed limit when the extract ran, in the facility currency |
+| drawn_balance | the obligor's drawings when the extract ran, in the facility currency |
 | start_date | date the facility became available |
 | final_maturity_date | date the facility falls due for repayment and the commitment ends |
-| facility_status | ACTIVE, CANCELLED or CLOSED, maintained by the overnight batch |
+| facility_status | ACTIVE, CANCELLED or CLOSED when the extract ran |
+
+## {files['limits']}
+
+Every committed limit each facility has carried, one row per version.
+
+| field | meaning |
+|---|---|
+| booking_entity, facility_id | as in {files['facilities']} |
+| committed_limit | the committed limit of the version, in the facility currency |
+| effective_from | when the version took effect, UTC, as the loan platform records it |
+| source | SOD_BATCH for the start-of-day batch, otherwise the user who keyed it |
 
 ## {files['fx']}
 
 | field | meaning |
 |---|---|
-| closing_rate | units of the currency for one pound sterling at the Group Treasury 16:00 London close |
+| units_per_gbp | units of the currency for one pound sterling at the Group Treasury 16:00 London close |
 
 ## GLEIF files ({files['lei']}, {files['rr']}, {files['repex']})
 
@@ -410,13 +585,6 @@ def count_rows(path):
 def extract_log(path, files, target):
     def rows(k):
         return count_rows(os.path.join(target, files[k]))
-    import csv as _csv
-    with open(os.path.join(target, files["plc"]), encoding="utf-8") as fh:
-        a = {r["facility_id"]: r["committed_limit"] for r in _csv.DictReader(fh)}
-    with open(os.path.join(target, files["plc_rerun"]), encoding="utf-8") as fh:
-        b = {r["facility_id"]: r["committed_limit"] for r in _csv.DictReader(fh)}
-    assert set(a) == set(b)
-    ndiff = sum(1 for k in a if a[k] != b[k])
     lines = [
         "REFERENCE DATA EXTRACT LOG",
         "Halstow Bank plc   quarter-end pack for Credit Risk Monitoring   as at 30/09/2026   compiled 08/10/2026 16:40",
@@ -430,14 +598,12 @@ def extract_log(path, files, target):
         "CREDIT_GROUP_REGISTER        2026-10-01 06:05   %7d" % (openpyxl.load_workbook(
             os.path.join(target, files["register"]))["Group register"].max_row - 4),
         "WATCH_LIST_HISTORY           2026-10-01 06:07   %7d   cases opened from 2020-01-01" % rows("watchlist"),
-        "FACILITY_EXTRACT_HBPLC       2026-09-30 19:40   %7d   scheduled run" % rows("plc"),
-        "FACILITY_EXTRACT_HBPLC       2026-09-30 23:05   %7d   rerun after limit amendments approved on 30/09 were "
-        "posted following the scheduled run; the rerun is the record for 30/09" % rows("plc_rerun"),
-        "FACILITY_EXTRACT_HBDAC       2026-10-07 11:52   %7d   Halstow Bank Ireland DAC, delivered after the Dublin "
-        "ledger close; HBPLC extracts carry plc bookings only" % rows("dac"),
+        "FACILITY_OBLIGOR_EXTRACT     2026-10-01 01:15   %7d   both ledgers; held for the HB-DAC ledger close, ran "
+        "after start of day 01/10" % rows("facilities"),
+        "FACILITY_LIMIT_HISTORY       2026-10-08 05:50   %7d   limit versions to 07/10/2026" % rows("limits"),
         "TREASURY_CLOSING_RATES       2026-09-30 16:20   %7d" % rows("fx"),
         "",
-        "Control: HBPLC scheduled and rerun extracts hold the same facility list; %d committed limits differ." % ndiff,
+        "Control: limit history reconciled to the facility extract, no breaks.",
         "Next quarter-end pack: 31/12/2026.",
     ]
     with open(path, "w", encoding="utf-8", newline="\n") as fh:

@@ -26,10 +26,9 @@ DESC = {
     FILES["obligors"]: "Credit system obligor master: customer, LEI, Companies House number, obligor group, booking entity",
     FILES["register"]: "Credit system obligor group register with relationship dates, ultimate parent LEI and sector",
     FILES["watchlist"]: "Watch-list cases opened since January 2020: placement, level, removal and reason",
-    FILES["plc"]: "Facility extract for Halstow Bank plc at 30 Sep 2026, scheduled run (19:40)",
-    FILES["plc_rerun"]: "Facility extract for Halstow Bank plc at 30 Sep 2026, rerun (23:05) after late-posted limit "
-                        "amendments",
-    FILES["dac"]: "Facility extract for Halstow Bank Ireland DAC at 30 Sep 2026, delivered 7 Oct 2026",
+    FILES["facilities"]: "Facility and obligor extract from the Halstow Bank plc and Halstow Bank Ireland DAC loan "
+                         "ledgers, run 01:15 on 1 Oct 2026",
+    FILES["limits"]: "Committed limit history for every facility, one row per version, to 7 Oct 2026",
     FILES["fx"]: "Group Treasury closing FX rates at 30 Sep 2026",
     FILES["triggers"]: "Early-warning trigger code list with feed and default signal",
     FILES["standard"]: "Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
@@ -38,7 +37,7 @@ DESC = {
     FILES["log"]: "Reference Data quarter-end extract log: jobs, run times, row counts and the control check "
                   "(provenance)",
     FILES["ratings"]: "Internal rating master scale and group ratings at 30 Sep 2026",
-    FILES["scenarios"]: "IFRS 9 forward-looking macroeconomic scenarios and weights, 2026 Q3 run",
+    FILES["outlook"]: "Group Economics UK outlook, October 2026: central, downside and severe downside paths",
 }
 
 
@@ -70,8 +69,8 @@ def main():
         "subdomain": "other: early-warning and watch-list monitoring of corporate obligor groups",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band "
-                        "with expected arrivals from flagged and from unflagged groups and the expected committed "
-                        "exposure arriving, with a total row",
+                        "with the groups it holds, their committed exposure, expected arrivals from flagged and from "
+                        "unflagged groups and the expected committed exposure arriving, with a total row",
         "as_of": "2026-10-08",
         "deliverables": ["watchlist_inflow_2027.xlsx", "watchlist_inflow_2027.svg"],
         "distractor_files": list(DISTRACTORS),

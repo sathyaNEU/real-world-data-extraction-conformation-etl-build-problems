@@ -4,7 +4,7 @@
   "domain": "Banking, Credit & Financial Risk",
   "subdomain": "other: early-warning and watch-list monitoring of corporate obligor groups",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
+  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
   "as_of": "2026-10-08",
   "deliverables": [
     "watchlist_inflow_2027.xlsx",
@@ -12,10 +12,10 @@
   ],
   "distractor_files": [
     "internal_rating_master_scale_2026.xlsx",
-    "ifrs9_macro_scenarios_2026q3.xlsx"
+    "group_economics_uk_outlook_oct2026.xlsx"
   ],
   "input_gates": {
-    "files": 18,
+    "files": 17,
     "formats": [
       "csv",
       "docx",
@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "ews_entity_signals_2022-09_to_2026-09.csv",
-    "largest_file_rows": 127675
+    "largest_file_rows": 125317
   },
   "sources": [
     {
@@ -41,7 +41,7 @@
     {
       "path": "credit_data_field_reference.md",
       "format": "md",
-      "bytes": 3577,
+      "bytes": 4249,
       "rows": null,
       "source": "Constructed: Reference Data field reference for the quarter-end credit extracts (data dictionary)",
       "date": "2026-10-08",
@@ -50,7 +50,7 @@
     {
       "path": "credit_group_register_20260930.xlsx",
       "format": "xlsx",
-      "bytes": 92768,
+      "bytes": 93100,
       "rows": 1310,
       "source": "Constructed: Credit system obligor group register with relationship dates, ultimate parent LEI and sector",
       "date": "2026-10-08",
@@ -59,8 +59,8 @@
     {
       "path": "credit_obligor_master_20260930.csv",
       "format": "csv",
-      "bytes": 212613,
-      "rows": 2068,
+      "bytes": 213422,
+      "rows": 2078,
       "source": "Constructed: Credit system obligor master: customer, LEI, Companies House number, obligor group, booking entity",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -68,7 +68,7 @@
     {
       "path": "early_warning_and_watch_list_standard.pdf",
       "format": "pdf",
-      "bytes": 5247,
+      "bytes": 5666,
       "rows": null,
       "source": "Constructed: Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
       "date": "2026-10-08",
@@ -77,8 +77,8 @@
     {
       "path": "ews_entity_signals_2022-09_to_2026-09.csv",
       "format": "csv",
-      "bytes": 11225823,
-      "rows": 127675,
+      "bytes": 11018582,
+      "rows": 125317,
       "source": "Constructed: Early-warning engine month-end publications, one row per covered entity per month-end, September 2022 to September 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -95,44 +95,35 @@
     {
       "path": "exec_risk_committee_agenda_2026-11-04.docx",
       "format": "docx",
-      "bytes": 37285,
+      "bytes": 7812,
       "rows": null,
       "source": "Constructed: Executive Risk Committee agenda, 4 Nov 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "facility_extract_hbdac_20260930.csv",
+      "path": "facility_limit_history_20261008.csv",
       "format": "csv",
-      "bytes": 10245,
-      "rows": 110,
-      "source": "Constructed: Facility extract for Halstow Bank Ireland DAC at 30 Sep 2026, delivered 7 Oct 2026",
+      "bytes": 268106,
+      "rows": 4647,
+      "source": "Constructed: Committed limit history for every facility, one row per version, to 7 Oct 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "facility_extract_hbplc_20260930.csv",
+      "path": "facility_obligor_extract_20260930.csv",
       "format": "csv",
-      "bytes": 245270,
-      "rows": 2689,
-      "source": "Constructed: Facility extract for Halstow Bank plc at 30 Sep 2026, scheduled run (19:40)",
-      "date": "2026-10-08",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "facility_extract_hbplc_20260930_rerun.csv",
-      "format": "csv",
-      "bytes": 245278,
-      "rows": 2689,
-      "source": "Constructed: Facility extract for Halstow Bank plc at 30 Sep 2026, rerun (23:05) after late-posted limit amendments",
+      "bytes": 279195,
+      "rows": 3104,
+      "source": "Constructed: Facility and obligor extract from the Halstow Bank plc and Halstow Bank Ireland DAC loan ledgers, run 01:15 on 1 Oct 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "gleif_lei_cdf_20260930.csv",
       "format": "csv",
-      "bytes": 602111,
-      "rows": 3299,
+      "bytes": 596466,
+      "rows": 3269,
       "source": "Constructed: GLEIF LEI-CDF 3.1 level 1 records for the Bank's entities and the engine's coverage list, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -140,7 +131,7 @@
     {
       "path": "gleif_repex_20260930.csv",
       "format": "csv",
-      "bytes": 210994,
+      "bytes": 210990,
       "rows": 2612,
       "source": "Constructed: GLEIF level 2 reporting exceptions, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
@@ -149,26 +140,26 @@
     {
       "path": "gleif_rr_cdf_20260930.csv",
       "format": "csv",
-      "bytes": 723934,
-      "rows": 3793,
+      "bytes": 711712,
+      "rows": 3729,
       "source": "Constructed: GLEIF RR-CDF 2.1 level 2 relationship records, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "ifrs9_macro_scenarios_2026q3.xlsx",
+      "path": "group_economics_uk_outlook_oct2026.xlsx",
       "format": "xlsx",
-      "bytes": 8649,
-      "rows": 63,
-      "source": "Constructed: IFRS 9 forward-looking macroeconomic scenarios and weights, 2026 Q3 run",
+      "bytes": 9127,
+      "rows": 55,
+      "source": "Constructed: Group Economics UK outlook, October 2026: central, downside and severe downside paths",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "internal_rating_master_scale_2026.xlsx",
       "format": "xlsx",
-      "bytes": 28382,
-      "rows": 996,
+      "bytes": 28893,
+      "rows": 1002,
       "source": "Constructed: Internal rating master scale and group ratings at 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -176,7 +167,7 @@
     {
       "path": "reference_data_extract_log_20261008.txt",
       "format": "txt",
-      "bytes": 1392,
+      "bytes": 1167,
       "rows": null,
       "source": "Constructed: Reference Data quarter-end extract log: jobs, run times, row counts and the control check (provenance)",
       "date": "2026-10-08",
@@ -185,7 +176,7 @@
     {
       "path": "treasury_closing_rates_20260930.csv",
       "format": "csv",
-      "bytes": 269,
+      "bytes": 270,
       "rows": 4,
       "source": "Constructed: Group Treasury closing FX rates at 30 Sep 2026",
       "date": "2026-10-08",
@@ -194,7 +185,7 @@
     {
       "path": "watch_list_history_2020-01_to_2026-09.csv",
       "format": "csv",
-      "bytes": 30023,
+      "bytes": 29823,
       "rows": 307,
       "source": "Constructed: Watch-list cases opened since January 2020: placement, level, removal and reason",
       "date": "2026-10-08",

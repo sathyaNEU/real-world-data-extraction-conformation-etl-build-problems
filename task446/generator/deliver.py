@@ -20,6 +20,7 @@ from openpyxl.utils import get_column_letter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import solve  # noqa: E402
+import docs  # noqa: E402
 
 GOLD = os.path.join(HERE, "..", "golden")
 XLSX = "watchlist_inflow_2027.xlsx"
@@ -41,9 +42,11 @@ def figures(t=solve.TARGET):
     p1 = (a1 - f) / (se - f)
     rows = []
     for b, r in zip(BANDS, G["bands"]):
-        rows.append(dict(band=b, flagged=r1(r["exp_flagged"]), unflagged=r1(r["exp_unflagged"]),
-                         exposure=r1(r["exp_exposure"] / 1e6)))
-    total = dict(band="Total", flagged=r1(sum(r["exp_flagged"] for r in G["bands"])),
+        rows.append(dict(band=b, groups=r["groups"], committed=r1(r["committed"] / 1e6), flagged=r1(r["exp_flagged"]),
+                         unflagged=r1(r["exp_unflagged"]), exposure=r1(r["exp_exposure"] / 1e6)))
+    total = dict(band="Total", groups=sum(r["groups"] for r in G["bands"]),
+                 committed=r1(sum(r["committed"] for r in G["bands"]) / 1e6),
+                 flagged=r1(sum(r["exp_flagged"] for r in G["bands"])),
                  unflagged=r1(sum(r["exp_unflagged"] for r in G["bands"])),
                  exposure=r1(sum(r["exp_exposure"] for r in G["bands"]) / 1e6))
     cohorts = []
@@ -54,62 +57,9 @@ def figures(t=solve.TARGET):
                             false_alarm=(F - TP) / (N - P), share=P / N, flagged_share=F / N))
     F = dict(G=G, call=G["call"], rows=rows, total=total, cohorts=cohorts, measures=m, N1=fc["N1"], F1=fc["F1"],
              a1=a1, p1=p1, p_flag=fc["p_flag"], p_unflag=fc["p_unflag"], expected=fc["total"])
-    F["backtest"] = backtest(cohorts)
+    F["test"] = fc["test"]
+    F["model"] = fc["model"]
     return F
-
-
-def backtest(cohorts):
-    """Each closed cohort re-run from the other three, rates pooled and rates averaged. Returns the largest
-    absolute miss of the capture and false-alarm model and the count of cohorts the hit and miss model misses
-    by more than a third, under each variant; the write-ups quote only what holds under both."""
-    out = {}
-    for variant in ("pooled", "averaged"):
-        err, yld = [], []
-        for k, c in enumerate(cohorts):
-            rest = [x for j, x in enumerate(cohorts) if j != k]
-            if variant == "pooled":
-                N, Fl, P, TP = (sum(x[q] for x in rest) for q in ("N", "F", "P", "TP"))
-                hit, miss, se, f = TP / Fl, (P - TP) / (N - Fl), TP / P, (Fl - TP) / (N - P)
-            else:
-                hit = sum(x["TP"] / x["F"] for x in rest) / 3
-                miss = sum((x["P"] - x["TP"]) / (x["N"] - x["F"]) for x in rest) / 3
-                se = sum(x["capture"] for x in rest) / 3
-                f = sum(x["false_alarm"] for x in rest) / 3
-            e = c["N"] * (c["F"] / c["N"] - f) / (se - f)
-            y = c["F"] * hit + (c["N"] - c["F"]) * miss
-            err.append(e / c["P"] - 1)
-            yld.append(y / c["P"] - 1)
-        out[variant] = dict(err=err, yld=yld, max_err=max(abs(v) for v in err),
-                            yld_over_third=sum(1 for v in yld if abs(v) > 1 / 3))
-    assert all(v["max_err"] < 0.03 for v in out.values()), out
-    assert all(v["yld_over_third"] == 2 for v in out.values()), out
-    return out
-
-
-# ------------------------------------------------------------------ container
-def normalise_xlsx(path, modified):
-    """Fixed member order and times, Excel's own application name, in-fiction core dates."""
-    with zipfile.ZipFile(path) as z:
-        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
-    created = (modified - dt.timedelta(days=6, hours=2, minutes=41)).strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    stamp = modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-    out = []
-    for n, data in items:
-        if n == "docProps/app.xml":
-            data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Excel</Application>", data)
-            data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>16.0300</AppVersion>", data)
-        if n == "docProps/core.xml":
-            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + created + rb"\g<2>", data)
-            data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
-        out.append((n, data))
-    first = [x for x in out if x[0] == "[Content_Types].xml"]
-    rest = sorted(x for x in out if x[0] != "[Content_Types].xml")
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, data in first + rest:
-            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o600 << 16
-            z.writestr(zi, data)
 
 
 # ------------------------------------------------------------------ workbook
@@ -117,6 +67,24 @@ GREY = "595F66"
 HEAD_FILL = PatternFill("solid", fgColor="E9EBEE")
 TOTAL_FILL = PatternFill("solid", fgColor="F4F5F7")
 THIN = Side(style="thin", color="A6ABB2")
+
+
+LABELS = {
+    "capture_false_alarm": "Capture and false-alarm rates, share reaching backed out of the flagged share",
+    "share_on_flagged_share": "Share reaching on flagged share, straight line",
+    "share_on_flagged_share_weighted": "Share reaching on flagged share, straight line weighted by book",
+    "arrivals_on_flagged_and_book": "Arrivals on flagged groups and book size",
+    "mean_capture_false_alarm": "Capture and false-alarm rates, mean of the cohorts' rates",
+    "hit_and_miss_trended": "Hit and miss rates, each trended on flagged share",
+    "latest_hit_and_miss": "Hit and miss rates of the latest cohort",
+    "arrivals_per_flagged": "Arrivals per flagged group, none from the rest",
+    "mean_hit_and_miss": "Hit and miss rates, mean of the cohorts' rates",
+    "hit_and_miss": "Hit and miss rates",
+    "one_share": "One share for every group",
+    "most_stressed_hit_and_miss": "Hit and miss rates of the most stressed cohort",
+    "every_flagged_reaches": "Every flagged group reaches, the rest at the miss rate",
+}
+PREP_CREATED = dt.datetime(2026, 10, 21, 9, 37, 0)
 
 
 def workbook(F, path):
@@ -131,18 +99,19 @@ def workbook(F, path):
     ws["A3"].font = Font(size=10, color=GREY)
     ws["A5"] = "Groups expected to reach the watch list by 30 September 2027"
     ws["A5"].font = Font(bold=True, size=11)
-    ws["D5"] = F["call"]
-    ws["D5"].font = Font(bold=True, size=18)
-    ws["D5"].number_format = "0"
-    ws["D5"].alignment = Alignment(horizontal="right", vertical="center")
+    ws["F5"] = F["call"]
+    ws["F5"].font = Font(bold=True, size=18)
+    ws["F5"].number_format = "0"
+    ws["F5"].alignment = Alignment(horizontal="right", vertical="center")
     ws.row_dimensions[5].height = 27
     ws["A6"] = ("From the %d groups in the monitored book at 30 September 2026, %d of them flagged by the "
                 "September early-warning run" % (F["N1"], F["F1"]))
     ws["A6"].font = Font(size=9, color=GREY)
 
     hdr_row = 8
-    hdr = ["Caseload band\n(committed exposure at 30 Sep 2026)", "Expected arrivals,\nflagged in September",
-           "Expected arrivals,\nnot flagged", "Expected committed exposure\narriving (£m)"]
+    hdr = ["Caseload band\n(committed exposure at 30 Sep 2026)", "Groups", "Committed\nexposure (£m)",
+           "Expected arrivals,\nflagged in September", "Expected arrivals,\nnot flagged",
+           "Expected committed exposure\narriving (£m)"]
     for c, h in enumerate(hdr, start=1):
         cell = ws.cell(row=hdr_row, column=c, value=h)
         cell.font = Font(bold=True, size=10)
@@ -154,11 +123,13 @@ def workbook(F, path):
     for row in F["rows"] + [F["total"]]:
         r += 1
         ws.cell(row=r, column=1, value=row["band"])
-        ws.cell(row=r, column=2, value=row["flagged"]).number_format = "0.0"
-        ws.cell(row=r, column=3, value=row["unflagged"]).number_format = "0.0"
-        ws.cell(row=r, column=4, value=row["exposure"]).number_format = "#,##0.0"
+        ws.cell(row=r, column=2, value=row["groups"]).number_format = "#,##0"
+        ws.cell(row=r, column=3, value=row["committed"]).number_format = "#,##0.0"
+        ws.cell(row=r, column=4, value=row["flagged"]).number_format = "0.0"
+        ws.cell(row=r, column=5, value=row["unflagged"]).number_format = "0.0"
+        ws.cell(row=r, column=6, value=row["exposure"]).number_format = "#,##0.0"
         if row["band"] == "Total":
-            for c in range(1, 5):
+            for c in range(1, 7):
                 cell = ws.cell(row=r, column=c)
                 cell.font = Font(bold=True)
                 cell.fill = TOTAL_FILL
@@ -166,36 +137,33 @@ def workbook(F, path):
     last = r
     notes = [
         "1  A group's chance of reaching the watch list depends only on its flag at 30 September 2026 (CRM-07 s5.2): "
-        "%.1f%% if flagged AMBER or RED, %.1f%% if not. Set from the 2022 to 2025 cohorts; see Cohorts."
-        % (F["p_flag"] * 100, F["p_unflag"] * 100),
-        "2  Committed exposure per CRM-07 s6.1: HB-PLC 23:05 rerun for 30/09 and the HB-DAC extract, facilities in "
-        "force at the end of 30 September 2026, converted at Group Treasury closing rates.",
-        "3  Bands of £40m and over are worked by Restructuring, the rest by Business Support (s6.2).",
-        "4  Computed unrounded. Caseload to the nearest whole group, band figures to one decimal (s5.3); "
+        "%.1f%% if flagged AMBER or RED, %.1f%% if not, on the basis the s5.2 test selects from the 2022 to 2025 "
+        "cohorts; see Cohorts." % (F["p_flag"] * 100, F["p_unflag"] * 100),
+        "2  Committed exposure per CRM-07 s6.1: every facility on which a member is an obligor, once per group (a joint "
+        "facility counts in each of its groups), at its limit as it stood at the end of 30 September UK time (23:00 "
+        "UTC in the limit history), in sterling at Group Treasury closing rates.",
+        "3  Customers the grouping review had not yet booked are placed through their GLEIF consolidation (s2.2).",
+        "4  Bands of £40m and over are worked by Restructuring, the rest by Business Support (s6.2).",
+        "5  Computed unrounded. Caseload to the nearest whole group, band figures to one decimal (s5.3); "
         "totals rounded from the unrounded sums.",
     ]
     for i, n in enumerate(notes):
         cell = ws.cell(row=last + 2 + i, column=1, value=n)
         cell.font = Font(size=9, color=GREY)
-    for col, wd in zip("ABCD", [34, 19, 17, 27]):
+    for col, wd in zip("ABCDEF", [34, 9, 14, 19, 14, 26]):
         ws.column_dimensions[col].width = wd
     ws.freeze_panes = ws.cell(row=hdr_row + 1, column=1)
-    ws.print_area = "A1:D%d" % (last + 1 + len(notes))
-    ws.page_setup.orientation = "portrait"
+    ws.print_area = "A1:F%d" % (last + 1 + len(notes))
+    ws.print_title_rows = "%d:%d" % (hdr_row, hdr_row)
+    ws.page_setup.orientation = "landscape"
     ws.page_setup.fitToWidth = 1
     ws.sheet_properties.pageSetUpPr.fitToPage = True
     ws.page_setup.fitToHeight = 0
 
     cohort_sheet(wb, F)
     notes_sheet(wb)
-    p = wb.properties
-    p.creator = AUTHOR
-    p.lastModifiedBy = AUTHOR
-    p.title = None
-    p.created = PREPARED
-    p.modified = PREPARED
     wb.save(path)
-    normalise_xlsx(path, PREPARED)
+    docs.finish_xlsx(path, AUTHOR, AUTHOR, PREP_CREATED, PREPARED)
 
 
 def cohort_sheet(wb, F):
@@ -214,16 +182,15 @@ def cohort_sheet(wb, F):
     r = 3
     for c in F["cohorts"]:
         r += 1
-        vals = [c["date"], c["N"], c["F"], c["P"], c["TP"], round(c["hit"], 3), round(c["capture"], 3),
-                round(c["false_alarm"], 4), round(c["share"], 3)]
+        vals = [c["date"], c["N"], c["F"], c["P"], c["TP"], c["hit"], c["capture"], c["false_alarm"], c["share"]]
         for j, v in enumerate(vals, start=1):
             ws.cell(row=r, column=j, value=v)
         ws.cell(row=r, column=1).number_format = "d mmm yyyy"
         ws.cell(row=r, column=1).alignment = Alignment(horizontal="left")
     m = F["measures"]
     r += 1
-    tot = ["Four cohorts together", m["N"], m["NF"], m["P"], m["TP"], round(m["hit"], 3), round(m["capture"], 3),
-           round(m["false_alarm"], 4), round(m["P"] / m["N"], 3)]
+    tot = ["Four cohorts together", m["N"], m["NF"], m["P"], m["TP"], m["hit"], m["capture"], m["false_alarm"],
+           m["P"] / m["N"]]
     for j, v in enumerate(tot, start=1):
         cell = ws.cell(row=r, column=j, value=v)
         cell.font = Font(bold=True)
@@ -237,18 +204,44 @@ def cohort_sheet(wb, F):
         ws.cell(row=rr, column=8).number_format = "0.00%"
 
     r += 2
+    ws.cell(row=r, column=1, value="Choice of basis (CRM-07 s5.2): each closed cohort predicted from the other three "
+            "taken together").font = Font(bold=True, size=11)
+    r += 1
+    hdr = ["Basis", "Miss\n2022", "Miss\n2023", "Miss\n2024", "Miss\n2025", "Largest\nmiss", "2026 book,\nexpected"]
+    for c, h in enumerate(hdr, start=1):
+        cell = ws.cell(row=r, column=c, value=h)
+        cell.font = Font(bold=True, size=10)
+        cell.fill = HEAD_FILL
+        cell.border = Border(bottom=THIN)
+        cell.alignment = Alignment(wrap_text=True, vertical="bottom", horizontal="left" if c == 1 else "right")
+    ws.row_dimensions[r].height = 30
+    for name, (miss, err, fw) in sorted(F["test"].items(), key=lambda kv: kv[1][1]):
+        r += 1
+        vals = [LABELS[name]] + list(miss) + [err, fw]
+        for j, v in enumerate(vals, start=1):
+            cell = ws.cell(row=r, column=j, value=v)
+            if j in (2, 3, 4, 5, 6):
+                cell.number_format = "+0.0%;-0.0%;0.0%" if j < 6 else "0.0%"
+            elif j == 7:
+                cell.number_format = "0.0"
+            if name == F["model"]:
+                cell.font = Font(bold=True)
+    r += 1
+    ws.cell(row=r, column=1, value="Miss: predicted less actual arrivals, as a share of actual arrivals. Basis used: "
+            "the smallest largest miss.").font = Font(size=9, color=GREY)
+
+    r += 2
     ws.cell(row=r, column=1, value="Book at 30 September 2026").font = Font(bold=True, size=11)
     lines = [
         ("Groups monitored", F["N1"], "#,##0", "active on the group register and not on the watch list (s4.1)"),
         ("Flagged AMBER or RED", F["F1"], "#,##0", "September 2026 publication, any member (s3.2)"),
-        ("Flagged share", round(F["a1"], 3), "0.0%", ""),
-        ("Share of book expected to reach the list", round(F["p1"], 3), "0.0%",
+        ("Flagged share", F["a1"], "0.0%", ""),
+        ("Share of book expected to reach the list", F["p1"], "0.0%",
          "(flagged share less false-alarm rate) / (capture rate less false-alarm rate)"),
-        ("Probability of reaching, flagged", round(F["p_flag"], 3), "0.0%",
-         "capture rate x expected share / flagged share"),
-        ("Probability of reaching, not flagged", round(F["p_unflag"], 3), "0.0%",
+        ("Probability of reaching, flagged", F["p_flag"], "0.0%", "capture rate x expected share / flagged share"),
+        ("Probability of reaching, not flagged", F["p_unflag"], "0.0%",
          "(1 - capture rate) x expected share / (1 - flagged share)"),
-        ("Expected arrivals", r1(F["expected"]), "0.0", "%.1f flagged + %.1f not flagged; caseload %d"
+        ("Expected arrivals", F["expected"], "0.0", "%.1f flagged + %.1f not flagged; caseload %d"
          % (F["total"]["flagged"], F["total"]["unflagged"], F["call"])),
     ]
     for label, v, fmt, note in lines:
@@ -264,20 +257,17 @@ def cohort_sheet(wb, F):
     fsh = [c["flagged_share"] for c in F["cohorts"]]
     r += 2
     text = [
-        "The hit rate has moved from %.1f%% to %.1f%% with the share of each cohort that reached the list (%.1f%% to %.1f%%); "
-        % (min(hits) * 100, max(hits) * 100, min(shares) * 100, max(shares) * 100)
-        + "capture (%.1f%% to %.1f%%) and false-alarm (%.2f%% to %.2f%%) rates have held."
-        % (min(caps) * 100, max(caps) * 100, min(fas) * 100, max(fas) * 100),
-        "Re-run from the other three cohorts, capture and false-alarm rates reproduce each cohort's arrivals within 3%; "
-        "hit and miss rates miss two of the four by more than a third.",
-        "This year %.1f%% of the book is flagged, against %.1f%% to %.1f%% in the closed cohorts, so the 2026 probabilities "
-        "come from the capture and false-alarm rates, not from the hit rate." % (F["a1"] * 100, min(fsh) * 100,
-                                                                                max(fsh) * 100),
+        "The hit rate has moved from %.1f%% to %.1f%% with the share of each cohort that reached the list (%.1f%% to "
+        "%.1f%%); capture (%.1f%% to %.1f%%) and false-alarm (%.2f%% to %.2f%%) rates have held."
+        % (min(hits) * 100, max(hits) * 100, min(shares) * 100, max(shares) * 100, min(caps) * 100, max(caps) * 100,
+           min(fas) * 100, max(fas) * 100),
+        "This year %.1f%% of the book is flagged, against %.1f%% to %.1f%% in the closed cohorts."
+        % (F["a1"] * 100, min(fsh) * 100, max(fsh) * 100),
     ]
     for t in text:
         ws.cell(row=r, column=1, value=t).font = Font(size=9, color=GREY)
         r += 1
-    for col, wd in zip("ABCDEFGHI", [38, 12, 10, 12, 12, 10, 12, 12, 14]):
+    for col, wd in zip("ABCDEFGHI", [62, 11, 10, 11, 11, 11, 12, 12, 14]):
         ws.column_dimensions[col].width = wd
     ws.freeze_panes = "A4"
 
@@ -289,16 +279,18 @@ def notes_sheet(wb):
         ("As at", "Monitored book, flags and committed exposure at 30 September 2026. Forecast window 1 October 2026 "
                   "to 30 September 2027."),
         ("Obligor groups", "Group register customers plus GLEIF accounting-consolidation members in force at each date "
-                           "(CRM-07 s2.2, s2.3). Engine signals keyed by LEI or Companies House number."),
+                           "(CRM-07 s2.2). Engine signals keyed by LEI or Companies House number."),
         ("Flag", "Any member AMBER or RED in the engine's month-end publication for the date (s3.2)."),
         ("Cohorts", "30 September 2022 to 2025. Reached: placed on the watch list, any watch level, within twelve "
                     "months of the cohort date; groups leaving the book unplaced have not reached it (s4.1, s4.2)."),
         ("Forecast", "Monitored book at 30 September 2026 only, no new groups (s5.1). One probability for flagged "
-                     "groups and one for the rest, set from the four cohorts taken together (s4.3, s5.2)."),
-        ("Committed exposure", "Committed limits of facilities in force at the end of 30 September 2026: status ACTIVE "
-                               "and final maturity after that date. HB-PLC from the 23:05 rerun, the record for 30/09 "
-                               "per the extract log; HB-DAC from its own extract, delivered 7 October. Non-sterling "
-                               "limits divided by the Group Treasury closing rate, quoted per pound (s6.1)."),
+                     "groups and one for the rest, on the basis with the smallest largest miss when each closed "
+                     "cohort is predicted from the other three taken together (s5.2)."),
+        ("Committed exposure", "Facility and obligor extract run at 01:15 on 1 October, after the start-of-day batch; "
+                               "limits taken from the limit history as at 23:00 UTC on 30 September, the end of the "
+                               "day in BST (s1.3, s6.1). Facilities keyed by booking entity and facility number, "
+                               "each counted once in each group with an obligor on it. Non-sterling limits divided by "
+                               "the Group Treasury closing rate (units per pound)."),
         ("Bands", "Under £5m; £5m and under £15m; £15m and under £40m; £40m and under £100m; £100m and over (s6.2)."),
         ("Source", "Reference Data quarter-end pack as at 30/09/2026, compiled 08/10/2026."),
         ("Prepared", "Credit Risk Monitoring, 27 October 2026."),
@@ -391,15 +383,16 @@ def chart(F, path):
 def verify(F):
     wb = openpyxl.load_workbook(os.path.join(GOLD, XLSX))
     ws = wb["Caseload 2027"]
-    assert ws["D5"].value == F["call"] == 134
+    assert ws["F5"].value == F["call"] == 133
     got = []
     for row in ws.iter_rows(min_row=9, max_row=14, values_only=True):
-        got.append(tuple(row[:4]))
-    want = [(r["band"], r["flagged"], r["unflagged"], r["exposure"]) for r in F["rows"] + [F["total"]]]
+        got.append(tuple(row[:6]))
+    want = [(r["band"], r["groups"], r["committed"], r["flagged"], r["unflagged"], r["exposure"])
+            for r in F["rows"] + [F["total"]]]
     assert got == want, (got, want)
-    assert abs(sum(r["flagged"] for r in F["rows"]) - F["total"]["flagged"]) < 1e-9
-    assert abs(sum(r["unflagged"] for r in F["rows"]) - F["total"]["unflagged"]) < 1e-9
-    assert abs(sum(r["exposure"] for r in F["rows"]) - F["total"]["exposure"]) < 1e-9
+    assert sum(r["groups"] for r in F["rows"]) == F["total"]["groups"] == F["N1"]
+    for k in ("committed", "flagged", "unflagged", "exposure"):
+        assert abs(sum(r[k] for r in F["rows"]) - F["total"][k]) < 1e-6, k
     assert round(F["total"]["flagged"] + F["total"]["unflagged"]) == F["call"]
     with zipfile.ZipFile(os.path.join(GOLD, XLSX)) as z:
         meta = b"".join(z.read(n) for n in z.namelist() if n.startswith("docProps/"))
@@ -427,7 +420,7 @@ def main():
     workbook(F, os.path.join(GOLD, XLSX))
     chart(F, os.path.join(GOLD, CHART))
     for w in verify(F):
-        print("%-22s %6.1f %6.1f %9.1f" % w)
+        print("%-22s %5d %10.1f %6.1f %6.1f %9.1f" % w)
     print("caseload", F["call"], "p_flag %.4f p_unflag %.4f p1 %.4f a1 %.4f" % (F["p_flag"], F["p_unflag"], F["p1"], F["a1"]))
 
 

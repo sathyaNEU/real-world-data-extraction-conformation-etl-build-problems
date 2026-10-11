@@ -18,8 +18,8 @@ D = dt.date
 COHORTS = [D(2022, 9, 30), D(2023, 9, 30), D(2024, 9, 30), D(2025, 9, 30), D(2026, 9, 30)]
 N_TARGET = [846, 871, 889, 902, 913]
 P_REACH = [75, 43, 36, 47]
-TP_FLAG = [58, 33, 28, 39]
-FP_FLAG = [60, 64, 66, 63]
+TP_FLAG = [58, 32, 28, 39]
+FP_FLAG = [61, 66, 67, 65]
 F_FWD = 165
 EXTRACT_DATE = D(2026, 9, 30)
 GAP = 8                       # no lifecycle date within this many days of a cohort date
@@ -103,7 +103,7 @@ SUB_SUFFIX = ["Ltd", "Ltd", "Ltd", "Limited", "Services Ltd", "Operations Ltd", 
 class Ent:
     __slots__ = ("eid", "gid", "lei", "crn", "name", "country", "category", "role", "parent", "borrower",
                  "cust", "reg", "reg_status", "successor", "merged_on", "joined", "lower_key", "repex",
-                 "direct_only", "vendor_name", "inert")
+                 "direct_only", "vendor_name", "inert", "hz", "cust_since")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -508,7 +508,7 @@ def build_signals(w, cohort):
                     if m in sept_idx and m != d:
                         continue
                     colour = "RED" if (entry is not None and m >= entry - dt.timedelta(days=75)) or \
-                        (m == d and rng.random() < 0.28) else "AMBER"
+                        rng.random() < 0.28 else "AMBER"
                     mark(car[0], m, colour)
                     if len(car) > 1 and m >= d - dt.timedelta(days=40):
                         mark(car[1], m, "AMBER")
@@ -529,10 +529,7 @@ def build_signals(w, cohort):
             e0 = lead[0]
             stop = ep["end"] or EXTRACT_DATE
             for m in months_between(ep["start"], stop):
-                if m in sept_idx:
-                    c = sept_idx[m]
-                    if w.on_list(g, m):
-                        mark(e0, m, "RED" if rng.random() < 0.7 else "AMBER")
+                if m in sept_idx and not w.on_list(g, m):
                     continue
                 if rng.random() < 0.85:
                     mark(e0, m, "RED" if ep["level"] >= 2 else "AMBER")
@@ -632,8 +629,7 @@ def band_plan():
             if fl[4] < 6 or fl[4] > 12:
                 continue
             u = [n[i] - fl[i] for i in range(5)]
-            ms = [bin_margin(fl[i] * PPV1) for i in range(5)] + [bin_margin(u[i] * M1) for i in range(5)] + \
-                 [bin_margin(fl[i] * PPV1 + u[i] * M1) for i in range(5)]
+            ms = [bin_margin(fl[i] * PPV1) for i in range(5)] + [bin_margin(u[i] * M1) for i in range(5)]
             m = min(ms)
             key = (round(m, 3), -sum(abs(x) for x in dn) - sum(abs(x) for x in df))
             if best is None or key > best[0]:
@@ -641,8 +637,8 @@ def band_plan():
     return best[1], best[2]
 
 
-BAND_N = [203, 294, 242, 122, 52]     # band_plan() result, fixed here; checks.py re-derives the margins
-BAND_F = [36, 54, 44, 23, 8]
+BAND_N = [201, 306, 250, 120, 36]     # band_plan() result, fixed here; checks.py re-derives the margins
+BAND_F = [34, 54, 47, 20, 10]
 
 
 def assign_bands_and_flags(w, cohort):
@@ -661,14 +657,55 @@ def assign_bands_and_flags(w, cohort):
     w.band_n, w.band_f = n, fl
 
 
+
+
 # ------------------------------------------------------------------ facilities at 30 Sep 2026
+# The loan platforms stamp limit versions in UTC. The start-of-day batch runs at 00:30 UK time, so in BST it
+# stamps 23:30Z on the previous date. The end of 30 September 2026 UK time is 23:00Z.
+T_END = dt.datetime(2026, 9, 30, 23, 0, 0)
+SOD_1OCT = dt.datetime(2026, 9, 30, 23, 30, 0)
+EXTRACT_RUN = dt.datetime(2026, 10, 1, 0, 15, 0)       # 01:15 BST on 1 October
+USERS = ["mryan", "jpage", "jali", "rhussain", "ewilliams", "vpratt", "banderson", "dbishop", "dfoster"]
+
+
+def last_sunday(y, m):
+    d = D(y, m + 1, 1) - dt.timedelta(days=1) if m < 12 else D(y, 12, 31)
+    while d.weekday() != 6:
+        d -= dt.timedelta(days=1)
+    return d
+
+
+def is_bst(d):
+    return last_sunday(d.year, 3) <= d < last_sunday(d.year, 10)
+
+
+def sod_stamp(d):
+    """the start-of-day batch for UK date d, in UTC"""
+    t = dt.datetime(d.year, d.month, d.day, 0, 30, 0)
+    return t - dt.timedelta(hours=1) if is_bst(d) else t
+
+
+def user_stamp(rng, d):
+    """a limit keyed by a user during the UK working day of d, in UTC"""
+    t = dt.datetime(d.year, d.month, d.day, int(rng.integers(8, 18)), int(rng.integers(0, 60)), int(rng.integers(0, 60)))
+    return t - dt.timedelta(hours=1) if is_bst(d) else t
+
+
 class Fac:
-    __slots__ = ("fid", "cust", "eid", "booking", "product", "ccy", "limit", "drawn", "start", "maturity",
-                 "status", "limit_r1", "device")
+    __slots__ = ("fid", "booking", "product", "ccy", "limit", "obligors", "start", "maturity", "status", "drawn",
+                 "booked", "oct1", "sep30", "later", "dev", "closed_on", "history")
 
     def __init__(self, **kw):
         for k in self.__slots__:
             setattr(self, k, kw.get(k))
+        if self.obligors is None:
+            self.obligors = []
+        if self.dev is None:
+            self.dev = set()
+        if self.later is None:
+            self.later = []
+        self.oct1 = self.oct1 or 0.0
+        self.sep30 = self.sep30 or 0.0
 
 
 def band_of(x):
@@ -676,6 +713,10 @@ def band_of(x):
         if x < e:
             return i
     return 4
+
+
+def edge_dist(x):
+    return min(abs(x - e) for e in BAND_EDGES)
 
 
 def round_limit(x):
@@ -691,10 +732,88 @@ def round_limit(x):
     return max(step, round(x / step) * step)
 
 
+def in_force(f):
+    return f.start <= EXTRACT_DATE < f.maturity
+
+
+def fac_value(f, clock="right"):
+    """the facility's committed limit under a reading of the limit clock, in its currency"""
+    if clock == "right":
+        v = f.limit
+    elif clock in ("B1", "B2"):
+        v = f.limit + f.oct1
+    elif clock == "B3":
+        v = f.later[-1][1] if f.later else f.limit + f.oct1
+    elif clock == "B0":
+        v = f.limit - f.sep30
+    else:
+        raise ValueError(clock)
+    return v
+
+
+def fac_groups(w, f, grain="group", hz=True):
+    cnt = {}
+    for eid in f.obligors:
+        e = w.ents[eid]
+        if e.hz and not hz:
+            continue
+        cnt[e.gid] = cnt.get(e.gid, 0) + 1
+    if grain != "rows":
+        cnt = {k: 1 for k in cnt}
+    return cnt
+
+
+def gexp(w, g, clock="right", grain="group", hz=True):
+    tot = 0.0
+    for f in w.gfacs.get(g.gid, []):
+        if not in_force(f):
+            continue
+        k = fac_groups(w, f, grain, hz).get(g.gid, 0)
+        tot += k * fac_value(f, clock) / FX[f.ccy]
+    return tot
+
+
+def exposure(w, clock="right", grain="group", hz=True):
+    out = {}
+    for f in w.facilities:
+        if not in_force(f):
+            continue
+        v = fac_value(f, clock) / FX[f.ccy]
+        for gid, k in fac_groups(w, f, grain, hz).items():
+            out[gid] = out.get(gid, 0.0) + k * v
+    return out
+
+
+def add_fac(w, f):
+    w.facilities.append(f)
+    for gid in {w.ents[e].gid for e in f.obligors}:
+        w.gfacs.setdefault(gid, [])
+        if f not in w.gfacs[gid]:
+            w.gfacs[gid].append(f)
+
+
+def drop_fac(w, f):
+    w.facilities.remove(f)
+    for lst in w.gfacs.values():
+        if f in lst:
+            lst.remove(f)
+
+
+def booking_of(e):
+    return "HB-DAC" if e.country == "IE" else "HB-PLC"
+
+
+def ccy_of(rng, e):
+    if e.country == "IE" or e.country in ("NL", "DE"):
+        return "EUR"
+    r = rng.random()
+    return "USD" if r < 0.05 else ("EUR" if r < 0.10 else "GBP")
+
+
 def build_facilities(w, cohort):
     rng = w.rng
     lo_hi = [(0.4e6, 4.6e6), (5.4e6, 14.6e6), (15.6e6, 39.2e6), (41e6, 98e6), (104e6, 260e6)]
-    w._fseq = 3104227
+    w.gfacs = {}
     live_groups = [g for gid, g in sorted(w.groups.items()) if w.active(g, EXTRACT_DATE)]
     for g in live_groups:
         if g.band is None:   # on the watch list at 30 Sep 2026
@@ -703,36 +822,15 @@ def build_facilities(w, cohort):
         else:
             b = g.band
         lo, hi = lo_hi[b]
-        if b == 4:
-            target = lo * np.exp(rng.uniform(0, np.log(hi / lo)))
-        else:
-            target = rng.uniform(lo, hi)
+        target = lo * np.exp(rng.uniform(0, np.log(hi / lo))) if b == 4 else rng.uniform(lo, hi)
         borrowers = [e for e in g.members if e.borrower]
-        # split the target into facilities
         k = int(min(6, 1 + rng.poisson(0.9 + 0.5 * b)))
         shares = rng.dirichlet(np.ones(k) * 1.6)
-        amounts = [round_limit(target * s) for s in shares]
-        # top up or trim to stay inside the band, away from the edges
-        def total(a, ccys):
-            return sum(x / FX[c] for x, c in zip(a, ccys))
-        ccys = []
-        bk = []
-        owners = []
-        for i in range(k):
-            e = borrowers[int(rng.integers(0, len(borrowers)))]
-            owners.append(e)
-            if e.country == "IE":
-                ccys.append("EUR")
-                bk.append("HB-DAC")
-            elif e.country in ("NL", "DE"):
-                ccys.append("EUR")
-                bk.append("HB-PLC")
-            else:
-                r = rng.random()
-                ccys.append("USD" if r < 0.05 else ("EUR" if r < 0.10 else "GBP"))
-                bk.append("HB-PLC")
+        owners = [borrowers[int(rng.integers(0, len(borrowers)))] for _ in range(k)]
+        ccys = [ccy_of(rng, e) for e in owners]
+        amounts = [round_limit(target * s * FX[c]) for s, c in zip(shares, ccys)]
         for _ in range(60):
-            t = total(amounts, ccys)
+            t = sum(x / FX[c] for x, c in zip(amounts, ccys))
             if lo + 0.25e6 <= t <= hi - 0.25e6:
                 break
             j = int(np.argmax(amounts))
@@ -740,279 +838,664 @@ def build_facilities(w, cohort):
         for i in range(k):
             e = owners[i]
             prod = str(rng.choice(["RCF", "TERM_LOAN", "OVERDRAFT", "TERM_LOAN", "ASSET_FINANCE", "RCF"]))
-            start = w.rand_date(max(D(2016, 1, 1), g.active_from), D(2026, 8, 31))
+            if rng.random() < (0.25 if booking_of(e) == "HB-DAC" else 0.03):
+                start = D(2026, 9, int(rng.integers(1, 22)))
+            else:
+                start = w.rand_date(max(D(2016, 1, 1), g.active_from), D(2026, 8, 31))
             mat = start + dt.timedelta(days=int(rng.integers(400, 2600)))
             if mat <= EXTRACT_DATE + dt.timedelta(days=20):
                 mat = EXTRACT_DATE + dt.timedelta(days=int(rng.integers(40, 1500)))
-            drawn = amounts[i] * (rng.uniform(0.2, 0.95) if prod != "OVERDRAFT" else rng.uniform(0, 0.6))
-            w._fseq += int(rng.integers(1, 40))
-            w.facilities.append(Fac(fid="F%08d" % w._fseq, cust=e.cust, eid=e.eid, booking=bk[i], product=prod,
-                                    ccy=ccys[i], limit=float(amounts[i]), drawn=round(drawn, 2), start=start,
-                                    maturity=mat, status="ACTIVE", limit_r1=None, device=None))
-        # cancelled and closed facilities kept in the extract with their last limit
+            add_fac(w, Fac(booking=booking_of(e), product=prod, ccy=ccys[i], limit=float(amounts[i]), obligors=[e.eid],
+                           start=start, maturity=mat, status="ACTIVE",
+                           booked=start - dt.timedelta(days=int(rng.integers(0, 45 if start.year < 2026 or
+                                                                              start.month < 9 else 7)))))
+        # cancelled and closed facilities stay on the ledger with a nil limit
         if rng.random() < 0.10:
             e = borrowers[0]
-            w._fseq += int(rng.integers(1, 40))
             st = w.rand_date(D(2017, 1, 1), D(2024, 12, 31))
-            w.facilities.append(Fac(fid="F%08d" % w._fseq, cust=e.cust, eid=e.eid, booking="HB-PLC",
-                                    product="RCF", ccy="GBP", limit=float(round_limit(rng.uniform(1e6, 12e6))),
-                                    drawn=0.0, start=st, maturity=st + dt.timedelta(days=1825),
-                                    status=str(rng.choice(["CANCELLED", "CLOSED"])), limit_r1=None, device=None))
+            status = str(rng.choice(["CANCELLED", "CLOSED"]))
+            mat = st + dt.timedelta(days=1825)
+            closed_on = mat if (status == "CLOSED" and mat <= D(2026, 8, 31)) else \
+                w.rand_date(st + dt.timedelta(days=200), min(mat, D(2026, 8, 31)))
+            if closed_on < st + dt.timedelta(days=60):
+                closed_on = st + dt.timedelta(days=60)
+            add_fac(w, Fac(booking="HB-PLC", product="RCF", ccy="GBP", limit=0.0, obligors=[e.eid], start=st,
+                           maturity=mat, status=status, booked=st - dt.timedelta(days=int(rng.integers(0, 30))),
+                           closed_on=closed_on, history=float(round_limit(rng.uniform(1e6, 12e6)))))
+    w.live_groups = live_groups
 
 
-def group_exposure(w, g, facs=None, fx_wrong=False, dac=True, rerun=True, matured=False, status=True):
-    """Committed exposure of a group at 30 Sep 2026 under a reading of the facility files."""
-    eids = {e.eid for e in g.members}
-    tot = 0.0
-    for f in (facs if facs is not None else w.facilities):
-        if f.eid not in eids:
+# ------------------------------------------------------------------ ask devices
+class Undo:
+    def __init__(self):
+        self.ops = []
+
+    def set(self, obj, attr, val):
+        self.ops.append(("set", obj, attr, getattr(obj, attr)))
+        setattr(obj, attr, val)
+
+    def add(self, w, f):
+        add_fac(w, f)
+        self.ops.append(("fac", f))
+
+    def oblig(self, w, f, eid):
+        f.obligors.append(eid)
+        gid = w.ents[eid].gid
+        new = f not in w.gfacs.setdefault(gid, [])
+        if new:
+            w.gfacs[gid].append(f)
+        self.ops.append(("obl", f, eid, gid, new))
+
+    def member(self, g, e, w):
+        g.members.append(e)
+        w.ents[e.eid] = e
+        self.ops.append(("mem", g, e, w))
+
+    def rollback(self, w):
+        for op in reversed(self.ops):
+            if op[0] == "set":
+                setattr(op[1], op[2], op[3])
+            elif op[0] == "fac":
+                drop_fac(w, op[1])
+            elif op[0] == "obl":
+                _, f, eid, gid, new = op
+                f.obligors.remove(eid)
+                if new:
+                    w.gfacs[gid].remove(f)
+            elif op[0] == "mem":
+                op[1].members.remove(op[2])
+                del op[3].ents[op[2].eid]
+        self.ops = []
+
+
+def plain_facs(w, g):
+    """facilities of g that carry nothing else: one obligor, in force, no device"""
+    return [f for f in w.gfacs.get(g.gid, []) if in_force(f) and len(f.obligors) == 1 and not f.dev
+            and f.status == "ACTIVE"]
+
+
+def reduce_by(w, g, amount, u):
+    """take about `amount` (GBP) off the group's plain facilities, largest first, keeping each above GBP 0.25m"""
+    left = amount
+    for f in sorted(plain_facs(w, g), key=lambda f: -f.limit / FX[f.ccy]):
+        if left <= 0.05e6:
+            break
+        v = f.limit / FX[f.ccy]
+        take = min(left, v - 0.3e6)
+        if take <= 0.05e6:
             continue
-        if not dac and f.booking == "HB-DAC":
-            continue
-        if status and f.status != "ACTIVE":
-            continue
-        if not matured and f.maturity <= EXTRACT_DATE:
-            continue
-        lim = f.limit if (rerun or f.limit_r1 is None) else f.limit_r1
-        tot += lim * FX[f.ccy] if fx_wrong else lim / FX[f.ccy]
-    return tot
+        new = round((v - take) * FX[f.ccy] / 50000) * 50000
+        u.set(f, "limit", float(new))
+        left -= v - new / FX[f.ccy]
+    return amount - left
+
+
+def right_ok(w, g, clear=0.3e6):
+    if g.band is None:
+        return True
+    e = gexp(w, g)
+    return band_of(e) == g.band and edge_dist(e) >= clear and any(in_force(f) and fac_value(f) > 0
+                                                                   for f in w.gfacs.get(g.gid, []))
 
 
 def plant_devices(w, cohort):
-    """Ledgered exposure devices, each moving flagged and unflagged groups across band edges."""
-    rng = w.rng
+    rng = w.drng
     M4 = [w.groups[g] for g in cohort[4]["M"]]
+    used = set()                       # groups carrying a crosser for some device
+    w.movers = {}
+    width = [BAND_EDGES[i + 1] - BAND_EDGES[i] for i in range(3)] + [None]
 
-    def facs_of(g):
-        eids = {e.eid for e in g.members}
-        return [f for f in w.facilities if f.eid in eids and f.status == "ACTIVE"]
+    def up(g):
+        return BAND_EDGES[g.band] - gexp(w, g) if g.band < 4 else None
 
-    def margin_up(g):
-        t = group_exposure(w, g)
-        return BAND_EDGES[g.band] - t if g.band < 4 else None
+    def down(g):
+        return gexp(w, g) - BAND_EDGES[g.band - 1] if g.band > 0 else gexp(w, g)
 
-    def margin_down(g):
-        t = group_exposure(w, g)
-        return t - BAND_EDGES[g.band - 1] if g.band > 0 else None
+    def pool(band, flag, key):
+        c = [g for g in M4 if g.band == band and g.flag[4] == flag and g.gid not in used]
+        c.sort(key=key)
+        return c
 
-    used = set()
-    # D3: euro facilities large enough that multiplying by the rate instead of dividing crosses up
-    fx_movers = []
-    k_fx = FX["EUR"] * (FX["EUR"] - 1 / FX["EUR"]) + 1.0
-    for b in (0, 1, 2, 3):
-        for want_flag, k in ((True, 2), (False, 2)):
-            cands = [g for g in M4 if g.band == b and g.flag[4] == want_flag and g.gid not in used]
-            n_ok = 0
-            for g in cands:
-                if n_ok >= k:
-                    break
-                up = margin_up(g)
-                if up is None or up < 2.4e6:
+    # ---------------------------------------------------------- HZ-C: customers not yet grouped
+    hz_plan = [(1, True, 1), (1, False, 4), (2, True, 1), (2, False, 2)]      # (edge, flagged, count), down
+    w.movers["HZ"] = []
+    nseq = [0]
+
+    def hz_entity(g, u):
+        top = g.members[0]
+        place, word = g.name.split(" ")[0], SECTORS[g.sector][2][0]
+        nm = f"{place} {word} Ireland {'DAC' if rng.random() < 0.6 else 'Limited'}"
+        joined = D(2026, int(rng.integers(2, 9)), int(rng.integers(1, 28)))
+        w._eseq += 1
+        e = Ent(eid=w._eseq, gid=g.gid, lei=make_lei(rng, LOUS["IE"][:4], w.used_lei), crn=None, name=nm, country="IE",
+                category="GENERAL", role="sub", parent=top.eid, borrower=True, cust=None, reg=joined,
+                reg_status="ISSUED", successor=None, merged_on=None, joined=joined, lower_key=False, repex=None,
+                direct_only=False, vendor_name=nm, inert=True, hz=True,
+                cust_since=D(2026, 9, int(rng.integers(1, 20))))
+        w._hzseq += int(rng.integers(3, 25))
+        e.cust = "HB%07d" % w._hzseq
+        u.member(g, e, w)
+        start = e.cust_since + dt.timedelta(days=int(rng.integers(0, 5)))
+        return e, start
+
+    def hz_ok_group(g):
+        top = g.members[0]
+        return top.lei and top.reg_status == "ISSUED" and not top.lower_key
+
+    for edge, flag, cnt in hz_plan:
+        got = 0
+        for g in pool(edge + 1, flag, key=lambda g: down(g)):
+            if got >= cnt:
+                break
+            if not hz_ok_group(g):
+                continue
+            u = Undo()
+            L = down(g) + rng.uniform(0.4e6, 1.0e6)
+            if L > 0.8 * gexp(w, g):
+                continue
+            e, start = hz_entity(g, u)
+            eur = round(L * FX["EUR"] / 50000) * 50000
+            red = reduce_by(w, g, eur / FX["EUR"], u)
+            f = Fac(booking="HB-DAC", product=str(rng.choice(["RCF", "TERM_LOAN"])), ccy="EUR", limit=float(eur),
+                    obligors=[e.eid], start=start, maturity=start + dt.timedelta(days=int(rng.integers(1095, 1826))),
+                    status="ACTIVE", booked=max(e.cust_since, start - dt.timedelta(days=int(rng.integers(0, 4)))),
+                    dev={"HZ"})
+            u.add(w, f)
+            if not right_ok(w, g) or band_of(gexp(w, g, hz=False)) != edge or \
+                    edge_dist(gexp(w, g, hz=False)) < 0.2e6:
+                u.rollback(w)
+                continue
+            used.add(g.gid)
+            w.movers["HZ"].append(g.gid)
+            got += 1
+        assert got == cnt, ("HZ", edge, flag, got)
+    # non-crossers, two in each outer band and two elsewhere
+    for band, cnt in ((0, 2), (4, 2), (1, 1), (3, 1)):
+        got = 0
+        cands = [g for g in M4 if g.band == band and g.gid not in used and hz_ok_group(g)]
+        for i in rng.permutation(len(cands)):
+            if got >= cnt:
+                break
+            g = cands[int(i)]
+            u = Undo()
+            d0 = down(g)
+            L = min(rng.uniform(0.3, 0.6) * gexp(w, g), d0 - 0.5e6, 9e6)
+            if L < 0.3e6:
+                continue
+            e, start = hz_entity(g, u)
+            eur = round(L * FX["EUR"] / 50000) * 50000
+            reduce_by(w, g, eur / FX["EUR"], u)
+            u.add(w, Fac(booking="HB-DAC", product=str(rng.choice(["RCF", "TERM_LOAN"])), ccy="EUR", limit=float(eur),
+                         obligors=[e.eid], start=start,
+                         maturity=start + dt.timedelta(days=int(rng.integers(1095, 1826))), status="ACTIVE",
+                         booked=max(e.cust_since, start - dt.timedelta(days=int(rng.integers(0, 4)))), dev={"HZ"}))
+            if not right_ok(w, g) or band_of(gexp(w, g, hz=False)) != band:
+                u.rollback(w)
+                continue
+            used.add(g.gid)
+            got += 1
+        assert got == cnt, ("HZ nc", band, got)
+
+    # ---------------------------------------------------------- DV-A: joint property facilities
+    w.movers["A3"] = []
+    re_live = [g for g in w.live_groups if g.sector == 0]
+
+    def joint(gB, eB, L, u, want_cross, prefer_band=None):
+        partners = [g for g in re_live if g.gid not in used and g is not gB]
+        order_ = [partners[int(i)] for i in rng.permutation(len(partners))]
+
+        def cross_last(g):
+            # the partner drops a band when the extract is de-duplicated keeping the last row
+            if g.band is None or g.band == 0:
+                return False
+            d = down(g)
+            return 0.35e6 <= L - d and (g.band == 1 or L - d <= BAND_EDGES[g.band - 1] - BAND_EDGES[g.band - 2] - 0.35e6)
+        if want_cross:
+            order_ = [g for g in order_ if cross_last(g)] + [g for g in order_ if not cross_last(g)]
+        elif prefer_band is not None:
+            order_ = [g for g in order_ if g.band == prefer_band] + [g for g in order_ if g.band != prefer_band]
+        for gA in order_:
+            ea = [m for m in gA.members if m.borrower and not m.hz and m.cust < eB.cust]
+            if not ea:
+                continue
+            eA = ea[0]
+            if g_total := gexp(w, gA):
+                if g_total < L + 1.0e6:
                     continue
-                e = [m for m in g.members if m.borrower]
-                if not e:
-                    continue
-                e = e[0]
-                x = (up + 0.45e6 + rng.uniform(0, 0.3e6)) / k_fx       # sterling value of the new euro limit
-                if x > up - 0.3e6:
-                    continue
-                eur = round_limit(x * FX["EUR"])
-                f = new_fac(w, e, "EUR", eur, "HB-DAC" if e.country == "IE" else "HB-PLC", "D3")
-                t = group_exposure(w, g)
-                if band_of(t) != b or min(abs(t - xx) for xx in BAND_EDGES) < 0.25e6 or \
-                        band_of(group_exposure(w, g, fx_wrong=True)) == b:
-                    w.facilities.remove(f)
-                    continue
-                fx_movers.append(g.gid)
-                used.add(g.gid)
-                n_ok += 1
-    # D4: Dublin facilities; dropping them moves groups down a band
-    dac_movers = []
-    for b in (1, 2, 3, 4):
-        for want_flag, k in ((True, 2), (False, 2)):
-            cands = [g for g in M4 if g.band == b and g.flag[4] == want_flag and g.gid not in used]
-            n_ok = 0
-            for g in cands:
-                if n_ok >= k:
-                    break
-                down = margin_down(g)
-                gbp = [f for f in facs_of(g) if f.ccy == "GBP"]
-                if not gbp:
-                    continue
-                big = max(gbp, key=lambda f: f.limit)
-                shift = down + 0.6e6 + rng.uniform(0, 1.2e6)
-                if shift >= 0.8 * big.limit:
-                    continue
-                ie = [m for m in g.members if m.country == "IE" and not m.inert and m.role == "sub"]
-                e = ie[0] if ie else None
-                eur = round_limit(shift * FX["EUR"])
-                old_limit = big.limit
-                big.limit = float(round_limit(big.limit - eur / FX["EUR"]))
-                if e is None:
-                    top = g.members[0]
-                    e = w.new_ent(g, top.name.split(" ")[0] + " " + SECTORS[g.sector][2][0] + " Ireland DAC",
-                                  "sub", country="IE", parent=top.eid)
-                    e.inert = True
-                if not e.borrower:
-                    e.borrower = True
-                    e.cust = w.new_cust()
-                f = new_fac(w, e, "EUR", eur, "HB-DAC", "D4")
-                t2 = group_exposure(w, g)
-                if band_of(t2) != b or min(abs(t2 - x) for x in BAND_EDGES) < 0.25e6 or \
-                        band_of(group_exposure(w, g, dac=False)) == b:
-                    w.facilities.remove(f)
-                    big.limit = old_limit
-                    continue
-                dac_movers.append(g.gid)
-                used.add(g.gid)
-                n_ok += 1
-    # D2: limits amended on 30 Sep, posted after the scheduled run
-    rerun_movers = []
-    for b in (1, 2, 3, 4):
-        for want_flag, k in ((True, 2), (False, 2)):
-            cands = [g for g in M4 if g.band == b and g.flag[4] == want_flag and g.gid not in used]
-            cands.sort(key=lambda g: margin_down(g))
-            n_ok = 0
-            for g in cands:
-                if n_ok >= k:
-                    break
-                plc = [f for f in facs_of(g) if f.booking == "HB-PLC" and f.ccy == "GBP"]
-                if not plc:
-                    continue
-                f = max(plc, key=lambda x: x.limit)
-                down = margin_down(g)
-                # the amendment raised the limit; the scheduled run still shows the old one
-                old = round_limit(f.limit - (down + 0.6e6 + rng.uniform(0, 1.0e6)))
-                if old <= 0.2e6:
-                    continue
-                f.limit_r1 = float(old)
-                f.device = "D2"
-                if band_of(group_exposure(w, g, rerun=False)) == b:
-                    f.limit_r1 = None
-                    f.device = None
-                    continue
-                rerun_movers.append(g.gid)
-                used.add(g.gid)
-                n_ok += 1
-    # amendments that do not cross an edge (most of them), so the rerun is not a list of movers
-    others = [f for f in w.facilities if f.booking == "HB-PLC" and f.status == "ACTIVE" and f.limit_r1 is None
-              and f.ccy == "GBP" and w.groups[w.ents[f.eid].gid].gid not in used and f.limit >= 1e6]
-    for f in rng.choice(others, 32, replace=False):
-        g = w.groups[w.ents[f.eid].gid]
-        delta = round_limit(rng.uniform(0.1, 0.35) * f.limit) * (1 if rng.random() < 0.6 else -1)
-        old = f.limit - delta
-        if old <= 0.25e6:
+            mark = len(u.ops)
+            reduce_by(w, gA, L, u)
+            reduce_by(w, gB, L, u)
+            st = w.rand_date(D(2019, 1, 1), D(2026, 6, 30))
+            f = Fac(booking="HB-PLC", product="TERM_LOAN", ccy="GBP", limit=float(L), obligors=[eA.eid, eB.eid],
+                    start=st, maturity=st + dt.timedelta(days=int(rng.integers(1400, 2600))), status="ACTIVE",
+                    booked=st - dt.timedelta(days=int(rng.integers(0, 30))), dev={"JOINT"})
+            if f.maturity <= EXTRACT_DATE + dt.timedelta(days=60):
+                f.maturity = EXTRACT_DATE + dt.timedelta(days=int(rng.integers(200, 900)))
+            u.add(w, f)
+            eB_loss = gexp(w, gB) - L
+            okB = right_ok(w, gB) and (band_of(eB_loss) == gB.band - 1 if want_cross else
+                                       band_of(eB_loss) == gB.band)
+            if want_cross:
+                okB = okB and edge_dist(eB_loss) >= 0.2e6
+            if okB and right_ok(w, gA):
+                return gA
+            # undo this partner's part only
+            tail = Undo()
+            tail.ops = u.ops[mark:]
+            tail.rollback(w)
+            u.ops = u.ops[:mark]
+        return None
+
+    a3_plan = [(0, True, 1), (0, False, 2), (1, False, 1), (2, True, 1), (2, False, 2), (3, False, 1)]
+    for edge, flag, cnt in a3_plan:
+        got = 0
+        for gB in pool(edge + 1, flag, key=lambda g: down(g)):
+            if got >= cnt:
+                break
+            if gB.sector != 0:
+                continue
+            eb = [m for m in gB.members if m.borrower and not m.hz]
+            eB = max(eb, key=lambda m: m.cust)
+            u = Undo()
+            L = float(round_limit(down(gB) + rng.uniform(0.5e6, 1.5e6)))
+            gA = joint(gB, eB, L, u, True)
+            if gA is None:
+                continue
+            used.update([gA.gid, gB.gid])
+            w.movers["A3"].append(gB.gid)
+            got += 1
+        assert got == cnt, ("A3", edge, flag, got)
+    n_joint_nc = 0
+    cands = [g for g in M4 if g.sector == 0 and g.gid not in used and g.band > 0]
+    for i in rng.permutation(len(cands)):
+        if n_joint_nc >= 10:
+            break
+        gB = cands[int(i)]
+        if gB.gid in used:
             continue
-        f.limit_r1 = float(old)
-        if g.band is not None and band_of(group_exposure(w, g, rerun=False)) != g.band:
-            f.limit_r1 = None
-    # D8: facilities reaching final maturity on 30 Sep 2026, still ACTIVE in the plc runs
-    mat_movers = []
-    for b in (0, 1, 2, 3):
-        for want_flag, k in ((True, 2), (False, 2)):
-            cands = [g for g in M4 if g.band == b and g.flag[4] == want_flag and g.gid not in used]
-            for g in cands[:k]:
-                up = margin_up(g)
-                e = [m for m in g.members if m.borrower and m.country == "GB"]
-                if not e:
-                    continue
-                amt = round_limit(up + 0.7e6 + rng.uniform(0, 1.2e6))
-                f = new_fac(w, e[0], "GBP", amt, "HB-PLC", "D8")
-                f.maturity = EXTRACT_DATE
-                f.start = EXTRACT_DATE - dt.timedelta(days=int(rng.integers(700, 1800)))
-                f.product = str(rng.choice(["TERM_LOAN", "RCF"]))
-                if band_of(group_exposure(w, g, matured=True)) == b:
-                    w.facilities.remove(f)
-                    continue
-                mat_movers.append(g.gid)
+        d0 = down(gB)
+        if d0 < 2.0e6:
+            continue
+        eb = [m for m in gB.members if m.borrower and not m.hz]
+        eB = max(eb, key=lambda m: m.cust)
+        u = Undo()
+        L = float(round_limit(rng.uniform(0.25, 0.7) * min(d0 - 0.5e6, 20e6)))
+        gA = joint(gB, eB, L, u, False, prefer_band=(0, 4)[n_joint_nc % 2])
+        if gA is None:
+            continue
+        used.update([gA.gid, gB.gid])
+        n_joint_nc += 1
+
+    # ---------------------------------------------------------- DV-A: several obligors in one group
+    w.movers["A1"] = []
+    a1_plan = [(0, True, 1), (1, True, 3), (2, True, 1), (3, True, 3),
+               (0, False, 3), (1, False, 7), (2, False, 3), (3, False, 7)]
+
+    def borrowers_of(g):
+        return [m for m in g.members if m.borrower and not m.hz and m.cust]
+
+    for edge, flag, cnt in a1_plan:
+        got = 0
+        cands = pool(edge, flag, key=lambda g: up(g))
+        for g in cands:
+            if got >= cnt:
+                break
+            bs = borrowers_of(g)
+            if len(bs) < 2:
+                continue
+            u0 = up(g)
+            done = False
+            for f in sorted(plain_facs(w, g), key=lambda f: -f.limit / FX[f.ccy]):
+                v = f.limit / FX[f.ccy]
+                others = [m for m in bs if m.eid != f.obligors[0]]
+                for k in range(1, min(3, len(others)) + 1):
+                    if k * v < u0 + 0.35e6:
+                        continue
+                    if edge < 3 and k * v > u0 + width[edge] - 0.35e6:
+                        break
+                    u = Undo()
+                    for m in others[:k]:
+                        u.oblig(w, f, m.eid)
+                    f.dev.add("A1")
+                    e1 = gexp(w, g, grain="rows")
+                    if right_ok(w, g) and band_of(e1) == edge + 1 and edge_dist(e1) >= 0.2e6:
+                        done = True
+                        break
+                    f.dev.discard("A1")
+                    u.rollback(w)
+                if done:
+                    break
+            if done:
                 used.add(g.gid)
-    # matured facilities that do not cross an edge
-    for g in rng.choice([g for g in M4 if g.gid not in used], 14, replace=False):
-        e = [m for m in g.members if m.borrower and m.country == "GB"]
-        if not e:
+                w.movers["A1"].append(g.gid)
+                got += 1
+        assert got == cnt, ("A1", edge, flag, got)
+    # blending: about 12 per cent of facilities carry two to four obligors from one group
+    target = int(0.12 * sum(1 for f in w.facilities if f.status == "ACTIVE"))
+    have = sum(1 for f in w.facilities if "A1" in f.dev)
+    cands = [f for f in w.facilities if f.status == "ACTIVE" and len(f.obligors) == 1 and not f.dev]
+    for i in rng.permutation(len(cands)):
+        if have >= target:
+            break
+        f = cands[int(i)]
+        g = w.groups[w.ents[f.obligors[0]].gid]
+        if g.gid in used:
             continue
-        up = margin_up(g)
-        if up is None or up < 1.2e6:
+        others = [m for m in borrowers_of(g) if m.eid != f.obligors[0]]
+        if not others:
             continue
-        amt = round_limit(rng.uniform(0.2, 0.6) * up)
-        f = new_fac(w, e[0], "GBP", amt, "HB-PLC", None)
-        f.maturity = EXTRACT_DATE
-        f.start = EXTRACT_DATE - dt.timedelta(days=int(rng.integers(700, 1800)))
-    w.movers = dict(D3=fx_movers, D4=dac_movers, D2=rerun_movers, D8=mat_movers)
+        k = int(min(len(others), 1 + rng.choice(3, p=[0.7, 0.22, 0.08])))
+        u = Undo()
+        for j in rng.choice(len(others), k, replace=False):
+            u.oblig(w, f, others[int(j)].eid)
+        f.dev.add("A1")
+        if g.band is not None and band_of(gexp(w, g, grain="rows")) != g.band:
+            f.dev.discard("A1")
+            u.rollback(w)
+            continue
+        have += 1
 
+    # ---------------------------------------------------------- DV-B: limit increases from 1 October
+    w.movers["B2"] = []
+    b2_plan = [(0, True, 1), (1, True, 3), (2, True, 1), (3, True, 3),
+               (0, False, 3), (1, False, 7), (2, False, 3), (3, False, 7)]
+    for edge, flag, cnt in b2_plan:
+        got = 0
+        for g in pool(edge, flag, key=lambda g: up(g)):
+            if got >= cnt:
+                break
+            u0 = up(g)
+            fs = sorted([f for f in plain_facs(w, g) if f.start < D(2026, 8, 1)], key=lambda f: -f.limit / FX[f.ccy])
+            if not fs:
+                continue
+            f = fs[0]
+            d_gbp = u0 + rng.uniform(0.4e6, 1.2e6)
+            d = round(d_gbp * FX[f.ccy] / 50000) * 50000
+            if d > 1.5 * f.limit:
+                continue
+            u = Undo()
+            u.set(f, "oct1", float(d))
+            f.dev.add("B")
+            e2 = gexp(w, g, clock="B2")
+            if band_of(e2) == edge + 1 and edge_dist(e2) >= 0.2e6:
+                used.add(g.gid)
+                w.movers["B2"].append(g.gid)
+                got += 1
+            else:
+                f.dev.discard("B")
+                u.rollback(w)
+        assert got == cnt, ("B2", edge, flag, got)
+    n = len(w.movers["B2"])
+    cands = [f for f in w.facilities if f.status == "ACTIVE" and in_force(f) and not f.dev and f.limit >= 0.5e6
+             and f.start < D(2026, 8, 1)]
+    for i in rng.permutation(len(cands)):
+        if n >= 70:
+            break
+        f = cands[int(i)]
+        gids = fac_groups(w, f)
+        if any(x in used for x in gids):
+            continue
+        d = round(rng.uniform(0.08, 0.35) * f.limit / 50000) * 50000
+        if d <= 0:
+            continue
+        u = Undo()
+        u.set(f, "oct1", float(d))
+        f.dev.add("B")
+        if any(w.groups[x].band is not None and band_of(gexp(w, w.groups[x], clock="B2")) != w.groups[x].band
+               for x in gids):
+            f.dev.discard("B")
+            u.rollback(w)
+            continue
+        n += 1
+    # facilities available from 1 October, activated by the same batch
+    for g in [w.live_groups[int(i)] for i in rng.choice(len(w.live_groups), 12, replace=False)]:
+        e = [m for m in g.members if m.borrower and not m.hz][0]
+        ccy = ccy_of(rng, e)
+        add_fac(w, Fac(booking=booking_of(e), product=str(rng.choice(["RCF", "TERM_LOAN", "ASSET_FINANCE"])), ccy=ccy,
+                       limit=0.0, oct1=float(round_limit(rng.uniform(0.5e6, 6e6) * FX[ccy])), obligors=[e.eid],
+                       start=D(2026, 10, 1), maturity=D(2026, 10, 1) + dt.timedelta(days=int(rng.integers(900, 1830))),
+                       status="ACTIVE", booked=D(2026, 8, 1) + dt.timedelta(days=int(rng.integers(0, 56))),
+                       dev={"ACT"}))
+    # facilities reaching final maturity on 30 September, closed by the 1 October batch
+    cands = [f for f in w.facilities if f.status == "ACTIVE" and in_force(f) and not f.dev and
+             f.start < D(2024, 6, 1)]
+    for i in rng.choice(len(cands), 22, replace=False):
+        f = cands[int(i)]
+        g = w.groups[w.ents[f.obligors[0]].gid]
+        if g.gid in used:
+            continue
+        u = Undo()
+        u.set(f, "maturity", EXTRACT_DATE)
+        # the facility's own limit no longer counts; the group keeps its band through a new facility
+        e = w.ents[f.obligors[0]]
+        st = w.rand_date(D(2026, 3, 1), D(2026, 8, 31))
+        nf = Fac(booking=f.booking, product=f.product, ccy=f.ccy, limit=f.limit, obligors=[e.eid], start=st,
+                 maturity=st + dt.timedelta(days=int(rng.integers(1000, 1830))), status="ACTIVE",
+                 booked=st - dt.timedelta(days=int(rng.integers(0, 30))))
+        u.add(w, nf)
+        u.set(f, "status", "CLOSED")
+        f.dev.add("MAT")
+        if not right_ok(w, g):
+            f.dev.discard("MAT")
+            u.rollback(w)
 
-def new_fac(w, e, ccy, amount, booking, device):
-    rng = w.rng
-    w._fseq += int(rng.integers(1, 40))
-    start = w.rand_date(D(2019, 1, 1), D(2026, 8, 31))
-    f = Fac(fid="F%08d" % w._fseq, cust=e.cust, eid=e.eid, booking=booking,
-            product=str(rng.choice(["TERM_LOAN", "RCF", "TERM_LOAN"])), ccy=ccy, limit=float(amount),
-            drawn=round(float(amount) * rng.uniform(0.3, 0.9), 2), start=start,
-            maturity=EXTRACT_DATE + dt.timedelta(days=int(rng.integers(60, 1600))), status="ACTIVE",
-            limit_r1=None, device=device)
-    w.facilities.append(f)
-    return f
+    # ---------------------------------------------------------- DV-B: increases keyed in the day on 30 September
+    w.movers["B0"] = []
+    b0_plan = [(0, True, 1), (2, True, 1), (0, False, 2), (1, False, 4), (2, False, 2), (3, False, 4)]
+    for edge, flag, cnt in b0_plan:
+        got = 0
+        for g in pool(edge + 1, flag, key=lambda g: down(g)):
+            if got >= cnt:
+                break
+            d0 = down(g)
+            fs = sorted([f for f in plain_facs(w, g) if f.start < D(2026, 8, 1)], key=lambda f: -f.limit / FX[f.ccy])
+            if not fs:
+                continue
+            f = fs[0]
+            d_gbp = d0 + rng.uniform(0.4e6, 1.2e6)
+            d = round(d_gbp * FX[f.ccy] / 50000) * 50000
+            if f.limit - d < 0.4 * f.limit:
+                continue
+            u = Undo()
+            u.set(f, "sep30", float(d))
+            f.dev.add("B")
+            e0 = gexp(w, g, clock="B0")
+            if band_of(e0) == edge and edge_dist(e0) >= 0.2e6:
+                used.add(g.gid)
+                w.movers["B0"].append(g.gid)
+                got += 1
+            else:
+                f.dev.discard("B")
+                u.rollback(w)
+        assert got == cnt, ("B0", edge, flag, got)
+    n = len(w.movers["B0"])
+    cands = [f for f in w.facilities if f.status == "ACTIVE" and in_force(f) and not f.dev and f.limit >= 0.5e6
+             and f.start < D(2026, 8, 1)]
+    for i in rng.permutation(len(cands)):
+        if n >= 34:
+            break
+        f = cands[int(i)]
+        gids = fac_groups(w, f)
+        if any(x in used for x in gids):
+            continue
+        d = round(rng.uniform(0.1, 0.3) * f.limit / 50000) * 50000
+        if d <= 0:
+            continue
+        u = Undo()
+        u.set(f, "sep30", float(d))
+        f.dev.add("B")
+        if any(w.groups[x].band is not None and band_of(gexp(w, w.groups[x], clock="B0")) != w.groups[x].band
+               for x in gids):
+            f.dev.discard("B")
+            u.rollback(w)
+            continue
+        n += 1
+
+    # ---------------------------------------------------------- later limit changes, 2 to 7 October
+    cands = [f for f in w.facilities if f.status == "ACTIVE" and in_force(f) and f.limit >= 0.5e6 and
+             not (f.dev & {"MAT"})]
+    for i in rng.choice(len(cands), 26, replace=False):
+        f = cands[int(i)]
+        base = f.limit + f.oct1
+        val = float(round(base * rng.uniform(0.7, 1.35) / 50000) * 50000)
+        d = D(2026, 10, int(rng.integers(2, 8)))
+        stamp = sod_stamp(d) if rng.random() < 0.4 else user_stamp(rng, d)
+        if stamp.date() < D(2026, 10, 1):
+            stamp = user_stamp(rng, d)
+        f.later = [(stamp, val)]
+        f.dev.add("LATER")
+    w.used_groups = used
 
 
 def band_exposure_figures(w, cohort, **kw):
-    """World-side expected arriving exposure by band and in total (GBP m), and per-band flagged and
-    unflagged expected arrivals, on the right reading unless told otherwise."""
+    """World-side committed exposure and expected arriving exposure by band and in total (GBP m)."""
     PPV1, M1 = ppv_m1()
-    out = [0.0] * 5
+    E = exposure(w, **kw)
+    com, arr = [0.0] * 5, [0.0] * 5
     for gid in cohort[4]["M"]:
         g = w.groups[gid]
-        e = group_exposure(w, g, **kw)
+        e = E.get(gid, 0.0)
         b = band_of(e)
-        out[b] += (PPV1 if g.flag[4] else M1) * e
-    return [x / 1e6 for x in out] + [sum(out) / 1e6]
+        com[b] += e
+        arr[b] += (PPV1 if g.flag[4] else M1) * e
+    return [x / 1e6 for x in com] + [sum(com) / 1e6], [x / 1e6 for x in arr] + [sum(arr) / 1e6]
 
 
 def tune_exposures(w, cohort):
-    """Nudge one ordinary sterling limit at a time, in GBP 50,000 steps, until every expected-exposure
-    figure (five bands and the total, GBP m to one decimal) sits at least 0.2 of its bin from an edge."""
-    rng = w.rng
-    movers = set(sum(w.movers.values(), []))
+    """Nudge one ordinary sterling limit at a time until every committed and arriving exposure figure (five
+    bands and the total, GBP m to one decimal) sits at least 0.25 of its bin from an edge."""
+    rng = w.drng
     cand = []
     for gid in cohort[4]["M"]:
         g = w.groups[gid]
-        if gid in movers:
+        if gid in w.used_groups:
             continue
-        e = group_exposure(w, g)
-        if min(abs(e - x) for x in BAND_EDGES) < 1.5e6:
+        if any(f.dev for f in w.gfacs.get(gid, [])):
             continue
-        eids = {m.eid for m in g.members}
-        for f in w.facilities:
-            if f.eid in eids and f.ccy == "GBP" and f.booking == "HB-PLC" and f.status == "ACTIVE" and \
-                    f.limit_r1 is None and f.device is None and 1e6 <= f.limit <= 5e6 and f.maturity > EXTRACT_DATE:
+        if edge_dist(gexp(w, g)) < 1.5e6:
+            continue
+        for f in plain_facs(w, g):
+            if f.ccy == "GBP" and f.booking == "HB-PLC" and 1e6 <= f.limit <= 5e6:
                 cand.append((g.band, gid, f))
-    for it in range(400):
-        figs = band_exposure_figures(w, cohort)
-        bad = [i for i, x in enumerate(figs) if bin_margin(x) < 0.2]
+    for it in range(3000):
+        com, arr = band_exposure_figures(w, cohort)
+        bad = [("c", i) for i, x in enumerate(com) if bin_margin(x) < 0.25] + \
+              [("a", i) for i, x in enumerate(arr) if bin_margin(x) < 0.25]
+        for v in (com, arr):     # the rounded rows tie to the rounded total
+            if abs(sum(round(x, 1) for x in v[:5]) - round(v[5], 1)) > 1e-6:
+                bad.append(("t", 5))
         if not bad:
             return it
-        i = bad[0]
+        _, i = bad[0]
         b = i if i < 5 else int(rng.integers(0, 5))
-        pool = [x for x in cand if x[0] == b]
-        _, gid, f = pool[int(rng.integers(0, len(pool)))]
-        f.limit = float(f.limit + 50000 * int(rng.choice([-2, -1, 1, 2])))
+        pl = [x for x in cand if x[0] == b]
+        _, gid, f = pl[int(rng.integers(0, len(pl)))]
+        f.limit = float(f.limit + 25000 * int(rng.choice([-3, -2, -1, 1, 2, 3])))
     raise RuntimeError("exposure tuning did not settle")
 
 
-def build():
+def number_facilities(w):
+    """Each ledger numbers its facilities in the order they were booked."""
+    rng = w.drng
+    plc = sorted([f for f in w.facilities if f.booking == "HB-PLC"], key=lambda f: (f.booked, f.start, f.limit))
+    dac = sorted([f for f in w.facilities if f.booking == "HB-DAC"], key=lambda f: (f.booked, f.start, f.limit))
+    n = 20418226
+    for f in plc:
+        n += int(rng.integers(1, 6))
+        f.fid = "%08d" % n
+    span = n - 20418226
+    step = max(2, span // max(1, len(dac)))
+    n = 20418226 + int(rng.integers(0, 20))
+    for f in dac:
+        n += int(rng.integers(1, 2 * step))
+        f.fid = "%08d" % n
+
+
+def build_histories(w):
+    """Every committed limit each facility has carried, with the platform's UTC stamps."""
+    rng = w.drng
+    for f in w.facilities:
+        h = []
+        if "ACT" in f.dev:
+            h.append((SOD_1OCT, f.oct1, "SOD_BATCH"))
+            f.history = h
+            continue
+        pre = f.history if f.status in ("CANCELLED", "CLOSED") and "MAT" not in f.dev else (f.limit - f.sep30)
+        # earlier amendments, walked backwards from the limit in force before 30 September
+        n_am = 0
+        if f.start < D(2025, 9, 1):
+            n_am = int(min(3, rng.poisson(0.9)))
+        last_day = min(D(2026, 9, 25), f.closed_on - dt.timedelta(days=5) if f.closed_on else D(2026, 9, 25))
+        days = sorted({f.start + dt.timedelta(days=int(rng.integers(30, max(31, (last_day - f.start).days))))
+                       for _ in range(n_am)} - {None})
+        days = [d for d in days if d <= last_day]
+        vals = [float(pre)]
+        for _ in days:
+            vals.insert(0, float(round_limit(vals[0] * rng.uniform(0.7, 1.15))))
+        # initial version: keyed when the facility was booked, or set by the batch on the start date
+        if rng.random() < 0.6:
+            h.append((user_stamp(rng, f.booked), vals[0], str(rng.choice(USERS))))
+        else:
+            h.append((sod_stamp(f.start), vals[0], "SOD_BATCH"))
+        for d, v in zip(days, vals[1:]):
+            if rng.random() < 0.5:
+                h.append((sod_stamp(d), v, "SOD_BATCH"))
+            else:
+                h.append((user_stamp(rng, d), v, str(rng.choice(USERS))))
+        if f.status in ("CANCELLED", "CLOSED") and "MAT" not in f.dev:
+            h.append((user_stamp(rng, f.closed_on) if rng.random() < 0.5 else sod_stamp(f.closed_on), 0.0,
+                      "SOD_BATCH" if rng.random() < 0.5 else str(rng.choice(USERS))))
+        if f.sep30:
+            t = dt.datetime(2026, 9, 30, int(rng.integers(7, 16)), int(rng.integers(0, 60)), int(rng.integers(0, 60)))
+            h.append((t, f.limit, str(rng.choice(USERS))))
+        if f.oct1:
+            h.append((SOD_1OCT, f.limit + f.oct1, "SOD_BATCH"))
+        if "MAT" in f.dev:
+            h.append((SOD_1OCT, 0.0, "SOD_BATCH"))
+        for t, v in f.later:
+            h.append((t, v, "SOD_BATCH" if t.minute == 30 and t.second == 0 else str(rng.choice(USERS))))
+        h.sort(key=lambda x: x[0])
+        # the stamps are strictly increasing, and the value in force at each reading is the designed one
+        for a, b in zip(h, h[1:]):
+            assert a[0] < b[0], (f.fid, h)
+        f.history = h
+
+
+def version_at(f, t):
+    v = None
+    for s, val, _ in f.history:
+        if s <= t:
+            v = val
+    return v
+
+
+def build(devices=True):
     w = World()
+    w.drng = np.random.default_rng(SEED + 101)
+    w._hzseq = 2290000
     cohort = build_lifecycle(w)
     w.cohort = cohort
     gleif_texture(w, cohort)
     assign_bands_and_flags(w, cohort)
     build_signals(w, cohort)
     build_facilities(w, cohort)
-    plant_devices(w, cohort)
-    w.tune_steps = tune_exposures(w, cohort)
+    w.used_groups = set()
+    w.movers = {}
+    if devices:
+        plant_devices(w, cohort)
+        w.tune_steps = tune_exposures(w, cohort)
+    number_facilities(w)
+    build_histories(w)
+    for f in w.facilities:
+        if f.status in ("CANCELLED", "CLOSED") and "MAT" not in f.dev:
+            f.limit = 0.0
+        assert version_at(f, T_END) == (f.limit if (f.start <= EXTRACT_DATE or "ACT" not in f.dev) else None) or \
+            "ACT" in f.dev, f.fid
     return w
 
 
 if __name__ == "__main__":
     w = build()
     print(len(w.groups), len(w.ents), len(w.signals), len(w.facilities))
-    print({k: len(v) for k, v in w.movers.items()})
+    print({k: len(v) for k, v in w.movers.items()}, "tuning", w.tune_steps)
     print(w.band_n, w.band_f)

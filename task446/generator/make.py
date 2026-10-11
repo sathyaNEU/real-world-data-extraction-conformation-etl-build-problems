@@ -25,9 +25,8 @@ FILES = dict(
     obligors="credit_obligor_master_20260930.csv",
     register="credit_group_register_20260930.xlsx",
     watchlist="watch_list_history_2020-01_to_2026-09.csv",
-    plc="facility_extract_hbplc_20260930.csv",
-    plc_rerun="facility_extract_hbplc_20260930_rerun.csv",
-    dac="facility_extract_hbdac_20260930.csv",
+    facilities="facility_obligor_extract_20260930.csv",
+    limits="facility_limit_history_20261008.csv",
     fx="treasury_closing_rates_20260930.csv",
     triggers="ews_trigger_codes.csv",
     standard="early_warning_and_watch_list_standard.pdf",
@@ -35,9 +34,9 @@ FILES = dict(
     fieldref="credit_data_field_reference.md",
     log="reference_data_extract_log_20261008.txt",
     ratings="internal_rating_master_scale_2026.xlsx",
-    scenarios="ifrs9_macro_scenarios_2026q3.xlsx",
+    outlook="group_economics_uk_outlook_oct2026.xlsx",
 )
-DISTRACTORS = [FILES["ratings"], FILES["scenarios"]]
+DISTRACTORS = [FILES["ratings"], FILES["outlook"]]
 
 
 def wcsv(path, header, rows):
@@ -81,12 +80,11 @@ def entity_key(e):
     return "CRN:" + e.crn
 
 
-def build(target=TARGET):
+def build(target=TARGET, devices=True):
     os.makedirs(target, exist_ok=True)
     for f in os.listdir(target):
         os.remove(os.path.join(target, f))
-    w = world.build()
-    rng = np.random.default_rng(world.SEED + 7)
+    w = world.build(devices=devices)
 
     # ---------------------------------------------------------------- signals (spine)
     rows = []
@@ -100,6 +98,7 @@ def build(target=TARGET):
 
     # ---------------------------------------------------------------- GLEIF level 1
     ents = [w.ents[k] for k in sorted(w.ents)]
+    rng = np.random.default_rng(world.SEED + 7)
     l1 = []
     for e in ents:
         if not e.lei:
@@ -127,6 +126,7 @@ def build(target=TARGET):
           "Registration.NextRenewalDate", "Registration.ManagingLOU", "Registration.ValidationSources"], l1)
 
     # ---------------------------------------------------------------- GLEIF level 2
+    rng = np.random.default_rng(world.SEED + 8)
     rr = []
     for e in ents:
         if not e.lei or e.parent is None:
@@ -137,6 +137,8 @@ def build(target=TARGET):
         start = min(e.reg, D(2019, 12, 31)) - dt.timedelta(days=int(rng.integers(0, 900)))
         if e.reg > D(2025, 1, 1):
             start = e.reg
+        if e.hz:
+            start = e.joined
         end = ""
         status = "ACTIVE"
         regst = "LAPSED" if e.reg_status == "LAPSED" else "PUBLISHED"
@@ -188,9 +190,11 @@ def build(target=TARGET):
         g = w.groups[e.gid]
         since = max(g.active_from, e.reg - dt.timedelta(days=200)) if e.role != "top" else g.active_from
         since = min(since, EXTRACT_DATE - dt.timedelta(days=30))
+        if e.hz:
+            since = e.cust_since
         closed = (g.active_to is not None and g.active_to <= EXTRACT_DATE) or (not e.borrower)
         booking = "HB-DAC" if e.country == "IE" else "HB-PLC"
-        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, g.gid, since.isoformat(),
+        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, "" if e.hz else g.gid, since.isoformat(),
                    "CLOSED" if closed else "ACTIVE", booking))
     ob.sort()
     wcsv(os.path.join(target, FILES["obligors"]),
@@ -198,6 +202,7 @@ def build(target=TARGET):
           "customer_status", "primary_booking_entity"], ob)
 
     # ---------------------------------------------------------------- watch-list history
+    rng = np.random.default_rng(world.SEED + 9)
     wl = []
     teams = ["Business Support North", "Business Support South", "Restructuring", "Business Support Midlands"]
     for gid, g in sorted(w.groups.items()):
@@ -209,23 +214,30 @@ def build(target=TARGET):
          ["case_id", "group_id", "group_name", "placed_on", "watch_level", "removed_on", "removal_reason",
           "case_team"], wl)
 
-    # ---------------------------------------------------------------- facilities
-    plc, plc2, dac = [], [], []
-    for f in sorted(w.facilities, key=lambda x: x.fid):
-        base = [f.fid, f.cust, f.booking, f.product, f.ccy]
-        tail = [round(f.drawn, 2), f.start.isoformat(), f.maturity.isoformat(), f.status]
-        if f.booking == "HB-DAC":
-            dac.append(base + ["%.2f" % f.limit] + tail)
-        else:
-            r1 = f.limit_r1 if f.limit_r1 is not None else f.limit
-            plc.append(base + ["%.2f" % r1] + tail)
-            plc2.append(base + ["%.2f" % f.limit] + tail)
-    hdr = ["facility_id", "customer_id", "booking_entity", "product", "currency", "committed_limit",
-           "drawn_balance", "start_date", "final_maturity_date", "facility_status"]
-    wcsv(os.path.join(target, FILES["plc"]), hdr, plc)
-    wcsv(os.path.join(target, FILES["plc_rerun"]), hdr, plc2)
-    wcsv(os.path.join(target, FILES["dac"]), hdr, dac)
-    wcsv(os.path.join(target, FILES["fx"]), ["rate_date", "currency", "closing_rate", "source"],
+    # ---------------------------------------------------------------- facilities and their limit history
+    rng = np.random.default_rng(world.SEED + 10)
+    fx_rows, lh = [], []
+    for f in w.facilities:
+        ext = world.version_at(f, world.EXTRACT_RUN) or 0.0
+        if f.status != "ACTIVE":
+            ext = 0.0
+        shares = rng.dirichlet(np.ones(len(f.obligors)) * 2.0) if len(f.obligors) > 1 else [1.0]
+        util = 0.0 if f.status != "ACTIVE" or f.start > EXTRACT_DATE else \
+            (rng.uniform(0.2, 0.95) if f.product != "OVERDRAFT" else rng.uniform(0, 0.6))
+        for eid, sh in zip(f.obligors, shares):
+            e = w.ents[eid]
+            fx_rows.append((f.booking, f.fid, e.cust, f.product, f.ccy, "%.2f" % ext, "%.2f" % (ext * util * sh),
+                            f.start.isoformat(), f.maturity.isoformat(), f.status))
+        for t, v, src in f.history:
+            lh.append((f.booking, f.fid, "%.2f" % v, t.strftime("%Y-%m-%dT%H:%M:%SZ"), src))
+    fx_rows.sort(key=lambda r: (r[0], r[1], r[2]))
+    wcsv(os.path.join(target, FILES["facilities"]),
+         ["booking_entity", "facility_id", "customer_id", "product", "currency", "committed_limit", "drawn_balance",
+          "start_date", "final_maturity_date", "facility_status"], fx_rows)
+    lh.sort(key=lambda r: (r[0], r[1], r[3]))
+    wcsv(os.path.join(target, FILES["limits"]),
+         ["booking_entity", "facility_id", "committed_limit", "effective_from", "source"], lh)
+    wcsv(os.path.join(target, FILES["fx"]), ["rate_date", "currency", "units_per_gbp", "source"],
          [("2026-09-30", c, "%.4f" % FX[c], "Group Treasury 16:00 London close") for c in ("EUR", "USD")] +
          [("2026-09-30", "CHF", "1.0732", "Group Treasury 16:00 London close"),
           ("2026-09-30", "SEK", "14.6815", "Group Treasury 16:00 London close")])
@@ -252,7 +264,7 @@ def build(target=TARGET):
     docs.field_reference(os.path.join(target, FILES["fieldref"]), FILES)
     docs.extract_log(os.path.join(target, FILES["log"]), FILES, target)
     docs.ratings_workbook(w, os.path.join(target, FILES["ratings"]))
-    docs.scenarios_workbook(os.path.join(target, FILES["scenarios"]))
+    docs.outlook_workbook(os.path.join(target, FILES["outlook"]))
 
     # file times: one coherent pull
     stamp = dt.datetime(2026, 10, 8, 17, 42, 0).timestamp()
@@ -263,5 +275,5 @@ def build(target=TARGET):
 
 if __name__ == "__main__":
     t = sys.argv[1] if len(sys.argv) > 1 else TARGET
-    build(t)
+    build(t, devices="--no-devices" not in sys.argv)
     print("wrote", t)

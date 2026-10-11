@@ -11,7 +11,7 @@
   "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "Put a 2027 caseload of 133 groups to the committee: 133 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
-  "answer_source": "task446/DESIGN_NOTE.md, Entity and decision (the planned call of architecture 2, loop 1); the loop 1 builder replaces it with the first sentence of submission.md",
+  "answer_source": "task446/submission.md, Final Recommendation (architecture 2, loop 1 build)",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "ews_entity_signals_2022-09_to_2026-09.csv",
-    "rows": 127675,
+    "rows": 125317,
     "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
     "grain": "LEI x month-end",
     "source": "synthetic"
@@ -53,7 +53,17 @@
     ],
     "people": [
       "Jill Berry",
-      "Mathew Long"
+      "Mathew Long",
+      "Abbie Stevens",
+      "Molly Ryan",
+      "Jeffrey Page",
+      "Jade Ali",
+      "Russell Hussain",
+      "Eric Williams",
+      "Victor Pratt",
+      "Bruce Anderson",
+      "Dennis Bishop",
+      "Danny Foster"
     ]
   },
   "deliverables": [
