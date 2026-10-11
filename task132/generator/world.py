@@ -1,7 +1,7 @@
 """Fixed facts of the Tarrock Hydro world: dates, the PSU failure law, bands, lots, stock, stores."""
 import datetime as dt
 
-SEED = 1165
+SEED = 1215
 ASOF = dt.date(2026, 9, 30)            # extract date; stock count at close of business
 HORIZON_START = dt.date(2026, 10, 1)   # first month the stock has to cover
 MIGRATION = dt.date(2021, 1, 1)        # EAM go-live; work-order and rotating-item history start here
@@ -58,7 +58,7 @@ LEGACY_STORES = {"Lakeshore": "North Depot", "Ridge": "Central Stores (Barrie Ro
 RMA_START = dt.date(2015, 4, 1)         # Veldtek's register for Tarrock's VPR-340 PSU returns opens with SB-15-02
 REG_SAVED = dt.date(2026, 9, 29)        # Veldtek's last save of the register before the count
 CUTOVER_HOLD = dt.date(2020, 12, 14)    # stores held shipments over the EAM cutover
-SB_LAST_CODE = 1997                     # SB-15-02 covers modules with date codes 91 to 97
+SB_LAST_CODE = 1997                     # SB-15-02 covers modules with date codes 97 and earlier
 MFG_LAG = (20, 270)                     # days from manufacture to installation of a relay, control or RTU
 HELD_LAG = (365, 1096)                  # the same for one held in stores for a year or more
 
@@ -90,4 +90,4 @@ def store_for(region, legacy_region, d):
 
 # settled by tune.py: the legacy fitted dates of a few modules that were already replacements at go-live moved by a
 # month (index into those modules, months), so no graded figure sits on a rounding edge
-TUNE = ()
+TUNE = ((76, -1),)

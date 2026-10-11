@@ -93,13 +93,18 @@ def main(rounds=8, stop=0.09):
     target = E.lots_needed(lam0, avail)
     print("target lots", target, "lam", round(lam0, 3), flush=True)
 
+    def edge_of(lam, step):
+        """the expected-failure edge of the target's bin, walked from lam in steps of `step`"""
+        x = lam
+        while E.lots_needed(x + step, avail) == target:
+            x += step
+        return x
+
+    lo_edge, hi_edge = edge_of(lam0, -0.01), edge_of(lam0, 0.01)
+    print("bin", round(lo_edge, 2), round(hi_edge, 2), flush=True)
+
     def margins(lam):
-        lo, hi = lam, lam
-        while E.lots_needed(lo, avail) == target:
-            lo -= 0.05
-        while E.lots_needed(hi, avail) == target:
-            hi += 0.05
-        return (lam - lo) / lam, (hi - lam) / lam
+        return (lam - lo_edge) / lam, (hi_edge - lam) / lam
 
     def score(Bmat, counts, ex):
         lam, by_year, by_reg = evaluate(Bmat, counts, ex)

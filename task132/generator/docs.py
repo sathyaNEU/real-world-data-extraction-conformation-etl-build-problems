@@ -400,7 +400,7 @@ def other_schemes(rng, prog, reg):
     for rank, i in enumerate(order):
         m = months[picks[rank]] if rank < n_in else None
         rows[i]["plan_2026"] = m
-        if m is not None and rng.random() < 0.2:
+        if m is not None and rng.random() < 0.35:
             m = max(S.PLAN_25_FIRST, S.month_add(m, -int(rng.integers(6, 19))))
         rows[i]["plan_2025"] = m
         rows[i]["in_2025"], rows[i]["in_2026"] = True, True

@@ -57,16 +57,25 @@ def score(sd):
             early += 1
             again += seen.get(sn, 0) >= 2
     young = sum(1 for a in E.failures(wo, fl, hist)["age"] if a < 6)
+    log = set(wo[(wo["work_type"] == "LOG") & (wo["failed_component"] == "PSU")]["wo_number"])
+    refs = [str(x[4]) for x in rows if x[4]]
+    pairs = sum(1 for w in log if refs.count(w) == 2)
+    first_fit = {}
+    for sn, fit in zip(hist["serial_no"], hist["fitted"]):
+        first_fit[sn] = min(fit, first_fit.get(sn, fit))
+    jan21 = sum(1 for x in rows if x[5].year == 2021 and x[5].month == 1 and x[4] and str(x[4]).isdigit()
+                and (x[2] not in first_fit or first_fit[x[2]] > x[5].date()))
     out = dict(seed=sd, lam=round(lam, 2), lots=L, avail=avail, open=s["at_repair"], lo=round(100 * (lam - lo) / lam, 2),
                hi=round(100 * (hi - lam) / lam, 2), counts=[int(c) for c in s["counts"]], young=young, early=early,
-               again=again, diff25=sum(in25[y] != s["in_service"][y] for y in in25),
+               again=again, pairs=pairs, jan21=jan21, diff25=sum(in25[y] != s["in_service"][y] for y in in25),
                diffst=sum(by_st[y] != s["in_service"][y] for y in by_st),
                rungs={k: [round(r[k][0], 1), r[k][1]] for k in KEYS})
     gap = r["window_no_renewal"][1] - L
     clash = [k for k in KEYS if r[k][1] == L]
     out["ok"] = (gap >= 4 and r["window_no_renewal"][0] >= 1.25 * lam and not clash and out["lo"] >= 3 and out["hi"] >= 3
                  and r["install_renewal"][0] <= 0.88 * lam and r["relay_age_window_no_renewal"][0] <= 0.88 * lam
-                 and r["trailing_rate"][0] <= 0.80 * lam and out["diff25"] >= 6 and out["diffst"] >= 5 and again >= 1)
+                 and r["trailing_rate"][0] <= 0.80 * lam and out["diff25"] >= 6 and out["diffst"] >= 5 and again >= 1
+                 and pairs >= 5)
     out["ok"], out["gap"], out["clash"] = bool(out["ok"]), int(gap), clash
     out["again"] = int(again)
     return out

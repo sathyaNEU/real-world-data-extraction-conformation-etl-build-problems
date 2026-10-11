@@ -401,13 +401,14 @@ class Returns:
             rec["ship"] = add_bdays(dt.date(2021, 1, 4), int(rr.integers(0, 9)))
         self.recs.append(rec)
         if rec["kind"] == "EAM":
-            # a module still waiting at the same store, due out within the next two weeks, may wait for this one
+            # a module still waiting at the same store and due out within two weeks of this one often goes in the same
+            # box, which leaves when the later of the two would have
             for b in sorted(self.open_boxes, key=lambda b: (self.boxes[b][0]["ship"], b)):
                 a = self.boxes[b]
                 if (len(a) == 1 and a[0]["kind"] == "EAM" and a[0]["store"] == rec["store"]
-                        and a[0]["ship"] >= rec["removed"] and 0 <= (rec["ship"] - a[0]["ship"]).days <= 14):
+                        and a[0]["ship"] >= rec["removed"] and abs((rec["ship"] - a[0]["ship"]).days) <= 14):
                     if rr.random() < 0.5:
-                        a[0]["ship"] = rec["ship"]
+                        a[0]["ship"] = rec["ship"] = max(a[0]["ship"], rec["ship"])
                         a.append(rec)
                         rec["box"] = b
                         return
@@ -505,7 +506,7 @@ def modules(rng, fl, prog, subs):
         spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=removed, reason=reason,
                            made=made[i], repaired=repaired[i], origin=origin[i]))
 
-    # Veldtek service bulletin SB-15-02 (2015): modules with date codes 91 to 97 replaced, station by station; the
+    # Veldtek service bulletin SB-15-02 (2015): modules with date codes 97 and earlier replaced, station by station; the
     # station's month in the bulletin campaign is the drawn one, and the swap is dated on a working day counted from
     # the same first day of a month
     when = {}

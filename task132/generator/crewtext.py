@@ -83,7 +83,7 @@ class Writer:
         if not bay or not bay.startswith("F"):
             return bay
         n = int(bay[1:])
-        if self.r.random() < 0.004 and n > 1:
+        if self.r.random() < 0.01 and n > 1:
             n += self.r.choice([-1, 1])
             self.wrong_bays += 1
         st = p.bay if self.r.random() < 0.85 else self.one(BAY_STYLES)

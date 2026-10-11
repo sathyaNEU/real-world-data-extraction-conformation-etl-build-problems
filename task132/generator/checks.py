@@ -334,11 +334,19 @@ def repair3(reg, wo, hist, subs, plan, f, s):
         if r[7] is not None:
             back.setdefault(r[2], []).append(r[7].date())
     early = [(sn, fit, rem) for sn, fit, rem, why in zip(hist["serial_no"], hist["fitted"], hist["removed"], hist["removal_reason"])
-             if why == "FAILED" and any(b < fit for b in back.get(sn, [])) and (rem - fit).days < 200]
+             if why == "FAILED" and any(b < fit for b in back.get(sn, [])) and (rem - fit).days < 250]
     warranty = [r for r in rows if r[8] and str(r[8]).startswith("Warranty")]
     ok(len(early) >= 2 and len(warranty) >= 1
        and all(any(q[2] == w[2] and q[7] is not None and q[7] < w[5] for q in rows) for w in warranty),
-       "%d repaired modules failed within months of refit, %d back at Veldtek under warranty" % (len(early), len(warranty)))
+       "%d repaired modules failed within eight months of refit, %d back at Veldtek under warranty" % (len(early), len(warranty)))
+    # repaired modules back from Veldtek and not fitted since are on the shelf, inside the serviceable count
+    stock0 = pd.read_csv(os.path.join(T, E.F["stock"]), dtype={"item_no": str})
+    last_fit = {}
+    for sn_, fit_ in zip(hist["serial_no"], hist["fitted"]):
+        last_fit[sn_] = max(fit_, last_fit.get(sn_, fit_))
+    shelf = sum(1 for r in rows if r[7] is not None and r[7].date() >= W.MIGRATION
+                and r[2] not in [q[2] for q in rows if q[5] > r[5]] and last_fit.get(r[2], dt.date(1900, 1, 1)) < r[7].date())
+    ok(shelf <= s["serviceable"], "%d repaired modules on the shelf at the count, within the %d serviceable" % (shelf, s["serviceable"]))
     # R2: modules left in relays retired by a rebuild went for scrap with them, under the e-waste manifest in the LOG
     # work order for that rebuild; none comes back, and the stock is untouched
     scrap = hist[hist["removal_reason"] == "ASSET RETIRED"]
@@ -392,7 +400,7 @@ def repair3(reg, wo, hist, subs, plan, f, s):
     ok(sum(x.year == 2026 for x in c25) >= 2, "%d 2026 entries on the 2025 plan" % sum(x.year == 2026 for x in c25))
     # R13: the bulletin's returns are its date codes
     sb = [r for r in rows if "SB-15-02" in str(r[6])]
-    ok(len(sb) >= 20 and all(91 <= int(r[2][5:7]) <= 97 for r in sb), "%d SB-15-02 returns, all date codes 91 to 97" % len(sb))
+    ok(len(sb) >= 20 and all(88 <= int(r[2][5:7]) <= 97 for r in sb), "%d SB-15-02 returns, all date codes 97 or earlier" % len(sb))
     # R14: Ontario names, distribution stations at a distribution station's size
     live = reg[(reg["status"] == "IN SERVICE") & reg["bay"].str.startswith("F")]
     kind = dict(zip(subs["sub_code"], subs["station_type"]))
