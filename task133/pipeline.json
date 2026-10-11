@@ -2,8 +2,8 @@
  "task": "task133",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 6,
- "stage_name": "solver round 1 passed; leak read round 3 running, then the judge",
+ "stage": 7,
+ "stage_name": "determinism check (judge pass 1)",
  "updated": "2026-10-11",
  "branch": "sathya8571/task133-same-day-access",
  "stump": "A competent solver stages the book, reads the model team's cumulative default curve from month 1 for every loan's next 12 months or remaining term and books about 44 per cent too much (about AUD 19.8 million against AUD 13,773,000); the step that lands it there is treating a curve that runs from origination as a term structure from the reporting date, when most of the book is past its riskiest months.",
@@ -51,6 +51,27 @@
    "mean": 37.6,
    "decision": "pass",
    "brief": "Both solvers read the curve from each loan's months on book (the decisive starting-point rung) and stopped at the unconditional increment, the -3.3% rung; both named the survival-conditioned reading (A$13,773k) and declined it because CRM-ECL-04 does not spell it out. Read as a stump, not a fork: 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date for a loan performing on that date, and the curve is the probability that a new loan defaults by each month on book. The judge rules on it at stage 7."
+  },
+  {
+   "label": "round 2",
+   "date": "2026-10-11",
+   "score": 36.1,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
+  },
+  {
+   "round": 2,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "rule": "one sandboxed solver (main, PR #17)",
+   "solver": {
+    "landed": false,
+    "proxy": 36.1,
+    "answer": "A$13,318,000 (curve increments from months on book, no survival division)"
+   },
+   "decision": "pass",
+   "brief": "The solver staged the book exactly as the golden does (37,289 stage 1, 3,265 stage 2, 343 stage 3, every gross carrying amount), read 3.2 and the curve header correctly, took the plain increments from each loan's months on book and named the survival-conditioned reading (about A$13,773,000) as an open point it declined because CRM-ECL-04 does not spell it out. The miss is at the decisive analytical step the card's analyst_test names; the judge rules on stump against fork at stage 7."
   }
  ],
  "judge": {
@@ -60,5 +81,10 @@
  },
  "approved": null,
  "delivered": null,
- "portal": null
+ "portal": null,
+ "three_rules": {
+  "domain": "pass (AASB 9 staging, LGD, EAD, scenario weighting and discounting decide it)",
+  "layers": "pass",
+  "decisive_step": "analytical (survival conditioning of an origination-indexed cumulative curve)"
+ }
 }
