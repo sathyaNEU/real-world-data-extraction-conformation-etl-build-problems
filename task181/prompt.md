@@ -1,4 +1,4 @@
-Pertussis has been climbing across the district since August, and Janice Barker's response team works one local government area a week. Our pertussis response protocol, PR-07, says which area that is, and Monday's huddle settles it off this morning's line-list extract. The call is one area.
+Pertussis has been climbing across the district since August, and Janice Barker's response team works one local government area a week. Our pertussis response protocol, PR-07, says which area that is, and Monday's huddle, by phone this Labour Day, settles it off this morning's line-list extract. The call is one area.
 
 The huddle reads one slide, `response_team_brief.pptx`. It names the area the team goes to, then lists every school the protocol counts as a cluster this week, each with the school, its area and its number of cases.
 
