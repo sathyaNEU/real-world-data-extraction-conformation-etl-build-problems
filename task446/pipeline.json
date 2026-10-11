@@ -2,8 +2,8 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 4,
- "stage_name": "leak check (architecture 2, loop 1)",
+ "stage": 7,
+ "stage_name": "determinism check (architecture 2, loop 1)",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver sets the probabilities from the share of flagged and of unflagged groups that reached the list over the four closed cohorts taken together (the hit and miss rates) and files 73, or, seeing that basis fail the standard's leave-one-cohort-out test by 40.6 per cent, trends those rates on the flagged share and files 147; only the basis that backs each year's share reaching out of its flagged share through the capture and false-alarm rates passes the test (worst miss 1.6 per cent) and gives 133.",
@@ -51,6 +51,26 @@
    },
    "decision": "harden",
    "brief": "designer pass before any architecture 2 round: the stage 4 reader's main-call fork (5.2's filed basis read literally as the pooled hit rate, 74 against 134) is the portal's task445 defect; 5.2 refiled as the estimand plus the leave-one-cohort-out test, cohort counts retuned (call 133), ask devices redrawn off architecture 1's families (facility-obligor grain, UTC limit clock, not-yet-grouped customers)"
+  },
+  {
+   "label": "round 2",
+   "date": "2026-10-11",
+   "score": 24.7,
+   "landed": false,
+   "cracked": 0,
+   "items": 6
+  },
+  {
+   "round": 2,
+   "architecture": 2,
+   "loop": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": false,
+    "proxy": 24.7
+   },
+   "decision": "pass",
+   "brief": "missed at the decisive step: ran the filed leave-one-cohort-out test over the flag-split pooled hit rates and a single book rate only, chose the hit rates and filed 73; never built the capture and false-alarm basis (133); every field and rule read correctly (book, membership with GLEIF, flags by LEI or CRN, exposure at end of day UK time, facility once per group)"
   }
  ],
  "judge": {
@@ -60,5 +80,6 @@
  },
  "approved": null,
  "delivered": null,
- "portal": null
+ "portal": null,
+ "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed"
 }
