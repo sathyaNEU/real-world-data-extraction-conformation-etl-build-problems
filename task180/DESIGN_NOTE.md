@@ -550,3 +550,50 @@ slot then retires); a miss that lands anywhere other than rungs 0 to 2 is read f
   hazard deflated corinurad's all-time ratio only to 2.29, 2.24 and 2.23. It also painted kidney injury admissions
   before the start at twice the post-start level, the story of a medicine avoided in kidney disease turned upside
   down. Calendar adjustment still named corinurad.
+- **Hardening loop 1, the paper half under the literal rule (2026-10-11): spent.** The rung loop 1 built (velaglutide
+  not started after a pancreatitis, so the comparison with all observed time names it and only the comparison anchored
+  at the start recovers corinurad) is rule application once the comparison is filed, which `determinism-check` §1
+  requires. SOP-PV-14 1.2 asks whether starting the medicine raises the risk of the event in the month after the start
+  and files no comparison. Measured on the a4261fe build with `golden.py`'s own estimators:
+  - **Literal reader.** Each filing of the comparison, executed word for word:
+    - other people (matched non-users; new users of the established medicine; both crude): tasorexant, by 2.48 and
+      2.49;
+    - the same new users before they started (days -365 to -31; all resident time before the start; against the
+      matched non-users' same windows): velaglutide 11.17, 11.87 and 9.42, by 6.25, 5.72 and 4.97;
+    - the same new users' other time (all observed time from 2018, unadjusted and by age and calendar year; from 2022
+      by five-year age band): velaglutide, by 2.64, 1.38 and 1.53;
+    - the same new users' time after the month after the start (days 61 to 180; day 31 on): corinurad 1.655 (1.221 to
+      2.242), by 1.62 and 1.59 (tasorexant 0.985, velaglutide 1.023). The only filing whose literal execution is the
+      golden's figure, and it names the reference window, which is the step.
+  - **The counterfactual filing** ("the rate the same new users would have had over those days had they not
+    started"). Read literally it either leaves the method open with nothing to select it, or points at the only time
+    the same new users were without the medicine, before they started (the second reading, velaglutide). It also
+    leaves velaglutide's step at the start live as an effect of starting: its pancreatitis runs at 0.24 admissions per
+    1,000 person-years in the year before the start and 2.09 in the year after (18 admissions in the twelve 30-day
+    blocks before the start, 103 in the twelve after). The golden's design compares two windows after the start and
+    cannot see a step at day 0. Only a between-person argument rules it out (after the start velaglutide users match
+    orlistat starters, 2.09 against 2.11), the kind of comparison this build teaches the solver to distrust.
+  - **The counterfactual with a criterion** ("estimated by a design whose assumptions the registry data bear out", the
+    closest general wording that closes the all-time reading without naming a window or an estimator). The data
+    separate the candidates under it by wide margins. In the year before the start, tasorexant starters' fall rate ran
+    at 3.99 times matched non-users' and 2.28 times zopiclone starters'. Corinurad starters' kidney injury ran at 0.45
+    times allopurinol starters'. Velaglutide starters' pancreatitis ran at 0.12 times orlistat starters' and 0.17
+    times matched non-users'. But executing the criterion is the decisive step. The assumption to check for the
+    self-controlled comparison is the textbook one (the event must not change the chance of starting), and its data
+    are the loudest pattern in the pack, in the 30-day block profile round 6 drew unprompted (its step 4). A criterion
+    that names only a concept is a Gate C risk on its own (task44), and naming the observable ("time in which the
+    event cannot have changed whether the person started") names the step.
+  - **Rule 3, answered: no.** A strong analyst who reads that criterion correctly and cleans the data names corinurad.
+    Naming velaglutide or tasorexant takes skipping the check the filed text orders. The only texts that close the
+    all-time reading name the step or order it.
+  - **Why no tuning rescues it.** To beat the age adjustment the deficit has to be deep and lasting (loop 1's
+    arithmetic above), and a deficit that deep is an 8.5-fold step at day 0 in the event profile. So the separation
+    determinism needs is the same symptom that hands over the step (`stumping`, Where the decisive move survives, 3 and
+    6). A filed back-test on closed reference pairs (C2) separates the designs only with a contraindicated negative
+    control in the corpus, and that corpus then nominates the anchored design to any solver that back-tests.
+  - **The shipped ladder fails the same test.** The comparison is one of the estimand's five parts and is this
+    architecture's whole decisive step (rungs 1 and 2 against rung 3). Filing "the same people's other time" makes
+    round 6's method the literal execution (corinurad 2.58 in the shipped world) with nothing analytical left, as
+    task181 found.
+  - **State.** The WIP generator at a4261fe stays as committed (not green: caused 5.539 on its rounding edge). No pack
+    is cut and nothing goes to a builder. Retiring the number is the author's decision.
