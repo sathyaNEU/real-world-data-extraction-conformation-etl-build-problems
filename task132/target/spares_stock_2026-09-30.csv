@@ -1,0 +1,17 @@
+item_no,item_code,item_description,location,bin,stock_state,uom,quantity,unit_cost_cad
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",Central Stores (Barrie Road),A-14-03,SERVICEABLE,EA,5,1418.40
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",North Depot,N-02-11,SERVICEABLE,EA,4,1418.40
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",South Depot,S-05-07,SERVICEABLE,EA,3,1418.40
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",Central Stores (Barrie Road),Q-01-02,QUARANTINE,EA,4,1418.40
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",South Depot,Q-02-01,QUARANTINE,EA,3,1418.40
+300-14522,VPR340-PSU-02,"Power supply module, VPR-340, 48-250 V DC",Veldtek repair centre,,AT REPAIR,EA,3,1418.40
+300-14523,VPR340-CPU-01,"Processor card, VPR-340",Central Stores (Barrie Road),A-14-04,SERVICEABLE,EA,6,2210.00
+300-14524,VPR340-IO-03,"Input/output card, VPR-340",Central Stores (Barrie Road),A-14-05,SERVICEABLE,EA,9,865.75
+300-14526,VPR340-DSP-01,"Front panel display, VPR-340",North Depot,N-02-12,SERVICEABLE,EA,4,640.00
+300-11870,VPR220-PSU-01,"Power supply module, VPR-220",Central Stores (Barrie Road),A-11-01,SERVICEABLE,EA,12,905.20
+300-11870,VPR220-PSU-01,"Power supply module, VPR-220",Central Stores (Barrie Road),Q-01-04,QUARANTINE,EA,2,905.20
+300-20115,NX5-PSU,"Power supply, Norland NX-5",Central Stores (Barrie Road),A-20-02,SERVICEABLE,EA,7,1290.00
+300-20131,NX9-PSU,"Power supply, Norland NX-9",North Depot,N-04-03,SERVICEABLE,EA,5,1105.00
+300-31007,AT7-CTRL,"Control module, Arcwell AT-7",South Depot,S-01-09,SERVICEABLE,EA,3,3480.00
+300-26402,KDR30-PSU,"Power supply, Kestrel KDR-30",North Depot,N-03-02,SERVICEABLE,EA,2,1675.50
+300-31040,RT400-CPU,"RTU processor, Arcwell RT-400",Central Stores (Barrie Road),A-31-01,SERVICEABLE,EA,2,4120.00

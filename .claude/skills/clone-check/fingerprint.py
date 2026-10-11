@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import zipfile
 from collections import Counter, defaultdict
 
@@ -349,6 +350,10 @@ def submission_card(text):
 def target_card(tdir):
     files, formats = [], Counter()
     if not os.path.isdir(tdir):
+        # target/ is gitignored, so a fresh checkout often holds only the tracked target.zip;
+        # profile the zip rather than recording an empty pack.
+        if os.path.isfile(tdir + ".zip"):
+            return target_card_from_zip(tdir + ".zip")
         return {"present": False, "file_count": 0, "formats": {}, "layout": [], "files": []}
     for root, dirs, names in os.walk(tdir):
         dirs[:] = [d for d in dirs if not EXCLUDE_DIRS.search(d) and d != "__pycache__"]
@@ -374,6 +379,28 @@ def target_card(tdir):
     layout = sorted({os.path.dirname(f["rel"]).split(os.sep)[0] for f in files if os.path.dirname(f["rel"])})
     return {"present": True, "file_count": len(files), "formats": dict(formats),
             "layout": layout or ["<flat>"], "files": files}
+
+
+def target_card_from_zip(zpath):
+    """The same profile as target_card, read from a build's target.zip (flat, or with one
+    top-level target/ folder). Members with absolute or parent paths are skipped."""
+    try:
+        zf = zipfile.ZipFile(zpath)
+    except (OSError, zipfile.BadZipFile):
+        return {"present": False, "file_count": 0, "formats": {}, "layout": [], "files": []}
+    with zf, tempfile.TemporaryDirectory() as tmp:
+        for info in zf.infolist():
+            parts = info.filename.replace("\\", "/").split("/")
+            if info.is_dir() or info.filename.startswith("/") or ".." in parts or "__MACOSX" in parts:
+                continue
+            zf.extract(info, tmp)
+        root = tmp
+        entries = [e for e in os.listdir(tmp) if not e.startswith(".")]
+        if entries == ["target"] and os.path.isdir(os.path.join(tmp, "target")):
+            root = os.path.join(tmp, "target")
+        card = target_card(root)
+    card["source"] = "target.zip"
+    return card
 
 
 def parse_ledger(path):
@@ -475,6 +502,13 @@ def cmd_extract(args):
             cached = json.load(open(args.out)).get("cards", [])
         except (OSError, ValueError):
             cached = []
+        # A build on this disk with neither target/ nor target.zip keeps the pack profile the cache
+        # already holds for it, instead of overwriting it with an empty one.
+        by_task = {c.get("task"): c for c in cached}
+        for c in cards:
+            old_target = (by_task.get(c["task"]) or {}).get("target") or {}
+            if not c["target"].get("file_count") and old_target.get("file_count"):
+                c["target"] = dict(old_target, source="cache")
         have = {c["task"] for c in cards}
         cards = sorted(cards + [c for c in cached if c.get("task") not in have],
                        key=lambda c: c.get("num") or int(re.sub(r"\D", "", c.get("task", "")) or 0))
