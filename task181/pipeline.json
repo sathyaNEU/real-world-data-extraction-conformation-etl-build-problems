@@ -2,7 +2,7 @@
  "task": "task181",
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
- "stage": 6,
+ "stage": 7,
  "stage_name": "solver round 2 passed; ask layer tied to the call next, then the leak re-read and a confirming round",
  "updated": "2026-10-11",
  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
@@ -44,6 +44,16 @@
    },
    "decision": "pass",
    "brief": "Missed at the decisive analytical step (rung 1): every field and stated rule read correctly (episodes, split postcodes, the extract day, the five-year expected count) and every ask figure right, but the solver set the cases notified so far against PR-07's expected count and sent the team to Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6) without a word on reporting delay. A valid analytical miss under the three rules. The proxy is high (65.2) because every ask is independent of the call: the slide's cluster list becomes the clusters in the area the team goes to (its school visits), so a wrong area carries a wrong list."
+  },
+  {
+   "round": 3,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 59.0
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 1) again, after the slide was made call-dependent: every field and stated rule read correctly (episodes, split postcodes, the extract day, the five-year expected count, the roster checks) and every CSV figure right, but the solver set the cases notified so far against PR-07's expected count and sent the team to Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6) without a word on reporting delay; the slide then carried Wagga Wagga's clusters (Wollundry 3, Bolton Park HS 2) instead of Griffith's (Banna Avenue 5, Kooyoo Street 2). Proxy fell from 65.2 to 59.0; the slide items still score partial token hits because the solver names Griffith as runner-up and shares 'Public School' tokens. A valid analytical miss under the three rules."
   }
  ],
  "judge": {
