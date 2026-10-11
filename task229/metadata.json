@@ -11,7 +11,7 @@
     "read_health_by_build_wk41.png"
   ],
   "distractor_files": [
-    "hes_firmware_census_20261012.csv",
+    "extract_log_20261012.csv",
     "dnsp_planned_interruptions_oct2026.xlsx"
   ],
   "input_gates": {

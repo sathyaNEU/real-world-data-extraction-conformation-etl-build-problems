@@ -6,12 +6,13 @@ in the same objective inside the product-analytics experiment-platform world, so
 seed's objective and moves the world to a smart-meter metering data provider, where the object under
 analysis (interval data delivery) is the health of the data itself.
 
-**Where the build stands.** Architecture 1, hardening loop 2. Round 1 had both solvers execute the
-filed mean and the filed installation-level error and land the call. Loop 1 moved the decisive rung
-to the unit the build's standard error is built over, which no clause can carry: round 2 had both
-solvers miss the call at exactly that step, and the ask layer leaked. Loop 2 hardens the ask layer and
-closes an outage carve-out route the leak reader found (`## Tried and rejected`). The main ladder is
-unchanged since loop 1.
+**Where the build stands.** Architecture 1, hardening loop 2, round 3 passed the worth-it gate and
+the determinism judge is reviewing the loop-2 cut. Round 1 had both solvers execute the filed mean and
+the filed installation-level error and land the call. Loop 1 moved the decisive rung to the unit the
+build's standard error is built over, which no clause can carry: round 2 had both solvers miss the
+call at exactly that step, and the ask layer leaked. Loop 2 hardened the ask layer and closed an
+outage carve-out route the leak reader found; round 3 had both solvers, and the leak reader solving
+on its own, miss the call at the same step (`## Solver rounds`).
 
 ## DRAW
 
@@ -185,6 +186,36 @@ place:
   sits clearly under its installation-level limit: every carve-out variant (failed node-days dropped,
   the node backlog counted as held, installations behind failed nodes dropped) fires EM3.12.0 by 0.15
   and files a wrong set (asserted). The golden still holds EM3.12.0 by 0.41.
+
+## Solver rounds
+
+| Round | Cut | Plain | Skeptic | Decision |
+|---|---|---|---|---|
+| 1 | architecture 1 as first built | landed, 91.3 | landed, 87.4 | harden: the decisive step was a filed formula |
+| 2 | loop 1 | missed at R4, 54.5 | missed at R4, 54.5 | harden the asks: read for the facts each kept about 37, no margin under 40 |
+| 3 | loop 2 | missed at R4, 47.0 | missed at R4, 43.4 | pass |
+
+Round 3 against the worth-it gate:
+
+1. **Both solvers miss the main call.** Both filed fire on EM3.12.0, EM3.10.9, EM3.12.2, EM3.12.1 and
+   PX5.2.7 with "SE = sample SD (n-1)/sqrt(n)" and no use of `comms_parent`, and both stopped Wave 8
+   onto EM3.12.2. The round-3 leak reader, solving on its own, filed the same five fires and tried a
+   cut-off sweep, AEDT, a pooled error, the build at the week start, dropping missing or estimated days
+   and excluding the four failed collectors (EM3.12.0 still fires there, at minus 0.15), and never an
+   error over the nodes.
+2. **The pair stays under 40 on the facts.** Read for what each solver filed, each kept 17 of 51 ask
+   criteria (the read-health figures, six of the eight per-build alerts, PX5.3.1's Wave 8 figure and
+   the chart's points and reference line) and lost every standard error, limit and distance, both
+   lists, the order, EM3.12.2's Wave 8 figure, the substitution load and the chart's title, order and
+   ticks: about 31 each. By grade.py's own cracked-item count (one of four items each) the pair
+   arithmetic gives about 27. grade.py's decimal (47.0 and 43.4) is inflated by its matcher, which is
+   the reason the skill reads the facts rather than the decimal: it accepts a number within 0.5 per
+   cent of the golden (about 0.49 points on percentages near 99, so 98.89 passes for 98.40), matches
+   numbers anywhere in an answer rather than on their build, credits the eligible 1,274 the solvers
+   quoted beside their committed 0, and scores a capitalised word in the load item. With the
+   tolerance at the prompt's rounding the decimals are 44.5 and 40.8 (`solver_rounds/round-3-*.md`).
+3. **Every miss is a stump** (`## Stump or fork`): the files refute the independence R4 assumes, and
+   every dependence-respecting grouping lands the golden call.
 
 ## The decisive move, and why it survives the opponent
 
@@ -386,11 +417,14 @@ is the third hardening loop or a re-root, decided on that solver's path sentence
 - Surface screen (`guard.py surface task229`, loop-1 cut): 0 promoted pairs, nearest surface 0.10;
   no persona of another build in the cut pack. task228's pack sits on another checkout and is
   screened against this one before ship.
-- Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry about 95,000 rows;
-  distractors `hes_firmware_census_20261012.csv` (the head-end's inventory by image and status) and
+- Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry 95,140 rows; distractors
+  `extract_log_20261012.csv` (the pull's provenance: sources, times, coverage, record counts) and
   `dnsp_planned_interruptions_oct2026.xlsx` (the distributors' planned supply interruption
   notifications; the meters keep their interval data through daytime works, so the reads are
-  unaffected while the day totals dip), both named in `metadata.json` and asserted unused by the golden.
+  unaffected while the day totals dip), both named in `metadata.json` and asserted unused by the
+  golden. `hes_firmware_census_20261012.csv` (the head-end's inventory by image and status) is a
+  supporting cross-check, not a distractor: solvers use it to confirm each meter's build, and once the
+  fire set is known its in-service counts sum to the substitution load.
 
 ## House fixes and realism (reduce-house-fixes, golden-realism)
 
@@ -435,9 +469,18 @@ digit; the history now reads 99.20.) Each REVIEW line:
   matters; harmless.
 
 Round 2's solver's-eye reader (on the loop-1 cut) quoted nothing for any question and called every
-REVIEW line harmless; its solvability point is answered in `## The outage carve-out route`. The
-prompt changed in loop 2 and the standard did not, so the reader runs again on this cut, staged with
-round 3.
+REVIEW line harmless; its solvability point is answered in `## The outage carve-out route`. Round 3's
+reader (on the loop-2 cut, after the prompt changed) again quoted nothing for any question and called
+every REVIEW line harmless. Two points from it:
+
+- It names `dnsp_planned_interruptions_oct2026.xlsx` as a distractor that does not help ("none of the
+  NMIs it lists in the assessment week lost reads on the notified day"), as designed.
+- For question 4 it notes that once the fire set is known, the census's in-service counts sum to the
+  substitution load (695 + 423 + 728 = 1,846): a second route to the same figure, which is
+  convergence, not a fork, but it means the census answers a graded quantity, so it cannot stay a
+  declared distractor. `metadata.json` now declares the extract log and the planned-interruption
+  notifications as the two distractors and the census as a supporting cross-check (the change touches
+  no shipped byte, no graded figure and no document a solver reads).
 
 ## Tried and rejected
 

@@ -2,15 +2,15 @@
  "task": "task229",
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
- "stage": 6,
- "stage_name": "solver round 3 staged (hardening loop 2); fresh leak read staged; determinism judge staged to run if round 3 holds the call",
+ "stage": 7,
+ "stage_name": "determinism judge running on the loop-2 cut (round 3 passed the worth-it gate)",
  "updated": "2026-10-11",
  "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.83 and 0.57, not 0.40 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
  "architecture": 1,
  "loops": 2,
  "leak": {
   "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
-  "reader": "round-2 reader (loop-1 cut): Q1-Q4 none, R1-R3 harmless, solvability point answered (carve-out route closed); re-read staged for round 3 (the prompt changed)"
+  "reader": "round-3 reader (loop-2 cut): Q1-Q4 none, R1-R3 harmless; it solved the task itself and filed R4 (five fires), never trying an error over comms nodes; it notes the census sums to the substitution load once the fire set is known"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task228, answered); nearest heart text 0.04 (task114); nearest driver 0.06 (task87 v3)",
@@ -74,6 +74,41 @@
    "mean_read": 37.0,
    "decision": "harden (ask layer)",
    "brief": "both missed the call at R4 (installation-level error), a stump not a fork (independence refuted by the node-night failures; every dependence-respecting grouping lands the call); the asks leaked (grade.py 54.5 each, about 37 read honestly): Wave 7 fully cracked in both rounds, read health free; drop Wave 7, add the distance from the limit and the 6.1 substitution load; close the outage carve-out route (EM3.12.0 at 0.006 of its limit) by raising EM3.12.0's own gap and outage rates"
+  },
+  {
+   "label": "round 3, plain",
+   "date": "2026-10-11",
+   "score": 47.0,
+   "landed": false,
+   "cracked": 1,
+   "items": 4
+  },
+  {
+   "label": "round 3, skeptic",
+   "date": "2026-10-11",
+   "score": 43.4,
+   "landed": false,
+   "cracked": 1,
+   "items": 4
+  },
+  {
+   "round": 3,
+   "architecture": 1,
+   "loop": 2,
+   "plain": {
+    "landed": false,
+    "proxy": 47.0,
+    "strict_proxy": 44.5
+   },
+   "skeptic": {
+    "landed": false,
+    "proxy": 43.4,
+    "strict_proxy": 40.8
+   },
+   "mean": 45.2,
+   "mean_read": 31,
+   "decision": "pass",
+   "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)"
   }
  ],
  "judge": {

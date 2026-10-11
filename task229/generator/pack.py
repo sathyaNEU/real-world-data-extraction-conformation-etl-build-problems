@@ -26,7 +26,7 @@ FILES = {
     "census": "hes_firmware_census_20261012.csv",
     "dnsp": "dnsp_planned_interruptions_oct2026.xlsx",
 }
-DISTRACTORS = ["census", "dnsp"]
+DISTRACTORS = ["log", "dnsp"]
 
 
 def _hex(*parts, n=10):

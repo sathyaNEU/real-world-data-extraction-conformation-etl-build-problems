@@ -49,7 +49,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "mdm_interval_receipts_20261005_20261011.csv",
-    "rows": 94912,
+    "rows": 95140,
     "entity": "one metered register (data stream) of one installation for one market day, as one delivery from the meter data management system carried it, with its interval counts by quality flag",
     "grain": "register x market day x delivery",
     "source": "synthetic"
