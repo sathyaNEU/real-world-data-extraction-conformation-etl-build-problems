@@ -21,6 +21,7 @@
  ],
  "generators": [
   "G2",
+  "G12",
   "G7",
   "G17"
  ],
@@ -47,7 +48,7 @@
  "scoring_unit": "per active unit per period",
  "spine": {
   "file": "mdm_interval_receipts_20261005_20261011.csv",
-  "rows": 94384,
+  "rows": 94239,
   "entity": "one metered register (data stream) of one installation for one market day, as one delivery from the meter data management system carried it, with its interval counts by quality flag",
   "grain": "register x market day x delivery",
   "source": "synthetic"
@@ -74,7 +75,7 @@
  "opening_move": "calendar-first",
  "driver": "The decisive quantity is an average of per-entity shares taken over the entities present for the whole window, with its error drawn from between-entity spread, so a pooled ratio over records that a few high-volume entities dominate, with a record-count error, both reverses which groups breach in each direction and makes small groups breach on noise.",
  "driver_concrete": "The read-health standard scores a firmware build on its average installation that ran the build all week, counting the interval reads the meter data management system held as actual at the next-morning delivery cutoff, with the limit set three standard errors of that average below the reference; pooling interval reads lets the 5-minute, three-register commercial installations (about eighteen times a household's reads) carry PX5.3.0 under the line and lift EM3.12.1 over it, and a read-count error makes the large and the pilot builds breach on noise.",
- "stump": "A competent solver builds each firmware build's read health from the MDM receipts as the share of all expected interval reads that came in actual, keeps each register-day's latest delivery, counts every installation on its end-of-week build and sets the limit with the binomial error on those reads, so it fires the alert on EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1 and holds EM3.12.1, PX5.2.7 and EM3.12.0; the step that carries the stump is pooling reads that the 5-minute three-register installations dominate, with a read-count error, instead of averaging the installations that ran the build all week on the reads held at the 06:00 cut-off with an installation-level error.",
+ "stump": "A competent solver builds each firmware build's read health from the MDM receipts as the share of expected interval reads that came in actual, keeps each register-day's latest delivery, counts every installation on its end-of-week build and sets the limit with the binomial error on those reads, so it fires the alert on EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1 and holds EM3.12.1, PX5.2.7 and EM3.12.0; the step that carries the stump is pooling reads that the 5-minute three-register installations dominate, with a read-count error, instead of averaging the installations that ran the build all week on the reads held at the 06:00 cut-off against every expected interval, with an installation-level error.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task98": "task98 v3 formed units by chaining labelled members within a distance and applied a per-unit threshold to a filed count; here the units are stored and named by the standard, and the move is how a group of units is scored and given an error: the average of per-unit shares with a between-unit standard error against a record-pooled ratio with a record-count error, which reverses breaches in both directions and makes small groups breach on noise"

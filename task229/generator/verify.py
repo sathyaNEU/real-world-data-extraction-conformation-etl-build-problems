@@ -83,16 +83,22 @@ def main(target, golden):
                 continue
             k = (r["NMI"], r["NMI_SUFFIX"], rd)
             if k not in best or t > best[k][0]:
-                exp = int(r["QTY_A"]) + int(r["QTY_S"]) + int(r["QTY_F"])
-                best[k] = (t, int(r["QTY_A"]), exp)
-    held, expd, day_miss = {}, {}, {}
-    for (nmi, sx, rd), (_, a, e) in best.items():
+                best[k] = (t, int(r["QTY_A"]))
+    # expected reads come from the register's data streams: every interval of every stream, every day
+    per_day = {}
+    for row in list(wb["Data streams"].iter_rows(values_only=True))[3:]:
+        nmi = str(row[0])[:10]
+        per_day[nmi] = per_day.get(nmi, 0) + 1440 // int(row[2])
+    days = [(dt.date(2026, 10, 5) + dt.timedelta(days=d)).strftime("%Y%m%d") for d in range(7)]
+    held, held_day = {}, {}
+    for (nmi, sx, rd), (_, a) in best.items():
         held[nmi] = held.get(nmi, 0) + a
-        expd[nmi] = expd.get(nmi, 0) + e
-        day_miss[(nmi, rd)] = day_miss.get((nmi, rd), 0) + (e - a)
+        held_day[(nmi, rd)] = held_day.get((nmi, rd), 0) + a
+    expd = {nmi: 7 * v for nmi, v in per_day.items()}
+    day_miss = {(nmi, d): per_day[nmi] - held_day.get((nmi, d), 0) for nmi in per_day for d in days}
     shares = {}
     for nmi, rel in pop.items():
-        shares.setdefault(rel, []).append(100.0 * held[nmi] / expd[nmi])
+        shares.setdefault(rel, []).append(100.0 * held.get(nmi, 0) / expd[nmi])
     score = {}
     for rel, xs in shares.items():
         n = len(xs)

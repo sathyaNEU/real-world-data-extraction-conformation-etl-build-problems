@@ -103,6 +103,7 @@ Last revised 14/09/2026 (T. Phillips).
 | QTY_A | intervals in the delivery carrying an actual read |
 | QTY_S | intervals carrying a substituted value |
 | QTY_F | intervals carrying a final substituted value |
+| QTY_E | intervals carrying an estimated value from the MDM estimation run |
 | DAY_TOTAL | sum of the day's interval values in UOM, every quality |
 
 A delivery carries the whole data stream for the read date; a later delivery for the same NMI, suffix and

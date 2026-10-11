@@ -32,7 +32,8 @@ GOLD_FIRE = ("EM3.10.9", "EM3.12.1", "PX5.2.7")
 
 
 def edge(x):
-    return 0.005 - abs((x * 100) % 1 - 0.5) / 100
+    """Distance from x to the nearest two-decimal rounding edge (the x.xx5 points)."""
+    return abs((x * 100) % 1 - 0.5) / 100
 
 
 def run(target, world=None, quiet=False):
@@ -56,11 +57,11 @@ def run(target, world=None, quiet=False):
     vers = {w: G.versions(D["mdm"], w) for w in ("cutoff", "latest", "first")}
     pops = {m: G.assessed(D, m) for m in ("fullweek", "start", "end")}
     rung = {
-        "R0 latest deliveries, every installation on its end-of-week build, pooled reads, read-count error": ("latest", "end", "pooled", "binomial_reads"),
-        "R1 + reads held at the cut-off": ("cutoff", "end", "pooled", "binomial_reads"),
-        "R2 + installations that ran the build all week": ("cutoff", "fullweek", "pooled", "binomial_reads"),
-        "R3 + the average installation": ("cutoff", "fullweek", "installation", "binomial_reads"),
-        "R4 + installation-level error (the answer)": ("cutoff", "fullweek", "installation", "installation"),
+        "R0 latest deliveries, every installation on its end-of-week build, pooled reads, read-count error": ("latest", "end", "pooled", "binomial_reads", "register"),
+        "R1 + reads held at the cut-off against every expected interval (a register-day held nowhere counts zero)": ("cutoff", "end", "pooled", "binomial_reads", "register"),
+        "R2 + installations that ran the build all week": ("cutoff", "fullweek", "pooled", "binomial_reads", "register"),
+        "R3 + the average installation": ("cutoff", "fullweek", "installation", "binomial_reads", "register"),
+        "R4 + installation-level error (the answer)": ("cutoff", "fullweek", "installation", "installation", "register"),
     }
     expect = [("EM3.10.9", "EM3.12.2", "PX5.3.0", "PX5.3.1"),
               ("EM3.10.9", "EM3.12.0", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
@@ -69,7 +70,7 @@ def run(target, world=None, quiet=False):
               GOLD_FIRE]
     sets = []
     for (name, cell), want in zip(rung.items(), expect):
-        fs = G.fire_set(G.score(vers[cell[0]], pops[cell[1]], cell[2], cell[3]))
+        fs = G.fire_set(G.score(vers[cell[0]], pops[cell[1]], cell[2], cell[3], cell[4]))
         ok(fs == tuple(sorted(want)), "%s fires %s" % (name, fs))
         sets.append(fs)
         log.append("%s -> fires %s" % (name, ", ".join(fs)))
@@ -80,14 +81,27 @@ def run(target, world=None, quiet=False):
     errs = ("installation", "binomial_reads", "binomial_installations", "none")
     golden_cells = []
     cells = 0
-    for v, p, u, e in itertools.product(vers, pops, units, errs):
-        fs = G.fire_set(G.score(vers[v], pops[p], u, e))
+    for v, p, u, e, dn in itertools.product(vers, pops, units, errs, ("register", "rows")):
+        fs = G.fire_set(G.score(vers[v], pops[p], u, e, dn))
         cells += 1
         if fs == GOLD_FIRE:
-            golden_cells.append((v, p, u, e))
-    ok(cells == 144, "grid size")
-    ok(golden_cells == [("cutoff", "fullweek", "installation", "installation"), ("first", "fullweek", "installation", "installation")],
-       "only the standard's reading (and the first-delivery reading, which moves figures but not the call) lands the call: %s" % golden_cells)
+            golden_cells.append((v, p, u, e, dn))
+    ok(cells == 288, "grid size")
+    ok(golden_cells == [("cutoff", "fullweek", "installation", "installation", "register"),
+                        ("first", "fullweek", "installation", "installation", "register"),
+                        ("first", "fullweek", "installation", "installation", "rows")],
+       "only the standard's reading and the first-delivery readings (which move figures, not the call) land the call: %s" % golden_cells)
+    naive_cut = G.score(vers["cutoff"], pops["fullweek"], "installation", "installation", "rows")
+    ok(not naive_cut["PX5.2.7"]["fire"], "dividing by the register-days held at the cut-off holds PX5.2.7")
+    ok(G.fire_set(G.score(vers["cutoff"], pops["end"], "pooled", "binomial_reads", "rows")) == expect[0],
+       "the cut-off filter applied to rows alone leaves the natural pipeline's set unchanged")
+    held_days = set(map(tuple, vers["cutoff"][["NMI", "NMI_SUFFIX", "READ_DATE"]].values.tolist()))
+    pxn = [n for n, b in pops["fullweek"].items() if b == "PX5.2.7"]
+    st = D["streams"][D["streams"]["NMI"].isin(pxn)]
+    absent = sum(1 for _, r_ in st.iterrows() for d_ in G.DATES if (r_["NMI"], r_["NMI_SUFFIX"], d_) not in held_days)
+    ok(absent >= 60, "PX5.2.7 has register-days the MDM held nothing for at the cut-off (%d)" % absent)
+    log.append("PX5.2.7: %d register-days held nowhere at the cut-off; dividing by held rows gives %.2f against %.2f, the register gives %.2f"
+               % (absent, naive_cut["PX5.2.7"]["rh"], naive_cut["PX5.2.7"]["lcl"], sc["PX5.2.7"]["rh"]))
     first = G.score(vers["first"], pops["fullweek"])
     moved = [r for r in G.RELEASES if round(first[r]["rh"], 2) != round(sc[r]["rh"], 2)]
     ok(len(moved) >= 4, "the first-delivery reading moves at least four graded read-health figures: %s" % moved)
@@ -103,7 +117,7 @@ def run(target, world=None, quiet=False):
     dd = [r for r in G.RELEASES if round(sc0[r]["lcl"], 2) != round(sc[r]["lcl"], 2)]
     ok(dd == ["PX5.3.1"], "the n divisor moves only the 37-installation pilot's limit at two decimals: %s" % dd)
     # installation-day mean equals the installation mean for every assessed installation
-    x = vers["cutoff"][vers["cutoff"]["NMI"].isin(pops["fullweek"].keys())]
+    x = G.panel(D, vers["cutoff"], pops["fullweek"])
     day = x.groupby(["NMI", "READ_DATE"])[["QTY_A", "expected"]].sum()
     day_mean = (100 * day["QTY_A"] / day["expected"]).groupby(level=0).mean()
     wk = x.groupby("NMI")[["QTY_A", "expected"]].sum()
@@ -112,7 +126,7 @@ def run(target, world=None, quiet=False):
     gap = (D["mdm"]["cutoff"] - D["mdm"]["received"]).dt.total_seconds().abs() / 60
     ok(float(gap.min()) >= 8.0, "no delivery lands within 8 minutes of its cut-off")
     # every row's expected count is the day's interval count
-    ok(bool(((D["mdm"]["expected"] * D["mdm"]["INTERVAL_LENGTH"]) == 1440).all()), "every register-day carries a full day of intervals")
+    ok(bool(((D["mdm"]["expected"] * D["mdm"]["INTERVAL_LENGTH"]) == 1440).all()), "every delivered register-day carries a full day of intervals")
 
     # the deciding contrasts, both directions
     pooled = G.score(vers["cutoff"], pops["fullweek"], "pooled", "installation")
@@ -163,7 +177,7 @@ def run(target, world=None, quiet=False):
 
     # ---------------------------------------------------------------- ask B: Wave 7 cost
     b = g["wave7"]
-    ok(b == {"EM3.12.2": {"installations": 1109, "missing": 16415}, "PX5.3.1": {"installations": 63, "missing": 933}}, "wave 7 cost %s" % b)
+    ok(b == {"EM3.12.2": {"installations": 1109, "missing": 17455}, "PX5.3.1": {"installations": 63, "missing": 933}}, "wave 7 cost %s" % b)
     for clock in ("UTC", "AEDT"):
         bb = G.wave7_cost(D, vers["cutoff"], clock)
         ok(bb["EM3.12.2"]["missing"] != b["EM3.12.2"]["missing"], "%s move day lands elsewhere" % clock)
@@ -213,6 +227,22 @@ def run(target, world=None, quiet=False):
         ok(not hits, "%s stated outside the standard: %s" % (needle, hits))
     for f in files:
         ok("distract" not in f.lower(), "no file named for its role")
+    # the write-up carries the golden's figures, to the golden's rounding (H2, H3)
+    sub = os.path.join(os.path.dirname(target), "submission.md")
+    gj = os.path.join(os.path.dirname(target), "golden", "wave8_read_health_alerts.json")
+    if os.path.exists(sub) and os.path.exists(gj):
+        s_ = open(sub).read()
+        pj = json.load(open(gj))
+        for b_ in pj["builds"]:
+            line = "%s: %s installations, %.2f%%, %.2f%%, %s" % (b_["release"], format(b_["assessed_installations"], ","),
+                                                              b_["read_health_pct"], b_["lower_limit_pct"], b_["alert"].lower())
+            ok(line in s_, "submission carries %s" % line)
+            ok("**%.2f%%** against a lower limit of **%.2f%%**" % (b_["read_health_pct"], b_["lower_limit_pct"]) in s_
+               or b_["release"] not in ("PX5.2.7", "EM3.12.1", "PX5.3.0", "EM3.12.0", "EM3.10.9"), "critical component %s" % b_["release"])
+        for v_ in list(pj["wave8_schedule_moves_if_it_goes_ahead"].values()) + [x for w_ in pj["wave7_moves_this_week"] for x in
+                                                                               (w_["installations_moved"], w_["interval_reads_missing_at_cutoff_on_move_day"])]:
+            ok(format(v_, ",") in s_, "submission carries %s" % v_)
+        ok("\u2014" not in s_, "no em dash in the write-up")
     if not quiet:
         print("checks: %d assertions passed" % N[0])
         for line in log:

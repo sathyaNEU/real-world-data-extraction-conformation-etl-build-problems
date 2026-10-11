@@ -168,7 +168,11 @@ def bench_meters():
 # ------------------------------------------------------------------ MDM deliveries
 
 def deliveries(insts):
-    """One row per data stream, read date and delivery. A delivery carries the whole register-day."""
+    """One row per data stream, read date and delivery. A delivery carries the whole register-day.
+
+    The MDM creates a register-day only when the head-end delivers reads for it, or when the 06:30
+    estimation run fills a day that nothing arrived for; so a day the meter was not read at all has
+    no version at all until that run, which comes after the delivery cut-off."""
     r = S.rng("deliveries")
     rows = []
     for i in sorted(insts, key=lambda x: x.nmi):
@@ -178,25 +182,32 @@ def deliveries(insts):
             rd = W.READ_DATES[dd]
             nxt = dt.datetime(rd.year, rd.month, rd.day, tzinfo=W.AEST) + dt.timedelta(days=1)
             t1 = nxt + dt.timedelta(minutes=int(r.integers(55, 285)), seconds=int(r.integers(0, 60)))
-            vers = [(t1, per - c1 - c2 - c3, c1 + c2 + c3, 0)]
-            if c1:
-                t2 = nxt + dt.timedelta(minutes=int(r.integers(305, 352)), seconds=int(r.integers(0, 60)))
-                vers.append((t2, per - c2 - c3, c2 + c3, 0))
+            a1 = per - c1 - c2 - c3
+            t2 = nxt + dt.timedelta(minutes=int(r.integers(305, 352)), seconds=int(r.integers(0, 60)))
+            if a1 > 0:
+                vers = [(t1, a1, c1 + c2 + c3, 0, 0)]
+                if c1:
+                    vers.append((t2, per - c2 - c3, c2 + c3, 0, 0))
+            elif c1:
+                vers = [(t2, per - c2 - c3, c2 + c3, 0, 0)]
+            else:
+                te = nxt + dt.timedelta(minutes=int(r.integers(392, 418)), seconds=int(r.integers(0, 60)))
+                vers = [(te, 0, 0, 0, per)]
             if c2:
                 base = nxt + dt.timedelta(hours=int(r.integers(9, 15)), minutes=int(r.integers(0, 60)))
                 if rd < W.READ_DATES[-1] and r.random() < 0.35:
                     base = base + dt.timedelta(days=1)
-                vers.append((base, per - c3, c3, 0))
-            # settlement turns substituted reads final two days on, where the extract reaches it
+                vers.append((base, per - c3, c3, 0, 0))
+            # settlement turns substituted and estimated reads final two days on, where the extract reaches it
             last = vers[-1]
             tf = nxt + dt.timedelta(days=2, hours=4, minutes=int(r.integers(0, 50)))
-            if last[2] > 0 and tf < W.EXTRACT_AT and tf > last[0]:
-                vers.append((tf, last[1], 0, last[2]))
-            for vi, (t, a, s_, f) in enumerate(vers):
+            if (last[2] + last[4]) > 0 and tf < W.EXTRACT_AT and tf > last[0]:
+                vers.append((tf, last[1], 0, last[2] + last[4], 0))
+            for vi, (t, a, s_, f, e) in enumerate(vers):
                 if t >= W.EXTRACT_AT:
                     continue
                 for sx in suff:
-                    rows.append((i.nmi, sx, rd, L, t, a, s_, f, vi))
+                    rows.append((i.nmi, sx, rd, L, t, a, s_, f, e, vi))
     return rows
 
 

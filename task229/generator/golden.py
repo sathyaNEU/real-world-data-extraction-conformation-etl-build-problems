@@ -36,13 +36,19 @@ def parse_local(s):
 
 
 def load(target):
+    D = _load(target)
+    DCUR[0] = D
+    return D
+
+
+def _load(target):
     p = lambda f: os.path.join(target, f)
     mdm = pd.read_csv(p("mdm_interval_receipts_20261005_20261011.csv"), dtype={"NMI": str, "READ_DATE": str})
     mdm["received"] = pd.to_datetime(mdm["RECEIVED_UTC"], utc=True)
     rd = pd.to_datetime(mdm["READ_DATE"], format="%Y%m%d")
     # cut-off: 06:00 AEST on the day after the read date = 20:00 UTC on the read date
     mdm["cutoff"] = (rd + pd.Timedelta(hours=20)).dt.tz_localize("UTC")
-    mdm["expected"] = mdm["QTY_A"] + mdm["QTY_S"] + mdm["QTY_F"]
+    mdm["expected"] = mdm["QTY_A"] + mdm["QTY_S"] + mdm["QTY_F"] + mdm["QTY_E"]
     cat = pd.read_csv(p("fw_release_catalogue.csv"))
     img2rel = dict(zip(cat["hes_image"], cat["release"]))
     hes = json.load(open(p("hes_meter_firmware_history.json")))
@@ -53,7 +59,12 @@ def load(target):
         meters.append(dict(nmi=str(nmi11)[:10], serial=str(serial).zfill(8), installed=parse_local(inst),
                            removed=parse_local(rem) if rem else None))
     meters = pd.DataFrame(meters)
-    return dict(mdm=mdm, img2rel=img2rel, hes=hes, meters=meters, target=target)
+    streams = []
+    for row in list(wb["Data streams"].iter_rows(values_only=True))[3:]:
+        nmi11, sx, L, uom, since = row
+        streams.append(dict(NMI=str(nmi11)[:10], NMI_SUFFIX=sx, per_day=1440 // int(L)))
+    streams = pd.DataFrame(streams)
+    return dict(mdm=mdm, img2rel=img2rel, hes=hes, meters=meters, streams=streams, target=target)
 
 
 def running_builds(hes, img2rel, dedupe=True, failed_moves=False, staged_moves=False):
@@ -129,10 +140,29 @@ def versions(mdm, which="cutoff"):
     raise ValueError(which)
 
 
-def score(v, pop, unit="installation", err="installation"):
+DATES = [(WEEK_START + dt.timedelta(days=d)).strftime("%Y%m%d") for d in range(7)]
+
+
+def panel(D, v, pop, denom="register"):
+    """One row per assessed data stream and market day. denom="register": every day of every stream
+    the register lists, an absent register-day holding no actual reads; denom="rows": only the
+    register-days the chosen version set carries."""
+    x = v[v["NMI"].isin(pop.keys())][["NMI", "NMI_SUFFIX", "READ_DATE", "QTY_A", "expected"]]
+    if denom == "rows":
+        out = x.copy()
+    else:
+        st = D["streams"][D["streams"]["NMI"].isin(pop.keys())]
+        grid = st.merge(pd.DataFrame({"READ_DATE": DATES}), how="cross")
+        out = grid.merge(x[["NMI", "NMI_SUFFIX", "READ_DATE", "QTY_A"]], on=["NMI", "NMI_SUFFIX", "READ_DATE"], how="left")
+        out["QTY_A"] = out["QTY_A"].fillna(0).astype(int)
+        out["expected"] = out["per_day"]
+    out["release"] = out["NMI"].map(pop)
+    return out
+
+
+def score(v, pop, unit="installation", err="installation", denom="register", D=None):
     """Read health, n, standard error, lower limit and the alert, per release, under one reading."""
-    x = v[v["NMI"].isin(pop.keys())].copy()
-    x["release"] = x["NMI"].map(pop)
+    x = panel(D or DCUR[0], v, pop, denom)
     res = {}
     for rel in RELEASES:
         g = x[x["release"] == rel]
@@ -166,6 +196,9 @@ def score(v, pop, unit="installation", err="installation"):
         lcl = REFERENCE - K * se
         res[rel] = dict(n=n, rh=rh, se=se, lcl=lcl, fire=bool(rh < lcl))
     return res
+
+
+DCUR = [None]
 
 
 def fire_set(res):
@@ -217,13 +250,13 @@ def wave7_cost(D, vcut=None, day_clock="AEST"):
                 tz = AEST if day_clock == "AEST" else (dt.timezone(dt.timedelta(hours=11)) if day_clock == "AEDT" else UTC)
                 moved[serial] = (D["img2rel"][e["image"]], t.astimezone(tz).strftime("%Y%m%d"))
     per = {}
-    v = vcut.set_index(["NMI", "READ_DATE"])
-    miss = (vcut["expected"] - vcut["QTY_A"]).groupby([vcut["NMI"], vcut["READ_DATE"]]).sum().to_dict()
+    held = vcut.groupby(["NMI", "READ_DATE"])["QTY_A"].sum().to_dict()
+    perday = D["streams"].groupby("NMI")["per_day"].sum().to_dict()
     for serial, (rel, day) in moved.items():
         nmi = serial2nmi[serial]
         c = per.setdefault(rel, dict(installations=set(), missing=0))
         c["installations"].add(nmi)
-        c["missing"] += int(miss.get((nmi, day), 0))
+        c["missing"] += int(perday[nmi] - held.get((nmi, day), 0))
     return {k: dict(installations=len(v_["installations"]), missing=v_["missing"]) for k, v_ in per.items()}
 
 

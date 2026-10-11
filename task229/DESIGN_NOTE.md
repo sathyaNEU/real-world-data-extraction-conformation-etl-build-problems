@@ -52,19 +52,22 @@ go/no-go per build.
 ## Stump sentence
 
 A competent solver builds each firmware build's read health from the MDM receipts as the share of
-all expected interval reads that came in actual, keeps the latest delivery of each register-day,
-counts every installation on the build it ends the week on, and sets the limit with the binomial
-error on those reads: it fires the alert on EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1 and holds
-EM3.12.1, PX5.2.7 and EM3.12.0. The step that carries the stump is the unit and its error: the
-standard scores the average installation that ran the build all week, so the 5-minute three-register
-installations that file about three quarters of PX5.3.0's reads count once each (PX5.3.0 holds at
-99.49 against a limit of 99.36, where pooled reads put it at 98.49), EM3.12.1's degraded 30-minute
-households stop hiding behind its healthy 5-minute sites (98.99 against 99.33, where pooled reads
-clear the reference at 99.58), and the limit comes from installation-to-installation spread, which
-is several times a read-count error, so EM3.12.0 (99.43 against 99.37) and the 37-installation
-PX5.3.1 pilot (98.96 against 96.83) hold. With the reads held at the 06:00 cut-off and only the
-installations that ran the build all week, the alert fires on EM3.10.9, EM3.12.1 and PX5.2.7 and the
-other five hold.
+expected interval reads that came in actual, keeps the latest delivery of each register-day, counts
+every installation on the build it ends the week on, and sets the limit with the binomial error on
+those reads: it fires the alert on EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1 and holds EM3.12.1, PX5.2.7
+and EM3.12.0. The step that carries the stump is the unit and its error: the standard scores the
+average installation that ran the build all week, so the 5-minute three-register installations that
+file about three quarters of PX5.3.0's reads count once each (PX5.3.0 holds at 99.51 against a limit
+of 99.36, where pooled reads put it at 98.64), EM3.12.1's degraded 30-minute households stop hiding
+behind its healthy 5-minute sites (99.13 against 99.39, where pooled reads clear the reference at
+99.64), and the limit comes from installation-to-installation spread, eight times a read-count error
+on EM3.12.0, so EM3.12.0 (99.44 against 99.38) and the 37-installation PX5.3.1 pilot (98.96 against
+96.83) hold. A solver who does read the 06:00 cut-off and keeps the deliveries received before it
+still holds PX5.2.7 if it divides by the register-days the MDM held at the cut-off: on 130 of
+PX5.2.7's assessed register-days the overnight session never opened and the MDM held nothing until
+its 06:30 estimate, so those days drop out of numerator and denominator alike (99.80 against 99.42)
+when the standard counts every interval of every stream (98.45 against 98.99). Done as the standard
+reads, the alert fires on PX5.2.7, EM3.10.9 and EM3.12.1 and the other five hold.
 
 ## Gate G
 
@@ -73,8 +76,8 @@ other five hold.
   history and the register are correct records of what happened. The one belief in the prompt (the
   desk expects PX5.3.0 to be pulled because its commercial sites are the ones retailers chase) is true
   about those sites and is a belief about the call, not a figure. The difficulty is constructing the
-  measure the standard defines from register-day deliveries: the unit, its error, the population and
-  the version. Answer: no.
+  measure the standard defines from register-day deliveries: the unit, its error, the population, the
+  version, and the expected reads the deliveries do not carry. Answer: no.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
 - **Primary mechanism:** signal_vs_noise_or_hold (which builds sit below the reference by more than
   their own installation-level noise), with `statistical_rigor` support (the error that follows the
@@ -82,16 +85,18 @@ other five hold.
 - **Deletion test.** Nothing in the pack is wrong; there is nothing to delete. Still hard because the
   pooled read and the installation average are both arithmetically perfect and disagree in both
   directions on this fleet.
-- **Clean-data test (asserted).** Drop every delivery after its cut-off and every installation that
-  did not run its build all week (the two population and version rungs repaired): the pooled
-  read-count pipeline still fires EM3.10.9, EM3.12.0, PX5.2.7, PX5.3.0 and PX5.3.1, and with an
-  installation-level error it still fires PX5.3.0 and holds EM3.12.1. The decisive rung survives a
+- **Clean-data test (asserted).** Give the MDM a version for every register-day at the cut-off, drop
+  every delivery after it and every installation that did not run its build all week (the version,
+  denominator and population rungs repaired): the pooled read-count pipeline still fires EM3.10.9,
+  EM3.12.0, PX5.2.7, PX5.3.0 and PX5.3.1, and with an installation-level error it still fires PX5.3.0
+  and holds EM3.12.1. The decisive rung survives a
   perfect instrument because no instrument is lying: the heavy installations really do file eighteen
   times the reads.
 - **Lens-swap test.** The naive reading and the answer are not one population at one moment: the
   naive reading takes 7,930 installations on their end-of-week build with the latest deliveries; the
-  answer takes the 6,729 that ran one build all week, with the deliveries held at each day's cut-off,
-  and four constructions separate them (asserted: the populations differ by 1,201 installations).
+  answer takes the 6,729 that ran one build all week, with the deliveries held at each day's cut-off
+  against every expected interval, and five constructions separate them (asserted: the populations
+  differ by 1,201 installations).
 - **Forward framing.** The measure is of the week just closed, which is what the standard scores;
   the decision is forward (Wave 8 moves nothing onto a build the alert fires on). A Data Quality
   Monitoring call is a gate on the next action, and its evidence is the last complete window by
@@ -104,13 +109,14 @@ other five hold.
    errors of the build's read health. Nothing says that the installations differ eighteen-fold in the
    reads they file, that pooled reads and the installation mean disagree, or that the standard error
    of a mean of installation shares is their spread over the square root of their number. The
-   construction (per installation, over every data stream and day, from the cut-off version, then the
-   mean, then the spread) is the work.
+   construction (per installation, over every data stream and day the register lists, from the
+   cut-off version where one exists, then the mean, then the spread) is the work.
 2. **No sweepable corpus.** There is no prior read-health report, no published figure, no closed
    corpus; nothing nominates a method.
-3. **No arithmetic symptom.** Pooled reads reconcile to the receipts exactly; every register-day
-   carries a full day of intervals; the pooled figure and the binomial error are complete, plausible
-   and internally consistent.
+3. **No arithmetic symptom.** Pooled reads reconcile to the receipts exactly; every delivered
+   register-day carries a full day of intervals; the pooled figure and the binomial error are
+   complete, plausible and internally consistent. The register-days missing at the cut-off leave no
+   trace in a share computed from the rows that are there.
 4. **Not a per-row predicate.** It needs a group (installation), a share per group across streams and
    days, a mean across groups, and a spread across groups.
 5. **Enumeration is arithmetic.** The assessed population comes from an effective-dated register and
@@ -123,8 +129,9 @@ other five hold.
 ## Layers
 
 - **Layer 1 (the realistic mess and the system that produces it).** MDM interval receipts at
-  register-day by delivery grain with A, S and F quality counts at 5, 15 and 30 minute resolution; a
-  later delivery replaces the register-day (real MDM behaviour when a retrieval recovers reads); UTC
+  register-day by delivery grain with A, S, F and E quality counts at 5, 15 and 30 minute resolution; a
+  later delivery replaces the register-day (real MDM behaviour when a retrieval recovers reads); a day
+  the head-end collected nothing for has no version at all until the MDM's 06:30 estimation run; UTC
   receipt stamps against a market-time (AEST) cut-off, while the register and the schedule are in
   local time (AEDT since 4 October); the head-end history as nested JSON with staging, failed
   activations, rollbacks, decommissioning and events re-stored after a failover; HES image ids that
@@ -135,7 +142,9 @@ other five hold.
   scores the average installation, and taking the error of that pooled share from the read count. An
   expert in measurement recognises both: the pooled share is carried by the heaviest installations,
   and the reads of one installation are not independent draws, so the error belongs to the unit the
-  measure averages.
+  measure averages. Beneath it, a construction step: the expected reads come from the register's data
+  streams, not from the rows a delivery set happens to carry (absence of a record is not a record of
+  absence).
 
 ## Ladder (asserted by name in `generator/checks.py`)
 
@@ -143,34 +152,38 @@ Answer: fire on {EM3.10.9, EM3.12.1, PX5.2.7}, hold on the other five.
 
 | Rung | Reading | Fires on | Killed by |
 |---|---|---|---|
-| R0 natural pipeline | latest delivery per register-day, every installation on its end-of-week build, pooled reads, binomial error on reads | EM3.10.9, EM3.12.2, PX5.3.0, PX5.3.1 | 3.5 (read held at cut-off) |
-| R1 | + the delivery held at the 06:00 cut-off | EM3.10.9, EM3.12.0, EM3.12.2, PX5.2.7, PX5.3.0, PX5.3.1 | 3.6 and 3.7 (assessed installation) |
+| R0 natural pipeline | latest delivery per register-day, every installation on its end-of-week build, pooled reads, binomial error on reads | EM3.10.9, EM3.12.2, PX5.3.0, PX5.3.1 | 3.5 (read held at cut-off) with 3.3 (every expected interval) |
+| R1 | + reads held at the 06:00 cut-off against every interval of every stream (a register-day held nowhere counts zero) | EM3.10.9, EM3.12.0, EM3.12.2, PX5.2.7, PX5.3.0, PX5.3.1 | 3.6 and 3.7 (assessed installation) |
 | R2 | + only installations that ran the build all week | EM3.10.9, EM3.12.0, PX5.2.7, PX5.3.0, PX5.3.1 | 4.2 (the average installation) |
 | R3 | + the mean of installation read health | EM3.10.9, EM3.12.0, EM3.12.1, PX5.2.7, PX5.3.1 | 5.2 (standard error of the build's read health, over its installations) |
 | R4 | + the error from installation-to-installation spread | **EM3.10.9, EM3.12.1, PX5.2.7** | answer |
 
+- The cut-off applied to the rows alone (keep deliveries received before 06:00, divide by the rows
+  kept) files R0's set unchanged: the partial application is inert, which is why R1 needs the
+  denominator built from the register (asserted).
 - "A solver who does everything right up to R3 commits to firing EM3.12.0 and the PX5.3.1 pilot as
-  well": the read-count error is 0.006 percentage points on EM3.12.0's 1.6 million reads against an
-  installation-level 0.044.
+  well": the read-count error is 0.005 percentage points on EM3.12.0's 1.6 million reads against an
+  installation-level 0.040, and 0.06 against 0.89 on the pilot.
 - Satisfying to stop at: R0 is the dashboard number every MDP reports; R1 is what a careful analyst
-  who read the cut-off clause files; R2 is the clause-by-clause reading of the population; R3 is a
-  correct mean with the error a proportion invites.
+  who read the cut-off and expected-reads clauses files; R2 is the clause-by-clause reading of the
+  population; R3 is a correct mean with the error a proportion invites.
 - Every rung names a different set (asserted). The decisive pair is R2 to R4, the seed's pitfall:
   the unit, and the limit that follows the unit.
 - **Position.** For a set answer the analogue of rank is how many of the eight calls a rung gets
-  right: R0 3 of 8, R1 4, R2 5, R3 6, R4 8. No intermediate rung lands the call.
-- **Discriminator dominance.** PX5.3.0: pooled 98.49 against limit 99.36 (fires by 0.87); average
-  installation 99.49 against 99.36 (holds by 0.14). EM3.12.1: pooled 99.58 (above the reference
-  itself); average 98.99 against 99.33 (fires by 0.34). The heavy installations are 15 per cent of
-  PX5.3.0's installations and about 73 per cent of its reads, and 22 per cent of EM3.12.1's
-  installations and about 77 per cent of its reads.
+  right: R0 3 of 8, R1 3, R2 4, R3 6, R4 8. No intermediate rung lands the call.
+- **Discriminator dominance.** PX5.3.0: pooled 98.64 against limit 99.36 (fires by 0.72); average
+  installation 99.51 against 99.36 (holds, and sits above the reference itself). EM3.12.1: pooled 99.64
+  (above the reference); average 99.13 against 99.39 (fires by 0.26). PX5.2.7: rows held at the
+  cut-off 99.80 against 99.42 (holds); every expected interval 98.45 against 98.99 (fires by 0.54). The
+  heavy installations are 16 per cent of PX5.3.0's installations and about 73 per cent of its reads,
+  and 22 per cent of EM3.12.1's installations and about 77 per cent of its reads.
 - **Grid (asserted cell by cell).** 3 versions (cut-off, latest, first) x 3 populations (whole week,
   start-of-week build, end-of-week build) x 4 units (installation, pooled reads, register-day rows,
   data streams) x 4 errors (installation spread, binomial on reads, binomial on installations, none)
-  = 144 cells. Exactly two land the call: the standard's reading, and the same reading on the first
-  delivery of each register-day, which moves every build's read health at two decimals (8 of 8) and
-  so fails the scorecard. Every other cell files a different fire set and violates a named clause
-  (3.5, 3.6 and 3.7, 4.2 or 5.2).
+  x 2 denominators (the register's streams, the rows held) = 288 cells. Three land the call: the
+  standard's reading, and the first delivery of each register-day under either denominator, which
+  moves every build's read health at two decimals (8 of 8) and so fails the scorecard. Every other
+  cell files a different fire set and violates a named clause (3.3, 3.5, 3.6 and 3.7, 4.2 or 5.2).
 - **Sign discipline, margins.** Every build sits at least 0.05 percentage points from its limit and
   every pair of builds' distances to their limits differ by at least 0.04 (the payload's order is not
   a near tie). Every two-decimal figure sits at least 0.0015 from its rounding edge (asserted).
@@ -184,7 +197,7 @@ Answer: fire on {EM3.10.9, EM3.12.1, PX5.2.7}, hold on the other five.
 | 3 | Attribution window | market days 5 to 11 October | filed (3.2); the receipts carry only those read dates |
 | 4 | As-of dating | the meter's build at the week start, no activation inside the week | filed (3.6, 3.7) |
 | 5 | Version basis | latest delivery received before the cut-off | filed (3.5); first and latest are grid cells |
-| 6 | Denominator | every interval of every data stream | filed (3.3); each row's A+S+F is a full day (asserted) |
+| 6 | Denominator | every interval of every data stream the register lists, every day | filed (3.3); the rows held at the cut-off are a grid cell; each delivered row's A+S+F+E is a full day (asserted) |
 | 7 | Weighting | equal per installation | filed (4.2) |
 | 8 | Window length | one week | filed (3.2) |
 | 9 | Boundary inclusivity | received before 06:00; fire when strictly below | C1: no delivery lands within 8 minutes of a cut-off; no build within 0.05 of its limit |
@@ -197,7 +210,7 @@ Answer: fire on {EM3.10.9, EM3.12.1, PX5.2.7}, hold on the other five.
 | 16 | Identity | NMI to 10 characters, serials to 8 digits | C1: the joins have one answer once normalised |
 | 17 | Netting | not applicable | none |
 | 18 | Dimensional units | interval counts only | C1: kWh totals are never used |
-| 19 | Code semantics | A is a read; S and F are not; a rolled-back activation is not a move | filed (3.5, 3.6) and the field reference |
+| 19 | Code semantics | A is a read; S, F and E are not; a rolled-back activation is not a move | filed (3.5, 3.6) and the field reference |
 | 20 | Integerisation | counts are counts | C1 |
 | 21 | Scope of a clause | the standard governs the alert; the Wave 7 and Wave 8 asks are defined in the prompt | prompt wording |
 | 22 | Forward window contents | Wave 8 moves if it goes ahead, on the schedule as cut | prompt wording ("if it goes ahead"), decoupled from the call |
@@ -214,7 +227,7 @@ or schedule rows inside it (asserted).
 | Ask | What it is in the decision | Primary device | Stops (asserted) | Named use |
 |---|---|---|---|---|
 | A. Wave 8 moves onto EM3.12.2 and PX5.3.1 if the wave goes ahead | the exposure beside each go/no-go | D2 a schedule cut on 1 October before 37 + 9 meters went in Wave 7 and 22 were exchanged out; D7 serials that lost their leading zeros on batch A; D1 rows re-batched onto B and left on A (16 + 5), with blank NMIs on a third of batch A punishing a dedup on NMI | rows 1,349 / 123; distinct rows 1,339 / 119; one per NMI cell 1,134 / 103; answer **1,274 / 109** | the desk sizes field support and Settlement's substitution load for the night |
-| B. Wave 7 moves this week: installations moved onto EM3.12.2 and PX5.3.1 and the interval reads they were missing at the cut-off on the market day they moved | the audit trail of what a wave costs, which the desk weighs beside the alert | D8 the move day in market time (UTC stamps, AEDT local nights from 23:30); D1 events re-stored after the 7 October failover; D5 41 meters that failed on Tuesday, rolled back and moved on Wednesday, and 29 exchanged meters commissioned on EM3.12.2 that no wave moved | UTC day 2,808 / 332; AEDT day 20,040 / 1,072; latest deliveries 16,232 / 926; answer **1,109 installations, 16,415 reads / 63, 933** | Settlement Operations carries the substitutions |
+| B. Wave 7 moves this week: installations moved onto EM3.12.2 and PX5.3.1 and the interval reads they were missing at the cut-off on the market day they moved | the audit trail of what a wave costs, which the desk weighs beside the alert | D8 the move day in market time (UTC stamps, AEDT local nights from 23:30); D1 events re-stored after the 7 October failover; D5 41 meters that failed on Tuesday, rolled back and moved on Wednesday, and 29 exchanged meters commissioned on EM3.12.2 that no wave moved | UTC day 2,161 / 332; AEDT day 20,954 / 1,072; latest deliveries 17,367 / 926; answer **1,109 installations, 17,455 reads / 63, 933** | Settlement Operations carries the substitutions |
 
 Both asks run on rows the main call never reads (movers, exchanges, the schedule). Chart parts: one
 row per build in the payload's order, the point, the limit marker, the reference line with its value,
@@ -247,15 +260,15 @@ but the asks leak above a fifth each.
 ## Build record
 
 - Generator: `generator/make.py` builds the pack (`build.py`), the goldens from the shipped bundle
-  alone (`deliver.py` over `golden.py`), `metadata.json`, runs `checks.py` (74 assertions: the five
-  rungs by name, the 144-cell grid, the convergences, the deciding contrasts in both directions, both
+  alone (`deliver.py` over `golden.py`), `metadata.json`, runs `checks.py` (100-plus assertions: the five
+  rungs by name, the 288-cell grid, the inert partial cut-off, the convergences, the deciding contrasts in both directions, both
   asks' stops, chronology, separation, the gates, single statement of the reference and the cut-off)
   and the independent `verify.py` (standard library and openpyxl, no shared code), builds a second
   time into scratch and requires byte-identical target and golden files, then cuts `target.zip`
   (flat, ten members). Texture salts per build were chosen by `tune.py` so every two-decimal figure
   sits at least 0.0015 from its rounding edge and every build at least 0.05 from its limit; the
   design parameters did not move.
-- Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry 94,384 rows; distractors
+- Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry 94,239 rows; distractors
   `hes_firmware_census_20261012.csv` (the head-end's inventory by image and status, which counts
   removed and bench meters and every mover on its new image) and
   `carrier_maintenance_notices_oct2026.xlsx` (the carrier's IoT maintenance windows), both named in
@@ -290,11 +303,9 @@ but the asks leak above a fifth each.
 
 ## Leak check (stage 4, mechanical half)
 
-`leak.py --asof 2026-10-12`: REVIEW (no LEAK after renaming the schedule workbook off `_v2` and
-dropping the reference figure from block 4). Each REVIEW line:
+`leak.py --asof 2026-10-12`: REVIEW, three lines (no LEAK after renaming the schedule workbook off
+`_v2` and dropping the reference figure from block 4). Each REVIEW line:
 
-- `mdm_interval_receipts` "16,415": two adjacent CSV fields (`QTY_F` 16, `DAY_TOTAL` 415.054) read
-  as one number; harmless.
 - The standard "carries 6 of 6 distinctive words of the committed call": the words are read-health,
   alert, fire, hold and the like, which the standard defines; it names no build; harmless.
 - The standard and the field reference carry generic stump-paragraph words (installation, standard,
@@ -308,3 +319,11 @@ dropping the reference figure from block 4). Each REVIEW line:
   metric, not the health of data or of a pipeline, so the build would retag as Anomaly Detection
   without changing a word; and task228 holds product-analytics in this objective on the same day,
   so the pairing would block on `ban.pairing` at the heart check.
+- First cut of PX5.2.7's late data as partial-day misses (16:00 to 24:00) that the overnight delivery
+  already carried as substituted reads: a solver who applied the cut-off clause to the rows it held
+  reached PX5.2.7's fire with no further thought, so the cut-off was a filter rather than a
+  construction. Replaced before any round with whole-day misses that leave the MDM no version of the
+  register-day until its 06:30 estimate, which is how an MDM behaves when the head-end collected
+  nothing overnight; the cut-off applied to rows alone is now inert (asserted).
+- First rounding-edge assertion measured distance to the bin centre instead of to the x.xx5 edge;
+  caught on review, fixed in `tune.py` and `checks.py`, salts re-chosen.

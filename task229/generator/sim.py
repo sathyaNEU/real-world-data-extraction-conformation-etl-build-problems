@@ -145,7 +145,7 @@ BUILD_FX = {
     "EM3.12.0": dict(gp=0.074, op=0.029),
     "EM3.12.1": dict(light_extra=(0.17, 50, 115)),
     "EM3.12.2": dict(gp=0.025, op=0.009),
-    "PX5.2.7": dict(drop=0.026),
+    "PX5.2.7": dict(drop=0.012),
     "PX5.3.0": dict(heavy_extra=(0.31, 40, 120)),
     "PX5.3.1": dict(gp=0.025, op=0.0),
 }
@@ -179,8 +179,9 @@ def comms_blocks(r, build, profile):
             s = d * W.SLOTS_PER_DAY + int(r.integers(0, W.SLOTS_PER_DAY))
             out.append((s, s + int(r.integers(he[1], he[2])) // W.SLOT + 1, 3))
         if fx.get("drop") and r.random() < fx["drop"]:
-            s = d * W.SLOTS_PER_DAY + int(r.integers(14 * 12, 18 * 12))
-            out.append((s, (d + 1) * W.SLOTS_PER_DAY, 2))
+            # the overnight LTE-M collection session never opened: nothing for the day reaches the
+            # MDM before the morning catch-up pass
+            out.append((d * W.SLOTS_PER_DAY, (d + 1) * W.SLOTS_PER_DAY, 2))
     if r.random() < p["op"]:
         s = int(r.integers(0, W.WEEK_SLOTS))
         dur = int(np.exp(r.uniform(np.log(p["odur"][0]), np.log(p["odur"][1])))) // W.SLOT

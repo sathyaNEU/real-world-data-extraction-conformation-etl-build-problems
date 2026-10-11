@@ -50,7 +50,7 @@ def write_mdm(path, insts, rows):
             level[(i.nmi, sx)] = lv
     day_fx = [1.04, 0.97, 1.01, 0.99, 1.06, 0.92, 0.95]
     out = []
-    for (nmi, sx, rd, L, t, a, s_, f, vi) in rows:
+    for (nmi, sx, rd, L, t, a, s_, f, e, vi) in rows:
         dd = (rd - W.READ_DATES[0]).days
         base = level[(nmi, sx)] * day_fx[dd]
         wob = 1.0 + ((int(_hex(nmi, sx, rd, n=4), 16) % 200) - 100) / 4000.0
@@ -58,14 +58,14 @@ def write_mdm(path, insts, rows):
         uom = "KVARH" if sx == "Q1" else "KWH"
         ta = t.astimezone(W.AEST)
         did = "D%s.%s.%02d" % (ta.strftime("%y%m%d"), ta.strftime("%H%M"), (int(_hex(nmi, ta, n=4), 16) % 23) + 1)
-        out.append((R.utc(t), nmi, sx, rd.strftime("%Y%m%d"), L, uom, did, a, s_, f, "%.3f" % tot))
+        out.append((R.utc(t), nmi, sx, rd.strftime("%Y%m%d"), L, uom, did, a, s_, f, e, "%.3f" % tot))
     out.sort(key=lambda x: (x[0], x[1], x[2], x[3]))
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh, lineterminator="\n")
         w.writerow(["NMI", "NMI_SUFFIX", "READ_DATE", "INTERVAL_LENGTH", "UOM", "DELIVERY_ID", "RECEIVED_UTC",
-                    "QTY_A", "QTY_S", "QTY_F", "DAY_TOTAL"])
-        for (tu, nmi, sx, rd, L, uom, did, a, s_, f, tot) in out:
-            w.writerow([nmi, sx, rd, L, uom, did, tu, a, s_, f, tot])
+                    "QTY_A", "QTY_S", "QTY_F", "QTY_E", "DAY_TOTAL"])
+        for (tu, nmi, sx, rd, L, uom, did, a, s_, f, e, tot) in out:
+            w.writerow([nmi, sx, rd, L, uom, did, tu, a, s_, f, e, tot])
     return len(out)
 
 
