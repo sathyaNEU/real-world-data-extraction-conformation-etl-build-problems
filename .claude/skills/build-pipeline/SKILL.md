@@ -19,13 +19,34 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 1 | draw | `guide-to-prompt` (pairing, shape), `stumping` Part 6.1, `fingerprint` (`new`, `check`, `register`), exemplars | card registered at PASS or answered WARN, with `stump_strategy`, `decisive_rule_filed`, `official_decoy` and `validated_decoy` filled, the three rules answered (`stump_class` analytical, `analyst_test` and `domain_test` written, `stumping` Part 1), and the two layers named (`client_domain` where the domain is a house one, `layer2_family`, `layer2_pattern` from `stumping/references/client/layer2-rigor-patterns.md` or `own:`, `layer1` from `dataset-generation/references/layer1-messiness.md`); **the stump sentence and the data-native sentence written** (`stumping` Part 2); the two nearest exemplars read as idea seeds, never as architectures |
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check; on a hardening loop, the brief from the last solver round is answered in the ladder and the design note says how |
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, surface screen clean |
-| 4 | leak check | `leak-check` (`leak.py`, then one `/leak-check` reader pass on Sonnet) | `leak.py` not LEAK on the final cut with every REVIEW line answered in the design note; the reader quotes no sentence for its question 1 and names no file that ranks the candidates or states the asked figures (question 2) or exists only to help the analyst (question 3), and any fork it sizes on the main call is closed. Those findings are fixed in the generator before the solver round (stage 3 re-run). The reader's realism tells and the forks it sizes on ask figures are written into the design note and **deferred**: repaired once at stage 6b when the round passes, or folded into the hardening brief when the solver lands. `leak.py` runs after every rebuild; the reader runs again only when a fix changed a document under `target/` or the prompt, never after a data-only repair |
+| 4 | leak check | `leak-check` (`leak.py`, then one `/leak-check` reader pass on Sonnet at medium effort) | `leak.py` not LEAK on the final cut with every REVIEW line answered in the design note; the reader quotes no sentence for its question 1 and names no file that ranks the candidates or states the asked figures (question 2) or exists only to help the analyst (question 3), and any fork it sizes on the main call is closed. Those findings are fixed in the generator before the solver round (stage 3 re-run). The reader's realism tells and the forks it sizes on ask figures are written into the design note and **deferred**: repaired once at stage 6b when the round passes, or folded into the hardening brief when the solver lands. `leak.py` runs after every rebuild; the reader runs again only when a fix changed a document under `target/` or the prompt, never after a data-only repair |
 | 5 | duplicate check | `fingerprint` (`heart`), `clone-check` (the `clone-auditor` agent, pre-flight mode on this build) | `guard.py heart` not BLOCK, and the adjudicated pre-flight returns no Exact, Same seed, Dataset or Template finding (`clone-check` Part 3); a Shape echo or Idiom finding is reported to the author, not looped on; a reject-tier finding sends the build back to stage 1 once with the colliding axis redrawn, or retires it. On a hardening loop the heart check re-runs and the adjudicated pre-flight re-runs only when the driver changed |
 | 6 | solver round | `solver-round` (`/solve taskNN`: one isolated solver in a sandbox) | **the worth-it gate** (below): the solver does not commit to the main call. Pass: stage 7. Landed: the hardening loop, back to stage 2 with the round's brief |
 | 6b | post-round repair | `dataset-generation`, `determinism-check`, `golden-realism`, `reduce-house-fixes` | after a passing round, one repair of the reader's deferred findings (realism tells, forks on ask figures), each fork asserted closed in the checks; `leak.py` re-run; the reader re-runs only if the repair changed a document under `target/` or the prompt; a fresh round only if the repair changed the prompt, a rung or the decisive path. A data-only repair that keeps the method and the ladder goes straight to stage 7 |
 | 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solver read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
 | 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | the client's pre-ship check (the three rules and the two layers) answered in the design note (`stumping/references/client/two-layer-task-design.md`), `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered, Status `shipped` in the root `START_HERE.md`; the author has the bundle, the stump sentence, the leak line, the duplicate-check line, the solver line and the judge line |
-| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory |
+| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory. A result that held the main call (stumped and deterministic) and lost on the asks goes to the ask-only revision (`supplemental-stumping` Part 12) and straight back to the author, set to `shipped` again on main; no stage above re-runs |
+
+## Models and effort
+
+Each role runs on one model at one effort, passed as `model` and `effort` on every `Agent` call (or set
+in the agent's definition), because an agent otherwise runs on its type's default. The thinking goes into
+the design. Everything after it executes a design that is already written, so it runs at medium.
+
+| Role | Stages | Model | Effort |
+|---|---|---|---|
+| **Designer**: the draw, the stump sentence and the data-native sentence, the ladder, the closure table, the ask sheet and the prompt; the paper half of every hardening loop and every re-root; any fix that changes a rung, a pin or the decisive step | 1, 2, and the paper half of each loop | Opus | max |
+| **Builder**: the generator, the pack, the goldens, the write-up, the verifiers, the house fixes, `leak.py` and the guard runs; the rebuild that executes a committed design; the 6b repair; a FIX_NOW that edits data or prose; the ask-only revision; ship | 3, the mechanical half of 4, 6b, the FIX_NOW of 7, 8, 9 | Opus | medium |
+| **Leak reader** | 4 | Sonnet | medium |
+| **Duplicate-check auditor** (`clone-auditor`) and its per-pair adjudicators | 5 | Opus | medium |
+| **Solver** (`Explore`) | 6 | Opus | medium |
+| **Determinism judge** (`determinism-judge` and its one judge thread) | 7 | Sonnet | medium |
+
+The designer reads before it draws: it couples the pitfall to the domain and learns from the client's
+examples and the builds that held before it writes the stump sentence (`stumping` Part 2). It never cuts
+data. The builder executes the committed design and tunes the data to it. A builder that finds the design
+will not hold, because a margin cannot be met or a rung does not fire, commits what it has and hands back
+the reason, and the next paper pass goes to a designer.
 
 ## The worth-it gate and the hardening loop
 
@@ -62,28 +83,37 @@ old card. A task number gets three architectures; when the third is spent the nu
 ## Running the stages
 
 **Not optional.** The leak reader (stage 4), the solver round (stage 6) and the judge (stage 7) run
-on every build, and a build reaches stage 7 only through a passing round.
+on every build, and a build reaches stage 7 only through a passing round. The one exception is the ask-only
+revision after a portal result that held the main call (`supplemental-stumping` Part 12). It edits the ask paths'
+data with the main call's inputs byte-identical, refreshes the write-up, re-cuts `target.zip` and commits.
+`leak.py`, the leak reader, the duplicate check, the solver round and the judge do not run again for it.
 
 **Solver first, polish after.** The round runs as soon as the pack is free of leaks: the reader's
 question 1 to 3 findings and any fork on the main call are fixed before the solver sees the pack, and
 everything else the reader raises (realism tells, forks on ask figures) waits for a round the solver
 misses (stage 6b). A build the solver cracks is rebuilt by the hardening loop anyway, so repairing it
 first spends a repair and a second read on a pack that is about to change. The leak reader runs on
-Sonnet (`model: sonnet` on its `Agent` call): it reads the pack and answers four questions, it does not
+Sonnet (`model: sonnet` and `effort: medium` on its `Agent` call): it reads the pack and answers four questions, it does not
 solve, so it needs no stronger model. One read per build, and a second only when a fix changed a
 document under `target/` or the prompt. The solver and the leak
 reader are always isolated threads on fresh scratch copies; no solve or read happens in the main
 thread, which has seen the design.
 
 **Every repair starts in a fresh agent, from what is committed.** The work after a round (a hardening
-rebuild, the stage 6b repair of the reader's deferred findings, a judge's FIX_NOW) is never handed back
+rebuild, the stage 6b repair of the reader's deferred findings, a judge's FIX_NOW, an ask-only revision) is never handed back
 to the agent that built the pack, and a finished agent is never resumed with `SendMessage`, because a
 resumed agent reloads its whole transcript and every repair would then be paid for on top of the
 builds before it. The main session spawns a new agent with a short brief file in the scratchpad that
 names the inputs, each already committed and pushed on the build's branch:
 - the round's log in `solver_rounds/` (the solver's call, answers and path);
 - the round's row and brief in `pipeline.json`, with its `deferred` list;
-- the leak report's deferred findings and the design note, `## Tried and rejected` first.
+- the leak report's deferred findings and the design note, `## Tried and rejected` first;
+- for an ask-only revision, instead of the above: the portal's rubric with the criteria that passed, the asks'
+  lines in the design note and the generator's ask-path files, as `supplemental-stumping` Part 12 sets out.
+
+A hardening loop and a re-root are two fresh agents in turn (Models and effort): the designer writes the
+next rung, or the new draw, on paper and commits it, then a builder is spawned from that commit. A 6b
+repair, a FIX_NOW that edits data or prose and an ask-only revision need only the builder.
 
 The new agent reads what the repair needs and nothing more, so a repair costs its own work, not the
 history behind it. That only works if the stage before it committed and pushed everything the next
@@ -172,6 +202,9 @@ registration has to be serial. Nothing waits on the author, so the pace is set b
   device (`supplemental-stumping` Part 2), so a wrong basis fails every figure and a cracker still
   loses the device layer.
 - Every stage's gate is a script's exit status or a thread's verdict, never a sentence in the chat.
+- A build is set to `shipped` in the root `START_HERE.md` on main the moment its bundle is done and handed
+  to the author: at stage 8, and again after every revision the author takes back to the portal. The
+  status goes in a commit of its own (`Status: taskNN shipped (<owner>)`), pushed to main.
 - The design note is the only reasoning record; `pipeline.json` is the only state record; the
   reports (`leak_check_report.md`, `clone_check_report.md`, `solver_rounds/`,
   `determinism_check_report*.md`) are evidence.

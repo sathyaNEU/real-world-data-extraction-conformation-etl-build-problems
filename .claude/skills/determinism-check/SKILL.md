@@ -126,7 +126,8 @@ determinism check, the last gate before ship).** Nothing else licenses it: not a
 outside `/build`, not a patch that seems to want validation.
 
 1. Resolve the task to an absolute folder; if none is named, ask and stop.
-2. Spawn the `determinism-judge` agent once, `subagent_type: determinism-judge`, stating that the
+2. Spawn the `determinism-judge` agent once, `subagent_type: determinism-judge` (Sonnet at medium effort, as
+   its definition sets), stating that the
    author asked through this skill (or that `/build` stage 7 reached it) and giving the path. If a
    `determinism_check_report.md` exists, name the pass number so the new report is numbered.
 3. Relay the verdict, the disposition, the Gate G line, the Gate H line and the report path. Do not fix, soften or

@@ -1,90 +1,173 @@
 {
-  "task": "task228",
-  "architecture": "v1",
-  "drawn": "2026-10-11",
-  "slot_note": "seed DQ01 (which guardrail metric the experiment platform's automated alert watches), re-rooted under the two-layer standard: the object is the experiment platform's data health and the call is the auto-alert wiring for the coming peak season",
-  "domain": "product-analytics",
-  "subdomain": "metric-definition-measurement-science",
-  "client_domain": "product-analytics",
-  "niche": "a holiday-rental marketplace's experimentation platform choosing which one of its five nightly data-health checks the paging alert is wired to, and at what setting, for the winter booking peak, scored on a random replay audit of last year's experiments",
-  "objective": "data-quality-monitoring",
-  "shape": "04",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Wire the paging alert to the pageview beacon loss check (beacon_loss_z) at a setting of 3.3 for the whole 2027 peak, 4 January to 28 March 2027.",
-  "answer_source": "task228/submission.md, 1. Final Recommendation (golden/peak_alert_config.json carries the same check and setting)",
-  "gap": [
+ "task": "task228",
+ "architecture": "v2",
+ "drawn": "2026-10-11",
+ "slot_note": "seed DQ01 (which guardrail metric the experiment platform's automated alert watches); architecture 2, re-rooted in the same objective after architecture 1 was spent: the object is a soil moisture reference network's data health and the call is which stations the spring crew re-installs before the drought monitor anchors on them",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "sensor-calibration-measurement",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "a prairie soil moisture reference network choosing which eight of its 56 stations the spring field crew re-installs before the drought monitor starts anchoring its satellite soil moisture layer on them, ranked on each station's own random error against the true soil moisture of its satellite cell",
+ "objective": "data-quality-monitoring",
+ "shape": "01",
+ "decision_type": "ranked_slate_under_cap",
+ "answer_unit": "set_of_items",
+ "answer": "Re-install Spiritwood N, Swift Current E, Kindersley W, Davidson W, Pense, Watrous S, Melfort N and Kandahar in the April 2027 window, largest tracking error first.",
+ "answer_source": "task228/submission.md, block 1",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G13",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": true,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who cleans the logger, satellite and model files and reads every field and rule correctly runs the field's standard triple collocation of station, morning retrieval and land-surface model and re-installs Balgonie S, Grand Coulee and Regina W in place of Watrous S, Melfort N and Kandahar, because over the clay plains the two products take texture from the same soil map and their errors co-vary, which no rule states and only an independent fourth series, a second station in the cell, separates.",
+ "domain_test": "Separating a soil moisture station's own random error from a satellite retrieval's and a land-surface model's by collocation, and recognising from their ancillary inputs that two of the three share a soil texture map and so cannot serve as independent references where that map is wrong, is the core of in-situ reference validation in environmental remote sensing; with another field's nouns there are no independent observing systems of one geophysical field whose error structure follows from the ancillary data each one ingests.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:collocation-with-cross-correlated-reference-errors",
+ "layer1": [
+  "hourly logger tables in UTC, one parquet file per calendar year, two probe depths, a firmware column added in the latest file, against a delivery day kept in Saskatchewan's year-round UTC-6",
+  "re-sent duplicate hours with later receive times after logger restarts",
+  "-9999 failed reads, lost hours and frozen-soil hours",
+  "probe and logger replacements in the register's probe and logger sheets, and a visit log with dd/mm/yyyy dates before 2022 and ISO after",
+  "satellite retrievals dated by local solar date with observation seconds since J2000, two passes a day, bit-packed quality and surface flags, -9999 fill, and a superseded version 4 extract beside version 5",
+  "land-surface model layer water in millimetres over 0 to 10 cm on a 0.1 degree grid, six-hourly UTC",
+  "station coordinates to be placed on the 36 km EASE grid by cell bounds and on the model's 0.1 degree boxes",
+  "station tipping-bucket gauges, daily for the Saskatchewan day, run 1 April to 31 October with the buckets closed over winter"
+ ],
+ "context_artifact": "planning_thread",
+ "stakeholder_role": "head of the soil moisture network's data office at a provincial agroclimate research centre, who signs the spring re-installation list and the network's delivery statement to the drought service",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "coteau_sm_hourly_2024.parquet",
+  "rows": 982624,
+  "entity": "one hourly volumetric water content reading of one soil probe at one network station",
+  "grain": "station x probe depth x UTC hour",
+  "source": "synthetic",
+  "note": "one file per calendar year 2024 to 2026 (982,624, 980,216 and 746,548 rows with re-sent hours)"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "Canada, Saskatchewan",
+  "currency": "CAD",
+  "org_type": "provincial agroclimate research centre running a soil moisture reference network",
+  "invented_names": [
+   "Coteau Agroclimate Research Centre",
+   "Prairie Drought Service",
+   "Ninox L-band retrieval",
+   "Plains Hydromet Office"
+  ],
+  "people": [
+   "Samantha Dominguez",
+   "Steven Velazquez",
+   "Veronica Flowers",
+   "Michael Holloway",
+   "Lisa Chandler",
+   "Kimberly Peterson"
+  ]
+ },
+ "deliverables": [
+  "reinstall_list_2027.docx",
+  "station_review_2027.csv",
+  "station_review_2027.png"
+ ],
+ "opening_move": "constraint-first",
+ "driver": "Each unit's own random error against a signal nothing observes decides the ranking, and the two comparators that could separate it share an input in one region, so their errors co-vary there and the standard three-way covariance separation charges that region's units with the comparators' shared error; a fourth series independent of both, a second unit observing the same signal, separates each unit's error where the shared input bites, and the three-way answer misses the right set by three swaps.",
+ "driver_concrete": "The spring crew can re-install eight of the network's 56 stations, ranked on each station's own random error against its satellite cell's true soil moisture (NS-03 s.2.1); the Ninox retrieval and the PLSM model both take soil texture from the same 1:1 million provincial soil map, which carries the heavy clay plains as clay loam, so over the two clay cells their errors co-vary and triple collocation of station, retrieval and model charges Balgonie S, Grand Coulee and Regina W with the products' shared error; collocating with the morning retrieval and a second station in the same cell (the model only in the three single-station cells, none on the clay) returns Spiritwood N, Swift Current E, Kindersley W, Davidson W, Pense, Watrous S, Melfort N and Kandahar.",
+ "stump": "A competent solver who reads NS-03 s.2.1 as asking for each station's own error separates it by triple collocation of the station, the morning retrieval and the PLSM model and re-installs Balgonie S, Grand Coulee and Regina W in place of Watrous S, Melfort N and Kandahar; the step that lands it there is treating the retrieval and the model as independent references over the heavy clay plains, where both take their texture from the same provincial soil map and err together, which a second station in the cell separates.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task107": "task107 v2 scaled a lottery pilot's assignment effect by receipt that the comparison arm also got through reassigned practitioners, a contamination reached through a staff directory; this build separates each station's own measurement error from two products whose errors co-vary over the clay plains, because both take soil texture from the same provincial soil map, so plain triple collocation of station, retrieval and model charges their shared error to the stations there and a second station in the cell, a fourth series independent of both, separates it; no treatment, no assignment and no contamination, and the shared input is a filed ancillary dataset, not a channel that carries a treatment",
+  "task228": "architecture 1 calibrated a paging threshold on the record's runs that look like the season's; architecture 2 as cut for round 3 separated each station's error by plain triple collocation; this cut turns on the two products sharing one ancillary input, so their errors are not independent over the clay plains and a fourth independent series (a second station in the cell) is needed there, a different decisive step from plain collocation",
+  "task134": "task134 chooses cumulative incidence over Kaplan-Meier for a recidivism return probability under competing exits (a competing exit is not a censored observation); this build estimates each soil moisture station's own random error where its two standard comparators, the retrieval and the model, take soil texture from the same provincial soil map, so over the clay plains their errors co-vary, plain triple collocation charges the shared error to the stations, and a second station in the cell, independent of both, separates it. Both are estimator choices pinned by a stated estimand, and since loop 1 both turn on an independence-type assumption of the standard estimator failing in one segment; the claims differ (who stays in the risk set, against whether two comparators are independent), as do the domains, the data structures and the drivers."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (architecture 1, final form after round 2: redrawn decisive rung)",
+   "fate": "spent 2026-10-11 and re-rooted: keyed honestly its decisive rung is composition_mix in the round-2 cut and pattern E with G14 decisive in the redraw (clone_check_report_task228_3.md), and both BLOCK against task129; an unresolved fork remained (dropping only the nights after a revision gives beacon_loss_z about 2.9, dropping revised runs whole gives 3.0). Round 2 had passed the solver gate.",
+   "driver": "The false-alarm budget is set per monitored run over the season a setting is live, and a run's chance of a false page carries whatever disturbed the nights it was checked; in the record a third of the long runs took a mid-run configuration change, which makes the per-night candidates jump for about a week and leaves its imbalance in the cumulative one for the rest of the run, and no run can be changed during the season, so a threshold calibrated on every long run in the record over-sets the candidates the changes disturb, and held on the long runs that ran unchanged, the candidate the changes hit hardest takes its most sensitive setting and leads.",
+   "driver_concrete": "The peak alert may page no more than one in twenty sound experiments over the season; every peak test books four weeks and none can be revised while it runs (no revision ships in the change freeze), while 60 of last year's 166 sound four-week runs took a revision (a ramp, an audience edit, a copy change) that makes the beacon-loss, late-events and events-per-user checks jump on sound tests for about a week and whose imbalance the cumulative exposure gap carries for the rest of the run; pooled, the beacon-loss check needs 7.5 and the exposure gap leads at 4.5, while held on the 106 runs that ran unrevised the beacon-loss check holds at 3.0 and leads with 22 catches.",
+   "stump": "A competent solver takes the replay audit as the record of sound and defective, holds the page budget on last year's sound four-week runs because every 2027 peak test books 28 nights, and wires the exposure-gap check at 4.5 (12 of 78 caught); the step that lands it there is pooling all 166 of those runs, when 60 of them took a revision mid-run and the change freeze lets no revision reach a peak test: a revision makes the beacon-loss check jump on sound tests for a week (57 of the 60 paged at 3.0), which drives its pooled setting to 7.5, so held on the 106 runs that ran unrevised, as every peak test will, the beacon-loss check holds at 3.0 and leads with 22.",
+   "gap": [
     "population",
     "time"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
+   ],
+   "pattern": [
+    "E",
+    "A"
+   ],
+   "generators": [
+    "G14",
     "G13",
-    "G17",
-    "G12"
-  ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": true,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "lead of the experimentation platform at a holiday-rental marketplace, who sets the paging alert before the peak change freeze",
-  "role_family": "research_desk",
-  "scoring_unit": "per episode",
-  "spine": {
-    "file": "vigia_nightly_checks_2025-10_2026-09.parquet",
-    "rows": 65100,
-    "entity": "one nightly data-health check result for one running experiment on one Lisbon check night",
-    "grain": "experiment x check night x check",
-    "source": "synthetic"
+    "G17"
+   ],
+   "decision_type": "pick_one_of_n",
+   "gate_g": "signal_vs_noise_or_hold",
+   "stump_strategy": "population_selection",
+   "answer": "Wire the paging alert to the pageview beacon loss check (beacon_loss_z) at a setting of 3.0 for the whole 2027 peak, 4 January to 28 March 2027.",
+   "domain": "product-analytics",
+   "subdomain": "metric-definition-measurement-science",
+   "objective": "data-quality-monitoring",
+   "notes": "filed as pattern A at the redraw; the clone check's honest key is E with G14 decisive"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "season_or_peak",
-  "org_family": "hospitality_or_tourism",
-  "world": {
-    "geography": "Portugal (Porto and Lisbon)",
-    "currency": "EUR",
-    "org_type": "online holiday-rental marketplace with an in-house experimentation platform",
-    "invented_names": [
-      "Pousalto",
-      "Vigia"
-    ],
-    "people": [
-      "Lourenço Miranda",
-      "Isabela Pires",
-      "Gaspar Gonçalves",
-      "Naiara Sá",
-      "Tomé Pinto",
-      "Diego Pinheiro",
-      "Vitória Campos",
-      "Teresa Tavares"
-    ]
+  {
+   "architecture": "v1 (loops 0 and 1, rounds 1 and 2)",
+   "fate": "decisive rung redrawn after round 2, which passed under the gate of 11 October (both solvers wired the beacon check at 3.4): loop 0's four-week calibration was landed by the round-1 skeptic and became rung 2; loop 1's reweighting to the season's surface mix keys composition_mix (pre-flight pass 2), which the guard bans against task129, so the strategy axis was redrawn inside the architecture",
+   "driver": "The false-alarm budget is set per monitored run over the season a setting is live, and a run's chance of a false page depends on how many nights it is checked and on the surface it runs on; a threshold calibrated on the historical runs (a mix of lengths, and four-week runs that under-represent the surface where batched uploads make the client-side checks noisy) under-protects the season the queue books, so rebuilt on the season's own length and surface mix, the heavy-tailed and batch-sensitive candidates lose their settings and a cumulative, batch-insensitive candidate leads.",
+   "driver_concrete": "The peak alert may page no more than one in twenty sound experiments over the season; every peak test books four weeks and a third of the season's standing tests run in the app, whose four-week runs span a release and page sound tests through batched beacon losses, while last year's four-week runs hold almost no app tests because app tests rode the fortnightly release train; held on the season's mix of surfaces the beacon-loss check has no setting inside the budget and the cumulative exposure-gap check leads.",
+   "stump": "A competent solver takes the replay audit as the record of sound and defective, holds the page budget on last year's sound four-week runs because every 2027 peak test books 28 nights, and wires the pageview beacon check at 3.4 (22 of 78 caught); the step that lands it there is pooling those 166 runs, which hold only 15 app tests because app tests rode the fortnightly release train, when 15 of the season's 43 standing tests are app tests whose four-week runs span a release and whose batched beacons page 7 of the 15 sound app runs at 3.4 and still 3 at 8.0; held on the season's own mix, no catalogue setting keeps the beacon check inside the budget, and the exposure-gap check at 3.5, which pages app and web tests alike, leads with 15.",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G6",
+    "G13",
+    "G17"
+   ],
+   "decision_type": "pick_one_of_n",
+   "gate_g": "signal_vs_noise_or_hold",
+   "stump_strategy": "composition_mix",
+   "answer": "Wire the paging alert to the exposure rate gap check (expo_rate_gap_pp) at a setting of 3.5 for the whole 2027 peak, 4 January to 28 March 2027."
   },
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "product-analytics/metric-definition-measurement-science/1",
-  "layer1": [
-    "check results in long format, one row per check per night, with nightly job re-runs",
-    "check nights on Lisbon local dates while job stamps are UTC, across two DST changes",
-    "a check renamed and re-unitised between catalogue releases",
-    "experiment keys that differ between the check export, the audit workbook and the incident tracker",
-    "an incident tracker migrated mid-year, migrated tickets present under both key schemes",
-    "a peak booking queue with rebooked and cancelled entries and squad ownership by effective date"
-  ],
-  "deliverables": [
-    "peak_alert_config.json",
-    "alert_replay.py",
-    "peak_alert_tradeoff.png"
-  ],
-  "opening_move": "stakes-first",
-  "driver": "The false-alarm budget is set per monitored run while the check is evaluated on every repeated look, so a threshold calibrated on the historical mix of run lengths under-protects the longer runs the coming window books; recalibrated on runs of the forward length, the heavy-tailed candidate that led on the historical mix loses most of its sensitivity and a light-tailed candidate leads.",
-  "driver_concrete": "The peak alert may page no more than one in twenty sound experiments over a run, and every peak experiment books four weeks of nightly checks, so the setting has to be calibrated on sound four-week audited runs rather than on last year's mix of two- and four-week runs; the events-per-user check, whose bot-burst tail is heavy, then needs a much higher setting and drops most of the defects it caught, and the beacon-loss gap leads.",
-  "stump": "A competent solver takes the replay audit as the record of sound and defective, finds for each nightly check the most sensitive grid setting at which no more than one in twenty sound audited experiments pages on any night of its run, counts the defects each catches on the first bad night or the two after, and wires the events-per-exposed-user check at 12 per cent (29 of 68 caught); the step that lands it there is holding the page budget on last year's mix of two-week and four-week runs, when every 2027 peak test books 28 nights, so on the 123 sound four-week runs the heavy-tailed events check needs 18 per cent and catches 12, and the pageview beacon loss check at 3.3, which catches 19 under either reading, leads.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Layer 2 frame from the seed (score candidate alert checks on labelled past experiments at a stated false-alert rate); the decisive move is the simultaneous (per-run) false-alarm rate over the forward run length, not the seed's largest-movement shortcut. Calibration organ is the platform's quarterly random replay audit, which the alert standard names as the record of sound and defective; no certified figure is reproduced. Drawn beside task229 (same objective, built in parallel): different domain, org family, forum, forcing event, geography, personas, spine and stump strategy."
+  {
+   "architecture": "v2 loop 0 (architecture 2 as cut for round 3, before hardening loop 1)",
+   "fate": "hardened 2026-10-11: round 3 landed the call on the solver's step 6, plain triple collocation of station, morning retrieval and model; that step is now a lower rung that completes and returns the wrong eight, because the two products share the soil map's texture over the clay plains",
+   "driver": "Each unit's own random error against a signal that nothing observes decides the ranking, and every comparison available carries the comparator's own error, which here is largest exactly where units sit in a comparator's weak conditions; three independent measurements of one signal identify each one's error from their pairwise covariances, so ranking units on their disagreement with one comparator, with whichever comparator they match better, or with the comparators' average sends the scarce visits to sound units in the comparators' weak spots.",
+   "driver_concrete": "The spring crew can re-install eight of the network's 56 stations, and the network standard ranks stations on their own random error against the true soil moisture of their satellite cell; the retrieval errs most over the parkland and pothole cells and the land-surface model (no irrigation, no ponding) over the irrigation district, the clay plain and the potholes, so a station's unbiased error against either product, the better of the two or their mean carries that product's error, and only triple collocation of station, retrieval and model on their common mornings separates the station's own error.",
+   "stump": "A competent solver places each station in its Ninox cell, matches its 5 cm reading at the morning overpass to the recommended-quality morning retrieval, treats the retrieval as the cell's soil moisture, ranks the 56 stations by their unbiased error against it and sends the crew to Kandahar plus seven sound pothole-country stations (Avonlea W, Briercrest, Dafoe, Dirt Hills, Muenster, Wynyard E, Yorkton W); the step that lands it there is charging each station with the retrieval's own error, and the model, the better reference or the two references' mean keep a reference's error too (2, 2 and 4 of the eight), when triple collocation of station, retrieval and model on the tracking mornings separates each station's own error and puts five open-cropland stations among the eight.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G16",
+    "G13",
+    "G17"
+   ],
+   "decision_type": "ranked_slate_under_cap",
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "decomposition_attribution",
+   "answer": "Re-install Swift Current E, Kindersley W, Davidson W, Watrous S, Melfort N, Pense, Kandahar and Spiritwood N in April 2027, in that order (own errors 0.048 to 0.034 m3/m3; ninth Craik E 0.024)"
+  }
+ ],
+ "notes": "Architecture 2 of the slot (re-rooted 2026-10-11, loops 0). Architecture 1 is spent: keyed honestly it is composition_mix (round 2) and then pattern E with G14 decisive (the redraw), both BLOCK against task129, and a fork remained between dropping only the nights after a revision (about 2.9) and dropping revised runs whole (3.0); its identity stays in lineage. Decisive generator keyed G16 (method selection) after clone-check pre-flight pass 4 (clone_check_report_task228_4.md) and kept through hardening loop 1 (pass 5, clone_check_report_task228_5.md): several defensible estimators of a station's error are available (unbiased error or regression residual against the retrieval, the model, the better of the two or their mean, a neighbour station, and plain triple collocation of station, retrieval and model) and disagree on the eight, and only collocation with the retrieval and a second station in the cell estimates the quantity the standard defines over the clay plains, because both products' notes file the same provincial soil map as their texture source, so their errors are not independent there; the draw was first keyed G3 (record versus operation), which the pack does not carry. gate_g method_or_model_selection, consistent with G16; stump_strategy stays decomposition_attribution (the covariances decide how each pairwise disagreement splits across the three sources). G13 carries a lower rung (each station is judged on its current installation, dated in the register's probe sheet) that leaves the eight unchanged; G17 supports (the eighth and ninth own errors held apart by a stated margin). No calibration organ, no filed rival metric, no certified record; the network standard states the estimand and the cap and never the construction. Saskatchewan keeps CST all year, so the loggers' local hour is UTC minus 6. Author waiver, 2026-10-11: ban.pattern (decisive G16) against task134 waived by the author after pre-flight pass 4; the drivers differ (a station's own error separated from two comparators that share an input, the soil map's texture over the clay plains, by a fourth independent series, in soil-moisture validation, vs cumulative incidence under competing exits treated as censoring in recidivism), different domains, and task134 was registered after this draw. Pre-flight pass 5 (hardening loop 1, clone_check_report_task228_5.md) found the same ban and not a Template: the drivers still differ (competing exits as censoring against comparators sharing an input), but loop 1 moved the build closer to task134 in form, since both now hinge on an independence-type assumption of the standard estimator failing in one segment; the third ground holds for the architecture-2 draw only, so the waiver now rests on the first two. Role redrawn 2026-10-11 from field_unit_lead (the network lead) to statistical_office_head (the head of the network's data office) after ban.role against task135, by the author's decision; the driver is unchanged. Hardening loop 1 (2026-10-11): round 3 landed on plain triple collocation; the decisive rung is now the cross-correlated reference errors over the clay plains (shared soil-map texture), broken by a second station in the cell; driver re-keyed, the round-3 driver moved to lineage, and the adjudicated pre-flight re-run because the driver changed (pass 5: no reject-tier finding)."
 }
