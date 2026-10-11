@@ -107,6 +107,14 @@ where it left the ladder. Three shapes recur:
 - **It executed the rung as a work order.** The path performs the step with no apparent effort. The
   rung was announced somewhere; `leak-check` sweep 4 and 5 find where.
 
+**Then classify where the miss happened, against the three rules** (`../stumping/SKILL.md` Part 1). A
+miss counts only when the solver left the ladder at the decisive analytical step: its path read the
+fields and applied the stated rules correctly and still took the easy analytical route the card's
+`analyst_test` names. A solver that missed because it misread a field, code or unit, or misapplied a
+stated rule, is a miss on a lower rung that tells you nothing about the stump; record it as such in the
+round's file, and if it is the only way the round was missed, the round says nothing about the decisive
+step and the build goes back to design to make the analytical step decisive.
+
 ## What this is not
 
 - Not the portal. The ledger row waits for the portal result, and nothing a solver round says is
