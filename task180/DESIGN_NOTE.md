@@ -10,6 +10,25 @@ the whole lane shares: the loudest signal is not the cause.
 Carried from architecture 2's send-back: the decisive separation must sit far above the noise of every lens a reviewer
 can bring; every graded figure is stated with its window and method; no exact ties among graded figures.
 
+## Retired
+
+task180 is retired on 2026-10-11, its third architecture spent (`build-pipeline`, Retirement), on the author's decision.
+Every card stays filed so none of the three is drawn again.
+
+- **Architecture 1** (revenue protection, the screen grain) was spent at in-house round 1. Both solvers landed
+  Caithness (81.3 and 85.6), because the filed glossary and the related metering points sheet made the grain a work
+  order.
+- **Architecture 2** (a lines company's transformer inspection slate, main-tank acetylene attributed to its source) was
+  spent at judge pass 2: SEND_BACK on Gate C, a second defensible slate.
+- **Architecture 3** (signal refinement in the national registries, a self-controlled comparison against
+  between-person designs) was landed by round 6 (81.6) with a plain self-controlled comparison over all observed time.
+  Hardening loop 1 built a contraindication so that comparison names velaglutide (WIP at a4261fe, never cut into a
+  pack), and its paper half then found that the rung fails main's literal-determinism rule. The only filed comparison
+  whose literal execution gives corinurad's figure names the reference window, which is rule application; every
+  general text either orders the assumption check that hands over the step or reads literally to velaglutide; and the
+  data separation determinism needs is the same signal that announces the step. Details are under Tried and rejected,
+  hardening loop 1.
+
 ## DRAW
 
 ```
