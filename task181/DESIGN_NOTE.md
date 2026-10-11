@@ -340,6 +340,12 @@ names fell from 9 to 6 (the line list and the rosters now name 4 of 6, not 7 of 
 swap "written" for "pattern" (from the pass 2 paragraph above, added after the last run), so the notes carry 6 terms,
 not 7. The two reader passes read the earlier slide sentence; a reader re-read follows.
 
+**Solver's-eye read, pass 3 (after the slide's cluster list was tied to the call).** Clean: question 1 PR-07 4.2 as the
+rule the prompt cites, questions 2 to 4 none, every REVIEW line harmless. The rosters' arrival order ends with the two
+Griffith schools (30 September and 1 October), which the reader called "at most a weak sign of recent activity": it is
+the slow route showing (Griffith's first school cases were notified late), the order is honest, and it names no area or
+cluster. Its plan files Wagga Wagga at rung 1, stable under every 14-day variant it tried, without a word on delay.
+
 ## DUPLICATE CHECK (stage 5)
 
 - **Adjudicated pre-flight (clone-auditor, pass 1 on architecture 2, `clone_check_report.md`): CLEAN.** No Exact, Same

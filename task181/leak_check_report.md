@@ -63,3 +63,12 @@ Plan (reader's own, abridged): pin the extract day from the run report; cases un
 REVIEW lines: all harmless, including the rosters workbook: "the sheets run in the order rosters arrived (08/09 Hurley Street to 01/10 Kooyoo Street). That order does not mark this week's clusters: Hurley Street, Fernleigh Road, Canal Road and Twynam Street have rosters but are not clusters, and the five clusters are sheets 4, 5, 6, 8 and 9."
 
 Since pass 2 (2026-10-11): PR-07 5.1's slide sentence and the prompt's slide sentence changed (the slide now lists only the clusters in the area the team goes to, its school visits that week); leak.py rerun REVIEW with the same twelve lines and no new one; a reader re-read follows.
+
+## Solver's-eye read (pass 3, isolated reader, architecture 2, after the slide's cluster list was tied to the call, 2026-10-11)
+
+1. "The team goes to the area with the largest excess of cases with specimens collected in the 14 days before the extract day over its expected count." (PR-07 4.2): the unit's own rule the prompt sends the reader to; no counts, no area, no warning about the traps.
+2. none. 3. none (the run log's daylight-saving and Labour Day notes only fix the extract day). 4. none.
+
+Plan (reader's own, abridged): extract day from the run log; cases under 3.3 and 3.5; areas under 3.4; observed against the five-year expected count; "Wagga Wagga 9 - 1.4 = +7.6, Griffith 7 - 1.4 = +5.6, Snowy Valleys 7 - 1.4 = +5.6", stable under every 14-day variant it tried; the slide's schools for the chosen area (Wagga Wagga: Wollundry 3, Bolton Park 2; Griffith: Banna Avenue 5, Kooyoo Street 2). No mention of reporting delay.
+
+REVIEW lines: all harmless. The rosters workbook: a roster for every school with any case, each received about a day after its first case, nothing flagged; "the sheet order is just the date each roster arrived (the last two are Griffith schools, 30/09 and 01/10), which is at most a weak sign of recent activity".
