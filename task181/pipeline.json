@@ -3,17 +3,17 @@
  "domain": "banking-credit-financial-risk",
  "objective": "anomaly-detection",
  "stage": 4,
- "stage_name": "leak check",
+ "stage_name": "leak check and duplicate check",
  "updated": "2026-10-11",
  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's 60-day lookback, finds the Ferrier Creek pump terminal (205 of 283 victims, lift 38.78), counts the 174 open member cards it read by contact between the first and last victim read and files that reissue count (or keeps the coffee counter too and files 502); the step that lands it there is stopping at the strongest common point, when 47 of the 78 victims the pump does not explain trace to the Lombard Market self-checkout PIN pad in Smiths Falls, which the pooled screen ranks level with the car wash (lift 4.59) and below the coffee counter (11.95).",
  "architecture": 1,
  "loops": 0,
  "leak": {
   "leak_py": "REVIEW, no LEAK (2026-10-11, --asof 2026-10-05): 3 REVIEW lines, terminal ID 02417158 in the authorisation parquet, 6 of 25 stump terms in CP-14 and 4 in the 2025 close-out, each answered in DESIGN_NOTE; 2 INFO (merchant directory names the candidates without ranking them; container audit clean); leak_check_report.md",
-  "reader": ""
+  "reader": "pass 1 running (fresh copy of prompt.md and target/, isolated general-purpose reader)"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN, no BLOCK (repeat.gate_g: decomposition_attribution repeats task180 v1; overuse.gate_g: 5 of the last 12 builds); nearest drivers task25 and task107 at 0.06",
   "nearest": "task25 driver 0.06 (guard check, WARN only: repeat.gate_g, overuse.gate_g)",
   "clone_check": "",
   "surface": "1 promoted: task103 0.143 (pct 99), carried by the flat layout, the format mix and the pdf+xlsx deliverable pair; no shared file names or file contents, one short generic prompt shingle; nearest not promoted task131 0.096"
