@@ -280,6 +280,9 @@ MONTHLY_2026 = {  # watch-list days outside the round months: (day A, day B)
     5: ("2026-05-12", "2026-05-13"), 7: ("2026-07-14", "2026-07-15"), 8: ("2026-08-11", "2026-08-12"),
 }
 LEAK_ONSET = {"DSL-T1": D("2024-07-01"), "LST-T2": D("2025-03-17")}   # barrier began to weep
+# new hot-dip galvanised radiators: hydrogen from the fresh zinc, fast at first and easing off (date, ppm at
+# saturation, time constant in years). The panels were changed through the isolating valves, in service.
+RADIATOR_WORK = {"LST-T2": (D("2024-11-12"), 26.0, 0.8)}
 ARC_ONSET = {"SBG-T2": D("2025-03-31"), "RLS-T2": D("2024-12-16")}    # internal arcing began
 THERMAL_ONSET = {"CGT-T1": D("2022-09-26"), "SPN-T2": D("2023-05-29"), "DFD-T1": D("2021-04-19")}
 # twelve-month increases the September 2026 results are tuned to (ppm, before scaling to 365 days)

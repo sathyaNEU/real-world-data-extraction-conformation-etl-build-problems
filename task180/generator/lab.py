@@ -206,6 +206,11 @@ def true_values(u, p, t, extra):
         o2 = 600 + (p["O2"] - 600) * k
     v["O2"] = o2
     v["N2"] = p["N2"]
+    rw = W.RADIATOR_WORK.get(tid)
+    if rw is not None:
+        t0 = dt.datetime.combine(rw[0], dt.time(0))
+        if t > t0:
+            v["H2"] += rw[1] * (1 - math.exp(-((t - t0).total_seconds() / (365.25 * 86400)) / rw[2]))
     role = u["role"]
     if role in ("L1", "L2"):
         k = extra["leak_k"][tid]
@@ -376,11 +381,15 @@ def build(dlist, H, ops, cnt):
         nv = round(bv + delta, 1 if step < 1 else 0)
         rep[l][gas] = (f"{nv:.1f}" if step < 1 else str(int(nv)))
 
-    # the leaking units: twelve-month acetylene increase as tuned, hydrogen up by 1 ppm
+    # the leaking units: twelve-month acetylene increase as tuned, hydrogen up by 1 ppm, plus what the new
+    # radiators gave off over the same year where a unit has them
     for tid in W.LEAK_ONSET:
         set_inc(tid, "C2H2", W.TUNED_INCREASE[tid][1], 0.1)
         b, l = sample_in(tid, "2025-09"), sample_in(tid, "2026-09")
-        rep[l]["H2"] = str(int(rep[b]["H2"]) + 1)
+        rad = 0.0
+        if tid in W.RADIATOR_WORK:
+            rad = truth[l]["H2"] - truth[b]["H2"] - 0.10 * (truth[l]["C2H2"] - truth[b]["C2H2"])
+        rep[l]["H2"] = str(int(rep[b]["H2"]) + 1 + int(round(rad)))
     for tid in W.THERMAL_ONSET:
         set_inc(tid, "C2H4", W.TUNED_INCREASE[tid][1], 1)
 

@@ -253,6 +253,14 @@ def log_rows(dlist, ops, cnt, R=None):
         seq += int(r.integers(3, 29))
         site = W.SUB_NAME[asset.split("-")[0].split(" ")[0]]
         out.append([f"WO{seq}", d, site, asset, kind, txt, who, hrs])
+    # capital works carry the projects office's own job numbers
+    for k, (tid, (d, _, _)) in enumerate(sorted(W.RADIATOR_WORK.items())):
+        txt = ("Radiator bank replaced panel by panel through the isolating valves, transformer kept in service. "
+               "Four new hot-dip galvanised panel radiators fitted, main tank topped up with new oil to the "
+               "conservator mark. Old panels to scrap.")
+        out.append([f"CW{d.year % 100}-{417 + k:04d}", d, W.SUB_NAME[tid.split("-")[0]], tid, "CAPITAL WORK", txt,
+                    W.PEOPLE["fitter"], 22.0])
+    out.sort(key=lambda x: (x[1], x[3]))
     return out
 
 

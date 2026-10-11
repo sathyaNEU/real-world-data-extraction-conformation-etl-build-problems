@@ -60,8 +60,9 @@ def main():
     check("T2 and T3 driven by ethylene", (coded[T2][2], coded[T3][2]) == ("C2H4", "C2H4"))
     check("L1 and L2 attributed: remaining gases code 2", coded[L1][0] == 2 and coded[L2][0] == 2,
           f"{coded[L1][:3]} {coded[L2][:3]}")
-    check("L1 and L2 attributed severity below 1 and from paper gases",
-          coded[L1][1] < 1 and coded[L2][1] < 1 and coded[L1][2] in ("CO", "CO2") and coded[L2][2] in ("CO", "CO2"),
+    check("L1 and L2 attributed severity below 1 (no remaining gas above its rate limit: L2 on paper gases, "
+          "L1 on the radiators' hydrogen)",
+          coded[L1][1] < 1 and coded[L2][1] < 1 and coded[L2][2] in ("CO", "CO2") and coded[L1][2] in ("H2", "CO", "CO2"),
           f"{coded[L1][1]:.4f} {coded[L1][2]} {coded[L2][1]:.4f} {coded[L2][2]}")
     OUT["severity"] = {t: round(sv[t], 4) for t in W.IDS}
 
@@ -93,10 +94,13 @@ def main():
     r3b, _ = G.solve_main(trk)
     check("rung 3b (drop acetylene wherever it tracks the operations) names V, T1, T2", r3b == [V, T1, T2],
           str(r3b))
+    r3c, _ = G.solve_main(G.attribute(sig, rule=("type", "tracking", "ratio")))
+    check("rung 3c (attribute on the plain twelve-month C2H2/H2) names L1, V and A3", sorted(r3c) == sorted([L1, V, A3]),
+          str(r3c))
     for nm, sl in (("rung 0", r0), ("rung 1", r1), ("rung 2a", r2a), ("rung 2b", r2b), ("rung 3", r3),
-                   ("rung 3b", r3b)):
+                   ("rung 3b", r3b), ("rung 3c", r3c)):
         check(f"{nm} differs from the answer by at least one unit", set(sl) != set(ANSWER))
-    OUT["rungs"] = {"r0": r0, "r1": r1, "r2a": r2a, "r2b": r2b, "r3": r3, "r3b": r3b}
+    OUT["rungs"] = {"r0": r0, "r1": r1, "r2a": r2a, "r2b": r2b, "r3": r3, "r3b": r3b, "r3c": r3c}
 
     # -- the twin pair -------------------------------------------------------------------------
     units = S.by_unit(S.record_of_issue(list(G.main_rows())))
@@ -128,15 +132,29 @@ def main():
               f"{s2[V]['r']:.3f} {s2[V]['r_day']:.3f}")
         OUT[f"sig_{win}"] = {t: {k: (round(v, 3) if isinstance(v, float) else v) for k, v in s2[t].items()}
                              for t in s2}
+    check(f"{L2} C2H2/H2 twelve-month ratio at least 5", sig[L2]["ratio"] >= 5, f"{sig[L2]['ratio']:.2f}")
+    check(f"{L1} C2H2/H2 twelve-month ratio under 1.2 (reads as arc gas: the new radiators' hydrogen)",
+          sig[L1]["ratio"] < 1.2, f"{sig[L1]['ratio']:.3f}")
+    check(f"{L1} hydrogen already rising at 5 ppm a year or more in the year before its first acetylene",
+          sig[L1]["h2_pre_slope"] >= 5, f"{sig[L1]['h2_pre_slope']:.2f}")
+    check(f"{A3} hydrogen not rising in the year before its first acetylene (slope under 1 ppm a year)",
+          sig[A3]["h2_pre_slope"] < 1, f"{sig[A3]['h2_pre_slope']:.2f}")
     for t in (L1, L2):
-        check(f"{t} C2H2/H2 twelve-month ratio at least 5", sig[t]["ratio"] >= 5, f"{sig[t]['ratio']:.2f}")
+        check(f"{t} acetylene arrives with no hydrogen of its own (own ratio at least 5)", sig[t]["own_ratio"] >= 5,
+              f"{sig[t]['own_ratio']}")
         check(f"{t} cumulative growth follows operations better than time", sig[t]["cum_ops_better"])
+    check(f"{A3} acetylene arrives with hydrogen of its own (own ratio under 1)", sig[A3]["own_ratio"] < 1,
+          f"{sig[A3]['own_ratio']:.3f}")
+    rad_rows = [e for e in G.maintenance_log() if str(e["work_type"]).strip().upper() == "CAPITAL WORK"]
+    check("the log carries the radiator replacement at L1 as its one capital-works row",
+          len(rad_rows) == 1 and rad_rows[0]["asset"] == L1, str([(e["wo_number"], e["asset"]) for e in rad_rows]))
     check("V C2H2/H2 about 0.5", 0.4 <= sig[V]["ratio"] <= 0.6, f"{sig[V]['ratio']:.3f}")
     check("A3 C2H2/H2 about 0.6", 0.5 <= sig[A3]["ratio"] <= 0.7, f"{sig[A3]['ratio']:.3f}")
     check(f"{V} cumulative growth does not follow operations better than time", not sig[V]["cum_ops_better"])
     check(f"{A3} cumulative growth follows operations better than time, as at L1 and L2", sig[A3]["cum_ops_better"])
-    check("A3 hydrogen rises with its acetylene and the leaks' does not (twelve-month C2H2/H2 under 1 at A3, "
-          "at least 5 at L1 and L2)", sig[A3]["ratio"] < 1 and min(sig[L1]["ratio"], sig[L2]["ratio"]) >= 5)
+    check("A3 hydrogen rises with its acetylene and the leaks' acetylene brings none of its own (own ratio under 1 "
+          "at A3, at least 5 at L1 and L2)", sig[A3]["own_ratio"] < 1 and min(sig[L1]["own_ratio"],
+                                                                                sig[L2]["own_ratio"]) >= 5)
     # monthly sampling only (2026), the twelve-month window
     rest = sorted(set(sig) - {L1, L2, V, A3})
     cnt2 = {t: sum([sig[t]["type"] == "In-oil arcing", sig[t]["r"] >= 0.8, sig[t]["ratio"] >= 2]) for t in rest}
@@ -159,9 +177,17 @@ def main():
 
     # -- the grid -------------------------------------------------------------------------------
     cols = list(itertools.product(("zero", "half", "limit"), (330, 365, 400), ("latest", "median")))
-    # rules that read the gas the acetylene arrives with (the answer in every cell) and rules that read
-    # only the tap changer's type and the tracking (rung 3b in every cell: A3's acetylene tracks too)
+    # rules that read the hydrogen the acetylene brings of its own (the answer in every cell), rules that read
+    # the plain twelve-month gas ratio (rung 3c: L1's radiator hydrogen keeps it), and rules that read only the
+    # tap changer's type and the tracking (rung 3b: A3's acetylene tracks too)
     attribution_rules = {
+        "type+tracking+own": dict(rule=("type", "tracking", "own_ratio")),
+        "type+own": dict(rule=("type", "own_ratio")),
+        "tracking+own": dict(rule=("tracking", "own_ratio")),
+        "own>2": dict(rule=("own_ratio",), ratio_min=2), "own>3": dict(rule=("own_ratio",), ratio_min=3),
+        "own>5": dict(rule=("own_ratio",), ratio_min=5),
+    }
+    plain_ratio_rules = {
         "type+tracking+ratio": dict(rule=("type", "tracking", "ratio")),
         "type+ratio": dict(rule=("type", "ratio")),
         "tracking+ratio": dict(rule=("tracking", "ratio")),
@@ -180,6 +206,8 @@ def main():
     grid = {}
     nbad = 0
     nbad_trk = 0
+    nbad_plain = 0
+    R3C = sorted([L1, V, A3], key=lambda t: t)
     for bdl, gap, cls in cols:
         kw = dict(bdl=bdl, gap=gap, cls_mode=cls)
         for win in ("first_detectable", "last_bdl"):
@@ -192,6 +220,13 @@ def main():
                 if top != ANSWER:
                     nbad += 1
                     print("   grid miss", key, top, att)
+            for name, rk in plain_ratio_rules.items():
+                att = G.attribute(sg, **rk)
+                top, _ = G.solve_main(att, **kw)
+                grid[f"plain {name}|{win}|{bdl}|{gap}|{cls}"] = top
+                if sorted(top) != R3C:
+                    nbad_plain += 1
+                    print("   grid plain-ratio cell off rung 3c", name, win, bdl, gap, cls, top, att)
             for name, rk in tracking_rules.items():
                 att = G.attribute(sg, **rk)
                 top, _ = G.solve_main(att, **kw)
@@ -205,8 +240,10 @@ def main():
             check(f"grid main-tank-only rule keeps L1 or L2 ({bdl},{gap},{cls})", bool({L1, L2} & set(top)), str(top))
         top_lc = sorted(W.IDS, key=lambda t: -S.value(units[t][-1]["C2H2"], bdl))[:3]
         check(f"grid latest-acetylene rule keeps L1 or L2 ({bdl})", bool({L1, L2} & set(top_lc)))
-    check(f"grid: every gas-signature attribution rule returns V, A3, T1 in every column ({len(cols)} columns x "
+    check(f"grid: every own-hydrogen attribution rule returns V, A3, T1 in every column ({len(cols)} columns x "
           f"2 windows x {len(attribution_rules)} rules)", nbad == 0, f"{nbad} misses")
+    check(f"grid: every plain-ratio rule returns rung 3c (L1, V, A3) in every column ({len(cols)} columns x "
+          f"2 windows x {len(plain_ratio_rules)} rules)", nbad_plain == 0, f"{nbad_plain} off")
     check(f"grid: every tracking-only rule returns rung 3b (V, T1, T2) in every column ({len(cols)} columns x "
           f"2 windows x {len(tracking_rules)} rules)", nbad_trk == 0, f"{nbad_trk} off")
     OUT["grid_cells"] = len(grid)

@@ -184,12 +184,24 @@ def signatures(rows=None, bdl="half", window="first_detectable", gap=W.BASE_GAP_
         res_t = float(res_t[0]) if len(res_t) else 0.0
         h2 = inc12["H2"]
         ratio = inc12["C2H2"] / h2 if h2 > 0 else float("inf")
+        # hydrogen of the acetylene's own: the twelve-month hydrogen rise less the pace hydrogen was already
+        # rising at in the year before the acetylene first showed (least squares over those samples)
+        t_first = ss[first]["sampled"]
+        pre = [r for r in ss[:first] if (t_first - r["sampled"]).days <= 366]
+        slope = 0.0
+        if len(pre) >= 3:
+            xs = np.array([(r["sampled"] - pre[0]["sampled"]).days / 365.25 for r in pre])
+            ys = np.array([S.value(r["H2"], bdl) for r in pre])
+            slope = float(np.polyfit(xs, ys, 1)[0])
+        own_h2 = h2 - max(slope, 0.0)
+        own_ratio = inc12["C2H2"] / own_h2 if own_h2 > 0 else float("inf")
         out[tid] = {"type": reg[tid]["oltc_type"], "r": r_raw, "r_day": r_day, "ratio": ratio,
+                    "h2_pre_slope": slope, "own_ratio": own_ratio,
                     "cum_ops_better": res_o < 0.5 * res_t, "n": len(inc)}
     return out
 
 
-def attribute(sig, rule=("type", "tracking", "ratio"), r_min=0.9, ratio_min=3.0, need=None, tracking="raw"):
+def attribute(sig, rule=("type", "tracking", "own_ratio"), r_min=0.9, ratio_min=3.0, need=None, tracking="raw"):
     """Units whose main-tank acetylene is attributed to the tap changer under a rule. need: how many of
     the named signatures must hold (default all of them)."""
     out = []
@@ -207,6 +219,8 @@ def attribute(sig, rule=("type", "tracking", "ratio"), r_min=0.9, ratio_min=3.0,
                     checks.append(s["cum_ops_better"])
             elif k == "ratio":
                 checks.append(s["ratio"] >= ratio_min)
+            elif k == "own_ratio":
+                checks.append(s["own_ratio"] >= ratio_min)
         n = len(checks) if need is None else need
         if sum(checks) >= n:
             out.append(tid)

@@ -65,7 +65,7 @@
     {
       "path": "dga_main_tank_results_2021-2026.csv",
       "format": "csv",
-      "bytes": 135125,
+      "bytes": 135138,
       "rows": 1077,
       "source": "Constructed: Laboratory dissolved gas, water and oil temperature results for main-tank oil samples, one row per report issue, March 2021 to September 2026",
       "date": "2026-10-16",
@@ -74,7 +74,7 @@
     {
       "path": "maintenance_log_2019-2026.xlsx",
       "format": "xlsx",
-      "bytes": 20987,
+      "bytes": 21153,
       "source": "Constructed: Closed work orders on zone substation plant, January 2019 to October 2026",
       "date": "2026-10-16",
       "license": "CC0-1.0 (original work, constructed for this task)"

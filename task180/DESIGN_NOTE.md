@@ -107,8 +107,9 @@ changer, arcing at the tap selector in the main tank from December 2024, gas mad
 | 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | DSL-T1 9.64, LST-T2 and SBG-T2 8.07 each, then RLS-T2 4.98, CGT-T1 4.73 | the filed standard applied exactly | at DSL-T1 and LST-T2 the main-tank acetylene increments track tap-change counts (r 0.998 and 0.995 from the first detectable result; 0.978 and 0.989 from the last below-detection one), twelve-month C2H2/H2 is 9.8 and 8.2, the tap changers are in-oil arcing types |
 | 2 | Drop the unit with the clearest leak only | without DSL-T1: LST-T2, SBG-T2, RLS-T2; without LST-T2: DSL-T1, SBG-T2, RLS-T2 | one contaminated unit found | the other leaking unit carries the same signature |
 | 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene arrives with more hydrogen than acetylene (C2H2/H2 0.64): made in the main tank |
-| 3b | Drop acetylene wherever it tracks the unit's tap operations (round 2's step) | SBG-T2, CGT-T1, SPN-T2 | the two leaks track their counters, so tracking reads as the test | RLS-T2's acetylene tracks its counter too (r 0.999 raw, 0.992 per day) but arrives with 1.6 times as much hydrogen (C2H2/H2 0.64 against 9.8 and 8.2 at the leaks): arc gas made in the main-tank oil at each tap change, not diverter oil |
-| 4 (answer) | Attribute each unit's acetylene by the gas it arrives with; the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
+| 3b | Drop acetylene wherever it tracks the unit's tap operations (round 2's and round 3's step) | SBG-T2, CGT-T1, SPN-T2 | the two leaks track their counters, so tracking reads as the test | RLS-T2's acetylene tracks its counter too (r 0.999 raw, 0.992 per day) but arrives with hydrogen of its own (C2H2/H2 0.64, hydrogen flat in the year before and rising with the acetylene): arc gas made in the main-tank oil at each tap change, not diverter oil |
+| 3c | Drop acetylene where the plain twelve-month C2H2/H2 says tap-changer oil (round 4's step) | LST-T2 and SBG-T2 (tied 8.07), RLS-T2 | the IEC 60599 reading of a high ratio as tap-changer contamination | LST-T2's ratio (0.91) is the new radiators' hydrogen: rising at 9.7 ppm a year in the year before its first acetylene (November 2024 radiator replacement, in the log as capital work), easing since, and not quickening when the acetylene came; its acetylene brings no hydrogen of its own and tracks its counter (r 0.995) |
+| 4 (answer) | Attribute each unit's acetylene by the hydrogen it brings of its own (over the pace hydrogen already had before the first acetylene); the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
 
 With their acetylene attributed, DSL-T1 and LST-T2 stay code 3 under section 4, which codes the main-tank results as
 reported (the goldens carry the literal code and severity, 3 at 9.64 and 3 at 8.07), but neither has a fault in the
@@ -130,14 +131,15 @@ named unit, asserted.
 
 ## GRID (asserted in checks.py)
 
-Rows: six attribution rules that read the gas the acetylene arrives with (all three signatures; type and ratio;
-tracking and ratio; acetylene dropped for C2H2/H2 above 2, 3 and 5) and eight that do not (type and tracking; any two
+Rows: six attribution rules on the hydrogen the acetylene brings of its own (type, tracking and own ratio; type and own
+ratio; tracking and own ratio; own ratio above 2, 3 and 5), six on the plain twelve-month C2H2/H2 (the same shapes), and
+eight that read no gas ratio (type and tracking; any two
 of three; tracking r of 0.8, 0.9 and 0.95 on increments per sample interval; r of 0.9 per day; cumulative growth
 fitting the operations better than time, alone and with the tap-changer type), each on two tracking windows (from the
 first detectable result, from the last below-detection result). Columns: below-detection values at zero, half the
 limit or the limit; base sample at 330, 365 and 400 days; preservation class from the latest or the median O2/N2 (18
-columns). Shipped: all 216 gas-signature cells return SBG-T2, RLS-T2, CGT-T1 in that order, and all 288 tracking-only
-cells return rung 3b (SBG-T2, CGT-T1, SPN-T2); the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
+columns). Shipped: all 216 own-hydrogen cells return SBG-T2, RLS-T2, CGT-T1 in that order, all 216 plain-ratio cells
+return rung 3c (LST-T2, SBG-T2, RLS-T2) and all 288 tracking-only cells return rung 3b (SBG-T2, CGT-T1, SPN-T2); the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
 DSL-T1 and LST-T2 in all three below-detection readings. Attribution is looked for only where acetylene rises faster than
 its rate limit (DSL-T1, LST-T2, SBG-T2, RLS-T2).
 
@@ -231,8 +233,9 @@ relay operations) and the March 2026 thermal imaging survey of the 11 kV switchb
    counter replacements, a free-text maintenance log, UTC historian exports, re-issued reports.
 3. The flip is a methodological choice: attributing each unit's acetylene to its source by the gas it arrives with. Not
    a planted catch, not a field or code read correctly, not a stated rule applied.
-4. Analyst test holds: the easy attribution (drop acetylene that tracks the tap operations) gives Southbridge T2,
-   Coalgate T1, Springston T2; the design note names it (rung 3b) and checks.py asserts it in every grid cell.
+4. Analyst test holds: the easy attributions give wrong slates, tracking alone (rung 3b: Southbridge T2, Coalgate T1,
+   Springston T2) and the plain gas ratio (rung 3c: Leeston T2, Southbridge T2, Rolleston T2); checks.py asserts both
+   in every grid cell.
 5. ES-DGA-02 defines the population, the coding, the window and the priority (5.1, 5.2: outages to code 3 transformers
    with a fault in the main tank); every gas-signature attribution rule returns the answer in all 216 cells.
 6. No decoy memo, staff draft or briefing; Barry's notes are a field dictionary and true.
@@ -245,7 +248,7 @@ relay operations) and the March 2026 thermal imaging survey of the 11 kV switchb
 ## STOPPING RULE
 
 Two rounds in which both solvers attribute the acetylene unprompted file this architecture as at-ceiling; a miss landing
-anywhere other than rungs 0 to 3b is read for a fork before any hardening.
+anywhere other than rungs 0 to 3c is read for a fork before any hardening.
 
 ## LEAK CHECK (leak.py, as-of 2026-10-16)
 
@@ -289,6 +292,21 @@ harmless; its plan keeps "only code 3 units whose gas shows a main-tank fault" a
 history before trusting main-tank acetylene" (rungs 3 and 3b), with no gas-ratio step.
 
 ## Tried and rejected
+
+- **Round 4 landed (architecture 2, loop 1, the re-run the judge's FIX_NOW required, 2026-10-11); hardened as loop
+  2.** One solver, proxy 74.8, the slate exact. Its deciding step: "Main-tank fault screen (s5.1-5.2): DSL-T1 and
+  LST-T2 (in-oil arcing tap changers) show C2H2 +9.8 and +8.2 ppm with H2 +1 ppm, read as tap-changer contamination
+  and excluded; SBG-T2 (vacuum tap changer, H2 +16) and RLS-T2 (H2 +8) kept". The plain gas ratio carried the call.
+  Brief: build the next rung so that exactly this step completes and returns the wrong slate. Leeston T2's radiators
+  were replaced with new hot-dip galvanised panels on 12 November 2024 (in service, through the isolating valves; the
+  log carries it as capital work under the projects office's own job number, so no work-order number moves), and new
+  zinc gives off hydrogen, fast at first and easing (26 ppm towards saturation, time constant 0.8 years). Its hydrogen
+  was rising at 9.7 ppm a year in the year before its first acetylene (June 2025), so the twelve-month C2H2/H2 reads
+  0.91 and the ratio step keeps it (rung 3c: LST-T2 and SBG-T2 tied at 8.07, RLS-T2). What the ratio cannot see is
+  that the acetylene brought no hydrogen of its own: over and above the pace it already had, Leeston T2's hydrogen
+  did not move when the acetylene came, while Rolleston T2's hydrogen was flat for the year before its acetylene and
+  rose with it. The decisive step is now per gas: tracking for the acetylene, the timing of the hydrogen against it.
+  Every golden figure stays (asserted against the round-4 values); the verifier carries its own version of the rule.
 
 - **Judge pass 1 (2026-10-11): DETERMINISTIC, FIX_NOW on hygiene.** The maintenance log's 176 annual inspections
   reused one sentence and five remarks ("T2 fan 3 noisy bearing, raised WO." 25 times at 16 sites with no follow-up

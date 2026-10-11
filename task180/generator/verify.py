@@ -174,7 +174,9 @@ def code(tid, drop=()):
 
 
 # attribution: acetylene rising, an in-oil arcing tap changer, increments tracking the operations from
-# the first detectable result, and a twelve-month C2H2/H2 ratio of 3 or more
+# the first detectable result, and acetylene that brings no hydrogen of its own: the twelve-month C2H2
+# rise against the hydrogen rise over and above the pace hydrogen already had in the year before the
+# first acetylene, 3 or more
 ATTR = []
 for tid in sorted(UNIT):
     s = UNIT[tid]
@@ -190,9 +192,19 @@ for tid in sorted(UNIT):
     ops = [ops_window(tid, a["t"].date(), b["t"].date()) for a, b in zip(seg[:-1], seg[1:])]
     r = float(np.corrcoef(incs, ops)[0, 1])
     ratio = inc_c2h2 / inc_h2 if inc_h2 > 0 else float("inf")
+    t1 = s[first]["t"]
+    before = [x for x in s[:first] if (t1 - x["t"]).days <= 366]
+    pace = 0.0
+    if len(before) >= 3:
+        yrs = np.array([(x["t"] - before[0]["t"]).days / 365.25 for x in before])
+        h = np.array([val(x["H2"]) for x in before])
+        pace = max(float(np.polyfit(yrs, h, 1)[0]), 0.0)
+    own = inc_h2 - pace
+    own_ratio = inc_c2h2 / own if own > 0 else float("inf")
     inoil = REG[tid]["oltc_type"] == "In-oil arcing"
-    print(f"  {tid}: in-oil {inoil}, r {r:.3f}, C2H2/H2 {ratio:.2f}")
-    if inoil and r >= 0.9 and ratio >= 3:
+    print(f"  {tid}: in-oil {inoil}, r {r:.3f}, C2H2/H2 {ratio:.2f}, hydrogen pace before {pace:.1f}/yr, "
+          f"own ratio {own_ratio:.2f}")
+    if inoil and r >= 0.9 and own_ratio >= 3:
         ATTR.append(tid)
 CODED = {tid: code(tid, ("C2H2",) if tid in ATTR else ()) for tid in UNIT}
 NAIVE = {tid: code(tid) for tid in UNIT}
