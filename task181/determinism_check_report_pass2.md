@@ -106,3 +106,12 @@ Likely adequate. The 07:00 count is the natural move given 4.1 and the prompt's 
 
 ## Next action for the author
 Ship task181 at stage 8 once the stage-5 guard BLOCK (`ban.strategy` maturity_censoring against task134) is settled by the author's decision.
+
+## After the pass (author, 2026-10-11)
+Finding 1 is fixed in the generator's container step (`generator/postprocess.py`, `share_strings`): both workbooks now keep their text in a shared-strings table, as Excel does, carry an XML declaration on every part, and list their parts in the order Excel saves them. No value moved:
+- every cell value, number format, bold flag, fill, frozen pane and merged range in both workbooks is identical before and after (openpyxl and pandas, all 11 sheets, 19,260 cells);
+- the other 9 pack files and both goldens are byte-identical to the judged build;
+- the rebuild passes 446 checks, the verifier is OK, and two builds are byte-identical (combined sha256 3b2d4f6d23d5b501);
+- `leak.py --asof 2026-10-05` gives the same lines as before.
+
+The roster header block stays: the nine sheets are the unit's own roster record, one per school, each filled by the nurse who received the roster (the "Roster received" line names her), so one layout across the sheets is what that workbook would hold. The judge's verdict stands on unchanged content.

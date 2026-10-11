@@ -113,7 +113,7 @@
     {
       "path": "postcode_lga_concordance.xlsx",
       "format": "xlsx",
-      "bytes": 8571,
+      "bytes": 9129,
       "rows": null,
       "source": "Constructed: The unit's residential postcode to LGA lookup (2021 Census correspondence ratios) and area populations",
       "date": "2026-10-05",
@@ -131,7 +131,7 @@
     {
       "path": "school_rosters_term3_2026.xlsx",
       "format": "xlsx",
-      "bytes": 105853,
+      "bytes": 99791,
       "rows": null,
       "source": "Constructed: School enrolment rosters received during follow-up in term 3 2026, one sheet per school, names removed",
       "date": "2026-10-05",
