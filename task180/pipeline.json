@@ -2,8 +2,8 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 7,
- "stage_name": "determinism check (judge pass 2, on the loop-2 pack)",
+ "stage": "spent",
+ "stage_name": "architecture 2 spent (judge pass 2 SEND_BACK); re-root to architecture 3 at stage 1",
  "updated": "2026-10-11",
  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
@@ -75,13 +75,29 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "report": "determinism_check_report.md (pass 1)",
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "determinism_check_report.md (pass 2, on the loop-2 pack)",
   "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
-  "note": "pass 1 (FIX_NOW, hygiene) was on the loop-1 pack; a fresh pass follows the next round that passes"
+  "finding": "Gate C, competing_defensible_answer: LST-T2's 2026 hydrogen increments track its tap operations (r 0.81, permutation p 0.005; RLS-T2's r 0.14), so the submission's own increment method keeps LST-T2 as a main-tank fault and SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is defensible; companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 OLS), the exact SBG-T2/LST-T2 tie, and the unstated gas-source rule pressable as an external dependency",
+  "passes": [
+   {
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW",
+    "report": "determinism_check_report_pass1.md",
+    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
+    "pass": 1
+   },
+   {
+    "pass": 2,
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md"
+   }
+  ]
  },
  "approved": null,
  "delivered": null,

@@ -299,6 +299,18 @@ that produced the hydrogen (a radiator replacement is logged wherever one is don
 
 ## Tried and rejected
 
+- **Judge pass 2 (architecture 2, loop 2, 2026-10-11): NOT_DETERMINISTIC, SEND_BACK; architecture 2 spent.** Gate C,
+  competing_defensible_answer, in the judge's words: "LST-T2's hydrogen increments track its tap operations: r 0.81,
+  permutation p 0.005. Rolleston T2's (RLS-T2) do not: r 0.14." The submission's own increment method, applied to
+  hydrogen, keeps Leeston T2 as a main-tank fault, so SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is a defensible
+  slate on these files. Companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 by OLS over the year
+  before 9 June 2025), the exact SBG-T2/LST-T2 tie reads as constructed, and the gas-source rule, stated nowhere in the
+  pack, can be pressed as an external dependency. The loop-2 radiator hydrogen sat at the noise floor of the tap-linked
+  increments, so the hardening that stopped round 4's ratio step opened a fork. Under build-pipeline (Retirement) a
+  judge SEND_BACK spends the architecture; re-rooted to architecture 3, the slot's last. Carried forward: a decisive
+  separation far above measurement noise under every lens a reviewer can bring, every graded pace stated with its window
+  and method, and no exact ties among graded figures.
+
 - **Round 4 landed (architecture 2, loop 1, the re-run the judge's FIX_NOW required, 2026-10-11); hardened as loop
   2.** One solver, proxy 74.8, the slate exact. Its deciding step: "Main-tank fault screen (s5.1-5.2): DSL-T1 and
   LST-T2 (in-oil arcing tap changers) show C2H2 +9.8 and +8.2 ppm with H2 +1 ppm, read as tap-changer contamination
