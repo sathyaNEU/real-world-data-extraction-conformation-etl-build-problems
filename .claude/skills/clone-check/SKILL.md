@@ -106,7 +106,7 @@ generated output of the same run, which is visible in row counts, column sets an
 content of the tables surviving a rename. A reviewer who compares two packages closely finds this
 one, and it reads as worse than a template because it looks like an attempt to hide.
 
-**Dataset.** The spine dataset, or its schema, carries both builds. Part 6.1 already bans this
+**Dataset.** The spine dataset, or its schema, carries both builds. `stumping` Part 6 already bans this
 between consecutive builds, and the ban exists because the data is where most of the build cost
 sits, so reusing it is the temptation the draw is meant to defeat.
 
@@ -118,7 +118,7 @@ every noun in the package.
 **Shape echo.** The mechanism differs but the build is recognisable from its outline, so the ask
 sentence is built the same way, the deliverable pair is the same species, the decision has the
 same shape and the calibration form is the same organ. No single one of these is a finding.
-Several of them together are the thing Part 6.1 means by a task recognisable from its shape, and
+Several of them together are the thing `stumping` Part 6 means by a task recognisable from its shape, and
 that is a soft flag rather than an exclusion.
 
 **Idiom.** The author's habits, visible across the whole corpus rather than in any pair, so a file

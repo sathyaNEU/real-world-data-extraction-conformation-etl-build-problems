@@ -207,7 +207,7 @@ plausible official rule is filed as the decoy) is the one every Set 2 note share
 twin pair, a licensed wrong basis and a roll call of voices. So a note is an **idea seed, never a build plan**. A build
 that starts from a note keeps its world and its decision only if the stump is redesigned from the dataset's own analytic
 structure, with the corpus, the licensed basis and the voices dropped unless that redesign needs them, and it passes the
-fingerprint guard's strategy bans and template caps (`.claude/skills/stumping/SKILL.md` Part 2). The Set 1 blueprints
+fingerprint guard's strategy bans and template caps (`.claude/skills/stumping/SKILL.md` Part 1.4). The Set 1 blueprints
 state their rules in a memo and carry almost none of this architecture, so they are the safer seeds, with one caution:
 a memo that paraphrases the trap ("never sum parent and children") hands it over, so the memo cites the external
 standard instead.

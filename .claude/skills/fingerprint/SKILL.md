@@ -12,7 +12,7 @@ description: The anti-repeat system for task builds. Every build has a fingerpri
 Builds come out as the same kind of project for a mechanical reason, not a creative one. The
 shipped ledger records outcomes, so it gets a row only when the portal result comes back, and every
 build finished but not yet reported is invisible to it; it is also too large, with single rows of
-20,000 characters, to read whole at draw time. So the standing bans in `stumping` Part 6.1 cannot be
+20,000 characters, to read whole at draw time. So the standing bans in `stumping` Part 6 cannot be
 checked against it.
 
 A fingerprint card fixes both halves. It is one small structured record per build, in a controlled
@@ -44,7 +44,7 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 | `gap`, `pattern`, `generators` | the decisive gap, pattern and G-code, **decisive first** | enum lists |
 | `gate_g` | the FINE-numbers mechanism that carries the stump | enum |
 | `calibration_form`, `context_artifact` | the calibration organ (`none` when the strategy needs none), and the type of file the stakeholder works from | enum |
-| `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 2) | enum |
+| `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 1) | enum |
 | `decisive_rule_filed`, `official_decoy` | whether a shipped sentence states the rule that decides the answer, and whether a filed, official-looking rule, basis or metric gives the wrong answer; `false` plus `true` is the withheld rule with an official decoy, the architecture the client names as templated, whatever `stump_strategy` says | true or false |
 | `validated_decoy` | whether the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it | true or false |
 | `stump_class` | the class of the decisive step under the client's three rules: `analytical`, `planted`, `data_semantics` or `rule_application`; only `analytical` may decide the answer | enum |
@@ -58,7 +58,7 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 | `spine` | the spine file, its rows, what one row is, its grain, and its source dataset | mixed |
 | `world` | geography, currency, organisation type, the proper nouns the build invented, and `people`, every persona the build names | mixed |
 | `forum`, `forcing_event`, `org_family` | who receives or decides the call, what forces it now, and the kind of organisation it sits in | enum |
-| `deliverables`, `opening_move` | the file names the prompt asks for, and the prompt's opening move | free plus enum |
+| `deliverables`, `opening_move`, `question_form` | the file names the prompt asks for, the prompt's opening move (`question-first` on every build under the prompt rules) and the form of its leading question (how many, how much, which, whether, what, when, who, where), which is where the batch's variety now lives | free plus enum |
 | `driver` | **one sentence, the decisive move with every domain noun stripped** | free, compared by similarity |
 | `driver_concrete`, `stump` | the same move in the build's own terms, and the wrong committed answer a competent solver files with the step that lands them there | free |
 | `answer`, `answer_source` | the committed answer verbatim, and where it was copied from | free |
@@ -99,11 +99,11 @@ it before you choose, because the pairing is the cheapest thing in the build to 
 samples each dimension independently, weighted toward what has been used least and never breaking
 a standing ban; take it as a starting point, never as the decision.
 
-**2. When the draw is fixed** (`stumping` Part 6.1, before the ladder is written):
+**2. When the draw is fixed** (`stumping` Part 6, before the ladder is written):
 
 ```
 python3 .claude/skills/fingerprint/guard.py new task98 > <scratchpad>/task98_card.json
-#   fill it from the design note's DRAW block, including the driver and the stump sentence
+#   fill it from the design note's `## Draw` section, including the driver and the stump sentence
 python3 .claude/skills/fingerprint/guard.py check <scratchpad>/task98_card.json
 python3 .claude/skills/fingerprint/guard.py register <scratchpad>/task98_card.json
 ```
@@ -137,7 +137,7 @@ stump and every shipped-ledger row, then runs the full check. It is the cheap ha
 `/clone-check` is paid for. A card with an empty `stump` cannot be checked and is filled from the design note first.
 
 **5. When the submission is final**, update the card's `answer`, `answer_source`, `spine.rows`,
-`deliverables` and `opening_move` so the corpus stays true. That is part of delivering the build,
+`deliverables`, `opening_move` and `question_form` so the corpus stays true. That is part of delivering the build,
 not bookkeeping, because the next draw is checked against it.
 
 **6. When the author reports the portal result**, write the ledger row (the ledger's own "Adding a
@@ -152,12 +152,12 @@ is 1 on BLOCK, so the check can sit in a script.
 |---|---|---|---|
 | `legal.domain`, `legal.objective` | BLOCK | the nine domains and the eight objectives | the spec |
 | `legal.gate_g` | BLOCK | surface-read rejection, or `statistical_rigor` alone | Gate G v3 |
-| `ban.pairing` | BLOCK | domain plus objective, last three builds | Part 6.1 |
-| `ban.subdomain` | BLOCK | domain and subdomain both, last three | Part 6.1 draw table |
-| `ban.pattern` | BLOCK | the decisive pattern (or decisive G-code), last three | Part 6.1 |
-| `ban.calibration` | BLOCK | calibration form, last three | Part 6.1 |
-| `ban.role`, `ban.artifact` | BLOCK | role family, context-artifact type, last three | Part 6.1 |
-| `ban.spine` | BLOCK | spine entity and grain, last three | Part 6.1, `dataset-generation` §13 |
+| `ban.pairing` | BLOCK | domain plus objective, last three builds | `stumping` Part 6 |
+| `ban.subdomain` | BLOCK | domain and subdomain both, last three | `stumping` Part 6 draw table |
+| `ban.pattern` | BLOCK | the decisive pattern (or decisive G-code), last three | `stumping` Part 6 |
+| `ban.calibration` | BLOCK | calibration form, last three | `stumping` Part 6 |
+| `ban.role`, `ban.artifact` | BLOCK | role family, context-artifact type, last three | `stumping` Part 6 |
+| `ban.spine` | BLOCK | spine entity and grain, last three | `stumping` Part 6, `dataset-generation` §13 |
 | `ban.source` | BLOCK, else WARN | the same real source dataset, last three, else anywhere | `dataset-generation` §13 |
 | `ban.shape` | BLOCK | prompt shape, last two | `clone-check` Part 1 |
 | `ban.strategy` | BLOCK | the same `stump_strategy`, last three | the client's template note, `stumping` Part 2 |
@@ -167,8 +167,8 @@ is 1 on BLOCK, so the check can sit in a script.
 | `three_rules.class`, `three_rules.analyst_test`, `three_rules.domain_test` | BLOCK | a card drawn from 2026-10-10 without `stump_class`, with any class but `analytical`, or without the analyst test or the domain test | the client's three rules (`stumping` Part 1) |
 | `three_rules.strategy_risk` | WARN | a stump strategy whose decisive step most often turns out to be a field reading or a stated rule (`time_semantics`, `grain_or_unit`, `identity_resolution`, `stated_rule_hard_construction`, `withheld_rule_corpus_fit`) | the same |
 | `template.validated_decoy`, `template.validated_cap` | BLOCK | the certified-record decoy in the last build, or already in three of the last twelve | the same, from the card audit (27 of task99 to task130) |
-| `test.same_puzzle` | BLOCK | gap, pattern and decision type all equal, last twelve, lineage included | Part 6.1 similarity test |
-| `test.same_puzzle_older` | BLOCK unless differentiated | the same, older than twelve | Part 6.1 similarity test |
+| `test.same_puzzle` | BLOCK | gap, pattern and decision type all equal, last twelve, lineage included | `stumping` Part 6 similarity test |
+| `test.same_puzzle_older` | BLOCK unless differentiated | the same, older than twelve | `stumping` Part 6 similarity test |
 | `test.same_driver` | BLOCK | gap, pattern and Gate G mechanism all equal, last twelve, lineage included | `clone-check` Template tier |
 | `test.same_driver_older` | BLOCK unless differentiated | the same, older than twelve | `clone-check` Template tier |
 | `test.own_lineage` | BLOCK unless differentiated | the slot's own earlier architectures | re-roots |
@@ -181,14 +181,14 @@ is 1 on BLOCK, so the check can sit in a script.
 | `people.inside` | BLOCK | two personas in one build sharing a first name or a surname | the name audit, Part 3b |
 | `ban.forum`, `ban.forcing_event`, `ban.org_family` | BLOCK | the same forum, forcing event or organisation family as any of the last three | the business-furniture audit, Part 3b |
 | `overuse.forum`, `overuse.forcing_event`, `overuse.org_family` | WARN | a forum, event or organisation family already spent across the corpus | the business-furniture audit, Part 3b |
-| `overuse.*`, `repeat.*` | WARN | domain, objective, shape, Gate G, decision type, deliverable set, PDF share, opening move, geography, niche | the client's voice note, Part 6.1 |
+| `overuse.*`, `repeat.*` | WARN | domain, objective, shape, Gate G, decision type, deliverable set, PDF share, opening move, question form, geography, niche | the client's voice note, `stumping` Part 6 |
 
-**Why the bans reach three builds and not one.** Part 6.1 writes them against "your last build",
+**Why the bans reach three builds and not one.** `stumping` Part 6 writes them against "your last build",
 and builds here are routinely drawn two or three at a time, so the last build is not the only one a
 reviewer reads beside this one. Three is the batch a reviewer holds as neighbours; twelve is the
 batch they read in one sitting, which is where `voice-check.py` measures too.
 
-**Why there are two structural tests.** Part 6.1's similarity test reads gap, pattern and decision
+**Why there are two structural tests.** `stumping` Part 6's similarity test reads gap, pattern and decision
 type. The one Template clone on record (task86 v1 against task72 v2) shared the gap, the pattern and
 the Gate G mechanism and differed only in how the decision was cut, a quantity against a pick, so
 that test let it through. `test.same_driver` reads gap, pattern and Gate G mechanism and blocks it.
@@ -228,7 +228,7 @@ file names are not, so name them the way the organisation in the build would.
 ## Part 4. How this goes wrong
 
 **A PASS read as "not a clone".** The guard is necessary and not sufficient. It sees what the card
-says, and the similarity test in Part 6.1 still has to be answered in writing in the design note.
+says, and the similarity test in `stumping` Part 6 still has to be answered in writing in the design note.
 
 **A card written to pass.** Choosing the vocabulary key that dodges a ban while the build is the
 same build is the failure the whole system exists to stop, and it fools nobody but the script. If

@@ -247,7 +247,7 @@ def first(lst):
 
 def decisive_mech(c):
     """The pattern that carried the decisive rung, or the decisive generator when no A to E pattern
-    did. This is the thing Part 6.1 bans reusing."""
+    did. This is the thing stumping Part 6 bans reusing."""
     pats = [x for x in (c.get("pattern") or []) if x]
     if pats and pats[0] != "none":
         return pats[0]
@@ -350,6 +350,8 @@ def validate_card(c, vocab, strict=False):
     enum("scoring_unit", vocab["scoring_units"], c.get("scoring_unit"), required=False)
     if c.get("opening_move"):
         enum("opening_move", vocab["opening_moves"], c.get("opening_move"))
+    if c.get("question_form"):
+        enum("question_form", vocab["question_forms"], c.get("question_form"))
     enum("forum", vocab["forums"], c.get("forum"), required=strict)
     enum("forcing_event", vocab["forcing_events"], c.get("forcing_event"), required=strict)
     enum("org_family", vocab["org_families"], c.get("org_family"), required=strict)
@@ -418,7 +420,7 @@ def validate_card(c, vocab, strict=False):
 # ------------------------------------------------------------------ the check
 
 def check(cand, cards, vocab, status=None):
-    """Every rule names the axis to redraw. BLOCK rules come from stumping Part 6.1's standing bans
+    """Every rule names the axis to redraw. BLOCK rules come from stumping Part 6's standing bans
     and similarity test, clone-check's hard tells, and the spec's legality gates. WARN rules are
     overuse across the batch a reviewer reads in one sitting."""
     status = status or {}
@@ -516,7 +518,7 @@ def check(cand, cards, vocab, status=None):
         add("BLOCK", "legal.gate_g", "statistical_rigor is supporting only and never the sole defence",
             fix="pair it under one of the seven FINE-numbers mechanisms and name that one")
 
-    # Part 6.1 standing bans, against the builds a reviewer reads alongside this one.
+    # stumping Part 6 standing bans, against the builds a reviewer reads alongside this one.
     hit = [c for c in recent if (c.get("domain"), c.get("objective")) == (cand.get("domain"), cand.get("objective"))]
     if hit:
         add("BLOCK", "ban.pairing", "domain plus objective pairing repeats a recent build", tasks(hit),
@@ -571,7 +573,7 @@ def check(cand, cards, vocab, status=None):
     hit = [c for c in recent if st and st != "other" and c.get("stump_strategy") == st]
     if hit:
         add("BLOCK", "ban.strategy", "stump strategy %s repeats a recent build" % st, tasks(hit),
-            "pick the stump this dataset's own analytic structure produces, see stumping Part 2")
+            "pick the stump this dataset's own analytic structure produces, see stumping Part 1")
     n_st = sum(1 for c in window if st and st != "other" and c.get("stump_strategy") == st)
     if n_st >= STRATEGY_WARN:
         add("WARN", "overuse.strategy", "stump strategy %s used in %d of the last %d builds" % (st, n_st, len(window)),
@@ -611,7 +613,7 @@ def check(cand, cards, vocab, status=None):
         add("WARN", "template.flagged", "the client names this architecture as templated: the design note says "
             "in one line why this dataset, and not the habit, calls for a withheld rule")
 
-    # Two structural signatures. The first is Part 6.1's similarity test: gap, pattern and decision
+    # Two structural signatures. The first is stumping Part 6's similarity test: gap, pattern and decision
     # type all repeating is the same puzzle in new clothes. The second is clone-check's Template
     # tier, "the gap, the pattern and the decisive rung line up": the same gap and pattern defeating
     # the solver through the same Gate G mechanism is the same driver even when the decision is cut
@@ -722,7 +724,7 @@ def check(cand, cards, vocab, status=None):
         if n_of >= max(6, int(0.12 * len(others))):
             add("WARN", "overuse.org_family", "%s is the organisation in %d builds already" % (of, n_of))
 
-    # Overuse across the batch, and the softer Part 6.1 axes.
+    # Overuse across the batch, and the softer stumping Part 6 axes.
     def count(field, value, cs):
         return sum(1 for c in cs if value and c.get(field) == value)
 
@@ -759,10 +761,16 @@ def check(cand, cards, vocab, status=None):
             add("WARN", "overuse.pdf", "a PDF ships in %d of the last %d builds" % (n_pdf, len(window)),
                 fix="pick the file a real analyst would produce for this decision")
     om = cand.get("opening_move")
-    hit = [c for c in ordered[-2:] if om and om != "other" and c.get("opening_move") == om]
+    # every prompt under the prompt rules leads with its question, so question-first never counts as a repeat
+    hit = [c for c in ordered[-2:] if om and om not in ("other", "question-first") and c.get("opening_move") == om]
     if hit:
         add("WARN", "repeat.opening", "opening move %s repeats one of the last two prompts" % om, tasks(hit),
-            "see prompt-voice.md section 3")
+            "lead with the question (prompt-voice.md)")
+    qf = cand.get("question_form")
+    hit = [c for c in ordered[-2:] if qf and qf != "other" and c.get("question_form") == qf]
+    if hit:
+        add("WARN", "repeat.question_form", "question form %s repeats one of the last two prompts" % qf, tasks(hit),
+            "take the form from the decision: a count asks how many, a pick asks which, a gate asks whether (prompt-voice.md)")
     geo = ((cand.get("world") or {}).get("geography") or "").strip().lower()
     hit = [c for c in recent if geo and geo != "fictional" and ((c.get("world") or {}).get("geography") or "").strip().lower() == geo]
     if hit:
@@ -879,6 +887,7 @@ def cmd_coverage(args):
     axis("context-artifact type", "context_artifact", vocab["context_artifacts"])
     axis("stakeholder role family", "role_family", vocab["role_families"])
     axis("opening move", "opening_move", vocab["opening_moves"])
+    axis("question form", "question_form", vocab["question_forms"])
     fm = Counter("+".join(fmt_set(c)) for c in window if fmt_set(c))
     print("\ndeliverable format sets in the last %d: %s" % (WINDOW, ", ".join("%s x%d" % kv for kv in fm.most_common())))
     geo = Counter(((c.get("world") or {}).get("geography") or "?").split(",")[0].strip() for c in live)
@@ -961,7 +970,7 @@ def cmd_suggest(args):
         sts = [k for k in vocab["stump_strategies"] if k not in ("other", TEMPLATE_STRATEGY, "withheld_rule_corpus_fit")]
         st = pick(sts, weights("stump_strategy", sts))
         if st not in ("withheld_rule_corpus_fit", "forecast_method_backtest"):
-            cf = "none"   # an organ ships only where the strategy needs one (stumping Part 4.1)
+            cf = "none"   # an organ ships only where the strategy needs one (stumping Part 7)
         draw = {"domain": d, "subdomain": sub, "objective": o, "shape": sh, "gap": gp, "pattern": pt,
                 "gate_g": gg, "calibration_form": cf, "context_artifact": ca, "role_family": rf,
                 "decision_type": dt, "stump_strategy": st}
@@ -1036,7 +1045,8 @@ def cmd_new(args):
         "org_family": "<vocab org_families key>",
         "world": {"geography": "<country, state or region>", "currency": "<ISO>", "org_type": "<short>",
                   "invented_names": [], "people": ["<drawn with guard.py names, never typed from memory>"]},
-        "deliverables": ["<file names the prompt will ask for>"], "opening_move": "<vocab opening_moves item>",
+        "deliverables": ["<file names the prompt will ask for>"], "opening_move": "question-first",
+        "question_form": "<vocab question_forms item: the form of the leading question>",
         "driver": "<ONE sentence, the decisive move with every domain noun stripped>",
         "driver_concrete": "<ONE sentence, the decisive move in this build's own terms>",
         "stump": "<ONE sentence, the wrong committed answer a competent solver files and the step that lands them there>",

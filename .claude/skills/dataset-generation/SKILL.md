@@ -7,7 +7,7 @@ description: Build the evidence pack that carries a designed trap. Covers the in
 
 > The prompt names the decision. The pack *is* the task. Every rung of the ladder must reproduce to zero drift from files in this bundle, and every rival must die to a fact that is also in this bundle. If a number in your golden cannot be recomputed from the pack, it does not exist.
 
-**Prerequisites, in order.** The pairing is fixed via `guide-to-prompt` (one domain, one enumerated subdomain, one Axis 1 objective), the build's fingerprint card is filed and clear of BLOCK (`../fingerprint/SKILL.md`, which also bans a spine whose entity and grain or source dataset repeats a recent build), the refusal ladder is designed and written down per the `stumping` skill (Part 13, the design note), and the ask sheet and device ledger are fixed per the `supplemental-stumping` skill, because the eight-file spans that skill floors are schema decisions this pack has to honour. Do not open a data file before the design note states everything Part 13 and the ask ledger require. Building data before the ladder produces a pack that either leaks the answer or carries no trap, and building it before the pairing produces a pack that carries evidence for an objective nobody tagged.
+**Prerequisites, in order.** The pairing is fixed via `guide-to-prompt` (one domain, one enumerated subdomain, one Axis 1 objective), the build's fingerprint card is filed and clear of BLOCK (`../fingerprint/SKILL.md`, which also bans a spine whose entity and grain or source dataset repeats a recent build), the refusal ladder is designed and written down per the `stumping` skill (Part 5, the design note that `precut.py` gates), and the ask sheet and device ledger are fixed per the `supplemental-stumping` skill, because the eight-file spans that skill floors are schema decisions this pack has to honour. Do not open a data file before the design note states everything `precut.py` requires. Building data before the ladder produces a pack that either leaks the answer or carries no trap, and building it before the pairing produces a pack that carries evidence for an objective nobody tagged.
 
 **Navigation.** §1 scope rule · §2 sourcing doctrine · §3 the ten roles · §4 the calibration file, fittability and the twin pair · §5 the context artifact · §6 rung exactness, position table, discriminator dominance · §7 authentic mess and the realism gate · §8 governing documents · §9 provenance and hygiene · §10 build order · §11 verification, the assertion regime, the independent verifier · §12 repair directions · §13 anti-clone · §14 checklist
 
@@ -92,7 +92,7 @@ Properties to check before committing:
 
 ## 3. The ten roles
 
-The `stumping` skill Part 8 lists these. Here is how to actually build each one.
+`stumping` Part 7 names the organs a strategy may need. Here is how to actually build each role.
 
 | # | Role | Count | Build notes |
 |---|---|---|---|
@@ -101,7 +101,7 @@ The `stumping` skill Part 8 lists these. Here is how to actually build each one.
 | 3 | **Operating extracts** | 2–4 | The entity's telemetry. **The trap lives here.** Give each a plausible export cadence and a `pull_date`-style column. |
 | 4 | **Context artifact** | 1–2 | §5. Correct numbers, about a question that is not the decision question |
 | 5 | **Calibration file** | 0–1 | §4, only where the stump strategy needs one (a withheld rule, an honest back-test); then build it first |
-| 6 | **Governing document** | 1–2 | §8, carries the pin; a licensed wrong basis only where `stumping` Part 4.3 allows it |
+| 6 | **Governing document** | 1–2 | §8, carries the pin; never a licensed wrong basis (`stumping` Part 7) |
 | 7 | **Social layer** | 0–1 | Only where the decision really has advocates; at most two people holding beliefs, never a roll call, never quoting a computed ranking |
 | 8 | **Dimension / lookup tables** | 3–6 | Small, boring, essential. They force joins and make the warehouse look real. |
 | 9 | **Data dictionary / codebook** | 1 | §6.5, where grain statements live |
@@ -143,7 +143,7 @@ Never name a file after the trap. `data_quality_notes.md`, `known_issues.txt`, `
 
 ## 4. The calibration file, when the strategy needs one
 
-Ship one only when the stump strategy needs it (a withheld rule recovered from settled cases, a forecast chosen by honest back-test). A pack that ships a calibration file, a twin pair or a published control set on every build is the habit the client reads as a template (`stumping` Part 2). When it is needed it is the hardest artifact to make convincing and the one that decides whether your task is deterministic, so build it first, while you still have freedom.
+Ship one only when the stump strategy needs it (a forecast chosen by honest back-test, a filed criterion confirmed on closed data). A pack that ships a calibration file, a twin pair or a published control set on every build is the habit the client reads as a template (`stumping` Part 7). When it is needed it is the hardest artifact to make convincing and the one that decides whether your task is deterministic, so build it first, while you still have freedom.
 
 **What it is:** a record of **outcomes the decision does not cover but the method must explain.** The solver computes each candidate basis, then checks which basis reproduces these known outcomes. The right one fits; the rivals do not.
 
@@ -340,7 +340,7 @@ Write these as flat field definitions. Never as advice.
 
 ## 7. Authentic mess, and the realism gate
 
-**This section is the client's Layer 1, and `references/layer1-messiness.md` is its library** (the eight universal techniques and eight field-specific ones per domain, each with where it occurs and how to include it honestly; list the ones a pack carries in the card's `layer1` field). Every pack is hard to parse in the ways real exports are: information spread across files, grains that differ, versions and supersessions, calendars, identifiers, partial cuts. A model may trip on it and that is allowed, but the stump never rests on it (the stump is Layer 2, `stumping` Part 2), and nothing in the pack is a defect placed to be caught, a decoy value or a trap. The test for every piece of mess: would this organisation's real export look exactly like this if nobody had designed a task around it? The design note names the mess in one line and the real system that produces it.
+**This section is the client's Layer 1, and `references/layer1-messiness.md` is its library** (the eight universal techniques and eight field-specific ones per domain, each with where it occurs and how to include it honestly; list the ones a pack carries in the card's `layer1` field). Every pack is hard to parse in the ways real exports are: information spread across files, grains that differ, versions and supersessions, calendars, identifiers, partial cuts. A model may trip on it and that is allowed, but the stump never rests on it (the stump is Layer 2, `stumping` Part 1), and nothing in the pack is a defect placed to be caught, a decoy value or a trap. The test for every piece of mess: would this organisation's real export look exactly like this if nobody had designed a task around it? The design note names the mess in one line and the real system that produces it.
 
 ### Realism is a rejection criterion, not a nicety
 
@@ -363,6 +363,23 @@ artifacts a script produces**. A chart rendered by a plotting library and a work
 cannot read as generated prose, because they are not prose.
 
 Ship the data close to raw. Clean, self-consistent inputs produce tasks any model solves.
+
+### The realism sweep, a stage 3 gate
+
+Thirteen realism findings in one window reached the leak reader or the judge, and task132 spent about six
+hours on three realism rebuilds before its second solver round. So realism is asserted in `checks.py`
+before any thread sees the pack, and the reader confirms rather than finds:
+
+- no two periods, sites or entities carry identical counts or totals where real variation would show;
+- no headline total, share or rate sits on a round value;
+- no measured stream is constant over its length, and no repeating block of readings;
+- no free-text remark, note or reason string recurs beyond the frequency a real system produces;
+- every persona drawn with `guard.py names`, none typed from memory (`guard.py surface` checks it);
+- every shipped container scrubbed of its writer's name and build clock (`reduce-house-fixes` H1);
+- file timestamps and in-file dates coherent with the setting (§9).
+
+A sweep that fails is a generator fix; a tell the reader still finds afterwards is deferred to stage 6b
+(`build-pipeline`), never fixed on a pack the next round may rebuild.
 
 ### The governing rule
 
@@ -463,7 +480,7 @@ solver weigh anything, they read as padding, and they do not count toward the tw
 whether a competent analyst would open the file and have to think before setting it aside.
 
 **Named in the task's metadata, never in the pack.** Every distractor is identified in
-`metadata.json` in the task folder, beside `prompt.md` and outside `target/`, with its path as it
+`metadata.json` in the task folder, beside `prompt.txt` and outside `target/`, with its path as it
 appears in the shipped bundle (use the portal's key names where its template gives them):
 
 ```json
@@ -599,7 +616,9 @@ Enumerate every unpinned choice (window, grain, population, counting convention,
 **Assert the grid cell by cell, never in aggregate.** "Wins 8 of 12" is a summary, not a check. Each losing cell must be named in the build and mapped to the specific shipped rule it violates, the clause it contradicts, the eligibility gate it ignores, the censoring the dictionary excludes. A cell you cannot map is an open fork wearing a count.
 
 ### 11.6 Mess neutrality
-For every complication in §7, compute the answer with it handled and ignored. Same winner both ways, unless it is a designed rung or a ledgered ask device. A ledgered device gets the scoped assertion instead: it moves exactly the asks its `supplemental-stumping` ledger row names, by the stated deltas, and the count of its rows, and of every hazard's rows, inside the main call's declared row population is asserted to be zero.
+For every complication in §7, compute the answer with it handled and ignored. Same winner both ways, unless it is a designed rung or a ledgered ask device. A ledgered device gets the scoped assertion instead: it moves exactly the asks its `supplemental-stumping` ledger row names, by the stated deltas, and the count of its rows, and of every hazard's rows, inside the main call's declared row population is asserted to be zero. The cracker sheet
+(`supplemental-stumping` Part 1.1) is asserted here too: for every ask, the path of the response that
+landed the call, ran the hygiene battery and executed every filed rule lands outside the ask's bin.
 
 ### 11.7 The assertion regime
 
@@ -633,7 +652,7 @@ Record all outcomes in an internal-only notes file so the pack can be regenerate
 
 ## 12. Repair directions
 
-Match the symptom. Diagnosis and hardening escalation live in `stumping` Part 10; these are the **data-side** moves.
+Match the symptom. Diagnosis and hardening escalation live in `stumping` Part 8; these are the **data-side** moves.
 
 | Symptom | Data-side repair |
 |---|---|
@@ -725,7 +744,7 @@ The `stumping` skill governs scenario distance. These are the pack-level bans.
 
 **Governing layer**
 - [ ] Pin is one unjustified sentence in the highest-authority document
-- [ ] Any licensed wrong **basis** is there because `stumping` Part 4.3 allows it, and no file computes the ranking that basis would produce
+- [ ] No licensed wrong **basis** anywhere (`stumping` Part 7), and no file computes the ranking a wrong basis would produce
 - [ ] Large non-decisive documents disclaimed
 - [ ] Social layer, if any: at most two people holding beliefs, never a roll call, nobody quotes a computed ranking
 

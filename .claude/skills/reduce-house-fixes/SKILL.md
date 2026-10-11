@@ -11,7 +11,7 @@ This skill is a **register, not a procedure**. It grows one entry at a time, eac
 
 **The governing idea.** A build has two kinds of correctness. The analysis has to be right, which is what `determinism-check` measures, and the artifact has to be *what it claims to be*, which nothing measures until a reviewer opens it. House fixes cluster in the second kind. They are not analytical errors, so no rung moves and no figure changes, and that is exactly why they slip through: the build's own verification is pointed at the analysis and looks straight past everything the analysis ships inside, the container in H1 and the prose in H2.
 
-**When to run this.** After the data is cut and before the bundle is declared ready, which is the last moment a fix is free. `stumping` Part 12 routes here as the final pre-ship block. Running it earlier is fine and running it later is a house fix.
+**When to run this.** After the data is cut and before the bundle is declared ready, which is the last moment a fix is free. `build-pipeline` stage 3 routes here as the last block before the leak check. Running it earlier is fine and running it later is a house fix.
 
 **Reading the register and writing to it are two different jobs, and only one of them is urgent.** Reading it, and running its checks over the build, is part of delivery and happens before the bundle is handed over. Writing a *new* entry into it is bookkeeping: it happens after the author has the build, and for a defect the portal or the author actually surfaced, never speculatively. See the working-method rules in `CLAUDE.md`.
 
@@ -365,9 +365,9 @@ a graded artifact **readable under its operative name** anywhere below the task 
 directories included, because name discovery does not honour dot-prefixes.
 
 **The check.** Assert, in the bundle verifier, that exactly one file named `submission.md` and
-one named `prompt.md` exist anywhere under the task tree, that no markdown lives outside the
-task root and the shipped bundle directory, and that no superseded-build directory exists as a
-directory at all.
+one named `prompt.txt` exist anywhere under the task tree, that no `prompt.md` sits beside the
+`prompt.txt`, that no markdown lives outside the task root and the shipped bundle directory, and that
+no superseded-build directory exists as a directory at all.
 
 **How to repair without collateral.** Move the record of what each superseded build cost into the
 design note's `## Tried and rejected` section, one line per dead end, then delete the superseded
@@ -406,22 +406,20 @@ nature and carries no rounding fork untagged; only derived quantities, a counter
 share, an average, a ratio, genuinely need stated rounding, and those statements read as
 natural precision when they are the exceptions rather than the pattern.
 
-**The check.** Classify every figure the prompt asks for as a natural integer (a count of
-discrete things in the shipped data) or a derived quantity. Assert that every derived
-quantity states its rounding inside its own sentence, and that no unit-tag phrase repeats
-more than about twice across the prompt. Where a blanket convention sentence carries the
-counts ("whole counts, decimals only where I ask"), assert it is present. Wire the phrase
-count and the convention sentence into the bundle verifier so a prompt edit cannot
-reintroduce the litany.
+**The check.** `voice-check.py`'s `rounding at the close` rule: rounding words appear in the
+prompt's last sentence and nowhere else, each rule tied to the figures it governs ("Return
+probabilities go in per cent to one decimal and projected returns as whole numbers"); a rounding tag
+in two or more earlier sentences fails the gate and a prompt with no rounding anywhere warns. Then
+classify every figure the prompt asks for as a natural integer (a count of discrete things in the
+shipped data) or a derived quantity, and confirm every derived quantity is covered by the closing
+sentence. Units stay with their figures throughout, because that is how a person says a figure.
 
-**How to repair without collateral.** State the convention once, in the requester's own
-voice, and keep explicit rounding only on the derived figures, phrased with variety. For
-every tag dropped, confirm the figure it covered is integer by construction in the shipped
-data (a count over an integer-valued file), so no Gate E fork opens where the tag was; a
-figure that is fractional upstream and whole only by rounding keeps its explicit statement.
-Then re-enumerate the surviving pins against the full figure list and confirm every
-non-integer quantity is still covered, because the failure mode of this repair is dropping
-one pin too many.
+**How to repair without collateral.** Move every rounding rule into one closing sentence, each
+naming the figures it governs, and delete the tags from the asks. For every tag dropped, confirm the
+figure it covered is either integer by construction in the shipped data (a count over an
+integer-valued file) or named in the closing sentence, so no Gate E fork opens where the tag was.
+Then re-enumerate the closing sentence against the full figure list, because the failure mode of
+this repair is dropping one rule too many, and run the gate.
 
 ## H13. A prompt whose committed call reads as one output among several
 
@@ -452,27 +450,22 @@ requirement, and the whole repair is grammar and paragraph order. The one except
 supporting ask answers a different decision rather than sitting in the wrong place, no reordering fixes it, and
 retiring the ask is the repair.
 
-**The check.** Three reads, none of which involves a figure. **They also run at authoring time**,
-in `../guide-to-prompt/SKILL.md` under "The hierarchy read", because prompts are written under
-`guide-to-prompt` while this register runs as the last pass before ship, and a defect whose only
-check sits downstream of the work gets found by the client instead. `voice-check.py` prints the three
-reads' inputs. The reads themselves: the context's last sentence before the
-first deliverable is the committed call, stated bare. The clause saying what the committing
-document leads with names exactly one quantity. Every paragraph after the first opens by tying back
-to that quantity rather than on a bare commissioning verb. A prompt failing any of the three reads
-as a list of outputs however well the call itself is worded.
+**The check.** `voice-check.py`'s `question first` rule, which runs at authoring time under
+`guide-to-prompt` and again here: the committed call is a direct question in the first two sentences,
+with nothing before it but the one clause the computation needs, and the files follow it, each tied
+to the quantity it stands up ("Put the count in ...", "Behind the slides, ... carries ..."). The clause
+saying what the committing file leads with names exactly one quantity. A prompt whose question
+arrives after the files, or whose first sentence is a role or a meeting, reads as a list of outputs
+however well the call itself is worded.
 
-**How to repair without collateral.** Move the call to the end of the context and demote the
-figures that were sitting beside it into the sentence underneath, carrying their wording across
-unchanged. Add one short bridging line saying the rest exists to stand that figure up, which is the
-sentence a reviewer reads as the hierarchy. Then handle the housekeeping the move displaces: a
-blanket rounding or counting convention that governed every ask has to stay above all of them, so
-it belongs in the bridge rather than at the end of a context that now ends on the call. Re-read
-every clause the edit touched against the pins the build depends on, because this repair moves
-sentences carrying stated grain, ordering and precision, and losing one of those trades a shape
-finding for a determinism finding. Check the golden's correspondence rather than regenerating it,
-since a committing document that already leads with its call usually satisfies the repaired prompt
-as it stands.
+**How to repair without collateral.** Turn the call into the question and lead with it, carrying the
+forcing fact the computation needs as a clause inside it; demote the figures that sat beside it into
+the file sentences underneath, wording unchanged; move every rounding rule to the closing sentence.
+Re-read every clause the edit touched against the pins the build depends on, because this repair
+moves sentences carrying stated grain, ordering and precision, and losing one of those trades a
+shape finding for a determinism finding. Check the golden's correspondence rather than regenerating
+it, since a committing document that already leads with its call usually satisfies the repaired
+prompt as it stands.
 
 ## H14. An estimation domain the golden picked silently, that the data then argues against
 
@@ -690,9 +683,10 @@ finding, which is the worse trade.
 
 **The check.** `python3 .claude/skills/guide-to-prompt/references/voice-check.py` bare over the
 window, as part of this pre-ship pass rather than only per build, because per build is the grain
-that cannot see it. The batch is clean when it shows four or more distinct opening moves across
-twelve builds, no carrier phrase in more than a third of them, and a format mix more than one row
-deep. Read the counts, not the impression: eighteen consecutive builds passed a self-reported
+that cannot see it. Every prompt now leads with its question, so the batch report measures the
+question's form (how many, how much, which, whether, what, when, who, where), the first sentences,
+any six-word phrase repeated across prompts, and the format mix: the batch is clean when no form
+carries more than a third of the window, no phrase recurs, and the mix is more than one row deep. Read the counts, not the impression: eighteen consecutive builds passed a self-reported
 checklist asking whether the context was first person and short, and every answer was truthful.
 
 **How to repair without collateral.** Repair forward, not backward. Rewriting shipped prompts to
@@ -701,8 +695,8 @@ that is about the next batch. What actually has to change is the **prescription*
 example, the checklist line and the reference block that taught the skeleton, and rewrite those,
 because an author working from a template will reproduce it however the register is worded. Then
 carry the axis into the per-build checklist so the next build chooses its move rather than
-inheriting it. `.claude/skills/guide-to-prompt/references/prompt-voice.md` carries the moves, the
-requirement-against-carrier table and the structural axes; `clone-check` Track A adjudicates a
+inheriting it. `.claude/skills/guide-to-prompt/references/prompt-voice.md` carries the ten rules and where the
+variety lives; `clone-check` Track A adjudicates a
 finding once the script has measured it.
 
 ## H18. A supporting ask that passes the hierarchy reads and is still a second decision
@@ -742,7 +736,7 @@ called done, because the prompt's own wording is exactly what hides this defect.
 win their criteria back inside the decision without coupling them to the main call: carry a second
 measure on every candidate that the call does not turn on, grade the trail that audits an input the
 call consumes at its natural grain, or reconcile a candidate figure to another system's total, each
-on rows outside the main call's population (`supplemental-stumping` Part 2). That is the
+on rows outside the main call's population (`supplemental-stumping` Part 1.3). That is the
 denser-structure route of the shape picker, and it keeps the rubric over its floor without bolting
 anything on. Splitting the committed figure at the grain its owners book it also passes this entry,
 but the split inherits the main trap, so the response that lands the call banks it; use it only when
