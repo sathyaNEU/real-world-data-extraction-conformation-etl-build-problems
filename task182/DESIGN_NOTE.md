@@ -439,6 +439,21 @@ Each REVIEW line:
 
 The isolated solver's-eye reader (stage 4, second half) is the author's to run; it has not run.
 
+**Solver's-eye read (pass 1, Sonnet; the answers are in `leak_check_report.md`).**
+- **Q1, Q2 and Q4: none.**
+- **Q3 names `monitoring_network_notes.md` as the file that briefs the analyst. Answered, no fix:**
+  - it is the network's dictionary and the notes that go with the extract, required content written in the
+    organisation's own voice (author, date, network history, field tables);
+  - its logger formula is the standard field definition of a level (Layer 1 semantics), not the decisive step;
+  - it never names the counterfactual, a lag or a reference-bore design.
+- **No fork on the main call.** Nothing was fixed before the round; the realism notes are deferred.
+- **Watch items for the solver round:**
+  - The reader's rough model reached the answer unprompted. It fitted the pre-dewatering record to a lagged rainfall
+    departure and found LB04, LB05, LB07, LB10 and LB12; the STOPPING RULE applies if the solver does the same.
+  - The offer set separates by distance to the mine-bore ring (within 6.3 km, against beyond 6.9 km), so a
+    proximity guess lands the call. If the round lands it that way, the hardening brief breaks the separation on
+    the physics.
+
 ## SURFACE (`guard.py surface task182`)
 
 2 pairs promoted of 126 in scope: task83 (surface 0.147, corpus percentile 100) and task132 (0.138, percentile 99).
