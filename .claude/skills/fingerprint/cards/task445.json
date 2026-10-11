@@ -1,0 +1,92 @@
+{
+  "task": "task445",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed ET02 (13F institutional ownership bridge: amendment types, filing-date value units, option rows, CUSIP repair). The seed's stump was rule application and data semantics, so it is re-rooted: the seed's mechanics stay as Layer 1 mess carried by the asks, and the decisive step is a Layer 2 censoring construction, completing a filing period whose 45-day window is still open at the extract.",
+  "domain": "quantitative-finance",
+  "subdomain": "other",
+  "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.",
+  "answer_source": "task445/submission.md, 1. Final Recommendation (golden/crowded_flags_2022q4.csv crowded column carries the same call)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G16",
+    "G6",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms every Q4 2022 13F filing correctly (amendment types, value units by filing date, option rows out, CUSIPs repaired) computes institutional ownership on the filings received by the extract, or scales every issuer by one aggregate share of value historically on file by that day, and flags the wrong set of watchlist issuers, because managers that filed for Q3 and have not yet filed for Q4 are holders not yet reported, not zero holders, and they sit in some issuers' registers far more than in others.",
+  "domain_test": "The flag turns on ownership-data practice specific to 13F: holdings arrive over a 45-day window, filing lag tracks manager type (large passive complexes and multi-strategy funds file at the deadline), positions of slow filers persist quarter to quarter, and ownership is measured in shares against the issuer's cover-page shares outstanding; put another field's nouns in and the censoring structure, the carry-forward of a manager's last filed position and the shares denominator have nothing to attach to.",
+  "client_domain": "quantitative-finance",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:late-reporter-completion-of-a-censored-filing-period",
+  "layer1": [
+    "holdings filings with reporting lags and amendments (originals, RESTATEMENT and NEW HOLDINGS amendments, filing dates)",
+    "value reported in thousands of dollars before 2023-01-03 and in dollars after, by filing date, with a filer still in thousands after the switch",
+    "put and call rows and principal-amount rows on the same CUSIP as the shares",
+    "filer-keyed CUSIPs with dropped leading zeros, lower case and a bad check digit",
+    "the SEC data sets organised by the quarter a filing was submitted, not the period it reports",
+    "shares outstanding from cover pages of 10-K and 10-Q filings with different as-of dates",
+    "manager families filing under several CIKs, and 13F notice filers"
+  ],
+  "context_artifact": "register",
+  "stakeholder_role": "head of ownership research at an independent ownership-research firm that publishes a quarterly crowded flag to hedge fund clients",
+  "role_family": "product_manager",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "form13f_2022q4/INFOTABLE.tsv (one INFOTABLE per drop: form13f_2022q3, form13f_2022q4, edgar13f_daily_20230103_20230203)",
+    "rows": 39301,
+    "entity": "one information-table line of one 13F filing (one security position, or put or call, as one manager reported it in one accession)",
+    "grain": "accession x information-table line",
+    "source": "synthetic, on the SEC Form 13F data set schema"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "other",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "independent ownership-research firm serving hedge fund clients",
+    "invented_names": [
+      "Quillfield Research",
+      "Harrowby Point Partners",
+      "Prescott Funds Group",
+      "Wexley Trust Wealth Advisors",
+      "Tregaron National Bank Wealth Management",
+      "Shelby Investment Group"
+    ],
+    "people": [
+      "Nancy Henderson",
+      "Jonathan Richardson"
+    ]
+  },
+  "deliverables": [
+    "crowded_flags_2022q4.csv",
+    "sep_quarter_bridge.png"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold.",
+  "driver_concrete": "At the extract the Q4 2022 13F window (deadline 2023-02-14) is still open; managers that filed for Q3 but not yet for Q4 are mostly large passive complexes and multi-strategy funds that file at the deadline, and they hold a very different share of each watchlist issuer, so the flag rests on Q4 holdings on file plus each pending manager carried at its last filed share position (back-tested on the Q2 and Q3 windows at the same day), not on the filings in hand or one aggregate completion factor.",
+  "stump": "A competent solver conforms the December 2022 13F reports in hand perfectly and flags the names whose ownership on file is above 80 per cent (WHII, JEMS), or scales every name by the aggregate share of value historically on file by the same day (WHII, AMRB, TAAV, JEMS, FENN, SAF); both file the wrong set, because the step that decides it is completing the period holder by holder: the 125 managers with a September report and no December report by 3 February are holders not yet reported, concentrated in GLI, OTF and SAF, and carrying each at its September shares flags WHII, GLI, OTF, JEMS and SAF.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "subdomain other: institutional ownership analytics from regulatory holdings filings, which the quantitative-finance task-type list does not carry. forcing_event other: the firm's quarterly flag file is published to clients on a fixed date inside the filing window. decisive_rule_filed true: the firm's methodology note files the estimand (ownership on the complete filing set for the period, every manager that files for it) and the 13F deadline; it does not say how to complete a period before the deadline, which is the construction the data force. Personas drawn with guard.py names --geo 'United States' --seed 445 (Joan Collins skipped as a public figure name; Philip Montes and Pamela Sullivan skipped on a people.first WARN). Surface screen 2026-10-11: 0 promoted pairs; people.last WARN (Henderson in task117) answered in the design note."
+}
