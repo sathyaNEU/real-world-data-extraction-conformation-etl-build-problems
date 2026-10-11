@@ -27,7 +27,7 @@ compute from the files, reconcile where the files let you, commit to one answer 
 units.
 
 **The solver** is an `Explore` type agent (it carries no repository instructions), spawned with
-`model: opus` and `effort: high` (high, not max) and the prompt in `/solve`. The model is passed
+`model: opus` and `effort: medium` and the prompt in `/solve`. The model is passed
 explicitly, because an `Explore` agent otherwise runs on its own default model. It reads as the
 portal's model.
 
@@ -128,7 +128,7 @@ step and the build goes back to design to make the analytical step decisive.
 ## Checklist
 
 - [ ] The build is finished and through the leak check: submission written, goldens recompute, `leak.py` not LEAK, the reader quoted nothing for question 1
-- [ ] One `Explore` solver (`model: opus`, `effort: high`) run in a fresh sandbox, its path read against the ladder
+- [ ] One `Explore` solver (`model: opus`, `effort: medium`) run in a fresh sandbox, its path read against the ladder
 - [ ] Main call read by the main thread, `--landed` passed where the token match misjudged
 - [ ] Worth-it gate applied: pass when the solver did not commit to the main call
 - [ ] A landed round's brief written, and the attempt in `## Tried and rejected` with the solver's own path sentence

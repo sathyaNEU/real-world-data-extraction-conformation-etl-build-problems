@@ -16,7 +16,7 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
    `python3 .claude/skills/leak-check/leak.py <task> --asof <date> --quiet`
    and read `<task>/leak_check_report.md`.
 4. **Run the reader's half** with a single `Agent` call, `subagent_type: general-purpose`,
-   `model: sonnet` (it reads and answers, it does not solve):
+   `model: sonnet` and `effort: medium` (it reads and answers, it does not solve):
    - First, with Bash, make a fresh scratch copy: `<scratchpad>/leak-<task>/prompt.md` and
      `<scratchpad>/leak-<task>/target/` (unzip `target.zip` if `target/` is absent).
    - The prompt tells the agent it is an analyst who has just been handed this folder, gives the

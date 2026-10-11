@@ -76,7 +76,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | oviya13ya | in build |
-| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | oviya13ya | in build |
+| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | oviya13ya | shipped |
 | task182 | AD05 | [How many high-dose patients the referral letter puts on one prescriber, when the dose that defines them is a daily dose built from overlapping fills](task182/START_HERE.md) | Policy & Education · public health-insurance programme integrity | developer 2 | open |
 | task183 | AD06 | [Which surge trigger the network adopts when the authority stops publishing its own, and only one rebuilt rule settles every week the agency was paid for](task183/START_HERE.md) | Supply Chain & Logistics · healthcare surge staffing contracts | developer 2 | open |
 | task184 | AD07 | [Which airport gets the one mobile screening team for the summer, when the team can only open lanes where a lane position stands idle](task184/START_HERE.md) | Supply Chain & Logistics · aviation passenger screening operations | developer 2 | open |
@@ -365,9 +365,9 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task445 | ET02 | [13F institutional ownership: the quarter the units changed and the amendments that only add](task445/START_HERE.md) | Asset management / market-data product (ownership analytics) | oviya1301 | shipped |
+| task445 | ET02 | [13F institutional ownership: the quarter the units changed and the amendments that only add](task445/START_HERE.md) | Asset management / market-data product (ownership analytics) | oviya1301 | in build |
 | task446 | ET03 | [Issuer-group concentration: rolling holdings up the LEI tree without climbing the wrong branches](task446/START_HERE.md) | Asset management risk / regulatory reporting (BCBS 239-style risk data aggregation) | oviya1301 | in build |
-| task447 | ET04 | [Organic deposit growth: the peer that "grew fastest" bought its growth](task447/START_HERE.md) | Banking strategy / FP&A / peer benchmarking | oviya1301 | open |
+| task447 | ET04 | [Organic deposit growth: the peer that "grew fastest" bought its growth](task447/START_HERE.md) | Banking strategy / FP&A / peer benchmarking | oviya1301 | in build |
 | task448 | ET05 | [Mortgage market share across the 2018 HMDA overhaul: purchased loans and the two-part lender key](task448/START_HERE.md) | Mortgage lending / fair-lending compliance / market intelligence | oviya1301 | open |
 | task449 | ET06 | [Complaint surge or taxonomy seam? Sizing a post-event staffing plan on the CFPB database](task449/START_HERE.md) | Consumer finance compliance / complaint-operations workforce planning | oviya1301 | open |
 | task450 | ET07 | [Federal spending C-to-D reconciliation: the contract key that is four columns, not one](task450/START_HERE.md) | Federal financial management / DATA Act reporting / grants & contracts transparency | oviya1301 | open |

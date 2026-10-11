@@ -27,6 +27,8 @@ keeps its own branch rules.
   on `main`; set `shipped` when it ships and `retired` if it dies.
 - Each build keeps its own branch and its own fingerprint card, registered as soon as its draw is
   fixed so the other build's guard check sees it.
+- When a build ships (or retires), start the next open number in the lane at once, without waiting
+  to be asked: set its Status, cut its branch and run `/build` on it, so two builds stay in flight.
 
 ## The work, and how a build ships
 
