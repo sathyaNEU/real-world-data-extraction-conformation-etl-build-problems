@@ -48,4 +48,3 @@ keeps its own branch rules.
   - links to the prompt, the submission and `target.zip` (GitHub links on the build's branch, or on
     `main` once shipped);
   - a short note of where the build stands, and the date.
-- Send the artifact's link to sathya8571 when it is first published.
