@@ -122,7 +122,7 @@ their nodes and fire on either error.
 
 1. **Written in no sentence.** The standard defines the installation's read health, the build's read
    health as their mean, the reference, and the limit as three standard errors of the build's read
-   health, computed from the build's assessed installations, with sample (n minus 1) spreads. Nothing
+   health, with only the build's own assessed installations entering it, and sample (n minus 1) spreads. Nothing
    says what unit the error is built over, that installations behind one node fail together, or that
    waves go node by node. The field reference describes `comms_parent` as the node that collects the
    meter's reads, which is what the head-end field is. The round-1 sentence the solvers executed
@@ -246,7 +246,7 @@ Answer: fire on {PX5.2.7, EM3.12.1, EM3.10.9}, hold on the other five.
 | 22 | Forward window contents | Wave 8 moves under this week's call, on the schedule as cut | prompt wording ("once this call is applied") and 6.1 |
 | + | Unit the error is built over | the node (collector or access point) each installation reports through | the data's structure: the node-night split (asserted); every assessed installation has one node and no assessed meter changed node during the week (asserted) |
 | + | Small-sample convention | k/(k minus 1) over the nodes' summed deviations | filed (7: sample spreads, standard errors built from them); the call is the same without it and under the jackknife (asserted) |
-| + | Domain or full design | the build's own installations | filed (4.3: computed from that build's assessed installations alone) |
+| + | Domain or full design | the build's own installations | filed (4.3: only the build's own assessed installations enter its read health and its standard error) |
 
 ## Ask sheet (supplemental-stumping)
 

@@ -36,8 +36,7 @@ STANDARD = [
     ("p", "4.1  An installation's read health is its reads held at cut-off as a percentage of its expected "
           "interval reads for the assessment week."),
     ("p", "4.2  A build's read health is the mean of its assessed installations' read health."),
-    ("p", "4.3  A build's read health and its standard error are computed from that build's assessed "
-          "installations alone."),
+    ("p", "4.3  Only the build's own assessed installations enter its read health and its standard error."),
     ("h", "5  Alert rule"),
     ("p", "5.1  The reference read health is 99.50 per cent."),
     ("p", "5.2  A build's lower limit sits three standard errors of the build's read health below the "
