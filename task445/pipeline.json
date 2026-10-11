@@ -1,0 +1,57 @@
+{
+ "task": "task445",
+ "domain": "quantitative-finance",
+ "objective": "data-extraction-conformation",
+ "stage": 8,
+ "stage_name": "shipped",
+ "updated": "2026-10-11",
+ "branch": "oviya1301/task445-13f-ownership-bridge",
+ "stump": "Solvers flag on the December 13F reports in hand (WHII, JEMS) or one aggregate completion share (WHII, AMRB, TAAV, JEMS, FENN, SAF); the decisive step is completing the open filing window holder by holder (125 managers with a September report and none for December), giving WHII, GLI, OTF, JEMS, SAF.",
+ "architecture": 1,
+ "loops": 0,
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; CUSIP, CIK and vocabulary lines answered in the design note)",
+  "reader": "Q1-Q3 none on the decisive step, no main-call fork; deferred: data_sources.md didactic lines, NOPR CUSIP reads as a hint"
+ },
+ "duplicate_check": {
+  "heart": "WARN (not BLOCK)",
+  "nearest": "task130 v1 (retired; shares a component, not the driver)",
+  "clone_check": "pre-flight CLEAN, 0 findings on either track (task445/clone_check_report.md)"
+ },
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 41.0,
+   "landed": false,
+   "cracked": 0,
+   "items": 3
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": false,
+    "proxy": 41.0
+   },
+   "decision": "pass",
+   "brief": "missed at R0: conformed the December reports on file (WHII, JEMS); saw the 91 unfiled September holders and the 14 Feb deadline in its notes but declined to complete them (a seen-and-declined miss at the decisive analytical step, every stated rule applied correctly); asks 0 of 3 cracked at 80 per cent tokens, bridge ties except the start bar basis"
+  }
+ ],
+ "judge": {
+  "verdict": "DETERMINISTIC (pass 1 and pass 2)",
+  "disposition": "FIX_NOW twice, write-up wording only, both applied; no target, prompt or graded figure moved",
+  "report": "task445/determinism_check_report.md, task445/determinism_check_report_pass2.md",
+  "gate_g": "judge: forecasting (nowcast, method chosen by back-test), analytical_non_defect, surface_read_dependency no, sole_data_defect no; card: method_or_model_selection, same step",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "approved": null,
+ "delivered": "2026-10-11",
+ "portal": null,
+ "stage_6b": "no repair: the reader's deferred items read as harmless on the main thread (NOPR 359Y60106 is a valid CUSIP keyed lower case in the info tables; data_sources.md lines are an ordinary desk readme and restate SEC readme facts); no document changed, no second read",
+ "ship": {
+  "target_zip": "2262723 bytes, 19 members, matches target/ (H7), rebuild byte-identical, 311 checks green",
+  "surface": "guard.py surface WARN people.last (Henderson vs task117, answered)"
+ }
+}

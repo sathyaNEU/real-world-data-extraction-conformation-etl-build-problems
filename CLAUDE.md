@@ -56,7 +56,11 @@ candidates or states the asked figures, a file that exists only to help) and any
 are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
 for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
 pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
-An author keeps at most two builds in flight, a re-rooted architecture included.
+An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
+round (a hardening rebuild, the deferred findings, a judge's FIX_NOW, an ask-only revision) runs in a fresh agent that starts
+from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
+named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
+it (`build-pipeline`, Running the stages).
 
 ## Per-author rules
 
@@ -95,6 +99,8 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
               SEND_BACK re-roots or retires
    ->  SHIP to the author
    ->  the author tests on the official portal and reports back
+              main call held, asks over the bar: the ask-only revision (`supplemental-stumping`
+              Part 12): ask-path data only, main call byte-identical, commit; no leak read, round or judge
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
@@ -309,7 +315,10 @@ slot of its own.
 span many rows, periods or cuts and still resolve to one defensible answer, and that is the ask you
 want, because a wrong analytical path fails it everywhere at once. Unit and rounding are stated
 inside the sentence that asks for the figure, and every figure inside an ask is separately gradable
-and separately determinate. One deterministic recommendation anchors everything.
+and separately determinate. One deterministic recommendation anchors everything. An ask is free of the
+main call's rules: it needs no filed rule to pin its handling, its golden may go against the procedure,
+and its device may turn on data semantics or rule application, which rule 3 bans only as the main call's
+decisive step (`supplemental-stumping` Parts 5 and 12).
 
 **The prompt is prose, first person, the way you would write to a colleague.** No bracketed blocks,
 no `file.ext (Family)` headers, no bulleted asks. What costs you is a **roll call** of colleagues'
