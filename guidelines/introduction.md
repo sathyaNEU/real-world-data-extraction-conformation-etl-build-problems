@@ -1,3 +1,76 @@
+> ## 10/10 UPDATES (2026-10-10), OPERATIVE: three rules for how every task is built and reviewed
+>
+> From October 10, every task is built and reviewed against three rules. They exist for one reason:
+> tasks are training data, and a task is only useful if getting it right teaches a model something real.
+>
+> **The three rules in one line each.** (1) Your task must actually use its assigned domain, not just
+> borrow its vocabulary. (2) Every task has two layers: realistic messy data, and real analytical rigor
+> that decides the answer. (3) Planted traps, data semantics and rule application can appear in a task,
+> but none of them can be the decisive stump.
+>
+> **1. Your task must really use its domain.** Every task is assigned a domain and secondary domain. The
+> task must do the kind of analysis that domain is about, close to one of its task types on the client's
+> Domains page. The domain cannot just be the setting or backdrop for a generic question. Two example
+> prompts for every task type are on the client's Example prompts page. A quick test: swap the nouns to
+> another field ("hospital" for "school", "megawatt-hours" for "visits"). If the task reads exactly the
+> same, the domain is only a backdrop.
+>
+> - Good. Quantitative Finance, alpha research: "Our researcher found a sentiment signal with a strong
+>   backtest. Decide whether to allocate capital to it, using a cost-adjusted, factor-neutral Sharpe ratio
+>   over 2015 to 2024, measured point in time." Validating a return signal is the core work of alpha research.
+> - Bad. Energy Systems and Utilities, as a backdrop: "Which three substations get the upgrade grant,
+>   ranked by the score in the grant rules?" The answer comes from applying a stated score. Swap in
+>   "schools" and the task reads the same, so energy is only the setting.
+> - Good. Biomedical and Clinical Research, survival analysis: "Decide whether the new maintenance regimen
+>   lengthens time to relapse, measuring from randomization to relapse, with patients who leave the study
+>   treated as censored." Time-to-event analysis with censoring is the core work of survival analysis.
+> - Bad. Epidemiology and Public Health, as a backdrop: "Which clinics qualify for the outreach fund under
+>   the eligibility criteria?" This is checking criteria against a list. No epidemiological analysis,
+>   such as a risk, a rate comparison or an outbreak signal, decides the answer.
+>
+> A decision framing like "which clinics" is fine. What matters is whether the quantity that decides it
+> is something the field would estimate, model or test.
+>
+> **2. Every task has two layers.** Layer 1, messy data: the data should be hard to use for the reasons
+> real data is hard to use. It complicates the problem and can help stump the model, but it must be
+> realistic, with no planted defects or decoys: files whose layout changes across years, or tables inside
+> PDFs that must be extracted; joins across sources with imperfect keys, like codes in one file and names
+> in another; a preliminary release and a revised release that overlap, so you must decide which to use;
+> fiscal and calendar years mixed, local time and UTC mixed, or values in thousands in one file and units
+> in another. Layer 2, analytical rigor decides the answer: the recommendation turns on doing the
+> analysis correctly, the kind of choice an expert in the field would recognize, where a capable analyst
+> taking the easy route gets the wrong answer: comparing against the right group (in a staggered rollout,
+> comparing each wave against units not yet treated, not a simple before and after); handling the data's
+> real structure (estimating time to an event while accounting for people who left the study early);
+> judging the evidence (reading a guardrail metric with a confidence interval, not only "it was not
+> significant"); validating a forecast properly (testing it only on data it was not built on).
+>
+> **3. Three kinds of stump are banned as the decisive stump.** These can appear in your task, because
+> real tasks always involve some field reading and rule following, but none of them can be what decides
+> the answer. Something genuinely analytical must still stand between the solver and the right answer. A
+> task decided by one of these is sent back, even if it is deterministic and correct.
+>
+> - Planted defects, decoys and hidden rules: something inserted only so that catching it flips the
+>   answer. A block of hourly readings secretly copied from the week before, so finding the copy is what
+>   changes the ranking; a staff memo written to argue for the wrong answer, where rejecting the memo is
+>   what decides the call.
+> - Data semantics: the answer flips only on reading a field, code, unit or definition correctly. The
+>   answer flips only once you notice the school capacity column also counts preschool seats; the answer
+>   flips only once you read that a rainfall column holds multi-day totals, not daily values.
+> - Rule application: the answer comes from applying stated rules correctly, however many steps there
+>   are. Ranking programs by checking six listed eligibility criteria and applying a stated score;
+>   working out which company held a license on a given date by following the transfer records.
+>
+> **The test.** Could a strong analyst who cleaned the data and read every rule correctly still get the
+> answer wrong by doing the analysis the easy way? If yes, your stump is analytical and valid. If no, it
+> is semantics or rule application. Choosing the right estimand or unit of analysis counts as analysis.
+>
+> Where this lives in the working standard: `../CLAUDE.md` (Current spec),
+> `../.claude/skills/stumping/SKILL.md` Part 1 (the three rules) and
+> `../.claude/skills/stumping/references/client/two-layer-task-design.md`, `../.claude/skills/guide-to-prompt/SKILL.md`
+> Step 1 (the swap test), the judge's Gate H in `determinism_judge_system_prompt.md`, and the card fields
+> `stump_class`, `analyst_test` and `domain_test` that `../.claude/skills/fingerprint/guard.py` requires.
+
 > ## BAR UPDATE (2026-09-05), OPERATIVE, supersedes the 2026-08-27 block below and the criteria under it
 >
 > **The bar is the top two responses averaging under 70 per cent, with at least one model genuinely
