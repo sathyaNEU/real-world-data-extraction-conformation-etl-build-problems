@@ -167,7 +167,7 @@ Ship one only when the stump strategy needs it (a withheld rule recovered from s
 
 ### 4.1 Fittability, build both halves
 
-A calibration outcome that **no rule in the pack reproduces** fails review as a fabricated intermediate (`stumping` Part 11 Failure C), and it also fails as a trap: solvers who cannot fit a case declare it unexplainable and fall back to using the file **ordinally**, which lands them on the decoy without ever measuring anything.
+A calibration outcome that **no rule in the pack reproduces** fails review as a fabricated intermediate (`determinism-check` §5), and it also fails as a trap: solvers who cannot fit a case declare it unexplainable and fall back to using the file **ordinally**, which lands them on the decoy without ever measuring anything.
 
 So a calibration case is always two artifacts:
 
