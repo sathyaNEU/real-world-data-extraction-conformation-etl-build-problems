@@ -6,8 +6,9 @@ in the same objective inside the product-analytics experiment-platform world, so
 seed's objective and moves the world to a smart-meter metering data provider, where the object under
 analysis (interval data delivery) is the health of the data itself.
 
-**Where the build stands.** Architecture 1, hardening loop 2, round 3 passed the worth-it gate and
-the determinism judge is reviewing the loop-2 cut. Round 1 had both solvers execute the filed mean and
+**Where the build stands.** Architecture 1, hardening loop 2, round 3 passed the worth-it gate (recorded
+as a pass under the single-solver rule of PR #17: no solver committed to the main call) and the
+determinism judge is reviewing the loop-2 cut. Round 1 had both solvers execute the filed mean and
 the filed installation-level error and land the call. Loop 1 moved the decisive rung to the unit the
 build's standard error is built over, which no clause can carry: round 2 had both solvers miss the
 call at exactly that step, and the ask layer leaked. Loop 2 hardened the ask layer and closed an
@@ -118,7 +119,7 @@ PX5.2.7 only, whose shortfalls are spread across their nodes and fire on either 
   Monitoring call is a gate on the next action, and its evidence is the last complete window by
   design.
 
-## Stump or fork (worth-it gate, rule 3)
+## Stump or fork
 
 Both round-2 solvers missed the call at R4, and both said why they never used the node field: "the
 planned-interruption and comms_parent data were not used because the standard sets no exclusions for
@@ -193,9 +194,15 @@ place:
 |---|---|---|---|---|
 | 1 | architecture 1 as first built | landed, 91.3 | landed, 87.4 | harden: the decisive step was a filed formula |
 | 2 | loop 1 | missed at R4, 54.5 | missed at R4, 54.5 | harden the asks: read for the facts each kept about 37, no margin under 40 |
-| 3 | loop 2 | missed at R4, 47.0 | missed at R4, 43.4 | pass |
+| 3 | loop 2 | missed at R4, 47.0 | missed at R4, 43.4 | pass (recorded under the PR #17 single-solver rule: the main call missed; proxy recorded) |
 
-Round 3 against the worth-it gate:
+Rounds 1 to 3 ran under the two-solver rule (plain and skeptic, mean proxy at most 40). PR #17 replaced
+it while the judge was reading the loop-2 cut: a round is one isolated solver in a sandbox, it passes
+when the solver does not commit to the main call, the proxy is recorded and does not gate, and
+whether a different answer is a stump or a fork is the determinism judge's question at stage 7.
+Round 3 is recorded as a pass under that rule: neither solver, and not the leak reader solving on its
+own, committed to the golden fire set. No hardening loop 3 ran for the proxy. The record below is the
+round as graded under the old rule, kept for the judge and the portal.
 
 1. **Both solvers miss the main call.** Both filed fire on EM3.12.0, EM3.10.9, EM3.12.2, EM3.12.1 and
    PX5.2.7 with "SE = sample SD (n-1)/sqrt(n)" and no use of `comms_parent`, and both stopped Wave 8
@@ -203,7 +210,7 @@ Round 3 against the worth-it gate:
    cut-off sweep, AEDT, a pooled error, the build at the week start, dropping missing or estimated days
    and excluding the four failed collectors (EM3.12.0 still fires there, at minus 0.15), and never an
    error over the nodes.
-2. **The pair stays under 40 on the facts.** Read for what each solver filed, each kept 17 of 51 ask
+2. **The proxy (recorded, no longer gating): the pair stays under 40 on the facts.** Read for what each solver filed, each kept 17 of 51 ask
    criteria (the read-health figures, six of the eight per-build alerts, PX5.3.1's Wave 8 figure and
    the chart's points and reference line) and lost every standard error, limit and distance, both
    lists, the order, EM3.12.2's Wave 8 figure, the substitution load and the chart's title, order and
@@ -214,8 +221,9 @@ Round 3 against the worth-it gate:
    numbers anywhere in an answer rather than on their build, credits the eligible 1,274 the solvers
    quoted beside their committed 0, and scores a capitalised word in the load item. With the
    tolerance at the prompt's rounding the decimals are 44.5 and 40.8 (`solver_rounds/round-3-*.md`).
-3. **Every miss is a stump** (`## Stump or fork`): the files refute the independence R4 assumes, and
-   every dependence-respecting grouping lands the golden call.
+3. **Every miss is a stump on the main thread's read** (`## Stump or fork`; the judge rules on it): the
+   files refute the independence R4 assumes, and every dependence-respecting grouping lands the golden
+   call.
 
 ## The decisive move, and why it survives the opponent
 
@@ -389,6 +397,30 @@ the fire and hold lists, the order, Wave 8 (2), the substitution load and the ch
 - EM3.12.0 runs a little worse than EM3.11.4 on its own (gap and outage rates of 0.085 and 0.035),
   which is why its shortfall would fire on an installation-level error even without the node failures;
   the node failures are what make the week's evidence too noisy to fire on.
+
+## The client's six-point check (stage 8)
+
+1. **The inputs take real work, and none of it is a planted defect.** Ten files in five formats:
+   register-day deliveries replaced by later deliveries, a cut-off in market time against UTC stamps
+   and AEDT field times, an activation history with replays, failed activations and rollbacks, serials
+   that lost their zeros in a CIS migration, NMIs with and without the checksum, a schedule re-batched
+   by a depot. Each is what these systems export; nothing exists to be caught.
+2. **The step that flips the call is a methodological choice.** The unit the standard error of a mean
+   is built over: independent installations, or the comms nodes the installations share. Nothing is
+   planted; the node failures are real reads the standard counts.
+3. **The standard defines what to measure precisely enough that one method is defensible.** MDS-STD-114
+   files the population, the measure, the window, the cut-off, the reference and the rule; a standard
+   error is a defined quantity; the files refute the independence the installation-level error needs;
+   every dependence-respecting estimator lands the same call; 4.3 and 7 pin the domain and the
+   small-sample convention for the figures.
+4. **No decoy memo, staff draft or briefing.** The pack carries no memo, no ranking, no prior read-health
+   report and no stakeholder belief, and no sentence states or implies installation-level independence.
+5. **The method is not hidden and recovered from certified figures.** There are no certified or
+   published figures to reproduce and no corpus to back-test; the method follows from the definition of
+   a standard error and the dependence the files show.
+6. **The lesson is new.** An operational alert's standard error built over the units that fail together
+   (clustered errors on a monitoring gate). The adjudicated pre-flight found no Track A or Track B
+   finding at any tier; the nearest mechanism neighbour (task131) is clean.
 
 ## Stopping rule
 

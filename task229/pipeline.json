@@ -3,7 +3,7 @@
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
  "stage": 7,
- "stage_name": "determinism judge running on the loop-2 cut (round 3 passed the worth-it gate)",
+ "stage_name": "determinism judge running on the loop-2 cut (round 3 recorded as a pass under the PR #17 single-solver rule)",
  "updated": "2026-10-11",
  "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.83 and 0.57, not 0.40 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
  "architecture": 1,
@@ -108,7 +108,8 @@
    "mean": 45.2,
    "mean_read": 31,
    "decision": "pass",
-   "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)"
+   "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)",
+   "rule": "recorded as a pass under the single-solver rule (PR #17): the gate is that the solver does not commit to the main call; the proxy is recorded and does not gate; stump or fork is the judge's question"
   }
  ],
  "judge": {
