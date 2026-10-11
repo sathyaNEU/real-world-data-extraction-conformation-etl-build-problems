@@ -107,6 +107,11 @@ Side cells (priced): module-months from fitting and no replacement 352.8 (15 lot
 
 Pair arithmetic: a solver on rung 3 (18 lots) keeps the costs (15) and, if it reads stages by bay, the nine supported-relay counts; it loses the lot call, every non-trivial cover cell, every year and every region. Criteria: 3 + 30 + 10 + 9 + 3 + memo items (2) + files (2), about 59.
 
+## SOLVER ROUNDS
+
+- Round 1 (architecture 1, before loop 1): both solvers landed 17 lots; hardened in loop 1 (module age with renewal).
+- Round 2 (loop 1): both solvers missed the call with 18 lots on 411.9 expected failures, proxy 36.8 each, worth-it gate passed. Each completed every lower rung (module age from the fitted date, support by bay, exposure from January 2021, 14 available modules) and carried each relay's current module forward with no replacement. Both named the renewal reading (about 298, 13 lots) and declined it because the procedure does not spell it out. Read as the stump, not a fork: section 3 ages a module from the date it was fitted and counts it in service only while it is fitted to a relay, so after a failure the module in service is the one fitted in its place, and 6.2 applies the band rates to the module-months expected in each band; their own exposure counts replacement modules from their refit. The determinism judge rules on it.
+
 ## LEAK REVIEW
 
 - Loop 1 `leak.py`: REVIEW. The procedure, dictionary and notice carry six to eight of the call's words (VPR340-PSU-02, lots, modules, last-time buy, Veldtek): the vocabulary of the subject, with no figure from the answer. The dictionary's run date 2026-10-01 is the extract job's stamp. Container audit clean (H1).
