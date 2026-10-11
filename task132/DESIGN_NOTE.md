@@ -68,6 +68,12 @@ Side cells (priced): module-months from fitting and no replacement 365.9 (16 lot
 6. No cutover date: replacements happen throughout the horizon.
 7. Survives deletion: nothing wrong to delete.
 
+## THREE RULES (client update, 10/10)
+
+- **Domain (swap test).** The deciding quantity is the expected number of power-supply failures over each relay's remaining support, from failure rates by module age estimated on the maintenance system's exposure and projected as a renewal process, then a Poisson cover test on the buy: the asset-condition and spares work of a distribution utility's protection asset plan. The swap test breaks it: the staged bay replacements of the renewal program, the support period ending at each scheme's commissioning and the rotating-item history of fitted modules are what the projection runs on.
+- **Two layers.** Layer 1: a work-order extract and a rotating-item history from the maintenance system's 2021 go-live with legacy dates, a register and program keyed by station and bay ranges, a manufacturer's return register, crew-written failure text and stock by store. Layer 2: age-dependent failure rates on the right exposure, and a failed module replaced from the buy, so the relay then carries a new module.
+- **Decisive step: analytical.** Analyst test: a strong analyst who reads AM-PC-014 correctly (band rates over the work-order history's own period, support to each scheme's commissioning month, Poisson cover at 95 per cent) and ages each relay's current module forward month by month, with no replacement after a failure, expects 431.4 failures and orders 19 lots instead of 13. Round 2's two solvers did exactly that on the earlier world.
+
 ## CLOSURE TABLE (22 axes)
 
 | # | Axis | Reading and closure |

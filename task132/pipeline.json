@@ -2,11 +2,11 @@
  "task": "task132",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 6,
- "stage_name": "solver round 2 passed; realism repair 2 running, then leak read and the judge",
+ "stage": 4,
+ "stage_name": "leak check (reader round 6 on the repair 3 pack), then solver round 3 (one-solver rule)",
  "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
- "stump": "A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 18 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.",
+ "stump": "A competent solver completes every lower rung (module age from the fitted date, support by bay to each scheme's commissioning month, exposure over the work-order history's own period, 15 available modules), ages each relay's current module forward with no replacement after a failure, expects 431.4 failures and orders 19 lots; the step that lands it there is projecting failures as if a failed module stayed in service, when it is replaced from the buy by a new one: the answer is 13 lots on 298.6 expected failures.",
  "architecture": 1,
  "loops": 1,
  "leak": {
@@ -88,5 +88,10 @@
  },
  "approved": null,
  "delivered": null,
- "portal": null
+ "portal": null,
+ "three_rules": {
+  "domain": "pass (asset-condition and spares forecasting)",
+  "layers": "pass",
+  "decisive_step": "analytical (renewal of a failed module in the projection)"
+ }
 }
