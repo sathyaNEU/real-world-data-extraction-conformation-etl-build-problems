@@ -3,19 +3,19 @@
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
  "stage": 8,
- "stage_name": "judge pass 2 DETERMINISTIC, APPROVE (pass 1 did not run); ship waits on the author's decision on the stage-5 guard BLOCK against task134",
+ "stage_name": "shipped",
  "updated": "2026-10-11",
  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW: 12 lines, each answered in the design note (LEAK CHECK); no LEAK. The first run was LEAK once (the protocol's file name ending _v3.1), fixed in the generator",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (12 lines, each answered in the design note), on the final rebuild with --asof 2026-10-05",
+  "reader": "pass 3 (after the slide's cluster list was tied to the call): nothing quoted for the decisive step, no file ranks or states the answer, every REVIEW line harmless, plan of attack at rung 1 (the cases notified so far)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": "",
+  "heart": "BLOCK on one axis (ban.strategy maturity_censoring against task134, drawn the same day); author override, registered with --force 2026-10-11, reason and differentiation on the card; WARNs (Gate G repeat and overuse, decision and opening against task180 v3) answered in the design note",
+  "nearest": "drivers task98 0.08, task91 0.06; task134 not among them",
+  "clone_check": "pass 1 on architecture 2 CLEAN (clone_check_report.md)",
   "surface": "guard.py surface: 0 promoted pairs of 124 in scope; nearest task93 surface 0.100; personas in the cut pack all on the card"
  },
  "three_rules": {
@@ -58,8 +58,8 @@
  ],
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md",
+  "disposition": "APPROVE (pass 2; pass 1 did not run, no Agent tool in the orchestrating subagent)",
+  "report": "determinism_check_report.md (pass 1, no run), determinism_check_report_pass2.md",
   "passes": [
    {
     "pass": 1,
@@ -77,10 +77,12 @@
     "gate_h": "domain pass, layers pass, decisive_step analytical",
     "note": "every load-bearing figure reproduced; Griffith first in all 33 nowcast variants; no competing answer survived; minor workbook hygiene note only; finding 1 (workbook inline strings) fixed after the pass with no value moved"
    }
-  ]
+  ],
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-11",
  "portal": null,
  "build": {
   "answer": "Griffith",
@@ -89,6 +91,7 @@
   "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 3b2d4f6d23d5b501)",
   "grid": "54 cells, 0 misses (36 route-specific Griffith, min margin 2.70; 18 pooled Wagga Wagga, min 1.25)",
   "rungs": "R0 to R3 Wagga Wagga, margins 1.29 to 1.71; R4 Griffith 3.18",
-  "hygiene": "after judge pass 2: workbooks moved to shared strings, Excel part order and XML declarations; every cell identical, other files byte-identical, leak.py unchanged"
+  "hygiene": "after judge pass 2: workbooks moved to shared strings, Excel part order and XML declarations; every cell identical, other files byte-identical, leak.py unchanged",
+  "target_zip": "cut from the final rebuild by generator/build.py: 11 files, each identical to target/ (zip sha256 f719df32b0a10e70)"
  }
 }

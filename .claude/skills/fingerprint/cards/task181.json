@@ -56,7 +56,6 @@
       "Nathan Olson",
       "Tiffany Peters",
       "Janice Barker",
-      "Darryl Morales",
       "Colleen Brown",
       "Cassandra Dawson"
     ]
@@ -73,7 +72,10 @@
   "analyst_test": "A strong analyst who removes the duplicate laboratory notifications, applies the episode rule and the case definition, maps every case to its area and computes the protocol's expected counts exactly still compares the cases notified so far for the fortnight (or a nowcast built on one pooled delay) with the expected counts and sends the team to Wagga Wagga, because only a nowcast on each laboratory route's own specimen-to-notification delay shows Griffith's fortnight running several times above its expected count.",
   "domain_test": "What decides the call is an epidemiological nowcast, the eventual count of recent onsets estimated from each reporting route's own delay distribution, which is how outbreak surveillance reads right-truncated case data; with another field's nouns in there is no onset-to-notification delay, no laboratory route and no truncated epidemic curve, so the task does not read the same.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task134": "task134 forecasts how many of next year's jail releases are re-booked within three years, so its open periods are release cohorts whose follow-up has not run out (with deportations and deaths competing); task181 nowcasts specimens already collected whose notifications are still in transit, by laboratory route, to pick one outbreak area, and the error it punishes is a pooled or ignored reporting delay, not an immature follow-up window.",
+    "task135": "task135's forecasting is a creek rating curve fitted in logs and applied to daily flow; task181's is a right-truncation nowcast of an epidemic curve from each reporting route's delay history."
+  },
   "lineage": [
     {
       "architecture": "draft (never registered): which merchant location gets the acquirer's forensic inspection, exposure counted on contact reads at the device",
@@ -86,7 +88,7 @@
       "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures."
     }
   ],
-  "notes": "Re-root of task181 (architecture 2) under the client's three rules. Anomaly Detection & Diagnostics: an outbreak signal in surveillance data. The protocol files the decision quantity (excess of onsets in the last 14 days over the expected count) and the baseline; it says nothing about notification delay.",
+  "notes": "Re-root of task181 (architecture 2) under the client's three rules. Anomaly Detection & Diagnostics: an outbreak signal in surveillance data. The protocol files the decision quantity (the excess of cases with specimens collected in the 14 days before the extract day over the expected count) and the baseline; it says nothing about notification delay. AUTHOR OVERRIDE 2026-10-11, registered with --force on the author's explicit instruction (AskUserQuestion answer 'Register anyway (Recommended)'): ban.strategy blocks stump_strategy maturity_censoring against task134, another author's build drawn the same day about five minutes apart, when neither card was on main for the other's guard to read (same-day draws sort by task number, so task181 sits after it). The label is kept honest rather than relabelled: the stump is late arrival, which maturity_censoring names. The block is on that one axis; domain, objective, decision type, shape, gap, pattern and Gate G mechanism all differ, test.same_puzzle and test.same_driver do not fire, and task134 is not among this card's nearest drivers (nearest on file 0.08). The build was solver-tested (rounds 2 and 3 missed at the nowcast) and judged DETERMINISTIC, APPROVE (pass 2) before the override. Darryl Morales (immunisation coordinator in the design) is named in no shipped file and is off people at ship.",
   "layer2_family": "field_method",
   "layer2_pattern": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/2",
   "layer1": [

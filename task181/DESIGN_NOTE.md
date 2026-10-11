@@ -359,6 +359,22 @@ cluster. Its plan files Wagga Wagga at rung 1, stable under every 14-day variant
   byte-identical), leak.py REVIEW with the file-name sweep clean. The two reader passes read the same content under the
   old name; no third pass for a rename.
 
+- **Heart (`guard.py heart task181`, refreshed 2026-10-11 with task180 v3, task134 and task135 on file): BLOCK on one
+  axis, `ban.strategy`.** maturity_censoring repeats task134, another author's forecasting build drawn the same day.
+  - No other ban fired, and neither `test.same_puzzle` nor `test.same_driver` did.
+  - The nearest drivers are task98 (0.08) and task91 (0.06); task134 is not among them.
+- **Author override, 2026-10-11.** The card is registered with `--force` on the author's explicit instruction. The card's
+  notes carry the reason; its `differentiation` carries one line each against task134 and task135. The label is kept
+  honest: the stump is late arrival, which maturity_censoring names.
+- **WARNs, one line each:**
+  - `repeat.gate_g` (task135): task135's forecasting is a creek rating curve applied to daily flow; this one is a
+    right-truncation nowcast inside an anomaly call.
+  - `overuse.gate_g` (5 of the last 12): three of the five are the Forecasting lane's own builds (task132, task133,
+    task135), where forecasting is the objective. task181 is the Anomaly lane's only one, and task182 draws away from it.
+  - `repeat.decision` (task180 v3): both are this lane's builds, one area of ten against one signal of three; task182
+    takes another answer type.
+  - `repeat.opening` (task180 v3): task182's prompt opens on another move (prompt-voice.md section 3).
+
 ## SURFACE (guard.py surface task181)
 
 0 promoted pairs across 124 in scope; nearest neighbours task93 (surface 0.100, percentile 98), task90 (0.094), task72,
@@ -383,8 +399,41 @@ Tiffany Peters, all on the card (Colleen Brown is in the rosters workbook, which
 - **Volume.** The line list holds 1,118 notifications, not a few thousand: realistic pertussis rates for 160,000 people
   give this many, and the volume gate is carried by the admissions extract and the register.
 - **Hospital route.** 100% of its notifications within 14 days; no artificial outlier was added.
+- **Personas.** Darryl Morales (immunisation coordinator) is named in no shipped file; he is off the card's people at
+  ship. Colleen Brown signs the roster receipts in the rosters workbook and stays on the card.
 
 ## PRE-SHIP CHECK (client, eight points; answered at ship)
+
+1. **Domain.** Surveillance epidemiology's own task: excess cases over a five-year seasonal baseline on a right-truncated
+   epidemic curve, read by reporting route. The swap test breaks it: another field's nouns have no specimen-to-notification
+   delay, no laboratory route and no truncated curve.
+2. **Real data work, no plant.**
+   - The notification-grain line list has to be built into 90-day episodes.
+   - Receipt stamps are UTC across the daylight-saving change.
+   - Split postcodes go by population share, under the 2024 case-definition revision.
+   - Records link on MRN and on Medicare number plus IRN across three registers, and free-text school names have to be
+     matched to rosters.
+
+   Every record is correct.
+3. **The flip is a method.** The flip is completing each area's fortnight from its own laboratory route's delay history.
+   PR-07 is silent on delay, so the solver has to choose to estimate. Nothing is planted to catch, and no field, code or
+   stated rule decides it.
+4. **Analyst test.** It holds. Cleaned and read correctly, the easy route sets the cases notified so far against PR-07's
+   expected count, or nowcasts on one pooled delay, and sends the team to Wagga Wagga (7.6 against 5.6). In-house solver
+   rounds 2 and 3 both took that route.
+5. **The estimand is defined.** PR-07 4.2 to 4.3 define the quantity: cases (3.3) dated by first specimen (3.5), collected
+   in the 14 days before the extract day, set against the mean of the same dates in five complete years. Only an estimate
+   of the cases collected is like for like. Judge pass 2 ruled the on-file count the trap, not a licensed reading, and
+   found Griffith first under all 33 nowcast variants.
+6. **No decoy.** No memo, draft or briefing argues for Wagga Wagga. The two declared distractors carry no recommendation:
+   the week-35 report counts notifications by week received, and the influenza file holds another condition's
+   notifications.
+7. **The method isn't recovered from certified figures.** No shipped figure is reproduced only by the right method. The
+   week-35 report reconciles to the line list on received dates and pins nothing about the nowcast.
+8. **A new lesson.** The lesson is that a right-truncated count has to be completed with each reporting route's own delay
+   before it meets a complete baseline. The nearest earlier lessons teach censoring in durations or follow-up: task31's
+   open approval clocks, and task134's immature recidivism follow-up with competing risks (same strategy family,
+   differentiation on the card). Neither nowcasts an outbreak curve by route, and the nearest driver on file is 0.08.
 
 ## STOPPING RULE
 
