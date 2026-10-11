@@ -15,7 +15,8 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
 3. **Run the mechanical half** with Bash:
    `python3 .claude/skills/leak-check/leak.py <task> --asof <date> --quiet`
    and read `<task>/leak_check_report.md`.
-4. **Run the reader's half** with a single `Agent` call, `subagent_type: general-purpose`:
+4. **Run the reader's half** with a single `Agent` call, `subagent_type: general-purpose`,
+   `model: sonnet` (it reads and answers, it does not solve):
    - First, with Bash, make a fresh scratch copy: `<scratchpad>/leak-<task>/prompt.md` and
      `<scratchpad>/leak-<task>/target/` (unzip `target.zip` if `target/` is absent).
    - The prompt tells the agent it is an analyst who has just been handed this folder, gives the
@@ -28,8 +29,10 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
 6. **Report**: the mechanical verdict, the four answers in one line each, and the list of items to
    fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`
-   (stage 4) the pipeline fixes each finding in the generator, rebuilds and re-runs this command
-   before the solver round.
+   (stage 4) the pipeline fixes the question 1 to 3 findings and any fork on the main call in the
+   generator before the solver round, re-running this command only if a fix changed a document
+   under `target/` or the prompt; the realism tells and the forks on ask figures wait for the repair
+   after a passing round (`build-pipeline` stage 6b).
 
 Spawn one agent and only one. Do not run the determinism judge, the clone check or a solver from
 here.
