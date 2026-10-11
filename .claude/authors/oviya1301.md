@@ -8,7 +8,7 @@ keeps its own branch rules.
 ## Branches
 
 - Every build goes on its own branch under the `oviya1301/` prefix:
-  `oviya1301/taskNN-<short-slug>`, for example `oviya1301/task301-intersection-redesign`.
+  `oviya1301/taskNN-<short-slug>`, for example `oviya1301/task445-13f-ownership-bridge`.
 - This is the author's standing permission to push build work to that branch instead of the
   session's designated `claude/...` branch. Skill and rule edits that are not part of one build go
   on `oviya1301/skills-<short-slug>`.
@@ -20,9 +20,9 @@ keeps its own branch rules.
 
 ## Lane
 
-- One Axis 1 objective at a time, two builds in parallel inside it. The lane is **Opportunity Sizing &
-  Decision Support**, the block task301 to task396 in the root `START_HERE.md`, taken two at a
-  time from the lowest open numbers (task301 and task302 first).
+- One Axis 1 objective at a time, two builds in parallel inside it. The lane is **Data Extraction &
+  Conformation (ETL)**, the block task445 to task493 in the root `START_HERE.md`, taken two at a
+  time from the lowest open numbers (task445 and task446 first).
 - When a task starts, set its Status to `in build` (Owner `oviya1301`) in the root `START_HERE.md`
   on `main`; set `shipped` when it ships and `retired` if it dies.
 - Each build keeps its own branch and its own fingerprint card, registered as soon as its draw is
