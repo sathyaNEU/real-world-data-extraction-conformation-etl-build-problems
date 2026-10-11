@@ -1,0 +1,89 @@
+TARROCK HYDRO DISTRIBUTION
+EAM reporting service - P&C extracts, field descriptions
+
+Job PC_ASSET_WO_MONTHLY (scheduled, first working day of the month)
+  Run 2026-10-01 06:10, data to close of business 2026-09-30
+  protection_asset_register_2026-09-30.csv, eam_work_orders_protection_2021-01_2026-09.csv, substations.csv
+
+Extracts for the VPR340-PSU-02 final-buy sizing (run on request by KALLISON, Senior Asset Engineer, P&C)
+  spares_stock_2026-09-30.csv                     inventory balance after the stores count, run 2026-09-30 17:25
+  psu_rotating_item_history_2021-01_2026-09.csv   rotating-item history for item VPR340-PSU-02, run 2026-10-01 09:41
+
+Notes (all extracts from this service)
+  Comma-separated, UTF-8, header row. Dates are local (Eastern), yyyy-mm-dd. An empty field has no value.
+  EAM went live on 2021-01-01, replacing the legacy maintenance system (MMS). EAM history starts at go-live; work
+  orders raised in MMS are in the MMS archive (read only, request through the IT Service Desk).
+  Go-live load (conversion project CNV-07): assets in service on 2020-12-31, and the rotating items fitted to them,
+  were converted from the MMS asset lists. Assets retired in MMS were not converted. Where MMS held only a year, the
+  date was converted as 1 July of that year.
+  Region and crew codes changed on 2024-04-01 (CR-2024-031, four regions to three). Records keep the codes they were
+  created with; the PM masters were re-coded on 2024-05-13.
+  Work orders waiting for approval (WAPPR) are not extracted. Asset numbers come from one sequence shared by all
+  asset classes and are not reused.
+
+protection_asset_register_2026-09-30.csv  (one row per asset)
+  asset_id          EAM asset number
+  model, manufacturer, function
+  sub_code          substation code, see substations.csv
+  bay               bay or position: Fnn feeder, Tn transformer, Bn bus zone, RTU
+  serial_no         manufacturer serial number
+  install_date      date placed in service (MMS date for assets converted at go-live)
+  status            IN SERVICE or RETIRED
+  retired_date      date taken out of service
+  region            region on the asset record when it was created (not updated by the 2024 reorganization)
+
+eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
+assets, station DC systems, breaker trip circuits and instrument transformers, P&C station inspections, and the crews'
+returns and disposal work at the stores)
+  wo_number         work-order number, allocated when the work order is entered (shared numbering with lines and
+                    metering work)
+  reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
+  completed_date    date completed (blank while open or cancelled)
+  work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
+                    MOD modification (settings, firmware, device replacement or station rebuild cutover),
+                    LOG logistics (shipping, returns and disposal)
+  status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
+  asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
+                    blank for station inspections and for disposal
+  sub_code, region  substation (blank for work at a store), and the region code the work order was raised with
+  failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
+                    returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
+                    COMMS communications card (blank otherwise, including no fault found and follow-up work)
+  description       crew text; planned work carries the job plan title, with the crew's remarks after it
+  crew              crew lead's crew
+  labour_hours      hours booked on timesheets, including travel
+
+substations.csv
+  sub_code, sub_name, region (from 1 April 2024), legacy_region (before 1 April 2024),
+  station_type (TS transformer station, DS distribution station)
+
+spares_stock_2026-09-30.csv  (one row per item, location and stock state at close of business 2026-09-30)
+  item_no           EAM item number
+  item_code         item code; for an item tracked by serial, the rotating-item code
+  item_description  item description
+  location          storeroom or depot, or the manufacturer's repair centre
+  bin               bin location (blank at the repair centre)
+  stock_state       SERVICEABLE on the shelf; QUARANTINE awaiting bench test before going back on the shelf
+                    (returned unused from site); AT REPAIR at the manufacturer under an open RMA
+  uom               unit of issue (EA each)
+  quantity          quantity in that state at the count
+  unit_cost_cad     moving average cost
+  A module back from the manufacturer's repair centre comes by overnight courier and is received to SERVICEABLE the
+  day it arrives. A failed module on a store's returns shelf, waiting to go to the repair centre or for disposal, is
+  not stock and is not in this extract (see removed_to in the rotating-item history).
+
+psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installation)
+  serial_no         module serial number; a module repaired by the manufacturer keeps its serial
+  item_code         rotating-item code (VPR340-PSU-02)
+  asset_id          relay the module is or was fitted to
+  fitted_date       date fitted to that relay (MMS fitted date for modules converted at go-live)
+  fitting_wo        work order the module was fitted under (blank for go-live loads)
+  removed_date      date removed (blank while fitted)
+  removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
+  removal_wo        work order the module was removed under
+  removed_to        where the module went when it came out: the returns shelf of the store serving the station, or
+                    SCRAP with a relay retired by a station rebuild
+  disposal_ref      e-waste manifest the module was scrapped under: with its relay, or from the returns shelf when
+                    the store scrapped a failed module on bench check instead of sending it to the manufacturer (the
+                    disposal work order gives what the check found)
+  record_source     GO-LIVE LOAD or EAM
