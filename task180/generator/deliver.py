@@ -167,8 +167,8 @@ def write_docx(g, path):
     th_c, th_s, th_g, _ = coded[t3]
     rest = [t for t in sorted(coded, key=lambda x: -coded[x][1]) if coded[t][0] == 3 and t not in slate]
     _heading(doc, "Why these three")
-    _para(doc, f"ES-DGA-02 gives the inspection outages to the transformers whose main-tank gases point to the most "
-               f"severe faults in the main tank. {name(t1)} has the strongest: acetylene rising at "
+    _para(doc, f"ES-DGA-02 gives the inspection outages to the code 3 transformers with a fault in the main tank, "
+               f"in order of severity score. {name(t1)} has the strongest: acetylene rising at "
                f"{sev(v_s)} times its rate limit, with hydrogen rising alongside it, which is arcing inside the tank. "
                f"It has a vacuum tap changer, so none of that acetylene comes from switching. {name(t2)} shows the "
                f"same kind of arcing at a lower rate ({sev(a_s)}). Its tap changer is an in-oil type, but its "
@@ -195,9 +195,9 @@ def write_docx(g, path):
                    "operations from the first result that showed it, with almost no hydrogen alongside, and both "
                    "have in-oil arcing tap changers whose diverter compartments make exactly that gas in normal "
                    "switching. The acetylene is reaching the main tank from the tap changer, not from a fault in "
-                   "the windings or core, and an internal inspection would not find it. On the gases generated in "
-                   "their main tanks both are code 2. The work they need is on the tap changer, at their next "
-                   "tap-changer outage.")
+                   "the windings or core, and an internal inspection would not find it. Both stay code 3 under section 4, "
+                   "but neither has a fault in its main tank for an inspection to remedy. The work they need is on "
+                   "the tap changer, at their next tap-changer outage.")
     _heading(doc, "Tap changers")
     _para(doc, "Operations since the last service for every in-oil tap changer, against the ES-DGA-02 annex B "
                "interval of 60,000 operations or seven years.", after=4)
@@ -239,7 +239,7 @@ def write_docx(g, path):
 
 
 def write_csv(g, path):
-    coded, a, b, slate = g["coded"], g["ask_a"], g["ask_b"], g["slate"]
+    coded, a, b, slate = g["naive"], g["ask_a"], g["ask_b"], g["slate"]
     with open(path, "w", newline="") as fh:
         wr = csv.writer(fh, lineterminator="\n")
         wr.writerow(["transformer_id", "substation", "condition_code", "severity_score", "on_slate",

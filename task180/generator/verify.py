@@ -243,8 +243,8 @@ with open(os.path.join(GD, "dga_fleet_review.csv")) as fh:
 expect("fleet review has 44 rows", len(gold), 44)
 for tid in sorted(UNIT):
     g = gold[tid]
-    expect(f"{tid} code", g["condition_code"], str(CODED[tid][0]))
-    expect(f"{tid} severity", g["severity_score"], f"{CODED[tid][1]:.2f}")
+    expect(f"{tid} code", g["condition_code"], str(NAIVE[tid][0]))
+    expect(f"{tid} severity", g["severity_score"], f"{NAIVE[tid][1]:.2f}")
     expect(f"{tid} on slate", g["on_slate"], "yes" if tid in SLATE else "no")
     expect(f"{tid} ops since service", g["oltc_operations_since_service"], str(ASKA[tid][1]) if tid in ASKA else "")
     expect(f"{tid} relative saturation", g["relative_saturation_pct"], f"{ASKB[tid][0]:.1f}")

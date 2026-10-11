@@ -100,12 +100,13 @@ changer, internal arc, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Spring
 | 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | DSL-T1 9.64, LST-T2 and SBG-T2 8.07 each, then RLS-T2 4.98, CGT-T1 4.73 | the filed standard applied exactly | at DSL-T1 and LST-T2 the main-tank acetylene increments track tap-change counts (r 0.998 and 0.995 from the first detectable result; 0.978 and 0.989 from the last below-detection one), twelve-month C2H2/H2 is 9.8 and 8.2, the tap changers are in-oil arcing types |
 | 2 | Drop the unit with the clearest leak only | without DSL-T1: LST-T2, SBG-T2, RLS-T2; without LST-T2: DSL-T1, SBG-T2, RLS-T2 | one contaminated unit found | the other leaking unit carries the same signature |
 | 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene does not track its counter (r 0.110) and its C2H2/H2 is 0.64: internal |
-| 4 (answer) | Attribute each unit's acetylene, code what the main tank made | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
+| 4 (answer) | Attribute each unit's acetylene; the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
 
-With their acetylene attributed, DSL-T1 and LST-T2 code 2 (carbon dioxide above its 90th percentile at DSL-T1, carbon
-monoxide at LST-T2; severities 0.81 and 0.38, both from paper gases, so whether the few ppm of leaked ethylene and
-hydrogen are also taken out moves nothing). Code 3 after attribution: SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73, SPN-T2
-4.43, DFD-T1 3.45.
+With their acetylene attributed, DSL-T1 and LST-T2 stay code 3 under section 4, which codes the main-tank results as
+reported (the goldens carry the literal code and severity, 3 at 9.64 and 3 at 8.07), but neither has a fault in the
+main tank, so 5.2 gives them no outage. Recoded on what the main tank made they would be code 2 on paper gases (0.81
+and 0.38); no filed sentence asks for that recoding, and the slate is the same either way. Code 3 with a main-tank
+fault: SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73, SPN-T2 4.43, DFD-T1 3.45.
 
 **Twin pair.** LST-T2 and SBG-T2 are sampled on the same day every round (the route pairs Leeston with Southbridge) and
 carry the same main-tank acetylene at the samples the standard reads: 4.7 ppm on 8 September 2025 and 12.9 ppm on 14
@@ -179,16 +180,16 @@ Filed: ES-DGA-02 Fleet DGA condition standard rev 3 (governing): scope (1.1, 1.2
 sampling and the report of record (3.4, 3.5), coding (4.1 preservation class and age band, 4.2 levels, 4.3 twelve-month
 increase with the base sample the most recent main-tank sample taken 330 days or more before the latest, 4.4 codes and
 severity over the seven fault gases), inspection priority (5.1 an internal inspection is the remedy for a fault in the
-main tank; 5.2 the outages go to the transformers whose main-tank gases point to the most severe such faults), the
+main tank; 5.2 the outages go to the code 3 transformers with such a fault, in descending order of severity), the
 tap-changer service record (6.1 to 6.3), water in oil (7.1), annex A limit tables, annex B service intervals, annex C
 relative saturation. Oil results notes (field semantics only). No sentence anywhere mentions compartment leakage,
 contamination, weeping or barriers (asserted on the standard, the log and the notes).
 
 ## PACK GATES (shipped)
 
-12 files, 6 formats (csv, xlsx, parquet, pdf, md, txt): main-tank results 1,077 rows (1,072 samples and 5 re-issues),
-compartment results 162, daily counters 93,060, hourly top-oil parquet 2,232,384 rows, asset register 44, maintenance
-log 275, relay events 1,161. Two distractors named in metadata.json: the protection relay event log (feeder and incomer
+11 files, 6 formats (csv, xlsx, parquet, pdf, md, txt): main-tank results 1,077 rows (1,072 samples and 5 re-issues),
+daily counters 93,060, hourly top-oil parquet 2,232,384 rows, asset register 44, maintenance log 275, relay events
+1,161, mobile substation bookings 12. Two distractors named in metadata.json: the protection relay event log (feeder and incomer
 relay operations) and the March 2026 thermal imaging survey of the 11 kV switchboards; the golden never reads either
 (asserted). Two consecutive builds byte-identical (sha256 on every file of the pack, the goldens and metadata.json).
 
@@ -211,13 +212,21 @@ Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6
 `guard.py surface task180`: 124 builds screened, no pair promoted (nearest task89 at surface 0.104); personas found in the pack all on the card.
 
 - Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries five swept terms (register, manager, network, written,
-  degree): ordinary words of a utility standard (the asset register, the General Manager Network who approves it, the
-  temperature written on the label, degrees C). It names gases and the main tank as any DGA standard does and says
-  nothing about compartment oil reaching the main tank (asserted).
+  remedy): ordinary words of a utility standard (the asset register, the General Manager Network who approves it, the
+  temperature written on the label, an internal inspection as the remedy for a fault in the main tank, 5.1). It names
+  gases and the main tank as any DGA standard does and says nothing about compartment oil reaching the main tank
+  (asserted).
 - Sweep 8, `oil_temp_c` in the main-tank results: the label temperature column the brief names; "temp" is temperature,
   not a temporary field.
 - Sweep 9, `mobile_substation_bookings_2027-28.xlsx` carries 18 dates in 2027 and 2028: it is the forward booking sheet
   for the windows the slate fills, forward by design.
+
+Isolated reader, pass 2 (after the scope sentence, the compartment clause and the compartment file came out; read on
+the pack before the 5.2 rewording): decisive step, the selection rule in 5.2, which the prompt itself points to; no
+ranking file, no analyst-only file, no answer-like figure or name; all three REVIEW lines read harmless. Its plan of
+attack coded every transformer on the main-tank results and put "the top three code 3 transformers" into the windows,
+with no step that asks where a gas was made: the attribution is no longer a work order. Pass 3 reads the pack with 5.2
+as reworded.
 
 ## Tried and rejected
 
@@ -260,6 +269,13 @@ Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6
   tank) and the allocation to transformers whose main-tank gases point to such faults (5.2); the attribution rests on
   the tap-changer type, the counter tracking and the acetylene-to-hydrogen ratio, all of which the main call already
   reads for other reasons, and on IEC 60599, which the standard cites.
+
+- **Section 5.2 reworded for determinism (2026-10-11).** With the scope sentence gone, section 4 codes the main-tank
+  results as reported, so DSL-T1 and LST-T2 are code 3, and the old 5.2 ("the outages go to the transformers whose
+  main-tank gases point to the most severe such faults") could be read as plain code 3 by severity, which lands rung 1.
+  5.2 now allocates the outages "to the code 3 transformers with such a fault", the fault being 5.1's fault in the
+  main tank, and the goldens report the literal section 4 code, so the code column has one reading and the slate turns
+  only on where the fault is. The board paper says both stay code 3 and need tap-changer work instead.
 
 - **Re-root candidates weighed for architecture 2 and not drawn (2026-10-11).** A heat-pump drop told from a diversion
   by its day and night registers, with the heating measures register as the convenient record: the register would be

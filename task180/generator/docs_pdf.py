@@ -151,8 +151,8 @@ def write_standard(path):
     sec("5 Inspection priority", [
         "5.1 An internal inspection, with the oil drained and the main tank entered to examine the windings, "
         "leads, connections, core and clamping structure, is the remedy for a fault in the main tank.",
-        "5.2 Internal inspection outages are allocated to the transformers whose main-tank gases point to "
-        "the most severe such faults: code 3 transformers, in descending order of severity score.",
+        "5.2 Internal inspection outages are allocated to the code 3 transformers with such a fault, in "
+        "descending order of severity score.",
         "5.3 A transformer taken out for internal inspection is covered by the mobile substation for the "
         "outage, so the number of inspections in a year is the number of mobile substation windows held.",
     ])

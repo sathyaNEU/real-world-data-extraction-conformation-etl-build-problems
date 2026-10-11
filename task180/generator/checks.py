@@ -375,7 +375,7 @@ def main():
     ok = True
     for _, row in gcsv.iterrows():
         t = row["transformer_id"]
-        ok &= row["severity_score"] == f"{sv[t]:.2f}" and row["condition_code"] == str(coded[t][0])
+        ok &= row["severity_score"] == f"{nsv[t]:.2f}" and row["condition_code"] == str(naive[t][0])
         ok &= row["relative_saturation_pct"] == f"{b[t]['rs']:.1f}"
         ok &= row["oltc_operations_since_service"] == (str(a[t]["ops"]) if t in a else "")
         ok &= row["on_slate"] == ("yes" if t in ANSWER else "no")

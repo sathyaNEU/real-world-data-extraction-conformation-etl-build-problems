@@ -10,21 +10,21 @@
 
 **Take Southbridge T2, Rolleston T2 and Coalgate T1 for the three 2027/28 internal inspections, in that order.**
 
-Southbridge T2 leads at a severity score of 8.07 on acetylene, then Rolleston T2 at 4.98 on acetylene and Coalgate T1 at 4.73 on ethylene, with Springston T2 at 4.43 the first left out. Not Dunsandel T1 or Leeston T2, whose main-tank acetylene rises with their in-oil tap changers' operations and is not generated in the main tank, so they code 2. Not a slate that drops the acetylene at every in-oil tap changer, which loses Rolleston T2, whose acetylene comes with hydrogen and ignores its tap changer.
+Southbridge T2 leads at a severity score of 8.07 on acetylene, then Rolleston T2 at 4.98 on acetylene and Coalgate T1 at 4.73 on ethylene, with Springston T2 at 4.43 the first left out. Not Dunsandel T1 or Leeston T2: both are code 3 as reported (9.64 and 8.07), but their main-tank acetylene rises with their in-oil tap changers' operations and is not generated in the main tank, so neither has a main-tank fault for an inspection to remedy. Not a slate that drops the acetylene at every in-oil tap changer, which loses Rolleston T2, whose acetylene comes with hydrogen and ignores its tap changer.
 
 ## 2. Critical Components
 
 1. Coded on main-tank gases as reported, Dunsandel T1 is code 3 at **9.64** and Leeston T2 and Southbridge T2 are code 3 at **8.07** each
 2. At Dunsandel T1 and Leeston T2 the acetylene rises with the tap operations and the twelve-month C2H2/H2 ratio is **9.8** and **8.2**; at Southbridge T2 and Rolleston T2 it does not and the ratio is **0.5** and **0.6**
-3. With their acetylene attributed to the tap changer, Dunsandel T1 and Leeston T2 are code **2**
-4. Code 3 by severity: Southbridge T2 **8.07**, Rolleston T2 **4.98**, Coalgate T1 **4.73**, Springston T2 **4.43**, Darfield T1 **3.45**
+3. With their acetylene attributed to the tap changer, Dunsandel T1 and Leeston T2 stay code **3** but have **no main-tank fault**, so they take no inspection outage
+4. Code 3 with a main-tank fault, by severity: Southbridge T2 **8.07**, Rolleston T2 **4.98**, Coalgate T1 **4.73**, Springston T2 **4.43**, Darfield T1 **3.45**
 
 ## 3. Step-by-Step Solution
 
 1. Kept the latest issue of each laboratory report (ES-DGA-02 3.4), took below-detection results at half the limit (3.5) and coded all 44 transformers on the September 2026 round against annex A (section 4): seven code 3, led by Dunsandel T1 at 9.64 and Leeston T2 and Southbridge T2 at 8.07.
 2. For each transformer with rising main-tank acetylene, set its increments between samples against the tap operations between the same dates in `scada_tap_counters_daily_2021-2026.csv`: at Dunsandel T1 and Leeston T2, in-oil arcing tap changers in `asset_register_zone_transformers.xlsx`, they move together (r above 0.97) with C2H2/H2 of 9.8 and 8.2; at Southbridge T2 (vacuum) and Rolleston T2 they do not (r near zero, C2H2/H2 0.5 and 0.6).
-3. Coded Dunsandel T1 and Leeston T2 on the gases generated in their main tanks (1.2): both code 2.
-4. Ranked the code 3 transformers by severity (5.2): Southbridge T2 8.07, Rolleston T2 4.98, Coalgate T1 4.73, Springston T2 4.43, Darfield T1 3.45.
+3. Set Dunsandel T1 and Leeston T2 aside: code 3, but the acetylene behind it is the tap changer's, so there is no fault in the main tank for an internal inspection to remedy (5.1).
+4. Ranked the code 3 transformers with a main-tank fault by severity (5.2): Southbridge T2 8.07, Rolleston T2 4.98, Coalgate T1 4.73, Springston T2 4.43, Darfield T1 3.45.
 5. Took each in-oil tap changer's last service from `maintenance_log_2019-2026.xlsx` (6.1) and summed the 00:00 counter increments to 16 October 2026, a drop being a rollover past 99,999 unless the log has the counter replaced that day: 7 of 27 past the annex B interval.
 6. Computed relative saturation at each latest sample (annex C) from the label temperature or, where blank, the hourly top-oil temperature of `scada_top_oil_hourly_2021-2026.parquet`, whose timestamps are UTC, for the New Zealand clock hour of sampling: six above 30 per cent.
 7. Recommendation: Southbridge T2, Rolleston T2 and Coalgate T1, in that order.
@@ -82,7 +82,7 @@ Southbridge T2 leads at a severity score of 8.07 on acetylene, then Rolleston T2
    - CGT-T2: code 1, severity 0.28, not on the slate, 57,551 operations since service, 28.2 per cent
    - DFD-T1: code 3, severity 3.45, not on the slate, 21,895 operations since service, 19.6 per cent
    - DFD-T2: code 1, severity 0.16, not on the slate, no in-oil tap changer, 11.7 per cent
-   - DSL-T1: code 2, severity 0.81, not on the slate, 87,322 operations since service, 21.5 per cent
+   - DSL-T1: code 3, severity 9.64, not on the slate, 87,322 operations since service, 21.5 per cent
    - DSL-T2: code 1, severity 0.33, not on the slate, 20,955 operations since service, 17.0 per cent
    - DYL-T1: code 1, severity 0.29, not on the slate, 32,511 operations since service, 33.1 per cent
    - DYL-T2: code 1, severity 0.46, not on the slate, 87,029 operations since service, 23.9 per cent
@@ -99,7 +99,7 @@ Southbridge T2 leads at a severity score of 8.07 on acetylene, then Rolleston T2
    - LIN-T1: code 1, severity 0.14, not on the slate, 16,064 operations since service, 19.0 per cent
    - LIN-T2: code 1, severity 0.22, not on the slate, 10,079 operations since service, 27.3 per cent
    - LST-T1: code 1, severity 0.31, not on the slate, 61,972 operations since service, 22.2 per cent
-   - LST-T2: code 2, severity 0.38, not on the slate, 54,294 operations since service, 18.2 per cent
+   - LST-T2: code 3, severity 8.07, not on the slate, 54,294 operations since service, 18.2 per cent
    - PRB-T1: code 1, severity 0.42, not on the slate, no in-oil tap changer, 8.9 per cent
    - PRB-T2: code 1, severity 0.49, not on the slate, no in-oil tap changer, 10.0 per cent
    - RLS-T1: code 1, severity 0.45, not on the slate, no in-oil tap changer, 8.0 per cent
