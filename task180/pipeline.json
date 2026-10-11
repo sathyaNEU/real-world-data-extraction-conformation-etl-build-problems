@@ -2,20 +2,20 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw (re-root, architecture 2)",
+ "stage": 2,
+ "stage_name": "design (architecture 2)",
  "updated": "2026-10-11",
- "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, every week below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number, and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row for the supply the procedure screens, when it is a metering system's total and the 42 bypassed heating-only supplies in Caithness, listed as related metering points, fall 36 to 58 per cent while their systems fall 6.5 to 23.9.",
+ "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names the three highest code-3 units, two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take the vacuum-tap-changer unit and the next two internal faults.",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (0 LEAK)",
-  "reader": "pass 1 on the first cut: no answer, no ranking file; its plan found the supply grain, so the pack was hardened (mart re-keyed to metering system, related metering points on their own sheet); pass 2 running"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK; nearest task131 0.15, task52 0.14)",
-  "nearest": "task97 surface 0.102, not promoted",
-  "clone_check": "pre-flight CLEAN: no Track A or B finding; task90, task72, task103, task58 v15 adjudicated clean, shares components by design (task180/clone_check_report.md)"
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
  },
  "solver_rounds": [
   {

@@ -1,190 +1,164 @@
-# task180 design note: Corran Energy, the field team's patch for January to March 2027
+# task180 design note: Ellesmere Lines, the three internal inspections of 2027/28 (architecture 2)
 
-Seed AD03 (revenue-protection crew, register grain). Re-rooted under the two-layer standard: the seed's
-calibration corpus, twin pair, licensed wrong basis and withheld rule are not used. The procedure the
-organisation would have in writing (RP-07) is filed in full, and the difficulty is the construction it
-demands on data whose convenient series is at the wrong grain.
+Seed AD03 (revenue-protection crew). Architecture 1 (revenue protection, the screen grain) was spent at in-house
+round 1 and is recorded under Tried and rejected. This is the re-root: same objective, same number, a new draw. The
+seed's idea that carries over is the one AD03 shares with the whole lane: the loudest signal is not all cause.
+
+Figures marked *target* are what the generator is tuned to; `checks.py` asserts the shipped values and the write-up
+uses only those.
 
 ## DRAW
 
 ```
-Card filed with guard.py register before the ladder was written? yes (WARN, answered below)
-Shape: other (8 patches x {referrals, 3 winter-history figures, Q1 capacity} + call, runner-up, gap, chart)
-Gate G mechanism: decomposition_attribution
-Gap: population (decisive), rule        Pattern: D, two grains both flawless (G2 grain mismatch)
-Domain: energy-systems-utilities (client domain)   Subdomain: other (revenue protection)   Objective: anomaly-detection
-Pairing repeated from last build? no (energy x anomaly never built)
-Stakeholder role: revenue protection manager (field_unit_lead)   Context artifact: monitoring_export (the mart)
-Calibration form: none   Decision type: pick_one_of_n   Decisive mechanism: screen per metered supply, count per patch
-Stump strategy: grain_or_unit   Decisive rule filed? yes (RP-07 sections 2 to 7)   Official decoy filed? no
-Forum: operations_desk (the December planning meeting)   Forcing event: season_or_peak   Org family: utility_or_infrastructure
-People (guard.py names, en_GB, seed 180): Gareth Francis (RP manager, RP-07 approver), Judith Jones (field side, prompt
-  belief), Christopher Horton (RP analytics, extract owner), Matthew Gill (senior field officer); field officers in the
-  visit logs and rota: Alan Khan, Aaron O'Connor, Jonathan Gibson, Debra Martin, Chloe Lewis
+Card filed with guard.py register before the ladder was written? yes (PASS)
+Shape: 01 ranked list under a cap (three inspection outages, 44 transformers)
+Gate G mechanism: decomposition_attribution (each transformer's main-tank acetylene attributed to its source)
+Gap: population (decisive), rule        Pattern: none (own); generators G8 (the worst-looking units are the ones the remedy cannot reach), G3
+Domain: energy-systems-utilities / asset-condition-maintenance   Objective: anomaly-detection (fault diagnosis from DGA)
+Pairing repeated from a recent build? task180 architecture 1 only (its own lineage, a different puzzle)
+Stakeholder role: network asset manager (portfolio_manager)   Context artifact: capacity_report (mobile substation bookings)
+Calibration form: none   Decision type: ranked_slate_under_cap   Answer unit: set_of_items
+Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 s4.1 scope and s5 priority)
+Official decoy filed? no   Validated decoy? no
+Forum: board_of_directors (28 October 2026)   Forcing event: audit_or_inspection   Org family: utility_or_infrastructure
+People (guard.py names, en_NZ, seed 1802): Donna Carson (network asset manager, the requester), Barry Forbes (zone
+  substation engineer, owner of ES-DGA-02 and the oil results), Wendy Godfrey (board chair), Connor McGill (oil sampling
+  technician)
 ```
 
-**Data-native sentence.** In the north of Scotland storage-heated homes carry a second, heating-only supply number
-(a related metering point on its own meter), so a bypass of the heating meter takes 36.2 to 57.9 per cent off that supply
-while the metering system's weekly total in the analytics mart, keyed by the primary supply number, falls by 6.5
-to 23.9 per cent, below the 30 per cent referral band.
+**Data-native sentence.** Older zone-substation transformers switch load on an in-oil arcing tap changer that sits in a
+compartment sharing a barrier with the main tank, so when that barrier weeps, the acetylene every tap change makes in
+the compartment turns up in the main-tank oil the fleet is coded on, rising with the tap-change count rather than with
+any fault in the winding.
 
-**Layer 1 (realistic mess and the system that produces it).** Cumulative midnight register reads from the smart
-metering data service with comms gaps and meter exchanges (bridged by the exchange reads in the CIS register); primary
-supply numbers to premises through a four-sheet CIS workbook whose related metering points (the heating-only supply
-numbers) sit on their own sheet; a weekly analytics-mart table at metering-system grain keyed by the primary supply
-number; degree days by station with a patch map in JSON; a field-visit system migration (FieldLink to
-FieldOps, re-keyed jobs carrying the legacy number) and an appeals register keyed to whichever system raised the
-finding; a group HR holiday calendar that lists both the England and Wales and the Scottish holidays.
+**Layer 1 (realistic mess and the system that produces it).** A laboratory results file per sampling round (sampling
+date and analysis date, gases in ppm with below-detection values written as `<n`, oxygen and nitrogen, moisture, the oil
+temperature the technician wrote down or left blank); tap-changer compartment results on their own annual schedule; an
+asset register with rewind years and tap-changer types; SCADA daily tap-change counters that roll over at 99,999 and
+reset when a counter is replaced at a tap-changer service; hourly SCADA top-oil temperatures exported from the
+historian in UTC; a maintenance log in free text.
 
-**Layer 2 (the analytical shortcut).** Screening the ready-made weekly series. The mart's weekly series, keyed by a supply number, is
-the natural input for a supply-level anomaly test, and every count, join and total ties on it; an expert screens each metered
-supply against its own history, because an anomaly confined to one component of an additive total is diluted below
-any sensible referral band in the total.
+**Layer 2 (the analytical shortcut).** Coding each transformer on its main-tank gases and ranking the code-3 units by
+severity. The standard's arithmetic is right and every gas really is in the main-tank oil; an expert first asks where
+each fault gas was made, because the standard codes gases generated in the main tank, and acetylene carried in from a
+tap-changer compartment is made by normal switching, not by a fault an internal inspection can find.
 
-**Similarity claim.** No prior build turns on an anomaly test whose filed unit is a metered component while the
-convenient series sums the components; the guard's structural near-neighbours (task72, task103, task81, task86, task90)
-are attribution, fan-out, identity and chaining moves, differentiated on the card.
-
-**WARN answers.** driver.near task131 (0.15) and task52 (0.14): both read; task131 is interference between sibling
-units in a randomised test, task52 a minimum over sub-units, neither is dilution of a component anomaly in a sum.
-repeat.decision pick_one_of_n after task131: the decision is genuinely one patch for one team; the answer type is a
-named option carrying a count. Deliverable format set moved off docx+png and pptx+xlsx to pptx+csv.
+**Similarity claim.** No prior build attributes a measured anomaly to an attached compartment's normal operation before
+ranking. task181 (explaining away a dominant source among pooled victims) is a different structure: there the sources
+compete for the same victims; here each unit's own signal has a second, benign origin.
 
 ## GATE G
 
-- **Litmus.** No reported number is overturned: the mart's weekly totals are exactly the metering system's import, primary
-  plus related supplies (the verifier rebuilds them), every register read, degree day, occupier event and visit record is correct,
-  and the difficulty is which series the filed screen runs on.
-- **Primary mechanism:** decomposition_attribution (the anomaly lives in one metered component of an additive total).
+- **Litmus.** Nothing reported is overturned: every laboratory value, counter reading and register field is correct;
+  the standard's codes and severities are computed correctly. The difficulty is which units' gases point to a fault
+  inside the main tank.
+- **Primary mechanism:** decomposition_attribution.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
-- **Deletion test.** Delete Judith's belief, both distractors and the history and capacity files: the RP-07 screen run
-  on the mart still names Elgin and Lossiemouth and run per supply still names Caithness.
-- **Clean-data and instrument test.** The suspect files are the reads (comms gaps) and the mart (coarse grain). Gap
-  handling converges: linear interpolation, booking a gap to the later week, and spreading it evenly over its days
-  (the verifier's route) give identical referral counts in every patch. The mart is complete at its grain; the
-  instrument that observes the decision's own quantity, consumption per supply number, already ships (the reads), and
-  the difficulty is choosing it over the metering-system total, not repairing either.
-- **Lens swap.** Not one population under two lenses: the rung's unit is a metering system (2,960, keyed by the primary
-  supply number), the answer's is a supply number (3,659, 699 of them related heating-only supplies), and a supply-level series has to be built
-  from cumulative reads before it can be screened.
-- No shipped artifact ranks the patches on referrals. The distractors answer nothing on the decision.
+- **Deletion test.** Delete Barry's note and the mobile substation schedule: coding on main-tank gases still names the
+  two leaking units; attribution still removes them.
+- **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample, every
+  compartment sample and every counter reading ships. A perfect main-tank gas analyser still reads the leaked acetylene,
+  because it is really in the oil; what the decision needs is its origin, which the counters, the tap-changer types and
+  the gas ratios settle.
+- **Lens swap.** Not one population under two lenses: the answer's ranking runs on main-tank gases generated in the main
+  tank, a different set of gas volumes from the naive ranking's, built per unit from three files.
 
 ## STUMP SENTENCE
 
-A competent solver runs the filed RP-07 screen (own 104-week degree-day line, 30 per cent over eight weeks, every week
-below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number,
-and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row
-for the supply the procedure screens, when it is a metering system's total, when 42 storage-heated premises in Caithness carry a bypassed heating-only supply
-whose 36.2 to 57.9 per cent shortfall moves the metering system total by 6.5 to 23.9 per cent.
+A competent solver codes every transformer under ES-DGA-02 from its main-tank samples (limits by preservation type and
+age, twelve-month increases, code 3 ranked by severity) and names the three highest code-3 units, two of which carry
+acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a
+main-tank fault, when at those two units its increments track the tap-change counts and its ratio to hydrogen is the
+tap changer's, so the slate takes the vacuum-tap-changer unit with the same acetylene, the in-oil unit whose acetylene
+is internal, and the worst thermal fault.
 
 ## ENTITY AND UNIT OF VALUE
 
-Corran Energy's revenue protection team places one field team per quarter and is judged by referrals worked; RP-07
-places it in the patch with the most referred supplies. Two series both look like a supply's "consumption": the mart's weekly
-import keyed by the primary supply number, and each supply number's weekly import (reads). They rank the patches differently because only some
-patches' premises hold two supplies, and only there does a single-supply anomaly dilute.
+One transformer, one inspection outage. The standard's severity score is a ratio of a gas's twelve-month increase to its
+rate limit; the slate is three transformers in priority order.
 
-## LADDER
+## LADDER (targets)
 
-| Rung | Construction | Names | Why a careful analyst stops | Killed by |
+Units (target severities): L2 and L1 (in-oil tap changers, leaking barriers), V (vacuum tap changer, internal arc), A3
+(in-oil tap changer, internal arc, not leaking), T1, T2, T3 (thermal faults).
+
+| Rung | Construction | Slate | Why a careful analyst stops | Killed by |
 |---|---|---|---|---|
-| belief | best confirmation rate over three winters | Lochaber, 68.2% (15 of 22) | the field side's own outcome record, computed properly (dedupe, appeals) | RP-07 section 7 places on referrals; Lochaber has the fewest (8) |
-| 0 | RP-07 screen on the mart's weekly import (keyed by primary supply number), or on the Supplies sheet's supply numbers from the reads | Elgin and Lossiemouth, 35 | the filed method run on a series keyed by supply number, every exclusion applied; every key matches the Supplies sheet and every total ties | RP-07 section 6 glossary (a supply is a supply number and its meter) and the register's Related metering points sheet (699 heating-only supply numbers, each with its own meter) |
-| grid | RP-07 per supply, heating changes not excluded | Strathspey, 73 | the decisive grain found, one exclusion missed | RP-07 section 5 and the completions file (heat pumps commissioned June to September 2026) |
-| 1 (decisive) | RP-07 per supply number from the reads, exclusions by premises | **Caithness, 54** | | |
+| 0 | Highest latest acetylene (arcing read off the Duval triangle) | L2, L1, V | arcing is the most severe fault class | ES-DGA-02 s4 codes on levels and twelve-month increases, not the latest level |
+| 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | L2 (9.6), L1 and V (8.1 each), then A3 (4.9), T1 (4.7) | the filed standard applied exactly | at L1 and L2 the main-tank acetylene increments track tap-change counts (r at least 0.97), C2H2/H2 is 4 or more, the tap changers are in-oil arcing types |
+| 2 | Drop the unit with the clearest leak only | L1 or L2, V, A3 | one contaminated unit found | the other leaking unit carries the same signature |
+| 3 | Drop acetylene at every in-oil tap-changer unit | V, T1, T2 | a rule of thumb about tap changers | A3's acetylene does not track its counter and its C2H2/H2 is 0.6: internal |
+| 4 (answer) | Attribute each unit's acetylene, code what the main tank made | **V, A3, T1** | | |
 
-Position: Caithness ranks 5th on rung 0 (12, behind Elgin 35, Inverness City 19, Nairn 14, Skye 13), last-but-two on
-the belief rung (41.5%), and leads only the decisive rung. Rung margins: belief 68.2 against 57.9 (1.18x, a past
-rate, not a referral rung), rung 0 35 against 19 (1.84x), decisive 54 against 35 (1.54x).
+**Twin pair.** L1 and V carry the same main-tank acetylene trajectory (the same levels and the same twelve-month
+increase to 0.1 ppm), the same preservation class and the same age band, so code and severity are identical; L1's tap
+changer is in-oil and its acetylene tracks the counter, V's is vacuum. Any rule on main-tank gases keeps both or drops
+both.
 
-**Discriminator dominance.** Elgin carries 35 against Caithness's 12 into the decisive rung (2.92x). The grain move
-multiplies Caithness by 4.50 (12 to 54) and Elgin by 1.00: edge 4.50 against the required 1.2 x 2.92 = 3.50, 1.29x
-headroom.
+Margins: the answer's third unit (T1, 4.7) clears the fourth (T2, 4.4) by at least 5 per cent of severity; every wrong
+slate differs from the answer by at least one named unit, asserted.
 
-**A solver who does everything right up to rung 0 commits to Elgin and Lossiemouth.** Summing each premises' supplies
-from the reads and screening the sum (the "build the premises unit" correction) returns exactly the rung-0 counts,
-asserted: aggregating before detecting is the same mistake whichever file it starts from.
+## GRID (asserted in checks.py)
 
-## GRID (asserted in checks.py, cell by cell)
-
-| Cell | Names | Rule violated |
-|---|---|---|
-| supply, heating changes kept | Strathspey 73 (1.28x over Caithness 57) | RP-07 s5 |
-| supply, occupier changes kept | Inverness City 91 (1.52x over 60) | RP-07 s5 |
-| supply, neither exclusion | Inverness City 91 (two violations) | RP-07 s5 twice |
-| mart (metering system), occupier changes kept | Inverness City 91 (2.17x over Elgin 42) | RP-07 s5 and s2/s6 |
-| mart (metering system), heating changes kept | Elgin 35 | RP-07 s2/s6 |
-| Supplies-sheet supply numbers only, from the reads | Elgin 35 (same counts as the mart) | RP-07 s6 and the related sheet |
-| premises sum from reads | Elgin 35 | RP-07 s2/s6 |
-| supply, no weather adjustment (same weeks a year earlier) | Caithness | RP-07 s3; recorded as a rule violation that happens to land on the answer |
-
-Convergent (identical counts in all eight patches, asserted): degree-day base 14 and 16.5 C, gap booked to the later
-week or spread evenly, total-only against every-week test, threshold 25 and 33 per cent, counting premises against
-supplies, prepayment supplies left in.
+Rows: the five rungs above; acetylene dropped for units with C2H2/H2 above 2, 3 and 5; correlation thresholds 0.8, 0.9
+and 0.95; leak judged on increments per sample interval or on cumulative growth. Columns: below-detection values at
+zero, half the limit or the limit; twelve-month base sample at 330, 365 and 400 days; preservation class from the latest
+or the median O2/N2. Asserts: every attribution rule that uses any two of the three signatures (in-oil type, tracking,
+ratio) returns V, A3, T1 in every column; every main-tank-only rule returns a slate with L1 or L2 in it.
 
 ## CLOSURE (the 22 axes)
 
-1 Population: credit accounts, filed (RP-07 s1); prepayment converges (no prepayment supply clears the band). 2 Unit
-of account: supply number, filed (s2, s6), and premises against supply counting converges. 3 Attribution window:
-weeks Monday to Monday local, filed (s2). 4 As-of dating: register on the run date; patch is a premises attribute, no
-moves. 5 Version basis: one register extract; appeals register is the record of decision (s8). 6 Divisor: rate is
-over visits with access (s8). 7 Weighting: none in the call; counts. 8 Window length: 104 + 8 weeks, filed (s2).
-9 Boundary inclusivity: 30 per cent band sits in an empty gap (ordinary supplies at most 12.4 per cent, diverted at
-least 36.2 per cent), C1. 10 Rounding path: counts only in the call; rates rounded once from integer counts, mid-bin
-asserted. 11 Tie-break: filed (s7), not reached (no level patches). 12 Maturity: assessment weeks complete; no read
-missing on any Monday from 28 September or at the window edges. 13 Order of operations: detect then count is the
-decisive move; aggregate-then-detect is the rung. 14 Row order: irrelevant. 15 Duplicate resolution: re-keyed visits
-by `legacy_job_no` (field notes), ask layer only. 16 Identity normalisation: MPAN cores are text throughout.
-17 Netting: not applicable. 18 Units: kWh throughout. 19 Code semantics: heating change defined in s5 (heat pumps,
-new heating system, change of fuel; not insulation or solar); FW-3 codes for field days. 20 Integerisation: whole
-visits per day, filed (FW-3 s2), no boundary values. 21 Scope of a clause: s5 exclusions apply to the premises, all its
-supplies. 22 Forward window contents: the call is the referrals on the Monday 7 December run (s7), the quarter's
-capacity never binds (at least 3x referrals in every patch).
+1 Population: the 44 zone-substation transformers in service (ES-DGA-02 s1). 2 Unit: transformer. 3 Window: twelve
+months to the latest sample (s4.3). 4 As-of: latest main-tank sample on or before 30 September 2026. 5 Version basis: the
+laboratory report of record is the latest issued for a sample ID (s3). 6 Divisor: rate limits per gas (s4.3 table).
+7 Weighting: none. 8 Window length: base sample the earliest at least 330 days before the latest (s4.3); 365 and 400
+converge. 9 Boundary: no severity within 2 per cent of the slate cut. 10 Rounding: severity to two decimals, no unit
+within 0.005 of a rounding edge. 11 Tie-break: the L1/V tie sits inside the naive slate, never at its cut. 12 Maturity:
+the September round complete for every unit. 13 Order of operations: attribute, then code, then rank. 14 Row order:
+irrelevant. 15 Duplicates: re-issued laboratory reports for the same sample ID (D2, ask layer only). 16 Identity:
+transformer IDs stable; tap-changer counters replaced keep the transformer ID. 17 Netting: none. 18 Units: ppm (uL/L).
+19 Code semantics: preservation class by O2/N2 (s4.1). 20 Integerisation: none. 21 Scope: s4.1 gases generated in the
+main tank. 22 Forward window: none in the call.
 
-## ASK SHEET
+## ASK SHEET (devices off the main call's rows)
 
-Both asks are decoupled from the screen (the screen never reads the visit logs, appeals register, rota or FW-3,
-asserted) and enter the call as the belief's audit trail (history) and the capacity qualifier (can the team work its
-referrals).
+Main call row population (declared, asserted device-free): main-tank and compartment results for every transformer;
+the daily tap-change counts and the asset register rows of every code-3 transformer.
 
-| Ask | Figures | Primary devices | Stops (asserted to move figures) |
+| Ask | Figures | Primary devices (silent) | Shared hazard |
 |---|---|---|---|
-| Winter history by patch | 8 x (visits with access, confirmed, rate) = 24 | D1 re-keyed migration jobs (FieldLink 4 to 17 Nov 2024 re-created in FieldOps), with genuine revisits after no access as the over-cleaning half; D2/D7 appeals keyed to the raising system's job number, overturned findings count as no fault | no dedupe (8 patches move), no appeals (8), all visits as denominator (8), both (8) |
-| Q1 visit capacity by patch | 8 | D8 group HR calendar lists England and Wales and Scotland (FW-3 s3 names Scotland; leave booked on 4 January and 29 March makes the calendars differ by 2 officer-days); D5 third officer's field start 15 February; standby counts as a field day | E&W calendar 136 days, officer counted all quarter 167, standby as leave 137, against 138 |
+| A. Tap-changer service: every in-oil tap changer's operations since its last service and whether it is past the interval (ES-DGA-02 annex B) | about 28 x 2 | D7/D2: a counter drop is a rollover at 99,999 unless the counter was replaced at a service that day (maintenance log free text); the asset register's last-service field predates the 2025 and 2026 services, and the maintenance log is the record of service (s6) | H1 laboratory re-issues (a corrected report under the same sample ID supersedes the first) |
+| B. Wet transformers: relative saturation at each unit's latest sample, those above 30 per cent | about 6 | D8: the SCADA historian exports UTC (New Zealand is UTC+13 in October), so joining the hourly top-oil temperature on the local clock reads the wrong half of the day where the technician left the sampling temperature blank; D8: the results file's `date` is the analysis date, the sampling date is `sampled` | H1 |
 
-Pair arithmetic (planning weights): the call block (patch, count, runner-up, gap, eight referral counts, chart parts)
-is the 38-point recommendation and critical block and is inherited by a solver on the right grain; the 32 ask figures
-are device-carried. A cracker that handles neither device class keeps the capacity figures only if it reads FW-3 s3
-and the rota start dates; a mirror sheet (rung 0) keeps the same ask figures as the cracker. Estimated pair:
-cracker about 45 + 0.4 x 55, mirror about 7 + 0.4 x 55, mean about 48 at 40 per cent ask leakage, about 41 at 25 per
-cent. The ask layer is the weaker half of this build; the solver round reads it.
+Use test: both are the next two tables of a board paper that asks for three inspection outages (tap-changer backlog,
+wet units for oil processing). Decoupling: clearing the attribution moves no figure in A or B (asserted).
 
 ## PINS
 
-Filed: RP-07 v4 (governing, level 1): scope, screening unit, method, referral test, exclusions, glossary, placement,
-reporting. FW-3 (level 1): field day, visit standard, holiday calendar, start dates. Field notes (level 4): field
-semantics only (mart grain, read semantics, re-keyed jobs). No counter-pins: no file states that a metering system is screened.
+Filed: ES-DGA-02 Fleet DGA condition standard (governing): scope (s1), sampling and the report of record (s3), coding
+(s4: preservation class, age bands, levels, twelve-month increases, codes, severity), inspection priority (s5: an
+internal inspection is the remedy for a fault in the main tank; the outages go to the transformers whose main-tank gases
+point to the most severe such faults), tap-changer service record (s6), annex A limit tables, annex B service intervals,
+annex C relative saturation. Oil results notes (field semantics). No sentence mentions compartment leakage.
 
-## PACK GATES
+## PACK GATES (targets)
 
-17 files, 8 formats (csv, docx, json, md, parquet, pdf, txt, xlsx), largest `smart_daily_reads_*.parquet` at
-2,891,687 rows; distractors `prepayment_vends_*.csv` (prepayment is out of RP-07 scope) and
-`dno_feeder_loss_estimates_2025-26.xlsx` (all-supplier technical and non-technical losses by feeder), named in
-metadata.json.
+At least 12 files, at least 5 formats; hourly SCADA top-oil temperature parquet above 1,500,000 rows; two distractors
+named in metadata.json: the protection relay event log (fault records on the 11 kV feeders) and the 2026 thermal
+imaging survey of the 11 kV switchboards.
 
 ## SIX-POINT CHECK
 
-1. The inputs take real work (cumulative reads with gaps and exchanges, three-sheet register, occupier and heating
-   events by UPRN, migrated visit logs), none of it planted. 2. The flip is a methodological choice: the grain at
-   which a filed anomaly test runs. 3. RP-07 defines the population, outcome, window, unit and comparison. 4. No decoy
-   memo or staff draft; Judith's belief is a true statement about the past. 5. The method is stated, not recovered
-   from certified figures. 6. No earlier task teaches dilution of a component anomaly in an additive total.
+1. Real work: laboratory formats, detection limits, preservation class from O2/N2, rollovers and counter replacements, a
+   free-text maintenance log, UTC historian exports. 2. The flip is a method choice: attributing gases to their source
+   before coding. 3. ES-DGA-02 defines the population, the coding, the window and the priority. 4. No decoy memo; Barry's
+   note is true. 5. The method is not recovered from certified figures. 6. No earlier task teaches source attribution of
+   a diagnostic signal before ranking.
 
 ## STOPPING RULE
 
-Two solver rounds that land Caithness by reading the RP-07 glossary first file this architecture as at-ceiling for the
-main call; a round where the miss lands anywhere other than Elgin and Lossiemouth or Strathspey is read for a fork
-before any hardening.
+Two rounds in which both solvers attribute the acetylene unprompted file this architecture as at-ceiling; a miss landing
+anywhere other than rungs 0 to 3 is read for a fork before any hardening.
 
 ## Tried and rejected
 
@@ -217,3 +191,12 @@ before any hardening.
   keyed by supply number and silent everywhere. The same reader flagged RP-07's revision table (its two lines named the
   own-history degree days and the occupier window) and the DNO loss file ranking Lochaber top, echoing the belief; both
   rewritten.
+
+- **Re-root candidates weighed for architecture 2 and not drawn (2026-10-11).** A heat-pump drop told from a diversion
+  by its day and night registers, with the heating measures register as the convenient record: the register would be
+  the narrower file the clean-data test repairs, so the defect would carry the stump. A weekly referral queue replayed
+  run by run: a filed lifecycle is a filed formula, executed. Re-tampers hidden by a baseline that includes the earlier
+  diversion: the use-versus-recorded distinction has to be filed in RP-07's glossary, which is where architecture 1 was
+  read. Evaluating a new screen on a verification sample: inverse weighting is reflexive once the sampling is stated.
+  Revenue protection was left for a transformer fleet, where the decisive step is a diagnostic attribution no filed
+  sentence names.

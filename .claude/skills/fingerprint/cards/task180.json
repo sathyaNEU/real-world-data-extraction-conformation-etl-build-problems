@@ -1,15 +1,15 @@
 {
   "task": "task180",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-11",
-  "slot_note": "seed AD03 re-rooted under the two-layer standard: no calibration corpus, no licensed wrong basis, the referral procedure filed in full",
+  "slot_note": "seed AD03 re-rooted, architecture 2: v1 (revenue protection, screen grain) was spent at in-house round 1; the objective and number are kept and the draw is new",
   "domain": "energy-systems-utilities",
-  "subdomain": "other",
-  "niche": "an electricity supplier's revenue-protection team in the north of Scotland choosing which of eight field patches its one theft-investigation team works for the January to March quarter, where storage-heated homes carry a second, heating-only supply number on its own meter",
+  "subdomain": "asset-condition-maintenance",
+  "niche": "a New Zealand lines company's zone-substation transformer fleet, choosing which three transformers get the 2027/28 internal inspection outages from five years of dissolved gas analysis",
   "objective": "anomaly-detection",
-  "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
@@ -17,67 +17,56 @@
     "rule"
   ],
   "pattern": [
-    "D"
+    "none"
   ],
   "generators": [
-    "G2",
-    "G16"
+    "G8",
+    "G3"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "stated_rule_hard_construction",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "revenue protection manager at an electricity supplier, who places the field investigation team for the quarter",
-  "role_family": "field_unit_lead",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "network asset manager at a lines company, who takes the inspection slate to the board with the 2027/28 capital works programme",
+  "role_family": "portfolio_manager",
   "scoring_unit": "per resolved case",
   "spine": {
-    "file": "smart_daily_register_reads_2024-10-01_2026-12-06.parquet",
-    "rows": 2891687,
-    "entity": "one cumulative import register reading of one supply number on one day",
-    "grain": "supply number x day",
+    "file": "dga_main_tank_results_2021-2026.csv",
+    "rows": 0,
+    "entity": "one laboratory dissolved gas analysis of one main-tank oil sample from one transformer",
+    "grain": "transformer x sample",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "season_or_peak",
+  "forum": "board_of_directors",
+  "forcing_event": "audit_or_inspection",
   "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United Kingdom, north of Scotland (Highland and Moray)",
-    "currency": "GBP",
-    "org_type": "domestic electricity supplier with a revenue protection function",
+    "geography": "New Zealand, Canterbury",
+    "currency": "NZD",
+    "org_type": "electricity distribution business (lines company) with 44 zone-substation power transformers",
     "invented_names": [
-      "Corran Energy"
+      "Ellesmere Lines"
     ],
     "people": [
-      "Gareth Francis",
-      "Judith Jones",
-      "Christopher Horton",
-      "Matthew Gill",
-      "Alan Khan",
-      "Aaron O'Connor",
-      "Jonathan Gibson",
-      "Debra Martin",
-      "Chloe Lewis"
+      "Donna Carson",
+      "Barry Forbes",
+      "Wendy Godfrey",
+      "Connor McGill"
     ]
   },
   "deliverables": [
-    "field_team_q1_2027.pptx",
-    "patch_screen_q1_2027.csv"
+    "inspection_slate_2027-28.docx",
+    "dga_fleet_review.csv"
   ],
-  "opening_move": "constraint-first",
-  "driver": "The referral test is filed for each metered sub-unit against its own history, but the ready-made series sums the sub-units of an entity, and where an entity holds a second sub-unit carrying one seasonal load, a large fall on that sub-unit moves the entity total by a few per cent, inside ordinary variation, so screening the summed series ranks the candidates differently from screening each sub-unit and counting entities once.",
-  "driver_concrete": "Corran's procedure refers a supply number whose weather-adjusted consumption over the latest eight weeks sits 30 per cent or more under its own two-year history, and storage-heated homes in Caithness carry a second, heating-only supply number (a related metering point on its own meter); a bypass on the heating meter takes 36 to 58 per cent off that supply while the analytics mart's weekly import for the metering system, keyed by the primary supply number, falls by 6.5 to 23.9 per cent, so the procedure run on the mart (or on the Supplies sheet's primaries) names Elgin, and run on every supply number from the daily register reads names Caithness.",
-  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, every week below expected, occupier and heating changes excluded) on the analytics mart's weekly import, keyed by supply number, and places the team in Elgin and Lossiemouth with 35 referrals; the step that lands it there is taking the mart row for the supply the procedure screens, when it is a metering system's total and the 42 bypassed heating-only supplies in Caithness, listed as related metering points, fall 36 to 58 per cent while their systems fall 6.5 to 23.9.",
+  "opening_move": "calendar-first",
+  "driver": "A monitored signal that the standard reads as the unit's own fault can be carried in from an attached compartment whose ordinary operation produces it, so ranking units on the signal measured in the main body puts units with a leaking neighbour ahead of units with genuine internal faults; only attributing each unit's signal to its source, by its co-movement with the neighbour's operations and its composition, separates them.",
+  "driver_concrete": "Acetylene in a transformer's main-tank oil reads as arcing and the fleet DGA standard codes it most severely; at two zone substations with in-oil arcing tap changers the barrier between the tap-changer compartment and the main tank leaks, so their main-tank acetylene rises with every tap change and their code-3 severity leads the fleet, while a third transformer with a vacuum tap changer carries the same acetylene from a genuine internal arc; a slate built on main-tank codes spends two of its three outages on tap-changer seals.",
+  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names the three highest code-3 units, two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take the vacuum-tap-changer unit and the next two internal faults.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task72": "task72 books a correctly measured movement to the owner whose agreement covered each piece of service across a transfer; here nothing is attributed between owners: an anomaly test has to run on each metered component because a summed series dilutes a one-component fall below the referral band.",
-    "task103": "task103 counts units a contact served through standing authorizations; here no unit is fanned out or recovered from a quantity: the test is applied per metered supply and counted once per premises, and the trap is dilution of a component fall in a summed series.",
-    "task81": "task81 recovers a paid entity across registry renumbering by matching sub-unit sets; here identities are stable and known, and the move is the grain at which a filed anomaly test is run, not who the entity is.",
-    "task86": "task86 runs an earlier draw on a shared pool forward member by member; here there is no pool or draw, the difficulty is a summed series hiding a component-level anomaly from a filed screen.",
-    "task90": "task90 chains supplier asset stays into a buyer-side position for a tariff; here no chaining or re-rating: the summed account series is correct and simply too coarse for a per-supply anomaly test."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1 (screen grain: metering system against supply number)",
@@ -85,15 +74,15 @@
       "driver": "The referral test is filed for each metered sub-unit against its own history, but the ready-made series sums the sub-units of an entity, and where an entity holds a second sub-unit carrying one seasonal load, a large fall on that sub-unit moves the entity total by a few per cent, inside ordinary variation, so screening the summed series ranks the candidates differently from screening each sub-unit and counting entities once."
     }
   ],
-  "notes": "Subdomain 'other': revenue protection (energy theft detection) at a supplier, an anomaly-detection task type the energy taxonomy does not list. Bespoke draw from how north-of-Scotland storage heating is metered (a related, heating-only supply number). No calibration corpus, no licensed wrong basis, no certified record; the referral procedure is filed in full. v1 spent at round 1; re-root in progress.",
+  "notes": "Re-root of task180 (architecture 2). Subdomain asset-condition-maintenance carried under Anomaly Detection & Diagnostics because DGA interpretation is fault diagnosis on condition-monitoring anomalies. Bespoke draw from how zone-substation transformers are built (in-oil arcing tap changers in a compartment sharing a barrier with the main tank on older units, vacuum tap changers on newer ones) and monitored (main-tank DGA on a schedule, compartment samples less often, tap-change counters on SCADA). No calibration corpus, no licensed wrong basis; the fleet DGA standard is filed in full and says nothing about compartment leakage.",
   "client_domain": "energy-systems-utilities",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:detect-at-the-metered-component-count-at-the-premises",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:attribute-a-diagnostic-gas-to-its-source-before-coding-the-unit",
   "layer1": [
-    "cumulative smart-meter register reads in parquet, needing differencing across comms gaps and meter exchanges",
-    "supply numbers to accounts to premises through a multi-sheet register workbook",
-    "a weekly analytics-mart extract at account grain",
-    "degree days per weather station with a station-to-patch map in JSON",
-    "a field visit log re-keyed in a system migration, with appeal outcomes in a separate register"
+    "laboratory DGA reports with sampling and analysis dates, below-detection values written as <n, and O2 and N2 for the preservation type",
+    "an asset register with rewind years and tap-changer types by make and model",
+    "SCADA daily tap-change counters that roll over at 99,999 and reset when a counter is replaced at tap-changer maintenance",
+    "a maintenance log in free text with oil processing, tap-changer services and seal work",
+    "a mobile substation booking schedule for the 2027/28 outages"
   ]
 }
