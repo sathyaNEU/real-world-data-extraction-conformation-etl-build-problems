@@ -334,3 +334,12 @@ but the asks leak above a fifth each.
   nothing overnight; the cut-off applied to rows alone is now inert (asserted).
 - First rounding-edge assertion measured distance to the bin centre instead of to the x.xx5 edge;
   caught on review, fixed in `tune.py` and `checks.py`, salts re-chosen.
+- Architecture 1, round 1 (2026-10-11): both solvers landed the call and every scorecard figure
+  (plain 91.3, skeptic 87.4). Plain path: "a build's read health is the mean of its installations'
+  read health; its lower limit is 99.50 minus 3 x (sample standard deviation / square root of n)",
+  read straight off section 4.2 and 5.2, with the cut-off, the register denominators and the full-week
+  population executed as written. Every decisive step was a filed formula, which is the dead shape
+  "a committed figure that is the output of a filed formula". Brief: keep the world and the call, make
+  the stated measure the pooled share the field actually reports, and move the decisive step into the
+  error that measure needs when outages are shared by the meters behind one comms parent (a ratio of
+  totals sampled by cluster), which no formula in the pack spells out.

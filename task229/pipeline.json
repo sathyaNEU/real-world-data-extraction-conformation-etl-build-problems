@@ -2,22 +2,47 @@
  "task": "task229",
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "leak check",
+ "stage": 2,
+ "stage_name": "design (hardening loop 1)",
  "updated": "2026-10-11",
  "stump": "A competent solver pools interval reads per build from the MDM receipts (latest delivery, every installation on its end-of-week build, binomial error) and fires EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1; the standard's average installation that ran the build all week, on reads held at the 06:00 cut-off against every expected interval, with an installation-level error, fires PX5.2.7, EM3.10.9 and EM3.12.1 only.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "leak": {
   "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
-  "reader": "staged for an isolated thread (scratch leak-task229)"
+  "reader": "round-1 reader: Q1-Q4 none, R1-R3 harmless (it reproduced the call by following the standard)"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task228, answered in the design note); ban.artifact vs task228 cleared by redrawing context_artifact to filed_standard",
   "nearest": "task87 v3 driver 0.06; surface nearest 0.10, 0 promoted",
-  "clone_check": "staged for an isolated thread (pre-flight on task229)"
+  "clone_check": "pre-flight CLEAN (task229/clone_check_report.md); re-runs when the driver changes"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-11",
+   "score": 91.3,
+   "landed": true,
+   "cracked": 4,
+   "items": 5,
+   "architecture": 1
+  },
+  {
+   "label": "round 1, skeptic",
+   "date": "2026-10-11",
+   "score": 87.4,
+   "landed": true,
+   "cracked": 3,
+   "items": 5,
+   "architecture": 1
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "decision": "harden",
+   "brief": "both landed the call by executing the filed formulas; move the decisive step into the error of a pooled share sampled by comms parent"
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",
