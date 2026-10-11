@@ -2,8 +2,8 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round 3 (hardening loop 1; three rules answered, card PASS)",
+ "stage": 7,
+ "stage_name": "determinism check (judge pass 1)",
  "updated": "2026-10-11",
  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
@@ -42,6 +42,16 @@
    },
    "decision": "harden",
    "brief": "The solver attributed by the tap counter alone (DSL-T1 and LST-T2 acetylene at a constant ~0.6 ppm per 1,000 operations, excluded; RLS-T2 'in steps unrelated to ops') off 5.2's main-tank qualifier, which the confirming reader also planned; 5.2 stays for determinism, and the next rung makes that exact step return the wrong slate: RLS-T2's arc moves to the tap selector in the main-tank oil, so its acetylene tracks its counter as closely as a leak (r 0.999) and only the gas it arrives with (C2H2/H2 0.64 against 9.8 and 8.2) keeps it on the slate; tracking-only attribution now names SBG-T2, CGT-T1, SPN-T2 (rung 3b)."
+  },
+  {
+   "round": 3,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 37.8
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 3b): every field read and every stated rule applied correctly, every ask figure right, but the solver attributed by the tap counter alone (DSL-T1 and LST-T2 about 0.6, RLS-T2 about 0.36 ppm per 1,000 operations, all three in-oil) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2; it never read the gas RLS-T2's acetylene arrives with (C2H2/H2 0.64 against 9.8 and 8.2). A valid analytical miss under the three rules."
   }
  ],
  "judge": {
