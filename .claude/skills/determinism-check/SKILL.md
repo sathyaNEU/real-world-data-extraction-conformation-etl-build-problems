@@ -86,17 +86,23 @@ never by a decoy document.
 
 ## C. When the build is finished
 
-**The client's six-point check comes first**, one line each in the design note: the inputs take real
-work to put in order and none of it is a planted defect; the step that flips the recommendation is a
-methodological choice; the prompt or a supplied standard defines what to measure precisely enough that
-only one method is defensible; there is no decoy memo, staff draft or briefing; the method is not hidden
-and recovered from certified or published figures; the lesson is not one an earlier task already teaches.
+**The client's pre-ship check comes first**, one line each in the design note
+(`../stumping/references/client/two-layer-task-design.md`): the task does its domain's own analysis and
+the swap test breaks it; the inputs take real work to put in order and none of it is a planted defect;
+the step that flips the recommendation is a methodological choice, not a planted catch, a field reading
+or a stated rule applied; the analyst test holds (a strong analyst who cleaned the data and read every
+rule correctly still gets it wrong the easy way, route and wrong answer named); the prompt or a supplied
+standard defines what to measure precisely enough that only one method is defensible; there is no decoy
+memo, staff draft or briefing; the method is not hidden and recovered from certified or published
+figures; the lesson is not one an earlier task already teaches. The judge rehearses the first and the
+third of these as Gate H.
 
 
 Run the gates in this order; each is one question.
 
 | Gate | The question | Fails as |
 |---|---|---|
+| H | Does the task do its domain's own analysis (the swap test breaks it), are both layers there, and is the decisive step analytical: would a strong analyst who cleaned the data and read every field and rule correctly still get it wrong the easy way? A decisive step that is planted, data semantics or rule application fails. | SEND_BACK, rebuild the decisive step |
 | G | Does the difficulty survive deleting every wrong number from the pack, and is it not a lens swap? | SEND_BACK, rebuild |
 | A | Does every figure (call, components, steps, every supplementary answer) recompute from the shipped files alone, at the file's own grain, attributed to the right party and period? | `solution_incorrect` |
 | B | Is every decisive fact in a shipped file, and does every distinctive term in the recommendation occur in some input (grep every format, tables included)? Never repair by adding vocabulary to an input afterwards. | missing input |
@@ -113,7 +119,7 @@ frozen.
 An isolated thread that sees the prompt, the unzipped bundle and the submission's graded blocks,
 and nothing else: not the design note, the generator or any verifier. It recomputes every
 load-bearing figure and returns a verdict (DETERMINISTIC or NOT_DETERMINISTIC), a disposition
-(APPROVE, FIX_NOW, SEND_BACK) and the Gate G line.
+(APPROVE, FIX_NOW, SEND_BACK), the Gate G line and the Gate H line (the three rules).
 
 **It runs when the author asks in their own words, or when `/build` reaches stage 7 (the
 determinism check, the last gate before ship).** Nothing else licenses it: not a finished build
@@ -123,12 +129,13 @@ outside `/build`, not a patch that seems to want validation.
 2. Spawn the `determinism-judge` agent once, `subagent_type: determinism-judge`, stating that the
    author asked through this skill (or that `/build` stage 7 reached it) and giving the path. If a
    `determinism_check_report.md` exists, name the pass number so the new report is numbered.
-3. Relay the verdict, the disposition, the Gate G line and the report path. Do not fix, soften or
+3. Relay the verdict, the disposition, the Gate G line, the Gate H line and the report path. Do not fix, soften or
    re-run. Run it again only after a change that moves a graded number.
 
 ## Checklist
 
 - [ ] Litmus answered in writing; mechanism from the pass list; three flags in the design note
+- [ ] The three rules answered in writing: the swap test, both layers, the decisive step's class with the analyst test (route and wrong answer named)
 - [ ] No shipped artifact ranks the candidates on the decision question, a declared wrong-basis distractor excepted
 - [ ] 22 axes walked, one closure move per axis, in the design note
 - [ ] Every convergence, back-test, corridor, grid cell and bin distance asserted in the generator and checked in the independent verifier
