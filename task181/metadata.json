@@ -1,0 +1,151 @@
+{
+  "task": "task181",
+  "title": "Sizing a credit union's card reissue after a counterfeit wave traced to two skimmed terminals",
+  "domain": "Banking, Credit & Financial Risk",
+  "subdomain": "fraud and AML detection (card compromise, common point of purchase)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "18 hypotheses versus evidence: every terminal a hypothesis; the committed figure is the exposed card population",
+  "as_of": "2026-10-05",
+  "deliverables": [
+    "card_reissue_request.pdf",
+    "common_point_trace.xlsx"
+  ],
+  "distractor_files": [
+    "atm_cash_replenishment_q3_2026.xlsx",
+    "online_banking_logins_2026-08-01_2026-10-04.csv"
+  ],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "docx",
+      "md",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "card_authorisations_2026-06-01_2026-10-04.parquet",
+    "largest_file_rows": 1257657
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task181/generator/build.py (seeded, deterministic) around a fictional credit union (Larchmere Credit Union) in real eastern Ontario towns; every member, card, merchant, terminal and case is invented.",
+      "date": "2026-10-11",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task181/generator/build.py",
+  "files": [
+    {
+      "path": "CP-14_card_compromise_and_reissue.pdf",
+      "format": "pdf",
+      "bytes": 4736,
+      "source": "Constructed: Card policy CP-14 v3: card compromise and reissue",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "MS-3_member_service_standard.docx",
+      "format": "docx",
+      "bytes": 37596,
+      "source": "Constructed: Member service standard MS-3: unauthorised card transactions, with the 2026 holiday list",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "atm_cash_replenishment_q3_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 11305,
+      "source": "Constructed: Branch ATM cash replenishment visits, July to September 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "card_authorisations_2026-06-01_2026-10-04.parquet",
+      "format": "parquet",
+      "bytes": 25499020,
+      "rows": 1257657,
+      "source": "Constructed: Authorisation host messages for the credit union's cards, 1 June to 4 October 2026 (UTC)",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "card_history_2026-10-05.xlsx",
+      "format": "xlsx",
+      "bytes": 1112125,
+      "source": "Constructed: Card services card history at 5 October 2026: cards, replacements, members",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "chargebacks_2026-08-01_2026-10-04.csv",
+      "format": "csv",
+      "bytes": 84533,
+      "rows": 992,
+      "source": "Constructed: Chargeback events, 1 August to 4 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "close_out_2025_brockville_atm_skimmer.pdf",
+      "format": "pdf",
+      "bytes": 3126,
+      "source": "Constructed: Close-out of the 2025 Brockville branch ATM skimming incident",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_log_2026-10-05.txt",
+      "format": "txt",
+      "bytes": 1315,
+      "source": "Constructed: Extract log for the 5 October 2026 pull",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fraud_cases_2026-08-01_2026-10-04.xlsx",
+      "format": "xlsx",
+      "bytes": 79958,
+      "source": "Constructed: Fraud desk workbook, one row per disputed transaction, cases opened 1 August to 4 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fraud_desk_notes.md",
+      "format": "md",
+      "bytes": 1737,
+      "source": "Constructed: Fraud desk field notes for the extracts",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merchant_directory_2026-10.csv",
+      "format": "csv",
+      "bytes": 93047,
+      "rows": 1316,
+      "source": "Constructed: Acquirer merchant directory: merchant ID, name, MCC, address, town, province or state, country",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "online_banking_logins_2026-08-01_2026-10-04.csv",
+      "format": "csv",
+      "bytes": 6893933,
+      "rows": 101424,
+      "source": "Constructed: Online banking session log, 1 August to 4 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pos_entry_mode_codebook.pdf",
+      "format": "pdf",
+      "bytes": 3420,
+      "source": "Constructed: Code lists for the authorisation extract (entry mode, message type, processing, response, currency)",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
