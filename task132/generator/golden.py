@@ -217,7 +217,8 @@ def memo(s, path):
          "January 2021, over the module-years each band has been in service since then; the 25-and-over band loses about one "
          "module in %d a year, the 0-9 band about one in %d. Each relay's present module is then aged month by month until the "
          "program reaches its bay. A module that fails comes out and its replacement from this buy starts again in the 0-9 "
-         "band, so the old module's rate only applies for as long as it is likely to still be there."
+         "band, so each month the old module's rate is weighted by the chance it is still fitted and the 0-9 rate by the "
+         "chance it has already been replaced."
          % (round(1 / s["rates"][-1]), round(1 / s["rates"][0], -1)), after=6)
     pic = chart_png(s)
     d.add_picture(pic, width=Cm(15.0))

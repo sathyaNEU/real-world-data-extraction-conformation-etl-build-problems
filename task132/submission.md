@@ -14,16 +14,17 @@ With the 15 modules available, 13 lots cover every expected failure to the end o
 
 ## 2. Critical Components
 
-1. Expected PSU failures from 1 October 2026 to the end of support: **298.6**
-2. Modules available at the 30 September 2026 count: **15**
-3. Chance that the stock covers all failures with 13 lots: **99.1%** (12 lots: **83.6%**)
+1. Failure rates per module-year by age band: **0.0052** (0-9), **0.0233** (10-14), **0.0508** (15-19), **0.1186** (20-24), **0.2945** (25 and over)
+2. Expected PSU failures from 1 October 2026 to the end of support: **298.6**
+3. Modules available at the 30 September 2026 count: **15**
+4. Chance that the stock covers all failures with 13 lots: **99.1%** (12 lots: **83.6%**)
 
 ## 3. Step-by-Step Solution
 
 1. Took VPR-340 PSU failures from `eam_work_orders_protection_2021-01_2026-09.csv` as AM-PC-014 5.1 defines them, each in the age band of the module it removed, aged from that module's fitted date in `psu_rotating_item_history_2021-01_2026-09.csv` on the first of the reported month (5.2).
 2. Counted module-months in service in each band over the period the work-order history covers, from January 2021 (AM-PC-014 5.3, `eam_extract_dictionary.txt`), and divided to get the band rates.
 3. Set each in-service relay's end of support from the Approved 2026 sheet of `protection_renewal_program_2026.xlsx` by its bay, taking the stage that replaces the bay in staged schemes, or through December 2035 for a station with no scheme in the program period (AM-PC-014 4).
-4. Aged each relay's present module month by month to its end of support, counting its band rate over twelve while it is likely to survive and the 0-9 band rate for the new module that replaces it after a failure (AM-PC-014 6): 298.6 expected failures.
+4. Aged each relay's present module month by month to its end of support, each month adding the chance it is still fitted times its band rate over twelve plus the chance it has already failed times the 0-9 band rate over twelve, because a failed module is replaced from the buy and a module's age runs from its own fitted date (AM-PC-014 1, 3, 6.1 and 6.2): 298.6 expected failures.
 5. Counted available modules in `spares_stock_2026-09-30.csv` as serviceable plus at Veldtek repair, quarantine excluded (AM-PC-014 7): 15.
 6. Took the smallest number of 25-module lots whose Poisson chance of covering all failures is at least 95 per cent (AM-PC-014 8): 13 lots give 99.1 per cent, 12 lots 83.6 per cent.
 7. Priced the order at CAD 1,965 per module from `veldtek_vpr340_eol_notice.pdf`: 325 modules for CAD 638,625.
