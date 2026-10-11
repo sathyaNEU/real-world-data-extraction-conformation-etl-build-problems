@@ -2,14 +2,14 @@
  "task": "task180",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build (architecture 3: signal refinement in the national registries, a self-controlled comparison under channelling)",
+ "stage": 4,
+ "stage_name": "leak check (architecture 3): leak.py REVIEW, no LEAK; the one Sonnet reader next, then the duplicate check and the solver round",
  "updated": "2026-10-11",
  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
  "architecture": 3,
  "loops": 0,
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2 lines answered in the design note) --asof 2026-10-12",
   "reader": ""
  },
  "duplicate_check": {
@@ -148,5 +148,14 @@
     "determinism_check_report_arch2_pass2.md"
    ]
   }
+ },
+ "build": {
+  "answer": "corinurad (Uralexa) and acute kidney injury: 2.52 (95% CI 1.92 to 3.31), days 1 to 30 against days 61 to 180; 2.36 to 2.62 across control periods; 21 admissions among 2025 starters, 13 caused (12 or 13 across the band)",
+  "checks": 4241,
+  "verify": "OK (independent code path; the call, the ratio, the asks, the rungs, the new-user table and the note agree)",
+  "byte_identical": "12 target files, 2 golden files and metadata.json (combined sha256 b3ac114e0fabd58d)",
+  "grid": "567 self-controlled cells under the pinned conventions and 1,134 under two variants, misses 0; corinurad 2.308 to 2.624; 48 naive cells all tasorexant, thinnest margin 1.33",
+  "rungs": "rung 0 tasorexant 34 reports (1.62); matched non-users 2.13 to 2.56; observed against expected 2.29; active comparator 1.33 to 1.80; self-controlled corinurad 2.52, tasorexant 1.01, velaglutide 0.98",
+  "salt": "corinurad 2022 after-start stream salt 1 (ten screened)"
  }
 }

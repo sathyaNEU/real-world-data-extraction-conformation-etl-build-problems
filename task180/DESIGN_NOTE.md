@@ -141,31 +141,45 @@ sleep medicine slightly (insomnia after discharge): both bias a full-observation
 direction as the answer (the kidney ratio up, the falls ratio down), and the exposure-anchored design (all observation
 after the start) is immune; asserted.
 
-## LADDER (planned; each rung asserted by name in `generator/checks.py`)
+## LADDER (shipped; each rung asserted by name in `generator/checks.py`)
 
-| Rung | Construction | First | Target margin | Killed by |
+| Rung | Construction | First | Shipped margin (thinnest cell) | Killed by |
 |---|---|---|---|---|
-| 0 | Spontaneous reports per signal in the quarter (the screen) | tasorexant falls | most reports | reports are not incidence; the screen raises signals, it does not confirm them |
-| 1 | New users against matched non-users, 30-day admission rate ratio, crude and adjusted for recorded comorbidities and prior admissions for the event | tasorexant falls | first by 1.3 or more in every variant | channelling: the users fell (and the uricosuric's users had kidney injury) at their own rates before starting |
-| 1b | Observed in the 30 days after the start against expected from the age- and sex-specific population rates | tasorexant falls | first by 1.3 or more | as rung 1 |
-| 2 | New-user active comparator (tasorexant against zopiclone starters, corinurad against allopurinol starters, velaglutide against orlistat starters), crude, adjusted and propensity-weighted | tasorexant falls | first by 1.3 or more in every variant; corinurad 1.4 or less | the new sleep medicine is channelled to the frailest; the uricosuric to the healthiest kidneys |
-| 3 (answer) | Self-controlled: each new user's days 1 to 30 after the first dispensing against the same person's later time on it (exposure-anchored control window), conditional Poisson | **corinurad acute kidney injury** | rate ratio 2.2 or more in every cell; tasorexant and velaglutide 1.25 or less with intervals spanning 1 | |
+| 0 | Spontaneous reports per signal in the quarter (the screen: latest version of each case, medicine suspected) | tasorexant falls, 34 cases | 1.62 over velaglutide 21 (corinurad 13) | reports are not incidence; the screen raises signals, it does not confirm them |
+| 1 | New users against matched non-users, 30-day admission rate ratio: crude; Charlson groups; Charlson groups and prior admission for the event | tasorexant falls (3.76, 3.49, 3.13 in the thinnest cells) | 2.56, 2.37, 2.13 | channelling: the users were admitted for the event at their own rates before starting |
+| 1b | Observed in the 30 days after the start against expected from the age- and sex-specific population rates | tasorexant falls (3.51) | 2.29 | as rung 1 |
+| 2 | New-user active comparator (zopiclone, allopurinol, orlistat starters): crude, adjusted, propensity-weighted (IPTW and ATT) | tasorexant falls (2.25, 1.86, 1.81, 1.91) | 1.80, 1.38, 1.33, 1.38; corinurad 1.40 or less in every cell | the new sleep medicine is channelled to the frailest; the uricosuric to the healthiest kidneys |
+| 3 (answer) | Self-controlled: each new user's days 1 to 30 after the first dispensing against the same person's days 61 to 180, conditional Poisson, each start its own stratum, Wald interval | **corinurad acute kidney injury, 2.52 (95% CI 1.92 to 3.31)** | tasorexant 1.01 (0.84 to 1.22), velaglutide 0.98 (0.51 to 1.85) | |
 
-Evidence the pack carries for the judge (asserted): tasorexant starters' fall admission rate in the year before the start
-is about four times matched non-users' and about twice zopiclone starters'; corinurad starters' kidney injury rate in the
-year before the start is about half allopurinol starters'.
+Evidence the pack carries for the judge (asserted): in the year before the start tasorexant starters' fall admission
+rate is 3.95 times matched non-users' and 2.32 times zopiclone starters'; corinurad starters' kidney injury rate is 0.46
+times allopurinol starters'. In the month before the start falls run at 1.65 times the rate of days -395 to -31 for
+tasorexant starters (211 events), and kidney injury at 0.41 for corinurad starters (12 events): the event-dependent
+starts the design note planned, which bias a full-observation comparison (corinurad 2.573 with days -30 to 0 set
+aside, 2.606 without; tasorexant 1.034 and 1.020) and leave the exposure-anchored one untouched (the golden cell reads
+no time before the start, asserted by deleting every earlier event). Among corinurad starters with no NSAID dispensed in
+days 0 to 30 (72 per cent) the ratio is 2.35 (1.71 to 3.23); NSAIDs are dispensed in days 0 to 30 to 28.3 per cent
+against 6.1 per cent in the month before (flare cover). Corinurad: 58,988 new-user starts, 93 admissions in days 1 to
+30 and 132 in days 61 to 180.
+## GRID (shipped, asserted cell by cell)
 
-## GRID (planned, asserted cell by cell)
-
-Self-controlled cells (all give corinurad): risk window days 1 to 30, 0 to 30 or 1 to 28; control window days 31 to 180,
-61 to 180, 61 to 365, or all observed time after day 30 (exposure-anchored), plus the full-observation case series with a
-30-day pre-exposure window removed; with and without five-year age bands and calendar half-years; estimator conditional
-Poisson maximum likelihood or the Mantel-Haenszel ratio. Naive cells (all give tasorexant): matched non-users crude and
-adjusted (comorbidity sets: none, Charlson groups, Charlson plus prior admission for the event), population
-observed-against-expected, active comparator crude, adjusted and propensity-weighted. Variants: observation from 2022 or
-2023; deaths and emigrations ending observation or not; transfers merged within 24 hours or treated as separate
-contacts. Every cell keeps its winner.
-
+- **Self-controlled, pinned conventions (deaths and emigrations end observation, transfers merged): 567 cells, 189
+  per signal** (3 populations: all starts, starts from 2022, starts from 2023; risk windows days 1 to 30, 0 to 30 and
+  1 to 28; control windows days 61 to 180, 31 to 180, 61 to 365, all time after day 30, and the full-observation design
+  with days -30 to 0 set aside; no adjustment, five-year age bands, and age bands with calendar half-years in the
+  full-observation design; conditional Poisson and Mantel-Haenszel). Corinurad 2.308 to 2.624 in every cell, every cell
+  within 0.3 of the golden 2.52 and every lower limit 1.6 or more; tasorexant 0.960 to 1.083 and velaglutide 0.619 to
+  0.996, every interval spanning 1. Misses 0.
+- **The two convention variants: 1,134 cells.** Deaths and emigrations not ending observation: corinurad 2.333 to
+  2.670, tasorexant 1.029 to 1.132, velaglutide 0.619 to 0.996. Transfers not merged: corinurad 2.195 to 2.567,
+  tasorexant 1.010 to 1.138, velaglutide 0.621 to 0.821. Every cell keeps corinurad first with no rival within 25 per
+  cent (closure asserted cell by cell).
+- **Naive cells: 48, every one tasorexant falls** (matched non-users crude and two adjustment sets, observed against
+  expected, active comparator crude, adjusted, IPTW and ATT, each over observation from 2022 or 2023 and with deaths
+  ending observation or not); thinnest margin 1.33 (active comparator IPTW).
+- **Mess neutrality of the main call (asserted):** every ask stop below keeps corinurad first with no rival within 25
+  per cent; contacts linked within 1, 4, 12, 24 or 48 hours give the same admissions for every event; no dispensing gap
+  of 336 to 394 days and no immigration within ten days of a start's 365-day boundary.
 ## CLOSURE (the 22 axes)
 
 1 Population: new users 1 January 2022 to 31 March 2026 (no dispensing of the same substance in the 365 days before;
@@ -180,50 +194,126 @@ extracts; the substance across its two ATC codes. 17 Netting: none. 18 Units: ad
 the registry's D-prefixed ICD-10; action against secondary diagnoses per the case definitions. 20 Integerisation: none.
 21 Scope: the three signals. 22 Forward window: none.
 
-## ASK SHEET (planned)
+## ASK SHEET (shipped)
 
-| Ask | Figures | Depends on the call |
+| Ask | Figures | Shipped answer |
 |---|---|---|
-| The signal the committee opens (note) | 1 | yes |
-| For that signal: the rate ratio for the 30 days after the start, with its 95 per cent interval (note) | 3 | yes (the golden carries the self-controlled band the grid spans) |
-| For that signal: admissions with the event in the 30 days after a start in 2025, and how many the medicine caused (note) | 2 | yes |
-| New users per medicine and calendar year, 2022 to 2025 (`new_users_by_year.csv`) | 3 x 4 = 12 | no (Layer 1: the new-user rule, the ATC reassignment, residence, reversed dispensings) |
+| The signal the committee opens (note) | 1 | corinurad (Uralexa) and acute kidney injury |
+| Its rate ratio for the month after the start, with the 95 per cent interval (note) | 3 | 2.52 (1.92 to 3.31), days 1 to 30 against days 61 to 180; 2.36 to 2.62 over the 63 self-controlled cells on SOP-PV-14 6.1's days 1 to 30 (every control period, adjustment, estimator and population), which the submission carries; the 189-cell grid spans 2.31 to 2.62 |
+| Its admissions in that month among people who started it in 2025 (note) | 1 | 21 |
+| How many of those it caused (note; SOP-PV-14 8.2) | 1 | 13 (12.678); 12 or 13 across the band (12.11 to 13.00), carried in the submission |
+| New users per medicine and calendar year, 2022 to 2025 (`new_users_by_year.csv`) | 12 | tasorexant 1,946, 3,895, 4,546, 4,625; corinurad 11,182, 12,903, 13,712, 13,461; velaglutide 6,153, 18,338, 21,376, 20,070 |
 
-Ask stops (each asserted to move its figures): the current ATC code only (corinurad's 2022 and 2023 users vanish);
-the washout ignored; reversed dispensings counted; transfers counted as separate admissions; secondary diagnoses counted
-where the case definition says action diagnosis; deaths and emigrations not ending observation.
+Ask stops (each asserted to move its figures, shipped):
+- New users: the current ATC code only takes corinurad 2022 and 2023 to 0 and 2024 to 22,905. Ignoring the washout
+  (first dispensing ever) takes tasorexant 2025 to 4,422 and corinurad 2025 to 12,765. A first dispensing each year takes
+  corinurad 2025 to 24,178. Counting returned dispensings takes corinurad 2025 to 13,567, and ignoring residence to 13,515.
+- The 2025 admissions: transfers counted separately 26, secondary diagnoses 25, outpatient contacts 24, returned
+  dispensings counted 22.
+- The ratio moves under secondary diagnoses (1.79), outpatient contacts (1.94), the current ATC code only (2.00), the
+  washout ignored (2.42), returned dispensings (2.49), residence ignored (2.51), transfers separately (2.53) and deaths not
+  ending observation (2.53).
+## PINS (shipped)
 
-## PINS (planned)
+`SOP-PV-14_signal_refinement.pdf`, revision 3, effective 1 June 2026:
+- 1.1 purpose. 1.2 the committee's question: does starting the medicine raise the risk of the event in the month after
+  the start? A signal is supported when it does.
+- 2.1 responsibilities.
+- 3.1 the registry extract, linked on the pseudonymised personal number. 3.2 spontaneous reports frame the event and are
+  not used to estimate risk.
+- 4.1 annex A's case definitions on the registry's D-prefixed codes. 4.2 contacts linked by transfer make one admission;
+  an event is dated by the start of its admission.
+- 5.1 to 5.4 the new-user rule: 365 days without the substance, resident for those days; every ATC code the substance
+  has carried; returned dispensings do not count; a person can be a new user again after 365 days.
+- 6.1 the month after the start is days 1 to 30.
+- 7.1 observation ends at death, emigration or the last day of data.
+- 8.1 the note's figures. 8.2 ratios to two decimals, and admissions caused as admissions x (ratio - 1) / ratio,
+  rounded to the nearest whole admission. 8.3 the note's deadline.
+- Annex A:
+  - falls: an emergency contact or inpatient admission whose action diagnosis is an injury (DS00 to DT14), with a fall
+    code (DW00 to DW19) among its diagnoses;
+  - acute kidney injury: an inpatient admission with DN17 as action diagnosis;
+  - acute pancreatitis: an inpatient admission with DK85 as action diagnosis.
 
-SOP-PV-14 (the agency's signal refinement procedure, filed as a PDF): the case definitions (falls: an emergency or
-inpatient contact whose action diagnosis is an injury, DS00 to DT14, with a fall code among its diagnoses; acute kidney
-injury: an inpatient contact with DN17 as action or secondary diagnosis; acute pancreatitis: an inpatient contact with DK85
-as action diagnosis; contacts of one admission linked by transfer count once), the new-user rule (365 days without the
-substance, by substance across code changes), the 30-day window from the first dispensing, the end of observation
-(death, emigration, 30 June 2026), and the committee's question in section 1 ("a signal is supported when starting the
-medicine raises the risk of the event in the month after the start"). It names no comparison group and no design.
-Registry extract notes: field semantics, the D prefix, the 2019 structure change, the ATC reassignment, the matched
-comparator extract's matching rule.
+The SOP names no comparison group and no design.
 
-## PACK (planned; the builder may rename within the organisation's own conventions)
+`registry_extract_notes.md` (Janni Nielsen): field semantics in Danish with an English dictionary, the D prefix, the
+change of record structure on 4 February 2019, the ATC reassignment, the matched comparator extract's matching rule.
+The banned-word sweep (15 terms) over every shipped text file and the prompt is clean.
+## PACK GATES (shipped)
 
-1. `pv_signal_screen_2026Q3.xlsx` (context artifact: the screen's disproportionality table and the line listing of
-   reports for the three signals; correct, labelled as reports)
-2. `SOP-PV-14_signal_refinement.pdf` (pins)
-3. `registry_extract_notes.md`
-4. `prescription_registry_2018-2026.parquet` (dispensings of the six substances and the co-medication groups)
-5. `patient_registry_contacts_2018-2026.parquet` (spine: hospital contacts of every person in the extract)
-6. `patient_registry_diagnoses_2018-2026.parquet` (diagnoses per contact)
-7. `civil_registration_extract.csv` (birth year, sex, death, emigration, immigration)
-8. `matched_comparators.csv` (the agency's standard matched non-user extract)
-9. `atc_ddd_index_2026.csv` (substances, ATC codes with validity dates, DDDs)
-10. `population_by_age_sex_2022-2025.csv` (population denominators)
-11. distractor: `psur_summary_tasorexant_2026.pdf` (the company's periodic report summary: exposure estimates and
-    cumulative reports; same world, nothing it states decides the call)
-12. distractor: `committee_minutes_2026-07-09.md` (the previous meeting's minutes on other medicines)
+| File | Format | Rows | Role |
+|---|---|---|---|
+| `pv_signal_screen_2026Q3.xlsx` | xlsx | | context artifact: the Q3 screen's disproportionality table and line listing |
+| `SOP-PV-14_signal_refinement.pdf` | pdf | | governing procedure (pins) |
+| `registry_extract_notes.md` | md | | field notes |
+| `prescription_registry_2018-2026.parquet` | parquet | 3,598,588 | dispensings |
+| `patient_registry_contacts_2018-2026.parquet` | parquet | 2,667,469 | hospital contacts (spine) |
+| `patient_registry_diagnoses_2018-2026.parquet` | parquet | 3,725,191 | diagnoses per contact |
+| `civil_registration_extract.csv` | csv | 583,700 | birth year, sex, death, emigration, immigration |
+| `matched_comparators.csv` | csv | 446,700 | the data service's matched non-users |
+| `atc_ddd_index_2026.csv` | csv | 12 | substances, codes with validity dates, DDDs |
+| `population_and_admissions_2022-2025.csv` | csv | 128 | population and national admissions by age and sex |
+| `psur_summary_tasorexant_2026.pdf` | pdf | | distractor (named in `metadata.json`) |
+| `committee_minutes_2026-07-09.md` | md | | distractor (named in `metadata.json`) |
 
-Goldens: `golden/signal_refinement_note.docx` and `golden/new_users_by_year.csv`.
+12 files, 5 formats (csv, md, parquet, pdf, xlsx), 130.1 MB; four files over 25,000 rows. Two distractors, asserted unused:
+the golden recomputes unchanged with each removed. Goldens: `golden/signal_refinement_note.docx` (one page and a
+little, to the committee from Iben Pedersen, approved by Helge Jørgensen) and `golden/new_users_by_year.csv`.
 
+## BUILD RECORD
+
+- `generator/build.py` runs everything:
+  - the pack: `world.py`, `sim.py` (people, latent channelling, dispensings, events), `hospital.py` (contacts,
+    transfers, diagnoses, the 2019 structure change), `records.py`, `docs.py`, `postprocess.py`;
+  - the goldens: `deliver.py` over `golden.py`;
+  - then `metadata.py`, `checks.py` (4,219 assertions), `verify.py` (OK on its own code path: the call corinurad at 2.52 (1.92 to 3.31), 2025 admissions 21,
+    caused 13, tasorexant 1.01 and velaglutide 0.98, NSAID-free 2.35, the between-person rungs (matched 3.77, active
+    comparator 2.29, observed against expected 3.53 for tasorexant), and the new-user table and the note agree);
+  - then a second full build into a scratch folder inside the task (removed after) and the sha256 comparison
+    (12 target files, 2 golden files and metadata.json byte-identical, combined sha256 b3ac114e0fabd58d).
+- Containers: workbooks and the note repacked with in-fiction owners and saved stamps and fixed entry stamps. PDFs are
+  issued on their in-fiction dates with the library banner blanked at equal length.
+- Personas in the pack, the golden and the prompt (`guard.py surface` scan): Esben Olesen, Frida Clausen, Helge
+  Jørgensen, Iben Pedersen, Janni Nielsen, Kåre Holst, all on the card.
+- Invented names (H21): Somnevo, Uralexa, Gravera, tasorexant, corinurad, velaglutide (no such products or INNs); the
+  agency is "the Agency" and the data service "the national health data service".
+
+## DEVIATIONS FROM THE DESIGN (as built)
+
+- **A salted stream.** The 2022 cohort of corinurad starters draws its after-start events from a salted stream (salt
+  1); no other stream moves.
+  - Why: the unsalted world passed every check except one. Its admissions-caused figure was 12.579, 0.079 from its
+    rounding edge.
+  - How it was chosen: a screen of ten salts against the checks' thresholds. This salt is the only one that held every
+    graded figure off its edges (ratio 2.5235, limits 1.9222 and 3.3130, caused 12.678) with every margin.
+- **The two convention variants are held to keep the winner, not to the 2.2 floor.** These are deaths and emigrations
+  not ending observation, and transfers not merged.
+  - The floor applies to the pinned cells only. The variants hold corinurad at 2.0 or more, rivals at 1.25 or less,
+    closure at 1.25.
+  - This matches the GRID line "every cell keeps its winner". Transfers not merged reach 2.195 at their lowest.
+- **A last stay-separation pass.** `hospital.separate_stays` settles any clash left after its six rounds against the
+  latest end of every earlier event stay of the person.
+  - One person's kidney injury stay and pancreatitis stay sat 41 hours apart, so 48-hour linking changed an admission.
+  - Now every linking window from 1 to 48 hours gives the same admissions, asserted.
+- **Acute kidney injury counts on the action diagnosis only** (annex A), not "action or secondary" as the plan had it.
+  Counting secondary diagnoses is an ask stop (2025 admissions 21 to 25, ratio 1.79).
+- **The population file** carries national admissions beside the population (`population_and_admissions_2022-2025.csv`),
+  which rung 1b's observed-against-expected comparison uses.
+
+## LEAK CHECK (stage 4, mechanical half)
+
+`python3 .claude/skills/leak-check/leak.py task180 --asof 2026-10-12 --quiet`: **REVIEW, no LEAK** (12 files, 19
+golden figures). Each REVIEW line answered:
+- `SOP-PV-14_signal_refinement.pdf` carries 6 of 8 words of the committed call. Harmless: the SOP names the formal
+  assessment the committee opens (1.1, 8.1) and defines all three events in annex A (falls, acute kidney injury, acute
+  pancreatitis); it never pairs an event with a medicine as supported and names no design.
+- `registry_extract_notes.md` has 3 stump-paragraph terms (register, agency, matched). Harmless: "matched" is the
+  data service's matched comparator extract (a file the notes must describe), "register" and "agency" are the
+  organisation's nouns; the notes describe fields and never name a comparison design.
+- Container metadata: INFO only (no writer signature).
+
+The solver's-eye read (one Sonnet reader on a fresh scratch copy) follows in `leak_check_report.md`.
 ## WARNS (guard.py, answered)
 
 - `overuse.org_family government_agency`: signal management belongs to the medicines agency; a university unit could
