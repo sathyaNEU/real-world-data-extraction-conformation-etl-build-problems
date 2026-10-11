@@ -52,8 +52,10 @@ specimen-to-notification delay from the completed history in the file and nowcas
 
 **Similarity claim.** No prior build turns on right-truncated counts read across reporting routes of different speed.
 task229 (a release-health alert on interval meter reads) has days the MDM held nothing for until its estimation run,
-but there the decisive step is the unit the standard error is built over; task180's decisive step is a gas source
-attribution. Differentiation lines are written at stage 5.
+but there the decisive step is the unit the standard error is built over. task180 was re-rooted on 11 October to
+architecture 3 (which of three spontaneous-report drug signals the national registries support, decided by a
+within-patient comparison under channelling): another health signal one draw back, but its decisive step is a
+comparison design against confounding, not a count read before its records have arrived.
 
 ## THREE RULES (client, 2026-10-10)
 
@@ -252,7 +254,7 @@ route, so the judge is pointed at this sentence.
 |---|---|---|---|
 | `pertussis_notifications_2019-2026.csv` | csv | 1,118 | the line-list extract (spine) |
 | `pertussis_line_list_notes.md` | md | | field notes |
-| `pertussis_extract_run_20261005.txt` | txt | | the state system's run report (checksum and row count of the extract) |
+| `SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt` | txt | | the state system's run report (checksum and row count of the extract) |
 | `PR-07_pertussis_response_protocol.pdf` | pdf | | governing protocol |
 | `postcode_lga_concordance.xlsx` | xlsx | | postcode lookup with ratios; area populations on a second sheet |
 | `respiratory_admissions_2019-2026.csv` | csv | 29,036 | PAS respiratory admissions (ask A) |
@@ -295,7 +297,7 @@ builds byte-identical over `target/`, `golden/` and `metadata.json` (sha256).
   hospital laboratory's 14-day share, which the bulletin never states. Harmless.
 - `PR-07_pertussis_response_protocol.pdf` carries 4 of 5 words of the committed call: response team, Griffith (only in
   the list of the ten areas), this week; the protocol names no area as the deployment. Harmless.
-- Design-note vocabulary in PR-07 (12 terms), the bulletin (6), the run report (4) and the notes (7): their own subject
+- Design-note vocabulary in PR-07 (12 terms), the bulletin (6), the run report (the scheduler job log, 4) and the notes (7): their own subject
   matter (specimens, expected, excess, notified, episode, public health, population); none mentions the time a notification takes,
   completeness, pooling or estimating unreported cases (asserted). Harmless.
 - Ranking artifacts: PR-07 lists the ten areas without figures; the bulletin counts notifications received to 30 August
@@ -313,8 +315,27 @@ adjustment": rung 1, found from the data, with no sentence in the pack naming th
 workbook's sheets ran the five schools that are clusters on 5 October first and the four near-misses last, an order no
 one could have known when the file was saved on 1 October (ask B). Fixed in the generator: the sheets now run in the
 order the rosters were received, and Twynam Street's roster, dated before its only case was notified, is now received
-on 29 September. Rebuilt: checks 423, verifier OK, byte-identical, leak.py REVIEW (the same twelve lines). Pass 2 on the
-rebuilt pack is the confirming read.
+on 29 September. Rebuilt: checks 423, verifier OK, byte-identical, leak.py REVIEW (the same twelve lines).
+
+**Solver's-eye read, pass 2 (rebuilt pack).** Clean: question 1 again PR-07 4.2 as the measure the prompt cites,
+questions 2 to 4 none, every REVIEW line harmless, the rosters now in arrival order with the clusters at sheets 4, 5, 6, 8
+and 9. Its plan again files Wagga Wagga at rung 1 with the caveat that "PR-07 4.1 fixes the count to the 07:00 extract":
+two independent readers took the literal operational reading, which is the stump and the Gate C question PINS answers
+(4.2's quantity is the cases collected, set against 4.3's complete years; the client's own pin for this pattern is a
+question about the latest weeks on data whose report dates make the delay estimable).
+
+## DUPLICATE CHECK (stage 5)
+
+- **Adjudicated pre-flight (clone-auditor, pass 1 on architecture 2, `clone_check_report.md`): CLEAN.** No Exact, Same
+  seed, Dataset or Template finding, no Shape echo; the screen promoted no pair of 124 (nearest task93, 0.100, layout and
+  formats only). Readings of the nearest cards (task91, task31, task99, task59, task229, task122, task180 v3): each turns
+  on something else. Batch-level note, not this build's: the certified-record decoy in 7 of the 12 builds before it;
+  task181 adds to none of the capped counts.
+- **Idiom, acted on.** The run report was named on the corpus's `extract` stem (`pertussis_extract_run_20261005.txt`,
+  as seven of the twelve builds before it name their provenance file); it is now the scheduler's own job log name,
+  `SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt`. No content or figure moved; rebuilt (checks 423, verifier OK,
+  byte-identical), leak.py REVIEW with the file-name sweep clean. The two reader passes read the same content under the
+  old name; no third pass for a rename.
 
 ## SURFACE (guard.py surface task181)
 

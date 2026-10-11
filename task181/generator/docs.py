@@ -21,7 +21,7 @@ import world as W
 
 PROTOCOL = "PR-07_pertussis_response_protocol.pdf"
 NOTES = "pertussis_line_list_notes.md"
-RUN_REPORT = "pertussis_extract_run_20261005.txt"
+RUN_REPORT = "SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt"
 BULLETIN = "cd_weekly_report_2026_wk35.pdf"
 
 INK = colors.HexColor("#1d2733")

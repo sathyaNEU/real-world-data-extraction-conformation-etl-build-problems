@@ -48,6 +48,15 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
+      "path": "SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt",
+      "format": "txt",
+      "bytes": 1198,
+      "rows": null,
+      "source": "Constructed: State system run report for the 07:00 extract of 5 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "antenatal_vaccinations_2019-2026.parquet",
       "format": "parquet",
       "bytes": 822042,
@@ -80,15 +89,6 @@
       "bytes": 240928,
       "rows": 1476,
       "source": "Constructed: State notifiable conditions system: the unit's influenza notifications received in 2026",
-      "date": "2026-10-05",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pertussis_extract_run_20261005.txt",
-      "format": "txt",
-      "bytes": 1198,
-      "rows": null,
-      "source": "Constructed: State system run report for the 07:00 extract of 5 October 2026",
       "date": "2026-10-05",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },

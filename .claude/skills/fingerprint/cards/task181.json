@@ -35,7 +35,7 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "pertussis_notifications_2019-2026.csv",
-    "rows": 0,
+    "rows": 1118,
     "entity": "one notification of a pertussis case to the public health unit",
     "grain": "notification (a case can be notified more than once)",
     "source": "synthetic"
@@ -67,10 +67,10 @@
   ],
   "opening_move": "evidence-first",
   "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units.",
-  "driver_concrete": "Each local government area's pertussis onsets in the last 14 days are compared with its expected count under the unit's response protocol; Griffith's specimens go by courier to a Sydney laboratory, so only about a quarter of its cases are notified within 14 days of onset, and the onsets notified so far understate its surge several times over, while Wagga Wagga's fast hospital laboratory makes its modest seasonal rise look like the largest excess.",
-  "stump": "A competent solver counts the notified pertussis onsets in the last 14 days for each local government area against the protocol's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled reporting delay and still lands there); the step that lands it there is reading the onsets notified so far as the onsets, when Griffith's cases reach the unit through a slow private laboratory route and, at Griffith's own onset-to-notification delay, its recent onsets are several times what has arrived.",
+  "driver_concrete": "Each local government area's pertussis cases with specimens collected in the 14 days before the extract are compared with its expected count under the unit's response protocol; Griffith's swabs go by courier to a Sydney laboratory that notifies a median of 12 days after collection (8 per cent within 7 days, 76 per cent within 14), so the specimens notified so far understate its fortnight several times over, while Wagga Wagga's hospital laboratory notifies within a couple of days and its modest rise looks like the largest excess.",
+  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days before the extract in each local government area against the protocol's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled reporting delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs reach the unit through a slow private laboratory route and, at that route's own specimen-to-notification delay, its fortnight is several times what has arrived.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who removes the duplicate laboratory notifications, imputes missing onsets as the protocol says, maps every case to its area and computes the protocol's expected counts exactly still compares the onsets notified so far (or a nowcast built on one pooled delay) with the expected counts and sends the team to Wagga Wagga, because only a nowcast on each area's own onset-to-notification delay shows Griffith's fortnight running several times above its expected count.",
+  "analyst_test": "A strong analyst who removes the duplicate laboratory notifications, applies the episode rule and the case definition, maps every case to its area and computes the protocol's expected counts exactly still compares the cases notified so far for the fortnight (or a nowcast built on one pooled delay) with the expected counts and sends the team to Wagga Wagga, because only a nowcast on each laboratory route's own specimen-to-notification delay shows Griffith's fortnight running several times above its expected count.",
   "domain_test": "What decides the call is an epidemiological nowcast, the eventual count of recent onsets estimated from each reporting route's own delay distribution, which is how outbreak surveillance reads right-truncated case data; with another field's nouns in there is no onset-to-notification delay, no laboratory route and no truncated epidemic curve, so the task does not read the same.",
   "mechanism_source": "design_note",
   "differentiation": {},
