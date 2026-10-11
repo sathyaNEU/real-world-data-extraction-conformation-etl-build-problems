@@ -2,20 +2,21 @@
  "task": "task181",
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build (architecture 2: pertussis nowcast by laboratory route)",
+ "stage": 4,
+ "stage_name": "leak check (architecture 2: pertussis nowcast by laboratory route)",
  "updated": "2026-10-11",
- "stump": "A competent solver counts the notified pertussis onsets in the last 14 days for each local government area against the protocol's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled reporting delay and still lands there); the step that lands it there is reading the onsets notified so far as the onsets, when Griffith's cases reach the unit through a slow private laboratory route and, at Griffith's own onset-to-notification delay, its recent onsets are several times what has arrived.",
+ "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW: 12 lines, each answered in the design note (LEAK CHECK); no LEAK. The first run was LEAK once (the protocol's file name ending _v3.1), fixed in the generator",
   "reader": ""
  },
  "duplicate_check": {
   "heart": "",
   "nearest": "",
-  "clone_check": ""
+  "clone_check": "",
+  "surface": "guard.py surface: 0 promoted pairs of 124 in scope; nearest task93 surface 0.100; personas in the cut pack all on the card"
  },
  "three_rules": {
   "domain": "pass (epidemiological nowcast of right-truncated surveillance counts; the swap breaks it)",
@@ -42,5 +43,13 @@
  },
  "approved": null,
  "delivered": null,
- "portal": null
+ "portal": null,
+ "build": {
+  "answer": "Griffith",
+  "checks": "423 assertions passed",
+  "verify": "OK",
+  "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json",
+  "grid": "54 cells, 0 misses (36 route-specific Griffith, min margin 2.70; 18 pooled Wagga Wagga, min 1.25)",
+  "rungs": "R0 to R3 Wagga Wagga, margins 1.29 to 1.71; R4 Griffith 3.18"
+ }
 }
