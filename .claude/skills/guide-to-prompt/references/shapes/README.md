@@ -1,120 +1,160 @@
-# Prompt shapes, the picker
+# Prompt shapes
 
-**A prompt shape is named for where its many rubric criteria come from.** A task ships one to
-three deliverables with uncapped but multi-dimensional asks, which is a small, honest prompt, so
-the generated rubric's 25-criteria floor cannot be reached by stacking asks. It has to come from the **structure of the answer**. A ranked list under a cap
-grades every candidate's score. A forecast across many periods grades every period. A grid grades
-every cell. Pick the shape whose structure your data and your decision already have, and the
-criteria fall out of it.
+A shape is named for where the rubric's 25 or more criteria come from: the **structure of the answer**, never a
+stack of asks. Pick the shape the data and the decision already have, size it on paper, write the arithmetic into the
+design note. The eighteen are patterns seen to carry a rich rubric, not a menu: a structure outside them is legal
+(card `shape: other`) with its arithmetic written out. `fingerprint/vocab.json` keys the shapes `01` to `18`, and
+`guard.py` (`SHAPE_OBJECTIVE`, `SHAPE_DECISIONS`) mirrors the objective column below.
 
-**Read this file to choose, then load exactly one shape file.** Each shape file carries what the
-shape is, where its criteria come from, how to size it past 25, what makes it hard rather than
-merely long, and four worked prompts from the client's library.
+**The shape is not the stump.** It decides where the criteria come from; `stumping` decides why the task is hard.
+Each entry's *Hard* line is the seam between the two: worked without it the shape is wide and easy and the whole field
+answers it. A filed rule may set the test, but the decisive step must be analysis the rule leaves to the analyst,
+never applying the rule (`stumping` Part 1). Reusing a shape is legitimate; reusing a driver is a clone. The ask lines
+are the client's, idea seeds only: never copy a scenario, entity, metric, file name or wording.
 
-> **Then read [`../prompt-voice.md`](../prompt-voice.md), which is where the prompt actually gets
-> written.** The shape decides where the criteria come from. The voice file decides what the
-> request sounds like, and that is a batch-level gate: 17 of 18 consecutive prompts of ours
-> opened in first person with a role verb in clause one, 12 of them with the
-> literal words "I run", and 18 of 18 shipped a PDF. The 72 worked prompts below vary their
-> openings much more than we have, and reading four of them in one sitting is exactly when the
-> single voice gets picked up.
+## Sizing to 25
 
-**The eighteen are ideas, not a menu.** They are patterns that have been seen to carry a rich
-rubric. If your data and decision suggest a different structure that earns the criteria honestly,
-use it, and write the criteria arithmetic into the design note the way these files do. Treat the
-eighteen as inspiration and the arithmetic as the discipline.
-
----
-
-## The index
-
-| # | Shape | The criteria come from | Canonical Axis 1 objective | Files |
-|---|---|---|---|---|
-| [01](01-ranked-list-under-a-cap.md) | Ranked list under a cap | Every candidate's score, the in-or-out call, the first one below the line | Descriptive & Distribution | 2 |
-| [02](02-forecast-across-many-periods.md) | Forecast across many periods | Every period's forecast value | **Forecasting & Predictive Modeling** | 2 |
-| [03](03-bridge-between-two-totals.md) | Bridge between two totals | Each reconciling item on the walk, on both sides | Data Extraction & Conformation (ETL) | 2 |
-| [04](04-setting-one-dial.md) | Setting one dial | The outcome at every allowed setting | Descriptive & Distribution | 2 |
-| [05](05-allocation-to-a-fixed-total.md) | Allocation to a fixed total | Each bucket's amount and what it buys | Descriptive & Distribution | 2 |
-| [06](06-sequenced-schedule-under-capacity.md) | Sequenced schedule under capacity | Each item's finish period, the running total per period | Descriptive & Distribution | 2 |
-| [07](07-grid-of-cells.md) | Grid of cells | Every cell in the grid | **Experiment & Causal Analysis** | 2 |
-| [08](08-rule-replayed-on-history.md) | Rule replayed on history | Each period's four outcome cells against its ceiling | Descriptive & Distribution | 2 |
-| [09](09-funnel-or-chain-of-stages.md) | Funnel or chain of stages | Each stage's volume, rate and unit cost | Descriptive & Distribution | 2 |
-| [10](10-scorecard-against-thresholds.md) | Scorecard against thresholds | Each metric-against-threshold check per segment | Descriptive & Distribution | **1** |
-| [11](11-before-and-after-with-a-control.md) | Before and after with a control | Each unit's two effects and its pre-period check | **Experiment & Causal Analysis** | 2 |
-| [12](12-drill-down-to-one-leaf.md) | Drill-down to one leaf | The piece of the movement at each drill level | **Root-Cause Analysis** | 2 |
-| [13](13-scenarios-and-the-flip-point.md) | Scenarios and the flip point | Each scenario cell, the earliest failure, the flip point | **Forecasting & Predictive Modeling** | 2 |
-| [14](14-cuts-of-a-distribution.md) | Cuts of a distribution | Each percentile cut in each segment | Descriptive & Distribution | 2 |
-| [15](15-fields-conformed-to-one-schema.md) | Fields conformed to one schema | Each target field, on its source and its transformation | Data Extraction & Conformation (ETL) | 2 |
-| [16](16-indicators-into-one-score.md) | Indicators into one score | Each indicator as it enters the index | Descriptive & Distribution | 2 |
-| [17](17-periods-around-a-change-point.md) | Periods around a change point | Each observed period around the change | **Anomaly Detection & Diagnostics** | **1** |
-| [18](18-hypotheses-versus-evidence.md) | Hypotheses versus evidence | Each cause-against-evidence cell | **Root-Cause Analysis** | 2 |
-
-## About that objective column
-
-**The shape does not fix the tag.** The objective comes from what the analyst has to
-*produce*, decided in step 2 of the skill, and reading it off this table instead is how a build
-gets mistagged. The column says which of our **eight** canonical labels the shape most naturally
-carries, and several shapes carry two depending on how the decision is cut, which each shape file
-spells out. No shape defaults to Opportunity Sizing & Decision Support or to Data Quality
-Monitoring & Alerting, so for those two the tag comes from the objective's discriminating test in
-`../SKILL.md` Step 2, never from this column.
-
-The client's own page tags many of these examples "Opportunity Sizing & Decision
-Support", which is one of our eight objectives
-(`../objectives/opportunity-sizing-decision-support.md`), and two "Comparative analysis and
-explanation", which **is not a valid Axis 1 label here**: a task tagged outside the eight is
-rejected on the tag alone. The page labels are not carried on the imported examples, so the shape
-files do not mark which ones the client tagged Opportunity Sizing.
-
-**Two drifts to watch when you pick.**
-
-1. **Nine of the eighteen default to Descriptive & Distribution Analysis**, so a batch that picks
-   shapes without checking the tag drifts there and the clone check reads a repeated driver.
-   Before drawing, run `python3 .claude/skills/fingerprint/guard.py recent` and check what the
-   last few builds were tagged.
-2. **Forecasting & Predictive Modeling is the most wanted objective and the
-   tiebreak.** Shapes 02 and 13 carry it natively, and 04 and 06 carry it whenever the bar has to
-   be cleared over a window that has not closed or the banked total rests on a rate the history
-   pins down. Prefer those when two pairings are otherwise equal.
-
-## The criteria arithmetic, at a glance
-
-Size the shape on paper before you draw a single file. Every shape file carries its own version
-of this, and the pattern is always the same: **one repeated structural unit, times the number of
-times it repeats, plus the decision furniture.**
-
-| Structural unit | Times | Gives |
+| Unit | Times | Gives |
 |---|---|---|
-| Candidate, period, bucket, item, stage, cell, field, indicator, tract | 10 to 20 | 10 to 20 |
-| A second figure on the same unit (its rank, its gate verdict, its scaling range, its cost) | same | doubles it |
-| The committed call, the runner-up, the gap, the flip threshold | once each | 3 to 4 |
-| The chart with its parts named (series, ordering, labelled threshold line at its value, annotation, title stating the finding) | once | 5 to 7 |
-| The deliverables themselves, present and named | 1 to 3 | 1 to 3 |
+| The repeated unit (candidate, period, bucket, item, stage, cell, field, indicator, segment) | 10 to 20 | 10 to 20 |
+| A second figure on the same unit (rank, verdict, range, cost) | same | doubles it |
+| The call, the runner-up, the gap, the flip threshold | once each | 3 to 4 |
+| A chart with its parts named (series, ordering, threshold line at its value, annotation, title stating the finding) | once | 5 to 7 |
+| The deliverables, present and named | 1 to 3 | 1 to 3 |
 
-If the arithmetic lands under 25 the fix is a **denser structure**, more units or a second figure
-on each unit, never more asks bolted on the side. If it lands well over 25 that is fine, there is
-no ceiling.
+Under 25 means a denser structure (more units, or a second figure per unit), never more asks. No ceiling.
 
-## Two things the shape does not give you
+**Drift.** Nine shapes default to Descriptive & Distribution, so check `guard.py recent` before drawing. Forecasting
+is the most wanted objective and the tiebreak: 02 and 13 carry it natively, 04 and 06 whenever the bar is cleared over
+an open window or the total rests on a rate the history pins. No shape defaults to Opportunity Sizing or Data Quality
+Monitoring; those tags come from the objective's own test.
 
-**A shape is not a mechanism, and it is not a stump.** The shape decides where the criteria come
-from. `../../../stumping/SKILL.md` decides why the task is hard, and the bar requires at least
-one model genuinely stumped. Every shape file has a "what makes it hard rather
-than long" section, and that section is the seam where the shape meets the ladder: a shape worked
-without it is a wide, easy task that the whole field answers, which fails the average bar from the
-other direction.
+## The eighteen
 
-**Reusing a shape is legitimate; reusing the driver is a clone.** Two builds can both be a ranked
-list under a cap. They cannot both turn on the same insight, the same decisive rung or the same
-calibration form. `../../clone-check/SKILL.md` carries the discrimination, and the pre-flight is
-run while the draw is fixed and the data is not yet cut.
+| # | Shape | Criteria from | Objective | Files |
+|---|---|---|---|---|
+| 01 | Ranked list under a cap | each candidate's score, in or out, the first below the line | DD (F if the score is predicted) | 2 |
+| 02 | Forecast across many periods | each period's forecast | **F** | 2 |
+| 03 | Bridge between two totals | each reconciling item, both sides | ETL (DD for a growth walk) | 2 |
+| 04 | Setting one dial | the outcome at every allowed setting | DD (F over an open window) | 2 |
+| 05 | Allocation to a fixed total | each bucket's amount and what it buys | DD | 2 |
+| 06 | Sequenced schedule under capacity | each item's finish period, running total | DD (F on a pinned run rate) | 2 |
+| 07 | Grid of cells | every cell | **EC** (DD for observed rates) | 2 |
+| 08 | Rule replayed on history | each period's four outcome cells | DD (AD for breaches) | 2 |
+| 09 | Funnel or chain of stages | each stage's volume, rate, unit cost | DD (RC for a fall) | 2 |
+| 10 | Scorecard against thresholds | each metric-threshold check per segment | DD | **1** |
+| 11 | Before and after with a control | each unit's effects and pre-period check | **EC** | 2 |
+| 12 | Drill-down to one leaf | the movement's piece at each level | **RC** | 2 |
+| 13 | Scenarios and the flip point | each scenario cell, earliest failure, flip | **F** | 2 |
+| 14 | Cuts of a distribution | each percentile cut in each segment | DD | 2 |
+| 15 | Fields conformed to one schema | each target field: source and transform | ETL | 2 |
+| 16 | Indicators into one score | each indicator as it enters | DD | 2 |
+| 17 | Periods around a change point | each period around the change | **AD** | **1** |
+| 18 | Hypotheses versus evidence | each cause-by-evidence cell | **RC** | 2 |
 
-## The rule that governs every prompt in these files
+**01 Ranked list under a cap.** Rank every candidate on one score, fill from the top until the cap runs out.
+*To 25:* 10 to 12 candidates, score plus verdict each; the first below the line (identity, score, shortfall), trimmed
+awards, the screened-out set, the cutline on the chart. A short list with a cap that bites beats twenty rows.
+*Hard:* the score is built, not read; screen and cap in different files; the cap runs out mid-list.
+*Ask:* "every eligible applicant in score order with its score, its request, its award, and whether it was funded".
 
-**Never copy any example into a build. Not the scenario, not the entity, not the metric, not the
-file names, not the wording of a single ask.** They exist to show what a task in a shape can be
-about and how a finished prompt reads. Read a few, then draw a fresh domain, subdomain, entity,
-metric and decision through the anti-clone draw in `../../../stumping/SKILL.md` Part 6. A build
-that lifts any scenario, wording or file name is a clone and the review reads it as one.
+**02 Forecast across many periods.** Forecast each period, commit one level for the series.
+*To 25:* 12 periods, the level, the period that sets it, the break-even count, the committed, spot and all-spot
+costs, the chart with the level drawn across. *Hard:* the commit rule is built (a break-even from prices in the pack),
+and peak versus mean moves every downstream figure at once.
+*Ask:* "the forecast peak node demand for each month of 2027 next to the nodes left on demand under the commit".
 
-What transfers is the **shape**, and only the shape.
+**03 Bridge between two totals.** Walk one total to another item by item; adopt the source or figure.
+*To 25:* two sources each bridged (5 or 6 items a side), each source's gap in three periods, raw and audited totals,
+the flagged rows, the adopted source, the largest losing item. *Hard:* both bridges must be built before a source can
+be named; the reconciling items are discoverable in the pack, never listed.
+*Ask:* "the August bridge for each source, raw count down through one line per reconciling item to the ledger".
+
+**04 Setting one dial.** Test every allowed setting, take the lowest that clears a fixed bar.
+*To 25:* 11 settings at their worst period, the setting and the one below, periods short per setting, cost at
+several settings, headroom, the worst-period chart with today's setting marked. *Hard:* the bar is a worst case, not
+an average; a second axis (cost to hold) stops "set it to maximum".
+*Ask:* "each allowed cover level with its lowest monthly fill rate and how many months it ran short".
+
+**05 Allocation to a fixed total.** Spread a fixed total under one rule; solve the rate that makes it land.
+*To 25:* 11 buckets with dollars and units bought at local price, the rate, the weighted base, eligible set, floor,
+cap, chart. *Hard:* floor and cap make it non-linear, so the residual is redistributed and the rate re-struck; one
+pass gets every bucket slightly wrong.
+*Ask:* "each eligible district's grant in dollars beside the students it serves at its contract price".
+
+**06 Sequenced schedule under capacity.** Order items under capacity, blackouts and one dependency.
+*To 25:* 12 finish periods, cumulative value at each period end, the run order, a Gantt with its parts named.
+*Hard:* greedy by value is visibly wrong: blackouts punish the obvious order, the dependency inverts a pair, one high
+rate item runs long, and the horizon binds.
+*Ask:* "one row per site in run order with its start week and go-live week, and what is banked at each quarter end".
+
+**07 Grid of cells.** Rows against columns, one measured value per cell; pick per row or one column.
+*To 25:* 5 by 3 is 15, 6 by 4 is 24; one column priced per row, the assignment vector, the population reached, a
+heatmap with picks marked. *Hard:* a two-gate rule (effect floor and cost cap) makes one cell binding; a grid where
+the largest number wins is a max() and everyone gets it.
+*Ask:* "the activation rate for each segment under each flow with the flow each segment ends up on".
+
+**08 Rule replayed on history.** Replay a decided rule on labelled history; state what it frees.
+*To 25:* 4 periods by 4 outcome cells, each period's ceiling, the periods it runs, the freed quantity, the per-case
+saving. *Hard:* the four cells are distinct populations; a period that breaches suspends the rule, so the total is a
+sum over a subset; the netting (time saved less rework) is where most lose the figure.
+*Ask:* "for each quarter the families fast-tracked, the ones wrongly approved, the eligible ones still sent to full review".
+
+**09 Funnel or chain of stages.** Ordered stages with volume, pass-through and unit cost; where does a budget buy most
+finished output. *To 25:* six volumes, lost pool, hours per item and added terminal output at each stage, the pick,
+the funnel drawing. *Hard:* the biggest lost pool is wrong because downstream pass-through discounts early recoveries,
+and hours per item differ by stage.
+*Ask:* "each stage's base-year intake, what we lost because nobody got to it, and the hours per item".
+
+**10 Scorecard against thresholds.** Each metric by its own definition per segment, against its threshold; one
+go or no-go. *To 25:* 5 metrics by 4 segments, the population per segment, the call, checks missed (value and verdict
+are one criterion). *Hard:* different denominators and windows per metric, a compound pass test, three binding checks.
+*Ask:* "each metric for each lane group over the review period beside its threshold and marked pass or fail".
+
+**11 Before and after with a control.** Each treated unit's change against matched comparisons, after a pre-period
+check; keep, extend or revert. *To 25:* 6 units by 3 figures (two effects, pre-period gap), pooled figures, comparison
+changes, population, call, chart against two tolerances. *Hard:* the owner's weighting (a simple mean is wrong), the
+pre-period check as a gate, a three-way call on tolerances.
+*Ask:* "each pilot county's employment and hours effects with the pooled row, and each county's pre-period gap".
+
+**12 Drill-down to one leaf.** Break one movement level by level, mix separated from rate, to one leaf and its owner.
+*To 25:* every graded branch at every level, the chosen branch per level, the leaf, the headline, the level-one mix
+term, the tree with the path highlighted. *Hard:* mix versus rate; ranking leaves globally lands elsewhere, and
+skipping the mix term at level one sends every level below wrong.
+*Ask:* "each region's piece of the drop and each platform and version down the path".
+
+**13 Scenarios and the flip point.** One A-or-B decision scored in every cell of a grid crossing two uncertainties.
+*To 25:* 3 by 3 cells by two figures, the flip level per schedule, the earliest failure, the path, its dollar line,
+the crossover chart. *Hard:* the flip point is solved by inversion, not read; the two axes move different mechanisms.
+*Ask:* "for every projection crossed with every permit schedule, the rooms the tighter school needs in its worst year".
+
+**14 Cuts of a distribution.** Cut one weighted distribution at several percentiles across segments; bands that hit
+committed coverage. *To 25:* 2 percentiles by 6 segments, share qualifying per segment, population per tier, the
+reference boundary per tier, the scaling factor, the base, the exhibit. *Hard:* weighted percentiles, boundaries
+solved backwards from coverage, nested through an equivalence scale.
+*Ask:* "each tier's ceiling at each household size and the households receiving each tier's credit".
+
+**15 Fields conformed to one schema.** Map many source columns into one target; adopt the matching rule as key.
+*To 25:* 10 fields by source and transform, rows dropped per system, the lineage column, the rule, the conformed
+count, the links it reunites. *Hard:* every candidate rule built in full, a two-part test that punishes over-merging.
+On an ETL build, use it only when the decisive move is the choice between rules, not the conformance.
+*Ask:* "each target field with its source column per district and the transformation applied, the rows dropped".
+
+**16 Indicators into one score.** Several indicators scaled, weighted and screened into one composite; pick the unit.
+*To 25:* 7 indicators by value and scaling range, weights, the selected and runner-up composites, the screened-out
+set, the direction pins, the population, ranked bars. *Hard:* the range is the eligible set's own, so screen before
+scaling; inverted indicators; top two close enough that one mis-scaled indicator flips them.
+*Ask:* "each indicator as it enters, the range it was scaled over, its scaled score and its composite".
+
+**17 Periods around a change point.** Periods before and after a suspected change against a computed baseline; go or
+no-go and what it unlocks. *To 25:* 4 pre periods once, 8 post periods twice (observed and baseline), the
+run-breaking period, the run start, the amount, the call. *Hard:* the baseline is constructed, not observed; a
+run-length trigger, so one dip breaks the run.
+*Ask:* "one row per week from the pre-notice weeks through the latest, the baseline, and whether it clears".
+
+**18 Hypotheses versus evidence.** Causes against evidence lines, each cell consistent or not on a figure; one cause
+acted on. *To 25:* 4 by 4 cells, the surviving cause, its share of the movement, the decisive affected-versus-
+unaffected gap, the action, the total. *Hard:* every verdict rests on a computed figure; each rival dies on a
+different line. Closest shape to surface-read rejection: every candidate cause is a real change and every reported
+figure true; the evidence settles which one carries the movement, never whether a number lies.
+*Ask:* "each candidate cause against each evidence line marked consistent or not with the figure behind it".
