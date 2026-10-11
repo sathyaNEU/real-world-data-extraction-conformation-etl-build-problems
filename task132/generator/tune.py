@@ -17,14 +17,14 @@ def edge(v):
     return abs((v * 10) % 1 - 0.5)
 
 
-def main(rounds=8, stop=0.08):
+def main(rounds=8, stop=0.09):
     import build as B
     import estimators as E
     import extracts as X
     W.TUNE = ()
     tmp = tempfile.mkdtemp()
-    _, subs, fl, prog, extra, sp, f = B.simulate()
-    B.build(tmp)
+    _, subs, fl, prog, extra, sp, f, _ = B.simulate()
+    B.build(tmp, docs=False)
     reg, wo, hist, subs2, stock, plan = E.load(tmp)
     flt = E.fleet(reg)
     p26 = plan["Approved 2026"]
@@ -93,16 +93,25 @@ def main(rounds=8, stop=0.08):
     target = E.lots_needed(lam0, avail)
     print("target lots", target, "lam", round(lam0, 3), flush=True)
 
+    def margins(lam):
+        lo, hi = lam, lam
+        while E.lots_needed(lo, avail) == target:
+            lo -= 0.05
+        while E.lots_needed(hi, avail) == target:
+            hi += 0.05
+        return (lam - lo) / lam, (hi - lam) / lam
+
     def score(Bmat, counts, ex):
         lam, by_year, by_reg = evaluate(Bmat, counts, ex)
-        if E.lots_needed(lam, avail) != target:
+        if E.lots_needed(lam, avail) != target or min(margins(lam)) < 0.03:
             return -1.0, lam
         covers = [100 * E.poisson_cdf(avail + n * W.LOT, lam) for n in W.SETTINGS]
         vals = [lam] + by_year + by_reg + [c for c in covers if 0.05 < c < 99.95]
         return min(edge(v) for v in vals), lam
 
     cand = B.candidates(sp)
-    _, key2aid, _, _ = X.register(np.random.default_rng(W.SEED + 1), subs, fl, prog, X.bay_plan(fl, prog))
+    relay_mfg = {int(k): m for k, m in zip(fl["relay_key"], fl["mfg"])}
+    _, key2aid, _, _ = X.register(np.random.default_rng(W.SEED + 1), subs, fl, prog, X.bay_plan(fl, prog), relay_mfg)
     moves = []
     for k, i in enumerate(cand):
         aid = key2aid[int(sp.at[i, "relay_key"])]
@@ -153,4 +162,4 @@ def main(rounds=8, stop=0.08):
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 8, float(sys.argv[2]) if len(sys.argv) > 2 else 0.08)
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 8, float(sys.argv[2]) if len(sys.argv) > 2 else 0.09)

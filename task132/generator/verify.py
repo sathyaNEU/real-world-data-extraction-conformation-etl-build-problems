@@ -11,8 +11,8 @@ import pandas as pd
 from scipy.stats import poisson
 
 TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-T = os.path.join(TASK, "target")
-G = os.path.join(TASK, "golden")
+T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
+G = sys.argv[2] if len(sys.argv) > 2 else os.path.join(TASK, "golden")
 EDGES = [0, 10, 15, 20, 25, 999]
 MIG, H0 = 2021 * 12, 2026 * 12 + 9
 

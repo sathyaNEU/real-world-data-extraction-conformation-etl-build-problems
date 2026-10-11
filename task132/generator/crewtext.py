@@ -38,7 +38,15 @@ class Person:
         self.sn = r.choice(SERIAL_STYLES)
         self.typo = r.choice([0.002, 0.005, 0.01, 0.02])
         self.action_first = r.random() < 0.18
-        self.words = r.choice(["PSU", "PSU", "p/s", "power supply", "PS module", "supply module"])
+        self.words = r.choice(["PSU", "PSU", "p/s", "power supply", "PS module", "supply module", "PSU card", "power supply card"])
+        self.store = r.choice(["full", "short", "short", "code"])
+        self.seed = r.randrange(1 << 30)
+
+    def vocab(self, slot, opts):
+        """the phrases this person reaches for in a slot: their own share of what the crews say"""
+        rr = random.Random("%d-%s" % (self.seed, slot))
+        mine = [o for o in opts if rr.random() < 0.45]
+        return mine or [opts[rr.randrange(len(opts))]]
 
 
 # hours a crew books for the round trip to site, and its pace on the job, are in extracts.CREW; who on a crew does the
@@ -82,6 +90,18 @@ class Writer:
         return {"F05": "F%02d" % n, "F5": "F%d" % n, "F-05": "F-%02d" % n, "fdr 5": "fdr %d" % n, "feeder 5": "feeder %d" % n,
                 "FDR05": "FDR%02d" % n}[st]
 
+    STORE_SHORT = {"Central Stores (Barrie Road)": ("Central Stores", "Barrie Rd stores", "CS"),
+                   "North Depot": ("North Depot", "north depot", "ND"), "South Depot": ("South Depot", "south depot", "SD")}
+
+    def store(self, p, store):
+        if p.store == "full" or store not in self.STORE_SHORT:
+            return store
+        s = self.STORE_SHORT[store]
+        return s[2] if p.store == "code" else s[self.r.randrange(2)]
+
+    def say(self, p, slot, opts):
+        return self.one(p.vocab(slot, opts))
+
     def clock(self):
         h = self.one(list(range(0, 24)), [2] * 6 + [1] * 2 + [3] * 10 + [2] * 6)
         return self.one(["%02d:%02d", "%02d%02d", "%02d:%02dh"]) % (h, self.r.randrange(60))
@@ -109,7 +129,13 @@ class Writer:
 
     def finish(self, parts, p, typo=None):
         """join the pieces the way this person writes"""
-        parts = [x.strip() for x in parts if x and x.strip()]
+        seen, uniq = set(), []
+        for x in parts:
+            x = x.strip() if x else ""
+            if x and x.lower() not in seen:
+                seen.add(x.lower())
+                uniq.append(x)
+        parts = uniq
         sep = p.sep if self.r.random() < 0.8 else self.one([". ", ", ", " - ", "; "])
         out = sep.join(parts)
         for a, b in ABBR:
@@ -119,7 +145,8 @@ class Writer:
         if p.case == "caps":
             out = out.upper()
         elif p.case == "lower":
-            out = re.sub(r"[A-Z]+(?![\w-]*\d)", lambda m: m.group(0).lower(), out)
+            keep = re.compile(r"PS02-\d\d-\d+|WO\d+|RMA-\d+")
+            out = "".join(seg if keep.fullmatch(seg) else seg.lower() for seg in re.split(r"(PS02-\d\d-\d+|WO\d+|RMA-\d+)", out))
         elif p.case == "clause":
             out = re.sub(r"(^|[.;,/-] )([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
         else:

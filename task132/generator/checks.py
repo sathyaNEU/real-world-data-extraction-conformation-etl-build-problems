@@ -18,15 +18,21 @@ import estimators as E
 import world as W
 
 TASK = os.path.dirname(HERE)
-T = os.path.join(TASK, "target")
+T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
 n_ok = 0
 LOTS = 13
+
+
+FAILS = [] if os.environ.get("CHECKS_ALL") else None
 
 
 def ok(cond, msg):
     global n_ok
     if not cond:
-        raise AssertionError(msg)
+        if FAILS is None:
+            raise AssertionError(msg)
+        FAILS.append(msg)
+        return
     n_ok += 1
 
 
@@ -91,6 +97,12 @@ def main():
     ok(len(f) == s["n_fail"] and f["fitted"].notna().all(), "every failure ties to the module it removed")
     ok((hist0["removal_reason"] == "FAILED").sum() >= len(f), "the history records a removal for every failure")
     realism(reg0, wo0, hist0, subs0, plan0, f)
+    repair3(reg0, wo0, hist0, subs0, plan0, f, s)
+    if FAILS:
+        print("CHECKS FAIL", len(FAILS))
+        for m in FAILS:
+            print("  FAIL", m)
+        sys.exit(1)
     print("CHECKS PASS", n_ok)
 
 
@@ -182,8 +194,11 @@ def realism(reg, wo, hist, subs, plan, f):
     ok(min(gap) >= 0 and max(gap) <= 3 and sum(g >= 2 for g in gap) >= 20,
        "serial year 0 to 3 years before installation (%d at 2 or 3)" % sum(g >= 2 for g in gap))
     trips = pd.read_csv(os.path.join(T, "feeder_relay_operations_2025.csv"))
-    brk = int((trips["trip_operations"] != trips["reclose_attempts"] + trips["lockouts"]).sum())
-    ok(50 <= brk <= 0.25 * len(trips), "%d feeders log trips outside the reclosing identity" % brk)
+    ok((trips["trip_operations"] == trips["protection_trips"] + trips["supervisory_trips"]).all()
+       and (trips["protection_trips"] == trips["reclose_attempts"] + trips["lockouts"]).all()
+       and (trips["successful_recloses"] <= trips["reclose_attempts"]).all()
+       and (trips[trips["reclosing"] == "OFF"]["reclose_attempts"] == 0).all(), "the operations export closes on every feeder")
+    ok((trips["supervisory_trips"] > 0).sum() >= 30, "%d feeders with supervisory trips" % (trips["supervisory_trips"] > 0).sum())
     # program: spare bays and VPR-220 feeders inside scheme bay lists, a 2025 plan that differs, every live VPR-340 bay
     # in exactly one approved row
     p26, p25 = plan["Approved 2026"], plan["2025 plan (superseded)"]
@@ -207,9 +222,10 @@ def realism(reg, wo, hist, subs, plan, f):
     both = set(sc26) & set(sc25)
     ok(0.2 <= sum(sc26[k] != sc25[k] for k in both) / len(both) <= 0.8, "scope text differs between versions in places")
     notes = " ".join(str(r[0]) for r in wbp["Notes"].iter_rows(values_only=True))
-    ok("Each stage replaces the bays it lists" in notes and
-       "out of service from the first day of the commissioning month" in notes, "the program notes pin staging and the outage day")
-    ok("keep their existing protection" not in notes, "no note written to an analyst")
+    ok("Each stage replaces the bays it lists" in notes and "booked from the 1st of its commissioning month" in notes
+       and "out of service from that day" in notes, "the program notes pin staging and the outage day")
+    ok("first day of the commissioning month" not in notes and "keep their existing protection" not in notes
+       and "including spare bays" not in notes, "the notes read as program management notes")
     # maintenance distractor derived from the PM work orders, with formulas
     import distract as Q
     wo_d = wo.copy()
@@ -219,8 +235,15 @@ def realism(reg, wo, hist, subs, plan, f):
     wc = openpyxl.load_workbook(os.path.join(T, "pc_relay_maintenance_compliance_2025.xlsx"))
     ws = wc.active
     body = [r for r in ws.iter_rows(min_row=4, values_only=True) if r[0] and r[0] != "All models"]
-    ok(len(body) == len(cnt) and all(list(cnt[(r[0], r[1])]) == list(r[2:6]) for r in body),
-       "compliance counts recompute from the 2025 PM work orders")
+    ok(len(body) == len(cnt), "one compliance row per model and region tested in 2025")
+    adj, fixed = {k: dl for k, dl, _ in Q.ADJUSTED}, 0
+    for r in body:
+        c = list(cnt[(r[0], r[1])])
+        if r[7]:
+            c = [a + b for a, b in zip(c, adj[(r[0], r[1])])]
+            fixed += 1
+        ok(c == list(r[2:6]), "compliance %s %s recomputes from the PM work orders with its noted correction" % (r[0], r[1]))
+    ok(fixed == 2, "two corrections made by hand, each noted against its row")
     ok(all(str(c.value).startswith("=") for c in ws["G"][3:]), "on-time per cent is a formula")
     pm = wo[(wo["work_type"] == "PM") & (wo["status"] != "CANC") & wo["description"].str.contains("relay test|RELAY MAINT", case=False)]
     kind = dict(zip(subs["sub_code"], subs["station_type"]))
@@ -256,14 +279,17 @@ def realism(reg, wo, hist, subs, plan, f):
         txt = _text(os.path.join(T, fn))
         ok(not re.search(r"programme|organis|reorganis|minimis|prioritis|analys(e|ing)\b", txt, re.I), "Canadian spelling in %s" % fn)
     eol = _text(os.path.join(T, "veldtek_vpr340_eol_notice.pdf"))
-    ok("August 20, 2026" in eol and "electrolytic capacitors and fan" in eol.replace("\n", " "), "the notice's date and repair terms")
+    ok("August 20, 2026" in eol and "electrolytic capacitors and any failed input fuse" in " ".join(eol.split())
+       and not re.search(r"\bfans?\b", eol, re.I), "the notice's date and a relay PSU's repair terms")
+    ok(not any(re.search(r"\bfans?\b", str(r[8]), re.I) for r in rows), "no fan in a PSU repair note")
     proc = _text(os.path.join(T, "AM-PC-014_obsolete_spares_final_buy.docx"))
     ok("by year" not in proc and "Monthly failure rate" in proc and "Module age" in proc, "8.3 files, section 3 defines")
     ok(not re.search(r"ageing|aging|renewed|starts again|replacement module", proc, re.I), "no sentence on ageing or renewal")
     dic = _text(os.path.join(T, "eam_extract_dictionary.txt"))
     for col in ["item_code", "item_no", "item_description", "location", "bin", "stock_state", "uom", "quantity", "unit_cost_cad",
-                "1 July", "KALLISON"]:
+                "1 July", "KALLISON", "removed_to", "disposal_ref", "CR-2024-031"]:
         ok(col in dic, "dictionary documents %s" % col)
+    ok("\nGeneral\n" not in dic.replace("\r", ""), "the dictionary carries the reporting service's notes, not a caveat list")
     # containers: each workbook saved by its own Excel, Word's ids irregular, the PDF stamped to the second
     geo = set()
     for fn in ("protection_renewal_program_2026.xlsx", "veldtek_rma_log_vpr340_psu.xlsx", "pc_relay_maintenance_compliance_2025.xlsx"):
@@ -275,8 +301,155 @@ def realism(reg, wo, hist, subs, plan, f):
     ok("77777777" not in tids and len(set(tids)) == len(tids), "text ids are Word's own")
     runs = [len(list(g)) for _, g in __import__("itertools").groupby(re.findall(r'<w:p [^>]*w:rsidR="([0-9A-F]+)"', x))]
     ok(len(set(runs)) >= 5, "revision sessions run in blocks of %d different lengths" % len(set(runs)))
-    info = PdfReader(os.path.join(T, "veldtek_vpr340_eol_notice.pdf")).metadata
+    info = PdfReader(os.path.join(T, "veldtek_vpr340_eol_notice.pdf"), strict=True).metadata
     ok(not info["/CreationDate"][14:16] == "00", "PDF creation stamped to the second")
+    raw = open(os.path.join(T, "veldtek_vpr340_eol_notice.pdf"), "rb").read()
+    ok(info["/Producer"].startswith("LibreOffice") and info["/Creator"] == "Writer" and b"Microsoft" not in raw
+       and b"/DocChecksum" in raw, "the notice is LibreOffice Writer's own export")
+
+
+def repair3(reg, wo, hist, subs, plan, f, s):
+    """the third repair's texture, and the claims that it moves no graded figure"""
+    import shutil
+    import tempfile
+    d = lambda x: dt.date.fromisoformat(x) if x else None
+    # P1, P2: one period for failures and exposure; the last month of the program period counted
+    proc = " ".join(_text(os.path.join(T, "AM-PC-014_obsolete_spares_final_buy.docx")).split())
+    ok("Failures and module-years are both counted over the period the work-order history covers" in proc,
+       "5.3 counts failures and module-years over one period")
+    ok("counted for every month up to and including the last month of the period" in proc and "December 2035" not in proc,
+       "4.2 counts the last month of the program period")
+    ok("IA-25-09" in proc and "First issue" in proc and proc.count("Prepared") == 1 and "Revision history" in proc,
+       "AM-PC-014 carries its revision history and approval")
+    # R1: young modules fail, at a rate an electronic power supply shows, and repaired modules fail early now and then
+    ok(s["counts"][0] >= 8 and 0.003 <= s["rates"][0] <= 0.010,
+       "0-9 band: %d failures, %.4f per module-year" % (s["counts"][0], s["rates"][0]))
+    ok(int((f["age"] < 6).sum()) >= 3, "%d failures of modules under six years old" % int((f["age"] < 6).sum()))
+    rows = list(openpyxl.load_workbook(os.path.join(T, "veldtek_rma_log_vpr340_psu.xlsx")).active.iter_rows(min_row=2, values_only=True))
+    back = {}
+    for r in rows:
+        if r[7] is not None:
+            back.setdefault(r[2], []).append(r[7].date())
+    early = [(sn, fit, rem) for sn, fit, rem, why in zip(hist["serial_no"], hist["fitted"], hist["removed"], hist["removal_reason"])
+             if why == "FAILED" and any(b < fit for b in back.get(sn, [])) and (rem - fit).days < 200]
+    warranty = [r for r in rows if r[8] and str(r[8]).startswith("Warranty")]
+    ok(len(early) >= 2 and len(warranty) >= 1
+       and all(any(q[2] == w[2] and q[7] is not None and q[7] < w[5] for q in rows) for w in warranty),
+       "%d repaired modules failed within months of refit, %d back at Veldtek under warranty" % (len(early), len(warranty)))
+    # R2: modules left in relays retired by a rebuild went for scrap with them, under the e-waste manifest in the LOG
+    # work order for that rebuild; none comes back, and the stock is untouched
+    scrap = hist[hist["removal_reason"] == "ASSET RETIRED"]
+    ok(len(scrap) >= 20 and (scrap["removed_to"] == "SCRAP").all() and (scrap["disposal_ref"] != "").all(),
+       "%d modules scrapped with their retired relays, each with a manifest" % len(scrap))
+    a2s = dict(zip(reg["asset_id"], reg["sub_code"]))
+    for man, g in scrap.groupby("disposal_ref"):
+        lw = wo[(wo["work_type"] == "LOG") & wo["description"].str.contains(man, regex=False)]
+        n = re.search(r"(\d+) VPR-340", lw["description"].iloc[0], re.I) if len(lw) == 1 else None
+        ok(len(lw) == 1 and lw["sub_code"].iloc[0] == a2s[g["asset_id"].iloc[0]] and n is not None and int(n.group(1)) == len(g),
+           "manifest %s: one LOG work order at the station listing its %d relays" % (man, len(g)))
+        later = hist[hist["serial_no"].isin(set(g["serial_no"])) & (hist["fitted"] > g["removed"].max())]
+        ok(len(later) == 0 and not any(r[2] in set(g["serial_no"]) and r[5].date() > g["removed"].min() for r in rows),
+           "no module scrapped under %s is seen again" % man)
+    fail = hist[hist["removal_reason"] == "FAILED"]
+    cur = dict(zip(subs["sub_code"], subs["region"]))
+    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
+    store = {"North": "NORTH DEPOT", "Central": "CENTRAL STORES", "South": "SOUTH DEPOT"}
+    lstore = {"Lakeshore": "NORTH DEPOT", "Ridge": "CENTRAL STORES", "Valley": "CENTRAL STORES", "Harbour": "SOUTH DEPOT"}
+    ok(all(to == (store[cur[a2s[a]]] if rm >= W.REORG else lstore[leg[a2s[a]]]) + " RETURNS"
+           for a, rm, to in zip(fail["asset_id"], fail["removed"], fail["removed_to"])),
+       "failed modules go back to the store serving the station's region of the day")
+    # R6: the residue an EAM carries, none of it on a graded path
+    after = wo[[d(x) >= W.REORG for x in wo["reported_date"]]]
+    old = after[after["region"].isin(["Lakeshore", "Ridge", "Valley", "Harbour"])]
+    ok(len(old) >= 20 and all((wt == "PM" and d(x) < W.PM_MASTER_UPDATE) or (wt != "PM" and (d(x) - W.REORG).days < 21)
+                              for wt, x in zip(old["work_type"], old["reported_date"])),
+       "%d work orders raised on the old region and crew codes after the change" % len(old))
+    rd = list(wo["reported_date"])
+    back_steps = sum(1 for a, b in zip(rd, rd[1:]) if b < a)
+    ok(list(wo["wo_number"]) == sorted(wo["wo_number"]) and back_steps >= 50,
+       "%d work orders entered after later-dated ones" % back_steps)
+    new = reg[[d(x) >= W.MIGRATION for x in reg["install_date"]]].sort_values("asset_id")
+    inv = sum(1 for a, b in zip(new["install_date"], list(new["install_date"])[1:]) if b < a)
+    ok(inv >= 10, "%d post-go-live asset numbers out of install-date order" % inv)
+    bay_of = dict(zip(reg["asset_id"], reg["bay"]))
+    styled = wrong = 0
+    for a, t, wt in zip(wo["asset_id"], wo["description"], wo["work_type"]):
+        if wt not in ("CM", "EM") or a not in bay_of or not bay_of[a].startswith("F"):
+            continue
+        for m in re.finditer(r"\b(?:F-?|FDR ?|feeder )(\d+)\b", t, re.I):
+            styled += not re.fullmatch(r"F\d\d", m.group(0))
+            wrong += int(m.group(1)) != int(bay_of[a][1:])
+    ok(styled >= 50 and 1 <= wrong <= 20, "crew bay references: %d written their own way, %d on the wrong bay" % (styled, wrong))
+    # R7: late-2026 commissionings on the approved sheet, 2026 entries on the 2025 plan
+    wbp = openpyxl.load_workbook(os.path.join(T, E.F["prog"]))
+    c26 = [r[7] for r in wbp["Approved 2026"].iter_rows(min_row=4, values_only=True) if isinstance(r[7], dt.datetime)]
+    c25 = [r[7] for r in wbp["2025 plan (superseded)"].iter_rows(min_row=4, values_only=True) if isinstance(r[7], dt.datetime)]
+    ok(1 <= sum(x.year == 2026 for x in c26) <= 8 and min(c26) >= dt.datetime(2026, 10, 1),
+       "%d approved schemes commission in late 2026" % sum(x.year == 2026 for x in c26))
+    ok(sum(x.year == 2026 for x in c25) >= 2, "%d 2026 entries on the 2025 plan" % sum(x.year == 2026 for x in c25))
+    # R13: the bulletin's returns are its date codes
+    sb = [r for r in rows if "SB-15-02" in str(r[6])]
+    ok(len(sb) >= 20 and all(91 <= int(r[2][5:7]) <= 97 for r in sb), "%d SB-15-02 returns, all date codes 91 to 97" % len(sb))
+    # R14: Ontario names, distribution stations at a distribution station's size
+    live = reg[(reg["status"] == "IN SERVICE") & reg["bay"].str.startswith("F")]
+    kind = dict(zip(subs["sub_code"], subs["station_type"]))
+    nfeed = live.groupby("sub_code").size()
+    ok(max(n for sc, n in nfeed.items() if kind[sc] == "DS") <= W.DS_FEEDERS_MAX, "distribution stations carry 12 feeders at most")
+    ok(not any(re.search(r"bury|worth|^(Stag|Owl|Otter|Wolf|Fox|Deer|Elk|Crow|Raven|Wren|Heron|Swan|Lark|Fish)", n)
+               for n in subs["sub_name"]), "no English-village or animal station names")
+    # R9, R10: exports as the systems write them
+    for fn in sorted(os.listdir(T)):
+        if fn.endswith((".csv", ".txt")):
+            raw = open(os.path.join(T, fn), "rb").read()
+            ok(raw.count(b"\r\n") == raw.count(b"\n") > 0, "%s has Windows line endings" % fn)
+    ok(wo["labour_hours"].str.fullmatch(r"\d+\.\d\d").all(), "labour hours to two decimals")
+    stock = pd.read_csv(os.path.join(T, E.F["stock"]), dtype=str)
+    ok(stock["unit_cost_cad"].str.fullmatch(r"\d+\.\d\d").all(), "unit costs to the cent")
+    z = zipfile.ZipFile(os.path.join(T, "pc_relay_maintenance_compliance_2025.xlsx"))
+    sheet = z.read("xl/worksheets/sheet1.xml").decode()
+    chain = re.findall(r'<c r="([A-Z]+\d+)"', z.read("xl/calcChain.xml").decode())
+    ok(chain == re.findall(r'<c r="([A-Z]+\d+)"[^>]*><f>', sheet), "the calculation chain lists every formula cell")
+    vals = re.findall(r"<v>(-?\d+\.\d+)</v>", sheet)
+    ok(vals and all(len(v.replace("-", "").replace(".", "").lstrip("0")) in range(1, 16) or len(v.replace("-", "").replace(".", "").lstrip("0")) == 17
+                    for v in vals), "cached values as Excel writes doubles")
+    zd = zipfile.ZipFile(os.path.join(T, "AM-PC-014_obsolete_spares_final_buy.docx"))
+    x = zd.read("word/document.xml").decode()
+    rs_set = re.findall(r'<w:rsid w:val="([0-9A-F]+)"', zd.read("word/settings.xml").decode())
+    rs_body = set(re.findall(r'w:rsidR="([0-9A-F]+)"', x))
+    ok(len(rs_set) >= 15 and len(rs_body) >= 10, "%d editing sessions, %d on body paragraphs" % (len(rs_set), len(rs_body)))
+    app = zd.read("docProps/app.xml").decode()
+    words = int(re.search(r"<Words>(\d+)</Words>", app).group(1))
+    split = len(" ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", x)).split())
+    ok(words != split and abs(words - split) < 0.1 * split, "word count %d measured on the document (split %d)" % (words, split))
+    # crew text: people's own habits
+    fdesc = wo[wo["wo_number"].isin(set(hist["removal_wo"][hist["removal_reason"] == "FAILED"]))]["description"]
+    low = sum(t == t.lower() for t in fdesc) / len(fdesc)
+    caps = sum(t == t.upper() for t in fdesc) / len(fdesc)
+    ok(0.08 <= low <= 0.35 and 0.08 <= caps <= 0.35, "failure write-ups %.0f%% lower case, %.0f%% capitals" % (100 * low, 100 * caps))
+    clause = {}
+    for t in fdesc:
+        for p in re.split(r"\. |, | - |; | / ", t):
+            p = re.sub(r"F-?\d+|FDR ?\d+|feeder \d+|PS02-\d\d-\d+", "#", p.strip().strip(".").lower())
+            clause[p] = clause.get(p, 0) + 1
+    top = max(clause.values())
+    ok(top <= 0.06 * len(fdesc), "no clause in more than 6 per cent of failure write-ups (most %d of %d)" % (top, len(fdesc)))
+    # the claims that none of this moves a graded figure: the answer from a work-order extract re-sorted by date, with
+    # every region and crew code set to the station's current one, is the same answer
+    tmp = tempfile.mkdtemp()
+    try:
+        for fn in os.listdir(T):
+            shutil.copy(os.path.join(T, fn), tmp)
+        w2 = pd.read_csv(os.path.join(T, E.F["wo"]), dtype=str, keep_default_na=False)
+        w2["region"] = [cur.get(sc, rg) for sc, rg in zip(w2["sub_code"], w2["region"])]
+        w2["crew"] = ""
+        w2.sort_values(["reported_date", "wo_number"]).to_csv(os.path.join(tmp, E.F["wo"]), index=False)
+        s2 = E.solve(tmp)
+        ok(all(abs(s2[k] - s[k]) < 1e-9 for k in ("lam", "avail", "lots")) and s2["by_region"] == s["by_region"]
+           and s2["by_year"] == s["by_year"] and s2["in_service"] == s["in_service"],
+           "graded figures unchanged by work-order order, region and crew codes")
+    finally:
+        shutil.rmtree(tmp)
+    ok(s["by_region"].keys() == set(subs["region"]), "regions are the current regions of substations.csv")
 
 
 if __name__ == "__main__":
