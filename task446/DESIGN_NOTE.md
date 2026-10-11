@@ -1,279 +1,68 @@
-# task446 design note
+# task446 design note (architecture 2)
 
-Seed ET03 (GLEIF LEI-hierarchy issuer-group concentration over N-PORT holdings, Data Extraction &
-Conformation). Re-rooted at the draw: the seed's stump (relationship types, LAPSED status, successor
-LEIs, ISIN fallback) is rule application and data semantics, and its asset-management pairing
-(Quantitative Finance with ETL) was taken by task445, registered first the same day. The objective and
-the number stay; the domain moves to Banking, Credit & Financial Risk and the LEI-hierarchy mechanics
-stay as Layer 1 on the ask paths.
+Seed ET03 (GLEIF LEI-hierarchy issuer-group concentration, Data Extraction & Conformation). Architecture 1
+(obligor-group house-limit projection on the projection-date membership) was spent at solver round 1 as a
+rule-application stump (see `## Tried and rejected` and `solver_rounds/round-1.md`). Architecture 2 keeps the
+number, the objective and the seed's world (the GLEIF consolidation hierarchy carrying entity-level records up
+to obligor groups, a UK bank's own systems) and draws a new decision and a new Layer 2 pitfall.
 
 ## DRAW
 
 | Axis | Draw |
 |---|---|
-| Card | `cards/task446.json`, registered 2026-10-11 with `guard.py register` before the ladder; verdict WARN (answered below) |
-| Domain / task type | banking-credit-financial-risk / other: obligor-group credit concentration and house-limit monitoring (client domain Banking, Credit & Financial Risk) |
-| Objective | Data Extraction & Conformation (ETL): five quarter-ends of loan, securities and derivative exposure from three booking systems conformed to obligor groups on the GLEIF consolidation hierarchy, then projected under the bank's filed standard |
-| Shape | 01 ranked list under a cap: every agenda group ranked on projected utilisation of its house limit, the in-or-out on its request, the approvable amount |
-| Gate G mechanism | etl_conformance (the history conformed to the estimand the standard defines) |
-| Gap / pattern | population then time / none; generators G4 (attribution at transition, decisive), G2, G19, G13 |
-| Decision type | quantity_figure (GBP, the approvable commitment for the requesting group) |
-| Stump strategy | time_semantics (which membership a history describes); decisive rule filed: yes (estimand), official decoy: no, validated decoy: no |
-| Calibration | none, because nothing has to be recovered: the projection formula and the group definition are filed, and the difficulty is the history the formula runs on |
-| Context artifact | other: the credit committee's pending-request agenda |
-| Role | head of credit portfolio analytics (portfolio_manager family); forum committee_or_panel; forcing event vote_or_meeting; org financial_institution |
-| World | United Kingdom, GBP, a UK commercial bank; personas Lesley Miller, Russell Hussain (`guard.py names --geo 'United Kingdom' --seed 446`) |
-| Layer 2 | estimand_identification, own:history-rebuilt-on-the-projected-membership |
-| Layer 1 | GLEIF merger events with retired predecessors still keyed in the loan system; lapsed relationship records; international branches; fund-management links; blank issuer LEIs resolvable through the ISIN map; three booking systems with their own keys, currencies and units; quarterly archived reference-data snapshots |
+| Card | `cards/task446.json` v2, `guard.py check` PASS, registered 2026-10-11 before the ladder; v1 kept in `lineage` with its fate |
+| Domain / task type | banking-credit-financial-risk / other: early-warning and watch-list monitoring of corporate obligor groups (client domain Banking, Credit & Financial Risk) |
+| Objective | Data Extraction & Conformation (ETL): four closed annual cohorts and the live book built from an early-warning engine's entity-level monthly signals, carried to obligor groups through the credit system's group register and the GLEIF consolidation hierarchy, matched to the watch-list history; the forecast runs on that conformed cohort table |
+| Shape | 01 ranked list: the six sectors ranked by expected watch-list arrivals, each with groups monitored, groups flagged, expected arrivals and expected arriving exposure |
+| Gate G mechanism | forecasting, with method_or_model_selection support (which performance measure carries across cohorts) |
+| Gap / pattern | time then population / none; generators G16 (decisive), G13, G19 |
+| Decision type | quantity_figure (count: obligor groups the 2027 watch-list caseload plans for) |
+| Stump strategy | forecast_method_backtest; decisive rule filed: no; official decoy: no; validated decoy: no |
+| Calibration | existing_book_actuals: the bank's own four closed cohorts, used to measure the screen and to back-test how its performance carries forward |
+| Context artifact | filed_model (the early-warning system's model documentation and monitoring standard) |
+| Role | head of credit risk monitoring (portfolio_manager family); forum committee_or_panel (executive risk committee); forcing event budget_or_appropriation (2027 resourcing budget); org financial_institution |
+| World | United Kingdom, GBP, Halstow Bank plc; personas Jill Berry, Mathew Long (`guard.py names --geo 'United Kingdom' --seed 446`) |
+| Layer 2 | forecast_uncertainty, own:screen-yield-under-a-moved-base-rate |
+| Layer 1 | entity signals keyed by LEI including non-borrowing entities; GLEIF L1/L2 with relationship periods, lapsed registrations, successors, branches, fund-management links; credit-system group register and watch-list history in their own namespace; a re-issued sector code with a crosswalk; facility extracts from two booking entities with currencies and a late file (exposure asks only) |
 
-**Guard WARN answered.** `three_rules.strategy_risk` (time_semantics). The decisive step is not
-reading a date field: every date in the pack is read the same way on the wrong path and the right
-one. The step is choosing which membership a five-quarter history describes when the standard
-projects the group as it stands now. The analyst test below names the route that fails after every
-field and rule is read correctly: point-in-time joins, the discipline a careful analyst applies to any
-history by habit.
-
-**Similarity claim.** No prior build turns on rebuilding a history on the membership of the date the
-projection is for. Nearest drivers on file sit at 0.07 and below (task33 forward yield, task65 filed
-grouping rule, task87 per-entity cap, task14 entitlement resolved point in time). task14 resolves
-membership point in time as the right answer; here point in time is the trap.
-
-## The three rules
-
-- **Domain test.** The call turns on credit-exposure aggregation to obligor groups under
-  accounting-consolidation control (drawn loans, undrawn commitments under a credit conversion
-  factor, investment securities, derivative replacement cost net of cash collateral per netting set)
-  checked against house limits through a limit-monitoring projection; put another field's nouns in
-  and the consolidation hierarchy, the commitment exposure measure and the limit framework have
-  nothing to attach to.
-- **Two layers.** Layer 1: the bank's three booking systems (loans, investment securities, derivatives
-  with CSA collateral), each with its own keys, currency and units, and the GLEIF golden copy
-  archived at each quarter-end, with its real behaviour (merged LEIs still keyed in the customer
-  master, lapsed relationship records, branches, fund-management links, blank issuer LEIs on
-  custodian feeds). Layer 2: a five-quarter history built for a projection of the group as it stands
-  on the projection date has to be rebuilt on that membership; the point-in-time build books
-  acquisitions and disposals as growth and shrinkage.
-- **Decisive step class: analytical.** Analyst test: a strong analyst who conforms every quarter's
-  three books correctly and reads the standard correctly builds each past quarter on the hierarchy
-  archived for that quarter, because point-in-time joins are the default discipline for history, and
-  so books membership changes as exposure change and files the wrong approvable amount, too low for a
-  group that grew by acquisition and too high for one that sold a borrower.
+**Similarity claim.** No build on file turns on which of a screen's measured properties carries to a year with
+a different base rate. Nearest drivers sit at 0.06 and below (task57 v19 held-out year, task89 v11 forward roll,
+task51 decomposition). Rejected neighbours this draw passed through are recorded in `## Tried and rejected`.
 
 ## Stump sentence
 
-A competent solver conforms all three books, groups each quarter-end on the hierarchy the bank archived
-at that quarter-end (or on the customer master's group code as it stood then), and so the requesting
-group's April acquisition of a borrower the bank already lends to enters its history as
-quarter-on-quarter growth; the least-squares trend it projects with is inflated, the projected
-year-end exposure is overstated and it approves a commitment well short of what the limit allows
-(figures fixed at build, recorded in the ladder below).
+A competent solver rolls the entity signals up to groups, builds the four closed cohorts, measures the
+early-warning system's hit rate (the share of flagged groups that reach the watch list within twelve months)
+and its miss rate exactly as the monitoring standard reports them, applies them to the groups flagged and not
+flagged at 30 September 2026 and files a caseload about half the golden; the hit rate rises with each cohort's
+deterioration rate, and this year's flagged share implies a deterioration rate far above any closed cohort,
+which only the capture and false-alarm rates (stable across the cohorts) can back out of the flagged share.
 
 ## Data-native sentence
 
-Obligor groups change shape between quarter-ends (a parent buys a borrower the bank already lends to,
-sells another to a group the bank also lends to), and the bank's own records of those quarter-ends,
-the archived golden copy and the customer master's group code, are both correctly point-in-time, so
-the history a projection naturally reads describes groups that no longer exist in that form, while
-the standard projects the group as it stands on the projection date.
+An early-warning screen on a credit book is judged by its hit rate, but how many flags turn bad depends on how
+much of the book is deteriorating that year, and the bank's own cohorts show exactly that: the capture and
+false-alarm rates sit still while the hit rate climbs in the year rates rose, so a year in which the flagged
+share has jumped is a year in which the hit rate measured on calmer years undercounts the inflow.
 
-## Gate G
+## The three rules
 
-- **Litmus.** No reported number in the pack is wrong and nothing is overturned. The archived golden
-  copies, the customer master's group codes and every extract are correct for the date they describe;
-  the difficulty is that the projection is for the group as it stands on 30 September 2026, and a
-  history built point in time describes other groups.
-- **Mechanism:** etl_conformance (the five-quarter history conformed to the estimand the standard
-  defines), with forecasting support (the filed least-squares projection runs on that history).
-- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Delete every wrong number:** there are none to delete; repair every file at source (successors
-  keyed, late extract merged, one derivatives run, both parent relationships reported) and the main
-  call and the point-in-time figure do not move (asserted: every ask device mishandled at once leaves
-  B1 at 21.8 restated and 15.0 point in time).
-- **Lens swap:** no. The naive history and the answer's history are different borrower populations
-  (asserted), and the difference runs both ways: Tarrant Hydraulics enters Kelderby's restated history
-  for all five quarters, Norbeck Coatings leaves it for all five.
-- **No artifact ranks the requests.** No concentration report, limit-utilisation report or past limit
-  check ships; the house limit register gives limits only.
-
-## Entity and decision
-
-Calder & Wey Bank plc's credit portfolio analytics team runs the LMS-03 limit check on the six Part B
-requests for the 4 November 2026 credit committee. The committed call: **how much of Kelderby
-Facilities Ltd's GBP 30.0m term loan the committee can approve: GBP 21.8m.** Forward facing: the
-projection is to 31 December 2026, a quarter that has not closed, and the commitment is signed against
-it. The tag stays ETL: the work is conforming three booking systems and five archived hierarchies
-into one group-by-quarter exposure history; the projection is a filed one-line formula.
-
-## Ladder (asserted in `generator/checks.py`; B1 Kelderby, approvable GBP m)
-
-| Rung | Reading | Projected | Approvable | Killed by |
-|---|---|---|---|---|
-| R0 | point in time, drawn balances only (the loan book's balance column) | 139.3 | 30.0 | Policy 3.1(b): undrawn committed balances at 50% |
-| R1 | point in time, policy measure: each quarter on the archive of that quarter-end, or on the customer master's group code as it stood (both land here) | 154.9 | **15.0** | LMS-03 2.3: the projection is for the group as constituted at the projection date, from that group's exposure at each quarter-end |
-| R1c | the 30 Sep archive read with relationship periods at each quarter-end, active records only | 159.7 | 10.2 | same; ended relationships are INACTIVE records the reading drops, so the disposal leaves and the acquisition never enters |
-| R2 | acquisition restated, disposal left in (pro forma for the purchase only) | 143.4 | 26.6 | LMS-03 2.3: Norbeck is not in the group at the projection date |
-| Answer | every quarter on the 30 September 2026 membership | **148.1** | **21.8** | |
-
-- **Rule-violation cells (not rungs, asserted distinct):** no projection 23.5 (+7.8 per cent); drawn
-  balances only on the restated history 30.0; the request at the revolver weight 30.0. The average
-  quarterly change instead of the least-squares slope converges on the answer for B1 (148.2, 21.8):
-  C1 on that axis.
-- **Satisfying to stop at.** R0 is the balance column a loan extract offers; R1 is the disciplined
-  history (no look-ahead, the bank's own archive, the customer master agreeing with it); R2 is the
-  pro forma a credit analyst does for an acquisition.
-- **Direction.** Point in time under-approves where a group bought a borrower (Kelderby, Meridale,
-  Brauneck, Pellow) and over-approves where it sold one (Corrin: 25.0 against 16.7).
-- **Thinnest margin:** the no-projection cell, 23.5 against 21.8 (1.7m). Rungs proper sit 30 per cent
-  or more away.
-- **The decisive move against the seven properties.** 1 no sentence states it (2.3 defines the group,
-  not the history); 2 no corpus; 3 no arithmetic symptom: every point-in-time history reconciles to
-  its own archive and to the customer master's codes; 4 not a row predicate: it needs each borrower's
-  group at another date, behind a join; 5 enumeration is a resolution of the whole hierarchy twice;
-  6 the membership changes are dated, but the dates move membership, not the outcome series, and the
-  event-study reflex finds a jump it reads as growth; 7 survives deletion (nothing is wrong).
-
-## Stump or fork
-
-LMS-03 2.2 and 2.3 file the estimand: the group as constituted at the projection date, its exposure at
-each of the five quarter-ends, the least-squares slope. The point-in-time history is not that group's
-exposure at those dates, it is a different group's, so the reading is named by a shipped sentence
-without the sentence naming the construction. The alternatives are ruled out by the data's own
-structure: a history that mixes membership with exposure books an acquisition as quarter-on-quarter
-growth that no borrower drew.
-
-## Layers
-
-- **Layer 1:** three booking systems (core lending with two booking entities and a late Dublin
-  delivery, the custodian's positions with gaps in issuer LEIs, the trading risk system's netting sets
-  in thousands with a rerun close and CSA collateral in units), Treasury FX in units per pound, and the
-  GLEIF golden copy archived quarterly with its real behaviour (merged LEIs still keyed in the customer
-  master, lapsed entity registrations, subsidiaries reporting only a direct parent, international
-  branches, fund-management links, reporting exceptions).
-- **Layer 2:** the history behind a projection must describe the population the projection is for;
-  the point-in-time build, the right discipline for most histories, is wrong here.
-
-## Closure table (22 axes)
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | committed and uncommitted facilities on the extracts, investment positions, netting sets; pinned by Policy 3.1 |
-| 2 | Unit | obligor group by accounting consolidation, branches to head office, funds alone; Policy 2.1 to 2.6 |
-| 3 | Attribution window | quarter-end extracts; Policy 3.3 |
-| 4 | As-of dating | membership at the projection date for every quarter: LMS-03 2.3, the decisive axis (C4: R1, R1c, R2 are named wrong cells) |
-| 5 | Version basis | one extract per quarter-end plus the late Dublin file (extract log); the R2 rerun for the 30 Sep close (field reference); the 30 Sep archive for membership |
-| 6 | Denominator | house limit from the register, keyed by ultimate parent LEI |
-| 7 | Weighting | sums; none |
-| 8 | Window length | five quarter-ends, LMS-03 2.2 |
-| 9 | Inclusivity | "does not exceed": no group lands on its limit (room at least 0.15 of a GBP 0.1m step from the edge, asserted) |
-| 10 | Rounding path | unrounded pounds, rounding only on report (LMS-03 2.4); approvals floor to GBP 0.1m steps (3.2); every graded figure at least GBP 10,000 inside its bin (asserted) |
-| 11 | Tie-break | utilisation order gaps at least 0.3 points (asserted) |
-| 12 | Maturity | none; every quarter is closed |
-| 13 | Order of operations | per netting set: MTM less cash collateral, floored at nil (Policy 3.1(d)); FX before summing (linear) |
-| 14 | Row order | irrelevant (sums) |
-| 15 | Duplicate resolution | migration overlap: receiving facility is the record (field reference); twin tranches are two facilities (distinct refs) |
-| 16 | Identity | LEI; merged LEI to successor (Policy 2.5); blank issuer LEI through the ISIN file |
-| 17 | Netting | netting sets not offset (Policy 3.1(d)) |
-| 18 | Units | derivatives in GBP thousands, collateral in units (field reference) |
-| 19 | Code semantics | committed flag, facility types, relationship types and statuses (Policy, field reference) |
-| 20 | Integerisation | floor to GBP 0.1m, capped at the request (LMS-03 3.2) |
-| 21 | Clause scope | the 50% weight applies to undrawn committed balances and to new revolvers (Policy 3.1(b), LMS-03 3.1) |
-| 22 | Forward window | one quarter, the least-squares slope; C1 with the average-change reading on B1 |
-
-## Ask sheet (supplemental-stumping)
-
-Main call row population: the five facilities of Kelderby Group plc, Kelderby Facilities Ltd, Kelderby
-Engineering Ltd and Tarrant Hydraulics Ltd across five quarter-ends (25 rows), their GLEIF records.
-Zero Dublin, migration, non-sterling, uncommitted, late-file, securities or derivative rows inside it,
-and every main entity ISSUED with PUBLISHED relationship records in every archive (asserted).
-
-| Row (ask) | In the decision | Primary device | Hazards | Stops (projected / approvable, asserted) | Use |
-|---|---|---|---|---|---|
-| B2 Meridale | the check beside the call | June booking migration London to Dublin: both rows on the 30 Jun extract, receiving row carries migrated_from (D1) | twin tranches a lazy dedup collapses (over-clean); EUR in units per pound (D3); construction (bought Norbeck) | migration twice 75.0/9.9; twins collapsed 68.5/12.0; FX multiplied 78.2/6.8; no FX 75.8/9.2; point in time 78.5/6.5; **golden 73.7/11.2** | committee sizes the Meridale loan |
-| B3 Brauneck | same | Dublin 31 Dec 2025 extract delivered late, in its own file (D4 absent channel) | London branch reached only through IS_INTERNATIONAL_BRANCH_OF; EUR rate; construction (bought Hollins Gear) | late file out 87.6/12.3; branch alone 56.6/20.0; FX multiplied 96.1/3.9; point in time 88.7/11.3; **golden 83.7/16.2** | same |
-| B4 Corrin | same | merged Corrin Warehousing still keyed in the customer master (D7) | derivatives in GBP thousands (D3); cash CSA only, gilts ignored; construction (sold Corrin Cold Chain) | merged alone 63.6/25.0; MTM as pounds 80.1/19.7; collateral ignored 83.7/12.6; gilts deducted 80.7/18.6; point in time 77.5/25.0; **golden 81.6/16.7** | same |
-| B5 Pellow | same | the bakery reports only its direct parent, a lapsed holding company (D7) | lapsed holdco dropped; blank issuer LEI on a 2031 bond (ISIN file); construction (bought Fenwick) | ultimate join only 34.0/14.0; lapsed dropped 34.0/14.0; blank LEI dropped 70.6/14.0; point in time 77.4/7.6; **golden 74.4/10.5** | same |
-| B6 Stannard | same | the 30 Sep close rerun (R2 sheet is the record) (D2) | derivatives in thousands; funds grouped under the manager on the customer master; revolver request at 50% | first run 20.5/18.9; MTM as pounds 19.9/20.0; funds under manager 77.9/0.0; revolver at full weight 21.5/8.5; **golden 21.5/17.0** | same |
-| Book split at 30 Sep | the exposure the check stands on | carries every device above that lives at 30 Sep | | moves with each device | committee reads what the exposure is made of |
-| Chart | the call at a glance | the construction (order and bars) | | point in time reorders the bars | committee pack |
-
-**Pair arithmetic, stated plainly.** The point-in-time history moves 26 of the 72 row figures (the
-earlier quarter-ends, projections, utilisations and approvals of the five groups that changed shape);
-the other 46 (the 30 September book splits and totals and the Stannard row) rest on the devices alone
-(counted by script). A response that misses the call but handles every device keeps those 46; one
-that lands the call keeps whatever devices it handles. The design therefore leans on the main ladder
-keeping both top responses off the call, with the devices as margin, and the device layer is the
-first place a hardening goes if a round shows high ask leakage. The solver round measures it.
-
-## Shape and criteria
-
-Shape 01 (ranked list under a cap): six requests ranked by projected utilisation against the 100 per
-cent line, each with 12 figures (four book parts, five quarter-ends, projected, utilisation,
-approvable) = 72, plus the order, the call, and the chart's five named parts (bars in order, the
-limit line at its value, the annotation, the title, the file) and two files: well past 25.
-
-## Prompt
-
-`prompt.md`, 995 characters by voice-check, 160 words, opening on the binding constraint (the card
-says constraint-first; the script files it as other). Redrawn from question-first after task445's card
-took that move. Voice-check clean otherwise (no calcified carrier, no roll call, no input file name, no
-method or trap word); the call is one sentence carrying its unit and rounding at the seam, and both later
-paragraphs open by tying back to it. Deliverables `limit_check_2026-11-04.xlsx` and
-`projected_utilisation_2026Q4.png`.
-
-## Realism debts
-
-- Every agenda group but Stannard changed shape inside the year. Acquisitive groups are the ones
-  that come for term loans, and the background book carries 26 more ownership changes and 18 legal
-  mergers, so the agenda is not marked out.
-- The least-squares projection is a simple early-warning metric; it is the bank's filed standard.
-
-## Stopping rule
-
-Two consecutive solver rounds that land 21.8 by restating the history file the architecture as
-spent at the decisive rung (re-root, not harden). A round that lands on 15.0, 10.2 or 26.6 and keeps
-most ask figures licenses one hardening of the device layer only.
-
-## Build record (stage 3)
-
-- Generator: `generator/make.py` (world.py, truth.py, tune.py, docs.py), golden path and independent
-  verifier `generator/solve.py` (reads target/ only), deliverables `generator/deliver.py`, write-up
-  `generator/writeup.py`, metadata `generator/meta.py`, assertions `generator/checks.py`: 248
-  assertions green, two builds byte-identical.
-- Input gates: 18 files, 6 formats (csv, docx, md, pdf, txt, xlsx), largest file
-  `gleif_lei_records_qe_archive.csv` at 29,966 rows, distractors `obligor_ratings_qe.csv` and
-  `sector_concentration_2026Q3.xlsx` (named in metadata.json only; golden unchanged with both deleted,
-  asserted).
-- Tuning: one revolver per agenda group carries a drawn-balance nudge (whole pence, inside its limit) so
-  every graded figure sits at least GBP 10,000 inside its rounding bin, every approval at least 0.15 of
-  a GBP 100,000 step from its edge, and the utilisation order at least 0.3 points apart (asserted).
-- House fixes run: H1 (no writer signature or out-of-band stamp in inputs or golden, scrubbed in the
-  generator), H2/H3 (submission emitted by writeup.py from target/, asserted identical), H4 (18
-  members, no enclosing folder), H7 (target.zip cut last from the final build), H11 (one prompt.md, one
-  submission.md), H12 (no rounding tags beyond the money and percentage conventions), H13 (call at the
-  seam), H16 (no GLEIF record updated after its archive date, no facility starting after its extract;
-  forward maturity and renewal dates are the allow-list), H18 (every row is a component of the call's
-  check: same standard, same committee, same sitting).
-- Golden realism: workbook with a finding-first header line, frozen panes, number formats, a
-  membership sheet tracing each group at 30 Sep 2026 (joins and departures dated from the archive) and
-  a notes sheet citing Policy s2 and s3 and LMS-03 2.1 to 3.2; chart with the call in the title, the
-  limit line labelled, the requesting bar distinguished, the annotation on it.
-- `guard.py surface`: three promoted pairs at surface similarity 0.14 to 0.15 (task130, task87,
-  task100), each on a shared decision type only; no byte-identical file, no shared table, no shared
-  invented name. Personas in the pack: Russell Hussain only (Lesley Miller signs the golden).
-
-## Leak check (stage 4, mechanical half)
-
-`leak.py --asof 2026-10-09`: REVIEW, no LEAK (a policy file name carrying a version suffix and the
-word "golden" in two GLEIF descriptions were renamed in the generator). REVIEW lines answered:
-- answer figures in the agenda (12.0, 14.0, 20.0, 25.0) are the requested amounts the decision is
-  about; 1.3 no longer appears (LMS-03 now supersedes "the January 2025 issue");
-- the agenda and LMS-03 share the call's words (committee, approve, term loan): they are the request
-  and the standard;
-- design-note vocabulary in the policy, standard, field reference and log is the field's own
-  (obligor, netting, collateral, quarter); none states the history's membership;
-- ranking artifacts: the LEI archive, the loan extract and the limit register name agenda groups
-  beside numbers that are identifiers, balances and limits, never a ranking on the decision;
-- dates after 2026-10-09 are facility maturities and GLEIF renewal dates (allow-list).
+- **Domain test.** The call is a credit-monitoring forecast, the watch-list inflow a bank sizes its workout
+  caseload on, from an early-warning system's performance on obligor groups (signals raised on any legal entity
+  and carried to the group through accounting consolidation, a twelve-month watch-list outcome, the committed
+  book as the monitored population). With another field's nouns in, the group roll-up of entity signals, the
+  watch-list window and the committed-book population have nothing to attach to.
+- **Two layers.** Layer 1: an early-warning engine that publishes monthly signals per legal entity by LEI
+  (borrowers and the non-borrowing parents and sisters the vendors cover), the GLEIF golden copy with its real
+  behaviour, the credit system's group register and watch-list history in its own customer namespace, a sector
+  taxonomy change that re-issued codes, facility extracts with currencies and a late booking-entity file. Layer
+  2: a screen's past yield is carried onto a year whose base rate has moved; the yield is a property of the year,
+  the error rates are the screen's, and the cohorts show it.
+- **Decisive step class: analytical.** Analyst test: a strong analyst who conforms every signal to its group
+  correctly and reads the standard's group-flag rule, cohort definition and performance measures correctly
+  applies the measured hit rate to this year's flagged groups and the miss rate to the rest, because those are
+  the screen's reported performance over exactly the cohorts the standard names, and so files about half the
+  expected inflow.
 
 ## Tried and rejected
 
@@ -295,3 +84,10 @@ word "golden" in two GLEIF descriptions were renamed in the generator). REVIEW l
 - Linkage-error propagation for holdings without LEIs (gold-standard review sample): calibration form
   banned against task228, estimator forks.
 - Architecture 1 (obligor-group house-limit projection, history rebuilt on the membership at the projection date), spent at round 1, 2026-10-11: the solver fixed the 30 Sep 2026 group and applied it to all five quarter-ends citing LMS-03 s.2.3, landing 21.8 and cracking every ask device (proxy 93.4). The decisive step was the stated clause applied, a rule-application stump; un-stating it would be a withheld rule or a fork, so no honest hardening exists. Re-rooted to architecture 2.
+- Architecture 2 candidate, corporate deposit retention standardised on whether the depositor's consolidation group borrows from the bank (moderator behind the GLEIF join, mix moved by a notice-account campaign): the same driver as task97 (a forward rate set by a linked entity's property, newcomers concentrated on one side, every unit-level route misforecasts) and task44 v2 (a correct pooled effect carried onto a moved mix); a Template finding waiting to happen, and a real treasury would file its segmentation.
+- Architecture 2 candidate, deposit run-off assumptions moved only when the year's measured share clears two standard errors, with the error clustered on the GLEIF consolidation group so the move becomes a hold: the same driver as task229 (the standard error of a mean over entities that fail together through a shared parent).
+- Corporate deposit retention with intra-group sweeps capped at account level (retention has to be measured on the group's money): stump strategy grain_or_unit, banned against task229 in the last three.
+- Seasonal working-capital projection of group exposure chosen by back-test: a seasonal pattern clean enough for the seasonal methods to converge is plain on the twelve-quarter series, and with noise the seasonal methods fork on the approvable step.
+- Contractual roll-forward of group exposure to the projection date (maturities, amortisation, commitment expiries): every step is a row predicate on a filed date, a filter a solver writes first.
+- Near-term deposit outflow from the register of notices already given: maturity_censoring family, banned against task445 in the last three.
+- Partial verification of a sampled review (below-the-line alert testing, a file-review sample): stratum rates are what a solver computes by default, and a value-proportional design is either filed (a reading) or unrecoverable (a fork).

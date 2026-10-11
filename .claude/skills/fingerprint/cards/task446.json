@@ -1,94 +1,101 @@
 {
   "task": "task446",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-11",
-  "slot_note": "seed ET03 (GLEIF LEI-hierarchy issuer-group concentration over N-PORT holdings, 5/10/40 scorecard). The seed's stump was rule application and data semantics (relationship types, LAPSED status, successor LEIs, ISIN fallback) and its pairing (asset-management risk, Quantitative Finance, with ETL) is taken by task445 drawn the same day, so the draw is redrawn inside ETL into Banking: the seed's LEI-hierarchy mechanics stay as Layer 1 mess on every path, and the decisive step is a Layer 2 estimand construction, rebuilding an obligor group's exposure history on the membership the projection is for.",
+  "slot_note": "re-root of task446 after architecture 1 (obligor-group house-limit projection on the membership at the projection date) was spent at round 1 as a rule-application stump; same objective and number, new decision, new Layer 2 pitfall. The seed's GLEIF Level 2 hierarchy stays as the join that carries entity-level early-warning signals up to obligor groups, and the bank's booking systems stay as Layer 1 on the exposure asks.",
   "domain": "banking-credit-financial-risk",
   "subdomain": "other",
-  "niche": "a UK commercial bank's credit portfolio team checking the new-commitment requests on the November credit committee agenda against each obligor group's house limit, with each group's year-end exposure projected under the bank's limit-monitoring standard from five quarter-ends of loan, securities and derivative exposure rolled up the GLEIF consolidation hierarchy",
+  "niche": "a UK commercial bank's credit risk monitoring team forecasting how many obligor groups will move onto the watch list over the next twelve months, to size the 2027 watch-list and workout caseload, from an early-warning system's entity-level monthly signals rolled up to groups through the GLEIF consolidation hierarchy and four closed annual cohorts of watch-list outcomes",
   "objective": "etl",
   "shape": "01",
   "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "Approve GBP 21.8m of Kelderby Facilities Ltd's GBP 30.0m term loan (projected 31 Dec 2026 exposure GBP 148.1m against a GBP 170.0m house limit)",
-  "answer_source": "task446/submission.md, block 1",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G4",
-    "G2",
-    "G19",
-    "G13"
+    "G16",
+    "G13",
+    "G19"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "time_semantics",
-  "decisive_rule_filed": true,
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "other",
-  "stakeholder_role": "head of credit portfolio analytics at a UK commercial bank, preparing the limit check for the credit committee",
+  "context_artifact": "filed_model",
+  "stakeholder_role": "head of credit risk monitoring at a UK commercial bank, who sizes the watch-list and workout caseload for the executive risk committee's 2027 resourcing budget",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "gleif_lei_records_qe_archive.csv",
-    "rows": 29966,
-    "entity": "one LEI record as GLEIF's golden copy carried it in one quarter-end snapshot the bank's reference-data team archived",
-    "grain": "LEI x archived quarter-end snapshot",
-    "source": "synthetic, on the GLEIF LEI-CDF 3.1 golden-copy schema"
+    "file": "ews_entity_signals_monthly.csv",
+    "rows": 0,
+    "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
+    "grain": "LEI x month-end",
+    "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "financial_institution",
   "world": {
     "geography": "United Kingdom",
     "currency": "GBP",
-    "org_type": "UK commercial bank, credit risk management",
+    "org_type": "UK commercial bank, credit risk monitoring",
     "invented_names": [
-      "Calder & Wey Bank plc",
-      "Kelderby Group plc",
-      "Tarrant Hydraulics Ltd",
-      "Norbeck Coatings Ltd",
-      "Meridale Holdings Ltd",
-      "Brauneck Holding SE",
-      "Corrin Logistics Group plc",
-      "Pellow Foods Group plc",
-      "Stannard Capital Group plc"
+      "Halstow Bank plc"
     ],
     "people": [
-      "Lesley Miller",
-      "Russell Hussain"
+      "Jill Berry",
+      "Mathew Long"
     ]
   },
   "deliverables": [
-    "limit_check_2026-11-04.xlsx",
-    "projected_utilisation_2026Q4.png"
+    "watchlist_inflow_2027.xlsx",
+    "watchlist_inflow_by_sector_2027.png"
   ],
-  "opening_move": "constraint-first",
-  "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them.",
-  "driver_concrete": "The limit-monitoring standard projects each obligor group's 31 December 2026 exposure as its 30 September exposure plus its average quarter-on-quarter change over the four quarters to 30 September, for the group as it stands on the projection date; groups on the agenda took control of borrowers the bank already lent to and sold others during the year, so rebuilding each quarter on the GLEIF snapshot archived at that quarter-end turns membership changes into exposure trend, while the projection the standard wants restates every quarter on the 30 September 2026 hierarchy, predecessor LEIs carried to their successors.",
-  "stump": "A competent solver joins each quarter's loan, securities and derivative extracts to the GLEIF snapshot the bank archived at that quarter-end, the point-in-time build that keeps later knowledge out of a history, so the requesting group's acquisition of a borrower the bank already lent to enters its history as quarter-on-quarter growth, its projected year-end exposure is overstated and it approves less of the request than the limit allows (names and figures fixed at build).",
+  "opening_move": "number-first",
+  "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it.",
+  "driver_concrete": "The early-warning system's measured hit rate (share of flagged groups reaching the watch list within twelve months) and miss rate are carried onto the 30 September 2026 book, where the share of groups flagged has jumped well above anything in the four closed cohorts; the capture and false-alarm rates hold steady across cohorts while the hit rate climbs with each cohort's deterioration rate, so the expected watch-list inflow is the book's deterioration rate backed out of the flagged share through those two rates (Rogan-Gladen), not flags times hit rate.",
+  "stump": "A competent solver rolls the entity signals up to groups through the GLEIF hierarchy, builds the four closed cohorts, measures the early-warning system's hit rate and miss rate exactly as the monitoring standard reports them, applies them to the groups flagged and not flagged at 30 September 2026 and files a caseload about half the golden, because the hit rate rises with the share of the book deteriorating and this year's flagged share implies a deterioration rate far above any closed cohort; the capture and false-alarm rates are the screen's stable properties and back the deterioration rate out of the flagged share (figures fixed at build).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every quarter's three books correctly (lapsed registrations kept, branches to head office, fund-management links not followed, merged LEIs to successors, ISIN fallback for blank issuer LEIs) and reads the standard correctly builds each past quarter on the hierarchy archived for that quarter, because point-in-time joins are the default discipline for history, and so books membership changes as exposure change and files the wrong approvable amount, too low for a group that grew by acquisition and too high for one that sold a borrower.",
-  "domain_test": "The call turns on credit-exposure aggregation to obligor groups under accounting-consolidation control across drawn loans, undrawn commitments, securities and derivative replacement cost, checked against house limits through a limit-monitoring projection; with another field's nouns the consolidation hierarchy, the commitment exposure measure and the limit framework have nothing to attach to.",
+  "analyst_test": "A strong analyst who conforms every entity signal to its obligor group correctly (lapsed registrations kept, merged entities carried to their successors, branches to head office) and reads the monitoring standard's group-flag rule, cohort definition and performance measures correctly applies the measured hit rate to the groups flagged at 30 September 2026 and the measured miss rate to the rest, because those are the screen's reported performance over exactly the cohorts the standard names, and so files about half the expected inflow: the hit rate is not a property of the screen but of each year's deterioration rate, which this year's flagged share puts far above the history.",
+  "domain_test": "The call is a credit-monitoring forecast, the watch-list inflow a bank sizes its workout caseload on, built from an early-warning system's performance on obligor groups (signals raised on any legal entity and carried to the group through accounting consolidation, a twelve-month watch-list outcome, the committed book as the monitored population); with another field's nouns in, the group roll-up of entity signals, the watch-list outcome window and the committed-book population have nothing to attach to, and the exposure the arriving groups carry is a credit quantity.",
   "client_domain": "banking-credit-financial-risk",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:history-rebuilt-on-the-projected-membership",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:screen-yield-under-a-moved-base-rate",
   "layer1": [
-    "mergers reshaping entities: GLEIF merger events, retired predecessor LEIs and successor LEIs, with old exposure records still keyed to predecessors",
-    "LEI registrations lapsed for non-renewal while the entity and its consolidation links stand",
-    "accounting-consolidation parents with relationship start and end dates, international branches pointing to their head offices, and fund-management links that are not ownership",
-    "securities positions with a blank issuer LEI resolvable only through the ISIN-to-LEI relationship file",
-    "three booking systems (loans, investment securities, derivatives) each with its own keys, exposure basis and quarter-end extract layout",
-    "quarterly archived reference-data snapshots beside quarterly exposure extracts"
+    "entity-level monthly signals from an early-warning engine keyed by LEI, including entities that do not borrow, to be carried to obligor groups",
+    "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches and fund-management links that are not consolidation",
+    "a credit system's group register and watch-list history in its own customer namespace",
+    "a sector code that was re-issued with new meanings when the credit system moved to a new sector taxonomy, with a crosswalk",
+    "facility extracts from two booking entities with their own currencies and a late-delivered quarter-end file, for the exposure the arriving groups carry"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
-  "lineage": [],
-  "notes": "subdomain other: obligor-group credit concentration and house-limit monitoring, which the banking task-type list does not carry. stump_strategy time_semantics: the decisive step is which membership a history describes (as-then against as-of-the-projection-date); the analyst test names the analytical route (point-in-time joins taken as the discipline for history) that fails after every field and rule is read correctly. decisive_rule_filed true: the standard files the projection formula and defines the obligor group at the projection date; it does not say how to build the history, which is the construction. No certified or published history ships (no quarterly concentration report), so nothing blesses the point-in-time build. context_artifact other: the credit committee's pending-request agenda. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446. | architecture 1 SPENT 2026-10-11 at round 1: decisive step was LMS-03 s.2.3 applied as stated (rule application); solver landed 21.8 and every ask device."
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at in-house solver round 1, 2026-10-11: the solver fixed the projection-date group and applied it to all five quarter-ends citing the limit-monitoring standard's clause, landing the call and every ask device (proxy 93.4); the decisive step was a filed clause applied, rule application",
+      "domain": "banking-credit-financial-risk",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them."
+    }
+  ],
+  "notes": "Re-rooted as v2 on 2026-10-11. stump_strategy forecast_method_backtest: two methods carry a screen's past performance forward, the yield (hit and miss rates) or the error rates (capture and false-alarm rates); the four closed cohorts, whose deterioration rates differ, show the yield moving with the base rate and the error rates holding, so only the second survives the back-test, and it gives the forward count by backing the base rate out of the flagged share. decisive_rule_filed false: the monitoring standard files the group-flag rule, the cohort and outcome definitions and the three performance measures, and says nothing about how a forecast uses them. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false. subdomain other: early-warning and watch-list monitoring of corporate obligor groups, which the banking task-type list does not carry. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446 (Lesley Miller skipped, used by v1)."
 }
