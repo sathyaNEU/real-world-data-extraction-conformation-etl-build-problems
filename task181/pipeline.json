@@ -2,8 +2,8 @@
  "task": "task181",
  "domain": "banking-credit-financial-risk",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round 1",
+ "stage": 1,
+ "stage_name": "re-root to architecture 2 (draw)",
  "updated": "2026-10-11",
  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's 60-day lookback, finds the Ferrier Creek pump terminal (205 of 283 victims, lift 38.78), counts the 174 open member cards it read by contact between the first and last victim read and files that reissue count (or keeps the coffee counter too and files 502); the step that lands it there is stopping at the strongest common point, when 47 of the 78 victims the pump does not explain trace to the Lombard Market self-checkout PIN pad in Smiths Falls, which the pooled screen ranks level with the car wash (lift 4.59) and below the coffee counter (11.95).",
  "architecture": 1,
@@ -18,7 +18,18 @@
   "clone_check": "pre-flight CLEAN (pass 1): no Exact, Same seed, Dataset or Template finding, no Shape echo; task103 promoted and adjudicated clean; Idiom notes acted on ('what I need' closer dropped, extract log renamed to the warehouse job report cudw_job_fraud_weekly_20261005.txt)",
   "surface": "1 promoted: task103 0.143 (pct 99), carried by the flat layout, the format mix and the pdf+xlsx deliverable pair; no shared file names or file contents, one short generic prompt shingle; nearest not promoted task131 0.096"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "round": 1,
+   "architecture": 1,
+   "solver": {
+    "landed": true,
+    "proxy": 94.5
+   },
+   "decision": "reroot",
+   "brief": "The solver ran the pooled screen, explained the co-visited plaza sites away as subsets of the pump's victims, re-screened the 78 victims the pump leaves and found the Lombard PIN pad, then checked the last 31 for a common point: 387 and every ask figure. The next rung would need a site that outranks the PIN pad on the residual and survives the subset check; any such site carries unexplained victims of its own and reads as a compromise (a fork), and any site that does not is dismissed by the subset check this solver already ran. The architecture is spent: re-root."
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",

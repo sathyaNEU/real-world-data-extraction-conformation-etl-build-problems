@@ -312,6 +312,16 @@ lands anywhere other than rungs 0, 1 or 1b is read for a fork before any hardeni
 
 ## Tried and rejected
 
+- **Architecture 1 spent at round 1 (2026-10-11): two skimmed terminals behind a dominant common point.** One
+  solver, proxy 94.5, 387 and every ask figure. Its path: "Coffee counter LT314033 (95) and car wash LT938930 (47)
+  contain only pump cards. Of the 78 non-pump cards, 47 were read at Lombard 02417158 (16.6% vs 3.62% base), disjoint
+  from the pump cards. The remaining 31 have no common point." The explain-away and the residual re-screen are what a
+  careful analyst does on the second pass, not a step any sentence announced (both readers' plans stopped at the pooled
+  ranking). Hardening weighed and not built: a site that outranks the PIN pad on the residual (the Smiths Falls branch
+  ATM the PIN pad's local victims also use, a pharmacy in the same plaza, the PIN pad moved between lanes) is either a
+  near-subset of the PIN pad's victims, which the solver's subset check already dismisses, or carries unexplained
+  victims of its own, which makes it read as a compromise and opens a fork. Re-rooted.
+
 - Draft (never registered): which merchant location gets the acquirer's inspection, exposure counted only on contact
   reads at the device. Rejected before registration: pick-one-of-N is the spent shape on this objective, and contact-only
   exposure is applied by reflex by a fraud-literate solver.
