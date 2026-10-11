@@ -59,7 +59,10 @@ draft this card replaced (exposure counted on contact reads at the device) is ke
 
 **WARN answers.** repeat.gate_g and overuse.gate_g (decomposition_attribution after task180 v1, 5 of the last 12): the
 mechanism is honestly attribution (each counterfeit victim is attributed to the terminal that exposed the card), and
-task180's architecture 1 is spent and being re-rooted on a different mechanism, so the repeat is with a dead build.
+task180's architecture 1 is spent. task180's architecture 2 also carries decomposition_attribution, and the two decisive
+moves differ: here a population-level mixture is screened again after the dominant source explains its victims; there
+one unit's diagnostic gas is attributed between two sources that share a tracking signature, by the gas it arrives
+with. The WARN is a batch note, answered here.
 
 ## GATE G
 
@@ -238,13 +241,55 @@ Prompt: one sentence split ("The committee approves a number of cards. That numb
 ECONOMY row is clean (206 words, 22.9 per sentence, a sentence under eight words); page three asks for "the counterfeit
 cases we refunded", the population ask B counts.
 
-## SIX-POINT CHECK
+Isolated reader, pass 1 (2026-10-11): nothing quoted for question 1 (CP-14 s4 "sets out the method as ordinary policy";
+the version-3 change line "a normal change-log entry"), no ranking file, no analyst-only file (fraud_desk_notes.md "the
+fraud desk's normal hand-off data dictionary"), no answer-like figure (the Brockville figures a labelled precedent; "283"
+counts victims; "Nicholas traced the first cases to the pumps" "reads as a lead to test"). The three REVIEW lines
+harmless. Its plan screens contact reads against the member base and "allow[s] for more than one common point", which it
+took from CP-14 s2 ("a card is reissued once however many compromised terminals read it") and s8 ("each compromised
+terminal with its exposure window") and its own practice. Those are the sentences any card compromise policy carries,
+and allowing for several common points lands rung 0 (every terminal the pooled screen ranks high: 502 or 1,139) unless
+the victims the pump explains are set aside first, which no sentence says. Kept.
 
-1. Real work: ISO message pairs, entry-mode codebook, merchant directory, card history chains, re-opened cases, UTC
-   timestamps, none planted. 2. The flip is a method choice: pooled against conditional attribution. 3. CP-14 defines
-   population, unit, window, exposure and comparison. 4. No decoy memo; the manager's note is a true observation (the
-   pump is the biggest source). 5. The method is not recovered from certified figures. 6. No earlier task teaches
-   masking and co-visit confounding in a common-source screen.
+## THREE RULES (client, 2026-10-10)
+
+- **Rule 1, the domain is used.** What decides the count is a card-fraud compromise-point analysis: each terminal's lift
+  among counterfeit victims against the member base on skimmable contact reads, re-run on the victims the first
+  compromised terminal does not explain. That is the fraud desk's own common-point-of-purchase work, close to the
+  fraud and AML detection task type. Swap test: with another field's nouns in there is no skimming exposure by entry
+  mode, no counterfeit lookback and no per-card reissue, so the task does not read the same.
+- **Rule 2, two layers.** Layer 1: ISO 8583 message pairs and reversals, terminal IDs that change at replacement, entry
+  mode and currency codes from a codebook, merchant IDs mapped through the processor's directory, card numbers that
+  change on renewal, loss and fraud, re-opened cases under new numbers, UTC case timestamps. Layer 2: attributing the
+  victims to the dominant source first and screening the victims it leaves unexplained, because a pooled lift averages
+  over a mixture of sources.
+- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who cleans the
+  messages, counts only contact reads and runs CP-14's screen exactly as written finds the pump (lift 38.78) and either
+  stops there (174 cards) or keeps every terminal the pooled screen ranks high (502 with the coffee counter, 1,139 with
+  the car wash and the PIN pad as well); only the re-screen of the 78 unexplained victims finds the Lombard Market PIN
+  pad (lift 17.13) and gives 387. The entry-mode reading (data semantics, CP-14 s3) and CP-14's window and reissue rules
+  (rule application) sit on lower rungs and in the asks: misread, they move the count as well (every card-present read
+  as exposure gives 701), but read correctly they still leave the pooled screen at 174, 502 or 1,139, and only the
+  residual re-screen gives 387.
+
+## PRE-SHIP CHECK (client, eight points)
+
+1. Domain: the fraud desk's own compromise-point analysis (lift against the member base on skimmable reads, then the
+   residual re-screen); the swap test breaks it.
+2. Real work, nothing planted: ISO message pairs, entry-mode codebook, merchant directory, card history chains,
+   re-opened cases, UTC timestamps.
+3. The flip is a methodological choice, pooled against conditional attribution: not a planted catch, not a field or
+   code read correctly, not a stated rule applied.
+4. Analyst test holds: the easy routes give 174 (pump only), 502 (pump and coffee) or 1,139 (all four), named in the
+   ladder and asserted in the grid.
+5. CP-14 defines population, unit, window, exposure and comparison precisely enough that one method is defensible
+   (sequential attribution and set cover return the pump and the PIN pad in all 12 grid columns, the joint logistic in
+   the six contact-read columns CP-14 s3 defines).
+6. No decoy memo; the manager's note is a true observation (the pump is the biggest source).
+7. The method is not recovered from certified figures: the 2025 close-out is a precedent of layout, not a calibration
+   set.
+8. The lesson (a pooled common-point screen averages over a mixture, so the dominant source masks the next; screen the
+   residual) is not one an earlier task teaches.
 
 ## STOPPING RULE
 

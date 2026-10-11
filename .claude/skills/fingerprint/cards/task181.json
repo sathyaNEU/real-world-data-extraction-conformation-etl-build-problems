@@ -89,5 +89,8 @@
     "terminals mapped to merchant locations through the processor's terminal register with reader replacement dates",
     "card reissues under new card numbers linked through a card history table",
     "a fraud case workbook with one row per disputed transaction and a fraud type taxonomy"
-  ]
+  ],
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the authorisation messages, counts only contact reads and runs CP-14's common-point screen exactly as written finds the Ferrier Creek pump (lift 38.78, 205 of 283 victims) and either stops there (174 cards) or keeps every terminal the pooled screen ranks high (with the plaza's coffee counter, 502; with the car wash and the PIN pad as well, 1,139), because only re-screening the 78 victims the pump does not explain shows the Lombard Market PIN pad (lift 17.13 on 47 of them, level with the car wash at 4.59 in the pooled screen) and the 387 cards to reissue.",
+  "domain_test": "What decides the count is a card-fraud compromise-point analysis, each terminal's lift among counterfeit victims against the member base on skimmable contact reads, re-run on the victims the first compromised terminal does not explain, which is the fraud desk's own common-point-of-purchase work; with another field's nouns in there is no skimming exposure by entry mode, no counterfeit lookback and no per-card reissue, so the task does not read the same."
 }
