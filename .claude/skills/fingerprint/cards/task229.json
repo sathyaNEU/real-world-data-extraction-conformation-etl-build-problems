@@ -1,0 +1,85 @@
+{
+  "task": "task229",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed DQ02 (release-health alert on the average user's rate); seed's product-analytics pairing redrawn into energy-systems-utilities because task228 (same objective, drawn the same day in parallel) holds the product-analytics experiment-platform world; the seed's Layer 2 pitfall is kept on a smart-meter data provider's firmware rollout",
+  "domain": "energy-systems-utilities",
+  "subdomain": "other",
+  "niche": "a smart-meter data provider's read-health gate on the communications-module firmware builds live in its fleet, deciding which builds the read-health alert fires on before the next rollout wave, from the meter data management system's interval-receipt deliveries and the head-end's firmware activation history",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G7",
+    "G17"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "client_domain": "energy-systems-utilities",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "product-analytics/metric-definition-measurement-science/2",
+  "layer1": [
+    "interval meter reads with quality codes and mixed 5 and 30 minute resolution",
+    "re-delivered register-days (a later delivery replaces an earlier one)",
+    "UTC receipts, AEST market time and AEDT field time against a filed cutoff",
+    "firmware build codes spelled three ways across systems",
+    "effective-dated meter-to-installation assignments with mid-week meter exchanges",
+    "replayed head-end events and failed activations with rollback"
+  ],
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "metering data services lead at a smart-meter metering data provider, who owns the read-health alert the rollout desk gates each firmware wave on",
+  "role_family": "other",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "mdm_interval_receipts_20261005_20261011.csv",
+    "rows": 0,
+    "entity": "one metered register (data stream) of one installation for one market day, as one delivery from the meter data management system carried it, with its interval counts by quality flag",
+    "grain": "register x market day x delivery",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Australia, New South Wales",
+    "currency": "AUD",
+    "org_type": "accredited metering provider and metering data provider in the National Electricity Market",
+    "invented_names": [
+      "Wattle Grid Metering"
+    ],
+    "people": [
+      "Troy Phillips",
+      "Veronica Sharp",
+      "Margaret Roberson"
+    ]
+  },
+  "deliverables": [
+    "wave8_read_health_alerts.json",
+    "read_health_by_build_wk41.png"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The decisive quantity is an average of per-entity shares taken over the entities present for the whole window, with its error drawn from between-entity spread, so a pooled ratio over records that a few high-volume entities dominate, with a record-count error, both reverses which groups breach in each direction and makes small groups breach on noise.",
+  "driver_concrete": "The read-health standard scores a firmware build on its average installation that ran the build all week, counting the interval reads the meter data management system held as actual at the next-morning delivery cutoff, with the limit set three standard errors of that average below the reference; pooling interval reads lets the 5-minute, three-register commercial installations (about eighteen times a household's reads) carry PX5.3.0 under the line and lift EM3.12.1 over it, and a read-count error makes the large and the pilot builds breach on noise.",
+  "stump": "A competent solver builds each firmware build's read health from the MDM receipts as the share of all expected interval reads that were actual, with the binomial error on those reads, and fires the alert on EM3.12.0, EM3.12.2, PX5.3.0, PX5.3.1 and EM3.10.9 while holding PX5.2.7 and EM3.12.1; the step that lands it there is pooling interval reads, which the 5-minute commercial installations dominate, instead of averaging installations that ran the build all week at the delivery cutoff with an installation-level error.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v3 formed units by chaining labelled members within a distance and applied a per-unit threshold to a filed count; here the units are stored and named by the standard, and the move is how a group of units is scored and given an error: the average of per-unit shares with a between-unit standard error against a record-pooled ratio with a record-count error, which reverses breaches in both directions and makes small groups breach on noise"
+  },
+  "lineage": [],
+  "notes": "subdomain other: smart-meter interval data delivery quality (metering data provider read performance), which the energy task-type list does not carry; the task type that serves Data Quality Monitoring in the client taxonomy is the nearest analogue to product-analytics metric-definition, hence the pattern id."
+}

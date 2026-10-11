@@ -1,9 +1,29 @@
-{"task": "task229", "domain": "energy-systems-utilities", "objective": "data-quality-monitoring",
- "stage": 0, "stage_name": "intake", "updated": "2026-10-11",
- "stump": "",
- "architecture": 1, "loops": 0,
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+{
+ "task": "task229",
+ "domain": "energy-systems-utilities",
+ "objective": "data-quality-monitoring",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-11",
+ "stump": "A competent solver pools each build's interval reads from the MDM receipts with a binomial error and fires on EM3.12.0, EM3.12.2, PX5.3.0, PX5.3.1 and EM3.10.9, holding PX5.2.7 and EM3.12.1; the standard's average installation that ran the build all week, on reads held at the cut-off, with an installation-level error, fires on PX5.2.7, EM3.12.1 and EM3.10.9 only.",
+ "architecture": 1,
+ "loops": 0,
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
  "solver_rounds": [],
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "approved": null, "delivered": null, "portal": null}
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
+}
