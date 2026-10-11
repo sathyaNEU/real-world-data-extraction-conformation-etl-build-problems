@@ -36,18 +36,18 @@ If two apply, invoke both, in pipeline order.
 
 **Five slash commands, all author-triggered:** `/build` (the pipeline), `/approve` (the heart
 check and sign-off), `/leak-check` (the leak sweeps plus a reader's pass), `/clone-check` (the
-adjudicated corpus comparison) and `/solve` (a solver round: plain and skeptic solvers, graded).
+adjudicated corpus comparison) and `/solve` (a solver round: one isolated solver in a sandbox, graded).
 Each spends tokens in isolated threads except `/approve`, so none runs on the model's own
 initiative; `/build` is the author's licence for every stage it sequences: the leak reader, the
 adjudicated duplicate check, every solver round its loop needs, and the determinism judge.
 
 **The workflow is design, build, leak check, duplicate check, solver round, determinism check,
-ship, and it loops.** Two isolated solvers (plain and skeptic) work every finished build cold. A
-round that lands the main call, or lets the pair's mean proxy score above 40, sends the build back
-to design with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three
-loops per architecture, then re-rooted in the same objective and number, three architectures, then
-retired. Only a build that clears that worth-it gate goes to the determinism judge, whose FIX_NOW is
-fixed and re-judged once. No session runs a solve in the main thread, which has read the design.
+ship, and it loops.** One isolated solver works every finished build cold, in a sandbox holding only
+the prompt and the bundle. A round where it commits to the main call sends the build back to design
+with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three loops per
+architecture, then re-rooted in the same objective and number, three architectures, then retired. A
+round where it does not commit to the main call passes the worth-it gate, and the build goes straight
+on to the determinism judge, whose FIX_NOW is fixed and re-judged once. No session runs a solve in the main thread, which has read the design.
 
 ## Per-author rules
 
@@ -74,9 +74,9 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
               (a finding is fixed in the generator and the build re-run)
    ->  DUPLICATE CHECK: guard.py heart (mechanical)  ->  /clone-check pre-flight on this build
               (a reject-tier finding: redraw the colliding axis once, or retire)
-   ->  SOLVER ROUND: /solve, plain and skeptic, graded at the rubric's weights
-              worth-it gate: one solver off the main call, mean proxy <= 40, no fork
-              fail: back to the ladder with the brief (harden, rebuild, leak check, solve again);
+   ->  SOLVER ROUND: /solve, one isolated solver in a sandbox, graded at the rubric's weights
+              worth-it gate: the solver does not commit to the main call (the proxy is recorded, not gated)
+              landed: back to the ladder with the brief (harden, rebuild, leak check, solve again);
               3 loops per architecture, then re-root; 3 architectures, then retire
    ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once
               (a fresh solver round first if the fix moved a figure, a rung or a document);

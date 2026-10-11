@@ -22,8 +22,8 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task132 | FC03 | [The go-live stock value for a slow-moving parts tail, when the new engine forecasts each part on its whole supersession chain](task132/START_HERE.md) | Supply Chain & Logistics · aftermarket service-parts planning | sathya8571 | open |
-| task133 | FC04 | [Which zone gets next season's extra overnight rebalancing crew, when its newest stations have not finished growing](task133/START_HERE.md) | Supply Chain & Logistics · micromobility fleet rebalancing | sathya8571 | open |
+| task132 | FC03 | [The go-live stock value for a slow-moving parts tail, when the new engine forecasts each part on its whole supersession chain](task132/START_HERE.md) | Supply Chain & Logistics · aftermarket service-parts planning | sathya8571 | in build |
+| task133 | FC04 | [Which zone gets next season's extra overnight rebalancing crew, when its newest stations have not finished growing](task133/START_HERE.md) | Supply Chain & Logistics · micromobility fleet rebalancing | sathya8571 | in build |
 | task134 | FC05 | [Where twelve leased batteries go for next spring's midday oversupply, when a dry year will bring the irrigation pumps back](task134/START_HERE.md) | Economics · electricity distribution planning | sathya8571 | open |
 | task135 | FC06 | [How much grain to reserve rail for during next year's four lock closures, when storage fills terminal by terminal](task135/START_HERE.md) | Supply Chain & Logistics · inland waterway freight | sathya8571 | open |
 | task136 | FC07 | [Which feeder gets the one accelerated solar upgrade, when next spring's neighbourhood campaigns have a lift the log can measure](task136/START_HERE.md) | Demographic & Social Science · household technology adoption | sathya8571 | open |
@@ -76,7 +76,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | oviya13ya | in build |
-| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | developer 2 | open |
+| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | oviya13ya | in build |
 | task182 | AD05 | [How many high-dose patients the referral letter puts on one prescriber, when the dose that defines them is a daily dose built from overlapping fills](task182/START_HERE.md) | Policy & Education · public health-insurance programme integrity | developer 2 | open |
 | task183 | AD06 | [Which surge trigger the network adopts when the authority stops publishing its own, and only one rebuilt rule settles every week the agency was paid for](task183/START_HERE.md) | Supply Chain & Logistics · healthcare surge staffing contracts | developer 2 | open |
 | task184 | AD07 | [Which airport gets the one mobile screening team for the summer, when the team can only open lanes where a lane position stands idle](task184/START_HERE.md) | Supply Chain & Logistics · aviation passenger screening operations | developer 2 | open |
