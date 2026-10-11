@@ -1,6 +1,7 @@
-"""Pick balance adjustments on a few loans so every graded figure clears its rounding edge. A loan's ECL is
-linear in its current balance, so each candidate updates the group sums arithmetically."""
-import itertools
+"""Pick extra repayments of irregular amounts on a few up-to-date loans, paid a few days after their September 2026
+instalment, so every graded figure clears its rounding edge. The repayment comes off the balance at the reporting date
+in full (no interest is charged on it before then) and a loan's ECL is linear in its current balance, so each candidate
+updates the group sums arithmetically. Paste the printed TUNE into world.py and rebuild."""
 import os
 import sys
 import tempfile
@@ -16,15 +17,8 @@ def keys_of(prod, st, year):
     return ["total", "s%d" % st, "%s_s%d" % (prod, st), "band_%s_%s" % (prod, year)], ["%s_s%d_gca" % (prod, st)]
 
 
-def margin(f):
-    worst = 1.0
-    for k, v in f.items():
-        if k.endswith("_cov"):
-            m = abs((v * 100) % 1 - 0.5) / 0.5
-        else:
-            m = abs((v / 1000.0) % 1 - 0.5) / 0.5
-        worst = min(worst, m)
-    return worst
+def margin_of(k, v):
+    return abs((v * 100) % 1 - 0.5) / 0.5 if k.endswith("_cov") else abs((v / 1000.0) % 1 - 0.5) / 0.5
 
 
 def main():
@@ -32,11 +26,12 @@ def main():
     import estimators as E
     W.TUNE = {}
     tmp = tempfile.mkdtemp()
-    lo, bk, hd = B.build(tmp)
+    _, bk, _ = B.build(tmp)
     s = E.solve(tmp)
     L = s["loans"].reset_index(drop=True)
-    keymap = dict(zip(bk["loan_no"], bk["loan_key"]))
-    # base sums
+    info = bk.set_index("loan_no")
+    L["key"] = info.loc[L["loan_no"], "loan_key"].values
+    L["dpd"] = info.loc[L["loan_no"], "days_past_due"].values
     base = {"total": L["ecl"].sum()}
     for (st, p), g in L.groupby(["stage", "product"]):
         base["s%d" % st] = base.get("s%d" % st, 0.0) + g["ecl"].sum()
@@ -47,12 +42,12 @@ def main():
 
     def figures(adj):
         f = dict(base)
-        for i, d in adj:
+        for i, amt in adj:
             r = L.iloc[i]
-            de = r["ecl"] * d / r["current_balance"]
+            d = -amt
             ek, gk = keys_of(r["product"], int(r["stage"]), r["band"])
             for k in ek:
-                f[k] += de
+                f[k] += r["ecl"] * d / r["current_balance"]
             for k in gk:
                 f[k] += d
         for st in (1, 2):
@@ -60,31 +55,28 @@ def main():
                 f["%s_s%d_cov" % (p, st)] = 100 * f["%s_s%d" % (p, st)] / f["%s_s%d_gca" % (p, st)]
         return f
 
-    print("base margin", round(margin(figures([])), 3), flush=True)
+    def margin(f):
+        return min(margin_of(k, v) for k, v in f.items())
 
     def worst_key(f):
-        best_k, best_m = None, 9
-        for k, v in f.items():
-            m = abs((v * 100) % 1 - 0.5) / 0.5 if k.endswith("_cov") else abs((v / 1000.0) % 1 - 0.5) / 0.5
-            if m < best_m:
-                best_k, best_m = k, m
-        return best_k
+        return min(f.items(), key=lambda kv: margin_of(*kv))[0]
 
     def group_rows(k):
+        ok = (L["ecl"] > 0) & (L["dpd"] == 0) & (L["current_balance"] > 4000)
         if k == "total":
-            return L.index[L["ecl"] > 0]
+            return L.index[ok]
         if k.startswith("s") and k[1:].isdigit():
-            return L.index[(L["stage"] == int(k[1:])) & (L["ecl"] > 0)]
+            return L.index[ok & (L["stage"] == int(k[1:]))]
         if k.startswith("band_"):
             _, p, y = k.split("_", 2)
-            return L.index[(L["product"] == p) & (L["band"] == y)]
+            return L.index[ok & (L["product"] == p) & (L["band"] == y)]
         p, st = k.split("_")[0], int(k.split("_")[1][1])
-        return L.index[(L["product"] == p) & (L["stage"] == st) & (L["ecl"] > 0)]
+        return L.index[ok & (L["product"] == p) & (L["stage"] == st)]
 
-    adj = []
-    deltas = [-2900, -2100, -1400, -900, -400, 400, 900, 1400, 2100, 2900]
     rng = np.random.default_rng(11)
-    for step in range(8):
+    adj = []
+    print("base margin", round(margin(figures([])), 3), flush=True)
+    for step in range(10):
         f = figures(adj)
         cur = margin(f)
         print("step", step, "margin", round(cur, 3), "worst", worst_key(f), flush=True)
@@ -96,16 +88,16 @@ def main():
         for i in rows:
             if any(i == a for a, _ in adj):
                 continue
-            for d in deltas:
-                m = margin(figures(adj + [(i, d)]))
+            cap = min(6000.0, 0.3 * float(L.at[i, "current_balance"]))
+            for amt in np.round(rng.uniform(250, cap, 12), 2):
+                m = margin(figures(adj + [(i, float(amt))]))
                 if cand is None or m > cand[0]:
-                    cand = (m, i, d)
+                    cand = (m, i, float(amt))
         if cand is None or cand[0] <= cur:
             break
         adj.append((cand[1], cand[2]))
-    best = (margin(figures(adj)), adj)
-    tune = {int(keymap[L.at[i, "loan_no"]]): float(d) for i, d in best[1]}
-    print("best margin", round(best[0], 3))
+    tune = {int(L.at[i, "key"]): amt for i, amt in sorted(adj, key=lambda x: int(L.at[x[0], "key"]))}
+    print("best margin", round(margin(figures(adj)), 3))
     print("TUNE =", tune)
 
 

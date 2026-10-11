@@ -1,115 +1,244 @@
-"""System extracts: the loan book at the reporting date, the hardship register, the development sample, write-offs."""
+"""System extracts and model-team files, all read off the simulated book: the loan book at close of business on the
+reporting date, the hardship register, the PD curve and its development sample, write-offs and recoveries, and the
+month-end arrears roll rates."""
 import datetime as dt
-import math
 
 import numpy as np
 import pandas as pd
 
-import sim as S
+import sim as SM
 import world as W
 
-STATES = ["NSW", "VIC", "QLD", "WA", "SA", "ACT", "TAS", "NT"]
-STATE_P = [0.34, 0.26, 0.2, 0.09, 0.06, 0.02, 0.02, 0.01]
-CHANNELS = ["Broker", "Online", "Direct"]
+BUCKETS = ["Current", "1-29", "30-59", "60-89", "90+"]
 
 
-def annuity(amount, rate, n):
-    i = rate / 12.0
-    return amount * i / (1 - (1 + i) ** -n)
+def bucket(d):
+    return np.select([d == 0, d < 30, d < 60, d < 90], [0, 1, 2, 3], 4)
 
 
-def sched_balance(amount, rate, term, paid):
-    i = rate / 12.0
-    p = annuity(amount, rate, term)
-    return amount * (1 + i) ** paid - p * ((1 + i) ** paid - 1) / i
+def mob_at(S, rows, t):
+    """repayments fallen due on or before day t"""
+    T = S.T[rows]
+    due = S.due[rows]
+    k = np.arange(SM.J)[None, :] < T[:, None]
+    return ((due <= t) & k).sum(1)
 
 
-def v3_score(rng):
-    return int(np.clip(rng.normal(620, 55), 420, 820))
-
-
-def to_v4(v3):
-    a, b = W.SCORE_MAP
-    return int(round(a * v3 + b))
-
-
-def book(rng, lo):
-    """every loan in the book system at the reporting date: performing loans plus defaulted loans not yet
-    written off (90 or more days past due, written off at 180)"""
-    perf = lo[lo["status"] == "performing"].copy()
-    recent_def = lo[(lo["status"] == "default") & (lo["mob"] - lo["end_mob"] <= 3)].copy()
-    rows = []
-    for _, r in pd.concat([perf, recent_def]).sort_values("loan_key").iterrows():
-        if r.status == "performing":
-            u = rng.random()
-            dpd = 0 if u < 0.93 else (int(rng.integers(1, 30)) if u < 0.968 else (int(rng.integers(30, 60)) if u < 0.986 else int(rng.integers(60, 90))))
-        else:
-            dpd = int(90 + 30 * (r.mob - r.end_mob) + rng.integers(0, 28))
-        missed = math.ceil(dpd / 30) if dpd else 0
-        paid = max(0, min(r.mob, r.term) - missed)
-        bal = round(sched_balance(r.amount, r.rate, r.term, paid) + W.TUNE.get(int(r.loan_key), 0.0), 2)
-        if r.drawdown < W.SCORECARD_SWITCH:
-            card, s0 = "v3", v3_score(rng)
-            s0v4 = to_v4(s0)
-        else:
-            card = "v4"
-            s0 = to_v4(v3_score(rng))
-            s0v4 = s0
-        drift = rng.normal(4, 22) if rng.random() > 0.085 else rng.normal(-85, 25)
-        cur = int(np.clip(round(s0v4 + drift - (40 if dpd >= 30 else 0)), 380, 900))
-        rows.append(dict(loan_key=r.loan_key, product=r["product"], risk_grade=r.grade, drawdown_date=r.drawdown,
-                         first_repayment_date=r.first_rep, term_months=r.term, contract_rate=r.rate,
-                         original_amount=r.amount, current_balance=bal, days_past_due=dpd,
-                         origination_score=s0, origination_scorecard=card, current_score_v4=cur,
-                         state=STATES[int(rng.choice(8, p=STATE_P))], channel=CHANNELS[int(rng.integers(3))]))
-    bk = pd.DataFrame(rows)
-    bk.insert(0, "loan_no", ["BPL%07d" % (3100000 + int(k) * 7 + int(k) % 5) for k in bk["loan_key"]])
+def book(S, rng):
+    """every loan open in the loan system at close of business on the reporting date, after the month-end write-off
+    batch, with its behaviour score that night"""
+    R = S.R
+    L = S.L
+    rows = np.nonzero(SM.open_at(S, R))[0]
+    n = len(rows)
+    dpd = SM.dpd_at(S, R, rows)
+    bal = SM.balances(S, rows, np.full(n, R))
+    a = mob_at(S, rows, R)
+    # behaviour score: the application score's drift since origination plus what the bureau and the account show now
+    s0 = L["score_v3"][rows]
+    drift = rng.normal(0.3 * np.minimum(a, 24), 10 + 3.0 * np.sqrt(a))
+    ev = np.select([dpd == 0, dpd < 30, dpd < 60, dpd < 90], [0.0, -12.0, -45.0, -60.0], -80.0) + np.where(dpd > 0, rng.normal(0, 8, n), 0)
+    pos = {int(r): k for k, r in enumerate(rows)}
+    hs_now = np.zeros(n)
+    for x in S.arr:
+        k = pos.get(x["loan"])
+        if k is None or x["received"] > R:
+            continue
+        cancelled = x["cancel"] is not None and x["cancel"] < R
+        if x["start"] <= R <= x["end"] and not cancelled:
+            hs_now[k] = min(hs_now[k], rng.normal(-22, 12))
+        elif cancelled and x["outcome"] == "failed" and R - x["cancel"] < 365:
+            hs_now[k] = min(hs_now[k], rng.normal(-25, 12))
+        elif x["end"] < R and R - x["end"] < 365 and x["outcome"] != "withdrawn":
+            hs_now[k] = min(hs_now[k], rng.normal(-14, 10))
+    onset = np.where(S.j0[rows] > 0, S.due[rows, np.maximum(S.j0[rows] - 1, 0)], SM.BIG)
+    pre = (onset > R) & (onset <= R + 183) & (rng.random(n) < 0.55)
+    ev += np.where(pre, rng.normal(-45, 18, n), 0)
+    ev += np.where(S.cured[rows], rng.normal(-40, 15, n), 0)
+    recent = ((S.clear[rows] > S.due[rows]) & (S.due[rows] > R - 183) & (S.due[rows] <= R) & (S.clear[rows] < SM.BIG)).sum(1)
+    ev += -9.0 * recent
+    ev += np.where(rng.random(n) < 0.045, rng.normal(-65, 22, n), 0)
+    latent = s0 + drift + ev + hs_now
+    sa, sb = W.SCORE_MAP
+    raw = sa * latent + sb + rng.normal(0, 5, n)
+    raw = np.where(raw > 880, 880 + 60 * np.tanh((raw - 880) / 60), raw)    # the points scale flattens at the top
+    cur = np.rint(raw).astype(int)
+    first = np.array([SM.dd(x) for x in S.nom[rows, 0]])
+    bk = pd.DataFrame(dict(
+        loan_no=L["loan_no"][rows],
+        product=np.where(L["pl60"][rows], "PL60", "PL36"),
+        risk_grade=np.array(W.GRADES)[L["grade"][rows]],
+        drawdown_date=[SM.dd(x).isoformat() for x in L["draw"][rows]],
+        first_repayment_date=[d.isoformat() for d in first],
+        term_months=S.T[rows],
+        contract_rate=["%.4f" % x for x in L["rate"][rows]],
+        original_amount=L["financed"][rows],
+        current_balance=["%.2f" % x for x in np.round(bal, 2)],
+        days_past_due=dpd,
+        origination_score=L["orig_score"][rows],
+        origination_scorecard=np.where(L["v4"][rows], "v4", "v3"),
+        current_score_v4=cur,
+        state=np.array(W.STATES)[L["state"][rows]],
+        channel=np.array(W.CHANNELS)[L["channel"][rows]],
+    ))
+    bk["loan_key"] = rows + 1
+    bk["_bal"] = np.round(bal, 2)
+    bk = bk.sort_values("loan_no", kind="stable").reset_index(drop=True)
     return bk
 
 
-def hardship(rng, bk, lo):
-    """hardship arrangements, past and present, for loans still on the book and some since closed"""
+def hardship(S, rng):
+    """the hardship register: every arrangement recorded since go-live, one row per arrangement, case numbers in the
+    order requests were received (requests declined at assessment take a number and do not appear)"""
+    R = S.R
+    L = S.L
     rows = []
-    for _, r in bk.iterrows():
-        u = rng.random()
-        if u < 0.026 and r.days_past_due < 90:
-            start = W.REPORT - dt.timedelta(days=int(rng.integers(5, 150)))
-            end = start + dt.timedelta(days=int(rng.choice([90, 180])))
-            if end < W.REPORT:
-                end = W.REPORT + dt.timedelta(days=int(rng.integers(10, 120)))
-            rows.append((r.loan_no, start, end, "Active", "Reduced repayments"))
-        elif u < 0.06:
-            start = r.drawdown_date + dt.timedelta(days=int(rng.integers(60, 600)))
-            if start > W.REPORT - dt.timedelta(days=60):
-                continue
-            end = start + dt.timedelta(days=int(rng.choice([60, 90, 180])))
-            if end >= W.REPORT:
-                end = W.REPORT - dt.timedelta(days=int(rng.integers(1, 30)))
-            st = "Completed" if rng.random() < 0.8 else "Cancelled"
-            rows.append((r.loan_no, start, end, st, "Repayment pause" if rng.random() < 0.5 else "Reduced repayments"))
-        elif u < 0.068 and r.days_past_due < 30:
-            # cancelled before it began: the customer withdrew the request
-            start = W.REPORT - dt.timedelta(days=int(rng.integers(10, 60)))
-            rows.append((r.loan_no, start, start + dt.timedelta(days=90), "Cancelled", "Repayment pause"))
-    hd = pd.DataFrame(rows, columns=["loan_no", "arrangement_start", "arrangement_end", "arrangement_status", "arrangement_type"])
-    hd.insert(0, "case_ref", ["HS-%05d" % (20000 + i) for i in range(len(hd))])
-    return hd
-
-
-def development_sample(lo):
-    """the PD model's development data: loans drawn October 2019 to September 2023, outcome to June 2026"""
-    d = lo[lo["drawdown"] < dt.date(2023, 10, 1)].copy()
-    out = pd.DataFrame(dict(loan_key=d["loan_key"], product=d["product"], risk_grade=d["grade"],
-                            drawdown_month=[x.strftime("%Y-%m") for x in d["drawdown"]],
-                            term_months=d["term"], outcome=d["status"],
-                            outcome_month_on_book=d["end_mob"].astype("Int64")))
+    for x in S.arr:
+        if x["received"] > R or x["received"] >= S.close[x["loan"]]:
+            continue
+        x = dict(x)
+        shut = int(S.close[x["loan"]])
+        if shut <= R and x["end"] > shut and not (x["cancel"] is not None and x["cancel"] <= shut):
+            if shut < x["start"]:
+                continue                        # repaid before the varied repayments began: the request lapsed
+            # the loan was repaid while the arrangement ran: it ends with the loan
+            x["end"], x["cancel"], x["outcome"] = min(shut, R - 1), None, "complete"
+        if x["outcome"] == "withdrawn":
+            if x["cancel"] < R:
+                status, cancel = "Cancelled", x["cancel"]
+            else:
+                status, cancel = "Approved", None
+        elif x["outcome"] == "failed":
+            if x["cancel"] < R:
+                status, cancel = "Cancelled", x["cancel"]
+            elif x["start"] > R:
+                status, cancel = "Approved", None
+            else:
+                status, cancel = "Active", None
+        else:
+            status = "Approved" if x["start"] > R else ("Active" if x["end"] >= R else "Completed")
+            cancel = None
+        rows.append((x["received"], L["loan_no"][x["loan"]], x["reason"], x["kind"], x["start"], x["end"],
+                     x["reduced"], status, cancel))
+    rows.sort(key=lambda r: (r[0], r[1]))
+    seq = 10230 + np.cumsum(1 + rng.poisson(0.22, len(rows)))
+    out = pd.DataFrame(dict(
+        case_ref=["HS-%06d" % q for q in seq],
+        loan_no=[r[1] for r in rows],
+        received_date=[SM.dd(r[0]) for r in rows],
+        hardship_reason=[r[2] for r in rows],
+        arrangement_type=[r[3] for r in rows],
+        arrangement_start=[SM.dd(r[4]) for r in rows],
+        arrangement_end=[SM.dd(r[5]) for r in rows],
+        agreed_repayment_aud=[(r[6] if r[3] == "Reduced repayments" else 0.0) for r in rows],
+        arrangement_status=[r[7] for r in rows],
+        cancelled_date=[SM.dd(r[8]) if r[8] is not None else None for r in rows],
+    ))
     return out
 
 
-def write_offs(rng):
+def curve(S):
+    """the model team's cumulative default curve by month on book: the expected share of a new loan's cohort that
+    has reached 90 days past due at a month end by each month on book, over the development loans' own repayment
+    calendars, all grades pooled at the development mix, payouts not counted as an exit"""
+    cal = S.cal
+    dev = S.L["draw"] < SM.dn(W.DEV_CUTOFF)
+    out = {}
+    for p, T in W.PRODUCTS.items():
+        rows = np.nonzero(dev & (S.L["pl60"] == (p == "PL60")))[0]
+        h = S.haz[rows, :T]
+        surv = np.exp(-np.cumsum(-np.log1p(-h), 1))
+        before = np.hstack([np.ones((len(rows), 1)), surv[:, :-1]])
+        pj = h * before
+        due = S.due[rows, :T]
+        e = cal.me[cal.mi_of[due + 90]]
+        m = np.zeros_like(due)
+        for k in range(T):
+            m += due[:, k:k + 1] <= e
+        C = np.zeros(T + 1)
+        for mm in range(1, T + 1):
+            C[mm] = (pj * (m <= mm)).sum(1).mean()
+        out[p] = np.round(C, 6)
+    return out
+
+
+def development_sample(S):
+    """loans drawn October 2019 to September 2023 and what had become of each by 30 June 2026"""
+    obs = SM.dn(W.DEV_OBS_END)
+    L = S.L
+    rows = np.nonzero(L["draw"] < SM.dn(W.DEV_CUTOFF))[0]
+    T = S.T[rows]
+    due = S.due[rows]
+    inside = np.arange(SM.J)[None, :] < T[:, None]
+    close, ct = S.close[rows], S.close_type[rows]
+    dflt = S.e_def[rows] <= obs
+    mob_close = ((due <= close[:, None]) & inside).sum(1)
+    mob_obs = ((due <= obs) & inside).sum(1)
+    shut = (close <= obs) & ~dflt
+    mat = shut & (ct == 2) & (mob_close >= T)
+    pre = shut & ((ct == 1) | ((ct == 2) & (mob_close < T)))
+    outcome = np.select([dflt, pre, mat], ["default", "prepaid", "matured"], "open")
+    month = np.select([dflt, pre, mat], [S.m_def[rows], mob_close, T], mob_obs)
+    return pd.DataFrame(dict(
+        loan_key=(rows + 1).astype(np.int64),
+        product=np.where(L["pl60"][rows], "PL60", "PL36"),
+        risk_grade=np.array(W.GRADES)[L["grade"][rows]],
+        drawdown_month=[SM.dd(x).strftime("%Y-%m") for x in L["draw"][rows]],
+        term_months=T.astype(np.int64),
+        outcome=outcome,
+        outcome_month_on_book=month.astype(np.int64),
+    ))
+
+
+def write_offs(S, rng):
+    """loans written off in each month-end batch, July 2025 to September 2026, the balance written off, and
+    recoveries received in the month on loans written off in any earlier month"""
+    cal, R = S.cal, S.R
+    wo = np.nonzero((S.close_type == 3) & (S.close <= R))[0]
+    bal = SM.balances(S, wo, S.close[wo])
+    flows = []
+    for k, i in enumerate(wo):
+        u = rng.random()
+        b = float(bal[k])
+        if u < 0.48:
+            d = int(S.close[i]) + int(rng.integers(60, 181))
+            amt = float(np.round(rng.uniform(40, 220) / 5) * 5)
+            total = 0.0
+            for _ in range(1 + int(rng.geometric(0.09))):
+                if total + amt > 0.7 * b:
+                    break
+                flows.append((int(cal.next_bd[d]), amt))
+                total += amt
+                d = SM.add_months(d, 1)
+        elif u < 0.56:
+            d = int(cal.next_bd[int(S.close[i]) + int(rng.integers(90, 541))])
+            flows.append((d, float(np.round(b * rng.uniform(0.20, 0.45), 2))))
+    fl = pd.DataFrame(flows, columns=["d", "amt"])
+    fl["m"] = [SM.dd(x).strftime("%Y-%m") for x in fl["d"]]
+    wm = pd.Series([SM.dd(x).strftime("%Y-%m") for x in S.close[wo]])
     rows = []
-    for m in pd.period_range("2025-07", "2026-09", freq="M"):
-        n = int(rng.poisson(118))
-        rows.append(dict(month=str(m), loans_written_off=n, gross_write_off_aud=round(n * float(rng.uniform(13500, 16500)), 2),
-                         recoveries_aud=round(n * float(rng.uniform(1800, 2600)), 2)))
+    for per in pd.period_range("2025-07", "2026-09", freq="M"):
+        m = str(per)
+        sel = (wm == m).values
+        rows.append(dict(month=m, loans_written_off=int(sel.sum()), gross_write_off_aud="%.2f" % round(float(bal[sel].sum()), 2),
+                         recoveries_aud="%.2f" % round(float(fl.loc[fl["m"] == m, "amt"].sum()), 2)))
     return pd.DataFrame(rows)
+
+
+def roll_rates(S):
+    """month-end roll rates between arrears buckets, July 2025 to June 2026, by loan count"""
+    cal = S.cal
+    out = []
+    k0 = int(cal.mi_of[SM.dn(dt.date(2025, 6, 30))])
+    for k in range(k0 + 1, k0 + 13):
+        t0, t1 = int(cal.me[k - 1]), int(cal.me[k])
+        o0 = SM.open_at(S, t0)
+        rows = np.nonzero(o0)[0]
+        b0 = bucket(SM.dpd_at(S, t0, rows))
+        still = S.close[rows] > t1
+        b1 = np.where(still, bucket(SM.dpd_at(S, t1, rows)), -1)
+
+        def rr(x, y):
+            return float(((b0 == x) & (b1 == y)).sum()) / float((b0 == x).sum())
+        out.append((SM.dd(t1), rr(0, 1), rr(1, 2), rr(2, 3), rr(3, 4), rr(1, 0)))
+    return out

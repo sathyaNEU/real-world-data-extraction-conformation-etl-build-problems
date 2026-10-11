@@ -14,6 +14,8 @@ from pptx.util import Cm, Pt
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import estimators as E
+import officex as OX
+import world as W
 import postprocess as P
 
 TASK = os.path.dirname(HERE)
@@ -100,8 +102,9 @@ def workbook(s, path):
         "Stage 2: 30 or more days past due, a hardship arrangement in force on 30 September 2026 (start on or before, end on or "
         "after, not cancelled), or a behaviour score 60 or more points below origination on scorecard v4; v3 origination scores "
         "converted as 1.12 x v3 - 18, rounded (section 2 and the June 2024 migration note).",
-        "PD(k) for a loan that has had a repayments fall due is (C(a+k) - C(a+k-1)) / (1 - C(a)) on the PLPD-2026.06 curve for its "
-        "product: the curve runs from origination, and a performing loan has already come through its first a months.",
+        "PD(k) is (C(a+k) - C(a+k-1)) / (1 - C(a)) on the PLPD-2026.06 curve for the loan's product, where a is the number of "
+        "monthly repayments fallen due by 30 September: the curve runs from origination, and a performing loan has already come "
+        "through its first a months.",
         "EAD re-amortises the current balance over the remaining term at the contract rate; months discounted at the contract rate; "
         "LGD 70 per cent PL36, 76 per cent PL60 (sections 3.3 to 3.5).",
         "Scenario weights 55 / 30 / 15 per cent on PD multipliers 1.00 / 1.30 / 0.80 give a weighted multiplier of %.4f (section 4)." % s["mult"],
@@ -110,7 +113,7 @@ def workbook(s, path):
     for i, t in enumerate(notes, 1):
         ws.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
     ws.column_dimensions["A"].width = 125
-    wb.save(path)
+    OX.xlsx_from_openpyxl(wb, path, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 15, 12, 9), PREPARED, seed=1009)
 
 
 def deck(s, path):
@@ -213,7 +216,7 @@ def deck(s, path):
     footer(s2, 2)
     prs.core_properties.author = "Joseph Mitchell"
     prs.core_properties.last_modified_by = "Joseph Mitchell"
-    prs.core_properties.title = "ECL allowance, Q3 FY27"
+    prs.core_properties.title = "ECL allowance, Q1 FY27"
     prs.core_properties.created = PREPARED
     prs.core_properties.modified = PREPARED
     prs.core_properties.revision = 3
@@ -227,11 +230,12 @@ def build(target=None, out=None):
     s = E.solve(target)
     wbp = os.path.join(out, "ecl_allowance_2026Q3.xlsx")
     workbook(s, wbp)
-    P.normalize_zip(wbp, (2026, 10, 9, 16, 20, 0), creator="Joseph Mitchell")
     dp = os.path.join(out, "arc_ecl_q3_2026.pptx")
     deck(s, dp)
+    P.office_container(dp, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 16, 41), PREPARED,
+                       "Microsoft Office PowerPoint", revision=3)
     for f in (wbp, dp):
-        ts = PREPARED.timestamp()
+        ts = W.posix(PREPARED)
         os.utime(f, (ts, ts))
     return s
 

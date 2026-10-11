@@ -23,13 +23,16 @@ BANDS_V4 = [("A", 766), ("B", 716), ("C", 671), ("D", 632), ("E", 592)]
 APP_SCORE = (640.0, 58.0)              # applicant score on the v3 scale
 TIGHTENED = (dt.date(2020, 4, 1), dt.date(2020, 9, 30))   # E grade closed to new lending
 
-# establishment fee by grade (added to the amount financed), re-set 1 July 2023
-FEES = {"A": (250, 295), "B": (350, 395), "C": (450, 495), "D": (495, 545), "E": (595, 645)}
+# establishment fee: a share of the amount by grade, between a floor and a cap, re-set 1 July 2023; added to the
+# amount financed unless the borrower pays it at settlement
+FEE_PCT = {"A": (0.010, 0.0125), "B": (0.015, 0.0175), "C": (0.020, 0.0225), "D": (0.025, 0.0275), "E": (0.030, 0.0325)}
+FEE_FLOOR, FEE_CAP = 95, 995
+FEE_UPFRONT = 0.12
 FEE_CHANGE = dt.date(2023, 7, 1)
 
 # rate card: grade base at a 0.10 per cent cash rate, PL60 loading, cash-rate pass-through on reprice
 RATE_BASE = {"A": 0.0799, "B": 0.1049, "C": 0.1349, "D": 0.1699, "E": 0.2049}
-PL60_LOADING = 0.0050
+PL60_LOADING = 0.0075
 PASS_THROUGH = 0.85
 REPRICE_LAG_DAYS = 21
 RATE_CAP = 0.2699
@@ -58,7 +61,7 @@ STATE_P = [0.36, 0.25, 0.20, 0.08, 0.06, 0.02, 0.02, 0.01]
 
 # default onset (first instalment of a run that is never made good) by instalment number, grade C,
 # and the grade multipliers; the 90 days past due default follows about three months after the onset
-ONSET_LEVEL = {"PL36": 0.00215, "PL60": 0.00205}
+ONSET_LEVEL = {"PL36": 0.00616, "PL60": 0.00701}
 ONSET_PEAK = 3.0
 ONSET_FLOOR = 0.24
 GRADE_MULT = {"A": 0.32, "B": 0.62, "C": 1.0, "D": 1.55, "E": 2.30}
@@ -66,19 +69,19 @@ GRADE_MULT = {"A": 0.32, "B": 0.62, "C": 1.0, "D": 1.55, "E": 2.30}
 PREPAY = 0.0118
 PREPAY_GRADE = {"A": 1.30, "B": 1.12, "C": 1.0, "D": 0.88, "E": 0.76}
 # instalments paid late or missed and later made good, per instalment, by grade, with calendar seasonality
-LATE = {"A": 0.020, "B": 0.030, "C": 0.042, "D": 0.058, "E": 0.080}
+LATE = {"A": 0.032, "B": 0.048, "C": 0.066, "D": 0.090, "E": 0.122}
 LATE_SEASON = {1: 1.35, 2: 1.15, 3: 1.0, 4: 0.97, 5: 0.95, 6: 1.0, 7: 1.08, 8: 0.96, 9: 0.95, 10: 0.95, 11: 1.0, 12: 1.22}
 # after default: monthly chance of settling in full, catching up, or a collections hardship arrangement
 POST_DEFAULT = (0.014, 0.009, 0.007)
 # hardship arrangements: requests per loan-month by period, grade multipliers
-HARDSHIP_RATE = [(dt.date(2019, 10, 1), 0.0012), (dt.date(2020, 7, 1), 0.0018), (dt.date(2021, 1, 1), 0.0012),
-                 (dt.date(2022, 7, 1), 0.0018), (dt.date(2023, 1, 1), 0.0026), (dt.date(2024, 1, 1), 0.0031),
-                 (dt.date(2025, 1, 1), 0.0032), (dt.date(2026, 1, 1), 0.0034)]
+HARDSHIP_RATE = [(dt.date(2019, 10, 1), 0.0014), (dt.date(2020, 7, 1), 0.0022), (dt.date(2021, 1, 1), 0.0015),
+                 (dt.date(2022, 7, 1), 0.0024), (dt.date(2023, 1, 1), 0.0040), (dt.date(2024, 1, 1), 0.0050),
+                 (dt.date(2025, 1, 1), 0.0054), (dt.date(2026, 1, 1), 0.0058)]
 HARDSHIP_GRADE = {"A": 0.45, "B": 0.70, "C": 1.0, "D": 1.45, "E": 2.0}
 
 # extra repayments settled by tune.py: loan_key -> amount (AUD), paid a few days after the loan's
 # September 2026 instalment, so no graded figure sits on a rounding edge
-TUNE = {}
+TUNE = {75277: 1616.36}
 
 
 def easter(y):

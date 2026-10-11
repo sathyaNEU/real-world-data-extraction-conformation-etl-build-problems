@@ -12,6 +12,7 @@ F = dict(book="personal_loan_book_2026-09-30.csv", curve="pd_curve_personal_loan
          hardship="hardship_register_2026-09-30.xlsx", scen="ifrs9_scenarios_2026Q3.xlsx",
          note="scorecard_v4_migration_note.pdf")
 REPORT = dt.date(2026, 9, 30)
+SCEN_SHEET = "Q1 FY27 scenarios"
 LGD = {"PL36": 0.70, "PL60": 0.76}
 STAGE2_SCALAR = 2.4
 
@@ -42,12 +43,16 @@ def band_of(m):
 def load(target):
     bk = pd.read_csv(os.path.join(target, F["book"]))
     bk["first_rep"] = bk["first_repayment_date"].map(_d)
-    cv = pd.read_csv(os.path.join(target, F["curve"]))
+    cv = pd.read_csv(os.path.join(target, F["curve"]), comment="#")
     curves = {p: g.sort_values("month_on_book")["cumulative_pd"].tolist() for p, g in cv.groupby("product")}
     hd = pd.read_excel(os.path.join(target, F["hardship"]), sheet_name=0)
     wb = openpyxl.load_workbook(os.path.join(target, F["scen"]), data_only=True)
-    ws = wb["Q3 FY27 scenarios"]
-    scen = [(r[0], float(r[1]), float(r[2])) for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0]]
+    ws = wb[SCEN_SHEET]
+    scen = []
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if not r or r[0] is None:
+            break
+        scen.append((r[0], float(r[1]), float(r[2])))
     text = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, F["note"])).pages)
     m = re.search(r"v4 = ([0-9.]+) x v3 - ([0-9.]+)", text)
     mapping = (float(m.group(1)), -float(m.group(2)))

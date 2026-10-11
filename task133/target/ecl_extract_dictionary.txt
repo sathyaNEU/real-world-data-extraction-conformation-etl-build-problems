@@ -1,0 +1,67 @@
+BELLBIRD PERSONAL FINANCE LTD
+QUARTER-END ECL RUN, 30 SEPTEMBER 2026: LOAN SYSTEM EXTRACTS
+Produced by job ECL_QE_BOOK on 1 October 2026 at 07:30, after the September month-end batch.
+Credit Risk Reporting keeps this dictionary; changes to an extract are recorded against the job.
+
+
+1. personal_loan_book_2026-09-30.csv
+Every loan open in the loan system at close of business on 30 September 2026, one row per loan, including loans in
+arrears. Loans are written off in the month-end batch once 180 or more days past due, so loans written off in the
+September batch are not in the extract. Sorted by loan number.
+
+  loan_no                  loan number, allocated at application: BPL, six digits and a check digit
+  product                  PL36 (36-month term) or PL60 (60-month term)
+  risk_grade               grade at approval, A (lowest risk) to E, from the application score bands in force on the day
+  drawdown_date            date the loan was funded
+  first_repayment_date     date of the first scheduled repayment; later repayments are scheduled on the same day of each
+                           month. A repayment scheduled on a weekend or NSW public holiday falls due on the next
+                           business day
+  term_months              contractual term in months
+  contract_rate            fixed annual contract rate, decimal
+  original_amount          amount financed, whole dollars, including the establishment fee
+  current_balance          account balance at close of business: principal plus interest and fees charged, less
+                           repayments received (AUD). Interest accrues daily and is charged on each scheduled
+                           repayment date
+  days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
+  origination_score        application score at origination, on the scorecard named in origination_scorecard
+  origination_scorecard    v3 (applications before 1 July 2024) or v4
+  current_score_v4         behaviour score at the reporting date, scorecard v4
+  state                    state of the borrower's residential address
+  channel                  origination channel: Broker, Online or Direct
+
+
+2. hardship_register_2026-09-30.xlsx, sheet Arrangements
+Every hardship arrangement recorded since the loan system went live in October 2019, one row per arrangement,
+including arrangements on loans since repaid or written off. A loan can have more than one arrangement. Case numbers
+are allocated when a request is received; requests declined at assessment keep their number and are not listed.
+Arrears at the start of an arrangement are capitalised.
+
+  case_ref                 hardship case number
+  loan_no                  loan number
+  received_date            date the request was received
+  hardship_reason          reason recorded at assessment
+  arrangement_type         Payment pause (no repayments for the period) or Reduced repayments
+  arrangement_start        first day of the varied repayments
+  arrangement_end          last day of the varied repayments, as approved
+  agreed_repayment_aud     monthly repayment agreed under a reduced repayment arrangement; 0 for a pause
+  arrangement_status       Approved (not yet started), Active, Completed or Cancelled
+  cancelled_date           date the arrangement was cancelled, at the customer's request or after varied repayments
+                           were missed; a cancelled arrangement keeps its approved dates
+
+
+3. write_offs_2025-07_2026-09.csv
+Loans written off in each month-end batch, July 2025 to September 2026, and recoveries received.
+
+  month                    month of the batch (YYYY-MM)
+  loans_written_off        number of loans written off
+  gross_write_off_aud      balances written off (AUD)
+  recoveries_aud           amounts received in the month on loans written off in any earlier month (AUD)
+
+
+Other files in the run folder (not loan system extracts)
+  ifrs9_scenarios_2026Q3.xlsx            Group Finance: scenario weights and PD multipliers approved by the Audit and
+                                         Risk Committee, one sheet per quarter
+  pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: default curves; described in the file's header lines
+  pd_model_development_sample.parquet    Credit Risk Modelling: the curves' development data; described in the file's
+                                         metadata
+  arrears_roll_rates_fy26.xlsx           Collections MI: month-end roll rates between arrears buckets, FY26

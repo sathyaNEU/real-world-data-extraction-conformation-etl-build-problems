@@ -17,10 +17,14 @@ G = os.path.join(TASK, "golden")
 
 def main():
     bk = pd.read_csv(os.path.join(T, "personal_loan_book_2026-09-30.csv"), parse_dates=["first_repayment_date", "drawdown_date"])
-    cv = pd.read_csv(os.path.join(T, "pd_curve_personal_loans_2026-06.csv"))
+    cv = pd.read_csv(os.path.join(T, "pd_curve_personal_loans_2026-06.csv"), comment="#")
     hd = pd.read_excel(os.path.join(T, "hardship_register_2026-09-30.xlsx"), parse_dates=["arrangement_start", "arrangement_end"])
-    sc = openpyxl.load_workbook(os.path.join(T, "ifrs9_scenarios_2026Q3.xlsx"), data_only=True)["Q3 FY27 scenarios"]
-    mult = sum(float(r[1]) * float(r[2]) for r in sc.iter_rows(min_row=5, values_only=True) if r and r[0])
+    sc = openpyxl.load_workbook(os.path.join(T, "ifrs9_scenarios_2026Q3.xlsx"), data_only=True)["Q1 FY27 scenarios"]
+    mult = 0.0
+    for r in sc.iter_rows(min_row=5, values_only=True):
+        if not r or r[0] is None:
+            break
+        mult += float(r[1]) * float(r[2])
     note = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "scorecard_v4_migration_note.pdf")).pages)
     a, b = map(float, re.search(r"v4 = ([\d.]+) x v3 - ([\d.]+)", note).groups())
     rep = pd.Timestamp("2026-09-30")
@@ -37,7 +41,7 @@ def main():
     C = {p: g.sort_values("month_on_book")["cumulative_pd"].values for p, g in cv.groupby("product")}
     ecl = np.zeros(len(bk))
     for p in ("PL36", "PL60"):
-        idx = np.where((bk["product"] == p).values & (st < 3))[0]
+        idx = np.where((bk["product"] == p).values & (st < 3) & (rem.values > 0))[0]
         cp = C[p]
         aa = due.values[idx]
         rr = rem.values[idx]
@@ -48,8 +52,9 @@ def main():
         K = np.arange(1, 61)
         kk = K[None, :]
         mask = kk <= H[:, None]
-        ia = np.minimum(aa[:, None] + kk, 60)
-        mp = (cp[ia] - cp[ia - 1]) / (1 - cp[aa])[:, None]
+        top = len(cp) - 1
+        ia = np.minimum(aa[:, None] + kk, top)
+        mp = (cp[ia] - cp[ia - 1]) / (1 - cp[np.minimum(aa, top)])[:, None]
         # balance at the start of month k: bal*(1+i)^(k-1) - pmt*((1+i)^(k-1)-1)/i
         g = (1 + rate)[:, None] ** (kk - 1)
         ead = bal[:, None] * g - pmt[:, None] * (g - 1) / rate[:, None]

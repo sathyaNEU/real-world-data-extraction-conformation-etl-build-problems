@@ -66,7 +66,12 @@
     "people": [
       "Matthew Gardner",
       "Stephanie Manning",
-      "Joseph Mitchell"
+      "Joseph Mitchell",
+      "Tamara Farrell",
+      "Adam Gordon",
+      "Renee Foster",
+      "Troy Olson",
+      "Natalie Hanna"
     ]
   },
   "deliverables": [
@@ -75,13 +80,13 @@
   ],
   "opening_move": "number-first",
   "driver": "A cumulative outcome curve is filed from each unit's entry, and every unit in scope has already survived part of it, so its forward probability is the curve's remaining increments divided by its own survival to date; reading the curve from entry for every unit overstates the total, and shifting it to the unit's age without the division understates it.",
-  "driver_concrete": "The model team's cumulative PD curve runs from origination by months on book, so a performing loan at month a carries marginal PDs (C(a+k) - C(a+k-1)) / (1 - C(a)); reading the curve from month 1 for every loan's remaining term books about 23 per cent too much, and shifting it by months on book without the survival division books about 8 per cent too little.",
-  "stump": "A competent solver applies the cumulative PD curve to each loan's remaining months counted from the reporting date as if it were a term structure, books an allowance about 23 per cent high; the step that lands it there is reading a curve indexed by months on book as if every performing loan were new.",
+  "driver_concrete": "The model team's cumulative PD curve runs from origination by repayments fallen due, so a performing loan at month a carries marginal PDs (C(a+k) - C(a+k-1)) / (1 - C(a)); reading the curve from month 1 for every loan's remaining term books about 43 per cent too much, and shifting it by months on book without the survival division books about 3 per cent too little.",
+  "stump": "A competent solver applies the cumulative PD curve to each loan's remaining months counted from the reporting date as if it were a term structure and books an allowance about 43 per cent high; the step that lands it there is reading a curve indexed by months on book as if every performing loan were new.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task132": "task132 estimates a rate whose exposure must start where the outcome records start; here the rate curve is filed and correct, and the construction is applying it to units that have already survived part of it.",
+    "task132": "task132 forecasts failures of replaceable modules in which a failed unit is renewed by a new one at age zero, so the forecast weights each band by the present module's survival and adds its replacement; here a loan defaults once and is not replaced, and the construction is the conditional increment of a filed curve for loans that have already survived part of it.",
     "task130": "task130 runs a closed group off a rationed list; here nothing is rationed and no group closes: each loan's forward loss is a survival-conditioned share of a filed curve."
   },
   "lineage": [],
-  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 an exposure window in a rate, task133 conditioning a lifetime curve on survival to date)."
+  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 replacement of failed modules in a spares forecast, task133 conditioning a lifetime curve on survival to date). Realism rebuild 2026-10-11 moved the allowance to AUD 13,667,000 with realistic default levels."
 }

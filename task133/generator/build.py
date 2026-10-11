@@ -3,6 +3,7 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import shutil
 import sys
 
@@ -11,10 +12,11 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import world as W
-import sim as S
+import sim as SM
 import extracts as X
 import docs as D
 import distract as Q
+import officex as OX
 import postprocess as P
 
 TASK = os.path.dirname(HERE)
@@ -31,56 +33,104 @@ FILES = {
     "rolls": "arrears_roll_rates_fy26.xlsx",
 }
 DISTRACTORS = ["dev", "writeoffs", "rolls"]
-CREATORS = {"scen": "Christine Webb", "hardship": "Bellbird Collections", "rolls": "Bellbird Collections"}
+# Sydney wall-clock times each file was last saved
 MTIMES = {
-    "book": (2026, 10, 1, 7, 34), "curve": (2026, 6, 24, 16, 2), "method": (2026, 5, 26, 14, 0),
-    "scen": (2026, 9, 18, 17, 12), "hardship": (2026, 10, 1, 7, 36), "note": (2024, 6, 20, 15, 5),
-    "dictionary": (2026, 10, 1, 7, 30), "dev": (2026, 6, 19, 11, 45), "writeoffs": (2026, 10, 1, 8, 5),
+    "book": (2026, 10, 1, 7, 34), "curve": (2026, 6, 24, 16, 2), "method": (2026, 5, 26, 13, 58),
+    "scen": (2026, 9, 18, 16, 52), "hardship": (2026, 10, 1, 8, 2), "note": (2024, 6, 20, 15, 5),
+    "dictionary": (2026, 10, 1, 7, 31), "dev": (2026, 6, 19, 11, 45), "writeoffs": (2026, 10, 1, 8, 5),
     "rolls": (2026, 7, 14, 9, 50),
+}
+CURVE_HEADER = """# Bellbird Personal Finance - Credit Risk Modelling
+# PLPD-2026.06 personal loan default curves, PL36 and PL60; approved by the Model Risk Committee on 24 June 2026
+# Developed on loans drawn October 2019 to September 2023, performance to 30 June 2026 (pd_model_development_sample.parquet)
+# Default: 90 or more days past due at a month end. All risk grades pooled
+# month_on_book: number of monthly repayments fallen due
+# cumulative_pd: probability that a new loan defaults by the end of that month on book
+"""
+DEV_META = {
+    "dataset": "PLPD-2026.06 development sample",
+    "owner": "Credit Risk Modelling",
+    "extracted": "2026-06-19",
+    "population": "PL36 and PL60 loans drawn October 2019 to September 2023",
+    "performance_to": "2026-06-30",
+    "outcome": "default (90 or more days past due at a month end), prepaid, matured, or open at 30 June 2026",
+    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity; for open loans, at 30 June 2026",
 }
 
 
-def simulate():
-    rng = np.random.default_rng(W.SEED)
-    lo = S.originations(rng)
-    lo = S.outcomes(rng, lo)
-    return lo
+def register_xlsx(hd, path):
+    import openpyxl
+    from openpyxl.styles import Alignment, Font, PatternFill
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Arrangements"
+    cols = list(hd.columns)
+    ws.append(cols)
+    for j in range(1, len(cols) + 1):
+        c = ws.cell(row=1, column=j)
+        c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="D9E1F2")
+        c.alignment = Alignment(vertical="top")
+    for rec in hd.itertuples(index=False):
+        ws.append([None if (isinstance(v, float) and v != v) else v for v in rec])
+    n = len(hd) + 1
+    for r in range(2, n + 1):
+        for j, name in enumerate(cols, 1):
+            if name.endswith("_date") or name in ("arrangement_start", "arrangement_end"):
+                ws.cell(row=r, column=j).number_format = "dd/mm/yyyy"
+            elif name.endswith("_aud"):
+                ws.cell(row=r, column=j).number_format = "#,##0.00"
+    for col, w in zip("ABCDEFGHIJ", [11, 12, 13, 21, 19, 16, 16, 20, 17, 14]):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = "A1:%s%d" % (OX.col_letter(len(cols)), n)
+    OX.xlsx_from_openpyxl(wb, path, "Natalie Hanna", "Natalie Hanna", dt.datetime(2026, 10, 1, 7, 36, 5),
+                          dt.datetime(2026, 10, 1, 8, 2, 44), seed=1001)
+
+
+def curve_csv(curves, path):
+    lines = [CURVE_HEADER.rstrip("\n"), "product,month_on_book,cumulative_pd,model_version"]
+    for prod, term in W.PRODUCTS.items():
+        for m, v in enumerate(curves[prod]):
+            lines.append("%s,%d,%.6f,PLPD-2026.06" % (prod, m, v))
+    with open(path, "w") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def dev_parquet(df, path):
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    t = pa.Table.from_pandas(df, preserve_index=False)
+    t = t.replace_schema_metadata({k: v for k, v in DEV_META.items()})
+    pq.write_table(t, path)
+    b = open(path, "rb").read()
+    b = re.sub(rb"parquet-cpp-arrow version \d{2}\.\d\.\d", b"parquet-cpp-arrow version 16.1.0", b)
+    open(path, "wb").write(b)
 
 
 def build(out):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    lo = simulate()
-    rng = np.random.default_rng(W.SEED + 1)
+    S = SM.simulate()
     p = lambda k: os.path.join(out, FILES[k])
-    bk = X.book(rng, lo)
-    bk.drop(columns=["loan_key"]).to_csv(p("book"), index=False)
-    hd = X.hardship(rng, bk, lo)
-    hd.to_excel(p("hardship"), index=False, sheet_name="Arrangements", engine="openpyxl")
-    rows = []
-    for prod, term in W.PRODUCTS.items():
-        c = S.curve(prod)
-        for m in range(0, 61):
-            rows.append(dict(product=prod, month_on_book=m, cumulative_pd=c[m], model_version="PLPD-2026.06"))
-    import pandas as pd
-    pd.DataFrame(rows).to_csv(p("curve"), index=False)
+    bk = X.book(S, np.random.default_rng(W.SEED + 1))
+    bk.drop(columns=["loan_key", "_bal"]).to_csv(p("book"), index=False, lineterminator="\n")
+    hd = X.hardship(S, np.random.default_rng(W.SEED + 2))
+    register_xlsx(hd, p("hardship"))
+    curve_csv(X.curve(S), p("curve"))
     D.methodology_docx(p("method"))
     D.scenarios_xlsx(p("scen"))
     D.scorecard_pdf(p("note"))
+    P.normalize_pdf(p("note"), dt.datetime(*MTIMES["note"]))
     D.dictionary_txt(p("dictionary"))
-    X.development_sample(lo).to_parquet(p("dev"), index=False)
-    X.write_offs(np.random.default_rng(W.SEED + 2)).to_csv(p("writeoffs"), index=False)
-    Q.roll_rates_xlsx(p("rolls"), np.random.default_rng(W.SEED + 3))
-    for k, f in FILES.items():
-        path = p(k)
-        if f.endswith((".xlsx", ".docx")):
-            P.normalize_zip(path, MTIMES[k] + (0,), creator=CREATORS.get(k, "Bellbird Personal Finance"))
-        if f.endswith(".pdf"):
-            P.normalize_pdf(path, stamp=b"D:20240620150500Z'")
-        ts = dt.datetime(*MTIMES[k]).timestamp()
-        os.utime(path, (ts, ts))
-    return lo, bk, hd
+    dev_parquet(X.development_sample(S), p("dev"))
+    X.write_offs(S, np.random.default_rng(W.SEED + 3)).to_csv(p("writeoffs"), index=False, lineterminator="\n")
+    Q.roll_rates_xlsx(p("rolls"), X.roll_rates(S))
+    for k in FILES:
+        ts = W.posix(dt.datetime(*MTIMES[k]))
+        os.utime(p(k), (ts, ts))
+    return S, bk, hd
 
 
 def write_metadata():
