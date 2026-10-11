@@ -14,10 +14,13 @@ description: "Check a built bundle for anything that hands the solver the answer
 ## When to run it
 
 - **Inside `/build` it is stage 4, both halves**, after the build stage and before the duplicate
-  check and the solver round, and again on every hardening loop: `leak.py` after every rebuild, the
-  reader whenever a document under `target/` or the prompt changed since its last read. A solver
-  round on a leaking pack measures nothing, so the round never runs past a LEAK or a quoted
-  question-1 sentence, and the pipeline fixes the finding in the generator itself.
+  check and the solver round. `leak.py` runs after every rebuild. The reader runs once per build on
+  Sonnet, and again only when a fix changed a document under `target/` or the prompt; a data-only
+  repair is checked by `leak.py` alone. A solver round on a leaking pack measures nothing, so the
+  round never runs past a LEAK, a quoted question-1 sentence, a question-2 or question-3 file, or a
+  fork the reader sizes on the main call, and the pipeline fixes those in the generator first. The
+  reader's realism tells and its forks on ask figures are deferred to the repair after a passing
+  round (`build-pipeline` stage 6b), or folded into the hardening brief when the solver lands.
 
 - After the pack is cut and the submission is written, before `golden-realism` (so a figure a
   realism edit copies into a memo is caught on the second run too).
@@ -64,7 +67,7 @@ decisive property.
 
 ## The reader's half: the `/leak-check` command
 
-`/leak-check taskNN` runs `leak.py` and then spawns **one** isolated agent that sees only a fresh
+`/leak-check taskNN` runs `leak.py` and then spawns **one** isolated agent, on Sonnet, that sees only a fresh
 copy of `prompt.md` and `target/` in the scratch directory, never the design note, the generator,
 the submission or the report. It is asked four questions as a solver, not as a reviewer:
 
