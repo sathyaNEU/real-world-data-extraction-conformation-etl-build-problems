@@ -126,7 +126,8 @@ consolidated). An offer is an agreement with the bore's owner (deepen, replace o
 
 **The mine.** Kelvale Mine, an open-cut coal mine of Tarrabool Resources in the northern Bowen Basin (Isaac region,
 central Queensland). Pit dewatering began on 4 July 2022 (pit sump PS1; PS2 from 16 January 2023); the advance
-dewatering bores AD01 to AD04 came on between 6 March 2023 and 12 February 2024. The metered take averaged 1.86 ML a day
+dewatering bores AD01 to AD04 came on in March 2023 (AD03 and AD04 on temporary pumps until 14 August 2023 and 12 February
+2024). The metered take averaged 1.86 ML a day
 in July 2022, 5.62 in June 2023, 9.12 in June 2024, 10.49 in June 2025 and 12.60 in September 2026 (12.9 GL in all).
 
 **Hydrogeology.** The Mundoora Creek alluvium (unconsolidated, trigger 2 m), the Tertiary basalt on the ridges and the
@@ -172,7 +173,8 @@ measures, which fell 36.0, 29.4, 24.7 and 21.4 m (KV-MB03 to KV-MB06).
 monthly runs from July 2014 (codes, with the field team's variants); fortnightly at the landholder bores from 10 August
 2026, so each has three September 2026 visits; baseline assessments on each landholder bore's date in April to June 2022
 (coal measures in April, basalt in May, alluvium in June); hourly loggers from May 2015 at KV-LB04, KV-LB05, KV-LB12,
-KV-LB02, KV-LB15, KV-LB18, KV-RF01, KV-RF03, KV-MB01 and KV-MB03 (two replaced, one 17-day gap), downloaded quarterly
+KV-LB02, KV-LB15, KV-LB18, KV-RF01, KV-RF03, KV-MB01 and KV-MB03 (two replaced; one 17-day gap at KV-LB15; the mine's two
+loggers drift, step at re-hangs and have two outages each, outside what the evidence reads), downloaded quarterly
 with a check dip and finally on 1 to 6 October 2026; the site barometric logger (one 9-hour gap in 2018).
 
 ## LADDER (shipped; each rung's set asserted by name in `generator/checks.py`, every bore at least 25 per cent of its trigger away from it at every rung)
@@ -357,17 +359,17 @@ deseasonalise, detrend, recharge model, Pastas, Menyanthes, "without the mine", 
 
 | File | Format | Rows | Role |
 |---|---|---|---|
-| `landholder_bore_register.xlsx` | xlsx | 18 + 29 + 9 | context artifact: the register, measuring points, network bores; labelled "holds no current water levels and no assessment results" |
+| `landholder_bore_register.xlsx` | xlsx | 18 + 29 + 9 | context artifact: the register, measuring points, network bores; labelled for the baseline assessments it records |
 | `MG-02_bore_assessment_and_make_good.pdf` | pdf | | governing procedure (pins) |
 | `monitoring_network_notes.md` | md | | field semantics, compensation, provenance of the extract |
 | `water_level_dips_2012-2026.csv` | csv | 4,214 | manual dips as keyed (feet, variants, remarks, duplicates) |
-| `logger_pressure_2015-2026.parquet` | parquet | 996,966 | hourly absolute pressure, UTC (the volume gate) |
+| `logger_pressure_2015-2026.parquet` | parquet | 994,869 | hourly absolute pressure and water temperature, UTC (the volume gate) |
 | `logger_installations.csv` | csv | 13 | serials, bores, times, sensor depths (with the barometric logger) |
 | `barometric_logger_2015-2026.csv` | csv | 99,959 | hourly air pressure, UTC |
 | `daily_climate_1990-2026.csv` | csv | 13,422 | gridded climate data for the point nearest the pit |
-| `pit_dewatering_2022-2026.csv` | csv | 7,606 | daily metered take by source |
-| `landholder_contact_log_2026.xlsx` | xlsx | 46 | distractor (named in `metadata.json`) |
-| `groundwater_quality_2012-2026.csv` | csv | 905 | distractor (named in `metadata.json`) |
+| `pit_dewatering_2022-2026.csv` | csv | 8,066 | daily metered take by source, with the meters' zero and estimated days |
+| `landholder_contact_log_2026.xlsx` | xlsx | 61 | distractor (named in `metadata.json`) |
+| `groundwater_quality_2012-2026.csv` | csv | 1,018 | distractor (named in `metadata.json`) |
 
 Goldens: `golden/bore_impact_assessment.xlsx` (18 rows, the prompt's four figures with the register's identities, the
 baseline level, the offer and the basis of each September level; a Method sheet with each bore's fitted response time,
@@ -381,10 +383,10 @@ plain words, a footnote on levels and rounding; rendered to one page through Lib
 |---|---|---|
 | Files | 10 or more | 11 |
 | Formats | 3 or more | 5 (csv, md, parquet, pdf, xlsx) |
-| Volume | a file of 25,000 rows or more | logger parquet 996,966; barometric CSV 99,959 |
+| Volume | a file of 25,000 rows or more | logger parquet 994,869; barometric CSV 99,959 |
 | Distractors | 2 or more, in `metadata.json`, golden unchanged without each | contact log and water quality; the call, offers, complainants and all 54 figures recompute identically with each removed (asserted) |
 | Deliverables | the prompt's two | `bore_impact_assessment.xlsx`, `make_good_recommendation.docx` |
-| Containers | no writer signature, in-fiction stamps | workbooks and memo repacked with in-fiction owners (Erika Martin, Rebecca Quinn) and fixed stamps; the PDF dated 01/03/2026 with the library banner blanked at equal length; the producer audit clean |
+| Containers | no writer signature, in-fiction stamps | the pack's two workbooks rewritten in Excel's own dialect with in-fiction owners (Erika Martin) and fixed stamps, the goldens repacked with Rebecca Quinn and fixed stamps; MG-02 with its two fonts embedded and stamped Friday 27/02/2026 14:36:52, the library banner blanked at equal length; the producer audit clean |
 
 The contact log carries the four complaints in the landholders' words, but the register already records each
 complaint's date (MG-02 7.1), so the golden never reads the log.
@@ -395,8 +397,10 @@ complaint's date (MG-02 7.1), so the golden never reads the log.
   `docs.py`, `postprocess.py`), the goldens (`deliver.py` over `golden.py`, `analysis.py`, `models.py`), `metadata.py`,
   `checks.py`, `verify.py`, then a second full build into a scratch folder inside the task (`*.tmp`, gitignored,
   removed after) and the sha256 comparison. `target.zip` is not cut at this stage.
-- Final run: `checks.py` **2,187 assertions passed**; `verify.py` OK; two consecutive builds byte-identical over
-  `target/`, `golden/` and `metadata.json` (combined sha256 f195389d7a9f2772); 2 minutes 5 seconds.
+- Final run (stage 6b): `checks.py` **2,261 assertions passed**; `verify.py` OK; two consecutive builds byte-identical
+  over `target/`, `golden/` and `metadata.json` (combined sha256 c4e345b30cdf9091); 1 minute 8 seconds. The goldens are
+  byte-identical to the stage 3 build. MG-02 embeds Liberation Sans from the machine's
+  `/usr/share/fonts/truetype/liberation/`, so a rebuild elsewhere needs those two font files to be byte-identical.
 - `verify.py` (standard library, numpy, openpyxl, pyarrow, python-docx; imports nothing
   from the generator): recomputes the 18 September levels and 18 changes (match the workbook exactly), every naive rung, and
   the call with its own monthly gamma fit (12 shapes x 45 response times x 41 evaporation factors): the same five
@@ -409,35 +413,36 @@ complaint's date (MG-02 7.1), so the golden never reads the log.
   and mining companies (edit distance above 2, no containment); no check against a register of real pastoral
   properties was possible offline. The consultant appears only as IVH, the field officers only as initials.
 
-## LEAK CHECK (stage 4, mechanical half)
+## LEAK CHECK (mechanical half, re-run after the stage 6b repair)
 
-`python3 .claude/skills/leak-check/leak.py task182 --asof 2026-10-13 --quiet` on the final cut: **REVIEW, no LEAK** (19
-REVIEW lines; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; the container audit finds no writer signature). An earlier run also
-flagged the barometric file's `air_temp_c` column as a generator's word; renamed `air_temperature_c` in the generator.
-Each REVIEW line:
+`python3 .claude/skills/leak-check/leak.py task182 --asof 2026-10-13 --quiet` on the stage 6b cut: **REVIEW, no LEAK**
+(19 REVIEW lines, the same four kinds as at stage 4; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; the container audit finds no
+writer signature). At stage 4 an earlier run also flagged the barometric file's `air_temp_c` column as a generator's
+word; renamed `air_temperature_c` in the generator. Each REVIEW line:
 
 - `MG-02_bore_assessment_and_make_good.pdf`, golden figures 2.4 and 1.1: these are MG-02's clause numbers (2.4 the
   assessment level, 1.1 the purpose); the golden's 2.4 and 1.1 are the drawdowns at KV-LB16 and KV-LB11, which MG-02
   never states. Harmless.
 - `logger_pressure_2015-2026.parquet`, 17 golden figures (12 printed, "and 5 more"): the September levels of every
   bore but KV-LB12, whose 209.50 the text sweep cannot match. leak.py prints the first 12 of equal-length figures in
-  set order, so which 12 it names changes between runs (this run 202.33, 214.47, 209.61, 201.88, 199.16, 195.44,
-  245.75, 203.49, 207.77, 241.33, 238.12, 243.13; an earlier run also 205.24, 201.27, 204.86 and 209.51). They are
+  set order, so which 12 it names changes between runs (this run 204.86, 203.49, 241.33, 209.61, 201.88, 195.44,
+  201.27, 207.77, 205.24, 209.51, 214.47, 202.33; earlier runs also 199.16, 245.75, 238.12 and 243.13). They are
   hourly absolute pressures in kPa (195 to 250 kPa at these sensors) that coincide with September levels in m AHD
   (195 to 246 m), on other bores' loggers and on other dates (for example 207.77 kPa at 2041890, KV-LB12's logger, on
   24 July 2022, while 207.77 m AHD is KV-LB04's September level). No reading states a level. Harmless.
-- Design-note vocabulary in MG-02 (6 of 25: reference, levels, measures, reading, measuring, logger) and in the notes
-  (8 of 25: reference, levels, reading, measuring, drawdown, climate, logger, monthly): their own subject matter.
-  MG-02 names the reference bores only to put them outside its scope; the notes say the reference bores sit outside
-  the EIS predicted drawdown (a fact about where they are), that the field team has read the network monthly since July
-  2014 (a visit schedule), and call the climate file gridded climate data. Neither says what to do with a reference bore,
-  the climate or the take, and no method word appears (asserted). Harmless.
+- Design-note vocabulary in MG-02 (8 of 25, among them reference, network, levels, measures, logger, reading) and in
+  the notes (10 of 25, among them reference, network, levels, logger, reading, written): their own subject matter.
+  The counts rose from 6 and 8 at stage 4 only because this note's stump paragraphs now carry "network", "written" and
+  "record"; neither document's text changed (asserted by hash against the text the reader read). MG-02 names the
+  monitoring network and the reference bores only to put them outside its scope; the notes say the reference bores
+  sit outside the EIS predicted drawdown (a fact about where they are), that the field team has read the network
+  monthly since July 2014 (a visit schedule), that remarks are kept as written, and call the climate file gridded
+  climate data. Neither says what to do with a reference bore, the climate or the take, and no method word appears
+  (asserted). Harmless.
 - Ranking artifacts: the register names all 20 candidate names beside numbers, but its numbers are construction,
-  coordinates and the baseline assessment as recorded, labelled "holds no current water levels and no assessment
-  results"; it ranks nothing. The contact log names 13 (properties and owners) beside dates and times; it records
-  contacts and ranks nothing. Harmless.
-
-The isolated solver's-eye reader (stage 4, second half) is the author's to run; it has not run.
+  coordinates and the baseline assessment as recorded, under a label that says so; it ranks nothing. The contact log
+  names 13 (properties and owners) beside dates and times, and its routine notices name no bore; it records contacts
+  and ranks nothing. Harmless.
 
 **Solver's-eye read (pass 1, Sonnet; the answers are in `leak_check_report.md`).**
 - **Q1, Q2 and Q4: none.**
@@ -453,6 +458,80 @@ The isolated solver's-eye reader (stage 4, second half) is the author's to run; 
   - The offer set separates by distance to the mine-bore ring (within 6.3 km, against beyond 6.9 km), so a
     proximity guess lands the call. If the round lands it that way, the hardening brief breaks the separation on
     the physics.
+
+**Realism notes from pass 1, repaired at stage 6b in the generator** (every September level, change, drawdown, impaired
+flag, offer, rung value, grid cell, evidence figure and ask stop recomputes bit for bit; the goldens are byte-identical;
+the one value that moved is KV-MB01's own September level, which nothing graded reads). One line per note:
+- **KV-MB03's logger typed 0-300 kPa reading 589.7:** fixed; the installation register types its sensor 0-1000 kPa, a
+  deep sensor for the pit perimeter (about 50 m of water over it before dewatering); every logger's maximum is asserted
+  inside its stated range.
+- **Temperatures at 25.40 or 25.70 C:** fixed; each sensor reads the ground at its depth (23.6 C plus 2.8 C per 100 m,
+  with the bore's own departure), a small annual swing at the shallow sensors, its own offset and slow drift, finer
+  resolution on the two replacements and the first hours after installation cooling from the air (medians 23.85 to
+  25.93 C, asserted).
+- **Logger levels within 2 cm of every check dip, one outage:** fixed where nothing graded reads the record, answered
+  where it does. KV-MB01's logger drifts about 4 cm from its check dips by 2026, steps at the downloads where it was
+  re-hung, and was flat from 27 August to 8 October 2018 and out for a headworks repair from 9 to 22 May 2023;
+  KV-MB03's was re-hung 4.5 cm high from the October 2019 download to the January 2020 one, stopped from 14 September
+  to 7 October 2016 and was out for road works from 11 to 20 June 2024, all clear of April to June 2022 and September
+  2026, the windows its cone evidence reads. The officers' remarks and the installation comments record each event.
+  The eight landholder and reference loggers keep their record: every hour of theirs feeds a graded figure (the
+  September levels, the fits behind every drawdown, the full-record grid family, the reference tracking), so a drift,
+  a step or a gap there would move one.
+- **The LB05 comment against data to 26 February 2019:** fixed on the data side; the comment now says the logger gave
+  a low battery warning at the 11 February visit and was pulled for repair, which is what its record shows (asserted).
+  Cutting the record at 11 February instead would take 15 days out of KV-LB05's fit.
+- **Feet in the 2012 to 2014 rounds:** kept as the documented Layer 1 device, and plausible: dippers graduated in
+  hundredths of a foot are standard imported field kit, and the consultant's own remarks now carry "ft dipper", with
+  "MP marked TOC N side" at each bore's first round.
+- **Remarks from a short fixed list:** fixed. Weather remarks only where the gridded rainfall and temperature bear them
+  out (light rain, showers, heavy rain, wet tracks, dust, frost, heat; asserted row by row); headworks remarks only at
+  bores with that headworks; pumped remarks that fit the pump; a few standing notes per bore (the Tondara dogs, the
+  dam paddock gate); lease and road-reserve remarks at the mine and reference bores. No static dip's remark names the
+  pump or reads as a dry reading, and the golden's and the verifier's pumped-dip rules agree on every row (asserted).
+  This also closes two latent forks on September levels: "windmill turning" on KV-LB06's electric bore on 16
+  September and "dry" on KV-LB17 on 3 September.
+- **Quality sample_id in steps of 7:** fixed; numbers climb by one per sample and skip the duplicates and blanks sent
+  with each laboratory batch; the consultant's samples keep their own EIS numbers.
+- **No non-detects:** fixed; fluoride, nitrate as N and filtered iron added, and sulfate, nitrate and iron below the
+  laboratory's limits reported as <1, <0.01 and <0.05 (866 non-detects, in the reduced coal measures and the oxic
+  alluvium and basalt).
+- **Every bore sampled in the same month:** fixed; the mine's bores quarterly, the landholder bores in March and
+  September, the reference bores in September, each round a run of field days that can carry into the next month,
+  one laboratory batch per dispatch.
+- **Nothing moving at the pit-perimeter bores:** fixed; the four coal-measure mine bores take up sulfate (about 2.5
+  mg/L to 2021, 108 to 171 in 2026), salt (EC up 19 to 25 per cent) and iron and lose about 0.3 to 0.6 of a pH unit as
+  dewatering draws them down. Every bore off the lease moves less than 12 per cent in EC (asserted), so the file still
+  points at no landholder bore.
+- **Meters with no outage, zero or estimated day:** fixed; 233 zero days (83 with the reason, 150 the temporary pumps'
+  idle days), telemetry outages split evenly from the totaliser and meter faults estimated from run hours (43 days
+  flagged `estimated` in a new `volume_basis` column, beside a `comment` column).
+- **AD03 and AD04 starting after March 2023:** fixed on the data side; both came on in late March 2023 on temporary
+  pumps and meters (MAG-23-0110, MAG-23-0111) and went to their permanent pumps and meters on 14 August 2023 and 12
+  February 2024, their volume coming out of the pit sumps on the same day. Every day's total is the simulated take to the
+  last bit through the analysis's own pandas sum (asserted), so the full-record grid family reads the same take.
+- **Contact log entries on weekends:** fixed; every entry is on a working day (asserted).
+- **Lines pasted verbatim:** fixed; each routine notice carries its own particulars (the blast days and pit area, the
+  bore run dates from the dips file, the road closure's dates, hours and reason, the month of the dust results), and no
+  summary repeats (asserted).
+- **"Three other landholders" on 7 September:** fixed; two (Saltbush Flat on 3 August, Brolga Plains on 19 August),
+  counted from the register's complaint dates (asserted).
+- **"Dipped 23/06" with no such dip:** fixed; the ridge paddock bore was dipped on the July run, 06/07, which the dips
+  file holds (asserted). Two of the same kind fixed with it: the Yarrowmere logger visit sits on 9 April, the day of
+  the KV-LB04 download dip, not 8 April; the Ghost Gum visit of 2 September is logged at 10:25 by Erika Martin, after
+  the 10:09 dip she took there, not at 08:20 by the technician.
+- **MG-02 effective on a Sunday, created at 08:30:00, base-14 Helvetica:** the effective date is MG-02's text and stays
+  (a revision taking effect on the first of the month is ordinary); the PDF is now created on Friday 27 February 2026
+  at 14:36:52 and modified at 14:37:05, and its two fonts are embedded subsets (Liberation Sans, Arial metrics, so
+  every line breaks where it did) under ordinary subset tags. The extracted text is unchanged (asserted by hash).
+- **MG-02 cites no Water Act:** not fixed. Naming the Water Act 2000 is a change to MG-02's text, which this repair
+  may not make (it would need a second leak read); it rides with any later repair that has to touch MG-02.
+- **openpyxl signatures under an Excel app.xml:** fixed; the two pack workbooks are written in Excel's own dialect
+  (relative relationships and Excel's part order, a file version and calculation id 191029, full extended properties
+  with the sheet titles, Excel's styles, cell and row records, page margins and column widths, the theme as Excel
+  stores it); values, number formats, panes and filters are unchanged, LibreOffice reads both as before, and no
+  openpyxl marker remains (asserted). The goldens keep their containers.
+- **The register's line saying what it lacks:** fixed; A2 now says only what the register holds.
 
 ## SURFACE (`guard.py surface task182`)
 
@@ -533,3 +612,12 @@ retire.
 - Coal-measure drawdowns of 7.4 to 9.2 m: the rainfall-departure family put CM4 at 5.9 to 6.1 m, inside the 25 per cent
   margin. Raised to 8.1 to 9.4 m.
 - The property name Tea Tree Flat: the people scan reads "Tea Tree" as a person. Renamed Lancewood Flat.
+- Cutting KV-LB05's first logger record at 11 February 2019 to match its "no data since" comment: it takes 15 days out
+  of the fit behind KV-LB05's 9.3 m. The comment now agrees with the record (a low battery warning at that visit).
+- AD04's temporary-pump volume carved out of pit sump 1 (AD03's out of pit sump 2), then a random litre nudged between
+  meters until each day summed right: pandas sums a day's printed volumes with Kahan compensation, and on days such as
+  17 April 2023 the six smaller volumes cannot land on the one-ulp-high double the four-meter file gave, whatever
+  litre is moved between any two meters. Both carved out of pit sump 2 (pit sump 1 only when it ran low), which keeps
+  the addends' error capacity, a deterministic search over meter pairs and shifts reproduces every day's double.
+- The dip remark "dusty" (EM writes "Dusty"): the people scan read "Dusty Dogs" (beside "Dogs tied up") as a person.
+  Renamed "dust about".

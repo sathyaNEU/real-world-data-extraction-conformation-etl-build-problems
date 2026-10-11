@@ -2,14 +2,14 @@
  "task": "task182",
  "domain": "physical-environmental-sciences",
  "objective": "anomaly-detection",
- "stage": "6b",
- "stage_name": "post-round repair of the reader's deferred realism notes (fresh agent), then the determinism judge",
+ "stage": 7,
+ "stage_name": "determinism check (the judge rehearsal)",
  "updated": "2026-10-11",
  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the ridge basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2019 to 2021 wet seasons, were drawn 8.2 to 9.3 m below where that rise was taking them while showing 2.21 to 2.49 m of decline.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (19 lines, each answered in the design note: clause numbers 2.4 and 1.1 in MG-02, logger pressures in kPa coinciding with levels in m AHD, the documents' own subject words, the register and contact log naming bores without ranking them), on the final cut with --asof 2026-10-13",
+  "leak_py": "REVIEW, no LEAK (19 lines, the same four kinds as at stage 4, each answered in the design note: clause numbers 2.4 and 1.1 in MG-02, logger pressures in kPa coinciding with levels in m AHD, the documents' own subject words, the register and contact log naming bores without ranking them), re-run on the stage 6b cut with --asof 2026-10-13",
   "reader": "pass 1 (Sonnet, 2026-10-11): Q1, Q2, Q4 none; Q3 names the network notes, answered as the required dictionary (no fix); no pre-round fix; watch items: the reader's lagged-rainfall model reached the answer, and the offer set separates by distance to the mine"
  },
  "duplicate_check": {
@@ -37,7 +37,8 @@
    "decision": "pass",
    "left_ladder": "the coal-measures counterfactual: it took KV-LB16, a far-field coal-measures landholder bore the mine itself draws down 2.4 m, as an unaffected control (pre-take regression with lags of a few months), which understated the coal-measure declines by about 3.5 m (LB04 5.1, LB05 5.5, LB07 4.9, LB10 4.8 against 8.9, 9.3, 8.4, 8.2) and dropped LB07 and LB10 under the 5 m trigger; set {LB04, LB05, LB12}, 2 offers",
    "classification": "analytical: every level and change since baseline exact (Layer 1 handled), the miss is the choice of counterfactual for the coal measures",
-   "for_the_judge": "the solver wrote that the rainfall file could not reproduce the hydrographs and that nothing says whether KV-LB16 is outside the predicted drawdown; the judge checks the rainfall-response fit and that the LB16-as-control reading is ruled out"
+   "for_the_judge": "the solver wrote that the rainfall file could not reproduce the hydrographs and that nothing says whether KV-LB16 is outside the predicted drawdown; the judge checks the rainfall-response fit and that the LB16-as-control reading is ruled out",
+   "deferred": []
   }
  ],
  "judge": {},
@@ -46,14 +47,23 @@
  "portal": "",
  "build": {
   "answer": "KV-LB04, KV-LB05, KV-LB07, KV-LB10, KV-LB12 have impaired capacity; four make-good offers (Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05, Tondara Grazing Pty Ltd, Bluebush Downs Pty Ltd, Cypress Ridge Pastoral Trust)",
-  "checks": "2187 assertions passed",
+  "checks": "2261 assertions passed",
   "verify": "OK. Same five bores on its own monthly gamma fit; 18 September levels and 18 changes match the workbook exactly; drawdowns within 0.38 m of the workbook; every naive rung recomputed and none gives the answer",
-  "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 f195389d7a9f2772)",
+  "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 c4e345b30cdf9091); goldens byte-identical to the stage 3 build",
   "rungs": "R0 complaints A2, A3, A5, B4; R1 and R1b (baseline, June 2022, 2012-22 mean) A1 to A7 and B4; R2 (pooled, matched) A1; R2b (2017-22, 2012-22) A1 to A9 and B4; R3 (12 months, 3 years) A1; R4 CM1 to CM4 and A1; every bore at least 25 per cent of its trigger away at every rung (thinnest 0.26, B4 at R2 pooled)",
   "grid": "40 cells (gamma, delayed exponential, rainfall departure on each bore's own window and lag, moving-average regression, full record with the take; first reading or May 2015; daily or monthly; dips or logger means), 0 misses, plus 120 variant cells (last September reading, outlier rule for pumped dips, feet record dropped), 0 misses; thinnest per family gamma 0.463, exp 0.453, crd 0.306, ma 0.419, full 0.431 of the trigger",
   "evidence": "coal-measure bores rising 0.65 to 0.72 m a year in 2021-22; reference bores tracked within 0.29, 0.24, 0.14 m to September 2026; mine coal-measure bores fell 21.4 to 36.0 m; full-record model gives the same set",
   "asks": "18 x (September level, change, drawdown, impaired), offers 4, complainants 4; every graded figure at least 0.15 of a unit from its rounding edge (min 0.17 levels and changes, 0.44 drawdowns), no ties; stops asserted: measuring point history (KV-LB07, KV-LB08), pumped dips kept (KV-LB06, KV-LB10, KV-LB11), loggers uncompensated (+10.02 m at six bores), last reading (17 levels), UTC days (KV-LB12, KV-LB18)",
-  "gates": "11 files, 5 formats (csv, md, parquet, pdf, xlsx), logger parquet 996,966 rows, distractors landholder_contact_log_2026.xlsx and groundwater_quality_2012-2026.csv (golden unchanged without each)",
+  "gates": "11 files, 5 formats (csv, md, parquet, pdf, xlsx), logger parquet 994,869 rows, distractors landholder_contact_log_2026.xlsx and groundwater_quality_2012-2026.csv (golden unchanged without each)",
   "target_zip": "not cut (stage 3 and 4 only)"
+ },
+ "repair_6b": {
+  "date": "2026-10-11",
+  "deferred": [],
+  "done": "the reader's pass-1 realism notes repaired in the generator, one line each in the design note's LEAK CHECK section: logger ranges, temperatures, drift, steps and gaps on the two mine-bore loggers, the LB05 comment, remarks tied to headworks and the climate file, the feet rounds kept with the consultant's own remarks, water-quality sampling programme, non-detects and the pit-perimeter response, meter zero and estimated days, AD03 and AD04 on in March 2023, the contact log's dates, counts and dips, MG-02's stamps and embedded fonts, the workbooks in Excel's dialect, the register's A2 line",
+  "not_fixed": "the eight landholder and reference loggers keep their record (every hour feeds a graded figure); MG-02 still cites no Water Act (a text change, which needs a second leak read)",
+  "figures": "every September level, change, drawdown, impaired flag, offer, rung value, grid cell, evidence figure and ask stop bit-for-bit unchanged (95,963 values compared; only KV-MB01's own September level moved, which nothing graded reads); goldens byte-identical",
+  "documents": "MG-02's text and the network notes unchanged (asserted by hash), so no second leak read",
+  "new_round": "none needed: no change to the prompt, a rung or the decisive path"
  }
 }

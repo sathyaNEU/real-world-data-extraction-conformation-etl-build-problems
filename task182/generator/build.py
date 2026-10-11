@@ -34,7 +34,7 @@ def simulate():
     clim = S.climate()
     q = S.take()
     hd = S.heads(clim, q)
-    rows, truth = RD.dips(hd)
+    rows, truth = RD.dips(hd, clim)
     bt, bp, btemp, bmap = RD.baro()
     logs, installs = RD.loggers(hd, bmap)
     baseline = {t["label"]: (t["day"], round(t["depth_m"], 2)) for t in truth if t["purpose"] == "baseline"}
@@ -55,13 +55,15 @@ def build(out, quiet=False, world=None):
     counts["baro"] = R.write_baro(p("baro"), *w["baro"])
     counts["climate"] = R.write_climate(p("climate"), w["clim"])
     counts["take"] = R.write_take(p("take"), w["q"])
-    counts["quality"] = R.write_quality(p("quality"))
+    counts["quality"] = R.write_quality(p("quality"), w["hd"])
     R.write_register(p("register"), w["baseline"])
     counts["contacts"] = R.write_contacts(p("contacts"))
     D.write_mg02(p("mg02"))
     D.write_notes(p("notes"))
-    PP.normalize_ooxml(p("register"), W.PEOPLE["env"], W.PEOPLE["env"], "2014-08-19T01:42:10Z", "2026-10-09T03:18:44Z")
-    PP.normalize_ooxml(p("contacts"), W.PEOPLE["env"], W.PEOPLE["env"], "2026-01-05T23:20:31Z", "2026-10-09T01:05:12Z")
+    PP.normalize_ooxml(p("register"), W.PEOPLE["env"], W.PEOPLE["env"], "2014-08-19T01:42:10Z", "2026-10-09T03:18:44Z",
+                       excel=True)
+    PP.normalize_ooxml(p("contacts"), W.PEOPLE["env"], W.PEOPLE["env"], "2026-01-05T23:20:31Z", "2026-10-09T01:05:12Z",
+                       excel=True)
     stamp = dt.datetime(2026, 10, 9, 14, 20, tzinfo=W.AEST).timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (stamp, stamp))

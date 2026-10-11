@@ -4,6 +4,7 @@ bands) and every ask stop, mess neutrality, MG-02's wording, the banned vocabula
 dates, people and invented names. Everything is computed from target/ and golden/ through golden.py, plus the
 simulated world where an assertion is about the world itself."""
 import datetime as dt
+import hashlib
 import json
 import math
 import os
@@ -75,6 +76,9 @@ EXPECT = {  # label: (September 2026 level m AHD, change since baseline m, decli
 BANNED = re.compile(r"counterfactual|transfer function|response function|\bTFN\b|cumulative rainfall departure|\bCRD\b|"
                     r"climate[- ]adjusted|climate adjustment|deseasonali[sz]\w*|detrend\w*|recharge model|pastas|menyanthes|"
                     r"without the mine|would have been", re.I)
+# the documents' text as the leak reader read it (pass 1): MG-02 as extracted, whitespace collapsed; the notes as bytes
+MG02_TEXT_SHA = "e52fffca24a86b7b07f877f415093f2efaeddf3e9a5e50edd442bbb9427abaff"
+NOTES_SHA = "f73754502707696f8be4262a88f050449d571ace98a8de80a8f78b1fa34d1844"
 TOOLCHAIN = re.compile(r"python-docx|python-pptx|openpyxl|reportlab|matplotlib|pandas|numpy|pyarrow|distractor|"
                        r"\bclaude\b|anthropic|lorem|placeholder|\bseed\b|\bsimulat\w*|\bsynthetic\b", re.I)
 # real Queensland coal mines and mining companies an invented name must not sit near (H21)
@@ -325,7 +329,11 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     ok("9.80665" in notes and "9.80665" not in mg, "the compensation constant stated once, in the notes")
     reg = file_text(os.path.join(target, "landholder_bore_register.xlsx"))
     ok("2 m" not in reg and "5 m" not in reg, "the register does not restate the triggers")
-    ok("holds no current water levels" in reg, "the register is labelled for the question it answers")
+    ok("with each bore's baseline assessment as recorded" in reg and "holds no" not in reg,
+       "the register is labelled for what it holds, and does not list what it lacks")
+    ok(hashlib.sha256(" ".join(mg.split()).encode()).hexdigest() == MG02_TEXT_SHA
+       and hashlib.sha256(open(os.path.join(target, "monitoring_network_notes.md"), "rb").read()).hexdigest() == NOTES_SHA,
+       "the text of MG-02 and of the network notes is the text the leak reader read")
 
     # ---------------------------------------------------------------- vocabulary, every text-bearing file and the prompt
     prompt = open(os.path.join(TASK, "prompt.md")).read()
@@ -472,6 +480,8 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
             ok(lev(core, rcore) > 2 and core not in rcore and rcore not in core,
                "invented name %r sits near the real %r (H21)" % (name, real))
 
+    check_realism(target, world, g)
+
     sub = os.path.join(TASK, "submission.md")
     if os.path.exists(sub):
         check_submission(open(sub).read(), g)
@@ -480,6 +490,171 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
             print("  " + line)
     print("checks: %d assertions passed" % N_ASSERT[0])
     return N_ASSERT[0], LOG, g
+
+
+OPENPYXL_DIALECT = [b'calcId="124519"', b"pivotButton=", b'Target="/xl/', b"<workbookProtection", b"<outlinePr",
+                    b'left="0.75"', b' t="n"', b"TableStyleMedium9", b"<indexedColors>", b'hidden="0"', b'state="visible"',
+                    b'<?xml version="1.0"?>', b'baseColWidth="8"']
+
+
+def check_realism(target, world, g):
+    """The realism repairs of stage 6b, asserted so that a rebuild cannot bring a tell back: remarks that fit the bore
+    and the day, loggers that fit their range and read like instruments, meter records with their outages, a
+    sampling programme with its non-detects, a contact log that agrees with the dips, and containers in the dialect
+    of the program each claims to come from."""
+    import pyarrow.parquet as pq
+    import readings as RD
+    import records as R
+    # ------------------------------------------------ dips: the remarks
+    d = pd.read_csv(os.path.join(target, "water_level_dips_2012-2026.csv"), dtype=str, keep_default_na=False)
+    ids = G.identity(*G.load_register(target)[:2])
+    d["label"] = [C2L[ids[G.norm_site(x)]] for x in d["site"]]
+    rem = d["remarks"].str.lower()
+    golden_pump = d["remarks"].map(lambda x: bool(G.PUMPED.search(x)) and not G.NOT_PUMPED.search(x))
+    verify_pump = rem.str.contains("pump") & ~rem.str.contains("pump off")
+    ok((golden_pump == verify_pump).all(), "the golden's and the verifier's pumped-dip rules disagree on a remark")
+    if world is not None:
+        truth = {t["entry_no"]: t["pumped"] for t in world["truth"]}
+        ok(all(truth[int(e)] == p_ for e, p_ in zip(d["entry_no"], golden_pump)), "a pumped remark on a static dip, or none on a pumped one")
+    plain = ~golden_pump & (d["remarks"] != RD.BASELINE_REMARK)
+    ok(not rem[plain].str.contains(r"\bdry\b|windmill turning|tape wet|high wind").any(),
+       "a static dip's remark reads as a dry, doubtful or pumped reading")
+    pump_of = d["label"].map(lambda x: W.BY_LABEL[x]["pump"])
+    kind_of = d["label"].map(lambda x: W.BY_LABEL[x]["kind"])
+    for kind, texts in RD.HEADWORKS_REMARKS.items():
+        ok(not (rem.isin([t_.lower() for t_ in texts]) & (pump_of != kind)).any(), "a %s remark at another bore" % kind)
+    ok(not (rem.str.contains("mill") & (pump_of != "windmill")).any(), "a windmill remark at a bore without one")
+    ok(not (rem.str.contains("solar") & (pump_of != "solar submersible")).any(), "a solar remark at a bore without one")
+    ok(not (rem.isin([t_.lower() for t_ in RD.MINE_REMARKS]) & (kind_of != "mine")).any(), "a lease remark off the lease")
+    ok(not (rem.str.contains("homestead|owner present|manager present|cattle at trough|dogs tied up")
+            & (kind_of != "landholder")).any(), "a landholder's remark at a network bore")
+    clim = pd.read_csv(os.path.join(target, "daily_climate_1990-2026.csv"))
+    rain = dict(zip(clim["date"], clim["rain_mm"]))
+    tmax = dict(zip(clim["date"], clim["tmax_c"]))
+    tmin = dict(zip(clim["date"], clim["tmin_c"]))
+    day = lambda s_, k: (dt.date.fromisoformat(s_) + dt.timedelta(days=k)).isoformat()
+    bad = []
+    for ds, hm, r_ in zip(d["reading_date"], d["reading_time"], rem):
+        if not r_ or day(ds, 1) not in rain:
+            continue
+        now = rain[ds] if int(hm[:2]) < 9 else rain[day(ds, 1)]
+        prev3 = rain[ds] + rain[day(ds, -1)] + rain[day(ds, -2)]
+        month30 = sum(rain[day(ds, -k)] for k in range(31))
+        rules = {"light rain": 0.4 <= now < 5, "drizzle": 0.4 <= now < 5, "showers": 5 <= now < 20,
+                 "rain during visit": 5 <= now < 20, "heavy rain": now >= 20, "road wet, 4wd": prev3 >= 10,
+                 "tracks boggy, 4wd": prev3 >= 10, "dust about": month30 < 1, "dust on the road": month30 < 1,
+                 "frost on the flat": tmin[ds] <= 2, "hot": tmax[ds] >= 37.5, "very hot": tmax[ds] >= 37.5}
+        if r_ in rules and not rules[r_]:
+            bad.append((ds, r_))
+    ok(not bad, "weather remarks the climate file does not bear out: %s" % bad[:5])
+    n_weather = int(rem.isin(["light rain", "drizzle", "showers", "heavy rain", "road wet, 4wd", "dust about"]).sum())
+    ok(n_weather >= 50 and (d["remarks"] == "").mean() > 0.5, "remarks: %d weather notes" % n_weather)
+    # ------------------------------------------------ loggers
+    inst = pd.read_csv(os.path.join(target, "logger_installations.csv"), dtype=str, keep_default_na=False)
+    lg = pq.read_table(os.path.join(target, "logger_pressure_2015-2026.parquet")).to_pandas()
+    stats = lg.groupby("logger_serial").agg(pmax=("pressure_kpa", "max"), tmed=("temperature_c", "median"),
+                                            tsd=("temperature_c", "std"), last=("timestamp_utc", "max"))
+    for _, row in inst.iterrows():
+        top = float(re.search(r"0-(\d+) kPa", row["logger_type"]).group(1))
+        if row["sensor_depth_below_mp_m"]:
+            ok(stats.loc[row["logger_serial"], "pmax"] < top, "logger %s reads past its range" % row["logger_serial"])
+        m_ = re.search(r"no data since (\d{4}-\d\d-\d\d)", row["comment"])
+        if m_:
+            ok(str(stats.loc[row["logger_serial"], "last"])[:10] <= m_.group(1), "comment %r and data disagree" % row["comment"])
+    ok("2041881" in inst["logger_serial"].values and "2019-02-11" in inst.set_index("logger_serial").loc["2041881", "comment"]
+       and str(stats.loc["2041881", "last"])[:10] == "2019-02-26", "the LB05 logger's comment and record agree")
+    ok(stats["tmed"].max() - stats["tmed"].min() >= 1.0 and (stats["tsd"] > 0).all()
+       and stats["tmed"].round(2).nunique() >= 8, "logger temperatures sit on one or two values")
+    obs = g["obs"]
+    for code, lo, hi in (("KV-MB01", 0.02, 0.2),):
+        ld, lv = obs[code]["logger"]
+        dd_, dv = obs[code]["dips"]
+        m_ = dict(zip(ld, lv))
+        late_ = [m_[x] - y for x, y in zip(dd_, dv) if x in m_ and x >= M.dnum(dt.date(2025, 7, 1))]
+        ok(lo <= np.mean(late_) <= hi, "%s drifts from its check dips (%.3f m)" % (code, np.mean(late_)))
+    for s_ in ("2041956", "2041964"):
+        ts = np.sort(lg.loc[lg["logger_serial"] == s_, "timestamp_utc"].values)
+        ok((np.diff(ts) > np.timedelta64(7, "D")).sum() == 2, "logger %s has its two outages" % s_)
+    # ------------------------------------------------ the dewatering meters
+    take = pd.read_csv(os.path.join(target, "pit_dewatering_2022-2026.csv"), keep_default_na=False)
+    if world is not None:
+        want = R.daily_take(R.old_take_csv(world["q"]))
+        got = R.daily_take(open(os.path.join(target, "pit_dewatering_2022-2026.csv")).read())
+        ok(list(got.index) == list(want.index) and (got.values == want.values).all(),
+           "the daily take is not the simulated take to the last bit")
+    first = take.groupby("source_id")["date"].min()
+    ok(all("2023-03-01" <= first[s_] <= "2023-03-31" for s_ in ("AD01", "AD02", "AD03", "AD04")),
+       "AD01 to AD04 came on in March 2023: %s" % dict(first))
+    ok(((take["volume_ml"] == 0) & (take["comment"] != "")).sum() >= 20 and (take["volume_basis"] == "estimated").sum() >= 20,
+       "the meters' zero and estimated days")
+    ok(take.groupby("source_id")["meter_serial"].nunique()[["AD03", "AD04"]].tolist() == [2, 2], "AD03 and AD04 change meters")
+    # ------------------------------------------------ water quality
+    q = pd.read_csv(os.path.join(target, "groundwater_quality_2012-2026.csv"), dtype=str, keep_default_na=False)
+    ids = q.loc[q["sample_id"].str.startswith("KVGW"), "sample_id"].str[5:].astype(int)
+    ok(ids.is_monotonic_increasing and ids.diff().dropna().nunique() >= 2, "sample numbers climb in one fixed step")
+    ok(sum(q[c].str.startswith("<").any() for c in ("so4_mg_l", "no3_n_mg_l", "fe_mg_l")) == 3, "non-detects")
+    months = q.assign(m=q["sample_date"].str[5:7])
+    ok(months["m"].nunique() >= 6 and months.groupby("site")["sample_date"].count().nunique() >= 3,
+       "every bore sampled in the same months")
+    q["y"] = q["sample_date"].str[:4].astype(int)
+    q["so4"] = pd.to_numeric(q["so4_mg_l"].str.replace("<", ""), errors="coerce")
+    q["ec"] = q["ec_us_cm"].astype(float)
+    for code in ("KV-MB03", "KV-MB04", "KV-MB05", "KV-MB06"):
+        x = q[q["site"] == code]
+        ok(x.loc[x["y"] >= 2025, "so4"].mean() > 5 * x.loc[x["y"] <= 2021, "so4"].mean(), "%s sulfate after dewatering" % code)
+    for code in [b["code"] for b in W.BORES if b["kind"] != "mine"]:
+        x = q[q["site"] == code]
+        before_, after_ = x.loc[x["y"].between(2019, 2021), "ec"].mean(), x.loc[x["y"] >= 2024, "ec"].mean()
+        ok(abs(after_ / before_ - 1) < 0.12, "water quality moves at %s (%.2f): the file would point at a bore" % (
+            code, after_ / before_))
+    # ------------------------------------------------ the contact log
+    wb = openpyxl.load_workbook(os.path.join(target, "landholder_contact_log_2026.xlsx"), read_only=True)
+    log = [r_ for r_ in wb.worksheets[0].iter_rows(min_row=5, values_only=True) if r_[0]]
+    ok(all(r_[0].weekday() < 5 for r_ in log), "contact log entries on a weekend")
+    from collections import Counter
+    ok(max(Counter(r_[6] for r_ in log).values()) == 1, "a contact log summary pasted twice")
+    raw = {(lab_, x) for lab_, x in zip(d["label"], d["reading_date"])}
+    for r_ in log:
+        for m_ in re.finditer(r"(?:Dipped|dipped)[^.;]*?(\d\d)/(\d\d)", (r_[7] or "")):
+            when = "2026-%s-%s" % (m_.group(2), m_.group(1))
+            lab_ = {"Kurrajong Park": "B3"}.get(r_[3])
+            ok(lab_ and (lab_, when) in raw, "the log cites a dip the dips file does not hold: %r" % r_[7])
+        if "Logger visit at the house bore" in (r_[6] or ""):
+            ok(("CM1", r_[0].date().isoformat()) in raw, "the log's logger visit is not a visit in the dips file")
+        if "other landholders" in (r_[7] or ""):
+            said = re.search(r"(\w+) other landholders", r_[7]).group(1)
+            before_ = [k for k, d_ in W.COMPLAINTS.items() if d_ < r_[0].date() and W.BY_LABEL[k]["prop"] != r_[3]]
+            ok(said == {1: "one", 2: "two", 3: "three", 4: "four"}[len(before_)], "the log's count of complainants")
+    # ------------------------------------------------ containers
+    for f in ("landholder_bore_register.xlsx", "landholder_contact_log_2026.xlsx"):
+        with zipfile.ZipFile(os.path.join(target, f)) as z:
+            blob = b"".join(z.read(n_) for n_ in z.namelist())
+            app = z.read("docProps/app.xml")
+        ok(not [t_ for t_ in OPENPYXL_DIALECT if t_ in blob], "%s keeps the writing library's dialect" % f)
+        ok(b"<TitlesOfParts>" in app and b'calcId="191029"' in blob, "%s reads as an Excel save" % f)
+    pdf = open(os.path.join(target, "MG-02_bore_assessment_and_make_good.pdf"), "rb").read()
+    ok(b"/Type1" not in pdf and b"/Helvetica" not in pdf and pdf.count(b"/FontFile2") == 2 and b"AAAAAA+" not in pdf,
+       "MG-02 leans on base-14 fonts")
+    cd_, md_ = re.findall(rb"/(?:CreationDate|ModDate) \(D:(\d{14})", pdf)
+    created = dt.datetime.strptime(cd_.decode(), "%Y%m%d%H%M%S")
+    ok(created.weekday() < 5 and created.second and created.date() < W.MG02_EFFECTIVE and md_ >= cd_,
+       "MG-02's stamps: created %s" % created)
+    from pypdf import PdfReader
+    import logging
+    import io as io_
+    buf = io_.StringIO()
+    hnd = logging.StreamHandler(buf)
+    logging.getLogger("pypdf").addHandler(hnd)
+    try:
+        pages = PdfReader(os.path.join(target, "MG-02_bore_assessment_and_make_good.pdf")).pages
+        ok(len(pages) == 2 and all(p_.extract_text() for p_ in pages) and not buf.getvalue(), "MG-02 parses cleanly")
+    finally:
+        logging.getLogger("pypdf").removeHandler(hnd)
+    LOG.append("realism: %d weather remarks, logger temperatures %.2f to %.2f C, KV-MB01 drift %.3f m, %d zero and %d "
+               "estimated meter days, %d non-detects, %d contact entries" % (
+                   n_weather, stats["tmed"].min(), stats["tmed"].max(), np.mean(late_),
+                   int((take["volume_ml"] == 0).sum()), int((take["volume_basis"] == "estimated").sum()),
+                   int(sum(q[c].str.startswith("<").sum() for c in ("so4_mg_l", "no3_n_mg_l", "fe_mg_l"))), len(log)))
 
 
 def check_submission(text, g):

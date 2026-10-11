@@ -4,6 +4,8 @@ from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                           # noqa: E402
+from reportlab.pdfbase import pdfmetrics                                   # noqa: E402
+from reportlab.pdfbase.ttfonts import TTFont                               # noqa: E402
 from reportlab.lib.pagesizes import A4                                     # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                            # noqa: E402
 from reportlab.lib.units import mm                                         # noqa: E402
@@ -16,21 +18,27 @@ import world as W          # noqa: E402
 MG02 = "MG-02_bore_assessment_and_make_good.pdf"
 NOTES = "monitoring_network_notes.md"
 
+# document control's PDFs embed the house sans (Arial metrics) rather than lean on a viewer's built-in fonts
+FONT_DIR = "/usr/share/fonts/truetype/liberation/"
+pdfmetrics.registerFont(TTFont("LiberationSans", FONT_DIR + "LiberationSans-Regular.ttf"))
+pdfmetrics.registerFont(TTFont("LiberationSans-Bold", FONT_DIR + "LiberationSans-Bold.ttf"))
+pdfmetrics.registerFontFamily("LiberationSans", normal="LiberationSans", bold="LiberationSans-Bold")
+SANS, SANS_BOLD = "LiberationSans", "LiberationSans-Bold"
 INK = colors.HexColor("#1f2a24")
 RULE = colors.HexColor("#7f8c84")
-BODY = ParagraphStyle("body", fontName="Helvetica", fontSize=9.4, leading=12.8, textColor=INK, spaceAfter=4.5)
+BODY = ParagraphStyle("body", fontName=SANS, fontSize=9.4, leading=12.8, textColor=INK, spaceAfter=4.5)
 CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=26, firstLineIndent=-26)
-H1 = ParagraphStyle("h1", fontName="Helvetica-Bold", fontSize=15, leading=19, textColor=INK, spaceAfter=3)
-H2 = ParagraphStyle("h2", fontName="Helvetica-Bold", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
+H1 = ParagraphStyle("h1", fontName=SANS_BOLD, fontSize=15, leading=19, textColor=INK, spaceAfter=3)
+H2 = ParagraphStyle("h2", fontName=SANS_BOLD, fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
 SMALL = ParagraphStyle("small", parent=BODY, fontSize=7.8, leading=10, textColor=colors.HexColor("#4d5852"))
 CELL = ParagraphStyle("cell", parent=BODY, fontSize=8.4, leading=10.4, spaceAfter=0)
-CELLB = ParagraphStyle("cellb", parent=CELL, fontName="Helvetica-Bold")
+CELLB = ParagraphStyle("cellb", parent=CELL, fontName=SANS_BOLD)
 
 
 def _frame(title, ref, issued):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont("Helvetica", 7.6)
+        canvas.setFont(SANS, 7.6)
         canvas.setFillColor(colors.HexColor("#4d5852"))
         canvas.drawString(18 * mm, A4[1] - 12 * mm, "%s  |  %s" % (W.COMPANY, W.MINE))
         canvas.drawRightString(A4[0] - 18 * mm, A4[1] - 12 * mm, ref)
@@ -46,7 +54,8 @@ def _frame(title, ref, issued):
 def _table(rows, widths):
     data = [[Paragraph(str(c), CELLB if i == 0 else CELL) for c in r] for i, r in enumerate(rows)]
     t = Table(data, colWidths=widths, hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE),
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), SANS, 8.4),
+                           ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE),
                            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2.2),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2), ("LEFTPADDING", (0, 0), (-1, -1), 3)]))
     return t
@@ -104,7 +113,8 @@ def write_mg02(path):
     title = "MG-02 Landholder bore assessment and make good"
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=20 * mm,
                             bottomMargin=18 * mm, title=title, author=W.COMPANY, subject="Procedure MG-02, revision 3",
-                            creator="Tarrabool Resources document control", producer="Tarrabool Resources document control")
+                            creator="Tarrabool Resources document control", producer="Tarrabool Resources document control",
+                            initialFontName=SANS)
     s = [Paragraph(title, H1),
          Paragraph("%s, %s" % (W.COMPANY, W.MINE), SMALL), Spacer(1, 5),
          _table([["Revision", "Effective", "Owner", "Approved", "Next review"],
@@ -127,7 +137,8 @@ def write_mg02(path):
                     "site document register.", SMALL)]
     doc.build(s, onFirstPage=_frame(title, "MG-02 rev 3", "Effective 01/03/2026"),
               onLaterPages=_frame(title, "MG-02 rev 3", "Effective 01/03/2026"))
-    PP.normalize_pdf(path, b"D:20260301083000+10'00'")
+    # issued from document control on the Friday before the revision took effect
+    PP.normalize_pdf(path, b"D:20260227143652+10'00'", b"D:20260227143705+10'00'")
 
 
 def write_notes(path):

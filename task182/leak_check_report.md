@@ -1,4 +1,52 @@
+# leak check, task182
 
+**Verdict: REVIEW.** 11 files read, 58 golden figures and 20 candidate names taken from submission.md, 25 stump terms taken from the design note.
+
+LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
+
+Stump terms swept: reference, family, network, fitted, levels, killed, measures, objective, organisation, decisive, logger, analyst, reading, prescriber, repeated, written, decomposition, domain, measuring, drawdown, analytical, climate, calibrated, record, basalt
+
+## 3 answer figures in the pack (REVIEW 15)
+- **REVIEW** `MG-02_bore_assessment_and_make_good.pdf`: golden figure 1.1 appears: ...ger, Kelvale Mine March 2028 1 Purpose and scope 1.1 This procedure sets how Kelvale Mine assesses la...
+- **REVIEW** `MG-02_bore_assessment_and_make_good.pdf`: golden figure 2.4 appears: ...r air pressure, over the day in Queensland time. 2.4 A bore's assessment level is the mean of its sta...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 204.86 appears: ...1:00:00,204.889,24.76 2041881,2018-09-20 12:00:00,204.86,24.75 2041881,2018-09-20 13:00:00,204.913,24.75 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 203.49 appears: ...6:00:00,203.439,24.76 2041881,2018-10-27 07:00:00,203.49,24.75 2041881,2018-10-27 08:00:00,203.396,24.76 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 241.33 appears: ...0:00:00,241.307,24.23 2041902,2020-08-07 11:00:00,241.33,24.23 2041902,2020-08-07 12:00:00,241.316,24.24 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 209.61 appears: ...9:00:00,209.657,24.61 2041873,2015-06-05 10:00:00,209.61,24.62 2041873,2015-06-05 11:00:00,209.662,24.61 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 201.88 appears: ...07:00:00,201.83,24.64 2041873,2018-05-05 08:00:00,201.88,24.64 2041873,2018-05-05 09:00:00,201.971,24.64 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 195.44 appears: ...7:00:00,195.579,24.35 2041890,2019-06-05 18:00:00,195.44,24.34 2041890,2019-06-05 19:00:00,195.373,24.34 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 201.27 appears: ...1:00:00,201.237,24.64 2041873,2018-05-01 12:00:00,201.27,24.63 2041873,2018-05-01 13:00:00,201.259,24.64 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 207.77 appears: ...7:00:00,207.799,24.35 2041890,2022-07-24 18:00:00,207.77,24.35 2041890,2022-07-24 19:00:00,207.875,24.36 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 205.24 appears: ...1:00:00,205.358,24.64 2041873,2018-02-22 12:00:00,205.24,24.65 2041873,2018-02-22 13:00:00,205.272,24.63 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 209.51 appears: ...7:00:00,209.518,24.62 2041873,2015-06-06 08:00:00,209.51,24.62 2041873,2015-06-06 09:00:00,209.447,24.61 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 214.47 appears: ...02:00:00,214.57,24.62 2041873,2016-01-16 03:00:00,214.47,24.62 2041873,2016-01-16 04:00:00,214.508,24.63 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: golden figure 202.33 appears: ...1:00:00,202.222,24.35 2041890,2017-09-29 22:00:00,202.33,24.34 2041890,2017-09-29 23:00:00,202.364,24.35 2...
+- **REVIEW** `logger_pressure_2015-2026.parquet`: and 5 more golden figures
+
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `MG-02_bore_assessment_and_make_good.pdf`: 8 of 25 stump-paragraph terms appear (reference, network, levels, measures, logger, reading); read whether the document names the move
+- **REVIEW** `monitoring_network_notes.md`: 10 of 25 stump-paragraph terms appear (reference, network, levels, logger, reading, written); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 2)
+- **REVIEW** `landholder_bore_register.xlsx`: names 20 of 20 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `landholder_contact_log_2026.xlsx`: names 13 of 20 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+
+## 10 container metadata (INFO 1)
+- **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 1 file names (clean)
+
+## 2 author vocabulary (clean)
+
+## 5 announcements (clean)
+
+## 7 hidden content (clean)
+
+## 8 column names (clean)
+
+## 9 dates after the setting (clean)
+
+## 11 prompt form (clean)
 
 ## Solver's-eye read
 

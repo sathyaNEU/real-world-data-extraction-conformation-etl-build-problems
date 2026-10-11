@@ -24,7 +24,7 @@
       "xlsx"
     ],
     "largest_file": "logger_pressure_2015-2026.parquet",
-    "largest_file_rows": 996966
+    "largest_file_rows": 994869
   },
   "sources": [
     {
@@ -40,7 +40,7 @@
     {
       "path": "MG-02_bore_assessment_and_make_good.pdf",
       "format": "pdf",
-      "bytes": 5159,
+      "bytes": 43672,
       "rows": null,
       "source": "Constructed: Tarrabool Resources procedure MG-02 Landholder bore assessment and make good, revision 3 (effective 1 March 2026)",
       "date": "2026-10-09",
@@ -67,8 +67,8 @@
     {
       "path": "groundwater_quality_2012-2026.csv",
       "format": "csv",
-      "bytes": 73374,
-      "rows": 905,
+      "bytes": 97016,
+      "rows": 1018,
       "source": "Constructed: Groundwater quality: field and laboratory results for the network by sampling round, 2012 to 2026",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -76,7 +76,7 @@
     {
       "path": "landholder_bore_register.xlsx",
       "format": "xlsx",
-      "bytes": 12682,
+      "bytes": 13521,
       "rows": null,
       "source": "Constructed: Kelvale Mine landholder bore register (MG-02 1.2): the 18 landholder bores with their owners, properties, landholders' names, aquifers, construction and baseline assessments; measuring point history; the network's reference and mine bores",
       "date": "2026-10-09",
@@ -85,7 +85,7 @@
     {
       "path": "landholder_contact_log_2026.xlsx",
       "format": "xlsx",
-      "bytes": 9968,
+      "bytes": 11624,
       "rows": null,
       "source": "Constructed: Environment team's landholder and community contact log, January to October 2026",
       "date": "2026-10-09",
@@ -94,7 +94,7 @@
     {
       "path": "logger_installations.csv",
       "format": "csv",
-      "bytes": 1520,
+      "bytes": 1746,
       "rows": 13,
       "source": "Constructed: Logger installation register: serial, bore, installed and removed (Queensland time), sensor depth below the measuring point",
       "date": "2026-10-09",
@@ -103,8 +103,8 @@
     {
       "path": "logger_pressure_2015-2026.parquet",
       "format": "parquet",
-      "bytes": 6647591,
-      "rows": 996966,
+      "bytes": 6134477,
+      "rows": 994869,
       "source": "Constructed: Logger download archive: hourly absolute pressure and temperature from the ten network loggers, May 2015 to the October 2026 downloads, UTC",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -121,8 +121,8 @@
     {
       "path": "pit_dewatering_2022-2026.csv",
       "format": "csv",
-      "bytes": 424047,
-      "rows": 7606,
+      "bytes": 513985,
+      "rows": 8066,
       "source": "Constructed: Pit dewatering meters: daily metered volume by source, 4 July 2022 to 30 September 2026",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -130,7 +130,7 @@
     {
       "path": "water_level_dips_2012-2026.csv",
       "format": "csv",
-      "bytes": 222965,
+      "bytes": 212650,
       "rows": 4214,
       "source": "Constructed: Monitoring database extract: every manual dip keyed from the field sheets, March 2012 to 6 October 2026",
       "date": "2026-10-09",
