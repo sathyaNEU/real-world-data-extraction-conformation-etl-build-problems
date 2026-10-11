@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survival, sample, staging, header, asserted, reading, decisive, status, dividing, construction, months, forward, reporting, conditioning, repayment, cohort, analyst, arrangement, driver, forecasting, probability, performing, method, development, nothing
+Stump terms swept: sample, survival, asserted, staging, months, reporting, header, reading, status, decisive, development, dividing, construction, forward, performing, conditioning, repayment, cohort, analyst, nothing, arrangement, driver, forecasting, probability, method
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: \bthe model\b x1: ...of default in the k-th month after the reporting date, comes from the model team's cumulative default curve for the loan's product. Stage...
@@ -15,8 +15,8 @@ Stump terms swept: survival, sample, staging, header, asserted, reading, decisiv
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: carries 8 of 9 distinctive words of the committed call: 'Book a collective expected credit loss allowance of AUD 13,160,000 on the PL36 and PL60 personal loans at 30 September 2'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 10 of 25 stump-paragraph terms appear (staging, status, months, forward, reporting, repayment); read whether the document names the move
-- **REVIEW** `ecl_extract_dictionary.txt`: 8 of 25 stump-paragraph terms appear (sample, months, reporting, repayment, arrangement, performing); read whether the document names the move
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 10 of 25 stump-paragraph terms appear (staging, months, reporting, status, forward, performing); read whether the document names the move
+- **REVIEW** `ecl_extract_dictionary.txt`: 8 of 25 stump-paragraph terms appear (sample, months, reporting, development, performing, repayment); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `hardship_register_2026-09-30.xlsx`: 742 ISO dates after 2026-10-12, e.g. 2026-10-13, 2026-10-14, 2026-10-15, 2026-10-16, 2026-10-17

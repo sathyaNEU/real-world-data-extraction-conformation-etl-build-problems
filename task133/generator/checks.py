@@ -146,7 +146,9 @@ def main_call():
         kept_out[nm] = x["total"]
         for n, label in (("total", "allowance"), ("stage1", "stage 1"), ("stage2", "stage 2")):
             ok(K(x[n]) == K(s[n]) and edge(x[n], 1000) >= 0.05, "%s: %s keeps its bin with 5 per cent to spare (%.0f)" % (nm, label, x[n]))
-    # exits counted to the start of the month instead of its end: the curve header's month-end definition rules it out
+    # exits counted to the start of the month instead of its end, Cl(a-1) in place of Cl(a): a loan repaid in full during
+    # month on book a read as still on the books at a. The sample's metadata counts its outcome month the way the curve
+    # header counts defaults, by the end of that month on book (asserted in curve_and_sample), which rules it out
     sh = E.sample_shares
     starts = {}
     for nm, f in (("payouts in month a still at risk", lambda d: np.concatenate([[0.0], d["Cl"][:-1]])),):
@@ -162,6 +164,9 @@ def main_call():
             E.sample_shares = sh
         starts[nm] = x["total"] / A - 1
         ok(K(x["total"]) != K(A), "%s lands off the answer's bin (%+.2f%%)" % (nm, 100 * starts[nm]))
+        ok(all(K(x[n]) != K(s[n]) for n in ("total", "stage1", "stage2")),
+           "%s misses the allowance and both stage amounts at the nearest thousand (%.0f, %.0f, %.0f)"
+           % (nm, x["total"], x["stage1"], x["stage2"]))
     nh = E.solve(T, use_hardship=False)
     nm = E.solve(T, map_v3=False)
     ok(abs(nh["n2"] - s["n2"]) >= 300, "the hardship register moves at least 300 loans into stage 2 (%d)" % abs(nh["n2"] - s["n2"]))
@@ -204,6 +209,29 @@ def curve_and_sample():
         ok(w not in head, "the curve header says nothing about %r" % w)
     ok("share of the loans drawn in the development window that had defaulted by the end of that month on book" in head,
        "the header defines the column in plain words")
+    # the sample counts its outcome month the way the header counts defaults, by the end of that month on book, so a loan
+    # repaid in full during month on book a is counted at a, as a default recorded in it is (the Cl(a-1) reading in
+    # main_call misses all three figures); and the metadata says nothing about how the curve is read
+    meta = {k.decode(): v.decode() for k, v in pq.read_schema(os.path.join(T, E.F["dev"])).metadata.items()
+            if not k.startswith(b"pandas")}
+    om = meta["outcome_month_on_book"].lower()
+    ok("by the end of that month on book" in om and all(w in om for w in ("defaulted", "repaid in full", "matured")),
+       "the sample's outcome month is the month on book by whose end the loan had defaulted, been repaid in full or matured")
+    ok("number of monthly repayments fallen due" in om and "number of monthly repayments fallen due" in head,
+       "the sample and the curve header measure month on book the same way")
+    mt = " ".join(meta.values()).lower()
+    for w in (r"condition", r"surviv", r"\bopen", r"allowance", r"at risk", r"\bstill\b"):
+        ok(not re.search(w, mt), "the sample's metadata says nothing about %r" % w)
+    # the run folder's dictionary says why the release package is filed with the run, and nothing about its use
+    dic = open(os.path.join(T, "ecl_extract_dictionary.txt")).read()
+    i0 = dic.index("pd_model_development_sample.parquet")
+    entry = " ".join(dic[i0:dic.index("behaviour_score_runs_2026-03_2026-08.parquet", i0)].split())
+    ok(all(w in entry for w in ("approved on 24 June 2026", "first quarter-end run", "release package (the curves and the "
+                                "development sample)", "external auditors' review of the PD model change")),
+       "the dictionary files the curves and the sample with the run as PLPD-2026.06's release package, for the auditors")
+    for w in (r"allowance", r"\bECL\b", r"PD\(k\)", r"\bstage", r"condition", r"surviv", r"\bopen", r"repaid", r"divid",
+              r"\bused?\b", r"\bthe model\b"):
+        ok(not re.search(w, entry, re.I), "the sample's dictionary entry says nothing about %r" % w)
     pol = docx_text(POLICY)
     ok("sample" not in pol.lower(), "CRM-ECL-04 carries no sentence about the development sample")
     ok("not modelled" not in pol and "EAD(k) follows the repayment schedule; extra repayments and hardship variations after "

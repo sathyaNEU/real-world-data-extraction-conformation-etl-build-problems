@@ -63,8 +63,9 @@ DEV_META = {
     "performance_to": "2026-05-31",
     "outcome": "default (90 or more days past due at a month end), prepaid (repaid in full before the end of the term) or "
                "matured",
-    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity, repayment dates during a "
-                             "payment pause included",
+    "outcome_month_on_book": "month on book of the outcome: the loan had defaulted, been repaid in full or matured by "
+                             "the end of that month on book (the number of monthly repayments fallen due, repayment "
+                             "dates during a payment pause included)",
 }
 SCORE_META = {
     "dataset": "Behaviour score v4: month-end scoring runs",

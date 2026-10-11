@@ -16,7 +16,7 @@
  "duplicate_check": {
   "heart": "WARN, no BLOCK on the loop 1 card (strategy risk, task134 driver 0.14 differentiated, older first names, Gate G forecasting in the block)",
   "nearest": "task134 driver 0.18 (check) and 0.14 (heart), differentiated on the card; task133 v1 lineage 0.27, differentiated",
-  "surface": "0 promoted pairs",
+  "surface": "2 promoted after the pre-round repair (task124 0.149, task89 0.143) on the deliverable order alone: the prompt now names the deck before the workbook, as both of those do; no shared wording, file name, schema or invented name. 0 promoted on the loop 1 cut",
   "clone_check": ""
  },
  "solver_rounds": [
@@ -102,6 +102,7 @@
   "decisive_step": "analytical (conditioning a crude cohort default curve on survival of both exits, default and repayment in full)"
  },
  "forum_redraw": "committee_or_panel to board_of_directors at ship (heart ban.forum against task129); the policy's section 5 reporting line and the deck name changed, no figure moved; no fresh solver round, the change does not touch the analysis",
+ "pre_round_repair": "2026-10-11, from 22d2dfd, before the round: (1) the dictionary's other-files section files the curves and the development sample as PLPD-2026.06's release package for the external auditors' review of the PD model change (approved 24 June 2026, first quarter-end run on it), with nothing on the sample's use; (2) the sample's outcome_month_on_book pinned to the curve header's 'by the end of that month on book', and Cl(a-1) asserted off the allowance and both stage amounts (13,010,574, 10,445,065, 2,565,509) in checks.py and verify.py; (3) the prompt reordered deliverable-first (the chair's two slides, then the workbook behind them), 934 characters, ask B dated 30 September, card opening_move deliverable-first. No graded figure moved; the edits changed only ecl_extract_dictionary.txt and pd_model_development_sample.parquet under target/. The index refresh also replaced two stale blobs committed at 22d2dfd (personal_loan_book_2026-09-30.csv, three rows, and arrears_roll_rates_fy26.xlsx: an older build's files of the same byte size, which git never saw change); target.zip and the generator already carried the current files, and on the stale folder BPL2247062 stages 1 not 2 (37,289 and 3,265 against 37,288 and 3,266) and two ask B counts move (PL36 June stage 1: 14,471 and 679 against 14,470 and 680). leak.py REVIEW, no LEAK; guard check and heart WARN; surface 2 promoted on the deliverable order",
  "deferred": [
   "ask A: the date a cured loan's full recovery is discounted from (default month end or cure month end)",
   "ask A: contract rate over 12 per month (3.5) against the annual rate per whole month in 3.3",

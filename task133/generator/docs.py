@@ -327,6 +327,10 @@ Other files in the run folder (not loan system extracts)
                                          weights and multipliers on a second sheet
   pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: PLPD-2026.06 default curves for PL36 and PL60
   pd_model_development_sample.parquet    Credit Risk Modelling: the PLPD-2026.06 development sample
+                                         PLPD-2026.06 was approved on 24 June 2026 and this is the first quarter-end
+                                         run on it, so its release package (the curves and the development sample)
+                                         is filed with the run for the external auditors' review of the PD model
+                                         change
   behaviour_score_runs_2026-03_2026-08.parquet
                                          Behaviour Scoring: the month-end scoring runs for March to August 2026
   arrears_roll_rates_fy26.xlsx           Collections MI: month-end roll rates between arrears buckets, FY26

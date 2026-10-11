@@ -11,7 +11,7 @@ driver repeats the age-forward structure of task132 drawn the same day.
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task133.json`, rewritten for loop 1 with the v1 driver in `lineage`; check and heart WARN only, surface 0 promoted (GUARD below) |
+| Card | `.claude/skills/fingerprint/cards/task133.json`, rewritten for loop 1 with the v1 driver in `lineage`, opening move deliverable-first since the pre-round repair; check and heart WARN only, surface 2 promoted on the deliverable order alone (GUARD below) |
 | Domain / task type | banking-credit-financial-risk / expected-credit-loss-provisioning (client domain itself) |
 | Objective | Forecasting & Predictive Modeling: the allowance is the expected loss over each loan's next 12 months or remaining life |
 | Shape | 02: one committed figure with its stage split, plus two grids (realised loss by product and quarter, 8 cells; the June book's stages by where they stand at 30 September, 16 cells) |
@@ -102,7 +102,10 @@ cent, skipping the v3 conversion moves 786 and -0.86 per cent (floors of 300 and
    sentence says how a performing loan reads it, and the header and the policy carry no word about dividing,
    conditioning, survival, attrition, early repayment, payout or performing loans (asserted).
 2. The divisor sits in a second file: only the development sample's outcomes give Cl(a), and CRM-ECL-04 carries no
-   sentence about the sample (asserted), so nothing points a solver at it and nothing forbids it.
+   sentence about the sample (asserted), so nothing points a solver at it and nothing forbids it. The sample is in the
+   run folder for an in-world reason the dictionary states: PLPD-2026.06 was approved on 24 June 2026, this is the
+   first quarter-end run on it, so its release package (the curves and the sample) is filed for the external auditors'
+   review of the PD model change; the entry says nothing about the sample's use (asserted).
 3. The textbook move is the wrong one: 1 - C(a) is the standard survival divisor, so a careful solver who conditions
    at all reaches it first; it is wrong only because of the curve's denominator.
 4. No arithmetic symptom: an allowance on 1 - C(a) reconciles to every control the pack has.
@@ -150,7 +153,7 @@ cent, skipping the v3 conversion moves 786 and -0.86 per cent (floors of 300 and
 | 19 | Codes | a cancelled arrangement stops being in force on its cancellation day (2.2); two arrangements that ended 29 September still show Active, and staging on the label keeps the allowance in its bin (13,160,285, asserted) |
 | 20 | Integerisation | none |
 | 21 | Clause scope | the 2.4 scalar applies to PD(k) for stage 2 only (3.2) |
-| 22 | Forward window | the decisive axis, the attrition-conditioned curve. Exits are counted to the end of month a, as the header counts defaults; counting payouts in month a as still at risk lands -1.14 per cent, off the bin, and is ruled out by the header's month-end definition (asserted) |
+| 22 | Forward window | the decisive axis, the attrition-conditioned curve. Exits are counted to the end of month a, as the header counts defaults; counting payouts in month a as still at risk, Cl(a-1) for Cl(a), lands 13,010,574 (-1.14 per cent) with stage 1 at 10,445,065 and stage 2 at 2,565,509, all three off their bins (asserted in checks.py and verify.py). The sample's metadata pins it: outcome_month_on_book is the month on book by the end of which the loan had defaulted, been repaid in full or matured, in the header's own words ("by the end of that month on book"), with nothing about conditioning, survival, open loans or the allowance (asserted) |
 
 ## ASK LEDGER (supplemental-stumping Part 9, step 4)
 
@@ -248,6 +251,20 @@ is 51.4; with both handling B1 and B2 and Ask A left habitual it is 65.2; both a
 With neither top response on the call (two mirror sheets) the same cases are 34.9, 48.7 and 67.0. The 8-file span
 floor is not met (5 and 7 files).
 
+## PROMPT
+
+934 characters and 155 words in one paragraph. `voice-check.py 133` gives 22.1 words a sentence, one sentence under
+eight words, one rounding tag, no "because", and no carrier or six-word-run flag; it reads the opening as
+deliverable-first, the only one in the twelve-build window. The card files the same move, against task130
+stakes-first, task132 constraint-first, task134 calendar-first and task135 stakes-first.
+
+The order since the pre-round repair: Stephanie Manning's two slides for the board; the first slide's figure, the
+allowance, with the sign-off on 23 October; the chart of where the 30 June stage 1 and stage 2 loans stood at 30
+September; then the workbook behind the slides, with the stage amounts and the realised loss by product and quarter.
+Loop 1 ran the 23 October sign-off, the figure, the workbook and then the chair's slides, the one build order the
+clone check read across task130, task132, task133, task134 and task135 (Idiom). Every requirement, unit and rounding
+carries over. Ask B names 30 September where loop 1 said "now", and the "what it needs from my team" frame is gone.
+
 ## PRE-SHIP CHECK (the client's three rules and two layers)
 
 1. Domain: the deciding quantity is the AASB 9 allowance from staging, an attrition-conditioned crude default curve,
@@ -268,7 +285,7 @@ floor is not met (5 and 7 files).
 8. The lesson (condition a crude cohort curve on both exits) is not one an earlier build teaches: guard heart WARN, the
    nearest driver task134 at 0.18, differentiated.
 
-## GUARD (guard.py check and heart, WARN only; surface 0 promoted)
+## GUARD (guard.py check and heart, WARN only; surface 2 promoted on the deliverable order alone)
 
 - three_rules.strategy_risk: the analyst test is the answer; the easy route that still fails once every rule is read is
   dividing by survival to date.
@@ -280,7 +297,13 @@ floor is not met (5 and 7 files).
   survival of both exits on the same curve.
 - people.first Kayla (task118) and Christine (task104): older builds only, ordinary first names, drawn by guard.py names.
 - repeat.gate_g forecasting (task130 v3, task132): both sit in the Forecasting block with different mechanisms.
-- surface: no promoted pair; the only persona the cut pack names is Stephanie Manning, on the card.
+- people: the only persona the cut pack names is Stephanie Manning, on the card.
+
+Surface after the pre-round repair: two pairs promoted, task124 (0.149) and task89 (0.143), and the one axis that moved
+is the deliverable species, which the screen reads in the order the prompt names the files. The prompt now names the
+deck before the workbook, as both of those prompts do. Neither pair shares wording, a file name, a schema, a persona
+or an invented name with task133, and before the repair the same pairs scored 0.089 and 0.083. Naming the workbook
+first again would undo the prompt-order repair, so the pairs are left for the author's /clone-check.
 
 ## LEAK REVIEW
 
@@ -302,6 +325,17 @@ floor is not met (5 and 7 files).
   the policy's statistics and revision ids; the register written by svc_crr_batch and last saved by Kayla Stokes; the
   migration note left as LibreOffice output; the 2021 lockdown pauses on loans closed before 30 September.
 - Loop 1 changed documents under `target/` and the prompt, so the main session's reader pass runs on this cut.
+- Pre-round repair of the loop 1 read. The reader found no sentence that hands over the step and no file that states
+  the answer. Its question 3 (the development sample read as there only to help) is answered by a filing note under
+  the sample's entry in the run folder's list of other files. The fork on the main call (whether a loan repaid in full
+  during month on book a is still on the books at a) is closed by closure row 22's pin. The filing note is not repeated
+  in the sample's own description, which was written at extraction on 2 June 2026, before the approval. leak.py on the
+  repaired cut: REVIEW, no LEAK, the same files and lines as above. Under `target/` only `ecl_extract_dictionary.txt`
+  and `pd_model_development_sample.parquet` changed, so the next read covers those two files and the prompt.
+- The same commit replaces two stale blobs left under `target/` at 22d2dfd, the September book (three rows) and the
+  roll-rate workbook, each an older build's file of the same byte size, which git never saw change. `target.zip` and
+  the generator already carried the current files; on the stale folder BPL2247062 stays in stage 1 (3,265 in stage 2
+  against 3,266) and two ask B counts move.
 
 ## Tried and rejected
 
@@ -323,3 +357,5 @@ floor is not met (5 and 7 files).
 - Agency remittances capped at a fixed monthly amount: 62 per cent of the remittances sat exactly on the cap, a pattern no collections ledger shows; replaced by a log-normal affordability draw per arrangement, its median raised to AUD 320 when the first draw left recoveries under the level the 70 and 76 per cent LGDs imply.
 - Dating each default on the day it reached 90 days past due: 39 of the 2023-24 defaults resolved inside that same month, so the population turned on a day-or-month reading; 1.2 now records the default at the first month end at 90 or more days past due, and the defaults file carries only those (no default resolves in its default month, and no receipt falls in it).
 - Hardship windows that reached the instalments of a default run (18 loans, 4 of them 2023-24 defaults) cleared those instalments in the simulation; the windows now stop before the run's first missed instalment.
+- The release-package filing note in the development sample's own metadata (pre-round repair): not built. It was written at extraction on 2 June 2026, before the 24 June approval and months before the September run, so a note about this run cannot sit there without moving the file's date; the note is in the run folder's list of other files, which Credit Risk Reporting keeps for the run.
+- A calendar-first prompt with the workbook commissioned before the chair's slides (loop 1): the same build order as task130, task132, task134 and task135, read by the clone check as one skeleton across the lane (Idiom); it now opens on the slides and puts the workbook behind them.

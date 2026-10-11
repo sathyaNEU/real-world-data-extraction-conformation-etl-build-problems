@@ -54,7 +54,7 @@ def stages(frame, hd, conv, day, score):
 
 def allowance(target, how="cond"):
     """the collective allowance by stage under one reading of the curve: 'cond' (the answer), 'r4', 'shift', 'uncond',
-    'hazard', 'r4b'"""
+    'hazard', 'r4b', or 'clprev' ('cond' with a loan repaid in full during month a read as still on the books at a)"""
     bk, cv, dev, hd, mult, conv = read_inputs(target)
     rep = pd.Timestamp(REP)
     fr = bk["first_repayment_date"]
@@ -75,6 +75,8 @@ def allowance(target, how="cond"):
     for p in ("PL36", "PL60"):
         idx = np.where((bk["product"] == p).to_numpy() & (st < 3))[0]
         c, cl = C[p], gone[p]
+        if how == "clprev":
+            cl = np.concatenate([[0.0], cl[:-1]])
         top = len(c) - 1
         aa, rr = pos[idx], rem.to_numpy()[idx]
         H = np.where(st[idx] == 2, rr, np.minimum(12, rr))
@@ -84,7 +86,7 @@ def allowance(target, how="cond"):
         inc = c[m] - c[m - 1]
         surv_a = (1 - c[aa] - cl[aa])[:, None]
         surv_prev = 1 - c[m - 1] - cl[m - 1]
-        if how in ("cond", "r4b"):
+        if how in ("cond", "r4b", "clprev"):
             mp = inc / surv_a
         elif how == "r4":
             mp = inc / (1 - c[aa])[:, None]
@@ -226,6 +228,12 @@ def main(target=T, golden=G):
         print(("OK  " if far else "FAIL"), "rung %-7s %14.0f %+7.2f%%" % (how, x["total"], 100 * d))
         if not far:
             fails.append("rung " + how)
+    x, _, _ = allowance(target, "clprev")
+    off = all(k(x[n]) != k(fig[n]) for n in ("total", "stage1", "stage2"))
+    print(("OK  " if off else "FAIL"), "payouts in month a at risk %14.0f %+7.2f%%, all three figures off their bins"
+          % (x["total"], 100 * (x["total"] / fig["total"] - 1)))
+    if not off:
+        fails.append("payout month")
     L = lgd(target)
     quarter = {"Jul to Sep 2023": 1, "Oct to Dec 2023": 2, "Jan to Mar 2024": 3, "Apr to Jun 2024": 4}
     seen = 0
