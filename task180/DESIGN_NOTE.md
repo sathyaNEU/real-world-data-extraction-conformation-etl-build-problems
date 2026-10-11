@@ -29,7 +29,8 @@ Decision type: pick_one_of_n   Answer unit: named_option   Opening move: evidenc
 Stump strategy: causal_design   Decisive rule filed? no (SOP-PV-14 files the case definitions, the new-user rule and the
   30-day window; it says nothing about what the month after the start is compared with)
 Official decoy filed? no   Validated decoy? no   stump_class: analytical
-Forum: regulator_or_inspector (the agency's medicines safety committee opens the formal assessment)
+Forum: committee_or_panel (the agency's medicines safety committee opens the formal assessment; filed as
+  regulator_or_inspector until the stage 5 heart check, see DUPLICATE CHECK)
 Forcing event: vote_or_meeting (the committee meets on Thursday 22 October 2026)
 Org family: government_agency (the national medicines agency)
 Layer 2: estimand_identification, own:self-controlled-signal-refinement
@@ -314,6 +315,30 @@ golden figures). Each REVIEW line answered:
 - Container metadata: INFO only (no writer signature).
 
 The solver's-eye read (one Sonnet reader on a fresh scratch copy) follows in `leak_check_report.md`.
+## DUPLICATE CHECK (stage 5)
+
+**Heart (`guard.py heart task180`, 2026-10-11): BLOCK on two axes, both against task135.** task135 is another author's
+build. Its card reached main at 10:46, after this card was registered on this branch at 10:14. Same-day draws sort by
+task number, so task135 counts as a predecessor here, and neither card was on main when the other was checked.
+- `ban.forum` (regulator_or_inspector). The deciding forum is the agency's own medicines safety committee, so the card
+  now files `committee_or_panel`, which is the more accurate label and clears the block.
+- `ban.pattern` (decisive G-code G17).
+  - The only other honest label for the decisive step, G16 (the comparison design), is banned by task134, drawn the
+    same day.
+  - This is the slot's third and last architecture.
+  - The card was re-registered with `--force` on the author's explicit instruction (AskUserQuestion, "Register anyway
+    (Recommended)"), with the reason in its notes and a differentiation line against task135.
+  - task135's G17 is a rating curve's retransformation bias in a sediment forecast; here it is confounding by
+    indication that only a within-person comparison removes.
+  - Domain, objective, decision type, shape, gap and driver all differ, and the heart's nearest driver on file is 0.04.
+
+WARNs, answered:
+- `overuse.org_family` government_agency: signal management belongs to the medicines agency (see WARNS).
+- `repeat.gate_g` method_or_model_selection against task134: task134's method choice is a survival estimator for
+  competing exits on a forecast; here it is the comparison design under channelling.
+
+**Clone pre-flight:** see `clone_check_report.md` (architecture 3, pass 1).
+
 ## WARNS (guard.py, answered)
 
 - `overuse.org_family government_agency`: signal management belongs to the medicines agency; a university unit could
