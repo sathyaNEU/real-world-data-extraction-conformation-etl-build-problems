@@ -2,15 +2,15 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "FIX_NOW cycle: leak reader pass 5, then solver round 4 and judge pass 2",
+ "stage": 6,
+ "stage_name": "solver round 4 (FIX_NOW cycle)",
  "updated": "2026-10-11",
  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
  "loops": 1,
  "leak": {
   "leak_py": "REVIEW (0 LEAK; three REVIEW lines, sweep 4 now six ordinary terms; all answered in the design note)",
-  "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b)"
+  "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b) ; pass 5 (after the judge's hygiene fix): clean, plan at rungs 3 and 3b"
  },
  "duplicate_check": {
   "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",

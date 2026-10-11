@@ -284,6 +284,10 @@ main-tank added, all ordinary standard wording). Its plan: "Acetylene that track
 those transformers are excluded", having seen "the acetylene in DSL-T1, LST-T2 and RLS-T2 rising in step with the SCADA
 tap operations": rung 3b, with no step that reads the gas the acetylene arrives with.
 
+Isolated reader, pass 5 (after the judge's hygiene fix): nothing quoted for any question, the three REVIEW lines
+harmless; its plan keeps "only code 3 units whose gas shows a main-tank fault" and checks "tap-changer type and service
+history before trusting main-tank acetylene" (rungs 3 and 3b), with no gas-ratio step.
+
 ## Tried and rejected
 
 - **Judge pass 1 (2026-10-11): DETERMINISTIC, FIX_NOW on hygiene.** The maintenance log's 176 annual inspections

@@ -31,3 +31,12 @@ Stump terms swept: register, decisive, heating, attribution, main-tank, acetylen
 ## 7 hidden content (clean)
 
 ## 11 prompt form (clean)
+
+## Solver's-eye read (pass 5, isolated reader, after the judge's hygiene fix)
+
+1. none. Nearest: ES-DGA-02 5.2 "Internal inspection outages are allocated to the code 3 transformers with such a fault, in descending order of severity score." "one of about a dozen rules given equal weight, and it does not say which test or which transformer decides the slate."
+2. none (the thermal survey ranks switchboard hot spots; "Transformers, their tanks, radiators and tap changers were not part of the scope.").
+3. none (oil_results_notes.md a handover note; the run report an ordinary extract log).
+4. none (people are document owners, crews and planners; bookings sites "To be advised"; the ten monthly-sampled units a watch-list under 3.1).
+REVIEW lines: all three harmless (ordinary standard wording; the label temperature a normal field with 122 blanks; a forward booking sheet).
+Plan step 4: "Keep only code 3 units whose gas shows a main-tank fault (5.1-5.2). Check tap-changer type and service history before trusting main-tank acetylene." No step reads the gas the acetylene arrives with.
