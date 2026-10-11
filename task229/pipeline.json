@@ -1,0 +1,126 @@
+{
+ "task": "task229",
+ "domain": "energy-systems-utilities",
+ "objective": "data-quality-monitoring",
+ "stage": 8,
+ "stage_name": "shipped",
+ "updated": "2026-10-11",
+ "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.83 and 0.57, not 0.40 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
+ "architecture": 1,
+ "loops": 2,
+ "leak": {
+  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK; re-run on the stage 8 rebuild with the same 3 lines",
+  "reader": "round-3 reader (loop-2 cut): Q1-Q4 none, R1-R3 harmless; it solved the task itself and filed R4 (five fires), never trying an error over comms nodes; it notes the census sums to the substitution load once the fire set is known. Its read stands for the stage 8 rebuild: containers only, no text under target/ and no prompt change (verified against the judged cut)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g vs task228, answered); nearest heart text 0.04 (task114); nearest driver 0.06 (task87 v3)",
+  "nearest": "task87 v3 driver 0.06",
+  "clone_check": "loop-1 pre-flight CLEAN on the hardened driver (task229/clone_check_report.md); loop 2 leaves the driver unchanged",
+  "surface": "stage 8 final cut against task228's pack (6b19d41, built from its generator in a scratch worktree, since removed): 0 promoted pairs; task228 vs task229 Track A 0.08, Track B shares only the population gap label; no persona in the cut pack"
+ },
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-11",
+   "score": 91.3,
+   "landed": true,
+   "cracked": 4,
+   "items": 5,
+   "architecture": 1
+  },
+  {
+   "label": "round 1, skeptic",
+   "date": "2026-10-11",
+   "score": 87.4,
+   "landed": true,
+   "cracked": 3,
+   "items": 5,
+   "architecture": 1
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "decision": "harden",
+   "brief": "both landed by executing the filed mean and the filed installation-level error; the error's unit is now unstated and the data's node-night failures make the comms node the unit, so the habitual sample-SD-over-root-n step completes and fires EM3.12.0 and EM3.12.2"
+  },
+  {
+   "label": "round 2, plain",
+   "date": "2026-10-11",
+   "score": 54.5,
+   "landed": false,
+   "cracked": 3,
+   "items": 5
+  },
+  {
+   "label": "round 2, skeptic",
+   "date": "2026-10-11",
+   "score": 54.5,
+   "landed": false,
+   "cracked": 3,
+   "items": 5
+  },
+  {
+   "round": 2,
+   "architecture": 1,
+   "loop": 1,
+   "plain": {
+    "landed": false,
+    "proxy": 54.5
+   },
+   "skeptic": {
+    "landed": false,
+    "proxy": 54.5
+   },
+   "mean": 54.5,
+   "mean_read": 37.0,
+   "decision": "harden (ask layer)",
+   "brief": "both missed the call at R4 (installation-level error), a stump not a fork (independence refuted by the node-night failures; every dependence-respecting grouping lands the call); the asks leaked (grade.py 54.5 each, about 37 read honestly): Wave 7 fully cracked in both rounds, read health free; drop Wave 7, add the distance from the limit and the 6.1 substitution load; close the outage carve-out route (EM3.12.0 at 0.006 of its limit) by raising EM3.12.0's own gap and outage rates"
+  },
+  {
+   "label": "round 3, plain",
+   "date": "2026-10-11",
+   "score": 47.0,
+   "landed": false,
+   "cracked": 1,
+   "items": 4
+  },
+  {
+   "label": "round 3, skeptic",
+   "date": "2026-10-11",
+   "score": 43.4,
+   "landed": false,
+   "cracked": 1,
+   "items": 4
+  },
+  {
+   "round": 3,
+   "architecture": 1,
+   "loop": 2,
+   "plain": {
+    "landed": false,
+    "proxy": 47.0,
+    "strict_proxy": 44.5
+   },
+   "skeptic": {
+    "landed": false,
+    "proxy": 43.4,
+    "strict_proxy": 40.8
+   },
+   "mean": 45.2,
+   "mean_read": 31,
+   "decision": "pass",
+   "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)",
+   "rule": "recorded as a pass under the single-solver rule (PR #17): the gate is that the solver does not commit to the main call; the proxy is recorded and does not gate; stump or fork is the judge's question"
+  }
+ ],
+ "judge": {
+  "verdict": "DETERMINISTIC (pass 1)",
+  "disposition": "APPROVE; optional fixes applied with no rerun: grading tolerance stated in step 6, the thinnest margins named in the recommendation, container metadata (PDF creator, Excel-shaped workbooks with their own UTC stamps); no graded figure, rung or read text moved",
+  "report": "task229/determinism_check_report.md",
+  "gate_g": "mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the design note",
+  "residual": "simple mean with a random-intercept variance holds EM3.10.9 (SE 0.65 against 0.48); not licensed: the full random-intercept fit (97.44, SE 0.46) and every design-based estimator fire it; asserted in checks.py"
+ },
+ "approved": "2026-10-11 (no author checkpoint in the flow; heart WARN answered, pre-flight CLEAN, surface clean against task228, judge APPROVE)",
+ "delivered": "2026-10-11",
+ "portal": null
+}

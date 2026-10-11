@@ -75,8 +75,8 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | developer 2 | open |
-| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | developer 2 | open |
+| task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | oviya13ya | in build |
+| task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | oviya13ya | in build |
 | task182 | AD05 | [How many high-dose patients the referral letter puts on one prescriber, when the dose that defines them is a daily dose built from overlapping fills](task182/START_HERE.md) | Policy & Education · public health-insurance programme integrity | developer 2 | open |
 | task183 | AD06 | [Which surge trigger the network adopts when the authority stops publishing its own, and only one rebuilt rule settles every week the agency was paid for](task183/START_HERE.md) | Supply Chain & Logistics · healthcare surge staffing contracts | developer 2 | open |
 | task184 | AD07 | [Which airport gets the one mobile screening team for the summer, when the team can only open lanes where a lane position stands idle](task184/START_HERE.md) | Supply Chain & Logistics · aviation passenger screening operations | developer 2 | open |
@@ -129,7 +129,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task228 | DQ01 | [Which guardrail metric the experiment platform's automated alert watches](task228/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
-| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
+| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | perssathya (developer 3) | shipped |
 | task230 | DQ03 | [Whether an event-volume drop is an instrumentation incident or a mix shift toward a new client version](task230/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
 | task231 | DQ04 | [Whether the network-total shortfall alert fires when the missing reads are multiply imputed](task231/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
 | task232 | DQ05 | [The upstream-lag threshold for a feed SLA alert, when lag is itself measured with error](task232/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
