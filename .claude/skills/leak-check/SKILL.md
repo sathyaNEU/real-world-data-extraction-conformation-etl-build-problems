@@ -15,7 +15,7 @@ description: "Check a built bundle for anything that hands the solver the answer
 
 - **Inside `/build` it is stage 4, both halves**, after the build stage and before the duplicate
   check and the solver round. `leak.py` runs after every rebuild. The reader runs once per build on
-  Sonnet, and again only when a fix changed a document under `target/` or the prompt; a data-only
+  Sonnet at medium effort, and again only when a fix changed a document under `target/` or the prompt; a data-only
   repair is checked by `leak.py` alone. A solver round on a leaking pack measures nothing, so the
   round never runs past a LEAK, a quoted question-1 sentence, a question-2 or question-3 file, or a
   fork the reader sizes on the main call, and the pipeline fixes those in the generator first. The
@@ -67,14 +67,18 @@ decisive property.
 
 ## The reader's half: the `/leak-check` command
 
-`/leak-check taskNN` runs `leak.py` and then spawns **one** isolated agent, on Sonnet, that sees only a fresh
+`/leak-check taskNN` runs `leak.py` and then spawns **one** isolated agent, on Sonnet at medium effort, that sees only a fresh
 copy of `prompt.md` and `target/` in the scratch directory, never the design note, the generator,
-the submission or the report. It is asked four questions as a solver, not as a reviewer:
+the submission or the report. It is asked five questions as a solver, not as a reviewer:
 
 1. Which sentence or file, if any, tells you what the decisive step of this analysis is? Quote it.
 2. Which file, if any, already ranks or scores the candidates on the question the prompt asks?
 3. Which file has no reason to exist in this organisation's folder except to help the analyst?
 4. Which figure or name in the documents reads as the answer rather than as context?
+5. Which filed sentence, read literally, fixes how the main figure is to be computed or over which
+   population (a basis, a rate, a membership rule)? Quote it, and say what a literal execution of it
+   gives. The main thread checks that this is the golden; a filed sentence whose literal execution is
+   the easy answer is a main-call fork, fixed before the solver round (`determinism-check` §1).
 
 Its answers are appended to `leak_check_report.md` under `## Solver's-eye read`, with the reader's
 verdict on each REVIEW line of the mechanical half. The main thread then decides, line by line,

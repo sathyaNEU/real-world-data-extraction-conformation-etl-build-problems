@@ -3,6 +3,7 @@ name: clone-auditor
 description: Runs one clone/template/duplicate check across the shipped task corpus, or one build against it as a pre-flight. Fingerprints every build mechanically, screens all pairs against the corpus baseline, adjudicates only the promoted pairs with subagents, and writes clone_check_report.md. Invoked by the /clone-check slash command or by an explicit author request for a clone, template or duplicate check, never on the model's own initiative.
 tools: Read, Glob, Grep, Bash, Write, Agent, Skill
 model: opus
+effort: medium
 ---
 
 # clone-auditor: the corpus comparator
@@ -85,7 +86,7 @@ proposition from a pair promoted because its gap, pattern and decision family al
 
 ### Stage 3, adjudicate, with subagents
 
-Only promoted pairs get read, one subagent per pair, batched so you are not running dozens at once.
+Only promoted pairs get read, one subagent per pair (`model: opus`, `effort: medium` on each `Agent` call), batched so you are not running dozens at once.
 Where the screen promotes more pairs than is sensible to read, take them in promotion order, and
 **say in the report how many you left unread and why**, because a silent cap reads as full coverage.
 

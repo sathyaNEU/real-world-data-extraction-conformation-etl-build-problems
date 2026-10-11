@@ -306,6 +306,8 @@ def simulate(seed=W.SEED):
     S.susp = np.full((N, J), -BIG, np.int64)   # paused instalments are not owed before this day (a cancelled pause)
     S.e_def = np.full(N, BIG, np.int64)
     S.m_def = np.zeros(N, np.int64)
+    S.res_kind = np.zeros(N, np.int8)          # how a default was resolved: 1 caught up, 2 collections hardship
+    S.res_day = np.full(N, BIG, np.int64)      # arrangement, 3 written off, 4 settled; and the day it was
     defaults(S)
     hardship(S)
     finish(S)
@@ -416,15 +418,18 @@ def defaults(S):
                 S.clear[i][after] = S.due[i][after]
                 S.cash[i][after] = S.P[i]
                 S.cured[i] = True
+                S.res_kind[i], S.res_day[i] = 2, start
                 S.arr.append(dict(loan=int(i), received=out[1], start=start, end=end, kind="Reduced repayments",
                                   outcome="complete", reduced=red, reason=pick_reason(rng, out[1]), cancel=None))
                 continue
         if out is None:
             if e_wo <= R:
                 S.close[i], S.close_type[i] = e_wo, 3
+                S.res_kind[i], S.res_day[i] = 3, e_wo
             continue
         if out[0] == "settle":
             S.close[i], S.close_type[i] = out[1], 4
+            S.res_kind[i], S.res_day[i] = 4, out[1]
             continue
         x = out[1]
         sel = (ar >= j0 - 1) & (ar < T)
@@ -435,6 +440,7 @@ def defaults(S):
         S.clear[i][nxt] = S.due[i][nxt]
         S.cash[i][nxt] = S.P[i]
         S.cured[i] = True
+        S.res_kind[i], S.res_day[i] = 1, x
 
 
 def sched_balance(S, i, paid):
@@ -478,6 +484,7 @@ def pick_reason(rng, when):
 
 def hardship(S):
     cal, rng, R, N = S.cal, S.rng, S.R, S.N
+    QJ = dn(W.PRIOR_QE)                         # the June quarter end: no cancellation falls on it either
     L = S.L
     ar = np.arange(J)
     life_end = np.minimum(np.minimum(S.close, S.final_nom), R)
@@ -522,6 +529,8 @@ def hardship(S):
                     c = int(cal.prev_bd[end])
                 if c == R:
                     c = int(cal.prev_bd[R - 1])
+                if c == QJ:
+                    c = int(cal.prev_bd[QJ - 1])
                 red = reduced_amount(rng, S, i, j0 - 1)
                 reason = pick_reason(rng, x)
                 if end - start >= 27 and c > start:     # at least a month of varied repayments left to agree
@@ -597,11 +606,13 @@ def hardship(S):
             rec["cancel"] = min(c, int(cal.prev_bd[start - 1]))
             if rec["cancel"] == R:
                 rec["cancel"] = int(cal.prev_bd[R - 1])
+            if rec["cancel"] == QJ:
+                rec["cancel"] = int(cal.prev_bd[QJ - 1])
             S.arr.append(rec)
             continue
         row_c, row_m = S.clear[i], S.cash[i]
         # repayments around the arrangement are as varied; arrears at the start are capitalised
-        near = (S.due[i] >= x) & (S.due[i] <= end + 100) & (ar < T)
+        near = (S.due[i] >= x) & (S.due[i] <= end + 100) & (ar < T) & (S.due[i] < onset_due[i])
         row_c[near] = S.due[i][near]
         np.maximum.accumulate(row_c, out=row_c)
         cap = (S.due[i] < start) & (row_c > start)
@@ -622,8 +633,10 @@ def hardship(S):
                 c = int(cal.prev_bd[end])
             if c == R:
                 c = int(cal.prev_bd[R - 1])
+            if c == QJ:
+                c = int(cal.prev_bd[QJ - 1])
             y = min(int(cal.next_bd[c + int(rng.integers(5, 26))]), int(cal.prev_bd[int(S.due[i, first]) + 84]))
-            owed = (ar >= first) & (S.due[i] <= y) & (ar < T)
+            owed = (ar >= first) & (S.due[i] <= y) & (ar < T) & (S.due[i] < onset_due[i])
             row_c[owed] = y
             row_m[owed] = S.P[i]
             if kind == "Payment pause":

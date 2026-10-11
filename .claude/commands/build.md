@@ -35,7 +35,8 @@ stage only when its gate holds. Two rules about how:
    every solver round the loop needs (stage 6, `/solve taskNN`: one isolated `Agent` in a sandbox)
    and the determinism judge (stage 7, the
    `determinism-judge` agent, spawned once per pass). Follow each one's own command or skill text
-   for how to spawn.
+   for how to spawn. Every agent the pipeline spawns runs on the model and effort `build-pipeline`
+   (Models and effort) sets for its role: the designer on Opus at max, the rest at medium.
 
 **The solver round drives the loop.** After the leak check (with only its leak-level findings and any
 fork on the main call fixed) and the duplicate check, run the round (`solver-round`); when the solver
@@ -44,7 +45,8 @@ judge; when it lands the call, take the round's brief, with the deferred finding
 stage 2,
 harden, rebuild, leak-check and solve again, three loops per architecture, then re-root at stage 1
 in the same objective and number, three architectures, then retire (`build-pipeline`, the worth-it
-gate and Retirement). Each of those repairs is a fresh agent spawned from the main session with a short
+gate and Retirement). Each of those repairs is a fresh agent spawned from the main session (for a hardening loop or a
+re-root, a designer on paper first, then a builder from its commit) with a short
 brief that points at the committed round log, `pipeline.json` and the design note, never the agent that
 built the pack resumed (`build-pipeline`, Running the stages). Difficulty is still argued on paper
 first (the stump sentence, the ladder, the closure table); the round tests it. The judge's FIX_NOW repairs a determinism or spec defect and is

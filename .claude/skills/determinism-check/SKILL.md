@@ -1,147 +1,167 @@
 ---
 name: determinism-check
-description: "Force one answer while the build is being designed, assert it while the generator is written, and check the finished build against the judge's gates (A to E determinism, F stump power, G stumping type). Direct rules only; the evidence behind them is in references/forcing-the-answer.md (the 22-axis convention inventory, the four closure moves, the bin arithmetic, the eight ways determinism is lost). Also carries the judge rehearsal, spawned only when the author asks or when the /build pipeline reaches stage 7. Invoke three times per build: at the ladder, at the generator, at the end; and again when a build comes back NOT_DETERMINISTIC or SEND_BACK."
+description: "The determinism spec for every build. What must be filed literally (the estimand and every convention), what may stay open (the method, and only behind a filed criterion the data settles), the literal-reader test that decides whether a golden is forced, the closure moves, the generator assertions, the judge's gates and the judge rehearsal. Invoke while the ladder is designed, while the generator is written and on the finished build. The rehearsal thread is spawned only when the author asks or /build reaches stage 7."
 ---
 
 # Determinism
 
-> Builds here do not fail determinism on arithmetic. They fail because a competent solver did the
-> analysis correctly and landed somewhere else, on a choice the author never noticed was a choice:
-> 31 `underspecified_objective` findings across 18 builds against 2 `solution_incorrect`. Every one
-> of those builds had a verifier. A verifier asserts the forks somebody enumerated, so the work is
-> the enumeration, and it happens before the data is cut.
+> A build is deterministic when a reader who follows the shipped sentences word for word, and infers
+> nothing the files do not say, lands on the golden. That is how the portal's judge reads. Our builds fail
+> it for one reason in several costumes: the golden is right only under a reading the author supplies, in
+> the write-up, the design note or "plain sense", and the shipped text, read literally, supports another.
 
-The judge's own system prompt is `guidelines/determinism_judge_system_prompt.md` (v3); read it when
-a verdict is contested. `references/forcing-the-answer.md` is the evidence for every rule below.
+## Why builds fail, counted
 
-## A. While the ladder is designed
+25 in-house judge reports over 14 builds (task117 to task445) plus the shipped ledger:
 
-1. **Answer the litmus in writing, first.** *Is the reported number or conclusion the task overturns
-   actually wrong, and is catching that the main thing that defeats the model?* Yes to both is
-   banned (surface-read rejection, at any depth). The reported figures stay correct and the
-   difficulty lives elsewhere.
-2. **Name the primary mechanism** from the pass list: `forecasting`, `method_or_model_selection`,
-   `binding_constraint`, `decomposition_attribution`, `signal_vs_noise_or_hold`,
-   `confirm_surface_read`, `etl_conformance`. Never `planted_defect_flip` or
-   `single_conceptual_flip`. `statistical_rigor` only paired with one of the seven.
-3. **Name the two layers in the design note** (Layer 1: the realistic mess and the system that produces it; Layer 2: the analytical shortcut the stump rests on), and confirm no filed decoy, no decoy-blessing record and no withheld rule with a stated rival anywhere in the pack. Then **write the three flags into the design note**: `surface_read_dependency: no`,
-   `stumping_family: analytical_non_defect` (or `mixed` with the independent layer named),
-   `sole_data_defect: no`. Flags are claims; section B asserts them.
-4. **Ship no artifact that ranks the candidates on the decision question and gets it wrong.** A
-   past-quantity ranking is legal only if it is correct about the past and labelled in-file for the
-   question it answers. The one exception to the rule is a declared wrong-basis distractor (`dataset-generation` §8.3): wrong on a basis a shipped fact rules out, named in `metadata.json`, and never the stump. Assert that its answer is neither the correct answer nor the decoy.
-5. **Walk the 22 axes** in `forcing-the-answer.md` Part 1 and write one line per axis in the design
-   note: the reading chosen and which closure move closed it.
-   - **C1 converge**: build the records so every reasonable reading selects the same rows and the
-     same figure (the strongest close; assert on the figure and on the row and entity counts).
-   - **C2 corpus recovery** (confirmation only: the client caps a method recovered from certified figures, so C2 may confirm a stated method, never pin a hidden one): the rule is the unique survivor of a back-test over a closed corpus;
-     state the family size, N of N, and every rival's worst miss.
-   - **C3 corridor**: the parameter is unrecoverable and irrelevant, with the answer identical across
-     its whole admissible range.
-   - **C4 grid separation**: every cell of the fork grid computed, each mapped to the shipped rule
-     it violates, and the nearest wrong cell at least 6 per cent from the answer (under that, the
-     two-opposite-violations argument).
-   An axis that cannot move the answer today still gets a line; it becomes load-bearing when
-   another parameter moves.
-6. **Centre every graded figure in its rounding bin, never on the round value.** State the flip
-   condition as a number. A figure tuned to land at 24.8000 is a receipt: task100's in-house solver
-   wrote "the composites land within 0.001 of round one-decimal values, which points to the intended
-   method". Tune to a non-round position inside the bin (24.8371) with the same margin to the edges.
-7. **Pin conventions in a filed document, once, stated as a rule and never argued.** A convention a
-   competent analyst could reverse is a fork; the write-up pins nothing.
-8. **Decision pinned, method not.** One committed call for the main ask, one determinate answer per
-   supplementary figure, no bundled asks, unit and rounding inside the sentence. A hold is a call.
-9. **No decision metric asserted in the prompt's own voice that a shipped file contradicts**; demote
-   it to an attributed claim so the filed policy governs.
-10. **Write the stump sentence**: the wrong committed answer a competent solver files and the step
-    that lands them there. No sentence, no stump, no build.
+| Cause | Findings | Where it is fixed |
+|---|---|---|
+| A write-up figure that does not reproduce (an incidental figure, a figure on a bin edge, a count no filed definition forces) | 19 in 14 builds | §5 |
+| The estimand not filed literally (population, window or inclusion left implicit) | 16 in 13 | §1 |
+| A convention or threshold not pinned (rounding path, tie, as-of date, boundary) | 13 in 13 | §3 |
+| The method left open with no filed criterion for choosing it | 9 in 9 | §1 |
+| A filed rule whose literal reading gives another answer | 7 in 7 | §1 |
 
-## B. While the generator is written
+Two facts decide how the work is done. task445 came back DETERMINISTIC twice from our judge and failed the
+portal (`answer_contradicts_files`, `golden_wrong`): its methodology defined ownership over "managers that
+file" for the period, the literal reading counted only the reports on file, and nothing filed licensed
+completing the rest. And eight builds were solved soon after a determinism repair added a pin, because
+their stump had been living in the ambiguity the pin removed.
 
-Assert, do not state. Each of these is an assertion in the generator and a check in an independent
-verifier that reads only the shipped bytes on a code path sharing nothing with the generator.
+## 1. WHAT is filed literally, HOW may stay open
 
-- every C1 convergence as an equality on the figure and on the row and entity counts
-- the C2 back-test: survivor N of N, family size, every rival's miss count and worst miss
-- the C3 corridor's bounds and the answer's constancy across it
-- every C4 grid cell, its violated rule, and the nearest cell's distance
-- every graded figure's distance to its bin boundary
-- **the clean-data test, once per suspect file** (incomplete, stale, superseded, delta-shaped or
-  filtered): repair the file in the generator and assert `answer(repaired) == answer(shipped)`,
-  `naive(repaired) == naive(shipped)`, `answer != naive`. Failing either equality makes
-  `sole_data_defect` yes whatever the note says.
-- **the lens-swap test, separately**: the naive read and the answer are not the same population at
-  the same moment under two lenses; if they are, the mechanism is `single_conceptual_flip`.
-- file grain honoured wherever a rate, average or roll-up runs (a delta feed is reconstructed into a
-  panel before any rate)
-- the input gates: 10 or more files, 3 or more formats, a file of 25,000 or more rows in any format, or a large database file, at
-  least two distractors (files the solution does not use that look relevant) named in `metadata.json`, 1 to 3
-  deliverables, every ask with unit and rounding
-- two consecutive builds byte-identical
+**WHAT: the estimand, filed so that its literal execution is the golden's quantity.** Population (name
+its members in terms the data executes, and say outright whether members not yet observed at the as-of
+date are in it), outcome, window, unit, comparison, inclusion and exclusion, threshold, rounding. Each is
+fixed by the prompt's question or by one filed sentence at authority (a governing standard, policy or
+contract), stated once. Never leave a part of the estimand for the solver to infer, and never word it so
+that its literal reading is the easy answer.
 
-**Pin without a plant** (`../stumping/references/client/two-layer-task-design.md`): the estimand is
-defined precisely in the prompt or a supplied standard (population, outcome, window, unit, comparison),
-the design implies the method, and every reasonable alternative is ruled out by the data's own structure,
-never by a decoy document.
+**HOW: the method may stay open only behind a filed selection criterion.** If the decisive step is the
+choice of method, file the criterion that selects it in general terms, never the method itself: "the
+basis that, applied at the same point in the last closed period, comes closest to that period's final
+figure on every unit (closeness: the largest miss)", "only measures that held steady across the closed
+cohorts", "the standard's general method for this estimate". Then build the data so every reasonable
+candidate is separated under that criterion with margin, and assert it. With no filed criterion, two
+defensible methods survive and the judge fails the build (`underspecified_objective`). With the method
+itself filed, the decisive step is rule application and the stump is gone.
 
-## C. When the build is finished
+**Never file a procedure, basis or formula whose literal application gives an answer other than the
+golden.** It is an official decoy (banned on the card) and a determinism fork at once.
 
-**The client's pre-ship check comes first**, one line each in the design note
-(`../stumping/references/client/two-layer-task-design.md`): the task does its domain's own analysis and
-the swap test breaks it; the inputs take real work to put in order and none of it is a planted defect;
-the step that flips the recommendation is a methodological choice, not a planted catch, a field reading
-or a stated rule applied; the analyst test holds (a strong analyst who cleaned the data and read every
-rule correctly still gets it wrong the easy way, route and wrong answer named); the prompt or a supplied
-standard defines what to measure precisely enough that only one method is defensible; there is no decoy
-memo, staff draft or briefing; the method is not hidden and recovered from certified or published
-figures; the lesson is not one an earlier task already teaches. The judge rehearses the first and the
-third of these as Gate H.
+**The stump lives in HOW, never in WHAT.** If filing the estimand literally makes the call easy, the stump
+was a fork. Redesign the decisive step (`stumping`, the ladder) so that the easy METHOD fails on a
+precisely stated estimand. Do not keep the estimand vague to keep the stump.
 
+## 2. The literal-reader test
 
-Run the gates in this order; each is one question.
+Run it on paper before any data is cut, and again on the finished pack. Write the result into the design
+note as the `Literal reader` line.
+
+1. Execute the prompt and every filed definition and rule word for word. Infer nothing the text does not
+   state. Where the text is silent on a choice, list every option and compute each.
+2. The build passes only if every literal reading gives the golden, or each reading that differs
+   violates a sentence you can quote from a shipped file, or the records are built so the readings
+   converge (C1, asserted on the figure and on the row and entity counts).
+3. The easy answer must come from an easy method applied to the same literal estimand, never from a
+   different reading of the text.
+4. Every step of the write-up passes the same test. A step that needs an inference no file states is an
+   open fork, however obvious it feels.
+
+## 3. Close every convention
+
+- **Walk the 22 axes** (`references/forcing-the-answer.md` Part 1) and write one line per axis in the
+  design note: the reading chosen and the move that closed it. An axis that cannot move the answer today
+  still gets its line, because it becomes load-bearing when another parameter moves.
+- **The closure moves, strongest first.** C1 converge: build the records so every reading selects the same
+  rows. C2 confirm: a filed criterion is shown, on closed data, to select one candidate (family size, N of
+  N, every rival's worst miss); C2 never recovers a rule nobody filed. C3 corridor: the parameter is
+  unrecoverable and the answer is identical across its whole admissible range. C4 separate: every cell of
+  the fork grid computed and mapped to the shipped sentence it violates, the nearest wrong cell at least
+  6 per cent away. Details and worked cases: `references/forcing-the-answer.md` Part 2.
+- **Pin at authority, once.** The prompt states the question and carries no convention. Below it,
+  authority runs: a governing standard or policy, a contract or schedule, a decision memo, a data
+  dictionary (field semantics only), method notes on an export, informal notes. A pin must sit at or
+  above every sentence that could argue the other way (`references/forcing-the-answer.md` Part 6.1). Sweep the
+  pack for sentences quotable against the answer (the constraint's nouns, and words such as defensible,
+  added, raised, increased near them) and qualify or remove them.
+- **Bins.** Every graded figure sits mid-bin on a non-round value, with its flip condition stated as a
+  number. Never grade the count of an iteration, a median of an even-sized set, or a percentage near a
+  one-decimal edge where a count would do.
+- **No decision metric in the prompt's own voice** that a filed policy contradicts; demote it to an
+  attributed claim.
+- **No artifact ranks the candidates on the decision question and gets it wrong**, except a declared
+  wrong-basis distractor (`dataset-generation` §8.3) that a shipped fact rules out and that is never the
+  stump.
+
+## 4. Assert in the generator, verify independently
+
+Assert in the generator, and recompute in an independent verifier that reads only the shipped bundle:
+
+- the literal reading's answer equals the golden, or the readings' asserted convergence;
+- every C1 convergence (the figure and the row and entity counts), every C2 candidate's error and the
+  winner's margin under the filed criterion, the C3 corridor, every C4 cell with its violated sentence;
+- every graded figure's distance to its bin edge;
+- the clean-data test, once per suspect file (repair it in the generator: the answer and the naive
+  answer are unchanged and still differ), and the lens-swap test (the naive read and the answer are not
+  the same population at the same moment under two lenses);
+- the input gates (10 or more files, 3 or more formats, a file of 25,000 or more rows or a large
+  database, two or more distractors named in `metadata.json`, 1 to 3 deliverables, unit and rounding in
+  every ask) and two consecutive builds byte-identical.
+
+Compute forward: build the data, then compute every figure from it. Where a rung turns on two axes
+disagreeing (date against period label, row against entity), build the disagreement per candidate, since
+independent draws make it inert.
+
+## 5. The write-up
+
+Every figure in `submission.md` is a claim the judge recomputes. State the answers the rubric owes and a
+reproducible path, nothing more: no incidental figure, no count unless a filed definition forces it, no
+sentence saying two readings agree unless the generator asserts it. Blocks and wording:
+`submission-writeup`.
+
+## 6. The gates, in the judge's order
 
 | Gate | The question | Fails as |
 |---|---|---|
-| H | Does the task do its domain's own analysis (the swap test breaks it), are both layers there, and is the decisive step analytical: would a strong analyst who cleaned the data and read every field and rule correctly still get it wrong the easy way? A decisive step that is planted, data semantics or rule application fails. | SEND_BACK, rebuild the decisive step |
-| G | Does the difficulty survive deleting every wrong number from the pack, and is it not a lens swap? | SEND_BACK, rebuild |
-| A | Does every figure (call, components, steps, every supplementary answer) recompute from the shipped files alone, at the file's own grain, attributed to the right party and period? | `solution_incorrect` |
-| B | Is every decisive fact in a shipped file, and does every distinctive term in the recommendation occur in some input (grep every format, tables included)? Never repair by adding vocabulary to an input afterwards. | missing input |
-| C | Does any answer flip under a reasonable definition, threshold, scope, inclusion rule, window or rounding path the pack does not pin? Enumerate the rivals and defeat each. A thin margin is fine when clean; thin and contested is not. | `underspecified_objective` |
+| H | Does the task do its domain's own analysis (the swap test breaks it), are both layers there, and would a strong analyst who read every field and rule correctly still get it wrong the easy way? | SEND_BACK |
+| G | Does the difficulty survive deleting every wrong number from the pack, and is it not a lens swap? | SEND_BACK |
+| A | Does every figure recompute from the shipped files alone, at the file's own grain? | `solution_incorrect` |
+| B | Is every decisive fact in a shipped file, and does every distinctive term in the recommendation occur in some input? | `missing_input_data`, `answer_contradicts_files` |
+| C | Does any answer flip under a definition, threshold, scope, window or rounding path the pack leaves open? The literal reading first. | `underspecified_objective` |
 | D | Would rigorous solvers disagree because they read a term differently rather than analysed differently? | `semantic_fork` |
-| E | Is the decision pinned, the method open, every ask single and precise? | hedge, bundled ask |
-| F | Can the stump sentence be written, and is the ask layer holding both top responses to about a fifth of the ask weight (`supplemental-stumping` Part 0)? The bar is the top two averaging under 50 with one genuinely stumped; build to 40. | too easy |
+| E | Is the decision pinned, every ask single and precise? | `prompt_ambiguity` |
+| F | Can the stump sentence be written, and do the asks hold both top responses near a fifth of the ask weight? | too easy |
 
-Then the spec gates (section B's list), `leak-check`, and `golden-realism` after the figures are
-frozen.
+The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
 
-## D. The judge rehearsal
+## Running the judge rehearsal
 
-An isolated thread that sees the prompt, the unzipped bundle and the submission's graded blocks,
-and nothing else: not the design note, the generator or any verifier. It recomputes every
-load-bearing figure and returns a verdict (DETERMINISTIC or NOT_DETERMINISTIC), a disposition
-(APPROVE, FIX_NOW, SEND_BACK), the Gate G line and the Gate H line (the three rules).
-
-**It runs when the author asks in their own words, or when `/build` reaches stage 7 (the
-determinism check, the last gate before ship).** Nothing else licenses it: not a finished build
-outside `/build`, not a patch that seems to want validation.
-
-1. Resolve the task to an absolute folder; if none is named, ask and stop.
-2. Spawn the `determinism-judge` agent once, `subagent_type: determinism-judge`, stating that the
-   author asked through this skill (or that `/build` stage 7 reached it) and giving the path. If a
-   `determinism_check_report.md` exists, name the pass number so the new report is numbered.
-3. Relay the verdict, the disposition, the Gate G line, the Gate H line and the report path. Do not fix, soften or
-   re-run. Run it again only after a change that moves a graded number.
+- **Licence.** The author asks in their own words, or `/build` reaches stage 7. Nothing else.
+- **One isolated thread** (model and effort per `build-pipeline`, Models and effort). It sees a fresh
+  unzip of `target.zip`, the prompt, the submission's graded blocks inlined, and
+  `guidelines/determinism_judge_system_prompt.md` inlined verbatim. It never sees the design note,
+  `pipeline.json`, the solver rounds, the stump sentence, an earlier report or anything its orchestrator
+  has read.
+- **The thread runs the literal reading first** (§2), then the gates, and counts a fork closed only by
+  inference or by the write-up as open.
+- **Spawning.** The `determinism-judge` agent orchestrates and spawns the thread. Where it cannot spawn
+  (no `Agent` tool in the runtime), it writes the spawn brief beside a fresh unzip and returns its path,
+  and the main session spawns the thread from that brief under the same contract. An orchestrator that
+  has read anything beyond the bundle never judges in its own thread.
+- **After it returns.** Relay the verdict, the disposition, the Gate G line and the Gate H line. FIX_NOW
+  is fixed and re-judged once; SEND_BACK re-roots or retires (`build-pipeline`).
+- **Our judge is the floor, not the bar.** The portal reads more strictly. A fork our thread settles "by
+  the plain reading" or "as the natural intent" is a FIX_NOW, not a pass.
 
 ## Checklist
 
-- [ ] Litmus answered in writing; mechanism from the pass list; three flags in the design note
-- [ ] The three rules answered in writing: the swap test, both layers, the decisive step's class with the analyst test (route and wrong answer named)
-- [ ] No shipped artifact ranks the candidates on the decision question, a declared wrong-basis distractor excepted
-- [ ] 22 axes walked, one closure move per axis, in the design note
-- [ ] Every convergence, back-test, corridor, grid cell and bin distance asserted in the generator and checked in the independent verifier
-- [ ] Clean-data test and lens-swap test asserted, once per suspect file
-- [ ] Every figure in the submission recomputes from `target/`, supplementary answers included
-- [ ] Every distinctive term of the recommendation grepped in every input format, with hits
-- [ ] Rivals enumerated and defeated for the main ask and every supplementary figure
-- [ ] Stump sentence written; ask layer sized to the pair ceiling
-- [ ] Spec gates green; `leak.py` not LEAK; goldens through `golden-realism` after figures froze
+- [ ] Estimand filed literally: population (unobserved members stated), outcome, window, unit, comparison, inclusion, threshold, rounding
+- [ ] Method either filed (and then not the stump) or open behind a filed selection criterion the data settles with margin, asserted
+- [ ] No filed rule, basis or formula whose literal reading gives another answer
+- [ ] `Literal reader` line in the design note; every literal reading gives the golden, violates a quotable sentence, or converges (asserted)
+- [ ] 22 axes walked, one closure move each; pins at authority, counter-pin sweep clean
+- [ ] Every graded figure mid-bin, flip condition stated; nothing graded on an edge
+- [ ] Generator assertions and the independent verifier green; two builds byte-identical; input gates met
+- [ ] Write-up states only owed figures, each recomputed from `target/`
+- [ ] Judge rehearsal isolated, literal reading first; FIX_NOW fixed and re-judged once

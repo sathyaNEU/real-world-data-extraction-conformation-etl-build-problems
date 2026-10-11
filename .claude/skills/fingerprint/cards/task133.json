@@ -1,17 +1,17 @@
 {
   "task": "task133",
-  "architecture": "v1",
+  "architecture": "v1, hardening loop 1",
   "drawn": "2026-10-11",
   "slot_note": "Forecasting block, second build of the wave; seed FC04 (station maturity ramp) not used: its forward-maturity driver repeats the age-forward structure of task132 drawn the same day, so the slot keeps the objective and draws a fresh world",
   "domain": "banking-credit-financial-risk",
   "subdomain": "expected-credit-loss-provisioning",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a non-bank consumer lender's quarter-end expected credit loss allowance on its unsecured personal loan book, built from the model team's cumulative default curve by months on book, the staging rule and the scenario weights",
+  "niche": "a non-bank consumer lender's quarter-end expected credit loss allowance on its unsecured personal loan book, built from the model team's crude cumulative default curve by months on book, read against the development sample it came from, with the staging rule and the scenario weights",
   "objective": "forecasting",
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Book a collective expected credit loss allowance of AUD 13,773,000 on the PL36 and PL60 personal loans at 30 September 2026.",
+  "answer": "Book a collective expected credit loss allowance of AUD 13,160,000 on the PL36 and PL60 personal loans at 30 September 2026.",
   "answer_source": "task133/submission.md, 1. Final Recommendation",
   "gap": [
     "time"
@@ -31,14 +31,16 @@
   "official_decoy": false,
   "validated_decoy": false,
   "layer2_family": "field_method",
-  "layer2_pattern": "own:seasoning-conditional-lifetime-pd",
+  "layer2_pattern": "own:attrition-conditioned-lifetime-pd",
   "layer1": [
     "a loan book extract with origination and first-repayment dates rather than months on book",
-    "a hardship register joined by loan number, with arrangements that start, end and are cancelled",
+    "a hardship register joined by loan number, with arrangements that start, end and are cancelled, a status label as at the extract date, and bulk-loaded COVID-19 deferrals whose status was never moved on",
     "behaviour scores at origination and now on different scorecard versions with a mapping table",
-    "a default curve file with one curve per product and a model version stamp",
+    "a prior quarter-end extract without the score column the job added in July, taken before the same change by a job that counted days past due to its morning run, beside month-end scoring runs dated the day after each month end",
+    "a smoothed default curve file with one curve per product and a model version stamp, beside the complete-term development sample it was fitted to",
     "scenario multipliers and weights in a committee-approved workbook",
-    "an outcomes history the model was developed on, which the allowance does not use"
+    "a collections receipts ledger across cohorts with dishonour reversals and a debt-sale receipt carried without a loan number, beside the sale schedule in cents per dollar of face value",
+    "a collections MI file whose case resolution is set when the case closes, so a cure recorded on an approved arrangement stands after the arrangement is withdrawn"
   ],
   "context_artifact": "filed_model",
   "stakeholder_role": "head of credit risk reporting at a consumer lender, who presents the quarter-end ECL allowance to the Audit and Risk Committee",
@@ -61,7 +63,9 @@
     "invented_names": [
       "Bellbird Personal Finance",
       "PL36",
-      "PL60"
+      "PL60",
+      "Wirraway Mercantile Agents",
+      "Tarwin Receivables Pty Ltd"
     ],
     "people": [
       "Matthew Gardner",
@@ -72,25 +76,53 @@
       "Renee Foster",
       "Troy Olson",
       "Natalie Hanna",
-      "Kayla Stokes"
+      "Kayla Stokes",
+      "Christine Fletcher"
     ]
   },
   "deliverables": [
     "ecl_allowance_2026Q3.xlsx",
     "board_ecl_q3_2026.pptx"
   ],
-  "opening_move": "number-first",
-  "driver": "A cumulative outcome curve is filed from each unit's entry, and every unit in scope has already survived part of it, so its forward probability is the curve's remaining increments divided by its own survival to date; reading the curve from entry for every unit overstates the total, and shifting it to the unit's age without the division understates it.",
-  "driver_concrete": "The model team's cumulative PD curve runs from origination by repayments fallen due, so a performing loan at month a carries marginal PDs (C(a+k) - C(a+k-1)) / (1 - C(a)); reading the curve from month 1 for every loan's remaining term books about 43 per cent too much, and shifting it by months on book without the survival division books about 3 per cent too little.",
-  "stump": "A competent solver applies the cumulative PD curve to each loan's remaining months counted from the reporting date as if it were a term structure and books an allowance about 43 per cent high; the step that lands it there is reading a curve indexed by months on book as if every performing loan were new.",
+  "opening_move": "question-first",
+  "driver": "A cumulative outcome curve is filed as shares of every unit that ever entered, so units that left by a competing exit stay in its base; a unit still in scope at its age has come through both the outcome and the competing exit, so its forward probability is the curve's increment divided by the share of entrants still present and outcome-free at that age, which only the unit-level development record gives; dividing by one less the curve to date leaves the exited units in the base and understates the total, and a hazard rolled forward with no competing exit overstates it.",
+  "driver_concrete": "The PLPD-2026.06 curve is the crude default share of every loan drawn in complete-term development cohorts, loans repaid in full kept in its denominator; a performing loan a months on book takes [C(a+k) - C(a+k-1)] / S(a) with S(a) = 1 - C(a) - Cl(a), Cl(a) the development sample's share repaid in full by the end of month a; dividing by 1 - C(a), the survival-to-date reading the portal landed in v1, books 10.8 per cent too little, a default-only hazard rolled forward with no repayment 6.9 per cent too much, and the curve read from origination 38.9 per cent too much.",
+  "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000, 10.8 per cent low; the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so the loans repaid in full by month a stay in the at-risk base.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task132": "task132 forecasts failures of replaceable modules in which a failed unit is renewed by a new one at age zero, so the forecast weights each band by the present module's survival and adds its replacement; here a loan defaults once and is not replaced, and the construction is the conditional increment of a filed curve for loans that have already survived part of it.",
-    "task130": "task130 runs a closed group off a rationed list; here nothing is rationed and no group closes: each loan's forward loss is a survival-conditioned share of a filed curve."
+    "task130": "task130 runs a closed group off a rationed list; here nothing is rationed and no group closes: each loan's forward loss is a survival-conditioned share of a filed curve.",
+    "task133": "Hardening loop 1 moves the decisive rung one step deeper on the same curve: v1 conditioned on survival to date, 1 - C(a), and the portal landed it; the curve is now a crude share of every loan drawn, so 1 - C(a) is itself a rung (10.8 per cent low) and the answer conditions on survival of both exits, read from the development sample.",
+    "task134": "task134 estimates the probability that a released unit has an event within a fixed horizon from follow-up that is censored, with competing exits, so its move is an estimator under incomplete observation; here the curve is filed and every development cohort is complete, nothing is censored or estimated, and the move is conditioning a filed crude cohort curve on each performing loan having come through both exits by its own month on book."
   },
-  "lineage": [],
-  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 replacement of failed modules in a spares forecast, task133 conditioning a lifetime curve on survival to date). Realism rebuild 2026-10-11 moved the allowance to AUD 13,667,000 with realistic default levels. Forum redrawn at ship from committee_or_panel to board_of_directors (the Audit and Risk Committee chair presents to the board) after guard.py heart blocked committee_or_panel against task129.",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-11",
+      "fate": "hardening loop 1: survival to date landed on the portal (one model stumped, the other filed AUD 13,773,000 and scored 100 per cent, banking every inheriting ask: stage by product, drawdown year, stage 3 count)",
+      "domain": "banking-credit-financial-risk",
+      "subdomain": "expected-credit-loss-provisioning",
+      "objective": "forecasting",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "layer2_pattern": "own:seasoning-conditional-lifetime-pd",
+      "driver": "A cumulative outcome curve is filed from each unit's entry, and every unit in scope has already survived part of it, so its forward probability is the curve's remaining increments divided by its own survival to date; reading the curve from entry for every unit overstates the total, and shifting it to the unit's age without the division understates it.",
+      "stump": "A competent solver applies the cumulative PD curve to each loan's remaining months counted from the reporting date as if it were a term structure and books an allowance about 43 per cent high; the step that lands it there is reading a curve indexed by months on book as if every performing loan were new."
+    }
+  ],
+  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 replacement of failed modules in a spares forecast, task133 conditioning a lifetime curve on survival to date). Realism rebuild 2026-10-11 moved the allowance to AUD 13,667,000 with realistic default levels. Forum redrawn at ship from committee_or_panel to board_of_directors (the Audit and Risk Committee chair presents to the board) after guard.py heart blocked committee_or_panel against task129. Hardening loop 1 (2026-10-11): the curve became the development sample's crude default share over complete-term cohorts, the answer moved to AUD 13,160,000, the inheriting asks were replaced by two decoupled asks (realised LGD of the 2023-24 defaults by product and quarter; where the 30 June stage 1 and stage 2 loans stand at 30 September), and the opening move moved from number-first to calendar-first. The pre-round repair moved it to deliverable-first (the chair's two slides first, the workbook behind them) after the clone check read one build order across the lane. Stage 6b (2026-10-11): ask devices hardened against the loop 1 round's careful solver (a June extract counting days past due to its 07:30 run; Collections MI cures recorded on collections arrangements withdrawn before they started); PLPD-2026.06 released as a smoothed curve fitted under the allowance's own constraints; CRM-ECL-04 and the run-folder dictionary rewritten as working documents. No change to the draw, the driver, the stump or the answer. Ship after portal round 1 (2026-10-11): the prompt converted to prompt.txt, question-first plain text at 840 characters with every ask carried word for word; no change to the draw, driver, stump or answer.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the book and reads CRM-ECL-04 3.2 and the curve header correctly takes the curve's increments from each loan's months on book as its forward monthly PDs without dividing by the loan's survival to the reporting date, and books about AUD 13.32 million against AUD 13,773,000.",
-  "domain_test": "The deciding quantity is each loan's AASB 9 12-month or lifetime expected credit loss from a cumulative default curve by months on book, staged, scenario-weighted, re-amortised and discounted; with another field's nouns the staging triggers, LGD, EAD and coverage ratios have nothing to attach to, so the task does not read the same."
+  "analyst_test": "A strong analyst who cleans the book and reads CRM-ECL-04 3.2 and the curve header correctly conditions the curve on survival to date, dividing each forward increment by 1 - C(a) as the textbook conditional PD for a performing loan, and books about AUD 11.74 million against AUD 13,160,000, because the curve counts defaults against every loan drawn and a performing loan has also not been repaid.",
+  "domain_test": "The deciding quantity is each loan's AASB 9 12-month or lifetime expected credit loss from a crude cumulative default curve under competing early repayment, staged, scenario-weighted, re-amortised and discounted; with another field's nouns the staging triggers, LGD, EAD, prepayment and the coverage ratios have nothing to attach to, so the task does not read the same."
 }
