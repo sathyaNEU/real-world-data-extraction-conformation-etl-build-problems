@@ -2,8 +2,8 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round 5 (hardening loop 2)",
+ "stage": 7,
+ "stage_name": "determinism check (judge pass 2, on the loop-2 pack)",
  "updated": "2026-10-11",
  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
@@ -62,6 +62,16 @@
    },
    "decision": "harden",
    "brief": "The re-run after the judge's FIX_NOW landed on the plain gas ratio (DSL-T1 and LST-T2 acetylene with flat hydrogen excluded as tap-changer oil, RLS-T2 kept for its hydrogen). Loop 2: LST-T2's new galvanised radiators (November 2024) give off hydrogen from months before its first acetylene, so its twelve-month C2H2/H2 reads 0.91 and the ratio step keeps it (rung 3c); only the hydrogen the acetylene brings of its own, over the pace hydrogen already had, separates it from RLS-T2. No golden figure moves."
+  },
+  {
+   "round": 5,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 47.3
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 3b): every field and stated rule read correctly, every ask figure right, but the solver attributed by tracking alone (DSL-T1, LST-T2 and RLS-T2 at a constant 0.60, 0.60 and 0.37 ppm per 1,000 operations) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2."
   }
  ],
  "judge": {
