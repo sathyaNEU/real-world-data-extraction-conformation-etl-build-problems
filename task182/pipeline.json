@@ -1,0 +1,33 @@
+{
+ "task": "task182",
+ "domain": "physical-environmental-sciences",
+ "objective": "anomaly-detection",
+ "stage": 3,
+ "stage_name": "build (architecture 1: make-good bore assessments, each bore's decline split between the dry seasons and the pit's dewatering)",
+ "updated": "2026-10-11",
+ "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the basalt bore that fell more than 5 m; the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2020 to 2022 wet seasons, were drawn 6 to 9 m below where that rise would have taken them while showing less than 4 m of decline.",
+ "architecture": 1,
+ "loops": 0,
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": "",
+  "surface": ""
+ },
+ "three_rules": {
+  "domain": "pass (groundwater-level change attributed between climate-driven recharge and pumping with per-bore response functions calibrated before the impact; the swap breaks it)",
+  "layers": "pass",
+  "decisive_step": "analytical",
+  "analyst_test": "the decline since the baseline (or against the reference bores, or on one rainfall window) designates the alluvial bores and the basalt bore; only each bore's own climate response run forward finds the coal-measure bores"
+ },
+ "solver_rounds": [],
+ "judge": {},
+ "approved": false,
+ "delivered": "",
+ "portal": "",
+ "build": {}
+}
