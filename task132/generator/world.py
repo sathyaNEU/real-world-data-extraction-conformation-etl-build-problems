@@ -1,7 +1,7 @@
 """Fixed facts of the Tarrock Hydro world: dates, the PSU failure law, bands, lots, stock, stores."""
 import datetime as dt
 
-SEED = 1079
+SEED = 1165
 ASOF = dt.date(2026, 9, 30)            # extract date; stock count at close of business
 HORIZON_START = dt.date(2026, 10, 1)   # first month the stock has to cover
 MIGRATION = dt.date(2021, 1, 1)        # EAM go-live; work-order and rotating-item history start here

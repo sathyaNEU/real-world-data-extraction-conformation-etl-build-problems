@@ -8,7 +8,7 @@ import re
 
 PM_REVISED = (2023, 7, 1)
 
-ABBR = [("power supply", "p/s"), ("replaced", "repl"), ("returned to service", "RTS"), ("back in service", "RTS"),
+ABBR = [("power supply", "p/s"), ("replaced", "repl"), ("returned to service", "RTS"),
         (" with ", " w/ "), ("tested", "tstd"), ("feeder", "fdr"), ("breaker", "bkr"), ("battery", "batt"),
         ("charger", "chgr"), ("inspection", "insp"), ("settings", "stgs"), ("alarm", "alm"), ("station", "stn"),
         ("transformer", "xfmr"), ("secondary injection", "sec inj"), ("no fault found", "NFF"), ("checked", "chkd"),
@@ -121,11 +121,12 @@ class Writer:
 
     LEDS = ["ALARM", "ENABLED", "RELAY OK", "IN SVC", "PWR", "TRIP", "TEST"]
     STATES = ["flashing", "on solid", "red", "out", "off", "flickering", "amber", "blinking"]
-    DEAD = ["all LEDs off", "no LEDs", "front panel dark", "display blank, no LEDs", "PWR LED off", "ENABLED and PWR LEDs out",
-            "relay dark", "nothing on the front panel", "IN SVC LED off, display blank", "no lights on relay", "LEDs all out",
-            "relay completely dead", "panel dark, display blank", "no display", "relay front dark", "no power to relay",
-            "front panel blank", "display and LEDs dead", "dead relay, no display", "PWR LED out, display blank",
-            "relay off, LCD blank", "LCD blank and no LEDs", "no LEDs or display", "relay showing nothing"]
+    DEAD = ["all LEDs off", "no LEDs", "front panel dark", "LCD blank, no LEDs", "PWR LED off", "ENABLED and PWR LEDs out",
+            "relay dark", "nothing on the front panel", "IN SVC LED off, screen blank", "no lights on relay", "LEDs all out",
+            "relay completely dead", "panel dark", "display off", "relay front dark", "no power to relay",
+            "front panel blank", "display and LEDs dead", "dead relay", "PWR LED out, LCD dead", "relay off, LCD blank",
+            "LCD blank and no LEDs", "no LEDs or display", "relay showing nothing", "screen dead, no LEDs", "fascia dark",
+            "front panel totally dead", "no PWR LED, no display"]
 
     def led(self, p, dead):
         if dead:
@@ -141,9 +142,9 @@ class Writer:
         v = round(self.r.uniform(*nominal), 1)
         tb = "TB%d-%d/%d" % (self.r.randint(1, 3), self.r.randint(1, 12), self.r.randint(13, 24))
         return self.say(p, "dc", ["%.1f VDC at %s" % (v, tb), "DC at terminals %.1f V" % v, "%.1fV DC in" % v,
-                                  "station DC OK (%.1f V)" % v, "%.1f V at relay DC input" % v, "DC input %.1fV, OK" % v,
+                                  "station DC OK (%.1f V)" % v, "%.1f V at relay DC input" % v, "DC input %.1fV OK" % v,
                                   "measured %.1f VDC at relay" % v, "batt volts at panel %.1f" % v, "DC supply %.1fV" % v,
-                                  "%.1f V on %s" % (v, tb), "input %.1f VDC" % v, "DC good, %.1f V" % v])
+                                  "%.1f V on %s" % (v, tb), "input %.1f VDC" % v, "DC good at %.1f V" % v])
 
     def rails(self, p):
         five = self.one(["0.0", "0.2", "0.4", "1.1", "2.8", "3.6", "4.1", "4.4"])
@@ -171,8 +172,8 @@ class Writer:
         if p.case == "caps":
             out = out.upper()
         elif p.case == "lower":
-            keep = re.compile(r"PS02-\d\d-\d+|WO\d+|RMA-\d+")
-            out = "".join(seg if keep.fullmatch(seg) else seg.lower() for seg in re.split(r"(PS02-\d\d-\d+|WO\d+|RMA-\d+)", out))
+            keep = r"(PS02-\d\d-\d+|WO\d+|RMA-\d+|EW\d\d-\d{4}|SC-\d{4}-\d+|@@[A-Z]+-\d+-\d+@@)"
+            out = "".join(seg if re.fullmatch(keep, seg) else seg.lower() for seg in re.split(keep, out))
         elif p.case == "clause":
             out = re.sub(r"(^|[.;,/-] )([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
         else:
@@ -276,14 +277,19 @@ class Writer:
                 "trip test OK", "trip tested OK, CB opened %.1f cyc" % self.r.uniform(2.6, 3.6), "secondary injection OK",
                 "functional test OK", "settings verified against file", "settings checked, file rev %d" % self.r.randint(2, 9),
                 "self-test clear", "ENABLED LED on", "trip checked to CB OK", "tripped CB from relay, OK", "sec inj OK, pickup in tol",
-                "settings compared to file, no diffs", "self-test passed", "alarms clear at SCADA", "relay in service, alarms clear",
-                "test trip OK", "relay healthy LED on".replace("healthy ", "OK "), "pickup and timing checked"])]
+                "settings compared to file, no diffs", "self-test passed", "alarms clear at SCADA", "relay in service with alarms clear",
+                "test trip OK", "RELAY OK LED on", "pickup and timing checked", "trip test to CB %.1f cyc" % self.r.uniform(2.6, 3.6),
+                "sec inj all %d elements OK" % self.r.randint(3, 6), "relay OK on power up",
+                "settings file rev %d loaded and checked" % self.r.randint(2, 9), "self-test OK after power up",
+                "IED up, self-test clean", "inputs and outputs checked", "test trip from SCADA OK"])]
             if p.detail >= 1:
                 tests.append(self.say(p, "close", [
                     "event records downloaded", "SER downloaded", "control room advised", "returned to service %s" % t(self.r.randint(90, 300))
                     if self.r.random() < p.times else "returned to service", "back in service", "System Control notified",
-                    "SER pulled to laptop", "events saved to stn folder", "ctrl rm notified, alarm clear", "RTS", "relay back online",
-                    "SCADA points back", "RTS, ctrl rm advised", "closed out with System Control"]))
+                    "SER pulled to laptop", "events saved to stn folder", "ctrl rm notified alarm clear", "RTS %s" % t(self.r.randint(90, 300)),
+                    "relay back on line %s" % t(self.r.randint(90, 300)), "SCADA points back", "RTS and ctrl rm advised",
+                    "closed out with System Control", "in service %s" % t(self.r.randint(90, 300)), "SCADA confirms relay back",
+                    "System Control has relay back", "alarm reset at SCADA", "released to System Control %s" % t(self.r.randint(90, 300))]))
             parts = lead + ([act, trig] + finds if p.action_first else [trig] + finds) + [hold] + ([] if p.action_first else [act]) + tests
         else:
             act = self.say(p, "act_l", [
@@ -296,21 +302,24 @@ class Writer:
             parts = lead + [trig] + finds + [hold, act]
         parts.append(self.maybe(0.2, self.say(p, "extra", [
             "failed unit bagged and tagged for RMA", "failed %s to %s returns" % (psu, st), "tag %d on failed unit" % self.r.randint(1000, 9999),
-            "failed unit to %s returns shelf" % st, "old %s to returns, tagged" % psu, "defective %s tagged %d" % (psu, self.r.randint(1000, 9999))])))
+            "failed unit to %s returns shelf" % st, "old %s tagged for returns" % psu, "defective %s tagged %d" % (psu, self.r.randint(1000, 9999))])))
         return self.finish(parts, p)
 
     def psu_fitting(self, crew, bay, store, serial, repaired, wo_fail):
         p = self.who(crew)
         sn = p.sn.format(serial)
-        what = (["fit spare %s %s (repaired unit)" % (p.words, sn), "install refurb %s %s from %s" % (p.words, sn, store),
-                 "fit repaired %s %s" % (p.words, sn)] if repaired else
-                ["fit new %s %s" % (p.words, sn), "install new %s from %s" % (p.words, store),
-                 "fit new %s from %s stock, %s" % (p.words, store, sn)])
-        ref = ["follow-up to %s" % wo_fail, "ref %s" % wo_fail, "f/u %s" % wo_fail, "per %s" % wo_fail, "from %s" % wo_fail]
+        st = self.store(p, store)
+        what = (["fit spare %s %s (repaired unit)" % (p.words, sn), "install refurb %s %s from %s" % (p.words, sn, st),
+                 "fit repaired %s %s" % (p.words, sn), "repaired %s %s fitted" % (p.words, sn), "refurb spare in, %s" % sn] if repaired else
+                ["fit new %s %s" % (p.words, sn), "install new %s from %s" % (p.words, st),
+                 "fit new %s from %s stock, %s" % (p.words, st, sn), "new %s in, %s" % (p.words, sn), "spare %s fitted, new" % sn])
+        ref = ["follow-up to %s" % wo_fail, "ref %s" % wo_fail, "f/u %s" % wo_fail, "per %s" % wo_fail, "from %s" % wo_fail,
+               "see %s" % wo_fail, "cont'd from %s" % wo_fail]
         test = ["relay tested and returned to service", "trip test OK, back in service", "secondary injection OK, RTS",
-                "settings verified, relay in service", "functional test OK, control room advised", "tstd OK, ENABLED on"]
-        return self.finish(["%s relay" % self.bay(p, bay) if self.r.random() < 0.4 else "", self.one(what), self.one(ref),
-                            self.one(test)], p)
+                "settings verified, relay in service", "functional test OK, control room advised", "tstd OK, ENABLED on",
+                "trip checked, relay in service", "self-test clear, RTS"]
+        return self.finish(["%s relay" % self.bay(p, bay) if self.r.random() < 0.4 else "", self.say(p, "fit", what),
+                            self.say(p, "fitref", ref), self.say(p, "fittest", test)], p)
 
     def psu_duplicate(self, crew, wo):
         p = self.who(crew)

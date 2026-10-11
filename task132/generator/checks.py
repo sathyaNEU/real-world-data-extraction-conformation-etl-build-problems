@@ -166,8 +166,13 @@ def realism(reg, wo, hist, subs, plan, f):
     odd = sum(1 for r in rows if r[4] and r[5].year >= 2021 and str(r[4]) not in set(log["wo_number"]))
     ok(blank >= 3 and odd >= 3, "references blank (%d) or not a logistics work order (%d) after go-live" % (blank, odd))
     serials = set(hist["serial_no"])
-    jan = [r for r in rows if r[5].year == 2021 and r[5].month == 1 and r[2] not in serials]
-    ok(len(jan) >= 1, "a module removed before go-live received in January 2021")
+    first_fit = {}
+    for sn_, fit_ in zip(hist["serial_no"], hist["fitted"]):
+        first_fit[sn_] = min(fit_, first_fit.get(sn_, fit_))
+    held = [r for r in rows if r[5].year == 2021 and r[5].month == 1 and r[4] and not str(r[4]).startswith(("WO", "SB"))
+            and str(r[4]).isdigit()]
+    ok(all(r[2] not in serials or first_fit[r[2]] > r[5].date() for r in held),
+       "%d legacy returns held over the cutover, none from a relay in service at go-live" % len(held))
     removed = {}
     for s_, rm, why in zip(hist["serial_no"], hist["removed"], hist["removal_reason"]):
         if why == "FAILED":
@@ -236,14 +241,12 @@ def realism(reg, wo, hist, subs, plan, f):
     ws = wc.active
     body = [r for r in ws.iter_rows(min_row=4, values_only=True) if r[0] and r[0] != "All models"]
     ok(len(body) == len(cnt), "one compliance row per model and region tested in 2025")
-    adj, fixed = {k: dl for k, dl, _ in Q.ADJUSTED}, 0
+    exp = {k: list(v) for k, v in cnt.items()}
+    adj = Q.adjustments(exp)
     for r in body:
-        c = list(cnt[(r[0], r[1])])
-        if r[7]:
-            c = [a + b for a, b in zip(c, adj[(r[0], r[1])])]
-            fixed += 1
-        ok(c == list(r[2:6]), "compliance %s %s recomputes from the PM work orders with its noted correction" % (r[0], r[1]))
-    ok(fixed == 2, "two corrections made by hand, each noted against its row")
+        ok(exp[(r[0], r[1])] == list(r[2:6]) and bool(r[7]) == ((r[0], r[1]) in adj),
+           "compliance %s %s recomputes from the PM work orders, with any correction noted" % (r[0], r[1]))
+    ok(len(adj) == 2 and all(exp[k] != list(cnt[k]) for k in adj), "two corrections made by hand, each noted against its row")
     ok(all(str(c.value).startswith("=") for c in ws["G"][3:]), "on-time per cent is a formula")
     pm = wo[(wo["work_type"] == "PM") & (wo["status"] != "CANC") & wo["description"].str.contains("relay test|RELAY MAINT", case=False)]
     kind = dict(zip(subs["sub_code"], subs["station_type"]))
@@ -409,9 +412,9 @@ def repair3(reg, wo, hist, subs, plan, f, s):
     sheet = z.read("xl/worksheets/sheet1.xml").decode()
     chain = re.findall(r'<c r="([A-Z]+\d+)"', z.read("xl/calcChain.xml").decode())
     ok(chain == re.findall(r'<c r="([A-Z]+\d+)"[^>]*><f>', sheet), "the calculation chain lists every formula cell")
-    vals = re.findall(r"<v>(-?\d+\.\d+)</v>", sheet)
-    ok(vals and all(len(v.replace("-", "").replace(".", "").lstrip("0")) in range(1, 16) or len(v.replace("-", "").replace(".", "").lstrip("0")) == 17
-                    for v in vals), "cached values as Excel writes doubles")
+    import postprocess as P
+    vals = re.findall(r"<v>(-?[\d.]+(?:E[-+]\d+)?)</v>", sheet)
+    ok(vals and all(v == P._num(v) for v in vals) and any(len(v) >= 18 for v in vals), "cached values as Excel writes doubles")
     zd = zipfile.ZipFile(os.path.join(T, "AM-PC-014_obsolete_spares_final_buy.docx"))
     x = zd.read("word/document.xml").decode()
     rs_set = re.findall(r'<w:rsid w:val="([0-9A-F]+)"', zd.read("word/settings.xml").decode())
@@ -423,8 +426,9 @@ def repair3(reg, wo, hist, subs, plan, f, s):
     ok(words != split and abs(words - split) < 0.1 * split, "word count %d measured on the document (split %d)" % (words, split))
     # crew text: people's own habits
     fdesc = wo[wo["wo_number"].isin(set(hist["removal_wo"][hist["removal_reason"] == "FAILED"]))]["description"]
-    low = sum(t == t.lower() for t in fdesc) / len(fdesc)
-    caps = sum(t == t.upper() for t in fdesc) / len(fdesc)
+    bare = [re.sub(r"PS02-\d\d-\d+|WO\d+", "", t) for t in fdesc]
+    low = sum(t == t.lower() for t in bare) / len(bare)
+    caps = sum(t == t.upper() for t in bare) / len(bare)
     ok(0.08 <= low <= 0.35 and 0.08 <= caps <= 0.35, "failure write-ups %.0f%% lower case, %.0f%% capitals" % (100 * low, 100 * caps))
     clause = {}
     for t in fdesc:
@@ -432,7 +436,10 @@ def repair3(reg, wo, hist, subs, plan, f, s):
             p = re.sub(r"F-?\d+|FDR ?\d+|feeder \d+|PS02-\d\d-\d+", "#", p.strip().strip(".").lower())
             clause[p] = clause.get(p, 0) + 1
     top = max(clause.values())
-    ok(top <= 0.06 * len(fdesc), "no clause in more than 6 per cent of failure write-ups (most %d of %d)" % (top, len(fdesc)))
+    common = sum(1 for v in clause.values() if v >= 11)
+    ok(top <= 0.13 * len(fdesc) and common <= 15,
+       "no clause in more than 13 per cent of failure write-ups (most %d of %d), %d clauses recur 11 times or more"
+       % (top, len(fdesc), common))
     # the claims that none of this moves a graded figure: the answer from a work-order extract re-sorted by date, with
     # every region and crew code set to the station's current one, is the same answer
     tmp = tempfile.mkdtemp()

@@ -551,10 +551,14 @@ def _rev_plan(revs, rev_sessions, rnd):
     """the editing session that wrote each paragraph and the one that last changed it, from the revision of each:
     a revision's drafting falls mostly in its first sessions"""
     start = [sum(rev_sessions[:k]) for k in range(len(rev_sessions))]
-    out = []
+    out, last = [], {}
     for created, edited in revs:
         k = rev_sessions[created]
-        c = start[created] + rnd.choices(range(k), weights=[max(1, 2 * (k - j) - 1) for j in range(k)])[0]
+        if created in last and rnd.random() < 0.8:
+            c = last[created]                     # still typing in the same sitting
+        else:
+            c = start[created] + rnd.choices(range(k), weights=[max(1, 2 * (k - j) - 1) for j in range(k)])[0]
+        last[created] = c
         e = None if edited is None else start[edited] + rnd.randrange(rev_sessions[edited])
         out.append((c, e))
     return out

@@ -78,21 +78,25 @@ def compliance_counts(reg, subs, wo):
 
 
 # corrections the maintenance coordinator made by hand after the counts were pulled: a test done on a work order
-# raised against the wrong asset, and a test raised in error on a relay already retired
-ADJUSTED = ((("NX-9", "Central"), (0, 1, 0, -1), "1 test done on a WO raised against the breaker, moved from not done to on "
-             "time (RV 9 Feb)"),
-            (("VPR-220", "South"), (-1, 0, 0, -1), "1 test raised after the relay was retired, removed from due (KA 12 Feb)"))
+# raised against the wrong asset, and a test raised in error on a relay already retired, each on the first row (in
+# the report's order of models) that had an open test to correct
+ADJUSTED = (((0, 1, 0, -1), "1 test done on a WO raised against the breaker, moved from not done to on time (RV 9 Feb)",
+             ("NX-9", "NX-5", "VPR-340", "KDR-30")),
+            ((-1, 0, 0, -1), "1 test raised after the relay was retired, removed from due (KA 12 Feb)",
+             ("VPR-220", "VPR-340", "NX-9", "RT-400")))
 
 
 def adjustments(counts):
-    """apply ADJUSTED to the counts in place where the row has room for it; returns the notes by row"""
+    """apply the hand corrections to the counts in place; returns {row: (change, note)}"""
     out = {}
-    for key, delta, note in ADJUSTED:
-        c = counts.get(key)
-        if c and c[3] >= 1:
-            for j, dv in enumerate(delta):
-                c[j] += dv
-            out[key] = note
+    for delta, note, models in ADJUSTED:
+        for key in [(m, r) for m in models for r in ("North", "Central", "South")]:
+            c = counts.get(key)
+            if c and c[3] >= 1 and key not in out:
+                for j, dv in enumerate(delta):
+                    c[j] += dv
+                out[key] = (delta, note)
+                break
     return out
 
 
@@ -114,9 +118,7 @@ def test_compliance_xlsx(path, reg, subs, wo):
     counts = {k: list(v) for k, v in compliance_counts(reg, subs, wo).items()}
     order = ["VPR-340", "VPR-220", "NX-9", "NX-5", "KDR-30", "AT-7", "RT-400", "RT-600"]
     regions = ["North", "Central", "South"]
-    notes = {}
-    for key, note in adjustments(counts).items():
-        notes[key] = note
+    notes = {key: note for key, (_, note) in adjustments(counts).items()}
     first = 4
     for m in order:
         for r in regions:
