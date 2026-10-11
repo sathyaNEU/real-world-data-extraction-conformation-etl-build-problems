@@ -25,13 +25,19 @@ number.
   days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
   origination_score        application score at origination, on the scorecard named in origination_scorecard
   origination_scorecard    v3 (applications before 1 July 2024) or v4
-  current_score_v4         behaviour score from the month-end scoring run, scorecard v4. Loans are behaviour-scored from
-                           their first repayment date; before that the field holds the application score on the v4 scale
+  current_score_v4         behaviour score from the September month-end scoring run, scorecard v4. Loans are
+                           behaviour-scored from their first repayment date; before that the field holds the application
+                           score on the v4 scale
   state                    state of the borrower's residential address; blank for an overseas address
   channel                  origination channel: Broker, Online or Direct
 
 
-2. hardship_register_2026-09-30.xlsx, sheet Arrangements
+2. personal_loan_book_2026-06-30.csv
+The same extract at the June quarter end, produced by the job on 1 July 2026 at 07:30, after the June month-end batch.
+Same fields as file 1 except current_score_v4, which change CHG-26-0418 added to the extract on 21 July 2026.
+
+
+3. hardship_register_2026-09-30.xlsx, sheet Arrangements
 Every hardship arrangement recorded since the loan system went live in October 2019, one row per arrangement,
 including arrangements on loans since repaid or written off. A loan can have more than one arrangement. Case numbers
 are allocated when a request is received; requests declined at assessment keep their number and are not listed.
@@ -54,7 +60,7 @@ is payable on those dates in place of the contracted repayment.
                            were missed; a cancelled arrangement keeps its approved dates
 
 
-3. write_offs_2025-07_2026-09.csv
+4. write_offs_2025-07_2026-09.csv
 Loans written off in each month-end batch, July 2025 to September 2026, and recoveries received.
 
   month                    month of the batch (YYYY-MM)
@@ -69,4 +75,29 @@ Other files in the run folder (not loan system extracts)
                                          weights and multipliers on a second sheet
   pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: PLPD-2026.06 default curves for PL36 and PL60
   pd_model_development_sample.parquet    Credit Risk Modelling: the PLPD-2026.06 development sample
+  behaviour_score_runs_2026-03_2026-08.parquet
+                                         Behaviour Scoring: the month-end scoring runs for March to August 2026
   arrears_roll_rates_fy26.xlsx           Collections MI: month-end roll rates between arrears buckets, FY26
+  collections_defaults_2023-24.csv       Collections MI: the loans that defaulted in 2023-24, at 30 September 2026
+  collections_receipts_2023-07_2026-09.csv
+                                         Collections: amounts received on loans in collections, July 2023 to
+                                         September 2026
+  debt_sale_2026-03_schedule.xlsx        Collections: the written-off accounts sold in March 2026
+
+  collections_defaults_2023-24.csv, one row per loan
+    loan_no                loan number
+    product                PL36 or PL60
+    contract_rate          fixed annual contract rate, decimal
+    default_month          month of the first month end at which the loan was 90 or more days past due (YYYY-MM)
+    balance_at_default     account balance at that month end (AUD)
+    resolution             Cured (back to performing, by catching up or under a collections hardship arrangement),
+                           Settled (closed for an agreed amount) or Written off
+    resolution_date        date of the resolution
+
+  collections_receipts_2023-07_2026-09.csv, one row per receipt, on loans in default or written off
+    receipt_ref            receipt number
+    loan_no                loan number
+    received_date          date received
+    amount_aud             amount received (AUD); a dishonoured direct debit is reversed by a negative entry
+    source                 Direct debit, BPAY, Card, Agency remittance, Settlement or Debt sale
+    narrative              payment narrative
