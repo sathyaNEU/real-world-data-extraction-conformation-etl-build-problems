@@ -58,7 +58,7 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "client_flag_file_layout_v3.md",
+      "path": "client_flag_file_layout.md",
       "format": "md",
       "bytes": 1125,
       "rows": null,
@@ -78,7 +78,7 @@
     {
       "path": "data_sources.md",
       "format": "md",
-      "bytes": 2010,
+      "bytes": 2007,
       "rows": null,
       "source": "Constructed: Data sources note for the ownership desk",
       "date": "2023-02-04",
@@ -195,7 +195,7 @@
     {
       "path": "ownership_methodology_OM-4.pdf",
       "format": "pdf",
-      "bytes": 3370,
+      "bytes": 3368,
       "rows": null,
       "source": "Constructed: Ownership methodology note OM-4",
       "date": "2023-02-04",

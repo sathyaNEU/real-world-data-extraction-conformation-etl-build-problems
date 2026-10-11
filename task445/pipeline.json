@@ -2,15 +2,15 @@
  "task": "task445",
  "domain": "quantitative-finance",
  "objective": "data-extraction-conformation",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-11",
  "branch": "oviya1301/task445-13f-ownership-bridge",
  "stump": "Solvers flag on the December 13F reports in hand (WHII, JEMS) or one aggregate completion share (WHII, AMRB, TAAV, JEMS, FENN, SAF); the decisive step is completing the open filing window holder by holder (125 managers with a September report and none for December), giving WHII, GLI, OTF, JEMS, SAF.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), 2026-10-11",
   "reader": ""
  },
  "duplicate_check": {

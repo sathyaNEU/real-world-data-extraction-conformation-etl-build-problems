@@ -171,6 +171,17 @@ def run(wd, g, target, golden_dir, meta):
             for wrd in ("distractor", "pending", "carry forward", "carried forward", "late filer", "censor",
                         "not yet filed", "complete filing set"):
                 ok(wrd not in t, f"'{wrd}' in {p}")
+    # ---- H9: the data-sources note registers every shipped file or folder; H11: one prompt, one submission
+    src_note = open(os.path.join(target, "data_sources.md"), encoding="utf-8").read()
+    for p in files:
+        rel = os.path.relpath(p, target)
+        top = rel.split(os.sep)[0]
+        if rel != "data_sources.md":
+            ok(("`" + top + ("/`" if os.sep in rel else "`")) in src_note, f"data_sources.md does not register {rel}")
+    task = os.path.dirname(target)
+    for nm in ("prompt.md", "submission.md"):
+        hits = [os.path.join(dp, f) for dp, _, fns in os.walk(task) for f in fns if f == nm]
+        ok(len(hits) <= 1, f"more than one {nm}")
     # ---- golden files exist
     for fn in ("crowded_flags_2022q4.csv", "sep_quarter_bridge.png"):
         ok(os.path.exists(os.path.join(golden_dir, fn)), fn)

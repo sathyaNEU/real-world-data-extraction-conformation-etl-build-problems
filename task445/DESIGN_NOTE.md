@@ -191,6 +191,28 @@ Two consecutive in-house rounds landing the call by holder-level completion file
 solved; harden by moving the decisive construction (not the devices). A round that lands R0, R1 or R3
 licenses one repair of the ask layer only.
 
+## Build record (stage 3)
+
+- Generator: `python3 task445/generator/make.py` builds the pack and goldens, runs 311 checks
+  (`checks.py`) and the independent verifier (`verify.py`, plain csv, no generator state), rebuilds
+  into scratch and asserts byte-identical output, then cuts `target.zip`.
+- `leak.py --asof 2023-02-06`: REVIEW, no LEAK (a `_v3` file-name LEAK was fixed by renaming the
+  layout file). The 56 answer-figure REVIEW lines are the twelve CUSIPs and the three top-holder CIKs,
+  which are identifiers every row of the pack carries, and the December and September share counts in
+  the cover-page extract, which are the lookups the asks are built on. The four vocabulary REVIEW lines
+  are the 13F nouns (filing, period, manager, report) every 13F document uses; no document names the
+  completion step.
+- `guard.py surface task445`: 0 promoted pairs; nearest task66 at surface 0.030. People WARN: surname
+  Henderson in one older build (task117), a WARN not a BLOCK, kept.
+- Container: `scrub_producer_metadata.py` clean on target and golden (the PDF's writer comments and
+  invariant dates are replaced at equal length in `docs.py`).
+- reduce-house-fixes register read: H1 (scrubbed in the generator), H2/H3 (every figure in the
+  submission is emitted from `golden_figures.json` and the golden CSV), H4 (19 members, no enclosing
+  folder), H8 (OM-4 sections cited exist), H9 (data_sources.md registers every shipped path, asserted),
+  H11 (one prompt, one submission, asserted), H12 (rounding stated once per class), H16 (no date after
+  3 Feb 2023 in any extract), H18 (every ask is a component, qualifier or audit trail of the flag file),
+  H20 (the prompt names the institutional ownership read, the watchlist and the SEC files).
+
 ## Tried and rejected
 
 - Seed ET02 as written (amendment-type supersession and filing-date value units deciding the flag):

@@ -65,9 +65,10 @@ def bridge_png(g, path):
         ax.spines[s].set_visible(False)
     ax.grid(axis="y", color="#edf2f7", linewidth=0.8)
     ax.set_axisbelow(True)
-    ax.set_title("September 2022 quarter: from the SEC information-table lines to our institutional shares,\n"
-                 f"twelve watchlist names combined (net {b['conformed'] - b['raw']:+,.0f} shares)",
-                 fontsize=10.5, loc="left")
+    net = b["conformed"] - b["raw"]
+    ax.set_title(f"Our September institutional shares sit {abs(net) / 1e6:,.1f}m {'below' if net < 0 else 'above'} a straight sum of the "
+                 "SEC lines:\nrestated reports and options come out, CUSIPs keyed off-format come back in "
+                 "(twelve watchlist names, period ended 30 Sep 2022)", fontsize=10.5, loc="left")
     fig.text(0.01, 0.01, "Source: Form 13F reports for the period ended 30 Sep 2022, filed through 3 Feb 2023. "
              "Quillfield Research ownership desk.", fontsize=7.5, color="#4a5568")
     fig.tight_layout(rect=(0, 0.03, 1, 1))

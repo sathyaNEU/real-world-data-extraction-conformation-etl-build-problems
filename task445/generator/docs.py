@@ -22,7 +22,7 @@ FIRM = "Quillfield Research LLC"
 METHOD_PDF = "ownership_methodology_OM-4.pdf"
 README = "FORM13F_readme.htm"
 WATCHLIST = "client_watchlist_crowding_2022Q4.xlsx"
-LAYOUT = "client_flag_file_layout_v3.md"
+LAYOUT = "client_flag_file_layout.md"
 SOURCES = "data_sources.md"
 SHORTS = "short_interest_20221230.csv"
 LIST13F = "13flist2022q4.txt"
@@ -49,7 +49,7 @@ METHOD = [
     ("p", "Holdings come from Form 13F reports as filed on EDGAR: the SEC's Form 13F data sets for closed "
           "submission quarters, and the data engineering team's nightly build from EDGAR information-table XML for "
           "the current quarter, in the same layout. Share counts come from the cover pages of issuers' 10-K and "
-          "10-Q filings, as carried in the financial statement data sets."),
+          "10-Q filings, in the financial statement data sets layout."),
     ("b", "2. Institutional ownership"),
     ("p", "Institutional ownership of an issuer for a report period is the number of its shares held by all "
           "managers that file a Form 13F holdings report or combination report for that period, each report taken "
@@ -93,7 +93,24 @@ def method_pdf(path):
                             author="Nancy Henderson", subject="Methodology", creator="Microsoft Word",
                             producer="Microsoft: Print To PDF")
     doc.build(flow)
-    PP.normalize_pdf(path, stamp=b"D:20221018142233Z'", doc_id=b"9C2E51B07A4F3D18E6B2A0C94D7F1E35")
+    _scrub_pdf(path)
+
+
+def _scrub_pdf(path):
+    """same-length replacements, so the cross-reference offsets stay valid"""
+    import re
+    b = open(path, "rb").read()
+
+    def same(m, new):
+        old = m.group(0)
+        return new.ljust(len(old))[:len(old)]
+    b = re.sub(rb"ReportLab Generated PDF document \(opensource\)", lambda m: same(m, b"Microsoft Print To PDF"), b)
+    b = re.sub(rb"ReportLab generated PDF document -- digest \(opensource\)", lambda m: same(m, b"end"), b)
+    b = b.replace(b"D:20000101000000+00'00'", b"D:20221018142233-04'00'")
+    b = re.sub(rb"(/ID\s*\[\s*)<[0-9A-Fa-f]{32}>(\s*)<[0-9A-Fa-f]{32}>",
+               lambda m: m.group(1) + b"<9C2E51B07A4F3D18E6B2A0C94D7F1E35>" + m.group(2) + b"<9C2E51B07A4F3D18E6B2A0C94D7F1E35>", b)
+    assert b"ReportLab" not in b and b"reportlab" not in b
+    open(path, "wb").write(b)
 
 
 # ------------------------------------------------------------------ SEC data-set readme
