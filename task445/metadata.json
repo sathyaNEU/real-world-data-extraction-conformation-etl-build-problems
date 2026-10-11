@@ -1,0 +1,214 @@
+{
+  "task": "task445",
+  "title": "Which watchlist names carry the crowded-ownership flag for the December 2022 13F quarter",
+  "domain": "Quantitative Finance",
+  "subdomain": "other: institutional ownership analytics from Form 13F holdings filings",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "03 (bridge between two totals): the September bridge from the SEC information-table lines to conformed institutional shares, inside a twelve-row client flag file with ownership, flag, share counts and top holder per name for two periods",
+  "as_of": "2023-02-06",
+  "deliverables": [
+    "crowded_flags_2022q4.csv",
+    "sep_quarter_bridge.png"
+  ],
+  "distractor_files": [
+    "short_interest_20221230.csv",
+    "13flist2022q4.txt"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "htm",
+      "md",
+      "pdf",
+      "tsv",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "form13f_2022q4/INFOTABLE.tsv",
+    "largest_file_rows": 39301
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task445/generator/make.py (seeded, deterministic) in the layout of the SEC Form 13F data sets and the SEC financial statement data sets; every manager, issuer, CIK, CUSIP and figure is invented and no real filer or security is depicted",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task445/generator/make.py",
+  "files": [
+    {
+      "path": "13flist2022q4.txt",
+      "format": "txt",
+      "bytes": 18179,
+      "rows": null,
+      "source": "Constructed: Official list of Section 13(f) securities, fourth quarter 2022, rows for covered issuers",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "FORM13F_readme.htm",
+      "format": "htm",
+      "bytes": 4116,
+      "rows": null,
+      "source": "Constructed on the SEC readme's structure: Readme for the Form 13F data sets (tables, fields)",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_flag_file_layout_v3.md",
+      "format": "md",
+      "bytes": 1125,
+      "rows": null,
+      "source": "Constructed: Client flag file layout v3",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_watchlist_crowding_2022Q4.xlsx",
+      "format": "xlsx",
+      "bytes": 7323,
+      "rows": null,
+      "source": "Constructed: Client watchlist, crowding monitor",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_sources.md",
+      "format": "md",
+      "bytes": 2010,
+      "rows": null,
+      "source": "Constructed: Data sources note for the ownership desk",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "edgar13f_daily_20230103_20230203/COVERPAGE.tsv",
+      "format": "tsv",
+      "bytes": 43354,
+      "rows": 292,
+      "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: cover pages",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "edgar13f_daily_20230103_20230203/INFOTABLE.tsv",
+      "format": "tsv",
+      "bytes": 3621683,
+      "rows": 34351,
+      "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: information tables",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "edgar13f_daily_20230103_20230203/SUBMISSION.tsv",
+      "format": "tsv",
+      "bytes": 17585,
+      "rows": 292,
+      "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: submissions",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q3/COVERPAGE.tsv",
+      "format": "tsv",
+      "bytes": 60978,
+      "rows": 411,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: cover pages",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q3/INFOTABLE.tsv",
+      "format": "tsv",
+      "bytes": 3832367,
+      "rows": 37395,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: information tables",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q3/SUBMISSION.tsv",
+      "format": "tsv",
+      "bytes": 24723,
+      "rows": 411,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: submissions",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q4/COVERPAGE.tsv",
+      "format": "tsv",
+      "bytes": 60864,
+      "rows": 409,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: cover pages",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q4/INFOTABLE.tsv",
+      "format": "tsv",
+      "bytes": 4027186,
+      "rows": 39301,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: information tables",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form13f_2022q4/SUBMISSION.tsv",
+      "format": "tsv",
+      "bytes": 24605,
+      "rows": 409,
+      "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: submissions",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fsds_cover_extract/num.txt",
+      "format": "txt",
+      "bytes": 59958,
+      "rows": 612,
+      "source": "Constructed: Cover-page extract in the financial statement data sets layout: dei cover tags",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fsds_cover_extract/sub.txt",
+      "format": "txt",
+      "bytes": 80065,
+      "rows": 554,
+      "source": "Constructed: Cover-page extract in the financial statement data sets layout: submissions",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "manager_register.csv",
+      "format": "csv",
+      "bytes": 40556,
+      "rows": 417,
+      "source": "Constructed: Ownership desk register of 13F filing managers",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ownership_methodology_OM-4.pdf",
+      "format": "pdf",
+      "bytes": 3370,
+      "rows": null,
+      "source": "Constructed: Ownership methodology note OM-4",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "short_interest_20221230.csv",
+      "format": "csv",
+      "bytes": 1303,
+      "rows": 12,
+      "source": "Constructed: Exchange short interest for the watchlist, settlement 30 Dec 2022",
+      "date": "2023-02-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
