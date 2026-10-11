@@ -31,6 +31,10 @@
       "format": "csv"
     },
     {
+      "path": "housing_allocations_scheme_2024_part6.pdf",
+      "format": "pdf"
+    },
+    {
       "path": "housing_needs_extracts_dictionary.txt",
       "format": "txt"
     },

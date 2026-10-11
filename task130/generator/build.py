@@ -27,6 +27,7 @@ FILES = {
     "lets": "moveon_lets_2018-04_2026-09.csv",
     "plan": "moveon_plan_2026-27.xlsx",
     "notice": "corvane_notice_tenter_house.pdf",
+    "scheme": "housing_allocations_scheme_2024_part6.pdf",
     "procedure": "tenter_house_closure_procedure.docx",
     "prices": "dps_lot2_lot3_price_schedule.xlsx",
     "position": "ta_weekly_position_2026-09-28.xlsx",
@@ -39,7 +40,7 @@ DISTRACTORS = ["reglets", "spend", "position"]
 PENDING = {1: 6, 2: 8, 3: 3, 4: 1}
 MTIMES = {
     "placements": (2026, 10, 1, 7, 42), "cases": (2026, 10, 1, 7, 40), "reviews": (2026, 10, 1, 7, 41),
-    "lets": (2026, 10, 1, 7, 44), "plan": (2026, 10, 1, 9, 25), "notice": (2026, 9, 15, 11, 31),
+    "lets": (2026, 10, 1, 7, 44), "plan": (2026, 10, 1, 9, 25), "notice": (2026, 9, 15, 11, 31), "scheme": (2024, 3, 28, 10, 5),
     "procedure": (2026, 9, 18, 15, 12), "prices": (2026, 9, 22, 12, 10), "position": (2026, 9, 28, 9, 5),
     "register": (2026, 10, 1, 7, 46), "dictionary": (2026, 10, 1, 9, 10), "reglets": (2026, 4, 8, 10, 2),
     "spend": (2026, 7, 21, 15, 45),
@@ -142,6 +143,7 @@ def build(out):
     W.PLAN_ORIGINAL.update(orig)
     D.plan_xlsx(p("plan"), actuals)
     D.notice_pdf(p("notice"))
+    D.scheme_pdf(p("scheme"))
     D.procedure_docx(p("procedure"))
     D.prices_xlsx(p("prices"))
     # weekly position from the placements extract on Sunday 27 September
@@ -167,7 +169,7 @@ def build(out):
         if f.endswith((".xlsx", ".docx")):
             P.normalize_zip(path, MTIMES[k] + (0,))
         if f.endswith(".pdf"):
-            P.normalize_pdf(path, stamp=b"D:20260915113100Z'")
+            P.normalize_pdf(path, stamp=b"D:20240328100500Z'" if k == "scheme" else b"D:20260915113100Z'")
         ts_ = dt.datetime(*MTIMES[k]).timestamp()
         os.utime(path, (ts_, ts_))
     return df, lt, pl

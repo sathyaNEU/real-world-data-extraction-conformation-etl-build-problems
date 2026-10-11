@@ -1,17 +1,18 @@
 # leak check, task130
 
-**Verdict: REVIEW.** 13 files read, 2 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 2 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: rejected, housing, decisive, register, repair, holders, returns, large-holder, record, domain, ledger, simulation, departures, forecast, manager, cabinet, procedure, shares, forward, holdings, strong, bridge, clean-data, textbook, takeovers
+Stump terms swept: rejected, housing, decisive, register, repair, holders, returns, large-holder, record, domain, ledger, simulation, departures, forecast, method, scheme, manager, cabinet, procedure, shares, forward, holdings, strong, bridge, recovered
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `housing_needs_extracts_dictionary.txt`: carries 3 of 5 distinctive words of the committed call: 'Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.'
 - **REVIEW** `tenter_house_closure_procedure.docx`: carries 5 of 5 distinctive words of the committed call: 'Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.'
 
-## 4 design-note vocabulary (REVIEW 2)
+## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `corvane_notice_tenter_house.pdf`: 3 of 25 stump-paragraph terms appear (housing, register, repair); read whether the document names the move
+- **REVIEW** `housing_allocations_scheme_2024_part6.pdf`: 4 of 25 stump-paragraph terms appear (housing, register, scheme, cabinet); read whether the document names the move
 - **REVIEW** `tenter_house_closure_procedure.docx`: 3 of 25 stump-paragraph terms appear (housing, register, procedure); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)

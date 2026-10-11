@@ -34,8 +34,9 @@
   ],
   "target_zip": {
     "path": "task130/target.zip",
-    "bytes": 781402,
-    "members": 13,
-    "sha256": "48249e0a96558440dc28e5306dbe053eb9f8bfaf2f52db1efcf59b626263f16c"
-  }
+    "bytes": 814196,
+    "members": 14,
+    "sha256": "ef3c1e2d9d164357ff04842dd0e7601eeccec94ac69abfa822fc586032a4f325"
+  },
+  "two_layer": "compliant: allocation order filed (scheme Part 6); six-point check in the design note"
 }
