@@ -1,89 +1,130 @@
-"""Write submission.md from the golden path (solve.py over target/), so every figure is computed once."""
+"""Write task446/submission.md from the same figures the golden deliverables carry.
+
+    python3 task446/generator/writeup.py
+"""
 import os
+import re
 import sys
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import solve
-from deliver import SHORT, m1
+import deliver  # noqa: E402
 
-QL = ["30 Sep 2025", "31 Dec 2025", "31 Mar 2026", "30 Jun 2026", "30 Sep 2026"]
-
-
-def f1(x):
-    return "%.1f" % x
+OUT = os.path.join(HERE, "..", "submission.md")
 
 
-def main():
-    pack = solve.Pack()
-    res = sorted(solve.run(pack, "restated"), key=lambda r: -r["utilisation"])
-    x = [r for r in res if r["item"] == "B1"][0]
-    pit = [r for r in solve.run(pack, "pit") if r["item"] == "B1"][0]
-    names = {r["item"]: pack.l1[solve.PROJ][r["top"]]["Entity.LegalName"] for r in res}
+def pct(x, nd=1):
+    return ("%." + str(nd) + "f%%") % (x * 100)
+
+
+def money(x):
+    return "£{:,.1f}m".format(x)
+
+
+def build(F):
+    m = F["measures"]
+    rows, tot = F["rows"], F["total"]
     L = []
     L.append("# task446 submission")
     L.append("")
     L.append("## Tags")
     L.append("")
-    L.append("**Domain:** Banking, Credit & Financial Risk (obligor-group credit concentration and house-limit monitoring).")
-    L.append("**Analytical objective:** Data Extraction & Conformation (ETL / Pipeline Build).")
-    L.append("**Axis 2:** Explore/Discover, Hypothesize, Analyze/Validate, Synthesize, Recommend/Communicate.")
+    L.append("**Domain:** Banking, Credit & Financial Risk (early-warning and watch-list monitoring of corporate "
+             "obligor groups).  ")
+    L.append("**Analytical objective:** Data Extraction & Conformation (ETL).")
     L.append("")
     L.append("## 1. Final Recommendation")
     L.append("")
-    L.append("**Credit committee should approve GBP %sm of Kelderby Facilities Ltd's GBP %sm term loan.**" % (
-        f1(x["approvable"]), f1(x["request"])))
+    L.append("**Put a 2027 caseload of %d groups to the committee: %d of the %d obligor groups in the monitored book "
+             "at 30 September 2026 are expected to reach the watch list by 30 September 2027.**"
+             % (F["call"], F["call"], F["N1"]))
     L.append("")
-    L.append("Kelderby's projected 31 December 2026 exposure is GBP %sm against its GBP %sm house limit. "
-             "Not GBP %sm, which builds each past quarter on the group as it stood then, so the Tarrant "
-             "Hydraulics purchase reads as growth. Not the full GBP %sm, which would take Kelderby over its limit." % (
-                 f1(m1(x["projected"])), f1(x["limit"]), f1(pit["approvable"]), f1(x["request"])))
+    L.append("The %d is the %d groups times %s, the share reaching the list that this year's %s flagged share "
+             "implies once the early-warning screen's capture and false-alarm rates are taken from the 2022 to 2025 "
+             "cohorts. Not the hit and miss rates those cohorts report, carried onto this year's flags: the hit rate "
+             "rises and falls with the share of each year's book that reaches the list, and this year's flagged share "
+             "is above every closed cohort's. Not the latest or the most stressed cohort on its own: the standard "
+             "measures the screen on the four closed cohorts taken together."
+             % (F["call"], F["N1"], pct(F["p1"]), pct(F["a1"])))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. At 30 September 2026 the Kelderby group includes Tarrant Hydraulics Ltd and no longer includes Norbeck Coatings Ltd")
-    L.append("2. Kelderby's quarter-end exposures on that membership are **%s** (GBP m, 30 Sep 2025 to 30 Sep 2026)" % (
-        ", ".join(f1(m1(v)) for v in x["series"])))
-    L.append("3. Kelderby's projected 31 December 2026 exposure is **GBP %sm**, utilisation **%s%%** of the GBP %sm limit" % (
-        f1(m1(x["projected"])), f1(round(x["utilisation"] * 100, 1)), f1(x["limit"])))
-    L.append("4. The approvable term loan is **GBP %sm**" % f1(x["approvable"]))
+    L.append("1. The monitored book at 30 September 2026 is **%d** groups, **%d** of them flagged" % (F["N1"], F["F1"]))
+    L.append("2. Over the 2022 to 2025 cohorts taken together the capture rate is **%s** and the false-alarm rate "
+             "**%s**" % (pct(m["capture"]), pct(m["false_alarm"], 2)))
+    L.append("3. The flagged share of **%s** implies **%s** of the book reaches the watch list within the year"
+             % (pct(F["a1"]), pct(F["p1"])))
+    L.append("4. A flagged group reaches it with probability **%s**, a group not flagged with **%s**"
+             % (pct(F["p_flag"]), pct(F["p_unflag"])))
     L.append("")
     L.append("## 3. Step-by-Step Solution")
     L.append("")
     steps = [
-        "Took the six Part B requests and borrower LEIs from credit_committee_agenda_20261104.docx and each group's limit from house_limit_register_20260930.xlsx.",
-        "Resolved every LEI to its Obligor Group on the 30 September 2026 GLEIF archive under Policy section 2 (consolidation chains, branches to head office, managed funds alone, lapsed records kept, merged LEIs to successors): Tarrant Hydraulics is Kelderby's, Norbeck Coatings is Meridale's.",
-        "Measured each quarter-end's exposure under Policy section 3 from the loan extracts (the late Dublin file included, migrated facilities once), the treasury positions (ISIN file for blank issuer LEIs), the R2 rerun for the 30 Sep 2026 netting sets in GBP thousands less cash CSA collateral, all converted at Treasury rates.",
-        "Assigned all five quarter-ends to the groups as constituted at 30 September 2026 (LMS-03 2.3): Kelderby runs %s." % ", ".join(f1(m1(v)) for v in x["series"]),
-        "Projected 31 December 2026 as the 30 September exposure plus the least-squares slope (LMS-03 2.2): Kelderby GBP %sm, %s%% of GBP %sm." % (
-            f1(m1(x["projected"])), f1(round(x["utilisation"] * 100, 1)), f1(x["limit"])),
-        "Applied LMS-03 3.1 and 3.2 (term 100%, revolver 50%, GBP 0.1m steps, capped at the request) to every request.",
-        "Recommendation: approve GBP %sm of Kelderby's GBP %sm term loan." % (f1(x["approvable"]), f1(x["request"])),
+        "Built the monitored book at each 30 September from credit_group_register_20260930.xlsx and "
+        "watch_list_history_2020-01_to_2026-09.csv (CRM-07 4.1): %d groups at 30 September 2026." % F["N1"],
+        "Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the "
+        "obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date "
+        "(CRM-07 2.2, 2.3, 3.2): %d of the %d are flagged." % (F["F1"], F["N1"]),
+        "Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and "
+        "measured them taken together (4.3): capture rate %s, false-alarm rate %s."
+        % (pct(m["capture"]), pct(m["false_alarm"], 2)),
+        "Re-ran each closed cohort from the other three: capture and false-alarm rates reproduce its arrivals within "
+        "3%, while hit and miss rates miss two of the four by more than a third, because the hit rate moves with the "
+        "share of each year's book that reaches the list.",
+        "Solved this year's %s flagged share for the share of the book that will reach the list through those two "
+        "rates: %s, so a flagged group reaches it with probability %s and a group not flagged with %s (CRM-07 5.2)."
+        % (pct(F["a1"]), pct(F["p1"]), pct(F["p_flag"]), pct(F["p_unflag"])),
+        "Summed the probabilities over the %d groups: %.1f expected arrivals, %d to the nearest whole group "
+        "(CRM-07 5.3)." % (F["N1"], F["expected"], F["call"]),
+        "Built each group's committed exposure at 30 September 2026 under CRM-07 6.1 from "
+        "facility_extract_hbplc_20260930_rerun.csv (the record for 30/09 per "
+        "reference_data_extract_log_20261008.txt) and facility_extract_hbdac_20260930.csv, counting active "
+        "facilities that mature after 30 September and dividing non-sterling limits by the per-pound rates in "
+        "treasury_closing_rates_20260930.csv, then summed probabilities and probability-weighted exposure within "
+        "each 6.2 band for the workbook.",
+        "Recommendation: put a 2027 caseload of %d groups to the committee." % F["call"],
     ]
-    for i, s in enumerate(steps, 1):
+    for i, s in enumerate(steps, start=1):
         L.append("%d. %s" % (i, s))
     L.append("")
     L.append("## 4. Deliverable Answers")
     L.append("")
-    L.append("### limit_check_2026-11-04.xlsx")
-    L.append("1. Kelderby: approve GBP %sm of the GBP %sm term loan" % (f1(x["approvable"]), f1(x["request"])))
-    L.append("2. One row per request, highest projected utilisation first, GBP m to one decimal:")
-    for r in res:
-        b = r["books"]
-        L.append("   - %s %s (%s): drawn loans %s, undrawn commitments %s, securities %s, derivatives %s; "
-                 "quarter-end exposures %s; projected 31 Dec 2026 %s; utilisation %s%%; approvable %s of %s requested" % (
-                     r["item"], r["borrower"], names[r["item"]], f1(m1(b.get("loans_drawn", 0))),
-                     f1(m1(b.get("undrawn", 0))), f1(m1(b.get("securities", 0))), f1(m1(b.get("derivatives", 0))),
-                     ", ".join("%s %s" % (q, f1(m1(v))) for q, v in zip(QL, r["series"])),
-                     f1(m1(r["projected"])), f1(round(r["utilisation"] * 100, 1)), f1(r["approvable"]), f1(r["request"])))
+    L.append("### %s" % deliver.XLSX)
+    L.append("1. Heading figure: %d obligor groups expected to reach the watch list by 30 September 2027" % F["call"])
+    L.append("2. One row per caseload band, smallest first (expected arrivals from groups flagged in September, "
+             "expected arrivals from groups not flagged, expected committed exposure arriving):")
+    for r in rows:
+        L.append("   - %s: %.1f flagged, %.1f not flagged, %s" % (r["band"], r["flagged"], r["unflagged"],
+                                                                money(r["exposure"])))
+    L.append("3. Total row: %.1f flagged, %.1f not flagged, %s" % (tot["flagged"], tot["unflagged"],
+                                                                 money(tot["exposure"])))
     L.append("")
-    L.append("### projected_utilisation_2026Q4.png")
-    L.append("1. Horizontal bars of projected utilisation per group in the workbook's order (%s), the house limit line marked at 100%%, "
-             "Kelderby's bar annotated \"Approve GBP %sm of GBP %sm\", titled \"Kelderby can take GBP %sm of its GBP %sm term loan\"." % (
-                 ", ".join("%s %s%%" % (SHORT[r["item"]], f1(round(r["utilisation"] * 100, 1))) for r in res),
-                 f1(x["approvable"]), f1(x["request"]), f1(x["approvable"]), f1(x["request"])))
-    txt = "\n".join(L) + "\n"
-    with open(os.path.join(HERE, "..", "submission.md"), "w") as fh:
-        fh.write(txt)
+    L.append("### %s" % deliver.CHART)
+    L.append("1. One stacked bar per band, smallest first, with the flagged and not-flagged segments labelled with "
+             "the band figures above")
+    L.append("2. The caseload, %d groups, written on the chart" % F["call"])
+    L.append("3. Title: \"%s\"" % (deliver.TITLE % (F["call"], F["N1"])))
+    return "\n".join(L) + "\n"
+
+
+def check(text, F):
+    assert "—" not in text and "–" not in text
+    for banned in ("deteriorat", "robust", "leverage", "comprehensive", "it is worth noting"):
+        assert banned not in text.lower(), banned
+    names = set(re.findall(r"[a-z0-9_\-]+\.(?:csv|xlsx|txt|pdf|docx|md|png|svg)", text))
+    target = set(os.listdir(os.path.join(HERE, "..", "target")))
+    for n in names:
+        assert n in target or n in (deliver.XLSX, deliver.CHART), n
+    assert text.count("### ") == 2
+
+
+def main():
+    F = deliver.figures()
+    text = build(F)
+    check(text, F)
+    with open(OUT, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    print(text)
 
 
 if __name__ == "__main__":

@@ -2,20 +2,20 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 2,
- "stage_name": "design (architecture 2): ladder, closure table, ask sheet, prompt",
+ "stage": 3,
+ "stage_name": "build (architecture 2): pack, goldens, write-up, house fixes, surface, leak.py",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
- "stump": "A competent solver measures the early-warning system's hit rate and miss rate on the four closed cohorts, applies them to the groups flagged and not flagged at 30 Sep 2026 and files about half the golden watch-list inflow, because the hit rate moves with each year's deterioration rate while the capture and false-alarm rates hold, and this year's flagged share implies a deterioration rate far above any closed cohort.",
+ "stump": "A competent solver measures the early-warning system's hit rate and miss rate on the four closed cohorts, applies them to the groups flagged and not flagged at 30 Sep 2026 and files 74 against the golden 134, because the hit rate moves with each year's share of the book reaching the watch list while the capture and false-alarm rates hold, and this year's flagged share implies a share far above any closed cohort's.",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-10-11, --asof 2026-10-11; first run LEAK on GLEIF 'golden copy', reworded in docs.py)",
   "reader": ""
  },
  "duplicate_check": {
   "heart": "",
-  "nearest": "",
+  "nearest": "guard.py surface: 0 promoted pairs, nearest task57 and task123 at 0.100",
   "clone_check": ""
  },
  "solver_rounds": [

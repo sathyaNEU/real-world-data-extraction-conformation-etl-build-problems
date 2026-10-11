@@ -1,269 +1,252 @@
-"""The golden path for task446, reading only target/. Also the independent verifier: it shares no code
-with world.py, truth.py or make.py. Options switch on the wrong paths the ladder and the ask stops use."""
+"""Independent golden path for task446 (architecture 2). Reads target/ only; shares no code or state with
+the generator.
+
+    python3 task446/generator/solve.py [target_dir]
+
+Readings that the checks compare against the golden are switched by keyword arguments.
+"""
 import csv
-import math
+import datetime as dt
 import os
-import re
+import sys
 from collections import defaultdict
 
 import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TARGET = os.path.join(HERE, "..", "target")
-QES = ["2025-09-30", "2025-12-31", "2026-03-31", "2026-06-30", "2026-09-30"]
-PROJ = QES[-1]
+COHORTS = ["2022-09-30", "2023-09-30", "2024-09-30", "2025-09-30", "2026-09-30"]
+EDGES = [5e6, 15e6, 40e6, 100e6]
+BANDS = ["Under GBP 5m", "GBP 5m and under GBP 15m", "GBP 15m and under GBP 40m",
+         "GBP 40m and under GBP 100m", "GBP 100m and over"]
 
 
-def rcsv(name, target):
-    with open(os.path.join(target, name), encoding="utf-8", newline="") as fh:
+def d(s):
+    return dt.date.fromisoformat(s[:10]) if s else None
+
+
+def rows(t, name):
+    with open(os.path.join(t, name), encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
 
 
-def dmy(s):  # 30/09/2026 -> 2026-09-30
-    d, m, y = s.split("/")
-    return "%s-%s-%s" % (y, m, d)
-
-
-MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
-
-
-def dmon(s):  # 30-SEP-2026
-    d, m, y = s.split("-")
-    return "%s-%02d-%s" % (y, MON[m.upper()], d)
-
-
 class Pack:
-    def __init__(self, target=TARGET):
-        self.target = target
-        self.loans_main = rcsv("loan_book_qe_extracts.csv", target)
-        self.loans_late = rcsv("loan_book_cwb_dub_20251231_late.csv", target)
-        self.loans = self.loans_main + self.loans_late
-        self.secs = rcsv("treasury_investment_positions_qe.csv", target)
-        self.csa = rcsv("csa_collateral_held_qe.csv", target)
-        self.fx = {(r["rate_date"], r["quote_currency"]): float(r["rate"]) for r in
-                   rcsv("treasury_fx_closing_rates.csv", target)}
-        self.l1 = defaultdict(dict)
-        for r in rcsv("gleif_lei_records_qe_archive.csv", target):
-            self.l1[r["archive_date"]][r["LEI"]] = r
-        self.rr = defaultdict(list)
-        for r in rcsv("gleif_relationship_records_qe_archive.csv", target):
-            self.rr[r["archive_date"]].append(r)
-        self.isin = {}
-        for r in rcsv("isin_lei_20260930.csv", target):
-            self.isin[r["ISIN"]] = r["LEI"]
-        wb = openpyxl.load_workbook(os.path.join(target, "ccr_netting_set_exposure_qe.xlsx"), read_only=True)
-        self.drv, self.drv_first = {}, {}
-        for ws in wb.worksheets:
-            title = ws.title.split(" ")
-            d, m, y = title[0].split(".")
-            date = "%s-%s-%s" % (y, m, d)
-            rows = list(ws.iter_rows(values_only=True))
-            hi = [i for i, r in enumerate(rows) if r and r[0] == "Netting set"][0]
-            hdr = rows[hi]
-            recs = [dict(zip(hdr, r)) for r in rows[hi + 1:] if r and r[0]]
-            if len(title) > 1:          # rerun: the record for that close
-                self.drv[date] = recs
-            else:
-                self.drv_first[date] = recs
-                self.drv.setdefault(date, recs)
-        wb = openpyxl.load_workbook(os.path.join(target, "house_limit_register_20260930.xlsx"), read_only=True)
-        rows = list(wb.active.iter_rows(values_only=True))
-        hi = [i for i, r in enumerate(rows) if r and r[0] == "Ultimate parent LEI"][0]
-        self.limits = {r[0]: float(r[2]) for r in rows[hi + 1:] if r and r[0]}
-        self.requests = self._agenda()
+    def __init__(self, t=TARGET):
+        self.t = t
+        self.signals = rows(t, "ews_entity_signals_2022-09_to_2026-09.csv")
+        self.lei = {r["LEI"]: r for r in rows(t, "gleif_lei_cdf_20260930.csv")}
+        self.rr = rows(t, "gleif_rr_cdf_20260930.csv")
+        self.obl = rows(t, "credit_obligor_master_20260930.csv")
+        self.wl = rows(t, "watch_list_history_2020-01_to_2026-09.csv")
+        wb = openpyxl.load_workbook(os.path.join(t, "credit_group_register_20260930.xlsx"), read_only=True)
+        ws = wb["Group register"]
+        it = ws.iter_rows(values_only=True)
+        hdr = None
+        self.reg = []
+        for r in it:
+            if r and r[0] == "group_id":
+                hdr = r
+                continue
+            if hdr and r and r[0]:
+                rec = dict(zip(hdr, r))
+                for k in ("relationship_start", "relationship_end"):
+                    v = rec[k]
+                    rec[k] = v.date() if isinstance(v, dt.datetime) else v
+                self.reg.append(rec)
+        self.fx = {r["currency"]: float(r["closing_rate"]) for r in rows(t, "treasury_closing_rates_20260930.csv")}
 
-    def _agenda(self):
-        from docx import Document
-        doc = Document(os.path.join(self.target, "credit_committee_agenda_20261104.docx"))
-        t = doc.tables[0]
-        out = []
-        for row in t.rows[1:]:
-            c = [x.text for x in row.cells]
-            lei = re.search(r"LEI ([A-Z0-9]{20})", c[1]).group(1)
-            amt = float(re.search(r"GBP ([0-9.]+)m", c[4]).group(1))
-            out.append(dict(item=c[0], borrower=c[1].split(" (LEI")[0], lei=lei, relationship=c[2],
-                            ftype=c[3], amount=amt))
+    # ------------------------------------------------------------ membership
+    def group_of_key(self, date, follow_direct=True, keep_lapsed=True, follow_funds=False, branches=True,
+                     successors=True, case_fold=True):
+        """entity_key -> group_id at a date, under the standard's section 2."""
+        top_to_group = {r["ultimate_parent_lei"]: r["group_id"] for r in self.reg if r["ultimate_parent_lei"]}
+        key_to_group = {}
+        for r in self.obl:
+            if r["lei"]:
+                key_to_group[r["lei"]] = r["group_id"]
+            if r["companies_house_no"]:
+                key_to_group["CRN:" + r["companies_house_no"]] = r["group_id"]
+        ult, direct, branch, fund = {}, {}, {}, {}
+        for r in self.rr:
+            st = d(r["Relationship.Period1.startDate"])
+            en = d(r["Relationship.Period1.endDate"])
+            in_force = st <= date and (en is None or en > date)
+            if not in_force:
+                continue
+            if not keep_lapsed and r["Registration.RegistrationStatus"] == "LAPSED":
+                continue
+            a, b, typ = r["Relationship.StartNode.NodeID"], r["Relationship.EndNode.NodeID"], r["Relationship.RelationshipType"]
+            if typ == "IS_ULTIMATELY_CONSOLIDATED_BY":
+                ult[a] = b
+            elif typ == "IS_DIRECTLY_CONSOLIDATED_BY":
+                direct[a] = b
+            elif typ == "IS_INTERNATIONAL_BRANCH_OF":
+                branch[a] = b
+            elif typ == "IS_FUND-MANAGED_BY":
+                fund[a] = b
+
+        def resolve(lei, depth=0):
+            if depth > 8:
+                return None
+            if not keep_lapsed and self.lei.get(lei, {}).get("Registration.RegistrationStatus") == "LAPSED":
+                return None
+            if lei in top_to_group:
+                return top_to_group[lei]
+            if lei in key_to_group:
+                return key_to_group[lei]
+            if successors:
+                s = self.lei.get(lei, {}).get("Entity.SuccessorEntity.SuccessorLEI")
+                if s:
+                    return resolve(s, depth + 1)
+            if lei in ult:
+                return resolve(ult[lei], depth + 1)
+            if follow_direct and lei in direct:
+                return resolve(direct[lei], depth + 1)
+            if branches and lei in branch:
+                return resolve(branch[lei], depth + 1)
+            if follow_funds and lei in fund:
+                return resolve(fund[lei], depth + 1)
+            return None
+        return resolve, key_to_group
+
+    # ------------------------------------------------------------ cohorts
+    def active(self, date):
+        out = set()
+        for r in self.reg:
+            st, en = r["relationship_start"], r["relationship_end"]
+            if st <= date and (en is None or en > date):
+                out.add(r["group_id"])
         return out
 
+    def on_list(self, date):
+        out = set()
+        for r in self.wl:
+            st, en = d(r["placed_on"]), d(r["removed_on"])
+            if st <= date and (en is None or en > date):
+                out.add(r["group_id"])
+        return out
 
-class Groups:
-    """Obligor-group resolution from one GLEIF archive, membership at date d."""
+    def reached(self, date):
+        end = dt.date(date.year + 1, date.month, date.day)
+        return {r["group_id"] for r in self.wl if date < d(r["placed_on"]) <= end}
 
-    def __init__(self, pack, archive, d, follow_funds=False, keep_lapsed_rr=True, branches=True,
-                 successors=True, keep_lapsed_entities=True):
-        self.l1 = pack.l1[archive]
-        self.parent, self.direct, self.branch, self.fund = {}, {}, {}, {}
-        for r in pack.rr[archive]:
-            if r["Relationship.RelationshipStatus"] != "ACTIVE":
+    def flagged(self, date, **kw):
+        resolve, _ = self.group_of_key(date, **kw)
+        case_fold = kw.get("case_fold", True)
+        out = set()
+        ds = date.isoformat()
+        for r in self.signals:
+            if r["publication_date"] != ds or r["signal"] == "GREEN":
                 continue
-            if not keep_lapsed_rr and r["Registration.RegistrationStatus"] == "LAPSED":
-                continue
-            st = r["Relationship.Period.1.startDate"][:10]
-            en = r["Relationship.Period.1.endDate"][:10]
-            if st > d or (en and en <= d):
-                continue
-            c, p, ty = r["Relationship.StartNode.NodeID"], r["Relationship.EndNode.NodeID"], r["Relationship.RelationshipType"]
-            if not keep_lapsed_entities:
-                if self.l1.get(p, {}).get("Registration.RegistrationStatus") == "LAPSED":
-                    continue
-            if ty == "IS_ULTIMATELY_CONSOLIDATED_BY":
-                self.parent[c] = p
-            elif ty == "IS_DIRECTLY_CONSOLIDATED_BY":
-                self.direct[c] = p
-            elif ty == "IS_INTERNATIONAL_BRANCH_OF":
-                self.branch[c] = p
-            elif ty == "IS_FUND-MANAGED_BY":
-                self.fund[c] = p
-        self.follow_funds, self.branches, self.successors = follow_funds, branches, successors
+            k = r["entity_key"]
+            if case_fold and not k.startswith("CRN:"):
+                k = k.upper()
+            g = resolve(k)
+            if g:
+                out.add(g)
+        return out
 
-    def top(self, lei):
-        seen = set()
-        cur = lei
-        while cur and cur not in seen:
-            seen.add(cur)
-            rec = self.l1.get(cur)
-            if self.successors and rec and rec["Registration.RegistrationStatus"] == "MERGED" and \
-                    rec["Entity.SuccessorEntity.SuccessorLEI"]:
-                cur = rec["Entity.SuccessorEntity.SuccessorLEI"]
-                continue
-            if self.branches and cur in self.branch:
-                cur = self.branch[cur]
-                continue
-            if cur in self.parent:
-                cur = self.parent[cur]
-                continue
-            if cur in self.direct:
-                cur = self.direct[cur]
-                continue
-            if self.follow_funds and cur in self.fund:
-                cur = self.fund[cur]
-                continue
-            return cur
-        return cur
+    def cohort_table(self, **kw):
+        tab = []
+        for i, cs in enumerate(COHORTS):
+            date = d(cs)
+            M = self.active(date) - self.on_list(date)
+            F = self.flagged(date, **kw) & M
+            R = (self.reached(date) & M) if i < 4 else None
+            tab.append(dict(date=cs, M=M, F=F, R=R))
+        return tab
 
 
-def exposures(pack, qe, assign, opt):
-    """Exposure by group top and book at quarter-end qe. assign(lei, row) -> group key."""
-    out = defaultdict(lambda: defaultdict(float))
-    rate = lambda c: 1.0 if c == "GBP" else (pack.fx[(qe, c)] if not opt.get("fx_multiply") else 1.0 / pack.fx[(qe, c)])
-    if opt.get("no_fx"):
-        rate = lambda c: 1.0
-    src = pack.loans_main if opt.get("no_late_file") else pack.loans
-    rows = [r for r in src if r["extract_date"] == qe]
-    receiving_src = {r["migrated_from"] for r in rows if r["migrated_from"]}
-    seen = set()
-    for r in rows:
-        if opt.get("dedup_migration", True) and r["facility_ref"] in receiving_src:
-            continue
-        if opt.get("lazy_dedup"):
-            k = (r["customer_id"], r["facility_type"], r["currency"], r["facility_limit"], r["drawn_balance"])
-            if k in seen:
+def measures(tab):
+    P = sum(len(c["R"]) for c in tab[:4])
+    TP = sum(len(c["R"] & c["F"]) for c in tab[:4])
+    NF = sum(len(c["F"]) for c in tab[:4])
+    N = sum(len(c["M"]) for c in tab[:4])
+    FP = NF - TP
+    return dict(hit=TP / NF, capture=TP / P, false_alarm=FP / (N - P), miss=(P - TP) / (N - NF),
+                P=P, TP=TP, NF=NF, N=N, FP=FP)
+
+
+def forecast(tab, model="error_rates"):
+    m = measures(tab)
+    fwd = tab[4]
+    N1, F1 = len(fwd["M"]), len(fwd["F"])
+    a1 = F1 / N1
+    if model == "error_rates":
+        se, f = m["capture"], m["false_alarm"]
+        p1 = (a1 - f) / (se - f)
+        pf, pu = se * p1 / a1, (1 - se) * p1 / (1 - a1)
+    elif model == "yield":
+        pf, pu = m["hit"], m["miss"]
+    else:
+        raise ValueError(model)
+    return dict(N1=N1, F1=F1, a1=a1, p_flag=pf, p_unflag=pu, flagged=F1 * pf, unflagged=(N1 - F1) * pu,
+                total=F1 * pf + (N1 - F1) * pu, measures=m)
+
+
+# ------------------------------------------------------------ exposure
+def exposures(pk, scheduled=False, with_dac=True, fx_multiply=False, count_matured=False, status_filter=True):
+    date = dt.date(2026, 9, 30)
+    files = ["facility_extract_hbplc_20260930.csv" if scheduled else "facility_extract_hbplc_20260930_rerun.csv"]
+    if with_dac:
+        files.append("facility_extract_hbdac_20260930.csv")
+    cust_group = {r["customer_id"]: r["group_id"] for r in pk.obl}
+    exp = defaultdict(float)
+    for fn in files:
+        for r in rows(pk.t, fn):
+            if status_filter and r["facility_status"] != "ACTIVE":
                 continue
-            seen.add(k)
-        g = assign(r["customer_lei"] or ("CUST:" + r["customer_id"]), r)
-        rt = rate(r["currency"])
-        drawn = float(r["drawn_balance"]) / rt
-        und = max(0.0, float(r["facility_limit"]) - float(r["drawn_balance"])) / rt
-        out[g]["loans_drawn"] += drawn
-        if opt.get("drawn_only"):
-            continue
-        if r["committed"] == "Y":
-            out[g]["undrawn"] += opt.get("ccf", 0.5) * und
-        elif opt.get("ccf_uncommitted"):
-            out[g]["undrawn"] += 0.5 * und
-    if not opt.get("loans_only"):
-        for r in pack.secs:
-            if dmy(r["position_date"]) != qe:
+            if not count_matured and d(r["final_maturity_date"]) <= date:
                 continue
-            lei = r["issuer_lei"] or ("" if opt.get("drop_blank_issuer") else pack.isin.get(r["isin"], ""))
-            if not lei:
-                continue
-            out[assign(lei, r)]["securities"] += float(r["carrying_value"]) / rate(r["currency"])
-        cash = defaultdict(float)
-        for r in pack.csa:
-            if dmon(r["valuation_date"]) == qe and r["collateral_type"] == "CASH":
-                cash[r["csa_reference"]] += float(r["amount_held"]) / rate(r["currency"])
-            elif dmon(r["valuation_date"]) == qe and opt.get("all_collateral"):
-                cash[r["csa_reference"]] += float(r["amount_held"]) / rate(r["currency"])
-        for r in (pack.drv_first[qe] if opt.get("first_run") else pack.drv[qe]):
-            m = float(r["Net MTM"]) * (1.0 if opt.get("mtm_units") else 1000.0)
-            c = 0.0 if opt.get("ignore_collateral") else cash.get(r["CSA reference"] or "", 0.0)
-            v = max(0.0, m - c)
-            if v:
-                out[assign(r["Counterparty LEI"], r)]["derivatives"] += v
+            lim = float(r["committed_limit"])
+            rate = pk.fx.get(r["currency"], 1.0) if r["currency"] != "GBP" else 1.0
+            exp[cust_group[r["customer_id"]]] += lim * rate if fx_multiply else lim / rate
+    return exp
+
+
+def band_of(x):
+    for i, e in enumerate(EDGES):
+        if x < e:
+            return i
+    return 4
+
+
+def band_table(tab, fc, exp):
+    fwd = tab[4]
+    out = []
+    for b in range(5):
+        G = [g for g in fwd["M"] if band_of(exp.get(g, 0.0)) == b]
+        Fg = [g for g in G if g in fwd["F"]]
+        Ug = [g for g in G if g not in fwd["F"]]
+        ef = len(Fg) * fc["p_flag"]
+        eu = len(Ug) * fc["p_unflag"]
+        ex = fc["p_flag"] * sum(exp.get(g, 0.0) for g in Fg) + fc["p_unflag"] * sum(exp.get(g, 0.0) for g in Ug)
+        out.append(dict(band=BANDS[b], groups=len(G), flagged=len(Fg), exp_flagged=ef, exp_unflagged=eu,
+                        exp_total=ef + eu, committed=sum(exp.get(g, 0.0) for g in G), exp_exposure=ex))
     return out
 
 
-def ls_slope(y):
-    return sum((x - 3.0) * (v - sum(y) / 5.0) for x, v in zip([1, 2, 3, 4, 5], y)) / 10.0
-
-
-def approvable(limit_m, projected, req_m, ftype):
-    ccf = 0.5 if ftype.lower().startswith("revolving") else 1.0
-    room = limit_m * 1e6 - projected
-    if room <= 0:
-        return 0.0
-    return min(req_m, math.floor(round(room / ccf / 1e5, 9)) / 10.0)
-
-
-def run(pack, mode="restated", opt=None, group_opt=None):
-    """mode: restated (every quarter on the 30 Sep 2026 archive), pit (each quarter on its own archive),
-    rmcode (the customer master's group code at each extract), union / addonly variants for the ladder."""
-    opt = opt or {}
-    group_opt = group_opt or {}
-    G30 = Groups(pack, PROJ, PROJ, **group_opt)
-    req_top = {}
-    for rq in pack.requests:
-        req_top[rq["item"]] = G30.top(rq["lei"])
-    series = {}
-    books = {}
-    for i, qe in enumerate(QES):
-        if mode == "restated":
-            assign = lambda lei, row: G30.top(lei)
-        elif mode == "pit":
-            Gq = Groups(pack, qe, qe, **group_opt)
-            assign = lambda lei, row, Gq=Gq: Gq.top(lei)
-        elif mode == "pit_current_archive_dates":
-            Gq = Groups(pack, PROJ, qe, **group_opt)  # 30 Sep archive, membership at each quarter-end
-            assign = lambda lei, row, Gq=Gq: Gq.top(lei)
-        elif mode == "rmcode":
-            code30 = {}
-            for r in pack.loans:
-                if r["extract_date"] == PROJ:
-                    code30[r["customer_lei"]] = r["rm_group_code"]
-            def assign(lei, row):
-                if "rm_group_code" in row:
-                    return row["rm_group_code"]
-                return G30.top(lei)
-        else:
-            raise ValueError(mode)
-        ex = exposures(pack, qe, assign, opt)
-        for k, parts in ex.items():
-            series.setdefault(k, [0.0] * 5)[i] = sum(parts.values())
-            books.setdefault(k, [None] * 5)[i] = dict(parts)
-    res = []
-    for rq in pack.requests:
-        top = req_top[rq["item"]]
-        key = top
-        if mode == "rmcode":
-            key = [r["rm_group_code"] for r in pack.loans if r["extract_date"] == PROJ and r["customer_lei"] == rq["lei"]][0]
-        y = series.get(key, [0.0] * 5)
-        b = ls_slope(y)
-        proj = y[-1] + b
-        lim = pack.limits.get(top)
-        res.append(dict(item=rq["item"], borrower=rq["borrower"], top=top, key=key, series=y, slope=b,
-                        latest=y[-1], projected=proj, limit=lim, utilisation=proj / (lim * 1e6),
-                        request=rq["amount"], ftype=rq["ftype"],
-                        approvable=approvable(lim, proj, rq["amount"], rq["ftype"]),
-                        books=books.get(key, [None] * 5)[-1]))
-    return res
+def golden(t=TARGET):
+    pk = Pack(t)
+    tab = pk.cohort_table()
+    fc = forecast(tab, "error_rates")
+    exp = exposures(pk)
+    bt = band_table(tab, fc, exp)
+    return dict(pack=pk, tab=tab, fc=fc, exp=exp, bands=bt, call=round(fc["total"]))
 
 
 if __name__ == "__main__":
-    p = Pack()
-    for mode in ("restated", "pit", "rmcode"):
-        print("==", mode)
-        for r in run(p, mode):
-            print("%-4s %-34s lim %6.1f  series %s  slope %7.3f  proj %8.3f  util %.4f  appr %5.1f" % (
-                r["item"], r["borrower"][:34], r["limit"], [round(x / 1e6, 3) for x in r["series"]],
-                r["slope"] / 1e6, r["projected"] / 1e6, r["utilisation"], r["approvable"]))
+    t = sys.argv[1] if len(sys.argv) > 1 else TARGET
+    G = golden(t)
+    for c in G["tab"]:
+        print(c["date"], len(c["M"]), len(c["F"]), None if c["R"] is None else (len(c["R"]), len(c["R"] & c["F"])))
+    fc = G["fc"]
+    m = fc["measures"]
+    print("hit %.4f capture %.4f false-alarm %.4f miss %.5f" % (m["hit"], m["capture"], m["false_alarm"], m["miss"]))
+    print("forward N %d flagged %d; p_flag %.5f p_unflag %.5f" % (fc["N1"], fc["F1"], fc["p_flag"], fc["p_unflag"]))
+    print("caseload %.3f -> %d (flagged %.3f, unflagged %.3f)" % (fc["total"], G["call"], fc["flagged"], fc["unflagged"]))
+    for r in G["bands"]:
+        print("%-28s groups %4d flagged %3d  exp_flag %7.3f exp_unflag %7.3f  committed %10.1f  exp_exposure GBP m %8.3f"
+              % (r["band"], r["groups"], r["flagged"], r["exp_flagged"], r["exp_unflagged"], r["committed"] / 1e6,
+                 r["exp_exposure"] / 1e6))
+    print("expected exposure total GBP m %.3f" % (sum(r["exp_exposure"] for r in G["bands"]) / 1e6))

@@ -1,7 +1,8 @@
-"""Documents and workbooks for the task446 pack."""
+"""Documents and workbooks for task446's pack (architecture 2)."""
 import datetime as dt
 import io
 import os
+import re
 import zipfile
 
 import numpy as np
@@ -10,33 +11,31 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 import world
-import truth
-from world import QE
+from world import D, EXTRACT_DATE
 
-FIXED_ZIP_TIME = (2026, 10, 9, 18, 40, 0)
-CREATED = dt.datetime(2026, 10, 9, 18, 40, 0)
+FIXED_ZIP_TIME = (2026, 10, 8, 17, 42, 0)
+MODIFIED = dt.datetime(2026, 10, 8, 16, 55, 0)
 
 
-def normalize_zip(path, modified=None):
-    """Rewrite an OOXML zip with fixed member timestamps and order, so two builds are byte-identical."""
-    import re
+def normalize_zip(path, modified=MODIFIED, app=b"Microsoft Excel"):
+    """Rewrite an OOXML zip with fixed member times, fixed order and a plausible writer, so two
+    builds are byte-identical and no library signature ships."""
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
-    def _app(n, data):
+    out = []
+    created = (modified - dt.timedelta(days=9, hours=3)).strftime("%Y-%m-%dT%H:%M:%SZ").encode()
+    stamp = modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
+    for n, data in items:
         if n == "docProps/app.xml":
-            data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Excel</Application>", data)
-            data = re.sub(rb"<AppVersion>3.1</AppVersion>", b"<AppVersion>16.0300</AppVersion>", data)
-        return n, data
-    items = [_app(n, d) for n, d in items]
-    if modified is not None:
-        created = (modified - dt.timedelta(days=3, hours=5)).strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-        items = [(n, re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + created + rb"\g<2>", data))
-                 if n == "docProps/core.xml" else (n, data) for n, data in items]
-        stamp = modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-        items = [(n, re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data))
-                 if n == "docProps/core.xml" else (n, data) for n, data in items]
-    first = [x for x in items if x[0] == "[Content_Types].xml"]
-    rest = sorted([x for x in items if x[0] != "[Content_Types].xml"])
+            data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app + b"</Application>", data)
+            data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>16.0300</AppVersion>", data)
+        if n == "docProps/core.xml":
+            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + created + rb"\g<2>", data)
+            data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
+            data = re.sub(rb"<cp:lastPrinted>[^<]*</cp:lastPrinted>", b"", data)
+        out.append((n, data))
+    first = [x for x in out if x[0] == "[Content_Types].xml"]
+    rest = sorted([x for x in out if x[0] != "[Content_Types].xml"])
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in first + rest:
             zi = zipfile.ZipInfo(name, date_time=FIXED_ZIP_TIME)
@@ -45,163 +44,176 @@ def normalize_zip(path, modified=None):
             z.writestr(zi, data)
 
 
-def set_xlsx_props(wb, creator, modified=CREATED):
+def set_props(wb, creator):
     p = wb.properties
     p.creator = creator
     p.lastModifiedBy = creator
-    p.created = modified - dt.timedelta(days=3, hours=2)
-    p.modified = modified
+    p.created = MODIFIED - dt.timedelta(days=9, hours=3)
+    p.modified = MODIFIED
     p.title = None
 
 
-def autosize(ws, widths):
-    for i, wdt in enumerate(widths, start=1):
-        ws.column_dimensions[get_column_letter(i)].width = wdt
+def widths(ws, ws_widths):
+    for i, w_ in enumerate(ws_widths, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = w_
 
 
-# ------------------------------------------------------------------ derivatives workbook
-def derivatives_workbook(w, path):
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
-    runs = [(t, d, False) for t, d in enumerate(QE)] + [(4, QE[4], True)]
-    for t, d, rerun in runs:
-        ws = wb.create_sheet(d.strftime("%d.%m.%Y") + (" R2" if rerun else ""))
-        ws["A1"] = "Counterparty credit risk: netting set mark-to-market"
-        ws["A1"].font = Font(bold=True)
-        ws["A2"] = "Run CCR-NS-01 for close of business %s; produced %s" % (
-            d.strftime("%d %b %Y"), (d + dt.timedelta(days=6 if rerun else 3)).strftime("%d %b %Y 06:15"))
-        hdr = ["Netting set", "Counterparty LEI", "Counterparty", "Master agreement", "CSA reference",
-               "Live trades", "Net MTM"]
-        ws.append([])
-        ws.append(hdr)
-        for c in range(1, len(hdr) + 1):
-            ws.cell(row=4, column=c).font = Font(bold=True)
-        for n in sorted(w.drv, key=lambda x: x["ns"]):
-            mtm = n["mtm_k"][t] if (t < 4 or rerun) else n["mtm_run1"]
-            ws.append([n["ns"], n["lei"], w.ent[n["lei"]]["name"].upper(), "ISDA 2002",
-                       n["csa"] or "", n["trades"], round(mtm, 1)])
-        autosize(ws, [13, 23, 44, 16, 16, 11, 12])
-    set_xlsx_props(wb, "ccr.batch")
-    wb.save(path)
-    normalize_zip(path, dt.datetime(2026, 10, 6, 6, 15, 0))
-
-
-# ------------------------------------------------------------------ house limit register
-def limits_workbook(w, limits, path):
+# ------------------------------------------------------------------ group register
+def register_workbook(w, path):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Register"
-    ws["A1"] = "House Limit Register at 30 September 2026"
+    ws.title = "Group register"
+    ws["A1"] = "Credit system: obligor group register"
     ws["A1"].font = Font(bold=True)
-    ws["A2"] = "Limits in GBP m. Maintained by Credit Risk Management under the Credit Authorities Matrix."
+    ws["A2"] = "As at 30/09/2026. Reference Data quarter-end extract. Includes groups whose relationship has ended."
+    hdr = ["group_id", "group_name", "ultimate_parent_lei", "relationship_start", "relationship_end", "sector_code",
+           "sector", "coverage_team", "credit_officer"]
     ws.append([])
-    hdr = ["Ultimate parent LEI", "Obligor group", "House limit (GBP m)", "Approved by", "Last review",
-           "Next review"]
     ws.append(hdr)
-    for c in range(1, len(hdr) + 1):
-        ws.cell(row=4, column=c).font = Font(bold=True)
-    rng = np.random.default_rng(world.SEED + 21)
-    auth = ["Credit Committee", "CCO", "Senior Credit Officer", "Board Risk Committee"]
-    for top in sorted(limits, key=lambda l: w.ent[l]["name"]):
-        lim = limits[top]
-        last = dt.date(2025, 10, 1) + dt.timedelta(days=int(rng.integers(0, 360)))
-        a = auth[3] if lim >= 150 else (auth[0] if lim >= 40 else auth[int(rng.integers(1, 3))])
-        ws.append([top, w.ent[top]["name"], lim, a, last.strftime("%d/%m/%Y"),
-                   (last + dt.timedelta(days=365)).strftime("%d/%m/%Y")])
-    autosize(ws, [24, 48, 18, 22, 12, 12])
-    set_xlsx_props(wb, "Credit Risk Management")
+    for c in ws[4]:
+        c.font = Font(bold=True)
+    for gid, g in sorted(w.groups.items()):
+        top = g.members[0]
+        code, desc, _ = world.SECTORS[g.sector]
+        ws.append([gid, g.name, top.lei or "", g.active_from, g.active_to, code, desc, g.coverage, g.officer])
+    for row in ws.iter_rows(min_row=5, min_col=4, max_col=5):
+        for c in row:
+            c.number_format = "dd/mm/yyyy"
+    widths(ws, [11, 44, 23, 15, 15, 11, 36, 24, 13])
+    ws.freeze_panes = "A5"
+    set_props(wb, "Reference Data")
     wb.save(path)
-    normalize_zip(path, dt.datetime(2026, 10, 1, 16, 48, 0))
-
-
-# ------------------------------------------------------------------ sector report (management basis)
-def sector_report(w, path):
-    SIC = {"10": "C10 Food products", "11": "C11 Beverages", "13": "C13 Textiles", "17": "C17 Paper",
-           "18": "C18 Printing", "20": "C20 Chemicals", "22": "C22 Rubber and plastics", "24": "C24 Basic metals",
-           "28": "C28 Machinery", "35": "D35 Electricity and gas", "41": "F41 Construction of buildings",
-           "47": "G47 Retail trade", "49": "H49 Land transport", "50": "H50 Water transport",
-           "52": "H52 Warehousing", "55": "I55 Accommodation", "61": "J61 Telecommunications",
-           "62": "J62 Computer programming", "64": "K64 Financial services", "66": "K66 Auxiliary financial",
-           "68": "L68 Real estate", "81": "N81 Services to buildings", "86": "Q86 Human health"}
-    agg = {}
-    for f in w.fac:
-        if f.limit[4] is None:
-            continue
-        s = w.ent[f.lei]["sector"] or "64"
-        rate = truth.FX[f.ccy][4]
-        a = agg.setdefault(s, [0, 0.0, 0.0])
-        a[0] += 1
-        a[1] += f.limit[4] * 1e6 / rate
-        a[2] += f.drawn[4] / rate
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "By SIC division"
-    ws["A1"] = "Credit portfolio by SIC division, 30 September 2026"
-    ws["A1"].font = Font(bold=True)
-    ws["A2"] = "Management basis: facility limits and drawn balances, loan book only, GBP m"
-    ws.append([])
-    ws.append(["SIC division", "Facilities", "Limits (GBP m)", "Drawn (GBP m)", "Share of limits"])
-    tot = sum(v[1] for v in agg.values())
-    for s in sorted(agg, key=lambda k: -agg[k][1]):
-        v = agg[s]
-        ws.append([SIC.get(s, s), v[0], round(v[1] / 1e6, 1), round(v[2] / 1e6, 1), round(v[1] / tot, 4)])
-    ws.append(["Total", sum(v[0] for v in agg.values()), round(tot / 1e6, 1),
-               round(sum(v[2] for v in agg.values()) / 1e6, 1), 1.0])
-    for r in range(5, ws.max_row + 1):
-        ws.cell(row=r, column=5).number_format = "0.0%"
-    autosize(ws, [32, 11, 15, 14, 15])
-    set_xlsx_props(wb, "Portfolio MI")
-    wb.save(path)
-    normalize_zip(path, dt.datetime(2026, 10, 8, 9, 20, 0))
-
-
-# ------------------------------------------------------------------ agenda (docx)
-def agenda_docx(w, requests, path):
-    from docx import Document
-    from docx.shared import Pt
-    doc = Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Arial"
-    st.font.size = Pt(10)
-    doc.add_paragraph("Calder & Wey Bank plc").runs[0].bold = True
-    doc.add_paragraph("Credit Committee, Wednesday 4 November 2026, 10:00, Committee Room 3, 61 Lothian Wharf")
-    doc.add_paragraph("Part B: new commitment requests")
-    doc.add_paragraph("Papers circulated Friday 30 October. Limit checks to the secretary by Monday 2 November "
-                      "(LMS-03). Secretary: Russell Hussain.")
-    tbl = doc.add_table(rows=1, cols=7)
-    tbl.style = "Table Grid"
-    hdr = ["Item", "Borrower", "Relationship", "Facility", "Amount", "Tenor", "Purpose"]
-    for i, h in enumerate(hdr):
-        tbl.rows[0].cells[i].text = h
-    rel_label = {"X": "Kelderby", "W": "Meridale", "A": "Brauneck (Germany)", "B": "Corrin", "C": "Pellow",
-                 "D": "Stannard Capital"}
-    for i, k in enumerate(["X", "W", "A", "B", "C", "D"]):
-        bkey, ftype, amt, tenor, purpose = requests[k]
-        lei = getattr(w, k)[bkey]
-        row = tbl.add_row().cells
-        row[0].text = "B%d" % (i + 1)
-        row[1].text = "%s (LEI %s)" % (w.ent[lei]["name"], lei)
-        row[2].text = rel_label[k]
-        row[3].text = ftype
-        row[4].text = "GBP %.1fm" % amt
-        row[5].text = tenor
-        row[6].text = purpose
-    doc.add_paragraph("")
-    doc.add_paragraph("Part C (for noting): limit excesses reported since the last meeting; quarterly "
-                      "large exposures return (Regulatory Reporting).")
-    cp = doc.core_properties
-    cp.author = "Russell Hussain"
-    cp.last_modified_by = "Russell Hussain"
-    cp.created = dt.datetime(2026, 10, 7, 16, 12, 0)
-    cp.modified = dt.datetime(2026, 10, 9, 11, 3, 0)
-    cp.title = "Credit Committee agenda 4 November 2026"
-    cp.comments = ""
-    cp.revision = 3
-    doc.save(path)
     normalize_zip(path)
 
 
-# ------------------------------------------------------------------ PDFs
+def ratings_workbook(w, path):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Master scale"
+    ws.append(["Halstow Bank internal rating master scale (corporate and commercial), effective 1 January 2026"])
+    ws["A1"].font = Font(bold=True)
+    ws.append([])
+    ws.append(["grade", "description", "pd_lower", "pd_upper", "pd_midpoint", "s&p_equivalent"])
+    for c in ws[3]:
+        c.font = Font(bold=True)
+    scale = [(1, "Exceptional", 0.0000, 0.0005, "AA"), (2, "Very strong", 0.0005, 0.0012, "A"),
+             (3, "Strong", 0.0012, 0.0025, "BBB+"), (4, "Good", 0.0025, 0.0050, "BBB-"),
+             (5, "Satisfactory", 0.0050, 0.0100, "BB+"), (6, "Adequate", 0.0100, 0.0200, "BB"),
+             (7, "Weak", 0.0200, 0.0450, "BB-"), (8, "Vulnerable", 0.0450, 0.1000, "B"),
+             (9, "Watch", 0.1000, 0.2500, "CCC"), (10, "Default", 1.0, 1.0, "D")]
+    for gr, de, lo, hi, sp in scale:
+        mid = round((lo * hi) ** 0.5, 5) if lo > 0 and hi < 1 else (0.0002 if gr == 1 else 1.0)
+        ws.append([gr, de, lo, hi, mid, sp])
+    widths(ws, [8, 16, 10, 10, 12, 16])
+    ws2 = wb.create_sheet("Group ratings 30-09-2026")
+    ws2.append(["group_id", "rating_grade", "rating_date", "rating_model"])
+    for c in ws2[1]:
+        c.font = Font(bold=True)
+    rng = np.random.default_rng(world.SEED + 31)
+    for gid, g in sorted(w.groups.items()):
+        if not w.active(g, EXTRACT_DATE):
+            continue
+        base = 4.2 + (1.8 if g.flag.get(4) else 0.0) + (2.5 if w.on_list(g, EXTRACT_DATE) else 0.0)
+        grade = int(np.clip(round(base + rng.normal(0, 1.1)), 1, 9))
+        rdate = EXTRACT_DATE - dt.timedelta(days=int(rng.integers(10, 360)))
+        ws2.append([gid, grade, rdate, "CORP-SCORE v5" if rng.random() < 0.8 else "COMMERCIAL-SCORE v3"])
+    for row in ws2.iter_rows(min_row=2, min_col=3, max_col=3):
+        for c in row:
+            c.number_format = "dd/mm/yyyy"
+    widths(ws2, [11, 13, 13, 22])
+    set_props(wb, "Credit Risk Models")
+    wb.save(path)
+    normalize_zip(path)
+
+
+def scenarios_workbook(path):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Weights"
+    ws.append(["IFRS 9 forward-looking scenarios, 2026 Q3 run. Approved by the Impairment Committee 6 October 2026."])
+    ws["A1"].font = Font(bold=True)
+    ws.append([])
+    ws.append(["scenario", "weight"])
+    for row in [("Upside", 0.15), ("Base", 0.50), ("Downside", 0.25), ("Severe downside", 0.10)]:
+        ws.append(list(row))
+    widths(ws, [18, 10])
+    qs = ["2026Q4", "2027Q1", "2027Q2", "2027Q3", "2027Q4", "2028Q1", "2028Q2", "2028Q3", "2028Q4", "2029Q1",
+          "2029Q2", "2029Q3", "2029Q4"]
+    paths = {
+        "Upside": dict(gdp=[0.5, 0.6, 0.6, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
+                       unemp=[4.8, 4.7, 4.6, 4.5, 4.4, 4.3, 4.3, 4.2, 4.2, 4.2, 4.2, 4.1, 4.1],
+                       rate=[3.75, 3.50, 3.25, 3.25, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00]),
+        "Base": dict(gdp=[0.2, 0.3, 0.3, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
+                     unemp=[5.1, 5.2, 5.2, 5.1, 5.0, 4.9, 4.9, 4.8, 4.8, 4.7, 4.7, 4.7, 4.6],
+                     rate=[3.75, 3.75, 3.50, 3.50, 3.25, 3.25, 3.25, 3.00, 3.00, 3.00, 3.00, 3.00, 3.00]),
+        "Downside": dict(gdp=[-0.3, -0.4, -0.2, 0.0, 0.2, 0.3, 0.3, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
+                         unemp=[5.4, 5.8, 6.1, 6.3, 6.4, 6.3, 6.2, 6.0, 5.9, 5.8, 5.7, 5.6, 5.5],
+                         rate=[3.75, 3.50, 3.00, 2.75, 2.50, 2.50, 2.50, 2.50, 2.75, 2.75, 2.75, 3.00, 3.00]),
+        "Severe downside": dict(gdp=[-0.9, -1.2, -0.8, -0.3, 0.1, 0.3, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5],
+                                unemp=[5.8, 6.6, 7.3, 7.8, 8.0, 7.9, 7.7, 7.4, 7.1, 6.9, 6.7, 6.5, 6.3],
+                                rate=[3.75, 3.25, 2.50, 2.00, 1.75, 1.75, 1.75, 2.00, 2.00, 2.25, 2.25, 2.50, 2.50]),
+    }
+    for name, p in paths.items():
+        s = wb.create_sheet(name[:28])
+        s.append(["quarter", "real_gdp_qoq_pct", "unemployment_rate_pct", "bank_rate_pct_end_quarter"])
+        for c in s[1]:
+            c.font = Font(bold=True)
+        for i, q in enumerate(qs):
+            s.append([q, p["gdp"][i], p["unemp"][i], p["rate"][i]])
+        widths(s, [10, 18, 22, 26])
+    set_props(wb, "Impairment Analytics")
+    wb.save(path)
+    normalize_zip(path)
+
+
+# ------------------------------------------------------------------ docx agenda
+def agenda_docx(path):
+    import docx
+    from docx.shared import Pt
+    doc = docx.Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Arial"
+    st.font.size = Pt(10)
+    p = doc.add_paragraph()
+    r = p.add_run("HALSTOW BANK PLC")
+    r.bold = True
+    doc.add_paragraph("Executive Risk Committee")
+    doc.add_paragraph("Wednesday 4 November 2026, 09:30 to 12:00, Board Room 2, Halstow House")
+    doc.add_paragraph("Chair: Chief Risk Officer. Members: Chief Financial Officer, Chief Credit Officer, Chief "
+                      "Operating Officer. In attendance: Jill Berry (Head of Credit Risk Monitoring), Mathew Long "
+                      "(Head of Restructuring), Head of Business Support, Company Secretary.")
+    p = doc.add_paragraph()
+    p.add_run("Agenda").bold = True
+    items = [
+        "1. Minutes of the meeting of 7 October 2026 and matters arising",
+        "2. Q3 2026 risk appetite dashboard (Chief Risk Officer)",
+        "3. 2027 resourcing budget: credit",
+        "    3.1 Watch-list caseload for the year to 30 September 2027 (Credit Risk Monitoring, paper to follow). "
+        "The caseload standard for Restructuring and Business Support is twelve watch-list groups per analyst.",
+        "    3.2 Restructuring and Business Support headcount for 2027 (Head of Restructuring)",
+        "4. Early-warning system annual performance report: taken at the Credit Risk Committee on 18 November",
+        "5. Operational resilience: third-party data feeds (Chief Operating Officer)",
+        "6. Any other business",
+    ]
+    for it in items:
+        doc.add_paragraph(it)
+    doc.add_paragraph("Papers to the Company Secretary by 12:00 on Wednesday 28 October. Item 3.1 papers carry the "
+                      "committed exposure by caseload band so that 3.2 can be read against them.")
+    p = doc.add_paragraph()
+    p.add_run("Internal. Not for onward distribution.").italic = True
+    cp = doc.core_properties
+    cp.author = "Company Secretariat"
+    cp.last_modified_by = "Company Secretariat"
+    cp.created = MODIFIED - dt.timedelta(days=9, hours=3)
+    cp.modified = MODIFIED
+    cp.revision = 4
+    cp.title = ""
+    cp.comments = ""
+    doc.save(path)
+    normalize_zip(path, app=b"Microsoft Office Word")
+
+
+# ------------------------------------------------------------------ PDF standard
 def _pdf(path, title, author, blocks):
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -210,6 +222,7 @@ def _pdf(path, title, author, blocks):
     rl_config.invariant = 1
     ss = getSampleStyleSheet()
     body = ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=9.5, leading=13)
+    bullet = ParagraphStyle("u", parent=body, leftIndent=14)
     h = ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
                        spaceBefore=6)
     t = ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=13, leading=17)
@@ -218,205 +231,214 @@ def _pdf(path, title, author, blocks):
                             title=title, author=author, creator="", producer="", subject="")
     story = []
     for kind, text in blocks:
-        story.append(Paragraph(text, {"t": t, "h": h, "p": body}[kind]))
+        story.append(Paragraph(text, {"t": t, "h": h, "p": body, "u": bullet}[kind]))
         story.append(Spacer(1, 4 if kind != "t" else 8))
     doc.build(story)
     data = buf.getvalue()
-    stamp = b"D:20261008141500+01'00'"
+    stamp = b"D:20260212101500+00'00'"
     data = data.replace(b"D:20000101000000+00'00'", stamp)
-    for s in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest (opensource)"):
+    for s in (b"ReportLab Generated PDF document (opensource)",
+              b"ReportLab generated PDF document -- digest (opensource)"):
         data = data.replace(s, b" " * len(s))
     with open(path, "wb") as fh:
         fh.write(data)
 
 
-def policy_pdf(path):
+def standard_pdf(path):
     B = [
-        ("t", "Calder &amp; Wey Bank plc<br/>Credit Concentration Policy"),
-        ("p", "Version 4.2. Approved by the Board Risk Committee on 17 March 2026. Owner: Chief Credit Officer. "
-              "Next review: March 2027."),
-        ("h", "1 Purpose"),
-        ("p", "1.1 This policy sets how the Bank groups the parties it lends to, how it measures its exposure to "
-              "each group, and how house limits are held against that exposure. It applies to every booking "
-              "entity of the Bank and to every product that creates credit exposure to a non-bank counterparty."),
-        ("h", "2 Obligor groups"),
-        ("p", "2.1 An Obligor Group is an entity together with every entity consolidated with it by the same "
-              "ultimate parent in accounting-consolidation terms. The Bank reads consolidation from the GLEIF "
-              "relationship records (IS_DIRECTLY_CONSOLIDATED_BY and IS_ULTIMATELY_CONSOLIDATED_BY) kept in the "
-              "reference-data archive."),
-        ("p", "2.2 An international branch is part of the legal entity it is a branch of."),
-        ("p", "2.3 A fund that a group entity manages or advises is not consolidated by that group because it is "
-              "managed by it. A managed fund is its own Obligor Group unless a consolidation relationship says "
-              "otherwise."),
-        ("p", "2.4 A lapsed registration, whether of an LEI or of a relationship record, does not end the entity "
-              "or the relationship. A relationship ends on the end date of its relationship period."),
-        ("p", "2.5 Where an LEI has merged into another, exposure recorded against the merged LEI belongs to the "
-              "successor from the date of the merger."),
-        ("p", "2.6 An entity that reports no consolidating parent, or for which a parent reporting exception is "
-              "filed, heads its own Obligor Group."),
-        ("p", "2.7 Relationship-management group codes in the customer master record coverage and pricing "
-              "relationships. They are not Obligor Groups and are not used for limits."),
-        ("h", "3 Exposure"),
-        ("p", "3.1 Exposure to an Obligor Group is the sum, over its entities, of: (a) drawn balances on all "
-              "facilities; (b) 50 per cent of the undrawn balance of committed facilities (term loans and "
-              "revolving credit facilities), with undrawn balances of uncommitted facilities counting at nil; "
-              "(c) investment securities issued by the entity, at carrying value; and (d) for each derivative "
-              "netting set, the net mark-to-market where positive, less cash collateral held under the credit "
-              "support annex attached to that netting set, and never less than nil. Non-cash collateral is not "
-              "deducted, and netting sets are not offset against one another."),
-        ("p", "3.2 Amounts in other currencies are converted to sterling at the Treasury closing rate for the "
-              "measurement date."),
-        ("p", "3.3 Exposure is measured at each quarter-end from the Credit Risk Data Mart quarter-end extracts."),
-        ("h", "4 House limits"),
-        ("p", "4.1 Every Obligor Group to which the Bank has exposure carries a house limit in the House Limit "
-              "Register, approved under the Credit Authorities Matrix and reviewed at least annually."),
-        ("p", "4.2 Exposure above the house limit is a limit excess. It is reported to the Chief Credit Officer "
-              "within two business days and to the Board Risk Committee at its next meeting."),
-        ("p", "4.3 New commitments are checked against house limits under the Limit Monitoring Standard (LMS-03)."),
-        ("h", "5 Outside this policy"),
-        ("p", "5.1 Regulatory large exposures reporting is run by Regulatory Reporting on the regulatory basis "
-              "and is not governed by this policy. Exposures to central governments and to banks are managed "
-              "under the Treasury Counterparty Policy."),
-    ]
-    _pdf(path, "Credit Concentration Policy v4.2", "Credit Risk Management", B)
-
-
-def lms_pdf(path):
-    B = [
-        ("t", "LMS-03 Limit utilisation projection and new commitments"),
-        ("p", "Limit Monitoring Standard. Version 2.0, effective 1 July 2026. Owner: Head of Credit Portfolio "
-              "Analytics. Supersedes the January 2025 issue."),
+        ("t", "Halstow Bank plc<br/>Early-Warning and Watch-List Monitoring Standard"),
+        ("p", "Standard CRM-07, version 3.1. Approved by the Credit Risk Committee on 12 February 2026. "
+              "Owner: Head of Credit Risk Monitoring. Next review: February 2027."),
         ("h", "1 Scope"),
-        ("p", "1.1 This standard applies to every request for a new commitment presented to Credit Committee "
-              "and to the quarterly limit utilisation report."),
-        ("h", "2 Projection"),
-        ("p", "2.1 The projection date is the latest quarter-end for which the quarter-end extracts are closed."),
-        ("p", "2.2 The exposure of an Obligor Group at the next quarter-end is projected as its exposure at the "
-              "projection date plus the least-squares slope, per quarter, of its exposure at the five quarter-ends "
-              "ending on the projection date, the quarters numbered 1 to 5."),
-        ("p", "2.3 Projections are made for each Obligor Group as constituted at the projection date, from that "
-              "group's exposure at each of the five quarter-ends."),
-        ("p", "2.4 Exposure is measured under section 3 of the Credit Concentration Policy, in pounds and "
-              "without rounding. Projected exposure is reported in GBP m to one decimal place."),
-        ("h", "3 New commitments"),
-        ("p", "3.1 The exposure of a new commitment is its full amount for a term loan and 50 per cent of its "
-              "amount for a revolving credit facility, which is undrawn at signing."),
-        ("p", "3.2 Credit Committee may approve the largest amount, in multiples of GBP 100,000 and not more "
-              "than the amount requested, for which projected exposure plus the exposure of the new commitment "
-              "does not exceed the house limit. Where no amount qualifies, the request is referred to the Board "
-              "Risk Committee."),
-        ("p", "3.3 Utilisation is projected exposure divided by the house limit."),
-        ("h", "4 Records"),
-        ("p", "4.1 The limit check for each request is filed with the committee papers and kept for seven years."),
+        ("p", "1.1 This standard covers the corporate and commercial book: every obligor group with a committed "
+              "facility from Halstow Bank plc or Halstow Bank Ireland DAC. It sets how early-warning signals are "
+              "carried to groups, how the watch list is measured against them, and how the watch-list caseload "
+              "is forecast for resourcing."),
+        ("p", "1.2 The early-warning system is release 3.2 of the engine, in production since 10 January 2022. "
+              "Its models, triggers and bands have not changed since. A change would be a new release, approved "
+              "by the Model Risk Committee before use."),
+        ("h", "2 Obligor groups"),
+        ("p", "2.1 An obligor group is the set of legal entities under one ultimate accounting-consolidation "
+              "parent. The credit system's group register holds each group, the dates its relationship with the "
+              "Bank started and ended, and the LEI of its ultimate parent where the parent has one."),
+        ("p", "2.2 A group's members are the customers the credit system books to it and every legal entity "
+              "whose GLEIF relationship record shows it accounting-consolidated into the group's ultimate parent "
+              "(IS_ULTIMATELY_CONSOLIDATED_BY; where an entity reports only IS_DIRECTLY_CONSOLIDATED_BY, its "
+              "direct parents are followed to the top), with the relationship in force at the date in question."),
+        ("p", "2.3 An entity whose LEI registration has lapsed is still the entity its LEI identifies. An "
+              "international branch belongs with its head office. A fund-management link is not consolidation. "
+              "An entity merged into another is carried by its successor from the merger date."),
+        ("h", "3 Signals and flags"),
+        ("p", "3.1 The engine publishes a signal for every entity it covers at each month-end: GREEN, AMBER or "
+              "RED, with a score from 0 to 99 and the triggers behind it. Entities with an LEI are keyed by LEI, "
+              "entities without one by their Companies House number."),
+        ("p", "3.2 A group is flagged at a date when any of its members carries AMBER or RED in the engine's "
+              "publication for that month-end."),
+        ("h", "4 The watch list and the cohorts"),
+        ("p", "4.1 The monitored book at a cohort date, 30 September each year, is every group active on the "
+              "group register at that date and not on the watch list at that date."),
+        ("p", "4.2 A group in a cohort reaches the watch list if it is placed on the watch list in the twelve "
+              "months after the cohort date. A group that leaves the book in that time without being placed has "
+              "not reached it. A group counts once."),
+        ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the last "
+              "four closed cohorts taken together:"),
+        ("u", "hit rate: groups flagged at the cohort date that reach the watch list, as a share of groups "
+              "flagged;"),
+        ("u", "capture rate: groups reaching the watch list that were flagged at the cohort date, as a share of "
+              "groups reaching it;"),
+        ("u", "false-alarm rate: groups not reaching the watch list that were flagged at the cohort date, as a "
+              "share of groups not reaching it."),
+        ("h", "5 Watch-list caseload forecast"),
+        ("p", "5.1 Each October credit risk monitoring forecasts how many groups in the monitored book at the "
+              "cohort date will reach the watch list in the following twelve months, and the committed exposure "
+              "they will bring, for the resourcing budget. Groups that join the book after the cohort date are "
+              "outside the forecast."),
+        ("p", "5.2 The forecast gives each group in the monitored book a probability of reaching the watch list "
+              "that depends only on its flag status at the cohort date and is the same across the book. It is "
+              "set from the performance measures in 4.3. Expected arrivals are the sum of those probabilities; "
+              "expected exposure is the sum of each probability times the group's committed exposure."),
+        ("p", "5.3 The caseload is reported to the nearest whole group, and expected arrivals within a band to "
+              "one decimal."),
+        ("h", "6 Committed exposure and caseload bands"),
+        ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits of its members' "
+              "facilities in force at the end of that date, across Halstow Bank plc and Halstow Bank Ireland DAC, "
+              "in sterling at that date's Group Treasury closing rates. A facility whose final maturity date "
+              "falls on or before the date is not in force at the end of it."),
+        ("p", "6.2 The caseload is reported in five bands of committed exposure: under GBP 5m; GBP 5m and under "
+              "GBP 15m; GBP 15m and under GBP 40m; GBP 40m and under GBP 100m; GBP 100m and over. Groups of "
+              "GBP 40m and over are worked by Restructuring, the rest by Business Support."),
+        ("h", "7 Records"),
+        ("p", "7.1 Signals are kept for every month-end from September 2022. Reference Data extracts the group "
+              "register, the obligor master, the watch-list history and the GLEIF records for the Bank's entities "
+              "at each quarter-end."),
     ]
-    _pdf(path, "LMS-03 Limit utilisation projection and new commitments", "Credit Portfolio Analytics", B)
+    _pdf(path, "Early-Warning and Watch-List Monitoring Standard", "Credit Risk Monitoring", B)
 
 
-# ------------------------------------------------------------------ field reference and extract log
-FIELD_REF = """# Credit Risk Data Mart: field reference
+# ------------------------------------------------------------------ markdown and text
+def field_reference(path, files):
+    txt = f"""# Credit data: field reference
 
-Quarter-end extracts, release 2026-Q3 (closed 9 October 2026). Maintained by Credit Risk Data.
+Maintained by Reference Data. Covers the quarter-end extracts used by Credit Risk Monitoring.
 
-## loan_book_qe_extracts.csv
+## {files['signals']}
 
-One row per facility per quarter-end extract (`extract_date`), from the core lending system.
+Month-end publications of the early-warning engine, one row per covered entity per month-end.
 
-| Field | Meaning |
+| field | meaning |
 |---|---|
-| facility_ref | Facility identifier. LN for loan facilities, OD for overdrafts. |
-| booking_entity | CWB-LDN (Calder & Wey Bank plc, London) or CWB-DUB (Calder & Wey Bank Europe DAC, Dublin). |
-| customer_id | Customer master identifier. |
-| customer_lei | LEI held on the customer master at the extract date. Blank where none is held. |
-| customer_name | Name as held on the customer master. |
-| rm_group_code | Relationship-management group code held on the customer master at the extract date. |
-| facility_type | TERM term loan, RCF revolving credit facility, OVD overdraft. |
-| committed | Y for committed facilities, N for uncommitted. |
-| currency | Facility currency. All amounts in this file are in facility currency. |
-| facility_limit, drawn_balance, undrawn_balance | Limit, drawn principal and undrawn amount at the extract date. |
-| migrated_from | Set on the receiving facility when a facility moves between booking entities. Until the source ledger closes at the following month-end, the facility appears in the extracts of both booking entities; the receiving facility is the record. |
-| sic_division | SIC 2007 division of the customer. |
+| publication_date | the month-end the publication is for |
+| entity_key | the entity's LEI, or `CRN:` and the Companies House number for an entity without an LEI |
+| entity_name | the name as the engine's data vendor holds it |
+| country | country of registration |
+| signal | GREEN, AMBER or RED |
+| score | 0 to 99; GREEN below 40, AMBER 40 to 69, RED 70 and over |
+| trigger_codes | triggers active at the publication, semicolon separated (see {files['triggers']}) |
+| feed | the vendor feed the leading trigger came from; COMPOSITE where no trigger is active |
+| engine_release | engine release that produced the publication |
 
-## treasury_investment_positions_qe.csv
+## {files['obligors']}
 
-Treasury investment book positions at each quarter-end, from the custodian. `position_date` is DD/MM/YYYY.
-`carrying_value` is in position currency. `issuer_lei` is as delivered on the custodian feed and is blank where
-the feed carries none; issuer LEIs are maintained against ISINs in the GLEIF ISIN-to-LEI file.
+Every customer the credit system has booked to an obligor group, open or closed.
 
-## ccr_netting_set_exposure_qe.xlsx
+| field | meaning |
+|---|---|
+| customer_id | credit system customer number |
+| lei | the customer's LEI where held |
+| companies_house_no | Companies House number for UK-registered customers |
+| group_id | the obligor group the customer is booked to |
+| customer_status | ACTIVE or CLOSED at the extract date |
+| primary_booking_entity | HB-PLC (Halstow Bank plc) or HB-DAC (Halstow Bank Ireland DAC) |
 
-Run CCR-NS-01 from the trading risk system, one sheet per quarter-end close, one row per netting set. Net MTM is
-reported in GBP thousands, as the trading risk system holds it. Where a close is rerun, the rerun is added as a
-further sheet for that date marked R2, and the rerun is the record for that close.
+## {files['register']}
 
-## csa_collateral_held_qe.csv
+One row per obligor group, including groups whose relationship has ended.
 
-Collateral held from counterparties under credit support annexes, by CSA reference and valuation date
-(DD-MON-YYYY). `amount_held` is in the collateral currency, in units.
+| field | meaning |
+|---|---|
+| ultimate_parent_lei | LEI of the group's ultimate accounting-consolidation parent; blank where the parent has none |
+| relationship_start | date the group's first facility started |
+| relationship_end | date the relationship ended (last facility repaid, refinanced elsewhere or transferred to Recoveries); blank while active |
+| sector_code, sector | the group's sector |
 
-## treasury_fx_closing_rates.csv
+## {files['watchlist']}
 
-Treasury closing rates at each quarter-end. `rate` is units of the quote currency per GBP 1.
+Every watch-list case opened since 1 January 2020.
 
-## gleif_lei_records_qe_archive.csv, gleif_relationship_records_qe_archive.csv
+| field | meaning |
+|---|---|
+| placed_on | date the group was placed on the watch list |
+| watch_level | 1, 2 or 3 (case intensity); every level is on the watch list |
+| removed_on | date the case closed; blank while open |
+| removal_reason | CURED, REFINANCED_AWAY or TO_RECOVERY |
 
-The GLEIF concatenated files (LEI-CDF 3.1 and RR-CDF 2.1 CSV) as last published on each quarter-end date, filtered to the
-reference-data universe and archived by Reference Data. `archive_date` is added by the archive; all other columns
-are as GLEIF publishes them.
+## Facility extracts ({files['plc']}, {files['plc_rerun']}, {files['dac']})
 
-## gleif_reporting_exceptions_20260930.csv, isin_lei_20260930.csv
+One row per facility held by the booking entity at the extract date.
 
-GLEIF reporting exceptions and the GLEIF ISIN-to-LEI relationship file as published on 30 September 2026, filtered
-to the reference-data universe.
+| field | meaning |
+|---|---|
+| booking_entity | HB-PLC or HB-DAC |
+| currency | facility currency |
+| committed_limit | the facility's committed limit, in the facility currency |
+| drawn_balance | drawn balance at the extract time, in the facility currency |
+| start_date | date the facility became available |
+| final_maturity_date | date the facility falls due for repayment and the commitment ends |
+| facility_status | ACTIVE, CANCELLED or CLOSED, maintained by the overnight batch |
 
-## house_limit_register_20260930.xlsx
+## {files['fx']}
 
-House limits by Obligor Group, keyed by the LEI of the group's ultimate parent.
+| field | meaning |
+|---|---|
+| closing_rate | units of the currency for one pound sterling at the Group Treasury 16:00 London close |
 
-## obligor_ratings_qe.csv
+## GLEIF files ({files['lei']}, {files['rr']}, {files['repex']})
 
-Internal rating grade by customer at each quarter-end (master scale MRS-2).
-
-## sector_concentration_2026Q3.xlsx
-
-Quarterly portfolio MI pack, sector page.
+Records from GLEIF's concatenated files published on 30 September 2026 (LEI-CDF 3.1, RR-CDF 2.1 and reporting
+exceptions), filtered by Reference Data to the LEIs in the obligor master and the engine's coverage list.
+Field names are GLEIF's.
 """
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(txt)
 
 
-def field_reference(path):
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(FIELD_REF)
+def count_rows(path):
+    with open(path, encoding="utf-8") as fh:
+        return sum(1 for _ in fh) - 1
 
 
-def extract_log(target, path):
-    lines = ["CRDM quarter-end release 2026-Q3", "Closed 2026-10-09 18:31 by crdm_release (job QE-CLOSE-07)", ""]
-    sources = {
-        "loan_book_qe_extracts.csv": "core lending (extracts 2025-09-30 to 2026-09-30)",
-        "loan_book_cwb_dub_20251231_late.csv": "core lending, CWB-DUB, 2025-12-31 (late delivery)",
-        "treasury_investment_positions_qe.csv": "custodian positions feed",
-        "ccr_netting_set_exposure_qe.xlsx": "trading risk system, run CCR-NS-01",
-        "csa_collateral_held_qe.csv": "collateral management system",
-        "treasury_fx_closing_rates.csv": "Treasury closing rates",
-        "gleif_lei_records_qe_archive.csv": "Reference Data archive of GLEIF concatenated file (level 1)",
-        "gleif_relationship_records_qe_archive.csv": "Reference Data archive of GLEIF concatenated file (level 2)",
-        "gleif_reporting_exceptions_20260930.csv": "GLEIF reporting exceptions, 30 Sep 2026",
-        "isin_lei_20260930.csv": "GLEIF ISIN-to-LEI relationship file, 30 Sep 2026",
-        "obligor_ratings_qe.csv": "rating system MRS-2",
-    }
-    lines.append("%-46s %10s  %s" % ("file", "rows", "source"))
-    for fn in sorted(sources):
-        p = os.path.join(target, fn)
-        if fn.endswith(".xlsx"):
-            wb = openpyxl.load_workbook(p, read_only=True)
-            n = sum(ws.max_row - 4 for ws in wb.worksheets)
-        else:
-            n = sum(1 for _ in open(p, encoding="utf-8")) - 1
-        lines.append("%-46s %10d  %s" % (fn, n, sources[fn]))
-    lines.append("")
-    lines.append("Late delivery: the CWB-DUB core lending extract for 2025-12-31 missed the QE-CLOSE window and was "
-                 "delivered on 2026-01-21. It is held as loan_book_cwb_dub_20251231_late.csv and forms part of the "
-                 "2025-12-31 extract.")
-    lines.append("")
-    lines.append("Reference-data universe: customers, issuers in the treasury book, derivative counterparties and "
-                 "their related entities.")
-    with open(path, "w", encoding="utf-8") as fh:
+def extract_log(path, files, target):
+    def rows(k):
+        return count_rows(os.path.join(target, files[k]))
+    import csv as _csv
+    with open(os.path.join(target, files["plc"]), encoding="utf-8") as fh:
+        a = {r["facility_id"]: r["committed_limit"] for r in _csv.DictReader(fh)}
+    with open(os.path.join(target, files["plc_rerun"]), encoding="utf-8") as fh:
+        b = {r["facility_id"]: r["committed_limit"] for r in _csv.DictReader(fh)}
+    assert set(a) == set(b)
+    ndiff = sum(1 for k in a if a[k] != b[k])
+    lines = [
+        "REFERENCE DATA EXTRACT LOG",
+        "Halstow Bank plc   quarter-end pack for Credit Risk Monitoring   as at 30/09/2026   compiled 08/10/2026 16:40",
+        "",
+        "job                          produced           rows     note",
+        "EWS_MONTHEND_PUBLICATIONS    2026-10-02 06:14   %7d   publications 2022-09-30 to 2026-09-30" % rows("signals"),
+        "GLEIF_LEI_CDF_SUBSET         2026-10-01 05:40   %7d   GLEIF concatenated file of 2026-09-30" % rows("lei"),
+        "GLEIF_RR_CDF_SUBSET          2026-10-01 05:41   %7d   GLEIF concatenated file of 2026-09-30" % rows("rr"),
+        "GLEIF_REPEX_SUBSET           2026-10-01 05:41   %7d   GLEIF concatenated file of 2026-09-30" % rows("repex"),
+        "CREDIT_OBLIGOR_MASTER        2026-10-01 06:02   %7d" % rows("obligors"),
+        "CREDIT_GROUP_REGISTER        2026-10-01 06:05   %7d" % (openpyxl.load_workbook(
+            os.path.join(target, files["register"]))["Group register"].max_row - 4),
+        "WATCH_LIST_HISTORY           2026-10-01 06:07   %7d   cases opened from 2020-01-01" % rows("watchlist"),
+        "FACILITY_EXTRACT_HBPLC       2026-09-30 19:40   %7d   scheduled run" % rows("plc"),
+        "FACILITY_EXTRACT_HBPLC       2026-09-30 23:05   %7d   rerun after limit amendments approved on 30/09 were "
+        "posted following the scheduled run; the rerun is the record for 30/09" % rows("plc_rerun"),
+        "FACILITY_EXTRACT_HBDAC       2026-10-07 11:52   %7d   Halstow Bank Ireland DAC, delivered after the Dublin "
+        "ledger close; HBPLC extracts carry plc bookings only" % rows("dac"),
+        "TREASURY_CLOSING_RATES       2026-09-30 16:20   %7d" % rows("fx"),
+        "",
+        "Control: HBPLC scheduled and rerun extracts hold the same facility list; %d committed limits differ." % ndiff,
+        "Next quarter-end pack: 31/12/2026.",
+    ]
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")

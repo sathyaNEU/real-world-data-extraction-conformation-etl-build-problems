@@ -2,44 +2,46 @@
 
 ## Tags
 
-**Domain:** Banking, Credit & Financial Risk (obligor-group credit concentration and house-limit monitoring).
-**Analytical objective:** Data Extraction & Conformation (ETL / Pipeline Build).
-**Axis 2:** Explore/Discover, Hypothesize, Analyze/Validate, Synthesize, Recommend/Communicate.
+**Domain:** Banking, Credit & Financial Risk (early-warning and watch-list monitoring of corporate obligor groups).  
+**Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Credit committee should approve GBP 21.8m of Kelderby Facilities Ltd's GBP 30.0m term loan.**
+**Put a 2027 caseload of 134 groups to the committee: 134 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.**
 
-Kelderby's projected 31 December 2026 exposure is GBP 148.1m against its GBP 170.0m house limit. Not GBP 15.0m, which builds each past quarter on the group as it stood then, so the Tarrant Hydraulics purchase reads as growth. Not the full GBP 30.0m, which would take Kelderby over its limit.
+The 134 is the 913 groups times 14.7%, the share reaching the list that this year's 18.1% flagged share implies once the early-warning screen's capture and false-alarm rates are taken from the 2022 to 2025 cohorts. Not the hit and miss rates those cohorts report, carried onto this year's flags: the hit rate rises and falls with the share of each year's book that reaches the list, and this year's flagged share is above every closed cohort's. Not the latest or the most stressed cohort on its own: the standard measures the screen on the four closed cohorts taken together.
 
 ## 2. Critical Components
 
-1. At 30 September 2026 the Kelderby group includes Tarrant Hydraulics Ltd and no longer includes Norbeck Coatings Ltd
-2. Kelderby's quarter-end exposures on that membership are **139.4, 141.5, 140.4, 144.5, 146.4** (GBP m, 30 Sep 2025 to 30 Sep 2026)
-3. Kelderby's projected 31 December 2026 exposure is **GBP 148.1m**, utilisation **87.1%** of the GBP 170.0m limit
-4. The approvable term loan is **GBP 21.8m**
+1. The monitored book at 30 September 2026 is **913** groups, **165** of them flagged
+2. Over the 2022 to 2025 cohorts taken together the capture rate is **78.6%** and the false-alarm rate **7.65%**
+3. The flagged share of **18.1%** implies **14.7%** of the book reaches the watch list within the year
+4. A flagged group reaches it with probability **63.9%**, a group not flagged with **3.8%**
 
 ## 3. Step-by-Step Solution
 
-1. Took the six Part B requests and borrower LEIs from credit_committee_agenda_20261104.docx and each group's limit from house_limit_register_20260930.xlsx.
-2. Resolved every LEI to its Obligor Group on the 30 September 2026 GLEIF archive under Policy section 2 (consolidation chains, branches to head office, managed funds alone, lapsed records kept, merged LEIs to successors): Tarrant Hydraulics is Kelderby's, Norbeck Coatings is Meridale's.
-3. Measured each quarter-end's exposure under Policy section 3 from the loan extracts (the late Dublin file included, migrated facilities once), the treasury positions (ISIN file for blank issuer LEIs), the R2 rerun for the 30 Sep 2026 netting sets in GBP thousands less cash CSA collateral, all converted at Treasury rates.
-4. Assigned all five quarter-ends to the groups as constituted at 30 September 2026 (LMS-03 2.3): Kelderby runs 139.4, 141.5, 140.4, 144.5, 146.4.
-5. Projected 31 December 2026 as the 30 September exposure plus the least-squares slope (LMS-03 2.2): Kelderby GBP 148.1m, 87.1% of GBP 170.0m.
-6. Applied LMS-03 3.1 and 3.2 (term 100%, revolver 50%, GBP 0.1m steps, capped at the request) to every request.
-7. Recommendation: approve GBP 21.8m of Kelderby's GBP 30.0m term loan.
+1. Built the monitored book at each 30 September from credit_group_register_20260930.xlsx and watch_list_history_2020-01_to_2026-09.csv (CRM-07 4.1): 913 groups at 30 September 2026.
+2. Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date (CRM-07 2.2, 2.3, 3.2): 165 of the 913 are flagged.
+3. Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and measured them taken together (4.3): capture rate 78.6%, false-alarm rate 7.65%.
+4. Re-ran each closed cohort from the other three: capture and false-alarm rates reproduce its arrivals within 3%, while hit and miss rates miss two of the four by more than a third, because the hit rate moves with the share of each year's book that reaches the list.
+5. Solved this year's 18.1% flagged share for the share of the book that will reach the list through those two rates: 14.7%, so a flagged group reaches it with probability 63.9% and a group not flagged with 3.8% (CRM-07 5.2).
+6. Summed the probabilities over the 913 groups: 134.1 expected arrivals, 134 to the nearest whole group (CRM-07 5.3).
+7. Built each group's committed exposure at 30 September 2026 under CRM-07 6.1 from facility_extract_hbplc_20260930_rerun.csv (the record for 30/09 per reference_data_extract_log_20261008.txt) and facility_extract_hbdac_20260930.csv, counting active facilities that mature after 30 September and dividing non-sterling limits by the per-pound rates in treasury_closing_rates_20260930.csv, then summed probabilities and probability-weighted exposure within each 6.2 band for the workbook.
+8. Recommendation: put a 2027 caseload of 134 groups to the committee.
 
 ## 4. Deliverable Answers
 
-### limit_check_2026-11-04.xlsx
-1. Kelderby: approve GBP 21.8m of the GBP 30.0m term loan
-2. One row per request, highest projected utilisation first, GBP m to one decimal:
-   - B4 Corrin Freight Ltd (Corrin Logistics Group plc): drawn loans 73.5, undrawn commitments 8.0, securities 0.0, derivatives 1.5; quarter-end exposures 30 Sep 2025 88.1, 31 Dec 2025 87.4, 31 Mar 2026 86.0, 30 Jun 2026 83.2, 30 Sep 2026 83.1; projected 31 Dec 2026 81.6; utilisation 90.7%; approvable 16.7 of 25.0 requested
-   - B5 Pellow Distribution Ltd (Pellow Foods Group plc): drawn loans 59.6, undrawn commitments 5.7, securities 9.8, derivatives 0.0; quarter-end exposures 30 Sep 2025 77.4, 31 Dec 2025 77.3, 31 Mar 2026 74.7, 30 Jun 2026 75.5, 30 Sep 2026 75.1; projected 31 Dec 2026 74.4; utilisation 87.6%; approvable 10.5 of 14.0 requested
-   - B1 Kelderby Facilities Ltd (Kelderby Group plc): drawn loans 128.2, undrawn commitments 18.2, securities 0.0, derivatives 0.0; quarter-end exposures 30 Sep 2025 139.4, 31 Dec 2025 141.5, 31 Mar 2026 140.4, 30 Jun 2026 144.5, 30 Sep 2026 146.4; projected 31 Dec 2026 148.1; utilisation 87.1%; approvable 21.8 of 30.0 requested
-   - B2 Meridale Packaging Ltd (Meridale Holdings Ltd): drawn loans 68.3, undrawn commitments 6.3, securities 0.0, derivatives 0.0; quarter-end exposures 30 Sep 2025 78.0, 31 Dec 2025 77.6, 31 Mar 2026 75.3, 30 Jun 2026 75.4, 30 Sep 2026 74.6; projected 31 Dec 2026 73.7; utilisation 86.7%; approvable 11.2 of 12.0 requested
-   - B3 Brauneck Antriebstechnik AG (Brauneck Holding SE): drawn loans 78.5, undrawn commitments 4.6, securities 0.0, derivatives 0.0; quarter-end exposures 30 Sep 2025 80.2, 31 Dec 2025 81.3, 31 Mar 2026 79.2, 30 Jun 2026 81.5, 30 Sep 2026 83.1; projected 31 Dec 2026 83.7; utilisation 83.7%; approvable 16.2 of 20.0 requested
-   - B6 Stannard Capital Management Ltd (Stannard Capital Group plc): drawn loans 17.4, undrawn commitments 2.8, securities 0.0, derivatives 1.3; quarter-end exposures 30 Sep 2025 21.6, 31 Dec 2025 21.0, 31 Mar 2026 20.5, 30 Jun 2026 21.0, 30 Sep 2026 21.5; projected 31 Dec 2026 21.5; utilisation 71.6%; approvable 17.0 of 20.0 requested
+### watchlist_inflow_2027.xlsx
+1. Heading figure: 134 obligor groups expected to reach the watch list by 30 September 2027
+2. One row per caseload band, smallest first (expected arrivals from groups flagged in September, expected arrivals from groups not flagged, expected committed exposure arriving):
+   - Under £5m: 23.0 flagged, 6.4 not flagged, £73.6m
+   - £5m and under £15m: 34.5 flagged, 9.2 not flagged, £450.5m
+   - £15m and under £40m: 28.1 flagged, 7.6 not flagged, £969.8m
+   - £40m and under £100m: 14.7 flagged, 3.8 not flagged, £1,295.5m
+   - £100m and over: 5.1 flagged, 1.7 not flagged, £1,319.0m
+3. Total row: 105.4 flagged, 28.7 not flagged, £4,108.4m
 
-### projected_utilisation_2026Q4.png
-1. Horizontal bars of projected utilisation per group in the workbook's order (Corrin 90.7%, Pellow 87.6%, Kelderby 87.1%, Meridale 86.7%, Brauneck 83.7%, Stannard 71.6%), the house limit line marked at 100%, Kelderby's bar annotated "Approve GBP 21.8m of GBP 30.0m", titled "Kelderby can take GBP 21.8m of its GBP 30.0m term loan".
+### watchlist_inflow_2027.svg
+1. One stacked bar per band, smallest first, with the flagged and not-flagged segments labelled with the band figures above
+2. The caseload, 134 groups, written on the chart
+3. Title: "134 of the 913 groups we monitor are expected on the watch list by 30 September 2027"

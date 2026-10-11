@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Put a 2027 caseload of 134 groups to the committee: 134 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
+  "answer_source": "task446/submission.md, 1. Final Recommendation, first sentence (bold markers removed); golden/watchlist_inflow_2027.xlsx heads with the same 134",
   "gap": [
     "time",
     "population"
@@ -35,8 +35,8 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "ews_entity_signals_monthly.csv",
-    "rows": 0,
+    "file": "ews_entity_signals_2022-09_to_2026-09.csv",
+    "rows": 127675,
     "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
     "grain": "LEI x month-end",
     "source": "synthetic"
@@ -58,12 +58,12 @@
   },
   "deliverables": [
     "watchlist_inflow_2027.xlsx",
-    "watchlist_inflow_2027.png"
+    "watchlist_inflow_2027.svg"
   ],
   "opening_move": "number-first",
   "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it.",
   "driver_concrete": "The early-warning system's measured hit rate (share of flagged groups reaching the watch list within twelve months) and miss rate are carried onto the 30 September 2026 book, where the share of groups flagged has jumped well above anything in the four closed cohorts; the capture and false-alarm rates hold steady across cohorts while the hit rate climbs with each cohort's deterioration rate, so the expected watch-list inflow is the book's deterioration rate backed out of the flagged share through those two rates (Rogan-Gladen), not flags times hit rate.",
-  "stump": "A competent solver rolls the entity signals up to groups through the GLEIF hierarchy, builds the four closed cohorts, measures the early-warning system's hit rate and miss rate exactly as the monitoring standard reports them, applies them to the groups flagged and not flagged at 30 September 2026 and files a caseload about half the golden, because the hit rate rises with the share of the book deteriorating and this year's flagged share implies a deterioration rate far above any closed cohort; the capture and false-alarm rates are the screen's stable properties and back the deterioration rate out of the flagged share (figures fixed at build).",
+  "stump": "A competent solver rolls the entity signals up to groups through the GLEIF hierarchy, builds the four closed cohorts, measures the early-warning system's hit rate and miss rate exactly as the monitoring standard reports them, applies them to the groups flagged and not flagged at 30 September 2026 and files a caseload about half the golden, because the hit rate rises with the share of the book deteriorating and this year's flagged share implies a deterioration rate far above any closed cohort; the capture and false-alarm rates are the screen's stable properties and back the deterioration rate out of the flagged share: 74 against 134.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms every entity signal to its obligor group correctly (lapsed registrations kept, merged entities carried to their successors, branches to head office) and reads the monitoring standard's group-flag rule, cohort definition and performance measures correctly applies the measured hit rate to the groups flagged at 30 September 2026 and the measured miss rate to the rest, because those are the screen's reported performance over exactly the cohorts the standard names, and so files about half the expected inflow: the hit rate is not a property of the screen but of each year's deterioration rate, which this year's flagged share puts far above the history.",
   "domain_test": "The call is a credit-monitoring forecast, the watch-list inflow a bank sizes its workout caseload on, built from an early-warning system's performance on obligor groups (signals raised on any legal entity and carried to the group through accounting consolidation, a twelve-month watch-list outcome, the committed book as the monitored population); with another field's nouns in, the group roll-up of entity signals, the watch-list outcome window and the committed-book population have nothing to attach to, and the exposure the arriving groups carry is a credit quantity.",
@@ -96,5 +96,5 @@
       "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them."
     }
   ],
-  "notes": "Re-rooted as v2 on 2026-10-11. stump_strategy forecast_method_backtest: two methods carry a screen's past performance forward, the yield (hit and miss rates) or the error rates (capture and false-alarm rates); the four closed cohorts, whose deterioration rates differ, show the yield moving with the base rate and the error rates holding, so only the second survives the back-test, and it gives the forward count by backing the base rate out of the flagged share. decisive_rule_filed false: the monitoring standard files the group-flag rule, the cohort and outcome definitions and the three performance measures, and says nothing about how a forecast uses them. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false. subdomain other: early-warning and watch-list monitoring of corporate obligor groups, which the banking task-type list does not carry. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446 (Lesley Miller skipped, used by v1)."
+  "notes": "Re-rooted as v2 on 2026-10-11. stump_strategy forecast_method_backtest: two methods carry a screen's past performance forward, the yield (hit and miss rates) or the error rates (capture and false-alarm rates); the four closed cohorts, whose deterioration rates differ, show the yield moving with the base rate and the error rates holding, so only the second survives the back-test, and it gives the forward count by backing the base rate out of the flagged share. decisive_rule_filed false: the monitoring standard files the group-flag rule, the cohort and outcome definitions, the three performance measures and that the forecast's probability by flag status is set from them, and says nothing about which of them carries across years. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false. subdomain other: early-warning and watch-list monitoring of corporate obligor groups, which the banking task-type list does not carry. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446 (Lesley Miller skipped, used by v1)."
 }
