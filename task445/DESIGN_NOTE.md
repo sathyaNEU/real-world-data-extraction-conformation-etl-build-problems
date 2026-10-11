@@ -213,6 +213,16 @@ licenses one repair of the ask layer only.
   3 Feb 2023 in any extract), H18 (every ask is a component, qualifier or audit trail of the flag file),
   H20 (the prompt names the institutional ownership read, the watchlist and the SEC files).
 
+## Pre-ship check (client two-layer standard)
+
+- Domain: institutional ownership analytics from 13F holdings, completing a period still inside its filing window; swap the nouns for another field and the 45-day window, the filer mix by manager type and the per-holder carry no longer exist, so the swap test breaks it.
+- Layer 1: amendments by type, the value-unit switch by filing date (one filer still in thousands after it), put/call lines, filer-keyed CUSIPs, share counts dated either side of the period end, affiliates under separate CIKs; all produced by real 13F filing practice, none planted, none on the main call's rows (asserted).
+- Decisive step: a methodological choice, how to complete holders not yet reported (holder-level carry chosen by the September-window back-test); not a planted catch, not a field reading, not a stated rule applied (OM-4 defines the estimand and leaves the completion to the analyst).
+- Analyst test: a strong analyst who conforms every filing correctly and reads every rule still flags only WHII and JEMS from the reports in hand (round 1 did exactly this), or scales by one aggregate share and flags AMRB, TAAV and FENN while missing GLI and OTF.
+- Estimand pinned: OM-4 s.2 counts every manager that files for the period; s.8 (not reissued) makes the call forward facing; the back-test in the pack rules out the aggregate and issuer-factor routes.
+- No decoy memo, staff draft or briefing; no method recovered from certified figures; the lesson (completing a censored filing window holder by holder) is not one an earlier build teaches (clone pre-flight CLEAN; task130 v1 shares the recognition only).
+- Judge: pass 1 DETERMINISTIC FIX_NOW (aggregate share named in the write-up); pass 2 DETERMINISTIC FIX_NOW (incidental SAF figure on a bin edge removed from block 1); no graded figure moved.
+
 ## Tried and rejected
 
 - Seed ET02 as written (amendment-type supersession and filing-date value units deciding the flag):

@@ -9,7 +9,7 @@
 
 **WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.**
 
-The closest calls are OTF at 83.4% and FENN at 77.3%. Not the reports in hand alone, which flag only WHII and JEMS because 125 managers that filed for September had not yet filed for December. Not one aggregate completion share (the prior quarter's share of final 13F value already on file by day 34 of the filing window, 0.820 from the September window), which flags AMRB, TAAV, FENN and SAF (80.3) and misses GLI and OTF because the managers still to file sit in some registers far more than others. Not September's flags, which miss OTF's rise and FENN's fall.
+The closest calls are OTF at 83.4% and FENN at 77.3%. Not the reports in hand alone, which flag only WHII and JEMS because 125 managers that filed for September had not yet filed for December. Not one aggregate completion share (the prior quarter's share of final 13F value already on file by day 34 of the filing window, 0.820 from the September window), which flags AMRB, TAAV, FENN and SAF and misses GLI and OTF because the managers still to file sit in some registers far more than others. Not September's flags, which miss OTF's rise and FENN's fall.
 
 ## 2. Critical Components
 
