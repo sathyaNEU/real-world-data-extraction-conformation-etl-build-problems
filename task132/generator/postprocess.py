@@ -1,8 +1,8 @@
 """Make the office containers read as saved by the applications the fiction says made them, and reproducible:
-Excel's own workbook, sheet and style parts for workbooks, Word's own parts for documents (namespaces, styles in
-use, font table, settings, revision ids, paragraph ids, field results and page count from a real render), Office's
-zip entries (Windows, 1980 stamps, Office's order), and a PDF rewritten through pypdf with the authoring
-application's metadata, XMP packet and font subset names."""
+Excel's own workbook, sheet, style and calculation-chain parts for workbooks, Word's own parts for documents
+(namespaces, styles in use, font table, settings, revision ids across the document's editing sessions, paragraph ids,
+field results, page count and statistics measured on a real render), Office's zip entries (Windows, 1980 stamps,
+Office's order), and a LibreOffice PDF export left as LibreOffice wrote it, with only its clock fields pinned."""
 import datetime as dt
 import hashlib
 import os
@@ -291,10 +291,18 @@ def _workbook(x, seed, prof):
 
 
 def _num(v):
-    """a cell value written the way Excel writes a double"""
-    if float(v) == int(float(v)) and abs(float(v)) < 1e15:
-        return str(int(float(v)))
-    return repr(float(v))
+    """a cell value written the way Excel writes a double: fifteen significant digits when they give the same double
+    back, seventeen when they do not"""
+    v = float(v)
+    if v == int(v) and abs(v) < 1e15:
+        return str(int(v))
+    s = "%.15g" % v
+    if float(s) != v:
+        s = "%.17g" % v
+    if "e" in s:
+        m, e = s.split("e")
+        s = "%sE%s%02d" % (m, "-" if e.startswith("-") else "+", abs(int(e)))
+    return s
 
 
 def _formula_values(x):
@@ -323,7 +331,9 @@ def _formula_values(x):
         vals[re.search(r'r="([A-Z]+\d+)"', m.group(1)).group(1)] = v
         return "%s<f>%s</f><v>%s</v></c>" % (m.group(1), m.group(2), _num(v))
 
-    return re.sub(r'(<c r="[A-Z]+\d+"[^>]*>)<f>([^<]+)</f><v\s*/?>(?:</v>)?</c>', repl, x)
+    x = re.sub(r'(<c r="[A-Z]+\d+"[^>]*>)<f>([^<]+)</f><v\s*/?>(?:</v>)?</c>', repl, x)
+    # every other number as Excel writes a double
+    return re.sub(r'(<c r="[A-Z]+\d+"(?: s="\d+")?>)<v>([-0-9.Ee+]+)</v>', lambda m: "%s<v>%s</v>" % (m.group(1), _num(m.group(2))), x)
 
 
 def _colname(n):
@@ -361,6 +371,15 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
         x = re.sub(r'<c ([^>]*?)t="inlineStr"([^>]*)><is><t(?: xml:space="preserve")?\s*/></is></c>', "", x)
         x = _INLINE.sub(repl, x)
         data[n] = _formula_values(_sheet(x, _guid("%s-sheet-%d" % (seed, k)), k == 0)).encode("utf-8")
+    # the calculation chain Excel keeps for a workbook with formulas: each sheet's formula cells, row by row, the
+    # sheet's first cell carrying its index
+    chain = []
+    for k, n_ in enumerate(sheets, 1):
+        cells = re.findall(r'<c r="([A-Z]+\d+)"[^>]*><f>', data[n_].decode("utf-8"))
+        chain += ['<c r="%s" i="%d"/>' % (c, k) if j == 0 else '<c r="%s"/>' % c for j, c in enumerate(cells)]
+    if chain:
+        data["xl/calcChain.xml"] = (DECL + '<calcChain xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">%s'
+                                    '</calcChain>' % "".join(chain)).encode("utf-8")
     if sst:
         body = "".join('<si><t%s>%s</t></si>' % (' xml:space="preserve"' if (t != t.strip()) else "", t) for t in sst)
         data["xl/sharedStrings.xml"] = (DECL + '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="%d" uniqueCount="%d">%s</sst>'
@@ -372,6 +391,8 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
     rels.append('<Relationship Id="rId%d" Type="%s/styles" Target="styles.xml"/>' % (n + 2, REL))
     if "xl/sharedStrings.xml" in data:
         rels.append('<Relationship Id="rId%d" Type="%s/sharedStrings" Target="sharedStrings.xml"/>' % (n + 3, REL))
+    if "xl/calcChain.xml" in data:
+        rels.append('<Relationship Id="rId%d" Type="%s/calcChain" Target="calcChain.xml"/>' % (len(rels) + 1, REL))
     data["xl/_rels/workbook.xml.rels"] = (DECL + '<Relationships xmlns="%s">%s</Relationships>' % (PKG_REL, "".join(rels))).encode("utf-8")
     data["_rels/.rels"] = (DECL + '<Relationships xmlns="%s"><Relationship Id="rId3" Type="%s/extended-properties" '
                            'Target="docProps/app.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" '
@@ -384,6 +405,8 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
     ov.append('<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>')
     if "xl/sharedStrings.xml" in data:
         ov.append('<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>')
+    if "xl/calcChain.xml" in data:
+        ov.append('<Override PartName="/xl/calcChain.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml"/>')
     ov.append('<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>')
     ov.append('<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>')
     data["[Content_Types].xml"] = (DECL + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
@@ -404,7 +427,7 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
            % (len(names), len(names), "".join("<vt:lpstr>%s</vt:lpstr>" % n for n in names), escape(company)))
     data["docProps/app.xml"] = app.encode("utf-8")
     data["docProps/core.xml"] = _core(creator, last_by, created, modified)
-    order = XLSX_ORDER + sheets + ["xl/theme/theme1.xml", "xl/styles.xml", "xl/sharedStrings.xml"]
+    order = XLSX_ORDER + sheets + ["xl/theme/theme1.xml", "xl/styles.xml", "xl/sharedStrings.xml", "xl/calcChain.xml"]
     _write(path, list(data.items()), order)
 
 
@@ -524,11 +547,24 @@ class _Ids:
         return out
 
 
-def _tag(x, ids, first, last):
+def _rev_plan(revs, rev_sessions, rnd):
+    """the editing session that wrote each paragraph and the one that last changed it, from the revision of each:
+    a revision's drafting falls mostly in its first sessions"""
+    start = [sum(rev_sessions[:k]) for k in range(len(rev_sessions))]
+    out = []
+    for created, edited in revs:
+        k = rev_sessions[created]
+        c = start[created] + rnd.choices(range(k), weights=[max(1, 2 * (k - j) - 1) for j in range(k)])[0]
+        e = None if edited is None else start[edited] + rnd.randrange(rev_sessions[edited])
+        out.append((c, e))
+    return out
+
+
+def _tag(x, ids, first, last, plan=None):
     """paragraphs and table rows carry the editing session that created them (and the one that last edited them),
     Word's paragraph ids and its text ids"""
     total = len(re.findall(r"<w:p[ >]", x))
-    plan = ids.plan(total, first, last)
+    plan = plan or ids.plan(total, first, last)
     pos = {"p": 0}
 
     def tagp(m):
@@ -615,16 +651,24 @@ def _settings(sessions, seed):
                ("%08X" % (int(_hex(seed + "docid"), 16) & 0x7FFFFFFF)), _guid(seed + "w15")))
 
 
-def _page_count(data, order):
-    """pages when the document is laid out, from a render of the package as it stands"""
+def _measure(data, order):
+    """the document's statistics as a word processor counts them on the laid-out document: pages and lines from a
+    render, words, characters and paragraphs from the word processor's own count"""
     from pypdf import PdfReader
     tmp = tempfile.mkdtemp()
     try:
         src = os.path.join(tmp, "doc.docx")
         _write(src, list(data.items()), order)
-        subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src],
-                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return len(PdfReader(os.path.join(tmp, "doc.pdf")).pages)
+        for fmt in ("pdf", "odt"):
+            subprocess.run(["soffice", "--headless", "--convert-to", fmt, "--outdir", tmp, src],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        pages = len(PdfReader(os.path.join(tmp, "doc.pdf")).pages)
+        txt = subprocess.run(["pdftotext", os.path.join(tmp, "doc.pdf"), "-"], check=True, capture_output=True).stdout
+        lines = sum(1 for ln in txt.decode("utf-8").splitlines() if ln.strip())
+        meta = zipfile.ZipFile(os.path.join(tmp, "doc.odt")).read("meta.xml").decode("utf-8")
+        st = dict(re.findall(r'meta:([a-z-]+)="(\d+)"', re.search(r"<meta:document-statistic[^>]*>", meta).group(0)))
+        return dict(pages=pages, lines=lines, words=int(st["word-count"]), chars=int(st["non-whitespace-character-count"]),
+                    chars_sp=int(st["character-count"]), paras=int(st["paragraph-count"]))
     finally:
         shutil.rmtree(tmp)
 
@@ -637,7 +681,9 @@ def _set_fields(x, pages):
 
 
 def normalize_docx(path, author, last_by, created, modified, revision, total_time, title=None,
-                   company="Tarrock Hydro Distribution", seed="doc"):
+                   company="Tarrock Hydro Distribution", seed="doc", rev_sessions=None, rev_plan=None):
+    """rev_sessions: the number of editing sessions in each revision of a document revised over the years, and
+    rev_plan(texts): for each body paragraph, the revision that wrote it and the one that last changed it"""
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
     data = dict(items)
@@ -645,14 +691,20 @@ def normalize_docx(path, author, last_by, created, modified, revision, total_tim
         del data[n]
     stories = ["word/document.xml"] + sorted(n for n in data if re.fullmatch(r"word/(header|footer)\d+\.xml", n))
     doc_paras = len(re.findall(r"<w:p[ >]", data["word/document.xml"].decode("utf-8")))
-    sessions = [_rsid(seed, k) for k in range(max(2, min(6, 1 + doc_paras // 12)))]
+    n_sessions = sum(rev_sessions) if rev_sessions else max(2, min(6, 1 + doc_paras // 12))
+    sessions = [_rsid(seed, k) for k in range(n_sessions)]
     ids = _Ids(seed, sessions)
     for n in stories:
         x = _clean_body(data[n].decode("utf-8"))
         tag = "w:document" if n == "word/document.xml" else ("w:hdr" if "header" in n else "w:ftr")
         x = _root(x, tag, BODY_ROOT)
         if n == "word/document.xml":
-            x = _tag(x, ids, 0, len(sessions) - 1)
+            plan = None
+            if rev_plan:
+                texts = [" ".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p))
+                         for p in re.findall(r"<w:p[ >].*?</w:p>", x, flags=re.S)]
+                plan = _rev_plan(rev_plan(texts), rev_sessions, ids.rnd)
+            x = _tag(x, ids, 0, len(sessions) - 1, plan)
             x = re.sub(r"<w:sectPr\b[^>]*>", '<w:sectPr w:rsidR="%s" w:rsidSect="%s">' % (sessions[0], sessions[0]), x)
         else:
             x = _tag(x, ids, 0, 0)
@@ -708,14 +760,10 @@ def normalize_docx(path, author, last_by, created, modified, revision, total_tim
     data["docProps/core.xml"] = _core(author, last_by, created, modified, revision, title)
     data["docProps/app.xml"] = (DECL + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
                                 'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>').encode("utf-8")
-    pages = _page_count(data, order)
+    st = _measure(data, order)
+    pages = st["pages"]
     for n in stories[1:]:
         data[n] = _set_fields(data[n].decode("utf-8"), pages).encode("utf-8")
-    doc = data["word/document.xml"].decode("utf-8")
-    text = " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", doc))
-    words = len(text.split())
-    chars = len(text.replace(" ", ""))
-    npara = len([p for p in re.findall(r"<w:p [^>]*>(.*?)</w:p>", doc, flags=re.S) if "<w:t" in p])
     tp = ('<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Title</vt:lpstr></vt:variant>'
           '<vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="1" '
           'baseType="lpstr"><vt:lpstr>%s</vt:lpstr></vt:vector></TitlesOfParts>' % escape(title)) if title else ""
@@ -726,7 +774,7 @@ def normalize_docx(path, author, last_by, created, modified, revision, total_tim
            '<Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop>%s<Company>%s</Company><LinksUpToDate>false</LinksUpToDate>'
            '<CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>'
            '<AppVersion>16.0000</AppVersion></Properties>'
-           % (total_time, pages, words, chars, max(1, words // 11), npara, tp, escape(company), len(text)))
+           % (total_time, pages, st["words"], st["chars"], st["lines"], st["paras"], tp, escape(company), st["chars_sp"]))
     data["docProps/app.xml"] = app.encode("utf-8")
     _write(path, list(data.items()), order)
     return pages
@@ -734,68 +782,25 @@ def normalize_docx(path, author, last_by, created, modified, revision, total_tim
 
 # ---------------------------------------------------------------- PDF
 
-PS_NAMES = {"LiberationSans": "ArialMT", "LiberationSans-Bold": "Arial-BoldMT", "LiberationSans-Italic": "Arial-ItalicMT",
-            "LiberationSans-BoldItalic": "Arial-BoldItalicMT", "Carlito": "Calibri", "Carlito-Bold": "Calibri-Bold",
-            "Carlito-Italic": "Calibri-Italic", "Carlito-BoldItalic": "Calibri-BoldItalic"}
-
-
-def _xmp(title, author, app, when, uuid):
-    stamp = when.strftime("%Y-%m-%dT%H:%M:%S") + when.strftime("%z")[:3] + ":" + when.strftime("%z")[3:]
-    body = ('<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="3.1-701">\n'
-            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n'
-            '<rdf:Description rdf:about=""  xmlns:pdf="http://ns.adobe.com/pdf/1.3/">\n'
-            '<pdf:Producer>%s</pdf:Producer></rdf:Description>\n'
-            '<rdf:Description rdf:about=""  xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
-            '<dc:title><rdf:Alt><rdf:li xml:lang="x-default">%s</rdf:li></rdf:Alt></dc:title>'
-            '<dc:creator><rdf:Seq><rdf:li>%s</rdf:li></rdf:Seq></dc:creator></rdf:Description>\n'
-            '<rdf:Description rdf:about=""  xmlns:xmp="http://ns.adobe.com/xap/1.0/">\n'
-            '<xmp:CreatorTool>%s</xmp:CreatorTool><xmp:CreateDate>%s</xmp:CreateDate><xmp:ModifyDate>%s</xmp:ModifyDate>'
-            '</rdf:Description>\n<rdf:Description rdf:about=""  xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">\n'
-            '<xmpMM:DocumentID>uuid:%s</xmpMM:DocumentID><xmpMM:InstanceID>uuid:%s</xmpMM:InstanceID></rdf:Description>\n'
-            '</rdf:RDF></x:xmpmeta>\n' % (escape(app), escape(title), escape(author), escape(app), stamp, stamp, uuid, uuid))
-    pad = "\n".join(" " * 99 for _ in range(20))
-    return (body + pad + '\n<?xpacket end="w"?>').encode("utf-8")
-
-
-def normalize_pdf(path, title, author, when, uid, lang="en-CA", app="Microsoft Word for Microsoft 365"):
-    """Rewrite the PDF through pypdf with a fresh cross-reference table: the document information and an XMP packet as
-    the authoring application writes them, the document id, random-looking subset tags on the PostScript names of the
-    faces the document set, and no converter's checksum or binary marker. when: a timezone-aware local datetime."""
-    from pypdf import PdfReader, PdfWriter
-    from pypdf.generic import ArrayObject, ByteStringObject, DecodedStreamObject, NameObject, TextStringObject
-    w = PdfWriter(clone_from=PdfReader(path))
-    rnd = random.Random(uid)
-    tags = {}
-    for page in w.pages:
-        for ref in page["/Resources"]["/Font"].values():
-            font = ref.get_object()
-            group = [font] + [d.get_object() for d in font.get("/DescendantFonts", [])]
-            for f in group:
-                base = str(f["/BaseFont"])[1:]
-                face = base.split("+", 1)[-1]
-                if face not in tags:
-                    tags[face] = "".join(rnd.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(6))
-                name = NameObject("/%s+%s" % (tags[face], PS_NAMES.get(face, face)))
-                f[NameObject("/BaseFont")] = name
-                if "/FontDescriptor" in f:
-                    f["/FontDescriptor"].get_object()[NameObject("/FontName")] = name
-    stamp = when.strftime("D:%Y%m%d%H%M%S") + when.strftime("%z")[:3] + "'" + when.strftime("%z")[3:] + "'"
-    w.metadata = {"/Title": title, "/Author": author, "/Creator": app, "/CreationDate": stamp, "/ModDate": stamp,
-                  "/Producer": app}
-    xmp = DecodedStreamObject()
-    xmp.set_data(_xmp(title, author, app, when, uid))
-    xmp.update({NameObject("/Type"): NameObject("/Metadata"), NameObject("/Subtype"): NameObject("/XML")})
-    root = w.root_object
-    for k in ("/OpenAction", "/PageMode"):
-        if k in root:
-            del root[k]
-    root[NameObject("/Metadata")] = w._add_object(xmp)
-    root[NameObject("/Lang")] = TextStringObject(lang)
-    raw = bytes.fromhex(uid.replace("-", ""))
-    w._ID = ArrayObject([ByteStringObject(raw), ByteStringObject(raw)])
-    w.pdf_header = "%PDF-1.7"
-    with open(path, "wb") as fh:
-        w.write(fh)
+def pin_pdf(path, when, uid):
+    """A LibreOffice export as it left the author's machine: everything LibreOffice wrote stays as written, and the
+    three fields it fills from the clock are set to the export the fiction describes, at equal length so every
+    cross-reference offset holds: the creation date (local time with its offset), the document ID, and the
+    /DocChecksum, taken here from the rest of the file. when: a timezone-aware local datetime."""
+    from pypdf import PdfReader
     b = open(path, "rb").read()
-    b = b.replace(b"%\xE2\xE3\xCF\xD3\n", b"%\xB5\xB5\xB5\xB5\n", 1)
+    stamp = (when.strftime("D:%Y%m%d%H%M%S") + when.strftime("%z")[:3] + "'" + when.strftime("%z")[3:] + "'").encode()
+    old = re.findall(rb"/CreationDate\((D:\d{14}[-+]\d\d'\d\d')\)", b)
+    assert len(old) == 1 and len(old[0]) == len(stamp), old
+    b = b.replace(b"/CreationDate(" + old[0] + b")", b"/CreationDate(" + stamp + b")")
+    ids = re.findall(rb"/ID \[ <([0-9A-F]{32})>\s*<([0-9A-F]{32})> \]", b)
+    assert len(ids) == 1 and ids[0][0] == ids[0][1], ids
+    new_id = uid.replace("-", "").upper().encode()
+    assert len(new_id) == 32
+    b = b.replace(ids[0][0], new_id)
+    m = re.search(rb"/DocChecksum /([0-9A-F]{32})", b)
+    blank = b[:m.start(1)] + b"0" * 32 + b[m.end(1):]
+    b = b[:m.start(1)] + hashlib.md5(blank).hexdigest().upper().encode() + b[m.end(1):]
     open(path, "wb").write(b)
+    r = PdfReader(path, strict=True)
+    assert len(r.pages) >= 1 and r.metadata["/CreationDate"] == stamp.decode()

@@ -55,12 +55,12 @@ def main():
         lo -= 0.05
     while E.lots_needed(hi, s["avail"]) == s["lots"]:
         hi += 0.05
-    ok((s["lam"] - lo) / s["lam"] >= 0.025 and (hi - s["lam"]) / s["lam"] >= 0.025,
-       "expected failures sit at least 2.5 per cent inside the answer's lot bin (%.1f < %.1f < %.1f)" % (lo, s["lam"], hi))
+    ok((s["lam"] - lo) / s["lam"] >= 0.03 and (hi - s["lam"]) / s["lam"] >= 0.03,
+       "expected failures sit at least 3 per cent inside the answer's lot bin (%.1f < %.1f < %.1f)" % (lo, s["lam"], hi))
     vals = [s["lam"]] + list(s["by_year"].values()) + list(s["by_region"].values()) + [
         100 * v["cover"] for v in s["settings"].values() if 0.05 < 100 * v["cover"] < 99.95]
     for v in vals:
-        ok(edge(v) >= 0.04, "figure %.4f clear of its one-decimal rounding edge" % v)
+        ok(edge(v) >= 0.05, "figure %.4f at least 0.05 of a tenth clear of its rounding edge" % v)
     ok(abs(sum(s["by_year"].values()) - s["lam"]) < 1e-6, "years add to the total")
     ok(abs(sum(s["by_region"].values()) - s["lam"]) < 1e-6, "regions add to the total")
     ok(list(s["in_service"].values()) == sorted(s["in_service"].values(), reverse=True), "supported relays fall year on year")
@@ -71,7 +71,7 @@ def main():
         if k == "ANSWER":
             continue
         ok(l != s["lots"], "rung %s lands on %d lots, not the answer" % (k, l))
-    ok(r["window_no_renewal"][1] >= s["lots"] + 3, "keeping today's module in every month is at least three lots high")
+    ok(r["window_no_renewal"][1] >= s["lots"] + 4, "keeping today's module in every month is at least four lots high")
     ok(r["window_no_renewal"][0] >= 1.25 * ans, "and at least 25 per cent high")
     ok(r["install_renewal"][0] <= 0.88 * ans, "exposure from fitting rather than the go-live is at least 12 per cent low")
     ok(r["relay_age_window_no_renewal"][0] <= 0.88 * ans, "relay age in place of module age is at least 12 per cent low")

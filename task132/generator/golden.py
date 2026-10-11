@@ -128,7 +128,7 @@ def workbook(s, path):
         "stock by a new module, which counts in the 0-9 band from the following month, so each month's module-years are split between "
         "the present module (by the chance it has not yet failed) and its replacement (6.1, 6.2).",
         "Support ends in the commissioning month of the scheme, or the stage of a staged scheme, that replaces the relay's bay in the "
-        "approved 2026 program; relays at stations with no scheme in the period are supported to December 2035 (4.1, 4.2).",
+        "approved 2026 program; relays at stations with no scheme in the period are supported through December 2035 (4.1, 4.2).",
         "Available modules: %d serviceable at Central Stores, North and South depots plus %d at Veldtek under open RMA; %d quarantined "
         "modules excluded (7)." % (s["serviceable"], s["at_repair"], s["quarantine"]),
         "Cover is the Poisson probability that available modules plus the buy meet all failures to end of support (8.1, 8.2).",
@@ -202,16 +202,23 @@ def memo(s, path):
     para("", after=4)
     para("Order %d lots (%d modules) of VPR340-PSU-02 for CAD %s before Veldtek's 15 December deadline."
          % (s["lots"], s["modules"], "{:,.0f}".format(s["cost"])), bold=True, size=11.5, after=6)
+    cum, half = 0.0, None
+    for y, v in s["by_year"].items():
+        cum += v
+        if half is None and cum > s["lam"] / 2:
+            half = y
     para("With the %d modules we can use today, %d lots give a %.1f per cent chance of covering every power supply failure "
          "until the renewal program reaches each relay, against the 95 per cent AM-PC-014 asks for; %d lots would give %.1f per "
-         "cent. We expect %.1f failures between October 2026 and the end of support, most of them in 2027 to 2031 while the fleet is "
-         "still large."
-         % (s["avail"], s["lots"], 100 * s["cover"], s["lots"] - 1, 100 * s["settings"][s["lots"] - 1]["cover"], s["lam"]), after=6)
+         "cent. We expect %.1f failures between October 2026 and the end of support, more than half of them by the end of %d "
+         "while the fleet is still large."
+         % (s["avail"], s["lots"], 100 * s["cover"], s["lots"] - 1, 100 * s["settings"][s["lots"] - 1]["cover"], s["lam"], half),
+         after=6)
     para("How the figure is built. Rates are set for the AM-PC-014 module age bands from the PSU failures in the EAM history since "
-         "January 2021, over the module-years each band has been in service since then; the 25-and-over band fails about a "
-         "quarter of its modules a year. Each relay's present module is then aged month by month until the program reaches "
-         "its bay. A module that fails comes out and its replacement from this buy starts again in the 0-9 band, where failures "
-         "are rare, so the old module's rate only applies for as long as it is likely to still be there.", after=6)
+         "January 2021, over the module-years each band has been in service since then; the 25-and-over band loses about one "
+         "module in %d a year, the 0-9 band about one in %d. Each relay's present module is then aged month by month until the "
+         "program reaches its bay. A module that fails comes out and its replacement from this buy starts again in the 0-9 "
+         "band, so the old module's rate only applies for as long as it is likely to still be there."
+         % (round(1 / s["rates"][-1]), round(1 / s["rates"][0], -1)), after=6)
     pic = chart_png(s)
     d.add_picture(pic, width=Cm(15.0))
     d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER

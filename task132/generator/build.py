@@ -41,7 +41,7 @@ OFFICE = {
     "rma": ((2015, 2, 9, 14, 31, 22), (2026, 9, 29, 11, 2, 38), "Veldtek Service Centre", "Veldtek Service Centre",
             "Veldtek Protection Systems"),
     "compliance": ((2026, 2, 3, 10, 25, 9), (2026, 2, 27, 15, 5, 52), "Rachael Villanueva", "Kurt Allison", "Tarrock Hydro Distribution"),
-    "procedure": ((2019, 5, 14, 10, 40, 0), (2026, 4, 14, 11, 20, 0), "Kurt Allison", "Kurt Allison", "Tarrock Hydro Distribution"),
+    "procedure": ((2019, 5, 14, 10, 40, 0), (2025, 11, 18, 14, 6, 0), "Kurt Allison", "Kurt Allison", "Tarrock Hydro Distribution"),
 }
 # the Excel that last saved each workbook: Kurt's on a second screen, Rachael's laptop, and Veldtek's service-centre
 # register, started in 2015 from an Excel 2010 template and still carrying its theme
@@ -53,11 +53,11 @@ EXCEL = {
 }
 MTIMES = {
     "register": (2026, 10, 1, 6, 12), "hist": (2026, 10, 1, 9, 41), "wo": (2026, 10, 1, 6, 14), "subs": (2026, 10, 1, 6, 11),
-    "prog": (2026, 3, 24, 16, 40), "eol": (2026, 8, 20, 9, 5), "procedure": (2026, 4, 14, 11, 20),
+    "prog": (2026, 3, 24, 16, 40), "eol": (2026, 8, 20, 9, 5), "procedure": (2025, 11, 18, 14, 6),
     "stock": (2026, 9, 30, 17, 25), "rma": (2026, 9, 29, 11, 2), "dictionary": (2026, 10, 1, 6, 10),
     "trips": (2026, 1, 14, 10, 20), "compliance": (2026, 2, 27, 15, 5),
 }
-# the notice as Veldtek's lifecycle team saved it from Word, 9:05 on 20 August 2026 Eastern time
+# the notice as Veldtek's lifecycle team exported it from LibreOffice Writer, 9:05 on 20 August 2026 Eastern time
 EOL_SAVED = (2026, 8, 20, 9, 5, 37)
 EOL_ID = "6D1F4C0A-92B8-4E57-A1C4-D90E3B7F2A61"
 
@@ -140,11 +140,12 @@ def build(out, docs=True):
             P.normalize_xlsx(path, a, b, utc(c), utc(m), company=co, seed=fn, excel=EXCEL[k])
         elif fn.endswith(".docx"):
             c, m, a, b, co = OFFICE[k]
+            # 23 saves over the four revisions since 2019, in 21 editing sessions
             P.normalize_docx(path, a, b, utc(c), utc(m), revision=23, total_time=312,
-                             title="AM-PC-014 Obsolete protection spares: final-buy sizing", company=co, seed="AM-PC-014")
+                             title="AM-PC-014 Obsolete protection spares: final-buy sizing", company=co, seed="AM-PC-014",
+                             rev_sessions=(7, 4, 4, 6), rev_plan=D.procedure_plan)
         elif fn.endswith(".pdf"):
-            P.normalize_pdf(path, "Product end-of-life notice EOL-2026-07", "George Ray",
-                            dt.datetime(*EOL_SAVED, tzinfo=TZ), EOL_ID)
+            P.pin_pdf(path, dt.datetime(*EOL_SAVED, tzinfo=TZ), EOL_ID)
         ts = dt.datetime(*MTIMES[k], tzinfo=TZ).timestamp()
         os.utime(path, (ts, ts))
     return subs, fl, prog, sp, f, reg, wo

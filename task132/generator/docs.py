@@ -1,6 +1,7 @@
 """The pack's documents, in their owners' voices."""
 import datetime as dt
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -125,11 +126,12 @@ def _widths(t, cms):
 
 
 def _pdf(d, out_path, stem):
+    """the document exported to PDF from LibreOffice Writer, on a machine set to Eastern time"""
     tmp = tempfile.mkdtemp()
     src = os.path.join(tmp, stem + ".docx")
     d.save(src)
-    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src],
-                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", tmp, src], check=True,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=dict(os.environ, TZ="America/Toronto"))
     shutil.move(os.path.join(tmp, stem + ".pdf"), out_path)
     shutil.rmtree(tmp)
 
@@ -274,28 +276,43 @@ def procedure_docx(path):
     d.save(path)
 
 
-def procedure_revision(text):
-    """the revision that wrote a paragraph of AM-PC-014, and the one that last changed it (None if unchanged)"""
-    t = text.strip()
-    rev4 = ("Fitted date", "The date the module was fitted", "Module age", "The age of a module", "In service",
-            "A module counts as in service", "Module-month", "One module in service", "Failure rate",
-            "Module failures per module-year", "Monthly failure rate", "One twelfth", "Term", "Meaning in this",
-            "3. Definitions", "4.2 ", "5.2 ", "5.3 ", "Prepared", "Reviewed", "Approved", "Kurt Allison", "Rachael",
-            "Angel Baird", "Senior Asset Engineer, P&C", "Manager, P&C Asset Planning", "4 November 2025",
-            "10 November 2025", "18 November 2025", "November 2027", "4", "Nov 2025")
-    if t.startswith(rev4) or "IA-25-09" in t:
-        return (0, 3) if t.startswith(("4.2 ", "5.2 ", "5.3 ", "Prepared", "Reviewed", "Approved")) else (3, None)
-    if t.startswith(("5.1 ", "9.1 ", "9.2 ", "9.3 ", "9.4 ", "2", "Mar 2022")) or "go-live" in t:
-        return (0, 1) if t.startswith(("5.1 ", "9.")) else (1, None)
-    if t.startswith(("8.1 ", "8.2 ", "8.3 ", "3", "Jun 2023", "SC-PR-07")) or "Poisson" in t:
-        return (0, 2) if t.startswith(("8.1 ", "8.2 ")) else (2, None)
-    if t.startswith("4.1 "):
-        return (0, 3)
-    return (0, None)
+def procedure_plan(texts):
+    """for each paragraph of AM-PC-014 in document order, the revision that wrote it and the one that last changed it
+    (None if unchanged since), by the revision history: 0 = rev 1 (2019) ... 3 = rev 4 (2025)"""
+    out, sec, rev_row = [], "head", 0
+    for t in (x.strip() for x in texts):
+        m = re.match(r"(\d+)\. ", t)
+        if m and len(t) < 40:
+            sec = m.group(1)
+        elif t in ("Approval", "Revision history"):
+            sec = t
+        if sec == "head":
+            out.append((0, 3) if t in (PROC_REVS[-1][0], "18 November 2025", "November 2027") else (0, None))
+        elif sec == "3":
+            out.append((0, 3) if t == "3. Definitions" else (3, None))
+        elif sec == "4":
+            out.append((0, 3) if t.startswith(("4.1 ", "4.2 ")) else (0, None))
+        elif sec == "5":
+            out.append((0, 1) if t.startswith("5.1 ") else (0, 3) if t.startswith(("5.2 ", "5.3 ")) else (0, None))
+        elif sec == "8":
+            out.append((0, 2) if t.startswith(("8.1 ", "8.2 ")) else (2, None) if t.startswith("8.3 ") else (0, None))
+        elif sec == "9":
+            out.append((0, 1) if t.startswith("9.") else (0, None))
+        elif sec == "11":
+            out.append((2, None) if t.startswith("SC-PR-07") else (0, None))
+        elif sec == "Approval":
+            out.append((0, 3) if t and t not in ("Approval", "Name", "Title", "Date") else (0, None))
+        elif sec == "Revision history":
+            if t in [r[0] for r in PROC_REVS]:
+                rev_row = int(t) - 1
+            out.append((rev_row, None) if t and t not in ("Revision history", "Rev", "Date", "Change") else (0, None))
+        else:
+            out.append((0, None))
+    return out
 
 
 def eol_pdf(path):
-    d = _doc(font="Arial", size=10, author="George Ray", title="Product end-of-life notice EOL-2026-07")
+    d = _doc(font="Liberation Sans", size=10, author="George Ray", title="Product end-of-life notice EOL-2026-07")
     _p(d, "VELDTEK PROTECTION SYSTEMS INC.", bold=True, size=11, after=0)
     _p(d, "Lifecycle Services  \u00b7  88 Cardinal Gate, Unit 4, Mississauga ON  L5T 2W8", size=8, after=10)
     _p(d, "Product end-of-life notice EOL-2026-07", style="Heading 1", after=2)
@@ -310,8 +327,8 @@ def eol_pdf(path):
         "final run.",
         "Repair service for VPR340-PSU-02 ends on December 15, 2026. Modules already at our repair centre under an open "
         "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. A repair "
-        "replaces the module's electrolytic capacitors and fan and ends with a full-load test. Modules received after "
-        "December 15, 2026 will be sent back unrepaired.",
+        "replaces the module's electrolytic capacitors and any failed input fuse, DC-DC converter stage or supervision "
+        "relay, and ends with a full-load test. Modules received after December 15, 2026 will be sent back unrepaired.",
     ]
     for tx in body:
         _p(d, tx, after=6)
@@ -376,7 +393,7 @@ def other_schemes(rng, prog, reg):
                          oldest=min(list(v["install_date"]) + list(rtu["install_date"]))))
     age = np.array([(W.ASOF - r["oldest"]).days / 365.25 for r in rows])
     order = np.argsort(-(age + rng.normal(0, 4, len(rows))), kind="stable")
-    months = S.months_between(dt.date(2027, 1, 1), dt.date(2036, 1, 1))
+    months = S.months_between(S.PLAN_FIRST, dt.date(2036, 1, 1))
     mw = np.array([S.SEASON[m.month - 1] for m in months])
     n_in = len(rows) - max(1, len(rows) // 7)
     picks = np.sort(rng.choice(len(months), n_in, replace=True, p=mw / mw.sum()))
@@ -384,7 +401,7 @@ def other_schemes(rng, prog, reg):
         m = months[picks[rank]] if rank < n_in else None
         rows[i]["plan_2026"] = m
         if m is not None and rng.random() < 0.2:
-            m = max(dt.date(2027, 1, 1), S.month_add(m, -int(rng.integers(6, 19))))
+            m = max(S.PLAN_25_FIRST, S.month_add(m, -int(rng.integers(6, 19))))
         rows[i]["plan_2025"] = m
         rows[i]["in_2025"], rows[i]["in_2026"] = True, True
     rx = np.random.default_rng([W.SEED, 46])
@@ -508,10 +525,10 @@ def programme_xlsx(path, rng, prog, subs, reg, plan):
         "windows, clear of the summer and winter peaks. Winter work is limited to stations with a full back-feed.",
         "Staging: large stations are rebuilt in two outage stages, so that half the feeders stay on the existing "
         "protection while the other half is cut over. Each stage replaces the bays it lists.",
-        "Commissioning month: the month the new protection for the listed bays is commissioned. The relays in a "
-        "commissioned bay are out of service from the first day of the commissioning month.",
-        "Bays: a scheme lists every feeder bay its new panels serve, including spare bays and feeders on other relay "
-        "types at the same station.",
+        "Outage bookings: a scheme's cutover outage is booked from the 1st of its commissioning month, and the existing "
+        "relays in the listed bays are out of service from that day.",
+        "Bay ranges are copied from the station single-line and take in spare bays and any feeders still on other relay "
+        "types; the new panels are built for the full range.",
         "Scheme numbers are assigned when a scheme first enters the program and do not change between versions. "
         "RTU-only schemes moved to the SCADA upgrade program in 2026 are no longer listed here.",
         "Stations rebuilt under the 2022-2025 station renewals are complete and are not listed.",
@@ -548,43 +565,48 @@ Extracts for the VPR340-PSU-02 final-buy sizing (run on request by KALLISON, Sen
   spares_stock_2026-09-30.csv                     inventory balance after the stores count, run 2026-09-30 17:25
   psu_rotating_item_history_2021-01_2026-09.csv   rotating-item history for item VPR340-PSU-02, run 2026-10-01 09:41
 
-General
-  The EAM went live on 1 January 2021, replacing the legacy maintenance system. Assets in service at go-live,
-  and the rotating items fitted to them, were loaded from the legacy lists. Work orders raised before go-live
-  were archived with the legacy system and are not in EAM. Assets retired before go-live are not in EAM.
-  Legacy dates held only as a year were loaded as 1 July of that year.
-  Operating regions were reorganized on 1 April 2024 (four regions to three); crews were renamed at the same time.
-  Dates are local (Eastern). Blank means no value.
+Notes (all extracts from this service)
+  Comma-separated, UTF-8, header row. Dates are local (Eastern), yyyy-mm-dd. An empty field has no value.
+  EAM went live on 2021-01-01, replacing the legacy maintenance system (MMS). EAM history starts at go-live; work
+  orders raised in MMS are in the MMS archive (read only, request through the IT Service Desk).
+  Go-live load (conversion project CNV-07): assets in service on 2020-12-31, and the rotating items fitted to them,
+  were converted from the MMS asset lists. Assets retired in MMS were not converted. Where MMS held only a year, the
+  date was converted as 1 July of that year.
+  Region and crew codes changed on 2024-04-01 (CR-2024-031, four regions to three). Records keep the codes they were
+  created with; the PM masters were re-coded on 2024-05-13.
+  Work orders waiting for approval (WAPPR) are not extracted. Asset numbers come from one sequence shared by all
+  asset classes and are not reused.
 
 protection_asset_register_2026-09-30.csv  (one row per asset)
-  asset_id          EAM asset number (shared numbering with all asset classes)
+  asset_id          EAM asset number
   model, manufacturer, function
   sub_code          substation code, see substations.csv
   bay               bay or position: Fnn feeder, Tn transformer, Bn bus zone, RTU
   serial_no         manufacturer serial number
-  install_date      date placed in service (legacy list date for assets loaded at go-live)
+  install_date      date placed in service (MMS date for assets converted at go-live)
   status            IN SERVICE or RETIRED
   retired_date      date taken out of service
   region            region on the asset record when it was created (not updated by the 2024 reorganization)
 
 eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
 assets, station DC systems, breaker trip circuits and instrument transformers, and P&C station inspections)
-  wo_number         work-order number (shared numbering with lines and metering work)
+  wo_number         work-order number, allocated when the work order is entered (shared numbering with lines and
+                    metering work)
   reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
   completed_date    date completed (blank while open or cancelled)
   work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
                     MOD modification (settings, firmware, device replacement or station rebuild cutover),
-                    LOG logistics (shipping and returns)
+                    LOG logistics (shipping, returns and disposal)
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
   asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
-                    blank for station inspections
-  sub_code, region  region at the date raised
+                    blank for station inspections and for disposal
+  sub_code, region  substation, and the region code the work order was raised with
   failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
                     returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
                     COMMS communications card (blank otherwise, including no fault found and follow-up work)
   description       crew text; planned work carries the job plan title, with the crew's remarks after it
   crew              crew lead's crew
-  labour_hours      hours booked, including travel
+  labour_hours      hours booked on timesheets, including travel
 
 substations.csv
   sub_code, sub_name, region (from 1 April 2024), legacy_region (before 1 April 2024),
@@ -596,8 +618,8 @@ spares_stock_2026-09-30.csv  (one row per item, location and stock state at clos
   item_description  item description
   location          storeroom or depot, or the manufacturer's repair centre
   bin               bin location (blank at the repair centre)
-  stock_state       SERVICEABLE on the shelf; QUARANTINE awaiting bench test (returned from site or recovered
-                    from a station rebuild); AT REPAIR at the manufacturer under an open RMA
+  stock_state       SERVICEABLE on the shelf; QUARANTINE awaiting bench test before going back on the shelf
+                    (returned unused from site); AT REPAIR at the manufacturer under an open RMA
   uom               unit of issue (EA each)
   quantity          quantity in that state at the count
   unit_cost_cad     moving average cost
@@ -606,11 +628,13 @@ psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installat
   serial_no         module serial number; a module repaired by the manufacturer keeps its serial
   item_code         rotating-item code (VPR340-PSU-02)
   asset_id          relay the module is or was fitted to
-  fitted_date       date fitted to that relay (legacy fitted date for modules loaded at go-live)
+  fitted_date       date fitted to that relay (MMS fitted date for modules converted at go-live)
   fitting_wo        work order the module was fitted under (blank for go-live loads)
   removed_date      date removed (blank while fitted)
   removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
   removal_wo        work order the module was removed under
+  removed_to        where the module went: the returns shelf of the store serving the station, or SCRAP
+  disposal_ref      e-waste manifest the module was scrapped under
   record_source     GO-LIVE LOAD or EAM
 """
-    open(path, "w").write(txt)
+    open(path, "w", newline="\r\n").write(txt)
