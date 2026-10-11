@@ -4,7 +4,7 @@
  "objective": "forecasting",
  "architecture": "v3",
  "stage": 2,
- "stage_name": "design (hardening loop 1 of v3)",
+ "stage_name": "design (hardening loop 1 of v3): v3 spent, re-root or retire",
  "updated": "2026-10-11",
  "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,830; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,475 per member month the following year (at the enrolled tier mix, before trend); the baseline is $4,060.",
  "duplicate_check": {
@@ -100,6 +100,13 @@
    },
    "decision": "harden",
    "brief": "The solver saw the selection on 2026 claims, took the cancelled RFP 2025-07 cohort's April 2025 to March 2026 experience by its own RFP tier as untreated (C.1(e)'s any-list Risk Tier, Recital B's cancellation before award, the bid cover's programme year), trended it 24 months and weighted by the final list's tier counts, landing $4,060 in about four minutes; the next rung must let exactly that step complete and still return the wrong answer, or v3 is spent."
+  },
+  {
+   "round": "loop 1",
+   "architecture": "v3",
+   "date": "2026-10-11",
+   "decision": "reroot",
+   "brief": "v3 is spent: with the analog construction found in round 1, no forced, fork-free rung moves the call (exposure weighting 0.05 per cent, age and sex normalisation -3.56 to +0.18 per cent by an unfiled table, the tier-4 score floor +1.39 per cent against C.1(e), a two-month bridge +8.98 per cent and unfiled); v3 is the number's third architecture, so the cap retires task130 unless the author grants a fourth root"
   }
  ],
  "repairs": [
