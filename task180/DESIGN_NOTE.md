@@ -18,7 +18,7 @@ Domain: energy-systems-utilities / asset-condition-maintenance   Objective: anom
 Pairing repeated from a recent build? task180 architecture 1 only (its own lineage, a different puzzle)
 Stakeholder role: network asset manager (portfolio_manager)   Context artifact: capacity_report (mobile substation bookings)
 Calibration form: none   Decision type: ranked_slate_under_cap   Answer unit: set_of_items
-Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 5.1 remedy and 5.2 priority)
+Stump strategy: decomposition_attribution (relabelled at hardening loop 1 from stated_rule_hard_construction)   Decisive rule filed? yes (ES-DGA-02 5.1 remedy and 5.2 priority)
 Official decoy filed? no   Validated decoy? no
 Forum: board_of_directors (28 October 2026)   Forcing event: audit_or_inspection   Org family: utility_or_infrastructure
 People (guard.py names, en_NZ, seed 1802): Donna Carson (network asset manager, the requester), Barry Forbes (zone
@@ -202,14 +202,45 @@ daily counters 93,060, hourly top-oil parquet 2,232,384 rows, asset register 44,
 relay operations) and the March 2026 thermal imaging survey of the 11 kV switchboards; the golden never reads either
 (asserted). Two consecutive builds byte-identical (sha256 on every file of the pack, the goldens and metadata.json).
 
-## SIX-POINT CHECK
+## THREE RULES (client, 2026-10-10)
 
-1. Real work: laboratory formats, detection limits, preservation class from O2/N2, rollovers and counter replacements, a
-   free-text maintenance log, UTC historian exports. 2. The flip is a method choice: attributing gases to their source
-   before coding. 3. ES-DGA-02 defines the population, the coding, the window and the priority. 4. No decoy memo; Barry's
-   notes are true. 5. The method is not recovered from certified figures. 6. task28 splits a flagged excess by source before ranking; here the second source is the normal operation of an
-   attached compartment, told from an arc at the tap selector by the gas it arrives with (both follow the counter), and
-   no earlier task teaches that.
+- **Rule 1, the domain is used.** What decides the slate is a dissolved-gas diagnosis of where each transformer's
+  main-tank acetylene was generated, diverter-compartment oil carried through a weeping barrier (C2H2/H2 of 8 to 10)
+  against an arc in the main-tank oil (more hydrogen than acetylene): the field's own fault-gas interpretation (IEC
+  60599), close to the asset-condition task type. Swap test: with schools or clinics in place of transformers there is
+  no gas, tap changer or ratio to read, so the task does not survive the swap. The decision framing ("which three
+  transformers") is the client's allowed kind; the severity ranking under section 4 is a lower rung, never the decider.
+- **Rule 2, two layers.** Layer 1: laboratory re-issues under one sample ID, below-detection values written as `<n`,
+  preservation class from O2/N2 rather than the register, a UTC historian export, five-digit counters that roll over or
+  restart at a replacement, last-service dates the register stopped writing back, a free-text maintenance log. Layer 2:
+  attributing each unit's main-tank acetylene to its source by the gas it arrives with, when two sources (a leaking
+  diverter barrier and an arc at the tap selector) both follow the tap counter.
+- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who keeps the latest
+  issue of every report, codes all 44 transformers correctly under ES-DGA-02 and reads 5.1 and 5.2 as giving the
+  outages only to faults in the main tank still takes the easy attribution, dropping every transformer whose acetylene
+  rises in step with its tap operations, and files Southbridge T2, Coalgate T1 and Springston T2 (rung 3b; all 288
+  tracking-only cells). Rule application (the section 4 coding, the annex B interval) and data semantics (the `<n`
+  notation, the UTC export, the analysis date) sit on lower rungs and in the asks; none of them moves the slate once the
+  attribution is right (asserted), and none of them can produce the answer without it.
+
+## PRE-SHIP CHECK (client, eight points)
+
+1. Domain: transformer condition assessment's own analysis (DGA fault diagnosis and gas-source attribution); the swap
+   test breaks it (no gas, tap changer or ratio with another field's nouns).
+2. Real work, nothing planted: laboratory formats, detection limits, preservation class from O2/N2, rollovers and
+   counter replacements, a free-text maintenance log, UTC historian exports, re-issued reports.
+3. The flip is a methodological choice: attributing each unit's acetylene to its source by the gas it arrives with. Not
+   a planted catch, not a field or code read correctly, not a stated rule applied.
+4. Analyst test holds: the easy attribution (drop acetylene that tracks the tap operations) gives Southbridge T2,
+   Coalgate T1, Springston T2; the design note names it (rung 3b) and checks.py asserts it in every grid cell.
+5. ES-DGA-02 defines the population, the coding, the window and the priority (5.1, 5.2: outages to code 3 transformers
+   with a fault in the main tank); every gas-signature attribution rule returns the answer in all 216 cells.
+6. No decoy memo, staff draft or briefing; Barry's notes are a field dictionary and true.
+7. The method is not hidden and recovered from certified figures: the attribution rests on the physics of where gas is
+   made, and nothing in the pack is fitted to.
+8. The lesson (a diagnostic signal that follows a component's operation is not proof that the component made it; read
+   the gas it arrives with) is not one an earlier task teaches: task28 splits a flagged excess by source before ranking,
+   but there the sources do not share a signature.
 
 ## STOPPING RULE
 
@@ -245,6 +276,13 @@ figure; all three REVIEW lines harmless. Its plan kept "only code 3 units with a
 dropping in-oil tap-changer units whose acetylene or hydrogen rise tracks tap operations": the qualifier turns the
 attribution into a work order, which is what round 2 executed. 5.2 stays (without it the literal reading is rung 1) and
 the hardening (loop 1) makes the tracking step return rung 3b. Pass 4 reads the hardened pack.
+
+Isolated reader, pass 4 (hardened pack): nothing quoted for question 1 (5.2 "gives the condition for qualifying, not
+how to test it. No file says how to tell a main-tank fault from tap-changer diverter oil leaking into the tank"), no
+ranking file, no analyst-only file, no answer-like figure; the three REVIEW lines harmless (sweep 4 now carries six terms,
+main-tank added, all ordinary standard wording). Its plan: "Acetylene that tracks tap operations is diverter leakage, so
+those transformers are excluded", having seen "the acetylene in DSL-T1, LST-T2 and RLS-T2 rising in step with the SCADA
+tap operations": rung 3b, with no step that reads the gas the acetylene arrives with.
 
 ## Tried and rejected
 

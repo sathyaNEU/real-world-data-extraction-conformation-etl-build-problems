@@ -31,3 +31,12 @@ Stump terms swept: heating, register, decisive, supply, manager, related, ranked
 ## 7 hidden content (clean)
 
 ## 11 prompt form (clean)
+
+## Solver's-eye read (pass 4, isolated reader on the hardened pack, hardening loop 1)
+
+1. Nearest: ES-DGA-02 5.2 "Internal inspection outages are allocated to the code 3 transformers with such a fault, in descending order of severity score." with 5.1 "is the remedy for a fault in the main tank" -- "the condition for qualifying, not how to test it. No file says how to tell a main-tank fault from tap-changer diverter oil leaking into the tank. That test is only in the data: a quick look shows the acetylene in DSL-T1, LST-T2 and RLS-T2 rising in step with the SCADA tap operations."
+2. none (thermal survey ranks switchboard hot spots; "Transformers, their tanks, radiators and tap changers were not part of the scope.")
+3. none (oil_results_notes.md an ordinary handover note; fields only).
+4. none (no slate names, codes or severities; held windows "To be advised").
+REVIEW: ES-DGA-02 stump terms harmless (ordinary wording; never mentions tap-changer contamination, gas tracking or any transformer); oil_temp_c harmless (label temperature, 122 blanks); bookings dates harmless (forward sheet, Apr 2027-Mar 2028).
+Plan step 3: "Main-tank test (5.1-5.2): for each code 3 transformer with an in-oil tap changer, compare the acetylene increases between monthly samples with the SCADA tap operations over the same intervals. Acetylene that tracks tap operations is diverter leakage, so those transformers are excluded." -> drops DSL-T1, LST-T2 AND RLS-T2 = rung 3b (SBG-T2, CGT-T1, SPN-T2). The hardened rung holds against the reader's plan; no gas-ratio step planned.
