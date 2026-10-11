@@ -90,7 +90,7 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
 (`build-pipeline`), without stopping for the author.
 
 The judge rehearsal runs once the solver round has passed, in the background: keep working the
-stages that do not move a graded figure (the card, the six-point check, the design note) while it
+stages that do not move a graded figure (the card, the pre-ship check, the design note) while it
 runs. The portal's own Determinism QC also runs in the background now and no longer
 blocks submission, so a build is not held waiting on it; the in-house judge still gates the ship.
 
@@ -229,28 +229,42 @@ bare over the batch before submission. Self-report does not catch a calcified vo
 
 ## Current spec
 
-**Every build has two layers of difficulty, and neither is a planted trap.** The client's standard:
-difficulty comes from analytical rigour, not from planted traps, decoys or defects, which were applied
-the same way across every domain and are not how real data behaves.
+**Every task is built and reviewed against three rules**, and a task that breaks one is sent back even
+when it is deterministic and correct. Tasks are training data, and a task is useful only if getting it
+right teaches a model something real.
 
-- **Layer 1, data messiness.** Realistic, hard-to-parse data spread across several files: the grains,
-  versions, calendars, identifiers, partial extracts and superseded documents a real export carries. A
-  model may trip here, and that is fine, but the stump never rests on mess and never on an unrealistic
-  planted defect. Every piece of mess has to be something the organisation's real systems would
-  produce (`dataset-generation` §7).
-- **Layer 2, the analytical or methodological pitfall.** The shortcut a capable analyst is tempted to
-  take and an expert in the field would recognise as wrong, with the task set up so the rigorous
-  method is the only defensible one. This layer carries the stump (`stumping` Part 2).
+1. **The task really uses its domain.** It does the kind of analysis its domain is about, close to one of
+   the domain's task types, and the quantity that decides the call is one the field would estimate,
+   model or test. The swap test: put another field's nouns in ("hospital" for "school", "megawatt-hours"
+   for "visits"); if the task reads exactly the same, the domain is only a backdrop (`guide-to-prompt`
+   Step 1).
+2. **Every task has two layers.**
+   - **Layer 1, data messiness.** Realistic, hard-to-parse data spread across several files: the grains,
+     versions, calendars, identifiers, partial extracts and superseded documents a real export carries.
+     A model may trip here, and that is fine, but the stump never rests on mess and never on an
+     unrealistic planted defect. Every piece of mess has to be something the organisation's real
+     systems would produce (`dataset-generation` §7).
+   - **Layer 2, the analytical or methodological pitfall.** The shortcut a capable analyst is tempted to
+     take and an expert in the field would recognise as wrong, with the task set up so the rigorous
+     method is the only defensible one. This layer carries the stump (`stumping` Part 2).
+3. **Three kinds of stump are banned as the decisive step**: a planted defect, decoy or hidden rule;
+   data semantics (the answer flips only on reading a field, code, unit or definition correctly); and
+   rule application (the answer comes from applying stated rules correctly, however many steps there
+   are). All three may appear in a task, never as what decides it. **The test:** could a strong analyst
+   who cleaned the data and read every rule correctly still get the answer wrong by doing the analysis
+   the easy way? If yes, the stump is analytical and valid; if no, it is semantics or rule application.
+   Choosing the right estimand or unit of analysis counts as analysis (`stumping` Part 1).
 
-So the following never carry or frame a stump on a new build, and the fingerprint guard blocks each on
-the draw: a filed rule, basis or metric planted to give the wrong answer (an official decoy); a closed
-or certified record built to bless the wrong method until a forward condition breaks it; and a
-decisive rule deliberately left unstated with a conflicting stated rule as the trap (the shape the
-client counted in about 40 per cent of recent tasks). Prefer filing the rules a real organisation
-would have in writing; the difficulty is the construction they demand, not finding them.
+Every card drawn from 2026-10-10 carries `stump_class` (only `analytical` passes), `analyst_test` and
+`domain_test`, and the fingerprint guard blocks the draw without them. The guard also blocks on the draw:
+a filed rule, basis or metric planted to give the wrong answer (an official decoy); a closed or certified
+record built to bless the wrong method until a forward condition breaks it; and a decisive rule
+deliberately left unstated with a conflicting stated rule as the trap. File the rules a real
+organisation would have in writing; what decides the answer is an analytical step those rules leave to
+the analyst, never the rules themselves.
 
 The client's libraries are the working material: `stumping/references/client/two-layer-task-design.md`
-(the standard and its six-point pre-ship check), `stumping/references/client/layer2-rigor-patterns.md`
+(the three rules, the two layers and the pre-ship check), `stumping/references/client/layer2-rigor-patterns.md`
 (300 rigor patterns by domain and task type: the pitfall, the tempting shortcut, what pins the rigorous
 method) and `dataset-generation/references/layer1-messiness.md` (the universal Layer 1 techniques and
 eight per domain). A pattern is learned, never copied: the build makes its own version on its own data,

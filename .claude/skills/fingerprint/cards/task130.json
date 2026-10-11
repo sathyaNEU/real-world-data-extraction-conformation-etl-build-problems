@@ -1,99 +1,112 @@
 {
   "task": "task130",
-  "architecture": "v2",
-  "drawn": "2026-10-10",
-  "slot_note": "re-root of task130 after the v1 portal failure (both top models filed the golden); same slot, same domain and subdomain, new graded quantity and a methodological stump",
-  "domain": "demographic-social-science",
-  "subdomain": "housing",
-  "niche": "a borough council's temporary-accommodation team sizing the replacement units it must call off, by bedroom size, for the homeless households still in a leased block on the day the owner takes it back, when those households leave only as move-on offers reach them",
+  "architecture": "v3",
+  "drawn": "2026-10-11",
+  "slot_note": "re-root of task130 after v2 was spent (portal failure, then a template finding on its hardening loop); same objective, new domain, new graded quantity, new Layer 2 pitfall",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "claims-frequency-severity",
+  "niche": "a public school district's self-insured health plan certifying the expected programme-year claims of the members a care-management vendor flagged on last year's claims, the baseline the vendor's savings share is measured against",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "14",
   "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Call off 46 replacement units for 1 April 2027: no one-bed, 7 two-bed, 20 three-bed and 19 four-bed.",
-  "answer_source": "task130/submission.md, 1. Final Recommendation (the Call-off sheet of golden/tenter_house_replacement_units.xlsx carries the same units)",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "task130/submission.md, 1. Final Recommendation",
   "gap": [
-    "rule",
+    "objective",
     "population"
   ],
   "pattern": [
-    "none"
+    "A"
   ],
   "generators": [
-    "G16",
-    "G2",
-    "G11"
+    "G14",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": true,
+  "gate_g": "forecasting",
+  "calibration_form": "other",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "operations_log",
-  "stakeholder_role": "temporary accommodation and procurement manager at a borough council, who puts the replacement-unit call-off to the cabinet member for housing",
+  "stakeholder_role": "director of risk management and benefits at a public school district, who certifies the care-management contract's claims baseline to the board of trustees",
   "role_family": "procurement_lead",
-  "scoring_unit": "units served",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "ta_placements_2018-04_2026-09.csv",
-    "rows": 27981,
-    "entity": "one temporary-accommodation placement of one homeless household (a household's stay runs across one or more placements)",
-    "grain": "placement",
+    "file": "medical_claim_lines_2025-01_2027-02.csv",
+    "rows": 0,
+    "entity": "one adjudicated medical claim line for one covered member",
+    "grain": "claim line",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
+  "forum": "trustees_or_governors",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United Kingdom, England (Kent)",
-    "currency": "GBP",
-    "org_type": "borough council housing needs service with a temporary-accommodation portfolio of leased blocks, private-sector leases and nightly-paid units",
+    "geography": "United States, Minnesota",
+    "currency": "USD",
+    "org_type": "public school district with a self-insured employee health plan, administered by a third-party administrator, with a pharmacy benefit manager and a care-management vendor",
     "invented_names": [
-      "Larkmoor Borough Council",
-      "Tenter House",
-      "Corvane Property Services"
+      "Red Cedar Valley School District",
+      "Northcourt Care Partners",
+      "Lindqvist Benefits Consulting"
     ],
     "people": [
-      "Maria Field",
-      "Irene Roberts",
-      "Eileen Nicholls",
-      "Declan Morton",
-      "Debra Young",
-      "Nicola Robinson"
+      "Joyce Salinas",
+      "Deborah Johnson",
+      "Michael Perry",
+      "Allison Santiago",
+      "Anthony Olsen",
+      "Tiffany Barrett"
     ]
   },
   "deliverables": [
-    "tenter_house_replacement_units.xlsx",
-    "tenter_house_runoff.png"
+    "cohort_baseline_2027.xlsx",
+    "baseline_certification_memo.docx"
   ],
-  "opening_move": "evidence-first",
-  "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it.",
-  "driver_concrete": "Tenter House takes no new placements after the owner's notice, and a household on the main duty leaves temporary accommodation only when a move-on offer reaches it; offers go to every main-duty household in the borough, wherever it lives, in order of the date the duty was accepted within each bedroom size, against the monthly numbers in the move-on plan, so the households still in the block on 31 March 2027 are those whose place in their size's list lies beyond the plan's offers, near the front for some sizes and far back for others.",
-  "stump": "A competent solver rebuilds each household's stay from its placements, measures how fast main-duty households have been leaving temporary accommodation over the last year by bedroom size (or fits a survival curve on time since the duty was accepted, or shares the plan's lets out over the borough's list) and runs the Tenter House households forward on it, calling off around 136 units; the step that lands it there is forecasting departures as a rate, when after its first months a household leaves only when a move-on let reaches it, lets go borough-wide in duty-date order within each bedroom size against the move-on plan, and Tenter House's households sit near the front of those lists because its flats have gone to the longest-waiting nightly-paid household since 2023, so most of them are reached before 31 March: the queue leaves 46 households (no one-bed, 7 two-bed, 20 three-bed, 19 four-bed).",
+  "opening_move": "stakes-first",
+  "driver": "A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carrying its own chosen-period value forward with trend, when the outcome regresses toward the mean; the forecast that holds is the next-period experience of a group chosen the same way one period earlier, which the record contains untreated, cell by cell.",
+  "driver_concrete": "The vendor flags the plan's 140 highest-acuity members on their 2026 claims and its savings share is measured against the cohort's expected allowed claims per member month in the programme year without the programme, by risk tier and by medical and pharmacy; the 140 members the same model flagged on 2024 claims in the vendor's 2025 bid were never enrolled, so their allowed claims in the year from April 2025, projected two years at the renewal trend, are each tier's baseline, not the enrolled cohort's own 2026 cost projected forward.",
+  "stump": "A competent solver nets the claim lines and pharmacy reversals, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost; the step that lands it there is projecting a group chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost a fraction of that in the year after they were flagged.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task80": "task80 dates a fixed-term status from the criterion event that conferred it rather than from when it was first observed operating; here nothing is dated or certified: a closed group's departures are a rank inside a borough-wide priority list against a planned supply, read per size class, and the wrong readings are rates and survival curves, not a mis-dated status.",
-    "task86": "task86 files the list order and works it as a low rung; its decisive move is an earlier hidden draw on the same pool that empties the front of the list. Here the list order itself is the decisive rung, filed nowhere and recovered only from the lets log, and nothing draws on the supply before the list.",
-    "task50": "task50 shares a component (a supply worked against demand) on a different driver; here departures from a closed group are a rank inside a borough-wide list against planned lets, which no rate or curve reproduces.",
-    "task125": "task125 sizes a council call-off for April 2027 too (shape 02, purchase order, local government), but its driver is unrelated; the deliverable stem was renamed from calloff_2027 to replacement_units so the two do not share a file name."
+    "task51": "task51 values an intervention against a baseline an unfiled standing rule moves on its own (accounts that settle voluntarily); here no rule moves the baseline: a cohort chosen on its own extreme claims regresses toward the mean, measured on an untreated cohort chosen the same way a year earlier.",
+    "task43": "task43 carries a pooled effect onto places whose moderator mix differs; here there is no effect to carry: the forecast is the counterfactual cost of a cohort selected on its outcome.",
+    "task132": "task132 forecasts failures where a replaced module starts again young (renewal); here nothing renews: the selection on this year's outcome is what makes this year's level a biased forecast of next year's.",
+    "task133": "task133 conditions a cumulative default curve on survival to date; here the forecast conditions on the selection that put the members in the cohort, read off an earlier cohort's realised outcomes."
   },
   "lineage": [
     {
       "architecture": "v1",
       "fate": "failed on the portal 2026-10-10: both top models filed the golden seven-section designation",
       "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it."
+    },
+    {
+      "architecture": "v2",
+      "fate": "failed on the portal 2026-10-11 (the model built the filed duty-date queue and filed the golden 46 units); hardening loop 1 (lists on the need re-derived from the household members on each round day against a lagging case record) rejected at the clone pre-flight as a Template of task73 world ten, and the same move was solved on the portal in task86 v2's first cut",
+      "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it."
+    },
+    {
+      "architecture": "v2 loop 1",
+      "fate": "rejected at the clone pre-flight (Template, Track B, against task73 world ten)",
+      "driver": "A waiting list is split into classes by an attribute the governing rule works out on the day from each member's composition, while the case record keeps that attribute as last assessed; a run-off forecast against a planned supply has to recompute every member's class on each allocation day, because members age across the rule's thresholds and a record assessed years earlier holds the longest-waiting members in classes they have already left."
     }
   ],
-  "notes": "Re-rooted after the v1 portal failure. The v1 world (large-holder designation from ownership returns) had no analytic stump left: every surviving idea was a hidden record a diligent solver joins or a unit swap the judge reads as a lens flip. The re-root keeps the domain and subdomain and moves to a methodological stump: a closed group's departures forecast as a rank inside a rationed priority list rather than as a rate. stump_strategy 'other': the decisive property is the allocation order (a rank inside a group against a cumulative planned supply), not a limit that removes the natural pick, so binding_constraint (task127, task128) is not the move; the supply limit is common to every reading and the rate readings already respect it. Personas drawn with guard.py names --geo 'United Kingdom, England' --seed 130. 2026-10-11: the move-on order is filed as the council's allocations scheme extract (client two-layer standard).",
-  "client_domain": "urban-regional-science",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:queue-runoff-against-planned-supply",
+  "notes": "Re-rooted as v3 on 2026-10-11 after v2 was spent (v2 failed on the portal; its hardening loop 1 was a Template of task73 world ten). v3 moves to actuarial claims forecasting with a regression-to-the-mean pitfall (Layer 2 estimand_identification: selection on the outcome), pinned by an untreated cohort flagged by the same stratification on 2024 claims in the vendor's 2025 bid and never enrolled (calibration form other: the bid list, its outcomes read from the claims). stump_strategy forecast_method_backtest: the natural persistence projection is wrong out of sample for a selected cohort, and the bid cohort's realised programme-length year is the back-test. Shape 14, the baseline cut by the vendor's four risk tiers and by medical and pharmacy. The ratio form is unavailable because the claims history starts with the current administrator on 1 January 2025 and the stratification files carry no cost, so the analog's level projected at the renewal trend is the one estimator. context_artifact is operations_log: the stakeholder certifies from the plan's claims and eligibility feeds (the administrator's claim lines and the PBM's claims), which are the record the baseline is built on; the vendor's lists carry tiers and scores, never a cost (filed_model collided with task133 and register with task131).",
+  "client_domain": "actuarial-science-insurance",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:selection-on-the-outcome-baseline",
   "layer1": [
-    "several sources for one picture (cases, placements, reviews, lets, plan, register)",
-    "a household stay spread across placement rows",
-    "bedroom need revised in a separate reviews file with effective dates",
-    "a superseded plan sheet beside the revised one",
-    "accepted lets with tenancy starts after the extract",
-    "rates in two lots and two rate years"
-  ]
+    "medical claim lines with replacements, voids and denied lines",
+    "pharmacy claims from a PBM in its own layout, with reversals, keyed on employee number and person code",
+    "eligibility as coverage spans",
+    "an administrator change with new member identifiers and a conversion crosswalk",
+    "claims history that starts with the current administrator",
+    "run-out: claims incurred late in the year paid in the following months",
+    "a superseded draft stratification beside the final one"
+  ],
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who nets the claim lines and pharmacy reversals, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed claims per member month fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost, because the 140 were chosen on their extreme 2026 claims, which regress toward the mean.",
+  "domain_test": "The deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by risk tier and by medical and pharmacy, projected at the plan's trend over member months: a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to."
 }

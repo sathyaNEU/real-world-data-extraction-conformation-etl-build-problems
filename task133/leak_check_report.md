@@ -1,0 +1,36 @@
+# leak check, task133
+
+**Verdict: REVIEW.** 10 files read, 28 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+
+LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
+
+Stump terms swept: default, hardship, decisive, dictionary, months, sample, status, reporting, arrangements, staging, asserted, maturity, forward, graded, repayment, remaining, development, header, reading, policy, sentence, forecasting, probability, nothing, window
+
+## 2 author vocabulary (REVIEW 1)
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: \bthe model\b x1: ...of default in the k-th month after the reporting date, comes from the model team's cumulative default curve for the loan's product. Stage...
+
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: carries 7 of 9 distinctive words of the committed call: 'Book a collective expected credit loss allowance of AUD 13,773,000 on the PL36 and PL60 personal loans at 30 September 2'
+
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 13 of 25 stump-paragraph terms appear (default, hardship, months, status, reporting, arrangements); read whether the document names the move
+- **REVIEW** `ecl_extract_dictionary.txt`: 11 of 25 stump-paragraph terms appear (default, hardship, dictionary, months, sample, reporting); read whether the document names the move
+
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `hardship_register_2026-09-30.xlsx`: 871 ISO dates after 2026-09-30, e.g. 2026-10-01, 2026-10-02, 2026-10-03, 2026-10-04, 2026-10-05
+- **REVIEW** `personal_loan_book_2026-09-30.csv`: 1530 ISO dates after 2026-09-30, e.g. 2026-10-01, 2026-10-02, 2026-10-03, 2026-10-04, 2026-10-05
+
+## 10 container metadata (INFO 1)
+- **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 1 file names (clean)
+
+## 5 announcements (clean)
+
+## 6 ranking artifacts (clean)
+
+## 7 hidden content (clean)
+
+## 8 column names (clean)
+
+## 11 prompt form (clean)

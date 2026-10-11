@@ -47,6 +47,9 @@ One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes 
 | `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 2) | enum |
 | `decisive_rule_filed`, `official_decoy` | whether a shipped sentence states the rule that decides the answer, and whether a filed, official-looking rule, basis or metric gives the wrong answer; `false` plus `true` is the withheld rule with an official decoy, the architecture the client names as templated, whatever `stump_strategy` says | true or false |
 | `validated_decoy` | whether the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it | true or false |
+| `stump_class` | the class of the decisive step under the client's three rules: `analytical`, `planted`, `data_semantics` or `rule_application`; only `analytical` may decide the answer | enum |
+| `analyst_test` | one sentence: the easy route a strong analyst takes after cleaning the data and reading every field and rule correctly, and the wrong answer it gives | free |
+| `domain_test` | one sentence: the field's own analysis that decides the answer, and why swapping the nouns into another field breaks the task | free |
 | `client_domain` | the client-taxonomy domain a house domain sits in (blank when `domain` is already a client domain) | enum |
 | `layer2_family`, `layer2_pattern` | the Layer 2 family (five, `vocab.json` `layer2_families`) and the pattern from `stumping/references/client/layer2-rigor-patterns.md` as `<domain>/<task-type>/<n>`, or `own:<name>`; the same pattern on the same spine grain as an earlier build is a BLOCK | enum plus free |
 | `layer1` | the Layer 1 messiness techniques the pack carries, from `dataset-generation/references/layer1-messiness.md` | list |
@@ -161,6 +164,8 @@ is 1 on BLOCK, so the check can sit in a script.
 | `overuse.strategy` | WARN | one strategy in three or more of the last twelve | the same |
 | `template.withheld_rule_decoy`, `template.cap` | BLOCK | the withheld rule with an official decoy in any of the last three, or already in two of the last twelve | the same |
 | `template.flagged` | WARN | every build carrying it, so the design note says why this dataset calls for it | the same |
+| `three_rules.class`, `three_rules.analyst_test`, `three_rules.domain_test` | BLOCK | a card drawn from 2026-10-10 without `stump_class`, with any class but `analytical`, or without the analyst test or the domain test | the client's three rules (`stumping` Part 1) |
+| `three_rules.strategy_risk` | WARN | a stump strategy whose decisive step most often turns out to be a field reading or a stated rule (`time_semantics`, `grain_or_unit`, `identity_resolution`, `stated_rule_hard_construction`, `withheld_rule_corpus_fit`) | the same |
 | `template.validated_decoy`, `template.validated_cap` | BLOCK | the certified-record decoy in the last build, or already in three of the last twelve | the same, from the card audit (27 of task99 to task130) |
 | `test.same_puzzle` | BLOCK | gap, pattern and decision type all equal, last twelve, lineage included | Part 6.1 similarity test |
 | `test.same_puzzle_older` | BLOCK unless differentiated | the same, older than twelve | Part 6.1 similarity test |

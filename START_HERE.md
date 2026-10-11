@@ -23,7 +23,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task132 | FC03 | [The go-live stock value for a slow-moving parts tail, when the new engine forecasts each part on its whole supersession chain](task132/START_HERE.md) | Supply Chain & Logistics · aftermarket service-parts planning | sathya8571 | in build |
-| task133 | FC04 | [Which zone gets next season's extra overnight rebalancing crew, when its newest stations have not finished growing](task133/START_HERE.md) | Supply Chain & Logistics · micromobility fleet rebalancing | sathya8571 | in build |
+| task133 | FC04 | [Which zone gets next season's extra overnight rebalancing crew, when its newest stations have not finished growing](task133/START_HERE.md) | Supply Chain & Logistics · micromobility fleet rebalancing | sathya8571 | shipped |
 | task134 | FC05 | [Where twelve leased batteries go for next spring's midday oversupply, when a dry year will bring the irrigation pumps back](task134/START_HERE.md) | Economics · electricity distribution planning | sathya8571 | open |
 | task135 | FC06 | [How much grain to reserve rail for during next year's four lock closures, when storage fills terminal by terminal](task135/START_HERE.md) | Supply Chain & Logistics · inland waterway freight | sathya8571 | open |
 | task136 | FC07 | [Which feeder gets the one accelerated solar upgrade, when next spring's neighbourhood campaigns have a lift the log can measure](task136/START_HERE.md) | Demographic & Social Science · household technology adoption | sathya8571 | open |
@@ -129,7 +129,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
 | task228 | DQ01 | [Which guardrail metric the experiment platform's automated alert watches](task228/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
-| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
+| task229 | DQ02 | [Whether the release-health alert fires on this week's build, when the metric is the average user's rate](task229/START_HERE.md) | product-analytics · metric-definition-measurement-science | perssathya (developer 3) | shipped |
 | task230 | DQ03 | [Whether an event-volume drop is an instrumentation incident or a mix shift toward a new client version](task230/START_HERE.md) | product-analytics · metric-definition-measurement-science | developer 3 | open |
 | task231 | DQ04 | [Whether the network-total shortfall alert fires when the missing reads are multiply imputed](task231/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
 | task232 | DQ05 | [The upstream-lag threshold for a feed SLA alert, when lag is itself measured with error](task232/START_HERE.md) | general-statistics-data-science · missing-data-censoring-measurement-error | developer 3 | open |
