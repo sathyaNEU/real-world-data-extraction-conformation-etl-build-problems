@@ -64,8 +64,9 @@ class Pack:
 
     # ------------------------------------------------------------ membership
     def group_of_key(self, date, follow_direct=True, keep_lapsed=True, follow_funds=False, branches=True,
-                     successors=True, case_fold=True):
-        """entity_key -> group_id at a date, under the standard's section 2."""
+                     successors=True, case_fold=True, apex=True):
+        """entity_key -> group_id at a date, under the standard's section 2. apex=False is the reading of 2.2
+        without its ultimate-parent clause: the ultimate parent counts only when it is itself booked."""
         top_to_group = {r["ultimate_parent_lei"]: r["group_id"] for r in self.reg if r["ultimate_parent_lei"]}
         key_to_group = {}
         for r in self.obl:
@@ -99,7 +100,7 @@ class Pack:
                 return None
             if not keep_lapsed and self.lei.get(lei, {}).get("Registration.RegistrationStatus") == "LAPSED":
                 return None
-            if lei in top_to_group:
+            if lei in top_to_group and (apex or depth > 0 or lei in key_to_group):
                 return top_to_group[lei]
             if lei in key_to_group:
                 return key_to_group[lei]
@@ -391,9 +392,49 @@ def golden(t=TARGET):
     return dict(pack=pk, tab=tab, fc=fc, exp=exp, bands=bt, call=round(fc["total"]))
 
 
+# ------------------------------------------------------------ CRM-07 2.2: the ultimate parent is a member
+COMMITTED = dict(call=133, flagged=165, apex_only=[6, 5, 3, 5, 6], bands=[
+    (201, 475.8, 21.4, 6.5, 69.6), (306, 3016.2, 34.0, 9.8, 411.5), (250, 7153.8, 29.6, 7.9, 1108.6),
+    (120, 8213.8, 12.6, 3.9, 1121.5), (36, 6640.9, 6.3, 1.0, 1283.4)])
+
+
+def check_membership(G, t=TARGET):
+    """The amended 2.2 read literally (the ultimate parent, booked customers and GLEIF consolidation members)
+    gives the committed figures; the apex-only flags are counted; every apex edge has one reading."""
+    import pypdf
+    pk, tab = G["pack"], G["tab"]
+    std = " ".join("".join(p.extract_text() for p in pypdf.PdfReader(
+        os.path.join(t, "early_warning_and_watch_list_standard.pdf")).pages).split())
+    assert "A group's members are its ultimate parent, the customers the credit system books to it" in std
+    assert len(tab[4]["F"]) == COMMITTED["flagged"] and G["call"] == COMMITTED["call"]
+    got = [(r["groups"], round(r["committed"] / 1e6 + 1e-12, 1), round(r["exp_flagged"] + 1e-12, 1),
+            round(r["exp_unflagged"] + 1e-12, 1), round(r["exp_exposure"] / 1e6 + 1e-12, 1)) for r in G["bands"]]
+    assert got == COMMITTED["bands"], got
+    no_apex = pk.cohort_table(apex=False)
+    only = [len(a["F"] - b["F"]) for a, b in zip(tab, no_apex)]
+    assert only == COMMITTED["apex_only"] and all(not (b["F"] - a["F"]) for a, b in zip(tab, no_apex)), only
+    tops = {r["ultimate_parent_lei"]: r["group_id"] for r in pk.reg}
+    assert all(tops), "every group has an ultimate parent LEI"
+    booked = {r["lei"]: r["group_id"] for r in pk.obl if r["lei"]}
+    assert all(booked[l] == g for l, g in tops.items() if l in booked), "a booked apex is booked to its own group"
+    cons = ("IS_ULTIMATELY_CONSOLIDATED_BY", "IS_DIRECTLY_CONSOLIDATED_BY")
+    assert not any(r["Relationship.StartNode.NodeID"] in tops for r in pk.rr
+                   if r["Relationship.RelationshipType"] in cons), "no apex reports a consolidating parent"
+    with open(os.path.join(t, "gleif_repex_20260930.csv"), encoding="utf-8", newline="") as fh:
+        rx = list(csv.DictReader(fh))
+    assert {r["ExceptionReason"] for r in rx if r["LEI"] in tops} <= {"NON_CONSOLIDATING", "NATURAL_PERSONS",
+                                                                        "NO_KNOWN_PERSON"}
+    br = {r["Relationship.StartNode.NodeID"] for r in pk.rr if r["Relationship.RelationshipType"] ==
+          "IS_INTERNATIONAL_BRANCH_OF" and r["Relationship.EndNode.NodeID"] in tops}
+    assert not any(r["entity_key"].upper() in br and r["signal"] != "GREEN" for r in pk.signals
+                   if r["publication_date"] in COHORTS), "branches of an apex are green at every cohort date"
+    return only
+
+
 if __name__ == "__main__":
     t = sys.argv[1] if len(sys.argv) > 1 else TARGET
     G = golden(t)
+    print("2.2 membership: flagged %d, apex-only flags by cohort %s" % (len(G["tab"][4]["F"]), check_membership(G, t)))
     for c in G["tab"]:
         print(c["date"], len(c["M"]), len(c["F"]), None if c["R"] is None else (len(c["R"]), len(c["R"] & c["F"])))
     fc = G["fc"]

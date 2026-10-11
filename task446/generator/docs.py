@@ -413,8 +413,9 @@ def standard_pdf(path):
         ("p", "2.1 An obligor group is the set of legal entities under one ultimate accounting-consolidation "
               "parent. The credit system's group register holds each group, the dates its relationship with the "
               "Bank started and ended, and the LEI of its ultimate parent where the parent has one."),
-        ("p", "2.2 A group's members are the customers the credit system books to it and every legal entity "
-              "whose GLEIF relationship record shows it accounting-consolidated into the group's ultimate parent "
+        ("p", "2.2 A group's members are its ultimate parent, the customers the credit system books to it and "
+              "every legal entity whose GLEIF relationship record shows it accounting-consolidated into the "
+              "ultimate parent "
               "(IS_ULTIMATELY_CONSOLIDATED_BY; where an entity reports only IS_DIRECTLY_CONSOLIDATED_BY, its "
               "direct parents are followed to the top), with the relationship in force at the date in question."),
         ("p", "2.3 Group structure is read from GLEIF's Level 1 and Level 2 data as GLEIF publishes it, under "
