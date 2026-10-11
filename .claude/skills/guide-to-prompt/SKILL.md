@@ -10,6 +10,13 @@ description: Decide what to ask before writing a word of the prompt. Pick one Ax
 > **The prompt has to be concise.** No yapping, nothing lengthy, nothing that reads as LLM
 > generated, and not too much context about the work. Straightforward.
 >
+> **Under 1,000 characters, always.** The whole prompt, file names included, stays under 1,000
+> characters. That means fewer asks, never thinner ones: one committed call and two or three asks,
+> each multi-dimensional and hard, so the prompt reads as one request and never as a laundry list.
+> The 25 or more criteria still come from the prompt shape (a grid, a ranked list, a per-period
+> forecast), which is how a short prompt carries them. `voice-check.py` counts the characters and
+> flags 1,000 or more, and a draft that breaches it is cut before it is called done.
+>
 > That is not a style note layered on the spec. It is the one difference that shows up on every
 > axis at once when 25 prompts the client paid out on are measured against the current window:
 > **227 words against 404, 21.6 words per sentence against 31.4, 1.5 commas per sentence against

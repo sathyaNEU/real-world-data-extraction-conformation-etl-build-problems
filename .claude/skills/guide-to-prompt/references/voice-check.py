@@ -124,8 +124,11 @@ COMMISSION = ("build", "give", "write", "put", "send", "make", "produce", "draft
 # LIMIT is the paid-out set's own p90 or observed maximum, so a flag means the draft sits outside
 # anything that has been paid out rather than merely above their average. The two distributions
 # overlap on wps, longest and ctx%, which is why those limits are loose on purpose.
+# CHARS is a ceiling rather than a benchmark: the whole prompt stays under 1,000 characters, file names
+# included, and a draft at 1,000 or more is cut before it is called done (prompt-economy.md section 5).
 BENCH = {"words": 227, "wps": 21.6, "ctxpct": 22.4, "longest": 90, "tags": 0, "because": 0}
 LIMIT = {"words": 330, "wps": 33.0, "ctxpct": 46.0, "longest": 180, "tags": 3, "because": 2}
+CHARS = 1000
 
 ROUNDING_TAG = (r"whole (?:number|tonne|unit|dollar|pound|euro|case|household|record|USD|GBP|EUR)s?"
                 r"|(?:one|two|three|\d+) decimal places?|a decimal place|to the nearest \w+"
@@ -153,6 +156,7 @@ def economy(text):
                      for s in sents)
     ctx = len(paras[0].split()) if paras else 0
     return {
+        "chars": len(text.strip()),
         "words": wc,
         "wps": round(wc / max(len(sents), 1), 1),
         "context": ctx,
@@ -299,7 +303,7 @@ def main(argv):
 
     # 6. Economy. The budget and what a breach means are in prompt-economy.md.
     print()
-    print("ECONOMY".ljust(12) + "words  w/sent  ctx%  longest  <8w  tags conv  because")
+    print("ECONOMY".ljust(12) + "chars  words  w/sent  ctx%  longest  <8w  tags conv  because")
     econ = {p: economy(t) for p, t in texts.items()}
     for path, e in econ.items():
         mark = "*" if path in focus else " "
@@ -309,20 +313,23 @@ def main(argv):
             over.remove("tags")          # H12 is satisfied by a stated convention
         if not e["short"]:
             over.append("no short sentence")
-        print(f" {mark}{os.path.dirname(path):<10}{e['words']:>5} {e['wps']:>7} {e['ctxpct']:>5}"
+        if e["chars"] >= CHARS:
+            over.insert(0, "1,000+ characters (hard ceiling)")
+        print(f" {mark}{os.path.dirname(path):<10}{e['chars']:>5} {e['words']:>6} {e['wps']:>7} {e['ctxpct']:>5}"
               f" {e['longest']:>8} {'yes' if e['short'] else ' no':>4} {e['tags']:>5}"
               f" {'yes' if e['conv'] else ' no':>4} {e['because']:>8}"
               + ("   <-- " + ", ".join(over) if over else ""))
     med = {k: statistics.median([e[k] for e in econ.values()])
            for k in ("words", "wps", "ctxpct", "longest", "tags", "because")}
-    print(f"  {'median':<10}{med['words']:>5.0f} {med['wps']:>7.1f} {med['ctxpct']:>5.1f}"
+    print(f"  {'median':<10}{statistics.median([e['chars'] for e in econ.values()]):>5.0f}"
+          f" {med['words']:>6.0f} {med['wps']:>7.1f} {med['ctxpct']:>5.1f}"
           f" {med['longest']:>8.0f} {sum(e['short'] for e in econ.values()):>3}/{len(econ)}"
           f" {med['tags']:>5.0f} {sum(e['conv'] for e in econ.values()):>3}/{len(econ)}"
           f" {med['because']:>8.0f}")
-    print(f"  {'paid-out':<10}{BENCH['words']:>5} {BENCH['wps']:>7} {BENCH['ctxpct']:>5}"
+    print(f"  {'paid-out':<10}{'':>5} {BENCH['words']:>6} {BENCH['wps']:>7} {BENCH['ctxpct']:>5}"
           f" {BENCH['longest']:>8} {'18/25':>7} {BENCH['tags']:>5} {'  n/a':>4}"
           f" {BENCH['because']:>8}    <-- median over 25 paid-out prompts")
-    print(f"  {'flag over':<10}{LIMIT['words']:>5} {LIMIT['wps']:>7} {LIMIT['ctxpct']:>5}"
+    print(f"  {'flag over':<10}{CHARS - 1:>5} {LIMIT['words']:>6} {LIMIT['wps']:>7} {LIMIT['ctxpct']:>5}"
           f" {LIMIT['longest']:>8} {'':>7} {LIMIT['tags']:>5} {'':>4} {LIMIT['because']:>8}"
           "    <-- the paid-out p90 or max, not their median")
 
