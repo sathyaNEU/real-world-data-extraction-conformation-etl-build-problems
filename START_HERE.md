@@ -365,7 +365,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task445 | ET02 | [13F institutional ownership: the quarter the units changed and the amendments that only add](task445/START_HERE.md) | Asset management / market-data product (ownership analytics) | oviya1301 | in build |
+| task445 | ET02 | [13F institutional ownership: the quarter the units changed and the amendments that only add](task445/START_HERE.md) | Asset management / market-data product (ownership analytics) | oviya1301 | shipped |
 | task446 | ET03 | [Issuer-group concentration: rolling holdings up the LEI tree without climbing the wrong branches](task446/START_HERE.md) | Asset management risk / regulatory reporting (BCBS 239-style risk data aggregation) | oviya1301 | in build |
 | task447 | ET04 | [Organic deposit growth: the peer that "grew fastest" bought its growth](task447/START_HERE.md) | Banking strategy / FP&A / peer benchmarking | oviya1301 | open |
 | task448 | ET05 | [Mortgage market share across the 2018 HMDA overhaul: purchased loans and the two-part lender key](task448/START_HERE.md) | Mortgage lending / fair-lending compliance / market intelligence | oviya1301 | open |

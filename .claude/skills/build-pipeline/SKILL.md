@@ -25,7 +25,7 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 6b | post-round repair | `dataset-generation`, `determinism-check`, `golden-realism`, `reduce-house-fixes` | after a passing round, one repair of the reader's deferred findings (realism tells, forks on ask figures), each fork asserted closed in the checks; `leak.py` re-run; the reader re-runs only if the repair changed a document under `target/` or the prompt; a fresh round only if the repair changed the prompt, a rung or the decisive path. A data-only repair that keeps the method and the ladder goes straight to stage 7 |
 | 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solver read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
 | 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | the client's pre-ship check (the three rules and the two layers) answered in the design note (`stumping/references/client/two-layer-task-design.md`), `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered, Status `shipped` in the root `START_HERE.md`; the author has the bundle, the stump sentence, the leak line, the duplicate-check line, the solver line and the judge line |
-| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory |
+| 9 | portal | the author | the result reported; only then the ledger row, lessons, memory. A result that held the main call (stumped and deterministic) and lost on the asks goes to the ask-only revision (`supplemental-stumping` Part 12) and straight back to the author; no stage above re-runs |
 
 ## The worth-it gate and the hardening loop
 
@@ -62,7 +62,10 @@ old card. A task number gets three architectures; when the third is spent the nu
 ## Running the stages
 
 **Not optional.** The leak reader (stage 4), the solver round (stage 6) and the judge (stage 7) run
-on every build, and a build reaches stage 7 only through a passing round.
+on every build, and a build reaches stage 7 only through a passing round. The one exception is the ask-only
+revision after a portal result that held the main call (`supplemental-stumping` Part 12). It edits the ask paths'
+data with the main call's inputs byte-identical, refreshes the write-up, re-cuts `target.zip` and commits.
+`leak.py`, the leak reader, the duplicate check, the solver round and the judge do not run again for it.
 
 **Solver first, polish after.** The round runs as soon as the pack is free of leaks: the reader's
 question 1 to 3 findings and any fork on the main call are fixed before the solver sees the pack, and
@@ -76,14 +79,16 @@ reader are always isolated threads on fresh scratch copies; no solve or read hap
 thread, which has seen the design.
 
 **Every repair starts in a fresh agent, from what is committed.** The work after a round (a hardening
-rebuild, the stage 6b repair of the reader's deferred findings, a judge's FIX_NOW) is never handed back
+rebuild, the stage 6b repair of the reader's deferred findings, a judge's FIX_NOW, an ask-only revision) is never handed back
 to the agent that built the pack, and a finished agent is never resumed with `SendMessage`, because a
 resumed agent reloads its whole transcript and every repair would then be paid for on top of the
 builds before it. The main session spawns a new agent with a short brief file in the scratchpad that
 names the inputs, each already committed and pushed on the build's branch:
 - the round's log in `solver_rounds/` (the solver's call, answers and path);
 - the round's row and brief in `pipeline.json`, with its `deferred` list;
-- the leak report's deferred findings and the design note, `## Tried and rejected` first.
+- the leak report's deferred findings and the design note, `## Tried and rejected` first;
+- for an ask-only revision, instead of the above: the portal's rubric with the criteria that passed, the asks'
+  lines in the design note and the generator's ask-path files, as `supplemental-stumping` Part 12 sets out.
 
 The new agent reads what the repair needs and nothing more, so a repair costs its own work, not the
 history behind it. That only works if the stage before it committed and pushed everything the next
