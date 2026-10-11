@@ -261,6 +261,10 @@ terminal with its exposure window") and its own practice. Those are the sentence
 and allowing for several common points lands rung 0 (every terminal the pooled screen ranks high: 502 or 1,139) unless
 the victims the pump explains are set aside first, which no sentence says. Kept.
 
+Isolated reader, pass 2 (after the idiom fixes): nothing quoted for any of the four questions; the three REVIEW lines
+harmless ("nothing in the folder points to Lombard Market"). Its plan ranks terminals by the pooled ratio and takes "each
+common point" off that ranking, with no step that screens the victims the pump leaves unexplained: rung 0.
+
 ## THREE RULES (client, 2026-10-10)
 
 - **Rule 1, the domain is used.** What decides the count is a card-fraud compromise-point analysis: each terminal's lift
