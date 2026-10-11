@@ -1,0 +1,90 @@
+{
+ "task": "task446",
+ "domain": "banking-credit-financial-risk",
+ "objective": "data-extraction-conformation",
+ "stage": 8,
+ "stage_name": "shipped",
+ "updated": "2026-10-11",
+ "branch": "oviya1301/task446-lei-group-concentration",
+ "stump": "A competent solver sets the probabilities from the share of flagged and of unflagged groups that reached the list over the four closed cohorts taken together (the hit and miss rates) and files 73, or, seeing that basis fail the standard's leave-one-cohort-out test by 40.6 per cent, trends those rates on the flagged share and files 147; only the basis that backs each year's share reaching out of its flagged share through the capture and false-alarm rates passes the test (worst miss 1.6 per cent) and gives 133.",
+ "architecture": 2,
+ "loops": 1,
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the loop-1 cut d1696c6, lines answered in the design note",
+  "reader": "arch 2: Q1 quotes the standard's 4.3 and 5.2 as the procedure; FORK on the main call: 5.2's literal basis (one probability per flag status set from the 4.3 measures, read as the pooled hit rate) gives about 74 against the golden 134; band status fork on the asks; realism tells in the containers",
+  "disposition": "loop 1 (designer): the main-call fork closed on paper (5.2 files the estimand and the test that selects the basis, names no basis; literal reading 133); the band-status fork closed by the records (cancelled and closed limits nil); realism tells listed for the rebuild; the reader reads again after it (prompt and documents change)"
+ },
+ "duplicate_check": {
+  "heart": "PASS on branch cards (WARN overuse.gate_g with main's task181 card)",
+  "nearest": "task133 (soft shape echo: IFRS 9 scenario distractor); task447 and arch 1 clean",
+  "clone_check": "arch 2 pre-flight: one soft Track A shape echo, Track B clean; idiom: closing role sentence repeated across task445 to task447 (task446/clone_check_report.md)",
+  "loop1": "guard check and heart WARN (repeat.gate_g, overuse.gate_g, answered in the design note); IFRS 9 distractor renamed and retitled; closing role sentence moved into the opening sentence",
+  "loop1_build": "guard.py surface: 0 promoted; heart WARN (repeat.gate_g, overuse.gate_g, answered)"
+ },
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 93.4,
+   "landed": true,
+   "cracked": 3,
+   "items": 3
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": true,
+    "proxy": 93.4
+   },
+   "decision": "reroot",
+   "brief": "landed 21.8 by executing LMS-03 s.2.3 as a work order (fixed the 30 Sep 2026 membership and applied it to all five quarter-ends, citing the clause); the decisive step is a stated rule applied, so the stump fails the analyst test (rule application) and no honest hardening exists inside this architecture: removing the clause makes it a withheld rule or a fork; every ask device was also caught (asks 3 of 3 at 80 per cent tokens)"
+  },
+  {
+   "round": null,
+   "architecture": 2,
+   "loop": 1,
+   "solver": {
+    "landed": null,
+    "proxy": null
+   },
+   "decision": "harden",
+   "brief": "designer pass before any architecture 2 round: the stage 4 reader's main-call fork (5.2's filed basis read literally as the pooled hit rate, 74 against 134) is the portal's task445 defect; 5.2 refiled as the estimand plus the leave-one-cohort-out test, cohort counts retuned (call 133), ask devices redrawn off architecture 1's families (facility-obligor grain, UTC limit clock, not-yet-grouped customers)"
+  },
+  {
+   "label": "round 2",
+   "date": "2026-10-11",
+   "score": 24.7,
+   "landed": false,
+   "cracked": 0,
+   "items": 6
+  },
+  {
+   "round": 2,
+   "architecture": 2,
+   "loop": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": false,
+    "proxy": 24.7
+   },
+   "decision": "pass",
+   "brief": "missed at the decisive step: ran the filed leave-one-cohort-out test over the flag-split pooled hit rates and a single book rate only, chose the hit rates and filed 73; never built the capture and false-alarm basis (133); every field and rule read correctly (book, membership with GLEIF, flags by LEI or CRN, exposure at end of day UK time, facility once per group)"
+  }
+ ],
+ "judge": {
+  "verdict": "DETERMINISTIC (architecture 2, loop 1, pass 1)",
+  "disposition": "APPROVE",
+  "report": "task446/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the card",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "approved": null,
+ "delivered": "2026-10-11",
+ "portal": null,
+ "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed",
+ "ship": {
+  "target_zip": "3035037 bytes, 17 members, matches target/ (H7); rebuild byte-identical (builder)"
+ }
+}

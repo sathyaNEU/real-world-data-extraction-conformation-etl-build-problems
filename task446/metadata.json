@@ -1,0 +1,195 @@
+{
+  "task": "task446",
+  "title": "How many obligor groups from the monitored book will reach the watch list in the year to 30 September 2027",
+  "domain": "Banking, Credit & Financial Risk",
+  "subdomain": "other: early-warning and watch-list monitoring of corporate obligor groups",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
+  "as_of": "2026-10-08",
+  "deliverables": [
+    "watchlist_inflow_2027.xlsx",
+    "watchlist_inflow_2027.svg"
+  ],
+  "distractor_files": [
+    "internal_rating_master_scale_2026.xlsx",
+    "group_economics_uk_outlook_oct2026.xlsx"
+  ],
+  "input_gates": {
+    "files": 17,
+    "formats": [
+      "csv",
+      "docx",
+      "md",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "ews_entity_signals_2022-09_to_2026-09.csv",
+    "largest_file_rows": 125317
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task446/generator/make.py (seeded, deterministic) around a fictional UK bank (Halstow Bank plc, with Halstow Bank Ireland DAC) and fictional borrowers, on GLEIF's published concatenated-file CSV schemas (LEI-CDF 3.1, RR-CDF 2.1, reporting exceptions) with valid ISO 17442 LEI check digits; managing LOU identifiers are real LOU LEIs; no real borrower, bank exposure or GLEIF record is depicted",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task446/generator/make.py",
+  "files": [
+    {
+      "path": "credit_data_field_reference.md",
+      "format": "md",
+      "bytes": 4249,
+      "rows": null,
+      "source": "Constructed: Reference Data field reference for the quarter-end credit extracts (data dictionary)",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "credit_group_register_20260930.xlsx",
+      "format": "xlsx",
+      "bytes": 93100,
+      "rows": 1310,
+      "source": "Constructed: Credit system obligor group register with relationship dates, ultimate parent LEI and sector",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "credit_obligor_master_20260930.csv",
+      "format": "csv",
+      "bytes": 213422,
+      "rows": 2078,
+      "source": "Constructed: Credit system obligor master: customer, LEI, Companies House number, obligor group, booking entity",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "early_warning_and_watch_list_standard.pdf",
+      "format": "pdf",
+      "bytes": 5666,
+      "rows": null,
+      "source": "Constructed: Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ews_entity_signals_2022-09_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 11018582,
+      "rows": 125317,
+      "source": "Constructed: Early-warning engine month-end publications, one row per covered entity per month-end, September 2022 to September 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ews_trigger_codes.csv",
+      "format": "csv",
+      "bytes": 1132,
+      "rows": 13,
+      "source": "Constructed: Early-warning trigger code list with feed and default signal",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "exec_risk_committee_agenda_2026-11-04.docx",
+      "format": "docx",
+      "bytes": 7812,
+      "rows": null,
+      "source": "Constructed: Executive Risk Committee agenda, 4 Nov 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facility_limit_history_20261008.csv",
+      "format": "csv",
+      "bytes": 268106,
+      "rows": 4647,
+      "source": "Constructed: Committed limit history for every facility, one row per version, to 7 Oct 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facility_obligor_extract_20260930.csv",
+      "format": "csv",
+      "bytes": 279195,
+      "rows": 3104,
+      "source": "Constructed: Facility and obligor extract from the Halstow Bank plc and Halstow Bank Ireland DAC loan ledgers, run 01:15 on 1 Oct 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gleif_lei_cdf_20260930.csv",
+      "format": "csv",
+      "bytes": 596466,
+      "rows": 3269,
+      "source": "Constructed: GLEIF LEI-CDF 3.1 level 1 records for the Bank's entities and the engine's coverage list, GLEIF concatenated file of 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gleif_repex_20260930.csv",
+      "format": "csv",
+      "bytes": 210990,
+      "rows": 2612,
+      "source": "Constructed: GLEIF level 2 reporting exceptions, GLEIF concatenated file of 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gleif_rr_cdf_20260930.csv",
+      "format": "csv",
+      "bytes": 711712,
+      "rows": 3729,
+      "source": "Constructed: GLEIF RR-CDF 2.1 level 2 relationship records, GLEIF concatenated file of 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "group_economics_uk_outlook_oct2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9127,
+      "rows": 55,
+      "source": "Constructed: Group Economics UK outlook, October 2026: central, downside and severe downside paths",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "internal_rating_master_scale_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 28893,
+      "rows": 1002,
+      "source": "Constructed: Internal rating master scale and group ratings at 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "reference_data_extract_log_20261008.txt",
+      "format": "txt",
+      "bytes": 1167,
+      "rows": null,
+      "source": "Constructed: Reference Data quarter-end extract log: jobs, run times, row counts and the control check (provenance)",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "treasury_closing_rates_20260930.csv",
+      "format": "csv",
+      "bytes": 270,
+      "rows": 4,
+      "source": "Constructed: Group Treasury closing FX rates at 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "watch_list_history_2020-01_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 29823,
+      "rows": 307,
+      "source": "Constructed: Watch-list cases opened since January 2020: placement, level, removal and reason",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
