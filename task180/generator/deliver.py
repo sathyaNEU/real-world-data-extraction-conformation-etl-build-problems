@@ -171,9 +171,12 @@ def write_docx(g, path):
                f"in order of severity score. {name(t1)} has the strongest: acetylene rising at "
                f"{sev(v_s)} times its rate limit, with hydrogen rising alongside it, which is arcing inside the tank. "
                f"It has a vacuum tap changer, so none of that acetylene comes from switching. {name(t2)} shows the "
-               f"same kind of arcing at a lower rate ({sev(a_s)}). Its tap changer is an in-oil type, but its "
-               f"acetylene does not follow the tap changer's operations and comes with hydrogen, so it is being "
-               f"made in the main tank. {name(t3)} has a thermal fault in the oil, with ethylene, methane and "
+               f"same kind of arcing at a lower rate ({sev(a_s)}). Its acetylene rises with its tap changer's "
+               f"operations, as at {' and '.join(name(t) for t in sorted(g['attributed'], key=lambda t: -g['naive'][t][1]))} "
+               f"below, but it arrives with more hydrogen than acetylene, which is gas made by an arc in the "
+               f"main-tank oil, not oil from the diverter compartment. The arcing is most likely at the tap "
+               f"selector, which sits in the main tank and moves at every tap change, and an internal inspection "
+               f"is what reaches it. {name(t3)} has a thermal fault in the oil, with ethylene, methane and "
                f"ethane all rising and ethylene at {sev(th_s)} times its limit.")
     if rest:
         rtxt = " and ".join(f"{name(t)} ({sev(coded[t][1])})" for t in rest)

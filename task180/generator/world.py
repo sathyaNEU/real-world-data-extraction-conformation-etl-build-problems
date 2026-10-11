@@ -50,7 +50,8 @@ OLTC = {  # model: (maker, type as the register writes it)
 # the fleet. pres: FB free-breathing conservator (silica gel breather), SL sealed (air cell)
 # rating: ONAN/ONAF MVA. ops: mean tap operations per day. rs: target relative saturation (%).
 # role: normal, L1/L2 (tap-changer barrier weeping), V (vacuum OLTC, internal arc), A3 (in-oil OLTC,
-# internal arc), T1/T2/T3 (thermal faults in oil), and ordinary ageing variants.
+# arcing at the tap selector in the main tank, in step with the operations), T1/T2/T3 (thermal faults
+# in oil), and ordinary ageing variants.
 FLEET = [
     # id,       maker, year, rewind, rating,      pres, oltc,    oltc_year, ops,  rs,   role
     ("LST-T1", "BR", 1984, None, (7.5, 10.0),   "FB", "AR-10", 1984, 41.0, 22.0, "normal"),
@@ -279,7 +280,7 @@ MONTHLY_2026 = {  # watch-list days outside the round months: (day A, day B)
     5: ("2026-05-12", "2026-05-13"), 7: ("2026-07-14", "2026-07-15"), 8: ("2026-08-11", "2026-08-12"),
 }
 LEAK_ONSET = {"DSL-T1": D("2024-07-01"), "LST-T2": D("2025-03-17")}   # barrier began to weep
-ARC_ONSET = {"SBG-T2": D("2025-03-31"), "RLS-T2": D("2025-01-20")}    # internal arcing began
+ARC_ONSET = {"SBG-T2": D("2025-03-31"), "RLS-T2": D("2024-12-16")}    # internal arcing began
 THERMAL_ONSET = {"CGT-T1": D("2022-09-26"), "SPN-T2": D("2023-05-29"), "DFD-T1": D("2021-04-19")}
 # twelve-month increases the September 2026 results are tuned to (ppm, before scaling to 365 days)
 TUNED_INCREASE = {"DSL-T1": ("C2H2", 9.8), "LST-T2": ("C2H2", 8.2), "SBG-T2": ("C2H2", 8.2),

@@ -88,9 +88,15 @@ def main():
     check("rung 2b (drop L1's acetylene only) names L2, V, A3", set(r2b) == {L2, V, A3}, str(r2b))
     r3, _ = G.solve_main([t for t in W.IN_OIL])
     check("rung 3 (drop acetylene at every in-oil unit) names V, T1, T2", r3 == [V, T1, T2], str(r3))
-    for nm, sl in (("rung 0", r0), ("rung 1", r1), ("rung 2a", r2a), ("rung 2b", r2b), ("rung 3", r3)):
+    trk = G.attribute(sig, rule=("tracking",), r_min=0.9)
+    check("rung 3b: acetylene tracking the tap operations at L1, L2 and A3", trk == sorted([L1, L2, A3]), str(trk))
+    r3b, _ = G.solve_main(trk)
+    check("rung 3b (drop acetylene wherever it tracks the operations) names V, T1, T2", r3b == [V, T1, T2],
+          str(r3b))
+    for nm, sl in (("rung 0", r0), ("rung 1", r1), ("rung 2a", r2a), ("rung 2b", r2b), ("rung 3", r3),
+                   ("rung 3b", r3b)):
         check(f"{nm} differs from the answer by at least one unit", set(sl) != set(ANSWER))
-    OUT["rungs"] = {"r0": r0, "r1": r1, "r2a": r2a, "r2b": r2b, "r3": r3}
+    OUT["rungs"] = {"r0": r0, "r1": r1, "r2a": r2a, "r2b": r2b, "r3": r3, "r3b": r3b}
 
     # -- the twin pair -------------------------------------------------------------------------
     units = S.by_unit(S.record_of_issue(list(G.main_rows())))
@@ -115,10 +121,11 @@ def main():
             check(f"{t} tracks its tap operations ({win}, raw r >= {lim})", s2[t]["r"] >= lim, f"{s2[t]['r']:.3f}")
             check(f"{t} tracks its tap operations ({win}, per-day r >= 0.95)", s2[t]["r_day"] >= 0.95,
                   f"{s2[t]['r_day']:.3f}")
-        for t in (V, A3):
-            check(f"{t} does not track ({win}, |r| raw and per day <= 0.3)",
-                  abs(s2[t]["r"]) <= 0.3 and abs(s2[t]["r_day"]) <= 0.3,
-                  f"{s2[t]['r']:.3f} {s2[t]['r_day']:.3f}")
+        check(f"{A3} tracks its tap operations as closely as a leak ({win}, raw r >= 0.97, per day >= 0.95)",
+              s2[A3]["r"] >= 0.97 and s2[A3]["r_day"] >= 0.95, f"{s2[A3]['r']:.3f} {s2[A3]['r_day']:.3f}")
+        check(f"{V} does not track ({win}, |r| raw and per day <= 0.3)",
+              abs(s2[V]["r"]) <= 0.3 and abs(s2[V]["r_day"]) <= 0.3,
+              f"{s2[V]['r']:.3f} {s2[V]['r_day']:.3f}")
         OUT[f"sig_{win}"] = {t: {k: (round(v, 3) if isinstance(v, float) else v) for k, v in s2[t].items()}
                              for t in s2}
     for t in (L1, L2):
@@ -126,8 +133,10 @@ def main():
         check(f"{t} cumulative growth follows operations better than time", sig[t]["cum_ops_better"])
     check("V C2H2/H2 about 0.5", 0.4 <= sig[V]["ratio"] <= 0.6, f"{sig[V]['ratio']:.3f}")
     check("A3 C2H2/H2 about 0.6", 0.5 <= sig[A3]["ratio"] <= 0.7, f"{sig[A3]['ratio']:.3f}")
-    for t in (V, A3):
-        check(f"{t} cumulative growth does not follow operations better than time", not sig[t]["cum_ops_better"])
+    check(f"{V} cumulative growth does not follow operations better than time", not sig[V]["cum_ops_better"])
+    check(f"{A3} cumulative growth follows operations better than time, as at L1 and L2", sig[A3]["cum_ops_better"])
+    check("A3 hydrogen rises with its acetylene and the leaks' does not (twelve-month C2H2/H2 under 1 at A3, "
+          "at least 5 at L1 and L2)", sig[A3]["ratio"] < 1 and min(sig[L1]["ratio"], sig[L2]["ratio"]) >= 5)
     # monthly sampling only (2026), the twelve-month window
     rest = sorted(set(sig) - {L1, L2, V, A3})
     cnt2 = {t: sum([sig[t]["type"] == "In-oil arcing", sig[t]["r"] >= 0.8, sig[t]["ratio"] >= 2]) for t in rest}
@@ -150,14 +159,18 @@ def main():
 
     # -- the grid -------------------------------------------------------------------------------
     cols = list(itertools.product(("zero", "half", "limit"), (330, 365, 400), ("latest", "median")))
+    # rules that read the gas the acetylene arrives with (the answer in every cell) and rules that read
+    # only the tap changer's type and the tracking (rung 3b in every cell: A3's acetylene tracks too)
     attribution_rules = {
         "type+tracking+ratio": dict(rule=("type", "tracking", "ratio")),
-        "type+tracking": dict(rule=("type", "tracking")),
         "type+ratio": dict(rule=("type", "ratio")),
         "tracking+ratio": dict(rule=("tracking", "ratio")),
-        "two of three": dict(rule=("type", "tracking", "ratio"), need=2),
         "ratio>2": dict(rule=("ratio",), ratio_min=2), "ratio>3": dict(rule=("ratio",), ratio_min=3),
         "ratio>5": dict(rule=("ratio",), ratio_min=5),
+    }
+    tracking_rules = {
+        "type+tracking": dict(rule=("type", "tracking")),
+        "two of three": dict(rule=("type", "tracking", "ratio"), need=2),
         "r>=0.8": dict(rule=("tracking",), r_min=0.8), "r>=0.9": dict(rule=("tracking",), r_min=0.9),
         "r>=0.95": dict(rule=("tracking",), r_min=0.95),
         "r/day>=0.9": dict(rule=("tracking",), r_min=0.9, tracking="day"),
@@ -166,6 +179,7 @@ def main():
     }
     grid = {}
     nbad = 0
+    nbad_trk = 0
     for bdl, gap, cls in cols:
         kw = dict(bdl=bdl, gap=gap, cls_mode=cls)
         for win in ("first_detectable", "last_bdl"):
@@ -178,14 +192,23 @@ def main():
                 if top != ANSWER:
                     nbad += 1
                     print("   grid miss", key, top, att)
+            for name, rk in tracking_rules.items():
+                att = G.attribute(sg, **rk)
+                top, _ = G.solve_main(att, **kw)
+                grid[f"{name}|{win}|{bdl}|{gap}|{cls}"] = top
+                if top != [V, T1, T2]:
+                    nbad_trk += 1
+                    print("   grid tracking-rule cell off rung 3b", name, win, bdl, gap, cls, top, att)
         for name, excl in (("main-tank only", []),):
             top, cd = G.solve_main(excl, **kw)
             grid[f"{name}|{bdl}|{gap}|{cls}"] = top
             check(f"grid main-tank-only rule keeps L1 or L2 ({bdl},{gap},{cls})", bool({L1, L2} & set(top)), str(top))
         top_lc = sorted(W.IDS, key=lambda t: -S.value(units[t][-1]["C2H2"], bdl))[:3]
         check(f"grid latest-acetylene rule keeps L1 or L2 ({bdl})", bool({L1, L2} & set(top_lc)))
-    check(f"grid: every attribution rule returns V, A3, T1 in every column ({len(cols)} columns x 2 windows x "
-          f"{len(attribution_rules)} rules)", nbad == 0, f"{nbad} misses")
+    check(f"grid: every gas-signature attribution rule returns V, A3, T1 in every column ({len(cols)} columns x "
+          f"2 windows x {len(attribution_rules)} rules)", nbad == 0, f"{nbad} misses")
+    check(f"grid: every tracking-only rule returns rung 3b (V, T1, T2) in every column ({len(cols)} columns x "
+          f"2 windows x {len(tracking_rules)} rules)", nbad_trk == 0, f"{nbad_trk} off")
     OUT["grid_cells"] = len(grid)
 
     # analysis date in place of sampling date, record of issue ignored: the main call does not move

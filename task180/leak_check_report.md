@@ -4,10 +4,10 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: heating, register, decisive, supply, manager, related, ranked, architecture, network, screen, account, written, attribution, pattern, remedy, bookings, stated, operator, sentence, regime, recovered, acknowledgement, corpus, metered, diversions
+Stump terms swept: heating, register, decisive, supply, manager, related, ranked, attribution, architecture, network, sentence, reader, screen, account, written, main-tank, pattern, remedy, bookings, stated, operator, compartment, points, ranking, attack
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `ES-DGA-02_fleet_dga_condition_standard.pdf`: 5 of 25 stump-paragraph terms appear (register, manager, network, written, remedy); read whether the document names the move
+- **REVIEW** `ES-DGA-02_fleet_dga_condition_standard.pdf`: 6 of 25 stump-paragraph terms appear (register, manager, network, written, main-tank, remedy); read whether the document names the move
 
 ## 8 column names (REVIEW 1)
 - **REVIEW** `dga_main_tank_results_2021-2026.csv`: columns a generator names and an organisation does not: oil_temp_c

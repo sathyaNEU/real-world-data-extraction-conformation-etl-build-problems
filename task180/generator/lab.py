@@ -6,9 +6,12 @@ Gas trajectories per role:
   L1, L2            the tap-changer barrier weeps from LEAK_ONSET: every tap operation carries
                     diverter-compartment oil into the main tank, so acetylene (and a little hydrogen,
                     ethylene and methane) rises in proportion to the operations
-  V, A3             internal arcing from ARC_ONSET: acetylene with hydrogen at about twice
-                    (V) and 1.7 times (A3) the acetylene, a slight ethylene rise, in bursts that have
-                    nothing to do with the tap changer's operations
+  V                 internal arcing from ARC_ONSET: acetylene with hydrogen at about twice the
+                    acetylene, a slight ethylene rise, in bursts that have nothing to do with the
+                    tap changer's operations
+  A3                arcing at the tap selector, which sits in the main-tank oil, from ARC_ONSET: a
+                    little gas at every operation, so acetylene with hydrogen at about 1.7 times it
+                    rises in step with the operations, made in the main tank and arriving whole
   T1, T2, T3        thermal faults in oil: ethylene, methane and ethane rising, little acetylene
 """
 import datetime as dt
@@ -296,6 +299,19 @@ def _design_increments(total, n, fixed_inc, fixed_ops, free_ops, days_fixed, day
     return best, best_score
 
 
+def _tracking_increments(total, ops, r, noise=0.05, step=0.1):
+    """Increments (multiples of step) summing to total, in proportion to the operations in each
+    interval with a little scatter: gas made at every operation."""
+    w = np.asarray(ops, float) * np.clip(r.normal(1.0, noise, len(ops)), 0.8, 1.2)
+    units = int(round(total / step))
+    raw = w / w.sum() * units
+    base = np.floor(raw).astype(int)
+    rem = units - base.sum()
+    order = np.argsort(-(raw - base))
+    base[order[:rem]] += 1
+    return base * step
+
+
 def build(dlist, H, ops, cnt):
     samples = plan()
     adates = analysis_dates(samples)
@@ -407,23 +423,23 @@ def build(dlist, H, ops, cnt):
     for k, i in enumerate(vi):
         rep[i]["C2H2"] = _fmt_c2h2(lv[k]) if lv[k] >= 0.5 else "<0.5"
 
-    # A3: internal arcing from January 2025, acetylene in bursts
+    # A3: arcing at the tap selector from January 2025, gas made at every operation
     ai = per[A3u]
     akeys = [samples[i][2] for i in ai]
     a_dec, a_sep, a_lat = akeys.index("2024-12"), akeys.index("2025-09"), akeys.index("2026-09")
     adays = [samples[i][1].date() for i in ai]
-    aops = np.array([ops_between(A3u, a, b) for a, b in zip(adays[:-1], adays[1:])], float)
-    add = np.array([(b - a).days for a, b in zip(adays[:-1], adays[1:])], float)
+    on = W.ARC_ONSET[A3u]
+    aops = np.array([ops_between(A3u, max(a, on), b) if b > on else 0
+                     for a, b in zip(adays[:-1], adays[1:])], float)
     r = rng(902)
     pre_n = a_sep - a_dec
-    pre_total = 3.1
-    inc_pre, s1 = _design_increments(pre_total - 0.25, pre_n, [], [], aops[a_dec:a_sep], [], add[a_dec:a_sep], r,
-                                     [(False, slice(0, pre_n))], tries=8000)
     post_n = a_lat - a_sep
     post_total = W.TUNED_INCREASE[A3u][1]
-    windows = [(True, slice(0, post_n)), (False, slice(0, post_n))]
-    inc_post, s2 = _design_increments(post_total, post_n, list(inc_pre), list(aops[a_dec:a_sep]),
-                                      aops[a_sep:a_lat], list(add[a_dec:a_sep]), add[a_sep:a_lat], r, windows)
+    per_op = post_total / aops[a_sep:a_lat].sum()          # the same gas per operation throughout
+    inc_pre = _tracking_increments(round(per_op * aops[a_dec:a_sep].sum(), 1), aops[a_dec:a_sep], r)
+    inc_post = _tracking_increments(post_total, aops[a_sep:a_lat], r)
+    s1 = float(np.corrcoef(inc_pre, aops[a_dec:a_sep])[0, 1])
+    s2 = float(np.corrcoef(inc_post, aops[a_sep:a_lat])[0, 1])
     alv = {k: 0.08 for k in range(a_dec + 1)}
     run = 0.25
     for m in range(pre_n):

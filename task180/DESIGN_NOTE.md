@@ -43,8 +43,12 @@ temperatures exported from the historian in UTC with no zone marker; a maintenan
 
 **Layer 2 (the analytical shortcut).** Coding each transformer on its main-tank gases and ranking the code-3 units by
 severity. The standard's arithmetic is right and every gas really is in the main-tank oil; an expert first asks where
-each fault gas was made, because the standard codes gases generated in the main tank, and acetylene carried in from a
-tap-changer compartment is made by normal switching, not by a fault an internal inspection can find.
+each fault gas was made, because the inspection outages go to faults in the main tank (5.1, 5.2), and acetylene carried
+in from a tap-changer compartment is made by normal switching, not by a fault an internal inspection can find. The
+second shortcut is how to tell: following the tap counter is not enough, because an arc at the tap selector, which
+works in the main-tank oil, also makes its gas at every operation. The gas the acetylene arrives with settles it: oil
+from a diverter compartment brings acetylene with almost no hydrogen, an arc in the main-tank oil makes more hydrogen
+than acetylene (IEC 60599, cited by the standard, reads a C2H2/H2 above 2 to 3 in the main tank as tap-changer oil).
 
 **Similarity claim.** No prior build attributes a measured anomaly to an attached compartment's normal operation before
 ranking. task181 (explaining away a dominant source among pooled victims) is a different structure: there the sources
@@ -68,7 +72,8 @@ here identities are fixed and the question is where a measured gas was made.
 - **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample and every
   counter reading ships, and the main call's rows carry no device (asserted, below). A
   perfect main-tank gas analyser still reads the leaked acetylene, because it is really in the oil; what the decision
-  needs is its origin, which the counters, the tap-changer types and the gas ratios settle.
+  needs is its origin, which the gas it arrives with settles; the counters and the tap-changer types alone do not
+  (Rolleston T2's acetylene follows its counter as closely as the leaks' do).
 - **Lens swap.** Not one population under two lenses: the answer's ranking runs on main-tank gases generated in the main
   tank, a different set of gas volumes from the naive ranking's, built per unit from three files.
 
@@ -78,9 +83,11 @@ A competent solver codes every transformer under ES-DGA-02 from its main-tank sa
 age, twelve-month increases, code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and
 Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it
 there is reading main-tank acetylene as a main-tank fault, when at Dunsandel T1 and Leeston T2 its increments track the
-tap-change counts (r 0.998 and 0.995) and its twelve-month ratio to hydrogen is 9.8 and 8.2, so the slate takes the
-vacuum-tap-changer unit with the same acetylene (Southbridge T2), the in-oil unit whose acetylene is internal (Rolleston
-T2, 4.98) and the worst thermal fault (Coalgate T1, 4.73).
+tap-change counts (r 0.998 and 0.995) and its twelve-month ratio to hydrogen is 9.8 and 8.2. A solver who does
+attribute, but by the counter alone, drops Rolleston T2 as well (its acetylene tracks its counter at r 0.999, arc gas
+from the tap selector in the main-tank oil, C2H2/H2 0.64) and names Southbridge T2, Coalgate T1 and Springston T2. The
+slate takes the vacuum-tap-changer unit with the same acetylene (Southbridge T2), the in-oil unit whose acetylene is
+made in its main tank (Rolleston T2, 4.98) and the worst thermal fault (Coalgate T1, 4.73).
 
 ## ENTITY AND UNIT OF VALUE
 
@@ -91,7 +98,7 @@ rate limit; the slate is three transformers in priority order.
 
 Units: L2 = DSL-T1 Dunsandel T1 and L1 = LST-T2 Leeston T2 (in-oil arcing tap changers, barriers weeping from 1 July 2024
 and 17 March 2025), V = SBG-T2 Southbridge T2 (vacuum tap changer, internal arc), A3 = RLS-T2 Rolleston T2 (in-oil tap
-changer, internal arc, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Springston T2, T3 = DFD-T1 Darfield T1
+changer, arcing at the tap selector in the main tank from December 2024, gas made at every operation, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Springston T2, T3 = DFD-T1 Darfield T1
 (thermal faults in oil).
 
 | Rung | Construction | Slate | Why a careful analyst stops | Killed by |
@@ -99,8 +106,9 @@ changer, internal arc, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Spring
 | 0 | Highest latest acetylene (arcing read off the Duval triangle) | DSL-T1 (22.5 ppm), LST-T2 and SBG-T2 (12.9 each) | arcing is the most severe fault class | ES-DGA-02 4.4 codes on levels and twelve-month increases, not the latest level |
 | 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | DSL-T1 9.64, LST-T2 and SBG-T2 8.07 each, then RLS-T2 4.98, CGT-T1 4.73 | the filed standard applied exactly | at DSL-T1 and LST-T2 the main-tank acetylene increments track tap-change counts (r 0.998 and 0.995 from the first detectable result; 0.978 and 0.989 from the last below-detection one), twelve-month C2H2/H2 is 9.8 and 8.2, the tap changers are in-oil arcing types |
 | 2 | Drop the unit with the clearest leak only | without DSL-T1: LST-T2, SBG-T2, RLS-T2; without LST-T2: DSL-T1, SBG-T2, RLS-T2 | one contaminated unit found | the other leaking unit carries the same signature |
-| 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene does not track its counter (r 0.110) and its C2H2/H2 is 0.64: internal |
-| 4 (answer) | Attribute each unit's acetylene; the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
+| 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene arrives with more hydrogen than acetylene (C2H2/H2 0.64): made in the main tank |
+| 3b | Drop acetylene wherever it tracks the unit's tap operations (round 2's step) | SBG-T2, CGT-T1, SPN-T2 | the two leaks track their counters, so tracking reads as the test | RLS-T2's acetylene tracks its counter too (r 0.999 raw, 0.992 per day) but arrives with 1.6 times as much hydrogen (C2H2/H2 0.64 against 9.8 and 8.2 at the leaks): arc gas made in the main-tank oil at each tap change, not diverter oil |
+| 4 (answer) | Attribute each unit's acetylene by the gas it arrives with; the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
 
 With their acetylene attributed, DSL-T1 and LST-T2 stay code 3 under section 4, which codes the main-tank results as
 reported (the goldens carry the literal code and severity, 3 at 9.64 and 3 at 8.07), but neither has a fault in the
@@ -122,13 +130,14 @@ named unit, asserted.
 
 ## GRID (asserted in checks.py)
 
-Rows: fourteen attribution rules (all three signatures; each pair of type, tracking and ratio; any two of three;
-acetylene dropped for C2H2/H2 above 2, 3 and 5; tracking r of 0.8, 0.9 and 0.95 on increments per sample interval;
-r of 0.9 per day; cumulative growth fitting the operations better than time, alone and with the tap-changer type), each
-on two tracking windows (from the first detectable result, from the last below-detection result). Columns:
-below-detection values at zero, half the limit or the limit; base sample at 330, 365 and 400 days; preservation class
-from the latest or the median O2/N2 (18 columns). Shipped: all 504 attribution cells return SBG-T2, RLS-T2, CGT-T1 in
-that order; the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
+Rows: six attribution rules that read the gas the acetylene arrives with (all three signatures; type and ratio;
+tracking and ratio; acetylene dropped for C2H2/H2 above 2, 3 and 5) and eight that do not (type and tracking; any two
+of three; tracking r of 0.8, 0.9 and 0.95 on increments per sample interval; r of 0.9 per day; cumulative growth
+fitting the operations better than time, alone and with the tap-changer type), each on two tracking windows (from the
+first detectable result, from the last below-detection result). Columns: below-detection values at zero, half the
+limit or the limit; base sample at 330, 365 and 400 days; preservation class from the latest or the median O2/N2 (18
+columns). Shipped: all 216 gas-signature cells return SBG-T2, RLS-T2, CGT-T1 in that order, and all 288 tracking-only
+cells return rung 3b (SBG-T2, CGT-T1, SPN-T2); the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
 DSL-T1 and LST-T2 in all three below-detection readings. Attribution is looked for only where acetylene rises faster than
 its rate limit (DSL-T1, LST-T2, SBG-T2, RLS-T2).
 
@@ -199,23 +208,25 @@ relay operations) and the March 2026 thermal imaging survey of the 11 kV switchb
    free-text maintenance log, UTC historian exports. 2. The flip is a method choice: attributing gases to their source
    before coding. 3. ES-DGA-02 defines the population, the coding, the window and the priority. 4. No decoy memo; Barry's
    notes are true. 5. The method is not recovered from certified figures. 6. task28 splits a flagged excess by source before ranking; here the second source is the normal operation of an
-   attached compartment, found by co-movement with its own counter and by gas ratio, and no earlier task teaches that.
+   attached compartment, told from an arc at the tap selector by the gas it arrives with (both follow the counter), and
+   no earlier task teaches that.
 
 ## STOPPING RULE
 
 Two rounds in which both solvers attribute the acetylene unprompted file this architecture as at-ceiling; a miss landing
-anywhere other than rungs 0 to 3 is read for a fork before any hardening.
+anywhere other than rungs 0 to 3b is read for a fork before any hardening.
 
 ## LEAK CHECK (leak.py, as-of 2026-10-16)
 
 Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6, 7 and 11 clean; sweep 10 found no writer signature.
 `guard.py surface task180`: 124 builds screened, no pair promoted (nearest task89 at surface 0.104); personas found in the pack all on the card.
 
-- Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries five swept terms (register, manager, network, written,
-  remedy): ordinary words of a utility standard (the asset register, the General Manager Network who approves it, the
-  temperature written on the label, an internal inspection as the remedy for a fault in the main tank, 5.1). It names
-  gases and the main tank as any DGA standard does and says nothing about compartment oil reaching the main tank
-  (asserted).
+- Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries six swept terms (register, manager, network, written,
+  main-tank, remedy): ordinary words of a utility standard (the asset register, the General Manager Network who approves
+  it, the temperature written on the label, the main-tank sample the fleet is coded on, an internal inspection as the
+  remedy for a fault in the main tank, 5.1). It names gases and the main tank as any DGA standard does and says nothing
+  about compartment oil reaching the main tank, about tap selectors or about telling one source from another by its
+  gases (asserted).
 - Sweep 8, `oil_temp_c` in the main-tank results: the label temperature column the brief names; "temp" is temperature,
   not a temporary field.
 - Sweep 9, `mobile_substation_bookings_2027-28.xlsx` carries 18 dates in 2027 and 2028: it is the forward booking sheet
@@ -228,7 +239,35 @@ attack coded every transformer on the main-tank results and put "the top three c
 with no step that asks where a gas was made: the attribution is no longer a work order. Pass 3 reads the pack with 5.2
 as reworded.
 
+Isolated reader, pass 3 (5.2 as reworded, run beside round 2): nothing quoted for question 1 ("The closest is ES-DGA-02
+s.5.2 ... That is the rule for who qualifies, not the move"), no ranking file, no analyst-only file, no answer-like
+figure; all three REVIEW lines harmless. Its plan kept "only code 3 units with a main-tank fault (s.5.1-5.2). That means
+dropping in-oil tap-changer units whose acetylene or hydrogen rise tracks tap operations": the qualifier turns the
+attribution into a work order, which is what round 2 executed. 5.2 stays (without it the literal reading is rung 1) and
+the hardening (loop 1) makes the tracking step return rung 3b. Pass 4 reads the hardened pack.
+
 ## Tried and rejected
+
+- **Round 2 landed (architecture 2, loop 0, 2026-10-11); hardened as loop 1.** One solver, proxy 74.6, the slate exact
+  and every ask figure right. Its deciding step: "Main-tank test (5.2): joined monthly samples with tap ops from
+  scada_tap_counters_daily (rollovers +100000; counters replaced -> reset). DSL-T1 and LST-T2 acetylene rises at a
+  constant ~0.6 ppm per 1,000 ops in every interval (in-oil tap-changer leak) -> excluded; SBG-T2 (vacuum tap changer)
+  and RLS-T2 acetylene rise in steps unrelated to ops." The confirming reader (pass 3, run beside the round) planned the
+  same step off the 5.2 rewording: "Keep only code 3 units with a main-tank fault (s.5.1-5.2). That means dropping in-oil
+  tap-changer units whose acetylene or hydrogen rise tracks tap operations." 5.2 stays as worded, because without it the
+  literal reading is rung 1; the attribution is a work order and the hardening deepens it instead. Brief: build the next
+  rung so that exactly this step completes and still returns the wrong slate. Rolleston T2's arc is now at the tap
+  selector, which works in the main-tank oil: a little gas at every operation, so its acetylene follows its counter as
+  closely as the leaks' (r 0.999 raw, 0.992 per day) and the tracking step drops it (rung 3b: Southbridge T2, Coalgate T1,
+  Springston T2). What it cannot copy is the gas: an arc in the main-tank oil makes 1.6 times as much hydrogen as
+  acetylene (twelve-month C2H2/H2 0.64), where the leaks bring diverter oil at 9.8 and 8.2. Construction: the gas per
+  operation is held constant through the arc, the onset is just after the December 2024 sample, and Rolleston's tap
+  changer follows the step loads of the processing plant on its feeder (its own random stream, so no other unit's
+  draws move; plant seed chosen so all 18 grid columns keep the order with at least 5.3 per cent margin and the
+  tracking r is at least 0.985 in every window and below-detection reading). Only RLS-T2's tap-operation figure moves
+  in the goldens (27,534 to 49,897, still inside the interval). A first draw on the substation's ordinary load-swing
+  switching, with the onset in January 2025, fell to r 0.884 from the last below-detection result and let Coalgate T1
+  pass it on a 400-day base; both rejected.
 
 - **Architecture 1 spent at round 1 (2026-10-11): screen grain (metering system against supply number).** Plain
   solver 81.3 and skeptic 85.6, both on Caithness 54 against Elgin 35. Plain: "rp_mart_weekly_import was rejected for

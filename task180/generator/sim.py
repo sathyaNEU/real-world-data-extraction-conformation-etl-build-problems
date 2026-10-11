@@ -195,6 +195,9 @@ def hourly(dlist):
 
 # ---------------------------------------------------------------------------------------------
 # tap operations per local day, and the SCADA counters at 00:00
+RLS_PLANT_SEED, RLS_OPS_SEED = 63, 44
+
+
 def daily_ops(dlist, H):
     r = rng(4)
     n = len(dlist)
@@ -222,6 +225,12 @@ def daily_ops(dlist, H):
             lam = u["ops"] * (0.55 + 0.45 * swing)
         lam = lam * np.clip(r.normal(1.0, 0.10, n), 0.6, 1.4)
         k = r.poisson(np.clip(lam, 0.1, None))
+        if role == "A3":
+            # Rolleston's tap changer follows the step loads of the processing plant on its feeder
+            # (drawn on its own stream, so every other unit keeps its draws)
+            ra = rng(RLS_OPS_SEED)
+            lam_a = (4.5 + 30.0 * plant_regimes(dlist, RLS_PLANT_SEED)) * np.clip(ra.normal(1.0, 0.10, n), 0.6, 1.4)
+            k = ra.poisson(np.clip(lam_a, 0.1, None))
         # outages: the service day carries nothing; the evening before and the morning after part
         for a, b, kind in out.get(u["id"], []):
             for i, d in enumerate(dlist):
