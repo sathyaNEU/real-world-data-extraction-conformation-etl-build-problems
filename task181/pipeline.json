@@ -1,0 +1,120 @@
+{
+ "task": "task181",
+ "domain": "epidemiology-public-health",
+ "objective": "anomaly-detection",
+ "stage": 9,
+ "stage_name": "shipped after the ask-only revision (df378aa); the author re-tests on the portal (round 2)",
+ "updated": "2026-10-11",
+ "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
+ "architecture": 2,
+ "loops": 0,
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (12 lines, each answered in the design note), on the final rebuild with --asof 2026-10-05",
+  "reader": "pass 3 (after the slide's cluster list was tied to the call): nothing quoted for the decisive step, no file ranks or states the answer, every REVIEW line harmless, plan of attack at rung 1 (the cases notified so far)"
+ },
+ "duplicate_check": {
+  "heart": "BLOCK on one axis (ban.strategy maturity_censoring against task134, drawn the same day); author override, registered with --force 2026-10-11, reason and differentiation on the card; WARNs (Gate G repeat and overuse, decision and opening against task180 v3) answered in the design note",
+  "nearest": "drivers task98 0.08, task91 0.06; task134 not among them",
+  "clone_check": "pass 1 on architecture 2 CLEAN (clone_check_report.md)",
+  "surface": "guard.py surface: 0 promoted pairs of 124 in scope; nearest task93 surface 0.100; personas in the cut pack all on the card"
+ },
+ "three_rules": {
+  "domain": "pass (epidemiological nowcast of right-truncated surveillance counts; the swap breaks it)",
+  "layers": "pass",
+  "decisive_step": "analytical",
+  "analyst_test": "the cases notified so far, or a nowcast on one pooled delay, send the team to Wagga Wagga; only each route's own delay finds Griffith"
+ },
+ "solver_rounds": [
+  {
+   "round": 1,
+   "architecture": 1,
+   "solver": {
+    "landed": true,
+    "proxy": 94.5
+   },
+   "decision": "reroot",
+   "brief": "The solver ran the pooled screen, explained the co-visited plaza sites away as subsets of the pump's victims, re-screened the 78 victims the pump leaves and found the Lombard PIN pad, then checked the last 31 for a common point: 387 and every ask figure. The next rung would need a site that outranks the PIN pad on the residual and survives the subset check; any such site carries unexplained victims of its own and reads as a compromise (a fork), and any site that does not is dismissed by the subset check this solver already ran. The architecture is spent: re-root."
+  },
+  {
+   "round": 2,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 65.2
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 1): every field and stated rule read correctly (episodes, split postcodes, the extract day, the five-year expected count) and every ask figure right, but the solver set the cases notified so far against PR-07's expected count and sent the team to Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6) without a word on reporting delay. A valid analytical miss under the three rules. The proxy is high (65.2) because every ask is independent of the call: the slide's cluster list becomes the clusters in the area the team goes to (its school visits), so a wrong area carries a wrong list."
+  },
+  {
+   "round": 3,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 59.0
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 1) again, after the slide was made call-dependent: every field and stated rule read correctly (episodes, split postcodes, the extract day, the five-year expected count, the roster checks) and every CSV figure right, but the solver set the cases notified so far against PR-07's expected count and sent the team to Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6) without a word on reporting delay; the slide then carried Wagga Wagga's clusters (Wollundry 3, Bolton Park HS 2) instead of Griffith's (Banna Avenue 5, Kooyoo Street 2). Proxy fell from 65.2 to 59.0; the slide items still score partial token hits because the solver names Griffith as runner-up and shares 'Public School' tokens. A valid analytical miss under the three rules."
+  }
+ ],
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 did not run, no Agent tool in the orchestrating subagent)",
+  "report": "determinism_check_report.md (pass 1, no run), determinism_check_report_pass2.md",
+  "passes": [
+   {
+    "pass": 1,
+    "verdict": "none",
+    "disposition": "none",
+    "report": "determinism_check_report.md",
+    "note": "did not run: the orchestrator subagent had no Agent tool to spawn the judge thread"
+   },
+   {
+    "pass": 2,
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md",
+    "gate_g": "mechanism forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "note": "every load-bearing figure reproduced; Griffith first in all 33 nowcast variants; no competing answer survived; minor workbook hygiene note only; finding 1 (workbook inline strings) fixed after the pass with no value moved"
+   }
+  ],
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "approved": false,
+ "delivered": "2026-10-11",
+ "portal": {
+  "round": 1,
+  "reported": "2026-10-11",
+  "stump": "pass",
+  "determinism": "pass",
+  "score": 52,
+  "rubric": "task181/portal_round1_rubric.csv",
+  "finding": "criteria 1 to 7 (the call, the fortnight figures, the route shares and the slide's two schools; 48 points) failed and criteria 8 to 32 passed (every graded CSV figure, 42 points, and the ten format points), so the response scored 52 on the CSV alone",
+  "repair": "harden ask A (the 10-area by 5-measure CSV) with silent, stacked, filed devices off the main path; the prompt, the call, the fortnight, the prior-year windows and the slide's clusters stay as they are",
+  "revision": {
+   "rule": "supplemental-stumping Part 12 (ask-only revision)",
+   "date": "2026-10-11",
+   "commit": "df378aa",
+   "devices": [
+    "A1 a laboratory request's date of birth keyed month first, the true date on the birth record (I1 Wagga Wagga, I4 Griffith): Wagga Wagga infants 2 (natural 3), admitted 1 (2), vaccinated 0 (1); Griffith infants 1 (2), vaccinated 0 (1)",
+    "A2 an MRN merged in the PAS into the one issued at birth, the line list keeping the merged number (I5 Griffith, I10 Cootamundra-Gundagai): Griffith admitted 1 (0); Cootamundra-Gundagai admitted 1 (0), vaccinated 1 (0)",
+    "A3 a mother's Medicare card reissued late in the pregnancy, the issue digit one up on the birth record (I6 Leeton, I8 Junee, I9 Edward River, about one mother in 25): Leeton, Junee and Edward River vaccinated 1 (0)"
+   ],
+   "gate": "against d6944e3: the line list, the other seven pack files the main call reads and the slide byte-identical; every main-call figure on golden.py and verify.py hashes as shipped (2e6c46341f359476); only the admissions, births and register changed",
+   "effect": "the shipped method misses 9 of round 1's 15 graded CSV cells (26 of their 42 points), 11 cells in all",
+   "not_run": "leak.py, leak reader, solver round, guard.py heart, clone check, determinism judge, golden-realism (Part 12)"
+  }
+ },
+ "build": {
+  "answer": "Griffith",
+  "checks": "488 assertions passed",
+  "verify": "OK. Griffith (excess 31.0; next Wagga Wagga 9.7); rungs 0 to 3 Wagga Wagga; 2 clusters in Griffith (Banna Avenue Public School 5, Kooyoo Street Public School 2); 50 ask A figures; route speeds Inland Pathology 76.0%, Wagga Wagga Hospital Laboratory 100.0%",
+  "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 ffb77559e24dc539)",
+  "grid": "54 cells, 0 misses (36 route-specific Griffith, min margin 2.70; 18 pooled Wagga Wagga, min 1.25)",
+  "rungs": "R0 to R3 Wagga Wagga, margins 1.29 to 1.71; R4 Griffith 3.18",
+  "hygiene": "after judge pass 2: workbooks moved to shared strings, Excel part order and XML declarations; every cell identical, other files byte-identical, leak.py unchanged",
+  "target_zip": "cut from the final rebuild by generator/build.py: 11 files, each identical to target/ (zip sha256 af1f744a87ef687a)"
+ },
+ "deferred": []
+}

@@ -48,7 +48,10 @@ with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, 
 architecture, then re-rooted in the same objective and number, three architectures, then retired. A
 round where it does not commit to the main call passes the worth-it gate, gets one repair of whatever
 the leak reader deferred, and goes on to the determinism judge, whose FIX_NOW is fixed and re-judged
-once. No session runs a solve in the main thread, which has read the design.
+once. No session runs a solve in the main thread, which has read the design. Each role runs on its
+own model and effort (`build-pipeline`, Models and effort): the designer on Opus at max effort; the
+builder, the duplicate-check auditor and the solver on Opus at medium; the leak reader and the judge on
+Sonnet at medium.
 
 **Solver first, polish after.** The leak reader runs once per build, on Sonnet, before the round. Only
 what hands the solver the answer (a sentence naming the decisive step, a file that ranks the
@@ -56,7 +59,11 @@ candidates or states the asked figures, a file that exists only to help) and any
 are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
 for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
 pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
-An author keeps at most two builds in flight, a re-rooted architecture included.
+An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
+round (a hardening rebuild, the deferred findings, a judge's FIX_NOW, an ask-only revision) runs in a fresh agent that starts
+from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
+named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
+it (`build-pipeline`, Running the stages).
 
 ## Per-author rules
 
@@ -95,6 +102,9 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
               SEND_BACK re-roots or retires
    ->  SHIP to the author
    ->  the author tests on the official portal and reports back
+              main call held, asks over the bar: the ask-only revision (`supplemental-stumping`
+              Part 12): ask-path data only, main call byte-identical, commit, Status `shipped` on main;
+              no leak read, round or judge
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
@@ -275,6 +285,14 @@ deliberately left unstated with a conflicting stated rule as the trap. File the 
 organisation would have in writing; what decides the answer is an analytical step those rules leave to
 the analyst, never the rules themselves.
 
+**Determinism is literal.** The portal's judge executes the shipped text word for word and infers
+nothing. So the estimand (population, including any members not yet observed at the as-of date, outcome,
+window, unit, comparison) is filed so that its literal execution is the golden's quantity; the method may
+stay open only behind a filed criterion that selects it, with the data separating the candidates under it;
+and no filed rule, basis or formula may give another answer when read literally. The stump lives in how
+the stated quantity is computed, never in what is meant: if a literal estimand makes the call easy, the
+stump was a fork and the decisive step is redesigned (`determinism-check` §1 and §2).
+
 The client's libraries are the working material: `stumping/references/client/two-layer-task-design.md`
 (the three rules, the two layers and the pre-ship check), `stumping/references/client/layer2-rigor-patterns.md`
 (300 rigor patterns by domain and task type: the pitfall, the tempting shortcut, what pins the rigorous
@@ -309,12 +327,17 @@ slot of its own.
 span many rows, periods or cuts and still resolve to one defensible answer, and that is the ask you
 want, because a wrong analytical path fails it everywhere at once. Unit and rounding are stated
 inside the sentence that asks for the figure, and every figure inside an ask is separately gradable
-and separately determinate. One deterministic recommendation anchors everything.
+and separately determinate. One deterministic recommendation anchors everything. An ask is free of the
+main call's rules: it needs no filed rule to pin its handling, its golden may go against the procedure,
+and its device may turn on data semantics or rule application, which rule 3 bans only as the main call's
+decisive step (`supplemental-stumping` Parts 5 and 12).
 
 **The prompt is prose, first person, the way you would write to a colleague.** No bracketed blocks,
 no `file.ext (Family)` headers, no bulleted asks. What costs you is a **roll call** of colleagues'
 opinions, which is a design defect rather than a style one, because each named opinion hands the
-solver a rung to refute.
+solver a rung to refute. **It stays under 1,000 characters**: one committed call and two or three
+asks, each multi-dimensional and hard, never a list of small ones, so it cannot read as a laundry
+list (`guide-to-prompt`, and `voice-check.py` flags a draft at 1,000 or more).
 
 **The rubric is generated and must reach 25 or more criteria.** A one-to-three file prompt is a small
 surface, so the criteria come from the **prompt shape**, the structure of the answer: a ranked list

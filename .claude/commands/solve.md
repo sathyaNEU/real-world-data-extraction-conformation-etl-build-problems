@@ -20,7 +20,7 @@ The round number `k` is one more than the rounds already recorded in `<task>/pip
    the solver's scripts. Nothing else goes under the scratchpad: no earlier round's copy, no result
    file, no design or grading notes (results and notes live outside it).
 4. **Spawn one isolated `Agent`** of type `Explore` (it carries no repository instructions) with
-   `model: opus` and `effort: high` (high, not max), with the spawn prompt below, `S` and the
+   `model: opus` and `effort: medium`, with the spawn prompt below, `S` and the
    deliverable file names filled in. Pass the model explicitly, because an `Explore` agent otherwise
    runs on its own default model. One agent needs no Workflow script.
 5. **Write the solver's JSON** to a results folder outside the scratchpad and grade it:
