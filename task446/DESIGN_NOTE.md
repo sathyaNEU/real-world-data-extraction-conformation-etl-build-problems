@@ -217,6 +217,19 @@ and no inversion.
   growth, unemployment, Bank Rate and CPI to 2029 Q4) and Notes; no scenario weights, no IFRS 9 wording; author
   Group Economics. It stays in `metadata.json`'s distractor list beside the rating master scale.
 
+## Semantic fork table
+
+Membership under CRM-07 2.2 as amended after portal round 1, one row per edge the ultimate-parent clause touches
+(asserted in `generator/checks.py` and in `solve.check_membership`).
+
+| ID | Term | Golden reading | Alternative | Call under the alternative | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | an ultimate parent that is not booked | a member: 165 flagged at 30 Sep 2026, apex-only flags 6 / 5 / 3 / 5 / 6 by cohort | members only when booked or consolidated into the parent (the pre-amendment text): 159 flagged | 133 (132.77), but band arrivals move (under GBP 5m not flagged 6.5 to 7.0, GBP 5m to 15m flagged 34.0 to 31.9) | 2.2: "A group's members are its ultimate parent, ..." |
+| SF2 | an ultimate parent the credit system books | a member, booked to its own register group (901 of 1,306, none to another group) | none: booked and named both make it a member | same call | the records converge (asserted) |
+| SF3 | an ultimate parent with a GLEIF reporting exception | the register's ultimate parent is GLEIF's top: every apex files NON_CONSOLIDATING, NATURAL_PERSONS or NO_KNOWN_PERSON for both parent categories | a hidden consolidating parent above it | same call | no exception reason on an apex withholds a parent (asserted); 2.1 and the register name the parent |
+| SF4 | an international branch of the ultimate parent (30 records) | read with its head office under 2.3 | left out as not a legal entity | same call | every branch of an apex is GREEN at every cohort date (asserted, branches off inert) |
+| SF5 | an ultimate parent with its own direct parent | does not occur | the parent's parent as the top | same call | no apex is the start node of any consolidation record (asserted) |
+
 ## Ladder (asserted in `generator/checks.py`; the call, groups)
 
 Closed cohorts (built from the pack; counts retuned in loop 1): monitored 846 / 871 / 889 / 902; reaching the
@@ -305,7 +318,7 @@ a reader who skips the test, and skipping it violates 5.2.
 | # | Axis | Reading and closure |
 |---|---|---|
 | 1 | Population | monitored book: active on the register and not on the watch list at 30 Sep (4.1); later joiners out (5.1); C1: no register or watch-list date within 8 days of a cohort date |
-| 2 | Unit | obligor group; members = booked customers plus GLEIF accounting-consolidation members in force at the date (2.1, 2.2); C1: every flagged entity's membership stable across all cohort dates |
+| 2 | Unit | obligor group; members = the ultimate parent, booked customers and GLEIF accounting-consolidation members in force at the date (2.1, 2.2 as amended after portal round 1); pinned at authority: 2.2 names the ultimate parent a member, so its literal reading counts the 6 / 5 / 3 / 5 / 6 apex-only flags and gives 165 flagged (the pre-amendment reading, 159, moves band arrivals; SF1 to SF5); C1: every flagged entity's membership stable across all cohort dates |
 | 3 | Attribution window | placed in the twelve months after the cohort date (4.2); C1: no placement within 8 days of a window edge |
 | 4 | As-of dating | the September month-end publication; relationship periods covering the date; asks: limits as they stood at the end of 30 Sep UK time (1.3, 6.1) read from a history stamped in UTC (field reference) |
 | 5 | Version basis | one publication per month-end; asks: the limit version in force at the end of 30 Sep (6.1), not the extract's limit at its 01:15 run on 1 Oct |
@@ -531,3 +544,4 @@ to stage 6b and the judge.
 - Standard 5.2 as filed at architecture 2 stage 3 ("a probability of reaching the watch list that depends only on its flag status at the cohort date and is the same across the book. It is set from the performance measures in 4.3"): read literally, the flagged probability is the cohorts' hit rate, so the filed text gives about 74 against the golden 134; the stage 4 reader sized it as a main-call fork, it is the defect the portal failed task445 on (answer_contradicts_files, golden_wrong) and an official decoy on the card's terms. Replaced in loop 1 by a 5.2 that files the estimand and the leave-one-cohort-out test that selects the basis and names no basis.
 - Architecture 2's stage 3 ask devices: the superseded scheduled plc run (D2), the HB-DAC file delivered on its own (D4) and closing rates quoted per pound (D3) were re-skinned from architecture 1's set, which its round-1 solver cleared in full (asks 3 of 3 at 80 per cent of tokens), and facilities maturing on the cohort date still ACTIVE (D8) were executed by any reader of 6.1's maturity sentence (and sat as the last 25 rows); with CANCELLED and CLOSED rows carrying their last limit, 6.1 also left the status reading open (18 groups between bands). Replaced in loop 1 by the facility-obligor grain, the UTC limit clock and the not-yet-grouped hazard, with cancelled and closed limits nil in the records.
 - Stage 3 cohort counts under loop 1's test (flagged and reaching 58/33/28/39, flagged and not reaching 60/64/66/63): the pooled basis lost the test to the mean of cohort rates (2.5 against 1.9 per cent), whose unflagged total sat in another bin (28.5 against 28.7). The first retune tried (59/34/28/39 and 60/64/66/64) put the straight-line fit of the arrival share at 131.49 against the pooled 131.92, on a bin edge and a different whole number. Retuned to 58/32/28/39 and 61/66/67/65, where every convergent route lands in the 133 bin with at least 0.33 of margin.
+- CRM-07 2.2 as shipped ("the customers the credit system books to it and every legal entity whose GLEIF relationship record shows it accounting-consolidated into the group's ultimate parent"), portal round 1, 2026-10-11: read literally it leaves out an ultimate parent that is neither booked nor consolidated into itself, giving 159 flagged against the golden's 165 and moving every band arrival figure past its bin (the headline 133 held). Pinned at authority by amending 2.2 to name the ultimate parent a member; convergence would have moved main-call rows.

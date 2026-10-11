@@ -69,7 +69,7 @@ def build(F):
         "Built the monitored book at each 30 September from credit_group_register_20260930.xlsx and "
         "watch_list_history_2020-01_to_2026-09.csv (CRM-07 4.1): %d groups at 30 September 2026." % F["N1"],
         "Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the "
-        "obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date "
+        "group register's ultimate parent LEI, the obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date "
         "(CRM-07 2.2, 3.2): %d of the %d are flagged." % (F["F1"], F["N1"]),
         "Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and "
         "measured them taken together (4.3): capture rate %s, false-alarm rate %s."

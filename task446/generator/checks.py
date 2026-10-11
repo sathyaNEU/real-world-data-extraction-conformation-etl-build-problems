@@ -319,6 +319,21 @@ def main():
         t2 = pk.cohort_table(**kw)
         for c in range(5):
             ok(t2[c]["F"] == tab[c]["F"], "texture %s inert at cohort %d" % (kw, c))
+    # SF1, SF2, SF3, SF4, SF5 (2.2 membership, design note semantic fork table): the amended clause names the ultimate parent a member; read literally it gives the
+    # golden's 165 and every committed band figure. The pre-amendment reading (apex only when booked) is refused
+    # by 2.2's own words; it would give 159 and move band arrivals, and leaves the call on 133.
+    only = solve.check_membership(G, target)
+    ok(only == [6, 5, 3, 5, 6], "apex-only flags counted by cohort %s" % only)
+    t_na = pk.cohort_table(apex=False)
+    ok(len(t_na[4]["F"]) == 159, "the old 2.2 reading gives 159 flagged")
+    fc_na = solve.forecast(t_na)
+    ok(round(fc_na["total"]) == CALL, "the call holds under the old reading (%.2f)" % fc_na["total"])
+    ok(n_moved(golden_figs, band_figures(solve.band_table(t_na, fc_na, G["exp"]))) >= 5,
+       "the old reading moves band arrivals, so the amended clause is load-bearing")
+    for kw in (dict(branches=False), dict(follow_direct=False), dict(keep_lapsed=False)):
+        ok(pk.cohort_table(apex=True, **kw)[4]["F"] == tab[4]["F"], "apex edge %s inert" % kw)
+    ok("members are its ultimate parent, the customers the credit system books to it" in std_flat_22(target),
+       "2.2 as amended")
     resolve_obl_only = 0
     for c in range(5):
         date = solve.d(solve.COHORTS[c])
@@ -414,6 +429,12 @@ def main():
     shutil.rmtree(tmp2, ignore_errors=True)
     goldens_and_writeup()
     return w, G, rungs, moved, totals, tot_com
+
+
+def std_flat_22(target):
+    import pypdf
+    return " ".join("".join(pg.extract_text() for pg in pypdf.PdfReader(
+        os.path.join(target, make.FILES["standard"])).pages).split())
 
 
 def F1_PPV(w):

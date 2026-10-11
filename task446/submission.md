@@ -22,7 +22,7 @@ The 133 comes from the basis CRM-07 5.2's test selects: the early-warning screen
 ## 3. Step-by-Step Solution
 
 1. Built the monitored book at each 30 September from credit_group_register_20260930.xlsx and watch_list_history_2020-01_to_2026-09.csv (CRM-07 4.1): 913 groups at 30 September 2026.
-2. Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date (CRM-07 2.2, 3.2): 165 of the 913 are flagged.
+2. Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the group register's ultimate parent LEI, the obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date (CRM-07 2.2, 3.2): 165 of the 913 are flagged.
 3. Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and measured them taken together (4.3): capture rate 78.1%, false-alarm rate 7.83%.
 4. Ran 5.2's test, each closed cohort predicted from the other three taken together: the capture and false-alarm basis has the smallest largest miss, 1.6%, against 40.6% for the hit and miss rates.
 5. Solved this year's 18.1% flagged share for the share of the book that will reach the list through those two rates: 14.6%, so a flagged group reaches it with probability 63.0% and a group not flagged with 3.9%.
