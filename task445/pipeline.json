@@ -1,17 +1,30 @@
 {
  "task": "task445",
- "domain": "",
+ "domain": "quantitative-finance",
  "objective": "data-extraction-conformation",
- "stage": 0,
- "stage_name": "intake",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-11",
  "branch": "oviya1301/task445-13f-ownership-bridge",
- "stump": "",
+ "stump": "Solvers flag on the Q4 13F filings in hand (or one aggregate completion share) and file the wrong flag set; the decisive step is completing the open filing window holder by holder from each pending manager's last filed position.",
  "architecture": 1,
  "loops": 0,
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
  "solver_rounds": [],
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "approved": null, "delivered": null, "portal": null
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
 }
