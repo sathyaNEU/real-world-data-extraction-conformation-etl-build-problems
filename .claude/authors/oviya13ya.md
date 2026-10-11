@@ -17,6 +17,14 @@ this file and keeps its own branch rules.
   `pipeline.json` to `retired`, and never offer retirement as an option. A build the author pauses
   goes back to Status `open`.
 
+## Pipeline
+
+- **No in-house solver round.** It is retired permanently. A build goes draw, design, build, the leak and duplicate
+  checks together, the determinism judge, ship, and then the next open task starts at once. Stump power is argued on
+  paper (the default path ending on a wrong answer, `precut.py`) and measured by the portal.
+- **Models and effort:** every designer runs on Opus at max effort, and every builder on Opus at medium.
+- **Every stump is unique** against every card on file. No driver, pattern or strategy is repeated.
+
 ## Branches
 
 - Every build goes on its own branch under the `oviya13ya/` prefix, `oviya13ya/taskNN-<short-slug>`,
