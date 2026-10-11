@@ -37,14 +37,24 @@ fixed by the prompt's question or by one filed sentence at authority (a governin
 contract), stated once. Never leave a part of the estimand for the solver to infer, and never word it so
 that its literal reading is the easy answer.
 
-**HOW: the method may stay open only behind a filed selection criterion.** If the decisive step is the
-choice of method, file the criterion that selects it in general terms, never the method itself: "the
-basis that, applied at the same point in the last closed period, comes closest to that period's final
-figure on every unit (closeness: the largest miss)", "only measures that held steady across the closed
-cohorts", "the standard's general method for this estimate". Then build the data so every reasonable
-candidate is separated under that criterion with margin, and assert it. With no filed criterion, two
-defensible methods survive and the judge fails the build (`underspecified_objective`). With the method
-itself filed, the decisive step is rule application and the stump is gone.
+**HOW: the method may stay open only when something filed or structural forces it.** Three forms, in
+order of preference:
+1. **The design forces it.** The estimand plus the data's own structure rule out every other method: the
+   records show the population is censored, the comparison group is contaminated, the rate moves with the
+   mix, the constraint binds. The analyst must see it; no sentence says so.
+2. **A governing standard's general method**, stated as the field states it (an actuarial standard on
+   development, a survey standard on weighting), with the analytical step the method leaves open being
+   the stump.
+3. **A filed selection criterion**, in general terms and never naming the method: "the basis that,
+   applied at the same point in the last closed period, comes closest to that period's final figure on
+   every unit (closeness: the largest miss)", "only measures that held steady across the closed cohorts".
+   It is a strong pin and a recognisable organ: the guard and the clone check count it, and two builds in
+   a row with a filed back-test read as a template. Use it when the design cannot force the method.
+
+Whichever form, build the data so every reasonable candidate method is separated with margin, and assert
+it. With nothing forcing the method, two defensible methods survive and the judge fails the build
+(`underspecified_objective`). With the method itself filed, the decisive step is rule application and the
+stump is gone.
 
 **Never file a procedure, basis or formula whose literal application gives an answer other than the
 golden.** It is an official decoy (banned on the card) and a determinism fork at once.
@@ -190,7 +200,7 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
 ## Checklist
 
 - [ ] Estimand filed literally: population (unobserved members stated), outcome, window, unit, comparison, inclusion, threshold, rounding
-- [ ] Method either filed (and then not the stump) or open behind a filed selection criterion the data settles with margin, asserted
+- [ ] Method either filed (and then not the stump) or forced by the design, a standard's general method or a filed selection criterion, with every candidate separated by margin, asserted
 - [ ] No filed rule, basis or formula whose literal reading gives another answer
 - [ ] `Literal reader` line in the design note; every literal reading gives the golden, violates a quotable sentence, or converges (asserted)
 - [ ] Semantic fork table complete, every alternative ruled out by a cited sentence or convergent, the stump none of the readings, every row asserted in `checks.py`
