@@ -1,6 +1,15 @@
 # task130: Red Cedar Valley, the care-management baseline for 2027-28 (v3, re-rooted after v2 was spent)
 
-v1 (a 2027 large-holder designation) and v2 (the Tenter House replacement-unit call-off) are spent: v1 failed on the portal, v2 failed on the portal and its hardening loop came back from the clone pre-flight as a Template of task73 world ten (the same move had already been solved on the portal in task86 v2). Both are on the card's lineage and their dead ends are in `## Tried and rejected` below. v3 is the third and last architecture this number gets.
+v1 (a 2027 large-holder designation) and v2 (the Tenter House replacement-unit call-off) are spent: v1 failed on the portal, v2 failed on the portal and its hardening loop came back from the clone pre-flight as a Template of task73 world ten (the same move had already been solved on the portal in task86 v2). Both are on the card's lineage and their dead ends are in `## Retired
+
+task130 is retired on 2026-10-11, its third architecture spent (`build-pipeline`, Retirement). Every card stays filed so none of the three is drawn again.
+
+- v1 failed on the portal on 2026-10-10: both top models filed the golden.
+- v2 failed on the portal on 2026-10-11, and its hardening loop 1 was a Template of task73's world ten at the clone pre-flight.
+- v3, the regression-to-the-mean baseline (an untreated cohort selected the same way a year earlier, trended), was cracked by the in-house solver in round 1. It filed the golden $4,060 PMPM and every tier figure in about four minutes (proxy 100). The pins that closed v3's forks (the any-list Risk Tier, the cancelled RFP, the bid list's programme year) pointed at the method, and the renewal letter's plan totals verified the solver's claims netting.
+- Hardening loop 1 measured every candidate deeper rung on the shipped pack and found none that is forced, fork-free and moves the call (one line each under Tried and rejected, Hardening loop 1). The only levers left were planting a rung or deleting the pins that close forks, both outside the client's standard.
+
+## Tried and rejected` below. v3 is the third and last architecture this number gets.
 
 ```
 DRAW  (guard.py check and register, 2026-10-11; refined before the ladder was cut, same card)
