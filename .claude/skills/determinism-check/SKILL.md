@@ -37,14 +37,24 @@ fixed by the prompt's question or by one filed sentence at authority (a governin
 contract), stated once. Never leave a part of the estimand for the solver to infer, and never word it so
 that its literal reading is the easy answer.
 
-**HOW: the method may stay open only behind a filed selection criterion.** If the decisive step is the
-choice of method, file the criterion that selects it in general terms, never the method itself: "the
-basis that, applied at the same point in the last closed period, comes closest to that period's final
-figure on every unit (closeness: the largest miss)", "only measures that held steady across the closed
-cohorts", "the standard's general method for this estimate". Then build the data so every reasonable
-candidate is separated under that criterion with margin, and assert it. With no filed criterion, two
-defensible methods survive and the judge fails the build (`underspecified_objective`). With the method
-itself filed, the decisive step is rule application and the stump is gone.
+**HOW: the method may stay open only when something filed or structural forces it.** Three forms, in
+order of preference:
+1. **The design forces it.** The estimand plus the data's own structure rule out every other method: the
+   records show the population is censored, the comparison group is contaminated, the rate moves with the
+   mix, the constraint binds. The analyst must see it; no sentence says so.
+2. **A governing standard's general method**, stated as the field states it (an actuarial standard on
+   development, a survey standard on weighting), with the analytical step the method leaves open being
+   the stump.
+3. **A filed selection criterion**, in general terms and never naming the method: "the basis that,
+   applied at the same point in the last closed period, comes closest to that period's final figure on
+   every unit (closeness: the largest miss)", "only measures that held steady across the closed cohorts".
+   It is a strong pin and a recognisable organ: the guard and the clone check count it, and two builds in
+   a row with a filed back-test read as a template. Use it when the design cannot force the method.
+
+Whichever form, build the data so every reasonable candidate method is separated with margin, and assert
+it. With nothing forcing the method, two defensible methods survive and the judge fails the build
+(`underspecified_objective`). With the method itself filed, the decisive step is rule application and the
+stump is gone.
 
 **Never file a procedure, basis or formula whose literal application gives an answer other than the
 golden.** It is an official decoy (banned on the card) and a determinism fork at once.
@@ -68,11 +78,26 @@ note as the `Literal reader` line.
 4. Every step of the write-up passes the same test. A step that needs an inference no file states is an
    open fork, however obvious it feels.
 
+**The semantic fork table is the literal-reader test written down**, one row per term in the main ask
+(every noun, unit and period word) and per convention the main computation depends on (as-of date,
+inclusion, grain, rounding path, tie-break): the golden reading, each plausible alternative, the call under
+the alternative, and the sentence of the prompt or the shipped document that rules it out, or `same call`
+when the records converge. The stump is never one of the readings. Six builds in one window (119, 127,
+128, 131, 133, 134) carried a reading difference as their difficulty, and it was judged a fork or landed
+on the portal every time. The table lives in the design note (`## Semantic fork table`, ids `SF1`,
+`SF2`, ...), `precut.py` refuses a note with an unresolved row, and `checks.py` asserts every row: the
+alternative reading computed and either equal to the golden or refused by the cited text (`stumping`
+Part 2.2).
+
 ## 3. Close every convention
 
 - **Walk the 22 axes** (`references/forcing-the-answer.md` Part 1) and write one line per axis in the
-  design note: the reading chosen and the move that closed it. An axis that cannot move the answer today
-  still gets its line, because it becomes load-bearing when another parameter moves.
+  design note's `## Closure table`: the reading chosen and the move that closed it. An axis that cannot
+  move the answer today still gets its line, because it becomes load-bearing when another parameter
+  moves. **The table is a stage 2 gate, not a stage 7 inspection**: `stumping/precut.py` refuses to open
+  the build stage until all 22 rows are closed, because 13 forks in one window were found by the reader or
+  the judge after the pack was cut, each costing a FIX_NOW and a re-judge and two costing the
+  architecture. A hardening loop re-walks the table before the rebuild.
 - **The closure moves, strongest first.** C1 converge: build the records so every reading selects the same
   rows. C2 confirm: a filed criterion is shown, on closed data, to select one candidate (family size, N of
   N, every rival's worst miss); C2 never recovers a rule nobody filed. C3 corridor: the parameter is
@@ -120,6 +145,20 @@ reproducible path, nothing more: no incidental figure, no count unless a filed d
 sentence saying two readings agree unless the generator asserts it. Blocks and wording:
 `submission-writeup`.
 
+**The write-up is emitted from the verifier, never typed.** The generator writes
+`<task>/generator/figures.json`, every owed figure as the write-up states it (the call, each critical
+component, each step's result, every deliverable answer), and the blocks are drafted from that file.
+`figures_check.py` is a stage 3 gate:
+
+```
+python3 .claude/skills/determinism-check/figures_check.py taskNN      # exit 0: every number in blocks 1 to 4 is in figures.json
+```
+
+A number in blocks 1 to 4 that the generator never computed fails the build, because a typed figure or a
+step that does not recompute as written was the single commonest judge finding (16 in one window, 12 of
+them write-up wording). Every step names the file and the rule in the verifier's own words, and every
+graded figure is centred in its bin by assertion, never by hand.
+
 ## 6. The gates, in the judge's order
 
 | Gate | The question | Fails as |
@@ -145,10 +184,14 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
   has read.
 - **The thread runs the literal reading first** (§2), then the gates, and counts a fork closed only by
   inference or by the write-up as open.
-- **Spawning.** The `determinism-judge` agent orchestrates and spawns the thread. Where it cannot spawn
-  (no `Agent` tool in the runtime), it writes the spawn brief beside a fresh unzip and returns its path,
-  and the main session spawns the thread from that brief under the same contract. An orchestrator that
-  has read anything beyond the bundle never judges in its own thread.
+- **Spawning.** The `determinism-judge` agent prepares the pass (the fresh unzip, the extracted blocks,
+  the spawn brief with the judge's system prompt inlined) and spawns the one thread where its runtime
+  gives it the `Agent` tool. Where it does not (five passes in one window ran inline or did not run), it
+  returns the brief's path and **the main session spawns the thread from that brief**, under the same
+  contract, then re-invokes the agent with the thread's `verdict.md` to write the report. An
+  orchestrator that has read anything beyond the bundle never judges in its own thread.
+- **In the background.** The judge runs after the solver round passes and alongside the ship stage's
+  non-figure work; nothing that moves a graded figure happens while it runs.
 - **After it returns.** Relay the verdict, the disposition, the Gate G line and the Gate H line. FIX_NOW
   is fixed and re-judged once; SEND_BACK re-roots or retires (`build-pipeline`).
 - **Our judge is the floor, not the bar.** The portal reads more strictly. A fork our thread settles "by
@@ -157,11 +200,12 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
 ## Checklist
 
 - [ ] Estimand filed literally: population (unobserved members stated), outcome, window, unit, comparison, inclusion, threshold, rounding
-- [ ] Method either filed (and then not the stump) or open behind a filed selection criterion the data settles with margin, asserted
+- [ ] Method either filed (and then not the stump) or forced by the design, a standard's general method or a filed selection criterion, with every candidate separated by margin, asserted
 - [ ] No filed rule, basis or formula whose literal reading gives another answer
 - [ ] `Literal reader` line in the design note; every literal reading gives the golden, violates a quotable sentence, or converges (asserted)
-- [ ] 22 axes walked, one closure move each; pins at authority, counter-pin sweep clean
+- [ ] Semantic fork table complete, every alternative ruled out by a cited sentence or convergent, the stump none of the readings, every row asserted in `checks.py`
+- [ ] 22 axes walked in the closure table before data is cut (`precut.py` exit 0); pins at authority, counter-pin sweep clean
 - [ ] Every graded figure mid-bin, flip condition stated; nothing graded on an edge
 - [ ] Generator assertions and the independent verifier green; two builds byte-identical; input gates met
-- [ ] Write-up states only owed figures, each recomputed from `target/`
+- [ ] `figures.json` written by the generator and `figures_check.py` exit 0: every number in blocks 1 to 4 is a computed figure
 - [ ] Judge rehearsal isolated, literal reading first; FIX_NOW fixed and re-judged once

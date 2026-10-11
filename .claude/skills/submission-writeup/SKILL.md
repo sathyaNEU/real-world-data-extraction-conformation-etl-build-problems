@@ -44,6 +44,19 @@ prompt named**, in the requested formats.
 others, and every figure reproduces from the shipped bundle. If a number in the write-up cannot be
 recomputed from `target/`, it does not exist, and the determinism review will find it.
 
+**Every figure is emitted, never typed.** The generator writes `<task>/generator/figures.json` (the
+call, every critical component, every step's result and every deliverable answer, each as the write-up
+will state it), and blocks 1 to 4 are drafted from that file. `figures_check.py` fails the build when a
+number in those blocks is absent from it:
+
+```
+python3 .claude/skills/determinism-check/figures_check.py taskNN
+```
+
+Twelve of the sixteen write-up findings in one window of judge reports were typed figures, or steps
+that give a different figure when followed literally; a step therefore names the file and the rule in the
+verifier's own words, and its result is the verifier's figure.
+
 **Run this last.** The order is: build, `determinism-check`, then this skill, then `golden-realism`.
 Writing the submission before the determinism pass means rewriting it after.
 
@@ -234,5 +247,5 @@ they would not, the fix is in the prompt or the golden, because the rubric is re
 - [ ] Every figure shared between deliverables and block 4 agrees, to the same rounding
 - [ ] The deliverable set is one to three files, a visual where it helps, any chart rendered by the code, and the code prints the critical components' figures
 - [ ] Every golden run through `golden-realism` after its figures were frozen, and the bundle verifier green afterwards
-- [ ] Every number in every block recomputes from `target/`
+- [ ] Every number in every block recomputes from `target/`, and `figures_check.py` exits 0 against the generator's `figures.json`
 - [ ] No em dashes anywhere; read it once more for LLM tells before filing

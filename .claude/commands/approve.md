@@ -13,7 +13,7 @@ Run these in order and stop at the first failure:
 1. **The heart check.** `python3 .claude/skills/fingerprint/guard.py heart <task>`. It reads the
    card's `driver`, `driver_concrete` and `stump` and compares them with every card's driver, every
    lineage driver, every card's stump sentence and every shipped-ledger row, then runs the full
-   structural check (the Part 6.1 bans, the same-puzzle and same-driver tests, names, furniture).
+   structural check (the `stumping` Part 6 bans, the same-puzzle and same-driver tests, names, furniture).
    Exit 1 is a BLOCK and the command stops there: relay the nearest builds it printed and the axis
    to redraw. A WARN is relayed with the one-line differentiation the design note carries, or the
    lack of one, which is a finding.
@@ -21,21 +21,24 @@ Run these in order and stop at the first failure:
    (`guard.py validate <task>` afterwards), because a card with no heart cannot be checked.
 2. **The surface screen.** `python3 .claude/skills/fingerprint/guard.py surface <task>`. A promoted
    pair is a rename or a regeneration, not an approval.
-3. **The leak report.** `<task>/leak_check_report.md` must exist and its verdict line must not read
+3. **The paper gate and the prompt gate.** `python3 .claude/skills/stumping/precut.py <task>` exits 0 on a
+   build designed under the current skill (it runs `voice-check.py` on `prompt.txt`); on a build from before
+   the rule, relay the failing rows as findings and carry on, because the author decides.
+4. **The leak report.** `<task>/leak_check_report.md` must exist and its verdict line must not read
    LEAK. If it is missing, run `python3 .claude/skills/leak-check/leak.py <task> --quiet` and read
    the verdict. REVIEW passes only if every REVIEW line is answered in the design note; say which
    are not.
-4. **The design note's stump sentence.** Grep `DESIGN_NOTE.md` for the one sentence naming the
+5. **The design note's stump sentence.** Grep `DESIGN_NOTE.md` for the one sentence naming the
    wrong committed answer a competent solver files and the step that lands them there. Absent, the
    build has no stump to approve: stop and say so.
-5. **The determinism record.** If `<task>/pipeline.json` exists, read `judge` and
+6. **The determinism record.** If `<task>/pipeline.json` exists, read `judge` and
    `duplicate_check`. Relay the judge's verdict, disposition and Gate G line and the duplicate-check
    line. A build with no judge pass is stated plainly, not refused: the author decides.
 
 On PASS:
 
-- Update the fingerprint card's `answer`, `answer_source`, `spine.rows`, `deliverables` and
-  `opening_move` from the submission and the pack if any is stale (`fingerprint` Part 2 step 5),
+- Update the fingerprint card's `answer`, `answer_source`, `spine.rows`, `deliverables`,
+  `opening_move` and `question_form` from the submission and the prompt if any is stale (`fingerprint` Part 2 step 5),
   then `guard.py validate <task>`.
 - Write `<task>/pipeline.json` with `"stage": "approved"` and the ISO date (create the file with
   that one field if it does not exist).

@@ -26,7 +26,7 @@ certification, and the verified pairs in a third file.
 **House caution.** This is the one shape whose difficulty is conformance end to end, so on a build
 tagged ETL it collides with the standing house ban on conformance in the top two rungs of the main
 ladder. Use it when the ladder's decisive move is the **adjudication between candidate rules**,
-not the conformance itself, and check `supplemental-stumping` Part 1 before the ask layer draws
+not the conformance itself, and check `supplemental-stumping` Part 2 before the ask layer draws
 its devices from the same family.
 
 ---

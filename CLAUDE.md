@@ -20,8 +20,8 @@ The rest of the pipeline routes the same way:
 | Writing or editing `submission.md`, or any golden deliverable | `submission-writeup` |
 | Making a golden deliverable look like a real work product rather than an LLM draft | `golden-realism` |
 | **Starting a new build or re-rooting one** (before the pairing is chosen, and again when the draw is fixed), or asking whether a build repeats an earlier one | `fingerprint` |
-| Choosing the domain and objective pairing, **picking the prompt shape that supplies the 25 criteria**, shaping the Main Recommendation Ask, writing the prompt | `guide-to-prompt` |
-| Designing, hardening or repairing the trap architecture | `stumping` |
+| Choosing the domain and objective pairing, **picking the prompt shape that supplies the 25 criteria**, shaping the Main Recommendation Ask, writing or editing `prompt.txt` | `guide-to-prompt` |
+| Finding the analytical pitfall, writing the default path and the stump sentence, screening the rungs, designing or hardening the ladder, re-rooting a spent architecture | `stumping` |
 | Designing or hardening the supplemental asks, or the data-quality devices that carry them | `supplemental-stumping` |
 | Building or repairing the evidence bundle under `target/` | `dataset-generation` |
 | Checking a finished build against the judge's gates, or **forcing an answer to be unique while the build is still being designed** | `determinism-check` |
@@ -41,26 +41,38 @@ Each spends tokens in isolated threads except `/approve`, so none runs on the mo
 initiative; `/build` is the author's licence for every stage it sequences: the leak reader, the
 adjudicated duplicate check, every solver round its loop needs, and the determinism judge.
 
-**The workflow is design, build, leak check, duplicate check, solver round, determinism check,
-ship, and it loops.** One isolated solver works every finished build cold, in a sandbox holding only
-the prompt and the bundle. A round where it commits to the main call sends the build back to design
-with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three loops per
-architecture, then re-rooted in the same objective and number, three architectures, then retired. A
-round where it does not commit to the main call passes the worth-it gate, gets one repair of whatever
-the leak reader deferred, and goes on to the determinism judge, whose FIX_NOW is fixed and re-judged
-once. No session runs a solve in the main thread, which has read the design. Each role runs on its
-own model and effort (`build-pipeline`, Models and effort): the designer on Opus at max effort; the
-builder, the duplicate-check auditor and the solver on Opus at medium; the leak reader and the judge on
-Sonnet at medium.
+**The workflow is design (gated by `precut.py`), build (gated by the generator's checks,
+`figures_check.py` and the realism sweep), leak check and duplicate check together, solver round,
+determinism check, ship, and it loops.** Nothing with a token cost runs on a pack the free mechanical
+gates have not passed. One isolated solver works every finished build cold, in a sandbox holding only
+`prompt.txt` and the bundle. A round where it commits to the main call sends the build back to design
+with a hardening brief, the default path rewritten first; it is hardened, rebuilt, leak-checked and
+solved again, three loops per architecture, then re-rooted in the same objective and number, three
+architectures, then retired. A round where the solver misses the call but still keeps 35 per cent of
+the ask weight, or cracks any ask, sends the ask layer back (`grade.py` ASKS LEAK) without touching the
+ladder. A round that passes both gates gets one repair of whatever the leak reader deferred and goes on
+to the determinism judge, run in the background, whose FIX_NOW is fixed and re-judged once. No session
+runs a solve in the main thread, which has read the design. Each role runs on its own model and effort
+(`build-pipeline`, Models and effort): the designer on Opus at max effort; the solver on Opus at high;
+the builder and the duplicate-check auditor on Opus at medium; the leak reader and the judge on Sonnet
+at medium.
 
-**Solver first, polish after.** The leak reader runs once per build, on Sonnet, before the round. Only
+**Returned tasks skip the heavy stages.** A shipped task the author brings back with portal feedback is
+repaired design, build, commit, ship (`build-pipeline`, Returned tasks): a designer when the call
+landed, a builder when it held and the asks scored, with the free mechanical gates only (the
+generator's checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py`, `voice-check.py`,
+`figures_check.py`, `precut.py`). No leak reader, solver round, judge or clone check runs for it. New
+builds keep the full workflow.
+
+**Solver first, polish after.** The leak reader runs once per build, on Sonnet, after the realism sweep
+and in parallel with the clone pre-flight, before the round. Only
 what hands the solver the answer (a sentence naming the decisive step, a file that ranks the
 candidates or states the asked figures, a file that exists only to help) and any fork on the main call
 are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
 for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
 pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
 An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
-round (a hardening rebuild, the deferred findings, a judge's FIX_NOW, an ask-only revision) runs in a fresh agent that starts
+round (a hardening rebuild, an ask-layer rebuild, the deferred findings, a judge's FIX_NOW, a returned-task repair) runs in a fresh agent that starts
 from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
 named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
 it (`build-pipeline`, Running the stages).
@@ -82,29 +94,36 @@ developers never draw the same `taskNN`.
 fingerprint recent + coverage   (what the last builds spent, and what has never been drawn)
    ->  guide-to-prompt  (pairing, then the PROMPT SHAPE, with its criteria arithmetic worked to 25+)
        + the two nearest exemplars (guide-to-prompt/references/exemplars/, the client's measured tasks)
-   ->  stumping: the draw, decisive rung from traps/_measured.md  ->  fingerprint check + register
-   ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
-   ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
+   ->  stumping: the draw (the card checked and registered), the pitfall from the dataset and the
+       domain's rigor patterns, the DEFAULT PATH written and ending on a wrong answer, the stump sentence
+   ->  DESIGN: the readability screen (the decisive rung silent), the semantic fork table (no fork on
+       the main call), the ladder (3 to 5 rungs), determinism-check (literal reader, 22 axes closed),
+       supplemental-stumping (the cracker sheet, the ask sheet, pair ceiling at or under 40),
+       guide-to-prompt (prompt.txt through voice-check.py)
+              gate: precut.py exit 0, or nothing is cut
+   ->  BUILD: dataset-generation (the realism sweep asserted)  ->  submission-writeup (blocks from
+       figures.json, figures_check.py exit 0)  ->  golden-realism  ->  reduce-house-fixes
               ->  fingerprint surface
-   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated pass, on Sonnet)
-              (leak-level findings and main-call forks fixed in the generator now; realism tells and
-              ask-level forks deferred to after the round)
-   ->  DUPLICATE CHECK: guard.py heart (mechanical)  ->  /clone-check pre-flight on this build
-              (a reject-tier finding: redraw the colliding axis once, or retire)
+   ->  LEAK CHECK and DUPLICATE CHECK together: leak.py and one /leak-check reader pass on Sonnet;
+       guard.py heart and the /clone-check pre-flight (leak-level findings and main-call forks fixed in
+       the generator now; realism tells and ask-level forks deferred to after the round; a reject-tier
+       clone finding redraws the colliding axis once, or retires)
+              meanwhile: the next number's draw, if a slot is free
    ->  SOLVER ROUND: /solve, one isolated solver in a sandbox, graded at the rubric's weights
-              worth-it gate: the solver does not commit to the main call (the proxy is recorded, not gated)
-              landed: back to the ladder with the brief and the deferred findings (harden, rebuild,
-              leak check, solve again); 3 loops per architecture, then re-root; 3 architectures, then retire
-              missed: one repair of the deferred findings (a new read only if a document or the prompt
+              grade.py exit 0: the solver does not commit to the main call and the asks hold
+              exit 2, landed: back to design with the brief and the deferred findings (default path
+              rewritten, harden, rebuild, leak check, solve again); 3 loops per architecture, then
+              re-root; 3 architectures, then retire
+              exit 3, asks leak: the ask layer rebuilt against the cracker sheet, a fresh round
+              pass: one repair of the deferred findings (a new read only if a document or the prompt
               changed, a new round only if the prompt, a rung or the decisive path changed)
-   ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once
-              (a fresh solver round first if the fix moved a figure, a rung or a document);
-              SEND_BACK re-roots or retires
+   ->  DETERMINISM CHECK: the judge rehearsal, in the background. APPROVE ships; FIX_NOW is fixed and
+              re-judged once (a fresh solver round first only if the fix moved a figure, a rung or a
+              document); SEND_BACK re-roots or retires
    ->  SHIP to the author
    ->  the author tests on the official portal and reports back
-              main call held, asks over the bar: the ask-only revision (`supplemental-stumping`
-              Part 12): ask-path data only, main call byte-identical, commit, Status `shipped` on main;
-              no leak read, round or judge
+              RETURNED: design (if the call landed), build, commit, ship, with the free mechanical gates
+              only; no leak reader, round, judge or clone check (`build-pipeline`, Returned tasks)
    ->  only then: ledger row, lessons folded into the skills, house fixes, memory
 ```
 
@@ -122,7 +141,7 @@ eighteen shapes and the picker are at `.claude/skills/guide-to-prompt/references
 
 **The fingerprint guard is mandatory, mechanical and free.** Every build has a fingerprint card in
 `.claude/skills/fingerprint/cards/`, and `guard.py` checks a new draw against all of them: the
-Part 6.1 standing bans against the last three builds, the same-puzzle test against the last twelve,
+`stumping` Part 6 standing bans against the last three builds, the same-puzzle test against the last twelve,
 the driver sentence against every driver on file including retired architectures, and the legality
 gates. A draw with a BLOCK does not get a ladder. The card is filed with `guard.py register` the
 moment the draw is fixed, so a build in flight is visible to the next one, which the shipped ledger
@@ -149,9 +168,12 @@ the ledger records. The in-house round decides what is worth sending: a build it
 hardened, not shipped, and a build they miss still has to face the portal. Solves run only in
 isolated threads on fresh scratch copies, never in the main thread (a solve that has read the design
 note measures nothing). Stump power is argued on paper first: **name the stump in the design note**
-before the pack is cut, the wrong committed answer a competent solver files and the step that lands
-them there. A ladder whose author cannot write that sentence has no stump in it, and is not built;
-the round then tests the sentence. A hardening deepens the analysis and never plants a decoy.
+before the pack is cut: first the default path, the pipeline a competent analyst builds without
+thinking, step by step, ending on a named figure that is not the golden; then the stump sentence, the
+wrong answer that default path files and the step that lands it there. A design whose default path ends
+on the golden has no stump (task134 landed 33 navigators in four minutes that way), and a ladder whose
+author cannot write the sentence is not built; `precut.py` refuses both, and the round then tests the
+sentence. A hardening deepens the analysis and never plants a decoy.
 
 **`/clone-check` is author-triggered only**: never invoke it on your own initiative, including right
 after applying a patch that seems to want validation, because it spends real tokens in an isolated
@@ -209,7 +231,8 @@ is nothing to preserve. Banned inside a task folder: `DESIGN_V2.md` and every la
 `_v*_snapshot.zip`, `.bak` files, dated copies of the prompt or the golden, and a second design note
 under any name. If a scratch copy is genuinely needed while an edit is in flight, it goes in the
 scratchpad and is deleted when the edit lands. What a task folder may carry beside the design note:
-`START_HERE.md` (the seed it was numbered from, never edited once the build starts), `pipeline.json` (state, never reasoning), `solver_rounds/` (the graded rounds) and the `leak_check_report.md` and
+`START_HERE.md` (the seed it was numbered from, never edited once the build starts), `pipeline.json` (state, never reasoning), `solver_rounds/` (the graded rounds), `generator/figures.json` (the
+owed figures the write-up is drafted from) and the `leak_check_report.md` and
 `determinism_check_report*.md` reports, which are evidence rather than design.
 
 A build that cannot be rebuilt from its generator has a broken generator, and the fix is the
@@ -234,20 +257,27 @@ generator, never a zip.
 
 ## Voice and structure
 
-The client's requirement is that every prompt feel different. Their note names the shape to avoid:
-*"I'm a X working at Y. Here's some context. Give me this main recommendation and here are the two
-deliverables that I need from me."* Prose, first person, one committed call, one to three
-deliverables, unit and rounding inside the sentence and 25 or more criteria off the prompt shape all
-hold; what is banned is a fixed skeleton, context in two or three sentences and then one paragraph
-per deliverable in the same order every time.
+**Every prompt is `prompt.txt`**: plain text, one continuous paragraph, led by the question, under
+1,000 characters. It sounds like a person asking for help with their task, not a backstory about them,
+and it mentions only what the task needs. The ten rules (`guide-to-prompt/references/prompt-voice.md`):
+lead with the question; cut who and why (no names, titles, sign-offs, meetings or readers); test every
+fact before cutting it (a date or a stop rule the answer depends on stays); keep every ask exactly (file
+names, columns, periods, units and rounding word for word); do not change meaning while smoothing; one
+continuous paragraph, with no "Then" and "Last"; merge and shorten, each rounding rule stated once at the
+end; ask, do not specify; drop claims made only to be rejected; and run the 10/10 check last. The client's
+note names the shape to avoid: *"I'm a X working at Y. Here's some context. Give me this main
+recommendation and here are the two deliverables that I need from me."*
 
-**Before writing or editing any prompt, read
-`.claude/skills/guide-to-prompt/references/prompt-voice.md`.** It carries the twelve opening moves
-derived from the client's own 72 worked prompts, the table that separates spec-mandated wording
-from wording that is merely our habit, and the structural axes (length, file count, format mix)
-that rewriting an opening does not fix. Then run
-`python3 .claude/skills/guide-to-prompt/references/voice-check.py <task number>` on the draft, and
-bare over the batch before submission. Self-report does not catch a calcified voice; `grep` does.
+**The gate is mechanical.** `python3 .claude/skills/guide-to-prompt/references/voice-check.py <task
+number>` exits non-zero per rule: the file is `prompt.txt`, no markdown character, one paragraph, a
+question mark in the first two sentences, under 1,000 characters, no em dash, no persona or job title
+(the card's `world.people` and a title lexicon), no sequencing words, no LLM tells, no roll call,
+rounding as a closing clause, one to three deliverables named. `leak.py` runs the same gate as its sweep
+11, `precut.py` runs it before any data is cut, and every reader of the prompt (`/solve`, `/leak-check`,
+the judge, the guard, the clone check) reads `prompt.txt` first and falls back to `prompt.md` only on a
+build shipped before the rule. Run it bare over the batch before submission: variety now lives in the
+question's form, the sentences and the files, and the batch report measures it. Self-report does not
+catch a calcified voice; `grep` does.
 
 ## Current spec
 
@@ -268,7 +298,7 @@ right teaches a model something real.
      systems would produce (`dataset-generation` §7).
    - **Layer 2, the analytical or methodological pitfall.** The shortcut a capable analyst is tempted to
      take and an expert in the field would recognise as wrong, with the task set up so the rigorous
-     method is the only defensible one. This layer carries the stump (`stumping` Part 2).
+     method is the only defensible one. This layer carries the stump (`stumping` Part 1).
 3. **Three kinds of stump are banned as the decisive step**: a planted defect, decoy or hidden rule;
    data semantics (the answer flips only on reading a field, code, unit or definition correctly); and
    rule application (the answer comes from applying stated rules correctly, however many steps there
@@ -288,7 +318,8 @@ the analyst, never the rules themselves.
 **Determinism is literal.** The portal's judge executes the shipped text word for word and infers
 nothing. So the estimand (population, including any members not yet observed at the as-of date, outcome,
 window, unit, comparison) is filed so that its literal execution is the golden's quantity; the method may
-stay open only behind a filed criterion that selects it, with the data separating the candidates under it;
+stay open only when the design, a standard's general method or a filed selection criterion forces it, with
+the data separating the candidates (a filed back-test is a recognisable organ, never in consecutive builds);
 and no filed rule, basis or formula may give another answer when read literally. The stump lives in how
 the stated quantity is computed, never in what is meant: if a literal estimand makes the call easy, the
 stump was a fork and the decisive step is redesigned (`determinism-check` §1 and §2).
@@ -306,13 +337,23 @@ by a hidden method recovered from certified or published figures, which the clie
 **Every build is bespoke, never templated.** Replicating an approved task's traps, solution method,
 questions or stumping strategy onto another dataset teaches the model nothing and is sent back. Each
 build picks the pitfall its own dataset's analytic structure produces, and its design note says why
-in one line (the data-native sentence, `stumping` Part 2). The client's examples and the strategy
+in one line (the data-native sentence, `stumping` Part 1.7). The client's examples and the strategy
 libraries are idea seeds: learn the fundamentals from them, never copy one.
 
 A calibration corpus, a twin pair and colleague voices are organs a strategy may need, never
 furniture every build ships, and none of them may act as a decoy. The 300 notes under
 `analytical_tasks/01` to `06` were all written to the withheld-rule-with-decoy architecture, so they
-are idea seeds and never build plans (`README.md`).
+are idea seeds and never build plans (`README.md`): a seed supplies a world, a decision and a quantity,
+its withheld rule is filed, its decoy is cut, and the pitfall is re-found from the data (`stumping`, the
+references table).
+
+**No semantic fork on the main recommendation.** Every term in the main ask and every convention the
+main computation depends on has a row in the design note's semantic fork table: the golden reading, each
+plausible alternative, the call under it, and the sentence of the prompt or a shipped document that rules
+it out, or `same call` where the records converge. `checks.py` asserts every row and `precut.py` refuses a
+note with an unresolved one. The stump is never one of the readings: a reading difference is a fork and
+data semantics at once, and six builds in one window built or defended one as their difficulty
+(`stumping` Part 2.2, `determinism-check` §2).
 
 **One to three deliverables, and three is the ceiling**, so a four-file build is a spec failure.
 **No format family is assigned.** The four families (Data: CSV, TSV, JSON, XLSX, Parquet · Visual:
@@ -330,14 +371,17 @@ inside the sentence that asks for the figure, and every figure inside an ask is 
 and separately determinate. One deterministic recommendation anchors everything. An ask is free of the
 main call's rules: it needs no filed rule to pin its handling, its golden may go against the procedure,
 and its device may turn on data semantics or rule application, which rule 3 bans only as the main call's
-decisive step (`supplemental-stumping` Parts 5 and 12).
+decisive step (`supplemental-stumping` Parts 2 and 6). Every ask is designed against the careful solver's
+path: the cracker sheet (the response that landed the call, ran the hygiene battery and executed every
+filed rule) misses every ask figure, so no device is adjudicated by a filed rule, a marker or a referee
+that ties only under the golden, and no ask is keyed to the call (`supplemental-stumping` Part 1).
 
-**The prompt is prose, first person, the way you would write to a colleague.** No bracketed blocks,
-no `file.ext (Family)` headers, no bulleted asks. What costs you is a **roll call** of colleagues'
-opinions, which is a design defect rather than a style one, because each named opinion hands the
-solver a rung to refute. **It stays under 1,000 characters**: one committed call and two or three
-asks, each multi-dimensional and hard, never a list of small ones, so it cannot read as a laundry
-list (`guide-to-prompt`, and `voice-check.py` flags a draft at 1,000 or more).
+**The prompt is `prompt.txt`: plain text, one paragraph, question first, under 1,000 characters**
+(Voice and structure above). No persona, title, meeting or reader; no bracketed blocks, headers or
+bulleted asks; no roll call of colleagues' opinions, which is a design defect rather than a style one,
+because each named opinion hands the solver a rung to refute. One committed call and two or three asks,
+each multi-dimensional and hard, never a list of small ones (`guide-to-prompt`, and `voice-check.py`
+fails a draft at 1,000 characters or more).
 
 **The rubric is generated and must reach 25 or more criteria.** A one-to-three file prompt is a small
 surface, so the criteria come from the **prompt shape**, the structure of the answer: a ranked list
@@ -395,8 +439,8 @@ task tagged outside the eight is rejected on the tag alone.
 ranks the candidates on the decision question and gets it wrong, however many rungs sit above it.
 The one exception is a declared wrong-basis distractor: wrong on a basis a shipped fact rules out, named in
 `metadata.json`, and never the stump. Depth is not a defence. The difficulty has to survive deleting every wrong number from the pack.
-`.claude/skills/stumping/SKILL.md` Parts 1 and 2 carry the four gaps and the five patterns that
-pass.
+`.claude/skills/stumping/SKILL.md` Part 1.4 carries the four gaps and the patterns with a measured
+record, and Part 2 the readability screen every rung passes before data is cut.
 
 **The committed call is forward facing by default.** The Main Recommendation Ask commits to a
 quantity about a window that has not closed. A retrospective ask is legal and needs its reason

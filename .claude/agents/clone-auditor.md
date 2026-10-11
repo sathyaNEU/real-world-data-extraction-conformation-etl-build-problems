@@ -76,7 +76,7 @@ time, and it labels each promoted pair as in batch or against an earlier build.
 The surface score is meaningless as an absolute number, so the screen ranks each pair against how
 similar these builds normally are to each other and promotes on the percentile. It also promotes
 independently of the surface on the mechanism axes, on hard tells (byte-identical files, same-seed
-tables, a shared invented name), and on the Part 6.1 bans between consecutive builds. **The
+tables, a shared invented name), and on the `stumping` Part 6 bans between consecutive builds. **The
 mechanism route is not gated behind the surface score**, because the pair the check exists to
 catch is the fully reskinned one, and that pair scores near the corpus floor on every mechanical
 axis.
@@ -135,7 +135,7 @@ come from the current file and not from your memory of it.
 Weight by what the other side is. A collision against an **approved or delivered** build is
 exclusion level. A collision against a **failed or retired** build is worth knowing and is not the
 same finding, and the report says which it is on every hit. A **consecutive** pair carries more
-weight than a distant one because Part 6.1's bans are written against the previous build
+weight than a distant one because the `stumping` Part 6 bans are written against the previous build
 specifically.
 
 ## Your report
