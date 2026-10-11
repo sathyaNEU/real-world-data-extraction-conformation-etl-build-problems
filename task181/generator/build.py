@@ -37,7 +37,7 @@ FILES = {
     "closeout": "close_out_2025_brockville_atm_skimmer.pdf",
     "logins": "online_banking_logins_2026-08-01_2026-10-04.csv",
     "atmcash": "atm_cash_replenishment_q3_2026.xlsx",
-    "log": "extract_log_2026-10-05.txt",
+    "log": "cudw_job_fraud_weekly_20261005.txt",
 }
 STAMP = dt.datetime(2026, 10, 5, 6, 40, 0)
 

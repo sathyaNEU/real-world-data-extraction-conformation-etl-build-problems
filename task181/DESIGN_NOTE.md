@@ -237,9 +237,19 @@ prompt shingle, and a different domain, decision and spine. Nearest not promoted
 cut pack: Laurie Townsend and Brenda Figueroa (on the card). `guard.py check` on the synced card: WARN only
 (repeat.gate_g, overuse.gate_g, answered under DRAW).
 
-Prompt: one sentence split ("The committee approves a number of cards. That number is what I need.") so the voice-check
-ECONOMY row is clean (206 words, 22.9 per sentence, a sentence under eight words); page three asks for "the counterfeit
-cases we refunded", the population ask B counts.
+Prompt: the context closes on "The committee approves a number of cards." (seven words), so the voice-check ECONOMY row
+is clean (200 words, 25.0 per sentence, a sentence under eight words); page three asks for "the counterfeit cases we
+refunded", the population ask B counts. The earlier closer "That number is what I need." was the corpus's "what I need"
+ask construction (13 builds, 5 of the last 12; clone pre-flight Idiom note) and is gone.
+
+**Duplicate check (stage 5).** `guard.py heart`: WARN, no BLOCK (repeat.gate_g, overuse.gate_g; answered under DRAW).
+Clone pre-flight (pass 1, `clone_check_report.md`): CLEAN, no Exact, Same seed, Dataset or Template finding and no Shape
+echo. One promoted pair, task103 (a foundation's food-security reserve), adjudicated clean: the deciding steps are
+different moves, and the two share only the pdf-plus-workbook deliverable pair with a "so the desk can check it" line
+and an Ontario, CAD setting. Two Idiom notes, both acted on: the "what I need" closer (above) and the provenance file,
+which copied task131's `extract_log_<date>.txt` down to a 06:12 job time and is now the warehouse's job report
+`cudw_job_fraud_weekly_20261005.txt` (run 05:47, status line), no figure moved. The batch-level certified-record decoy
+count (7 of the last 12) is not this build's: task181 files no certified record.
 
 Isolated reader, pass 1 (2026-10-11): nothing quoted for question 1 (CP-14 s4 "sets out the method as ordinary policy";
 the version-3 change line "a normal change-log entry"), no ranking file, no analyst-only file (fraud_desk_notes.md "the

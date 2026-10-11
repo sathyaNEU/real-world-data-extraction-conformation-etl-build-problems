@@ -346,7 +346,7 @@ positive, amounts taken back are negative, and a filing moves nothing.
 def write_log(path, F, counts, msg):
     first = msg.txn_datetime_utc.min().strftime("%Y-%m-%dT%H:%M:%SZ")
     last = msg.txn_datetime_utc.max().strftime("%Y-%m-%dT%H:%M:%SZ")
-    txt = f"""card data pull 2026-10-05 06:12:41 EDT  job: fraud_weekly  user: nrodriguez
+    txt = f"""CUDW job fraud_weekly  run 2026-10-05 05:47:19 EDT  submitted by nrodriguez  status COMPLETE
 source                     file                                                  rows
 auth_host.messages         {F['auth']:<53} {counts['messages']}
 acquirer.merchant_dir      {F['merchants']:<53} {counts['merchants']}

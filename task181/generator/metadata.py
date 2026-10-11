@@ -19,7 +19,7 @@ DESC = {
     "close_out_2025": "Close-out of the 2025 Brockville branch ATM skimming incident",
     "online_banking_logins": "Online banking session log, 1 August to 4 October 2026",
     "atm_cash_replenishment": "Branch ATM cash replenishment visits, July to September 2026",
-    "extract_log": "Extract log for the 5 October 2026 pull",
+    "cudw_job_fraud_weekly": "Data warehouse job report for the 5 October 2026 fraud_weekly run",
 }
 DISTRACTORS = ("online_banking_logins", "atm_cash_replenishment")
 
