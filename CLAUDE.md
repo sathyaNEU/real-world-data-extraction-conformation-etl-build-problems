@@ -52,6 +52,9 @@ Some authors keep standing working rules (branch prefixes, for one) in `.claude/
 At the start of a session, read the file whose account email matches the session's user and follow
 it; ignore every other author's file. A rule there binds only that author's sessions.
 
+Task numbers and objective lanes are reserved in `.claude/reservations.md`; every session takes its
+number from there, so parallel developers never draw the same `taskNN`.
+
 ## The build loop
 
 ```
