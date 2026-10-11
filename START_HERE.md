@@ -158,8 +158,8 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task253 | DA03 | [How a city splits 3,000 anti-displacement vouchers across nine neighbourhoods, when last year's close-out counted tenancies and the survey counts dwellings](task253/START_HERE.md) | Policy & Education · housing policy and programme allocation | sathay3012 | open |
-| task254 | DA04 | [The planning bands a state fire agency adopts for its tankers and crews, when the acres it protects are not the fires that start on its ground](task254/START_HERE.md) | Supply Chain & Logistics · emergency aviation and crew pre-positioning | sathay3012 | open |
+| task253 | DA03 | [How a city splits 3,000 anti-displacement vouchers across nine neighbourhoods, when last year's close-out counted tenancies and the survey counts dwellings](task253/START_HERE.md) | Policy & Education · housing policy and programme allocation | sathay3012 | in build |
+| task254 | DA04 | [The planning bands a state fire agency adopts for its tankers and crews, when the acres it protects are not the fires that start on its ground](task254/START_HERE.md) | Supply Chain & Logistics · emergency aviation and crew pre-positioning | sathay3012 | in build |
 | task255 | DA05 | [Which specialty gets the weekend day-surgery team, when no anaesthetist works weekends and the longest-looking cataract waits are second eyes](task255/START_HERE.md) | Policy & Education · health-system administration and elective waiting lists | sathay3012 | open |
 | task256 | DA06 | [The contributor-stickiness baseline a mapping foundation signs into a grant, when a company's paid editors are homed among the volunteers](task256/START_HERE.md) | Product Analytics · contributor engagement on an open mapping platform | sathay3012 | open |
 | task257 | DA07 | [The replacement tiers a parcel fleet adopts for its nine van models, when three tie at full demonstration and the tie-break rewards the vans with the easiest routes](task257/START_HERE.md) | Supply Chain & Logistics · last-mile delivery fleet procurement | sathay3012 | open |
