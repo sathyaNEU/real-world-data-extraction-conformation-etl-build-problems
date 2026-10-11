@@ -24,7 +24,7 @@ Stage 1 carries AUD 10,933,000 and stage 2 AUD 2,840,000, with 343 loans in stag
 2. Staged the rest under CRM-ECL-04 section 2: 30 or more days past due, a hardship arrangement in force on 30 September in `hardship_register_2026-09-30.xlsx`, or a 60-point score fall after converting v3 origination scores with `scorecard_v4_migration_note.pdf`: 3,265 loans in stage 2.
 3. Counted each loan's monthly repayments fallen due by 30 September and its remaining term, one month for a loan past maturity (CRM-ECL-04 3.2).
 4. Took PD(k) from `pd_curve_personal_loans_2026-06.csv` as the curve's increment after the loan's months on book divided by its survival to date, because the curve runs from origination and a performing loan has already come through those months, with the 2.4 stage 2 scalar.
-5. Applied LGD, the re-amortised balance and the contract-rate discount over 12 months for stage 1 and the remaining term for stage 2 (CRM-ECL-04 3.3 to 3.5).
+5. Applied LGD, the re-amortised balance and the contract-rate discount over 12 months or the remaining term if shorter for stage 1 and the remaining term for stage 2 (CRM-ECL-04 3.3 to 3.5).
 6. Weighted the scenarios in the Q1 FY27 sheet of `ifrs9_scenarios_2026Q3.xlsx` into one PD multiplier: 1.06.
 7. Summed by stage: AUD 10,933,000 in stage 1 and AUD 2,840,000 in stage 2.
 8. Recommendation: book AUD 13,773,000.
@@ -48,5 +48,11 @@ Stage 1 carries AUD 10,933,000 and stage 2 AUD 2,840,000, with 343 loans in stag
 
 ### arc_ecl_q3_2026.pptx
 
-1. Slide 1 states the AUD 13,773,000 allowance in its title, over the stage and product table of loans, gross carrying amount, allowance and coverage.
-2. Slide 2 is a column chart of the allowance by drawdown year for PL36 and PL60, the largest bar (2026 PL60, AUD 5,763,000) named in the title.
+1. Slide 1 states the AUD 13,773,000 allowance with the stage and product table:
+   - Stage 1, PL36: 17,109 loans; AUD 138,349,000; allowance AUD 3,202,000; coverage 2.31%
+   - Stage 1, PL60: 20,180 loans; AUD 330,436,000; allowance AUD 7,731,000; coverage 2.34%
+   - Stage 2, PL36: 1,421 loans; AUD 11,728,000; allowance AUD 681,000; coverage 5.81%
+   - Stage 2, PL60: 1,844 loans; AUD 28,735,000; allowance AUD 2,159,000; coverage 7.51%
+2. Slide 2 charts the allowance by drawdown year for each product:
+   - PL36: 2023 and earlier AUD 5,000; 2024 AUD 159,000; 2025 AUD 940,000; 2026 AUD 2,779,000
+   - PL60: 2023 and earlier AUD 641,000; 2024 AUD 1,073,000; 2025 AUD 2,412,000; 2026 AUD 5,763,000

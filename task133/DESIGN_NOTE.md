@@ -59,7 +59,7 @@ The answer sits between the two natural misreadings of the curve (bracketing, `p
 ## SURVIVAL PROPERTIES
 
 1. Not written: CRM-ECL-04 3.2 defines PD(k) and names the curve; the curve file's own header says it gives a new loan's cumulative probability by month on book, counted in repayments fallen due. No sentence turns the one into the other.
-2. No corpus: the development sample ships as a distractor, and rebuilding the curve from it returns the filed curve, which settles nothing about conditioning.
+2. No corpus: the development sample ships as a distractor; a curve rebuilt from it lands near the filed curve (within about 0.0075 of cumulative PD) and settles nothing about conditioning, and CRM-ECL-04 3.2 and 7.1 rule the re-estimate out.
 3. No arithmetic symptom: an unconditional allowance reconciles to every control the pack has (stage counts, balances, scenario weights).
 4. Not a row predicate: each loan's PD path depends on its own months on book along a filed curve.
 5. Enumeration is arithmetic: no column carries a loan's conditional PD.
@@ -80,7 +80,7 @@ The answer sits between the two natural misreadings of the curve (bracketing, `p
 | 2 | Unit | loan |
 | 3 | Attribution window | default month k after the reporting date |
 | 4 | As-of dating | stage at the reporting date (filed), hardship in force on the date (filed) |
-| 5 | Version basis | Q3 FY27 scenario sheet, not the prior quarter's (sheet named; ARC approval date) |
+| 5 | Version basis | the Q1 FY27 scenarios sheet, not the prior quarter's (sheet named; ARC approval date) |
 | 6 | Divisor | coverage over gross carrying amount, the sum of current balances (filed in CRM-ECL-04 1.5 and 1.6) |
 | 7 | Weighting | probability-weighted scenarios (filed; linear in PD, so one multiplier) |
 | 8 | Window | 12 months stage 1, remaining term stage 2 (filed); a loan past contractual maturity outside stage 3 is treated as being in the final month of its term, one month remaining (CRM-ECL-04 3.2, filed), at its curve's last month; read as carrying nothing instead, every graded figure keeps its bin (C3, asserted: 28 loans, AUD 222) |
@@ -143,3 +143,4 @@ Pair arithmetic: a solver on rung 0 keeps the eight stage counts and balances if
 - Stale arrangement_status labels from a weekly status refresh: not built. The labels sit on the main call's staging path, so a solver staging on status instead of dates would move a handful of loans and the allowance bin; the statuses stay current to the reporting date and CRM-ECL-04 2.2's date rule decides.
 - Weekly status batch on Sunday or Monday night (round 3, B4): 12 or 6 arrangements end after the run, 9 or 5 book loans otherwise in stage 1, and staging on the label alone moves the allowance to AUD 13,778,000 or 13,775,000 (set STATUS_RUN_WEEKDAY to 6 or 0 to reproduce). The Tuesday run leaves two and moves one loan, and the allowance keeps its bin, so the main call stays mess-neutral.
 - Blank state or channel for loans migrated at the October 2019 go-live (round 3, B4): no such loan is on the book, where the earliest drawdown is May 2021, so the blank states are overseas addresses.
+- Stale arrangement_status labels, revisited in repair 3: built after all with a Tuesday-night status batch (two arrangements that ended 29 September still show Active), because a Sunday or Monday batch moved a status-only staging's allowance out of its bin (AUD 13,778,000 or 13,775,000) while the Tuesday batch moves one PL36 loan and keeps the bin (asserted); the line above records the earlier refusal.
