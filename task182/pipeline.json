@@ -39,6 +39,14 @@
    "classification": "analytical: every level and change since baseline exact (Layer 1 handled), the miss is the choice of counterfactual for the coal measures",
    "for_the_judge": "the solver wrote that the rainfall file could not reproduce the hydrographs and that nothing says whether KV-LB16 is outside the predicted drawdown; the judge checks the rainfall-response fit and that the LB16-as-control reading is ruled out",
    "deferred": []
+  },
+  {
+   "label": "round 1 regraded after fix",
+   "date": "2026-10-11",
+   "score": 30.2,
+   "landed": false,
+   "cracked": 0,
+   "items": 5
   }
  ],
  "judge": {
