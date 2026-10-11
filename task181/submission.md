@@ -26,7 +26,7 @@ On the extract Griffith has 7 cases with specimens collected 21 September to 4 O
 4. Measured each laboratory's time from specimen collection to notification, with `received_utc` converted to Sydney dates: for specimens collected August 2025 to July 2026, Inland Pathology notified 76% within 14 days and the hospital laboratory 100%.
 5. Estimated each area's cases with specimens in the fortnight by dividing each laboratory route's notified cases by that route's own share notified within the days each specimen day has had, from the completed specimens in the line list: Griffith's fortnight is several times its 7 notified, Wagga Wagga's and Snowy Valleys' a little above what is on file, and Griffith's excess over 1.4 is the largest, as it is under per-day and weekly reporting-triangle versions and over 6, 12 or 24 months of history.
 6. Clusters (5.1): student cases by interview role with specimens collected 5 September to 4 October, one per episode, free-text school names matched to the roster names in `school_rosters_term3_2026.xlsx`, kept where two or more; the slide lists those at schools in Griffith, the area the team goes to, each school's area as its roster gives it.
-7. Quarterly table (7.1): cases with specimens 1 January to 31 August 2026 by area and status; infants under six months at the specimen (6.1); of those, an admission within 14 days in `respiratory_admissions_2019-2026.csv` on medical record number (6.2), and a dTpa dose in that pregnancy at least 14 days before birth in `antenatal_vaccinations_2019-2026.parquet`, linked through `birth_records_2024-2026.csv` on the mother's Medicare number (6.3).
+7. Quarterly table (7.1): cases with specimens 1 January to 31 August 2026 by area and status; infants under six months at the specimen (6.1) on the date of birth in `birth_records_2024-2026.csv`, not the line list's (some requests were keyed month first), the birth found on medical record number or, for a number in neither linked file (a record merged since follow-up), on date of birth, sex and postcode (the baby the PAS holds where two fit); of those, an admission within 14 days in `respiratory_admissions_2019-2026.csv` on either number (6.2), and a dTpa dose in that pregnancy at least 14 days before birth in `antenatal_vaccinations_2019-2026.parquet`, the mother matched on her Medicare card's first nine digits and IRN, since the tenth (the issue number) changes when a card is reissued (6.3).
 8. Recommendation: the response team goes to Griffith this week.
 
 ## 4. Deliverable Answers
@@ -41,13 +41,13 @@ On the extract Griffith has 7 cases with specimens collected 21 September to 4 O
 ### pertussis_cases_by_lga.csv
 
 1. One row per area, specimens collected 1 January to 31 August 2026, as confirmed cases, probable cases, infants under six months, of those admitted to hospital, of those born to a mother vaccinated at least two weeks before the birth:
-   - Wagga Wagga: 63, 2, 3, 2, 1
-   - Griffith: 25, 3, 2, 1, 1
+   - Wagga Wagga: 63, 2, 2, 1, 0
+   - Griffith: 25, 3, 1, 1, 0
    - Leeton: 11, 0, 1, 0, 1
    - Narrandera: 5, 0, 1, 0, 0
    - Murrumbidgee: 0, 0, 0, 0, 0
    - Hay: 2, 0, 0, 0, 0
-   - Edward River: 7, 1, 1, 1, 0
+   - Edward River: 7, 1, 1, 1, 1
    - Junee: 3, 1, 1, 0, 1
    - Cootamundra-Gundagai: 15, 2, 1, 1, 1
    - Snowy Valleys: 9, 1, 1, 1, 0

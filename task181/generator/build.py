@@ -35,6 +35,7 @@ def build(out, quiet=False):
     counts = {"line_list": R.write_line_list(p("line_list"), pert)}
     counts["influenza"] = R.write_csv(p("influenza"), flu, R.FLU_COLUMNS)
     R.write_concordance(p("concordance"))
+    R.plan_merged_mrns(world)                  # the quarterly table's records draw from the "ask" streams only
     counts["admissions"] = R.write_admissions(p("admissions"), world)
     pregnancies, rb = R.build_mothers_and_births(world)
     counts["births"] = R.write_births(p("births"), pregnancies, world, rb)

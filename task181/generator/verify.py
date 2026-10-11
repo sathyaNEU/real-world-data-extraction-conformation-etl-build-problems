@@ -64,6 +64,7 @@ def main(target, golden):
         c["status"] = "Confirmed" if any(x["case_status"] == "Confirmed" for x in c["rows"]) else "Probable"
         c["lab"] = f["notifying_lab"]
         c["dob"] = day(f["dob"])
+        c["sex"], c["postcode"] = f["sex"], f["postcode"]
         c["mrn"] = next((x["mrn"] for x in c["rows"] if x["mrn"]), "")
         c["school"] = next((x["school_or_childcare"] for x in c["rows"] if x["school_or_childcare"]), "")
         c["role"] = next((x["school_role"] for x in c["rows"] if x["school_role"]), "")
@@ -111,12 +112,29 @@ def main(target, golden):
     adm = defaultdict(list)
     for r in csv.DictReader(open(os.path.join(target, "respiratory_admissions_2019-2026.csv"), newline="")):
         adm[int(r["mrn"])].append(dt.datetime.strptime(r["admission_date"], "%d/%m/%Y").date())
-    births = {int(r["baby_mrn"]): r for r in csv.DictReader(open(os.path.join(target, "birth_records_2024-2026.csv"), newline=""))}
+    birth_rows = list(csv.DictReader(open(os.path.join(target, "birth_records_2024-2026.csv"), newline="")))
+    births = {int(r["baby_mrn"]): r for r in birth_rows}
+    by_person = defaultdict(list)
+    for r in birth_rows:
+        by_person[(r["birth_date"], r["sex"], r["mother_postcode"])].append(r)
     t = pq.read_table(os.path.join(target, "antenatal_vaccinations_2019-2026.parquet")).to_pydict()
     dtpa = defaultdict(list)
+    # the person on a Medicare card is its first nine digits and the IRN; the tenth digit is the card's issue number
     for card, irn, d, ag in zip(t["medicare_card"], t["irn"], t["dose_date"], t["antigen"]):
         if ag == "dTpa":
-            dtpa[card.replace(" ", "") + str(irn)].append(d)
+            dtpa[card.replace(" ", "")[:9] + str(irn)].append(d)
+
+    def birth_record(c):
+        """By MRN; a case whose MRN is in neither the births nor the PAS (a merged record) by date of birth, sex and
+        postcode, and where two babies fit, the one the PAS holds."""
+        if c["mrn"] and int(c["mrn"]) in births:
+            return births[int(c["mrn"])]
+        if c["mrn"] and int(c["mrn"]) in adm:
+            return None
+        fits = by_person.get((c["dob"].isoformat(), c["sex"], c["postcode"]), [])
+        if len(fits) > 1:
+            fits = [r for r in fits if int(r["baby_mrn"]) in adm]
+        return fits[0] if len(fits) == 1 else None
 
     def six_months(b):
         m = b.month + 6
@@ -128,16 +146,24 @@ def main(target, golden):
     A = {}
     for a in TEN:
         sel = [c for c in cases if c["area"] == a and D(2026, 1, 1) <= c["date"] <= D(2026, 8, 31)]
-        inf = [c for c in sel if c["date"] < six_months(c["dob"])]
-        n_adm = sum(1 for c in inf if c["mrn"] and any(abs((x - c["date"]).days) <= 14 for x in adm.get(int(c["mrn"]), [])))
+        for c in sel:
+            c["birth"] = birth_record(c)
+        # the birth record's date of birth over the request's
+        inf = [c for c in sel if c["date"] < six_months(day(c["birth"]["birth_date"]) if c["birth"] else c["dob"])]
+        n_adm = 0
+        for c in inf:
+            numbers = {int(x) for x in (c["mrn"], c["birth"]["baby_mrn"] if c["birth"] else "") if x}
+            if any(abs((x - c["date"]).days) <= 14 for m in numbers for x in adm.get(m, [])):
+                n_adm += 1
         n_vac = 0
         for c in inf:
-            b = births.get(int(c["mrn"])) if c["mrn"] else None
+            b = c["birth"]
             if not b:
                 continue
             born = day(b["birth_date"])
             start = born - dt.timedelta(weeks=int(b["gestation_weeks"]))
-            if any(start <= x <= born - dt.timedelta(days=14) for x in dtpa.get(b["mother_medicare_no"], [])):
+            mother = b["mother_medicare_no"][:9] + b["mother_medicare_no"][10:]
+            if any(start <= x <= born - dt.timedelta(days=14) for x in dtpa.get(mother, [])):
                 n_vac += 1
         A[a] = (sum(1 for c in sel if c["status"] == "Confirmed"), sum(1 for c in sel if c["status"] == "Probable"),
                 len(inf), n_adm, n_vac)

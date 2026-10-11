@@ -43,10 +43,38 @@ EXPECT_N = {"Wagga Wagga": 9, "Griffith": 7, "Leeton": 1, "Narrandera": 1, "Murr
             "Junee": 0, "Cootamundra-Gundagai": 2, "Snowy Valleys": 7}
 EXPECT_E = {"Wagga Wagga": 1.4, "Griffith": 1.4, "Leeton": 0.6, "Narrandera": 0.4, "Murrumbidgee": 0.2, "Hay": 0.2,
             "Edward River": 0.4, "Junee": 0.2, "Cootamundra-Gundagai": 0.6, "Snowy Valleys": 1.4}
-EXPECT_A = {"Wagga Wagga": (63, 2, 3, 2, 1), "Griffith": (25, 3, 2, 1, 1), "Leeton": (11, 0, 1, 0, 1),
+EXPECT_A = {"Wagga Wagga": (63, 2, 2, 1, 0), "Griffith": (25, 3, 1, 1, 0), "Leeton": (11, 0, 1, 0, 1),
             "Narrandera": (5, 0, 1, 0, 0), "Murrumbidgee": (0, 0, 0, 0, 0), "Hay": (2, 0, 0, 0, 0),
-            "Edward River": (7, 1, 1, 1, 0), "Junee": (3, 1, 1, 0, 1), "Cootamundra-Gundagai": (15, 2, 1, 1, 1),
+            "Edward River": (7, 1, 1, 1, 1), "Junee": (3, 1, 1, 0, 1), "Cootamundra-Gundagai": (15, 2, 1, 1, 1),
             "Snowy Valleys": (9, 1, 1, 1, 0)}
+# the ask A devices (records.py): each one's natural read, and the cells it lands off the golden, at the value it gives
+ASK_A_DEVICES = [
+    ("A1 the infant's age from the request's date of birth (keyed month first), not the birth record's", dict(dob="request"),
+     {("Wagga Wagga", "infants"): 3, ("Wagga Wagga", "admitted"): 2, ("Wagga Wagga", "vaccinated"): 1,
+      ("Griffith", "infants"): 2, ("Griffith", "vaccinated"): 1}),
+    ("A2 the line list's MRN only, so a merged record finds neither its birth nor its admission", dict(link="mrn"),
+     {("Griffith", "admitted"): 0, ("Cootamundra-Gundagai", "admitted"): 0, ("Cootamundra-Gundagai", "vaccinated"): 0}),
+    ("A3 the mother matched on all ten card digits, so a reissued card finds no dose", dict(card="full"),
+     {("Leeton", "vaccinated"): 0, ("Edward River", "vaccinated"): 0, ("Junee", "vaccinated"): 0}),
+]
+# the gate: the main call as shipped at d6944e3 (portal round 1). Every file the main call reads keeps its bytes (the
+# line list, so every row of the main call's population, among them), and every main-call figure on golden.py and
+# verify.py hashes to the shipped pack's (main_fingerprint below, computed on the d6944e3 pack).
+SHIPPED_COMMIT = "d6944e3"
+SHIPPED_FILES = {
+    "target/PR-07_pertussis_response_protocol.pdf": "a9203ff9795d27cc1174648c0d7862ef25c4e9594b7e04323ea991ae5a11603d",
+    "target/SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt": "c9d21b1c95fc8bec67611cc9272d01b2485b2d76ca8ef3823ef6afd5a23f2357",
+    "target/cd_weekly_report_2026_wk35.pdf": "5bfcb7195e1d45e0d3117bd2d596250a0d190075df99bca4189c4c9b233ab7f8",
+    "target/influenza_notifications_2026.csv": "8442d344e0a412a180d2e1ea986bdbcdd5d8d1fe3f54c241a29de264d4d13ba4",
+    "target/pertussis_line_list_notes.md": "2951ff081423f9011b9eec24968bdd61d8b4c0f98a945522748c105a5d7c7a2d",
+    "target/pertussis_notifications_2019-2026.csv": "2e1f9e5cedd271a30d1744946de177df3e79169256200efb35d7da63c628bbcf",
+    "target/postcode_lga_concordance.xlsx": "6e8bad9a566ed5c0fee558aa8178e2fdb1f8a3b69a6e342369ca74797909004e",
+    "target/school_rosters_term3_2026.xlsx": "e92c80c0b53e9b11d321ccb6a19b27b95d16ef92ec1d06ec40af81a3f4e1e556",
+    "golden/response_team_brief.pptx": "151c233209a355a24d73bf5c365f69c4cba36394e3f969e68d092faa10578acb",
+}
+ASK_ONLY_FILES = ("respiratory_admissions_2019-2026.csv", "birth_records_2024-2026.csv",
+                  "antenatal_vaccinations_2019-2026.parquet")
+SHIPPED_MAIN = "2e6c46341f35947685cf726850d40bfea0109b7d128bf06717f246bd76c73961"
 A_KEYS = ("confirmed", "probable", "infants", "admitted", "vaccinated")
 EXPECT_B_ALL = [("Banna Avenue Public School", "Griffith", 5), ("Wollundry Public School", "Wagga Wagga", 3),
                 ("Blowering Road Public School", "Snowy Valleys", 2), ("Bolton Park High School", "Wagga Wagga", 2),
@@ -64,6 +92,29 @@ BANNED = re.compile(r"\b(delay\w*|completeness|incomplete|backfill\w*|nowcast\w*
 TOOLCHAIN = re.compile(r"python-docx|python-pptx|openpyxl|reportlab|matplotlib|pandas|numpy|pyarrow|distractor|"
                        r"\bclaude\b|anthropic|lorem|placeholder|\bseed\b", re.I)
 ASOF = dt.date(2026, 10, 5)
+
+
+def _canon(x):
+    if isinstance(x, float):
+        return round(x, 9)
+    if isinstance(x, dict):
+        return {str(k): _canon(v) for k, v in sorted(x.items(), key=lambda kv: str(kv[0]))}
+    if isinstance(x, (list, tuple)):
+        return [_canon(v) for v in x]
+    if hasattr(x, "item"):
+        return _canon(x.item())
+    return x
+
+
+def main_fingerprint(g, v):
+    """sha256 over every main-call figure: golden.py's call, counts, expected counts, every rung and grid cell, the
+    route shares and the slide's clusters, and verify.py's call, counts, clusters and route speeds."""
+    fig = {"answer": g["answer"], "N": g["N"], "E": g["E"], "Nn": g["Nn"], "En": g["En"], "rungs": g["rungs"],
+           "grid": {"|".join(map(str, k)): sc for k, sc in g["grid"].items()},
+           "route_share": g["route_share"], "route_share_7": g["route_share_7"],
+           "ask_b": g["ask_b"], "ask_b_all": g["ask_b_all"],
+           "verify": {k: v[k] for k in ("answer", "N", "E", "B", "B_all", "speed")}}
+    return hashlib.sha256(json.dumps(_canon(fig), sort_keys=True).encode()).hexdigest()
 
 
 def lead_ok(score, want, margin):
@@ -205,6 +256,31 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     utc_day = pd.to_datetime(ll["received_utc"], utc=True).dt.date
     ok(int((utc_day != ll["recv_day"]).sum()) > 50, "UTC and local received dates differ on many rows (texture)")
 
+    # ---------------------------------------------------------------- the gate: the main call as shipped
+    for rel, h in sorted(SHIPPED_FILES.items()):
+        path = os.path.join(target if rel.startswith("target/") else golden_dir, rel.split("/", 1)[1])
+        ok(hashlib.sha256(open(path, "rb").read()).hexdigest() == h, "%s differs from %s" % (rel, SHIPPED_COMMIT))
+    try:
+        shown = {rel: hashlib.sha256(subprocess.run(["git", "show", "%s:task181/%s" % (SHIPPED_COMMIT, rel)], cwd=REPO,
+                                                    capture_output=True, check=True).stdout).hexdigest()
+                 for rel in SHIPPED_FILES}
+    except (OSError, subprocess.CalledProcessError):
+        shown = None
+    if shown is not None:
+        ok(shown == SHIPPED_FILES, "the gate's digests are the files at %s" % SHIPPED_COMMIT)
+    ok(sorted(os.listdir(target)) == sorted([r.split("/", 1)[1] for r in SHIPPED_FILES if r.startswith("target/")]
+                                            + list(ASK_ONLY_FILES)),
+       "every target file is either byte-identical to the shipped pack or read only by the quarterly table")
+    import contextlib
+    import io
+    import verify as V
+    with contextlib.redirect_stdout(io.StringIO()):
+        vmain = V.main(target, golden_dir)
+    ok(main_fingerprint(g, vmain) == SHIPPED_MAIN, "a main-call figure moved from the shipped pack (%s)" % SHIPPED_COMMIT)
+    LOG.append("gate: %d files byte-identical to %s (the line list, so every main-population row, among them); every "
+               "main-call figure on golden.py and verify.py as shipped (fingerprint %s)" % (
+                   len(SHIPPED_FILES), SHIPPED_COMMIT, SHIPPED_MAIN[:16]))
+
     # ---------------------------------------------------------------- the asks
     adm, births, reg = G.load_links(target)
     A = g["ask_a"]
@@ -238,6 +314,18 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     moves_a("infants under twelve months", G.ask_a(cases, adm, births, reg, infant_months=12))
     moves_a("split postcodes by first row", G.ask_a(G.episodes(ll, conc, alloc="first"), adm, births, reg))
     moves_a("split postcodes to any unit area", G.ask_a(G.episodes(ll, conc, alloc="any_unit"), adm, births, reg))
+    # the devices: one asserted line each, the natural read off the golden on exactly the cells the device moves
+    union = {}
+    for label, kw, want in ASK_A_DEVICES:
+        other = G.ask_a(cases, adm, births, reg, **kw)
+        moved = {(a, k): other[a][k] for a in G.AREAS for k in A_KEYS if other[a][k] != A[a][k]}
+        ok(moved == want, "ask A device %s: %s" % (label, moved))
+        LOG.append("ask A device %s: %s" % (label, "; ".join("%s %s %d->%d" % (a, k, A[a][k], v) for (a, k), v in sorted(want.items()))))
+        union.update(want)
+    every = G.ask_a(cases, adm, births, reg, **{k: v for _, kw, _ in ASK_A_DEVICES for k, v in kw.items()})
+    moved = {(a, k): every[a][k] for a in G.AREAS for k in A_KEYS if every[a][k] != A[a][k]}
+    ok(moved == union, "the three natural reads together move every cell each moves alone: %s" % moved)
+    LOG.append("ask A, all three natural reads: %d cells off the golden" % len(moved))
     rosters = g["rosters"]
 
     graded_b, untouched_b = [], []
@@ -274,25 +362,52 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         k = G.school_key(c["school"], rnames)
         if k:
             ok(c["area"] == rosters[k]["lga"], "student at %s lives in the school's area" % k)
-    # convergence: the infant boundary, the admission window, the pregnancy window
+    # convergence: the infant boundary, the admission window, the pregnancy window, on the records' own linkage
     ask_cases = cases[cases["area"].notna() & (cases["date"] >= G.ASK[0]) & (cases["date"] <= G.ASK[1])]
-    ages = [(d - b).days / 30.4375 for d, b in zip(ask_cases["date"], ask_cases["dob"])]
-    ok(not any(5.7 <= x <= 6.3 for x in ages), "no case near six months of age (day and calendar-month readings agree)")
-    inf = ask_cases[[d < G.add_months(b, 6) for d, b in zip(ask_cases["date"], ask_cases["dob"])]]
-    adm_by = {}
-    for m_, d_ in zip(adm["mrn"], adm["admit"]):
-        adm_by.setdefault(int(m_), []).append(d_)
-    gaps = [abs((x - d).days) for m_, d in zip(inf["mrn"], inf["date"]) for x in adm_by.get(int(m_), [])]
-    ok(all(gp <= 3 or gp >= 30 for gp in gaps), "infant admissions sit within 3 days of the specimen or 30 or more away")
-    bmap = {int(b["baby_mrn"]): b for _, b in births.iterrows()}
-    reg2 = reg.assign(key=[re.sub(r"\D", "", c) + str(i) for c, i in zip(reg["medicare_card"], reg["irn"])])
-    for m_ in inf["mrn"]:
-        b = bmap[int(m_)]
+    det_all = []
+    G.ask_a(cases, adm, births, reg, infant_months=1200, detail=det_all)      # every ask-period case, linked
+    ages = [(x["date"] - b).days / 30.4375 for x in det_all for b in (x["request_dob"], x["born"])]
+    ok(len(det_all) == len(ask_cases) and not any(5.7 <= x <= 6.3 for x in ages),
+       "no case near six months of age on either date of birth (day and calendar-month readings agree)")
+    det = []
+    G.ask_a(cases, adm, births, reg, detail=det)
+    ok(all(abs(gp) <= 3 or abs(gp) >= 30 for x in det for gp in x["gaps"]),
+       "infant admissions sit within 3 days of the specimen or 30 or more away")
+    for x in det:
+        b = x["birth"]
+        ok(b is not None, "infant %s has a birth record" % x["person_id"])
         born = dt.date.fromisoformat(b["birth_date"])
-        ds = [(born - pd.Timestamp(x).date()).days for x, ag in zip(reg2[reg2["key"] == b["mother_medicare_no"]]["dose_date"],
-                                                                     reg2[reg2["key"] == b["mother_medicare_no"]]["antigen"]) if ag == "dTpa"]
-        ok(all(x >= 56 or 7 <= x <= 13 or x >= 365 for x in ds), "maternal doses are clearly in or clearly out")
-        ok(not any(60 <= x < 365 and x > 7 * int(b["gestation_weeks"]) for x in ds), "no dose between pregnancies")
+        ds = [(born - d).days for d, ag in x["doses"] if ag == "dTpa"]
+        ok(all(y >= 56 or 7 <= y <= 13 or y >= 365 for y in ds), "maternal doses are clearly in or clearly out")
+        ok(not any(60 <= y < 365 and y > 7 * int(b["gestation_weeks"]) for y in ds), "no dose between pregnancies")
+    # the devices' records: each infant's own, and nobody else's
+    regk = reg.assign(full=[re.sub(r"\D", "", c) + str(i) for c, i in zip(reg["medicare_card"], reg["irn"])])
+    regk["ident"] = [G.mother_key(k) for k in regk["full"]]
+    a1 = [x for x in det_all if x["birth"] is not None and x["born"] != x["request_dob"]]
+    ok(len(a1) == 2 and all(x["born"] == dt.date(x["request_dob"].year, x["request_dob"].day, x["request_dob"].month)
+                            for x in a1), "A1: two birth records disagree with the request, each by day and month")
+    for x in a1:
+        edd = pd.to_datetime(regk[regk["ident"] == G.mother_key(x["birth"]["mother_medicare_no"])]["estimated_due_date"]).dt.date
+        ok(any(abs((e - x["born"]).days) <= 14 for e in edd), "A1: the register's due date sits on the birth record's")
+        ok(x["date"] >= G.add_months(x["born"], 6) and x["date"] < G.add_months(x["request_dob"], 6),
+           "A1: under six months only on the request's date")
+    a2 = [x for x in det if int(x["birth"]["baby_mrn"]) != int(x["mrn"] or 0)]
+    pas = set(int(m_) for m_ in adm["mrn"])
+    bm = set(int(m_) for m_ in births["baby_mrn"])
+    ok(len(a2) == 2 and all(int(x["mrn"]) not in pas | bm and int(x["birth"]["baby_mrn"]) in pas for x in a2),
+       "A2: two infants' line-list MRNs are in neither file; their birth records' numbers carry the PAS admissions")
+    for x in a2:
+        ok(x["birth"]["birth_date"] == x["request_dob"].isoformat() and any(abs(gp) <= 1 for gp in x["gaps"]),
+           "A2: the linked birth has the case's date of birth, and its number an admission at the specimen")
+    a3 = 0
+    for x in det:
+        mm = x["birth"]["mother_medicare_no"]
+        women = regk[regk["ident"] == G.mother_key(mm)]
+        ok(women["mother_dob"].nunique() <= 1, "A3: one woman on each infant mother's card and IRN")
+        if len(women) and not (regk["full"] == mm).any():
+            a3 += 1
+            ok(all(int(mm[9]) == int(f[9]) + 1 for f in women["full"]), "A3: the birth record's issue digit one up on the register's")
+    ok(a3 == 3, "A3: three infants' mothers are on a reissued card (Leeton, Edward River, Junee): %d" % a3)
     # the clusters' students are on their rosters, and no roster match is ambiguous
     wb = openpyxl.load_workbook(os.path.join(target, "school_rosters_term3_2026.xlsx"), read_only=True)
     roster_people = {}

@@ -1,11 +1,11 @@
 lga,period_from,period_to,confirmed_cases,probable_cases,infants_under_6_months,infants_admitted_to_hospital,infants_mother_vaccinated_14d_before_birth
-Wagga Wagga,2026-01-01,2026-08-31,63,2,3,2,1
-Griffith,2026-01-01,2026-08-31,25,3,2,1,1
+Wagga Wagga,2026-01-01,2026-08-31,63,2,2,1,0
+Griffith,2026-01-01,2026-08-31,25,3,1,1,0
 Leeton,2026-01-01,2026-08-31,11,0,1,0,1
 Narrandera,2026-01-01,2026-08-31,5,0,1,0,0
 Murrumbidgee,2026-01-01,2026-08-31,0,0,0,0,0
 Hay,2026-01-01,2026-08-31,2,0,0,0,0
-Edward River,2026-01-01,2026-08-31,7,1,1,1,0
+Edward River,2026-01-01,2026-08-31,7,1,1,1,1
 Junee,2026-01-01,2026-08-31,3,1,1,0,1
 Cootamundra-Gundagai,2026-01-01,2026-08-31,15,2,1,1,1
 Snowy Valleys,2026-01-01,2026-08-31,9,1,1,1,0

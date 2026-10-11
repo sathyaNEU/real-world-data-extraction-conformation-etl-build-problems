@@ -28492,18 +28492,18 @@ episode_id,facility,mrn,sex,age_years,postcode,admission_date,separation_date,pr
 26128490,Junee Hospital,986640,M,89,2663,26/08/2026,31/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
 26128491,Leeton Hospital,1601439,F,16,2705,26/08/2026,01/09/2026,J22,Unspecified acute lower respiratory infection,Acute,Emergency,Died
 26128492,Tumut Hospital,772282,F,73,2729,26/08/2026,02/09/2026,J22,Unspecified acute lower respiratory infection,Acute,Emergency,Discharged home
-26128493,Wagga Wagga Hospital,1040887,F,14,2650,26/08/2026,26/08/2026,J05.0,Acute obstructive laryngitis [croup],Acute,Emergency,Transferred to another hospital
-26128494,Wagga Wagga Hospital,1682806,F,69,2650,26/08/2026,27/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
-26128495,Wagga Wagga Hospital,1846738,F,0,2727,26/08/2026,02/09/2026,A37.0,Whooping cough due to Bordetella pertussis,Acute,Emergency,Discharged home
+26128493,Wagga Wagga Hospital,1007017,F,0,2727,26/08/2026,02/09/2026,A37.0,Whooping cough due to Bordetella pertussis,Acute,Emergency,Discharged home
+26128494,Wagga Wagga Hospital,1040887,F,14,2650,26/08/2026,26/08/2026,J05.0,Acute obstructive laryngitis [croup],Acute,Emergency,Transferred to another hospital
+26128495,Wagga Wagga Hospital,1682806,F,69,2650,26/08/2026,27/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
 26128496,Wagga Wagga Hospital,405733,M,78,2652,26/08/2026,28/08/2026,J11.1,"Influenza with other respiratory manifestations, virus not identified",Acute,Emergency,Discharged home
 26128497,Wagga Wagga Hospital,606304,F,75,2650,26/08/2026,01/09/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
 26128498,Wagga Wagga Hospital,883247,F,3,2680,26/08/2026,27/08/2026,J45.9,"Asthma, unspecified",Acute,Emergency,Discharged home
 26128499,Cootamundra Hospital,802038,M,15,2722,27/08/2026,28/08/2026,U07.1,"COVID-19, virus identified",Acute,Emergency,Discharged home
-26128500,Griffith Hospital,1074380,M,0,2680,27/08/2026,31/08/2026,A37.0,Whooping cough due to Bordetella pertussis,Acute,Emergency,Discharged home
-26128501,Griffith Hospital,1088512,M,54,2680,27/08/2026,05/09/2026,J45.9,"Asthma, unspecified",Acute,Emergency,Discharged home
-26128502,Griffith Hospital,386054,F,92,2706,27/08/2026,29/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
-26128503,Griffith Hospital,418097,M,65,2681,27/08/2026,28/08/2026,J18.9,"Pneumonia, unspecified",Acute,Emergency,Discharged home
-26128504,Griffith Hospital,539107,F,16,2680,27/08/2026,02/09/2026,J96.0,Acute respiratory failure,Acute,Emergency,Discharged home
+26128500,Griffith Hospital,1088512,M,54,2680,27/08/2026,05/09/2026,J45.9,"Asthma, unspecified",Acute,Emergency,Discharged home
+26128501,Griffith Hospital,386054,F,92,2706,27/08/2026,29/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Discharged home
+26128502,Griffith Hospital,418097,M,65,2681,27/08/2026,28/08/2026,J18.9,"Pneumonia, unspecified",Acute,Emergency,Discharged home
+26128503,Griffith Hospital,539107,F,16,2680,27/08/2026,02/09/2026,J96.0,Acute respiratory failure,Acute,Emergency,Discharged home
+26128504,Griffith Hospital,586193,M,0,2680,27/08/2026,31/08/2026,A37.0,Whooping cough due to Bordetella pertussis,Acute,Emergency,Discharged home
 26128505,Griffith Hospital,929383,F,26,2680,27/08/2026,28/08/2026,J96.0,Acute respiratory failure,Acute,Emergency,Discharged home
 26128506,Hay Hospital,424508,F,12,2711,27/08/2026,28/08/2026,J18.9,"Pneumonia, unspecified",Acute,Emergency,Discharged home
 26128507,Tumut Hospital,987050,F,73,2720,27/08/2026,29/08/2026,J44.1,"Chronic obstructive pulmonary disease with acute exacerbation, unspecified",Acute,Emergency,Transferred to another hospital

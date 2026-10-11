@@ -84,7 +84,7 @@ def episodes(ll, conc, rule=True, alloc="larger"):
                 person_id=pid, date=first["spec"], area=allocate(conc, first["postcode"], alloc),
                 postcode=first["postcode"],
                 status="Confirmed" if any(x["case_status"] == "Confirmed" for x in grp) else "Probable",
-                lab=first["notifying_lab"], first_recv=min(x["recv_day"] for x in grp), dob=first["dob_d"],
+                lab=first["notifying_lab"], first_recv=min(x["recv_day"] for x in grp), dob=first["dob_d"], sex=first["sex"],
                 mrn=next((x["mrn"] for x in grp if x["mrn"]), ""),
                 school=next((x["school_or_childcare"] for x in grp if x["school_or_childcare"]), ""),
                 role=next((x["school_role"] for x in grp if x["school_role"]), ""),
@@ -352,48 +352,82 @@ def digits(s):
     return re.sub(r"\D", "", str(s))
 
 
+def mother_key(number, card="identifier"):
+    """A mother's key in the register from her Medicare number (ten card digits, then the IRN). The tenth digit is
+    the card's issue number, which goes up when a card is reissued, so the person is the first nine digits (the
+    identifier and its check digit) and the IRN. card="full" is the natural read: all ten digits and the IRN."""
+    d = digits(number)
+    return d if card == "full" else d[:9] + d[10:]
+
+
 def ask_a(cases, adm, births, reg, adm_window=14, vacc_rule="pregnancy14", infant_months=6,
-          statuses=("Confirmed", "Probable")):
+          statuses=("Confirmed", "Probable"), dob="birth_record", link="fallback", card="identifier", detail=None):
+    """PR-07 7.1 for 1 January to 31 August 2026. The records' own handling (each switch's other value is the
+    natural read it defeats):
+    dob   the infant's age from the birth record's date of birth where the case's MRN finds one; the date on the
+          laboratory request was in places keyed month first ("request": the line list's dob)
+    link  a case whose MRN is in neither the births nor the admissions is linked to the birth record with its date of
+          birth, sex and postcode (where two fit, the one the PAS holds), whose MRN, the surviving one after a merge,
+          carries its admissions ("mrn")
+    card  the mother found in the register on her card's first nine digits and IRN, the issue digit set aside ("full")"""
     sub = cases[cases["area"].notna() & (cases["date"] >= ASK[0]) & (cases["date"] <= ASK[1]) & cases["status"].isin(statuses)]
     adm_by = defaultdict(list)
     for m, d in zip(adm["mrn"], adm["admit"]):
         adm_by[int(m)].append(d)
-    bmap = {}
+    bmap, bpeople = {}, defaultdict(list)
     for _, b in births.iterrows():
         bmap[int(b["baby_mrn"])] = b
+        bpeople[(b["birth_date"], b["sex"], b["mother_postcode"])].append(b)
     reg = reg.copy()
-    reg["card"] = [digits(x) for x in reg["medicare_card"]]
-    reg["key"] = reg["card"] + reg["irn"].astype(str)
+    reg["key"] = [mother_key(digits(c) + str(i), card) for c, i in zip(reg["medicare_card"], reg["irn"])]
     doses = defaultdict(list)
     for k, d, ag in zip(reg["key"], reg["dose_date"], reg["antigen"]):
         doses[k].append((pd.Timestamp(d).date(), ag))
+
+    def birth_of(c):
+        mrn = int(c["mrn"]) if c["mrn"] else None
+        b = bmap.get(mrn)
+        if b is None and link == "fallback" and (mrn is None or mrn not in adm_by):
+            hits = bpeople.get((c["dob"].isoformat(), c["sex"], c["postcode"]), [])
+            if len(hits) > 1:                       # two babies born that day: the one the PAS holds
+                hits = [x for x in hits if int(x["baby_mrn"]) in adm_by]
+            b = hits[0] if len(hits) == 1 else None
+        return b
+
     rows = {}
     for a in AREAS:
         s = sub[sub["area"] == a]
         conf = int((s["status"] == "Confirmed").sum())
         prob = int((s["status"] == "Probable").sum())
-        inf = s[[d < add_months(b, infant_months) for d, b in zip(s["date"], s["dob"])]]
-        admitted = vacc = 0
-        for _, c in inf.iterrows():
-            mrn = int(c["mrn"]) if c["mrn"] else None
-            if mrn is not None and any((adm_window is None) or abs((x - c["date"]).days) <= adm_window for x in adm_by.get(mrn, [])):
-                admitted += 1
-            b = bmap.get(mrn)
-            if b is None:
+        n_inf = admitted = vacc = 0
+        for _, c in s.iterrows():
+            b = birth_of(c)
+            born_on = dt.date.fromisoformat(b["birth_date"]) if (b is not None and dob == "birth_record") else c["dob"]
+            if not c["date"] < add_months(born_on, infant_months):
                 continue
-            born = dt.date.fromisoformat(b["birth_date"])
-            start = born - dt.timedelta(days=7 * int(b["gestation_weeks"]))
-            key = digits(b["mother_medicare_no"])
-            ok = False
-            for d, ag in doses.get(key, []):
-                if vacc_rule == "pregnancy14" and ag == "dTpa" and start <= d <= born - dt.timedelta(days=14):
-                    ok = True
-                elif vacc_rule == "anytime" and ag == "dTpa" and d < born:
-                    ok = True
-                elif vacc_rule == "any_vaccine" and start <= d <= born - dt.timedelta(days=14):
-                    ok = True
+            n_inf += 1
+            mrns = ({int(c["mrn"])} if c["mrn"] else set()) | ({int(b["baby_mrn"])} if b is not None else set())
+            gaps = [(x - c["date"]).days for m in mrns for x in adm_by.get(m, [])]
+            was_admitted = any((adm_window is None) or abs(g) <= adm_window for g in gaps)
+            admitted += was_admitted
+            ok, ds = False, []
+            if b is not None:
+                born = dt.date.fromisoformat(b["birth_date"])
+                start = born - dt.timedelta(days=7 * int(b["gestation_weeks"]))
+                ds = doses.get(mother_key(b["mother_medicare_no"], card), [])
+                for d, ag in ds:
+                    if vacc_rule == "pregnancy14" and ag == "dTpa" and start <= d <= born - dt.timedelta(days=14):
+                        ok = True
+                    elif vacc_rule == "anytime" and ag == "dTpa" and d < born:
+                        ok = True
+                    elif vacc_rule == "any_vaccine" and start <= d <= born - dt.timedelta(days=14):
+                        ok = True
             vacc += ok
-        rows[a] = dict(confirmed=conf, probable=prob, infants=len(inf), admitted=admitted, vaccinated=vacc)
+            if detail is not None:
+                detail.append(dict(area=a, person_id=c["person_id"], date=c["date"], request_dob=c["dob"], born=born_on,
+                                   mrn=c["mrn"], birth=b, mrns=mrns, gaps=gaps, admitted=was_admitted, doses=ds,
+                                   vaccinated=ok))
+        rows[a] = dict(confirmed=conf, probable=prob, infants=n_inf, admitted=admitted, vaccinated=vacc)
     return rows
 
 

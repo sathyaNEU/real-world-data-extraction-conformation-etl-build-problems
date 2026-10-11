@@ -199,7 +199,7 @@ fortnight and the prior windows carry one notification per case.
 
 | Ask | Figures | Shipped answer |
 |---|---|---|
-| A. 1 Jan to 31 Aug 2026 by area (CSV): confirmed, probable, infants under six months, of those admitted, of those born to a mother vaccinated 14 days or more before birth | 10 x 5 = 50 | Wagga Wagga 63, 2, 3, 2, 1; Griffith 25, 3, 2, 1, 1; Leeton 11, 0, 1, 0, 1; Narrandera 5, 0, 1, 0, 0; Murrumbidgee 0, 0, 0, 0, 0; Hay 2, 0, 0, 0, 0; Edward River 7, 1, 1, 1, 0; Junee 3, 1, 1, 0, 1; Cootamundra-Gundagai 15, 2, 1, 1, 1; Snowy Valleys 9, 1, 1, 1, 0 |
+| A. 1 Jan to 31 Aug 2026 by area (CSV): confirmed, probable, infants under six months, of those admitted, of those born to a mother vaccinated 14 days or more before birth | 10 x 5 = 50 | Wagga Wagga 63, 2, 2, 1, 0; Griffith 25, 3, 1, 1, 0; Leeton 11, 0, 1, 0, 1; Narrandera 5, 0, 1, 0, 0; Murrumbidgee 0, 0, 0, 0, 0; Hay 2, 0, 0, 0, 0; Edward River 7, 1, 1, 1, 1; Junee 3, 1, 1, 0, 1; Cootamundra-Gundagai 15, 2, 1, 1, 1; Snowy Valleys 9, 1, 1, 1, 0 |
 | B. School clusters in the area the team goes to (slide, PR-07 5.1): students, specimens 5 Sep to 4 Oct, two or more, at schools in that area | 2 schools x 2 | Banna Avenue Public School, 5; Kooyoo Street Public School, 2 (both Griffith schools on their rosters). Unit-wide, not graded: the same two with Wollundry Public School 3, Blowering Road Public School 2 and Bolton Park High School 2 |
 
 Devices as built: two laboratories for one infant (I2, a GP swab to Inland Pathology then an admission swab); a Leeton
@@ -212,11 +212,11 @@ separate IRN in the register; interview school names as written; a staff case, a
 as a student; a Cootamundra student swabbed on 4 September and notified on 7 September; split postcodes 2652, 2655,
 2665, 2706, 2722, 2727, 2729 (two of them allocate outside the unit).
 
-**Ask stops** (each asserted to move its figures): episode rule ignored (A: Wagga Wagga confirmed 63 to 69, infants 3 to
-4, admitted 2 to 3, Griffith 25 to 27, Edward River 7 to 10 and three more); probable cases not counted (A: every
-probable figure to 0); admissions without the 14-day link (A: Wagga Wagga admitted 2 to 3, Leeton 0 to 1); antenatal
-dTpa at any time before birth (A: Wagga Wagga vaccinated 1 to 3, Narrandera 0 to 1, Edward River 0 to 1); any antenatal
-vaccine (A: Griffith vaccinated 1 to 2); infants under twelve months (A: Wagga Wagga infants 3 to 6 and Griffith 2 to 3,
+**Ask stops** (each asserted to move its figures): episode rule ignored (A: Wagga Wagga confirmed 63 to 69, infants 2 to
+3, admitted 1 to 2, Griffith 25 to 27, Edward River 7 to 10 and three more); probable cases not counted (A: every
+probable figure to 0); admissions without the 14-day link (A: Wagga Wagga admitted 1 to 2, Leeton 0 to 1); antenatal
+dTpa at any time before birth (A: Wagga Wagga vaccinated 0 to 2, Narrandera 0 to 1); any antenatal
+vaccine (A: Griffith vaccinated 0 to 1); infants under twelve months (A: Wagga Wagga infants 2 to 6 and Griffith 1 to 3,
 with their admitted and vaccinated figures); split postcodes by the first row (A: Wagga Wagga 63 to 61,
 Cootamundra-Gundagai 15 to 18, Snowy Valleys 9 to 6) or to any unit area (A: Wagga Wagga 63 to 66); school names matched
 exactly (B: no clusters at all); parents counted (B: Banna Avenue Public School 5 to 6). The call moves ask B too: a
@@ -229,6 +229,32 @@ becomes a cluster of 2), probable cases not counted (Bolton Park High School dro
 (Hurley Street Public School, Cootamundra-Gundagai, becomes a cluster of 2) and the preschool merged into the school of
 the same name (Wollundry Public School 3 to 4), all at schools outside Griffith. Every cluster window student lives in
 the school's area, so reading "the clusters in the area" by residence gives the same list (asserted).
+
+**Ask-only revision after portal round 1** (`supplemental-stumping` Part 12, 2026-10-11). Three devices, in the births,
+the register and the admissions extract only; the line list and the other eight files keep their d6944e3 bytes and every
+main-call figure on `golden.py` and `verify.py` hashes as shipped (the gate in `checks.py`). Draws from the `ask` streams.
+Each cell is given as golden, then the natural read in brackets.
+
+- **A1, a date of birth keyed month first.** The laboratory request's date of birth was keyed month first (11/02/2025
+  read as 2 November), so the line list carries the swapped date; the birth record holds the date the baby was born and
+  the mother's register due date sits on it. Rows: I1 (P7996616, Wagga Wagga, born 2025-02-11, request 2025-11-02) and
+  I4 (P8102146, Griffith, born 2025-08-12, request 2025-12-08), their birth records and their mothers' doses. Cells:
+  Wagga Wagga infants 2 (3), admitted 1 (2), vaccinated 0 (1); Griffith infants 1 (2), vaccinated 0 (1).
+- **A2, a merged medical record number.** The presentation made a second MRN, recorded at follow-up and then merged in
+  the PAS into the number issued at birth; the PAS and the birth record carry the surviving number and the line list's is
+  in neither. Found on date of birth, sex and postcode, the baby the PAS holds where two fit (Griffith Hospital had two
+  boys born 25 June). Rows: I5 (P9436908, Griffith, 01074380 to 00586193) and I10 (P6704032, Cootamundra-Gundagai,
+  01846738 to 01007017), their birth records and admissions. Cells: Griffith admitted 1 (0); Cootamundra-Gundagai
+  admitted 1 (0), vaccinated 1 (0).
+- **A3, a reissued Medicare card.** The mother's card was reissued late in the pregnancy, so the tenth digit, the issue
+  number, is one up on the birth record against the register's; the woman is the first nine digits and the IRN. About one
+  mother in 25 across the births, and three infant mothers: I6 (Leeton, at 34 weeks), I8 (Junee, 34 weeks) and I9
+  (Edward River, 35 weeks; her dTpa is now at 26 to 30 weeks, where the shipped design had it in the last fortnight).
+  Cells: Leeton vaccinated 1 (0), Junee 1 (0), Edward River 1 (0).
+
+The shipped method (d6944e3's `golden.py`) on the revised pack lands off the golden on 11 cells, 9 of them among round
+1's 15 graded CSV cells (26 of their 42 points). The five confirmed and probable cells sit on the line list, which the
+gate holds byte-identical, so they cannot move.
 
 Use test: the huddle sees the area, the school visits it means and the year's infant picture every week. Decoupling
 (asserted): ask A's rows share none with the fortnight and ask A does not move with any nowcast estimator; nor does the
@@ -274,7 +300,7 @@ route, so the judge is pointed at this sentence.
 
 11 files, 6 formats (csv, md, parquet, pdf, txt, xlsx); two files over 25,000 rows; two distractors named in
 `metadata.json`, asserted unused (the golden recomputes unchanged with each removed). Goldens:
-`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 446 assertions
+`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 488 assertions
 passed. `verify.py` (standard library, openpyxl and pyarrow, no code shared with `golden.py`): OK, Griffith, rungs 0 to
 3 Wagga Wagga, Griffith's 2 clusters (5 unit-wide), 50 ask A figures and both route speeds, each matched against the
 goldens. Two consecutive
@@ -472,3 +498,4 @@ anywhere other than rungs 0 to 3 is read for a fork before any hardening.
 - **Build, "(preliminary)" on the population sheet.** Dropped with the rest of that vocabulary (asserted by the banned
   word sweep in `checks.py`).
 - Solver round 2 (architecture 2) missed the call at rung 1 but answered every ask, proxy 65.2; the slide's cluster list now follows the call (the team's school visits), so a wrong area carries a wrong list.
+- **Portal round 1 (2026-10-11): ask A's devices as shipped did not bite.** The response filed all 15 graded CSV figures (42 points, 52 with the format points against the bar of 50), because each device was a stated rule or a step the hygiene battery runs: the 90-day episode, probable status, the 14-day admission link, the pregnancy window, the six-month boundary, split postcodes, eight-digit MRNs and the Medicare format. Revised on ask-path data alone (A1 to A3 under ASK SHEET). Not taken: any line-list device (the run report carries the line list's sha256, so one changed byte changes the job file the gate holds), and a `dTpa-IPV` antigen label (a value count shows it).

@@ -59,7 +59,7 @@
     {
       "path": "antenatal_vaccinations_2019-2026.parquet",
       "format": "parquet",
-      "bytes": 822042,
+      "bytes": 822234,
       "rows": 35724,
       "source": "Constructed: Antenatal vaccination register: vaccines recorded in pregnancy for women in the district since 2019",
       "date": "2026-10-05",
@@ -122,7 +122,7 @@
     {
       "path": "respiratory_admissions_2019-2026.csv",
       "format": "csv",
-      "bytes": 4395303,
+      "bytes": 4395302,
       "rows": 29036,
       "source": "Constructed: Patient administration system extract: inpatient episodes with a principal respiratory diagnosis at the district's hospitals, 1 January 2019 to 4 October 2026",
       "date": "2026-10-05",

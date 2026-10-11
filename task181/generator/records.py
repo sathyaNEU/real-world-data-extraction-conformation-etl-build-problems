@@ -154,6 +154,88 @@ def _dates_between(rng, a, b, n):
     return [a + DAY * int(x) for x in rng.integers(0, span + 1, size=n)]
 
 
+# ------------------------------------------------------------------ the quarterly table's records (ask A only)
+
+# Each sits in the births, the antenatal register or the admissions extract, which only the quarterly table reads;
+# the line list and every other file keep their shipped bytes. Draws come from the "ask" streams only.
+# A1  the date of birth on the laboratory request was keyed month first (11/02 read as 2 November); the birth record
+#     holds the date the baby was born, and the line list keeps the request's
+DOB_KEYED_MONTH_FIRST = ("I1", "I4")
+# A2  the presentation made a second medical record number, later merged into the one issued at birth; the PAS and
+#     the birth record carry the surviving number, the line list the number recorded at follow-up
+MRN_MERGED = ("I5", "I10")
+# A3  the mother's Medicare card reissued late in the pregnancy (the tenth digit, the issue number, goes up by one):
+#     the register keeps the card she showed when vaccinated, the birth record the card she showed at the birth.
+#     The designed mothers' cards are reissued at the week given; about one mother in 25 otherwise.
+CARD_REISSUED = {"I6": 34, "I8": 34, "I9": 35}
+REISSUE_SHARE = 0.04
+# I9's mother had her dTpa at 26 to 30 weeks (the protocol's window), not in the last fortnight
+DTPA_THIRD_TRIMESTER = ("I9",)
+
+
+def true_dob(c):
+    """The date the infant was born: the request's date with day and month the other way round where it was keyed
+    month first (A1), else the request's date."""
+    if (c.get("infant") or {}).get("key") in DOB_KEYED_MONTH_FIRST:
+        return dt.date(c["dob"].year, c["dob"].day, c["dob"].month)
+    return c["dob"]
+
+
+def plan_merged_mrns(world):
+    """A2: the surviving medical record number of each merged infant, unused anywhere else."""
+    r = W.stream("ask", "merged_mrn")
+    used = set(int(x) for x in world["ids"].mrns)
+    out = {}
+    for c in world["cases"]:
+        key = (c.get("infant") or {}).get("key")
+        if key in MRN_MERGED:
+            while True:
+                m = int(r.integers(210_000, 1_890_000))
+                if m not in used:
+                    used.add(m)
+                    out[c["person"]] = m
+                    break
+    world["merged_mrn"] = out
+    return out
+
+
+def record_mrn(world, c):
+    """The case's number in the PAS and the birth record (the surviving one, A2)."""
+    return world.get("merged_mrn", {}).get(c["person"], c["mrn"])
+
+
+def plan_reissues(pregnancies, used_cards):
+    """A3: a mother's card reissued at a date in her pregnancy; records from that date carry the new issue number."""
+    r = W.stream("ask", "card_reissue")
+    for p in sorted(pregnancies, key=lambda x: (x["birth"], x["mother"]["card"])):
+        m = p["mother"]
+        if "reissue" in m or not (dt.date(2024, 1, 1) <= p["birth"] <= dt.date(2026, 9, 30)) or not p["district"] \
+                or p.get("previous_of"):
+            r.random()
+            continue
+        key = ((p.get("case") or {}).get("infant") or {}).get("key")
+        start = p["birth"] - DAY * (7 * p["gest"])
+        u = r.random()
+        if key in CARD_REISSUED:
+            wk = CARD_REISSUED[key]
+        elif key is None and not p.get("case") and u < REISSUE_SHARE:
+            wk = float(r.uniform(31, max(31.5, p["gest"] - 0.5)))
+        else:
+            continue
+        new = m["card"][:9] + str(int(m["card"][9]) + 1)
+        if new in used_cards:
+            continue
+        used_cards.add(new)
+        m["reissue"] = (start + DAY * int(wk * 7), new)
+
+
+def card_on(m, d):
+    """The card number a mother showed on date d."""
+    if "reissue" in m and d >= m["reissue"][0]:
+        return m["reissue"][1]
+    return m["card"]
+
+
 def build_mothers_and_births(world):
     """Every pregnancy in the district since 2017 that reaches the register or the birth records, with
     the infant cases' own births placed among them."""
@@ -202,16 +284,19 @@ def build_mothers_and_births(world):
     for c in infant_cases:
         inf = c.get("infant") or {}
         vacc = inf.get("vacc") or ("A" if r.random() < 0.6 else "E")
-        m = dict(card=card(), irn=1, dob=c["dob"] - DAY * int(r.integers(22 * 365, 38 * 365)), area=c["area"] or "Wagga Wagga",
-                 last=c["dob"])
-        p = dict(birth=c["dob"], area=c["area"] or "Wagga Wagga", district=True, mother=m, case=c, vacc=vacc)
+        born = true_dob(c)
+        m = dict(card=card(), irn=1, dob=born - DAY * int(r.integers(22 * 365, 38 * 365)), area=c["area"] or "Wagga Wagga",
+                 last=born)
+        p = dict(birth=born, area=c["area"] or "Wagga Wagga", district=True, mother=m, case=c, vacc=vacc,
+                 draw_order=c["dob"])         # the register's draws keep the shipped order (A1 moves the birth only)
         pregnancies.append(p)
         if vacc == "C":
-            pregnancies.append(dict(birth=c["dob"] - DAY * int(r.integers(560, 900)), area=p["area"], district=True,
+            pregnancies.append(dict(birth=born - DAY * int(r.integers(560, 900)), area=p["area"], district=True,
                                     mother=m, previous_of=c["person"], vacc="A"))
     for p in pregnancies:
         p["gest"] = int(r.choice([36, 37, 38, 38, 39, 39, 39, 40, 40, 40, 41, 35, 34])) if not p.get("case") else int(r.choice([38, 39, 40]))
         p["edd"] = p["birth"] + DAY * int((40 - p["gest"]) * 7 + r.integers(-3, 4))
+    plan_reissues(pregnancies, used_cards)
     return pregnancies, r
 
 
@@ -255,13 +340,17 @@ def write_register(path, pregnancies, r):
     import pyarrow as pa
     import pyarrow.parquet as pq
     rows = []
-    for p in sorted(pregnancies, key=lambda x: (x["birth"], x["mother"]["card"])):
+    third = W.stream("ask", "third_trimester")
+    for p in sorted(pregnancies, key=lambda x: (x.get("draw_order", x["birth"]), x["mother"]["card"])):
+        key = ((p.get("case") or {}).get("infant") or {}).get("key")
         for antigen, d in doses_for(p, r):
+            if antigen == "dTpa" and key in DTPA_THIRD_TRIMESTER:
+                d = p["birth"] - DAY * (7 * p["gest"]) + DAY * int(third.uniform(26, 30) * 7)
             if d > dt.date(2026, 10, 2) or d < dt.date(2018, 7, 1):
                 continue
             m = p["mother"]
             start = p["birth"] - DAY * (7 * p["gest"])
-            rows.append(dict(medicare_card=spaced(m["card"]), irn=m["irn"], mother_dob=m["dob"], dose_date=d,
+            rows.append(dict(medicare_card=spaced(card_on(m, d)), irn=m["irn"], mother_dob=m["dob"], dose_date=d,
                              antigen=antigen, vaccine_brand=BRANDS[antigen][int(r.integers(0, len(BRANDS[antigen])))],
                              gestation_weeks_at_dose=round((d - start).days / 7.0, 1), estimated_due_date=p["edd"],
                              provider_type=PROVIDERS[int(r.choice(4, p=[0.58, 0.27, 0.12, 0.03]))],
@@ -290,7 +379,7 @@ def write_births(path, pregnancies, world, r):
         twins = 2 if (not p.get("case") and r.random() < 0.012) else 1
         for k in range(twins):
             c = p.get("case")
-            mrn = c["mrn"] if c else ids.mrn()
+            mrn = record_mrn(world, c) if c else ids.mrn()
             sex = c["sex"] if c else ("F" if r.random() < 0.487 else "M")
             bw = int(np.clip(r.normal(3380 - 160 * (40 - p["gest"]), 430), 1450, 5100))
             age = (p["birth"] - p["mother"]["dob"]).days / 365.25
@@ -299,7 +388,7 @@ def write_births(path, pregnancies, world, r):
             pc = (c["postcode"] if c else draw_pc(area, r))
             rows.append(dict(facility=BIRTH_FACILITY.get(area, "Wagga Wagga Hospital"), baby_mrn="%08d" % mrn,
                              birth_date=p["birth"].isoformat(), sex=sex, plurality=twins, gestation_weeks=p["gest"],
-                             birthweight_g=bw, mother_medicare_no=p["mother"]["card"] + str(p["mother"]["irn"]),
+                             birthweight_g=bw, mother_medicare_no=card_on(p["mother"], p["birth"]) + str(p["mother"]["irn"]),
                              mother_age_group=ag, mother_postcode=pc))
     rows.sort(key=lambda x: (x["birth_date"], x["facility"], x["baby_mrn"]))
     for i, row in enumerate(rows):
@@ -397,11 +486,11 @@ def write_admissions(path, world):
         fac = W.AREA_FACILITY.get(c["area"], "Wagga Wagga Hospital")
         if inf:
             if inf["adm"] == "A":
-                rows.append(adm_row(r, c["mrn"], fac if c["area"] not in ("Junee", "Cootamundra-Gundagai", "Narrandera") else "Wagga Wagga Hospital",
+                rows.append(adm_row(r, record_mrn(world, c), fac if c["area"] not in ("Junee", "Cootamundra-Gundagai", "Narrandera") else "Wagga Wagga Hospital",
                                     c["sex"], 0, c["postcode"], spec + DAY * inf["adm_off"], "A37.0", stay=(3, 9)))
             elif inf["adm"] == "B":
                 code = "P22.1" if inf["adm_off"] < 0 else "J21.9"
-                rows.append(adm_row(r, c["mrn"], fac, c["sex"], 0, c["postcode"], spec + DAY * inf["adm_off"], code, stay=(2, 5)))
+                rows.append(adm_row(r, record_mrn(world, c), fac, c["sex"], 0, c["postcode"], spec + DAY * inf["adm_off"], code, stay=(2, 5)))
             continue
         if c["spec"].date() > dt.date(2026, 10, 2):
             continue
