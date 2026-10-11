@@ -156,6 +156,9 @@ def realism():
     inside = [(life[l][0] < s0 and e0 <= life[l][1]) for l, s0, e0 in zip(hd["loan_no"], st, en) if l in life]
     ok(all(inside), "arrangements on book loans fall inside the loan's life")
     ok(((hd["cancelled_date"].notna()) == (hd["arrangement_status"] == "Cancelled")).all(), "cancelled_date is filled exactly for cancelled arrangements")
+    ok(((en - st).map(lambda x: x.days) >= 1).all(), "every arrangement ends after the day it starts (shortest %d days)" % ((en - st).map(lambda x: x.days).min() + 1))
+    cx = hd[hd["arrangement_status"] == "Cancelled"]
+    ok((cx["cancelled_date"] <= cx["arrangement_end"]).all(), "arrangements are cancelled inside their term")
     ok((hd["received_date"].diff().dropna().dt.days >= 0).all() and hd["case_ref"].is_monotonic_increasing, "case numbers run in order of receipt")
     ok(hd.loc[hd["arrangement_status"] == "Active", "arrangement_type"].nunique() == 2, "active arrangements are of both types")
     ok((hd["loan_no"].value_counts() > 1).sum() > 100, "some loans have repeat arrangements")
