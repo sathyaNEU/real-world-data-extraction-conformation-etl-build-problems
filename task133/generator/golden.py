@@ -1,4 +1,4 @@
-"""The golden deliverables: the allowance workbook and the two Audit and Risk Committee slides."""
+"""The golden deliverables: the allowance workbook and the two board slides."""
 import datetime as dt
 import os
 import sys
@@ -144,7 +144,7 @@ def deck(s, path):
     def footer(slide, n):
         tb = slide.shapes.add_textbox(Cm(1.6), Cm(17.7), Cm(30.5), Cm(0.8))
         r = tb.text_frame.paragraphs[0].add_run()
-        r.text = "Bellbird Personal Finance  |  Audit and Risk Committee, 23 October 2026  |  Credit Risk Reporting  |  %d" % n
+        r.text = "Bellbird Personal Finance  |  Board, 23 October 2026  |  Credit Risk Reporting  |  %d" % n
         r.font.size = Pt(9)
         r.font.color.rgb = GREY
 
@@ -233,7 +233,7 @@ def build(target=None, out=None):
     s = E.solve(target)
     wbp = os.path.join(out, "ecl_allowance_2026Q3.xlsx")
     workbook(s, wbp)
-    dp = os.path.join(out, "arc_ecl_q3_2026.pptx")
+    dp = os.path.join(out, "board_ecl_q3_2026.pptx")
     deck(s, dp)
     P.office_container(dp, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 16, 41), PREPARED,
                        "Microsoft Office PowerPoint", revision=3)

@@ -51,7 +51,7 @@
     "grain": "loan at reporting date",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "board_of_directors",
   "forcing_event": "period_close",
   "org_family": "financial_institution",
   "world": {
@@ -77,7 +77,7 @@
   },
   "deliverables": [
     "ecl_allowance_2026Q3.xlsx",
-    "arc_ecl_q3_2026.pptx"
+    "board_ecl_q3_2026.pptx"
   ],
   "opening_move": "number-first",
   "driver": "A cumulative outcome curve is filed from each unit's entry, and every unit in scope has already survived part of it, so its forward probability is the curve's remaining increments divided by its own survival to date; reading the curve from entry for every unit overstates the total, and shifting it to the unit's age without the division understates it.",
@@ -89,7 +89,7 @@
     "task130": "task130 runs a closed group off a rationed list; here nothing is rationed and no group closes: each loan's forward loss is a survival-conditioned share of a filed curve."
   },
   "lineage": [],
-  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 replacement of failed modules in a spares forecast, task133 conditioning a lifetime curve on survival to date). Realism rebuild 2026-10-11 moved the allowance to AUD 13,667,000 with realistic default levels.",
+  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 replacement of failed modules in a spares forecast, task133 conditioning a lifetime curve on survival to date). Realism rebuild 2026-10-11 moved the allowance to AUD 13,667,000 with realistic default levels. Forum redrawn at ship from committee_or_panel to board_of_directors (the Audit and Risk Committee chair presents to the board) after guard.py heart blocked committee_or_panel against task129.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who cleans the book and reads CRM-ECL-04 3.2 and the curve header correctly takes the curve's increments from each loan's months on book as its forward monthly PDs without dividing by the loan's survival to the reporting date, and books about AUD 13.32 million against AUD 13,773,000.",
   "domain_test": "The deciding quantity is each loan's AASB 9 12-month or lifetime expected credit loss from a cumulative default curve by months on book, staged, scenario-weighted, re-amortised and discounted; with another field's nouns the staging triggers, LGD, EAD and coverage ratios have nothing to attach to, so the task does not read the same."

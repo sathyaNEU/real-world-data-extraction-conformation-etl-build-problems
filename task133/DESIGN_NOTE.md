@@ -20,7 +20,7 @@ world.
 | Decisive rule filed | yes: CRM-ECL-04 files PD(k) as the probability of default in the k-th month after the reporting date, the curve file is stated as running from origination; the step from one to the other is not written |
 | Official decoy, validated decoy | no, no |
 | Decision | quantity_figure, currency |
-| Stakeholder | Head of Credit Risk Reporting (finance_controller), to the Audit and Risk Committee (committee_or_panel), at the quarter close (period_close) |
+| Stakeholder | Head of Credit Risk Reporting (finance_controller), to the board (board_of_directors) with the Audit and Risk Committee chair presenting, at the quarter close (period_close); the forum was redrawn from the Audit and Risk Committee at ship, when guard.py heart blocked committee_or_panel against task129 |
 | Context artifact | filed_model (the PD curve) |
 | Calibration form | none: the curve is filed, the method is filed, the difficulty is the construction |
 | World | New South Wales, AUD; Bellbird Personal Finance (fictional non-bank lender); PL36, PL60 |

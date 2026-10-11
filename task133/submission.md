@@ -46,7 +46,7 @@ Stage 1 carries AUD 10,933,000 and stage 2 AUD 2,840,000, with 343 loans in stag
    - 2026: PL36 AUD 2,779,000; PL60 AUD 5,763,000
 4. Loans left out of the collective model as stage 3: 343
 
-### arc_ecl_q3_2026.pptx
+### board_ecl_q3_2026.pptx
 
 1. Slide 1 states the AUD 13,773,000 allowance with the stage and product table:
    - Stage 1, PL36: 17,109 loans; AUD 138,349,000; allowance AUD 3,202,000; coverage 2.31%
