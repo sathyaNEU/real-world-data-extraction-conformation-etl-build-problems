@@ -1,17 +1,30 @@
 {
  "task": "task446",
- "domain": "",
+ "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 0,
- "stage_name": "intake",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
- "stump": "",
+ "stump": "A competent solver groups each past quarter-end on the hierarchy archived for that quarter (point in time), so the requesting group's acquisition of an existing borrower enters its history as growth, the projected year-end exposure is overstated and it approves well short of what the house limit allows.",
  "architecture": 1,
  "loops": 0,
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
  "solver_rounds": [],
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "approved": null, "delivered": null, "portal": null
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
 }
