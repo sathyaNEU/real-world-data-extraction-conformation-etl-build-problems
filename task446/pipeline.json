@@ -89,7 +89,7 @@
    "result": "determinism Gate C (underspecified_objective) on the band arrival asks and the flagged-count component: CRM-07 2.2 read literally left out the ultimate parent (159 flagged against 165); headline 133 held either way",
    "repair": {
     "branch": "oviya1301/task446-portal-fix",
-    "commit": null,
+    "commit": "9ce297f",
     "change": "2.2 amended to name the ultimate parent a member (pinned at authority); SF1 to SF5 membership edges added to the design note and asserted in checks.py and solve.check_membership; 165 flagged, apex-only flags 6/5/3/5/6, every band figure and the call unchanged; target.zip re-cut",
     "gates": "checks 9155 assertions, two builds byte-identical, verifier PASS, leak.py REVIEW (no LEAK), guard validate PASS; heart, voice-check, precut and figures_check findings pre-existing and unchanged by the repair"
    }
