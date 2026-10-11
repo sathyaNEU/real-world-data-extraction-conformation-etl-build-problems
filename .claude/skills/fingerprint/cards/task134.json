@@ -1,0 +1,89 @@
+{
+  "task": "task134",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed FC05 (spring battery siting) not used: its analysis is electricity load forecasting, so its Economics label would be a backdrop under rule 1, and energy-systems-utilities with forecasting repeats task132 under the pairing ban; redrawn inside Forecasting",
+  "domain": "criminology-justice",
+  "subdomain": "recidivism-risk-assessment",
+  "niche": "a border county's criminal justice planning office projecting how many of next fiscal year's jail releases will be booked again within three years, when some releases are deported or die before they can return, to size a state-funded reentry navigator grant by supervision district",
+  "objective": "forecasting",
+  "shape": "07",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "task134/submission.md, 1. Final Recommendation",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G13",
+    "G12"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "criminal justice planning manager at a county, who files the county's application to the state reentry navigator grant",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "jail_releases_2021-10_2026-10.csv",
+    "rows": 0,
+    "entity": "one release from the county jail to the community or to another custody",
+    "grain": "release event",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, Texas",
+    "currency": "USD",
+    "org_type": "county sheriff's office jail and county criminal justice planning office, applying to a state grant program",
+    "invented_names": [],
+    "people": [
+      "Timothy Gonzalez",
+      "Tonya Bartlett",
+      "Julie Houston",
+      "Anthony Hines",
+      "Rebecca Francis"
+    ]
+  },
+  "deliverables": [
+    "navigator_application_fy2027.xlsx",
+    "return_curves_by_district.png"
+  ],
+  "opening_move": "calendar-first",
+  "driver": "The decisive quantity is the probability that a released unit has an event within a fixed horizon when competing exits remove some units from risk for good and most units are not yet followed to the horizon: the share observed so far understates it, the survival estimate that treats competing exits as censoring overstates it most where those exits concentrate, and only the cumulative incidence that counts competing exits as ending the risk sizes the allocation.",
+  "driver_concrete": "Each supervision district's probability that a release is booked into the jail again within 36 months is estimated from releases since the bail reform, none followed for the full 36 months, while transfers to an immigration detainer that end in removal, and deaths, end the chance of a return; the share booked again so far understates it, Kaplan-Meier with removals and deaths censored overstates it most in the border district, and the Aalen-Johansen cumulative incidence times next year's projected releases sets the navigators by district.",
+  "stump": "A competent solver estimates each district's 36-month return probability by Kaplan-Meier from post-reform releases, censoring removals and deaths along with the data cut, and applies for too many navigators with the border district over-allocated; the step that lands it there is treating deportation and death as censoring, when a removed or dead releasee can no longer be booked again.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the releases, links the removals and deaths and reads the grant guidance correctly still estimates the return probability by Kaplan-Meier with removals and deaths censored (or as the share booked again so far, ignoring incomplete follow-up) and sizes the application wrong, because competing exits are not censoring.",
+  "domain_test": "The deciding quantity is the probability of re-booking within a fixed window from release, estimated with censoring and competing exits from jail release and booking records, the core measurement of recidivism research; with another field's nouns the release types, immigration detainers and removals, re-booking definitions and supervision districts have nothing to attach to.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task104": "task104 re-runs a self-adapting detector at a threshold it never ran at, because the log only describes the setting that produced it; here nothing is re-run: the estimand is a cumulative incidence under censoring with competing exits, and the method choice is the estimator.",
+    "task70": "task70 builds a per-record chargeable date with a class-conditional cut from an event log; here the decisive choice is the survival estimator for a forward return probability (cumulative incidence against Kaplan-Meier with competing exits censored, against the share observed so far)."
+  },
+  "lineage": [],
+  "notes": "Drawn after task133 shipped, as the lane's next number; the seed's battery siting is left for a later energy draw outside the pairing ban.",
+  "client_domain": "criminology-justice",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:competing-removal-and-death-in-return-forecast",
+  "layer1": [
+    "a jail management system replaced in 2024, with booking numbers reissued and a person crosswalk",
+    "release types that mix community releases with transfers to other custody",
+    "an immigration detainer unit's log of transfers and removals keyed on a different identifier",
+    "a medical examiner death linkage with match status",
+    "a district boundary change in 2025 with an address crosswalk",
+    "a superseded preliminary release projection beside the adopted one"
+  ]
+}
