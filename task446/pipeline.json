@@ -2,21 +2,21 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 3,
- "stage_name": "build (architecture 2): pack, goldens, write-up, house fixes, surface, leak.py",
+ "stage": 4,
+ "stage_name": "leak check (architecture 2)",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver measures the early-warning system's hit rate and miss rate on the four closed cohorts, applies them to the groups flagged and not flagged at 30 Sep 2026 and files 74 against the golden 134, because the hit rate moves with each year's share of the book reaching the watch list while the capture and false-alarm rates hold, and this year's flagged share implies a share far above any closed cohort's.",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-11, --asof 2026-10-11; first run LEAK on GLEIF 'golden copy', reworded in docs.py)",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "arch 2: Q1 quotes the standard's 4.3 and 5.2 as the procedure; FORK on the main call: 5.2's literal basis (one probability per flag status set from the 4.3 measures, read as the pooled hit rate) gives about 74 against the golden 134; band status fork on the asks; realism tells in the containers"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "guard.py surface: 0 promoted pairs, nearest task57 and task123 at 0.100",
-  "clone_check": ""
+  "heart": "PASS on branch cards (WARN overuse.gate_g with main's task181 card)",
+  "nearest": "task133 (soft shape echo: IFRS 9 scenario distractor); task447 and arch 1 clean",
+  "clone_check": "arch 2 pre-flight: one soft Track A shape echo, Track B clean; idiom: closing role sentence repeated across task445 to task447 (task446/clone_check_report.md)"
  },
  "solver_rounds": [
   {
