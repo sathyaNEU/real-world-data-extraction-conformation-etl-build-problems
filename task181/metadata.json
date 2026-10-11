@@ -98,10 +98,10 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "extract_log_2026-10-05.txt",
+      "path": "cudw_job_fraud_weekly_20261005.txt",
       "format": "txt",
-      "bytes": 1315,
-      "source": "Constructed: Extract log for the 5 October 2026 pull",
+      "bytes": 1332,
+      "source": "Constructed: Data warehouse job report for the 5 October 2026 fraud_weekly run",
       "date": "2026-10-05",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
