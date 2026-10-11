@@ -56,7 +56,11 @@ candidates or states the asked figures, a file that exists only to help) and any
 are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
 for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
 pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
-An author keeps at most two builds in flight, a re-rooted architecture included.
+An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
+round (a hardening rebuild, the deferred findings, a judge's FIX_NOW) runs in a fresh agent that starts
+from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
+named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
+it (`build-pipeline`, Running the stages).
 
 ## Per-author rules
 
