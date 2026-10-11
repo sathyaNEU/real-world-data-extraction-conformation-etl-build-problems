@@ -3,7 +3,7 @@
  "domain": "physical-environmental-sciences",
  "objective": "anomaly-detection",
  "stage": 7,
- "stage_name": "determinism check (the judge rehearsal)",
+ "stage_name": "determinism check: pass 1 DETERMINISTIC, FIX_NOW (golden drawdowns refit continuously); the fix in a fresh agent, then the re-judge",
  "updated": "2026-10-11",
  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the ridge basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2019 to 2021 wet seasons, were drawn 8.2 to 9.3 m below where that rise was taking them while showing 2.21 to 2.49 m of decline.",
  "architecture": 1,
@@ -41,7 +41,18 @@
    "deferred": []
   }
  ],
- "judge": {},
+ "judge": {
+  "pass_1": {
+   "date": "2026-10-11",
+   "verdict": "DETERMINISTIC (SOLUTION_WRONG)",
+   "disposition": "FIX_NOW",
+   "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical",
+   "findings": "1 eleven of 18 attributed declines do not reproduce to 1 dp (coarse-grid golden fit; refit continuously, restate in submission and both goldens, bands about 0.3 m, 0.4 m at KV-LB06); 2 the KV-LB16-control route belongs on the ladder and in the card's analyst_test, with KV-LB16's own departure asserted; 3 the golden note asserts geology the pack does not carry (outcrop, subcrop) and puts the reference bores 20 to 30 km away (one is 31.7); 4 accept 0.01 m on the change column; 5 the card is out of date",
+   "rival": "the KV-LB16 control reading is ruled out by the bundle (KV-LB16 drawn down 2.3 to 2.4 m)",
+   "report": "task182/determinism_check_report.md"
+  }
+ },
  "approved": false,
  "delivered": "",
  "portal": "",
