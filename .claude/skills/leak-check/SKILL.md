@@ -1,6 +1,6 @@
 ---
 name: leak-check
-description: "Check a built bundle for anything that hands the solver the answer or the author's intent: golden figures in a memo, the stump's vocabulary in a filed document, a sentence that announces the decisive step, a file name that names the trap, hidden sheets or tracked changes, toolchain signatures, a shipped artifact that ranks the candidates, dates after the setting. leak.py runs eleven mechanical sweeps and writes leak_check_report.md; the /leak-check command adds a solver's-eye read by one isolated agent. Run after the pack is cut and again after any edit to a document in target/. Costs nothing unless the command's agent pass is asked for."
+description: "Check a built bundle for anything that hands the solver the answer or the author's intent: golden figures in a memo, the stump's vocabulary in a filed document, a sentence that announces the decisive step, a file name that names the trap, hidden sheets or tracked changes, toolchain signatures, a shipped artifact that ranks the candidates, dates after the setting. leak.py runs eleven mechanical sweeps and writes leak_check_report.md; the /leak-check command adds a solver's-eye read by one isolated agent. Stage 4 of the build pipeline, both halves, before every solver round; run again after any edit to a document in target/. /build runs the agent pass; outside it the pass runs when the author asks."
 ---
 
 # Leak check
@@ -12,6 +12,12 @@ description: "Check a built bundle for anything that hands the solver the answer
 > pack once as a solver would, which is not.
 
 ## When to run it
+
+- **Inside `/build` it is stage 4, both halves**, after the build stage and before the duplicate
+  check and the solver round, and again on every hardening loop: `leak.py` after every rebuild, the
+  reader whenever a document under `target/` or the prompt changed since its last read. A solver
+  round on a leaking pack measures nothing, so the round never runs past a LEAK or a quoted
+  question-1 sentence, and the pipeline fixes the finding in the generator itself.
 
 - After the pack is cut and the submission is written, before `golden-realism` (so a figure a
   realism edit copies into a memo is caught on the second run too).

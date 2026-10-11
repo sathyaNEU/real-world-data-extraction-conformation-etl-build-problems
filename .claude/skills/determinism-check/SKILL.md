@@ -1,6 +1,6 @@
 ---
 name: determinism-check
-description: "Force one answer while the build is being designed, assert it while the generator is written, and check the finished build against the judge's gates (A to E determinism, F stump power, G stumping type). Direct rules only; the evidence behind them is in references/forcing-the-answer.md (the 22-axis convention inventory, the four closure moves, the bin arithmetic, the eight ways determinism is lost). Also carries the judge rehearsal, spawned only when the author asks or when the /build pipeline reaches stage 5. Invoke three times per build: at the ladder, at the generator, at the end; and again when a build comes back NOT_DETERMINISTIC or SEND_BACK."
+description: "Force one answer while the build is being designed, assert it while the generator is written, and check the finished build against the judge's gates (A to E determinism, F stump power, G stumping type). Direct rules only; the evidence behind them is in references/forcing-the-answer.md (the 22-axis convention inventory, the four closure moves, the bin arithmetic, the eight ways determinism is lost). Also carries the judge rehearsal, spawned only when the author asks or when the /build pipeline reaches stage 7. Invoke three times per build: at the ladder, at the generator, at the end; and again when a build comes back NOT_DETERMINISTIC or SEND_BACK."
 ---
 
 # Determinism
@@ -115,13 +115,13 @@ and nothing else: not the design note, the generator or any verifier. It recompu
 load-bearing figure and returns a verdict (DETERMINISTIC or NOT_DETERMINISTIC), a disposition
 (APPROVE, FIX_NOW, SEND_BACK) and the Gate G line.
 
-**It runs when the author asks in their own words, or when `/build` reaches stage 5 (the
+**It runs when the author asks in their own words, or when `/build` reaches stage 7 (the
 determinism check, the last gate before ship).** Nothing else licenses it: not a finished build
 outside `/build`, not a patch that seems to want validation.
 
 1. Resolve the task to an absolute folder; if none is named, ask and stop.
 2. Spawn the `determinism-judge` agent once, `subagent_type: determinism-judge`, stating that the
-   author asked through this skill (or that `/build` stage 5 reached it) and giving the path. If a
+   author asked through this skill (or that `/build` stage 7 reached it) and giving the path. If a
    `determinism_check_report.md` exists, name the pass number so the new report is numbered.
 3. Relay the verdict, the disposition, the Gate G line and the report path. Do not fix, soften or
    re-run. Run it again only after a change that moves a graded number.

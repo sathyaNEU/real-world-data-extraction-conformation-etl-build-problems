@@ -1502,20 +1502,21 @@ Read the failure texture, then apply the specific repair. **Do not reach for "ma
 
 ### The repair loop
 
-A diagnosis arrives from a portal result the author reports, or from the determinism judge's
-report; never from a solve run in the main thread, which has read the design note, and not from an
-in-house solver round (paused). Between the draw and the portal the only repair loop is the
-judge's FIX_NOW; the table below is read against a portal result.
+A diagnosis arrives from an in-house solver round (`solver-round`, stage 6 of `build-pipeline`), from
+the determinism judge's report, or from a portal result the author reports; never from a solve run in
+the main thread, which has read the design note. Between the draw and the portal the repair loops are
+the solver round's hardening loop (three per architecture, then re-root) and the judge's FIX_NOW; the
+table below is read against a solver path or a portal result.
 
 1. **Build.** All assertions green, verifier green.
-2. **Diagnose on paper before the portal.** The design-side checks tell you the ladder computes, not that it bites, and nothing in house will tell you the difference. Name the wrong committed answer a competent solver lands on and the step that lands them there, in one sentence. A ladder whose author cannot name that sentence has no stump in it.
-3. **When a portal result comes back, read it for route and for assumptions**, per the section above. Absence is still the finding.
+2. **Diagnose on paper before the solver round.** The design-side checks tell you the ladder computes, not that it bites; the solver round is the in-house test of whether it bites. Name the wrong committed answer a competent solver lands on and the step that lands them there, in one sentence. A ladder whose author cannot name that sentence has no stump in it.
+3. **When a solver round or a portal result comes back, read it for route and for assumptions**, per the section above. Absence is still the finding.
 4. **Diagnose from the table above**, then apply the matching repair.
 5. **Change one mechanism per iteration** so the next result is attributable. If you must bundle edits, bundle only edits to the same mechanism.
 6. **Ship both halves of every patch.** A patch that adds a summary row, a rule or a claim without the records that reproduce it leaves the pack worse than before.
 7. **Do not treat a check agent's verification claims as authoritative.** Recompute contested numbers yourself from the shipped bundle before acting on them.
 8. **Write every dead end into the design note's `## Tried and rejected` section as you abandon it**, one line with the reason it died. That section is the whole memory of the build now, and a repair tried twice is a build paid for twice.
-9. **Invoke `determinism-check` when the build is finished**, and again while the ladder is designed and while the generator is written. Only its judge rehearsal is author-triggered (or run by `/build` stage 5).
+9. **Invoke `determinism-check` when the build is finished**, and again while the ladder is designed and while the generator is written. Only its judge rehearsal is author-triggered (or run by `/build` stage 7, after the solver round passes).
 
 ---
 

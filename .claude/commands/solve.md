@@ -1,19 +1,14 @@
 ---
-description: PAUSED, not part of the workflow; runs only if the author asks for it in their own words. Run an in-house solver round on a built task before the portal. One plain solver by default; "2" runs plain and skeptic together. Each solver sees only the prompt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md.
+description: Run an in-house solver round on a built task before the judge and the portal (stage 6 of /build, or on its own). Plain and skeptic run together by default; "1" runs the plain lens alone. Each solver sees only the prompt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md.
 argument-hint: taskNN [1|2] [--label "..."]
 ---
 
 # /solve
 
-**This command is paused.** Solver rounds are not part of the workflow (see `build-pipeline`), and
-`/build` never runs them. If the author has not lifted the pause in this conversation in their own
-words (for example "run a solver round on task108"), do nothing except say the command is paused
-and stop. The remainder of this file applies only after the author has lifted the pause.
-
 Run one solver round on the task named in `$ARGUMENTS`. Resolve a bare number or `taskN` to
 `taskN/` at the repository root (the folder holding `CLAUDE.md`); if nothing is named, ask and stop. The second
-argument is the number of solvers: `1` (default) runs the plain lens, `2` runs plain and skeptic
-together. The round number `k` is one more than the rounds already recorded in `<task>/pipeline.json`.
+argument is the number of solvers: `2` (default) runs plain and skeptic together, `1` the plain lens
+alone (a quick look outside the pipeline; it cannot pass the worth-it gate). The round number `k` is one more than the rounds already recorded in `<task>/pipeline.json`.
 
 1. **Invoke the `solver-round` skill.** The lenses, the decision rule and the isolation rules come
    from it; do not restate them from memory.
@@ -25,7 +20,9 @@ together. The round number `k` is one more than the rounds already recorded in `
    sits at `$S/target/`; a zip that extracts flat has its files moved under `target/`. Create
    `$S/work/` for the solver's scripts.
 4. **Run the solvers through the Workflow tool** with the script below, filling `SCRATCH`, `N` and
-   the file names the prompt asks for. This command is the author's opt-in to the workflow. The
+   the file names the prompt asks for. This command, or `/build` reaching stage 6, is the author's
+   opt-in to the workflow; where the Workflow tool is unavailable, spawn the lenses as isolated
+   `Agent` calls with the same prompts and schema. The
    plain lens uses `agentType: 'Explore'`, which carries no repository instructions; the skeptic
    uses the default agent type.
 5. **Write each solver's structured result** to `$S/<lens>.json` and grade it:
@@ -35,10 +32,13 @@ together. The round number `k` is one more than the rounds already recorded in `
    `grade.py` with `--landed no|yes`.
 7. **Report**: per solver, the proxy score, landed or missed, asks cracked, and the path step at
    which it left the ladder (read the path against the design note's rungs; this is the one place
-   the main thread opens the design note in this command). Then the decision under the skill's
-   rule: pass, harden (with the hardening brief in one sentence), or re-root.
+   the main thread opens the design note in this command). Then the decision under the worth-it
+   gate: pass, harden (with the hardening brief in one sentence), fork (with the pin), or re-root,
+   and the round's row in `pipeline.json` `solver_rounds`.
 
-Do not harden in this command. Do not run the determinism judge or the clone check from here.
+Run on its own, this command reports and stops; the hardening is the pipeline's next stage-2 pass.
+Inside `/build` the pipeline carries on from the decision. Do not run the determinism judge or the
+clone check from here.
 
 ## Workflow script
 
@@ -49,7 +49,7 @@ export const meta = {
   phases: [{ title: 'Solve' }],
 }
 const S = args.scratch          // absolute path holding prompt.md and target/
-const N = args.n || 1
+const N = args.n || 2
 const files = args.deliverables  // the file names the prompt asks for, e.g. ["x.xlsx", "y.png"]
 const SCHEMA = {
   type: 'object',
@@ -80,4 +80,4 @@ const results = await parallel(lenses.map(l => () =>
 return results.filter(Boolean)
 ```
 
-Pass `args` as a JSON object: `{"scratch": "<S>", "n": 1, "deliverables": ["..."]}`.
+Pass `args` as a JSON object: `{"scratch": "<S>", "n": 2, "deliverables": ["..."]}`.

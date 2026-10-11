@@ -26,9 +26,10 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
    - Then give it the REVIEW lines from the mechanical report, verbatim, and ask for one line per
      item: harmless, with the reason, or a leak, with what it gives away.
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
-6. **Report** to the author: the mechanical verdict, the four answers in one line each, and the
-   list of items to fix. Do not fix anything in this command; the fix is the author's and it goes
-   in the generator.
+6. **Report**: the mechanical verdict, the four answers in one line each, and the list of items to
+   fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`
+   (stage 4) the pipeline fixes each finding in the generator, rebuilds and re-runs this command
+   before the solver round.
 
 Spawn one agent and only one. Do not run the determinism judge, the clone check or a solver from
 here.
