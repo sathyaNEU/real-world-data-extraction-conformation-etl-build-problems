@@ -1,373 +1,317 @@
-"""The golden reading and every rung of the ladder, computed from the shipped files only."""
-import functools
+"""Every figure the build reports, computed from the shipped files only: the golden tier table and programme
+baseline, each rung of the ladder, the renewal letter's exhibits, the rebate statement's counts, and the cost-only
+regression the design note compares against."""
+import datetime as dt
 import os
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd
-import openpyxl
+from openpyxl import load_workbook
 
-ASOF = pd.Timestamp("2026-09-30")
-UNITS_START = pd.Timestamp("2027-04-01")
-SIZES = [1, 2, 3, 4]
-MONTH_ENDS = [pd.Timestamp(x) for x in ("2026-10-31", "2026-11-30", "2026-12-31", "2027-01-31",
-                                         "2027-02-28", "2027-03-31")]
-OCTOBER = pd.Timestamp("2026-10-01")
-TENANCY_MONTHS = [pd.Timestamp(x) for x in ("2026-11-01", "2026-12-01", "2027-01-01", "2027-02-01", "2027-03-01")]
-F = {
-    "cases": "homelessness_cases_2026-09-30.csv",
-    "placements": "ta_placements_2018-04_2026-09.csv",
-    "reviews": "bedroom_need_reviews.csv",
-    "members": "household_members_2026-09-30.csv",
-    "lets": "moveon_lets_2018-04_2026-09.csv",
-    "plan": "moveon_plan_2026-27.xlsx",
-    "prices": "dps_lot2_lot3_price_schedule.xlsx",
-}
+import world as W
+
+TM, TR = W.TREND_MED, W.TREND_RX
+MID26 = 15            # months, 1 July 2026 to 1 October 2027
+MID_AN = 24           # months, 1 October 2025 to 1 October 2027
 
 
-def load(target):
-    p = lambda k: os.path.join(target, F[k])
-    c = pd.read_csv(p("cases"), dtype=str, keep_default_na=False)
-    pl = pd.read_csv(p("placements"), dtype=str, keep_default_na=False)
-    rv = pd.read_csv(p("reviews"), dtype=str, keep_default_na=False)
-    mb = pd.read_csv(p("members"), dtype=str, keep_default_na=False)
-    lt = pd.read_csv(p("lets"), dtype=str, keep_default_na=False)
-    for df, cols in ((c, ["application_date", "decision_date", "closed_date"]),
-                     (pl, ["placement_start", "placement_end"]), (rv, ["review_date"]),
-                     (lt, ["offer_date", "tenancy_start"]), (mb, ["date_of_birth"])):
-        for k in cols:
-            df[k] = pd.to_datetime(df[k].replace("", None))
-    rv["bedrooms_after"] = rv["bedrooms_after"].astype(int)
-    lt["bedrooms"] = lt["bedrooms"].astype(int)
-    c["need0"] = pd.to_numeric(c["bedrooms_needed_at_decision"].replace("", None))
-    return c, pl, rv, mb, lt
+def months_between(a, b):
+    return (b.year - a.year) * 12 + b.month - a.month
 
 
-def plan(target, sheet="Revised 14 Sep 2026"):
-    """lets by bedrooms in the home (5 meaning five or more) for each month, October to March"""
-    ws = openpyxl.load_workbook(os.path.join(target, F["plan"]), data_only=False)[sheet]
+class Files:
+    def __init__(self, d):
+        self.d = d
+        md = pd.read_csv(os.path.join(d, "medical_claim_lines_2025-01_2027-02.csv"), dtype=str, keep_default_na=False)
+        for c in ("allowed_amount", "plan_paid_amount", "deductible_amount", "copay_amount", "coinsurance_amount"):
+            md[c] = pd.to_numeric(md[c].replace("", "0")).astype(float)
+        md["d0"] = pd.to_datetime(md["first_date_of_service"]).dt.date
+        md["paid"] = pd.to_datetime(md["paid_date"]).dt.date
+        self.med = md
+        rx = pd.read_csv(os.path.join(d, "pharmacy_claims_2025-01_2027-02.csv"), dtype=str, keep_default_na=False)
+        for c in ("GROSS_AMT_DUE", "PLAN_PAY_AMT", "PATIENT_PAY_AMT"):
+            rx[c] = pd.to_numeric(rx[c]).astype(float)
+        rx["dos"] = pd.to_datetime(rx["DATE_OF_SERVICE"], format="%Y%m%d").dt.date
+        rx["proc"] = pd.to_datetime(rx["DATE_PROCESSED"], format="%Y%m%d").dt.date
+        el = pd.read_csv(os.path.join(d, "eligibility_spans_2027-02.csv"), dtype=str, keep_default_na=False)
+        self.el = el
+        key = {}
+        for r in el.itertuples(index=False):
+            k = (int(r.employee_number), r.person_code)
+            assert key.get(k, r.member_id) == r.member_id, "one employee number and person code, one member"
+            key[k] = r.member_id
+        rx["member_id"] = [key.get((int(c), p), "") for c, p in zip(rx["CARDHOLDER_ID"], rx["PERSON_CD"])]
+        self.rx = rx
+        self.spans = defaultdict(list)
+        for r in el.itertuples(index=False):
+            s = dt.date.fromisoformat(r.span_start)
+            e = dt.date.fromisoformat(r.span_end) if r.span_end else dt.date(9999, 12, 31)
+            self.spans[r.member_id].append((s, e))
+        xw = pd.read_csv(os.path.join(d, "tpa_conversion_crosswalk_2025-01-01.csv"), dtype=str, keep_default_na=False)
+        self.xw = {a + "-" + b: m for a, b, m in zip(xw.prior_subscriber_number, xw.prior_member_suffix, xw.member_id)}
+
+    # ---------------------------------------------------------------- the conventions
+    def mm(self, member, a, b):
+        """member months in [a, b]: months whose first day the member is covered"""
+        n, d = 0, dt.date(a.year, a.month, 1)
+        if d < a:
+            d = W.add_months(d, 1)
+        while d <= b:
+            if any(s <= d <= e for s, e in self.spans.get(member, ())):
+                n += 1
+            d = W.add_months(d, 1)
+        return n
+
+    def med_net(self, cutoff=None, netted=True, field="allowed_amount"):
+        md = self.med if cutoff is None else self.med[self.med.paid <= cutoff]
+        if netted:
+            gone = set(md.loc[md.claim_frequency_code == "7", "original_claim_number"])
+            md = md[~md.claim_number.isin(gone)]
+        return md
+
+    def rx_net(self, cutoff=None, reversals=True):
+        rx = self.rx if cutoff is None else self.rx[self.rx.proc <= cutoff]
+        if not reversals:
+            rx = rx[rx.TXN_CD == "B1"]
+        return rx
+
+    def allowed(self, members, a, b, cutoff=None, netted=True, paid_field=False, reversals=True):
+        """{member: [medical, pharmacy]} for claims incurred in [a, b]"""
+        ms = set(members)
+        md = self.med_net(cutoff, netted)
+        md = md[(md.d0 >= a) & (md.d0 <= b) & md.member_id.isin(ms)]
+        rx = self.rx_net(cutoff, reversals)
+        rx = rx[(rx.dos >= a) & (rx.dos <= b) & rx.member_id.isin(ms)]
+        out = {m: [0.0, 0.0] for m in ms}
+        f1 = "plan_paid_amount" if paid_field else "allowed_amount"
+        for m, v in md.groupby("member_id")[f1].sum().items():
+            out[m][0] = float(v)
+        f2 = "PLAN_PAY_AMT" if paid_field else "GROSS_AMT_DUE"
+        for m, v in rx.groupby("member_id")[f2].sum().items():
+            out[m][1] = float(v)
+        return out
+
+
+def read_list(path):
+    wb = load_workbook(path, data_only=True)
+    ws = wb["Members"]
+    rows = list(ws.iter_rows(min_row=2, values_only=True))
+    return [(r[0], str(r[1]), float(r[5]), int(r[6])) for r in rows if r[0] is not None]
+
+
+def tier_pmpm(F, groups, a, b, **kw):
+    """groups: {tier: [member ids]} -> {tier: (medical PMPM, pharmacy PMPM, member months, medical $, pharmacy $)}"""
     out = {}
-    for r in range(5, 10):
-        s = ws.cell(row=r, column=1).value
-        s = 5 if s == "5 or more" else int(s)
-        out[s] = [int(ws.cell(row=r, column=8 + j).value) for j in range(6)]
+    for t, ms in groups.items():
+        al = F.allowed(ms, a, b, **kw)
+        m = sum(F.mm(x, a, b) for x in ms)
+        med = sum(al[x][0] for x in ms)
+        rx = sum(al[x][1] for x in ms)
+        out[t] = (med / m if m else 0.0, rx / m if m else 0.0, m, med, rx)
     return out
 
 
-def lot3_2728(target):
-    ws = openpyxl.load_workbook(os.path.join(target, F["prices"]))["Rates"]
+def figures(d):
+    """the golden and every rung, from the files in directory d"""
+    F = Files(d)
+    bid = read_list(os.path.join(d, "northcourt_rfp_2025-07_stratification_2024_claims.xlsx"))
+    fin = read_list(os.path.join(d, "northcourt_stratification_2026_claims_final.xlsx"))
+    dpath = os.path.join(d, "northcourt_stratification_2026_claims_draft.xlsx")
+    dra = read_list(dpath) if os.path.exists(dpath) else []
+    bidg, fing, drag = defaultdict(list), defaultdict(list), defaultdict(list)
+    for rank, ident, sc, t in bid:
+        bidg[t].append(F.xw[ident])
+    for rank, ident, sc, t in fin:
+        fing[t].append(ident)
+    for rank, ident, sc, t in dra:
+        drag[t].append(ident)
+    T = (1, 2, 3, 4)
+    n = {t: len(fing[t]) for t in T}
+    N = sum(n.values())
+    a26, b26 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
+    an = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END)
+    f26 = tier_pmpm(F, fing, a26, b26)
+    G = {}
+    G["n"] = n
+    G["f26"] = {t: (f26[t][0], f26[t][1]) for t in T}
+    G["an"] = {t: (an[t][0], an[t][1]) for t in T}
+    G["an_detail"] = {t: (len(bidg[t]), an[t][2], an[t][3], an[t][4]) for t in T}
+    G["f26_detail"] = {t: (n[t], f26[t][2], f26[t][3], f26[t][4]) for t in T}
+    fm, fr = TM ** (MID_AN / 12), TR ** (MID_AN / 12)
+    G["base"] = {t: (an[t][0] * fm, an[t][1] * fr) for t in T}
+    G["prog"] = (sum(n[t] * G["base"][t][0] for t in T) / N, sum(n[t] * G["base"][t][1] for t in T) / N)
+    G["prog_total"] = G["prog"][0] + G["prog"][1]
+
+    def prog_of(tab):
+        return sum(n[t] * (tab[t][0] + tab[t][1]) for t in T) / N
+
+    R = {}
+    R["R0"] = {t: (f26[t][0] * TM ** (MID26 / 12), f26[t][1] * TR ** (MID26 / 12)) for t in T}
+    c25 = tier_pmpm(F, bidg, dt.date(2025, 1, 1), dt.date(2025, 12, 31))
+    R["R2"] = {t: (c25[t][0] * TM ** (27 / 12), c25[t][1] * TR ** (27 / 12)) for t in T}
+    R["R3a"] = {t: (an[t][0], an[t][1]) for t in T}
+    R["R3b"] = {t: (an[t][0] * TM ** 1.5, an[t][1] * TR ** 1.5) for t in T}
+    R["R4a"] = {t: (an[t][3] / (12 * len(bidg[t])) * fm, an[t][4] / (12 * len(bidg[t])) * fr) for t in T}
+    apr = {t: [m for m in bidg[t] if F.mm(m, dt.date(2025, 4, 1), dt.date(2025, 4, 30)) == 1] for t in T}
+    R["R4b"] = {t: (an[t][3] / (12 * len(apr[t])) * fm, an[t][4] / (12 * len(apr[t])) * fr) for t in T}
+    G["r4b_n"] = {t: len(apr[t]) for t in T}
+    paid = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, paid_field=True)
+    R["R6a"] = {t: (paid[t][0] * fm, paid[t][1] * fr) for t in T}
+    raw = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, netted=False, reversals=False)
+    R["R6b"] = {t: (raw[t][0] * fm, raw[t][1] * fr) for t in T}
+    rawp = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, netted=False, reversals=False, paid_field=True)
+    R["R6c"] = {t: (rawp[t][0] * fm, rawp[t][1] * fr) for t in T}
+    nd = {t: len(drag[t]) for t in T}
+    rk = {}
+    rk["R0"] = prog_of(R["R0"])
+    for k in ("R2", "R3a", "R3b", "R4a", "R4b", "R6a", "R6b", "R6c"):
+        rk[k] = prog_of(R[k])
+    rk["R5b"] = sum(nd[t] * (G["base"][t][0] + G["base"][t][1]) for t in T) / sum(nd.values()) if dra else float("nan")
+    rk["R5a"] = rk["R0"]
+    # pooled: the analog over all 140 bid members, ignoring tiers
+    allb = [m for t in T for m in bidg[t]]
+    pool = tier_pmpm(F, {0: allb}, W.ANALOG_START, W.ANALOG_END)[0]
+    rk["pooled"] = pool[0] * fm + pool[1] * fr
+    LF = letter_figures(F)
+    rk["R1"] = LF["proj_med"] + LF["proj_rx"]
+    # R0 with the 2026 claims completed at the renewal letter's factors
+    cf = LF["cf"]
+    comp = {}
+    for t in T:
+        med_c = 0.0
+        for mth in range(1, 13):
+            a, b = dt.date(2026, mth, 1), W.month_end(W.month_index(dt.date(2026, mth, 1)))
+            al = F.allowed(fing[t], a, b)
+            med_c += sum(v[0] for v in al.values()) / cf[mth]
+        comp[t] = (med_c / f26[t][2] * TM ** (MID26 / 12), f26[t][1] * TR ** (MID26 / 12))
+    R["R0c"] = comp
+    rk["R0c"] = prog_of(comp)
+    rk["regression"], R["regression"] = regression_alternative(F, fing, n)
+    G["rungs"] = rk
+    G["rung_tiers"] = R
+    G["letter"] = LF
+    G["bid_tiers"] = {t: len(bidg[t]) for t in T}
+    G["draft_n"] = nd
+    G["members"] = {"bid": bidg, "final": fing, "draft": drag}
+    G["zero26"] = sum(1 for t in T for m in fing[t] if F.mm(m, a26, b26) == 0)
+    return G, F
+
+
+def regression_alternative(F, fing, n):
+    """a cost-only regression of 2026 allowed on 2025 allowed across members enrolled all of 2025 and 2026, applied to
+    the enrolled members' 2026 claims and projected three months at trend (calendar 2027 to the programme year)"""
+    a25, b25, a26, b26 = dt.date(2025, 1, 1), dt.date(2025, 12, 31), dt.date(2026, 1, 1), dt.date(2026, 12, 31)
+    full = [m for m in F.spans if F.mm(m, a25, b25) == 12 and F.mm(m, a26, b26) == 12]
+    x = F.allowed(full, a25, b25)
+    y = F.allowed(full, a26, b26)
+    coef = []
+    for k in (0, 1):
+        X = np.array([x[m][k] for m in full])
+        Y = np.array([y[m][k] for m in full])
+        b = float(np.cov(X, Y, bias=True)[0, 1] / np.var(X))
+        a = float(Y.mean() - b * X.mean())
+        coef.append((a, b))
     out = {}
-    for r in ws.iter_rows(min_row=5, values_only=True):
-        if r[0] == "3":
-            out[4 if r[3] == "4+" else int(r[3])] = float(r[5])
-    return out
+    for t, ms in fing.items():
+        al = F.allowed(ms, a26, b26)
+        pm = [0.0, 0.0]
+        for m in ms:
+            mm26 = F.mm(m, a26, b26)
+            for k in (0, 1):
+                ann = al[m][k] * 12 / mm26 if mm26 else 0.0
+                pm[k] += (coef[k][0] + coef[k][1] * ann) / 12
+        out[t] = (pm[0] / len(ms) * TM ** 0.25, pm[1] / len(ms) * TR ** 0.25)
+    N = sum(n.values())
+    return sum(n[t] * (out[t][0] + out[t][1]) for t in out) / N, out
 
 
-# ---------------- Part 3: the bedroom standard ----------------
+# ------------------------------------------------------------------ the renewal letter's exhibits
+def letter_figures(F):
+    cut = W.LETTER_PAID
+    allm = list(F.spans)
+    mm = {y: sum(F.mm(m, dt.date(y, 1, 1), dt.date(y, 12, 31)) for m in allm) for y in (2025, 2026)}
+    md = F.med_net(cut)
+    rx = F.rx_net(cut)
+    med_paid = {y: float(md[(md.d0 >= dt.date(y, 1, 1)) & (md.d0 <= dt.date(y, 12, 31))].allowed_amount.sum()) for y in (2025, 2026)}
+    rxa = {y: float(rx[(rx.dos >= dt.date(y, 1, 1)) & (rx.dos <= dt.date(y, 12, 31))].GROSS_AMT_DUE.sum()) for y in (2025, 2026)}
+    # completion factors from the second half of 2025: share of the final allowed paid k months after the month
+    final = F.med_net(None)
+    cfk = {}
+    for k in range(1, 7):
+        num = den = 0.0
+        for mth in range(7, 13):
+            a = dt.date(2025, mth, 1)
+            b = W.month_end(W.month_index(a))
+            cut_k = W.month_end(W.month_index(a) + k)
+            tot = final[(final.d0 >= a) & (final.d0 <= b)].allowed_amount.sum()
+            part = F.med_net(cut_k)
+            part = part[(part.d0 >= a) & (part.d0 <= b)].allowed_amount.sum()
+            num += part
+            den += tot
+        cfk[k] = round(num / den, 3)
+    cf = {m: 1.0 for m in range(1, 13)}
+    for mth in range(7, 13):
+        cf[mth] = cfk[13 - mth]
+    by_month = {}
+    for mth in range(1, 13):
+        a = dt.date(2026, mth, 1)
+        b = W.month_end(W.month_index(a))
+        by_month[mth] = float(md[(md.d0 >= a) & (md.d0 <= b)].allowed_amount.sum())
+    med_comp = {2025: med_paid[2025], 2026: sum(by_month[m] / cf[m] for m in range(1, 13))}
+    proj_med = med_comp[2026] / mm[2026] * TM ** 1.5
+    proj_rx = rxa[2026] / mm[2026] * TR ** 1.5
+    # funding: the current rates were set last year; the increase is the projected cost over the current revenue
+    el = F.el
+    feb = dt.date(2027, 2, 1)
+    enrol = defaultdict(int)
+    members = 0
+    for r in el.itertuples(index=False):
+        s = dt.date.fromisoformat(r.span_start)
+        e = dt.date.fromisoformat(r.span_end) if r.span_end else dt.date(9999, 12, 31)
+        if s <= feb <= e:
+            members += 1
+            if r.relationship == "SUB":
+                enrol[("PPO" if r.plan_code == "RCV-PPO" else "HDHP", r.coverage_tier)] += 1
+    subs = sum(enrol.values())
+    now = RATES_NOW
+    revenue = sum(enrol[(p, t)] * now[p][t] for p, t in enrol)
+    cost = (proj_med + proj_rx) * members * 1.03 + subs * (38.75 + 78.20 + 4.15)
+    incr = cost / revenue - 1
+    new = {p: {t: round(now[p][t] * (1 + incr), 2) for t in now[p]} for p in now}
+    return {"mm": mm, "med_paid": med_paid, "med_comp": med_comp, "rx": rxa, "cf": cf, "cfk": cfk,
+            "proj_med": proj_med, "proj_rx": proj_rx, "rate_incr": round(100 * incr, 1), "rates_now": now, "rates_new": new,
+            "subs_feb": subs, "members_feb": members, "enrol": dict(enrol)}
 
-@functools.lru_cache(maxsize=None)
-def _shared(kids):
-    """most pairs of children under 16 that can share a room: both under 10, or of the same sex"""
-    if len(kids) < 2:
-        return 0
-    (a, s), rest = kids[0], kids[1:]
-    best = _shared(rest)
-    for j, (b, t) in enumerate(rest):
-        if (a < 10 and b < 10) or s == t:
-            best = max(best, 1 + _shared(rest[:j] + rest[j + 1:]))
-    return best
+
+RATES_NOW = {"PPO": {"EE": 1058.40, "ES": 2201.30, "EC": 1873.60, "FAM": 3002.70},
+             "HDHP": {"EE": 861.20, "ES": 1791.10, "EC": 1524.40, "FAM": 2443.10}}
 
 
-def _age(dob, day):
-    return day.year - dob.year - ((day.month, day.day) < (dob.month, dob.day))
+# ------------------------------------------------------------------ the rebate statement
+G_BRAND, G_SPEC = 212.50, 1640.00
 
 
-def rooms(people, day):
-    """people: (relationship, sex, date of birth) for everyone on the application"""
-    n, kids = 1, []
-    for rel, sex, dob in people:
-        if rel in ("Applicant", "Partner") or dob > day:
-            continue
-        a = _age(dob, day)
-        if a >= 16:
+def rebate_figures(F):
+    rx = F.rx[(F.rx.dos >= dt.date(2026, 1, 1)) & (F.rx.dos <= dt.date(2026, 12, 31)) & (F.rx.BRAND_GENERIC_CD == "B")]
+    rx = rx.assign(q=[(d.month - 1) // 3 + 1 for d in rx.dos], sg=np.where(rx.TXN_CD == "B2", -1, 1),
+                   spec=rx.PHARMACY_NCPDP_ID == W.NCPDP_IDS[W.SPECIALTY_PHARMACY])
+    brand = {q: int(rx[(rx.q == q) & ~rx.spec].sg.sum()) for q in (1, 2, 3, 4)}
+    spec = {q: int(rx[(rx.q == q) & rx.spec].sg.sum()) for q in (1, 2, 3, 4)}
+    by = []
+    for (ndc, name, sp), g in rx.groupby(["NDC", "DRUG_NAME", "spec"]):
+        qs = [int(g[g.q == q].sg.sum()) for q in (1, 2, 3, 4)]
+        by.append((name, ndc, bool(sp), qs))
+    by.sort(key=lambda x: (not x[2], x[0]))
+    return {"brand": brand, "spec": spec, "g_brand": G_BRAND, "g_spec": G_SPEC, "by_drug": by}
+
+
+def stoploss_census(F):
+    jan = dt.date(2027, 1, 1)
+    n = 0
+    for r in F.el.itertuples(index=False):
+        s = dt.date.fromisoformat(r.span_start)
+        e = dt.date.fromisoformat(r.span_end) if r.span_end else dt.date(9999, 12, 31)
+        if r.relationship == "SUB" and s <= jan <= e:
             n += 1
-        else:
-            kids.append((a, sex))
-    kids = tuple(sorted(kids))
-    return n + len(kids) - _shared(kids)
-
-
-def households(mb):
-    return {ref: list(zip(g["relationship"], g["sex"], g["date_of_birth"]))
-            for ref, g in mb.groupby("case_ref", sort=False)}
-
-
-def part3(hh, refs, day):
-    """need under Part 3 on `day` of each case in `refs`, from the people on its application"""
-    refs = list(refs)
-    return pd.Series([rooms(hh[r], day) for r in refs], index=refs)
-
-
-def recorded(c, rv, t):
-    """need as the case records it on day t: the decision, then the latest review on or before t"""
-    n = c.set_index("case_ref")["need0"].copy()
-    r = rv[rv["review_date"] <= t].sort_values(["review_date"], kind="mergesort")
-    last = r.groupby("case_ref")["bedrooms_after"].last()
-    n.loc[last.index] = last.values
     return n
-
-
-# ---------------- the lists ----------------
-
-def open_main(c, t):
-    """cases owed the main duty on day t: accepted on or before t and not closed by t"""
-    m = (c["decision"] == "Main duty accepted") & (c["decision_date"] <= t)
-    m &= c["closed_date"].isna() | (c["closed_date"] > t)
-    return c[m]
-
-
-def tenter_house(pl, t=ASOF):
-    live = (pl["accommodation_type"] == "Tenter House") & (pl["placement_start"] <= t)
-    live &= pl["placement_end"].isna() | (pl["placement_end"] > t)
-    return set(pl.loc[live, "case_ref"])
-
-
-def in_ta(pl, t=ASOF):
-    live = (pl["placement_start"] <= t) & (pl["placement_end"].isna() | (pl["placement_end"] > t))
-    return set(pl.loc[live, "case_ref"])
-
-
-def round_date(month):
-    """the offer round for tenancies starting in `month`: the third Monday of the month before"""
-    prev = (month - pd.DateOffset(months=1)).replace(day=1)
-    first_monday = prev + pd.Timedelta(days=(7 - prev.weekday()) % 7)
-    return first_monday + pd.Timedelta(days=14)
-
-
-def accepted_october(lt):
-    return set(lt.loc[lt["let_status"] == "Accepted, tenancy to start", "case_ref"])
-
-
-def runoff(c, pl, lt, P, list_need, unit_need, order="duty", members="all", lump=False, october="log"):
-    """Month-end households still in Tenter House, October to March, by replacement unit size.
-
-    list_need(day, refs) gives each listed case's bedrooms on a round day; unit_need (a Series by case)
-    is the unit size each Tenter House household is counted under. The October lets were offered in the
-    September round and are in the lets log ("log"); "plan" runs the September round from the plan's
-    October column instead, and "twice" does both."""
-    q = open_main(c, ASOF).copy()
-    if members == "ta":
-        q = q[q["case_ref"].isin(in_ta(pl))]
-    if order == "ta_start":
-        first = pl.groupby("case_ref")["placement_start"].min()
-        q["key"] = q["case_ref"].map(first).fillna(q["application_date"])
-    elif order == "application":
-        q["key"] = q["application_date"]
-    else:
-        q["key"] = q["decision_date"]
-    q = q.sort_values(["key", "case_ref"], kind="mergesort")
-    refs = q["case_ref"].tolist()
-    th = tenter_house(pl)
-    is_th = np.array([r in th for r in refs])
-    unit = np.minimum(unit_need.reindex(refs).fillna(0).astype(int).values, 4)
-    gone = np.zeros(len(refs), bool)
-    if october in ("log", "twice"):
-        acc = accepted_october(lt)
-        gone |= np.array([r in acc for r in refs])
-    steps = [(m, {s: P[s][k + 1] for s in P}) for k, m in enumerate(TENANCY_MONTHS)]
-    if october in ("plan", "twice"):
-        steps = [(OCTOBER, {s: P[s][0] for s in P})] + steps
-    out = {s: [] for s in SIZES}
-
-    def take(m, pk):
-        nd = np.asarray(list_need(round_date(m), refs), dtype=int)
-        if lump:
-            nd = np.minimum(nd, 4)
-        for s, n in pk.items():
-            if n > 0:
-                idx = np.flatnonzero((nd == s) & ~gone)[:n]
-                gone[idx] = True
-
-    def count():
-        for s in SIZES:
-            out[s].append(int(((unit == s) & is_th & ~gone).sum()))
-    if steps[0][0] == OCTOBER:
-        take(*steps.pop(0))
-    count()                                   # 31 October
-    for m, pk in steps:
-        take(m, pk)
-        count()
-    return out
-
-
-def golden(target):
-    c, pl, rv, mb, lt = load(target)
-    hh = households(mb)
-    P = plan(target)
-    th = sorted(tenter_house(pl))
-    unit = part3(hh, th, UNITS_START)
-    return runoff(c, pl, lt, P, lambda day, refs: part3(hh, refs, day).values, unit)
-
-
-def start_counts(pl, hh):
-    th = sorted(tenter_house(pl))
-    u = np.minimum(part3(hh, th, UNITS_START).values, 4)
-    return {s: int((u == s).sum()) for s in SIZES}
-
-
-def callout(run):
-    return {s: run[s][-1] for s in SIZES}
-
-
-def weekly_cost(units, rates):
-    return sum(units[s] * rates[s] for s in SIZES)
-
-
-# ---------------- the wrong rungs ----------------
-
-def rung_recorded(c, rv, pl, lt, P, hh, unit="recorded", lump=True):
-    """the queue on the need the case records on 30 September (the stump), lumped at four by default"""
-    rec = recorded(c, rv, ASOF)
-    th = sorted(tenter_house(pl))
-    u = rec.reindex(th) if unit == "recorded" else part3(hh, th, UNITS_START)
-    return runoff(c, pl, lt, P, lambda day, refs: rec.reindex(refs).values, u, lump=lump)
-
-
-def rung_frozen(c, pl, lt, P, hh, day=ASOF, unit_day=UNITS_START, lump=False):
-    """Part 3 need from the application, but worked out once (on `day`) for every round"""
-    q = open_main(c, ASOF)
-    fixed = part3(hh, q["case_ref"], day)
-    th = sorted(tenter_house(pl))
-    return runoff(c, pl, lt, P, lambda d, refs: fixed.reindex(refs).values, part3(hh, th, unit_day), lump=lump)
-
-
-def rung_dynamic(c, pl, lt, P, hh, unit_day=UNITS_START, lump=False, members="all", order="duty", october="log"):
-    """Part 3 need on each round day (the answer's list rule) with one other choice changed"""
-    th = sorted(tenter_house(pl))
-    return runoff(c, pl, lt, P, lambda d, refs: part3(hh, refs, d).values, part3(hh, th, unit_day),
-                  lump=lump, members=members, order=order, october=october)
-
-
-def rung_none(pl, unit):
-    th = sorted(tenter_house(pl))
-    u = np.minimum(unit.reindex(th).values, 4)
-    return {s: [int((u == s).sum())] * 6 for s in SIZES}
-
-
-def monthly_rate(c, rv, months=12):
-    """share of main-duty households leaving each month over the last `months` months, by recorded need"""
-    starts = pd.date_range(ASOF - pd.DateOffset(months=months) + pd.Timedelta(days=1), ASOF, freq="MS")
-    tot = {s: [0, 0] for s in SIZES}
-    for m in starts:
-        me = m + pd.offsets.MonthEnd(0)
-        o = open_main(c, m - pd.Timedelta(days=1))
-        nd = np.minimum(recorded(c, rv, m).reindex(o["case_ref"]).values, 4)
-        left = (o["closed_date"] <= me).values
-        for s in SIZES:
-            tot[s][0] += int(((nd == s) & left).sum())
-            tot[s][1] += int((nd == s).sum())
-    return {s: tot[s][0] / tot[s][1] for s in SIZES}
-
-
-def rung_rate(c, rv, pl):
-    th = sorted(tenter_house(pl))
-    u = np.minimum(recorded(c, rv, ASOF).reindex(th).values, 4)
-    n = {s: int((u == s).sum()) for s in SIZES}
-    r = monthly_rate(c, rv)
-    return {s: [n[s] * (1 - r[s]) ** (k + 1) for k in range(6)] for s in SIZES}
-
-
-def rung_share(c, rv, pl, P):
-    rec = recorded(c, rv, ASOF)
-    th = sorted(tenter_house(pl))
-    u = np.minimum(rec.reindex(th).values, 4)
-    n = {s: int((u == s).sum()) for s in SIZES}
-    q = open_main(c, ASOF)
-    nd = np.minimum(rec.reindex(q["case_ref"]).values, 4)
-    out = {}
-    for s in SIZES:
-        L = (nd == s).sum()
-        lets = [P[s][k] + (P[5][k] if s == 4 else 0) for k in range(6)]
-        out[s] = [n[s] * (1 - k / L) for k in np.cumsum(lets)]
-    return out
-
-
-def rung_survival(c, rv, pl):
-    """Kaplan-Meier on time since the main duty was accepted, cases accepted from 1 April 2018,
-    by recorded need, read at each Tenter House household's elapsed time"""
-    acc = c[(c["decision"] == "Main duty accepted") & c["decision_date"].notna()
-            & (c["decision_date"] >= pd.Timestamp("2018-04-01"))].copy()
-    end = acc["closed_date"].where(acc["closed_date"].notna() & (acc["closed_date"] <= ASOF), ASOF)
-    acc["dur"] = (end - acc["decision_date"]).dt.days.values
-    acc["ev"] = (acc["closed_date"].notna() & (acc["closed_date"] <= ASOF)).values
-    acc["need"] = np.minimum(recorded(c, rv, ASOF).reindex(acc["case_ref"]).values, 4)
-    th = tenter_house(pl)
-    out = {}
-    for s in SIZES:
-        sub = acc[acc["need"] == s]
-        d = sub["dur"].values
-        e = sub["ev"].values
-        ts = np.unique(d)
-        S, at, Ss = 1.0, len(d), []
-        for t in ts:
-            m = d == t
-            k = (m & e).sum()
-            if k:
-                S *= 1 - k / at
-            at -= m.sum()
-            Ss.append(S)
-        Ss = np.array(Ss)
-
-        def f(x):
-            j = np.searchsorted(ts, x, "right") - 1
-            return np.where(j < 0, 1.0, Ss[np.clip(j, 0, None)])
-        t0 = acc[acc["case_ref"].isin(th) & (acc["need"] == s)]
-        el = (ASOF - t0["decision_date"]).dt.days.values
-        base = np.maximum(f(el), 1e-12)
-        out[s] = [float((f(el + (me - ASOF).days) / base).sum()) for me in MONTH_ENDS]
-    return out
-
-
-def replay(c, rv, lt, need="recorded", hh=None, since=pd.Timestamp("2018-04-01")):
-    """Re-run every round from `since` against the list rule: each round's homes of one size go to the
-    first households of that size's list on the day of the round. need="recorded" sorts households by
-    the need on the case record, need="part3" by Part 3 on the day from the application (open cases
-    only, so only rounds whose candidates are all still open can be replayed that way).
-    Returns (reproduced, total)."""
-    acc = c[c["decision"] == "Main duty accepted"].sort_values(["decision_date", "case_ref"], kind="mergesort")
-    acc = acc.reset_index(drop=True)
-    far = np.datetime64("2100-01-01")
-    dec = acc["decision_date"].values.astype("datetime64[D]")
-    clo = acc["closed_date"].values.astype("datetime64[D]")
-    clo = np.where(np.isnat(clo), far, clo)
-    refs = acc["case_ref"].values
-    pos = {r: k for k, r in enumerate(refs)}
-    taken = np.zeros(len(acc), bool)
-    for x in lt.loc[lt["offer_date"] < since, "case_ref"]:
-        if x in pos:
-            taken[pos[x]] = True
-    need0 = acc["need0"].fillna(0).astype(int).values
-    rvs = rv[rv["case_ref"].isin(pos)].sort_values("review_date", kind="mergesort")
-    r_idx = np.array([pos[x] for x in rvs["case_ref"]], int)
-    r_day = rvs["review_date"].values.astype("datetime64[D]")
-    r_new = rvs["bedrooms_after"].values.astype(int)
-    hits = tot = 0
-    for r, grp_r in lt[lt["offer_date"] >= since].groupby("offer_date", sort=True):
-        td = np.datetime64(r.date())
-        ok = (dec <= td) & (clo > td) & ~taken
-        if need == "recorded":
-            nd = need0.copy()
-            m = r_day <= td
-            nd[r_idx[m]] = r_new[m]
-        else:
-            nd = np.full(len(acc), -1)
-            for k in np.flatnonzero(ok):
-                if refs[k] in hh:
-                    nd[k] = rooms(hh[refs[k]], r)
-        for s, grp in grp_r.groupby("bedrooms"):
-            cand = np.flatnonzero(ok & (nd == s))[:len(grp)]
-            hits += len(set(refs[cand]) & set(grp["case_ref"]))
-            tot += len(grp)
-        for x in grp_r["case_ref"]:
-            if x in pos:
-                taken[pos[x]] = True
-    return hits, tot

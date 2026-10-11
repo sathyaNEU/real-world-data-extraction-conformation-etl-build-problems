@@ -1,109 +1,123 @@
 {
- "task": "task130",
- "architecture": "v3",
- "drawn": "2026-10-11",
- "slot_note": "re-root of task130 after v2 was spent (portal failure, then a template finding on its hardening loop); same objective, new domain, new graded quantity, new Layer 2 pitfall",
- "domain": "actuarial-science-insurance",
- "subdomain": "claims-frequency-severity",
- "niche": "a public school district's self-insured health plan certifying the expected programme-year claims of the members a care-management vendor flagged on last year's claims, the baseline the vendor's savings share is measured against",
- "objective": "forecasting",
- "shape": "14",
- "decision_type": "quantity_figure",
- "answer_unit": "currency",
- "answer": "",
- "answer_source": "task130/submission.md, 1. Final Recommendation",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "A"
- ],
- "generators": [
-  "G14",
-  "G13"
- ],
- "gate_g": "forecasting",
- "calibration_form": "other",
- "stump_strategy": "forecast_method_backtest",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_model",
- "stakeholder_role": "director of risk management and benefits at a public school district, who certifies the care-management contract's claims baseline to the board of trustees",
- "role_family": "procurement_lead",
- "scoring_unit": "per covered member",
- "spine": {
-  "file": "medical_claim_lines_2025-01_2027-02.csv",
-  "rows": 0,
-  "entity": "one adjudicated medical claim line for one covered member",
-  "grain": "claim line",
-  "source": "synthetic"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "purchase_order_or_contract",
- "org_family": "university_or_school",
- "world": {
-  "geography": "United States, Minnesota",
-  "currency": "USD",
-  "org_type": "public school district with a self-insured employee health plan, administered by a third-party administrator, with a pharmacy benefit manager and a care-management vendor",
-  "invented_names": [
-   "Red Cedar Valley School District",
-   "Northcourt Care Partners",
-   "Lindqvist Benefits Consulting"
+  "task": "task130",
+  "architecture": "v3",
+  "drawn": "2026-10-11",
+  "slot_note": "re-root of task130 after v2 was spent (portal failure, then a template finding on its hardening loop); same objective, new domain, new graded quantity, new Layer 2 pitfall",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "claims-frequency-severity",
+  "niche": "a public school district's self-insured health plan certifying the expected programme-year claims of the members a care-management vendor flagged on last year's claims, the baseline the vendor's savings share is measured against",
+  "objective": "forecasting",
+  "shape": "14",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "Certify a programme baseline of $3,541 per member per month for the 140 enrolled members ($2,157 medical, $1,384 pharmacy), built tier by tier from what the 140 members Northcourt's model flagged on 2024 claims for its 2025 proposal, never enrolled, cost from April 2025 to March 2026, trended 24 months.",
+  "answer_source": "task130/submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "population"
   ],
-  "people": [
-   "Joyce Salinas",
-   "Deborah Johnson",
-   "Michael Perry",
-   "Allison Santiago",
-   "Anthony Olsen",
-   "Tiffany Barrett"
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G14",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "other",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "director of risk management and benefits at a public school district, who certifies the care-management contract's claims baseline to the board of trustees",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "medical_claim_lines_2025-01_2027-02.csv",
+    "rows": 278892,
+    "entity": "one adjudicated medical claim line for one covered member",
+    "grain": "claim line",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United States, Minnesota",
+    "currency": "USD",
+    "org_type": "public school district with a self-insured employee health plan, administered by a third-party administrator, with a pharmacy benefit manager and a care-management vendor",
+    "invented_names": [
+      "Red Cedar Valley School District",
+      "Northcourt Care Partners",
+      "Lindqvist Benefits Consulting",
+      "Bramwell Plan Services",
+      "Ellery Benefit Administrators",
+      "Quarrystone Rx",
+      "Wyecliff Life Assurance Company"
+    ],
+    "people": [
+      "Joyce Salinas",
+      "Deborah Johnson",
+      "Michael Perry",
+      "Allison Santiago",
+      "Anthony Olsen",
+      "Tiffany Barrett",
+      "Phillip Alvarado",
+      "Amy Kelley",
+      "Michelle Peterson",
+      "Jonathan Hoffman",
+      "Sandra Lopez"
+    ]
+  },
+  "deliverables": [
+    "cohort_baseline_2027.xlsx",
+    "baseline_certification_memo.docx"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carrying its own chosen-period value forward with trend, when the outcome regresses toward the mean; the forecast that holds is the next-period experience of a group chosen the same way one period earlier, which the record contains untreated, cell by cell.",
+  "driver_concrete": "The vendor flags the plan's 140 highest-acuity members on their 2026 claims and its savings share is measured against the cohort's expected allowed claims per member month in the programme year without the programme, by risk tier and by medical and pharmacy; the 140 members the same model flagged on 2024 claims in the vendor's 2025 bid were never enrolled, so their allowed claims in the year from April 2025, projected two years at the renewal trend, are each tier's baseline, not the enrolled cohort's own 2026 cost projected forward.",
+  "stump": "A competent solver nets the claim lines and pharmacy reversals, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost; the step that lands it there is projecting a group chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost a fraction of that in the year after they were flagged.",
+  "stump_class": "analytical",
+  "analyst_test": "a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,928 programme total against $3,541, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.",
+  "domain_test": "the deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by tier and by medical and pharmacy, projected at the plan's trend over member months, a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task51": "task51 values an intervention against a baseline an unfiled standing rule moves on its own (accounts that settle voluntarily); here no rule moves the baseline: a cohort chosen on its own extreme claims regresses toward the mean, measured on an untreated cohort chosen the same way a year earlier.",
+    "task43": "task43 carries a pooled effect onto places whose moderator mix differs; here there is no effect to carry: the forecast is the counterfactual cost of a cohort selected on its outcome.",
+    "task132": "task132 forecasts failures where a replaced module starts again young (renewal); here nothing renews: the selection on this year's outcome is what makes this year's level a biased forecast of next year's.",
+    "task133": "task133 conditions a cumulative default curve on survival to date; here the forecast conditions on the selection that put the members in the cohort, read off an earlier cohort's realised outcomes."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "failed on the portal 2026-10-10: both top models filed the golden seven-section designation",
+      "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it."
+    },
+    {
+      "architecture": "v2",
+      "fate": "failed on the portal 2026-10-11 (the model built the filed duty-date queue and filed the golden 46 units); hardening loop 1 (lists on the need re-derived from the household members on each round day against a lagging case record) rejected at the clone pre-flight as a Template of task73 world ten, and the same move was solved on the portal in task86 v2's first cut",
+      "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it."
+    },
+    {
+      "architecture": "v2 loop 1",
+      "fate": "rejected at the clone pre-flight (Template, Track B, against task73 world ten)",
+      "driver": "A waiting list is split into classes by an attribute the governing rule works out on the day from each member's composition, while the case record keeps that attribute as last assessed; a run-off forecast against a planned supply has to recompute every member's class on each allocation day, because members age across the rule's thresholds and a record assessed years earlier holds the longest-waiting members in classes they have already left."
+    }
+  ],
+  "notes": "Re-rooted as v3 on 2026-10-11 after v2 was spent (v2 failed on the portal; its hardening loop 1 was a Template of task73 world ten). v3 moves to actuarial claims forecasting with a regression-to-the-mean pitfall (Layer 2 estimand_identification: selection on the outcome), pinned by an untreated cohort flagged by the same stratification on 2024 claims in the vendor's 2025 bid and never enrolled (calibration form other: the bid list, its outcomes read from the claims). stump_strategy forecast_method_backtest: the natural persistence projection is wrong out of sample for a selected cohort, and the bid cohort's realised programme-length year is the back-test. Shape 14, the baseline cut by the vendor's four risk tiers and by medical and pharmacy. The ratio form is unavailable because the claims history starts with the current administrator on 1 January 2025 and the stratification files carry no cost, so the analog's level projected at the renewal trend is the one estimator. context_artifact is operations_log: the stakeholder certifies from the plan's claims and eligibility feeds (the administrator's claim lines and the PBM's claims), the record the baseline is built on; the vendor's lists carry tiers and scores, never a cost.",
+  "client_domain": "actuarial-science-insurance",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:selection-on-the-outcome-baseline",
+  "layer1": [
+    "medical claim lines in 837 layout, one row per line of every adjudicated version: originals, frequency 7 replacements that name the claim they replace, frequency 8 voids that repeat it with the signs reversed, replacement chains",
+    "denied lines with claim adjustment reason codes (16 resubmitted as a new claim, 18 duplicate, 27 after coverage ended, 97 bundled, 204 not covered), blank allowed and zero plan paid",
+    "claims paid in error under the wrong member, voided and rebilled under the right one",
+    "pharmacy claims from a PBM in its own fixed layout (CCYYMMDD dates, zero-filled cardholder numbers), with B2 reversals, reverse-and-rebill and return-to-stock, keyed on employee number and person code rather than the administrator's member ID",
+    "eligibility as coverage spans that split on plan, coverage tier or employee class changes, month-end terminations, deaths ending coverage on the day, newborns covered from birth",
+    "an administrator change on 1 January 2025 with new member identifiers: the bid list carries the old subscriber-suffix numbers and the conversion crosswalk maps them, with merged duplicate prior records and dependent suffixes not carried over",
+    "claims history that starts with the current administrator, so the old administrator's 2024 claims are absent",
+    "run-out: claims incurred late in 2026 still being paid at the extract date",
+    "a superseded January draft stratification beside the final list: ten members swapped and five re-tiered"
   ]
- },
- "deliverables": [
-  "cohort_baseline_2027.xlsx",
-  "baseline_certification_memo.docx"
- ],
- "opening_move": "stakes-first",
- "driver": "A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carrying its own chosen-period value forward with trend, when the outcome regresses toward the mean; the forecast that holds is the next-period experience of a group chosen the same way one period earlier, which the record contains untreated, cell by cell.",
- "driver_concrete": "The vendor flags the plan's 140 highest-acuity members on their 2026 claims and its savings share is measured against the cohort's expected allowed claims per member month in the programme year without the programme, by risk tier and by medical and pharmacy; the 140 members the same model flagged on 2024 claims in the vendor's 2025 bid were never enrolled, so their allowed claims in the year from April 2025, projected two years at the renewal trend, are each tier's baseline, not the enrolled cohort's own 2026 cost projected forward.",
- "stump": "A competent solver nets the claim lines and pharmacy reversals, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost; the step that lands it there is projecting a group chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost a fraction of that in the year after they were flagged.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task51": "task51 values an intervention against a baseline an unfiled standing rule moves on its own (accounts that settle voluntarily); here no rule moves the baseline: a cohort chosen on its own extreme claims regresses toward the mean, measured on an untreated cohort chosen the same way a year earlier.",
-  "task43": "task43 carries a pooled effect onto places whose moderator mix differs; here there is no effect to carry: the forecast is the counterfactual cost of a cohort selected on its outcome.",
-  "task132": "task132 forecasts failures where a replaced module starts again young (renewal); here nothing renews: the selection on this year's outcome is what makes this year's level a biased forecast of next year's.",
-  "task133": "task133 conditions a cumulative default curve on survival to date; here the forecast conditions on the selection that put the members in the cohort, read off an earlier cohort's realised outcomes."
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "failed on the portal 2026-10-10: both top models filed the golden seven-section designation",
-   "driver": "The committed set is read off holdings on a future effective date built forward from a past snapshot of filed returns; the forward roll, with a third party's takeovers of scheduled transfers completed on the fixed interval its settled cases show, reproduces both closed controls because every holder enrolled by the snapshot had filed, but the holder population on the effective date also takes in holders enrolled after the snapshot who have not filed yet, whose units are recoverable only by grouping the transfer extract on the buyer, so a unit the roll leaves under the threshold is over it."
-  },
-  {
-   "architecture": "v2",
-   "fate": "failed on the portal 2026-10-11 (the model built the filed duty-date queue and filed the golden 46 units); hardening loop 1 (lists on the need re-derived from the household members on each round day against a lagging case record) rejected at the clone pre-flight as a Template of task73 world ten, and the same move was solved on the portal in task86 v2's first cut",
-   "driver": "Members of a closed group leave only when a rationed supply reaches them, and the supply is handed out across a wider list in a filed priority order within each size class, so how many remain at a later date is each member's rank inside its class against the cumulative planned supply, and neither a leaving rate nor a survival curve read off history, which both average over whatever list length the past happened to have, gives it."
-  },
-  {
-   "architecture": "v2 loop 1",
-   "fate": "rejected at the clone pre-flight (Template, Track B, against task73 world ten)",
-   "driver": "A waiting list is split into classes by an attribute the governing rule works out on the day from each member's composition, while the case record keeps that attribute as last assessed; a run-off forecast against a planned supply has to recompute every member's class on each allocation day, because members age across the rule's thresholds and a record assessed years earlier holds the longest-waiting members in classes they have already left."
-  }
- ],
- "notes": "Re-rooted as v3 on 2026-10-11 after v2 was spent (v2 failed on the portal; its hardening loop 1 was a Template of task73 world ten). v3 moves to actuarial claims forecasting with a regression-to-the-mean pitfall (Layer 2 estimand_identification: selection on the outcome), pinned by an untreated cohort flagged by the same stratification on 2024 claims in the vendor's 2025 bid and never enrolled (calibration form other: the bid list, its outcomes read from the claims). stump_strategy forecast_method_backtest: the natural persistence projection is wrong out of sample for a selected cohort, and the bid cohort's realised programme-length year is the back-test. Shape 14, the baseline cut by the vendor's four risk tiers and by medical and pharmacy. The ratio form is unavailable because the claims history starts with the current administrator on 1 January 2025 and the stratification files carry no cost, so the analog's level projected at the renewal trend is the one estimator.",
- "client_domain": "actuarial-science-insurance",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:selection-on-the-outcome-baseline",
- "layer1": [
-  "medical claim lines with replacements, voids and denied lines",
-  "pharmacy claims from a PBM in its own layout, with reversals, keyed on employee number and person code",
-  "eligibility as coverage spans",
-  "an administrator change with new member identifiers and a conversion crosswalk",
-  "claims history that starts with the current administrator",
-  "run-out: claims incurred late in the year paid in the following months",
-  "a superseded draft stratification beside the final one"
- ]
 }

@@ -1,155 +1,171 @@
-"""Independent verifier: reads only target/ and the golden workbook, shares no code with the
-generator, rebuilds the move-on lists round by round and the run-off, and checks the golden against them."""
+"""Independent recomputation of task130's graded figures from target/ and golden/ alone.
+
+Shares no code with the generator: it parses the CSVs with the csv module, sums in Decimal, and applies its own
+reading of the dictionary and Schedule C (replacements drop the claims they name, voids and reversals net by sign,
+denied lines carry nothing, a member month is a month whose first day the member is covered, a claim belongs to the
+month of its first date of service or fill date). It then checks the golden workbook, the memo and, when present,
+submission.md block 4 against what it computed.
+
+    python3 verify.py [TASK_DIR]
+"""
+import csv
 import datetime as dt
-import itertools
 import os
+import re
 import sys
+from collections import defaultdict
+from decimal import Decimal
 
-import openpyxl
-import pandas as pd
+from openpyxl import load_workbook
 
-TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def age(born, day):
-    years = day.year - born.year
-    if (day.month, day.day) < (born.month, born.day):
-        years -= 1
-    return years
+TASK = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TGT = os.path.join(TASK, "target")
+GLD = os.path.join(TASK, "golden")
 
 
-def can_share(a, b):
-    return (a[0] < 10 and b[0] < 10) or a[1] == b[1]
+def iso(s):
+    return dt.date(int(s[0:4]), int(s[5:7]), int(s[8:10]))
 
 
-def best_pairs(kids):
-    """brute force: the largest set of disjoint sharing pairs"""
-    if len(kids) < 2:
-        return 0
-    first, rest = kids[0], kids[1:]
-    best = best_pairs(rest)
-    for i, other in enumerate(rest):
-        if can_share(first, other):
-            best = max(best, 1 + best_pairs(rest[:i] + rest[i + 1:]))
-    return best
+def ymd(s):
+    return dt.date(int(s[0:4]), int(s[4:6]), int(s[6:8]))
 
 
-def bedrooms(people, day):
-    rooms = 1
-    kids = []
-    for rel, sex, born in people:
-        if rel in ("Applicant", "Partner") or born > day:
-            continue
-        a = age(born, day)
-        if a >= 16:
-            rooms += 1
-        else:
-            kids.append((a, sex))
-    return rooms + len(kids) - best_pairs(kids)
+def first_days(a, b):
+    y, m = a.year, a.month
+    while True:
+        d = dt.date(y, m, 1)
+        if d > b:
+            return
+        if d >= a:
+            yield d
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
 
 
-def third_monday_before(month_start):
-    y, m = month_start.year, month_start.month - 1
-    if m == 0:
-        y, m = y - 1, 12
-    d = dt.date(y, m, 1)
-    mondays = [d + dt.timedelta(days=i) for i in range(31)
-               if (d + dt.timedelta(days=i)).month == m and (d + dt.timedelta(days=i)).weekday() == 0]
-    return mondays[2]
+def rows(name):
+    with open(os.path.join(TGT, name), newline="") as f:
+        return list(csv.DictReader(f))
 
 
-def main(target=None, golden=None):
-    t = target or os.path.join(TASK, "target")
-    g = golden or os.path.join(TASK, "golden")
-    cases = pd.read_csv(os.path.join(t, "homelessness_cases_2026-09-30.csv"), dtype=str).fillna("")
-    place = pd.read_csv(os.path.join(t, "ta_placements_2018-04_2026-09.csv"), dtype=str).fillna("")
-    members = pd.read_csv(os.path.join(t, "household_members_2026-09-30.csv"), dtype=str)
-    lets = pd.read_csv(os.path.join(t, "moveon_lets_2018-04_2026-09.csv"), dtype=str)
-
-    cut = "2026-09-30"
-    duty = cases[(cases["decision"] == "Main duty accepted") & (cases["decision_date"] <= cut)
-                 & ((cases["closed_date"] == "") | (cases["closed_date"] > cut))]
-    duty = duty.sort_values(["decision_date", "case_ref"])
-    order = duty["case_ref"].tolist()
-    people = {}
-    for _, r in members.iterrows():
-        people.setdefault(r["case_ref"], []).append(
-            (r["relationship"], r["sex"], dt.date.fromisoformat(r["date_of_birth"])))
-    in_th = set(place[(place["accommodation_type"] == "Tenter House") & (place["placement_start"] <= cut)
-                      & ((place["placement_end"] == "") | (place["placement_end"] > cut))]["case_ref"])
-    april = dt.date(2027, 4, 1)
-    unit = {x: min(bedrooms(people[x], april), 4) for x in in_th}
-
-    ws = openpyxl.load_workbook(os.path.join(t, "moveon_plan_2026-27.xlsx"))["Revised 14 Sep 2026"]
-    plan = {}
-    for row in ws.iter_rows(min_row=5, max_row=9, values_only=True):
-        plan[5 if row[0] == "5 or more" else int(row[0])] = list(row[7:13])
-
-    # October: the lets accepted in the September round
-    done = set(lets.loc[lets["let_status"] == "Accepted, tenancy to start", "case_ref"])
-    month_end = []
-
-    def tally():
-        out = {s: 0 for s in (1, 2, 3, 4)}
-        for x in in_th:
-            if x not in done:
-                out[unit[x]] += 1
-        month_end.append(out)
-    tally()
-    for k, (y, m) in enumerate([(2026, 11), (2026, 12), (2027, 1), (2027, 2), (2027, 3)], 1):
-        day = third_monday_before(dt.date(y, m, 1))
-        need = {x: bedrooms(people[x], day) for x in order if x not in done}
-        for s in (1, 2, 3, 4, 5):
-            n = plan[s][k]
-            front = [x for x in order if x not in done and need[x] == s][:n]
-            done |= set(front)
-        tally()
-    run = {s: [me[s] for me in month_end] for s in (1, 2, 3, 4)}
-    units = {s: run[s][-1] for s in run}
-    start = {s: sum(1 for x in in_th if unit[x] == s) for s in (1, 2, 3, 4)}
-
-    ws = openpyxl.load_workbook(os.path.join(t, "dps_lot2_lot3_price_schedule.xlsx"))["Rates"]
-    rate = {}
-    for row in ws.iter_rows(min_row=5, values_only=True):
-        if row[0] == "3":
-            rate[4 if row[3] == "4+" else int(row[3])] = row[5]
-    cost = sum(units[s] * rate[s] for s in units)
-
-    # the September round, re-checked with plain loops: each home went to the first household on the list
-    # for its bedrooms on 21 September, the need worked out from the people on the application
-    sept = dt.date(2026, 9, 21)
-    acc = lets[lets["let_status"] == "Accepted, tenancy to start"]
-    on_list = [x for x in order if x in people]
-    ok = 0
-    for beds, grp in acc.groupby("bedrooms"):
-        b = int(beds)
-        front = [x for x in on_list if bedrooms(people[x], sept) == b][:len(grp)]
-        ok += len(set(front) & set(grp["case_ref"]))
-
-    print("Tenter House on the cut, by unit on 1 April", start, "total", sum(start.values()))
-    print("run-off", run)
-    print("call-off", units, "total", sum(units.values()), "weekly cost %.2f" % cost)
-    print("September round lets reproduced from the application: %d of %d" % (ok, len(acc)))
-
-    good = ok == len(acc)
-    wb = openpyxl.load_workbook(os.path.join(g, "tenter_house_replacement_units.xlsx"))
-    co = wb["Call-off"]
-    lab = {"1 bed": 1, "2 bed": 2, "3 bed": 3, "4+ bed": 4}
-    for r in range(5, 9):
-        s = lab[co.cell(row=r, column=1).value]
-        good &= co.cell(row=r, column=2).value == start[s]
-        good &= co.cell(row=r, column=3).value == run[s][-1]
-        good &= co.cell(row=r, column=4).value == units[s]
-        good &= abs(co.cell(row=r, column=5).value - rate[s]) < 1e-9
-    good &= co.cell(row=11, column=6).value == int(round(cost))
-    ro = wb["Run-off"]
-    for r in range(5, 9):
-        s = lab[ro.cell(row=r, column=1).value]
-        good &= ro.cell(row=r, column=2).value == start[s]
-        good &= [ro.cell(row=r, column=j).value for j in range(3, 9)] == run[s]
-    print("golden workbook matches the recomputation:", good)
-    return good
+cover = defaultdict(list)
+person = {}
+for r in rows("eligibility_spans_2027-02.csv"):
+    end = iso(r["span_end"]) if r["span_end"] else dt.date(9999, 12, 31)
+    cover[r["member_id"]].append((iso(r["span_start"]), end))
+    person[(int(r["employee_number"]), r["person_code"])] = r["member_id"]
 
 
-if __name__ == "__main__":
-    sys.exit(0 if main() else 1)
+def member_months(member, a, b):
+    return sum(1 for d in first_days(a, b) if any(s <= d <= e for s, e in cover[member]))
+
+
+med_lines = rows("medical_claim_lines_2025-01_2027-02.csv")
+replaced = {r["original_claim_number"] for r in med_lines if r["claim_frequency_code"] == "7"}
+med = defaultdict(Decimal)
+for r in med_lines:
+    if r["claim_number"] in replaced or not r["allowed_amount"]:
+        continue
+    med[(r["member_id"], iso(r["first_date_of_service"]))] += Decimal(r["allowed_amount"])
+rx = defaultdict(Decimal)
+for r in rows("pharmacy_claims_2025-01_2027-02.csv"):
+    m = person[(int(r["CARDHOLDER_ID"]), r["PERSON_CD"])]
+    rx[(m, ymd(r["DATE_OF_SERVICE"]))] += Decimal(r["GROSS_AMT_DUE"])
+by_member_med, by_member_rx = defaultdict(list), defaultdict(list)
+for (m, d), v in med.items():
+    by_member_med[m].append((d, v))
+for (m, d), v in rx.items():
+    by_member_rx[m].append((d, v))
+
+prior = {}
+for r in rows("tpa_conversion_crosswalk_2025-01-01.csv"):
+    prior["%s-%s" % (r["prior_subscriber_number"], r["prior_member_suffix"])] = r["member_id"]
+
+
+def vendor_list(name):
+    ws = load_workbook(os.path.join(TGT, name), read_only=True, data_only=True)["Members"]
+    out = defaultdict(list)
+    for i, row in enumerate(ws.iter_rows(values_only=True)):
+        if i and row[0] is not None:
+            out[int(row[6])].append(str(row[1]))
+    return out
+
+
+bid = vendor_list("northcourt_rfp_2025-07_stratification_2024_claims.xlsx")
+fin = vendor_list("northcourt_stratification_2026_claims_final.xlsx")
+bid = {t: [prior[x] for x in xs] for t, xs in bid.items()}
+
+
+def pmpm(members, a, b):
+    s_med = sum((v for m in members for d, v in by_member_med[m] if a <= d <= b), Decimal(0))
+    s_rx = sum((v for m in members for d, v in by_member_rx[m] if a <= d <= b), Decimal(0))
+    mm = sum(member_months(m, a, b) for m in members)
+    return s_med / mm, s_rx / mm
+
+
+TM, TR = Decimal("1.065") ** 2, Decimal("1.09") ** 2
+A0, A1 = dt.date(2025, 4, 1), dt.date(2026, 3, 31)
+Y0, Y1 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
+tiers = sorted(fin)
+n = {t: len(fin[t]) for t in tiers}
+assert sum(n.values()) == 140 and sum(len(v) for v in bid.values()) == 140
+base, y26 = {}, {}
+for t in tiers:
+    am, ar = pmpm(bid[t], A0, A1)
+    base[t] = (am * TM, ar * TR)
+    y26[t] = pmpm(fin[t], Y0, Y1)
+prog_m = sum(n[t] * base[t][0] for t in tiers) / 140
+prog_r = sum(n[t] * base[t][1] for t in tiers) / 140
+total = prog_m + prog_r
+r0 = sum(n[t] * (y26[t][0] * Decimal(1.065 ** 1.25) + y26[t][1] * Decimal(1.09 ** 1.25)) for t in tiers) / 140
+
+
+def whole(x):
+    return int(x.quantize(Decimal("1"), rounding="ROUND_HALF_UP"))
+
+
+print("tier  members  2026 medical  2026 pharmacy  baseline medical  baseline pharmacy")
+for t in tiers:
+    print("%4d  %7d  %12s  %13s  %16s  %17s" % (t, n[t], "{:,}".format(whole(y26[t][0])), "{:,}".format(whole(y26[t][1])),
+                                                "{:,}".format(whole(base[t][0])), "{:,}".format(whole(base[t][1]))))
+print("programme baseline: medical %s, pharmacy %s, total %s" % tuple("{:,}".format(whole(x)) for x in (prog_m, prog_r, total)))
+print("members' own 2026 claims at trend (not certified): %s" % "{:,}".format(whole(r0)))
+
+# the golden workbook
+ws = load_workbook(os.path.join(GLD, "cohort_baseline_2027.xlsx"), data_only=True)["Baseline"]
+got = {}
+for row in ws.iter_rows(values_only=True):
+    if row and isinstance(row[0], str) and re.fullmatch(r"Tier \d", row[0]):
+        got[int(row[0][-1])] = tuple(row[1:6])
+    if row and row[0] == "All enrolled members" and row[4] is not None:
+        got["prog"] = (row[1], row[4], row[5], row[6])
+for t in tiers:
+    want = (n[t], whole(y26[t][0]), whole(y26[t][1]), whole(base[t][0]), whole(base[t][1]))
+    assert got[t] == want, ("workbook tier", t, got[t], want)
+assert got["prog"] == (140, whole(prog_m), whole(prog_r), whole(total)), ("workbook programme", got["prog"])
+assert whole(prog_m) + whole(prog_r) == whole(total), "the rounded parts add to the rounded total"
+
+# the memo opens with the total
+import zipfile
+xml = zipfile.ZipFile(os.path.join(GLD, "baseline_certification_memo.docx")).read("word/document.xml").decode("utf-8")
+text = re.sub(r"<[^>]+>", "", re.sub(r"</w:p>", "\n", xml))
+paras = [p for p in text.split("\n") if p.strip()]
+opening = next(p for p in paras if p.startswith("I recommend"))
+assert "${:,}".format(whole(total)) in opening.split(":")[0], "memo opens with the total programme baseline"
+assert "word/media/" in "".join(zipfile.ZipFile(os.path.join(GLD, "baseline_certification_memo.docx")).namelist()), "chart"
+
+# submission.md block 4, when it exists
+sub = os.path.join(TASK, "submission.md")
+if os.path.exists(sub):
+    s = open(sub).read()
+    b4 = s[s.index("## 4."):]
+    for t in tiers:
+        line = next(l for l in b4.split("\n") if re.match(r"\s*-\s*Tier %d:" % t, l))
+        for v in (n[t], whole(y26[t][0]), whole(y26[t][1]), whole(base[t][0]), whole(base[t][1])):
+            tok = "{:,}".format(v)
+            assert re.search(r"(?<![\d,])\$?%s(?![\d,])" % re.escape(tok), line), ("submission tier", t, tok, line)
+    for v in (whole(prog_m), whole(prog_r), whole(total)):
+        assert "${:,}".format(v) in b4, ("submission programme", v)
+    b1 = s[s.index("## 1."):s.index("## 2.")]
+    assert "${:,}".format(whole(total)) in b1, "block 1 carries the total"
+    print("submission.md agrees with the recomputation")
+print("verify: every graded figure recomputes from target/ and agrees with golden/")

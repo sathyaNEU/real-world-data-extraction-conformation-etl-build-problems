@@ -1,50 +1,44 @@
-# task130: Tenter House, the replacement units for 1 April 2027
+# task130 · Red Cedar Valley Schools, the Northcourt care management baseline for 2027-28
 
 ## Tags
 
-**Domain:** Demographic & Social Science (housing: homelessness and temporary accommodation).
-**Analytical objective:** Forecasting & Predictive Modeling (a closed group's run-off forecast from move-on lists worked against a planned supply).
-**Reasoning phases:** Explore/Discover, Hypothesize, Analyze/Validate, Synthesize, Recommend/Communicate.
+**Domain:** Actuarial Science & Insurance (claims frequency and severity: a self-insured school district's baseline for its care management vendor's share of savings).
+**Analytical objective:** Forecasting & Predictive Modeling (the allowed claims per member month that 140 members chosen on their 2026 claims would incur in a programme year that has not started, by tier, medical and pharmacy).
 
 ## 1. Final Recommendation
 
-**Call off 52 replacement units for 1 April 2027: no one-bed, 10 two-bed, 18 three-bed and 24 four-bed.**
+**Certify a programme baseline of $3,541 per member per month for the 140 enrolled members ($2,157 medical, $1,384 pharmacy), built tier by tier from what the 140 members Northcourt's model flagged on 2024 claims for its 2025 proposal, never enrolled, cost from April 2025 to March 2026, trended 24 months.**
 
-Of the 160 households in Tenter House on 30 September, 52 are still there on 31 March once each round's lets go by the bedrooms households need on the round day. Not the queue on the bedroom need on the case record, which has not caught up with children reaching ten or sixteen and keeps the longest-waiting households on lists they have left. Not the borough's recent leaving rate, which ignores the order lets are made in.
+Not the enrolled members' own 2026 claims carried forward at the renewal trend, which treats the year they were picked for as a year they will repeat. Not the renewal letter's plan-wide projection, which prices the average member rather than the 140 at the top of the plan.
 
 ## 2. Critical Components
 
-1. Households living in Tenter House at the end of 30 September 2026: **160**
-2. Households expected still living there on 31 March 2027: **52**
+1. The untreated comparison is the **140** members on Northcourt's RFP 2025-07 list, matched to Ellery member IDs through the conversion crosswalk
+2. Their allowed claims per member month are taken over **1 April 2025 to 31 March 2026**, by tier, medical and pharmacy
+3. That experience is trended **24 months** at **6.5%** medical and **9.0%** pharmacy
+4. The tiers are weighted by the final list's enrolled members, **18, 38, 41 and 43**
+5. The programme baseline is **$2,157** medical and **$1,384** pharmacy, **$3,541** in total
 
 ## 3. Step-by-Step Solution
 
-1. Took the households with a live Tenter House placement on 30 September 2026 from `ta_placements_2018-04_2026-09.csv`: 160, every one owed the main duty in `homelessness_cases_2026-09-30.csv`.
-2. Worked out every open main-duty household's bedroom need under Part 3 of `housing_allocations_scheme_2024_parts_3_and_6.pdf` from the people in `household_members_2026-09-30.csv`, on each round day (3.4, 6.4), which reproduces all 49 lets accepted in the round of 21 September.
-3. Listed every open main-duty case, households at home included, by duty acceptance date then case reference (6.1, 6.3), less the 49 households with October lets.
-4. Ran the November to March rounds on the third Monday of the month before with the lets in the 14 September sheet of `moveon_plan_2026-27.xlsx`; no homes with five or more bedrooms are planned, so those households stay.
-5. Counted the Tenter House households no round reaches, each under the unit it needs on 1 April 2027 (closure procedure, point 5): 52.
-6. Priced the call-off at the Lot 3 2027/28 weekly rates in `dps_lot2_lot3_price_schedule.xlsx`: GBP 24,512 a week.
-7. Recommendation: call off 52 units for 1 April 2027 (0 one-bed, 10 two-bed, 18 three-bed, 24 four-bed).
+1. Netted the Ellery claim lines as the extract dictionary describes (a frequency 7 claim drops the claim it replaces, a void reverses its amounts, a denied line has no allowed amount) and the Quarrystone B2 reversals against their fills, linking pharmacy to members on employee number and person code.
+2. Counted member months from the eligibility spans and dated each claim by first date of service or fill date, both as Schedule C.1 defines them.
+3. Took the 140 members and tiers on the final stratification list of 5 March 2027 (the January draft is superseded) and computed their 2026 allowed PMPM paid through 28 February 2027, without completion per Schedule C.2: tier 1 runs at $15,338 medical and $2,780 pharmacy.
+4. Matched all 140 Bramwell member numbers on the RFP 2025-07 list to Ellery member IDs through the conversion crosswalk; the award was suspended in April 2025, so none of them was ever in the programme.
+5. Divided each bid tier's allowed claims from 1 April 2025 to 31 March 2026 by its member months and trended them 24 months, midpoint to midpoint, per Schedule C.1(g) at the renewal letter's 6.5% and 9.0%: tier 1's baseline is $4,177 medical and $899 pharmacy.
+6. Weighted the four tier baselines by enrolled members per Schedule C.1(h): $2,157 medical and $1,384 pharmacy, $3,541 in total.
+7. Recommendation: certify a programme baseline of $3,541 per member per month.
 
 ## 4. Deliverable Answers
 
-### tenter_house_replacement_units.xlsx
+### cohort_baseline_2027.xlsx
+1. One row per tier, whole dollars per member per month:
+   - Tier 1: 18 enrolled members, 2026 allowed PMPM $15,338 medical and $2,780 pharmacy, baseline PMPM $4,177 medical and $899 pharmacy
+   - Tier 2: 38 enrolled members, 2026 allowed PMPM $8,182 medical and $1,242 pharmacy, baseline PMPM $2,729 medical and $2,072 pharmacy
+   - Tier 3: 41 enrolled members, 2026 allowed PMPM $4,828 medical and $1,603 pharmacy, baseline PMPM $1,172 medical and $1,484 pharmacy
+   - Tier 4: 43 enrolled members, 2026 allowed PMPM $3,413 medical and $1,262 pharmacy, baseline PMPM $1,745 medical and $884 pharmacy
+2. Programme baseline across all 140 members, whole dollars per member per month: $2,157 medical, $1,384 pharmacy, $3,541 in total
 
-1. Units to call off for 1 April 2027, whole units:
-   - One-bed: 0
-   - Two-bed: 10
-   - Three-bed: 18
-   - Four-bed (four or more): 24
-   - Total: 52
-2. Weekly cost of the call-off at the Lot 3 rates from 1 April 2027: GBP 24,512
-3. Households expected still living in Tenter House at each month end, by the size of replacement unit each will move into, whole households:
-   - One-bed: 31 Oct 2026 20, 30 Nov 2026 10, 31 Dec 2026 4, 31 Jan 2027 0, 28 Feb 2027 0, 31 Mar 2027 0
-   - Two-bed: 31 Oct 2026 49, 30 Nov 2026 41, 31 Dec 2026 35, 31 Jan 2027 26, 28 Feb 2027 18, 31 Mar 2027 10
-   - Three-bed: 31 Oct 2026 43, 30 Nov 2026 38, 31 Dec 2026 35, 31 Jan 2027 31, 28 Feb 2027 26, 31 Mar 2027 18
-   - Four-bed: 31 Oct 2026 31, 30 Nov 2026 30, 31 Dec 2026 30, 31 Jan 2027 29, 28 Feb 2027 26, 31 Mar 2027 24
-
-### tenter_house_runoff.png
-
-1. Stacked bars of households in Tenter House by replacement unit size at 30 September 2026 and each month end to 31 March 2027 (totals 160, 143, 119, 104, 86, 70, 52), the call-off of 52 units (0, 10, 18 and 24 by size) annotated at March.
-2. Title: Call off 52 replacement units for 1 April 2027: Tenter House runs down from 160 households to 52
+### baseline_certification_memo.docx
+1. One page for the board, opening with the total programme baseline to certify: $3,541 per member per month ($2,157 medical, $1,384 pharmacy)
+2. Bar chart of each tier's 2026 allowed PMPM against its baseline PMPM, medical and pharmacy in two panels, in dollars per member per month

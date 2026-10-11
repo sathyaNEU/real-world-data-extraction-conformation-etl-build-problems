@@ -1,17 +1,17 @@
 {
  "task": "task130",
- "domain": "demographic-social-science",
+ "domain": "actuarial-science-insurance",
  "objective": "forecasting",
  "architecture": "v3",
- "stage": 1,
- "stage_name": "re-root: architecture v3 draw (v2 spent after the loop 1 template finding)",
+ "stage": 4,
+ "stage_name": "leak check",
  "updated": "2026-10-11",
- "stump": "A competent solver builds the filed duty-date queue on the case record's bedroom need, works it against the revised plan with the accepted October lets out, and calls off 66 units (0 / 19 / 35 / 12); the step that lands it there is taking the recorded need as the household's need, when the scheme offers each home to the household that needs its bedrooms on the day of the round, worked out from the household members, and the record lags the long-waiting households at the front of every list: 52 remain (0 / 10 / 18 / 24).",
+ "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,928; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,067 per member month the following year (at the enrolled tier mix, before trend); the baseline is $3,541.",
  "duplicate_check": {
-  "heart": "PASS (NOTE vs task102, differentiated)",
-  "nearest": "task119 0.08",
-  "surface": "",
-  "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
+  "heart": "",
+  "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check WARN only (first names Phillip, Michelle in older builds)",
+  "surface": "guard.py surface: task83 promoted on percentile only (0.140, corpus pct 99); shared: the xlsx+docx pair, seven steps, five components, flat layout, one short masked prompt shingle; no shared file name or entity; different domain and mechanism",
+  "clone_check": ""
  },
  "judge": {
   "verdict": "",
@@ -20,11 +20,7 @@
  },
  "approved": null,
  "delivered": null,
- "portal": {
-  "date": "2026-10-11",
-  "result": "failed",
-  "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
- },
+ "portal": null,
  "lineage": [
   {
    "architecture": "v1",
@@ -33,15 +29,41 @@
     "result": "failed",
     "note": "both top models filed the golden seven-section designation"
    }
+  },
+  {
+   "architecture": "v2",
+   "portal": {
+    "date": "2026-10-11",
+    "result": "failed",
+    "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
+   },
+   "duplicate_check": {
+    "heart": "PASS (NOTE vs task102, differentiated)",
+    "nearest": "task119 0.08",
+    "surface": "",
+    "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
+   },
+   "leak": {
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
+   },
+   "fate": "spent: failed on the portal; hardening loop 1 rejected at the clone pre-flight as a template of task73 world ten"
   }
  ],
- "target_zip": null,
- "two_layer": "compliant: allocation order filed (scheme Part 6); six-point check in the design note",
+ "target_zip": {
+  "path": "task130/target.zip",
+  "entries": 12,
+  "bytes": 10671792,
+  "sha256": "64b4eecd1a12df6b4da429304114cf9f9d70572c07d492ea4b1e7fe74b1674eb",
+  "cut": "2026-10-11, by build.py from the final rebuild",
+  "matches_target": "by content, every entry; byte-identical across rebuilds"
+ },
+ "two_layer": "compliant: Layer 1 the claims plumbing (claim versions and denials, PBM reversals, two key systems, the administrator conversion, run-out, a superseded draft list); Layer 2 selection on the outcome, a cohort chosen on its 2026 claims regressing toward the mean; six-point check in the design note",
  "loops": 0,
  "branch": "sathya8571/task130-harden",
  "leak": {
-  "leak_py": "REVIEW, no LEAK",
-  "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
+  "leak_py": "REVIEW, no LEAK (2 REVIEW lines answered in the design note's Leak review)",
+  "reader": ""
  },
  "solver_rounds": [
   {

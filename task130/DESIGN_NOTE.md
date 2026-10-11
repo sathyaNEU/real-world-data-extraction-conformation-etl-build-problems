@@ -16,13 +16,17 @@ DRAW  (guard.py check and register, 2026-10-11; refined before the ladder was cu
   Layer 2: estimand_identification, own:selection-on-the-outcome-baseline   Calibration form: other (the bid
     cohort list, its outcomes read from the claims)
   Stakeholder role: director of risk management and benefits (procurement_lead)
-  Context artifact: filed_model (the vendor's stratification exports)
+  Context artifact: operations_log (the plan's claims and eligibility feeds, the administrator's claim lines and the
+    PBM's claims, the record the baseline is built on; the vendor's lists carry tiers and scores, never a cost;
+    redrawn at the build from filed_model, banned against task133, and from register, banned against task131)
   Forum: trustees_or_governors (the school board)   Forcing event: purchase_order_or_contract
   Organisation: university_or_school   Opening move: stakes-first
   Personas (guard.py names --geo "United States" --seed 130): Joyce Salinas (requester, director of risk
     management and benefits), Deborah Johnson (board chair), Anthony Olsen (chief financial officer),
     Michael Perry (consulting actuary, Lindqvist Benefits Consulting), Allison Santiago (Northcourt account
-    lead), Tiffany Barrett (benefits analyst)
+    lead), Tiffany Barrett (benefits analyst); added at the build from the same draw: Phillip Alvarado (Northcourt
+    chief operating officer), Amy Kelley (Northcourt clinical analytics), Michelle Peterson (Quarrystone client
+    account executive), Jonathan Hoffman (Wyecliff stop-loss underwriting), Sandra Lopez (superintendent)
 As-of date: 2027-03-12 (claims paid through 28 February 2027); the programme year is 1 April 2027 to 31 March 2028
 ```
 
@@ -54,20 +58,29 @@ Northcourt picked the 140 members the plan paid most for in 2026, and a year of 
 
 ## Stump sentence
 
-(Figures filled at build.) A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $X; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $Y per member month the following year; the baseline is $Z.
+A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,928; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,067 per member month the following year (at the enrolled tier mix, before trend); the baseline is $3,541.
 
-## The ladder (planned; measured values in the build record)
+## The ladder (measured on the shipped pack)
 
-| Rung | Construction | Killed by |
-|---|---|---|
-| R0 | each tier's 2026 PMPM by benefit projected 15 months at the renewal trend (persistence) | the bid cohort's realised year |
-| R1 | the plan-wide PMPM at trend (ignores that the cohort is high-cost) | the bid cohort's realised year is several times the plan average |
-| R2 | the bid cohort's calendar 2025 instead of the programme-year window (the lag not matched) | the bid's proposed programme year and the three-month lag |
-| R3 | the bid cohort's realised year without the trend, or trended to the programme start (18 months) | Schedule C's midpoint rule |
-| R4 | the bid cohort's claims over twelve months per member, not over member months (leavers and deaths) | Schedule C's member month |
-| R5 | the bid cohort found without the conversion crosswalk (old identifiers matched to nothing, or the draft list) | the crosswalk; the final list |
-| R6 | paid instead of allowed, replacements and voids and reversals not netted | Schedule C and the dictionary |
-| Answer | each tier's bid-cohort allowed PMPM, April 2025 to March 2026, medical and pharmacy, over member months, times 1.065 squared and 1.09 squared; the programme baseline weights the tiers by enrolled members | |
+Programme totals per member per month against the golden $3,541.30. Every rung also moves the tier figures; the four rungs within 5 per cent on the total still miss the whole-dollar tier cells they touch.
+
+| Rung | Construction | Programme total | Killed by |
+|---|---|---|---|
+| R0 | each tier's 2026 PMPM by benefit projected 15 months at the renewal trend (persistence) | $8,928.23, +152.1%; R0c with 2026 medical completed at the letter's factors $9,144.31, +158.2% | the bid cohort's realised year |
+| R1 | the renewal letter's plan-wide projection | $776.18, -78.1% | the bid cohort's realised year is several times the plan average |
+| R2 | the bid cohort's calendar 2025, trended 27 months | $3,826.70, +8.1% | the bid's proposed programme year and the three-month lag |
+| R3 | R3a the bid cohort's year untrended; R3b trended 18 months to the programme start | $3,066.88, -13.4%; $3,416.06, -3.5% | Schedule C.1(g)'s midpoint rule |
+| R4 | R4a twelve months for each listed member; R4b twelve months for each member enrolled on 1 April 2025 | $3,080.02, -13.0%; $3,264.94, -7.8% (tier 3 equals the golden: no tier-3 member left in the year) | Schedule C.1(b)'s member month |
+| R5 | R5a the Bramwell numbers matched to nothing, so the bid cohort is lost and persistence is left; R5b the January draft's tier counts as weights | $8,928.23; $3,488.30, -1.5% | the crosswalk; the final list |
+| R6 | R6a paid instead of allowed; R6b replacements, voids and reversals not netted; R6c both | $3,247.04, -8.3%; $3,742.13, +5.7%; $3,428.53, -3.2% | Schedule C.1(a) and the dictionary |
+| Pooled | the bid cohort's year without tiers | $3,533.75, -0.2% on the total, every tier baseline wrong | Schedule C.1(g), a baseline per tier |
+| Answer | each tier's bid-cohort allowed PMPM, April 2025 to March 2026, medical and pharmacy, over member months, times 1.065 squared and 1.09 squared; the programme baseline weights the tiers by enrolled members | $3,541.30 ($2,157.17 medical, $1,384.13 pharmacy) | |
+
+## Three rules (client update, 10/10)
+
+- **Domain (swap test).** The deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by tier and by medical and pharmacy, projected at the plan's trend over member months, a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to.
+- **Two layers.** Layer 1 is the claims plumbing a self-insured plan really produces (claim versions and denials, PBM reversals in their own layout, two key systems, an administrator conversion, run-out, a superseded draft list) and carries no stump; Layer 2 is selection on the outcome, a cohort chosen on its extreme 2026 claims regressing toward the mean, with the untreated 2025 bid cohort as the design-implied estimator.
+- **The decisive step is analytical** (`stump_class: analytical`). Analyst test: a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,928 programme total against $3,541, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.
 
 ## Determinism: the 22 axes
 
@@ -123,11 +136,24 @@ Stakes-first, first person, two files, units in the sentences; nothing about sel
 
 ## Build record
 
-(filled at build)
+- **Generator** (`generator/`, `python3 build.py` writes target/, target.zip, golden/ and metadata.json). `world.py` constants, organisations, plan designs, drug and code sets; `sim.py` the plan member by member, January 2024 to March 2028 (families, hires and separations, chronic conditions, one-off episodes, pharmacy regimens, claim components with payment lags); `acuity.py` the vendor's model and the bid, draft and final lists; `extracts.py` claim versions, denials, PBM transactions, eligibility spans, the crosswalk; `docs.py` the agreement, renewal letter, stop-loss schedule, stratification and rebate workbooks, dictionary; `containers.py` byte-stable PDF and Office containers; `estimators.py` the golden and every rung from the shipped files; `tune.py` and `tune_table.py` bin centring; `golden.py` the workbook, chart and memo; `checks.py` 5,352 assertions; `verify.py` an independent recompute (csv module and Decimal, no shared code) of every graded figure against golden/ and submission.md.
+- **Seeds.** World seed 101005 (population stream at the seed, health at +11, claims at +23); the acuity model's member noise keyed by crc32 of member, year and salt 41730, so the draft and final lists score a member the same way; tier floors 53.5, 45.5 and 40.0, ranked on the unrounded score.
+- **Magnitudes.** 5,905 members at the start; 70,810 member months in 2025; plan-wide 2025 allowed PMPM $531.15 medical and $148.69 pharmacy; medical claim lines 278,892 rows, PBM transactions 87,785, eligibility spans 8,160, crosswalk 5,891; 12 files, 53.1 MB, csv, pdf, txt and xlsx. Final tiers 18, 38, 41, 43 (1,636 member months in 2026); bid tiers 17, 41, 27, 55, all 140 linked, 133 enrolled on 1 April 2025, 1,466 member months in the analog year; draft tiers 15, 38, 38, 49 (ten members swapped against the final, five re-tiered); 17 members on both the bid and the final list.
+- **Golden** (whole dollars PMPM: members; 2026 medical, pharmacy; baseline medical, pharmacy). Tier 1: 18; 15,338, 2,780; 4,177, 899. Tier 2: 38; 8,182, 1,242; 2,729, 2,072. Tier 3: 41; 4,828, 1,603; 1,172, 1,484. Tier 4: 43; 3,413, 1,262; 1,745, 884. Programme baseline $2,157 medical, $1,384 pharmacy, $3,541 total (unrounded 2,157.17, 1,384.13, 3,541.30).
+- **Simulated truth** (the enrolled members' untreated 2027-28 year, read from the simulation, never shipped): $3,384.18 at the tier weights ($1,589.69 medical, $1,794.49 pharmacy), $3,380.04 pooled; golden over truth 1.046, persistence over truth 2.64. Per tier the analog is noisy, as 17 to 55 members with heavy-tailed claims will be (tier 1 pharmacy $899 against a simulated $3,048); the method is pinned by Schedule C's estimand and the design, not by the tier-level fit.
+- **Regression to the mean in the record.** The bid cohort's April 2025 to March 2026 claims ran at 0.29 of its 2024 level for medical and 1.06 for pharmacy, in real terms (2024: $6,071 medical, $979 pharmacy PMPM); specialty drug regimens persist, one-off medical episodes do not.
+- **Regression alternative.** A cost-only least-squares fit of 2026 allowed on 2025 allowed over members enrolled all 24 months, applied to the enrolled members' annualised 2026 claims and trended three months: $2,990.40, -15.6% from the golden and -11.6% from the truth. It is not the estimator: the selection runs on the acuity score (conditions, specialty drugs, admissions, not cost alone), the fit's population is the whole plan rather than a cohort chosen the same way, and its year does not match the three-month lag.
+- **Clean-data and deletion tests.** The golden equals the simulation's claim-free service amounts for the bid members' year in every tier; persistence on complete claim-free 2026 data is $8,978.22. Deleting the three distractors leaves every golden figure unchanged.
+- **Bins.** 13 centring adjustments to clean claims (largest $106.59), validated against all three lists; the nearest graded figure sits 0.20 from a rounding boundary and the rounded medical and pharmacy parts add to the rounded total.
+- **Reproducibility.** Two scratch rebuilds, and a third with the archive, are byte-identical to the shipped target/, golden/ and target.zip (12 entries at the top level, contents identical to target/).
 
 ## Leak review
 
-(filled after `leak.py` and the reader)
+`leak.py task130 --asof 2027-03-12`: REVIEW, no LEAK (report in `leak_check_report.md`); producer-metadata audit clean on target/ and golden/. The /leak-check reader's pass has not been run on v3.
+
+- REVIEW, Schedule C carries 19 of 24 distinctive words of the call: they are the estimand's own defined terms (Programme Baseline, per Member Month, Enrolled Members, medical and pharmacy) that the prompt also uses; it carries no figure of the answer, and its recitals record the 2025 tender and its suspension as history without saying the bid cohort sets the baseline.
+- REVIEW, 140 dates after the as-of in the final list: the Enrolment effective column is 1 April 2027 for every member, the programme start the list exists to schedule, not an outcome.
+- REVIEW, the dictionary carries 4 of 25 stump-paragraph terms (record, benefits, extract, analyst): they are the office's own furniture (a Bramwell member record, Risk Management and Benefits, the warehouse extracts, the benefits analyst who maintains it); the dictionary describes fields and codes and says nothing about the cohort, the bid list's use or trend.
 
 ## Tried and rejected
 
@@ -168,3 +194,18 @@ Hardening loop 1 (after the v2 portal failure, 2026-10-11):
 - Tenter House flats let on the case record's need (the record then stale for 27 per cent of the block): rejected, it fills the block with families in flats too small for them, which reads as a data defect; flats go on the need checked on the day, as a TA move would.
 - Reassessing the record for every household near the front of a list before each round, so that a replay on the record reproduces every let: rejected before building, the lets log would then bless the record until the forward rounds broke it, the validated-record shape the client bans; the record is reassessed only for the household offered.
 - Hardening loop 1 as built (the move-on lists on Part 3 need worked out from the household members on each round day, against a case record that lags it; 52 units against the record's 66): rejected at the clone pre-flight, reject tier (Template, Track B) against task73 world ten, whose stump is the same move (carry the class the household's record holds, when a filed rule re-derives it from the circumstances on file); task86's v2 first cut carried the same move (the bedroom standard applied with ages on the offer date) and both platform responses solved it on 2026-09-12. Its realism read (birth histories, working-day dates, the 56-day relief period, TA sizing and voids, procedure dating) was not repaired, since the device is spent. With rate-against-queue (v2) and record-against-re-derived-class (loop 1) both gone, the Tenter House queue world has no honest decisive device left that a filed rule does not turn into a computation; v2 is spent and task130 is re-rooted as architecture v3 in the same objective.
+
+v3 build (2026-10-11):
+
+- The first acuity score (claims dollars with pharmacy at full weight): rejected after measurement, specialty-drug members dominated every list and persistence came out only 1.1 to 1.5 times the golden, because a specialty regimen persists; the score now weights pharmacy at 0.2 of medical and the world carries the one-off medical episodes a top-of-plan list really holds (major surgery, stroke, post-acute stays, readmissions, longer cancer courses).
+- Model noise keyed by a member's position on the list: rejected, the draft and the final list scored the same member differently; noise is keyed by member and year.
+- Tiers from a rank on the rounded score: rejected, it tied at place 140; ranks use the unrounded score and the lists show one decimal, as the cover sheets say.
+- Scores on nominal dollars: rejected, the 2024 and 2026 scores drifted apart with prices and the bid and final tiers stopped meaning the same acuity; dollars are restated to a 2023 base.
+- Model noise salted with the world seed: rejected, the seed sweep and the build drew different lists; the salt is fixed (41730).
+- Seeds 100000 and 102002: passed every gate but their tier baselines fell out of order (a lower tier costing more than a higher one in total), which a board reads as a broken model; seed 101005 kept.
+- A tier total column in the workbook: rejected, Schedule C.2 forbids intermediate rounding and tier 4's unrounded total rounds to 2,630 against 2,629 from its rounded parts; the medical and pharmacy figures stand alone and Note 1 says why.
+- R3b, R5b and R6c land within 5 per cent of the golden total: accepted rather than forced apart, they are the arithmetic of 18 against 24 months of trend, weights only, and two offsetting errors; each still misses the whole-dollar tier cells it touches.
+- R4b equal to the golden in tier 3: accepted as structural, no tier-3 bid member left the plan during the year; checks.py reports it.
+- The renewal letter restating Schedule C's member-month and incurred-date rules: cut, each convention is stated once, in Schedule C.
+- Procedure lines carrying diagnoses drawn at random: replaced by procedure-appropriate diagnosis maps for outpatient surgery and hospital services.
+- context_artifact register, asked for at the card update to clear filed_model's collision with task133: BLOCK ban.artifact against task131; redrawn to operations_log, the plan's claims and eligibility feeds the baseline is built on.
