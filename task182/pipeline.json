@@ -2,8 +2,8 @@
  "task": "task182",
  "domain": "physical-environmental-sciences",
  "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "duplicate check: heart PASS; the adjudicated pre-flight running; then the solver round",
+ "stage": 6,
+ "stage_name": "solver round 1: leak and duplicate checks passed",
  "updated": "2026-10-11",
  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the ridge basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2019 to 2021 wet seasons, were drawn 8.2 to 9.3 m below where that rise was taking them while showing 2.21 to 2.49 m of decline.",
  "architecture": 1,
@@ -14,8 +14,8 @@
  },
  "duplicate_check": {
   "heart": "PASS (guard.py heart task182, no near drivers)",
-  "nearest": "",
-  "clone_check": "",
+  "nearest": "task228 architecture 2 (another author's build): Shape echo on domain, gap, G16 and decomposition_attribution; different drivers (nearest driver score 0.06)",
+  "clone_check": "pass 1 (09ee630): no Exact, Same seed, Dataset or Template finding; one Shape echo (Track B, soft) against task228 arch 2, whose guard has not seen task182's card (it is not on main); Idiom notes: workbook plus memo with no visual, three anomaly-detection builds in a row",
   "surface": "guard.py surface: 2 of 126 pairs promoted (task83 0.147, task132 0.138) on layout, format mix and the xlsx+docx deliverable pair only; filenames, schemas, invented names, prompt and submission share nothing; personas in the cut pack all on the card"
  },
  "three_rules": {
