@@ -44,8 +44,10 @@ judge; when it lands the call, take the round's brief, with the deferred finding
 stage 2,
 harden, rebuild, leak-check and solve again, three loops per architecture, then re-root at stage 1
 in the same objective and number, three architectures, then retire (`build-pipeline`, the worth-it
-gate and Retirement). Difficulty is still argued on paper first (the stump sentence, the ladder, the
-closure table); the round tests it. The judge's FIX_NOW repairs a determinism or spec defect and is
+gate and Retirement). Each of those repairs is a fresh agent spawned from the main session with a short
+brief that points at the committed round log, `pipeline.json` and the design note, never the agent that
+built the pack resumed (`build-pipeline`, Running the stages). Difficulty is still argued on paper
+first (the stump sentence, the ladder, the closure table); the round tests it. The judge's FIX_NOW repairs a determinism or spec defect and is
 re-judged once, with a fresh round first when the fix moved a graded figure, a rung or a document.
 
 **Write `pipeline.json` at every stage boundary**, and `updated` with the ISO date.
