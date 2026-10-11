@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, cut-off, quality, provider, measure, outage, carve-out, interval, delivery, carries, distance, formula, collectors, missed, architecture, hardening, installation-level, energy, monitoring, objective, scorecard, installation, register-day, signal, strategy
+Stump terms swept: missed, recorded, decisive, quality, provider, cut-off, golden, determinism, reader, interval, collectors, committed, solving, rounds, energy, delivery, carries, monitoring, installation, mechanism, signal, strategy, measure, sentence, parent
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `MDS-STD-114_firmware_read_health_r3.pdf`: carries 6 of 6 distinctive words of the committed call: 'Fire the read-health alert on EM3.12.1, EM3.10.9 and PX5.2.7, and hold PX5.3.0, EM3.12.0, EM3.11.4, PX5.3.1 and EM3.12.2'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `MDS-STD-114_firmware_read_health_r3.pdf`: 6 of 25 stump-paragraph terms appear (cut-off, provider, measure, interval, delivery, installation); read whether the document names the move
+- **REVIEW** `MDS-STD-114_firmware_read_health_r3.pdf`: 6 of 25 stump-paragraph terms appear (provider, cut-off, interval, delivery, installation, measure); read whether the document names the move
 - **REVIEW** `mds_extract_field_reference.md`: 5 of 25 stump-paragraph terms appear (quality, interval, delivery, carries, installation); read whether the document names the move
 
 ## 10 container metadata (INFO 1)

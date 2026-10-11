@@ -170,10 +170,27 @@ def write_register(path, insts):
         for c in w[3]:
             c.font = Font(bold=True)
         w.freeze_panes = "A4"
-    wb.properties.creator = "MP Registry"
-    wb.properties.created = dt.datetime(2026, 10, 12, 6, 5)
-    wb.properties.modified = dt.datetime(2026, 10, 12, 6, 5)
+    stamp_workbook(wb, "MP Registry", "register")
     wb.save(path)
+
+
+# Workbook core properties are UTC, as Excel writes them; the extract log's times are local
+# (AEST to 3 October, AEDT from 4 October). Created and last saved, per workbook.
+WB_STAMPS = {
+    "register": (dt.datetime(2026, 10, 11, 19, 5), dt.datetime(2026, 10, 11, 19, 5)),   # 06:05 AEDT 12/10, the extract
+    "wave8": (dt.datetime(2026, 10, 1, 4, 20), dt.datetime(2026, 10, 9, 5, 48)),        # 14:20 AEST 01/10; 16:48 AEDT 09/10
+    "dnsp": (dt.datetime(2026, 9, 30, 22, 0), dt.datetime(2026, 10, 11, 20, 55)),       # 08:00 AEST 01/10; 07:55 AEDT 12/10
+}
+
+
+def stamp_workbook(wb, owner, key):
+    wb.properties.creator = owner
+    wb.properties.lastModifiedBy = owner
+    wb.properties.created, wb.properties.modified = WB_STAMPS[key]
+
+
+def saved_stamp(key):
+    return WB_STAMPS[key][1].strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 # ------------------------------------------------------------------ catalogue
@@ -238,9 +255,7 @@ def write_wave8(path, rows):
                  "The HES job skips any meter already on the target image and any meter not in service at its installation on the night.",
                  "Go/no-go per target image comes from the read-health gate (MDS-STD-114) on Monday."]:
         n.append([line])
-    wb.properties.creator = "Rollout Desk"
-    wb.properties.created = dt.datetime(2026, 10, 1, 14, 20)
-    wb.properties.modified = dt.datetime(2026, 10, 9, 16, 48)
+    stamp_workbook(wb, "Rollout Desk", "wave8")
     wb.save(path)
 
 
@@ -309,9 +324,7 @@ def write_dnsp(path, rows):
     ws["A1"].font = Font(bold=True)
     for c in ws[2]:
         c.font = Font(bold=True)
-    wb.properties.creator = "Market Operations"
-    wb.properties.created = dt.datetime(2026, 10, 1, 8, 0)
-    wb.properties.modified = dt.datetime(2026, 10, 12, 7, 55)
+    stamp_workbook(wb, "Market Operations", "dnsp")
     wb.save(path)
 
 

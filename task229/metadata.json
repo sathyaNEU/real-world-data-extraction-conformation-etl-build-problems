@@ -4,7 +4,7 @@
   "domain": "Energy Systems & Utilities",
   "subdomain": "other: smart-meter interval data delivery quality (metering data provider read performance)",
   "objective": "Data Quality Monitoring & Alerting",
-  "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit and fire or hold, plus the Wave 8 moves under the call and the Wave 7 cost",
+  "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit, distance from the limit and fire or hold, plus the Wave 8 moves under the call and the substitution load",
   "as_of": "2026-10-12",
   "deliverables": [
     "wave8_read_health_alerts.json",
@@ -58,7 +58,7 @@
     {
       "path": "mp_installation_register_20261012.xlsx",
       "format": "xlsx",
-      "bytes": 813829,
+      "bytes": 793015,
       "rows": null,
       "source": "Constructed: MP installation register extract: installations, meters with install and removal times, data streams",
       "date": "2026-10-12",
@@ -76,7 +76,7 @@
     {
       "path": "wave8_schedule.xlsx",
       "format": "xlsx",
-      "bytes": 63319,
+      "bytes": 63955,
       "rows": null,
       "source": "Constructed: Rollout desk Wave 8 schedule workbook, both batches",
       "date": "2026-10-12",
@@ -85,7 +85,7 @@
     {
       "path": "MDS-STD-114_firmware_read_health_r3.pdf",
       "format": "pdf",
-      "bytes": 4527,
+      "bytes": 4521,
       "rows": null,
       "source": "Constructed: Controlled document MDS-STD-114 revision 3, firmware read health",
       "date": "2026-10-12",
@@ -121,7 +121,7 @@
     {
       "path": "dnsp_planned_interruptions_oct2026.xlsx",
       "format": "xlsx",
-      "bytes": 7813,
+      "bytes": 8912,
       "rows": null,
       "source": "Constructed: Planned supply interruption notifications received from the distributors in October 2026",
       "date": "2026-10-12",

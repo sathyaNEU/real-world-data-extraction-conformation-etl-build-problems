@@ -6,6 +6,7 @@ import collections
 import datetime as dt
 import itertools
 import json
+import math
 import os
 import shutil
 import sys
@@ -28,6 +29,21 @@ def ok(cond, msg):
 
 
 GOLD_FIRE = ("EM3.10.9", "EM3.12.1", "PX5.2.7")
+
+
+def random_intercept(y, groups):
+    """One-way random-intercept model by the moment (ANOVA) estimator: the variance of the simple mean
+    under the model, and the full fit's GLS mean and its standard error."""
+    df = pd.DataFrame({"y": y, "g": groups})
+    grp = df.groupby("g")["y"]
+    m, mu = grp.size().to_numpy().astype(float), grp.mean().to_numpy()
+    n, k, yb = len(df), len(m), float(df["y"].mean())
+    msb = float((m * (mu - yb) ** 2).sum()) / (k - 1)
+    msw = float(((df["y"] - grp.transform("mean")) ** 2).sum()) / (n - k)
+    su2, se2 = max(0.0, (msb - msw) / ((n - float((m ** 2).sum()) / n) / (k - 1))), msw
+    w = 1.0 / (su2 + se2 / m)
+    return dict(rh=yb, se_simple=math.sqrt(su2 * float((m ** 2).sum()) + se2 * n) / n,
+                gls=float((w * mu).sum() / w.sum()), se_gls=1.0 / math.sqrt(float(w.sum())))
 
 
 def edge(x):
@@ -116,6 +132,23 @@ def run(target, world=None, quiet=False):
         ok(G.fire_set(G.score(*fw, e, "register", D=D)) == GOLD_FIRE, "%s: same call" % e)
     jack = G.score(*fw, "collector_jack", "register", D=D)
     log.append("jackknife over comms parents: same call; standard errors %s" % {r: round(jack[r]["se"], 3) for r in G.RELEASES})
+    # the judge's residual (pass 1): the simple mean with a random-intercept variance holds EM3.10.9, whose
+    # node spread is one failed collector the model charges to every node by size squared; the full
+    # random-intercept fit, which applies the same model to the mean, fires it with the golden call
+    U = G._units(D, vers["cutoff"], pops["fullweek"], "register", "installation")
+    ri = {r: random_intercept(U.loc[U["release"] == r, "y"].to_numpy(), U.loc[U["release"] == r, "parent"].to_numpy())
+          for r in G.RELEASES}
+    gls_fire = tuple(sorted(r for r in G.RELEASES if ri[r]["gls"] < G.REFERENCE - G.K * ri[r]["se_gls"]))
+    hyb_fire = tuple(sorted(r for r in G.RELEASES if ri[r]["rh"] < G.REFERENCE - G.K * ri[r]["se_simple"]))
+    ok(gls_fire == GOLD_FIRE, "the full random-intercept fit lands the call: %s" % (gls_fire,))
+    ok(hyb_fire == ("EM3.12.1", "PX5.2.7"), "the simple mean with a random-intercept variance holds EM3.10.9 only: %s" % (hyb_fire,))
+    big = U[U["release"] == "EM3.10.9"].groupby("parent")["y"].agg(["size", "mean"]).sort_values("size").tail(10)
+    log.append("random intercept (moment estimator): full fit fires %s (EM3.10.9 %.2f, SE %.2f); simple mean with the model's "
+               "variance fires %s (EM3.10.9 SE %.2f, needs %.2f to hold); EM3.10.9's ten largest nodes (%d to %d "
+               "installations) average %.2f to %.2f"
+               % (gls_fire, ri["EM3.10.9"]["gls"], ri["EM3.10.9"]["se_gls"], hyb_fire, ri["EM3.10.9"]["se_simple"],
+                  (G.REFERENCE - ri["EM3.10.9"]["rh"]) / G.K, big["size"].min(), big["size"].max(), big["mean"].min(),
+                  big["mean"].max()))
     # the error built over installations (either divisor) fires EM3.12.0 and EM3.12.2 with margin
     inst = G.score(*fw, "installation", "register", D=D)
     inst0 = G.score(*fw, "installation_ddof0", "register", D=D)

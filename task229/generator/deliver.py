@@ -45,7 +45,7 @@ def payload(g):
                   "reads counted as actual in the latest MDM delivery received before 06:00 AEST the day after each read date (3.5)",
                   "standard errors taken over the comms nodes (collectors, access points) the assessed installations report "
                   "through, since a node that misses a night's collection takes that day from the installations behind it together",
-                  "wave 8 counts follow the schedule as cut on 1 Oct, net of meters already on the target image or no longer in service",
+                  "wave 8 counts take each meter once across the schedule's two batches (cut 1 Oct, batch B rebuilt 9 Oct), net of meters already on the target image or no longer in service",
                   "substitution load: installations whose in-service meter runs a build the alert fires on (6.1)"],
         "raised_by": "Metering Data Services",
         "raised_local": "2026-10-12T17:05:00+11:00",

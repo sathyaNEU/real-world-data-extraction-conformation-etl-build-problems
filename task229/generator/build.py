@@ -54,7 +54,7 @@ def build(out, quiet=False):
     D.field_reference_md(p("fieldref"))
     P.write_log(p("log"), counts)
     for k in ("register", "wave8", "dnsp"):
-        PP.normalize_zip(p(k))
+        PP.normalize_zip(p(k), modified=P.saved_stamp(k))
     pdf = open(p("standard"), "rb").read().replace(b"D:20000101000000+00'00'", b"D:20260624101500+10'00'")
     open(p("standard"), "wb").write(pdf)
     # H1: the controlled document carries its owner, not the PDF library, as producer

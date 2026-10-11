@@ -63,7 +63,7 @@ def standard_pdf(path):
     small = ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica", fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
                             bottomMargin=18 * mm, title="MDS-STD-114 Firmware read health", author="Metering Data Services",
-                            subject="Controlled document", creator="Microsoft Word", producer="Microsoft Word")
+                            subject="Controlled document", creator="HVM Records", producer="HVM Records")
     story = [Paragraph("Halvane Metering Pty Ltd &nbsp;&nbsp;|&nbsp;&nbsp; Metering Data Services", small), Spacer(1, 4),
              Paragraph("MDS-STD-114 &nbsp;Firmware read health", title), Spacer(1, 6)]
     ctl = Table([["Revision", "3", "Effective", "01/07/2026"],

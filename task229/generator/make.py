@@ -61,7 +61,7 @@ def metadata():
         "domain": "Energy Systems & Utilities",
         "subdomain": "other: smart-meter interval data delivery quality (metering data provider read performance)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit and fire or hold, plus the Wave 8 moves under the call and the Wave 7 cost",
+        "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit, distance from the limit and fire or hold, plus the Wave 8 moves under the call and the substitution load",
         "as_of": "2026-10-12",
         "deliverables": ["wave8_read_health_alerts.json", "read_health_by_build_wk41.png"],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],

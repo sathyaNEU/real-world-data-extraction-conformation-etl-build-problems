@@ -6,9 +6,10 @@ in the same objective inside the product-analytics experiment-platform world, so
 seed's objective and moves the world to a smart-meter metering data provider, where the object under
 analysis (interval data delivery) is the health of the data itself.
 
-**Where the build stands.** Architecture 1, hardening loop 2, round 3 passed the worth-it gate (recorded
-as a pass under the single-solver rule of PR #17: no solver committed to the main call) and the
-determinism judge is reviewing the loop-2 cut. Round 1 had both solvers execute the filed mean and
+**Where the build stands.** Shipped (stage 8) on architecture 1, hardening loop 2. Round 3 passed the
+worth-it gate (recorded as a pass under the single-solver rule of PR #17: no solver committed to the
+main call), and the determinism judge's first pass on the loop-2 cut returned DETERMINISTIC with
+APPROVE (`## Determinism check (stage 7)`). Round 1 had both solvers execute the filed mean and
 the filed installation-level error and land the call. Loop 1 moved the decisive rung to the unit the
 build's standard error is built over, which no clause can carry: round 2 had both solvers miss the
 call at exactly that step, and the ask layer leaked. Loop 2 hardened the ask layer and closed an
@@ -144,6 +145,17 @@ lands the golden call (all asserted in `checks.py`):
 - **The size of the error the premise costs.** The node-level standard error is 4.6 times the
   installation-level one for EM3.12.2 (1.83 against 0.40) and 6.1 times for EM3.12.0 (0.57 against
   0.09); for the builds whose nodes did not fail the two agree within 15 per cent.
+- **The judge's residual is not a second answer.** The judge found one estimator that moves a build:
+  the standard's simple mean paired with a random-intercept variance, (σu² Σm² + σe² n) / n², gives
+  EM3.10.9 a standard error of 0.65 against the 0.48 it needs to hold. It did not count it as
+  licensed, and the data say why. The model gives every node one common spread of node effects,
+  estimated from EM3.10.9's many small nodes (most hold one to six installations, and their means
+  scatter widely, the failed EMC-8631 among them). It then charges that spread to the few large nodes
+  by size squared, though their means sit close to the build's 98.06 (the ten largest, 22 to 36
+  installations each, at 97.67 to 99.58). The full random-intercept fit applies the same model to the
+  mean as well: it gives 97.44 with a standard error of 0.46 and fires EM3.10.9, as does every
+  design-based estimator. The figures are asserted or printed by `checks.py` with a moment estimator,
+  which reproduces the judge's.
 
 ## Why the standard files three standard errors and not their unit
 
@@ -223,7 +235,61 @@ round as graded under the old rule, kept for the judge and the portal.
    tolerance at the prompt's rounding the decimals are 44.5 and 40.8 (`solver_rounds/round-3-*.md`).
 3. **Every miss is a stump on the main thread's read** (`## Stump or fork`; the judge rules on it): the
    files refute the independence R4 assumes, and every dependence-respecting grouping lands the golden
-   call.
+   call. The judge agreed (`## Determinism check (stage 7)`).
+
+## Determinism check (stage 7)
+
+Pass 1, an isolated judge on the loop-2 cut (`determinism_check_report.md`): **DETERMINISTIC, APPROVE**,
+Gate G passes (`mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`,
+`surface_read_dependency: no`, `sole_data_defect: no`). It rebuilt the chain from the ten files and
+reproduced every figure in the four graded blocks to two decimals. It found the four collector-nights
+(77 to 100 per cent of the installations behind one collector losing the day, at most 3 installations
+elsewhere), and all nine collector-aware estimators it tried, design-based and model-based, landed the
+golden call. It judged the independent-installation error an analytical error, not a licensed
+reading. Its notes, and what was done:
+
+- **Grading tolerance.** A limit or distance worked from the two-decimal standard error moves by 0.01
+  for EM3.12.1, EM3.10.9, PX5.3.0 and EM3.12.0. Step 6 of the write-up now says the limits and
+  distances come from the unrounded error and names the four that move by 0.01 with no call changing.
+- **Wording.** The recommendation called EM3.12.0 a deciding margin; the thinnest margins are PX5.2.7
+  (0.23 below) and PX5.3.0 (0.13 above), and the recommendation now names those.
+- **Container nits, fixed in the generator.** The standard's PDF named Microsoft Word as its creator
+  over a ReportLab structure; it now names the records system that renders it (HVM Records, already
+  its producer). The three workbooks carried openpyxl's layout (inline strings, calc id 124519, a
+  two-field app.xml, explicit defaults) and one shared modified stamp. They are now laid out the way
+  Excel saves a workbook (shared strings, calc id 191029, full extended properties, Excel's entry order
+  and 1980 entry stamps), each with its own created and last-saved stamps in UTC, matching the extract
+  log's local times. The golden's Wave 8 note said the schedule was cut on 1 October; batch B was
+  rebuilt on 9 October, and the note now says so.
+- **Nothing graded or read moved.** The rebuilt pack was compared with the judged cut:
+  - the seven text files are byte-identical;
+  - the PDF's extracted text is identical page for page and parses with no error logged;
+  - every workbook cell value, type, number format, bold header and frozen pane is identical. The 239
+    empty Wave 8 NMI cells that openpyxl stored as empty strings are now unstored, as Excel stores
+    them, and still read as empty;
+  - LibreOffice opens all three workbooks;
+  - the goldens' figures, the 120 assertions and the verifier are unchanged, and two builds are
+    byte-identical.
+
+  No fresh round and no second pass are owed, since no graded figure, rung or document text a solver
+  reads moved.
+- **The judge's cross-batch duplicate check did not run** (its allow-list barred the batch folders).
+  The duplicate check stands on stage 5 (heart and adjudicated pre-flight) and on the surface screen
+  against task228 (`## Build record`).
+
+**Reconciliation (main thread, after the verdict).**
+
+- **Gate G.** The judge's three flags match this note's `## Gate G` exactly. Its mechanism label
+  (method or model selection) is the judge's vocabulary for the move this note files as
+  signal_vs_noise_or_hold with statistical_rigor support: choosing the unit of the error on honest
+  data. Its stump-power paragraph calls it a signal-versus-noise call. There is no mismatch, and the
+  judge names no distractor as the surface read.
+- **Spec gates.** All pass:
+  - 10 files in 5 formats, the largest at 95,140 rows;
+  - two declared distractors, unused by the golden and named for nothing;
+  - two deliverables;
+  - every ask with its unit and rounding;
+  - shape 10, at about 51 criteria.
 
 ## The decisive move, and why it survives the opponent
 
@@ -434,7 +500,8 @@ is the third hardening loop or a re-root, decided on that solver's path sentence
 - Generator: `generator/make.py` builds the pack (`build.py`), the goldens from the shipped bundle
   alone (`deliver.py` over `golden.py`), `metadata.json`, runs `checks.py` (the six rungs by name, the
   432-cell grid, the convergences, the independence test, the dependence-respecting groupings, the
-  carve-out routes, the node-night split, the deciding contrasts in both directions, both asks' stops,
+  carve-out routes, the node-night split, the deciding contrasts in both directions, the judge's
+  random-intercept residual, both asks' stops,
   chronology, separation, the gates, single statement of the reference and the cut-off, the write-up
   against the golden) and the independent `verify.py` (standard library and openpyxl, no shared code,
   the node-level error, the distances and the substitution load recomputed), builds a second time into
@@ -447,8 +514,14 @@ is the third hardening loop or a re-root, decided on that solver's path sentence
   per build and the network salt were chosen by `tune.py` against the design's margins, edges and the
   carve-out routes.
 - Surface screen (`guard.py surface task229`, loop-1 cut): 0 promoted pairs, nearest surface 0.10;
-  no persona of another build in the cut pack. task228's pack sits on another checkout and is
-  screened against this one before ship.
+  no persona of another build in the cut pack. Against task228's pack (stage 8, final cut): the run
+  was a scratch worktree holding both branches, with task228 at 6b19d41 built from its generator, and
+  the worktree was removed afterwards.
+  - **Result:** 0 promoted pairs, and no persona in the cut pack.
+  - **Track A (task228 against task229): 0.08.** They share no file name, schema, seeded table, prompt
+    or write-up wording, entity or deliverable species; both are flat, with one shared format.
+  - **Track B:** they share only the population gap label (pattern, decision family and mechanism
+    0), so the pair is not promoted.
 - Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry 95,140 rows; distractors
   `extract_log_20261012.csv` (the pull's provenance: sources, times, coverage, record counts) and
   `dnsp_planned_interruptions_oct2026.xlsx` (the distributors' planned supply interruption
@@ -460,9 +533,11 @@ is the third hardening loop or a re-root, decided on that solver's path sentence
 
 ## House fixes and realism (reduce-house-fixes, golden-realism)
 
-- H1: the standard's PDF is written invariant and stamped 24/06/2026 with the owner as producer;
-  `scrub_producer_metadata.py` audits the target clean; workbooks carry their owners and in-fiction
-  dates. Goldens are script output (matplotlib, json) and are left as such.
+- H1: the standard's PDF is written invariant and stamped 24/06/2026 with the owner's records system
+  as creator and producer; `scrub_producer_metadata.py` audits the target clean; workbooks carry their
+  owners and their own created and last-saved stamps (UTC, matching the extract log), laid out the
+  way Excel saves them (`postprocess.normalize_zip`). Goldens are script output (matplotlib, json) and
+  are left as such.
 - H2, H3: every figure in `submission.md` is printed by `golden.py` and re-derived by `verify.py`;
   the steps cite clauses rather than restating figures.
 - H4: `target.zip` members equal the ten declared files, no enclosing folder; the chart was opened
@@ -488,7 +563,10 @@ is the third hardening loop or a re-root, decided on that solver's path sentence
 
 ## Leak check (stage 4, mechanical half)
 
-`leak.py --asof 2026-10-12` on the loop-2 cut: REVIEW, three lines, no LEAK. (Loop 1's first run was
+`leak.py --asof 2026-10-12` on the loop-2 cut, and again on the stage 8 rebuild: REVIEW, the same
+three lines, no LEAK. The stage 8 rebuild changed containers only. No text under `target/` changed and
+the prompt did not change, so round 3's reader pass stands (the equivalence is in `## Determinism check
+(stage 7)`). (Loop 1's first run was
 LEAK twice, fixed in the generator: block 4 named the reference value on the chart line, and the
 standard's revision history gave the old reference as 99.30, which had become a lower limit to the
 digit; the history now reads 99.20.) Each REVIEW line:
