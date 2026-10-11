@@ -10,8 +10,8 @@
   "shape": "18",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Reissue 387 member cards: every open card the Ferrier Creek Travel Plaza pay-at-pump terminal LT723511 in Kemptville read by contact from 5 to 31 August 2026, or the Lombard Market terminal 02417158 in Smiths Falls read by contact from 13 August to 14 September 2026.",
+  "answer_source": "task181/submission.md, 1. Final Recommendation (page one of golden/card_reissue_request.pdf and sheet 1 Reissue of golden/common_point_trace.xlsx carry the same count)",
   "gap": [
     "population",
     "rule"
@@ -35,7 +35,7 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "card_authorisations_2026-06-01_2026-10-04.parquet",
-    "rows": 0,
+    "rows": 1257657,
     "entity": "one authorisation message for one card at one terminal (pre-authorisation, completion, purchase, reversal or decline)",
     "grain": "authorisation message",
     "source": "synthetic"
@@ -47,12 +47,19 @@
     "geography": "Canada, eastern Ontario (Kingston, Rideau Lakes, Smiths Falls and Highway 416 corridor)",
     "currency": "CAD",
     "org_type": "regional credit union issuing debit and credit cards to members",
-    "invented_names": [],
+    "invented_names": [
+      "Larchmere Credit Union",
+      "Ferrier Creek Travel Plaza",
+      "Lombard Market"
+    ],
     "people": [
       "Laurie Townsend",
       "Brenda Figueroa",
       "Stephanie Wise",
-      "Nicholas Rodriguez"
+      "Nicholas Rodriguez",
+      "Erika Jenkins",
+      "Eric Snyder",
+      "Donna Keller"
     ]
   },
   "deliverables": [
@@ -61,8 +68,8 @@
   ],
   "opening_move": "number-first",
   "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures.",
-  "driver_concrete": "Counterfeit fraud on the credit union's members traces to two skimmed terminals: a pay-at-pump reader at a Highway 416 service centre that read most victims, and a self-checkout PIN pad in Smiths Falls that read a smaller, separate group; commuters skimmed at the pump also stop at the coffee counter and car wash at the same exit, so the pooled common-point screen ranks those two above the PIN pad, and only re-screening the victims the pump does not explain finds the PIN pad and adds its exposed cards to the reissue.",
-  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's lookback, finds the Highway 416 pump, counts the member cards it read by contact while it was compromised and files that reissue count; the step that lands it there is stopping at the strongest common point, when the victims the pump does not explain trace to a Smiths Falls self-checkout PIN pad that the pooled screen ranks below two places the pump's victims co-visited at the same exit.",
+  "driver_concrete": "Counterfeit fraud on 283 member cards traces to two skimmed terminals: the pay-at-pump terminal at the Ferrier Creek Travel Plaza on Highway 416, which read 205 of them by contact in their 60-day lookbacks (pooled lift 38.78), and a self-checkout PIN pad at Lombard Market in Smiths Falls, which read 47 of the 78 the pump leaves; commuters skimmed at the pump also stop at the plaza's coffee counter (95 victims, lift 11.95) and car wash (47 victims on the same 597-card member base as the PIN pad, lift 4.59 for both), so the pooled common-point screen ranks the coffee counter above the PIN pad and the car wash level with it, and only re-screening the 78 victims the pump does not explain finds the PIN pad (lift 17.13) and adds its 228 exposed open cards to the pump's 174, 387 cards with 15 read at both.",
+  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's 60-day lookback, finds the Ferrier Creek pump terminal (205 of 283 victims, lift 38.78), counts the 174 open member cards it read by contact between the first and last victim read and files that reissue count (or keeps the coffee counter too and files 502); the step that lands it there is stopping at the strongest common point, when 47 of the 78 victims the pump does not explain trace to the Lombard Market self-checkout PIN pad in Smiths Falls, which the pooled screen ranks level with the car wash (lift 4.59) and below the coffee counter (11.95).",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
