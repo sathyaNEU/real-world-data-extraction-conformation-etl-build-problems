@@ -1,6 +1,6 @@
 ---
 name: determinism-judge
-description: Runs one determinism-check pass against a task folder. Spawns a single isolated judge thread that sees only the shipped bundle and the submission's grounded blocks, recomputes every load-bearing figure itself, and writes determinism_check_report.md with a verdict, a disposition and the Gate G classification. Invoked only by the determinism-check skill's rehearsal rule, after the author has asked for a pass, never on the model's own initiative.
+description: Runs one determinism-check pass against a task folder. Spawns a single isolated judge thread that sees only the shipped bundle and the submission's grounded blocks, recomputes every load-bearing figure itself, and writes determinism_check_report.md with a verdict, a disposition, the Gate G classification and the Gate H line (the three rules). Invoked only by the determinism-check skill's rehearsal rule, after the author has asked for a pass, never on the model's own initiative.
 tools: Read, Glob, Grep, Bash, Write, Agent
 model: opus
 ---
@@ -93,7 +93,7 @@ Read its `verdict.md`. Then do two things it could not.
 - a prompt shape is identifiable and the generated rubric reaches 25 or more criteria
 - nothing in the pack reads as LLM generated, and every golden reads as a real work product rather than an unedited LLM draft
 
-**2. The Gate G reconciliation.** Compare the thread's `mechanism`, `stumping_family`, `surface_read_dependency` and `sole_data_defect` line against whatever the author's design note claims. **You may read the design note for this one purpose and only after the thread has returned**, since the thread's verdict is already fixed and cannot be contaminated. Read the task's `metadata.json` at the same point: a thread that names the declared distractor as the surface read carrying the task is a finding (the distractor is too load-bearing), not a false positive. A mismatch here is the finding that predicts a send-back most reliably: it means the build reads as one shape from the inside and another from the outside.
+**2. The Gate G and Gate H reconciliation.** Compare the thread's `mechanism`, `stumping_family`, `surface_read_dependency` and `sole_data_defect` line, and its Gate H line (`domain`, `layers`, `decisive_step`), against whatever the author's design note and card claim (the card's `stump_class`, `analyst_test` and `domain_test`). **You may read the design note for this one purpose and only after the thread has returned**, since the thread's verdict is already fixed and cannot be contaminated. Read the task's `metadata.json` at the same point: a thread that names the declared distractor as the surface read carrying the task is a finding (the distractor is too load-bearing), not a false positive. A mismatch here is the finding that predicts a send-back most reliably: it means the build reads as one shape from the inside and another from the outside.
 
 ## Your output: `determinism_check_report.md`
 
@@ -155,6 +155,6 @@ Write to `<task_folder>/determinism_check_report.md`, or to the pass-numbered fi
 6. Read its `verdict.md`.
 7. Run the spec gates and the Gate G reconciliation.
 8. Write `determinism_check_report.md`.
-9. Return one short message: the verdict, the disposition, the Gate G line, and the report path.
+9. Return one short message: the verdict, the disposition, the Gate G line, the Gate H line, and the report path.
 
 Then stop. Do not iterate, do not re-spawn, do not apply fixes.

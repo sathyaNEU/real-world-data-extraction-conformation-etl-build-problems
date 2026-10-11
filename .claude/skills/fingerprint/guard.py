@@ -79,6 +79,12 @@ STRATEGY_WARN = 3
 # consecutive builds (task99 to task130), so it is capped too: never in consecutive builds, and at
 # most VALIDATED_CAP of the last WINDOW.
 VALIDATED_CAP = 3
+# The client's three rules apply to every card drawn from this date: the card classifies its decisive step
+# (only analytical may decide) and carries the analyst test and the domain test.
+THREE_RULES_FROM = "2026-10-10"
+# Stump strategies whose decisive step most often turns out to be a field reading or a stated rule.
+SEMANTICS_RISK = ("time_semantics", "grain_or_unit", "identity_resolution", "stated_rule_hard_construction",
+                  "withheld_rule_corpus_fit")
 WARN_SIM = 0.12
 NICHE_SIM = 0.50
 
@@ -332,6 +338,8 @@ def validate_card(c, vocab, strict=False):
         enum("layer2_family", vocab.get("layer2_families", {}), c.get("layer2_family"))
     if c.get("client_domain") is not None:
         enum("client_domain", vocab.get("client_domains", {}), c.get("client_domain"))
+    if c.get("stump_class") is not None:
+        enum("stump_class", vocab.get("stump_classes", {}), c.get("stump_class"))
     enum("shape", vocab["shapes"], c.get("shape"))
     enum("decision_type", vocab["decision_types"], c.get("decision_type"))
     enum("answer_unit", vocab["answer_units"], c.get("answer_unit"), required=strict)
@@ -464,6 +472,29 @@ def check(cand, cards, vocab, status=None):
         if missing:
             add("BLOCK", "two_layer.fields", "the card does not name %s" % ", ".join(missing),
                 fix="fill layer2_family, layer2_pattern and layer1 from the design note's two-layer lines")
+    # The three rules (client update, October 2026): the task really uses its domain, it has both layers, and
+    # the step that decides the answer is analytical. A planted defect, decoy or hidden rule, a data-semantics
+    # reading and a stated-rule application may sit in a task as lower rungs, never as the decisive stump.
+    if (cand.get("drawn") or "") >= THREE_RULES_FROM:
+        sc = cand.get("stump_class")
+        if not sc:
+            add("BLOCK", "three_rules.class", "the card does not classify its decisive step (stump_class)", [],
+                "classify the decisive step: analytical, planted, data_semantics or rule_application")
+        elif sc != "analytical":
+            add("BLOCK", "three_rules.class", "the decisive step is %s, which is banned as the decisive stump" % sc, [],
+                "rebuild the stump so a strong analyst who cleaned the data and read every rule correctly still "
+                "gets it wrong by doing the analysis the easy way (stumping Part 1, the three rules)")
+        for f, what in (("analyst_test", "the easy route a strong analyst takes after cleaning the data and reading "
+                         "every rule correctly, and the wrong answer it gives"),
+                        ("domain_test", "the field's own analysis that decides the answer, and why swapping the "
+                         "nouns into another field breaks the task")):
+            if not (cand.get(f) or "").strip():
+                add("BLOCK", "three_rules." + f, "the card has no %s" % f, [], "write %s in one sentence" % what)
+        if cand.get("stump_strategy") in SEMANTICS_RISK:
+            add("WARN", "three_rules.strategy_risk", "stump strategy %s often decides on reading a field or applying "
+                "a stated rule" % cand.get("stump_strategy"), [],
+                "the analyst_test shows the easy analytical route that still fails once every field and rule is "
+                "read correctly; if it cannot, the stump is semantics or rule application")
     lp = cand.get("layer2_pattern")
     if lp:
         same = [c for c in cards if c.get("task") != cand.get("task") and c.get("layer2_pattern") == lp]
@@ -1009,6 +1040,9 @@ def cmd_new(args):
         "driver": "<ONE sentence, the decisive move with every domain noun stripped>",
         "driver_concrete": "<ONE sentence, the decisive move in this build's own terms>",
         "stump": "<ONE sentence, the wrong committed answer a competent solver files and the step that lands them there>",
+        "stump_class": "<vocab stump_classes key: only analytical may decide the answer>",
+        "analyst_test": "<ONE sentence: the easy route a strong analyst takes after cleaning the data and reading every rule correctly, and the wrong answer it gives>",
+        "domain_test": "<ONE sentence: the field's own analysis that decides the answer, and why swapping the nouns into another field breaks the task>",
         "mechanism_source": "design_note", "differentiation": {}, "lineage": [], "notes": "",
     }
     print(json.dumps(card, indent=2, ensure_ascii=False))
