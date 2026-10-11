@@ -1,0 +1,86 @@
+{
+  "task": "task181",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed AD04 (pump bearing overhaul) redrawn inside Anomaly Detection: energy-systems-utilities x anomaly-detection is task180's pairing (ban.pairing), and the seed's corpus pin and licensed wrong basis are blocked under the two-layer standard",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "niche": "a regional credit union's card fraud team in eastern Ontario tracing a wave of counterfeit debit and credit card fraud back to the terminals that skimmed its members' cards, to size the card reissue the risk committee approves",
+  "objective": "anomaly-detection",
+  "shape": "18",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "fraud and risk manager at a credit union, who takes the card reissue to the board risk committee",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "card_authorisations_2026-06-01_2026-10-04.parquet",
+    "rows": 0,
+    "entity": "one authorisation message for one card at one terminal (pre-authorisation, completion, purchase, reversal or decline)",
+    "grain": "authorisation message",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "Canada, eastern Ontario (Kingston, Rideau Lakes, Smiths Falls and Highway 416 corridor)",
+    "currency": "CAD",
+    "org_type": "regional credit union issuing debit and credit cards to members",
+    "invented_names": [],
+    "people": [
+      "Laurie Townsend",
+      "Brenda Figueroa",
+      "Stephanie Wise",
+      "Nicholas Rodriguez"
+    ]
+  },
+  "deliverables": [
+    "card_reissue_request.docx",
+    "common_point_trace.xlsx"
+  ],
+  "opening_move": "number-first",
+  "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures.",
+  "driver_concrete": "Counterfeit fraud on the credit union's members traces to two skimmed terminals: a pay-at-pump reader at a Highway 416 service centre that read most victims, and a self-checkout PIN pad in Smiths Falls that read a smaller, separate group; commuters skimmed at the pump also stop at the coffee counter and car wash at the same exit, so the pooled common-point screen ranks those two above the PIN pad, and only re-screening the victims the pump does not explain finds the PIN pad and adds its exposed cards to the reissue.",
+  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's lookback, finds the Highway 416 pump, counts the member cards it read by contact while it was compromised and files that reissue count; the step that lands it there is stopping at the strongest common point, when the victims the pump does not explain trace to a Smiths Falls self-checkout PIN pad that the pooled screen ranks below two places the pump's victims co-visited at the same exit.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "draft (never registered): which merchant location gets the acquirer's forensic inspection, exposure counted on contact reads at the device",
+      "fate": "redrawn before registration: pick-one-of-N is the spent decision shape on this objective, and the device (contact reads only expose a card) is applied by reflex by a fraud-literate solver",
+      "driver": "Exposure to a compromised device happens only on the channels that pass a unit's data through that device, so a common-source screen that counts every visit at the site grain dilutes one compromised device among the site's untouched channels."
+    }
+  ],
+  "notes": "Bespoke draw from how skimming crews work (more than one terminal per campaign) and how members move (a commute shares an exit's pump, coffee counter and car wash), which is what makes pooled common-point screens both invent and hide sources. No calibration corpus, no licensed wrong basis: the fraud policy files the estimand (reissue every card read by contact at a terminal that compromised members' cards, while compromised) and no screen threshold.",
+  "client_domain": "banking-credit-financial-risk",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:explain-away-the-dominant-source-before-screening-for-the-next",
+  "layer1": [
+    "an authorisation log with pre-authorisation and completion pairs at the pump, reversals and declines as separate messages",
+    "ISO 8583 POS entry mode codes needing a codebook",
+    "terminals mapped to merchant locations through the processor's terminal register with reader replacement dates",
+    "card reissues under new card numbers linked through a card history table",
+    "a fraud case workbook with one row per disputed transaction and a fraud type taxonomy"
+  ]
+}
