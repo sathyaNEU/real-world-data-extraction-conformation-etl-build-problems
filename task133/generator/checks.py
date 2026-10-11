@@ -1082,13 +1082,15 @@ def deliverables(s, g_a, m_b):
         line = "%s, stage %d at 30 June: %s in stage 1, %s in stage 2, %s in stage 3, %s closed" % (
             (p, s0) + tuple("{:,}".format(m_b[(p, s0, x)]) for x in ("stage 1", "stage 2", "stage 3", "closed")))
         ok(line in sub, "submission: %s" % line)
-    pr = open(os.path.join(TASK, "prompt.md")).read().strip()
+    pr = open(os.path.join(TASK, "prompt.txt")).read().strip()
     ok(len(pr) < 1000, "the prompt is under 1,000 characters (%d)" % len(pr))
     ok(all(d in pr for d in ("ecl_allowance_2026Q3.xlsx", "board_ecl_q3_2026.pptx")), "the prompt names both deliverables")
-    for f in ("prompt.md", "submission.md", "DESIGN_NOTE.md"):
+    for f in ("prompt.txt", "submission.md", "DESIGN_NOTE.md"):
         ok("\u2014" not in open(os.path.join(TASK, f)).read(), "no em dash in %s" % f)
-    found = Counter(f for _, _, fs in os.walk(TASK) for f in fs if f in ("submission.md", "prompt.md"))
-    ok(found == Counter({"submission.md": 1, "prompt.md": 1}), "one live write-up and one prompt in the task tree")
+    found = Counter(f for _, _, fs in os.walk(TASK) for f in fs if f in ("submission.md", "prompt.txt"))
+    ok(found == Counter({"submission.md": 1, "prompt.txt": 1}), "one live write-up and one prompt in the task tree")
+    ok(not any("prompt.md" in fs for _, _, fs in os.walk(TASK)), "no prompt.md beside prompt.txt")
+    ok("\n" not in pr and not any(c in pr for c in "`*#|[]>"), "the prompt is one plain-text paragraph with no markdown characters")
     return len(pr)
 
 
