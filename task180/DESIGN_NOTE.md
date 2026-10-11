@@ -521,3 +521,14 @@ slot then retires); a miss that lands anywhere other than rungs 0 to 2 is read f
   (first name Tai) and blocked against task123, and "Karl Fischer" in the water-content method line read as another
   persona; the substation is Ladbrooks (LDB) and the method line cites IEC 60814. No figure moved (per-unit draws are by
   fleet position, not by name).
+- **Architecture 3, round 6 (2026-10-11): landed, proxy 81.6, decision harden (loop 1).**
+  - **The solver's own sentence:** "Comparisons between different people ... give tasorexant 2.27 / 3.77 / 3.51,
+    but tasorexant users already had 3.43 times the national rate in the year before starting and corinurad users
+    0.60, so these mix up who starts the drug with what the drug does; rejected."
+  - **Its landing step:** a self-controlled case series over all observed time, age-adjusted: corinurad 2.58 (2.10
+    to 3.18), tasorexant 0.99, velaglutide 0.93.
+  - **Why the between-person rungs fell:** the national-rate table lets a solver measure the channelling directly.
+  - **Why the plain SCCS was enough:** it needed none of rung 3's exposure anchoring, because the event-dependent
+    starts moved it only from 2.52 to 2.58.
+  - **Stopping-rule count:** 1 of 2.
+

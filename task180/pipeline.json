@@ -2,12 +2,12 @@
  "task": "task180",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round (architecture 3, round 1): leak and duplicate checks passed; the round runs once the scratchpad is clear",
+ "stage": 2,
+ "stage_name": "hardening loop 1 (architecture 3): a fresh agent on the round 6 brief, then rebuild, leak check, heart and round 7",
  "updated": "2026-10-11",
  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "leak": {
   "leak_py": "REVIEW, no LEAK, --asof 2026-10-12; re-run on the rebuild at 92e0abb: the same 3 lines, each answered in the design note",
   "reader": "pass 1 (Sonnet, 2026-10-11): Q1 none, Q4 none; Q3 atc_ddd_index_2026.csv remarks and Q2 the screen's PRR order fixed data-only (no second read); realism tells deferred to 6b"
@@ -72,6 +72,20 @@
    },
    "decision": "pass",
    "brief": "Missed at the decisive analytical step (rung 3b): every field and stated rule read correctly, every ask figure right, but the solver attributed by tracking alone (DSL-T1, LST-T2 and RLS-T2 at a constant 0.60, 0.60 and 0.37 ppm per 1,000 operations) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2."
+  },
+  {
+   "label": "round 6 arch3",
+   "date": "2026-10-11",
+   "score": 81.6,
+   "landed": true,
+   "cracked": 2,
+   "items": 5,
+   "round": "6",
+   "architecture": "3",
+   "decision": "harden",
+   "path_step": "measured the channelling from the national-rate table (tasorexant starters 3.43 times the national fall rate in the year before, corinurad 0.60), set every between-person contrast aside, then a self-controlled case series over all observed time, age-adjusted: corinurad 2.58 (2.10 to 3.18), tasorexant 0.99, velaglutide 0.93",
+   "brief": "Harden so the plain full-observation SCCS (days 1 to 30 against all other observed time) completes and names a wrong signal, with only the exposure-anchored design the field uses when the event changes the chance of starting (post-start reference window, rung 3) recovering corinurad.",
+   "stopping_rule_count": "1 of 2 rounds with a self-controlled comparison unprompted"
   }
  ],
  "judge": {
