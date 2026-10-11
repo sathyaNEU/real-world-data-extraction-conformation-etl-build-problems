@@ -1,0 +1,44 @@
+TAMARACK HYDRO DISTRIBUTION - EAM EXTRACTS, PROTECTION & CONTROL
+Extract run 2026-10-01 06:10 by the EAM reporting service (job PC_ASSET_WO_MONTHLY)
+
+The asset management system (EAM) went live on 1 January 2021, replacing the legacy maintenance system.
+Assets in service at go-live were loaded from the legacy asset list. Work-order history starts at go-live:
+legacy work orders were archived with the old system and were not migrated.
+
+protection_asset_register_2026-09-30.csv
+  asset_id           EAM asset number
+  model              relay or controller model
+  manufacturer       manufacturer name as held in EAM
+  function           protection function
+  sub_code           substation code (see substations.csv)
+  bay                bay or position in the substation
+  serial_no          manufacturer serial number
+  install_date       date the asset was placed in service (from the legacy asset list for assets loaded at go-live)
+  status             IN SERVICE or RETIRED
+  retired_date       date the asset was taken out of service (first day of the month for station rebuilds)
+  region             operating region recorded on the asset at load (not maintained after go-live)
+  Assets retired before go-live are not in EAM.
+
+eam_work_orders_protection_2021-01_2026-09.csv
+  wo_number          work-order number
+  reported_date      date the work was raised
+  completed_date     date the work was completed (blank while open)
+  work_type          PM planned maintenance test, CM corrective, EM emergency corrective, INSP inspection,
+                     MOD settings or firmware modification, LOG logistics (shipping, returns)
+  status             INPRG in progress, COMP completed, CLOSE closed after review, CANC cancelled
+  asset_id           EAM asset number (blank for substation-level inspections)
+  sub_code           substation code
+  region             operating region at the date the work was raised (regions reorganised 1 April 2024)
+  failed_component   component recorded by the crew on corrective and logistics work (PSU power supply,
+                     CPU processor, IO input/output card, DISP display, COMMS communications card)
+  description        crew text
+  crew               crew
+  labour_hours       hours booked
+
+substations.csv
+  sub_code, sub_name, region (operating region from 1 April 2024), legacy_region (before 1 April 2024),
+  station_type (TS transformer station, DS distribution station)
+
+spares_stock_2026-09-30.csv
+  Stores count at close of business 30 September 2026. stock_state: SERVICEABLE on the shelf, QUARANTINE awaiting
+  bench test after return from site, AT REPAIR at the manufacturer under an open RMA.

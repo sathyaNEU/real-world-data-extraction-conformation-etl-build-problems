@@ -1,0 +1,87 @@
+{
+  "task": "task132",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "Forecasting block seed FC03 (service-parts tail at go-live) re-rooted under the two-layer standard: the seed's withheld-rule shadow-run corpus is capped, so the build keeps the seed's service-parts lifecycle setting and draws a methodological pitfall instead",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a distribution utility's protection and control asset team sizing the last-time buy of power-supply modules for an obsolete feeder-protection relay fleet, which must keep every relay running until the relay replacement programme reaches its substation",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:delayed-entry-exposure-for-age-banded-failure-rates",
+  "layer1": [
+    "an asset-management system migration: work-order history starts at go-live and pre-migration records were not carried over",
+    "a work-order export covering every protection asset model, filtered to one model through the asset register",
+    "cancelled and duplicate work orders",
+    "a replacement programme workbook whose approved 2026 plan supersedes the 2025 plan, with deferred schemes",
+    "spares held across depots in serviceable, quarantined and at-repair states",
+    "substation codes against names, and a 2024 regional reorganisation"
+  ],
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "manager of protection and control asset planning at a local distribution company, who puts the last-time buy to the director of asset management for signature",
+  "role_family": "capacity_planner",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "eam_work_orders_protection_2021-01_2026-09.csv",
+    "rows": 0,
+    "entity": "one work order on one protection and control asset",
+    "grain": "work order",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "other",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Canada, Ontario",
+    "currency": "CAD",
+    "org_type": "local electricity distribution company with about 140 distribution substations",
+    "invented_names": [
+      "Tamarack Hydro Distribution",
+      "Veldtek Protection Systems",
+      "VPR-340"
+    ],
+    "people": [
+      "Rachael Villanueva",
+      "Kurt Allison",
+      "Susan Huff"
+    ]
+  },
+  "deliverables": [
+    "vpr340_psu_final_buy.xlsx",
+    "psu_last_time_buy_memo.docx"
+  ],
+  "opening_move": "constraint-first",
+  "driver": "A rate is estimated per unit of exposure within bands of an ageing attribute, but the outcome records only begin at a date long after many units entered service, so exposure counted from each unit's entry dilutes the bands those units passed through unrecorded; the forward total, applied to the older band mix the horizon brings, is low by about a sixth.",
+  "driver_concrete": "Failure rates per relay-year by age band divide work-order failures, which exist only from the January 2021 asset-system migration, by relay-years counted from each relay's 1992 to 2018 installation date, so the 10 to 24 year bands are understated and the last-time buy falls about three lots short of the 95 per cent cover the procedure requires.",
+  "stump": "A competent solver builds the procedure's age-banded failure rates per relay-year in service, counting each relay's years from its installation date, applies them to the relay-years each band will carry until the replacement programme reaches each substation, and orders about twelve lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task46": "task46 measures age on the wrong clock (register age against service exposure rebuilt from a movement log); here age is the plain installation age and is right, and the exposure is wrong only in where it starts: relay-years before the January 2021 work-order migration carry no failure records, a left-truncated observation window, so the shortfall sits in the middle age bands rather than at a step a cohort crosses."
+  },
+  "lineage": [],
+  "notes": "Seed: analytical_tasks/01_forecasting/FC03 (service-parts lifecycle setting only; its shadow-run withheld rule is not used). Forcing event is the OEM's last-time-buy window in its end-of-life notice (a purchase, but the decision is forced by the supplier's discontinuation rather than by a contract or order cycle). "
+}
