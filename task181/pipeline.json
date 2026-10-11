@@ -2,8 +2,8 @@
  "task": "task181",
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
- "stage": 8,
- "stage_name": "shipped",
+ "stage": 6,
+ "stage_name": "portal round 1: stumped and deterministic, but the CSV asks were answered in full (52 against the 50 bar); ask layer repair (stage 6b) in a fresh agent, then the leak re-read, a solver round and the judge",
  "updated": "2026-10-11",
  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
  "architecture": 2,
@@ -81,9 +81,18 @@
   "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
- "approved": null,
+ "approved": false,
  "delivered": "2026-10-11",
- "portal": null,
+ "portal": {
+  "round": 1,
+  "reported": "2026-10-11",
+  "stump": "pass",
+  "determinism": "pass",
+  "score": 52,
+  "rubric": "task181/portal_round1_rubric.csv",
+  "finding": "criteria 1 to 7 (the call, the fortnight figures, the route shares and the slide's two schools; 48 points) failed and criteria 8 to 32 passed (every graded CSV figure, 42 points, and the ten format points), so the response scored 52 on the CSV alone",
+  "repair": "harden ask A (the 10-area by 5-measure CSV) with silent, stacked, filed devices off the main path; the prompt, the call, the fortnight, the prior-year windows and the slide's clusters stay as they are"
+ },
  "build": {
   "answer": "Griffith",
   "checks": "446 assertions passed",
@@ -93,5 +102,6 @@
   "rungs": "R0 to R3 Wagga Wagga, margins 1.29 to 1.71; R4 Griffith 3.18",
   "hygiene": "after judge pass 2: workbooks moved to shared strings, Excel part order and XML declarations; every cell identical, other files byte-identical, leak.py unchanged",
   "target_zip": "cut from the final rebuild by generator/build.py: 11 files, each identical to target/ (zip sha256 f719df32b0a10e70)"
- }
+ },
+ "deferred": []
 }
