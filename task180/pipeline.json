@@ -3,7 +3,7 @@
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
  "stage": 2,
- "stage_name": "hardening loop 1 (architecture 3): a fresh agent on the round 6 brief, then rebuild, leak check, heart and round 7",
+ "stage_name": "architecture 3 spent at the paper half of hardening loop 1 (determinism is literal): the exposure-anchored rung is rule application once the comparison is filed; retiring task180 is the author's decision",
  "updated": "2026-10-11",
  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
  "architecture": 3,
@@ -171,5 +171,21 @@
   "grid": "567 self-controlled cells under the pinned conventions and 1,134 under two variants, misses 0; corinurad 2.308 to 2.624; 48 naive cells all tasorexant, thinnest margin 1.33",
   "rungs": "rung 0 tasorexant 34 reports (1.62); matched non-users 2.13 to 2.56; observed against expected 2.29; active comparator 1.33 to 1.80; self-controlled corinurad 2.52, tasorexant 1.01, velaglutide 0.98",
   "salt": "corinurad 2022 after-start stream salt 1 (ten screened)"
- }
+ },
+ "hardening": [
+  {
+   "loop": 1,
+   "architecture": 3,
+   "date": "2026-10-11",
+   "from_round": "6",
+   "brief": "harden so the plain full-observation self-controlled comparison names a wrong signal and only the exposure-anchored design recovers corinurad",
+   "wip": "a4261fe (an earlier loop agent, stopped by an author interrupt, not green): velaglutide not started after a pancreatitis, corinurad effect 1.7, realism fixes, rung 2b assertions; checks stop on caused 5.539 at its rounding edge",
+   "paper_result": "spent",
+   "literal_reader": "other people: tasorexant by 2.48 (matched non-users) and 2.49 (active comparator); the same new users before they started: velaglutide by 6.25 (days -365 to -31), 5.72 (all pre-start time), 4.97 (difference in differences on the matched sets); the same new users' other time: velaglutide by 2.64, 1.38 and 1.53; the same new users' time after the month after the start: corinurad 1.655 (1.221 to 2.242) by 1.62 and 1.59, the only filing that gives the golden and it names the reference window",
+   "best_text": "1.2 compared with the rate the same new users would have had over those days had they not started; estimated by a design whose assumptions the registry data bear out",
+   "separation": "year before the start: tasorexant falls 3.99 x matched non-users and 2.28 x zopiclone starters; corinurad kidney injury 0.45 x allopurinol starters; velaglutide pancreatitis 0.12 x orlistat starters and 0.17 x matched non-users (0.24 per 1,000 person-years before the start, 2.09 after; 18 admissions in the twelve 30-day blocks before the start, 103 in the twelve after)",
+   "rule3": "no: executing the criterion is the textbook self-controlled assumption check (the event must not change the chance of starting), whose data are the loudest pattern in the pack and sit in the block profile round 6 drew unprompted; the counterfactual without a criterion reads literally to the same new users before they started (velaglutide)",
+   "decision": "spent on paper; no rebuild, no round 7; retirement is the author's decision (START_HERE.md untouched)"
+  }
+ ]
 }
