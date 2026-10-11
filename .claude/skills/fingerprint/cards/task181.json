@@ -1,75 +1,77 @@
 {
   "task": "task181",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-11",
-  "slot_note": "seed AD04 (pump bearing overhaul) redrawn inside Anomaly Detection: energy-systems-utilities x anomaly-detection is task180's pairing (ban.pairing), and the seed's corpus pin and licensed wrong basis are blocked under the two-layer standard",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "fraud-aml-detection",
-  "niche": "a regional credit union's card fraud team in eastern Ontario tracing a wave of counterfeit debit and credit card fraud back to the terminals that skimmed its members' cards, to size the card reissue the risk committee approves",
+  "slot_note": "seed AD04 re-rooted, architecture 2: v1 (a credit union's counterfeit wave, two skimmed terminals behind a dominant common point) was spent at in-house round 1, where the solver's explain-away and residual re-screen landed the count; the objective and number are kept and the draw is new",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "niche": "a regional public health unit's pertussis surveillance across inland New South Wales local government areas, choosing where its one outbreak response team goes this week from a notification line list whose latest onset days are still filling in, each area at the speed of its own laboratory route",
   "objective": "anomaly-detection",
-  "shape": "18",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Reissue 387 member cards: every open card the Ferrier Creek Travel Plaza pay-at-pump terminal LT723511 in Kemptville read by contact from 5 to 31 August 2026, or the Lombard Market terminal 02417158 in Smiths Falls read by contact from 13 August to 14 September 2026.",
-  "answer_source": "task181/submission.md, 1. Final Recommendation (page one of golden/card_reissue_request.pdf and sheet 1 Reissue of golden/common_point_trace.xlsx carry the same count)",
+  "shape": "17",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Griffith",
+  "answer_source": "task181/golden/response_team_brief.pptx and task181/golden/pertussis_cases_by_lga.csv, written by generator/golden.py from target/ and recomputed by generator/verify.py",
   "gap": [
-    "population",
-    "rule"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
-    "G16"
+    "G12",
+    "G13"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "gate_g": "forecasting",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
-  "stakeholder_role": "fraud and risk manager at a credit union, who takes the card reissue to the board risk committee",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per resolved case",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the public health unit's director, who sends the outbreak response team each Monday",
+  "role_family": "operations_director",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "card_authorisations_2026-06-01_2026-10-04.parquet",
-    "rows": 1257657,
-    "entity": "one authorisation message for one card at one terminal (pre-authorisation, completion, purchase, reversal or decline)",
-    "grain": "authorisation message",
+    "file": "pertussis_notifications_2019-2026.csv",
+    "rows": 0,
+    "entity": "one notification of a pertussis case to the public health unit",
+    "grain": "notification (a case can be notified more than once)",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "financial_institution",
+  "forum": "operations_desk",
+  "forcing_event": "shift_or_daily_cycle",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Canada, eastern Ontario (Kingston, Rideau Lakes, Smiths Falls and Highway 416 corridor)",
-    "currency": "CAD",
-    "org_type": "regional credit union issuing debit and credit cards to members",
+    "geography": "Australia, New South Wales (Riverina)",
+    "currency": "AUD",
+    "org_type": "regional public health unit of a local health district",
     "invented_names": [
-      "Larchmere Credit Union",
-      "Ferrier Creek Travel Plaza",
-      "Lombard Market"
+      "Southern Inland Public Health Unit",
+      "Inland Pathology",
+      "Murrumbidgee Courier Run"
     ],
     "people": [
-      "Laurie Townsend",
-      "Brenda Figueroa",
-      "Stephanie Wise",
-      "Nicholas Rodriguez",
-      "Erika Jenkins",
-      "Eric Snyder",
-      "Donna Keller"
+      "Nathan Olson",
+      "Tiffany Peters",
+      "Janice Barker",
+      "Darryl Morales",
+      "Colleen Brown",
+      "Cassandra Dawson"
     ]
   },
   "deliverables": [
-    "card_reissue_request.pdf",
-    "common_point_trace.xlsx"
+    "response_team_brief.pptx",
+    "pertussis_cases_by_lga.csv"
   ],
-  "opening_move": "number-first",
-  "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures.",
-  "driver_concrete": "Counterfeit fraud on 283 member cards traces to two skimmed terminals: the pay-at-pump terminal at the Ferrier Creek Travel Plaza on Highway 416, which read 205 of them by contact in their 60-day lookbacks (pooled lift 38.78), and a self-checkout PIN pad at Lombard Market in Smiths Falls, which read 47 of the 78 the pump leaves; commuters skimmed at the pump also stop at the plaza's coffee counter (95 victims, lift 11.95) and car wash (47 victims on the same 597-card member base as the PIN pad, lift 4.59 for both), so the pooled common-point screen ranks the coffee counter above the PIN pad and the car wash level with it, and only re-screening the 78 victims the pump does not explain finds the PIN pad (lift 17.13) and adds its 228 exposed open cards to the pump's 174, 387 cards with 15 read at both.",
-  "stump": "A competent solver runs the common-point screen on contact reads in each counterfeit victim's 60-day lookback, finds the Ferrier Creek pump terminal (205 of 283 victims, lift 38.78), counts the 174 open member cards it read by contact between the first and last victim read and files that reissue count (or keeps the coffee counter too and files 502); the step that lands it there is stopping at the strongest common point, when 47 of the 78 victims the pump does not explain trace to the Lombard Market self-checkout PIN pad in Smiths Falls, which the pooled screen ranks level with the car wash (lift 4.59) and below the coffee counter (11.95).",
+  "opening_move": "evidence-first",
+  "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units.",
+  "driver_concrete": "Each local government area's pertussis onsets in the last 14 days are compared with its expected count under the unit's response protocol; Griffith's specimens go by courier to a Sydney laboratory, so only about a quarter of its cases are notified within 14 days of onset, and the onsets notified so far understate its surge several times over, while Wagga Wagga's fast hospital laboratory makes its modest seasonal rise look like the largest excess.",
+  "stump": "A competent solver counts the notified pertussis onsets in the last 14 days for each local government area against the protocol's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled reporting delay and still lands there); the step that lands it there is reading the onsets notified so far as the onsets, when Griffith's cases reach the unit through a slow private laboratory route and, at Griffith's own onset-to-notification delay, its recent onsets are several times what has arrived.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who removes the duplicate laboratory notifications, imputes missing onsets as the protocol says, maps every case to its area and computes the protocol's expected counts exactly still compares the onsets notified so far (or a nowcast built on one pooled delay) with the expected counts and sends the team to Wagga Wagga, because only a nowcast on each area's own onset-to-notification delay shows Griffith's fortnight running several times above its expected count.",
+  "domain_test": "What decides the call is an epidemiological nowcast, the eventual count of recent onsets estimated from each reporting route's own delay distribution, which is how outbreak surveillance reads right-truncated case data; with another field's nouns in there is no onset-to-notification delay, no laboratory route and no truncated epidemic curve, so the task does not read the same.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -77,20 +79,22 @@
       "architecture": "draft (never registered): which merchant location gets the acquirer's forensic inspection, exposure counted on contact reads at the device",
       "fate": "redrawn before registration: pick-one-of-N is the spent decision shape on this objective, and the device (contact reads only expose a card) is applied by reflex by a fraud-literate solver",
       "driver": "Exposure to a compromised device happens only on the channels that pass a unit's data through that device, so a common-source screen that counts every visit at the site grain dilutes one compromised device among the site's untouched channels."
+    },
+    {
+      "architecture": "v1 (a credit union's counterfeit wave traced to two skimmed terminals behind a dominant common point; reissue count)",
+      "fate": "spent at in-house solver round 1 (2026-10-11): one solver, proxy 94.5, landed 387 by explaining the co-visited plaza sites away as subsets of the pump's victims and re-screening the residual; any further rung is dismissed by the same subset check or opens a fork",
+      "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures."
     }
   ],
-  "notes": "Bespoke draw from how skimming crews work (more than one terminal per campaign) and how members move (a commute shares an exit's pump, coffee counter and car wash), which is what makes pooled common-point screens both invent and hide sources. No calibration corpus, no licensed wrong basis: the fraud policy files the estimand (reissue every card read by contact at a terminal that compromised members' cards, while compromised) and no screen threshold.",
-  "client_domain": "banking-credit-financial-risk",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:explain-away-the-dominant-source-before-screening-for-the-next",
+  "notes": "Re-root of task181 (architecture 2) under the client's three rules. Anomaly Detection & Diagnostics: an outbreak signal in surveillance data. The protocol files the decision quantity (excess of onsets in the last 14 days over the expected count) and the baseline; it says nothing about notification delay.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/2",
   "layer1": [
-    "an authorisation log with pre-authorisation and completion pairs at the pump, reversals and declines as separate messages",
-    "ISO 8583 POS entry mode codes needing a codebook",
-    "terminals mapped to merchant locations through the processor's terminal register with reader replacement dates",
-    "card reissues under new card numbers linked through a card history table",
-    "a fraud case workbook with one row per disputed transaction and a fraud type taxonomy"
-  ],
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the authorisation messages, counts only contact reads and runs CP-14's common-point screen exactly as written finds the Ferrier Creek pump (lift 38.78, 205 of 283 victims) and either stops there (174 cards) or keeps every terminal the pooled screen ranks high (with the plaza's coffee counter, 502; with the car wash and the PIN pad as well, 1,139), because only re-screening the 78 victims the pump does not explain shows the Lombard Market PIN pad (lift 17.13 on 47 of them, level with the car wash at 4.59 in the pooled screen) and the 387 cards to reissue.",
-  "domain_test": "What decides the count is a card-fraud compromise-point analysis, each terminal's lift among counterfeit victims against the member base on skimmable contact reads, re-run on the victims the first compromised terminal does not explain, which is the fraud desk's own common-point-of-purchase work; with another field's nouns in there is no skimming exposure by entry mode, no counterfeit lookback and no per-card reissue, so the task does not read the same."
+    "laboratory notifications of one case from two laboratories, and repeat notifications after a re-test, under the protocol's episode rule",
+    "residential postcodes mapped to local government areas through a postcode concordance whose split postcodes carry population ratios",
+    "onset dates missing on some notifications, imputed from the specimen date under the protocol's stated rule",
+    "confirmed and probable cases under a case definition revised in 2024 (serology-only cases moved to probable)",
+    "a notification extract with notification times in UTC from the state system and onset and specimen dates as local dates",
+    "an antenatal vaccination register keyed by the mother's Medicare number, linked to infant cases through a birth record"
+  ]
 }

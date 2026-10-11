@@ -1,346 +1,207 @@
-# task181 design note: Larchmere Credit Union, the card reissue after the counterfeit wave
+# task181 design note (architecture 2)
 
-Seed AD04 (pump bearing overhaul) redrawn inside Anomaly Detection & Diagnostics. The seed's domain pairing
-(energy-systems-utilities x anomaly-detection) is task180's, which `ban.pairing` blocks for the next draw. The seed's
-calibration corpus (close-outs that recover the operating band) and its licensed wrong basis (the insurer's surveyor) are
-blocked under the two-layer standard. What survives of the seed is its idea: send the remedy where the cause is, when
-the loudest signal is not all cause.
-
-Every figure below is the shipped value: `generator/checks.py` asserts it on the files under `target/` (537 assertions
-in the final run, all passing) and `generator/verify.py` recomputes the graded ones from the shipped bytes on a
-separate code path.
+Architecture 1 (a credit union's counterfeit wave traced to two skimmed terminals) was spent at in-house round 1; its
+note is `DESIGN_NOTE_arch1.md` and its reports carry the `_arch1` suffix. This note is the build plan for architecture
+2 and the record of it.
 
 ## DRAW
 
 ```
-Card filed with guard.py register before the ladder was written? yes (WARN only, answered below)
-Shape: 18 hypotheses-versus-evidence (every terminal a hypothesis; the committed figure is the exposed population)
-Gate G mechanism: decomposition_attribution (counterfeit victims attributed to the terminals that read their cards)
-Gap: population (decisive), rule        Pattern: none (own); generators G6 (the victims are a mixture of sources), G16
-Domain: banking-credit-financial-risk / fraud-aml-detection   Objective: anomaly-detection
-Pairing repeated from a recent build? no (banking x anomaly never built)
-Stakeholder role: fraud and risk manager (compliance_or_audit)   Context artifact: close_out_summary (2025 incident)
-Calibration form: none   Decision type: quantity_figure (cards to reissue)   Answer unit: count
-Stump strategy: decomposition_attribution   Decisive rule filed? yes (the estimand and the exposure rule, card policy CP-14)
-Official decoy filed? no (no screen threshold, no ranked list)   Validated decoy? no
-Forum: committee_or_panel (the board risk committee, Thursday 8 October 2026)   Forcing event: incident_or_complaint
-Org family: financial_institution
-People (guard.py names, en_CA, seeds 1812026 and 181): Laurie Townsend (fraud and risk manager, the requester),
-  Brenda Figueroa (chair, board risk committee), Stephanie Wise (card services manager, card history and reissue),
-  Nicholas Rodriguez (fraud analyst, keeps the case workbook). Pack furniture (guard.py names, seed 1813): Erika
-  Jenkins (MS-3 owner), Eric Snyder (Brockville branch, 2025), Donna Keller (cash operations); the documents carry
-  initials only.
+Card filed with guard.py register before the ladder was written? yes (PASS)
+Shape: 17 periods around a change point (each area's fortnight against its expected count; the curve around the surge)
+Gate G mechanism: forecasting (a nowcast: the eventual count of recent specimens from each route's delay)
+Gap: time (decisive), population        Pattern: none (own); generators G12 (absence of record versus record of absence), G13
+Domain: epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection   Objective: anomaly-detection
+Pairing repeated from a recent build? no (epidemiology x anomaly detection never built)
+Stakeholder role: director of a regional public health unit (operations_director)   Context artifact: filed_standard
+Calibration form: censored_or_lagged_release (the line list's own history of how each area's counts fill in)
+Decision type: pick_one_of_n   Answer unit: named_option   Opening move: evidence-first
+Stump strategy: maturity_censoring   Decisive rule filed? yes (PR-07 4.2 defines the excess; it says nothing about delay)
+Official decoy filed? no   Validated decoy? no   stump_class: analytical
+Forum: operations_desk (the Monday huddle)   Forcing event: shift_or_daily_cycle (the weekly deployment)
+Org family: hospital_or_health_provider (a public health unit inside a local health district)
+Layer 2: field_method, epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/2 (nowcast the
+recent, incomplete period)
+People (guard.py names, en_AU, seeds 1814 and 1816): Nathan Olson (director, the requester), Tiffany Peters
+(surveillance epidemiologist, owner of the line list notes), Janice Barker (response team leader), Darryl Morales
+(immunisation coordinator), Colleen Brown (public health nurse), Cassandra Dawson (data officer who runs the extract).
 ```
 
-**Data-native sentence.** Skimming crews work more than one terminal in a season, and members who commute past a
-compromised fuel pump also buy coffee and wash the car at the same highway exit, so a common-point screen run on all
-counterfeit victims at once credits the exit's coffee counter and car wash with the pump's victims and buries a second,
-smaller compromise among ordinary busy terminals; a fraud team traces victims source by source.
+**Data-native sentence.** A pertussis case reaches the public health unit only when a laboratory notifies it, and the
+laboratory a case goes through depends on where the patient was swabbed: the regional hospital laboratory runs the PCR
+on site and notifies within a couple of days, while the private collection network that serves most Griffith general
+practices sends its swabs by courier to Sydney and notifies a week and a half or more after collection, so the
+specimens of the last fortnight are almost all on file for one area and mostly still in transit for another.
 
-**Layer 1 (realistic mess and the system that produces it).** An issuer-side authorisation log of 1,257,657 ISO 8583
-messages (pre-authorisation 0100 and completion advice 0220 pairs at pay-at-pump on one retrieval reference, 0200
-financial requests, 0420 reversals for short dispenses and timeouts, declines with their response codes) with terminal
-IDs that change when a terminal is replaced (95 positions re-terminalled, among them OPT 6 on 2 September and Lombard's
-six self-checkout pads on 15 September; OPT 6's dispenser also sat out of service from 29 June to 24 July on the same
-reader); POS entry mode, processing and currency codes that need the codebook; merchant IDs mapped to names, MCCs and
-towns through the processor's merchant directory, with one merchant ID per business at a shared address; card numbers
-that change on renewal (a 2023 conversion cohort expiring 09 and 10/2026), loss, theft, damage, fraud and closure,
-linked through the card history; a fraud case workbook with one row per disputed transaction, re-opened cases under new
-case numbers and dispute-form amounts in the merchant's currency; a chargeback event log; case timestamps in UTC.
+**Layer 1 (realistic mess and the system that produces it).** A notifiable-conditions line list with one row per
+laboratory notification (a person tested by two laboratories, or re-tested, appears twice, and the protocol's episode
+rule decides when that is one case); confirmed and probable status under a case definition revised on 1 July 2024
+(serology-only cases moved from confirmed to probable); onset dates missing on many rows and imputed under the
+protocol's stated rule; specimen dates as local dates and notification times as UTC stamps from the state system;
+residential postcodes mapped to local government areas through the ABS-style concordance, where a few postcodes are
+split between two areas with population ratios and the protocol's allocation rule applies; a hospital admissions
+extract keyed by medical record number; an antenatal vaccination register keyed by the mother's Medicare number, linked
+to infants through the birth record file; school enrolment rosters with school names spelled as each school spells
+them.
 
-**Layer 2 (the analytical shortcut).** Screening all counterfeit victims at once and keeping the terminals that stand
-out. The pooled screen is the standard first pass and its arithmetic is right; an expert attributes victims to the
-strongest source first, then screens the victims it leaves unexplained, because a pooled lift is an average over a
-mixture of sources: it inflates every place the dominant source's victims also passed through and dilutes a second
-source below them.
+**Layer 2 (the analytical shortcut).** Reading the cases notified so far for the last fortnight as the fortnight's
+cases. The protocol's excess is defined on specimens collected in the 14 days before the extract; the line list holds
+only the specimens that have been notified, and how many have is a property of each area's laboratory route. A careful
+analyst who sees the shortfall still pools the delay across the unit; an expert estimates each route's own
+specimen-to-notification delay from the completed history in the file and nowcasts each area on it.
 
-**Similarity claim.** No prior build turns on explaining away a dominant source before screening for the next. The
-draft this card replaced (exposure counted on contact reads at the device) is kept as rung texture, not as the driver.
-
-**WARN answers.** repeat.gate_g and overuse.gate_g (decomposition_attribution after task180 v1, 5 of the last 12): the
-mechanism is honestly attribution (each counterfeit victim is attributed to the terminal that exposed the card), and
-task180's architecture 1 is spent. task180's architecture 2 also carries decomposition_attribution, and the two decisive
-moves differ: here a population-level mixture is screened again after the dominant source explains its victims; there
-one unit's diagnostic gas is attributed between two sources that share a tracking signature, by the gas it arrives
-with. The WARN is a batch note, answered here.
-
-## GATE G
-
-- **Litmus.** Nothing reported is overturned and no stakeholder read is corrected. Every authorisation, case, card
-  history row and chargeback is correct; the pooled lift of every terminal is computed correctly. The difficulty is
-  which terminals compromised members' cards.
-- **Primary mechanism:** decomposition_attribution.
-- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
-- **Deletion test.** Delete the manager's note and the 2025 close-out: the pooled screen still credits the coffee counter
-  and car wash and buries the PIN pad; conditioning still finds the PIN pad.
-- **Clean-data and instrument test.** Suspect files: none incomplete. The case workbook lists every counterfeit case
-  (every counterfeit transaction is disputed: the members noticed the cash withdrawals); the authorisation log is the
-  issuer's complete record. The instrument that observes the decision's own quantity (which terminals read which cards
-  by contact, and when) ships whole; the difficulty is attribution across a mixture, not a repair.
-- **Lens swap.** Not one population under two lenses: the rung-1 population is the cards read at one terminal; the
-  answer's is the cards read at two terminals in two different windows.
-
-## STUMP SENTENCE
-
-A competent solver runs the common-point screen on the contact reads in each counterfeit victim's 60-day lookback,
-finds the Ferrier Creek pump terminal, counts the open member cards it read by contact between the first and last
-victim read and files that reissue count; the step that lands it there is stopping at the strongest common point, when
-the victims the pump does not explain trace to the Lombard Market self-checkout PIN pad in Smiths Falls, which the pooled
-screen ranks level with the car wash at the pump's exit and below its coffee counter.
-
-## ENTITY AND UNIT OF VALUE
-
-One card number. The policy (CP-14) reissues every open card read by contact at a compromise point while it was
-compromised and not replaced since. The committed figure is a count of card numbers; members, accounts and messages are
-not the unit.
-
-## LADDER (shipped)
-
-Main column of the screen: contact reads (05, 80, 90), 60-day lookback, member base rate over the cards with any
-authorisation in the screen's span (16,487 cards). Victims: 283 counterfeit cards, 205 read at the pump in their
-lookback, 47 at the PIN pad, 31 at neither.
-
-| Rung | Construction | Cards | Why a careful analyst stops | Killed by |
-|---|---|---|---|---|
-| 0 | Pooled screen, every terminal above a lift that looks clearly elevated: the pump (lift 38.78, 205 cards, base 1.87 per cent), the coffee counter (11.95, 95 cards) and, below any threshold under 4.59, the car wash and the PIN pad together | 1,139 (all four, +194.3%) or 502 (pump and coffee, +29.7%) | the standard common-point method, contact reads, 60-day lookback, member base rate, all filed | every coffee-counter and car-wash counterfeit card was also read at the pump in its window: neither terminal accounts for a card the pump does not |
-| 1 | The pump alone | 174 (-55.0%) | the dominant source, 205 of 283 victims, lift 38.78; the co-visited places explained away | 78 victims are unexplained, and 47 of them were read at one PIN pad in Smiths Falls (60.3 per cent against a base of 3.52 per cent, lift 17.13; next terminal with 3 or more cards 9.73 on 5 cards) |
-| 1b | The pump, and the residual put down to travel (31 of the 78 have US or out-of-province card-present use in their lookback) | 174 | a plausible story for a residual | the 47 Smiths Falls victims have no travel and share one terminal |
-| 2 (answer) | Pump and PIN pad, each in its own window | **387** (174 + 228, 15 at both) | | |
-
-Windows (CP-14 s5, Eastern): pump terminal LT723511, 5 August 2026 06:28 to 31 August 2026 18:01; Lombard Market
-terminal 02417158, 13 August 2026 07:56 to 14 September 2026 19:25. No member message at either terminal ID after the
-last counterfeit-card read, none from 20:00 the evening before the first, and every edge falls on the same date in UTC
-and Eastern time, so instant, Eastern-date and UTC-date windows all give 387.
-
-Discriminator: the twin pair. The car wash and the PIN pad carry the same pooled victim count (47) and the same member
-base (597 cards, 3.62 per cent): identical pooled lift 4.59, so any rule on pooled lift keeps both or drops both, and
-both are wrong. Every other terminal that read 10 or more counterfeit cards has lift at most 2.78 (Larchmere ATM
-Merrickville, 36 cards). After both sources, no terminal with 3 or more of the last 31 cards stands above 1.91.
-
-Bracketing (L5): the under-count stops (rungs 1 and 1b, 174) and the over-count stops (rung 0, 502 and 1,139) sit on
-opposite sides of 387; the nearest pooled cell is 502 (+29.7%).
-
-**Deviation from the targets the design was drafted with.** The draft paired a pump lift of about 45 with about 2,300
-pump-exposed cards and a reissue of about 2,590 out of about 15,000 cards. Under CP-14's lift (victim share over member
-base share) those cannot coexist: a lift of 45 on 205 of 283 cards needs a member base of 1.6 per cent, about 240 other
-cards, while 2,300 exposed cards put the base at 14 per cent or more and the lift near 5, below the coffee counter and
-the twin. The build keeps the lift structure the ladder needs (pump about 39, coffee 12, twin 4.6, others under 3) and
-lets the exposure follow: 400 cards read at the pump in its window (205 of them victims), 283 at the PIN pad, 387 to
-reissue.
-
-## GRID (asserted in checks.py, cell by cell)
-
-Columns: lookback 45, 60, 90 days; base over the screen's span or the whole extract; contact modes only or all
-card-present modes (12 columns). Rows: pooled screen at thresholds 3, 5, 8, 10, 15, 20, 30 with and without a 10-card
-floor (168 cells); pump only; pump and coffee; pump, coffee and car wash; pump and PIN pad (answer); all four;
-sequential attribution (floor 10, stop at lift 3), greedy set cover and a joint logistic on terminal exposure.
-
-- Sequential attribution and set cover return {pump, PIN pad} in all 12 columns; the joint logistic returns them in
-  the 6 contact columns (pump z 29, PIN pad z 10 in the main column). In the all-mode columns, which count contactless
-  taps that CP-14 s3 says do not expose a card, the logistic keeps the pump and returns the PIN pad at 45 and 60 days
-  only; at 90 days the taps of Lombard's other shoppers bury it. Those columns' own count (all-mode exposure at the two
-  terminals) is 701, +81.1%.
-- No pooled cell returns {pump, PIN pad}: the coffee counter stands above the PIN pad in every contact column (10.98 vs
-  5.73 at 45 days, 11.95 vs 4.59 at 60, 12.44 vs 3.70 at 90). Every pooled cell is at least 6 per cent from 387; the
-  nearest is 502 (+29.7%).
-- Other readings of the count: cards not filtered on status 667 (+72.4%, CP-14 s6); only the counterfeit cards removed
-  415 (+7.2%, CP-14 s6, renewals and closures since); all card-present reads 701 (+81.1%, CP-14 s3); the two terminals
-  summed with the 15 shared cards counted twice 402 (+3.9%, a unit violation of CP-14 s2, not a reading).
-- Converging readings: chip-only (no fallback or stripe read inside either window), approved-only (no decline inside
-  either window), Eastern-date and UTC-date window edges: all 387.
-
-## CLOSURE (the 22 axes)
-
-1 Population: open member cards (CP-14 s6). 2 Unit: card number (CP-14 s2). 3 Attribution window: 60 days before the
-first counterfeit use (CP-14 s4); 45 and 90 converge on the terminal set and the count (C1). 4 As-of dating: card status
-on Monday 5 October (card history). 5 Version basis: card history is the record of replacement (CP-14 s6).
-6 Divisor: member base rate over cards with any authorisation in the screen's span (CP-14 s4); whole-extract base
-converges (C1). 7 Weighting: none. 8 Window length: exposure window = first to last read of a later counterfeit card at
-the terminal (CP-14 s5); the pump's terminal ID last reads on 31 August and the PIN pad's on 14 September, and no member
-read sits between the last victim read and either retirement (C1). 9 Boundary inclusivity: no member read from 20:00 the
-evening before a window opens to its first victim read, every edge between 04:00 and 20:00 Eastern (C1). 10 Rounding:
-counts only. 11 Tie-break: none reached. 12 Maturity: every victim's first counterfeit use is before the extract.
-13 Order of operations: attribute then screen the remainder is the decisive move; pooled screen is the rung.
-14 Row order: irrelevant. 15 Duplicates: pre-authorisation and completion pairs count once per card (distinct cards).
-16 Identity: card numbers stay text; replacements linked through card history. 17 Netting: not applicable. 18 Units:
-counts. 19 Code semantics: contact = chip insert 05, fallback 80, magstripe 90 (CP-14 s3 and the codebook); contactless
-07 and 91, keyed 01 and e-commerce 81 do not expose a card; declined reads count (CP-14 s3) and none occurs inside a
-window (C1). 20 Integerisation: none. 21 Scope: CP-14 applies to every card the credit union issued. 22 Forward window:
-none; the reissue is of cards already exposed.
-
-## ASK SHEET (devices, all off the main call's row population)
-
-Main call row population (declared, asserted device-free): authorisation messages at card-present terminals from 1 June
-to 4 October; card history; the case workbook's card numbers and first-counterfeit dates. Asserted: re-opened rows change
-no victim or first-use date; no disputed transaction sits inside any lookback; the first counterfeit date agrees between
-the workbook and the log for all 283 cards; removing every read at the four screened terminals leaves both asks
-unchanged (decoupling).
-
-| Ask | Shipped figures | Primary devices (silent) | Shared hazard |
-|---|---|---|---|
-| A. What the wave has cost so far, CAD as posted, by card type | Debit: gross $246,792.17, recovered $78,330.45, net $168,461.72. Credit: gross $35,217.25, recovered $11,845.28, net $23,371.97 | D3: the workbook's amount is the dispute-form amount in the merchant's currency, USD at US merchants, with no currency column (the directory carries country; the log carries currency 840 and the CAD billing amount). D1: 8 claims re-opened under new case numbers repeat their transactions on the same retrieval reference; 58 groups of genuine identical-looking withdrawals (same card, ATM, amount, day) carry different retrieval references | H1 chargebacks: 6 credits taken back at pre-arbitration as later negative rows; the log also carries chargebacks on card-not-present fraud and merchant disputes |
-| B. Counterfeit cases refunded within MS-3's ten business days, and the longest wait, by card type | Debit: 195 of 215 refunded, longest 20 business days. Credit: 21 of 25, longest 16 | D8: case_opened is UTC with Z; MS-3 counts from the member's Eastern reporting day, weekends and the MS-3 holidays excluded (Labour Day 7 September falls inside); evening reports cross midnight UTC. A re-opened claim is the same claim (MS-3 s4) | the re-opened claims of ask A (the longest debit and credit waits are both re-opened claims, asserted) |
-
-Ask A stops (each moves debit and credit by $50 or more, asserted): workbook amount taken as dollars: debit gross
-$204,104.00, credit $29,377.28; no de-duplication: $254,521.10 and $38,279.84; de-duplicated on card, merchant, amount
-and date: $221,385.95 and $30,789.22; credits only (pre-arbitration ignored): recovered $80,644.26 and $13,330.38; every
-chargeback and case in the files: gross $263,408.47 and $96,798.50, recovered $87,242.23 and $38,382.03.
-
-Ask B stops (each moves debit and credit, three or four of the four figures, asserted): UTC day as the report day:
-debit 199 within / 19 longest, credit 23 / 16; calendar days: 161 / 29 and 18 / 23; no holidays: 189 / 21 and 19 / 17;
-a re-opened case as a new claim: 201 / 13 and 23 / 11. A federal calendar that adds 30 September moves credit to 22
-within (MS-3's list governs).
-
-Use test: both asks are what a risk committee reads next to a reissue request (what it has cost, how members were
-treated); CP-14 s8 lists both in the request. Decoupling asserted as above.
-
-## PINS
-
-Filed: CP-14 Card compromise and reissue (governing): scope, unit, contact exposure, the common-point screen as the
-standard first pass (lookback, member base rate), the window rule, the reissue rule, loss reporting (posted CAD, each
-disputed transaction once, recoveries net of amounts taken back). MS-3 Member service standard: the ten-business-day
-promise, the counting rule, the re-opened claim rule and the 2026 holiday list. Merchant directory and codebook
-(reference). Notes from the fraud analyst (field semantics only). No sentence states that victims are attributed before
-screening again, and no document gives a lift threshold.
-
-## PACK GATES (shipped)
-
-13 files, 7 formats (parquet, csv, xlsx, pdf, docx, md, txt). `card_authorisations_2026-06-01_2026-10-04.parquet`
-1,257,657 messages on 16,869 card numbers (debit 12,213, credit 4,656) from 15,137 member card slots (debit 10,643, credit
-4,494) of 9,840 members; merchant directory 1,316 merchants; card history 16,951 card numbers and 1,814 replacements;
-case workbook 1,012 disputed transactions in 458 cases; chargeback log 992 events. Distractors named in metadata.json:
-`online_banking_logins_2026-08-01_2026-10-04.csv` (101,424 sessions; account takeover is a different fraud) and
-`atm_cash_replenishment_q3_2026.xlsx` (127 visits; operations at the same branch ATMs). Two consecutive builds
-byte-identical on all 13 files and both goldens (sha256). Goldens in `golden/` (the repo's ignored build folder, cut
-with the pack): `card_reissue_request.pdf` (three pages, chart of the pooled and residual screens) and
-`common_point_trace.xlsx` (one sheet per page with the screen, the 387 card numbers, the transaction and claim trails).
-
-## LEAK CHECK AND SURFACE (stage 4)
-
-`leak.py task181 --asof 2026-10-05` on the final pack: REVIEW, no LEAK (13 files read; 11 golden figures and 3 candidate
-names from submission.md; 25 stump terms from this note). Answers to each REVIEW line:
-- golden figure 02417158 appears in the authorisation parquet: it is a terminal ID, one of 3,150 in the log, and
-  finding it is the task.
-- CP-14 carries 6 of the 25 stump-paragraph terms (window, exposure, screen, history, device, counted): it is the
-  governing policy and defines the screen, the window and the reissue; it does not say to attribute victims or screen
-  again, and gives no threshold.
-- the 2025 close-out carries 4 (window, exposure, device, decision; the last only in its timeline row "Last chargeback
-  decision received"): a single-terminal incident told as timeline and cost; it says nothing about how the common point
-  was found beyond naming it.
-INFO: the merchant directory names the three candidates (a directory, no ranking); the container audit found no writer
-signature.
-
-`guard.py surface task181`: one pair promoted for adjudication, task103 (a community foundation's food-security reserve;
-surface 0.143, corpus percentile 99; both cards file population as the decisive gap), carried by the flat layout, the
-format mix and the pdf+xlsx deliverable pair the prompt fixes; no shared file names or file contents, one short generic
-prompt shingle, and a different domain, decision and spine. Nearest not promoted: task131 (0.096). People found in the
-cut pack: Laurie Townsend and Brenda Figueroa (on the card). `guard.py check` on the synced card: WARN only
-(repeat.gate_g, overuse.gate_g, answered under DRAW).
-
-Prompt: the context closes on "The committee approves a number of cards." (seven words), so the voice-check ECONOMY row
-is clean (200 words, 25.0 per sentence, a sentence under eight words); page three asks for "the counterfeit cases we
-refunded", the population ask B counts. The earlier closer "That number is what I need." was the corpus's "what I need"
-ask construction (13 builds, 5 of the last 12; clone pre-flight Idiom note) and is gone.
-
-**Duplicate check (stage 5).** `guard.py heart`: WARN, no BLOCK (repeat.gate_g, overuse.gate_g; answered under DRAW).
-Clone pre-flight (pass 1, `clone_check_report.md`): CLEAN, no Exact, Same seed, Dataset or Template finding and no Shape
-echo. One promoted pair, task103 (a foundation's food-security reserve), adjudicated clean: the deciding steps are
-different moves, and the two share only the pdf-plus-workbook deliverable pair with a "so the desk can check it" line
-and an Ontario, CAD setting. Two Idiom notes, both acted on: the "what I need" closer (above) and the provenance file,
-which copied task131's `extract_log_<date>.txt` down to a 06:12 job time and is now the warehouse's job report
-`cudw_job_fraud_weekly_20261005.txt` (run 05:47, status line), no figure moved. The batch-level certified-record decoy
-count (7 of the last 12) is not this build's: task181 files no certified record.
-
-Isolated reader, pass 1 (2026-10-11): nothing quoted for question 1 (CP-14 s4 "sets out the method as ordinary policy";
-the version-3 change line "a normal change-log entry"), no ranking file, no analyst-only file (fraud_desk_notes.md "the
-fraud desk's normal hand-off data dictionary"), no answer-like figure (the Brockville figures a labelled precedent; "283"
-counts victims; "Nicholas traced the first cases to the pumps" "reads as a lead to test"). The three REVIEW lines
-harmless. Its plan screens contact reads against the member base and "allow[s] for more than one common point", which it
-took from CP-14 s2 ("a card is reissued once however many compromised terminals read it") and s8 ("each compromised
-terminal with its exposure window") and its own practice. Those are the sentences any card compromise policy carries,
-and allowing for several common points lands rung 0 (every terminal the pooled screen ranks high: 502 or 1,139) unless
-the victims the pump explains are set aside first, which no sentence says. Kept.
-
-Isolated reader, pass 2 (after the idiom fixes): nothing quoted for any of the four questions; the three REVIEW lines
-harmless ("nothing in the folder points to Lombard Market"). Its plan ranks terminals by the pooled ratio and takes "each
-common point" off that ranking, with no step that screens the victims the pump leaves unexplained: rung 0.
+**Similarity claim.** No prior build turns on right-truncated counts read across reporting routes of different speed.
+task229 (a release-health alert on interval meter reads) has days the MDM held nothing for until its estimation run,
+but there the decisive step is the unit the standard error is built over; task180's decisive step is a gas source
+attribution. Differentiation lines are written at stage 5.
 
 ## THREE RULES (client, 2026-10-10)
 
-- **Rule 1, the domain is used.** What decides the count is a card-fraud compromise-point analysis: each terminal's lift
-  among counterfeit victims against the member base on skimmable contact reads, re-run on the victims the first
-  compromised terminal does not explain. That is the fraud desk's own common-point-of-purchase work, close to the
-  fraud and AML detection task type. Swap test: with another field's nouns in there is no skimming exposure by entry
-  mode, no counterfeit lookback and no per-card reissue, so the task does not read the same.
-- **Rule 2, two layers.** Layer 1: ISO 8583 message pairs and reversals, terminal IDs that change at replacement, entry
-  mode and currency codes from a codebook, merchant IDs mapped through the processor's directory, card numbers that
-  change on renewal, loss and fraud, re-opened cases under new numbers, UTC case timestamps. Layer 2: attributing the
-  victims to the dominant source first and screening the victims it leaves unexplained, because a pooled lift averages
-  over a mixture of sources.
-- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who cleans the
-  messages, counts only contact reads and runs CP-14's screen exactly as written finds the pump (lift 38.78) and either
-  stops there (174 cards) or keeps every terminal the pooled screen ranks high (502 with the coffee counter, 1,139 with
-  the car wash and the PIN pad as well); only the re-screen of the 78 unexplained victims finds the Lombard Market PIN
-  pad (lift 17.13) and gives 387. The entry-mode reading (data semantics, CP-14 s3) and CP-14's window and reissue rules
-  (rule application) sit on lower rungs and in the asks: misread, they move the count as well (every card-present read
-  as exposure gives 701), but read correctly they still leave the pooled screen at 174, 502 or 1,139, and only the
-  residual re-screen gives 387.
+- **Rule 1, the domain is used.** What decides the call is an epidemiological nowcast, the eventual count of recent
+  specimens estimated from each reporting route's own delay distribution, which is how outbreak surveillance reads
+  right-truncated case data. Swap test: with another field's nouns in there is no specimen-to-notification delay, no
+  laboratory route and no truncated epidemic curve; the task does not survive the swap.
+- **Rule 2, two layers.** Layer 1 above (episodes from duplicate notifications, the case-definition revision, onset
+  imputation, UTC stamps, split postcodes, record linkage across three registers, school spellings). Layer 2: the
+  nowcast on each route's own delay.
+- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who removes the
+  duplicate notifications, applies the case definition, maps every case to its area and computes the protocol's
+  expected counts exactly still compares the cases notified so far for the fortnight (or a nowcast on one pooled delay)
+  with the expected counts and sends the team to Wagga Wagga; only a nowcast on each area's own route shows Griffith's
+  fortnight several times above its expected count. Rule application (the expected-count arithmetic, the episode rule,
+  the cluster rule) and data semantics (UTC stamps, the probable class) sit on lower rungs and in the asks.
 
-## PRE-SHIP CHECK (client, eight points)
+## GATE G
 
-1. Domain: the fraud desk's own compromise-point analysis (lift against the member base on skimmable reads, then the
-   residual re-screen); the swap test breaks it.
-2. Real work, nothing planted: ISO message pairs, entry-mode codebook, merchant directory, card history chains,
-   re-opened cases, UTC timestamps.
-3. The flip is a methodological choice, pooled against conditional attribution: not a planted catch, not a field or
-   code read correctly, not a stated rule applied.
-4. Analyst test holds: the easy routes give 174 (pump only), 502 (pump and coffee) or 1,139 (all four), named in the
-   ladder and asserted in the grid.
-5. CP-14 defines population, unit, window, exposure and comparison precisely enough that one method is defensible
-   (sequential attribution and set cover return the pump and the PIN pad in all 12 grid columns, the joint logistic in
-   the six contact-read columns CP-14 s3 defines).
-6. No decoy memo; the manager's note is a true observation (the pump is the biggest source).
-7. The method is not recovered from certified figures: the 2025 close-out is a precedent of layout, not a calibration
-   set.
-8. The lesson (a pooled common-point screen averages over a mixture, so the dominant source masks the next; screen the
-   residual) is not one an earlier task teaches.
+- **Litmus.** Nothing reported is overturned: every notification is correct, every date is right, the expected counts
+  are the protocol's own. The difficulty is that the recent fortnight is incomplete by different amounts in different
+  areas.
+- **Primary mechanism:** forecasting (nowcasting the eventual count of specimens already collected).
+- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
+- **Deletion test.** Delete the line-list notes and the protocol's background section: the notified counts still put
+  Wagga Wagga first and the route-specific nowcast still puts Griffith first.
+- **Clean-data and instrument test.** No file is incomplete or stale: the line list is the state system's complete
+  extract of everything notified up to 07:00 on Monday 5 October 2026. A perfect notification system would still hold
+  only the specimens notified so far; the decision needs the specimens collected, which is an estimate from the delay
+  each route shows in the completed history. Nothing is repaired.
+- **Lens swap.** Not one population under two lenses: the answer's quantity is the estimated count of specimens
+  collected, built from the delay history; the naive quantity is the count notified.
+
+## STUMP SENTENCE
+
+A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area
+against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the
+unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as
+the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification
+delay, its fortnight is several times what has arrived.
+
+## ENTITY AND UNIT OF VALUE
+
+One local government area, one team-week. PR-07's excess is a count of cases (confirmed and probable) with specimens
+collected in the 14 days before the extract day, less the area's expected count for the same 14 days.
+
+## LADDER (targets for the build; the shipped values replace these)
+
+Areas (ten local government areas served by the unit; populations from the 2021 census, rounded): Wagga Wagga 67,600
+(hospital route), Griffith 27,100 (private route since before 2019), Leeton 11,400 (private route), Narrandera 5,800,
+Murrumbidgee 3,900, Hay 2,900, Edward River 8,500, Junee 6,600, Cootamundra-Gundagai 11,300, Snowy Valleys 14,400 (all
+hospital route unless named). Route delays (specimen collection to notification): hospital route median 2 days, 95th
+percentile 5; private route median about 12 days (courier runs Tuesday and Friday, a Sydney batch PCR, results keyed
+next working day), 95th percentile about 24.
+
+| Rung | Construction | Area | Why a careful analyst stops | Killed by |
+|---|---|---|---|---|
+| 0 | Most cases notified with specimens in the fortnight | Wagga Wagga (about 9) | the biggest number | PR-07 4.2 is an excess over the expected count |
+| 1 | PR-07 excess on the cases notified so far | Wagga Wagga (about 9 against 2.0, +7) | the protocol applied exactly | the fortnight is incomplete: in the completed history only about a quarter of Griffith's cases are notified within 14 days of collection |
+| 1b | The same on notification date instead of specimen date | Wagga Wagga | a complete window | PR-07 4.2 counts specimens collected; Griffith's surge is mostly not yet notified on either date |
+| 2 | Relative excess (notified over expected) | Wagga Wagga or a tie | a rate reads fairer than a count | PR-07 4.2 is a count excess |
+| 3 | Nowcast on one delay pooled across the unit | Wagga Wagga | the truncation handled | the pooled delay is the hospital route's (most cases go through it); Griffith's route is several times slower |
+| 4 (answer) | Nowcast each area on its own route's delay | **Griffith** (about 40 estimated against 0.8 expected) | | |
+
+**Twin pair.** Griffith and Snowy Valleys carry the same notified count for the fortnight and the same expected count
+(both about 6 against 0.8), so rungs 0 to 2 cannot separate them; Snowy Valleys' cases go through the hospital route and
+its fortnight is nearly complete (nowcast about 6.5), Griffith's go through the private route (nowcast about 25 or more
+under every estimator in the grid).
+
+**Margins (targets).** Under every route-specific estimator in the grid, Griffith's estimated excess is at least 2.5
+times the next area's; under every rung 0 to 3 construction, Wagga Wagga is first and Griffith is not; Wagga Wagga's
+notified excess beats the next area by at least 25 per cent.
+
+## GRID (to be asserted in checks.py, cell by cell)
+
+Rows (estimators): aggregate inflation (notified in the fortnight divided by the route's completeness averaged over the
+fortnight's days), per-day inflation (each specimen day divided by its own completeness, with days below 5 per cent
+completeness pooled into the nearest day above it), reporting-triangle chain ladder on weekly specimen cohorts, and a
+negative-binomial delay model by route. Columns: delay history over the last 6, 12 and 24 months of completed
+specimens; stratified by laboratory route or by area; daily or weekly delay bins. Every route-specific cell returns
+Griffith. Every pooled cell and every rung 0 to 2 construction returns Wagga Wagga. The 2024 epidemic months may be in
+or out of the history window without moving a cell (asserted).
+
+## CLOSURE (the 22 axes)
+
+1 Population: residents of the ten areas (PR-07 1.2); visitors notified to the unit are excluded by residential
+postcode. 2 Unit: local government area. 3 Window: specimens collected Monday 21 September to Sunday 4 October 2026
+(the 14 days before the extract day, PR-07 4.2). 4 As-of: the extract at 07:00 AEDT on Monday 5 October 2026 (daylight
+saving began Sunday 4 October; the window's dates are local). 5 Version basis: one row per notification; the episode
+rule (PR-07 3.3) makes one case of a person's notifications within 90 days. 6 Divisor: none (a count excess). 7
+Weighting: none. 8 Window length: 14 days. 9 Boundary: no area within 25 per cent of the winner at any rung. 10
+Rounding: expected counts to one decimal in the brief. 11 Tie-break: the twin tie sits below the naive winner. 12
+Maturity: the decisive axis; the nowcast. 13 Order of operations: episodes, case status, area, window, then expected
+count and nowcast. 14 Row order: irrelevant. 15 Duplicates: the episode rule. 16 Identity: person ID across
+laboratories; the mother's Medicare number for the antenatal link. 17 Netting: none. 18 Units: cases. 19 Code
+semantics: case status confirmed or probable under the definition in force at the specimen date; PR-07 counts both. 20
+Integerisation: none in the call. 21 Scope: pertussis only. 22 Forward window: none.
+
+## ASK SHEET (devices off the main call's row population)
+
+| Ask | Figures | Primary devices (silent) | Shared hazard |
+|---|---|---|---|
+| A. The year to 31 August by area (CSV): confirmed cases, probable cases, infants under six months at specimen, of those admitted to hospital, of those whose mother was vaccinated at least 14 days before the birth | 10 x 5 = 50 | the episode rule across two laboratories (a second laboratory's notification within 90 days is the same case); serology-only cases before 1 July 2024 recoded probable by the revised definition (none in 2026, but the extract's status column carries the status at notification); age at specimen from date of birth; hospital admission linked by medical record number with an admission date within 14 days of the specimen; antenatal vaccine linked to the infant through the birth record (mother's Medicare number), counted only at least 14 days before birth | split postcodes (PR-07 3.4: the area holding the larger population share) |
+| B. School clusters (slide): schools with two or more cases among students with specimens in the 30 days to 4 October, each with school, area and case count | about 4 schools | school names spelled as each school spells them on its roster against the case interview's free-text school; students against staff (the interview's role field); the 30-day window by specimen date | the episode rule |
+
+Stops (each moving its figures, to be asserted): ignoring the episode rule; counting probable cases as not cases;
+admissions without the 14-day link; antenatal vaccine at any time before birth; school names matched exactly; the
+window by notification date.
+
+Use test: the huddle sees the area, the clusters and the year's infant picture every week. Decoupling: the ask figures
+do not move with the nowcast (asserted).
+
+## PINS
+
+Filed: PR-07 Pertussis response protocol (governing): scope (1.1, 1.2), case definition and status (2.1, 2.2, revision
+of 1 July 2024), episodes and notifications (3.1 to 3.4: the episode rule, onset imputation as specimen date less 10
+days where onset is missing, residential postcode, split postcodes to the area with the larger population share),
+deployment (4.1 the team works one area a week; 4.2 the area is the one with the largest excess of cases with
+specimens collected in the 14 days before the extract day over its expected count; 4.3 the expected count is the mean
+count for the same 14 days in the previous five years), clusters (5.1 two or more cases among a school's students with
+specimens in 30 days), infants (6.1 maternal vaccination counts at least 14 days before birth). Line-list notes (field
+semantics only). No sentence anywhere mentions notification delay, completeness, backfill or nowcasting (to be
+asserted on the protocol, the notes and the extract report).
+
+## PACK GATES (targets)
+
+10 to 13 files, at least 5 formats: the line list (csv, 2019 to 2026, a few thousand notifications), the postcode
+concordance (xlsx), population by area (xlsx, census and estimated resident population), hospital admissions extract
+(csv), birth records (csv), antenatal vaccination register (parquet, large: every pregnancy dose for the district since
+2019, or a daily immunisation register at 25,000 rows or more), school rosters (xlsx, one sheet per school), PR-07 (pdf),
+line-list notes (md), extract run report (txt), and two distractors named in metadata.json (an influenza notifications
+extract and the unit's weekly bulletin PDF for August, both from the same world, neither read by the golden). Two
+consecutive builds byte-identical.
+
+## PRE-SHIP CHECK (client, eight points; answered at ship)
 
 ## STOPPING RULE
 
-Two rounds in which both solvers re-screen the residual unprompted file this architecture as at-ceiling; a miss that
-lands anywhere other than rungs 0, 1 or 1b is read for a fork before any hardening.
+Two rounds in which the solver nowcasts each route unprompted file this architecture as at-ceiling; a miss that lands
+anywhere other than rungs 0 to 3 is read for a fork before any hardening.
 
 ## Tried and rejected
 
-- **Architecture 1 spent at round 1 (2026-10-11): two skimmed terminals behind a dominant common point.** One
-  solver, proxy 94.5, 387 and every ask figure. Its path: "Coffee counter LT314033 (95) and car wash LT938930 (47)
-  contain only pump cards. Of the 78 non-pump cards, 47 were read at Lombard 02417158 (16.6% vs 3.62% base), disjoint
-  from the pump cards. The remaining 31 have no common point." The explain-away and the residual re-screen are what a
-  careful analyst does on the second pass, not a step any sentence announced (both readers' plans stopped at the pooled
-  ranking). Hardening weighed and not built: a site that outranks the PIN pad on the residual (the Smiths Falls branch
-  ATM the PIN pad's local victims also use, a pharmacy in the same plaza, the PIN pad moved between lanes) is either a
-  near-subset of the PIN pad's victims, which the solver's subset check already dismisses, or carries unexplained
-  victims of its own, which makes it read as a compromise and opens a fork. Re-rooted.
-
-- Draft (never registered): which merchant location gets the acquirer's inspection, exposure counted only on contact
-  reads at the device. Rejected before registration: pick-one-of-N is the spent shape on this objective, and contact-only
-  exposure is applied by reflex by a fraud-literate solver.
-- First fraudulent use anchored on unclaimed test transactions (the test site posing as the common point). Rejected:
-  the claims file would be the narrower record the clean-data test repairs, so the defect would carry the stump.
-- Targets of about 2,300 pump-exposed cards and a pump lift of about 45 on about 15,000 cards. Rejected at generation:
-  the two are arithmetically incompatible under CP-14's lift (see LADDER); the lift structure was kept and the exposure
-  followed it (answer 387).
-- Random pump choice by commuters with the victims' pre-August OPT 6 reads moved to OPT 5 as inserts. Rejected: OPT 5
-  became a 62-lift terminal and step one of the attribution picked it; the moved visits are taps at other pumps instead.
-- Every plaza pump tap-capable at the same habit as the coffee counter, and commuters' Ottawa favourites including ATMs.
-  Rejected: other pumps and an Ottawa ATM reached 10+ victims at lifts of 13 to 20 in the 90-day column and outranked
-  the pump; pumps now take taps by habit, Ottawa ATMs left out of commuters' favourites, and OPT 6's July dispenser
-  outage lowers its pre-window users.
-- Victims drawn only from cards with no replacement due in August to October. Rejected: the non-victim exposed cards
-  were then half renewals and the answer fell to 244; a renewal due after the skim is now superseded by the fraud
-  reissue, and the renewal cohort is 13 per cent of debit cards.
-- Lombard Market at its first calibration (self-checkout 68 per cent of lanes, baskets at the grocery median). Rejected:
-  in the all-mode columns the PIN pad's taps diluted it below a joint logistic's bar; bigger weekly baskets (more inserts
-  over the $100 tap limit) and fewer self-checkout visits keep contact and all-mode bases closer.
-- Background travellers chosen without a destination cap. Rejected: five of the 31 had been to Erie, Pennsylvania, and
-  its parking lot entered the all-mode logistic; at most two background cards now share a destination in a lookback.
+- **Architecture 1 spent at round 1 (2026-10-11).** See `DESIGN_NOTE_arch1.md`, Tried and rejected: the solver's
+  explain-away and residual re-screen landed the reissue count, and any further rung was either dismissed by its subset
+  check or opened a fork.
+- **Draws weighed for architecture 2 and not taken.** A competing-risks registry outlier (one minus Kaplan-Meier against
+  cumulative incidence for implants in frail patients): registries report Kaplan-Meier, so the expert estimand would
+  read as a second defensible answer. Overdispersed funnel limits for hospital mortality: multiplicative and additive
+  adjustments rank the extreme hospitals differently, a fork. A disproportionality signal masked by indication: the
+  pinned comparator would have to be filed, which makes it rule application.
