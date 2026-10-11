@@ -31,3 +31,12 @@ Stump terms swept: register, decisive, heating, attribution, main-tank, acetylen
 ## 7 hidden content (clean)
 
 ## 11 prompt form (clean)
+
+## Solver's-eye read (pass 6, isolated reader, hardening loop 2)
+
+1. none. ES-DGA-02 5.2 sets the rule; "No file says how to tell a main-tank fault from other gassing, or that the analysis turns on it."
+2. none (the thermal survey's Priority 1-4 scale covers switchboards; transformers out of scope).
+3. none (oil_results_notes.md defines fields without drawing conclusions; listed under "documents copied" in the run report).
+4. none (no document names or scores a transformer; the bookings say "To be advised").
+REVIEW lines: all three harmless (the standard's own vocabulary, naming no contamination test, ratio or transformer; a normal label field whose second issues change it; a forward booking sheet).
+Plan: the IEC 60599 acetylene-to-hydrogen indicator and acetylene steps against the tap counters, the vacuum unit as no source, and "check the maintenance log for events that distort the increases, such as oil processing and the LST-T2 radiator change". No step attributes each gas to its own source or reads the hydrogen's timing against the acetylene.

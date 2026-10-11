@@ -291,6 +291,12 @@ Isolated reader, pass 5 (after the judge's hygiene fix): nothing quoted for any 
 harmless; its plan keeps "only code 3 units whose gas shows a main-tank fault" and checks "tap-changer type and service
 history before trusting main-tank acetylene" (rungs 3 and 3b), with no gas-ratio step.
 
+Isolated reader, pass 6 (hardening loop 2): nothing quoted for any question, the three REVIEW lines harmless. Its plan
+reads the acetylene-to-hydrogen indicator and the tracking together and would "check the maintenance log for events that
+distort the increases, such as oil processing and the LST-T2 radiator change": it reads the capital-works row as a
+maintenance event, not as a hydrogen source, and plans no per-gas attribution. The row is the honest record of the work
+that produced the hydrogen (a radiator replacement is logged wherever one is done) and says nothing about gas.
+
 ## Tried and rejected
 
 - **Round 4 landed (architecture 2, loop 1, the re-run the judge's FIX_NOW required, 2026-10-11); hardened as loop
