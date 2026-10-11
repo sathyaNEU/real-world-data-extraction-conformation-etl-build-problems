@@ -309,12 +309,35 @@ golden figures). Each REVIEW line answered:
 - `SOP-PV-14_signal_refinement.pdf` carries 6 of 8 words of the committed call. Harmless: the SOP names the formal
   assessment the committee opens (1.1, 8.1) and defines all three events in annex A (falls, acute kidney injury, acute
   pancreatitis); it never pairs an event with a medicine as supported and names no design.
-- `registry_extract_notes.md` has 3 stump-paragraph terms (register, agency, matched). Harmless: "matched" is the
-  data service's matched comparator extract (a file the notes must describe), "register" and "agency" are the
-  organisation's nouns; the notes describe fields and never name a comparison design.
+- `SOP-PV-14_signal_refinement.pdf` has 3 stump-paragraph terms (agency, carried, extract). Harmless: the
+  Agency's own name, and "carried" and "extract" in the SOP's description of the data service's extract; the SOP
+  states the committee's question and never names a design, a reference period or an estimator.
+- `registry_extract_notes.md` has 4 stump-paragraph terms (register, agency, matched, extract). Harmless: "matched"
+  is the data service's matched comparator extract (a file the notes must describe), and "register", "agency" and
+  "extract" are the organisation's nouns; the notes describe fields and never name a comparison design.
 - Container metadata: INFO only (no writer signature).
 
-The solver's-eye read (one Sonnet reader on a fresh scratch copy) follows in `leak_check_report.md`.
+Re-run after the reader's fixes (rebuild 92e0abb): the same lines, nothing new.
+
+**Solver's-eye read (pass 1, Sonnet; the answers are in `leak_check_report.md`).**
+- **Q1 and Q4: none.** No sentence names the decisive step, and nothing reads as the answer.
+- **Q3: `atc_ddd_index_2026.csv`.** It narrated the corinurad code change ("Erstatter M04AX02"). The list now keeps
+  its codes and validity dates without remarks; the notes already present it as the delivered code list for `atc`.
+- **Q2: the screen's PRR ranked corinurad/AKI first.** It was 17.74, against 10.37 and 6.35. It now leads with
+  tasorexant/Fall (13.85, corinurad/AKI 11.18 at 24 cases, velaglutide 6.35), as the report counts already did, and
+  no screen count equals a golden figure.
+- **Both fixes are data-only,** so there is no second read.
+- **Realism notes, deferred to stage 6b:**
+  - weekday-flat dispensings, with holidays;
+  - a 15:59 start-time spike in the LPR3 contacts;
+  - round cohort counts;
+  - flat immigration dates;
+  - the PSUR's exposure against the registry's;
+  - the extract delivered before the screen ran;
+  - the screen's 11 pairs and its case-number blocks;
+  - fictional ATC codes on real assignments (M04AX02).
+- **Watch item:** the reader planned the within-person comparison unprompted. The STOPPING RULE applies if the solver
+  round does the same.
 ## DUPLICATE CHECK (stage 5)
 
 **Heart (`guard.py heart task180`, 2026-10-11): BLOCK on two axes, both against task135.** task135 is another author's

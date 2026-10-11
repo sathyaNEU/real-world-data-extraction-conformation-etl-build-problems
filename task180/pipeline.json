@@ -2,20 +2,20 @@
  "task": "task180",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "leak check (architecture 3): leak.py REVIEW, no LEAK; the one Sonnet reader next, then the duplicate check and the solver round",
+ "stage": 6,
+ "stage_name": "solver round (architecture 3, round 1): leak and duplicate checks passed; the round runs once the scratchpad is clear",
  "updated": "2026-10-11",
  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
  "architecture": 3,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2 lines answered in the design note) --asof 2026-10-12",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK, --asof 2026-10-12; re-run on the rebuild at 92e0abb: the same 3 lines, each answered in the design note",
+  "reader": "pass 1 (Sonnet, 2026-10-11): Q1 none, Q4 none; Q3 atc_ddd_index_2026.csv remarks and Q2 the screen's PRR order fixed data-only (no second read); realism tells deferred to 6b"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": ""
+  "heart": "BLOCK on ban.pattern (G17 against task135), overridden with --force on the author's instruction (card re-registered at 83eaddc)",
+  "nearest": "task135, by the G17 label only; the clone check finds no shared driver (log back-transform against a within-person design)",
+  "clone_check": "pass 1 CLEAN (0bb0d0e): no Exact, Same seed, Dataset, Template or Shape echo; Idiom notes: one pack outline across task180 to task182, 'extract' in file names"
  },
  "solver_rounds": [
   {
