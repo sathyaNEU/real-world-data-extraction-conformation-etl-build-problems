@@ -10,14 +10,14 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
 
 1. **Invoke the `leak-check` skill** so the sweeps and the five questions come from the current file.
 2. **Resolve `--asof`.** If the argument does not carry it, read the fiction's as-of date from the
-   design note's DRAW block (`as-of`, `as of`, `cut-off` or the decision date) and pass it. If the
+   design note's `## Draw` section (`as-of`, `as of`, `cut-off` or the decision date) and pass it. If the
    note has none, run without it and say so.
 3. **Run the mechanical half** with Bash:
    `python3 .claude/skills/leak-check/leak.py <task> --asof <date> --quiet`
    and read `<task>/leak_check_report.md`.
 4. **Run the reader's half** with a single `Agent` call, `subagent_type: general-purpose`,
    `model: sonnet` and `effort: medium` (it reads and answers, it does not solve):
-   - First, with Bash, make a fresh scratch copy: `<scratchpad>/leak-<task>/prompt.md` and
+   - First, with Bash, make a fresh scratch copy: `<scratchpad>/leak-<task>/prompt.txt` (or `prompt.md` on a build shipped before the rule) and
      `<scratchpad>/leak-<task>/target/` (unzip `target.zip` if `target/` is absent).
    - The prompt tells the agent it is an analyst who has just been handed this folder, gives the
      scratch path as the **only** readable location, forbids reading anything else on the machine

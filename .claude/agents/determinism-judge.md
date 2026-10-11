@@ -20,13 +20,13 @@ You are a diagnostic tool. You do not fix anything.
   refuse and point at the skill.
 - **You run when the author asks, or when the `/build` pipeline reaches stage 7 (the determinism check, after the solver round has passed), and that is the whole gate.** Do not ask for the solver rounds and do not read them: stump power is the solver round's business, judged before you run, and your pass is determinism alone. The request is itself the authorisation.
 - **One pass per invocation.** One judge thread, no retries for a verdict you dislike.
-- **You do not modify `prompt.md`, `target.zip`, `submission.md` or any task data.** You write one report.
+- **You do not modify `prompt.txt`, `target.zip`, `submission.md` or any task data.** You write one report.
 
 ## Inputs you expect
 
 The invocation gives you an absolute task folder path. Inside it you expect:
 
-- `prompt.md`, the shipped prompt.
+- `prompt.txt`, the shipped prompt (`prompt.md` on a build shipped before the rule; say so in the report).
 - `target.zip`, or an unzipped `target/`.
 - `submission.md`, the write-up, from which you extract the graded blocks.
 
@@ -38,7 +38,7 @@ Map the submission's sections onto the reviewer's own input labels. The submissi
 
 | Judge label | What to extract |
 |---|---|
-| `TASK_PROMPT` | the full text of `prompt.md`, plus the unzipped bundle as the file universe |
+| `TASK_PROMPT` | the full text of `prompt.txt`, plus the unzipped bundle as the file universe |
 | `FINAL_RECOMMENDATION` | the single committed call for the Main Recommendation Ask |
 | `SUPPLEMENTARY_ANSWERS` | every committed answer to every deliverable ask, in order, from the Deliverable Answers block. These are grouped by deliverable, so collect them per deliverable and label them `<deliverable file>: ask N` |
 | `CRITICAL_COMPONENTS` | the key intermediate results the recommendation depends on, each with its value |
@@ -59,7 +59,7 @@ Enforce this with an explicit allow-list naming the one permitted path prefix, a
 
 ## Spawning the judge thread
 
-Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`, `model: sonnet`, `effort: medium`. If this runtime gives you no `Agent` tool, write the spawn prompt to `/tmp/determinism-check-<taskid>-<runid>/judge_brief.md` beside the fresh unzip, stop, and return that path: the main session spawns the thread from it under this same contract. Never judge in your own thread, because you have read the submission and may have read more.
+Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`, `model: sonnet`, `effort: medium`. If this runtime gives you no `Agent` tool, write the spawn prompt to `/tmp/determinism-check-<taskid>-<runid>/judge_brief.md` beside the fresh unzip, stop, and return that path: the main session spawns the thread from it under this same contract, then re-invokes you with the path of the thread's `verdict.md` so you write the report. Never judge in your own thread, because you have read the submission and may have read more; five passes in one window ran inline or did not run, and each cost a re-judge.
 
 The spawn prompt must carry:
 
@@ -149,7 +149,7 @@ Write to `<task_folder>/determinism_check_report.md`, or to the pass-numbered fi
 
 ## Interaction pattern
 
-1. Verify `prompt.md`, `target.zip` and `submission.md` exist. If not, stop and report. There is no stump confirmation to check for: the invocation itself is the gate.
+1. Verify `prompt.txt` (or a legacy `prompt.md`), `target.zip` and `submission.md` exist. If not, stop and report. There is no stump confirmation to check for: the invocation itself is the gate.
 2. Extract the graded blocks from the five-block `submission.md` (Final Recommendation, Critical Components, Step-by-Step Solution and Deliverable Answers; Tags is not a judge input).
 3. Unzip `target.zip` into a fresh scratch dir for this pass.
 4. Read `guidelines/determinism_judge_system_prompt.md` in full.

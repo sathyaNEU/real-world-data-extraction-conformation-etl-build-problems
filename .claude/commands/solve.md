@@ -1,5 +1,5 @@
 ---
-description: Run an in-house solver round on a built task before the judge and the portal (stage 6 of /build, or on its own). One isolated solver works the task in a sandbox holding only the prompt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md. The round passes when the solver does not commit to the main call.
+description: Run an in-house solver round on a built task before the judge and the portal (stage 6 of /build, or on its own). One isolated solver works the task in a sandbox holding only prompt.txt and the bundle, returns its committed call and every ask figure, and grade.py scores it against submission.md. The round passes when the solver does not commit to the main call and the asks hold (grade.py exit 0).
 argument-hint: taskNN [--label "..."]
 ---
 
@@ -11,38 +11,41 @@ The round number `k` is one more than the rounds already recorded in `<task>/pip
 
 1. **Invoke the `solver-round` skill.** The solver, the decision rule and the isolation rules come
    from it; do not restate them from memory.
-2. **Refuse an unfinished build.** `submission.md` must exist with a block 4, and every file the
-   prompt names must be in `<task>/` or `<task>/golden/`. If `leak_check_report.md` reads LEAK, say
-   so and stop, because a solver reading a leak measures nothing.
-3. **Make the sandbox** with Bash: `S=<scratchpad>/solve-<task>-<k>`; copy `prompt.md` to
-   `$S/prompt.md`; unzip `target.zip` (or copy `target/` when there is no zip) so the bundle sits at
+2. **Refuse an unfinished build.** `submission.md` must exist with a block 4, `prompt.txt` must exist
+   (a build with only `prompt.md` is from before the rule and is solved from that file, which the report
+   says), and every file the prompt names must be in `<task>/` or `<task>/golden/`. If
+   `leak_check_report.md` reads LEAK, say so and stop, because a solver reading a leak measures nothing.
+3. **Make the sandbox** with Bash: `S=<scratchpad>/solve-<task>-<k>`; copy `prompt.txt` to
+   `$S/prompt.txt`; unzip `target.zip` (or copy `target/` when there is no zip) so the bundle sits at
    `$S/target/`; a zip that extracts flat has its files moved under `target/`. Create `$S/work/` for
    the solver's scripts. Nothing else goes under the scratchpad: no earlier round's copy, no result
-   file, no design or grading notes (results and notes live outside it).
+   file, no design or grading notes.
 4. **Spawn one isolated `Agent`** of type `Explore` (it carries no repository instructions) with
-   `model: opus` and `effort: medium`, with the spawn prompt below, `S` and the
-   deliverable file names filled in. Pass the model explicitly, because an `Explore` agent otherwise
-   runs on its own default model. One agent needs no Workflow script.
+   `model: opus` and `effort: high`, with the spawn prompt below, `S` and the deliverable file names
+   filled in. Pass the model explicitly, because an `Explore` agent otherwise runs on its own default
+   model. One agent needs no Workflow script.
 5. **Write the solver's JSON** to a results folder outside the scratchpad and grade it:
    `python3 .claude/skills/solver-round/grade.py <task> <results>/solver.json --label "round k"`.
+   Exit 0 passes, 2 is LANDED, 3 is ASKS LEAK.
 6. **Read the main-call sentence yourself** in `solver_rounds/<label>.md`. Where the token match
    says LANDED for a wrong set, or missed for a right one phrased differently, re-run `grade.py` with
    `--landed no|yes`.
-7. **Report**: the proxy score, landed or missed, the asks cracked, and the path step at which the
-   solver left the ladder (read the path against the design note's rungs; this is the one place the
-   main thread opens the design note in this command). Then the decision: **pass** when the solver
-   did not commit to the main call, **harden** (with the hardening brief in one sentence) when it
-   did, or re-root when the architecture is spent; and the round's row in `pipeline.json`
-   `solver_rounds`.
+7. **Report**: the proxy score, landed or missed, the ask share kept and the items cracked, the gate,
+   and the path step at which the solver left the ladder (read the path against the design note's
+   rungs and its default path; this is the one place the main thread opens the design note in this
+   command). Then the decision: **pass** on exit 0; **harden** (with the hardening brief in one
+   sentence, and whether the solver's path was the design note's default path) on exit 2; **asks** on
+   exit 3; or re-root when the architecture is spent. Write the round's row in `pipeline.json`
+   `solver_rounds` with `landed`, `proxy`, `ask_share` and `gate`.
 
-Run on its own, this command reports and stops; the hardening is the pipeline's next stage-2 pass.
-Inside `/build` the pipeline carries on from the decision. Do not run the determinism judge or the
-clone check from here.
+Run on its own, this command reports and stops; the hardening or the ask rebuild is the pipeline's
+next pass. Inside `/build` the pipeline carries on from the decision. Do not run the determinism judge
+or the clone check from here.
 
 ## Spawn prompt
 
 ```text
-You are the analyst this request was sent to. The request is at S/prompt.md and the folder it
+You are the analyst this request was sent to. The request is at S/prompt.txt and the folder it
 refers to is S/target/. Those are the only locations you may read; do not open anything else on
 this machine, do not use web tools, and do not spawn agents. The files are the universe: a fact
 absent from the folder does not exist for this work. Read the request, do the analysis with Python
