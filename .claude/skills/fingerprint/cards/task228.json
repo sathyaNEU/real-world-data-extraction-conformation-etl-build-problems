@@ -1,0 +1,90 @@
+{
+  "task": "task228",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed DQ01 (which guardrail metric the experiment platform's automated alert watches), re-rooted under the two-layer standard: the object is the experiment platform's data health and the call is the auto-alert wiring for the coming peak season",
+  "domain": "product-analytics",
+  "subdomain": "metric-definition-measurement-science",
+  "client_domain": "product-analytics",
+  "niche": "a holiday-rental marketplace's experimentation platform choosing which one of its five nightly data-health checks the paging alert is wired to, and at what setting, for the winter booking peak, scored on a random replay audit of last year's experiments",
+  "objective": "data-quality-monitoring",
+  "shape": "04",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Wire the paging alert to the pageview beacon loss check (beacon_loss_z) at a setting of 3.3 for the whole 2027 peak, 4 January to 28 March 2027.",
+  "answer_source": "task228/submission.md, 1. Final Recommendation (golden/peak_alert_config.json carries the same check and setting)",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G17",
+    "G12"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "lead of the experimentation platform at a holiday-rental marketplace, who sets the paging alert before the peak change freeze",
+  "role_family": "research_desk",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "vigia_nightly_checks_2025-10_2026-09.parquet",
+    "rows": 65100,
+    "entity": "one nightly data-health check result for one running experiment on one Lisbon check night",
+    "grain": "experiment x check night x check",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "hospitality_or_tourism",
+  "world": {
+    "geography": "Portugal (Porto and Lisbon)",
+    "currency": "EUR",
+    "org_type": "online holiday-rental marketplace with an in-house experimentation platform",
+    "invented_names": [
+      "Pousalto",
+      "Vigia"
+    ],
+    "people": [
+      "Lourenço Miranda",
+      "Isabela Pires",
+      "Gaspar Gonçalves",
+      "Naiara Sá",
+      "Tomé Pinto",
+      "Diego Pinheiro",
+      "Vitória Campos",
+      "Teresa Tavares"
+    ]
+  },
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "product-analytics/metric-definition-measurement-science/1",
+  "layer1": [
+    "check results in long format, one row per check per night, with nightly job re-runs",
+    "check nights on Lisbon local dates while job stamps are UTC, across two DST changes",
+    "a check renamed and re-unitised between catalogue releases",
+    "experiment keys that differ between the check export, the audit workbook and the incident tracker",
+    "an incident tracker migrated mid-year, migrated tickets present under both key schemes",
+    "a peak booking queue with rebooked and cancelled entries and squad ownership by effective date"
+  ],
+  "deliverables": [
+    "peak_alert_config.json",
+    "alert_replay.py",
+    "peak_alert_tradeoff.png"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "The false-alarm budget is set per monitored run while the check is evaluated on every repeated look, so a threshold calibrated on the historical mix of run lengths under-protects the longer runs the coming window books; recalibrated on runs of the forward length, the heavy-tailed candidate that led on the historical mix loses most of its sensitivity and a light-tailed candidate leads.",
+  "driver_concrete": "The peak alert may page no more than one in twenty sound experiments over a run, and every peak experiment books four weeks of nightly checks, so the setting has to be calibrated on sound four-week audited runs rather than on last year's mix of two- and four-week runs; the events-per-user check, whose bot-burst tail is heavy, then needs a much higher setting and drops most of the defects it caught, and the beacon-loss gap leads.",
+  "stump": "A competent solver takes the replay audit as the record of sound and defective, finds for each nightly check the most sensitive grid setting at which no more than one in twenty sound audited experiments pages on any night of its run, counts the defects each catches on the first bad night or the two after, and wires the events-per-exposed-user check at 12 per cent (29 of 68 caught); the step that lands it there is holding the page budget on last year's mix of two-week and four-week runs, when every 2027 peak test books 28 nights, so on the 123 sound four-week runs the heavy-tailed events check needs 18 per cent and catches 12, and the pageview beacon loss check at 3.3, which catches 19 under either reading, leads.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Layer 2 frame from the seed (score candidate alert checks on labelled past experiments at a stated false-alert rate); the decisive move is the simultaneous (per-run) false-alarm rate over the forward run length, not the seed's largest-movement shortcut. Calibration organ is the platform's quarterly random replay audit, which the alert standard names as the record of sound and defective; no certified figure is reproduced. Drawn beside task229 (same objective, built in parallel): different domain, org family, forum, forcing event, geography, personas, spine and stump strategy."
+}

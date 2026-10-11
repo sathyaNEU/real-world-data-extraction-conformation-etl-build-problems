@@ -9,7 +9,7 @@
 
 **Fire the read-health alert on EM3.10.9, EM3.12.1 and PX5.2.7, and hold EM3.12.0, PX5.3.0, EM3.11.4, EM3.12.2 and PX5.3.1 for Wave 8.**
 
-The deciding margins are PX5.2.7 at 98.45% against its 98.99% limit and EM3.12.1 at 99.13% against 99.39%. PX5.2.7 fires although its week looks complete once the morning catch-up deliveries land, because only what the MDM held at the 06:00 cut-off counts. Not PX5.3.0, which the desk expects to pull: its 5-minute commercial installations carry most of its reads but count once each, and its average installation is 99.51% against 99.36%. Not EM3.12.0 or the PX5.3.1 pilot, which breach only on an error taken from the read count rather than from installation-to-installation spread. Not EM3.12.2, whose shortfall is Wave 7's upgrade nights on installations that did not run it all week.
+The deciding margins are PX5.2.7 at 98.45% against its 98.99% limit and EM3.12.1 at 99.13% against 99.39%. PX5.2.7 fires although its week looks complete once the morning catch-up deliveries land, because only what the MDM held at the 06:00 cut-off counts. Not PX5.3.0: its 5-minute commercial installations carry most of its reads but count once each, and its average installation is 99.51% against 99.36%. Not EM3.12.0 or the PX5.3.1 pilot, which breach only on an error taken from the read count rather than from installation-to-installation spread. Not EM3.12.2, whose shortfall is Wave 7's upgrade nights on installations that did not run it all week.
 
 ## 2. Critical Components
 
@@ -49,4 +49,4 @@ The deciding margins are PX5.2.7 at 98.45% against its 98.99% limit and EM3.12.1
 
 ### read_health_by_build_wk41.png
 
-1. One row per build in the payload's order, read health as a point with its lower limit marked beside it, the reference drawn as a line labelled with its value, EM3.10.9, EM3.12.1 and PX5.2.7 picked out as firing, titled "Read-health alert fires on EM3.10.9, EM3.12.1 and PX5.2.7; the other five builds hold for Wave 8".
+1. Titled "Read-health alert fires on EM3.10.9, EM3.12.1 and PX5.2.7; the other five builds hold for Wave 8", one row per build in the payload's order labelled with its assessed installations, read health as a point, its lower limit as a tick beside it, and the reference drawn as a line labelled with its value.

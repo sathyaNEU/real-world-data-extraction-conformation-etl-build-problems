@@ -21,19 +21,27 @@ where the object under analysis (interval data delivery) is the health of the da
 | Layer 2 | estimation_fit, `product-analytics/metric-definition-measurement-science/2` (ratio of sums is not mean of ratios; the limit follows the unit), made this build's own: the heavy unit is a 5-minute, three-register installation that files eighteen times a 30-minute single-register household's reads, and the build's error has to come from installation-to-installation spread |
 | Layer 1 | interval reads with quality codes at mixed 5, 15 and 30 minute resolution; register-days re-delivered when a later retrieval completes them; receipts in UTC, market time in AEST, field times in AEDT, against a filed cut-off; firmware build codes spelled three ways across the head-end, the rollout schedule and the MDM; effective-dated meter-to-installation assignments with mid-week exchanges; head-end events replayed after a failover and failed activations rolled back |
 | Calibration form | none, because the strategy is a stated rule whose construction is the work; no closed corpus is needed or shipped |
-| Context artifact | monitoring_export (the MDM interval receipt extract) |
+| Context artifact | filed_standard (the read-health standard MDS-STD-114 the gate runs on; redrawn from monitoring_export once task228, drawn earlier the same day, took that type) |
 | Stakeholder | metering data services lead, who owns the read-health alert the rollout desk gates each wave on |
 | Forum / forcing event / org family | operations_desk (the rollout desk holds the wave for any build the alert fires on) / cutover_or_migration (Wave 8 of the firmware migration goes out on Tuesday night) / utility_or_infrastructure |
 | World | Halvane Metering, an accredited metering provider and metering data provider in the National Electricity Market, New South Wales, AUD; personas drawn with `guard.py names --locale en_AU --seed 229` |
 | Deliverables | `wave8_read_health_alerts.json` (the alert payload the routing system ingests: commits), `read_health_by_build_wk41.png` (reads at a glance) |
-| Guard | PASS (WARN repeat.deliverables cleared by moving to json plus png, a set the batch has not used); NOTE same_puzzle_older against task98 v3, differentiated on the card; nearest driver 0.06 (task87 v3) |
+| Guard | WARN repeat.gate_g against task228 (answered below); repeat.deliverables cleared by moving to json plus png; ban.artifact against task228 cleared by the redraw above; NOTE same_puzzle_older against task98 v3, differentiated on the card; nearest driver 0.06 (task87 v3) |
+
+**WARN repeat.gate_g (task228), answered.** Both builds label their Gate G mechanism
+signal_vs_noise_or_hold because both are alerting calls; task228 picks which metric an alert should
+watch from a replay of past check nights (one of N), task229 constructs one stated measure and its
+error per build and designates the builds that breach. The decisive constructions share nothing.
 
 **Coordination with task228.** Drawn the same day in the same objective. task228 holds the
 product-analytics experiment-platform guardrail world; this build differs in domain (energy
 utilities), organisation (a metering data provider), forum (the rollout desk), forcing event (a
 firmware migration wave), geography (New South Wales), personas (en_AU draw), data structure
-(register-day deliveries of interval counts by quality flag, with an activation history) and
-stump strategy (grain_or_unit with a limit that follows the unit).
+(register-day deliveries of interval counts by quality flag, with an activation history), stump
+strategy (grain_or_unit with a limit that follows the unit) and context-artifact type. task228's card
+is copied into this build's cards folder so the guard sees both. The prompt avoids the six idioms the
+corpus over-uses (a named colleague's belief about the naive pick, a closing role line, "what I need
+is", a chart title asked for last, the pick marked on the chart, the runner-up beside the pick).
 
 **Data-native sentence.** A metering data provider's fleet mixes 30-minute single-register
 household meters with 5-minute three-register installations (solar export and controlled load, or
@@ -73,9 +81,8 @@ reads, the alert fires on PX5.2.7, EM3.10.9 and EM3.12.1 and the other five hold
 
 - **Litmus.** No reported number or stakeholder conclusion is overturned. The pack carries no
   read-health report, no scorecard and no ranking of the builds; the MDM receipts, the head-end
-  history and the register are correct records of what happened. The one belief in the prompt (the
-  desk expects PX5.3.0 to be pulled because its commercial sites are the ones retailers chase) is true
-  about those sites and is a belief about the call, not a figure. The difficulty is constructing the
+  history and the register are correct records of what happened. The prompt carries no stakeholder
+  belief. The difficulty is constructing the
   measure the standard defines from register-day deliveries: the unit, its error, the population, the
   version, and the expected reads the deliveries do not carry. Answer: no.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
@@ -249,8 +256,8 @@ the fire and hold lists, the order, Wave 8 (2), Wave 7 (4) and the chart parts (
 
 - 2,242 installations on one build and 37 on the pilot is the shape of a real fleet mid-migration.
 - PX5.3.0's heavy installations lose about 1.8 per cent of their reads to a firmware profile issue;
-  that is a large defect for 5-minute sites and is what makes retailers chase them, which is the
-  belief the prompt reports.
+  that is a large defect for 5-minute sites, and it is real: the average installation still holds
+  because most of PX5.3.0's installations are 30-minute households.
 
 ## Stopping rule
 

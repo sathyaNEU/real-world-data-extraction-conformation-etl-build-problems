@@ -42,7 +42,7 @@
   "effective-dated meter-to-installation assignments with mid-week meter exchanges",
   "replayed head-end events and failed activations with rollback"
  ],
- "context_artifact": "monitoring_export",
+ "context_artifact": "filed_standard",
  "stakeholder_role": "metering data services lead at a smart-meter metering data provider, who owns the read-health alert the rollout desk gates each firmware wave on",
  "role_family": "other",
  "scoring_unit": "per active unit per period",
@@ -64,8 +64,7 @@
    "Halvane Metering"
   ],
   "people": [
-   "Troy Phillips",
-   "Veronica Sharp"
+   "Troy Phillips"
   ]
  },
  "deliverables": [
@@ -81,5 +80,5 @@
   "task98": "task98 v3 formed units by chaining labelled members within a distance and applied a per-unit threshold to a filed count; here the units are stored and named by the standard, and the move is how a group of units is scored and given an error: the average of per-unit shares with a between-unit standard error against a record-pooled ratio with a record-count error, which reverses breaches in both directions and makes small groups breach on noise"
  },
  "lineage": [],
- "notes": "subdomain other: smart-meter interval data delivery quality (metering data provider read performance), which the energy task-type list does not carry; the task type that serves Data Quality Monitoring in the client taxonomy is the nearest analogue to product-analytics metric-definition, hence the pattern id."
+ "notes": "subdomain other: smart-meter interval data delivery quality (metering data provider read performance), which the energy task-type list does not carry; the task type that serves Data Quality Monitoring in the client taxonomy is the nearest analogue to product-analytics metric-definition, hence the pattern id. context_artifact: redrawn from monitoring_export to filed_standard after task228 (drawn earlier the same day) took monitoring_export; the metering data services lead runs the gate from the filed read-health standard MDS-STD-114, which the pack ships, over the MDM receipts and the head-end history. repeat.gate_g WARN against task228 answered in the design note: task228 picks which metric an alert should watch from a replay of history, task229 constructs one stated measure and its error per build."
 }

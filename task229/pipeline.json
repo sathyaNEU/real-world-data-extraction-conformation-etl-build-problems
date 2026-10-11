@@ -10,12 +10,12 @@
  "loops": 0,
  "leak": {
   "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
-  "reader": "pending isolated run"
+  "reader": "staged for an isolated thread (scratch leak-task229)"
  },
  "duplicate_check": {
-  "heart": "PASS (mechanical, run early)",
+  "heart": "WARN (repeat.gate_g vs task228, answered in the design note); ban.artifact vs task228 cleared by redrawing context_artifact to filed_standard",
   "nearest": "task87 v3 driver 0.06; surface nearest 0.10, 0 promoted",
-  "clone_check": "pending isolated run"
+  "clone_check": "staged for an isolated thread (pre-flight on task229)"
  },
  "solver_rounds": [],
  "judge": {

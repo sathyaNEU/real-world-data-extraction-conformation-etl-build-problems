@@ -89,7 +89,7 @@ WAVE8_PX_PULLED_FORWARD = 9
 WAVE8_PX_REBATCHED = 5
 
 COMPANY = "Halvane Metering"
-PEOPLE = {"lead": "Troy Phillips", "desk": "Veronica Sharp"}
+PEOPLE = {"lead": "Troy Phillips"}
 
 # per-build texture salts, chosen by tune.py so every graded figure sits clear of its rounding edge
 SALT = {"EM3.10.9": 1, "EM3.11.4": 5, "EM3.12.0": 20, "EM3.12.1": 3, "EM3.12.2": 4, "PX5.2.7": 1, "PX5.3.0": 2, "PX5.3.1": 0}
