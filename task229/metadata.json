@@ -24,7 +24,7 @@
       "xlsx"
     ],
     "largest_file": "mdm_interval_receipts_20261005_20261011.csv",
-    "largest_file_rows": 94912
+    "largest_file_rows": 95140
   },
   "sources": [
     {
@@ -40,8 +40,8 @@
     {
       "path": "mdm_interval_receipts_20261005_20261011.csv",
       "format": "csv",
-      "bytes": 7845715,
-      "rows": 94912,
+      "bytes": 7864652,
+      "rows": 95140,
       "source": "Constructed: MDM interval receipt extract: one row per data stream, read date and delivery, read dates 5 to 11 October 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -49,8 +49,8 @@
     {
       "path": "hes_meter_firmware_history.json",
       "format": "json",
-      "bytes": 10479977,
-      "rows": 49469,
+      "bytes": 10484757,
+      "rows": 49495,
       "source": "Constructed: Head-end (HES) firmware service export: every meter and its firmware events since commissioning",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"

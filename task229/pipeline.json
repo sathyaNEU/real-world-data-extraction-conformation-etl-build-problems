@@ -3,19 +3,19 @@
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
  "stage": 6,
- "stage_name": "solver round 2 staged (hardening loop 1); leak reader and pre-flight staged with it",
+ "stage_name": "solver round 3 staged (hardening loop 2); fresh leak read staged; determinism judge staged to run if round 3 holds the call",
  "updated": "2026-10-11",
- "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.90 and 0.56, not 0.41 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on PX5.2.7, EM3.12.1 and EM3.10.9 only.",
+ "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.83 and 0.57, not 0.40 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "leak": {
-  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK after two fixes in the generator",
-  "reader": "round-1 reader: Q1-Q4 none; re-read staged for round 2 (every document and the prompt changed)"
+  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
+  "reader": "round-2 reader (loop-1 cut): Q1-Q4 none, R1-R3 harmless, solvability point answered (carve-out route closed); re-read staged for round 3 (the prompt changed)"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task228, answered); nearest heart text 0.04 (task114); nearest driver 0.06 (task87 v3)",
   "nearest": "task87 v3 driver 0.06",
-  "clone_check": "round-1 pre-flight CLEAN (task229/clone_check_report.md); the driver changed in hardening loop 1, fresh pre-flight staged"
+  "clone_check": "loop-1 pre-flight CLEAN on the hardened driver (task229/clone_check_report.md); loop 2 leaves the driver unchanged"
  },
  "solver_rounds": [
   {
@@ -41,6 +41,39 @@
    "architecture": 1,
    "decision": "harden",
    "brief": "both landed by executing the filed mean and the filed installation-level error; the error's unit is now unstated and the data's node-night failures make the comms node the unit, so the habitual sample-SD-over-root-n step completes and fires EM3.12.0 and EM3.12.2"
+  },
+  {
+   "label": "round 2, plain",
+   "date": "2026-10-11",
+   "score": 54.5,
+   "landed": false,
+   "cracked": 3,
+   "items": 5
+  },
+  {
+   "label": "round 2, skeptic",
+   "date": "2026-10-11",
+   "score": 54.5,
+   "landed": false,
+   "cracked": 3,
+   "items": 5
+  },
+  {
+   "round": 2,
+   "architecture": 1,
+   "loop": 1,
+   "plain": {
+    "landed": false,
+    "proxy": 54.5
+   },
+   "skeptic": {
+    "landed": false,
+    "proxy": 54.5
+   },
+   "mean": 54.5,
+   "mean_read": 37.0,
+   "decision": "harden (ask layer)",
+   "brief": "both missed the call at R4 (installation-level error), a stump not a fork (independence refuted by the node-night failures; every dependence-respecting grouping lands the call); the asks leaked (grade.py 54.5 each, about 37 read honestly): Wave 7 fully cracked in both rounds, read health free; drop Wave 7, add the distance from the limit and the 6.1 substitution load; close the outage carve-out route (EM3.12.0 at 0.006 of its limit) by raising EM3.12.0's own gap and outage rates"
   }
  ],
  "judge": {

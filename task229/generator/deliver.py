@@ -37,16 +37,16 @@ def payload(g):
                     "read_health_pct": round(float(sc[r]["rh"]), 2),
                     "standard_error_pct": round(float(sc[r]["se"]), 2),
                     "lower_limit_pct": round(float(sc[r]["lcl"]), 2),
+                    "vs_limit_pct": round(float(sc[r]["rh"] - sc[r]["lcl"]), 2),
                     "alert": "FIRE" if sc[r]["fire"] else "HOLD"} for r in order],
         "wave8_moves_under_this_call": {k: int(v) for k, v in sorted(g["wave8"].items())},
-        "wave7_moves_this_week": [{"onto": k, "installations_moved": int(v["installations"]),
-                                   "interval_reads_missing_at_cutoff_on_move_day": int(v["missing"])}
-                                  for k, v in sorted(g["wave7"].items())],
+        "settlement_substitution_load_installations": int(g["load"]),
         "notes": ["assessed installations ran the build from 00:00 Mon 5 Oct to 24:00 Sun 11 Oct AEST with no meter change (MDS-STD-114 3.7)",
                   "reads counted as actual in the latest MDM delivery received before 06:00 AEST the day after each read date (3.5)",
                   "standard errors taken over the comms nodes (collectors, access points) the assessed installations report "
                   "through, since a node that misses a night's collection takes that day from the installations behind it together",
-                  "wave 8 counts follow the schedule as cut on 1 Oct, net of meters already on the target image or no longer in service"],
+                  "wave 8 counts follow the schedule as cut on 1 Oct, net of meters already on the target image or no longer in service",
+                  "substitution load: installations whose in-service meter runs a build the alert fires on (6.1)"],
         "raised_by": "Metering Data Services",
         "raised_local": "2026-10-12T17:05:00+11:00",
     }
@@ -81,7 +81,9 @@ def chart(g, path):
             ax.annotate("limit %.2f (off scale)" % v["lcl"], (lo + 0.06, y), xytext=(6, -13), textcoords="offset points",
                         fontsize=7.5, color=INK2, ha="left")
         ax.plot([v["rh"]], [y], marker="o", markersize=8.5, color=col, markeredgecolor=SURFACE, mew=2, zorder=3)
-        ax.annotate("%.2f%%" % v["rh"], (v["rh"], y), xytext=(7, 6), textcoords="offset points", fontsize=8.5, color=INK)
+        tight = v["lcl"] > v["rh"] and v["lcl"] - v["rh"] < 0.45
+        ax.annotate("%.2f%%" % v["rh"], (v["rh"], y), xytext=(-7, 6) if tight else (7, 6), textcoords="offset points",
+                    fontsize=8.5, color=INK, ha="right" if tight else "left")
         if v["fire"]:
             ax.plot([100.05], [y], marker="o", markersize=7, color=FIRE_C, zorder=3, clip_on=False)
             ax.annotate("FIRE", (100.05, y), xytext=(8, 0), textcoords="offset points", fontsize=8.5,
@@ -119,7 +121,7 @@ def main(target=None, out=None):
     D, g = G.solve(target)
     text = json.dumps(payload(g), indent=2)
     # percentages carry two decimals in the payload the router reads
-    text = re.sub(r'("[a-z_]*_pct": )(\d+\.\d+)', lambda m: m.group(1) + "%.2f" % float(m.group(2)), text)
+    text = re.sub(r'("[a-z_]*_pct": )(-?\d+\.\d+)', lambda m: m.group(1) + "%.2f" % float(m.group(2)), text)
     with open(os.path.join(out, "wave8_read_health_alerts.json"), "w") as fh:
         fh.write(text + "\n")
     chart(g, os.path.join(out, "read_health_by_build_wk41.png"))

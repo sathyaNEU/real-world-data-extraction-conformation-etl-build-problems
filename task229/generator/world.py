@@ -105,4 +105,4 @@ PEOPLE = {"lead": "Troy Phillips"}
 
 # per-build texture salts and the network salt, chosen by tune.py so every graded figure sits clear of
 # its rounding edge and every build clear of its limit
-SALT = {"EM3.10.9": 3, "EM3.11.4": 3, "EM3.12.0": 1, "EM3.12.1": 10, "EM3.12.2": 5, "PX5.2.7": 9, "PX5.3.0": 5, "PX5.3.1": 7}
+SALT = {"EM3.10.9": 3, "EM3.11.4": 3, "EM3.12.0": 9, "EM3.12.1": 10, "EM3.12.2": 7, "PX5.2.7": 10, "PX5.3.0": 5, "PX5.3.1": 12}

@@ -331,6 +331,27 @@ def wave7_cost(D, vcut=None, day_clock="AEST"):
     return {k: dict(installations=len(v_["installations"]), missing=v_["missing"]) for k, v_ in per.items()}
 
 
+def running_now(D, at=None):
+    """Installations by the build their in-service meter runs at the extract (3.6)."""
+    at = at or dt.datetime(2026, 10, 12, 4, 40, tzinfo=UTC)
+    spells = running_builds(D["hes"], D["img2rel"])
+    mt = D["meters"]
+    live = mt[mt["removed"].isna() & (mt["installed"] <= at)]
+    out = {}
+    for nmi, ser in zip(live["nmi"], live["serial"]):
+        b = build_at(spells.get(ser, []), at)
+        if b:
+            out[b] = out.get(b, 0) + 1
+    return out
+
+
+def substitution_load(D, fire, at=None):
+    """Installations Settlement Operations is told to expect substitutions on (6.1): every installation
+    running a build the alert fires on."""
+    run = running_now(D, at)
+    return int(sum(run.get(b, 0) for b in fire))
+
+
 def solve(target):
     D = load(target)
     pop = assessed(D, "fullweek")
@@ -338,4 +359,4 @@ def solve(target):
     res = score(vc, pop)
     fs = fire_set(res)
     return D, dict(scorecard=res, fire=fs, wave8=wave8_moves(D, fs), wave8_schedule=wave8_schedule(D),
-                   wave7=wave7_cost(D, vc))
+                   load=substitution_load(D, fs))

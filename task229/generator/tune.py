@@ -45,6 +45,29 @@ def cr_mean(SH, groups, small=True):
     return math.sqrt(f * float((d ** 2).sum())) / len(SH)
 
 
+def carve_margins(sel, events):
+    """Margins under the outage carve-outs a solver might improvise (none is in the standard, which
+    counts every expected interval): the failed node-days dropped for every installation behind the
+    node, the node backlog counted as held, the installations behind a failed node dropped. Each with
+    the installation-level error."""
+    failed = {(p_, d) for p_, d, _, _ in events}
+    nodes = {p_ for p_, _, _, _ in events}
+    out = {}
+    rows = {"drop_days": [], "backlog_held": [], "drop_nodes": []}
+    for i in sel:
+        dc = S.day_counts(i)
+        keep = [x for d, x in enumerate(dc) if (i.parent, d) not in failed]
+        rows["drop_days"].append(100.0 * sum(x[0] - x[2] - x[3] for x in keep) / sum(x[0] for x in keep))
+        rows["backlog_held"].append(100.0 * sum((x[0] - x[3]) if (i.parent, d) in failed else (x[0] - x[2] - x[3])
+                                                for d, x in enumerate(dc)) / sum(x[0] for x in dc))
+        if i.parent not in nodes:
+            rows["drop_nodes"].append(100.0 * sum(x[0] - x[2] - x[3] for x in dc) / sum(x[0] for x in dc))
+    for k, v in rows.items():
+        v = np.array(v)
+        out[k] = v.mean() - (REF - K * v.std(ddof=1) / math.sqrt(len(v)))
+    return out
+
+
 def figures(sel):
     Y, X, Yl, P, SH, SHl, SHr = [], [], [], [], [], [], []
     for i in sel:
@@ -75,8 +98,10 @@ def figures(sel):
 
 def ok(b, f):
     m = f["m"]
-    if min(edge(f["rh"]), edge(f["lcl"]), edge(f["se"]["col"])) < 0.0015:
+    if min(edge(f["rh"]), edge(f["lcl"]), edge(f["se"]["col"]), edge(f["rh"] - f["lcl"])) < 0.0015:
         return False
+    if round(round(f["rh"], 2) - round(f["lcl"], 2), 2) != round(f["rh"] - f["lcl"], 2):
+        return False            # the distance to the limit reads the same from rounded or unrounded figures
     if (m["col"] < 0) != (m["col0"] < 0) or abs(m["col0"]) < 0.05:
         return False
     if f["se"]["col"] < 0.85 * f["se"]["inst"]:
@@ -84,7 +109,7 @@ def ok(b, f):
     return {
         "EM3.10.9": m["col"] <= -0.15 and m["inst"] <= -0.15,
         "EM3.11.4": m["col"] >= 0.2 and m["inst"] >= 0.08,
-        "EM3.12.0": m["col"] >= 0.15 and m["inst"] <= -0.10,
+        "EM3.12.0": m["col"] >= 0.3 and m["inst"] <= -0.5 and max(f.get("carve", {"x": -1}).values()) <= -0.08,
         "EM3.12.1": m["col"] <= -0.15 and m["inst"] <= -0.15,
         "EM3.12.2": m["col"] >= 0.5 and m["inst"] <= -0.2,
         "PX5.2.7": m["col"] <= -0.15 and m["inst"] <= -0.15 and m["late"] >= 0.1 and m["rows"] >= 0.1,
@@ -107,7 +132,10 @@ def run(insts, b, salt):
         i.blocks = S.own_blocks(i)
     if b == "PX5.3.1":
         sel[S.PILOT_DROP].blocks.append((int(2.6 * W.SLOTS_PER_DAY), int(4.9 * W.SLOTS_PER_DAY), 3))
-    return figures(sel)
+    f = figures(sel)
+    if b == "EM3.12.0":
+        f["carve"] = carve_margins(sel, S.network_events())
+    return f
 
 
 def search(net_salt, max_salt=300, quiet=False):

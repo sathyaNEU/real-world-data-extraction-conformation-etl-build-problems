@@ -243,7 +243,7 @@ BASE = dict(gp=0.03, gdur=(20, 120), op=0.012, odur=(240, 2880))
 BUILD_FX = {
     "EM3.10.9": dict(gp=0.15, op=0.07),
     "EM3.11.4": dict(gp=0.028, op=0.011),
-    "EM3.12.0": dict(gp=0.074, op=0.029),
+    "EM3.12.0": dict(gp=0.085, op=0.035),
     "EM3.12.1": dict(light_extra=(0.17, 50, 115)),
     "EM3.12.2": dict(gp=0.025, op=0.009),
     "PX5.2.7": dict(drop=0.012),

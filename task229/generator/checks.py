@@ -49,7 +49,8 @@ def run(target, world=None, quiet=False):
     for r in G.RELEASES:
         v = sc[r]
         ok(abs(margin(v)) >= 0.05, "%s sits %.4f from its limit" % (r, margin(v)))
-        ok(min(edge(v["rh"]), edge(v["se"]), edge(v["lcl"])) >= 0.0015, "%s two-decimal edge" % r)
+        ok(min(edge(v["rh"]), edge(v["se"]), edge(v["lcl"]), edge(margin(v))) >= 0.0015, "%s two-decimal edge" % r)
+        ok(round(round(v["rh"], 2) - round(v["lcl"], 2), 2) == round(margin(v), 2), "%s distance reads the same from rounded figures" % r)
     margins = sorted(margin(sc[r]) for r in G.RELEASES)
     ok(min(b - a for a, b in zip(margins, margins[1:])) >= 0.04, "order by distance to the limit is not a near tie")
 
@@ -68,7 +69,7 @@ def run(target, world=None, quiet=False):
         ("R5 + a standard error built over the comms parents the installations share (the answer)",
          ("cutoff", "fullweek", "installation", "collector", "register")),
     ])
-    expect = [("EM3.10.9", "EM3.12.2", "PX5.3.0", "PX5.3.1"),
+    expect = [("EM3.10.9", "EM3.12.0", "EM3.12.2", "PX5.3.0", "PX5.3.1"),
               ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
               ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0"),
               ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.1"),
@@ -141,6 +142,61 @@ def run(target, world=None, quiet=False):
     log.append("node-nights losing the day for most installations: %s; every other node-night at most %.1f per cent"
                % ({k: round(v_, 3) for k, v_ in hi.items()}, 100 * lo.max()))
     ok(set(pops["fullweek"]) <= set(D["nmi_parent"]), "every assessed installation has a comms parent")
+
+    # independence of installations, which the installation-level error assumes, is refuted by the files:
+    # at the rate installations lose a whole day on every other node-night, each failed node-night
+    # has a binomial tail below 1e-10
+    import math as _m
+    from scipy import stats as _st
+    cnt = day.groupby(["parent", "READ_DATE"])["lost"].agg(["sum", "size"])
+    base = cnt[frac < 0.5]
+    p0 = float(base["sum"].sum() / base["size"].sum())
+    tails = {k: _st.binom.logsf(int(r_["sum"]) - 1, int(r_["size"]), p0) / _m.log(10) for k, r_ in cnt[frac >= 0.5].iterrows()}
+    ok(all(t <= -10 for t in tails.values()), "every failed node-night is impossible under independent installations: %s" % tails)
+    log.append("independence test: whole-day loss rate %.4f outside node failures; log10 tail per failed node-night %s"
+               % (p0, {k: round(t, 1) for k, t in tails.items()}))
+
+    # every grouping that respects the shared failures lands the call: nodes, node-days, days, and the
+    # two-way node and day error, on the installation-day panel (each installation-day an equal share)
+    xf = G.panel(D, vers["cutoff"], pops["fullweek"])
+    xf["parent"] = xf["NMI"].map(D["nmi_parent"])
+    idy = xf.groupby(["NMI", "READ_DATE"]).agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
+                                              release=("release", "first")).reset_index()
+    idy["s"] = 100.0 * idy["A"] / idy["E"]
+
+    def se_by(y, g_):
+        d_ = pd.Series(y - y.mean()).groupby(pd.Series(g_).values).sum().to_numpy()
+        k_ = len(d_)
+        return _m.sqrt(k_ / (k_ - 1) * float((d_ ** 2).sum())) / len(y)
+    alt = {}
+    for rel, g_ in idy.groupby("release"):
+        y = g_["s"].to_numpy()
+        se_n, se_nd, se_d = se_by(y, g_["parent"]), se_by(y, g_["parent"] + "|" + g_["READ_DATE"]), se_by(y, g_["READ_DATE"])
+        two = _m.sqrt(max(se_n ** 2 + se_d ** 2 - se_nd ** 2, se_n ** 2))
+        alt[rel] = {k_: bool(y.mean() < 99.5 - 3 * v_) for k_, v_ in (("node", se_n), ("node-day", se_nd), ("day", se_d), ("two-way", two))}
+    for k_ in ("node", "node-day", "day", "two-way"):
+        fs_ = tuple(sorted(r for r in G.RELEASES if alt[r][k_]))
+        ok(fs_ == GOLD_FIRE, "the %s grouping lands the call: %s" % (k_, fs_))
+    log.append("node, node-day, day and two-way groupings of the installation-day panel all fire %s" % ", ".join(GOLD_FIRE))
+
+    # the outage carve-out a solver might improvise (no clause allows it: 3.3 counts every interval)
+    # files a wrong set on every variant, with EM3.12.0 firing clearly, so it reaches no knife edge
+    failed = set(frac[frac >= 0.5].index)
+    nodes_f = {p_ for p_, _ in failed}
+    xl = G.panel(D, vers["latest"], pops["fullweek"])
+    dl = xl.groupby(["NMI", "READ_DATE"])["QTY_A"].sum()
+    idy["AL"] = [dl.get((n_, d_), 0) for n_, d_ in zip(idy["NMI"], idy["READ_DATE"])]
+    idy["nf"] = [(p_, d_) in failed for p_, d_ in zip(idy["parent"], idy["READ_DATE"])]
+    variants = {"failed node-days dropped": idy[~idy["nf"]],
+                "node backlog counted as held": idy.assign(A=idy["A"].where(~idy["nf"], idy["AL"])),
+                "installations behind failed nodes dropped": idy[~idy["parent"].isin(nodes_f)]}
+    for nm, dv in variants.items():
+        iv = dv.groupby("NMI").agg(A=("A", "sum"), E=("E", "sum"), release=("release", "first"))
+        iv["s"] = 100.0 * iv["A"] / iv["E"]
+        mm = {rel: g_["s"].mean() - (99.5 - 3 * g_["s"].std(ddof=1) / _m.sqrt(len(g_))) for rel, g_ in iv.groupby("release")}
+        fs_ = tuple(sorted(r for r, v_ in mm.items() if v_ < 0))
+        ok(fs_ != GOLD_FIRE and mm["EM3.12.0"] <= -0.1, "carve-out (%s) files %s, EM3.12.0 at %.3f" % (nm, fs_, mm["EM3.12.0"]))
+        log.append("carve-out, %s, installation-level error: fires %s (EM3.12.0 %.3f)" % (nm, ", ".join(fs_), mm["EM3.12.0"]))
     if world is not None:
         moved_parent = [i for i in world["insts"] if i.group == "full" and i.since.date() >= dt.date(2026, 10, 5)]
         ok(not moved_parent, "no assessed installation changed comms parent during the week")
@@ -150,7 +206,7 @@ def run(target, world=None, quiet=False):
     ok(not naive_rows["PX5.2.7"]["fire"], "dividing by the register-days held at the cut-off holds PX5.2.7")
     part = G.fire_set(G.score(vers["cutoff"], pops["end"], "pooled", "binomial_reads", "rows", D=D))
     ok(part != GOLD_FIRE and "PX5.2.7" not in part, "the cut-off filter applied to rows alone holds PX5.2.7: %s" % (part,))
-    ok(naive_rows["EM3.12.2"]["rh"] >= 99.5 and not naive_rows["EM3.12.0"]["fire"],
+    ok(naive_rows["EM3.12.2"]["rh"] >= 99.5 and G.fire_set(naive_rows) != GOLD_FIRE,
        "dividing by held rows drops the node failures' days altogether (EM3.12.2 %.2f)" % naive_rows["EM3.12.2"]["rh"])
     log.append("cut-off on rows alone fires %s; on held rows the node failures vanish (EM3.12.2 %.2f, EM3.12.0 %.2f)"
                % (", ".join(part), naive_rows["EM3.12.2"]["rh"], naive_rows["EM3.12.0"]["rh"]))
@@ -212,16 +268,15 @@ def run(target, world=None, quiet=False):
     ok(by_nmi != a, "collapsing on the NMI column (blanks included) is not the answer")
     log.append("wave 8: rows %s, distinct meters %s, one-per-NMI-cell %s, answer %s" % (rows_ct, pad.groupby("target").size().to_dict(), by_nmi, a))
 
-    # ---------------------------------------------------------------- ask B: Wave 7 cost
-    b = g["wave7"]
-    ok(b == {"EM3.12.2": {"installations": 1109, "missing": 16907}, "PX5.3.1": {"installations": 63, "missing": 1101}}, "wave 7 cost %s" % b)
-    for clock in ("UTC", "AEDT"):
-        bb = G.wave7_cost(D, vers["cutoff"], clock)
-        ok(bb["EM3.12.2"]["missing"] != b["EM3.12.2"]["missing"], "%s move day lands elsewhere" % clock)
-        log.append("wave 7 missing reads on the %s day: %s" % (clock, {k: v["missing"] for k, v in bb.items()}))
-    bl = G.wave7_cost(D, vers["latest"])
-    ok(bl["EM3.12.2"]["missing"] < b["EM3.12.2"]["missing"], "the latest deliveries understate the move-day loss")
-    log.append("wave 7 missing reads on latest deliveries: %s" % {k: v["missing"] for k, v in bl.items()})
+    # ---------------------------------------------------------------- ask B: the substitution load
+    load = g["load"]
+    run_now = G.running_now(D)
+    ok(load == sum(run_now[r] for r in GOLD_FIRE), "the load is every installation running a build that fires")
+    week_end = G.running_now(D, dt.datetime(2026, 10, 11, 14, 0, tzinfo=dt.timezone.utc))
+    ok(week_end == run_now, "the build each installation runs is the same at the week's end and at the extract")
+    load_r4 = G.substitution_load(D, sets[4])
+    ok(load_r4 != load and load_r4 - load >= 3000, "the installation-level call loads %d installations, not %d" % (load_r4, load))
+    log.append("substitution load: %d installations on the builds that fire; the installation-level call would load %d" % (load, load_r4))
 
     # ---------------------------------------------------------------- chronology (H16)
     if world is not None:
@@ -258,7 +313,7 @@ def run(target, world=None, quiet=False):
                 shutil.copy(os.path.join(target, f), tmp)
         _, g2 = G.solve(tmp)
         shutil.rmtree(tmp)
-        ok(g2["fire"] == g["fire"] and g2["wave8"] == g["wave8"] and g2["wave7"] == g["wave7"], "the golden ignores the distractors")
+        ok(g2["fire"] == g["fire"] and g2["wave8"] == g["wave8"] and g2["load"] == g["load"], "the golden ignores the distractors")
     # single statement: the reference and the cut-off hour are stated only in the standard
     txt = {f: open(os.path.join(target, f), errors="ignore").read() for f in files if f.endswith((".md", ".csv")) and "mdm_" not in f}
     for needle in ("99.50", "06:00"):
@@ -273,11 +328,11 @@ def run(target, world=None, quiet=False):
         s_ = open(sub).read()
         pj = json.load(open(gj))
         for b_ in pj["builds"]:
-            line = "%s: %.2f%%, standard error %.2f, lower limit %.2f%%, %s" % (
-                b_["release"], b_["read_health_pct"], b_["standard_error_pct"], b_["lower_limit_pct"], b_["alert"].lower())
+            line = "%s: %.2f%%, standard error %.2f, lower limit %.2f%%, %.2f %s the limit, %s" % (
+                b_["release"], b_["read_health_pct"], b_["standard_error_pct"], b_["lower_limit_pct"], abs(b_["vs_limit_pct"]),
+                "below" if b_["vs_limit_pct"] < 0 else "above", b_["alert"].lower())
             ok(line in s_, "submission carries %s" % line)
-        for v_ in list(pj["wave8_moves_under_this_call"].values()) + [x for w_ in pj["wave7_moves_this_week"] for x in
-                                                                      (w_["installations_moved"], w_["interval_reads_missing_at_cutoff_on_move_day"])]:
+        for v_ in list(pj["wave8_moves_under_this_call"].values()) + [pj["settlement_substitution_load_installations"]]:
             ok(format(v_, ",") in s_, "submission carries %s" % v_)
         ok("\u2014" not in s_, "no em dash in the write-up")
     if not quiet:

@@ -131,13 +131,6 @@ def main(target, golden):
             s = str(row[1]).zfill(8)
             if s in in_service and at(s, end) != row[5]:
                 w8.setdefault(row[5], set()).add(in_service[s])
-    # wave 7
-    serial2nmi = {s: nmi for nmi, ms in assign.items() for s, _, _ in ms}
-    w7c = {}
-    for s, (rel, day) in w7.items():
-        c = w7c.setdefault(rel, [set(), 0])
-        c[0].add(serial2nmi[s])
-        c[1] += day_miss.get((serial2nmi[s], day), 0)
     # compare with the golden payload
     gj = json.load(open(os.path.join(golden, "wave8_read_health_alerts.json")))
     bad = []
@@ -149,19 +142,26 @@ def main(target, golden):
         bad.append(("order", order))
     for b in gj["builds"]:
         n, mu, se, lcl, f = score[b["release"]]
-        if (b["read_health_pct"], b["standard_error_pct"], b["lower_limit_pct"], b["alert"]) != (round(mu, 2), round(se, 2), round(lcl, 2), "FIRE" if f else "HOLD"):
+        if (b["read_health_pct"], b["standard_error_pct"], b["lower_limit_pct"], b["vs_limit_pct"], b["alert"]) != (
+                round(mu, 2), round(se, 2), round(lcl, 2), round(mu - lcl, 2), "FIRE" if f else "HOLD"):
             bad.append((b, (n, mu, se, lcl, f)))
+    # substitution load: installations whose in-service meter runs a firing build at the extract
+    now = dt.datetime(2026, 10, 12, 4, 40, tzinfo=UTC)
+    load = 0
+    for nmi, ms in assign.items():
+        for s, a, b in ms:
+            if b is None and a <= now and at(s, now) in fire:
+                load += 1
+    if gj["settlement_substitution_load_installations"] != load:
+        bad.append(("load", load))
     moves = {k: (0 if k in fire else len(v)) for k, v in w8.items()}
     if gj["wave8_moves_under_this_call"] != moves:
         bad.append(("wave8", moves))
-    for x in gj["wave7_moves_this_week"]:
-        c = w7c[x["onto"]]
-        if (x["installations_moved"], x["interval_reads_missing_at_cutoff_on_move_day"]) != (len(c[0]), c[1]):
-            bad.append(("wave7", x, c[1]))
+
     if bad:
         print("VERIFY FAILED", bad)
         sys.exit(1)
-    print("verify: every graded figure recomputes from target/ (%d builds with comms-parent standard errors, wave 8, wave 7)" % len(score))
+    print("verify: every graded figure recomputes from target/ (%d builds with comms-parent standard errors, wave 8, the substitution load)" % len(score))
 
 
 if __name__ == "__main__":
