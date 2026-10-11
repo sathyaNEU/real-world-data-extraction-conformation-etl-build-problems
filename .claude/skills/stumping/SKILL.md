@@ -122,6 +122,56 @@ And name your primary mechanism, the one whose removal collapses the difficulty,
 
 `statistical_rigor` is a real mechanism in the judge's list but it is **not** on Gate G's explicit pass list. Never lean on it alone. Pair it with one of the seven.
 
+**Passing Gate G is not passing the three rules below.** `etl_conformance`, `binding_constraint` and `confirm_surface_read` most often decide on applying a stated contract, limit or rule, which is rule application; each passes only when the step that decides the answer inside it survives the analyst test.
+
+### The three rules, answered beside the litmus
+
+The client reviews every task against three rules, and a task that breaks one is sent back even when it
+is deterministic and correct. Answer each in one sentence in the design note, and on the card.
+
+**1. The task really uses its domain.** It does the kind of analysis its domain is about, close to one of
+the domain's task types (`guide-to-prompt/references/domains/README.md`), and the domain is never only the
+setting for a generic question. What matters is whether the quantity that decides the call is something
+the field would estimate, model or test; a decision framing such as "which clinics" is fine. The test:
+swap the nouns into another field ("hospital" for "school", "megawatt-hours" for "visits"). If the task
+reads exactly the same, the domain is a backdrop. A grant ranked by the score in the grant rules reads the
+same with substations or schools in it; a decision on a sentiment signal from a cost-adjusted,
+factor-neutral, point-in-time Sharpe ratio cannot be answered without alpha research. The card's
+`domain_test` carries the sentence: the field's own analysis that decides the answer, and why the swap
+breaks the task.
+
+**2. Every task has two layers.** Realistic messy data (Layer 1) and analytical rigour that decides the
+answer (Layer 2), exactly as Part 2 and `references/client/two-layer-task-design.md` set out.
+
+**3. Three kinds of stump are banned as the decisive step.** They may appear in a task as lower rungs or
+as ask devices, because real work always involves some field reading and rule following, but none of them
+may be what decides the answer:
+
+- **A planted defect, decoy or hidden rule**: something inserted only so that catching it flips the answer
+  (a block of readings copied from the week before, a staff memo written to argue for the wrong answer, a
+  rule withheld and recovered from settled cases).
+- **Data semantics**: the answer flips only on reading a field, code, unit or definition correctly (the
+  capacity column that also counts preschool seats, the rainfall column that holds multi-day totals).
+- **Rule application**: the answer comes from applying stated rules correctly, however many steps there
+  are (six listed eligibility criteria and a stated score, a licence holder on a date traced through the
+  transfer records).
+
+**The test, written as the card's `analyst_test`:** could a strong analyst who cleaned the data and read
+every field and rule correctly still get the answer wrong by doing the analysis the easy way? If yes, the
+stump is analytical and valid; name the easy route and the wrong answer it gives. If no, the stump is
+semantics or rule application, and the build is redesigned, not hardened. Choosing the right estimand or
+unit of analysis counts as analysis: comparing each wave of a staggered rollout against units not yet
+treated, estimating time to an event with people who left early treated as censored, reading a guardrail
+metric through its confidence interval, validating a forecast only on data it was not built on.
+
+The card's `stump_class` takes `analytical`, `planted`, `data_semantics` or `rule_application`, and
+`guard.py check` blocks any class but `analytical` on a draw dated from 2026-10-10, along with a card that
+carries no `analyst_test` or `domain_test`. It warns when the stump strategy is one whose decisive step
+most often turns out to be a reading or a stated rule (`time_semantics`, `grain_or_unit`,
+`identity_resolution`, `stated_rule_hard_construction`, `withheld_rule_corpus_fit`): those strategies stay
+legal only when the analyst test names an analytical route that fails after every field and rule is read
+correctly.
+
 ### The four gaps, which is where difficulty lives when nothing is wrong
 
 This is the working model for the whole skill. A pack full of correct numbers still leaves four gaps open, and every passing mechanism is an instance of one of them. Pick your gap first, then pick the mechanism, then pick the scenario. Picking the scenario first is how builds end up recycling a shape.
@@ -286,7 +336,7 @@ tempting shortcut is and why an expert would refuse it.
 **Draw the pitfall from the Layer 2 library, then make it your own.** `references/client/layer2-rigor-patterns.md`
 holds the client's 300 rigor patterns, twenty per domain, grouped by task type, each with the pitfall,
 the tempting shortcut and what pins the rigorous method; `references/client/two-layer-task-design.md`
-holds the five families they belong to and the six-point pre-ship check. At the draw: pick the domain
+holds the three rules, the five families the patterns belong to and the pre-ship check. At the draw: pick the domain
 and task type (`guide-to-prompt/references/domains/README.md`), read that task type's patterns, choose
 the one your data's analytic structure actually invites, and write your own version on your own data.
 The card records `layer2_family`, `layer2_pattern` (the library id, or `own:<name>` for a pattern beyond
@@ -366,7 +416,7 @@ decided by a filed rule and shipped data with no calibration corpus and no licen
 
 ### Pattern B. The rule recovered from a closed corpus
 
-**Capped by the client as a pin.** A method left unstated and recovered from settled or certified cases is the saturated architecture the two-layer standard names; do not draw it as the decisive rung on a new build. What survives of it is the idea that a field's own method has to be applied correctly (the `field_method` family), with the method stated.
+**Banned as the decisive step.** A method left unstated and recovered from settled or certified cases is a hidden rule under the three rules (Part 1) and the saturated architecture the two-layer standard names; never draw it as the decisive rung on a new build. What survives of it is the idea that a field's own method has to be applied correctly (the `field_method` family), with the method stated and the difficulty in an analytical step the stated method leaves to the analyst.
 
 **Gap 4.** The decisive rule is written down nowhere. What ships instead is a corpus of cases that are already settled, with their inputs and their outcomes, and enough raw material underneath them that a candidate rule can be run forward and scored. Exactly one rule reproduces the whole corpus. Every rival misses at least one case badly.
 
@@ -384,7 +434,7 @@ decided by a filed rule and shipped data with no calibration corpus and no licen
 
 **What makes it deterministic.** The serviceability split has to be absolute rather than graded. Threshold-free is the target: a record either was or was not on the governing list, every attempt with property P succeeded and every attempt without it returned nothing. An invented cutoff is a fork you left open.
 
-**Where it degrades.** Discriminator dominance, in Part 3. If the decoy's carried advantage on magnitude is bigger than the winner's edge on serviceability, the rung computes perfectly and never changes the ranking.
+**Where it degrades.** Discriminator dominance, in Part 3. If the decoy's carried advantage on magnitude is bigger than the winner's edge on serviceability, the rung computes perfectly and never changes the ranking. Under the three rules (Part 1) it also fails when the serviceable share is a column to read or a stated eligibility rule to apply: the share has to be an estimate the analyst builds, which is what makes it analysis rather than semantics.
 
 ### Pattern D. Two grains, both flawless
 
@@ -396,7 +446,7 @@ decided by a filed rule and shipped data with no calibration corpus and no licen
 
 **What makes it deterministic.** The decision grain has to be pinned by what the decision funds, in one filed sentence about the unit of work, and the weighting convention has to be either pinned in the dictionary or convergent (both handlings give the same answer). A rate computed over a delta feed without reconstructing the panel is the classic version of this and the judge checks for it explicitly.
 
-**Where it degrades.** If both grains give the same winner, the rung is decoration. Build the correlation that makes them disagree, per candidate, and assert it in both directions.
+**Where it degrades.** If both grains give the same winner, the rung is decoration. Build the correlation that makes them disagree, per candidate, and assert it in both directions. Choosing the unit of analysis counts as analysis under the three rules (Part 1), but only when the grain is a choice the analyst makes from what the decision funds; a grain that flips only on reading what a column counts is data semantics and cannot decide the answer.
 
 **A key column that turns the grain bridge into one group-by is a hand-hold** (an order id for an order-line grain). The honest alternatives are an unpinned bridge (a fork) or a bridge the corpus pins, and neither stumps, so a grain rung bridged that way is variance against careless solvers (task44). **Where two causes are collinear, the decisive grain move is often a standardisation**: when the causes separate only in partial-exposure groups, the group is usually not a miniature of the base its effect will be applied to, and standardising it decides the attribution (task73, a price effect of 0.24 read straight against 0.59 standardised). Measure on a grid whether the standardisation can flip the call before designing for a flip; where it cannot without collapsing dominance, put the stump on the magnitude and say so in the design note.
 
@@ -426,7 +476,7 @@ decided by a filed rule and shipped data with no calibration corpus and no licen
 | Anomaly Detection & Diagnostics | A | A on task33, C on tasks 25 and 28 | B or D |
 | Experiment & Causal Analysis | D with statistical rigor | never built | anything, the pairing itself is clone-free |
 | Descriptive & Distribution Analysis | D | D on task34 | A, B or E |
-| Data Extraction & Conformation | B with `etl_conformance` | never built as the primary | anything, the pairing itself is clone-free |
+| Data Extraction & Conformation | C or D, with the conformance an estimate rather than a stated rule (B is banned as the decisive step) | never built as the primary | anything whose decisive step passes the analyst test: conforming to a stated contract is rule application |
 | Opportunity Sizing & Decision Support | not established, one build so far | task106 (`binding_constraint`, no Part 2 pattern) | any of A to E, with the sizing kept as the graded figure |
 | Data Quality Monitoring & Alerting | not established, one build so far | E on task107 | A, B, C or D |
 

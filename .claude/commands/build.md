@@ -48,7 +48,7 @@ re-judged once, with a fresh round first when the fix moved a graded figure, a r
 **Write `pipeline.json` at every stage boundary**, and `updated` with the ISO date.
 
 **At ship**, report to the author in this order: the committed answer, the stump sentence, the
-leak line (`leak.py` verdict and the reader's question-1 answer), the duplicate-check line (heart
+three-rules line (the swap test, both layers, the decisive step's class and the analyst test), the leak line (`leak.py` verdict and the reader's question-1 answer), the duplicate-check line (heart
 verdict, nearest build and its similarity, the pre-flight verdict), the solver line (rounds run,
 architectures used, the passing round's proxy, the answer the solver committed to and where it left
 the ladder), the judge's verdict and Gate G line, the zip path. Then stop. The ledger row, the
