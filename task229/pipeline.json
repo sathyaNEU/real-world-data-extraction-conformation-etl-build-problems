@@ -2,20 +2,21 @@
  "task": "task229",
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
- "stage": 7,
- "stage_name": "determinism judge running on the loop-2 cut (round 3 recorded as a pass under the PR #17 single-solver rule)",
+ "stage": 8,
+ "stage_name": "shipped",
  "updated": "2026-10-11",
  "stump": "A competent solver executes MDS-STD-114 and gives the mean its textbook error (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; installations behind one mesh collector lose a missed night together and EM3.12.2 sits behind seven, so the error built over the comms nodes (1.83 and 0.57, not 0.40 and 0.09) holds EM3.12.2 and EM3.12.0 and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
  "architecture": 1,
  "loops": 2,
  "leak": {
-  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK",
-  "reader": "round-3 reader (loop-2 cut): Q1-Q4 none, R1-R3 harmless; it solved the task itself and filed R4 (five fires), never trying an error over comms nodes; it notes the census sums to the substitution load once the fire set is known"
+  "leak_py": "REVIEW (3 lines, each answered in the design note); no LEAK; re-run on the stage 8 rebuild with the same 3 lines",
+  "reader": "round-3 reader (loop-2 cut): Q1-Q4 none, R1-R3 harmless; it solved the task itself and filed R4 (five fires), never trying an error over comms nodes; it notes the census sums to the substitution load once the fire set is known. Its read stands for the stage 8 rebuild: containers only, no text under target/ and no prompt change (verified against the judged cut)"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task228, answered); nearest heart text 0.04 (task114); nearest driver 0.06 (task87 v3)",
   "nearest": "task87 v3 driver 0.06",
-  "clone_check": "loop-1 pre-flight CLEAN on the hardened driver (task229/clone_check_report.md); loop 2 leaves the driver unchanged"
+  "clone_check": "loop-1 pre-flight CLEAN on the hardened driver (task229/clone_check_report.md); loop 2 leaves the driver unchanged",
+  "surface": "stage 8 final cut against task228's pack (6b19d41, built from its generator in a scratch worktree, since removed): 0 promoted pairs; task228 vs task229 Track A 0.08, Track B shares only the population gap label; no persona in the cut pack"
  },
  "solver_rounds": [
   {
@@ -113,11 +114,13 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 1)",
+  "disposition": "APPROVE; optional fixes applied with no rerun: grading tolerance stated in step 6, the thinnest margins named in the recommendation, container metadata (PDF creator, Excel-shaped workbooks with their own UTC stamps); no graded figure, rung or read text moved",
+  "report": "task229/determinism_check_report.md",
+  "gate_g": "mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the design note",
+  "residual": "simple mean with a random-intercept variance holds EM3.10.9 (SE 0.65 against 0.48); not licensed: the full random-intercept fit (97.44, SE 0.46) and every design-based estimator fire it; asserted in checks.py"
  },
- "approved": null,
- "delivered": null,
+ "approved": "2026-10-11 (no author checkpoint in the flow; heart WARN answered, pre-flight CLEAN, surface clean against task228, judge APPROVE)",
+ "delivered": "2026-10-11",
  "portal": null
 }
