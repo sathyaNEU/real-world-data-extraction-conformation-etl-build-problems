@@ -174,9 +174,8 @@ def write_docx(g, path):
                f"same kind of arcing at a lower rate ({sev(a_s)}). Its acetylene rises with its tap changer's "
                f"operations, as at {' and '.join(name(t) for t in sorted(g['attributed'], key=lambda t: -g['naive'][t][1]))} "
                f"below, but it arrives with more hydrogen than acetylene, which is gas made by an arc in the "
-               f"main-tank oil, not oil from the diverter compartment. The arcing is most likely at the tap "
-               f"selector, which sits in the main tank and moves at every tap change, and an internal inspection "
-               f"is what reaches it. {name(t3)} has a thermal fault in the oil, with ethylene, methane and "
+               f"main-tank oil, not oil from the diverter compartment. The arcing happens at each tap change "
+               f"inside the main tank, and an internal inspection is what reaches it. {name(t3)} has a thermal fault in the oil, with ethylene, methane and "
                f"ethane all rising and ethylene at {sev(th_s)} times its limit.")
     if rest:
         rtxt = " and ".join(f"{name(t)} ({sev(coded[t][1])})" for t in rest)
@@ -193,7 +192,7 @@ def write_docx(g, path):
         lvl = f", level with {name(level[0])}" if level else ""
         _heading(doc, f"{nm}")
         _para(doc, f"{name(att[0])} has the highest main-tank acetylene in the fleet and {name(att[1])} the next "
-                   f"highest{lvl}, and both code 3 on the results as reported. In both, the acetylene has risen in "
+                   f"highest{lvl}, and both code 3 under section 4. In both, the acetylene has risen in "
                    "step with the tap changer's "
                    "operations from the first result that showed it, with almost no hydrogen alongside, and both "
                    "have in-oil arcing tap changers whose diverter compartments make exactly that gas in normal "

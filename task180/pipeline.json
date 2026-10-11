@@ -2,8 +2,8 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 7,
- "stage_name": "determinism check (judge pass 1)",
+ "stage": 4,
+ "stage_name": "FIX_NOW cycle: leak reader pass 5, then solver round 4 and judge pass 2",
  "updated": "2026-10-11",
  "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
@@ -55,9 +55,12 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "determinism_check_report.md (pass 1)",
+  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow"
  },
  "approved": null,
  "delivered": null,

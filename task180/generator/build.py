@@ -170,8 +170,11 @@ def main():
     docs_pdf.write_thermal(os.path.join(TARGET, F["thermal"]), docs.thermal_findings())
     docs.write_extract_log(os.path.join(TARGET, F["extract"]), F,
                            {k: f"{v:,}" for k, v in counts.items()})
-    for k in ("register", "log", "bookings"):
+    for k in ("register", "log"):
         docs.rewrite_ooxml(os.path.join(TARGET, F[k]), W.ORG)
+    # the bookings sheet is the copy saved when the windows were confirmed, 9 October, not an extract
+    docs.rewrite_ooxml(os.path.join(TARGET, F["bookings"]), W.ORG, stamp_iso="2026-10-09T01:34:00Z",
+                       zip_time=(2026, 10, 9, 14, 34, 0))
     scrub = os.path.join(HERE, "..", "..", ".claude", "skills", "reduce-house-fixes", "scripts",
                          "scrub_producer_metadata.py")
     # the contractor's report carries the contractor's name, everything else the organisation's

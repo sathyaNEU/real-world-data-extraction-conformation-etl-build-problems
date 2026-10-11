@@ -185,7 +185,31 @@ def log_rows(dlist, ops, cnt, R=None):
                "Breather replaced, old gel exhausted. New 3 kg breather fitted.",
                "Replaced silica gel breather, crystals all changed colour."][int(r.integers(0, 3))]
         rows.append((d, tid, "BREATHER", txt, W.PEOPLE["sampler"], 1.5))
-    # annual inspections and other plant work
+    # annual inspections and other plant work. The draws on r are the ones the rest of the log was built
+    # on (they feed the work order numbers), so the wording varies on a stream of its own.
+    rr = rng(2077)
+    remarks = {
+        2: ["{t} oil level gauge glass cracked, taped up, listed for the next outage.",
+            "{t} oil level gauge reading low against the dipstick, float sticking, freed off.",
+            "{t} conservator gauge glass fogged inside, cleaned.",
+            "{t} magnetic oil level gauge pointer loose, re-seated."],
+        3: ["{t} fan {n} bearing noisy, bearing replaced on site from spares.",
+            "{t} fan {n} would not start on manual, contactor replaced, runs OK.",
+            "{t} fan {n} guard loose, refixed.",
+            "{t} fan {n} blade chipped, fan swapped from spares."],
+        4: ["Kiosk door hinge repaired.", "Marshalling kiosk door seal replaced.",
+            "Control room door closer adjusted.", "Yard gate padlock replaced, keys to depot."],
+        5: ["Bird nest removed from {t} radiator bank.", "Starling nest cleared from {t} cooler.",
+            "Possum guard on {t} HV bushings refitted.", "Weeds sprayed along the {t} bund wall."],
+    }
+    opener = ["Annual zone substation inspection. T1 and T2 visual, oil levels normal, breathers {c}, Buchholz "
+              "relays checked, fans run on manual.",
+              "Annual inspection. Both transformers checked externally, tanks and radiators dry, breather gel {c}, Buchholz "
+              "relays checked, cooling fans run on manual.",
+              "Yearly substation check: T1/T2 walk-round, oil levels OK, breathers {c}, Buchholz checked, fans "
+              "tested on manual."]
+    used = {}
+    battery_done = set()
     for y in range(2019, 2027):
         for k, (code, name) in enumerate(W.SUBSTATIONS):
             d = dt.date(y, 2, 1) + dt.timedelta(int(r.integers(0, 250)))
@@ -194,21 +218,33 @@ def log_rows(dlist, ops, cnt, R=None):
             if d > W.EXTRACT_DATE - dt.timedelta(5):
                 continue
             col = ["orange", "orange", "orange with some green", "mostly green"][int(r.integers(0, 4))]
-            extra = ["", "", " T1 oil level gauge glass cracked, replace at next outage.",
-                     " T2 fan 3 noisy bearing, raised WO.", " Kiosk door hinge repaired.",
-                     " Bird nest removed from T1 radiator bank."][int(r.integers(0, 6))]
-            txt = (f"Annual zone substation inspection. T1 and T2 visual, oil levels normal, breathers {col}, "
-                   f"Buchholz relays checked, fans run on manual.{extra}")
+            cat = int(r.integers(0, 6))
+            extra = ""
+            if cat >= 2:
+                seen = used.setdefault(code, set())
+                pool = [m for m in remarks[cat] if (cat, m) not in seen]
+                if pool:
+                    m = pool[int(rr.integers(0, len(pool)))]
+                    seen.add((cat, m))
+                    extra = " " + m.format(t="T%d" % int(rr.integers(1, 3)), n=int(rr.integers(1, 5)))
+            style = 0 if y <= 2021 else 1 + int(rr.integers(0, 2))
+            txt = opener[style].format(c=col) + extra
             rows.append((d, f"{code} ZS", "ANNUAL INSPECTION", txt, W.PEOPLE["fitter2"], 3.0))
             if r.random() < 0.18:
                 d2 = d + dt.timedelta(int(r.integers(20, 90)))
                 while d2.weekday() >= 5 or d2 in W.HOLIDAYS:
                     d2 += dt.timedelta(1)
                 if d2 < W.EXTRACT_DATE - dt.timedelta(5):
-                    t = ["Protection secondary injection test, feeder relays and transformer IDMT.",
-                         "Substation battery bank replaced (110 V, 8 years old).",
-                         "11 kV switchboard maintenance, breakers racked out and timed.",
-                         "Earth grid test, results within limits."][int(r.integers(0, 4))]
+                    ti = int(r.integers(0, 4))
+                    if ti == 1 and code in battery_done:
+                        t = "Battery bank discharge test, all cells within limits, charger float voltage set."
+                    elif ti == 1:
+                        battery_done.add(code)
+                        t = f"Substation battery bank replaced (110 V, {int(rr.integers(8, 13))} years old)."
+                    else:
+                        t = ["Protection secondary injection test, feeder relays and transformer IDMT.", None,
+                             "11 kV switchboard maintenance, breakers racked out and timed.",
+                             "Earth grid test, results within limits."][ti]
                     rows.append((d2, f"{code} ZS", "PLANT WORK", t, W.PEOPLE["fitter2"], 6.0))
     rows.sort(key=lambda x: (x[0], x[1]))
     out = []

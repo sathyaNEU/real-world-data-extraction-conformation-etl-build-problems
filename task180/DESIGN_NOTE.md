@@ -286,6 +286,16 @@ tap operations": rung 3b, with no step that reads the gas the acetylene arrives 
 
 ## Tried and rejected
 
+- **Judge pass 1 (2026-10-11): DETERMINISTIC, FIX_NOW on hygiene.** The maintenance log's 176 annual inspections
+  reused one sentence and five remarks ("T2 fan 3 noisy bearing, raised WO." 25 times at 16 sites with no follow-up
+  order) and Burnham's battery bank was "8 years old" in 2019 and again in 2022. The remarks now vary on a random stream
+  of their own (the draws that number the work orders are untouched, so every OLTC, breather and oil-processing row is
+  byte-identical, asserted), defects are dealt with on the visit, a second battery job at a site is a discharge test,
+  and the bookings sheet carries its 9 October save stamp. The judge's watch item stays a defence, not a change: the
+  RLS-T2 split rests on the field's gas knowledge, and the in-pack contrasts are hydrogen flat at DSL-T1 and LST-T2
+  through acetylene rises of about 22 and 13 ppm, RLS-T2 hydrogen from about 33 to 54 ppm after its onset, and SBG-T2
+  as the control.
+
 - **Round 2 landed (architecture 2, loop 0, 2026-10-11); hardened as loop 1.** One solver, proxy 74.6, the slate exact
   and every ask figure right. Its deciding step: "Main-tank test (5.2): joined monthly samples with tap ops from
   scada_tap_counters_daily (rollovers +100000; counters replaced -> reset). DSL-T1 and LST-T2 acetylene rises at a
