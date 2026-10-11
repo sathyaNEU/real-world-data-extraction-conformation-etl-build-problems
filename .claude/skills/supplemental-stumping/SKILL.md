@@ -9,7 +9,7 @@ Three to five wide, criteria-dense, decoupled asks on silent realistic mess, har
 
 ## Part 0. The pair arithmetic
 
-The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, so `(C + S) / 2 <= 40` when `55 (Lc + Ls) <= 28 - r`. `L` is the ask weight kept, `r` the recommendation weight a wrong call keeps (about 5, from the generated rubric). The pair keeps about 23 of 110 ask points, **a fifth each**. Build for one response on the call (the cracker): only devices hold it; two on it is a ladder failure. Levers: references A1, A2.
+The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, so `(C + S) / 2 <= 40` when `55 (Lc + Ls) <= 28 - r`. `L` is the ask weight kept, `r` the recommendation weight a wrong call keeps (about 5, from the generated rubric). The pair keeps about 23 of 110 ask points, **a fifth each**. Build for one response on the call (the cracker): only devices hold it. With none on it the construction layer costs the pair everything and devices are margin; two on it is a ladder failure. The ten points under 50 are bought here, since the ladder's margin goes to determinism. Levers: references A1, A2.
 
 ## Part 1. Design against the careful solver's path
 

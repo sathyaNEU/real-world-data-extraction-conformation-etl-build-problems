@@ -39,7 +39,7 @@ strategies are in `../../stumping/references/strategies.md`.
 | 0.41 | Economics · treasury cash forecasting | 07 | Chose the feed on QA scorecard measures; the certified loss is cumulative within-period asymmetric loss |
 | 0.41 | Policy · school finance review | 01 | Undocumented variance measure rebuilt with an incomplete peer-pool rule; winner held, runner-up and counts wrong |
 | 0.41 | Product · contribution margin diagnostics | 18 | Stopped at the first construction that replayed the action-level controls; the archive controls needed the highest of six exposure views |
-| 0.42 | Nonprofit · sector revenue outlook | 02 | Rejected raw total-revenue growth but stopped at a near-miss cohort (no size floor), accepting residuals |
+| 0.42 | Nonprofit · sector revenue outlook | 02 | Rejected raw total-revenue growth but stopped at a near-miss cohort (no size floor), accepting residuals; the panel's rate applies to the whole sector's base, not the cohort's |
 | 0.44 | Policy · higher education formula | 05 | Charge counts as part of the allocation, so it is circular; one pass instead of a fixed-point solve under the ceiling |
 | 0.44 | Supply chain · outbound volume planning | 04 | Right profile, wrong scoring window (all origins against the trailing 180); one run multiplied an allowance meant to be added |
 | 0.45 | Economics · labour market seasonality | 17 | Arbitrary averaging window; the window is the one that replays both past calendars month for month |
@@ -59,7 +59,7 @@ strategies are in `../../stumping/references/strategies.md`.
 | 0.56 | Economics · occupational safety statistics | 18 | Treated suppressed rates as missing instead of bounding them from the published combined rate and its component |
 | 0.58 | Product · paid acquisition | 12 | Never priced the copy premium from the account's own seven merges; copy sets under-scoped |
 | 0.58 | Product · loyalty operations | fig | Joined storefront orders by account only; orders credited by phone dropped 155 qualifying members |
-| 0.58 | Product · usage-based allowance | 04 | Searched only the seven slate values; the answer is off the slate where overage pricing turns non-monotone |
+| 0.58 | Product · usage-based allowance | 04 | Searched only the seven slate values; the answer is off the slate where overage pricing turns non-monotone, and review hours bind month by month (pooling them admits a wrong allowance) |
 | 0.60 | Economics · subscription seat billing | fig | Treated expiring channel seats as leaving; the contract moves them to each account's open line |
 | 0.62 | Demography · social care capacity | 02 | Built demand right (946 beds) and never capped at registered supply (899) |
 | 0.66 | Economics · quarterly national accounts | 18 | Read component growth at face value; never aggregated weighted contributions into domestic demand and net trade |

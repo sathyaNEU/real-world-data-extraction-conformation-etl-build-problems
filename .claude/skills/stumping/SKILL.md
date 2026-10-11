@@ -65,9 +65,9 @@ correct and an unchecked constraint removes the pick re-placing nobody (58 v3, v
 misleads". **4 Rule:** which method a filed criterion the data settles selects (C2).
 
 Each pattern fires only under its condition. **A** past exceedance against forward yield: candidates
-resolve for an ordinary reason the series shows, a filed logistics fact pins the horizon. **C**
-serviceable share behind a join: an absolute share the analyst builds, the winner's edge clearing the
-decoy's carried advantage, never a column. **D** two flawless grains: different in shape, the grain pinned
+resolve for an ordinary reason the series shows, a filed logistics fact pins the horizon, and no past
+ranking ships as the answer. **C** serviceable share behind a join: an absolute share the analyst builds,
+the winner's edge clearing the decoy's carried advantage, never a column or a stated eligibility rule. **D** two flawless grains: different in shape, the grain pinned
 by what the decision funds, no key bridging them (44). **E** conditioned yield: an absolute split,
 confounders controlled by construction, no column naming it (43). **B**, a recovered rule, never decides.
 
@@ -142,11 +142,12 @@ never a Gate G defence.
 `dataset-generation` §6 asserts them (4th or 5th on rung 0, no margin under 1.15x). Then: one live degree
 of freedom in the graded quantity holds no ladder (49); the decisive move is never the smallest (37);
 every correction walks one way and only the decisive move reverses; a quantile absorbs a selection rung
-(44) and a share cancels one moving both terms; every grid cell is a named wrong answer or outside the
-floor, n monotone corrections at f needing a reversing g >= 1/((1 - floor) f^n), partial applications
-swept, hazards adding path length but no cell, the answer extreme or bracketed (L3 to L5, C4); every
-single-error cell files a feasible figure (44); and a saturated grid takes no rung, while cutting one can
-buy separation (45).
+(44) and a share cancels one moving both terms, while totals, counts and levels carry rungs, so each
+rung's worth is computed on the graded quantity, never an intermediate; every grid cell is a named wrong
+answer or outside the floor, n monotone corrections at f needing a reversing g >= 1/((1 - floor) f^n),
+partial applications swept, hazards adding path length but no cell, the answer extreme or bracketed (L3 to
+L5, C4); every single-error cell files a feasible figure (44); and a saturated grid takes no rung, while
+cutting one can buy separation (45).
 
 Stack two to four mechanisms from different gaps, the decisive gap not rung 1's; same-pattern stacking is
 one mechanism twice. **A hold** (`signal_vs_noise_or_hold`) is determinate when a computed blocking
@@ -259,7 +260,8 @@ is the finding, and an assumption every response holds unchecked is where to cha
   `SF` row and converge (`determinism-check` §2). An undesigned wrong candidate: close that reading.
 - The last rung never moves the ranking: widen the edge or shrink the carried advantage. A control quoted
   back: tie it under every basis, or cut it. Missed the call yet scored high: rebuild the asks. The name
-  right, figures wrong, repeatedly: re-root so the name is not graded. "The figure looks wrong": Gate G.
+  right, figures wrong, repeatedly: re-root so the name is not graded. "The figure looks wrong": Gate G;
+  rebuild, never harden.
 
 **Harden, in order:** a rung from another gap below the decisive one; the discriminator behind a join; the
 pin's evidence split across two documents; the winner's default-path rank worse; a conditioned yield; the

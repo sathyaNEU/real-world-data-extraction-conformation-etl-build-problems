@@ -68,8 +68,10 @@ about 2x apart; at least sixteen builds shipped one).
 answer. It needs a real quantisation (a publication step grid, a filing increment, a purchase block), with
 the estimate mid-cell and the whole admissible family inside it. Example: task40, no filer between 192
 and 209, so every ceiling 193 to 209 gives the same provision to the cent ("forced without the number that
-generates it being knowable"). State the slack as a number; a corridor with no slack is a coin flip
-(task35, two asks within 1 per cent of a $0.1M edge).
+generates it being knowable"). Recompute the whole admissible family under shifted conventions (task71,
+day counts moved two days either way; task75, four run-off implementations inside one block). State the
+slack as a number; a corridor with no slack is a coin flip (task35, two asks within 1 per cent of a $0.1M
+edge).
 
 **C4 Separate.** Compute every cell of the cross product of independent choices, each distinct, each
 mapped to the shipped sentence it violates, the nearest wrong cell at least 6 per cent away (builds ran
@@ -81,16 +83,17 @@ grid's extreme cell where possible (task76, task78), so half-applied corrections
 
 A binned figure is deterministic only when nothing in the admissible family crosses the bin edge, and the
 only way to know is to compute the distance. Every graded figure sits mid-bin on a non-round value, at
-least about 7 per cent of a bin from the edge (task72), with its flip condition stated as a number:
-"the Minimum would have to fall to 7,651 before 96 replicates carry it" (task79), not "the margin is
+least about 7 per cent of a bin from the edge (task72), with its flip condition stated as a number: "the
+Minimum would have to fall to 7,651 before 96 replicates carry it" (task79), not "the margin is
 comfortable". Two independent estimators agreeing inside the bin is strong evidence (task54, 0.076 per
 cent apart). The deliverable's display precision must not move a bin (task83, cells at two decimals land
 every figure in the full-precision bin). The rounding path is an axis and the one most often missed:
 task70 reproduced the invoice per collection point to the penny and missed by two pence per operating
-date. In a bin of width w the clearance is at most w/2, so re-centring cannot absorb a modelling spread
-(task47); pin the estimator or widen the gap. Measure a one-decimal figure's distance to x.x5 (task55).
-Never grade an iteration count, a median of an even-sized set, or a percentage near a one-decimal edge
-where a count would do (task57).
+date, so every summary artifact the generator emits rounds the way its lines do, one arithmetic with the
+golden, asserted. In a bin of width w the clearance is at most w/2, so re-centring cannot absorb a
+modelling spread (task47); pin the estimator or widen the gap. Measure a one-decimal figure's distance to
+x.x5 (task55). Never grade an iteration count, a median of an even-sized set, or a percentage near a
+one-decimal edge where a count would do (task57).
 
 ## Part 4. How determinism is lost
 
@@ -98,7 +101,7 @@ where a count would do (task57).
 |---|---|
 | A semantic pin never operationalised: filed at the right level, naming no field, still several readings (task42, 13.35 per cent) | converge (C1), never a second pin: a pin naming the field turns the rung into a lookup and trades Gate C for Gate F |
 | The deciding axis never enumerated (task62) | the Part 1 walk in writing before the cut |
-| A decision metric in the requester's own voice while a filed policy ranks on another | demote it to an attributed claim |
+| A decision metric in the requester's own voice while a filed policy ranks on another (runs reproduce every number and split only on which objective governs) | demote it to an attributed claim |
 | A convention declared in the write-up, not closed | the ten-of-ten test: if a competent analyst could go the other way, it is a decision; pin or converge |
 | An unasserted convergence claim (task42) | assert it in the generator and the verifier, or delete the sentence |
 | A thin margin over a live estimation range: two rigorous solvers on the same method reach opposite answers | pin the estimator (task59, the rate struck on the settled cohorts together) or widen the margin |
@@ -163,7 +166,8 @@ semantic" (task44).
 - Convergence is bought with sample density, separation with block size; tune them separately and re-sweep
   every separation after closing a fork, since a separation can be borrowed from the fork (task44).
 - A threshold family (drop addresses held by more than t) must cross the answer somewhere: put the
-  crossing at an unnatural t, every round t at least 10 per cent off, the corpus refusing the family (task58).
+  crossing at an unnatural t, every round t at least 10 per cent off, the corpus refusing the family; sweep
+  string heuristics on an entity exactly like columns (task58).
 
 ### 6.4 The robustness sweep
 
@@ -182,8 +186,9 @@ field is the giveaway column (task60, 29 spring executions, 16 load-bearing).
 Compute forward, never backward. Assert, 40 or more: each rung's winner by name and margin; the position
 table; discriminator dominance; the calibration back-test and swept count; the fork grid cell by cell;
 every C1 equality on figure and counts; the C3 corridor; every graded figure's bin distance and flip
-condition; every closure-table axis, including those that cannot move the answer; generation tells;
-each load-bearing fact in one file; the input gates. Ship an independent verifier on a code path sharing
+condition; every closure-table axis, including those that cannot move the answer; the generation tells (no
+headline total on a round boundary, no exactly round share); each load-bearing fact in one file; the input
+gates. Ship an independent verifier on a code path sharing
 nothing with the generator (task71, pyarrow against pandas; task83, the golden used only as expectations).
 
 Generator disciplines, each from a build that shipped wrong without it:

@@ -263,46 +263,53 @@ counts where the failure cost the call or its key figures, so one task can feed 
 decided and of those under 0.50. Evidence of habits, never architectures: the top four decided 37 of 64
 and share the withheld method behind a published control set the client rejects. 17 to 26 are emerging.
 
-1. **Ships a method its own back-test failed** (11, 9): now only a filed criterion the data confirms; two
-constructions fitting every control pin nothing, and the right one matches every control exactly.
+1. **Ships a method its own back-test failed** (11, 9): the obvious construction matches most controls, not
+all; now only a filed criterion the data confirms; two constructions fitting every control pin nothing, and
+the right one matches every control exactly, never within rounding.
 2. **Counts file rows, not the real unit** (11, 7): F2; never a grouping on fuzzy text.
-3. **Stops at a close, inexact match** (8, 5): ask for the runner-up and the gap so a near miss shows; a
+3. **Stops at a close, inexact match** (8, 5): dropping any one rule breaks at least one control and the
+runner-up or margin rides on the last rule; ask for the runner-up and the gap so a near miss shows; a
 dropped rule that moves nothing graded does not bite.
 4. **Never tests its reading against the control** (7, 5): a closed case read as history; the
 withheld-step form is banned.
-5. **Takes the population a flag or filter suggests** (5, 3): the scope comes from a date or a join,
-exceptions checkable record by record (F7).
-6. **Treats a mixed segment one way** (5, 2): a clause splits it through a join, either blanket treatment
-moving the headline; ask for the part counts.
+5. **Takes the population a flag or filter suggests** (5, 3): the flag agrees with the scope on most records
+and its misses move the call; the scope comes from a date or a join, exceptions checkable record by record
+(F7).
+6. **Treats a mixed segment one way** (5, 2): a clause splits it through a join, each part identifiable
+record by record, either blanket treatment moving the headline; ask for the part counts.
 7. **Uses the ready-made measure** (5, 2): a scorecard or raw rate over the defined measure (16.92 per
 cent weighted against 9.90 raw), different in definition, never ranking the decision.
 8. **Papers over a failed reproduction** (4, 4): pastes published values or takes the escape clause; ask
 for a traceable series; withholding is wrong only when a reproducing method exists.
-9. **Picks from the slate when none passes** (4, 3): a wider admissible set, the off-slate answer unique,
-the veto and the status quo ruled out.
-10. **Notes a binding limit as a risk** (4, 3): the policy says it binds, it derives exactly, and the ask
-    is the committed figure (F3).
+9. **Picks from the slate when none passes** (4, 3): every slate option fails one stated condition; a wider
+admissible set, the off-slate answer unique, the veto and the status quo ruled out.
+10. **Notes a binding limit as a risk** (4, 3): the limit sits in an operations file, the policy says it
+    binds, it derives exactly, and the ask is the committed figure (F3).
 11. **Beats the headline trap, misses the quiet one** (4, 2): the quiet step has its own evidence and
     moves the call.
-12. **Stops at the first control that passes** (3, 2): finer checks in the same record separate the
-    constructions.
+12. **Stops at the first control that passes** (3, 2): several constructions pass the salient control and
+    disagree on the call; finer checks in the same record separate them.
 13. **Validates on one population, applies to another** (3, 2): the difference shows in published
     aggregates (446's form).
-14. **Coarsens the segment asked about** (3, 1): the class list is spelled out at authority.
+14. **Coarsens the segment asked about** (3, 1): the term has a common coarse shorthand and a convenience
+    table at the coarse grain; the class list is spelled out at authority.
 15. **Follows the requester's hunch** (3, 1): a hunch in the prompt is a roll-call risk.
-16. **Lets small shortcuts flip a thin margin** (3, 1): a margin under any shortcut's shift is fragile.
+16. **Lets small shortcuts flip a thin margin** (3, 1): each common shortcut shifts more than the margin,
+    the processing documented and the exact margin asked; as the main call's margin it is fragile.
 17. **Guesses an attribution the data can settle** (2, 2): a latent marker, exact every time, confirmed on
     a settled case.
 18. **Joins only on the visible key** (2, 1): a phone-credited order or a multi-hop roll-up, the link
     unambiguous.
-19. **Breaks a big tie instead of questioning it** (2, 1): reconciling across files leaves one (a 111-way
-    tie at 100 per cent).
-20. **Leaves the deciding comparison unstated** (2, 1): ask for it by name.
+19. **Breaks a big tie instead of questioning it** (2, 1): the naive measure saturates; reconciling across
+    files leaves one (a 111-way tie at 100 per cent).
+20. **Leaves the deciding comparison unstated** (2, 1): the components point the other way read one at a
+    time; ask for the combined comparison by name.
 21. **Adds exclusions nobody asked for** (2, 0): controls pin the screen set; ask for the carried counts.
 22. **Solves a self-referencing rule in one pass** (1, 1): a fixed point with a ceiling that binds after
     it; ask who sits at it.
 23. **Reads a closure notice as a market exit** (1, 1): the billing crosses the date onto a successor.
-24. **Treats an unpublished figure as unknown** (1, 0): bound it by the total and its other component.
+24. **Treats an unpublished figure as unknown** (1, 0): bound it by the total and its other component, the
+    bound clear of the comparison value.
 25. **Assumes an effect the log could measure** (1, 0): past instances are natural experiments; ask for a
     stated precision.
 26. **Picks a window across a documented confounder** (1, 0): start after it ends; ask for an interval.
@@ -321,7 +328,9 @@ Read before every draw: the shape, its evidence, its replacement.
   filed rule plus a stated join route is a reading test (45), and so is a rule composed from two documents
   (76 v1); a dictionary explaining public layouts hands over the plumbing (57 v22).
 - **A move visible in the schema**, six landings (117, 119, 121 x2, 124, 128; in 48 two columns named it).
-- **A reflex correction**, ten landings (130 v3, 180 x4, 181, 228 x2, 230 x2).
+- **A reflex correction**, ten landings (130 v3, 180 x4, 181, 228 x2, 230 x2). **A decisive step that is the
+  last link of the obvious chain**: decomposing, controlling and refuting are defaults and the deepest of them
+  is already solved; move the rung off the chain, where thoroughness on it does not help.
 - **A control that nominates or refutes** (120, 125; 92 v2 and 89 v5 on the portal), and **an oracle that
   ties only under the golden**, seven landings (117, 118, 120, 122 x2, 123 x2, 128), or a finer-grain
   working paper that validates the rules (60).
@@ -346,11 +355,15 @@ Read before every draw: the shape, its evidence, its replacement.
   123, 128, 228). **A rung spent fixing determinism** (75 spent three).
 - **A rung that changes the model of behaviour** (75: a rolling-origin back-test sees it).
 - **A linear mechanism in a rate-times-exposure world** (59: 0.2 to 2.7 per cent; 125: one subtraction and a
-  half, landed twice); a non-linear move holds (56 v5).
+  half, landed twice); a non-linear move holds (56 v5). **A world additive over rows once its map ships**
+  (hours sum, cases count, balances subtract; 56): every basis is the natural one, so grade a quantity
+  non-linear in the rows (a min, a gate).
 - **Charge reconstruction under published terms** (92 v2): grade what the terms do not define, what could
   have been avoided or what comes next.
 - **A gate on a status word** (89: certified, licensed, in force, approved; one as-of join). Use a quantity.
-- **A forward population named by a filed clause** (100 v1).
+- **A forward population named by a filed clause** (100 v1). **A forward window whose every input is filed**
+  (55): the simulation is the solver's first move, and a mechanism that only moves when something becomes
+  available is inert against a filed quantity plan; move what the thing is (its date code, unit, eligibility).
 - **Recovering what an instrument could not observe** (89 v6: the judge repairs the instrument).
 - **A confirm draw whose natural route keeps the figure** (38 v2, 40, 62 s.29, 87 v6b).
 - **Conformance as either of the top two rungs** (107 v3; the ETL builds 39 and 40).
