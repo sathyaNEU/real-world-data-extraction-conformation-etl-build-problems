@@ -1,20 +1,27 @@
-"""Every graded figure and every rung of task133, from the shipped files alone."""
+"""Every graded figure of task133, every rung of the main ladder and every stop on the two ask ladders, read from the
+shipped files alone."""
 import datetime as dt
 import math
 import os
 import re
 
+import numpy as np
 import openpyxl
 import pandas as pd
 from pypdf import PdfReader
 
-F = dict(book="personal_loan_book_2026-09-30.csv", curve="pd_curve_personal_loans_2026-06.csv",
+F = dict(book="personal_loan_book_2026-09-30.csv", june="personal_loan_book_2026-06-30.csv",
+         curve="pd_curve_personal_loans_2026-06.csv", dev="pd_model_development_sample.parquet",
          hardship="hardship_register_2026-09-30.xlsx", scen="ifrs9_scenarios_2026Q3.xlsx",
-         note="scorecard_v4_migration_note.pdf")
+         note="scorecard_v4_migration_note.pdf", scores="behaviour_score_runs_2026-03_2026-08.parquet",
+         defaults="collections_defaults_2023-24.csv", receipts="collections_receipts_2023-07_2026-09.csv",
+         sale="debt_sale_2026-03_schedule.xlsx")
 REPORT = dt.date(2026, 9, 30)
+PRIOR = dt.date(2026, 6, 30)
 SCEN_SHEET = "Q1 FY27 scenarios"
 LGD = {"PL36": 0.70, "PL60": 0.76}
 STAGE2_SCALAR = 2.4
+QUARTERS = {1: "Jul to Sep 2023", 2: "Oct to Dec 2023", 3: "Jan to Mar 2024", 4: "Apr to Jun 2024"}
 
 
 def _d(x):
@@ -30,21 +37,23 @@ def months_due(first_rep, report=REPORT):
     return n
 
 
-BANDS = [(0, 6, "0-6"), (7, 12, "7-12"), (13, 24, "13-24"), (25, 36, "25-36"), (37, 59, "37-59")]
+# ------------------------------------------------------------------------------------------------- shared reads
 
-
-def band_of(m):
-    for lo, hi, lab in BANDS:
-        if lo <= m <= hi:
-            return lab
-    raise ValueError(m)
+def load_staging(target):
+    """what staging needs: the September book, the hardship register and the v3 to v4 conversion"""
+    bk = pd.read_csv(os.path.join(target, F["book"]))
+    bk["first_rep"] = bk["first_repayment_date"].map(_d)
+    hd = pd.read_excel(os.path.join(target, F["hardship"]), sheet_name=0)
+    text = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, F["note"])).pages)
+    m = re.search(r"v4 = ([0-9.]+) x v3 - ([0-9.]+)", text)
+    return bk, hd, (float(m.group(1)), -float(m.group(2)))
 
 
 def load(target):
     bk = pd.read_csv(os.path.join(target, F["book"]))
     bk["first_rep"] = bk["first_repayment_date"].map(_d)
     cv = pd.read_csv(os.path.join(target, F["curve"]), comment="#")
-    curves = {p: g.sort_values("month_on_book")["cumulative_pd"].tolist() for p, g in cv.groupby("product")}
+    curves = {p: g.sort_values("month_on_book")["cumulative_pd"].to_numpy() for p, g in cv.groupby("product")}
     hd = pd.read_excel(os.path.join(target, F["hardship"]), sheet_name=0)
     wb = openpyxl.load_workbook(os.path.join(target, F["scen"]), data_only=True)
     ws = wb[SCEN_SHEET]
@@ -59,23 +68,67 @@ def load(target):
     return bk, curves, hd, scen, mapping
 
 
-def stage(bk, hd, mapping, use_hardship=True, map_v3=True):
+def sample_shares(target):
+    """from the development sample: for each product, the share of its loans that had defaulted (D) and the share
+    repaid in full, early or at term, without defaulting (Cl) by the end of each month on book"""
+    dev = pd.read_parquet(os.path.join(target, F["dev"]))
+    out = {}
+    for p, g in dev.groupby("product"):
+        T = int(g["term_months"].iloc[0])
+        n = len(g)
+        grid = np.arange(T + 1)
+        dm = np.sort(g.loc[g["outcome"] == "default", "outcome_month_on_book"].to_numpy())
+        cm = np.sort(g.loc[g["outcome"].isin(["prepaid", "matured"]), "outcome_month_on_book"].to_numpy())
+        early = np.sort(g.loc[g["outcome"] == "prepaid", "outcome_month_on_book"].to_numpy())
+        out[p] = dict(D=np.searchsorted(dm, grid, side="right") / n, Cl=np.searchsorted(cm, grid, side="right") / n,
+                      Cl_early=np.searchsorted(early, grid, side="right") / n, n=n)
+    return out
+
+
+def in_force(hd, at, rule="dates"):
+    """loans with a hardship arrangement in force on day `at`. 'dates' is CRM-ECL-04 2.2 (in force from its start date to
+    its end date, both included, and not from the day it is cancelled); the others are the misreadings the ask ladders
+    price"""
+    at = pd.Timestamp(at)
+    s, e, c = hd["arrangement_start"], hd["arrangement_end"], hd["cancelled_date"]
+    status = hd["arrangement_status"]
+    if rule == "dates":
+        sel = (s <= at) & (e >= at) & (c.isna() | (c > at))
+    elif rule == "excl_cancel":
+        sel = (s <= at) & (e >= at) & (status != "Cancelled")
+    elif rule == "ignore_cancel":
+        sel = (s <= at) & (e >= at)
+    elif rule == "label":
+        sel = status == "Active"
+    elif rule == "label_dated":
+        sel = (status == "Active") & (s <= at)
+    elif rule == "end_exclusive":
+        sel = (s <= at) & (e > at) & (c.isna() | (c > at))
+    elif rule == "cancel_inclusive":
+        sel = (s <= at) & (e >= at) & (c.isna() | (c >= at))
+    else:
+        raise ValueError(rule)
+    return set(hd.loc[sel, "loan_no"])
+
+
+def stage(bk, hd, mapping, use_hardship=True, map_v3=True, at=REPORT, rule="dates", score=None):
+    """CRM-ECL-04 section 2 at day `at`: stage 3 at 90 or more days past due; stage 2 at 30 or more, a hardship
+    arrangement in force, or a behaviour score 60 or more points below the origination score on v4 (v3 converted)"""
     a, b = mapping
-    live = hd[hd["arrangement_status"] != "Cancelled"].copy()
-    live["s"] = live["arrangement_start"].map(_d)
-    live["e"] = live["arrangement_end"].map(_d)
-    inforce = set(live[(live["s"] <= REPORT) & (live["e"] >= REPORT)]["loan_no"])
     o = bk["origination_score"].astype(float)
     if map_v3:
         o = [int(math.floor(a * v + b + 0.5)) if c == "v3" else int(v) for v, c in zip(o, bk["origination_scorecard"])]
-    drop = pd.Series(o, index=bk.index) - bk["current_score_v4"]
+    sc = bk["current_score_v4"] if score is None else score
+    drop = pd.Series(o, index=bk.index) - pd.Series(sc, index=bk.index)
     st = pd.Series(1, index=bk.index)
-    st[(bk["days_past_due"] >= 30) | (drop >= 60)] = 2
+    st[(bk["days_past_due"] >= 30) | (drop >= 60).fillna(False)] = 2
     if use_hardship:
-        st[bk["loan_no"].isin(inforce)] = 2
+        st[bk["loan_no"].isin(in_force(hd, at, rule))] = 2
     st[bk["days_past_due"] >= 90] = 3
     return st
 
+
+# ------------------------------------------------------------------------------------------------- the main call
 
 def ead_path(balance, rate, rem):
     """balance at the start of each month k = 1..rem, re-amortising the current balance over rem months"""
@@ -90,74 +143,231 @@ def ead_path(balance, rate, rem):
     return out
 
 
-def loan_ecl(row, st, curves, mult, variant="cond", disc=True, flat_ead=False, by_month=None, pm_zero=False):
-    a = months_due(row["first_rep"])
+def loan_ecl(row, st, C, Cl, mult, variant="cond", disc=True, flat_ead=False, pm_zero=False, a_shift=0):
+    """the loan's ECL under CRM-ECL-04 section 3. variant: 'cond' (the curve's increments from the loan's months on
+    book over the share of development loans still open and never defaulted), 'r4' (over one less the curve to date),
+    'shift' (no division), 'uncond' (the curve from origination), 'hazard' (the sample's default hazard rolled forward
+    with no repayment in the forward months), 'r4b' ('cond' with the balance also run off by the sample's payout rate)"""
+    a = months_due(row["first_rep"]) - a_shift
     T = int(row["term_months"])
     rem = T - a
     if rem <= 0:
-        # past its contractual maturity and not in stage 3: one month remaining (CRM-ECL-04 3.2), so the loan stands
-        # at the month on book that leaves one month of its term, the last month of its product's curve
+        # past contractual maturity and not in stage 3: one month remaining (CRM-ECL-04 3.2), so the loan stands at the
+        # month on book that leaves one month of its term
         if pm_zero:
             return 0.0
         a, rem = T - 1, 1
     H = rem if st == 2 else min(12, rem)
-    C = curves[row["product"]]
     r = float(row["contract_rate"])
-    eads = ead_path(float(row["current_balance"]), r, rem)
-    sa = 1.0 - C[a]
+    bal = float(row["current_balance"])
+    eads = ead_path(bal, r, rem)
+    Sa = 1.0 - C[a] - Cl[a]
+    surv = 1.0                       # 'hazard': no default between a and the month before; 'r4b': no payout
     tot = 0.0
     for k in range(1, H + 1):
-        if variant == "cond":
-            mp = (C[a + k] - C[a + k - 1]) / sa
+        m = a + k
+        inc = C[m] - C[m - 1]
+        if variant == "cond" or variant == "r4b":
+            mp = inc / Sa
+        elif variant == "r4":
+            mp = inc / (1.0 - C[a])
         elif variant == "shift":
-            mp = C[a + k] - C[a + k - 1]
+            mp = inc
+        elif variant == "uncond":
+            mp = C[k] - C[k - 1] if k <= T else 0.0
+        elif variant == "hazard":
+            h = inc / (1.0 - C[m - 1] - Cl[m - 1])
+            mp = surv * h
+            surv *= 1.0 - h
         else:
-            mp = C[k] - C[k - 1]
-        ead = float(row["current_balance"]) if flat_ead else eads[k - 1]
+            raise ValueError(variant)
+        ead = bal if flat_ead else eads[k - 1]
+        if variant == "r4b":
+            ead *= surv
+            surv *= 1.0 - (Cl[m] - Cl[m - 1]) / (1.0 - C[m - 1] - Cl[m - 1])
         df = (1 + r / 12.0) ** (-k) if disc else 1.0
-        e = mp * (STAGE2_SCALAR if st == 2 else 1.0) * mult * LGD[row["product"]] * ead * df
-        tot += e
-        if by_month is not None:
-            by_month[k] = by_month.get(k, 0.0) + e
+        tot += mp * (STAGE2_SCALAR if st == 2 else 1.0) * mult * LGD[row["product"]] * ead * df
     return tot
 
 
 def solve(target, **kw):
     bk, curves, hd, scen, mapping = load(target)
-    st = stage(bk, hd, mapping, kw.get("use_hardship", True), kw.get("map_v3", True))
+    sh = sample_shares(target)
+    st = stage(bk, hd, mapping, kw.get("use_hardship", True), kw.get("map_v3", True), rule=kw.get("rule", "dates"))
+    if kw.get("stage_fn") is not None:
+        st = kw["stage_fn"](bk, hd, mapping)
     mult = sum(w * m for _, w, m in scen)
     variant = kw.get("variant", "cond")
-    disc = kw.get("disc", True)
-    flat = kw.get("flat_ead", False)
-    by_month = {}
+    D_from = kw.get("D_from", "curve")
     ecl = []
     for idx, row in bk.iterrows():
         s = int(st[idx])
-        ecl.append(0.0 if s == 3 else loan_ecl(row, s, curves, mult, variant, disc, flat, by_month, kw.get("pm_zero", False)))
-    mob = [months_due(f) for f in bk["first_rep"]]
-    bk = bk.assign(stage=st.values, ecl=ecl, mob=mob,
-                   band=[str(d)[:4] if str(d)[:4] >= "2024" else "2023 and earlier" for d in bk["drawdown_date"]])
+        if s == 3:
+            ecl.append(0.0)
+            continue
+        p = row["product"]
+        C = curves[p] if D_from == "curve" else sh[p]["D"]
+        Cl = sh[p]["Cl_early"] if kw.get("early_only") else sh[p]["Cl"]
+        ecl.append(loan_ecl(row, s, C, Cl, mult, variant, kw.get("disc", True), kw.get("flat_ead", False),
+                            kw.get("pm_zero", False), kw.get("a_shift", 0)))
+    bk = bk.assign(stage=st.values, ecl=ecl, mob=[months_due(f) for f in bk["first_rep"]])
     inb = bk[bk["stage"] < 3]
-    out = dict(total=float(inb["ecl"].sum()), mult=mult, loans=inb[["loan_no", "product", "stage", "band", "current_balance", "ecl"]].copy())
-    out["by_band"] = {(p, b): float(g["ecl"].sum()) for (p, b), g in inb.groupby(["product", "band"])}
+    out = dict(total=float(inb["ecl"].sum()), mult=mult, loans=inb[["loan_no", "product", "stage", "current_balance", "ecl"]].copy())
     for s in (1, 2):
         g = inb[inb["stage"] == s]
         out["stage%d" % s] = float(g["ecl"].sum())
         out["n%d" % s] = int(len(g))
         out["gca%d" % s] = float(g["current_balance"].sum())
-        for p in ("PL36", "PL60"):
-            gp = g[g["product"] == p]
-            out["%s_s%d" % (p, s)] = float(gp["ecl"].sum())
-            out["%s_s%d_gca" % (p, s)] = float(gp["current_balance"].sum())
-            out["%s_s%d_cov" % (p, s)] = 100.0 * float(gp["ecl"].sum()) / float(gp["current_balance"].sum())
-    # by calendar period of the default month: October to December 2026, then calendar years
-    per = {}
-    for k, v in by_month.items():
-        y = 2026 + (9 + k - 1) // 12          # month k after September 2026
-        per[y] = per.get(y, 0.0) + v
-    out["by_year"] = dict(sorted(per.items()))
     out["n3"] = int((bk["stage"] == 3).sum())
     pm = (bk["mob"] >= bk["term_months"]) & (bk["stage"] < 3)
     out["n_pm"] = int(pm.sum())
     out["ecl_pm"] = float(bk.loc[pm, "ecl"].sum())
+    out["stages"] = dict(zip(bk["loan_no"], bk["stage"]))
     return out
+
+
+# ------------------------------------------------------------------------------------------------- ask A
+
+def collections(target):
+    fy = pd.read_csv(os.path.join(target, F["defaults"]), dtype={"loan_no": str})
+    led = pd.read_csv(os.path.join(target, F["receipts"]), dtype={"loan_no": str, "receipt_ref": str})
+    wb = openpyxl.load_workbook(os.path.join(target, F["sale"]), data_only=True)
+    ws = wb.worksheets[0]
+    head, rows, cols = {}, [], None
+    for r in ws.iter_rows(values_only=True):
+        if cols is None:
+            if r[0] == "loan_no":
+                cols = list(r)
+            elif r[0]:
+                head[r[0]] = r[1]
+            continue
+        if r[0]:
+            rows.append(dict(zip(cols, r)))
+    sale = pd.DataFrame(rows)
+    price = float(re.match(r"([0-9.]+) cents", str(head["Price"])).group(1)) / 100.0
+    return fy, led, sale, price, head
+
+
+def _month(s):
+    s = str(s)
+    return int(s[:4]) * 12 + int(s[5:7]) - 1
+
+
+def realised_lgd(target, variant="gold"):
+    """what the 2023-24 defaults have lost, as a share of their balance at default, by product and quarter of the
+    default month, in per cent. 'gold' is CRM-ECL-04 3.3: every amount received after default to the reporting date,
+    the loan's share of the March 2026 sale proceeds (its face value at the cut-off times the price) included, counted
+    at the end of the month it was received and discounted to the default month end at the contract rate for each whole
+    month; a loan back to performing loses nothing. The other variants are the stops on the ask's ladder"""
+    fy, led, sale, price, head = collections(target)
+    fy = fy.copy()
+    fy["B"] = fy["balance_at_default"].astype(float)
+    fy["r"] = fy["contract_rate"].astype(float)
+    fy["M"] = fy["default_month"].map(_month)
+    fy["q"] = [((int(m[5:7]) - 7) % 12) // 3 + 1 for m in fy["default_month"]]
+    rec = led[led["loan_no"].notna()].merge(fy[["loan_no", "M", "r", "default_month"]], on="loan_no", how="inner")
+    rec["amt"] = rec["amount_aud"].astype(float)
+    rec["n"] = rec["received_date"].map(_month) - rec["M"]
+    me = pd.to_datetime(rec["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    rec["days"] = (pd.to_datetime(rec["received_date"]) - me).dt.days
+    rec["pv"] = rec["amt"] * (1 + rec["r"] / 12) ** (-rec["n"])
+    rec["pv_days"] = rec["amt"] * (1 + rec["r"] / 12) ** (-rec["days"] / (365.25 / 12))
+    rec["pv_start"] = rec["amt"] * (1 + rec["r"] / 12) ** (-(rec["n"] - 1))
+    rec["pv_kept"] = np.where(rec["amt"] < 0, 0.0, rec["pv"])
+    by = rec.groupby("loan_no")
+    for c in ("amt", "pv", "pv_days", "pv_start", "pv_kept"):
+        fy[c] = fy["loan_no"].map(by[c].sum()).fillna(0.0)
+    bulk = led[led["loan_no"].isna() & (led["source"] == "Debt sale")]
+    sale_m = _month(bulk["received_date"].iloc[0])
+    sale_day = pd.Timestamp(bulk["received_date"].iloc[0])
+    consideration = float(bulk["amount_aud"].astype(float).sum())
+    face = dict(zip(sale["loan_no"], sale["face_value_aud"].astype(float)))
+    fy["sale"] = fy["loan_no"].map(face).fillna(0.0) * price
+    fy["sale_pv"] = fy["sale"] * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"]))
+    dme = pd.to_datetime(fy["default_month"] + "-01") + pd.offsets.MonthEnd(0)
+    fy["sale_pv_days"] = fy["sale"] * (1 + fy["r"] / 12) ** (-((sale_day - dme).dt.days) / (365.25 / 12))
+    fy["sale_pv_start"] = fy["sale"] * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"] - 1))
+    cured = fy["resolution"] == "Cured"
+    wo = fy["resolution"] == "Written off"
+    pop = None
+    if variant == "gold":
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale_pv"])
+    elif variant == "s1":            # written-off loans only, undiscounted, the sale left out
+        loss, pop = fy["B"] - fy["amt"], wo
+    elif variant == "s2":            # cures in at full recovery, undiscounted, the sale left out
+        loss = np.where(cured, 0.0, fy["B"] - fy["amt"])
+    elif variant == "s3":            # discounted, the sale left out
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv"])
+    elif variant == "s4":            # the sale receipt spread over the 2023-24 written-off loans by balance at default
+        share = np.where(wo, fy["B"] / fy.loc[wo, "B"].sum(), 0.0)
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - consideration * share * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"])))
+    elif variant == "cures_receipts":
+        loss = fy["B"] - fy["pv"] - fy["sale_pv"]
+    elif variant == "excl_cures":
+        loss, pop = fy["B"] - fy["pv"] - fy["sale_pv"], ~cured
+    elif variant == "sale_undisc":
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale"])
+    elif variant == "all_undisc":
+        loss = np.where(cured, 0.0, fy["B"] - fy["amt"] - fy["sale"])
+    elif variant == "floor":
+        loss = np.maximum(np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale_pv"]), 0.0)
+    elif variant == "days":
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv_days"] - fy["sale_pv_days"])
+    elif variant == "month_start":
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv_start"] - fy["sale_pv_start"])
+    elif variant == "lazy":           # every receipt summed as it stands, cures taken from their receipts, no sale
+        loss = fy["B"] - fy["amt"]
+    elif variant == "no_reversals":   # the negative ledger rows dropped as errors, the dishonoured attempts kept
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv_kept"] - fy["sale_pv"])
+    elif variant == "face_alloc":     # the sale receipt shared over the sold loans in proportion to face value
+        alloc = fy["loan_no"].map(face).fillna(0.0) / sum(face.values()) * consideration
+        loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - alloc * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"])))
+    else:
+        raise ValueError(variant)
+    d = fy.assign(loss=loss)
+    if pop is not None:
+        d = d[pop]
+    g = d.groupby(["product", "q"])
+    val = 100.0 * g["loss"].sum() / g["B"].sum()
+    return {(p, int(q)): float(v) for (p, q), v in val.items()}
+
+
+# ------------------------------------------------------------------------------------------------- ask B
+
+def score_runs(target):
+    sc = pd.read_parquet(os.path.join(target, F["scores"]))
+    sc["run_date"] = pd.to_datetime(sc["run_date"]).dt.date
+    return sc
+
+
+def migration(target, june_rule="dates", run="june", sept_rule="dates"):
+    """the loans in stage 1 and stage 2 at 30 June 2026, by product and June stage: how many are in stage 1, 2 and 3
+    at 30 September and how many have closed (not in the September extract). 'june' takes the scores of the month-end
+    run on the 30 June position (made on 1 July); 'may' the last run made on or before 30 June; 'sept' the September
+    extract's scores"""
+    bk, hd, mapping = load_staging(target)
+    jb = pd.read_csv(os.path.join(target, F["june"]))
+    sc = score_runs(target)
+    if run == "june":
+        pick = sc[sc["run_date"] == dt.date(2026, 7, 1)]
+    elif run == "may":
+        pick = sc[sc["run_date"] == max(d for d in sc["run_date"].unique() if d <= PRIOR)]
+    elif run == "july":
+        pick = sc[sc["run_date"] == dt.date(2026, 8, 1)]
+    elif run == "sept":
+        pick = bk[["loan_no", "current_score_v4"]].rename(columns={"current_score_v4": "score_v4"})
+    else:
+        raise ValueError(run)
+    score = jb["loan_no"].map(dict(zip(pick["loan_no"], pick["score_v4"])))
+    jst = stage(jb, hd, mapping, at=PRIOR, rule=june_rule, score=score)
+    sst = stage(bk, hd, mapping, rule=sept_rule)
+    now = dict(zip(bk["loan_no"], sst))
+    cells = {}
+    for p in ("PL36", "PL60"):
+        for s0 in (1, 2):
+            ids = jb.loc[(jb["product"] == p) & (jst == s0), "loan_no"]
+            ss = ids.map(now)
+            for s1 in (1, 2, 3):
+                cells[(p, s0, "stage %d" % s1)] = int((ss == s1).sum())
+            cells[(p, s0, "closed")] = int(ss.isna().sum())
+    return cells

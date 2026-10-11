@@ -28,21 +28,23 @@ def methodology_docx(path):
     add(("small", "Credit Risk Management policy and method library"), "1.0")
     add(("table", [["Document control", ""],
                    ["Document number", "CRM-ECL-04"],
-                   ["Version", "4.1"],
+                   ["Version", "4.2"],
                    ["Status", "Approved"],
-                   ["Effective", "Reporting dates from 30 June 2026"],
+                   ["Effective", "Reporting dates from 30 September 2026"],
                    ["Owner", "Head of Credit Risk Modelling"],
                    ["Approver", "Audit and Risk Committee"],
                    ["Next review", "May 2027"],
                    ["Related documents", "CRM-ECL-06 Stage 3 assessment; CRM-COL-02 Collections and write-off; "
                                          "HP-01 Financial hardship"]], [2600, 6400], 19),
-        "1.0", cells={(2, 1): "4.1", (4, 1): "4.1", (7, 1): "4.1", (8, 1): "4.1"})
+        "1.0", cells={(2, 1): "4.2", (4, 1): "4.2", (7, 1): "4.1", (8, 1): "4.1"})
     add(("h1", "1. Scope and definitions"), "1.0")
     add(P("1.1 This method sets the collective expected credit loss (ECL) allowance under AASB 9 Financial Instruments "
           "for PL36 and PL60 unsecured personal loans in stages 1 and 2. Loans in stage 3 (90 or more days past due) are "
           "assessed under CRM-ECL-06 and are outside this method."), "1.0")
-    add(P("1.2 A loan is in default when it is 90 or more days past due. The 90-day presumption in AASB 9 B5.5.37 is not "
-          "rebutted for this portfolio, and loans in default are in stage 3."), "1.0")
+    add(P("1.2 A loan is in default when it is 90 or more days past due. The default is recorded at the first month end at "
+          "which the loan is 90 or more days past due. The 90-day presumption in AASB 9 B5.5.37 is not rebutted for this "
+          "portfolio, and loans in default are in stage 3."), "1.0",
+        edits=[("The default is recorded at the first month end at which the loan is 90 or more days past due. ", "4.2")])
     add(P("1.3 Days past due are taken from the loan system at close of business on the reporting date."), "1.0")
     add(P("1.4 Loans are written off under CRM-COL-02 in the month-end batch once 180 or more days past due. A loan that "
           "has been written off is closed in the loan system."), "1.0")
@@ -54,11 +56,16 @@ def methodology_docx(path):
           "is immaterial and is not recognised."), "2.0")
     add(("h1", "2. Staging"), "1.0")
     add(P("2.1 A loan is in stage 2 if, at the reporting date, any of the following holds: it is 30 or more days past due; "
-          "a hardship arrangement is in force; or its current behaviour score is 60 or more points below its score at "
-          "origination, both on the current (v4) scorecard. Otherwise it is in stage 1."), "1.0",
-        edits=[("a hardship arrangement is in force; ", "4.1"), ("both on the current (v4) scorecard", "3.1")])
-    add(P("2.2 A hardship arrangement is in force if the reporting date falls on or between its start and end dates and it "
-          "was not cancelled."), "4.1")
+          "a hardship arrangement is in force; or its behaviour score from the month-end scoring run on the position at "
+          "the reporting date is 60 or more points below its score at origination, both on the current (v4) scorecard. "
+          "Otherwise it is in stage 1."), "1.0",
+        edits=[("a hardship arrangement is in force; ", "4.1"),
+               ("behaviour score from the month-end scoring run on the position at the reporting date", "4.2"),
+               ("both on the current (v4) scorecard", "3.1")])
+    add(P("2.2 A hardship arrangement is in force from its start date to its end date, both included, and stops being in "
+          "force on the day it is cancelled."), "4.1",
+        edits=[("from its start date to its end date, both included, and stops being in force on the day it is "
+                "cancelled.", "4.2")])
     add(P("2.3 Origination scores recorded on the v3 scorecard are converted to v4 with the published migration formula "
           "before the comparison in 2.1."), "3.1")
     add(P("2.4 Transfers between stages are symmetrical. A loan returns to stage 1 at the first reporting date on which "
@@ -84,7 +91,18 @@ def methodology_docx(path):
                 "the repayment schedule or the maturity date. ", "2.0"),
                ("A loan past its contractual maturity that is not in stage 3 is treated as being in the final month of its "
                 "term, with a remaining term of one month.", "3.0")])
-    add(P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60."), "1.0", edits=[("76 per cent", "4.1")])
+    add(P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60. Each year it is set against what defaults have "
+          "actually lost: the share of the balance at default that has not been recovered. Every amount received after "
+          "default up to the reporting date, including proceeds from a sale of the debt, counts at the end of the month in "
+          "which it is received and is discounted to the default month end at the contract rate for each whole month "
+          "between the two. A loan that returns to performing is treated as recovering its balance at default in full."),
+        "1.0", edits=[("76 per cent", "4.1"),
+                      ("Each year it is set against what defaults have actually lost: the share of the balance at default "
+                       "that has not been recovered. Every amount received after default up to the reporting date, "
+                       "including proceeds from a sale of the debt, counts at the end of the month in which it is "
+                       "received and is discounted to the default month end at the contract rate for each whole month "
+                       "between the two. A loan that returns to performing is treated as recovering its balance at "
+                       "default in full.", "4.2")])
     add(P("3.4 EAD(k) is the balance outstanding at the start of month k when the current balance is repaid over the "
           "remaining term in equal monthly instalments at the contract rate."), "1.0")
     add(P("3.5 DF(k) discounts month k at the contract rate: (1 + contract rate / 12) to the power -k."), "1.0")
@@ -110,20 +128,22 @@ def methodology_docx(path):
           "validation."), "4.0")
     add(P("7.3 LGD is a portfolio average for each product and does not vary with time in arrears or with the size of the "
           "balance."), "1.0")
-    add(P("7.4 EAD assumes the current balance is repaid on schedule. Extra repayments, payouts and hardship variations "
-          "after the reporting date are not modelled."), "1.0")
+    add(P("7.4 EAD(k) follows the repayment schedule; extra repayments and hardship variations after the reporting date "
+          "do not change it."), "1.0",
+        edits=[("EAD(k) follows the repayment schedule; extra repayments and hardship variations after the reporting date "
+                "do not change it.", "4.2")])
     add(P("7.5 Scenario multipliers scale PD only. LGD is not stressed."), "1.0")
     add(("h1", "8. Governance"), "1.0")
     add(P("8.1 Credit Risk Modelling reviews this method each year, and sooner if the products, the portfolio or the source "
           "data change materially. Model Validation reviews it independently at least every two years."), "1.0")
     add(("h2", "8.2 Sign-off"), "1.0")
     add(("table", [["Role", "Name and position", "Date"],
-                   ["Prepared", "Matthew Gardner, Head of Credit Risk Modelling", "12 May 2026"],
-                   ["Reviewed", "Adam Gordon, Manager, Model Validation", "15 May 2026"],
-                   ["Endorsed", "Renee Foster, Chief Risk Officer", "19 May 2026"],
-                   ["Approved", "Audit and Risk Committee (Chair: Stephanie Manning)", "26 May 2026"]], [1700, 5300, 2000], 19),
+                   ["Prepared", "Matthew Gardner, Head of Credit Risk Modelling", "4 August 2026"],
+                   ["Reviewed", "Adam Gordon, Manager, Model Validation", "7 August 2026"],
+                   ["Endorsed", "Renee Foster, Chief Risk Officer", "12 August 2026"],
+                   ["Approved", "Audit and Risk Committee (Chair: Stephanie Manning)", "25 August 2026"]], [1700, 5300, 2000], 19),
         "1.0", rows=["1.0", "1.0", "1.0", "1.0", "1.0"],
-        cells={(1, 2): "4.1", (2, 1): "4.1", (2, 2): "4.1", (3, 1): "4.0", (3, 2): "4.1", (4, 1): "4.1", (4, 2): "4.1"})
+        cells={(1, 2): "4.2", (2, 1): "4.1", (2, 2): "4.2", (3, 1): "4.0", (3, 2): "4.2", (4, 1): "4.1", (4, 2): "4.2"})
     add(("h2", "8.3 Version history"), "1.0")
     add(("table", [["Version", "Date", "Change"],
                    ["1.0", "Nov 2019", "First issue, at the launch of the personal loan portfolio"],
@@ -134,16 +154,19 @@ def methodology_docx(path):
                    ["4.0", "Jun 2025", "Stage 2 scalar of 2.4 on PD(k) introduced (MV-2025-07)"],
                    ["4.1", "May 2026", "Hardship arrangements added to the stage 2 conditions; LGD for PL60 raised from 74 to "
                                        "76 per cent; the allowance reported to the Board after the Audit and Risk "
-                                       "Committee's review"]], [1100, 1300, 6600], 19),
-        "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1"])
+                                       "Committee's review"],
+                   ["4.2", "Aug 2026", "Stage 2 conditions stated for any reporting date (the scoring run, hardship "
+                                       "arrangements in force); default dated to the month end; the annual LGD review "
+                                       "measure added to 3.3; 7.4 reworded"]], [1100, 1300, 6600], 19),
+        "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1", "4.2"])
     blocks = [b for b, _ in B]
     history = [h for _, h in B]
     props = dict(title="CRM-ECL-04 Expected credit loss: unsecured personal loans", creator="Matthew Gardner",
-                 modified_by="Matthew Gardner", created=dt.datetime(2019, 11, 4, 10, 21), modified=dt.datetime(2026, 5, 26, 13, 58),
-                 revision=41, total_time=1174, company="Bellbird Personal Finance Ltd")
+                 modified_by="Matthew Gardner", created=dt.datetime(2019, 11, 4, 10, 21), modified=dt.datetime(2026, 8, 26, 9, 14),
+                 revision=45, total_time=1236, company="Bellbird Personal Finance Ltd")
     OX.docx(path, blocks, ("Bellbird Personal Finance Ltd", "CRM-ECL-04 Expected credit loss: unsecured personal loans"),
-            ("Version 4.1  |  Internal  |  Uncontrolled when printed", "Page {PAGE} of {NUMPAGES}"), props, seed=4041,
-            sessions=[("1.0", 3), ("2.0", 2), ("3.0", 2), ("3.1", 1), ("4.0", 2), ("4.1", 3)], history=history)
+            ("Version 4.2  |  Internal  |  Uncontrolled when printed", "Page {PAGE} of {NUMPAGES}"), props, seed=4042,
+            sessions=[("1.0", 3), ("2.0", 2), ("3.0", 2), ("3.1", 1), ("4.0", 2), ("4.1", 3), ("4.2", 2)], history=history)
 
 
 def scorecard_pdf(path):
@@ -254,13 +277,19 @@ number.
   days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
   origination_score        application score at origination, on the scorecard named in origination_scorecard
   origination_scorecard    v3 (applications before 1 July 2024) or v4
-  current_score_v4         behaviour score from the month-end scoring run, scorecard v4. Loans are behaviour-scored from
-                           their first repayment date; before that the field holds the application score on the v4 scale
+  current_score_v4         behaviour score from the September month-end scoring run, scorecard v4. Loans are
+                           behaviour-scored from their first repayment date; before that the field holds the application
+                           score on the v4 scale
   state                    state of the borrower's residential address; blank for an overseas address
   channel                  origination channel: Broker, Online or Direct
 
 
-2. hardship_register_2026-09-30.xlsx, sheet Arrangements
+2. personal_loan_book_2026-06-30.csv
+The same extract at the June quarter end, produced by the job on 1 July 2026 at 07:30, after the June month-end batch.
+Same fields as file 1 except current_score_v4, which change CHG-26-0418 added to the extract on 21 July 2026.
+
+
+3. hardship_register_2026-09-30.xlsx, sheet Arrangements
 Every hardship arrangement recorded since the loan system went live in October 2019, one row per arrangement,
 including arrangements on loans since repaid or written off. A loan can have more than one arrangement. Case numbers
 are allocated when a request is received; requests declined at assessment keep their number and are not listed.
@@ -283,7 +312,7 @@ is payable on those dates in place of the contracted repayment.
                            were missed; a cancelled arrangement keeps its approved dates
 
 
-3. write_offs_2025-07_2026-09.csv
+4. write_offs_2025-07_2026-09.csv
 Loans written off in each month-end batch, July 2025 to September 2026, and recoveries received.
 
   month                    month of the batch (YYYY-MM)
@@ -298,7 +327,73 @@ Other files in the run folder (not loan system extracts)
                                          weights and multipliers on a second sheet
   pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: PLPD-2026.06 default curves for PL36 and PL60
   pd_model_development_sample.parquet    Credit Risk Modelling: the PLPD-2026.06 development sample
+  behaviour_score_runs_2026-03_2026-08.parquet
+                                         Behaviour Scoring: the month-end scoring runs for March to August 2026
   arrears_roll_rates_fy26.xlsx           Collections MI: month-end roll rates between arrears buckets, FY26
+  collections_defaults_2023-24.csv       Collections MI: the loans that defaulted in 2023-24, at 30 September 2026
+  collections_receipts_2023-07_2026-09.csv
+                                         Collections: amounts received on loans in collections, July 2023 to
+                                         September 2026
+  debt_sale_2026-03_schedule.xlsx        Collections: the written-off accounts sold in March 2026
+
+  collections_defaults_2023-24.csv, one row per loan
+    loan_no                loan number
+    product                PL36 or PL60
+    contract_rate          fixed annual contract rate, decimal
+    default_month          month of the first month end at which the loan was 90 or more days past due (YYYY-MM)
+    balance_at_default     account balance at that month end (AUD)
+    resolution             Cured (back to performing, by catching up or under a collections hardship arrangement),
+                           Settled (closed for an agreed amount) or Written off
+    resolution_date        date of the resolution
+
+  collections_receipts_2023-07_2026-09.csv, one row per receipt, on loans in default or written off
+    receipt_ref            receipt number
+    loan_no                loan number
+    received_date          date received
+    amount_aud             amount received (AUD); a dishonoured direct debit is reversed by a negative entry
+    source                 Direct debit, BPAY, Card, Agency remittance, Settlement or Debt sale
+    narrative              payment narrative
 """
     with open(path, "w", newline="\r\n") as f:
         f.write(txt)
+
+
+def sale_xlsx(sch, consideration, path):
+    """Collections: the sale of written-off accounts, March 2026"""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Sale schedule"
+    ws.append(["Sale of written-off personal loan accounts"])
+    ws["A1"].font = Font(bold=True, size=12)
+    head = [("Buyer", W.SALE_BUYER), ("Sale reference", W.SALE_REF),
+            ("Cut-off", "Close of business %s" % W.SALE_CUTOFF.strftime("%-d %B %Y")),
+            ("Settlement", W.SALE_SETTLED.strftime("%-d %B %Y")),
+            ("Price", "%.2f cents per dollar of face value" % W.SALE_PRICE_CENTS),
+            ("Accounts", len(sch)), ("Face value at cut-off (AUD)", round(float(sch["face_value_aud"].sum()), 2)),
+            ("Consideration (AUD)", consideration)]
+    for k, v in head:
+        ws.append([k, v])
+    for r in range(2, 2 + len(head)):
+        ws.cell(row=r, column=1).font = Font(bold=True)
+    ws.cell(row=8, column=2).number_format = "#,##0"
+    ws.cell(row=9, column=2).number_format = "#,##0.00"
+    ws.cell(row=10, column=2).number_format = "#,##0.00"
+    ws.append([])
+    hdr = ["loan_no", "product", "written_off", "face_value_aud"]
+    ws.append(hdr)
+    hr = ws.max_row
+    for j in range(1, len(hdr) + 1):
+        c = ws.cell(row=hr, column=j)
+        c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="DDEBF7")
+    for rec in sch.itertuples(index=False):
+        ws.append([rec.loan_no, rec.product, rec.written_off, float(rec.face_value_aud)])
+    for r in range(hr + 1, ws.max_row + 1):
+        ws.cell(row=r, column=4).number_format = "#,##0.00"
+    for col, wd in zip("ABCD", [26, 44, 13, 15]):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A%d" % (hr + 1)
+    # saved as from Collections' account-list workbook (set up in May 2021) when the sale was prepared, and last saved
+    # the day it settled
+    OX.xlsx_from_openpyxl(wb, path, "Christine Fletcher", "Christine Fletcher", dt.datetime(2021, 5, 12, 9, 42, 10),
+                          dt.datetime(2026, 3, 27, 14, 5, 12), seed=327)
