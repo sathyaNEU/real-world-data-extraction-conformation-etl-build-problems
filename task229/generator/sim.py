@@ -52,7 +52,7 @@ SUBURBS = [("Penrith", "2750"), ("Blacktown", "2148"), ("Parramatta", "2150"), (
            ("Oran Park", "2570"), ("Camden", "2570"), ("Richmond", "2753"), ("Windsor", "2756"),
            ("Katoomba", "2780"), ("Springwood", "2777"), ("Raymond Terrace", "2324"), ("Port Stephens", "2317")]
 
-MODEL = {"EM3": ["WG-1PH-E3a", "WG-1PH-E3b", "WG-3PH-E3"], "PX5": ["WG-1PH-P5", "WG-3PH-P5", "WG-CT-P5"]}
+MODEL = {"EM3": ["M1PH-E3A", "M1PH-E3B", "M3PH-E3"], "PX5": ["M1PH-P5", "M3PH-P5", "MCT-P5"]}
 
 
 def make_fleet():

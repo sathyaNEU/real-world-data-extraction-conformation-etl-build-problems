@@ -147,7 +147,7 @@ def run(target, world=None, quiet=False):
     # ---------------------------------------------------------------- ask A: Wave 8 moves
     a = g["wave8"]
     ok(a == {"EM3.12.2": 1274, "PX5.3.1": 109}, "wave 8 moves %s" % a)
-    wb = __import__("openpyxl").load_workbook(os.path.join(target, "wave8_schedule_v2.xlsx"), read_only=True)
+    wb = __import__("openpyxl").load_workbook(os.path.join(target, "wave8_schedule.xlsx"), read_only=True)
     raw = []
     for name in ("Batch A 13-10", "Batch B 14-10"):
         for r_ in list(wb[name].iter_rows(values_only=True))[2:]:
@@ -171,6 +171,17 @@ def run(target, world=None, quiet=False):
     bl = G.wave7_cost(D, vers["latest"])
     ok(bl["EM3.12.2"]["missing"] < b["EM3.12.2"]["missing"], "the latest deliveries understate the move-day loss")
     log.append("wave 7 missing reads on latest deliveries: %s" % {k: v["missing"] for k, v in bl.items()})
+
+    # ---------------------------------------------------------------- chronology (H16)
+    if world is not None:
+        import records as R
+        inv = {v: k for k, v in R.ALL_IMAGES.items()}
+        early = sum(1 for es in world["ev"].values() for e in es
+                    if e["image"] and e["type"] in ("COMMISSIONED", "FW_ACTIVATED")
+                    and e["at"].date() < dt.date.fromisoformat(R.RELEASED[inv[e["image"]]]))
+        ok(early == 0, "no meter runs an image before its release date (%d)" % early)
+        late = sum(1 for es in world["ev"].values() for e in es if e["at"] > W.EXTRACT_AT)
+        ok(late == 0, "no event after the extract")
 
     # ---------------------------------------------------------------- separation
     if world is not None:

@@ -1,5 +1,8 @@
 """The governing standard (PDF) and the extract field reference (Markdown)."""
+from reportlab import rl_config
 from reportlab.lib.pagesizes import A4
+
+rl_config.invariant = 1
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -12,7 +15,7 @@ STANDARD = [
           "go/no-go input the rollout desk takes for each wave."),
     ("h", "2  Scope"),
     ("p", "Every communications firmware build (EM3 and PX5 modules) running on meters at installations "
-          "where WGM is the metering data provider. Bench and laboratory meters are out of scope."),
+          "where HVM is the metering data provider. Bench and laboratory meters are out of scope."),
     ("h", "3  Definitions"),
     ("p", "3.1  <b>Installation</b>: a metering installation, identified by its NMI."),
     ("p", "3.2  <b>Assessment week</b>: Monday 00:00 to Sunday 24:00 market time (AEST) immediately before "
@@ -61,7 +64,7 @@ def standard_pdf(path):
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
                             bottomMargin=18 * mm, title="MDS-STD-114 Firmware read health", author="Metering Data Services",
                             subject="Controlled document", creator="Microsoft Word", producer="Microsoft Word")
-    story = [Paragraph("Wattle Grid Metering Pty Ltd &nbsp;&nbsp;|&nbsp;&nbsp; Metering Data Services", small), Spacer(1, 4),
+    story = [Paragraph("Halvane Metering Pty Ltd &nbsp;&nbsp;|&nbsp;&nbsp; Metering Data Services", small), Spacer(1, 4),
              Paragraph("MDS-STD-114 &nbsp;Firmware read health", title), Spacer(1, 6)]
     ctl = Table([["Revision", "3", "Effective", "01/07/2026"],
                  ["Owner", "Manager, Metering Data Services", "Approved", "Head of Metering Operations"],
@@ -75,7 +78,7 @@ def standard_pdf(path):
         story.append(Paragraph(text, head if kind == "h" else body))
     story += [Spacer(1, 10), Paragraph("Revision history: r3 01/07/2026, cut-off aligned to the MDP service level; "
                                        "r2 01/02/2025, reference raised from 99.30 per cent; r1 14/08/2023, first issue.", small),
-              Spacer(1, 4), Paragraph("Uncontrolled when printed. Internal: WGM staff and contracted rollout partners.", small)]
+              Spacer(1, 4), Paragraph("Uncontrolled when printed. Internal: HVM staff and contracted rollout partners.", small)]
     doc.build(story)
 
 

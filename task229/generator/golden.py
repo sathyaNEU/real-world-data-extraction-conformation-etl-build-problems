@@ -175,7 +175,7 @@ def fire_set(res):
 # ------------------------------------------------------------------ the asks
 
 def wave8_moves(D):
-    wb = openpyxl.load_workbook(os.path.join(D["target"], "wave8_schedule_v2.xlsx"), read_only=True)
+    wb = openpyxl.load_workbook(os.path.join(D["target"], "wave8_schedule.xlsx"), read_only=True)
     rows = []
     for name in ("Batch A 13-10", "Batch B 14-10"):
         for r in list(wb[name].iter_rows(values_only=True))[2:]:

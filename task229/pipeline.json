@@ -2,20 +2,20 @@
  "task": "task229",
  "domain": "energy-systems-utilities",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "leak check",
  "updated": "2026-10-11",
  "stump": "A competent solver pools interval reads per build from the MDM receipts (latest delivery, every installation on its end-of-week build, binomial error) and fires EM3.10.9, EM3.12.2, PX5.3.0 and PX5.3.1; the standard's average installation that ran the build all week, on reads held at the 06:00 cut-off, with an installation-level error, fires EM3.10.9, EM3.12.1 and PX5.2.7 only.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (4 lines, each answered in the design note); no LEAK",
+  "reader": "pending isolated run"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": ""
+  "heart": "PASS (mechanical, run early)",
+  "nearest": "task87 v3 driver 0.06; surface nearest 0.10, 0 promoted",
+  "clone_check": "pending isolated run"
  },
  "solver_rounds": [],
  "judge": {

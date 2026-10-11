@@ -101,7 +101,7 @@ def main(target, golden):
         lcl = 99.50 - 3 * sd / math.sqrt(n)
         score[rel] = (n, mu, lcl, mu < lcl)
     # wave 8
-    wb8 = openpyxl.load_workbook(os.path.join(target, "wave8_schedule_v2.xlsx"), read_only=True)
+    wb8 = openpyxl.load_workbook(os.path.join(target, "wave8_schedule.xlsx"), read_only=True)
     in_service = {}
     for nmi, ms in assign.items():
         for s, a, b in ms:

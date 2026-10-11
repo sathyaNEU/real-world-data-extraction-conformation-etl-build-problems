@@ -24,7 +24,7 @@ where the object under analysis (interval data delivery) is the health of the da
 | Context artifact | monitoring_export (the MDM interval receipt extract) |
 | Stakeholder | metering data services lead, who owns the read-health alert the rollout desk gates each wave on |
 | Forum / forcing event / org family | operations_desk (the rollout desk holds the wave for any build the alert fires on) / cutover_or_migration (Wave 8 of the firmware migration goes out on Tuesday night) / utility_or_infrastructure |
-| World | Wattle Grid Metering, an accredited metering provider and metering data provider in the National Electricity Market, New South Wales, AUD; personas drawn with `guard.py names --locale en_AU --seed 229` |
+| World | Halvane Metering, an accredited metering provider and metering data provider in the National Electricity Market, New South Wales, AUD; personas drawn with `guard.py names --locale en_AU --seed 229` |
 | Deliverables | `wave8_read_health_alerts.json` (the alert payload the routing system ingests: commits), `read_health_by_build_wk41.png` (reads at a glance) |
 | Guard | PASS (WARN repeat.deliverables cleared by moving to json plus png, a set the batch has not used); NOTE same_puzzle_older against task98 v3, differentiated on the card; nearest driver 0.06 (task87 v3) |
 
@@ -243,6 +243,64 @@ the fire and hold lists, the order, Wave 8 (2), Wave 7 (4) and the chart parts (
 
 At ceiling if the portal's top two land the call; licensed one repair if the top two miss the call
 but the asks leak above a fifth each.
+
+## Build record
+
+- Generator: `generator/make.py` builds the pack (`build.py`), the goldens from the shipped bundle
+  alone (`deliver.py` over `golden.py`), `metadata.json`, runs `checks.py` (74 assertions: the five
+  rungs by name, the 144-cell grid, the convergences, the deciding contrasts in both directions, both
+  asks' stops, chronology, separation, the gates, single statement of the reference and the cut-off)
+  and the independent `verify.py` (standard library and openpyxl, no shared code), builds a second
+  time into scratch and requires byte-identical target and golden files, then cuts `target.zip`
+  (flat, ten members). Texture salts per build were chosen by `tune.py` so every two-decimal figure
+  sits at least 0.0015 from its rounding edge and every build at least 0.05 from its limit; the
+  design parameters did not move.
+- Input gates: 10 files; csv, json, md, pdf, xlsx; the MDM receipts carry 94,384 rows; distractors
+  `hes_firmware_census_20261012.csv` (the head-end's inventory by image and status, which counts
+  removed and bench meters and every mover on its new image) and
+  `carrier_maintenance_notices_oct2026.xlsx` (the carrier's IoT maintenance windows), both named in
+  `metadata.json` and asserted unused by the golden.
+- Surface screen (`guard.py surface`): 0 promoted pairs, nearest surface 0.10; no persona of another
+  build in the cut pack. Heart check: PASS, nearest driver 0.06 (task87 v3), nearest stump 0.05.
+
+## House fixes and realism (reduce-house-fixes, golden-realism)
+
+- H1: the standard's PDF is written invariant and stamped 24/06/2026 with the owner as producer;
+  `scrub_producer_metadata.py` audits the target clean; workbooks carry their owners and in-fiction
+  dates. Goldens are script output (matplotlib, json) and are left as such.
+- H2, H3: every figure in `submission.md` is printed by `golden.py` and re-derived by `verify.py`;
+  the steps cite clauses rather than restating figures.
+- H4: `target.zip` members equal the ten declared files, no enclosing folder; the chart was opened
+  and read after rendering.
+- H12: one convention sentence (percentages to two decimals, counts whole) carries every figure.
+- H13: the call is the last sentence of the context; each later paragraph ties back to it.
+- H16: no meter runs an image before its release date and no event postdates the extract (asserted);
+  the standard (effective 01/07/2026) predates every document that cites it.
+- H18: Wave 8's moves are the exposure each go/no-go releases; Wave 7's move-night cost is what a
+  hold costs Settlement Operations if the wave proceeds. Both sit on rows the main call never reads.
+- H20: the prompt names the comms firmware rollout, interval reads, installations, the market day
+  and the retailers chasing missing data, which place the request with a metering data provider.
+- H21: the invented organisation is Halvane Metering (first drafted under a name that sat on a
+  common Australian business word, renamed in the generator); suburbs and postcodes are real NSW
+  places used as texture.
+- golden-realism: payload carries an alert id, the week, the routing list, notes sourced from the
+  standard's own clauses, two-decimal percentages; the chart uses the validated categorical blue for
+  holds and the reserved critical red for fires, with a FIRE label beside every red mark, ink-coloured
+  text, a title stating the call and the reference line labelled with its value.
+
+## Leak check (stage 4, mechanical half)
+
+`leak.py --asof 2026-10-12`: REVIEW (no LEAK after renaming the schedule workbook off `_v2` and
+dropping the reference figure from block 4). Each REVIEW line:
+
+- `mdm_interval_receipts` "16,415": two adjacent CSV fields (`QTY_F` 16, `DAY_TOTAL` 415.054) read
+  as one number; harmless.
+- The standard "carries 6 of 6 distinctive words of the committed call": the words are read-health,
+  alert, fire, hold and the like, which the standard defines; it names no build; harmless.
+- The standard and the field reference carry generic stump-paragraph words (installation, standard,
+  deliveries, average, measure, quality, receipts, head-end); these are the documents' own subject
+  matter and neither says that the installations differ in volume, that pooled reads and the average
+  disagree, or how the standard error is formed; harmless.
 
 ## Tried and rejected
 

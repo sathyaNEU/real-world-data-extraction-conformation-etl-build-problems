@@ -3,6 +3,7 @@ import argparse
 import datetime as dt
 import os
 import shutil
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -15,6 +16,7 @@ import docs as D
 import postprocess as PP
 
 TASK = os.path.dirname(HERE)
+SCRUB = os.path.join(os.path.dirname(TASK), ".claude", "skills", "reduce-house-fixes", "scripts", "scrub_producer_metadata.py")
 
 
 def build(out, quiet=False):
@@ -46,7 +48,12 @@ def build(out, quiet=False):
     P.write_log(p("log"), counts)
     for k in ("register", "wave8", "telco"):
         PP.normalize_zip(p(k))
-    PP.normalize_pdf(p("standard"), stamp=b"D:20260624101500Z'")
+    pdf = open(p("standard"), "rb").read().replace(b"D:20000101000000+00'00'", b"D:20260624101500+10'00'")
+    open(p("standard"), "wb").write(pdf)
+    # H1: the controlled document carries its owner, not the PDF library, as producer
+    subprocess.run([sys.executable, SCRUB, out, "--apply", "--producer", "HVM Records",
+                    "--stamp", "2026-06-24", "--floor", "2023-06-01", "--ceiling", "2026-10-12"],
+                   check=True, stdout=subprocess.DEVNULL)
     ts = dt.datetime(2026, 10, 12, 15, 40).timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (ts, ts))

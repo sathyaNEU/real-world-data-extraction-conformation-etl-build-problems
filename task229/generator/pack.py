@@ -19,7 +19,7 @@ FILES = {
     "hes": "hes_meter_firmware_history.json",
     "register": "mp_installation_register_20261012.xlsx",
     "catalogue": "fw_release_catalogue.csv",
-    "wave8": "wave8_schedule_v2.xlsx",
+    "wave8": "wave8_schedule.xlsx",
     "standard": "MDS-STD-114_firmware_read_health_r3.pdf",
     "fieldref": "mds_extract_field_reference.md",
     "log": "extract_log_20261012.csv",
@@ -83,7 +83,7 @@ def write_hes(path, insts, ev, bench):
         for m in i.meters:
             meta[m[0]] = (m[2], m[1], "REMOVED" if m[4] is not None else "IN_SERVICE")
     for serial, (fam, _) in bench.items():
-        meta[serial] = (fam, "WG-1PH-P5" if fam == "PX5" else "WG-1PH-E3b", "BENCH")
+        meta[serial] = (fam, "M1PH-P5" if fam == "PX5" else "M1PH-E3B", "BENCH")
         ev[serial] = bench[serial][1]
     allev = []
     for serial in sorted(ev):
@@ -113,7 +113,7 @@ def write_hes(path, insts, ev, bench):
         fam, model, status = meta[serial]
         meters.append({"meter_id": "MTR-" + serial, "module": fam, "model": model, "status": status,
                        "events": sorted(per_meter[serial], key=lambda x: x["seq"])})
-    doc = {"export": {"system": "WGM head-end (HES) firmware service", "exported_utc": R.utc(W.EXTRACT_AT - dt.timedelta(minutes=22)),
+    doc = {"export": {"system": "HVM head-end (HES) firmware service", "exported_utc": R.utc(W.EXTRACT_AT - dt.timedelta(minutes=22)),
                       "scope": "every meter registered to the head-end, firmware events since commissioning",
                       "meters": len(meters)},
            "meters": meters}
@@ -130,7 +130,7 @@ def _local_str(t_naive):
 
 def write_register(path, insts):
     wb = openpyxl.Workbook()
-    hdr = "Wattle Grid Metering - MP installation register extract - as at 12/10/2026 06:00 (local time)"
+    hdr = "Halvane Metering - MP installation register extract - as at 12/10/2026 06:00 (local time)"
     ws = wb.active
     ws.title = "Installations"
     ws.append([hdr])
@@ -288,7 +288,7 @@ def write_telco(path):
                    str(r.choice(["LTE-M", "LTE-M, NB-IoT", "NB-IoT"])),
                    str(r.choice(["Intermittent data sessions", "Data sessions may drop up to 20 min",
                                  "No impact expected", "Brief loss of service during cutover"])),
-                   "Completed" if day < dt.date(2026, 10, 12) else "Scheduled"])
+                   "Completed" if st < dt.datetime(2026, 10, 12, 7, 55) else "Scheduled"])
     ws["A1"].font = Font(bold=True)
     wb.properties.creator = "Network Ops"
     wb.properties.created = dt.datetime(2026, 10, 1, 8, 0)
@@ -300,7 +300,7 @@ def write_telco(path):
 
 def write_log(path, counts):
     rows = [
-        (FILES["mdm"], "MDM (meter data management)", "12/10/2026 15:40", "every data stream WGM is MDP for; read dates 05/10/2026 to 11/10/2026; every delivery received up to the extract", counts["mdm"]),
+        (FILES["mdm"], "MDM (meter data management)", "12/10/2026 15:40", "every data stream HVM is MDP for; read dates 05/10/2026 to 11/10/2026; every delivery received up to the extract", counts["mdm"]),
         (FILES["hes"], "HES firmware service", "12/10/2026 15:18", "every meter registered to the head-end, all firmware events since commissioning", counts["hes_meters"]),
         (FILES["register"], "MP registry", "12/10/2026 06:05", "installations, meters (with removal times) and data streams", counts["register"]),
         (FILES["catalogue"], "Firmware engineering", "09/10/2026 11:30", "releases and the HES image each one ships as", counts["catalogue"]),

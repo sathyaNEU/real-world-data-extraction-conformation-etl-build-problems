@@ -1,0 +1,131 @@
+{
+  "task": "task229",
+  "title": "Which comms firmware builds the read-health alert fires on before a smart-meter rollout wave",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "other: smart-meter interval data delivery quality (metering data provider read performance)",
+  "objective": "Data Quality Monitoring & Alerting",
+  "prompt_shape": "10 (scorecard against thresholds): eight builds, each with assessed installations, read health, lower limit and fire or hold, plus the Wave 8 exposure and the Wave 7 cost",
+  "as_of": "2026-10-12",
+  "deliverables": [
+    "wave8_read_health_alerts.json",
+    "read_health_by_build_wk41.png"
+  ],
+  "distractor_files": [
+    "hes_firmware_census_20261012.csv",
+    "carrier_maintenance_notices_oct2026.xlsx"
+  ],
+  "input_gates": {
+    "files": 10,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "mdm_interval_receipts_20261005_20261011.csv",
+    "largest_file_rows": 94384
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task229/generator/make.py (seeded, deterministic) around a fictional metering data provider (Halvane Metering) with real New South Wales suburbs and postcodes and the AEMO NMI checksum; no real installation, meter, customer or firmware product is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task229/generator/make.py",
+  "files": [
+    {
+      "path": "mdm_interval_receipts_20261005_20261011.csv",
+      "format": "csv",
+      "bytes": 7613591,
+      "rows": 94384,
+      "source": "Constructed: MDM interval receipt extract: one row per data stream, read date and delivery, read dates 5 to 11 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hes_meter_firmware_history.json",
+      "format": "json",
+      "bytes": 9984127,
+      "rows": 49799,
+      "source": "Constructed: Head-end (HES) firmware service export: every meter and its firmware events since commissioning",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mp_installation_register_20261012.xlsx",
+      "format": "xlsx",
+      "bytes": 860066,
+      "rows": null,
+      "source": "Constructed: MP installation register extract: installations, meters with install and removal times, data streams",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fw_release_catalogue.csv",
+      "format": "csv",
+      "bytes": 1021,
+      "rows": 12,
+      "source": "Constructed: Firmware engineering release catalogue: release names and HES image ids",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wave8_schedule.xlsx",
+      "format": "xlsx",
+      "bytes": 63747,
+      "rows": null,
+      "source": "Constructed: Rollout desk Wave 8 schedule workbook, both batches",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "MDS-STD-114_firmware_read_health_r3.pdf",
+      "format": "pdf",
+      "bytes": 4499,
+      "rows": null,
+      "source": "Constructed: Controlled document MDS-STD-114 revision 3, firmware read health",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mds_extract_field_reference.md",
+      "format": "md",
+      "bytes": 2458,
+      "rows": null,
+      "source": "Constructed: MDS analytics field reference for the read-health extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_log_20261012.csv",
+      "format": "csv",
+      "bytes": 1089,
+      "rows": 8,
+      "source": "Constructed: Extract log for the pull of 12 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hes_firmware_census_20261012.csv",
+      "format": "csv",
+      "bytes": 649,
+      "rows": 12,
+      "source": "Constructed: HES nightly firmware census by image and status, 00:00 on 12 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "carrier_maintenance_notices_oct2026.xlsx",
+      "format": "xlsx",
+      "bytes": 6055,
+      "rows": null,
+      "source": "Constructed: Carrier IoT network maintenance notices received in October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

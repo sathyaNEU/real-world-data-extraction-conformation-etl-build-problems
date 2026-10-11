@@ -1,4 +1,4 @@
-"""task229 world: Wattle Grid Metering, a metering data provider in the NEM (New South Wales).
+"""task229 world: Halvane Metering, a metering data provider in the NEM (New South Wales).
 
 Every constant the generator uses lives here. Times are kept in three clocks, as the real systems do:
 market time (AEST, UTC+10, no daylight saving), local field time (AEDT, UTC+11, daylight saving began
@@ -88,8 +88,8 @@ WAVE8_REBATCHED = 16               # meters listed on both batch sheets after th
 WAVE8_PX_PULLED_FORWARD = 9
 WAVE8_PX_REBATCHED = 5
 
-COMPANY = "Wattle Grid Metering"
-PEOPLE = {"lead": "Troy Phillips", "desk": "Veronica Sharp", "vendor": "Margaret Roberson"}
+COMPANY = "Halvane Metering"
+PEOPLE = {"lead": "Troy Phillips", "desk": "Veronica Sharp"}
 
 # per-build texture salts, chosen by tune.py so every graded figure sits clear of its rounding edge
 SALT = {"EM3.10.9": 2, "EM3.11.4": 3, "EM3.12.0": 2, "EM3.12.1": 0, "EM3.12.2": 1, "PX5.2.7": 4, "PX5.3.0": 1, "PX5.3.1": 0}
