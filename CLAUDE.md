@@ -318,7 +318,8 @@ the analyst, never the rules themselves.
 **Determinism is literal.** The portal's judge executes the shipped text word for word and infers
 nothing. So the estimand (population, including any members not yet observed at the as-of date, outcome,
 window, unit, comparison) is filed so that its literal execution is the golden's quantity; the method may
-stay open only behind a filed criterion that selects it, with the data separating the candidates under it;
+stay open only when the design, a standard's general method or a filed selection criterion forces it, with
+the data separating the candidates (a filed back-test is a recognisable organ, never in consecutive builds);
 and no filed rule, basis or formula may give another answer when read literally. The stump lives in how
 the stated quantity is computed, never in what is meant: if a literal estimand makes the call easy, the
 stump was a fork and the decisive step is redesigned (`determinism-check` §1 and §2).

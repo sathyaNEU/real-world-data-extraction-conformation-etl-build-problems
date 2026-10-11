@@ -122,8 +122,9 @@ The card's `stump_class` takes only `analytical` on a new draw; `guard.py check`
 ### 1.2 The stump lives in HOW, never in WHAT
 
 The estimand (population, outcome, window, unit, comparison) is filed so that its literal execution is
-the golden's quantity (`determinism-check` §1). The method may stay open only behind a filed criterion
-that selects it. So the stump is never a reading of a term: if filing the estimand literally makes the
+the golden's quantity (`determinism-check` §1). The method may stay open only when something forces it:
+the design and the data's structure (preferred), a standard's general method, or a filed selection
+criterion (a counted organ, never in consecutive builds). So the stump is never a reading of a term: if filing the estimand literally makes the
 call easy, there was no stump, only a fork, and the decisive step is redesigned.
 
 ### 1.3 Couple the pitfall to the domain, from the libraries
@@ -370,8 +371,9 @@ is a hedge and fails.
 
 Determinism has one home, `determinism-check`, and three of its rules shape the stump itself:
 
-- **WHAT is filed literally, HOW stays open only behind a filed selection criterion** (§1). A filed
-  method makes the step rule application; an unfiled criterion leaves a fork.
+- **WHAT is filed literally; HOW stays open only when the design, a standard's general method or a filed
+  selection criterion forces it** (§1). A filed method makes the step rule application; nothing forcing
+  it leaves a fork. A filed back-test is a recognisable organ: not in consecutive builds.
 - **The literal-reader test** (§2) runs on the ladder before data is cut: execute the prompt and every
   filed sentence word for word, list every option where the text is silent, and require that each literal
   reading gives the golden, violates a quotable sentence, or converges by construction. Its line goes in
