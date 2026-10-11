@@ -10,7 +10,7 @@
   "shape": "14",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Certify a programme baseline of $3,916 per member per month for the 140 enrolled members ($2,227 medical, $1,689 pharmacy), built tier by tier from what the 140 members Northcourt's model flagged on 2024 claims for its 2025 proposal, never enrolled, cost from April 2025 to March 2026, trended 24 months.",
+  "answer": "Certify a programme baseline of $4,083 per member per month for the 140 enrolled members ($1,453 medical, $2,630 pharmacy), built tier by tier from what the 140 members Northcourt's model flagged on 2024 claims for its 2025 proposal, never enrolled, cost from April 2025 to March 2026, trended 24 months.",
   "answer_source": "task130/submission.md, 1. Final Recommendation",
   "gap": [
     "objective",
@@ -35,7 +35,7 @@
   "scoring_unit": "per covered member",
   "spine": {
     "file": "medical_claim_lines_2025-01_2027-02.csv",
-    "rows": 303148,
+    "rows": 310604,
     "entity": "one adjudicated medical claim line for one covered member",
     "grain": "claim line",
     "source": "synthetic"
@@ -81,7 +81,7 @@
   "driver_concrete": "The vendor flags the plan's 140 highest-acuity members on their 2026 claims and its savings share is measured against the cohort's expected allowed claims per member month in the programme year without the programme, by risk tier and by medical and pharmacy; the 140 members the same model flagged on 2024 claims in the vendor's 2025 bid were never enrolled, so their allowed claims in the year from April 2025, projected two years at the renewal trend, are each tier's baseline, not the enrolled cohort's own 2026 cost projected forward.",
   "stump": "A competent solver nets the claim lines and pharmacy reversals, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost; the step that lands it there is projecting a group chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost a fraction of that in the year after they were flagged.",
   "stump_class": "analytical",
-  "analyst_test": "a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,895 programme total against $3,916, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.",
+  "analyst_test": "a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,785 programme total against $4,083, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.",
   "domain_test": "the deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by tier and by medical and pharmacy, projected at the plan's trend over member months, a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -119,11 +119,11 @@
     "payment on the administrator's weekly Thursday check run, with pended claims paid one to four months after receipt, and a clinical calendar (weekday clinics, holiday closures, weekend pharmacy dips)",
     "pharmacy claims from a PBM in its own fixed layout (CCYYMMDD dates, zero-filled cardholder numbers), with B2 reversals, reverse-and-rebill and return-to-stock, keyed on employee number and person code rather than the administrator's member ID",
     "person codes renumbered when the administrator corrects a dependent's birth date, so a few fills join to a member only on the code in effect on the fill date",
-    "eligibility as coverage spans that split on plan, coverage tier, employee class or person code changes, month-end terminations, deaths ending coverage on the day, newborns covered from the date of birth",
+    "eligibility as coverage spans that split on plan, coverage tier, employee class or person code changes, month-end terminations, deaths ending coverage on the day, newborns covered from the date of birth; COBRA continuation, employees rehired after a gap, dependents dropped at open enrolment and some added back",
     "an administrator change on 1 January 2025 with new member identifiers: the bid list carries the old subscriber-suffix numbers and the conversion crosswalk maps them, with merged duplicate prior records, dependent suffixes not carried over and a few birth dates corrected since",
     "claims history that starts with the current administrator, so the old administrator's 2024 claims are absent",
     "run-out: claims incurred late in 2026 still being paid at the extract date",
-    "a superseded January draft stratification beside the final list: eight members swapped and five re-tiered",
+    "a superseded January draft stratification beside the final list: nine members swapped and six re-tiered",
     "the vendor's other papers in the folder: its implementation and outreach plan beside the stratification lists"
   ]
 }
