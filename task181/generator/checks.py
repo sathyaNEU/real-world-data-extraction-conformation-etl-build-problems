@@ -48,9 +48,14 @@ EXPECT_A = {"Wagga Wagga": (63, 2, 3, 2, 1), "Griffith": (25, 3, 2, 1, 1), "Leet
             "Edward River": (7, 1, 1, 1, 0), "Junee": (3, 1, 1, 0, 1), "Cootamundra-Gundagai": (15, 2, 1, 1, 1),
             "Snowy Valleys": (9, 1, 1, 1, 0)}
 A_KEYS = ("confirmed", "probable", "infants", "admitted", "vaccinated")
-EXPECT_B = [("Banna Avenue Public School", "Griffith", 5), ("Wollundry Public School", "Wagga Wagga", 3),
-            ("Blowering Road Public School", "Snowy Valleys", 2), ("Bolton Park High School", "Wagga Wagga", 2),
-            ("Kooyoo Street Public School", "Griffith", 2)]
+EXPECT_B_ALL = [("Banna Avenue Public School", "Griffith", 5), ("Wollundry Public School", "Wagga Wagga", 3),
+                ("Blowering Road Public School", "Snowy Valleys", 2), ("Bolton Park High School", "Wagga Wagga", 2),
+                ("Kooyoo Street Public School", "Griffith", 2)]
+# the slide's list (PR-07 5.1): the clusters in the area the team goes to
+EXPECT_B = [("Banna Avenue Public School", "Griffith", 5), ("Kooyoo Street Public School", "Griffith", 2)]
+EXPECT_B_WAGGA = [("Wollundry Public School", "Wagga Wagga", 3), ("Bolton Park High School", "Wagga Wagga", 2)]
+EXPECT_B_SNOWY = [("Blowering Road Public School", "Snowy Valleys", 2)]
+GRADED_B_STOPS = ["school names matched exactly", "parents counted"]
 RUNG_MARGIN, ANSWER_MARGIN, POOLED_MARGIN = 1.25, 2.5, 1.2
 BANNED = re.compile(r"\b(delay\w*|completeness|incomplete|backfill\w*|nowcast\w*|truncat\w*|in transit|lag|lags|lagged|"
                     r"lagging|still arriving|provisional|preliminary|pending|outstanding|awaiting|turnaround|courier\w*|"
@@ -205,8 +210,19 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     A = g["ask_a"]
     for a in G.AREAS:
         ok(tuple(A[a][k] for k in A_KEYS) == EXPECT_A[a], "ask A %s moved: %s" % (a, A[a]))
-    B = g["ask_b"]
-    ok(B == EXPECT_B, "ask B moved: %s" % B)
+    B, B_all = g["ask_b"], g["ask_b_all"]
+    ok(B_all == EXPECT_B_ALL, "unit-wide clusters moved: %s" % B_all)
+    ok(B == EXPECT_B, "ask B (the clusters in the area the team goes to) moved: %s" % B)
+    ok(B == G.clusters_in(B_all, g["answer"]), "ask B is the clusters in the call's area")
+    roster_lga = {v["name"]: v["lga"] for v in g["rosters"].values()}
+    ok(all(roster_lga[name] == GRIFFITH for name, _, _ in B), "both of Griffith's cluster schools are in Griffith on their rosters")
+    ok(G.clusters_in(B_all, WAGGA) == EXPECT_B_WAGGA,
+       "a solver who sends the team to Wagga Wagga lists Wollundry Public School 3 and Bolton Park High School 2")
+    ok(G.clusters_in(B_all, SNOWY) == EXPECT_B_SNOWY, "a solver who sends the team to Snowy Valleys lists Blowering Road 2")
+    ok(G.clusters_in(B_all, WAGGA) != B and G.clusters_in(B_all, SNOWY) != B, "the slide's list moves with the call")
+    LOG.append("ask B: Griffith's list %s; to Wagga Wagga the list would be %s; to Snowy Valleys %s" % (
+        "; ".join("%s %d" % (x[0], x[2]) for x in B), "; ".join("%s %d" % (x[0], x[2]) for x in EXPECT_B_WAGGA),
+        "; ".join("%s %d" % (x[0], x[2]) for x in EXPECT_B_SNOWY)))
 
     def moves_a(label, other):
         diff = [(a, k, A[a][k], other[a][k]) for a in G.AREAS for k in A_KEYS if A[a][k] != other[a][k]]
@@ -224,9 +240,21 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     moves_a("split postcodes to any unit area", G.ask_a(G.episodes(ll, conc, alloc="any_unit"), adm, births, reg))
     rosters = g["rosters"]
 
-    def moves_b(label, other):
-        ok(other != B, "ask B stop '%s' moves nothing" % label)
-        LOG.append("ask B stop, %s: %s" % (label, "; ".join("%s %s %d" % x for x in other) or "no clusters"))
+    graded_b, untouched_b = [], []
+
+    def moves_b(label, other_all):
+        """Each device still moves the unit-wide cluster set; a stop is graded only if it moves Griffith's list."""
+        ok(other_all != B_all, "ask B device '%s' moves nothing unit-wide" % label)
+        other = G.clusters_in(other_all, g["answer"])
+        diff_all = sorted(set(other_all) ^ set(B_all))
+        if other != B:
+            graded_b.append(label)
+            LOG.append("ask B stop (graded, Griffith's list), %s: %s" % (
+                label, "; ".join("%s %d" % (x[0], x[2]) for x in other) or "no clusters"))
+        else:
+            untouched_b.append(label)
+            LOG.append("ask B device no longer touching the graded list, %s: unit-wide %s" % (
+                label, "; ".join("%s %s %s %d" % ((("+" if x in other_all else "-"),) + tuple(x)) for x in diff_all)))
 
     moves_b("school names matched exactly", G.ask_b(cases, rosters, match="exact"))
     moves_b("staff counted", G.ask_b(cases, rosters, roles=("Student", "Staff")))
@@ -235,6 +263,17 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     moves_b("probable cases not counted", G.ask_b(cases, rosters, statuses=("Confirmed",)))
     moves_b("window by notification date", G.ask_b(cases, rosters, window="notification"))
     moves_b("preschool merged into the school of the same name", G.ask_b(cases, rosters, match="fuzzy"))
+    ok(graded_b == GRADED_B_STOPS, "graded ask B stops: %s" % graded_b)
+    g["ask_b_stops"] = dict(graded=graded_b, untouched=untouched_b)
+    # a cluster's area is its school's (5.1); every cluster window student lives in the school's area, so the
+    # residence reading of "the clusters in the area" gives the same list
+    win = cases[(cases["date"] >= G.CLUSTER_DAYS[0]) & (cases["date"] <= G.CLUSTER_DAYS[1]) & (cases["role"] == "Student")
+                & (cases["school"] != "")]
+    rnames = {k: v["name"] for k, v in rosters.items()}
+    for _, c in win.iterrows():
+        k = G.school_key(c["school"], rnames)
+        if k:
+            ok(c["area"] == rosters[k]["lga"], "student at %s lives in the school's area" % k)
     # convergence: the infant boundary, the admission window, the pregnancy window
     ask_cases = cases[cases["area"].notna() & (cases["date"] >= G.ASK[0]) & (cases["date"] <= G.ASK[1])]
     ages = [(d - b).days / 30.4375 for d, b in zip(ask_cases["date"], ask_cases["dob"])]
@@ -277,8 +316,8 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
        "ask A shares no row with the main call's fortnight")
     for est, m, st, b in (("aggregate", 6, "route", "weekly"), ("chainladder", 24, "pooled", "daily")):
         G.nowcast(ll, cases, est, m, st, b)
-        ok(G.ask_a(cases, adm, births, reg) == A and G.ask_b(cases, rosters) == B,
-           "the asks do not move with the nowcast")
+        ok(G.ask_a(cases, adm, births, reg) == A and G.ask_b(cases, rosters) == B_all,
+           "ask A and the unit-wide clusters do not move with the nowcast (the slide's list follows only the call)")
     fort = cases[(cases["date"] >= G.FORTNIGHT[0]) & (cases["date"] <= G.LAST_DAY)]
     ok((fort["n_notifications"] == 1).all() and (fort["status"] == "Confirmed").all(),
        "no ask device (repeat notification, probable status) inside the fortnight")
@@ -393,8 +432,12 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
            == EXPECT_A[r["lga"]], "golden CSV %s" % r["lga"])
     st = file_text(os.path.join(golden_dir, "response_team_brief.pptx"))
     ok("Send the response team to Griffith this week" in st, "slide names the call")
+    ok("School clusters in Griffith this week" in st, "slide's cluster panel names the area")
     for name, area, n in EXPECT_B:
         ok(name in st and area in st, "slide lists %s" % name)
+    for name, area, n in EXPECT_B_ALL:
+        if (name, area, n) not in EXPECT_B:
+            ok(name not in st, "slide lists %s, outside the call's area" % name)
     ph, pp = g["route_share"][G.HOSP][0], g["route_share"][G.PRIV][0]
     for x in (ph, pp):
         ok(x == 1.0 or abs((100 * x) % 1 - 0.5) >= 0.2, "route share %.4f sits within 0.3 points of a rounding edge" % x)
@@ -446,7 +489,7 @@ def check_submission(text, g, cases):
        and N["Cootamundra-Gundagai"] == 2 and N["Edward River"] == N["Leeton"] == N["Narrandera"] == 1
        and N["Hay"] == N["Junee"] == N["Murrumbidgee"] == 0, "step 2: counts")
     for name, area, n in g["ask_b"]:
-        ok("   - %s, %s, %d" % (name, area, n) in text, "block 4 cluster %s" % name)
+        ok("   - %s, %d" % (name, n) in text, "block 4 cluster %s" % name)
     ok(text.count("   - ") == len(g["ask_b"]) + len(G.AREAS), "block 4 holds every cluster and every area, nothing else")
     for a in G.AREAS:
         r = g["ask_a"][a]

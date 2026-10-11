@@ -134,16 +134,17 @@ def write_slide(path, D, g):
               call, fmt_pct(pp), call, N[call], N["Snowy Valleys"], one_decimal(E["Snowy Valleys"])), {})],
     ]
     _text(s, 0.45, 5.08, 7.4, 1.9, reason, size=11.5, fill=QUIET_BG)
-    # clusters
+    # the clusters in the area the team goes to (PR-07 5.1): the team's school visits
     cl = g["ask_b"]
-    crow = [["School", "Area", "Cases"]] + [[name, area, n] for name, area, n in cl]
-    _text(s, 8.25, 1.5, 4.65, 0.32, [[("School clusters this week (PR-07 5.1)", {"size": 12, "bold": True})]])
-    _table(s, 8.25, 1.86, 4.65, crow, [2.75, 1.3, 0.6], right=(2,), size=10.5, height=0.36)
+    assert all(area == call for _, area, _ in cl)
+    crow = [["School", "Cases"]] + [[name, n] for name, area, n in cl]
+    _text(s, 8.25, 1.5, 4.65, 0.32, [[("School clusters in %s this week (PR-07 5.1)" % call, {"size": 12, "bold": True})]])
+    _table(s, 8.25, 1.86, 4.65, crow, [3.65, 1.0], right=(1,), size=10.5, height=0.36)
     _text(s, 8.25, 1.95 + 0.36 * len(crow), 4.65, 1.3,
-          [[("Two or more student cases at one school with specimens collected 5 September to 4 October; school names "
-             "matched to the enrolment rosters. Staff and parents are not counted; a student notified twice is one case.",
-             {"size": 10, "color": INK2})]])
-    y0 = 1.95 + 0.36 * len(crow) + 1.0
+          [[("These are the team's school visits this week (4.4). Two or more student cases at one school with specimens "
+             "collected 5 September to 4 October; school names matched to the enrolment rosters. Staff and parents are not "
+             "counted; a student notified twice is one case.", {"size": 10, "color": INK2})]])
+    y0 = 5.11                       # the route-speed panel keeps its place on the slide
     _text(s, 8.25, y0, 4.65, 0.5, [[("Laboratory route speed", {"size": 12, "bold": True})],
                                    [("Specimens collected August 2025 to July 2026", {"size": 10, "color": INK2})]])
     _table(s, 8.25, y0 + 0.62, 4.65, [["Laboratory", "Notified within 14 days of collection"],

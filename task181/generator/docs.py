@@ -117,7 +117,8 @@ PR07 = [
     ("5", "School clusters", [
         ("5.1", "A school cluster is two or more cases among the students of one school with specimens collected in the 30 "
                 "days before the extract day. A student is a case recorded at interview as a student of that school. The "
-                "huddle slide lists each cluster with the school, the area the school is in and its number of cases."),
+                "huddle slide lists the clusters in the area the team goes to, each with the school and its number of "
+                "cases; they are the team's school visits that week (4.4)."),
         ("5.2", "For each cluster the unit sends the school the pertussis information letter, asks for the class "
                 "rosters and reviews the vaccination records of the cases' classmates."),
     ]),

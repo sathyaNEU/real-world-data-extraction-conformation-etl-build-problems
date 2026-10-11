@@ -458,6 +458,12 @@ def ask_b(cases, rosters, window="specimen", roles=("Student",), statuses=("Conf
     return clusters
 
 
+def clusters_in(clusters, area):
+    """PR-07 5.1: the slide lists the clusters at schools in the area the team goes to (the school's area as its
+    roster gives it), which are the team's school visits that week."""
+    return [c for c in clusters if c[1] == area]
+
+
 # ------------------------------------------------------------------ everything
 
 def solve(target, with_grid=True):
@@ -477,5 +483,6 @@ def solve(target, with_grid=True):
         g["ask_a"] = ask_a(cases, adm, births, reg)
         rosters = load_rosters(target)
         g["rosters"] = rosters
-        g["ask_b"] = ask_b(cases, rosters)
+        g["ask_b_all"] = ask_b(cases, rosters)
+        g["ask_b"] = clusters_in(g["ask_b_all"], g["answer"])
     return dict(ll=ll, conc=conc, cases=cases), g

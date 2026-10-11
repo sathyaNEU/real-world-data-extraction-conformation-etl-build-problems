@@ -166,7 +166,10 @@ def main(target, golden):
             s = which(c["school"])
             if s:
                 cnt[(s[0], s[1])] += 1
-    B = sorted(((k[0], k[1], n) for k, n in cnt.items() if n >= 2), key=lambda x: (-x[2], x[0]))
+    B_all = sorted(((k[0], k[1], n) for k, n in cnt.items() if n >= 2), key=lambda x: (-x[2], x[0]))
+    # PR-07 5.1: the slide lists the clusters at schools in the area the team goes to
+    B = [b for b in B_all if b[1] == order[0]]
+    assert B, "no cluster in the call's area"
     # against the goldens
     gc = {r["lga"]: r for r in csv.DictReader(open(os.path.join(golden, "pertussis_cases_by_lga.csv"), newline=""))}
     cols = ("confirmed_cases", "probable_cases", "infants_under_6_months", "infants_admitted_to_hospital",
@@ -182,16 +185,22 @@ def main(target, golden):
             text.append("\n".join("|".join(c.text for c in r.cells) for r in sh.table.rows))
     slide = "\n".join(text)
     assert "Send the response team to %s this week" % order[0] in slide, "slide call"
+    assert "School clusters in %s this week" % order[0] in slide, "slide cluster panel names the area"
     for name, lga, n in B:
-        assert "%s|%s|%d" % (name, lga, n) in slide, "slide cluster %s" % name
+        assert "%s|%d" % (name, n) in slide, "slide cluster %s" % name
+    for name, lga, n in B_all:
+        if lga != order[0]:
+            assert name not in slide, "slide lists %s, a cluster outside the call's area" % name
     for a in TEN:
         assert "%s|%d|%.1f|" % (a, N[a], E[a]) in slide, "slide row %s" % a
     for lab, label in (("Wagga Wagga Hospital Laboratory", "Hospital laboratory"), ("Inland Pathology", "Inland Pathology")):
         assert "%s|%d%%" % (label, round(100 * speed[lab])) in slide, "slide speed %s" % lab
-    print("verify: OK. %s (excess %.1f; next %s %.1f); rungs 0 to 3 Wagga Wagga; %d clusters; 50 ask A figures; "
-          "route speeds %s" % (order[0], R4[order[0]], order[1], R4[order[1]], len(B),
-                               ", ".join("%s %.1f%%" % (k, 100 * v) for k, v in sorted(speed.items()))))
-    return dict(answer=order[0], N=N, E=E, A=A, B=B, speed=speed)
+    print("verify: OK. %s (excess %.1f; next %s %.1f); rungs 0 to 3 Wagga Wagga; %d clusters in %s (%s; %d unit-wide); "
+          "50 ask A figures; route speeds %s" % (
+              order[0], R4[order[0]], order[1], R4[order[1]], len(B), order[0],
+              ", ".join("%s %d" % (b[0], b[2]) for b in B), len(B_all),
+              ", ".join("%s %.1f%%" % (k, 100 * v) for k, v in sorted(speed.items()))))
+    return dict(answer=order[0], N=N, E=E, A=A, B=B, B_all=B_all, speed=speed)
 
 
 if __name__ == "__main__":

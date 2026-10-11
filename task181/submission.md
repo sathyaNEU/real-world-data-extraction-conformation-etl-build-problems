@@ -25,7 +25,7 @@ On the extract Griffith has 7 cases with specimens collected 21 September to 4 O
 3. Took each area's expected count as the mean of its cases on the same 14 dates in 2021 to 2025 (4.3): 1.4 for Wagga Wagga, Griffith and Snowy Valleys, so on the cases notified so far Wagga Wagga leads.
 4. Measured each laboratory's time from specimen collection to notification, with `received_utc` converted to Sydney dates: for specimens collected August 2025 to July 2026, Inland Pathology notified 76% within 14 days and the hospital laboratory 100%.
 5. Estimated each area's cases with specimens in the fortnight by dividing each laboratory route's notified cases by that route's own share notified within the days each specimen day has had, from the completed specimens in the line list: Griffith's fortnight is several times its 7 notified, Wagga Wagga's and Snowy Valleys' a little above what is on file, and Griffith's excess over 1.4 is the largest, as it is under per-day and weekly reporting-triangle versions and over 6, 12 or 24 months of history.
-6. Clusters (5.1): student cases by interview role with specimens collected 5 September to 4 October, one per episode, free-text school names matched to the roster names in `school_rosters_term3_2026.xlsx`, kept where two or more.
+6. Clusters (5.1): student cases by interview role with specimens collected 5 September to 4 October, one per episode, free-text school names matched to the roster names in `school_rosters_term3_2026.xlsx`, kept where two or more; the slide lists those at schools in Griffith, the area the team goes to, each school's area as its roster gives it.
 7. Quarterly table (7.1): cases with specimens 1 January to 31 August 2026 by area and status; infants under six months at the specimen (6.1); of those, an admission within 14 days in `respiratory_admissions_2019-2026.csv` on medical record number (6.2), and a dTpa dose in that pregnancy at least 14 days before birth in `antenatal_vaccinations_2019-2026.parquet`, linked through `birth_records_2024-2026.csv` on the mother's Medicare number (6.3).
 8. Recommendation: the response team goes to Griffith this week.
 
@@ -34,12 +34,9 @@ On the extract Griffith has 7 cases with specimens collected 21 September to 4 O
 ### response_team_brief.pptx
 
 1. The area the team goes to this week: Griffith.
-2. School clusters this week, five, each with school, area and cases:
-   - Banna Avenue Public School, Griffith, 5
-   - Wollundry Public School, Wagga Wagga, 3
-   - Blowering Road Public School, Snowy Valleys, 2
-   - Bolton Park High School, Wagga Wagga, 2
-   - Kooyoo Street Public School, Griffith, 2
+2. School clusters in Griffith this week, two, each with its number of cases:
+   - Banna Avenue Public School, 5
+   - Kooyoo Street Public School, 2
 
 ### pertussis_cases_by_lga.csv
 

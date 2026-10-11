@@ -200,7 +200,7 @@ fortnight and the prior windows carry one notification per case.
 | Ask | Figures | Shipped answer |
 |---|---|---|
 | A. 1 Jan to 31 Aug 2026 by area (CSV): confirmed, probable, infants under six months, of those admitted, of those born to a mother vaccinated 14 days or more before birth | 10 x 5 = 50 | Wagga Wagga 63, 2, 3, 2, 1; Griffith 25, 3, 2, 1, 1; Leeton 11, 0, 1, 0, 1; Narrandera 5, 0, 1, 0, 0; Murrumbidgee 0, 0, 0, 0, 0; Hay 2, 0, 0, 0, 0; Edward River 7, 1, 1, 1, 0; Junee 3, 1, 1, 0, 1; Cootamundra-Gundagai 15, 2, 1, 1, 1; Snowy Valleys 9, 1, 1, 1, 0 |
-| B. School clusters (slide): students, specimens 5 Sep to 4 Oct, two or more | 5 schools x 3 | Banna Avenue Public School, Griffith, 5; Wollundry Public School, Wagga Wagga, 3; Blowering Road Public School, Snowy Valleys, 2; Bolton Park High School, Wagga Wagga, 2; Kooyoo Street Public School, Griffith, 2 |
+| B. School clusters in the area the team goes to (slide, PR-07 5.1): students, specimens 5 Sep to 4 Oct, two or more, at schools in that area | 2 schools x 2 | Banna Avenue Public School, 5; Kooyoo Street Public School, 2 (both Griffith schools on their rosters). Unit-wide, not graded: the same two with Wollundry Public School 3, Blowering Road Public School 2 and Bolton Park High School 2 |
 
 Devices as built: two laboratories for one infant (I2, a GP swab to Inland Pathology then an admission swab); a Leeton
 student notified by both laboratories; serology-only cases probable from 1 July 2024; infants placed clearly inside or
@@ -213,20 +213,28 @@ as a student; a Cootamundra student swabbed on 4 September and notified on 7 Sep
 2665, 2706, 2722, 2727, 2729 (two of them allocate outside the unit).
 
 **Ask stops** (each asserted to move its figures): episode rule ignored (A: Wagga Wagga confirmed 63 to 69, infants 3 to
-4, admitted 2 to 3, Griffith 25 to 27, Edward River 7 to 10 and three more; B: Canal Road Public School, Leeton, becomes
-a cluster of 2); probable cases not counted (A: every probable figure to 0; B: Bolton Park High School drops out);
-admissions without the 14-day link (A: Wagga Wagga admitted 2 to 3, Leeton 0 to 1); antenatal dTpa at any time before
-birth (A: Wagga Wagga vaccinated 1 to 3, Narrandera 0 to 1, Edward River 0 to 1); any antenatal vaccine (A: Griffith
-vaccinated 1 to 2); infants under twelve months (A: Wagga Wagga infants 3 to 6 and Griffith 2 to 3, with their admitted
-and vaccinated figures); split postcodes by the first row (A: Wagga Wagga 63 to 61, Cootamundra-Gundagai 15 to 18, Snowy
-Valleys 9 to 6) or to any unit area (A: Wagga Wagga 63 to 66); school names matched exactly (B: no clusters at all);
-staff counted (B: Bolton Park High School 2 to 3); parents counted (B: Banna Avenue Public School 5 to 6); the window by
-notification date (B: Hurley Street Public School, Cootamundra-Gundagai, becomes a cluster of 2); the preschool merged
-into the school of the same name (B: Wollundry Public School 3 to 4).
+4, admitted 2 to 3, Griffith 25 to 27, Edward River 7 to 10 and three more); probable cases not counted (A: every
+probable figure to 0); admissions without the 14-day link (A: Wagga Wagga admitted 2 to 3, Leeton 0 to 1); antenatal
+dTpa at any time before birth (A: Wagga Wagga vaccinated 1 to 3, Narrandera 0 to 1, Edward River 0 to 1); any antenatal
+vaccine (A: Griffith vaccinated 1 to 2); infants under twelve months (A: Wagga Wagga infants 3 to 6 and Griffith 2 to 3,
+with their admitted and vaccinated figures); split postcodes by the first row (A: Wagga Wagga 63 to 61,
+Cootamundra-Gundagai 15 to 18, Snowy Valleys 9 to 6) or to any unit area (A: Wagga Wagga 63 to 66); school names matched
+exactly (B: no clusters at all); parents counted (B: Banna Avenue Public School 5 to 6). The call moves ask B too: a
+solver who sends the team to Wagga Wagga lists Wollundry Public School 3 and Bolton Park High School 2, and one who sends
+it to Snowy Valleys lists Blowering Road Public School 2 (asserted).
 
-Use test: the huddle sees the area, the clusters and the year's infant picture every week. Decoupling (asserted): ask
-A's rows share none with the fortnight; neither ask moves with any nowcast estimator; the
-fortnight holds no ask device on the main call's columns (no repeat notification, no probable status).
+**Ask B devices that no longer touch the graded list** (each still asserted to move the unit-wide cluster set, and
+recorded): staff counted (Bolton Park High School 2 to 3), the episode rule ignored (Canal Road Public School, Leeton,
+becomes a cluster of 2), probable cases not counted (Bolton Park High School drops out), the window by notification date
+(Hurley Street Public School, Cootamundra-Gundagai, becomes a cluster of 2) and the preschool merged into the school of
+the same name (Wollundry Public School 3 to 4), all at schools outside Griffith. Every cluster window student lives in
+the school's area, so reading "the clusters in the area" by residence gives the same list (asserted).
+
+Use test: the huddle sees the area, the school visits it means and the year's infant picture every week. Decoupling
+(asserted): ask A's rows share none with the fortnight and ask A does not move with any nowcast estimator; nor does the
+unit-wide cluster set, but the slide's list is the clusters in the area the team goes to (PR-07 5.1, the team's school
+visits under 4.4), so it follows the call and a wrong area carries a wrong list; the fortnight holds no ask device on
+the main call's columns (no repeat notification, no probable status).
 
 ## PINS (shipped)
 
@@ -235,7 +243,7 @@ to 2.4 case definition, the 1 July 2024 revision and both statuses counted; 3.1 
 onset imputation (specimen date less 10 days), 3.3 the 90-day episode rule, 3.4 residential postcode and the larger
 population share for split postcodes, 3.5 every count dated by first specimen; 4.1 one area a week from the 07:00
 Monday extract, 4.2 the deciding excess, 4.3 the expected count, 4.4 team leader confirmations; 5.1 the cluster rule and
-the slide, 5.2 cluster follow-up; 6.1 infants, 6.2 the admission link, 6.3 the maternal vaccination link; 7.1 the
+the slide's list (the clusters in the area the team goes to, its school visits under 4.4), 5.2 cluster follow-up; 6.1 infants, 6.2 the admission link, 6.3 the maternal vaccination link; 7.1 the
 quarterly report. Line-list notes: field semantics, the school fields added to the interview on 1 September 2026, the
 linked files. No shipped sentence mentions the time a notification takes, completeness, backfill or nowcasting
 (asserted over every text-bearing file and the prompt, with the banned list in `checks.py`).
@@ -266,9 +274,10 @@ route, so the judge is pointed at this sentence.
 
 11 files, 6 formats (csv, md, parquet, pdf, txt, xlsx); two files over 25,000 rows; two distractors named in
 `metadata.json`, asserted unused (the golden recomputes unchanged with each removed). Goldens:
-`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 423 assertions
+`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 446 assertions
 passed. `verify.py` (standard library, openpyxl and pyarrow, no code shared with `golden.py`): OK, Griffith, rungs 0 to
-3 Wagga Wagga, 5 clusters, 50 ask A figures and both route speeds, each matched against the goldens. Two consecutive
+3 Wagga Wagga, Griffith's 2 clusters (5 unit-wide), 50 ask A figures and both route speeds, each matched against the
+goldens. Two consecutive
 builds byte-identical over `target/`, `golden/` and `metadata.json` (sha256).
 
 ## BUILD RECORD
@@ -297,7 +306,7 @@ builds byte-identical over `target/`, `golden/` and `metadata.json` (sha256).
   hospital laboratory's 14-day share, which the bulletin never states. Harmless.
 - `PR-07_pertussis_response_protocol.pdf` carries 4 of 5 words of the committed call: response team, Griffith (only in
   the list of the ten areas), this week; the protocol names no area as the deployment. Harmless.
-- Design-note vocabulary in PR-07 (12 terms), the bulletin (6), the run report (the scheduler job log, 4) and the notes (7): their own subject
+- Design-note vocabulary in PR-07 (12 terms), the bulletin (6), the run report (the scheduler job log, 4) and the notes (6): their own subject
   matter (specimens, expected, excess, notified, episode, public health, population); none mentions the time a notification takes,
   completeness, pooling or estimating unreported cases (asserted). Harmless.
 - Ranking artifacts: PR-07 lists the ten areas without figures; the bulletin counts notifications received to 30 August
@@ -323,6 +332,13 @@ and 9. Its plan again files Wagga Wagga at rung 1 with the caveat that "PR-07 4.
 two independent readers took the literal operational reading, which is the stump and the Gate C question PINS answers
 (4.2's quantity is the cases collected, set against 4.3's complete years; the client's own pin for this pattern is a
 question about the latest weeks on data whose report dates make the delay estimable).
+
+**Rerun after the slide's cluster list was tied to the call (2026-10-11).** PR-07 5.1's slide sentence and the
+prompt's slide sentence changed; `leak.py task181 --asof 2026-10-05`: REVIEW, the same twelve lines, no new one, each
+answered as above. Two counts moved: block 4 of the submission now lists Griffith's two clusters, so the candidate
+names fell from 9 to 6 (the line list and the rosters now name 4 of 6, not 7 of 9); and the swept design-note terms
+swap "written" for "pattern" (from the pass 2 paragraph above, added after the last run), so the notes carry 6 terms,
+not 7. The two reader passes read the earlier slide sentence; a reader re-read follows.
 
 ## DUPLICATE CHECK (stage 5)
 
@@ -400,3 +416,4 @@ anywhere other than rungs 0 to 3 is read for a fork before any hardening.
   it invites the question of why, and the answer is the time a notification takes.
 - **Build, "(preliminary)" on the population sheet.** Dropped with the rest of that vocabulary (asserted by the banned
   word sweep in `checks.py`).
+- Solver round 2 (architecture 2) missed the call at rung 1 but answered every ask, proxy 65.2; the slide's cluster list now follows the call (the team's school visits), so a wrong area carries a wrong list.
