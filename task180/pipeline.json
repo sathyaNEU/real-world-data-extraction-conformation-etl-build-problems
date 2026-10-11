@@ -2,8 +2,8 @@
  "task": "task180",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
- "stage": "retired",
- "stage_name": "retired: three architectures spent",
+ "stage": 2,
+ "stage_name": "open on the author's decision (2026-10-11, no retiring): architecture 3's hardening loop 1 found on paper that the exposure-anchored rung fails the literal-determinism rule; picked up again when a build slot frees",
  "updated": "2026-10-11",
  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
  "architecture": 3,
@@ -187,10 +187,5 @@
    "rule3": "no: executing the criterion is the textbook self-controlled assumption check (the event must not change the chance of starting), whose data are the loudest pattern in the pack and sit in the block profile round 6 drew unprompted; the counterfactual without a criterion reads literally to the same new users before they started (velaglutide)",
    "decision": "spent on paper; no rebuild, no round 7; retirement is the author's decision (START_HERE.md untouched)"
   }
- ],
- "retired": {
-  "date": "2026-10-11",
-  "reason": "v1 landed by both in-house solvers at round 1; v2 SEND_BACK at judge pass 2 (Gate C); v3 landed at round 6 (81.6) and its hardening loop 1 failed the literal-determinism rule on paper (the only filing that gives the golden names the reference window)",
-  "decided_by": "author"
- }
+ ]
 }

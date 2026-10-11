@@ -75,7 +75,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | oviya13ya | retired |
+| task180 | AD03 | [Which district gets the one revenue-protection crew, when two scoring methods match every acknowledged total and only one matches the register lines](task180/START_HERE.md) | Economics · energy retail and revenue protection | oviya13ya | open |
 | task181 | AD04 | [Which pump gets the outage's one bearing overhaul, when most of the worst pump's zone-D hours are ones a new bearing would not remove](task181/START_HERE.md) | Supply Chain & Logistics · utility asset maintenance | oviya13ya | in build |
 | task182 | AD05 | [How many high-dose patients the referral letter puts on one prescriber, when the dose that defines them is a daily dose built from overlapping fills](task182/START_HERE.md) | Policy & Education · public health-insurance programme integrity | oviya13ya | shipped |
 | task183 | AD06 | [Which surge trigger the network adopts when the authority stops publishing its own, and only one rebuilt rule settles every week the agency was paid for](task183/START_HERE.md) | Supply Chain & Logistics · healthcare surge staffing contracts | oviya13ya | in build |
