@@ -7,7 +7,7 @@ Private, never ships. Architecture v1, drawn 2026-10-11. Seed: `analytical_tasks
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task132.json`, registered before the ladder, guard PASS (after redrawing context artifact, forum and forcing event, which were BLOCKs against task129 to task131) |
+| Card | `.claude/skills/fingerprint/cards/task132.json`, registered before the ladder, guard PASS; world seed 147 chosen by `seedsearch.py` after the realism rebuild (after redrawing context artifact, forum and forcing event, which were BLOCKs against task129 to task131) |
 | Domain / task type | energy-systems-utilities / asset-condition-maintenance (client domain itself) |
 | Objective | Forecasting & Predictive Modeling |
 | Shape | 04, setting one dial (whole lots against a 95 per cent cover bar), with a forecast across periods underneath |
@@ -28,7 +28,7 @@ Private, never ships. Architecture v1, drawn 2026-10-11. Seed: `analytical_tasks
 
 **Data-native sentence.** A utility's maintenance system was replaced in January 2021 and its work-order history starts there, while the relays it covers went in from 1992 to 2018; any failure rate by age built from that history has to count exposure only over the window the history can see, and the VPR-340 fleet's middle-aged bands were lived mostly before 2021.
 
-**Layer 1 (the mess, and the systems that make it).** EAM export of every protection asset's work orders (26,700 rows, eight work types, cancelled duplicates raised twice from SCADA alarms, LOG work orders that ship failed modules to the OEM, in-progress orders with no completion date); an asset register holding six relay models, with a region column frozen at go-live; substations with a 2024 regional reorganisation; a renewal programme workbook whose approved 2026 sheet supersedes the 2025 planning sheet (deferrals and schemes brought forward); spares split across depots in serviceable, quarantined and at-repair states, the last only visible against the OEM's RMA log.
+**Layer 1 (the mess, and the systems that make it).** EAM export of every protection asset's work orders (about 26,800 rows, eight work types, cancelled duplicates raised twice from SCADA alarms, LOG work orders that ship failed modules to the OEM, in-progress orders with no completion date); an asset register holding six relay models, with a region column frozen at go-live; substations with a 2024 regional reorganisation; a renewal programme workbook whose approved 2026 sheet supersedes the 2025 planning sheet (deferrals and schemes brought forward); spares split across depots in serviceable, quarantined and at-repair states, the last only visible against the OEM's RMA log.
 
 **Layer 2 (the shortcut, and why an expert refuses it).** The procedure says a band's rate is failures over "relay-years in service in the band". The shortcut counts each relay's years in each band from its installation date. The numerator holds only failures recorded since January 2021, so relay-years before 2021 sit in the denominator with no chance of contributing a failure: the estimator mixes two observation windows. A reliability engineer recognises this as left truncation (delayed entry): each relay enters the risk set at the later of installation and the start of observation.
 
@@ -38,26 +38,26 @@ Private, never ships. Architecture v1, drawn 2026-10-11. Seed: `analytical_tasks
 - **Primary mechanism:** `forecasting`, with `statistical_rigor` (delayed entry) as the decisive estimation step inside it.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
 - **Deletion test.** There is no wrong number to delete. With every voice and distractor removed the ladder is unchanged.
-- **Clean-data and instrument tests.** The suspect file is the work-order history (it starts in 2021). Repairing it is not possible inside the fiction (the legacy work orders were archived, not lost in error), and the judge's version of the repair, an instrument that recorded failures back to 1992, would make the install-dated exposure correct and remove the decisive rung. What survives that repair is still a forecast with a real pitfall: the trailing twelve-month rate is 17.6 per cent low, because the forward horizon ages the fleet into its wear-out bands. So the build carries two independent difficulties, one estimation (delayed entry) and one forecasting (age mix over the horizon), and neither is a defect: a coverage window is how every observational record works, and the client lists censoring and truncation as Layer 2 estimation pitfalls. This is the line most exposed at the judge, and it is written here so the rehearsal can test it.
+- **Clean-data and instrument tests.** The suspect file is the work-order history (it starts in 2021). Repairing it is not possible inside the fiction (the legacy work orders were archived, not lost in error), and the judge's version of the repair, an instrument that recorded failures back to 1992, would make the install-dated exposure correct and remove the decisive rung. What survives that repair is still a forecast with a real pitfall: the trailing twelve-month rate is 30.7 per cent low, because the forward horizon ages the fleet into its wear-out bands. So the build carries two independent difficulties, one estimation (delayed entry) and one forecasting (age mix over the horizon), and neither is a defect: a coverage window is how every observational record works, and the client lists censoring and truncation as Layer 2 estimation pitfalls. This is the line most exposed at the judge, and it is written here so the rehearsal can test it.
 - **Lens swap.** The naive read and the answer are not one population under two lenses: they differ in the exposure window, and the forward relay-months are identical under both.
 
 ## THE STUMP
 
-A competent solver builds the procedure's age-banded failure rates per relay-year in service, counting each relay's years from its installation date, applies them to the relay-months each band carries until the renewal programme reaches each substation, and orders 16 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.
+A competent solver builds the procedure's age-banded failure rates per relay-year in service, counting each relay's years from its installation date, applies them to the relay-months each band carries until the renewal programme reaches each substation, and orders 12 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.
 
 ## LADDER (expected failures, lots, against the answer)
 
 | Rung | Construction | Expected failures | Lots | vs answer |
 |---|---|---|---|---|
-| 0 | One pooled rate per relay-year, exposure from installation | 68.9 | 2 | -85.3% |
-| 1 | One pooled rate, exposure from January 2021 | 229.6 | 9 | -50.9% |
-| 2 | Last twelve months' failures per in-service relay, carried over the forward relay-years | 385.6 | 16 | -17.6% |
-| 3 | AM-PC-014 band rates, exposure from installation | 383.1 | 16 | -18.1% |
-| 4 (answer) | Band rates, exposure from January 2021, each relay to its programme month | **467.8** | **19** | 0 |
+| 0 | One pooled rate per relay-year, exposure from installation | 72.2 | 3 | -82.3% |
+| 1 | One pooled rate, exposure from January 2021 | 243.2 | 10 | -40.3% |
+| 2 | Last twelve months' failures per in-service relay, carried over the forward relay-years | 282.4 | 12 | -30.7% |
+| 3 | AM-PC-014 band rates, exposure from installation | 295.2 | 12 | -27.6% |
+| 4 (answer) | Band rates, exposure from January 2021, each relay to its programme month | **407.5** | **17** | 0 |
 
-Side cells (Layer 1, priced): trailing twelve months' count times the horizon length 703.0 (29 lots, ignores the programme); every relay supported to December 2035 1,120.0 (46 lots); every PSU work order counted, cancelled and LOG included, 649.3 (27 lots) with window exposure and 532.8 (22 lots) with install exposure; the superseded 2025 plan 454.4 (19 lots, converges on the call and misstates the supported relays in most years). Every methodological rung sits at least 17 per cent from the answer, all on the low side, so the decisive move reverses the direction of every shortcut.
+Side cells (Layer 1, priced): trailing twelve months' count times the horizon length 518.0 (22 lots, ignores the programme); every relay supported to December 2035 948.2 (39 lots); every PSU work order counted, cancelled and LOG included, 615.4 (26 lots) with window exposure and 450.9 (19 lots) with install exposure (two errors of opposite sign, still two lots off); the superseded 2025 plan 397.4 (17 lots, converges on the call and misstates the supported relays in most years). Every methodological rung sits at least 27 per cent from the answer, all on the low side, so the decisive move reverses the direction of every shortcut.
 
-**Bin.** With 39 modules available, 19 lots hold for expected failures from 454.2 to 478.2, so the answer sits 2.9 per cent above the lower edge and 2.2 per cent below the upper (asserted at 2 per cent). 18 lots give 84.2 per cent and 19 give 98.3.
+**Bin.** With 29 modules available, 17 lots hold for expected failures from 396.5 to 420.5, so the answer sits 2.7 per cent above the lower edge and 3.2 per cent below the upper (asserted at 2 per cent). 16 lots give 86.2 per cent and 17 give 98.9.
 
 ## SURVIVAL PROPERTIES (Part 1)
 
@@ -101,12 +101,12 @@ Side cells (Layer 1, priced): trailing twelve months' count times the horizon le
 | Ask | Figures | Device on the ask path |
 |---|---|---|
 | Lot count, modules, cost | 3 | none beyond the main construction |
-| Cover and cost for 15 to 21 lots | 14 | the cover column moves with expected failures |
+| Cover and cost for 13 to 19 lots | 14 | the cover column moves with expected failures |
 | Expected failures by year, Q4 2026 to 2035 | 10 | the age mix by year |
 | Relays supported on 1 January 2027 to 2035 | 9 | the superseded 2025 sheet; early-retired substations |
 | Expected failures by region | 3 | the register's region column is frozen at go-live; the 2024 regions live in substations.csv |
 
-Pair arithmetic: a solver on rung 2 or 3 loses the lot count, every cover cell, every year and every region (all move with expected failures) and keeps the nine supported-relay counts if it reads the 2026 sheet; on the planning weights that is about 5 + 7 + 58 x 9/39 = 25. Criteria: 3 + 14 + 10 + 9 + 3 + memo items (2) + files (2), about 43.
+Pair arithmetic: a solver on rung 2 or 3 (12 lots) loses the lot count, every cover cell, every year and every region (all move with expected failures) and keeps the nine supported-relay counts if it reads the 2026 sheet; on the planning weights that is about 5 + 7 + 58 x 9/39 = 25. Criteria: 3 + 14 + 10 + 9 + 3 + memo items (2) + files (2), about 43.
 
 ## LEAK REVIEW
 
@@ -116,3 +116,4 @@ Pair arithmetic: a solver on rung 2 or 3 loses the lot count, every cover cell, 
 
 - Healthcare same-day demand censored at sell-out time as task133's first draw (recorded here because it was drawn in the same wave): the censoring was too mild to separate the rungs (bookings 7 per cent low) and two rigorous uncensoring methods disagreed by one session in several cells, a fork.
 - Install-date day shifts as the rounding knob: no effect. Install-month shifts: reseeded the failure draw (expected failures moved from 465 to 418), so the knob became a recorded-failure month shift, which leaves exposure untouched.
+- The first world (seed 132): after the leak reader flagged the background work orders as machine-made (substation names like "Basswoodwood", crews named for the 2024 regions from 2021, work dated outside service windows, cancellations and logistics orders only on the analysed path, perfectly regular inspections, one scope line for every scheme), the rebuild changed the random stream and the trailing-rate rung fell to 9.7 per cent low, one lot from the answer. Seeds 140 to 165 were swept and seed 147 taken (trailing rate 30.7 and installation exposure 27.6 per cent low).

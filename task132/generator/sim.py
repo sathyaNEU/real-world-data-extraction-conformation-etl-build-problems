@@ -10,10 +10,13 @@ import pandas as pd
 
 import world as W
 
-PLACE_A = ["Birch", "Cedar", "Maple", "Tamarack", "Spruce", "Willow", "Aspen", "Hemlock", "Juniper", "Larch",
-           "Alder", "Beech", "Elm", "Pine", "Poplar", "Sumac", "Hickory", "Basswood", "Ash", "Oak"]
-PLACE_B = ["mount", " Falls", " Creek", " Point", "wood", " Hill", " Corners", " Lake", "dale", " Bay",
-           " Ridge", "field", " Crossing", " Mills", " Junction", "brook", " Station", " Landing"]
+PLACE_A = ["Ash", "Birch", "Cedar", "Elm", "Fox", "Glen", "Hawk", "Iron", "Kings", "Lake", "Mill", "North",
+           "Oak", "Pine", "Red", "Silver", "Stone", "West", "White", "Wolf", "Bear", "Deer", "Fern", "Grey",
+           "High", "Long", "Maple", "Moss", "Rock", "Sand", "Spring", "Sugar", "Willow", "Clear", "Crow", "Otter",
+           "Port", "Brant", "Kettle", "Heron"]
+PLACE_B = ["brook", " Bay", " Bridge", " Corners", " Creek", "dale", " Falls", "field", "ford", " Hill", "hurst",
+           " Junction", " Landing", " Mills", "mount", " Point", " Ridge", " River", "ton", "ville", "wood", " Road"]
+_AWKWARD = ("Lake Landing", "Mill Mills", "Port Point", "Rock Ridge", "Stone Ridge", "Sand Bay", "North Point")
 CURRENT_REGIONS = ["North", "Central", "South"]
 LEGACY_REGIONS = ["Lakeshore", "Ridge", "Valley", "Harbour"]
 
@@ -40,7 +43,12 @@ def age_on(inst, first):
 def substations(rng):
     names, seen = [], set()
     while len(names) < W.N_SUBS:
-        n = PLACE_A[rng.integers(len(PLACE_A))] + PLACE_B[rng.integers(len(PLACE_B))]
+        a, b = PLACE_A[rng.integers(len(PLACE_A))], PLACE_B[rng.integers(len(PLACE_B))]
+        n = a + b
+        if b.strip().lower().startswith(a.lower()[-3:]) or a.lower().endswith(b.strip().lower()[:3]) or n in _AWKWARD:
+            continue
+        if any(n.startswith(x) and n != x and x.endswith(b) for x in seen):
+            continue
         if n not in seen:
             seen.add(n)
             names.append(n)

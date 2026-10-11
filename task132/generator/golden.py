@@ -115,8 +115,8 @@ def workbook(s, path):
         "in service on its first day (4.2, 4.3).",
         "Support ends in the commissioning month of the substation's scheme in the approved 2026 programme; substations with no scheme "
         "are supported to December 2035 (3.1, 3.2).",
-        "Available modules: 36 serviceable at Central Stores, North and South depots plus %d at Veldtek under open RMA; 7 quarantined "
-        "modules excluded (5)." % (s["avail"] - 36),
+        "Available modules: %d serviceable at Central Stores, North and South depots plus %d at Veldtek under open RMA; %d quarantined "
+        "modules excluded (5)." % (s["serviceable"], s["at_repair"], s["quarantine"]),
         "Cover is the Poisson probability that available modules plus the buy meet all failures to end of support (6.1, 6.2).",
     ]
     for i, t in enumerate(notes, 1):
@@ -225,10 +225,10 @@ def memo(s, path):
         cell(row[2], "%.1f" % (100 * stg["cover"]), bold=b, right=True)
         cell(row[3], "{:,.0f}".format(stg["cost"]), bold=b, right=True)
     para("", after=4)
-    para("Available modules are the 36 serviceable at Central Stores and the two depots plus the %d at Veldtek under open RMA, "
-         "which the notice says will come back repaired; the 7 in quarantine are left out until they pass bench test. The "
+    para("Available modules are the %d serviceable at Central Stores and the two depots plus the %d at Veldtek under open RMA, "
+         "which the notice says will come back repaired; the %d in quarantine are left out until they pass bench test. The "
          "workbook vpr340_psu_final_buy.xlsx carries the settings, the outlook by year and region, and the band rates."
-         % (s["avail"] - 36), size=9.5, after=6)
+         % (s["serviceable"], s["at_repair"], s["quarantine"]), size=9.5, after=6)
     para("Signed for order:  ______________________   Susan Huff, Director, Asset Management", after=0)
     d.save(path)
 

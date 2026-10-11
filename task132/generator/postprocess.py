@@ -16,8 +16,17 @@ def normalize_zip(path, when=FIXED, creator="Tamarack Hydro"):
     if is_docx:
         xml = dict(items)["word/document.xml"].decode("utf-8")
         doc_text = " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", xml))
+    if is_docx:
+        items = [(n, d) for n, d in items if n != "docProps/thumbnail.jpeg"]
     with zipfile.ZipFile(path, "w") as z:
         for name, data in items:
+            if name == "_rels/.rels":
+                data = re.sub(rb'<Relationship[^>]*thumbnail[^>]*/>', b"", data)
+            if name == "word/settings.xml":
+                data = data.replace(b'w:val="14"/>', b'w:val="15"/>')
+            if name == "xl/workbook.xml":
+                data = data.replace(b'calcId="124519"', b'calcId="191029"')
+                data = re.sub(rb"<workbookProtection\s*/>", b"", data)
             if name == "docProps/core.xml":
                 data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
                               lambda m: m.group(1) + stamp.encode() + m.group(2), data)

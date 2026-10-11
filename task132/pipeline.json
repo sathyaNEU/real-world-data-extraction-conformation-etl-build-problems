@@ -1,7 +1,7 @@
 {"task": "task132", "domain": "energy-systems-utilities", "objective": "forecasting",
  "stage": 4, "stage_name": "leak check", "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
- "stump": "A competent solver builds the procedure's age-banded failure rates counting each relay's years from installation and orders 16 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.",
+ "stump": "A competent solver builds the procedure's age-banded failure rates counting each relay's years from installation and orders 12 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.",
  "architecture": 1, "loops": 0,
  "leak": {"leak_py": "", "reader": ""},
  "duplicate_check": {"heart": "", "nearest": "task46 at 0.08 (draw)", "clone_check": ""},

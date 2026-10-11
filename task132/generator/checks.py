@@ -37,9 +37,9 @@ def main():
         ok(not any(w in f.lower() for w in ("answer", "golden", "trap", "clean", "_v2")), "file name %s carries no author noun" % f)
 
     s = E.solve(T)
-    ok(s["lots"] == 19, "answer is 19 lots (%d)" % s["lots"])
-    ok(s["cover"] >= W.COVER > s["settings"][s["lots"] - 1]["cover"], "19 lots clears 95 per cent and 18 does not")
-    ok(s["avail"] == 39, "39 modules available")
+    ok(s["lots"] == 17, "answer is 17 lots (%d)" % s["lots"])
+    ok(s["cover"] >= W.COVER > s["settings"][s["lots"] - 1]["cover"], "17 lots clears 95 per cent and 16 does not")
+    ok(s["avail"] == 29, "29 modules available")
     # bin margins on the expected failures
     def lots_at(l):
         return E.lots_needed(l, s["avail"])
@@ -49,7 +49,7 @@ def main():
     while lots_at(hi) == s["lots"]:
         hi += 0.05
     ok((s["lam"] - lo) / s["lam"] >= 0.02 and (hi - s["lam"]) / s["lam"] >= 0.02,
-       "expected failures sit at least 2 per cent inside the 19-lot bin (%.1f < %.1f < %.1f)" % (lo, s["lam"], hi))
+       "expected failures sit at least 2 per cent inside the answer's lot bin (%.1f < %.1f < %.1f)" % (lo, s["lam"], hi))
     for y, v in s["by_year"].items():
         ok(abs(v * 10 - round(v * 10)) <= 0.45, "year %d figure clear of its rounding edge" % y)
     ok(abs(sum(s["by_year"].values()) - s["lam"]) < 1e-6, "years add to the total")
@@ -67,8 +67,8 @@ def main():
     reg0, wo0, subs0, stock0, plan0 = E.load(T)
     in25 = E.in_service_jan1(E.fleet(reg0), plan0["2025 plan (superseded)"])
     ok(sum(in25[y] != s["in_service"][y] for y in in25) >= 6, "the 2025 plan misstates the supported relays in most years")
-    ok(r["banded_install"][0] <= 0.88 * ans, "exposure from installation is at least 12 per cent low")
-    ok(r["trailing_rate"][0] <= 0.88 * ans, "the trailing twelve-month rate is at least 12 per cent low")
+    ok(r["banded_install"][0] <= 0.80 * ans, "exposure from installation is at least 20 per cent low")
+    ok(r["trailing_rate"][0] <= 0.80 * ans, "the trailing twelve-month rate is at least 20 per cent low")
     ok(r["pooled_window"][0] <= 0.6 * ans, "one pooled rate is far low")
     near = min(abs(v / ans - 1) for k, (v, l) in r.items() if k not in ("ANSWER", "banded_window_2025_plan"))
     ok(near >= 0.10, "every methodological rung at least 10 per cent from the answer (%.3f)" % near)

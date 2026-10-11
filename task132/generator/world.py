@@ -1,7 +1,7 @@
 """Fixed facts of the Tamarack Hydro world: dates, the VPR-340 wear-out law, bands, lots, stock."""
 import datetime as dt
 
-SEED = 132
+SEED = 147
 ASOF = dt.date(2026, 9, 30)            # extract date; stock count at close of business
 HORIZON_START = dt.date(2026, 10, 1)   # first month the stock has to cover
 MIGRATION = dt.date(2021, 1, 1)        # EAM go-live; work-order history starts here
@@ -19,7 +19,7 @@ BAND_LABELS = ["0-9", "10-14", "15-19", "20-24", "25-29", "30+"]
 LOT = 25
 UNIT_PRICE = 1965.00                   # CAD per module, last-time-buy price in the notice
 COVER = 0.95
-SETTINGS = list(range(15, 22))         # lots shown in the settings table (asked range)
+SETTINGS = list(range(13, 20))         # lots shown in the settings table (asked range)
 
 N_RELAY = 1240                          # VPR-340 relays in the register (in service on or after migration)
 N_OTHER = 4010                          # other protection assets in the register
@@ -40,4 +40,4 @@ def hazard(age_years):
 
 # settled by tune.py: recorded failures moved by a month (index into the post-migration failures, months),
 # so no graded figure sits on a rounding edge
-TUNE = ((96, 1),)
+TUNE = ((71, -1), (227, -1))

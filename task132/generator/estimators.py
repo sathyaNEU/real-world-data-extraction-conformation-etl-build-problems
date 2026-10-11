@@ -159,7 +159,9 @@ def solve(target):
     lam = float((rW * tot).sum() / 12.0)
     avail = available(stock)
     lots = lots_needed(lam, avail)
-    out = dict(rates=rW, counts=cnt, exposure=expW, fwd=tot, lam=lam, avail=avail, lots=lots,
+    psu = stock[stock["item_code"] == "VPR340-PSU-02"]
+    st_n = {k: int(psu[psu["stock_state"] == k]["quantity"].sum()) for k in ("SERVICEABLE", "AT REPAIR", "QUARANTINE")}
+    out = dict(serviceable=st_n["SERVICEABLE"], at_repair=st_n["AT REPAIR"], quarantine=st_n["QUARANTINE"],rates=rW, counts=cnt, exposure=expW, fwd=tot, lam=lam, avail=avail, lots=lots,
                modules=lots * W.LOT, cost=lots * W.LOT * W.UNIT_PRICE,
                cover=poisson_cdf(avail + lots * W.LOT, lam),
                by_year={y: float((rW * v).sum() / 12.0) for y, v in sorted(by_year.items())},

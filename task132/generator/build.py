@@ -69,7 +69,7 @@ def build(out):
     st = X.stock()
     st.loc[st["stock_state"] == "AT REPAIR", "quantity"] = int((rma["result"] == "OPEN").sum())
     st.to_csv(p("stock"), index=False)
-    rma.to_excel(p("rma"), index=False, sheet_name="RMA returns")
+    rma.to_excel(p("rma"), index=False, sheet_name="RMA returns", engine="openpyxl")
     D.programme_xlsx(p("prog"), prog, subs)
     D.eol_pdf(p("eol"))
     D.procedure_docx(p("procedure"))

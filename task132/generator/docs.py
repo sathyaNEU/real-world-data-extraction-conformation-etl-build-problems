@@ -10,7 +10,13 @@ import openpyxl
 from docx.shared import Cm, Pt
 from openpyxl.styles import Alignment, Font, PatternFill
 
+import zlib
+
 import world as W
+
+SCOPES = ["Replace feeder protection, %d bays", "Protection and control panel replacement (%d feeder bays)",
+          "Feeder relay replacement, %d bays, with panel rewiring", "P&C rebuild with new control building (%d bays)",
+          "Replace VPR-340 feeder relays (%d) and RTU", "Feeder protection upgrade, %d bays, IEC 61850 station bus"]
 
 
 def _doc(author, title, created, font="Calibri"):
@@ -79,8 +85,8 @@ def procedure_docx(path):
           "4.2 Failure rates are set by relay age band: 0 to 9, 10 to 14, 15 to 19, 20 to 24, 25 to 29, and 30 years and "
           "over. A relay's age is its age in completed years on the first day of a month, measured from its installation "
           "date in the asset register; a failure takes the relay's age on the first day of the month it occurred.",
-          "4.3 The failure rate for a band is the number of module failures recorded in the work-order history in the band, "
-          "all of them, divided by the relay-years in service in the band. Relay-years are counted in relay-months: a relay "
+          "4.3 The failure rate for a band is the number of module failures in the work-order history in the band "
+          "divided by the relay-years in service in the band. Relay-years are counted in relay-months: a relay "
           "counts for a month if it is in service on the first day of that month.",
           "4.4 Expected failures over the support period are the band rates applied to the relay-months each relay "
           "will spend in each band, from the stock count date to the end of its support."]),
@@ -121,7 +127,7 @@ def eol_pdf(path):
         "available after that date.",
         "The other replaceable cards of the VPR-340 (processor, input/output and display) remain available until "
         "further notice.",
-        "Questions to your Veldtek account manager or to lifecycle@veldtek-ps.example.",
+        "Questions to your Veldtek account manager, or to Veldtek Lifecycle Services through the customer portal.",
     ]
     for t in body:
         _p(d, t, after=6)
@@ -149,8 +155,10 @@ def programme_xlsx(path, prog, subs):
         for _, r in live.iterrows():
             n += 1
             when = r[col].strftime("%b %Y") if r[col] is not None else "Not in programme period"
+            bays = int(1 + (zlib.crc32(r["sub_code"].encode()) % 9))
+            scope = SCOPES[zlib.crc32((r["sub_code"] + "s").encode()) % len(SCOPES)] % bays
             ws.append(["PRP-%03d" % n if r[col] is not None else "", r["sub_code"], names[r["sub_code"]],
-                       region[r["sub_code"]], "Replace feeder protection (VPR-340) and panel wiring", when])
+                       region[r["sub_code"]], scope, when])
         for j, w in enumerate([10, 15, 22, 10, 48, 22], 1):
             ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
         ws.freeze_panes = "A4"

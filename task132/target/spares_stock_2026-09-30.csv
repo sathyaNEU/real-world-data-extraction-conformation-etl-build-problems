@@ -1,10 +1,10 @@
 item_code,item_description,location,stock_state,quantity
-VPR340-PSU-02,"Power supply module, VPR-340",Central Stores (Barrie Road),SERVICEABLE,17
-VPR340-PSU-02,"Power supply module, VPR-340",North Depot,SERVICEABLE,11
-VPR340-PSU-02,"Power supply module, VPR-340",South Depot,SERVICEABLE,8
+VPR340-PSU-02,"Power supply module, VPR-340",Central Stores (Barrie Road),SERVICEABLE,10
+VPR340-PSU-02,"Power supply module, VPR-340",North Depot,SERVICEABLE,8
+VPR340-PSU-02,"Power supply module, VPR-340",South Depot,SERVICEABLE,5
 VPR340-PSU-02,"Power supply module, VPR-340",Central Stores (Barrie Road),QUARANTINE,4
 VPR340-PSU-02,"Power supply module, VPR-340",South Depot,QUARANTINE,3
-VPR340-PSU-02,"Power supply module, VPR-340",Veldtek repair centre,AT REPAIR,3
+VPR340-PSU-02,"Power supply module, VPR-340",Veldtek repair centre,AT REPAIR,6
 VPR340-CPU-01,"Processor card, VPR-340",Central Stores (Barrie Road),SERVICEABLE,6
 VPR340-IO-03,"Input/output card, VPR-340",Central Stores (Barrie Road),SERVICEABLE,9
 VPR340-DSP-01,"Front panel display, VPR-340",North Depot,SERVICEABLE,4

@@ -31,10 +31,14 @@ def main():
     sub_of = dict(zip(fl["relay_key"], fl["sub_code"]))
     base = np.bincount([W.band_of(a) for a in post["age"]], minlength=6).astype(float)
 
+    r0 = base / expW * 12.0
+    target_lots = E.lots_needed((r0 * tot).sum() / 12.0, avail)
+    print("target lots", target_lots, "lam", round((r0 * tot).sum() / 12.0, 2))
+
     def score(cnt):
         r = cnt / expW * 12.0
         lam = (r * tot).sum() / 12.0
-        if E.lots_needed(lam, avail) != 19:
+        if E.lots_needed(lam, avail) != target_lots:
             return -1
         vals = [(r * v).sum() / 12.0 for v in by_year.values()] + [(r * v).sum() / 12.0 for v in by_region.values()] + [lam]
         vals += [100 * E.poisson_cdf(avail + n * W.LOT, lam) for n in W.SETTINGS]

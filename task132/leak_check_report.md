@@ -1,14 +1,14 @@
 # leak check, task132
 
-**Verdict: REVIEW.** 11 files read, 38 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 37 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: window, exposure, horizon, estimation, decisive, forecasting, population, register, pattern, record, fictional, defect, forward, ladder, context, artifact, forcing, domain, client, setting, forecast, mechanism, denominator, absence, strategy
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `AM-PC-014_obsolete_spares_final_buy.docx`: carries 6 of 9 distinctive words of the committed call: "Order 19 lots (475 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 933,375."
-- **REVIEW** `veldtek_vpr340_eol_notice.pdf`: carries 7 of 9 distinctive words of the committed call: "Order 19 lots (475 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 933,375."
+- **REVIEW** `AM-PC-014_obsolete_spares_final_buy.docx`: carries 6 of 9 distinctive words of the committed call: "Order 17 lots (425 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 835,125."
+- **REVIEW** `veldtek_vpr340_eol_notice.pdf`: carries 7 of 9 distinctive words of the committed call: "Order 17 lots (425 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 835,125."
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `eam_extract_dictionary.txt`: 1 ISO dates after 2026-09-30, e.g. 2026-10-01
