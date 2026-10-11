@@ -1,303 +1,254 @@
-# task180 design note: Ellesmere Lines, the three internal inspections of 2027/28 (architecture 2)
+# task180 design note (architecture 3)
 
-Seed AD03 (revenue-protection crew). Architecture 1 (revenue protection, the screen grain) was spent at in-house
-round 1 and is recorded under Tried and rejected. This is the re-root: same objective, same number, a new draw. The
-seed's idea that carries over is the one AD03 shares with the whole lane: the loudest signal is not all cause.
+Seed AD03 (the revenue-protection crew), objective Anomaly Detection & Diagnostics. Architecture 1 (revenue protection,
+the screen grain) was spent at in-house round 1. Architecture 2 (a lines company's transformer inspection slate, main-tank
+acetylene attributed to its source) was spent at judge pass 2 (SEND_BACK, Gate C); its note is `DESIGN_NOTE_arch2.md`
+and its reports and rounds carry the `_arch2` suffix (architecture 1's carry `_arch1`). This is the slot's third and last
+architecture: a SEND_BACK or a third failed hardening loop retires task180. The seed's idea that carries over is the one
+the whole lane shares: the loudest signal is not the cause.
 
-Every figure below is the shipped value. `generator/checks.py` asserts them (146 assertions) and
-`generator/verify.py` recomputes the slate and every graded figure from the shipped bytes alone.
+Carried from architecture 2's send-back: the decisive separation must sit far above the noise of every lens a reviewer
+can bring; every graded figure is stated with its window and method; no exact ties among graded figures.
 
 ## DRAW
 
 ```
-Card filed with guard.py register before the ladder was written? yes (PASS)
-Shape: 01 ranked list under a cap (three inspection outages, 44 transformers)
-Gate G mechanism: decomposition_attribution (each transformer's main-tank acetylene attributed to its source)
-Gap: population (decisive), rule        Pattern: none (own); generators G8 (the worst-looking units are the ones the remedy cannot reach), G3
-Domain: energy-systems-utilities / asset-condition-maintenance   Objective: anomaly-detection (fault diagnosis from DGA)
-Pairing repeated from a recent build? task180 architecture 1 only (its own lineage, a different puzzle)
-Stakeholder role: network asset manager (portfolio_manager)   Context artifact: capacity_report (mobile substation bookings)
-Calibration form: none   Decision type: ranked_slate_under_cap   Answer unit: set_of_items
-Stump strategy: decomposition_attribution (relabelled at hardening loop 1 from stated_rule_hard_construction)   Decisive rule filed? yes (ES-DGA-02 5.1 remedy and 5.2 priority)
-Official decoy filed? no   Validated decoy? no
-Forum: board_of_directors (28 October 2026)   Forcing event: audit_or_inspection   Org family: utility_or_infrastructure
-People (guard.py names, en_NZ, seed 1802): Donna Carson (network asset manager, the requester), Barry Forbes (zone
-  substation engineer, owner of ES-DGA-02 and the oil results), Wendy Godfrey (board chair), Connor McGill (oil sampling
-  technician). Drawn with seed 1803 for the pack: Emma Elliott (general manager network, approves ES-DGA-02), Dennis
-  Trask and Ethan Mason (field services, tap-changer work), Aroha O'Brien (maintenance planning, MSU-2 bookings), Aimee
-  Craig (contract thermographer), Allan Simpson (runs the extract, operator asimpson).
+Card filed with guard.py register before the ladder was written? yes (WARN: overuse.org_family government_agency,
+  repeat.gate_g method_or_model_selection against task134; both answered under WARNS)
+Shape: 18 hypotheses versus evidence (three signals, each a hypothesis the registries confirm or refute)
+Gate G mechanism: method_or_model_selection (which comparison the registry data entitle: the medicine's users against
+  other people, or each user against their own other time)
+Gap: population (decisive: who the users are compared with), time (the month after the start)
+Pattern: none (own); generator G17 (confounding: the association collapses once the person is conditioned on)
+Domain: pharmacology-pharmacoepidemiology-safety / safety-signal-detection   Objective: anomaly-detection
+Pairing repeated from a recent build? no (pharmacology x anomaly detection never built)
+Stakeholder role: head of the medicines agency's pharmacovigilance unit (compliance_or_audit)
+Context artifact: monitoring_export (the quarter's signal screen and its spontaneous-report line listing)
+Calibration form: none
+Decision type: pick_one_of_n   Answer unit: named_option   Opening move: evidence-first
+Stump strategy: causal_design   Decisive rule filed? no (SOP-PV-14 files the case definitions, the new-user rule and the
+  30-day window; it says nothing about what the month after the start is compared with)
+Official decoy filed? no   Validated decoy? no   stump_class: analytical
+Forum: regulator_or_inspector (the agency's medicines safety committee opens the formal assessment)
+Forcing event: vote_or_meeting (the committee meets on Thursday 22 October 2026)
+Org family: government_agency (the national medicines agency)
+Layer 2: estimand_identification, own:self-controlled-signal-refinement
+People (guard.py names, da_DK, seed 180): Helge Jørgensen (head of the pharmacovigilance unit, the requester), Janni Nielsen (registry data manager who wrote the extract notes), Frida Clausen (signal
+  assessor, owner of SOP-PV-14), Kåre Holst (committee secretary), Iben Pedersen
+  (pharmacoepidemiologist), Esben Olesen (medical assessor)
 ```
 
-**Data-native sentence.** Older zone-substation transformers switch load on an in-oil arcing tap changer that sits in a
-compartment sharing a barrier with the main tank, so when that barrier weeps, the acetylene every tap change makes in
-the compartment turns up in the main-tank oil the fleet is coded on, rising with the tap-change count rather than with
-any fault in the winding.
+**Data-native sentence.** A new medicine's users are the patients doctors chose to start on it, and a new medicine is
+channelled by its claims and its contraindications: the new orexin-receptor sleep medicine, sold as gentler for older
+people, goes to frail patients who are already falling, and the new uricosuric, which is avoided in kidney disease,
+goes to gout patients whose kidneys are healthy; the registries hold every dispensing and every hospital contact of the
+same people for years, so each new user can be compared with their own other time.
 
-**Layer 1 (realistic mess and the system that produces it).** A laboratory results file per sampling round (sampling
-date and time and a separate analysis date, gases in ppm with below-detection values written as `<n`, oxygen and
-nitrogen, moisture, the label temperature the technician wrote down or left blank, and corrected reports re-issued under
-the same sample ID); an asset register with rewind years
-and tap-changer types whose last-service field stopped being written back in March 2025; SCADA daily tap-change counters
-that roll over at 99,999 and restart at zero when a counter is replaced at a tap-changer service; hourly SCADA top-oil
-temperatures exported from the historian in UTC with no zone marker; a maintenance log in free text.
+**Layer 1 (realistic mess and the systems that produce it).** National registry extracts as a medicines agency receives
+them through the national health data service: the patient registry's contacts (emergency, inpatient and outpatient) with
+ICD-10 diagnoses in the registry's own form (a D prefix, no dot: DN179), an action diagnosis and secondary diagnoses per
+contact, and transfers between departments recorded as separate contacts of one admission; the registry's 2019 change
+from courses to contacts, so the extract carries two record structures; the prescription registry's dispensings coded by
+ATC with package number, packages and defined daily doses per package, with one new product's ATC code reassigned in 2024
+from a provisional code; pseudonymised personal numbers across the extracts, with deaths and emigrations in the civil
+registration extract ending observation; the spontaneous reports line listing with suspect and concomitant medicines,
+follow-up versions of one case and MedDRA preferred terms; the agency's standard matched comparator extract (non-users
+matched on birth year, sex and the user's start date).
 
-**Layer 2 (the analytical shortcut).** Coding each transformer on its main-tank gases and ranking the code-3 units by
-severity. The standard's arithmetic is right and every gas really is in the main-tank oil; an expert first asks where
-each fault gas was made, because the inspection outages go to faults in the main tank (5.1, 5.2), and acetylene carried
-in from a tap-changer compartment is made by normal switching, not by a fault an internal inspection can find. The
-second shortcut is how to tell: following the tap counter is not enough, because an arc at the tap selector, which
-works in the main-tank oil, also makes its gas at every operation. The gas the acetylene arrives with settles it: oil
-from a diverter compartment brings acetylene with almost no hydrogen, an arc in the main-tank oil makes more hydrogen
-than acetylene (IEC 60599, cited by the standard, reads a C2H2/H2 above 2 to 3 in the main tank as tap-changer oil).
+**Layer 2 (the analytical shortcut).** Comparing the people who started a medicine with other people. A strong analyst
+compares each medicine's new users with matched non-users and then, as modern pharmacoepidemiology prefers, with new
+users of the established alternative (zopiclone, allopurinol, orlistat), adjusted for every recorded comorbidity; both
+designs name the sleep medicine's falls signal, because the new sleep medicine is channelled to frail patients already
+falling and the uricosuric to patients with healthy kidneys, and frailty and kidney reserve are what no registry
+variable records. An expert sees an acute effect of an intermittent exposure in a channelled population and uses the
+self-controlled comparison, each patient's first 30 days on the medicine against the same patient's later time, which
+cancels everything fixed about who is prescribed it: the falls signal disappears and the kidney injury signal stands.
 
-**Similarity claim.** No prior build attributes a measured anomaly to an attached compartment's normal operation before
-ranking. task181 (explaining away a dominant source among pooled victims) is a different structure: there the sources
-compete for the same victims; here each unit's own signal has a second, benign origin.
-
-**Differentiation (clone pre-flight, 2026-10-11, CLEAN).** task119: a unit blamed on its outcome count and
-excused by capacity data through a bed-allocation record; here units the standard ranks worst are cleared because
-their signal is a benign leak from an attached compartment. task101: a baseline cleaned of the fund's own top-ups;
-here no baseline is restated, each unit's gas is attributed to its source. task121: identity of signed-out users;
-here identities are fixed and the question is where a measured gas was made.
-
-## GATE G
-
-- **Litmus.** Nothing reported is overturned: every laboratory value, counter reading and register field is correct;
-  the standard's codes and severities are computed correctly. The difficulty is which units' gases point to a fault
-  inside the main tank.
-- **Primary mechanism:** decomposition_attribution.
-- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
-- **Deletion test.** Delete Barry's notes and the mobile substation schedule: coding on main-tank gases still names the
-  two leaking units; attribution still removes them.
-- **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample and every
-  counter reading ships, and the main call's rows carry no device (asserted, below). A
-  perfect main-tank gas analyser still reads the leaked acetylene, because it is really in the oil; what the decision
-  needs is its origin, which the gas it arrives with settles; the counters and the tap-changer types alone do not
-  (Rolleston T2's acetylene follows its counter as closely as the leaks' do).
-- **Lens swap.** Not one population under two lenses: the answer's ranking runs on main-tank gases generated in the main
-  tank, a different set of gas volumes from the naive ranking's, built per unit from three files.
-
-## STUMP SENTENCE
-
-A competent solver codes every transformer under ES-DGA-02 from its main-tank samples (limits by preservation type and
-age, twelve-month increases, code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and
-Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it
-there is reading main-tank acetylene as a main-tank fault, when at Dunsandel T1 and Leeston T2 its increments track the
-tap-change counts (r 0.998 and 0.995) and its twelve-month ratio to hydrogen is 9.8 and 8.2. A solver who does
-attribute, but by the counter alone, drops Rolleston T2 as well (its acetylene tracks its counter at r 0.999, arc gas
-from the tap selector in the main-tank oil, C2H2/H2 0.64) and names Southbridge T2, Coalgate T1 and Springston T2. The
-slate takes the vacuum-tap-changer unit with the same acetylene (Southbridge T2), the in-oil unit whose acetylene is
-made in its main tank (Rolleston T2, 4.98) and the worst thermal fault (Coalgate T1, 4.73).
-
-## ENTITY AND UNIT OF VALUE
-
-One transformer, one inspection outage. The standard's severity score is a ratio of a gas's twelve-month increase to its
-rate limit; the slate is three transformers in priority order.
-
-## LADDER (shipped)
-
-Units: L2 = DSL-T1 Dunsandel T1 and L1 = LST-T2 Leeston T2 (in-oil arcing tap changers, barriers weeping from 1 July 2024
-and 17 March 2025), V = SBG-T2 Southbridge T2 (vacuum tap changer, internal arc), A3 = RLS-T2 Rolleston T2 (in-oil tap
-changer, arcing at the tap selector in the main tank from December 2024, gas made at every operation, not leaking), T1 = CGT-T1 Coalgate T1, T2 = SPN-T2 Springston T2, T3 = DFD-T1 Darfield T1
-(thermal faults in oil).
-
-| Rung | Construction | Slate | Why a careful analyst stops | Killed by |
-|---|---|---|---|---|
-| 0 | Highest latest acetylene (arcing read off the Duval triangle) | DSL-T1 (22.5 ppm), LST-T2 and SBG-T2 (12.9 each) | arcing is the most severe fault class | ES-DGA-02 4.4 codes on levels and twelve-month increases, not the latest level |
-| 1 | ES-DGA-02 code 3 on main-tank gases, ranked by severity | DSL-T1 9.64, LST-T2 and SBG-T2 8.07 each, then RLS-T2 4.98, CGT-T1 4.73 | the filed standard applied exactly | at DSL-T1 and LST-T2 the main-tank acetylene increments track tap-change counts (r 0.998 and 0.995 from the first detectable result; 0.978 and 0.989 from the last below-detection one), twelve-month C2H2/H2 is 9.8 and 8.2, the tap changers are in-oil arcing types |
-| 2 | Drop the unit with the clearest leak only | without DSL-T1: LST-T2, SBG-T2, RLS-T2; without LST-T2: DSL-T1, SBG-T2, RLS-T2 | one contaminated unit found | the other leaking unit carries the same signature |
-| 3 | Drop acetylene at every in-oil tap-changer unit | SBG-T2, CGT-T1, SPN-T2 | a rule of thumb about tap changers | RLS-T2's acetylene arrives with more hydrogen than acetylene (C2H2/H2 0.64): made in the main tank |
-| 3b | Drop acetylene wherever it tracks the unit's tap operations (round 2's and round 3's step) | SBG-T2, CGT-T1, SPN-T2 | the two leaks track their counters, so tracking reads as the test | RLS-T2's acetylene tracks its counter too (r 0.999 raw, 0.992 per day) but arrives with hydrogen of its own (C2H2/H2 0.64, hydrogen flat in the year before and rising with the acetylene): arc gas made in the main-tank oil at each tap change, not diverter oil |
-| 3c | Drop acetylene where the plain twelve-month C2H2/H2 says tap-changer oil (round 4's step) | LST-T2 and SBG-T2 (tied 8.07), RLS-T2 | the IEC 60599 reading of a high ratio as tap-changer contamination | LST-T2's ratio (0.91) is the new radiators' hydrogen: rising at 9.7 ppm a year in the year before its first acetylene (November 2024 radiator replacement, in the log as capital work), easing since, and not quickening when the acetylene came; its acetylene brings no hydrogen of its own and tracks its counter (r 0.995) |
-| 4 (answer) | Attribute each unit's acetylene by the hydrogen it brings of its own (over the pace hydrogen already had before the first acetylene); the outages go to the code 3 units whose fault is in the main tank | **SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73** | | |
-
-With their acetylene attributed, DSL-T1 and LST-T2 stay code 3 under section 4, which codes the main-tank results as
-reported (the goldens carry the literal code and severity, 3 at 9.64 and 3 at 8.07), but neither has a fault in the
-main tank, so 5.2 gives them no outage. Recoded on what the main tank made they would be code 2 on paper gases (0.81
-and 0.38); no filed sentence asks for that recoding, and the slate is the same either way. Code 3 with a main-tank
-fault: SBG-T2 8.07, RLS-T2 4.98, CGT-T1 4.73, SPN-T2 4.43, DFD-T1 3.45.
-
-**Twin pair.** LST-T2 and SBG-T2 are sampled on the same day every round (the route pairs Leeston with Southbridge) and
-carry the same main-tank acetylene at the samples the standard reads: 4.7 ppm on 8 September 2025 and 12.9 ppm on 14
-September 2026, 371 days apart, an increase of 8.2 ppm scaled to 8.07 (also level at 2.8 ppm in June 2025). Both are
-free-breathing on the latest and on the median O2/N2 and both are 10 to 30 years old, so code and severity are
-identical (code 3, 8.0674). LST-T2's tap changer is in-oil and its acetylene tracks the counter; SBG-T2's is vacuum,
-its increments are uncorrelated with its counter (r -0.073 raw, 0.016 per day) and its hydrogen rose 16 ppm (C2H2/H2
-0.51). Any rule on main-tank gases keeps both or drops both.
-
-Margins: SBG-T2 over RLS-T2 1.62; RLS-T2 over CGT-T1 1.053; the slate cut CGT-T1 over SPN-T2 1.068 (6.8 per cent);
-on the naive slate the cut is SBG-T2 8.07 over RLS-T2 4.98. Every wrong slate differs from the answer by at least one
-named unit, asserted.
-
-## GRID (asserted in checks.py)
-
-Rows: six attribution rules on the hydrogen the acetylene brings of its own (type, tracking and own ratio; type and own
-ratio; tracking and own ratio; own ratio above 2, 3 and 5), six on the plain twelve-month C2H2/H2 (the same shapes), and
-eight that read no gas ratio (type and tracking; any two
-of three; tracking r of 0.8, 0.9 and 0.95 on increments per sample interval; r of 0.9 per day; cumulative growth
-fitting the operations better than time, alone and with the tap-changer type), each on two tracking windows (from the
-first detectable result, from the last below-detection result). Columns: below-detection values at zero, half the
-limit or the limit; base sample at 330, 365 and 400 days; preservation class from the latest or the median O2/N2 (18
-columns). Shipped: all 216 own-hydrogen cells return SBG-T2, RLS-T2, CGT-T1 in that order, all 216 plain-ratio cells
-return rung 3c (LST-T2, SBG-T2, RLS-T2) and all 288 tracking-only cells return rung 3b (SBG-T2, CGT-T1, SPN-T2); the main-tank-only rule returns DSL-T1, LST-T2, SBG-T2 in all 18 columns and the latest-acetylene rule keeps
-DSL-T1 and LST-T2 in all three below-detection readings. Attribution is looked for only where acetylene rises faster than
-its rate limit (DSL-T1, LST-T2, SBG-T2, RLS-T2).
-
-## CLOSURE (the 22 axes)
-
-1 Population: the 44 zone-substation transformers in service (ES-DGA-02 1.1). 2 Unit: transformer. 3 Window: twelve
-months to the latest sample (4.3). 4 As-of: the September 2026 round, 14 to 30 September 2026, the latest sample of every
-unit. 5 Version basis: the report of record is the latest issue for a sample ID (3.4); the five re-issues change
-moisture or label temperature only, and the first issue leaves every code and severity unchanged (asserted). 6 Divisor:
-rate limits per gas and class (table A3). 7 Weighting: none. 8 Window length: the base sample is the September 2025 round
-sample for every unit (366 to 378 days back); 365 converges (every gap is 366 or more) and 400 takes June 2025 with the
-same slate (grid). 9 Boundary: no severity within 5 per cent of the slate cut (6.8 per cent). 10 Rounding: severity to
-two decimals, every severity at least 0.002 from a two-decimal edge (worst 0.0021, BNM-T1) and at least 0.0003 off the
-round value; relative saturation at least 0.02 from a one-decimal edge and at least 0.5 from 30 per cent (worst 1.51,
-SPF-T1). 11 Tie-break: the LST-T2/SBG-T2 tie sits inside the naive slate, never at its cut. 12 Maturity: the September
-round is complete for every unit. 13 Order of operations: attribute, then code, then rank. 14 Row order: irrelevant.
-15 Duplicates: re-issued laboratory reports for the same sample ID (H1, ask layer only). 16 Identity: transformer IDs
-stable; replaced counters keep the transformer ID. 17 Netting: none. 18 Units: ppm (uL/L). 19 Code semantics:
-preservation class by O2/N2 (4.1), every unit at least 0.09 from 0.2 on the latest and on the median ratio. 20 Integerisation: none. 21 Scope: 5.1 and 5.2, faults
-in the main tank. 22 Forward window: none in the call. The analysis date read as the sampling date leaves the
-slate unchanged (asserted).
-
-## ASK SHEET (devices off the main call's rows)
-
-Main call row population (declared, asserted device-free): main-tank results for every transformer;
-the daily tap-change counts and the asset register rows of every code-3 transformer. Zero counts at the seven code-3
-units: 0 counter drops 2021 to 2026, 0 stale register dates, 0 counter replacements, 0 laboratory re-issues.
-
-| Ask | Figures | Primary devices (silent) | Shared hazard |
-|---|---|---|---|
-| A. Tap-changer service: every in-oil tap changer's operations since its last service and whether it is past the interval (ES-DGA-02 annex B) | 27 x 2 = 54; seven past (DSL-T1 87,322, DYL-T2 87,029, GLT-T1 75,013, TPR-T2 64,224, LST-T1 61,972; GLT-T2 and SHF-T1 on the seven years) | D7: a counter drop is a rollover at 99,999 (LST-T1, DYL-T2, TPR-T2, CGT-T2, GLT-T1, WDS-T1) unless the log has the counter replaced at a service that day (SBG-T1, WDN-T1, GDL-T1, LDB-T2, LIN-T1, KRW-T1, HOR-T1); D2: the register's last-service field predates the services since March 2025 (DSL-T2, HOR-T1, KRW-T1, LIN-T1, LIN-T2, SPF-T2, LDB-T2, WDS-T1, and WDN-T2 among the vacuum units), and the log is the record (6.1) | none (H1 moves ask B only) |
-| B. Wet transformers: relative saturation at each unit's latest sample, those above 30 per cent | 44 in the CSV, six in the board paper (SHF-T1 36.1, GDL-T1 34.9, WDN-T1 34.1, DYL-T1 33.1, TPR-T2 31.7, SPF-T1 31.5) | D8: the historian exports UTC (UTC+12 to 27 September 2026, UTC+13 after), so the hourly top-oil temperature joined on the local clock reads the wrong half of the day for the 15 latest samples with a blank label temperature (12 before and 3 after the change to daylight time); D8: the results file's `date` is the analysis date, `sampled` is the sampling time | H1 laboratory re-issues (five; three on latest samples: SPF-T1 moisture, KRW-T1 and GDL-T2 label temperature) |
-
-Stops (asserted, each moving its figures): ask A, register last-service date: 8 figures and 8 flags move (LIN-T1
-84,026 against 16,064); every drop a rollover: 7 figures and 3 flags (SBG-T1 89,197 against 32,019); every drop a
-reset: 6 figures, no flag (LST-T1 61,948 against 61,972); both together: 11 figures, 11 flags. Counting from the morning
-after the service converges (no load operations on a service day). Ask B, the hourly temperature read on the export's
-own clock: 15 figures move and the wet list falls to four (DYL-T1 22.2, TPR-T2 23.4); a fixed UTC+12: 3 move; a fixed
-UTC+13: 12 move; the analysis date as the sampling date: 15 move and the list grows to seven (CGT-T2 34.1, LIN-T2 30.3);
-the first issue of a re-issued report: 3 move and SPF-T1 (28.6) leaves the list while KRW-T1 (43.0) joins it.
-
-Use test: both are the next two tables of a board paper that asks for three inspection outages (tap-changer backlog,
-wet units for oil processing). Decoupling: clearing the attribution moves the slate and no figure in A or B (asserted);
-the ask code reads no code and no slate (asserted).
-
-## PINS
-
-Filed: ES-DGA-02 Fleet DGA condition standard rev 3 (governing): scope (1.1, 1.2),
-sampling and the report of record (3.4, 3.5), coding (4.1 preservation class and age band, 4.2 levels, 4.3 twelve-month
-increase with the base sample the most recent main-tank sample taken 330 days or more before the latest, 4.4 codes and
-severity over the seven fault gases), inspection priority (5.1 an internal inspection is the remedy for a fault in the
-main tank; 5.2 the outages go to the code 3 transformers with such a fault, in descending order of severity), the
-tap-changer service record (6.1 to 6.3), water in oil (7.1), annex A limit tables, annex B service intervals, annex C
-relative saturation. Oil results notes (field semantics only). No sentence anywhere mentions compartment leakage,
-contamination, weeping or barriers (asserted on the standard, the log and the notes).
-
-## PACK GATES (shipped)
-
-11 files, 6 formats (csv, xlsx, parquet, pdf, md, txt): main-tank results 1,077 rows (1,072 samples and 5 re-issues),
-daily counters 93,060, hourly top-oil parquet 2,232,384 rows, asset register 44, maintenance log 275, relay events
-1,161, mobile substation bookings 12. Two distractors named in metadata.json: the protection relay event log (feeder and incomer
-relay operations) and the March 2026 thermal imaging survey of the 11 kV switchboards; the golden never reads either
-(asserted). Two consecutive builds byte-identical (sha256 on every file of the pack, the goldens and metadata.json).
+**Similarity claim.** No build on file uses a self-controlled comparison. task68's matched panel removes entrants from a
+movement (composition); task83 conditions a randomised holdout's effect on each unit's prior trend; task130 v3 forecasts a
+group chosen on an extreme value (regression to the mean). Here the decisive step is the comparison design under
+channelling. Nearest driver on file 0.07 (task41).
 
 ## THREE RULES (client, 2026-10-10)
 
-- **Rule 1, the domain is used.** What decides the slate is a dissolved-gas diagnosis of where each transformer's
-  main-tank acetylene was generated, diverter-compartment oil carried through a weeping barrier (C2H2/H2 of 8 to 10)
-  against an arc in the main-tank oil (more hydrogen than acetylene): the field's own fault-gas interpretation (IEC
-  60599), close to the asset-condition task type. Swap test: with schools or clinics in place of transformers there is
-  no gas, tap changer or ratio to read, so the task does not survive the swap. The decision framing ("which three
-  transformers") is the client's allowed kind; the severity ranking under section 4 is a lower rung, never the decider.
-- **Rule 2, two layers.** Layer 1: laboratory re-issues under one sample ID, below-detection values written as `<n`,
-  preservation class from O2/N2 rather than the register, a UTC historian export, five-digit counters that roll over or
-  restart at a replacement, last-service dates the register stopped writing back, a free-text maintenance log. Layer 2:
-  attributing each unit's main-tank acetylene to its source by the gas it arrives with, when two sources (a leaking
-  diverter barrier and an arc at the tap selector) both follow the tap counter.
-- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who keeps the latest
-  issue of every report, codes all 44 transformers correctly under ES-DGA-02 and reads 5.1 and 5.2 as giving the
-  outages only to faults in the main tank still takes the easy attribution, dropping every transformer whose acetylene
-  rises in step with its tap operations, and files Southbridge T2, Coalgate T1 and Springston T2 (rung 3b; all 288
-  tracking-only cells). Rule application (the section 4 coding, the annex B interval) and data semantics (the `<n`
-  notation, the UTC export, the analysis date) sit on lower rungs and in the asks; none of them moves the slate once the
-  attribution is right (asserted), and none of them can produce the answer without it.
+- **Rule 1, the domain is used.** What decides the call is the self-controlled design pharmacoepidemiology uses to test
+  an acute adverse reaction in registry data, under channelling of a new medicine. Swap test: with another field's nouns
+  in there is no new-user cohort, no channelling by indication and contraindication, no acute risk window after an
+  exposure start on the same person; the task does not survive the swap.
+- **Rule 2, two layers.** Layer 1 above (registry structures, codes, the 2019 change, ATC reassignment, linkage,
+  censoring, report versions). Layer 2: the comparison design under channelling.
+- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who links the
+  registries correctly, restricts to new users and compares the 30-day admission rate after the start with matched
+  non-users and with new users of the established alternative, adjusted for every recorded comorbidity, confirms the sleep
+  medicine's falls signal; only the within-patient comparison of the first 30 days with the same patient's later time
+  confirms the uricosuric's kidney injury signal. Rule application (the case definitions, the new-user rule, the window)
+  and data semantics (the D prefix, the two record structures, the ATC reassignment) sit on lower rungs and in the asks.
 
-## PRE-SHIP CHECK (client, eight points)
+## GATE G
 
-1. Domain: transformer condition assessment's own analysis (DGA fault diagnosis and gas-source attribution); the swap
-   test breaks it (no gas, tap changer or ratio with another field's nouns).
-2. Real work, nothing planted: laboratory formats, detection limits, preservation class from O2/N2, rollovers and
-   counter replacements, a free-text maintenance log, UTC historian exports, re-issued reports.
-3. The flip is a methodological choice: attributing each unit's acetylene to its source by the gas it arrives with. Not
-   a planted catch, not a field or code read correctly, not a stated rule applied.
-4. Analyst test holds: the easy attributions give wrong slates, tracking alone (rung 3b: Southbridge T2, Coalgate T1,
-   Springston T2) and the plain gas ratio (rung 3c: Leeston T2, Southbridge T2, Rolleston T2); checks.py asserts both
-   in every grid cell.
-5. ES-DGA-02 defines the population, the coding, the window and the priority (5.1, 5.2: outages to code 3 transformers
-   with a fault in the main tank); every gas-signature attribution rule returns the answer in all 216 cells.
-6. No decoy memo, staff draft or briefing; Barry's notes are a field dictionary and true.
-7. The method is not hidden and recovered from certified figures: the attribution rests on the physics of where gas is
-   made, and nothing in the pack is fitted to.
-8. The lesson (a diagnostic signal that follows a component's operation is not proof that the component made it; read
-   the gas it arrives with) is not one an earlier task teaches: task28 splits a flagged excess by source before ranking,
-   but there the sources do not share a signature.
+- **Litmus.** Nothing reported is overturned: every report, dispensing and contact is correct, and no one in the pack
+  claims any signal is real. The committee's question is open; the difficulty is which comparison answers it.
+- **Primary mechanism:** method_or_model_selection (the comparison design), with statistical rigour (confounding)
+  supporting.
+- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
+- **Deletion test.** Delete the spontaneous reports and the extract notes: the cohort and active-comparator designs still
+  name the sleep medicine and the self-controlled design still names the uricosuric.
+- **Clean-data and instrument test.** No file is incomplete or stale. A perfect instrument (every fall and every kidney
+  injury in the population recorded, every dose taken known) leaves the channelling exactly where it is: the people who
+  start the sleep medicine still fall more before and after starting it. Nothing is repaired.
+- **Lens swap.** Not one population under two lenses: the answer's quantity is a within-person rate ratio built from the
+  timing of each case's admissions against their own start date (a group-and-order construction across the prescription
+  and patient registries); the naive quantity is a between-person ratio.
+
+## STUMP SENTENCE
+
+A competent solver links the prescription and patient registries, takes each medicine's new users, compares their
+admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the
+established alternative, adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest
+ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is
+channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled
+comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury
+signal instead.
+
+## ENTITY AND UNIT OF VALUE
+
+One signal (a medicine and an event). The committee opens one formal assessment this meeting; its value is an adverse
+reaction confirmed (a label change, a direct healthcare professional communication) or a false alarm not chased.
+
+## THE WORLD (build plan; every figure below is a target the generator asserts or replaces with its shipped value)
+
+Medicines (fictional products, real ATC groups):
+- Sleep medicine: tasorexant (Somnevo), a dual orexin-receptor antagonist, ATC N05CJ05, launched in Denmark 2022.
+  Signal: falls. Comparator for the active-comparator design: zopiclone (N05CF01).
+- Uricosuric: corinurad (Uralexa), a URAT1 inhibitor for gout, provisional ATC M04AX02 until 31 December 2023, then
+  M04AB06. Signal: acute kidney injury. Comparator: allopurinol (M04AA01).
+- Weight-loss medicine: velaglutide (Gravera), a GLP-1 receptor agonist, ATC A10BJ09. Signal: acute pancreatitis.
+  Comparator: orlistat (A08AB01).
+
+Channelling (latent, never a column):
+- Tasorexant starters carry a latent frailty that raises fall admissions about fourfold against age- and sex-matched
+  people; zopiclone starters carry about half that excess; prior fall admissions and recorded comorbidities are noisy
+  indicators of it, so adjusting for them moves the ratios only partly.
+- Corinurad starters carry a latent kidney reserve that halves their acute kidney injury rate against allopurinol starters
+  (allopurinol is the gout medicine used in kidney disease); recorded chronic kidney disease codes capture only part of it.
+- Velaglutide starters carry moderate obesity-related pancreatitis risk; no true effect.
+
+True effects (the only causal effects in the world): corinurad raises acute kidney injury about 2.5-fold in days 1 to 30
+after a new user's first dispensing, independently of NSAID co-use (the excess holds among starters with no NSAID
+dispensed in the window, asserted). Tasorexant and velaglutide have no effect on their events. A prior acute kidney
+injury lowers the chance of starting corinurad (contraindication), and a fall admission raises the chance of starting a
+sleep medicine slightly (insomnia after discharge): both bias a full-observation self-controlled analysis in the same
+direction as the answer (the kidney ratio up, the falls ratio down), and the exposure-anchored design (all observation
+after the start) is immune; asserted.
+
+## LADDER (planned; each rung asserted by name in `generator/checks.py`)
+
+| Rung | Construction | First | Target margin | Killed by |
+|---|---|---|---|---|
+| 0 | Spontaneous reports per signal in the quarter (the screen) | tasorexant falls | most reports | reports are not incidence; the screen raises signals, it does not confirm them |
+| 1 | New users against matched non-users, 30-day admission rate ratio, crude and adjusted for recorded comorbidities and prior admissions for the event | tasorexant falls | first by 1.3 or more in every variant | channelling: the users fell (and the uricosuric's users had kidney injury) at their own rates before starting |
+| 1b | Observed in the 30 days after the start against expected from the age- and sex-specific population rates | tasorexant falls | first by 1.3 or more | as rung 1 |
+| 2 | New-user active comparator (tasorexant against zopiclone starters, corinurad against allopurinol starters, velaglutide against orlistat starters), crude, adjusted and propensity-weighted | tasorexant falls | first by 1.3 or more in every variant; corinurad 1.4 or less | the new sleep medicine is channelled to the frailest; the uricosuric to the healthiest kidneys |
+| 3 (answer) | Self-controlled: each new user's days 1 to 30 after the first dispensing against the same person's later time on it (exposure-anchored control window), conditional Poisson | **corinurad acute kidney injury** | rate ratio 2.2 or more in every cell; tasorexant and velaglutide 1.25 or less with intervals spanning 1 | |
+
+Evidence the pack carries for the judge (asserted): tasorexant starters' fall admission rate in the year before the start
+is about four times matched non-users' and about twice zopiclone starters'; corinurad starters' kidney injury rate in the
+year before the start is about half allopurinol starters'.
+
+## GRID (planned, asserted cell by cell)
+
+Self-controlled cells (all give corinurad): risk window days 1 to 30, 0 to 30 or 1 to 28; control window days 31 to 180,
+61 to 180, 61 to 365, or all observed time after day 30 (exposure-anchored), plus the full-observation case series with a
+30-day pre-exposure window removed; with and without five-year age bands and calendar half-years; estimator conditional
+Poisson maximum likelihood or the Mantel-Haenszel ratio. Naive cells (all give tasorexant): matched non-users crude and
+adjusted (comorbidity sets: none, Charlson groups, Charlson plus prior admission for the event), population
+observed-against-expected, active comparator crude, adjusted and propensity-weighted. Variants: observation from 2022 or
+2023; deaths and emigrations ending observation or not; transfers merged within 24 hours or treated as separate
+contacts. Every cell keeps its winner.
+
+## CLOSURE (the 22 axes)
+
+1 Population: new users 1 January 2022 to 31 March 2026 (no dispensing of the same substance in the 365 days before;
+resident for those 365 days). 2 Unit: a signal (medicine and event). 3 Window: days 1 to 30 after the first dispensing
+(SOP-PV-14). 4 As-of: registry data to 30 June 2026 (the extract); the committee meets 22 October 2026. 5 Version basis:
+the latest version of each spontaneous report. 6 Divisor: person time. 7 Weighting: none. 8 Window length: 30 days. 9
+Boundary: no rival within 25 per cent of the winner at any rung. 10 Rounding: ratios to two decimals. 11 Tie-break: none
+needed. 12 Maturity: windows that end after 30 June 2026 excluded (starters after 31 March 2026 cannot complete a control
+window). 13 Order: link, new-user rule, case definition, then the design. 14 Row order: irrelevant. 15 Duplicates:
+transfers within one admission are one admission; report versions. 16 Identity: pseudonymised personal number across
+extracts; the substance across its two ATC codes. 17 Netting: none. 18 Units: admissions, person-days. 19 Code semantics:
+the registry's D-prefixed ICD-10; action against secondary diagnoses per the case definitions. 20 Integerisation: none.
+21 Scope: the three signals. 22 Forward window: none.
+
+## ASK SHEET (planned)
+
+| Ask | Figures | Depends on the call |
+|---|---|---|
+| The signal the committee opens (note) | 1 | yes |
+| For that signal: the rate ratio for the 30 days after the start, with its 95 per cent interval (note) | 3 | yes (the golden carries the self-controlled band the grid spans) |
+| For that signal: admissions with the event in the 30 days after a start in 2025, and how many the medicine caused (note) | 2 | yes |
+| New users per medicine and calendar year, 2022 to 2025 (`new_users_by_year.csv`) | 3 x 4 = 12 | no (Layer 1: the new-user rule, the ATC reassignment, residence, reversed dispensings) |
+
+Ask stops (each asserted to move its figures): the current ATC code only (corinurad's 2022 and 2023 users vanish);
+the washout ignored; reversed dispensings counted; transfers counted as separate admissions; secondary diagnoses counted
+where the case definition says action diagnosis; deaths and emigrations not ending observation.
+
+## PINS (planned)
+
+SOP-PV-14 (the agency's signal refinement procedure, filed as a PDF): the case definitions (falls: an emergency or
+inpatient contact whose action diagnosis is an injury, DS00 to DT14, with a fall code among its diagnoses; acute kidney
+injury: an inpatient contact with DN17 as action or secondary diagnosis; acute pancreatitis: an inpatient contact with DK85
+as action diagnosis; contacts of one admission linked by transfer count once), the new-user rule (365 days without the
+substance, by substance across code changes), the 30-day window from the first dispensing, the end of observation
+(death, emigration, 30 June 2026), and the committee's question in section 1 ("a signal is supported when starting the
+medicine raises the risk of the event in the month after the start"). It names no comparison group and no design.
+Registry extract notes: field semantics, the D prefix, the 2019 structure change, the ATC reassignment, the matched
+comparator extract's matching rule.
+
+## PACK (planned; the builder may rename within the organisation's own conventions)
+
+1. `pv_signal_screen_2026Q3.xlsx` (context artifact: the screen's disproportionality table and the line listing of
+   reports for the three signals; correct, labelled as reports)
+2. `SOP-PV-14_signal_refinement.pdf` (pins)
+3. `registry_extract_notes.md`
+4. `prescription_registry_2018-2026.parquet` (dispensings of the six substances and the co-medication groups)
+5. `patient_registry_contacts_2018-2026.parquet` (spine: hospital contacts of every person in the extract)
+6. `patient_registry_diagnoses_2018-2026.parquet` (diagnoses per contact)
+7. `civil_registration_extract.csv` (birth year, sex, death, emigration, immigration)
+8. `matched_comparators.csv` (the agency's standard matched non-user extract)
+9. `atc_ddd_index_2026.csv` (substances, ATC codes with validity dates, DDDs)
+10. `population_by_age_sex_2022-2025.csv` (population denominators)
+11. distractor: `psur_summary_tasorexant_2026.pdf` (the company's periodic report summary: exposure estimates and
+    cumulative reports; same world, nothing it states decides the call)
+12. distractor: `committee_minutes_2026-07-09.md` (the previous meeting's minutes on other medicines)
+
+Goldens: `golden/signal_refinement_note.docx` and `golden/new_users_by_year.csv`.
+
+## WARNS (guard.py, answered)
+
+- `overuse.org_family government_agency`: signal management belongs to the medicines agency; a university unit could
+  run the analysis but could not open a committee assessment.
+- `repeat.gate_g method_or_model_selection` against task134: task134's method choice is a survival estimator for
+  competing exits on a forecast; here it is the comparison design under channelling on a signal.
 
 ## STOPPING RULE
 
-Two rounds in which both solvers attribute the acetylene unprompted file this architecture as at-ceiling; a miss landing
-anywhere other than rungs 0 to 3c is read for a fork before any hardening.
-
-## LEAK CHECK (leak.py, as-of 2026-10-16)
-
-Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6, 7 and 11 clean; sweep 10 found no writer signature.
-`guard.py surface task180`: 124 builds screened, no pair promoted (nearest task89 at surface 0.104); personas found in the pack all on the card.
-
-- Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries six swept terms (register, manager, network, written,
-  main-tank, remedy): ordinary words of a utility standard (the asset register, the General Manager Network who approves
-  it, the temperature written on the label, the main-tank sample the fleet is coded on, an internal inspection as the
-  remedy for a fault in the main tank, 5.1). It names gases and the main tank as any DGA standard does and says nothing
-  about compartment oil reaching the main tank, about tap selectors or about telling one source from another by its
-  gases (asserted).
-- Sweep 8, `oil_temp_c` in the main-tank results: the label temperature column the brief names; "temp" is temperature,
-  not a temporary field.
-- Sweep 9, `mobile_substation_bookings_2027-28.xlsx` carries 18 dates in 2027 and 2028: it is the forward booking sheet
-  for the windows the slate fills, forward by design.
-
-Isolated reader, pass 2 (after the scope sentence, the compartment clause and the compartment file came out; read on
-the pack before the 5.2 rewording): decisive step, the selection rule in 5.2, which the prompt itself points to; no
-ranking file, no analyst-only file, no answer-like figure or name; all three REVIEW lines read harmless. Its plan of
-attack coded every transformer on the main-tank results and put "the top three code 3 transformers" into the windows,
-with no step that asks where a gas was made: the attribution is no longer a work order. Pass 3 reads the pack with 5.2
-as reworded.
-
-Isolated reader, pass 3 (5.2 as reworded, run beside round 2): nothing quoted for question 1 ("The closest is ES-DGA-02
-s.5.2 ... That is the rule for who qualifies, not the move"), no ranking file, no analyst-only file, no answer-like
-figure; all three REVIEW lines harmless. Its plan kept "only code 3 units with a main-tank fault (s.5.1-5.2). That means
-dropping in-oil tap-changer units whose acetylene or hydrogen rise tracks tap operations": the qualifier turns the
-attribution into a work order, which is what round 2 executed. 5.2 stays (without it the literal reading is rung 1) and
-the hardening (loop 1) makes the tracking step return rung 3b. Pass 4 reads the hardened pack.
-
-Isolated reader, pass 4 (hardened pack): nothing quoted for question 1 (5.2 "gives the condition for qualifying, not
-how to test it. No file says how to tell a main-tank fault from tap-changer diverter oil leaking into the tank"), no
-ranking file, no analyst-only file, no answer-like figure; the three REVIEW lines harmless (sweep 4 now carries six terms,
-main-tank added, all ordinary standard wording). Its plan: "Acetylene that tracks tap operations is diverter leakage, so
-those transformers are excluded", having seen "the acetylene in DSL-T1, LST-T2 and RLS-T2 rising in step with the SCADA
-tap operations": rung 3b, with no step that reads the gas the acetylene arrives with.
-
-Isolated reader, pass 5 (after the judge's hygiene fix): nothing quoted for any question, the three REVIEW lines
-harmless; its plan keeps "only code 3 units whose gas shows a main-tank fault" and checks "tap-changer type and service
-history before trusting main-tank acetylene" (rungs 3 and 3b), with no gas-ratio step.
-
-Isolated reader, pass 6 (hardening loop 2): nothing quoted for any question, the three REVIEW lines harmless. Its plan
-reads the acetylene-to-hydrogen indicator and the tracking together and would "check the maintenance log for events that
-distort the increases, such as oil processing and the LST-T2 radiator change": it reads the capital-works row as a
-maintenance event, not as a hydrogen source, and plans no per-gas attribution. The row is the honest record of the work
-that produced the hydrogen (a radiator replacement is logged wherever one is done) and says nothing about gas.
+Two rounds in which the solver uses a self-controlled comparison unprompted file this architecture as at-ceiling (the
+slot then retires); a miss that lands anywhere other than rungs 0 to 2 is read for a fork before any hardening.
 
 ## Tried and rejected
+
+- **Draws weighed for architecture 3 and not taken (2026-10-11).** A labour force survey movement read on the people
+  interviewed in both quarters against the rotation groups: the guard's same-puzzle test and the driver both put it on
+  task68 (a matched panel of continuing units against an aggregate moved by entrants), the same insight in the same kind
+  of office. An airline's landing gear alert traced to one station's wheel changes within each airframe: with forty
+  aircraft and many defects each, the chronically defective tails show in any per-aircraft table and controlling for the
+  aircraft is a reflex, so the confounder announces itself. Signals passed at danger per approach at danger: the exposure
+  either has to be named in the question (rule application) or is a fork against trains passing. An air-quality rise
+  normalised for meteorology and a groundwater rise read within each well: attribution of a signal to its drivers, the
+  architecture-2 move, and trends any analyst plots. A disproportionality signal unmasked by removing a dominant drug
+  from the background: the comparator would have to be filed (rule application) or is a fork. Pre-bid abnormal returns
+  under thin trading: the bias from a synchronous beta is swamped by the noise of the thinly traded share.
 
 - **Judge pass 2 (architecture 2, loop 2, 2026-10-11): NOT_DETERMINISTIC, SEND_BACK; architecture 2 spent.** Gate C,
   competing_defensible_answer, in the judge's words: "LST-T2's hydrogen increments track its tap operations: r 0.81,

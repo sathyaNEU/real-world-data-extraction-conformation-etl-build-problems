@@ -1,21 +1,21 @@
 {
  "task": "task180",
- "domain": "energy-systems-utilities",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "anomaly-detection",
- "stage": "spent",
- "stage_name": "architecture 2 spent (judge pass 2 SEND_BACK); re-root to architecture 3 at stage 1",
+ "stage": 3,
+ "stage_name": "build (architecture 3: signal refinement in the national registries, a self-controlled comparison under channelling)",
  "updated": "2026-10-11",
- "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
- "architecture": 2,
- "loops": 2,
+ "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
+ "architecture": 3,
+ "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (0 LEAK; three REVIEW lines, sweep 4 now six ordinary terms; all answered in the design note)",
-  "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b) ; pass 5 (after the judge's hygiene fix): clean, plan at rungs 3 and 3b ; pass 6 (loop 2): clean, plan reads the ratio and the tracking together, the radiator row as a maintenance event"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",
-  "nearest": "task89 surface 0.104 (not promoted); highest driver overlap 0.093",
-  "clone_check": "pre-flight CLEAN: no Track A or B finding, no Shape echo; seven pairs adjudicated in-thread clean (task119, task121, task101, task38, task92, task116, task181); idiom notes acted on (ask sentence rephrased, extract log renamed)"
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
  },
  "solver_rounds": [
   {
@@ -75,37 +75,78 @@
   }
  ],
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "determinism_check_report.md (pass 2, on the loop-2 pack)",
-  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "finding": "Gate C, competing_defensible_answer: LST-T2's 2026 hydrogen increments track its tap operations (r 0.81, permutation p 0.005; RLS-T2's r 0.14), so the submission's own increment method keeps LST-T2 as a main-tank fault and SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is defensible; companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 OLS), the exact SBG-T2/LST-T2 tie, and the unstated gas-source rule pressable as an external dependency",
-  "passes": [
-   {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW",
-    "report": "determinism_check_report_pass1.md",
-    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
-    "pass": 1
-   },
-   {
-    "pass": 2,
-    "verdict": "NOT_DETERMINISTIC",
-    "disposition": "SEND_BACK",
-    "report": "determinism_check_report.md"
-   }
-  ]
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "approved": null,
  "delivered": null,
  "portal": null,
  "three_rules": {
-  "domain": "pass (DGA fault-gas source diagnosis; the swap breaks it)",
+  "domain": "pass (the self-controlled design pharmacoepidemiology uses to test an acute adverse reaction under channelling; the swap breaks it)",
   "layers": "pass",
   "decisive_step": "analytical",
-  "analyst_test": "tracking-only attribution drops RLS-T2 (rung 3b: SBG-T2, CGT-T1, SPN-T2); the plain gas ratio keeps LST-T2 (rung 3c: LST-T2, SBG-T2, RLS-T2); only each gas's own source gives SBG-T2, RLS-T2, CGT-T1"
+  "analyst_test": "A strong analyst who links the registries correctly, restricts to new users and compares the 30-day admission rate after starting each medicine with matched non-users and then with new users of the established alternative, adjusted for every recorded comorbidity, confirms the sleep medicine's falls signal, because the new medicine is channelled to frail patients already falling and the uricosuric to patients with healthy kidneys; only the within-patient comparison of the first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal."
+ },
+ "earlier_architectures": {
+  "arch1": {
+   "spent": "in-house round 1 (screen grain)",
+   "reports": [
+    "leak_check_report_arch1.md",
+    "clone_check_report_arch1.md",
+    "solver_rounds/round-1-plain_arch1.md",
+    "solver_rounds/round-1-skeptic_arch1.md"
+   ]
+  },
+  "arch2": {
+   "spent": "judge pass 2 SEND_BACK (Gate C)",
+   "design_note": "DESIGN_NOTE_arch2.md",
+   "leak": {
+    "leak_py": "REVIEW (0 LEAK; three REVIEW lines, sweep 4 now six ordinary terms; all answered in the design note)",
+    "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b) ; pass 5 (after the judge's hygiene fix): clean, plan at rungs 3 and 3b ; pass 6 (loop 2): clean, plan reads the ratio and the tracking together, the radiator row as a maintenance event"
+   },
+   "duplicate_check": {
+    "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",
+    "nearest": "task89 surface 0.104 (not promoted); highest driver overlap 0.093",
+    "clone_check": "pre-flight CLEAN: no Track A or B finding, no Shape echo; seven pairs adjudicated in-thread clean (task119, task121, task101, task38, task92, task116, task181); idiom notes acted on (ask sentence rephrased, extract log renamed)"
+   },
+   "judge": {
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md (pass 2, on the loop-2 pack)",
+    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "finding": "Gate C, competing_defensible_answer: LST-T2's 2026 hydrogen increments track its tap operations (r 0.81, permutation p 0.005; RLS-T2's r 0.14), so the submission's own increment method keeps LST-T2 as a main-tank fault and SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is defensible; companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 OLS), the exact SBG-T2/LST-T2 tie, and the unstated gas-source rule pressable as an external dependency",
+    "passes": [
+     {
+      "verdict": "DETERMINISTIC",
+      "disposition": "FIX_NOW",
+      "report": "determinism_check_report_pass1.md",
+      "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+      "gate_h": "domain pass, layers pass, decisive_step analytical",
+      "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
+      "pass": 1
+     },
+     {
+      "pass": 2,
+      "verdict": "NOT_DETERMINISTIC",
+      "disposition": "SEND_BACK",
+      "report": "determinism_check_report.md"
+     }
+    ]
+   },
+   "three_rules": {
+    "domain": "pass (DGA fault-gas source diagnosis; the swap breaks it)",
+    "layers": "pass",
+    "decisive_step": "analytical",
+    "analyst_test": "tracking-only attribution drops RLS-T2 (rung 3b: SBG-T2, CGT-T1, SPN-T2); the plain gas ratio keeps LST-T2 (rung 3c: LST-T2, SBG-T2, RLS-T2); only each gas's own source gives SBG-T2, RLS-T2, CGT-T1"
+   },
+   "reports": [
+    "leak_check_report_arch2.md",
+    "clone_check_report_arch2.md",
+    "determinism_check_report_arch2_pass1.md",
+    "determinism_check_report_arch2_pass2.md"
+   ]
+  }
  }
 }
