@@ -19,7 +19,7 @@ WEIBULL_K = 4.0
 WEIBULL_SCALE = 26.0
 RANDOM_RATE = 0.0020                   # per module-year, any age
 EARLY_NEW = (0.0035, 0.60)             # monthly excess in the first month in service, and its decay per month
-EARLY_REPAIRED = (0.0120, 0.65)
+EARLY_REPAIRED = (0.0180, 0.65)
 
 # filed in the obsolescence procedure
 BANDS = [(0, 9), (10, 14), (15, 19), (20, 24), (25, None)]

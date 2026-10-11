@@ -1,6 +1,7 @@
 """The system extracts: the EAM asset register, the PSU rotating-item history, the work-order export,
 substations, spares stock and Veldtek's RMA register."""
 import datetime as dt
+import math
 
 import numpy as np
 import openpyxl
@@ -28,13 +29,18 @@ END = dt.date(2026, 10, 1)
 # the device that goes into a bay when the old one comes out
 NEW_DEVICE = {"VPR-340": "NX-9", "VPR-220": "NX-9", "NX-9": "NX-9", "NX-5": "NX-5", "KDR-30": "KDR-30",
               "RT-400": "RT-600", "AT-7": "AT-7"}
-MFG_LAG = (20, 270)                    # days from manufacture to installation of a relay, control or RTU
-HELD_LAG = (365, 1096)                 # the same for one held in stores for a year or more
-STORES = {"North": "North Depot", "Central": "Central Stores (Barrie Road)", "South": "South Depot"}
+MFG_LAG, HELD_LAG = W.MFG_LAG, W.HELD_LAG
 YEAR_ONLY_BEFORE = dt.date(2001, 1, 1)  # legacy records older than this sometimes held only the year
-RMA_START = dt.date(2015, 4, 1)         # Veldtek's register for Tarrock's VPR-340 PSU returns opens with SB-15-02
-REG_SAVED = dt.date(2026, 9, 29)        # Veldtek's last save of the register before the count
-CUTOVER_HOLD = dt.date(2020, 12, 14)    # stores held shipments over the EAM cutover
+EWASTE_CONTRACT = "SC-2021-118"         # e-waste processing contract for retired P&C equipment
+
+
+def write_csv(df, path, decimals=None):
+    """an export from the EAM reporting service: numbers to the decimals the field is defined with, blank for no value,
+    Windows line endings"""
+    d = df.copy()
+    for col, n in (decimals or {}).items():
+        d[col] = ["" if v is None or (isinstance(v, float) and math.isnan(v)) else "%.*f" % (n, float(v)) for v in d[col]]
+    d.to_csv(path, index=False, lineterminator="\r\n")
 
 
 def _d(rng, y0, y1):
@@ -44,10 +50,12 @@ def _d(rng, y0, y1):
 
 
 def bay_plan(fl, prog):
-    """a few stations keep older VPR-220 feeders beside their VPR-340s, and a few have a spare feeder bay after them"""
+    """a few stations keep older VPR-220 feeders beside their VPR-340s, and a few have a spare feeder bay after them
+    (a distribution station only where its feeder bays allow)"""
     rx = np.random.default_rng([W.SEED, 40])
     n = fl.groupby("sub_code").size()
-    ok = sorted(s for s, r in zip(prog["sub_code"], prog["retired_on"]) if not isinstance(r, dt.date) and n[s] >= 6)
+    ok = sorted(s for s, r in zip(prog["sub_code"], prog["retired_on"])
+                if not isinstance(r, dt.date) and (6 <= n[s] <= 7 or (s.startswith("TS") and n[s] >= 6)))
     pick = [str(x) for x in rx.choice(ok, 9, replace=False)]
     plan = {s: dict(vpr220=int(rx.integers(2, 5)), spare=0) for s in pick[:5]}
     plan.update({s: dict(vpr220=0, spare=1) for s in pick[5:]})
@@ -78,7 +86,7 @@ def assets(rng, subs, fl, prog, plan):
                                 install=_d(rv, max(1989, min(y0 - 10, 2000)), min(2004, max(y0 - 1, 1993))),
                                 retired=None, relay_key=None))
             off = nv + bp["vpr220"] + bp["spare"]
-            extra = int(rng.integers(1, 5)) if ts else int(rng.integers(0, 3))
+            extra = int(rng.integers(1, 5)) if ts else min(int(rng.integers(0, 3)), W.DS_FEEDERS_MAX - off)
             for j in range(extra):
                 y0n = max(camp[sc].year + 1, 2011)
                 out.append(dict(model="NX-9", sub_code=sc, bay="F%02d" % (off + j + 1), install=_d(rng, min(y0n, 2026), 2026),
@@ -131,32 +139,56 @@ def assets(rng, subs, fl, prog, plan):
     return a.reset_index(drop=True)
 
 
-def register(rng, subs, fl, prog, plan):
+def register(rng, subs, fl, prog, plan, relay_mfg):
     """protection asset register: every asset in service on 1 Jan 2021 or installed since. Returns the register, the
-    asset number of each VPR-340 relay, each VPR-340 relay's date of manufacture, and the VPR-340 relays whose legacy
-    record held only the year of installation."""
+    asset number of each VPR-340 relay, the VPR-340 relays whose legacy record held only the year of installation, and
+    the date each asset created after go-live was set up in EAM."""
     a = assets(rng, subs, fl, prog, plan)
-    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
-    cur = dict(zip(subs["sub_code"], subs["region"]))
     a["loaded"] = a["install"] < GOLIVE
-    # EAM asset numbers: the go-live load in location order, then new assets as they were created; other asset
-    # classes share the sequence, so protection numbers have gaps
-    a["_o"] = [(0, s, b, str(i)) if l else (1, str(i), s, b) for s, b, i, l in zip(a["sub_code"], a["bay"], a["install"], a["loaded"])]
+    # EAM asset numbers: the go-live load in location order, then new assets as they were set up. A station rebuild's
+    # assets are set up together when the project is released, months before the cutover; a single replacement a few
+    # weeks before it goes in. Other asset classes share the sequence, so protection numbers have gaps.
+    cut = {sc: d for sc, d in zip(prog["sub_code"], prog["cut_days"]) if isinstance(d, list)}
+    rc = np.random.default_rng([W.SEED, 47])
+    release = {sc: d[0] - dt.timedelta(days=int(rc.integers(60, 200))) for sc, d in sorted(cut.items())}
+    created, batch = [], []
+    for s, b, i, l in zip(a["sub_code"], a["bay"], a["install"], a["loaded"]):
+        if l:
+            created.append(None)
+            batch.append(None)
+        elif s in cut and cut[s][0] <= i <= cut[s][-1]:
+            created.append(release[s])
+            batch.append(s)
+        else:
+            created.append(i - dt.timedelta(days=int(rc.integers(0, 61))))
+            batch.append(None)
+    a["created"], a["_batch"] = created, batch
+    a["_o"] = [(0, s, b, str(i)) if l else (1, str(c), s or "", b) for s, b, i, l, c in
+               zip(a["sub_code"], a["bay"], a["install"], a["loaded"], a["created"])]
     a = a.sort_values("_o", key=lambda c: c.map(lambda t: t), kind="mergesort").reset_index(drop=True)
-    num, ids = 1000000, []
-    for l in a["loaded"]:
-        num += int(rng.integers(1, 9)) if l else int(rng.integers(4, 61))
+    num, ids, prev = 1000000, [], None
+    for l, bt in zip(a["loaded"], a["_batch"]):
+        if l:
+            num += int(rng.integers(1, 9))
+        elif bt is not None and bt == prev:
+            num += int(rng.integers(1, 4))
+        else:
+            num += int(rng.integers(4, 61))
         if not l and num < 1046000:
             num = 1046000 + int(rng.integers(0, 400))
+        prev = bt
         ids.append("P%07d" % num)
     a["asset_id"] = ids
     # manufacturer serials: the year of manufacture and the maker's running number, in order of manufacture (the
     # maker numbers every unit it builds, so ours have gaps); a unit that sat in stores goes in a year or more later
-    lags = []
-    for i in a["install"]:
-        held = rng.random() < 0.13
-        lags.append(int(rng.integers(*HELD_LAG)) if held else int(rng.integers(*MFG_LAG)))
-    a["mfg"] = [i - dt.timedelta(days=g) for i, g in zip(a["install"], lags)]
+    mfg = []
+    for i, k in zip(a["install"], a["relay_key"]):
+        if k is not None and not pd.isna(k):
+            mfg.append(relay_mfg[int(k)])
+        else:
+            held = rng.random() < 0.13
+            mfg.append(i - dt.timedelta(days=int(rng.integers(*HELD_LAG)) if held else int(rng.integers(*MFG_LAG))))
+    a["mfg"] = mfg
     a["serial_no"] = ""
     for m, g in a.groupby("model"):
         seq = int(rng.integers(100, 3000))
@@ -166,7 +198,9 @@ def register(rng, subs, fl, prog, plan):
     a["manufacturer"] = [MODELS[m][0] for m in a["model"]]
     a["function"] = [MODELS[m][1] for m in a["model"]]
     a["status"] = ["RETIRED" if r is not None and not pd.isna(r) else "IN SERVICE" for r in a["retired"]]
-    a["region"] = [leg[s] if (l or i < W.REORG) else cur[s] for s, l, i in zip(a["sub_code"], a["loaded"], a["install"])]
+    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
+    cur = dict(zip(subs["sub_code"], subs["region"]))
+    a["region"] = [leg[s] if (l or c < W.REORG) else cur[s] for s, l, c in zip(a["sub_code"], a["loaded"], a["created"])]
     # legacy lists from before the legacy system often held only the year a device went in; those were loaded as
     # 1 July of that year (whole stations' records were kept that way)
     ry = np.random.default_rng([W.SEED, 41])
@@ -179,15 +213,15 @@ def register(rng, subs, fl, prog, plan):
     reg = a.sort_values(["sub_code", "bay", "install_date", "asset_id"], kind="mergesort").reset_index(drop=True)
     cols = ["asset_id", "model", "manufacturer", "function", "sub_code", "bay", "serial_no", "install_date", "status",
             "retired_date", "region"]
-    keyed = [(int(k), aid, mf, y) for k, aid, mf, y in zip(reg["relay_key"], reg["asset_id"], reg["mfg"], reg["_yo"])
+    keyed = [(int(k), aid, y) for k, aid, y in zip(reg["relay_key"], reg["asset_id"], reg["_yo"])
              if k is not None and not pd.isna(k)]
-    return (reg[cols], {k: aid for k, aid, _, _ in keyed}, {k: mf for k, _, mf, _ in keyed},
-            {k for k, _, _, y in keyed if y})
+    created_of = {aid: c for aid, c in zip(reg["asset_id"], reg["created"]) if c is not None and not pd.isna(c)}
+    return reg[cols], {k: aid for k, aid, _ in keyed}, {k for k, _, y in keyed if y}, created_of
 
 
 # ---------------------------------------------------------------- station equipment the P&C crews work on
 
-def equipment(subs, reg):
+def equipment(subs, reg, created_of):
     """station DC systems (battery banks and chargers), the breaker in each relay-protected bay and the bus VTs: the
     assets the P&C crews test beside the relays. Their EAM numbers come from the same sequence as the protection
     assets: the go-live load numbered each station's equipment in location order, newer equipment as it was created."""
@@ -216,11 +250,11 @@ def equipment(subs, reg):
         for b in range(1, s.n_bus + 1):
             rows.append(dict(cls="vt", sub_code=s.sub_code, name="VT-B%d" % b, install=_d(re_, 1980, 2015), retired=None))
     eq = pd.DataFrame(rows)
-    eq["asset_id"] = _alloc_ids(reg, eq, re_)
+    eq["asset_id"] = _alloc_ids(reg, eq, re_, created_of)
     return eq
 
 
-def _alloc_ids(reg, eq, rng):
+def _alloc_ids(reg, eq, rng, created_of):
     used = {int(a[1:]) for a in reg["asset_id"]}
     out = [None] * len(eq)
     order = {"B": 0, "F": 1, "T": 2, "V": 3, "C": 4}
@@ -240,9 +274,10 @@ def _alloc_ids(reg, eq, rng):
             n = free[int(j * step)]
             used.add(n)
             out[i] = "P%07d" % n
-    new = sorted((d, int(a[1:])) for d, a in zip(reg["install_date"], reg["asset_id"]) if d >= GOLIVE)
-    for i in sorted(eq.index[[d >= GOLIVE for d in eq["install"]]], key=lambda i: (eq.at[i, "install"], i)):
-        d = eq.at[i, "install"]
+    new = sorted((created_of[a], int(a[1:])) for a in reg["asset_id"] if a in created_of)
+    made = {i: eq.at[i, "install"] - dt.timedelta(days=int(rng.integers(0, 61))) for i in eq.index if eq.at[i, "install"] >= GOLIVE}
+    for i in sorted(made, key=lambda i: (made[i], i)):
+        d = made[i]
         lo = max([n for dd, n in new if dd <= d] or [1046000])
         hi = min([n for dd, n in new if dd > d] or [lo + 400])
         cand = [n for n in range(lo + 1, hi) if n not in used] or [n for n in range(hi + 1, hi + 400) if n not in used]
@@ -259,144 +294,44 @@ def legacy_wo(d, rng):
     return "%d" % (468000 + int((d - dt.date(2015, 1, 1)).days * 13.6) + int(rng.integers(0, 40)))
 
 
-def psu_cycle(sp, f, key2aid, relay_mfg, sub_of, depot_of):
-    """Module serials for every spell; failed modules, and the modules the 2015 service bulletin took out, sent back
-    to Veldtek under RMA once its register was running, then repaired, found fault-free or scrapped; repaired modules
-    come back to stores and some are fitted again. A new module's serial carries its year of manufacture and Veldtek's
-    running number in order of manufacture; a repaired module keeps its serial."""
+def psu_cycle(sp, ret, key2aid):
+    """Module serials for every spell, and Veldtek's side of the returns. A module built new carries its year of
+    manufacture and Veldtek's running number in order of manufacture; a repaired module keeps its serial. Returns the
+    spells with serials and the modules in Veldtek's register (a box still at the store at the count is not)."""
     sp = sp.copy()
-    r_ship = np.random.default_rng([W.SEED, 21, 1])
-    r_res = np.random.default_rng([W.SEED, 21, 2])
-    r_pool = np.random.default_rng([W.SEED, 21, 3])
     r_made = np.random.default_rng([W.SEED, 21, 4])
     r_ref = np.random.default_rng([W.SEED, 21, 5])
     spell_of = {(int(k), int(m)): i for i, k, m in zip(sp.index, sp["relay_key"], sp["module"])}
-    cand = []
-    for r in f.sort_values(["done", "relay_key"], kind="mergesort").itertuples():
-        if r.done >= RMA_START:
-            cand.append(dict(kind="EAM" if r.month >= GOLIVE else "LEGACY", relay_key=int(r.relay_key), module=int(r.module),
-                             removed=r.done, reported=r.reported))
-    camp = sp[sp["reason"] == "CAMPAIGN"]
-    for k, m, d in zip(camp["relay_key"], camp["module"], camp["removed"]):
-        cand.append(dict(kind="SB", relay_key=int(k), module=int(m), removed=d, reported=d))
-    cand.sort(key=lambda c: (c["removed"], c["relay_key"], c["module"]))
-    ships, batch = [], {}
-    for c in cand:
-        if c["kind"] == "SB":
-            if r_ship.random() > 0.86:
-                continue
-            sub = sub_of[c["relay_key"]]
-            if sub not in batch:
-                batch[sub] = (len(batch), S.add_bdays(c["removed"], int(r_ship.integers(12, 40))))
-            g, ship = batch[sub]
-            ships.append(dict(c, ship=ship, group="SB%d" % g, ref=None))
-            continue
-        if r_ship.random() > (0.5 if c["kind"] == "LEGACY" else 0.55):
-            continue
-        u = r_ship.random()
-        lag = (int(r_ship.integers(2, 9)) if u < 0.55 else int(r_ship.integers(9, 19)) if u < 0.82 else
-               int(r_ship.integers(19, 46)) if u < 0.95 else int(r_ship.integers(46, 111)))
-        ship = S.add_bdays(c["removed"], lag)
-        if c["kind"] == "LEGACY" and ship >= CUTOVER_HOLD:
-            ship = S.add_bdays(dt.date(2021, 1, 4), int(r_ship.integers(0, 9)))
-        ships.append(dict(c, ship=ship, group="M%d" % len(ships), ref=None))
-    # failed modules waiting at the same depot within a couple of weeks go to Veldtek in one box
-    eam = sorted([s for s in ships if s["kind"] == "EAM"], key=lambda s: (s["ship"], s["relay_key"]))
-    paired = set()
-    for i, a in enumerate(eam):
-        if id(a) in paired:
-            continue
-        for b in eam[i + 1:]:
-            if (b["ship"] - a["ship"]).days > 14:
-                break
-            if id(b) in paired or depot_of[b["relay_key"]] != depot_of[a["relay_key"]]:
-                continue
-            if r_ship.random() < 0.5:
-                a["ship"] = b["ship"]
-                b["group"] = a["group"]
-                paired.update((id(a), id(b)))
-            break
-    groups = {}
-    for s in ships:
-        groups.setdefault(s["group"], []).append(s)
-    keep = []
-    for g in sorted(groups, key=lambda g: (min(s["ship"] for s in groups[g]), g)):
-        members = groups[g]
-        ship = max(s["ship"] for s in members)
-        lag = int(r_ship.integers(1, 4)) if r_ship.random() < 0.85 else int(r_ship.integers(4, 10))
-        recv = S.add_bdays(ship, lag)
-        if recv > REG_SAVED:
-            continue                                       # still on the shelf at the depot at the count
-        for s in members:
-            s["ship"], s["received"] = ship, recv
-            keep.append(s)
-    for s in keep:
-        if s["kind"] == "SB":
-            s["result"], s["returned"] = "SCRAPPED (SB-15-02)", None
-            continue
-        evald = S.add_bdays(s["received"], int(r_res.integers(4, 13)))
-        u = r_res.random()
-        res = "REPAIRED" if u < 0.77 else ("NO FAULT FOUND" if u < 0.82 else "BEYOND ECONOMIC REPAIR")
-        if res == "NO FAULT FOUND":
-            t = int(r_res.integers(5, 19))
-        else:
-            v = r_res.random()
-            t = int(r_res.integers(14, 33)) if v < 0.7 else int(r_res.integers(32, 61)) if v < 0.92 else int(r_res.integers(60, 121))
-            if s["received"].year >= 2026:
-                t = int(t * 1.25)
-        back = None if res == "BEYOND ECONOMIC REPAIR" else S.add_bdays(s["received"], t)
-        if evald > REG_SAVED or (back is not None and back > REG_SAVED):
-            res, back = "OPEN", None
-        s["result"], s["returned"] = res, back
-    # repaired and fault-free modules back on the stores shelf a few days after Veldtek ships them
-    shelf = sorted((S.add_bdays(s["returned"], int(r_pool.integers(1, 6))), spell_of[(s["relay_key"], s["module"])])
-                   for s in keep if s["returned"] is not None)
-    taken = set()
-    made, origin = {}, {}
-    for i in sp.sort_values(["fitted", "relay_key", "module"], kind="mergesort").index:
-        when = sp.at[i, "fitted"]
-        key, mod = int(sp.at[i, "relay_key"]), int(sp.at[i, "module"])
-        if mod == 0:
-            made[i] = relay_mfg[key] - dt.timedelta(days=int(r_made.integers(7, 45)))     # built into the relay
-        elif sp.at[i - 1, "reason"] == "CAMPAIGN":
-            made[i] = when - dt.timedelta(days=int(r_made.integers(30, 160)))            # built for the bulletin
-        else:
-            avail = [p for p in shelf if p[0] <= when and p[1] not in taken and p[1] != i]
-            if avail and r_pool.random() < 0.45:
-                pick = avail[0]
-                taken.add(pick[1])
-                origin[i] = pick[1]
-            else:
-                made[i] = when - dt.timedelta(days=int(r_made.integers(45, 900)))       # from stores stock
+    roots = [i for i in sp.index if not isinstance(sp.at[i, "origin"], tuple)]
     serial, n = {}, 21000
-    for i in sorted(made, key=lambda j: (made[j], j)):
+    for i in sorted(roots, key=lambda j: (sp.at[j, "made"], j)):
         n += int(r_made.integers(1, 9))
-        serial[i] = "PS02-%02d-%05d" % (made[i].year % 100, n)
+        serial[i] = "PS02-%02d-%05d" % (sp.at[i, "made"].year % 100, n)
 
     def serial_of(i):
-        while i in origin:
-            i = origin[i]
+        while isinstance(sp.at[i, "origin"], tuple):
+            i = spell_of[sp.at[i, "origin"]]
         return serial[i]
 
     sp["serial"] = [serial_of(i) for i in sp.index]
-    sp["repaired"] = [i in origin for i in sp.index]
     sp["asset_id"] = [key2aid[int(k)] for k in sp["relay_key"]]
-    ships = pd.DataFrame(keep)
-    ships["spell"] = [spell_of[(k, m)] for k, m in zip(ships["relay_key"], ships["module"])]
+    ships = pd.DataFrame([dict(r) for r in ret.recs if not r.get("held")])
+    ships["group"] = ships["box"]
+    ships["spell"] = [spell_of[(int(k), int(m))] for k, m in zip(ships["relay_key"], ships["module"])]
     ships["serial"] = [serial_of(i) for i in ships["spell"]]
     # Tarrock's reference on each return: the EAM logistics work order (filled in later), or the legacy work order
-    sbref = {}
-    refs = []
-    for s in ships.itertuples():
+    sbref, refs = {}, []
+    for s in ships.sort_values(["ship", "group", "removed", "relay_key"], kind="mergesort").itertuples():
         if s.kind == "SB":
             if s.group not in sbref:
                 sbref[s.group] = legacy_wo(s.removed, r_ref)
-            refs.append(sbref[s.group])
+            refs.append((s.Index, sbref[s.group]))
         elif s.kind == "LEGACY":
-            refs.append(legacy_wo(s.reported, r_ref))
+            refs.append((s.Index, legacy_wo(s.reported, r_ref)))
         else:
-            refs.append(None)
-    ships["ref"] = refs
+            refs.append((s.Index, None))
+    ref_of = dict(refs)
+    ships["ref"] = [ref_of[i] for i in ships.index]
     ships = ships.sort_values(["ship", "group", "removed", "relay_key"], kind="mergesort").reset_index(drop=True)
     return sp, ships
 
@@ -493,7 +428,7 @@ def _slip(rng):
             int(rng.integers(22, 46)) if u < 0.90 else int(rng.integers(46, 111)) if u < 0.97 else int(rng.integers(111, 221)))
 
 
-def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
+def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste):
     cur = dict(zip(subs["sub_code"], subs["region"]))
     leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
     kind_of = dict(zip(subs["sub_code"], subs["station_type"]))
@@ -509,22 +444,35 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
     spell = {(int(k), int(m)): (s, rp) for k, m, s, rp in zip(sp["relay_key"], sp["module"], sp["serial"], sp["repaired"])}
     T = crewtext.Writer(W.SEED * 7 + 3)
     rng_c = np.random.default_rng([W.SEED, 30, 0])     # crews and hours
+    rng_s = np.random.default_rng([W.SEED, 30, 8])     # work raised on the old codes after the reorganisation
+    rv = np.random.default_rng([W.SEED, 30, 9])
+    legacy_crews = {c for v in CREWS_LEGACY.values() for c, _ in v}
+    # station DC: 125 V at most stations, 48 V at some small distribution stations, 250 V at some transformer stations
+    volts = {sc: (48 if (k == "DS" and rv.random() < 0.15) else 250 if (k == "TS" and rv.random() < 0.3) else 125)
+             for sc, k in sorted(kind_of.items())}
     rows = []
 
     def in_service(aid, d):
         r = retd.get(aid)
         return inst[aid] <= d and (r is None or d < r)
 
-    def crew(sub, d):
-        return _crew(rng_c, CREWS_CURRENT[cur[sub]] if d >= W.REORG else CREWS_LEGACY[leg[sub]])
+    def crew(sub, d, wt=None):
+        """the crew a work order is raised for. The PM masters kept the old region and crew codes until they were
+        re-coded in one batch, and for the first weeks some planners still raised work on the old codes"""
+        old = d < W.REORG
+        if not old and wt == "PM" and d < W.PM_MASTER_UPDATE:
+            old = True
+        elif not old and wt != "PM" and (d - W.REORG).days < 21 and rng_s.random() < 0.3 * (1 - (d - W.REORG).days / 21):
+            old = True
+        return _crew(rng_c, CREWS_LEGACY[leg[sub]] if old else CREWS_CURRENT[cur[sub]])
 
-    def add(d, aid, sub, wt, comp, desc, done, hours, key=None, cr=None, status=None, due=None, after=0):
+    def add(d, aid, sub, wt, comp, desc, done, hours, key=None, cr=None, status=None, due=None, after=0, parent=None):
         """hours: (mu, sd, lo[, travel]) of the task, or a callable of the crew; done: completion date, None while open"""
-        cr = cr or crew(sub, d)
+        cr = cr or crew(sub, d, wt)
         h = hours(cr) if callable(hours) else _hours(rng_c, cr, *hours)
         rows.append(dict(reported_date=d, asset_id=aid, sub_code=sub, work_type=wt, status=status, failed_component=comp,
                          description=desc(cr) if callable(desc) else desc, labour_hours=h, completed_date=done, crew=cr,
-                         region=cur[sub] if d >= W.REORG else leg[sub], _key=key, _after=after))
+                         region=leg[sub] if cr in legacy_crews else cur[sub], _key=key, _after=after, _parent=parent))
 
     storms = {}
     for day, regions in W.STORMS:
@@ -546,15 +494,15 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
         k, m = int(r.relay_key), int(r.module)
         aid = key2aid[k]
         sub = aid2sub[aid]
-        store = STORES[cur[sub]]
+        store = W.store_for(cur[sub], leg[sub], r.reported)
         nxt_serial, nxt_rep = spell.get((k, m + 1), (None, False))
         fit = fits.get((k, m))
         storm = after_storm(sub, r.reported)
         wt = "EM" if r.em else "CM"
-        cr = crew(sub, r.reported)
+        cr = crew(sub, r.reported, wt)
         text = T.psu_failure(cr, bay_of[aid], store, r.em, storm=day_name(storm) if storm else None,
                              fitted="later" if fit else "same", repaired=nxt_rep, serial=nxt_serial,
-                             wo_fit=(TOKEN % ("FIT", k, m)) if (fit and rng_a.random() < 0.5) else None)
+                             wo_fit=(TOKEN % ("FIT", k, m)) if (fit and rng_a.random() < 0.5) else None, volts=volts[sub])
         done = r.done
         if rng_a.random() < 0.12:
             late = done + dt.timedelta(days=int(rng_a.integers(1, 3)))
@@ -562,12 +510,13 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
         add(r.reported, aid, sub, wt, "PSU", text, done, (1.6, 0.35, 0.75) if fit else (2.2, 0.35, 1.0), key=("F", k, m), cr=cr)
         if fit:
             raised, fitted = fit
-            cr2 = crew(sub, raised)
-            add(raised, aid, sub, "CM", "", T.psu_fitting(cr2, bay_of[aid], store, nxt_serial, nxt_rep, TOKEN % ("F", k, m)),
-                fitted, (1.5, 0.35, 0.5), key=("FIT", k, m), cr=cr2, after=1)
+            cr2 = crew(sub, raised, "CM")
+            add(raised, aid, sub, "CM", "", T.psu_fitting(cr2, bay_of[aid], W.store_for(cur[sub], leg[sub], raised), nxt_serial,
+                                                           nxt_rep, TOKEN % ("F", k, m)),
+                fitted, (1.5, 0.35, 0.5), key=("FIT", k, m), cr=cr2, after=1, parent=("F", k, m))
         if rng_a.random() < 0.045:
             add(r.reported, aid, sub, wt, "PSU", T.psu_duplicate(cr, TOKEN % ("F", k, m)), None, lambda c: 0.0, status="CANC",
-                after=1)
+                after=1, parent=("F", k, m))
 
     # B. failed PSUs shipped to Veldtek under RMA, one logistics work order per box
     lkey = {}
@@ -577,7 +526,7 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
         aid = key2aid[k0]
         sub = aid2sub[aid]
         ship = grp["ship"].iloc[0]
-        cr = crew(sub, ship)
+        cr = crew(sub, ship, "LOG")
         add(ship, aid, sub, "LOG", "PSU", T.log_psu(cr, list(grp["serial"])), S.add_bdays(ship, _lag(rng_c, "LOG")),
             (0.4 + 0.15 * (len(grp) - 1), 0.4, 0.25, False), key=("L", k0, m0), cr=cr)
         for k, m in zip(grp["relay_key"], grp["module"]):
@@ -808,13 +757,18 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
              "Replace charger %s, new unit commissioned, alarms tested" % e.name)
         d0 = S.pick_bday(rng_m, max(GOLIVE, d1 - dt.timedelta(days=21)), d1)
         add(d0, e.asset_id, e.sub_code, "MOD", "", t, d1, (6.0, 0.3, 2.0))
+    # retired equipment from each station rebuild to the e-waste processor
+    for e in ewaste:
+        cr = crew(e["sub"], e["date"], "LOG")
+        add(e["date"], "", e["sub"], "LOG", "", T.ewaste(cr, e["sub"], e["counts"], EWASTE_CONTRACT, e["manifest"]),
+            S.add_bdays(e["date"], _lag(rng_m, "LOG")), (1.5, 0.4, 0.5, False), cr=cr)
 
     # work raised and then cancelled across every type (raised in error, superseded, access refused)
     rng_x = np.random.default_rng([W.SEED, 30, 7])
     plain = [k for k, r in enumerate(rows) if r["_key"] is None and r["status"] is None]
     for k in rng_x.choice(plain, int(len(rows) * 0.012), replace=False):
         r = dict(rows[int(k)])
-        r.update(status="CANC", completed_date=None, labour_hours=0.0, _key=None,
+        r.update(status="CANC", completed_date=None, labour_hours=0.0, _key=None, _parent=None,
                  description=["Raised in error", "Superseded by planned outage work", "No access - rebooked",
                               "Duplicate of earlier work order", "Raised against wrong asset", "Combined with outage work",
                               "No outage available, rebooked"][int(rng_x.integers(7))])
@@ -834,11 +788,27 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
         else:
             review = 1 + float(rng_x.gamma(1.6, 7.0))
             r["status"] = "CLOSE" if done + dt.timedelta(days=review) <= W.ASOF else "COMP"
+    # the day each work order went into EAM: planned work is generated on its due date, while a call-out is often
+    # written up the next morning and a fault found on a visit keyed in back at the depot; a follow-up or a duplicate
+    # goes in after the work order it refers to
+    rng_n = np.random.default_rng([W.SEED, 30, 10])
+    late = {"EM": (0.35, 1, 3), "CM": (0.15, 1, 6), "MOD": (0.1, 1, 11), "LOG": (0.1, 1, 4), "INSP": (0.04, 1, 4)}
+    for r in rows:
+        p, a, b = late.get(r["work_type"], (0.0, 0, 1))
+        e = r["reported_date"]
+        if a and rng_n.random() < p:
+            e = S.add_bdays(e, int(rng_n.integers(a, b)))
+        r["_entry"] = e if e <= W.ASOF else r["reported_date"]
+    entry_of = {r["_key"]: r["_entry"] for r in rows if r["_key"] is not None}
+    for r in rows:
+        if r.get("_parent") is not None:
+            pe = entry_of[r["_parent"]]
+            r["_entry"] = pe if r["status"] == "CANC" else max(r["_entry"], pe)
     wo = pd.DataFrame(rows)
     wo = wo[wo["reported_date"] <= W.ASOF]
-    wo = wo.sort_values(["reported_date", "sub_code", "asset_id", "_after", "work_type", "status", "description"],
+    wo = wo.sort_values(["_entry", "reported_date", "sub_code", "asset_id", "_after", "work_type", "status", "description"],
                         kind="mergesort").reset_index(drop=True)
-    # EAM work-order numbers run in raise order and are shared with the lines and metering crews
+    # EAM work-order numbers run in the order work goes in and are shared with the lines and metering crews
     n, nums = 2104000, []
     for _ in range(len(wo)):
         n += int(rng_x.geometric(0.28)) + (int(rng_x.integers(20, 300)) if rng_x.random() < 0.004 else 0)
@@ -862,10 +832,33 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq):
     return wo[cols], keymap
 
 
-def module_history(sp, keymap, fits, yearonly):
+def ewaste_plan(prog, reg):
+    """each station rebuild's retired equipment leaves for the e-waste processor a few weeks after the last cutover,
+    under the processor's manifest"""
+    re_ = np.random.default_rng([W.SEED, 48])
+    order = ["VPR-340", "VPR-220", "NX-5", "KDR-30", "AT-7", "RT-400", "NX-9", "RT-600"]
+    out = []
+    for sc, days in sorted((s, d) for s, d in zip(prog["sub_code"], prog["cut_days"]) if isinstance(d, list)):
+        gone = reg[(reg["sub_code"] == sc) & (reg["status"] == "RETIRED")]
+        gone = gone[[isinstance(x, dt.date) and days[0] <= x <= days[-1] for x in gone["retired_date"]]]
+        counts = [(m, int((gone["model"] == m).sum())) for m in order if (gone["model"] == m).any()]
+        d = S.add_bdays(days[-1], int(re_.integers(5, 26)))
+        manifest = "EW%02d-%04d" % (d.year % 100, int((d - dt.date(d.year, 1, 1)).days * 2.6) + int(re_.integers(10, 60)))
+        out.append(dict(sub=sc, date=d, manifest=manifest, counts=counts))
+    return out
+
+
+RETURNS = {"North Depot": "NORTH DEPOT RETURNS", "Central Stores (Barrie Road)": "CENTRAL STORES RETURNS",
+           "South Depot": "SOUTH DEPOT RETURNS"}
+
+
+def module_history(sp, keymap, fits, yearonly, subs, sub_of, manifests):
     """EAM rotating-item installation history for VPR340-PSU-02: every module in a VPR-340 position since the
     go-live (modules in place at go-live were loaded with the fitted date the legacy system held, which for the
-    oldest relays was sometimes only the year, loaded as 1 July)"""
+    oldest relays was sometimes only the year, loaded as 1 July). A failed module goes to the returns shelf of the
+    store that serves the station; a module still in a relay retired by a station rebuild went for scrap with it."""
+    cur = dict(zip(subs["sub_code"], subs["region"]))
+    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
     h = sp[(sp["removed"].isna()) | (sp["removed"] >= GOLIVE)].copy()
     h["removal_wo"] = [keymap.get(("F", int(k), int(m)), "") if r == "FAILED" else keymap.get(("R", int(k)), "") if r == "RETIRED"
                        else "" for k, m, r in zip(h["relay_key"], h["module"], h["reason"])]
@@ -884,11 +877,23 @@ def module_history(sp, keymap, fits, yearonly):
     h["removal_reason"] = [{"FAILED": "FAILED", "RETIRED": "ASSET RETIRED"}.get(r, "") if isinstance(r, str) else "" for r in h["reason"]]
     h["record_source"] = ["GO-LIVE LOAD" if f < GOLIVE else "EAM" for f in h["fitted"]]
     h["item_code"] = "VPR340-PSU-02"
+    to, ref = [], []
+    for k, r, d in zip(h["relay_key"], h["reason"], h["removed"]):
+        s = sub_of[int(k)]
+        if r == "FAILED":
+            to.append(RETURNS[W.store_for(cur[s], leg[s], d)])
+            ref.append("")
+        elif r == "RETIRED":
+            to.append("SCRAP")
+            ref.append(manifests[s])
+        else:
+            to.append("")
+            ref.append("")
     out = pd.DataFrame(dict(serial_no=h["serial"], item_code=h["item_code"], asset_id=h["asset_id"],
                             fitted_date=h["fitted_shown"], fitting_wo=h["fitting_wo"],
                             removed_date=[None if (r is None or pd.isna(r)) else r for r in h["removed"]],
-                            removal_reason=h["removal_reason"], removal_wo=h["removal_wo"],
-                            record_source=h["record_source"]))
+                            removal_reason=h["removal_reason"], removal_wo=h["removal_wo"], removed_to=to,
+                            disposal_ref=ref, record_source=h["record_source"]))
     return out.sort_values(["asset_id", "fitted_date"], kind="mergesort").reset_index(drop=True)
 
 
@@ -915,13 +920,14 @@ def stock(n_open):
 
 
 SERVICE_NOTES = {
-    "REPAIRED": ["Electrolytic caps and fan replaced, load tested", "Caps C12-C19 and fan replaced, 4 h burn-in OK",
-                 "Bulk caps bulging, replaced with fan", "Fan seized, caps replaced, tested OK", "Replaced caps, fan, output fuse",
-                 "Caps and fan replaced", "Output stage repaired, caps and fan replaced", "", ""],
+    "REPAIRED": ["Electrolytic caps replaced, load tested", "Caps C12-C19 replaced, 4 h burn-in OK", "Bulk caps bulging, replaced",
+                 "Input fuse open, fuse and bulk caps replaced", "DC-DC converter stage replaced, caps replaced",
+                 "Supervision relay K1 replaced, caps replaced", "Output stage repaired, caps replaced",
+                 "Replaced caps, input fuse, output connector", "DC-DC stage and caps replaced, full-load test OK", "", ""],
     "NO FAULT FOUND": ["NFF on bench, 24 h burn-in OK", "No fault found, returned", "Tested at full load, no fault"],
     "BEYOND ECONOMIC REPAIR": ["Board burnt, BER, credit issued", "Transformer failed, not economic, scrapped",
-                               "PCB delaminated, BER", "BER, scrapped at customer's request"],
-    "OPEN": ["In repair", "Awaiting caps", "On bench", "", ""],
+                               "PCB delaminated, BER", "BER, scrapped at customer's request", "Input stage burnt, BER"],
+    "OPEN": ["In repair", "Awaiting caps", "On bench", "Awaiting DC-DC module", "", ""],
     "SCRAPPED (SB-15-02)": ["Returned under SB-15-02, scrapped", "SB-15-02 exchange, credit issued", "SB-15-02 return"],
 }
 
@@ -959,7 +965,16 @@ def rma_log(ships, keymap):
             refs.append("" if rr.random() < 0.08 else ("SB-15-02 / " + r.ref if r.kind == "SB" and rr.random() < 0.5 else r.ref))
         y = r.received.year
         cust.append("Tarrock Hydro" if y < 2019 else ("TARROCK HYDRO DIST" if rr.random() < 0.04 else "Tarrock Hydro Distribution"))
-    notes = [SERVICE_NOTES[res][int(rr.integers(len(SERVICE_NOTES[res])))] for res in s["result"]]
+    # a module back within a year of its last repair is repaired under Veldtek's repair warranty
+    notes, last = [], {}
+    for r, num in zip(s.itertuples(), nums):
+        note = SERVICE_NOTES[r.result][int(rr.integers(len(SERVICE_NOTES[r.result])))]
+        prev = last.get(r.serial)
+        if prev is not None and (r.received - prev[0]).days <= 365 and r.kind != "SB":
+            note = ("Warranty, ref %s. %s" % (prev[1], note)).strip() if note else "Warranty, ref %s" % prev[1]
+        if isinstance(r.returned, dt.date):
+            last[r.serial] = (r.returned, num)
+        notes.append(note)
     return pd.DataFrame(dict(rma_no=nums, part_no="VPR340-PSU-02", serial_no=s["serial"], customer=cust, customer_ref=refs,
                              received=s["received"], result=s["result"], returned=s["returned"], notes=notes))
 

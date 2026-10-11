@@ -67,10 +67,12 @@ def utc(t):
 
 
 def candidates(sp):
-    """modules fitted as replacements before the go-live and still in place at it (their legacy date is loaded)"""
+    """modules fitted as replacements before the go-live and still in place at it (their legacy date is loaded), built
+    at least two months before they went in"""
     rem = sp["removed"]
     return sp[(sp["module"] > 0) & (sp["fitted"] < W.MIGRATION)
-              & (rem.isna() | rem.map(lambda d: d is not None and not isinstance(d, float) and d >= W.MIGRATION))].index.tolist()
+              & (rem.isna() | rem.map(lambda d: d is not None and not isinstance(d, float) and d >= W.MIGRATION))
+              & np.array([(f - m).days >= 62 for f, m in zip(sp["fitted"], sp["made"])])].index.tolist()
 
 
 def simulate():
@@ -79,7 +81,8 @@ def simulate():
     fl = S.fleet(rng, subs)
     prog, extra = S.programme(rng, fl, subs)
     fl, prog = S.cutovers(subs, fl, prog)
-    sp, f = S.modules(rng, fl, prog)
+    sp, f, ret, relay_mfg = S.modules(rng, fl, prog, subs)
+    fl = fl.assign(mfg=relay_mfg)
     # rounding knob: the legacy fitted date of a module that was already a replacement at go-live, moved a month
     # (a service-bulletin fit stays on a working day in its new month)
     cand = candidates(sp)
@@ -92,40 +95,43 @@ def simulate():
         if sp.at[i - 1, "reason"] == "CAMPAIGN" and not S.is_bday(nd):
             nd = S.bday_like(adj, nd)
         sp.at[i, "fitted"] = nd
-    return rng, subs, fl, prog, extra, sp, f
+    return rng, subs, fl, prog, extra, sp, f, ret
 
 
-def build(out):
+def build(out, docs=True):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    rng, subs, fl, prog, extra, sp, f = simulate()
+    rng, subs, fl, prog, extra, sp, f, ret = simulate()
     rng2 = np.random.default_rng(W.SEED + 1)
     p = lambda k: os.path.join(out, FILES[k])
 
     plan = X.bay_plan(fl, prog)
-    reg, key2aid, relay_mfg, yearonly = X.register(rng2, subs, fl, prog, plan)
-    reg.to_csv(p("register"), index=False)
-    eq = X.equipment(subs, reg)
-    region = dict(zip(subs["sub_code"], subs["region"]))
+    relay_mfg = {int(k): m for k, m in zip(fl["relay_key"], fl["mfg"])}
+    reg, key2aid, yearonly, created_of = X.register(rng2, subs, fl, prog, plan, relay_mfg)
+    X.write_csv(reg, p("register"))
+    eq = X.equipment(subs, reg, created_of)
     sub_of = {int(k): s for k, s in zip(fl["relay_key"], fl["sub_code"])}
-    depot_of = {k: X.STORES[region[s]] for k, s in sub_of.items()}
-    sp2, ships = X.psu_cycle(sp, f, key2aid, relay_mfg, sub_of, depot_of)
+    sp2, ships = X.psu_cycle(sp, ret, key2aid)
     fits = X.refit_plan(f, sp)
     rebuilt = set(prog["sub_code"][prog["cut_days"].map(lambda d: isinstance(d, list))])
-    wo, keymap = X.work_orders(subs, reg, f, sp2, ships, rebuilt, fits, eq)
-    wo.to_csv(p("wo"), index=False)
-    X.module_history(sp2, keymap, fits, yearonly).to_csv(p("hist"), index=False)
-    subs[["sub_code", "sub_name", "region", "legacy_region", "station_type"]].to_csv(p("subs"), index=False)
+    ewaste = X.ewaste_plan(prog, reg)
+    wo, keymap = X.work_orders(subs, reg, f, sp2, ships, rebuilt, fits, eq, ewaste)
+    X.write_csv(wo, p("wo"), decimals={"labour_hours": 2})
+    X.write_csv(X.module_history(sp2, keymap, fits, yearonly, subs, sub_of, {e["sub"]: e["manifest"] for e in ewaste}), p("hist"))
+    X.write_csv(subs[["sub_code", "sub_name", "region", "legacy_region", "station_type"]], p("subs"))
     rma = X.rma_log(ships, keymap)
-    X.stock(int((rma["result"] == "OPEN").sum())).to_csv(p("stock"), index=False)
+    X.write_csv(X.stock(int((rma["result"] == "OPEN").sum())), p("stock"), decimals={"unit_cost_cad": 2})
     X.rma_xlsx(p("rma"), rma)
     D.programme_xlsx(p("prog"), np.random.default_rng(W.SEED + 4), prog, subs, reg, plan)
-    D.eol_pdf(p("eol"))
-    D.procedure_docx(p("procedure"))
+    if docs:
+        D.eol_pdf(p("eol"))
+        D.procedure_docx(p("procedure"))
     D.dictionary_txt(p("dictionary"))
     Q.trip_operations_csv(p("trips"), np.random.default_rng(W.SEED + 2), reg)
     Q.test_compliance_xlsx(p("compliance"), reg, subs, wo)
+    if not docs:
+        return subs, fl, prog, sp, f, reg, wo
 
     for k, fn in FILES.items():
         path = p(k)

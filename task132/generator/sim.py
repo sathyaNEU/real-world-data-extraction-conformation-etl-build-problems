@@ -13,31 +13,35 @@ import pandas as pd
 
 import world as W
 
-ROOTS = ["Alder", "Amber", "Arrow", "Aspen", "Barrow", "Beech", "Bell", "Birch", "Black", "Bram", "Brant", "Briar",
-         "Brock", "Camden", "Cedar", "Clay", "Clear", "Cold", "Corn", "Cran", "Crow", "Deer", "Elder", "Elk", "Elm",
-         "Fair", "Fern", "Fish", "Flint", "Fox", "Glen", "Gold", "Green", "Grey", "Hart", "Hazel", "Heath", "Hemlock",
-         "Heron", "High", "Holly", "Juniper", "Kettle", "King", "Lark", "Laurel", "Long", "Maple", "Marl", "Mead",
-         "Mill", "Moss", "Oak", "Otter", "Owl", "Pine", "Plum", "Quarry", "Rain", "Raven", "Red", "Reed", "Rock",
-         "Rose", "Rush", "Sable", "Salt", "Sand", "Silver", "Slate", "Spruce", "Stag", "Still", "Stone", "Swan",
-         "Thorn", "Wolf", "Wren", "Ashby", "Carden", "Farley", "Ingle", "Pember", "Strath", "Kil", "Dun", "Bal",
-         "Gar", "Lyn", "Mal", "Tal", "Wel", "Win", "Hal", "Coll", "Car", "Bran", "Tam", "Wil", "Ash", "Pell",
-         "Stan", "Shel", "Har", "Lang", "Mor", "Nor", "Rad", "Sel", "Ter", "Wal", "Whit", "Yar", "Brad", "Dal",
-         "Ken", "Lin", "Sum", "Ald", "Bur", "Cal", "Fal", "Hol", "Ran", "Tor", "Val", "War", "Bel", "Dor", "Gran",
-         "Kel", "Mid", "Nash", "Ox", "Pen", "Rich", "Sher", "Stam", "Tew", "Up", "Wend", "Ather", "Bex", "Chat",
-         "Dray", "Edge", "From", "Gil", "Hep", "Ips", "Kirk", "Lox", "Mere", "Ney", "Ock", "Pol", "Rye", "Sap"]
-FRAGMENTS = {"Kil", "Dun", "Bal", "Gar", "Lyn", "Mal", "Tal", "Wel", "Win", "Hal", "Coll", "Car", "Bran", "Tam",
-             "Wil", "Pell", "Stan", "Shel", "Har", "Lang", "Mor", "Nor", "Rad", "Sel", "Ter", "Wal", "Whit", "Yar",
-             "Brad", "Dal", "Ken", "Lin", "Sum", "Ald", "Bur", "Cal", "Fal", "Hol", "Ran", "Tor", "Val", "War", "Bel",
-             "Dor", "Gran", "Kel", "Mid", "Nash", "Ox", "Pen", "Rich", "Sher", "Stam", "Tew", "Up", "Wend", "Ather",
-             "Bex", "Chat", "Dray", "Edge", "From", "Gil", "Hep", "Ips", "Kirk", "Lox", "Mere", "Ney", "Ock", "Pol",
-             "Rye", "Sap", "Strath", "Ingle", "Pember", "Carden", "Farley", "Ashby"}
-SUFFIX = ["ford", "field", "ton", "ville", "wood", "dale", "brook", "burn", "by", "ham", "mere", "more", "stead",
-          "well", "worth", "bury", "cliff", "croft", "gate", "haven", "hurst", "ley", "mount", "port", "side",
-          "view", " Creek", " Falls", " Hill", " Junction", " Lake", " Mills", " Point", " River", " Road"]
+# station names in the Ontario mix: surnames and roads the stations were named for, English, Scottish and French
+# localities, and Indigenous-derived names, all invented for Tarrock's service area
+SURNAMES = ["Tamblyn", "Garrow", "Lattimer", "Brodie", "McVean", "Pennock", "Ruttan", "Sproule", "Thackery", "Stinson",
+            "Kerrigan", "Dowling", "Gibbard", "Hurlbut", "Lockhart", "Marwood", "Nesbitt", "Prentice", "Quinlan",
+            "Rennick", "Tolton", "Varcoe", "Whitlock", "Yeoman", "Bellamy", "Carscadden", "Doupe", "Ellerby", "Fawcett",
+            "Gilchrist", "Hamill", "Jardine", "Mallory", "Oakes", "Purdy", "Rorke", "Treleaven", "Vandusen", "Wardrop",
+            "Yardley", "Fairbairn", "Goodfellow", "Jessop", "Kinnear", "Lusk", "Pattinson", "Mulvihill", "Tweedie",
+            "Urquhart", "Vokes", "Allingham", "Corrigan", "Grier", "Kearney", "McAlpine", "Pugsley", "Ritchie", "Wylie",
+            "Hagarty", "Ostrander", "Ferrier", "Brebner"]
+STREETS = [("", 0.42), (" Road", 0.16), (" Line", 0.1), (" Street", 0.07), (" Corners", 0.1), (" Mills", 0.07),
+           (" Junction", 0.05), (" Sideroad", 0.03)]
+ENGLISH = ["Tamarack Corners", "Sumac Heights", "Basswood Falls", "Hemlock Station", "Juniper Point", "Poplar Junction",
+           "Clover Mills", "Hawthorn Ridge", "Briarcrest", "Marl Heights", "Cedarbank", "Ashlea", "Hollycrest",
+           "Sprucemount", "Pinecroft", "Maplecrest", "Stonecroft", "Clayfield", "Churchview", "Northmount", "Highcroft",
+           "Fairlea", "Bramblewood", "Thornbank", "Rushbrook", "Oakcrest"]
+SCOTTISH = ["Glenvarra", "Dunmairn", "Kilmarra", "Balnacree", "Invercarrick", "Strathcorran", "Ardmorran", "Lochvane",
+            "Torbrae", "Kinlarig", "Auchenlee", "Rossmara", "Craigellan", "Kintallan", "Glenardie", "Dunallen",
+            "Balcarran", "Ardcarron", "Lochardie", "Benvarrow", "Glen Tavish"]
+FRENCH = ["Beaumarais", "Bellerive", "Boisclair", "Montbrun", "Ch\u00eanevert", "Pointe-Verdure", "Lac-Brunet",
+          "Rivi\u00e8re-Sauvage", "Val-Ombre", "Coteau-Vert", "Pr\u00e9-Fontaine", "Lacroix Line", "Beaucourt", "Clairval",
+          "Boisjoli", "Lafreni\u00e8re Road", "Pointe-aux-Saules", "Lac-Sauv\u00e9", "Rivi\u00e8re-aux-Pins", "Belle-Prairie",
+          "C\u00f4te-Rouge", "Fontbrune"]
+INDIGENOUS = ["Ossawin Creek", "Wanatami Road", "Minnetaga", "Opekona Bay", "Mishawana", "Wapasaga", "Kabeshing",
+              "Nibawin Point", "Kawanaki", "Waskeda", "Pemachi"]
 CURRENT_REGIONS = ["North", "Central", "South"]
 PLAN_LAST = dt.date(2035, 10, 1)       # last autumn outage window inside the programme period
+PLAN_FIRST = dt.date(2026, 10, 1)      # first commissioning month the approved 2026 program can still plan
+PLAN_25_FIRST = dt.date(2026, 4, 1)    # first month a 2025-plan scheme could be moved back to
 LEGACY_REGIONS = ["Lakeshore", "Ridge", "Valley", "Harbour"]
-SB_CUTOFF = dt.date(1998, 1, 1)
 SEASON = np.array([0.3, 0.3, 0.6, 1.4, 1.6, 1.3, 0.5, 0.5, 1.3, 1.6, 1.3, 0.3])   # outage windows, Jan..Dec
 
 
@@ -160,30 +164,19 @@ def bday_like(rng, d):
     return pick_bday(rng, dt.date(d.year, d.month, 2), month_add(m, 1) - dt.timedelta(days=1))
 
 
-def _name(rng, used_root, suffix_n):
-    while True:
-        r = ROOTS[int(rng.integers(len(ROOTS)))]
-        s = SUFFIX[int(rng.integers(len(SUFFIX)))]
-        if r in used_root or suffix_n.get(s, 0) >= 6:
-            continue
-        t = s.strip().lower()
-        if s[0] == " " and r in FRAGMENTS:
-            continue
-        if s[0] != " " and r in FRAGMENTS and r in ("Ashby", "Carden", "Farley", "Ingle", "Pember", "Strath"):
-            continue
-        if r.lower()[-1] == t[0] or r.lower().endswith(t[:2]) or (r.lower() + t) in ("kington", "newton", "oxford", "brantford", "langford", "whitmore", "shelby", "deerfield", "radcliff"):
-            continue
-        used_root.add(r)
-        suffix_n[s] = suffix_n.get(s, 0) + 1
-        return r + s
+def station_names():
+    """every station's name, from a stream of its own"""
+    rn = np.random.default_rng([W.SEED, 60])
+    w = np.array([p for _, p in STREETS])
+    out = [s + STREETS[int(rn.choice(len(STREETS), p=w / w.sum()))][0] for s in SURNAMES]
+    out += ENGLISH + SCOTTISH + FRENCH + INDIGENOUS
+    assert len(out) == W.N_SUBS and len(set(out)) == len(out), (len(out), len(set(out)))
+    rn.shuffle(out)
+    return out
 
 
 def substations(rng):
-    used, sn, names = set(), {}, []
-    while len(names) < W.N_SUBS:
-        n = _name(rng, used, sn)
-        if n not in names:
-            names.append(n)
+    names = station_names()
     kinds = ["TS"] * W.N_TS + ["DS"] * (W.N_SUBS - W.N_TS)
     rng.shuffle(kinds)
     rows, nts, nds = [], 0, 0
@@ -211,19 +204,22 @@ def _install_day(rng, y, m):
 
 
 def fleet(rng, subs):
-    """VPR-340 relays, one per feeder bay: station campaigns 1992-2018, then feeders added later.
-    Campaign bays are numbered first, added bays after them."""
+    """VPR-340 relays, one per feeder bay: station campaigns 1992-2018, then feeders added later. Campaign bays are
+    numbered first, added bays after them. A distribution station carries three to ten VPR-340 feeders; the
+    transformer stations carry the rest."""
     yrs = np.arange(1992, 2019)
     w = 0.85 * np.exp(-0.5 * ((yrs - 2008) / 5.0) ** 2)
     w = w / w.sum() * 0.85 + (yrs <= 2000) * (0.15 / (yrs <= 2000).sum())
     w = w / w.sum()
-    ts = subs[subs["station_type"] == "TS"].sample(n=12, random_state=int(rng.integers(1e9)))
-    ds = subs[subs["station_type"] == "DS"].sample(n=106, random_state=int(rng.integers(1e9)))
+    ts = subs[subs["station_type"] == "TS"].sample(n=W.TS_HOSTS, random_state=int(rng.integers(1e9)))
+    ds = subs[subs["station_type"] == "DS"].sample(n=W.DS_HOSTS, random_state=int(rng.integers(1e9)))
     host = pd.concat([ts, ds]).sort_values("sub_code")
-    base = np.where(host["station_type"] == "TS", 9, 3)
-    extra = W.N_RELAY - int(base.sum())
-    weights = np.where(host["station_type"] == "TS", 2.2, 1.0)
-    counts = base + rng.multinomial(extra, weights / weights.sum())
+    is_ts = (host["station_type"] == "TS").to_numpy()
+    counts = np.zeros(len(host), dtype=int)
+    counts[~is_ts] = 3 + rng.binomial(7, 0.55, int((~is_ts).sum()))
+    rest = W.N_RELAY - int(counts.sum()) - 14 * int(is_ts.sum())
+    share = rng.gamma(6.0, 1.0, int(is_ts.sum()))
+    counts[is_ts] = 14 + rng.multinomial(rest, share / share.sum())
     rows, rid = [], 0
     adj = np.random.default_rng([W.SEED, 7])
     for (_, s), c in zip(host.iterrows(), counts):
@@ -240,7 +236,7 @@ def fleet(rng, subs):
             inst.append(_install_day(rng, y, m))
         inst.sort()
         # the date each relay went in, on a working day counted from the same first day of a month; the drawn date
-        # (install_raw) stays behind for the world's own ordering, so the stations' programme order is unchanged
+        # (install_raw) stays behind for the world's own ordering
         moved = sorted(bday_like(adj, d) for d in inst)
         for j, (d0, d) in enumerate(zip(inst, moved)):
             rid += 1
@@ -261,8 +257,9 @@ def programme(rng, fl, subs):
     rest = [i for i in np.argsort(order) if not early[i]]
     unscheduled = set(rest[-9:])
     sched_idx = [i for i in rest if i not in unscheduled]
-    # commissioning months: 2027-2035, about a dozen a year, mostly in the spring and autumn outage windows
-    months = months_between(dt.date(2027, 1, 1), dt.date(2036, 1, 1))
+    # commissioning months: from the autumn 2026 outage window to 2035, about a dozen a year, mostly in the spring and
+    # autumn windows
+    months = months_between(PLAN_FIRST, dt.date(2036, 1, 1))
     mw = np.array([SEASON[m.month - 1] for m in months])
     picks = np.sort(rng.choice(len(months), len(sched_idx), replace=True, p=mw / mw.sum()))
     when = {i: months[p] for i, p in zip(sched_idx, picks)}
@@ -297,18 +294,19 @@ def programme(rng, fl, subs):
     movable = [i for i in range(n) if p25[i] is not None]
     for i in rng.choice(movable, 23, replace=False):
         shift = int(rng.integers(6, 31)) * (1 if rng.random() < 0.8 else -1)
-        # a deferral past the period is held at the last autumn outage window inside it
-        p25[i] = min(PLAN_LAST, max(dt.date(2027, 1, 1), month_add(p25[i], -shift)))
+        # a deferral past the period is held at the last autumn outage window inside it; the 2025 plan reached back to
+        # the spring 2026 window
+        p25[i] = min(PLAN_LAST, max(PLAN_25_FIRST, month_add(p25[i], -shift)))
     prog["plan_2025"] = p25
-    # the first draft of the schemes at stations with no VPR-340: its draws stay in the world's stream so the module
-    # simulation is unchanged, and the schemes themselves are now chosen from the register (docs.other_schemes)
+    # the first draft of the schemes at stations with no VPR-340: its draws stay in the world's stream, and the schemes
+    # themselves are chosen from the register (docs.other_schemes)
     others = subs[~subs["sub_code"].isin(host["sub_code"])]
     pick = others.sample(n=17, random_state=int(rng.integers(1e9)))
     extra = []
     for _, s in pick.iterrows():
         m = months[int(rng.choice(len(months), p=mw / mw.sum()))]
         m25 = m if rng.random() < 0.8 else month_add(m, -int(rng.integers(6, 19)))
-        extra.append(dict(sub_code=s.sub_code, plan_2026=m, plan_2025=max(dt.date(2027, 1, 1), m25)))
+        extra.append(dict(sub_code=s.sub_code, plan_2026=m, plan_2025=max(PLAN_25_FIRST, m25)))
     return prog, pd.DataFrame(extra)
 
 
@@ -370,45 +368,181 @@ def support_end(prog_row, bay):
     return prog_row["plan_2026"]
 
 
-def modules(rng, fl, prog):
+class Returns:
+    """Failed modules Tarrock sends to Veldtek under RMA once Veldtek's register is running, and the modules SB-15-02
+    took out. A failed module waits at its store for the next shipment; two waiting at the same store within a couple
+    of weeks often go in one box. Veldtek repairs a module, finds no fault or scraps it; a repaired module is back on
+    the stores shelf a few days after Veldtek ships it, and the stores issue it to the next job that needs a spare.
+    A box Veldtek has not received by its last save of the register before the count is still at the store."""
+
+    def __init__(self):
+        self.recs = []
+        self.boxes = {}          # box number -> records
+        self.open_boxes = []     # boxes not yet shipped
+        self.shelf = []          # [date on the shelf, (relay_key, module)] repaired modules not yet issued
+        self.made = {}           # (relay_key, module) -> build date of that module
+
+    def _box(self, recs):
+        b = len(self.boxes)
+        self.boxes[b] = recs
+        for r in recs:
+            r["box"] = b
+        self.open_boxes.append(b)
+
+    def failed(self, rec, rr):
+        """a failed module removed on rec['removed']: sent to Veldtek or not, its shipping date, its box"""
+        if rr.random() > (0.5 if rec["kind"] == "LEGACY" else 0.55):
+            return
+        u = rr.random()
+        lag = (int(rr.integers(2, 9)) if u < 0.55 else int(rr.integers(9, 19)) if u < 0.82 else
+               int(rr.integers(19, 46)) if u < 0.95 else int(rr.integers(46, 111)))
+        rec["ship"] = add_bdays(rec["removed"], lag)
+        if rec["kind"] == "LEGACY" and rec["ship"] >= W.CUTOVER_HOLD:
+            rec["ship"] = add_bdays(dt.date(2021, 1, 4), int(rr.integers(0, 9)))
+        self.recs.append(rec)
+        if rec["kind"] == "EAM":
+            # a module still waiting at the same store, due out within the next two weeks, may wait for this one
+            for b in sorted(self.open_boxes, key=lambda b: (self.boxes[b][0]["ship"], b)):
+                a = self.boxes[b]
+                if (len(a) == 1 and a[0]["kind"] == "EAM" and a[0]["store"] == rec["store"]
+                        and a[0]["ship"] >= rec["removed"] and 0 <= (rec["ship"] - a[0]["ship"]).days <= 14):
+                    if rr.random() < 0.5:
+                        a[0]["ship"] = rec["ship"]
+                        a.append(rec)
+                        rec["box"] = b
+                        return
+                    break
+        self._box([rec])
+
+    def bulletin(self, recs, ship):
+        for r in recs:
+            r["ship"] = ship
+            self.recs.append(r)
+        if recs:
+            self._box(recs)
+
+    def ship_before(self, day):
+        """every box that left before `day`: received, assessed and, if repaired, back on the shelf"""
+        for b in [b for b in self.open_boxes if self.boxes[b][0]["ship"] < day]:
+            self.open_boxes.remove(b)
+            recs = self.boxes[b]
+            rb = np.random.default_rng([W.SEED, 22, b])
+            ship = max(r["ship"] for r in recs)
+            lag = int(rb.integers(1, 4)) if rb.random() < 0.85 else int(rb.integers(4, 10))
+            recv = add_bdays(ship, lag)
+            for r in recs:
+                r["ship"], r["received"] = ship, recv
+                r["held"] = recv > W.REG_SAVED
+                if r["held"]:
+                    r["result"], r["returned"] = None, None
+                    continue
+                if r["kind"] == "SB":
+                    r["result"], r["returned"] = "SCRAPPED (SB-15-02)", None
+                    continue
+                rm = np.random.default_rng([W.SEED, 23, r["relay_key"], r["module"]])
+                evald = add_bdays(recv, int(rm.integers(4, 13)))
+                u = rm.random()
+                res = "REPAIRED" if u < 0.77 else ("NO FAULT FOUND" if u < 0.82 else "BEYOND ECONOMIC REPAIR")
+                if res == "NO FAULT FOUND":
+                    t = int(rm.integers(5, 19))
+                else:
+                    v = rm.random()
+                    t = int(rm.integers(14, 33)) if v < 0.7 else int(rm.integers(32, 61)) if v < 0.92 else int(rm.integers(60, 121))
+                    if recv.year >= 2026:
+                        t = int(t * 1.25)
+                back = None if res == "BEYOND ECONOMIC REPAIR" else add_bdays(recv, t)
+                if evald > W.REG_SAVED or (back is not None and back > W.REG_SAVED):
+                    res, back = "OPEN", None
+                r["result"], r["returned"] = res, back
+                if back is not None:
+                    self.shelf.append([add_bdays(back, int(rm.integers(1, 6))), (r["relay_key"], r["module"])])
+
+    def issue(self, day, rr):
+        """the module the stores issue for a job on `day`: the repaired module longest on the shelf (most jobs), or
+        a module from new stock"""
+        ready = sorted(s for s in self.shelf if s[0] <= day)
+        if ready and rr.random() < 0.85:
+            self.shelf.remove(ready[0])
+            return ready[0][1]
+        return None
+
+
+def modules(rng, fl, prog, subs):
     """Every PSU module fitted to a VPR-340 position from installation to the extract date.
 
-    Each month a module in service on the first day fails with probability hazard(age + 0.5) / 12. The
-    corrective work completes 0 to 6 days later (emergency work the same day), and the module fitted then is
-    in service from the next first day of a month."""
-    keys = fl["relay_key"].tolist()
+    Each month a module in service on the first day fails with the chance W.p_month gives for its age, its months in
+    service and whether it came back from repair. The corrective work completes 0 to 6 days later (emergency work the
+    same day), and the module fitted then is in service from the next first day of a month. Returns the module spells,
+    the failures, the RMA flow, and each relay's build date."""
+    keys = [int(k) for k in fl["relay_key"]]
     inst = fl["install"].tolist()
-    inst_raw = fl["install_raw"].tolist()
     stop = [d if isinstance(d, dt.date) else None for d in fl["retire"]]
+    sub_of = fl["sub_code"].tolist()
+    cur = dict(zip(subs["sub_code"], subs["region"]))
+    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
     n = len(keys)
+    # each relay's build date (some sat in stores a year or more before they went in) and its first module's
+    relay_mfg, made = [], []
+    for i in range(n):
+        r = np.random.default_rng([W.SEED, 50, keys[i]])
+        lag = int(r.integers(*W.HELD_LAG)) if r.random() < 0.13 else int(r.integers(*W.MFG_LAG))
+        relay_mfg.append(inst[i] - dt.timedelta(days=lag))
+        made.append(relay_mfg[i] - dt.timedelta(days=int(r.integers(7, 45))))
     fitted = list(inst)
-    fitted_raw = list(inst_raw)          # the drawn dates, for the bulletin's eligibility tests
     live_from = [first_month(d) for d in inst]
-    spells, fails = [], []
     serial = [0] * n
-    # Veldtek service bulletin SB-15-02 (2015): PSU modules in relays installed before 1998 replaced, station by station
-    # the station's month in the bulletin campaign is the drawn one; the swap is dated on a working day counted from
+    repaired = [False] * n
+    origin = [None] * n
+    spells, fails = [], []
+    ret = Returns()
+    for i in range(n):
+        ret.made[(keys[i], 0)] = made[i]
+
+    def store(i, d):
+        return W.store_for(cur[sub_of[i]], leg[sub_of[i]], d)
+
+    def close_spell(i, removed, reason):
+        spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=removed, reason=reason,
+                           made=made[i], repaired=repaired[i], origin=origin[i]))
+
+    # Veldtek service bulletin SB-15-02 (2015): modules with date codes 91 to 97 replaced, station by station; the
+    # station's month in the bulletin campaign is the drawn one, and the swap is dated on a working day counted from
     # the same first day of a month
     when = {}
-    for s_ in sorted(set(fl["sub_code"])):
+    for s_ in sorted(set(sub_of)):
         when[s_] = weekday(rng, dt.date(2015, int(rng.integers(4, 12)), int(rng.integers(1, 29))), 0)
     adj = np.random.default_rng([W.SEED, 8])
     camp = {s_: bday_like(adj, when[s_]) for s_ in sorted(when)}
+    sb_ship = {}
     for m in months_between(dt.date(1992, 1, 1), dt.date(2026, 10, 1)):
         if m.year == 2015:
+            out = {}
             for i in range(n):
-                c0, c = when[fl["sub_code"].iat[i]], camp[fl["sub_code"].iat[i]]
-                if (c0.year, c0.month) == (m.year, m.month) and inst_raw[i] < SB_CUTOFF and live_from[i] <= m and fitted_raw[i] < dt.date(2011, 1, 1):
-                    spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=c, reason="CAMPAIGN"))
+                c0, c = when[sub_of[i]], camp[sub_of[i]]
+                if ((c0.year, c0.month) == (m.year, m.month) and live_from[i] <= m and made[i].year <= W.SB_LAST_CODE
+                        and (stop[i] is None or m < first_month(stop[i]))):
+                    close_spell(i, c, "CAMPAIGN")
+                    rs = np.random.default_rng([W.SEED, 21, keys[i], serial[i]])
+                    if rs.random() < 0.86:
+                        out.setdefault(sub_of[i], []).append(dict(kind="SB", relay_key=keys[i], module=serial[i],
+                                                                  removed=c, reported=c, store=store(i, c)))
                     serial[i] += 1
-                    fitted[i], fitted_raw[i] = c, c0
+                    fitted[i] = c
                     live_from[i] = first_month(c)
+                    made[i] = c - dt.timedelta(days=int(rs.integers(30, 160)))     # built for the bulletin
+                    repaired[i], origin[i] = False, None
+                    ret.made[(keys[i], serial[i])] = made[i]
+            for s_ in sorted(out):
+                k = sorted(when).index(s_)
+                sb_ship[s_] = add_bdays(camp[s_], int(np.random.default_rng([W.SEED, 21, 9, k]).integers(12, 40)))
+                ret.bulletin(out[s_], sb_ship[s_])
         idx = [i for i in range(n) if live_from[i] <= m and (stop[i] is None or m < first_month(stop[i]))]
         if not idx:
             continue
-        ages = np.array([age_on(fitted[i], m) for i in idx])
-        p = np.array([W.hazard(a + 0.5) for a in ages]) / 12.0
+        ages = [age_on(fitted[i], m) for i in idx]
+        p = np.array([W.p_month(a, mindex(m) - mindex(live_from[i]), repaired[i]) for a, i in zip(ages, idx)])
         hit = rng.random(len(idx)) < p
+        month = []
         for j in np.where(hit)[0]:
             i = idx[j]
             rep = dt.date(m.year, m.month, int(rng.integers(2, 29)))
@@ -417,15 +551,31 @@ def modules(rng, fl, prog):
             done = min(rep + dt.timedelta(days=0 if em else int(rng.integers(1, 7))), eom, W.ASOF)
             if stop[i] is not None and done >= stop[i]:
                 continue                                   # station rebuilt before the repair: no record
-            fails.append(dict(relay_key=keys[i], reported=rep, month=m, age=int(ages[j]), em=em, done=done,
-                              module=serial[i]))
-            spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=done, reason="FAILED"))
+            month.append((done, keys[i], i, rep, em, int(ages[j])))
+        for done, _, i, rep, em, age in sorted(month):
+            ret.ship_before(done)
+            fails.append(dict(relay_key=keys[i], reported=rep, month=m, age=age, em=em, done=done, module=serial[i],
+                              repaired=repaired[i]))
+            close_spell(i, done, "FAILED")
+            if done >= W.RMA_START:
+                ret.failed(dict(kind="EAM" if m >= W.MIGRATION else "LEGACY", relay_key=keys[i], module=serial[i],
+                                removed=done, reported=rep, store=store(i, done)),
+                           np.random.default_rng([W.SEED, 21, keys[i], serial[i]]))
+            rr = np.random.default_rng([W.SEED, 24, keys[i], serial[i] + 1])
+            src = ret.issue(done, rr)
             serial[i] += 1
-            fitted[i] = fitted_raw[i] = done
+            fitted[i] = done
             live_from[i] = first_month(done)
+            if src is None:
+                made[i] = done - dt.timedelta(days=int(rr.integers(45, 900)))      # from new stock
+                repaired[i], origin[i] = False, None
+            else:
+                made[i] = ret.made[src]
+                repaired[i], origin[i] = True, src
+            ret.made[(keys[i], serial[i])] = made[i]
+    ret.ship_before(dt.date(2100, 1, 1))
     for i in range(n):
-        spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i],
-                           removed=stop[i], reason="RETIRED" if stop[i] else None))
+        close_spell(i, stop[i], "RETIRED" if stop[i] else None)
     f = pd.DataFrame(fails)
     sp = pd.DataFrame(spells).sort_values(["relay_key", "module"], kind="mergesort").reset_index(drop=True)
-    return sp, f
+    return sp, f, ret, relay_mfg
