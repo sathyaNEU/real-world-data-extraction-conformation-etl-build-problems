@@ -2,8 +2,8 @@
  "task": "task182",
  "domain": "physical-environmental-sciences",
  "objective": "anomaly-detection",
- "stage": 6,
- "stage_name": "solver round 1: leak and duplicate checks passed",
+ "stage": "6b",
+ "stage_name": "post-round repair of the reader's deferred realism notes (fresh agent), then the determinism judge",
  "updated": "2026-10-11",
  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the ridge basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2019 to 2021 wet seasons, were drawn 8.2 to 9.3 m below where that rise was taking them while showing 2.21 to 2.49 m of decline.",
  "architecture": 1,
@@ -24,7 +24,22 @@
   "decisive_step": "analytical",
   "analyst_test": "the decline since the baseline (or against the reference bores, or on one rainfall window) designates the alluvial bores and the basalt bore; only each bore's own climate response run forward finds the coal-measure bores"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 35.0,
+   "landed": false,
+   "cracked": 0,
+   "items": 5,
+   "round": "1",
+   "architecture": "1",
+   "decision": "pass",
+   "left_ladder": "the coal-measures counterfactual: it took KV-LB16, a far-field coal-measures landholder bore the mine itself draws down 2.4 m, as an unaffected control (pre-take regression with lags of a few months), which understated the coal-measure declines by about 3.5 m (LB04 5.1, LB05 5.5, LB07 4.9, LB10 4.8 against 8.9, 9.3, 8.4, 8.2) and dropped LB07 and LB10 under the 5 m trigger; set {LB04, LB05, LB12}, 2 offers",
+   "classification": "analytical: every level and change since baseline exact (Layer 1 handled), the miss is the choice of counterfactual for the coal measures",
+   "for_the_judge": "the solver wrote that the rainfall file could not reproduce the hydrographs and that nothing says whether KV-LB16 is outside the predicted drawdown; the judge checks the rainfall-response fit and that the LB16-as-control reading is ruled out"
+  }
+ ],
  "judge": {},
  "approved": false,
  "delivered": "",
