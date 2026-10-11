@@ -1,0 +1,87 @@
+{
+  "task": "task133",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "Forecasting block, second build of the wave; seed FC04 (station maturity ramp) not used: its forward-maturity driver repeats the age-forward structure of task132 drawn the same day, so the slot keeps the objective and draws a fresh world",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "expected-credit-loss-provisioning",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a non-bank consumer lender's quarter-end expected credit loss allowance on its unsecured personal loan book, built from the model team's cumulative default curve by months on book, the staging rule and the scenario weights",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "stated_rule_hard_construction",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:seasoning-conditional-lifetime-pd",
+  "layer1": [
+    "a loan book extract with origination and first-repayment dates rather than months on book",
+    "a hardship register joined by loan number, with arrangements that start, end and are cancelled",
+    "behaviour scores at origination and now on different scorecard versions with a mapping table",
+    "a default curve file with one curve per product and a model version stamp",
+    "scenario multipliers and weights in a committee-approved workbook",
+    "an outcomes history the model was developed on, which the allowance does not use"
+  ],
+  "context_artifact": "filed_model",
+  "stakeholder_role": "head of credit risk reporting at a consumer lender, who presents the quarter-end ECL allowance to the Audit and Risk Committee",
+  "role_family": "finance_controller",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "personal_loan_book_2026-09-30.csv",
+    "rows": 0,
+    "entity": "one performing unsecured personal loan at the reporting date",
+    "grain": "loan at reporting date",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "period_close",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "Australia, New South Wales",
+    "currency": "AUD",
+    "org_type": "non-bank consumer lender with an unsecured personal loan book",
+    "invented_names": [
+      "Bellbird Personal Finance",
+      "PL36",
+      "PL60"
+    ],
+    "people": [
+      "Matthew Gardner",
+      "Stephanie Manning",
+      "Joseph Mitchell"
+    ]
+  },
+  "deliverables": [
+    "ecl_allowance_2026Q3.xlsx",
+    "arc_ecl_q3_2026.pptx"
+  ],
+  "opening_move": "number-first",
+  "driver": "A cumulative outcome curve is filed from each unit's entry, and every unit in scope has already survived part of it, so its forward probability is the curve's remaining increments divided by its own survival to date; reading the curve from entry for every unit overstates the total, and shifting it to the unit's age without the division understates it.",
+  "driver_concrete": "The model team's cumulative PD curve runs from origination by months on book, so a performing loan at month a carries marginal PDs (C(a+k) - C(a+k-1)) / (1 - C(a)); reading the curve from month 1 for every loan's remaining term books about 23 per cent too much, and shifting it by months on book without the survival division books about 8 per cent too little.",
+  "stump": "A competent solver applies the cumulative PD curve to each loan's remaining months counted from the reporting date as if it were a term structure, books an allowance about 23 per cent high; the step that lands it there is reading a curve indexed by months on book as if every performing loan were new.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task132": "task132 estimates a rate whose exposure must start where the outcome records start; here the rate curve is filed and correct, and the construction is applying it to units that have already survived part of it.",
+    "task130": "task130 runs a closed group off a rationed list; here nothing is rationed and no group closes: each loan's forward loss is a survival-conditioned share of a filed curve."
+  },
+  "lineage": [],
+  "notes": "Forcing event: the 30 September 2026 quarter close. Gate G forecasting repeats task132 by design: both builds sit in the Forecasting block; the mechanisms differ (task132 an exposure window in a rate, task133 conditioning a lifetime curve on survival to date)."
+}
