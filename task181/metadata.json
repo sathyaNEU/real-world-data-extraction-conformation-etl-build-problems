@@ -1,0 +1,141 @@
+{
+  "task": "task181",
+  "title": "Which local government area the pertussis response team goes to this week, off a line list whose areas reach the unit through laboratories of different speed",
+  "domain": "Epidemiology & Public Health",
+  "subdomain": "disease surveillance and outbreak anomaly detection (a regional public health unit's pertussis notifications across inland New South Wales)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "17 (periods around a change point): each area's 14-day count against its expected count, plus the school clusters and a ten-area quarterly table of five measures",
+  "as_of": "2026-10-05",
+  "deliverables": [
+    "response_team_brief.pptx",
+    "pertussis_cases_by_lga.csv"
+  ],
+  "distractor_files": [
+    "influenza_notifications_2026.csv",
+    "cd_weekly_report_2026_wk35.pdf"
+  ],
+  "input_gates": {
+    "files": 11,
+    "formats": [
+      "csv",
+      "md",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "antenatal_vaccinations_2019-2026.parquet",
+    "largest_file_rows": 35724
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task181/generator/build.py (seeded, deterministic) around a fictional public health unit (Southern Inland Public Health Unit), a fictional private pathology network (Inland Pathology) and fictional schools, with real New South Wales local government areas, postcodes, public holidays and ICD-10-AM codes; no real person, case, school or laboratory result is depicted.",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task181/generator/build.py",
+  "files": [
+    {
+      "path": "PR-07_pertussis_response_protocol.pdf",
+      "format": "pdf",
+      "bytes": 6716,
+      "rows": null,
+      "source": "Constructed: PR-07 Pertussis response protocol, version 3.1 (effective 2 March 2026)",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "antenatal_vaccinations_2019-2026.parquet",
+      "format": "parquet",
+      "bytes": 822042,
+      "rows": 35724,
+      "source": "Constructed: Antenatal vaccination register: vaccines recorded in pregnancy for women in the district since 2019",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "birth_records_2024-2026.csv",
+      "format": "csv",
+      "bytes": 522036,
+      "rows": 5983,
+      "source": "Constructed: Maternity units' birth records, 1 January 2024 to 30 September 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cd_weekly_report_2026_wk35.pdf",
+      "format": "pdf",
+      "bytes": 3794,
+      "rows": null,
+      "source": "Constructed: The unit's communicable diseases weekly report for week 35 (24 to 30 August 2026)",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "influenza_notifications_2026.csv",
+      "format": "csv",
+      "bytes": 240928,
+      "rows": 1476,
+      "source": "Constructed: State notifiable conditions system: the unit's influenza notifications received in 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pertussis_extract_run_20261005.txt",
+      "format": "txt",
+      "bytes": 1198,
+      "rows": null,
+      "source": "Constructed: State system run report for the 07:00 extract of 5 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pertussis_line_list_notes.md",
+      "format": "md",
+      "bytes": 3273,
+      "rows": null,
+      "source": "Constructed: Surveillance field notes for the pertussis line list and the linked follow-up files",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pertussis_notifications_2019-2026.csv",
+      "format": "csv",
+      "bytes": 193135,
+      "rows": 1118,
+      "source": "Constructed: State notifiable conditions system: the unit's daily pertussis line-list extract, every notification received 1 January 2019 to 07:00 AEDT 5 October 2026, one row per laboratory notification",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "postcode_lga_concordance.xlsx",
+      "format": "xlsx",
+      "bytes": 8571,
+      "rows": null,
+      "source": "Constructed: The unit's residential postcode to LGA lookup (2021 Census correspondence ratios) and area populations",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "respiratory_admissions_2019-2026.csv",
+      "format": "csv",
+      "bytes": 4395303,
+      "rows": 29036,
+      "source": "Constructed: Patient administration system extract: inpatient episodes with a principal respiratory diagnosis at the district's hospitals, 1 January 2019 to 4 October 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "school_rosters_term3_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 105918,
+      "rows": null,
+      "source": "Constructed: School enrolment rosters received during follow-up in term 3 2026, one sheet per school, names removed",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
