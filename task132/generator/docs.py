@@ -146,39 +146,58 @@ def procedure_docx(path):
         for c, v in enumerate(row):
             _cell(t.rows[r].cells[c], v, bold=c in (0, 2))
     _p(d, "", after=2)
-    sections = [
+    head = [
         ("1. Purpose",
          ["When a manufacturer withdraws a replaceable module of a protection relay we place one last-time buy, and "
           "failed modules are replaced from that buy for as long as the relays stay in service. This procedure sets how "
-          "the buy is sized so that the relays can be kept running until the Protection Renewal Programme replaces them."]),
+          "the buy is sized so that the relays can be kept running until the Protection Renewal Program replaces them."]),
         ("2. Scope",
          ["Replaceable modules of protection relays and controllers that are covered by a manufacturer's end-of-life "
           "notice and are tracked as rotating items in EAM. Whole-relay spares are held under AM-PC-009 and are not "
           "sized here."]),
-        ("3. Definitions",
-         ["Module age: the age of a module in completed years on the first day of a month, counted from the date it was "
-          "fitted to the relay as recorded in the EAM rotating-item history.",
-          "In service: a module counts as in service for a month if it is fitted to a relay in service on the first day "
-          "of that month.",
-          "Lot: the manufacturer's minimum order quantity stated in the end-of-life notice."]),
+    ]
+    for h, paras in head:
+        _p(d, h, style="Heading 2", after=3)
+        for tx in paras:
+            _p(d, tx, after=5)
+    _p(d, "3. Definitions", style="Heading 2", after=3)
+    defs = [("Fitted date", "The date the module was fitted to the relay, as recorded in the EAM rotating-item history."),
+            ("Module age", "Completed years from the fitted date to the first day of the month."),
+            ("In service", "A module is in service for a month if it is fitted to a relay that is in service on the first "
+                           "day of that month."),
+            ("Module-month", "One module in service for one month. Twelve module-months make a module-year."),
+            ("Failure rate", "Module failures per module-year in an age band (5.3)."),
+            ("Monthly failure rate", "The failure rate of the band divided by twelve."),
+            ("Lot", "The manufacturer's minimum order quantity stated in the end-of-life notice."),
+            ("Stock count date", "The date of the stores count used for the sizing (9.3).")]
+    t = d.add_table(rows=1, cols=2)
+    t.style = "Table Grid"
+    _cell(t.rows[0].cells[0], "Term", bold=True)
+    _cell(t.rows[0].cells[1], "Meaning in this procedure", bold=True)
+    for k, v in defs:
+        cells = t.add_row().cells
+        _cell(cells[0], k)
+        _cell(cells[1], v)
+    _p(d, "", after=2)
+    sections = [
         ("4. Support period",
-         ["4.1 A relay is supported from the stock count date until the scheme that replaces it is commissioned. Use the "
-          "approved Protection Renewal Programme current at the stock count date. Where a scheme is built in stages, the "
-          "relay's bay decides which stage replaces it. A relay is counted for every month up to, but not including, the "
-          "commissioning month of the scheme or stage that replaces its bay.",
-          "4.2 A relay at a substation with no scheme in the programme period is supported to the end of the programme "
-          "period (December 2035 in the 2026 programme)."]),
+         ["4.1 A relay is supported from the stock count date until the scheme that replaces it is commissioned, as set "
+          "in the approved Protection Renewal Program current at the stock count date. Where a scheme is built in "
+          "stages, the stage that lists the relay's bay is the one that replaces it. A relay is counted for every month "
+          "up to, but not including, the commissioning month of that scheme or stage.",
+          "4.2 A relay at a substation with no scheme in the program period is supported to the end of the program "
+          "period (December 2035 in the 2026 program)."]),
         ("5. Failure rates",
          ["5.1 Module failures are corrective work orders (work type CM or EM) on a relay of the type concerned whose "
           "failed component is the module, with status COMP or CLOSE. Cancelled work orders and logistics work orders "
           "(work type LOG) are not failures.",
-          "5.2 Failure rates are set by module age band: 0 to 9, 10 to 14, 15 to 19, 20 to 24, and 25 years and over."
-          " A failure takes the age of the failed module on the first day of the month in which the work order was "
-          "reported.",
+          "5.2 Rates are set for module age bands of 0 to 9, 10 to 14, 15 to 19, 20 to 24, and 25 years and over. Each "
+          "failure is counted in the band of the failed module's age on the first day of the month in which its work "
+          "order was reported.",
           "5.3 The failure rate for a band is the number of module failures in the work-order history in the band divided "
           "by the module-years in service in the band, counted in module-months."]),
         ("6. Expected failures",
-         ["6.1 A module in service for a month is expected to fail its band rate divided by twelve times in that month.",
+         ["6.1 Each month a module is in service it is expected to fail at the monthly failure rate of its band.",
           "6.2 Expected failures over the support period are the band rates applied to the module-months expected in each "
           "band, counted for every supported relay from the stock count date to the end of its support."]),
         ("7. Available modules",
@@ -189,8 +208,8 @@ def procedure_docx(path):
          ["8.1 Module demand over the support period is treated as Poisson with mean equal to the expected failures.",
           "8.2 Buy the smallest whole number of lots for which the probability that available modules plus the buy cover "
           "all demand over the support period is at least 95 per cent.",
-          "8.3 The sizing goes to the Director, Asset Management for signature with the lot count, the cover it gives, the "
-          "expected failures by year and the cost."]),
+          "8.3 The signed sizing goes to Purchasing with the requisition. Purchasing places the order under SC-PR-07 and "
+          "files the manufacturer's acknowledgement with the sizing (10)."]),
         ("9. Roles",
          ["9.1 The Manager, P&C Asset Planning owns this procedure, prepares the sizing when an end-of-life notice is "
           "received and submits it for signature.",
@@ -204,13 +223,13 @@ def procedure_docx(path):
         ("11. Related documents",
          ["AM-PC-009 Protection relay spares holdings",
           "P&C Standard 3.2 Protection relay maintenance and testing",
-          "Protection Renewal Programme, approved version",
+          "Protection Renewal Program, approved version",
           "SC-PR-07 Purchasing: last-time buys and single-source items"]),
     ]
-    for head, paras in sections:
-        _p(d, head, style="Heading 2", after=3)
+    for h, paras in sections:
+        _p(d, h, style="Heading 2", after=3)
         for tx in paras:
-            _p(d, tx, after=5 if not head.startswith("11.") else 1)
+            _p(d, tx, after=5 if not h.startswith("11.") else 1)
     _p(d, "Approval", style="Heading 2", after=3)
     t = d.add_table(rows=1, cols=4)
     t.style = "Table Grid"
@@ -232,13 +251,14 @@ def procedure_docx(path):
                 ("2", "Mar 2022", "EAM work orders become the failure source after the January 2021 go-live."),
                 ("3", "Jun 2023", "Poisson cover test replaces the 20 per cent contingency."),
                 ("4", "Apr 2026", "Rates by module age from the EAM rotating-item history; support by bay for the staged "
-                                  "schemes of the approved 2026 programme; roles, records and approval added.")):
+                                  "schemes of the approved 2026 program; definitions, roles, records and approval added.")):
         cells = t.add_row().cells
         for c, v in enumerate(row):
             _cell(cells[c], v)
     _widths(d.tables[0], (3.0, 5.0, 3.0, 5.0))
-    _widths(d.tables[1], (2.4, 4.0, 6.0, 3.6))
-    _widths(d.tables[2], (1.2, 2.4, 12.4))
+    _widths(d.tables[1], (3.6, 12.4))
+    _widths(d.tables[2], (2.4, 4.0, 6.0, 3.6))
+    _widths(d.tables[3], (1.2, 2.4, 12.4))
     _footer(d, "AM-PC-014 rev 4    Uncontrolled when printed")
     d.save(path)
 
@@ -248,18 +268,19 @@ def eol_pdf(path):
     _p(d, "VELDTEK PROTECTION SYSTEMS INC.", bold=True, size=11, after=0)
     _p(d, "Lifecycle Services  \u00b7  88 Cardinal Gate, Unit 4, Mississauga ON  L5T 2W8", size=8, after=10)
     _p(d, "Product end-of-life notice EOL-2026-07", style="Heading 1", after=2)
-    _p(d, "20 August 2026", after=10)
+    _p(d, "August 20, 2026", after=10)
     _p(d, "To: customers operating VPR-340 feeder protection relays", after=2)
     _p(d, "Re: VPR340-PSU-02 power supply module, last-time buy and end of repair", bold=True, after=8)
     body = [
         "The VPR-340 relay was withdrawn from sale in 2018. Its power supply module, part VPR340-PSU-02, depends on "
         "components that our suppliers have now discontinued, and we will build one final production run.",
-        "Last-time-buy orders for VPR340-PSU-02 must reach us by 15 December 2026. Modules are sold in lots of 25 at "
-        "CAD 1,965.00 per module (CAD 49,125.00 per lot), delivery by 31 March 2027. No orders are accepted after the "
+        "Last-time-buy orders for VPR340-PSU-02 must reach us by December 15, 2026. Modules are sold in lots of 25 at "
+        "CAD 1,965.00 per module (CAD 49,125.00 per lot), delivery by March 31, 2027. No orders are accepted after the "
         "final run.",
-        "Repair service for VPR340-PSU-02 ends on 15 December 2026. Modules already at our repair centre under an open "
-        "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. Modules "
-        "received after 15 December 2026 will be sent back unrepaired.",
+        "Repair service for VPR340-PSU-02 ends on December 15, 2026. Modules already at our repair centre under an open "
+        "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. A repair "
+        "replaces the module's electrolytic capacitors and fan and ends with a full-load test. Modules received after "
+        "December 15, 2026 will be sent back unrepaired.",
     ]
     for tx in body:
         _p(d, tx, after=6)
@@ -267,9 +288,9 @@ def eol_pdf(path):
     t.style = "Table Grid"
     for c, v in enumerate(("Key dates", "")):
         _cell(t.rows[0].cells[c], v, bold=True, size=9.5)
-    for k, v in (("Notice issued", "20 August 2026"), ("Last day for last-time-buy orders", "15 December 2026"),
-                 ("Last day for RMA receipts at the repair centre", "15 December 2026"),
-                 ("Final shipment of last-time-buy orders", "By 31 March 2027")):
+    for k, v in (("Notice issued", "August 20, 2026"), ("Last day for last-time-buy orders", "December 15, 2026"),
+                 ("Last day for RMA receipts at the repair centre", "December 15, 2026"),
+                 ("Final shipment of last-time-buy orders", "By March 31, 2027")):
         cells = t.add_row().cells
         _cell(cells[0], k, size=9.5)
         _cell(cells[1], v, size=9.5)
@@ -298,11 +319,20 @@ SCOPE_S1 = ["Stage 1: feeder protection %s, new control building", "Stage 1: rep
 SCOPE_S2 = ["Stage 2: feeder protection %s, RTU cutover", "Stage 2: replace feeder relays %s", "Stage 2: P&C panels %s, decommission old building"]
 SCOPE_VPR220 = ["Replace VPR-220 feeder protection %s", "Replace VPR-220 relays %s, new DC system",
                 "VPR-220 feeder relay replacement %s, panel rewiring"]
+# the wording the 2025 planning version used before the schemes were scoped in detail
+SCOPE_25 = ["Replace VPR-340 feeder relays %s", "VPR-340 feeder protection replacement %s", "Feeder relay replacement %s",
+            "Replace feeder protection %s, new panels"]
+NOT_IN_PERIOD = "Not in program period"
+
+
+def _dd(x):
+    return x if isinstance(x, dt.date) else None
 
 
 def other_schemes(rng, prog, reg):
     """Schemes at stations without VPR-340: the feeder bays still on VPR-220 relays and RTUs installed before 2009,
-    the oldest equipment first; the stations whose equipment is youngest wait beyond the period"""
+    the oldest equipment first; the stations whose equipment is youngest wait beyond the period. A few schemes came
+    into the program with the 2026 approval, and two RTU-only schemes left it for the SCADA upgrade program."""
     hosts = set(prog["sub_code"])
     live = reg[(reg["status"] == "IN SERVICE") & ~reg["sub_code"].isin(hosts)]
     rows = []
@@ -325,40 +355,81 @@ def other_schemes(rng, prog, reg):
         if m is not None and rng.random() < 0.2:
             m = max(dt.date(2027, 1, 1), S.month_add(m, -int(rng.integers(6, 19))))
         rows[i]["plan_2025"] = m
+        rows[i]["in_2025"], rows[i]["in_2026"] = True, True
+    rx = np.random.default_rng([W.SEED, 46])
+    sched = [i for i, r in enumerate(rows) if r["plan_2026"] is not None]
+    for i in rx.choice(sched, 3, replace=False):
+        rows[int(i)]["in_2025"] = False
+    rtu_only = [i for i in sched if not rows[i]["bays"] and rows[i]["in_2025"]]
+    for i in rx.choice(rtu_only, min(2, len(rtu_only)), replace=False):
+        rows[int(i)]["in_2026"] = False
     return rows
 
 
 def _schemes(rng, prog, extra):
-    """stable scheme numbers: given when a scheme first entered the programme, so they do not follow the dates"""
+    """stable scheme numbers: given when a scheme first entered the program, so they do not follow the dates"""
     keys = sorted(list(prog["sub_code"][prog["retired_on"].isna()]) + [r["sub_code"] for r in extra])
     perm = rng.permutation(len(keys))
     return {k: "PRP-%03d" % (11 + 2 * int(p) + int(rng.integers(0, 2))) for k, p in zip(keys, perm)}
 
 
-def programme_xlsx(path, rng, prog, subs, reg):
+def programme_xlsx(path, rng, prog, subs, reg, plan):
     wb = openpyxl.Workbook()
     names = dict(zip(subs["sub_code"], subs["sub_name"]))
     region = dict(zip(subs["sub_code"], subs["region"]))
     extra = other_schemes(rng, prog, reg)
     ids = _schemes(rng, prog, extra)
     pick = {k: int(rng.integers(0, 1000)) for k in ids}
+    rx = np.random.default_rng([W.SEED, 45])
+    host = prog[prog["retired_on"].isna()]
+    unsched = sorted(host["sub_code"][host["plan_2026"].isna()])
+    # two schemes the 2025 plan still had in the period were deferred beyond it by the 2026 approval
+    autumn = [m for m in S.months_between(dt.date(2031, 1, 1), dt.date(2036, 1, 1)) if m.month in (9, 10, 11)]
+    deferred = {str(sc): autumn[int(rx.integers(len(autumn)))] for sc in rx.choice(unsched, 2, replace=False)}
+    same_text = {k: rx.random() < 0.45 for k in sorted(ids)}
+
+    def host_rows(version):
+        out = []
+        for _, r in host.iterrows():
+            sc, k = r.sub_code, pick[r.sub_code]
+            nv = int(r.last_bay[1:])
+            bp = plan.get(sc, dict(vpr220=0, spare=0))
+            if version == 2025:
+                when = _dd(r["plan_2025"]) or deferred.get(sc)
+                if when is None:
+                    continue
+                whole = "%s-%s" % (r.first_bay, r.last_bay)
+                txt = (SCOPE_ONE[k % len(SCOPE_ONE)] if same_text[sc] and not bp["vpr220"] and not bp["spare"]
+                       else SCOPE_25[k % len(SCOPE_25)]) % whole
+                out.append((when, ids[sc], "", sc, whole, txt))
+                continue
+            last = nv + bp["vpr220"] + bp["spare"]
+            note = ""
+            if bp["vpr220"]:
+                note = " (VPR-220 feeders F%02d-F%02d)" % (nv + 1, nv + bp["vpr220"])
+            elif bp["spare"]:
+                note = ", spare bay F%02d fitted out" % last
+            when = _dd(r["plan_2026"])
+            if isinstance(r["stage2_from"], str):
+                cut = int(r["stage2_from"][1:])
+                b1, b2 = "%s-F%02d" % (r.first_bay, cut - 1), "%s-F%02d" % (r["stage2_from"], last)
+                out.append((when, ids[sc], 1, sc, b1, SCOPE_S1[k % len(SCOPE_S1)] % b1))
+                out.append((_dd(r["plan_2026_s2"]), ids[sc], 2, sc, b2, SCOPE_S2[k % len(SCOPE_S2)] % b2 + note))
+            else:
+                whole = "%s-F%02d" % (r.first_bay, last)
+                sid = ids[sc] if (when is not None or sc in deferred) else ""
+                out.append((when, sid, "", sc, whole, SCOPE_ONE[k % len(SCOPE_ONE)] % whole + note))
+        return out
 
     def rows_for(version):
-        out = []
-        for _, r in prog[prog["retired_on"].isna()].iterrows():
-            sc, k = r.sub_code, pick[r.sub_code]
-            whole = "%s-%s" % (r.first_bay, r.last_bay)
-            when = r["plan_2026"] if version == 2026 else r["plan_2025"]
-            if version == 2026 and isinstance(r["stage2_from"], str):
-                cut = int(r["stage2_from"][1:])
-                b1, b2 = "%s-F%02d" % (r.first_bay, cut - 1), "%s-%s" % (r["stage2_from"], r.last_bay)
-                out.append((when, ids[sc], 1, sc, b1, SCOPE_S1[k % len(SCOPE_S1)] % b1))
-                out.append((r["plan_2026_s2"], ids[sc], 2, sc, b2, SCOPE_S2[k % len(SCOPE_S2)] % b2))
-            else:
-                out.append((when, ids[sc] if when is not None else "", "", sc, whole, SCOPE_ONE[k % len(SCOPE_ONE)] % whole))
+        out = host_rows(version)
         for r in extra:
+            if not r["in_%d" % version]:
+                continue
             sc, k = r["sub_code"], pick[r["sub_code"]]
             when = r["plan_2026"] if version == 2026 else r["plan_2025"]
+            if version == 2025 and when is None:
+                continue
             if r["bays"]:
                 bays = _bay_list(r["bays"])
                 scope = SCOPE_VPR220[k % len(SCOPE_VPR220)] % (bays + (" and RTU" if r["rtu"] else ""))
@@ -381,33 +452,43 @@ def programme_xlsx(path, rng, prog, subs, reg):
             ws.cell(row=3, column=j).fill = PatternFill("solid", fgColor="E3E9F2")
         for when, sid, stage, sc, bays, scope in rows_for(version):
             ws.append([sid or None, stage or None, sc, names[sc], region[sc], bays, scope,
-                       dt.datetime(when.year, when.month, 1) if when is not None else "Not in programme period"])
+                       dt.datetime(when.year, when.month, 1) if when is not None else NOT_IN_PERIOD])
             c = ws.cell(row=ws.max_row, column=8)
             if when is not None:
                 c.number_format = "mmm yyyy"
             c.alignment = Alignment(horizontal="left")
-        for j, w in enumerate([10, 7, 15, 20, 10, 16, 58, 22], 1):
+        for j, w in enumerate([10, 7, 15, 20, 10, 16, 64, 22], 1):
             ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
         ws.freeze_panes = "A4"
         ws.auto_filter.ref = "A3:H%d" % ws.max_row
 
     ws = wb.active
     ws.title = "Approved 2026"
-    sheet(ws, 2026, "Protection Renewal Programme 2026-2035, approved by the Board 19 March 2026 (resolution 2026-07)")
+    sheet(ws, 2026, "Protection Renewal Program 2026-2035, approved by the Board 19 March 2026 (resolution 2026-07)")
     ws2 = wb.create_sheet("2025 plan (superseded)")
-    sheet(ws2, 2025, "Protection Renewal Programme, 2025 planning version (superseded by the approved 2026 programme)")
+    sheet(ws2, 2025, "Protection Renewal Program, 2025 planning version (superseded by the approved 2026 program)")
     ws3 = wb.create_sheet("Notes")
     notes = [
-        "Commissioning month is the month the new protection for the listed bays goes into service. The relays in those "
-        "bays come out of service in the same month.",
-        "Large stations are built in two outage stages. Each stage lists the bays it replaces.",
+        "Program management notes, P&C Asset Planning. The program is approved by the Board each March with the capital "
+        "budget; the approved version replaces the planning version of the year before.",
+        "Funding: P&C renewal line of the capital plan. A scheme is released to detailed design about eighteen months "
+        "before its commissioning month, and its material is ordered at release.",
+        "Outage windows: most commissioning is planned in the spring (April to June) and autumn (September to November) "
+        "windows, clear of the summer and winter peaks. Winter work is limited to stations with a full back-feed.",
+        "Staging: large stations are rebuilt in two outage stages, so that half the feeders stay on the existing "
+        "protection while the other half is cut over. Each stage replaces the bays it lists.",
+        "Commissioning month: the month the new protection for the listed bays is commissioned. The relays in a "
+        "commissioned bay are out of service from the first day of the commissioning month.",
+        "Bays: a scheme lists every feeder bay its new panels serve, including spare bays and feeders on other relay "
+        "types at the same station.",
+        "Scheme numbers are assigned when a scheme first enters the program and do not change between versions. "
+        "RTU-only schemes moved to the SCADA upgrade program in 2026 are no longer listed here.",
         "Stations rebuilt under the 2022-2025 station renewals are complete and are not listed.",
-        "Stations marked 'Not in programme period' keep their existing protection beyond December 2035.",
-        "Scheme numbers are assigned when a scheme first enters the programme and do not change between versions.",
+        "Schedule questions: Kurt Allison, Senior Asset Engineer, P&C.",
     ]
     for i, t in enumerate(notes, 1):
-        ws3.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True)
-    ws3.column_dimensions["A"].width = 110
+        ws3.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
+    ws3.column_dimensions["A"].width = 112
     wb.save(path)
 
 
@@ -426,14 +507,22 @@ def _bay_list(bays):
 
 def dictionary_txt(path):
     txt = """TARROCK HYDRO DISTRIBUTION
-EAM reporting service - monthly P&C asset and work extract (job PC_ASSET_WO_MONTHLY)
-Run 2026-10-01 06:10, data to close of business 2026-09-30
+EAM reporting service - P&C extracts, field descriptions
+
+Job PC_ASSET_WO_MONTHLY (scheduled, first working day of the month)
+  Run 2026-10-01 06:10, data to close of business 2026-09-30
+  protection_asset_register_2026-09-30.csv, eam_work_orders_protection_2021-01_2026-09.csv, substations.csv
+
+Extracts for the VPR340-PSU-02 final-buy sizing (run on request by KALLISON, Senior Asset Engineer, P&C)
+  spares_stock_2026-09-30.csv                     inventory balance after the stores count, run 2026-09-30 17:25
+  psu_rotating_item_history_2021-01_2026-09.csv   rotating-item history for item VPR340-PSU-02, run 2026-10-01 09:41
 
 General
   The EAM went live on 1 January 2021, replacing the legacy maintenance system. Assets in service at go-live,
   and the rotating items fitted to them, were loaded from the legacy lists. Work orders raised before go-live
   were archived with the legacy system and are not in EAM. Assets retired before go-live are not in EAM.
-  Operating regions were reorganised on 1 April 2024 (four regions to three); crews were renamed at the same time.
+  Legacy dates held only as a year were loaded as 1 July of that year.
+  Operating regions were reorganized on 1 April 2024 (four regions to three); crews were renamed at the same time.
   Dates are local (Eastern). Blank means no value.
 
 protection_asset_register_2026-09-30.csv  (one row per asset)
@@ -445,31 +534,24 @@ protection_asset_register_2026-09-30.csv  (one row per asset)
   install_date      date placed in service (legacy list date for assets loaded at go-live)
   status            IN SERVICE or RETIRED
   retired_date      date taken out of service
-  region            region on the asset record when it was created (not updated by the 2024 reorganisation)
+  region            region on the asset record when it was created (not updated by the 2024 reorganization)
 
-psu_rotating_item_history_2021-01_2026-09.csv  (item VPR340-PSU-02, one row per module per installation)
-  serial_no         module serial number; a module repaired by the manufacturer keeps its serial
-  asset_id          relay the module is or was fitted to
-  fitted_date       date fitted to that relay (legacy fitted date for modules loaded at go-live)
-  fitting_wo        work order the module was fitted under (blank for go-live loads)
-  removed_date      date removed (blank while fitted)
-  removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
-  removal_wo        work order the module was removed under
-  record_source     GO-LIVE LOAD or EAM
-
-eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order)
+eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
+assets, station DC systems, breaker trip circuits and instrument transformers, and P&C station inspections)
   wo_number         work-order number (shared numbering with lines and metering work)
-  reported_date     date raised
+  reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
   completed_date    date completed (blank while open or cancelled)
   work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
                     MOD modification (settings, firmware, device replacement or station rebuild cutover),
                     LOG logistics (shipping and returns)
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
-  asset_id          blank for station-level inspections
+  asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
+                    blank for station inspections
   sub_code, region  region at the date raised
-  failed_component  recorded by the crew on corrective and logistics work: PSU power supply, CPU processor,
-                    IO input/output card, DISP display, COMMS communications card (blank when no fault was found)
-  description       crew text
+  failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
+                    returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
+                    COMMS communications card (blank otherwise, including no fault found and follow-up work)
+  description       crew text; planned work carries the job plan title, with the crew's remarks after it
   crew              crew lead's crew
   labour_hours      hours booked, including travel
 
@@ -477,9 +559,27 @@ substations.csv
   sub_code, sub_name, region (from 1 April 2024), legacy_region (before 1 April 2024),
   station_type (TS transformer station, DS distribution station)
 
-spares_stock_2026-09-30.csv  (stores count at close of business 2026-09-30)
+spares_stock_2026-09-30.csv  (one row per item, location and stock state at close of business 2026-09-30)
+  item_no           EAM item number
+  item_code         item code; for an item tracked by serial, the rotating-item code
+  item_description  item description
+  location          storeroom or depot, or the manufacturer's repair centre
+  bin               bin location (blank at the repair centre)
   stock_state       SERVICEABLE on the shelf; QUARANTINE awaiting bench test (returned from site or recovered
                     from a station rebuild); AT REPAIR at the manufacturer under an open RMA
+  uom               unit of issue (EA each)
+  quantity          quantity in that state at the count
   unit_cost_cad     moving average cost
+
+psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installation)
+  serial_no         module serial number; a module repaired by the manufacturer keeps its serial
+  item_code         rotating-item code (VPR340-PSU-02)
+  asset_id          relay the module is or was fitted to
+  fitted_date       date fitted to that relay (legacy fitted date for modules loaded at go-live)
+  fitting_wo        work order the module was fitted under (blank for go-live loads)
+  removed_date      date removed (blank while fitted)
+  removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
+  removal_wo        work order the module was removed under
+  record_source     GO-LIVE LOAD or EAM
 """
     open(path, "w").write(txt)

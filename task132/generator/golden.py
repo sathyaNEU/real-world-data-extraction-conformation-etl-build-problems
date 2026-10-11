@@ -120,14 +120,15 @@ def workbook(s, path):
     ws = wb.create_sheet("Notes")
     notes = [
         "Failures: corrective (CM, EM) work orders on VPR-340 relays with failed component PSU, status COMP or CLOSE (AM-PC-014 5.1). "
-        "Each failure takes the age of the module it removed, from that module's fitted date in the rotating-item history (5.2).",
+        "Each failure takes the age of the module it removed, from that module's fitted date in the rotating-item history (5.2); "
+        "legacy fitted dates held only as a year are used as loaded, 1 July of that year.",
         "Rates: module-years are counted from the January 2021 go-live, when the work-order history begins; a module fitted earlier "
         "enters the count at go-live at the age it had then (5.3).",
         "Expected module-years: each supported relay's present module is aged month by month. A module that fails is replaced from "
         "stock by a new module, which counts in the 0-9 band from the following month, so each month's module-years are split between "
         "the present module (by the chance it has not yet failed) and its replacement (6.1, 6.2).",
         "Support ends in the commissioning month of the scheme, or the stage of a staged scheme, that replaces the relay's bay in the "
-        "approved 2026 programme; relays at stations with no scheme in the period are supported to December 2035 (4.1, 4.2).",
+        "approved 2026 program; relays at stations with no scheme in the period are supported to December 2035 (4.1, 4.2).",
         "Available modules: %d serviceable at Central Stores, North and South depots plus %d at Veldtek under open RMA; %d quarantined "
         "modules excluded (7)." % (s["serviceable"], s["at_repair"], s["quarantine"]),
         "Cover is the Poisson probability that available modules plus the buy meet all failures to end of support (8.1, 8.2).",
@@ -152,7 +153,7 @@ def chart_png(s):
     ax.tick_params(labelsize=8, colors=INK)
     ax.grid(axis="y", color="#E3E8EA", linewidth=0.6)
     ax.set_axisbelow(True)
-    ax.set_title("Expected VPR-340 PSU failures by year until the renewal programme replaces each relay",
+    ax.set_title("Expected VPR-340 PSU failures by year until the renewal program replaces each relay",
                  fontsize=9, color=INK, loc="left")
     fig.tight_layout()
     buf = io.BytesIO()
@@ -202,13 +203,13 @@ def memo(s, path):
     para("Order %d lots (%d modules) of VPR340-PSU-02 for CAD %s before Veldtek's 15 December deadline."
          % (s["lots"], s["modules"], "{:,.0f}".format(s["cost"])), bold=True, size=11.5, after=6)
     para("With the %d modules we can use today, %d lots give a %.1f per cent chance of covering every power supply failure "
-         "until the renewal programme reaches each relay, against the 95 per cent AM-PC-014 asks for; %d lots would give %.1f per "
+         "until the renewal program reaches each relay, against the 95 per cent AM-PC-014 asks for; %d lots would give %.1f per "
          "cent. We expect %.1f failures between October 2026 and the end of support, most of them in 2027 to 2031 while the fleet is "
          "still large."
          % (s["avail"], s["lots"], 100 * s["cover"], s["lots"] - 1, 100 * s["settings"][s["lots"] - 1]["cover"], s["lam"]), after=6)
     para("How the figure is built. Rates are set for the AM-PC-014 module age bands from the PSU failures in the EAM history since "
          "January 2021, over the module-years each band has been in service since then; the 25-and-over band fails about a "
-         "quarter of its modules a year. Each relay's present module is then aged month by month until the programme reaches "
+         "quarter of its modules a year. Each relay's present module is then aged month by month until the program reaches "
          "its bay. A module that fails comes out and its replacement from this buy starts again in the 0-9 band, where failures "
          "are rare, so the old module's rate only applies for as long as it is likely to still be there.", after=6)
     pic = chart_png(s)
@@ -256,7 +257,8 @@ def build(target=None, out=None):
     workbook(s, wbp)
     utc = lambda t: dt.datetime(*t, tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
     P.normalize_xlsx(wbp, "Rachael Villanueva", "Rachael Villanueva", utc((2026, 10, 6, 13, 55, 18)),
-                     utc((2026, 10, 7, 15, 38, 46)), seed="vpr340_psu_final_buy.xlsx")
+                     utc((2026, 10, 7, 15, 38, 46)), seed="vpr340_psu_final_buy.xlsx",
+                     excel=dict(rup="27728", window=(-108, -108, 23256, 12456), docid="11_", coauth="47"))
     mp = os.path.join(out, "psu_last_time_buy_memo.docx")
     memo(s, mp)
     pages = P.normalize_docx(mp, "Rachael Villanueva", "Rachael Villanueva", utc((2026, 10, 6, 14, 2, 0)),

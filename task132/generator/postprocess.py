@@ -89,10 +89,14 @@ def _core(creator, last_by, created, modified, revision=None, title=None):
             + "".join(parts) + "</cp:coreProperties>").encode("utf-8")
 
 
-def _theme(x):
-    """the Office theme of current Office versions (Calibri Light and Calibri, the 2013 colour set), on one line"""
+def _theme(x, variant="2013"):
+    """the Office theme on one line: the theme of current Office versions (Calibri Light and Calibri, the 2013 colour
+    set), or for a workbook started from an Excel 2007-2010 template the theme it was made with (Cambria and Calibri,
+    the 2007 colours, which is the theme the writing library starts from)"""
     x = re.sub(r">\s+<", "><", _decl(x.decode("utf-8") if isinstance(x, bytes) else x).strip()) + ""
     x = x.replace("?><a:theme", "?>\r\n<a:theme")
+    if variant == "2007":
+        return x.encode("utf-8")
     for tag, val in (("dk2", "44546A"), ("lt2", "E7E6E6"), ("accent1", "4472C4"), ("accent2", "ED7D31"),
                      ("accent3", "A5A5A5"), ("accent4", "FFC000"), ("accent5", "5B9BD5"), ("accent6", "70AD47"),
                      ("hlink", "0563C1"), ("folHlink", "954F72")):
@@ -250,7 +254,14 @@ def _styles(x):
     return DECL + x
 
 
-def _workbook(x, seed):
+# the Excel that last saved each workbook: build, window, the theme and file lineage it was started from
+EXCEL = {
+    "default": dict(rup="27328", lowest="7", theme="2013", theme_version="166925", window=(-108, -108, 23256, 12456),
+                    docid="13_ncr:1_", coauth="47", calc="191029"),
+}
+
+
+def _workbook(x, seed, prof):
     sheets = re.findall(r"<sheet [^>]*/>", x)
     out = []
     for s in sheets:
@@ -260,6 +271,7 @@ def _workbook(x, seed):
     names = re.search(r"<definedNames>.*?</definedNames>", x, re.S)
     active = re.search(r'activeTab="(\d+)"', x)
     tab = ' activeTab="%s"' % active.group(1) if active and active.group(1) != "0" else ""
+    xw, yw, ww, wh = prof["window"]
     return (DECL + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="%s" '
             'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x15 xr xr6 xr10 xr2" '
             'xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main" '
@@ -267,18 +279,66 @@ def _workbook(x, seed):
             'xmlns:xr6="http://schemas.microsoft.com/office/spreadsheetml/2016/revision6" '
             'xmlns:xr10="http://schemas.microsoft.com/office/spreadsheetml/2016/revision10" '
             'xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2">'
-            '<fileVersion appName="xl" lastEdited="7" lowestEdited="7" rupBuild="27328"/>'
-            '<workbookPr defaultThemeVersion="166925"/>'
-            '<xr:revisionPtr revIDLastSave="0" documentId="13_ncr:1_%s" xr6:coauthVersionLast="47" xr6:coauthVersionMax="47" '
+            '<fileVersion appName="xl" lastEdited="7" lowestEdited="%s" rupBuild="%s"/>'
+            '<workbookPr defaultThemeVersion="%s"/>'
+            '<xr:revisionPtr revIDLastSave="0" documentId="%s%s" xr6:coauthVersionLast="%s" xr6:coauthVersionMax="%s" '
             'xr10:uidLastSave="{00000000-0000-0000-0000-000000000000}"/>'
-            '<bookViews><workbookView xWindow="-108" yWindow="-108" windowWidth="23256" windowHeight="12456"%s xr2:uid="%s"/></bookViews>'
-            '<sheets>%s</sheets>%s<calcPr calcId="191029"/></workbook>'
-            % (REL, _guid(seed + "doc"), tab, _guid(seed + "view"), "".join(out), names.group(0) if names else ""))
+            '<bookViews><workbookView xWindow="%d" yWindow="%d" windowWidth="%d" windowHeight="%d"%s xr2:uid="%s"/></bookViews>'
+            '<sheets>%s</sheets>%s<calcPr calcId="%s"/></workbook>'
+            % (REL, prof["lowest"], prof["rup"], prof["theme_version"], prof["docid"], _guid(seed + "doc"), prof["coauth"],
+               prof["coauth"], xw, yw, ww, wh, tab, _guid(seed + "view"), "".join(out), names.group(0) if names else "",
+               prof["calc"]))
 
 
-def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock Hydro Distribution", seed=None):
-    """created and modified: UTC time tuples to the second, as Excel stamps them"""
+def _num(v):
+    """a cell value written the way Excel writes a double"""
+    if float(v) == int(float(v)) and abs(float(v)) < 1e15:
+        return str(int(float(v)))
+    return repr(float(v))
+
+
+def _formula_values(x):
+    """cache the value of each formula the way Excel saves it (SUM over a range, or one reference divided by,
+    multiplied by, added to or taken from another), evaluated in row order"""
+    vals = {}
+    for ref, v in re.findall(r'<c r="([A-Z]+\d+)"(?: s="\d+")?(?: t="n")?><v>([-0-9.Ee+]+)</v></c>', x):
+        vals[ref] = float(v)
+
+    def val(ref):
+        return vals.get(ref, 0.0)
+
+    def ev(f):
+        m = re.fullmatch(r"SUM\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)", f)
+        if m:
+            c1, r1, c2, r2 = _colnum(m.group(1)), int(m.group(2)), _colnum(m.group(3)), int(m.group(4))
+            return sum(val("%s%d" % (_colname(c), r)) for c in range(c1, c2 + 1) for r in range(r1, r2 + 1))
+        m = re.fullmatch(r"([A-Z]+\d+)([-+*/])([A-Z]+\d+)", f)
+        if m:
+            a, b = val(m.group(1)), val(m.group(3))
+            return {"+": a + b, "-": a - b, "*": a * b, "/": a / b}[m.group(2)]
+        raise ValueError(f)
+
+    def repl(m):
+        v = ev(m.group(2))
+        vals[re.search(r'r="([A-Z]+\d+)"', m.group(1)).group(1)] = v
+        return "%s<f>%s</f><v>%s</v></c>" % (m.group(1), m.group(2), _num(v))
+
+    return re.sub(r'(<c r="[A-Z]+\d+"[^>]*>)<f>([^<]+)</f><v\s*/?>(?:</v>)?</c>', repl, x)
+
+
+def _colname(n):
+    s = ""
+    while n:
+        n, r = divmod(n - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
+def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock Hydro Distribution", seed=None, excel=None):
+    """created and modified: UTC time tuples to the second, as Excel stamps them; excel: the profile of the Excel that
+    saved it (EXCEL keys)"""
     seed = seed or os.path.basename(path)
+    prof = dict(EXCEL["default"], **(excel or {}))
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
     data = dict(items)
@@ -300,7 +360,7 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
         x = re.sub(r'<c ([^>]*?)t="inlineStr"([^>]*)/>', lambda m: "<c %s%s/>" % (m.group(1), m.group(2).strip()) if ' s="' in m.group(0) else "", x)
         x = re.sub(r'<c ([^>]*?)t="inlineStr"([^>]*)><is><t(?: xml:space="preserve")?\s*/></is></c>', "", x)
         x = _INLINE.sub(repl, x)
-        data[n] = _sheet(x, _guid("%s-sheet-%d" % (seed, k)), k == 0).encode("utf-8")
+        data[n] = _formula_values(_sheet(x, _guid("%s-sheet-%d" % (seed, k)), k == 0)).encode("utf-8")
     if sst:
         body = "".join('<si><t%s>%s</t></si>' % (' xml:space="preserve"' if (t != t.strip()) else "", t) for t in sst)
         data["xl/sharedStrings.xml"] = (DECL + '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="%d" uniqueCount="%d">%s</sst>'
@@ -330,9 +390,9 @@ def normalize_xlsx(path, creator, last_by, created, modified, company="Tarrock H
                                    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
                                    '<Default Extension="xml" ContentType="application/xml"/>%s</Types>' % "".join(ov)).encode("utf-8")
     data["xl/styles.xml"] = _styles(data["xl/styles.xml"].decode("utf-8")).encode("utf-8")
-    data["xl/theme/theme1.xml"] = _theme(data["xl/theme/theme1.xml"])
+    data["xl/theme/theme1.xml"] = _theme(data["xl/theme/theme1.xml"], prof["theme"])
     wb = data["xl/workbook.xml"].decode("utf-8")
-    data["xl/workbook.xml"] = _workbook(wb, seed).encode("utf-8")
+    data["xl/workbook.xml"] = _workbook(wb, seed, prof).encode("utf-8")
     names = re.findall(r'<sheet [^>]*name="([^"]+)"', wb)
     app = (DECL + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
            'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Excel</Application>'
@@ -432,36 +492,67 @@ def _fonts_attr(x):
 
 
 class _Ids:
-    """revision-session ids and paragraph ids, deterministic from the document's seed"""
+    """revision-session ids, paragraph ids and text ids, deterministic from the document's seed"""
 
     def __init__(self, seed, sessions):
-        self.seed, self.sessions, self.n = seed, sessions, 0
+        self.seed, self.sessions = seed, sessions
+        self.rnd = random.Random(seed + "-ids")
+
+    def _hex(self):
+        return "%08X" % max(self.rnd.getrandbits(31), 1)
 
     def para(self):
-        self.n += 1
-        v = int(hashlib.md5(("%s-p-%d" % (self.seed, self.n)).encode()).hexdigest()[:8], 16) & 0x7FFFFFFF
-        return "%08X" % max(v, 1)
+        return self._hex()
+
+    def text(self):
+        return self._hex()
+
+    def plan(self, n, first, last):
+        """the session each paragraph was typed in, and the later session that edited it if any: a document is
+        written in runs of paragraphs, later sessions insert a paragraph or a short run here and there and rewrite
+        text in place, so the runs have no common length"""
+        k = last - first + 1
+        out, cur = [], first
+        for p in range(n):
+            if p and self.rnd.random() < 0.17:
+                w = [max(1, 6 - 2 * j) for j in range(k)]
+                cur = first + self.rnd.choices(range(k), weights=w)[0]
+            edited = None
+            if cur < last and self.rnd.random() < 0.15:
+                edited = self.rnd.randint(cur + 1, last)
+            out.append((cur, edited))
+        return out
 
 
 def _tag(x, ids, first, last):
-    """paragraphs and table rows carry the editing session that wrote them and Word's paragraph ids"""
-    total = max(1, len(re.findall(r"<w:p[ >]", x)))
-    count = {"k": 0}
+    """paragraphs and table rows carry the editing session that created them (and the one that last edited them),
+    Word's paragraph ids and its text ids"""
+    total = len(re.findall(r"<w:p[ >]", x))
+    plan = ids.plan(total, first, last)
+    pos = {"p": 0}
 
     def tagp(m):
-        k = first + min(last - first, count["k"] * (last - first + 1) // total)
-        count["k"] += 1
-        s = ids.sessions[k]
+        created, edited = plan[min(pos["p"], total - 1)]
+        pos["p"] += 1
+        s0 = ids.sessions[created]
         rest = re.sub(r'\s*w:rsid\w*="[^"]*"', "", m.group(1))
-        return '<w:p w14:paraId="%s" w14:textId="77777777" w:rsidR="%s" w:rsidRDefault="%s"%s>' % (ids.para(), s, s, rest)
-
-    x = re.sub(r"<w:p((?: [^>]*)?)>", tagp, x)
+        attrs = 'w14:paraId="%s" w14:textId="%s" w:rsidR="%s"' % (ids.para(), ids.text(), s0)
+        if edited is not None and ids.rnd.random() < 0.4:
+            attrs += ' w:rsidRPr="%s"' % ids.sessions[edited]
+        attrs += ' w:rsidRDefault="%s"' % (ids.sessions[edited] if edited is not None and ids.rnd.random() < 0.6 else s0)
+        if edited is not None and ids.rnd.random() < 0.5:
+            attrs += ' w:rsidP="%s"' % ids.sessions[edited]
+        return "<w:p %s%s>" % (attrs, rest)
 
     def tagr(m):
-        s = ids.sessions[first]
-        return '<w:tr w:rsidR="%s" w14:paraId="%s" w14:textId="77777777" w:rsidTr="%s"%s>' % (s, ids.para(), s, m.group(1))
+        created, _ = plan[min(pos["p"], total - 1)]
+        s0 = ids.sessions[created]
+        return '<w:tr w:rsidR="%s" w14:paraId="%s" w14:textId="%s" w:rsidTr="%s"%s>' % (s0, ids.para(), ids.text(), s0, m.group(2))
 
-    return re.sub(r"<w:tr((?: [^>]*)?)>", tagr, x)
+    def both(m):
+        return tagr(m) if m.group(1) == "tr" else tagp(re.match(r"<w:p((?: [^>]*)?)>", m.group(0)))
+
+    return re.sub(r"<w:(tr|p)((?: [^>]*)?)>", both, x)
 
 
 def _prune_styles(st, used, session):

@@ -54,6 +54,6 @@ def hazard(age_years):
     a = max(age_years, 0.01)
     return (k / s) * (a / s) ** (k - 1)
 
-# settled by tune.py: recorded failures moved by a month (index into the post-migration failures, months),
-# so no graded figure sits on a rounding edge
-TUNE = ((93, -1), (119, 1), (162, -1), (85, -1), (51, 1), (115, 1), (0, 1), (59, -1), (135, -1), (183, -1), (86, 1), (84, -1))
+# settled by tune.py: the legacy fitted dates of a few modules that were already replacements at go-live moved by a
+# month (index into those modules, months), so no graded figure sits on a rounding edge
+TUNE = ((102, 1), (135, -1), (130, -1), (86, -1))

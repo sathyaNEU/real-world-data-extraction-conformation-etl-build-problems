@@ -58,24 +58,29 @@ def main():
             expo[band(age(fit, m))] += 1
     rate = cnt / expo * 12.0
     # support end by bay from the approved programme
-    wb = openpyxl.load_workbook(os.path.join(T, "protection_renewal_programme_2026.xlsx"), data_only=True)
+    wb = openpyxl.load_workbook(os.path.join(T, "protection_renewal_program_2026.xlsx"), data_only=True)
     plan = {}
     for row in wb["Approved 2026"].iter_rows(min_row=4, values_only=True):
         if not row or not row[2]:
             continue
-        g = re.fullmatch(r"F(\d+)-F(\d+)", str(row[5]))
-        if not g:
+        bays = set()
+        for part in str(row[5]).replace(" ", "").split(","):
+            g = re.fullmatch(r"F(\d+)(?:-F(\d+))?", part)
+            if g:
+                bays.update(range(int(g.group(1)), int(g.group(2) or g.group(1)) + 1))
+        if not bays:
             continue
         v = row[7]
-        end = 2036 * 12 if str(v).strip() == "Not in programme period" else mk(pd.Timestamp(v) if not isinstance(v, str) else pd.to_datetime(v, format="%b %Y"))
-        plan.setdefault(row[2], []).append((int(g.group(1)), int(g.group(2)), end))
+        end = 2036 * 12 if str(v).strip().lower().startswith("not in") else mk(pd.Timestamp(v) if not isinstance(v, str) else pd.to_datetime(v, format="%b %Y"))
+        plan.setdefault(row[2], []).append((bays, end))
 
     def send(sub, bay):
+        if sub not in plan:
+            return 2036 * 12                      # AM-PC-014 4.2: no scheme in the program period
         b = int(bay[1:])
-        for lo, hi_, e in plan.get(sub, []):
-            if lo <= b <= hi_:
-                return e
-        return None
+        hit = [e for bays, e in plan[sub] if b in bays]
+        assert len(hit) == 1, (sub, bay, hit)
+        return hit[0]
 
     live = fl[fl.status == "IN SERVICE"]
     cur = hi[hi.removed_date.isna()].set_index("asset_id")

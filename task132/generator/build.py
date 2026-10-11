@@ -25,7 +25,7 @@ FILES = {
     "hist": "psu_rotating_item_history_2021-01_2026-09.csv",
     "wo": "eam_work_orders_protection_2021-01_2026-09.csv",
     "subs": "substations.csv",
-    "prog": "protection_renewal_programme_2026.xlsx",
+    "prog": "protection_renewal_program_2026.xlsx",
     "eol": "veldtek_vpr340_eol_notice.pdf",
     "procedure": "AM-PC-014_obsolete_spares_final_buy.docx",
     "stock": "spares_stock_2026-09-30.csv",
@@ -38,19 +38,27 @@ DISTRACTORS = ["rma", "trips", "compliance"]
 # (created, modified) local Eastern time, author, last saved by, company (Excel stamps the second, Word the minute)
 OFFICE = {
     "prog": ((2026, 3, 20, 9, 12, 41), (2026, 3, 24, 16, 40, 17), "Kurt Allison", "Rachael Villanueva", "Tarrock Hydro Distribution"),
-    "rma": ((2021, 1, 18, 8, 47, 5), (2026, 9, 29, 11, 2, 38), "Veldtek Service Centre", "Veldtek Service Centre",
+    "rma": ((2015, 2, 9, 14, 31, 22), (2026, 9, 29, 11, 2, 38), "Veldtek Service Centre", "Veldtek Service Centre",
             "Veldtek Protection Systems"),
     "compliance": ((2026, 2, 3, 10, 25, 9), (2026, 2, 27, 15, 5, 52), "Rachael Villanueva", "Kurt Allison", "Tarrock Hydro Distribution"),
     "procedure": ((2019, 5, 14, 10, 40, 0), (2026, 4, 14, 11, 20, 0), "Kurt Allison", "Kurt Allison", "Tarrock Hydro Distribution"),
 }
+# the Excel that last saved each workbook: Kurt's on a second screen, Rachael's laptop, and Veldtek's service-centre
+# register, started in 2015 from an Excel 2010 template and still carrying its theme
+EXCEL = {
+    "prog": dict(rup="27328", window=(28680, -120, 29040, 15720), docid="13_ncr:1_", coauth="47"),
+    "compliance": dict(rup="27130", window=(-108, -108, 23256, 12456), docid="11_", coauth="47"),
+    "rma": dict(rup="27425", lowest="5", theme="2007", theme_version="124226", window=(-120, -120, 20730, 11160),
+                docid="8_", coauth="47"),
+}
 MTIMES = {
-    "register": (2026, 10, 1, 6, 12), "hist": (2026, 10, 1, 6, 13), "wo": (2026, 10, 1, 6, 14), "subs": (2026, 10, 1, 6, 11),
+    "register": (2026, 10, 1, 6, 12), "hist": (2026, 10, 1, 9, 41), "wo": (2026, 10, 1, 6, 14), "subs": (2026, 10, 1, 6, 11),
     "prog": (2026, 3, 24, 16, 40), "eol": (2026, 8, 20, 9, 5), "procedure": (2026, 4, 14, 11, 20),
     "stock": (2026, 9, 30, 17, 25), "rma": (2026, 9, 29, 11, 2), "dictionary": (2026, 10, 1, 6, 10),
     "trips": (2026, 1, 14, 10, 20), "compliance": (2026, 2, 27, 15, 5),
 }
 # the notice as Veldtek's lifecycle team saved it from Word, 9:05 on 20 August 2026 Eastern time
-EOL_SAVED = (2026, 8, 20, 9, 5)
+EOL_SAVED = (2026, 8, 20, 9, 5, 37)
 EOL_ID = "6D1F4C0A-92B8-4E57-A1C4-D90E3B7F2A61"
 
 
@@ -95,29 +103,35 @@ def build(out):
     rng2 = np.random.default_rng(W.SEED + 1)
     p = lambda k: os.path.join(out, FILES[k])
 
-    reg, key2aid, relay_mfg = X.register(rng2, subs, fl, prog)
+    plan = X.bay_plan(fl, prog)
+    reg, key2aid, relay_mfg, yearonly = X.register(rng2, subs, fl, prog, plan)
     reg.to_csv(p("register"), index=False)
-    sp2, ships, _ = X.psu_cycle(np.random.default_rng([W.SEED, 21]), sp, f, key2aid, relay_mfg)
+    eq = X.equipment(subs, reg)
+    region = dict(zip(subs["sub_code"], subs["region"]))
+    sub_of = {int(k): s for k, s in zip(fl["relay_key"], fl["sub_code"])}
+    depot_of = {k: X.STORES[region[s]] for k, s in sub_of.items()}
+    sp2, ships = X.psu_cycle(sp, f, key2aid, relay_mfg, sub_of, depot_of)
+    fits = X.refit_plan(f, sp)
     rebuilt = set(prog["sub_code"][prog["cut_days"].map(lambda d: isinstance(d, list))])
-    wo, keymap = X.work_orders(rng2, subs, reg, f, sp2, ships, rebuilt)
+    wo, keymap = X.work_orders(subs, reg, f, sp2, ships, rebuilt, fits, eq)
     wo.to_csv(p("wo"), index=False)
-    X.module_history(sp2, keymap).to_csv(p("hist"), index=False)
+    X.module_history(sp2, keymap, fits, yearonly).to_csv(p("hist"), index=False)
     subs[["sub_code", "sub_name", "region", "legacy_region", "station_type"]].to_csv(p("subs"), index=False)
-    rma = X.rma_log(rng2, ships, keymap)
+    rma = X.rma_log(ships, keymap)
     X.stock(int((rma["result"] == "OPEN").sum())).to_csv(p("stock"), index=False)
     X.rma_xlsx(p("rma"), rma)
-    D.programme_xlsx(p("prog"), np.random.default_rng(W.SEED + 4), prog, subs, reg)
+    D.programme_xlsx(p("prog"), np.random.default_rng(W.SEED + 4), prog, subs, reg, plan)
     D.eol_pdf(p("eol"))
     D.procedure_docx(p("procedure"))
     D.dictionary_txt(p("dictionary"))
     Q.trip_operations_csv(p("trips"), np.random.default_rng(W.SEED + 2), reg)
-    Q.test_compliance_xlsx(p("compliance"), np.random.default_rng(W.SEED + 3), reg, subs)
+    Q.test_compliance_xlsx(p("compliance"), reg, subs, wo)
 
     for k, fn in FILES.items():
         path = p(k)
         if fn.endswith(".xlsx"):
             c, m, a, b, co = OFFICE[k]
-            P.normalize_xlsx(path, a, b, utc(c), utc(m), company=co, seed=fn)
+            P.normalize_xlsx(path, a, b, utc(c), utc(m), company=co, seed=fn, excel=EXCEL[k])
         elif fn.endswith(".docx"):
             c, m, a, b, co = OFFICE[k]
             P.normalize_docx(path, a, b, utc(c), utc(m), revision=23, total_time=312,
@@ -143,7 +157,7 @@ def write_metadata():
         "distractors": [FILES[k] for k in DISTRACTORS],
         "provenance": "Fully constructed pack (dataset-generation section 2): every extract is generated by "
                       "task132/generator from a simulated protection-relay fleet, its power-supply modules, work-order "
-                      "history and renewal programme for a fictional Ontario distribution utility (Tarrock Hydro "
+                      "history and renewal program for a fictional Ontario distribution utility (Tarrock Hydro "
                       "Distribution) and its fictional relay vendor (Veldtek Protection Systems); documents written "
                       "for the fiction. No real utility's data.",
         "license": "Constructed data, released with the task (CC BY 4.0).",

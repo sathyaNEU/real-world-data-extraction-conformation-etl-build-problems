@@ -4,21 +4,20 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, exposure, decisive, replacement, landed, forecasting, forecast, pattern, population, module-months, construction, fictional, go-live, dictionary, reader, bulletin, ladder, domain, setting, mechanism, wear-out, horizon, occupancy, replaced, absence
+Stump terms swept: exposure, fitted, replacement, dictionary, programme, decisive, window, go-live, landed, reader, module-months, reading, procedure, container, sentence, realism, rebuild, wording, register, inspections, forecasting, forecast, pattern, population, failed
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `AM-PC-014_obsolete_spares_final_buy.docx`: carries 6 of 9 distinctive words of the committed call: "Order 13 lots (325 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 638,625."
 - **REVIEW** `eam_extract_dictionary.txt`: carries 6 of 9 distinctive words of the committed call: "Order 13 lots (325 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 638,625."
 - **REVIEW** `veldtek_vpr340_eol_notice.pdf`: carries 8 of 9 distinctive words of the committed call: "Order 13 lots (325 modules) of the VPR340-PSU-02 power supply module in Veldtek's last-time buy, for CAD 638,625."
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `AM-PC-014_obsolete_spares_final_buy.docx`: 3 of 25 stump-paragraph terms appear (module-months, go-live, replaced); read whether the document names the move
-- **REVIEW** `eam_extract_dictionary.txt`: 3 of 25 stump-paragraph terms appear (replacement, go-live, setting); read whether the document names the move
-- **REVIEW** `veldtek_vpr340_eol_notice.pdf`: 3 of 25 stump-paragraph terms appear (replacement, setting, replaced); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `AM-PC-014_obsolete_spares_final_buy.docx`: 5 of 25 stump-paragraph terms appear (fitted, go-live, module-months, procedure, failed); read whether the document names the move
+- **REVIEW** `eam_extract_dictionary.txt`: 7 of 25 stump-paragraph terms appear (fitted, replacement, go-live, rebuild, register, inspections); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
-- **REVIEW** `eam_extract_dictionary.txt`: 1 ISO dates after 2026-09-30, e.g. 2026-10-01
-- **REVIEW** `protection_renewal_programme_2026.xlsx`: 273 ISO dates after 2026-09-30, e.g. 2027-01-01, 2027-02-01, 2027-03-01, 2027-04-01, 2027-07-01
+- **REVIEW** `eam_extract_dictionary.txt`: 2 ISO dates after 2026-09-30, e.g. 2026-10-01
+- **REVIEW** `protection_renewal_program_2026.xlsx`: 272 ISO dates after 2026-09-30, e.g. 2027-01-01, 2027-02-01, 2027-03-01, 2027-04-01, 2027-07-01
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -36,11 +35,3 @@ Stump terms swept: window, exposure, decisive, replacement, landed, forecasting,
 ## 8 column names (clean)
 
 ## 11 prompt form (clean)
-
-## Solver's-eye read (round 4, after the loop 1 realism rebuild)
-
-- Question 1: no sentence names the decisive step. The reader quoted the procedure's filed rules (section 3 module age, 4.1 support by bay, 5.1 the failure definition, 7 the stock count) and the Rev 4 change log as pointers to the lower rungs; it listed the renewal of a failed module among readings that could split solvers, not as a named step.
-- Question 2: none.
-- Question 3: none is pure scaffolding; the dictionary's general block and the programme's Notes sheet read closest to analyst help and are being rewritten as working text.
-- Question 4: nothing reads as the answer; the compliance workbook's VPR-340 regional test counts (157, 120, 128) are a distractor, not the regional split.
-- REVIEW lines from the mechanical sweep: the call's vocabulary in the procedure, dictionary and notice, and the programme's commissioning months as dates after the as-of date; all harmless.

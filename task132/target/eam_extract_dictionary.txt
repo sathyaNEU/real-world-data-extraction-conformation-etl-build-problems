@@ -1,12 +1,20 @@
 TARROCK HYDRO DISTRIBUTION
-EAM reporting service - monthly P&C asset and work extract (job PC_ASSET_WO_MONTHLY)
-Run 2026-10-01 06:10, data to close of business 2026-09-30
+EAM reporting service - P&C extracts, field descriptions
+
+Job PC_ASSET_WO_MONTHLY (scheduled, first working day of the month)
+  Run 2026-10-01 06:10, data to close of business 2026-09-30
+  protection_asset_register_2026-09-30.csv, eam_work_orders_protection_2021-01_2026-09.csv, substations.csv
+
+Extracts for the VPR340-PSU-02 final-buy sizing (run on request by KALLISON, Senior Asset Engineer, P&C)
+  spares_stock_2026-09-30.csv                     inventory balance after the stores count, run 2026-09-30 17:25
+  psu_rotating_item_history_2021-01_2026-09.csv   rotating-item history for item VPR340-PSU-02, run 2026-10-01 09:41
 
 General
   The EAM went live on 1 January 2021, replacing the legacy maintenance system. Assets in service at go-live,
   and the rotating items fitted to them, were loaded from the legacy lists. Work orders raised before go-live
   were archived with the legacy system and are not in EAM. Assets retired before go-live are not in EAM.
-  Operating regions were reorganised on 1 April 2024 (four regions to three); crews were renamed at the same time.
+  Legacy dates held only as a year were loaded as 1 July of that year.
+  Operating regions were reorganized on 1 April 2024 (four regions to three); crews were renamed at the same time.
   Dates are local (Eastern). Blank means no value.
 
 protection_asset_register_2026-09-30.csv  (one row per asset)
@@ -18,31 +26,24 @@ protection_asset_register_2026-09-30.csv  (one row per asset)
   install_date      date placed in service (legacy list date for assets loaded at go-live)
   status            IN SERVICE or RETIRED
   retired_date      date taken out of service
-  region            region on the asset record when it was created (not updated by the 2024 reorganisation)
+  region            region on the asset record when it was created (not updated by the 2024 reorganization)
 
-psu_rotating_item_history_2021-01_2026-09.csv  (item VPR340-PSU-02, one row per module per installation)
-  serial_no         module serial number; a module repaired by the manufacturer keeps its serial
-  asset_id          relay the module is or was fitted to
-  fitted_date       date fitted to that relay (legacy fitted date for modules loaded at go-live)
-  fitting_wo        work order the module was fitted under (blank for go-live loads)
-  removed_date      date removed (blank while fitted)
-  removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
-  removal_wo        work order the module was removed under
-  record_source     GO-LIVE LOAD or EAM
-
-eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order)
+eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
+assets, station DC systems, breaker trip circuits and instrument transformers, and P&C station inspections)
   wo_number         work-order number (shared numbering with lines and metering work)
-  reported_date     date raised
+  reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
   completed_date    date completed (blank while open or cancelled)
   work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
                     MOD modification (settings, firmware, device replacement or station rebuild cutover),
                     LOG logistics (shipping and returns)
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
-  asset_id          blank for station-level inspections
+  asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
+                    blank for station inspections
   sub_code, region  region at the date raised
-  failed_component  recorded by the crew on corrective and logistics work: PSU power supply, CPU processor,
-                    IO input/output card, DISP display, COMMS communications card (blank when no fault was found)
-  description       crew text
+  failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
+                    returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
+                    COMMS communications card (blank otherwise, including no fault found and follow-up work)
+  description       crew text; planned work carries the job plan title, with the crew's remarks after it
   crew              crew lead's crew
   labour_hours      hours booked, including travel
 
@@ -50,7 +51,25 @@ substations.csv
   sub_code, sub_name, region (from 1 April 2024), legacy_region (before 1 April 2024),
   station_type (TS transformer station, DS distribution station)
 
-spares_stock_2026-09-30.csv  (stores count at close of business 2026-09-30)
+spares_stock_2026-09-30.csv  (one row per item, location and stock state at close of business 2026-09-30)
+  item_no           EAM item number
+  item_code         item code; for an item tracked by serial, the rotating-item code
+  item_description  item description
+  location          storeroom or depot, or the manufacturer's repair centre
+  bin               bin location (blank at the repair centre)
   stock_state       SERVICEABLE on the shelf; QUARANTINE awaiting bench test (returned from site or recovered
                     from a station rebuild); AT REPAIR at the manufacturer under an open RMA
+  uom               unit of issue (EA each)
+  quantity          quantity in that state at the count
   unit_cost_cad     moving average cost
+
+psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installation)
+  serial_no         module serial number; a module repaired by the manufacturer keeps its serial
+  item_code         rotating-item code (VPR340-PSU-02)
+  asset_id          relay the module is or was fitted to
+  fitted_date       date fitted to that relay (legacy fitted date for modules loaded at go-live)
+  fitting_wo        work order the module was fitted under (blank for go-live loads)
+  removed_date      date removed (blank while fitted)
+  removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
+  removal_wo        work order the module was removed under
+  record_source     GO-LIVE LOAD or EAM

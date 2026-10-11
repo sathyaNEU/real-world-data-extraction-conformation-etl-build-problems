@@ -12,7 +12,7 @@ import world as W
 
 F = dict(register="protection_asset_register_2026-09-30.csv", wo="eam_work_orders_protection_2021-01_2026-09.csv",
          hist="psu_rotating_item_history_2021-01_2026-09.csv", subs="substations.csv",
-         prog="protection_renewal_programme_2026.xlsx", stock="spares_stock_2026-09-30.csv")
+         prog="protection_renewal_program_2026.xlsx", stock="spares_stock_2026-09-30.csv")
 SHEETS = ("Approved 2026", "2025 plan (superseded)")
 END_HIST = dt.date(2026, 10, 1)
 
@@ -46,8 +46,15 @@ def _d(x):
 
 
 def _bays(txt):
-    m = re.fullmatch(r"F(\d+)-F(\d+)", str(txt).strip())
-    return (int(m.group(1)), int(m.group(2))) if m else None
+    """the feeder bays a program row lists, as (first, last) ranges: 'F01-F09, F11, RTU' style lists"""
+    out = []
+    for part in str(txt).split(","):
+        part = part.strip()
+        m = re.fullmatch(r"F(\d+)-F(\d+)", part) or re.fullmatch(r"F(\d+)()", part)
+        if m:
+            lo = int(m.group(1))
+            out.append((lo, int(m.group(2)) if m.group(2) else lo))
+    return out
 
 
 def load(target):
@@ -69,14 +76,14 @@ def load(target):
             if not row or not row[2]:
                 continue
             rng = _bays(row[5])
-            if rng is None:
+            if not rng:
                 continue
             v = row[7]
             if isinstance(v, dt.datetime):
                 when = dt.date(v.year, v.month, 1)
             elif isinstance(v, dt.date):
                 when = dt.date(v.year, v.month, 1)
-            elif str(v).strip() == "Not in programme period":
+            elif str(v).strip().startswith("Not in"):
                 when = None
             else:
                 when = dt.datetime.strptime(str(v).strip(), "%b %Y").date()
@@ -126,12 +133,14 @@ def rates(f, expo):
 
 
 def support_end(sub, bay, plan):
-    """first month the relay in this bay is no longer supported; None when its station is not in the programme"""
+    """first month the relay in this bay is no longer supported: the commissioning month of the scheme or stage whose
+    bays include it, or the month after the program period for a station with no scheme in the period (4.2); None
+    for a listed station whose rows do not list the bay"""
     if sub not in plan:
-        return None
+        return month_add(W.PROGRAMME_END, 1)
     b = int(bay[1:])
-    for (lo, hi), when in plan[sub]:
-        if lo <= b <= hi:
+    for ranges, when in plan[sub]:
+        if any(lo <= b <= hi for lo, hi in ranges):
             return when if when is not None else month_add(W.PROGRAMME_END, 1)
     return None
 

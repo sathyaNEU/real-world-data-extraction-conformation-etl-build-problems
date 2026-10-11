@@ -102,7 +102,7 @@ def main(rounds=8, stop=0.08):
         return min(edge(v) for v in vals), lam
 
     cand = B.candidates(sp)
-    _, key2aid, _ = X.register(np.random.default_rng(W.SEED + 1), subs, fl, prog)
+    _, key2aid, _, _ = X.register(np.random.default_rng(W.SEED + 1), subs, fl, prog, X.bay_plan(fl, prog))
     moves = []
     for k, i in enumerate(cand):
         aid = key2aid[int(sp.at[i, "relay_key"])]
