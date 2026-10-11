@@ -36,8 +36,8 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "gleif_lei_level1_qe_snapshots.csv",
-    "rows": 30271,
+    "file": "gleif_lei_records_qe_archive.csv",
+    "rows": 29966,
     "entity": "one LEI record as GLEIF's golden copy carried it in one quarter-end snapshot the bank's reference-data team archived",
     "grain": "LEI x archived quarter-end snapshot",
     "source": "synthetic, on the GLEIF LEI-CDF 3.1 golden-copy schema"

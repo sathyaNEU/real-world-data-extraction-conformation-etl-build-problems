@@ -2,21 +2,21 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 3,
- "stage_name": "build",
+ "stage": 6,
+ "stage_name": "solver round",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver groups each past quarter-end on the hierarchy archived for that quarter (point in time), so the requesting group's acquisition of an existing borrower enters its history as growth, the projected year-end exposure is overstated and it approves well short of what the house limit allows.",
  "architecture": 1,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (no LEAK), REVIEW lines answered in DESIGN_NOTE",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK; agenda amounts, vocabulary hits, maturity dates answered)",
+  "reader": "Q1-Q3 none, no main-call fork; LMS-03 s.2.3 read as the stated estimand (Gate H question for the judge); deferred: register review-date cadence, customer-name case variation"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": ""
+  "heart": "WARN (time_semantics strategy risk, answered)",
+  "nearest": "task24 (membership attribution, opposite estimand; clean, shares components)",
+  "clone_check": "pre-flight CLEAN, 0 findings on either track (task446/clone_check_report.md)"
  },
  "solver_rounds": [],
  "judge": {

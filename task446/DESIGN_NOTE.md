@@ -240,7 +240,7 @@ most ask figures licenses one hardening of the device layer only.
   `generator/writeup.py`, metadata `generator/meta.py`, assertions `generator/checks.py`: 248
   assertions green, two builds byte-identical.
 - Input gates: 18 files, 6 formats (csv, docx, md, pdf, txt, xlsx), largest file
-  `gleif_lei_records_qe_archive.csv` at 30,271 rows, distractors `obligor_ratings_qe.csv` and
+  `gleif_lei_records_qe_archive.csv` at 29,966 rows, distractors `obligor_ratings_qe.csv` and
   `sector_concentration_2026Q3.xlsx` (named in metadata.json only; golden unchanged with both deleted,
   asserted).
 - Tuning: one revolver per agenda group carries a drawn-balance nudge (whole pence, inside its limit) so
