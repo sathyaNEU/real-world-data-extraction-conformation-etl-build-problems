@@ -18,7 +18,7 @@ Domain: energy-systems-utilities / asset-condition-maintenance   Objective: anom
 Pairing repeated from a recent build? task180 architecture 1 only (its own lineage, a different puzzle)
 Stakeholder role: network asset manager (portfolio_manager)   Context artifact: capacity_report (mobile substation bookings)
 Calibration form: none   Decision type: ranked_slate_under_cap   Answer unit: set_of_items
-Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 1.2 scope and 5.2 priority)
+Stump strategy: stated_rule_hard_construction   Decisive rule filed? yes (ES-DGA-02 5.1 remedy and 5.2 priority)
 Official decoy filed? no   Validated decoy? no
 Forum: board_of_directors (28 October 2026)   Forcing event: audit_or_inspection   Org family: utility_or_infrastructure
 People (guard.py names, en_NZ, seed 1802): Donna Carson (network asset manager, the requester), Barry Forbes (zone
@@ -36,7 +36,7 @@ any fault in the winding.
 **Layer 1 (realistic mess and the system that produces it).** A laboratory results file per sampling round (sampling
 date and time and a separate analysis date, gases in ppm with below-detection values written as `<n`, oxygen and
 nitrogen, moisture, the label temperature the technician wrote down or left blank, and corrected reports re-issued under
-the same sample ID); tap-changer compartment results on their own annual schedule; an asset register with rewind years
+the same sample ID); an asset register with rewind years
 and tap-changer types whose last-service field stopped being written back in March 2025; SCADA daily tap-change counters
 that roll over at 99,999 and restart at zero when a counter is replaced at a tap-changer service; hourly SCADA top-oil
 temperatures exported from the historian in UTC with no zone marker; a maintenance log in free text.
@@ -50,6 +50,12 @@ tap-changer compartment is made by normal switching, not by a fault an internal 
 ranking. task181 (explaining away a dominant source among pooled victims) is a different structure: there the sources
 compete for the same victims; here each unit's own signal has a second, benign origin.
 
+**Differentiation (clone pre-flight, 2026-10-11, CLEAN).** task119: a unit blamed on its outcome count and
+excused by capacity data through a bed-allocation record; here units the standard ranks worst are cleared because
+their signal is a benign leak from an attached compartment. task101: a baseline cleaned of the fund's own top-ups;
+here no baseline is restated, each unit's gas is attributed to its source. task121: identity of signed-out users;
+here identities are fixed and the question is where a measured gas was made.
+
 ## GATE G
 
 - **Litmus.** Nothing reported is overturned: every laboratory value, counter reading and register field is correct;
@@ -59,8 +65,8 @@ compete for the same victims; here each unit's own signal has a second, benign o
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
 - **Deletion test.** Delete Barry's notes and the mobile substation schedule: coding on main-tank gases still names the
   two leaking units; attribution still removes them.
-- **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample, every
-  compartment sample and every counter reading ships, and the main call's rows carry no device (asserted, below). A
+- **Clean-data and instrument test.** No file is incomplete or stale for the decision: every main-tank sample and every
+  counter reading ships, and the main call's rows carry no device (asserted, below). A
   perfect main-tank gas analyser still reads the leaked acetylene, because it is really in the oil; what the decision
   needs is its origin, which the counters, the tap-changer types and the gas ratios settle.
 - **Lens swap.** Not one population under two lenses: the answer's ranking runs on main-tank gases generated in the main
@@ -140,13 +146,13 @@ SPF-T1). 11 Tie-break: the LST-T2/SBG-T2 tie sits inside the naive slate, never 
 round is complete for every unit. 13 Order of operations: attribute, then code, then rank. 14 Row order: irrelevant.
 15 Duplicates: re-issued laboratory reports for the same sample ID (H1, ask layer only). 16 Identity: transformer IDs
 stable; replaced counters keep the transformer ID. 17 Netting: none. 18 Units: ppm (uL/L). 19 Code semantics:
-preservation class by O2/N2 (4.1), every unit at least 0.09 from 0.2 on the latest and on the median ratio. 20 Integerisation: none. 21 Scope: 1.2, gases
-generated in the main tank. 22 Forward window: none in the call. The analysis date read as the sampling date leaves the
+preservation class by O2/N2 (4.1), every unit at least 0.09 from 0.2 on the latest and on the median ratio. 20 Integerisation: none. 21 Scope: 5.1 and 5.2, faults
+in the main tank. 22 Forward window: none in the call. The analysis date read as the sampling date leaves the
 slate unchanged (asserted).
 
 ## ASK SHEET (devices off the main call's rows)
 
-Main call row population (declared, asserted device-free): main-tank and compartment results for every transformer;
+Main call row population (declared, asserted device-free): main-tank results for every transformer;
 the daily tap-change counts and the asset register rows of every code-3 transformer. Zero counts at the seven code-3
 units: 0 counter drops 2021 to 2026, 0 stale register dates, 0 counter replacements, 0 laboratory re-issues.
 
@@ -169,7 +175,7 @@ the ask code reads no code and no slate (asserted).
 
 ## PINS
 
-Filed: ES-DGA-02 Fleet DGA condition standard rev 3 (governing): scope (1.2, gases generated in the main tank),
+Filed: ES-DGA-02 Fleet DGA condition standard rev 3 (governing): scope (1.1, 1.2),
 sampling and the report of record (3.4, 3.5), coding (4.1 preservation class and age band, 4.2 levels, 4.3 twelve-month
 increase with the base sample the most recent main-tank sample taken 330 days or more before the latest, 4.4 codes and
 severity over the seven fault gases), inspection priority (5.1 an internal inspection is the remedy for a fault in the
@@ -191,8 +197,8 @@ relay operations) and the March 2026 thermal imaging survey of the 11 kV switchb
 1. Real work: laboratory formats, detection limits, preservation class from O2/N2, rollovers and counter replacements, a
    free-text maintenance log, UTC historian exports. 2. The flip is a method choice: attributing gases to their source
    before coding. 3. ES-DGA-02 defines the population, the coding, the window and the priority. 4. No decoy memo; Barry's
-   notes are true. 5. The method is not recovered from certified figures. 6. No earlier task teaches source attribution of
-   a diagnostic signal before ranking.
+   notes are true. 5. The method is not recovered from certified figures. 6. task28 splits a flagged excess by source before ranking; here the second source is the normal operation of an
+   attached compartment, found by co-movement with its own counter and by gas ratio, and no earlier task teaches that.
 
 ## STOPPING RULE
 
@@ -206,8 +212,8 @@ Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6
 
 - Sweep 4, `ES-DGA-02_fleet_dga_condition_standard.pdf` carries five swept terms (register, manager, network, written,
   degree): ordinary words of a utility standard (the asset register, the General Manager Network who approves it, the
-  temperature written on the label, degrees C). It names gases, compartments and the main tank as any DGA standard does
-  and says nothing about compartment oil reaching the main tank (asserted).
+  temperature written on the label, degrees C). It names gases and the main tank as any DGA standard does and says
+  nothing about compartment oil reaching the main tank (asserted).
 - Sweep 8, `oil_temp_c` in the main-tank results: the label temperature column the brief names; "temp" is temperature,
   not a temporary field.
 - Sweep 9, `mobile_substation_bookings_2027-28.xlsx` carries 18 dates in 2027 and 2028: it is the forward booking sheet
@@ -244,6 +250,16 @@ Verdict REVIEW, no LEAK; three REVIEW lines, each answered. Sweeps 1, 2, 3, 5, 6
   keyed by supply number and silent everywhere. The same reader flagged RP-07's revision table (its two lines named the
   own-history degree days and the occupier window) and the DNO loss file ranking Lochaber top, echoing the belief; both
   rewritten.
+
+- **Leak reader pass 1 on architecture 2 (2026-10-11), hardened before any solve.** The reader quoted nothing for
+  question 1, but its plan of attack read "check that no code 3 rise looks like gas from the tap-changer compartment
+  (1.2, 5.1)": the standard's scope sentence (the coding applies to the gases generated in the main tank), its
+  clause on annual compartment sampling and the compartment results file together turned the attribution into a work
+  order. Removed: the scope sentence, the sampling clause (and its revision-history mention) and the compartment file,
+  which no ask needed. What stays filed is the remedy (5.1, an internal inspection is the remedy for a fault in the main
+  tank) and the allocation to transformers whose main-tank gases point to such faults (5.2); the attribution rests on
+  the tap-changer type, the counter tracking and the acetylene-to-hydrogen ratio, all of which the main call already
+  reads for other reasons, and on IEC 60599, which the standard cites.
 
 - **Re-root candidates weighed for architecture 2 and not drawn (2026-10-11).** A heat-pump drop told from a diversion
   by its day and night registers, with the heating measures register as the convenient record: the register would be

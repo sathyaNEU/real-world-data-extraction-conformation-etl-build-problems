@@ -309,7 +309,7 @@ def main():
     # -- input gates -------------------------------------------------------------------------------
     files = sorted(os.listdir(G.TARGET))
     exts = sorted({os.path.splitext(f)[1] for f in files})
-    check("12 to 14 files", 12 <= len(files) <= 14, str(len(files)))
+    check("10 to 14 files", 10 <= len(files) <= 14, str(len(files)))
     check("at least 5 formats", len(exts) >= 5, str(exts))
     import pyarrow.parquet as pq
     nrow = pq.ParquetFile(G.tp("scada_top_oil")).metadata.num_rows

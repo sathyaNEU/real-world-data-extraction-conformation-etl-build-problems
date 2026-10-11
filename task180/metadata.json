@@ -15,7 +15,7 @@
     "thermal_imaging_survey_2026.pdf"
   ],
   "input_gates": {
-    "files": 12,
+    "files": 11,
     "formats": [
       "csv",
       "md",
@@ -39,9 +39,17 @@
   "generator": "task180/generator/build.py",
   "files": [
     {
+      "path": "AM-EXT-0412_run_report_2026-10-16.txt",
+      "format": "txt",
+      "bytes": 1218,
+      "source": "Constructed: Asset data extract job run report for the 16 October 2026 pull",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "ES-DGA-02_fleet_dga_condition_standard.pdf",
       "format": "pdf",
-      "bytes": 10050,
+      "bytes": 9887,
       "source": "Constructed: Network standard ES-DGA-02 rev 3, fleet DGA condition standard (governing document)",
       "date": "2026-10-16",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -64,23 +72,6 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "dga_tap_changer_compartments_2021-2026.csv",
-      "format": "csv",
-      "bytes": 20571,
-      "rows": 162,
-      "source": "Constructed: Laboratory dissolved gas results for in-oil tap-changer diverter compartments, annual March samples 2021 to 2026",
-      "date": "2026-10-16",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_log_2026-10-16.txt",
-      "format": "txt",
-      "bytes": 1337,
-      "source": "Constructed: Extract job log for the 16 October 2026 pull",
-      "date": "2026-10-16",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "maintenance_log_2019-2026.xlsx",
       "format": "xlsx",
       "bytes": 19752,
@@ -99,7 +90,7 @@
     {
       "path": "oil_results_notes.md",
       "format": "md",
-      "bytes": 2491,
+      "bytes": 2296,
       "source": "Constructed: Zone substation engineering field notes for the extracts",
       "date": "2026-10-16",
       "license": "CC0-1.0 (original work, constructed for this task)"

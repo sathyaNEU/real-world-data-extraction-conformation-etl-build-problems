@@ -8,7 +8,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 T = os.path.join(HERE, "..", "target")
 DESC = {
     "dga_main_tank_results": "Laboratory dissolved gas, water and oil temperature results for main-tank oil samples, one row per report issue, March 2021 to September 2026",
-    "dga_tap_changer_compartments": "Laboratory dissolved gas results for in-oil tap-changer diverter compartments, annual March samples 2021 to 2026",
     "asset_register_zone_transformers": "Asset management system extract: the 44 zone substation transformers and the 22 substations",
     "scada_tap_counters_daily": "SCADA tap-changer operations counters at 00:00 daily, 1 January 2021 to 16 October 2026",
     "scada_top_oil_hourly": "SCADA historian export of hourly mean top-oil temperature and load per transformer, 2021 to 15 October 2026",
@@ -18,7 +17,7 @@ DESC = {
     "mobile_substation_bookings": "Canterbury mobile substation pool MSU-2 booking sheet, April 2027 to March 2028",
     "protection_relay_events": "Feeder and incomer protection relay operations, January 2025 to October 2026",
     "thermal_imaging_survey": "Contractor infrared survey of the 11 kV switchboards, March 2026",
-    "extract_log": "Extract job log for the 16 October 2026 pull",
+    "AM-EXT-0412_run_report": "Asset data extract job run report for the 16 October 2026 pull",
 }
 files, fmts = [], set()
 for f in sorted(os.listdir(T)):

@@ -94,9 +94,7 @@ def write_standard(path):
         "1.1 This standard sets how Ellesmere Lines samples, codes and prioritises its zone substation "
         "power transformers on the dissolved gas analysis (DGA) of their insulating oil. It applies to the "
         "44 transformers held in the asset register as in service at the 22 zone substations.",
-        "1.2 The condition coding in section 4 applies to the gases generated in the main tank of each "
-        "transformer.",
-        "1.3 Bushings, cooling plant and transformer protection are assessed under ES-MNT-07 and are outside "
+        "1.2 Bushings, cooling plant and transformer protection are assessed under ES-MNT-07 and are outside "
         "this standard.",
     ])
     sec("2 References", [
@@ -118,8 +116,6 @@ def write_standard(path):
         "3.4 The laboratory report of record for a sample is the latest issue for its sample ID. Earlier "
         "issues are kept on file for audit.",
         "3.5 A result below the laboratory's limit of detection counts as half the limit of detection.",
-        "3.6 Oil from the diverter compartment of each in-oil tap changer is sampled once a year for "
-        "maintenance planning. Compartment results are not coded under section 4.",
     ])
     sec("4 Condition coding", [])
     story.append(Paragraph("4.1 Preservation class and age band", H2))
@@ -205,7 +201,7 @@ def write_standard(path):
     story.append(Paragraph("Revision history", H1))
     t = Table([["Rev", "Date", "Change"],
                ["1", "March 2018", "First issue"],
-               ["2", "August 2021", "Monthly sampling at the engineer's discretion; annual compartment sampling"],
+               ["2", "August 2021", "Monthly sampling at the engineer's discretion"],
                ["3", "June 2025", "Level tables by preservation class and age band; twelve-month increase; "
                                   "severity score; annex C"]],
               colWidths=[12 * mm, 26 * mm, 128 * mm])

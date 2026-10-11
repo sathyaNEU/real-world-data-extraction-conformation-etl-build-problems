@@ -1,13 +1,13 @@
 # leak check, task180
 
-**Verdict: REVIEW.** 12 files read, 100 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 100 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: heating, register, decisive, supply, manager, related, ranked, architecture, network, screen, account, written, attribution, pattern, bookings, stated, operator, sentence, regime, recovered, acknowledgement, corpus, metered, diversions, degree
+Stump terms swept: heating, register, decisive, supply, manager, related, ranked, architecture, network, screen, account, written, attribution, pattern, remedy, bookings, stated, operator, sentence, regime, recovered, acknowledgement, corpus, metered, diversions
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `ES-DGA-02_fleet_dga_condition_standard.pdf`: 5 of 25 stump-paragraph terms appear (register, manager, network, written, degree); read whether the document names the move
+- **REVIEW** `ES-DGA-02_fleet_dga_condition_standard.pdf`: 5 of 25 stump-paragraph terms appear (register, manager, network, written, remedy); read whether the document names the move
 
 ## 8 column names (REVIEW 1)
 - **REVIEW** `dga_main_tank_results_2021-2026.csv`: columns a generator names and an organisation does not: oil_temp_c

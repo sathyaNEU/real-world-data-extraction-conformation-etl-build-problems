@@ -305,11 +305,6 @@ Main-tank oil results from Waihora Laboratories, one row per issue of a laborato
   written.
 - `sample_point`: the valve the sample was drawn from.
 
-## {F['comp']}
-
-Diverter compartment oil from the in-oil tap changers, sampled at the March visit. Same fields as the
-main-tank file, without the oil temperature.
-
 ## {F['counters']}
 
 - `date`, `transformer_id`
@@ -355,7 +350,6 @@ def write_extract_log(path, F, counts):
         "",
         "source                      object                                   file                                          rows",
         f"LIMS Waihora Laboratories   results, main tank, from 01/01/2021      {F['main']:<45} {counts['main']}",
-        f"LIMS Waihora Laboratories   results, OLTC compartment                {F['comp']:<45} {counts['comp']}",
         f"SCADA historian             ZS_TX*.TAPCOUNT daily at 00:00           {F['counters']:<45} {counts['counters']}",
         f"SCADA historian             ZS_TX*.TOPOIL, ZS_TX*.MVA hourly mean    {F['topoil']:<45} {counts['topoil']}",
         f"AMS                         assets: zone transformers, substations   {F['register']:<45} {counts['register']}",

@@ -22,7 +22,6 @@ import docs_pdf        # noqa: E402
 TARGET = os.path.join(HERE, "..", "target")
 F = {
     "main": "dga_main_tank_results_2021-2026.csv",
-    "comp": "dga_tap_changer_compartments_2021-2026.csv",
     "register": "asset_register_zone_transformers.xlsx",
     "counters": "scada_tap_counters_daily_2021-2026.csv",
     "topoil": "scada_top_oil_hourly_2021-2026.parquet",
@@ -32,7 +31,7 @@ F = {
     "bookings": "mobile_substation_bookings_2027-28.xlsx",
     "relay": "protection_relay_events_2025-2026.csv",
     "thermal": "thermal_imaging_survey_2026.pdf",
-    "extract": "extract_log_2026-10-16.txt",
+    "extract": "AM-EXT-0412_run_report_2026-10-16.txt",
 }
 GAS_COLS = ["H2", "CH4", "C2H6", "C2H4", "C2H2", "CO", "CO2", "O2", "N2"]
 
@@ -159,7 +158,6 @@ def main():
     main_ids, comp_ids = lab_ids(R)
     counts = {}
     counts["main"] = write_main(os.path.join(TARGET, F["main"]), R, main_ids)
-    counts["comp"] = write_comp(os.path.join(TARGET, F["comp"]), R, comp_ids)
     counts["counters"] = write_counters(os.path.join(TARGET, F["counters"]), dl, cnt)
     counts["topoil"] = write_topoil(os.path.join(TARGET, F["topoil"]), H)
     docs.write_register(os.path.join(TARGET, F["register"]))
