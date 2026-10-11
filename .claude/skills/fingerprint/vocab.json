@@ -522,6 +522,17 @@
     "calendar-first",
     "other"
   ],
+  "question_forms": [
+    "how-many",
+    "how-much",
+    "which",
+    "whether",
+    "what",
+    "when",
+    "who",
+    "where",
+    "other"
+  ],
   "deliverable_formats": [
     "csv",
     "tsv",

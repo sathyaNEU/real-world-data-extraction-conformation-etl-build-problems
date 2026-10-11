@@ -243,7 +243,7 @@ writing and comes back **no on both limbs**, so the build is legal and is not
 own screen in its own words, so there is no read the task overturns. It is dead for a different
 reason. **Charter 2.1, 2.2, 3.1 and 4.1 are a complete algorithm**, quantity, threshold test, limit
 and sum, so the decisive rule is written in a shipped sentence and the decision shape is the one
-`stumping` Part 2 rules out, "a figure computed to see which side of a line it falls".
+`stumping` Part 9 rules out, "a figure computed to see which side of a line it falls".
 
 **The finding that generalises, and it is a design-time check rather than a round-time one: count
 the degrees of freedom in the graded quantity before choosing it.** task49 grades the sum over a

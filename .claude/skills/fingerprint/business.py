@@ -22,7 +22,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 NARRATIVE_EXT = {".md", ".txt", ".eml", ".html", ".htm", ".pdf", ".docx", ".pptx", ".rtf"}
-TOP_LEVEL_FILES = ("prompt.md", "PROMPT.md", "problem_statement.md", "original_prompt.txt",
+TOP_LEVEL_FILES = ("prompt.txt", "prompt.md", "PROMPT.md", "problem_statement.md", "original_prompt.txt",
                    "submission.md", "submissions.md", "SOLUTION.md", "solution.md")
 NARRATIVE_DIRS = ("target", "golden", "deliverables", "golden_deliverables", "answer_key")
 
@@ -440,7 +440,7 @@ def derived_elements(repo, task):
     fields existed."""
     d = Path(repo) / task
     text = ""
-    for f in ("prompt.md", "PROMPT.md", "problem_statement.md", "original_prompt.txt"):
+    for f in ("prompt.txt", "prompt.md", "PROMPT.md", "problem_statement.md", "original_prompt.txt"):
         if (d / f).exists():
             text = read_narrative(d / f)
             break
