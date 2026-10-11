@@ -2,8 +2,8 @@
  "task": "task182",
  "domain": "physical-environmental-sciences",
  "objective": "anomaly-detection",
- "stage": 7,
- "stage_name": "determinism check: pass 1 DETERMINISTIC, FIX_NOW fixed (declines refit continuously, bands stated, KV-LB16-control rung asserted); re-judge pending",
+ "stage": 9,
+ "stage_name": "shipped 2026-10-11; the author tests on the portal",
  "updated": "2026-10-11",
  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change) and offers make good to the alluvial bores that fell more than 2 m and the ridge basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and the basalt fell through the dry seasons on rainfall alone and the coal-measure bores near the pit, still rising on the 2019 to 2021 wet seasons, were drawn 8.3 to 9.3 m below where that rise was taking them while showing 2.21 to 2.49 m of decline.",
  "architecture": 1,
@@ -73,10 +73,17 @@
     "leak_py": "REVIEW, no LEAK (19 lines, the same four kinds, answered in the design note)",
     "next": "re-judge (pass 2)"
    }
+  },
+  "pass_2": {
+   "date": "2026-10-11",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "task182/determinism_check_report_pass2.md",
+   "notes": "every level, change and decline inside its band (largest gap 0.07 m against 0.3); the offer list forced; the KV-LB16 control ruled out; KV-LB12 on the 4.4/4.5 edge graded safely by its band"
   }
  },
  "approved": false,
- "delivered": "",
+ "delivered": "2026-10-11",
  "portal": "",
  "build": {
   "answer": "KV-LB04, KV-LB05, KV-LB07, KV-LB10, KV-LB12 have impaired capacity; four make-good offers (Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05, Tondara Grazing Pty Ltd, Bluebush Downs Pty Ltd, Cypress Ridge Pastoral Trust)",

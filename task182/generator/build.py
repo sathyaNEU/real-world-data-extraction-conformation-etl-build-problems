@@ -1,6 +1,6 @@
 """Build task182: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json, then the
 checks and the independent verifier, then a second full build into a scratch folder inside the task (removed
-after) compared byte for byte.
+after) compared byte for byte, then target.zip cut from the final build.
 
     python3 task182/generator/build.py              everything
     python3 task182/generator/build.py --out DIR    the pack only, into DIR"""
@@ -77,6 +77,23 @@ def digest(folder):
     return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
 
 
+def cut_zip(root):
+    """target.zip from root/target: the pack's files at the archive's root, in name order, each stamped with the
+    afternoon of the network extract (Friday 9 October 2026), so the archive is cut from the tree it ships beside
+    and two cuts are byte-identical."""
+    import zipfile
+    folder = os.path.join(root, "target")
+    stamp = dt.datetime.combine(W.EXTRACT_DAY, dt.time(15, 42, 6)).timetuple()[:6]
+    zp = os.path.join(root, "target.zip")
+    with zipfile.ZipFile(zp, "w") as z:
+        for f in sorted(os.listdir(folder)):
+            zi = zipfile.ZipInfo(f, date_time=stamp)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(folder, f), "rb").read())
+    return zp
+
+
 def everything(root, quiet=False):
     import deliver as DL
     import metadata as MD
@@ -111,6 +128,14 @@ def main():
                           + m1.encode()).hexdigest()
     print("two builds byte-identical: %d target files, %d golden files and metadata.json (combined sha256 %s)" % (
         len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))), allh[:16]))
+    import zipfile
+    zp = cut_zip(TASK)
+    with zipfile.ZipFile(zp) as z:
+        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
+    if inside != digest(os.path.join(TASK, "target")):
+        raise SystemExit("target.zip differs from target/")
+    print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
+        len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
 
 
 if __name__ == "__main__":

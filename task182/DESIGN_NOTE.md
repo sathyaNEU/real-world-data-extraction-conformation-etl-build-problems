@@ -616,6 +616,43 @@ card's six.
 - **Complaints** are dated in the register (MG-02 7.1), so the contact log stays a distractor.
 - **Prompt.** Unchanged.
 
+## PRE-SHIP CHECK (client, eight points; answered at ship)
+
+1. **Domain.** The task is a groundwater impact assessment, the field's own make-good work: attributing a bore's
+   decline to the mine's take against its aquifer's trigger.
+   - The swap test breaks it: with another field's nouns the aquifers' lagged recharge response, the per-aquifer
+     triggers and the logger compensation do not survive.
+2. **Real work, nothing planted.** The inputs take work to put in order:
+   - dips under seven site spellings;
+   - the consultant's rounds in feet;
+   - two measuring-point changes and pumped dips;
+   - unvented loggers needing barometric compensation and sensor depths;
+   - UTC against Queensland days.
+
+   Each comes from the network's own systems, and none is planted.
+3. **The flip is a method choice.** The step that flips the call is the counterfactual for each bore without the
+   mine: its own lagged climate response, fitted before the take and run forward. It is not a catch, a field
+   reading or a stated rule: MG-02 sets the trigger test, not the attribution method.
+4. **The analyst test holds.** A strong analyst who cleans every reading and applies MG-02 exactly still gets the
+   answer wrong by reading the decline since baseline as the mine's. The LADDER names each route and its set:
+   - **Since baseline:** the alluvial bores and KV-LB18.
+   - **Net of the reference bores:** KV-LB12 alone.
+   - **KV-LB16 as the coal measures' control (rung 5):** two offers for three bores.
+5. **One defensible method.** The prompt and MG-02 4.1 define the quantity: "the decline the mine's take has caused,
+   at its September 2026 level", against the aquifer's trigger (3.1), with offers per owner (6.1).
+   - Only a per-bore counterfactual measures it.
+   - Judge passes 1 and 2 forced the set in every fitting variant that fits the record.
+6. **No decoy.** No memo, draft or briefing carries an answer:
+   - the contact log holds complaints, not assessments;
+   - the register holds inputs only, and its line saying so was removed at 6b.
+7. **Nothing hidden and recovered.** No certified or published figure is shipped for the method to reproduce. The
+   method follows from the quantity and the data's own structure: the pre-take record, the climate file and the state
+   reference bores.
+8. **A new lesson.** It is attribution by each bore's own lagged climate response rather than the change since
+   baseline or a nearby control that is itself drawn down.
+   - The guard's heart check found no near driver (nearest 0.06).
+   - The clone pre-flight found no reject tier (a Shape echo against task228 architecture 2, a different driver).
+
 ## STOPPING RULE
 
 Three hardening loops on this architecture, then a re-root in the same objective and number; three architectures, then
