@@ -1,89 +1,146 @@
 {
   "task": "task134",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-11",
-  "slot_note": "seed FC05 (spring battery siting) not used: its analysis is electricity load forecasting, so its Economics label would be a backdrop under rule 1, and energy-systems-utilities with forecasting repeats task132 under the pairing ban; redrawn inside Forecasting",
-  "domain": "criminology-justice",
-  "subdomain": "recidivism-risk-assessment",
-  "niche": "a border county's criminal justice planning office projecting how many of next fiscal year's jail releases will be booked again within three years, when some releases are deported or die before they can return, to size a state-funded reentry navigator grant by supervision district",
+  "slot_note": "architecture 2 of 3, a re-root of v1 (spent at hardening loop 1: its default construction was the golden); drawn fresh in Forecasting & Predictive Modeling; seed FC05 (battery siting) still not used, energy with forecasting being banned against task132",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization-access-demand-forecasting",
+  "niche": "a Scottish health and social care partnership forecasting how many care home residents it will be paying for at each quarter end of 2027-28, when a wave of self-funding residents admitted to new private homes in 2025-26 will run their savings down to the funding threshold during the year",
   "objective": "forecasting",
   "shape": "07",
-  "decision_type": "allocation_to_total",
+  "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "",
-  "answer_source": "task134/submission.md, 1. Final Recommendation",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
+    "G14",
     "G13",
-    "G12"
+    "G5"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "criminal justice planning manager at a county, who files the county's application to the state reentry navigator grant",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
+  "context_artifact": "none",
+  "stakeholder_role": "planning and performance analyst at a health and social care partnership, preparing the care home line of the integration joint board's 2027-28 budget",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "jail_releases_2021-10_2026-10.csv",
+    "file": "fpnc_payment_lines_2016-2026.csv",
     "rows": 0,
-    "entity": "one release from the county jail to the community or to another custody",
-    "grain": "release event",
+    "entity": "one weekly free personal and nursing care payment line for one self-funding care home resident",
+    "grain": "self-funding resident x payment week",
     "source": "synthetic"
   },
-  "forum": "council_or_assembly",
+  "forum": "committee_or_panel",
   "forcing_event": "budget_or_appropriation",
   "org_family": "local_government",
   "world": {
-    "geography": "United States, Texas",
-    "currency": "USD",
-    "org_type": "county sheriff's office jail and county criminal justice planning office, applying to a state grant program",
-    "invented_names": [],
+    "geography": "United Kingdom, Scotland",
+    "currency": "GBP",
+    "org_type": "health and social care partnership (council and NHS board integration authority) commissioning and funding care home places",
+    "invented_names": [
+      "Strathallan Health and Social Care Partnership",
+      "Strathallan Council",
+      "Strathallan Integration Joint Board",
+      "Strathallan Care Finance Team"
+    ],
     "people": [
-      "Timothy Gonzalez",
-      "Tonya Bartlett",
-      "Julie Houston",
-      "Anthony Hines",
-      "Rebecca Francis"
+      "Richard Lynch",
+      "Martyn Rogers",
+      "Hollie Todd",
+      "Ruth Wong",
+      "Joseph Morris",
+      "Margaret Booth"
     ]
   },
   "deliverables": [
-    "navigator_application_fy2027.xlsx",
-    "return_curves_by_district.png"
+    "care_home_funding_forecast_2027-28.xlsx",
+    "council_funded_residents_2027-28.png"
   ],
-  "opening_move": "calendar-first",
-  "driver": "The decisive quantity is the probability that a released unit has an event within a fixed horizon when competing exits remove some units from risk for good and most units are not yet followed to the horizon: the share observed so far understates it, the survival estimate that treats competing exits as censoring overstates it most where those exits concentrate, and only the cumulative incidence that counts competing exits as ending the risk sizes the allocation.",
-  "driver_concrete": "Each supervision district's probability that a release is booked into the jail again within 36 months is estimated from releases since the bail reform, none followed for the full 36 months, while transfers to an immigration detainer that end in removal, and deaths, end the chance of a return; the share booked again so far understates it, Kaplan-Meier with removals and deaths censored overstates it most in the border district, and the Aalen-Johansen cumulative incidence times next year's projected releases sets the navigators by district.",
-  "stump": "A competent solver estimates each district's 36-month return probability by Kaplan-Meier from post-reform releases, censoring removals and deaths along with the data cut, and applies for too many navigators with the border district over-allocated; the step that lands it there is treating deportation and death as censoring, when a removed or dead releasee can no longer be booked again.",
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the inflow that a pool held outside the decision's own register will send into it over the forward year, generated by a conversion hazard that is near zero for a member's first months and peaks a year or more after entry; because a recent surge filled the pool with members not yet in their conversion window, the inflow counted in past years, or a pooled per-member rate, understates it, and only the hazard by time since entry applied to each member's own entry date sizes it.",
+  "driver_concrete": "Self-funding care home residents become council-funded when their savings fall to the threshold, which almost never happens in the first months and mostly happens one to three years after admission; two new private homes filled with self-funders in 2025-26, so the partnership's transfer counts of past years and its transfers per self-funder both understate 2027-28, and only conversion by months since admission, applied to each self-funder's admission date, sizes the council-funded caseload.",
+  "stump": "A competent solver projects the council-funded caseload from its own placements register, current residents by survival plus new placements by route trended from 2023-24 to 2025-26, so transfers from self-funding run at their past rate, and under-forecasts the residents the partnership pays for at 31 March 2028 most in the localities where the new homes opened; the step that lands it there is treating transfers as a stable route, when they are generated by the self-funding pool by time since admission and that pool is now mostly residents entering their depletion window.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the releases, links the removals and deaths and reads the grant guidance correctly still estimates the return probability by Kaplan-Meier with removals and deaths censored (or as the share booked again so far, ignoring incomplete follow-up) and sizes the application wrong, because competing exits are not censoring.",
-  "domain_test": "The deciding quantity is the probability of re-booking within a fixed window from release, estimated with censoring and competing exits from jail release and booking records, the core measurement of recidivism research; with another field's nouns the release types, immigration detainers and removals, re-booking definitions and supervision districts have nothing to attach to.",
+  "analyst_test": "A strong analyst who links the placements register to the payment and assessment records, applies the funding definitions correctly and handles deaths as a competing exit still forecasts transfers from self-funding as a trend of past annual transfers, or as the pooled transfer rate per self-funder times today's pool, and under-forecasts the council-funded caseload at 31 March 2028; conditioning the transfer hazard on months since admission and applying it to each self-funder's admission date sizes it.",
+  "domain_test": "The deciding quantity is the conversion of self-funding care home residents to public funding as their capital depletes, forecast by time since admission against a means-test threshold, the core of long-term care funding forecasts; with another field's nouns there is no means test, no self-funder pool outside the funder's register and no depletion clock, and the task stops reading the same.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task104": "task104 re-runs a self-adapting detector at a threshold it never ran at, because the log only describes the setting that produced it; here nothing is re-run: the estimand is a cumulative incidence under censoring with competing exits, and the method choice is the estimator.",
-    "task70": "task70 builds a per-record chargeable date with a class-conditional cut from an event log; here the decisive choice is the survival estimator for a forward return probability (cumulative incidence against Kaplan-Meier with competing exits censored, against the share observed so far)."
-  },
-  "lineage": [],
-  "notes": "Drawn after task133 shipped, as the lane's next number; the seed's battery siting is left for a later energy draw outside the pairing ban.",
-  "client_domain": "criminology-justice",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-11",
+      "domain": "criminology-justice",
+      "subdomain": "recidivism-risk-assessment",
+      "niche": "a border county's criminal justice planning office projecting how many of next fiscal year's jail releases will be followed by a return within three years, when some releases are deported or die before they can return, to size a state-funded reentry navigator grant by supervision district",
+      "objective": "forecasting",
+      "shape": "07",
+      "decision_type": "allocation_to_total",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G13",
+        "G12"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "maturity_censoring",
+      "context_artifact": "none",
+      "role_family": "policy_adviser",
+      "forum": "council_or_assembly",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "local_government",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:competing-removal-and-death-in-return-forecast",
+      "driver": "The decisive quantity is the probability that a released unit has an event within a fixed horizon when some units leave through exits that are not censoring and most units are not yet followed to the horizon: the share observed so far understates it, the survival estimate that censors those exits overstates it most where they concentrate, treating the exit that can be reversed as final understates it, and only following every unit to the data cut sizes the allocation.",
+      "driver_concrete": "Each supervision district's probability that a release is booked into the jail again within 36 months is estimated from releases since the bail reform, none followed for the full 36 months, while transfers on an immigration detainer end mostly in removal, some removed people come back and are booked again, and some releasees die; the share booked again so far understates it, Kaplan-Meier with removals and deaths censored overstates it most in the border district, a cumulative incidence that ends follow-up at removal drops the returns after people come back, and following every release to the data cut, times next year's projected releases, sets the navigators by district.",
+      "stump": "A competent solver estimates each district's 36-month return probability by Kaplan-Meier from post-reform releases, censoring removals and deaths along with the data cut, and applies for too many navigators with the border district over-allocated; the step that lands it there is treating deportation and death as loss to follow-up, when a removed person who comes back is booked into the same jail and a dead releasee can no longer return.",
+      "answer": "We should apply for 33 reentry navigators: 8 in Puerto, 8 in Centro, 4 in Norte, 6 in Poniente, 4 in Oriente and 3 in Sur, for 7,441 projected returns from fiscal 2027 releases.",
+      "fate": "spent 2026-10-11 at hardening loop 1 of 3: round 1 landed the call exactly (33 navigators, 7,441 projected returns, proxy 82.3) on the default construction (Kaplan-Meier with the cut as the only censoring, deaths as non-returners), which was the golden; the stump (censoring removals and deaths) sat off that path, and loop 1 found on paper no rung on it that is analytical, forced, fork-free and outside the bin (period, mix, a younger window, a forward booking change, a release pulse and visible exits all measured dead)",
+      "spine": {
+        "file": "jail_releases_2021-10_2026-10.csv",
+        "rows": 69418,
+        "entity": "one release from the county jail to the community or to another custody",
+        "grain": "release event",
+        "source": "synthetic"
+      },
+      "deliverables": [
+        "navigator_application_fy2027.xlsx",
+        "release_ratings_by_district.png"
+      ]
+    }
+  ],
+  "notes": "Re-root drawn 2026-10-11 after architecture 1 was spent at hardening loop 1 (design note, Hardening loop 1, on paper); architecture 1's identity is in lineage with its fate. Coding: decisive gap time (the transfer history describes past self-funding pools, the forecast bets on a pool whose time-since-admission mix the window never saw), pattern none with G14 decisive (does the pooled transfer rate apply to this pool), Gate G method_or_model_selection (the transfer forecasting method). The pattern-E codings collided with spent signatures (task117, task37, task44, task97; task31, task56, task76) and were not used. Forum committee_or_panel is the integration joint board.",
+  "client_domain": "healthcare-delivery-health-economics",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:competing-removal-and-death-in-return-forecast",
+  "layer2_pattern": "own:self-funder-conversion-by-time-since-admission",
   "layer1": [
-    "a jail management system replaced in 2024, with booking numbers reissued and a person crosswalk",
-    "release types that mix community releases with transfers to other custody",
-    "an immigration detainer unit's log of transfers and removals keyed on a different identifier",
-    "a medical examiner death linkage with match status",
-    "a district boundary change in 2025 with an address crosswalk",
-    "a superseded preliminary release projection beside the adopted one"
+    "a social care case system replaced in 2023, with client identifiers reissued, a conversion crosswalk and merged duplicate records",
+    "care home placements split into episodes at every change of home, care type or rate, so one stay spans several register rows",
+    "respite, interim and permanent placements in one register, told apart by a placement-type code",
+    "weekly free personal and nursing care payment lines with April rate changes, hospital-absence reductions and retrospective adjustment lines",
+    "financial assessments superseded by reassessments, with effective dates that run back before the date the assessment was recorded",
+    "deaths linked from the national registers with a match status and a registration lag",
+    "care homes re-registered on change of ownership under a new service number, with the old number closed",
+    "locality boundaries revised in 2024, with a postcode-to-locality lookup for both versions",
+    "National Care Home Contract rates announced each spring for the following April, beside a superseded draft rate schedule"
   ]
 }
