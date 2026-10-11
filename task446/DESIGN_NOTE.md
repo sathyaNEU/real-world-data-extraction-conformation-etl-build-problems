@@ -1,4 +1,4 @@
-# task446 design note (architecture 2)
+# task446 design note (architecture 2, loop 1)
 
 Seed ET03 (GLEIF LEI-hierarchy issuer-group concentration, Data Extraction & Conformation). Architecture 1
 (obligor-group house-limit projection on the projection-date membership) was spent at solver round 1 as a
@@ -6,38 +6,46 @@ rule-application stump (see the tried-and-rejected section and `solver_rounds/ro
 keeps the number, the objective and the seed's world (the GLEIF consolidation hierarchy carrying entity-level records up
 to obligor groups, a UK bank's own systems) and draws a new decision and a new Layer 2 pitfall.
 
+Loop 1 is a designer pass before any solver round on architecture 2. The stage 4 reader found that the
+standard's 5.2 filed a basis ("set from the performance measures in 4.3") whose literal reading is the pooled
+hit rate, about 74 against the golden 134: the defect the portal failed task445 on (`answer_contradicts_files`)
+and an official decoy on the card's terms. Loop 1 files the estimand and the test that selects the basis, names
+no basis, retunes the cohort counts so the test separates the bases widely, redraws the ask devices off
+architecture 1's families, and lists the realism repairs. The builder executes the brief at the end of this note.
+
 ## DRAW
 
 | Axis | Draw |
 |---|---|
-| Card | `cards/task446.json` v2, `guard.py check` PASS, registered 2026-10-11 before the ladder; v1 kept in `lineage` with its fate |
+| Card | `cards/task446.json` v2, refiled 2026-10-11 for loop 1: `guard.py check` WARN (repeat.gate_g, overuse.gate_g, answered under Gate G), `heart` WARN, nearest driver 0.07; v1 kept in `lineage` with its fate |
 | Domain / task type | banking-credit-financial-risk / other: early-warning and watch-list monitoring of corporate obligor groups (client domain Banking, Credit & Financial Risk) |
-| Objective | Data Extraction & Conformation (ETL): four closed annual cohorts and the live book built from an early-warning engine's entity-level monthly signals, carried to obligor groups through the credit system's group register and the GLEIF consolidation hierarchy, matched to the watch-list history; the forecast runs on that conformed cohort table |
-| Shape | 05 allocation to a fixed total: the caseload allocated over the five exposure bands, each band with expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row |
-| Gate G mechanism | forecasting, with method_or_model_selection support (which performance measure carries across cohorts) |
+| Objective | Data Extraction & Conformation (ETL): four closed annual cohorts and the live book built from an early-warning engine's entity-level monthly signals, carried to obligor groups through the credit system's group register and the GLEIF consolidation hierarchy, matched to the watch-list history; committed exposure conformed from a two-ledger facility extract and its limit history; the forecast runs on the conformed cohort table |
+| Shape | 05 allocation to a fixed total: the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row |
+| Gate G mechanism | method_or_model_selection (the basis the filed test selects), with forecasting support (a forward count for a window that has not opened) |
 | Gap / pattern | time then population / none; generators G16 (decisive), G13, G19 |
 | Decision type | quantity_figure (count: obligor groups the 2027 watch-list caseload plans for) |
-| Stump strategy | forecast_method_backtest; decisive rule filed: no; official decoy: no; validated decoy: no |
-| Calibration | existing_book_actuals: the bank's own four closed cohorts, used to measure the screen and to back-test how its performance carries forward |
-| Context artifact | filed_model (the early-warning system's model documentation and monitoring standard) |
+| Stump strategy | forecast_method_backtest; decisive rule filed: no (the criterion that selects the basis is filed, the basis is not); official decoy: no; validated decoy: no |
+| Calibration | existing_book_actuals: the bank's own four closed cohorts, on which the filed test is run |
+| Context artifact | filed_model (the early-warning and watch-list monitoring standard) |
 | Role | head of credit risk monitoring (portfolio_manager family); forum committee_or_panel (executive risk committee); forcing event budget_or_appropriation (2027 resourcing budget); org financial_institution |
 | As of | 2026-10-11, the request (data as at 30 Sep 2026, pack compiled 8 Oct 2026; the agenda carries the 4 Nov meeting) |
 | World | United Kingdom, GBP, Halstow Bank plc; personas Jill Berry, Mathew Long (`guard.py names --geo 'United Kingdom' --seed 446`) |
 | Layer 2 | forecast_uncertainty, own:screen-yield-under-a-moved-base-rate |
-| Layer 1 | entity signals keyed by LEI including non-borrowing entities; GLEIF L1/L2 with relationship periods, lapsed registrations, successors, branches, fund-management links; credit-system group register and watch-list history in their own namespace; facility extracts from two booking entities with currencies and a late file (exposure asks only) |
+| Layer 1 | entity signals keyed by LEI or company number including non-borrowing entities; GLEIF L1/L2 with relationship periods, lapsed registrations, successors, branches, fund-management links; the credit system's group register and watch-list history in its own namespace; a two-ledger facility extract at facility-and-obligor grain run after the 1 October start-of-day batch, a limit history stamped in UTC, and customers not yet booked to a group (ask paths only) |
 
 **Similarity claim.** No build on file turns on which of a screen's measured properties carries to a year with
-a different base rate. Nearest drivers sit at 0.06 and below (task57 v19 held-out year, task89 v11 forward roll,
+a different base rate. Nearest drivers sit at 0.07 and below (task57 v19 held-out year, task89 v11 forward roll,
 task51 decomposition). Rejected neighbours this draw passed through are recorded in `## Tried and rejected`.
 
 ## Stump sentence
 
-A competent solver rolls the entity signals up to groups, builds the four closed cohorts, measures the
-early-warning system's hit rate (the share of flagged groups that reach the watch list within twelve months)
-and its miss rate exactly as the monitoring standard reports them, applies them to the groups flagged and not
-flagged at 30 September 2026 and files a caseload about half the golden; the hit rate rises with each cohort's
-deterioration rate, and this year's flagged share implies a deterioration rate far above any closed cohort,
-which only the capture and false-alarm rates (stable across the cohorts) can back out of the flagged share.
+A competent solver rolls the entity signals up to groups, builds the four closed cohorts and sets the
+probabilities from the share of flagged and of unflagged groups that reached the list over those cohorts taken
+together, the hit and miss rates the committee is shown each November, and files 73; one who runs the
+standard's test, sees that basis miss the 2024 cohort by 40.6 per cent and trends the hit and miss rates on the
+flagged share (worst miss 8.0 per cent) files 147; only the basis that backs each year's share of the book
+reaching the list out of that year's flagged share through the capture and false-alarm rates, which hold
+across the cohorts, predicts every closed cohort within 1.6 per cent, and it gives 133.
 
 ## Data-native sentence
 
@@ -45,6 +53,19 @@ An early-warning screen on a credit book is judged by its hit rate, but how many
 much of the book is deteriorating that year, and the bank's own cohorts show exactly that: the capture and
 false-alarm rates sit still while the hit rate climbs in the year rates rose, so a year in which the flagged
 share has jumped is a year in which the hit rate measured on calmer years undercounts the inflow.
+
+## Literal reader
+
+Executing the prompt and CRM-07 word for word, a reader computes the expected number of the 913 groups in the
+30 September 2026 monitored book (4.1, with later joiners out under 5.1) that are placed on the watch list by
+30 September 2027 (4.2), as the sum of one probability for the 165 flagged groups and one for the 748 others
+(5.2), on the basis that, set in turn from three of the last four closed cohorts taken together and applied to
+the fourth cohort's book and flags at its date, has the smallest largest miss (5.2), rounded to the nearest
+whole group (5.3). The text names no basis. Of every basis that can be set from the cohorts taken together, the
+share of flagged and of unflagged groups reaching the list misses the 2024 cohort by 40.6 per cent, and the
+capture and false-alarm rates applied to each cohort's own flagged share miss no cohort by more than 1.6 per
+cent, so the literal reading is 133. The easy 73 comes only from an easy method (the pooled hit and miss rates
+applied without the test 5.2 requires); no sentence in the pack, read literally, gives it.
 
 ## The three rules
 
@@ -54,17 +75,19 @@ share has jumped is a year in which the hit rate measured on calmer years underc
   book as the monitored population). With another field's nouns in, the group roll-up of entity signals, the
   watch-list window and the committed-book population have nothing to attach to.
 - **Two layers.** Layer 1: an early-warning engine that publishes monthly signals per legal entity by LEI
-  (borrowers and the non-borrowing parents and sisters the vendors cover), the GLEIF golden copy with its real
-  behaviour, the credit system's group register and watch-list history in its own customer namespace, facility
-  extracts with currencies and a late booking-entity file. Layer
-  2: a screen's past yield is carried onto a year whose base rate has moved; the yield is a property of the year,
-  the error rates are the screen's, and the cohorts show it.
+  (borrowers and the non-borrowing parents and sisters the vendors cover), the GLEIF concatenated files with their
+  real behaviour, the credit system's group register and watch-list history in its own customer namespace, and on
+  the ask paths a two-ledger facility extract and limit history with the mess two loan platforms produce. Layer 2:
+  a screen's past yield is carried onto a year whose base rate has moved; the yield is a property of the year,
+  the error rates are the screen's, and the filed test on the cohorts shows it.
 - **Decisive step class: analytical.** Analyst test: a strong analyst who conforms every signal to its group
-  correctly and reads the standard's group-flag rule, cohort definition and performance measures correctly
-  applies the measured hit rate to this year's flagged groups and the miss rate to the rest, because those are
-  the screen's reported performance over exactly the cohorts the standard names, and so files about half the
-  expected inflow.
-
+  correctly and reads the standard's book, outcome, cohort and test clauses correctly sets the flagged and
+  unflagged probabilities first from the share of each that reached the list over the four cohorts taken
+  together, because that is the probability of reaching given flag status as the cohorts measured it; that easy
+  method gives 73, its test miss is 40.6 per cent, and an analyst who then searches only among rates measured on
+  flag status (latest, most stressed, trended on the flagged share) still files 69, 98 or 147, because the hit
+  rate is a property of each year's share of the book reaching the list, which this year's flagged share puts far
+  above every closed cohort.
 
 ## Gate G
 
@@ -73,83 +96,167 @@ share has jumped is a year in which the hit rate measured on calmer years underc
   describe; the hit rate the standard defines is the right hit rate for the cohorts it was measured on.
   The difficulty is that a hit rate is a property of the year it was measured in, and the call is about
   a year whose flagged share sits far outside the history.
-- **Mechanism:** forecasting (a forward count for a window that has not opened), with
-  method_or_model_selection support: which of the screen's measured properties carries across years.
+- **Mechanism:** method_or_model_selection: the standard files the estimand and the test that selects the
+  basis, and the decisive step is constructing the basis that passes it (this year's share of the book
+  reaching the list backed out of the flagged share through the two rates that hold across cohorts).
+  Forecasting is the vehicle (a forward count for a window that has not opened).
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Delete every wrong number:** there are none to delete. Repair every file at source (one facility
-  extract, rates quoted both ways, the Dublin file merged, matured facilities closed) and the call and
-  the naive figure do not move, because no exposure file is on the call's path (asserted).
+- **Delete every wrong number:** there are none to delete. Repair every file at source (the facility
+  extract read at its proper grain and as at the end of 30 September, every customer grouped) and the call and
+  the naive figure do not move, because no facility, limit-history or rates row is on the call's path (asserted).
 - **Lens swap:** no. The naive figure and the answer are the same book under two forecasting models:
   the naive carries P(arrival | flag status) from calmer years, the answer carries P(flag | outcome)
-  and backs the year's deterioration rate out of the flagged share; the back-test separates them.
+  and backs the year's share reaching the list out of the flagged share; the filed test separates them.
 - **No artifact ranks or forecasts.** No performance report, no prior forecast, no prior caseload
-  figure ships. The standard defines the three measures and the group-flag rule only.
+  figure ships. The standard defines the three measures, the group-flag rule and the test.
+- **Guard WARNs, answered.** `repeat.gate_g` (task230, task445) and `overuse.gate_g` (5 of the last 12): the
+  label follows the decisive step, and with the test filed the step is a choice of basis; the alternative label,
+  forecasting, sits in 5 of the last 12 too (task130, task132, task133, task135, task181), so neither clears
+  it. No neighbour turns on a screen's yield moving with the base rate: task445 completes each reporter from its
+  own arrival history, task230 is a causal design, task228 a false-alarm budget per run, task134 maturity,
+  task131 a causal design; drivers sit at 0.07 and below.
 
 ## Entity and decision
 
 Halstow Bank plc, a UK commercial bank. Credit risk monitoring sizes the 2027 watch-list caseload for
 the executive risk committee on 4 November 2026 (one analyst carries twelve groups). The committed
-call: **134 obligor groups from the 30 September 2026 monitored book will reach the watch list by
+call: **133 obligor groups from the 30 September 2026 monitored book will reach the watch list by
 30 September 2027.** Forward facing: the window opens on 1 October 2026. The tag stays ETL: the work
 is building the five cohorts from four systems (entity signals keyed by LEI or company number, the
 GLEIF consolidation hierarchy for non-borrowing members, the credit system's group register and
-watch-list history) and conforming committed exposure from two booking entities; the forecast is one
-line of algebra on the conformed cohort table.
+watch-list history) and conforming committed exposure from a two-ledger facility extract and its limit
+history; the forecast is one line of algebra on the conformed cohort table once the test has chosen it.
+
+## Filed text for the builder (CRM-07 v3.1, exact wording)
+
+Every section not listed keeps its stage 3 wording. 5.2 names no hit, capture or false-alarm rate, no base rate
+and no inversion.
+
+- **1.3 (new):** "Dates and times in this standard are UK time (GMT or BST, whichever is in force)."
+- **2.3 (replaces the stage 3 list of the pack's edge cases):** "Group structure is read from GLEIF's Level 1 and
+  Level 2 data as GLEIF publishes it, under GLEIF's own definitions of its relationship types and registration
+  statuses."
+- **4.2 (one sentence added at the end):** "A cohort is closed once its twelve months have ended."
+- **5.2 (replaced):** "The forecast is the number of groups in the monitored book at the cohort date expected to
+  reach the watch list in the twelve months after it, with the book, the outcome and the groups left out as 4.1,
+  4.2 and 5.1 set them. Each group is given a probability of reaching the list that depends only on whether it is
+  flagged at the cohort date and is the same across the book; expected arrivals are the sum of the probabilities,
+  and expected exposure the sum of each probability times the group's committed exposure at the cohort date. The
+  probabilities are set from the last four closed cohorts taken together, on whichever basis predicts those
+  cohorts best: each cohort in turn is predicted from its own book and flags at its cohort date, on the basis set
+  from the other three taken together; a basis's error is the largest of its four misses, each taken as a share of
+  that cohort's actual arrivals; and the basis with the smallest error is the one used."
+- **6.1 (replaced):** "A group's committed exposure at a date is the sum of the committed limits, as they stood at
+  the end of that date, of the facilities on which one or more of its members is an obligor, across Halstow Bank
+  plc and Halstow Bank Ireland DAC, in sterling at that date's Group Treasury closing rates. Only facilities in
+  force at the end of the date count: a facility whose start date falls after the date, or whose final maturity
+  date falls on or before it, is not in force at the end of it."
+- **6.2 (first sentence reworded):** "The caseload is reported in five bands of committed exposure at the cohort
+  date: under GBP 5m; GBP 5m and under GBP 15m; GBP 15m and under GBP 40m; GBP 40m and under GBP 100m; GBP 100m
+  and over. Groups of GBP 40m and over are worked by Restructuring, the rest by Business Support."
+- **Field reference.** The three facility-extract sections go; in their place
+  `facility_obligor_extract_20260930.csv` ("Facilities on the Halstow Bank plc and Halstow Bank Ireland DAC loan
+  ledgers when the quarter-end extract ran, with their obligors"; fields booking_entity "HB-PLC or HB-DAC, the
+  ledger the facility is booked on", facility_id "the facility number on that ledger", customer_id "the obligor
+  the row is for", product, currency, committed_limit "the facility's committed limit when the extract ran, in the
+  facility currency", drawn_balance "the obligor's drawings when the extract ran", start_date, final_maturity_date,
+  facility_status "ACTIVE, CANCELLED or CLOSED when the extract ran") and `facility_limit_history_20261008.csv`
+  ("Every committed limit each facility has carried, one row per version"; booking_entity and facility_id as in
+  the extract, committed_limit, effective_from "when the version took effect, UTC, as the loan platform records
+  it", source "SOD_BATCH for the start-of-day batch, otherwise the user who keyed it"). The obligor master's
+  group_id reads "the obligor group the credit system books the customer to; blank until the monthly grouping
+  review books a new customer". The rates file's column is `units_per_gbp` ("units of the currency for one pound
+  sterling at the Group Treasury 16:00 London close"). Nothing in the reference states a row grain beyond these
+  sentences, names a device, or says how many rows a facility has.
+- **Extract log.** The three facility jobs and the plc control line go. In their place:
+  `FACILITY_OBLIGOR_EXTRACT 2026-10-01 01:15 <rows> both ledgers; held for the HB-DAC ledger close, ran after
+  start of day 01/10`, `FACILITY_LIMIT_HISTORY 2026-10-08 05:50 <rows> limit versions to 07/10/2026`, and
+  `Control: limit history reconciled to the facility extract, no breaks.` No line states a facility count.
+- **Distractor.** `ifrs9_macro_scenarios_2026q3.xlsx` becomes `group_economics_uk_outlook_oct2026.xlsx`, titled
+  "Group Economics: UK outlook, October 2026", sheets Central, Downside and Severe downside (quarterly real GDP
+  growth, unemployment, Bank Rate and CPI to 2029 Q4) and Notes; no scenario weights, no IFRS 9 wording; author
+  Group Economics. It stays in `metadata.json`'s distractor list beside the rating master scale.
 
 ## Ladder (asserted in `generator/checks.py`; the call, groups)
 
-Closed cohorts (built from the pack): monitored 846 / 871 / 889 / 902; reaching the watch list
-75 / 43 / 36 / 47; flagged 118 / 97 / 94 / 102; flagged and reaching 58 / 33 / 28 / 39. Hit rate
-0.492 / 0.340 / 0.298 / 0.382; capture rate 0.773 / 0.767 / 0.778 / 0.830; false-alarm rate
-0.0778 / 0.0773 / 0.0774 / 0.0737. Taken together: hit 0.3844, capture 0.7861 (158 of 201),
-false-alarm 0.0765 (253 of 3,307). Forward book at 30 Sep 2026: 913 monitored, 165 flagged (0.1807).
+Closed cohorts (built from the pack; counts retuned in loop 1): monitored 846 / 871 / 889 / 902; reaching the
+watch list 75 / 43 / 36 / 47; flagged 119 / 98 / 95 / 104; flagged and reaching 58 / 32 / 28 / 39 (flagged and
+not reaching 61 / 66 / 67 / 65). Hit rate 0.487 / 0.327 / 0.295 / 0.375; capture rate 0.773 / 0.744 / 0.778 /
+0.830; false-alarm rate 0.0791 / 0.0797 / 0.0785 / 0.0760; share reaching 8.9 / 4.9 / 4.0 / 5.2 per cent; flagged
+share 14.1 / 11.3 / 10.7 / 11.5 per cent. Taken together: hit 0.3774 (157 of 416), capture 0.7811 (157 of 201),
+false-alarm 0.0783 (259 of 3,307), miss 0.0142 (44 of 3,092). Forward book at 30 Sep 2026: 913 monitored, 165
+flagged (0.1807).
+
+**5.2's test over the family** (each closed cohort predicted from the other three; worst miss as a share of
+actual arrivals; forward figure):
+
+| Basis | Set from the cohorts taken together? | Test misses 2022 / 2023 / 2024 / 2025 (per cent) | Worst | Forward |
+|---|---|---|---|---|
+| R0: share of flagged and of unflagged groups reaching (hit and miss) | yes | -36.0 / +15.2 / +40.6 / +10.3 | 40.6 | 72.92 (73) |
+| one share for every group | yes | -46.6 / +21.4 / +55.6 / +13.4 | 55.6 | 52.31 |
+| arrivals per flagged group, none from the rest | yes | -32.7 / +13.2 / +35.6 / +9.2 | 35.6 | 79.72 |
+| R3: every flagged group reaches, the rest at the miss rate | yes | +69.7 / +153.5 / +198.4 / +147.9 | 198.4 | 175.64 |
+| **Answer: capture and false-alarm, share reaching backed out of the cohort's flagged share** | yes | -0.2 / -1.6 / +0.5 / +1.1 | **1.6** | **133.04 (133)** |
+| mean of cohort capture and false-alarm rates | no | 0.0 / -2.0 / +0.2 / +1.2 | 2.0 | 132.97 (133) |
+| arrival share on flagged share, straight line (unweighted or by book size) | no | -0.5 / -2.0 / +0.8 / +1.4 | 2.0 | 132.83 (133) |
+| arrivals on flagged count and book size | no | -0.6 / -2.0 / +0.7 / +1.4 | 2.0 | 132.84 (133) |
+| R2: hit and miss trended on the flagged share | no | +8.0 / -2.9 / +3.4 / -0.2 | 8.0 | 146.72 (147) |
+| mean of cohort hit and miss rates | no | -36.2 / +14.0 / +39.6 / +8.8 | 39.6 | 71.99 |
+| R0b: the latest cohort's hit and miss | no (window) | -30.8 / +3.5 / +21.1 / -17.7 | 30.8 | 69.37 |
+| R1: the most stressed cohort's hit and miss | no (window) | -30.8 / +53.1 / +80.2 / +47.6 | 80.2 | 97.91 |
+
+Window violations of the answer's own basis: the latest cohort's capture and false-alarm alone 126.82, the last
+three cohorts 132.44, the first three 135.01 (5.2 and 4.3 name the last four closed cohorts).
 
 | Rung | Reading | Figure | Killed by |
 |---|---|---|---|
-| R0 | flagged x pooled hit rate + unflagged x pooled miss rate | 73.8 (74) | the hit rate moves with each cohort's deterioration rate (0.492 in the 8.9 per cent year, 0.298 in the 4.0 per cent year); re-run one cohort out it misses by -35.6, +15.4, +40.7 and +9.5 per cent |
-| R0b | the latest closed cohort's rates (2025) | 70.6 | the standard measures performance on the four closed cohorts taken together; and the 2025 rates fail the same back-test |
-| R1 | the most stressed cohort's rates (2022) | 98.6 | the same; 2022's flagged share (0.140) is still far below this year's (0.181) |
-| R2 | hit and miss rates trended on flagged share and extrapolated | 148.4 | not a measure the standard defines; the hit rate is not linear in the flagged share |
-| R3 | every flagged group reaches, plus pooled misses | 175.4 | the false-alarm rate: about 7.7 per cent of groups that do not deteriorate are flagged every year |
-| Answer | the deterioration rate backed out of the flagged share through the pooled capture and false-alarm rates: 913 x (0.1807 - 0.0765) / (0.7861 - 0.0765) | **134.10 (134)** | |
+| R0 | the pooled hit and miss rates, the measure the committee sees | 72.9 (73) | 5.2's test: 40.6 per cent against 1.6 |
+| R0b | the latest closed cohort's rates | 69.4 | 5.2's window (the last four closed cohorts taken together) and its test |
+| R1 | the most stressed cohort's rates | 97.9 | the same |
+| R2 | hit and miss rates trended on the flagged share | 146.7 (147) | not set from the cohorts taken together, and its test miss is 8.0 per cent |
+| R3 | every flagged group reaches, plus the unflagged miss rate | 175.6 | the test (198 per cent); about 7.8 per cent of groups that do not reach are flagged every year |
+| Answer | 913 x (0.1807 - 0.0783) / (0.7811 - 0.0783) | **133.04 (133)** | |
 
-- **Convergent rigorous routes (C1):** the pooled measures, a straight-line fit of deterioration rate on
-  flagged share across the four cohorts, the same fit weighted by cohort size, the mean of the four
-  cohort-by-cohort solutions and the solution on averaged rates land at 133.86 to 134.30; all file 134.
-- **Back-test the answer's model passes:** re-run one cohort out, capture and false-alarm rates predict
-  each closed cohort's arrivals within -0.4, -0.5, +2.5 and -1.7 per cent.
-- **Satisfying to stop at.** R0 is the standard's own measure applied the way the measure reads; R0b is
-  the freshest evidence; R1 is the analyst's "use a stressed year" instinct; R2 is the half insight.
-- **Direction.** Every rung but R2 and R3 sits below the answer; the answer brackets between the
-  conditional-rate family (all low) and the flag-count family (high). Nearest wrong cell: R2 at +10.6
-  per cent. The base rate with no flags (52.3) and flagged arrivals only (105.4) are rule violations.
-- **The decisive move against the seven properties.** 1 no sentence states it (the standard defines the
-  measures and that the forecast uses them, not which of them carries across years); 2 the closed
-  cohorts do score it, by design (the back-test above), and that is what makes it the only defensible
-  model; 3 no arithmetic symptom: R0 reconciles to every count it uses; 4 not a row predicate: it is a
-  property of the whole cohort table; 5 the enumeration is algebra over four cohorts; 6 no cutover date
-  (the 2022 cohort's high rate is a cycle, not an event); 7 survives deletion (nothing is wrong).
+- **Convergent routes (C1):** the mean of cohort rates (132.97), the straight-line fits of the arrival share on
+  the flagged share (132.83 unweighted and weighted) and arrivals on flagged count and book size (132.84) all file
+  133, and each loses the test to the pooled basis (2.0 against 1.6) and is not "taken together" in any case. The
+  mean-of-rates variant also lands both arrival totals (103.9, 29.1) and every arrival figure in the golden's bin
+  (its probabilities differ by -0.00018 flagged and -0.00005 not flagged); on the top bands' exposure figures it
+  can differ, which 5.2's "taken together" and the test both rule out.
+- **Probabilities:** this year's share reaching 0.14571; flagged 0.62978 (63.0 per cent), not flagged 0.03893
+  (3.9 per cent); expected arrivals 103.91 flagged and 29.12 not flagged.
+- **Satisfying to stop at.** R0 is the measure the standard reports, applied as it reads; R0b is the freshest
+  evidence; R1 is the "use a stressed year" instinct; R2 is the half insight with a decent test score.
+- **Direction.** R0, R0b and R1 sit below the answer, R2 and R3 above. Nearest natural rung: R2 at +10.3 per
+  cent. The base rate with no flags (52.3) and flagged arrivals only (79.7) are bases the test refuses.
+- **Bins.** 133.04 sits 0.46 from the nearer edge (the call moves only if expected arrivals rise by 0.46 groups);
+  103.91 and 29.12 sit 0.4 and 0.3 of a bin from theirs.
+- **The decisive move against the seven properties.** 1 no sentence states it (5.2 files the test, not the
+  basis); 2 the closed cohorts score it, which is the filed test working (C2 confirmation of a filed criterion,
+  not recovery of an unwritten rule); 3 no arithmetic symptom: R0 reconciles to every count it uses; 4 not a row
+  predicate: a property of the whole cohort table; 5 the enumeration is algebra over four cohorts; 6 no cutover
+  date (2022's high rate is a cycle, not an event); 7 survives deletion (nothing is wrong).
 
 ## Stump or fork
 
-The standard files the estimand (expected arrivals from the monitored book within twelve months, by
-flag status at book level, rounded to the nearest whole group) and that the forecast uses the
-section-4 measures taken together. Two readings of "uses the measures" exist; the data's own structure
-decides between them: the hit rate tracks each cohort's deterioration rate while the capture and
-false-alarm rates hold, and only the second model survives the one-cohort-out re-run. Every route that
-uses the stable properties lands on 134.
+The standard files the estimand (5.2 with 4.1, 4.2, 5.1 and 5.3) and the test that selects the basis (5.2), and
+names no basis. The four closed cohorts separate the bases under the test by a wide margin: the pooled
+capture-and-false-alarm basis is the unique minimum at 1.6 per cent; the bases that converge on 133 sit at 2.0
+per cent and are not "taken together"; every basis that gives another figure misses a cohort by 7.97 per cent or
+more, and every one set from the cohorts taken together by 35.6 per cent or more. A second answer exists only for
+a reader who skips the test, and skipping it violates 5.2.
 
 ## Layers
 
 - **Layer 1 (main path, conformance the standard files):** entity signals keyed by LEI, or by
   `CRN:` and company number for entities without an LEI; non-borrowing members (parents, sisters)
   reached through GLEIF accounting-consolidation records whose period covers the cohort date; the
-  credit system's own customer and group namespace; watch-list categories (WATCH and WORKOUT are one
-  list); groups already on the list excluded; groups leaving the book count as not reaching.
-  GLEIF texture on the main path (lapsed registrations, merged LEIs still in the vendor feed,
-  international branches, fund-management links, reporting exceptions) sits on entities whose
-  signals are green at every cohort date, so mishandling it moves nothing (asserted).
-- **Layer 1 (ask paths, ledgered devices):** the committed-exposure conformance below.
+  credit system's own customer and group namespace; every watch level is on the list; groups already on the list
+  excluded; groups leaving the book count as not reaching. GLEIF texture on the main path (lapsed registrations,
+  merged LEIs still in the vendor feed, international branches, fund-management links, reporting exceptions) sits
+  on entities whose signals are green at every cohort date, so mishandling it moves nothing (asserted).
+- **Layer 1 (ask paths, ledgered devices):** the facility-obligor grain, the UTC limit clock and the
+  not-yet-grouped customers below.
 - **Layer 2:** a screen's yield measured in calm years is carried onto a stressed year; the yield
   depends on the base rate, the screen's error rates do not.
 
@@ -157,162 +264,201 @@ uses the stable properties lands on 134.
 
 | # | Axis | Reading and closure |
 |---|---|---|
-| 1 | Population | monitored book: active on the group register and not on the watch list at 30 Sep (standard 4.1); C1: no register or watch-list date within 7 days of a cohort date |
-| 2 | Unit | obligor group; members = register borrowers plus GLEIF accounting-consolidation members (standard 2); C1: every flagged entity's membership stable across all cohort dates |
-| 3 | Attribution window | placed on the list within the twelve months after the cohort date (4.2); C1: no entry within 7 days of a window edge |
-| 4 | As-of dating | the September month-end publication; relationship periods covering the date; C1 |
-| 5 | Version basis | one publication per month-end; facility extracts: the rerun is the record (extract log, ask path) |
-| 6 | Denominator | the three measures' denominators filed (4.3) |
-| 7 | Weighting | four cohorts taken together (4.3); C1 across mean-of-cohort and fitted variants (asserted, 133.86 to 134.30) |
-| 8 | Window length | the last four closed cohorts (4.3) |
-| 9 | Inclusivity | band edges "and under" (standard 6); C1: no group within GBP 0.25m of an edge on the right path |
-| 10 | Rounding path | unrounded throughout; whole groups to the nearest (5.3); one decimal on report; every graded figure at least 0.15 of its bin from an edge (asserted) |
-| 11 | Tie-break | none (no ranking) |
-| 12 | Maturity | the four cohorts are closed (2025's window ends 30 Sep 2026; the history runs to that date); C1: no entry after 30 Sep 2026 in the history |
-| 13 | Order of operations | flag at group level before counting; FX before summing exposure |
-| 14 | Row order | irrelevant |
-| 15 | Duplicate resolution | a group counts once per window; C1: no group enters twice inside one window |
-| 16 | Identity | LEI case-normalised; CRN keys through the company number; merged LEIs green (inert) |
+| 1 | Population | monitored book: active on the register and not on the watch list at 30 Sep (4.1); later joiners out (5.1); C1: no register or watch-list date within 8 days of a cohort date |
+| 2 | Unit | obligor group; members = booked customers plus GLEIF accounting-consolidation members in force at the date (2.1, 2.2); C1: every flagged entity's membership stable across all cohort dates |
+| 3 | Attribution window | placed in the twelve months after the cohort date (4.2); C1: no placement within 8 days of a window edge |
+| 4 | As-of dating | the September month-end publication; relationship periods covering the date; asks: limits as they stood at the end of 30 Sep UK time (1.3, 6.1) read from a history stamped in UTC (field reference) |
+| 5 | Version basis | one publication per month-end; asks: the limit version in force at the end of 30 Sep (6.1), not the extract's limit at its 01:15 run on 1 Oct |
+| 6 | Denominator | the three measures' denominators filed (4.3); the test's miss is a share of the cohort's actual arrivals (5.2) |
+| 7 | Weighting | the four cohorts taken together (5.2); mean-of-rates converges on the call, both arrival totals and every arrival figure (asserted) and loses the test |
+| 8 | Window length | the last four closed cohorts (4.3, 5.2); latest-alone 126.82 and three-cohort 132.44 and 135.01 violate it |
+| 9 | Inclusivity | band edges "and under" (6.2); C1: no group within GBP 0.25m of an edge on the right path |
+| 10 | Rounding path | unrounded throughout; whole groups to the nearest (5.3); one decimal on report; every graded figure at least 0.25 of its bin from an edge (asserted) |
+| 11 | Tie-break | the test's minimum is unique (1.6 against 2.0 and more); no ranking elsewhere |
+| 12 | Maturity | a cohort is closed once its twelve months have ended (4.2); 2025's window ends 30 Sep 2026 and the history runs to that date; C1: no placement after 30 Sep 2026 in the history |
+| 13 | Order of operations | flag at group level before counting; convert each facility to sterling before summing; collect a group's facilities before summing |
+| 14 | Row order | irrelevant on the right path; the whole-extract de-duplication stops depend on it and both orders are asserted off the golden |
+| 15 | Duplicate resolution | a group counts once per window (4.2); a facility counts once in each group with an obligor on it (6.1) |
+| 16 | Identity | LEI case-normalised; CRN keys through the company number; merged LEIs green (inert); a facility is its booking entity and ledger number |
 | 17 | Netting | none |
-| 18 | Units | limits in facility currency; treasury rates in units per pound (ask path) |
-| 19 | Code semantics | AMBER and RED flag, GREEN does not (3.2); WATCH and WORKOUT are one list, a category change is not an entry (field reference) |
-| 20 | Integerisation | nearest whole group (5.3); 134.10 sits 0.40 from the nearest edge |
-| 21 | Clause scope | a group's probability depends only on its flag status, for the book as a whole (5.2): not split by band, sector or size |
-| 22 | Forward window | the 30 Sep 2026 monitored book only; no new groups (5.1) |
+| 18 | Units | limits in facility currency; rates in `units_per_gbp` (inert) |
+| 19 | Code semantics | AMBER and RED flag, GREEN does not (3.2); every watch level is on the list; CANCELLED and CLOSED facilities carry a nil limit in the extract and in the history's version in force (C1 on any status reading) |
+| 20 | Integerisation | nearest whole group (5.3); 133.04 sits 0.46 from the nearest edge |
+| 21 | Clause scope | one probability per flag status, the same across the book (5.2): not split by band, sector or size |
+| 22 | Forward window | the 30 Sep 2026 monitored book only (5.1, 5.2); every group in it carries at least one facility in force at the end of 30 Sep 2026 (asserted) |
+| decisive | The basis | C2 confirmation of 5.2's filed test on the closed cohorts: a family of 13 bases (the table above), the pooled capture-and-false-alarm basis the unique minimum at 1.6 per cent (1.57), every non-convergent basis at 7.97 per cent or more |
 
 ## Ask sheet (supplemental-stumping)
 
-**Main call's declared row population:** the September publications of 2022 to 2026 in the signal
-file, the obligor master's key columns, the group register's key and date columns, the GLEIF records
-of signalling entities, the watch-list history. Zero facility, FX or maturity rows inside it (the
-exposure files are not on the path at all).
+**Main call's declared row population** (the zero-counts run against it): the five September publications
+(2022-09-30 to 2026-09-30) in the signal file; the GLEIF LEI-CDF and RR-CDF rows of every entity carrying AMBER
+or RED in any of them, and of its parents up the consolidation chain; the obligor master rows whose LEI or
+Companies House number matches such an entity; every group register row (group, ultimate parent LEI, relationship
+dates); every watch-list history row. Device and hazard rows: every row of the facility-obligor extract, the
+limit history and the rates file (outside by file); the obligor master and GLEIF rows of the not-yet-grouped
+customers, each GREEN in every September publication (asserted zero inside); no device writes a register,
+watch-list or September-publication row (asserted by building the main-path files with and without the devices and
+comparing bytes).
 
-| Ask | In the decision | Construction | Devices (all on the exposure path) | Use |
+**The asks** (one band table in `watchlist_inflow_2027.xlsx`, its arrival columns drawn in the chart):
+
+| Column | Figures | Construction | Devices on the path | Use |
 |---|---|---|---|---|
-| Per band: expected arrivals from flagged groups | caseload split for the two teams (restructuring above GBP 40m, business support below) | PPV under this year's base rate | band membership moves under every device | team sizing |
-| Per band: expected arrivals from unflagged groups | the arrivals the screen will miss, worked by manual review | miss probability under this year's base rate | same | review capacity |
-| Per band: expected committed exposure arriving | qualifier: agenda item 3.1 papers carry committed exposure by caseload band so that 3.2 (headcount) can be read against them | probability x committed exposure | all four devices and the status hazard | committee |
-| Total row | ties to the call | as above | exposure total under all devices | |
-| Chart | the call at a glance | bars are the band figures | inherits | committee |
+| Groups the band holds | 5 counts, total 913 | each group's committed exposure at 30 Sep 2026 (6.1), banded (6.2) | DV-A, DV-B, HZ-C | how the book splits between Restructuring (GBP 40m and over) and Business Support, read against 3.2's headcount |
+| Their committed exposure | 5 in GBP m, total | the band's sum of group exposures | DV-A, DV-B, HZ-C | the agenda's "committed exposure by caseload band" |
+| Expected arrivals, flagged | 5, total 103.9 | flagged groups in the band x 0.62978 | DV-A, DV-B through band membership | caseload by team |
+| Expected arrivals, not flagged | 5, total 29.1 | the rest x 0.03893 | DV-A, DV-B through band membership | manual-review capacity |
+| Expected exposure arriving | 5 in GBP m, total | probability x committed exposure | DV-A, DV-B, HZ-C | what the arriving caseload carries |
 
-**Devices.** D2 version: the plc scheduled run (19:40) is superseded by the 23:05 rerun after limit
-amendments approved on 30 Sep posted late (extract log is the organ; its control line reads 48 committed limits differ). D4 absent
-channel: Halstow Bank Ireland DAC's extract was delivered on 7 October in its own file and is not in
-the plc file. D3 units: limits are in facility currency and the treasury closing rates are quoted in
-currency units per pound (field reference plus rate file). D8 boundary: facilities whose final
-maturity date is the cohort date still carry status ACTIVE in both plc runs; the standard counts only
-facilities in force at the end of the cohort date. Each device moves at least one flagged group across
-a band edge (asserted per device: which band figures move and by how much).
+The groups and committed-exposure columns need nothing from the main call; the arrival and arriving-exposure
+columns carry the main construction (a response on the naive model loses all fifteen whatever it does with the
+devices) and every device. The two arrival totals and 913 are the only ask figures the devices do not reach.
 
-**Pair arithmetic, stated plainly.** Every band figure is an output of the decisive construction, so a
-response on the naive model loses all fifteen band figures and the exposure total whatever it does
-with the devices; it keeps the chart's structure. A response on the right model keeps the call and the
-two split totals, and keeps the fifteen band figures and the exposure total only if it handles all
-four exposure devices and the status hazard. The pair sheet is in the build record.
+**Device ledger** (none from architecture 1's families D2, D3, D4; architecture 2's stage 3 devices retired):
+
+- **DV-A, primary, facility-and-obligor grain (D6, with a D7 over-cleaning half and stated non-additivity).**
+  Root cause: the credit data warehouse's facility-obligor table, fed by two loan ledgers that number facilities
+  independently; LMA facilities with several borrowers in one group; joint property facilities whose borrowers
+  sit in two monitored groups. The extract carries one row per facility per obligor with the facility's committed
+  limit repeated on each row. Right: within each group, each (booking entity, facility number) once; a joint
+  facility counts in both groups (6.1, "the facilities on which one or more of its members is an obligor").
+  Wrong stops: A1 every row summed (multi-obligor groups move up); A2 each facility number once across the whole
+  extract (HB-DAC facilities whose numbers coincide with HB-PLC numbers, and one group of each joint facility,
+  drop); A3 each booking entity and number once across the whole extract (one group of each joint facility drops).
+  Organs: 6.1 and the records (identical attributes across a facility's obligor rows; coinciding numbers differ in
+  booking entity, currency, dates and obligors; the limit history keyed by booking entity and number). Silent:
+  (booking entity, facility, customer) is unique, every customer joins, nothing states a facility count. Scale:
+  about 12 per cent of facilities with 2 to 4 obligors in one group; 15 to 20 joint facilities (sector RE); about
+  40 coinciding ledger numbers.
+- **DV-B, primary, the limit clock (D8).** Root cause: the extract was held for the Dublin ledger close and ran
+  at 01:15 on 1 October, after the start-of-day batch; the loan platform stamps limit versions in UTC; the
+  batch runs at 00:30 UK time, so in BST it stamps 23:30Z on the previous date. The 1 October batch applies about
+  70 limit increases approved in September with effect from 1 October and activates about 12 facilities
+  available from 1 October, all stamped 2026-09-30T23:30:00Z, and closes the facilities maturing on 30 September.
+  Right: each facility's version in force at 2026-09-30T23:00:00Z (the end of 30 September UK time). Wrong stops:
+  B1 the extract's committed_limit (the 1 October increases in, up); B2 the history read on its UTC date (the same
+  rows in, up); B3 the latest version in the history (the 2 to 7 October changes in as well); B0, over-cleaning,
+  versions dated before 30 September only (increases keyed in the day on 30 September drop, down). Organs: 1.3 and
+  6.1, the field reference's "UTC", the history records; referee: the extract log's run time. Silent: one version
+  per facility is selected under any reading and nothing fails. Blending: the batch stamps every day of the year
+  (23:30Z in BST months, 00:30Z in GMT months) and users key amendments in the day, so no column isolates the
+  1 October rows.
+- **HZ-C, hazard, customers not yet grouped (D7).** Root cause: about 14 customers the HB-DAC ledger created in
+  September 2026, which the monthly grouping review has not yet booked (group_id blank), each with an LEI whose
+  GLEIF consolidation, in force at 30 September 2026, runs to a monitored group's ultimate parent; 2.2 makes them
+  members. Wrong stop: their facilities dropped with the blank group (down). Each is GREEN in every September
+  publication.
+
+**Movers** (distinct groups per device; each edge in GBP 5m, 15m, 40m, 100m order): A1 up across the four edges
+1, 3, 1, 3 flagged and 3, 7, 3, 7 not flagged; B2 up across the four edges with the same counts on other groups;
+A2 and A3 down through the joint facilities and coinciding numbers; B0 down across every edge; HZ-C down across
+the 15m and 40m edges (2 flagged, 6 not flagged). Every band's flagged count then moves by at least one and its
+unflagged count by at least three under A1 and under B2, so every arrival figure leaves its bin (a flagged group
+is 0.63, three unflagged 0.12).
+
+**Assertions for the builder.**
+1. Zero device and hazard rows inside the declared population, the counts written into this ledger.
+2. A1 alone and B2 alone each move all 25 band figures and both exposure totals out of their bins; A2, A3, B1,
+   B3, B0 and the HZ-C drop each move at least 15 of the 25 and the committed-exposure total.
+3. The device grid (A at four stops, B at five, HZ-C at two): every cell but the all-correct one misses the golden
+   on at least 15 of the 25 band figures and on the committed-exposure total by at least GBP 5m; no subset of
+   mishandlings cancels back onto a golden figure.
+4. Fairness: the right handling reproduces the world's own group exposures exactly.
+5. The hygiene battery on every wrong path runs clean (unique keys at the extract's grain, every customer joins
+   the master, the history joins on booking entity and number without fan-out).
+6. The over-cleaners (A2, A3, B0) each land on their own off-golden values.
+7. Every band figure at least 0.25 of its bin from an edge; every group in the book has a facility in force.
+
+**Pair arithmetic, stated plainly** (planning weights 38/7/55, about 50 criteria: the call, 4 components and 8
+steps in the 38; the heading, 25 band figures, 5 totals and 4 chart parts in the 55). A response that lands 133
+keeps the recommendation, instruction following, the heading, 913, both arrival totals and the chart's structure,
+about 58, and about 100 only if it clears every device. A response on 73 keeps the book components and the
+conformance steps, instruction following, 913 and the chart's structure, about 27, and about 44 if it clears every
+device (the groups and committed-exposure columns). Pairs: no response on 133, 27 to 44; one on 133 missing a
+device beside one on 73, about 42 to 51; one on 133 clearing every device, about 63 to 72, which fails. The pass
+condition rests on the main ladder keeping the top two off 133; the devices hold a response that lands it near 58.
+For the writer: the critical components should carry the decisive construction (the test's result, the share
+reaching implied by the flagged share, the two probabilities) with the book and flag counts as one component, so a
+response on 73 keeps as little of the 38 as the analysis allows.
 
 ## Shape and criteria
 
-Shape 05: the 134 allocated over five bands, each band with three figures (15), the total row (3,
-the two split totals and the exposure total), the call, the chart's five named parts (stacked bars per
-band, the band order, flagged against not flagged, the caseload written on the chart, a quotable
-title) and two files: 26.
+Shape 05: the 133 allocated over five bands, each band with five figures (25), the total row (5), the call, the
+chart's named parts (stacked bars per band, the band order, flagged against not flagged, the caseload written on
+the chart, a quotable title) and two files: 38.
 
 ## Prompt
 
-`prompt.md`, 888 characters by voice-check, 148 words, opening on the analyst caseload (number-first;
-the script files it as other). The call is one sentence at the seam carrying its unit, both later
-paragraphs open by tying back to it. No input file, method, measure or trap word; "early-warning run"
-names the system the committee knows. Deliverables `watchlist_inflow_2027.xlsx` and
-`watchlist_inflow_2027.svg` (the chart was a PNG until the stage-3 surface screen; see the build record).
+`prompt.md`, 946 characters by voice-check, 157 words, opening on the analyst caseload (number-first; the script
+files it as other, 9 of 12 in the window, a batch property). The role moves from the bare closing sentence ("I head
+credit risk monitoring.", which closed task445 to task447 in turn) into the opening sentence ("the caseload I put
+to it as head of credit risk monitoring"). The call is one sentence at the seam carrying its unit and the book's
+date; both later paragraphs tie back to it. The band row gains the groups it holds and their committed exposure,
+the agenda's own requirement. No input file, method, measure or trap word. Deliverables
+`watchlist_inflow_2027.xlsx` and `watchlist_inflow_2027.svg`. voice-check: no carrier flags, no repeated runs,
+economy inside every flag.
 
 ## Realism debts
 
-- A deterioration rate of 14.7 per cent of the monitored book in one year is a stress year (the
+- A share reaching the list of 14.6 per cent of the monitored book in one year is a stress year (the
   closed cohorts run 4.0 to 8.9 per cent). It is what the flagged share implies, and the flagged
   share's jump is the forcing fact; the signal file shows it in the trigger mix (payment delays and
   rating actions), not in coverage or engine version.
 
+## Realism repairs for the loop 1 rebuild (the reader's tells and golden-realism)
+
+1. **Containers.** The agenda is built from a Word-authored skeleton (styles, theme, settings and font table as
+   Word 16 writes them, app.xml with Template Normal.dotm, TotalTime, Pages, Words, Characters, Company Halstow
+   Bank plc, AppVersion 16.0000), never python-docx's default template. Every input workbook carries a full Excel
+   app.xml (DocSecurity, ScaleCrop, HeadingPairs and TitlesOfParts naming its real sheets, Company, LinksUpToDate,
+   SharedDoc, HyperlinksChanged, AppVersion 16.0300). Core stamps follow each file's own story: the register,
+   written by the Reference Data job at 05:05Z on 1 October (created equal to modified, as a job writes it); the
+   rating master scale, Credit Risk Models, created 2025-12-12, modified 2026-10-02; the outlook, Group Economics,
+   created 2026-10-05, modified 2026-10-06; the agenda, created 2026-10-07 by the Company Secretariat and last
+   modified 2026-10-08 by a named secretariat officer, revision 4. Asserted: no two input containers share a
+   created stamp, and the producer-metadata audit is clean.
+2. **Standard 2.3** is the general sentence above, not a list of the pack's edge cases (the GLEIF texture is
+   inert on the main path, so no fork opens).
+3. **RED through the year.** Signals draw RED month by month within a flagged episode (rising towards a
+   watch-list entry, with a steady RED share among flagged entity-months), never as a September draw; asserted:
+   each September's RED count lies within 15 per cent of the mean of its August and October.
+4. **Row order.** The facility extract is sorted by booking entity, facility number and customer, device
+   facilities draw their numbers from the same ledger sequences, and the facilities maturing on 30 September show
+   CLOSED with a nil limit (the 1 October batch closed them); asserted: no run of more than 3 consecutive device rows, and device rows'
+   mean position between 40 and 60 per cent of the file.
+
 ## Stopping rule
 
-A round that lands 134 by the capture and false-alarm route files the architecture as spent at its
-decisive rung if the solver's path cites a filed sentence for the move; a round that lands 134 by the
-back-test licenses one hardening of the device layer and the ladder below. A round on 74, 71 or 99
-with the band figures on the same model is the designed stump.
+A round that lands 133 sends the build to loop 2 with the solver's path sentence. If that path is 5.2's test with
+the capture-and-false-alarm basis or a straight-line fit of the arrival share on the flagged share, the next
+designer records it in `## Tried and rejected` and weighs a re-root against a ladder change, because the test is
+filed and the data has to separate the bases; a hardening may deepen the analysis but never un-file the test. A
+round on 73, 69, 98 or 147 with the band figures on the same model is the designed stump, and the build goes on
+to stage 6b and the judge.
 
-## Build record (stage 3)
+## Loop 1 build brief (for the builder)
 
-- **Generator.** `world.py` (the world), `make.py` (the pack), `docs.py` (documents), `solve.py` (the
-  independent solver, reads `target/` only), `checks.py` (1,181 assertions, green), `deliver.py` (goldens),
-  `writeup.py` (submission), `meta.py` (metadata, then `--zip` cuts `target.zip` last). Two builds of the
-  pack and of the goldens are byte-identical (asserted); `submission.md` is asserted equal to the
-  `writeup.py` output and every number in it is swept against the figures, citations and dates it owes.
-- **Input gates.** 18 files, six formats (csv, xlsx, pdf, docx, md, txt); spine
-  `ews_entity_signals_2022-09_to_2026-09.csv`, 127,675 rows; distractors
-  `internal_rating_master_scale_2026.xlsx` and `ifrs9_macro_scenarios_2026q3.xlsx`, named in
-  `metadata.json` only, and the golden is unchanged with both deleted (asserted); provenance and licence
-  (constructed, CC0-1.0) per file in `metadata.json`. `target.zip`: 3,105,498 bytes, 18 members, flat,
-  sha256 d35b5e8d2b37d719ff0b64da48dc40f3b2445bcb654352026c85fc4a41fded1b.
-- **Figures (asserted).** Call 134 (134.10). Rigorous routes 133.86 to 134.30. Rungs R0 73.8, R0b 70.6,
-  R1 98.6, R2 148.4, R3 175.4; nearest wrong cell R2 at +10.6 per cent. One-cohort-out back-test, pooled
-  rates: capture and false-alarm model -0.4, -0.5, +2.5, -1.7 per cent; hit and miss model -35.6, +15.4,
-  +40.7, +9.5 per cent. Averaged rates give the same verdict (the write-up quotes only "within 3 per cent"
-  and "two of the four by more than a third", which `deliver.backtest` asserts under both). Bins: arrivals
-  at least 0.3 of a bin from an edge, exposure figures at least 0.2, the call 0.40; the tightest graded
-  figure is the under-£5m expected exposure, 73.570 against the 73.55 edge.
-- **Device ledger (checks.py output; band figures moved of 15, each device also moving the exposure
-  total).** D2 scheduled run kept: 9. D4 HB-DAC file left out: 15. D3 rates multiplied: 13. D8 matured
-  facilities kept: 11. Status hazard (CANCELLED and CLOSED facilities kept): 12. Movers planted 16, 16,
-  16, 14. Zero exposure rows on the main call's path: the call and the naive figure are unchanged when
-  every exposure file is repaired (asserted). The naive model with every device handled matches none of
-  the band figures.
-- **Pair sheet** (planning weights 38/7/55, about 35 criteria: the call, 4 components and 8 steps in the
-  38; the heading figure, 15 band figures, 3 totals and 3 chart parts in the 55). Naive model with every
-  device handled: about 29 (the book and screen components and four conformance steps, about 17 of the
-  38; instruction following 7; two chart parts, about 5). Right model: every device handled about 100,
-  D8 missed about 70, D4 missed about 60. Pairs: both top responses on the naive model about 29; one on
-  the right model missing D4 about 45, missing D8 about 50, clearing every device about 65, which fails
-  the bar. So the pass condition rests on the main ladder keeping both top responses off 134; the devices
-  are filed work orders (extract log, CRM-07 6.1, field reference), so a top solver that lands the call
-  can clear them, and they are margin rather than a second defence. The round measures the ladder.
-- **Goldens (golden-realism).** `watchlist_inflow_2027.xlsx`: the caseload heads the sheet, band rows
-  smallest first with a total row rounded from the unrounded sums (ties to the displayed rows), number
-  formats per column, frozen header, set widths, print area, a Cohorts sheet carrying the working (the
-  four cohorts, the 30 September 2026 book, the back-test sentence) and a Notes sheet citing CRM-07 and
-  the extract log; creator Jill Berry, Excel application name, core dates 21 and 27 October 2026 (the
-  paper deadline is 28 October, agenda item 3.1). `watchlist_inflow_2027.svg`: stacked bars smallest
-  first, segments labelled, the 134 written large with its split, a title stating the finding, the
-  Business Support and Restructuring split from CRM-07 6.2, a source strip; text kept as text in a
-  Calibri-first stack, no producer metadata, deterministic ids.
-- **House-fix register.** H1 audit clean on `target/` and `golden/` (band 2025-10-01 to 2026-11-04). H2 and
-  H3: every write-up figure emitted from the computing objects and swept by unit class in `checks.py`;
-  the back-test sentence asserted. H4: golden holds exactly the two named files, the zip is flat with the
-  18 inputs, the chart was opened and read. H5: each ask's reading pinned (5.2 sets expected exposure as
-  probability times committed exposure; 6.1 and 6.2 set the band basis at 30 September 2026). H6: no
-  stated rule mispredicts the record. H7: zip cut last from the final rebuild, byte-compared to the tree.
-  H8: CRM-07 2.2 to 6.2, agenda item 3.1 and every cited file resolve. H9: the field reference covers
-  every extract it claims; the log lists every Reference Data job. H10: no discretion filed. H11: one
-  `submission.md`, one `prompt.md`. H12: one rounding tag repeats twice. H13: the call closes the first
-  paragraph and the later paragraphs tie back. H14: no degenerate subgroup (sector, team and booking
-  entity rates checked; 5.2 pins one probability per flag status). H15: no referee depends on a hazard.
-  H16: the only dates after the 8 October export are final maturity and next-renewal dates, forward by
-  design. H17: batch read, opening move "other" in 9 of 12 builds (batch property, logged). H18: every
-  ask is a component of the call or the exposure qualifier the agenda requires beside it. H19: receipt
-  above. H20: banking nouns in the prompt (watch list, obligor groups, monitored book, early-warning run,
-  committed exposure). H21: invented names are place-word composites, no real register shipped. H22:
-  no real download in the pack.
-- **Surface.** `guard.py surface`: 0 promoted pairs; nearest task57 and task123 at 0.100. With the chart as
-  a PNG the xlsx-plus-png deliverable set promoted task87, task100 and task130 on layout, format mix and
-  deliverable species alone (no shared names, schemas, wording or values); the chart ships as SVG.
-- **leak.py** (`--asof 2026-10-11`): first run LEAK on "golden copy" (GLEIF's own term) in the field
-  reference, the standard and the extract log; reworded to GLEIF's concatenated files in `docs.py`; rerun
-  REVIEW, no LEAK. Answers: "the model" is the Model Risk Committee. "5.1" is a section number of the
-  standard. The standard carries the call's words because it defines the estimand (monitored book, watch
-  list, twelve months, caseload, nearest whole group); no figure of the answer appears. Field reference
-  (5 terms) and agenda (3 terms): generic words, no method. The standard (15 terms) files the group rule,
-  the cohorts, the three measures and that the forecast's probability by flag status is set from them; it
-  does not say which measure carries across years or that the hit rate moves with the share reaching the
-  list, which is the decisive step. Dates after 11 October 2026 in the facility extracts are final
-  maturity dates.
+- **`world.py`:** `TP_FLAG = [58, 32, 28, 39]`, `FP_FLAG = [61, 66, 67, 65]` (N, reaching and the forward 913 and
+  165 unchanged); `band_plan` retuned to the new probabilities and the two new columns' bins; `plant_devices`
+  rewritten for DV-A, DV-B and HZ-C (D2, D3, D4 and the matured-ACTIVE D8 removed; cancelled and closed facilities
+  carry a nil limit); facilities carry obligor lists, ledger numbering per booking entity and limit versions with
+  UTC stamps; `build_signals` draws RED through the year.
+- **`make.py`:** `FILES` loses the two plc extracts and the HB-DAC extract and gains
+  `facility_obligor_extract_20260930.csv` and `facility_limit_history_20261008.csv`; the scenarios workbook becomes
+  `group_economics_uk_outlook_oct2026.xlsx`; the rates column becomes `units_per_gbp`; natural row order.
+- **`docs.py`:** the standard's 1.3, 2.3, 4.2, 5.2, 6.1 and 6.2 as filed above; the field reference and the extract
+  log as above; the outlook workbook; the containers per the realism repairs. Keep GLEIF's own term for the
+  concatenated files (never "golden copy", which tripped leak.py at stage 3).
+- **`solve.py`:** 5.2's test over the 13 bases and the choice by smallest worst miss; exposures from the
+  facility-obligor extract with the history as of 2026-09-30T23:00:00Z, per group by booking entity and number,
+  not-yet-grouped customers through GLEIF; the band table's five columns.
+- **`checks.py`:** the test table (every basis's misses and forward figure, the unique minimum), the convergence
+  of the 133 routes, the bins, the device assertions 1 to 7, the zero-counts, the literal-reader assertion (the
+  filed test's winner is the golden's basis), and the realism assertions.
+- **`deliver.py`, `writeup.py`, `meta.py`:** the two new columns and the 133; the Cohorts sheet carries the test
+  table; the steps cite 5.2's test; `metadata.json` files and distractors. The chart stays an SVG (a PNG put
+  task87, task100 and task130 on the surface screen at stage 3).
+- **Then** stages 3 to 5 as the pipeline sets them: the reader reads again (the prompt and documents changed).
 
 ## Tried and rejected
 
@@ -342,3 +488,6 @@ with the band figures on the same model is the designed stump.
 - Near-term deposit outflow from the register of notices already given: maturity_censoring family, banned against task445 in the last three.
 - Partial verification of a sampled review (below-the-line alert testing, a file-review sample): stratum rates are what a solver computes by default, and a value-proportional design is either filed (a reading) or unrecoverable (a fork).
 - Chart deliverable as a PNG (stage 3): the xlsx-plus-png set is shared by task87, task100 and task130, and the surface screen promoted all three on deliverable species, layout and format mix alone; the chart ships as an SVG with its text kept as text.
+- Standard 5.2 as filed at architecture 2 stage 3 ("a probability of reaching the watch list that depends only on its flag status at the cohort date and is the same across the book. It is set from the performance measures in 4.3"): read literally, the flagged probability is the cohorts' hit rate, so the filed text gives about 74 against the golden 134; the stage 4 reader sized it as a main-call fork, it is the defect the portal failed task445 on (answer_contradicts_files, golden_wrong) and an official decoy on the card's terms. Replaced in loop 1 by a 5.2 that files the estimand and the leave-one-cohort-out test that selects the basis and names no basis.
+- Architecture 2's stage 3 ask devices: the superseded scheduled plc run (D2), the HB-DAC file delivered on its own (D4) and closing rates quoted per pound (D3) were re-skinned from architecture 1's set, which its round-1 solver cleared in full (asks 3 of 3 at 80 per cent of tokens), and facilities maturing on the cohort date still ACTIVE (D8) were executed by any reader of 6.1's maturity sentence (and sat as the last 25 rows); with CANCELLED and CLOSED rows carrying their last limit, 6.1 also left the status reading open (18 groups between bands). Replaced in loop 1 by the facility-obligor grain, the UTC limit clock and the not-yet-grouped hazard, with cancelled and closed limits nil in the records.
+- Stage 3 cohort counts under loop 1's test (flagged and reaching 58/33/28/39, flagged and not reaching 60/64/66/63): the pooled basis lost the test to the mean of cohort rates (2.5 against 1.9 per cent), whose unflagged total sat in another bin (28.5 against 28.7). The first retune tried (59/34/28/39 and 60/64/66/64) put the straight-line fit of the arrival share at 131.49 against the pooled 131.92, on a bin edge and a different whole number. Retuned to 58/32/28/39 and 61/66/67/65, where every convergent route lands in the 133 bin with at least 0.33 of margin.
