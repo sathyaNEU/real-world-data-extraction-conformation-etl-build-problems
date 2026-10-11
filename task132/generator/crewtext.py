@@ -119,13 +119,39 @@ class Writer:
         return self.one(["+5V rail %sV" % five, "5 V out %s" % five, "+24V rail %s V" % tw, "+5 %s / +24 %s" % (five, tw),
                          "PSU output %s V on 5V test point" % five, "24V rail sagging to %s V" % tw])
 
-    def led(self, dead):
+    LEDS = ["ALARM", "ENABLED", "RELAY OK", "IN SVC", "PWR", "TRIP", "TEST"]
+    STATES = ["flashing", "on solid", "red", "out", "off", "flickering", "amber", "blinking"]
+    DEAD = ["all LEDs off", "no LEDs", "front panel dark", "display blank, no LEDs", "PWR LED off", "ENABLED and PWR LEDs out",
+            "relay dark", "nothing on the front panel", "IN SVC LED off, display blank", "no lights on relay", "LEDs all out",
+            "relay completely dead", "panel dark, display blank", "no display", "relay front dark", "no power to relay",
+            "front panel blank", "display and LEDs dead", "dead relay, no display", "PWR LED out, display blank",
+            "relay off, LCD blank", "LCD blank and no LEDs", "no LEDs or display", "relay showing nothing"]
+
+    def led(self, p, dead):
         if dead:
-            return self.one(["all LEDs off", "no LEDs", "front panel dark", "display blank, no LEDs", "PWR LED off",
-                             "ENABLED and PWR LEDs out", "relay dark", "nothing on the front panel", "IN SVC LED off, display blank"])
-        st = self.one(["flashing", "on solid", "red", "out", "off"])
-        return self.one(["ALARM LED %s" % st, "ENABLED LED %s" % st, "RELAY OK LED %s" % st, "ALARM LED on, ENABLED off",
-                         "IN SVC LED off, ALARM red", "display flickering", "display frozen, LEDs %s" % st])
+            return self.say(p, "dead", self.DEAD)
+        a, b = self.r.sample(self.LEDS, 2)
+        s1, s2 = self.one(self.STATES), self.one(self.STATES)
+        return self.say(p, "part", ["%s LED %s" % (a, s1), "%s LED %s, %s %s" % (a, s1, b, s2), "%s lamp %s" % (a, s1),
+                                     "%s %s" % (a, s1), "display frozen, %s LED %s" % (a, s1), "display flickering, %s %s" % (a, s1),
+                                     "LCD garbled, %s %s" % (a, s1), "%s and %s LEDs %s" % (a, b, s1)])
+
+    def dc(self, p, volts):
+        nominal = {48: (51.6, 54.2), 125: (127.8, 134.6), 250: (256.0, 268.5)}[volts]
+        v = round(self.r.uniform(*nominal), 1)
+        tb = "TB%d-%d/%d" % (self.r.randint(1, 3), self.r.randint(1, 12), self.r.randint(13, 24))
+        return self.say(p, "dc", ["%.1f VDC at %s" % (v, tb), "DC at terminals %.1f V" % v, "%.1fV DC in" % v,
+                                  "station DC OK (%.1f V)" % v, "%.1f V at relay DC input" % v, "DC input %.1fV, OK" % v,
+                                  "measured %.1f VDC at relay" % v, "batt volts at panel %.1f" % v, "DC supply %.1fV" % v,
+                                  "%.1f V on %s" % (v, tb), "input %.1f VDC" % v, "DC good, %.1f V" % v])
+
+    def rails(self, p):
+        five = self.one(["0.0", "0.2", "0.4", "1.1", "2.8", "3.6", "4.1", "4.4"])
+        tw = self.one(["0.0", "3.2", "6.3", "11.4", "14.8", "17.9", "19.2", "21.0"])
+        return self.say(p, "rails", ["+5V rail %sV" % five, "5 V out %s" % five, "+24V rail %s V" % tw, "+5 %s / +24 %s" % (five, tw),
+                                     "PSU output %s V on 5V test point" % five, "24V rail sagging to %s V" % tw,
+                                     "5V TP reads %s" % five, "+24 out %sV" % tw, "outputs %s/%s V" % (five, tw),
+                                     "5V rail dropping to %s" % five, "24 V rail %s, should be 24" % tw])
 
     def finish(self, parts, p, typo=None):
         """join the pieces the way this person writes"""
@@ -184,67 +210,93 @@ class Writer:
         p = self.who(crew)
         b = self.bay(p, bay)
         psu = p.words
+        st = self.store(p, store)
+        h0, m0 = self.r.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]), self.r.randrange(60)
+        fmt = self.one(["%02d:%02d", "%02d%02d", "%02d:%02dh"])
+        t = lambda mins: fmt % (((h0 * 60 + m0 + mins) // 60) % 24, (h0 * 60 + m0 + mins) % 60)
         if storm:
-            trig = self.one(["after the %s storm, %s relay dark" % (storm, b), "post-storm patrol %s, %s relay fail alarm" % (storm, b),
-                             "%s relay down after %s storm" % (b, storm), "storm %s, %s relay found off" % (storm, b)])
+            trig = self.say(p, "storm", ["after the %s storm, %s relay dark" % (storm, b), "post-storm patrol %s, %s relay fail alarm" % (storm, b),
+                                         "%s relay down after %s storm" % (b, storm), "storm %s, %s relay found off" % (storm, b),
+                                         "%s storm, found %s relay dead" % (storm, b), "storm damage check %s, %s relay out" % (storm, b)])
         else:
-            alarm = self.one(ALARMS)
-            trig = self.one(["%s alarm %s" % (alarm, b), "SCADA %s alarm on %s" % (alarm, b), "%s %s alarm" % (b, alarm),
-                             "control room called, %s relay %s" % (b, self.one(["not responding", "off line", "showing fail", "no comms"])),
-                             "%s relay found dark on %s" % (b, self.one(["station visit", "monthly insp", "switching", "stn check"])),
-                             "System Control call, %s %s" % (b, alarm), "%s alm rec'd %s, %s" % (alarm, self.clock(), b)])
+            alarm = self.say(p, "alarm", ALARMS)
+            trig = self.say(p, "trig", ["%s alarm %s" % (alarm, b), "SCADA %s alarm on %s" % (alarm, b), "%s %s alarm" % (b, alarm),
+                                        "control room called, %s relay %s" % (b, self.one(["not responding", "off line", "showing fail", "no comms", "dropped off"])),
+                                        "%s relay found dark on %s" % (b, self.one(["station visit", "monthly insp", "switching", "stn check", "patrol"])),
+                                        "System Control call re %s %s" % (b, alarm), "%s alm rec'd %s, %s" % (alarm, t(0), b),
+                                        "%s alarm at %s on %s" % (alarm, t(0), b), "paged for %s %s" % (b, alarm),
+                                        "ctrl rm reports %s %s" % (b, alarm), "%s: %s since %s" % (b, alarm, t(0)),
+                                        "%s alarm in from SCADA, %s" % (alarm, b), "%s relay %s" % (b, alarm)])
         lead = []
         if em and self.r.random() < 0.55:
-            lead.append(self.one(["call-out", "after hours call-out", "o/t call out", "emergency call", "C/O"]))
+            lead.append(self.say(p, "callout", ["call-out", "after hours call-out", "o/t call out", "emergency call", "C/O",
+                                                "called in", "standby call", "night call"]))
             if self.r.random() < p.times:
-                lead.append("on site %s" % self.clock())
+                lead.append(self.say(p, "onsite", ["on site %s" % t(self.r.randint(40, 110)), "arr %s" % t(self.r.randint(40, 110)),
+                                                   "at stn %s" % t(self.r.randint(40, 110))]))
         dead = self.r.random() < 0.6
-        finds = [self.led(dead)]
+        finds = [self.led(p, dead)]
         if self.r.random() < p.reads:
-            finds.append(self.dc(volts))
+            finds.append(self.dc(p, volts))
         if self.r.random() < p.reads * 0.8:
-            finds.append(self.rails())
+            finds.append(self.rails(p))
         if p.detail >= 1 or self.r.random() < 0.5:
-            finds.append(self.one(["relay rebooting every %d min" % self.r.randint(2, 15), "relay cycling on and off",
-                                   "self-test log: PS FAIL", "SER shows DC fail at %s" % self.clock(), "burnt smell at %s" % psu,
-                                   "scorch mark on %s board" % psu, "%s caps bulging" % psu, "%s input fuse blown" % psu,
-                                   "%s fuse OK" % psu, "%s hot to touch" % psu, "%s dead" % psu, "%s failed" % psu,
-                                   "%s output collapsing under load" % psu, "nothing out of %s" % psu,
-                                   "relay powers up then drops out", "relay dead"]))
+            finds.append(self.say(p, "find", [
+                "relay rebooting every %d min" % self.r.randint(2, 15), "relay cycling on and off", "self-test log: PS FAIL",
+                "SER shows DC fail at %s" % t(-self.r.randint(1, 9)), "burnt smell at %s" % psu, "scorch mark on %s board" % psu,
+                "%s caps bulging" % psu, "%s input fuse blown" % psu, "%s fuse OK" % psu, "%s hot to touch" % psu, "%s dead" % psu,
+                "%s failed" % psu, "%s output collapsing under load" % psu, "nothing out of %s" % psu,
+                "relay powers up then drops out", "relay dead", "self-test: power supply error", "event log PWR FAIL at %s" % t(-2),
+                "%s clicking, no output" % psu, "%s smells burnt" % psu, "electrolytic on %s leaking" % psu, "%s getting hot" % psu,
+                "relay boots, dies after %d s" % self.r.randint(5, 60), "%s fuse blown, replaced fuse, blew again" % psu,
+                "relay restarts when panel door closed", "%s output intermittent" % psu]))
         if p.detail == 0 and len(finds) > 2:
             finds = finds[:2]
-        hold = self.maybe(0.25 if fitted == "same" else 0.9,
-                          self.one(["feeder on backup prot", "bus protection backing up %s" % b, "%s left on backup" % b,
-                                    "%s reclosing blocked until relay back" % b, "load transferred off %s" % b,
-                                    "upstream prot covering %s" % b]))
+        hold = self.maybe(0.25 if fitted == "same" else 0.9, self.say(p, "hold", [
+            "feeder on backup prot", "bus protection backing up %s" % b, "%s left on backup" % b,
+            "%s reclosing blocked until relay back" % b, "load transferred off %s" % b, "upstream prot covering %s" % b,
+            "%s on bus backup" % b, "TS backup in service for %s" % b, "%s non-reclose till fixed" % b, "%s backed up by bus diff" % b]))
         sn = p.sn.format(serial) if serial else ""
         if fitted == "same":
             if repaired:
-                act = self.one(["replaced %s w/ repaired unit from %s" % (psu, store), "fitted repaired %s %s" % (psu, sn),
-                                "changed %s, used refurb spare from %s" % (psu, store), "installed Veldtek-repaired %s %s" % (psu, sn),
-                                "replaced %s, spare ex Veldtek repair %s" % (psu, sn), "swapped %s for repaired spare (%s stock)" % (psu, store)])
+                act = self.say(p, "act_r", [
+                    "replaced %s w/ repaired unit from %s" % (psu, st), "fitted repaired %s %s" % (psu, sn),
+                    "changed %s, used refurb spare from %s" % (psu, st), "installed Veldtek-repaired %s %s" % (psu, sn),
+                    "replaced %s, spare ex Veldtek repair %s" % (psu, sn), "swapped %s for repaired spare (%s stock)" % (psu, st),
+                    "put in refurb %s %s" % (psu, sn), "%s changed out, repaired unit %s" % (psu, sn),
+                    "used repaired spare from %s, %s" % (st, sn), "refurb %s fitted from %s" % (psu, st)])
             else:
-                act = self.one(["replaced %s with new module from %s" % (psu, store), "new %s fitted %s" % (psu, sn),
-                                "changed %s, new unit from %s" % (psu, store), "installed new %s %s" % (psu, sn),
-                                "replaced %s, new %s" % (psu, sn), "swapped in new %s from %s stock" % (psu, store)])
-            tests = [self.one(["trip test OK", "trip tested OK, CB opened %.1f cyc" % self.r.uniform(2.6, 3.6),
-                               "secondary injection OK", "functional test OK", "settings verified against file",
-                               "settings checked, file rev %d" % self.r.randint(2, 9), "self-test clear", "ENABLED LED on"])]
+                act = self.say(p, "act_n", [
+                    "replaced %s with new module from %s" % (psu, st), "new %s fitted %s" % (psu, sn),
+                    "changed %s, new unit from %s" % (psu, st), "installed new %s %s" % (psu, sn),
+                    "replaced %s, new %s" % (psu, sn), "swapped in new %s from %s stock" % (psu, st),
+                    "put in new %s %s" % (psu, sn), "%s changed out, new unit %s" % (psu, sn),
+                    "new spare from %s, %s" % (st, sn), "new %s from %s fitted" % (psu, st)])
+            tests = [self.say(p, "test", [
+                "trip test OK", "trip tested OK, CB opened %.1f cyc" % self.r.uniform(2.6, 3.6), "secondary injection OK",
+                "functional test OK", "settings verified against file", "settings checked, file rev %d" % self.r.randint(2, 9),
+                "self-test clear", "ENABLED LED on", "trip checked to CB OK", "tripped CB from relay, OK", "sec inj OK, pickup in tol",
+                "settings compared to file, no diffs", "self-test passed", "alarms clear at SCADA", "relay in service, alarms clear",
+                "test trip OK", "relay healthy LED on".replace("healthy ", "OK "), "pickup and timing checked"])]
             if p.detail >= 1:
-                tests.append(self.one(["event records downloaded", "SER downloaded", "control room advised",
-                                       "returned to service %s" % self.clock() if self.r.random() < p.times else "returned to service",
-                                       "back in service", "System Control notified"]))
+                tests.append(self.say(p, "close", [
+                    "event records downloaded", "SER downloaded", "control room advised", "returned to service %s" % t(self.r.randint(90, 300))
+                    if self.r.random() < p.times else "returned to service", "back in service", "System Control notified",
+                    "SER pulled to laptop", "events saved to stn folder", "ctrl rm notified, alarm clear", "RTS", "relay back online",
+                    "SCADA points back", "RTS, ctrl rm advised", "closed out with System Control"]))
             parts = lead + ([act, trig] + finds if p.action_first else [trig] + finds) + [hold] + ([] if p.action_first else [act]) + tests
         else:
-            act = self.one(["no spare on truck, %s removed, follow-up WO raised to fit spare" % psu,
-                            "pulled failed %s, spare to be fitted on follow-up WO" % psu,
-                            "%s removed, relay left out of service pending spare" % psu, "failed %s removed, fitting on next WO" % psu,
-                            "removed %s, spare coming from %s" % (psu, store),
-                            ("%s removed, spare fitted under %s" % (psu, wo_fit)) if wo_fit else ("%s removed, spare fitted on f/u WO" % psu)])
+            act = self.say(p, "act_l", [
+                "no spare on truck, %s removed, follow-up WO raised to fit spare" % psu, "pulled failed %s, spare to be fitted on follow-up WO" % psu,
+                "%s removed, relay left out of service pending spare" % psu, "failed %s removed, fitting on next WO" % psu,
+                "removed %s, spare coming from %s" % (psu, st),
+                ("%s removed, spare fitted under %s" % (psu, wo_fit)) if wo_fit else ("%s removed, spare fitted on f/u WO" % psu),
+                "%s out, waiting on spare from %s" % (psu, st), "no %s in van, pulled failed one, f/u to fit" % psu,
+                "removed %s, relay out until spare fitted" % psu])
             parts = lead + [trig] + finds + [hold, act]
-        parts.append(self.maybe(0.2, self.one(["failed unit bagged and tagged for RMA", "failed %s to %s returns" % (psu, store),
-                                                "tag %d on failed unit" % self.r.randint(1000, 9999), "SER downloaded",
-                                                "failed unit to %s returns shelf" % store])))
+        parts.append(self.maybe(0.2, self.say(p, "extra", [
+            "failed unit bagged and tagged for RMA", "failed %s to %s returns" % (psu, st), "tag %d on failed unit" % self.r.randint(1000, 9999),
+            "failed unit to %s returns shelf" % st, "old %s to returns, tagged" % psu, "defective %s tagged %d" % (psu, self.r.randint(1000, 9999))])))
         return self.finish(parts, p)
 
     def psu_fitting(self, crew, bay, store, serial, repaired, wo_fail):
