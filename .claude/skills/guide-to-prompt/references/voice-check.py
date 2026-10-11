@@ -7,7 +7,7 @@
     python3 .claude/skills/guide-to-prompt/references/voice-check.py --file <path>  # a draft anywhere on disk
 
 Per build it prints one PASS or FAIL line per rule and exits 1 when any rule fails, so the gate can sit in a
-script. The rules are in `prompt-voice.md`. The prompt is `prompt.txt`, plain text; a folder carrying only
+script. The rules are in the guide-to-prompt `SKILL.md`. The prompt is `prompt.txt`, plain text; a folder carrying only
 `prompt.md` is a build shipped before the rule and is read with a warning (and fails the file rule when it
 is the build under check, unless `--legacy` is passed). The batch report measures what no single prompt can
 see: the spread of question forms, repeated word runs, file counts and formats.
