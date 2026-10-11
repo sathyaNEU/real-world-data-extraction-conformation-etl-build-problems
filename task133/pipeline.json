@@ -2,8 +2,8 @@
  "task": "task133",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": "7",
- "stage_name": "determinism check",
+ "stage": 8,
+ "stage_name": "shipped",
  "updated": "2026-10-11",
  "branch": "sathya8571/task133-harden",
  "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each performing loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000 (10.8 per cent low); the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so loans repaid in full by month a stay in the at-risk base.",
@@ -112,13 +112,13 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "not run",
+  "disposition": "returned task (portal round 1): the author's rule is design, build, commit and ship, with no leak reader, solver round, judge or clone check; the mechanical gates ran (build, checks.py 511, verify, byte-identical rebuilds, leak.py, guard)",
   "report": "",
   "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
  },
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
  "portal": {
   "v1": "2026-10-11: one model stumped, the other landed AUD 13,773,000 at 100 per cent"
  },
@@ -155,5 +155,6 @@
    "write_offs_2025-07_2026-09.csv"
   ],
   "next": "stage 7: the determinism judge; a reader's pass on the 6b cut is owed because documents under target/ changed"
- }
+ },
+ "prompt": "prompt.txt at ship, 840 characters, question-first plain text under the author's ten points; every ask, unit and rounding word for word; prompt.md removed"
 }

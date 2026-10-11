@@ -302,20 +302,36 @@ solution uses, and no further file enters either computation without a dependenc
 
 ## PROMPT
 
-934 characters and 155 words in one paragraph. `voice-check.py 133` gives 22.1 words a sentence, one sentence under
-eight words, one rounding tag, no "because", and no carrier or six-word-run flag; it reads the opening as
-deliverable-first, the only one in the twelve-build window. The card files the same move, against task130
-stakes-first, task132 constraint-first, task134 calendar-first and task135 stakes-first.
+`prompt.txt`, 840 characters and 145 words in one plain-text paragraph with no markdown characters, written at ship
+under the author's ten prompt points; `prompt.md` is gone. The economy check (voice-check, run on `prompt.txt`) gives
+20.7 words a sentence, two sentences under eight words, one rounding tag, no "because", and reads the opening as
+question-first.
 
-The order since the pre-round repair: Stephanie Manning's two slides for the board; the first slide's figure, the
-allowance, with the sign-off on 23 October; the chart of where the 30 June stage 1 and stage 2 loans stood at 30
-September; then the workbook behind the slides, with the stage amounts and the realised loss by product and quarter.
-Loop 1 ran the 23 October sign-off, the figure, the workbook and then the chair's slides, the one build order the
-clone check read across task130, task132, task133, task134 and task135 (Idiom). Every requirement, unit and rounding
-carries over. Ask B names 30 September where loop 1 said "now", and the "what it needs from my team" frame is gone.
+The ten points, walked once:
+1. The question leads: "What collective expected credit loss allowance should we book on our PL36 and PL60 loans at
+   30 September 2026, built the way CRM-ECL-04 sets out with this quarter's approved scenarios?"
+2. Cut: Stephanie Manning, the Audit and Risk Committee, the board's 23 October sign-off, "my team's" and "the
+   auditors". None moves a figure: no rung, pin or ask reads a date after 30 September 2026 or a person.
+3. Kept because a figure could move without it: 30 September 2026, PL36 and PL60, CRM-ECL-04, this quarter's
+   approved scenarios, the 30 June groups, and the tie between the realised-loss ask and the LGDs (it is what puts the
+   ask on CRM-ECL-04 3.3's basis, discounted to the default month end; without it an undiscounted share is a second
+   reading).
+4. Every ask carries over word for word: both file names, "built the way CRM-ECL-04 sets out with this quarter's
+   approved scenarios", "where each product's stage 1 and stage 2 loans at 30 June stood at 30 September, giving for
+   each of those four groups the number in each stage and the number closed", "what the loans that defaulted in 2023-24
+   have actually lost as a share of their balance at default", "by product and quarter", "in Australian dollars to the
+   nearest thousand", "in per cent to one decimal".
+5. Meaning held: "add that" now names the workbook, where the golden carries it; the nearest-thousand rounding now
+   also names the stage amounts, which the golden already states to the thousand and which sum to the allowance.
+6. One paragraph, ordered question, files, rounding; no list and no "then".
+7. The two rounding rules are stated once, in the last sentence.
+8. Asked, not specified: "Put it with", "add that", "I also need".
+9. No opinion argues for a wrong answer.
+10. The answer turns on analysis: the conditioning base of a cumulative default curve (THE STUMP), not on a field or a
+    stated procedure.
 
-6b left the prompt word for word (934 characters): both devices and every pin sit in the pack, so the asks' wording
-needed no change, and the repair goes to the judge without a fresh solver round on the prompt's account.
+6b left the old prompt word for word. The conversion at ship changes no ask, unit or rounding. This is a returned
+task (portal round 1), so it ships from design, build and commit without a reader, solver round or judge.
 
 ## PRE-SHIP CHECK (the client's three rules and two layers)
 
@@ -409,6 +425,7 @@ June extract's arrears clock, the Collections case closure, the bulk COVID-19 st
   files) and data on the ask paths (the June extract's days past due, the Collections MI file, the register's new rows
   and COVID-19 statuses, the write-off file), so a reader's pass on this cut is owed before the round or the judge
   reads it; the earlier reader sections stay appended to the report.
+- `leak.py --asof 2026-10-12` again at ship, sweeping `prompt.txt`: the same REVIEW lines as the 6b cut and no LEAK; sweeps 4, 5 and 11 read the new prompt clean.
 
 ## Tried and rejected
 
