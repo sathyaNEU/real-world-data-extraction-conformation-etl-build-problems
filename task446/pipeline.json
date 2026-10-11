@@ -2,8 +2,8 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "data-extraction-conformation",
- "stage": 7,
- "stage_name": "determinism check (architecture 2, loop 1)",
+ "stage": 8,
+ "stage_name": "shipped",
  "updated": "2026-10-11",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver sets the probabilities from the share of flagged and of unflagged groups that reached the list over the four closed cohorts taken together (the hit and miss rates) and files 73, or, seeing that basis fail the standard's leave-one-cohort-out test by 40.6 per cent, trends those rates on the flagged share and files 147; only the basis that backs each year's share reaching out of its flagged share through the capture and false-alarm rates passes the test (worst miss 1.6 per cent) and gives 133.",
@@ -74,12 +74,17 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (architecture 2, loop 1, pass 1)",
+  "disposition": "APPROVE",
+  "report": "task446/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the card",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-11",
  "portal": null,
- "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed"
+ "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed",
+ "ship": {
+  "target_zip": "3035037 bytes, 17 members, matches target/ (H7); rebuild byte-identical (builder)"
+ }
 }

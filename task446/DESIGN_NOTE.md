@@ -65,6 +65,16 @@ edge, rounded rows tie to the rounded totals.
 - **Personas.** User ids in the limit history come from the seed-446 name draw (Jade Ali replaces a first name the
   guard warned on); the secretariat officer on the agenda is Abbie Stevens. Card updated.
 
+## Pre-ship check (client two-layer standard)
+
+- Domain: credit risk monitoring; the field's own early-warning performance measures (capture, false alarm, hit rate) and the base-rate dependence of the hit rate decide the caseload; with another field's nouns the screen's error rates and the cohort structure do not exist.
+- Layer 1: group membership through the credit system and GLEIF consolidation (lapsed holdcos, a branch, fund links, a direct-only parent, CRN-keyed members), facility rows repeated per obligor, a limit history stamped in UTC with a start-of-day batch, a superseded extract run, FX quoted per pound; all real system behaviour, none on the main call's rows (asserted).
+- Decisive step: a method choice (which basis carries the screen onto a year whose flagged share jumped), forced by the filed 5.2 test on the closed cohorts; not a planted catch, not a field reading, not a stated rule applied (5.2 names no basis).
+- Analyst test: a strong analyst who reads every field and rule correctly and runs 5.2's test over the bases it reaches for (the hit and miss rates, a single book rate) files 73 (round 2 did exactly this); the capture and false-alarm basis gives 133.
+- Estimand pinned: 4.1, 4.2 and 5.1 (book, outcome, exclusions) and 5.2 (one probability per flag status, the basis with the smallest largest leave-one-out miss); the literal reading gives 133 (judge, literal reading first).
+- No decoy memo, no withheld rule, no certified record blessing a method; the lesson is not one an earlier build teaches (pre-flight: Track B clean; one soft Track A shape echo repaired by the distractor rename).
+- Judge: DETERMINISTIC, APPROVE, no FIX_NOW.
+
 ## Tried and rejected`.
 
 ## Stump sentence
