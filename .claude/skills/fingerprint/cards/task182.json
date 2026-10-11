@@ -1,0 +1,86 @@
+{
+  "task": "task182",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed AD05 (a prescriber's high-dose patient count, a daily dose built from overlapping fills) re-rooted at the draw: its reviewer-determination corpus pins the construction by replaying settled figures, which the client's 10/10 standard caps, and its world (a state programme-integrity unit referring a prescriber to a medical board) repeats task180's role, forum and organisation family; the objective and the number are kept and the draw is new. A first draft on left-censored laboratory results was dropped at the guard (same gap, G-code and Gate G as task134, and a third censoring stump in a row after task134 and task181)",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "niche": "make-good bore assessments at an open-cut coal mine in central Queensland whose pit has been dewatered since mid-2022: which neighbouring landholders' water bores have lost more water level to the mine's take than the trigger threshold for their aquifer, through two dry years that lowered every shallow bore in the district",
+  "objective": "anomaly-detection",
+  "shape": "11",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Offer make-good agreements to four owners for five bores: Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05 (one agreement), Tondara Grazing Pty Ltd for KV-LB07, Bluebush Downs Pty Ltd for KV-LB10 and Cypress Ridge Pastoral Trust for KV-LB12.",
+  "answer_source": "task182/submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "other",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "principal hydrogeologist at the mine, who recommends which landholders are offered make-good agreements",
+  "role_family": "other",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "water_level_dips_2012-2026.csv",
+    "rows": 4214,
+    "entity": "one manual depth-to-water reading at one bore, by the field team or the EIS consultant (logged bores add hourly pressures in logger_pressure_2015-2026.parquet, 994,869 rows)",
+    "grain": "bore x observation",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "other",
+  "world": {
+    "geography": "Australia, central Queensland (Isaac region, Bowen Basin)",
+    "currency": "AUD",
+    "org_type": "an open-cut coal mine owned by a mid-sized mining company, whose pit dewatering takes associated water from the coal measures",
+    "invented_names": [
+      "Kelvale Mine",
+      "Tarrabool Resources",
+      "Mundoora Creek"
+    ],
+    "people": [
+      "Rebecca Quinn",
+      "Stephen Anderson",
+      "Erika Martin",
+      "Ernest Walker",
+      "Clarence Lewis",
+      "Noah Carrillo"
+    ]
+  },
+  "deliverables": [
+    "bore_impact_assessment.xlsx",
+    "make_good_recommendation.docx"
+  ],
+  "opening_move": "question-first",
+  "driver": "When every unit's level follows a shared external driver through its own lagged response, a change measured from a fixed baseline mixes that response with the effect being assessed, so the effect is the gap between the observed level and each unit's own driver-only path fitted before the effect began, which hides large effects where the driver was lifting the level and invents them where it was pulling it down.",
+  "driver_concrete": "Each landholder bore's September 2026 assessment level is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt) since the pit's dewatering began on 4 July 2022; the alluvial bores fell 4.6 to 5.2 m through the failed 2022-23 to 2025-26 seasons on rainfall alone, while the coal-measure bores near the pit, still rising on the 2019-20 and 2020-21 wet seasons through a six to seven year rainfall memory, were drawn 8.3 to 9.3 m below where that rise was taking them and show only 2.2 to 2.5 m of net decline.",
+  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change, or with the far-field coal-measure bore KV-LB16 as a control) and offers make good to the alluvial bores and the ridge basalt bore that fell past their triggers (or to KV-LB12 alone, or to KV-LB04, KV-LB05 and KV-LB12); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and basalt fell through the dry seasons and the coal measures' small net fall hides 8.3 to 9.3 m of drawdown under a rise the wet seasons had set going.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who turns every reading into a reduced level, drops pumped and duplicate dips, compensates the loggers for air pressure and applies each aquifer's trigger exactly still measures each bore's decline from its baseline (or against the reference bores) and designates the alluvial bores and the ridge basalt bore, or takes the far-field coal-measure bore KV-LB16 as the coal measures' climate control, which the mine has itself drawn down about 2.4 m, so KV-LB04 sits at 5.0 to 5.1 m on its 5 m trigger, KV-LB07 and KV-LB10 fall under it and the set is KV-LB04, KV-LB05 and KV-LB12 or KV-LB05 and KV-LB12; only a model of each bore's own response to rainfall and evaporation, calibrated before dewatering and run forward as the level without the mine, shows which bores the mine has drawn down past their trigger.",
+  "domain_test": "What decides the set is attributing groundwater-level change between climate-driven recharge and pumping with response functions calibrated on each bore's pre-impact record, which is how hydrogeologists assess drawdown impacts on neighbouring bores; with another field's nouns there is no recharge, no aquifer memory that differs between shallow and deep bores and no drawdown cone, so the task does not read the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:counterfactual-groundwater-level-from-calibrated-climate-response",
+  "layer1": [
+    "depth to water below a measuring point that changed when headworks were rebuilt, against reduced levels in metres AHD",
+    "landholder dips taken while the bore's own pump was running (pumped, not static, levels) flagged only in a free-text remark",
+    "unvented pressure loggers that need the site barometric logger subtracted, stamped in UTC and averaged to Queensland days",
+    "bores known by a state registered number, the landholder's name for it and the company's monitoring code",
+    "the 2012 to 2014 EIS consultant rounds in feet, and duplicate dips entered twice"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Re-root of seed AD05 at the draw (see slot_note). Anomaly Detection & Diagnostics: which bores show a drawdown the mine caused, as against the dry years' decline. decisive_rule_filed is true: the make-good procedure files the trigger (a decline attributable to the mine's take beyond 2 m in unconsolidated and 5 m in consolidated aquifers) and the baseline assessment, and nothing files how the attributable part is estimated; no filed document defines the decline as the baseline minus the current level, so there is no official decoy. calibration_form is other: reference bores outside the predicted zone of influence show the climate-only model holds after July 2022. org_family is other (a coal mining company) and role_family is other (a hydrogeologist)."
+}

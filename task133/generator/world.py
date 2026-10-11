@@ -4,9 +4,12 @@ from zoneinfo import ZoneInfo
 
 SEED = 133
 REPORT = dt.date(2026, 9, 30)          # quarter-end reporting date (a Wednesday)
+PRIOR_QE = dt.date(2026, 6, 30)        # the June quarter end (a Tuesday)
 GO_LIVE = dt.date(2019, 10, 1)         # loan system go-live; first drawdowns October 2019
-DEV_CUTOFF = dt.date(2023, 10, 1)      # development sample: loans drawn before this date
 DEV_OBS_END = dt.date(2026, 5, 31)     # development sample performance window ends (the May 2026 month end)
+# development sample: every loan drawn from go-live to the last monthly vintage whose loans had all run their full term,
+# defaulted or been repaid by the end of the performance window (asserted: no development loan is still open)
+DEV_WINDOW = {"PL36": (GO_LIVE, dt.date(2023, 3, 31)), "PL60": (GO_LIVE, dt.date(2021, 3, 31))}
 PRODUCTS = {"PL36": 36, "PL60": 60}
 LGD = {"PL36": 0.70, "PL60": 0.76}     # filed in CRM-ECL-04
 GRADES = ["A", "B", "C", "D", "E"]
@@ -107,12 +110,51 @@ REDUCED_TOKEN = [10, 20, 20, 25, 30, 40, 50]
 # after write-off: a payment plan with the collection agency, a lump-sum settlement, odd payments, or nothing; amounts
 # received over two to three years
 RECOVERY_MIX = (0.48, 0.15, 0.09)
-RECOVERY_PLAN = (0.030, 0.064, 45, 520, 0.052)   # monthly amount as a share of the balance (low, high), floor, cap; stop hazard
+RECOVERY_PLAN = (0.030, 0.064, 45, 320, 0.052)   # monthly amount: a share of the balance (low, high), but no more than
+                                                # the borrower can afford (log-normal, median 320, sd 0.55), floor 45; stop hazard
 RECOVERY_SETTLE = (0.38, 0.64)                  # lump sum as a share of the balance
+# a settlement agreed with a borrower before write-off: a share of the balance owed, in round fifty dollars
+SETTLEMENT_SHARE = (0.40, 0.70)
+# how borrowers in collections pay (direct debit, BPAY, card), and how often a direct debit is dishonoured and taken again
+PART_PAY_MIX = (0.50, 0.32)
+CATCH_UP_MIX = (0.20, 0.45)
+DD_DISHONOUR = 0.07
+COLLECTION_AGENCY = "Wirraway Mercantile Agents"
+# the sale of written-off accounts to a debt buyer in March 2026: accounts written off by the end of August 2025 with
+# nothing received in the six months before the cut-off, at their balances at the cut-off, for a price per dollar of face
+SALE_REF = "BPF-DS-2026-01"
+SALE_BUYER = "Tarwin Receivables Pty Ltd"
+SALE_CUTOFF = dt.date(2026, 3, 6)
+SALE_SETTLED = dt.date(2026, 3, 27)
+SALE_WRITTEN_OFF_BY = dt.date(2025, 8, 31)
+SALE_QUIET_DAYS = 183
+SALE_PRICE_CENTS = 3.85
 
 # extra repayments settled by tune.py: loan_key -> amount (AUD), paid a few days after the loan's
 # September 2026 instalment, so no graded figure sits on a rounding edge
-TUNE = {38209: 4151.3, 42844: 5897.56, 78469: 3760.64, 78929: 5533.42, 80945: 5639.26, 81228: 4855.47}
+TUNE = {38209: 4151.3, 42844: 5897.56, 70618: 4782.73, 78469: 3760.64, 78929: 5533.42, 80945: 5639.26, 81228: 4855.47}
+
+# PLPD-2026.06 as Credit Risk Modelling released it: from month on book 4 the log of each month's increment is a natural
+# cubic spline in month on book with these knots and coefficients (truncated power basis, Hastie and Tibshirani); months
+# 1 to 3 are the development sample's own shares, and the final month, which collects the defaults recorded after the
+# last repayment date, is not fitted. tune_curve.py fits the coefficients to the sample's monthly default shares
+# (weighted by the defaults in each month) subject to the allowance and both stage amounts coming out as they do on the
+# sample's unsmoothed shares, read either way in the divisor (closure row 6)
+CURVE_FROM = 4
+CURVE_KNOTS = {"PL36": [4, 5, 7, 10, 14, 20, 27, 35], "PL60": [4, 5, 7, 10, 14, 20, 28, 40, 59]}
+CURVE_FIT = {"PL36": [-6.452902690007774, 0.3259712983836727, -1.3882885785797703, 1.9049587664148009, -0.4308075387717622,
+                      -0.10407652747142933, 0.037741028968568624, -0.029706425387825523],
+             "PL60": [-7.146364148973196, 0.4673099603949415, -4.047989699945275, 6.188526134187412, -2.434275014066228,
+                      0.5203459145460895, -0.33003623312736424, 0.1399717320294233, -0.04470576809844909]}
+
+# the June quarter-end extract was produced by ECL_QE_BOOK before change CHG-26-0418, when the job took days past due
+# as at the run (07:30 on 1 July) rather than at close of business on the quarter end
+JUNE_ARREARS_AT_RUN = True
+# collections hardship arrangements approved on 2023-24 defaults and withdrawn before they started: Collections closes
+# a default case as cured when the arrangement is approved, dated from the arrangement's start, and the case is not
+# reopened when the arrangement is withdrawn (extracts.withdrawn_arrangements sets how many fall in each product and
+# quarter of default)
+WITHDRAWN_SEED = SEED + 61
 
 
 def easter(y):

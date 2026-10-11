@@ -1,0 +1,14 @@
+logger_serial,site,installed_local,removed_local,sensor_depth_below_mp_m,logger_type,comment
+2041902,KV-LB02,2015-05-14 11:30,,18.40,"absolute pressure (unvented), 0-300 kPa",
+2041873,KV-LB04,2015-05-13 10:20,,41.50,"absolute pressure (unvented), 0-300 kPa",
+2041881,KV-LB05,2015-05-13 13:05,2019-02-26 11:40,38.00,"absolute pressure (unvented), 0-300 kPa",low battery warning at the 2019-02-11 visit; pulled for repair; replaced by 2190446
+2190446,KV-LB05,2019-04-02 09:55,,37.75,"absolute pressure (unvented), 0-300 kPa","replacement for 2041881; cable re-cut, sensor 0.25 m higher"
+2041890,KV-LB12,2015-05-14 08:45,,20.20,"absolute pressure (unvented), 0-300 kPa",
+2041917,KV-LB15,2015-05-15 09:10,,35.20,"absolute pressure (unvented), 0-300 kPa",
+2041925,KV-LB18,2015-05-15 12:25,2021-09-08 10:15,30.40,"absolute pressure (unvented), 0-300 kPa","removed at scheduled download, end of service life; replaced by 2213378 same visit"
+2213378,KV-LB18,2021-09-08 10:40,,30.65,"absolute pressure (unvented), 0-300 kPa",replacement for 2041925; new cable
+2041956,KV-MB01,2015-05-12 15:20,,24.80,"absolute pressure (unvented), 0-300 kPa","battery flat 2018-08-27, new battery at the October 2018 download; out 2023-05-09 to 2023-05-22 for headworks repair"
+2041964,KV-MB03,2015-05-12 16:10,,78.00,"absolute pressure (unvented), 0-1000 kPa",deep sensor for the pit perimeter; out 2024-06-11 to 2024-06-20 for perimeter road works
+2041933,KV-RF01,2015-05-19 10:00,,17.60,"absolute pressure (unvented), 0-300 kPa",
+2041948,KV-RF03,2015-05-19 14:35,,33.40,"absolute pressure (unvented), 0-300 kPa",
+2041972,KV-SITE-OFFICE,2015-05-12 09:00,,,"barometric (absolute pressure), 0-120 kPa","site barometric logger, in the environment store at the site office"

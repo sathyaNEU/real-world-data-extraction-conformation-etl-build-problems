@@ -19,6 +19,22 @@
       "format": "xlsx"
     },
     {
+      "path": "behaviour_score_runs_2026-03_2026-08.parquet",
+      "format": "parquet"
+    },
+    {
+      "path": "collections_defaults_2023-24.csv",
+      "format": "csv"
+    },
+    {
+      "path": "collections_receipts_2023-07_2026-09.csv",
+      "format": "csv"
+    },
+    {
+      "path": "debt_sale_2026-03_schedule.xlsx",
+      "format": "xlsx"
+    },
+    {
       "path": "ecl_extract_dictionary.txt",
       "format": "txt"
     },
@@ -39,6 +55,10 @@
       "format": "parquet"
     },
     {
+      "path": "personal_loan_book_2026-06-30.csv",
+      "format": "csv"
+    },
+    {
       "path": "personal_loan_book_2026-09-30.csv",
       "format": "csv"
     },
@@ -52,7 +72,6 @@
     }
   ],
   "distractors": [
-    "pd_model_development_sample.parquet",
     "write_offs_2025-07_2026-09.csv",
     "arrears_roll_rates_fy26.xlsx"
   ],
