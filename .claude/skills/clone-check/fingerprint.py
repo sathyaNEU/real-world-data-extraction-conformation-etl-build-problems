@@ -769,7 +769,7 @@ def norm_pattern(cell):
 
     Returns the set of patterns named and the decisive one. Cells read `A`, `B over A`,
     `G11 filed eligibility over D`, so the pattern written first is the one carrying the
-    decisive rung, and that is the one Part 6.1 bans reusing. The rest of the set is
+    decisive rung, and that is the one stumping Part 6 bans reusing. The rest of the set is
     context, worth a weaker signal.
     """
     t = (cell or "").strip()
@@ -836,7 +836,7 @@ def track_b_cards(x, y):
     best["mechanism"] = round(jaccard(norm_cell(fx.get("driver")), norm_cell(fy.get("driver"))), 3)
     if best["gap_decisive"] and best["pattern_decisive"]:
         ev.append("the decisive gap (%s) and the decisive pattern (%s) are both the same on the cards, "
-                  "which is Part 6.1's similarity test failing on the two axes that matter" % (gx, px))
+                  "which is stumping Part 6's similarity test failing on the two axes that matter" % (gx, px))
     elif best["gap_decisive"]:
         ev.append("same decisive gap on the cards (%s)" % gx)
     elif best["pattern_decisive"]:
@@ -849,7 +849,7 @@ def track_b_cards(x, y):
     if same_pair:
         ev.append("same domain and objective pairing on the cards (%s x %s)" % (fx.get("domain"), fx.get("objective")))
     if best["calibration_family"]:
-        ev.append("same calibration form on the cards (%s), which Part 6.1 bans reusing" % cf)
+        ev.append("same calibration form on the cards (%s), which stumping Part 6 bans reusing" % cf)
     if best["artifact_family"]:
         ev.append("same context-artifact type on the cards (%s)" % ca)
     if best["mechanism"] >= CARD_DRIVER_OVERLAP:
@@ -941,7 +941,7 @@ def track_b(x, y):
     if best.get("gap_decisive") and best.get("pattern_decisive"):
         gp = extras["gap_pattern_rows"]
         where = (" (rows %s and %s, %s against %s)" % (gp[1], gp[2], gp[3], gp[4])) if gp else ""
-        ev.append("the decisive gap and the decisive pattern are both the same, which is Part 6.1's "
+        ev.append("the decisive gap and the decisive pattern are both the same, which is stumping Part 6's "
                   "similarity test failing on the two axes that matter" + where)
         if gp and gp[0] <= 1:
             ev.append("both colliding rows are retired or failed architectures, so this is history rather than a live clone")
@@ -956,7 +956,7 @@ def track_b(x, y):
             ev.append("that pairing collides only with a retired or failed architecture, so the redraw "
                       "already answered it")
     if extras["calibration_family"]:
-        ev.append("same calibration family (%s), which Part 6.1 bans reusing" % extras["calibration_family"])
+        ev.append("same calibration family (%s), which stumping Part 6 bans reusing" % extras["calibration_family"])
     elif extras["calibration_ambiguous"]:
         ev.append("calibration cells overlap on %s but at least one classifies more than one way, so the "
                   "design notes decide whether the form is actually shared"
@@ -1054,7 +1054,7 @@ def cmd_screen(args):
         sa, ax, tb = rec["track_a"], rec["axes"], rec["track_b"]
         pct = rec["track_a_pct"]
         lx, ly = live_row(x), live_row(y)
-        adjacent = abs(x["num"] - y["num"]) == 1     # Part 6.1 bans are written against "your last build"
+        adjacent = abs(x["num"] - y["num"]) == 1     # stumping Part 6 bans are written against "your last build"
         consecutive = abs(x["num"] - y["num"]) <= 2  # near enough that the draw should have seen it
         core = (tb or {}).get("_core_collisions", 0)
         promote = []
@@ -1079,12 +1079,12 @@ def cmd_screen(args):
                            (", but at least one side carries a back-fitted label so the design notes decide it"
                             if backfit else ""))
         elif core >= 2 and consecutive:
-            promote.append("two of three mechanism axes collide between consecutive builds, which Part 6.1 bans directly")
+            promote.append("two of three mechanism axes collide between consecutive builds, which stumping Part 6 bans directly")
         if tb and tb.get("same_driver") and core < 3:
             promote.append("gap, pattern and Gate G mechanism all collide on the cards, the same-driver signature, "
                            "which carries a Template finding even when the decision is cut differently")
         if tb and tb.get("pattern_decisive") and adjacent:
-            promote.append("the decisive pattern repeats from the immediately previous build, which Part 6.1 bans by name")
+            promote.append("the decisive pattern repeats from the immediately previous build, which stumping Part 6 bans by name")
         elif tb and tb.get("pattern_decisive") and consecutive:
             promote.append("the decisive pattern repeats from a build two back, close enough that the draw should have caught it")
         pr = (tb or {}).get("pairing_rows")
