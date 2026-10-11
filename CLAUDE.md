@@ -48,7 +48,10 @@ with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, 
 architecture, then re-rooted in the same objective and number, three architectures, then retired. A
 round where it does not commit to the main call passes the worth-it gate, gets one repair of whatever
 the leak reader deferred, and goes on to the determinism judge, whose FIX_NOW is fixed and re-judged
-once. No session runs a solve in the main thread, which has read the design.
+once. No session runs a solve in the main thread, which has read the design. Each role runs on its
+own model and effort (`build-pipeline`, Models and effort): the designer on Opus at max effort; the
+builder, the duplicate-check auditor and the solver on Opus at medium; the leak reader and the judge on
+Sonnet at medium.
 
 **Solver first, polish after.** The leak reader runs once per build, on Sonnet, before the round. Only
 what hands the solver the answer (a sentence naming the decisive step, a file that ranks the

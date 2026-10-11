@@ -323,6 +323,25 @@ sentence**: *what about this dataset makes this the stump a real analyst would t
 decisive move that would read the same on any other dataset has no data-native sentence and is not
 built.
 
+**Couple the pitfall to the domain, and learn it from the examples first.** The decisive step is the
+field's own method for the quantity that decides the call: the estimation, model or test an expert in
+this domain applies and a capable generalist replaces with a generic statistical move. The generic
+corrections (stratify by a visible attribute, reweight, shrink, add a control group, check two
+references against each other) are the opponent's reflexes (Part 1, items 2, 3 and 6). A pitfall whose
+fix is one of them is spent before it is built: task228 rounds 3 and 4 and task230 rounds 1 and 2 each
+landed on exactly such a correction. The pitfall that survives needs the domain's knowledge of how its
+quantity is generated, measured or defined. Before the stump sentence is written, the designer reads:
+- the exemplar index and the two or three exemplars nearest the domain
+  (`../guide-to-prompt/references/exemplars/`), for the depth and the voice the client pays for. Their
+  withheld-method architecture is capped now, so take the depth, not the structure;
+- the domain's task types in `references/client/layer2-rigor-patterns.md`;
+- `references/traps/_measured.md`;
+- the builds that held, in `references/proven-in-production.md`.
+The design note then carries one line per example read: what it teaches and how this build differs.
+Learning is the point and copying is banned; the guard blocks the same pattern on the same data
+structure. The card's `domain_test` names the field's method that decides the answer, and why a
+generalist's correction does not reach it.
+
 **Two layers, and the stump lives in the second.** The client's standard is that difficulty comes
 from analytical rigour, not planted traps. Every build carries **Layer 1, data messiness**: realistic,
 hard-to-parse data spread across several files, which a model may trip on but which never carries
@@ -1627,6 +1646,7 @@ The build is genuinely analytical but the design note does not say so unarguably
 
 **Bespoke, never templated**
 - [ ] The data-native sentence written: what about this dataset makes this the stump a real analyst would trip on here
+- [ ] The domain coupling written: the nearest exemplars, the domain's rigor patterns, the measured misses and the builds that held read, one line each in the design note; the decisive step is the field's own method, not a generic correction
 - [ ] `stump_strategy`, `decisive_rule_filed` and `official_decoy` filled honestly on the card, and the guard passes the strategy bans and the two-layer decoy bans
 - [ ] If the decisive rule is withheld and an official-looking rule is filed as the rival, the design note says why this dataset calls for it
 - [ ] No organ shipped out of habit: every corpus, twin pair, control set, licensed basis and voice in the pack is there because this strategy needs it

@@ -2,7 +2,8 @@
 name: determinism-judge
 description: Runs one determinism-check pass against a task folder. Spawns a single isolated judge thread that sees only the shipped bundle and the submission's grounded blocks, recomputes every load-bearing figure itself, and writes determinism_check_report.md with a verdict, a disposition, the Gate G classification and the Gate H line (the three rules). Invoked only by the determinism-check skill's rehearsal rule, after the author has asked for a pass, never on the model's own initiative.
 tools: Read, Glob, Grep, Bash, Write, Agent
-model: opus
+model: sonnet
+effort: medium
 ---
 
 # determinism-judge, review orchestrator agent
@@ -58,7 +59,7 @@ Enforce this with an explicit allow-list naming the one permitted path prefix, a
 
 ## Spawning the judge thread
 
-Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`.
+Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`, `model: sonnet`, `effort: medium`.
 
 The spawn prompt must carry:
 
