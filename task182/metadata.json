@@ -1,0 +1,140 @@
+{
+  "task": "task182",
+  "title": "Which neighbouring landholders' bores the pit has drawn down past their make-good trigger, when the dry seasons lowered every shallow bore and the coal measures were still rising on the wet years",
+  "domain": "Physical & Environmental Sciences",
+  "subdomain": "environmental monitoring and exceedance (groundwater drawdown at landholder bores around an open-cut coal mine in central Queensland)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "11 (before and after with a control): each bore's September 2026 level against its own level from the climate alone, 18 bores by four figures, the offers and the complainants",
+  "as_of": "2026-10-13",
+  "deliverables": [
+    "bore_impact_assessment.xlsx",
+    "make_good_recommendation.docx"
+  ],
+  "distractor_files": [
+    "landholder_contact_log_2026.xlsx",
+    "groundwater_quality_2012-2026.csv"
+  ],
+  "input_gates": {
+    "files": 11,
+    "formats": [
+      "csv",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "logger_pressure_2015-2026.parquet",
+    "largest_file_rows": 996966
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task182/generator/build.py (seeded, deterministic) around a fictional open-cut coal mine (Kelvale Mine), its fictional owner (Tarrabool Resources), a fictional creek (Mundoora Creek) and fictional properties and pastoral companies in central Queensland, with a synthetic climate shaped on the region's seasons; no real bore, person, property or mine is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task182/generator/build.py",
+  "files": [
+    {
+      "path": "MG-02_bore_assessment_and_make_good.pdf",
+      "format": "pdf",
+      "bytes": 5159,
+      "rows": null,
+      "source": "Constructed: Tarrabool Resources procedure MG-02 Landholder bore assessment and make good, revision 3 (effective 1 March 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "barometric_logger_2015-2026.csv",
+      "format": "csv",
+      "bytes": 3298755,
+      "rows": 99959,
+      "source": "Constructed: Site barometric logger, hourly absolute air pressure, May 2015 to October 2026, UTC",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "daily_climate_1990-2026.csv",
+      "format": "csv",
+      "bytes": 387520,
+      "rows": 13422,
+      "source": "Constructed: Gridded climate data for the point nearest the pit: daily rainfall, Morton's areal potential evapotranspiration and temperature, 1 January 1990 to 30 September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "groundwater_quality_2012-2026.csv",
+      "format": "csv",
+      "bytes": 73374,
+      "rows": 905,
+      "source": "Constructed: Groundwater quality: field and laboratory results for the network by sampling round, 2012 to 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "landholder_bore_register.xlsx",
+      "format": "xlsx",
+      "bytes": 12682,
+      "rows": null,
+      "source": "Constructed: Kelvale Mine landholder bore register (MG-02 1.2): the 18 landholder bores with their owners, properties, landholders' names, aquifers, construction and baseline assessments; measuring point history; the network's reference and mine bores",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "landholder_contact_log_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9968,
+      "rows": null,
+      "source": "Constructed: Environment team's landholder and community contact log, January to October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "logger_installations.csv",
+      "format": "csv",
+      "bytes": 1520,
+      "rows": 13,
+      "source": "Constructed: Logger installation register: serial, bore, installed and removed (Queensland time), sensor depth below the measuring point",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "logger_pressure_2015-2026.parquet",
+      "format": "parquet",
+      "bytes": 6647591,
+      "rows": 996966,
+      "source": "Constructed: Logger download archive: hourly absolute pressure and temperature from the ten network loggers, May 2015 to the October 2026 downloads, UTC",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "monitoring_network_notes.md",
+      "format": "md",
+      "bytes": 3843,
+      "rows": null,
+      "source": "Constructed: Environment team's notes on the October 2026 network extract (field semantics, loggers, files)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pit_dewatering_2022-2026.csv",
+      "format": "csv",
+      "bytes": 424047,
+      "rows": 7606,
+      "source": "Constructed: Pit dewatering meters: daily metered volume by source, 4 July 2022 to 30 September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "water_level_dips_2012-2026.csv",
+      "format": "csv",
+      "bytes": 222965,
+      "rows": 4214,
+      "source": "Constructed: Monitoring database extract: every manual dip keyed from the field sheets, March 2012 to 6 October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
