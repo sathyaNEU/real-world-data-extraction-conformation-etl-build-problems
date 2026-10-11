@@ -349,12 +349,26 @@ def main():
     margins = [0.5 - abs(v - round(v)) for v in figs]
     check(min(margins) >= 0.18, "every graded figure sits clear of its rounding boundary")
     check(round(m_) + round(r_) == round(tot_), "the rounded parts add to the rounded total")
+    # no graded figure is exact under the golden method: an unrounded value on a cent or a quarter-dollar would confirm
+    # the method for free, so each sits at an irregular point inside its bin (tune.py draws the offsets)
+    named = [("%s tier %d %s" % ("2026 PMPM" if kd == "f26" else "baseline", t, "medical" if k == 0 else "pharmacy"), v)
+             for (kd, t, k), v in sorted(gold.items())]
+    named += [("programme medical", m_), ("programme pharmacy", r_), ("programme total", tot_)]
+    for name, v in named:
+        check(E.grid_gap(v, 0.01) >= 0.0005, "%s (%.6f) sits at least 0.0005 from every cent multiple" % (name, v))
+        check(E.grid_gap(v, 0.25) >= 0.0005, "%s (%.6f) is not within 0.0005 of a quarter-dollar multiple" % (name, v))
     t4 = 1.1342
     for t in T:
         check(round(base[t][0] / W.TREND_MED ** 2 * t4) == round(base[t][0]), "a trend factor shown to 4 places rounds alike")
     check(round(sum(n[t] * base[t][0] / W.TREND_MED ** 2 * t4 for t in T) / 140) == round(m_), "programme alike at 1.1342")
-    rep("bins: closest graded figure sits %.2f from a rounding boundary; %d centring adjustments, largest $%.2f" % (
-        min(margins), len(tune_table.TUNE), max(abs(v) for v in tune_table.TUNE.values()) / 100 if tune_table.TUNE else 0))
+    for key, dv in tune_table.TUNE.items():
+        check(dv != 0 and abs(dv) <= (0.025 if key[2] == "fill" else 0.04) * key[4],
+              "centring moves %s by at most 4 per cent of a facility claim, 2.5 per cent of a fill" % (key,))
+    rep("bins: closest graded figure sits %.2f from a rounding boundary, %.4f from a cent multiple and %.4f from a "
+        "quarter-dollar multiple; %d centring adjustments, largest $%.2f, none above %.1f per cent of its claim" % (
+            min(margins), min(E.grid_gap(v, 0.01) for v in figs), min(E.grid_gap(v, 0.25) for v in figs),
+            len(tune_table.TUNE), max([abs(v) for v in tune_table.TUNE.values()] or [0]) / 100,
+            100 * max([abs(v) / k[4] for k, v in tune_table.TUNE.items()] or [0])))
     wb = load_workbook(os.path.join(GLD, "cohort_baseline_2027.xlsx"), data_only=True)
     ws = wb["Baseline"]
     for i, t in enumerate(T):
@@ -409,6 +423,13 @@ def main():
               "pooled", "regression"):
         rep("  %-10s %10.2f  %+7.1f%%" % (k, rk[k], 100 * (rk[k] / g - 1)))
     rep("  rungs within 5 per cent of the golden, every tier cell and both programme figures missed: %s" % (near or "none"))
+    # no reading of the ladder is singled out as exact either: every rung's and fork's programme total sits off the grid
+    totals = sorted(rk.items()) + sorted(("fork " + k, v) for k, v in G["forks"].items())
+    for k, v in totals:
+        check(E.grid_gap(v, 0.01) >= 0.0005, "%s's programme total (%.6f) sits at least 0.0005 from every cent multiple" % (k, v))
+        check(E.grid_gap(v, 0.25) >= 0.0005, "%s's programme total (%.6f) is not within 0.0005 of a quarter-dollar" % (k, v))
+    rep("  every rung's and fork's programme total sits at least %.4f from a cent multiple (closest: %s)" % (
+        min(E.grid_gap(v, 0.01) for k, v in totals), min(totals, key=lambda kv: E.grid_gap(kv[1], 0.01))[0]))
 
     # ------------------------------------------------------------ the forks the second reader sized, each closed
     FK, fk = G["fork_tiers"], G["forks"]

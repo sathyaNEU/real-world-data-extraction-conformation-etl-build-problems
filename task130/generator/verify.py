@@ -4,8 +4,8 @@ Shares no code with the generator: it parses the CSVs with the csv module, sums 
 reading of the readme and Schedule C (replacements drop the claims they name, voids and reversals net by sign,
 denied lines carry nothing, a member month is a month whose first day the member is covered, a claim belongs to the
 month of its first date of service or fill date, and a PBM row belongs to the member who held its employee number and
-person code on the fill date). It then checks the golden workbook, the memo and, when present, submission.md block 4
-against what it computed.
+person code on the fill date). It checks that every graded figure sits clear of its rounding boundary and off the
+cent grid, then checks the golden workbook, the memo and, when present, submission.md block 4 against what it computed.
 
     python3 verify.py [TASK_DIR]
 """
@@ -151,6 +151,15 @@ for t in tiers:
                                                 "{:,}".format(whole(base[t][0])), "{:,}".format(whole(base[t][1]))))
 print("programme baseline: medical %s, pharmacy %s, total %s" % tuple("{:,}".format(whole(x)) for x in (prog_m, prog_r, total)))
 print("members' own 2026 claims at trend (not certified): %s" % "{:,}".format(whole(r0)))
+
+# every graded figure, unrounded: clear of its rounding boundary, and on no cent (so on no quarter-dollar either)
+CENT = Decimal("0.01")
+graded = [y26[t][k] for t in tiers for k in (0, 1)] + [base[t][k] for t in tiers for k in (0, 1)] + [prog_m, prog_r, total]
+edge = min(Decimal("0.5") - abs(x - whole(x)) for x in graded)
+cent = min(min(x % CENT, CENT - x % CENT) for x in graded)
+assert edge >= Decimal("0.18"), ("a graded figure near its rounding boundary", edge)
+assert cent >= Decimal("0.0005"), ("a graded figure on the cent grid", cent)
+print("every graded figure sits at least %.2f from its rounding boundary and %.4f from a cent multiple" % (edge, cent))
 
 # the golden workbook
 ws = load_workbook(os.path.join(GLD, "cohort_baseline_2027.xlsx"), data_only=True)["Baseline"]

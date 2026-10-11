@@ -21,6 +21,12 @@ def months_between(a, b):
     return (b.year - a.year) * 12 + b.month - a.month
 
 
+def grid_gap(v, step):
+    """the distance from v to the nearest multiple of step (a cent, a quarter-dollar)"""
+    q = v / step
+    return abs(q - round(q)) * step
+
+
 class Files:
     def __init__(self, d):
         self.d = d
