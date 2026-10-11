@@ -51,5 +51,6 @@ duplicate line (heart verdict, nearest build and similarity, pre-flight verdict)
 Gate G line, the zip path. Then **start the next open task at once** (`build-pipeline`, Throughput). A
 retired build is reported in one line with the reason.
 
-**Do not** write the shipped ledger (it waits for the portal), or create any file in the task folder other
-than the ones the skills name.
+**Rewrite the build's ledger row** at each status change (`build-pipeline`, The ledger row): `drawing`,
+`built`, `delivered` at ship, `retired`. Create no file in the task folder other than the ones the skills
+name.

@@ -9,9 +9,10 @@ description: The anti-repeat system for task builds. Every build has a fingerpri
 
 ## Part 0. What this is for
 
-The ledger only sees reported builds; a card, filed when the draw is fixed, makes builds in flight
-visible. **A card records identity, never outcome** (outcomes go to `stumping/references/shipped-ledger.md`),
-except `lineage`, which keeps each dead architecture's fate: a driver already solved is the worst redraw.
+The ledger holds each build's status and portal result; a card, filed when the draw is fixed, holds identity
+in one vocabulary, so the guard bans against builds in flight. **A card records identity, never outcome**
+(status and outcomes go to `stumping/references/shipped-ledger.md`), except `lineage`, which keeps each dead
+architecture's fate: a driver already solved is the worst redraw.
 
 ## Part 1. The card
 
@@ -89,7 +90,9 @@ the full check; exit 1 on BLOCK. An empty `stump` is filled from the design note
 **5. When the submission is final**, update `answer`, `answer_source`, `spine.rows`, `deliverables`,
 `opening_move` and `question_form`. Part of delivery, because the next draw checks against it.
 
-**6. Portal result:** a ledger row; the card is untouched.
+**6. The ledger row** is rewritten at each status change (drawn, built, shipped, re-rooted, retired) and
+takes the portal result with its date the day the author reports it (`build-pipeline`, The ledger row);
+the card is untouched.
 
 ## Part 3. What the guard decides
 

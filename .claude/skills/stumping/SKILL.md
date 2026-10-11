@@ -182,7 +182,7 @@ Nothing is cut until `DESIGN_NOTE.md` carries these H2 headings, spelt exactly, 
 | `## Closure table` | the 22 axes with reading and closure; rows 1 to 22 filled |
 | `## Literal reader` | the `determinism-check` §2 line |
 | `## Oracles` | each control's wrong-path reading, or `none` |
-| `## Ask sheet` | asks, devices, spans, cracker sheet; `Pair ceiling:` 40 or under, cracker misses all |
+| `## Ask sheet` | asks, devices, spans, cracker sheet; `Pair ceiling:` 40 or under, `Mirror leakage:` under 35 (a WARN when absent), cracker misses all |
 | `## Tried and rejected` | a line per dead approach, appended when it dies |
 
 It also runs `voice-check.py` on `prompt.txt`. Any FAIL exits 1 and blocks the build; a repair moving the

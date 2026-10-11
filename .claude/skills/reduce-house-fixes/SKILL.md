@@ -96,8 +96,8 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   `/CreationDate`, image stamps, archive mtimes) makes every rebuild byte-different, so staleness is
   permanent and regressions are invisible.
 - **Line.** Content must agree; metadata the fiction never fixed need not, until reproducibility rests on it.
-- **Check.** Compare archive to tree by content, never mtime (§9 normalises mtimes). Run the generator twice
-  and assert byte-identical output.
+- **Check.** Compare archive to tree by content, never mtime (`dataset-generation` §9 normalises mtimes).
+  Run the generator twice and assert byte-identical output.
 - **Repair.** Pin nondeterministic fields by equal-length substitution from a fiction-derived value. Cut the
   archive last and let a freshness assertion, not build order, guarantee it.
 

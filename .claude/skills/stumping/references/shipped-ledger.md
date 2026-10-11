@@ -267,7 +267,7 @@ One line each, with the builds that paid for it. The techniques behind them are 
 - A natural basis that happens to be right on the graded rows (105 v1, 107 v3); a coarse band that absorbs the decisive move (103 v2).
 
 **What holds**
-- A corpus blind by construction (the regime opens after the closed period) confirms a back-tester in the wrong rule; blindness by tuning or by excluding a class leaves a fingerprint (56 v5, 56 v6, 57 v23, 76 v2).
+- A corpus blind by construction (the regime opens after the closed period) confirmed a back-tester in the wrong rule (56 v5); that is the validated decoy the guard now blocks, so a control ties under every basis for a reason true now (`strategies.md` L1). Blindness by tuning or by excluding a class leaves a fingerprint (56 v6, 57 v23, 76 v2).
 - A pin the solver reads, executes correctly and is harmed by, such as a billing-grain join that makes a population vanish (56 v6).
 - A correct monitor blind by its configured grain, which cannot refer a population split across its cells (48 v2).
 - A non-linear move: in a rate-times-exposure world every linear mechanism is absorbed when the rate is re-struck (56 v5, 59).
@@ -279,7 +279,7 @@ One line each, with the builds that paid for it. The techniques behind them are 
 
 **The ask layer and the bar**
 - A response stumped on the call still clears the bar when the asks are by-products of one forward pass (94 r6, 103 v3, 105 v2, 133 r1, 181 r1 at 52).
-- Asks decoupled from the construction protect the response that missed it; put most asks downstream of it (58 v12).
+- Asks downstream of the construction pay only when nobody lands the call (58 v12.1 moved 38 of 49 there); with one response on it, decoupled asks cost the pair less while ask leakage is under a half (`supplemental-stumping` references A5), so asks stay decoupled.
 - An ask whose rule sits beside it, or that is a dictionary line, is a reading exercise (61, 107 v2).
 - N asks both top responses fail drag both down: 97/(2 x (87 + N)) is under 50 from N = 11 (60 v7).
 - Redo the decorrelation count after any prompt repair; the ask mix moves (61).

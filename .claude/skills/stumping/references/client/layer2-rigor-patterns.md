@@ -4,7 +4,7 @@ The client's 300 methodological pitfalls by domain and task type, one line each:
 
 - **Learn, never copy.** No pattern names a dataset or scenario. Pick one the data in hand produces and build your own version; the design note says in one line why this data produces it.
 - **Duplicates.** A card's `layer2_pattern` is `<domain-key>/<task-type-key>/<n>` (the domain key in parentheses on each `##`, the task-type key as each `###`, both as in `client_domains` in `../../../fingerprint/vocab.json`; never renumber) or `own:<short name>` for a pattern beyond the library. The same pattern on the same data structure is a duplicate `guard.py` blocks; on a new structure it warns, and the note says how this version differs.
-- **The pin is a stated standard** (the estimand, the design, a named method) with the data ruling out the alternatives, never a hidden method recovered from certified or published figures. Turning a pattern into a stump: `../../SKILL.md`; pinning it without a plant: `../../../determinism-check/SKILL.md`.
+- **The pin is a stated standard** (the estimand, the design, a named method) with the data ruling out the alternatives, never a hidden method recovered from certified or published figures. Turning a pattern into a stump: `../../SKILL.md` Parts 1 and 2; pinning it without a plant: `../../../determinism-check/SKILL.md` §1 and §2.
 - Domains with no patterns here (Quantitative Finance; Banking, Credit & Financial Risk; Actuarial Science & Insurance; Physical & Environmental Sciences; Energy Systems & Utilities; Human Factors & Ergonomics) draw on the five families in `two-layer-task-design.md` and the nearest domain below.
 
 ## Product Analytics (`product-analytics`)

@@ -30,6 +30,7 @@ No isolated thread runs on the model's own initiative; `/build` licenses the thr
 ## The workflow
 
 ```
+0 INTAKE    taskNN from the root START_HERE.md, Status in build on main, the branch, pipeline.json
 1 DRAW      fingerprint recent + coverage, the pairing and prompt shape, the card through guard.py
             (check, then register): the stump is unique, no repeated driver, pattern or strategy
 2 DESIGN    designer, Opus max: default path ending on a wrong answer, stump sentence, ladder,
@@ -38,13 +39,15 @@ No isolated thread runs on the model's own initiative; `/build` licenses the thr
             gate: generator checks, verify, two byte-identical rebuilds, figures_check.py,
             the realism sweep, golden-realism, reduce-house-fixes, guard.py surface
 4 LEAK + DUPLICATE, together: leak.py + one leak reader (Sonnet medium);
-            guard.py heart + the clone pre-flight (clone-auditor, Opus medium)
+            guard.py heart + the clone pre-flight (clone-auditor, Opus medium);
+            every finding fixed in the generator before the judge
 5 JUDGE     determinism-judge (Sonnet medium). APPROVE ships; FIX_NOW fixed, re-judged once;
             SEND_BACK re-roots or retires
 6 SHIP      target.zip from the final build, commit "SHIPPED (taskNN): <the call>", Status shipped
-            on main. Then start the next open task at once.
-7 RETURNED  the portal sent it back: designer (if the call or determinism failed), builder, the free
-            mechanical gates, re-ship. No reader, clone check or judge.
+            on main, ledger row delivered. Then start the next open task at once.
+7 PORTAL    the author's result goes into the ledger row. A return takes the fast path: designer
+            (if the call or determinism failed), builder, the free mechanical gates, re-ship.
+            No reader, clone check or judge.
 ```
 
 There is no in-house solver round. Stump power is argued on paper (`precut.py`), checked by the leak
@@ -72,7 +75,9 @@ Status on main, so no two sessions draw the same `taskNN`.
 ## How a build is worked
 
 1. **Deliver before bookkeeping.** Finish and hand over what was asked; only then the ledger row, skill
-   lessons, house fixes or memory. This defers filing, never design or a skill.
+   lessons, house fixes or memory. This defers filing, never design or a skill. The ledger row is
+   rewritten whenever a build's status changes (drawn, built, shipped, re-rooted, retired) and takes the
+   portal result the day the author reports it (`stumping/references/shipped-ledger.md`).
 2. **One design note per build, with an append-only `## Tried and rejected` section** (that exact
    heading). When an approach dies, add one line: what was tried and why it died, written at the moment
    it is abandoned. Every iteration reads it first.
@@ -134,7 +139,7 @@ analyst would produce, and prefer a visual wherever it makes the decision read a
 answer), unit and rounding inside the asking sentence, every figure separately gradable and
 determinate. Asks are decoupled from the call and free of its rules: an ask may turn on semantics or
 rule application, and each carries its own silent device against the careful solver's path
-(`supplemental-stumping`).
+(`supplemental-stumping` Part 2.1).
 
 **Prompt:** `prompt.txt`, one plain paragraph, question first, under 1,000 characters, no persona,
 roll call or bullets, gated by `voice-check.py` (`guide-to-prompt`).

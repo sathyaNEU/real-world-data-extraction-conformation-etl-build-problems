@@ -1,6 +1,6 @@
 # Layer 1 library: data messiness by domain
 
-The client's messiness library. Layer 1 makes the inputs hard to use the way real data is hard to use; it costs the solver time and care and never decides the answer (that is Layer 2, `../../stumping/references/client/layer2-rigor-patterns.md`). How it is built into a pack: `../SKILL.md` §7. The card's `layer1` field lists the techniques a pack carries.
+The client's messiness library. Layer 1 makes the inputs hard to use the way real data is hard to use; it costs the solver time and care and never decides the answer (that is Layer 2, `../../stumping/references/client/layer2-rigor-patterns.md`). How it is built into a pack: `../SKILL.md` §7. The card's `layer1` field lists the techniques a pack carries. Marketing & Consumer Research has no section of its own: draw on Product Analytics, Survey Research & Official Statistics and Psychology & Behavioral Science.
 
 ## The test
 

@@ -17,13 +17,18 @@ the judge's Gate F, measured by the portal.
 | 1 | draw | `guide-to-prompt`, `stumping`, `fingerprint` (`check`, `register`, `names`) | card at PASS or answered WARN, three rules answered, both layers named, people drawn, the stump unique; **default path ending on a wrong answer, stump sentence, data-native sentence** |
 | 2 | design | `stumping` (screen, fork table, 3 to 5 rungs), `determinism-check` (closure), `supplemental-stumping`, `guide-to-prompt` | **`precut.py taskNN` exit 0** (runs `voice-check.py`) |
 | 3 | build | `dataset-generation`, `determinism-check`, `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `fingerprint` | generator green, every fork asserted; `verify`; two byte-identical builds; input gates; `metadata.json`; `figures_check.py` exit 0; realism sweep; house-fix register; `guard.py surface` |
-| 4 | leak + duplicate, together | `leak-check`, `fingerprint` (`heart`), `clone-check` (pre-flight) | `leak.py` not LEAK, REVIEW answered; reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork; `heart` not BLOCK; no Exact, Same seed, Dataset or Template finding. Fixes in the generator; reader re-runs only if a document or the prompt changed |
+| 4 | leak + duplicate, together | `leak-check`, `fingerprint` (`heart`), `clone-check` (pre-flight) | `leak.py` not LEAK, REVIEW answered; reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork; `heart` not BLOCK; no Exact, Same seed, Dataset or Template finding. Every finding, realism tells and ask-figure forks included, fixed in the generator before the judge; reader re-runs only if a document or the prompt changed |
 | 5 | judge | `determinism-check` | APPROVE ships. FIX_NOW: fixed, stage 3 gates and `leak.py`, re-judged once. SEND_BACK: re-root or retire |
-| 6 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note; `target.zip` from the final rebuild; card updated; commit `SHIPPED (taskNN): <the call>`; Status `shipped` on main; author handed the bundle and the stump, leak, duplicate and judge lines. **Then the next task** |
-| 7 | portal | the author | the result; then ledger row, lessons, memory |
+| 6 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note; `target.zip` from the final rebuild; card updated; commit `SHIPPED (taskNN): <the call>`; Status `shipped` on main; author handed the bundle and the stump, leak, duplicate and judge lines; ledger row `delivered`. **Then the next task** |
+| 7 | portal | the author | the result and its date in the ledger row; then lessons, memory |
 
 Back to design: a reader finding a decisive-step sentence or a main-call fork; a FIX_NOW that moves the
 decisive path; a reject-tier clone finding (redraw the axis once, or retire); a portal return.
+
+**The ledger row** (`stumping/references/shipped-ledger.md`, Keeping it current) is rewritten at every
+status change, after the hand-over it follows: `drawing` at stage 1, `built` at stage 3, `delivered` at
+stage 6, `retired` when that happens (a re-root moves the dead architecture to Earlier architectures),
+and the portal result with its date at stage 7.
 
 ## Models and effort
 
