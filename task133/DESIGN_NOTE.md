@@ -66,6 +66,12 @@ The answer sits between the two natural misreadings of the curve (bracketing, `p
 6. No cutover date.
 7. Survives deletion: nothing wrong to delete.
 
+## THREE RULES (client update, 10/10)
+
+- **Domain (swap test).** The deciding quantity is each loan's 12-month or lifetime expected credit loss under AASB 9: a cumulative default curve by months on book turned into forward monthly PDs, staged on significant-increase triggers, scenario-weighted, re-amortised and discounted at the contract rate. That is the provisioning work of the expected-credit-loss task type. Swap the nouns into another field and staging, LGD, EAD, the scenario overlay and the coverage ratios have nothing to attach to, so the task does not read the same.
+- **Two layers.** Layer 1: a loan-system extract that gives drawdown and first-repayment dates rather than months on book, a hardship register with lagging statuses and cancelled arrangements, origination scores on two scorecard versions with a published conversion, a scenario workbook beside the prior quarter's, and a development sample, roll-rate report and write-off file that set nothing. Layer 2: turning an origination-indexed cumulative curve into a performing loan's forward PDs.
+- **Decisive step: analytical.** Analyst test: a strong analyst who cleans the book and reads CRM-ECL-04 3.2 and the curve header correctly (PD(k) is the probability of default in the k-th month after the reporting date; the curve is a new loan's cumulative default probability by month on book) takes the curve's increments from each loan's months on book as its forward PDs, without dividing by the probability that the loan has survived to date, and books about AUD 13.32 million against AUD 13,773,000. Round 1's two solvers did exactly that. The staging inputs (the hardship dates rule, the v3 conversion, the 90-day filter) are stated rules, and they move the stage split, not the call.
+
 ## CLOSURE TABLE (22 axes)
 
 | # | Axis | Reading and closure |
