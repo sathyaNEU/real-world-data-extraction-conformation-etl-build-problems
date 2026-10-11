@@ -765,12 +765,12 @@ def check(cand, cards, vocab, status=None):
     hit = [c for c in ordered[-2:] if om and om not in ("other", "question-first") and c.get("opening_move") == om]
     if hit:
         add("WARN", "repeat.opening", "opening move %s repeats one of the last two prompts" % om, tasks(hit),
-            "lead with the question (prompt-voice.md)")
+            "lead with the question (guide-to-prompt SKILL.md)")
     qf = cand.get("question_form")
     hit = [c for c in ordered[-2:] if qf and qf != "other" and c.get("question_form") == qf]
     if hit:
         add("WARN", "repeat.question_form", "question form %s repeats one of the last two prompts" % qf, tasks(hit),
-            "take the form from the decision: a count asks how many, a pick asks which, a gate asks whether (prompt-voice.md)")
+            "take the form from the decision: a count asks how many, a pick asks which, a gate asks whether (guide-to-prompt SKILL.md)")
     geo = ((cand.get("world") or {}).get("geography") or "").strip().lower()
     hit = [c for c in recent if geo and geo != "fictional" and ((c.get("world") or {}).get("geography") or "").strip().lower() == geo]
     if hit:
