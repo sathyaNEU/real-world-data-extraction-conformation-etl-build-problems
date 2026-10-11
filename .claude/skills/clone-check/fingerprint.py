@@ -459,7 +459,9 @@ def cmd_extract(args):
     else:
         tasks = sorted((d for d in os.listdir(repo)
                         if re.fullmatch(r"task\d+", d) and os.path.isdir(os.path.join(repo, d))
-                        and not EXCLUDE_DIRS.search(d)),
+                        and not EXCLUDE_DIRS.search(d)
+                        # a folder holding only its START_HERE.md seed is not a build yet
+                        and os.path.exists(os.path.join(repo, d, "prompt.md"))),
                        key=lambda x: int(re.sub(r"\D", "", x)))
     cards = []
     for t in tasks:

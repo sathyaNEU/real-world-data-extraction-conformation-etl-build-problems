@@ -52,8 +52,10 @@ Some authors keep standing working rules (branch prefixes, for one) in `.claude/
 At the start of a session, read the file whose account email matches the session's user and follow
 it; ignore every other author's file. A rule there binds only that author's sessions.
 
-Task numbers and objective lanes are reserved in `.claude/reservations.md`; every session takes its
-number from there, so parallel developers never draw the same `taskNN`.
+Task numbers are given out from the root `START_HERE.md`: every unbuilt seed in `analytical_tasks/`
+has a numbered folder, objective by objective, and each `taskNN/START_HERE.md` carries its seed and the
+rules. A session builds the number it was handed and sets its Status there on main, so parallel
+developers never draw the same `taskNN`.
 
 ## The build loop
 
@@ -173,7 +175,7 @@ is nothing to preserve. Banned inside a task folder: `DESIGN_V2.md` and every la
 `_v*_snapshot.zip`, `.bak` files, dated copies of the prompt or the golden, and a second design note
 under any name. If a scratch copy is genuinely needed while an edit is in flight, it goes in the
 scratchpad and is deleted when the edit lands. What a task folder may carry beside the design note:
-`pipeline.json` (state, never reasoning), `solver_rounds/` (only if the pause is ever lifted) and the `leak_check_report.md` and
+`START_HERE.md` (the seed it was numbered from, never edited once the build starts), `pipeline.json` (state, never reasoning), `solver_rounds/` (only if the pause is ever lifted) and the `leak_check_report.md` and
 `determinism_check_report*.md` reports, which are evidence rather than design.
 
 A build that cannot be rebuilt from its generator has a broken generator, and the fix is the

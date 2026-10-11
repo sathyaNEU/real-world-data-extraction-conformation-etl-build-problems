@@ -19,6 +19,7 @@ for anyone else ignores this file and keeps its own branch rules.
 ## Lane
 
 - One Axis 1 objective at a time, two builds in parallel inside it. The current lane is
-  **Forecasting & Predictive Modeling**, builds task132 and task133 (`.claude/reservations.md`).
+  **Forecasting & Predictive Modeling**, the block task132 to task179 in the root `START_HERE.md`,
+  taken two at a time from the lowest open numbers (task132 and task133 first).
 - Each build keeps its own branch (`sathya8571/task132-...`, `sathya8571/task133-...`) and its own
   fingerprint card, registered as soon as its draw is fixed so the other build's guard check sees it.
