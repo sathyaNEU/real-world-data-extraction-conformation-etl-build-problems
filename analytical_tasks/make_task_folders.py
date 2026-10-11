@@ -11,7 +11,8 @@ root START_HERE.md are edited by hand on main and survive a re-run. A folder tha
 prompt.txt (or a prompt.md from before the plain-text rule) is a build in flight and its START_HERE.md
 is left alone.
 
-  python3 analytical_tasks/make_task_folders.py
+  python3 analytical_tasks/make_task_folders.py              # write the folders and the root START_HERE.md
+  python3 analytical_tasks/make_task_folders.py --dry-run    # print the plan and write nothing
 """
 import csv
 import os
@@ -336,8 +337,14 @@ def start_here(task, sid, obj, owner, block, row):
     ) % (task, task, obj, lo, hi, owner, sid, row["file"], task, task, fields, demote(note))
 
 
-def main():
-    write_dq()
+def main(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--dry-run", action="store_true",
+                    help="compute the numbering, report what would be written and which folders are builds in flight, write nothing")
+    a = ap.parse_args(argv)
+    if not a.dry_run:
+        write_dq()
     idx = seeds()
     plan = numbering(idx)
     root_path = os.path.join(ROOT, "START_HERE.md")
@@ -345,6 +352,12 @@ def main():
     blocks = {}
     for t, sid, key, obj, owner in plan:
         blocks.setdefault(key, []).append(t)
+    if a.dry_run:
+        in_flight = [t for t, sid, key, obj, owner in plan
+                     if os.path.exists(os.path.join(ROOT, t, "prompt.txt")) or os.path.exists(os.path.join(ROOT, t, "prompt.md"))]
+        print("dry run: %d task folders, %s to %s; %d builds in flight left alone (%s); root START_HERE.md not written"
+              % (len(plan), plan[0][0], plan[-1][0], len(in_flight), ", ".join(in_flight) or "none"))
+        return 0
     for t, sid, key, obj, owner in plan:
         d = os.path.join(ROOT, t)
         if os.path.exists(os.path.join(d, "prompt.txt")) or os.path.exists(os.path.join(d, "prompt.md")):
