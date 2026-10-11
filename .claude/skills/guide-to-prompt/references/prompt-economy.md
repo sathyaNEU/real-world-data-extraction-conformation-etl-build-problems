@@ -178,6 +178,7 @@ merely above average. Where the two distributions overlap, the flag is deliberat
 
 | Gate | Target | Flag over | Why the flag sits there |
 |---|---|---|---|
+| **Characters** | under 1,000 | **1,000 or more** | A ceiling, not a benchmark: two or three hard, multi-dimensional asks instead of a list of small ones, so the prompt never reads as a laundry list. The one row here that fails a draft on its own |
 | **Words** | 250 | **330** | The paid-out maximum is 334, and our median is 404. This is the gate that discriminates, and 8 of the 12 builds in the current window breach it |
 | **Words per sentence** | 24 | **33** | The paid-out p90 is 32.8 and its maximum is 44.3, so the distributions overlap. A draft over 33 is building sentences nothing paid out has built |
 | Longest paragraph | 110 | **180** | The paid-out p90. Its maximum is 269 and three paid-out prompts are a single paragraph, so this is a flag on the extreme |
@@ -192,8 +193,10 @@ python3 .claude/skills/guide-to-prompt/references/voice-check.py          # the 
 ```
 
 The ECONOMY block prints every row above with the paid-out medians beside them, and flags each one
-that breaches. Nothing here is a hard fail on its own: a build whose shape genuinely needs 300
-words is fine, and a build at 480 has narration in it whatever its author believes.
+that breaches. The character ceiling is the one hard fail: a draft at 1,000 characters or more is
+cut before the prompt is called done. Nothing else here fails on its own: a build whose shape
+genuinely needs a long sentence is fine, and a build that breaches several rows has narration in it
+whatever its author believes.
 
 **The order matters.** Draft at whatever length the ideas arrive in, then compress. Compressing a
 draft that already carries every requirement is safe, because every deletion is visible against the

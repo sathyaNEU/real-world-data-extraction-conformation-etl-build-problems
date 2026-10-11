@@ -56,7 +56,11 @@ candidates or states the asked figures, a file that exists only to help) and any
 are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
 for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
 pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
-An author keeps at most two builds in flight, a re-rooted architecture included.
+An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
+round (a hardening rebuild, the deferred findings, a judge's FIX_NOW) runs in a fresh agent that starts
+from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
+named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
+it (`build-pipeline`, Running the stages).
 
 ## Per-author rules
 
@@ -314,7 +318,9 @@ and separately determinate. One deterministic recommendation anchors everything.
 **The prompt is prose, first person, the way you would write to a colleague.** No bracketed blocks,
 no `file.ext (Family)` headers, no bulleted asks. What costs you is a **roll call** of colleagues'
 opinions, which is a design defect rather than a style one, because each named opinion hands the
-solver a rung to refute.
+solver a rung to refute. **It stays under 1,000 characters**: one committed call and two or three
+asks, each multi-dimensional and hard, never a list of small ones, so it cannot read as a laundry
+list (`guide-to-prompt`, and `voice-check.py` flags a draft at 1,000 or more).
 
 **The rubric is generated and must reach 25 or more criteria.** A one-to-three file prompt is a small
 surface, so the criteria come from the **prompt shape**, the structure of the answer: a ranked list
