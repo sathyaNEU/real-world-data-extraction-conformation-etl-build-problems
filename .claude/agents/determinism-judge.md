@@ -59,13 +59,14 @@ Enforce this with an explicit allow-list naming the one permitted path prefix, a
 
 ## Spawning the judge thread
 
-Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`, `model: sonnet`, `effort: medium`.
+Spawn **exactly one**, with a single `Agent` call, `subagent_type: general-purpose`, `model: sonnet`, `effort: medium`. If this runtime gives you no `Agent` tool, write the spawn prompt to `/tmp/determinism-check-<taskid>-<runid>/judge_brief.md` beside the fresh unzip, stop, and return that path: the main session spawns the thread from it under this same contract. Never judge in your own thread, because you have read the submission and may have read more.
 
 The spawn prompt must carry:
 
 - The full text of `guidelines/determinism_judge_system_prompt.md`. Read it with Bash and inline it. **Do not paraphrase it and do not summarise the gates**, the whole value of this pass is that the thread applies the reviewer's actual standard, and the standard changes between versions.
 - The extracted blocks under the judge's own labels.
 - The scratch path, as the only readable directory.
+- **The literal reading first.** Before weighing the golden, the thread executes the prompt and every filed definition and rule word for word, inferring nothing the text does not state, lists every option where the text is silent, and records the answer each literal reading gives. A golden that holds only under a reading the files do not state (a population, window or method supplied by inference or by the write-up) is an open fork: `answer_contradicts_files` or `underspecified_objective`, never a pass (`determinism-check` §2).
 - A hard instruction to **recompute every load-bearing value from the bundle** before accepting it, and to record for each one whether it reproduced, with the file and field it came from.
 - A hard instruction to **not read anything outside the scratch path**, to not use web search, and to not read any answer key or design note elsewhere on the machine.
 - **A no-server-tools rule.** The thread must not call `advisor`, `WebSearch`, `WebFetch` or any other server-side tool. Server-tool call pairs desync across the subagent boundary and produce API 400 errors that kill the run. Local filesystem tools only.

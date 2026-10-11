@@ -285,6 +285,14 @@ deliberately left unstated with a conflicting stated rule as the trap. File the 
 organisation would have in writing; what decides the answer is an analytical step those rules leave to
 the analyst, never the rules themselves.
 
+**Determinism is literal.** The portal's judge executes the shipped text word for word and infers
+nothing. So the estimand (population, including any members not yet observed at the as-of date, outcome,
+window, unit, comparison) is filed so that its literal execution is the golden's quantity; the method may
+stay open only behind a filed criterion that selects it, with the data separating the candidates under it;
+and no filed rule, basis or formula may give another answer when read literally. The stump lives in how
+the stated quantity is computed, never in what is meant: if a literal estimand makes the call easy, the
+stump was a fork and the decisive step is redesigned (`determinism-check` §1 and §2).
+
 The client's libraries are the working material: `stumping/references/client/two-layer-task-design.md`
 (the three rules, the two layers and the pre-ship check), `stumping/references/client/layer2-rigor-patterns.md`
 (300 rigor patterns by domain and task type: the pitfall, the tempting shortcut, what pins the rigorous

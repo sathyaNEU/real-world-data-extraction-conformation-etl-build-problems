@@ -9,7 +9,7 @@ description: Design, build and harden the trap architecture for a deterministic 
 
 **Read Part 0 and Part 1 before anything else.** They decide whether the build is legal. Everything after them is craft, and craft applied to an illegal shape is wasted.
 
-**Navigation.** Part 0 the goal, the pass bar and the opponent · Part 1 how to think toward it, the litmus, the four gaps, where a decisive move survives · Part 2 the five mechanism families and the decision shapes · Part 3 the ladder · Part 4 the organs · Part 5 determinism machinery · Part 6 the draw, the generators, composition, and hold as the answer · Part 7 the prompt, the deliverables and the asks · Part 8 the evidence pack · Part 9 build order · Part 10 diagnosis and the repair loop · Part 11 determinism failures · Part 12 pre-ship checklist · Part 13 worked skeleton and design note
+**Navigation.** Part 0 the goal, the pass bar and the opponent · Part 1 how to think toward it, the litmus, the four gaps, where a decisive move survives · Part 2 the five mechanism families and the decision shapes · Part 3 the ladder · Part 4 the organs · Part 5 determinism, the stump side · Part 6 the draw, the generators, composition, and hold as the answer · Part 7 the prompt, the deliverables and the asks · Part 8 the evidence pack · Part 9 build order · Part 10 diagnosis and the repair loop · Part 11 determinism failures · Part 12 pre-ship checklist · Part 13 worked skeleton and design note
 
 **Scenarios are the one thing that never transfers.** Every worked shape in this skill is structural, meaning it shows the form an argument or a file request takes, with the nouns left as blanks. Fill the blanks fresh on every build. Lifting a scenario, an entity, a metric, a file name or an ask's wording out of here, out of a reference file or out of a prior build is a clone tell, and the mechanisms are the only part that carries over.
 
@@ -816,7 +816,12 @@ Solvers accept a model that is off by 1.2x to 3x in magnitude if it **ranks** th
 - **Never justified.** A justified rule reads as arguable and reopens the fork you just closed.
 - Buried in operational noise so it does not read as the thesis of the document.
 
-**When not to have one.** Gap 4 builds deliberately ship no pin for the decisive rule, because the absence is the mechanism: the rule is recoverable only from the corpus. That is legal and it is strong. What is never legal is a decisive rule that is neither filed nor empirically recoverable, because then each solver fits its own and the round comes back split on the figure. **Every convention is pinned in a file, pinned by a corpus, or shown to converge** (`determinism-check` C1 and C3: every admissible reading lands on the same answer, asserted). A decisive rule pinned nowhere and not convergent is never legal.
+**What a pin may leave open.** The estimand never: every part of it is filed or asked in words whose
+literal execution is the golden's quantity. The method may stay open only when the filed text carries the
+criterion that selects it and the data separates the candidates under it (`determinism-check` §1). A
+decisive rule that is neither filed nor selected by a filed criterion is never legal, and a rule
+recoverable only from a corpus is a hidden rule. **Every convention is pinned in a file or shown to
+converge** (`determinism-check` C1 and C3: every admissible reading lands on the same answer, asserted).
 
 Scope rules, eligibility, grain and unit-of-work definitions usually want a filed pin. Method and parameter choices usually want an empirical one.
 
@@ -825,7 +830,7 @@ Scope rules, eligibility, grain and unit-of-work definitions usually want a file
 - **The pin fixes the basis, never the answer.** Delete the clause and ask whether the answer is still forced: if it is, the clause was handing over the insight; if it is not, it was doing real work (task57 v21, where the second half of one sentence was the whole insight and a response executed it at 94 per cent).
 - **The clause names the observable, not an abstract concept**, while naming no file, field or join. A clause that names only a concept ("under standard conditions") and leaves the corpus to operationalise it fails Gate C even behind a 91-of-91 back-test (task44). A clause that defines a term exhaustively is a counter-pin the moment the golden adds a condition the definition omits.
 - **A filed formula pins every population its own sentences name**, so filing the arithmetic while leaving the population open is not available: the population is either filed or filed wrong. File the applicability (a defined term) and leave the identification as arithmetic, enumerate the readings the new sentences admit and close each with its own clause, and state the cost, because a filed exclusion turns a discovery rung into an execution rung (task67).
-- **A projection is an open fork unless its method is filed or corpus-recoverable.** The test is the judge's: name the shipped sentence a solver violates by taking the other reading. If the honest answer is that the write-up explains why, there is no pin (task57 v20).
+- **A projection is an open fork unless its method, or the criterion that selects it, is filed.** The test is the judge's: name the shipped sentence a solver violates by taking the other reading. If the honest answer is that the write-up explains why, there is no pin (task57 v20).
 - **Build to the stricter judge.** Two judges will classify one fork oppositely, so every layer of the decisive mechanism either violates a nameable shipped statement when skipped or is the unique survivor of a shipped corpus, and the applicability layer (whether a constraint enters the computation at all) always needs the nameable kind, because a corpus can pin a parameter but not a scope question. A chain of small statements at mixed authority, each useless alone, satisfies it at least cost; soften in the same edit any verb that counter-pins the new sentence (task64).
 
 ### 4.3 The advocate structure, and the licensed wrong basis
@@ -848,151 +853,25 @@ A large genuine reference document shipped for authenticity is a different thing
 
 ---
 
-## Part 5. Determinism machinery
+## Part 5. Determinism
 
-Difficulty gets you a stump. Determinism gets you an approval.
+Determinism has one home, `determinism-check`, and its rules bind every ladder. Three of them shape the
+stump itself, so they are decided here, before the ladder is final:
 
-### 5.1 Pin authority hierarchy, where most tasks die
+- **The estimand is filed literally**: population (with any members not yet observed at the as-of date
+  stated in or out), outcome, window, unit, comparison. The stump lives in HOW the stated quantity is
+  computed, never in WHAT is meant.
+- **A decisive choice of method is left open only behind a filed selection criterion** (the basis that
+  best reproduces the closed periods, the measure that held steady across closed cohorts), with the data
+  separating the candidates under it. A filed method makes the step rule application; an unfiled
+  criterion leaves a fork.
+- **No filed rule, basis or formula may give another answer when read literally.** That is an official
+  decoy and a fork at once.
 
-**Your pin must sit at or above every counter-pin in the pack.** Authority order, highest first:
-
-0. **The prompt.** Outranks every shipped file and cannot be argued with, which is exactly why no pin and no convention of any kind may live there.
-1. Governing standard, policy document, regulatory terms
-2. Signed charter, SOW, contract, rate schedule, product terms
-3. Decision memo from the accountable executive
-4. Data dictionary or codebook, authoritative for **field semantics** only
-5. Method notes attached to an operational export
-6. Planning thread, notes, informal correspondence
-
-**Two fatal patterns.** The **counter-pin**: a different shipped file states the opposite convention, so the pack argues against your own answer. The **outranked pin**: your pin sits at level 5 and a level-1 document implies the opposite, so a solver that follows the governing document is right and your golden is wrong.
-
-**Fix:** move the pin up the hierarchy, relabel any artifact in-file so it explicitly answers a different question, and delete any endorsement of the wrong basis that outranks your pin.
-
-**A rule stated at two authority levels that agree on one side of the calculation and diverge on the other** is not fixed by adding a sentence to the lower document, which puts it in open conflict with the higher one. Make the situation not arise and assert that both readings return the same figure (task60 v8). **Sweep the pack for sentences quotable against the answer**: grep for the constraint's nouns and for *defensible*, *added*, *raised* and *increased* near them, and qualify every absolute claim with its grain, because a hostile judge quotes them (task64).
-
-### 5.2 The fork grid, asserted cell by cell
-
-List every choice a competent analyst could make differently: window, grain, population, counting convention, treatment of missing values, tie-break, maturity. Build the grid. **Your answer must win in every cell, or the choice must be pinned.**
-
-**Assert cell by cell, never in aggregate.** "The answer wins 8 of 12" is a summary, not an assertion. Each losing cell must be named in the build and mapped to the specific shipped rule it violates: the clause it contradicts, the eligibility gate it ignores, the censoring the dictionary excludes. A cell you cannot map is an open fork wearing a count.
-
-**Maturity and censoring is an axis and it is the one most often missed.** Any rate measured over vintages, cohorts or periods that are not fully observed has two defensible populations, all of them or only the mature ones, and the two can differ by 2x on the same candidate. Pin the maturity convention in one flat dictionary sentence, or prove convergence. Check it even when it does not currently change the winner, because it becomes load-bearing the moment any other parameter moves.
-
-**Test:** for each assumption, ask *"would ten competent analysts, given only these files, all make this choice?"* If no, it is not an assumption, it is a decision, and it must be pinned or the answer must change. A model that did 99 percent of the analysis right and diverged only on one of your assumptions is not a valid stump, it is `underspecified_objective`.
-
-**Axes the grid has to carry, each one a measured death:**
-
-- **Rounding paths** (per line, per day, per entity, per period, per total). Every summary artifact the generator emits pins the paths its lines demonstrate, so the emitter and the golden share one arithmetic, asserted (task70, three pence apart on a penny-graded ask). A strata choice that straddles a rounding boundary is closed by a filed rounding convention, never by pinning the strata (task73).
-- **The sign across every window a cohort claim admits**, not only its value under yours (task73, +217 under one window and -72 under the widest natural one).
-- **Window terms.** Any window a graded figure depends on is a filed, nameable date that falls in a gap in the records, so neighbouring cutoffs select identical rows; assert the gap (task55).
-- **Codings of a filed criterion on a real coded field.** Real public data brings its own conventions, so enumerate the codings a competent solver could adopt and measure the set difference before writing the clause (task57 v20, three of seven tests admitting two readings each).
-- **Inclusion readings of a delta or cumulative feed** (latest value, reconciled only, the batch closing the window): assert they converge or violate a shipped sentence, and compute the golden on reconciled values (task44).
-- **Tie-breaks on a duplicate mechanism.** File two levels (a date, then an identifier), ship enough distinct dates that the first level resolves nearly everything, and assert the attribution is unique for every case (task60 v5, 31 of 2,718 pairs reaching the second level).
-- **Mid-period proration.** Day-versus-month proration never converges at month boundaries, so a mid-period convention is either unpinned or pinned by an enumerable test; move whole periods at boundaries instead (task40).
-- **Things never to grade**: the run count of an iteration (a freeze reading and a re-evaluate reading agree on every allocation and disagree on the count, task57 v19), a median on an even-sized set, and a percentage near a one-decimal edge where a count would do (task57 v20).
-- **Pin the nuisance axis, never the decisive one**, and remember that rounding cannot absorb a modelling spread: in a bin of width w the maximum clearance is w/2, so re-centring the answer is not a repair (task47).
-
-### 5.3 Convergence construction, the strongest close
-
-**A semantic pin fixes a meaning, and a meaning still has to be operationalised.** This is the
-failure that survives every other check, because the pin reads as decisive and the design note
-records it as closed. task42 pinned chargeability with "assistance is chargeable for the period
-of the household's enrolment in the Project", which is a clean level-2 filed fact naming no
-join, no table and no field, exactly as this skill asks. It still admitted four readings:
-
-| Reading | Figure |
-|---|---|
-| the whole covered period lies inside the enrolment span | 5,746,538.25 |
-| the covered period starts inside the span | 6,631,832.46, the golden |
-| the warrant clears inside the span | 6,610,873.75 |
-| the covered period overlaps the span at all | a fourth |
-
-A 13.35 per cent spread, and a strong solver that reached **every** planted insight still
-diverged on it. That is `underspecified_objective`, not stump power, and the signature is
-exactly that: the solver performs the decisive move and lands somewhere else anyway.
-
-**The repair is convergence, never a second pin.** A clause naming the field ("charged to the
-Project of the enrolment open on the payment's coverage_start") closes it and simultaneously
-turns the decisive rung into a two-line lookup, which trades a Gate C failure for a Gate F one.
-Build the records so every reading selects the same rows instead: in task42 every certifiable
-payment's covered period **and** its warrant date were made to lie wholly inside one enrolment
-span, and all four readings then returned one figure on identical line and household counts.
-
-**The check, and run it on every interval the answer touches.** Enumerate the readings a
-period-shaped clause admits, compute each one, and assert they are equal, in the generator and
-again in the independent verifier. Two specific boundaries generate almost all of these and
-both are easy to miss because the natural join hides them:
-
-- **The far edge.** An as-of join keyed on entry ignores the exit entirely, so a covered period
-  running past the exit still resolves to the exited enrolment. Check the covered period
-  against the span the reading itself selects, not against any span.
-- **The gap.** Between one enrolment closing and the next opening the entity is enrolled in
-  nothing, and a backward as-of join silently attributes that gap to the enrolment that closed.
-
-**And never write "the figure is identical either way" without an assertion behind it.**
-task42's write-up carried exactly that sentence about the warrant key while the two keys
-differed by USD 20,958.71 on 113 lines, and the review found it, which converts a convergence
-claim into evidence that the author never controlled the fork.
-
-
-Where an ambiguity cannot be fully closed, engineer the data so **both defensible handlings give the same answer.** *"Reattributing the transferred units to the party that produced the measurements, or dropping them as unattributable, returns the same winner either way."* This closes the fork by construction rather than by argument and it is unanswerable in review.
-
-**More convergence by construction, each measured:**
-
-- **Integerisation on a forward quantity is unpinnable by any corpus of observed outcomes.** Make every discipline return the same integers by aligning the quantised units with the capacity constants (whole bundles sized from divisors of the conversion constant), and assert that floor, round, largest remainder and no integerisation coincide (task64, six tie-breaks spanning $6,700 before the repair).
-- **Build convergence at the grain of the finest pool a solver could defend.** De-meaning a control side as one group leaves its subsets drifting; de-mean inside each subgroup, and set each group's measure equal across periods so differently weighted aggregations agree (task43, 5.4 per cent between two control pools).
-- **Close silent sweep forks in the data**: the end-day convention and the order of same-day events at a limit converge once no event ends on a day another lands in the same unit and events are unique per day within a unit (task57).
-- **Convention robustness and grid separation are different sensitivities, tuned separately**: convergence is bought with sample density at the quantile, separation with the size of the block each rung moves (task44).
-- **Re-sweep every separation after closing a fork**, because a separation can be borrowed from the defect the fork carried (task44).
-
-### 5.4 The robustness sweep, stated with counts
-
-- "Holds across N of N combinations of choice A x choice B x choice C, narrowest margin 1.16x."
-- "Holds at inclusion floors of 1, 5 and 25."
-- "Holds on both the record basis and the constructed-unit basis."
-- "Holds on both periods, and with the largest rival excluded entirely."
-
-**Sweep the whole family and state the count you actually ran.** Rival-killers are audited as hard as the answer. If you claim seventeen alternative rules were tested, run seventeen, and report the **worst** miss across the family, not the average.
-
-A monotone classifier family (drop addresses held by more than t persons) must cross the answer at some t: put the crossing at an unnatural value, assert every round threshold lands at least 10 per cent off, and make the corpus refuse the whole family; sweep string heuristics on an entity exactly like columns (task58). Before claiming N rival readings, test each against a careful read of the clause, because claiming rivals the wording already excludes is the overclaim a hostile reviewer turns into "the difficulty is semantic" (task44).
-
-### 5.5 Construct the disagreement, it does not emerge from independent draws
-
-If a rung turns on **two axes disagreeing** (measured by date versus by period label, per-record versus per-entity, gross versus net, cohort versus calendar) then the generator must **build the correlation that makes them disagree**, per candidate. Draw the two axes independently and every candidate ends up with near-identical profiles on both: the mechanism is documented, findable and inert.
-
-Build it, then assert it in both directions. The design intent is usually "the winner looks slow on axis A and fast on axis B, the decoy is fast on both", and that sentence has to appear as an assertion, not only as a paragraph. Put decoy instances of the construction where they change nothing as well as where they decide everything, or the constructing field becomes the giveaway column no anti-signpost grep sees (task60 v4, 29 spring executions of which 16 were load-bearing).
-
-### 5.6 The assertion regime
-
-**Rules that live only in prose get broken by a later parameter tweak, and nothing in house rediscovers it.** A submission is expensive, assertions are free.
-
-**Compute forward, never backward.** Build the data, then compute every figure from it by script. Never author a number and reverse-engineer records to hit it.
-
-Assert, at minimum:
-
-- each rung's winner **by name**, and each rung's margin
-- the ground-truth position table, rank and distance from the leader, every rung
-- discriminator dominance, both ratios and their product
-- the calibration back-test, N of N within x percent, each rival missing by at least y percent
-- the fork grid **cell by cell**, each losing cell mapped to the shipped rule it violates
-- the rival sweep count, the number of alternative rules actually tested
-- every graded numeric answer's distance to the nearest rounding boundary
-- the generation tells: no headline total on a round boundary, no share that is an exact round figure
-- the anti-signpost invariants: each load-bearing fact appears in exactly one shipped file
-- the input-pack gates: file count, format count, the row count of the largest dataset
-
-Target **40 or more assertions**. A build that only asserts the answer is not verified.
-
-**Ship an independent verifier** that reads only the shipped bundle and no generator state. If it cannot recompute a figure, that figure does not exist.
-
-**Generator disciplines, each one a build that shipped wrong without it:**
-
-- **Assert agreement between the generator and the golden**, not only within the generator: any structure the design depends on exists in the shipped records, not in a variable (task56), and the extract-date cut is applied at source, never at pack-write time (task60).
-- **The generator's ground truth is the projection a solver can make**, not the realised value it knows (task56 v4). Run the golden deliverable script against the shipped bundle before anything else, because it is the first solver.
-- **Build the verifier first and treat a disagreement as the measurement**: the strongest evidence a stump is live is your own verifier, written before the mechanism existed, falling into it (task60 v5).
-- **Build the ladder by construction and let the seed decide texture only**, because a which-of-N ladder whose decoys are sums of a few hundred random records rides on sampling noise and a seed sweep is a lottery (task56 v4). Use one RNG stream per period, so a parameter change in one period does not re-roll the graded one (task69).
-- **Read shipped constants from the single definition the model implements**, derive parameters from the record rather than stating them, and check the rounding distance and adjacency of every ordered pair on every redraw, not only the top two (task60 v8, task73). Measure a one-decimal figure's distance to x.x5, not to the hundredths (task55).
-- **A column whose rows and whose total row are computed different ways**, and a rank or share that does not say whether it runs on the rounded or the unrounded value, are defects the generated rubric charges for: assert both in the verifier, rebuilt from the unrounded source (task60).
+Run the literal-reader test (`determinism-check` §2) on the ladder. If the call turns easy once the
+estimand is literal, the stump was a fork: redesign the decisive step, never loosen the estimand. The
+pin hierarchy, the fork grid, convergence construction, the robustness sweep and the assertion regime
+are in `determinism-check/references/forcing-the-answer.md` Part 6.
 
 ---
 
@@ -1589,25 +1468,11 @@ table below is read against a solver path or a portal result.
 
 ---
 
-## Part 11. Determinism failure modes and their repairs
+## Part 11. Determinism failures
 
-### Failure A, the unpinned convention
-The answer requires two unpinned choices to coincide, and a shipped file endorses the opposite of one of them.
-**Repair:** pin the convention in a shipped file at appropriate authority, and remove or reframe the counter-pin so it no longer states a governing method.
-
-### Failure B, the wrong basis better supported than the answer
-The pin exists but sits in a low-authority location while a high-authority document implies the rival.
-**Repair:** rewrite the governing document to state the criterion explicitly, relabel any artifact in-file, delete endorsements of the wrong basis from the social layer. After this the wrong basis becomes a **licensed** wrong path: real, available in writing, explicitly out of scope, which is the strongest form it can take.
-
-### Failure C, the fabricated intermediate
-A number in the golden, usually a rival-killer, does not reproduce from the shipped files, or two blocks of the golden contradict each other about the same artifact. **The most common instance is a calibration outcome with no underlying records.**
-**Repair:** recompute everything from the raws, including every rival-killer and every calibration outcome. Build data first and compute figures from it. Where a rival-killer is fragile, replace it with a structural impossibility.
-
-### Failure D, the Gate G misclassification
-The build is genuinely analytical but the design note does not say so unarguably, so the judge cannot tell a binding constraint from a surface-read rejection wearing one, calls the type borderline, and routes the task to live testing.
-**Repair:** write the litmus answer, the mechanism label and the three flags into the design note in the judge's own vocabulary, and state in one sentence why the reported figures in the pack are correct.
-
-**Standing rule:** every number in the golden, the answer's numbers, the numbers that kill the rivals, the calibration outcomes, and every figure any character quotes, must recompute from the shipped files alone.
+The counted causes and their repairs are in `determinism-check` (Why builds fail, counted, and §1 to §5).
+Every number in the golden (the answer's, the rival-killers', the calibration outcomes' and any a
+character quotes) recomputes from the shipped files alone.
 
 ---
 
