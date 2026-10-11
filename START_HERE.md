@@ -22,7 +22,7 @@ Regenerate with `python3 analytical_tasks/make_task_folders.py`; numbers never m
 
 | Task | Seed | Call | Domain | Owner | Status |
 |---|---|---|---|---|---|
-| task132 | FC03 | [The go-live stock value for a slow-moving parts tail, when the new engine forecasts each part on its whole supersession chain](task132/START_HERE.md) | Supply Chain & Logistics · aftermarket service-parts planning | sathya8571 | in build |
+| task132 | FC03 | [The go-live stock value for a slow-moving parts tail, when the new engine forecasts each part on its whole supersession chain](task132/START_HERE.md) | Supply Chain & Logistics · aftermarket service-parts planning | sathya8571 | shipped |
 | task133 | FC04 | [Which zone gets next season's extra overnight rebalancing crew, when its newest stations have not finished growing](task133/START_HERE.md) | Supply Chain & Logistics · micromobility fleet rebalancing | sathya8571 | shipped |
 | task134 | FC05 | [Where twelve leased batteries go for next spring's midday oversupply, when a dry year will bring the irrigation pumps back](task134/START_HERE.md) | Economics · electricity distribution planning | sathya8571 | in build |
 | task135 | FC06 | [How much grain to reserve rail for during next year's four lock closures, when storage fills terminal by terminal](task135/START_HERE.md) | Supply Chain & Logistics · inland waterway freight | sathya8571 | open |
