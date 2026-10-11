@@ -2,8 +2,8 @@
  "task": "task132",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "leak check (reader round 6 on the repair 3 pack), then solver round 3 (one-solver rule)",
+ "stage": 6,
+ "stage_name": "solver round 3 passed; figure-neutral cleanup, then the judge",
  "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
  "stump": "A competent solver completes every lower rung (module age from the fitted date, support by bay to each scheme's commissioning month, exposure over the work-order history's own period, 15 available modules), ages each relay's current module forward with no replacement after a failure, expects 431.4 failures and orders 19 lots; the step that lands it there is projecting failures as if a failed module stayed in service, when it is replaced from the buy by a new one: the answer is 13 lots on 298.6 expected failures.",
@@ -79,6 +79,27 @@
    "mean": 36.8,
    "decision": "pass",
    "brief": "Both solvers passed every lower rung (module age from the fitted date, support by bay, exposure from January 2021, 14 available) and carried each relay's current module forward with no replacement; both named renewal (about 298, 13 lots) and declined it because the procedure does not spell it out. Read as a stump: section 3 ages a module from its fitting and counts it in service only while fitted, and 6.2 applies the rates to the module-months expected in each band; the judge rules on it at stage 7."
+  },
+  {
+   "label": "round 3",
+   "date": "2026-10-11",
+   "score": 37.0,
+   "landed": false,
+   "cracked": 1,
+   "items": 6
+  },
+  {
+   "round": 3,
+   "architecture": 2,
+   "date": "2026-10-11",
+   "rule": "one sandboxed solver (main, PR #17)",
+   "solver": {
+    "landed": false,
+    "proxy": 37.0,
+    "answer": "19 lots, 475 modules, CAD 933,375 (431.4 expected failures, no renewal)"
+   },
+   "decision": "pass",
+   "brief": "The solver completed every lower rung exactly as the golden does (210 failures, the five band rates over the work-order history's own period, 1,178 supported relays with support by bay to each scheme's commissioning month, 15 usable modules) and aged each relay's current module forward month by month with no replacement after a failure: 431.4 expected failures, 19 lots. The miss is at the decisive analytical step the card's analyst_test names; the judge rules on stump against fork at stage 7."
   }
  ],
  "judge": {
