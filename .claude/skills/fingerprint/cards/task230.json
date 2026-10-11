@@ -1,0 +1,92 @@
+{
+  "task": "task230",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed DQ03 (an event-volume drop read as an instrumentation incident or a mix shift toward a new client version), drawn in the seed's own territory (product-analytics metric-definition-measurement-science), which the guard allows again since task228 re-rooted to physical-environmental-sciences; the seed's mix driver is carried into the comparison a staggered tracking switch needs: the patients who have not yet updated are a lighter mix whose winter trend is not the updated patients' own. Two earlier drafts were never registered: an errors-in-variables sensor gain (task228's architecture 2 took that pairing and the comparator-error family) and a transport of the switch's effect to the whole base (test.same_driver against task124, and an insight task43, task83 and task129 already spent).",
+  "domain": "product-analytics",
+  "subdomain": "metric-definition-measurement-science",
+  "client_domain": "product-analytics",
+  "niche": "a public hospital group's patient app whose 7.0 build swaps the analytics SDK and reaches frequent users first through in-app update prompts as the winter season builds, deciding which patient-app KPI series carry a series-break flag in the quarterly digital return to the programme that funds the app",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "head of digital analytics at a public hospital group, who signs the quarterly digital KPI return to the national programme that funds the patient app",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "app_kpi_weekly_by_account.parquet",
+    "rows": 1301241,
+    "entity": "one app account's recorded KPI events and interactive sign-ins for one ISO week on one tracker",
+    "grain": "account x ISO week x tracker",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "other",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Ireland",
+    "currency": "EUR",
+    "org_type": "public hospital group running its own patient app, funded by a national digital health programme that takes a quarterly KPI return",
+    "invented_names": [
+      "Drumlee Hospitals Group",
+      "Drumlee Patient",
+      "Dunnock",
+      "Tallyfield Analytics",
+      "National Patient App Programme"
+    ],
+    "people": [
+      "Sandra Fitzpatrick",
+      "Erica Phayre",
+      "Lesley Ahearne"
+    ]
+  },
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "product-analytics/observational-causal-inference/1",
+  "layer1": [
+    "one warehouse table holding every account the app touched: patients, dependant profiles a carer manages (rows with no sign-in), second-site registrations, staff test accounts, training and store-review logins, new registrations and lapsed patients returning",
+    "two rows for an account in the week it changed tracker, one per tracker",
+    "a patient index that merged second-site registrations in November, some through a chain of two merges",
+    "a service account register whose staff-domain rule sits on its second sheet, apart from the listed logins",
+    "staff beta testers recording on the new tracker three weeks before the release",
+    "a CRM engagement segment snapshot set on 1 October, refreshed monthly",
+    "phones that cannot take the new build, left on the old tracker until the forced update"
+  ],
+  "deliverables": [
+    "q4_series_break_prenotice.xlsx",
+    "q4_prenotice_cover_note.pdf"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "A switch reaches heavy users first, so its effect has to be read against users who have not switched yet in the same weeks, but those users are a lighter mix whose seasonal trend runs harder than the switched users' own; taking the whole not-yet-switched pool as the counterfactual books part of the season as the switch's doing, and only a counterfactual built within each usage band, or reweighted to the switched users' band mix, reads the switch alone, which moves units across the tolerance in both directions.",
+  "driver_concrete": "The 7.0 build swaps the analytics SDK and each patient meets the update at their next sign-in, so frequent patients switch first, and each KPI's change has to be measured against patients still on 6.8 in the same weeks; but those patients are mostly occasional users whose appointment, results and notification traffic climbs far faster into the winter than the frequent users' does. Differenced against the whole 6.8 pool the new SDK looks to lose appointment changes, result views and notification opens it does not lose, and to leave appointment views flat when they rise six per cent; differenced within each engagement segment, four series break and those three do not.",
+  "stump": "A competent solver takes each patient's handover week from the first new-tracker row and measures every KPI's settled change against all patients still on 6.8 in the same weeks, the canonical staggered difference-in-differences; the pool is a lighter, more seasonal mix, so it flags appointment change requests, test result views and notification opens, which measure inside the three per cent line, and clears appointment views, which breaks at +6; within engagement segment the flags are appointment views, clinic letter views, waiting list checks and digital check-ins.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who drops the non-patient accounts, maps the handover weeks, reads the continuity standard correctly and runs the canonical staggered difference-in-differences against patients not yet switched still files six flags, three of them wrong and one series missing, because the not-yet-switched pool is a lighter, more seasonal mix than the frequent patients who switched first.",
+  "domain_test": "The deciding quantity is the change a tracking-SDK swap makes to each patient-app KPI's recorded events per weekly active patient, estimated from an app-update rollout that frequent users take first, against patients not yet updated within the same usage band, which is product analytics measurement science (metric continuity across client releases, engagement-ordered update adoption, per-active-user KPIs); with ward, meter or school nouns there is no app update prompt, no usage band ordering the switch and no tracking SDK, so the task stops reading the same.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task68": "task68 matches continuing units across identity successions so entrants stop masking a decline, with the qualifying bar recovered from a closed corpus of settled dispositions; here nothing is matched across identities and no rule is recovered: the move is the counterfactual trend for a staggered tracking switch, taken within usage bands because the not-yet-switched pool is a lighter mix whose winter season runs harder than the switched patients' own"
+  },
+  "lineage": [],
+  "notes": "Pattern none with G6 decisive: the not-yet-switched comparison pool is a different usage mix from the switched patients and the season runs by usage band, so the counterfactual trend has to be standardised to the switched patients' band mix (G17 confounding as support). stump_strategy causal_design: the decisive move is the comparison group (conditional parallel trends), keyed so because the vocabulary names control choice and pre-trends there. decision_type designation_set repeats task229 (WARN), answered in the design note. layer2_pattern is the closest library entry (adopters were already your best users; condition on pre-adoption engagement with checked pre-trends), applied here to a data-continuity call. forcing_event other: the call is forced by a funding programme's mid-quarter deadline for pre-notifying series breaks ahead of its quarterly KPI return and national bulletin, a funder's reporting deadline rather than a statutory or regulatory filing (re-keyed at the heart check, when task135's regulator filing entered the window)."
+}
