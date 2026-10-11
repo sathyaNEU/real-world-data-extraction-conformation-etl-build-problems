@@ -213,8 +213,11 @@ limit line at its value, the annotation, the title, the file) and two files: wel
 
 ## Prompt
 
-`prompt.md`, 987 characters, 160 words, question-first, voice-check clean (no calcified carrier, no
-roll call, no input file name, no method or trap word). Deliverables `limit_check_2026-11-04.xlsx` and
+`prompt.md`, 995 characters by voice-check, 160 words, opening on the binding constraint (the card
+says constraint-first; the script files it as other). Redrawn from question-first after task445's card
+took that move. Voice-check clean otherwise (no calcified carrier, no roll call, no input file name, no
+method or trap word); the call is one sentence carrying its unit and rounding at the seam, and both later
+paragraphs open by tying back to it. Deliverables `limit_check_2026-11-04.xlsx` and
 `projected_utilisation_2026Q4.png`.
 
 ## Realism debts
@@ -229,6 +232,48 @@ roll call, no input file name, no method or trap word). Deliverables `limit_chec
 Two consecutive solver rounds that land 21.8 by restating the history file the architecture as
 spent at the decisive rung (re-root, not harden). A round that lands on 15.0, 10.2 or 26.6 and keeps
 most ask figures licenses one hardening of the device layer only.
+
+## Build record (stage 3)
+
+- Generator: `generator/make.py` (world.py, truth.py, tune.py, docs.py), golden path and independent
+  verifier `generator/solve.py` (reads target/ only), deliverables `generator/deliver.py`, write-up
+  `generator/writeup.py`, metadata `generator/meta.py`, assertions `generator/checks.py`: 248
+  assertions green, two builds byte-identical.
+- Input gates: 18 files, 6 formats (csv, docx, md, pdf, txt, xlsx), largest file
+  `gleif_lei_records_qe_archive.csv` at 30,271 rows, distractors `obligor_ratings_qe.csv` and
+  `sector_concentration_2026Q3.xlsx` (named in metadata.json only; golden unchanged with both deleted,
+  asserted).
+- Tuning: one revolver per agenda group carries a drawn-balance nudge (whole pence, inside its limit) so
+  every graded figure sits at least GBP 10,000 inside its rounding bin, every approval at least 0.15 of
+  a GBP 100,000 step from its edge, and the utilisation order at least 0.3 points apart (asserted).
+- House fixes run: H1 (no writer signature or out-of-band stamp in inputs or golden, scrubbed in the
+  generator), H2/H3 (submission emitted by writeup.py from target/, asserted identical), H4 (18
+  members, no enclosing folder), H7 (target.zip cut last from the final build), H11 (one prompt.md, one
+  submission.md), H12 (no rounding tags beyond the money and percentage conventions), H13 (call at the
+  seam), H16 (no GLEIF record updated after its archive date, no facility starting after its extract;
+  forward maturity and renewal dates are the allow-list), H18 (every row is a component of the call's
+  check: same standard, same committee, same sitting).
+- Golden realism: workbook with a finding-first header line, frozen panes, number formats, a
+  membership sheet tracing each group at 30 Sep 2026 (joins and departures dated from the archive) and
+  a notes sheet citing Policy s2 and s3 and LMS-03 2.1 to 3.2; chart with the call in the title, the
+  limit line labelled, the requesting bar distinguished, the annotation on it.
+- `guard.py surface`: three promoted pairs at surface similarity 0.14 to 0.15 (task130, task87,
+  task100), each on a shared decision type only; no byte-identical file, no shared table, no shared
+  invented name. Personas in the pack: Russell Hussain only (Lesley Miller signs the golden).
+
+## Leak check (stage 4, mechanical half)
+
+`leak.py --asof 2026-10-09`: REVIEW, no LEAK (a policy file name carrying a version suffix and the
+word "golden" in two GLEIF descriptions were renamed in the generator). REVIEW lines answered:
+- answer figures in the agenda (12.0, 14.0, 20.0, 25.0) are the requested amounts the decision is
+  about; 1.3 no longer appears (LMS-03 now supersedes "the January 2025 issue");
+- the agenda and LMS-03 share the call's words (committee, approve, term loan): they are the request
+  and the standard;
+- design-note vocabulary in the policy, standard, field reference and log is the field's own
+  (obligor, netting, collateral, quarter); none states the history's membership;
+- ranking artifacts: the LEI archive, the loan extract and the limit register name agenda groups
+  beside numbers that are identifiers, balances and limits, never a ranking on the decision;
+- dates after 2026-10-09 are facility maturities and GLEIF renewal dates (allow-list).
 
 ## Tried and rejected
 

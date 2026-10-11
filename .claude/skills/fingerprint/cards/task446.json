@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Approve GBP 21.8m of Kelderby Facilities Ltd's GBP 30.0m term loan (projected 31 Dec 2026 exposure GBP 148.1m against a GBP 170.0m house limit)",
+  "answer_source": "task446/submission.md, block 1",
   "gap": [
     "population",
     "time"
@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "gleif_lei_level1_qe_snapshots.csv",
-    "rows": 0,
+    "rows": 30271,
     "entity": "one LEI record as GLEIF's golden copy carried it in one quarter-end snapshot the bank's reference-data team archived",
     "grain": "LEI x archived quarter-end snapshot",
     "source": "synthetic, on the GLEIF LEI-CDF 3.1 golden-copy schema"
@@ -49,17 +49,27 @@
     "geography": "United Kingdom",
     "currency": "GBP",
     "org_type": "UK commercial bank, credit risk management",
-    "invented_names": [],
+    "invented_names": [
+      "Calder & Wey Bank plc",
+      "Kelderby Group plc",
+      "Tarrant Hydraulics Ltd",
+      "Norbeck Coatings Ltd",
+      "Meridale Holdings Ltd",
+      "Brauneck Holding SE",
+      "Corrin Logistics Group plc",
+      "Pellow Foods Group plc",
+      "Stannard Capital Group plc"
+    ],
     "people": [
       "Lesley Miller",
       "Russell Hussain"
     ]
   },
   "deliverables": [
-    "committee_limit_check_2026Q4.xlsx",
+    "limit_check_2026-11-04.xlsx",
     "projected_utilisation_2026Q4.png"
   ],
-  "opening_move": "question-first",
+  "opening_move": "constraint-first",
   "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them.",
   "driver_concrete": "The limit-monitoring standard projects each obligor group's 31 December 2026 exposure as its 30 September exposure plus its average quarter-on-quarter change over the four quarters to 30 September, for the group as it stands on the projection date; groups on the agenda took control of borrowers the bank already lent to and sold others during the year, so rebuilding each quarter on the GLEIF snapshot archived at that quarter-end turns membership changes into exposure trend, while the projection the standard wants restates every quarter on the 30 September 2026 hierarchy, predecessor LEIs carried to their successors.",
   "stump": "A competent solver joins each quarter's loan, securities and derivative extracts to the GLEIF snapshot the bank archived at that quarter-end, the point-in-time build that keeps later knowledge out of a history, so the requesting group's acquisition of a borrower the bank already lent to enters its history as quarter-on-quarter growth, its projected year-end exposure is overstated and it approves less of the request than the limit allows (names and figures fixed at build).",
