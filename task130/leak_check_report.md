@@ -48,3 +48,21 @@ The second reader's verdict on v3: no sentence names the decisive step. Primed t
 - **B4, identifiable numbers in a bidder copy.** The folder's copy is the District's identified copy, with data book record numbers and ages from Northcourt, and the Bramwell member number and birth date added by Risk Management and Benefits; the cover says bidders got the data book without them.
 - **Realism.** Inpatient revenue lines follow the diagnosis and the operation; NICU stays run by gestational age; no allowed claim falls after coverage ends (reason 27 denials instead); PDFs keep the producers of the organisations' own tools (LibreOffice, Chromium) and workbooks make no application claim; eligibility carries COBRA, rehires and dependents dropped and added back; claims are logged on business days; care teams follow the plan's rule; some 2025 claims settle in 2027; the renewal letter signs on its first page; the agreement carries conformed signatures. Deferred to after the solver round: none.
 - **Fresh read due.** The prompt changed (compressed under 1,000 characters) and documents under target/ changed, so the next reader round reads this build.
+
+## Solver's-eye read (round 3, after repair 2)
+
+One isolated reader on Sonnet, on a fresh copy of the prompt (933 characters) and the 13 shipped files.
+
+1. Decisive step: none. The nearest pointers are context, not instruction: the final workbook's cover (model 4.2 run on one calendar year of claims, the 140 highest-scoring members), Schedule C C.1(h) (a baseline per Risk Tier from the experience of members in that tier, the source of the experience left open) and Recital B (RFP 2025-07 cancelled before award).
+2. Ranks or states the asked figures: none. The only asked figure stated anywhere is an input, the final workbook's tier counts (35, 37, 38, 30).
+3. Exists only to help: none outright. The nearest is the TPA crosswalk, which the readme gives an in-world reason for.
+4. Reads as the answer: none. The renewal letter's whole-plan PMPMs ($515.43, $233.04, $748.48) are the wrong population.
+
+REVIEW lines: all four harmless (Schedule C states no PMPM or baseline; the implementation plan's words are its page header and records requests; the readme's are its own subject and its author's title; the 140 dates after the as-of are the enrolment effective date, 1 April 2027).
+
+Forks the reader raised on the main call, and their disposition:
+- Experience base (the enrolled members' own trended year against the untreated RFP cohort's year after selection): this is the stump, not a fork; the determinism judge rules on it at stage 7.
+- RCV8692544 (rank 18, Tier 1) is on the final list but left coverage on 31 October 2026, while the list's cover says members enrolled on 1 March 2027, so Tier 1 reads 35 or 34: a fork introduced by repair 2's eligibility churn. Fixed before the solver round.
+- The comparator tier for the 19 RFP members who are also on the final list (13 in a different tier there): measured, and closed before the solver round if it moves a graded figure.
+
+Realism tells, deferred to the repair after a round the solver misses (stage 6b): UK spellings and day-month dates across documents from four Minnesota organisations; PDF producers (Skia/HeadlessChrome with a Linux user agent, LibreOffice 24.2) and embedded Liberation and Carlito fonts; one openpyxl fingerprint across four workbooks from three organisations; Recital B narrating the cancelled RFP and its reason; the RFP workbook's "District copy" cover row; the readme over-justifying the crosswalk and repeating the renewal letter's note on Bramwell's 2024 history; the renewal letter saying the stop-loss premium was confirmed on 22 February when the policy schedule was signed on 18 December 2026.

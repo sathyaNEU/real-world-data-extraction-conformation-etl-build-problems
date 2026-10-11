@@ -10,7 +10,7 @@
  "duplicate_check": {
   "heart": "guard.py heart task130 after repair 2: WARN (people.first: Phillip against task101, Michelle against task104; heart text peaks at 0.06, task102's stump)",
   "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 2: WARN only (first names Phillip and Michelle in older builds)",
-  "surface": "guard.py surface after repair 1: task83 promoted on percentile only (0.140, corpus pct 99), as before; nearest unpromoted task50 0.100; people: WARN Phillip, NOTE 'Ellery Benefit' (the administrator's name read as a persona); the dictionary renamed warehouse_readme_2027-03.txt after the clone pre-flight's surface note",
+  "surface": "guard.py surface after repair 2: task132 (0.152) and task83 (0.140) promoted on percentile only, both on format mix and deliverable species alone (no file name, prompt, schema or entity overlap); nothing to rename. People: WARN Phillip (older build); Ellery Benefit and Johnson Phillip are an administrator's name and a reversed persona, not new personas",
   "clone_check": ""
  },
  "judge": {
@@ -63,7 +63,7 @@
  "branch": "sathya8571/task130-harden",
  "leak": {
   "leak_py": "REVIEW, no LEAK after repair 2 (4 REVIEW lines answered in the design note's Leak review)",
-  "reader": "v3 round 2 (2026-10-11): no sentence names the step; forks A1 to A5 closed and asserted in checks.py, signposts B1 to B4 removed, the realism list finished, in repair 2; a fresh read is due, because the prompt and documents under target/ changed"
+  "reader": "round 3 (Sonnet, after repair 2): no sentence names the decisive step, no file ranks or states the answer, none exists only to help; REVIEW lines harmless. Forks raised: RCV8692544 on the final list after leaving coverage (fix before the round); comparator tier for the 19 members on both lists (measure, close if it moves a figure); experience base is the stump (judge)."
  },
  "solver_rounds": [
   {
@@ -97,5 +97,13 @@
    "gates": "checks.py 6,310 assertions green; verify.py green; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only; voice-check no economy flag"
   }
  ],
- "deferred": []
+ "deferred": [
+  "UK spellings and day-month dates in documents from four Minnesota organisations (and the prompt)",
+  "PDF producers: Skia/HeadlessChrome with a Linux user agent and LibreOffice 24.2; embedded Liberation and Carlito fonts",
+  "one openpyxl fingerprint across four workbooks from three organisations",
+  "Recital B narrates the cancelled RFP 2025-07 and the Board's reason",
+  "the RFP workbook cover's District copy row reads as the join's explanation",
+  "the readme over-justifies the crosswalk and repeats the renewal letter's note on Bramwell's 2024 history",
+  "renewal letter: stop-loss premium confirmed 22 February, policy schedule signed 18 December 2026"
+ ]
 }
