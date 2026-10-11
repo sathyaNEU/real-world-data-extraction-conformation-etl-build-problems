@@ -31,7 +31,7 @@
  "portal": "",
  "build": {
   "answer": "KV-LB04, KV-LB05, KV-LB07, KV-LB10, KV-LB12 have impaired capacity; four make-good offers (Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05, Tondara Grazing Pty Ltd, Bluebush Downs Pty Ltd, Cypress Ridge Pastoral Trust)",
-  "checks": "2185 assertions passed",
+  "checks": "2187 assertions passed",
   "verify": "OK. Same five bores on its own monthly gamma fit; 18 September levels and 18 changes match the workbook exactly; drawdowns within 0.38 m of the workbook; every naive rung recomputed and none gives the answer",
   "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 f195389d7a9f2772)",
   "rungs": "R0 complaints A2, A3, A5, B4; R1 and R1b (baseline, June 2022, 2012-22 mean) A1 to A7 and B4; R2 (pooled, matched) A1; R2b (2017-22, 2012-22) A1 to A9 and B4; R3 (12 months, 3 years) A1; R4 CM1 to CM4 and A1; every bore at least 25 per cent of its trigger away at every rung (thinnest 0.26, B4 at R2 pooled)",

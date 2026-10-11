@@ -266,9 +266,10 @@ golden value sits inside its band and every bore's rung 1 decline sits outside i
 
 **Mess neutrality of the main call (primary cell re-run under each Layer 1 misstep).** Unchanged under: the measuring
 point history ignored, duplicate dips kept, pumped dips kept, the 2012 to 2014 rounds dropped (registered numbers not
-mapped), UTC days for the loggers, loggers left uncompensated (all asserted except the last two, which break the
-September level and are recorded). Recorded, not asserted: the feet record read as metres moves the call to 16 bores
-(the 2012 to 2014 levels drop by about 40 m, a step no analyst would keep).
+mapped), UTC days for the loggers, loggers left uncompensated (all six asserted; pumped dips kept, UTC days and
+uncompensated loggers are also ask stops, which move the September levels and leave the call where it is). Recorded,
+not asserted: the feet record read as metres moves the call to 16 bores (the 2012 to 2014 levels drop by about 40 m,
+a step no analyst would keep).
 
 ## CLOSURE (the 22 axes, as shipped)
 
@@ -394,8 +395,8 @@ complaint's date (MG-02 7.1), so the golden never reads the log.
   `docs.py`, `postprocess.py`), the goldens (`deliver.py` over `golden.py`, `analysis.py`, `models.py`), `metadata.py`,
   `checks.py`, `verify.py`, then a second full build into a scratch folder inside the task (`*.tmp`, gitignored,
   removed after) and the sha256 comparison. `target.zip` is not cut at this stage.
-- Final run: `checks.py` **2,185 assertions passed**; `verify.py` OK; two consecutive builds byte-identical over
-  `target/`, `golden/` and `metadata.json` (combined sha256 f195389d7a9f2772); 1 minute 58 seconds.
+- Final run: `checks.py` **2,187 assertions passed**; `verify.py` OK; two consecutive builds byte-identical over
+  `target/`, `golden/` and `metadata.json` (combined sha256 f195389d7a9f2772); 2 minutes 5 seconds.
 - `verify.py` (standard library, numpy, openpyxl, pyarrow, python-docx; imports nothing
   from the generator): recomputes the 18 September levels and 18 changes (match the workbook exactly), every naive rung, and
   the call with its own monthly gamma fit (12 shapes x 45 response times x 41 evaporation factors): the same five

@@ -283,7 +283,9 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         dd = {k: A.cell(o2, k, cl, *G.PRIMARY)[0] for k in LH}
         s = sorted(k for k in LH if dd[k] > trig[k])
         neutral[label] = (s, [C2L[x] for x in s])
-        recorded = label in ("pumped dips kept", "loggers left uncompensated", "the feet record read as metres")
+        # pumped dips kept and uncompensated loggers are ledgered ask stops: they move the September levels, and the
+        # main call must stay inert under them; only the feet record read as metres (a 40 m step) is recorded
+        recorded = label == "the feet record read as metres"
         if not recorded:
             ok(s == ANSWER, "the main call moves under '%s': %s" % (label, [C2L[x] for x in s]))
         LOG.append("mess, %s: main call %s" % (label, "unchanged" if s == ANSWER else "moves to %s" % [C2L[x] for x in s]))
