@@ -2,14 +2,14 @@
  "task": "task180",
  "domain": "energy-systems-utilities",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design (architecture 2)",
+ "stage": 4,
+ "stage_name": "leak check",
  "updated": "2026-10-11",
- "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names the three highest code-3 units, two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take the vacuum-tap-changer unit and the next two internal faults.",
+ "stump": "A competent solver codes every transformer under the fleet DGA standard from its main-tank samples (limits by preservation type and age, twelve-month rates, condition code 3 ranked by severity) and names Dunsandel T1 (9.64), Leeston T2 (8.07) and Southbridge T2 (8.07), two of which carry acetylene leaked from in-oil tap-changer compartments; the step that lands it there is reading main-tank acetylene as a main-tank fault, when its increments track each unit's tap-change counts and its ratio to hydrogen is the tap changer's, so the slate should take Southbridge T2 (vacuum tap changer), Rolleston T2 (4.98, internal arc behind an in-oil tap changer) and Coalgate T1 (4.73, thermal).",
  "architecture": 2,
  "loops": 0,
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (as-of 2026-10-16): 3 REVIEW lines answered in DESIGN_NOTE.md LEAK CHECK (sweep 4 standard vocabulary, sweep 8 oil_temp_c, sweep 9 forward booking dates); guard.py surface: no pair promoted, personas all on the card",
   "reader": ""
  },
  "duplicate_check": {
