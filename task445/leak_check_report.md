@@ -102,3 +102,5 @@ One isolated reader (Sonnet), 2026-10-11, on a fresh scratch copy of prompt.md a
 - **REVIEW lines:** CUSIPs and tickers in watchlist and info tables harmless (client keys, raw SEC layout); CIKs 1560568, 1093660, 1266847 harmless (plain rows, no annotation); readme and layout vocabulary harmless; data_sources.md mostly harmless with mild hints; OM-4 a mild leak of the cleaning steps (pins, kept; it names no flag and not the completion step).
 
 Main-thread disposition: no question 1 to 3 finding on the decisive step and no main-call fork, so nothing is fixed before the round. Deferred to stage 6b (or the hardening brief): trim data_sources.md's didactic lines, make the NOPR CUSIP defect read as a keying slip rather than a hint.
+
+Stage 6b disposition (after round 1 passed): both deferred items harmless. NOPR's `359Y60106` is a valid CUSIP (letters are legal in the issuer code) keyed lower case by some filers, ordinary Layer 1 mess on the bridge path; `data_sources.md` reads as a normal desk readme and its two flagged lines restate the SEC readme and a register column's purpose. No document changed.

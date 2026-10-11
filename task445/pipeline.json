@@ -2,8 +2,8 @@
  "task": "task445",
  "domain": "quantitative-finance",
  "objective": "data-extraction-conformation",
- "stage": 6,
- "stage_name": "solver round",
+ "stage": 7,
+ "stage_name": "determinism check",
  "updated": "2026-10-11",
  "branch": "oviya1301/task445-13f-ownership-bridge",
  "stump": "Solvers flag on the December 13F reports in hand (WHII, JEMS) or one aggregate completion share (WHII, AMRB, TAAV, JEMS, FENN, SAF); the decisive step is completing the open filing window holder by holder (125 managers with a September report and none for December), giving WHII, GLI, OTF, JEMS, SAF.",
@@ -18,7 +18,27 @@
   "nearest": "task130 v1 (retired; shares a component, not the driver)",
   "clone_check": "pre-flight CLEAN, 0 findings on either track (task445/clone_check_report.md)"
  },
- "solver_rounds": [],
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 41.0,
+   "landed": false,
+   "cracked": 0,
+   "items": 3
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "solver": {
+    "landed": false,
+    "proxy": 41.0
+   },
+   "decision": "pass",
+   "brief": "missed at R0: conformed the December reports on file (WHII, JEMS); saw the 91 unfiled September holders and the 14 Feb deadline in its notes but declined to complete them (a seen-and-declined miss at the decisive analytical step, every stated rule applied correctly); asks 0 of 3 cracked at 80 per cent tokens, bridge ties except the start bar basis"
+  }
+ ],
  "judge": {
   "verdict": "",
   "disposition": "",
@@ -26,5 +46,6 @@
  },
  "approved": null,
  "delivered": null,
- "portal": null
+ "portal": null,
+ "stage_6b": "no repair: the reader's deferred items read as harmless on the main thread (NOPR 359Y60106 is a valid CUSIP keyed lower case in the info tables; data_sources.md lines are an ordinary desk readme and restate SEC readme facts); no document changed, no second read"
 }
