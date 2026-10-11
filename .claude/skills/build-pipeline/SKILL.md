@@ -6,9 +6,9 @@ description: "The stage machine that takes a domain and an objective to a shippe
 # Build pipeline
 
 > Design, build, leak check, duplicate check, solver round, determinism check, ship. The solver round
-> is the in-house filter: two isolated solvers who never see the design work the task cold, and a
-> build they crack goes back to design and is hardened, rebuilt and solved again, until it clears
-> the worth-it gate or its architecture is spent. The portal stays the only stump oracle; the loop
+> is the in-house filter: one isolated solver who never sees the design works the task cold in a
+> sandbox, and a build it cracks goes back to design and is hardened, rebuilt and solved again, until
+> the solver misses the main call or the architecture is spent. The portal stays the only stump oracle; the loop
 > exists so that what reaches it is worth the day it costs.
 
 ## The stages
@@ -21,35 +21,30 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, surface screen clean |
 | 4 | leak check | `leak-check` (`leak.py`, then the `/leak-check` reader pass) | `leak.py` not LEAK on the final cut with every REVIEW line answered in the design note; the solver's-eye reader quotes no sentence for its question 1 and names no file that ranks the candidates (question 2) or exists only to help the analyst (question 3). A finding is fixed in the generator and stage 3 is re-run. `leak.py` runs after every rebuild; the reader runs again whenever a document under `target/` or the prompt changed since its last read |
 | 5 | duplicate check | `fingerprint` (`heart`), `clone-check` (the `clone-auditor` agent, pre-flight mode on this build) | `guard.py heart` not BLOCK, and the adjudicated pre-flight returns no Exact, Same seed, Dataset or Template finding (`clone-check` Part 3); a Shape echo or Idiom finding is reported to the author, not looped on; a reject-tier finding sends the build back to stage 1 once with the colliding axis redrawn, or retires it. On a hardening loop the heart check re-runs and the adjudicated pre-flight re-runs only when the driver changed |
-| 6 | solver round | `solver-round` (`/solve taskNN 2`: the plain and skeptic lenses together) | **the worth-it gate** (below). Pass: stage 7. Fail: the hardening loop, back to stage 2 with the round's brief |
-| 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solvers read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
+| 6 | solver round | `solver-round` (`/solve taskNN`: one isolated solver in a sandbox) | **the worth-it gate** (below): the solver does not commit to the main call. Pass: stage 7. Landed: the hardening loop, back to stage 2 with the round's brief |
+| 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solver read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
 | 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | the client's six-point check answered in the design note (`stumping/references/client/two-layer-task-design.md`), `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered, Status `shipped` in the root `START_HERE.md`; the author has the bundle, the stump sentence, the leak line, the duplicate-check line, the solver line and the judge line |
 | 9 | portal | the author | the result reported; only then the ledger row, lessons, memory |
 
 ## The worth-it gate and the hardening loop
 
-The bar is the top two responses averaging under 50 with at least one genuinely stumped, built to 40.
-The solver round is that bar in miniature: two solvers, the plain lens standing for the field and the
-skeptic for its strongest response, graded by `grade.py` at the rubric's weights.
+The client's bar is the top two responses averaging under 50 with at least one genuinely stumped. The
+in-house round checks the fact that decides it: whether a competent reader with no knowledge of the
+design lands the main call. One solver works the task cold in a sandbox (a fresh scratch copy holding
+only `prompt.md` and `target/`) and commits to an answer; `grade.py` scores it at the rubric's weights.
 
-**A round passes when all three hold:**
+**A round passes when the solver does not commit to the main call** (its committed answer is anything
+other than the golden one). The build goes straight on to stage 7. The proxy score is recorded in
+`pipeline.json` and does not gate. Whether the solver's different answer is a stump or a fork (a second
+defensible answer the pack does not rule out) is the determinism judge's question at stage 7; a fork the
+judge finds comes back as FIX_NOW and is closed with a pin.
 
-1. at least one of the two solvers misses the main call (commits to an answer other than the golden one);
-2. the two proxy scores average **40 or less**;
-3. every missed call is a stump, not a fork: the main thread reads the solver's path, and a different
-   answer reached for a reason the pack does not rule out is a determinism finding, fixed at stage 2
-   or 3 as a pin, never counted as a pass.
-
-**A round that fails sends the build back to stage 2 with a brief**, one sentence per failure:
-
-- the main call landed: the path step that landed it, and the next rung built so that exact step
-  completes and still returns the wrong answer;
-- the call held but the asks leaked score (average above 40): the asks a solver cracked, hardened in
-  the ask layer (`supplemental-stumping` Part 0, the pair ceiling);
-- a fork: the pin that closes it.
+**A round where the solver lands the main call sends the build back to stage 2 with a brief** in one
+sentence: the path step that landed it, and the next rung built so that exact step completes and still
+returns the wrong answer.
 
 Each attempt goes into the design note's `## Tried and rejected` with the solver's own path sentence,
-then the build runs stages 2, 3, 4 and 5 again and a fresh round (`k + 1`) on fresh scratch copies.
+then the build runs stages 2, 3, 4 and 5 again and a fresh round (`k + 1`) in a fresh sandbox.
 
 **Hardening stays inside the client's standard.** A hardening deepens the analytical pitfall (Layer 2)
 or the honest mess (Layer 1); it never plants a decoy, a doctored figure or a rule withheld to be
@@ -64,14 +59,13 @@ old card. A task number gets three architectures; when the third is spent the nu
 ## Running the stages
 
 **Not optional.** The leak reader (stage 4), the solver round (stage 6) and the judge (stage 7) run
-on every build, and a build reaches stage 7 only through a passing round. The solvers and the leak
+on every build, and a build reaches stage 7 only through a passing round. The solver and the leak
 reader are always isolated threads on fresh scratch copies; no solve or read happens in the main
 thread, which has seen the design.
 
 **Invoking `/build` is the author's licence for every token-spending stage it sequences**: the leak
 reader (stage 4), the adjudicated duplicate check (stage 5), every solver round the loop needs
-(stage 6, through the Workflow tool as `/solve` sets out, or two isolated `Agent` spawns where the
-Workflow tool is unavailable) and the judge (stage 7). Outside `/build`, each stays author-triggered
+(stage 6, one isolated `Agent` spawn as `/solve` sets out) and the judge (stage 7). Outside `/build`, each stays author-triggered
 as its own skill states.
 
 **The judge runs after the round passes**, because judging a build the next round may harden is
@@ -91,9 +85,8 @@ stage boundary.
  "architecture": 1, "loops": 0,
  "leak": {"leak_py": "", "reader": ""},
  "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
- "solver_rounds": [{"round": 1, "architecture": 1, "plain": {"landed": null, "proxy": null},
-                    "skeptic": {"landed": null, "proxy": null}, "mean": null,
-                    "decision": "pass | harden | fork | reroot", "brief": ""}],
+ "solver_rounds": [{"round": 1, "architecture": 1, "solver": {"landed": null, "proxy": null},
+                    "decision": "pass | harden | reroot", "brief": ""}],
  "judge": {"verdict": "", "disposition": "", "report": ""},
  "approved": null, "delivered": null, "portal": null}
 ```
