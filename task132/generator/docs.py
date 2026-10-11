@@ -134,15 +134,28 @@ def _pdf(d, out_path, stem):
     shutil.rmtree(tmp)
 
 
+# AM-PC-014's history: first issued for the VPS-120 display module buy, revised as the EAM came in, for the cover test,
+# and after internal audit report IA-25-09 on spares and obsolescence management
+PROC_REVS = (("1", "May 2019", "First issue, for the VPS-120 display module final buy."),
+             ("2", "Mar 2022", "Failure source moved to EAM corrective work orders after the January 2021 go-live (5.1); "
+                               "roles updated for the Asset Management reorganization (9)."),
+             ("3", "Jun 2023", "Poisson cover test at 95 per cent replaces the 20 per cent contingency (8.1, 8.2); "
+                               "SC-PR-07 added (8.3, 11)."),
+             ("4", "Nov 2025", "Revised for internal audit report IA-25-09, findings 3 and 5: failure rates by module age "
+                               "from the EAM rotating-item history (3, 5.2, 5.3); support by bay for schemes built in "
+                               "stages (4.1, 4.2); definitions set out in a table (3)."))
+PROC_ISSUED = dt.date(2025, 11, 18)
+
+
 def procedure_docx(path):
     d = _doc(author="Kurt Allison", title="AM-PC-014 Obsolete protection spares: final-buy sizing")
     _p(d, "Tarrock Hydro Distribution  |  Asset Management, Protection & Control", size=8.5, italic=True)
     _p(d, "AM-PC-014  Obsolete protection spares: final-buy sizing", style="Heading 1", after=6)
     t = d.add_table(rows=3, cols=4)
     t.style = "Table Grid"
-    for r, row in enumerate([("Document", "AM-PC-014", "Revision", "4"),
-                             ("Owner", "P&C Asset Planning", "Issued", "14 April 2026"),
-                             ("Approver", "Director, Asset Management", "Next review", "April 2028")]):
+    for r, row in enumerate([("Document", "AM-PC-014", "Revision", PROC_REVS[-1][0]),
+                             ("Owner", "P&C Asset Planning", "Issued", "18 November 2025"),
+                             ("Approver", "Director, Asset Management", "Next review", "November 2027")]):
         for c, v in enumerate(row):
             _cell(t.rows[r].cells[c], v, bold=c in (0, 2))
     _p(d, "", after=2)
@@ -161,15 +174,16 @@ def procedure_docx(path):
         for tx in paras:
             _p(d, tx, after=5)
     _p(d, "3. Definitions", style="Heading 2", after=3)
-    defs = [("Fitted date", "The date the module was fitted to the relay, as recorded in the EAM rotating-item history."),
-            ("Module age", "Completed years from the fitted date to the first day of the month."),
-            ("In service", "A module is in service for a month if it is fitted to a relay that is in service on the first "
-                           "day of that month."),
-            ("Module-month", "One module in service for one month. Twelve module-months make a module-year."),
-            ("Failure rate", "Module failures per module-year in an age band (5.3)."),
-            ("Monthly failure rate", "The failure rate of the band divided by twelve."),
-            ("Lot", "The manufacturer's minimum order quantity stated in the end-of-life notice."),
-            ("Stock count date", "The date of the stores count used for the sizing (9.3).")]
+    defs = [("Fitted date", "The date the module was fitted to the relay, as held in the EAM rotating-item history."),
+            ("Module age", "The age of a module in completed years on the first day of a month, counted from its fitted "
+                           "date."),
+            ("In service", "A module counts as in service for a month when, on the first day of that month, it is fitted "
+                           "to a relay that is in service."),
+            ("Module-month", "One module in service for one month. Twelve module-months are one module-year."),
+            ("Failure rate", "Module failures per module-year for an age band, set under 5.3."),
+            ("Monthly failure rate", "One twelfth of the failure rate for the band."),
+            ("Lot", "The manufacturer's minimum order quantity, as stated in its end-of-life notice."),
+            ("Stock count date", "The date of the stores count the sizing uses (9.3).")]
     t = d.add_table(rows=1, cols=2)
     t.style = "Table Grid"
     _cell(t.rows[0].cells[0], "Term", bold=True)
@@ -186,7 +200,7 @@ def procedure_docx(path):
           "stages, the stage that lists the relay's bay is the one that replaces it. A relay is counted for every month "
           "up to, but not including, the commissioning month of that scheme or stage.",
           "4.2 A relay at a substation with no scheme in the program period is supported to the end of the program "
-          "period (December 2035 in the 2026 program)."]),
+          "period, and is counted for every month up to and including the last month of the period."]),
         ("5. Failure rates",
          ["5.1 Module failures are corrective work orders (work type CM or EM) on a relay of the type concerned whose "
           "failed component is the module, with status COMP or CLOSE. Cancelled work orders and logistics work orders "
@@ -194,8 +208,9 @@ def procedure_docx(path):
           "5.2 Rates are set for module age bands of 0 to 9, 10 to 14, 15 to 19, 20 to 24, and 25 years and over. Each "
           "failure is counted in the band of the failed module's age on the first day of the month in which its work "
           "order was reported.",
-          "5.3 The failure rate for a band is the number of module failures in the work-order history in the band divided "
-          "by the module-years in service in the band, counted in module-months."]),
+          "5.3 The failure rate for a band is the module failures in the band divided by the module-years in service in "
+          "the band. Failures and module-years are both counted over the period the work-order history covers, and "
+          "module-years are counted in module-months."]),
         ("6. Expected failures",
          ["6.1 Each month a module is in service it is expected to fail at the monthly failure rate of its band.",
           "6.2 Expected failures over the support period are the band rates applied to the module-months expected in each "
@@ -235,9 +250,9 @@ def procedure_docx(path):
     t.style = "Table Grid"
     for c, v in enumerate(("", "Name", "Title", "Date")):
         _cell(t.rows[0].cells[c], v, bold=True)
-    for row in (("Prepared", "Kurt Allison", "Senior Asset Engineer, P&C", "7 April 2026"),
-                ("Reviewed", "Rachael Villanueva", "Manager, P&C Asset Planning", "9 April 2026"),
-                ("Approved", "Angel Baird", "Director, Asset Management", "14 April 2026")):
+    for row in (("Prepared", "Kurt Allison", "Senior Asset Engineer, P&C", "4 November 2025"),
+                ("Reviewed", "Rachael Villanueva", "Manager, P&C Asset Planning", "10 November 2025"),
+                ("Approved", "Angel Baird", "Director, Asset Management", "18 November 2025")):
         cells = t.add_row().cells
         for c, v in enumerate(row):
             _cell(cells[c], v, bold=c == 0)
@@ -247,11 +262,7 @@ def procedure_docx(path):
     t.style = "Table Grid"
     for c, v in enumerate(("Rev", "Date", "Change")):
         _cell(t.rows[0].cells[c], v, bold=True)
-    for row in (("1", "May 2019", "First issue (VPS-120 display module buy)."),
-                ("2", "Mar 2022", "EAM work orders become the failure source after the January 2021 go-live."),
-                ("3", "Jun 2023", "Poisson cover test replaces the 20 per cent contingency."),
-                ("4", "Apr 2026", "Rates by module age from the EAM rotating-item history; support by bay for the staged "
-                                  "schemes of the approved 2026 program; definitions, roles, records and approval added.")):
+    for row in PROC_REVS:
         cells = t.add_row().cells
         for c, v in enumerate(row):
             _cell(cells[c], v)
@@ -259,8 +270,28 @@ def procedure_docx(path):
     _widths(d.tables[1], (3.6, 12.4))
     _widths(d.tables[2], (2.4, 4.0, 6.0, 3.6))
     _widths(d.tables[3], (1.2, 2.4, 12.4))
-    _footer(d, "AM-PC-014 rev 4    Uncontrolled when printed")
+    _footer(d, "AM-PC-014 rev %s    Uncontrolled when printed" % PROC_REVS[-1][0])
     d.save(path)
+
+
+def procedure_revision(text):
+    """the revision that wrote a paragraph of AM-PC-014, and the one that last changed it (None if unchanged)"""
+    t = text.strip()
+    rev4 = ("Fitted date", "The date the module was fitted", "Module age", "The age of a module", "In service",
+            "A module counts as in service", "Module-month", "One module in service", "Failure rate",
+            "Module failures per module-year", "Monthly failure rate", "One twelfth", "Term", "Meaning in this",
+            "3. Definitions", "4.2 ", "5.2 ", "5.3 ", "Prepared", "Reviewed", "Approved", "Kurt Allison", "Rachael",
+            "Angel Baird", "Senior Asset Engineer, P&C", "Manager, P&C Asset Planning", "4 November 2025",
+            "10 November 2025", "18 November 2025", "November 2027", "4", "Nov 2025")
+    if t.startswith(rev4) or "IA-25-09" in t:
+        return (0, 3) if t.startswith(("4.2 ", "5.2 ", "5.3 ", "Prepared", "Reviewed", "Approved")) else (3, None)
+    if t.startswith(("5.1 ", "9.1 ", "9.2 ", "9.3 ", "9.4 ", "2", "Mar 2022")) or "go-live" in t:
+        return (0, 1) if t.startswith(("5.1 ", "9.")) else (1, None)
+    if t.startswith(("8.1 ", "8.2 ", "8.3 ", "3", "Jun 2023", "SC-PR-07")) or "Poisson" in t:
+        return (0, 2) if t.startswith(("8.1 ", "8.2 ")) else (2, None)
+    if t.startswith("4.1 "):
+        return (0, 3)
+    return (0, None)
 
 
 def eol_pdf(path):
