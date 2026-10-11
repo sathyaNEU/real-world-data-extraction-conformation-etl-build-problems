@@ -6,7 +6,10 @@ Builds the pack without centring, reads every graded figure from the files, and 
 0.20 of a whole-dollar rounding boundary picks one clean claim in the figure's own population and window and moves
 its allowed amount by the few dollars that put the figure a quarter of a dollar from the nearest whole dollar.
 Medical and pharmacy figures move independently; the programme baseline is then brought clear of its boundaries,
-with both rounding paths of the total agreeing, by moving the tier 4 baselines inside their own comfortable zones."""
+with both rounding paths of the total agreeing and each programme figure at least a dollar from the persistence
+rung's, by moving the tier baselines inside their own comfortable zones. Only facility claims (paid at a rate or a
+share of charges) and pharmacy claims are moved, never a fee-schedule line, and none by more than 4 per cent of its
+allowed amount (2.5 per cent for a fill)."""
 import datetime as dt
 import os
 import sys
@@ -44,8 +47,11 @@ def main(scratch):
     table = {}
 
     def pick_med(pids, a, b, delta):
-        cands = [c for c in P.med if c["clean"] and c["pid"] in pids and a <= c["d0"] <= b and c["key"] not in used
-                 and sum(l[5] for l in c["lines"]) >= 12 * abs(delta)]
+        # facility claims only: a professional line is at the fee schedule and stays there
+        cands = [c for c in P.med if c["clean"] and c["ct"] == "I" and c["pid"] in pids and a <= c["d0"] <= b
+                 and c["key"] not in used and sum(l[5] for l in c["lines"]) >= 25 * abs(delta)
+                 and max(l[5] for l in c["lines"]) + delta > 0
+                 and all(l[5] + delta < l[4] for l in c["lines"] if l[4] == max(x[4] for x in c["lines"]))]
         cands.sort(key=lambda c: (c["d0"], c["key"]))
         c = cands[len(cands) // 2]
         used.add(c["key"])
@@ -54,7 +60,7 @@ def main(scratch):
 
     def pick_rx(pids, a, b, delta):
         cands = [i for i, ev in enumerate(P.fills) if i in P.rx_clean and ev[0] in pids and a <= ev[1] <= b
-                 and ev[5][0][2] * 100 >= 12 * abs(delta) and ("rx", i) not in used]
+                 and ev[5][0][2] * 100 >= 40 * abs(delta) and ("rx", i) not in used]
         cands.sort(key=lambda i: (P.fills[i][1], P.fills[i][0]))
         i = cands[len(cands) // 2]
         used.add(("rx", i))
@@ -70,7 +76,12 @@ def main(scratch):
             targets[("base", t, k)] = target_for(base[t][k])
             targets[("f26", t, k)] = target_for(f26[t][k])
 
-    def cands(v, m=7):
+    # the persistence rung (each tier's own 2026 PMPM carried 15 months at trend) is the natural wrong answer: its programme
+    # medical and pharmacy figures must not round to the golden's
+    r0prog = [sum(n[t] * targets[("f26", t, k)] * (W.TREND_MED if k == 0 else W.TREND_RX) ** 1.25 for t in (1, 2, 3, 4)) / 140
+              for k in (0, 1)]
+
+    def cands(v, m=21):
         """points a comfortable distance from a whole dollar, nearest first"""
         pts = []
         for k in range(int(v // 1) - 1, int(v // 1) + 3):
@@ -85,7 +96,7 @@ def main(scratch):
         sols = []
         for combo in itertools.product(*opts):
             val = sum(n[t] * combo[t - 1] for t in (1, 2, 3, 4)) / 140
-            if comfortable(val):
+            if comfortable(val) and abs(val - r0prog[k]) >= 1.0:
                 sols.append((sum(abs(combo[t - 1] - base[t][k]) * an_mm[t] for t in (1, 2, 3, 4)), combo, val))
         sols.sort()
         return sols
@@ -135,7 +146,7 @@ def main(scratch):
         print("%-4s tier %d %s: %.4f -> %.4f, %+d cents on %s" % (kind, t, "med" if k == 0 else "rx", cur, tv, delta, key))
     with open(os.path.join(HERE, "tune_table.py"), "w") as f:
         f.write('"""Bin-centring adjustments written by tune.py: (member index, first date of service, event kind, claim '
-                'component,\noriginal allowed in cents) -> change in cents. Each moves one clean claim by a few dollars."""\n')
+                'component,\noriginal allowed in cents) -> change in cents. Each moves one clean claim by a few per cent at most."""\n')
         f.write("TUNE = {\n")
         for k in sorted(table):
             f.write("    %r: %d,\n" % (k, table[k]))

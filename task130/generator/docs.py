@@ -1,86 +1,225 @@
-"""The pack's documents, each in its own organisation's voice: the services agreement excerpt (recitals and
-Schedule C), the consulting actuary's renewal letter, the stop-loss policy schedule, Northcourt's three
-stratification exports, Quarrystone's rebate statement and the analyst's field dictionary."""
-import datetime as dt
+"""The pack's documents, each in its own organisation's voice: the services agreement excerpt (recitals, signature
+page and Schedule C), the consulting actuary's renewal letter, the stop-loss policy schedule, Northcourt's
+implementation and outreach plan, Northcourt's three stratification exports, Quarrystone's rebate statement and the
+benefits office's warehouse readme.
 
+Each PDF is written as a Word document and converted by LibreOffice (containers.soffice_pdf); each workbook is
+written by openpyxl and repacked the way Excel saves it (containers.repack)."""
+import datetime as dt
+import os
+import shutil
+import tempfile
+
+from docx import Document
+from docx.enum.section import WD_SECTION
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_RIGHT
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import (KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle)
 
 import containers as C
 import world as W
-
-# ------------------------------------------------------------------ shared pdf styles
-BODY = ParagraphStyle("body", fontName="Times-Roman", fontSize=10.5, leading=13.6, spaceAfter=6)
-SMALL = ParagraphStyle("small", parent=BODY, fontSize=8.5, leading=10.5, spaceAfter=3)
-H1 = ParagraphStyle("h1", parent=BODY, fontName="Times-Bold", fontSize=12.5, leading=15, alignment=TA_CENTER, spaceAfter=4)
-H2 = ParagraphStyle("h2", parent=BODY, fontName="Times-Bold", fontSize=10.5, leading=13.5, spaceBefore=6, spaceAfter=4)
-CENTER = ParagraphStyle("center", parent=BODY, alignment=TA_CENTER)
-CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=18, firstLineIndent=-18)
-SUB = ParagraphStyle("sub", parent=BODY, leftIndent=36, firstLineIndent=-18)
-
-SANS = ParagraphStyle("sans", fontName="Helvetica", fontSize=9.6, leading=12.6, spaceAfter=6)
-SANS_SM = ParagraphStyle("sans_sm", parent=SANS, fontSize=8, leading=10, spaceAfter=2)
-SANS_B = ParagraphStyle("sans_b", parent=SANS, fontName="Helvetica-Bold")
-SANS_R = ParagraphStyle("sans_r", parent=SANS, alignment=TA_RIGHT)
 
 
 def money(x, cents=False):
     return ("$%s" % format(x, ",.2f")) if cents else ("$%s" % format(int(round(x)), ","))
 
 
-def build_pdf(path, story, title, author, creator, producer, when, onpage=None, margins=(0.9, 0.9, 0.85, 0.8)):
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=margins[0] * inch, rightMargin=margins[1] * inch,
-                            topMargin=margins[2] * inch, bottomMargin=margins[3] * inch, title=title, author=author,
-                            subject="", creator=creator, producer=producer, invariant=1)
-    if onpage:
-        doc.build(story, onFirstPage=onpage, onLaterPages=onpage)
-    else:
-        doc.build(story)
-    C.pdf_stamp(path, when)
+def local(*a):
+    d = dt.datetime(*a)
+    return d.replace(tzinfo=C.central(d))
 
 
-def grid(data, widths, header=True, align_right_from=1, font="Helvetica", size=8.6, zebra=False):
-    t = Table(data, colWidths=widths, repeatRows=1 if header else 0)
-    st = [("FONT", (0, 0), (-1, -1), font, size), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-          ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black), ("TOPPADDING", (0, 0), (-1, -1), 2),
-          ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("ALIGN", (align_right_from, 0), (-1, -1), "RIGHT")]
-    if header:
-        st.append(("FONT", (0, 0), (-1, 0), font + "-Bold" if font == "Helvetica" else "Times-Bold", size))
-    if zebra:
-        for i in range(1, len(data)):
-            if i % 2 == 0:
-                st.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#F2F2F2")))
-    t.setStyle(TableStyle(st))
-    return t
+# ------------------------------------------------------------------ Word documents for the PDFs
+class Doc:
+    """a Word document in one organisation's house style"""
+
+    def __init__(self, font, size, margins=(1.0, 1.0, 0.9, 0.8)):
+        self.d = Document()
+        sec = self.d.sections[0]
+        sec.page_width, sec.page_height = Inches(8.5), Inches(11)
+        sec.left_margin, sec.right_margin = Inches(margins[0]), Inches(margins[1])
+        sec.top_margin, sec.bottom_margin = Inches(margins[2]), Inches(margins[3])
+        st = self.d.styles["Normal"]
+        st.font.name = font
+        st.element.rPr.rFonts.set(qn("w:eastAsia"), font)
+        st.element.rPr.rFonts.set(qn("w:hAnsi"), font)
+        st.element.rPr.rFonts.set(qn("w:cs"), font)
+        st.font.size = Pt(size)
+        st.paragraph_format.space_after = Pt(6)
+        st.paragraph_format.line_spacing = 1.08
+        self.font, self.size = font, size
+
+    def p(self, text="", bold=False, italic=False, size=None, align=None, after=None, before=None, indent=None,
+          hanging=None, color=None, keep=False):
+        para = self.d.add_paragraph()
+        if text:
+            self.runs(para, text, bold, italic, size, color)
+        pf = para.paragraph_format
+        if align == "center":
+            para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        elif align == "right":
+            para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        elif align == "justify":
+            para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        if after is not None:
+            pf.space_after = Pt(after)
+        if before is not None:
+            pf.space_before = Pt(before)
+        if indent is not None:
+            pf.left_indent = Inches(indent)
+        if hanging is not None:
+            pf.first_line_indent = Inches(-hanging)
+        if keep:
+            pf.keep_with_next = True
+        return para
+
+    def runs(self, para, text, bold=False, italic=False, size=None, color=None):
+        """text with **bold** spans"""
+        parts = text.split("**")
+        for i, t in enumerate(parts):
+            if not t:
+                continue
+            r = para.add_run(t)
+            r.bold = bold or (i % 2 == 1)
+            r.italic = italic
+            if size:
+                r.font.size = Pt(size)
+            if color:
+                r.font.color.rgb = RGBColor.from_string(color)
+        return para
+
+    def page_break(self):
+        self.d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+    def table(self, rows, widths, header=True, size=None, bold_first_col=False, align_right_from=None, grid=True,
+              shade=None):
+        t = self.d.add_table(rows=len(rows), cols=len(rows[0]))
+        t.alignment = WD_TABLE_ALIGNMENT.LEFT
+        t.autofit = False
+        tbl = t._tbl
+        tblPr = tbl.tblPr
+        if grid:
+            borders = OxmlElement("w:tblBorders")
+            for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+                el = OxmlElement("w:" + edge)
+                el.set(qn("w:val"), "single")
+                el.set(qn("w:sz"), "4")
+                el.set(qn("w:space"), "0")
+                el.set(qn("w:color"), "8C8C8C")
+                borders.append(el)
+            tblPr.append(borders)
+        for gc, w in zip(tbl.tblGrid.findall(qn("w:gridCol")), widths):
+            gc.set(qn("w:w"), str(int(w * 1440)))
+        for i, row in enumerate(rows):
+            for j, val in enumerate(row):
+                cell = t.rows[i].cells[j]
+                cell.width = Inches(widths[j])
+                para = cell.paragraphs[0]
+                para.paragraph_format.space_after = Pt(1)
+                para.paragraph_format.space_before = Pt(1)
+                if align_right_from is not None and j >= align_right_from and (i > 0 or not header):
+                    para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                self.runs(para, str(val), bold=(header and i == 0) or (bold_first_col and j == 0), size=size)
+                if shade and header and i == 0:
+                    tcPr = cell._tc.get_or_add_tcPr()
+                    shd = OxmlElement("w:shd")
+                    shd.set(qn("w:val"), "clear")
+                    shd.set(qn("w:color"), "auto")
+                    shd.set(qn("w:fill"), shade)
+                    tcPr.append(shd)
+        self.d.add_paragraph().paragraph_format.space_after = Pt(2)
+        return t
+
+    def _field(self, para, instr, size):
+        r = para.add_run()
+        r.font.size = Pt(size)
+        b = OxmlElement("w:fldChar")
+        b.set(qn("w:fldCharType"), "begin")
+        r._r.append(b)
+        r2 = para.add_run()
+        r2.font.size = Pt(size)
+        it = OxmlElement("w:instrText")
+        it.set(qn("xml:space"), "preserve")
+        it.text = " %s " % instr
+        r2._r.append(it)
+        r3 = para.add_run()
+        r3.font.size = Pt(size)
+        e = OxmlElement("w:fldChar")
+        e.set(qn("w:fldCharType"), "end")
+        r3._r.append(e)
+
+    def footer(self, left, page_fmt="Page {PAGE} of {NUMPAGES}", size=8):
+        f = self.d.sections[0].footer
+        para = f.paragraphs[0]
+        tab = OxmlElement("w:tabs")
+        t = OxmlElement("w:tab")
+        t.set(qn("w:val"), "right")
+        sec = self.d.sections[0]
+        t.set(qn("w:pos"), str(int((sec.page_width - sec.left_margin - sec.right_margin) / 635)))
+        tab.append(t)
+        para._p.get_or_add_pPr().append(tab)
+        r = para.add_run(left + "\t")
+        r.font.size = Pt(size)
+        rest = page_fmt
+        while rest:
+            i = rest.find("{")
+            if i < 0:
+                para.add_run(rest).font.size = Pt(size)
+                break
+            if i:
+                para.add_run(rest[:i]).font.size = Pt(size)
+            j = rest.index("}")
+            self._field(para, rest[i + 1:j], size)
+            rest = rest[j + 1:]
+
+    def header_lines(self, lines, align="left"):
+        h = self.d.sections[0].header
+        first = True
+        for text, bold, size, color in lines:
+            para = h.paragraphs[0] if first else h.add_paragraph()
+            first = False
+            para.paragraph_format.space_after = Pt(0)
+            if align == "right":
+                para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            r = para.add_run(text)
+            r.bold = bold
+            r.font.size = Pt(size)
+            if color:
+                r.font.color.rgb = RGBColor.from_string(color)
+
+    def save_pdf(self, path, title, author, when):
+        self.d.core_properties.title = title
+        self.d.core_properties.author = author
+        self.d.core_properties.last_modified_by = author
+        self.d.core_properties.created = when.replace(tzinfo=None)
+        self.d.core_properties.modified = when.replace(tzinfo=None)
+        self.d.core_properties.revision = 1
+        work = tempfile.mkdtemp(prefix="doc-")
+        try:
+            src = os.path.join(work, os.path.splitext(os.path.basename(path))[0] + ".docx")
+            self.d.save(src)
+            C.soffice_pdf(src, path, when)
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
 
 
 # ------------------------------------------------------------------ the agreement excerpt
 def agreement_pdf(path):
-    def page(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Times-Roman", 8.5)
-        canvas.drawString(0.9 * inch, 0.5 * inch, "Agreement No. RCV-2027-014")
-        canvas.drawRightString(letter[0] - 0.9 * inch, 0.5 * inch, "Page %d" % doc.page)
-        canvas.restoreState()
-
-    s = []
-    s.append(Paragraph("CARE MANAGEMENT SERVICES AGREEMENT", H1))
-    s.append(Paragraph("between Independent School District No. 2817 (Red Cedar Valley Schools), Minnesota,<br/>"
-                       "and Northcourt Care Partners, LLC", CENTER))
-    s.append(Paragraph("Agreement No. RCV-2027-014", CENTER))
-    s.append(Spacer(1, 6))
-    s.append(Paragraph("<i>Excerpt for the District's benefits file: Recitals and Schedule C. The body of the Agreement and "
-                       "Schedules A (Services), B (Administrative Fees), D (Data Exchange) and E (Business Associate "
-                       "Agreement) are held by the Business Office.</i>", SMALL))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("RECITALS", H2))
+    D = Doc("Times New Roman", 11, margins=(1.0, 1.0, 0.9, 0.85))
+    D.footer("Agreement No. RCV-2027-014")
+    D.p("CARE MANAGEMENT SERVICES AGREEMENT", bold=True, size=13, align="center", after=4)
+    D.p("between Independent School District No. 2817 (Red Cedar Valley Schools), Minnesota,", align="center", after=0)
+    D.p("and Northcourt Care Partners, LLC", align="center", after=2)
+    D.p("Agreement No. RCV-2027-014", align="center", after=10)
+    D.p("Excerpt for the District's benefits file: Recitals, signature page and Schedule C. The body of the Agreement "
+        "and Schedules A (Services), B (Administrative Fees), D (Data Exchange) and E (Business Associate Agreement) are "
+        "held by the Business Office.", italic=True, size=9.5, after=10)
+    D.p("RECITALS", bold=True, after=4, keep=True)
     rec = [
         ("A.", "The District sponsors the Red Cedar Valley Schools Employee Health Plan (the \"Plan\"), a self-insured "
                "group health plan for eligible employees, early retirees under age 65 and their dependents. Ellery Benefit "
@@ -92,26 +231,39 @@ def agreement_pdf(path):
         ("C.", "On 8 April 2025, before any agreement was signed, the School Board suspended the award under the "
                "District's budget freeze for the 2025-26 fiscal year. No agreement was executed under RFP 2025-07 and "
                "Northcourt provided no services to Plan members before the Effective Date."),
-        ("D.", "On 9 February 2027 the School Board authorised the Superintendent to enter into this Agreement with "
-               "Northcourt for the Programme Year on the terms set out below."),
+        ("D.", "On 9 February 2027 the School Board approved this Agreement for the Programme Year on the terms set out "
+               "below and authorised its Chair and the Superintendent to execute it on behalf of the District."),
     ]
     for k, t in rec:
-        s.append(Paragraph("%s&nbsp;&nbsp;%s" % (k, t), CLAUSE))
-    s.append(Paragraph("NOW, THEREFORE, in consideration of the mutual promises in this Agreement, the District and "
-                       "Northcourt agree as follows.", BODY))
-    s.append(Spacer(1, 4))
-    s.append(Paragraph("<i>[Sections 1 to 14 of the Agreement not reproduced.]</i>", SMALL))
-    s.append(PageBreak())
-    s.append(Paragraph("SCHEDULE C", H1))
-    s.append(Paragraph("BASELINE AND SAVINGS", H1))
-    s.append(Spacer(1, 6))
-    s.append(Paragraph("C.1&nbsp;&nbsp;<b>Definitions.</b> In this Schedule:", CLAUSE))
+        D.p(k + "\t" + t, indent=0.4, hanging=0.4, align="justify")
+    D.p("NOW, THEREFORE, in consideration of the mutual promises in this Agreement, the District and Northcourt agree "
+        "as follows.", align="justify")
+    D.p("[Sections 1 to 14 of the Agreement not reproduced.]", italic=True, size=9.5, before=4, after=14)
+    D.p("IN WITNESS WHEREOF, the parties have executed this Agreement as of the dates below.", keep=True, after=14)
+    sig = [["INDEPENDENT SCHOOL DISTRICT NO. 2817", "NORTHCOURT CARE PARTNERS, LLC"],
+           ["", ""],
+           ["By: ______________________________", "By: ______________________________"],
+           ["Deborah Johnson", "Phillip Alvarado"],
+           ["Chair, School Board", "Chief Operating Officer"],
+           ["Date: 16 February 2027", "Date: 16 February 2027"],
+           ["", ""],
+           ["By: ______________________________", ""],
+           ["Sandra Lopez", ""],
+           ["Superintendent", ""],
+           ["Date: 16 February 2027", ""]]
+    D.table(sig, [3.25, 3.25], header=True, grid=False)
+    D.page_break()
+    D.p("SCHEDULE C", bold=True, size=12, align="center", after=0)
+    D.p("BASELINE AND SAVINGS", bold=True, size=12, align="center", after=10)
+    D.p("C.1\t**Definitions.** In this Schedule:", indent=0.45, hanging=0.45)
     defs = [
-        ("(a)", "\"Allowed Claims\" means the allowed amount of medical and pharmacy claims for covered services to a "
-                "member, including the member's deductible, copayment and coinsurance. Pharmacy claims are taken before "
-                "manufacturer rebates. Claims are taken net of replacement claims, voided claims and pharmacy reversals. "
-                "No deduction is made for reimbursements under the District's stop-loss insurance. A medical claim is "
-                "incurred on its first date of service and a pharmacy claim on its date of fill."),
+        ("(a)", "\"Allowed Claims\" means the allowed amount of medical and pharmacy claims for covered services incurred "
+                "by a member while the member is covered under the Plan, including the member's deductible, copayment and "
+                "coinsurance. Pharmacy claims are taken before manufacturer rebates. Claims are taken net of replacement "
+                "claims, voided claims and pharmacy reversals. No deduction is made for reimbursements under the "
+                "District's stop-loss insurance. A medical claim is incurred on its first date of service and a pharmacy "
+                "claim on its date of fill, and a claim incurred in a period counts in that period whether or not the "
+                "month in which it is incurred is a Member Month for the member."),
         ("(b)", "\"Member Month\" means a calendar month in which a member is enrolled in the Plan on the first day of "
                 "the month."),
         ("(c)", "\"Data Cut-Off Date\" means 28 February 2027."),
@@ -135,113 +287,87 @@ def agreement_pdf(path):
                 "Member Months in the Programme Year."),
     ]
     for k, t in defs:
-        s.append(Paragraph("%s&nbsp;&nbsp;%s" % (k, t), SUB))
-    s.append(Paragraph("C.2&nbsp;&nbsp;<b>Certification.</b> Before the start of the Programme Year the District will "
-                       "certify to Northcourt in writing, following approval by the School Board, the Baseline PMPM for "
-                       "each Risk Tier and benefit and the Programme Baseline. The certification will also show, for each "
-                       "Risk Tier, the number of Enrolled Members and their Allowed Claims per Member Month for calendar "
-                       "year 2026 as paid through the Data Cut-Off Date, without completion. Amounts are stated in whole "
-                       "dollars and no amount is rounded before the final figure.", CLAUSE))
-    s.append(Paragraph("C.3&nbsp;&nbsp;<b>Savings.</b> For each Risk Tier and benefit, Savings equal the Baseline PMPM "
-                       "less the Actual PMPM, multiplied by the Enrolled Members' Member Months in the Programme Year in "
-                       "that Risk Tier. Programme Savings are the sum of Savings across Risk Tiers and benefits; a negative "
-                       "result for one Risk Tier or benefit reduces the total.", CLAUSE))
-    s.append(Paragraph("C.4&nbsp;&nbsp;<b>Shared Savings Fee.</b> Northcourt is entitled to 40 per cent of Programme "
-                       "Savings, if positive, up to a maximum of $900,000 for the Programme Year. The Shared Savings Fee "
-                       "is in addition to the administrative fee in Schedule B and is payable within 45 days after the "
-                       "reconciliation becomes final.", CLAUSE))
-    s.append(Paragraph("C.5&nbsp;&nbsp;<b>Reconciliation.</b> The District will deliver to Northcourt a reconciliation of "
-                       "Programme Savings by 31 August 2028, on claims paid through 30 June 2028, with the member-level "
-                       "detail Northcourt reasonably needs to check it.", CLAUSE))
-    s.append(Paragraph("C.6&nbsp;&nbsp;<b>Disputes.</b> Either party may dispute the certification under C.2 or the "
-                       "reconciliation under C.5 by written notice within 30 days of receiving it. A dispute the parties "
-                       "do not settle within a further 30 days will be referred to an independent actuary who is a Fellow "
-                       "of the Society of Actuaries and a Member of the American Academy of Actuaries, appointed jointly "
-                       "by the parties. The actuary's determination is final and binding, and the parties share the "
-                       "actuary's fees equally.", CLAUSE))
-    s.append(Paragraph("C.7&nbsp;&nbsp;<b>Plan changes.</b> If the District changes Plan benefits during the Programme "
-                       "Year, the parties will adjust the affected Baseline PMPMs in good faith to reflect the change.", CLAUSE))
-    s.append(Spacer(1, 14))
-    sig = [["INDEPENDENT SCHOOL DISTRICT NO. 2817", "NORTHCOURT CARE PARTNERS, LLC"],
-           ["", ""],
-           ["By: Sandra Lopez", "By: Phillip Alvarado"],
-           ["Superintendent", "Chief Operating Officer"],
-           ["Date: 16 February 2027", "Date: 16 February 2027"]]
-    t = Table(sig, colWidths=[3.3 * inch, 3.3 * inch])
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Times-Roman", 10), ("FONT", (0, 0), (-1, 0), "Times-Bold", 10),
-                           ("LINEABOVE", (0, 2), (0, 2), 0.5, colors.black), ("LINEABOVE", (1, 2), (1, 2), 0.5, colors.black),
-                           ("TOPPADDING", (0, 1), (-1, 1), 14)]))
-    s.append(KeepTogether([t]))
-    build_pdf(path, s, "Care Management Services Agreement RCV-2027-014 (excerpt)", "Business Office",
-              "Microsoft\xae Word for Microsoft 365", "Microsoft\xae Word for Microsoft 365",
-              dt.datetime(2027, 2, 17, 10, 42, 18), onpage=page)
+        D.p(k + "\t" + t, indent=0.9, hanging=0.45, align="justify")
+    clauses = [
+        ("C.2", "**Certification.** Before the start of the Programme Year the District will certify to Northcourt in "
+                "writing, following approval by the School Board, the Baseline PMPM for each Risk Tier and benefit and the "
+                "Programme Baseline. The certification will also show, for each Risk Tier, the number of Enrolled Members "
+                "and their Allowed Claims per Member Month for calendar year 2026 as paid through the Data Cut-Off Date, "
+                "without completion. Amounts are stated in whole dollars and no amount is rounded before the final "
+                "figure."),
+        ("C.3", "**Savings.** For each Risk Tier and benefit, Savings equal the Baseline PMPM less the Actual PMPM, "
+                "multiplied by the Enrolled Members' Member Months in the Programme Year in that Risk Tier. Programme "
+                "Savings are the sum of Savings across Risk Tiers and benefits; a negative result for one Risk Tier or "
+                "benefit reduces the total."),
+        ("C.4", "**Shared Savings Fee.** Northcourt is entitled to 40 per cent of Programme Savings, if positive, up to "
+                "a maximum of $900,000 for the Programme Year. The Shared Savings Fee is in addition to the administrative "
+                "fee in Schedule B and is payable within 45 days after the reconciliation becomes final."),
+        ("C.5", "**Reconciliation.** The District will deliver to Northcourt a reconciliation of Programme Savings by "
+                "31 August 2028, on claims paid through 30 June 2028, with the member-level detail Northcourt reasonably "
+                "needs to check it."),
+        ("C.6", "**Disputes.** Either party may dispute the certification under C.2 or the reconciliation under C.5 by "
+                "written notice within 30 days of receiving it. A dispute the parties do not settle within a further 30 "
+                "days will be referred to an independent actuary who is a Fellow of the Society of Actuaries and a Member "
+                "of the American Academy of Actuaries, appointed jointly by the parties. The actuary's determination is "
+                "final and binding, and the parties share the actuary's fees equally."),
+        ("C.7", "**Plan changes.** If the District changes Plan benefits during the Programme Year, the parties will "
+                "adjust the affected Baseline PMPMs in good faith to reflect the change."),
+    ]
+    for k, t in clauses:
+        D.p(k + "\t" + t, indent=0.45, hanging=0.45, align="justify")
+    D.save_pdf(path, "Care Management Services Agreement RCV-2027-014 (excerpt)", "Business Office",
+               dt.datetime(2027, 2, 17, 10, 42, 18))
 
 
 # ------------------------------------------------------------------ the renewal letter
 def renewal_pdf(path, F):
     """F: figures computed from the shipped extracts at the letter's paid-through date (see estimators.letter_figures)"""
-    def page(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica-Bold", 11)
-        canvas.setFillColor(colors.HexColor("#1F3B57"))
-        canvas.drawString(0.95 * inch, letter[1] - 0.6 * inch, "LINDQVIST")
-        canvas.setFont("Helvetica", 8)
-        canvas.drawString(0.95 * inch, letter[1] - 0.75 * inch, "Benefits Consulting")
-        canvas.drawRightString(letter[0] - 0.95 * inch, letter[1] - 0.6 * inch, "80 South Eighth Street, Suite 2210")
-        canvas.drawRightString(letter[0] - 0.95 * inch, letter[1] - 0.73 * inch, "Minneapolis, MN 55402")
-        canvas.setFillColor(colors.black)
-        canvas.setFont("Helvetica", 7.5)
-        canvas.drawString(0.95 * inch, 0.5 * inch, "Red Cedar Valley Schools, 2027-28 renewal")
-        canvas.drawRightString(letter[0] - 0.95 * inch, 0.5 * inch, "%d" % doc.page)
-        canvas.restoreState()
-
-    s = [Spacer(1, 14)]
-    s.append(Paragraph("26 February 2027", SANS))
-    s.append(Paragraph("Joyce Salinas<br/>Director of Risk Management and Benefits<br/>Red Cedar Valley Schools", SANS))
-    s.append(Paragraph("cc: Anthony Olsen, Chief Financial Officer", SANS_SM))
-    s.append(Spacer(1, 4))
-    s.append(Paragraph("<b>Re: Employee Health Plan, funding rates for the plan year 1 July 2027 to 30 June 2028</b>", SANS))
-    s.append(Paragraph("Dear Joyce,", SANS))
-    s.append(Paragraph(
-        "This letter sets out our recommended funding rates for the 2027-28 plan year. Anthony and I went through the "
+    D = Doc("Calibri", 10.5, margins=(1.0, 1.0, 1.1, 0.8))
+    D.header_lines([("LINDQVIST", True, 14, "1F3B57"), ("Benefits Consulting", False, 8.5, "1F3B57"),
+                    ("80 South Eighth Street, Suite 2210, Minneapolis, MN 55402", False, 8, "555555")])
+    D.footer("Red Cedar Valley Schools, 2027-28 renewal", page_fmt="{PAGE}", size=7.5)
+    D.p("26 February 2027", before=6, after=10)
+    D.p("Joyce Salinas", after=0)
+    D.p("Director of Risk Management and Benefits", after=0)
+    D.p("Red Cedar Valley Schools", after=8)
+    D.p("cc: Anthony Olsen, Chief Financial Officer", size=9, after=10)
+    D.p("**Re: Employee Health Plan, funding rates for the plan year 1 July 2027 to 30 June 2028**", after=8)
+    D.p("Dear Joyce,")
+    D.p("This letter sets out our recommended funding rates for the 2027-28 plan year. Anthony and I went through the "
         "draft on 23 February; the only change since the draft we sent on 19 February is the stop-loss premium, which "
-        "Wyecliff confirmed on 22 February.", SANS))
-    s.append(Paragraph("<b>Experience.</b> We used Ellery's medical claims and Quarrystone's pharmacy claims incurred from "
-                       "January 2025 to December 2026 and paid through 31 January 2027, with member months from Ellery's "
-                       "eligibility. Bramwell's 2024 history is not in the District's warehouse and we did not use it. "
-                       "Claims are taken at their allowed amounts, net of replacement and void claims and pharmacy "
-                       "reversals; pharmacy is before rebates, which we treat as a separate credit. Exhibit 1 summarises the "
-                       "experience. We completed 2026 medical claims with the factors in Exhibit 2, which we derived from "
-                       "the plan's own payment pattern on claims incurred in the second half of 2025. Pharmacy claims are "
-                       "paid at the point of sale and need no completion.", SANS))
-    s.append(Paragraph("<b>Trend.</b> We are holding annual trend at %.1f per cent for medical and %.1f per cent for pharmacy, "
-                       "unchanged from last year's renewal. The pharmacy rate reflects GLP-1 and specialty growth on the "
-                       "Quarrystone formulary; we will look at it again after the 2026 rebate true-up in June."
-                       % (100 * (W.TREND_MED - 1), 100 * (W.TREND_RX - 1)), SANS))
-    s.append(Paragraph("<b>Projection.</b> We projected the 2026 completed experience 18 months, from the middle of calendar "
-                       "2026 to the middle of the 2027-28 plan year. That gives %s per member per month for medical and %s "
-                       "for pharmacy, %s in total, before fixed costs."
-                       % (money(F["proj_med"], True), money(F["proj_rx"], True), money(F["proj_med"] + F["proj_rx"], True)), SANS))
-    s.append(Paragraph("<b>Fixed costs.</b> Ellery's administrative fee is $38.75 per employee per month from 1 January 2027. "
-                       "Wyecliff renewed the specific stop-loss for calendar 2027 at a $300,000 deductible with no individual "
-                       "lasers, at $78.20 per employee per month, and the aggregate cover at $4.15. Northcourt's "
-                       "administrative fee under the new care management agreement is budgeted outside the funding rates, "
-                       "as is any shared savings payment, and we have not taken credit for programme savings in the "
-                       "projection. We have kept the 3 per cent margin.", SANS))
-    s.append(Paragraph("<b>Recommended rates.</b> On this basis we recommend the monthly funding rates below, an increase of "
-                       "%.1f per cent on the current rates on the District's enrolment as of February 2027." % F["rate_incr"], SANS))
+        "Wyecliff confirmed on 22 February.")
+    D.p("**Experience.** We used Ellery's medical claims and Quarrystone's pharmacy claims incurred from January 2025 to "
+        "December 2026 and paid through 31 January 2027, with member months from Ellery's eligibility. Bramwell's 2024 "
+        "history is not in the District's warehouse and we did not use it. Claims are taken at their allowed amounts, net "
+        "of replacement and void claims and pharmacy reversals; pharmacy is before rebates, which we treat as a separate "
+        "credit. Exhibit 1 summarises the experience. We completed 2026 medical claims with the factors in Exhibit 2, "
+        "which we derived from the plan's own payment pattern on claims incurred in the second half of 2025. Pharmacy "
+        "claims are paid at the point of sale and need no completion.")
+    D.p("**Trend.** We are holding annual trend at %.1f per cent for medical and %.1f per cent for pharmacy, unchanged "
+        "from last year's renewal. The pharmacy rate reflects GLP-1 and specialty growth on the Quarrystone formulary; we "
+        "will look at it again after the 2026 rebate true-up in June." % (100 * (W.TREND_MED - 1), 100 * (W.TREND_RX - 1)))
+    D.p("**Projection.** We projected the 2026 completed experience 18 months, from the middle of calendar 2026 to the "
+        "middle of the 2027-28 plan year. That gives %s per member per month for medical and %s for pharmacy, %s in "
+        "total, before fixed costs." % (money(F["proj_med"], True), money(F["proj_rx"], True),
+                                        money(F["proj_med"] + F["proj_rx"], True)))
+    D.p("**Fixed costs.** Ellery's administrative fee is $38.75 per employee per month from 1 January 2027. Wyecliff "
+        "renewed the specific stop-loss for calendar 2027 at a $300,000 deductible with no individual lasers, at $78.20 "
+        "per employee per month, and the aggregate cover at $4.15. Northcourt's administrative fee under the new care "
+        "management agreement is budgeted outside the funding rates, as is any shared savings payment, and we have not "
+        "taken credit for programme savings in the projection. We have kept the 3 per cent margin.")
+    D.p("**Recommended rates.** On this basis we recommend the monthly funding rates below, an increase of %.1f per cent "
+        "on the current rates on the District's enrolment as of February 2027." % F["rate_incr"], keep=True)
     rates = [["Coverage tier", "PPO 2026-27", "PPO 2027-28", "HSA plan 2026-27", "HSA plan 2027-28"]]
     for tier, label in (("EE", "Employee"), ("ES", "Employee + spouse"), ("EC", "Employee + child(ren)"), ("FAM", "Family")):
         rates.append([label, money(F["rates_now"]["PPO"][tier], True), money(F["rates_new"]["PPO"][tier], True),
                       money(F["rates_now"]["HDHP"][tier], True), money(F["rates_new"]["HDHP"][tier], True)])
-    s.append(grid(rates, [1.75 * inch, 1.15 * inch, 1.15 * inch, 1.2 * inch, 1.2 * inch]))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Please call me with any questions before the Board's 25 March meeting.", SANS))
-    s.append(Paragraph("Sincerely,", SANS))
-    s.append(Spacer(1, 10))
-    s.append(Paragraph("Michael Perry, FSA, MAAA<br/>Principal and Consulting Actuary", SANS))
-    s.append(PageBreak())
-    s.append(Paragraph("<b>Exhibit 1. Experience, incurred January 2025 to December 2026, paid through 31 January 2027</b>", SANS))
+    D.table(rates, [1.7, 1.15, 1.15, 1.2, 1.2], size=9.5, align_right_from=1, shade="DCE4EC")
+    D.p("Please call me with any questions before the Board's 25 March meeting.")
+    D.p("Sincerely,", after=22)
+    D.p("Michael Perry, FSA, MAAA", after=0)
+    D.p("Principal and Consulting Actuary")
+    D.page_break()
+    D.p("**Exhibit 1. Experience, incurred January 2025 to December 2026, paid through 31 January 2027**", keep=True)
     e = [["", "2025", "2026"],
          ["Member months", format(F["mm"][2025], ","), format(F["mm"][2026], ",")],
          ["Medical allowed, paid", money(F["med_paid"][2025]), money(F["med_paid"][2026])],
@@ -251,80 +377,62 @@ def renewal_pdf(path, F):
          ["Pharmacy per member per month", money(F["rx"][2025] / F["mm"][2025], True), money(F["rx"][2026] / F["mm"][2026], True)],
          ["Total per member per month", money((F["med_comp"][2025] + F["rx"][2025]) / F["mm"][2025], True),
           money((F["med_comp"][2026] + F["rx"][2026]) / F["mm"][2026], True)]]
-    s.append(grid(e, [2.6 * inch, 1.5 * inch, 1.5 * inch]))
-    s.append(Paragraph("Member months and claims on the same basis as the 2026-27 renewal. 2025 medical claims are treated as "
-                       "complete.", SANS_SM))
-    s.append(Spacer(1, 10))
-    s.append(Paragraph("<b>Exhibit 2. Medical completion factors, 2026 incurred months, paid through 31 January 2027</b>", SANS))
+    D.table(e, [2.7, 1.5, 1.5], size=9.5, align_right_from=1, shade="DCE4EC")
+    D.p("Member months and claims on the same basis as the 2026-27 renewal. 2025 medical claims are treated as complete.",
+        size=8.5, italic=True)
+    D.p("**Exhibit 2. Medical completion factors, 2026 incurred months, paid through 31 January 2027**", keep=True, before=6)
     cf = [["Incurred month", "Completion factor"]]
     for m in range(1, 13):
         cf.append([dt.date(2026, m, 1).strftime("%B 2026"), "%.3f" % F["cf"][m]])
-    s.append(grid(cf, [2.0 * inch, 1.4 * inch]))
-    s.append(Paragraph("Completed claims are paid claims divided by the factor. Factors are the share of the final allowed "
-                       "amount for claims incurred July to December 2025 that had been paid the same number of months after "
-                       "the incurred month.", SANS_SM))
-    s.append(Spacer(1, 10))
-    s.append(Paragraph("<b>Exhibit 3. Projection to the 2027-28 plan year (per member per month)</b>", SANS))
+    D.table(cf, [2.0, 1.4], size=9.5, align_right_from=1, shade="DCE4EC")
+    D.p("Completed claims are paid claims divided by the factor. Factors are the share of the final allowed amount for "
+        "claims incurred July to December 2025 that had been paid the same number of months after the incurred month.",
+        size=8.5, italic=True)
+    D.p("**Exhibit 3. Projection to the 2027-28 plan year (per member per month)**", keep=True, before=6)
     pj = [["", "Medical", "Pharmacy"],
           ["2026 completed experience", money(F["med_comp"][2026] / F["mm"][2026], True), money(F["rx"][2026] / F["mm"][2026], True)],
           ["Annual trend", "%.1f%%" % (100 * (W.TREND_MED - 1)), "%.1f%%" % (100 * (W.TREND_RX - 1))],
           ["Months, 1 July 2026 to 1 January 2028", "18", "18"],
           ["Projected 2027-28", money(F["proj_med"], True), money(F["proj_rx"], True)]]
-    s.append(grid(pj, [2.6 * inch, 1.5 * inch, 1.5 * inch]))
-    build_pdf(path, s, "RCV 2027-28 renewal", "Michael Perry", "Microsoft\xae Word for Microsoft 365",
-              "Microsoft\xae Word for Microsoft 365", dt.datetime(2027, 2, 26, 16, 5, 41), onpage=page,
-              margins=(0.95, 0.95, 1.0, 0.8))
+    D.table(pj, [2.7, 1.5, 1.5], size=9.5, align_right_from=1, shade="DCE4EC")
+    D.save_pdf(path, "RCV 2027-28 renewal", "Michael Perry", dt.datetime(2027, 2, 26, 16, 5, 41))
 
 
 # ------------------------------------------------------------------ stop-loss policy schedule
 def stoploss_pdf(path, census):
-    def page(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.5)
-        canvas.drawString(0.9 * inch, 0.5 * inch, "WLA-SL-SCH (01/26)    Policy WSL 27 041188")
-        canvas.drawRightString(letter[0] - 0.9 * inch, 0.5 * inch, "Page %d of 3" % doc.page)
-        canvas.restoreState()
-
-    s = []
-    s.append(Paragraph("<b>WYECLIFF LIFE ASSURANCE COMPANY</b>", ParagraphStyle("x", parent=SANS, fontSize=13, alignment=TA_CENTER)))
-    s.append(Paragraph("Employer Medical Stop Loss Insurance", ParagraphStyle("y", parent=SANS, alignment=TA_CENTER)))
-    s.append(Paragraph("<b>POLICY SCHEDULE</b>", ParagraphStyle("z", parent=SANS, alignment=TA_CENTER)))
-    s.append(Spacer(1, 6))
-    rows = [
-        ["Policyholder", "Independent School District No. 2817 (Red Cedar Valley Schools), Minnesota"],
-        ["Policy number", "WSL 27 041188"],
-        ["Policy period", "12:01 a.m. 1 January 2027 to 12:00 midnight 31 December 2027, Central Time"],
-        ["Plan", "Red Cedar Valley Schools Employee Health Plan (self-insured)"],
-        ["Claims administrator", "Ellery Benefit Administrators (medical); Quarrystone Rx (prescription drugs)"],
-        ["Producer of record", "Lindqvist Benefits Consulting, Minneapolis"],
-        ["Covered benefits", "Medical and prescription drug"],
-    ]
-    s.append(grid(rows, [1.7 * inch, 4.9 * inch], header=False, align_right_from=9, size=9))
-    s.append(Paragraph("<b>Part 1. Specific stop loss</b>", SANS))
-    rows = [
-        ["Specific deductible", "$300,000 per Covered Person per Policy Period"],
-        ["Contract basis", "Claims incurred 1 January 2026 to 31 December 2027 and paid 1 January 2027 to 31 December 2027 (24/12)"],
-        ["Reimbursement", "100 per cent of Eligible Expenses in excess of the specific deductible"],
-        ["Maximum benefit", "Unlimited per Covered Person"],
-        ["Individual deductibles", "None. No Covered Person is subject to a separate specific deductible for this Policy Period."],
-        ["Premium", "$78.20 per covered employee per month, composite"],
-    ]
-    s.append(grid(rows, [1.7 * inch, 4.9 * inch], header=False, align_right_from=9, size=9))
-    s.append(Paragraph("<b>Part 2. Aggregate stop loss</b>", SANS))
-    rows = [["Coverage tier", "Monthly aggregate factor"], ["Employee", "$812.40"], ["Employee + spouse", "$1,690.10"],
-            ["Employee + child(ren)", "$1,452.60"], ["Family", "$2,371.30"]]
-    s.append(grid(rows, [2.6 * inch, 1.8 * inch], size=9))
-    rows = [
-        ["Attachment point", "The sum over the Policy Period of the monthly aggregate factors times the covered employees in "
-                             "each tier in that month; not less than the minimum attachment point"],
-        ["Minimum attachment point", "95 per cent of the first month's factors times 12"],
-        ["Contract basis", "Claims incurred 1 January 2027 to 31 December 2027 and paid 1 January 2027 to 31 March 2028 (12/15)"],
-        ["Maximum benefit", "$1,000,000 per Policy Period"],
-        ["Premium", "$4.15 per covered employee per month"],
-    ]
-    s.append(grid(rows, [1.7 * inch, 4.9 * inch], header=False, align_right_from=9, size=9))
-    s.append(PageBreak())
-    s.append(Paragraph("<b>Part 3. Definitions used in this Schedule</b>", SANS))
+    D = Doc("Arial", 9.5, margins=(0.9, 0.9, 0.85, 0.8))
+    D.footer("WLA-SL-SCH (01/26)    Policy WSL 27 041188", size=7.5)
+    D.p("WYECLIFF LIFE ASSURANCE COMPANY", bold=True, size=13, align="center", after=0)
+    D.p("Employer Medical Stop Loss Insurance", align="center", after=0)
+    D.p("POLICY SCHEDULE", bold=True, align="center", after=10)
+    W2 = [1.75, 4.95]
+    D.table([["Policyholder", "Independent School District No. 2817 (Red Cedar Valley Schools), Minnesota"],
+             ["Policy number", "WSL 27 041188"],
+             ["Policy period", "12:01 a.m. 1 January 2027 to 12:00 midnight 31 December 2027, Central Time"],
+             ["Plan", "Red Cedar Valley Schools Employee Health Plan (self-insured)"],
+             ["Claims administrator", "Ellery Benefit Administrators (medical); Quarrystone Rx (prescription drugs)"],
+             ["Producer of record", "Lindqvist Benefits Consulting, Minneapolis"],
+             ["Covered benefits", "Medical and prescription drug"]], W2, header=False, bold_first_col=True)
+    D.p("**Part 1. Specific stop loss**", keep=True)
+    D.table([["Specific deductible", "$300,000 per Covered Person per Policy Period"],
+             ["Contract basis", "Claims incurred 1 January 2026 to 31 December 2027 and paid 1 January 2027 to "
+                                "31 December 2027 (24/12)"],
+             ["Reimbursement", "100 per cent of Eligible Expenses in excess of the specific deductible"],
+             ["Maximum benefit", "Unlimited per Covered Person"],
+             ["Individual deductibles", "None. No Covered Person is subject to a separate specific deductible for this "
+                                        "Policy Period."],
+             ["Premium", "$78.20 per covered employee per month, composite"]], W2, header=False, bold_first_col=True)
+    D.p("**Part 2. Aggregate stop loss**", keep=True)
+    D.table([["Coverage tier", "Monthly aggregate factor"], ["Employee", "$812.40"], ["Employee + spouse", "$1,690.10"],
+             ["Employee + child(ren)", "$1,452.60"], ["Family", "$2,371.30"]], [2.6, 1.8], align_right_from=1, shade="E6E6E6")
+    D.table([["Attachment point", "The sum over the Policy Period of the monthly aggregate factors times the covered "
+                                  "employees in each tier in that month; not less than the minimum attachment point"],
+             ["Minimum attachment point", "95 per cent of the first month's factors times 12"],
+             ["Contract basis", "Claims incurred 1 January 2027 to 31 December 2027 and paid 1 January 2027 to "
+                                "31 March 2028 (12/15)"],
+             ["Maximum benefit", "$1,000,000 per Policy Period"],
+             ["Premium", "$4.15 per covered employee per month"]], W2, header=False, bold_first_col=True)
+    D.p("**Part 3. Definitions used in this Schedule**", keep=True, before=4)
     for k, t in [
         ("Eligible Expenses", "Amounts the Plan has paid for covered medical and prescription drug services under the terms "
                               "of the Plan Document in force at the start of the Policy Period, after member deductibles, "
@@ -336,33 +444,99 @@ def stoploss_pdf(path, census):
                  "in the Plan's account when the payment clears."),
         ("Run-in", "Claims incurred in 2026 are eligible under the specific coverage only if paid within the Policy Period."),
     ]:
-        s.append(Paragraph("<b>%s.</b> %s" % (k, t), SANS))
-    s.append(Paragraph("<b>Part 4. Notification and claims</b>", SANS))
-    s.append(Paragraph("The Policyholder or its claims administrator will notify the Company within 30 days after a Covered "
-                       "Person's paid claims in the Policy Period reach $150,000, and within 30 days after any of the "
-                       "following is first coded on a claim: a malignant neoplasm under active treatment, an organ or bone "
-                       "marrow transplant evaluation, end-stage renal disease or dialysis, a neonatal intensive care stay "
-                       "over 10 days, a spinal cord or traumatic brain injury, or a specialty drug with an annual cost above "
-                       "$100,000. Requests for reimbursement are submitted with an itemised claim history and proof of "
-                       "payment; the Company pays within 30 days of a complete request.", SANS))
-    s.append(Paragraph("<b>Part 5. Renewal</b>", SANS))
-    s.append(Paragraph("The Company will offer renewal terms at least 60 days before the end of the Policy Period. Renewal "
-                       "terms may change the deductible, factors, premiums and individual deductibles on the basis of the "
-                       "Plan's experience and the disclosure provided with the renewal application.", SANS))
-    s.append(PageBreak())
-    s.append(Paragraph("<b>Part 6. Premium summary at issue</b>", SANS))
-    rows = [["", "Covered employees (January 2027 census)", "Monthly premium"],
-            ["Specific", format(census, ","), money(census * 78.20, True)],
-            ["Aggregate", format(census, ","), money(census * 4.15, True)],
-            ["Total", "", money(census * 78.20 + census * 4.15, True)]]
-    s.append(grid(rows, [1.3 * inch, 2.8 * inch, 1.6 * inch], size=9))
-    s.append(Spacer(1, 18))
-    s.append(Paragraph("Signed for Wyecliff Life Assurance Company on 18 December 2026.", SANS))
-    s.append(Spacer(1, 14))
-    s.append(Paragraph("Jonathan Hoffman<br/>Vice President, Stop Loss Underwriting", SANS))
-    s.append(Paragraph("This Schedule forms part of the Policy and should be read with the Policy form WLA-SL-1 (01/26).", SANS_SM))
-    build_pdf(path, s, "Policy Schedule WSL 27 041188", "Wyecliff Life Assurance Company", "PScript5.dll Version 5.2.2",
-              "Acrobat Distiller 23.0 (Windows)", dt.datetime(2026, 12, 18, 9, 12, 7), onpage=page)
+        D.p("**%s.** %s" % (k, t), align="justify")
+    D.p("**Part 4. Notification and claims**", keep=True, before=4)
+    D.p("The Policyholder or its claims administrator will notify the Company within 30 days after a Covered Person's "
+        "paid claims in the Policy Period reach $150,000, and within 30 days after any of the following is first coded on "
+        "a claim: a malignant neoplasm under active treatment, an organ or bone marrow transplant evaluation, end-stage "
+        "renal disease or dialysis, a neonatal intensive care stay over 10 days, a spinal cord or traumatic brain injury, "
+        "or a specialty drug with an annual cost above $100,000. Requests for reimbursement are submitted with an "
+        "itemised claim history and proof of payment; the Company pays within 30 days of a complete request.",
+        align="justify")
+    D.p("**Part 5. Renewal**", keep=True, before=4)
+    D.p("The Company will offer renewal terms at least 60 days before the end of the Policy Period. Renewal terms may "
+        "change the deductible, factors, premiums and individual deductibles on the basis of the Plan's experience and "
+        "the disclosure provided with the renewal application.", align="justify")
+    D.p("**Part 6. Premium summary at issue**", keep=True, before=4)
+    D.table([["", "Covered employees (January 2027 census)", "Monthly premium"],
+             ["Specific", format(census, ","), money(census * 78.20, True)],
+             ["Aggregate", format(census, ","), money(census * 4.15, True)],
+             ["Total", "", money(census * 78.20 + census * 4.15, True)]], [1.3, 2.8, 1.6], align_right_from=1,
+            shade="E6E6E6")
+    D.p("Signed for Wyecliff Life Assurance Company on 18 December 2026.", before=10, after=20)
+    D.p("Jonathan Hoffman", after=0)
+    D.p("Vice President, Stop Loss Underwriting", after=10)
+    D.p("This Schedule forms part of the Policy and should be read with the Policy form WLA-SL-1 (01/26).", size=8,
+        italic=True)
+    D.save_pdf(path, "Policy Schedule WSL 27 041188", "Wyecliff Life Assurance Company", dt.datetime(2026, 12, 18, 9, 12, 7))
+
+
+# ------------------------------------------------------------------ Northcourt's implementation and outreach plan
+def implementation_pdf(path):
+    D = Doc("Calibri", 10.5, margins=(0.95, 0.95, 1.0, 0.8))
+    D.header_lines([("Northcourt Care Partners", True, 12, "0B5563"), ("Client Implementation", False, 8.5, "0B5563")])
+    D.footer("Northcourt Care Partners, LLC  |  Confidential: prepared for Red Cedar Valley Schools", size=7.5)
+    D.p("Red Cedar Valley Schools Employee Health Plan", bold=True, size=14, before=8, after=2)
+    D.p("Care management programme, 1 April 2027 to 31 March 2028: implementation and member outreach plan", size=12,
+        after=4, color="0B5563")
+    D.p("Version 1.2, 8 March 2027. Prepared by Allison Santiago, Account Lead, for Joyce Salinas, Director of Risk "
+        "Management and Benefits.", size=9, italic=True, after=12)
+    D.p("**1. Purpose**", keep=True)
+    D.p("This plan sets out how Northcourt will start the programme for Red Cedar Valley Schools under Agreement "
+        "RCV-2027-014: who on our side does what, the dates we are working to with the District, Ellery and Quarrystone, "
+        "how we will contact the members on the Final Enrolment List, and what the District will receive from us during "
+        "the year. It replaces version 1.1 of 22 February, which had the outreach waves a week later.", align="justify")
+    D.p("**2. Account team**", keep=True)
+    D.table([["Name", "Role", "Contact"],
+             ["Allison Santiago", "Account Lead", "Direct line and secure email in the contact sheet sent 17 February"],
+             ["Samantha Galvan, RN", "Clinical Manager, RN care management", "Escalations for Tier 1 and 2 members"],
+             ["Edward Miller", "Member Outreach Supervisor", "Welcome letters, call scheduling, opt-outs"],
+             ["Amy Kelley", "Clinical Analytics", "Enrolment list, data feeds, monthly reporting"],
+             ["Phillip Alvarado", "Chief Operating Officer, executive sponsor", "Contract and escalation of last resort"]],
+            [1.75, 2.4, 2.45], size=9.5, shade="DCEDEF")
+    D.p("**3. Timeline**", keep=True)
+    D.table([["Date", "Milestone", "Owner"],
+             ["16 February 2027", "Agreement executed", "District, Northcourt"],
+             ["26 February 2027", "Business associate agreement and Schedule D file layouts confirmed", "Northcourt, Ellery"],
+             ["5 March 2027", "Final Enrolment List delivered to the District", "Northcourt"],
+             ["18 March 2027", "Care team introductions to District Human Resources", "Northcourt"],
+             ["19 March 2027", "First weekly eligibility file sent to Northcourt", "Ellery"],
+             ["22 March 2027", "Welcome letters mailed to enrolled members", "Northcourt"],
+             ["1 April 2027", "Programme start", ""],
+             ["1 to 16 April 2027", "Outreach wave 1: Risk Tiers 1 and 2", "RN care managers"],
+             ["5 April to 7 May 2027", "Outreach wave 2: Risk Tiers 3 and 4", "Health coaches"],
+             ["12 April 2027", "First monthly claims files from Ellery and Quarrystone", "Ellery, Quarrystone"],
+             ["14 May 2027", "First monthly engagement report", "Northcourt"],
+             ["30 June 2027", "Second letter to members not yet reached", "Northcourt"],
+             ["22 July 2027", "First quarterly review with the District", "District, Northcourt"]],
+            [1.6, 3.5, 1.5], size=9.5, shade="DCEDEF")
+    D.p("**4. Member outreach**", keep=True)
+    D.p("Each member on the Final Enrolment List is assigned to a care team before the welcome letter goes out. Members "
+        "in Risk Tiers 1 and 2 are assigned to a registered nurse care manager on RN Team A, B or C; members in Risk Tiers "
+        "3 and 4 to a health coach on Health Coach Team 1 or 2. The care team named on the list is the team that calls the "
+        "member, so a member who calls back reaches someone who already has the file.", align="justify")
+    D.p("We make three call attempts at different times of day over two weeks, then send a letter with a direct number. "
+        "Calls to a member under 18 go to the parent or guardian on the District's file. A member who declines is marked "
+        "as opted out and is not called again; the member can rejoin at any time by calling the team. We use an "
+        "interpreter line for members who prefer a language other than English, and we do not leave health details on "
+        "voicemail.", align="justify")
+    D.p("**5. What the District receives**", keep=True)
+    for t in ("A monthly engagement report by the fourteenth of each month: members reached, members enrolled in a care "
+              "plan and members opted out, by Risk Tier and care team.",
+              "A quarterly review meeting with Risk Management and Benefits, with a short written summary of programme "
+              "activity and any issues with the data feeds.",
+              "Notice within two business days if a weekly eligibility file or a monthly claims file is late or fails our "
+              "load checks."):
+        D.p("•\t" + t, indent=0.3, hanging=0.2, align="justify")
+    D.p("**6. Data and privacy**", keep=True)
+    D.p("Northcourt receives eligibility and claims data only through the secure file transfer set up under Schedule D "
+        "and handles it under the business associate agreement in Schedule E. Care team members see the records of their "
+        "own members only. Nothing in this plan changes the terms of the Agreement.", align="justify")
+    D.p("**7. Holidays and cover**", keep=True)
+    D.p("The care teams are staffed Monday to Friday, 8:00 a.m. to 6:00 p.m. Central Time, except on federal holidays. Out "
+        "of hours, members reach Northcourt's nurse line, which has the care plan for every enrolled member.",
+        align="justify")
+    D.save_pdf(path, "RCV implementation and outreach plan v1.2", "Allison Santiago", dt.datetime(2027, 3, 8, 14, 26, 52))
 
 
 # ------------------------------------------------------------------ workbooks
@@ -375,6 +549,14 @@ def save_xlsx(wb, path, creator, last_by, created, modified, company):
     wb.save(path)
     C.repack(path, C.core_props(creator, last_by, created, modified),
              C.app_props_xlsx([ws.title for ws in wb.worksheets], company))
+
+
+# workbook saves: (created, created by, modified, modified by)
+LIST_SAVES = {
+    "bid": (local(2025, 2, 19, 16, 51, 3), "Amy Kelley", local(2025, 2, 21, 14, 37, 2), "Amy Kelley"),
+    "draft": (local(2027, 1, 12, 15, 6, 41), "Amy Kelley", local(2027, 1, 14, 11, 20, 45), "Amy Kelley"),
+    "final": (local(2027, 3, 3, 10, 14, 9), "Amy Kelley", local(2027, 3, 5, 9, 48, 30), "Allison Santiago"),
+}
 
 
 def stratification_xlsx(path, kind, rows, people):
@@ -400,9 +582,8 @@ def stratification_xlsx(path, kind, rows, people):
             ("Risk tiers", tiers),
             ("Proposed programme year", "1 April 2025 to 31 March 2026"),
             ("", ""),
-            ("Confidential", "Contains protected health information. For use in the evaluation of RFP 2025-07 only."),
+            ("Confidential", "Contains protected health information."),
         ]
-        when = (dt.datetime(2025, 2, 21, 14, 37, 2), "Amy Kelley")
     elif kind == "draft":
         meta = [
             ("Northcourt Care Partners", "Clinical Analytics"),
@@ -421,7 +602,6 @@ def stratification_xlsx(path, kind, rows, people):
             ("", ""),
             ("Confidential", "Contains protected health information."),
         ]
-        when = (dt.datetime(2027, 1, 14, 11, 20, 45), "Amy Kelley")
     else:
         meta = [
             ("Northcourt Care Partners", "Clinical Analytics"),
@@ -441,10 +621,9 @@ def stratification_xlsx(path, kind, rows, people):
             ("", ""),
             ("Confidential", "Contains protected health information."),
         ]
-        when = (dt.datetime(2027, 3, 5, 9, 48, 30), "Allison Santiago")
     for i, (k, v) in enumerate(meta, 1):
-        ws.cell(row=i, column=1, value=k).font = Font(bold=True, name="Calibri", size=11 if i > 1 else 13)
-        c = ws.cell(row=i, column=2, value=v)
+        ws.cell(row=i, column=1, value=k or None).font = Font(bold=True, name="Calibri", size=11 if i > 1 else 13)
+        c = ws.cell(row=i, column=2, value=v or None)
         c.alignment = Alignment(wrap_text=True, vertical="top")
         ws.cell(row=i, column=1).alignment = Alignment(vertical="top")
     ws.column_dimensions["A"].width = 24
@@ -484,7 +663,7 @@ def stratification_xlsx(path, kind, rows, people):
         hi = {1: None, 2: W.TIERS[0][1], 3: W.TIERS[1][1], 4: W.TIERS[2][1]}[t]
         rng = ("%.1f and above" % floor) if t == 1 else ("below %.1f" % hi if t == 4 else "%.1f to %.1f" % (floor, hi - 0.1))
         sm.append([t, rng, sum(1 for r_ in rows if r_[4] == t)])
-    sm.append(["Total", "", len(rows)])
+    sm.append(["Total", None, len(rows)])
     for j in range(1, 4):
         sm.cell(row=1, column=j).font = Font(bold=True)
         sm.cell(row=1, column=j).fill = HDR_FILL
@@ -493,9 +672,8 @@ def stratification_xlsx(path, kind, rows, people):
     sm.column_dimensions["A"].width = 11
     sm.column_dimensions["B"].width = 18
     sm.column_dimensions["C"].width = 10
-    created = when[0] - dt.timedelta(hours=3, minutes=12)
-    save_xlsx(wb, path, "Amy Kelley", when[1], created.replace(tzinfo=C.CENTRAL), when[0].replace(tzinfo=C.CENTRAL),
-              "Northcourt Care Partners, LLC")
+    created, by, modified, last_by = LIST_SAVES[kind]
+    save_xlsx(wb, path, by, last_by, created, modified, "Northcourt Care Partners, LLC")
 
 
 def rebate_xlsx(path, R):
@@ -503,10 +681,11 @@ def rebate_xlsx(path, R):
     wb = Workbook()
     ws = wb.active
     ws.title = "Summary"
-    top = [("Quarrystone Rx", ""), ("Client rebate statement, calendar year 2026", ""),
+    top = [("Quarrystone Rx", None), ("Client rebate statement, calendar year 2026", None),
            ("Client", "Red Cedar Valley Schools Employee Health Plan (ISD 2817), group RCV01"),
            ("Prepared", "19 February 2027 by Client Services (Michelle Peterson, Client Account Executive)"),
-           ("Contract", "Pharmacy Benefit Services Agreement, Exhibit 4: minimum rebate guarantees per paid brand claim"), ("", "")]
+           ("Contract", "Pharmacy Benefit Services Agreement, Exhibit 4: minimum rebate guarantees per paid brand claim"),
+           (None, None)]
     for k, v in top:
         ws.append([k, v])
     ws["A1"].font = Font(bold=True, size=13)
@@ -521,7 +700,7 @@ def rebate_xlsx(path, R):
         c.fill = HDR_FILL
         c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
     status = {1: ("05/14/2026", "08/21/2026", "Paid"), 2: ("08/13/2026", "11/20/2026", "Paid"),
-              3: ("11/12/2026", "02/18/2027", "Paid"), 4: ("02/11/2027", "", "Invoiced; payment expected by 06/30/2027")}
+              3: ("11/12/2026", "02/18/2027", "Paid"), 4: ("02/11/2027", None, "Invoiced; payment expected by 06/30/2027")}
     tot = [0, 0, 0.0]
     for q in (1, 2, 3, 4):
         b, sp = R["brand"][q], R["spec"][q]
@@ -562,15 +741,15 @@ def rebate_xlsx(path, R):
         d.append([name, ndc, "Y" if spec else "N"] + list(qs) + [n, n * (R["g_spec"] if spec else R["g_brand"])])
     for r_ in range(2, d.max_row + 1):
         d.cell(row=r_, column=9).number_format = '"$"#,##0.00'
-    for j, wdt in enumerate([36, 15, 10, 9, 9, 9, 9, 12, 15], 1):
+    for j, wdt in enumerate([40, 15, 10, 9, 9, 9, 9, 12, 15], 1):
         d.column_dimensions[get_column_letter(j)].width = wdt
     d.freeze_panes = "A2"
-    save_xlsx(wb, path, "Michelle Peterson", "Michelle Peterson", dt.datetime(2027, 2, 18, 15, 2, 11, tzinfo=C.CENTRAL),
-              dt.datetime(2027, 2, 19, 8, 31, 54, tzinfo=C.CENTRAL), "Quarrystone Rx")
+    save_xlsx(wb, path, "Michelle Peterson", "Michelle Peterson", local(2027, 2, 18, 15, 2, 11), local(2027, 2, 19, 8, 31, 54),
+              "Quarrystone Rx")
 
 
-# ------------------------------------------------------------------ the analyst's dictionary
-DICTIONARY = """CLAIMS WAREHOUSE EXTRACTS - FIELD DICTIONARY
+# ------------------------------------------------------------------ the benefits office's warehouse readme
+README = """BENEFITS CLAIMS WAREHOUSE - README FOR THE MARCH 2027 PULL
 Red Cedar Valley Schools, Risk Management and Benefits
 Maintained by Tiffany Barrett, Benefits Analyst
 Version of 8 March 2027 (covers the extracts pulled 1 to 3 March 2027)
@@ -592,7 +771,7 @@ Grain: one row per line of an adjudicated claim. Every version of a claim that E
 replacement, void) is its own claim number with its own lines. Claims paid or processed 1 January 2025 through
 28 February 2027. Pulled 3 March 2027. A claim adjudicated after 28 February 2027 is not in the file.
 
-claim_number            Ellery claim number. YYDDD of the receipt date followed by a sequence.
+claim_number            Ellery claim number. YYDDD of the date Ellery received the claim, then a sequence.
 line_number             Line on the claim, from 1.
 claim_type              P professional (CMS-1500 / 837P), I institutional (UB-04 / 837I).
 bill_type               Institutional type of bill (UB-04 form locator 4), blank on professional claims. The third
@@ -607,20 +786,27 @@ original_claim_number   For frequency 7 and 8 claims, the claim number the claim
 member_id               Ellery member ID (RCV + 7 digits). Joins to eligibility_spans_2027-02.csv.
 first_date_of_service   Earliest date of service on the claim (statement from date on institutional claims).
 last_date_of_service    Latest date of service on the claim (statement through date; discharge date for a stay).
-paid_date               Date Ellery released payment; on a fully denied claim, the date it was processed.
-place_of_service        CMS place of service code, professional claims only (11 office, 20 urgent care, 21 inpatient
-                        hospital, 22 on-campus outpatient hospital, 23 emergency department, 24 ambulatory surgery
-                        center, 41 ambulance, 81 independent laboratory, 10 telehealth in the patient's home).
+paid_date               Date of the Ellery check run that released payment. Ellery pays the District's claims once a
+                        week, on Thursday, or on the next business day when the Thursday is a bank holiday. On a
+                        fully denied claim, the check run whose remittance advice carried the denial.
+place_of_service        CMS place of service code, professional claims only (11 office, 10 telehealth in the patient's
+                        home, 20 urgent care, 21 inpatient hospital, 22 on-campus outpatient hospital, 23 emergency
+                        department, 24 ambulatory surgery center, 31 skilled nursing facility, 41 ambulance, 61
+                        inpatient rehabilitation facility, 81 independent laboratory).
 revenue_code            NUBC revenue code, institutional claims only.
 procedure_code          CPT or HCPCS code. Blank on revenue lines billed without one (room and board, supplies).
-modifier                First procedure modifier, where billed.
+modifier                First procedure modifier, where billed (26 professional component, 95 telehealth, GP therapy
+                        plan of care, AA and QK anesthesia).
 diagnosis_code_1        Principal or first-listed ICD-10-CM diagnosis on the claim (shown with the decimal point).
 diagnosis_code_2        Second diagnosis on the claim, where there is one.
 billing_npi             Billing provider NPI.
-units                   Units of service (days for room and board and NICU lines, sessions for dialysis).
+units                   Units of service (days for room and board and NICU lines, sessions for dialysis, minutes for
+                        anesthesia lines, billing units of the HCPCS code for drug lines).
 billed_amount           Provider's billed charge for the line.
-allowed_amount          Ellery's allowed amount for the line under the provider contract or the plan's reasonable
-                        and customary schedule. Blank on a denied line.
+allowed_amount          Ellery's allowed amount for the line. Professional lines: the network fee schedule, or the
+                        billed charge if it is lower. Hospital outpatient lines: the hospital's contracted share of
+                        charges. Inpatient stays, dialysis, skilled nursing and rehabilitation stays: the contracted
+                        rate for the claim, shown on its lines in proportion to their charges. Blank on a denied line.
 deductible_amount       Member deductible applied to the line.
 copay_amount            Member copayment applied to the line.
 coinsurance_amount      Member coinsurance applied to the line.
@@ -629,7 +815,8 @@ plan_paid_amount        Amount the plan paid on the line. On every line with an 
 denial_reason_code      Claim adjustment reason code on a denied line; blank on a paid line. A denied line carries no
                         allowed amount and no member cost sharing, and plan_paid_amount is 0.00.
                           16   claim lacks information needed for adjudication (usually resubmitted as a new claim)
-                          18   exact duplicate claim or service
+                          18   exact duplicate claim or service: the same claim submitted again; Ellery denies the
+                               duplicate and the claim first adjudicated stands
                           27   expenses incurred after coverage terminated
                           97   payment included in the allowance for another service
                           204  service not covered under the current benefit plan
@@ -648,13 +835,14 @@ RX_NBR, FILL_NBR     Pharmacy prescription number and fill number (00 for the or
 DATE_OF_SERVICE      Fill date.
 DATE_PROCESSED       Date Quarrystone adjudicated the transaction.
 CARDHOLDER_ID        District employee number of the subscriber, zero-filled to nine characters.
-PERSON_CD            Person code: 01 subscriber, 02 spouse, 03 and up dependents. Same codes as Ellery's eligibility.
-PATIENT_DOB          Patient date of birth.
+PERSON_CD            Person code: 01 subscriber, 02 spouse, 03 and up dependents, as on the eligibility Quarrystone
+                     held on the date of service (Ellery sends it weekly).
+PATIENT_DOB          Patient date of birth, as on the eligibility Quarrystone held on the date of service.
 PATIENT_GENDER_CD    1 male, 2 female.
 RELATIONSHIP_CD      1 cardholder, 2 spouse, 3 child.
 PHARMACY_NPI         Dispensing pharmacy NPI.
-PHARMACY_NCPDP_ID    Dispensing pharmacy NCPDP provider ID.
-NDC                  National Drug Code, 11 digits in 5-4-2 form.
+PHARMACY_NCPDP_ID    Dispensing pharmacy NCPDP provider ID (the first two digits are the state code; 24 is Minnesota).
+NDC                  National Drug Code, 11 digits in 5-4-2 form, of the package dispensed.
 DRUG_NAME            Quarrystone's drug description.
 BRAND_GENERIC_CD     B brand, G generic.
 DAW_CD               Dispense as written code (0 no product selection indicated, 1 substitution not allowed by
@@ -672,15 +860,18 @@ PLAN_PAY_AMT         GROSS_AMT_DUE - PATIENT_PAY_AMT.
 
 3. eligibility_spans_2027-02.csv
 ---------------------------------------------------------------------------------------------------------------------
-Grain: one row per member per coverage span with Ellery. A new span starts whenever the plan, the coverage tier or
-the employee class changes. Pulled 1 March 2027 from Ellery's eligibility as of 28 February 2027.
+Grain: one row per member per coverage span with Ellery. A new span starts whenever the plan, the coverage tier, the
+employee class or the member's person code changes. Pulled 1 March 2027 from Ellery's eligibility as of 28 February
+2027.
 
 member_id           Ellery member ID.
 employee_number     District employee number of the subscriber (six digits). Early retirees keep theirs.
-person_code         01 subscriber, 02 spouse, 03 and up dependents. Ellery renumbered dependents by date of birth at
-                    the conversion; children added later take the next number.
+person_code         Person code in effect during the span: 01 subscriber, 02 spouse, 03 and up dependents. Ellery
+                    numbered dependents by date of birth at the conversion, and children added later take the next
+                    number. When Ellery corrects a dependent's birth date, it renumbers the family's dependents in
+                    birth order from the date of the correction.
 relationship        SUB subscriber (employee or early retiree), SPS spouse, DEP dependent child.
-birth_date          Date of birth.
+birth_date          Date of birth as Ellery holds it at the pull, after any correction.
 sex                 F or M.
 employee_class      TCH licensed teacher, ESP education support professional, ADM administrator, RET early retiree.
 coverage_tier       EE employee only, ES employee and spouse, EC employee and child(ren), FAM family.
@@ -689,7 +880,8 @@ span_start          First day of coverage in the span. Spans start no earlier th
                     over; a member covered before then starts on 1 January 2025.
 span_end            Last day of coverage in the span (inclusive). Blank: coverage continuing at the pull.
                     Terminations take effect at month end (31 August for teachers who complete the school year),
-                    except deaths, which end coverage on the date of death. Newborns are covered from the date of birth.
+                    except deaths, which end coverage on the date of death. Newborns are covered from the date of
+                    birth; a new spouse from the first of the month after the marriage.
 
 
 4. tpa_conversion_crosswalk_2025-01-01.csv
@@ -706,7 +898,8 @@ member_id                 Ellery member ID issued at conversion.
 employee_number           District employee number of the subscriber.
 person_code               Ellery person code at conversion.
 relationship              SUB, SPS or DEP.
-birth_date                Date of birth as received from Bramwell (MM/DD/YYYY).
+birth_date                Date of birth as received from Bramwell (MM/DD/YYYY). Ellery has corrected a few since;
+                          the eligibility file carries the corrected date.
 conversion_note           MERGED DUPLICATE PRIOR RECORD where Bramwell held one member under two records; both prior
                           numbers map to the one Ellery member ID.
 
@@ -714,6 +907,6 @@ Questions on these files: Tiffany Barrett, ext. 4417.
 """
 
 
-def dictionary_txt(path):
+def readme_txt(path):
     with open(path, "w", newline="\n") as f:
-        f.write(DICTIONARY)
+        f.write(README)

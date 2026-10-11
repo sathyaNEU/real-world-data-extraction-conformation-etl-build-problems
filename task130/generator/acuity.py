@@ -9,6 +9,7 @@ import zlib
 from statistics import NormalDist
 from collections import Counter, defaultdict
 
+import catalog as K
 import world as W
 
 MODEL_SALT = 41730       # the vendor model's own fixed seed for the part of the score its inputs do not explain
@@ -52,7 +53,7 @@ def inputs(sim, year, cutoff, pids):
             IP[pid] += 1
         if k in ER:
             ERV[pid] += 1
-        if ev[3] == "R" and W.DRUGS[ev[6]["drug"]][5]:
+        if ev[3] == "R" and K.is_specialty(ev[6]["drug"]):
             SP.add(pid)
     out = {}
     for pid in pids:

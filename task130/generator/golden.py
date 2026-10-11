@@ -203,6 +203,9 @@ def workbook(path, R):
     w3["A10"] = ("Northcourt chose these members because of their 2026 claims, so their 2026 level is not what they would be "
                  "expected to cost in the Programme Year; see the Baseline sheet, note 3.")
     w3["A10"].font = Font(name="Calibri", size=9, color="404040")
+    w3["A11"] = ("Where a member's coverage began partway through a month, as a newborn's does, that month's claims are included "
+                 "and the month is not a member month (Schedule C.1(a) and (b)).")
+    w3["A11"].font = Font(name="Calibri", size=9, color="404040")
     for j, wdt in enumerate([10, 11, 11, 15, 15, 12, 12, 15, 15], 1):
         w3.column_dimensions[get_column_letter(j)].width = wdt
     w3.page_setup.orientation = "landscape"
@@ -248,7 +251,7 @@ def chart_png(R):
     axes[0].set_ylabel("Dollars per member per month", fontsize=7.5, color=INK2)
     h, l = axes[0].get_legend_handles_labels()
     fig.legend(h, l, loc="lower center", ncol=2, frameon=False, fontsize=7.5, bbox_to_anchor=(0.5, -0.01))
-    fig.suptitle("Medical baselines sit far below 2026 cost in every tier; pharmacy moves much less", x=0.01, ha="left",
+    fig.suptitle("Medical baselines sit under half of 2026 cost in every tier; pharmacy moves both ways", x=0.01, ha="left",
                  fontsize=9.5, fontweight="bold", color=INK)
     fig.tight_layout(rect=(0, 0.08, 1, 0.95), w_pad=2.2)
     buf = io.BytesIO()
@@ -332,8 +335,8 @@ def memo(path, R, png):
                 "Northcourt enrolls on 1 April: ${:,} for medical claims and ${:,} for pharmacy. Northcourt's 40 per cent share "
                 "of savings will be measured against the tier baselines that make it up, under Schedule C of the agreement the "
                 "Board approved on 9 February.").format(whole(tot), whole(m), whole(r)), after=6)
-    _para(doc, ("These members are on the list because 2026 was an expensive year for them, and for many it was the year of a "
-                "transplant, a premature baby, a cancer course or an accident that will not repeat. Northcourt ran the same model "
+    _para(doc, ("These members are on the list because 2026 was an expensive year for them, and for most it was the year of an "
+                "operation, a heart attack, pneumonia, a cancer course or a premature birth that will not repeat. Northcourt ran the same model "
                 "on our 2024 claims for its 2025 proposal, and because the Board suspended that award none of those 140 members "
                 "was ever enrolled. Their claims from April 2025 to March 2026 show what a member the model flags costs in the "
                 "following year without the programme, so each tier's baseline is that group's allowed claims per member month, "

@@ -1,10 +1,11 @@
 """Independent recomputation of task130's graded figures from target/ and golden/ alone.
 
 Shares no code with the generator: it parses the CSVs with the csv module, sums in Decimal, and applies its own
-reading of the dictionary and Schedule C (replacements drop the claims they name, voids and reversals net by sign,
+reading of the readme and Schedule C (replacements drop the claims they name, voids and reversals net by sign,
 denied lines carry nothing, a member month is a month whose first day the member is covered, a claim belongs to the
-month of its first date of service or fill date). It then checks the golden workbook, the memo and, when present,
-submission.md block 4 against what it computed.
+month of its first date of service or fill date, and a PBM row belongs to the member who held its employee number and
+person code on the fill date). It then checks the golden workbook, the memo and, when present, submission.md block 4
+against what it computed.
 
     python3 verify.py [TASK_DIR]
 """
@@ -48,11 +49,19 @@ def rows(name):
 
 
 cover = defaultdict(list)
-person = {}
+code_spans = defaultdict(list)
 for r in rows("eligibility_spans_2027-02.csv"):
+    start = iso(r["span_start"])
     end = iso(r["span_end"]) if r["span_end"] else dt.date(9999, 12, 31)
-    cover[r["member_id"]].append((iso(r["span_start"]), end))
-    person[(int(r["employee_number"]), r["person_code"])] = r["member_id"]
+    cover[r["member_id"]].append((start, end))
+    code_spans[(int(r["employee_number"]), r["person_code"])].append((start, end, r["member_id"]))
+
+
+def member_on(cardholder, code, day):
+    """the member who carried this employee number and person code on the day of the fill"""
+    hit = {m for s, e, m in code_spans[(cardholder, code)] if s <= day <= e}
+    assert len(hit) == 1, ("PBM row links to one member", cardholder, code, day, hit)
+    return hit.pop()
 
 
 def member_months(member, a, b):
@@ -68,8 +77,9 @@ for r in med_lines:
     med[(r["member_id"], iso(r["first_date_of_service"]))] += Decimal(r["allowed_amount"])
 rx = defaultdict(Decimal)
 for r in rows("pharmacy_claims_2025-01_2027-02.csv"):
-    m = person[(int(r["CARDHOLDER_ID"]), r["PERSON_CD"])]
-    rx[(m, ymd(r["DATE_OF_SERVICE"]))] += Decimal(r["GROSS_AMT_DUE"])
+    d = ymd(r["DATE_OF_SERVICE"])
+    m = member_on(int(r["CARDHOLDER_ID"]), r["PERSON_CD"], d)
+    rx[(m, d)] += Decimal(r["GROSS_AMT_DUE"])
 by_member_med, by_member_rx = defaultdict(list), defaultdict(list)
 for (m, d), v in med.items():
     by_member_med[m].append((d, v))

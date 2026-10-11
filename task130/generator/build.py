@@ -18,6 +18,7 @@ import world as W
 import sim as SM
 import acuity as AC
 import extracts as X
+import containers as C
 import docs as D
 import estimators as E
 
@@ -34,26 +35,41 @@ FILES = {
     "renewal": "renewal_letter_2027-28.pdf",
     "rebates": "pbm_rebate_report_2026.xlsx",
     "stoploss": "stop_loss_policy_2027.pdf",
-    "dict": "claims_extract_dictionary.txt",
+    "plan": "northcourt_implementation_plan_2027-28.pdf",
+    "readme": "warehouse_readme_2027-03.txt",
 }
-DISTRACTORS = ["draft", "rebates", "stoploss"]
+DISTRACTORS = ["draft", "rebates", "stoploss", "plan"]
 # local (Central) time each file was last written, in the fiction
 MTIMES = {
     "med": (2027, 3, 3, 7, 14), "rx": (2027, 3, 2, 6, 41), "elig": (2027, 3, 1, 6, 5), "xwalk": (2025, 1, 6, 15, 22),
     "final": (2027, 3, 5, 9, 48), "draft": (2027, 1, 14, 11, 20), "bid": (2025, 2, 21, 14, 37),
     "agreement": (2027, 2, 17, 10, 42), "renewal": (2027, 2, 26, 16, 5), "rebates": (2027, 2, 19, 8, 31),
-    "stoploss": (2026, 12, 18, 9, 12), "dict": (2027, 3, 8, 16, 58),
+    "stoploss": (2026, 12, 18, 9, 12), "plan": (2027, 3, 8, 14, 27), "readme": (2027, 3, 8, 16, 58),
 }
 
 
 def stamp(path, t):
-    ts = dt.datetime(*t, tzinfo=dt.timezone(dt.timedelta(hours=-6))).timestamp()
+    d = dt.datetime(*t)
+    ts = d.replace(tzinfo=C.central(d)).timestamp()
     os.utime(path, (ts, ts))
 
 
+def adjust(comp, delta):
+    """a component with its allowed amount moved by delta cents: a facility claim's rate moves on its largest line,
+    a pharmacy claim's ingredient cost moves"""
+    ct, npi, amt, lag, rlag, lines, bt, pos, dx1, dx2 = comp
+    if lines:
+        k = max(range(len(lines)), key=lambda i: lines[i][4])
+        ls = [list(l) for l in lines]
+        ls[k][5] += delta
+        assert 0 < ls[k][5] < ls[k][4], "an adjusted line stays under its charge"
+        lines = tuple(tuple(l) for l in ls)
+    return (ct, npi, round(amt + delta / 100.0, 2), lag, rlag, lines, bt, pos, dx1, dx2)
+
+
 def apply_tune(S, table):
-    """bin centring: move a handful of clean claims by a few dollars so that no graded figure sits near a rounding
-    boundary (the table is written by tune.py and asserted by checks.py)"""
+    """bin centring: move a handful of facility and pharmacy claims by a few per cent so that no graded figure sits near
+    a rounding boundary (the table is written by tune.py and asserted by checks.py)"""
     done = set()
     for i, ev in enumerate(S.events):
         pid, d0, d1, ben, kind, comps, info = ev
@@ -61,7 +77,7 @@ def apply_tune(S, table):
             key = (pid, d0.isoformat(), kind, ci, int(round(comp[2] * 100)))
             if key in table:
                 c = list(comps)
-                c[ci] = (comp[0], comp[1], round(comp[2] + table[key] / 100.0, 2), comp[3])
+                c[ci] = adjust(comp, table[key])
                 S.events[i] = (pid, d0, d1, ben, kind, tuple(c), info)
                 done.add(key)
     assert done == set(table), "tuning table out of date: %d of %d keys found" % (len(done), len(table))
@@ -81,7 +97,8 @@ def build(out, verbose=True, tune=True):
         L2 = AC.lists(S)
         for k in ("bid", "draft", "final"):
             assert [r[:5] for r in L2[k]] == [r[:5] for r in L[k]], "centring moved the %s list" % k
-    P = X.Pack(S, W.SEED)
+    protect = set(r[1] for k in ("bid", "draft", "final") for r in L[k])
+    P = X.Pack(S, W.SEED, protect)
     P.price()
     P.medical_versions()
     P.pharmacy_rows()
@@ -98,7 +115,8 @@ def build(out, verbose=True, tune=True):
     D.renewal_pdf(p("renewal"), E.letter_figures(F))
     D.rebate_xlsx(p("rebates"), E.rebate_figures(F))
     D.stoploss_pdf(p("stoploss"), E.stoploss_census(F))
-    D.dictionary_txt(p("dict"))
+    D.implementation_pdf(p("plan"))
+    D.readme_txt(p("readme"))
     for k in FILES:
         stamp(p(k), MTIMES[k])
     if verbose:
@@ -122,9 +140,13 @@ def write_metadata():
                      "license": "CC BY 4.0, constructed for this task"} for k in sorted(FILES, key=lambda k: FILES[k])],
         "provenance": "Fully constructed pack (dataset-generation section 2). The claims, PBM, eligibility and conversion "
                       "extracts are generated member by member from a simulation of a fictional Minnesota school "
-                      "district's health plan, January 2024 to March 2028; the documents were written for the fiction. "
-                      "Drug NDCs and medical code sets are real published vocabularies; NPIs carry valid check digits but "
-                      "belong to no real provider. No real person's or organisation's data.",
+                      "district's health plan, January 2023 to March 2028; the documents were written for the fiction and "
+                      "converted to PDF with LibreOffice. ICD-10-CM, CPT, HCPCS, NUBC revenue, bill type and place of "
+                      "service codes are the real published code sets; fee schedule and charge amounts are constructed. "
+                      "NDCs are in 5-4-2 form on the real labeler codes of the manufacturers named; their product and "
+                      "package segments are constructed and are not checked against the FDA NDC Directory. NPIs and NCPDP "
+                      "IDs carry valid formats and check digits but belong to no real provider. No real person's or "
+                      "organisation's data.",
         "license": "Constructed data, released with the task (CC BY 4.0).",
         "created": "2026-10-11",
     }
@@ -134,7 +156,7 @@ def write_metadata():
 
 
 def cut_zip(out):
-    """target.zip beside target/: the twelve files at the archive's top level, in name order, each entry dated with
+    """target.zip beside target/: the thirteen files at the archive's top level, in name order, each entry dated with
     its file's own export time, so the archive rebuilds byte for byte with the tree it is cut from"""
     import zipfile
     tgt = os.path.join(out, "target")

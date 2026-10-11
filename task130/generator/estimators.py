@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from openpyxl import load_workbook
 
+import providers as PV
 import world as W
 
 TM, TR = W.TREND_MED, W.TREND_RX
@@ -36,12 +37,18 @@ class Files:
         rx["proc"] = pd.to_datetime(rx["DATE_PROCESSED"], format="%Y%m%d").dt.date
         el = pd.read_csv(os.path.join(d, "eligibility_spans_2027-02.csv"), dtype=str, keep_default_na=False)
         self.el = el
-        key = {}
+        # a person code belongs to a member for the spans that carry it: join a fill on the code in effect that day
+        key = defaultdict(list)
         for r in el.itertuples(index=False):
-            k = (int(r.employee_number), r.person_code)
-            assert key.get(k, r.member_id) == r.member_id, "one employee number and person code, one member"
-            key[k] = r.member_id
-        rx["member_id"] = [key.get((int(c), p), "") for c, p in zip(rx["CARDHOLDER_ID"], rx["PERSON_CD"])]
+            e_ = dt.date.fromisoformat(r.span_end) if r.span_end else dt.date(9999, 12, 31)
+            key[(int(r.employee_number), r.person_code)].append((dt.date.fromisoformat(r.span_start), e_, r.member_id))
+
+        def member(c, p, d):
+            hit = [m for s, e2, m in key.get((int(c), p), ()) if s <= d <= e2]
+            assert len(set(hit)) <= 1, "one member per employee number, person code and day"
+            return hit[0] if hit else ""
+
+        rx["member_id"] = [member(c, p, d) for c, p, d in zip(rx["CARDHOLDER_ID"], rx["PERSON_CD"], rx["dos"])]
         self.rx = rx
         self.spans = defaultdict(list)
         for r in el.itertuples(index=False):
@@ -294,8 +301,9 @@ G_BRAND, G_SPEC = 212.50, 1640.00
 
 def rebate_figures(F):
     rx = F.rx[(F.rx.dos >= dt.date(2026, 1, 1)) & (F.rx.dos <= dt.date(2026, 12, 31)) & (F.rx.BRAND_GENERIC_CD == "B")]
+    spec_ncpdp = PV.Pharmacies().rows[PV.Pharmacies().specialty][1]
     rx = rx.assign(q=[(d.month - 1) // 3 + 1 for d in rx.dos], sg=np.where(rx.TXN_CD == "B2", -1, 1),
-                   spec=rx.PHARMACY_NCPDP_ID == W.NCPDP_IDS[W.SPECIALTY_PHARMACY])
+                   spec=rx.PHARMACY_NCPDP_ID == spec_ncpdp)
     brand = {q: int(rx[(rx.q == q) & ~rx.spec].sg.sum()) for q in (1, 2, 3, 4)}
     spec = {q: int(rx[(rx.q == q) & rx.spec].sg.sum()) for q in (1, 2, 3, 4)}
     by = []

@@ -1,4 +1,4 @@
-CLAIMS WAREHOUSE EXTRACTS - FIELD DICTIONARY
+BENEFITS CLAIMS WAREHOUSE - README FOR THE MARCH 2027 PULL
 Red Cedar Valley Schools, Risk Management and Benefits
 Maintained by Tiffany Barrett, Benefits Analyst
 Version of 8 March 2027 (covers the extracts pulled 1 to 3 March 2027)
@@ -20,7 +20,7 @@ Grain: one row per line of an adjudicated claim. Every version of a claim that E
 replacement, void) is its own claim number with its own lines. Claims paid or processed 1 January 2025 through
 28 February 2027. Pulled 3 March 2027. A claim adjudicated after 28 February 2027 is not in the file.
 
-claim_number            Ellery claim number. YYDDD of the receipt date followed by a sequence.
+claim_number            Ellery claim number. YYDDD of the date Ellery received the claim, then a sequence.
 line_number             Line on the claim, from 1.
 claim_type              P professional (CMS-1500 / 837P), I institutional (UB-04 / 837I).
 bill_type               Institutional type of bill (UB-04 form locator 4), blank on professional claims. The third
@@ -35,20 +35,27 @@ original_claim_number   For frequency 7 and 8 claims, the claim number the claim
 member_id               Ellery member ID (RCV + 7 digits). Joins to eligibility_spans_2027-02.csv.
 first_date_of_service   Earliest date of service on the claim (statement from date on institutional claims).
 last_date_of_service    Latest date of service on the claim (statement through date; discharge date for a stay).
-paid_date               Date Ellery released payment; on a fully denied claim, the date it was processed.
-place_of_service        CMS place of service code, professional claims only (11 office, 20 urgent care, 21 inpatient
-                        hospital, 22 on-campus outpatient hospital, 23 emergency department, 24 ambulatory surgery
-                        center, 41 ambulance, 81 independent laboratory, 10 telehealth in the patient's home).
+paid_date               Date of the Ellery check run that released payment. Ellery pays the District's claims once a
+                        week, on Thursday, or on the next business day when the Thursday is a bank holiday. On a
+                        fully denied claim, the check run whose remittance advice carried the denial.
+place_of_service        CMS place of service code, professional claims only (11 office, 10 telehealth in the patient's
+                        home, 20 urgent care, 21 inpatient hospital, 22 on-campus outpatient hospital, 23 emergency
+                        department, 24 ambulatory surgery center, 31 skilled nursing facility, 41 ambulance, 61
+                        inpatient rehabilitation facility, 81 independent laboratory).
 revenue_code            NUBC revenue code, institutional claims only.
 procedure_code          CPT or HCPCS code. Blank on revenue lines billed without one (room and board, supplies).
-modifier                First procedure modifier, where billed.
+modifier                First procedure modifier, where billed (26 professional component, 95 telehealth, GP therapy
+                        plan of care, AA and QK anesthesia).
 diagnosis_code_1        Principal or first-listed ICD-10-CM diagnosis on the claim (shown with the decimal point).
 diagnosis_code_2        Second diagnosis on the claim, where there is one.
 billing_npi             Billing provider NPI.
-units                   Units of service (days for room and board and NICU lines, sessions for dialysis).
+units                   Units of service (days for room and board and NICU lines, sessions for dialysis, minutes for
+                        anesthesia lines, billing units of the HCPCS code for drug lines).
 billed_amount           Provider's billed charge for the line.
-allowed_amount          Ellery's allowed amount for the line under the provider contract or the plan's reasonable
-                        and customary schedule. Blank on a denied line.
+allowed_amount          Ellery's allowed amount for the line. Professional lines: the network fee schedule, or the
+                        billed charge if it is lower. Hospital outpatient lines: the hospital's contracted share of
+                        charges. Inpatient stays, dialysis, skilled nursing and rehabilitation stays: the contracted
+                        rate for the claim, shown on its lines in proportion to their charges. Blank on a denied line.
 deductible_amount       Member deductible applied to the line.
 copay_amount            Member copayment applied to the line.
 coinsurance_amount      Member coinsurance applied to the line.
@@ -57,7 +64,8 @@ plan_paid_amount        Amount the plan paid on the line. On every line with an 
 denial_reason_code      Claim adjustment reason code on a denied line; blank on a paid line. A denied line carries no
                         allowed amount and no member cost sharing, and plan_paid_amount is 0.00.
                           16   claim lacks information needed for adjudication (usually resubmitted as a new claim)
-                          18   exact duplicate claim or service
+                          18   exact duplicate claim or service: the same claim submitted again; Ellery denies the
+                               duplicate and the claim first adjudicated stands
                           27   expenses incurred after coverage terminated
                           97   payment included in the allowance for another service
                           204  service not covered under the current benefit plan
@@ -76,13 +84,14 @@ RX_NBR, FILL_NBR     Pharmacy prescription number and fill number (00 for the or
 DATE_OF_SERVICE      Fill date.
 DATE_PROCESSED       Date Quarrystone adjudicated the transaction.
 CARDHOLDER_ID        District employee number of the subscriber, zero-filled to nine characters.
-PERSON_CD            Person code: 01 subscriber, 02 spouse, 03 and up dependents. Same codes as Ellery's eligibility.
-PATIENT_DOB          Patient date of birth.
+PERSON_CD            Person code: 01 subscriber, 02 spouse, 03 and up dependents, as on the eligibility Quarrystone
+                     held on the date of service (Ellery sends it weekly).
+PATIENT_DOB          Patient date of birth, as on the eligibility Quarrystone held on the date of service.
 PATIENT_GENDER_CD    1 male, 2 female.
 RELATIONSHIP_CD      1 cardholder, 2 spouse, 3 child.
 PHARMACY_NPI         Dispensing pharmacy NPI.
-PHARMACY_NCPDP_ID    Dispensing pharmacy NCPDP provider ID.
-NDC                  National Drug Code, 11 digits in 5-4-2 form.
+PHARMACY_NCPDP_ID    Dispensing pharmacy NCPDP provider ID (the first two digits are the state code; 24 is Minnesota).
+NDC                  National Drug Code, 11 digits in 5-4-2 form, of the package dispensed.
 DRUG_NAME            Quarrystone's drug description.
 BRAND_GENERIC_CD     B brand, G generic.
 DAW_CD               Dispense as written code (0 no product selection indicated, 1 substitution not allowed by
@@ -100,15 +109,18 @@ PLAN_PAY_AMT         GROSS_AMT_DUE - PATIENT_PAY_AMT.
 
 3. eligibility_spans_2027-02.csv
 ---------------------------------------------------------------------------------------------------------------------
-Grain: one row per member per coverage span with Ellery. A new span starts whenever the plan, the coverage tier or
-the employee class changes. Pulled 1 March 2027 from Ellery's eligibility as of 28 February 2027.
+Grain: one row per member per coverage span with Ellery. A new span starts whenever the plan, the coverage tier, the
+employee class or the member's person code changes. Pulled 1 March 2027 from Ellery's eligibility as of 28 February
+2027.
 
 member_id           Ellery member ID.
 employee_number     District employee number of the subscriber (six digits). Early retirees keep theirs.
-person_code         01 subscriber, 02 spouse, 03 and up dependents. Ellery renumbered dependents by date of birth at
-                    the conversion; children added later take the next number.
+person_code         Person code in effect during the span: 01 subscriber, 02 spouse, 03 and up dependents. Ellery
+                    numbered dependents by date of birth at the conversion, and children added later take the next
+                    number. When Ellery corrects a dependent's birth date, it renumbers the family's dependents in
+                    birth order from the date of the correction.
 relationship        SUB subscriber (employee or early retiree), SPS spouse, DEP dependent child.
-birth_date          Date of birth.
+birth_date          Date of birth as Ellery holds it at the pull, after any correction.
 sex                 F or M.
 employee_class      TCH licensed teacher, ESP education support professional, ADM administrator, RET early retiree.
 coverage_tier       EE employee only, ES employee and spouse, EC employee and child(ren), FAM family.
@@ -117,7 +129,8 @@ span_start          First day of coverage in the span. Spans start no earlier th
                     over; a member covered before then starts on 1 January 2025.
 span_end            Last day of coverage in the span (inclusive). Blank: coverage continuing at the pull.
                     Terminations take effect at month end (31 August for teachers who complete the school year),
-                    except deaths, which end coverage on the date of death. Newborns are covered from the date of birth.
+                    except deaths, which end coverage on the date of death. Newborns are covered from the date of
+                    birth; a new spouse from the first of the month after the marriage.
 
 
 4. tpa_conversion_crosswalk_2025-01-01.csv
@@ -134,7 +147,8 @@ member_id                 Ellery member ID issued at conversion.
 employee_number           District employee number of the subscriber.
 person_code               Ellery person code at conversion.
 relationship              SUB, SPS or DEP.
-birth_date                Date of birth as received from Bramwell (MM/DD/YYYY).
+birth_date                Date of birth as received from Bramwell (MM/DD/YYYY). Ellery has corrected a few since;
+                          the eligibility file carries the corrected date.
 conversion_note           MERGED DUPLICATE PRIOR RECORD where Bramwell held one member under two records; both prior
                           numbers map to the one Ellery member ID.
 

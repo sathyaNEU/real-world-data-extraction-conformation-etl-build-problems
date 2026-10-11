@@ -1,50 +1,72 @@
 """File containers that rebuild byte for byte and carry their organisation's own stamps.
 
-PDFs come out of reportlab in invariant mode with the library's banner comments left out, then the fixed creation
-date is swapped, at equal length, for the in-fiction one. Office packages are rewritten with fixed entry dates and
-document properties that name the person and the application that saved them."""
+PDFs are written by LibreOffice from a Word document, headless, with tagged structure and embedded font subsets; the
+export time and the document identifier LibreOffice stamps are then replaced, at equal length, by the in-fiction time
+and an identifier derived from the document, so a rebuild is byte-identical. LibreOffice's own Producer and Creator
+are left as LibreOffice wrote them.
+
+Workbooks are written the way Excel saves them: a shared string table, every part with its XML declaration, and the
+parts in Excel's order with fixed entry dates. Word documents get Word's part order. Document properties name the
+person and the application that saved them."""
 import datetime as dt
+import hashlib
 import io
+import os
 import re
+import shutil
+import subprocess
+import tempfile
 import zipfile
 
-from reportlab.pdfbase import pdfdoc
-
 CENTRAL = dt.timezone(dt.timedelta(hours=-6))
+DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 
 
-def _plain_header(self, pdfVersion=pdfdoc.PDF_VERSION_DEFAULT):
-    self.strings = []
-    self.write = self.strings.append
-    self.offset = 0
-    self.add(pdfdoc.pdfdocEnc("%%PDF-%s.%s" % pdfVersion) + b"\n%\xe2\xe3\xcf\xd3\n")
+def central(d):
+    """the UTC offset of a Minnesota local time"""
+    y = d.year
+    start = dt.date(y, 3, 8) + dt.timedelta(days=(6 - dt.date(y, 3, 8).weekday()) % 7)      # second Sunday of March
+    end = dt.date(y, 11, 1) + dt.timedelta(days=(6 - dt.date(y, 11, 1).weekday()) % 7)      # first Sunday of November
+    return dt.timezone(dt.timedelta(hours=-5 if start <= d.date() < end else -6))
 
 
-def _plain_id(self):
-    if self._ID:
-        return self._ID
-    ids = pdfdoc.PDFText(self.signature.digest(), enc="raw").format(pdfdoc.DummyDoc())
-    self._ID = b"\n[" + ids + ids + b"]\n"
-    return self._ID
-
-
-pdfdoc.PDFFile.__init__ = _plain_header
-pdfdoc.PDFDocument.ID = _plain_id
-
-
-def pdf_stamp(path, when):
-    """replace the invariant creation and modification dates with a local Minnesota time, same byte length"""
-    b = open(path, "rb").read()
-    inv = re.findall(rb"D:\d{14}[+-]\d\d'\d\d'", b)
-    assert inv, "no date in %s" % path
-    off = "-06'00'" if not (dt.date(when.year, 3, 14) <= when.date() < dt.date(when.year, 11, 7)) else "-05'00'"
-    new = ("D:" + when.strftime("%Y%m%d%H%M%S") + off).encode()
-    for old in set(inv):
+# ------------------------------------------------------------------ PDF through LibreOffice
+def soffice_pdf(docx_path, pdf_path, when):
+    """convert a .docx to a tagged PDF with LibreOffice, then pin the export time to `when` (local Minnesota time)
+    and the document identifier to one derived from the file, both at equal length"""
+    work = tempfile.mkdtemp(prefix="lo-")
+    try:
+        env = dict(os.environ, TZ="America/Chicago", HOME=work)
+        prof = "file://" + os.path.join(work, "profile")
+        flt = 'pdf:writer_pdf_Export:{"UseTaggedPDF":{"type":"boolean","value":"true"},' \
+              '"ExportBookmarks":{"type":"boolean","value":"true"}}'
+        subprocess.run(["soffice", "-env:UserInstallation=" + prof, "--headless", "--norestore", "--convert-to", flt,
+                        "--outdir", work, docx_path], check=True, env=env, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, timeout=180)
+        out = os.path.join(work, os.path.splitext(os.path.basename(docx_path))[0] + ".pdf")
+        b = open(out, "rb").read()
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    dates = re.findall(rb"D:\d{14}[+-]\d\d'\d\d'", b)
+    assert dates, "no export time in the PDF"
+    off = when.replace(tzinfo=central(when)).strftime("%z")
+    new = ("D:" + when.strftime("%Y%m%d%H%M%S") + off[:3] + "'" + off[3:] + "'").encode()
+    for old in set(dates):
         assert len(old) == len(new)
         b = b.replace(old, new)
-    open(path, "wb").write(b)
+    ids = re.findall(rb"/ID \[ <([0-9A-F]{32})>\s*<([0-9A-F]{32})> \]", b)
+    assert len(ids) == 1, "one document identifier"
+    pin = hashlib.md5(os.path.basename(pdf_path).encode() + new).hexdigest().upper().encode()
+    for old in set(ids[0]):
+        b = b.replace(old, pin)
+    # LibreOffice's own checksum covers the export as first written, run clock included: recomputed over the pinned file
+    assert len(re.findall(rb"/DocChecksum /[0-9A-F]{32}", b)) == 1, "one document checksum"
+    blank = re.sub(rb"(/DocChecksum /)[0-9A-F]{32}", rb"\g<1>" + b"0" * 32, b)
+    b = re.sub(rb"(/DocChecksum /)[0-9A-F]{32}", rb"\g<1>" + hashlib.md5(blank).hexdigest().upper().encode(), blank)
+    open(pdf_path, "wb").write(b)
 
 
+# ------------------------------------------------------------------ document properties
 def _w3c(d):
     return d.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -91,9 +113,74 @@ def app_props_docx(company, pages, words, chars):
                chars + words)).encode("utf-8")
 
 
+# ------------------------------------------------------------------ Office packages
+_INLINE = re.compile(rb'<c ([^>]*?)t="inlineStr"([^>]*)><is><t(?: xml:space="preserve")?>(.*?)</t></is></c>', re.S)
+_INLINE_EMPTY = re.compile(rb'<c ([^>]*?)t="inlineStr"([^>]*)><is><t(?: xml:space="preserve")?/></is></c>')
+
+
+def _shared_strings(items):
+    """move every inline string into a shared string table, in order of first use, as Excel keeps them"""
+    table, index, count = [], {}, [0]
+
+    def sub(m):
+        text = m.group(3)
+        if text not in index:
+            index[text] = len(table)
+            table.append(text)
+        count[0] += 1
+        return b'<c ' + m.group(1) + b't="s"' + m.group(2) + b'><v>%d</v></c>' % index[text]
+
+    out = []
+    for name, data in items:
+        if name.startswith("xl/worksheets/sheet") and name.endswith(".xml"):
+            data = _INLINE.sub(sub, data)
+            data = _INLINE_EMPTY.sub(lambda m: b'<c ' + m.group(1) + m.group(2).strip() + b'/>', data)
+        out.append((name, data))
+    si = b"".join(b'<si><t xml:space="preserve">' + t + b"</t></si>" if (t[:1].isspace() or t[-1:].isspace())
+                  else b"<si><t>" + t + b"</t></si>" for t in table)
+    sst = DECL + (b'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="%d" uniqueCount="%d">'
+                  % (count[0], len(table))) + si + b"</sst>"
+    return out, sst
+
+
+def _excel_order(name):
+    order = ["[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels"]
+    if name in order:
+        return (order.index(name), 0, name)
+    m = re.match(r"xl/worksheets/sheet(\d+)\.xml$", name)
+    if m:
+        return (4, int(m.group(1)), name)
+    rest = {"xl/theme/theme1.xml": 5, "xl/styles.xml": 6, "xl/sharedStrings.xml": 7, "docProps/core.xml": 20,
+            "docProps/app.xml": 21}
+    return (rest.get(name, 10), 0, name)
+
+
+def _word_order(name):
+    order = ["[Content_Types].xml", "_rels/.rels", "word/document.xml", "word/_rels/document.xml.rels"]
+    if name in order:
+        return (order.index(name), name)
+    rest = {"word/theme/theme1.xml": 8, "word/settings.xml": 9, "word/styles.xml": 10, "word/stylesWithEffects.xml": 11,
+            "word/webSettings.xml": 12, "word/fontTable.xml": 13, "docProps/core.xml": 20, "docProps/app.xml": 21,
+            "docProps/custom.xml": 22}
+    if name.startswith("word/media/"):
+        return (5, name)
+    if name.startswith(("word/header", "word/footer", "word/footnotes", "word/endnotes", "word/numbering")):
+        return (6, name)
+    if name.startswith("customXml/"):
+        return (15, name)
+    return (rest.get(name, 14), name)
+
+
+def _declared(name, data):
+    if name.endswith((".xml", ".rels")) and not data.startswith(b"<?xml"):
+        return DECL + data
+    return data
+
+
 def repack(path, core, app, drop=()):
-    """rewrite an Office package: fixed entry dates, given document properties, entries in their original order;
-    a dropped part loses its relationship and content-type entry too"""
+    """rewrite an Office package with fixed entry dates, the given document properties and the parts in the order
+    the Office application writes them; an .xlsx gets a shared string table. A dropped part loses its relationship
+    and content-type entry too."""
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist() if i.filename not in drop]
     for part in drop:
@@ -107,13 +194,31 @@ def repack(path, core, app, drop=()):
     names = [n for n, _ in items]
     if "docProps/core.xml" not in names:
         items.append(("docProps/core.xml", core))
+    if "docProps/app.xml" not in names and app is not None:
+        items.append(("docProps/app.xml", app))
+        items = [(n, d.replace(b"</Types>", b'<Override PartName="/docProps/app.xml" ContentType="application/vnd.'
+                                            b'openxmlformats-officedocument.extended-properties+xml"/></Types>')
+                  if n == "[Content_Types].xml" else d) for n, d in items]
+    xlsx = path.endswith(".xlsx")
+    if xlsx and "xl/sharedStrings.xml" not in names:
+        items, sst = _shared_strings(items)
+        items.append(("xl/sharedStrings.xml", sst))
+        items = [(n, d.replace(b"</Types>", b'<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.'
+                                            b'openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/></Types>')
+                  if n == "[Content_Types].xml" else d) for n, d in items]
+        rels = dict(items)["xl/_rels/workbook.xml.rels"]
+        ids = [int(x) for x in re.findall(rb'Id="rId(\d+)"', rels)]
+        rel = (b'<Relationship Id="rId%d" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/'
+               b'sharedStrings" Target="sharedStrings.xml"/>' % (max(ids) + 1))
+        items = [(n, d.replace(b"</Relationships>", rel + b"</Relationships>") if n == "xl/_rels/workbook.xml.rels" else d)
+                 for n, d in items]
+    items = [(n, core if n == "docProps/core.xml" else app if (n == "docProps/app.xml" and app is not None) else d)
+             for n, d in items]
+    items = [(n, _declared(n, d)) for n, d in items]
+    items.sort(key=lambda x: _excel_order(x[0]) if xlsx else _word_order(x[0]))
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as z:
         for name, data in items:
-            if name == "docProps/core.xml":
-                data = core
-            elif name == "docProps/app.xml" and app is not None:
-                data = app
             zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.create_system = 0

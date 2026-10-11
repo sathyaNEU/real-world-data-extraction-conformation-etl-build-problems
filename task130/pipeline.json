@@ -6,11 +6,11 @@
  "stage": 4,
  "stage_name": "leak check",
  "updated": "2026-10-11",
- "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,928; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,067 per member month the following year (at the enrolled tier mix, before trend); the baseline is $3,541.",
+ "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,895; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,385 per member month the following year (at the enrolled tier mix, before trend); the baseline is $3,916.",
  "duplicate_check": {
   "heart": "",
-  "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check WARN only (first names Phillip, Michelle in older builds)",
-  "surface": "guard.py surface: task83 promoted on percentile only (0.140, corpus pct 99); shared: the xlsx+docx pair, seven steps, five components, flat layout, one short masked prompt shingle; no shared file name or entity; different domain and mechanism",
+  "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 1: WARN only (first names Phillip and Michelle in older builds; Jessica Petty replaced by Edward Miller from the same draw)",
+  "surface": "guard.py surface after repair 1: task83 promoted on percentile only (0.140, corpus pct 99), as before; nearest unpromoted task50 0.100; people: WARN Phillip, NOTE 'Ellery Benefit' (the administrator's name read as a persona); the dictionary renamed warehouse_readme_2027-03.txt after the clone pre-flight's surface note",
   "clone_check": ""
  },
  "judge": {
@@ -52,18 +52,18 @@
  ],
  "target_zip": {
   "path": "task130/target.zip",
-  "entries": 12,
-  "bytes": 10671792,
-  "sha256": "64b4eecd1a12df6b4da429304114cf9f9d70572c07d492ea4b1e7fe74b1674eb",
-  "cut": "2026-10-11, by build.py from the final rebuild",
-  "matches_target": "by content, every entry; byte-identical across rebuilds"
+  "entries": 13,
+  "bytes": 11598542,
+  "sha256": "9b5648de8246f3ded10132046a292686a39ed07d2a63b6ca68b2c1d0a0bb6e98",
+  "cut": "2026-10-11, by build.py from the repair 1 rebuild",
+  "matches_target": "by content, every entry; byte-identical across two scratch rebuilds"
  },
  "two_layer": "compliant: Layer 1 the claims plumbing (claim versions and denials, PBM reversals, two key systems, the administrator conversion, run-out, a superseded draft list); Layer 2 selection on the outcome, a cohort chosen on its 2026 claims regressing toward the mean; six-point check in the design note",
  "loops": 0,
  "branch": "sathya8571/task130-harden",
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2 REVIEW lines answered in the design note's Leak review)",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK after repair 1 (4 REVIEW lines answered in the design note's Leak review)",
+  "reader": "v3 round 2026-10-11: findings L1, P1 to P4, R1 to R7 repaired in Repair 1 (design note); not re-run"
  },
  "solver_rounds": [
   {
@@ -79,6 +79,15 @@
    "architecture": "v2",
    "decision": "reroot",
    "brief": "the loop 1 device is a template of task73 world ten and was solved on the portal in task86 v2; v2 is spent"
+  }
+ ],
+ "repairs": [
+  {
+   "repair": 1,
+   "date": "2026-10-11",
+   "trigger": "v3 reader round and clone pre-flight surface note",
+   "moved": "every graded figure (claims engine rebuilt, seed 101005 to 101050): programme $2,157 / $1,384 / $3,541 to $2,227 / $1,689 / $3,916",
+   "gates": "checks.py 5,972 assertions green; verify.py green; two scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check WARN only"
   }
  ]
 }
