@@ -38,7 +38,7 @@ People (guard.py names, en_AU, seed 182): Rebecca Quinn (principal hydrogeologis
 
 **Data-native sentence.** A bore in the creek alluvium rises within weeks of a good wet season and falls through every
 dry one, while a bore in the coal measures answers rain that soaked in at the outcrop years before, so in 2026 the coal
-measures were still climbing on the 2020 to 2022 wet seasons when the pit's dewatering pulled them back down, and the
+measures were still climbing on the 2019 to 2021 wet seasons when the pit's dewatering pulled them back down, and the
 alluvium had been falling for three dry seasons whether the pit was there or not.
 
 **Layer 1 (realistic mess and the systems that produce it).** A mine's groundwater monitoring network as the
@@ -110,10 +110,11 @@ task51 (lineage).
 
 A competent solver converts every dip and logger reading to a reduced level and compares each bore's September 2026
 level with its baseline assessment (or with the reference bores' change). It offers make good to the alluvial bores
-that fell more than 2 m and the basalt bore that fell more than 5 m. The step that lands it there is reading the
-decline since the baseline as the mine's. In fact the alluvium and the basalt fell through the dry seasons on rainfall
-alone. The coal-measure bores near the pit were still rising on the 2020 to 2022 wet seasons, and the mine drew them
-6 to 9 m below where that rise would have taken them while they show less than 4 m of decline.
+that fell more than 2 m and the basalt bore that fell more than 5 m (or, net of the reference bores, to KV-LB12 alone).
+The step that lands it there is reading the decline since the baseline as the mine's. In fact the alluvium and the
+basalt fell through the dry seasons on rainfall alone. The coal-measure bores near the pit were still rising on the
+2019 to 2021 wet seasons, and the mine drew them 8 to 9 m below where that rise was taking them while they show less
+than 2.5 m of decline (shipped: 8.2 to 9.3 m drawn down, 2.21 to 2.49 m fallen).
 
 ## ENTITY AND UNIT OF VALUE
 
@@ -121,197 +122,364 @@ One landholder bore. MG-02 4.1's test: the decline in the bore's water level tha
 has caused, at its September 2026 assessment level, against the trigger for its aquifer (2 m unconsolidated, 5 m
 consolidated). An offer is an agreement with the bore's owner (deepen, replace or supply water).
 
-## THE WORLD (build plan; every figure below is a target the generator asserts or replaces with its shipped value)
+## THE WORLD (as built; every figure is the generator's, and the ones the pack carries are asserted in `checks.py`)
 
 **The mine.** Kelvale Mine, an open-cut coal mine of Tarrabool Resources in the northern Bowen Basin (Isaac region,
-central Queensland).
-- The box cut started in June 2022 and pit dewatering began on 4 July 2022. Advance dewatering bores came on from March
-  2023, and the take rises as the pit deepens.
-- The take is metered daily by source (pit sumps, advance dewatering bores AD01 to AD04).
+central Queensland). Pit dewatering began on 4 July 2022 (pit sump PS1; PS2 from 16 January 2023); the advance
+dewatering bores AD01 to AD04 came on between 6 March 2023 and 12 February 2024. The metered take averaged 1.86 ML a day
+in July 2022, 5.62 in June 2023, 9.12 in June 2024, 10.49 in June 2025 and 12.60 in September 2026 (12.9 GL in all).
 
-**Hydrogeology.** Three units:
-- The Mundoora Creek alluvium: unconsolidated, trigger 2 m. Water table 5 to 15 m below ground. Responds to a wet
-  season within weeks to months.
-- The Tertiary basalt on the ridges: consolidated, trigger 5 m. Responds over months to a year or two.
-- The Permian coal measures: consolidated, trigger 5 m. Confined, recharged at the outcrop. Levels respond over years.
-  The pit dewaters this unit.
+**Hydrogeology.** The Mundoora Creek alluvium (unconsolidated, trigger 2 m), the Tertiary basalt on the ridges and the
+Permian coal measures (both consolidated, trigger 5 m). The coal measures subcrop beneath the alluvium at the pit's
+eastern end, where the alluvial bore KV-LB12 (A1) is drawn down by leakage.
 
-The coal measures subcrop beneath the alluvium at the pit's eastern end, so one alluvial bore there is drawn down
-through leakage.
+**Climate (shipped daily, 1 January 1990 to 30 September 2026; simulated from 1965, seeded).** Mean annual rainfall
+579 mm over water years 1991 to 2022 (summer-dominant: December to March carries more than 2.2 times June to
+September), Morton areal potential evapotranspiration 1,753 mm. Water-year rainfall (October to September): 2010 638,
+2011 696, 2012 552, 2013 492, 2014 475, 2015 499, 2016 593, 2017 637, 2018 498, 2019 487, 2020 843, 2021 956, 2022 551,
+2023 336, 2024 325, 2025 318, 2026 348 mm. So: wet 2010 to 2011, dry 2013 to 2015, average 2016 to 2017, dry 2018 to
+2019, wet 2019-20 and 2020-21 seasons, an average 2021-22 season, failed seasons from 2022-23 to 2024-25 and a dry
+2025-26 (each failed year asserted under 0.7 of the mean, each wet one over 1.3).
 
-**Climate (shipped daily, 1990 to September 2026).**
-- Summer-dominant rainfall averaging about 600 mm a year, with Morton areal potential evaporation of about 1,800 mm.
-- Wet 2010 to 2011, dry 2013 to 2015, average 2016 to 2017, dry 2018 to 2019, wet 2020 to 2022, three failed wet
-  seasons 2023 to 2025, and a dry 2026 to date.
-- Synthetic, seeded, plausible against the region.
+**Bore response (the simulation, never shipped).** Level = constant + gain x (gamma response to rainfall less f x
+evaporation) - gain x (Hantush-type response to the metered take, leaky well function W(u, r/B) with a time scale and
+leakage per bore) + AR(1) noise (sigma 0.05 to 0.09 m, daily autocorrelation 0.98 to 0.995). Each gain is set from a
+target climate decline or rise between the bore's baseline date and September 2026, and from a target drawdown at
+September 2026. Response times: alluvium 140 to 200 days (shapes 1.5 to 2), basalt 300 to 650 days (shapes 1 to 2), coal
+measures 6.2 to 6.8 years (shape 16: little response in the first two years, the most at five to seven), which is what
+keeps the coal measures' 2019 to 2021 rise running through 2026 while the drought is still on its way down to them.
+Every bore's water table stays at least 1.5 m below ground and above the bore's bottom, and every logger stays
+submerged (asserted).
 
-**Bore response (the simulation, never shipped).** Head = constant + response to recharge (rainfall less a fitted share
-of evaporation, through a gamma response with its own gain and mean response time per bore) − response to the mine's
-take (a Hantush-type response whose gain falls with distance and leakance, and whose lag grows with distance) + AR(1)
-noise.
-- Mean response times: alluvium 60 to 200 days, basalt 300 to 700 days, coal measures 3.5 to 7 years.
-- The coal measures' 2020 to 2022 rise is still running in 2026 without the mine.
+**The 18 register bores as built.** Labels are the build's own; codes are shipped.
 
-**The 18 landholder bores in the register (targets).**
+| Bore | Unit | Change, baseline to Sep 2026 (m) | True drawdown (m) | Shipped estimate (m) | Call |
+|---|---|---|---|---|---|
+| CM1 KV-LB04, CM2 KV-LB07, CM3 KV-LB05, CM4 KV-LB10 (3.4 to 5.7 km) | coal measures | -2.44, -2.46, -2.49, -2.21 | 8.73, 8.33, 9.37, 8.11 | 8.9, 8.4, 9.3, 8.2 | impaired |
+| CM5 KV-LB16 (11 km) | coal measures | +1.74 | 2.28 | 2.4 | not impaired |
+| A1 KV-LB12 (over the subcrop) | alluvium | -8.78 | 4.50 | 4.6 | impaired |
+| A2 to A7 KV-LB01, 02, 03, 06, 08, 09 | alluvium | -4.63, -5.23, -4.64, -4.84, -4.81, -4.69 | 0.43 to 0.82 | 0.8, 0.7, 0.5, 0.6, 0.4, 0.3 | not impaired |
+| A8, A9 KV-LB13, 14 (on the Coolibah Springs waterholes) | alluvium | -0.98, -0.87 | 0.15, 0.12 | 0.2, 0.1 | not impaired |
+| B1 to B3 KV-LB11, 15, 17 | basalt | -2.59, -3.02, -2.68 | 1.16, 1.65, 1.00 | 1.1, 1.6, 0.9 | not impaired |
+| B4 KV-LB18 (ridge bore) | basalt | -8.70 | 1.48 | 1.3 | not impaired |
 
-| Bores | Unit | Observed change, baseline to Sep 2026 | Drawdown the mine caused | Call |
-|---|---|---|---|---|
-| CM1 to CM4 (3 to 6 km from the pit) | coal measures | −1.5 to −3.5 m | 6.5 to 9 m | impaired (answer) |
-| CM5 (11 km) | coal measures | +1 to +2 m | 2 to 3 m | not impaired |
-| A1 (above the subcrop, 2 km) | alluvium | −5 to −6 m | 2.8 to 3.5 m | impaired (answer) |
-| A2 to A7 | alluvium | −2.5 to −4.5 m | 0.1 to 0.8 m | not impaired |
-| A8, A9 (on the creek's permanent waterholes) | alluvium | −0.8 to −1.5 m | below 0.5 m | not impaired |
-| B1 to B3 | basalt | −1 to −3.5 m | 0.5 to 2 m | not impaired |
-| B4 (a ridge bore) | basalt | −6.5 to −7.5 m | about 1.5 m | not impaired |
+**The other network bores.** Three state reference bores 20 to 30 km from the pit: KV-RF01 and KV-RF02 in the alluvium
+(fell 4.84 and 5.02 m from their April to June 2022 mean to September 2026) and KV-RF03 in the basalt (5.16 m); none
+in the coal measures. Six mine monitoring bores on the pit perimeter: two in the alluvium and four in the coal
+measures, which fell 36.0, 29.4, 24.7 and 21.4 m (KV-MB03 to KV-MB06).
 
-**The other bores in the network (not in the decision).**
-- Three state reference bores outside the predicted drawdown, 20 to 30 km from the pit: two in the alluvium (change
-  about −3 m) and one in the basalt (about −1.5 m). None is in the coal measures.
-- Six mine monitoring bores near the pit (two alluvium, four coal measures; drawdown 3 to 40 m).
+**Monitoring history.** EIS rounds quarterly from March 2012 to June 2014 (the consultant, feet, registered numbers);
+monthly runs from July 2014 (codes, with the field team's variants); fortnightly at the landholder bores from 10 August
+2026, so each has three September 2026 visits; baseline assessments on each landholder bore's date in April to June 2022
+(coal measures in April, basalt in May, alluvium in June); hourly loggers from May 2015 at KV-LB04, KV-LB05, KV-LB12,
+KV-LB02, KV-LB15, KV-LB18, KV-RF01, KV-RF03, KV-MB01 and KV-MB03 (two replaced, one 17-day gap), downloaded quarterly
+with a check dip and finally on 1 to 6 October 2026; the site barometric logger (one 9-hour gap in 2018).
 
-**Monitoring history.**
-- Environmental-impact baseline dips from March 2012, quarterly, read in feet by a consultant until June 2014.
-- Monthly dips by the mine's field team from July 2014.
-- Hourly unvented loggers from May 2015 at ten bores: six landholder bores (CM1, CM3, A1, A3, B2, B4), two reference
-  bores and two mine bores.
-- One site barometric logger.
-- Baseline assessments under MG-02 in April to June 2022.
-- Complaints in August and September 2026 from the owners of A2, A3, A5 and B4 (bores "sucking air").
+## LADDER (shipped; each rung's set asserted by name in `generator/checks.py`, every bore at least 25 per cent of its trigger away from it at every rung)
 
-## LADDER (planned; each rung asserted by name in `generator/checks.py`)
+Each figure is the rung's quantity in metres (a positive figure is a fall attributed to the mine on that reading).
+Triggers: 2 m for the alluvium (A), 5 m for the basalt (B) and coal measures (CM).
 
-| Rung | Construction | Set | Killed by |
-|---|---|---|---|
-| 0 | The complaints | A2, A3, A5, B4 | a complaint is not a test |
-| 1 (naive) | Decline from the baseline assessment level to the September 2026 level, against the trigger | A1 to A7, B4 | the decline since the baseline is the seasons' and the mine's together |
-| 1b | Decline from the June 2022 level (or from the 2012 to 2022 mean) | as rung 1 | as rung 1 |
-| 2 | Decline less the reference bores' change (pooled, or matched by unit with the basalt reference for the coal measures) | A1 only | no reference bore is in the coal measures, whose path was a rise |
-| 2b | The pre-July 2022 trend extrapolated (linear, 2017 to 2022 or 2012 to 2022) | almost every bore | the 2020 to 2022 rise was the wet seasons, not a trend |
-| 3 | One rainfall model for every bore (cumulative rainfall departure on one window, 12 months or 3 years), calibrated before July 2022 | A1 (CM bores well under 5 m) | the coal measures' response runs years longer than any one window |
-| 4 (answer) | Each bore's own response to rainfall and evaporation, calibrated on its record before 4 July 2022 and run forward; drawdown = modelled level without the mine − September 2026 level | **CM1, CM2, CM3, CM4, A1** | |
+| Rung | CM1 | CM2 | CM3 | CM4 | CM5 | A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | A9 | B1 | B2 | B3 | B4 | Set | Thinnest |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 complaints | | | | | | | x | x | | x | | | | | | | | x | A2, A3, A5, B4 | |
+| 1 baseline | 2.44 | 2.46 | 2.49 | 2.21 | -1.74 | 8.78 | 4.63 | 5.23 | 4.64 | 4.84 | 4.81 | 4.69 | 0.98 | 0.87 | 2.59 | 3.02 | 2.68 | 8.70 | A1 to A7, B4 | 0.40 (B2) |
+| 1b June 2022 | 2.53 | 2.56 | 2.59 | 2.25 | -1.70 | 8.55 | 4.77 | 5.25 | 4.79 | 5.09 | 5.07 | 4.69 | 1.07 | 0.93 | 2.52 | 3.04 | 2.66 | 7.99 | A1 to A7, B4 | 0.39 (B2) |
+| 1b 2012-22 mean | 3.00 | 2.77 | 3.31 | 2.64 | -1.34 | 8.17 | 4.55 | 5.05 | 4.12 | 5.14 | 4.39 | 4.67 | 1.31 | 1.29 | 2.02 | 2.39 | 1.93 | 6.99 | A1 to A7, B4 | 0.34 (CM3) |
+| 2 pooled refs | -2.57 | -2.55 | -2.52 | -2.80 | -6.75 | 3.77 | -0.38 | 0.22 | -0.37 | -0.17 | -0.20 | -0.32 | -4.03 | -4.14 | -2.42 | -1.99 | -2.33 | 3.69 | A1 | 0.26 (B4) |
+| 2 matched refs | -2.72 | -2.70 | -2.67 | -2.95 | -6.91 | 3.85 | -0.30 | 0.30 | -0.29 | -0.09 | -0.12 | -0.25 | -3.95 | -4.06 | -2.57 | -2.14 | -2.49 | 3.54 | A1 | 0.29 (B4) |
+| 2b trend 2017-22 | -1.03 | -0.34 | -1.81 | -1.06 | -4.21 | 15.50 | 11.64 | 13.49 | 11.22 | 13.90 | 11.96 | 12.06 | 3.35 | 3.25 | 3.51 | 3.64 | 3.36 | 15.60 | A1 to A9, B4 | 0.27 (B2) |
+| 2b trend 2012-22 | 1.16 | 0.89 | 1.56 | 0.87 | -2.50 | 12.87 | 9.13 | 10.42 | 8.42 | 10.74 | 9.11 | 9.43 | 2.74 | 2.62 | 2.88 | 3.10 | 2.68 | 12.39 | A1 to A9, B4 | 0.31 (A9) |
+| 3 one window, 12 months | 2.99 | 2.77 | 3.30 | 2.64 | -1.34 | 4.31 | 0.83 | 0.56 | 0.59 | 0.69 | 0.59 | 0.72 | 0.08 | 0.13 | 1.38 | 1.95 | 1.43 | 2.74 | A1 | 0.34 (CM3) |
+| 3 one window, 3 years | 2.99 | 2.77 | 3.30 | 2.64 | -1.34 | 2.80 | -0.83 | -1.04 | -1.17 | -1.31 | -1.28 | -1.07 | -0.39 | -0.27 | 0.81 | 1.45 | 0.83 | 0.54 | A1 | 0.34 (CM3) |
+| **4 own response (answer)** | **8.90** | **8.41** | **9.30** | **8.19** | 2.40 | **4.60** | 0.80 | 0.70 | 0.50 | 0.60 | 0.40 | 0.30 | 0.21 | 0.10 | 1.10 | 1.60 | 0.90 | 1.30 | **CM1 to CM4, A1** | see GRID |
 
-**Margins (targets, asserted).** Every bore's quantity sits at least 25 per cent from its trigger at every rung, so no
-set is decided at its edge.
-- In every answer cell: CM1 to CM4 at 6.25 m or more; A1 at 2.5 m or more; every other coal-measure or basalt bore at
-  3.75 m or less; every other alluvial bore at 1.5 m or less.
-- At rung 1: A2 to A7 decline 2.5 m or more; B4 6.25 m or more; CM1 to CM4 3.75 m or less.
+"Thinnest" is the smallest distance from a trigger over the 18 bores, as a fraction of that trigger (0.25 is the floor).
 
-**Evidence the pack carries for the judge (asserted).**
-- The coal-measure bores were rising before 4 July 2022 (0.5 to 1 m a year since 2021).
-- The per-bore climate model fitted before dewatering tracks the three reference bores through September 2026 within
-  0.5 m.
-- The mine's coal-measure monitoring bores show the cone (20 to 40 m).
-- A full-record model with the take as a second stress gives the same set.
+- **Rung 0**, the complaints: KV-LB01, KV-LB02, KV-LB06, KV-LB18. Killed by MG-02 4.1 (a complaint is not the test); no
+  complainant's bore is in the answer.
+- **Rung 1 and 1b**, the decline from the baseline assessment (or from the June 2022 level, or from the mean of the
+  monthly levels March 2012 to June 2022): A1 to A7 and B4. A strong analyst who cleans every reading stops here. Killed
+  by the reference bores and the climate record: every alluvial reference fell about 5 m with no mine near it, and the
+  coal measures were rising before July 2022 (0.65 to 0.72 m a year since 2021, asserted).
+- **Rung 2**, the decline less the reference bores' change (April to June 2022 mean to September 2026: 4.84, 5.02 and
+  5.16 m), pooled (5.01) or matched by unit (alluvium 4.93, the basalt reference for the basalt and the coal measures
+  5.16): A1 alone. Killed by the register's network sheet: no reference bore is in the coal measures, whose path was a
+  rise.
+- **Rung 2b**, the pre-July 2022 straight line extrapolated to 15 September 2026 (monthly levels from January 2017 or
+  from the first reading): A1 to A9 and B4. Killed by the climate file: the 2019 to 2021 rise in the alluvium was two wet
+  seasons, not a trend; the coal-measure lines run flat because their pre-2022 path fell then rose.
+- **Rung 3**, one summed rainfall-departure window for every bore (12 months or 3 years, no lag, calibrated on monthly
+  levels to June 2022; a fitted slope below zero is read as no response and the bore's pre-July 2022 mean taken): A1
+  alone, coal measures 2.64 to 3.30 m. Killed by the coal measures' own records: their levels move with the rain of four
+  to eight years before, which no single short window sees.
+- **Rung 4**, the answer: each bore's own gamma response to daily rainfall less f x Morton areal evaporation, fitted on its
+  readings from the first reading to 3 July 2022 (logger daily means where the bore has a logger), run forward; the
+  drawdown is the fitted level for September 2026 (mean of its days) less the assessment level. CM1 to CM4 and A1.
 
-## GRID (planned, asserted cell by cell)
+**Margins (shipped, asserted).** Every bore is at least 25 per cent of its trigger away from it at every rung (thinnest
+0.26 of the trigger, B4 at rung 2 pooled) and in every answer cell (thinnest 0.306, CM4 6.53 m in the rainfall-departure
+family). Rung 1 as targeted: A2 to A7 fell 4.63 to 5.23 m (at least 2.5), B4 8.70 (at least 6.25), CM1 to CM4 2.21 to 2.49
+(at most 3.75, and inside 1.5 to 3.5). Five distinct sets on the ladder (rungs 2 and 3 share A1 alone, asserted).
 
-Answer cells. Every cell gives the answer set with the 25 per cent margins.
-- Model families:
-  - a gamma response to rainfall and evaporation (evaporation factor fitted);
-  - an exponential response;
-  - a cumulative-rainfall-departure regression with each bore's window chosen by fit (1 to 10 years);
-  - a regression on several rainfall moving averages (1, 3, 5 and 8 years);
-  - a full-record model with the take as a second stress, whose take term is the drawdown.
-- Calibration windows: from the first reading, or from May 2015, to 3 July 2022.
-- Time steps: daily or monthly.
-- Data: manual dips only, or logger daily means where there are loggers.
+**Evidence the pack carries (asserted).**
+- The coal-measure bores were rising before 4 July 2022: 0.72 (CM1), 0.70 (CM2), 0.66 (CM3) and 0.65 m a year (CM4),
+  least-squares slope of monthly levels January 2021 to June 2022 (target 0.5 to 1).
+- The per-bore model fitted before 4 July 2022 tracks the three reference bores to September 2026: largest monthly
+  residual 0.29 (KV-RF01), 0.24 (KV-RF02) and 0.14 m (KV-RF03) (target 0.5).
+- The mine's coal-measure bores show the cone: they fell 36.0, 29.4, 24.7 and 21.4 m from April to June 2022 to
+  September 2026 (target 20 to 40).
+- The full-record model with the take as a second stress gives the same set in all eight of its cells.
+- The world: the coal measures' climate path is still higher in September 2026 than in March 2026 at CM1 to CM4, and the
+  golden's estimate is within 0.5 m of the true drawdown at each (asserted against the simulation).
 
-Naive cells give their rung's set:
-- rungs 1 and 1b under every reference level;
-- rung 2 pooled, and matched by unit;
-- rung 2b on both trend windows;
-- rung 3 on 12 months and 3 years.
+## GRID (shipped, asserted cell by cell)
 
-Variants that must keep every winner:
-- assessment level as the September mean or the last static reading in September;
-- pumped dips removed by remark or by the robust outlier rule;
-- the 2012 to 2014 feet record kept or dropped.
+Five families, each numpy-only in `generator/models.py` (shared by `golden.py`; `verify.py` writes its own):
+- **gamma**: shapes 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20 x 40 mean response times from 20 days to 12 years (geometric) x
+  evaporation factor 0 to 1 in steps of 0.025, gain and constant by least squares (gain positive);
+- **exp**: an exponential response with a fitted delay (delays 0 to 6 years, 11 values, x 30 time constants);
+- **crd**: summed rainfall departure over each bore's own window, 1 to 10 years, lagged 0 to 6 years in six-month
+  steps, chosen by fit (slope positive);
+- **ma**: regression on the 1, 3, 5 and 8-year moving averages of rainfall;
+- **full**: the full record to September 2026 with the take as a second stress (gamma climate response x 45 gamma take
+  responses x 21 evaporation factors); its take term at September 2026 is the drawdown.
 
-## CLOSURE (the 22 axes)
+Calibration from the first reading or from May 2015, to 3 July 2022 (the full record runs to 30 September 2026); daily
+or monthly steps; manual dips only, or logger daily means where there are loggers. 5 x 2 x 2 x 2 = **40 cells, 0
+misses**, each giving CM1 to CM4 and A1 with every bore 25 per cent clear. Thinnest margin per family (fraction of the
+trigger): gamma 0.463 (A3 1.07 m, may2015/monthly/logger), exp 0.453 (CM5 2.73, may2015/daily/dips), crd 0.306 (CM4
+6.53, may2015/monthly/dips), ma 0.419 (CM2 7.09, may2015/daily/dips), full 0.431 (A3 1.14, may2015/monthly/logger).
 
-1 Population: the 18 landholder bores in the register (MG-02 1.2); the reference bores and the mine's own bores are
-outside it. 2 Unit: one bore. 3 Window: the September 2026 assessment level; the take from 4 July 2022. 4 As-of: water
-levels to 30 September 2026 (loggers downloaded 1 to 6 October, the extract delivered Friday 9 October 2026); the
-request on Tuesday 13 October; the executive team on Monday 26 October 2026. 5 Version basis: one row per reading; a dip
-keyed twice is one reading. 6 Divisor: none (a level difference). 7 Weighting: none; a logged bore's September level is
-the mean of its daily means, otherwise the mean of its static dips (MG-02 2.4). 8 Window length: one calendar month. 9
-Boundary: every bore at least 25 per cent from its trigger at every rung and in every answer cell. 10 Rounding: levels
-to two decimals and the mine's drawdown to one decimal in the deliverable; the call on unrounded values. 11 Tie-break:
-none needed. 12 Maturity: none (September is complete in the extract). 13 Order: identity, units, reduced level with the
-measuring point in force, static readings only, logger compensation and AEST days, the September level, then the
-attribution, then the trigger. 14 Row order: irrelevant. 15 Duplicates: identical double entries. 16 Identity: state
-registered number, company code and landholder's name through the register. 17 Netting: none. 18 Units: metres (feet
-before July 2014, 0.3048). 19 Code semantics: aquifer class from the register's unit (alluvium unconsolidated; basalt
-and coal measures consolidated). 20 Integerisation: none. 21 Scope: water level (yield and quality are not this test).
-22 Forward window: none (MG-02 4.1 tests the September 2026 level, not a projection).
+**Variants that keep every winner** (each re-run over all 40 cells; 120 cells, 0 misses):
+- the assessment level as the last static September reading: thinnest crd 0.326, exp 0.448, full 0.431, gamma 0.372, ma 0.433;
+- pumped dips removed by the robust outlier rule (more than 1.2 m below the median of up to two readings either side
+  within 50 days) instead of by remark: crd 0.306, exp 0.597, full 0.431, gamma 0.453, ma 0.419;
+- the 2012 to 2014 feet record dropped: crd 0.306, exp 0.453, full 0.431, gamma 0.463, ma 0.419.
 
-## ASK SHEET (planned)
+The naive cells (rungs 1, 1b, 2, 2b, 3 in each of their variants) are the ladder rows above.
 
-| Ask | Figures | Depends on the call |
+**Drawdown bands (min to max over the 40 cells, m):** CM1 6.9 to 9.3; CM2 7.1 to 9.1; CM3 7.6 to 10.5; CM4 6.5 to
+9.0; CM5 1.2 to 2.7; A1 3.2 to 4.9; A2 -0.3 to 0.8; A3 -0.6 to 1.1; A4 -0.6 to 0.8; A5 -0.8 to 0.7; A6 -0.8 to 0.7;
+A7 -0.5 to 0.7; A8 -0.2 to 0.2; A9 -0.1 to 0.2; B1 1.0 to 1.1; B2 1.4 to 1.7; B3 0.8 to 1.1; B4 0.7 to 2.7. Every
+golden value sits inside its band and every bore's rung 1 decline sits outside it (asserted).
+
+**Mess neutrality of the main call (primary cell re-run under each Layer 1 misstep).** Unchanged under: the measuring
+point history ignored, duplicate dips kept, pumped dips kept, the 2012 to 2014 rounds dropped (registered numbers not
+mapped), UTC days for the loggers, loggers left uncompensated (all asserted except the last two, which break the
+September level and are recorded). Recorded, not asserted: the feet record read as metres moves the call to 16 bores
+(the 2012 to 2014 levels drop by about 40 m, a step no analyst would keep).
+
+## CLOSURE (the 22 axes, as shipped)
+
+1 Population: the 18 landholder bores in the register (MG-02 1.2); the reference and mine bores are on a separate sheet
+outside MG-02. 2 Unit: one bore. 3 Window: the September 2026 assessment level (MG-02 2.4, 4.2); the take from 4 July
+2022. 4 As-of: water levels to 30 September 2026, loggers downloaded 1 to 6 October, the extract delivered Friday 9
+October 2026, the request Tuesday 13 October, the executive team Monday 26 October 2026; no date after 13 October 2026
+in any shipped file (asserted). 5 Version basis: one row per entry; a dip keyed twice (identical but for the entry
+number) is one reading (C1: the call is unchanged with duplicates kept). 6 Divisor: none. 7 Weighting: a logged bore's
+September level is the mean of its 30 Queensland-day means; a manual bore's is the mean of its September static dips
+(three, or two where one was pumped). 8 Window length: one calendar month. 9 Boundary: every bore at least 25 per cent
+of its trigger from it at every rung and in all 160 answer cells (thinnest 0.26 and 0.306). 10 Rounding: levels and
+changes to the centimetre, the mine's share to 0.1 m, the call on unrounded values; every graded figure at least 0.15 of
+its last printed unit from a rounding edge (levels and changes min 0.17, drawdowns min 0.44), no ties within a column
+(asserted). 11 Tie-break: none needed. 12 Maturity: September is complete (30 logger days per logged bore, three
+fortnightly runs). 13 Order: identity, units, measuring point in force, static readings, compensation and Queensland
+days, the September level, the attribution, the trigger. 14 Row order: irrelevant. 15 Duplicates: identical double
+entries, none in September 2026. 16 Identity: codes, code variants and registered numbers through the register (every
+site maps; C1: dropping the registered-number rows leaves the call unchanged). 17 Netting: none. 18 Units: metres, feet
+for the EIS rounds (0.3048); kPa to metres at 9.80665 (the notes; 9.81 moves no printed level, asserted). 19 Code
+semantics: aquifer class from the register (alluvium unconsolidated, basalt and coal measures consolidated). 20
+Integerisation: none. 21 Scope: water level only (yield and quality are not the test; the quality file is unused). 22
+Forward window: none (MG-02 4.1 tests the September 2026 level).
+
+Method axis (C4 grid separation): the five families, two calibration starts, two steps, two data sources and three
+variants (160 cells) all give the same five bores 25 per cent clear. The two forms ruled out by the data: a plain
+exponential (no delay) finds no positive response to rainfall at any time constant for any of the five coal-measure
+bores, whose levels fall after wet years at short lags, so it has no fit (forced, it reads like rung 3: A1 alone, the
+coal measures 2.8 to 3.7 m); the delayed exponential fits them to 0.66 to 0.74 m and the gamma to 0.09 to 0.29 m before
+July 2022. A single short window with no lag is rung 3 itself.
+
+## ASK SHEET (shipped)
+
+| Ask | Figures | Shipped answer |
 |---|---|---|
-| The bores and properties that get offers, and how many offers (memo; MG-02 6.1: one agreement per owner, covering every bore of theirs with impaired capacity) | 1 set + 1 | yes |
-| Per bore (workbook, 18 rows): September 2026 level in m AHD, two decimals | 18 | no (Layer 1: measuring points, pumped dips, compensation, AEST days, feet do not reach September) |
-| Per bore: change since its baseline assessment, m, two decimals | 18 | no (Layer 1: the baseline's measuring point) |
-| Per bore: the decline the mine has caused, m, one decimal | 18 | yes (graded on the band the answer grid spans, plus or minus a tolerance the build sets) |
-| Per bore: impaired capacity yes or no | 18 | yes (the call bore by bore) |
-| For each complainant whose bore misses the test (A2, A3, A5 and B4, all four): what lowered it (memo) | 4 | yes |
+| The offers and their count (note; MG-02 6.1) | 1 set + 1 | Yarrowmere Pastoral Co Pty Ltd (KV-LB04, KV-LB05), Tondara Grazing Pty Ltd (KV-LB07), Bluebush Downs Pty Ltd (KV-LB10), Cypress Ridge Pastoral Trust (KV-LB12): four offers |
+| September 2026 level, m AHD, two decimals (workbook) | 18 | LB01 209.51, LB02 205.24, LB03 204.86, LB04 207.77, LB05 214.47, LB06 209.61, LB07 195.44, LB08 201.27, LB09 199.16, LB10 203.49, LB11 238.12, LB12 209.50, LB13 202.33, LB14 201.88, LB15 241.33, LB16 209.84, LB17 243.13, LB18 245.75 |
+| Change since the baseline assessment, m, two decimals | 18 | LB01 -4.63, LB02 -5.23, LB03 -4.64, LB04 -2.44, LB05 -2.49, LB06 -4.84, LB07 -2.46, LB08 -4.81, LB09 -4.69, LB10 -2.21, LB11 -2.59, LB12 -8.78, LB13 -0.98, LB14 -0.87, LB15 -3.02, LB16 +1.74, LB17 -2.68, LB18 -8.70 |
+| The decline the mine caused, m, one decimal (graded on the band) | 18 | LB01 0.8, LB02 0.7, LB03 0.5, LB04 8.9, LB05 9.3, LB06 0.6, LB07 8.4, LB08 0.4, LB09 0.3, LB10 8.2, LB11 1.1, LB12 4.6, LB13 0.2, LB14 0.1, LB15 1.6, LB16 2.4, LB17 0.9, LB18 1.3 (bands in GRID) |
+| Impaired capacity | 18 | yes at LB04, LB05, LB07, LB10, LB12; no elsewhere |
+| What lowered each complainant's bore (note) | 4 | LB01 (Ernest Walker), LB02 (Brolga Plains Cattle Co), LB06 (Clarence Lewis), LB18 (Bottletree Holdings Pty Ltd): the dry seasons, with the mine's share 0.8, 0.7, 0.6 and 1.3 m against their falls of 4.63, 5.23, 4.84 and 8.70 m |
 
-Ask stops (each asserted to move its figures):
-- Measuring point history ignored (the latest measuring point for every reading): two bores' baseline changes move.
-- Pumped dips kept: the September levels of the bores with a September pumped dip move.
-- Loggers left uncompensated: about 10 m.
-- UTC days: the September means of logged bores move by a few millimetres; checked, and kept only if the shift clears a
-  rounding edge.
-- The last reading instead of the September mean.
+**Ask stops (each asserted to move exactly its figures):**
+- Measuring point history ignored (the latest measuring point for every reading): KV-LB07's change -2.46 to -2.33,
+  KV-LB08's -4.81 to -4.92 (resurveyed 14 November 2023 and 27 August 2025, after the baselines).
+- Pumped dips kept: KV-LB06 209.61 to 208.88, KV-LB10 203.49 to 202.03, KV-LB11 238.12 to 236.65 (the three September
+  pumped dips; the remark and the outlier rule agree on every September row, asserted).
+- Loggers left uncompensated: the six logged bores move up about 10.02 m (KV-LB04 207.77 to 217.79 and five more).
+- The last static reading instead of the September mean: 17 of the 18 levels move (KV-LB12 209.50 to 209.22, KV-LB18
+  245.75 to 245.44, and fifteen more).
+- UTC days instead of Queensland days: kept, it moves two printed levels (KV-LB12 209.50 to 209.49, KV-LB18 245.75 to
+  245.74; both bores were falling fastest in September).
 
-## PINS (planned)
+Recorded: 9.81 kPa per metre in place of the notes' 9.80665 moves no printed level. Every graded figure sits at least
+0.15 of a unit from its rounding edge (a third of a centimetre for the three-dip means; logged levels placed 0.25 to
+0.42 of a unit in), set by datum adjustments of 0 to 3.6 mm at six bores and by the drawdown targets; no two bores share
+a printed figure in any column.
 
-`MG-02_bore_assessment_and_make_good.pdf` (Tarrabool Resources, Kelvale Mine, revision 3, effective 1 March 2026):
-- 1.1 purpose; 1.2 scope (the landholder bores in the register).
-- 2.1 static level (pump off at least 12 hours; a reading with the pump running is a pumped level and is not used).
-- 2.2 reduced level (the measuring point elevation in force on the reading date, less the depth to water).
-- 2.3 a logged bore's daily level (the mean of the day's compensated readings, Queensland time).
-- 2.4 the assessment level (the mean of a bore's static levels in the assessment month: daily means for a logged bore,
-  manual dips otherwise).
-- 3.1 trigger thresholds by aquifer class.
-- 4.1 impaired capacity: the decline in the bore's water level caused by the mine's take of associated water, at its
-  assessment level, exceeds its trigger. Declines with other causes are not the mine's.
-- 4.2 the assessment month for a complaint is the last complete month before the assessment.
-- 5.1 the baseline assessment records the bore's construction, static level, yield and water quality before the take
-  began.
-- 6.1 offers: one make-good agreement per owner, covering every bore of theirs with impaired capacity. Two of CM1
-  to CM4 share an owner, so the answer's five bores make four offers.
-- 7.1 complaints.
+## PINS (shipped)
 
-No sentence defines the decline as a difference from the baseline. No sentence names a method of attribution.
+`MG-02_bore_assessment_and_make_good.pdf` (Tarrabool Resources, Kelvale Mine, revision 3, effective 01/03/2026; two
+pages): 1.1 purpose; 1.2 scope (the register's landholder bores; reference and mine bores outside it); 2.1 static level
+(pump off at least 12 hours; a pumped level is not used); 2.2 reduced level (the measuring point in force on the reading
+date less the depth to water); 2.3 a logged bore's daily level (mean of the day's readings compensated for air pressure,
+Queensland time); 2.4 the assessment level (mean of the static levels in the assessment month: daily levels for a logged
+bore, manual dips otherwise); 3.1 triggers (2 m unconsolidated, 5 m consolidated, stated only here, asserted); 4.1
+impaired capacity (the decline caused by the mine's take at the assessment level exceeds the trigger; "A decline with
+another cause is not the mine's"); 4.2 the assessment month for a complaint; 4.3 the principal hydrogeologist recommends
+and the executive team approves; 5.1 baseline assessments; 6.1 one agreement per owner covering every impaired bore of
+theirs; 6.2 make-good measures; 7.1 complaints recorded in the register. Revision history 1 (07/03/2022), 2
+(14/03/2023), 3 (01/03/2026).
 
-`monitoring_network_notes.md` (Erika Martin): field semantics, the feet era, measuring point resurveys, the logger
-compensation (kPa to metres at 9.80665 kPa per metre of fresh water), UTC stamps, and how codes and numbers map.
+Gate C sanity (asserted): MG-02 never defines the decline as a difference from the baseline and names no method (no
+"model", "regression", "reference bore", "rainfall", "climate" or "method" anywhere in it).
 
-Banned in every shipped text and the prompt (asserted): counterfactual, transfer function, response function, TFN,
-cumulative rainfall departure, CRD, climate-adjusted, climate adjustment, deseasonalise, detrend, recharge model,
-Pastas, Menyanthes, "without the mine", "would have been".
+`monitoring_network_notes.md` (Erika Martin, 9 October 2026): the network, identities, dip fields (feet for the EIS
+rounds, Queensland time, remarks as written), the measuring point resurveys pointed to the register, logger compensation
+(9.80665 kPa per metre, stated only here, asserted), UTC stamps, the check dips, the other files.
 
-## PACK (planned; the builder may rename within the company's conventions)
+Banned in every shipped text, the xlsx cells, the prompt, the goldens and the submission (asserted): counterfactual,
+transfer function, response function, TFN, cumulative rainfall departure, CRD, climate-adjusted, climate adjustment,
+deseasonalise, detrend, recharge model, Pastas, Menyanthes, "without the mine", "would have been".
 
-1. `landholder_bore_register.xlsx` (context artifact: bores, owners and properties, landholder names for the bores,
-   unit and class, trigger, construction, coordinates (GDA2020, MGA zone 55), baseline assessment date, level and
-   yield; measuring point history on a second sheet; the network's reference and mine bores on a third)
-2. `MG-02_bore_assessment_and_make_good.pdf` (pins)
-3. `monitoring_network_notes.md`
-4. `water_level_dips_2012-2026.csv` (manual dips: date, time, bore as recorded, depth to water, unit, remarks, officer)
-5. `logger_pressure_2015-2026.parquet` (hourly absolute pressure, kPa, UTC, by logger serial; the volume gate)
-6. `logger_installations.csv` (logger serial, bore, installed and removed, sensor depth below the measuring point)
-7. `barometric_logger_2015-2026.csv` (hourly air pressure, kPa, UTC)
-8. `daily_climate_1990-2026.csv` (rainfall and Morton areal potential evaporation for the mine's coordinates)
-9. `pit_dewatering_2022-2026.csv` (daily metered take by source, ML)
-10. `landholder_contact_log_2026.xlsx` (distractor: contacts and complaints, the forcing event's record)
-11. `groundwater_quality_2012-2026.csv` (distractor: field EC, pH and major ions by sampling round)
+## PACK (shipped)
 
-Goldens:
-- `golden/bore_impact_assessment.xlsx` (18 rows).
-- `golden/make_good_recommendation.docx` (a realistic one-page memo to Stephen Anderson: the offers, the count, the
-  complainants whose bores miss the test and why, and the method in plain words).
+| File | Format | Rows | Role |
+|---|---|---|---|
+| `landholder_bore_register.xlsx` | xlsx | 18 + 29 + 9 | context artifact: the register, measuring points, network bores; labelled "holds no current water levels and no assessment results" |
+| `MG-02_bore_assessment_and_make_good.pdf` | pdf | | governing procedure (pins) |
+| `monitoring_network_notes.md` | md | | field semantics, compensation, provenance of the extract |
+| `water_level_dips_2012-2026.csv` | csv | 4,214 | manual dips as keyed (feet, variants, remarks, duplicates) |
+| `logger_pressure_2015-2026.parquet` | parquet | 996,966 | hourly absolute pressure, UTC (the volume gate) |
+| `logger_installations.csv` | csv | 13 | serials, bores, times, sensor depths (with the barometric logger) |
+| `barometric_logger_2015-2026.csv` | csv | 99,959 | hourly air pressure, UTC |
+| `daily_climate_1990-2026.csv` | csv | 13,422 | gridded climate data for the point nearest the pit |
+| `pit_dewatering_2022-2026.csv` | csv | 7,606 | daily metered take by source |
+| `landholder_contact_log_2026.xlsx` | xlsx | 46 | distractor (named in `metadata.json`) |
+| `groundwater_quality_2012-2026.csv` | csv | 905 | distractor (named in `metadata.json`) |
+
+Goldens: `golden/bore_impact_assessment.xlsx` (18 rows, the prompt's four figures with the register's identities, the
+baseline level, the offer and the basis of each September level; a Method sheet with each bore's fitted response time,
+shape and fit error) and `golden/make_good_recommendation.docx` (one page to Stephen Anderson from Rebecca Quinn: the
+four offers by owner, bore and property, the coal-measure reasoning, one sentence for each complainant, the method in
+plain words, a footnote on levels and rounding; rendered to one page through LibreOffice in scratch).
+
+## PACK GATES (shipped)
+
+| Gate | Requirement | Shipped |
+|---|---|---|
+| Files | 10 or more | 11 |
+| Formats | 3 or more | 5 (csv, md, parquet, pdf, xlsx) |
+| Volume | a file of 25,000 rows or more | logger parquet 996,966; barometric CSV 99,959 |
+| Distractors | 2 or more, in `metadata.json`, golden unchanged without each | contact log and water quality; the call, offers, complainants and all 54 figures recompute identically with each removed (asserted) |
+| Deliverables | the prompt's two | `bore_impact_assessment.xlsx`, `make_good_recommendation.docx` |
+| Containers | no writer signature, in-fiction stamps | workbooks and memo repacked with in-fiction owners (Erika Martin, Rebecca Quinn) and fixed stamps; the PDF dated 01/03/2026 with the library banner blanked at equal length; the producer audit clean |
+
+The contact log carries the four complaints in the landholders' words, but the register already records each
+complaint's date (MG-02 7.1), so the golden never reads the log.
+
+## BUILD RECORD
+
+- `generator/build.py` runs everything: the simulation (`world.py`, `sim.py`, `readings.py`), the pack (`records.py`,
+  `docs.py`, `postprocess.py`), the goldens (`deliver.py` over `golden.py`, `analysis.py`, `models.py`), `metadata.py`,
+  `checks.py`, `verify.py`, then a second full build into a scratch folder inside the task (`*.tmp`, gitignored,
+  removed after) and the sha256 comparison. `target.zip` is not cut at this stage.
+- Final run: `checks.py` **2,185 assertions passed**; `verify.py` OK; two consecutive builds byte-identical over
+  `target/`, `golden/` and `metadata.json` (combined sha256 f195389d7a9f2772); 1 minute 58 seconds.
+- `verify.py` (standard library, numpy, openpyxl, pyarrow, python-docx; imports nothing
+  from the generator): recomputes the 18 September levels and 18 changes (match the workbook exactly), every naive rung, and
+  the call with its own monthly gamma fit (12 shapes x 45 response times x 41 evaporation factors): the same five
+  bores, drawdowns within 0.38 m of the workbook, offers and complainants matched in the note.
+- Parameters chosen by search in scratch (never shipped): the climate sequence, the response shapes, the gains and the
+  drawdowns, then datum adjustments and drawdown targets for the rounding edges (`world.SHIFT`, `world.BORES` dd).
+- Invented names (H21): Kelvale Mine, Tarrabool Resources, Mundoora Creek (card); Yarrowmere, Tondara, Bluebush Downs,
+  Kurrajong Park, Cypress Ridge, Saltbush Flat, Brolga Plains, Wilga Vale, Ghost Gum, Lancewood Flat, Bellbird Downs,
+  Coolibah Springs, Gidgee Creek, Bottletree and their companies, each asserted against 80 real Queensland coal mines
+  and mining companies (edit distance above 2, no containment); no check against a register of real pastoral
+  properties was possible offline. The consultant appears only as IVH, the field officers only as initials.
+
+## LEAK CHECK (stage 4, mechanical half)
+
+`python3 .claude/skills/leak-check/leak.py task182 --asof 2026-10-13 --quiet` on the final cut: **REVIEW, no LEAK** (19
+REVIEW lines; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; the container audit finds no writer signature). An earlier run also
+flagged the barometric file's `air_temp_c` column as a generator's word; renamed `air_temperature_c` in the generator.
+Each REVIEW line:
+
+- `MG-02_bore_assessment_and_make_good.pdf`, golden figures 2.4 and 1.1: these are MG-02's clause numbers (2.4 the
+  assessment level, 1.1 the purpose); the golden's 2.4 and 1.1 are the drawdowns at KV-LB16 and KV-LB11, which MG-02
+  never states. Harmless.
+- `logger_pressure_2015-2026.parquet`, 17 golden figures (12 printed, "and 5 more"): the September levels of every
+  bore but KV-LB12, whose 209.50 the text sweep cannot match. leak.py prints the first 12 of equal-length figures in
+  set order, so which 12 it names changes between runs (this run 202.33, 214.47, 209.61, 201.88, 199.16, 195.44,
+  245.75, 203.49, 207.77, 241.33, 238.12, 243.13; an earlier run also 205.24, 201.27, 204.86 and 209.51). They are
+  hourly absolute pressures in kPa (195 to 250 kPa at these sensors) that coincide with September levels in m AHD
+  (195 to 246 m), on other bores' loggers and on other dates (for example 207.77 kPa at 2041890, KV-LB12's logger, on
+  24 July 2022, while 207.77 m AHD is KV-LB04's September level). No reading states a level. Harmless.
+- Design-note vocabulary in MG-02 (6 of 25: reference, levels, measures, reading, measuring, logger) and in the notes
+  (8 of 25: reference, levels, reading, measuring, drawdown, climate, logger, monthly): their own subject matter.
+  MG-02 names the reference bores only to put them outside its scope; the notes say the reference bores sit outside
+  the EIS predicted drawdown (a fact about where they are), that the field team has read the network monthly since July
+  2014 (a visit schedule), and call the climate file gridded climate data. Neither says what to do with a reference bore,
+  the climate or the take, and no method word appears (asserted). Harmless.
+- Ranking artifacts: the register names all 20 candidate names beside numbers, but its numbers are construction,
+  coordinates and the baseline assessment as recorded, labelled "holds no current water levels and no assessment
+  results"; it ranks nothing. The contact log names 13 (properties and owners) beside dates and times; it records
+  contacts and ranks nothing. Harmless.
+
+The isolated solver's-eye reader (stage 4, second half) is the author's to run; it has not run.
+
+## SURFACE (`guard.py surface task182`)
+
+2 pairs promoted of 126 in scope: task83 (surface 0.147, corpus percentile 100) and task132 (0.138, percentile 99).
+Both rest only on the coarse axes: the pack layout (1.0), the format mix (0.67 and 0.43) and the deliverable species
+(xlsx plus docx, 1.0, fixed by the prompt at stage 2). Filenames, schemas, same-seed tables, invented names, prompt
+wording (masked and raw), the ask skeleton and the submission's steps share nothing (0.0; submission 0.005 against
+task132). Not a rename or regeneration finding; reported to the author for the adjudicated check. Personas in the cut
+pack: Clarence Lewis, Erika Martin, Ernest Walker, Rebecca Quinn, Stephen Anderson (all on the card; Noah Carrillo
+appears in the contact log and as NC), and the checks' own scan of the pack, the goldens and the prompt finds only the
+card's six.
+
+## DEVIATIONS FROM THE DESIGN (as built)
+
+- **Climate.** The wet seasons are 2019-20 and 2020-21 with an average 2021-22 (water years 2020 843, 2021 956, 2022
+  551 mm), not wet through 2022, and the failed seasons are deeper (318 to 348 mm). A wet 2021-22 season put every
+  alluvial and basalt baseline at a peak, so the decline from the 2012-2022 mean (rung 1b) could not clear its trigger
+  with 25 per cent; and with any milder drought every coal-measure response short of a five-year delay was falling by
+  2026.
+- **Magnitudes.** A2 to A7 fell 4.63 to 5.23 m (target 2.5 to 4.5), B4 8.70 (6.5 to 7.5), A1 8.78 with a 4.6 m drawdown
+  (5 to 6 and 2.8 to 3.5), the alluvial reference bores 4.84 and 5.02 (about 3) and the basalt reference 5.16 (about
+  1.5). Rung 1b on the mean needs B4 at least 6.25 m below its 2012-2022 mean (its baseline sits 1.71 m above it), while
+  rung 2 needs B4 less any reference at most 3.75, so the references must fall about 5 m; the pooled subtraction then
+  needs A1 at least 2.5 m above the reference mean. The coal-measure drawdowns are 8.2 to 9.3 m (target 6.5 to 9)
+  because the rainfall-departure family runs about 1.4 m low on the coal measures.
+- **Response times.** The coal measures respond over 6.2 to 6.8 years with a strongly delayed shape (16); the alluvium
+  140 to 200 days at shapes 1.5 to 2 (short shapes turned single storms into rises above ground at the gains the
+  declines need).
+- **Families.** The exponential family carries a fitted delay and the rainfall-departure family a fitted lag; without
+  them neither can produce the coal measures' rise after the rain stops. Rung 3 reads a negative fitted slope as no
+  response (the bore's pre-July 2022 mean).
+- **Rung 2b** gives A1 to A9 and B4 (ten bores: every alluvial bore and the ridge bore), not every bore: the
+  coal-measure lines run flat.
+- **Rounding rule.** "No graded figure within half a unit of its last printed place of a rounding edge" read as: at
+  least 0.15 of the last printed unit from the edge (the literal reading excludes every number). Shipped minimum 0.17
+  for levels and changes, 0.44 for drawdowns.
+- **Pumped dips.** None at the six logged landholder bores (their windmills and pumps draw a few centimetres, not
+  simulated); three in September 2026 at KV-LB06, KV-LB10 and KV-LB11. The outlier rule matches the remarks on 80 of 93
+  pumped dips and flags 10 others, identical in September.
+- **Mess.** The feet record read as metres moves the call (recorded, not asserted).
+- **Names.** Tea Tree Flat became Lancewood Flat (the people scan read "Tea Tree" as a person).
+- **Complaints** are dated in the register (MG-02 7.1), so the contact log stays a distractor.
+- **Prompt.** Unchanged.
 
 ## STOPPING RULE
 
@@ -325,3 +493,27 @@ retire.
 - Left-censored arsenic results across a laboratory reporting-limit change (a bore watch list for a water company).
   It had the same gap, G-code and Gate G as task134, a third censoring stump in a row, and its forum, forcing event,
   organisation family and shape would have repeated task228 and task229, which sort after task182 in draw order.
+
+- A wet 2021-22 season (the design's "wet 2020 to 2022"): every alluvial and basalt baseline then sat at a peak, so the
+  decline from the 2012 to 2022 mean (rung 1b) fell under the trigger at most alluvial bores and at B4. The 2021-22
+  season is average and the wet seasons are 2019-20 and 2020-21.
+- Short alluvial responses (shape 1, 60 to 110 days) with each gain set from its baseline decline: single storms lifted
+  the water table 10 to 30 m, above ground. Alluvial responses are 140 to 200 days at shapes 1.5 to 2, and six datums
+  were deepened so every water table stays 1.5 m or more below ground.
+- Coal-measure responses of shape 1 to 12 with means of 3.5 to 6.5 years: with failed seasons at 55 per cent of the
+  mean rainfall, each had stopped rising by 2026 as the drought reached it, so the rise the mine hides was gone or
+  turning. Shape 16 with means of 6.2 to 6.8 years keeps it rising through September 2026 (asserted).
+- An exponential family without delay and a rainfall-departure family without lag: no positive rainfall response exists
+  at short lags for the coal-measure bores, so a plain exponential has no fit and a no-lag window reads A1 alone. Both
+  families carry a fitted delay or lag.
+- The single-window regression taken at face value: its fitted slope is negative at every coal-measure bore, which
+  forecasts a rise in the drought and put CM3 into rung 3's set at 4.5 m. A negative slope is read as no response (the
+  bore's pre-July 2022 mean).
+- A basalt reference falling about 1.5 m (the design's figure): B4 would then need at most 5.25 m of decline for rung 2
+  and at least 6.25 m for rung 1. The basalt reference falls 5.16 m, the alluvial ones 4.84 and 5.02.
+- A robust outlier rule on the median of all dips within 60 days (5 MAD): it flagged 31 fast seasonal falls and missed
+  33 pumped dips. Replaced by the median of up to two readings either side within 50 days, with pumped drawdowns in the
+  alluvium of 1.7 to 2.8 m.
+- Coal-measure drawdowns of 7.4 to 9.2 m: the rainfall-departure family put CM4 at 5.9 to 6.1 m, inside the 25 per cent
+  margin. Raised to 8.1 to 9.4 m.
+- The property name Tea Tree Flat: the people scan reads "Tea Tree" as a person. Renamed Lancewood Flat.
