@@ -24,7 +24,7 @@ Stage 1 carries AUD 10,933,000 and stage 2 AUD 2,840,000, with 343 loans in stag
 2. Staged the rest under CRM-ECL-04 section 2: 30 or more days past due, a hardship arrangement in force on 30 September in `hardship_register_2026-09-30.xlsx`, or a 60-point score fall after converting v3 origination scores with `scorecard_v4_migration_note.pdf`: 3,265 loans in stage 2.
 3. Counted each loan's monthly repayments fallen due by 30 September and its remaining term, one month for a loan past maturity (CRM-ECL-04 3.2).
 4. Took PD(k) from `pd_curve_personal_loans_2026-06.csv` as the curve's increment after the loan's months on book divided by its survival to date, because the curve runs from origination and a performing loan has already come through those months, with the 2.4 stage 2 scalar.
-5. Applied LGD, the re-amortised balance and the contract-rate discount over 12 months or the remaining term if shorter for stage 1 and the remaining term for stage 2 (CRM-ECL-04 3.3 to 3.5).
+5. Applied LGD, the re-amortised balance and the contract-rate discount over 12 months or the remaining term if shorter for stage 1 and the remaining term for stage 2 (CRM-ECL-04 3.1, 3.3 to 3.5).
 6. Weighted the scenarios in the Q1 FY27 sheet of `ifrs9_scenarios_2026Q3.xlsx` into one PD multiplier: 1.06.
 7. Summed by stage: AUD 10,933,000 in stage 1 and AUD 2,840,000 in stage 2.
 8. Recommendation: book AUD 13,773,000.

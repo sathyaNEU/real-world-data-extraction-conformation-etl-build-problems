@@ -110,6 +110,17 @@ The answer sits between the two natural misreadings of the curve (bracketing, `p
 
 Pair arithmetic: a solver on rung 0 keeps the eight stage counts and balances if it stages correctly and loses the rest (allowances, coverages, years): about 5 + 7 + 58 x 8/26 = 30. A solver on rung 3 loses every allowance figure at the nearest thousand as well. Criteria about 26 asks + call + components + slides, over 30.
 
+## PRE-SHIP CHECK (the client's three rules and two layers)
+
+1. Domain: the deciding quantity is the AASB 9 allowance built from staging, a cumulative default curve by months on book, LGD, re-amortised EAD, scenario weights and discounting; with another field's nouns none of that has anything to attach to.
+2. The inputs take real work (dates rather than months on book, a hardship register with cancelled arrangements and a lagging status batch, two scorecard versions, a scenario workbook beside the prior quarter's) and none of it is planted.
+3. The flipping step is a methodological choice: a performing loan's forward PD from an origination-indexed cumulative curve is the increment divided by survival to date. It is not a planted catch, not a field reading and not a stated rule applied.
+4. Analyst test: an analyst who reads every rule and the curve header correctly and takes the plain increments books AUD 13,318,000; solver round 2 did exactly that.
+5. CRM-ECL-04 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date, and the curve header defines the curve as a new loan's cumulative probability; for a loan still performing, only the conditional is that probability.
+6. No decoy memo, staff draft or briefing.
+7. No certified, published or prior-quarter allowance in the pack, so nothing pins the method by replay.
+8. The lesson (condition an origination curve on survival to date) is not one an earlier build teaches: clone pre-flight CLEAN, guard heart WARN only, nearest driver 0.08.
+
 ## LEAK REVIEW
 
 - `leak.py` (after the realism rebuild): REVIEW, no LEAK. The policy and dictionary share the subject's vocabulary with the call (collective, expected credit loss, allowance, PL36, PL60) and carry no figure of the answer; the migration note's conversion sentence is the published formula CRM-ECL-04 section 2 calls for; dates after 30 September are hardship arrangement ends and first repayments of September loans.

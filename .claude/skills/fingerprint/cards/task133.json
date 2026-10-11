@@ -11,8 +11,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Book a collective expected credit loss allowance of AUD 13,773,000 on the PL36 and PL60 personal loans at 30 September 2026.",
+  "answer_source": "task133/submission.md, 1. Final Recommendation",
   "gap": [
     "time"
   ],
@@ -46,7 +46,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "personal_loan_book_2026-09-30.csv",
-    "rows": 0,
+    "rows": 40897,
     "entity": "one performing unsecured personal loan at the reporting date",
     "grain": "loan at reporting date",
     "source": "synthetic"
