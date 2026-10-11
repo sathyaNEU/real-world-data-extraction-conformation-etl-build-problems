@@ -24,7 +24,7 @@ a verdict is contested. `references/forcing-the-answer.md` is the evidence for e
    `binding_constraint`, `decomposition_attribution`, `signal_vs_noise_or_hold`,
    `confirm_surface_read`, `etl_conformance`. Never `planted_defect_flip` or
    `single_conceptual_flip`. `statistical_rigor` only paired with one of the seven.
-3. **Write the three flags into the design note**: `surface_read_dependency: no`,
+3. **Name the two layers in the design note** (Layer 1: the realistic mess and the system that produces it; Layer 2: the analytical shortcut the stump rests on), and confirm no filed decoy, no decoy-blessing record and no withheld rule with a stated rival anywhere in the pack. Then **write the three flags into the design note**: `surface_read_dependency: no`,
    `stumping_family: analytical_non_defect` (or `mixed` with the independent layer named),
    `sole_data_defect: no`. Flags are claims; section B asserts them.
 4. **Ship no artifact that ranks the candidates on the decision question and gets it wrong.** A

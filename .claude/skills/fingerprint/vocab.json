@@ -375,7 +375,7 @@
     "other": "other"
   },
   "stump_strategies": {
-    "withheld_rule_official_decoy": "the decisive rule is in no shipped sentence and is recovered from settled cases, while a filed, official-looking rule or basis gives the wrong answer (the architecture the client flags as templated; capped by the guard)",
+    "withheld_rule_official_decoy": "RETIRED for new draws (client two-layer standard, 2026-10-11): the decisive rule is in no shipped sentence and is recovered from settled cases, while a filed, official-looking rule or basis gives the wrong answer; kept so older cards validate",
     "withheld_rule_corpus_fit": "the decisive rule is in no shipped sentence and is recovered by fitting settled cases, with no official-looking rival rule filed",
     "stated_rule_hard_construction": "the rule is filed in full and the difficulty is building the quantity it defines across files and grains",
     "forecast_method_backtest": "forecast or model selection on honest history: structural break, seasonality, regime or horizon makes the natural fit wrong out of sample",

@@ -18,7 +18,7 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check |
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check` (`leak.py`, mechanical, free), `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, `leak.py` not LEAK with every REVIEW line answered, surface screen clean |
 | 4 | duplicate check | `fingerprint` (`heart`), `clone-check` (the `clone-auditor` agent, pre-flight mode on this build) | `guard.py heart` not BLOCK, and the adjudicated pre-flight returns no Exact, Same seed, Dataset or Template finding (`clone-check` Part 3); a Shape echo or Idiom finding is reported to the author, not looped on; a reject-tier finding sends the build back to stage 1 once with the colliding axis redrawn, or retires it |
-| 5 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: go to stage 6; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 gates and re-run the judge once; SEND_BACK: **retire** |
+| 5 | determinism check (runs in the background) | `determinism-check` (the `determinism-judge` agent, spawned as soon as the bundle is cut while the non-figure stages finish) | DETERMINISTIC with APPROVE: go to stage 6; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 gates and re-run the judge once; SEND_BACK: **retire** |
 | 6 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered; the author has the bundle, the stump sentence, the duplicate-check line and the judge line |
 | 7 | portal | the author | the result reported; only then the ledger row, lessons, memory |
 
@@ -85,9 +85,11 @@ the current wave builds. Nothing waits on the author, so the pace is set by the 
 
 - Every build is bespoke. The stump is chosen from the dataset's own analytic structure and the
   design note says so in the data-native sentence; the measured catalogue says which habits fail and
-  never which architecture to copy. The guard's strategy bans and its two template caps (the
-  withheld rule with an official decoy, and the certified record that blesses the wrong method) are
-  gates, not advice.
+  never which architecture to copy. The guard's strategy bans and its decoy bans (an official decoy, the
+  withheld rule with an official decoy, and the certified record that blesses the wrong method, each
+  blocked on a new draw) are gates, not advice. Every build names its two layers in the design note:
+  Layer 1, the realistic mess and the system that produces it; Layer 2, the analytical shortcut the
+  stump rests on.
 - The stump is argued on paper: the design note names the wrong committed answer a competent solver
   files and the step that lands them there, and the determinism check recomputes the golden. No
   in-house solve stands in for either.

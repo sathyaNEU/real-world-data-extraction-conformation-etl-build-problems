@@ -519,6 +519,16 @@ def check(cand, cards, vocab, status=None):
     if n_st >= STRATEGY_WARN:
         add("WARN", "overuse.strategy", "stump strategy %s used in %d of the last %d builds" % (st, n_st, len(window)),
             fix="prefer a strategy the coverage view shows under-used")
+    # Two-layer standard (client announcement 2026-10-11): difficulty comes from analytical rigour on
+    # realistic data, never from a planted trap. A filed decoy, a certified record that blesses the
+    # wrong method, and a withheld rule paired with a decoy are each blocked outright on a new draw.
+    if cand.get("official_decoy") is True:
+        add("BLOCK", "two_layer.decoy", "an official-looking rule, basis or metric is filed to give the wrong answer; "
+            "a planted decoy cannot carry or frame the stump", [],
+            "drop the decoy: let the wrong answer come from the shortcut a capable analyst takes, not from a filed rival")
+    if cand.get("validated_decoy") is True:
+        add("BLOCK", "two_layer.validated_decoy", "the closed record is built to bless the wrong method, which is a "
+            "decoy in the data", [], "build a stump the closed record does not bless, or one it already refutes")
     if cand.get("validated_decoy") is True:
         hit = [c for c in last if c.get("validated_decoy") is True]
         if hit:

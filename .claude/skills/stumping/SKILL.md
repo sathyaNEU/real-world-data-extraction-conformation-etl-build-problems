@@ -273,26 +273,41 @@ sentence**: *what about this dataset makes this the stump a real analyst would t
 decisive move that would read the same on any other dataset has no data-native sentence and is not
 built.
 
-**The withheld rule with an official decoy is capped.** The client has named one architecture as
-the template it sees most, about 40 per cent of what it receives: the rule that decides the answer
-is deliberately left unstated, recovered from a calibration corpus, and a plausible official rule
-(a governing clause, a licensed wrong basis, a house method) is filed as the decoy. It is Gap 4 and
-Pattern B paired with the licensed wrong basis of Part 4.3, and it is also the architecture the top
-of `references/traps/_measured.md` describes (a published control set produced by a method the
-documents do not spell out, a reproduction clause, an obvious construction that matches most
-controls). It is legal and it is still a strategy, not a default: the fingerprint guard blocks it
-when any of the last three builds carried it and when it already carries two of the last twelve,
-and every build that uses it writes why this dataset, and not the habit, calls for a withheld rule.
-The card's `stump_strategy`, `decisive_rule_filed` and `official_decoy` fields are what the guard
-reads, so they are filled honestly at the draw.
+**Two layers, and the stump lives in the second.** The client's standard is that difficulty comes
+from analytical rigour, not planted traps. Every build carries **Layer 1, data messiness**: realistic,
+hard-to-parse data spread across several files, which a model may trip on but which never carries
+the stump and never contains an unrealistic planted defect. And it carries **Layer 2, the analytical
+or methodological pitfall**: the shortcut a capable analyst is tempted to take and an expert in the
+field recognises as wrong, set up so the rigorous method is the only defensible one. The decisive
+rung of the ladder is always a Layer 2 move. Name both layers in the design note, one line each,
+beside the data-native sentence: what the mess is and which real system produces it, and what the
+tempting shortcut is and why an expert would refuse it.
 
-**So is the certified record that blesses the wrong method.** The commonest stump on our own cards
-is a close cousin of the flagged one: the natural method reproduces every closed, published or
-certified figure in the pack, and only a condition that first appears in the forward window breaks
-it, so the certified record does the official decoy's work. It carried 27 of 30 consecutive builds
-(task99 to task130), which is a monoculture whatever the surfaces. The card's `validated_decoy` field
-marks it, and the guard blocks it in consecutive builds and above three of the last twelve. A stump
-that the closed record does not bless (or already refutes, for a reader who looks) is the default.
+**Decoys are retired.** The fingerprint guard blocks each of these on a new draw, and none of them
+may carry or frame a stump:
+
+- **The withheld rule with an official decoy.** The rule that decides the answer is deliberately
+  left unstated and a plausible official rule (a governing clause, a licensed wrong basis, a house
+  method) is filed as the trap. The client counted it in about 40 per cent of what it received,
+  and it is the architecture the top of `references/traps/_measured.md` describes (a published
+  control set produced by a method the documents do not spell out, a reproduction clause, an
+  obvious construction that matches most controls). Read those traps for the habits they expose,
+  never for the architecture.
+- **The certified record that blesses the wrong method.** The natural method reproduces every
+  closed, published or certified figure and only a forward condition breaks it, so the record does
+  a decoy's work (27 of 30 consecutive builds, task99 to task130). The card's `validated_decoy`
+  field marks it.
+- **Any filed rule, basis or metric planted to give the wrong answer** (`official_decoy` on the
+  card), with or without a withheld rule beside it.
+
+**File what a real organisation would have in writing.** A rule left out of the pack so the solver
+has to find it is a hidden-rule trap even with no decoy beside it, and the portal's solvers find
+hidden records anyway (task130 v1). Where the organisation would have the rule in a policy, a scheme
+or a procedure, ship it; the difficulty is the construction the rule demands and the shortcut that
+skips it. A rule may stay unfiled only where the real organisation genuinely holds it as practice
+rather than text, and the design note says so in one line. The card's `stump_strategy`,
+`decisive_rule_filed`, `official_decoy` and `validated_decoy` fields are what the guard reads, so they
+are filled honestly at the draw.
 
 **The measured catalogue is evidence of what the model misses, not a recipe list.**
 `references/traps/_measured.md` ranks the failures the current model made on 64 of the client's
@@ -731,7 +746,7 @@ This is social pressure the solver has to overcome with evidence, and it makes t
 
 **A voice may hold a belief about what the data is like and may argue for a rule, never endorse carrying a particular quantity forward**, because on a build whose answer is a figure the quantity is the decision: a voice that says to carry the measured effect as-is converts an honest transport problem into an endorsed read the task overturns (task43), and a voice that endorses carrying a count forward is a counter-pin the judge quotes back (task57 v20). A factual statement about the past ("the line has filled its places in every cycle it has run") points at the decoy and contradicts nothing. On a build whose answer is a residual, no voice states the naive residual at all, even correctly, because that is the surface read (task56).
 
-**The licensed wrong basis, optional.** It is one way to make a wrong answer respectable, and it is half of the capped architecture of Part 2: a licensed wrong basis filed beside a withheld decisive rule is the withheld rule with an official decoy, and the guard counts it as such. With a filed decisive rule it is an ordinary rival. Where it is used, the same governing document that carries the pin also states, as a matter of record, that a named authority works from a different basis and will present it at the review. The basis is real, it is legitimately available in writing, and the evidence still refutes it. That is what separates a fair hard task from a gotcha. Keep it to the basis and the endorsement. Do not let the document compute the ranking. A licensed wrong basis is graded wherever an ask asks for it, so the governing document names its population in words that exclude the other reading, the advocate's belief language selects the same group, and the rejected reading is separated so it does not land on the main answer (task43, two readings of one committee basis 14 per cent apart).
+**The licensed wrong basis is retired.** A basis filed so that a named authority can argue the wrong answer is a decoy under the client's two-layer standard, and the guard blocks a card that carries one (`official_decoy`). Where the decision really has a rival method, let it arrive the way it does in practice: as the shortcut a capable analyst reaches for unprompted (Layer 2), never as a document the pack files to be refuted.
 
 ### 4.4 The distractors
 
@@ -1343,7 +1358,7 @@ Assert all five in the generator. They are cheap to check and expensive to disco
 | 3 | **Operating extracts** | 2 to 4 | The entity's own telemetry. **This is where the trap physically lives.** |
 | 4 | **Context artifact** | 1 to 2 | Correct numbers about a question that is not the decision question. |
 | 5 | **Calibration corpus** | 1 | Part 4.1. Build this first after the spine. |
-| 6 | **Governing document** | 1 to 2 | Carries the pin and the licensed wrong basis. |
+| 6 | **Governing document** | 1 to 2 | Carries the pin and the rules the organisation would have in writing. |
 | 7 | **Social layer** | 1 | Named humans holding wrong beliefs. |
 | 8 | **Dimension and lookup tables** | 3 to 6 | Realistic warehouse shape, forces joins. |
 | 9 | **Data dictionary or codebook** | 1 | Pins field semantics and grain statements. |
@@ -1388,7 +1403,7 @@ Cheap de-risking first. Do not build data before the ladder is written down.
 4. **Settle the arithmetic on paper.** Discriminator dominance, the correction grid, the fork grid. All three are decidable before a single row exists, and no amount of data work rescues a rung that fails them. Then design the ask layer on paper via `supplemental-stumping`, every ask's devices and eight-file span and the device ledger, because the spans are schema decisions the pack build has to honour and a device retrofitted into a cut pack breaks mess neutrality silently.
 5. **Choose the spine dataset.** Pick something whose subject is the market the entity operates in, not the entity's own product data. Check it clears the volume gate (25,000 or more rows in any format, or a large database file).
 6. **Build the organ the strategy needs, and only that one.** A withheld rule needs a calibration corpus built first, with its underlying records and the twin pair from the start; a forecasting build needs honest history long enough to back-test; a filed rule whose construction is hard needs the filed rule and the records it ranges over. Do not ship a corpus, a twin pair or a control set because earlier builds did.
-7. **Write the governing document** where the organisation would have one: the pin, a background disclaimer, realistic logistics, and a licensed wrong basis only where Part 4.3 allows it. Build the distractors (Part 4.4) and name them in `metadata.json`.
+7. **Write the governing document** where the organisation would have one: the pin, a background disclaimer, and realistic logistics; never a licensed wrong basis (Part 4.3). Build the distractors (Part 4.4) and name them in `metadata.json`.
 8. **Write a social layer only if the decision really has advocates**: at most two named people holding beliefs, never quoting rankings, never a roll call.
 9. **Solve it cold from the ZIP alone.** Every number must recompute. Write the golden with the robustness sweep and explicit counts.
 10. **Wire the assertion regime** and ship the independent verifier **before** the build is called finished. The assertions are the only thing that catches a collapsed rung, because nothing in house solves the build for you, so a defect an assertion would have caught for free is a defect the portal charges a whole submission for.
@@ -1538,7 +1553,7 @@ The build is genuinely analytical but the design note does not say so unarguably
 
 **Bespoke, never templated**
 - [ ] The data-native sentence written: what about this dataset makes this the stump a real analyst would trip on here
-- [ ] `stump_strategy`, `decisive_rule_filed` and `official_decoy` filled honestly on the card, and the guard passes the strategy bans and the template cap
+- [ ] `stump_strategy`, `decisive_rule_filed` and `official_decoy` filled honestly on the card, and the guard passes the strategy bans and the two-layer decoy bans
 - [ ] If the decisive rule is withheld and an official-looking rule is filed as the rival, the design note says why this dataset calls for it
 - [ ] No organ shipped out of habit: every corpus, twin pair, control set, licensed basis and voice in the pack is there because this strategy needs it
 
@@ -1553,7 +1568,7 @@ The build is genuinely analytical but the design note does not say so unarguably
 - [ ] Every convention is pinned in a file, pinned by a corpus, or shown to converge
 - [ ] Pin is one sentence, in a shipped file, unjustified, unrepeated, at or above every counter-pin, naming the observable
 - [ ] **No sentence in the prompt fixes the basis, window, convention or population**
-- [ ] Any licensed wrong basis stated as a basis rather than a ranking, and counted toward the template cap when the decisive rule is withheld
+- [ ] No licensed wrong basis, official decoy or decoy-blessing record anywhere in the pack; both layers named in the design note
 - [ ] Voices, if any, are at most two, hold beliefs, and never form a roll call
 - [ ] Large reference documents disclaimed if not decisive
 
