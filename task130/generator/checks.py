@@ -28,6 +28,7 @@ import estimators as E
 import tune_table
 
 TASK = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)
+CONC_MED, CONC_RX = 0.31, 0.45      # the largest member's share of a bid tier's year, medical and pharmacy
 TGT = os.path.join(TASK, "target")
 GLD = os.path.join(TASK, "golden")
 T = (1, 2, 3, 4)
@@ -145,9 +146,9 @@ def main():
     acted_on = set(raw.loc[raw.claim_frequency_code.isin(["7", "8"]), "original_claim_number"])
     c1 = raw[(raw.claim_frequency_code == "1") & (raw.denial_reason_code == "") & ~raw.claim_number.isin(acted_on)]
     sig = c1.groupby("claim_number").agg(m=("member_id", "first"), d=("first_date_of_service", "first"),
-                                         p=("procedure_code", "|".join), r=("revenue_code", "|".join),
-                                         a=("allowed_amount", "|".join))
-    dup = sig.duplicated(["m", "d", "p", "r", "a"]).sum()
+                                         p=("procedure_code", "|".join), x=("modifier", "|".join),
+                                         r=("revenue_code", "|".join), a=("allowed_amount", "|".join))
+    dup = sig.duplicated(["m", "d", "p", "x", "r", "a"]).sum()
     check(dup == 0, "no service paid twice on two original claims (%d)" % dup)
     n18 = raw[raw.denial_reason_code == "18"].claim_number.nunique()
     check(n18 >= 200, "exact duplicate submissions are denied with reason 18")
@@ -214,7 +215,7 @@ def main():
     check(len(live[live.diagnosis_code_1.str.match(r"^(C61|N40|N52)") & (live.sex == "F")]) == 0, "male diagnoses only for men")
     check(len(live[live.procedure_code.isin(["55250", "55866", "55700", "54150"]) & (live.sex == "F")]) == 0,
           "male procedures only for men")
-    nicu = live[live.revenue_code.isin(["0173", "0174"])]
+    nicu = live[live.revenue_code.isin(["0172", "0173", "0174"])]
     check((nicu.age == 0).all() and nicu.diagnosis_code_1.str.match(r"^(P|Z38)").all(), "NICU stays are newborns with neonatal diagnoses")
     ip = live[(live.bill_type.str[:2] == "11") & (live.denial_reason_code == "")]
     replaced = set(md.loc[md.claim_frequency_code.isin(["7", "8"]), "original_claim_number"])
@@ -356,7 +357,7 @@ def main():
     g = tot_
     r0 = rk["R0"]
     check(r0 >= 2.0 * g, "persistence at least twice the golden")
-    for k in ("R1", "R2", "R3a", "R4a", "R6a", "R6b"):
+    for k in ("R1", "R3a", "R4a"):
         check(abs(rk[k] / g - 1) >= 0.05, "%s moves the programme total by 5 per cent" % k)
     for name, tab in G["rung_tiers"].items():
         for t in T:
@@ -366,16 +367,129 @@ def main():
                     continue
                 if name == "R4b" and G["an_detail"][t][1] == 12 * G["r4b_n"][t]:
                     continue
+                if name == "R4c" and G["an_detail"][t][1] == G["r4c_n"][t]:
+                    continue
                 check(round(tab[t][k]) != round(base[t][k]), "%s lands on no golden tier figure" % name)
-    for k in ("R3b", "R5b", "R6c", "pooled", "regression", "R0c"):
+    for k in ("R3b", "R5b", "R6c", "pooled", "regression", "R0c", "R4c", "R7", "R9"):
         check(round(rk[k]) != round(g), "%s does not land on the golden total" % k)
     for name, tab in G["rung_tiers"].items():
         for k in (0, 1):
             pk = sum(n[t] * tab[t][k] for t in T) / 140
             check(round(pk) != round(G["prog"][k]), "%s lands on neither programme figure (%s %.2f)" % (name, k, pk))
+    # the magnitude floor: a rung within 5 per cent of the golden total misses every tier cell and both programme figures
+    near = [k for k in G["rung_tiers"] if k in rk and abs(rk[k] / g - 1) < 0.05]
+    for k in near:
+        tab = G["rung_tiers"][k]
+        cells = [(t, j) for t in T for j in (0, 1)
+                 if not (k == "R4c" and G["an_detail"][t][1] == G["r4c_n"][t])
+                 and not (k == "R4a" and G["an_detail"][t][1] == 12 * G["bid_tiers"][t])
+                 and not (k == "R4b" and G["an_detail"][t][1] == 12 * G["r4b_n"][t])]
+        check(all(round(tab[t][j]) != round(base[t][j]) for t, j in cells), "%s, within 5 per cent, misses every tier cell" % k)
+    check(r0 >= 2.0 * g and all(G["rung_tiers"]["R0"][t][0] > 1.5 * base[t][0] for t in T), "persistence stays far off")
     rep("ladder (programme total, change from the golden $%.2f):" % g)
-    for k in ("R0", "R0c", "R1", "R2", "R3a", "R3b", "R4a", "R4b", "R5a", "R5b", "R6a", "R6b", "R6c", "pooled", "regression"):
+    for k in ("R0", "R0c", "R1", "R2", "R3a", "R3b", "R4a", "R4b", "R4c", "R5a", "R5b", "R6a", "R6b", "R6c", "R7", "R9",
+              "pooled", "regression"):
         rep("  %-10s %10.2f  %+7.1f%%" % (k, rk[k], 100 * (rk[k] / g - 1)))
+    rep("  rungs within 5 per cent of the golden, every tier cell and both programme figures missed: %s" % (near or "none"))
+
+    # ------------------------------------------------------------ the forks the second reader sized, each closed
+    FK, fk = G["fork_tiers"], G["forks"]
+    ag = pdf_text(os.path.join(TGT, "care_management_services_agreement_schedule_c.pdf"))
+    bcover = " ".join(str(x) for r in load_workbook(os.path.join(TGT, "northcourt_rfp_2025-07_stratification_2024_claims.xlsx"),
+                                                    data_only=True)["Cover"].iter_rows(values_only=True) for x in r if x)
+    # 1. pharmacy carried forward at its own 2026 level: the record shows it is not persistent, and it lands well off
+    rx_p = sum(n[t] * FK["R0p"][t][1] for t in T) / 140
+    check(rx_p >= 1.10 * r_, "pharmacy persistence at least 10 per cent off the golden pharmacy (%.2f)" % (rx_p / r_))
+    check(abs(fk["R0p"] / g - 1) >= 0.10, "bid medical with own-trend pharmacy at least 10 per cent off the total")
+    check(all(round(FK["R0p"][t][1]) != round(base[t][1]) for t in T), "pharmacy persistence lands on no tier cell")
+    rx_up = sum(1 for t in T if G["f26"][t][1] > 1.03 * G["f25"][t][1])
+    check(rx_up >= 3, "the enrolled members' pharmacy rose into 2026 in most tiers (%d)" % rx_up)
+    rep("fork 1, pharmacy: own 2026 pharmacy carried forward $%.2f against $%.2f (%+.1f%%); with the bid members' medical "
+        "$%.2f (%+.1f%% on the total); enrolled members' pharmacy 2025 to 2026 by tier %s" % (
+            rx_p, r_, 100 * (rx_p / r_ - 1), fk["R0p"], 100 * (fk["R0p"] / g - 1),
+            ["%.0f to %.0f" % (G["f25"][t][1], G["f26"][t][1]) for t in T]))
+    # 2. the window: the bid's own programme year, three months after its claims year, as the agreement's is
+    check("1 April 2025 to 31 March 2026" in bcover and "savings measured on the programme year's claims" in bcover,
+          "the RFP list's cover gives the proposed programme year and that savings run on it")
+    check("stratified on claims incurred in calendar year 2026" in ag and "1 April 2027 to 31 March 2028" in ag,
+          "Schedule C: the list's claims year and the Programme Year three months after it")
+    check(abs(rk["R2"] / g - 1) >= 0.04, "calendar 2025 lands at least 4 per cent off (%.1f%%)" % (100 * (rk["R2"] / g - 1)))
+    rep("fork 2, window: calendar 2025 trended 27 months $%.2f (%+.1f%%), every tier cell missed" % (
+        rk["R2"], 100 * (rk["R2"] / g - 1)))
+    # 3. attrition: every listed member counts for the months enrolled
+    check("A member who is enrolled for part of the period is included for the Member Months in which the member is "
+          "enrolled" in ag, "Schedule C.1(c): partial-period members count")
+    rep("fork 3, attrition: full-year members only $%.2f (%+.1f%%), ruled out by Schedule C.1(c)" % (
+        rk["R4c"], 100 * (rk["R4c"] / g - 1)))
+    # 4. credibility: tier by tier
+    check("A Baseline PMPM is determined separately for each Risk Tier, from the experience of members in that Risk "
+          "Tier" in ag, "Schedule C.1(h): a baseline per tier from its own tier's experience")
+    sh = {}
+    for t in T:
+        al = F.allowed(G["members"]["bid"][t], W.ANALOG_START, W.ANALOG_END)
+        tm, tr = sum(v[0] for v in al.values()), sum(v[1] for v in al.values())
+        sh[t] = (max(v[0] for v in al.values()) / tm, max(v[1] for v in al.values()) / tr)
+    check(max(sh[t][0] for t in T) <= CONC_MED and max(sh[t][1] for t in T) <= CONC_RX,
+          "no single member dominates a tier's year (%s)" % sh)
+    rep("fork 4, credibility: pooled level spread by the enrolled members' 2026 relativities $%.2f (%+.1f%%), tier 1 medical "
+        "$%.0f against $%.0f; largest member's share of a bid tier's year, medical %s, pharmacy %s" % (
+            rk["R7"], 100 * (rk["R7"] / g - 1), G["rung_tiers"]["R7"][1][0], base[1][0],
+            [round(sh[t][0], 2) for t in T], [round(sh[t][1], 2) for t in T]))
+    # 5. run-out: the paid-through basis is filed; the three-month basis moves only medical
+    check("taken on claims paid through the Data Cut-Off Date" in ag, "Schedule C.1(h): experience paid through the cut-off")
+    check(all(FK["R8"][t][1] == G["an"][t][1] * W.TREND_RX ** 2 for t in T), "pharmacy has no run-out: identical either way")
+    moved = [t for t in T if round(FK["R8"][t][0]) != round(base[t][0])]
+    rep("fork 5, run-out: claims paid by 30 June 2026 move medical by %s and pharmacy by nothing; tiers whose whole-dollar "
+        "medical moves %s; ruled out by Schedule C.1(h)" % (
+            ["%+.2f" % (FK["R8"][t][0] - base[t][0]) for t in T], moved))
+
+    # ------------------------------------------------------------ realism the second reader asked for
+    ipc = raw[raw.bill_type.str.startswith("11")]
+    sets = ipc.groupby("claim_number").revenue_code.apply(lambda x: frozenset(x))
+    check(sets.nunique() >= 300, "inpatient revenue lines follow the stay (%d distinct sets)" % sets.nunique())
+    edx = sum(1 for x in sets if {"0450", "0730", "0320"} <= x) / len(sets)
+    check(edx <= 0.15, "ED, EKG and chest film only where the stay calls for them (%.2f)" % edx)
+    dx1 = ipc.drop_duplicates("claim_number").set_index("claim_number").diagnosis_code_1
+    op = [x for x in sets.index if dx1[x].startswith(("K35", "K81"))]
+    check(op and sum("0360" in sets[x] for x in op) / len(op) >= 0.8, "appendicitis and cholecystitis stays carry the operation")
+    nic = ipc[ipc.revenue_code.isin(["0172", "0173", "0174"])].drop_duplicates("claim_number")
+    for r_n in nic.itertuples(index=False):
+        ga = r_n.diagnosis_code_2 if r_n.diagnosis_code_1.startswith("Z38") else r_n.diagnosis_code_1
+        los = (dt.date.fromisoformat(r_n.last_date_of_service) - dt.date.fromisoformat(r_n.first_date_of_service)).days
+        if ga.startswith("P07.2"):
+            check(los >= 63, "an extremely preterm baby stays about three months (%s, %d days)" % (ga, los))
+        elif ga in ("P07.31", "P07.32", "P07.33", "P07.34"):
+            check(los >= 21, "a very preterm baby stays weeks (%s, %d days)" % (ga, los))
+    unc = 0
+    for r_n in md[md.allowed_amount != 0].drop_duplicates("claim_number").itertuples(index=False):
+        if not any(s_ <= r_n.d0 <= e_ for s_, e_ in F.spans[r_n.member_id]):
+            unc += 1
+    check(unc == 0, "no allowed claim on a day the member is not covered (%d)" % unc)
+    check((raw.denial_reason_code == "27").sum() >= 20, "services after coverage ended are denied with reason 27")
+    gaps = sum(1 for m_, sp_ in F.spans.items() for i in range(1, len(sp_))
+               if (sorted(sp_)[i][0] - sorted(sp_)[i - 1][1]).days > 1)
+    cob = (el.employee_class == "COB").sum()
+    check(gaps >= 20 and cob >= 50, "eligibility carries gaps and COBRA continuation (%d gaps, %d COB spans)" % (gaps, cob))
+    rday = Counter((dt.date(2000 + int(x[:2]), 1, 1) + dt.timedelta(days=int(x[2:5]) - 1)).weekday() for x in cl.claim_number)
+    check(rday.most_common(1)[0][0] == 0 and (rday[5] + rday[6]) / sum(rday.values()) < 0.06,
+          "claims are logged on business days, Monday busiest")
+    late = cl[(pd.to_datetime(cl.first_date_of_service).dt.year == 2025) & (cl.paid_date >= "2027-01-01")]
+    check(len(late) >= 10 and (late.paid_date >= "2027-02-01").any(), "some 2025 claims were adjusted in 2027 (%d)" % len(late))
+    flist = load_workbook(os.path.join(TGT, "northcourt_stratification_2026_claims_final.xlsx"), data_only=True)["Members"]
+    frows = list(flist.iter_rows(values_only=True))
+    teams = Counter(r_n[7] for r_n in frows[1:] if r_n[0] is not None)
+    rn = [teams[k] for k in ("RN Team A", "RN Team B", "RN Team C")]
+    hc = [teams[k] for k in ("Health Coach Team 1", "Health Coach Team 2")]
+    check(len(set(rn)) > 1 and len(set(hc)) > 1 and sum(rn) + sum(hc) == 140, "care teams follow the plan's rule, not a rota")
+    pg = [p.extract_text() for p in pypdf.PdfReader(os.path.join(TGT, "renewal_letter_2027-28.pdf")).pages]
+    check("Michael Perry, FSA, MAAA" in pg[0] and "Sincerely" in pg[0], "the renewal letter signs on its first page")
+    check("/s/ Deborah Johnson" in ag and "/s/ Sandra Lopez" in ag and "/s/ Phillip Alvarado" in ag, "conformed signatures")
+    check(all(len(p.extract_text()) > 200 for p in pypdf.PdfReader(os.path.join(TGT, "care_management_services_agreement_schedule_c.pdf")).pages),
+          "no blank page in the agreement excerpt")
+    rep("realism: %d distinct inpatient revenue-code sets; ED+EKG+chest film on %.0f%% of stays; %d of %d appendicitis and "
+        "cholecystitis stays operated; %d eligibility gaps, %d COBRA spans; receipts by weekday %s; %d 2025 claims adjusted in "
+        "2027; care teams %s" % (sets.nunique(), 100 * edx, sum("0360" in sets[x] for x in op), len(op), gaps, cob,
+                                 [rday[k] for k in range(7)], len(late), dict(teams)))
 
     # ------------------------------------------------------------ magnitudes the brief asks for (simulation only)
     def mmS(p, a, b):
@@ -408,27 +522,44 @@ def main():
     rm = ban[0] / W.TREND_MED ** 1.25 / b24[0]
     rr = ban[1] / W.TREND_RX ** 1.25 / b24[1]
     check(0.15 <= rm <= 0.45, "medical regresses to well under half its selection-year level in real terms")
-    check(rr >= 0.6, "pharmacy mostly persists")
+    check(0.6 <= rr <= 0.92, "pharmacy regresses too, less than medical (%.3f)" % rr)
+    fin_sim = set(pid_of[m] for t in T for m in G["members"]["final"][t])
+    f26s = sim_pmpm(fin_sim, dt.date(2026, 1, 1), dt.date(2026, 12, 31))
+    fpy = sim_pmpm(fin_sim, W.PROG_START, W.PROG_END)
+    frr = fpy[1] / W.TREND_RX ** 1.25 / f26s[1]
+    check(frr <= 0.95, "the enrolled members' own pharmacy falls after 2026 in real terms (%.3f)" % frr)
     fin_pids = {t: set(pid_of[m] for m in G["members"]["final"][t]) for t in T}
     # the memo's account of the enrolled members' 2026 and the chart's title hold on the data
     named = {"an operation": lambda k, dx: k in ("admit_surgery", "joint"), "a heart attack": lambda k, dx: dx.startswith("I21"),
+             "a stroke": lambda k, dx: k == "admit" and dx.startswith("I63"),
              "pneumonia": lambda k, dx: k == "admit" and dx.startswith("J18"), "a cancer course": lambda k, dx: k in ("chemo", "radiation"),
-             "a premature birth": lambda k, dx: k == "nicu"}
+             "a premature birth": lambda k, dx: k == "nicu", "a hepatitis C cure": lambda k, dx: dx == "hcv"}
     fin_all = set().union(*fin_pids.values())
     who = defaultdict(set)
     big = set()
     for ev in S.events:
-        if ev[0] in fin_all and dt.date(2026, 1, 1) <= ev[1] <= dt.date(2026, 12, 31) and ev[3] == "M":
-            dx = ev[6].get("dx", "") if isinstance(ev[6], dict) else ""
+        if ev[0] in fin_all and dt.date(2026, 1, 1) <= ev[1] <= dt.date(2026, 12, 31):
+            info = ev[6] if isinstance(ev[6], dict) else {}
+            dx = "hcv" if ev[3] == "R" and info.get("drug") in ("epclusa", "mavyret") else info.get("dx", "")
             for label, f in named.items():
                 if f(ev[4], dx):
                     who[label].add(ev[0])
-            if ev[4] in SM.STAY_KINDS or ev[4] in ("chemo", "radiation"):
+            if ev[3] == "M" and (ev[4] in SM.STAY_KINDS or ev[4] in ("chemo", "radiation")):
                 big.add(ev[0])
-    check(all(who[label] for label in named) and len(big) > 70, "the memo's 2026 events are the enrolled members' own")
-    check(all(base[t][0] < 0.5 * G["f26"][t][0] for t in T), "chart title: medical baselines under half of 2026 in every tier")
-    check(any(base[t][1] > G["f26"][t][1] for t in T) and any(base[t][1] < G["f26"][t][1] for t in T),
-          "chart title: pharmacy moves both ways")
+    mtext = " ".join(p.text for p in memo.paragraphs)
+    listed = re.search(r"for most it was the year of (.+?) that will not repeat", mtext).group(1)
+    listed = [x.strip() for x in re.split(r",| or ", listed) if x.strip()]
+    check(all(len(who[x]) >= 2 for x in listed) and set(listed) == {k for k in named if len(who[k]) >= 2},
+          "the memo names every one-off event at least two enrolled members had in 2026, and only those (%s)" % listed)
+    check(len(big) > 70, "most enrolled members had a hospital stay or a cancer course in 2026 (%d)" % len(big))
+    import golden as GD
+    title = GD.chart_title({"base": base, "f26": G["f26"]})
+    med_half = all(base[t][0] < 0.5 * G["f26"][t][0] for t in T)
+    check(("under half" in title) == med_half and all(base[t][0] < G["f26"][t][0] for t in T),
+          "chart title: medical baselines against 2026 (%s)" % title)
+    below = sum(1 for t in T if base[t][1] < G["f26"][t][1])
+    check(("every tier too" in title) == (below == 4) and ("three tiers of four" in title) == (below == 3)
+          and ("both ways" in title) == (below in (1, 2)), "chart title: pharmacy against 2026 (%d tiers below)" % below)
     rep("memo: %d of the 140 had a hospital stay or a cancer course in 2026 (%s)" % (
         len(big), ", ".join("%s %d" % (k, len(v)) for k, v in who.items())))
     tru = {t: sim_pmpm(fin_pids[t], W.PROG_START, W.PROG_END) for t in T}
@@ -521,14 +652,20 @@ def main():
         check(pin in ctext, "the bid list's cover keeps %r" % pin)
 
     # ------------------------------------------------------------ containers
-    stamps = []
+    # PDFs: the District and its consultant convert Word documents with LibreOffice; the stop-loss carrier's policy
+    # system and Northcourt's client portal print HTML with Chromium. Each keeps the producer that wrote it.
+    engines = {"care_management_services_agreement_schedule_c.pdf": "LibreOffice", "renewal_letter_2027-28.pdf": "LibreOffice",
+               "stop_loss_policy_2027.pdf": "Skia", "northcourt_implementation_plan_2027-28.pdf": "Skia"}
     for f in files:
         p = os.path.join(TGT, f)
         if f.endswith(".pdf"):
             blob = open(p, "rb").read()
             info = pdf_info(p)
-            check(info.get("/Producer", "").startswith("LibreOffice") and info.get("/Creator") == "Writer",
-                  "%s keeps LibreOffice's own Producer and Creator" % f)
+            check(info.get("/Producer", "").startswith(engines[f]), "%s keeps its own producer (%s)" % (f, info.get("/Producer")))
+            if engines[f] == "LibreOffice":
+                check(info.get("/Creator") == "Writer", "%s: LibreOffice Writer" % f)
+            else:
+                check("Chrome/" in info.get("/Creator", ""), "%s: printed by Chromium" % f)
             check(b"/FontFile2" in blob and b"/StructTreeRoot" in blob and b"/BaseFont/Helvetica" not in blob
                   and b"/BaseFont/Times-Roman" not in blob, "%s embeds its fonts and is tagged" % f)
             for m in re.findall(rb"D:(\d{4})(\d\d)(\d\d)", blob):
@@ -539,21 +676,21 @@ def main():
         elif f.endswith(".xlsx"):
             with zipfile.ZipFile(p) as z:
                 names = z.namelist()
-                check(names[0] == "[Content_Types].xml" and names[-2:] == ["docProps/core.xml", "docProps/app.xml"],
-                      "%s parts in Excel's order" % f)
-                check("xl/sharedStrings.xml" in names and not any(b"inlineStr" in z.read(x) for x in names
-                                                                  if x.startswith("xl/worksheets/")), "%s uses shared strings" % f)
-                check(all(i.date_time == (1980, 1, 1, 0, 0, 0) for i in z.infolist()), "fixed entry dates in %s" % f)
-                props = z.read("docProps/core.xml") + z.read("docProps/app.xml")
-                check(b"<Application>Microsoft Excel</Application>" in props, "%s saved by Excel" % f)
-                for sig in (b"openpyxl", b"python-docx", b"LibreOffice"):
+                check("docProps/app.xml" not in names and b"docProps/app.xml" not in z.read("_rels/.rels")
+                      and b"app.xml" not in z.read("[Content_Types].xml"),
+                      "%s claims no application that did not write it" % f)
+                props = z.read("docProps/core.xml")
+                for sig in (b"openpyxl", b"python-docx", b"LibreOffice", b"Microsoft"):
                     check(sig not in props, "%s carries no writer signature" % f)
                 cr = re.search(rb"<dcterms:created[^>]*>([^<]+)<", props).group(1).decode()
                 mo = re.search(rb"<dcterms:modified[^>]*>([^<]+)<", props).group(1).decode()
                 c_, m2 = dt.datetime.fromisoformat(cr.rstrip("Z")), dt.datetime.fromisoformat(mo.rstrip("Z"))
-                check(c_ < m2 and dt.date(2024, 12, 1) <= c_.date() <= W.ASOF, "%s created before it was saved, in the setting" % f)
-                stamps.append(m2 - c_)
-    check(len(set(stamps)) == len(stamps), "every workbook has its own save history")
+                check(c_ <= m2 and dt.date(2024, 12, 1) <= c_.date() <= W.ASOF, "%s exported inside the setting" % f)
+                local = (m2.replace(tzinfo=dt.timezone.utc).astimezone(
+                    __import__("containers").central(m2)).timetuple()[:6])
+                local = local[:5] + (local[5] // 2 * 2,)
+                check(all(i.date_time == local for i in z.infolist()), "%s entries carry the export time" % f)
+                check(not any(i.date_time[0] == 1980 for i in z.infolist()), "%s has no default entry dates" % f)
     for f in os.listdir(GLD):
         with zipfile.ZipFile(os.path.join(GLD, f)) as z:
             names = z.namelist()

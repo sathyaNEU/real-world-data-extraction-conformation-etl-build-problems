@@ -13,6 +13,10 @@ import catalog as K
 import world as W
 
 MODEL_SALT = 41730       # the vendor model's own fixed seed for the part of the score its inputs do not explain
+RX_WEIGHT = 0.75         # pharmacy dollars count at this share of medical dollars
+# the model's weights: log dollars, chronic conditions (up to six), specialty drug use, admissions (up to three),
+# emergency visits (up to five)
+COEF = (11.0, 2.5, 4.0, 3.0, 1.0)
 ADMIT = {"admit", "admit_trauma", "admit_cardiac", "admit_surgery", "transplant", "delivery", "nicu", "joint"}
 ER = {"er", "admit_trauma", "admit_cardiac"}
 
@@ -67,8 +71,9 @@ def score(inp, noise, year):
     2023 base with its own cost index, so a score does not drift upward with prices"""
     am, ar, cc, sp, ip, er = inp
     base = 2500.0 * 1.07 ** (year - 2023)
-    raw = (11.0 * math.log(1 + (am + 0.2 * ar) / base) + 1.75 * min(cc, 6) + 4.0 * sp + 5.5 * min(ip, 3)
-           + 1.3 * min(er, 5) + noise)
+    cd, ccw, spw, ipw, erw = COEF
+    raw = (cd * math.log(1 + (am + RX_WEIGHT * ar) / base) + ccw * min(cc, 6) + spw * sp + ipw * min(ip, 3)
+           + erw * min(er, 5) + noise)
     return min(99.94, max(0.0, raw))
 
 

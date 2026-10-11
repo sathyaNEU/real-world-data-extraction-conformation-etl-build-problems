@@ -25,6 +25,53 @@ INPATIENT = {"admit", "admit_trauma", "admit_cardiac", "admit_surgery", "joint",
              "nicu", "postacute_facility"}
 u01, h = PV.u01, PV.h
 
+# the revenue code a hospital's chargemaster bills a general medical or surgical day under, and a child's day
+ROOM = {"regional": "0121", "community": "0111", "cah1": "0120", "cah2": "0110", "tertiary_tc": "0111",
+        "childrens": "0113", "tertiary_r": "0121", "travel_hosp": "0120"}
+PEDS_ROOM = {"regional": "0123", "community": "0113", "cah1": "0123", "cah2": "0113", "tertiary_tc": "0113",
+             "childrens": "0113", "tertiary_r": "0123", "travel_hosp": "0123"}
+# unplanned admissions that usually end in an operation during the stay: (share operated, CPT, anesthesia, specialty)
+SURG_ADMIT = {"K35.80": (0.95, "44970", "00840", "gensurg"), "K81.0": (0.85, "47562", "00790", "gensurg"),
+              "K57.32": (0.08, "44204", "00790", "gensurg"), "K56.609": (0.25, "44005", "00790", "gensurg"),
+              "K56.699": (0.2, "44005", "00790", "gensurg")}
+# trauma: the share taken to the operating room
+TRAUMA_OR = {"S72.001A": 1.0, "S82.201A": 0.95, "S27.0XXA": 0.0, "S32.009A": 0.45, "S06.5X0A": 0.7}
+PATH_SPECIMEN = {"44970", "47562", "44204", "44140", "44005", "19303", "32663", "55866", "43644"}
+# services a stay carries by its principal diagnosis: (prefixes, [(revenue code, procedure code, charge weight, chance)])
+IP_SERVICES = [
+    (("J18", "J44", "J45", "J96", "J10", "J20"), [("0410", "", 0.08, 0.9), ("0320", "71045", 0.012, 0.95),
+                                                   ("0306", "", 0.02, 0.6), ("0350", "71260", 0.03, 0.15)]),
+    (("J21", "J05"), [("0410", "", 0.07, 0.8), ("0320", "71045", 0.012, 0.5), ("0306", "87634", 0.012, 0.6)]),
+    (("E84",), [("0410", "", 0.09, 1.0), ("0636", "J2543", 0.08, 0.8), ("0320", "71045", 0.01, 0.6), ("0306", "", 0.02, 0.9)]),
+    (("A41",), [("0306", "", 0.04, 1.0), ("0320", "71045", 0.012, 0.7), ("0350", "74177", 0.03, 0.4),
+                ("0636", "J2543", 0.05, 0.6), ("0410", "", 0.03, 0.3)]),
+    (("K35", "K81", "K80", "K57", "K56", "K85", "R10"), [("0350", "74177", 0.04, 0.85), ("0306", "", 0.01, 0.2)]),
+    (("K92",), [("0750", "43239", 0.08, 0.9), ("0390", "", 0.04, 0.5), ("0391", "36430", 0.01, 0.5)]),
+    (("K74", "K70", "K75"), [("0402", "76705", 0.02, 0.7), ("0761", "49083", 0.03, 0.5), ("0750", "43239", 0.05, 0.3)]),
+    (("A08", "E86", "R11", "K21"), [("0350", "74177", 0.03, 0.2), ("0402", "76705", 0.02, 0.12)]),
+    (("I21", "I20", "R07"), [("0730", "93005", 0.01, 1.0), ("0483", "93306", 0.04, 0.9), ("0320", "71045", 0.01, 0.8)]),
+    (("I48", "I50"), [("0730", "93005", 0.01, 1.0), ("0483", "93306", 0.04, 0.8), ("0320", "71045", 0.01, 0.85),
+                      ("0410", "", 0.03, 0.4)]),
+    (("I26",), [("0350", "71275", 0.04, 0.95), ("0730", "93005", 0.01, 1.0), ("0483", "93306", 0.03, 0.6),
+                ("0402", "93970", 0.02, 0.5)]),
+    (("R55",), [("0730", "93005", 0.01, 1.0), ("0483", "93306", 0.03, 0.6), ("0350", "70450", 0.03, 0.4)]),
+    (("I63",), [("0350", "70450", 0.03, 1.0), ("0610", "70551", 0.05, 0.85), ("0483", "93306", 0.03, 0.8),
+                ("0730", "93005", 0.01, 1.0), ("0420", "", 0.03, 0.9), ("0430", "", 0.02, 0.8), ("0440", "", 0.02, 0.7)]),
+    (("N10", "N39"), [("0306", "", 0.03, 0.9), ("0402", "76770", 0.02, 0.3), ("0350", "74176", 0.03, 0.4)]),
+    (("N17",), [("0402", "76770", 0.02, 0.7), ("0301", "", 0.04, 1.0)]),
+    (("N18",), [("0801", "90935", 0.12, 1.0), ("0301", "", 0.03, 1.0)]),
+    (("L03",), [("0306", "", 0.02, 0.5), ("0402", "76882", 0.02, 0.3), ("0636", "J3370", 0.04, 0.5)]),
+    (("G40", "R56"), [("0740", "95816", 0.04, 0.7), ("0350", "70450", 0.03, 0.6), ("0610", "70553", 0.04, 0.35)]),
+    (("E11.1", "E87"), [("0301", "", 0.06, 1.0), ("0258", "", 0.04, 1.0)]),
+    (("D70",), [("0306", "", 0.03, 1.0), ("0636", "J2543", 0.05, 0.8), ("0390", "", 0.03, 0.3)]),
+    (("G89",), [("0350", "74177", 0.03, 0.4), ("0402", "76705", 0.02, 0.15)]),
+    (("J91",), [("0320", "71045", 0.012, 1.0), ("0761", "32555", 0.03, 0.8), ("0350", "71260", 0.03, 0.5)]),
+    (("D66",), [("0636", "J7192", 0.3, 1.0), ("0402", "76882", 0.02, 0.4)]),
+    (("R50",), [("0306", "", 0.04, 1.0), ("0320", "71045", 0.01, 0.4)]),
+    (("F33", "F32", "F10"), [("0914", "90832", 0.05, 0.85), ("0915", "90853", 0.03, 0.6)]),
+    (("T86",), [("0402", "76776", 0.03, 0.8), ("0301", "", 0.05, 1.0), ("0761", "50200", 0.03, 0.5)]),
+]
+
 
 def cents(x):
     return int(round(x * 100))
@@ -164,6 +211,7 @@ class Coder:
         """room: [(rev, days)] at the chargemaster's daily rate; ancillary: [(rev, code, weight)]; the case rate is
         spread over the lines in proportion to their charges"""
         lines, tot = [], 0.0
+        days_total = max(1, sum(d for _, d in room))
         for rev, days in room:
             uc = self.unit_charge(fac, rev, "", K.REV_CHARGE[rev], y)
             lines.append([rev, "", "", days, round(uc * days, 2)])
@@ -188,7 +236,7 @@ class Coder:
                 lines.append([rev, code, "", units, ch])
                 tot += ch
             else:
-                lines.append([rev, code, "", 1, ch])
+                lines.append([rev, code, "", self.units_for(rev, code, days_total), ch])
                 tot += ch
         total_c = sum(cents(l[4]) for l in lines)
         amt_c = cents(amount)
@@ -210,6 +258,21 @@ class Coder:
         out[k][5] += diff
         return [tuple(l) for l in out]
 
+    def units_for(self, rev, code, days):
+        """the units a hospital's line carries: doses, tests, items, treatments, quarter hours"""
+        r = self.r
+        if code:
+            return 1
+        per_day = {"0250": (5, 14), "0258": (1, 4), "0270": (2, 9), "0272": (3, 12), "0300": (2, 7), "0301": (3, 9),
+                   "0305": (1, 3), "0306": (1, 3), "0410": (2, 6), "0412": (2, 6), "0420": (1, 3), "0424": (1, 2),
+                   "0430": (1, 3), "0440": (1, 2), "0390": (1, 2), "0278": (1, 1)}.get(rev)
+        if per_day is None:
+            return 1
+        lo, hi = per_day
+        if rev in ("0278", "0390", "0306", "0420", "0430", "0440"):
+            return int(r.integers(1, 4 if rev != "0420" else 6))
+        return max(1, int(round(days * (lo + (hi - lo) * r.random()))))
+
     # ---------------------------------------------------------------- lags
     def lags(self, ct, d1, kind, extra=0):
         """days from the last date of service to receipt and to payment (a Thursday check run)"""
@@ -228,7 +291,7 @@ class Coder:
             adj = int(r.integers(5, 22))
         else:
             adj = int(r.integers(30, 121))       # pended for records, accident details or coordination of benefits
-        recv = d1 + dt.timedelta(days=sub)
+        recv = W.receipt_day(d1 + dt.timedelta(days=sub), u01("recv", d1, sub, adj, ct, kind))
         paid = W.next_check_run(recv + dt.timedelta(days=adj + 1))
         return (paid - d1).days, (recv - d1).days
 
@@ -928,10 +991,13 @@ class Coder:
             code = "90837" if r.random() < 0.45 else "90834" if r.random() < 0.85 else "90832"
             if prov.spec == "psychiatry":
                 code = "99214" if r.random() < 0.6 else "99213"
-        line = self.fee_line(prov, code, 1, y)
+        lines = [self.fee_line(prov, code, 1, y)]
+        if prov.spec == "psychiatry" and code.startswith("992"):
+            # a psychiatrist's session is the medication visit with psychotherapy added
+            lines.append(self.fee_line(prov, "90836" if code == "99214" else "90833", 1, y))
         if tele:
-            line = line[:2] + ("95",) + line[3:]
-        return (self.comp("P", prov, [line], d1, "therapy", pos="10" if tele else "11", dx1=dx1),)
+            lines = [l[:2] + ("95",) + l[3:] for l in lines]
+        return (self.comp("P", prov, lines, d1, "therapy", pos="10" if tele else "11", dx1=dx1),)
 
     def k_home_health(self, p, d0, d1, fac_amt, info, age, y):
         r, D = self.r, self.D
@@ -942,7 +1008,8 @@ class Coder:
         return (self.comp("I", fac, lines, d1, "home_health", bt="322", dx1=info.get("dx"), dx2=info.get("dx2", "")),)
 
     # inpatient --------------------------------------------------------------
-    def _hospital_professionals(self, p, fac, d0, d1, los, y, dx1, age, icu=False, cardiac=False, via_er=False):
+    def _hospital_professionals(self, p, fac, d0, d1, los, y, dx1, age, icu=False, cardiac=False, via_er=False,
+                                imaging=()):
         r, D = self.r, self.D
         out = []
         hosp = D.hospital_group("hospitalist", fac)
@@ -960,7 +1027,7 @@ class Coder:
             out.append(self.comp("P", em, [self.fee_line(em, "99285" if r.random() < 0.7 else "99284", 1, y)], d1, "admit",
                                  pos="23", dx1=dx1))
         if cardiac and age >= 18:
-            card = self.specialist(p, "cardiology")
+            card = self.specialist(p, "neuro" if dx1.startswith("I63") else "cardiology")
             out.append(self.comp("P", card, [self.fee_line(card, "99254" if r.random() < 0.5 else "99253", 1, y),
                                              self.fee_line(card, "99232", max(1, min(los - 1, 5)), y)], d1,
                                  "admit", pos="21", dx1=dx1))
@@ -972,35 +1039,96 @@ class Coder:
             out.append(self.comp("P", cons, [self.fee_line(cons, "99253" if r.random() < 0.6 else "99254", 1, y),
                                              self.fee_line(cons, "99231" if r.random() < 0.5 else "99232", max(1, min(los - 1, 4)), y)],
                                  d1, "admit", pos="21", dx1=dx1))
-        if r.random() < 0.55:
+        reads = [c for c in dict.fromkeys(imaging) if c in K.PROF26]
+        if reads:
             rad = D.hospital_group("radiology", fac)
-            codes = ["71045"] + (["70450"] if dx1.startswith(("I63", "S06", "R55")) else
-                                 ["74177"] if dx1.startswith(("K", "A41", "R10")) else [])
-            out.append(self.comp("P", rad, [self.fee_line(rad, c, 1, y, mod="26") for c in codes], d1, "admit", pos="21", dx1=dx1))
+            out.append(self.comp("P", rad, [self.fee_line(rad, c, 1, y, mod="26") for c in reads], d1, "admit", pos="21", dx1=dx1))
         return out
 
-    def _anc(self, kind, info, los, dx1):
-        anc = [("0250", "", 0.20), ("0300", "", 0.14), ("0270", "", 0.06)]
-        if kind in ("admit_surgery", "admit_trauma", "joint", "transplant"):
-            anc += [("0360", "", 0.20), ("0370", "", 0.05), ("0710", "", 0.03)]
-        if kind in ("admit_trauma", "joint") or (kind == "admit_surgery" and dx1 in ("M48.062", "I35.0")):
-            anc.append(("0278", "", 0.16))
-        if kind == "admit_cardiac":
-            if dx1.startswith("I21"):
-                anc += [("0481", "", 0.0), ("0278", "", 0.10)]
-            else:
-                anc += [("0350", "70450", 0.04), ("0610", "70551", 0.05)]
+    def ip_services(self, kind, dx1, age, los, icu, via_er, surg, info, cpt=None):
+        """the revenue lines a stay carries besides its room: what the principal diagnosis and any operation call for"""
+        r = self.r
+        out = [("0250", "", 0.16), ("0300", "", 0.06)]
+        if r.random() < 0.8:
+            out.append(("0301", "", 0.05))
+        if r.random() < 0.7:
+            out.append(("0305", "", 0.03))
+        if r.random() < 0.85:
+            out.append(("0270", "", 0.05))
+        if r.random() < 0.6:
+            out.append(("0258", "", 0.03))
+        for pre, items in IP_SERVICES:
+            if dx1.startswith(pre):
+                for rev, code, w, pr in items:
+                    if dx1.startswith(("K81", "K80")) and rev == "0350":
+                        rev, code, pr = "0402", "76705", 0.9
+                    if r.random() < pr:
+                        out.append((rev, code, w))
+                break
+        if dx1.startswith("I21") and kind == "admit_cardiac":
+            out += [("0481", "93458", 0.0), ("0278", "", 0.10)]
+        if via_er:
+            out.append(("0450", "99285" if r.random() < 0.7 else "99284", 0.03))
+        if surg:
+            out += [("0360", "", 0.20), ("0370", "", 0.05), ("0710", "", 0.03)]
+            if r.random() < 0.8:
+                out.append(("0272", "", 0.04))
+            if cpt in PATH_SPECIMEN:
+                out.append(("0310", "88307" if cpt in ("19303", "32663", "55866", "44204", "44140") else "88305", 0.01))
+            if kind in ("joint",) or dx1 in ("M48.062", "I35.0") or (kind == "admit_trauma" and dx1 in ("S72.001A", "S82.201A")):
+                out.append(("0278", "", 0.16))
+            if age >= 50 and not any(x[0] == "0730" for x in out) and r.random() < 0.7:
+                out.append(("0730", "93005", 0.01))
+            if age >= 60 and not any(x[0] == "0320" for x in out) and r.random() < 0.45:
+                out.append(("0320", "71045", 0.01))
+        if kind == "admit_trauma":
+            out.append(("0350", "70450" if dx1.startswith("S06") else "74177", 0.04))
+            if not any(x[0] == "0320" for x in out):
+                out.append(("0320", {"S72.001A": "73502", "S82.201A": "73590"}.get(dx1, "71045"), 0.015))
+            if dx1 == "S27.0XXA":
+                out.append(("0761", "32551", 0.03))
+            if r.random() < 0.3:
+                out.append(("0390", "", 0.04))
+        if kind == "admit_surgery" and dx1 == "I35.0":
+            out += [("0483", "93312", 0.03), ("0390", "", 0.05)]
+        if kind == "admit_surgery" and dx1.startswith("C34"):
+            out += [("0410", "", 0.05), ("0320", "71045", 0.012)]
         if kind == "transplant":
-            anc.append(("0811" if info.get("organ") == "kidney" else "0812", "", 0.0))
-        if los >= 3:
-            anc.append(("0410", "", 0.04))
-        if kind in ("admit", "admit_trauma", "admit_cardiac") and info.get("via_er", True):
-            anc.append(("0450", "99285", 0.03))
-        anc.append(("0730", "93005", 0.01))
-        anc.append(("0320", "71045", 0.01))
-        if los >= 4 or kind in ("joint", "admit_trauma"):
-            anc += [("0420", "", 0.03), ("0430", "", 0.02)]
-        return anc
+            out += [("0811" if info.get("organ") == "kidney" else "0812", "", 0.0), ("0390", "", 0.04), ("0636", "J7504", 0.05)]
+        rehab = kind in ("joint", "admit_trauma") or dx1 in ("M48.062", "I35.0") or dx1.startswith("I63") or \
+            (los >= 4 and age >= 60 and r.random() < 0.5)
+        if rehab and not any(x[0] == "0420" for x in out):
+            out.append(("0420", "", 0.03))
+            if r.random() < 0.75:
+                out.append(("0430", "", 0.02))
+        if los >= 3 and not any(x[0] == "0410" for x in out) and r.random() < 0.15:
+            out.append(("0410", "", 0.03))
+        return out
+
+    def ip_room(self, fac, kind, dx1, age, los, icu):
+        """the stay's days by the accommodation billed: a general or child's room, intensive or intermediate care,
+        or a psychiatric room"""
+        role = fac.role if fac.role in ROOM else "travel_hosp"
+        if dx1.startswith(("F33", "F32")):
+            return [("0114" if role in ("community", "tertiary_tc") else "0124", los)]
+        if dx1.startswith("F10"):
+            return [("0116", los)]
+        gen = PEDS_ROOM[role] if age < 18 else ROOM[role]
+        if icu:
+            ic = max(1, los // 2)
+            unit = "0210" if kind == "admit_cardiac" or dx1 == "I35.0" else "0200"
+            room = [(unit, ic)]
+            if los - ic > 0:
+                room.append((gen, los - ic))
+            return room
+        if kind == "admit_cardiac" or dx1.startswith(("I48", "I50", "I26", "R55")):
+            step = min(los, max(1, los // 2)) if los > 1 else 0
+            if step:
+                room = [("0206", step)]
+                if los - step > 0:
+                    room.append((gen, los - step))
+                return room
+        return [(gen, los)]
 
     def _inpatient(self, p, d0, d1, fac_amt, info, age, y, kind):
         r, D = self.r, self.D
@@ -1008,37 +1136,48 @@ class Coder:
         los = max(1, (d1 - d0).days)
         fac = self.hospital_for(p, kind, info, age)
         icu = info.get("icu", False)
-        if icu:
-            ic = max(1, los // 2)
-            room = [("0200" if kind != "admit_cardiac" else "0210", ic)]
-            if los - ic > 0:
-                room.append(("0120", los - ic))
+        if kind in ("admit", "admit_trauma", "admit_cardiac"):
+            pr = 0.95 if kind == "admit_trauma" or dx1.startswith(("K35", "K81", "I21", "I63", "A41")) else 0.72
+            via_er = u01("via_er", p.pid, d0) < pr and not info.get("no_ed")
         else:
-            room = [("0120", los)]
-        lines = self.case_rate(fac, y, fac_amt, room, self._anc(kind, info, los, dx1))
+            via_er = kind == "admit_surgery" and dx1 == "K57.20" and u01("via_er", p.pid, d0) < 0.8
+        # the operation, if the stay has one
+        surg, cpt, anes, spec = False, None, None, None
+        if kind == "admit_surgery":
+            cpt, anes, spec = K.SURG_IP.get(dx1, ("44140", "00790", "gensurg"))
+            surg = True
+        elif kind == "admit_trauma":
+            cpt, anes = K.TRAUMA_CPT.get(dx1, ("27236", "01230"))
+            spec = "neurosurg" if dx1.startswith("S06") or dx1.startswith("S32") else "gensurg" if dx1.startswith("S27") else "ortho"
+            surg = u01("trauma_or", p.pid, d0) < TRAUMA_OR.get(dx1, 1.0)
+        elif kind == "transplant":
+            cpt = "50360" if info.get("organ") == "kidney" else "47135"
+            anes, spec = K.ANES_IP[info.get("organ", "kidney")], "transplant"
+            surg = True
+        elif kind == "joint":
+            cpt = "27447" if info.get("site") == "knee" else "27130"
+            anes, spec = K.ANES_IP["joint_" + info.get("site", "knee")], "ortho"
+            surg = True
+        elif kind == "admit" and dx1 in SURG_ADMIT:
+            share, cpt, anes, spec = SURG_ADMIT[dx1]
+            surg = u01("ip_or", p.pid, d0) < share
+        room = self.ip_room(fac, kind, dx1, age, los, icu)
+        lines = self.case_rate(fac, y, fac_amt, room, self.ip_services(kind, dx1, age, los, icu, via_er, surg, info, cpt))
         dx2 = info.get("dx2") or self.dx2_for(p, dx1, age)
         out = [self.comp("I", fac, lines, d1, kind, bt="111", dx1=dx1, dx2=dx2)]
-        via_er = kind in ("admit", "admit_trauma", "admit_cardiac") and u01("via_er", p.pid, d0) < 0.7 and not info.get("no_ed")
-        out += self._hospital_professionals(p, fac, d0, d1, los, y, dx1, age, icu, kind == "admit_cardiac", via_er)
-        if kind in ("admit_surgery", "admit_trauma", "joint", "transplant"):
-            if kind == "admit_surgery":
-                cpt, anes, spec = K.SURG_IP.get(dx1, ("44140", "00790", "gensurg"))
-            elif kind == "admit_trauma":
-                cpt, anes = K.TRAUMA_CPT.get(dx1, ("27236", "01230"))
-                spec = "neurosurg" if dx1.startswith("S06") or dx1.startswith("S32") else "gensurg" if dx1.startswith("S27") else "ortho"
-            elif kind == "transplant":
-                cpt = "50360" if info.get("organ") == "kidney" else "47135"
-                anes, spec = K.ANES_IP[info.get("organ", "kidney")], "transplant"
-            else:
-                cpt = "27447" if info.get("site") == "knee" else "27130"
-                anes, spec = K.ANES_IP["joint_" + info.get("site", "knee")], "ortho"
-            surg = self.specialist(p, spec)
-            out.append(self.comp("P", surg, [self.fee_line(surg, cpt, 1, y)], d1, kind, pos="21", dx1=dx1))
+        imaging = [l[1] for l in lines if l[0] in ("0320", "0350", "0610") and l[1]]
+        out += self._hospital_professionals(p, fac, d0, d1, los, y, dx1, age, icu, kind == "admit_cardiac", via_er, imaging)
+        if surg and (kind != "admit_trauma" or cpt):
+            surgeon = self.specialist(p, spec)
+            out.append(self.comp("P", surgeon, [self.fee_line(surgeon, cpt, 1, y)], d1, kind, pos="21", dx1=dx1))
             if anes:
                 agrp = D.hospital_group("anesthesia", fac)
                 minutes = int({"00567": 300, "00796": 480, "00868": 240, "00541": 210, "00630": 220,
-                               "00210": 260}.get(anes, 140) * (0.8 + 0.4 * r.random()))
+                               "00210": 260, "00840": 70, "00790": 110}.get(anes, 140) * (0.8 + 0.4 * r.random()))
                 out.append(self.comp("P", agrp, [self.anes_line(agrp, anes, minutes, y, "AA")], d1, kind, pos="21", dx1=dx1))
+        elif kind == "admit_trauma" and dx1 == "S27.0XXA":
+            surgeon = self.specialist(p, "gensurg")
+            out.append(self.comp("P", surgeon, [self.fee_line(surgeon, "32551", 1, y)], d1, kind, pos="21", dx1=dx1))
         if kind == "admit_cardiac" and dx1.startswith("I21"):
             card = self.specialist(p, "cardiology")
             out.append(self.comp("P", card, [self.fee_line(card, "93458", 1, y, mod="26") if "93458" in K.PROF26 else
@@ -1089,16 +1228,28 @@ class Coder:
         cs = info.get("csec")
         los = max(1, (d1 - d0).days)
         fac = self.hospital_for(p, "delivery", info, age)
-        lines = self.case_rate(fac, y, fac_amt, [("0112", los)],
-                               [("0720", "", 0.0), ("0250", "", 0.12), ("0300", "", 0.07), ("0370", "", 0.06),
-                                ("0270", "", 0.04)] + ([("0360", "", 0.18)] if cs else []))
+        anes = cs or u01("epidural", p.pid, d0) < 0.72
+        anc = [("0722" if u01("ldr", fac.npi) < 0.5 else "0720", "", 0.0), ("0250", "", 0.12), ("0300", "", 0.07)]
+        if anes:
+            anc.append(("0370", "", 0.06))
+        if r.random() < 0.85:
+            anc.append(("0270", "", 0.04))
+        if r.random() < 0.8:
+            anc.append(("0258", "", 0.03))
+        if cs:
+            anc += [("0360", "", 0.18), ("0710", "", 0.02)]
+        if r.random() < 0.08:
+            anc.append(("0402", "76815", 0.02))
+        if r.random() < 0.03:
+            anc.append(("0390", "", 0.04))
+        lines = self.case_rate(fac, y, fac_amt, [("0112", los)], anc)
         dx1 = info.get("dx")
         dx2 = "Z37.0"
         out = [self.comp("I", fac, lines, d1, "delivery", bt="111", dx1=dx1, dx2=dx2)]
         ob = self.specialist(p, "obgyn")
         out.append(self.comp("P", ob, [self.fee_line(ob, "59510" if cs else "59400", 1, y)], d1, "delivery", pos="21",
                              dx1=dx1, dx2=dx2, extra=int(r.integers(20, 50))))
-        if cs or r.random() < 0.72:
+        if anes:
             agrp = D.hospital_group("anesthesia", fac)
             minutes = int((75 if cs else 360) * (0.7 + 0.6 * r.random()))
             out.append(self.comp("P", agrp, [self.anes_line(agrp, "01961" if cs else "01967", minutes, y, "QK")], d1,
@@ -1109,7 +1260,16 @@ class Coder:
         r, D = self.r, self.D
         los = max(1, (d1 - d0).days)
         fac = self.hospital_for(p, "newborn", info, age)
-        lines = self.case_rate(fac, y, fac_amt, [("0171", los)], [("0250", "", 0.08), ("0300", "", 0.10), ("0270", "", 0.03)])
+        anc = [("0250", "", 0.08), ("0300", "", 0.10)]
+        if r.random() < 0.85:
+            anc.append(("0270", "", 0.03))
+        if r.random() < 0.9:
+            anc.append(("0470", "92558", 0.02))
+        if r.random() < 0.7:
+            anc.append(("0771", "90744", 0.01))
+        if r.random() < 0.6:
+            anc.append(("0301", "", 0.03))
+        lines = self.case_rate(fac, y, fac_amt, [("0171", los)], anc)
         dx1 = info.get("dx")
         dx2 = "P59.9" if r.random() < 0.18 else ""
         out = [self.comp("I", fac, lines, d1, "newborn", bt="111", dx1=dx1, dx2=dx2)]
@@ -1129,9 +1289,23 @@ class Coder:
         days = max(1, (d1 - d0).days)
         fac = self.hospital_for(p, "nicu", info, age)
         wk = info.get("weeks", 40)
-        rev = "0174" if wk < 32 else "0173"
-        anc = [("0250", "", 0.10), ("0300", "", 0.09), ("0410", "", 0.08), ("0270", "", 0.03), ("0320", "71045", 0.012)]
-        lines = self.case_rate(fac, y, fac_amt, [(rev, days)], anc)
+        # the baby steps down through the levels of neonatal care before going home
+        if wk < 32:
+            a, b = max(1, int(days * 0.5)), max(0, int(days * 0.3))
+            room = [("0174", a)] + ([("0173", b)] if b else []) + ([("0172", days - a - b)] if days - a - b > 0 else [])
+        elif wk < 35:
+            a = max(1, int(days * 0.6))
+            room = [("0173", a)] + ([("0172", days - a)] if days - a > 0 else [])
+        else:
+            room = [("0172" if days < 8 else "0173", days)]
+        anc = [("0250", "", 0.10), ("0300", "", 0.09), ("0410", "", 0.08), ("0270", "", 0.03)]
+        for rv, cd, w, pr in (("0320", "71045", 0.012, 0.9 if wk < 34 else 0.5), ("0306", "", 0.02, 0.7),
+                              ("0258", "", 0.04, 0.9), ("0402", "76506", 0.02, 0.9 if wk < 32 else 0.15),
+                              ("0483", "93303", 0.03, 0.6 if wk < 30 else 0.1), ("0470", "92558", 0.01, 0.9),
+                              ("0390", "", 0.03, 0.7 if wk < 28 else 0.05), ("0420", "", 0.02, 0.5 if wk < 30 else 0.05)):
+            if r.random() < pr:
+                anc.append((rv, cd, w))
+        lines = self.case_rate(fac, y, fac_amt, room, anc)
         dx1 = info.get("dx")
         dx2 = info.get("dx2", "")
         if fac.npi == self.hospital_for(p, "delivery", {}, 0).npi:

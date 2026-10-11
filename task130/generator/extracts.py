@@ -258,9 +258,15 @@ class Pack:
         for p in S.people:
             if p.member_id is not None:
                 fam_members[p.fid].append(p)
+        seen = set()
         for c in self.med:
             p = S.people[c["pid"]]
             lines = [list(l) for l in c["lines"]]
+            # a second read of the same film by the same group on the same day is billed as a repeat procedure
+            sig = (c["pid"], c["d0"], c["npi"], tuple(l[1] for l in lines))
+            if c["ct"] == "P" and sig in seen and all(l[1][:1] == "7" for l in lines):
+                lines = [l[:2] + ["76"] + l[3:] for l in lines]
+            seen.add(sig)
             n0 = len(V)
             self._claim_mess(c, p, lines, r, V, emit, fam_members)
             c["clean"] = len(V) == n0 + 1 and V[n0]["freq"] == "1" and V[n0]["denial"] is None and V[n0]["paid"] <= CUT \
@@ -270,7 +276,7 @@ class Pack:
 
     def later(self, d, lo, hi):
         """a provider's next submission, lo to hi days after d, and the check run that settles it"""
-        recv = d + dt.timedelta(days=int(self.rm.integers(lo, hi)))
+        recv = W.receipt_day(d + dt.timedelta(days=int(self.rm.integers(lo, hi))), self.rm.random())
         return recv, W.next_check_run(recv + dt.timedelta(days=int(self.rm.integers(1, 8))))
 
     def _claim_mess(self, c, p, lines, r, V, emit, fam_members):
@@ -298,13 +304,22 @@ class Pack:
                 rrecv, rpaid = self.later(vrecv, 0, 7)
                 emit(c, c["pid"], "1", rrecv, rpaid, lines)
                 return
-        # replacement claims: late charges on inpatient bills, corrected units or codes elsewhere
+        # replacement claims: late charges on inpatient bills, corrected units or codes elsewhere; and on a few 2025
+        # claims a provider's appeal or a rate correction settled a year or more after the first payment
         rep_p = 0.22 if inpatient else 0.05 if c["ct"] == "I" else 0.015
-        if r.random() < rep_p:
+        late = c["d0"].year == 2025 and r.random() < (0.014 if c["ct"] == "I" else 0.003)
+        if late or r.random() < rep_p:
             orig = self.wrong_version(c, lines, r)
             o = emit(c, c["pid"], "1", recv, paid, orig)
             rrecv, rpaid = self.later(paid, 20, 100)
-            if r.random() < 0.08:
+            hi = (CUT - paid).days - 25
+            settled_late = False
+            if late and hi > 300:
+                lrecv, lpaid = self.later(paid, 300, min(640, hi))
+                if lpaid <= CUT:
+                    rrecv, rpaid = lrecv, lpaid
+                    settled_late = True
+            if not settled_late and r.random() < 0.08:
                 mid = self.wrong_version(c, lines, r)
                 o = emit(c, c["pid"], "7", rrecv, rpaid, mid, ref=o)
                 rrecv, rpaid = self.later(rpaid, 25, 70)
@@ -332,12 +347,18 @@ class Pack:
         for p in S.people:
             if p.member_id is None:
                 continue
-            if p.end is not None and START <= p.end <= CUT - dt.timedelta(days=40) and p.death is None and r.random() < 0.25:
+            ends = [e for s0, e in p.spans() if e is not None and START <= e <= CUT - dt.timedelta(days=40)
+                    and not (p.death is not None and e == p.death)]
+            for end in ends:
+                if r.random() >= 0.25:
+                    continue
                 for _ in range(int(r.integers(1, 3))):
-                    d = W.next_business_day(p.end + dt.timedelta(days=int(r.integers(3, 41))))
+                    d = W.next_business_day(end + dt.timedelta(days=int(r.integers(3, 41))))
+                    if p.covered_on(d) or (p.death is not None and d > p.death):
+                        continue
                     prov, ls, pos, dx = coder.denied_service(p, d, "after_term")
                     c = {"d0": d, "d1": d, "ct": "P", "bt": "", "pos": pos, "dx1": dx, "dx2": "", "npi": prov.npi}
-                    recv = d + dt.timedelta(days=int(r.integers(4, 30)))
+                    recv = W.receipt_day(d + dt.timedelta(days=int(r.integers(4, 30))), r.random())
                     emit(c, p.pid, "1", recv, W.next_check_run(recv + DAY),
                          [[l[0], l[1], l[2], l[3], l[4], None, None, None, None, ""] for l in ls], denial="27")
             if p.covered_on(dt.date(2026, 1, 1)) and r.random() < 0.012:
@@ -345,7 +366,7 @@ class Pack:
                 if p.covered_on(d) and p.age(d) >= 18:
                     prov, ls, pos, dx = coder.denied_service(p, d, "not_covered")
                     c = {"d0": d, "d1": d, "ct": "P", "bt": "", "pos": pos, "dx1": dx, "dx2": "", "npi": prov.npi}
-                    recv = d + dt.timedelta(days=int(r.integers(6, 35)))
+                    recv = W.receipt_day(d + dt.timedelta(days=int(r.integers(6, 35))), r.random())
                     emit(c, p.pid, "1", recv, W.next_check_run(recv + DAY),
                          [[l[0], l[1], l[2], l[3], l[4], None, None, None, None, ""] for l in ls], denial="204")
 
@@ -437,7 +458,7 @@ class Pack:
             elif u < 0.045 and not spec:
                 # filled and never picked up: returned to stock and reversed, then filled again later
                 early = d0 - dt.timedelta(days=int(r.integers(5, 21)))
-                if early >= max(START, p.start):
+                if early >= START and p.covered_on(early):
                     rts = dict(base)
                     rts["dos"] = early
                     out.append(("B1", rts, early))
@@ -511,31 +532,34 @@ class Pack:
         return rows
 
     def spans(self, p):
-        """coverage spans with the current administrator, as of the extract (inclusive dates; blank end = open)"""
+        """coverage spans with the current administrator, as of the extract (inclusive dates; blank end = open): one
+        row for each stretch of coverage, split where the plan, tier, class or person code changes"""
         fam = self.S.fams[p.fid]
-        a = max(p.start, START)
-        b = p.end
-        if a > CUT or (b is not None and b < a):
-            return []
-        changes = {eff for eff, _, _ in fam.hist if a < eff} | {eff for eff, _ in fam.cls_hist if a < eff} | \
-            {eff for eff, _ in self.code_hist.get(p.pid, ()) if a < eff}
-        cuts = [a] + sorted(c for c in changes if (b is None or c <= b) and c <= CUT)
         out = []
-        for i, s in enumerate(cuts):
-            e = cuts[i + 1] - DAY if i + 1 < len(cuts) else b
-            if e is not None and e > CUT:
-                e = None
-            plan, tier, cls = self.fam_state(fam, s)
-            code = self.code_on(p, s)
-            if out and out[-1][2:] == (plan, tier, cls, code):
-                out[-1] = (out[-1][0], e, plan, tier, cls, code)
-            else:
-                out.append((s, e, plan, tier, cls, code))
+        for a0, b in p.spans():
+            a = max(a0, START)
+            if a > CUT or (b is not None and b < a):
+                continue
+            changes = {eff for eff, _, _ in fam.hist if a < eff} | {eff for eff, _ in fam.cls_hist if a < eff} | \
+                {eff for eff, _ in self.code_hist.get(p.pid, ()) if a < eff}
+            cuts = [a] + sorted(c for c in changes if (b is None or c <= b) and c <= CUT)
+            seg = []
+            for i, s in enumerate(cuts):
+                e = cuts[i + 1] - DAY if i + 1 < len(cuts) else b
+                if e is not None and e > CUT:
+                    e = None
+                plan, tier, cls = self.fam_state(fam, s)
+                code = self.code_on(p, s)
+                if seg and seg[-1][2:] == (plan, tier, cls, code):
+                    seg[-1] = (seg[-1][0], e, plan, tier, cls, code)
+                else:
+                    seg.append((s, e, plan, tier, cls, code))
+            out += seg
         return out
 
     def eligibility_rows(self):
         S = self.S
-        cls_code = {"T": "TCH", "S": "ESP", "A": "ADM", "R": "RET"}
+        cls_code = {"T": "TCH", "S": "ESP", "A": "ADM", "R": "RET", "C": "COB"}
         rel_code = {"E": "SUB", "R": "SUB", "S": "SPS", "C": "DEP"}
         rows = []
         for p in S.people:

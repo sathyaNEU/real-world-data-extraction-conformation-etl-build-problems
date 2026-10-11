@@ -109,8 +109,9 @@ def workbook(path, R):
         "2026 allowed PMPM: the enrolled members' allowed claims incurred in calendar 2026 and paid through 28 February 2027, not "
         "completed, over their 2026 member months (Schedule C.2).",
         "Baseline PMPM: allowed claims per member month, 1 April 2025 to 31 March 2026, of the members Northcourt's model placed in each "
-        "tier on 2024 claims in its RFP 2025-07 proposal (never enrolled: the award was suspended in April 2025), counted for the months "
-        "each was enrolled, and projected 24 months at the renewal trend, 6.5% medical and 9.0% pharmacy (Schedule C.1(g)).",
+        "tier on 2024 claims in its RFP 2025-07 proposal (never enrolled: the District cancelled the RFP before an award in April 2025), "
+        "each counted for the months enrolled (Schedule C.1(c)), on claims paid through 28 February 2027 and projected 24 months at the "
+        "renewal trend, 6.5% medical and 9.0% pharmacy (Schedule C.1(h)).",
         "Allowed claims include member cost sharing, are net of replacement and void claims and pharmacy reversals, before manufacturer "
         "rebates and stop-loss reimbursements (Schedule C.1(a)). Member month: enrolled on the first of the month (Schedule C.1(b)).",
         "Sources: Ellery claim lines and eligibility, Quarrystone claims (pulled 1 to 3 March 2027); Ellery conversion file of 1 January "
@@ -164,7 +165,7 @@ def workbook(path, R):
     w2["A11"] = ("Trend: 1.065 and 1.09 a year (renewal letter of 26 February 2027) over the 24 months from the middle of the "
                  "bid members' year (1 October 2025) to the middle of the Programme Year (1 October 2027).")
     w2["A12"] = ("Members who left the plan before 1 April 2025 have no member months in the year and drop out; members who "
-                 "left during it count for the months they were enrolled.")
+                 "left during it, or came back after a gap, count for the months they were enrolled (Schedule C.1(c)).")
     for a in ("A11", "A12"):
         w2[a].font = Font(name="Calibri", size=9, color="404040")
     for j, wdt in enumerate([10, 11, 11, 10, 15, 15, 12, 12, 11, 11, 13, 13], 1):
@@ -200,8 +201,8 @@ def workbook(path, R):
                 % ("${:,.0f}".format(R["R0_prog"][0]), "${:,.0f}".format(R["R0_prog"][1]),
                    "${:,.0f}".format(R["R0_prog"][0] + R["R0_prog"][1])))
     w3["A9"].font = Font(name="Calibri", size=9, color="404040")
-    w3["A10"] = ("Northcourt chose these members because of their 2026 claims, so their 2026 level is not what they would be "
-                 "expected to cost in the Programme Year; see the Baseline sheet, note 3.")
+    w3["A10"] = ("Northcourt chose these members because of their 2026 claims, so their 2026 level, medical or pharmacy, is not "
+                 "what they would be expected to cost in the Programme Year; see the Baseline sheet, note 3.")
     w3["A10"].font = Font(name="Calibri", size=9, color="404040")
     w3["A11"] = ("Where a member's coverage began partway through a month, as a newborn's does, that month's claims are included "
                  "and the month is not a member month (Schedule C.1(a) and (b)).")
@@ -223,6 +224,18 @@ def workbook(path, R):
 
 
 # ------------------------------------------------------------------ the chart
+def chart_title(R):
+    """the chart's headline, read off the figures it plots (checks.py asserts each clause)"""
+    med = max(R["base"][t][0] / R["f26"][t][0] for t in T)
+    assert med < 1, "a medical baseline above its 2026 level"
+    a = "Medical baselines sit under half of 2026 cost in every tier" if med < 0.5 else \
+        "Medical baselines sit below 2026 cost in every tier"
+    below = sum(1 for t in T if R["base"][t][1] < R["f26"][t][1])
+    b = {4: "pharmacy sits below it in every tier too", 3: "pharmacy sits below it in three tiers of four"}.get(
+        below, "pharmacy moves both ways")
+    return a + "; " + b
+
+
 def chart_png(R):
     plt.rcParams.update({"font.family": "Carlito", "font.size": 8.5, "axes.edgecolor": GRID, "axes.linewidth": 0.8,
                          "xtick.color": INK2, "ytick.color": INK2, "text.color": INK, "svg.hashsalt": "rcv"})
@@ -251,8 +264,7 @@ def chart_png(R):
     axes[0].set_ylabel("Dollars per member per month", fontsize=7.5, color=INK2)
     h, l = axes[0].get_legend_handles_labels()
     fig.legend(h, l, loc="lower center", ncol=2, frameon=False, fontsize=7.5, bbox_to_anchor=(0.5, -0.01))
-    fig.suptitle("Medical baselines sit under half of 2026 cost in every tier; pharmacy moves both ways", x=0.01, ha="left",
-                 fontsize=9.5, fontweight="bold", color=INK)
+    fig.suptitle(chart_title(R), x=0.01, ha="left", fontsize=9.5, fontweight="bold", color=INK)
     fig.tight_layout(rect=(0, 0.08, 1, 0.95), w_pad=2.2)
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None}, facecolor="white")
@@ -335,10 +347,10 @@ def memo(path, R, png):
                 "Northcourt enrolls on 1 April: ${:,} for medical claims and ${:,} for pharmacy. Northcourt's 40 per cent share "
                 "of savings will be measured against the tier baselines that make it up, under Schedule C of the agreement the "
                 "Board approved on 9 February.").format(whole(tot), whole(m), whole(r)), after=6)
-    _para(doc, ("These members are on the list because 2026 was an expensive year for them, and for most it was the year of an "
-                "operation, a heart attack, pneumonia, a cancer course or a premature birth that will not repeat. Northcourt ran the same model "
-                "on our 2024 claims for its 2025 proposal, and because the Board suspended that award none of those 140 members "
-                "was ever enrolled. Their claims from April 2025 to March 2026 show what a member the model flags costs in the "
+    _para(doc, ("These members are on the list because 2026 was an expensive year for them, and for most it was the year of "
+                + R["events"] + " that will not repeat. Northcourt ran the same model "
+                "on our 2024 claims for its 2025 proposal, and because we cancelled that RFP before an award none of those 140 "
+                "members was ever enrolled. Their claims from April 2025 to March 2026 show what a member the model flags costs in the "
                 "following year without the programme, so each tier's baseline is that group's allowed claims per member month, "
                 "counted for the months they were covered and brought forward 24 months at the 6.5 per cent medical and 9.0 per "
                 "cent pharmacy trend in the February renewal. The four tiers are weighted by the members Northcourt enrolled in "
@@ -371,10 +383,39 @@ def memo(path, R, png):
              C.app_props_docx("Red Cedar Valley Schools", 1, words, len(body)), drop=("docProps/thumbnail.jpeg",))
 
 
+# the one-off events the memo names, in the order it names them: each is listed only when at least two enrolled
+# members had one in 2026 (checks.py recounts them from the claims)
+EVENTS = (("an operation", lambda k, dx: k in ("admit_surgery", "joint")),
+          ("a heart attack", lambda k, dx: dx.startswith("I21")),
+          ("a stroke", lambda k, dx: k == "admit" and dx.startswith("I63")),
+          ("pneumonia", lambda k, dx: k == "admit" and dx.startswith("J18")),
+          ("a cancer course", lambda k, dx: k in ("chemo", "radiation")),
+          ("a premature birth", lambda k, dx: k == "nicu"),
+          ("a hepatitis C cure", lambda k, dx: k == "fill" and dx == "hcv"))
+
+
+def event_counts(S, pids):
+    who = {label: set() for label, _ in EVENTS}
+    for ev in S.events:
+        if ev[0] in pids and dt.date(2026, 1, 1) <= ev[1] <= dt.date(2026, 12, 31):
+            info = ev[6] if isinstance(ev[6], dict) else {}
+            dx = "hcv" if ev[3] == "R" and info.get("drug") in ("epclusa", "mavyret") else info.get("dx", "")
+            for label, f in EVENTS:
+                if f(ev[4], dx):
+                    who[label].add(ev[0])
+    return {label: len(v) for label, v in who.items()}
+
+
+def event_list(counts):
+    names = [label for label, _ in EVENTS if counts[label] >= 2]
+    return ", ".join(names[:-1]) + " or " + names[-1]
+
+
 def write(out, target, S=None, L=None):
     gdir = os.path.join(out, "golden")
     os.makedirs(gdir, exist_ok=True)
     R = figures(target)
+    R["events"] = event_list(event_counts(S, set(r[1] for r in L["final"])))
     workbook(os.path.join(gdir, "cohort_baseline_2027.xlsx"), R)
     png = chart_png(R)
     memo(os.path.join(gdir, "baseline_certification_memo.docx"), R, png)

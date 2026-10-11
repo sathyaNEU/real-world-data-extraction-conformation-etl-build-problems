@@ -83,11 +83,13 @@ class Files:
             rx = rx[rx.TXN_CD == "B1"]
         return rx
 
-    def allowed(self, members, a, b, cutoff=None, netted=True, paid_field=False, reversals=True):
+    def allowed(self, members, a, b, cutoff=None, netted=True, paid_field=False, reversals=True, by_paid=False):
         """{member: [medical, pharmacy]} for claims incurred in [a, b]"""
         ms = set(members)
         md = self.med_net(cutoff, netted)
         md = md[(md.d0 >= a) & (md.d0 <= b) & md.member_id.isin(ms)]
+        if by_paid:
+            md = md[md.paid <= by_paid]
         rx = self.rx_net(cutoff, reversals)
         rx = rx[(rx.dos >= a) & (rx.dos <= b) & rx.member_id.isin(ms)]
         out = {m: [0.0, 0.0] for m in ms}
@@ -101,16 +103,25 @@ class Files:
 
 
 def read_list(path):
+    """(rank, member identifier, score, tier): the Ellery member ID, or on the RFP list the Bramwell member number the
+    District added"""
     wb = load_workbook(path, data_only=True)
     ws = wb["Members"]
-    rows = list(ws.iter_rows(min_row=2, values_only=True))
-    return [(r[0], str(r[1]), float(r[5]), int(r[6])) for r in rows if r[0] is not None]
+    rows = list(ws.iter_rows(values_only=True))
+    hdr = list(rows[0])
+    ident = hdr.index("Bramwell member no.") if "Bramwell member no." in hdr else hdr.index("Member ID")
+    sc, tr = hdr.index("Acuity score"), hdr.index("Risk tier")
+    return [(r[0], str(r[ident]), float(r[sc]), int(r[tr])) for r in rows[1:] if r[0] is not None]
 
 
-def tier_pmpm(F, groups, a, b, **kw):
-    """groups: {tier: [member ids]} -> {tier: (medical PMPM, pharmacy PMPM, member months, medical $, pharmacy $)}"""
+def tier_pmpm(F, groups, a, b, full_year=False, **kw):
+    """groups: {tier: [member ids]} -> {tier: (medical PMPM, pharmacy PMPM, member months, medical $, pharmacy $)};
+    full_year keeps only the members enrolled in every month of the period"""
     out = {}
     for t, ms in groups.items():
+        if full_year:
+            months = (b.year - a.year) * 12 + b.month - a.month + 1
+            ms = [x for x in ms if F.mm(x, a, b) == months]
         al = F.allowed(ms, a, b, **kw)
         m = sum(F.mm(x, a, b) for x in ms)
         med = sum(al[x][0] for x in ms)
@@ -195,6 +206,30 @@ def figures(d):
     R["R0c"] = comp
     rk["R0c"] = prog_of(comp)
     rk["regression"], R["regression"] = regression_alternative(F, fing, n)
+    # the forks the reader sized: two are not rungs of the ladder but readings of one part of it
+    # pharmacy persistence: the bid members' medical with each tier's own 2026 pharmacy carried forward
+    FK, fk = {}, {}
+    FK["R0p"] = {t: (G["base"][t][0], R["R0"][t][1]) for t in T}
+    fk["R0p"] = prog_of(FK["R0p"])
+    # full-year members only
+    fy = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, full_year=True)
+    R["R4c"] = {t: (fy[t][0] * fm, fy[t][1] * fr) for t in T}
+    rk["R4c"] = prog_of(R["R4c"])
+    G["r4c_n"] = {t: fy[t][2] for t in T}
+    # a pooled bid level spread by the enrolled members' own 2026 tier relativities
+    f26all = tier_pmpm(F, {0: [m for t in T for m in fing[t]]}, a26, b26)[0]
+    R["R7"] = {t: (pool[0] * fm * f26[t][0] / f26all[0], pool[1] * fr * f26[t][1] / f26all[1]) for t in T}
+    rk["R7"] = prog_of(R["R7"])
+    # the Actual PMPM's three months of run-out instead of the claims paid through the data cut-off
+    ro = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, by_paid=dt.date(2026, 6, 30))
+    FK["R8"] = {t: (ro[t][0] * fm, ro[t][1] * fr) for t in T}
+    fk["R8"] = prog_of(FK["R8"])
+    G["fork_tiers"], G["forks"] = FK, fk
+    # the enrolled members' own 2025, the year before they were chosen, carried 27 months
+    f25 = tier_pmpm(F, fing, dt.date(2025, 1, 1), dt.date(2025, 12, 31))
+    R["R9"] = {t: (f25[t][0] * TM ** 2.25, f25[t][1] * TR ** 2.25) for t in T}
+    rk["R9"] = prog_of(R["R9"])
+    G["f25"] = {t: (f25[t][0], f25[t][1]) for t in T}
     G["rungs"] = rk
     G["rung_tiers"] = R
     G["letter"] = LF

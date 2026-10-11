@@ -42,7 +42,7 @@ DISTRACTORS = ["draft", "rebates", "stoploss", "plan"]
 # local (Central) time each file was last written, in the fiction
 MTIMES = {
     "med": (2027, 3, 3, 7, 14), "rx": (2027, 3, 2, 6, 41), "elig": (2027, 3, 1, 6, 5), "xwalk": (2025, 1, 6, 15, 22),
-    "final": (2027, 3, 5, 9, 48), "draft": (2027, 1, 14, 11, 20), "bid": (2025, 2, 21, 14, 37),
+    "final": (2027, 3, 5, 9, 48), "draft": (2027, 1, 14, 11, 20), "bid": (2025, 3, 6, 15, 12),
     "agreement": (2027, 2, 17, 10, 42), "renewal": (2027, 2, 26, 16, 5), "rebates": (2027, 2, 19, 8, 31),
     "stoploss": (2026, 12, 18, 9, 12), "plan": (2027, 3, 8, 14, 27), "readme": (2027, 3, 8, 16, 58),
 }
@@ -107,9 +107,9 @@ def build(out, verbose=True, tune=True):
     X.write_csv(p("rx"), X.PBM_COLS, P.pbm_rows())
     X.write_csv(p("elig"), X.ELIG_COLS, P.eligibility_rows())
     X.write_csv(p("xwalk"), X.XW_COLS, P.crosswalk_rows(set(r[1] for r in L["bid"])))
-    D.stratification_xlsx(p("bid"), "bid", L["bid"], S.people)
-    D.stratification_xlsx(p("draft"), "draft", L["draft"], S.people)
-    D.stratification_xlsx(p("final"), "final", L["final"], S.people)
+    D.stratification_xlsx(p("bid"), "bid", L["bid"], S)
+    D.stratification_xlsx(p("draft"), "draft", L["draft"], S)
+    D.stratification_xlsx(p("final"), "final", L["final"], S)
     D.agreement_pdf(p("agreement"))
     F = E.Files(tgt)
     D.renewal_pdf(p("renewal"), E.letter_figures(F))

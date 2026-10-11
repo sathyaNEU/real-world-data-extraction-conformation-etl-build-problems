@@ -2,7 +2,7 @@
 design, the provider and drug vocabularies). Everything stochastic lives in sim.py."""
 import datetime as dt
 
-SEED = 101050
+SEED = 102002
 
 D = dt.date
 SIM_START = D(2023, 1, 1)              # a year of history before the first claims anyone uses
@@ -22,7 +22,7 @@ BOARD = D(2027, 3, 25)
 
 TREND_MED, TREND_RX = 1.065, 1.09
 LIST_SIZE = 140
-TIERS = ((1, 53.5), (2, 45.5), (3, 40.0), (4, 0.0))   # tier t holds scores at or above its floor
+TIERS = ((1, 48.2), (2, 42.9), (3, 38.8), (4, 0.0))   # tier t holds scores at or above its floor
 
 DISTRICT = "Red Cedar Valley School District"
 DISTRICT_SHORT = "Red Cedar Valley Schools"
@@ -156,4 +156,14 @@ def next_check_run(d):
 def next_business_day(d):
     while d.weekday() >= 5 or d in BANK_HOLIDAYS:
         d += dt.timedelta(days=1)
+    return d
+
+
+def receipt_day(d, u):
+    """the day a claim is logged as received: electronic claims arrive every day, but most of what providers' billing
+    offices would have sent over a weekend or a bank holiday goes out in the first days of the next week"""
+    if (d.weekday() >= 5 or d in BANK_HOLIDAYS) and u < 0.85:
+        d = next_business_day(d)
+        for _ in range(0 if u < 0.47 else 1 if u < 0.72 else 2):
+            d = next_business_day(d + dt.timedelta(days=1))
     return d

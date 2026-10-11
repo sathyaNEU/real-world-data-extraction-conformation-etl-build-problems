@@ -91,17 +91,22 @@ for r in rows("tpa_conversion_crosswalk_2025-01-01.csv"):
     prior["%s-%s" % (r["prior_subscriber_number"], r["prior_member_suffix"])] = r["member_id"]
 
 
-def vendor_list(name):
+def vendor_list(name, key):
+    """members by risk tier, identified by the column named `key`"""
     ws = load_workbook(os.path.join(TGT, name), read_only=True, data_only=True)["Members"]
     out = defaultdict(list)
-    for i, row in enumerate(ws.iter_rows(values_only=True)):
-        if i and row[0] is not None:
-            out[int(row[6])].append(str(row[1]))
+    head = None
+    for row in ws.iter_rows(values_only=True):
+        if head is None:
+            head = list(row)
+            continue
+        if row[0] is not None:
+            out[int(row[head.index("Risk tier")])].append(str(row[head.index(key)]))
     return out
 
 
-bid = vendor_list("northcourt_rfp_2025-07_stratification_2024_claims.xlsx")
-fin = vendor_list("northcourt_stratification_2026_claims_final.xlsx")
+bid = vendor_list("northcourt_rfp_2025-07_stratification_2024_claims.xlsx", "Bramwell member no.")
+fin = vendor_list("northcourt_stratification_2026_claims_final.xlsx", "Member ID")
 bid = {t: [prior[x] for x in xs] for t, xs in bid.items()}
 
 

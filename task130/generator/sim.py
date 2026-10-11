@@ -20,7 +20,8 @@ import world as W
 DAY = dt.timedelta(days=1)
 
 CHRONIC = ("diabetes", "htn", "lipid", "asthma", "depression", "thyroid", "esrd", "hiv", "autoimmune",
-           "hemophilia", "cf", "afib", "cad", "liver", "hepc", "kidney_tx", "liver_tx", "cancer_hx", "chf", "copd")
+           "hemophilia", "cf", "afib", "cad", "liver", "hepc", "kidney_tx", "liver_tx", "cancer_hx", "chf", "copd",
+           "urticaria")
 # weekday weights (Monday first), the weight on a day the clinics close, and the factor on a reduced day
 PROFILES = {
     "clinic": ((1.08, 1.0, 0.97, 1.0, 0.9, 0.05, 0.0), 0.0, 0.35),
@@ -49,7 +50,8 @@ REHAB_SPEC = {"Z98.1": "neurosurg", "Z95.2": "cardiology", "Z48.815": "gensurg",
 
 class Person:
     __slots__ = ("pid", "fid", "rel", "sex", "dob", "code", "legacy", "legacy2", "member_id", "start", "end",
-                 "death", "frailty", "conds", "regs", "eps", "nchronic", "dis_until", "stays", "slots", "adhd")
+                 "death", "frailty", "conds", "regs", "eps", "nchronic", "dis_until", "stays", "slots", "adhd", "past",
+                 "readd")
 
     def __init__(self, pid, fid, rel, sex, dob):
         self.pid, self.fid, self.rel, self.sex, self.dob = pid, fid, rel, sex, dob
@@ -57,8 +59,10 @@ class Person:
         self.legacy = None
         self.legacy2 = None
         self.member_id = None
-        self.start = None
+        self.start = None     # the current (latest) coverage span
         self.end = None
+        self.past = []        # earlier coverage spans, closed: (start, end)
+        self.readd = None     # first of the month a dropped dependent is added back
         self.death = None
         self.frailty = 1.0
         self.conds = {}      # condition -> onset date
@@ -71,7 +75,21 @@ class Person:
         self.adhd = None     # ADHD diagnosis code, when treated
 
     def covered_on(self, d):
-        return self.start is not None and self.start <= d and (self.end is None or d <= self.end)
+        if self.start is not None and self.start <= d and (self.end is None or d <= self.end):
+            return True
+        return any(s <= d <= e for s, e in self.past)
+
+    def spans(self):
+        """every coverage span in date order, the last one open when end is None"""
+        return list(self.past) + ([(self.start, self.end)] if self.start is not None else [])
+
+    def first_start(self):
+        return self.past[0][0] if self.past else self.start
+
+    def reinstate(self, d):
+        """coverage starts again on d after a gap"""
+        self.past.append((self.start, self.end))
+        self.start, self.end = d, None
 
     def age(self, d):
         a = d.year - self.dob.year
@@ -81,7 +99,8 @@ class Person:
 
 
 class Family:
-    __slots__ = ("fid", "emp", "cls", "members", "hist", "root", "active", "cls_hist", "pending")
+    __slots__ = ("fid", "emp", "cls", "members", "hist", "root", "active", "cls_hist", "pending", "rehire", "cobra_end",
+                 "left")
 
     def __init__(self, fid, emp, cls):
         self.fid, self.emp, self.cls = fid, emp, cls
@@ -91,6 +110,9 @@ class Family:
         self.active = True
         self.cls_hist = []    # (effective date, employee class)
         self.pending = None   # a spouse joining on the first of the next month
+        self.rehire = None    # (first day of coverage on return, employee class) for an employee rehired after a gap
+        self.cobra_end = None  # last day COBRA continuation can run to
+        self.left = []        # members whose coverage ended with the family's last termination
 
 
 def state_at(fam, d):
@@ -113,7 +135,8 @@ class Sim:
         self.cond_years = {}
         self.hx_site = {}
         self.pp_visits = {}
-        self.ended = {}
+        self.rehires = {}     # first of a month -> families whose employee returns that day
+        self.bio_start = {}   # member -> the day the current biologic was started on the plan
 
     # ---------------------------------------------------------------- identifiers
     def new_emp(self):
@@ -194,15 +217,17 @@ class Sim:
             "asthma": 0.0 if a < 2 else 0.08 if a < 18 else 0.07,
             "depression": 0.0 if a < 12 else 0.09 if a < 18 else 0.115,
             "thyroid": 0.0 if a < 20 else 0.05 if p.sex == "F" else 0.012,
-            "esrd": 0.0 if a < 25 else 0.0011 if a < 50 else 0.0026,
+            "esrd": 0.0 if a < 25 else 0.0005 if a < 50 else 0.0012,
             "hiv": 0.0 if a < 20 else 0.0034,
             "autoimmune": 0.0 if a < 6 else 0.005 if a < 18 else 0.026,
-            "hemophilia": 0.0003 if p.sex == "M" else 0.0,
-            "cf": 0.00045 if a < 40 else 0.0,
+            "obesity": 0.0 if a < 20 else 0.33 if a < 40 else 0.41,
+            "hemophilia": 0.00006 if p.sex == "M" else 0.0,
+            "cf": 0.00008,
             "afib": 0.0 if a < 40 else 0.008 if a < 55 else 0.022,
             "cad": 0.0 if a < 40 else 0.006 if a < 55 else 0.02,
             "liver": 0.0 if a < 30 else 0.0016,
-            "hepc": 0.0 if a < 20 else 0.0032,
+            "hepc": 0.0 if a < 20 else 0.007,
+            "urticaria": 0.003 if 18 <= a <= 65 else 0.0,
             "kidney_tx": 0.0 if a < 25 else 0.0005,
             "chf": 0.0 if a < 40 else 0.003 if a < 55 else 0.009,
             "copd": 0.0 if a < 40 else 0.004 if a < 55 else 0.011,
@@ -253,7 +278,17 @@ class Sim:
         first = d + dt.timedelta(days=int(self.rp.integers(0, max(1, min(days, 30)))))
         p.regs[key] = [drug, days, until, first]
 
-    def start_regimen(self, p, c, d):
+    def start_biologic(self, p, drug, d):
+        self.reg(p, "biologic", drug, 84 if drug in ("stelara", "skyrizi") else 28, d)
+        self.bio_start[p.pid] = p.regs["biologic"][3]
+        self.loading(p, drug, p.regs["biologic"][3])
+
+    def loading(self, p, drug, first):
+        """the starter dose of a biologic: one extra fill dispensed with the first"""
+        when = first + dt.timedelta(days=14)
+        p.regs["loading"] = [drug, 28, when, when]
+
+    def start_regimen(self, p, c, d, new=False):
         r = self.rp
         a = p.age(d)
         days90 = r.random() < 0.38
@@ -313,7 +348,10 @@ class Sim:
                 drug = str(r.choice(list(drugs)))
                 if drug == "humira" and r.random() < 0.35:
                     drug = "hyrimoz"
-                self.reg(p, "biologic", drug, 84 if drug in ("stelara", "skyrizi") else 28, d)
+                if new:
+                    self.start_biologic(p, drug, d)
+                else:
+                    self.reg(p, "biologic", drug, 84 if drug in ("stelara", "skyrizi") else 28, d)
             elif u < 0.57 and infl:
                 p.regs["infusion"] = ["infliximab", 56, None, d]
             if code.startswith("M0") and r.random() < 0.55:
@@ -355,6 +393,9 @@ class Sim:
                 self.reg(p, "binder", "sevelamer", 30, d)
             if r.random() < 0.4:
                 self.reg(p, "vitd", "calcitriol", 30, d)
+        elif c == "urticaria":
+            if r.random() < 0.45:
+                self.reg(p, "xolair", "xolair", 28, d)
         elif c == "liver":
             if r.random() < 0.5:
                 self.reg(p, "lactulose", "lactulose", 30, d)
@@ -470,6 +511,8 @@ class Sim:
     def month(self, m):
         r = self.rp
         ms, me = W.month_start(m), W.month_end(m)
+        for fam in self.rehires.pop(ms, ()):
+            self.return_to_work(fam, ms)
         for fam in list(self.fams):
             if fam.active:
                 self.life(fam, ms, me)
@@ -510,8 +553,23 @@ class Sim:
             for p in mem:
                 p.end = me
             return
+        # a dependent dropped at an earlier open enrolment comes back on a special enrolment
+        for i in fam.members:
+            p = self.people[i]
+            if p.readd == ms:
+                p.readd = None
+                if p.end is not None and p.death is None and (p.rel != "C" or p.age(ms) < 26):
+                    p.reinstate(ms)
+                    p.eps = []
+        mem = [self.people[i] for i in fam.members if self.people[i].end is None]
         a = sub.age(ms)
-        if fam.cls == "R":
+        if fam.cls == "C":
+            # COBRA continuation: up to 18 months, most members leave it early for another employer's plan
+            start, last = fam.cobra_end
+            if ms >= start and (me >= last or r.random() < 0.065):
+                self.end_family(fam, me)
+                return
+        elif fam.cls == "R":
             if ms == W.D(sub.dob.year + 65, sub.dob.month, 1):
                 self.end_family(fam, ms - DAY)
                 return
@@ -529,14 +587,25 @@ class Sim:
                     fam.cls_hist.append((W.add_months(ms, 1), "R"))
                 else:
                     end = W.D(ms.year, 8, 31) if (fam.cls == "T" and ms.month in (6, 7)) else me
-                    self.end_family(fam, end)
-                    return
+                    self.leave(fam, end, ms)
+                    if not fam.active:
+                        return
         for p in mem:
             if p.rel == "C" and p.age(me) >= 26:
                 p.end = me
+        if ms.month == 7 and fam.cls != "C":
+            # open enrolment: an adult child or a spouse with coverage of their own comes off the plan on 30 June
+            for p in mem:
+                if p.end is not None or p.rel == "E":
+                    continue
+                q = 0.035 if (p.rel == "C" and 19 <= p.age(ms) <= 25) else 0.015 if p.rel == "S" else 0.0
+                if q and r.random() < q:
+                    p.end = ms - DAY
+                    if r.random() < (0.3 if p.rel == "C" else 0.25):
+                        p.readd = W.add_months(ms, int(r.integers(3, 19)))
         self.set_tier(fam, ms)
         plan, tier = state_at(fam, ms)
-        if tier in ("EE", "EC") and 24 <= a <= 52 and r.random() < 0.0011 and fam.pending is None:
+        if tier in ("EE", "EC") and 24 <= a <= 52 and r.random() < 0.0011 and fam.pending is None and fam.cls != "C":
             # a marriage: the spouse is covered from the first of the following month
             sa = int(min(60, max(22, a + r.normal(0, 4))))
             nxt = W.add_months(ms, 1)
@@ -546,7 +615,7 @@ class Sim:
 
     def tier_on(self, fam, d):
         mem = [self.people[i] for i in fam.members]
-        mem = [p for p in mem if p.start <= d and (p.end is None or p.end >= d)]
+        mem = [p for p in mem if p.covered_on(d)]
         has_sp = any(p.rel == "S" for p in mem)
         has_ch = any(p.rel == "C" for p in mem)
         return "FAM" if has_sp and has_ch else "ES" if has_sp else "EC" if has_ch else "EE"
@@ -569,12 +638,58 @@ class Sim:
             self.change(fam, d)
 
     def end_family(self, fam, end):
+        fam.left = []
         for i in fam.members:
             p = self.people[i]
+            p.readd = None
             if p.end is None:
                 p.end = end
-                self.ended[p.pid] = end
+                fam.left.append(p.pid)
         fam.active = False
+
+    def leave(self, fam, end, ms):
+        """an employee leaves the District: coverage ends on `end`, or continues under COBRA, and a few come back to
+        work after a gap"""
+        r = self.rp
+        mem = [self.people[i] for i in fam.members if self.people[i].end is None]
+        costly = any(c in p.conds for p in mem for c in ("esrd", "hiv", "autoimmune", "cf", "hemophilia", "liver", "chf",
+                                                           "kidney_tx", "liver_tx")) or \
+            any(e["kind"] in ("cancer", "preg", "transplant", "nicu", "hepc") for p in mem for e in p.eps)
+        if r.random() < (0.45 if costly else 0.07):
+            start = end + DAY
+            fam.cls = "C"
+            fam.cls_hist.append((start, "C"))
+            fam.cobra_end = (start, W.add_months(start, 18) - DAY)
+            return
+        cls = fam.cls
+        self.end_family(fam, end)
+        if r.random() < {"S": 0.10, "T": 0.06, "A": 0.03}.get(cls, 0.0):
+            back = end + DAY
+            if cls == "T" and r.random() < 0.5:
+                k = 12                                  # a year's leave, back for the next school year
+            else:
+                k = int(r.integers(2, 8)) if cls == "S" else int(r.integers(3, 10))
+            when = W.add_months(back, k)
+            fam.rehire = (when, cls)
+            self.rehires.setdefault(when, []).append(fam)
+
+    def return_to_work(self, fam, d):
+        """a rehired employee's coverage starts again on the first of the month, with the dependents still eligible"""
+        when, cls = fam.rehire
+        fam.rehire = None
+        sub = self.people[fam.members[0]]
+        if sub.death is not None or sub.pid not in fam.left:
+            return
+        for pid in fam.left:
+            p = self.people[pid]
+            if p.death is None and (p.rel != "C" or p.age(d) < 26):
+                p.reinstate(d)
+                p.eps = []
+        fam.left = []
+        fam.active = True
+        fam.cls = cls
+        fam.cls_hist.append((d, cls))
+        self.change(fam, d, plan=state_at(fam, d)[0])
 
     def die(self, p, d):
         p.death = d
@@ -704,6 +819,8 @@ class Sim:
             drug = "methylpred_4"
         elif dx == "F17.210" and u < 0.2:
             drug = "varenicline"
+        elif dx == "U07.1" and a >= 18 and (a >= 50 or p.nchronic) and u < 0.45:
+            drug = "paxlovid"
         elif dx == "K21.9" and u < 0.4 and a >= 12:
             drug = "omeprazole_20" if r.random() < 0.6 else "famotidine_20"
         if drug:
@@ -849,6 +966,8 @@ class Sim:
         if not self.add(p, d, d1, "M", kind, amount, info,
                         [("I", "hospital", 0.84), ("P", "hospitalist", 0.12), ("P", "hospitalist", 0.04)]):
             return False
+        if dx == "I26.99":
+            self.reg(p, "anticoag_pe", "eliquis", 30, d1 + DAY, until=d1 + dt.timedelta(days=180))
         if followup and amount > 20000:
             big = amount > 45000 or kind != "admit"
             p.eps.append({"kind": "postacute", "m": 0, "start": d1, "big": big, "dx": dx,
@@ -898,6 +1017,8 @@ class Sim:
         if r.random() >= q_m * frac:
             return False
         dd = d0 + dt.timedelta(days=int(r.integers(0, (d1 - d0).days + 1)))
+        if any(s <= dd and e > dd for s, e in p.stays[-6:]):
+            return False
         if q_m > 0.004 and r.random() < 0.7:
             st = max(d0, dd - dt.timedelta(days=int(r.integers(2, 12))))
             if self.stay_free(p, st, dd + DAY):
@@ -998,6 +1119,12 @@ class Sim:
                         self.add(p, dd, dd, "M", "infusion", r.lognormal(math.log(6400), 0.12),
                                  {"dx": CD.autoimmune_type(p.pid)[0]}, [("I", "hospital", 0.94), ("P", "gastro", 0.06)])
                 inf[3] = inf[3] + dt.timedelta(days=56 + int(r.integers(-3, 6)))
+        if "urticaria" in c:
+            if r.random() < 0.2 * frac:
+                self.visit(p, d0, d1, "office_spec", "clinic", dx=CD.cond_code(p.pid, "urticaria"), spec="allergy", rx=False)
+            if r.random() < 0.045 * frac:
+                del c["urticaria"]
+                p.regs.pop("xolair", None)
         if "cancer_hx" in c and not any(e["kind"] == "cancer" for e in p.eps) and r.random() < 0.12 * frac:
             hx = K.CANCER_HX[self.hx_site.get(p.pid, "breast")]
             dd = self.visit(p, d0, d1, "office_spec", "clinic", dx="Z08", spec="oncology", rx=False, extra={"dx2": hx})
@@ -1030,14 +1157,17 @@ class Sim:
                                    ("copd", a >= 45, 0.0008 if a < 55 else 0.0018)):
             if test and cond not in c and hit(annual):
                 c[cond] = d0
-                self.start_regimen(p, cond, d0)
-        if "diabetes" in c and "esrd" not in c and "kidney_tx" not in c and a >= 35 and hit(0.0016):
+                self.start_regimen(p, cond, d0, new=True)
+        if 18 <= a <= 65 and "urticaria" not in c and hit(0.0011):
+            c["urticaria"] = d0
+            self.start_regimen(p, "urticaria", d0)
+        if "diabetes" in c and "esrd" not in c and "kidney_tx" not in c and a >= 35 and hit(0.0008):
             c["esrd"] = d0
             self.start_regimen(p, "esrd", d0)
         if a >= 30 and "liver" not in c and "liver_tx" not in c and hit(0.00018):
             c["liver"] = d0
             self.start_regimen(p, "liver", d0)
-        if "hepc" in c and hit(0.17):
+        if "hepc" in c and hit(0.2):
             dd = self.pick_day(p, d0, d1, "clinic", "office_spec")
             if dd:
                 p.eps.append({"kind": "hepc", "m": 0, "start": dd, "drug": "mavyret" if r.random() < 0.55 else "epclusa"})
@@ -1082,8 +1212,13 @@ class Sim:
              "hazard": 0.032 if meta else 0.0015, "oral": None}
         if p.rel == "E" and site != "cll":
             p.dis_until = d + dt.timedelta(days=480)
-        if site == "cll" and r.random() < 0.55:
-            e["oral"] = "imbruvica"
+        if site == "cll":
+            u = r.random()
+            if u < 0.4:
+                e["oral"] = "imbruvica"
+            elif u < 0.75:
+                e["oral"] = "venclexta"
+                e["oral_until"] = d + dt.timedelta(days=int(r.integers(380, 420)))
         if meta and site == "breast":
             e["oral"] = "ibrance"
         if meta and site == "prostate":
@@ -1101,6 +1236,8 @@ class Sim:
             return
         self.add(p, d, d, "M", "ambulance", r.lognormal(math.log(1650), 0.2), {"dx": dx, "dx2": cause}, [("P", "ambulance", 1.0)])
         self.admission(p, d, amt, dx, los=los, icu=amt > 90000, kind="admit_trauma", dx2=cause)
+        if dx == "S72.001A" and p.sex == "F" and a >= 55 and r.random() < 0.2:
+            self.reg(p, "osteo", "forteo", 28, d + dt.timedelta(days=30), until=d + dt.timedelta(days=760))
         p.eps.append({"kind": "rehab", "m": 0, "start": d, "months": int(r.integers(2, 5)), "hazard": 0.004,
                       "dx": dx[:-1] + "D"})
 
@@ -1139,13 +1276,20 @@ class Sim:
                           kind="admit_cardiac"):
             p.conds["cad"] = d
             self.start_regimen(p, "cad", d)
-            self.reg(p, "p2y12", "clopidogrel_75", 30, d + DAY, until=d + dt.timedelta(days=365))
+            self.reg(p, "p2y12", "clopidogrel_75" if r.random() < 0.55 else "brilinta", 30, d + DAY,
+                     until=d + dt.timedelta(days=365))
             p.eps.append({"kind": "cardiac_rehab", "m": 0, "start": d, "months": 3, "hazard": 0.006})
 
     def pregnancy(self, p, d, a):
         r = self.rh
         pre = r.random() < 0.095
-        weeks = int(r.integers(25, 36)) if pre else int(r.integers(37, 42))
+        if pre:
+            # preterm births by gestational age: most late preterm, few extremely preterm
+            u = r.random()
+            weeks = int(r.integers(34, 37)) if u < 0.72 else int(r.integers(32, 34)) if u < 0.84 else \
+                int(r.integers(28, 32)) if u < 0.95 else int(r.integers(24, 28))
+        else:
+            weeks = int(r.integers(37, 42))
         lmp = d - dt.timedelta(days=14)
         p.eps.append({"kind": "preg", "m": 0, "start": d, "lmp": lmp, "due": lmp + dt.timedelta(days=weeks * 7),
                       "loss": r.random() < 0.13, "pre": pre, "weeks": weeks, "csec": r.random() < (0.45 if pre else 0.3),
@@ -1249,19 +1393,22 @@ class Sim:
                                dx, los=int(r.integers(1, 5)), kind="admit_surgery")
             return True
         if e["meta"] or site == "cll":
-            if e["oral"] and "onc" not in p.regs:
-                p.regs["onc"] = [e["oral"], 28, None, self.pick_day(p, d0, d1, "clinic") or d0]
+            if e["oral"] and "onc" not in p.regs and not e.get("oral_done"):
+                p.regs["onc"] = [e["oral"], 28, e.get("oral_until"), self.pick_day(p, d0, d1, "clinic") or d0]
+                e["oral_done"] = True
             if e["meta"] and not e["oral"]:
                 dd = self.pick_day(p, d0, d1, "elective", "chemo")
                 if dd:
                     self.add(p, dd, dd, "M", "chemo", r.lognormal(math.log(16500), 0.3) * frac, {"dx": dx, "site": site},
                              [("I", "hospital", 0.9), ("P", "oncology", 0.1)])
+                    if site in ("breast", "lymphoma") and m < 7 and e.setdefault("gcsf_m", r.random() < 0.5):
+                        self.fill(p, W.next_business_day(dd + DAY), "udenyca" if r.random() < 0.6 else "fulphila")
             if r.random() < (0.5 if e["meta"] else 0.25):
                 self.visit(p, d0, d1, "office_spec", "clinic", dx=dx, spec=spec, rx=False, extra={"dx2": dx2})
             if e["meta"] and r.random() < 0.06 * frac:
                 dd = self.pick_day(p, d0, d1, "any", "admit")
                 if dd:
-                    self.admission(p, dd, r.lognormal(math.log(39000), 0.45), dx)
+                    self.admission(p, dd, r.lognormal(math.log(39000), 0.45), self.cancer_admit_dx(site), dx2=dx)
             if site == "cll" and m > 24:
                 e["hazard"] = 0.0005
             return True
@@ -1282,10 +1429,18 @@ class Sim:
                 if dd:
                     self.add(p, dd, dd, "M", "chemo", r.lognormal(math.log(base), 0.28) * frac, {"dx": dx, "site": site},
                              [("I", "hospital", 0.9), ("P", "oncology", 0.1)])
+                    if "gcsf" not in e:
+                        e["gcsf"] = r.random() < {"breast": 0.75, "colon": 0.35, "lymphoma": 0.85, "lung": 0.3}.get(site, 0.0)
+                    if e["gcsf"] and m - first < 5:
+                        self.fill(p, W.next_business_day(dd + DAY), "udenyca" if r.random() < 0.6 else "fulphila")
+                    if site == "colon" and m - first < 6 and e.setdefault("capox", r.random() < 0.45):
+                        self.fill(p, self.rx_day(dd), "capecitabine")
                 if r.random() < 0.05:
                     ad = self.pick_day(p, d0, d1, "any", "admit")
                     if ad:
-                        self.admission(p, ad, r.lognormal(math.log(29000), 0.45), "D70.1" if r.random() < 0.6 else dx, dx2=dx)
+                        u = r.random()
+                        self.admission(p, ad, r.lognormal(math.log(29000), 0.45),
+                                       "D70.1" if u < 0.6 else "E86.0" if u < 0.8 else "A41.9", dx2=dx)
             return True
         if site == "breast" and first + tx <= m < first + tx + 2:
             dd = self.pick_day(p, d0, d1, "elective", "radiation")
@@ -1294,10 +1449,32 @@ class Sim:
                          [("I", "hospital", 0.86), ("P", "radonc", 0.14)])
             return True
         p.conds["cancer_hx"] = d0
+        u = r.random()
         if site == "breast":
             self.reg(p, "hormonal", "tamoxifen" if p.age(d0) < 50 else ("anastrozole" if r.random() < 0.6 else "letrozole"),
                      90 if r.random() < 0.5 else 30, d0)
+            if u < 0.1:
+                self.reg(p, "adjuvant", "verzenio", 28, d0, until=d0 + dt.timedelta(days=730))
+            elif u < 0.14:
+                self.reg(p, "adjuvant", "lynparza", 30, d0, until=d0 + dt.timedelta(days=365))
+        elif site == "lung" and u < 0.12:
+            self.reg(p, "adjuvant", "tagrisso", 30, d0, until=d0 + dt.timedelta(days=1095))
+        elif site == "lung" and u < 0.16:
+            self.reg(p, "adjuvant", "alecensa", 30, d0, until=d0 + dt.timedelta(days=730))
         return False
+
+    def cancer_admit_dx(self, site):
+        """the principal diagnosis of a stay for a complication of a cancer that has spread"""
+        u = self.rh.random()
+        if u < 0.3:
+            return "G89.3"
+        if u < 0.5:
+            return {"colon": "K56.699", "lung": "J91.0", "breast": "J91.0", "lymphoma": "R50.9"}.get(site, "E86.0")
+        if u < 0.7:
+            return "A41.9"
+        if u < 0.85:
+            return "E86.0"
+        return "J18.9"
 
     def transplant_month(self, p, e, d0, d1):
         r = self.rh
@@ -1319,7 +1496,10 @@ class Sim:
                 for k in ("binder", "vitd", "lactulose", "rifaximin"):
                     p.regs.pop(k, None)
                 self.start_regimen(p, "kidney_tx", dd)
-                self.reg(p, "cmv", "valganciclovir", 30, dd + dt.timedelta(days=los), until=dd + dt.timedelta(days=180))
+                if r.random() < 0.3:
+                    self.reg(p, "cmv", "prevymis", 28, dd + dt.timedelta(days=los), until=dd + dt.timedelta(days=200))
+                else:
+                    self.reg(p, "cmv", "valganciclovir", 30, dd + dt.timedelta(days=los), until=dd + dt.timedelta(days=180))
                 self.reg(p, "pjp", "smx_tmp_ss", 30, dd + dt.timedelta(days=los), until=dd + dt.timedelta(days=270))
                 e["hazard"] = 0.006
             return True
@@ -1442,7 +1622,10 @@ class Sim:
         baby = self.birth(p, due)
         if baby is not None:
             if e["pre"]:
-                days = int(max(8, min(95, r.lognormal(math.log(31 - (w - 30) * 3.2), 0.38))))
+                # a preterm baby goes home at about 36 to 39 weeks after the mother's last period, later the earlier it
+                # was born
+                home = 39.0 if w < 28 else 37.5 if w < 32 else 36.5
+                days = int(max(5, min(140, round(7 * (home - w) * r.lognormal(0, 0.16)))))
                 baby.eps.append({"kind": "nicu", "m": 0, "start": due, "days": days, "weeks": w, "hazard": 0.004, "csec": cs})
             elif r.random() < 0.035:
                 baby.eps.append({"kind": "nicu", "m": 0, "start": due, "days": int(r.integers(4, 15)), "weeks": w, "hazard": 0.0,
@@ -1487,6 +1670,30 @@ class Sim:
     # ---------------------------------------------------------------- pharmacy
     def pharmacy(self, p, a, d0, d1):
         r = self.rh
+        bio = p.regs.get("biologic")
+        if bio is not None:
+            started = self.bio_start.get(p.pid)
+            early = started is not None and (d0 - started).days < 365
+            if r.random() < (0.035 if early else 0.012):
+                del p.regs["biologic"]
+                self.bio_start.pop(p.pid, None)
+                if "autoimmune" in p.conds and r.random() < 0.4:
+                    drugs = [x for x in CD.autoimmune_type(p.pid)[2] if x not in (bio[0], "hyrimoz")]
+                    if drugs:
+                        self.start_biologic(p, drugs[int(r.integers(0, len(drugs)))],
+                                            d1 + dt.timedelta(days=int(r.integers(5, 30))))
+        elif "autoimmune" in p.conds and "infusion" not in p.regs and r.random() < 0.009:
+            # stepped up from conventional treatment to a biologic
+            drugs = CD.autoimmune_type(p.pid)[2]
+            self.start_biologic(p, drugs[int(r.integers(0, len(drugs)))], d0 + dt.timedelta(days=int(r.integers(0, 20))))
+        if "glp1" in p.regs and r.random() < 0.018:
+            del p.regs["glp1"]
+        # a weight-loss GLP-1 under the plan's obesity coverage: started on a prescriber's request, often stopped
+        if "glp1_wl" in p.regs:
+            if r.random() < 0.035:
+                del p.regs["glp1_wl"]
+        elif "obesity" in p.conds and "glp1" not in p.regs and 20 <= a < 65 and r.random() < 0.0045:
+            self.reg(p, "glp1_wl", "wegovy" if r.random() < 0.55 else "zepbound", 28, d0)
         for pp in [x for x in self.pp_visits.get(p.pid, ()) if d0 <= x <= d1]:
             self.pp_visits[p.pid].remove(pp)
             if not self.in_stay(p, pp):
@@ -1519,7 +1726,7 @@ class Sim:
         conv = W.CONVERSION - DAY
         for fam in self.fams:
             mem = [self.people[i] for i in fam.members]
-            onconv = [p for p in mem if p.start <= conv and (p.end is None or p.end >= W.CONVERSION)]
+            onconv = [p for p in mem if p.covered_on(conv) and p.covered_on(W.CONVERSION)]
             if onconv:
                 if fam.root is None:
                     fam.root = self.new_root()
@@ -1537,15 +1744,15 @@ class Sim:
                     nxt += 1 + (1 if r.random() < 0.05 else 0)
             # Ellery numbers and person codes: subscriber 01, spouse 02, children by date of birth from 03
             live = [p for p in mem if p.end is None or p.end >= W.CONVERSION]
-            kids = sorted([p for p in live if p.rel == "C"], key=lambda q: (q.start > conv, q.dob, q.pid))
+            kids = sorted([p for p in live if p.rel == "C"], key=lambda q: (q.first_start() > conv, q.dob, q.pid))
             for p in live:
                 p.member_id = self.new_member_id()
                 p.code = "01" if p.rel in ("E", "R") else "02" if p.rel == "S" else None
             for k, p in enumerate(kids):
                 p.code = "%02d" % (3 + k)
-        # coverage that ended on a date already behind the month being simulated (an early retiree reaching 65 at the
-        # start of a month): nothing is billed or filled for the member after the end
-        self.events = [e for e in self.events if not (e[0] in self.ended and e[1] > self.ended[e[0]])]
+        # a service is billed only for a day the member is covered: a course of visits booked before a death, a
+        # termination or a gap, and a prescription picked up a few days after coverage ended, never reach the plan
+        self.events = [e for e in self.events if self.people[e[0]].covered_on(e[1])]
         self.events.sort(key=lambda e: (e[1], e[0], e[4]))
 
 

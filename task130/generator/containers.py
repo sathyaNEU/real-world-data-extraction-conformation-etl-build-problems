@@ -5,9 +5,11 @@ export time and the document identifier LibreOffice stamps are then replaced, at
 and an identifier derived from the document, so a rebuild is byte-identical. LibreOffice's own Producer and Creator
 are left as LibreOffice wrote them.
 
-Workbooks are written the way Excel saves them: a shared string table, every part with its XML declaration, and the
-parts in Excel's order with fixed entry dates. Word documents get Word's part order. Document properties name the
-person and the application that saved them."""
+The pack's workbooks are exports from the organisations' own systems and are left in the layout the export library
+writes, with the person who ran the export and the time of the export in the document properties and on every entry;
+nothing claims an application that did not write the file. Some PDFs are printed from HTML by headless Chromium, the
+way a policy system or a client portal renders a document. The golden deliverables keep the Office part order and
+properties of the analyst's own files."""
 import datetime as dt
 import hashlib
 import io
@@ -63,6 +65,36 @@ def soffice_pdf(docx_path, pdf_path, when):
     assert len(re.findall(rb"/DocChecksum /[0-9A-F]{32}", b)) == 1, "one document checksum"
     blank = re.sub(rb"(/DocChecksum /)[0-9A-F]{32}", rb"\g<1>" + b"0" * 32, b)
     b = re.sub(rb"(/DocChecksum /)[0-9A-F]{32}", rb"\g<1>" + hashlib.md5(blank).hexdigest().upper().encode(), blank)
+    open(pdf_path, "wb").write(b)
+
+
+# ------------------------------------------------------------------ PDF through Chromium
+CHROMIUM = "/opt/pw-browsers/chromium"
+
+
+def chromium_pdf(html, pdf_path, when):
+    """print an HTML document to PDF with headless Chromium (Skia), then pin the creation and modification times
+    Chromium stamps to `when` (local Minnesota time, written in UTC as Chromium writes it), at equal length"""
+    work = tempfile.mkdtemp(prefix="cr-")
+    try:
+        src = os.path.join(work, "doc.html")
+        with open(src, "w", encoding="utf-8") as f:
+            f.write(html)
+        out = os.path.join(work, "doc.pdf")
+        env = dict(os.environ, TZ="America/Chicago", HOME=work)
+        subprocess.run([CHROMIUM, "--headless", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer",
+                        "--user-data-dir=" + os.path.join(work, "profile"), "--print-to-pdf=" + out, "file://" + src],
+                       check=True, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
+        b = open(out, "rb").read()
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    dates = re.findall(rb"D:\d{14}\+00'00'", b)
+    assert dates, "no creation time in the PDF"
+    utc = when.replace(tzinfo=central(when)).astimezone(dt.timezone.utc)
+    new = ("D:" + utc.strftime("%Y%m%d%H%M%S") + "+00'00'").encode()
+    for old in set(dates):
+        assert len(old) == len(new)
+        b = b.replace(old, new)
     open(pdf_path, "wb").write(b)
 
 
@@ -175,6 +207,36 @@ def _declared(name, data):
     if name.endswith((".xml", ".rels")) and not data.startswith(b"<?xml"):
         return DECL + data
     return data
+
+
+def library_xlsx(path, core, when):
+    """a workbook as an export library writes it, left in the library's own layout: the document properties name the
+    person who ran the export and when, the extended-properties part (where the library would name itself) is left
+    out rather than claiming an application that did not write the file, and every entry carries the time of the
+    export"""
+    with zipfile.ZipFile(path) as z:
+        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    out = []
+    for n, d in items:
+        if n == "docProps/app.xml":
+            continue
+        if n == "docProps/core.xml":
+            d = core
+        elif n == "_rels/.rels":
+            d = re.sub(rb'<Relationship [^>]*Target="/?docProps/app.xml"[^>]*/>', b"", d)
+        elif n == "[Content_Types].xml":
+            d = re.sub(rb'<Override PartName="/docProps/app.xml"[^>]*/>', b"", d)
+        out.append((n, d))
+    stamp = when.timetuple()[:6]
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for name, data in out:
+            zi = zipfile.ZipInfo(name, date_time=stamp)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 3
+            zi.external_attr = 0o600 << 16
+            z.writestr(zi, data)
+    open(path, "wb").write(buf.getvalue())
 
 
 def repack(path, core, app, drop=()):
