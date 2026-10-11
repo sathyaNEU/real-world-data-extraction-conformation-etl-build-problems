@@ -1,0 +1,9 @@
+{"task": "task229", "domain": "energy-systems-utilities", "objective": "data-quality-monitoring",
+ "stage": 0, "stage_name": "intake", "updated": "2026-10-11",
+ "stump": "",
+ "architecture": 1, "loops": 0,
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+ "solver_rounds": [],
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "approved": null, "delivered": null, "portal": null}
