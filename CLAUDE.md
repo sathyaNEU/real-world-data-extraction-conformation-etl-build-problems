@@ -46,6 +46,12 @@ round and no re-iteration loop: a build is not rebuilt because an in-house solve
 answer, and no session runs a solver "to sanity check" a design. The one repair loop between the
 draw and the portal is the determinism judge's FIX_NOW, re-judged once.
 
+## Per-author rules
+
+Some authors keep standing working rules (branch prefixes, for one) in `.claude/authors/<handle>.md`.
+At the start of a session, read the file whose account email matches the session's user and follow
+it; ignore every other author's file. A rule there binds only that author's sessions.
+
 ## The build loop
 
 ```
