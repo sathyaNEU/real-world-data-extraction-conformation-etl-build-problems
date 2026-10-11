@@ -63,6 +63,22 @@ def gates():
         ok(not any(w in f.lower() for w in ("answer", "golden", "trap", "clean", "_v2", "test_")), "file name %s carries no author noun" % f)
 
 
+def graded(s):
+    """every graded figure at its reporting precision"""
+    k = lambda x: int(round(x / 1000.0))
+    g = {"total": k(s["total"]), "stage1": k(s["stage1"]), "stage2": k(s["stage2"]), "n3": s["n3"]}
+    L = s["loans"]
+    for st in (1, 2):
+        for p in ("PL36", "PL60"):
+            g["n_%s_%d" % (p, st)] = int(((L["stage"] == st) & (L["product"] == p)).sum())
+            g["gca_%s_%d" % (p, st)] = k(s["%s_s%d_gca" % (p, st)])
+            g["ecl_%s_%d" % (p, st)] = k(s["%s_s%d" % (p, st)])
+            g["cov_%s_%d" % (p, st)] = round(s["%s_s%d_cov" % (p, st)], 2)
+    for key, v in s["by_band"].items():
+        g["year %s %s" % key] = k(v)
+    return g
+
+
 def answer_and_ladder():
     s = E.solve(T)
     A = s["total"]
@@ -94,6 +110,13 @@ def answer_and_ladder():
     ok(abs(nh["n2"] - s["n2"]) >= 300, "the hardship register moves at least 300 loans into stage 2 (%d)" % abs(nh["n2"] - s["n2"]))
     ok(abs(nm["n2"] - s["n2"]) >= 100, "the v3 conversion moves at least 100 loans across the stage line (%d)" % abs(nm["n2"] - s["n2"]))
     ok(s["n3"] > 0, "stage 3 loans are in the extract and outside the model")
+    # loans past contractual maturity outside stage 3 carry one remaining month (CRM-ECL-04 3.2); read as carrying
+    # nothing instead, every graded figure keeps its bin
+    z = E.solve(T, pm_zero=True)
+    ok(s["n_pm"] >= 10 and s["ecl_pm"] > 0, "loans past maturity outside stage 3 carry an allowance (%d loans, %.0f)" % (s["n_pm"], s["ecl_pm"]))
+    gs, gz = graded(s), graded(z)
+    ok(gs == gz, "every graded figure keeps its bin whether past-maturity loans carry one month or nothing (%s)"
+       % [k for k in gs if gs[k] != gz[k]])
     return s, rung
 
 
@@ -189,6 +212,42 @@ def realism():
     ok(vc.index[0] < 50000 and bk["original_amount"].max() > 50000, "the cap is not the most common amount")
     ch = bk["channel"].value_counts(normalize=True)
     ok(ch.max() - ch.min() > 0.2 and abs(bk["product"].eq("PL36").mean() - 0.5) > 0.01, "channel and product mixes are not even splits")
+    vs = bk["state"].value_counts()
+    sh = 100 * vs / len(bk)
+    ok(vs.is_unique and (np.abs(sh - np.round(sh)) >= 0.15).sum() >= 6, "state counts all differ and the shares sit off whole percentages (%s)" % sh.round(2).to_dict())
+    # 10 behaviour scores: the origination score on v4 until the first repayment falls due, moving after that
+    o4 = np.where(bk["origination_scorecard"] == "v3", np.floor(1.12 * bk["origination_score"] - 18 + 0.5), bk["origination_score"])
+    fresh = a == 0
+    cur = bk["current_score_v4"].values
+    ok(fresh.sum() > 500 and (cur[fresh] == o4[fresh]).all(), "behaviour score is the v4 origination score until the first repayment falls due (%d loans)" % fresh.sum())
+    ok((cur[~fresh] != o4[~fresh]).mean() > 0.9, "behaviour scores move once repayments fall due")
+    # 11 the scorecard follows the application date, and loan numbers follow applications
+    num = bk["loan_no"].str[3:9].astype(int)
+    v3 = (bk["origination_scorecard"] == "v3").values
+    sw = dt.date(2024, 7, 1)
+    ok(num[v3].max() < num[~v3].min(), "every v3 loan number precedes every v4 loan number")
+    ok((draw[v3] >= sw).sum() >= 50 and (draw[~v3] >= sw).all(), "loans applied for before 1 July 2024 and funded after it stay on v3 (%d)" % (draw[v3] >= sw).sum())
+    luhn = lambda q: (10 - sum((lambda x: x - 9 if x > 9 else x)(int(c) * (2 if i % 2 == 0 else 1)) for i, c in enumerate(q[::-1])) % 10) % 10
+    ok(all(int(x[-1]) == luhn(x[3:9]) for x in bk["loan_no"]), "loan numbers carry a Luhn check digit")
+    # 12 nothing falls due under a payment pause in force
+    pz = act.loc[act["arrangement_type"] == "Payment pause", "loan_no"]
+    dp = bk.set_index("loan_no").loc[pz, "days_past_due"]
+    ok(len(pz) > 50 and (dp == 0).all(), "no arrears on a loan under a payment pause in force on the reporting date (%d pauses)" % len(pz))
+    # 13 agreed repayments: round amounts offered, interest only, a share of the instalment, token amounts
+    red = hd.loc[hd["arrangement_type"] == "Reduced repayments", "agreed_repayment_aud"]
+    ok((red % 5 == 0).mean() < 0.75 and (red % 1 != 0).mean() > 0.1 and (red <= 50).mean() > 0.03,
+       "agreed repayments are a realistic mix (multiples of 5 %.2f, cents %.2f, $50 or less %.2f)" % ((red % 5 == 0).mean(), (red % 1 != 0).mean(), (red <= 50).mean()))
+    # 14 loss history: recoveries against write-offs in the window, and defaults resolved before write-off
+    rec = wo["recoveries_aud"].sum() / wo["gross_write_off_aud"].sum()
+    ok(0.15 <= rec <= 0.30, "recoveries run at %.3f of gross write-offs over the 15 months" % rec)
+    ok(wo["loans_written_off"].mean() < 0.95 * ((dpd >= 90) & (dpd < 120)).sum(), "fewer loans are written off each month than reach 90 days past due")
+    # 15 the curve's development data end before it was extracted and approved
+    import pyarrow.parquet as pq
+    head = open(os.path.join(T, E.F["curve"])).read().split("product,")[0]
+    meta = {k.decode(): v.decode() for k, v in pq.read_schema(os.path.join(T, "pd_model_development_sample.parquet")).metadata.items() if not k.startswith(b"pandas")}
+    ok("performance to 31 May 2026" in head and "24 June 2026" in head and meta["performance_to"] == "2026-05-31"
+       and meta["performance_to"] < meta["extracted"] <= "2026-06-24" and "30 June 2026" not in head + str(meta),
+       "development performance ends 31 May 2026, before extraction on %s and approval on 24 June" % meta["extracted"])
 
 
 def main():

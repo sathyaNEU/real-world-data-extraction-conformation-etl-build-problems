@@ -42,7 +42,7 @@ MTIMES = {
 }
 CURVE_HEADER = """# Bellbird Personal Finance - Credit Risk Modelling
 # PLPD-2026.06 personal loan default curves, PL36 and PL60; approved by the Model Risk Committee on 24 June 2026
-# Developed on loans drawn October 2019 to September 2023, performance to 30 June 2026 (pd_model_development_sample.parquet)
+# Developed on loans drawn October 2019 to September 2023, performance to 31 May 2026 (pd_model_development_sample.parquet)
 # Default: 90 or more days past due at a month end. All risk grades pooled
 # month_on_book: number of monthly repayments fallen due
 # cumulative_pd: probability that a new loan defaults by the end of that month on book
@@ -52,9 +52,9 @@ DEV_META = {
     "owner": "Credit Risk Modelling",
     "extracted": "2026-06-19",
     "population": "PL36 and PL60 loans drawn October 2019 to September 2023",
-    "performance_to": "2026-06-30",
-    "outcome": "default (90 or more days past due at a month end), prepaid, matured, or open at 30 June 2026",
-    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity; for open loans, at 30 June 2026",
+    "performance_to": "2026-05-31",
+    "outcome": "default (90 or more days past due at a month end), prepaid, matured, or open at 31 May 2026",
+    "outcome_month_on_book": "monthly repayments fallen due at default, payout or maturity; for open loans, at 31 May 2026",
 }
 
 
@@ -108,6 +108,29 @@ def dev_parquet(df, path):
     open(path, "wb").write(b)
 
 
+def loss_history(S):
+    """the simulated loss history sits where the filed LGDs say it should: written-off cohorts with three years behind
+    them have recovered roughly a quarter of the balance written off, and about one default in six is resolved (settled,
+    caught up or put on a collections arrangement) before the 180-day write-off"""
+    wo, bal, flows = X.recoveries(S, np.random.default_rng(W.SEED + 3))
+    R = S.R
+    got = np.zeros(len(wo))
+    for k, d, a in flows:
+        if d <= R:
+            got[k] += a
+    w = S.close[wo]
+    mature = w <= SM.dn(dt.date(2023, 9, 30))
+    rate = got[mature].sum() / bal[mature].sum()
+    assert 0.23 <= rate <= 0.30, "mature write-off cohorts recover %.3f of the balance written off" % rate
+    young = (w > SM.dn(dt.date(2025, 9, 30)))
+    assert got[young].sum() / bal[young].sum() < 0.6 * rate, "a young cohort shows a partial picture"
+    reached = (S.j0 > 0) & (S.e_def <= R - 200)
+    resolved = reached & (S.close_type != 3)
+    share = resolved.sum() / reached.sum()
+    assert 0.12 <= share <= 0.25, "defaults resolved before write-off %.3f" % share
+    return rate, share
+
+
 def build(out):
     if os.path.exists(out):
         shutil.rmtree(out)
@@ -126,6 +149,7 @@ def build(out):
     D.dictionary_txt(p("dictionary"))
     dev_parquet(X.development_sample(S), p("dev"))
     X.write_offs(S, np.random.default_rng(W.SEED + 3)).to_csv(p("writeoffs"), index=False, lineterminator="\n")
+    loss_history(S)
     Q.roll_rates_xlsx(p("rolls"), X.roll_rates(S))
     for k in FILES:
         ts = W.posix(dt.datetime(*MTIMES[k]))

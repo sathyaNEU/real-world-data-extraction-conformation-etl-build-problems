@@ -25,7 +25,8 @@ September batch are not in the extract. Sorted by loan number.
   days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
   origination_score        application score at origination, on the scorecard named in origination_scorecard
   origination_scorecard    v3 (applications before 1 July 2024) or v4
-  current_score_v4         behaviour score at the reporting date, scorecard v4
+  current_score_v4         behaviour score at the reporting date, scorecard v4. Until the first repayment has
+                           fallen due it is the origination score, on v4
   state                    state of the borrower's residential address
   channel                  origination channel: Broker, Online or Direct
 
@@ -59,8 +60,9 @@ Loans written off in each month-end batch, July 2025 to September 2026, and reco
 
 
 Other files in the run folder (not loan system extracts)
-  ifrs9_scenarios_2026Q3.xlsx            Group Finance: scenario weights and PD multipliers approved by the Audit and
-                                         Risk Committee, one sheet per quarter
+  ifrs9_scenarios_2026Q3.xlsx            Group Finance: this quarter's scenario weights, PD multipliers and economic
+                                         assumptions as approved by the Audit and Risk Committee; the prior quarter's
+                                         weights and multipliers on a second sheet
   pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: default curves; described in the file's header lines
   pd_model_development_sample.parquet    Credit Risk Modelling: the curves' development data; described in the file's
                                          metadata

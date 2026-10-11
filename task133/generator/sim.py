@@ -114,15 +114,47 @@ def originations(rng, cal):
     N = len(draw)
     L = dict(draw=draw)
     dates = [dd(x) for x in draw]
-    # application score (v3 scale), truncated at the approval floor of the day
+    # channel, by the year of funding
+    yrs = np.array([d.year for d in dates])
+    ch = np.zeros(N, int)
+    uc = rng.random(N)
+    for y, (pb, po, _) in W.CHANNEL_MIX.items():
+        sel = yrs == y
+        ch[sel] = np.where(uc[sel] < pb, 0, np.where(uc[sel] < pb + po, 1, 2))
+    L["channel"] = ch
+    # application received 0 to about 30 days before funding; brokers and the branch lodge on business days
+    same = np.array([W.APP_GAP[c][0] for c in W.CHANNELS])[ch]
+    mu_g = np.array([W.APP_GAP[c][1] for c in W.CHANNELS])[ch]
+    sd_g = np.array([W.APP_GAP[c][2] for c in W.CHANNELS])[ch]
+    gap = np.where(rng.random(N) < same, 0, np.ceil(np.exp(rng.normal(mu_g, sd_g)))).astype(np.int64)
+    gap = np.minimum(gap, W.APP_GAP_MAX)
+    app = draw - gap
+    lodged = cal.prev_bd[np.maximum(app, 0)]
+    app = np.where((ch != 1) & ~cal.is_bd[np.maximum(app, 0)] & (draw - lodged <= W.APP_GAP_MAX), lodged, app)
+    L["app"] = app
+    app_dates = [dd(x) for x in app]
+    # borrower state, by channel and year
+    yrf = np.array([1.0 + W.STATE_HOME_TILT[0] * math.exp(-(y - 2019) / W.STATE_HOME_TILT[1]) for y in range(2019, 2027)])
+    st = np.zeros(N, int)
+    us = rng.random(N)
+    for c in range(3):
+        for y in range(2019, 2027):
+            sel = (ch == c) & (yrs == y)
+            if not sel.any():
+                continue
+            w = np.array(W.STATE_BASE) * np.array([m[c] for m in W.STATE_CHANNEL])
+            w[0] *= yrf[y - 2019]
+            st[sel] = np.searchsorted(np.cumsum(w / w.sum()), us[sel], side="right")
+    L["state"] = np.minimum(st, len(W.STATES) - 1)
+    # application score (v3 scale), truncated at the approval floor in force when the application was received
     mu, sd = W.APP_SCORE
-    floor = np.array([580.0 if W.TIGHTENED[0] <= d <= W.TIGHTENED[1] else 545.0 for d in dates])
+    floor = np.array([580.0 if W.TIGHTENED[0] <= d <= W.TIGHTENED[1] else 545.0 for d in app_dates])
     s = rng.normal(mu, sd, N)
     bad = s < floor
     while bad.any():
         s[bad] = rng.normal(mu, sd, int(bad.sum()))
         bad = s < floor
-    v4 = np.array([d >= W.SCORECARD_SWITCH for d in dates])
+    v4 = np.array([d >= W.SCORECARD_SWITCH for d in app_dates])
     a, b = W.SCORE_MAP
     s4 = np.rint(a * s + b + rng.normal(0, 4.0, N))
     orig = np.where(v4, s4, np.rint(s)).astype(int)
@@ -146,19 +178,10 @@ def originations(rng, cal):
     amt = np.where((step == 5000) & (amt < 5000), np.rint(amt / 1000) * 1000, amt)
     pl60 = np.where(amt > 35000, True, np.where(amt < 5000, False, pl60))
     amt = np.clip(amt, 3000, 50000)
-    pct = np.array([W.FEE_PCT[W.GRADES[g]][int(d >= W.FEE_CHANGE)] for g, d in zip(grade, dates)])
+    pct = np.array([W.FEE_PCT[W.GRADES[g]][int(d >= W.FEE_CHANGE)] for g, d in zip(grade, app_dates)])
     fee = np.clip(np.rint(pct * amt / 5) * 5, W.FEE_FLOOR, W.FEE_CAP)
     fee = np.where(rng.random(N) < W.FEE_UPFRONT, 0, fee)
     L.update(pl60=pl60, requested=amt, financed=(amt + fee).astype(np.int64), T=np.where(pl60, 60, 36))
-    # channel and state
-    yrs = np.array([d.year for d in dates])
-    ch = np.zeros(N, int)
-    uc = rng.random(N)
-    for y, (pb, po, _) in W.CHANNEL_MIX.items():
-        sel = yrs == y
-        ch[sel] = np.where(uc[sel] < pb, 0, np.where(uc[sel] < pb + po, 1, 2))
-    L["channel"] = ch
-    L["state"] = rng.choice(len(W.STATES), size=N, p=W.STATE_P)
     # pricing: the rate card (repriced three weeks after each cash rate move), a score tier inside the grade,
     # the broker's loading and a returning-customer discount
     card = np.array([W.RATE_BASE[W.GRADES[g]] + (W.PL60_LOADING if p else 0.0)
@@ -197,9 +220,9 @@ def originations(rng, cal):
                 k += 1
             rday[i], first_mi[i] = c, k
     L.update(rday=rday, first_mi=first_mi)
-    # loan numbers: allocated at application, in application order, with gaps for applications never funded
-    app = draw - rng.integers(3, 26, N)
-    order = np.lexsort((np.arange(N), app))
+    # loan numbers: allocated when the application is received, in order of receipt, with gaps for applications
+    # never funded
+    order = np.lexsort((rng.random(N), app))
     seq = np.zeros(N, np.int64)
     seq[order] = 100100 + np.cumsum(1 + rng.poisson(1.35, N))
     L["loan_no"] = np.array(["BPL%06d%d" % (q, luhn(q)) for q in seq])
@@ -280,6 +303,7 @@ def simulate(seed=W.SEED):
     S.extras = []                              # (loan, date, amount): extra and part repayments
     S.arr = []                                 # hardship arrangements
     S.cured = np.zeros(N, bool)
+    S.susp = np.full((N, J), -BIG, np.int64)   # paused instalments are not owed before this day (a cancelled pause)
     S.e_def = np.full(N, BIG, np.int64)
     S.m_def = np.zeros(N, np.int64)
     defaults(S)
@@ -328,7 +352,7 @@ def defaults(S):
         if out and out[0] == "hcure":
             dec = int(cal.next_bd[out[1] + int(rng.integers(2, 7))])
             later = np.nonzero(S.due[i, :T] >= dec)[0]
-            if len(later) == 0:
+            if len(later) == 0 or T - int(later[0]) < 2:   # one instalment left: caught up instead
                 out = ("cure", out[1])
             elif int(S.due[i, later[0]]) > e_wo:
                 out = None
@@ -339,7 +363,7 @@ def defaults(S):
                 end = min(add_months(start, n) - 1, int(S.final_nom[i]))
                 if end == R:
                     end -= 1
-                red = max(20.0, float(np.round(S.P[i] * rng.uniform(0.35, 0.6) / 5) * 5))
+                red = reduced_amount(rng, S, i, js)
                 cap = (S.due[i] < start) & (ar < T)
                 S.clear[i][cap] = np.minimum(S.clear[i][cap], start)
                 S.cash[i][cap & (S.clear[i] == start)] = 0.0
@@ -369,6 +393,36 @@ def defaults(S):
         S.clear[i][nxt] = S.due[i][nxt]
         S.cash[i][nxt] = S.P[i]
         S.cured[i] = True
+
+
+def sched_balance(S, i, paid):
+    """the scheduled balance after the first `paid` instalments"""
+    im = float(S.L["rate"][i]) / 12
+    T = int(S.T[i])
+    return float(S.L["financed"][i]) * ((1 + im) ** T - (1 + im) ** paid) / ((1 + im) ** T - 1)
+
+
+def reduced_amount(rng, S, i, js):
+    """the monthly repayment agreed for reduced repayments from instalment js: a round amount the borrower offers,
+    interest only, a share of the instalment, a token amount, or what the income and expense statement shows"""
+    P = float(S.P[i])
+    a, b, c, d = W.REDUCED_MIX
+    u = rng.random()
+    if u < a:
+        grid = np.array(W.REDUCED_ROUND, float)
+        grid = grid[grid <= 0.8 * P]
+        if len(grid):
+            return float(grid[np.argmin(np.abs(grid - P * rng.uniform(0.25, 0.70)))])
+        u = 1.0
+    if u < a + b:                               # interest only, while there is a balance worth carrying; else half
+        if js <= int(S.T[i]) - 6:
+            return float(np.round(sched_balance(S, i, js) * float(S.L["rate"][i]) / 12, 2))
+        return float(np.round(0.5 * P))
+    if u < a + b + c:
+        return float(np.round(P * rng.choice([0.33, 0.4, 0.5, 0.5, 0.6, 0.75])))
+    if u < a + b + c + d:
+        return float(min(rng.choice(W.REDUCED_TOKEN), np.floor(0.5 * P)))
+    return float(np.round(P * rng.uniform(0.3, 0.8)))
 
 
 def pick_reason(rng, when):
@@ -422,12 +476,16 @@ def hardship(S):
                 if end == R:
                     end -= 1
                 c = int(cal.next_bd[start + int(rng.integers(25, 46))])
+                if c > end:                     # cancelled inside its term
+                    c = int(cal.prev_bd[end])
                 if c == R:
                     c = int(cal.prev_bd[R - 1])
-                red = max(20.0, float(np.round(S.P[i] * rng.uniform(0.35, 0.6) / 5) * 5))
-                S.arr.append(dict(loan=int(i), received=x, start=start, end=end, kind="Reduced repayments",
-                                  outcome="failed", reduced=red, reason=pick_reason(rng, x), cancel=c))
-                busy.setdefault(int(i), []).append((x, end))
+                red = reduced_amount(rng, S, i, j0 - 1)
+                reason = pick_reason(rng, x)
+                if end - start >= 27 and c > start:     # at least a month of varied repayments left to agree
+                    S.arr.append(dict(loan=int(i), received=x, start=start, end=end, kind="Reduced repayments",
+                                      outcome="failed", reduced=red, reason=reason, cancel=c))
+                    busy.setdefault(int(i), []).append((x, end))
     for a in S.arr:                             # collections arrangements made after a default
         busy.setdefault(a["loan"], []).append((a["received"], a["end"]))
     events = []                                 # (loan, received, kind, months, reason, outcome)
@@ -489,7 +547,7 @@ def hardship(S):
         if not free(i, x, end):
             continue
         busy.setdefault(i, []).append((x, end))
-        red = 0.0 if kind == "Payment pause" else max(20.0, float(np.round(S.P[i] * rng.uniform(0.35, 0.65) / 5) * 5))
+        red = 0.0 if kind == "Payment pause" else reduced_amount(rng, S, i, js)
         rec = dict(loan=i, received=x, start=start, end=end, kind=kind, outcome=outcome, reduced=red, reason=reason, cancel=None)
         if outcome == "withdrawn":
             lo = int(cal.next_bd[x + 1])
@@ -511,16 +569,25 @@ def hardship(S):
         row_c[var] = S.due[i][var]
         row_m[var] = red
         if outcome == "failed":
+            # reduced repayments missed, or a pause cancelled at review; the paused or missed instalments are owed
+            # from their own due dates once the arrangement is cancelled, and caught up a few weeks later
             first = int(np.nonzero(var)[0][0])
-            c = int(cal.next_bd[int(S.due[i, first]) + int(rng.integers(25, 46))])
+            c = int(S.due[i, first]) + int(rng.integers(25, 46))
+            if kind == "Payment pause":
+                c = min(c, end - int(rng.integers(2, 9)))
+            c = int(cal.next_bd[c])
+            if c > end:                         # cancelled inside its term
+                c = int(cal.prev_bd[end])
+            if c == R:
+                c = int(cal.prev_bd[R - 1])
             y = min(int(cal.next_bd[c + int(rng.integers(5, 26))]), int(cal.prev_bd[int(S.due[i, first]) + 84]))
             owed = (ar >= first) & (S.due[i] <= y) & (ar < T)
             row_c[owed] = y
             row_m[owed] = S.P[i]
+            if kind == "Payment pause":
+                S.susp[i][var & (S.due[i] <= c)] = c
             resumed = var & (S.due[i] > c)
             row_m[resumed] = S.P[i]
-            if c == R:
-                c = int(cal.prev_bd[R - 1])
             rec["cancel"] = c
         S.arr.append(rec)
 
@@ -623,7 +690,7 @@ def dpd_at(S, t, rows=None):
     """days past due at close of business on day t: days since the oldest instalment not yet made good"""
     rows = np.arange(S.N) if rows is None else np.asarray(rows)
     c = S.clear[rows]
-    unpaid = c > t
+    unpaid = (c > t) & (S.susp[rows] <= t)          # nothing falls due under a payment pause while it is in force
     jstar = unpaid.argmax(1)
     d = S.due[rows, jstar]
     return np.where(unpaid.any(1) & (d < t), t - d, 0)

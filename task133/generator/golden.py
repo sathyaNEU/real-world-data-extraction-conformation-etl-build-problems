@@ -104,7 +104,8 @@ def workbook(s, path):
         "converted as 1.12 x v3 - 18, rounded (section 2 and the June 2024 migration note).",
         "PD(k) is (C(a+k) - C(a+k-1)) / (1 - C(a)) on the PLPD-2026.06 curve for the loan's product, where a is the number of "
         "monthly repayments fallen due by 30 September: the curve runs from origination, and a performing loan has already come "
-        "through its first a months.",
+        "through its first a months. A loan past its contractual maturity outside stage 3 has one remaining month (section "
+        "3.2), the last month of its product's curve.",
         "EAD re-amortises the current balance over the remaining term at the contract rate; months discounted at the contract rate; "
         "LGD 70 per cent PL36, 76 per cent PL60 (sections 3.3 to 3.5).",
         "Scenario weights 55 / 30 / 15 per cent on PD multipliers 1.00 / 1.30 / 0.80 give a weighted multiplier of %.4f (section 4)." % s["mult"],
@@ -234,6 +235,7 @@ def build(target=None, out=None):
     deck(s, dp)
     P.office_container(dp, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 16, 41), PREPARED,
                        "Microsoft Office PowerPoint", revision=3)
+    P.deterministic_embeddings(dp, dt.datetime(2026, 10, 8, 16, 41))
     for f in (wbp, dp):
         ts = W.posix(PREPARED)
         os.utime(f, (ts, ts))

@@ -32,6 +32,8 @@ def main():
     due = (rep.year - fr.dt.year) * 12 + (rep.month - fr.dt.month) + (fr.dt.day <= rep.day).astype(int)
     due = due.clip(lower=0)
     rem = bk["term_months"] - due
+    rem = rem.where(rem > 0, 1)             # past contractual maturity and not in stage 3: one month left (3.2)
+    pos = (bk["term_months"] - rem).values  # months on book that leave that remaining term
     rep_ts = rep
     act = hd[(hd["arrangement_status"] != "Cancelled") & (hd["arrangement_start"] <= rep_ts) & (hd["arrangement_end"] >= rep_ts)]
     o4 = np.where(bk["origination_scorecard"] == "v3", np.floor(a * bk["origination_score"] - b + 0.5), bk["origination_score"])
@@ -41,9 +43,9 @@ def main():
     C = {p: g.sort_values("month_on_book")["cumulative_pd"].values for p, g in cv.groupby("product")}
     ecl = np.zeros(len(bk))
     for p in ("PL36", "PL60"):
-        idx = np.where((bk["product"] == p).values & (st < 3) & (rem.values > 0))[0]
+        idx = np.where((bk["product"] == p).values & (st < 3))[0]
         cp = C[p]
-        aa = due.values[idx]
+        aa = pos[idx]
         rr = rem.values[idx]
         H = np.where(st[idx] == 2, rr, np.minimum(12, rr))
         rate = bk["contract_rate"].values[idx] / 12.0

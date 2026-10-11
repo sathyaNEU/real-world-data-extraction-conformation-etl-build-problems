@@ -21,11 +21,14 @@ def esc(s):
 
 
 def write_zip(path, parts):
+    """entries stamped 1980-01-01 with no file-system attributes, as Office writes a package"""
     with zipfile.ZipFile(path, "w") as z:
         for name, data in parts:
             zi = zipfile.ZipInfo(name, date_time=OFFICE_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 0
             z.writestr(zi, data.encode("utf-8") if isinstance(data, str) else data)
+            zi.external_attr = 0                 # kept for the central directory, written on close
 
 
 def theme_xml(major="Calibri Light", minor="Calibri"):
@@ -100,51 +103,73 @@ WIGN = ('xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         'xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" '
         'mc:Ignorable="w14 w15 w16se w16cid w16 w16cex w16sdtdh"')
 
-LATENT = (["Normal"] + ["heading %d" % i for i in range(1, 10)] + ["index %d" % i for i in range(1, 10)]
-          + ["toc %d" % i for i in range(1, 10)]
-          + ["Normal Indent", "footnote text", "annotation text", "header", "footer", "index heading", "caption",
-             "table of figures", "envelope address", "envelope return", "footnote reference", "annotation reference",
-             "line number", "page number", "endnote reference", "endnote text", "table of authorities", "macro",
-             "toa heading", "List", "List Bullet", "List Number", "List 2", "List 3", "List 4", "List 5", "List Bullet 2",
-             "List Bullet 3", "List Bullet 4", "List Bullet 5", "List Number 2", "List Number 3", "List Number 4",
-             "List Number 5", "Title", "Closing", "Signature", "Default Paragraph Font", "Body Text", "Body Text Indent",
-             "List Continue", "List Continue 2", "List Continue 3", "List Continue 4", "List Continue 5", "Message Header",
-             "Subtitle", "Salutation", "Date", "Body Text First Indent", "Body Text First Indent 2", "Note Heading",
-             "Body Text 2", "Body Text 3", "Body Text Indent 2", "Body Text Indent 3", "Block Text", "Hyperlink",
-             "FollowedHyperlink", "Strong", "Emphasis", "Document Map", "Plain Text", "E-mail Signature",
-             "HTML Top of Form", "HTML Bottom of Form", "Normal (Web)", "HTML Acronym", "HTML Address", "HTML Cite",
-             "HTML Code", "HTML Definition", "HTML Keyboard", "HTML Preformatted", "HTML Sample", "HTML Typewriter",
-             "HTML Variable", "Normal Table", "annotation subject", "No List", "Outline List 1", "Outline List 2",
-             "Outline List 3", "Balloon Text", "Table Grid", "Placeholder Text", "No Spacing", "Light Shading",
-             "Light List", "Light Grid", "Medium Shading 1", "Medium Shading 2", "Medium List 1", "Medium List 2",
-             "Medium Grid 1", "Medium Grid 2", "Medium Grid 3", "Dark List", "Colorful Shading", "Colorful List",
-             "Colorful Grid", "Revision", "List Paragraph", "Quote", "Intense Quote", "Subtle Emphasis",
-             "Intense Emphasis", "Subtle Reference", "Intense Reference", "Book Title", "Bibliography", "TOC Heading",
-             "Plain Table 1", "Plain Table 2", "Plain Table 3", "Plain Table 4", "Plain Table 5", "Grid Table Light",
-             "Mention", "Smart Hyperlink", "Hashtag", "Unresolved Mention", "Smart Link"])
-LATENT_SHOWN = {"Normal": 0, "Title": 10, "Subtitle": 11, "Strong": 22, "Emphasis": 20, "Table Grid": 39,
-                "No Spacing": 1, "List Paragraph": 34, "Quote": 29, "Intense Quote": 30, "Subtle Emphasis": 19,
-                "Intense Emphasis": 21, "Subtle Reference": 31, "Intense Reference": 32, "Book Title": 33,
-                "Plain Table 1": 41, "Plain Table 2": 42, "Plain Table 3": 43, "Plain Table 4": 44, "Plain Table 5": 45,
-                "Grid Table Light": 40}
+def latent_styles():
+    """Word's built-in latent style table as Word 2016 and later write it: 376 names, each with the attributes that
+    differ from the table's defaults"""
+    sh = dict(semiHidden=1, unhideWhenUsed=1)
+    out = [("Normal", dict(uiPriority=0, qFormat=1)), ("heading 1", dict(uiPriority=9, qFormat=1))]
+    out += [("heading %d" % i, dict(semiHidden=1, uiPriority=9, unhideWhenUsed=1, qFormat=1)) for i in range(2, 10)]
+    out += [("index %d" % i, sh) for i in range(1, 10)]
+    out += [("toc %d" % i, dict(semiHidden=1, uiPriority=39, unhideWhenUsed=1)) for i in range(1, 10)]
+    out += [(n, sh) for n in ["Normal Indent", "footnote text", "annotation text", "header", "footer", "index heading"]]
+    out += [("caption", dict(semiHidden=1, uiPriority=35, unhideWhenUsed=1, qFormat=1))]
+    out += [(n, sh) for n in ["table of figures", "envelope address", "envelope return", "footnote reference",
+                               "annotation reference", "line number", "page number", "endnote reference", "endnote text",
+                               "table of authorities", "macro", "toa heading", "List", "List Bullet", "List Number"]
+            + ["List %d" % i for i in range(2, 6)] + ["List Bullet %d" % i for i in range(2, 6)]
+            + ["List Number %d" % i for i in range(2, 6)]]
+    out += [("Title", dict(uiPriority=10, qFormat=1)), ("Closing", sh), ("Signature", sh),
+            ("Default Paragraph Font", dict(semiHidden=1, uiPriority=1, unhideWhenUsed=1)), ("Body Text", sh),
+            ("Body Text Indent", sh), ("List Continue", sh)]
+    out += [("List Continue %d" % i, sh) for i in range(2, 6)]
+    out += [("Message Header", sh), ("Subtitle", dict(uiPriority=11, qFormat=1))]
+    out += [(n, sh) for n in ["Salutation", "Date", "Body Text First Indent", "Body Text First Indent 2", "Note Heading",
+                               "Body Text 2", "Body Text 3", "Body Text Indent 2", "Body Text Indent 3", "Block Text",
+                               "Hyperlink", "FollowedHyperlink"]]
+    out += [("Strong", dict(uiPriority=22, qFormat=1)), ("Emphasis", dict(uiPriority=20, qFormat=1))]
+    out += [(n, sh) for n in ["Document Map", "Plain Text", "E-mail Signature", "HTML Top of Form", "HTML Bottom of Form",
+                               "Normal (Web)", "HTML Acronym", "HTML Address", "HTML Cite", "HTML Code", "HTML Definition",
+                               "HTML Keyboard", "HTML Preformatted", "HTML Sample", "HTML Typewriter", "HTML Variable",
+                               "Normal Table", "annotation subject", "No List", "Outline List 1", "Outline List 2",
+                               "Outline List 3"]
+            + ["Table Simple %d" % i for i in range(1, 4)] + ["Table Classic %d" % i for i in range(1, 5)]
+            + ["Table Colorful %d" % i for i in range(1, 4)] + ["Table Columns %d" % i for i in range(1, 6)]
+            + ["Table Grid %d" % i for i in range(1, 9)] + ["Table List %d" % i for i in range(1, 9)]
+            + ["Table 3D effects %d" % i for i in range(1, 4)]
+            + ["Table Contemporary", "Table Elegant", "Table Professional", "Table Subtle 1", "Table Subtle 2",
+               "Table Web 1", "Table Web 2", "Table Web 3", "Balloon Text"]]
+    out += [("Table Grid", dict(uiPriority=39)), ("Table Theme", sh), ("Placeholder Text", dict(semiHidden=1)),
+            ("No Spacing", dict(uiPriority=1, qFormat=1))]
+    fam = ["Light Shading", "Light List", "Light Grid", "Medium Shading 1", "Medium Shading 2", "Medium List 1",
+           "Medium List 2", "Medium Grid 1", "Medium Grid 2", "Medium Grid 3", "Dark List", "Colorful Shading",
+           "Colorful List", "Colorful Grid"]
+    out += [(n, dict(uiPriority=60 + k)) for k, n in enumerate(fam)]
+    for acc in range(1, 7):
+        for k, n in enumerate(fam):
+            out.append(("%s Accent %d" % (n, acc), dict(uiPriority=60 + k)))
+            if acc == 1 and n == "Medium List 1":
+                out += [("Revision", dict(semiHidden=1)), ("List Paragraph", dict(uiPriority=34, qFormat=1)),
+                        ("Quote", dict(uiPriority=29, qFormat=1)), ("Intense Quote", dict(uiPriority=30, qFormat=1))]
+    out += [("Subtle Emphasis", dict(uiPriority=19, qFormat=1)), ("Intense Emphasis", dict(uiPriority=21, qFormat=1)),
+            ("Subtle Reference", dict(uiPriority=31, qFormat=1)), ("Intense Reference", dict(uiPriority=32, qFormat=1)),
+            ("Book Title", dict(uiPriority=33, qFormat=1)),
+            ("Bibliography", dict(semiHidden=1, uiPriority=37, unhideWhenUsed=1)),
+            ("TOC Heading", dict(semiHidden=1, uiPriority=39, unhideWhenUsed=1, qFormat=1))]
+    out += [("Plain Table %d" % i, dict(uiPriority=40 + i)) for i in range(1, 6)]
+    out += [("Grid Table Light", dict(uiPriority=40))]
+    seven = ["1 Light", "2", "3", "4", "5 Dark", "6 Colorful", "7 Colorful"]
+    for kind in ("Grid Table", "List Table"):
+        for acc in [""] + [" Accent %d" % i for i in range(1, 7)]:
+            out += [("%s %s%s" % (kind, t, acc), dict(uiPriority=46 + k)) for k, t in enumerate(seven)]
+    out += [(n, sh) for n in ["Mention", "Smart Hyperlink", "Hashtag", "Unresolved Mention", "Smart Link"]]
+    return out
 
 
 def styles_xml(font, size_half_points, heading_colour):
     lsd = []
-    for name in LATENT:
-        if name.startswith("heading"):
-            lvl = int(name.split()[1])
-            extra = ' w:uiPriority="9" w:qFormat="1"' if lvl == 1 else ' w:semiHidden="1" w:uiPriority="9" w:unhideWhenUsed="1" w:qFormat="1"'
-            lsd.append('<w:lsdException w:name="%s"%s/>' % (name, extra))
-        elif name in LATENT_SHOWN:
-            q = ' w:qFormat="1"' if name in ("Normal", "Title", "Subtitle", "Strong", "Emphasis", "No Spacing", "List Paragraph",
-                                              "Quote", "Intense Quote", "Subtle Emphasis", "Intense Emphasis", "Subtle Reference",
-                                              "Intense Reference", "Book Title") else ""
-            lsd.append('<w:lsdException w:name="%s" w:uiPriority="%d"%s/>' % (name, LATENT_SHOWN[name], q))
-        elif name.startswith("toc "):
-            lsd.append('<w:lsdException w:name="%s" w:semiHidden="1" w:uiPriority="39" w:unhideWhenUsed="1"/>' % name)
-        else:
-            lsd.append('<w:lsdException w:name="%s" w:semiHidden="1" w:unhideWhenUsed="1"/>' % name)
+    for name, at in latent_styles():
+        lsd.append('<w:lsdException w:name="%s"%s/>' % (name, "".join(' w:%s="%d"' % (k, at[k]) for k in
+                   ("semiHidden", "uiPriority", "unhideWhenUsed", "qFormat") if k in at)))
     sz = size_half_points
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<w:styles %s>'
             '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorHAnsi" '
@@ -153,7 +178,7 @@ def styles_xml(font, size_half_points, heading_colour):
             '</w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="160" w:line="259" w:lineRule="auto"/></w:pPr>'
             '</w:pPrDefault></w:docDefaults>'
             '<w:latentStyles w:defLockedState="0" w:defUIPriority="99" w:defSemiHidden="0" w:defUnhideWhenUsed="0" '
-            'w:defQFormat="0" w:count="376">%s</w:latentStyles>'
+            'w:defQFormat="0" w:count="%d">%s</w:latentStyles>'
             '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/>'
             '<w:pPr><w:spacing w:after="120" w:line="264" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="{f}" '
             'w:hAnsi="{f}" w:cs="{f}"/><w:sz w:val="{s}"/><w:szCs w:val="{s}"/></w:rPr></w:style>'
@@ -206,7 +231,7 @@ def styles_xml(font, size_half_points, heading_colour):
             '<w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/><w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>'
             '<w:insideH w:val="single" w:sz="4" w:space="0" w:color="auto"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto"/>'
             '</w:tblBorders></w:tblPr></w:style>'
-            '</w:styles>' % (WIGN, "".join(lsd))).replace("{f}", font).replace("{s}", str(sz)).replace("{c}", heading_colour)
+            '</w:styles>' % (WIGN, len(lsd), "".join(lsd))).replace("{f}", font).replace("{s}", str(sz)).replace("{c}", heading_colour)
 
 
 FONTS = {
@@ -300,15 +325,18 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
     ("table", rows, widths); header and footer: (left text, right text) with {PAGE} and {NUMPAGES} fields allowed"""
     rs = Rsid(seed, sessions)
     body, texts, paras = [], [], 0
+    plist = []                  # each body paragraph's text in document order; a table row's text on its first cell
     for b in blocks:
         kind = b[0]
         if kind == "table":
             body.append(table_xml(rs, b[1], b[2], size=b[3] if len(b) > 3 else None))
             body.append(para_xml(rs, [], ppr_extra='<w:spacing w:after="60"/>'))
             for row in b[1]:
+                plist += [" ".join(v for v in row if v.strip())] + [""] * (len(row) - 1)
                 for v in row:
                     texts.append(v)
                     paras += 1 if v.strip() else 0
+            plist.append("")
             continue
         if isinstance(b[1], str):
             runs_in = [(b[1], False, False)]
@@ -321,6 +349,7 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
         extra = '<w:spacing w:after="40"/>' if kind == "small" else ""
         body.append(para_xml(rs, runs, style=style, ppr_extra=extra))
         t = "".join(x[0] for x in runs_in)
+        plist.append(t)
         texts.append(t)
         paras += 1 if t.strip() else 0
 
@@ -331,7 +360,7 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
                 if piece == "{PAGE}":
                     out.append(field_runs("PAGE   \\* MERGEFORMAT", "1"))
                 elif piece == "{NUMPAGES}":
-                    out.append(field_runs("NUMPAGES   \\* MERGEFORMAT", "3"))
+                    out.append(field_runs("NUMPAGES   \\* MERGEFORMAT", "{NP}"))
                 elif piece:
                     out.append(run_xml(piece))
             return out
@@ -414,8 +443,11 @@ def docx(path, blocks, header, footer, props, font="Calibri", size=21, heading_c
     probe = os.path.join(tmp, "probe.docx")
     write_zip(probe, parts + [("docProps/core.xml", core_xml("x", "x", props["created"], props["modified"])),
                               ("docProps/app.xml", "<Properties/>")])
-    pages, lines = layout(probe)
+    pages, lines, starts = layout(probe)
     shutil.rmtree(tmp)
+    # Word keeps where each page began when it last laid the document out, and the page count in the footer field
+    document = rendered_breaks(document, plist, starts)
+    parts = [(n, document if n == "word/document.xml" else d.replace("{NP}", str(pages))) for n, d in parts]
     app = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
            'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Template>Normal.dotm</Template>'
            '<TotalTime>%d</TotalTime><Pages>%d</Pages><Words>%d</Words><Characters>%d</Characters>'
@@ -438,15 +470,61 @@ def guid(r):
 
 
 def layout(path):
-    """pages and body lines as a word processor lays the document out"""
+    """pages and body lines as a word processor lays the document out, and the first body line of each later page
+    (the header is a page's first line and the footer its last)"""
     from pypdf import PdfReader
     out = os.path.dirname(path)
     subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", out, path], check=True,
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     pdf = os.path.splitext(path)[0] + ".pdf"
     rd = PdfReader(pdf)
-    lines = sum(max(0, len([l for l in p.extract_text().split("\n") if l.strip()]) - 2) for p in rd.pages)
-    return len(rd.pages), lines
+    texts = [[l for l in p.extract_text().split("\n") if l.strip()] for p in rd.pages]
+    lines = sum(max(0, len(t) - 2) for t in texts)
+    return len(rd.pages), lines, [t[1] for t in texts[1:] if len(t) > 2]
+
+
+def rendered_breaks(document, plist, starts):
+    """put w:lastRenderedPageBreak where each later page begins: at the start of the paragraph (or table row) that
+    opens the page, or inside the run where a paragraph runs over"""
+    from xml.sax.saxutils import unescape
+    paras = list(re.finditer(r"<w:p [^>]*>.*?</w:p>|<w:p [^>]*/>", document, re.S))
+    assert len(paras) == len(plist), "paragraph count %d against %d texts" % (len(paras), len(plist))
+    norm = lambda x: " ".join(x.split())
+    marks, after = [], 0
+    for line in starts:
+        key = norm(line)[:40]
+        hit = None
+        for i in range(after, len(plist)):
+            t = norm(plist[i])
+            n = min(len(t), len(key))
+            if n >= 6 and t[:n] == key[:n]:
+                hit = (i, 0)
+                break
+            j = t.find(key)
+            if j > 0:
+                hit = (i, j)
+                break
+        if hit is None:
+            continue
+        marks.append(hit)
+        after = hit[0] + 1
+    for i, off in reversed(marks):
+        m = paras[i]
+        px = m.group(0)
+        runs = list(re.finditer(r'<w:r>(<w:rPr>.*?</w:rPr>)?<w:t(?: xml:space="preserve")?>(.*?)</w:t></w:r>', px, re.S))
+        pos = 0
+        for r in runs:
+            txt = unescape(r.group(2), {"&quot;": '"'})
+            if off < pos + len(txt) or r is runs[-1]:
+                k, rpr = max(0, off - pos), r.group(1) or ""
+                tx = lambda x: '<w:t%s>%s</w:t>' % (' xml:space="preserve"' if x != x.strip() or "  " in x else "", esc(x))
+                new = ('<w:r>%s<w:lastRenderedPageBreak/>%s</w:r>' % (rpr, tx(txt)) if k == 0 else
+                       '<w:r>%s%s</w:r><w:r>%s<w:lastRenderedPageBreak/>%s</w:r>' % (rpr, tx(txt[:k]), rpr, tx(txt[k:])))
+                px = px[:r.start()] + new + px[r.end():]
+                break
+            pos += len(txt)
+        document = document[:m.start()] + px + document[m.end():]
+    return document
 
 
 def pdf_from_docx(docx_path, pdf_path):
@@ -494,9 +572,17 @@ def num(v):
     return r[:-2] if r.endswith(".0") else r
 
 
+# the Excel window each author last saved from: maximised on one or two screens, or a restored window
+WINDOWS = [(-120, -120, 29040, 15840), (-110, -110, 25820, 15500), (28680, -120, 29040, 15720), (-108, -108, 23256, 12576),
+           (1950, 1560, 21600, 11295), (-120, -120, 38640, 21120), (0, 0, 28800, 12300)]
+BUILDS = ["27425", "28526", "28827", "29127"]
+
+
 def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, company="Bellbird Personal Finance Ltd",
                        seed=0, active=0):
     rnd = random.Random(seed)
+    window = WINDOWS[random.Random(seed * 7 + 3).randrange(len(WINDOWS))]
+    build = BUILDS[random.Random(seed * 11 + 5).randrange(len(BUILDS))]
     fonts = ['<font><sz val="11"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font>']
     fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>']
     numfmts, xfs = {}, ['<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>']
@@ -530,7 +616,7 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
         if fl is None or fl.fill_type != "solid":
             return 0
         rgb = fl.fgColor.rgb if isinstance(fl.fgColor.rgb, str) else "FFFFFFFF"
-        rgb = rgb if len(rgb) == 8 else "FF" + rgb
+        rgb = "FF" + rgb[-6:].upper()            # Excel writes an opaque colour
         x = '<fill><patternFill patternType="solid"><fgColor rgb="%s"/><bgColor indexed="64"/></patternFill></fill>' % rgb
         if x not in fill_ix:
             fill_ix[x] = len(fills)
@@ -574,6 +660,7 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
     for si, ws in enumerate(wb.worksheets):
         names.append(ws.title)
         rows_out, maxc, maxr = [], 1, 1
+        rows_raw = []                            # (row, first column, last column, height, cells)
         for row in ws.iter_rows():
             cells, used = [], []
             for c in row:
@@ -596,9 +683,16 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
             if cells:
                 r = row[0].row
                 maxr, maxc = max(maxr, r), max(maxc, max(used))
-                ht = ws.row_dimensions[r].height
-                rows_out.append('<row r="%d" spans="%d:%d"%s x14ac:dyDescent="0.25">%s</row>'
-                                % (r, min(used), max(used), ' ht="%s" customHeight="1"' % num(ht) if ht else "", "".join(cells)))
+                rows_raw.append((r, min(used), max(used), ws.row_dimensions[r].height, cells))
+        # Excel writes one spans value per block of 16 rows, the columns used anywhere in the block
+        block = {}
+        for r, lo, hi, _, _ in rows_raw:
+            b = (r - 1) // 16
+            block[b] = (min(lo, block.get(b, (lo, hi))[0]), max(hi, block.get(b, (lo, hi))[1]))
+        for r, lo, hi, ht, cells in rows_raw:
+            sp = block[(r - 1) // 16]
+            rows_out.append('<row r="%d" spans="%d:%d"%s x14ac:dyDescent="0.25">%s</row>'
+                            % (r, sp[0], sp[1], ' ht="%s" customHeight="1"' % num(ht) if ht else "", "".join(cells)))
         dim = "A1:%s%d" % (col_letter(maxc), maxr)
         cols = []
         for k in range(1, maxc + 1):
@@ -660,13 +754,13 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
                 'xmlns:xr6="http://schemas.microsoft.com/office/spreadsheetml/2016/revision6" '
                 'xmlns:xr10="http://schemas.microsoft.com/office/spreadsheetml/2016/revision10" '
                 'xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2">'
-                '<fileVersion appName="xl" lastEdited="7" lowestEdited="7" rupBuild="28526"/><workbookPr defaultThemeVersion="166925"/>'
+                '<fileVersion appName="xl" lastEdited="7" lowestEdited="7" rupBuild="%s"/><workbookPr defaultThemeVersion="166925"/>'
                 '<xr:revisionPtr revIDLastSave="0" documentId="13_ncr:1_{%s}" xr6:coauthVersionLast="47" xr6:coauthVersionMax="47" '
-                'xr10:uidLastSave="{00000000-0000-0000-0000-000000000000}"/><bookViews><workbookView xWindow="-110" yWindow="-110" '
-                'windowWidth="25820" windowHeight="15500"%s xr2:uid="{%s}"/></bookViews><sheets>%s</sheets>%s<calcPr calcId="191029"/>'
+                'xr10:uidLastSave="{00000000-0000-0000-0000-000000000000}"/><bookViews><workbookView xWindow="%d" yWindow="%d" '
+                'windowWidth="%d" windowHeight="%d"%s xr2:uid="{%s}"/></bookViews><sheets>%s</sheets>%s<calcPr calcId="191029"/>'
                 '</workbook>'
-                % (guid(rnd), ' activeTab="%d"' % active if active else "", guid(rnd),
-                   "".join('<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (esc(n), k + 1, k + 1) for k, n in enumerate(names)), dn))
+                % ((build,) + (guid(rnd),) + window + (' activeTab="%d"' % active if active else "", guid(rnd)) +
+                   ("".join('<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (esc(n), k + 1, k + 1) for k, n in enumerate(names)), dn)))
     n = len(names)
     wrels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">%s'
              '<Relationship Id="rId%d" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'

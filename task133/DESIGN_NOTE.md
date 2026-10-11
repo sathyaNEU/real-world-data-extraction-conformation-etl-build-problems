@@ -28,7 +28,7 @@ world.
 
 **Data-native sentence.** A personal loan book is a stack of vintages at every point on their default curve, and the model team's curve is written from origination, so every loan's forward default probability is the rest of the curve from where it stands, scaled by the fact that it is still performing; the book is young (most of it drawn in the last two years) and the curve's riskiest months come early, from the fourth repayment on, which is where reading the curve from the wrong end costs the most.
 
-**Layer 1 (the mess, and the systems that make it).** A loan system extract that gives drawdown and first-repayment dates rather than months on book; loans 90 or more days past due still on the book until write-off at 180; a hardship register of active, completed and cancelled arrangements, including requests cancelled before they began; origination scores on two scorecard versions with a published conversion; a curve file with one curve per product and a model version; scenario weights in a committee workbook beside the prior quarter's; a development sample, a write-off file and a roll-rate report that look relevant and set nothing.
+**Layer 1 (the mess, and the systems that make it).** A loan system extract that gives drawdown and first-repayment dates rather than months on book; loans 90 or more days past due still on the book until write-off at 180; a hardship register of active, completed and cancelled arrangements, including requests cancelled before they began; origination scores on two scorecard versions, the version set by the application date (loans applied for in June 2024 and funded in July stay on v3), with a published conversion; a curve file with one curve per product and a model version; scenario weights in a committee workbook beside the prior quarter's; a development sample, a write-off file and a roll-rate report that look relevant and set nothing.
 
 **Layer 2 (the shortcut, and why an expert refuses it).** The shortcut reads the cumulative curve from month 1 for every loan's remaining months, as if the curve were a term structure from the reporting date. An expert sees that the curve is indexed by months on book from origination: a loan 20 months in has already come through the months where most defaults fall, and its probability of defaulting in the k-th month from now is the curve's increment at month a + k divided by its survival to month a. The half-step (shift to months on book without dividing by survival) is also wrong, low.
 
@@ -42,19 +42,19 @@ world.
 
 ## THE STUMP
 
-A competent solver stages the book, reads the model team's cumulative default curve from month 1 for every loan's next 12 months or remaining term, and books about AUD 19.6 million, 43 per cent high; the step that lands it there is treating a curve that runs from origination as a term structure from the reporting date, when most of the book is already past its riskiest months.
+A competent solver stages the book, reads the model team's cumulative default curve from month 1 for every loan's next 12 months or remaining term, and books about AUD 19.8 million, 44 per cent high; the step that lands it there is treating a curve that runs from origination as a term structure from the reporting date, when most of the book is already past its riskiest months.
 
 ## LADDER (allowance against the answer)
 
 | Rung | Construction | vs answer |
 |---|---|---|
-| 0 | Curve read from origination for every loan (unconditional) | +43.4% |
-| 1 | Balance held flat instead of re-amortised | +19.6% |
-| 2 | No discounting at the contract rate | +9.9% |
+| 0 | Curve read from origination for every loan (unconditional) | +43.6% |
+| 1 | Balance held flat instead of re-amortised | +20.0% |
+| 2 | No discounting at the contract rate | +10.0% |
 | 3 | Curve shifted to months on book without the survival division | -3.3% |
-| 4 (answer) | Increment from months on book divided by survival to date, stage 2 scalar, scenarios, re-amortised EAD, discounted | **AUD 13,667,000** |
+| 4 (answer) | Increment from months on book divided by survival to date, stage 2 scalar, scenarios, re-amortised EAD, discounted | **AUD 13,773,000** |
 
-The answer sits between the two natural misreadings of the curve (bracketing, `proven-in-production` L5). The half-step (shift without the survival division) is the nearest rung at 3.3 per cent low, AUD 13.22 million, still about 450 thousand dollars from the answer at the nearest thousand; shift plus no discounting lands 6.3 per cent high. Staging devices move the stage split, not the call: dropping the hardship register moves 441 loans, skipping the v3 conversion moves 698 (floors 300 and 100 asserted).
+The answer sits between the two natural misreadings of the curve (bracketing, `proven-in-production` L5). The half-step (shift without the survival division) is the nearest rung at 3.3 per cent low, AUD 13.32 million, still about 455 thousand dollars from the answer at the nearest thousand; shift plus no discounting lands 6.3 per cent high. Staging devices move the stage split, not the call: dropping the hardship register moves 470 loans, skipping the v3 conversion moves 786 (floors 300 and 100 asserted).
 
 ## SURVIVAL PROPERTIES
 
@@ -77,9 +77,9 @@ The answer sits between the two natural misreadings of the curve (bracketing, `p
 | 5 | Version basis | Q3 FY27 scenario sheet, not the prior quarter's (sheet named; ARC approval date) |
 | 6 | Divisor | coverage over gross carrying amount, the sum of current balances (filed) |
 | 7 | Weighting | probability-weighted scenarios (filed; linear in PD, so one multiplier) |
-| 8 | Window | 12 months stage 1, remaining term stage 2 (filed) |
+| 8 | Window | 12 months stage 1, remaining term stage 2 (filed); a loan past contractual maturity outside stage 3 has one month (CRM-ECL-04 3.2, filed), at its curve's last month; read as carrying nothing instead, every graded figure keeps its bin (C3, asserted: 28 loans, AUD 222) |
 | 9 | Boundary | 30 and 90 days past due, 60-point score fall: "or more" (filed) |
-| 10 | Rounding | unrounded loan level; every graded figure at least 5 per cent of its bin from the edge after TUNE (one extra repayment on one up-to-date loan, asserted) |
+| 10 | Rounding | unrounded loan level; every graded figure at least 5 per cent of its bin from the edge after TUNE (six extra repayments on up-to-date loans), under both readings of axis 8 (asserted; nearest is stage 1 PL36 coverage at 6.3 per cent) |
 | 11 | Tie-break | none |
 | 12 | Maturity | months on book as repayments fallen due (the curve file's header and CRM-ECL-04 3.2) |
 | 13 | Order of operations | multipliers commute with sums |
@@ -107,7 +107,8 @@ Pair arithmetic: a solver on rung 0 keeps the eight stage counts and balances if
 ## LEAK REVIEW
 
 - `leak.py` (after the realism rebuild): REVIEW, no LEAK. The policy and dictionary share the subject's vocabulary with the call (collective, expected credit loss, allowance, PL36, PL60) and carry no figure of the answer; the migration note's conversion sentence is the published formula CRM-ECL-04 section 2 calls for; dates after 30 September are hardship arrangement ends and first repayments of September loans.
-- Reader round 1 (before the rebuild): no sentence names the decisive step (it read 3.2 and the curve definition as the stated standard), no file states or ranks the answer, no planted file; its realism list (arrears off the repayment calendar, annuity balances with round-hundred tuning edits, hardship records outside loan lives, curve defaults before month 4, loss flows that did not reconcile, calendar and pricing artefacts, template containers, local times stamped as UTC, a thin policy document, the Q3 FY27 label, pandas number formatting) was fixed in the generator. A second read runs on the rebuilt pack.
+- Reader round 1 (before the rebuild): no sentence names the decisive step (it read 3.2 and the curve definition as the stated standard), no file states or ranks the answer, no planted file; its realism list (arrears off the repayment calendar, annuity balances with round-hundred tuning edits, hardship records outside loan lives, curve defaults before month 4, loss flows that did not reconcile, calendar and pricing artefacts, template containers, local times stamped as UTC, a thin policy document, the Q3 FY27 label, pandas number formatting) was fixed in the generator.
+- Reader round 2 (on the rebuilt pack): twelve findings, all fixed in the generator. The curve's development performance ends 31 May 2026, before the 19 June extraction and the 24 June approval. Behaviour scores hold the v4 origination score until the first repayment falls due (a dictionary field line). About one default in six is resolved before write-off, and write-off cohorts three years on have recovered about 24 per cent of the balance (21 per cent of write-offs inside the 15-month window), against LGDs of 70 and 76 per cent. The scorecard version follows the application date and loan numbers follow applications. Nothing falls due under a payment pause in force. A loan past maturity outside stage 3 has one remaining month (CRM-ECL-04 3.2). Five policy passages now read as plain rules, the dictionary describes the scenario workbook's two sheets, the state mix and the agreed hardship repayments read like a lender's, the Office containers carry Excel's and Word's own structures, the deck rebuilds byte for byte, and the migration note's PDF stamp is Sydney time with its offset. The repair also fixed collections arrangements that ended before they began. Graded figures moved: the allowance is AUD 13,773,000. leak.py after the repair: REVIEW, no LEAK; the next read runs on the repaired pack.
 
 ## Tried and rejected
 
@@ -116,3 +117,7 @@ Pair arithmetic: a solver on rung 0 keeps the eight stage counts and balances if
 - Months-on-book bands as the breakdown ask: it names the decisive dimension in the prompt; drawdown year carries the same information the way a credit committee reads it.
 - No stage 2 scalar: stage 2 coverage came out barely above stage 1 (7.6 against 6.3 per cent), which no credit reviewer would accept; CRM-ECL-04 now files a 2.4 scalar.
 - Realistic default levels (lifetime default 10 per cent PL36, 14 per cent PL60, no 90-day default before the fourth repayment) put the half-step rung (curve shifted, no survival division) at 3.3 per cent low against its 6 per cent floor; reaching 6 per cent needs PL60 lifetime default near 20 per cent, a loss-making lender, so the floor is 2.5 per cent and the rung stays a distinct wrong answer at the nearest thousand.
+- Post-default resolution near one default in five with recoveries near 26 per cent of the written-off balance: the implied gross LGD fell to about 60 per cent, ten points under the filed 70 and 76, so resolution is set near one in six and recoveries near a quarter (about 24 per cent at three years: PL36 30, PL60 20).
+- Tuning the rounding margins on the one-month reading of past-maturity loans alone: the allowance and the PL60 2023-and-earlier figure straddled their edges between that reading and the zero one (the loans carry about AUD 220), so the tuner now centres both readings at once.
+- Pinning the past-maturity PD by curve position ("the curve's final month") in CRM-ECL-04: rejected, the sentence would tell a solver that a loan reads the curve from its own month on book, which is the decisive step; 3.2 pins only the one-month remaining term and the corridor assertion covers the PD reading.
+- Stale arrangement_status labels from a weekly status refresh: not built. The labels sit on the main call's staging path, so a solver staging on status instead of dates would move a handful of loans and the allowance bin; the statuses stay current to the reporting date and CRM-ECL-04 2.2's date rule decides.

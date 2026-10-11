@@ -55,7 +55,8 @@ def book(S, rng):
     pre = (onset > R) & (onset <= R + 183) & (rng.random(n) < 0.55)
     ev += np.where(pre, rng.normal(-45, 18, n), 0)
     ev += np.where(S.cured[rows], rng.normal(-40, 15, n), 0)
-    recent = ((S.clear[rows] > S.due[rows]) & (S.due[rows] > R - 183) & (S.due[rows] <= R) & (S.clear[rows] < SM.BIG)).sum(1)
+    recent = ((S.clear[rows] > S.due[rows]) & (S.due[rows] > R - 183) & (S.due[rows] <= R) & (S.clear[rows] < SM.BIG)
+              & (S.susp[rows] <= R)).sum(1)
     ev += -9.0 * recent
     ev += np.where(rng.random(n) < 0.045, rng.normal(-65, 22, n), 0)
     latent = s0 + drift + ev + hs_now
@@ -63,6 +64,9 @@ def book(S, rng):
     raw = sa * latent + sb + rng.normal(0, 5, n)
     raw = np.where(raw > 880, 880 + 60 * np.tanh((raw - 880) / 60), raw)    # the points scale flattens at the top
     cur = np.rint(raw).astype(int)
+    # until the first repayment has fallen due the behaviour score is the origination score, on v4
+    o4 = np.where(L["v4"][rows], L["orig_score"][rows], np.floor(sa * L["orig_score"][rows] + sb + 0.5)).astype(int)
+    cur = np.where(a == 0, o4, cur)
     first = np.array([SM.dd(x) for x in S.nom[rows, 0]])
     bk = pd.DataFrame(dict(
         loan_no=L["loan_no"][rows],
@@ -99,7 +103,7 @@ def hardship(S, rng):
         x = dict(x)
         shut = int(S.close[x["loan"]])
         if shut <= R and x["end"] > shut and not (x["cancel"] is not None and x["cancel"] <= shut):
-            if shut < x["start"]:
+            if shut <= x["start"]:
                 continue                        # repaid before the varied repayments began: the request lapsed
             # the loan was repaid while the arrangement ran: it ends with the loan
             x["end"], x["cancel"], x["outcome"] = min(shut, R - 1), None, "complete"
@@ -163,7 +167,7 @@ def curve(S):
 
 
 def development_sample(S):
-    """loans drawn October 2019 to September 2023 and what had become of each by 30 June 2026"""
+    """loans drawn October 2019 to September 2023 and what had become of each by 31 May 2026"""
     obs = SM.dn(W.DEV_OBS_END)
     L = S.L
     rows = np.nonzero(L["draw"] < SM.dn(W.DEV_CUTOFF))[0]
@@ -190,30 +194,49 @@ def development_sample(S):
     ))
 
 
-def write_offs(S, rng):
-    """loans written off in each month-end batch, July 2025 to September 2026, the balance written off, and
-    recoveries received in the month on loans written off in any earlier month"""
+def recoveries(S, rng):
+    """what each written-off loan pays after write-off, through the R + 3 year horizon: a payment plan with the
+    collection agency (monthly amounts, some months missed, until the plan lapses or the debt is cleared), a lump-sum
+    settlement, a few odd payments, or nothing. Returns the written-off loans, their balances and the flows."""
     cal, R = S.cal, S.R
     wo = np.nonzero((S.close_type == 3) & (S.close <= R))[0]
     bal = SM.balances(S, wo, S.close[wo])
-    flows = []
+    plan, settle, odd = W.RECOVERY_MIX
+    lo, hi, floor, cap, stop = W.RECOVERY_PLAN
+    s_lo, s_hi = W.RECOVERY_SETTLE
+    flows = []                                   # (position in wo, day, amount)
     for k, i in enumerate(wo):
-        u = rng.random()
         b = float(bal[k])
-        if u < 0.48:
-            d = int(S.close[i]) + int(rng.integers(60, 181))
-            amt = float(np.round(rng.uniform(40, 220) / 5) * 5)
+        w = int(S.close[i])
+        u = rng.random()
+        if u < plan:
+            m = float(np.clip(np.round(b * rng.uniform(lo, hi) / 5) * 5, floor, cap))
+            d = w + int(rng.integers(25, 160))
             total = 0.0
-            for _ in range(1 + int(rng.geometric(0.09))):
-                if total + amt > 0.7 * b:
+            for _ in range(48):
+                if rng.random() >= 0.13:         # a month missed now and then
+                    a = min(m, round(b - total, 2))
+                    flows.append((k, int(cal.next_bd[d]), a))
+                    total += a
+                if b - total < 1 or rng.random() < stop:
                     break
-                flows.append((int(cal.next_bd[d]), amt))
-                total += amt
                 d = SM.add_months(d, 1)
-        elif u < 0.56:
-            d = int(cal.next_bd[int(S.close[i]) + int(rng.integers(90, 541))])
-            flows.append((d, float(np.round(b * rng.uniform(0.20, 0.45), 2))))
-    fl = pd.DataFrame(flows, columns=["d", "amt"])
+        elif u < plan + settle:
+            d = w + int(rng.integers(45, 760))
+            flows.append((k, int(cal.next_bd[d]), float(np.round(b * rng.uniform(s_lo, s_hi) / 50) * 50)))
+        elif u < plan + settle + odd:
+            for _ in range(int(rng.integers(1, 5))):
+                flows.append((k, int(cal.next_bd[w + int(rng.integers(30, 900))]),
+                              float(rng.choice([20, 25, 30, 40, 50, 50, 75, 100, 100, 150, 200]))))
+    return wo, bal, flows
+
+
+def write_offs(S, rng):
+    """loans written off in each month-end batch, July 2025 to September 2026, the balance written off, and
+    recoveries received in the month on loans written off in any earlier month"""
+    wo, bal, flows = recoveries(S, rng)
+    fl = pd.DataFrame(flows, columns=["k", "d", "amt"])
+    fl = fl[fl["d"] <= S.R]
     fl["m"] = [SM.dd(x).strftime("%Y-%m") for x in fl["d"]]
     wm = pd.Series([SM.dd(x).strftime("%Y-%m") for x in S.close[wo]])
     rows = []

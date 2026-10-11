@@ -6,7 +6,7 @@ SEED = 133
 REPORT = dt.date(2026, 9, 30)          # quarter-end reporting date (a Wednesday)
 GO_LIVE = dt.date(2019, 10, 1)         # loan system go-live; first drawdowns October 2019
 DEV_CUTOFF = dt.date(2023, 10, 1)      # development sample: loans drawn before this date
-DEV_OBS_END = dt.date(2026, 6, 30)     # development sample performance window ends
+DEV_OBS_END = dt.date(2026, 5, 31)     # development sample performance window ends (the May 2026 month end)
 PRODUCTS = {"PL36": 36, "PL60": 60}
 LGD = {"PL36": 0.70, "PL60": 0.76}     # filed in CRM-ECL-04
 GRADES = ["A", "B", "C", "D", "E"]
@@ -14,7 +14,7 @@ SCENARIOS = [("Base", 0.55, 1.00), ("Downside", 0.30, 1.30), ("Upside", 0.15, 0.
 STAGE2_SCALAR = 2.4                    # filed in CRM-ECL-04 4.2
 SICR_DROP = 60                         # behaviour score fall (current scorecard points) that triggers stage 2
 SCORE_MAP = (1.12, -18.0)              # v3 -> v4: v4 = 1.12 * v3 - 18, rounded
-SCORECARD_SWITCH = dt.date(2024, 7, 1)
+SCORECARD_SWITCH = dt.date(2024, 7, 1)  # applications received on or after this date are scored on v4
 SYD = ZoneInfo("Australia/Sydney")
 
 # application score bands (approve at or above the floor); v4 floors re-set at the same approval rate
@@ -57,7 +57,15 @@ CHANNEL_MIX = {2019: (0.36, 0.50, 0.14), 2020: (0.37, 0.50, 0.13), 2021: (0.40, 
                2023: (0.45, 0.43, 0.12), 2024: (0.47, 0.42, 0.11), 2025: (0.49, 0.40, 0.11), 2026: (0.50, 0.39, 0.11)}
 CHANNELS = ["Broker", "Online", "Direct"]
 STATES = ["NSW", "VIC", "QLD", "WA", "SA", "ACT", "TAS", "NT"]
-STATE_P = [0.36, 0.25, 0.20, 0.08, 0.06, 0.02, 0.02, 0.01]
+# borrower state: near the resident population shares, tilted to the home state, varying by channel, with the early
+# book heavier in New South Wales before the broker panel went national
+STATE_BASE = [0.3384, 0.2563, 0.2117, 0.0912, 0.0634, 0.0143, 0.0178, 0.0069]
+STATE_CHANNEL = [(1.00, 0.93, 1.24), (1.06, 1.00, 0.84), (1.04, 0.98, 0.91), (1.11, 0.92, 0.69),
+                 (0.92, 1.12, 0.88), (0.79, 1.31, 1.07), (0.86, 1.24, 0.81), (0.97, 1.09, 0.58)]   # Broker, Online, Direct
+STATE_HOME_TILT = (0.31, 2.4)          # extra NSW weight in the launch year, and its decay in years
+# days from application to funding: same day for some online loans, about a week typically, up to a month
+APP_GAP = {"Broker": (0.04, 2.05, 0.62), "Online": (0.27, 1.25, 0.80), "Direct": (0.12, 1.55, 0.70)}   # same day, log mean, log sd
+APP_GAP_MAX = 31
 
 # default onset (first instalment of a run that is never made good) by instalment number, grade C,
 # and the grade multipliers; the 90 days past due default follows about three months after the onset
@@ -72,16 +80,26 @@ PREPAY_GRADE = {"A": 1.30, "B": 1.12, "C": 1.0, "D": 0.88, "E": 0.76}
 LATE = {"A": 0.032, "B": 0.048, "C": 0.066, "D": 0.090, "E": 0.122}
 LATE_SEASON = {1: 1.35, 2: 1.15, 3: 1.0, 4: 0.97, 5: 0.95, 6: 1.0, 7: 1.08, 8: 0.96, 9: 0.95, 10: 0.95, 11: 1.0, 12: 1.22}
 # after default: monthly chance of settling in full, catching up, or a collections hardship arrangement
-POST_DEFAULT = (0.014, 0.009, 0.007)
+POST_DEFAULT = (0.012, 0.013, 0.025)
 # hardship arrangements: requests per loan-month by period, grade multipliers
 HARDSHIP_RATE = [(dt.date(2019, 10, 1), 0.0014), (dt.date(2020, 7, 1), 0.0022), (dt.date(2021, 1, 1), 0.0015),
                  (dt.date(2022, 7, 1), 0.0024), (dt.date(2023, 1, 1), 0.0040), (dt.date(2024, 1, 1), 0.0050),
                  (dt.date(2025, 1, 1), 0.0054), (dt.date(2026, 1, 1), 0.0058)]
 HARDSHIP_GRADE = {"A": 0.45, "B": 0.70, "C": 1.0, "D": 1.45, "E": 2.0}
+# agreed repayment under a reduced repayment arrangement: a round amount offered, interest only, a share of the
+# instalment, a token amount, or an amount from the income and expense statement
+REDUCED_MIX = (0.44, 0.24, 0.16, 0.06)
+REDUCED_ROUND = [50, 60, 75, 80, 100, 120, 125, 150, 175, 200, 250, 300, 350, 400, 450, 500, 600, 700, 750, 800, 1000]
+REDUCED_TOKEN = [10, 20, 20, 25, 30, 40, 50]
+# after write-off: a payment plan with the collection agency, a lump-sum settlement, odd payments, or nothing; amounts
+# received over two to three years
+RECOVERY_MIX = (0.48, 0.15, 0.09)
+RECOVERY_PLAN = (0.030, 0.064, 45, 520, 0.052)   # monthly amount as a share of the balance (low, high), floor, cap; stop hazard
+RECOVERY_SETTLE = (0.38, 0.64)                  # lump sum as a share of the balance
 
 # extra repayments settled by tune.py: loan_key -> amount (AUD), paid a few days after the loan's
 # September 2026 instalment, so no graded figure sits on a rounding edge
-TUNE = {75277: 1616.36}
+TUNE = {38209: 4151.3, 42844: 5897.56, 78469: 3760.64, 78929: 5533.42, 80945: 5639.26, 81228: 4855.47}
 
 
 def easter(y):

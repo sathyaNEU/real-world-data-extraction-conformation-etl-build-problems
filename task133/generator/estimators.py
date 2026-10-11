@@ -90,12 +90,16 @@ def ead_path(balance, rate, rem):
     return out
 
 
-def loan_ecl(row, st, curves, mult, variant="cond", disc=True, flat_ead=False, by_month=None):
+def loan_ecl(row, st, curves, mult, variant="cond", disc=True, flat_ead=False, by_month=None, pm_zero=False):
     a = months_due(row["first_rep"])
     T = int(row["term_months"])
     rem = T - a
     if rem <= 0:
-        return 0.0
+        # past its contractual maturity and not in stage 3: one month remaining (CRM-ECL-04 3.2), so the loan stands
+        # at the month on book that leaves one month of its term, the last month of its product's curve
+        if pm_zero:
+            return 0.0
+        a, rem = T - 1, 1
     H = rem if st == 2 else min(12, rem)
     C = curves[row["product"]]
     r = float(row["contract_rate"])
@@ -129,7 +133,7 @@ def solve(target, **kw):
     ecl = []
     for idx, row in bk.iterrows():
         s = int(st[idx])
-        ecl.append(0.0 if s == 3 else loan_ecl(row, s, curves, mult, variant, disc, flat, by_month))
+        ecl.append(0.0 if s == 3 else loan_ecl(row, s, curves, mult, variant, disc, flat, by_month, kw.get("pm_zero", False)))
     mob = [months_due(f) for f in bk["first_rep"]]
     bk = bk.assign(stage=st.values, ecl=ecl, mob=mob,
                    band=[str(d)[:4] if str(d)[:4] >= "2024" else "2023 and earlier" for d in bk["drawdown_date"]])
@@ -153,4 +157,7 @@ def solve(target, **kw):
         per[y] = per.get(y, 0.0) + v
     out["by_year"] = dict(sorted(per.items()))
     out["n3"] = int((bk["stage"] == 3).sum())
+    pm = (bk["mob"] >= bk["term_months"]) & (bk["stage"] < 3)
+    out["n_pm"] = int(pm.sum())
+    out["ecl_pm"] = float(bk.loc[pm, "ecl"].sum())
     return out

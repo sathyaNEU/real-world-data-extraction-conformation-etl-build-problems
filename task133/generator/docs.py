@@ -37,7 +37,7 @@ def methodology_docx(path):
           "rebutted for this portfolio, and loans in default are in stage 3."),
         P("1.3 Days past due are taken from the loan system at close of business on the reporting date."),
         P("1.4 Loans are written off under CRM-COL-02 in the month-end batch once 180 or more days past due. A loan that "
-          "has been written off is closed in the loan system and carries no allowance."),
+          "has been written off is closed in the loan system."),
         P("1.5 The gross carrying amount of a loan is its current balance in the loan system."),
         ("h1", "2. Staging"),
         P("2.1 A loan is in stage 2 if, at the reporting date, any of the following holds: it is 30 or more days past due; "
@@ -47,10 +47,9 @@ def methodology_docx(path):
           "was not cancelled."),
         P("2.3 Origination scores recorded on the v3 scorecard are converted to v4 with the published migration formula "
           "before the comparison in 2.1."),
-        P("2.4 Transfers between stages are symmetrical. A loan returns to stage 1 at the first reporting date on which "
-          "none of the conditions in 2.1 holds, and a loan that is no longer 90 or more days past due is staged under 2.1. "
-          "No probation period applies: the 2025 validation (MV-2025-07) found that one would move few loans and little "
-          "allowance in this portfolio."),
+        P("2.4 Transfers between stages are symmetrical, with no probation period. A loan returns to stage 1 at the first "
+          "reporting date on which none of the conditions in 2.1 holds, and a loan that is no longer 90 or more days past "
+          "due is staged under 2.1."),
         P("2.5 The 30 days past due backstop in AASB 9 5.5.11 is not rebutted."),
         ("h1", "3. Expected credit loss"),
         P("3.1 ECL = sum over future months k of PD(k) x LGD x EAD(k) x DF(k). Stage 1 loans use the next 12 months or the "
@@ -58,7 +57,8 @@ def methodology_docx(path):
         P("3.2 PD(k), the probability of default in the k-th month after the reporting date, comes from the model team's "
           "cumulative default curve for the loan's product. Stage 2 loans carry the significant-increase scalar of 2.4 on "
           "PD(k). A loan's remaining term is its contractual term less the number of monthly repayments that have fallen "
-          "due on or before the reporting date."),
+          "due on or before the reporting date. A loan past its contractual maturity that is not in stage 3 has a "
+          "remaining term of one month."),
         P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60."),
         P("3.4 EAD(k) is the balance outstanding at the start of month k when the current balance is repaid over the "
           "remaining term in equal monthly instalments at the contract rate."),
@@ -73,11 +73,9 @@ def methodology_docx(path):
           "coverage ratio (allowance over gross carrying amount, the sum of current balances) for each."),
         ("h1", "6. Post-model adjustments"),
         P("An overlay is made only for a risk this method does not capture. It is approved by the Audit and Risk Committee "
-          "with the condition for its release and reported separately from the modelled allowance. The COVID-19 overlay was "
-          "released at 30 June 2023 and no overlay has been approved since."),
+          "with the condition for its release and reported separately from the modelled allowance."),
         ("h1", "7. Limitations"),
-        P("7.1 PD is set by product only. Differences in risk between grades, channels and states reach the allowance "
-          "through staging, not through PD."),
+        P("7.1 PD is set by product only. Risk grade, channel and state do not enter it."),
         P("7.2 The stage 2 scalar was calibrated on arrears outcomes from 2023 to 2025 and is reviewed each year with the "
           "validation."),
         P("7.3 LGD is a portfolio average for each product and does not vary with time in arrears or with the size of the "
@@ -165,7 +163,7 @@ def scenarios_xlsx(path):
         for c in (4, 5, 6):
             ws.cell(row=r, column=c).number_format = "0.0" if c != 5 else "0.00"
     ws.append([])
-    ws.append(["Source: Group Finance economic outlook, September 2026. Multipliers apply to PD only (CRM-ECL-04 section 4)."])
+    ws.append(["Source: Group Finance economic outlook, September 2026."])
     ws["A9"].font = Font(italic=True, color="5B6670")
     for col, wd in zip("ABCDEF", [14, 13, 11, 16, 15, 13]):
         ws.column_dimensions[col].width = wd
@@ -218,7 +216,8 @@ September batch are not in the extract. Sorted by loan number.
   days_past_due            days since the due date of the oldest repayment not paid in full; 0 when up to date
   origination_score        application score at origination, on the scorecard named in origination_scorecard
   origination_scorecard    v3 (applications before 1 July 2024) or v4
-  current_score_v4         behaviour score at the reporting date, scorecard v4
+  current_score_v4         behaviour score at the reporting date, scorecard v4. Until the first repayment has
+                           fallen due it is the origination score, on v4
   state                    state of the borrower's residential address
   channel                  origination channel: Broker, Online or Direct
 
@@ -252,8 +251,9 @@ Loans written off in each month-end batch, July 2025 to September 2026, and reco
 
 
 Other files in the run folder (not loan system extracts)
-  ifrs9_scenarios_2026Q3.xlsx            Group Finance: scenario weights and PD multipliers approved by the Audit and
-                                         Risk Committee, one sheet per quarter
+  ifrs9_scenarios_2026Q3.xlsx            Group Finance: this quarter's scenario weights, PD multipliers and economic
+                                         assumptions as approved by the Audit and Risk Committee; the prior quarter's
+                                         weights and multipliers on a second sheet
   pd_curve_personal_loans_2026-06.csv    Credit Risk Modelling: default curves; described in the file's header lines
   pd_model_development_sample.parquet    Credit Risk Modelling: the curves' development data; described in the file's
                                          metadata
