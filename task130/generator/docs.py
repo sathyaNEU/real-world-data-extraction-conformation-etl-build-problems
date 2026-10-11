@@ -134,7 +134,7 @@ def plan_xlsx(out_path, actuals):
     wb.properties.creator = "Eileen Nicholls"
     wb.properties.lastModifiedBy = "Eileen Nicholls"
     wb.properties.created = dt.datetime(2026, 3, 20, 10, 15)
-    wb.properties.modified = dt.datetime(2026, 9, 14, 16, 40)
+    wb.properties.modified = dt.datetime(2026, 10, 1, 9, 25)
     wb.properties.title = "Move-on plan 2026-27"
     ws = wb.active
     ws.title = "Revised 14 Sep 2026"

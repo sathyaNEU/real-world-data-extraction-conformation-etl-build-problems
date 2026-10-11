@@ -35,8 +35,8 @@ def workbook(fig, path):
     wb = openpyxl.Workbook()
     wb.properties.creator = "Maria Field"
     wb.properties.lastModifiedBy = "Maria Field"
-    wb.properties.created = dt.datetime(2026, 10, 30, 14, 5)
-    wb.properties.modified = dt.datetime(2026, 11, 2, 9, 40)
+    wb.properties.created = dt.datetime(2026, 10, 5, 14, 5)
+    wb.properties.modified = dt.datetime(2026, 10, 6, 9, 40)
     wb.properties.title = "Tenter House replacement units call-off 2027"
     head = Font(bold=True, color="FFFFFF")
     fill = PatternFill("solid", fgColor="2F5D50")
@@ -47,7 +47,7 @@ def workbook(fig, path):
     ws["A1"] = "Tenter House: replacement units to call off for 1 April 2027"
     ws["A1"].font = Font(bold=True, size=13)
     ws["A2"] = ("Larkmoor Borough Council, Housing Needs Service. Kent and Medway TA DPS, Lot 3 (self-contained, "
-                "12-month lease). Prepared by Maria Field for Cllr Irene Roberts, 2 November 2026.")
+                "12-month lease). Prepared by Maria Field for Cllr Irene Roberts, 6 October 2026.")
     ws["A2"].font = Font(italic=True, size=9)
     hdr = ["Bedrooms", "Households in Tenter House 30 Sep 2026", "Households expected there 31 Mar 2027",
            "Units to call off", "Lot 3 weekly rate from 1 Apr 2027 (GBP)", "Weekly cost (GBP)"]
@@ -123,7 +123,7 @@ def workbook(fig, path):
     ro.freeze_panes = "B5"
     xlcalc.freeze(wb)
     wb.save(path)
-    P.normalize_zip(path, (2026, 11, 2, 9, 40, 0))
+    P.normalize_zip(path, (2026, 10, 6, 9, 40, 0))
 
 
 def chart(fig, path):

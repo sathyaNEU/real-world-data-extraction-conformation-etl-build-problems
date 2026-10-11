@@ -3,9 +3,9 @@
   "domain": "demographic-social-science",
   "objective": "forecasting",
   "architecture": "v2",
-  "stage": 5,
-  "stage_name": "determinism check (re-judge after FIX_NOW)",
-  "updated": "2026-10-10",
+  "stage": 6,
+  "stage_name": "delivered",
+  "updated": "2026-10-11",
   "stump": "A competent solver runs the borough's recent monthly rate of main-duty households leaving TA (or a survival curve, or the plan shared over the lists) over the Tenter House households and calls off about 136 units; the step that lands it there is forecasting departures as a rate, when move-on lets go in duty-date order within each bedroom size against the move-on plan and the block's households sit near the front of those lists, so 46 remain: 0, 7, 20, 19.",
   "duplicate_check": {
     "heart": "PASS (two NOTEs vs task80, differentiated)",
@@ -15,12 +15,12 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW",
-    "report": "task130/determinism_check_report.md",
-    "pass1": "CPI month wording in the price schedule; fixed"
+    "disposition": "FIX_NOW (pass 2, metadata only, applied; no third pass)",
+    "report": "task130/determinism_check_report_pass2.md",
+    "pass1": "DETERMINISTIC, FIX_NOW (CPI month), applied"
   },
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-11",
   "portal": null,
   "lineage": [
     {
@@ -31,5 +31,11 @@
         "note": "both top models filed the golden seven-section designation"
       }
     }
-  ]
+  ],
+  "target_zip": {
+    "path": "task130/target.zip",
+    "bytes": 781402,
+    "members": 13,
+    "sha256": "48249e0a96558440dc28e5306dbe053eb9f8bfaf2f52db1efcf59b626263f16c"
+  }
 }

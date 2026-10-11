@@ -86,7 +86,7 @@ def lets_frame(df, lt, pend, rng):
     })
     prow = []
     for i, s, j in pend:
-        start = pd.Timestamp("2026-10-01") + pd.Timedelta(days=int(3 + 4 * j + (s % 3)))
+        start = pd.Timestamp("2026-10-01") + pd.Timedelta(days=int(1 + 3 * j + (s % 3)))
         offer = pd.Timestamp("2026-09-14") + pd.Timedelta(days=int(2 * j + s))
         social = (j + s) % 4 != 0
         prow.append(dict(case_ref=df.at[i, "case_ref"], bedrooms=s,
@@ -176,7 +176,7 @@ def register_frame(units):
             th += 1
             rows.append(dict(unit_ref="TH-%d%02d" % (s, q + 1), accommodation_type="Tenter House",
                              block_or_address="Tenter House, 2 Wharf Road, Larkmoor", bedrooms=s,
-                             provider=W.PROVIDER, contract="Block lease 2021-2026 (notice served 15 Sep 2026)"))
+                             provider=W.PROVIDER, contract="Block lease from 1 Apr 2021 (notice served 15 Sep 2026, ends 31 Mar 2027)"))
     provs = {"Private sector lease": ["Larkmoor Lettings PSL scheme", "Harbourside Property Partners", "Greystone Residential"],
              "Nightly-paid self-contained": ["Bridgeway Accommodation Ltd", "Kestrel Housing Solutions", "Northfleet Lodgings"],
              "Bed and breakfast": ["Station Hotel Larkmoor", "The Anchor Guest House", "Riverside Inn"],
