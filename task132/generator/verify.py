@@ -66,7 +66,8 @@ def main():
         g = re.fullmatch(r"F(\d+)-F(\d+)", str(row[5]))
         if not g:
             continue
-        end = 2036 * 12 if row[7] == "Not in programme period" else mk(pd.to_datetime(row[7]))
+        v = row[7]
+        end = 2036 * 12 if str(v).strip() == "Not in programme period" else mk(pd.Timestamp(v) if not isinstance(v, str) else pd.to_datetime(v, format="%b %Y"))
         plan.setdefault(row[2], []).append((int(g.group(1)), int(g.group(2)), end))
 
     def send(sub, bay):

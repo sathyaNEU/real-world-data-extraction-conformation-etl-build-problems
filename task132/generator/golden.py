@@ -189,7 +189,7 @@ def memo(s, path):
         p.paragraph_format.space_after = Pt(after)
         return p
 
-    para("Ironwood Hydro Distribution  |  P&C Asset Planning", size=8.5, italic=True, after=2)
+    para("Tarrock Hydro Distribution  |  P&C Asset Planning", size=8.5, italic=True, after=2)
     para("MEMO", bold=True, size=12, after=2)
     for k, v in [("To", "Angel Baird, Director, Asset Management"), ("From", "Rachael Villanueva, Manager, P&C Asset Planning"),
                  ("Date", "7 October 2026"), ("Re", "Last-time buy of VPR-340 power supply modules (Veldtek EOL-2026-07)")]:
@@ -254,13 +254,15 @@ def build(target=None, out=None):
     s = E.solve(target)
     wbp = os.path.join(out, "vpr340_psu_final_buy.xlsx")
     workbook(s, wbp)
-    created = dt.datetime(2026, 10, 6, 13, 55, tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
-    saved = PREPARED.replace(tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
-    P.normalize_xlsx(wbp, "Rachael Villanueva", "Rachael Villanueva", created, saved)
+    utc = lambda t: dt.datetime(*t, tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
+    P.normalize_xlsx(wbp, "Rachael Villanueva", "Rachael Villanueva", utc((2026, 10, 6, 13, 55, 18)),
+                     utc((2026, 10, 7, 15, 38, 46)), seed="vpr340_psu_final_buy.xlsx")
     mp = os.path.join(out, "psu_last_time_buy_memo.docx")
     memo(s, mp)
-    P.normalize_docx(mp, "Rachael Villanueva", "Rachael Villanueva", created, saved, revision=6, total_time=74,
-                     title="VPR-340 PSU last-time buy", seed="memo-psu")
+    pages = P.normalize_docx(mp, "Rachael Villanueva", "Rachael Villanueva", utc((2026, 10, 6, 14, 2, 0)),
+                             utc((2026, 10, 7, 15, 40, 0)), revision=6, total_time=74, title="VPR-340 PSU last-time buy",
+                             seed="memo-psu")
+    assert pages == 1, "the memo runs to %d pages" % pages
     for f in (wbp, mp):
         ts = PREPARED.replace(tzinfo=TZ).timestamp()
         os.utime(f, (ts, ts))

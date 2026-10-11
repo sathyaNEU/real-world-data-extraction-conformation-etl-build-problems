@@ -1,4 +1,4 @@
-"""Fixed facts of the Ironwood Hydro world: dates, the PSU wear-out law, bands, lots, stock."""
+"""Fixed facts of the Tarrock Hydro world: dates, the PSU wear-out law, bands, lots, stock."""
 import datetime as dt
 
 SEED = 150
@@ -28,6 +28,14 @@ N_SUBS = 142
 N_TS = 17
 STAGE_MIN = 11                          # VPR-340 relays at a station before its scheme is staged
 STAGE_LAG = (20, 49)                    # months between stage 1 and stage 2
+
+# storms that brought crews out across a region (the current regions, which follow geography)
+STORMS = ((dt.date(2021, 7, 24), ("Central", "South")), (dt.date(2021, 12, 11), ("North", "Central")),
+          (dt.date(2022, 5, 21), ("North", "Central", "South")), (dt.date(2022, 12, 23), ("North", "Central")),
+          (dt.date(2023, 4, 5), ("Central", "South")), (dt.date(2023, 7, 13), ("North",)),
+          (dt.date(2024, 3, 23), ("South",)), (dt.date(2024, 7, 16), ("Central",)),
+          (dt.date(2024, 8, 6), ("North", "Central")), (dt.date(2025, 3, 30), ("North", "Central")),
+          (dt.date(2025, 6, 18), ("South",)), (dt.date(2026, 6, 9), ("Central", "South")))
 
 # stores: new-in-box serviceable modules by location, recovered modules awaiting bench test
 SERVICEABLE = (("Central Stores (Barrie Road)", "A-14-03", 5), ("North Depot", "N-02-11", 4), ("South Depot", "S-05-07", 3))

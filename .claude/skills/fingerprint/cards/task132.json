@@ -21,9 +21,9 @@
     "none"
   ],
   "generators": [
-    "G9",
-    "G12",
-    "G13"
+    "G6",
+    "G13",
+    "G12"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
@@ -61,7 +61,7 @@
     "currency": "CAD",
     "org_type": "local electricity distribution company with about 140 distribution substations",
     "invented_names": [
-      "Ironwood Hydro Distribution",
+      "Tarrock Hydro Distribution",
       "Veldtek Protection Systems",
       "VPR-340"
     ],
@@ -85,5 +85,5 @@
     "task46": "task46 measures age on the wrong clock (register age against service exposure rebuilt from a movement log); here age is the plain installation age and is right, and the exposure is wrong only in where it starts: relay-years before the January 2021 work-order migration carry no failure records, a left-truncated observation window, so the shortfall sits in the middle age bands rather than at a step a cohort crosses."
   },
   "lineage": [],
-  "notes": "Seed: analytical_tasks/01_forecasting/FC03 (service-parts lifecycle setting only; its shadow-run withheld rule is not used). Forcing event is the OEM's last-time-buy window in its end-of-life notice (a purchase, but the decision is forced by the supplier's discontinuation rather than by a contract or order cycle).  Hardening loop 1 (2026-10-11): round 1 solvers both clipped exposure to the go-live window from the dictionary and landed; the PSU now wears out with module age and failed modules are replaced, so the decisive step is the replacement in the forecast; the go-live window stays as an ordinary step."
+  "notes": "Seed: analytical_tasks/01_forecasting/FC03 (service-parts lifecycle setting only; its shadow-run withheld rule is not used). Forcing event is the OEM's last-time-buy window in its end-of-life notice (a purchase, but the decision is forced by the supplier's discontinuation rather than by a contract or order cycle).  Hardening loop 1 (2026-10-11): round 1 solvers both clipped exposure to the go-live window from the dictionary and landed; the PSU now wears out with module age and failed modules are replaced, so the decisive step is the replacement in the forecast; the go-live window stays as an ordinary step. Clone pre-flight pass 2 (2026-10-11): decisive pattern moved from G9 to G6 (the band occupancy shifts toward new modules as failures are replaced), clearing the back-to-back pattern ban against task133; utility renamed Ironwood to Tarrock (Ironwood Commodities LP in task124)."
 }

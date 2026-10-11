@@ -3,7 +3,7 @@
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
  "stage": 3,
- "stage_name": "build (hardening loop 1)",
+ "stage_name": "leak and duplicate fixes in the generator (loop 1)",
  "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
  "stump": "A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 18 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.",
@@ -11,12 +11,12 @@
  "loops": 1,
  "leak": {
   "leak_py": "",
-  "reader": "rounds 1 and 2 read on architecture 1 before loop 1; loop 1 pack not yet read"
+  "reader": "loop 1 reader: no decisive-step sentence (it took the no-replacement total, 412 and 18 lots, for the answer), no ranking or answer file; realism list (PDF author python-docx, Monday roll-forward, holidays, generic corrective text, serial order, one-day station cutovers, scope mismatches, docx template residue, shared bays, anachronistic rev date) being fixed in the generator"
  },
  "duplicate_check": {
   "heart": "re-run after loop 1",
   "nearest": "task46 at 0.08",
-  "clone_check": "CLEAN at every tier (clone_check_report_task132.md); renames done: Tamarack to Ironwood, Susan Huff to Angel Baird"
+  "clone_check": "pass 2 (clone_check_report_task132_pass2.md): no clone tier; Track B G9 decisive-pattern ban against task133 cleared by moving task132 to G6; Track A 'Ironwood' (task124) renamed Tarrock"
  },
  "solver_rounds": [
   {

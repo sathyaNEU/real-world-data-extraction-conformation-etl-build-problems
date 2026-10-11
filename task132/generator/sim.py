@@ -6,6 +6,7 @@ completes, and the module fitted then starts again at age zero. The world runs f
 sees January 2021 on, plus the module in each position at go-live with the fitted date the legacy system held.
 """
 import datetime as dt
+import functools
 
 import numpy as np
 import pandas as pd
@@ -34,6 +35,7 @@ SUFFIX = ["ford", "field", "ton", "ville", "wood", "dale", "brook", "burn", "by"
           "well", "worth", "bury", "cliff", "croft", "gate", "haven", "hurst", "ley", "mount", "port", "side",
           "view", " Creek", " Falls", " Hill", " Junction", " Lake", " Mills", " Point", " River", " Road"]
 CURRENT_REGIONS = ["North", "Central", "South"]
+PLAN_LAST = dt.date(2035, 10, 1)       # last autumn outage window inside the programme period
 LEGACY_REGIONS = ["Lakeshore", "Ridge", "Valley", "Harbour"]
 SB_CUTOFF = dt.date(1998, 1, 1)
 SEASON = np.array([0.3, 0.3, 0.6, 1.4, 1.6, 1.3, 0.5, 0.5, 1.3, 1.6, 1.3, 0.3])   # outage windows, Jan..Dec
@@ -69,12 +71,93 @@ def first_month(d):
 
 
 def weekday(rng, d, sat=0.04):
-    """move a planned date off the weekend (a few Saturday jobs stay)"""
+    """the legacy draw: move a date off the weekend (a few Saturday jobs stay). The world's own stream still makes
+    these draws, so the failure simulation is unchanged; the date a planned job lands on is then taken from
+    bday_like, which draws it among working days directly."""
     if d.weekday() == 5 and rng.random() < sat:
         return d
     while d.weekday() >= 5:
         d = d + dt.timedelta(days=1)
     return d
+
+
+# ---------------------------------------------------------------- working days (Ontario)
+
+def _easter(y):
+    a, b, c = y % 19, y // 100, y % 100
+    d, e = b // 4, b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = c // 4, c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    return dt.date(y, (h + l - 7 * m + 114) // 31, (h + l - 7 * m + 114) % 31 + 1)
+
+
+def _monday(y, month, n):
+    d = dt.date(y, month, 1)
+    return d + dt.timedelta(days=(7 - d.weekday()) % 7 + 7 * (n - 1))
+
+
+@functools.lru_cache(maxsize=None)
+def holidays(y):
+    """Ontario statutory holidays as the utility and its suppliers observe them; one that falls at a weekend is
+    taken on the next working day"""
+    hs = {_easter(y) - dt.timedelta(days=2), _monday(y, 9, 1), _monday(y, 10, 2)}
+    if y >= 2008:
+        hs.add(_monday(y, 2, 3))
+    may24 = dt.date(y, 5, 24)
+    hs.add(may24 - dt.timedelta(days=may24.weekday()))
+    for d in (dt.date(y, 1, 1), dt.date(y, 7, 1), dt.date(y, 12, 25), dt.date(y, 12, 26)):
+        while d.weekday() >= 5 or d in hs:
+            d += dt.timedelta(days=1)
+        hs.add(d)
+    return frozenset(hs)
+
+
+def is_bday(d):
+    return d.weekday() < 5 and d not in holidays(d.year)
+
+
+def bdays(a, b):
+    """working days from a to b inclusive"""
+    out, d = [], a
+    while d <= b:
+        if is_bday(d):
+            out.append(d)
+        d += dt.timedelta(days=1)
+    return out
+
+
+def add_bdays(d, n):
+    """the n-th working day after d (n = 0: d itself when it is a working day, else the next one)"""
+    while not is_bday(d):
+        d += dt.timedelta(days=1)
+    for _ in range(int(n)):
+        d += dt.timedelta(days=1)
+        while not is_bday(d):
+            d += dt.timedelta(days=1)
+    return d
+
+
+def pick_bday(rng, a, b):
+    """a working day drawn uniformly from a to b"""
+    c = bdays(a, b)
+    while not c:
+        b += dt.timedelta(days=1)
+        c = bdays(a, b)
+    return c[int(rng.integers(len(c)))]
+
+
+def bday_like(rng, d):
+    """a working day counted from the same first day of a month as d, drawn across that window: the 2nd to the end
+    of d's month, or for a date on the 1st the day itself (or, on a holiday, the last week of the month before).
+    Every month-start count (first_month, age_on) is the same for the two dates."""
+    m = dt.date(d.year, d.month, 1)
+    if d.day == 1:
+        return d if is_bday(d) else pick_bday(rng, m - dt.timedelta(days=7), m - dt.timedelta(days=1))
+    return pick_bday(rng, dt.date(d.year, d.month, 2), month_add(m, 1) - dt.timedelta(days=1))
 
 
 def _name(rng, used_root, suffix_n):
@@ -142,6 +225,7 @@ def fleet(rng, subs):
     weights = np.where(host["station_type"] == "TS", 2.2, 1.0)
     counts = base + rng.multinomial(extra, weights / weights.sum())
     rows, rid = [], 0
+    adj = np.random.default_rng([W.SEED, 7])
     for (_, s), c in zip(host.iterrows(), counts):
         camp = int(rng.choice(yrs, p=w))
         cm = int(rng.integers(3, 11))
@@ -155,9 +239,12 @@ def fleet(rng, subs):
                 m = int(rng.integers(1, 13))
             inst.append(_install_day(rng, y, m))
         inst.sort()
-        for j, d in enumerate(inst):
+        # the date each relay went in, on a working day counted from the same first day of a month; the drawn date
+        # (install_raw) stays behind for the world's own ordering, so the stations' programme order is unchanged
+        moved = sorted(bday_like(adj, d) for d in inst)
+        for j, (d0, d) in enumerate(zip(inst, moved)):
             rid += 1
-            rows.append(dict(relay_key=rid, sub_code=s.sub_code, bay="F%02d" % (j + 1), install=d))
+            rows.append(dict(relay_key=rid, sub_code=s.sub_code, bay="F%02d" % (j + 1), install=d, install_raw=d0))
     return pd.DataFrame(rows)
 
 
@@ -165,7 +252,7 @@ def programme(rng, fl, subs):
     """Schemes in the approved 2026 programme for every substation still carrying VPR-340 relays (older
     stations tend to go first), schemes at stations without VPR-340, the superseded 2025 plan, and the
     stations rebuilt early (2022-2025). Large stations are replaced in two outage stages."""
-    host = fl.groupby("sub_code").agg(first=("install", "min"), n=("relay_key", "size")).reset_index()
+    host = fl.groupby("sub_code").agg(first=("install_raw", "min"), n=("relay_key", "size")).reset_index()
     age = np.array([(W.ASOF - d).days / 365.25 for d in host["first"]])
     score = age + rng.normal(0, 13, len(host))
     order = np.argsort(np.argsort(-score))
@@ -210,9 +297,11 @@ def programme(rng, fl, subs):
     movable = [i for i in range(n) if p25[i] is not None]
     for i in rng.choice(movable, 23, replace=False):
         shift = int(rng.integers(6, 31)) * (1 if rng.random() < 0.8 else -1)
-        p25[i] = max(dt.date(2027, 1, 1), month_add(p25[i], -shift))
+        # a deferral past the period is held at the last autumn outage window inside it
+        p25[i] = min(PLAN_LAST, max(dt.date(2027, 1, 1), month_add(p25[i], -shift)))
     prog["plan_2025"] = p25
-    # schemes at stations with no VPR-340 (VPR-220 and RTU renewals), in both versions
+    # the first draft of the schemes at stations with no VPR-340: its draws stay in the world's stream so the module
+    # simulation is unchanged, and the schemes themselves are now chosen from the register (docs.other_schemes)
     others = subs[~subs["sub_code"].isin(host["sub_code"])]
     pick = others.sample(n=17, random_state=int(rng.integers(1e9)))
     extra = []
@@ -221,6 +310,53 @@ def programme(rng, fl, subs):
         m25 = m if rng.random() < 0.8 else month_add(m, -int(rng.integers(6, 19)))
         extra.append(dict(sub_code=s.sub_code, plan_2026=m, plan_2025=max(dt.date(2027, 1, 1), m25)))
     return prog, pd.DataFrame(extra)
+
+
+def cut_date(days, bay, nv):
+    """the working day a bay is cut over in a station rebuild: transformer protection first, the VPR-340 feeders in
+    bay order across the weeks of the cutover, newer feeders, bus protection, and the RTU on the last day"""
+    n = len(days)
+    if bay == "RTU":
+        return days[-1]
+    if bay.startswith("T"):
+        return days[min(int(bay[1:]) - 1, n - 1)]
+    if bay.startswith("B"):
+        return days[max(0, n - 2)]
+    j = int(bay[1:]) - 1
+    if j < nv:
+        return days[min(n - 1, 1 + (j * max(1, n - 3)) // nv)]
+    return days[max(0, n - 3)]
+
+
+def cutovers(subs, fl, prog):
+    """Station rebuilds cut over bay by bay over several weeks of working days, inside the month that leaves the old
+    relays in service on the first day of the rebuild month (so every month a relay is counted in is unchanged).
+    Adds the working days of each rebuild to prog (cut_days) and each VPR-340's retirement to fl (retire)."""
+    adj = np.random.default_rng([W.SEED, 9])
+    ntx = dict(zip(subs["sub_code"], subs["n_tx"]))
+    nbus = dict(zip(subs["sub_code"], subs["n_bus"]))
+    prog = prog.copy()
+    fl = fl.copy()
+    days_of, retire = {}, {}
+    for _, r in prog.iterrows():
+        D = r["retired_on"]
+        if D is None or isinstance(D, float):
+            continue
+        m = dt.date(D.year, D.month, 1)
+        if D.day == 1:
+            m = month_add(m, -1)
+        L = bdays(dt.date(m.year, m.month, 2), month_add(m, 1) - dt.timedelta(days=1))
+        mine = fl[fl["sub_code"] == r.sub_code].sort_values("bay")
+        items = len(mine) + ntx[r.sub_code] + nbus[r.sub_code] + 3
+        wlen = min(len(L), max(12, int(np.ceil(items / 1.5))))
+        s0 = int(adj.integers(0, len(L) - wlen + 1))
+        days = L[s0:s0 + wlen]
+        days_of[r.sub_code] = days
+        for k, bay in zip(mine["relay_key"], mine["bay"]):
+            retire[k] = cut_date(days, bay, len(mine))
+    prog["cut_days"] = [days_of.get(sc) for sc in prog["sub_code"]]
+    fl["retire"] = [retire.get(k) for k in fl["relay_key"]]
+    return fl, prog
 
 
 def support_end(prog_row, bay):
@@ -240,27 +376,32 @@ def modules(rng, fl, prog):
     Each month a module in service on the first day fails with probability hazard(age + 0.5) / 12. The
     corrective work completes 0 to 6 days later (emergency work the same day), and the module fitted then is
     in service from the next first day of a month."""
-    ret = dict(zip(prog["sub_code"], prog["retired_on"]))
     keys = fl["relay_key"].tolist()
     inst = fl["install"].tolist()
-    stop = [ret.get(s) for s in fl["sub_code"]]
+    inst_raw = fl["install_raw"].tolist()
+    stop = [d if isinstance(d, dt.date) else None for d in fl["retire"]]
     n = len(keys)
     fitted = list(inst)
+    fitted_raw = list(inst_raw)          # the drawn dates, for the bulletin's eligibility tests
     live_from = [first_month(d) for d in inst]
     spells, fails = [], []
     serial = [0] * n
     # Veldtek service bulletin SB-15-02 (2015): PSU modules in relays installed before 1998 replaced, station by station
-    camp = {}
+    # the station's month in the bulletin campaign is the drawn one; the swap is dated on a working day counted from
+    # the same first day of a month
+    when = {}
     for s_ in sorted(set(fl["sub_code"])):
-        camp[s_] = weekday(rng, dt.date(2015, int(rng.integers(4, 12)), int(rng.integers(1, 29))), 0)
+        when[s_] = weekday(rng, dt.date(2015, int(rng.integers(4, 12)), int(rng.integers(1, 29))), 0)
+    adj = np.random.default_rng([W.SEED, 8])
+    camp = {s_: bday_like(adj, when[s_]) for s_ in sorted(when)}
     for m in months_between(dt.date(1992, 1, 1), dt.date(2026, 10, 1)):
         if m.year == 2015:
             for i in range(n):
-                c = camp[fl["sub_code"].iat[i]]
-                if (c.year, c.month) == (m.year, m.month) and inst[i] < SB_CUTOFF and live_from[i] <= m and fitted[i] < dt.date(2011, 1, 1):
+                c0, c = when[fl["sub_code"].iat[i]], camp[fl["sub_code"].iat[i]]
+                if (c0.year, c0.month) == (m.year, m.month) and inst_raw[i] < SB_CUTOFF and live_from[i] <= m and fitted_raw[i] < dt.date(2011, 1, 1):
                     spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=c, reason="CAMPAIGN"))
                     serial[i] += 1
-                    fitted[i] = c
+                    fitted[i], fitted_raw[i] = c, c0
                     live_from[i] = first_month(c)
         idx = [i for i in range(n) if live_from[i] <= m and (stop[i] is None or m < first_month(stop[i]))]
         if not idx:
@@ -280,7 +421,7 @@ def modules(rng, fl, prog):
                               module=serial[i]))
             spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i], removed=done, reason="FAILED"))
             serial[i] += 1
-            fitted[i] = done
+            fitted[i] = fitted_raw[i] = done
             live_from[i] = first_month(done)
     for i in range(n):
         spells.append(dict(relay_key=keys[i], module=serial[i], fitted=fitted[i],

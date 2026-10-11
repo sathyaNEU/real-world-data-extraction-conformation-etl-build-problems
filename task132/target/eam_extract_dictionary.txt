@@ -1,4 +1,4 @@
-IRONWOOD HYDRO DISTRIBUTION
+TARROCK HYDRO DISTRIBUTION
 EAM reporting service - monthly P&C asset and work extract (job PC_ASSET_WO_MONTHLY)
 Run 2026-10-01 06:10, data to close of business 2026-09-30
 
@@ -35,12 +35,13 @@ eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order)
   reported_date     date raised
   completed_date    date completed (blank while open or cancelled)
   work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
-                    MOD settings or firmware change, LOG logistics (shipping and returns)
+                    MOD modification (settings, firmware, device replacement or station rebuild cutover),
+                    LOG logistics (shipping and returns)
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
   asset_id          blank for station-level inspections
   sub_code, region  region at the date raised
   failed_component  recorded by the crew on corrective and logistics work: PSU power supply, CPU processor,
-                    IO input/output card, DISP display, COMMS communications card
+                    IO input/output card, DISP display, COMMS communications card (blank when no fault was found)
   description       crew text
   crew              crew lead's crew
   labour_hours      hours booked, including travel

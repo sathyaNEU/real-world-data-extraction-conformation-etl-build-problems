@@ -13,7 +13,7 @@ Private, never ships. Architecture v1, drawn 2026-10-11; hardening loop 1 (modul
 | Shape | 04, setting one dial (whole lots against a 95 per cent cover bar), with a forecast across periods underneath |
 | Gate G mechanism | forecasting |
 | Gap, pattern | population (which module is in the relay each month) over time (wear-out across the horizon); pattern none |
-| Generators | G9 downstream survival against upstream acquisition, G12 absence of record against record of absence, G13 horizon mismatch |
+| Generators | G6 composition shift (band occupancy moves to new modules as failures are replaced), G13 horizon mismatch, G12 absence of record against record of absence |
 | Stump strategy | population_selection (the module-months each band will hold, given failures replace modules) |
 | Layer 2 family / pattern | field_method / `own:renewal-of-replaced-modules-in-a-spares-forecast` |
 | Decisive rule filed | yes: AM-PC-014 rev 4 files module age from the fitted date (3), rates per module-year (5.3), a monthly expectation of rate over twelve for a module in service (6.1) and expected failures as the band rates applied to the module-months expected in each band (6.2); the purpose (1) and the prompt say failed modules are replaced from the buy |
@@ -22,7 +22,7 @@ Private, never ships. Architecture v1, drawn 2026-10-11; hardening loop 1 (modul
 | Stakeholder | Manager, P&C Asset Planning (capacity_planner); signs off to the Director, Asset Management (line_manager_or_team); forcing event the OEM last-time-buy window (other) |
 | Context artifact | filed_standard (AM-PC-014 rev 4) |
 | Calibration form | none: the method is filed and the difficulty is the construction |
-| World | Ontario, CAD; Ironwood Hydro Distribution (fictional), Veldtek Protection Systems (fictional), VPR-340 (fictional) |
+| World | Ontario, CAD; Tarrock Hydro Distribution (fictional), Veldtek Protection Systems (fictional), VPR-340 (fictional) |
 | People | Rachael Villanueva, Kurt Allison, Angel Baird, George Ray (guard.py names, en_CA, seed 132) |
 
 **Data-native sentence.** A relay's power supply is a field-replaceable module that wears out with its own age, and a module that fails is pulled and replaced with a new one, so the module in a relay two years from now is today's module only if today's module survives two years; for the fleet's oldest modules, a year's wear-out rate carried into every remaining month counts more failures than one relay position can have.
@@ -54,7 +54,7 @@ A competent solver builds AM-PC-014's module-age band rates over the go-live win
 | 3 | Module-age rates over the go-live window, present module aged forward with no replacement | 411.9 | 18 | +38.3% |
 | 4 (answer) | Module-age rates over the go-live window, present module weighted by survival, a 0-9 module after a failure | **297.9** | **13** | 0 |
 
-Side cells (priced): module-months from fitting and no replacement 352.8 (15 lots, the two errors partly cancel and stay two lots high); every PSU work order counted, cancelled and logistics included, 410.2 (18); a staged scheme read by its first stage for every bay 271.6 (12) or its last 324.8 (14); the superseded 2025 plan 260.2 (11); module-age rates with relays aged from installation 697.0 (30); no ageing (current band held) 234.0 (10) without replacement and 188.1 (8) with it; every relay to December 2035 518.0 (22). No rung lands on 13 (asserted).
+Side cells (priced): module-months from fitting and no replacement 352.8 (15 lots, the two errors partly cancel and stay two lots high); every PSU work order counted, cancelled and logistics included, 427.2 (18); a staged scheme read by its first stage for every bay 271.6 (12) or its last 324.8 (14); the superseded 2025 plan 259.5 (11); module-age rates with relays aged from installation 697.0 (30); no ageing (current band held) 234.0 (10) without replacement and 188.1 (8) with it; every relay to December 2035 518.0 (22). No rung lands on 13 (asserted).
 
 **Bin.** With 14 modules available, 13 lots hold for expected failures from 286.4 to 310.3, so the answer sits 4.0 per cent above the lower edge and 4.2 per cent below the upper (asserted at 2.5). 12 lots give 83.2 per cent and 13 give 99.1.
 
@@ -111,7 +111,8 @@ Pair arithmetic: a solver on rung 3 (18 lots) keeps the costs (15) and, if it re
 
 - Loop 1 `leak.py`: REVIEW. The procedure, dictionary and notice carry six to eight of the call's words (VPR340-PSU-02, lots, modules, last-time buy, Veldtek): the vocabulary of the subject, with no figure from the answer. The dictionary's run date 2026-10-01 is the extract job's stamp. Container audit clean (H1).
 - Reader rounds 1 and 2 read architecture 1 (before loop 1): no decisive-step sentence, no ranking file, no planted file; the narrow settings window (13 to 19) was a prompt-level tell and is now 8 to 22; the realism list was taken into the loop-1 rebuild (names, crews, bays, serials, retirements, programme months and scheme numbers, RMA filtering, weekday patterns, labour hours, descriptions, containers).
-- Loop 1 reader: (filled when it returns)
+- Loop 1 reader (round 3): no decisive-step sentence (it took the no-renewal reading, 412 failures and 18 lots, for the answer), no ranking file, no planted file; sixteen realism findings (the EOL PDF's container, planned work on weekends and holidays, corrective-work texture, completion lags, serial-number order, station rebuild cutovers, programme scope, storm wording, the AM-PC-014 container and dating, duplicate bays, RTU wording, workbook containers, RMA working days, feeder reclosing, the EOL repair terms) were fixed in the generator with no graded figure moving (checks 65 and the verifier green, double build byte-identical); two side cells moved (the 2025 plan 260.2 to 259.5, every PSU work order 410.2 to 427.2, neither on 13 lots). `leak.py` now also lists 273 dates after the as-of date: the programme's commissioning months, written as date cells.
+- Loop 1 reader (round 4, after the realism rebuild): (filled when it returns)
 
 ## Tried and rejected
 

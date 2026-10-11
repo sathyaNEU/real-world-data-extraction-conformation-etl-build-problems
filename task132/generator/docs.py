@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import docx
+import numpy as np
 import openpyxl
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
@@ -13,11 +14,22 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from openpyxl.styles import Alignment, Font, PatternFill
 
+import sim as S
 import world as W
 
 
-def _doc(font="Calibri", size=10.5):
+def _doc(font="Calibri", size=10.5, author="", title="", when=None):
     d = docx.Document()
+    cp = d.core_properties
+    cp.author = cp.last_modified_by = author
+    cp.title = title
+    cp.comments = cp.keywords = cp.subject = cp.category = ""
+    if when is not None:
+        cp.created = cp.modified = when
+    cp.revision = 1
+    lang = d.styles.element.find(qn("w:docDefaults")).find(qn("w:rPrDefault")).find(qn("w:rPr")).find(qn("w:lang"))
+    if lang is not None:
+        lang.set(qn("w:val"), "en-CA")
     st = d.styles["Normal"]
     st.font.name = font
     st.font.size = Pt(size)
@@ -62,42 +74,54 @@ def _p(d, text, bold=False, size=None, after=4, italic=False, style=None, align=
     return p
 
 
-def _field(par, instr):
-    r = par.add_run()
-    for kind, text in (("begin", None), (None, instr), ("separate", None), (None, "1"), ("end", None)):
-        if kind:
-            e = OxmlElement("w:fldChar")
-            e.set(qn("w:fldCharType"), kind)
-            r._r.append(e)
-        elif text == "1":
-            t = OxmlElement("w:t")
-            t.text = "1"
-            r._r.append(t)
-        else:
+def _field(par, instr, size):
+    """a simple field the way Word stores it: begin, instruction, separate, cached result and end each in a run"""
+    for kind in ("begin", "instr", "separate", "result", "end"):
+        r = par.add_run()
+        r.font.size = size
+        if kind == "instr":
             e = OxmlElement("w:instrText")
             e.set(qn("xml:space"), "preserve")
-            e.text = " %s " % text
-            r._r.append(e)
-    return r
+            e.text = " %s " % instr
+        elif kind == "result":
+            e = OxmlElement("w:t")
+            e.text = "1"
+        else:
+            e = OxmlElement("w:fldChar")
+            e.set(qn("w:fldCharType"), kind)
+        r._r.append(e)
 
 
 def _footer(d, text):
     f = d.sections[0].footer.paragraphs[0]
     r = f.add_run(text + "    Page ")
     r.font.size = Pt(8)
-    _field(f, "PAGE").font.size = Pt(8)
+    _field(f, "PAGE", Pt(8))
     r2 = f.add_run(" of ")
     r2.font.size = Pt(8)
-    _field(f, "NUMPAGES").font.size = Pt(8)
+    _field(f, "NUMPAGES", Pt(8))
 
 
 def _cell(c, text, bold=False, size=9):
-    c.text = ""
+    for r in list(c.paragraphs[0].runs):
+        r._r.getparent().remove(r._r)
+    c.paragraphs[0].paragraph_format.space_after = Pt(0)
+    if not text:
+        return
     r = c.paragraphs[0].add_run(text)
     if bold:
         r.bold = True
     r.font.size = Pt(size)
-    c.paragraphs[0].paragraph_format.space_after = Pt(0)
+
+
+def _widths(t, cms):
+    """column widths in the table grid and in every cell, as Word keeps them"""
+    t.autofit = False
+    for col, w in zip(t.columns, cms):
+        col.width = Cm(w)
+    for row in t.rows:
+        for c, w in zip(row.cells, cms):
+            c.width = Cm(w)
 
 
 def _pdf(d, out_path, stem):
@@ -111,14 +135,14 @@ def _pdf(d, out_path, stem):
 
 
 def procedure_docx(path):
-    d = _doc()
-    _p(d, "Ironwood Hydro Distribution  |  Asset Management, Protection & Control", size=8.5, italic=True)
+    d = _doc(author="Kurt Allison", title="AM-PC-014 Obsolete protection spares: final-buy sizing")
+    _p(d, "Tarrock Hydro Distribution  |  Asset Management, Protection & Control", size=8.5, italic=True)
     _p(d, "AM-PC-014  Obsolete protection spares: final-buy sizing", style="Heading 1", after=6)
     t = d.add_table(rows=3, cols=4)
     t.style = "Table Grid"
     for r, row in enumerate([("Document", "AM-PC-014", "Revision", "4"),
-                             ("Owner", "P&C Asset Planning", "Issued", "3 November 2025"),
-                             ("Approver", "Director, Asset Management", "Next review", "November 2027")]):
+                             ("Owner", "P&C Asset Planning", "Issued", "14 April 2026"),
+                             ("Approver", "Director, Asset Management", "Next review", "April 2028")]):
         for c, v in enumerate(row):
             _cell(t.rows[r].cells[c], v, bold=c in (0, 2))
     _p(d, "", after=2)
@@ -167,11 +191,38 @@ def procedure_docx(path):
           "all demand over the support period is at least 95 per cent.",
           "8.3 The sizing goes to the Director, Asset Management for signature with the lot count, the cover it gives, the "
           "expected failures by year and the cost."]),
+        ("9. Roles",
+         ["9.1 The Manager, P&C Asset Planning owns this procedure, prepares the sizing when an end-of-life notice is "
+          "received and submits it for signature.",
+          "9.2 The Senior Asset Engineer, P&C runs the EAM extracts the sizing uses and keeps them with the sizing.",
+          "9.3 The Stores Supervisor confirms the stock count, including modules in quarantine and modules at the "
+          "manufacturer under an open RMA.",
+          "9.4 The Director, Asset Management approves the buy and signs the purchase requisition."]),
+        ("10. Records",
+         ["The signed sizing, the end-of-life notice and the EAM extracts are filed in the Asset Management document "
+          "library under the item code, and kept for the life of the relays concerned and seven years after."]),
+        ("11. Related documents",
+         ["AM-PC-009 Protection relay spares holdings",
+          "P&C Standard 3.2 Protection relay maintenance and testing",
+          "Protection Renewal Programme, approved version",
+          "SC-PR-07 Purchasing: last-time buys and single-source items"]),
     ]
     for head, paras in sections:
         _p(d, head, style="Heading 2", after=3)
         for tx in paras:
-            _p(d, tx, after=5)
+            _p(d, tx, after=5 if not head.startswith("11.") else 1)
+    _p(d, "Approval", style="Heading 2", after=3)
+    t = d.add_table(rows=1, cols=4)
+    t.style = "Table Grid"
+    for c, v in enumerate(("", "Name", "Title", "Date")):
+        _cell(t.rows[0].cells[c], v, bold=True)
+    for row in (("Prepared", "Kurt Allison", "Senior Asset Engineer, P&C", "7 April 2026"),
+                ("Reviewed", "Rachael Villanueva", "Manager, P&C Asset Planning", "9 April 2026"),
+                ("Approved", "Angel Baird", "Director, Asset Management", "14 April 2026")):
+        cells = t.add_row().cells
+        for c, v in enumerate(row):
+            _cell(cells[c], v, bold=c == 0)
+    _p(d, "", after=2)
     _p(d, "Revision history", style="Heading 2", after=3)
     t = d.add_table(rows=1, cols=3)
     t.style = "Table Grid"
@@ -180,18 +231,22 @@ def procedure_docx(path):
     for row in (("1", "May 2019", "First issue (VPS-120 display module buy)."),
                 ("2", "Mar 2022", "EAM work orders become the failure source after the January 2021 go-live."),
                 ("3", "Jun 2023", "Poisson cover test replaces the 20 per cent contingency."),
-                ("4", "Nov 2025", "Rates by module age from the EAM rotating-item history; support by bay for staged schemes.")):
+                ("4", "Apr 2026", "Rates by module age from the EAM rotating-item history; support by bay for the staged "
+                                  "schemes of the approved 2026 programme; roles, records and approval added.")):
         cells = t.add_row().cells
         for c, v in enumerate(row):
             _cell(cells[c], v)
+    _widths(d.tables[0], (3.0, 5.0, 3.0, 5.0))
+    _widths(d.tables[1], (2.4, 4.0, 6.0, 3.6))
+    _widths(d.tables[2], (1.2, 2.4, 12.4))
     _footer(d, "AM-PC-014 rev 4    Uncontrolled when printed")
     d.save(path)
 
 
 def eol_pdf(path):
-    d = _doc(font="Arial", size=10)
+    d = _doc(font="Arial", size=10, author="George Ray", title="Product end-of-life notice EOL-2026-07")
     _p(d, "VELDTEK PROTECTION SYSTEMS INC.", bold=True, size=11, after=0)
-    _p(d, "Lifecycle Services  ·  88 Cardinal Gate, Unit 4, Mississauga ON  L5T 2W8", size=8, after=10)
+    _p(d, "Lifecycle Services  \u00b7  88 Cardinal Gate, Unit 4, Mississauga ON  L5T 2W8", size=8, after=10)
     _p(d, "Product end-of-life notice EOL-2026-07", style="Heading 1", after=2)
     _p(d, "20 August 2026", after=10)
     _p(d, "To: customers operating VPR-340 feeder protection relays", after=2)
@@ -202,16 +257,31 @@ def eol_pdf(path):
         "Last-time-buy orders for VPR340-PSU-02 must reach us by 15 December 2026. Modules are sold in lots of 25 at "
         "CAD 1,965.00 per module (CAD 49,125.00 per lot), delivery by 31 March 2027. No orders are accepted after the "
         "final run.",
-        "Repair service for VPR340-PSU-02 ends with this notice. Modules already received at our repair centre under an "
-        "open RMA, and modules received by 15 December 2026, will be repaired or replaced and returned. Repair is not "
-        "available after that date.",
+        "Repair service for VPR340-PSU-02 ends on 15 December 2026. Modules already at our repair centre under an open "
+        "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. Modules "
+        "received after 15 December 2026 will be sent back unrepaired.",
+    ]
+    for tx in body:
+        _p(d, tx, after=6)
+    t = d.add_table(rows=1, cols=2)
+    t.style = "Table Grid"
+    for c, v in enumerate(("Key dates", "")):
+        _cell(t.rows[0].cells[c], v, bold=True, size=9.5)
+    for k, v in (("Notice issued", "20 August 2026"), ("Last day for last-time-buy orders", "15 December 2026"),
+                 ("Last day for RMA receipts at the repair centre", "15 December 2026"),
+                 ("Final shipment of last-time-buy orders", "By 31 March 2027")):
+        cells = t.add_row().cells
+        _cell(cells[0], k, size=9.5)
+        _cell(cells[1], v, size=9.5)
+    _widths(t, (9.0, 5.0))
+    _p(d, "", after=4)
+    for tx in [
         "The processor, input/output and display cards of the VPR-340 remain available until further notice. Customers "
         "planning feeder protection replacement can migrate VPR-340 settings to the VPR-560 platform with our conversion "
         "tool; application notes are on the customer portal.",
         "For quotations and order acknowledgements please contact your Veldtek account manager or open a Lifecycle case on "
         "the customer portal, quoting EOL-2026-07.",
-    ]
-    for tx in body:
+    ]:
         _p(d, tx, after=6)
     _p(d, "", after=4)
     _p(d, "George Ray", after=0)
@@ -226,21 +296,51 @@ SCOPE_ONE = ["Feeder protection replacement %s, new P&C panels", "Replace feeder
 SCOPE_S1 = ["Stage 1: feeder protection %s, new control building", "Stage 1: replace feeder relays %s, station bus",
             "Stage 1: P&C panels %s"]
 SCOPE_S2 = ["Stage 2: feeder protection %s, RTU cutover", "Stage 2: replace feeder relays %s", "Stage 2: P&C panels %s, decommission old building"]
-SCOPE_OTHER = ["Replace VPR-220 feeder protection %s", "RTU replacement and SCADA cutover", "Replace VPR-220 relays %s, new DC system"]
+SCOPE_VPR220 = ["Replace VPR-220 feeder protection %s", "Replace VPR-220 relays %s, new DC system",
+                "VPR-220 feeder relay replacement %s, panel rewiring"]
 
 
-def _schemes(rng, prog, extra, subs):
+def other_schemes(rng, prog, reg):
+    """Schemes at stations without VPR-340: the feeder bays still on VPR-220 relays and RTUs installed before 2009,
+    the oldest equipment first; the stations whose equipment is youngest wait beyond the period"""
+    hosts = set(prog["sub_code"])
+    live = reg[(reg["status"] == "IN SERVICE") & ~reg["sub_code"].isin(hosts)]
+    rows = []
+    for sc, g in live.groupby("sub_code"):
+        v = g[g["model"] == "VPR-220"]
+        rtu = g[(g["model"] == "RT-400") & (g["install_date"] < dt.date(2009, 1, 1))]
+        if not len(v) and not len(rtu):
+            continue
+        rows.append(dict(sub_code=sc, bays=list(v["bay"]), rtu=bool(len(rtu)),
+                         oldest=min(list(v["install_date"]) + list(rtu["install_date"]))))
+    age = np.array([(W.ASOF - r["oldest"]).days / 365.25 for r in rows])
+    order = np.argsort(-(age + rng.normal(0, 4, len(rows))), kind="stable")
+    months = S.months_between(dt.date(2027, 1, 1), dt.date(2036, 1, 1))
+    mw = np.array([S.SEASON[m.month - 1] for m in months])
+    n_in = len(rows) - max(1, len(rows) // 7)
+    picks = np.sort(rng.choice(len(months), n_in, replace=True, p=mw / mw.sum()))
+    for rank, i in enumerate(order):
+        m = months[picks[rank]] if rank < n_in else None
+        rows[i]["plan_2026"] = m
+        if m is not None and rng.random() < 0.2:
+            m = max(dt.date(2027, 1, 1), S.month_add(m, -int(rng.integers(6, 19))))
+        rows[i]["plan_2025"] = m
+    return rows
+
+
+def _schemes(rng, prog, extra):
     """stable scheme numbers: given when a scheme first entered the programme, so they do not follow the dates"""
-    keys = sorted(list(prog["sub_code"][prog["retired_on"].isna()]) + list(extra["sub_code"]))
+    keys = sorted(list(prog["sub_code"][prog["retired_on"].isna()]) + [r["sub_code"] for r in extra])
     perm = rng.permutation(len(keys))
     return {k: "PRP-%03d" % (11 + 2 * int(p) + int(rng.integers(0, 2))) for k, p in zip(keys, perm)}
 
 
-def programme_xlsx(path, rng, prog, extra, subs, nfeed):
+def programme_xlsx(path, rng, prog, subs, reg):
     wb = openpyxl.Workbook()
     names = dict(zip(subs["sub_code"], subs["sub_name"]))
     region = dict(zip(subs["sub_code"], subs["region"]))
-    ids = _schemes(rng, prog, extra, subs)
+    extra = other_schemes(rng, prog, reg)
+    ids = _schemes(rng, prog, extra)
     pick = {k: int(rng.integers(0, 1000)) for k in ids}
 
     def rows_for(version):
@@ -256,12 +356,17 @@ def programme_xlsx(path, rng, prog, extra, subs, nfeed):
                 out.append((r["plan_2026_s2"], ids[sc], 2, sc, b2, SCOPE_S2[k % len(SCOPE_S2)] % b2))
             else:
                 out.append((when, ids[sc] if when is not None else "", "", sc, whole, SCOPE_ONE[k % len(SCOPE_ONE)] % whole))
-        for _, r in extra.iterrows():
-            sc, k = r.sub_code, pick[r.sub_code]
-            scope = SCOPE_OTHER[k % len(SCOPE_OTHER)]
-            bays = "F01-F%02d" % nfeed[sc] if (nfeed.get(sc) and "%s" in scope) else "RTU"
+        for r in extra:
+            sc, k = r["sub_code"], pick[r["sub_code"]]
             when = r["plan_2026"] if version == 2026 else r["plan_2025"]
-            out.append((when, ids[sc], "", sc, bays, scope % bays if "%s" in scope else scope))
+            if r["bays"]:
+                bays = _bay_list(r["bays"])
+                scope = SCOPE_VPR220[k % len(SCOPE_VPR220)] % (bays + (" and RTU" if r["rtu"] else ""))
+                if r["rtu"]:
+                    bays += ", RTU"
+            else:
+                bays, scope = "RTU", "RTU replacement and SCADA cutover"
+            out.append((when, ids[sc] if when is not None else "", "", sc, bays, scope))
         out.sort(key=lambda x: (x[0] or dt.date(2099, 1, 1), x[1] or "PRP-999", str(x[2]), x[3]))
         return out
 
@@ -276,8 +381,12 @@ def programme_xlsx(path, rng, prog, extra, subs, nfeed):
             ws.cell(row=3, column=j).fill = PatternFill("solid", fgColor="E3E9F2")
         for when, sid, stage, sc, bays, scope in rows_for(version):
             ws.append([sid or None, stage or None, sc, names[sc], region[sc], bays, scope,
-                       when.strftime("%b %Y") if when is not None else "Not in programme period"])
-        for j, w in enumerate([10, 7, 15, 20, 10, 11, 58, 22], 1):
+                       dt.datetime(when.year, when.month, 1) if when is not None else "Not in programme period"])
+            c = ws.cell(row=ws.max_row, column=8)
+            if when is not None:
+                c.number_format = "mmm yyyy"
+            c.alignment = Alignment(horizontal="left")
+        for j, w in enumerate([10, 7, 15, 20, 10, 16, 58, 22], 1):
             ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
         ws.freeze_panes = "A4"
         ws.auto_filter.ref = "A3:H%d" % ws.max_row
@@ -288,11 +397,10 @@ def programme_xlsx(path, rng, prog, extra, subs, nfeed):
     ws2 = wb.create_sheet("2025 plan (superseded)")
     sheet(ws2, 2025, "Protection Renewal Programme, 2025 planning version (superseded by the approved 2026 programme)")
     ws3 = wb.create_sheet("Notes")
-    staged = int(prog["stage2_from"].map(lambda x: isinstance(x, str)).sum())
     notes = [
         "Commissioning month is the month the new protection for the listed bays goes into service. The relays in those "
         "bays come out of service in the same month.",
-        "The 2026 revision builds %d schemes in two outage stages. Each stage lists the bays it replaces." % staged,
+        "Large stations are built in two outage stages. Each stage lists the bays it replaces.",
         "Stations rebuilt under the 2022-2025 station renewals are complete and are not listed.",
         "Stations marked 'Not in programme period' keep their existing protection beyond December 2035.",
         "Scheme numbers are assigned when a scheme first enters the programme and do not change between versions.",
@@ -303,8 +411,21 @@ def programme_xlsx(path, rng, prog, extra, subs, nfeed):
     wb.save(path)
 
 
+def _bay_list(bays):
+    """F01, F03-F05 style list of feeder bays"""
+    nums = sorted(int(b[1:]) for b in bays)
+    out, i = [], 0
+    while i < len(nums):
+        j = i
+        while j + 1 < len(nums) and nums[j + 1] == nums[j] + 1:
+            j += 1
+        out.append("F%02d" % nums[i] if i == j else "F%02d-F%02d" % (nums[i], nums[j]))
+        i = j + 1
+    return ", ".join(out)
+
+
 def dictionary_txt(path):
-    txt = """IRONWOOD HYDRO DISTRIBUTION
+    txt = """TARROCK HYDRO DISTRIBUTION
 EAM reporting service - monthly P&C asset and work extract (job PC_ASSET_WO_MONTHLY)
 Run 2026-10-01 06:10, data to close of business 2026-09-30
 
@@ -341,12 +462,13 @@ eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order)
   reported_date     date raised
   completed_date    date completed (blank while open or cancelled)
   work_type         PM periodic test, CM corrective, EM emergency corrective, INSP inspection,
-                    MOD settings or firmware change, LOG logistics (shipping and returns)
+                    MOD modification (settings, firmware, device replacement or station rebuild cutover),
+                    LOG logistics (shipping and returns)
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
   asset_id          blank for station-level inspections
   sub_code, region  region at the date raised
   failed_component  recorded by the crew on corrective and logistics work: PSU power supply, CPU processor,
-                    IO input/output card, DISP display, COMMS communications card
+                    IO input/output card, DISP display, COMMS communications card (blank when no fault was found)
   description       crew text
   crew              crew lead's crew
   labour_hours      hours booked, including travel

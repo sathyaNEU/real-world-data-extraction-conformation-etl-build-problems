@@ -72,7 +72,14 @@ def load(target):
             if rng is None:
                 continue
             v = row[7]
-            when = None if v == "Not in programme period" else dt.datetime.strptime(v, "%b %Y").date()
+            if isinstance(v, dt.datetime):
+                when = dt.date(v.year, v.month, 1)
+            elif isinstance(v, dt.date):
+                when = dt.date(v.year, v.month, 1)
+            elif str(v).strip() == "Not in programme period":
+                when = None
+            else:
+                when = dt.datetime.strptime(str(v).strip(), "%b %Y").date()
             rows.setdefault(row[2], []).append((rng, when))
         plan[sheet] = rows
     return reg, wo, hist, subs, stock, plan
