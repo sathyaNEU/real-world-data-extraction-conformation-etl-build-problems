@@ -281,8 +281,8 @@ def agreement_pdf(path):
         ("(e)", "\"Final Enrolment List\" means the list of members delivered by Northcourt under Section 3.2, "
                 "stratified on claims incurred in calendar year 2026 and paid through the Data Cut-Off Date. \"Enrolled "
                 "Members\" means the members on the Final Enrolment List. \"Risk Tier\" means one of the four tiers into "
-                "which Northcourt's acuity model places members by score, as described in Schedule A, and a member's Risk "
-                "Tier is the tier assigned to the member on the Final Enrolment List."),
+                "which Northcourt's acuity model places a member by score when it draws a list, as described in Schedule "
+                "A."),
         ("(f)", "\"Programme\" means the Services described in Schedule A, and \"Programme Year\" means the twelve "
                 "months from 1 April 2027 to 31 March 2028."),
         ("(g)", "\"Trend Factor\" means the annual medical and pharmacy trend rates adopted in the District's most "

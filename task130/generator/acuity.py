@@ -1,7 +1,13 @@
 """Northcourt's acuity model as the vendor runs it: a 0 to 100 score on one calendar year of claims as paid by the
 data cut-off, from the year's allowed claims, the chronic conditions seen, specialty drug use, admissions and
 emergency visits. The 140 highest-scoring members enrolled on the stratification date make the list; fixed
-score floors set the four risk tiers. The score is a ranking device, not a cost."""
+score floors set the four risk tiers. The score is a ranking device, not a cost.
+
+Enrolment is read from the eligibility file the run is made on, the administrator's monthly file of the first of the
+month, which carries coverage through the day before (the census in the bid's data book came from Bramwell's file of
+31 December 2024 the same way). A member is enrolled on the stratification date when a span in that file covers it,
+an open span included; coverage that starts on the stratification date itself (a rehire's, for one) is not in the
+file yet, so the model neither scores nor lists that member."""
 import bisect
 import datetime as dt
 import math
@@ -91,9 +97,15 @@ def tier_of(s):
     return 4
 
 
+def enrolled_on(p, d, known):
+    """covered on d by a span the eligibility file of `known` carries: a span that had started by then"""
+    return any(s <= known and s <= d and (e is None or d <= e) for s, e in p.spans())
+
+
 def stratify(sim, year, cutoff, elig_date, key):
     """key: 'legacy' for the bid (data book numbers) or 'member' for 2027. Returns [(rank, pid, ident, score, tier)]"""
-    people = [p for p in sim.people if p.covered_on(elig_date)]
+    known = elig_date - dt.timedelta(days=1)
+    people = [p for p in sim.people if enrolled_on(p, elig_date, known)]
     if key == "legacy":
         # the data book's census came from Bramwell's last eligibility file, so a member first covered on
         # 1 January 2025 has no Bramwell number and is not in it

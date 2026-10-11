@@ -7,7 +7,7 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 Stump terms swept: rejected, record, decisive, register, repair, holders, returns, household, forward, domain, benefits, months, strong, computation, ledger, tenter, households, device, objective, method, chosen, vendor, analyst, client, sentence
 
 ## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `care_management_services_agreement_schedule_c.pdf`: carries 21 of 24 distinctive words of the committed call: 'Certify a programme baseline of $4,083 per member per month for the 140 enrolled members ($1,453 medical, $2,630 pharmac'
+- **REVIEW** `care_management_services_agreement_schedule_c.pdf`: carries 21 of 24 distinctive words of the committed call: 'Certify a programme baseline of $4,060 per member per month for the 140 enrolled members ($1,438 medical, $2,622 pharmac'
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `northcourt_implementation_plan_2027-28.pdf`: 3 of 25 stump-paragraph terms appear (record, register, client); read whether the document names the move

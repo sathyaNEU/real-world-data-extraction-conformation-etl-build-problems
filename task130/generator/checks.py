@@ -105,6 +105,24 @@ def main():
     check(G["zero26"] == 0, "every enrolled member has 2026 member months")
     rep("lists: final tiers %s, bid tiers %s, draft tiers %s, %d members differ between draft and final" % (
         [n[t] for t in T], [G["bid_tiers"][t] for t in T], [G["draft_n"][t] for t in T], drift))
+    # every member on each list is enrolled on that list's date: in the shipped eligibility file (an open span at the
+    # extract's cut covers 1 March 2027) and in the file the run was made on, which carries coverage through the day
+    # before the list's date
+    for k, day in (("bid", W.BID_ELIG), ("draft", W.DRAFT_ELIG), ("final", W.FINAL_ELIG)):
+        for t in T:
+            for m in G["members"][k][t]:
+                check(any(s <= day <= e for s, e in F.spans[m]), "%s list: %s enrolled on %s in the eligibility file" % (k, m, day))
+        check(all(AC.enrolled_on(S.people[r[1]], day, day - dt.timedelta(days=1)) for r in L[k]),
+              "%s list: every member enrolled on %s in the file the run was made on" % (k, day))
+    late = [p for p in S.people if p.member_id and p.covered_on(W.FINAL_ELIG)
+            and not AC.enrolled_on(p, W.FINAL_ELIG, W.PAID_THROUGH)]
+    check(not set(p.pid for p in late) & set(r[1] for r in L["final"]), "no member the eligibility file does not carry is listed")
+    linp = AC.inputs(S, 2026, W.PAID_THROUGH, [p.pid for p in late])
+    last = L["final"][-1]
+    floor = AC.score(L["final_inp"][last[1]], AC.member_noise(last[2], 2026), 2026)
+    above = [p.member_id for p in late if AC.score(linp[p.pid], AC.member_noise(p.member_id, 2026), 2026) > floor]
+    rep("lists: every member on each list is enrolled on its date in the eligibility file; %d members covered from 1 March "
+        "2027 on spans the file does not carry yet are not scored, %s of them above the 140th score" % (len(late), above))
 
     # ------------------------------------------------------------ file conventions (Layer 1 resolved one way)
     md = F.med
@@ -442,6 +460,22 @@ def main():
     rep("fork 5, run-out: claims paid by 30 June 2026 move medical by %s and pharmacy by nothing; tiers whose whole-dollar "
         "medical moves %s; ruled out by Schedule C.1(h)" % (
             ["%+.2f" % (FK["R8"][t][0] - base[t][0]) for t in T], moved))
+    # 6. the comparator tier of a member on both lists: a Risk Tier is the tier a list places a member in when it is
+    # drawn, so the bid members' year is read in the bid list's tiers, the members also on the final list included
+    check("places a member by score when it draws a list" in ag and "tier assigned to the member" not in ag,
+          "Schedule C.1(e): a Risk Tier is the tier the model places a member in when it draws a list")
+    OV, mx = G["overlap"], FK["R10"]
+    check(len(OV["both"]) >= 10 and len(OV["retiered"]) >= 5 and OV["touched"] == list(T),
+          "members on both lists, re-tiered on the final list, in every tier (%d, %d)" % (len(OV["both"]), len(OV["retiered"])))
+    mxp = [sum(n[t] * mx[t][k] for t in T) / 140 for k in (0, 1)]
+    check(round(mxp[0]) != round(m_) and round(mxp[1]) != round(r_) and round(fk["R10"]) != round(g),
+          "final-list tiers for the members on both lists land on no programme figure")
+    check(all(round(mx[t][k]) != round(base[t][k]) for t in OV["touched"] for k in (0, 1)),
+          "final-list tiers for the members on both lists miss every tier cell")
+    rep("fork 6, comparator tier: %d bid members are on the final list, %d of them in another tier there; placing them by "
+        "the final list's tier gives $%.2f (%+.1f%%), medical $%.2f, pharmacy $%.2f, every tier cell missed; ruled out by "
+        "Schedule C.1(e) (a Risk Tier is the tier the model places a member in when it draws a list) and C.1(h)" % (
+            len(OV["both"]), len(OV["retiered"]), fk["R10"], 100 * (fk["R10"] / g - 1), mxp[0], mxp[1]))
 
     # ------------------------------------------------------------ realism the second reader asked for
     ipc = raw[raw.bill_type.str.startswith("11")]

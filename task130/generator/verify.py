@@ -108,6 +108,13 @@ def vendor_list(name, key):
 bid = vendor_list("northcourt_rfp_2025-07_stratification_2024_claims.xlsx", "Bramwell member no.")
 fin = vendor_list("northcourt_stratification_2026_claims_final.xlsx", "Member ID")
 bid = {t: [prior[x] for x in xs] for t, xs in bid.items()}
+draft = vendor_list("northcourt_stratification_2026_claims_draft.xlsx", "Member ID")
+# every member on each list is enrolled on the date its cover gives (an open span covers 1 March 2027)
+for name, lst, day in (("RFP 2025-07 list", bid, dt.date(2025, 1, 1)), ("draft list", draft, dt.date(2027, 1, 1)),
+                       ("final list", fin, dt.date(2027, 3, 1))):
+    for xs in lst.values():
+        for m in xs:
+            assert any(s <= day <= e for s, e in cover[m]), ("member not enrolled on the list's date", name, m, day)
 
 
 def pmpm(members, a, b):

@@ -224,6 +224,19 @@ def figures(d):
     ro = tier_pmpm(F, bidg, W.ANALOG_START, W.ANALOG_END, by_paid=dt.date(2026, 6, 30))
     FK["R8"] = {t: (ro[t][0] * fm, ro[t][1] * fr) for t in T}
     fk["R8"] = prog_of(FK["R8"])
+    # the bid members who are also on the final list placed in the tier the final list gives them, the rest in their
+    # bid tier
+    ftier = {m: t for t in T for m in fing[t]}
+    mixed = defaultdict(list)
+    for t in T:
+        for m in bidg[t]:
+            mixed[ftier.get(m, t)].append(m)
+    mx = tier_pmpm(F, mixed, W.ANALOG_START, W.ANALOG_END)
+    FK["R10"] = {t: (mx[t][0] * fm, mx[t][1] * fr) for t in T}
+    fk["R10"] = prog_of(FK["R10"])
+    G["overlap"] = {"both": [m for t in T for m in bidg[t] if m in ftier],
+                    "retiered": [m for t in T for m in bidg[t] if m in ftier and ftier[m] != t],
+                    "touched": [t for t in T if sorted(mixed[t]) != sorted(bidg[t])]}
     G["fork_tiers"], G["forks"] = FK, fk
     # the enrolled members' own 2025, the year before they were chosen, carried 27 months
     f25 = tier_pmpm(F, fing, dt.date(2025, 1, 1), dt.date(2025, 12, 31))
