@@ -40,3 +40,13 @@ Stump terms swept: nowcast, expected, decisive, health, window, recent, excess, 
 ## 8 column names (clean)
 
 ## 11 prompt form (clean)
+## Solver's-eye read (pass 1, isolated reader, architecture 2, 2026-10-11)
+
+1. "The team goes to the area with the largest excess of cases with specimens collected in the 14 days before the extract day over its expected count." (PR-07 4.2). The reader: the organisation's own rule, which the prompt sends you to; no file says which data step (case episodes, split postcodes, the extract day) tips the result.
+2. none. The only per-area table (cd_weekly_report_2026_wk35.pdf) counts notifications received to 30 August and year-to-date rates, in the protocol's fixed order, five weeks before the window, with no expected count or excess.
+3. none. Every file is something a public health unit holds anyway.
+4. none. Every area name and figure sits in ordinary context; nothing states or scores the 5 October excess; the one tell found is the roster sheet order (REVIEW).
+
+Plan (reader's own, abridged): pin the extract day (5 October local, window specimens 21 September to 4 October); collapse notifications to cases under 3.3 and 3.5; assign areas by postcode with split postcodes to the larger ratio; observed cases in the window; expected = mean of the same 14 dates in 2021 to 2025; excess; sensitivity checks (UTC extract day, notifications instead of cases, baseline without 2021). "Also note that Inland Pathology (178 of Griffith's 202 notifications) reports about 12 days after collection, against about 2 days for the hospital lab, so Griffith's last fortnight is incomplete. Report that, but PR-07 has no lag adjustment." Its result on the extract: Wagga Wagga 7.6, Griffith and Snowy Valleys 5.6, so Wagga Wagga. "No PR-07 reading I tried puts Griffith first; only a reporting-lag nowcast does."
+
+REVIEW lines (reader's verdicts): the bulletin's 100 (rate label per 100,000): harmless; PR-07 carrying 4 of 5 call words (Griffith only in the 1.2 list): harmless; PR-07, bulletin, run report and notes vocabulary: harmless (their own subject matter; nothing about what to compute); PR-07, bulletin, line list and concordance naming areas beside numbers: harmless (fixed order, no scores on the decision question); school_rosters_term3_2026.xlsx: LEAK for ask B (the first five sheets were exactly the five schools that qualify on 5 October, the last four the near-misses; not by date received); the parquet's 1,177 future dates (estimated due dates of pregnancies in progress): harmless.

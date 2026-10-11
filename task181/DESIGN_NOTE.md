@@ -238,6 +238,14 @@ quarterly report. Line-list notes: field semantics, the school fields added to t
 linked files. No shipped sentence mentions the time a notification takes, completeness, backfill or nowcasting
 (asserted over every text-bearing file and the prompt, with the banned list in `checks.py`).
 
+**Why 4.2 reads as the eventual count, the main Gate C risk.** 4.1 names the 07:00 extract as the day's data and 4.2
+names the quantity: cases with specimens collected in the 14 days before the extract day, the same quantity 4.3 counts
+on the same 14 dates in five complete years. A case exists from its positive specimen (2.1, 3.5), not from its
+notification, and the expected count is built on years in which every case has long since been notified, so setting
+the cases notified so far against it is not like for like. The literal reading (count what the extract holds) is rung
+1; the leak reader's pass 1 planned it in those words ("PR-07 has no lag adjustment") while noting Griffith's slow
+route, so the judge is pointed at this sentence.
+
 ## PACK GATES (shipped)
 
 | File | Format | Rows | Role |
@@ -296,6 +304,17 @@ builds byte-identical over `target/`, `golden/` and `metadata.json` (sha256).
   decision question. Harmless.
 - Dates after the setting in `antenatal_vaccinations_2019-2026.parquet`: `estimated_due_date` of pregnancies still in
   progress (allow-listed, H16; no dose or birth date is after the extract). Harmless.
+
+**Solver's-eye read, pass 1 (isolated reader, 2026-10-11).** Question 1 quoted PR-07 4.2, the rule the prompt sends the
+reader to ("no file says which data step tips the result"); questions 2 to 4 none. Its plan counted the extract's cases
+against 4.3 and filed Wagga Wagga (7.6 against Griffith and Snowy Valleys 5.6), noting that Inland Pathology "reports
+about 12 days after collection ... so Griffith's last fortnight is incomplete. Report that, but PR-07 has no lag
+adjustment": rung 1, found from the data, with no sentence in the pack naming the move. One leak: the rosters
+workbook's sheets ran the five schools that are clusters on 5 October first and the four near-misses last, an order no
+one could have known when the file was saved on 1 October (ask B). Fixed in the generator: the sheets now run in the
+order the rosters were received, and Twynam Street's roster, dated before its only case was notified, is now received
+on 29 September. Rebuilt: checks 423, verifier OK, byte-identical, leak.py REVIEW (the same twelve lines). Pass 2 on the
+rebuilt pack is the confirming read.
 
 ## SURFACE (guard.py surface task181)
 

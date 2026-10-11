@@ -444,7 +444,7 @@ SHEET = {"banna": "Banna Avenue PS", "kooyoo": "Kooyoo Street PS", "wollundry": 
          "bolton": "Bolton Park HS", "blowering": "Blowering Road PS", "canal": "Canal Road PS",
          "hurley": "Hurley Street PS", "twynam": "Twynam Street PS", "fernleigh": "Fernleigh Road PS"}
 RECEIVED = {"banna": "2026-09-30", "kooyoo": "2026-10-01", "wollundry": "2026-09-17", "bolton": "2026-09-23",
-            "blowering": "2026-09-25", "canal": "2026-09-16", "hurley": "2026-09-08", "twynam": "2026-09-25",
+            "blowering": "2026-09-25", "canal": "2026-09-16", "hurley": "2026-09-08", "twynam": "2026-09-29",
             "fernleigh": "2026-09-14"}
 
 
@@ -458,7 +458,9 @@ def write_rosters(path, world):
         if c.get("school") in SHEET and c.get("role") == "Student":
             students[c["school"]].append(c)
         taken.add((c["dob"], c["sex"], c["postcode"]))
-    for key, sheet in SHEET.items():
+    # sheets in the order the rosters came in (the workbook was built up over the term)
+    for key in sorted(SHEET, key=lambda k: (RECEIVED[k], SHEET[k])):
+        sheet = SHEET[key]
         _, name, sector, addr, town, lga, enrol = W.SCHOOL[key]
         ws = wb.create_sheet(sheet)
         ws["A1"] = name

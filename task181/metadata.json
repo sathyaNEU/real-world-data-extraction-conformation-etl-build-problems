@@ -131,7 +131,7 @@
     {
       "path": "school_rosters_term3_2026.xlsx",
       "format": "xlsx",
-      "bytes": 105918,
+      "bytes": 105853,
       "rows": null,
       "source": "Constructed: School enrolment rosters received during follow-up in term 3 2026, one sheet per school, names removed",
       "date": "2026-10-05",
