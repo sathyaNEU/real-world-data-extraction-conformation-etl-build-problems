@@ -2,8 +2,8 @@
  "task": "task181",
  "domain": "epidemiology-public-health",
  "objective": "anomaly-detection",
- "stage": 7,
- "stage_name": "solver round 2 passed; ask layer tied to the call next, then the leak re-read and a confirming round",
+ "stage": 8,
+ "stage_name": "judge pass 2 DETERMINISTIC, APPROVE (pass 1 did not run); ship waits on the author's decision on the stage-5 guard BLOCK against task134",
  "updated": "2026-10-11",
  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification delay, its fortnight is several times what has arrived.",
  "architecture": 2,
@@ -57,9 +57,27 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass2.md",
+  "passes": [
+   {
+    "pass": 1,
+    "verdict": "none",
+    "disposition": "none",
+    "report": "determinism_check_report.md",
+    "note": "did not run: the orchestrator subagent had no Agent tool to spawn the judge thread"
+   },
+   {
+    "pass": 2,
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md",
+    "gate_g": "mechanism forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "note": "every load-bearing figure reproduced; Griffith first in all 33 nowcast variants; no competing answer survived; minor workbook hygiene note only"
+   }
+  ]
  },
  "approved": null,
  "delivered": null,
