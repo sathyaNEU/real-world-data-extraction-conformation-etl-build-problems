@@ -46,8 +46,21 @@ ship, and it loops.** One isolated solver works every finished build cold, in a 
 the prompt and the bundle. A round where it commits to the main call sends the build back to design
 with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three loops per
 architecture, then re-rooted in the same objective and number, three architectures, then retired. A
-round where it does not commit to the main call passes the worth-it gate, and the build goes straight
-on to the determinism judge, whose FIX_NOW is fixed and re-judged once. No session runs a solve in the main thread, which has read the design.
+round where it does not commit to the main call passes the worth-it gate, gets one repair of whatever
+the leak reader deferred, and goes on to the determinism judge, whose FIX_NOW is fixed and re-judged
+once. No session runs a solve in the main thread, which has read the design.
+
+**Solver first, polish after.** The leak reader runs once per build, on Sonnet, before the round. Only
+what hands the solver the answer (a sentence naming the decisive step, a file that ranks the
+candidates or states the asked figures, a file that exists only to help) and any fork on the main call
+are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
+for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
+pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
+An author keeps at most two builds in flight, a re-rooted architecture included. Every repair after a
+round (a hardening rebuild, the deferred findings, a judge's FIX_NOW) runs in a fresh agent that starts
+from the committed state: the round's log in `solver_rounds/`, `pipeline.json` and the design note,
+named in a short brief. A finished agent is never resumed, so no repair pays for the transcript behind
+it (`build-pipeline`, Running the stages).
 
 ## Per-author rules
 
@@ -70,14 +83,17 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
    ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
               ->  fingerprint surface
-   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated solver's-eye pass)
-              (a finding is fixed in the generator and the build re-run)
+   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated pass, on Sonnet)
+              (leak-level findings and main-call forks fixed in the generator now; realism tells and
+              ask-level forks deferred to after the round)
    ->  DUPLICATE CHECK: guard.py heart (mechanical)  ->  /clone-check pre-flight on this build
               (a reject-tier finding: redraw the colliding axis once, or retire)
    ->  SOLVER ROUND: /solve, one isolated solver in a sandbox, graded at the rubric's weights
               worth-it gate: the solver does not commit to the main call (the proxy is recorded, not gated)
-              landed: back to the ladder with the brief (harden, rebuild, leak check, solve again);
-              3 loops per architecture, then re-root; 3 architectures, then retire
+              landed: back to the ladder with the brief and the deferred findings (harden, rebuild,
+              leak check, solve again); 3 loops per architecture, then re-root; 3 architectures, then retire
+              missed: one repair of the deferred findings (a new read only if a document or the prompt
+              changed, a new round only if the prompt, a rung or the decisive path changed)
    ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once
               (a fresh solver round first if the fix moved a figure, a rung or a document);
               SEND_BACK re-roots or retires
@@ -302,7 +318,9 @@ and separately determinate. One deterministic recommendation anchors everything.
 **The prompt is prose, first person, the way you would write to a colleague.** No bracketed blocks,
 no `file.ext (Family)` headers, no bulleted asks. What costs you is a **roll call** of colleagues'
 opinions, which is a design defect rather than a style one, because each named opinion hands the
-solver a rung to refute.
+solver a rung to refute. **It stays under 1,000 characters**: one committed call and two or three
+asks, each multi-dimensional and hard, never a list of small ones, so it cannot read as a laundry
+list (`guide-to-prompt`, and `voice-check.py` flags a draft at 1,000 or more).
 
 **The rubric is generated and must reach 25 or more criteria.** A one-to-three file prompt is a small
 surface, so the criteria come from the **prompt shape**, the structure of the answer: a ranked list
