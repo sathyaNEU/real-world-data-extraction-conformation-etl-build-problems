@@ -36,3 +36,11 @@ Stump terms swept: window, exposure, decisive, replacement, landed, forecasting,
 ## 8 column names (clean)
 
 ## 11 prompt form (clean)
+
+## Solver's-eye read (round 4, after the loop 1 realism rebuild)
+
+- Question 1: no sentence names the decisive step. The reader quoted the procedure's filed rules (section 3 module age, 4.1 support by bay, 5.1 the failure definition, 7 the stock count) and the Rev 4 change log as pointers to the lower rungs; it listed the renewal of a failed module among readings that could split solvers, not as a named step.
+- Question 2: none.
+- Question 3: none is pure scaffolding; the dictionary's general block and the programme's Notes sheet read closest to analyst help and are being rewritten as working text.
+- Question 4: nothing reads as the answer; the compliance workbook's VPR-340 regional test counts (157, 120, 128) are a distractor, not the regional split.
+- REVIEW lines from the mechanical sweep: the call's vocabulary in the procedure, dictionary and notice, and the programme's commissioning months as dates after the as-of date; all harmless.
