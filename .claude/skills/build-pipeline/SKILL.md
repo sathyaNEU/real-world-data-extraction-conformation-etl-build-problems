@@ -19,9 +19,10 @@ description: "The stage machine that takes a domain and an objective to a shippe
 | 1 | draw | `guide-to-prompt` (pairing, shape), `stumping` Part 6.1, `fingerprint` (`new`, `check`, `register`), exemplars | card registered at PASS or answered WARN, with `stump_strategy`, `decisive_rule_filed`, `official_decoy` and `validated_decoy` filled, the three rules answered (`stump_class` analytical, `analyst_test` and `domain_test` written, `stumping` Part 1), and the two layers named (`client_domain` where the domain is a house one, `layer2_family`, `layer2_pattern` from `stumping/references/client/layer2-rigor-patterns.md` or `own:`, `layer1` from `dataset-generation/references/layer1-messiness.md`); **the stump sentence and the data-native sentence written** (`stumping` Part 2); the two nearest exemplars read as idea seeds, never as architectures |
 | 2 | design | `stumping` (the ladder, 5 to 6 rungs), `determinism-check` (the 22-axis closure table), `supplemental-stumping` (the ask sheet), `guide-to-prompt` (the prompt), `voice-check.py` | design note carries DRAW, Gate G line, stump sentence, ladder with gaps, closure table, ask sheet with pair arithmetic; prompt passes voice-check; on a hardening loop, the brief from the last solver round is answered in the ladder and the design note says how |
 | 3 | build | `dataset-generation`, `determinism-check` (assertions), `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `fingerprint` (`surface`) | generator green, verifier green, two builds byte-identical, input gates, metadata clean, goldens through `golden-realism`, the `reduce-house-fixes` register passed, surface screen clean |
-| 4 | leak check | `leak-check` (`leak.py`, then the `/leak-check` reader pass) | `leak.py` not LEAK on the final cut with every REVIEW line answered in the design note; the solver's-eye reader quotes no sentence for its question 1 and names no file that ranks the candidates (question 2) or exists only to help the analyst (question 3). A finding is fixed in the generator and stage 3 is re-run. `leak.py` runs after every rebuild; the reader runs again whenever a document under `target/` or the prompt changed since its last read |
+| 4 | leak check | `leak-check` (`leak.py`, then one `/leak-check` reader pass on Sonnet) | `leak.py` not LEAK on the final cut with every REVIEW line answered in the design note; the reader quotes no sentence for its question 1 and names no file that ranks the candidates or states the asked figures (question 2) or exists only to help the analyst (question 3), and any fork it sizes on the main call is closed. Those findings are fixed in the generator before the solver round (stage 3 re-run). The reader's realism tells and the forks it sizes on ask figures are written into the design note and **deferred**: repaired once at stage 6b when the round passes, or folded into the hardening brief when the solver lands. `leak.py` runs after every rebuild; the reader runs again only when a fix changed a document under `target/` or the prompt, never after a data-only repair |
 | 5 | duplicate check | `fingerprint` (`heart`), `clone-check` (the `clone-auditor` agent, pre-flight mode on this build) | `guard.py heart` not BLOCK, and the adjudicated pre-flight returns no Exact, Same seed, Dataset or Template finding (`clone-check` Part 3); a Shape echo or Idiom finding is reported to the author, not looped on; a reject-tier finding sends the build back to stage 1 once with the colliding axis redrawn, or retires it. On a hardening loop the heart check re-runs and the adjudicated pre-flight re-runs only when the driver changed |
 | 6 | solver round | `solver-round` (`/solve taskNN`: one isolated solver in a sandbox) | **the worth-it gate** (below): the solver does not commit to the main call. Pass: stage 7. Landed: the hardening loop, back to stage 2 with the round's brief |
+| 6b | post-round repair | `dataset-generation`, `determinism-check`, `golden-realism`, `reduce-house-fixes` | after a passing round, one repair of the reader's deferred findings (realism tells, forks on ask figures), each fork asserted closed in the checks; `leak.py` re-run; the reader re-runs only if the repair changed a document under `target/` or the prompt; a fresh round only if the repair changed the prompt, a rung or the decisive path. A data-only repair that keeps the method and the ladder goes straight to stage 7 |
 | 7 | determinism check | `determinism-check` (the `determinism-judge` agent) | DETERMINISTIC with APPROVE: stage 8; FIX_NOW: fix in the generator or the filed documents, rebuild with the stage 3 and 4 gates, re-run stage 6 when the fix moved a graded figure, a rung or a document the solver read, then re-run the judge once; SEND_BACK: re-root or retire (below) |
 | 8 | ship | `fingerprint` (card fields), `reduce-house-fixes` (H4, H7) | the client's pre-ship check (the three rules and the two layers) answered in the design note (`stumping/references/client/two-layer-task-design.md`), `target.zip` cut from the final rebuild, card updated, `pipeline.json` delivered, Status `shipped` in the root `START_HERE.md`; the author has the bundle, the stump sentence, the leak line, the duplicate-check line, the solver line and the judge line |
 | 9 | portal | the author | the result reported; only then the ledger row, lessons, memory |
@@ -41,7 +42,9 @@ judge finds comes back as FIX_NOW and is closed with a pin.
 
 **A round where the solver lands the main call sends the build back to stage 2 with a brief** in one
 sentence: the path step that landed it, and the next rung built so that exact step completes and still
-returns the wrong answer.
+returns the wrong answer. The brief also carries the leak reader's deferred findings (stage 4), so the
+hardening rebuild repairs them in the same pass and no repair is spent on a pack that is about to be cut
+again.
 
 Each attempt goes into the design note's `## Tried and rejected` with the solver's own path sentence,
 then the build runs stages 2, 3, 4 and 5 again and a fresh round (`k + 1`) in a fresh sandbox.
@@ -59,7 +62,16 @@ old card. A task number gets three architectures; when the third is spent the nu
 ## Running the stages
 
 **Not optional.** The leak reader (stage 4), the solver round (stage 6) and the judge (stage 7) run
-on every build, and a build reaches stage 7 only through a passing round. The solver and the leak
+on every build, and a build reaches stage 7 only through a passing round.
+
+**Solver first, polish after.** The round runs as soon as the pack is free of leaks: the reader's
+question 1 to 3 findings and any fork on the main call are fixed before the solver sees the pack, and
+everything else the reader raises (realism tells, forks on ask figures) waits for a round the solver
+misses (stage 6b). A build the solver cracks is rebuilt by the hardening loop anyway, so repairing it
+first spends a repair and a second read on a pack that is about to change. The leak reader runs on
+Sonnet (`model: sonnet` on its `Agent` call): it reads the pack and answers four questions, it does not
+solve, so it needs no stronger model. One read per build, and a second only when a fix changed a
+document under `target/` or the prompt. The solver and the leak
 reader are always isolated threads on fresh scratch copies; no solve or read happens in the main
 thread, which has seen the design.
 
@@ -123,10 +135,11 @@ card so no spent architecture is drawn again.
 
 ## Throughput
 
-Each build runs as its own background run, so several tasks move at once at different stages. A
-wave's draws are drafted in parallel and registered in task-number order, because the guard's bans
-reach the last three builds and registration has to be serial; the next wave's draws can run while
-the current wave builds. Nothing waits on the author, so the pace is set by the build itself.
+**Two builds in flight per author.** An author's builds between intake and ship number at most two at
+a time, and an architecture re-rooted after a portal result counts as one of the two; the next number
+is drawn when one ships or retires. Each of the two runs as its own background run at its own stage.
+Draws are registered in task-number order, because the guard's bans reach the last three builds and
+registration has to be serial. Nothing waits on the author, so the pace is set by the build itself.
 
 ## Standing rules the pipeline enforces
 

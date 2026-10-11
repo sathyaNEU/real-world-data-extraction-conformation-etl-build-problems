@@ -1,0 +1,84 @@
+{
+  "task": "task135",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed FC06 (grain rail reserve for lock closures, per-terminal storage) not used: its decisive step, per-site floors summed because surpluses cannot transfer, repeats task16's driver, and its gap, pattern and decision type are spent in 14 builds (guard same_puzzle); redrawn inside Forecasting with no time-to-event estimator, after three time-to-event builds in the lane",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "other",
+  "niche": "a mutual irrigation reservoir company sizing the sediment forebay of a new off-channel reservoir, filled by decreed diversions from two creeks, for five years of trapped suspended sediment between cleanouts, in its design submittal to the state dam safety engineer",
+  "objective": "forecasting",
+  "shape": "14",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "task135/submission.md, 1. Final Recommendation",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G1"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "superintendent of a shareholder-owned irrigation reservoir company, who files the new reservoir's design basis with the state dam safety engineer",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "elk_draw_creek_daily_discharge_1950-10_2026-09.csv",
+    "rows": 0,
+    "entity": "one day's mean discharge at a creek gauge above a diversion headgate",
+    "grain": "gauge day",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States, Colorado",
+    "currency": "USD",
+    "org_type": "a shareholder-owned mutual irrigation reservoir company building an off-channel storage reservoir filled by decreed diversions from two plains creeks",
+    "invented_names": [],
+    "people": [
+      "Kathryn Jacobs",
+      "Jerry Ingram",
+      "Andrew Jimenez",
+      "Debra Roy"
+    ]
+  },
+  "deliverables": [
+    "forebay_sediment_build.xlsx",
+    "forebay_design_basis_memo.pdf"
+  ],
+  "opening_move": "stakes-first",
+  "driver": "The decisive quantity is the mean of a quantity predicted by a regression fitted on the log scale, multiplied by a second daily quantity and summed over a long record of the predictor: exponentiating the fitted log value returns the conditional median, which understates the mean by a factor that grows with the residual spread, so the committed total needs the retransformation correction, and the correction differs by segment because each segment's residual spread differs.",
+  "driver_concrete": "Each creek's suspended-sediment rating curve, log concentration on log daily creek discharge from fifteen years of samples, is applied to every day of a seventy-six-year daily record, and each day's concentration times the flow the company's decree lets it divert gives the sediment entering the new reservoir's forebay; exponentiating the fitted line gives the median concentration, about a third low on the flashy plains creek and about a tenth low on the foothills creek, so the forebay sized for five years of trapped sediment needs the smearing (or lognormal) correction; the samples' own mean overstates because storm days were sampled on purpose, and the curve applied to the diverted flow or to mean flows understates.",
+  "stump": "A competent solver fits each creek's rating curve in logs, applies it to every day's creek flow, multiplies by the day's decreed diversion, sums, and sizes the forebay roughly a quarter too small; the step that lands it there is reading the back-transformed line as the expected concentration, when it is the median and the sediment the forebay traps is a mean.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the samples, pairs them with the day's mean discharge, applies the decree to the full daily record and reads the design guidance correctly still fits the rating curve in logs, exponentiates the predictions and sums them, and sizes the forebay too small; recognising that the back-transformed regression is a median and correcting it to the mean is the analysis.",
+  "domain_test": "The deciding quantity is the long-term mean suspended-sediment load diverted into a reservoir, built the hydrologist's way from sediment rating curves, daily discharge records, a diversion decree, a trap efficiency and a deposit density; with another field's nouns the rating curve, the flow record, the storm sampling and the decree have nothing to attach to.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "stump_strategy other: retransformation bias, the back-transformed log-scale prediction is the conditional median and the planning figure is a mean (no strategy key fits; not censoring, not a constraint). subdomain other: suspended-sediment load estimation for reservoir sedimentation, hydrology that the domain's list (flood frequency) does not name.",
+  "client_domain": "physical-environmental-sciences",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:retransformation-bias-in-a-sediment-rating-curve",
+  "layer1": [
+    "USGS-style daily discharge with qualification codes (estimated, ice-affected, provisional) over forty water years",
+    "discrete suspended-sediment samples with sample-method and remark codes, some replicate and some quality-control blanks, paired by date to daily mean discharge",
+    "a feeder canal's daily diversion record from the water commissioner's system, with winter zeros and administrative call-day codes",
+    "the company's own pumped canal samples beside the gauge's depth-integrated creek samples",
+    "a 2024 bathymetric survey's capacity table in acre-feet with dry bulk density from cores in pounds per cubic foot",
+    "tons per day from cfs and mg/L, acre-feet and cubic yards, water years against calendar years"
+  ]
+}

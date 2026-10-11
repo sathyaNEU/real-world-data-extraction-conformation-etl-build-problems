@@ -46,8 +46,17 @@ ship, and it loops.** One isolated solver works every finished build cold, in a 
 the prompt and the bundle. A round where it commits to the main call sends the build back to design
 with a hardening brief; it is hardened, rebuilt, leak-checked and solved again, three loops per
 architecture, then re-rooted in the same objective and number, three architectures, then retired. A
-round where it does not commit to the main call passes the worth-it gate, and the build goes straight
-on to the determinism judge, whose FIX_NOW is fixed and re-judged once. No session runs a solve in the main thread, which has read the design.
+round where it does not commit to the main call passes the worth-it gate, gets one repair of whatever
+the leak reader deferred, and goes on to the determinism judge, whose FIX_NOW is fixed and re-judged
+once. No session runs a solve in the main thread, which has read the design.
+
+**Solver first, polish after.** The leak reader runs once per build, on Sonnet, before the round. Only
+what hands the solver the answer (a sentence naming the decisive step, a file that ranks the
+candidates or states the asked figures, a file that exists only to help) and any fork on the main call
+are fixed before the solver sees the pack. The reader's realism tells and its forks on ask figures wait
+for a round the solver misses, or ride in the hardening brief when it lands, so no repair is spent on a
+pack that is about to be rebuilt. A second read runs only when a fix changed a document or the prompt.
+An author keeps at most two builds in flight, a re-rooted architecture included.
 
 ## Per-author rules
 
@@ -70,14 +79,17 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
    ->  the ladder (5 to 6 rungs)  ->  determinism-check (22 axes closed)  ->  supplemental-stumping
    ->  BUILD: dataset-generation  ->  submission-writeup  ->  golden-realism  ->  reduce-house-fixes
               ->  fingerprint surface
-   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated solver's-eye pass)
-              (a finding is fixed in the generator and the build re-run)
+   ->  LEAK CHECK: leak.py (mechanical)  ->  the /leak-check reader (one isolated pass, on Sonnet)
+              (leak-level findings and main-call forks fixed in the generator now; realism tells and
+              ask-level forks deferred to after the round)
    ->  DUPLICATE CHECK: guard.py heart (mechanical)  ->  /clone-check pre-flight on this build
               (a reject-tier finding: redraw the colliding axis once, or retire)
    ->  SOLVER ROUND: /solve, one isolated solver in a sandbox, graded at the rubric's weights
               worth-it gate: the solver does not commit to the main call (the proxy is recorded, not gated)
-              landed: back to the ladder with the brief (harden, rebuild, leak check, solve again);
-              3 loops per architecture, then re-root; 3 architectures, then retire
+              landed: back to the ladder with the brief and the deferred findings (harden, rebuild,
+              leak check, solve again); 3 loops per architecture, then re-root; 3 architectures, then retire
+              missed: one repair of the deferred findings (a new read only if a document or the prompt
+              changed, a new round only if the prompt, a rung or the decisive path changed)
    ->  DETERMINISM CHECK: the judge rehearsal. APPROVE ships; FIX_NOW is fixed and re-judged once
               (a fresh solver round first if the fix moved a figure, a rung or a document);
               SEND_BACK re-roots or retires
