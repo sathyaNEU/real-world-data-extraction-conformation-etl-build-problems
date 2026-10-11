@@ -10,8 +10,8 @@
   "shape": "11",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Offer make-good agreements to four owners for five bores: Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05 (one agreement), Tondara Grazing Pty Ltd for KV-LB07, Bluebush Downs Pty Ltd for KV-LB10 and Cypress Ridge Pastoral Trust for KV-LB12.",
+  "answer_source": "task182/submission.md, 1. Final Recommendation",
   "gap": [
     "objective"
   ],
@@ -32,9 +32,9 @@
   "role_family": "other",
   "scoring_unit": "per resolved case",
   "spine": {
-    "file": "bore_water_levels_2008-2026.csv",
-    "rows": 0,
-    "entity": "one water-level observation at one bore: a manual dip by the field team or one day's mean from a pressure logger",
+    "file": "water_level_dips_2012-2026.csv",
+    "rows": 4214,
+    "entity": "one manual depth-to-water reading at one bore, by the field team or the EIS consultant (logged bores add hourly pressures in logger_pressure_2015-2026.parquet, 994,869 rows)",
     "grain": "bore x observation",
     "source": "synthetic"
   },
@@ -65,19 +65,19 @@
   ],
   "opening_move": "question-first",
   "driver": "When every unit's level follows a shared external driver through its own lagged response, a change measured from a fixed baseline mixes that response with the effect being assessed, so the effect is the gap between the observed level and each unit's own driver-only path fitted before the effect began, which hides large effects where the driver was lifting the level and invents them where it was pulling it down.",
-  "driver_concrete": "Each landholder bore's level since the pit's dewatering began in July 2022 is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt); the alluvial bores fell 2 to 4 m through the dry 2023 to 2025 seasons on rainfall alone, while the coal-measure bores, still rising on the slow recharge of the 2020 to 2022 wet years, were held 5 to 8 m below where that recharge would have taken them and show less than a metre of net decline.",
-  "stump": "A competent solver converts every dip to a reduced level, compares each bore since July 2022 with its pre-mining baseline (or with the reference bores outside the predicted drawdown) and offers make good to the alluvial bores that fell past 2 m; the step that lands it there is reading the decline from the baseline as the mine's drawdown, when the alluvium's fall is the dry years' and the coal measures' small net change hides a large drawdown under a recovery the wet years had set going.",
+  "driver_concrete": "Each landholder bore's September 2026 assessment level is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt) since the pit's dewatering began on 4 July 2022; the alluvial bores fell 4.6 to 5.2 m through the failed 2022-23 to 2025-26 seasons on rainfall alone, while the coal-measure bores near the pit, still rising on the 2019-20 and 2020-21 wet seasons through a six to seven year rainfall memory, were drawn 8.3 to 9.3 m below where that rise was taking them and show only 2.2 to 2.5 m of net decline.",
+  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change, or with the far-field coal-measure bore KV-LB16 as a control) and offers make good to the alluvial bores and the ridge basalt bore that fell past their triggers (or to KV-LB12 alone, or to KV-LB04, KV-LB05 and KV-LB12); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and basalt fell through the dry seasons and the coal measures' small net fall hides 8.3 to 9.3 m of drawdown under a rise the wet seasons had set going.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who turns every reading into a reduced level, drops pumped and duplicate dips, compensates the loggers for air pressure and applies each aquifer's trigger exactly still measures each bore's decline from its baseline (or against the reference bores) and designates the alluvial bores; only a model of each bore's own response to rainfall and evaporation, calibrated before dewatering and run forward as the level without the mine, shows which bores the mine has drawn down past their trigger.",
+  "analyst_test": "A strong analyst who turns every reading into a reduced level, drops pumped and duplicate dips, compensates the loggers for air pressure and applies each aquifer's trigger exactly still measures each bore's decline from its baseline (or against the reference bores) and designates the alluvial bores and the ridge basalt bore, or takes the far-field coal-measure bore KV-LB16 as the coal measures' climate control, which the mine has itself drawn down about 2.4 m, so KV-LB04 sits at 5.0 to 5.1 m on its 5 m trigger, KV-LB07 and KV-LB10 fall under it and the set is KV-LB04, KV-LB05 and KV-LB12 or KV-LB05 and KV-LB12; only a model of each bore's own response to rainfall and evaporation, calibrated before dewatering and run forward as the level without the mine, shows which bores the mine has drawn down past their trigger.",
   "domain_test": "What decides the set is attributing groundwater-level change between climate-driven recharge and pumping with response functions calibrated on each bore's pre-impact record, which is how hydrogeologists assess drawdown impacts on neighbouring bores; with another field's nouns there is no recharge, no aquifer memory that differs between shallow and deep bores and no drawdown cone, so the task does not read the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:counterfactual-groundwater-level-from-calibrated-climate-response",
   "layer1": [
     "depth to water below a measuring point that changed when headworks were rebuilt, against reduced levels in metres AHD",
     "landholder dips taken while the bore's own pump was running (pumped, not static, levels) flagged only in a free-text remark",
-    "unvented pressure loggers that need the site barometric logger subtracted, and logger drift corrected to the manual dips",
+    "unvented pressure loggers that need the site barometric logger subtracted, stamped in UTC and averaged to Queensland days",
     "bores known by a state registered number, the landholder's name for it and the company's monitoring code",
-    "pre-2012 readings in feet on transcribed field sheets, and duplicate dips entered twice"
+    "the 2012 to 2014 EIS consultant rounds in feet, and duplicate dips entered twice"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},

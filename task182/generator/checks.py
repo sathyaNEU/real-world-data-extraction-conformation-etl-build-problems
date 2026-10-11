@@ -67,12 +67,21 @@ OFFERS = {"Yarrowmere Pastoral Co Pty Ltd": codes("CM1", "CM3"), "Tondara Grazin
           "Bluebush Downs Pty Ltd": codes("CM4"), "Cypress Ridge Pastoral Trust": codes("A1")}
 # the shipped ask figures (printed rounding); a change here is a moved answer and fails the build
 EXPECT = {  # label: (September 2026 level m AHD, change since baseline m, decline caused by the mine m, impaired)
-    "CM1": (207.77, -2.44, 8.9, True), "CM2": (195.44, -2.46, 8.4, True), "CM3": (214.47, -2.49, 9.3, True),
-    "CM4": (203.49, -2.21, 8.2, True), "CM5": (209.84, 1.74, 2.4, False), "A1": (209.50, -8.78, 4.6, True),
-    "A2": (209.51, -4.63, 0.8, False), "A3": (205.24, -5.23, 0.7, False), "A4": (204.86, -4.64, 0.5, False),
-    "A5": (209.61, -4.84, 0.6, False), "A6": (201.27, -4.81, 0.4, False), "A7": (199.16, -4.69, 0.3, False),
-    "A8": (202.33, -0.98, 0.2, False), "A9": (201.88, -0.87, 0.1, False), "B1": (238.12, -2.59, 1.1, False),
-    "B2": (241.33, -3.02, 1.6, False), "B3": (243.13, -2.68, 0.9, False), "B4": (245.75, -8.70, 1.3, False)}
+    "CM1": (207.77, -2.44, 8.7, True), "CM2": (195.44, -2.46, 8.4, True), "CM3": (214.47, -2.49, 9.3, True),
+    "CM4": (203.49, -2.21, 8.3, True), "CM5": (209.84, 1.74, 2.4, False), "A1": (209.50, -8.78, 4.4, True),
+    "A2": (209.51, -4.63, 0.6, False), "A3": (205.24, -5.23, 0.8, False), "A4": (204.86, -4.64, 0.6, False),
+    "A5": (209.61, -4.84, 0.5, False), "A6": (201.27, -4.81, 0.5, False), "A7": (199.16, -4.69, 0.4, False),
+    "A8": (202.33, -0.98, 0.1, False), "A9": (201.88, -0.87, 0.1, False), "B1": (238.12, -2.59, 1.1, False),
+    "B2": (241.33, -3.02, 1.6, False), "B3": (243.13, -2.68, 0.9, False), "B4": (245.75, -8.70, 1.5, False)}
+# acceptance bands stated in the write-up: the decline caused by the mine +/-0.3 m (+/-0.4 m at KV-LB06, whose
+# full-record estimate is 0.2 m), the change since baseline +/-0.01 m (a logged bore's baseline read off its logger)
+DECLINE_BAND = {lab: (0.4 if lab == "A5" else 0.3) for lab in EXPECT}
+CHANGE_BAND = 0.01
+# the declines that sit closer than 0.15 of a unit to a rounding edge on the continuous fit (the band covers each)
+NEAR_EDGE = ["A1", "A2", "A6", "A8", "B4"]
+# the KV-LB16-control rung: the far-field coal-measure bore read as the coal measures' climate control
+CONTROL = "CM5"
+CONTROL_SETS = (codes("CM1", "CM3", "A1"), codes("CM3", "A1"))
 BANNED = re.compile(r"counterfactual|transfer function|response function|\bTFN\b|cumulative rainfall departure|\bCRD\b|"
                     r"climate[- ]adjusted|climate adjustment|deseasonali[sz]\w*|detrend\w*|recharge model|pastas|menyanthes|"
                     r"without the mine|would have been", re.I)
@@ -229,13 +238,83 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         e = EXPECT[lab]
         ok((round(L, 2), round(C, 2), round(Dd, 1), imp) == e, "ask figures moved at %s: %s" % (
             lab, (round(L, 2), round(C, 2), round(Dd, 1), imp)))
-        ok(edge_distance(L, 2) >= 0.15 and edge_distance(C, 2) >= 0.15 and edge_distance(Dd, 1) >= 0.15,
-           "%s: a graded figure near a rounding edge (%.4f, %.4f, %.3f)" % (lab, L, C, Dd))
+        ok(edge_distance(L, 2) >= 0.15 and edge_distance(C, 2) >= 0.15,
+           "%s: a level or change near a rounding edge (%.4f, %.4f)" % (lab, L, C))
+        ok((edge_distance(Dd, 1) < 0.15) == (lab in NEAR_EDGE), "%s: decline %.4f near-edge list" % (lab, Dd))
+        ok(abs(Dd - e[2]) + 0.05 <= DECLINE_BAND[lab], "%s: the band covers the rounding (%.4f)" % (lab, Dd))
         ok(Dd > 0.05, "%s drawdown prints positive" % lab)
         printed[k] = e
-    for i in range(3):
+    for i in range(2):
         vals = [printed[k][i] for k in LH]
         ok(len(set(vals)) == len(vals), "a tie among the graded figures in column %d" % i)
+    ok(not A.margin_ok(g["drawdown"], obs), "the refit: a bore inside 25 per cent of its trigger")
+    thin_fit = min((abs(g["drawdown"][k] / trig[k] - 1), C2L[k]) for k in LH)
+    LOG.append("refit margins: every bore at least %.2f of its trigger away (thinnest %s); declines within 0.15 of a "
+               "rounding edge (band covers): %s" % (thin_fit[0], thin_fit[1], ", ".join(
+                   "%s %.4f" % (lab, g["drawdown"][L2C[lab]]) for lab in NEAR_EDGE)))
+    for k in LH:
+        lab = C2L[k]
+        r1k = g["rungs"]["R1 decline from the baseline assessment"][k]
+        ok(abs(r1k - EXPECT[lab][2]) > DECLINE_BAND[lab], "rung 1 lands inside the decline band at %s" % lab)
+    # the change column's band: a logged bore's baseline read off its logger's daily mean on the baseline date
+    moved_c = {}
+    for k in LH:
+        o = obs[k]
+        if o["logger"] is None:
+            continue
+        ld, lv = o["logger"]
+        hit = ld == M.dnum(bores[k]["base_date"])
+        if not hit.any():
+            continue
+        alt = g["levels"][k] - float(lv[hit][0])
+        ok(abs(alt - g["change"][k]) <= CHANGE_BAND + 0.0049, "%s: the logger baseline moves the change by %.3f" % (
+            C2L[k], alt - g["change"][k]))
+        if round(alt, 2) != round(g["change"][k], 2):
+            moved_c[C2L[k]] = (round(g["change"][k], 2), round(alt, 2))
+    ok(sorted(moved_c) == ["B2", "CM1", "CM3"], "the logger baseline moves the printed change at %s" % sorted(moved_c))
+    LOG.append("change band: the logger's baseline-day mean moves %s" % "; ".join(
+        "%s %.2f -> %.2f" % (lab, a, b) for lab, (a, b) in sorted(moved_c.items())))
+
+    # ---------------------------------------------------------------- the KV-LB16-control rung
+    ctl = L2C[CONTROL]
+    cd_lo = []
+    for sname, start in A.CONTROL_STARTS.items():
+        for pick in (False, True):
+            vals, fits_c = A.control_route(obs, LH, g["REF"], ctl, start, pick)
+            s_ = A.designate(vals, obs)
+            ok(s_ in CONTROL_SETS and s_ != ANSWER, "control rung (%s, lag %s) gives %s" % (sname, pick, [C2L[x] for x in s_]))
+            ok(4.85 <= vals[L2C["CM1"]] <= 5.15, "control rung: CM1 on the knife-edge (%.2f)" % vals[L2C["CM1"]])
+            ok(vals[L2C["CM3"]] > 5.3 and vals[L2C["CM2"]] < 4.9 and vals[L2C["CM4"]] < 4.9,
+               "control rung: CM3 over, CM2 and CM4 under")
+            for lab in ("CM1", "CM2", "CM3", "CM4"):
+                ok(abs(vals[L2C[lab]] - EXPECT[lab][2]) > 2.5, "control rung inside the band at %s" % lab)
+            cd_lo.append(vals[L2C["CM1"]])
+            LOG.append("R5 KV-LB16 as the coal measures' control (from %s, %s) -> %s; CM1 %.2f, CM3 %.2f, CM2 %.2f, "
+                       "CM4 %.2f (regression R2 %s)" % (sname, "best lag" if pick else "no lag", ", ".join(C2L[x] for x in s_),
+                       vals[L2C["CM1"]], vals[L2C["CM3"]], vals[L2C["CM2"]], vals[L2C["CM4"]],
+                       ", ".join("%.3f" % fits_c[L2C[x]]["r2"] for x in ("CM1", "CM2", "CM3", "CM4"))))
+    # what kills it: KV-LB16's own pre-take response, run forward, departs from its record from 2023 on
+    days16, lev16 = A.series(obs[ctl], "logger")
+    pre16 = days16 <= M.dnum(A.CAL_END)
+    model16, info16 = M.fit_gamma_continuous(cl, "daily", days16[pre16], lev16[pre16])
+    dep = model16[days16] - lev16
+    quarters = []
+    for y in range(2021, 2027):
+        for q in range(4):
+            lo = M.dnum(dt.date(y, 3 * q + 1, 1))
+            hi = M.dnum(dt.date(y + (q == 3), (3 * q + 3) % 12 + 1, 1)) - 1
+            sel = (days16 >= lo) & (days16 <= hi)
+            if sel.any():
+                quarters.append(("%dQ%d" % (y, q + 1), float(dep[sel].mean())))
+    early = [v for qn, v in quarters if qn <= "2022Q4"]
+    late = [v for qn, v in quarters if qn >= "2023Q1"]
+    ok(max(abs(v) for v in early) < 0.1, "KV-LB16 departs before 2023: %s" % early)
+    ok(all(b_ >= a_ - 0.02 for a_, b_ in zip(late, late[1:])), "KV-LB16's departure grows from 2023: %s" % late)
+    ok(2.2 <= late[-1] <= 2.5 and 2.3 <= g["drawdown"][ctl] <= 2.45, "KV-LB16's own mine departure %.2f, %.2f" % (
+        late[-1], g["drawdown"][ctl]))
+    ok(info16["rmse"] < 0.05, "KV-LB16's own fit %.3f" % info16["rmse"])
+    LOG.append("KV-LB16's own departure by quarter: %s; September 2026 %.2f m; pre-take fit RMSE %.3f m" % (
+        ", ".join("%s %.2f" % qv for qv in quarters if qv[0] >= "2022Q3"), g["drawdown"][ctl], info16["rmse"]))
     ok(g["offers"] == {o: sorted(v) for o, v in OFFERS.items()} or {o: sorted(v) for o, v in g["offers"].items()} == OFFERS,
        "offers moved: %s" % g["offers"])
     ok(len(g["offers"]) == 4, "four offers")
@@ -457,6 +536,24 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         ok(("%.2f m" % abs(e[1])) in memo and ("%.1f m" % e[2]) in memo and bores[k]["name"] in memo,
            "the memo tells %s's owner what lowered it" % C2L[k])
     ok(re.search(r"tracked to within 0\.[1-5] m", memo), "the memo's tracking claim")
+    ok(not re.search(r"outcrop|subcrop", memo, re.I), "the memo asserts geology the pack does not carry")
+    import openpyxl as _ox
+    _wb = _ox.load_workbook(os.path.join(target, "landholder_bore_register.xlsx"), read_only=True, data_only=True)
+    _xy = {}
+    for _sh in ("Landholder bores", "Network bores"):
+        _rows = list(_wb[_sh].iter_rows(min_row=4, values_only=True))
+        for _r in _rows[1:]:
+            if _r[0] and str(_r[0]).startswith("KV-"):
+                _x = dict(zip(_rows[0], _r))
+                _xy[_x["Bore"]] = (_x["Easting (MGA55)"], _x["Northing (MGA55)"])
+    _mb = [v for k_, v in _xy.items() if k_.startswith("KV-MB")]
+    _cx, _cy = np.mean([v[0] for v in _mb]), np.mean([v[1] for v in _mb])
+    _rf = [math.hypot(v[0] - _cx, v[1] - _cy) / 1000 for k_, v in _xy.items() if k_.startswith("KV-RF")]
+    ok(25 <= min(_rf) and max(_rf) <= 32 and "25 to 32 km" in memo, "reference bores 25 to 32 km: %s" % _rf)
+    _a1 = min(math.hypot(_xy[L2C["A1"]][0] - v[0], _xy[L2C["A1"]][1] - v[1]) for v in _mb) / 1000
+    ok(0.8 <= _a1 <= 1.3 and "about a kilometre from the pit perimeter bores" in memo, "KV-LB12's distance %.2f" % _a1)
+    LOG.append("memo distances: reference bores %s km from the perimeter bores' centroid; KV-LB12 %.2f km from the "
+               "nearest perimeter bore" % (", ".join("%.1f" % x for x in _rf), _a1))
 
     # ---------------------------------------------------------------- people and invented names
     people = set(W.PEOPLE.values())
@@ -695,8 +792,9 @@ def check_submission(text, g):
         line = [l_ for l_ in text.split("\n") if l_.strip().startswith("- %s " % k)]
         ok(len(line) == 1, "block 4 row for %s" % k)
         s = line[0]
-        ok(("%.2f m AHD" % L) in s and (("%+.2f m" % C).replace("+", "+") in s or ("%.2f m" % C) in s)
-           and ("%.1f m" % Dd) in s and (("yes" if imp else "no") in s.lower()), "block 4 figures for %s: %s" % (k, s))
+        ok(("%.2f m AHD" % L) in s and (("%+.2f m (±0.01)" % C) in s or ("%.2f m (±0.01)" % C) in s)
+           and ("%.1f m (±%.1f)" % (Dd, DECLINE_BAND[lab])) in s and (("yes" if imp else "no") in s.lower()),
+           "block 4 figures and bands for %s: %s" % (k, s))
 
 
 def rows_of(path):

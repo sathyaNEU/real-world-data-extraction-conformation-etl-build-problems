@@ -131,7 +131,9 @@ def cell(obs, k, cl, family, cal, step, data, level_rule="mean"):
         clim, take_term, info = M.fit_full(cl, step, days[sel], lev[sel])
         return M.sep_value(cl, take_term, step), info
     sel = (days >= lo) & (days <= dn(CAL_END))
-    if family in ("gamma", "exp"):
+    if family == "gammac":
+        model, info = M.fit_gamma_continuous(cl, step, days[sel], lev[sel])
+    elif family in ("gamma", "exp"):
         model, info = M.fit_response(cl, family, step, days[sel], lev[sel])
     elif family == "crd":
         model, info = M.fit_crd(cl, step, days[sel], lev[sel], dn(CAL_END))
@@ -156,6 +158,48 @@ def grid(obs, landholders, cl, families=FAMILIES, cals=CALS, steps=STEPS, datas=
                             vals[k] = cell(obs, k, cl, fam, cal, step, data, level_rule)[0]
                     out[(fam, cal, step, data)] = vals
     return out
+
+
+CONTROL_STARTS = {"first": None, "2015": dt.date(2015, 1, 1), "2017": dt.date(2017, 1, 1)}
+CONTROL_LAGS = (0, 30, 61, 91, 122, 152, 182)
+
+
+def control_route(obs, landholders, refs, control, start=None, pick_lag=False):
+    """The far-field coal-measure bore read as the coal measures' climate control (the in-house solver's route): each
+    other coal-measure bore's monthly levels to June 2022 regressed on the control's static levels (interpolated to the
+    month's middle, lagged 0 to 6 months when pick_lag, the best fit kept), run forward on the control's level at
+    15 September 2026; the alluvial and basalt bores against the reference bores matched by unit (rung 2). Returns
+    {bore: drawdown} and the regressions."""
+    cd, cv = obs[control]["dips"]
+    at = dn(TREND_AT)
+    ref_change = {k: window_mean(obs[k], *REF_PERIOD) - assessment_level(obs[k]) for k in refs}
+    matched = {u: float(np.mean([ref_change[k] for k in refs if obs[k]["unit"] == u])) for u in ("alluvium", "basalt")}
+    out, fits = {}, {}
+    for k in landholders:
+        o = obs[k]
+        L = assessment_level(o)
+        if k == control:
+            out[k] = 0.0
+            continue
+        if o["unit"] != "coal":
+            out[k] = (o["baseline"] - L) - matched["alluvium" if o["unit"] == "alluvium" else "basalt"]
+            continue
+        u, v = monthly(o)
+        t = np.array([month_mid_day(x) for x in u])
+        keep = t >= (dn(start) if start else -10 ** 9)
+        best = None
+        for lag in (CONTROL_LAGS if pick_lag else (0,)):
+            ok_ = keep & (t - lag >= cd.min())
+            x = np.interp(t[ok_] - lag, cd, cv)
+            y = v[ok_]
+            b, a = np.polyfit(x, y, 1)
+            r2 = 1.0 - float(((y - a - b * x) ** 2).sum()) / float(((y - y.mean()) ** 2).sum())
+            if best is None or r2 > best[0]:
+                best = (r2, lag, a, b)
+        r2, lag, a, b = best
+        out[k] = a + b * float(np.interp(at - lag, cd, cv)) - L
+        fits[k] = dict(r2=r2, lag=lag, slope=b)
+    return out, fits
 
 
 def designate(vals, obs):

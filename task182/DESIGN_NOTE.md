@@ -114,7 +114,7 @@ that fell more than 2 m and the basalt bore that fell more than 5 m (or, net of 
 The step that lands it there is reading the decline since the baseline as the mine's. In fact the alluvium and the
 basalt fell through the dry seasons on rainfall alone. The coal-measure bores near the pit were still rising on the
 2019 to 2021 wet seasons, and the mine drew them 8 to 9 m below where that rise was taking them while they show less
-than 2.5 m of decline (shipped: 8.2 to 9.3 m drawn down, 2.21 to 2.49 m fallen).
+than 2.5 m of decline (shipped: 8.3 to 9.3 m drawn down, 2.21 to 2.49 m fallen).
 
 ## ENTITY AND UNIT OF VALUE
 
@@ -156,15 +156,15 @@ submerged (asserted).
 
 | Bore | Unit | Change, baseline to Sep 2026 (m) | True drawdown (m) | Shipped estimate (m) | Call |
 |---|---|---|---|---|---|
-| CM1 KV-LB04, CM2 KV-LB07, CM3 KV-LB05, CM4 KV-LB10 (3.4 to 5.7 km) | coal measures | -2.44, -2.46, -2.49, -2.21 | 8.73, 8.33, 9.37, 8.11 | 8.9, 8.4, 9.3, 8.2 | impaired |
+| CM1 KV-LB04, CM2 KV-LB07, CM3 KV-LB05, CM4 KV-LB10 (3.4 to 5.7 km) | coal measures | -2.44, -2.46, -2.49, -2.21 | 8.73, 8.33, 9.37, 8.11 | 8.7, 8.4, 9.3, 8.3 | impaired |
 | CM5 KV-LB16 (11 km) | coal measures | +1.74 | 2.28 | 2.4 | not impaired |
-| A1 KV-LB12 (over the subcrop) | alluvium | -8.78 | 4.50 | 4.6 | impaired |
-| A2 to A7 KV-LB01, 02, 03, 06, 08, 09 | alluvium | -4.63, -5.23, -4.64, -4.84, -4.81, -4.69 | 0.43 to 0.82 | 0.8, 0.7, 0.5, 0.6, 0.4, 0.3 | not impaired |
-| A8, A9 KV-LB13, 14 (on the Coolibah Springs waterholes) | alluvium | -0.98, -0.87 | 0.15, 0.12 | 0.2, 0.1 | not impaired |
+| A1 KV-LB12 (over the subcrop) | alluvium | -8.78 | 4.50 | 4.4 | impaired |
+| A2 to A7 KV-LB01, 02, 03, 06, 08, 09 | alluvium | -4.63, -5.23, -4.64, -4.84, -4.81, -4.69 | 0.43 to 0.82 | 0.6, 0.8, 0.6, 0.5, 0.5, 0.4 | not impaired |
+| A8, A9 KV-LB13, 14 (on the Coolibah Springs waterholes) | alluvium | -0.98, -0.87 | 0.15, 0.12 | 0.1, 0.1 | not impaired |
 | B1 to B3 KV-LB11, 15, 17 | basalt | -2.59, -3.02, -2.68 | 1.16, 1.65, 1.00 | 1.1, 1.6, 0.9 | not impaired |
-| B4 KV-LB18 (ridge bore) | basalt | -8.70 | 1.48 | 1.3 | not impaired |
+| B4 KV-LB18 (ridge bore) | basalt | -8.70 | 1.48 | 1.5 | not impaired |
 
-**The other network bores.** Three state reference bores 20 to 30 km from the pit: KV-RF01 and KV-RF02 in the alluvium
+**The other network bores.** Three state reference bores 26.6 to 31.7 km from the perimeter bores' centroid: KV-RF01 and KV-RF02 in the alluvium
 (fell 4.84 and 5.02 m from their April to June 2022 mean to September 2026) and KV-RF03 in the basalt (5.16 m); none
 in the coal measures. Six mine monitoring bores on the pit perimeter: two in the alluvium and four in the coal
 measures, which fell 36.0, 29.4, 24.7 and 21.4 m (KV-MB03 to KV-MB06).
@@ -194,7 +194,8 @@ Triggers: 2 m for the alluvium (A), 5 m for the basalt (B) and coal measures (CM
 | 2b trend 2012-22 | 1.16 | 0.89 | 1.56 | 0.87 | -2.50 | 12.87 | 9.13 | 10.42 | 8.42 | 10.74 | 9.11 | 9.43 | 2.74 | 2.62 | 2.88 | 3.10 | 2.68 | 12.39 | A1 to A9, B4 | 0.31 (A9) |
 | 3 one window, 12 months | 2.99 | 2.77 | 3.30 | 2.64 | -1.34 | 4.31 | 0.83 | 0.56 | 0.59 | 0.69 | 0.59 | 0.72 | 0.08 | 0.13 | 1.38 | 1.95 | 1.43 | 2.74 | A1 | 0.34 (CM3) |
 | 3 one window, 3 years | 2.99 | 2.77 | 3.30 | 2.64 | -1.34 | 2.80 | -0.83 | -1.04 | -1.17 | -1.31 | -1.28 | -1.07 | -0.39 | -0.27 | 0.81 | 1.45 | 0.83 | 0.54 | A1 | 0.34 (CM3) |
-| **4 own response (answer)** | **8.90** | **8.41** | **9.30** | **8.19** | 2.40 | **4.60** | 0.80 | 0.70 | 0.50 | 0.60 | 0.40 | 0.30 | 0.21 | 0.10 | 1.10 | 1.60 | 0.90 | 1.30 | **CM1 to CM4, A1** | see GRID |
+| 5 KV-LB16 as the coal measures' control | 5.02 | 4.73 | 5.50 | 4.66 | (control) | 3.85 | -0.30 | 0.30 | -0.29 | -0.09 | -0.12 | -0.25 | -3.95 | -4.06 | -2.57 | -2.14 | -2.49 | 3.54 | CM1, CM3, A1 (CM3, A1 from 2017) | 0.004 (CM1, knife-edge) |
+| **4 own response (answer)** | **8.71** | **8.39** | **9.33** | **8.32** | 2.38 | **4.45** | 0.64 | 0.77 | 0.63 | 0.50 | 0.54 | 0.42 | 0.14 | 0.10 | 1.10 | 1.60 | 0.93 | 1.46 | **CM1 to CM4, A1** | 0.52 (CM5); see GRID |
 
 "Thinnest" is the smallest distance from a trigger over the 18 bores, as a fraction of that trigger (0.25 is the floor).
 
@@ -215,20 +216,38 @@ Triggers: 2 m for the alluvium (A), 5 m for the basalt (B) and coal measures (CM
   levels to June 2022; a fitted slope below zero is read as no response and the bore's pre-July 2022 mean taken): A1
   alone, coal measures 2.64 to 3.30 m. Killed by the coal measures' own records: their levels move with the rain of four
   to eight years before, which no single short window sees.
+- **Rung 5**, KV-LB16 (CM5, the far-field coal-measure bore 12.4 km from the perimeter bores' centroid) read as the coal
+  measures' climate control, the route the in-house solver took and the judge found on its own: each other coal-measure
+  bore's monthly levels to June 2022 regressed on KV-LB16's static levels (no lag, or the best of 0 to 6 months; from
+  the first reading, 2015 or 2017) and run forward on KV-LB16's level, the alluvium and basalt against the matched
+  reference bores (rung 2). CM1 4.95 to 5.02 m against its 5 m trigger, CM3 5.50 to 5.78, CM2 4.38 to 4.73, CM4 4.51 to
+  4.66: the set is CM1, CM3 and A1 (KV-LB04, KV-LB05, KV-LB12), or CM3 and A1 from 2017 (asserted in all six variants).
+  CM1 sits on the knife-edge, a known coin-flip for solvers on this route, and the rung is exempt from the 25 per cent
+  floor because the route is wrong whichever side CM1 lands. Killed by KV-LB16's own record: its own pre-take response
+  (98 readings, RMSE 0.035 m) runs 2.38 m above its September 2026 level, and the departure is nil to 2022Q4 (within
+  0.1 m), then grows every quarter (0.12 m in 2023Q2, 0.54 in 2024Q1, 1.33 in 2025Q1, 2.34 in 2026Q3), later than the
+  near bores, as drawdown spreading outward does (asserted). Nothing ships that makes it a control: it is a register bore
+  inside MG-02 1.2 in the aquifer being dewatered, and the network sheet reserves "outside the EIS predicted drawdown"
+  for KV-RF01 to RF03.
 - **Rung 4**, the answer: each bore's own gamma response to daily rainfall less f x Morton areal evaporation, fitted on its
   readings from the first reading to 3 July 2022 (logger daily means where the bore has a logger), run forward; the
-  drawdown is the fitted level for September 2026 (mean of its days) less the assessment level. CM1 to CM4 and A1.
+  drawdown is the fitted level for September 2026 (mean of its days) less the assessment level. Shape, mean response
+  time and f are optimised continuously (`models.fit_gamma_continuous`: Nelder-Mead in log shape and log mean from the
+  four best distinct kernels of the wide grid, shapes 1 to 20 and means 20 days to 12 years, f and the gain by
+  constrained least squares, full-length kernels). CM1 to CM4 and A1. Coal-measure fits RMSE 0.026 to 0.040 m at shape
+  about 16.5 and means 6.2 to 6.8 years; the alluvium 0.04 to 0.09 m at means 0.38 to 0.55 years.
 
-**Margins (shipped, asserted).** Every bore is at least 25 per cent of its trigger away from it at every rung (thinnest
-0.26 of the trigger, B4 at rung 2 pooled) and in every answer cell (thinnest 0.306, CM4 6.53 m in the rainfall-departure
+**Margins (shipped, asserted).** Every bore is at least 25 per cent of its trigger away from it at every rung but rung 5
+(thinnest 0.26 of the trigger, B4 at rung 2 pooled; rung 5's knife-edge at CM1 is recorded above), on the continuous
+refit (thinnest 0.52, CM5 2.38 m) and in every answer cell (thinnest 0.306, CM4 6.53 m in the rainfall-departure
 family). Rung 1 as targeted: A2 to A7 fell 4.63 to 5.23 m (at least 2.5), B4 8.70 (at least 6.25), CM1 to CM4 2.21 to 2.49
 (at most 3.75, and inside 1.5 to 3.5). Five distinct sets on the ladder (rungs 2 and 3 share A1 alone, asserted).
 
 **Evidence the pack carries (asserted).**
 - The coal-measure bores were rising before 4 July 2022: 0.72 (CM1), 0.70 (CM2), 0.66 (CM3) and 0.65 m a year (CM4),
   least-squares slope of monthly levels January 2021 to June 2022 (target 0.5 to 1).
-- The per-bore model fitted before 4 July 2022 tracks the three reference bores to September 2026: largest monthly
-  residual 0.29 (KV-RF01), 0.24 (KV-RF02) and 0.14 m (KV-RF03) (target 0.5).
+- The per-bore model fitted before 4 July 2022 (continuous fit) tracks the three reference bores to September 2026:
+  largest monthly residual 0.22 (KV-RF01), 0.26 (KV-RF02) and 0.17 m (KV-RF03) (target 0.5; the write-up says 0.3).
 - The mine's coal-measure bores show the cone: they fell 36.0, 29.4, 24.7 and 21.4 m from April to June 2022 to
   September 2026 (target 20 to 40).
 - The full-record model with the take as a second stress gives the same set in all eight of its cells.
@@ -237,7 +256,9 @@ family). Rung 1 as targeted: A2 to A7 fell 4.63 to 5.23 m (at least 2.5), B4 8.7
 
 ## GRID (shipped, asserted cell by cell)
 
-Five families, each numpy-only in `generator/models.py` (shared by `golden.py`; `verify.py` writes its own):
+The golden's own figure is the continuous gamma fit (rung 4). The grid keeps the coarse gamma family below as one of its
+variants, so the bands are the spread of reasonable fitting choices around it. Five families, each numpy-only in
+`generator/models.py` (shared by `golden.py`; `verify.py` writes its own):
 - **gamma**: shapes 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20 x 40 mean response times from 20 days to 12 years (geometric) x
   evaporation factor 0 to 1 in steps of 0.025, gain and constant by least squares (gain positive);
 - **exp**: an exponential response with a fitted delay (delays 0 to 6 years, 11 values, x 30 time constants);
@@ -283,10 +304,15 @@ in any shipped file (asserted). 5 Version basis: one row per entry; a dip keyed 
 number) is one reading (C1: the call is unchanged with duplicates kept). 6 Divisor: none. 7 Weighting: a logged bore's
 September level is the mean of its 30 Queensland-day means; a manual bore's is the mean of its September static dips
 (three, or two where one was pumped). 8 Window length: one calendar month. 9 Boundary: every bore at least 25 per cent
-of its trigger from it at every rung and in all 160 answer cells (thinnest 0.26 and 0.306). 10 Rounding: levels and
-changes to the centimetre, the mine's share to 0.1 m, the call on unrounded values; every graded figure at least 0.15 of
-its last printed unit from a rounding edge (levels and changes min 0.17, drawdowns min 0.44), no ties within a column
-(asserted). 11 Tie-break: none needed. 12 Maturity: September is complete (30 logger days per logged bore, three
+of its trigger from it at every rung but rung 5 (KV-LB16 as a control, CM1 on the knife-edge, recorded) and in all 160
+answer cells (thinnest 0.26 and 0.306). 10 Rounding: levels and changes to the centimetre, the mine's share to 0.1 m,
+the call on unrounded values; every level and change at least 0.15 of its last printed unit from a rounding edge (min
+0.17), no ties within those columns (asserted). The mine's share is graded on a band, ±0.3 m (±0.4 m at KV-LB06, whose
+full-record estimate is 0.2 m), because the fitting choices MG-02 leaves open spread it by that much; on the continuous
+fit five declines sit closer than 0.15 of a unit to an edge (KV-LB12 4.449, KV-LB01 0.637, KV-LB08 0.540, KV-LB13
+0.141, KV-LB18 1.465; asserted as the list), each covered by its band. The change carries ±0.01 m: a logged bore's
+baseline read off its logger's daily mean instead of the register moves KV-LB04, KV-LB05 and KV-LB15 by a centimetre
+(asserted). The declines tie in print at 0.6, 0.5 and 0.1 m, which grades nothing differently. 11 Tie-break: none needed. 12 Maturity: September is complete (30 logger days per logged bore, three
 fortnightly runs). 13 Order: identity, units, measuring point in force, static readings, compensation and Queensland
 days, the September level, the attribution, the trigger. 14 Row order: irrelevant. 15 Duplicates: identical double
 entries, none in September 2026. 16 Identity: codes, code variants and registered numbers through the register (every
@@ -309,10 +335,10 @@ July 2022. A single short window with no lag is rung 3 itself.
 |---|---|---|
 | The offers and their count (note; MG-02 6.1) | 1 set + 1 | Yarrowmere Pastoral Co Pty Ltd (KV-LB04, KV-LB05), Tondara Grazing Pty Ltd (KV-LB07), Bluebush Downs Pty Ltd (KV-LB10), Cypress Ridge Pastoral Trust (KV-LB12): four offers |
 | September 2026 level, m AHD, two decimals (workbook) | 18 | LB01 209.51, LB02 205.24, LB03 204.86, LB04 207.77, LB05 214.47, LB06 209.61, LB07 195.44, LB08 201.27, LB09 199.16, LB10 203.49, LB11 238.12, LB12 209.50, LB13 202.33, LB14 201.88, LB15 241.33, LB16 209.84, LB17 243.13, LB18 245.75 |
-| Change since the baseline assessment, m, two decimals | 18 | LB01 -4.63, LB02 -5.23, LB03 -4.64, LB04 -2.44, LB05 -2.49, LB06 -4.84, LB07 -2.46, LB08 -4.81, LB09 -4.69, LB10 -2.21, LB11 -2.59, LB12 -8.78, LB13 -0.98, LB14 -0.87, LB15 -3.02, LB16 +1.74, LB17 -2.68, LB18 -8.70 |
-| The decline the mine caused, m, one decimal (graded on the band) | 18 | LB01 0.8, LB02 0.7, LB03 0.5, LB04 8.9, LB05 9.3, LB06 0.6, LB07 8.4, LB08 0.4, LB09 0.3, LB10 8.2, LB11 1.1, LB12 4.6, LB13 0.2, LB14 0.1, LB15 1.6, LB16 2.4, LB17 0.9, LB18 1.3 (bands in GRID) |
+| Change since the baseline assessment, m, two decimals, ±0.01 m | 18 | LB01 -4.63, LB02 -5.23, LB03 -4.64, LB04 -2.44, LB05 -2.49, LB06 -4.84, LB07 -2.46, LB08 -4.81, LB09 -4.69, LB10 -2.21, LB11 -2.59, LB12 -8.78, LB13 -0.98, LB14 -0.87, LB15 -3.02, LB16 +1.74, LB17 -2.68, LB18 -8.70 |
+| The decline the mine caused, m, one decimal, ±0.3 m (±0.4 m at LB06) | 18 | LB01 0.6, LB02 0.8, LB03 0.6, LB04 8.7, LB05 9.3, LB06 0.5, LB07 8.4, LB08 0.5, LB09 0.4, LB10 8.3, LB11 1.1, LB12 4.4, LB13 0.1, LB14 0.1, LB15 1.6, LB16 2.4, LB17 0.9, LB18 1.5 (continuous fit; grid bands in GRID) |
 | Impaired capacity | 18 | yes at LB04, LB05, LB07, LB10, LB12; no elsewhere |
-| What lowered each complainant's bore (note) | 4 | LB01 (Ernest Walker), LB02 (Brolga Plains Cattle Co), LB06 (Clarence Lewis), LB18 (Bottletree Holdings Pty Ltd): the dry seasons, with the mine's share 0.8, 0.7, 0.6 and 1.3 m against their falls of 4.63, 5.23, 4.84 and 8.70 m |
+| What lowered each complainant's bore (note) | 4 | LB01 (Ernest Walker), LB02 (Brolga Plains Cattle Co), LB06 (Clarence Lewis), LB18 (Bottletree Holdings Pty Ltd): the dry seasons, with the mine's share 0.6, 0.8, 0.5 and 1.5 m against their falls of 4.63, 5.23, 4.84 and 8.70 m |
 
 **Ask stops (each asserted to move exactly its figures):**
 - Measuring point history ignored (the latest measuring point for every reading): KV-LB07's change -2.46 to -2.33,
@@ -325,10 +351,10 @@ July 2022. A single short window with no lag is rung 3 itself.
 - UTC days instead of Queensland days: kept, it moves two printed levels (KV-LB12 209.50 to 209.49, KV-LB18 245.75 to
   245.74; both bores were falling fastest in September).
 
-Recorded: 9.81 kPa per metre in place of the notes' 9.80665 moves no printed level. Every graded figure sits at least
-0.15 of a unit from its rounding edge (a third of a centimetre for the three-dip means; logged levels placed 0.25 to
-0.42 of a unit in), set by datum adjustments of 0 to 3.6 mm at six bores and by the drawdown targets; no two bores share
-a printed figure in any column.
+Recorded: 9.81 kPa per metre in place of the notes' 9.80665 moves no printed level. Every level and change sits at
+least 0.15 of a unit from its rounding edge (a third of a centimetre for the three-dip means; logged levels placed 0.25
+to 0.42 of a unit in), set by datum adjustments of 0 to 3.6 mm at six bores; no two bores share a printed level or
+change. The declines are graded on their bands (CLOSURE axis 10).
 
 ## PINS (shipped)
 
@@ -401,6 +427,11 @@ complaint's date (MG-02 7.1), so the golden never reads the log.
   over `target/`, `golden/` and `metadata.json` (combined sha256 c4e345b30cdf9091); 1 minute 8 seconds. The goldens are
   byte-identical to the stage 3 build. MG-02 embeds Liberation Sans from the machine's
   `/usr/share/fonts/truetype/liberation/`, so a rebuild elsewhere needs those two font files to be byte-identical.
+- FIX_NOW run (judge pass 1, the declines refit continuously): `checks.py` **2,371 assertions passed**; `verify.py` OK
+  (its own daily continuous fit within 0.05 m of every printed decline, inside every band; its monthly coarse fit
+  within 0.32 m and the same five bores); two consecutive builds byte-identical (combined sha256 e5baae94ddb50433);
+  `target/` byte-identical to the 1264b00 build and `metadata.json` unchanged; the impaired set and the four offers
+  asserted unchanged; the goldens and the write-up restate the 18 declines.
 - `verify.py` (standard library, numpy, openpyxl, pyarrow, python-docx; imports nothing
   from the generator): recomputes the 18 September levels and 18 changes (match the workbook exactly), every naive rung, and
   the call with its own monthly gamma fit (12 shapes x 45 response times x 41 evaporation factors): the same five
@@ -414,6 +445,15 @@ complaint's date (MG-02 7.1), so the golden never reads the log.
   properties was possible offline. The consultant appears only as IVH, the field officers only as initials.
 
 ## LEAK CHECK (mechanical half, re-run after the stage 6b repair)
+
+**Re-run after the judge's FIX_NOW (pass 1).** `target/` is byte-identical to the 1264b00 build (asserted by hash:
+the 1264b00 generator rebuilt into a scratch folder and the new build's pack compared file by file), so no document
+the solver sees changed and no second reader pass is due. leak.py: **REVIEW, no LEAK**, 19 REVIEW lines of the same
+four kinds answered below. Golden figures 2.4 and 1.1 still match MG-02's clause numbers (the restated declines at
+KV-LB16 and KV-LB11 are still 2.4 and 1.1). The logger lines name a different 12 of the 17 coinciding September levels
+(238.12, 199.16, 209.84, 243.13 among them), the same kPa coincidences. The notes now share 11 of 25 stump terms
+("climate", "alluvium" and "coal-measure" entered the term list because this note's stump paragraphs changed; the
+notes' text did not). The reader's pass-1 record is kept at the foot of `leak_check_report.md`. Harmless.
 
 `python3 .claude/skills/leak-check/leak.py task182 --asof 2026-10-13 --quiet` on the stage 6b cut: **REVIEW, no LEAK**
 (19 REVIEW lines, the same four kinds as at stage 4; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; the container audit finds no
@@ -551,11 +591,11 @@ card's six.
   alluvial and basalt baseline at a peak, so the decline from the 2012-2022 mean (rung 1b) could not clear its trigger
   with 25 per cent; and with any milder drought every coal-measure response short of a five-year delay was falling by
   2026.
-- **Magnitudes.** A2 to A7 fell 4.63 to 5.23 m (target 2.5 to 4.5), B4 8.70 (6.5 to 7.5), A1 8.78 with a 4.6 m drawdown
+- **Magnitudes.** A2 to A7 fell 4.63 to 5.23 m (target 2.5 to 4.5), B4 8.70 (6.5 to 7.5), A1 8.78 with a 4.4 m drawdown
   (5 to 6 and 2.8 to 3.5), the alluvial reference bores 4.84 and 5.02 (about 3) and the basalt reference 5.16 (about
   1.5). Rung 1b on the mean needs B4 at least 6.25 m below its 2012-2022 mean (its baseline sits 1.71 m above it), while
   rung 2 needs B4 less any reference at most 3.75, so the references must fall about 5 m; the pooled subtraction then
-  needs A1 at least 2.5 m above the reference mean. The coal-measure drawdowns are 8.2 to 9.3 m (target 6.5 to 9)
+  needs A1 at least 2.5 m above the reference mean. The coal-measure drawdowns are 8.3 to 9.3 m (target 6.5 to 9)
   because the rainfall-departure family runs about 1.4 m low on the coal measures.
 - **Response times.** The coal measures respond over 6.2 to 6.8 years with a strongly delayed shape (16); the alluvium
   140 to 200 days at shapes 1.5 to 2 (short shapes turned single storms into rises above ground at the gains the
@@ -621,3 +661,7 @@ retire.
   the addends' error capacity, a deterministic search over meter pairs and shifts reproduces every day's double.
 - The dip remark "dusty" (EM writes "Dusty"): the people scan read "Dusty Dogs" (beside "Dogs tied up") as a person.
   Renamed "dust about".
+- The coarse-grid gamma fit as the golden's printed decline (shapes in ten steps, 40 means, f in steps of 0.025): it
+  left KV-LB04 at RMSE 0.22 m where a continuous fit reaches 0.027, and 11 of the 18 one-decimal declines did not
+  reproduce (judge pass 1). The golden refits continuously and the decline is graded on a ±0.3 m band; the call, the
+  impaired set and the offers did not move.

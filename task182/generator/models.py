@@ -324,3 +324,141 @@ def fit_full(cl, step, days, levels, f_grid=F_GRID[::2]):
 
 def sep_value(cl, series, step):
     return float(np.mean(series[sep_times(cl, step)]))
+
+
+# ------------------------------------------------------------------ the continuous gamma fit (the golden's answer)
+
+GC_STARTS = 4
+
+
+def _kernel_full(n, mean, L, unit=1.0):
+    edges = np.arange(L + 1) * unit
+    return gamma_pdf_bins(n, mean, edges)
+
+
+def _lin_fit(P, E, y):
+    """y = c + g (P - f E) with g > 0 and 0 <= f <= 1, least squares. The feasible (g, -g f) form a convex cone, so the
+    optimum is the free solution when it lies inside, else the better of the two edges f = 0 and f = 1.
+    Returns (sse, g, f, c)."""
+    n = len(y)
+    best = None
+    A = np.vstack([np.ones(n), P, E]).T
+    coef, *_ = np.linalg.lstsq(A, y, rcond=None)
+    c, a, b = coef
+    if a > 0 and -a <= b <= 0:
+        r = y - A @ coef
+        return float(r @ r), float(a), float(-b / a), float(c)
+    for f in (0.0, 1.0):
+        z = P - f * E
+        zc = z - z.mean()
+        vz = float(zc @ zc)
+        if vz <= 0:
+            continue
+        g = float(zc @ (y - y.mean())) / vz
+        if g <= 0:
+            continue
+        cc = float(y.mean() - g * z.mean())
+        r = y - cc - g * z
+        s = float(r @ r)
+        if best is None or s < best[0]:
+            best = (s, g, f, cc)
+    return best if best is not None else (np.inf, 0.0, 0.0, float(y.mean()))
+
+
+def _nelder_mead(fun, x0, step=(0.15, 0.08), xtol=1e-7, ftol=1e-12, maxiter=600):
+    """A plain Nelder-Mead simplex in two dimensions (deterministic: fixed initial simplex, fixed coefficients)."""
+    xs = [np.array(x0, float)]
+    for i, s in enumerate(step):
+        x = np.array(x0, float)
+        x[i] += s
+        xs.append(x)
+    fs = [fun(x) for x in xs]
+    for _ in range(maxiter):
+        order = np.argsort(fs, kind="stable")
+        xs = [xs[i] for i in order]
+        fs = [fs[i] for i in order]
+        if max(np.abs(xs[i] - xs[0]).max() for i in (1, 2)) < xtol and fs[-1] - fs[0] <= ftol * max(1.0, abs(fs[0])):
+            break
+        cen = (xs[0] + xs[1]) / 2.0
+        xr = cen + (cen - xs[-1])
+        fr = fun(xr)
+        if fr < fs[0]:
+            xe = cen + 2.0 * (cen - xs[-1])
+            fe = fun(xe)
+            xs[-1], fs[-1] = (xe, fe) if fe < fr else (xr, fr)
+        elif fr < fs[1]:
+            xs[-1], fs[-1] = xr, fr
+        else:
+            xc = cen + 0.5 * (xs[-1] - cen) if fr >= fs[-1] else cen + 0.5 * (xr - cen)
+            fc = fun(xc)
+            if fc < min(fr, fs[-1]):
+                xs[-1], fs[-1] = xc, fc
+            else:
+                xs = [xs[0]] + [xs[0] + 0.5 * (x - xs[0]) for x in xs[1:]]
+                fs = [fs[0]] + [fun(x) for x in xs[1:]]
+    j = int(np.argmin(fs))
+    return xs[j], fs[j]
+
+
+def fit_gamma_continuous(cl, step, days, levels, starts=GC_STARTS):
+    """The gamma response to rainfall less f times evaporation with shape, mean response time and f optimised
+    continuously (gain and constant by least squares, f in [0, 1] by the cone solution). Starts from the best distinct
+    kernels of the wide grid (shapes 1 to 20, means 20 days to 12 years) and polishes each with Nelder-Mead in
+    (log(shape - 1 + 0.05), log mean); the full-length kernel keeps the objective smooth.
+    Returns the model at every time and the parameters, as fit_response does."""
+    p = cl.rain if step == "daily" else cl.rain_m
+    e = cl.pet if step == "daily" else cl.pet_m
+    unit = 1.0 if step == "daily" else 365.25 / 12.0
+    L = len(p)
+    pc, ec = p - p.mean(), e - e.mean()
+    ti, y = at_step(cl, days, levels, step)
+    cache = {}
+
+    def unpack(x):
+        return 0.95 + math.exp(x[0]), math.exp(x[1])
+
+    def series(x):
+        n, mean = unpack(x)
+        k = _kernel_full(n, mean, L, unit)
+        return conv(pc, k), conv(ec, k)
+
+    def obj(x):
+        key = (float(x[0]), float(x[1]))
+        if key in cache:
+            return cache[key][0]
+        n, mean = unpack(x)
+        if not (1.0 <= n <= 60.0 and 5.0 <= mean <= 20.0 * 365.25):
+            cache[key] = (np.inf, None)
+            return np.inf
+        XP, XE = series(x)
+        s = _lin_fit(XP[ti], XE[ti], y)
+        cache[key] = (s[0], s)
+        return s[0]
+
+    # the wide starting grid, profiled over f
+    XPg, XEg, meta = cl.regressors("gamma", step)
+    P, E = XPg[:, ti], XEg[:, ti]
+    scores = []
+    for kk in range(len(meta)):
+        s = _lin_fit(P[kk], E[kk], y)
+        scores.append(s[0])
+    order = np.argsort(scores, kind="stable")
+    picks = []
+    for kk in order:
+        n0, m0 = meta[kk]
+        if all(abs(math.log(m0 / m1)) > 0.3 or abs(math.log(n0 / n1)) > 0.3 for n1, m1 in picks):
+            picks.append((n0, m0))
+        if len(picks) == starts:
+            break
+    best = None
+    for n0, m0 in picks:
+        x0 = (math.log(max(n0 - 0.95, 0.05)), math.log(m0))
+        x, fx = _nelder_mead(obj, x0)
+        if best is None or fx < best[1]:
+            best = (x, fx)
+    x, sse = best
+    n, mean = unpack(x)
+    XP, XE = series(x)
+    _, g, f, c = cache[(float(x[0]), float(x[1]))][1]
+    model = c + g * (XP - f * XE)
+    return model, dict(kernel=(n, mean), f=f, gain=g, rmse=math.sqrt(sse / len(y)), n_obs=len(y), starts=picks)

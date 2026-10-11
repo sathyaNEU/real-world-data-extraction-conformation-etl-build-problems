@@ -143,7 +143,9 @@ def write_workbook(path, g, rows, offer_no):
     text = [
         "Each bore's own response to daily rainfall less a fitted share of areal potential evaporation (a gamma-shaped "
         "response: gain, mean response time and shape fitted to the bore) was fitted on its readings from the first "
-        "reading to 3 July 2022, before dewatering began on 4 July 2022.",
+        "reading to 3 July 2022, before dewatering began on 4 July 2022. Shape, mean response time and the "
+        "evaporation share were optimised continuously from a starting grid reaching 20 for the shape and 12 years "
+        "for the mean; gain and level by least squares.",
         "Run forward on the rainfall and evaporation since, the fitted response gives the bore's September 2026 level "
         "from the climate alone; the decline caused by the mine is that level less the September 2026 assessment level.",
         "Readings: static dips reduced to the measuring point in force on the day (MG-02 2.1, 2.2), the 2012 to 2014 "
@@ -157,7 +159,7 @@ def write_workbook(path, g, rows, offer_no):
     for i, t in enumerate(text, 3):
         c = ws2.cell(row=i, column=1, value=t)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws2.row_dimensions[i].height = 62
+        ws2.row_dimensions[i].height = max(62, 15 * math.ceil(len(t) / 95))
     hdr = ["Bore", "Readings fitted", "Mean response time (years)", "Shape", "Fit RMSE (m)"]
     for j, h in enumerate(hdr, 1):
         c = ws2.cell(row=9, column=j, value=h)
@@ -169,8 +171,8 @@ def write_workbook(path, g, rows, offer_no):
     for i, x in enumerate(rows, 10):
         fit = x["fit"]
         n, mean = fit["kernel"]
-        vals = [x["code"], fit["n_obs"], round(mean / 365.25, 2), n, round(fit["rmse"], 2)]
-        fmts = [None, "0", "0.00", "0.0", "0.00"]
+        vals = [x["code"], fit["n_obs"], round(mean / 365.25, 2), round(n, 1), round(fit["rmse"], 3)]
+        fmts = [None, "0", "0.00", "0.0", "0.000"]
         for j, (v, f) in enumerate(zip(vals, fmts), 1):
             c = ws2.cell(row=i, column=j, value=v)
             c.font = Font(size=9)
@@ -287,10 +289,10 @@ def write_memo(path, g, rows, offer_no, ev):
     dlo, dhi = min(x["drawdown"] for x in coal), max(x["drawdown"] for x in coal)
     a1 = alluv[0]
     _run(p, "The coal-measure bores have fallen only %.1f to %.1f m since their baseline assessments, which is why they "
-            "were never on our list. The coal measures answer rain at the outcrop over years, and these bores were still "
+            "were never on our list. The coal measures answer rain over six years or more, and these bores were still "
             "rising on the 2019-20 and 2020-21 wet seasons when dewatering began on 4 July 2022 (about %.1f to %.1f m a "
             "year through 2021 and 2022). Each bore's own record, run forward on the rain since, puts it %.1f to %.1f m "
-            "above where it stands now. The %s on %s is in the alluvium over the coal-measure subcrop east of the pit: "
+            "above where it stands now. The %s on %s is in the creek alluvium about a kilometre from the pit perimeter bores: "
             "%s m of its %s m fall is the mine's." % (lo, hi, EV["rise_lo"], EV["rise_hi"], dlo, dhi, a1["name"], a1["prop"],
                                                     "%.1f" % a1["drawdown"], m(a1["change"])))
     p = doc.add_paragraph()
@@ -306,7 +308,7 @@ def write_memo(path, g, rows, offer_no, ev):
         elif len([y for y, _ in lines if y["unit"] == "alluvium"]) == 0:
             lines.append((x, "your %s is %s m lower than at its June 2022 baseline; about %.1f m of that is the mine's and "
                              "the rest is the four failed wet seasons since 2022-23, much the fall the state's reference "
-                             "bores 20 to 30 km from the mine show." % (x["name"], m(x["change"]), x["drawdown"])))
+                             "bores 25 to 32 km from the mine show." % (x["name"], m(x["change"]), x["drawdown"])))
         elif len([y for y, _ in lines if y["unit"] == "alluvium"]) == 1:
             lines.append((x, "the %s has fallen %s m since June 2022, %.1f m of it from the mine; the creek alluvium has "
                              "been running down through four dry seasons on its own." % (x["name"], m(x["change"]), x["drawdown"])))
@@ -322,7 +324,7 @@ def write_memo(path, g, rows, offer_no, ev):
     p.paragraph_format.space_before = Pt(3)
     _run(p, "How the mine's share was separated. ", bold=True)
     _run(p, "For each of the 18 bores I fitted its own response to daily rainfall and evaporation on its record before "
-            "4 July 2022 (the alluvium answers within months, the basalt over one to two years, the coal measures over "
+            "4 July 2022 (the alluvium answers within months, the basalt within one to two years, the coal measures over "
             "six years or more), ran it forward on the rain and evaporation since, and took the mine's share as the gap "
             "between that level and the bore's September 2026 level. Fitted the same way, the three state reference "
             "bores, which the pit cannot reach, are tracked to within %.1f m through September 2026. The same five bores "

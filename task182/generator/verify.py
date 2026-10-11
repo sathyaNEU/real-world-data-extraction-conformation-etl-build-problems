@@ -1,7 +1,8 @@
 """Independent verifier. Reads only target/ and golden/, imports nothing from the generator, and recomputes on its
 own code path: every bore's September 2026 assessment level and change since its baseline, the naive rungs, and
-the main call (a monthly gamma response to rainfall and evaporation fitted before 4 July 2022, written afresh),
-then matches the golden workbook and note."""
+the main call (a monthly gamma response to rainfall and evaporation fitted before 4 July 2022, written afresh), the
+decline column (a daily gamma response searched continuously, within the stated bands), then matches the golden
+workbook and note."""
 import csv
 import datetime as dt
 import math
@@ -233,6 +234,81 @@ def main(target, golden):
         sse, gain, c0, xp, xe, f = best
         dd[c] = c0 + gain * (xp[sep] - f * xe[sep]) - level[c]
     call = designated(dd)
+    # the decline column: each bore's daily gamma response, shape, mean and f searched continuously (a compass search
+    # in log shape and log mean from the best of a wide start grid; f and the gain by constrained least squares),
+    # fitted on its static dips and logger daily means to 3 July 2022
+    rain_d, pet_d = [], []
+    with open(os.path.join(target, "daily_climate_1990-2026.csv"), newline="") as fh:
+        for r in csv.DictReader(fh):
+            rain_d.append(float(r["rain_mm"]))
+            pet_d.append(float(r["morton_apet_mm"]))
+    Pd = np.array(rain_d) - np.mean(rain_d)
+    Ed = np.array(pet_d) - np.mean(pet_d)
+    nd = len(Pd)
+    nfft = 1 << (2 * nd).bit_length()
+    FP, FE = np.fft.rfft(Pd, nfft), np.fft.rfft(Ed, nfft)
+    tt = np.arange(nd) + 0.5
+
+    def responses(n, mean_d):
+        a = mean_d / n
+        w = np.exp((n - 1) * np.log(tt) - tt / a - math.lgamma(n) - n * math.log(a))
+        w /= w.sum()
+        fw = np.fft.rfft(w, nfft)
+        return np.fft.irfft(FP * fw, nfft)[:nd], np.fft.irfft(FE * fw, nfft)[:nd]
+
+    def lsq(xp, xe, y):
+        best = (np.inf, None)
+        X = np.column_stack([np.ones_like(y), xp, xe])
+        sol = np.linalg.lstsq(X, y, rcond=None)[0]
+        if sol[1] > 0 and -sol[1] <= sol[2] <= 0:
+            res = y - X @ sol
+            return float(res @ res), (sol[0], sol[1], -sol[2] / sol[1])
+        for f in (0.0, 1.0):
+            z = xp - f * xe
+            A_ = np.column_stack([np.ones_like(y), z])
+            c0, gn = np.linalg.lstsq(A_, y, rcond=None)[0]
+            if gn > 0:
+                res = y - A_ @ np.array([c0, gn])
+                if res @ res < best[0]:
+                    best = (float(res @ res), (c0, gn, f))
+        return best
+
+    cal_end = D(2022, 7, 3)
+    sep_days = np.array([(D(2026, 9, 1) - EPOCH).days + i for i in range(30)])
+    dd_daily = {}
+    for c in lh:
+        pts = [((d_ - EPOCH).days, x) for d_, x in readings(c) if d_ <= cal_end]
+        ix = np.array([p_[0] for p_ in pts])
+        y = np.array([p_[1] for p_ in pts])
+        cand = []
+        for n in (1.0, 1.5, 2.0, 3.0, 5.0, 8.0, 12.0, 16.0, 20.0):
+            for mean_d in np.exp(np.linspace(math.log(30.0), math.log(12 * 365.25), 32)):
+                xp, xe = responses(n, mean_d)
+                cand.append((lsq(xp[ix], xe[ix], y)[0], math.log(n), math.log(mean_d)))
+        cand.sort()
+        best = None
+        for sse0, u, v in cand[:3]:
+            step_ = 0.2
+            cur = sse0
+            while step_ > 1e-4:
+                moved = False
+                for du, dv in ((step_, 0), (-step_, 0), (0, step_), (0, -step_)):
+                    nu, nv = u + du, v + dv
+                    if math.exp(nu) < 1.0:
+                        continue
+                    xp, xe = responses(math.exp(nu), math.exp(nv))
+                    sc = lsq(xp[ix], xe[ix], y)[0]
+                    if sc < cur:
+                        cur, u, v, moved = sc, nu, nv, True
+                        break
+                if not moved:
+                    step_ /= 2
+            if best is None or cur < best[0]:
+                best = (cur, u, v)
+        _, u, v = best
+        xp, xe = responses(math.exp(u), math.exp(v))
+        _, (c0, gn, f) = lsq(xp[ix], xe[ix], y)
+        dd_daily[c] = float(np.mean(c0 + gn * (xp[sep_days] - f * xe[sep_days]))) - level[c]
     # against the golden workbook and note
     wb = openpyxl.load_workbook(os.path.join(golden, "bore_impact_assessment.xlsx"), data_only=True)
     ws = wb["Assessment"]
@@ -245,6 +321,9 @@ def main(target, golden):
         assert r["Change since baseline (m)"] == round(change[c], 2), (c, r["Change since baseline (m)"], change[c])
         assert (r["Impaired capacity"] == "Yes") == (c in call), c
         assert abs(r["Decline caused by the mine (m)"] - dd[c]) <= 0.6, (c, r["Decline caused by the mine (m)"], dd[c])
+        band = 0.4 if c == "KV-LB06" else 0.3
+        assert abs(r["Decline caused by the mine (m)"] - dd_daily[c]) <= band, (c, r["Decline caused by the mine (m)"],
+                                                                                dd_daily[c])
     owners = defaultdict(list)
     for c in call:
         owners[lh[c]["Owner"]].append(c)
@@ -264,10 +343,13 @@ def main(target, golden):
     for name, s in rungs.items():
         assert s != call, name
     print("verify: OK. %d bores impaired (%s), %d offers; 18 levels and 18 changes match the workbook exactly; "
-          "drawdowns within 0.6 m of the workbook (largest gap %.2f m); naive rungs: %s" % (
-              len(call), ", ".join(call), len(owners), max(abs(rows[c]["Decline caused by the mine (m)"] - dd[c]) for c in lh),
+          "declines within their bands on its own daily fit (largest gap %.2f m; monthly coarse fit %.2f m); "
+          "naive rungs: %s" % (
+              len(call), ", ".join(call), len(owners),
+              max(abs(rows[c]["Decline caused by the mine (m)"] - dd_daily[c]) for c in lh),
+              max(abs(rows[c]["Decline caused by the mine (m)"] - dd[c]) for c in lh),
               "; ".join("%s %s" % (k, ",".join(v)) for k, v in rungs.items())))
-    return dict(call=call, level=level, change=change, dd=dd, rungs=rungs)
+    return dict(call=call, level=level, change=change, dd=dd, dd_daily=dd_daily, rungs=rungs)
 
 
 if __name__ == "__main__":

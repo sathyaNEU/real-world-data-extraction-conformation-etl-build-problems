@@ -26,7 +26,7 @@ TAKE = "pit_dewatering_2022-2026.csv"
 REGISTER = "landholder_bore_register.xlsx"
 PUMPED = re.compile(r"\bpump(ed|ing)?\b", re.I)
 NOT_PUMPED = re.compile(r"\bpump off\b", re.I)
-PRIMARY = ("gamma", "first", "daily", "logger")
+PRIMARY = ("gammac", "first", "daily", "logger")   # the continuous gamma fit; the grid keeps the coarse one
 
 
 # ------------------------------------------------------------------ the register
@@ -280,7 +280,7 @@ def evidence(g):
     for k in g["REF"]:
         days, lev = A.series(obs[k], "logger")
         pre = days <= M.dnum(A.CAL_END)
-        model, info = M.fit_response(cl, "gamma", "daily", days[pre], lev[pre])
+        model, info = M.fit_gamma_continuous(cl, "daily", days[pre], lev[pre])
         post = (days > M.dnum(A.CAL_END)) & (days <= M.dnum(A.SEP[1]))
         mi = np.array([M.month_index(M.D0 + dt.timedelta(days=int(x))) for x in days[post]])
         res = lev[post] - model[days[post]]
