@@ -33,7 +33,8 @@ protection_asset_register_2026-09-30.csv  (one row per asset)
   region            region on the asset record when it was created (not updated by the 2024 reorganization)
 
 eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
-assets, station DC systems, breaker trip circuits and instrument transformers, and P&C station inspections)
+assets, station DC systems, breaker trip circuits and instrument transformers, P&C station inspections, and the crews'
+returns and disposal work at the stores)
   wo_number         work-order number, allocated when the work order is entered (shared numbering with lines and
                     metering work)
   reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
@@ -44,7 +45,7 @@ assets, station DC systems, breaker trip circuits and instrument transformers, a
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
   asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
                     blank for station inspections and for disposal
-  sub_code, region  substation, and the region code the work order was raised with
+  sub_code, region  substation (blank for work at a store), and the region code the work order was raised with
   failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
                     returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
                     COMMS communications card (blank otherwise, including no fault found and follow-up work)
@@ -67,6 +68,9 @@ spares_stock_2026-09-30.csv  (one row per item, location and stock state at clos
   uom               unit of issue (EA each)
   quantity          quantity in that state at the count
   unit_cost_cad     moving average cost
+  A module back from the manufacturer's repair centre comes by overnight courier and is received to SERVICEABLE the
+  day it arrives. A failed module on a store's returns shelf, waiting to go to the repair centre or for disposal, is
+  not stock and is not in this extract (see removed_to in the rotating-item history).
 
 psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installation)
   serial_no         module serial number; a module repaired by the manufacturer keeps its serial
@@ -77,6 +81,9 @@ psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installat
   removed_date      date removed (blank while fitted)
   removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
   removal_wo        work order the module was removed under
-  removed_to        where the module went: the returns shelf of the store serving the station, or SCRAP
-  disposal_ref      e-waste manifest the module was scrapped under
+  removed_to        where the module went when it came out: the returns shelf of the store serving the station, or
+                    SCRAP with a relay retired by a station rebuild
+  disposal_ref      e-waste manifest the module was scrapped under: with its relay, or from the returns shelf when
+                    the store scrapped a failed module on bench check instead of sending it to the manufacturer (the
+                    disposal work order gives what the check found)
   record_source     GO-LIVE LOAD or EAM

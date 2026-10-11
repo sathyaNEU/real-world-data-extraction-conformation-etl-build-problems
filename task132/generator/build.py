@@ -112,13 +112,15 @@ def build(out, docs=True):
     X.write_csv(reg, p("register"))
     eq = X.equipment(subs, reg, created_of)
     sub_of = {int(k): s for k, s in zip(fl["relay_key"], fl["sub_code"])}
-    sp2, ships = X.psu_cycle(sp, ret, key2aid)
+    sp2, ships = X.psu_cycle(sp, ret, key2aid, reg)
     fits = X.refit_plan(f, sp)
     rebuilt = set(prog["sub_code"][prog["cut_days"].map(lambda d: isinstance(d, list))])
     ewaste = X.ewaste_plan(prog, reg)
-    wo, keymap = X.work_orders(subs, reg, f, sp2, ships, rebuilt, fits, eq, ewaste)
+    scrap, scrapped = X.scrap_plan(f, ret, sp2, subs, sub_of, {e["manifest"]: e["date"] for e in ewaste})
+    wo, keymap = X.work_orders(subs, reg, f, sp2, ships, rebuilt, fits, eq, ewaste, scrap)
     X.write_csv(wo, p("wo"), decimals={"labour_hours": 2})
-    X.write_csv(X.module_history(sp2, keymap, fits, yearonly, subs, sub_of, {e["sub"]: e["manifest"] for e in ewaste}), p("hist"))
+    X.write_csv(X.module_history(sp2, keymap, fits, yearonly, subs, sub_of, {e["sub"]: e["manifest"] for e in ewaste},
+                                 {m["key"]: m["manifest"] for m in scrapped if m["manifest"]}), p("hist"))
     X.write_csv(subs[["sub_code", "sub_name", "region", "legacy_region", "station_type"]], p("subs"))
     rma = X.rma_log(ships, keymap)
     X.write_csv(X.stock(int((rma["result"] == "OPEN").sum())), p("stock"), decimals={"unit_cost_cad": 2})

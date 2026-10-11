@@ -21,6 +21,22 @@ TASK = os.path.dirname(HERE)
 T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
 n_ok = 0
 LOTS = 13
+# every graded figure as submission.md blocks 1 and 4 state it, and the unrounded values behind them: the realism
+# repairs after reader round 6 move none of them
+FROZEN = dict(
+    lots=13, modules=325, cost=638625, avail=15, serviceable=12, at_repair=3, quarantine=7,
+    lam=298.60587831924823, lam_1=298.6, cover_1=99.1, cover12_1=83.6,
+    by_year={2026: 11.585843978150951, 2027: 45.064933292639836, 2028: 44.67490922568835, 2029: 42.88135692728273,
+             2030: 40.63767488485243, 2031: 36.082141907792796, 2032: 30.028448006972155, 2033: 23.875543185056756,
+             2034: 15.96398905933716, 2035: 7.81103785145221},
+    by_year_1={2026: 11.6, 2027: 45.1, 2028: 44.7, 2029: 42.9, 2030: 40.6, 2031: 36.1, 2032: 30.0, 2033: 23.9, 2034: 16.0,
+               2035: 7.8},
+    by_region={"Central": 54.70509663935361, "North": 117.47403097737761, "South": 126.42675070251525},
+    by_region_1={"North": 117.5, "Central": 54.7, "South": 126.4},
+    in_service={2027: 1163, 2028: 1094, 2029: 973, 2030: 884, 2031: 783, 2032: 695, 2033: 564, 2034: 373, 2035: 201},
+    settings_1={8: 0.0, 9: 0.0, 10: 2.6, 11: 32.2, 12: 83.6, 13: 99.1, 14: 100.0, 15: 100.0, 16: 100.0, 17: 100.0, 18: 100.0,
+             19: 100.0, 20: 100.0, 21: 100.0, 22: 100.0},
+    n_fail=210, counts=[15, 49, 68, 66, 12])
 
 
 FAILS = [] if os.environ.get("CHECKS_ALL") else None
@@ -98,6 +114,8 @@ def main():
     ok((hist0["removal_reason"] == "FAILED").sum() >= len(f), "the history records a removal for every failure")
     realism(reg0, wo0, hist0, subs0, plan0, f)
     repair3(reg0, wo0, hist0, subs0, plan0, f, s)
+    no_move(s)
+    cleanup(reg0, wo0, hist0, subs0, plan0, f, s)
     if FAILS:
         print("CHECKS FAIL", len(FAILS))
         for m in FAILS:
@@ -465,6 +483,160 @@ def repair3(reg, wo, hist, subs, plan, f, s):
     finally:
         shutil.rmtree(tmp)
     ok(s["by_region"].keys() == set(subs["region"]), "regions are the current regions of substations.csv")
+
+
+def no_move(s):
+    """the graded figures are the ones submission.md states, down to their unrounded values"""
+    F = FROZEN
+    ok(s["lots"] == F["lots"] and s["modules"] == F["modules"] and round(s["cost"]) == F["cost"],
+       "%d lots, %d modules, CAD %d" % (s["lots"], s["modules"], s["cost"]))
+    ok(s["avail"] == F["avail"] and s["serviceable"] == F["serviceable"] and s["at_repair"] == F["at_repair"]
+       and s["quarantine"] == F["quarantine"], "15 modules available: 12 serviceable and 3 at repair, 7 in quarantine")
+    ok(abs(s["lam"] - F["lam"]) < 1e-6 and round(s["lam"], 1) == F["lam_1"], "expected failures unmoved (%.6f)" % s["lam"])
+    ok(round(100 * s["cover"], 1) == F["cover_1"] and round(100 * s["settings"][12]["cover"], 1) == F["cover12_1"],
+       "cover 99.1 per cent at 13 lots and 83.6 at 12")
+    ok(set(s["by_year"]) == set(F["by_year"]) and all(abs(s["by_year"][y] - v) < 1e-6 and round(s["by_year"][y], 1) == F["by_year_1"][y]
+                                                      for y, v in F["by_year"].items()), "every year's expected failures unmoved")
+    ok(set(s["by_region"]) == set(F["by_region"]) and all(abs(s["by_region"][g] - v) < 1e-6 and round(s["by_region"][g], 1) == F["by_region_1"][g]
+                                                          for g, v in F["by_region"].items()), "every region's expected failures unmoved")
+    ok(s["in_service"] == F["in_service"], "relays supported on 1 January unmoved")
+    ok(all(round(100 * s["settings"][n]["cover"], 1) == v and round(s["settings"][n]["cost"]) == n * W.LOT * 1965
+           for n, v in F["settings_1"].items()), "every lot setting's cover and cost unmoved")
+    ok(s["n_fail"] == F["n_fail"] and [int(c) for c in s["counts"]] == F["counts"], "210 failures in the same bands")
+    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
+    toks = ["Order 13 lots (325 modules)", "CAD 638,625", "**298.6**", "**15**", "**99.1%**", "**83.6%**",
+            "October to December 2026: %.1f" % F["by_year_1"][2026]]
+    toks += ["%d lots: %.1f%%, CAD %s" % (n, v, "{:,}".format(n * W.LOT * 1965)) for n, v in F["settings_1"].items()]
+    toks += ["%s: %.1f" % (g, v) for g, v in F["by_region_1"].items()]
+    toks += ["%d: %.1f; %s relays" % (y, F["by_year_1"][y], "{:,}".format(F["in_service"][y])) for y in range(2027, 2036)]
+    ok(all(t in sub for t in toks), "submission.md states every frozen figure (%d tokens)" % len(toks))
+
+
+CLAUSE_STOP = set("the a an to on at for from with and & of in up off out by then as is was be it w/ into after before till "
+                  "until pending not no".split())
+
+
+def cleanup(reg, wo, hist, subs, plan, f, s):
+    """the cleanup after reader round 6, none of which moves a graded figure (no_move): module serials against the
+    relay serials, a recorded end for every failed module, crew text without a clause library, the notice on
+    Veldtek's letterhead, the program notes against the RTU-only rows, and the rebuilds' modules"""
+    import sim as S
+    d = lambda x: dt.date.fromisoformat(x) if x else None
+    rows = list(openpyxl.load_workbook(os.path.join(T, "veldtek_rma_log_vpr340_psu.xlsx")).active.iter_rows(min_row=2, values_only=True))
+    # module serials: Veldtek numbers every module it builds, the one in each relay and the spares, so its module
+    # numbers run ahead of its relay numbers, ours take about the share of them we take of its relays, and they run in
+    # order of manufacture under the date code
+    num = lambda x: int(x.rsplit("-", 1)[1])
+    code = lambda x: (1900 + int(x.split("-")[1])) if int(x.split("-")[1]) > 50 else (2000 + int(x.split("-")[1]))
+    psu = sorted(set(hist["serial_no"]) | {r[2] for r in rows})
+    rel = list(reg[reg["model"] == "VPR-340"]["serial_no"])
+    ok(all(re.fullmatch(r"PS02-\d\d-\d{5}", x) for x in psu), "module serials keep the PS02-yy-nnnnn form")
+    pspan = max(map(num, psu)) - min(map(num, psu)) + 1
+    rspan = max(map(num, rel)) - min(map(num, rel)) + 1
+    ok(pspan >= 1.15 * rspan and len(psu) / pspan <= 1.1 * len(rel) / rspan,
+       "%d module serials over %d numbers, %d relays over %d" % (len(psu), pspan, len(rel), rspan))
+    by_num = sorted(psu, key=num)
+    ok(all(code(a) <= code(b) for a, b in zip(by_num, by_num[1:])), "module numbers run in date-code order")
+    rfirst, pfirst = {}, {}
+    for x in rel:
+        rfirst[code(x)] = min(num(x), rfirst.get(code(x), num(x)))
+    for x in psu:
+        pfirst[code(x)] = min(num(x), pfirst.get(code(x), num(x)))
+    ok(all(pfirst[y] >= rfirst[y] for y in pfirst if y in rfirst), "each year's module numbers start above its relay numbers")
+    ok(all(code(x) <= fit.year for x, fit in zip(hist["serial_no"], hist["fitted"])), "no module fitted before its date code")
+    # every failed module since go-live ends somewhere on record: at Veldtek under an RMA it was shipped on, or scrapped
+    # by the store on bench check under an e-waste manifest, on a disposal work order at the store that names it; only a
+    # module removed in the months before the count can still be on a returns shelf
+    log = wo[wo["work_type"] == "LOG"]
+    fits = {}
+    for x, fit in zip(hist["serial_no"], hist["fitted"]):
+        fits.setdefault(x, []).append(fit)
+    fail = hist[hist["removal_reason"] == "FAILED"]
+    n_rma = n_scrap = 0
+    pending = []
+    for x, rm, ref in zip(fail["serial_no"], fail["removed"], fail["disposal_ref"]):
+        rma = [r for r in rows if r[2] == x and r[5].date() >= rm]
+        if ref:
+            dw = log[log["description"].str.contains(ref, regex=False)]
+            ok(len(dw) == 1 and x in dw["description"].iloc[0] and dw["sub_code"].iloc[0] == "" and dw["asset_id"].iloc[0] == ""
+               and d(dw["completed_date"].iloc[0]) >= rm and not rma and not any(y > rm for y in fits[x]),
+               "%s scrapped by the store under %s and not seen again" % (x, ref))
+            n_scrap += 1
+        elif rma:
+            ship = log[log["description"].str.contains(x, regex=False) & log["reported_date"].map(lambda y: d(y) >= rm)]
+            ok(len(ship) >= 1, "%s shipped to Veldtek on a logistics work order" % x)
+            n_rma += 1
+        else:
+            pending.append(rm)
+    ok(n_scrap >= 60 and n_rma >= 80 and len(pending) <= 8 and all(y >= dt.date(2026, 5, 1) for y in pending),
+       "failed modules: %d to Veldtek, %d scrapped by the stores, %d removed since May 2026 still on a returns shelf"
+       % (n_rma, n_scrap, len(pending)))
+    man_date = []
+    for t, rep, done, sc in zip(log["description"], log["reported_date"], log["completed_date"], log["sub_code"]):
+        m = re.search(r"EW(\d\d)-(\d{4})", t)
+        if m and "SC-2021-118" in t:
+            man_date.append((d(rep) if sc else d(done), int(m.group(1)), int(m.group(2))))
+    man_date.sort()
+    ok(len({(a, b) for _, a, b in man_date}) == len(man_date)
+       and all(b[2] > a[2] for a, b in zip(man_date, man_date[1:]) if a[1] == b[1]),
+       "%d e-waste manifests, numbered in collection order through each year" % len(man_date))
+    disp = log[(log["sub_code"] == "") & log["description"].str.contains("SC-2021-118", regex=False)]
+    ok(len(disp) == len(set(fail["disposal_ref"]) - {""}) and disp["asset_id"].eq("").all()
+       and disp["region"].isin(["North", "Central", "South", "Lakeshore", "Ridge", "Valley", "Harbour"]).all(),
+       "%d disposal work orders at the stores, one for each manifest" % len(disp))
+    # the count: open RMAs are at repair, and a module Veldtek returned comes back by overnight courier and is
+    # SERVICEABLE from the next working day, so the one returned on 29 September is in the count on the 30th
+    stock = pd.read_csv(os.path.join(T, E.F["stock"]), dtype={"item_no": str})
+    ps = stock[stock["item_code"] == "VPR340-PSU-02"]
+    ok(int(ps[ps["stock_state"] == "AT REPAIR"]["quantity"].sum()) == sum(r[6] == "OPEN" for r in rows), "at repair = open RMAs")
+    shelf = []
+    for r in rows:
+        if r[7] is None or r[7].date() < W.MIGRATION:
+            continue
+        back = r[7].date()
+        if not any(y >= back for y in fits.get(r[2], [])) and not any(q[2] == r[2] and q[5] > r[5] for q in rows):
+            shelf.append(back)
+    ok(len(shelf) <= s["serviceable"] and all(S.add_bdays(b + dt.timedelta(days=1), 0) <= W.ASOF for b in shelf)
+       and dt.date(2026, 9, 29) in shelf, "%d repaired module(s) back on the shelf by the count, the 29 September return among them" % len(shelf))
+    dic = " ".join(_text(os.path.join(T, "eam_extract_dictionary.txt")).split())
+    ok("overnight courier" in dic and "received to SERVICEABLE the day it arrives" in dic and "is not stock" in dic
+       and "blank for work at a store" in dic,
+       "the dictionary says how returns, failed modules and store work are booked")
+    # crew text: a clause comes back on one crew's work orders, not across crews
+    cw = wo[wo["work_type"].isin(["CM", "EM", "LOG"])]
+    clause = {}
+    for t, c in zip(cw["description"], cw["crew"]):
+        for p in re.split(r"\. |, | - |; | / ", t):
+            p = re.sub(r"(?:\b(?:s/n:?|sn|ser) |#)?\bps02-\d\d-\d+\b|\b(?:f-?\d+|fdr ?\d+|feeder \d+|wo\d+)\b", "#",
+                       p.strip().strip(".").lower())
+            if len([w for w in p.split() if w != "#" and w not in CLAUSE_STOP]) >= 4:
+                clause.setdefault(p, {})
+                clause[p][c] = clause[p].get(c, 0) + 1
+    out = {p: sum(v.values()) - max(v.values()) for p, v in clause.items()}
+    worst = max(out, key=out.get)
+    ok(out[worst] <= 3, "no clause of four or more words recurs more than 3 times outside the crew that writes it most "
+                        "(worst '%s', %d)" % (worst, out[worst]))
+    for phrase in ("relay restarts when panel door closed", "reclosing blocked until relay back"):
+        ok(sum(phrase in t.lower() for t in cw["description"]) <= 3, "'%s' is an odd entry, not a stock phrase" % phrase)
+    # the notice on Veldtek's letterhead with its reference, ordering terms and a contact; lot size and price as they were
+    eol = " ".join(_text(os.path.join(T, "veldtek_vpr340_eol_notice.pdf")).split())
+    ok(all(x in eol for x in ("VELDTEK", "PROTECTION SYSTEMS INC.", "Mississauga", "Tel ", "Notice no. EOL-2026-07", "Ordering",
+                              "purchase order", "lots of 25", "CAD 1,965.00 per module", "CAD 49,125.00 per lot", "net 30",
+                              "Contact", "@veldtek.ca")) and W.LOT == 25 and W.UNIT_PRICE == 1965.0,
+       "the notice carries Veldtek's letterhead, its reference, ordering terms and a contact")
+    # the program: no RTU-only scheme on the approved sheet, as its notes say
+    wbp = openpyxl.load_workbook(os.path.join(T, E.F["prog"]))
+    rtu26 = [r for r in wbp["Approved 2026"].iter_rows(min_row=4, values_only=True) if r[2] and str(r[5]).strip() == "RTU"]
+    rtu25 = [r for r in wbp["2025 plan (superseded)"].iter_rows(min_row=4, values_only=True) if r[2] and str(r[5]).strip() == "RTU"]
+    notes = " ".join(str(r[0]) for r in wbp["Notes"].iter_rows(values_only=True))
+    ok(not rtu26 and rtu25 and "RTU-only schemes moved to the SCADA upgrade program" in notes,
+       "no RTU-only scheme on the approved sheet, as the notes say (%d on the 2025 plan)" % len(rtu25))
+    # the rebuilds' modules went with their relays because the rebuilds came before the end-of-life notice
+    man = set(hist[hist["removal_reason"] == "ASSET RETIRED"]["disposal_ref"])
+    rb = log[log["description"].map(lambda t: any(m in t for m in man))]
+    ok(len(rb) == len(man) and all(re.search(r"veldtek", t, re.I) and re.search(r"psu", t, re.I) for t in rb["description"])
+       and all(d(x) < W.NOTICE_DATE for x in rb["reported_date"]),
+       "each rebuild's e-waste order says why the modules went with the relays, before the end-of-life notice")
 
 
 if __name__ == "__main__":

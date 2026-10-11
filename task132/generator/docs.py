@@ -311,27 +311,91 @@ def procedure_plan(texts):
     return out
 
 
+VELDTEK_BLUE = RGBColor(0x1F, 0x3A, 0x5F)
+VELDTEK_GREY = RGBColor(0x59, 0x63, 0x6E)
+
+
+def _rule(par, color="1F3A5F", size=12, where="bottom"):
+    """a paragraph border line, the way a letterhead template carries its rule"""
+    ppr = par._p.get_or_add_pPr()
+    bdr = OxmlElement("w:pBdr")
+    b = OxmlElement("w:" + where)
+    for k, v in (("w:val", "single"), ("w:sz", str(size)), ("w:space", "4"), ("w:color", color)):
+        b.set(qn(k), v)
+    bdr.append(b)
+    ppr.append(bdr)
+
+
+def _run(par, text, size, bold=False, color=None, spacing=None):
+    r = par.add_run(text)
+    r.font.size = Pt(size)
+    r.bold = bold
+    if color is not None:
+        r.font.color.rgb = color
+    if spacing is not None:
+        rpr = r._r.get_or_add_rPr()
+        sp = OxmlElement("w:spacing")
+        sp.set(qn("w:val"), str(spacing))
+        rpr.append(sp)
+    return r
+
+
 def eol_pdf(path):
+    """Veldtek's product end-of-life notice on its letterhead, as its lifecycle team exported it from LibreOffice Writer"""
     d = _doc(font="Liberation Sans", size=10, author="George Ray", title="Product end-of-life notice EOL-2026-07")
-    _p(d, "VELDTEK PROTECTION SYSTEMS INC.", bold=True, size=11, after=0)
-    _p(d, "Lifecycle Services  \u00b7  88 Cardinal Gate, Unit 4, Mississauga ON  L5T 2W8", size=8, after=10)
-    _p(d, "Product end-of-life notice EOL-2026-07", style="Heading 1", after=2)
-    _p(d, "August 20, 2026", after=10)
+    sec = d.sections[0]
+    sec.top_margin = Cm(1.5)
+    sec.header_distance = Cm(0.9)
+    sec.footer_distance = Cm(0.9)
+    head = sec.header.paragraphs[0]
+    _run(head, "VELDTEK", 17, bold=True, color=VELDTEK_BLUE, spacing=30)
+    _run(head, "   PROTECTION SYSTEMS INC.", 9, bold=True, color=VELDTEK_BLUE, spacing=10)
+    head.paragraph_format.space_after = Pt(1)
+    addr = sec.header.add_paragraph()
+    _rule(addr)
+    _run(addr, "88 Cardinal Gate, Unit 4, Mississauga, Ontario  L5T 2W8   \u00b7   Tel 905 555 0142   \u00b7   "
+               "www.veldtek.ca", 8, color=VELDTEK_GREY)
+    addr.paragraph_format.space_after = Pt(0)
+    _p(d, "Product end-of-life notice", style="Heading 1", after=4)
+    t = d.add_table(rows=0, cols=2)
+    t.style = "Table Grid"
+    for k, v in (("Notice no.", "EOL-2026-07"), ("Date", "August 20, 2026"),
+                 ("Product", "VPR-340 feeder protection relay"),
+                 ("Part affected", "VPR340-PSU-02 power supply module, 48-250 V DC"),
+                 ("Notice type", "Last-time buy and end of repair"),
+                 ("Earlier notice", "EOL-2018-04, VPR-340 relay withdrawn from sale")):
+        cells = t.add_row().cells
+        _cell(cells[0], k, bold=True, size=9)
+        _cell(cells[1], v, size=9)
+    _widths(t, (3.6, 12.4))
+    _p(d, "", after=2)
     _p(d, "To: customers operating VPR-340 feeder protection relays", after=2)
-    _p(d, "Re: VPR340-PSU-02 power supply module, last-time buy and end of repair", bold=True, after=8)
-    body = [
+    _p(d, "Re: VPR340-PSU-02 power supply module, last-time buy and end of repair", bold=True, after=6)
+    for tx in [
         "The VPR-340 relay was withdrawn from sale in 2018. Its power supply module, part VPR340-PSU-02, depends on "
         "components that our suppliers have now discontinued, and we will build one final production run.",
         "Last-time-buy orders for VPR340-PSU-02 must reach us by December 15, 2026. Modules are sold in lots of 25 at "
         "CAD 1,965.00 per module (CAD 49,125.00 per lot), delivery by March 31, 2027. No orders are accepted after the "
         "final run.",
-        "Repair service for VPR340-PSU-02 ends on December 15, 2026. Modules already at our repair centre under an open "
-        "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. A repair "
-        "replaces the module's electrolytic capacitors and any failed input fuse, DC-DC converter stage or supervision "
-        "relay, and ends with a full-load test. Modules received after December 15, 2026 will be sent back unrepaired.",
-    ]
-    for tx in body:
-        _p(d, tx, after=6)
+    ]:
+        _p(d, tx, after=5)
+    _p(d, "Ordering", style="Heading 2", after=2)
+    for tx in [
+        "Send your purchase order to the Lifecycle order desk at orders.lifecycle@veldtek.ca, quoting EOL-2026-07 and part "
+        "number VPR340-PSU-02. Order in whole lots of 25 modules; we acknowledge each order in writing within five working "
+        "days.",
+        "Prices are in Canadian dollars and exclude HST. Last-time-buy modules are delivered to your stores with freight "
+        "included, in one shipment for each order. Payment terms are net 30 days from invoice.",
+        "Last-time-buy orders cannot be cancelled or reduced once acknowledged, and modules bought under this notice are "
+        "not returnable.",
+    ]:
+        _p(d, tx, after=4)
+    _p(d, "Repair service", style="Heading 2", after=2)
+    _p(d, "Repair service for VPR340-PSU-02 ends on December 15, 2026. Modules already at our repair centre under an open "
+          "RMA, and modules received under an RMA by that date, will be repaired or replaced and returned. A repair "
+          "replaces the module's electrolytic capacitors and any failed input fuse, DC-DC converter stage or supervision "
+          "relay, and ends with a full-load test. Modules received after December 15, 2026 will be sent back unrepaired.",
+       after=6)
     t = d.add_table(rows=1, cols=2)
     t.style = "Table Grid"
     for c, v in enumerate(("Key dates", "")):
@@ -343,19 +407,18 @@ def eol_pdf(path):
         _cell(cells[0], k, size=9.5)
         _cell(cells[1], v, size=9.5)
     _widths(t, (9.0, 5.0))
-    _p(d, "", after=4)
-    for tx in [
-        "The processor, input/output and display cards of the VPR-340 remain available until further notice. Customers "
-        "planning feeder protection replacement can migrate VPR-340 settings to the VPR-560 platform with our conversion "
-        "tool; application notes are on the customer portal.",
-        "For quotations and order acknowledgements please contact your Veldtek account manager or open a Lifecycle case on "
-        "the customer portal, quoting EOL-2026-07.",
-    ]:
-        _p(d, tx, after=6)
-    _p(d, "", after=4)
+    _p(d, "", after=2)
+    _p(d, "The processor, input/output and display cards of the VPR-340 remain available until further notice. Customers "
+          "planning feeder protection replacement can migrate VPR-340 settings to the VPR-560 platform with our conversion "
+          "tool; application notes are on the customer portal.", after=5)
+    _p(d, "Contact", style="Heading 2", after=2)
+    _p(d, "Questions about this notice: George Ray, Product Lifecycle Manager, 905 555 0142 ext. 231, "
+          "george.ray@veldtek.ca. Order status and acknowledgements: Lifecycle order desk, 905 555 0142 ext. 240, or a "
+          "Lifecycle case on the customer portal quoting EOL-2026-07.", after=8)
     _p(d, "George Ray", after=0)
     _p(d, "Product Lifecycle Manager, Protection Relays", after=0)
     _p(d, "Veldtek Protection Systems Inc.", after=0)
+    _footer(d, "Veldtek Protection Systems Inc.    EOL-2026-07")
     _pdf(d, path, "eol")
 
 
@@ -380,7 +443,8 @@ def _dd(x):
 def other_schemes(rng, prog, reg):
     """Schemes at stations without VPR-340: the feeder bays still on VPR-220 relays and RTUs installed before 2009,
     the oldest equipment first; the stations whose equipment is youngest wait beyond the period. A few schemes came
-    into the program with the 2026 approval, and two RTU-only schemes left it for the SCADA upgrade program."""
+    into the program with the 2026 approval, and every RTU-only scheme left it for the SCADA upgrade program (an RTU
+    replaced with VPR-220 feeders stays in its scheme)."""
     hosts = set(prog["sub_code"])
     live = reg[(reg["status"] == "IN SERVICE") & ~reg["sub_code"].isin(hosts)]
     rows = []
@@ -408,9 +472,9 @@ def other_schemes(rng, prog, reg):
     sched = [i for i, r in enumerate(rows) if r["plan_2026"] is not None]
     for i in rx.choice(sched, 3, replace=False):
         rows[int(i)]["in_2025"] = False
-    rtu_only = [i for i in sched if not rows[i]["bays"] and rows[i]["in_2025"]]
-    for i in rx.choice(rtu_only, min(2, len(rtu_only)), replace=False):
-        rows[int(i)]["in_2026"] = False
+    for r in rows:
+        if not r["bays"]:
+            r["in_2026"] = False
     return rows
 
 
@@ -530,7 +594,8 @@ def programme_xlsx(path, rng, prog, subs, reg, plan):
         "Bay ranges are copied from the station single-line and take in spare bays and any feeders still on other relay "
         "types; the new panels are built for the full range.",
         "Scheme numbers are assigned when a scheme first enters the program and do not change between versions. "
-        "RTU-only schemes moved to the SCADA upgrade program in 2026 are no longer listed here.",
+        "RTU-only schemes moved to the SCADA upgrade program with the 2026 approval and are no longer listed here; an RTU "
+        "replaced together with feeder protection stays in that scheme.",
         "Stations rebuilt under the 2022-2025 station renewals are complete and are not listed.",
         "Schedule questions: Kurt Allison, Senior Asset Engineer, P&C.",
     ]
@@ -589,7 +654,8 @@ protection_asset_register_2026-09-30.csv  (one row per asset)
   region            region on the asset record when it was created (not updated by the 2024 reorganization)
 
 eam_work_orders_protection_2021-01_2026-09.csv  (one row per work order: P&C crew work on protection and control
-assets, station DC systems, breaker trip circuits and instrument transformers, and P&C station inspections)
+assets, station DC systems, breaker trip circuits and instrument transformers, P&C station inspections, and the crews'
+returns and disposal work at the stores)
   wo_number         work-order number, allocated when the work order is entered (shared numbering with lines and
                     metering work)
   reported_date     date raised; a periodic test is raised on the date it falls due under P&C Standard 3.2
@@ -600,7 +666,7 @@ assets, station DC systems, breaker trip circuits and instrument transformers, a
   status            INPRG in progress, COMP completed, CLOSE closed after supervisor review, CANC cancelled
   asset_id          EAM asset number (batteries, chargers, breakers and VTs are not in the protection register);
                     blank for station inspections and for disposal
-  sub_code, region  substation, and the region code the work order was raised with
+  sub_code, region  substation (blank for work at a store), and the region code the work order was raised with
   failed_component  recorded by the crew on relay, RTU and recloser control faults and on the logistics work that
                     returns the part: PSU power supply, CPU processor, IO input/output card, DISP display,
                     COMMS communications card (blank otherwise, including no fault found and follow-up work)
@@ -623,6 +689,9 @@ spares_stock_2026-09-30.csv  (one row per item, location and stock state at clos
   uom               unit of issue (EA each)
   quantity          quantity in that state at the count
   unit_cost_cad     moving average cost
+  A module back from the manufacturer's repair centre comes by overnight courier and is received to SERVICEABLE the
+  day it arrives. A failed module on a store's returns shelf, waiting to go to the repair centre or for disposal, is
+  not stock and is not in this extract (see removed_to in the rotating-item history).
 
 psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installation)
   serial_no         module serial number; a module repaired by the manufacturer keeps its serial
@@ -633,8 +702,11 @@ psu_rotating_item_history_2021-01_2026-09.csv  (one row per module per installat
   removed_date      date removed (blank while fitted)
   removal_reason    FAILED, or ASSET RETIRED when the relay was removed by a station rebuild
   removal_wo        work order the module was removed under
-  removed_to        where the module went: the returns shelf of the store serving the station, or SCRAP
-  disposal_ref      e-waste manifest the module was scrapped under
+  removed_to        where the module went when it came out: the returns shelf of the store serving the station, or
+                    SCRAP with a relay retired by a station rebuild
+  disposal_ref      e-waste manifest the module was scrapped under: with its relay, or from the returns shelf when
+                    the store scrapped a failed module on bench check instead of sending it to the manufacturer (the
+                    disposal work order gives what the check found)
   record_source     GO-LIVE LOAD or EAM
 """
     open(path, "w", newline="\r\n").write(txt)

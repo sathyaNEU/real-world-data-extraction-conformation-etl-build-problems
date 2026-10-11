@@ -294,18 +294,27 @@ def legacy_wo(d, rng):
     return "%d" % (468000 + int((d - dt.date(2015, 1, 1)).days * 13.6) + int(rng.integers(0, 40)))
 
 
-def psu_cycle(sp, ret, key2aid):
+PSU_SHARE = (1, 24)                     # numbers between two of our modules in Veldtek's module sequence
+
+
+def psu_cycle(sp, ret, key2aid, reg):
     """Module serials for every spell, and Veldtek's side of the returns. A module built new carries its year of
-    manufacture and Veldtek's running number in order of manufacture; a repaired module keeps its serial. Returns the
-    spells with serials and the modules in Veldtek's register (a box still at the store at the count is not)."""
+    manufacture and Veldtek's running number in order of manufacture; a repaired module keeps its serial. Veldtek numbers
+    every module it builds in one sequence, the module in each relay it ships and the spares it builds for every
+    customer's repairs alike, so the module numbers run ahead of the relay numbers and ours take about one number in
+    twelve. Returns the spells with serials and the modules in Veldtek's register (a box still at the store at the count
+    is not)."""
     sp = sp.copy()
     r_made = np.random.default_rng([W.SEED, 21, 4])
     r_ref = np.random.default_rng([W.SEED, 21, 5])
     spell_of = {(int(k), int(m)): i for i, k, m in zip(sp.index, sp["relay_key"], sp["module"])}
     roots = [i for i in sp.index if not isinstance(sp.at[i, "origin"], tuple)]
-    serial, n = {}, 21000
+    # our first module went into our first relay, after the modules in the relays Veldtek had shipped before it and the
+    # spares built beside them
+    first_relay = min(int(s.rsplit("-", 1)[1]) for s in reg[reg["model"] == "VPR-340"]["serial_no"])
+    serial, n = {}, int(first_relay * 1.1)
     for i in sorted(roots, key=lambda j: (sp.at[j, "made"], j)):
-        n += int(r_made.integers(1, 9))
+        n += int(r_made.integers(*PSU_SHARE))
         serial[i] = "PS02-%02d-%05d" % (sp.at[i, "made"].year % 100, n)
 
     def serial_of(i):
@@ -428,7 +437,7 @@ def _slip(rng):
             int(rng.integers(22, 46)) if u < 0.90 else int(rng.integers(46, 111)) if u < 0.97 else int(rng.integers(111, 221)))
 
 
-def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste):
+def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste, scrap):
     cur = dict(zip(subs["sub_code"], subs["region"]))
     leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
     kind_of = dict(zip(subs["sub_code"], subs["station_type"]))
@@ -466,13 +475,16 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste):
             old = True
         return _crew(rng_c, CREWS_LEGACY[leg[sub]] if old else CREWS_CURRENT[cur[sub]])
 
-    def add(d, aid, sub, wt, comp, desc, done, hours, key=None, cr=None, status=None, due=None, after=0, parent=None):
-        """hours: (mu, sd, lo[, travel]) of the task, or a callable of the crew; done: completion date, None while open"""
+    def add(d, aid, sub, wt, comp, desc, done, hours, key=None, cr=None, status=None, due=None, after=0, parent=None,
+            region=None):
+        """hours: (mu, sd, lo[, travel]) of the task, or a callable of the crew; done: completion date, None while open;
+        region: for work at a store, which has no substation"""
         cr = cr or crew(sub, d, wt)
         h = hours(cr) if callable(hours) else _hours(rng_c, cr, *hours)
         rows.append(dict(reported_date=d, asset_id=aid, sub_code=sub, work_type=wt, status=status, failed_component=comp,
                          description=desc(cr) if callable(desc) else desc, labour_hours=h, completed_date=done, crew=cr,
-                         region=leg[sub] if cr in legacy_crews else cur[sub], _key=key, _after=after, _parent=parent))
+                         region=region or (leg[sub] if cr in legacy_crews else cur[sub]), _key=key, _after=after,
+                         _parent=parent))
 
     storms = {}
     for day, regions in W.STORMS:
@@ -762,7 +774,6 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste):
         cr = crew(e["sub"], e["date"], "LOG")
         add(e["date"], "", e["sub"], "LOG", "", T.ewaste(cr, e["sub"], e["counts"], EWASTE_CONTRACT, e["manifest"]),
             S.add_bdays(e["date"], _lag(rng_m, "LOG")), (1.5, 0.4, 0.5, False), cr=cr)
-
     # work raised and then cancelled across every type (raised in error, superseded, access refused)
     rng_x = np.random.default_rng([W.SEED, 30, 7])
     plain = [k for k, r in enumerate(rows) if r["_key"] is None and r["status"] is None]
@@ -804,6 +815,30 @@ def work_orders(subs, reg, f, sp, ships, rebuilt, fits, eq, ewaste):
         if r.get("_parent") is not None:
             pe = entry_of[r["_parent"]]
             r["_entry"] = pe if r["status"] == "CANC" else max(r["_entry"], pe)
+    # failed modules a store scrapped instead of sending them to Veldtek: one disposal work order for each e-waste
+    # collection that took any, raised by a P&C crew working out of that store a few days before the pickup, closed
+    # after review like other work (added last, on draws of its own, so no other work order's status or entry moves)
+    rng_w = np.random.default_rng([W.SEED, 30, 11])
+    n0 = len(rows)
+    for c in scrap:
+        if c["date"] >= W.REORG:
+            rg = next(g for g, s in W.STORES.items() if s == c["store"])
+            cr = _crew(rng_w, CREWS_CURRENT[rg])
+        else:
+            served = sorted(g for g, s in W.LEGACY_STORES.items() if s == c["store"])
+            rg = served[int(rng_w.integers(len(served)))]
+            cr = _crew(rng_w, CREWS_LEGACY[rg])
+        raised = S.add_bdays(c["date"] - dt.timedelta(days=int(rng_w.integers(2, 9))), 0)
+        raised = min(c["date"], max([raised] + [m["checked"] for m in c["modules"]]))
+        h = _hours(rng_w, cr, 0.5 + 0.2 * len(c["modules"]), 0.35, 0.5, travel=False)
+        add(raised, "", "", "LOG", "", T.scrap(cr, c["store"], [(m["serial"], m["find"]) for m in c["modules"]],
+                                               EWASTE_CONTRACT, c["manifest"]),
+            c["date"], lambda _c, h=h: h, cr=cr, region=rg)
+    for r in rows[n0:]:
+        review = 1 + float(rng_w.gamma(1.6, 7.0))
+        r["status"] = "CLOSE" if r["completed_date"] + dt.timedelta(days=review) <= W.ASOF else "COMP"
+        e = S.add_bdays(r["reported_date"], 1) if rng_w.random() < 0.1 else r["reported_date"]
+        r["_entry"] = e if e <= W.ASOF else r["reported_date"]
     wo = pd.DataFrame(rows)
     wo = wo[wo["reported_date"] <= W.ASOF]
     wo = wo.sort_values(["_entry", "reported_date", "sub_code", "asset_id", "_after", "work_type", "status", "description"],
@@ -848,15 +883,103 @@ def ewaste_plan(prog, reg):
     return out
 
 
+def _manifest(d, rng, taken):
+    """the e-waste processor's manifest number: its running number across all its customers through the year, so it
+    falls between the numbers of the collections either side of it (taken: manifest -> collection date)"""
+    yy = d.year % 100
+    mine = [(dd, int(m[5:])) for m, dd in taken.items() if m.startswith("EW%02d-" % yy)]
+    lo = max([n for dd, n in mine if dd <= d] or [0])
+    hi = min([n for dd, n in mine if dd > d] or [9999])
+    n = int((d - dt.date(d.year, 1, 1)).days * 2.6) + int(rng.integers(10, 60))
+    if not lo < n < hi:
+        n = int(rng.integers(lo + 1, max(lo + 2, hi)))
+    m = "EW%02d-%04d" % (yy, n)
+    assert m not in taken and lo < n < hi, (m, lo, hi)
+    taken[m] = d
+    return m
+
+
+# the operating region a store sits in, before and after the 2024 reorganization (for the work it raises itself)
+STORE_REGION = {"North Depot": ("Lakeshore", "North"), "Central Stores (Barrie Road)": ("Ridge", "Central"),
+                "South Depot": ("Harbour", "South")}
+# what the bench check at the store finds on a failed module it does not send to Veldtek
+SCRAP_FINDS = (("burnt", 0.30), ("charred", 0.15), ("vented", 0.17), ("corroded", 0.13), ("transformer", 0.10),
+               ("cracked", 0.09), ("water", 0.06))
+
+
+def scrap_plan(f, ret, sp, subs, sub_of, taken):
+    """Failed modules the stores did not send to Veldtek. A failed module waits on the returns shelf of the store
+    serving its station until a P&C technician bench-checks it there; one that is burnt, contaminated or damaged past
+    repair goes to the store's e-waste cage and leaves with the store's next collection by the e-waste processor, under
+    the processor's manifest, on a disposal work order that lists each module and what the check found. A module still
+    on the shelf or in the cage at the count has neither yet. Returns the collections that took a module, and the
+    modules (with their manifest, None while they wait)."""
+    cur = dict(zip(subs["sub_code"], subs["region"]))
+    leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
+    sent = {(int(r["relay_key"]), int(r["module"])) for r in ret.recs}
+    back = {(int(r["relay_key"]), int(r["module"])): r.get("returned") for r in ret.recs}
+    serial = {(int(k), int(m)): s for k, m, s in zip(sp["relay_key"], sp["module"], sp["serial"])}
+    origin = {(int(k), int(m)): o for k, m, o in zip(sp["relay_key"], sp["module"], sp["origin"])}
+    storms = {}
+    for day, regions in W.STORMS:
+        for g in regions:
+            storms.setdefault(g, []).append(day)
+    # each store's e-waste collections, every two to three and a half months from early 2021
+    rc = np.random.default_rng([W.SEED, 49])
+    pickups = {}
+    for store in sorted(STORE_REGION):
+        d = S.add_bdays(dt.date(2021, 1, 25) + dt.timedelta(days=int(rc.integers(0, 50))), 0)
+        out = []
+        while d <= dt.date(2027, 6, 30):
+            out.append(d)
+            d = S.add_bdays(d + dt.timedelta(days=int(rc.integers(55, 106))), 0)
+        pickups[store] = out
+    mods = []
+    for r in f[f["month"] >= W.MIGRATION].sort_values(["done", "relay_key"], kind="mergesort").itertuples():
+        key = (int(r.relay_key), int(r.module))
+        if key in sent:
+            continue
+        sub = sub_of[key[0]]
+        store = W.store_for(cur[sub], leg[sub], r.done)
+        rs = np.random.default_rng([W.SEED, 26, key[0], key[1]])
+        u = rs.random()
+        lag = (int(rs.integers(2, 9)) if u < 0.55 else int(rs.integers(9, 19)) if u < 0.82 else
+               int(rs.integers(19, 41)) if u < 0.95 else int(rs.integers(41, 71)))
+        checked = S.add_bdays(r.done, lag)
+        names, w = zip(*SCRAP_FINDS)
+        find = names[int(rs.choice(len(names), p=np.array(w) / sum(w)))]
+        if any(0 <= (r.reported - s).days <= 2 for s in storms.get(cur[sub], [])) and rs.random() < 0.8:
+            find = "surge"
+        prev = back.get(origin[key]) if isinstance(origin[key], tuple) else None
+        if isinstance(prev, dt.date) and (r.done - prev).days > 365 and find in ("burnt", "vented", "corroded") and rs.random() < 0.6:
+            find = "repeat"
+        nxt = [p for p in pickups[store] if p > checked]
+        mods.append(dict(key=key, serial=serial[key], store=store, removed=r.done, checked=checked, find=find,
+                         pickup=nxt[0] if nxt[0] <= W.ASOF else None, manifest=None))
+    rm = np.random.default_rng([W.SEED, 49, 1])
+    colls = {}
+    for m in mods:
+        if m["pickup"] is not None:
+            colls.setdefault((m["pickup"], m["store"]), []).append(m)
+    out = []
+    for (d, store), ms in sorted(colls.items()):
+        man = _manifest(d, rm, taken)
+        for m in ms:
+            m["manifest"] = man
+        out.append(dict(store=store, date=d, manifest=man, modules=sorted(ms, key=lambda m: (m["checked"], m["serial"]))))
+    return out, mods
+
+
 RETURNS = {"North Depot": "NORTH DEPOT RETURNS", "Central Stores (Barrie Road)": "CENTRAL STORES RETURNS",
            "South Depot": "SOUTH DEPOT RETURNS"}
 
 
-def module_history(sp, keymap, fits, yearonly, subs, sub_of, manifests):
+def module_history(sp, keymap, fits, yearonly, subs, sub_of, manifests, scrapped):
     """EAM rotating-item installation history for VPR340-PSU-02: every module in a VPR-340 position since the
     go-live (modules in place at go-live were loaded with the fitted date the legacy system held, which for the
     oldest relays was sometimes only the year, loaded as 1 July). A failed module goes to the returns shelf of the
-    store that serves the station; a module still in a relay retired by a station rebuild went for scrap with it."""
+    store that serves the station, and carries the e-waste manifest if the store later scrapped it there; a module
+    still in a relay retired by a station rebuild went for scrap with it."""
     cur = dict(zip(subs["sub_code"], subs["region"]))
     leg = dict(zip(subs["sub_code"], subs["legacy_region"]))
     h = sp[(sp["removed"].isna()) | (sp["removed"] >= GOLIVE)].copy()
@@ -878,11 +1001,11 @@ def module_history(sp, keymap, fits, yearonly, subs, sub_of, manifests):
     h["record_source"] = ["GO-LIVE LOAD" if f < GOLIVE else "EAM" for f in h["fitted"]]
     h["item_code"] = "VPR340-PSU-02"
     to, ref = [], []
-    for k, r, d in zip(h["relay_key"], h["reason"], h["removed"]):
+    for k, m, r, d in zip(h["relay_key"], h["module"], h["reason"], h["removed"]):
         s = sub_of[int(k)]
         if r == "FAILED":
             to.append(RETURNS[W.store_for(cur[s], leg[s], d)])
-            ref.append("")
+            ref.append(scrapped.get((int(k), int(m))) or "")
         elif r == "RETIRED":
             to.append("SCRAP")
             ref.append(manifests[s])

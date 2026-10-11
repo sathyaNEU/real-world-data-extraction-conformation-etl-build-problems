@@ -456,7 +456,10 @@ class Returns:
                     res, back = "OPEN", None
                 r["result"], r["returned"] = res, back
                 if back is not None:
-                    self.shelf.append([add_bdays(back, int(rm.integers(1, 6))), (r["relay_key"], r["module"])])
+                    # Veldtek returns a module by overnight courier and the store counts it serviceable from the day it
+                    # arrives; it goes out to a job one to five working days after Veldtek ships it, and a module Veldtek
+                    # shipped before the count is on the shelf at the count
+                    self.shelf.append([min(add_bdays(back, int(rm.integers(1, 6))), W.ASOF), (r["relay_key"], r["module"])])
 
     def issue(self, day, rr):
         """the module the stores issue for a job on `day`: the repaired module longest on the shelf (most jobs), or
