@@ -340,6 +340,8 @@ Write these as flat field definitions. Never as advice.
 
 ## 7. Authentic mess, and the realism gate
 
+**This section is the client's Layer 1.** Every pack is hard to parse in the ways real exports are: information spread across files, grains that differ, versions and supersessions, calendars, identifiers, partial cuts. A model may trip on it and that is allowed, but the stump never rests on it (the stump is Layer 2, `stumping` Part 2), and nothing in the pack is a defect placed to be caught, a decoy value or a trap. The test for every piece of mess: would this organisation's real export look exactly like this if nobody had designed a task around it? The design note names the mess in one line and the real system that produces it.
+
 ### Realism is a rejection criterion, not a nicety
 
 The pack has to read like an export from a system that has been running for years, not like a

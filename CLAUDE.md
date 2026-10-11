@@ -68,6 +68,11 @@ fingerprint recent + coverage   (what the last builds spent, and what has never 
 `/build <domain> <objective>` runs that loop as a stage machine with `pipeline.json` as its state
 (`build-pipeline`), without stopping for the author.
 
+The judge rehearsal runs in the background: spawn it as soon as the bundle is cut and keep working
+the stages that do not move a graded figure (the realism pass, the house fixes, the card, the design
+note) while it runs. The portal's own Determinism QC also runs in the background now and no longer
+blocks submission, so a build is not held waiting on it; the in-house judge still gates the ship.
+
 The prompt shape is picked **before** the ladder, not after a thin rubric comes back, because it
 decides where the criteria come from and it is the cheapest thing in the build to change. The
 eighteen shapes and the picker are at `.claude/skills/guide-to-prompt/references/shapes/`.
@@ -201,21 +206,36 @@ bare over the batch before submission. Self-report does not catch a calcified vo
 
 ## Current spec
 
-**Every build is bespoke, never templated.** The client rejects templated tasks: replicating an
-approved task's traps, solution method, questions or stumping strategy onto another dataset teaches
-the model nothing and is sent back. Each build picks the stump its own dataset's analytic structure
-produces, and its design note says why in one line (the data-native sentence, `stumping` Part 2).
-Two architectures are capped by the fingerprint guard because they carry most of our corpus:
+**Every build has two layers of difficulty, and neither is a planted trap.** The client's standard:
+difficulty comes from analytical rigour, not from planted traps, decoys or defects, which were applied
+the same way across every domain and are not how real data behaves.
 
-- the decisive rule left unstated while a plausible official rule is filed as the decoy (the one the
-  client names, about 40 per cent of what it receives), blocked within three builds of another and
-  above two in any twelve;
-- a certified record that blesses the wrong method until a forward condition breaks it (27 of
-  task99 to task130), blocked in consecutive builds and above three in any twelve.
+- **Layer 1, data messiness.** Realistic, hard-to-parse data spread across several files: the grains,
+  versions, calendars, identifiers, partial extracts and superseded documents a real export carries. A
+  model may trip here, and that is fine, but the stump never rests on mess and never on an unrealistic
+  planted defect. Every piece of mess has to be something the organisation's real systems would
+  produce (`dataset-generation` §7).
+- **Layer 2, the analytical or methodological pitfall.** The shortcut a capable analyst is tempted to
+  take and an expert in the field would recognise as wrong, with the task set up so the rigorous
+  method is the only defensible one. This layer carries the stump (`stumping` Part 2).
 
-A calibration corpus, a twin pair, a licensed wrong basis and colleague voices are organs a strategy
-may need, never furniture every build ships. The 300 notes under `analytical_tasks/01` to `06` were
-all written to the first architecture, so they are idea seeds and never build plans (`README.md`).
+So the following never carry or frame a stump on a new build, and the fingerprint guard blocks each on
+the draw: a filed rule, basis or metric planted to give the wrong answer (an official decoy); a closed
+or certified record built to bless the wrong method until a forward condition breaks it; and a
+decisive rule deliberately left unstated with a conflicting stated rule as the trap (the shape the
+client counted in about 40 per cent of recent tasks). Prefer filing the rules a real organisation
+would have in writing; the difficulty is the construction they demand, not finding them.
+
+**Every build is bespoke, never templated.** Replicating an approved task's traps, solution method,
+questions or stumping strategy onto another dataset teaches the model nothing and is sent back. Each
+build picks the pitfall its own dataset's analytic structure produces, and its design note says why
+in one line (the data-native sentence, `stumping` Part 2). The client's examples and the strategy
+libraries are idea seeds: learn the fundamentals from them, never copy one.
+
+A calibration corpus, a twin pair and colleague voices are organs a strategy may need, never
+furniture every build ships, and none of them may act as a decoy. The 300 notes under
+`analytical_tasks/01` to `06` were all written to the withheld-rule-with-decoy architecture, so they
+are idea seeds and never build plans (`README.md`).
 
 **One to three deliverables, and three is the ceiling**, so a four-file build is a spec failure.
 **No format family is assigned.** The four families (Data: CSV, TSV, JSON, XLSX, Parquet · Visual:
