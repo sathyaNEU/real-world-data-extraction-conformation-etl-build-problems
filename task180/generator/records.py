@@ -253,19 +253,14 @@ def write_atc(path):
     rows = []
     for s, d in W.SUBSTANCES.items():
         for code, fra, til in d["codes"]:
-            note = ""
-            if code == "M04AX02":
-                note = "Midlertidig kode; afløst af M04AB06 fra 2024-01-01"
-            if code == "M04AB06":
-                note = "Erstatter M04AX02"
             rows.append((code, s, fra.isoformat() if fra else "", til.isoformat() if til else "",
-                         ("%g" % d["ddd"]).replace(".", ","), d["ddd_unit"], d["route"], note))
+                         ("%g" % d["ddd"]).replace(".", ","), d["ddd_unit"], d["route"]))
     for s, (code, ddd) in W.NSAIDS.items():
-        rows.append((code, s, "", "", ("%g" % ddd).replace(".", ","), "mg", "O", ""))
+        rows.append((code, s, "", "", ("%g" % ddd).replace(".", ","), "mg", "O"))
     rows.sort()
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, delimiter=";", lineterminator="\n")
-        w.writerow(["atc", "substans", "gyldig_fra", "gyldig_til", "ddd", "enhed", "adm_vej", "bemaerkning"])
+        w.writerow(["atc", "substans", "gyldig_fra", "gyldig_til", "ddd", "enhed", "adm_vej"])
         w.writerows(rows)
     return len(rows)
 

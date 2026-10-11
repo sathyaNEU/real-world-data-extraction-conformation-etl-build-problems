@@ -25,7 +25,7 @@
     ],
     "largest_file": "patient_registry_diagnoses_2018-2026.parquet",
     "largest_file_rows": 3725191,
-    "bytes_total": 136398450
+    "bytes_total": 136398359
   },
   "sources": [
     {
@@ -50,7 +50,7 @@
     {
       "path": "atc_ddd_index_2026.csv",
       "format": "csv",
-      "bytes": 549,
+      "bytes": 455,
       "rows": 12,
       "source": "Constructed: The ATC/DDD index for the substances in the extract, with code validity dates",
       "date": "2026-09-04",
@@ -131,7 +131,7 @@
     {
       "path": "pv_signal_screen_2026Q3.xlsx",
       "format": "xlsx",
-      "bytes": 15785,
+      "bytes": 15788,
       "rows": null,
       "source": "Constructed: The Pharmacovigilance Unit's quarterly screen of spontaneous reports, Q3 2026, with the line listing of the quarter's reports for the three validated signals",
       "date": "2026-10-07",

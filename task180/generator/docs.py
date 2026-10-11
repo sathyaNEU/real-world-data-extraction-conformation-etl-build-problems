@@ -271,10 +271,10 @@ service under the case definitions of SOP-PV-14 annex A, 2022 to 2025.
 SCREEN_ROWS = [
     # substance, product, PT, Q3 cases, cumulative cases, reports with substance, reports with PT, status
     ("allopurinol", "", "Drug reaction with eosinophilia and systemic symptoms", 3, 141, 2218, 1904, "Labelled"),
-    ("corinurad", "Uralexa", "Acute kidney injury", None, 38, 286, 6120, "Validated signal, to refinement"),
+    ("corinurad", "Uralexa", "Acute kidney injury", None, 24, 286, 6120, "Validated signal, to refinement"),
     ("corinurad", "Uralexa", "Nephrolithiasis", 3, 12, 286, 1630, "Labelled"),
     ("corinurad", "Uralexa", "Gout", 5, 27, 286, 2391, "Labelled"),
-    ("tasorexant", "Somnevo", "Fall", None, 96, 412, 18340, "Validated signal, to refinement"),
+    ("tasorexant", "Somnevo", "Fall", None, 128, 412, 18340, "Validated signal, to refinement"),
     ("tasorexant", "Somnevo", "Nightmare", 4, 22, 412, 2867, "Labelled"),
     ("tasorexant", "Somnevo", "Somnolence", 11, 64, 412, 12405, "Labelled"),
     ("velaglutide", "Gravera", "Cholelithiasis", 9, 31, 1904, 2512, "Labelled"),
