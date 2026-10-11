@@ -1,6 +1,8 @@
-"""Independent check of every graded figure, from the shipped bytes only, on its own code path
-(pandas month arithmetic instead of the estimators' date loops, scipy's Poisson instead of a log sum)."""
+"""Independent check of every graded figure, from the shipped bytes only, on its own code path: integer month
+indices instead of the estimators' date loops, the failed module found by the module in service on the first of
+the reported month (not by the removal work order), the replacement recursion in numpy, scipy's Poisson."""
 import os
+import re
 import sys
 
 import numpy as np
@@ -11,65 +13,96 @@ from scipy.stats import poisson
 TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 T = os.path.join(TASK, "target")
 G = os.path.join(TASK, "golden")
-EDGES = [0, 10, 15, 20, 25, 30, 999]
+EDGES = [0, 10, 15, 20, 25, 999]
+MIG, H0 = 2021 * 12, 2026 * 12 + 9
 
 
-def mk(y, m):
-    return y * 12 + (m - 1)
+def mk(d):
+    return d.year * 12 + d.month - 1
+
+
+def first(d):
+    return mk(d) + (1 if d.day > 1 else 0)
+
+
+def age(fit, m):
+    y, mo = m // 12, m % 12 + 1
+    return y - fit.year - (1 if (mo < fit.month or (mo == fit.month and fit.day > 1)) else 0)
+
+
+def band(a):
+    return int(np.digitize([a], EDGES)[0] - 1)
 
 
 def main():
     reg = pd.read_csv(os.path.join(T, "protection_asset_register_2026-09-30.csv"), parse_dates=["install_date", "retired_date"])
     wo = pd.read_csv(os.path.join(T, "eam_work_orders_protection_2021-01_2026-09.csv"), parse_dates=["reported_date"])
+    hi = pd.read_csv(os.path.join(T, "psu_rotating_item_history_2021-01_2026-09.csv"), parse_dates=["fitted_date", "removed_date"])
     subs = pd.read_csv(os.path.join(T, "substations.csv"))
     st = pd.read_csv(os.path.join(T, "spares_stock_2026-09-30.csv"))
-    fl = reg[reg.model == "VPR-340"].copy()
-    # first month in service on its first day
-    fl["m0"] = [mk(d.year, d.month) + (1 if d.day > 1 else 0) for d in fl.install_date]
-    fl["mend"] = [mk(d.year, d.month) if pd.notna(d) else mk(2026, 10) for d in fl.retired_date]
-    MIG, END = mk(2021, 1), mk(2026, 10)
-
-    def ages(inst, m):
-        y, mo = m // 12, m % 12 + 1
-        return y - inst.year - ((mo < inst.month) | ((mo == inst.month) & (1 < inst.day)))
-
-    rows = []
-    for _, r in fl.iterrows():
-        ms = np.arange(max(r.m0, MIG), r.mend)
-        if len(ms):
-            a = np.array([ages(r.install_date, m) for m in ms])
-            rows.append(np.bincount(np.digitize(a, EDGES) - 1, minlength=6))
-    expo = np.sum(rows, axis=0) / 12.0
+    fl = reg[reg.model == "VPR-340"]
+    hi["m0"] = [first(d) for d in hi.fitted_date]
+    hi["m1"] = [first(d) if pd.notna(d) else H0 for d in hi.removed_date]
+    # failures: the module in service on the first of the reported month
     f = wo[wo.asset_id.isin(fl.asset_id) & wo.work_type.isin(["CM", "EM"]) & (wo.failed_component == "PSU")
            & wo.status.isin(["COMP", "CLOSE"])]
-    inst = dict(zip(fl.asset_id, fl.install_date))
-    fa = [ages(inst[a], mk(d.year, d.month)) for a, d in zip(f.asset_id, f.reported_date)]
-    cnt = np.bincount(np.digitize(fa, EDGES) - 1, minlength=6)
-    rate = cnt / expo
+    cnt = np.zeros(5)
+    for a, d in zip(f.asset_id, f.reported_date):
+        m = mk(d)
+        h = hi[(hi.asset_id == a) & (hi.m0 <= m) & (hi.m1 > m)]
+        assert len(h) == 1, (a, d)
+        cnt[band(age(h.fitted_date.iloc[0], m))] += 1
+    expo = np.zeros(5)
+    for fit, m0, m1 in zip(hi.fitted_date, hi.m0, hi.m1):
+        for m in range(max(m0, MIG), min(m1, H0)):
+            expo[band(age(fit, m))] += 1
+    rate = cnt / expo * 12.0
+    # support end by bay from the approved programme
     wb = openpyxl.load_workbook(os.path.join(T, "protection_renewal_programme_2026.xlsx"), data_only=True)
     plan = {}
     for row in wb["Approved 2026"].iter_rows(min_row=4, values_only=True):
-        if row and row[1]:
-            v = row[5]
-            plan[row[1]] = mk(2036, 1) if v == "Not in programme period" else mk(pd.to_datetime(v).year, pd.to_datetime(v).month)
+        if not row or not row[2]:
+            continue
+        g = re.fullmatch(r"F(\d+)-F(\d+)", str(row[5]))
+        if not g:
+            continue
+        end = 2036 * 12 if row[7] == "Not in programme period" else mk(pd.to_datetime(row[7]))
+        plan.setdefault(row[2], []).append((int(g.group(1)), int(g.group(2)), end))
+
+    def send(sub, bay):
+        b = int(bay[1:])
+        for lo, hi_, e in plan.get(sub, []):
+            if lo <= b <= hi_:
+                return e
+        return None
+
     live = fl[fl.status == "IN SERVICE"]
+    cur = hi[hi.removed_date.isna()].set_index("asset_id")
     region = dict(zip(subs.sub_code, subs.region))
     lam, by_year, by_reg = 0.0, {}, {}
-    for _, r in live.iterrows():
-        for m in range(mk(2026, 10), plan[r.sub_code]):
-            b = int(np.digitize([ages(r.install_date, m)], EDGES)[0] - 1)
-            e = rate[b] / 12.0
-            lam += e
-            by_year[m // 12] = by_year.get(m // 12, 0) + e
-            by_reg[region[r.sub_code]] = by_reg.get(region[r.sub_code], 0) + e
+    for a, sub, bay in zip(live.asset_id, live.sub_code, live.bay):
+        e = send(sub, bay)
+        if e is None:
+            continue
+        ms = np.arange(H0, e)
+        if not len(ms):
+            continue
+        fit = cur.loc[a, "fitted_date"]
+        q = np.array([rate[band(age(fit, m))] for m in ms]) / 12.0
+        surv = np.concatenate([[1.0], np.cumprod(1 - q)[:-1]])
+        ef = surv * q + (1 - surv) * rate[0] / 12.0
+        lam += ef.sum()
+        for m, v in zip(ms, ef):
+            by_year[m // 12] = by_year.get(m // 12, 0) + v
+        by_reg[region[sub]] = by_reg.get(region[sub], 0) + ef.sum()
     psu = st[st.item_code == "VPR340-PSU-02"]
     avail = int(psu[psu.stock_state.isin(["SERVICEABLE", "AT REPAIR"])].quantity.sum())
     lots = next(n for n in range(0, 100) if poisson.cdf(avail + 25 * n, lam) >= 0.95)
-    inserv = {y: int(sum(plan[s] > mk(y, 1) for s in live.sub_code)) for y in range(2027, 2036)}
+    inserv = {y: int(sum((send(s, b) or 0) > y * 12 for s, b in zip(live.sub_code, live.bay))) for y in range(2027, 2036)}
     fails = []
 
     def chk(name, got, exp, tol=0.05):
-        ok = abs(float(got) - float(exp)) <= tol
+        ok = got is not None and abs(float(got) - float(exp)) <= tol
         print(("OK  " if ok else "FAIL"), name, got, exp)
         if not ok:
             fails.append(name)
@@ -82,11 +115,14 @@ def main():
     chk("expected failures", b["B7"].value, round(lam, 1))
     chk("available", b["B8"].value, avail, 0)
     chk("cover", b["B9"].value, round(100 * poisson.cdf(avail + 25 * lots, lam), 1))
+    seen = 0
     for row in g["Lot settings"].iter_rows(min_row=2, values_only=True):
         if row[0] is None:
             continue
+        seen += 1
         chk("cover at %d lots" % row[0], row[3], round(100 * poisson.cdf(avail + 25 * row[0], lam), 1))
         chk("cost at %d lots" % row[0], row[4], row[0] * 25 * 1965, 0.5)
+    chk("settings rows 8 to 22", seen, 15, 0)
     for row in g["Outlook by year"].iter_rows(min_row=2, values_only=True):
         if row[0] in (None, "Total"):
             continue

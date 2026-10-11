@@ -1,143 +1,143 @@
 sub_code,sub_name,region,legacy_region,station_type
-DS-001,Cedar Road,Central,Ridge,DS
-DS-002,West River,North,Lakeshore,DS
-DS-003,Grey Mills,South,Harbour,DS
-DS-004,Otter Landing,South,Valley,DS
-DS-005,Silver River,Central,Valley,DS
-DS-006,Kettle Falls,North,Lakeshore,DS
-DS-007,Stone Bridge,South,Harbour,DS
-DS-008,Grey Point,Central,Valley,DS
-DS-009,Longford,North,Lakeshore,DS
-DS-010,Hawk Bay,Central,Ridge,DS
-DS-011,Port Landing,South,Valley,DS
-DS-012,Wolf Bridge,South,Harbour,DS
-DS-013,Springbrook,Central,Ridge,DS
-DS-014,Cedarbrook,Central,Ridge,DS
-DS-015,Birch Bay,South,Harbour,DS
-DS-016,Long Road,South,Valley,DS
-DS-017,Otter Bay,Central,Valley,DS
-DS-018,Sandville,North,Ridge,DS
-DS-019,Glen Bay,North,Lakeshore,DS
-DS-020,Heronwood,North,Lakeshore,DS
-DS-021,Rock Point,North,Lakeshore,DS
-DS-022,Wolfford,North,Lakeshore,DS
-DS-023,Grey Bridge,Central,Valley,DS
-DS-024,Millville,North,Lakeshore,DS
-TS-025,Brant Falls,North,Lakeshore,TS
-DS-026,Hawk Junction,Central,Valley,DS
-DS-027,North Hill,Central,Ridge,DS
-DS-028,Silver Ridge,North,Lakeshore,DS
-DS-029,Bear River,Central,Valley,DS
-DS-030,Millbrook,North,Lakeshore,DS
-DS-031,Oak Falls,Central,Ridge,DS
-DS-032,Spring Corners,North,Ridge,DS
-DS-033,Elmdale,North,Ridge,DS
-DS-034,Mossbrook,South,Harbour,DS
-DS-035,Clearton,South,Harbour,DS
-DS-036,Whitedale,Central,Ridge,DS
-DS-037,Deer Bay,South,Harbour,DS
-DS-038,Whitemount,North,Lakeshore,DS
-TS-039,Deerwood,North,Lakeshore,TS
-DS-040,Northbrook,North,Lakeshore,DS
-DS-041,Brant Ridge,North,Lakeshore,DS
-DS-042,Reddale,South,Harbour,DS
-DS-043,Moss Road,North,Ridge,DS
-DS-044,Pine Road,South,Harbour,DS
-DS-045,Rock Hill,South,Valley,DS
-DS-046,Hawkford,North,Lakeshore,DS
-DS-047,Cedar Ridge,South,Valley,DS
-DS-048,Grey Creek,North,Ridge,DS
-DS-049,Wolfhurst,Central,Valley,DS
-DS-050,Maplebrook,North,Lakeshore,DS
-DS-051,Oakford,Central,Valley,DS
-DS-052,Oak Corners,North,Ridge,DS
-DS-053,Hawk Mills,North,Lakeshore,DS
-DS-054,Long River,North,Lakeshore,DS
-TS-055,High Falls,North,Ridge,TS
-DS-056,Crowton,South,Harbour,DS
-DS-057,Fern River,Central,Ridge,DS
-TS-058,Elm Point,North,Lakeshore,TS
-DS-059,Clear Point,North,Lakeshore,DS
-DS-060,Otterville,South,Harbour,DS
-DS-061,Spring River,Central,Valley,DS
-DS-062,Oakton,North,Lakeshore,DS
-DS-063,Heron Falls,South,Harbour,DS
-DS-064,Kettle Bridge,North,Lakeshore,DS
-DS-065,Sugar River,Central,Valley,DS
-DS-066,Cedar Falls,Central,Valley,DS
-DS-067,Hawk Hill,South,Valley,DS
-DS-068,Iron Corners,South,Valley,DS
-DS-069,Sand Landing,Central,Ridge,DS
-DS-070,Moss Creek,South,Harbour,DS
-DS-071,Sugarford,South,Harbour,DS
-DS-072,Highfield,South,Valley,DS
-DS-073,Mapledale,Central,Ridge,DS
-DS-074,Ash Mills,North,Ridge,DS
-DS-075,Ash Creek,North,Ridge,DS
-DS-076,Iron Junction,South,Harbour,DS
-DS-077,High Road,North,Lakeshore,DS
-DS-078,Glen Corners,South,Valley,DS
-DS-079,Portford,North,Ridge,DS
-DS-080,Spring Ridge,South,Harbour,DS
-TS-081,Rockwood,North,Lakeshore,TS
-DS-082,Wolf Landing,Central,Valley,DS
-DS-083,Brant Creek,North,Lakeshore,DS
-DS-084,Mill Landing,Central,Ridge,DS
-TS-085,Mosshurst,North,Lakeshore,TS
-DS-086,Greywood,Central,Valley,DS
-DS-087,Wolf River,North,Lakeshore,DS
-TS-088,Otterton,Central,Ridge,TS
-DS-089,Greyford,South,Harbour,DS
-TS-090,Fox Mills,North,Ridge,TS
-DS-091,Port Mills,South,Harbour,DS
-DS-092,Fern Mills,North,Lakeshore,DS
-DS-093,Rock Landing,North,Lakeshore,DS
-DS-094,Willowwood,North,Lakeshore,DS
-DS-095,Ashhurst,South,Harbour,DS
-DS-096,Iron Point,South,Harbour,DS
-DS-097,Deer River,South,Valley,DS
-TS-098,Redwood,North,Lakeshore,TS
-DS-099,Kings River,South,Harbour,DS
-TS-100,Silver Falls,North,Lakeshore,TS
-DS-101,Silverford,Central,Valley,DS
-DS-102,Brant Mills,North,Ridge,DS
-DS-103,Mapleford,South,Valley,DS
-DS-104,Stone Mills,South,Valley,DS
-DS-105,Clear Landing,South,Harbour,DS
-DS-106,Willow Bridge,Central,Ridge,DS
-DS-107,Long Ridge,North,Lakeshore,DS
-DS-108,Whitefield,South,Valley,DS
-DS-109,Fernwood,Central,Valley,DS
-TS-110,Red Creek,Central,Ridge,TS
-DS-111,Cedar Bridge,Central,Valley,DS
-DS-112,Sandfield,North,Lakeshore,DS
-DS-113,Sugarhurst,Central,Valley,DS
-DS-114,Glenhurst,Central,Ridge,DS
-DS-115,Crow Junction,Central,Ridge,DS
-DS-116,Rockmount,South,Harbour,DS
-DS-117,Willowhurst,Central,Valley,DS
-DS-118,Clearville,South,Harbour,DS
-DS-119,Cedar Junction,North,Lakeshore,DS
-DS-120,Lakewood,South,Harbour,DS
-DS-121,Otterdale,Central,Valley,DS
-DS-122,Ash Bridge,South,Harbour,DS
-DS-123,Bearton,South,Harbour,DS
-DS-124,Cedar Mills,North,Ridge,DS
-DS-125,Glenfield,South,Harbour,DS
-DS-126,Long Falls,South,Harbour,DS
-DS-127,Kingsmount,Central,Ridge,DS
-DS-128,Rock Bay,Central,Valley,DS
-DS-129,Lake Mills,North,Lakeshore,DS
-DS-130,Red Bridge,North,Lakeshore,DS
-DS-131,Springwood,Central,Valley,DS
-DS-132,Oakdale,North,Ridge,DS
-DS-133,North Falls,Central,Ridge,DS
-DS-134,Mossfield,North,Ridge,DS
-DS-135,Fern Point,North,Lakeshore,DS
-DS-136,Fern Junction,North,Ridge,DS
-DS-137,Bear Landing,South,Harbour,DS
-TS-138,Kingston,Central,Ridge,TS
-DS-139,Birch Landing,South,Valley,DS
-DS-140,Elmfield,South,Harbour,DS
-DS-141,Crow Mills,South,Harbour,DS
-DS-142,Crow Ridge,North,Lakeshore,DS
+DS-001,Fox Falls,Central,Valley,DS
+DS-002,Millmore,South,Harbour,DS
+DS-003,Dalside,North,Lakeshore,DS
+DS-004,Highview,North,Lakeshore,DS
+DS-005,Branville,Central,Valley,DS
+DS-006,Crowmere,Central,Valley,DS
+DS-007,Tamhurst,North,Lakeshore,DS
+DS-008,Drayley,Central,Ridge,DS
+DS-009,Kingview,Central,Ridge,DS
+DS-010,Elmwell,North,Lakeshore,DS
+DS-011,Long Falls,South,Valley,DS
+DS-012,Meadcroft,North,Lakeshore,DS
+DS-013,Elkside,Central,Ridge,DS
+DS-014,Bexhurst,South,Harbour,DS
+DS-015,Mapleham,South,Valley,DS
+TS-01,Barrow Junction,North,Lakeshore,TS
+DS-016,Mormere,South,Harbour,DS
+DS-017,Wilbrook,Central,Ridge,DS
+DS-018,Bram Hill,Central,Valley,DS
+DS-019,Winstead,Central,Ridge,DS
+DS-020,Clearbury,North,Lakeshore,DS
+DS-021,Collham,North,Ridge,DS
+TS-02,Blackhaven,North,Lakeshore,TS
+DS-022,Rose Lake,North,Lakeshore,DS
+DS-023,Ryeworth,North,Lakeshore,DS
+DS-024,Fern Falls,North,Lakeshore,DS
+DS-025,Bradmount,South,Valley,DS
+TS-03,Ranburn,Central,Valley,TS
+DS-026,Stillhaven,North,Lakeshore,DS
+DS-027,Burside,South,Valley,DS
+TS-04,Aldby,South,Harbour,TS
+DS-028,Seldale,North,Lakeshore,DS
+DS-029,Loxside,South,Harbour,DS
+DS-030,Rushgate,North,Lakeshore,DS
+DS-031,Cedar Junction,North,Lakeshore,DS
+DS-032,Neycroft,Central,Ridge,DS
+DS-033,Merewood,North,Lakeshore,DS
+DS-034,Rainbury,South,Valley,DS
+DS-035,Corn River,North,Lakeshore,DS
+DS-036,Juniperport,South,Harbour,DS
+DS-037,Gold Creek,North,Lakeshore,DS
+DS-038,Stoneham,Central,Ridge,DS
+DS-039,Owlbury,Central,Valley,DS
+DS-040,Oakby,Central,Ridge,DS
+DS-041,Walfield,Central,Ridge,DS
+DS-042,Redbury,Central,Ridge,DS
+DS-043,Flintdale,North,Lakeshore,DS
+DS-044,Otterworth,South,Valley,DS
+DS-045,Fish Creek,North,Ridge,DS
+DS-046,Heathview,Central,Ridge,DS
+DS-047,Polmount,North,Lakeshore,DS
+DS-048,Oxby,South,Harbour,DS
+DS-049,Malbrook,North,Lakeshore,DS
+DS-050,Sherford,Central,Valley,DS
+DS-051,Pine Mills,North,Lakeshore,DS
+TS-05,Kirkcliff,Central,Valley,TS
+DS-052,Heron Junction,South,Harbour,DS
+TS-06,Pellworth,North,Ridge,TS
+TS-07,Rockhurst,North,Ridge,TS
+DS-053,Greyside,South,Harbour,DS
+DS-054,Silver Mills,Central,Valley,DS
+DS-055,Wendmore,South,Valley,DS
+DS-056,Sableburn,Central,Valley,DS
+DS-057,Amber Mills,South,Harbour,DS
+DS-058,Carworth,Central,Valley,DS
+DS-059,Birchworth,North,Lakeshore,DS
+DS-060,Upmere,South,Harbour,DS
+DS-061,Hazelford,Central,Ridge,DS
+DS-062,Aspenside,South,Harbour,DS
+DS-063,Ockham,Central,Valley,DS
+DS-064,Whitmere,Central,Valley,DS
+DS-065,Hollydale,North,Lakeshore,DS
+DS-066,Harton,Central,Ridge,DS
+TS-08,Cran Junction,North,Lakeshore,TS
+DS-067,Richgate,South,Harbour,DS
+TS-09,Stanby,Central,Valley,TS
+TS-10,Ravenport,South,Harbour,TS
+TS-11,Yarbury,North,Lakeshore,TS
+DS-068,Fairwell,North,Ridge,DS
+DS-069,Arrowmount,North,Lakeshore,DS
+DS-070,Chatwell,Central,Valley,DS
+DS-071,Reedby,North,Lakeshore,DS
+DS-072,Lindale,Central,Valley,DS
+DS-073,Hepcliff,South,Harbour,DS
+DS-074,Clayhaven,Central,Valley,DS
+DS-075,Edgecliff,North,Lakeshore,DS
+DS-076,Penville,South,Harbour,DS
+DS-077,Holbrook,Central,Valley,DS
+DS-078,Stamwell,South,Harbour,DS
+DS-079,Briarhaven,North,Lakeshore,DS
+DS-080,Slatemere,Central,Valley,DS
+DS-081,Thorncroft,North,Lakeshore,DS
+DS-082,Stagbury,North,Lakeshore,DS
+DS-083,Wolfbrook,North,Lakeshore,DS
+DS-084,Sand Junction,Central,Ridge,DS
+DS-085,Weldale,Central,Valley,DS
+DS-086,Balbrook,North,Lakeshore,DS
+DS-087,Kelville,Central,Ridge,DS
+DS-088,Hartport,South,Harbour,DS
+DS-089,Beechwood,South,Harbour,DS
+DS-090,Radby,Central,Ridge,DS
+DS-091,Saltley,Central,Valley,DS
+TS-12,Wrenmere,North,Lakeshore,TS
+DS-092,Alder Mills,North,Lakeshore,DS
+TS-13,Sumburn,Central,Valley,TS
+DS-093,Tewmore,South,Harbour,DS
+DS-094,Lynville,South,Harbour,DS
+DS-095,Eldercliff,Central,Ridge,DS
+DS-096,Camden Hill,North,Ridge,DS
+DS-097,Plumgate,Central,Valley,DS
+DS-098,Shelton,North,Lakeshore,DS
+DS-099,Deer Lake,Central,Valley,DS
+DS-100,Atherhurst,South,Valley,DS
+DS-101,Wargate,Central,Valley,DS
+DS-102,Calton,Central,Ridge,DS
+DS-103,Gildale,North,Ridge,DS
+TS-14,Terhaven,North,Lakeshore,TS
+DS-104,Garhurst,Central,Ridge,DS
+DS-105,Marl Falls,North,Ridge,DS
+DS-106,Swanwood,South,Valley,DS
+DS-107,Laurel Hill,Central,Ridge,DS
+DS-108,Kilwood,South,Harbour,DS
+DS-109,Glenmore,North,Lakeshore,DS
+DS-110,Ash Point,Central,Valley,DS
+DS-111,Granbrook,North,Lakeshore,DS
+TS-15,Quarryhaven,South,Harbour,TS
+DS-112,Brock Junction,Central,Valley,DS
+TS-16,Ipsgate,Central,Valley,TS
+DS-113,Valport,North,Lakeshore,DS
+DS-114,Kettleview,South,Valley,DS
+DS-115,Coldmount,South,Harbour,DS
+DS-116,Spruceburn,North,Lakeshore,DS
+TS-17,Bellfield,South,Harbour,TS
+DS-117,Mosswell,South,Valley,DS
+DS-118,Nashton,North,Lakeshore,DS
+DS-119,Greencroft,North,Lakeshore,DS
+DS-120,Belhurst,North,Ridge,DS
+DS-121,Midwood,South,Harbour,DS
+DS-122,Falworth,Central,Valley,DS
+DS-123,Brantstead,South,Harbour,DS
+DS-124,Norcroft,South,Valley,DS
+DS-125,Lark Mills,Central,Valley,DS

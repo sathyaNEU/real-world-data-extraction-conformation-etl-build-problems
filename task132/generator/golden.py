@@ -3,6 +3,7 @@ import datetime as dt
 import io
 import os
 import sys
+from zoneinfo import ZoneInfo
 
 import docx
 import matplotlib
@@ -22,6 +23,7 @@ import world as W
 
 TASK = os.path.dirname(HERE)
 PREPARED = dt.datetime(2026, 10, 7, 15, 40)
+TZ = ZoneInfo("America/Toronto")
 INK, ACCENT, MUTED, BAR = "#1F2A33", "#2F6B55", "#8A979F", "#9DBFB0"
 
 
@@ -42,7 +44,7 @@ def workbook(s, path):
     ws.title = "Buy"
     ws["A1"] = "VPR-340 power supply module (VPR340-PSU-02): last-time buy"
     ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = "P&C Asset Planning, prepared 7 October 2026 for the Director, Asset Management. Sized under AM-PC-014 rev 3."
+    ws["A2"] = "P&C Asset Planning, prepared 7 October 2026 for the Director, Asset Management. Sized under AM-PC-014 rev 4."
     ws["A2"].font = Font(italic=True, color="5A6A72")
     rows = [
         ("Lots to order (25 modules per lot)", s["lots"], "0"),
@@ -97,27 +99,38 @@ def workbook(s, path):
         ws.cell(row=i, column=2, value=round(s["by_region"][r], 1)).number_format = "0.0"
 
     ws = wb.create_sheet("Failure rates")
-    _hdr(ws, 1, ["Age band (years)", "PSU failures Jan 2021 to Sep 2026", "Relay-years in service Jan 2021 to Sep 2026",
-                 "Failures per relay-year", "Relay-years to end of support"], [16, 18, 20, 16, 18])
+    _hdr(ws, 1, ["Module age band (years)", "PSU failures Jan 2021 to Sep 2026", "Module-years in service Jan 2021 to Sep 2026",
+                 "Failures per module-year", "Expected module-years to end of support", "Expected failures"], [16, 18, 20, 16, 20, 14])
     for i, b in enumerate(W.BAND_LABELS, 2):
+        k = i - 2
         ws.cell(row=i, column=1, value=b)
-        ws.cell(row=i, column=2, value=int(s["counts"][i - 2]))
-        ws.cell(row=i, column=3, value=round(s["exposure"][i - 2] / 12.0, 1)).number_format = "#,##0.0"
-        ws.cell(row=i, column=4, value=round(float(s["rates"][i - 2]), 4)).number_format = "0.0000"
-        ws.cell(row=i, column=5, value=round(s["fwd"][i - 2] / 12.0, 1)).number_format = "#,##0.0"
+        ws.cell(row=i, column=2, value=int(s["counts"][k]))
+        ws.cell(row=i, column=3, value=round(s["exposure"][k] / 12.0, 1)).number_format = "#,##0.0"
+        ws.cell(row=i, column=4, value=round(float(s["rates"][k]), 4)).number_format = "0.0000"
+        ws.cell(row=i, column=5, value=round(s["occupancy"][k] / 12.0, 1)).number_format = "#,##0.0"
+        ws.cell(row=i, column=6, value=round(float(s["rates"][k] * s["occupancy"][k] / 12.0), 1)).number_format = "0.0"
+    n = len(W.BAND_LABELS) + 2
+    ws.cell(row=n, column=1, value="Total").font = Font(bold=True)
+    ws.cell(row=n, column=2, value=int(s["counts"].sum())).font = Font(bold=True)
+    c = ws.cell(row=n, column=6, value=round(s["lam"], 1))
+    c.number_format = "0.0"
+    c.font = Font(bold=True)
+    ws.freeze_panes = "A2"
 
     ws = wb.create_sheet("Notes")
     notes = [
-        "Failures are corrective (CM, EM) work orders on VPR-340 relays with failed component PSU, status COMP or CLOSE (AM-PC-014 4.1).",
-        "The EAM work-order history starts at the 1 January 2021 go-live, so relay-years are counted from that date: a relay-year "
-        "before 2021 has no work order that could record its failures.",
-        "Ages are completed years on the first of each month from the register's installation date; relays count for a month when "
-        "in service on its first day (4.2, 4.3).",
-        "Support ends in the commissioning month of the substation's scheme in the approved 2026 programme; substations with no scheme "
-        "are supported to December 2035 (3.1, 3.2).",
+        "Failures: corrective (CM, EM) work orders on VPR-340 relays with failed component PSU, status COMP or CLOSE (AM-PC-014 5.1). "
+        "Each failure takes the age of the module it removed, from that module's fitted date in the rotating-item history (5.2).",
+        "Rates: module-years are counted from the January 2021 go-live, when the work-order history begins; a module fitted earlier "
+        "enters the count at go-live at the age it had then (5.3).",
+        "Expected module-years: each supported relay's present module is aged month by month. A module that fails is replaced from "
+        "stock by a new module, which counts in the 0-9 band from the following month, so each month's module-years are split between "
+        "the present module (by the chance it has not yet failed) and its replacement (6.1, 6.2).",
+        "Support ends in the commissioning month of the scheme, or the stage of a staged scheme, that replaces the relay's bay in the "
+        "approved 2026 programme; relays at stations with no scheme in the period are supported to December 2035 (4.1, 4.2).",
         "Available modules: %d serviceable at Central Stores, North and South depots plus %d at Veldtek under open RMA; %d quarantined "
-        "modules excluded (5)." % (s["serviceable"], s["at_repair"], s["quarantine"]),
-        "Cover is the Poisson probability that available modules plus the buy meet all failures to end of support (6.1, 6.2).",
+        "modules excluded (7)." % (s["serviceable"], s["at_repair"], s["quarantine"]),
+        "Cover is the Poisson probability that available modules plus the buy meet all failures to end of support (8.1, 8.2).",
     ]
     for i, t in enumerate(notes, 1):
         ws.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True)
@@ -139,7 +152,7 @@ def chart_png(s):
     ax.tick_params(labelsize=8, colors=INK)
     ax.grid(axis="y", color="#E3E8EA", linewidth=0.6)
     ax.set_axisbelow(True)
-    ax.set_title("Expected VPR-340 PSU failures by year until the renewal programme reaches each substation",
+    ax.set_title("Expected VPR-340 PSU failures by year until the renewal programme replaces each relay",
                  fontsize=9, color=INK, loc="left")
     fig.tight_layout()
     buf = io.BytesIO()
@@ -176,9 +189,9 @@ def memo(s, path):
         p.paragraph_format.space_after = Pt(after)
         return p
 
-    para("Tamarack Hydro Distribution  |  P&C Asset Planning", size=8.5, italic=True, after=2)
+    para("Ironwood Hydro Distribution  |  P&C Asset Planning", size=8.5, italic=True, after=2)
     para("MEMO", bold=True, size=12, after=2)
-    for k, v in [("To", "Susan Huff, Director, Asset Management"), ("From", "Rachael Villanueva, Manager, P&C Asset Planning"),
+    for k, v in [("To", "Angel Baird, Director, Asset Management"), ("From", "Rachael Villanueva, Manager, P&C Asset Planning"),
                  ("Date", "7 October 2026"), ("Re", "Last-time buy of VPR-340 power supply modules (Veldtek EOL-2026-07)")]:
         p = d.add_paragraph()
         r1 = p.add_run(k + ":\t")
@@ -189,15 +202,15 @@ def memo(s, path):
     para("Order %d lots (%d modules) of VPR340-PSU-02 for CAD %s before Veldtek's 15 December deadline."
          % (s["lots"], s["modules"], "{:,.0f}".format(s["cost"])), bold=True, size=11.5, after=6)
     para("With the %d modules we can use today, %d lots give a %.1f per cent chance of covering every power supply failure "
-         "until the renewal programme reaches each substation, against the 95 per cent AM-PC-014 asks for. %d lots fall "
-         "short at %.1f per cent. We expect %.1f failures between October 2026 and the end of support, most of them in 2027 "
-         "to 2031 while the fleet is still large and ageing into its wear-out years."
+         "until the renewal programme reaches each relay, against the 95 per cent AM-PC-014 asks for; %d lots would give %.1f per "
+         "cent. We expect %.1f failures between October 2026 and the end of support, most of them in 2027 to 2031 while the fleet is "
+         "still large."
          % (s["avail"], s["lots"], 100 * s["cover"], s["lots"] - 1, 100 * s["settings"][s["lots"] - 1]["cover"], s["lam"]), after=6)
-    para("How the figure is built. Failure rates are set for the AM-PC-014 age bands, from the PSU failures in the EAM work-order "
-         "history over the relay-years the fleet spent in each band since that history began in January 2021. The older bands fail several "
-         "times faster than the fleet average, and the relays that stay longest are the ones that keep ageing, so the rate of the "
-         "last twelve months understates what is coming. Each in-service relay then contributes its months to each band until its "
-         "substation's commissioning month in the approved 2026 programme.", after=6)
+    para("How the figure is built. Rates are set for the AM-PC-014 module age bands from the PSU failures in the EAM history since "
+         "January 2021, over the module-years each band has been in service since then; the 25-and-over band fails about a "
+         "quarter of its modules a year. Each relay's present module is then aged month by month until the programme reaches "
+         "its bay. A module that fails comes out and its replacement from this buy starts again in the 0-9 band, where failures "
+         "are rare, so the old module's rate only applies for as long as it is likely to still be there.", after=6)
     pic = chart_png(s)
     d.add_picture(pic, width=Cm(15.0))
     d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -208,7 +221,8 @@ def memo(s, path):
     def cell(c, text, bold=False, right=False):
         c.text = ""
         r = c.paragraphs[0].add_run(text)
-        r.bold = bold
+        if bold:
+            r.bold = True
         r.font.size = Pt(9)
         c.paragraphs[0].paragraph_format.space_after = Pt(0)
         if right:
@@ -216,7 +230,7 @@ def memo(s, path):
 
     for j, h in enumerate(["Lots ordered", "Modules available with the buy", "Cover (%)", "Cost (CAD)"]):
         cell(t.rows[0].cells[j], h, bold=True, right=j > 0)
-    for n in W.SETTINGS:
+    for n in (s["lots"] - 1, s["lots"], s["lots"] + 1):
         stg = s["settings"][n]
         row = t.add_row().cells
         b = n == s["lots"]
@@ -227,9 +241,9 @@ def memo(s, path):
     para("", after=4)
     para("Available modules are the %d serviceable at Central Stores and the two depots plus the %d at Veldtek under open RMA, "
          "which the notice says will come back repaired; the %d in quarantine are left out until they pass bench test. The "
-         "workbook vpr340_psu_final_buy.xlsx carries the settings, the outlook by year and region, and the band rates."
-         % (s["serviceable"], s["at_repair"], s["quarantine"]), size=9.5, after=6)
-    para("Signed for order:  ______________________   Susan Huff, Director, Asset Management", after=0)
+         "workbook vpr340_psu_final_buy.xlsx carries every order from %d to %d lots, the outlook by year and region, and the "
+         "band rates." % (s["serviceable"], s["at_repair"], s["quarantine"], min(W.SETTINGS), max(W.SETTINGS)), size=9.5, after=6)
+    para("Signed for order:  ______________________   Angel Baird, Director, Asset Management", after=0)
     d.save(path)
 
 
@@ -240,12 +254,15 @@ def build(target=None, out=None):
     s = E.solve(target)
     wbp = os.path.join(out, "vpr340_psu_final_buy.xlsx")
     workbook(s, wbp)
-    P.normalize_zip(wbp, (2026, 10, 7, 15, 40, 0), creator="Rachael Villanueva")
+    created = dt.datetime(2026, 10, 6, 13, 55, tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
+    saved = PREPARED.replace(tzinfo=TZ).astimezone(dt.timezone.utc).timetuple()[:6]
+    P.normalize_xlsx(wbp, "Rachael Villanueva", "Rachael Villanueva", created, saved)
     mp = os.path.join(out, "psu_last_time_buy_memo.docx")
     memo(s, mp)
-    P.normalize_zip(mp, (2026, 10, 7, 15, 40, 0))
+    P.normalize_docx(mp, "Rachael Villanueva", "Rachael Villanueva", created, saved, revision=6, total_time=74,
+                     title="VPR-340 PSU last-time buy", seed="memo-psu")
     for f in (wbp, mp):
-        ts = PREPARED.timestamp()
+        ts = PREPARED.replace(tzinfo=TZ).timestamp()
         os.utime(f, (ts, ts))
     return s
 

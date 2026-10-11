@@ -21,9 +21,9 @@
     "none"
   ],
   "generators": [
+    "G9",
     "G12",
-    "G13",
-    "G6"
+    "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
@@ -31,15 +31,16 @@
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:delayed-entry-exposure-for-age-banded-failure-rates",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:renewal-of-replaced-modules-in-a-spares-forecast",
   "layer1": [
-    "an asset-management system migration: work-order history starts at go-live and pre-migration records were not carried over",
+    "an asset-management system migration: work-order and rotating-item history start at go-live, with the modules in place loaded at their legacy fitted dates",
+    "a 2015 service-bulletin module swap on the oldest relays, visible only as fitted dates in the go-live load",
     "a work-order export covering every protection asset model, filtered to one model through the asset register",
-    "cancelled and duplicate work orders",
-    "a replacement programme workbook whose approved 2026 plan supersedes the 2025 plan, with deferred schemes",
-    "spares held across depots in serviceable, quarantined and at-repair states",
-    "substation codes against names, and a 2024 regional reorganisation"
+    "cancelled duplicate and logistics work orders on the failure path",
+    "a renewal programme workbook whose approved 2026 version supersedes the 2025 plan and builds large stations in two stages by bay",
+    "spares across depots in serviceable, quarantined and at-repair states, the last tied to the vendor's RMA register",
+    "substation codes against names, and a 2024 regional reorganisation the asset records do not follow"
   ],
   "context_artifact": "filed_standard",
   "stakeholder_role": "manager of protection and control asset planning at a local distribution company, who puts the last-time buy to the director of asset management for signature",
@@ -60,14 +61,15 @@
     "currency": "CAD",
     "org_type": "local electricity distribution company with about 140 distribution substations",
     "invented_names": [
-      "Tamarack Hydro Distribution",
+      "Ironwood Hydro Distribution",
       "Veldtek Protection Systems",
       "VPR-340"
     ],
     "people": [
       "Rachael Villanueva",
       "Kurt Allison",
-      "Susan Huff"
+      "Angel Baird",
+      "George Ray"
     ]
   },
   "deliverables": [
@@ -75,13 +77,13 @@
     "psu_last_time_buy_memo.docx"
   ],
   "opening_move": "constraint-first",
-  "driver": "A rate is estimated per unit of exposure within bands of an ageing attribute, but the outcome records only begin at a date long after many units entered service, so exposure counted from each unit's entry dilutes the bands those units passed through unrecorded; the forward total, applied to the older band mix the horizon brings, is low by about a sixth.",
-  "driver_concrete": "Failure rates per relay-year by age band divide work-order failures, which exist only from the January 2021 asset-system migration, by relay-years counted from each relay's 1992 to 2018 installation date, so the 10 to 24 year bands are understated and the last-time buy falls five lots short of the 95 per cent cover the procedure requires.",
-  "stump": "A competent solver builds the procedure's age-banded failure rates per relay-year in service, counting each relay's years from its installation date, applies them to the relay-months each band will carry until the renewal programme reaches each substation, and orders twelve lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.",
+  "driver": "A spares forecast sums a wear-out failure rate over the remaining horizon for the item in each position, but every failure is replaced by a new item that starts again at the bottom of the curve, so carrying the old item's rate past the point it has probably failed counts failures one position cannot have; the forecast is high by over a third and the buy by several lots.",
+  "driver_concrete": "Expected VPR-340 power-supply failures to each relay's renewal are built by ageing the module now fitted through AM-PC-014's module-age band rates month by month, but a module that fails is replaced from the buy by a new module in the 0-9 band, so the present module's rate applies only while it is likely to survive; ignoring the replacement puts expected failures 38 per cent high and the buy five lots above the 13 the procedure requires.",
+  "stump": "A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 18 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task46": "task46 measures age on the wrong clock (register age against service exposure rebuilt from a movement log); here age is the plain installation age and is right, and the exposure is wrong only in where it starts: relay-years before the January 2021 work-order migration carry no failure records, a left-truncated observation window, so the shortfall sits in the middle age bands rather than at a step a cohort crosses."
   },
   "lineage": [],
-  "notes": "Seed: analytical_tasks/01_forecasting/FC03 (service-parts lifecycle setting only; its shadow-run withheld rule is not used). Forcing event is the OEM's last-time-buy window in its end-of-life notice (a purchase, but the decision is forced by the supplier's discontinuation rather than by a contract or order cycle). "
+  "notes": "Seed: analytical_tasks/01_forecasting/FC03 (service-parts lifecycle setting only; its shadow-run withheld rule is not used). Forcing event is the OEM's last-time-buy window in its end-of-life notice (a purchase, but the decision is forced by the supplier's discontinuation rather than by a contract or order cycle).  Hardening loop 1 (2026-10-11): round 1 solvers both clipped exposure to the go-live window from the dictionary and landed; the PSU now wears out with module age and failed modules are replaced, so the decisive step is the replacement in the forecast; the go-live window stays as an ordinary step."
 }

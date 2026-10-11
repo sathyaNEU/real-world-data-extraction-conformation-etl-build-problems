@@ -1,119 +1,124 @@
 # task132 design note: VPR-340 PSU last-time buy
 
-Private, never ships. Architecture v1, drawn 2026-10-11. Seed: `analytical_tasks/01_forecasting/FC03`
+Private, never ships. Architecture v1, drawn 2026-10-11; hardening loop 1 (module-age renewal) after solver round 1. Seed: `analytical_tasks/01_forecasting/FC03`
 (service-parts lifecycle setting only; its withheld-rule shadow-run corpus is capped and not used).
 
 ## DRAW
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task132.json`, registered before the ladder, guard PASS; world seed 147 chosen by `seedsearch.py` after the realism rebuild (after redrawing context artifact, forum and forcing event, which were BLOCKs against task129 to task131) |
+| Card | `.claude/skills/fingerprint/cards/task132.json`, registered before the ladder and re-checked after loop 1 (guard PASS, nearest driver task87 at 0.06); world seed 150 chosen by `seedsearch.py` for loop 1 |
 | Domain / task type | energy-systems-utilities / asset-condition-maintenance (client domain itself) |
 | Objective | Forecasting & Predictive Modeling |
 | Shape | 04, setting one dial (whole lots against a 95 per cent cover bar), with a forecast across periods underneath |
 | Gate G mechanism | forecasting |
-| Gap, pattern | population (exposure denominator) over time (ageing over the horizon); pattern none |
-| Generators | G12 absence of record against record of absence, G13 horizon mismatch, G6 composition shift |
-| Stump strategy | population_selection (who is in the denominator: exposure) |
-| Layer 2 family / pattern | estimation_fit / `own:delayed-entry-exposure-for-age-banded-failure-rates` |
-| Decisive rule filed | yes: AM-PC-014 files the band rates, the relay-month convention, the support end and the cover test. The step it does not write is where relay-years start |
+| Gap, pattern | population (which module is in the relay each month) over time (wear-out across the horizon); pattern none |
+| Generators | G9 downstream survival against upstream acquisition, G12 absence of record against record of absence, G13 horizon mismatch |
+| Stump strategy | population_selection (the module-months each band will hold, given failures replace modules) |
+| Layer 2 family / pattern | field_method / `own:renewal-of-replaced-modules-in-a-spares-forecast` |
+| Decisive rule filed | yes: AM-PC-014 rev 4 files module age from the fitted date (3), rates per module-year (5.3), a monthly expectation of rate over twelve for a module in service (6.1) and expected failures as the band rates applied to the module-months expected in each band (6.2); the purpose (1) and the prompt say failed modules are replaced from the buy |
 | Official decoy, validated decoy | no, no |
 | Decision | dial_setting, answer unit count (lots) |
 | Stakeholder | Manager, P&C Asset Planning (capacity_planner); signs off to the Director, Asset Management (line_manager_or_team); forcing event the OEM last-time-buy window (other) |
-| Context artifact | filed_standard (AM-PC-014) |
-| Calibration form | none, because the strategy needs no corpus: the method is filed and the difficulty is an estimation step |
-| World | Ontario, CAD; Tamarack Hydro Distribution (fictional), Veldtek Protection Systems (fictional), VPR-340 (fictional) |
-| People | Rachael Villanueva, Kurt Allison, Susan Huff (guard.py names, en_CA, seed 132) |
-| Nearest driver on file | task46 at 0.08 (age on the wrong clock); differentiation filed on the card |
+| Context artifact | filed_standard (AM-PC-014 rev 4) |
+| Calibration form | none: the method is filed and the difficulty is the construction |
+| World | Ontario, CAD; Ironwood Hydro Distribution (fictional), Veldtek Protection Systems (fictional), VPR-340 (fictional) |
+| People | Rachael Villanueva, Kurt Allison, Angel Baird, George Ray (guard.py names, en_CA, seed 132) |
 
-**Data-native sentence.** A utility's maintenance system was replaced in January 2021 and its work-order history starts there, while the relays it covers went in from 1992 to 2018; any failure rate by age built from that history has to count exposure only over the window the history can see, and the VPR-340 fleet's middle-aged bands were lived mostly before 2021.
+**Data-native sentence.** A relay's power supply is a field-replaceable module that wears out with its own age, and a module that fails is pulled and replaced with a new one, so the module in a relay two years from now is today's module only if today's module survives two years; for the fleet's oldest modules, a year's wear-out rate carried into every remaining month counts more failures than one relay position can have.
 
-**Layer 1 (the mess, and the systems that make it).** EAM export of every protection asset's work orders (about 26,800 rows, eight work types, cancelled duplicates raised twice from SCADA alarms, LOG work orders that ship failed modules to the OEM, in-progress orders with no completion date); an asset register holding six relay models, with a region column frozen at go-live; substations with a 2024 regional reorganisation; a renewal programme workbook whose approved 2026 sheet supersedes the 2025 planning sheet (deferrals and schemes brought forward); spares split across depots in serviceable, quarantined and at-repair states, the last only visible against the OEM's RMA log.
+**Layer 1 (the mess, and the systems that make it).** An EAM export of every protection asset's work orders (about 26,000 rows, eight work types, cancelled duplicates raised twice from SCADA alarms, logistics work orders that ship failed modules to Veldtek, in-progress work at the extract date); a rotating-item history for the PSU that starts at the January 2021 go-live with the modules then in place loaded at their legacy fitted dates (including the 2015 service-bulletin swaps on the oldest relays, which show only as fitted dates); an asset register of eight models with a region column that the 2024 reorganisation did not update; a renewal programme workbook whose approved 2026 version supersedes the 2025 plan and builds 27 large stations in two stages by bay; spares across depots in serviceable, quarantined and at-repair states, the last tied to Veldtek's RMA register.
 
-**Layer 2 (the shortcut, and why an expert refuses it).** The procedure says a band's rate is failures over "relay-years in service in the band". The shortcut counts each relay's years in each band from its installation date. The numerator holds only failures recorded since January 2021, so relay-years before 2021 sit in the denominator with no chance of contributing a failure: the estimator mixes two observation windows. A reliability engineer recognises this as left truncation (delayed entry): each relay enters the risk set at the later of installation and the start of observation.
+**Layer 2 (the shortcut, and why an expert refuses it).** The shortcut ages the module now in each relay month by month to the end of support and adds its band rate over twelve in every month (the cumulative hazard of today's module). An expert sees that a module that fails is replaced and the replacement starts in the 0-9 band, so the expected failures in a relay are the present module's rate weighted by its chance of still being there, plus the replacement's rate after; summing the hazard counts, for an old module, more than one failure of a module that can fail once. This is the renewal function against the cumulative hazard, the standard distinction in spares forecasting for replaced wear-out items.
 
 ## GATE G
 
-- **Litmus.** No reported number or stakeholder conclusion is overturned. Every file is correct: the history is complete for its window, the register is right, the procedure is right. The difficulty is estimating a rate from a window that opened after most of the fleet's middle years had passed. Litmus: no.
-- **Primary mechanism:** `forecasting`, with `statistical_rigor` (delayed entry) as the decisive estimation step inside it.
+- **Litmus.** No reported figure or stakeholder conclusion is overturned; every file is correct. The difficulty is a forecast construction. Litmus: no.
+- **Primary mechanism:** `forecasting`, with the expected occupancy of each age band under replacement as the decisive construction.
 - `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Deletion test.** There is no wrong number to delete. With every voice and distractor removed the ladder is unchanged.
-- **Clean-data and instrument tests.** The suspect file is the work-order history (it starts in 2021). Repairing it is not possible inside the fiction (the legacy work orders were archived, not lost in error), and the judge's version of the repair, an instrument that recorded failures back to 1992, would make the install-dated exposure correct and remove the decisive rung. What survives that repair is still a forecast with a real pitfall: the trailing twelve-month rate is 30.7 per cent low, because the forward horizon ages the fleet into its wear-out bands. So the build carries two independent difficulties, one estimation (delayed entry) and one forecasting (age mix over the horizon), and neither is a defect: a coverage window is how every observational record works, and the client lists censoring and truncation as Layer 2 estimation pitfalls. This is the line most exposed at the judge, and it is written here so the rehearsal can test it.
-- **Lens swap.** The naive read and the answer are not one population under two lenses: they differ in the exposure window, and the forward relay-months are identical under both.
+- **Deletion test.** There is no wrong number to delete; with every distractor removed the ladder is unchanged.
+- **Clean-data and instrument tests.** A perfect instrument (failures recorded since 1992) would remove the go-live window step, which is now an ordinary step and not the stump; the renewal step survives any repair of the data, because it is about the future.
+- **Lens swap.** Not one population under two lenses: the naive and the answer use the same rates and relays and differ in which module occupies each relay in each forward month.
 
 ## THE STUMP
 
-A competent solver builds the procedure's age-banded failure rates per relay-year in service, counting each relay's years from its installation date, applies them to the relay-months each band carries until the renewal programme reaches each substation, and orders 12 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.
+A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 18 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.
 
-## LADDER (expected failures, lots, against the answer)
+## LADDER (expected failures, lots, against the answer; 14 modules available)
 
 | Rung | Construction | Expected failures | Lots | vs answer |
 |---|---|---|---|---|
-| 0 | One pooled rate per relay-year, exposure from installation | 72.2 | 3 | -82.3% |
-| 1 | One pooled rate, exposure from January 2021 | 243.2 | 10 | -40.3% |
-| 2 | Last twelve months' failures per in-service relay, carried over the forward relay-years | 282.4 | 12 | -30.7% |
-| 3 | AM-PC-014 band rates, exposure from installation | 295.2 | 12 | -27.6% |
-| 4 (answer) | Band rates, exposure from January 2021, each relay to its programme month | **407.5** | **17** | 0 |
+| 0 | Trailing twelve months' failures per in-service relay, over the forward relay-years | 194.4 | 9 | -34.8% |
+| 1 | Band rates by relay age (installation date), relay ageing, no replacement | 238.0 | 10 | -20.1% |
+| 2 | Module-age rates, module-months counted from each module's fitting (not the go-live), with replacement | 253.2 | 11 | -15.0% |
+| 3 | Module-age rates over the go-live window, present module aged forward with no replacement | 411.9 | 18 | +38.3% |
+| 4 (answer) | Module-age rates over the go-live window, present module weighted by survival, a 0-9 module after a failure | **297.9** | **13** | 0 |
 
-Side cells (Layer 1, priced): trailing twelve months' count times the horizon length 518.0 (22 lots, ignores the programme); every relay supported to December 2035 948.2 (39 lots); every PSU work order counted, cancelled and LOG included, 615.4 (26 lots) with window exposure and 450.9 (19 lots) with install exposure (two errors of opposite sign, still two lots off); the superseded 2025 plan 397.4 (17 lots, converges on the call and misstates the supported relays in most years). Every methodological rung sits at least 27 per cent from the answer, all on the low side, so the decisive move reverses the direction of every shortcut.
+Side cells (priced): module-months from fitting and no replacement 352.8 (15 lots, the two errors partly cancel and stay two lots high); every PSU work order counted, cancelled and logistics included, 410.2 (18); a staged scheme read by its first stage for every bay 271.6 (12) or its last 324.8 (14); the superseded 2025 plan 260.2 (11); module-age rates with relays aged from installation 697.0 (30); no ageing (current band held) 234.0 (10) without replacement and 188.1 (8) with it; every relay to December 2035 518.0 (22). No rung lands on 13 (asserted).
 
-**Bin.** With 29 modules available, 17 lots hold for expected failures from 396.5 to 420.5, so the answer sits 2.7 per cent above the lower edge and 3.2 per cent below the upper (asserted at 2 per cent). 16 lots give 86.2 per cent and 17 give 98.9.
+**Bin.** With 14 modules available, 13 lots hold for expected failures from 286.4 to 310.3, so the answer sits 4.0 per cent above the lower edge and 4.2 per cent below the upper (asserted at 2.5). 12 lots give 83.2 per cent and 13 give 99.1.
 
 ## SURVIVAL PROPERTIES (Part 1)
 
-1. Not written: AM-PC-014 4.3 says "relay-years in service in the band" and pins the numerator to every recorded failure; no sentence says where relay-years start. The dictionary states, as any EAM dictionary would, that work-order history starts at go-live.
+1. Not written as a step: 6.2 defines the quantity (the band rates applied to the module-months expected in each band) and 3 defines module age from fitting; no sentence says how to split a month between the present module and its replacement.
 2. No sweepable corpus nominates it: there is no corpus.
-3. No arithmetic symptom: install-exposure rates reproduce every recorded failure exactly in their own back-test (asserted), as do window rates.
-4. Not a per-row predicate: exposure is a sum over relay-months, clipped per relay at the later of installation and migration, then grouped by band.
-5. Enumeration is arithmetic: which relay-months enter is computed per relay, no column carries it.
-6. No cutover date in an outcome series: the migration is a date in the dictionary, not a step in any failure series (failures rise smoothly with age).
+3. No arithmetic symptom: the no-replacement total reconciles to every control in the pack (rates, relay counts, stock); only a per-relay check (more than one expected failure of an old module) exposes it.
+4. Not a per-row predicate: the occupancy is a recursion per relay over months.
+5. Enumeration is arithmetic: no column carries a relay's expected failures.
+6. No cutover date: replacements happen throughout the horizon.
 7. Survives deletion: nothing wrong to delete.
 
 ## CLOSURE TABLE (22 axes)
 
 | # | Axis | Reading and closure |
 |---|---|---|
-| 1 | Population | VPR-340 relays in the register; failures per AM-PC-014 4.1 (filed pin) |
-| 2 | Unit | relay-month; failure = one CM or EM work order (filed) |
-| 3 | Attribution window | failure in its reported month (filed: age on the first of the failure month) |
-| 4 | As-of dating | ages on the first of each month from the register's installation date (filed) |
-| 5 | Version basis | approved 2026 programme, current at the count (filed 3.1); the 2025 sheet is labelled superseded |
-| 6 | Divisor | relay-years in service in the band, over the window the numerator covers: the decisive axis; the install-dated divisor is an inconsistent estimator, not a reading (argued above) |
-| 7 | Weighting | rates per relay-year, pooled within band (filed) |
-| 8 | Window length | numerator pinned to every recorded failure (4.3 "all of them"), so no shorter window is admissible |
-| 9 | Boundary | in service on the first day of a month (filed); support up to but not including the commissioning month (filed) |
-| 10 | Rounding | unrounded throughout; every graded figure at least 0.012 from its rounding edge after TUNE (asserted) |
+| 1 | Population | VPR-340 relays in service at the count; failures per 5.1 (filed) |
+| 2 | Unit | module-month; failure = one CM or EM work order (filed) |
+| 3 | Attribution window | failure in its reported month, at the removed module's age on the first of that month (filed 5.2) |
+| 4 | As-of dating | ages from the rotating-item fitted date on the first of each month (filed 3) |
+| 5 | Version basis | approved 2026 programme, current at the count (filed 4.1); the 2025 sheet is labelled superseded |
+| 6 | Divisor | module-years in service over the window the numerator covers (go-live, dictionary); 5.3 "in the work-order history" |
+| 7 | Weighting | rates per module-year, pooled within band (filed) |
+| 8 | Window length | numerator pinned to every recorded failure; no shorter window admissible |
+| 9 | Boundary | in service on the first day of a month (filed 3); support up to but not including the commissioning month of the bay's scheme or stage (filed 4.1) |
+| 10 | Rounding | unrounded throughout; every one-decimal figure at least 0.004 from its rounding edge after TUNE (asserted 0.04 of a tenth) |
 | 11 | Tie-break | none arises |
-| 12 | Maturity | all failures in the window are completed work orders; INPRG excluded by 4.1 |
-| 13 | Order of operations | rate then exposure then Poisson; commutes |
+| 12 | Maturity | every PSU failure work order is complete at the count; INPRG excluded by 5.1 |
+| 13 | Order of operations | rates, then occupancy, then Poisson; commutes |
 | 14 | Row order | sums only |
 | 15 | Duplicates | cancelled duplicates excluded by status (filed) |
-| 16 | Identity | asset_id joins register and work orders one to one |
+| 16 | Identity | removal_wo ties each failure to the module it removed; the module in service on the first of the month gives the same module (verify.py) |
 | 17 | Netting | none |
 | 18 | Units | modules and relays are counts; cost CAD per module (notice) |
 | 19 | Codes | CM, EM count; LOG, PM, MOD, INSP do not (filed) |
 | 20 | Integerisation | smallest whole number of lots (filed) |
-| 21 | Clause scope | 3.2 applies to substations outside the programme period only |
-| 22 | Forward window | October 2026 to each relay's support end (filed); retired relays carry none |
+| 21 | Clause scope | 4.2 applies to stations outside the programme period only |
+| 22 | Forward window | October 2026 to each relay's support end; the replacement is in service from the month after the failure (3: fitted during the month, in service from the next first day); with the 0-9 rate at 0.0019 a year, a one-month convention shift moves the total by under 0.05 |
 
 ## ASK SHEET
 
 | Ask | Figures | Device on the ask path |
 |---|---|---|
-| Lot count, modules, cost | 3 | none beyond the main construction |
-| Cover and cost for 13 to 19 lots | 14 | the cover column moves with expected failures |
-| Expected failures by year, Q4 2026 to 2035 | 10 | the age mix by year |
-| Relays supported on 1 January 2027 to 2035 | 9 | the superseded 2025 sheet; early-retired substations |
-| Expected failures by region | 3 | the register's region column is frozen at go-live; the 2024 regions live in substations.csv |
+| Lot count, modules, cost | 3 | the replacement construction |
+| Cover and cost for 8 to 22 lots | 30 | the cover column moves with expected failures; the range spans every rung from 9 to 18 lots |
+| Expected failures by year, Q4 2026 to 2035 | 10 | the replacement effect grows with each relay's horizon, so later years move most |
+| Relays supported on 1 January 2027 to 2035 | 9 | staged schemes by bay; the superseded 2025 sheet |
+| Expected failures by region | 3 | the register's region column predates the 2024 regions; the current regions live in substations.csv |
 
-Pair arithmetic: a solver on rung 2 or 3 (12 lots) loses the lot count, every cover cell, every year and every region (all move with expected failures) and keeps the nine supported-relay counts if it reads the 2026 sheet; on the planning weights that is about 5 + 7 + 58 x 9/39 = 25. Criteria: 3 + 14 + 10 + 9 + 3 + memo items (2) + files (2), about 43.
+Pair arithmetic: a solver on rung 3 (18 lots) keeps the costs (15) and, if it reads stages by bay, the nine supported-relay counts; it loses the lot call, every non-trivial cover cell, every year and every region. Criteria: 3 + 30 + 10 + 9 + 3 + memo items (2) + files (2), about 59.
 
 ## LEAK REVIEW
 
-(filled at stage 4)
+- Loop 1 `leak.py`: REVIEW. The procedure, dictionary and notice carry six to eight of the call's words (VPR340-PSU-02, lots, modules, last-time buy, Veldtek): the vocabulary of the subject, with no figure from the answer. The dictionary's run date 2026-10-01 is the extract job's stamp. Container audit clean (H1).
+- Reader rounds 1 and 2 read architecture 1 (before loop 1): no decisive-step sentence, no ranking file, no planted file; the narrow settings window (13 to 19) was a prompt-level tell and is now 8 to 22; the realism list was taken into the loop-1 rebuild (names, crews, bays, serials, retirements, programme months and scheme numbers, RMA filtering, weekday patterns, labour hours, descriptions, containers).
+- Loop 1 reader: (filled when it returns)
 
 ## Tried and rejected
 
 - Healthcare same-day demand censored at sell-out time as task133's first draw (recorded here because it was drawn in the same wave): the censoring was too mild to separate the rungs (bookings 7 per cent low) and two rigorous uncensoring methods disagreed by one session in several cells, a fork.
 - Install-date day shifts as the rounding knob: no effect. Install-month shifts: reseeded the failure draw (expected failures moved from 465 to 418), so the knob became a recorded-failure month shift, which leaves exposure untouched.
 - The first world (seed 132): after the leak reader flagged the background work orders as machine-made (substation names like "Basswoodwood", crews named for the 2024 regions from 2021, work dated outside service windows, cancellations and logistics orders only on the analysed path, perfectly regular inspections, one scope line for every scheme), the rebuild changed the random stream and the trailing-rate rung fell to 9.7 per cent low, one lot from the answer. Seeds 140 to 165 were swept and seed 147 taken (trailing rate 30.7 and installation exposure 27.6 per cent low).
+- Architecture 1 as built (relay-age rates, left-truncated exposure the decisive step): solver round 1, plain 85.0 and skeptic 85.4, both landed 17 lots. Both read the dictionary's go-live sentence and clipped exposure to January 2021, then followed AM-PC-014 step by step. Brief: let that step complete and still return the wrong lot count. Loop 1 moves the wear-out to the module, files module age in rev 4, and makes the replacement the decisive step; the go-live window stays as an ordinary step.
+- Loop 1 world without the 2015 service bulletin: rates by relay age reproduce the module-age renewal forecast to within 1 per cent (the population-average rate by relay age already carries the replacement history), so the relay-age route landed on the answer; the bulletin swaps on the pre-1998 relays decouple module age from relay age and put that route 20 per cent low.
+- Loop 1 with six bands (30+ on top): after the bulletin no module reaches 30 in the window, so the top band had no exposure; the top band is 25 and over.
+- Loop 1 seeds 147, 148, 151, 152: module-months from fitting with no replacement cancelled to within 5 per cent and landed on the answer's lot count; seed 149 landed the staged-scheme last-stage reading. Seed 150 separates every rung.

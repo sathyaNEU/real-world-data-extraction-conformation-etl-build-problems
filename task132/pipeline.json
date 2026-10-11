@@ -1,10 +1,58 @@
-{"task": "task132", "domain": "energy-systems-utilities", "objective": "forecasting",
- "stage": 4, "stage_name": "leak check", "updated": "2026-10-11",
+{
+ "task": "task132",
+ "domain": "energy-systems-utilities",
+ "objective": "forecasting",
+ "stage": 3,
+ "stage_name": "build (hardening loop 1)",
+ "updated": "2026-10-11",
  "branch": "sathya8571/task132-relay-final-buy",
- "stump": "A competent solver builds the procedure's age-banded failure rates counting each relay's years from installation and orders 12 lots; the step that lands it there is counting exposure before January 2021, when the work-order history it divides into does not exist.",
- "architecture": 1, "loops": 0,
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "task46 at 0.08 (draw)", "clone_check": ""},
- "solver_rounds": [],
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "approved": null, "delivered": null, "portal": null}
+ "stump": "A competent solver builds AM-PC-014's module-age band rates over the go-live window, ages the module fitted in each supported relay month by month to the end of its support, applies the band rate in every month and orders 18 lots; the step that lands it there is keeping today's module in the relay after it has probably failed, when 6.2 counts the module-months expected in each band and a failed module's replacement starts in the 0-9 band.",
+ "architecture": 1,
+ "loops": 1,
+ "leak": {
+  "leak_py": "",
+  "reader": "rounds 1 and 2 read on architecture 1 before loop 1; loop 1 pack not yet read"
+ },
+ "duplicate_check": {
+  "heart": "re-run after loop 1",
+  "nearest": "task46 at 0.08",
+  "clone_check": "CLEAN at every tier (clone_check_report_task132.md); renames done: Tamarack to Ironwood, Susan Huff to Angel Baird"
+ },
+ "solver_rounds": [
+  {
+   "label": "round 1, plain",
+   "date": "2026-10-11",
+   "score": 85.0,
+   "landed": true,
+   "cracked": 4,
+   "items": 6,
+   "round": 1,
+   "architecture": 1
+  },
+  {
+   "label": "round 1, skeptic",
+   "date": "2026-10-11",
+   "score": 85.4,
+   "landed": true,
+   "cracked": 4,
+   "items": 6,
+   "round": 1,
+   "architecture": 1
+  },
+  {
+   "round": 1,
+   "architecture": 1,
+   "mean": 85.2,
+   "decision": "harden",
+   "brief": "Both solvers clipped exposure to January 2021 from the dictionary's go-live sentence and landed 17 lots; the next rung has to let that exact step complete and still return the wrong lot count."
+  }
+ ],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
+}
