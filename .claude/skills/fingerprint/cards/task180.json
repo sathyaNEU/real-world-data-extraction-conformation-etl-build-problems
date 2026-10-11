@@ -1,0 +1,88 @@
+{
+  "task": "task180",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed AD03 re-rooted under the two-layer standard: no calibration corpus, no licensed wrong basis, the referral procedure filed in full",
+  "domain": "energy-systems-utilities",
+  "subdomain": "other",
+  "niche": "an electricity supplier's revenue-protection team in the north of Scotland choosing which of eight field patches its one theft-investigation team works for the January to March quarter, where storage-heated homes carry a second, heating-only supply number on its own meter",
+  "objective": "anomaly-detection",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "revenue protection manager at an electricity supplier, who places the field investigation team for the quarter",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "smart_daily_register_reads_2024-10-01_2026-12-06.parquet",
+    "rows": 0,
+    "entity": "one cumulative import register reading of one supply number on one day",
+    "grain": "supply number x day",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United Kingdom, north of Scotland (Highland and Moray)",
+    "currency": "GBP",
+    "org_type": "domestic electricity supplier with a revenue protection function",
+    "invented_names": [
+      "Corran Energy"
+    ],
+    "people": [
+      "Gareth Francis",
+      "Judith Jones",
+      "Christopher Horton",
+      "Matthew Gill"
+    ]
+  },
+  "deliverables": [
+    "field_team_q1_2027.pptx",
+    "patch_screen_q1_2027.csv"
+  ],
+  "opening_move": "constraint-first",
+  "driver": "The referral test is filed for each metered sub-unit against its own history, but the ready-made series sums the sub-units of an entity, and where an entity holds a second sub-unit carrying one seasonal load, a large fall on that sub-unit moves the entity total by a few per cent, inside ordinary variation, so screening the summed series ranks the candidates differently from screening each sub-unit and counting entities once.",
+  "driver_concrete": "Corran's procedure refers a supply number whose weather-adjusted consumption over the latest eight weeks sits 30 per cent or more under its own two-year history, and storage-heated homes in Caithness carry a second, heating-only supply number; a bypass on the heating meter takes 35 to 60 per cent off that supply while the account's weekly total in the analytics mart falls by 6 to 9 per cent, so the procedure run on the mart's account totals names Elgin, and run on each supply's daily register reads, counting each premises once, names Caithness.",
+  "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, voids and heating changes excluded) on the analytics mart's weekly account consumption and places the team in Elgin; the step that lands it there is treating an account's weekly total as the supply the procedure screens, when storage-heated premises in Caithness hold a second, heating-only supply whose bypassed meter shows a 35 to 60 per cent shortfall that moves the account total by only 6 to 9 per cent.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task72": "task72 books a correctly measured movement to the owner whose agreement covered each piece of service across a transfer; here nothing is attributed between owners: an anomaly test has to run on each metered component because a summed series dilutes a one-component fall below the referral band.",
+    "task103": "task103 counts units a contact served through standing authorizations; here no unit is fanned out or recovered from a quantity: the test is applied per metered supply and counted once per premises, and the trap is dilution of a component fall in a summed series.",
+    "task81": "task81 recovers a paid entity across registry renumbering by matching sub-unit sets; here identities are stable and known, and the move is the grain at which a filed anomaly test is run, not who the entity is.",
+    "task86": "task86 runs an earlier draw on a shared pool forward member by member; here there is no pool or draw, the difficulty is a summed series hiding a component-level anomaly from a filed screen.",
+    "task90": "task90 chains supplier asset stays into a buyer-side position for a tariff; here no chaining or re-rating: the summed account series is correct and simply too coarse for a per-supply anomaly test."
+  },
+  "lineage": [],
+  "notes": "Subdomain 'other': revenue protection (energy theft detection) at a supplier, an anomaly-detection task type the energy taxonomy does not list. Bespoke draw from how north-of-Scotland storage heating is metered (a related, heating-only supply number). No calibration corpus, no licensed wrong basis, no certified record; the referral procedure is filed in full.",
+  "client_domain": "energy-systems-utilities",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:detect-at-the-metered-component-count-at-the-premises",
+  "layer1": [
+    "cumulative smart-meter register reads in parquet, needing differencing across comms gaps and meter exchanges",
+    "supply numbers to accounts to premises through a multi-sheet register workbook",
+    "a weekly analytics-mart extract at account grain",
+    "degree days per weather station with a station-to-patch map in JSON",
+    "a field visit log re-keyed in a system migration, with appeal outcomes in a separate register"
+  ]
+}

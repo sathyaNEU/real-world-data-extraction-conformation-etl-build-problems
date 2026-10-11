@@ -1,8 +1,29 @@
-{"task": "task180", "domain": "", "objective": "anomaly-detection",
- "stage": 0, "stage_name": "intake", "updated": "2026-10-11",
- "stump": "", "architecture": 1, "loops": 0,
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+{
+ "task": "task180",
+ "domain": "energy-systems-utilities",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-11",
+ "stump": "A competent solver runs the filed referral test (weather-adjusted, own two-year history, 30 per cent over eight weeks, voids and heating changes excluded) on the analytics mart's weekly account consumption and places the team in Elgin; the step that lands it there is treating an account's weekly total as the supply the procedure screens, when storage-heated premises in Caithness hold a second, heating-only supply whose bypassed meter shows a 35 to 60 per cent shortfall that moves the account total by only 6 to 9 per cent.",
+ "architecture": 1,
+ "loops": 0,
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
  "solver_rounds": [],
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "approved": null, "delivered": null, "portal": null}
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
+}
