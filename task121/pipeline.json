@@ -1,34 +1,35 @@
 {
   "task": "task121",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "RETIRED",
   "domain": "physical-environmental-sciences",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design (architecture 3)",
+  "stage": "retired",
+  "stage_name": "retired: architecture 3 spent at stage 4 (judge SEND_BACK on the re-judge)",
   "updated": "2026-10-12",
-  "stump": "A competent solver counts the odor events each facility lay upwind of under the district's upwind check and files the Pine Gulch landfill, upwind of the most events, where the golden is Ridgeway Organics' compost facility; the step that lands it there is counting upwind events, when the night drainage puts the landfill upwind of the town on most nights whether or not anyone complains, and dividing by the all-hours wind frequency only moves the pick to the rendering plant.",
+  "stump": "A competent solver forms the district's 499 odor events of May to September 2026, counts the events each facility lay upwind of under the procedure's check and files the Pine Gulch Landfill (210; the compost facility 69), where the golden is Ridgeway Organics' composting facility; the step that lands it there is counting upwind events when the night drainage puts the landfill upwind of the town on most nights (299.1 expected at the same hours), and dividing by the all-hours wind only moves the pick to Kestrel Valley Rendering (2.69 times) while the compost facility falls to 0.39; against the same clock hours on the season's other days it stands 42.6 events above expectation (69 against 26.4).",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-12, --asof 2026-10-12, after the repair)",
+    "reader": "pass 1 and pass 2: no decisive-step sentence, no ranking file; pass 2 findings not repaired (retired)"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task180 v4 0.12 (differentiated), task50 v4 0.08"
+    "heart": "WARN (repeat Gate G task120; driver.near task180 0.12 differentiated)",
+    "surface": "promoted task97 (gap key) and task128 (context artifact), drivers differ (card differentiation)",
+    "nearest": "task180 v4 0.12, task50 v4 0.08"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1 NOT_DETERMINISTIC (ask 1 of the workbook); round 2 NOT_DETERMINISTIC (main call: no filed basis for \"behind the surge\"; a pre-surge baseline names Kestrel Valley Rendering)",
+    "disposition": "round 1 FIX_NOW; round 2 SEND_BACK",
+    "report": "task121/determinism_check_report.md, task121/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py",
+  "resume": "",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -61,5 +62,14 @@
       "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
       "status": "FAILED_TO_STUMP"
     }
-  }
+  },
+  "build": {
+    "checks": 5839,
+    "fork_grid_cells": 24,
+    "verifier": "green",
+    "byte_identical": true,
+    "figures_check": "PASS 58 of 58",
+    "target_zip_bytes": 1102579
+  },
+  "retired_reason": "Third architecture spent: the determinism judge returned SEND_BACK on the re-judge after round 1's FIX_NOW; retired under build-pipeline's retirement rule, not submitted."
 }

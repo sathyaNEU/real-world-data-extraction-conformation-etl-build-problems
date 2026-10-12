@@ -8,11 +8,11 @@
   "client_domain": "physical-environmental-sciences",
   "niche": "a regional air district deciding which of the permitted odor sources around a valley town (a compost facility that began taking food waste, the county landfill up-valley, the town's wastewater plant, a rendering plant and a mushroom substrate yard) is behind the 2026 surge in residents' odor complaints, from the complaint log's household locations and times and the district's 5-minute valley wind record, before the 2027 season",
   "objective": "root-cause",
-  "shape": "18",
+  "shape": "07",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Ridgeway Organics' composting facility is behind the 2026 surge in odor complaints in Harlow Falls, and the district should take it to the hearing board for an order for abatement before the 2027 season.",
+  "answer_source": "task121/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "time",
     "population"
@@ -36,8 +36,8 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "met_station_5min_export_2025-2026.csv",
-    "rows": 88128,
+    "file": "hfs_met_5min_2026-01-01_2026-09-30.csv",
+    "rows": 78624,
     "entity": "one 5-minute record of the district's town meteorological station",
     "grain": "station x 5 minutes",
     "source": "synthetic"
@@ -67,13 +67,13 @@
   "deliverables": [
     "odor_source_determination_2026.docx",
     "odor_events_2026.xlsx",
-    "odor_hours_by_facility_2026.png"
+    "odor_events_by_wind_direction_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive comparison sets each event's exposure against the same unit's exposure at the same clock hours on other days, because the events and the exposure both follow one daily cycle for reasons unrelated to any candidate; counting exposures among events, or normalizing by exposure over all hours, credits whichever candidate the daily cycle points at, and only the time-matched comparison at each unit's own geometry names the candidate whose exposure arrives with the events.",
   "driver_concrete": "Residents report odor when they are home, in the evening and early morning, and the valley wind turns with the clock (down-valley drainage at night), so the landfill up-valley lies upwind of the town on most nights whether or not anyone complains; only comparing the wind at each odor event's hour with the same hours on the other days of the season, at each household's own bearing to each facility, shows the compost facility in the side canyon upwind of complaint hours several times as often as of the same hours on other days.",
-  "stump": "A competent solver forms the district's odor events from the complaint log, applies the district's upwind check to each one, counts the events each facility lay upwind of and files the Pine Gulch landfill, upwind of the most events, where the golden is Ridgeway Organics' compost facility; the step that lands it there is taking upwind-during-the-events as the evidence, when the night drainage puts the landfill upwind of the town on most nights whether or not anyone complains, and dividing by how often the wind blows from each facility over all hours only moves the pick to the rendering plant, whose bearing the wind also takes only at night, while the compost facility, which the up-valley wind puts upwind of the town all day, looks unrelated until each event's hour is set against the same hours on the season's other days.",
+  "stump": "A competent solver forms the district's 499 odor events of May to September 2026, applies the procedure's upwind check to each and files the Pine Gulch Landfill, upwind of 210 events (the compost facility 69), where the golden is Ridgeway Organics' composting facility; the step that lands it there is counting upwind events, when the night drainage puts the landfill upwind of the town on most nights complaint or not (299.1 expected at the same hours), and dividing by the all-hours wind only moves the pick to Kestrel Valley Rendering (2.69 times) and drops the compost facility to 0.39, because the up-valley wind puts it upwind all day when nobody reports; set against the same clock hours on the season's other days it stands 42.6 events above expectation (69 against 26.4).",
   "stump_class": "analytical",
   "analyst_test": "An analyst who cleans the complaint log into the district's odor events, reads the noticed time, vector-averages the 5-minute wind into hours and applies the 30-degree upwind check correctly still files the landfill by counting upwind events, or the rendering plant by dividing by each facility's all-hours upwind frequency, because both comparisons let the valley's daily wind cycle and the residents' evening reporting stand in for the source.",
   "domain_test": "Odor source attribution from complaint geometry and the local wind record (conditional probability by direction and its time-stratified form) is the air agency's own analysis; with another field's nouns there is no plume bearing from each household, no valley wind turning with the clock and no drainage flow putting one source upwind every night, and the task stops reading the same.",
@@ -87,7 +87,9 @@
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task180": "task180 recovers a unit's true event rate from the quiet hours because instrument noise masks small events by day (completeness by hour); here nothing is masked: complaints and winds both follow the clock, so the comparison of each event's wind with the same hours on other days (a time-stratified referent at each household's own bearing) separates a confounded co-occurrence from the source, and the count of what was recorded is never in question."
+    "task180": "task180 recovers a unit's true event rate from the quiet hours because instrument noise masks small events by day (completeness by hour); here nothing is masked: complaints and winds both follow the clock, so the comparison of each event's wind with the same hours on other days (a time-stratified referent at each household's own bearing) separates a confounded co-occurrence from the source, and the count of what was recorded is never in question.",
+    "task97": "task97 counts a place's cumulative history across every occupant to forecast a unit's repeat need; here nothing about a place's history decides: each odor event's wind is compared with the same clock hours on other days, a confound by the shared daily cycle.",
+    "task128": "task128 books one request per interval against a budget stated for the whole period; here the shared organ is only the context-artifact type (a monitoring export), and the decisive move is a time-matched comparison, not a binding resource."
   },
   "lineage": [
     {
@@ -165,7 +167,32 @@
       "org_family": "retailer_or_ecommerce",
       "role_family": "product_manager",
       "fate": "built; solved in-house twice (rounds 86.1 and 89.5: the identity join was a schema read, token and member number on both files, then the SOCIO codes); retired 2026-10-10, FAILED_TO_STUMP; re-queued in wave 1 as re-root, Root-Cause"
+    },
+    {
+      "architecture": "v3 (odor complaints against the valley's wind)",
+      "drawn": "2026-10-12",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "pollution-source-attribution",
+      "objective": "root-cause",
+      "shape": "07",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G7"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive comparison sets each event's exposure against the same unit's exposure at the same clock hours on other days, because the events and the exposure both follow one daily cycle for reasons unrelated to any candidate; counting exposures among events, or normalizing by exposure over all hours, credits whichever candidate the daily cycle points at, and only the time-matched comparison at each unit's own geometry names the candidate whose exposure arrives with the events.",
+      "fate": "spent 2026-10-12 at stage 4: the determinism judge returned FIX_NOW in round 1 (the monthly complaint ask counted an app report received twice once on an unfiled rule) and SEND_BACK on the re-judge: no shipped file says how 'behind the surge' is decided, and a pre-surge baseline (each facility's share of the January to April events applied to the season's) names Kestrel Valley Rendering, so the hour-matched comparison was a method choice the text did not force; the number retired with its third architecture"
     }
   ],
-  "notes": "v3 drawn 2026-10-12 by sathay3012 for the wave-1 re-root."
+  "notes": "v3 drawn 2026-10-12 by sathay3012 for the wave-1 re-root. v3 spent 2026-10-12 (judge SEND_BACK on the re-judge); task121 retired."
 }

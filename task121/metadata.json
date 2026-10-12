@@ -1,0 +1,158 @@
+{
+ "task": "task121",
+ "title": "Which permitted odor source around Harlow Falls is behind the 2026 surge in odor complaints, and which comes closest, with the complaint record by month and the station's usable and calm hours",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "pollution source attribution (odor complaints against the valley's wind)",
+ "objective": "Root-Cause Analysis",
+ "prompt_shape": "07: the call and the rival, the five facilities' upwind counts, the complaints by month (January to September), the station's usable and calm hours by month (May to September), the sixteen-sector chart",
+ "as_of": "2026-10-12",
+ "deliverables": [
+  "odor_source_determination_2026.docx",
+  "odor_events_2026.xlsx",
+  "odor_events_by_wind_direction_2026.png"
+ ],
+ "distractor_files": [
+  "operator_monthly_reports_2026.xlsx",
+  "hfs_pm25_hourly_2026.csv",
+  "kestrel_county_airport_hourly_2026.csv"
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "geojson",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "hfs_met_5min_2026-01-01_2026-09-30.csv",
+  "largest_file_rows": 78624
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task121/generator/make.py (seeded, deterministic) around a fictional California air district, town, facilities and people; every record, reading and figure is invented.",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "files": [
+  {
+   "path": "complaint_export_fields.txt",
+   "format": "txt",
+   "bytes": 1297,
+   "rows": null,
+   "source": "Constructed: Field reference of the complaint system export",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cp14_odor_complaint_procedure_rev4.pdf",
+   "format": "pdf",
+   "bytes": 5512,
+   "rows": null,
+   "source": "Constructed: Compliance Procedure CP-14 rev. 4, odor complaint response",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hfs_met_5min_2026-01-01_2026-09-30.csv",
+   "format": "csv",
+   "bytes": 3696786,
+   "rows": 78624,
+   "source": "Constructed: Harlow Falls station 5-minute meteorological records, January to September 2026 (PST)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hfs_pm25_hourly_2026.csv",
+   "format": "csv",
+   "bytes": 151984,
+   "rows": 6552,
+   "source": "Constructed: Harlow Falls station hourly PM2.5, January to September 2026 (PST)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hfs_station_maintenance_log_2026.csv",
+   "format": "csv",
+   "bytes": 1961,
+   "rows": 20,
+   "source": "Constructed: Harlow Falls station maintenance log, 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hfs_station_readme.txt",
+   "format": "txt",
+   "bytes": 1426,
+   "rows": null,
+   "source": "Constructed: Readme of the Harlow Falls station export",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "kestrel_county_airport_hourly_2026.csv",
+   "format": "csv",
+   "bytes": 206332,
+   "rows": 6677,
+   "source": "Constructed: Kestrel County Airport hourly observations, 2026 (UTC)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ocs_open_complaints_2025-12-31.csv",
+   "format": "csv",
+   "bytes": 3782,
+   "rows": 38,
+   "source": "Constructed: Retired complaint system (OCS): open complaints at 31 December 2025",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "odor_complaint_totals_2019-2025.csv",
+   "format": "csv",
+   "bytes": 132,
+   "rows": 7,
+   "source": "Constructed: District odor complaint totals 2019 to 2025",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "odor_complaints_export_2026-10-02.csv",
+   "format": "csv",
+   "bytes": 142074,
+   "rows": 708,
+   "source": "Constructed: Complaint system export of 2 October 2026 (odor complaints, January to October 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "odor_source_list_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 8764,
+   "rows": null,
+   "source": "Constructed: District odor source list (30 September 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "operator_monthly_reports_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 9823,
+   "rows": null,
+   "source": "Constructed: Odor sources' monthly operating reports, January to September 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ukvaqmd_boundary.geojson",
+   "format": "geojson",
+   "bytes": 2425,
+   "rows": null,
+   "source": "Constructed: District boundary",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
+}
