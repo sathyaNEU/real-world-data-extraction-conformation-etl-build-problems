@@ -27,14 +27,14 @@ Pfeilbrunn's town stations record every earthquake down to about ML 0.6 only fro
 5. Multiplied each rate by the plant's 2027 volume (`operating_plans_2027.pdf`: each quarter as in 2026, the fourth as in 2025), the borehole networks locating every earthquake of ML 0.6 or more within 5 km (`monitoring_ordinance_2026.pdf` § 3): Pfeilbrunn 223 and 206 in the first and fourth quarters, no other plant above 85.
 6. Recommendation: Pfeilbrunn alone over amber, in the first and fourth quarters of 2027.
 7. Injected volume: the injection rows on the 2026 sheet of `injection_reports_2023-2026.xlsx`, each filed under the month after the one it reports (received in the month it is filed under, December 2025 filed again as 2026-01, the hourly telemetry matching each row in the month before), summed by the month reported, MST-Th4a counted as MST-GT4 (`well_register.csv`), the injected volume of the scheme's section 6.
-8. Automatic counts from `origins_2023-01_2026-09.csv` (origins by scautoloc grouped into events by origin time, each at its last origin), and hours from each station's HHZ epochs in the inventory less its HHZ gaps in `availability_gaps_2026-01_2026-09.csv`, a station not recording between its old and new epochs on an exchange day.
+8. Automatic counts from `origins_2023-01_2026-09.csv` (origins by scautoloc grouped into events where origin times lie within 3 seconds, each event at the origin the system created last), and hours from each station's HHZ epochs in the inventory less its HHZ gaps in `availability_gaps_2026-01_2026-09.csv`, a station not recording between its old and new epochs on an exchange day.
 
 ## 4. Deliverable Answers
 
 ### amber_outlook_2027.docx
 1. Plants over amber in 2027: Pfeilbrunn only, in the first quarter (about 223) and the fourth (about 206); no other plant in any quarter.
 2. Chart (Figure 1): one bar per plant for each quarter of 2027 against a line at 120; only Pfeilbrunn's first and fourth quarter bars are above it.
-3. Expected earthquakes of ML 1.0 or more within 5 km in 2027, whole numbers, each within 8 per cent under any other rate convention on the whole record and none across 120:
+3. Expected earthquakes of ML 1.0 or more within 5 km in 2027, whole numbers, each within 8 per cent under the other quiet-hour conventions on the whole record (another night window, the night count against the night's own volume, telemetry volumes); no convention moves a cell across 120:
    - Pfeilbrunn: Q1 223, Q2 70, Q3 44, Q4 206
    - Moorstetten: Q1 85, Q2 37, Q3 26, Q4 81
    - Lanzenried: Q1 76, Q2 33, Q3 24, Q4 73

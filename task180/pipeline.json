@@ -1,11 +1,11 @@
 {
   "task": "task180",
   "owner": "oviya13ya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes over amber (Moorstetten highest at 92, Pfeilbrunn at 62 and 77); the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when Pfeilbrunn's town stations lose most daytime earthquakes, so Pfeilbrunn's true rate, recovered from its quiet night hours (442 of its 658 located earthquakes fall in 5.5 hours), is 28.0 per 100,000 m3 injected against 9.6 on its whole-day record, about 223 and 206 in the winter quarters of 2027, which the borehole stations will locate from January.",
   "architecture": 4,
@@ -23,8 +23,8 @@
     "nearest": "task181 0.05 (driver); surface pairing on the notes file name cleared by renaming"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (minor SOLUTION_WRONG)",
-    "disposition": "FIX_NOW",
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW applied twice (pass 1 figures, pass 2 wording)",
     "report": "determinism_check_report.md (pass 1)",
     "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical",
@@ -35,6 +35,12 @@
         "verdict": "DETERMINISTIC",
         "disposition": "FIX_NOW",
         "report": "determinism_check_report.md"
+      },
+      {
+        "pass": 2,
+        "verdict": "DETERMINISTIC",
+        "disposition": "FIX_NOW (solution wording only, applied; no figure moved)",
+        "report": "determinism_check_report_pass2.md"
       }
     ]
   },
@@ -46,9 +52,9 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: FIX_NOW repaired (534 checks, verify OK, byte-identical, figures_check 104/104); the one re-judge (pass 2) was spawned from /tmp/determinism-check-task180-p2075450/judge_brief.md; on APPROVE: ledger row, card, status SHIPPED, commit SHIPPED with target.zip and golden/ force-added; on anything else the architecture is spent (re-root)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

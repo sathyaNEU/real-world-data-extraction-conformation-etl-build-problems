@@ -632,3 +632,11 @@ sends the sentence out of the pack and the build back to design.
   (Lanzenried from August 2025, its first whole month on the new network: 76, 33, 24, 73), and every 2027 cell is stated
   within 8 per cent under any rate convention on the whole record (asserted for eight conventions; shorter windows keep
   the call but not the band). The telemetry golden was dropped because a literal reader takes 6.2's volume.
+- **Judge pass 2 (2026-10-12): DETERMINISTIC, FIX_NOW on solution wording only; shipped.** Call, cells and all 45
+  annex figures reproduce. Three wording points, applied with no figure moving: the 8 per cent band held only for the
+  quiet-hour conventions (a Gutenberg-Richter extrapolation puts Pfeilbrunn's rate at 23.1 against 28.0, still over
+  amber), so the write-up and memo now say so and that no method moves a cell across 120; step 8 now names the
+  grouping window (origins within 3 seconds; 0.5 s and 10 s each move a count) and the last origin by creation time
+  (by origin time Lanzenried reads 102, 39, 28). The thread classed sole_data_defect yes as borderline (the detection
+  regime as the flip) without raising a banned-type finding; the author's live test decides it.
+

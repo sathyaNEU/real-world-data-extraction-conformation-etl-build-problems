@@ -254,8 +254,9 @@ def write_docx(path, c, fig):
     para("Each plant's rate per 100,000 m³ injected (the operators' reported volumes, each 2026 report counted for "
          "the month it reports) over its complete record, Pfeilbrunn's from 23:30 to 05:00 scaled to the day and "
          "Lanzenried's from August 2025, times the 2027 plan volume: each quarter as in 2026, the fourth as in 2025. Amber "
-         "in bold. Another rate convention on the same record, such as Pfeilbrunn's night count against the volume "
-         "injected in those hours or a window from midnight, moves a cell by up to %s per cent and none across the line."
+         "in bold. Another quiet-hour convention on the same record, such as Pfeilbrunn's night count against the volume "
+         "injected in those hours or a window from midnight, moves a cell by up to %s per cent; no method moves one "
+         "across the line."
          % TOL, size=8, color="56606A", after=10)
 
     para("Counting as in section 3 of the 2024 scheme: epicentres within 5 km of the open hole of an injection well, ML "
