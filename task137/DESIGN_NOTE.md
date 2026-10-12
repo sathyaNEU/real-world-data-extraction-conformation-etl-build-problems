@@ -17,10 +17,10 @@ filed and the callable-number wash is depth; the pitfall is re-found from how th
 | Decision | `quantity_figure`, answer unit `count` (agent-hours, to the nearest 250) |
 | Mechanism | gap time (decisive: the evidence is about past repricings on past cards, the bet is on a list repricing onto a much lower card), then population; pattern E (a conditioned yield, no column naming the conditioning quantity); generators G14 (the share of conversations that go to the retention offer, conditioned on the drop from the locked rate to the card) then G6 (the coming list's mix on that drop sits far from every past list's within each term: its four-year deposits meet a 2.50-point drop, every past four-year deposit met a negative or small one); Gate G `forecasting`; strategy `composition_mix` |
 | Layer 2 family / pattern | `field_method` (deposit behaviour's repricing-gap retention model); `own:repricing-gap-conditioned-retention-at-maturity` (banking has no library patterns; the family is the client's "the field's own method done right") |
-| Furniture | forum `line_manager_or_team` (the head of deposits signs the block order), forcing event `purchase_order_or_contract` (the quarterly take-or-pay block order is due on Friday 20 November 2026), organisation family `cooperative_or_member_body` (a building society), role family `product_manager` (the term deposits product manager owns the campaign budget), context artifact `planning_thread` (Harbourline's request for the block order and the society's reply), calibration `none` (the past campaigns are the history the yields are estimated from, not an organ), opening `question-first`, question form `how-many` |
+| Furniture | forum `committee_or_panel` (the society's Deposits Committee, chaired by the head of deposits, approves the block order, procedure 6.2), forcing event `purchase_order_or_contract` (the quarterly take-or-pay block order is due on Friday 20 November 2026), organisation family `cooperative_or_member_body` (a building society), role family `product_manager` (the term deposits product manager owns the campaign budget), context artifact `planning_thread` (Harbourline's request for the block order and the society's reply), calibration `none` (the past campaigns are the history the yields are estimated from, not an organ), opening `question-first`, question form `how-many` |
 | Spine | `harbourline_dial_log_2025q1-2026q3.csv`, the contact centre's dial records: one row per dial on a released case, December 2024 to September 2026 (264,592 rows); constructed |
 | Deliverables | `td_booking_q1_2027.xlsx` (the booking by maturity month with its basis, the two asks, a notes sheet), `td_booking_note_q1_2027.docx` (a one-page note for the head of deposits opening with the block and charting it by maturity month) |
-| People | drawn with `guard.py names --geo "New Zealand" --seed 137 --n 30`, keeping only names the guard clears: Hazel Johnstone (term deposits product manager, the requester), Stuart Waller (head of deposits, signs the block order), Suzanne Wallis (Harbourline account manager), Joseph Herd (customer data steward, keeps the do-not-call register), Sienna Stewart (treasury pricing analyst, prepares the quarterly card for ALCO), Ashton Findlay (Harbourline workforce planner); none appears in the prompt |
+| People | drawn with `guard.py names --geo "New Zealand" --seed 137 --n 30`, keeping only names the guard clears: Hazel Johnstone (term deposits product manager, the requester), Stuart Waller (head of deposits, chairs the Deposits Committee that approves the block order), Suzanne Wallis (Harbourline account manager), Joseph Herd (customer data steward, keeps the do-not-call register), Sienna Stewart (treasury pricing analyst, prepares the quarterly card for ALCO), Ashton Findlay (Harbourline workforce planner); none appears in the prompt |
 
 **Guard.** `guard.py check` on the scratch card: WARN, one finding. `repeat.gate_g` (`forecasting` in one of the last two
 builds, task130): the key is honest, because the decisive step is how the forward share of long conversations is
@@ -31,7 +31,10 @@ task136): a first draft blocked on `ban.org_family` (`financial_institution`, ta
 artifact to the planning thread that frames the booking. A first gap draft (population, E) blocked on `test.same_driver`
 against task124's lineage and on `test.same_puzzle_older`; gap time is the honest decisive gap (the stumping skill's
 "a lapsing term": the quantity moves with where on the rate path each deposit locked and where it matures), and the
-four older carriers of time, E and a quantity are differentiated on the card.
+four older carriers of time, E and a quantity are differentiated on the card. At stage 3 `guard.py heart` blocked on
+`ban.forum`: task136, drawn beside this build, moved its own forum to `line_manager_or_team` after this card was
+registered; the forum was redrawn to `committee_or_panel`, filed in the pack as the Deposits Committee's approval of the
+block (procedure 6.2, the block-order thread), and heart is back to the one WARN.
 
 **Same-puzzle and same-driver tests.** Gap time, pattern E, decision `quantity_figure`, Gate G `forecasting`: no build in
 the last twelve carries the four (task125 carries gap time with a composition mix on a G6 pattern; task130 gap time with
@@ -86,7 +89,8 @@ exhaustion of every callable number, withdrawal or maturity. Harbourline bills a
 retention offer because the holder says they mean to withdraw or move the funds) against a quarterly take-or-pay block
 the society books, in multiples of 250 hours, by the 20th of the second month before the quarter; hours beyond the
 block are billed at the block rate plus 35 per cent. The retention procedure (version 4) books the hours the quarter's
-list is forecast to need, to the nearest 250, drawing on every campaign closed under the SOW.
+list is forecast to need, to the nearest 250, drawing on every campaign closed under the SOW, and the Deposits
+Committee approves the block before it is sent.
 
 As-of dates: the January to March 2027 list was cut on 2 November 2026 (18,400 term deposits, 10,735 of them four-year
 deposits at 5.65 per cent); ALCO approved the January to March 2027 card (four years 3.15 per cent) and it sits in the
@@ -434,7 +438,8 @@ the retention offer.
 - `guard.py surface task137`: exit 0. The people the pack names are the card's (an email sign-off that set a first name
   before the full name read as two personas and was reworked). Four pairs promoted on card axes only (task117, task37,
   task97, task44: the same gap, pattern, Gate G and decision type), each differentiated on the card, surface overlap
-  0.075 to 0.089. `guard.py heart task137`: WARN (`repeat.gate_g` against task130, answered in `## Draw`).
+  0.075 to 0.089. `guard.py heart task137`: WARN (`repeat.gate_g` against task130, answered in `## Draw`), after the
+  forum redraw that cleared `ban.forum` against task136.
 - `leak.py --asof 2026-11-04`: the one LEAK (Harbourline's proposal gave a minimum block of 1,500 hours, the golden's
   January figure) fixed in the generator (750). REVIEW lines, each harmless: 3.15 in two briefs is a posted rate the
   call reads, not an answer; the briefs, SOW and extract notes share the call's domain nouns (agent-hours, Harbourline,
@@ -465,3 +470,5 @@ the retention offer.
   stopped the months adding to the block.
 - Extract notes that said the certificates in the holdings view were moved to the core and what MIGRATED means: they
   narrated Ask B's overlap; the notes now describe the files' fields only.
+- Forum `line_manager_or_team` (the head of deposits signing the block order alone): task136 moved its forum to the same
+  key after this card was registered, and `ban.forum` blocked; the Deposits Committee now approves the block.

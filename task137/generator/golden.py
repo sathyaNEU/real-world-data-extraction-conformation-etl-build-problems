@@ -359,8 +359,9 @@ def write_note(path, c_, figs):
     para("Kaimai Building Society  |  Term Deposits", size=9, color="5B6670", after=2)
     para("January to March 2027 maturity calls: book %s agent-hours with Harbourline" % figs["call"]["booking_hours"],
          bold=True, size=14, color=NAVY, after=2)
-    para("To %s, Head of Deposits. From %s, Term Deposits Product Manager. 5 November 2026." % (
-        W.PEOPLE["head"], W.PEOPLE["product"]), size=9, color="5B6670", after=8)
+    para("To the Deposits Committee (chair %s, Head of Deposits), for its meeting on 17 November. From %s, Term "
+         "Deposits Product Manager. 5 November 2026." % (W.PEOPLE["head"], W.PEOPLE["product"]), size=9,
+         color="5B6670", after=8)
     p = para(after=6)
     p.add_run("Book %s agent-hours with Harbourline for the January to March 2027 list: %s for the deposits maturing "
               "in January, %s for February and %s for March." % (

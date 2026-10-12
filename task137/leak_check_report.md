@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: locked, release, dialling, latest, golden, quantity, conditioned, retention, decisive, carries, callable, repricing, conversations, four-year, pooled, pattern, account, quarter, domain, posted, campaigns, coming, family, manager, register
+Stump terms swept: locked, release, dialling, latest, golden, quantity, conditioned, retention, decisive, carries, callable, repricing, conversations, four-year, pooled, pattern, account, quarter, domain, posted, campaigns, coming, family, committee, procedure
 
 ## 3 answer figures in the pack (REVIEW 9)
 - **REVIEW** `harbourline_campaign_brief_2026Q3.pdf`: golden figure 3.15 appears: ...er Term 1 yr 2 yrs 3 yrs 4 yrs 5 yrs Rate % p.a. 3.15 3.20 3.30 3.40 3.50 Posted rates as approved by A...
@@ -18,17 +18,17 @@ Stump terms swept: locked, release, dialling, latest, golden, quantity, conditio
 - **REVIEW** `kbs_extract_notes_2026-11.txt`: carries 10 of 15 distinctive words of the committed call: 'We should book 5,500 agent-hours with Harbourline for the 18,400 term deposits on the January to March 2027 maturity lis'
 
 ## 4 design-note vocabulary (REVIEW 12)
-- **REVIEW** `harbourline_2027_staffing_proposal.pdf`: 6 of 25 stump-paragraph terms appear (dialling, conversations, account, quarter, campaigns, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2025Q1.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2025Q2.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2025Q3.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2025Q4.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2026Q1.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2026Q2.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2026Q3.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
-- **REVIEW** `harbourline_campaign_brief_2027Q1.pdf`: 6 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted, manager); read whether the document names the move
+- **REVIEW** `harbourline_2027_staffing_proposal.pdf`: 5 of 25 stump-paragraph terms appear (dialling, conversations, account, quarter, campaigns); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2025Q1.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2025Q2.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2025Q3.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2025Q4.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2026Q1.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2026Q2.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2026Q3.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
+- **REVIEW** `harbourline_campaign_brief_2027Q1.pdf`: 5 of 25 stump-paragraph terms appear (release, retention, account, quarter, posted); read whether the document names the move
 - **REVIEW** `harbourline_sow_HCS-KBS-2025-01.pdf`: 6 of 25 stump-paragraph terms appear (release, dialling, retention, callable, account, quarter); read whether the document names the move
-- **REVIEW** `kbs_extract_notes_2026-11.txt`: 6 of 25 stump-paragraph terms appear (release, retention, callable, account, campaigns, register); read whether the document names the move
+- **REVIEW** `kbs_extract_notes_2026-11.txt`: 5 of 25 stump-paragraph terms appear (release, retention, callable, account, campaigns); read whether the document names the move
 - **REVIEW** `kbs_td_retention_procedure_v4.docx`: 8 of 25 stump-paragraph terms appear (release, retention, carries, callable, quarter, posted); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 4)

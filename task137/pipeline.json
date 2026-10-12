@@ -19,7 +19,7 @@
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 (repeat.gate_g only, answered in the design note)",
+    "heart": "WARN 2026-10-12 (repeat.gate_g only, answered in the design note; ban.forum against task136 cleared by redrawing the forum to committee_or_panel)",
     "nearest": "0.07 task136 (stump); surface exit 0, 4 promoted on card axes (task117, task37, task97, task44), differentiated on the card"
   },
   "judge": {

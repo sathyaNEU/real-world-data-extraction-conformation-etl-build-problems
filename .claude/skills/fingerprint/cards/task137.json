@@ -41,7 +41,7 @@
     "grain": "dial x case x number",
     "source": "constructed (the contact centre's acknowledgement records)"
   },
-  "forum": "line_manager_or_team",
+  "forum": "committee_or_panel",
   "forcing_event": "purchase_order_or_contract",
   "org_family": "cooperative_or_member_body",
   "world": {
@@ -81,7 +81,7 @@
     "task97": "task97's chance turns on the cumulative history of the place a unit occupies, counted across every occupant; here it turns on the unit's own price change at one repricing, set by where on the rate path it locked and where it matures, and no place, occupant or history count enters."
   },
   "lineage": [],
-  "notes": "Calibration none: the seven past campaigns are the bank's own history from which the dialling yields and the retention-offer share are estimated, not an organ confirming a filed criterion. Pattern E (a conditioned yield, no column naming the conditioning quantity: the drop needs the locked rate from the campaign list and the card for the deposit's term from each quarter's campaign brief); G14 then G6 (the coming list's mix on that quantity sits far from every past list's within each term). Layer 2 pattern own:repricing-gap-conditioned-retention-at-maturity (banking has no library patterns). Context artifact planning_thread: the contact centre's request for the quarter's block order and the society's reply, which set the deadline and the take-or-pay terms and argue no figure. Gate G forecasting answered against task130 (a claims-made window costed by report lag): the decisive step here is how the forward share is forecast, conditioned on the repricing gap.",
+  "notes": "Calibration none: the seven past campaigns are the bank's own history from which the dialling yields and the retention-offer share are estimated, not an organ confirming a filed criterion. Pattern E (a conditioned yield, no column naming the conditioning quantity: the drop needs the locked rate from the campaign list and the card for the deposit's term from each quarter's campaign brief); G14 then G6 (the coming list's mix on that quantity sits far from every past list's within each term). Layer 2 pattern own:repricing-gap-conditioned-retention-at-maturity (banking has no library patterns). Context artifact planning_thread: the contact centre's request for the quarter's block order and the society's reply, which set the deadline and the take-or-pay terms and argue no figure. Gate G forecasting answered against task130 (a claims-made window costed by report lag): the decisive step here is how the forward share is forecast, conditioned on the repricing gap. Forum redrawn at stage 3 from line_manager_or_team to committee_or_panel: task136, drawn beside this build, moved its own forum to line_manager_or_team after this card was registered, and ban.forum blocked the repeat; the society's Deposits Committee, chaired by the head of deposits, approves the block order (procedure 6.2).",
   "layer2_family": "field_method",
   "layer2_pattern": "own:repricing-gap-conditioned-retention-at-maturity",
   "layer1": [

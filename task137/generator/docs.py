@@ -298,7 +298,8 @@ def write_procedure(path):
     clause("6.1", "The Deposits team books with the contact centre the agent-hours the quarter's list is forecast to "
                   "need, rounded to the nearest 250 hours, by the date schedule 2 of the statement of work sets. The "
                   "forecast draws on every campaign the contact centre has closed under the statement of work.")
-    clause("6.2", "The booking is approved by the Head of Deposits before it is sent.")
+    clause("6.2", "The booking is approved by the Deposits Committee, chaired by the Head of Deposits, before it is "
+                  "sent.")
     head("7 Records")
     clause("7.1", "The release log, the contact centre's dial logs and close-outs, and each campaign's brief and list are "
                   "kept for seven years.")
@@ -319,9 +320,9 @@ def write_thread(path):
     msg["In-Reply-To"] = "<HCS.2026-10-28.7c1e@harbourline.co.nz>"
     body = (
         "Thanks Suzanne.\n\n"
-        "The January to March list was cut on Monday: 18,400 deposits. I'll send the block for the January to March "
-        "campaign to you by Friday 20 November, as schedule 2.2 has it, with the hours by month so Ashton can shape "
-        "the roster.\n\n"
+        "The January to March list was cut on Monday: 18,400 deposits. The Deposits Committee signs off the block on "
+        "Tuesday 17 November and I'll send it to you by Friday 20 November, as schedule 2.2 has it, with the hours by "
+        "month so Ashton can shape the roster.\n\n"
         "Regards,\n"
         "Hazel Johnstone\n"
         "Term Deposits Product Manager | Kaimai Building Society\n"

@@ -321,11 +321,15 @@ def run(target, golden, Wd=None, H=None, meta_path=None):
     for f in [W.F_SOW, W.F_PROPOSAL] + [W.brief_name(q) for q in W.PAST + [W.FWD]]:
         ok("\u2014" not in pdf_text(p(f)), "an em dash in %s" % f)
     ok("\u2014" not in proc, "an em dash in the procedure")
-    eml = open(p(W.F_THREAD), encoding="utf-8").read()
+    import email
+    from email import policy as _pol
+    msg = email.message_from_bytes(open(p(W.F_THREAD), "rb").read(), policy=_pol.default)
+    eml = " ".join(str(msg[h]) for h in ("From", "To", "Cc")) + " " + msg.get_body().get_content()
     for who in ("product", "vendor", "head"):
         ok(W.PEOPLE[who] in eml, "the thread is missing %s" % who)
     ok(dt.date(2026, 11, 2).weekday() == 0 and dt.date(2026, 11, 4).weekday() == 2 and
-       dt.date(2026, 11, 20).weekday() == 4, "the thread's days of the week")
+       dt.date(2026, 11, 17).weekday() == 1 and dt.date(2026, 11, 20).weekday() == 4, "the thread's days of the week")
+    ok("approved by the Deposits Committee" in proc and "Deposits Committee signs off" in eml, "the forum is filed")
     for q in W.PAST + [W.FWD]:
         n_ = W.FWD_LIST_SIZE if q == W.FWD else int(listed[q])
         ok("{:,}".format(n_) in briefs[q], "brief %s does not carry its list size" % q)
