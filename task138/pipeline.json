@@ -1,11 +1,11 @@
 {
   "task": "task138",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver replays the thirty weather years through the Water Order Procedure's daily root-zone balance with every field of the 2027 requests at field capacity on 1 February and files 189,800 acre-feet set by 2003; the step that lands it there is not starting each replay from the depletion each field actually carries on 31 January 2027, built from its last 2026 delivered set through the driest October to January on record: the golden is 202,700 acre-feet set by 2012.",
   "architecture": 1,
@@ -15,22 +15,24 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-12, on the pack after the stage 4 fix pass; the same REVIEW lines as before, each answered in the design note's Build record)",
-    "reader": "pass 1 (2026-10-12): clean on Q1 to Q4, every reading it raised closed in the fork table (SF8, SF16, SF25 to SF29); re-read pending, the fix pass changed two documents (kbid_data_dictionary.xlsx, kbid_canal_operations_log_2026.docx)"
+    "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2027-02-01), no LEAK, sweep 11 clean; the same lines as at stage 3, each answered in the design note's Build record",
+    "reader": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, every reading raised closed in the fork table (SF8, SF16, SF25 to SF29); targeted re-read of the four changed files (dictionary, operations log, meter shop log, request remarks): Q1 to Q4 none, readings closed by SF26, SF27 and the filed loss share, realism notes left as minor"
   },
   "duplicate_check": {
-    "heart": "WARN (strategy_risk, repeat.gate_g and repeat.decision against task137, answered at the draw)",
-    "nearest": "surface: two pairs promoted on card axes alone, task137 back to back (gap time and quantity_figure collide, pattern and driver differ; in flight, for the author's adjudicated /clone-check) and task446 (retired); both differentiated on the card"
+    "heart": "WARN 2026-10-12 at the final rebuild (strategy_risk, repeat.gate_g and repeat.decision against task137, answered at the draw); no BLOCK",
+    "nearest": "0.08 task107 (stump); surface promotes two pairs on card axes alone: task137 back to back (gap time and quantity_figure; main-session adjudication: a card-axis echo with a different domain, world, pattern and driver, surface 0.094, not a clone) and task446 (retired); both differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (no repair; the optional WOP 2.4 start-state sentence refused as naming the decisive rung; the unit margin closed by SF29 and the dictionary's 25.4 millimetres to the inch)",
-    "report": "task138/determinism_check_report.md"
+    "verdict": "DETERMINISTIC 2026-10-12: APPROVE, no fix; every graded figure reproduced (the 24th replay 2012 at 202,658 acre-feet, the order 202,700)",
+    "disposition": "APPROVE, shipped; the optional WOP 2.4 start-state sentence refused as naming the decisive rung; the unit margin recorded as SF29 and the dictionary's 25.4 millimetres to the inch; golden/ and figures.json byte-identical to the judged build",
+    "report": "task138/determinism_check_report.md",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: the reader's re-read of the changed pack (two documents: the dictionary's station 39 unit line and the operations log; data: the meter shop log, meter book and request remarks); the author's call on the surface pair task137 against task138; then stage 5 ship (pre-ship check written in the design note, target.zip cut from the final rebuild, card current; still to do: ledger row SHIPPED, status SHIPPED, commit SHIPPED with target.zip and golden/ force-added)",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

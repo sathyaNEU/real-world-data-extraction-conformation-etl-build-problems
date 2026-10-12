@@ -451,7 +451,10 @@ once at the close. 791 characters.
   groundwater levels, the 2026 crop report, the Authority's allocation notice. Two consecutive builds byte-identical
   (target, golden, `metadata.json`, `figures.json`, `target.zip`).
 - Stage 4: the leak reader (pass 1, clean on Q1 to Q4) and the judge (DETERMINISTIC, APPROVE,
-  `determinism_check_report.md`), then one generator pass:
+  `determinism_check_report.md`), then one generator pass; the reader's targeted re-read of the four changed files
+  quoted nothing for Q1 to Q4, its readings close by SF26, SF27 and the filed loss share, and its realism notes (a
+  tidy operations log, a regular shop log, stock request remarks) are left as minor, each further edit a document
+  change for no graded figure:
   - every reading the reader raised has its fork row: SF8 gains the rain-first order of a day (202,800), SF16 its
     quoted sentence (the connector turnouts for the call), SF25 the day of the last set in the carry (203,200), SF26
     and SF27 Ask A's tail turnouts by read interval and the headings after the connector, SF28 Ask B's head with
@@ -476,12 +479,16 @@ once at the close. 791 characters.
   on `target/` and `golden/`; `guard.py validate` clean; `guard.py heart` WARN (the three draw WARNs answered under
   `## Draw`; nearest stump 0.08).
 - `guard.py surface`: two promoted pairs, both on the card axes alone. task137 against task138, back to back (surface
-  0.000): the decisive gap (time) and the decision type (`quantity_figure`) collide; the pattern does not (E and G14
+  0.094): the decisive gap (time) and the decision type (`quantity_figure`) collide; the pattern does not (E and G14
   there, none and G16 here), and the drivers share nothing (a retention share conditioned on a repricing gap there,
-  a replay started from the state at the forecast date here), so the same-puzzle test passes; the card's
-  differentiation answers it, and the screen marks it in flight, for the author's adjudicated `/clone-check` before
-  the batch goes. task138 against task446 (surface 0.093), severity history (task446 is retired, rule application);
-  the card's differentiation answers it. No persona from outside the card appears in the pack.
+  a replay started from the state at the forecast date here), so the same-puzzle test passes and the card's
+  differentiation answers it; with task137 shipped (12 October) the screen rates the pair an exclusion risk, a
+  shippable build against a delivered one. Main-session adjudication (12 October): a card-axis echo (the gap time
+  and the decision type `quantity_figure`, which forecasting quantity calls commonly share) with a different domain,
+  world, pattern and driver, surface 0.094, the same-puzzle test passing: not a clone, the card's differentiation
+  answers it, and the author can still ask for `/clone-check`. task138 against task446 (surface 0.093), severity
+  history (task446 is retired, rule application); the card's differentiation answers it. No persona from outside the
+  card appears in the pack.
 - `leak.py --asof 2027-02-01`: REVIEW, no LEAK, the same lines before and after the fix pass. Each line harmless: "the
   model" is the procedure's own name for its crop water model (WOP 3); the meter book's "37,270" is a time and a
   register read run together ("13:37,270.39"); the procedure and the working-files note carry the call's nouns
@@ -519,8 +526,8 @@ once at the close. 791 characters.
 8. A new lesson: a season forecast replayed over past weather has to start from the state the system holds at the
    forecast date, rebuilt from its own delivery record, because each past season started from its own winter
    (`guard.py heart` WARN on the three draw findings answered under `## Draw`, nearest stump 0.08; `surface` promotes
-   task137 back to back on the gap and the decision type and task446 on the card axes, both differentiated on the
-   card).
+   task137, now shipped, back to back on the gap and the decision type, adjudicated a card-axis echo and not a clone,
+   and task446 on the card axes; both differentiated on the card).
 
 ## Tried and rejected
 
