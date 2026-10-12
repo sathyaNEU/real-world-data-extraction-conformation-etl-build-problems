@@ -90,8 +90,19 @@ def tables(body):
 
 
 def labelled(body, label):
+    """The text after `Label:`, with its wrapped continuation lines, up to a blank line, a new bullet, a table row,
+    a heading or the next `Label:` line."""
     m = re.search(r"^\s*(?:[-*]\s*)?\**%s\**\s*:?\**\s*(.+?)\s*$" % re.escape(label), body, re.M | re.I)
-    return m.group(1).strip() if m else None
+    if not m:
+        return None
+    parts = [m.group(1).strip()]
+    for line in body[m.end():].splitlines()[1:]:
+        s = line.strip()
+        if (not s or re.match(r"^([-*]\s|\d+[.)]\s|\||#)", s)
+                or re.match(r"^\**[A-Z][A-Za-z0-9 ]{0,30}\**\s*:", s)):
+            break
+        parts.append(s)
+    return " ".join(parts)
 
 
 def norm_number(s):
