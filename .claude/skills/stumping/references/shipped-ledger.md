@@ -173,7 +173,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 127 | FAILED_TO_STUMP: backlog sathay3012 | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | sathay3012 |
 | 128 | FAILED_TO_STUMP: backlog oviya1301 | BOA patch tickets | OPP | objective rule | none, C, B | capacity per booked interval | - | - | ticket split | none reported | oviya1301 |
 | 129 | FAILED_TO_STUMP: backlog perssathya | BOA service SLA | RCA | population objective | E, D | co-switched causes split by groups | - | - | cause named | none reported | perssathya |
-| 130 (v3) | FAILED_TO_STUMP: backlog sathya8571 | ACT claims | FC | objective population | A | regression to the mean after selection | - | - | $4,060 PMPM | v1, v2 solved 10-10, 10-11 | sathya8571 |
+| 130 (v4) | drawing 10-12: re-root, architecture 4 | ACT professional liability pricing | FC | time population | G13, G14 | a claims-made trust's opening window catches only the quick, cheap claims, part-year windows less than pro rata | - | register | trust contribution | v1, v2 failed on the portal 10-10, 10-11; v3 landed in house 10-11 | sathya8571 |
 | 131 | FAILED_TO_STUMP: backlog perssathya | MCR loyalty | CEX | population objective | none | card lift nets out inside a household | - | - | CHF 972k | none reported | perssathya |
 | 132 | SHIPPED & APPROVED 10-11 | ENR asset condition | FC | population time | none | a replacement restarts the wear curve | - | - | 13 lots | none reported | sathya8571 |
 | 133 | FAILED_TO_STUMP: backlog sathya8571 | BANK credit loss | FC | time | none | condition the curve on survival to date | - | - | AUD 13,160,000 | r1: one stumped, one at 100 | sathya8571 |
@@ -268,6 +268,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 125 (v1) | spent 10-10: solved in-house twice, judge SEND_BACK on hygiene | AAF | AD | population time | none, A, B | a filed date ends a component class (digit-filter call-off) |
 | 128 (v1) | retired 10-10: solved in-house | BOA | OPP | objective rule | C | whole-host rebuild value |
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
+| 130 (v3) | retired 10-11: landed in house round 1 (the analog was the default construction) | ACT | FC | objective population | A | regression to the mean after selection |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |
 | 134 (v1) | retired 10-11: default was the golden | CJ | FC | population time | none | Kaplan-Meier, deaths as non-returners |
 | 135 (v1) | retired 10-11: default was the golden | PES | FC | objective time | none | back-transformed median is not the mean |

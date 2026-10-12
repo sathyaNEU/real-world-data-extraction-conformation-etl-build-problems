@@ -1,192 +1,160 @@
-# task130: Red Cedar Valley, the care-management baseline for 2027-28 (v3, re-rooted after v2 was spent)
+# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4)
 
-v1 (a 2027 large-holder designation) and v2 (the Tenter House replacement-unit call-off) are spent: v1 failed on the portal, v2 failed on the portal and its hardening loop came back from the clone pre-flight as a Template of task73 world ten (the same move had already been solved on the portal in task86 v2). Both are on the card's lineage and their dead ends are in `## Retired
+Private, never ships. Architecture 4, drawn 2026-10-12 as the author's fourth root for a number retired with three
+architectures spent (wave 1, "re-root: retired"). v1 (a 2027 large-holder designation) and v2 (the Tenter House
+replacement-unit call-off) failed on the portal; v2's hardening loop was a Template of task73 world ten at the clone
+pre-flight; v3 (Red Cedar Valley's care-management baseline, regression to the mean against an untreated analog
+cohort) was landed by the in-house solver in round 1 because its default construction, the analog, was the golden.
+Their records are under `## Retired` and `## Tried and rejected`; the card keeps all four dead identities in
+`lineage`. v3's generator, pack, goldens, write-up, metadata, prompt and its leak and clone reports were removed from
+this folder at the re-root (in history at 15fab18); `solver_rounds/` stays as its evidence. Nothing of v3's world,
+pack, prompt or asks is reused: v4 moves from a health plan's claims baseline to professional liability pricing, from
+a selected cohort to a claims-made window, and from a school district to a health system.
 
-task130 is retired on 2026-10-11, its third architecture spent (`build-pipeline`, Retirement). Every card stays filed so none of the three is drawn again.
+Carried forward from v3's death, as design rules: the default path is written first and must end wrong on the data in
+hand; no pin may point at the method; no figure in the pack confirms the solver's construction for free.
 
-- v1 failed on the portal on 2026-10-10: both top models filed the golden.
-- v2 failed on the portal on 2026-10-11, and its hardening loop 1 was a Template of task73's world ten at the clone pre-flight.
-- v3, the regression-to-the-mean baseline (an untreated cohort selected the same way a year earlier, trended), was cracked by the in-house solver in round 1. It filed the golden $4,060 PMPM and every tier figure in about four minutes (proxy 100). The pins that closed v3's forks (the any-list Risk Tier, the cancelled RFP, the bid list's programme year) pointed at the method, and the renewal letter's plan totals verified the solver's claims netting.
-- Hardening loop 1 measured every candidate deeper rung on the shipped pack and found none that is forced, fork-free and moves the call (one line each under Tried and rejected, Hardening loop 1). The only levers left were planting a rung or deleting the pins that close forks, both outside the client's standard.
+## Draw
 
-## Tried and rejected` below. v3 is the third and last architecture this number gets.
+| Axis | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4, registered 2026-10-12; `guard.py check` WARN on one finding (`repeat.gate_g`, answered below); `guard.py validate` clean |
+| Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (a client domain): funding a self-insured professional liability programme is pricing its cover |
+| Objective | Forecasting & Predictive Modeling: the expected cost of the claims that will first be made against a new trust in 2027, its first year, from the system's claims experience to 30 September 2026 |
+| Shape | 02, forecast across periods: the expected cost (and number) of claims first made in each quarter of 2027, entity by entity from the quarter it joins (Ashgrove four quarters, Tolliver Falls three, the medical group two, Brennick one: ten cells, each with a cost and a count), each entity's 2027 total, and the contribution |
+| Decision | `quantity_figure`, answer unit `currency`: the 2027 contribution the trustees put into the trust |
+| Mechanism | gap time (decisive: the trust pays only for claims made inside its own opening window), then population (the claims a short window can catch are a cheap subset); pattern none; generators G13 (decisive: the horizon, the claims-made window against an annual incurred cost) then G14 (the cost of a claim conditioned on how soon it is made); Gate G `forecasting`; strategy `maturity_censoring` (the window truncates the report lag: only the claims made soon after their incident arrive in time) |
+| Layer 2 family / pattern | `field_method` (exposure windows and report-lag development, the professional liability actuary's claims-made method); `own:claims-made-opening-window-cost-by-report-lag` |
+| Furniture | forum `trustees_or_governors` (the trust's board of trustees sets its annual contribution), forcing event `purchase_order_or_contract` (each entity's expiring occurrence policy, renewed no further, moves it into the trust on its own anniversary date), organisation family `hospital_or_health_provider`, role family `compliance_or_audit` (the system's risk management and insurance lead), context artifact `register` (the risk management claims register the stakeholder works from), calibration `none` (the system's own claims experience is the evidence, no organ), opening `question-first`, question form `how-much` |
+| Spine | payroll FTE by clinician and month, January 2016 to September 2026, about 1,100 clinicians, over 100,000 rows: one clinician's paid FTE in one month with the entity, cost centre, specialty and employment status payroll held that month; synthetic |
+| Deliverables (draft) | `trust_funding_2027.xlsx` (the contribution, the quarterly emergence by entity, the asks), `trustees_paper_2027.pptx` (the call and the emergence chart); final at the build |
+| People | drawn with `guard.py names --geo "United States" --seed 130 --n 40`, skipping every name v3 used: Nancy Holland (vice president, risk management and insurance; the requester), Derek White (chief financial officer), Lori Williams (director of claims and litigation), Jerome Warren (consulting actuary), Elizabeth Nelson (director of the early resolution program), Walter Butler (chair of the trust's board of trustees); none appears in the prompt |
 
-```
-DRAW  (guard.py check and register, 2026-10-11; refined before the ladder was cut, same card)
-  Verdict: PASS
-  Shape: 14 cuts of a distribution (the baseline by Northcourt's four risk tiers, medical and pharmacy)
-  Gap: objective (decisive), then population   Pattern: A (past exceedance against forward yield)
-  Generators: G14 conditioned yield, G13 horizon mismatch   Gate G mechanism: forecasting
-  Domain: Actuarial Science & Insurance   Task type: claims-frequency-severity
-  Objective: Forecasting & Predictive Modeling
-  Stump strategy: forecast_method_backtest (persistence, the natural projection, is wrong out of sample for a
-    cohort chosen on its outcome; the bid cohort's realised year is the back-test); decisive_rule_filed: no
-    (Schedule C defines the estimand, not a method); official_decoy: no; validated_decoy: no
-  Layer 2: estimand_identification, own:selection-on-the-outcome-baseline   Calibration form: other (the bid
-    cohort list, its outcomes read from the claims)
-  Stakeholder role: director of risk management and benefits (procurement_lead)
-  Context artifact: operations_log (the plan's claims and eligibility feeds, the administrator's claim lines and the
-    PBM's claims, the record the baseline is built on; the vendor's lists carry tiers and scores, never a cost;
-    redrawn at the build from filed_model, banned against task133, and from register, banned against task131)
-  Forum: trustees_or_governors (the school board)   Forcing event: purchase_order_or_contract
-  Organisation: university_or_school   Opening move: stakes-first
-  Personas (guard.py names --geo "United States" --seed 130): Joyce Salinas (requester, director of risk
-    management and benefits), Deborah Johnson (board chair), Anthony Olsen (chief financial officer),
-    Michael Perry (consulting actuary, Lindqvist Benefits Consulting), Allison Santiago (Northcourt account
-    lead), Tiffany Barrett (benefits analyst); added at the build from the same draw: Phillip Alvarado (Northcourt
-    chief operating officer), Amy Kelley (Northcourt clinical analytics), Michelle Peterson (Quarrystone client
-    account executive), Jonathan Hoffman (Wyecliff stop-loss underwriting), Sandra Lopez (superintendent); added at
-    repair 1 from the same draw: Samantha Galvan (Northcourt clinical manager), Edward Miller (Northcourt member
-    outreach supervisor)
-As-of date: 2027-03-12 (claims paid through 28 February 2027); the programme year is 1 April 2027 to 31 March 2028
-```
+**Guard.** `guard.py check` on the scratch card: WARN, one finding. `repeat.gate_g` (forecasting repeats task124, one
+of the last two builds in draw order): forecasting is the honest mechanism, because the contribution is a bet on the
+claims that will be made in 2027 and the correctly read past (every claim's cost, every year's FTEs) pins it only
+through the window the trust's cover defines. Bans run against task120, task121 and task124, the three builds drawn
+before this one; a first draft blocked on `ban.artifact` (operations_log, task120), `ban.forum` (board_of_directors,
+task124) and the structural tests against task102 and task501 v3. The artifact and forum were redrawn (`register`,
+`trustees_or_governors`); the forcing event was moved off `cutover_or_migration` so that this card adds no block to
+task180, drawn later today with that event; the structural tests are answered by the card's differentiation lines
+(task102 moves payments across a period boundary by a release rule; task501 v3 sized a buffer on a cumulative path's
+furthest overrun; neither costs a lag-truncated window claim by claim). Gap time with pattern E was tried and blocked
+against four older builds (task117, task37, task44, task97); gap population with pattern E against task124's lineage.
+Nearest driver on file 0.07 (task121 v3); task50 v4 at 0.06 (a slow-surfacing failure projected with a run-out law) is
+the opposite move: there the unsurfaced part has to be added, here only the part surfaced inside the window counts.
 
-**World.** Red Cedar Valley School District (fictional, Minnesota) self-insures the health plan for about 6,000 covered members (employees, early retirees under 65, spouses and children, and former employees and dependents on COBRA continuation). A third-party administrator has run the medical plan since 1 January 2025, when it replaced the previous administrator and issued new member identifiers (a conversion crosswalk maps the old ones); pharmacy runs through a PBM keyed on the district's employee number and a person code. In January 2025 the district tendered for high-cost care management (RFP 2025-07) with a programme year from 1 April 2025; the bidders stratified the plan's 2024 claims from a de-identified data book, and Northcourt Care Partners' proposal flagged 140 members in four risk tiers on its acuity score. The district cancelled the RFP in April 2025, before an award, when the board froze new non-instructional contracts; Risk Management and Benefits had already keyed Northcourt's list back to Bramwell member numbers from its own key to the data book. A second tender (RFP 2026-11) led to the services agreement signed in February 2027 for a programme year from 1 April 2027; Northcourt stratified the plan's 2026 claims with the same model and the 140 members on its final list are enrolled from 1 April. Northcourt is paid 40 per cent of the savings, the difference between the baseline and the enrolled members' actual allowed claims per member month in the programme year, tier by tier and benefit by benefit. Joyce Salinas certifies the baseline and the board approves it on 25 March 2027.
+**Abstraction and same-puzzle tests.** Stripped of nouns, the driver is: a cover that pays only for events that both
+occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when
+inside a short window only the events reported soon after they occur can count, and here those are the cheap ones;
+the expected cost is the exposure at each point of the window times the cost of past events reported within the time
+then left. The three nearest drivers (task121 v3, events set against the same unit's exposure at the same clock hours;
+task93 v3, what raising a floor obliges a flat-rate unit to pay; task88, displaced full-rate demand on nights capacity
+fills) share no latent structure, default path or correction with it. On the maturity family's record (task181: a
+pooled reporting delay against each route's own, where the forecast needs the complete count), the move here runs the
+other way: the decision is the truncated count, and its cost, never the complete one.
 
-**Why this is hard.** The 140 members were chosen because their 2026 claims, medical and pharmacy, put them at the top of the plan. A cost that high is partly lasting (dialysis, a biologic that works, a chronic condition) and partly a one-off: an operation, a heart attack, a cancer course that ends, a premature birth, and on the pharmacy side a hepatitis C cure, the white-cell boosters and oral chemotherapy that come with a cancer course, a fixed-length targeted therapy, a biologic started and dropped, a weight-loss drug started and stopped, transplant prophylaxis that ends at six months. The one-off part does not come back. Projecting each tier's 2026 claims forward at the renewal trend, which is how the plan projects every other group and which is right for any group not chosen on its claims, certifies a baseline about twice what the cohort will cost, and Northcourt is paid for savings the members were always going to show. The plan's own record holds the answer: the 140 members Northcourt flagged with the same model on 2024 claims were never enrolled, and their allowed claims in the year from April 2025, the programme year they were flagged for, are what a flagged member costs the following year without the programme, tier by tier and benefit by benefit.
+**Data-native sentence.** Corvane's early resolution program meets most patients harmed by care within weeks, with an
+apology and a modest offer, and turns their requests into quick, small settlements, while the lawsuits that carry
+most of the money are filed a year or more after the incident; so a trust that each hospital and the medical group
+joins on its own policy's anniversary sees, in its first months, mostly the cheap early claims from a few months of
+incidents, and almost none of the suits.
 
-**Two layers (client standard).** Layer 1: medical claim lines with replacements, voids and denied lines; pharmacy claims from the PBM with reversals in its own layout and keyed on employee number and person code; eligibility as coverage spans with real churn (COBRA continuation, employees rehired after a gap, dependents dropped at open enrolment and some added back); the administrator change on 1 January 2025 with a conversion crosswalk (the District's copy of the bid list carries the old numbers); claims history that starts with the new administrator; run-out on the latest year; a superseded draft stratification beside the final one. Layer 2 (`estimand_identification`, `own:selection-on-the-outcome-baseline`): a cohort chosen on an extreme value of a noisy outcome is forecast by carrying its own value forward, when the outcome regresses toward the mean; the counterfactual is the next-period experience of a cohort chosen the same way and left untreated, which the plan's record contains. Six-point check: the inputs take real work (lines, replacements, reversals, two key systems, the conversion, member months over gaps) and none of it is planted; the flipping step is a method choice (persistence against the untreated cohort's realised year); Schedule C defines the estimand (expected claims in the programme year without the programme) and the bid cohort makes the analog the design-implied estimator; no decoy memo and no filed method that gives the wrong answer; the method is not recovered from certified figures; the lesson (a cohort chosen on its outcome regresses) is not one an earlier build teaches.
+**World (targets; the generator asserts or replaces each with its built value).** Corvane Health, a nonprofit health
+system in western Oregon: three hospitals and an employed medical group, about 1,000 FTE of employed physicians and
+advanced practice clinicians. Each entity has insured its employed clinicians' professional liability with a
+commercial occurrence policy on its own anniversary; the board resolved in June 2026 to let each policy run to expiry
+and move the entity into the new Corvane Professional Liability Trust, claims-made, with a retroactive date equal to
+its transition date (incidents before it stay with the occurrence policy that was in force):
 
-## Data-native sentence
+- Ashgrove Medical Center, the flagship (hospitalists, emergency, anesthesia, surgery, OB laborists, intensivists,
+  hospital APCs and CRNAs, about 205 FTE): trust from 1 January 2027.
+- Tolliver Falls Hospital (about 90 FTE): trust from 1 April 2027.
+- Corvane Medical Group, the clinics (primary care, OB/GYN, surgical and medical specialties, APCs, about 640 FTE):
+  trust from 1 July 2027.
+- Brennick Community Hospital (about 35 FTE): trust from 1 October 2027.
 
-Northcourt picked the 140 members the plan paid most for in 2026, and a year of the highest claims in a self-insured plan is mostly the year someone had the operation, the heart attack, the cancer course, the premature baby or the course of a specialty drug that ends, so the members who top the list are the ones whose next year looks least like their last; the district already watched it happen to the 140 members Northcourt flagged in its 2025 bid, who were never enrolled.
+Seven specialty classes as the trust's funding policy rates them (obstetrics, surgery, emergency medicine,
+anesthesiology, hospital and medical specialties, primary care, advanced practice). About 33 claims a year across the
+system (about 3.4 per 100 FTE, from about 11 in obstetrics to about 1.4 in advanced practice), about half of them made
+through the early resolution program: requests made a median of about six weeks after the incident and settled for
+tens of thousands; the rest are demand letters and suits, made a median of about fourteen months after the incident
+(obstetrics about two years), most closed without indemnity but carrying defence costs, the paid ones in the hundreds
+of thousands. The trust's actuarial basis (the funding policy) uses the system's own claims from incidents since
+1 January 2017, valued on 30 September 2026 at paid plus case reserve, one claim per incident, trended at a stated rate.
+Targets on the built pack: the default path about $2.9 million, the golden about $0.3 million; the count-share rung
+about 3.5 times the golden, the prorated full-year cost share about 1.45 times; every figure re-centred off round
+values at the build.
 
-## Gate G
+As-of date: the claims register extract runs Friday 2 October 2026, valued at 30 September 2026; payroll FTE runs
+through September 2026; the trustees set the 2027 contribution at their meeting on Tuesday 10 November 2026.
 
-- **Litmus.** No. Every file is correct: the claims, the eligibility, the crosswalk, the three stratification lists, the agreement, the renewal letter. No stakeholder states a number the task overturns.
-- **Primary mechanism:** `forecasting` (a forecast the correctly read past does not pin: the 2026 claims are right and are not the forecast).
-- **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Clean-data test.** With perfectly clean claims, the persistence projection is still the natural one and still wrong; the bid cohort's realised year is what refutes it.
-- **Deletion test.** Delete every distractor (rebates, stop-loss, the draft list, Northcourt's implementation plan): the persistence projection is still natural and still wrong.
-- **No shipped artifact ranks or forecasts the cohort's cost.** The stratification files carry an acuity score and a tier, never a cost or a predicted cost; the renewal letter projects the whole plan, not the cohort.
+## Default path
 
-## Why the analog's level is the one method (forcing)
+1. Read the claims register extract (one row per named defendant) and keep the rows for employed clinicians;
+   collapse them to one claim per incident, summing each claim's paid indemnity, paid defence and case reserves.
+2. Take incidents from 2017 onward, value each claim at paid plus reserve and trend it to 2027 at the funding
+   policy's rate.
+3. Sum the trended cost by specialty class and incident year, take each class's FTE-years of employed clinicians from
+   the payroll file, and form each class's annual cost per FTE over the mature years.
+4. Multiply by each entity's 2027 FTE by class for the months it is in the trust (twelve, nine, six, three) and add
+   the four entities; spread each entity's cost evenly over its quarters for the emergence schedule.
 
-- **The estimand** is Schedule C.1(h)'s: the allowed claims per member month that the enrolled members in each tier would be expected to incur in the programme year without the programme, medical and pharmacy separately, in programme-year dollars at the renewal trend from the midpoint of any experience period to the midpoint of the programme year.
-- **The analog.** The bid cohort was chosen by the same model, on the same tiers, on a calendar year of claims, for a programme year starting three months after that year, exactly as the enrolled cohort was; it was never treated. Its realised allowed claims per member month in April 2025 to March 2026, by tier and benefit, projected 24 months at the trend, is the expected cost of a member the model puts in that tier. Midpoint to midpoint is 24 months whichever convention is used.
-- **The window (fork A2).** The bid list's cover gives its data basis (2024 claims), its selection (members enrolled on 1 January 2025) and its proposed programme year (1 April 2025 to 31 March 2026, with members listed on 2024 claims enrolled on 1 April 2025 and savings measured on the programme year's claims); Schedule C.1(e) and (f) give the final list's basis (calendar 2026 claims) and the Programme Year three months later. The analog year is the bid cohort's own proposed programme year; calendar 2025 trended 27 months lands 9.0 per cent off and on no tier cell.
-- **Tier by tier (fork A4).** Schedule C.1(h) determines a Baseline PMPM separately for each Risk Tier from the experience of members in that tier, so neither the pooled bid year nor a pooled level spread by the enrolled members' tier relativities is a reading (both land 1.4 per cent above the golden total and on no tier cell). The largest single member is at most 25 per cent of a bid tier's medical and 22 per cent of its pharmacy, so each tier's year stands without credibility weighting.
-- **Member months (fork A3).** Schedule C.1(c) counts a member enrolled for part of the period for the months enrolled, so dropping the 18 part-year bid members (full-year members only) is not a reading; it lands 4.9 per cent off and on no tier cell. The 3 bid members who left before 1 April 2025 carry no member months and did not return in the year, so counting all 140 by member months equals counting the 137 enrolled on 1 April 2025 (asserted).
-- **Run-out (fork A5).** Schedule C.1(h) takes earlier experience on claims paid through the Data Cut-Off Date. The analog year is fully paid by then (asserted); the Actual PMPM's three-month basis would lower each tier's medical by $2.70 to $8.15 and leave pharmacy unchanged.
-- **Pharmacy (fork A1).** The score counts pharmacy and the selection year carries one-off pharmacy, so pharmacy regresses too: the enrolled members' pharmacy rose into 2026 in every tier (the selection's signature in the record), and carrying it forward lands 36.5 per cent above the golden programme pharmacy (23.6 per cent on the total) and on no tier cell.
-- **The comparator tier (round 3).** Schedule C.1(e) defines a Risk Tier as one of the four tiers the acuity model places a member in when it draws a list, and C.1(h) takes each tier's experience from the members in that tier, so the bid cohort's year is read in the tiers the RFP list gave its members, the 20 who are also on the final list (14 of them in another tier there) included. Placing those 20 by their final-list tier lands 3.3 per cent below the golden total, on no tier cell and on neither programme component (checks.py fork 6).
-- **The ratio form** (the enrolled cohort's 2026 cost times the bid cohort's next-year-over-selection-year ratio) cannot be built: the claims history starts on 1 January 2025 with the new administrator and no stratification file carries a cost. A cost-only regression on the whole plan does not reproduce the selection, which runs on the acuity score (claims, conditions, specialty drugs and admissions, not cost alone), and its window would not match the three-month lag.
+Ends on: about $2.9 million, the annual claims cost of a mature year prorated to each entity's months in the trust.
+Golden: about $0.3 million, the cost of the claims made before 31 December 2027 from incidents after each entity's
+transition, each past claim's trended cost counted for the share of the window's exposure from which it would have
+been made in time.
 
 ## Stump sentence
 
-A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,830; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,475 per member month the following year (at the enrolled tier mix, before trend); the baseline is $4,060.
+A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim
+from 2017, takes the system's annual claims cost per clinician FTE by specialty class, prorates it to each entity's
+months in the trust and files a contribution of about $2.9 million (Ends on); the step that lands it there is costing
+the trust's opening months as a mature year, when only the claims made before 31 December 2027 from incidents after
+each entity's transition count, and those are the early resolution program's quick, cheap settlements: the golden is
+about $0.3 million.
 
-## The ladder (measured on the shipped pack)
+## Three rules
 
-Programme totals per member per month against the golden $4,060.14. Every rung also moves the tier figures; the rungs within 5 per cent on the total (R3b, R4c, R6c, R7, pooled) still miss every whole-dollar tier cell and both programme components, R5b keeps the golden tier baselines and misses both programme components, and checks.py asserts it for every rung table and for the fork readings R0p, R8 and R10.
+- **Domain test:** the deciding quantity is the expected cost of the claims first made inside a claims-made trust's
+  opening window, built from each entity's covered clinician exposure through the system's own report-lag and
+  cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another
+  field's nouns the retroactive dates, report lags, early resolution settlements and specialty classes have nothing
+  to attach to.
+- **Analyst test:** a strong analyst who dedupes the register and reads the trust agreement and the funding policy
+  correctly still multiplies a mature year's cost per FTE by each entity's months of cover (about $2.9 million), or,
+  having seen that the cover is claims-made, applies the share of claims made within the window at the average claim
+  cost (about $1.1 million) or a full year's cost share prorated to a part year (about $0.45 million); each is wrong,
+  because inside a first claims-made window only the claims made quickly count, they cost a fraction of the average,
+  and the share a part year catches falls faster than its length.
+- **Layer 1:** a claims register with one row per named defendant and claim stages that move (a program request that
+  later becomes a suit keeps its first claim-made date); employed and contracted clinicians and institutional
+  defendants in one register; two expiring carriers' loss runs in their own layouts overlapping the register (one
+  carrier changed systems in 2021 and renumbered its claims); paid indemnity and defence on a transaction ledger with
+  case reserves at the valuation date; payroll FTE by clinician and month with cost-centre and specialty codes
+  re-mapped in 2020 and clinicians moving between entities; the early resolution program's own case log keyed on its
+  case number, linked to claim numbers only once a request for compensation exists. Each is something these systems
+  produce; none decides the call.
+- **Layer 2:** the shortcut is to cost the trust's first year as a mature year, or as a share of a mature year's
+  claims at the average cost; the expert costs the claims-made window claim by claim, each past claim's trended cost
+  counted for the share of the window's exposure from which it would have been made before the year ends, entity by
+  entity from its own transition date.
 
-| Rung | Construction | Programme total | Killed by |
-|---|---|---|---|
-| R0 | each tier's 2026 PMPM by benefit projected 15 months at the renewal trend (persistence) | $8,829.81, +117.5% ($5,251.47 medical, $3,578.35 pharmacy); R0c with 2026 medical completed at the letter's factors $9,011.56, +122.0% | the bid cohort's realised year |
-| R0p | the bid cohort's medical with each tier's own 2026 pharmacy carried 15 months (persistence on pharmacy only) | $5,016.62, +23.6%; programme pharmacy $3,578.35 against $2,621.87, +36.5%, every pharmacy tier cell missed | the enrolled members' pharmacy rose into 2026 in every tier |
-| R1 | the renewal letter's plan-wide projection | $748.47, -81.6% | the bid cohort's realised year is several times the plan average |
-| R2 | the bid cohort's calendar 2025, trended 27 months | $4,427.32, +9.0% | the bid's proposed programme year and the three-month lag |
-| R3 | R3a the bid cohort's year untrended; R3b trended 18 months to the programme start | $3,474.84, -14.4%; $3,904.99, -3.8% | Schedule C.1(h)'s midpoint rule |
-| R4 | R4a twelve months for each listed member; R4b twelve months for each member enrolled on 1 April 2025; R4c full-year members only | $3,722.29, -8.3%; $3,822.08, -5.9%; $3,860.24, -4.9% | Schedule C.1(b) and (c) |
-| R5 | R5a the Bramwell numbers matched to nothing, so the bid cohort is lost and persistence is left; R5b the January draft's tier counts as weights | $8,829.81; $4,036.89, -0.6% | the crosswalk; the final list |
-| R6 | R6a paid instead of allowed; R6b replacements, voids and reversals not netted; R6c both | $3,721.97, -8.3%; $4,354.33, +7.2%; $3,994.19, -1.6% | Schedule C.1(a) and the warehouse readme |
-| R7 | the bid cohort's pooled year spread by the enrolled members' 2026 tier relativities | $4,115.08, +1.4%; tier 1 medical $3,041 against $3,017 | Schedule C.1(h), a baseline per tier from its own tier's experience |
-| R8 | the bid cohort's year on claims paid by 30 June 2026 (the Actual PMPM's run-out) | $4,055.24, -0.1%: medical $2.70 to $8.15 lower in every tier, pharmacy unchanged | Schedule C.1(h), experience on claims paid through the Data Cut-Off Date |
-| R9 | the enrolled members' own 2025, the year before they were chosen, trended 27 months | $4,765.39, +17.4% | the bid cohort's realised year (2025 is not the year after these members were chosen) |
-| R10 | the bid members who are also on the final list placed in their final-list tier, the rest in their RFP tier | $3,924.50, -3.3%: every tier cell and both programme components missed | Schedule C.1(e), a Risk Tier is the tier the model places a member in when it draws a list |
-| Pooled | the bid cohort's year without tiers | $4,116.22, +1.4% on the total, every tier baseline wrong | Schedule C.1(h), a baseline per tier |
-| Answer | each tier's bid-cohort allowed PMPM, April 2025 to March 2026, medical and pharmacy, over member months, times 1.065 squared and 1.09 squared; the programme baseline weights the tiers by enrolled members | $4,060.14 ($1,438.28 medical, $2,621.87 pharmacy) | |
+## Retired
 
-## Three rules (client update, 10/10)
+task130 was retired on 2026-10-11 with its third architecture spent (`build-pipeline`, Retirement), and put back in
+the author's wave 1 on 2026-10-12 as a fourth root ("re-root: retired"). Every card stays filed so none of the earlier
+architectures is drawn again.
 
-- **Domain (swap test).** The deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by tier and by medical and pharmacy, projected at the plan's trend over member months, a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to.
-- **Two layers.** Layer 1 is the claims plumbing a self-insured plan really produces (claim versions and denials, PBM reversals in their own layout, two key systems, an administrator conversion, coverage churn, run-out, a superseded draft list) and carries no stump; Layer 2 is selection on the outcome, a cohort chosen on its extreme 2026 claims regressing toward the mean, with the untreated 2025 bid cohort as the design-implied estimator.
-- **The decisive step is analytical** (`stump_class: analytical`). Analyst test: a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,830 programme total against $4,060, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.
-
-## Determinism: the 22 axes
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | the 140 members on Northcourt's final 2027 enrolment list | Schedule C.1(e); the final list (the January draft is superseded) |
-| 2 | Unit | allowed claims per member month, medical and pharmacy | Schedule C.1(a), (c) and (h) |
-| 3 | Window | 1 April 2027 to 31 March 2028; the analog's year is the bid list's own proposed programme year, 1 April 2025 to 31 March 2026 | Schedule C.1(e) and (f); the bid list's cover. C4: calendar 2025 trended 27 months is 9.0 per cent off and on no tier cell |
-| 4 | As-of | 2026 claims incurred in 2026 and paid by 28 February 2027 (the 2026 PMPM ask) | Schedule C.1(d) and C.2 |
-| 5 | Version | the final list, not the January draft | file names and the lists' cover sheets |
-| 6 | Denominator | member months: enrolled on the first day of the month; a member enrolled for part of the period counts for those months | Schedule C.1(b) and (c). C4: full-year members only is 4.9 per cent off and on no tier cell; C1: the members who left before April did not return, so all 140 by member months equals the 137 enrolled on 1 April 2025 |
-| 7 | Weighting | a tier's PMPM is its claims over its member months, determined tier by tier from its own tier's experience; the programme baseline weights tiers by enrolled members | Schedule C.1(c), (h) and (i). C4: the pooled bid year and a pooled level spread by 2026 relativities are 1.4 per cent off, on no tier cell |
-| 8 | Window length | twelve months | Schedule C.1(f) |
-| 9 | Boundary | a medical claim is incurred on its first date of service, a pharmacy claim on its fill date; a claim counts in its period whether or not its month is a member month (a newborn's month of birth) | Schedule C.1(a) |
-| 10 | Rounding | whole dollars, no intermediate rounding; every graded figure's unrounded value sits at an irregular point inside its bin (0.20 or more from the rounding boundary, 0.0013 or more from a cent, 0.0131 or more from a quarter-dollar), so none comes out exact under the golden method, and every rung's and fork's programme total sits 0.0006 or more from a cent, so no reading does either | prompt; Schedule C.2. tune.py draws each figure's offset in its bin from a seeded generator (seed 52389) and keeps a draw only once it is built and every rung's total is off the cent grid; checks.py asserts the 0.18 margin and the 0.0005 floors off the cent and quarter-dollar grids for all 19 graded figures and every rung's and fork's total, verify.py the graded figures in Decimal |
-| 11 | Tie-break | none | n/a |
-| 12 | Maturity | the analog year is fully run out by February 2027 and taken on claims paid through the Data Cut-Off Date; 2026 is taken as paid by 28 February 2027 without completion | Schedule C.1(h) and C.2. The Actual PMPM's three-month basis lowers each tier's medical by $2.70 to $8.15 and leaves pharmacy unchanged |
-| 13 | Order of operations | net claims, link members, then aggregate | warehouse readme |
-| 14 | Row order | irrelevant | |
-| 15 | Duplicates | a replacement supersedes the claim it names, a void cancels it; an exact duplicate submission is denied (reason 18); a pharmacy reversal cancels its paid claim | warehouse readme; rung R6 |
-| 16 | Identity | the conversion crosswalk for the bid list's Bramwell numbers; employee number and the person code in effect on the fill date for pharmacy | crosswalk; warehouse readme; rung R5 |
-| 17 | Netting | voids and reversals net to zero | warehouse readme |
-| 18 | Units | USD | |
-| 19 | Status semantics | denied lines carry no allowed amount | warehouse readme |
-| 20 | Integerisation | n/a | |
-| 21 | Scope | allowed before cost sharing, pharmacy before rebates, stop-loss reimbursements not deducted | Schedule C.1(a) |
-| 22 | Forward window contents | no programme effect, the same plan design; trend from midpoint to midpoint; medical and pharmacy both from the bid cohort | Schedule C.1(h); renewal letter. C4: the enrolled members' own pharmacy carried forward is 36.5 per cent above the golden programme pharmacy, on no tier cell |
-| + | Enrolled on the list's date | every member on each list is enrolled on the list's date in the eligibility file (the final list's 1 March 2027 is an open span at the 28 February cut) | C1: Northcourt's model scores only members the eligibility file of its run carries on the list's date (the administrator's file of the first of the month, through the day before), so the rehire covered again from 1 March 2027, whom the file ends on 31 October 2026, is on no list; asserted for the RFP, draft and final lists in checks.py and verify.py |
-| + | Comparator tier for a member on both lists | the bid cohort's year in the tiers the RFP list gave its members, the 20 also on the final list included | filed: Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list, and C.1(h) takes a tier's experience from the members in that tier. C4: the 20 by their final-list tier land 3.3 per cent off, on no tier cell and on neither programme component |
-
-## Deliverables and criteria
-
-Shape 14. `cohort_baseline_2027.xlsx`: one row per tier (enrolled members, 2026 allowed PMPM medical and pharmacy, baseline PMPM medical and pharmacy) and the programme baseline (medical, pharmacy, total). `baseline_certification_memo.docx`: one page for the board, opening with the total programme baseline, with a chart of each tier's 2026 PMPM against its baseline. Criteria: 4 tiers x 5 figures (20), the programme baseline (3), the memo's opening figure and chart (2 to 3), the call: about 26.
-
-## Pack plan
-
-| File | Format | Role |
-|---|---|---|
-| `medical_claim_lines_2025-01_2027-02.csv` | CSV, large | spine: medical claim lines incurred from 1 January 2025, paid to 28 February 2027 |
-| `pharmacy_claims_2025-01_2027-02.csv` | CSV, large | PBM claims with reversals, keyed on employee number and person code |
-| `eligibility_spans_2027-02.csv` | CSV | coverage spans by member, with employee number and person code: COBRA continuation, rehires after a gap, dependents dropped at open enrolment and added back |
-| `tpa_conversion_crosswalk_2025-01-01.csv` | CSV | previous administrator's member identifiers to the current ones; the readme says why it goes out with every pull (the office still works Bramwell-numbered paper) |
-| `northcourt_stratification_2026_claims_final.xlsx` | XLSX | the 140 enrolled members: acuity score, tier, care team by the implementation plan's rule, on the current identifiers |
-| `northcourt_stratification_2026_claims_draft.xlsx` | XLSX | distractor: the January draft on claims paid through December, superseded |
-| `northcourt_rfp_2025-07_stratification_2024_claims.xlsx` | XLSX | the District's identified copy of the bid's 140 members: data book record numbers, score and tier, with the Bramwell member number and birth date Risk Management and Benefits added; cover sheet with the proposed programme year |
-| `care_management_services_agreement_schedule_c.pdf` | PDF | conformed excerpt: recitals (RFP 2025-07 cancelled before an award, RFP 2026-11), signatures, Schedule C (the baseline's definition, tier by tier, and the savings share) |
-| `renewal_letter_2027-28.pdf` | PDF | the consulting actuary's renewal: trend 6.5 per cent medical, 9.0 per cent pharmacy, unchanged |
-| `pbm_rebate_report_2026.xlsx` | XLSX | distractor: rebates (the baseline is before rebates) |
-| `stop_loss_policy_2027.pdf` | PDF | distractor: specific and aggregate stop-loss, printed from the carrier's policy system |
-| `northcourt_implementation_plan_2027-28.pdf` | PDF | distractor: Northcourt's implementation and outreach plan (account team, timeline, outreach, care-team rule), no amounts, printed from its client portal |
-| `warehouse_readme_2027-03.txt` | TXT | the benefits warehouse readme: field definitions, claim frequency, denial and transaction codes, the conversion |
-
-## Prompt
-
-Stakes-first, first person, two files, 933 characters in three short paragraphs: the stakes both ways; Schedule C's definition of the baseline (the 140 members on the final list, 1 April 2027 to 31 March 2028, without the programme, by risk tier, medical and pharmacy separately) with the call as one sentence after it ("Tell me the total programme baseline to certify") and the whole-dollar convention stated once; then the workbook's rows and the memo, which leads with that total and then charts each tier's 2026 PMPM beside its baseline. Nothing about selection, regression, persistence or the bid. Compressed from 1,104 characters under the 1,000-character ceiling: the sentence saying the claims and eligibility were in the folder through the February paid date went, because Schedule C.1(h) and C.2 carry the paid-through basis and the folder needs no inventory. voice-check: no economy flag; the opening falls in the classifier's `other` bucket (8 of 12 in the window), and it is the stakes-first move none of the last three builds uses.
-
-## Build record
-
-- **Generator** (`generator/`, `python3 build.py` writes target/, target.zip, golden/ and metadata.json). `world.py` constants, calendars (clinic and bank holidays, Ellery's Thursday check runs, receipt days) and plan designs; `catalog.py` the code sets, fee schedule, drug list and prices; `providers.py` the billing NPIs and pharmacies, sticky by family; `coding.py` each service coded and priced (fee schedule, share of charges, case rates spread over revenue lines chosen by the stay's diagnosis and operation, payment lags); `sim.py` the plan member by member, January 2023 to March 2028 (2023 is burn-in, so the 2024 and 2026 selection years carry the same depth of history), with terminations, COBRA, rehires and dependents dropped and added back; `acuity.py` the vendor's model and the bid, draft and final lists, each scoring the members the eligibility file of its run carries on the list's date; `extracts.py` claim versions, denials, late adjustments, PBM transactions, eligibility spans, the crosswalk; `docs.py` the agreement, renewal letter, stop-loss schedule, implementation plan, stratification and rebate workbooks, warehouse readme; `containers.py` LibreOffice conversion for the District's and the actuary's Word documents, headless Chromium printing for the carrier's and Northcourt's HTML documents, workbooks left as their exporting systems write them, every clock pinned to the fiction; `estimators.py` the golden, every rung and every fork from the shipped files; `tune.py` and `tune_table.py` bin centring; `golden.py` the workbook, chart and memo; `checks.py` 6,834 assertions; `verify.py` an independent recompute (csv module and Decimal, no shared code) of every graded figure against golden/ and submission.md.
-- **Seeds and the model.** World seed 102037 (population at the seed, health +11, coding +37, claim history +131, PBM +151); provider directory 52311, pharmacies 52323 and birth-date corrections 52367; the acuity model's member noise keyed by crc32 of member, year and salt 41730; score weights 9 on log dollars (pharmacy dollars at 0.4 of medical, on a 2023 base of 2,500), 2.5 per chronic condition, 6 for specialty drug use, 5.5 per admission, 1 per emergency visit; tier floors 42.2, 37.9 and 35.7, ranked on the unrounded score.
-- **Magnitudes.** 5,920 members covered on 1 January 2025; 70,904 member months in 2025; plan-wide 2025 allowed PMPM $488.71 medical and $183.30 pharmacy; medical claim lines 310,604 rows, PBM transactions 107,747, eligibility spans 8,331, crosswalk 5,910; 13 files, 61.3 MB, csv, pdf, txt and xlsx (target.zip 12.0 MB). Final tiers 34, 37, 38, 31 (1,612 member months in 2026); bid tiers 41, 30, 23, 46, all 140 linked, 137 enrolled on 1 April 2025, 18 enrolled for part of the year, 1,554 member months in the analog year; draft tiers 34, 35, 33, 38 (eight members swapped against the final, six re-tiered); 20 members on both the bid and the final list, 14 of them in another tier there.
-- **Golden** (whole dollars PMPM: members; 2026 medical, pharmacy; baseline medical, pharmacy). Tier 1: 34; 9,613, 2,696; 3,017, 3,231. Tier 2: 37; 4,335, 3,242; 1,247, 2,335. Tier 3: 38; 3,495, 2,551; 656, 2,771. Tier 4: 31; 1,919, 4,556; 893, 2,113. Programme baseline $1,438 medical, $2,622 pharmacy, $4,060 total (unrounded 1,438.28, 2,621.87, 4,060.14).
-- **Simulated truth** (the enrolled members' untreated 2027-28 year, read from the simulation, never shipped): $4,348.19 at the tier weights ($1,444.52 medical, $2,903.68 pharmacy), $4,357.34 pooled; golden over truth 0.934, persistence over truth 2.03. By tier: $2,472 and $2,272; $1,090 and $3,124; $994 and $2,355; $1,293 and $4,007 (medical and pharmacy). Per tier the analog is noisy, as 23 to 46 members with heavy-tailed claims will be; the method is pinned by Schedule C's estimand and the design, not by the tier-level fit.
-- **Regression to the mean in the record.** The bid cohort's April 2025 to March 2026 claims ran at 0.28 of its 2024 level for medical and 0.89 for pharmacy, in real terms (2024: $4,513 medical, $2,186 pharmacy PMPM). The enrolled members' pharmacy rose from 2025 to 2026 in every tier (1,922 to 2,696; 2,465 to 3,242; 2,120 to 2,551; 3,305 to 4,556) and their own pharmacy runs at 0.81 of its 2026 level in the programme year, in real terms. 94 of the 140 enrolled members had a hospital stay or a cancer course in 2026 (an operation 23, a cancer course 15, pneumonia 9, a premature birth 5, a heart attack 4).
-- **Concentration.** The largest member's share of a bid tier's year: medical 0.24, 0.24, 0.25, 0.18; pharmacy 0.18, 0.15, 0.18, 0.22 (asserted under 0.26 and 0.24).
-- **Regression alternative.** A cost-only least-squares fit of 2026 allowed on 2025 allowed over members enrolled all 24 months, applied to the enrolled members' annualised 2026 claims and trended three months: $5,708.31, +40.6% from the golden and +31.3% from the truth. It is not the estimator: the selection runs on the acuity score (conditions, specialty drugs, admissions, not cost alone), the fit's population is the whole plan rather than a cohort chosen the same way, and its year does not match the three-month lag.
-- **Clean-data and deletion tests.** The golden equals the simulation's claim-free service amounts for the bid members' year in every tier; persistence on complete claim-free 2026 data is $8,892.28. Deleting the four distractors leaves every golden figure unchanged.
-- **File conventions, each asserted.** Schedule C.1(a) counts claims incurred while covered, in their period whether or not the month is a Member Month: five newborns on the final list were covered from a mid-month birth date in 2026, with $595,199 of medical claims in their months of birth inside their tiers' 2026 figures. An exact duplicate submission is denied with reason 18 and carries no allowed amount (2,204 claims); no service is paid on two live original claims. PBM transactions are processed 1 January 2025 to 28 February 2027; medical claims paid 9 January 2025 to 25 February 2027. No allowed claim falls on a day the member is not covered; services after coverage ended are denied with reason 27.
-- **Realism.** Codes fit the patient (PSA for men from 40, preventive codes and examinations by age, otitis media for children, adult chronic diagnoses never under 12, sex-specific diagnoses and procedures, NICU only for newborns with neonatal diagnoses, 777 stays with none overlapping). 232 billing NPIs, 345 procedure codes, 388 principal diagnoses, 281 NDCs and 40 pharmacies on skewed frequencies; each professional group bills its own specialty's signature services. Inpatient revenue lines follow the stay's diagnosis and operation (613 distinct revenue-code sets; ED, EKG and chest film together on 2 per cent of stays; 84 of 88 appendicitis and cholecystitis stays carry the operation), NICU stays run by gestational age and step down through the levels of care. A clinic calendar, every payment on an Ellery Thursday check run, claims logged on business days with Monday busiest, 61 claims incurred in 2025 adjusted in 2027. Eligibility carries 69 gaps and 132 COBRA spans, and every span's coverage tier fits the dependents enrolled in it. Professional lines at the fee schedule or a lower billed charge, outpatient lines at a share of charges, stays at case rates spread over revenue lines; receipt to payment median 8 days, 5.9 per cent at 30 days or more, longest 128. Four fills join only on the person code in effect after a birth-date correction renumbered a family, and seven birth dates differ between the crosswalk and eligibility; none is on a graded member. Care teams follow the implementation plan's rule (RN Teams A, B and C 17, 18 and 36; Health Coach Teams 1 and 2 40 and 29). The District's agreement and the actuary's letter are LibreOffice conversions, the carrier's schedule and Northcourt's plan are printed by headless Chromium, each keeping its own producer; workbooks are library exports with no application claim and entries dated at the export; the agreement carries conformed signatures for the Chair, the Superintendent and Northcourt's chief operating officer, and the renewal letter signs on its first page.
-- **Bins.** 15 centring adjustments to clean facility and pharmacy claims (largest $180.10, none above 2.5 per cent of its claim), validated against all three lists, from tune.py's first draw on seed 52389: each graded figure aimed at an offset drawn for it between 0.12 and 0.30 from its whole dollar and clear of the cent grid (a figure already there left alone, as tier 2's baseline medical is), the programme baseline one of the 30 cheapest tier combinations that fit, and the draw built and kept only when every rung's and fork's programme total is off the cent grid too. As built, the nearest graded figure sits 0.20 from a rounding boundary, 0.0013 from a cent (tier 2 baseline pharmacy) and 0.0131 from a quarter-dollar (tier 3 2026 medical); the nearest rung total sits 0.0006 from a cent (R9, which centring does not move); the rounded medical and pharmacy parts add to the rounded total, the programme medical and pharmacy sit at least a dollar from the persistence rung's, and each baseline cell is kept off the full-year-only rung's whole dollar by moving a part-year member's claim.
-- **Reproducibility.** Three scratch rebuilds are byte-identical to each other and to the shipped target/, golden/ and target.zip (13 entries at the top level, contents identical to target/; sha256 149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a).
-
-## Leak review
-
-`leak.py task130 --asof 2027-03-12` on the final cut: REVIEW, no LEAK (report in `leak_check_report.md`); the producer-metadata audit reports no writer signature on target/ and golden/ (the PDFs keep the producers of the applications that wrote them, LibreOffice and Chromium, and the workbooks make no application claim).
-
-- Second reader round on v3 (2026-10-11), verdict no sentence names the step. Its forks on the main call are closed and asserted in checks.py (the fork lines 1 to 5): the pharmacy method (A1) in the data, the window (A2) by the bid list's cover and Schedule C.1(e) and (f), attrition (A3) by Schedule C.1(c), credibility (A4) by Schedule C.1(h) and the new seed's concentration, run-out (A5) by Schedule C.1(h). Its signposts are gone: the recitals are procurement history without the "no services" sentence (B1), the readme gives Bramwell's number format without naming the RFP and says why the crosswalk goes out with every pull (B2, B3), and the folder's bid list is the District's identified copy, the bidders' data book having been de-identified (B4). Its realism list (inpatient revenue lines, NICU stays, claims after coverage, producers and containers, eligibility churn, receipt days, care teams, late adjustments, the renewal letter's signature, conformed signatures) had all been started and is finished, so the generator is coherent.
-- Deferred to after the solver round: none (every section C item the reader listed had been started in the repair).
-- Third reader round (round 3, after repair 2, on Sonnet): no sentence names the step, no file ranks or states the asked figures, none exists only to help, and the four REVIEW lines are harmless. Its two forks on the main call are closed in repair 3 and asserted: the final list carried a member the eligibility file ends on 31 October 2026 (the model now scores only members the file of its run carries on the list's date, and checks.py and verify.py assert every member of every list enrolled on its date), and the comparator tier for the members on both lists (Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list; the final-list tiers for those members land 3.3 per cent off and on no tier cell, checks.py fork 6). Its realism tells wait in pipeline.json's deferred list for a round the solver misses.
-- First reader round and clone pre-flight on v3: the reader's findings (L1, a folder holding no Northcourt paper beside the lists and a bid cover marked for the RFP evaluation only; P1 to P4; R1 to R7) are repaired in the pack (Northcourt's implementation plan is in the folder, the cover has no evaluation-only line, and the conventions and realism are in the build record), and the pre-flight's surface note (the dictionary named on the `<system>_extract_dictionary.txt` pattern) is answered by `warehouse_readme_2027-03.txt`.
-- REVIEW, Schedule C carries 21 of 24 distinctive words of the call: the estimand's defined terms (Programme Baseline, per Member Month, Enrolled Members, Risk Tier, medical and pharmacy), C.2's certification and the recitals' procurement words (proposal, model, the April and March of the programme years); it carries no figure of the answer, its recitals record RFP 2025-07's cancellation before an award and RFP 2026-11 as history without saying the bid cohort sets the baseline, and C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list without naming any list but the Final Enrolment List.
-- REVIEW, design-note words in the implementation plan (record, register, client) and the warehouse readme (record, benefits, analyst): ordinary furniture (the records a care team sees, a registered nurse, Northcourt's Client Implementation team, the Risk Management and Benefits office, a Bramwell member record, the benefits analyst who keeps the readme); neither says anything about the bid list's use, how the members were chosen or how their cost moves, and the plan carries no amount, cost, tier figure or trend (asserted in checks.py).
-- REVIEW, 140 dates after the as-of in the final list: the Enrolment effective column is 1 April 2027 for every member, the programme start the list exists to schedule, not an outcome.
-- Repair 3 left the prompt unchanged and changed two documents under target/: the agreement (Schedule C.1(e)'s definition of a Risk Tier) and the renewal letter (its exhibits move by cents to a few hundred dollars, from re-centring). The data moved too: the final list (RCV8692544 off, RCV9058604 on at rank 140), the claims and PBM files (centring), and one family's Bramwell birth dates in the crosswalk and on its fills. A fresh reader round is due before the solver round.
-- Repair 4 (re-centring off round values) left the prompt and ten of the thirteen files under target/ byte for byte as they were, and moved no whole-dollar figure. The one document that changed is the renewal letter, by re-centring: two HDHP rates by a cent (Employee $908.68 to $908.67, Employee + child(ren) $1,608.44 to $1,608.43) and four exhibit cells by $3 to $38 (2025 medical allowed, paid and completed, $34,651,455 to $34,651,441; 2026 medical allowed paid $32,288,207 to $32,288,225 and completed $33,390,737 to $33,390,755; pharmacy before rebates $12,996,378 to $12,996,375 for 2025 and $14,580,582 to $14,580,544 for 2026). The claims data moved on the centred claims only: 13 medical claim lines and 17 PBM rows change amount, no row added or removed. leak.py after the repair: REVIEW, no LEAK, the same four REVIEW lines as before. A fresh reader round is still due before the solver round.
+- v1 failed on the portal on 2026-10-10: both top models filed the golden.
+- v2 failed on the portal on 2026-10-11, and its hardening loop 1 was a Template of task73's world ten at the clone
+  pre-flight.
+- v3, the regression-to-the-mean baseline (an untreated cohort selected the same way a year earlier, trended), was
+  cracked by the in-house solver in round 1: it filed the golden $4,060 PMPM and every tier figure in about four
+  minutes (proxy 100). The pins that closed v3's forks (the any-list Risk Tier, the cancelled RFP, the bid list's
+  programme year) pointed at the method, and the renewal letter's plan totals verified the solver's claims netting.
+- Hardening loop 1 measured every candidate deeper rung on the shipped pack and found none forced, fork-free and
+  moving the call; the only levers left were planting a rung or deleting the pins that close forks.
 
 ## Tried and rejected
 
@@ -289,3 +257,27 @@ Hardening loop 1 (after v3 round 1, 2026-10-11):
 - A bridge from the first two months after each selection year (the analog's January and February 2025 against the enrolled members' January and February 2027, as a ratio on the analog's year): rejected after measurement. It moves the total +8.98 per cent ($4,424.87) on tier ratios of 0.17 to 2.70, two months of a heavy-tailed cohort; nothing files it, and its medical half needs a completion factor for February 2027 that the renewal letter does not derive. The enrolled members' own January and February 2027 pharmacy, trended to the Programme Year's midpoint, runs 12.8 per cent above the golden programme pharmacy: a reading of C.1(h)'s "experience of members in that Risk Tier" the pack does not rule out, which any architecture that keeps this world has to close.
 - Weakening the three pins that announce the analog as the hardening on its own: rejected, hardening by deletion. Each pin closes a fork (the comparator tier for the 20 members on both lists, the cohort's untreated status, the analog window), and the bid list in the folder still announces the analog to any solver who knows regression to the mean.
 - Verdict: v3 is spent. With the analog construction forced and found, every deeper adjustment measured is optional with no shipped sentence the unadjusted reading violates (case mix, the bridge), contrary to a filed clause (the score floor) or worth two dollars (exposure); none moves the call by 5 per cent on a forced, fork-free path, and a plant is the only fix left. v3 is the number's third architecture, so the pipeline's cap retires task130 unless the author grants a fourth root.
+
+Architecture 4 draw (2026-10-12):
+
+- Draws weighed and not taken. A zone substation's peak after rooftop solar moves it into the evening: with
+  half-hourly load and a solar profile in the pack, netting the two half-hour by half-hour is the solver's first move,
+  so the default lands. A drought outlook whose evaporation scales with a shrinking lake's surface area: the planning
+  scenario has to file evaporation as a depth to be deterministic, and a depth sends every solver to the area table.
+  Bowel screening demand by prevalent and incident rounds: "first screen or repeat" is the first cut any screening
+  analyst makes, and the colonoscopy yields of first-time and repeat attenders nearly cancel per invitation. Mortality
+  after the end of a level term: the analog cohorts' post-level experience lands when it transfers, and a model is a
+  fork when it does not. Fiscal drag under frozen thresholds: with taxpayer records in the pack the microsimulation is
+  the first move. Increased limits factors after a minimum-limits change and leveraged trend in an excess layer:
+  per-claim trending under the new limit or retention is the actuarial reflex. Override bias against a random
+  low-side test: the decision reason code and the test's own description name the unbiased sample. Real-time data
+  vintages and mixed flood populations: neither method is forced by the estimand, so both are forks. Group quarters
+  in a cohort-change projection: the error moves only with the local cohort's size and stays a few per cent.
+- Claims-made funding with one entity joining on 1 January: the decisive step collapses to one filter (the claims
+  made in the same calendar year as their incident, costed on their own), which the coverage clause prompts and a
+  careful solver writes in one line; the draw keeps the claims-made window but staggers the transitions on each
+  entity's policy anniversary, so a part-year window catches a share of claims that falls faster than its length,
+  and keeps the cost of each claim tied to how soon it is made.
+- Card variants blocked at check: gap time with pattern E (test.same_puzzle and test.same_driver against task117,
+  task37, task44, task97); gap population with pattern E (test.same_driver inside the window against task124's
+  lineage); forcing event cutover_or_migration (it would have banned task180, drawn later today with that event).

@@ -1,94 +1,82 @@
 {
   "task": "task130",
-  "architecture": "v3",
-  "drawn": "2026-10-11",
-  "slot_note": "re-root of task130 after v2 was spent (portal failure, then a template finding on its hardening loop); same objective, new domain, new graded quantity, new Layer 2 pitfall",
+  "architecture": "v4",
+  "drawn": "2026-10-12",
+  "slot_note": "fourth root of task130 (wave 1, re-root: retired): v1 and v2 failed on the portal, v3 was landed in house because its default construction was the golden; same objective, new subdomain, new graded quantity, new Layer 2 pitfall",
   "domain": "actuarial-science-insurance",
-  "subdomain": "claims-frequency-severity",
-  "niche": "a public school district's self-insured health plan certifying the expected programme-year claims of the members a care-management vendor flagged on last year's claims, the baseline the vendor's savings share is measured against",
+  "subdomain": "pricing-ratemaking-credibility",
+  "niche": "first-year funding of a health system's new self-insured professional liability trust that each hospital and the employed medical group joins, claims-made, on the day its commercial occurrence policy expires",
   "objective": "forecasting",
-  "shape": "14",
+  "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Certify a programme baseline of $4,060 per member per month for the 140 enrolled members ($1,438 medical, $2,622 pharmacy), built tier by tier from what the 140 members Northcourt's model flagged on 2024 claims for its 2025 proposal, never enrolled, cost from April 2025 to March 2026, trended 24 months.",
-  "answer_source": "task130/submission.md, 1. Final Recommendation",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
-    "A"
+    "none"
   ],
   "generators": [
-    "G14",
-    "G13"
+    "G13",
+    "G14"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "other",
-  "stump_strategy": "forecast_method_backtest",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "director of risk management and benefits at a public school district, who certifies the care-management contract's claims baseline to the board of trustees",
-  "role_family": "procurement_lead",
-  "scoring_unit": "per covered member",
+  "context_artifact": "register",
+  "stakeholder_role": "vice president of risk management and insurance at a regional health system, who recommends the trust's first-year contribution to the board",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per resolved case",
   "spine": {
-    "file": "medical_claim_lines_2025-01_2027-02.csv",
-    "rows": 310604,
-    "entity": "one adjudicated medical claim line for one covered member",
-    "grain": "claim line",
+    "file": "clinician_fte_by_month_2016-01_2026-09.csv",
+    "rows": 0,
+    "entity": "one employed or contracted clinician's paid full-time equivalent in one month, with the entity, cost centre and specialty payroll held for that month",
+    "grain": "clinician x month",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "university_or_school",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States, Minnesota",
+    "geography": "United States, Oregon",
     "currency": "USD",
-    "org_type": "public school district with a self-insured employee health plan, administered by a third-party administrator, with a pharmacy benefit manager and a care-management vendor",
+    "org_type": "nonprofit regional health system with four hospitals and an employed medical group, replacing commercial occurrence professional liability policies with a self-insured claims-made trust",
     "invented_names": [
-      "Red Cedar Valley School District",
-      "Northcourt Care Partners",
-      "Lindqvist Benefits Consulting",
-      "Bramwell Plan Services",
-      "Ellery Benefit Administrators",
-      "Quarrystone Rx",
-      "Wyecliff Life Assurance Company"
+      "Corvane Health",
+      "Corvane Professional Liability Trust",
+      "Corvane Medical Group"
     ],
     "people": [
-      "Joyce Salinas",
-      "Deborah Johnson",
-      "Michael Perry",
-      "Allison Santiago",
-      "Anthony Olsen",
-      "Tiffany Barrett",
-      "Phillip Alvarado",
-      "Amy Kelley",
-      "Michelle Peterson",
-      "Jonathan Hoffman",
-      "Sandra Lopez",
-      "Samantha Galvan",
-      "Edward Miller"
+      "Nancy Holland",
+      "Derek White",
+      "Lori Williams",
+      "Jerome Warren",
+      "Elizabeth Nelson",
+      "Walter Butler"
     ]
   },
   "deliverables": [
-    "cohort_baseline_2027.xlsx",
-    "baseline_certification_memo.docx"
+    "trust_funding_2027.xlsx",
+    "trustees_paper_2027.pptx"
   ],
-  "opening_move": "stakes-first",
-  "driver": "A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carrying its own chosen-period value forward with trend, when the outcome regresses toward the mean; the forecast that holds is the next-period experience of a group chosen the same way one period earlier, which the record contains untreated, cell by cell.",
-  "driver_concrete": "The vendor flags the plan's 140 highest-acuity members on their 2026 claims and its savings share is measured against the cohort's expected allowed claims per member month in the programme year without the programme, by risk tier and by medical and pharmacy; the 140 members the same model flagged on 2024 claims in the vendor's 2025 bid were never enrolled, so their allowed claims in the year from April 2025, projected two years at the renewal trend, are each tier's baseline, not the enrolled cohort's own 2026 cost projected forward.",
-  "stump": "A competent solver nets the claim lines and pharmacy reversals, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them fifteen months at the renewal trend and certifies a baseline several times what the cohort will cost; the step that lands it there is projecting a group chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost a fraction of that in the year after they were flagged.",
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives.",
+  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its commercial occurrence policy expires, so the trust's 2027 cost is the claims first made by 31 December 2027 from incidents after each entity's transition; the system's early-resolution programme turns most claims into quick, small settlements while the lawsuits that carry most of the money are made years after the incident, so the expected cost is each month's covered clinician exposure times the trended cost of the system's past claims made within the months then left in 2027, not a mature year's cost per FTE prorated to each entity's months.",
+  "stump": "A competent solver collapses the claims system's defendant rows to one claim per incident, values and trends every claim, takes the system's annual claims cost per clinician FTE by specialty, prorates it to each entity's months in the trust and funds several times the golden; the step that lands it there is costing the trust's opening months as a mature year, when only claims made before 31 December 2027 from incidents after each transition count, and those are the system's quick, cheap early-resolution claims.",
   "stump_class": "analytical",
-  "analyst_test": "a strong analyst who nets the claims, links the members and reads Schedule C and the renewal letter correctly still projects each tier's 2026 allowed PMPM fifteen months at the renewal trend and certifies about $8,830 programme total against $4,060, because the cohort was chosen on its extreme 2026 claims, which regress toward the mean.",
-  "domain_test": "the deciding quantity is the expected allowed claims per member month of a selected cohort in a programme year without the programme, by tier and by medical and pharmacy, projected at the plan's trend over member months, a claims-cost projection a health actuary certifies; with another field's nouns the claim lines, member months, medical and pharmacy trend, run-out and the vendor's acuity tiers have nothing to attach to.",
+  "analyst_test": "a strong analyst who dedupes the claims and reads the trust agreement and funding policy correctly still multiplies a mature year's cost per FTE by each entity's 2027 months of cover, or applies the share of claims made within a year of the incident at the average claim cost, and overfunds the trust, because inside a first claims-made window only the claims made quickly count and they cost a fraction of the average.",
+  "domain_test": "the deciding quantity is the expected cost of claims first made inside a claims-made trust's opening window, built from each entity's covered clinician exposure through the system's own report-lag and cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another field's nouns the retroactive dates, report lags, early-resolution settlements and specialty classes have nothing to attach to.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task51": "task51 values an intervention against a baseline an unfiled standing rule moves on its own (accounts that settle voluntarily); here no rule moves the baseline: a cohort chosen on its own extreme claims regresses toward the mean, measured on an untreated cohort chosen the same way a year earlier.",
-    "task43": "task43 carries a pooled effect onto places whose moderator mix differs; here there is no effect to carry: the forecast is the counterfactual cost of a cohort selected on its outcome.",
-    "task132": "task132 forecasts failures where a replaced module starts again young (renewal); here nothing renews: the selection on this year's outcome is what makes this year's level a biased forecast of next year's.",
-    "task133": "task133 conditions a cumulative default curve on survival to date; here the forecast conditions on the selection that put the members in the cohort, read off an earlier cohort's realised outcomes."
+    "task102": "task102 moves payments across a period boundary by a business-day release rule; here nothing moves across a boundary: a claims-made window keeps only the claims made soon after their incident, which are the cheap early-resolution ones, so the cost is the exposure at each point of each entity's months of cover times the cost of past claims made within the time then left.",
+    "task501": "task501 v3 sized a buffer on the furthest a cumulative path ran ahead of its forecast inside a test horizon; here no path maximum or buffer is involved: the cost of a claims-made opening window is a lag-truncated, cost-weighted share of exposure, entity by entity."
   },
   "lineage": [
     {
@@ -105,25 +93,35 @@
       "architecture": "v2 loop 1",
       "fate": "rejected at the clone pre-flight (Template, Track B, against task73 world ten)",
       "driver": "A waiting list is split into classes by an attribute the governing rule works out on the day from each member's composition, while the case record keeps that attribute as last assessed; a run-off forecast against a planned supply has to recompute every member's class on each allocation day, because members age across the rule's thresholds and a record assessed years earlier holds the longest-waiting members in classes they have already left."
+    },
+    {
+      "architecture": "v3",
+      "fate": "landed by the in-house solver in round 1 on 2026-10-11 (the analog cohort's tier PMPM, trended and count-weighted, in about four minutes); hardening loop 1 found no forced, fork-free deeper rung; the number was retired with three architectures spent and put back in the author's wave 1 as a fourth root",
+      "driver": "A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carrying its own chosen-period value forward with trend, when the outcome regresses toward the mean; the forecast that holds is the next-period experience of a group chosen the same way one period earlier, which the record contains untreated, cell by cell.",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "stump_strategy": "forecast_method_backtest"
     }
   ],
-  "notes": "Re-rooted as v3 on 2026-10-11 after v2 was spent (v2 failed on the portal; its hardening loop 1 was a Template of task73 world ten). v3 moves to actuarial claims forecasting with a regression-to-the-mean pitfall (Layer 2 estimand_identification: selection on the outcome), pinned by an untreated cohort flagged by the same stratification on 2024 claims in the vendor's 2025 bid and never enrolled (calibration form other: the bid list, its outcomes read from the claims). stump_strategy forecast_method_backtest: the natural persistence projection is wrong out of sample for a selected cohort, and the bid cohort's realised programme-length year is the back-test. Shape 14, the baseline cut by the vendor's four risk tiers and by medical and pharmacy. The ratio form is unavailable because the claims history starts with the current administrator on 1 January 2025 and the stratification files carry no cost, so the analog's level projected at the renewal trend is the one estimator. context_artifact is operations_log: the stakeholder certifies from the plan's claims and eligibility feeds (the administrator's claim lines and the PBM's claims), the record the baseline is built on; the vendor's lists carry tiers and scores, never a cost. Spent and retired on 2026-10-11: v3 was landed by the in-house solver in round 1 (the analog cohort's tier PMPM, trended and count-weighted, in about four minutes), and hardening loop 1 found no forced, fork-free deeper rung (exposure weighting -0.05%, case-mix normalisation unforced, the score-band match against C.1(e)). The number is retired with three architectures spent; this card, v3's identity, stays filed so no spent architecture is drawn again.",
-  "client_domain": "actuarial-science-insurance",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:selection-on-the-outcome-baseline",
+  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact operations_log: the risk management claims system export the stakeholder works from.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:claims-made-opening-window-cost-by-report-lag",
   "layer1": [
-    "medical claim lines in 837 layout, one row per line of every adjudicated version: originals, frequency 7 replacements that name the claim they replace, frequency 8 voids that repeat it with the signs reversed, replacement chains",
-    "denied lines with claim adjustment reason codes (16 resubmitted as a new claim, 18 exact duplicate submission, 27 after coverage ended, 97 bundled, 204 not covered), blank allowed and zero plan paid",
-    "claims paid in error under the wrong member, voided and rebilled under the right one",
-    "allowed amounts as an administrator prices them: a professional fee schedule (a few lines allowed at a lower billed charge), hospital outpatient lines at a share of charges, inpatient, dialysis and post-acute stays at a contracted rate spread over the revenue lines in proportion to their charges",
-    "payment on the administrator's weekly Thursday check run, with pended claims paid one to four months after receipt, and a clinical calendar (weekday clinics, holiday closures, weekend pharmacy dips)",
-    "pharmacy claims from a PBM in its own fixed layout (CCYYMMDD dates, zero-filled cardholder numbers), with B2 reversals, reverse-and-rebill and return-to-stock, keyed on employee number and person code rather than the administrator's member ID",
-    "person codes renumbered when the administrator corrects a dependent's birth date, so a few fills join to a member only on the code in effect on the fill date",
-    "eligibility as coverage spans that split on plan, coverage tier, employee class or person code changes, month-end terminations, deaths ending coverage on the day, newborns covered from the date of birth; COBRA continuation, employees rehired after a gap, dependents dropped at open enrolment and some added back",
-    "an administrator change on 1 January 2025 with new member identifiers: the bid list carries the old subscriber-suffix numbers and the conversion crosswalk maps them, with merged duplicate prior records, dependent suffixes not carried over and a few birth dates corrected since",
-    "claims history that starts with the current administrator, so the old administrator's 2024 claims are absent",
-    "run-out: claims incurred late in 2026 still being paid at the extract date",
-    "a superseded January draft stratification beside the final list: nine members swapped and six re-tiered",
-    "the vendor's other papers in the folder: its implementation and outreach plan beside the stratification lists"
+    "a risk management claims system export with one row per named defendant, so one incident naming a surgeon, an anaesthetist and the hospital is three rows under one claim number",
+    "two expiring commercial carriers' loss runs in their own layouts (one per policy period, a format change when a carrier moved systems in 2021) overlapping the claims system",
+    "claim stages that move (an early-resolution request that later becomes a suit keeps its first claim-made date), reopened claims and claims closed without indemnity but with defence costs",
+    "paid indemnity and defence costs on a transaction ledger, with case reserves on open claims at the valuation date",
+    "payroll FTE by clinician and month with specialty and cost-centre codes that were re-mapped in 2020, employed and contracted clinicians in one file, and clinicians moving between entities",
+    "the early-resolution programme's own case log keyed on its case number, linked to claim numbers only once a payment or demand exists",
+    "each entity's expiring policy period, transition date and the trust's coverage terms in separate documents"
   ]
 }
