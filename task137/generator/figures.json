@@ -1,0 +1,110 @@
+{
+ "call": {
+  "booking_hours": "5,500",
+  "hours_by_month": {
+   "January": "1,500",
+   "February": "2,000",
+   "March": "2,000"
+  }
+ },
+ "components": {
+  "no_callable_number": "460",
+  "deposits_at_5_65_four_year": "10,735",
+  "locked_rate_pct": "5.65",
+  "card_four_year_pct": "3.15",
+  "drop_points": "2.50",
+  "past_share_at_2_5_or_more_pct": "92",
+  "expected_conversations": "14,000",
+  "retention_share_pct": "60",
+  "past_pooled_share_pct": "33"
+ },
+ "steps": {
+  "listed_deposits": "18,400",
+  "deposits_by_month": {
+   "January": "5,030",
+   "February": "6,631",
+   "March": "6,739"
+  },
+  "release_share_pct": "95.5",
+  "non_reaching_dials": "67,500",
+  "past_conversations": "45,044",
+  "past_conversations_at_2_5_or_more": "1,394",
+  "past_share_negative_drop_pct": "0.1",
+  "hours_unrounded": "5,568.0",
+  "hours_by_month_unrounded": {
+   "January": "1,479.5",
+   "February": "2,044.1",
+   "March": "2,044.4"
+  },
+  "band_points": "0.25",
+  "drop_threshold_points": "2.5"
+ },
+ "rules": {
+  "minutes_not_reached": "1.5",
+  "minutes_conversation": "8",
+  "minutes_retention": "22",
+  "release_days_before_maturity": "21",
+  "days_after_maturity": "30",
+  "listing_threshold_nzd": "25,000"
+ },
+ "default_path": {
+  "pooled_share_hours": "4,500",
+  "latest_campaign_hours": "4,750",
+  "by_term_hours": "4,000",
+  "by_locked_rate_hours": "5,000",
+  "trend_hours": "4,750",
+  "latest_hours_per_listed_deposit": "4,750",
+  "drop_without_release_share_hours": "5,750"
+ },
+ "ask_a": {
+  "2025Q1": {
+   "campaign": "January to March 2025",
+   "deposits": "6,520",
+   "principal_nzd": "486,794,000"
+  },
+  "2025Q2": {
+   "campaign": "April to June 2025",
+   "deposits": "7,007",
+   "principal_nzd": "526,875,000"
+  },
+  "2025Q3": {
+   "campaign": "July to September 2025",
+   "deposits": "6,902",
+   "principal_nzd": "504,704,000"
+  },
+  "2025Q4": {
+   "campaign": "October to December 2025",
+   "deposits": "6,917",
+   "principal_nzd": "500,989,000"
+  },
+  "2026Q1": {
+   "campaign": "January to March 2026",
+   "deposits": "6,860",
+   "principal_nzd": "503,624,000"
+  },
+  "2026Q2": {
+   "campaign": "April to June 2026",
+   "deposits": "6,933",
+   "principal_nzd": "512,433,000"
+  },
+  "2026Q3": {
+   "campaign": "July to September 2026",
+   "deposits": "7,001",
+   "principal_nzd": "521,207,000"
+  }
+ },
+ "ask_b": {
+  "January": {
+   "maturing_nzd": "467,102,000",
+   "not_on_list_nzd": "60,860,000"
+  },
+  "February": {
+   "maturing_nzd": "633,665,000",
+   "not_on_list_nzd": "74,665,000"
+  },
+  "March": {
+   "maturing_nzd": "633,034,000",
+   "not_on_list_nzd": "80,661,000"
+  }
+ }
+}

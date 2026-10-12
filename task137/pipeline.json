@@ -1,26 +1,26 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per callable configuration from the seven past campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or by term) and books about 4,400 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, where the 2024 three-year special meets a 2.5-point drop: the golden is about 5,000.",
+  "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per mix of callable numbers from the seven closed campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or each term's) and books about 4,500 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, which leaves the 10,735 four-year deposits locked at 5.65 per cent, meeting a 2.50-point drop where 92 per cent of past conversations went to the retention offer, at the share of deposits that met smaller drops: the golden is 5,500.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-12 (25 lines, no LEAK; each answered in the design note build record)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN 2026-10-12 (repeat.gate_g only, answered in the design note)",
+    "nearest": "0.07 task136 (stump); surface exit 0, 4 promoted on card axes (task117, task37, task97, task44), differentiated on the card"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: design (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, precut.py)",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,

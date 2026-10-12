@@ -1,0 +1,285 @@
+{
+  "task": "task137",
+  "title": "How many agent-hours Kaimai Building Society books with Harbourline for its January to March 2027 term deposit maturity calls",
+  "domain": "Banking, Credit & Financial Risk",
+  "subdomain": "deposit-liquidity-behaviour (term deposit retention at maturity on the repricing gap, at a New Zealand building society that outsources its maturity calls)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: the booking and its three maturity months, the note's chart, what each of seven closed campaigns kept on term deposit at 30 days (count and principal), and the quarter's maturing principal by month with the part off the list",
+  "as_of": "2026-11-04",
+  "deliverables": [
+    "td_booking_q1_2027.xlsx",
+    "td_booking_note_q1_2027.docx"
+  ],
+  "distractor_files": [
+    "kbs_treasury_funding_outlook_fy2027.xlsx",
+    "harbourline_2027_staffing_proposal.pdf"
+  ],
+  "input_gates": {
+    "files": 27,
+    "formats": [
+      "csv",
+      "docx",
+      "eml",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "harbourline_dial_log_2025q1-2026q3.csv",
+    "largest_file_rows": 264592
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task137/generator/build.py (seeded, deterministic) around a fictional New Zealand building society (Kaimai Building Society), contact centre (Harbourline Contact Services) and people; no real organisation, person, account or telephone number is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task137/generator/build.py",
+  "files": [
+    {
+      "path": "harbourline_2027_staffing_proposal.pdf",
+      "format": "pdf",
+      "bytes": 41690,
+      "rows": null,
+      "source": "Constructed: Harbourline's 2027 service and staffing proposal",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2025Q1.pdf",
+      "format": "pdf",
+      "bytes": 51506,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2025Q1, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2025Q2.pdf",
+      "format": "pdf",
+      "bytes": 51491,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2025Q2, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2025Q3.pdf",
+      "format": "pdf",
+      "bytes": 51491,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2025Q3, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2025Q4.pdf",
+      "format": "pdf",
+      "bytes": 51516,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2025Q4, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2026Q1.pdf",
+      "format": "pdf",
+      "bytes": 51511,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2026Q1, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2026Q2.pdf",
+      "format": "pdf",
+      "bytes": 51491,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2026Q2, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2026Q3.pdf",
+      "format": "pdf",
+      "bytes": 51493,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2026Q3, with the quarter's reinvestment rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_campaign_brief_2027Q1.pdf",
+      "format": "pdf",
+      "bytes": 51521,
+      "rows": null,
+      "source": "Constructed: the campaign brief for TDR-2027Q1, with the quarter's reinvestment rates (draft)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_case_closeouts_2025q1-2026q3.csv",
+      "format": "csv",
+      "bytes": 4071115,
+      "rows": 55369,
+      "source": "Constructed: Harbourline's case close-outs for the seven closed campaigns",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_dial_log_2025q1-2026q3.csv",
+      "format": "csv",
+      "bytes": 22014047,
+      "rows": 264592,
+      "source": "Constructed: Harbourline's dial log for the seven closed campaigns",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_q1_2027_block_order.eml",
+      "format": "eml",
+      "bytes": 1619,
+      "rows": null,
+      "source": "Constructed: the block-order email thread between the society and Harbourline, 28 October to 4 November 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "harbourline_sow_HCS-KBS-2025-01.pdf",
+      "format": "pdf",
+      "bytes": 44498,
+      "rows": null,
+      "source": "Constructed: statement of work HCS-KBS-2025-01 between the society and Harbourline, with its schedules",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_case_release_log_2025q1-2026q3.csv",
+      "format": "csv",
+      "bytes": 5901415,
+      "rows": 59265,
+      "source": "Constructed: the society's case release log for the seven closed campaigns",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_contact_points_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 1518514,
+      "rows": 37600,
+      "source": "Constructed: contact points held at the cut for the members on the January to March 2027 list",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_do_not_call_register_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 476805,
+      "rows": 13844,
+      "source": "Constructed: the society's do-not-call register at 2 November 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_extract_notes_2026-11.txt",
+      "format": "txt",
+      "bytes": 3160,
+      "rows": null,
+      "source": "Constructed: the deposits analytics team's notes on the extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_member_transfers_2025-01_2026-10.csv",
+      "format": "csv",
+      "bytes": 2196407,
+      "rows": 30728,
+      "source": "Constructed: transfers of principal into and out of the accounts in the events extract",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_td_account_events_2025-01_2026-10.csv",
+      "format": "csv",
+      "bytes": 9452929,
+      "rows": 155533,
+      "source": "Constructed: term deposit account events, January 2025 to October 2026, for the listed accounts and their holders' new term deposits",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_td_retention_list_2027Q1.csv",
+      "format": "csv",
+      "bytes": 1642260,
+      "rows": 18400,
+      "source": "Constructed: the society's retention list for term deposits maturing January to March 2027, cut 2 November 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_td_retention_lists_2025.csv",
+      "format": "csv",
+      "bytes": 3939019,
+      "rows": 33601,
+      "source": "Constructed: the retention lists for the four 2025 campaigns, from the pre-upgrade core banking report",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_td_retention_lists_2026.csv",
+      "format": "csv",
+      "bytes": 2289664,
+      "rows": 25664,
+      "source": "Constructed: the retention lists for the three 2026 campaigns, from the upgraded core",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_td_retention_procedure_v4.docx",
+      "format": "docx",
+      "bytes": 37866,
+      "rows": null,
+      "source": "Constructed: the society's term deposit retention procedure, version 4",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_term_holdings_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 3078366,
+      "rows": 44498,
+      "source": "Constructed: the core's term holdings view at 2 November 2026 (term deposits and migrated certificates maturing January to June 2027)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kbs_treasury_funding_outlook_fy2027.xlsx",
+      "format": "xlsx",
+      "bytes": 7191,
+      "rows": null,
+      "source": "Constructed: treasury's FY2027 term funding outlook prepared for ALCO",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kip_certificate_register_2026-06-30.csv",
+      "format": "csv",
+      "bytes": 228376,
+      "rows": 3400,
+      "source": "Constructed: the legacy investment platform's certificate register at 30 June 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kip_migration_batches_2026.csv",
+      "format": "csv",
+      "bytes": 162104,
+      "rows": 2741,
+      "source": "Constructed: the investment platform to core migration batches, July to October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

@@ -6,13 +6,13 @@
   "domain": "banking-credit-financial-risk",
   "subdomain": "deposit-liquidity-behaviour",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a New Zealand building society's quarterly take-or-pay block of outsourced agent-hours for the calls to holders of maturing term deposits, where a conversation that goes to the retention offer is billed at 21 agent-minutes against 8 for a plain renewal and the January to March 2027 list carries the 2024 three-year special at 5.75 per cent onto a reinvestment card near 3.25",
+  "niche": "a New Zealand building society's quarterly take-or-pay block of outsourced agent-hours for the calls to holders of maturing term deposits, where a conversation that goes to the retention offer is billed at 22 agent-minutes against 8 for a plain renewal and the January to March 2027 list carries the 2023 four-year special at 5.65 per cent onto a 3.15 per cent four-year card",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "We should book 5,500 agent-hours with Harbourline for the 18,400 term deposits on the January to March 2027 maturity list: 1,500 for the deposits maturing in January, 2,000 for February and 2,000 for March.",
+  "answer_source": "task137/submission.md block 1; task137/generator/figures.json call",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "harbourline_dial_log_2025q1-2026q3.csv",
-    "rows": 0,
+    "rows": 264592,
     "entity": "one dial Harbourline made on a released case",
     "grain": "dial x case x number",
     "source": "constructed (the contact centre's acknowledgement records)"
@@ -67,11 +67,11 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap only a small slice of past units met, and every such carry understates the forward effort by about an eighth.",
-  "driver_concrete": "Each conversation Harbourline holds with a maturing term deposit's holder goes to the 21-minute retention offer with a probability set by the drop from the deposit's locked rate to Kaimai's posted card for its term on the maturity date (a few per cent with no drop, above four in five at a 2.5-point drop), stable across the seven past campaigns; January to March 2027 brings the 2024 three-year special at 5.75 per cent onto a 3.25 per cent card, so conditioning on the drop books about 5,000 agent-hours where the pooled, latest, per-term or locked-rate share books 4,300 to 4,450.",
-  "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per callable configuration from the past campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or by term) and books about 4,400 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, where the 2024 three-year special meets a 2.5-point drop: the golden is about 5,000.",
+  "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap no past unit of its own group met, and every such carry understates the forward effort by a tenth to a quarter.",
+  "driver_concrete": "Each conversation Harbourline holds with a maturing term deposit's holder goes to the 22-minute retention offer with a probability set by the drop from the deposit's locked rate to Kaimai's posted card for its term on the maturity date (0.1 per cent where the rate rose, 92 per cent at drops of 2.5 points or more), rising with the drop inside every one of the seven past campaigns and every term; January to March 2027 brings 10,735 four-year deposits locked at the 2023 special's 5.65 per cent onto a 3.15 per cent card, where every past four-year deposit had locked in the 2021 and 2022 lows, so conditioning on the drop books 5,500 agent-hours where the pooled, latest-campaign or per-term share books 4,000 to 4,750 and the locked-rate share 5,000.",
+  "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per mix of callable numbers from the seven closed campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or each term's) and books about 4,500 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, where the 10,735 four-year deposits at 5.65 per cent meet a 2.50-point drop: the golden is 5,500.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the SOW's billing and dialling rules, washes every number against the do-not-call register and prices dialling per callable configuration still carries the past campaigns' retention-offer share (pooled, the latest campaign's, trended, by term or by locked rate) and books 4,300 to 4,450 agent-hours, about an eighth short of the golden.",
+  "analyst_test": "A strong analyst who reads the SOW's billing and dialling rules, washes every number against the do-not-call register and prices dialling per mix of callable numbers still carries the past campaigns' retention-offer share (pooled, the latest campaign's, trended, by term or by locked rate) and books 4,000 to 5,000 agent-hours, 10 to 28 per cent short of the golden 5,500.",
   "domain_test": "The deciding quantity is the share of maturing term deposits whose holders will want to move their money when reached, which deposit-behaviour analysis models on the repricing gap between each deposit's locked rate and the posted rate it reinvests at on maturity; with another field's nouns there is no fixed-term repricing, posted card, rate cycle or locked rate for the share to hang on, so the task stops making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -85,13 +85,13 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:repricing-gap-conditioned-retention-at-maturity",
   "layer1": [
-    "past campaign lists in two extract layouts (rate in per cent with dashed account numbers to mid-2025, then rate as a decimal with unpunctuated account numbers after the core banking upgrade)",
+    "past campaign lists in two extract layouts (rate in per cent with dashed account numbers and comma-grouped principal through 2025, then rate as a decimal with unpunctuated account numbers after the January 2026 core banking upgrade)",
     "the contact centre's dial records in UTC with its own disposition codes and its own case reference format",
-    "the bank's case release files listing each case's callable numbers and their types at release",
-    "client phone numbers in mixed formats (+64, 0-prefixed, spaced, with and without area codes) normalised before the do-not-call wash",
-    "a do-not-call register keyed on the normalised number with added and removed dates",
+    "the society's case release files listing each case's callable numbers and their types at release",
+    "members' phone numbers in mixed formats (+64, 0-prefixed, spaced, bracketed area codes) normalised before the do-not-call wash",
+    "a do-not-call register keyed on the E.164 number with recorded and withdrawn dates",
     "posted term deposit cards inside each quarter's campaign brief (PDF tables whose layout changes in 2026)",
-    "a term deposit account event extract where an instructed reinvestment opens a new account linked only through its funding transfer, on the ask paths",
-    "a whole-book maturity extract listing joint deposits once per holder and carrying foreign-currency deposits beside NZD ones, on the ask paths"
+    "a term deposit account event extract where a change of term at maturity opens a new account linked only through its funding transfer, on the ask paths",
+    "a core holdings view listing joint deposits under each holder beside a frozen legacy certificate register and its migration batches, on the ask paths"
   ]
 }
