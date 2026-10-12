@@ -180,7 +180,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 134 (v2) | FAILED_TO_STUMP: backlog sathya8571 | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | - | none reported | sathya8571 |
 | 135 | FAILED_TO_STUMP: backlog sathya8571 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
 | 180 | FAILED_TO_STUMP: backlog oviya13ya | ECON revenue protection | AD | - | - | seed AD03: night-register bypass hides in totals | - | - | which district | none reported | oviya13ya |
-| 181 (v2) | FAILED_TO_STUMP: backlog oviya13ya | EPH outbreak surveillance | AD | time population | none | nowcast each area on its own delay | - | - | Griffith | r1 10-11: stumped, 52 (asks); r2: not deterministic (PR-07 4.2) | oviya13ya |
+| 181 (v4) | drawing 10-12 | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik High | none reported | oviya13ya |
 | 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
 | 183 | FAILED_TO_STUMP: backlog oviya13ya | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
 | 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
@@ -269,6 +269,8 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |
 | 134 (v1) | retired 10-11: default was the golden | CJ | FC | population time | none | Kaplan-Meier, deaths as non-returners |
 | 181 (v1) | retired 10-11: solved in-house | BANK | AD | population | none | skimmed terminals behind a common point |
+| 181 (v2) | failed portal determinism 10-11: PR-07 4.2 fork, landed once filed | EPH | AD | time population | none | nowcast each area on its own delay |
+| 181 (v3) | failed at design 10-11: no filed back-test closes it | CJ | AD | population time | E, A | near-repeat runs against background |
 | 228 (v1) | retired 10-11: collided with task129 | PA | DQ | population time | E, A | beacon calibration; reweighting |
 | 229 (v1) | failed portal determinism 10-11 | ENR | DQ | population time | D | standard error of a build mean |
 | 230 (v1) | retired 10-11: solved in-house twice | PA | DQ | population time | none | segment comparison pool |

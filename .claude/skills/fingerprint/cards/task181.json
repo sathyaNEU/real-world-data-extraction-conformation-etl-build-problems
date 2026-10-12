@@ -1,94 +1,91 @@
 {
   "task": "task181",
-  "architecture": "v3",
-  "drawn": "2026-10-11",
-  "slot_note": "seed AD04 re-rooted, architecture 3 (the slot's last): v1 (a credit union's counterfeit wave, two skimmed terminals behind a dominant common point) spent at in-house round 1; v2 (pertussis area deployment, the fortnight completed by laboratory route) spent once its estimand was filed literally; the objective and number are kept and the draw is new",
-  "domain": "criminology-justice",
-  "subdomain": "crime-incidence-hotspot-analysis",
-  "niche": "a housing association's community safety team choosing which of its twelve estates its one winter target-hardening grant goes to, from a community safety log in which some autumn rises are a crew's passing run of break-ins along neighbouring doors and one is a lasting rise in an estate's background burglary",
+  "architecture": "v4",
+  "drawn": "2026-10-12",
+  "slot_note": "seed AD04 re-rooted, architecture 4 (the author's builds are never retired): v1 (a credit union's counterfeit wave) spent at in-house round 1; v2 (pertussis area deployment, completed by laboratory route) spent once its estimand was filed literally; v3 (near-repeat burglary runs) spent at design because no filed back-test closes it on honest data; the objective and number are kept and the draw is new",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "niche": "an area control centre's summer traffic plan: whether any en-route sector will run over the safety plan's tolerance of ATM-related losses of separation per 100,000 flight hours in summer 2027, when a new low-cost base sends its departures climbing through a busy eastbound airway",
   "objective": "anomaly-detection",
-  "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Heathfold (design target; the golden's wording is fixed at ship from the generator)",
-  "answer_source": "the design note's LADDER; at ship task181/golden/, written by the generator from target/ and recomputed by the verifier",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Tarvik High (design target; the golden's wording is fixed at ship from the generator)",
+  "answer_source": "the design note's Ladder; at ship task181/golden/, written by the generator from target/ and recomputed by the verifier",
   "gap": [
     "population",
     "time"
   ],
   "pattern": [
-    "E",
-    "A"
+    "D"
   ],
   "generators": [
-    "G13",
-    "G16",
-    "G6"
+    "G2",
+    "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the association's head of community safety, who names the estate in the bid for the Police and Crime Commissioner's winter target-hardening grant",
-  "role_family": "programme_officer",
-  "scoring_unit": "per episode",
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the centre's operations planning manager, who files the summer 2027 sector plan with the unit safety review board",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
   "spine": {
-    "file": "community_safety_log_2021-2026.csv",
+    "file": "fdps_sector_traversals_2025-2026.parquet",
     "rows": 0,
-    "entity": "one incident logged by the association's community safety team (burglary, attempted burglary, criminal damage, anti-social behaviour)",
-    "grain": "logged incident (a break-in logged by the contact centre and again by the housing officer carries one police crime reference)",
+    "entity": "one flight's traversal of one elementary en-route sector (entry and exit time and flight level, as the flight data processing system logged it)",
+    "grain": "flight x elementary sector traversal",
     "source": "synthetic"
   },
-  "forum": "funder_or_donor",
+  "forum": "committee_or_panel",
   "forcing_event": "season_or_peak",
-  "org_family": "nonprofit_or_charity",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United Kingdom, England (West Yorkshire)",
-    "currency": "GBP",
-    "org_type": "housing association (registered provider of social housing) with twelve estates",
+    "geography": "fictional country (Aldmark), northern Europe, EUR ICAO region",
+    "currency": "EUR",
+    "org_type": "national air navigation service provider's area control centre with eight elementary en-route sectors",
     "invented_names": [
-      "Hollinmoor Homes",
-      "Heathfold",
-      "Saltersfield",
-      "Whinhaugh",
-      "Mossbeck",
-      "Gillcroft",
-      "Rookcliffe",
-      "Snape Hollow",
-      "Nightline Property Services"
+      "Aldmark",
+      "Aldmark Air Navigation",
+      "Holmvik Area Control Centre",
+      "Holmvik",
+      "Brekka",
+      "Skarnes",
+      "Tarvik High",
+      "Tarvik Low",
+      "Mosby High",
+      "Mosby Low",
+      "Grendal",
+      "Linmark",
+      "Karrow",
+      "Lysvik"
     ],
     "people": [
-      "Hazel Lloyd",
-      "Declan Lee",
-      "Stewart Hargreaves",
-      "Lynn Cox",
-      "Peter Tomlinson",
-      "Graeme Mitchell"
+      "Dorte Koch",
+      "Erik Sørensen",
+      "Paw Frandsen"
     ]
   },
   "deliverables": [
-    "winter_hardening_bid.docx",
-    "estate_doors_windows.png"
+    "summer2027_sector_forecast.xlsx",
+    "sector_rates_summer2027.png"
   ],
-  "opening_move": "calendar-first",
-  "driver": "When events arrive both from a steady background and in short self-exciting runs, each run a burst of events close in place and time that ends once it has played out, a unit's recent count overstates its coming count exactly where a run has just passed, so the coming count follows the unit's background rate, which only separating the run events (each within a short distance and interval of an earlier one) from the rest recovers; projecting whole counts by any persistence, seasonal or smoothing rule names a unit whose run is over instead of the unit whose background has risen.",
-  "driver_concrete": "Each estate's break-ins over the 13 weeks to 11 October 2026 are projected into the winter programme's 13 weeks from 26 October: Saltersfield's 19 include a run of 10 by one crew along neighbouring doors, each within days and a street or two of the last, and Whinhaugh's 14 a run of 8, both over by the time the grant starts, while Heathfold's 16 are spread across the estate and the weeks, a rise in its background rate; projecting the whole autumn counts names Whinhaugh or Saltersfield, projecting each estate's background break-ins names Heathfold.",
-  "stump": "A competent solver counts each estate's break-ins in the 13 weeks to 11 October, back-tests persistence, seasonal-ratio, trailing-mean and smoothing projections of those counts over the last eight quarters as the standard's criterion asks, files the best of them and bids for Whinhaugh (Saltersfield on persistence); the step that lands it there is projecting each estate's whole autumn count, when the near-repeat runs (break-ins within days and a street or two of an earlier one, a crew's visit that ends when it moves on) are not what the winter brings and only Heathfold's rise is background, which the projection of each estate's background break-ins finds.",
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
+  "driver_concrete": "Losses of separation in the Holmvik centre happen where one aircraft climbs or descends through the level of another in the same sector, so each sector's summer 2027 losses follow the vertical crossings in the 2027 traffic sample; Brekka's new base sends about thirty departures a day climbing through Tarvik High's eastbound cruise levels, adding about 2 per cent to its flight hours and roughly doubling its crossings, which takes it over the safety plan's 12.0 losses per 100,000 flight hours while every other sector stays under.",
+  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the traffic sample and files that no sector reaches the safety plan's 12.0 in summer 2027 (Mosby High highest at about 11); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka departures that add about 2 per cent to Tarvik High's flight hours roughly double its vertical crossings and take it to about 14.5.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who counts each break-in once by its crime reference, maps every home to its estate through the property register, computes each estate's usual winter exactly and back-tests every projection of estate counts that the standard's criterion invites still projects whole autumn counts and bids for Whinhaugh or Saltersfield, because only separating the near-repeat runs from each estate's background break-ins shows that Heathfold's rise is the one the winter will keep.",
-  "domain_test": "What decides the call is crime science's near-repeat analysis of residential burglary (a break-in raises the risk to homes within a street or two for a couple of weeks, so a crew working a street leaves a short run that ends, distinct from an estate's background rate), used to project the winter a target-hardening programme will face; with another field's nouns there is no offender returning to neighbouring doors, no near-repeat window and no target hardening, so the task does not read the same.",
+  "analyst_test": "A strong analyst who deduplicates the occurrence records, keeps the ATM-related losses of separation, attributes each to its elementary sector under the night configurations and computes summer flight hours exactly still forecasts summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its climbing and descending flight hours, and files that no sector exceeds 12.0, because only counting the vertical crossings in each sector shows the new Brekka departures taking Tarvik High over the tolerance.",
+  "domain_test": "What decides the call is air traffic control's human-factors safety analysis of controller workload: a loss of separation is a controller error in a vertical interaction (one aircraft cleared through the level of another), so a sector's expected losses follow the vertical crossings in its traffic, a complexity measure the field uses beside flight hours; with another field's nouns there are no flight levels to cross and no climb through a cruising flow, so the task does not survive the swap.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task124": "task124 prices newcomers' share of a capped peak from analogs whose measured draw the organisation's own dispatch held down; task181 v3 projects each estate's winter burglary from an autumn count in which near-repeat runs (break-ins within days and a street or two of an earlier one, with no forward yield) are mixed with the estate's background, so the conditioning is on run membership built from the space-time proximity of break-ins, not on an intervention the analogs took part in.",
-    "task228": "task228 v1 set a monitoring rule's false-alarm budget per run when mid-run configuration changes disturbed the nights a run was checked; task181 v3 separates near-repeat burglary runs from an estate's background rate to project the winter, a forward count with no alarm budget and no configuration change.",
-    "task28": "task28 v1 conditioned at-stake volume on a portability property recovered through a credential join; task181 v3 conditions the forward yield of each autumn break-in on whether it belongs to a near-repeat run, a property of its distance and interval to earlier break-ins that no column or join carries.",
-    "task30": "task30 measured a change over only the events the existing procedure leaves unadjusted, found through a catalogue join; task181 v3 adjusts nothing and measures nothing on a subset: it projects the winter from each estate's background break-ins once the runs are separated by proximity in place and time.",
-    "task32": "task32 v1 conditioned each offer's realised delivered cost on the yield of the collection programme behind it; task181 v3's conditioning is the zero forward yield of near-repeat burglary runs against the persistence of an estate's background rate, in a forward projection chosen by a filed back-test.",
-    "task53": "task53 v2 pooled each candidate's eligible volume per account against a scale break a closed offer log draws; task181 v3 has no scale break and no account pooling: the decoy estates' autumn counts are concentrated in near-repeat runs that end, and the answer's rise is background spread across the estate.",
-    "task33": "task33 sent one field team to the syndromic signal whose elevation, carried as a ratio across the expected forward path and stopped at filed interventions, yields most; task181 v3's resolving candidates are near-repeat burglary runs that end by their own dynamics, found only by the space-time proximity of break-ins, with no filed intervention and no ratio carry-forward."
+    "task229": "task229 v1 builds a standard error over shared parent nodes (entities that fail together); task181 v4 builds the exposure unit as a vertical crossing between two aircraft in one sector, and its forecast follows the crossings, never an error term.",
+    "task98": "task98 v3 forms each unit by chaining members within a distance under a per-unit threshold; task181 v4 forms no group: the exposure is each pair where one aircraft changes level through another's, and the forward change is new traffic multiplying those pairs.",
+    "task60": "task60 v8 counts people filed by two filers once under a tie-break; task181 v4 counts encounters between two aircraft (vertical crossings), and the forward count scales with those pairs rather than with flight hours or with any roll of units."
   },
   "lineage": [
     {
@@ -105,18 +102,21 @@
       "architecture": "v2 (a regional public health unit's pertussis line list: which local government area the outbreak response team goes to, the fortnight's count completed by each laboratory route's specimen-to-notification delay)",
       "fate": "spent 2026-10-11: missed at in-house rounds 2 and 3 only while the estimand was open; the portal's determinism QC called the cases-on-file against eventual-count reading a fork, and once PR-07 4.2 filed the eventual count literally, round 4 landed (96.8) by completing each case on its own laboratory's delay; hardening loop 1 (a dated change in the slow laboratory's process) found that any filed criterion choosing the delay history names the step, so the architecture cannot be both literally deterministic and stumped; re-rooted to architecture 3",
       "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units."
+    },
+    {
+      "architecture": "v3 (a housing association's community safety log: which estate's winter target-hardening grant, near-repeat burglary runs against each estate's background rate)",
+      "fate": "spent 2026-10-11 at design, never built: the filed back-test that had to select the background projection does not select it on honest data (about ten break-ins per estate-quarter; the usual winter wins the back-test in most seeds, the golden cell in 8 per cent), so no criterion, window or volume closes the method without planting",
+      "driver": "When events arrive both from a steady background and in short self-exciting runs, each run a burst of events close in place and time that ends once it has played out, a unit's recent count overstates its coming count exactly where a run has just passed, so the coming count follows the unit's background rate, which only separating the run events (each within a short distance and interval of an earlier one) from the rest recovers; projecting whole counts by any persistence, seasonal or smoothing rule names a unit whose run is over instead of the unit whose background has risen."
     }
   ],
-  "notes": "Re-root of task181 to architecture 3 (the slot's last), drawn 2026-10-11 after architecture 2 was spent under the literal-determinism rule. Anomaly Detection & Diagnostics: the anomaly is each estate's autumn rise in break-ins, and the diagnosis is whether it is a passing near-repeat run or a lasting rise in the estate's background. The filed standard states the estimand literally (break-ins expected in the 13 weeks from 26 October 2026 against the mean of the same calendar dates in the five previous winters) and leaves the projection open behind a back-test criterion (the projection that would have come closest over the eight quarters of its Appendix B, each made from the log at the end of the Sunday two weeks before the quarter began, closeness the total absolute miss over every estate and quarter); the criterion names no method. stump_strategy is forecast_method_backtest rather than decomposition_attribution because what decides is which projection of the forward window the history supports, chosen by the filed back-test; separating run events is the construction inside the winning projection, not an attribution of a reported movement. Pattern A: Saltersfield's and Whinhaugh's runs are resolving, Heathfold's background rise is ongoing. No calibration corpus, no twin case file and no filed decoy: the eight back-test quarters are the log's own history, which the criterion names. Personas drawn with guard.py names (en_GB, seed 181); checked against task180's people on its branch cache (Danish names, no overlap).",
+  "notes": "Re-root of task181 to architecture 4, drawn 2026-10-12. Anomaly Detection & Diagnostics: the anomaly is a sector whose losses of separation will run over the safety plan's tolerance in summer 2027; the diagnosis is which of the flight-hour-scaled forecasts misses a change in the sector's vertical interactions. The tolerance is filed literally; the forecast's method is open and forced by the record (losses track vertical crossings, not flight hours).",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:near-repeat-runs-against-background-burglary-rate",
+  "layer2_pattern": "own:vertical-crossing-exposure-for-separation-losses",
   "layer1": [
-    "a community safety log where one break-in can be logged twice (contact centre and housing officer) under one police crime reference, with attempted and completed burglary under separate codes",
-    "log times in UTC from the association's CRM against occurred dates in local time across the October clock change",
-    "homes keyed by the association's property reference and UPRN, placed on British National Grid coordinates and mapped to estates in a property register that also holds Right to Buy leaseholders",
-    "flat references reissued to different flats after a 2023 block refurbishment, with the former reference and its change date on the register",
-    "a stock condition survey run in two cycles (2022 and 2025) on different door and window grading scales, each with its own guidance",
-    "a repairs job log with several jobs per break-in, and out-of-hours board-ups invoiced monthly by a contractor under its own job references and addresses, never raised in the repairs log",
-    "contractor invoices dated after the work, net and VAT shown separately, across a financial year that starts on 1 April"
+    "flight data processing extract at flight x elementary sector grain, levels in hundreds of feet, times in UTC, with the night sector configurations (collapsed positions) in a separate opening log",
+    "occurrence database export where one loss of separation carries a controller report, a short-term conflict alert log entry and sometimes a pilot report, under one occurrence number but on separate lines",
+    "callsigns that change between the flight plan and the radio (ICAO three-letter designator against the airline's telephony callsign and the operator's own flight number)",
+    "the season defined in local time against UTC timestamps across the summer-time changes",
+    "a traffic sample built by the forecast team in a different layout and key (IFPLID) from the actuals extract"
   ]
 }
