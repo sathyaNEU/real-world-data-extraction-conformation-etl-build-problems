@@ -1,0 +1,36 @@
+{
+  "task": "task184",
+  "owner": "oviya13ya",
+  "status": "DESIGN",
+  "domain": "supply-chain-logistics",
+  "objective": "anomaly-detection",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver runs the queue standard on each airport's 2027 design-day forecast and summer roster plan with the team's three lanes added and posts the team to Cullinvale; the step that lands it there is taking the planned lanes plus three as the lanes that will be open, when last summer's postings show Cullinvale's managers, like two other airports', released two of their own lanes all day while the team was there and Halloran Bay's only in its troughs, so the team moves the most at Halloran Bay.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2 design: default path, stump sentence, three rules, readability, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt; then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
+}

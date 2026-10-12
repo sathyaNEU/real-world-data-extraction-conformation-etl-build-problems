@@ -185,6 +185,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 181 (v4) | SHIPPED, delivered 10-12, pending review | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik | none reported | oviya13ya |
 | 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
 | 183 | SHIPPED, delivered 10-12, pending review | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
+| 184 | DRAWN 10-12, design | SCL aviation screening operations | AD | objective time | none | host airports release their own lanes while the posted team is there | pilot_log | monitoring_export | - | none reported | oviya13ya |
 | 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
 | 229 (v2) | FAILED_TO_STUMP: backlog perssathya | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | perssathya |
 | 230 (v2) | SHIPPED, delivered 10-12, pending review | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
