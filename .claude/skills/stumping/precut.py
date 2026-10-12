@@ -7,8 +7,8 @@ Reads <task>/DESIGN_NOTE.md and refuses to open stage 3 until the design is argu
 `stumping` Part 5 sets out: the default competent path written and ending on a wrong answer, the stump
 sentence naming that answer, the three rules answered, the readability screen with the decisive rung
 silent, the semantic fork table with every alternative ruled out, the 22-axis closure table, the
-literal-reader line, the oracles listed, the ask sheet with its pair ceiling and cracker sheet, and
-`## Tried and rejected` present. It also runs the prompt gate (voice-check.py) on prompt.txt.
+literal-reader line, the oracles listed, the ask sheet with its pair ceiling, mirror leakage and cracker
+sheet, and `## Tried and rejected` present. It also runs the prompt gate (voice-check.py) on prompt.txt.
 
 Exit status: 0 every check passed (WARNs allowed), 1 at least one FAIL, 2 the note or the task is missing.
 It reads files and runs one script; it spawns no agent and costs nothing.
@@ -27,6 +27,7 @@ REQUIRED = ["Draw", "Default path", "Stump sentence", "Three rules", "Readabilit
             "Semantic fork table", "Ladder", "Closure table", "Literal reader", "Oracles", "Ask sheet",
             "Tried and rejected"]
 PAIR_CEILING = 40.0
+MIRROR_CEILING = 35.0   # per cent of ask weight the best response off the call may keep (supplemental Part 1.1)
 AXES = set(range(1, 23))
 STOP = {"the", "and", "with", "from", "that", "this", "than", "into", "over", "under", "about", "ends",
         "golden", "answer", "figure", "candidate", "navigators", "per", "cent"}
@@ -202,7 +203,7 @@ def check_note(task_dir, note_text):
         body = (section(secs, name) or "").strip()
         row("%s written" % name.lower(), bool(body), body.splitlines()[0][:120] if body else "empty")
 
-    # Ask sheet: pair ceiling and the cracker sheet.
+    # Ask sheet: pair ceiling, mirror leakage and the cracker sheet.
     ask = section(secs, "Ask sheet") or ""
     pc = labelled(ask, "Pair ceiling")
     num = re.search(r"\d+(?:\.\d+)?", pc or "")
@@ -211,6 +212,13 @@ def check_note(task_dir, note_text):
     else:
         v = float(num.group(0))
         row("pair ceiling", v <= PAIR_CEILING, "%.1f (ceiling %.0f)" % (v, PAIR_CEILING))
+    ml = labelled(ask, "Mirror leakage")
+    mnum = re.search(r"\d+(?:\.\d+)?", ml or "")
+    if not mnum:
+        row("mirror leakage", False, "no `Mirror leakage:` figure (supplemental-stumping Part 7)", warn=True)
+    else:
+        v = float(mnum.group(0))
+        row("mirror leakage", v < MIRROR_CEILING, "%.1f per cent of ask weight (under %.0f)" % (v, MIRROR_CEILING))
     cr = [t for t in tables(ask) if any("cracker" in c.lower() for c in t[0])]
     if not cr:
         row("cracker sheet", False, "no table whose header names the cracker")

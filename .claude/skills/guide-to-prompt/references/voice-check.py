@@ -7,7 +7,7 @@
     python3 .claude/skills/guide-to-prompt/references/voice-check.py --file <path>  # a draft anywhere on disk
 
 Per build it prints one PASS or FAIL line per rule and exits 1 when any rule fails, so the gate can sit in a
-script. The rules are in `prompt-voice.md`. The prompt is `prompt.txt`, plain text; a folder carrying only
+script. The rules are in the guide-to-prompt `SKILL.md`. The prompt is `prompt.txt`, plain text; a folder carrying only
 `prompt.md` is a build shipped before the rule and is read with a warning (and fails the file rule when it
 is the build under check, unless `--legacy` is passed). The batch report measures what no single prompt can
 see: the spread of question forms, repeated word runs, file counts and formats.
@@ -71,7 +71,7 @@ TELLS = [
     r"\bcrucial\b", r"\bpivotal\b", r"\bin order to\b", r"\bfurthermore\b", r"\bmoreover\b", r"\badditionally\b",
     r"\bit is (important|worth) (to note|noting)\b", r"\bnote that\b", r"\bmake sure\b", r"\bensur\w*\b",
     r"\bplease\b", r"\bkey (insight|driver|finding|takeaway)s?\b", r"\bdeep[- ]dive\b", r"\bbest practice\b",
-    r"\bstakeholders?\b", r"\brobustly\b", r"\bempower\w*\b", r"\bunlock\b", r"\bjourney\b", r"–", r"—",
+    r"\bstakeholders?\b", r"\brobustly\b", r"\bempower\w*\b", r"\bunlock\b", r"\bjourney\b", "\u2013", "\u2014",
 ]
 NOT_NAMES = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
              "November", "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
@@ -179,7 +179,7 @@ def gate(text, task=None, legacy=False):
     n = len(inner)
     rows.append(("under 1,000 characters", "PASS" if n < CHARS else "FAIL", "%d characters" % n))
 
-    dash = len(re.findall(r"—", text))
+    dash = len(re.findall("\u2014", text))
     rows.append(("no em dash", "FAIL" if dash else "PASS", "%d em dash(es)" % dash if dash else "none"))
 
     found = []
@@ -210,7 +210,7 @@ def gate(text, task=None, legacy=False):
         ms = re.findall(pat, text, re.I)
         if ms:
             tells.append(ms[0] if isinstance(ms[0], str) else pat)
-    tells = [t if t not in ("–", "—") else ("en dash" if t == "–" else "em dash") for t in tells]
+    tells = [t if t not in ("\u2013", "\u2014") else ("en dash" if t == "\u2013" else "em dash") for t in tells]
     rows.append(("no LLM tells", "FAIL" if tells else "PASS", ", ".join(dict.fromkeys(tells)) or "none"))
 
     beliefs = re.findall(ROLL_CALL, text, re.I)

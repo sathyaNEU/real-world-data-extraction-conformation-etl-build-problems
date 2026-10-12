@@ -9,69 +9,46 @@ description: The anti-repeat system for task builds. Every build has a fingerpri
 
 ## Part 0. What this is for
 
-Builds come out as the same kind of project for a mechanical reason, not a creative one. The
-shipped ledger records outcomes, so it gets a row only when the portal result comes back, and every
-build finished but not yet reported is invisible to it; it is also too large, with single rows of
-20,000 characters, to read whole at draw time. So the standing bans in `stumping` Part 6 cannot be
-checked against it.
-
-A fingerprint card fixes both halves. It is one small structured record per build, in a controlled
-vocabulary, so two builds that made the same choice collide on the same string. It is filed the
-moment the draw is fixed, so a build in flight is visible to the next one. And `guard.py` reads
-every card in under a second, so the check is run every time rather than remembered.
-
-**A card records identity, never the outcome of the build it describes.** It says what kind of
-project a build is and what drives its difficulty. Whether that build stumped on the portal belongs
-to `stumping/references/shipped-ledger.md` and is written there once, when the author reports it.
-That split is deliberate: the ledger's rule against pending rows exists because a row written before
-the portal speaks records a guess as a fact, and a card makes no claim about its own build's portal
-result at all. The one place a card carries a fate is `lineage`, and that is history rather than a
-guess: why an earlier architecture was abandoned, kept because a driver the portal already solved
-is the worst thing to draw again.
+The ledger holds each build's status and portal result; a card, filed when the draw is fixed, holds identity
+in one vocabulary, so the guard bans against builds in flight. **A card records identity, never outcome**
+(status and outcomes go to `stumping/references/shipped-ledger.md`), except `lineage`, which keeps each dead
+architecture's fate: a driver already solved is the worst redraw.
 
 ## Part 1. The card
 
-One JSON file per build slot, `cards/taskNN.json`. Every enumerated field takes a key from
-`vocab.json`, and `guard.py validate` refuses anything else.
+`cards/taskNN.json`. Every enumerated field takes a key from `vocab.json`; `guard.py validate` refuses
+anything else.
 
-| Field | What it records | Kind |
-|---|---|---|
-| `domain`, `subdomain` | one of the nine domains and one of its enumerated subdomains | enum |
-| `niche` | the unusual sub-function inside the subdomain, in the build's own nouns | free, compared by similarity |
-| `objective` | one of the eight Axis 1 objectives | enum |
-| `shape` | the prompt shape the rubric's criteria come from (`01` to `18`, `single-figure`, `other`) | enum |
-| `decision_type`, `answer_unit` | what kind of call, and in what unit | enum |
-| `gap`, `pattern`, `generators` | the decisive gap, pattern and G-code, **decisive first** | enum lists |
-| `gate_g` | the FINE-numbers mechanism that carries the stump | enum |
-| `calibration_form`, `context_artifact` | the calibration organ (`none` when the strategy needs none), and the type of file the stakeholder works from | enum |
-| `stump_strategy` | the family of the decisive move, independent of the gap and pattern labels, chosen from the dataset's own analytic structure (`stumping` Part 1) | enum |
-| `decisive_rule_filed`, `official_decoy` | whether a shipped sentence states the rule that decides the answer, and whether a filed, official-looking rule, basis or metric gives the wrong answer; `false` plus `true` is the withheld rule with an official decoy, the architecture the client names as templated, whatever `stump_strategy` says | true or false |
-| `validated_decoy` | whether the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it | true or false |
-| `stump_class` | the class of the decisive step under the client's three rules: `analytical`, `planted`, `data_semantics` or `rule_application`; only `analytical` may decide the answer | enum |
-| `analyst_test` | one sentence: the easy route a strong analyst takes after cleaning the data and reading every field and rule correctly, and the wrong answer it gives | free |
-| `domain_test` | one sentence: the field's own analysis that decides the answer, and why swapping the nouns into another field breaks the task | free |
-| `client_domain` | the client-taxonomy domain a house domain sits in (blank when `domain` is already a client domain) | enum |
-| `layer2_family`, `layer2_pattern` | the Layer 2 family (five, `vocab.json` `layer2_families`) and the pattern from `stumping/references/client/layer2-rigor-patterns.md` as `<domain>/<task-type>/<n>`, or `own:<name>`; the same pattern on the same spine grain as an earlier build is a BLOCK | enum plus free |
-| `layer1` | the Layer 1 messiness techniques the pack carries, from `dataset-generation/references/layer1-messiness.md` | list |
-| `stakeholder_role`, `role_family` | the role as the prompt states it, and its family | free plus enum |
-| `scoring_unit` | the unit the decision is scored or paid on | enum |
-| `spine` | the spine file, its rows, what one row is, its grain, and its source dataset | mixed |
-| `world` | geography, currency, organisation type, the proper nouns the build invented, and `people`, every persona the build names | mixed |
-| `forum`, `forcing_event`, `org_family` | who receives or decides the call, what forces it now, and the kind of organisation it sits in | enum |
-| `deliverables`, `opening_move`, `question_form` | the file names the prompt asks for, the prompt's opening move (`question-first` on every build under the prompt rules) and the form of its leading question (how many, how much, which, whether, what, when, who, where), which is where the batch's variety now lives | free plus enum |
-| `driver` | **one sentence, the decisive move with every domain noun stripped** | free, compared by similarity |
-| `driver_concrete`, `stump` | the same move in the build's own terms, and the wrong committed answer a competent solver files with the step that lands them there | free |
-| `answer`, `answer_source` | the committed answer verbatim, and where it was copied from | free |
-| `lineage` | every earlier architecture of the slot, with its fate and its driver | list |
-| `differentiation` | `{taskNN: one line}` against a build the guard flagged as close | map |
+| Field | Records |
+|---|---|
+| `domain`, `subdomain`, `client_domain` | domain and subdomain; the client domain a house domain sits in |
+| `niche` | the unusual sub-function, in the build's nouns (similarity) |
+| `objective`, `shape` | one of the eight objectives; prompt shape `01` to `18`, `single-figure`, `other` |
+| `decision_type`, `answer_unit`, `scoring_unit` | kind of call, its unit, the unit it is scored or paid on |
+| `gap`, `pattern`, `generators` | decisive first |
+| `gate_g` | the mechanism carrying the stump |
+| `calibration_form`, `context_artifact` | calibration organ (`none` allowed); the stakeholder's file type |
+| `stump_strategy` | the family of the decisive move, from the dataset's own analytic structure |
+| `decisive_rule_filed`, `official_decoy` | booleans; `false` plus `true` is the withheld rule with an official decoy, whatever the strategy says |
+| `validated_decoy` | the wrong method reproduces every certified figure and only a forward condition breaks it |
+| `stump_class` | `analytical`, `planted`, `data_semantics` or `rule_application`; only `analytical` passes |
+| `analyst_test` | the easy route a strong analyst takes after reading everything correctly, and its wrong answer |
+| `domain_test` | the field's own analysis that decides, and why a noun swap breaks the task |
+| `layer2_family`, `layer2_pattern` | family from `vocab.json`; pattern `<domain>/<task-type>/<n>` from `layer2-rigor-patterns.md`, or `own:<name>` |
+| `layer1` | the Layer 1 techniques the pack carries |
+| `stakeholder_role`, `role_family` | the role as stated, its family |
+| `spine` | file, rows, row meaning, grain, source dataset |
+| `world` | geography, currency, org type, invented nouns, `people` |
+| `forum`, `forcing_event`, `org_family` | who decides, what forces it now, the kind of organisation; always declared |
+| `deliverables`, `opening_move`, `question_form` | file names; `question-first`; how many, how much, which, whether, what, when, who, where |
+| `driver` | **one sentence, the decisive move with every domain noun stripped** (similarity) |
+| `driver_concrete`, `stump` | the move in the build's terms; the wrong committed answer and the step that lands it |
+| `answer`, `answer_source` | the committed answer verbatim, its source |
+| `lineage`, `differentiation` | earlier architectures with fate and driver; `{taskNN: one line}` against a flagged build |
 
-**The driver sentence is the field that catches the reskin**, the clone with no surface overlap at
-all, so write it with care. Strip the industry, the organisation, the metric names and the figures,
-and keep the structure of the move: what quantity decides, where it comes from, and what it does to
-the naive answer. Two builds that turn on the same insight in different industries should produce
-near-identical sentences, and that is the point. A driver written vaguely to dodge the similarity
-check defeats the only part of the system that sees mechanism, so the test of a good one is whether
-the author, reading it cold, could name the move.
+**The driver catches the reskin.** Strip industry, organisation, metric names and figures; keep what
+quantity decides, where it comes from and what it does to the naive answer, so one insight in two
+industries yields near-identical sentences.
 
 ```
 weak    The analysis has to account for an important constraint in the data.
@@ -79,207 +56,91 @@ strong  The decisive quantity is a per-unit floor recovered from a closed corpus
         determinations, and applying it removes the largest naive candidates from the total.
 ```
 
-`lineage` carries every architecture the slot has been through, each with its own driver and its
-fate. Retired drivers stay in the corpus on purpose: a driver the portal already solved is the
-worst thing to draw again, in this slot or any other.
-
 ## Part 2. The procedure
 
-**1. Before choosing the pairing** (`guide-to-prompt` steps 1 and 2):
+**1. Before choosing the pairing:**
 
 ```
-python3 .claude/skills/fingerprint/guard.py recent      # the last builds, one line each
-python3 .claude/skills/fingerprint/guard.py coverage    # what is spent and what has never been drawn
-python3 .claude/skills/fingerprint/guard.py suggest     # optional: independent draws into fresh territory
+python3 .claude/skills/fingerprint/guard.py recent      # last builds, one line each
+python3 .claude/skills/fingerprint/guard.py coverage    # spent and never-drawn cells, axis use overall and last 12
+python3 .claude/skills/fingerprint/guard.py suggest     # optional fresh draws, never breaking a ban
 ```
 
-`coverage` prints the domain by objective grid with the never-built cells, the never-drawn
-subdomains, and the use of every other axis over the whole corpus and over the last twelve. Read
-it before you choose, because the pairing is the cheapest thing in the build to change. `suggest`
-samples each dimension independently, weighted toward what has been used least and never breaking
-a standing ban; take it as a starting point, never as the decision.
-
-**2. When the draw is fixed** (`stumping` Part 6, before the ladder is written):
+**2. When the draw is fixed** (before the ladder; personas from `guard.py names --geo <geo> --seed <N>`):
 
 ```
-python3 .claude/skills/fingerprint/guard.py new task98 > <scratchpad>/task98_card.json
-#   fill it from the design note's `## Draw` section, including the driver and the stump sentence
-python3 .claude/skills/fingerprint/guard.py check <scratchpad>/task98_card.json
-python3 .claude/skills/fingerprint/guard.py register <scratchpad>/task98_card.json
+python3 .claude/skills/fingerprint/guard.py new task98 > <scratch>/task98_card.json   # fill from ## Draw
+python3 .claude/skills/fingerprint/guard.py check <scratch>/task98_card.json
+python3 .claude/skills/fingerprint/guard.py register <scratch>/task98_card.json
 ```
 
-Clear every BLOCK by redrawing the axis it names. Answer every WARN in one line in the design note,
-because a WARN is a reviewer's eyebrow, not a pass. `register` runs the check again and refuses a
-card that still carries a BLOCK; `--force` exists for the author's explicit override and needs the
-reason in the card's `notes`. The card goes into `cards/` before the ladder exists, so the next
-build drawn sees this one even while it is in flight.
+Clear every BLOCK by redrawing its axis; answer each WARN in one design-note line. `register` refuses a
+BLOCK; `--force` is the author's override, reason in `notes`.
 
-**3. When a build is re-rooted**, move the old architecture's identity into `lineage` with its
-fate, write the new draw into the main fields, and check and register again. The guard compares the
-new draw with the slot's own lineage too, and blocks a re-root that lands back on the puzzle it was
-meant to replace.
+**3. Re-root:** move the old identity into `lineage` with its fate, write the new draw, check and register.
+The guard compares against the slot's own lineage too.
 
-**4. After the pack is cut** (`dataset-generation` §13):
+**4. After the pack is cut:** `guard.py surface task98` runs the `clone-check` hard-tell screen on the build
+and re-reads persona names from the pack; a promoted pair is renamed or regenerated.
 
-```
-python3 .claude/skills/fingerprint/guard.py surface task98
-```
+**4b. Duplicate check (stage 4, and `/approve`):** `guard.py heart taskNN` compares `driver`,
+`driver_concrete` and `stump` with every driver, lineage driver, stump and shipped-ledger row, then runs
+the full check; exit 1 on BLOCK. An empty `stump` is filled from the design note first.
 
-This runs `clone-check/fingerprint.py`'s mechanical screen focused on the build: byte-identical
-files, same-seed tables that survived a rename, identical column sets, shared invented names and
-masked prompt wording, each ranked against how similar the corpus normally is. A promoted pair is a
-rename or a regeneration before the bundle is called ready.
+**5. When the submission is final**, update `answer`, `answer_source`, `spine.rows`, `deliverables`,
+`opening_move` and `question_form`. Part of delivery, because the next draw checks against it.
 
-**4b. When the author types `/approve`**, `guard.py heart taskNN` compares the card's `driver`,
-`driver_concrete` and `stump` text with every card's driver, every lineage driver, every card's
-stump and every shipped-ledger row, then runs the full check. It is the cheap half of
-`/clone-check` and exits 1 on BLOCK, so a template or duplicate is caught before the adjudicated
-`/clone-check` is paid for. A card with an empty `stump` cannot be checked and is filled from the design note first.
+**6. The ledger row** is rewritten at each status change (drawn, built, shipped, re-rooted, retired) and
+takes the portal result with its date the day the author reports it (`build-pipeline`, The ledger row);
+the card is untouched.
 
-**5. When the submission is final**, update the card's `answer`, `answer_source`, `spine.rows`,
-`deliverables`, `opening_move` and `question_form` so the corpus stays true. That is part of delivering the build,
-not bookkeeping, because the next draw is checked against it.
+## Part 3. What the guard decides
 
-**6. When the author reports the portal result**, write the ledger row (the ledger's own "Adding a
-row" section). The card is not touched, because it never recorded an outcome.
+BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
 
-## Part 3. What the guard decides, and where each rule comes from
+| Rule | Level | Against |
+|---|---|---|
+| `legal.domain`, `legal.objective`, `legal.gate_g` | BLOCK | the taxonomy; surface-read rejection or `statistical_rigor` alone |
+| `ban.pairing`, `ban.subdomain`, `ban.pattern`, `ban.calibration`, `ban.role`, `ban.artifact`, `ban.spine`, `ban.strategy` | BLOCK | last three builds |
+| `ban.source` | BLOCK, else WARN | the same real source dataset in the last three, else anywhere |
+| `ban.shape` | BLOCK | last two |
+| `ban.forum`, `ban.forcing_event`, `ban.org_family` | BLOCK | last three; `overuse.*` WARN when spent across the corpus |
+| `template.withheld_rule_decoy`, `template.cap` | BLOCK | in any of the last three, or already two in the last twelve; `template.flagged` WARN on every carrier |
+| `template.validated_decoy`, `template.validated_cap` | BLOCK | in the last build, or already three in the last twelve |
+| `overuse.strategy` | WARN | one strategy in three of the last twelve |
+| `three_rules.class`, `.analyst_test`, `.domain_test` | BLOCK | a card from 2026-10-10 missing them or not `analytical` |
+| `three_rules.strategy_risk` | WARN | `time_semantics`, `grain_or_unit`, `identity_resolution`, `stated_rule_hard_construction`, `withheld_rule_corpus_fit` |
+| `test.same_puzzle` | BLOCK | gap, pattern and decision type equal, last twelve, lineage included (older: unless differentiated) |
+| `test.same_driver` | BLOCK | gap, pattern and Gate G equal, last twelve, lineage included (older: unless differentiated) |
+| `test.own_lineage` | BLOCK unless differentiated | the slot's earlier architectures |
+| `driver.text` / `driver.near` | BLOCK unless differentiated / WARN | driver similarity 0.30 and up / 0.12 to 0.30, every driver on file |
+| `tell.names` | BLOCK | a shared multi-word invented name |
+| `people.full`, `people.inside` | BLOCK | a full name reused anywhere; two personas in one build sharing a first name or surname |
+| `people.first` / `people.last` | BLOCK, else WARN | first name in 3+ builds or the last twelve / surname in 2+ or the last twelve; else one older build |
+| `overuse.*`, `repeat.*` | WARN | domain, objective, shape, Gate G, decision type, deliverable set, PDF share, opening move, question form, geography, niche |
 
-The verdict is **BLOCK** if any rule blocks, **WARN** if any warns, otherwise **PASS**. Exit status
-is 1 on BLOCK, so the check can sit in a script.
-
-| Rule | Level | Against | Source |
-|---|---|---|---|
-| `legal.domain`, `legal.objective` | BLOCK | the nine domains and the eight objectives | the spec |
-| `legal.gate_g` | BLOCK | surface-read rejection, or `statistical_rigor` alone | Gate G v3 |
-| `ban.pairing` | BLOCK | domain plus objective, last three builds | `stumping` Part 6 |
-| `ban.subdomain` | BLOCK | domain and subdomain both, last three | `stumping` Part 6 draw table |
-| `ban.pattern` | BLOCK | the decisive pattern (or decisive G-code), last three | `stumping` Part 6 |
-| `ban.calibration` | BLOCK | calibration form, last three | `stumping` Part 6 |
-| `ban.role`, `ban.artifact` | BLOCK | role family, context-artifact type, last three | `stumping` Part 6 |
-| `ban.spine` | BLOCK | spine entity and grain, last three | `stumping` Part 6, `dataset-generation` §13 |
-| `ban.source` | BLOCK, else WARN | the same real source dataset, last three, else anywhere | `dataset-generation` §13 |
-| `ban.shape` | BLOCK | prompt shape, last two | `clone-check` Part 1 |
-| `ban.strategy` | BLOCK | the same `stump_strategy`, last three | the client's template note, `stumping` Part 2 |
-| `overuse.strategy` | WARN | one strategy in three or more of the last twelve | the same |
-| `template.withheld_rule_decoy`, `template.cap` | BLOCK | the withheld rule with an official decoy in any of the last three, or already in two of the last twelve | the same |
-| `template.flagged` | WARN | every build carrying it, so the design note says why this dataset calls for it | the same |
-| `three_rules.class`, `three_rules.analyst_test`, `three_rules.domain_test` | BLOCK | a card drawn from 2026-10-10 without `stump_class`, with any class but `analytical`, or without the analyst test or the domain test | the client's three rules (`stumping` Part 1) |
-| `three_rules.strategy_risk` | WARN | a stump strategy whose decisive step most often turns out to be a field reading or a stated rule (`time_semantics`, `grain_or_unit`, `identity_resolution`, `stated_rule_hard_construction`, `withheld_rule_corpus_fit`) | the same |
-| `template.validated_decoy`, `template.validated_cap` | BLOCK | the certified-record decoy in the last build, or already in three of the last twelve | the same, from the card audit (27 of task99 to task130) |
-| `test.same_puzzle` | BLOCK | gap, pattern and decision type all equal, last twelve, lineage included | `stumping` Part 6 similarity test |
-| `test.same_puzzle_older` | BLOCK unless differentiated | the same, older than twelve | `stumping` Part 6 similarity test |
-| `test.same_driver` | BLOCK | gap, pattern and Gate G mechanism all equal, last twelve, lineage included | `clone-check` Template tier |
-| `test.same_driver_older` | BLOCK unless differentiated | the same, older than twelve | `clone-check` Template tier |
-| `test.own_lineage` | BLOCK unless differentiated | the slot's own earlier architectures | re-roots |
-| `driver.text` | BLOCK unless differentiated | driver similarity at or above 0.30, every driver on file | `clone-check` Track B |
-| `driver.near` | WARN | driver similarity 0.12 to 0.30 | `clone-check` Part 5 |
-| `tell.names` | BLOCK | a shared multi-word invented name | `clone-check` hard tells |
-| `people.full` | BLOCK | a persona's full name used in any other build | the name audit, Part 3b |
-| `people.first` | BLOCK, else WARN | a first name in 3 or more builds or any of the last twelve, else in one older build | the name audit, Part 3b |
-| `people.last` | BLOCK, else WARN | a surname in 2 or more builds or any of the last twelve, else in one older build | the name audit, Part 3b |
-| `people.inside` | BLOCK | two personas in one build sharing a first name or a surname | the name audit, Part 3b |
-| `ban.forum`, `ban.forcing_event`, `ban.org_family` | BLOCK | the same forum, forcing event or organisation family as any of the last three | the business-furniture audit, Part 3b |
-| `overuse.forum`, `overuse.forcing_event`, `overuse.org_family` | WARN | a forum, event or organisation family already spent across the corpus | the business-furniture audit, Part 3b |
-| `overuse.*`, `repeat.*` | WARN | domain, objective, shape, Gate G, decision type, deliverable set, PDF share, opening move, question form, geography, niche | the client's voice note, `stumping` Part 6 |
-
-**Why the bans reach three builds and not one.** `stumping` Part 6 writes them against "your last build",
-and builds here are routinely drawn two or three at a time, so the last build is not the only one a
-reviewer reads beside this one. Three is the batch a reviewer holds as neighbours; twelve is the
-batch they read in one sitting, which is where `voice-check.py` measures too.
-
-**Why there are two structural tests.** `stumping` Part 6's similarity test reads gap, pattern and decision
-type. The one Template clone on record (task86 v1 against task72 v2) shared the gap, the pattern and
-the Gate G mechanism and differed only in how the decision was cut, a quantity against a pick, so
-that test let it through. `test.same_driver` reads gap, pattern and Gate G mechanism and blocks it.
-Across the corpus each test collides on under 4 per cent of card pairs, and `suggest` never
-proposes a signature either test would block. When a signature is spent in many earlier builds the
-guard says so, because redrawing the gap or the pattern is cheaper than a page of differentiation.
-
-**Why a differentiation can clear some blocks and not others.** The axis bans are cheap to honour
-at draw time, so they never take an override. The similarity rules compare free text and a
-structural signature, and two builds can share both and still turn on different insights, which
-`clone-check` Part 1 is explicit about. There the guard asks for the one line that names the
-difference, and a line that cannot be written is the finding.
-
-## Part 3b. People and business furniture
-
-**Personas are drawn, never typed.** One first name stood in 23 builds (one full name in 13),
-because a model asked to invent a colleague reaches for the same few names. So every persona
-comes from `guard.py names --geo <the build's geography> --seed <task number>`, which draws from that
-locale's own Faker name pool and skips anything the check would block. The rule is ordinary names
-that are not recycled, not rare ones: a first name may recur across the corpus as names do in real
-offices, but never in a recent build, never in three builds, and never as the same full name. The
-names go in `world.people` at the draw, and `guard.py surface` re-reads the cut pack afterwards,
-because a generator writes names the card never planned.
-
-**The furniture around the decision repeats as badly as the mechanism did.** A committee or panel
-decided the call in 28 prompts and a board in 21, while a regulator, a minister, a funder, a line
-manager and an operations desk never decided one. Government agencies and retailers are the
-organisation in 37 builds. So `forum`, `forcing_event` and `org_family` are drawn like any other
-axis, banned against the last three builds and warned on when spent across the corpus. Where a
-card does not declare them, the guard reads them off the build's prompt with phrase rules, which is
-approximate, so every card declares all three and the bans rely on the declared fields.
-
-**The pack's file names are furniture too.** `data_dictionary.md` sits in 62 builds and
-`export_manifest.csv` in 34. The dictionary and the provenance record are required content; their
-file names are not, so name them the way the organisation in the build would.
+- **Three and twelve:** the neighbours a reviewer holds, and one sitting.
+- **Two structural tests:** the Template clone on record (task86 v1, task72 v2) differed only in decision
+  type, so `test.same_puzzle` alone passed it.
+- **Differentiation** clears only similarity rules, never axis bans. A line that cannot be written is the
+  finding.
+- **Drawn, never typed:** personas (one first name stood in 23 builds), furniture (committees and boards
+  decided 49 prompts, regulators none), and pack file names in the organisation's idiom.
 
 ## Part 4. How this goes wrong
 
-**A PASS read as "not a clone".** The guard is necessary and not sufficient. It sees what the card
-says, and the similarity test in `stumping` Part 6 still has to be answered in writing in the design note.
-
-**A card written to pass.** Choosing the vocabulary key that dodges a ban while the build is the
-same build is the failure the whole system exists to stop, and it fools nobody but the script. If
-two keys fit, use the one a reviewer would use.
-
-**A vague driver.** See Part 1. A driver that names no quantity and no source is a driver nobody can
-compare, including the guard.
-
-**A stale card.** A card that still describes a retired architecture is worse than a missing one,
-because the bans run against it and pass. Re-root means rewrite the card in the same edit.
-
-**Vocabulary drift.** A new value added to `vocab.json` because nothing seemed to fit splits one
-choice across two strings and the collision disappears. Add a value only when no existing one is
-honest, and say why in the card's `notes`. The opposite failure is a forced key: a value that is not
-true makes a collision that is not real. `calibration_forms` and `context_artifacts` carry an `other`
-for that case, which never counts as a collision, and the card's notes name what it actually is.
-
-**A mechanism family offered on its label.** A Gate G mechanism or generator that `coverage` lists as never drawn
-can still have been tried, and solved, in lineage. When `check` names the architectures a candidate collides with, read
-their fates in the cards before offering that family to the author: confirm_surface_read showed zero main-field uses
-while four lineage architectures had tried it and all four were solved (task107's screen, Tried and rejected).
-
-**Forgetting to register.** An unfiled card protects nobody. `register` is the step that makes the
-build visible.
+- **A PASS read as "not a clone"**: the design note still answers the similarity test.
+- **A card written to pass**: if two keys fit, use the reviewer's. **A vague driver**: no quantity, no source.
+- **A stale card** after a re-root: bans run against the dead architecture and pass.
+- **Vocabulary drift:** a new `vocab.json` value only when none is honest (reason in `notes`); `other`
+  exists so no untrue key is forced.
+- **A family offered on its label:** a mechanism `coverage` shows as never drawn may have died in lineage
+  (confirm_surface_read: zero main uses, four lineage architectures, all solved). Read the fates first.
+- **Not registering.** An unfiled card protects nobody.
 
 ## Part 5. Maintenance
 
-`guard.py validate` checks every card against `vocab.json` and exits non-zero on any error; run it
-after editing a card or the vocabulary. Cards are plain JSON and are edited in place, and like
-everything else in this repo they are never versioned or backed up inside the repo.
-
-The driver thresholds are calibrated on the corpus. Across pairs of
-drivers from different slots the 99.9th percentile sat under 0.10, the highest pair that was not
-the same build sat under 0.20, and the one byte-identical rebuild on disk (task90, built as task86
-v1) scored 0.88 against its original. Text similarity separates same-mechanism pairs from unrelated
-ones only weakly (an AUC of about 0.6), which is why it is a near-duplicate catcher and the
-mechanism check is the structural signature in `test.same_puzzle`. Recalibrate with
-`guard.py nearest taskNN` across a few known pairs if the corpus or the way drivers are written
-changes.
-
-**How this relates to the other records.** `clone-check` adjudicates whether two builds are the
-same task and is author-triggered, because it spends real tokens; its mechanical screen is what
-`guard.py surface` runs, and its adjudicators read the cards first because they carry the mechanism
-layer in one vocabulary. The shipped ledger records outcomes and the lessons each build paid for.
-The design note records the build's own reasoning and its `## Tried and rejected` section. The card
-is the one record that exists for every build on disk, in one vocabulary, from the moment the draw
-is fixed.
-
-**Backfilled cards.** A card not filed at draw time is extracted from the build folder's prompt,
-submission, design note and target, and reconciled against the shipped ledger. For builds up to
-task36 the gap and pattern labels were fitted after the fact (accurate about the
-mechanism, approximate about the label), and builds with no design note and no ledger row carry an
-empty gap and pattern with `mechanism_source: submission_only`, because a mechanism inferred from a
-prompt is a guess.
+`guard.py validate` after editing a card or `vocab.json`; cards are edited in place. Driver thresholds:
+cross-slot 99.9th percentile under 0.10, a byte-identical rebuild 0.88, AUC about 0.6 for mechanism (hence
+the structural tests); recalibrate with `guard.py nearest`. Cards to task36 carry fitted labels; builds
+with no design note or ledger row carry `mechanism_source: submission_only`.

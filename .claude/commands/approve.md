@@ -1,5 +1,5 @@
 ---
-description: The author's sign-off on a built task. Checks the heart of the stump against every card and ledger row for a template or a duplicate, re-runs the surface screen, refuses a LEAK, and on PASS writes the pipeline state to approved and brings the fingerprint card up to date.
+description: The author's sign-off on a built task. Checks the heart of the stump against every card and ledger row for a template or a duplicate, re-runs the surface screen, refuses a LEAK, and on PASS writes the pipeline state and the ledger row's status to approved and brings the fingerprint card up to date.
 argument-hint: taskNN
 ---
 
@@ -13,7 +13,7 @@ Run these in order and stop at the first failure:
 1. **The heart check.** `python3 .claude/skills/fingerprint/guard.py heart <task>`. It reads the
    card's `driver`, `driver_concrete` and `stump` and compares them with every card's driver, every
    lineage driver, every card's stump sentence and every shipped-ledger row, then runs the full
-   structural check (the `stumping` Part 6 bans, the same-puzzle and same-driver tests, names, furniture).
+   structural check (the standing bans in `stumping`, the same-puzzle and same-driver tests, names, furniture).
    Exit 1 is a BLOCK and the command stops there: relay the nearest builds it printed and the axis
    to redraw. A WARN is relayed with the one-line differentiation the design note carries, or the
    lack of one, which is a finding.
@@ -42,9 +42,10 @@ On PASS:
   then `guard.py validate <task>`.
 - Write `<task>/pipeline.json` with `"stage": "approved"` and the ISO date (create the file with
   that one field if it does not exist).
-- Tell the author: approved, the heart verdict line, the nearest build and its similarity, and
-  that the ledger row waits for the portal result.
+- Rewrite the build's row in `.claude/skills/stumping/references/shipped-ledger.md` to status
+  `approved MM-DD` (its Keeping it current section); the portal result is added when the author reports it.
+- Tell the author: approved, the heart verdict line, the nearest build and its similarity.
 
-This command never writes the shipped ledger (that waits for the portal), never edits the prompt,
-the bundle or the submission, and never spawns an adjudicator. Where the heart check promotes a
+Beyond that status cell this command never writes the shipped ledger, never edits the prompt, the
+bundle or the submission, and never spawns an adjudicator. Where the heart check promotes a
 pair the author wants read, `/clone-check <task>` is the adjudicated route.

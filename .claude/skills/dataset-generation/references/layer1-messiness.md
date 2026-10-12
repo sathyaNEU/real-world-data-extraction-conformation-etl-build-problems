@@ -1,557 +1,238 @@
 # Layer 1 library: data messiness by domain
 
-The client's data-messiness library, kept as reference. Layer 1 makes the inputs hard to use the way real data is hard to use; it costs the solver time and care and never decides the answer (that is Layer 2, `../../stumping/references/client/layer2-rigor-patterns.md`). How Layer 1 is built into a pack is `../SKILL.md` §7.
+The client's messiness library. Layer 1 makes the inputs hard to use the way real data is hard to use; it costs the solver time and care and never decides the answer (that is Layer 2, `../../stumping/references/client/layer2-rigor-patterns.md`). How it is built into a pack: `../SKILL.md` §7. The card's `layer1` field lists the techniques a pack carries. Marketing & Consumer Research has no section of its own: draw on Product Analytics, Survey Research & Official Statistics and Psychology & Behavioral Science.
 
 ## The test
-Would a real analyst meet this in the real source? If it exists only so that catching it flips the answer, it is a planted defect, not Layer 1: copied or backfilled blocks, swapped or reversed series, a hidden year-to-date column, deliberately wrong totals, mislabelled fields planted to mislead, decoy memos or staff drafts written to carry the wrong answer. **Keep it honest**: ship whatever a careful analyst needs to resolve each kind of mess (the codebook, the crosswalk, the release note), so the mess rewards care and the cleaned data supports exactly one recommendation once Layer 2 is done right.
+
+Would a real analyst meet this in the real source? If it exists only so that catching it flips the answer, it is a planted defect, not Layer 1: copied or backfilled blocks, swapped or reversed series, a hidden year-to-date column, deliberately wrong totals, fields mislabelled to mislead, decoy memos or drafts written to carry the wrong answer. **Keep it honest**: ship what a careful analyst needs to resolve each mess (the codebook, the crosswalk, the release note), so care is rewarded and the cleaned data supports exactly one recommendation once Layer 2 is done right. Each line below reads: the mess and the work it forces; *honest:* what ships so it resolves one way.
 
 ## Techniques that work in every field
 
-1. **Native release formats.** Files as the publisher ships them: multi-sheet workbooks with title blocks, merged headers and footnote markers, PDFs with tables, fixed-width or layout files that change across years.
+1. **Native release formats.** Multi-sheet workbooks with title blocks, merged headers and footnote markers; PDFs with tables; fixed-width or layout files that change across years.
 2. **Several sources for one picture.** A registry, a periodic release, a filing and a log, each with its own keys, grain and timing, never designed to join.
-3. **Imperfect keys.** Codes in one file and names in another, identifiers that change between systems or years, several spellings of one entity, many-to-many links that need a stated rule.
-4. **Vintages and revisions.** A preliminary and a revised release that overlap, classification or boundary changes between years, crosswalks that split or merge units.
-5. **Units, time and scale.** Fiscal and calendar years, local time and UTC, nominal and real values, counts and rates on different bases, thousands in one file and units in another.
-6. **Genuine overlap.** Extracts covering overlapping periods, records resubmitted after correction, the same event reported by two parties; deduplication needs a rule a careful analyst would apply.
-7. **Real coverage and missingness.** Suppressed small cells, survey skip and reserve codes, partial years, entities that enter or exit, reporting thresholds: documented features of the source, not inserted holes.
+3. **Imperfect keys.** Codes in one file and names in another, identifiers that change between systems or years, several spellings of one entity, many-to-many links needing a stated rule.
+4. **Vintages and revisions.** Overlapping preliminary and revised releases, classification or boundary changes between years, crosswalks that split or merge units.
+5. **Units, time and scale.** Fiscal against calendar years, local time against UTC, nominal against real, counts and rates on different bases, thousands in one file and units in another.
+6. **Genuine overlap.** Overlapping extracts, records resubmitted after correction, one event reported by two parties; deduplication needs a rule a careful analyst would apply.
+7. **Real coverage and missingness.** Suppressed small cells, skip and reserve codes, partial years, entities entering or exiting, reporting thresholds: documented features of the source, not inserted holes.
 8. **Documentation that has to be read.** Codebooks, dictionaries, release notes and methodology statements the solver must apply to interpret fields.
 
 ## Product Analytics  (`product-analytics`)
 
-1. **Event names and properties drift across releases.** Client versions rename events, add or retire properties, and change property types. The solver must map old and new names onto one taxonomy before counting anything across the release boundary.
-   - *Where it occurs:* Product event logs spanning several app versions, tracking plans with changelogs.
-   - *Keep it honest:* Record each rename in a tracking plan changelog and let old and new names overlap in time so the mapping is recoverable.
-2. **Anonymous devices stitched to signed-in users.** The same person appears as a device id before login and a user id after, often on several devices. The solver must merge identities through a mapping table and decide the unit of analysis.
-   - *Where it occurs:* Web and mobile event logs with identify calls, identity resolution and alias tables.
-   - *Keep it honest:* Supply the identity map and say in the brief whether the metric is per user or per device.
-3. **Client clocks, server clocks and offline batches.** Client timestamps skew, offline events upload hours later, and users sit in different time zones. The solver must pick the right clock, convert zones and sessionize without splitting real sessions.
-   - *Where it occurs:* Mobile SDK logs carrying both client and server timestamps, offline-capable apps.
-   - *Keep it honest:* Keep both timestamp columns clearly named; the question's window definition states which clock and time zone count.
-4. **Retried and double-fired events.** SDK retries resend events with the same insert id and some screens fire a view twice on load. The solver must dedupe on the event id, not on matching content, before computing rates.
-   - *Where it occurs:* Raw client event streams with at-least-once delivery, warehouse event tables.
-   - *Keep it honest:* Give every event an insert or message id and keep the duplicate share at a low, realistic level.
-5. **Assignment, exposure and outcomes in separate tables.** Experiment bucketing, actual exposure and outcome events live apart; some users are assigned but never exposed, and a few appear in both arms across devices. The solver joins and applies the exposure rule.
-   - *Where it occurs:* Feature flag and experimentation platform exports, assignment and exposure logs.
-   - *Keep it honest:* Describe the exposure and analysis rule in the experiment spec and keep the rare cross-arm users identifiable from the logs.
-6. **Nested JSON properties inside event rows.** Event properties sit in a JSON string column with nested arrays such as cart items, optional keys and types that shift by version. The solver must flatten, explode arrays and cast types.
-   - *Where it occurs:* Warehouse exports of event tables with a properties or context JSON column.
-   - *Keep it honest:* Keep the JSON valid, document keys in the tracking plan, and tie type changes to real version changes.
-7. **Internal, test and bot traffic mixed in.** Employee accounts, QA devices, load tests and crawlers sit alongside real users. The solver must filter them using an internal account list, test flags and user agent strings before measuring adoption.
-   - *Where it occurs:* Web analytics logs, product event streams, signup and account tables.
-   - *Keep it honest:* Provide the internal account list or flag column and state the exclusion rule in the metric definitions doc.
-8. **Billing events reconciled to product accounts.** The billing system records trials, upgrades, prorations and refunds under its own customer ids and currencies. The solver must link them to product accounts before computing retention or revenue per user.
-   - *Where it occurs:* Billing processor exports alongside product usage logs and CRM account tables.
-   - *Keep it honest:* Supply the account crosswalk and a short billing glossary so prorations and refunds follow normal billing semantics.
+1. **Event names drift across releases.** Renamed events and retyped properties mapped onto one taxonomy; *honest:* a tracking-plan changelog, old and new names overlapping in time.
+2. **Anonymous devices stitched to users.** Device ids before login, user ids after, merged through an alias table; *honest:* ship the identity map, state per user or per device.
+3. **Client clocks, server clocks, offline batches.** Pick the clock, convert zones, sessionize; *honest:* both timestamp columns named, the window states clock and zone.
+4. **Retried and double-fired events.** Dedupe on the insert id, not on content; *honest:* every event carries an id, duplicate share low and realistic.
+5. **Assignment, exposure and outcome in separate tables.** Assigned-not-exposed users, rare cross-arm users; *honest:* the exposure rule in the experiment spec, cross-arm users identifiable.
+6. **Nested JSON properties.** Flatten, explode arrays, cast types that shift by version; *honest:* valid JSON, keys in the tracking plan, type changes tied to versions.
+7. **Internal, test and bot traffic.** Filtered by account list, test flags and user agents; *honest:* the list or flag ships, the exclusion rule in the metric definitions.
+8. **Billing events against product accounts.** Trials, prorations and refunds under billing ids and currencies; *honest:* the account crosswalk and a short billing glossary.
 
 ## Quantitative Finance  (`quantitative-finance`)
 
-1. **Unadjusted prices around splits and dividends.** Raw exchange prices jump at splits, reverse splits and special dividends. The solver must build adjustment factors from a separate corporate actions file and apply them before computing any returns.
-   - *Where it occurs:* Exchange end of day files, vendor price histories, corporate action notices and dividend announcements.
-   - *Keep it honest:* Ship the actions file with real ex-dates. The answer should need correct adjustment, never discovery of an unrecorded split.
-2. **Ticker reuse and identifier changes over time.** Tickers get reused, and firms change names, security codes or listing venues. The solver must link each security's history through a dated identifier map instead of joining on the ticker string.
-   - *Where it occurs:* Security master files, index constituent histories, fund holdings filings and exchange listing notices.
-   - *Keep it honest:* Provide the dated map with real effective dates so ticker-only joins show visible mismatches rather than silently wrong answers.
-3. **Delisting events kept outside the price file.** Securities that delist simply stop appearing in the daily price file; final delisting returns and reason codes sit in a separate events table that must be merged into the return panel.
-   - *Where it occurs:* Academic stock return databases, exchange delisting notices and index deletion histories.
-   - *Keep it honest:* Keep delistings at their natural frequency and document the events table in the readme; never drop it to hide the effect.
-4. **Trade and quote clocks in mixed zones.** Tick data from different venues uses local exchange time, UTC or sequence numbers at varying precision. The solver must normalise clocks, handle daylight saving shifts and match trades to prevailing quotes.
-   - *Where it occurs:* Consolidated tape extracts, venue trade logs, quote files and order book snapshots.
-   - *Keep it honest:* Use the precision and zone conventions each source actually documents, and state them in a readme rather than hiding offsets.
-5. **Trading calendars that differ across markets.** Markets close on different holidays and half days. The solver must align multi-market panels on a common calendar and handle stale or missing prices without inventing returns on closed days.
-   - *Where it occurs:* International equity, futures and currency daily files alongside published exchange holiday calendars.
-   - *Keep it honest:* Include the real calendars; the stated method should say how to align dates so the choice is pinned, not guessed.
-6. **Separate futures contracts needing a continuous series.** Futures arrive as individual expiring contracts with overlapping dates, volumes and open interest. The solver must stitch a continuous series under a roll rule and treat the price gap at each roll.
-   - *Where it occurs:* Exchange settlement files, futures contract histories and vendor term structure extracts.
-   - *Keep it honest:* State the roll rule in the prompt or a spec, and supply every contract file so stitching is work, not guesswork.
-7. **Mixed price and rate quoting conventions.** Bonds are quoted clean in fractions, rates in percent or basis points, currencies in direct or indirect terms, options in volatility or premium. The solver must convert everything to one convention before combining.
-   - *Where it occurs:* Dealer quote sheets, fixed income pricing files, currency rate tables and option chain extracts.
-   - *Keep it honest:* Label each convention in headers or a readme as real sources do, so the work is conversion, not decoding a riddle.
-8. **Holdings filings with reporting lags and amendments.** Portfolio holdings come from periodic filings released weeks after period end, and amended filings supersede originals. The solver must use what was known on each date and keep the latest valid version.
-   - *Where it occurs:* Regulatory fund holdings filings, institutional manager position reports and fund factsheets.
-   - *Keep it honest:* Include originals and amendments with real filing dates; the prompt should define the as-of rule so look-ahead is avoidable.
+1. **Unadjusted prices around splits and dividends.** Adjustment factors built from a corporate-actions file; *honest:* real ex-dates, never an unrecorded split.
+2. **Ticker reuse and identifier changes.** Histories linked through a dated identifier map, not the ticker string; *honest:* real effective dates, ticker-only joins visibly mismatch.
+3. **Delistings outside the price file.** Delisting returns and reason codes merged from an events table; *honest:* natural frequency, the table documented.
+4. **Trade and quote clocks in mixed zones.** Normalise clocks and DST, match trades to prevailing quotes; *honest:* each source's documented precision and zone.
+5. **Trading calendars differ across markets.** Align panels without inventing returns on closed days; *honest:* real holiday calendars, the alignment method stated.
+6. **Futures contracts needing a continuous series.** Stitch under a roll rule, treat the roll gap; *honest:* the roll rule in a spec, every contract file shipped.
+7. **Mixed quoting conventions.** Clean prices in fractions, rates in percent or bp, direct or indirect FX, vol or premium; *honest:* each convention labelled.
+8. **Holdings filings with lags and amendments.** Use what was known on each date, keep the latest valid version; *honest:* real filing dates, the as-of rule defined.
 
 ## Banking, Credit & Financial Risk  (`banking-credit-financial-risk`)
 
-1. **Monthly loan tapes with status transitions.** Servicer files repeat each loan every month with delinquency status codes. The solver must reshape snapshots into loan histories, apply the status codebook and handle loans that pay off, transfer or reappear.
-   - *Where it occurs:* Securitisation loan level disclosures, servicer performance files and agency mortgage performance datasets.
-   - *Keep it honest:* Supply the real status codebook, and let transfers and payoffs occur at natural rates rather than inserting gaps as traps.
-2. **Regulatory report line items renumbered across revisions.** Bank regulatory reports renumber, split or merge line items when forms are revised. The solver must build a crosswalk across form vintages before computing capital, liquidity or asset quality ratios over time.
-   - *Where it occurs:* Quarterly bank regulatory filings, supervisory financial reports and form instruction manuals with revision notes.
-   - *Keep it honest:* Provide the instructions or revision notes so the crosswalk is derivable from the documents, not guessed.
-3. **Mergers and charter changes reshaping entities.** Institutions merge, convert charters and move between holding companies. The solver must follow a structure history to aggregate subsidiaries correctly and avoid double counting acquired balances or losing predecessor history.
-   - *Where it occurs:* Bank structure and attribute histories, merger transaction databases and holding company filings.
-   - *Keep it honest:* Include the structure history with real effective dates; mergers should be ordinary texture, not a hidden switch that flips totals.
-4. **Bureau attributes carrying special value codes.** Credit attributes use sentinel values for no trade, not applicable or inquiry only, sitting in the same numeric column as real counts. The solver must decode them from the dictionary before averaging or modelling.
-   - *Where it occurs:* Credit bureau attribute extracts, scorecard development samples and lender application files.
-   - *Keep it honest:* Document every sentinel in the data dictionary exactly as a bureau would; never leave one undocumented to catch the solver.
-5. **Ratings on different agency scales and outlooks.** Ratings arrive as letter grades with modifiers, watches and outlooks from several agencies. The solver must map them to one ordinal scale and pick the rating in force on each date.
-   - *Where it occurs:* Agency rating action histories, issuer rating files and regulatory rating disclosures.
-   - *Keep it honest:* Supply a real mapping convention or name the one to use, so the scale choice is pinned by the spec.
-6. **Charge-offs and recoveries booked in different periods.** Losses appear as gross charge-offs, then recoveries arrive later in a separate collections file. The solver must match recoveries back to loans or vintages to compute net loss on the right basis.
-   - *Where it occurs:* Loan servicing ledgers, collections and recovery files, and bank loss disclosures.
-   - *Keep it honest:* Keep recovery lags realistic for the product, and state whether net loss is measured by vintage or by period.
-7. **Transaction logs with reversals and chargebacks.** Payment and card logs hold authorisations, settlements, reversals and chargebacks for the same purchase as separate rows. The solver must link event types into one transaction before measuring volumes, losses or fraud rates.
-   - *Where it occurs:* Card processor extracts, core banking transaction logs and payment network settlement reports.
-   - *Keep it honest:* Use the event codes and linking keys real processors provide, at natural frequencies; do not plant phantom duplicates.
-8. **Rates quoted on different bases and day counts.** Loan and deposit rates appear as nominal or effective annual rates, on different day count bases and compounding frequencies. The solver must harmonise them before comparing yields or computing interest income.
-   - *Where it occurs:* Loan origination systems, deposit rate sheets, pricing disclosures and treasury funding files.
-   - *Keep it honest:* Label each basis as the source does; the work should be conversion, not guessing an unstated convention that decides the answer.
+1. **Monthly loan tapes with status transitions.** Snapshots reshaped into histories under the status codebook; *honest:* the real codebook, payoffs and transfers at natural rates.
+2. **Regulatory line items renumbered across form revisions.** A crosswalk across vintages before ratios; *honest:* the revision notes, so the crosswalk is derivable.
+3. **Mergers and charter changes.** Aggregate through a structure history without double counting; *honest:* real effective dates, mergers as texture, not a switch.
+4. **Bureau sentinel values.** No-trade and not-applicable codes in numeric columns decoded before averaging; *honest:* every sentinel documented as a bureau would.
+5. **Ratings on several agency scales.** Mapped to one ordinal scale, the rating in force on each date; *honest:* a real mapping convention named.
+6. **Charge-offs and recoveries in different periods.** Recoveries matched back to loans or vintages for net loss; *honest:* realistic lags, the basis (vintage or period) stated.
+7. **Reversals and chargebacks as separate rows.** Event types linked into one transaction; *honest:* real processor codes and keys, no phantom duplicates.
+8. **Rates on different bases and day counts.** Harmonised before comparing yields; *honest:* each basis labelled, never an unstated convention that decides.
 
 ## Actuarial Science & Insurance  (`actuarial-science-insurance`)
 
-1. **Claim transactions needing triangle construction.** Claims arrive as payment and reserve transactions with accident, report and payment dates. The solver must aggregate them into accident period by development age, handling reopened claims and reserve changes.
-   - *Where it occurs:* Claims system extracts, statutory loss development schedules and reinsurance claim bordereaux.
-   - *Keep it honest:* Give transaction-level data with a clear date dictionary; the method chosen on the triangle should decide the answer, not hidden rows.
-2. **Endorsements and cancellations altering earned exposure.** Policies change mid-term through endorsements, cancellations and reinstatements recorded as separate transactions. The solver must rebuild in-force periods to compute earned premium and earned exposure correctly.
-   - *Where it occurs:* Policy administration extracts, premium bordereaux and rating system transaction logs.
-   - *Keep it honest:* Use transaction types and effective dates as a real policy system records them, at natural frequencies.
-3. **Accident, policy and calendar year bases mixed.** Different reports group losses by accident year, policy year, underwriting year or calendar year. The solver must identify each basis and align or convert before comparing loss ratios or development.
-   - *Where it occurs:* Statutory annual statements, reinsurance submissions, internal management reports and rate filings.
-   - *Keep it honest:* Label the basis on each report as the source would; the question should name the basis the answer uses.
-4. **Mortality and lapse tables in published grid layouts.** Standard and experience tables come as wide select and ultimate grids by age and duration, with header notes and footnotes. The solver must reshape to long form and key by issue age and duration.
-   - *Where it occurs:* Published mortality tables, industry experience study reports and regulatory valuation tables.
-   - *Keep it honest:* Keep the native published layout and notes; the table should be usable once reshaped, with no altered cells.
-5. **Bordereaux in differing coverholder layouts.** Each coverholder or cedant sends periodic bordereaux with its own column names, currencies and coding, plus resubmitted periods. The solver must map all of them to one schema and dedupe genuine resubmissions.
-   - *Where it occurs:* Delegated authority bordereaux, reinsurance treaty statements and managing agent submissions.
-   - *Keep it honest:* Make resubmissions look like real corrected sends with dates; the solver keeps the latest by a documented rule.
-6. **Peril and cause of loss codes revised.** Peril and cause of loss codes change when claim systems migrate or coding schemes are revised. The solver must apply a code crosswalk so each peril is counted consistently across years.
-   - *Where it occurs:* Claims system extracts across migrations, statistical agent reporting plans and coding manuals.
-   - *Keep it honest:* Provide the crosswalk or manual revision notes; unmapped codes should be few and documented, not planted.
-7. **Catastrophe claims assigned to events by window.** Catastrophe claims carry event codes assigned by different bodies with differing date windows and areas. The solver must assign claims to events by loss date and location under the stated event definition.
-   - *Where it occurs:* Claims extracts, catastrophe event registries, reinsurance event loss reports and hours clauses.
-   - *Keep it honest:* State the event definition and window; let some claims fall near boundaries naturally rather than placing them to flip totals.
-8. **Member census files across valuation dates.** Pension and group benefit censuses give member snapshots at each valuation. The solver must match members across dates, infer exits, retirements and deaths, and reconcile them with benefit payment records.
-   - *Where it occurs:* Pension plan valuation censuses, group benefit enrolment files and payroll or benefit payment extracts.
-   - *Keep it honest:* Keep identifier changes and data gaps at realistic rates and document matching keys; do not hide decisive deaths.
+1. **Claim transactions needing a triangle.** Payments and reserve changes aggregated by accident period and age, reopenings handled; *honest:* transaction data, a clear date dictionary.
+2. **Endorsements and cancellations.** In-force periods rebuilt for earned premium and exposure; *honest:* real transaction types and effective dates.
+3. **Accident, policy and calendar year bases mixed.** Each basis identified and aligned; *honest:* the basis labelled per report, the question names its basis.
+4. **Published table grids.** Select-and-ultimate grids reshaped long and keyed by issue age and duration; *honest:* native layout and notes, no altered cell.
+5. **Bordereaux in differing layouts.** Mapped to one schema, genuine resubmissions deduped; *honest:* dated corrected sends, latest kept by a documented rule.
+6. **Peril codes revised.** Counted consistently through a code crosswalk; *honest:* the crosswalk or manual notes, few documented unmapped codes.
+7. **Catastrophe claims assigned to events by window.** By loss date and location under the event definition; *honest:* the definition stated, boundary claims natural, not placed.
+8. **Member census across valuation dates.** Members matched across dates, exits inferred, reconciled to payments; *honest:* realistic id changes, matching keys documented.
 
 ## General Statistics & Data Science  (`general-statistics-data-science`)
 
-1. **Results reported under inconsistent conventions.** Results tables mix percent and fraction, best seed and mean of seeds, and different evaluation splits. The solver must harmonise conventions before ranking methods.
-   - *Where it occurs:* Results tables in papers, leaderboard snapshots, experiment tracker exports.
-   - *Keep it honest:* Label seed count, aggregation and split in every source; never change a convention without saying so.
-2. **Resumed and crashed training runs.** Runs restart from checkpoints and repeat steps, crashed runs stop early and step counters reset. The solver must stitch each run's history and pick the right final metric.
-   - *Where it occurs:* Experiment tracker step logs, per-step metric CSVs, scheduler job records.
-   - *Keep it honest:* Carry run and resume ids with timestamps so overlapping steps can be resolved by a stated rule.
-3. **Dataset versions and split manifests.** Datasets get revised with removed or relabelled examples, and train, validation and test membership lives in separate id lists. The solver must join examples to the correct version and split.
-   - *Where it occurs:* Versioned dataset releases with changelogs, split manifests and removal lists.
-   - *Keep it honest:* Ship the changelog and have the question name the version being evaluated.
-4. **Multi-rater annotations with adjudication.** Labels arrive per rater in long format, guidelines change between rounds and adjudicated labels sit in a separate table. The solver must aggregate to one label per item by the stated rule.
-   - *Where it occurs:* Crowdsourcing platform exports, annotation tool exports, adjudication tables.
-   - *Keep it honest:* Document the guideline version per round and the aggregation or adjudication rule.
-5. **Nested configs with implicit defaults.** Sweep configs inherit from base files and omit default values, so effective hyperparameters are not written anywhere directly. The solver must resolve configs before grouping runs.
-   - *Where it occurs:* Sweep configuration files, experiment tracker config exports, run metadata.
-   - *Keep it honest:* Include the base and default config files so every effective value is recoverable.
-6. **Large per-example prediction dumps.** Evaluation outputs list per-class scores for many examples, with integer class indices and a separate label map. The solver must align indices, labels and ground truth before scoring.
-   - *Where it occurs:* Model evaluation output files, batch inference logs, prediction CSVs.
-   - *Keep it honest:* Ship the label index map and keep ordering consistent with it.
-7. **Compute logs in mixed units and hardware.** Compute is recorded as GPU hours, accelerator days or wall clock across different hardware types and node counts. The solver must normalise to one unit before comparing cost.
-   - *Where it occurs:* Cluster scheduler logs, cloud billing exports, training reports.
-   - *Keep it honest:* State hardware type and device count per job and supply any conversion factors used.
-8. **Near-duplicate examples across splits.** Scraped or augmented data contains genuine near duplicates across train and test. The solver must use the provided content hashes to flag overlap and apply the stated evaluation protocol.
-   - *Where it occurs:* Web-scraped corpora, dataset deduplication reports, content hash tables.
-   - *Keep it honest:* Keep overlap at a realistic low rate and state in the protocol how overlapping items are handled.
+1. **Results under inconsistent conventions.** Percent against fraction, best seed against mean, different splits harmonised; *honest:* seed count, aggregation and split labelled.
+2. **Resumed and crashed runs.** Each run's history stitched, the right final metric picked; *honest:* run and resume ids with timestamps.
+3. **Dataset versions and split manifests.** Examples joined to the right version and split; *honest:* the changelog ships, the question names the version.
+4. **Multi-rater annotations with adjudication.** One label per item by the stated rule; *honest:* guideline version per round and the aggregation rule documented.
+5. **Nested configs with implicit defaults.** Effective hyperparameters resolved before grouping; *honest:* base and default configs shipped.
+6. **Large prediction dumps.** Class indices aligned to the label map and ground truth; *honest:* the index map ships, ordering consistent.
+7. **Compute in mixed units and hardware.** GPU hours, accelerator days and wall clock normalised; *honest:* hardware and device count per job, conversion factors.
+8. **Near duplicates across splits.** Flagged by provided content hashes under the stated protocol; *honest:* realistic low overlap, handling stated.
 
 ## Biomedical & Clinical Research  (`biomedical-clinical-research`)
 
-1. **Trial data split across domain tables.** Subject data arrives as separate demographics, exposure, visit, lab and adverse event tables keyed by subject and visit. The solver must join them, pivot long lab records and build one analysis row per subject.
-   - *Where it occurs:* Clinical trial data transfers, standardised submission datasets, investigator site exports, sponsor data listings.
-   - *Keep it honest:* Supply the key structure and a data dictionary; make the joins real work but unambiguous, with every subject traceable across tables.
-2. **Lab results in mixed units and ranges.** Local and central labs report the same analyte in different units with site-specific normal ranges. The solver must harmonise units, map flags to a common range and decide which lab feeds the endpoint.
-   - *Where it occurs:* Multicentre trial lab transfers, hospital lab extracts, biobank assay results, registry lab feeds.
-   - *Keep it honest:* Give unit labels and the conversion source or range table; the protocol should say which lab is primary so no guessing decides it.
-3. **Unscheduled and out-of-window visits.** Visit labels mix nominal names, unscheduled repeats and early termination records, and actual dates drift from schedule. The solver must compute study day and map each record to analysis windows.
-   - *Where it occurs:* Trial visit logs, case report form exports, longitudinal cohort follow-up records, clinic encounter extracts.
-   - *Keep it honest:* State the windowing rule in the protocol or analysis plan; keep drift realistic so careful mapping, not a hidden rule, gets it right.
-4. **Partial dates needing stated imputation.** Onset, diagnosis and medication dates are recorded with unknown day or month. The solver must apply the stated partial-date imputation convention before computing durations, exposure or time to event.
-   - *Where it occurs:* Adverse event and medication case forms, medical history pages, patient-reported diaries, retrospective chart abstraction.
-   - *Keep it honest:* Include the imputation convention in the analysis plan; keep partial dates at realistic frequency and make the rule, applied correctly, determine durations.
-5. **Verbatim terms coded to a dictionary.** Adverse events and medical history arrive as investigator verbatim text alongside dictionary codes, sometimes from different dictionary versions. The solver must group terms at the right hierarchy level and reconcile version changes.
-   - *Where it occurs:* Safety databases, trial adverse event listings, pharmacovigilance case exports, coded medical history tables.
-   - *Keep it honest:* Provide the coding map or hierarchy file; mismatches should reflect real version drift and synonyms, not deliberately miscoded events.
-6. **Free-text concomitant medication records.** Medication entries mix brand and generic names, combined dose and frequency strings and abbreviated routes. The solver must parse dose, standardise drug names and assign each entry to a class or exposure period.
-   - *Where it occurs:* Concomitant medication case forms, pharmacy dispensing logs, electronic health record medication lists.
-   - *Keep it honest:* Offer a drug name or class lookup; spelling and format variety should be real clinical entry habits that careful parsing fully resolves.
-7. **Assay values beyond quantification limits.** Biomarker and drug concentration results include below-limit and above-limit codes, repeat assays and failed samples flagged by the lab. The solver must apply the stated handling for censored values and choose among repeats.
-   - *Where it occurs:* Bioanalytical lab reports, pharmacokinetic sample listings, biomarker panels, central lab result transfers with sample condition comments.
-   - *Keep it honest:* Document the limits and repeat-selection rule in the lab manual or plan; keep codes in native lab form, never silently replaced.
-8. **Questionnaire items needing a scoring manual.** Patient-reported outcome data comes item by item with reverse-scored items, allowed missing items per scale and form versions. The solver must score scales per the manual before analysing change from baseline.
-   - *Where it occurs:* Patient-reported outcome exports, quality of life instruments, symptom diaries, electronic clinical outcome assessment platforms.
-   - *Keep it honest:* Ship the scoring manual as an input; item missingness should follow real completion patterns and the manual's rules should settle every case.
+1. **Trial data split across domain tables.** Demographics, exposure, visits, labs and AEs joined to one row per subject; *honest:* key structure and dictionary, every subject traceable.
+2. **Labs in mixed units and ranges.** Units harmonised, flags mapped, the primary lab chosen; *honest:* unit labels and range table, the protocol names the primary lab.
+3. **Unscheduled and out-of-window visits.** Study day computed, records mapped to analysis windows; *honest:* the windowing rule in the plan, realistic drift.
+4. **Partial dates.** The stated imputation applied before durations; *honest:* the convention in the plan, realistic frequency.
+5. **Verbatim terms coded to a dictionary.** Grouped at the right level across dictionary versions; *honest:* the hierarchy file, real version drift and synonyms.
+6. **Free-text concomitant medications.** Dose parsed, names standardised, class assigned; *honest:* a drug lookup, real entry habits that careful parsing resolves.
+7. **Assays beyond quantification limits.** Censored values handled, repeats chosen; *honest:* limits and repeat rule in the lab manual, native codes kept.
+8. **Questionnaires needing a scoring manual.** Reverse items, allowed missing items, form versions scored per manual; *honest:* the manual ships and settles every case.
 
 ## Epidemiology & Public Health  (`epidemiology-public-health`)
 
-1. **Small-cell suppression in surveillance tables.** Published counts below a confidentiality threshold appear as symbols or ranges, with complementary suppression in totals. The solver must carry suppressed cells honestly, use available margins and avoid treating them as zero.
-   - *Where it occurs:* Surveillance summary tables, cancer and birth defect registries, vital statistics tabulations, small-area health profiles.
-   - *Keep it honest:* Explain the suppression rule in footnotes; ensure the decision rests on unsuppressed cells or margins, not on guessing hidden values.
-2. **Preliminary counts revised by later releases.** Weekly case or death counts are reported provisionally and filled in by later releases as delayed reports arrive. The solver must pick the right vintage per week and handle reporting lag near the end.
-   - *Where it occurs:* Weekly notifiable disease reports, provisional mortality releases, syndromic surveillance feeds, outbreak situation report series.
-   - *Keep it honest:* Label each release date clearly and state which vintage the question uses; revisions should follow real backfill patterns, not invented reversals.
-3. **Denominators from mismatched population vintages.** Case data uses one set of age bands and years while population estimates come in other bands and vintages. The solver must align age groups, choose the stated estimate series and build rates.
-   - *Where it occurs:* Population estimate releases, intercensal and postcensal series, census age tables, health department rate tables.
-   - *Keep it honest:* Name the required denominator series in the prompt or a methods note; make band alignment real work with one correct mapping.
-4. **Geographic codes changing over time.** Counties, districts or health areas split, merge or get renamed, and some sources use names while others use codes. The solver must apply a crosswalk, including allocation factors for postal-code to area links.
-   - *Where it occurs:* Boundary change notices, postal-code crosswalks, administrative area code lists, state and local surveillance files.
-   - *Keep it honest:* Supply the official crosswalk or allocation table; changes should be ones that genuinely occur, and the allocation rule should be stated.
-5. **Case definitions and coding revisions.** Case definitions add probable categories or tighten criteria, and cause-of-death coding moves between classification revisions. The solver must separate confirmed from probable and apply comparability adjustments across the break.
-   - *Where it occurs:* Notifiable condition case files, mortality multiple-cause files spanning coding revisions, disease registry case status fields.
-   - *Keep it honest:* Include the definition history or comparability ratios; the break should be documented in the source, and the question should say which definition counts.
-6. **Survey microdata with design and skip codes.** Health survey records carry weights, strata, clusters and numeric codes for refused, don't know and not asked. The solver must recode missing codes and use the design variables for estimates.
-   - *Where it occurs:* National and state health interview surveys, behavioural risk surveys, household health and nutrition examination surveys.
-   - *Keep it honest:* Ship the codebook with design notes; skip patterns should follow the real questionnaire flow, and the stated estimator should be unique.
-7. **Overlapping case reports across jurisdictions.** The same person can be reported by residence and by diagnosing jurisdiction, or appear again as a reinfection or update. The solver must deduplicate with the stated matching and episode rules.
-   - *Where it occurs:* Surveillance line lists, interjurisdictional case exchange extracts, laboratory electronic reports, immunisation registries.
-   - *Keep it honest:* State the deduplication and episode window rules; overlap should be the natural kind found in shared surveillance, not copied blocks.
-8. **Rates on different bases and standards.** Sources publish crude, age-specific and age-adjusted rates per different population bases and against different standard populations. The solver must convert bases and re-standardise to one stated standard before comparing.
-   - *Where it occurs:* Health statistics compendiums, registry annual reports, mortality rate tables, community health assessment profiles.
-   - *Keep it honest:* Provide the standard population weights and say which standard applies; labels must state the base honestly so careful reading resolves it.
+1. **Small-cell suppression.** Suppressed cells carried honestly through margins, never zero; *honest:* the rule in footnotes, the decision rests on unsuppressed cells.
+2. **Provisional counts revised later.** The right vintage per week, reporting lag near the end; *honest:* release dates labelled, the vintage stated, real backfill.
+3. **Denominators from mismatched population vintages.** Age bands aligned, the stated series used; *honest:* the series named in a methods note, one correct mapping.
+4. **Geographic codes changing over time.** Crosswalks with allocation factors; *honest:* the official crosswalk, the allocation rule stated.
+5. **Case definitions and coding revisions.** Confirmed against probable, comparability across the break; *honest:* definition history or ratios, the counting definition named.
+6. **Survey microdata with design and skip codes.** Missing codes recoded, design variables used; *honest:* codebook and design notes, a unique stated estimator.
+7. **Overlapping reports across jurisdictions.** Deduplicated under matching and episode rules; *honest:* the rules stated, natural overlap only.
+8. **Rates on different bases and standards.** Converted and re-standardised to one standard; *honest:* standard weights ship, the base labelled.
 
 ## Pharmacology, Pharmacoepidemiology & Safety  (`pharmacology-pharmacoepidemiology-safety`)
 
-1. **Package codes mapped to active ingredients.** Dispensing records identify products by package level codes in mixed 10 and 11 digit formats, brand names and salt forms. The solver must normalise code formats and map each package to ingredient and strength through a product crosswalk.
-   - *Where it occurs:* Pharmacy claims extracts, drug product directories, retail dispensing files, formulary listings across several years.
-   - *Keep it honest:* Ship the real product directory alongside; leave unmatched or discontinued codes as they occur, and state which ingredient level the question counts.
-2. **Overlapping fills, early refills and reversed claims.** Prescription claims include early refills that overlap prior supply, missing or implausible days supply, and reversal rows that cancel paid claims. The solver must net reversals and stitch fills into continuous exposure records before counting use.
-   - *Where it occurs:* Adjudicated pharmacy claims, outpatient dispensing logs, insurer drug utilisation files.
-   - *Keep it honest:* Keep reversals and overlaps at realistic rates; state the stockpiling and grace period rule in the prompt so episode building is deterministic.
-3. **Spontaneous reports with versions and duplicates.** Safety case reports arrive as an initial version plus follow ups, and the same event may be reported by a manufacturer and a clinician. The solver must keep the latest version per case and merge genuine duplicates.
-   - *Where it occurs:* Spontaneous adverse event reporting databases, manufacturer safety submissions, regulator case line listings.
-   - *Keep it honest:* Include the case and version identifiers the real system carries; duplicates should be ones a standard case matching rule resolves, not disguised copies.
-4. **Verbatim reaction terms and coding dictionary versions.** Reactions appear as reporter verbatims or as preferred terms from older dictionary versions. The solver must map them to the current hierarchy and roll up to the level the question asks about, such as organ class.
-   - *Where it occurs:* Adverse event report files, trial adverse event listings, post marketing safety tables coded over many years.
-   - *Keep it honest:* Supply the term hierarchy file; leave real misspellings and legacy terms, and name the hierarchy level used for counting in the prompt.
-5. **Strength strings, combination products and dose units.** Strength fields read like text, such as amount per volume, per actuation or combined ingredient pairs, in mg, mcg or units. The solver must parse them into numeric ingredient amounts to compute daily or cumulative dose.
-   - *Where it occurs:* Drug product listings, dispensing records, inpatient medication administration logs, trial dosing records.
-   - *Keep it honest:* Use the genuine string formats of the source; state the dose metric and any reference dose conversion the analysis must apply.
-6. **Lab results with mixed units and reference ranges.** Liver and kidney markers come from many labs in different units, each with its own upper limit of normal. The solver must convert units and express values as multiples of each lab's limit before flagging safety thresholds.
-   - *Where it occurs:* Trial laboratory datasets, electronic health record result tables, hepatotoxicity and renal safety reviews.
-   - *Keep it honest:* Carry each lab's reported range on the row; state the threshold definition, so converting correctly matters but nothing is hidden.
-7. **Monthly enrolment flags into eligibility spans.** Coverage arrives as one row per member month or as start and end segments with gaps and plan switches. The solver must build continuous enrolment spans to decide who has the required baseline and follow up time.
-   - *Where it occurs:* Insurance enrolment files, claims database member tables, public program eligibility extracts.
-   - *Keep it honest:* Keep genuine gaps and plan changes; state the allowable gap and baseline length so span building is the work, not a guess.
-8. **Partial and inconsistent dates in case records.** Onset, start and stop dates in safety records are often year only or month and year, and receipt dates differ from event dates. The solver must order events and compute time to onset under a stated imputation convention.
-   - *Where it occurs:* Spontaneous report line listings, trial adverse event and concomitant medication records, chart abstraction files.
-   - *Keep it honest:* Use partial dates at realistic frequency; state the imputation rule in the prompt or a supplied conventions document so results are reproducible.
+1. **Package codes to active ingredients.** 10 and 11 digit formats normalised, mapped through a product crosswalk; *honest:* the real directory, the counting level stated.
+2. **Overlapping fills, early refills, reversals.** Reversals netted, fills stitched into exposure; *honest:* realistic rates, stockpiling and grace rules stated.
+3. **Spontaneous reports with versions and duplicates.** Latest version per case, genuine duplicates merged; *honest:* real case and version ids.
+4. **Verbatim reactions across dictionary versions.** Mapped to the current hierarchy and rolled up; *honest:* the hierarchy file, the counting level named.
+5. **Strength strings and dose units.** Parsed into numeric ingredient amounts for daily or cumulative dose; *honest:* genuine string formats, the dose metric stated.
+6. **Labs with per-lab limits.** Expressed as multiples of each lab's ULN; *honest:* each lab's range on the row, the threshold defined.
+7. **Enrolment months into spans.** Continuous spans for baseline and follow-up; *honest:* genuine gaps and switches, the allowable gap stated.
+8. **Partial dates in case records.** Events ordered, time to onset under a stated imputation; *honest:* realistic frequency, the rule in a conventions document.
 
 ## Healthcare Delivery & Health Economics  (`healthcare-delivery-health-economics`)
 
-1. **Provider identifiers that do not line up.** Facilities and clinicians appear under certification numbers, national provider numbers, state license ids and changing names, with multi campus systems sharing one number. The solver must build a crosswalk and decide how many to many links roll up.
-   - *Where it occurs:* Provider enrolment files, quality reporting releases, hospital cost reports, payer network directories.
-   - *Keep it honest:* Ship the real crosswalk or enough fields to build one; state the reporting unit, such as campus or system, in the prompt.
-2. **Cost reports in worksheet, line and column form.** Institutional cost reports are long files keyed by worksheet, line and column codes, with fiscal years ending in different months and short periods after ownership changes. The solver must pivot, map codes and align periods.
-   - *Where it occurs:* Hospital, nursing facility and home health cost report releases, provider financial filings over several years.
-   - *Keep it honest:* Include the code map document; keep real short and overlapping periods, and state how periods are aligned or annualised.
-3. **Claim headers, lines and replacement bills.** Institutional claims split into a header and many revenue code lines, with interim bills and adjustment claims that replace or void earlier versions. The solver must collapse to the final action claim before counting stays or spending.
-   - *Where it occurs:* Medicare and commercial claims extracts, all payer claims databases, hospital billing exports.
-   - *Keep it honest:* Keep the real claim frequency or adjustment codes that mark replacements; do not insert copies that look final but are not flagged.
-4. **Negotiated rates in mixed payment formats.** Price transparency and contract files report rates as dollar amounts, per diems, case rates or percent of charges, by payer and plan, with service codes and modifiers. The solver must normalise them to a comparable price.
-   - *Where it occurs:* Hospital price transparency files, payer machine readable rate files, fee schedules, contract summaries.
-   - *Keep it honest:* Keep the native formats and nesting; state the comparison basis, such as price for a defined service bundle, in the prompt.
-5. **Coding system revisions across years.** Diagnosis groups, procedure codes and diagnosis code sets change between years, including major version transitions. The solver must apply crosswalks so volumes and case mix are comparable over the study window.
-   - *Where it occurs:* Inpatient discharge data, physician fee schedule releases, grouper version tables, utilisation files spanning revisions.
-   - *Keep it honest:* Supply the official crosswalk; keep the real break in the series, and state the target version for reporting.
-6. **Small cell suppression in public releases.** Public utilisation and outcome files hide counts below a threshold and sometimes suppress complementary cells to block back calculation. The solver must treat these as bounded unknowns, not zeros, when aggregating.
-   - *Where it occurs:* Public use provider utilisation files, state discharge summaries, quality measure releases, public health dashboards.
-   - *Keep it honest:* Apply the source's real suppression threshold and flag; state how suppressed cells are handled so totals stay deterministic.
-7. **Reserved negative codes in expenditure surveys.** Household health surveys code inapplicable, refused and don't know as reserved negative values, with skip patterns and person, event and household files. The solver must recode, join levels and apply weights.
-   - *Where it occurs:* National health expenditure and utilisation surveys, household panel files, event level medical visit files.
-   - *Keep it honest:* Ship the codebook; keep the real reserved codes and skip logic, and state which weight and population the estimate uses.
-8. **Geographic units that do not nest.** Data arrive by postal code, county, referral region or service area, and postal codes cross county lines. The solver must apply allocation crosswalks with residential or population ratios to put sources on one geography.
-   - *Where it occurs:* Hospital service area files, physician supply data, area deprivation and population releases, market analyses.
-   - *Keep it honest:* Supply the crosswalk with allocation ratios; state the target geography and allocation weight so the reshaping is defined.
+1. **Provider identifiers that do not line up.** CCN, NPI, licence ids and names crosswalked, many-to-many rolled up; *honest:* the crosswalk or the fields to build it, the reporting unit stated.
+2. **Cost reports by worksheet, line and column.** Pivoted, codes mapped, fiscal periods aligned; *honest:* the code map, real short periods, the alignment rule.
+3. **Claim headers, lines and replacement bills.** Collapsed to the final action claim; *honest:* real frequency or adjustment codes mark replacements.
+4. **Negotiated rates in mixed formats.** Dollars, per diems, case rates and percent of charges normalised; *honest:* native nesting, the comparison basis stated.
+5. **Coding revisions across years.** Crosswalked so volumes and case mix compare; *honest:* the official crosswalk, the target version named.
+6. **Suppression in public files.** Bounded unknowns, never zeros; *honest:* the source's threshold and flag, the handling stated.
+7. **Reserved negative codes in expenditure surveys.** Recoded, levels joined, weights applied; *honest:* the codebook, real skip logic, the weight named.
+8. **Geographies that do not nest.** Allocation crosswalks onto one geography; *honest:* ratios ship, the target geography and weight stated.
 
 ## Economics & Econometrics  (`economics-econometrics`)
 
-1. **Several vintages of the same revised series.** Advance, revised and benchmark estimates of the same aggregate sit in separate files or columns. The solver must identify each vintage, keep one consistent vintage per calculation and avoid splicing preliminary and final figures.
-   - *Where it occurs:* National accounts releases, real-time data archives, payroll survey benchmark revisions, quarterly revision tables.
-   - *Keep it honest:* Name the vintage the question uses. Keep revisions their ordinary size so careful vintage handling matters without engineering a flip.
-2. **Chained real components that do not add.** Chain-weighted real components do not sum to the chained total, and a residual line appears. The solver must use nominal shares or published contribution tables instead of adding real components.
-   - *Where it occurs:* Expenditure and industry value added tables in national accounts, chained volume measures in statistical bulletins.
-   - *Keep it honest:* Ship the residual line exactly as published and document chaining in the notes file, so the method is discoverable.
-3. **Seasonally adjusted and unadjusted series mixed.** Some series arrive seasonally adjusted, some not, and quarterly figures may be at annual rates. The solver must align the basis and rate convention before computing growth or comparing series.
-   - *Where it occurs:* Monthly labour, retail and price releases; quarterly output tables published at annualised rates.
-   - *Keep it honest:* Label the adjustment status in headers or footnotes the way the real release does; never hide it in one unmarked column.
-4. **Index numbers on different base periods.** Price or production indexes appear on different reference bases across releases or tables. The solver must rebase and splice at an overlap period before building long series or real values.
-   - *Where it occurs:* Consumer and producer price historical tables, industrial production indexes, trade unit value indexes.
-   - *Keep it honest:* Provide a genuine overlap period and base notes, so splicing is required but has one defensible result.
-5. **Industry and product codes revised across vintages.** Industry or product classification codes change between years, with splits and merges. The solver must apply a concordance, including weighted many-to-many links, before building a consistent panel.
-   - *Where it occurs:* Business and economic censuses, trade by commodity code, industry employment and wage releases.
-   - *Keep it honest:* Ship the real concordance with its allocation weights and say which classification the answer is stated in.
-6. **Mixed currencies, scales and fiscal years.** Cross-country or firm panels mix local currency, market-rate dollars and purchasing power units, thousands and millions, and fiscal years ending in different months. The solver must harmonise units and periods first.
-   - *Where it occurs:* International indicator panels, balance of payments tables, firm financial statement extracts, government finance statistics.
-   - *Keep it honest:* Put unit and fiscal year notes where the real source puts them; state the target unit and period in the prompt.
-7. **Wide country-year panels with status flag codes.** Values carry attached flag letters for estimated, provisional or break in series, and dots or dashes mark missing. The solver must split flags from values, reshape wide to long and treat breaks per the notes.
-   - *Where it occurs:* Statistical office bulk downloads, central bank statistical bulletins, international organisation indicator tables.
-   - *Keep it honest:* Use the source's real flag legend and a realistic flag frequency; flags inform handling but never secretly carry the answer.
-8. **Top-coded earnings and imputation flags in microdata.** Earnings and income are capped at published top codes, and imputed or allocated values are flagged. The solver must apply the codebook, handle top codes and treat allocated cases per the stated rule.
-   - *Where it occurs:* Household labour force survey public use files, earnings supplements, income and wealth survey microdata.
-   - *Keep it honest:* Supply the codebook with top code values and allocation flags; state how allocated records should be treated if it matters.
+1. **Several vintages of one series.** One consistent vintage per calculation, no splicing; *honest:* the vintage named, revisions at ordinary size.
+2. **Chained real components that do not add.** Nominal shares or contribution tables, never summed reals; *honest:* the residual line as published, chaining documented.
+3. **SA and NSA mixed, annual rates.** Basis aligned before growth; *honest:* adjustment status labelled as the release does.
+4. **Indexes on different base periods.** Rebased and spliced at an overlap; *honest:* a genuine overlap and base notes.
+5. **Classification codes revised.** A concordance with weighted many-to-many links; *honest:* the real concordance and weights, the answer's classification named.
+6. **Mixed currencies, scales and fiscal years.** Units and periods harmonised first; *honest:* notes where the source puts them, the target stated.
+7. **Wide panels with flag letters.** Flags split from values, reshaped long, breaks handled; *honest:* the real legend, realistic flag frequency.
+8. **Top codes and imputation flags.** Top codes and allocated cases handled per rule; *honest:* top-code values and flags in the codebook.
 
 ## Political Science & Public Policy  (`political-science-public-policy`)
 
-1. **Precinct boundaries that change between elections.** Precincts are split, merged and renumbered between elections, so IDs do not match across years. The solver must use crosswalks or aggregate to stable units like counties or districts before comparing results.
-   - *Where it occurs:* County and statewide precinct returns, redistricting data files, election administration boundary updates.
-   - *Keep it honest:* Ship a real crosswalk or name the stable unit of comparison, so the join has one correct resolution.
-2. **Canvass reports in printed result layout.** Results come with candidates as columns, county subtotal rows, write-ins, over votes and under votes. The solver must reshape to long form, drop subtotal rows and separate ballots cast from votes for an office.
-   - *Where it occurs:* Certified canvass reports, secretary of state result exports, county election board summary sheets.
-   - *Keep it honest:* Keep subtotal and over or under vote rows clearly labelled as the real report labels them; do not alter any totals.
-3. **Legislator identities inconsistent across records.** The same legislator appears with nicknames, suffixes, changed districts after redistricting or a party switch. The solver must build a stable person key to link roll calls, rosters and finance records.
-   - *Where it occurs:* Roll call vote records, legislative rosters and journals, campaign finance filings, committee assignment lists.
-   - *Keep it honest:* Use only variation real records show; include enough fields such as district, chamber and term to make linkage unambiguous.
-4. **Amended campaign finance reports alongside originals.** Committees file amendments that supersede earlier reports, and both appear in the extract along with memo and earmarked entries. The solver must keep the latest report per period and avoid double counting.
-   - *Where it occurs:* Campaign finance disclosure databases, itemised contribution and expenditure files, independent expenditure reports.
-   - *Keep it honest:* Keep amendment indicators and report identifiers as the real filing system records them, so the latest version is identifiable.
-5. **Budget lines across fiscal years and reorganisations.** Program and agency codes change when governments reorganise, and tables mix proposed, enacted and actual columns on fiscal years. The solver must map codes over time and pick the stated budget concept.
-   - *Where it occurs:* Budget appendices, appropriations tables, spending transparency portals, comprehensive annual financial reports.
-   - *Keep it honest:* Provide the reorganisation note or code map the real budget documents carry and state which budget column the question uses.
-6. **Opinion survey codes, waves and party leaners.** Microdata use numeric codes for refused and don't know, branching party identification items with leaners, wave-specific question wording and several weight variables. The solver must apply the codebook and stated weight.
-   - *Where it occurs:* Election studies, public opinion poll microdata, repeated cross-section attitude surveys, exit poll files.
-   - *Keep it honest:* Supply the full codebook; name the weight and the treatment of nonsubstantive responses when the result depends on them.
-7. **Policy adoption recorded with several date concepts.** Policy datasets record enactment, effective and implementation dates differently, with partial adoptions, court injunctions and repeals. The solver must code treatment timing to the date concept the design requires.
-   - *Where it occurs:* State policy databases, legislative histories, regulatory registers, executive order archives.
-   - *Keep it honest:* State which date defines treatment; real disagreements between dates should cost care, not decide the answer by surprise.
-8. **Turnout denominators: registered, voting age, eligible.** Registration rolls include inactive records, and voting age population differs from eligible population. Ballots cast differ from votes for the top office. The solver must assemble the stated denominator and numerator.
-   - *Where it occurs:* Voter registration reports, election administration surveys, population estimates by age and citizenship.
-   - *Keep it honest:* Define the turnout measure in the prompt and supply all needed pieces with their real coverage notes.
+1. **Precincts redrawn between elections.** Crosswalked or aggregated to stable units; *honest:* a real crosswalk or the stable unit named.
+2. **Canvass reports in printed layout.** Reshaped long, subtotals dropped, ballots cast separated from votes; *honest:* subtotal and over/under rows labelled as published.
+3. **Legislator identities inconsistent.** A stable person key across roll calls, rosters and finance; *honest:* real variation only, enough fields to link.
+4. **Amended finance reports beside originals.** Latest per period, no double count, memo entries handled; *honest:* real amendment indicators and report ids.
+5. **Budget lines across reorganisations.** Codes mapped over time, the stated budget column used; *honest:* the reorganisation note or code map.
+6. **Opinion survey codes, waves and leaners.** Codebook and stated weight applied; *honest:* the full codebook, the weight and nonsubstantive treatment named.
+7. **Several policy date concepts.** Treatment coded to the date the design requires; *honest:* the defining date stated.
+8. **Turnout denominators.** Registered, voting-age or eligible assembled as stated; *honest:* the measure defined, each piece with its coverage notes.
 
 ## Sociology & Demography  (`sociology-demography`)
 
-1. **Census geographies that change between decades.** Small areas are split, merged and renumbered between censuses. The solver must use relationship files and population or area weights to apportion counts onto one consistent geography before comparing.
-   - *Where it occurs:* Decennial census summary files, small area population estimates, geographic relationship and boundary files.
-   - *Keep it honest:* Ship the real relationship file with its weights and name the target geography, so apportionment has one answer.
-2. **Age bands that differ across tables.** Tables use single years in one release, five-year bands in another, and open-ended top groups at different ages. The solver must harmonise to common bands and handle the open interval as stated.
-   - *Where it occurs:* Population estimates, vital statistics tables, survey summary reports, life table inputs.
-   - *Keep it honest:* Choose target bands that the inputs can actually support, and state how the open top interval should be treated.
-3. **Race and ethnicity categories revised over time.** Categories change across years: multiple race reporting added, Hispanic origin asked separately, bridged and unbridged series. The solver must build consistent categories under a stated scheme before computing rates.
-   - *Where it occurs:* Census and survey releases, vital records, administrative education and health statistics.
-   - *Keep it honest:* Provide the category definitions for each year and state the scheme to use; do not invent recodes the source lacks.
-4. **Suppressed small cells and reliability flags.** Counts below a threshold are blanked or flagged, with complementary suppression, and rates carry unreliable flags. The solver must handle suppression per the stated rule or move to a higher level of aggregation.
-   - *Where it occurs:* Vital statistics tabulations, health registries, small area survey estimates, school and justice administrative tables.
-   - *Keep it honest:* Use the real suppression threshold and symbols; make sure the decision does not hinge on guessing a suppressed value.
-5. **Linked household and person record files.** Microdata come as separate household and person files linked by serial numbers, with relationship to reference person codes. The solver must join records and build household measures like size or headship.
-   - *Where it occurs:* Census microdata samples, household panel surveys, time use and expenditure surveys.
-   - *Keep it honest:* Include the linking keys and relationship codebook exactly as documented, with genuine variation in household composition.
-6. **Longitudinal panels with attrition and refresher samples.** Respondents drop out and re-enter, refresher samples join later, and variable names and weights are wave-specific. The solver must reshape across waves, track persons and pick the stated longitudinal or cross-sectional weight.
-   - *Where it occurs:* Household panel studies, birth and aging cohort studies, longitudinal labour and education surveys.
-   - *Keep it honest:* Document wave naming and weight purposes in the codebook; state which weight applies when the estimate depends on it.
-7. **Vital events by occurrence versus registration.** Births and deaths may be tabulated by year of registration or of occurrence, by residence or place of event, with late registrations added. The solver must align event counts to the stated basis.
-   - *Where it occurs:* Civil registration and vital statistics releases, mortality and natality files, registry annual reports.
-   - *Keep it honest:* Label the tabulation basis as the real tables do and state the basis the question uses.
-8. **Attitude items with changed scales across waves.** Repeated surveys change response scales, drop or add items, and recode categories between waves, documented only in codebooks. The solver must harmonise items before trend or group comparisons.
-   - *Where it occurs:* Repeated cross-section social surveys, cumulative survey data files, international comparative survey programmes.
-   - *Keep it honest:* Keep every change documented in the shipped codebook; state the harmonisation rule if more than one is plausible.
+1. **Census geographies changing between decades.** Apportioned by relationship-file weights; *honest:* the real file and weights, the target geography named.
+2. **Age bands differ across tables.** Harmonised to common bands, the open top handled; *honest:* bands the inputs support, the open interval rule stated.
+3. **Race and ethnicity categories revised.** Consistent categories under a stated scheme; *honest:* definitions per year, no invented recodes.
+4. **Suppressed cells and reliability flags.** Handled per rule or aggregated up; *honest:* the real threshold and symbols, no decision on a guessed cell.
+5. **Linked household and person files.** Joined by serial, household measures built; *honest:* keys and relationship codebook as documented.
+6. **Panels with attrition and refresher samples.** Persons tracked, the stated weight chosen; *honest:* wave naming and weight purposes in the codebook.
+7. **Vital events by occurrence or registration.** Counts aligned to the stated basis; *honest:* the basis labelled as the tables do.
+8. **Attitude scales changed across waves.** Items harmonised before trends; *honest:* changes in the codebook, the harmonisation rule stated.
 
 ## Psychology & Behavioral Science  (`psychology-behavioral-science`)
 
-1. **Raw item responses with reverse keyed items.** Questionnaires arrive as one column per item, some reverse keyed, with subscales scored differently across forms. The solver must apply the codebook to recode items, score subscales and check item counts against the scoring rules.
-   - *Where it occurs:* Survey archives, lab study data deposits, scale validation datasets, longitudinal panel releases.
-   - *Keep it honest:* Ship the codebook with keying and scoring rules; state which scale version and scoring method the question uses.
-2. **Trial level logs from experiment software.** Experiment software writes one file per participant and one row per trial, with session header lines, practice blocks and timeouts. The solver must stack files, drop practice trials by the logged block field and aggregate by condition.
-   - *Where it occurs:* Cognitive task output folders, online experiment platform exports, open data deposits for behavioral experiments.
-   - *Keep it honest:* Keep practice and timeout codes as the software logs them; state the trial exclusion rule in the prompt or protocol.
-3. **Skip logic and several missing value codes.** Responses use separate codes for not asked, refused, don't know and system missing, driven by branching logic. The solver must decode each, separate legitimate skips from nonresponse and set denominators correctly.
-   - *Where it occurs:* Household and health surveys, panel studies, online questionnaire exports with branching questions.
-   - *Keep it honest:* Ship the questionnaire flow or codebook listing every code; make the answer follow from a stated denominator rule.
-4. **Wide panel waves with attrition and re entry.** Panel studies release each wave as a separate file or as wide columns with wave prefixes, and respondents drop out and return. The solver must reshape to long, link on person id and track presence at each wave.
-   - *Where it occurs:* Longitudinal cohort releases, multi wave panel surveys, developmental study deposits.
-   - *Keep it honest:* Keep attrition at realistic levels with stable ids; state whether the analysis uses complete cases or all available waves.
-5. **Online panel screening flags and repeat submissions.** Crowdsourced study exports carry attention check items, completion times, repeated worker ids and partial submissions. The solver must apply the stated screening rules, keep one record per participant and count exclusions.
-   - *Where it occurs:* Crowdsourced research platform exports, online survey tool downloads, preregistered study data deposits.
-   - *Keep it honest:* Use realistic failure rates, put the screening rule in a preregistration or protocol file, and never let one record decide the result.
-6. **Scale forms and response anchors change.** Short and long forms, revised item wording and different response anchors, such as 5 versus 7 points, appear across sites or waves. The solver must restrict to common items or rescale using the documented linking.
-   - *Where it occurs:* Pooled multi site studies, repeated cross section surveys, consortium deposits spanning instrument revisions.
-   - *Keep it honest:* Supply the documented item mapping and anchor change; state which harmonisation the analysis should use.
-7. **Double coded observations with rater disagreement.** Observation and open response data are coded by two or more raters in separate files with different column orders and some disagreements. The solver must align by session and segment, apply the adjudication rule and compute agreement.
-   - *Where it occurs:* Behavioral observation coding exports, content analysis projects, clinical interview rating files.
-   - *Keep it honest:* Keep disagreement at realistic levels; state the adjudication rule, such as primary coder or consensus column, in the protocol.
-8. **Device streams on separate clocks from task events.** Eye tracking, wearable or physiological signals sample at high frequency on a device clock, while task events log on another. The solver must align streams to events, resample, and handle signal dropout segments.
-   - *Where it occurs:* Eye tracking exports, wearable and actigraphy downloads, psychophysiology recordings with event marker files.
-   - *Keep it honest:* Keep real signal loss and the clock offset documented in file headers; state the epoch window and target sampling rate.
+1. **Reverse-keyed items.** Recoded, subscales scored, item counts checked; *honest:* keying and scoring rules, the version named.
+2. **Trial logs from experiment software.** Files stacked, practice dropped by block field, aggregated by condition; *honest:* native practice and timeout codes, the exclusion rule.
+3. **Skip logic and several missing codes.** Legitimate skips separated from nonresponse; *honest:* every code listed, a stated denominator rule.
+4. **Wide panel waves with attrition.** Reshaped long, presence tracked per wave; *honest:* stable ids, complete-case or all-waves stated.
+5. **Online panel screening and repeats.** Screening applied, one record per participant; *honest:* realistic failure rates, the rule in a protocol.
+6. **Scale forms and anchors change.** Common items or documented linking; *honest:* the item mapping and anchor change shipped.
+7. **Double-coded observations.** Aligned by session and segment, adjudicated, agreement computed; *honest:* realistic disagreement, the rule stated.
+8. **Device streams on separate clocks.** Aligned to events, resampled, dropout handled; *honest:* real signal loss, the offset in headers.
 
 ## Criminology & Justice  (`criminology-justice`)
 
-1. **Incident records split into linked segments.** Incident based reporting stores incidents, offenses, victims, offenders and arrestees in linked segments, so one incident spans many rows. The solver must join segments and apply the counting rule to avoid double counting.
-   - *Where it occurs:* Incident based crime reporting releases, police records management exports, segment level crime data files.
-   - *Keep it honest:* Ship the segment layout and counting rule; state whether the unit of analysis is incidents, offenses or victims.
-2. **Agencies reporting partial years.** Agencies report only some months, switch reporting systems, or merge and dissolve, so coverage shifts each year. The solver must read the months reported field and avoid treating non reporting as zero crime.
-   - *Where it occurs:* National crime reporting program releases, state crime statistics files, agency participation tables.
-   - *Keep it honest:* Keep the months reported field as the source publishes it; state the minimum coverage or imputation rule in the prompt.
-3. **Agency codes that do not match jurisdictions.** Agencies are keyed by agency codes that do not map cleanly to counties or cities, and sheriff, city, campus and transit agencies overlap. The solver must use a crosswalk and allocate population to avoid double counting residents.
-   - *Where it occurs:* Law enforcement agency crosswalks, census place files, agency rosters joined to population estimates.
-   - *Keep it honest:* Ship the crosswalk; state how populations of overlapping agencies should be assigned.
-4. **Charge level court records collapsed to cases.** Court records list each charge, amendment and disposition as separate rows, with statute codes that change over time. The solver must map statutes to offense categories and collapse to case or defendant level with a most serious charge rule.
-   - *Where it occurs:* State court case management extracts, prosecutor case files, sentencing commission datasets.
-   - *Keep it honest:* Provide the statute to category map and the seriousness ranking; state the case level rule in the prompt.
-5. **Repeat custody spells for the same person.** Jail bookings and prison admissions repeat for the same person under name variants and new booking numbers. The solver must link spells on the system person id, compute stays from admission and release dates, and handle open spells.
-   - *Where it occurs:* Jail booking logs, prison admission and release files, probation and parole caseload extracts.
-   - *Keep it honest:* Ship the system's own person identifier where it exists; state how spells still open at the extract date are treated.
-6. **Dispatch logs with many call codes.** Calls for service logs carry hundreds of call type codes, free text dispositions and received, dispatched, arrived and cleared timestamps, some missing or entered late. The solver must map codes to categories and compute response intervals.
-   - *Where it occurs:* Computer aided dispatch exports, calls for service open data portals, emergency communications logs.
-   - *Keep it honest:* Ship the agency's code table; state which timestamps define the response interval and how missing arrival times are handled.
-7. **Masked locations and redrawn patrol boundaries.** Incident addresses are rounded to the block or offset for privacy, some fail to geocode, and beat or district boundaries are redrawn. The solver must assign incidents to areas using the boundary vintage that matches each period.
-   - *Where it occurs:* Open crime data portals, police beat and district boundary files, redistricting records.
-   - *Keep it honest:* Ship boundary files for each vintage and keep geocode failures at real rates; state the geography and vintage the answer uses.
-8. **Victimization survey files, weights and series incidents.** Victimization surveys ship separate household, person and incident files with weights, series incidents reported as counts, and suppressed small cells. The solver must link files, apply weights and the documented series counting rule.
-   - *Where it occurs:* National and city victimization surveys, public use crime survey files with codebooks.
-   - *Keep it honest:* Ship the codebook and weight documentation; state which weight and series rule apply.
+1. **Incidents in linked segments.** Segments joined under the counting rule; *honest:* the layout and rule, the unit of analysis stated.
+2. **Agencies reporting partial years.** Months-reported read, non-reporting never zero; *honest:* the field as published, the coverage or imputation rule.
+3. **Agency codes against jurisdictions.** Crosswalked, overlapping populations allocated; *honest:* the crosswalk and the allocation rule.
+4. **Charge-level court records.** Statutes mapped, collapsed by a most-serious-charge rule; *honest:* the map and ranking, the case rule stated.
+5. **Repeat custody spells.** Linked on the person id, stays computed, open spells handled; *honest:* the system's own id, open-spell treatment stated.
+6. **Dispatch logs with many call codes.** Codes mapped, response intervals computed; *honest:* the code table, the defining timestamps stated.
+7. **Masked locations and redrawn beats.** Assigned with the boundary vintage of each period; *honest:* boundary files per vintage, real geocode failure rates.
+8. **Victimization files and series incidents.** Files linked, weights and the series rule applied; *honest:* codebook and weight documentation.
 
 ## Physical & Environmental Sciences  (`physical-environmental-sciences`)
 
-1. **Station histories with moves and instrument swaps.** Long monitoring records span station moves, instrument replacements and changed sampling intervals, noted in station metadata rather than in the data. The solver must read station histories, split or align segments and harmonise intervals before comparing periods.
-   - *Where it occurs:* Air quality, weather and stream gauge networks; long-term ecological monitoring archives.
-   - *Keep it honest:* Document changes in station metadata as real networks do; never hide a change only to create a step that decides the answer.
-2. **Censored lab results and qualifier codes.** Lab results arrive as text with less-than signs, detection limits that vary by lab and year, and qualifier letters. The solver must parse values, apply qualifier meanings from the codebook and treat censored results consistently.
-   - *Where it occurs:* Water quality portals, soil and sediment sampling databases, contaminated site lab deliverables.
-   - *Keep it honest:* Supply the lab qualifier codebook and state the censoring rule in the prompt or standard, so handling is work, not guesswork.
-3. **Mixed concentration units and reporting bases.** Concentrations appear in mg/L, ug/L or ppb; emissions as mass or CO2 equivalent; samples on wet or dry weight, standard or actual conditions. The solver must harmonise units and bases before aggregating.
-   - *Where it occurs:* Emissions inventories, facility permit reports, sediment chemistry studies, multi-agency monitoring compilations.
-   - *Keep it honest:* Keep a units column or header note as real files do; state the conversion basis, such as the warming potential set, when it matters.
-4. **Logger clocks in local, daylight and UTC time.** Logger files mix local standard time, daylight time and UTC, with repeated or missing hours at transitions and averages labelled by period start or end. The solver must normalise time and align averaging windows.
-   - *Where it occurs:* Continuous monitoring loggers, meteorological towers, hourly air quality feeds, flux tower networks.
-   - *Keep it honest:* Let the time basis appear in headers or documentation; the repeated transition hour should be genuine, not added to move a result.
-5. **Wide sheets with multi-row unit and method headers.** Exports put stations or parameters across columns, with stacked header rows for units, method codes and depth, and footnotes below the table. The solver must reshape wide to long and carry header metadata onto each row.
-   - *Where it occurs:* Agency spreadsheet releases, cruise and field survey reports, laboratory batch exports.
-   - *Keep it honest:* Use the layout the agency actually publishes; keep every needed field present in headers or notes rather than removed.
-6. **Provisional and approved records that overlap.** Real-time feeds publish provisional values that are later revised and approved, so two extracts overlap with different values for the same timestamps. The solver must dedupe and keep the approved value where it exists.
-   - *Where it occurs:* Stream gauge archives, real-time air monitoring feeds, reprocessed satellite product versions.
-   - *Keep it honest:* Mark status with the source's own approval flag or version field, and say in the prompt which status governs.
-7. **Site identifiers that differ across systems.** One sampling site carries different ids in permits, monitoring databases and lab sheets, with renamed sites and coordinates in different datums or precisions. The solver must build a crosswalk from ids, names and spatial matching.
-   - *Where it occurs:* Permit compliance databases, monitoring site registries, chain of custody records, GIS site layers.
-   - *Keep it honest:* Provide enough fields to match sites uniquely, such as names, coordinates or a partial crosswalk; keep truly ambiguous sites out of the decisive set.
-8. **QC samples mixed in with field results.** Field blanks, duplicates, matrix spikes and flagged readings sit beside routine samples, marked only by sample type codes. The solver must separate QC samples from environmental results and handle replicates under the stated protocol.
-   - *Where it occurs:* Laboratory analytical deliverables, field sampling campaigns, buoy and sensor archives with QC flags.
-   - *Keep it honest:* Use the lab's real sample type codes with documentation; state the replicate rule, average or primary, so the answer is fixed.
+1. **Station moves and instrument swaps.** Segments split or aligned from station metadata; *honest:* changes documented as networks do, no hidden step.
+2. **Censored lab results and qualifiers.** Less-than values and qualifier letters parsed consistently; *honest:* the qualifier codebook, the censoring rule stated.
+3. **Mixed units and bases.** mg/L against ppb, wet against dry, CO2e sets harmonised; *honest:* a units column, the conversion basis stated.
+4. **Logger clocks in local, DST and UTC.** Time normalised, period-start against period-end labels aligned; *honest:* the basis in headers, genuine transition hours.
+5. **Wide sheets with multi-row headers.** Reshaped long, header metadata carried to rows; *honest:* the agency's own layout, every field present.
+6. **Provisional and approved records overlap.** Deduped, the approved value kept; *honest:* the source's approval flag, the governing status stated.
+7. **Site ids differ across systems.** Crosswalked from ids, names and spatial matching; *honest:* enough fields to match, ambiguous sites outside the decisive set.
+8. **QC samples among field results.** Blanks, duplicates and spikes separated, replicates handled; *honest:* real sample-type codes, the replicate rule stated.
 
 ## Energy Systems & Utilities  (`energy-systems-utilities`)
 
-1. **Interval meter reads with estimates and gaps.** Meter and telemetry interval data carry estimated reads, missing intervals, register rollovers and mixed 15 minute and hourly resolution. The solver must apply read quality codes, align resolutions and reconcile intervals to billed totals.
-   - *Where it occurs:* Utility smart meter exports, building energy management logs, generator telemetry archives.
-   - *Keep it honest:* Use the utility's real read quality codes with a codebook; billed totals should reconcile within documented estimation, not hide a substituted block.
-2. **Hour-ending labels and daylight saving days.** Market and load files label hours as hour ending or hour beginning, in prevailing or standard time, giving 23 and 25 hour days. The solver must normalise interval labels before joining prices, load and generation.
-   - *Where it occurs:* Wholesale market price files, balancing authority load reports, plant hourly emissions data.
-   - *Keep it honest:* State each file's convention in its header or documentation as the operator does; never invent a shifted series.
-3. **Fuel units and heating value bases.** Fuel and energy quantities mix MMBtu, therms, MWh and physical units, with heat contents on higher or lower heating value bases. The solver must convert with stated heat contents and keep one basis throughout.
-   - *Where it occurs:* Plant fuel receipt filings, gas utility sendout reports, generator heat rate and efficiency data.
-   - *Keep it honest:* Supply heat content tables and name the heating value basis in documentation; never relabel a basis to flip a ranking.
-4. **Plant, unit and generator ids across registries.** Assets appear as plants, units, boilers and generators with different ids in market, emissions and capacity registries, linked many to many. The solver must build crosswalks and aggregate at the level the question needs.
-   - *Where it occurs:* Generator inventories, emissions monitoring registries, interconnection queues, market participant asset lists.
-   - *Keep it honest:* Include the crosswalk fields real registries carry and set the aggregation level in the prompt.
-5. **Preliminary, final and amended utility filings.** Utilities resubmit monthly and annual filings, so preliminary and final versions, or original and amended rows, coexist with different values. The solver must dedupe and keep the governing vintage.
-   - *Where it occurs:* Utility annual reports to regulators, monthly generation and sales surveys, rate case exhibits.
-   - *Keep it honest:* Carry the source's own revision flag or filing date, and name in the prompt which vintage governs.
-6. **Tariffs with tiers, riders and effective dates.** Rate schedules combine tiered, time of use and demand charges with riders and effective dates that change mid period, often as PDF tables. The solver must parse the tariff and prorate bills across rate changes.
-   - *Where it occurs:* Utility tariff books, regulatory rate filings, billing determinant workpapers.
-   - *Keep it honest:* Publish the full tariff with effective dates; proration should follow the tariff text, not a separate memo.
-7. **Outage logs with step restorations and exclusions.** Outage records list start and restoration times, customers affected, cause codes and major event flags, with staged restorations as several rows per event. The solver must collapse events and apply exclusion rules before computing reliability indices.
-   - *Where it occurs:* Outage management system exports, distribution reliability reports, regulatory reliability filings.
-   - *Keep it honest:* Supply the cause code list and the stated exclusion standard; staged restorations should be genuine partial restorations.
-8. **Competing capacity ratings for the same asset.** Capacity appears as nameplate, net summer or net winter, AC or DC for solar, and power versus energy for storage, varying by source. The solver must pick the rating the metric needs before computing capacity factors.
-   - *Where it occurs:* Generator inventories, interconnection queue files, resource adequacy filings, solar and storage project databases.
-   - *Keep it honest:* Label each rating as the source does, and state in the prompt which rating the metric uses.
+1. **Interval reads with estimates and gaps.** Quality codes applied, resolutions aligned, reconciled to billing; *honest:* real codes, totals reconcile within documented estimation.
+2. **Hour-ending labels and DST days.** Interval labels normalised before joins; *honest:* each file's convention stated as the operator does.
+3. **Fuel units and heating-value bases.** Converted with stated heat contents on one basis; *honest:* heat-content tables, the HHV or LHV basis named.
+4. **Plant, unit and generator ids across registries.** Crosswalked and aggregated at the needed level; *honest:* real crosswalk fields, the level set.
+5. **Preliminary, final and amended filings.** Deduped to the governing vintage; *honest:* the source's revision flag or filing date, the vintage named.
+6. **Tariffs with tiers, riders and effective dates.** Parsed and prorated across rate changes; *honest:* the full tariff, proration per its text.
+7. **Outage logs with staged restorations.** Events collapsed, exclusions applied before indices; *honest:* the cause codes and exclusion standard.
+8. **Competing capacity ratings.** Nameplate, net summer or winter, AC or DC chosen per metric; *honest:* each rating labelled, the metric's rating stated.
 
 ## Human Factors & Ergonomics  (`human-factors-ergonomics`)
 
-1. **Sensor streams at different rates and clocks.** Eye trackers, motion capture, physiological sensors and simulator logs record at different rates on separate clocks, with track loss as zeros or blanks. The solver must resample and synchronise streams using shared event markers.
-   - *Where it occurs:* Lab eye tracking exports, driving and flight simulator logs, wearable physiological recordings.
-   - *Keep it honest:* Provide sync markers and device documentation; track loss should follow real device behaviour, not sit over the decisive interval.
-2. **Raw interaction event logs needing sessionisation.** Usability and task software logs record clicks, keystrokes and state changes as event streams with idle gaps, crashes and restarted sessions. The solver must sessionise events, rebuild task attempts and derive completion times.
-   - *Where it occurs:* Usability test platforms, interface telemetry, simulator scenario logs, training system records.
-   - *Keep it honest:* Document event codes and the task start and end definitions; restarts should be ordinary participant or software behaviour.
-3. **Item-level questionnaires with reverse-scored items.** Workload, usability and fatigue instruments arrive as item responses with reverse-scored items, anchor ranges that differ across versions and separate pairwise weighting sheets. The solver must apply the scoring key before any analysis.
-   - *Where it occurs:* Questionnaire platform exports, paper forms transcribed to spreadsheets, multi-session study workbooks.
-   - *Keep it honest:* Provide the scoring key; version differences should be documented real instrument revisions, not unexplained changes.
-4. **Anthropometric measures with differing definitions.** Body dimension data mix millimetres and inches, measured and self-reported values, different landmark and posture definitions, and survey sample weights. The solver must harmonise definitions and apply weights before computing design percentiles.
-   - *Where it occurs:* Anthropometric survey releases, workplace fit assessments, equipment and workstation sizing studies.
-   - *Keep it honest:* Include the measurement definitions document and state the percentile method, so harmonisation has one correct path.
-5. **Safety reports mixing codes and narratives.** Incident and near-miss reports combine coded fields with free text, taxonomies that change across years and reporters, and several reports of one event. The solver must code narratives, map taxonomies and merge duplicate reports.
-   - *Where it occurs:* Aviation, healthcare and industrial voluntary safety reporting systems, workplace injury logs.
-   - *Keep it honest:* Duplicates should come from real multiple reporters with matchable fields; provide a taxonomy crosswalk across years.
-6. **Condition orders kept apart from trial data.** Experiment data split across participant session files, with condition orders in a counterbalancing sheet, exclusions in lab notes and ids reformatted between sessions. The solver must join assignments to trials and apply exclusions.
-   - *Where it occurs:* Lab experiment folders, within-subject study exports, multi-site human subjects studies.
-   - *Keep it honest:* Record orders and exclusions in the lab's own logs with a stated exclusion rule; never hide a swapped condition label.
-7. **Exposure instruments with different settings.** Noise dosimeter, vibration and posture sampling exports use different integration times, exchange rates and observation sheet formats, recorded per instrument. The solver must normalise to shift exposure and align readings with task logs.
-   - *Where it occurs:* Occupational noise surveys, ergonomic job assessments, lifting and posture observation studies.
-   - *Keep it honest:* State the exposure standard and exchange rate; keep instrument settings in file headers as real exports do.
-8. **Trial files with practice, timeouts and lapses.** Reaction time files include practice blocks, timeouts, anticipatory responses and error codes, with timing granularity set by display refresh. The solver must filter trials under the stated protocol and aggregate per participant.
-   - *Where it occurs:* Psychomotor vigilance tests, simulator response tasks, lab reaction time experiments.
-   - *Keep it honest:* Code practice and timeout trials with the software's real flags, and state the trimming rule so the answer is pinned.
+1. **Sensor streams at different rates and clocks.** Resampled and synchronised on event markers; *honest:* sync markers and device documentation.
+2. **Interaction logs needing sessionisation.** Attempts rebuilt, completion times derived; *honest:* event codes and task start and end definitions.
+3. **Item-level questionnaires.** Reverse items and version anchors scored by the key; *honest:* the key ships, version changes documented.
+4. **Anthropometric definitions differ.** Units, measured against self-report and landmarks harmonised, weights applied; *honest:* definitions and the percentile method stated.
+5. **Safety reports mixing codes and narratives.** Narratives coded, taxonomies mapped, duplicates merged; *honest:* matchable multiple reporters, a taxonomy crosswalk.
+6. **Condition orders kept apart from trial data.** Assignments joined, exclusions applied; *honest:* the lab's own logs and a stated rule.
+7. **Exposure instruments with different settings.** Normalised to shift exposure, aligned with task logs; *honest:* the standard and exchange rate, settings in headers.
+8. **Trial files with practice, timeouts and lapses.** Filtered under the protocol, aggregated per participant; *honest:* the software's flags, the trimming rule stated.
 
 ## Survey Research & Official Statistics  (`survey-research-official-statistics`)
 
-1. **Questionnaire skip patterns and reserve codes.** Microdata mix true values with codes for not in universe, refused, don't know and valid skip, often as negative numbers or nines. The solver must apply the codebook and routing to define who was actually asked.
-   - *Where it occurs:* Household survey public use microdata, labour force surveys, health interview surveys, crime victimisation surveys.
-   - *Keep it honest:* Use the real reserve code scheme from the codebook and state the universe for each estimate, so recoding has one answer.
-2. **Replicate weight columns and design variables.** Files carry a final weight plus dozens of replicate weights or strata and cluster identifiers, named cryptically. The solver must find the right weight set and apply the documented variance method.
-   - *Where it occurs:* Public use survey files with balanced repeated replication, jackknife or successive difference replicate weights.
-   - *Keep it honest:* Ship the full replicate set and the variance documentation; name the estimate whose standard error the question needs.
-3. **Preliminary, revised and benchmarked estimate vintages.** Official series are released as preliminary, then revised, then rebenchmarked, with several vintages for the same reference period. The solver must stack releases and select the vintage the question specifies.
-   - *Where it occurs:* Monthly employment and output releases, annual revisions, benchmark revision tables, real time data archives.
-   - *Keep it honest:* Include genuine overlapping vintages with their release dates and state which vintage, or as of date, the analysis uses.
-4. **Seasonally adjusted and unadjusted series together.** Releases publish both adjusted and not adjusted versions, sometimes in adjacent columns or separate sheets, with seasonal factors updated each year. The solver must pick the correct series for the comparison type.
-   - *Where it occurs:* Monthly and quarterly official statistics tables, labour market releases, retail and production indexes.
-   - *Keep it honest:* Label both series as the source does; let the question's comparison (month on month or year on year) imply which applies.
-5. **Published tables with footnote symbols and flags.** Statistical tables carry symbols for suppressed, not applicable, too few cases, high coefficient of variation and break in series, mixed into numeric cells. The solver must parse symbols into values and flags.
-   - *Where it occurs:* Statistical agency spreadsheet tables, yearbooks, PDF annexes and dissemination database extracts.
-   - *Keep it honest:* Keep the agency's own symbol legend in the file; ensure the decision does not depend on imputing a suppressed cell.
-6. **Classification revisions in industry and occupation codes.** Industry, occupation and product codes are revised between survey years, with splits and merges. The solver must apply official concordance tables, sometimes with allocation shares, to build a consistent series.
-   - *Where it occurs:* Labour force and business surveys, establishment censuses, occupational employment statistics, trade statistics.
-   - *Keep it honest:* Ship the official concordance with any allocation weights and name the target classification vintage.
-7. **Response disposition and paradata files.** Case level files record call attempts, contact outcomes and final disposition codes separate from the interview data. The solver must link them and compute response, cooperation or contact rates under a standard definition.
-   - *Where it occurs:* Survey operations files, sample management system exports, fieldwork paradata and contact history logs.
-   - *Keep it honest:* Provide the real disposition code list and name the response rate formula, so eligibility counts have one answer.
-8. **Question wording and mode changes over time.** A repeated survey changes mode, wording or response options, flagged in methodology notes, sometimes with a bridge sample run in both designs. The solver must account for the break before reading trends.
-   - *Where it occurs:* Repeated cross sectional official surveys, redesign methodology reports, bridge or split ballot study files.
-   - *Keep it honest:* Document the change and any bridge data in the shipped notes; state how the break is to be handled.
+1. **Skip patterns and reserve codes.** Who was asked, from codebook and routing; *honest:* the real reserve scheme, the universe stated per estimate.
+2. **Replicate weights and design variables.** The right weight set and variance method; *honest:* the full replicate set and variance documentation.
+3. **Preliminary, revised and benchmarked vintages.** Releases stacked, the stated vintage selected; *honest:* overlapping vintages with release dates.
+4. **SA and NSA side by side.** The series fit for the comparison type; *honest:* both labelled, the comparison implies which.
+5. **Footnote symbols in numeric cells.** Symbols parsed into values and flags; *honest:* the agency's legend in the file, no decision on an imputed cell.
+6. **Industry and occupation codes revised.** Official concordances with allocation shares; *honest:* the concordance and the target vintage named.
+7. **Disposition and paradata files.** Linked to compute response rates under a standard definition; *honest:* the real code list, the formula named.
+8. **Wording and mode changes.** The break accounted for before trends; *honest:* the change and any bridge sample documented.
 
 ## Urban & Regional Science  (`urban-regional-science`)
 
-1. **Small area geographies redrawn between vintages.** Tracts, block groups, wards and traffic zones are split, merged or renumbered between vintages. The solver must use relationship files with population or housing weights to put all years on one geography.
-   - *Where it occurs:* Census small area tables, geographic relationship files, planning zone systems, ward boundary revisions.
-   - *Keep it honest:* Ship the real relationship file with weights and name the target geography and weighting basis.
-2. **Address strings needing geocoding to areas.** Point records like permits, sales or incidents carry free text addresses with unit numbers, abbreviations and typos, plus partial coordinates. The solver must standardise addresses and assign each record to an area.
-   - *Where it occurs:* Building permit logs, property transaction registers, business licence files, service request and incident records.
-   - *Keep it honest:* Include a parcel or address reference file to match against; keep unmatched records few and genuinely unmatched.
-3. **Parcel records with split and merged lots.** Assessor parcel identifiers change when lots are subdivided or consolidated, and roll records repeat across years with condo units nested under a master parcel. The solver must trace lineage and avoid double counting.
-   - *Where it occurs:* Property assessment rolls, cadastral and land registry extracts, zoning and land use parcel files.
-   - *Keep it honest:* Provide the parcel lineage or retired identifier table as the source keeps it; state the unit of analysis.
-4. **Origin destination flow matrices.** Commuting and migration flows come as long origin, destination, count tables with suppressed small flows and residence or workplace coding at different levels. The solver must reshape, aggregate and reconcile flows to totals.
-   - *Where it occurs:* Commuting flow tables, journey to work releases, migration flow tables, travel survey trip files.
-   - *Keep it honest:* Keep the source's real suppression and geography coding; ask for aggregates that survive suppression.
-5. **Overlapping jurisdictions and statistical areas.** Municipal, county, metropolitan and special district boundaries overlap and do not nest, and metro definitions are redelineated over time. The solver must allocate places to the stated area definition.
-   - *Where it occurs:* Metropolitan delineation files, place to county relationship tables, special district and school district registries.
-   - *Keep it honest:* State which area definition and vintage applies, and supply the delineation file that implements it.
-6. **Transit schedules versus recorded operations data.** Scheduled service files list trips, stops and calendars with service exceptions, while vehicle location or ridership logs record what ran. The solver must join stop and trip keys and expand calendars to dates.
-   - *Where it occurs:* General transit feed schedules, automatic vehicle location logs, farecard taps, automatic passenger counter files.
-   - *Keep it honest:* Use consistent real stop and trip identifiers; any unmatched trips should reflect genuine cancellations or added service.
-7. **Housing prices in mixed index forms.** House price data mix repeat sales indexes, median sale prices, and assessed values, at different geographies, base periods and frequencies. The solver must rebase, align frequency and keep each measure's meaning distinct.
-   - *Where it occurs:* House price index releases, property sales registers, assessment rolls, rental listing aggregates.
-   - *Keep it honest:* Label index bases and measure types as the source does; state which measure the question uses.
-8. **Land use codes from different local schemes.** Zoning and land use classes differ by jurisdiction and year, with local codes, overlays and mixed use categories. The solver must map local codes to a common classification using the supplied lookup tables.
-   - *Where it occurs:* Municipal zoning layers, regional land use inventories, assessor land use codes, comprehensive plan maps.
-   - *Keep it honest:* Supply every local code list and a stated target scheme so each local class maps to one category.
+1. **Small areas redrawn between vintages.** Relationship-file weights put all years on one geography; *honest:* the real file, target geography and weight named.
+2. **Address strings needing geocoding.** Standardised and assigned to areas; *honest:* a parcel or address reference, few genuinely unmatched.
+3. **Parcels split and merged.** Lineage traced, condo units not double counted; *honest:* the lineage table, the unit of analysis stated.
+4. **Origin-destination matrices.** Reshaped, aggregated, reconciled to totals; *honest:* real suppression and coding, aggregates that survive it.
+5. **Overlapping jurisdictions.** Places allocated to the stated area definition; *honest:* the definition and vintage, the delineation file.
+6. **Schedules against recorded operations.** Stop and trip keys joined, calendars expanded; *honest:* consistent ids, unmatched trips genuine.
+7. **House prices in mixed index forms.** Rebased, frequency aligned, measures kept distinct; *honest:* bases labelled, the measure named.
+8. **Local land-use schemes.** Mapped to a common classification; *honest:* every local code list and a stated target.
 
 ## Education & Learning Sciences  (`education-learning-sciences`)
 
-1. **School identifiers changing across years and agencies.** Schools open, close, merge and get renumbered, and state and federal identifiers differ. The solver must build a crosswalk across files and years to track the same school consistently.
-   - *Where it occurs:* State education agency school directories, federal school universe files, accountability reports, enrolment collections.
-   - *Keep it honest:* Ship the directory files with open, close and identifier history so each school links one way.
-2. **Privacy suppressed small subgroup counts.** Results for small student subgroups are masked with symbols, ranges like fewer than ten, or top and bottom coded percentages. The solver must parse masks into flags or bounds and handle them as stated.
-   - *Where it occurs:* School and district assessment results, graduation rate files, discipline and attendance reports.
-   - *Keep it honest:* Keep the real masking rules and symbols; ask for comparisons that do not depend on unmasking a cell.
-3. **Assessment scales changed when tests change.** States change tests, cut scores or performance levels, so scale scores and proficiency rates break across years. The solver must restrict comparisons or use documented linking tables before reading trends.
-   - *Where it occurs:* State assessment result files, technical reports, standard setting documentation, concordance tables between tests.
-   - *Keep it honest:* Include the technical notes describing the break and state which years are comparable or which concordance applies.
-4. **Student, course and enrolment records requiring linkage.** Student records sit in separate demographic, enrolment spell, course and grade files keyed by student and section identifiers, with mid year transfers. The solver must join and build student year measures.
-   - *Where it occurs:* Student information system extracts, longitudinal data system files, course taking and transcript files.
-   - *Keep it honest:* Use realistic transfers and multiple enrolment spells; state the attribution rule, such as days enrolled or snapshot date.
-5. **Learning platform event logs with sessions.** Clickstream logs record timestamped events like attempts, hints and views, with sessions that cross midnight, duplicate events on retries and mixed time zones. The solver must sessionise and aggregate to learner measures.
-   - *Where it occurs:* Online course platform logs, intelligent tutoring system transaction files, learning management system activity exports.
-   - *Keep it honest:* Keep duplicates to genuine retry or resend patterns and document the event schema and session timeout to use.
-6. **Different academic year and term conventions.** Data arrive by school year, fiscal year, semester or quarter term, labelled like 2023-24 or by fall year only. The solver must align periods and know which year a label refers to.
-   - *Where it occurs:* Enrolment counts, finance reports, postsecondary completions files, school calendars, survey reference periods.
-   - *Keep it honest:* Document each file's year labelling convention and state the reference period for the analysis.
-7. **Program and course codes revised over time.** Postsecondary programmes and courses use classification codes that are revised, split or retired across editions. The solver must apply crosswalks to compare completions or enrolments over years.
-   - *Where it occurs:* Postsecondary completions files, programme inventories, course catalogues, credential registries.
-   - *Keep it honest:* Supply the official crosswalk between code editions and name the target edition.
-8. **Rubric and observation scores across raters.** Classroom observation or essay scores come from multiple raters with double scored subsets, different rubric versions and rater identifiers. The solver must reshape rater rows and apply the stated reconciliation rule.
-   - *Where it occurs:* Teacher evaluation systems, observation study files, constructed response scoring records, rater training logs.
-   - *Keep it honest:* Document rubric versions and the resolution rule for disagreements; keep rater variation genuine, not planted.
+1. **School identifiers changing.** Crosswalked across files and years; *honest:* directory files with open, close and id history.
+2. **Suppressed subgroup counts.** Masks parsed into flags or bounds; *honest:* real masking rules, comparisons that need no unmasking.
+3. **Assessment scales changed.** Comparisons restricted or linked; *honest:* technical notes on the break, comparable years stated.
+4. **Student, course and enrolment linkage.** Student-year measures across transfers; *honest:* realistic spells, the attribution rule stated.
+5. **Platform event logs.** Sessionised across midnight and zones, retries deduped; *honest:* genuine retries, the schema and session timeout documented.
+6. **Year and term conventions.** Periods aligned, labels read correctly; *honest:* each file's convention, the reference period stated.
+7. **Programme and course codes revised.** Crosswalked across editions; *honest:* the official crosswalk, the target edition named.
+8. **Rubric scores across raters.** Rater rows reshaped, the reconciliation rule applied; *honest:* rubric versions and the rule documented.

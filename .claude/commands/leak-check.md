@@ -29,10 +29,10 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
 6. **Report**: the mechanical verdict, the five answers in one line each, and the list of items to
    fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`
-   (stage 4) the pipeline fixes the question 1 to 3 findings, any question 5 sentence whose literal execution is not the golden, and any fork on the main call in the
-   generator before the solver round, re-running this command only if a fix changed a document
-   under `target/` or the prompt; the realism tells and the forks on ask figures wait for the repair
-   after a passing round (`build-pipeline` stage 6b).
+   (stage 4) the pipeline fixes every finding before the judge: question 1 to 3 findings, any question 5
+   sentence whose literal execution is not the golden, any fork on the main call or an ask figure, and
+   the realism tells. A decisive-step sentence or a main-call fork goes back to a designer first. This
+   command re-runs only when a fix changed a document under `target/` or the prompt; a data-only fix is
+   checked by `leak.py`.
 
-Spawn one agent and only one. Do not run the determinism judge, the clone check or a solver from
-here.
+Spawn one agent and only one. Do not run the determinism judge or the clone check from here.
