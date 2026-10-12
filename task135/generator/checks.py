@@ -399,7 +399,11 @@ def main(target):
            "release %d: rounded parts give the stated figure" % s)
     ok(t is not None and t < 100 and inc[t] - G >= 0.025 * inc[t] and G - inc[t + 10] >= 0.025 * inc[t + 10],
        "title margins of 2.5 per cent of income on each side (title %s)" % t)
-    ok(all(rel[s] >= 30000 for s in A.STEPS), "the golden release is 30,000 pounds or more at every step")
+    # policy 6.1 and 6.2: the release comes from the expendable endowment, and a cap at its value never binds
+    exp_mv = float(P.val[P.val["sub_account"] == "WRX-EX02"]["market_value_gbp"].sum())
+    ok(all(30000 <= rel[s] < exp_mv for s in A.STEPS),
+       "the golden release is 30,000 pounds or more at every step, and under the expendable endowment's %.2f at "
+       "30 November (largest %.2f)" % (exp_mv, max(rel.values())))
     ok(all(np.diff([inc[s] for s in A.STEPS]) < 0), "income falls with the step")
     ok(running % 1000 != 0 and abs(G - round(G, -3)) > 0, "no round headline totals (running costs %d)" % running)
     lags = A.history_lags(P)

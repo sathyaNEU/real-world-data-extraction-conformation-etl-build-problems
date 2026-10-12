@@ -37,3 +37,7 @@ Stump terms swept: default, decisive, mandate, returns, golden, prices, valuatio
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Reader (Sonnet, medium) on the stage 3 cut, prompt.txt and target/ only. Questions 1 to 4: none (the nearest are policy 4.2 and 4.3, the method rules, which name no trap; the single-holding volatilities in the Fernside report and the Kestwick factsheets are holding-level, not portfolio figures; no helping file; no answer-like figure). Question 5: policy 3.4, 4.1, 4.4 with 2.1 to 2.3, and finance procedure 7.2 to 7.6 for the asks; not executed by the reader. REVIEW lines: all harmless (clause number 4.3, policy vocabulary, the entitlements' pay dates for events already ex, the forward holiday calendar). Realism: nothing reads machine-made. Readings raised: the number of equal periods (policy 4.3 says at least 100); "the last month-end valuation before the review" (30 November 2026 by the export date, not stated outright); whether the capital release is capped at the expendable endowment's value (policy 6.2).

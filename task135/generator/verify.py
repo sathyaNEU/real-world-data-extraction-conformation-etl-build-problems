@@ -181,7 +181,9 @@ def asks(X):
             G += float(r.amount) / (EUR if reg.loc[r.grant_ref, "currency"] == "EUR" else 1.0)
     rel = {s: G + X["running"] - inc[s] for s in STEPS}
     title = max(s for s in STEPS if inc[s] >= G)
-    return dict(total=total, yields=y, inc=inc, G=G, running=X["running"], rel=rel, title=title, lag=L)
+    expendable = last[last["sub_account"] == "WRX-EX02"]["market_value_gbp"].sum()
+    return dict(total=total, yields=y, inc=inc, G=G, running=X["running"], rel=rel, title=title, lag=L,
+                expendable=expendable)
 
 
 def main():
@@ -236,6 +238,9 @@ def main():
         check(abs(A["rel"][s] - F["release"][str(s)]) < 0.01 and r1000(A["rel"][s]) == F["release_stated"][str(s)],
               "release at %d: %.2f, stated %d" % (s, A["rel"][s], r1000(A["rel"][s])))
     check(A["title"] == F["title_step"], "chart title step %d" % A["title"])
+    check(all(0 < A["rel"][s] < A["expendable"] for s in STEPS),
+          "every release under the expendable endowment's %.2f at 30 November (largest %.2f): a cap at its value "
+          "never binds (policy 6.1, 6.2)" % (A["expendable"], max(A["rel"].values())))
     print("verify: %d failed" % len(FAILS))
     return 0 if not FAILS else 1
 

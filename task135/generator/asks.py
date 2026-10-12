@@ -73,7 +73,7 @@ def income(P, lines="position", months=12, route="history", accrued_in=False, wt
     elif lines == "o2":
         em = em.drop_duplicates(["security_code", "event_ref"])
     y = {"MAND": float(em["entitlement_gbp"].sum()) / mand_mv}
-    for f in DEFENSIVE.keys() | GROWTH.keys():
+    for f in list(GROWTH) + list(DEFENSIVE):     # a fixed order, so figures.json writes the same bytes every run
         if f == "MAND":
             continue
         if route == "history":
