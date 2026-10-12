@@ -1,0 +1,187 @@
+{
+  "task": "task180",
+  "title": "Which geothermal plants the 2027 borehole networks will put over the traffic-light amber, and in which quarters, with each plant's 2026 injected volume, automatic-system count and network downtime",
+  "domain": "Physical & Environmental Sciences",
+  "subdomain": "environmental monitoring and exceedance (induced seismicity at deep geothermal plants against a mining authority's traffic-light scheme)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "07 (grid of cells): every plant's expected count in every quarter of 2027 against amber, with every plant's injected volume, automatic-system count and hours under four stations for each quarter of 2026 to date",
+  "as_of": "2026-10-12",
+  "deliverables": [
+    "amber_outlook_2027.docx",
+    "tls_annex_2026.xlsx"
+  ],
+  "distractor_files": [
+    "federal_catalogue_2023-2026.csv",
+    "groundwater_levels_2025-01_2026-09.csv"
+  ],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx",
+      "xml"
+    ],
+    "largest_file": "injection_hourly_2023-01_2026-09.parquet",
+    "largest_file_rows": 197130
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task180/generator/build.py (seeded, deterministic) around a fictional state geological survey, mining authority, five geothermal plants and their operators in the southern Molasse basin; no real plant, operator, station, earthquake or person is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task180/generator/build.py",
+  "files": [
+    {
+      "path": "availability_gaps_2026-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 102285,
+      "rows": 1661,
+      "source": "Constructed: Data gaps of 60 s or more per station channel, 1 January to 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "datenabgabe_ampel_2026-10-12.md",
+      "format": "md",
+      "bytes": 2160,
+      "rows": null,
+      "source": "Constructed: Data office's extract notes",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "federal_catalogue_2023-2026.csv",
+      "format": "csv",
+      "bytes": 22186,
+      "rows": 372,
+      "source": "Constructed: Federal agency's regional catalogue, magnitude 2.0 and over, 2023 to 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "field_visits_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8665,
+      "rows": null,
+      "source": "Constructed: Field crew visit sheet, 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "groundwater_levels_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 7317,
+      "rows": 210,
+      "source": "Constructed: Shallow groundwater monitoring at the plants, monthly, January 2025 to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "injection_hourly_2023-01_2026-09.parquet",
+      "format": "parquet",
+      "bytes": 1832787,
+      "rows": 197130,
+      "source": "Constructed: Hourly injection telemetry of each injection well (rate, wellhead pressure, temperature), same period",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "injection_reports_2023-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 31546,
+      "rows": null,
+      "source": "Constructed: Operators' monthly metered volume reports as received by the data office, 2023 to 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "monitoring_ordinance_2026.pdf",
+      "format": "pdf",
+      "bytes": 65285,
+      "rows": null,
+      "source": "Constructed: State ordinance on the seismological monitoring of deep geothermal projects (2026), unofficial English text",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "operating_plans_2027.pdf",
+      "format": "pdf",
+      "bytes": 65026,
+      "rows": null,
+      "source": "Constructed: Mining authority's summary of the operators' 2027 operating plans",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "origins_2023-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 3971984,
+      "rows": 31267,
+      "source": "Constructed: Origin table of the survey's event database (real-time system and analysts' review origins), same period",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "plant_register.json",
+      "format": "json",
+      "bytes": 2617,
+      "rows": null,
+      "source": "Constructed: Register of the five plants under seismic monitoring",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "seismic_catalogue_reviewed_2023-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 2519645,
+      "rows": 17390,
+      "source": "Constructed: Reviewed seismic catalogue of the survey's induced-seismicity networks, January 2023 to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "station_inventory_2026-10-12.xml",
+      "format": "xml",
+      "bytes": 65162,
+      "rows": null,
+      "source": "Constructed: Station inventory (StationXML) of the plant networks and two regional stations, exported 12 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tls_bulletin_2026Q3.pdf",
+      "format": "pdf",
+      "bytes": 41846,
+      "rows": null,
+      "source": "Constructed: Survey's traffic-light bulletin for the third quarter of 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tls_scheme_2024.pdf",
+      "format": "pdf",
+      "bytes": 67300,
+      "rows": null,
+      "source": "Constructed: Mining authority's traffic-light scheme for deep geothermal plants (2024)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "well_register.csv",
+      "format": "csv",
+      "bytes": 1281,
+      "rows": 12,
+      "source": "Constructed: Well register with surveyed open-hole sections",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
