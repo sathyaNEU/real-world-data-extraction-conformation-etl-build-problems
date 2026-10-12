@@ -2,6 +2,40 @@
 
 Source note: `analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md`. The note is the idea and this build is its first realisation. Its decision and world are kept; its decisive rung is kept as rung 3, and a new decisive rung sits above it because the fingerprint guard blocks the note's own (see Changes and Tried and rejected).
 
+## Redesign plan (wave 1, 2026-10-12)
+
+The build is green as it stands (444 assertions in this container) and the main ladder held in every in-house solve
+(ten of ten stopped at rung 3 on Local·metro). It cannot ship under the current spec, for five reasons, and the redesign
+keeps the world, the spine, the archive, the staff list, the plan and the ladder while it changes these:
+
+1. **The change log blesses the stump rung.** Every closed embedding sits on an app desk, where the platform share and
+   the untested share are both 1.000, so rung 3's construction reproduces all seven realised gains and only the forward
+   desks break it: the validated decoy the guard now blocks (`template.validated_cap`; the card says
+   `validated_decoy: true`). Plan: the log records each embedding's realised holdback lift (the shipped winners' lift
+   over the 5 per cent holdback, a test-level rate) instead of planned and realised clicks, so it selects the lift
+   estimator (shrunk against raw, the twins) and says nothing about the click base or the netting; the relative misses
+   of every estimator rival are unchanged. The in-test clicks reading, which the click-level log refuted, is then pinned
+   by one charter phrase on the counting period (an article's clicks counted from publication, its test included).
+2. **The charter endorses the wrong basis.** "The editor-in-chief's office reviews squad placement on the experimentation
+   dashboard's average winning lift by vertical" files a basis that gives another answer (an official decoy). Plan: cut
+   it; the dashboard export stays as the declared wrong-basis distractor.
+3. **The thread is a roll call.** Four people state beliefs (readers, "a winner is a winner", Business like Puzzles,
+   the dashboard view). Plan: at most one belief survives (the head of audience's), the rest becomes logistics.
+4. **The ask layer does not hold a careful cracker.** The per-desk extra clicks, the chart walk and the back-test count
+   are the call's construction (banned as asks), extra clicks per reader stays in its one-decimal bin for any readers
+   device, and every readers and corrections device is either adjudicated by a filed sentence or record (the release
+   log's periods, the section history, the field notes' put-back and ten-minute lines, policy 7.4) or reopens a judge
+   fork when its pin is removed; rounds 5 to 7 executed them all. Plan: a new ask layer designed against the cracker
+   sheet before any data is cut, with one silent primary per ask found only by an internal inconsistency (the readers
+   candidate: the July file's repeat of April to June with the release log's periods column gone, so only the
+   restatement's own note and the repeated figures decide it), and the corrections block either given a primary of the
+   same quality or retired to a distractor.
+5. **The prompt** is `prompt.md` with personas and a roll call. Plan: `prompt.txt` under 1,000 characters, question first.
+
+Then the note moves to the current headings (Default path, Three rules, Readability screen, Semantic fork table,
+Ladder, Closure table, Literal reader, Oracles, Ask sheet), the card gets `stump_class`, `analyst_test`,
+`domain_test`, `client_domain` and `validated_decoy: false`, and `precut.py` must exit 0 before the generator moves.
+
 ## Draw
 
 ```
