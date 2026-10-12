@@ -1,79 +1,139 @@
 {
   "task": "task120",
-  "architecture": "v1",
-  "drawn": "2026-10-08",
-  "slot_note": "first realisation of analytical_tasks note DA01, drawn in the seven-card pilot batch; registration pending (the author registers the seven cards together in draw order)",
-  "domain": "economics",
-  "subdomain": "public-finance",
-  "niche": "re-basing the household-income tier floors a state revenue estimating conference's income-tax forecast carries for its top 10, 5 and 1 per cent, from the processed-return file and the dependents schedule",
+  "architecture": "v3 (architecture 3, re-root after the author's retirement)",
+  "drawn": "2026-10-12",
+  "slot_note": "seed DA01 (revenue tiers on household units); v1 built and solved in-house, v2 drafted and not built, the number retired by the author on 2026-10-09 and re-queued in wave 1 as re-root: retired on 2026-10-12; v3 re-roots in the same objective with a new domain, niche and Layer 2 pitfall: a supply system's daily use built from its production and the water its storage gave up",
+  "domain": "energy-systems-utilities",
+  "subdomain": "generation-capacity-planning",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a public university's campus water utility answering the state drinking water program's sanitary survey: how much well capacity it must add before summer 2027 so that, with its largest well out of service, its wells meet the most water the campus used in a day in the twelve months to September 2026, read from the operators' daily log of well totalizers and the hourly SCADA levels of its four storage tanks",
   "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
-  "answer": "Adopt TY2025 tier floors of $214,000, $318,000 and $742,000 for the top 10, 5 and 1 per cent of full-year resident household units.",
-  "answer_source": "task120/submission.md, 1. Final Recommendation",
+  "shape": "10",
+  "decision_type": "quantity_figure",
+  "answer_unit": "rate_or_share",
+  "answer": "Add about 180 gpm of firm well capacity before 1 June 2027 (prototype figure; stage 3 freezes it)",
+  "answer_source": "task120/DESIGN_NOTE.md, ## Default path (prototype scratchpad/t120/proto2.py)",
   "gap": [
-    "population",
     "objective"
   ],
   "pattern": [
-    "none",
-    "B"
+    "none"
   ],
   "generators": [
-    "G2",
-    "G10",
-    "G16"
+    "G5",
+    "G3"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "certified_matrix",
-  "stump_strategy": "identity_resolution",
+  "calibration_form": "none",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
-  "validated_decoy": true,
-  "context_artifact": "published_series",
-  "stakeholder_role": "director of the state's nonpartisan revenue research office, which staffs the Revenue Estimating Conference and re-bases its income-tax tiers",
-  "role_family": "statistical_office_head",
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the campus utilities director, who answers the state drinking water program's sanitary survey for the university's water system",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "returns_processed_ty2025.parquet",
-    "rows": 852947,
-    "entity": "one processed state individual income tax return for tax year 2025, with its residency code, filing status and federal primary filer TIN",
-    "grain": "return",
-    "source": "synthetic (a fictional state's processed-return extract; return microdata is confidential, so the shape is calibrated to public IRS SOI state AGI-class aggregates)"
+    "file": "campus_scada_hourly export (SCADA historian, hourly tag values)",
+    "rows": 0,
+    "entity": "one SCADA tag's value for one hour",
+    "grain": "tag x hour",
+    "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
+  "forum": "executive_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States, a fictional state (invented counties)",
+    "geography": "United States, Pennsylvania (a fictional public university campus)",
     "currency": "USD",
-    "org_type": "a state's nonpartisan revenue research office that staffs its Revenue Estimating Conference",
-    "invented_names": [
-      "Household Income Tables",
-      "Returns Processed by AGI Class",
-      "Kessler County",
-      "Abington County"
-    ],
+    "org_type": "a public university operating its own campus water system (wells, storage tanks, two pressure zones)",
+    "invented_names": [],
     "people": [
-      "Stephanie Reid",
-      "Manuel Stevenson",
-      "Brittany Shepard",
-      "Jeffrey King"
+      "Shelly Mccarthy",
+      "Wayne Hicks",
+      "Samuel Reyes",
+      "Darrell Clark"
     ]
   },
   "deliverables": [
-    "tier_schedule.xlsx",
-    "tier_floors.png"
+    "campus_water_capacity_2027.xlsx",
+    "sanitary_survey_response_2026.docx"
   ],
-  "opening_move": "evidence-first",
-  "driver": "The unit the percentile cuts are drawn on is a group of records that no file stores, formed by two links, one carried on every member as a shared key and one carried only on the claiming record's roster of the people it claims, so attaching a claimed person's own record is a two-hop join that nothing on that record invites; grouping on the visible key alone reproduces most cells of a published control table with every miss one-sided in one band, only the full grouping reproduces all of them, and it both shrinks the unit count and carries near-threshold units past the top cut, raising every floor.",
-  "driver_concrete": "A household unit is a federal filing unit (separately filed state returns recombined through the federal primary TIN) together with the own returns of the people its dependents schedule claims, and nothing on a dependent's return names the claimant; federal filing units reproduce 58 of the 69 published Household Income Table cells with every miss short in the $500,000 to $1M class and five county cells, only households reproduce all 69, and attaching the 94,807 dependents' returns cuts 677,351 units to 582,544 and carries 976 households past the top-1% mark on their children's trust and investment income, so the TY2025 floors rise from $197,000 / $293,000 / $594,000 to $214,000 / $318,000 / $742,000.",
-  "stump": "A competent solver filters to full-year residents, recombines separately filed state returns into federal filing units through the federal primary TIN (the textbook tax unit), sees that construction reproduce 58 of the 69 published cells with every miss a few per cent short in one class, and files the schedule $197,000 / $293,000 / $594,000 against $214,000 / $318,000 / $742,000, because the dependents' own returns join their claimants only through the claimant's dependents schedule, a link no column on the dependent's return invites.",
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is the most a population drew from a supply system in one period, which is what entered the system less what accumulated inside it; in the periods that matter the system's internal reserve was drawn down, so the inflow record understates the draw exactly when it peaks, and reading inflow as draw puts the peak, and any capacity sized on it, too low.",
+  "driver_concrete": "The campus's maximum-day demand is the water its users took in a day, the wells' production less what the storage tanks gained; in the late-August heat and move-in, with the largest well out for rehabilitation, the tanks gave up water every day, so the daily well production in the operators' log understates the peak and only adding each day's storage drawdown (midnight tank levels through each tank's level-volume table) shows the campus used more than its firm capacity.",
+  "stump": "A competent solver differences the operators' daily log into each day's well production, takes the largest day (about 4.15 million gallons, on 21 August 2026) as the maximum-day demand and, against the firm capacity of about 4.20 million gallons a day, files that the campus needs no added well capacity, where the golden is about 180 gpm (the campus used about 4.47 million gallons on 20 August); the step that lands it there is reading the wells' production as the campus's use, when on the peak days the tanks gave up water the wells could not supply and the default's own maximum day is the day the wells refilled them. (prototype figures; stage 3 freezes them)",
+  "stump_class": "analytical",
+  "analyst_test": "An analyst who reads the daily log, the SCADA export, the well test records and the state's definitions correctly (local calendar days, tested capacities, the largest well out) and takes each day's well production as that day's demand files no shortfall, where the campus's use (production less the water the tanks gained) exceeded firm capacity on the late-August peak days; the reflexes on top of it (average day times a textbook peaking factor, the peak hour times 24, production plus the booster transfer) land on other wrong figures.",
+  "domain_test": "The call turns on maximum-day demand, the water-system engineering quantity a source capacity evaluation is scored on: the water users took in a day, production adjusted for what storage gave up or gained; with another field's nouns there is no well field rated with its largest well out, no elevated storage riding through a peak, no pressure zones fed through a booster, and the task stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:maximum-day-demand-from-production-adjusted-for-storage",
+  "layer1": [
+    "an operators' daily log kept as a workbook with a sheet per month: each well's cumulative totalizer reading at midnight (gallons, one register rolling over), run hours, and each tank's level in feet as read at midnight",
+    "an hourly SCADA historian export in long format (tag, timestamp in UTC, value, quality code) with its tag list and engineering units, covering well flows, tank levels, the booster station and pressures",
+    "the wells' annual pump-test records (tested against nameplate gallons per minute) and a rehabilitation work order that took the largest well out of service for part of August 2026",
+    "level-volume tables for the two elevated tanks (bowl geometry) beside the standpipe's and ground tank's dimensions",
+    "monthly campus building meter reads on cycle days with register multipliers, and the billing account list",
+    "the state's sanitary survey letter and design standard excerpts; distractors: the town utility's consumer confidence report and the grounds department's irrigation controller schedule"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task109": "task109 is stumped by a corpus search that two compilation conventions defeat, each reproducing fewer published means alone than neither; here the published cells respond monotonically (3, then 58, then 69 of 69) and the stump is a member record that joins its unit only through another record's roster, which no visible key reaches."
+    "task89": "task89 v12 takes a trailing rate from a stock's change, already net of dated inflows, and rolls the stock forward to a first passage (gap time, forecasting); here a day's draw is the inflow less the stock's gain and the default reads the inflow alone (gap objective, descriptive)"
   },
-  "lineage": [],
-  "notes": "Realises analytical_tasks note DA01 (03_descriptive_distribution/DA01_revenue-tiers-household-unit-dependent-returns.md); design note task120/DESIGN_NOTE.md. Decisive rung from the measured catalogue: #2 counts file rows instead of the real unit (11 of 64, 7 under 0.50), in the form of #18 joins only on the visible key, with #3 and #1 holding a solver at the federal-filing-unit rung. Pattern recorded as the note's own 'S1 gated by Pattern B': the decisive rung is the G2 unit construction and B is its gate; B written first repeats task109 inside the window (test.same_driver, test.same_puzzle) and task66, task67 and task86 lineage, so the author may instead keep B first with --force (task109's precedent). Furniture redrawn against task115: role research_desk to statistical_office_head, forcing event vote_or_meeting to statutory_or_regulatory_filing; organisation family research_or_statistics_office (never used) instead of government_agency. scoring_unit other: the tiers are counted in household units. Batch registration: forum moved from committee_or_panel (blocked by task118) to minister_or_cabinet (line_manager_or_team is also blocked, by task116): the state finance secretary adopts the re-based floors on the office recommendation; planned opening moved from calendar-first (repeats task117) to evidence-first. Retired by the author on 2026-10-09 and not submitted; this card keeps the v1 architecture in the corpus so later draws do not repeat it."
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "built and solved in-house (solver round 1, plain, 96.8, main call landed at step 2: the 69-cell reproduction clause worked as a search signal and the household attachment sat one join away); retired by the author on 2026-10-09",
+      "domain": "economics",
+      "subdomain": "public-finance",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "dial_setting",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "generators": [
+        "G2",
+        "G10",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "identity_resolution",
+      "layer2_pattern": "own:household-units-for-income-tier-floors",
+      "niche": "re-basing the household-income tier floors a state revenue estimating conference's income-tax forecast carries for its top 10, 5 and 1 per cent, from the processed-return file and the dependents schedule",
+      "driver": "The unit the percentile cuts are drawn on is a group of records that no file stores, formed by two links, one carried on every member as a shared key and one carried only on the claiming record's roster of the people it claims, so attaching a claimed person's own record is a two-hop join that nothing on that record invites; grouping on the visible key alone reproduces most cells of a published control table with every miss one-sided in one band, only the full grouping reproduces all of them, and it both shrinks the unit count and carries near-threshold units past the top cut, raising every floor.",
+      "stump": "A competent solver filters to full-year residents, recombines separately filed state returns into federal filing units through the federal primary TIN (the textbook tax unit), sees that construction reproduce 58 of the 69 published cells with every miss a few per cent short in one class, and files the schedule $197,000 / $293,000 / $594,000 against $214,000 / $318,000 / $742,000, because the dependents' own returns join their claimants only through the claimant's dependents schedule, a link no column on the dependent's return invites."
+    },
+    {
+      "architecture": "v2",
+      "fate": "drafted 2026-10-09 and not built: test.same_driver blocked it on (objective, G11, binding_constraint); a tax-literate solver who rebuilds the joint return from its items lands it, and the effect on the top floor is a few per cent; the author retired the number",
+      "domain": "economics",
+      "subdomain": "public-finance",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "dial_setting",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11"
+      ],
+      "gate_g": "binding_constraint",
+      "stump_strategy": "binding_constraint",
+      "layer2_pattern": "own:joint-return-loss-netting-across-spouses",
+      "niche": "TY2026 current-law income-tier floors after the repeal of the separate state return, with capital and passive losses netted across spouses on the joint return",
+      "driver": "Units that combine two members' records under a new rule net a loss one member's own record could only limit against the other member's income of the same kind before one limit applies, so the combined units carry less income than the sum of the old records and the top cuts fall.",
+      "stump": "A competent solver sums the TY2025 household floors as the TY2026 schedule, missing the joint-return netting of limited losses across spouses."
+    }
+  ],
+  "notes": "Re-root of the retired DA01 slot on 2026-10-12. stump_strategy other: a mass balance (the use a system served is its inflow less what its storage gained), none of the listed families; not population, grain or time: every row is read at its own grain and date, and the error is taking a correct production record for the quantity the decision is scored on. subdomain generation-capacity-planning: the client's Energy Systems & Utilities capacity-planning task type, here source (well) capacity against peak demand in a water utility. Gap objective: production is correct and is not what the capacity check is scored on. G5 provision elsewhere: the peak-day need was met partly from storage, which the production record cannot see; G3 record versus operation under it."
 }

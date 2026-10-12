@@ -163,7 +163,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 117 | SHIPPED, delivered, pending review | SCL sourcing | FC | time population | E, A | draw caps via a dated join | - | - | 110 kW | none reported | - |
 | 118 | FAILED_TO_STUMP: backlog oviya1301 | MCR media | OPP | objective rule | none, C, B | gain only on volume tests have not banked | - | - | 1,250,000 clicks | none reported | oviya1301 |
 | 119 (v2) | SHIPPED, delivered, pending review | P&E mortality review | AD | objective population | C | beds held empty for planned work | - | - | Stennock | none reported | - |
-| 120 | FAILED_TO_STUMP: backlog sathay3012 | ECON revenue tiers | DESC | population objective | none, B | unit formed by the claimant's roster | - | - | tier floors | not submitted | sathay3012 |
+| 120 (v3) | drawing 10-12: re-root, architecture 3 | ENR campus water capacity | DESC | objective | none | a day's demand is production less what storage gained | - | - | added well capacity, gpm | none reported | sathay3012 |
 | 121 (v2) | FAILED_TO_STUMP: backlog sathay3012 | PA checkout | RCA | population time | none, A | signed-out customers own accounts | - | - | sprint target | not submitted | sathay3012 |
 | 122 (v2) | FAILED_TO_STUMP: backlog perssathya | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | perssathya |
 | 123 | FAILED_TO_STUMP: backlog oviya1301 | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | oviya1301 |
@@ -276,6 +276,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 229 (v1) | failed portal determinism 10-11 | ENR | DQ | population time | D | standard error of a build mean |
 | 230 (v1) | retired 10-11: solved in-house twice | PA | DQ | population time | none | segment comparison pool |
 | 254 (v1, v2) | retired 10-11 at stage 2: v1 the estimand named the overlay; v2 the literal annex read to the stump's month | PES, PHA | DESC | objective population | C | burned area by final perimeter; right-truncated onsets |
+| 120 (v1, v2) | retired 10-09: v1 solved in-house (96.8), v2 drafted and blocked | ECON | DESC | population objective | none, B | unit formed by the claimant's roster; losses netted across spouses |
 | 446 (v1) | retired 10-11: rule application | BANK | ETL | population time | none | group fixed at the projection date |
 | 500 (v1, v2) | solved on the portal 10-10, 10-11 | SCL, P&E | RCA | population | none | held blocks off late calls (shuttle, 15 of 28); a later start spilling onto siblings |
 
