@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK) 2026-10-12; the planning rate in WPS-3, contract vocabulary",
-    "reader": ""
+    "reader": "first read: Q1, Q2, Q4 none; Q3 the 18 May log entry (reworded) and realism tells (fixed); Q5 the estimand executed, 7.4 reading closed by SF1; Q6 analytical; second read running after the document changes"
   },
   "duplicate_check": {
     "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; answered) 2026-10-12",
@@ -24,12 +24,14 @@
     "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk and repeat.gate_g answered in the design note; task101 and task126 v1 differentiated on the card; at build the decisive generator ordered G17 first (statistical rigor), clearing the task101 and task126 card collisions; surface: no promoted pair"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "pass 1 DETERMINISTIC, FIX_NOW on hygiene (Marlowby final export date), fixed",
+    "disposition": "FIX_NOW, re-judge running",
+    "report": "determinism_check_report.md (pass 1)",
+    "gate_g": "statistical_rigor, analytical_non_defect, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
-  "resume": "stage 4: the leak reader and the determinism judge's isolated thread are running on the cut pack (brief /tmp/determinism-check-task449-r1/judge_brief.md); collect both, re-invoke the determinism-judge agent with the verdict for its report, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship",
+  "resume": "stage 4: the re-judge (pass 2, brief /tmp/determinism-check-task449-r2/judge_brief.md) and the reader's second read are running on the rebuilt pack; re-invoke the determinism-judge agent with the pass-2 verdict for determinism_check_report_pass2.md, append the second read, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

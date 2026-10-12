@@ -175,8 +175,9 @@ FIELDS = [
                                   "cardholder (by the phone system, a signed-in session, the regulator's or "
                                   "executive office's details, or a direct message); NAME_CITY, attached by the social "
                                   "care desk from a search of cardholders by the poster's name and city"),
-    ("register", "account_ref", "Bellcroft account reference of the account on the matter. For NAME_CITY, the first "
-                                "cardholder the search returned, in account-reference order"),
+    ("register", "account_ref", "Bellcroft account reference of the account on the matter: BCF and the twelve-digit "
+                                "account number. For NAME_CITY, the first cardholder the search returned, in "
+                                "account-reference order"),
     ("register", "queue", "Desk queue: GEN, REG (regulatory) or SOC (social care)"),
     ("register", "status", "OPEN, CLOSED or MERGED (closed as a duplicate of another matter)"),
     ("register", "closed_at", "Date and time the matter was closed, Eastern time"),
@@ -195,7 +196,7 @@ FIELDS = [
                                             "confirmed their account by direct message"),
     ("social", "matter_no", "Matter the desk opened for the post"),
     ("meridel", "payment_ref", "Meridel's payment reference"),
-    ("meridel", "acct_no", "Bellcroft account number (fourteen digits)"),
+    ("meridel", "acct_no", "Bellcroft account number, zero-padded to fourteen digits"),
     ("meridel", "received_date", "Date Meridel received the payment"),
     ("meridel", "due_post_date", "Date the payment should have posted"),
     ("meridel", "posted_date", "Date the payment posted to the account"),
@@ -277,22 +278,35 @@ def write_dictionary(path):
 
 
 OPSLOG = [
+    ("2026-01-02", "Desk manager", "Holiday rota closed out; normal hours from today."),
     ("2026-01-05", "CS", "Treadwell & Oake evening and weekend cover renewed for 2026 (five associates, approvals by "
                          "the evening supervisors)."),
+    ("2026-01-13", "Desk manager", "Case system release 4.2 overnight: queue filters and the letter templates changed; "
+                                   "no data changes."),
+    ("2026-01-27", "Desk manager", "IVR outage 10:05 to 10:40; callers advised to call back. Bellcroft telephony "
+                                   "ticket raised."),
+    ("2026-02-09", "Desk manager", "Bellcroft complaint program office walk-through of the desk, 10:00 to 12:00."),
     ("2026-02-16", "Desk manager", "Wrexley Energy billing changeover: the five cross-trained analysts work the "
                                    "Wrexley queue until further notice."),
+    ("2026-03-02", "Desk manager", "Quarterly calibration on complaint codes with Bellcroft's complaint program "
+                                   "office; no code changes."),
+    ("2026-03-23", "CS", "Evening supervisor rota changed: Treadwell & Oake approvals by the two evening leads."),
+    ("2026-04-14", "Desk manager", "Fire drill 14:00; phone queue paused 12 minutes."),
     ("2026-05-08", "Desk manager", "Meridel ACH posting failure: cardholder payments received 8 to 10 May are not "
                                    "posting. Bellcroft holding statement on the IVR and social channels."),
     ("2026-05-11", "CS", "Overtime authorised for all dedicated analysts until further notice."),
     ("2026-05-12", "CS", "Marlowby Staffing placements start on the Bellcroft queues; Treadwell & Oake adding two "
                          "associates for May and June."),
-    ("2026-05-18", "SF", "Social care desk opens a matter on every complaint post from today; until now matters were "
-                         "opened only for posters who confirmed their account by direct message."),
+    ("2026-05-18", "SF", "Social care desk: matters opened on complaint posts from today, not only on direct messages."),
     ("2026-05-22", "Desk manager", "Meridel's list of the 8 to 10 May payments received from Bellcroft card operations."),
     ("2026-06-19", "Desk manager", "Bellcroft and Meridel signed Schedule 7 (handling reimbursement and remediation)."),
+    ("2026-06-29", "Desk manager", "Case system release 4.3: bulk close for duplicate matters limited to team leads."),
+    ("2026-07-03", "Desk manager", "Independence Day observed: phone lines closed; social care desk open."),
     ("2026-07-20", "Desk manager", "Bellcroft remediation letters mailing 20 to 24 July."),
+    ("2026-08-17", "CS", "Two Treadwell & Oake associates on Saturday cover for August."),
     ("2026-08-03", "CS", "Overtime authorisation narrowed to the regulatory and social care queues."),
     ("2026-09-07", "Desk manager", "Labor Day: phone lines closed; social care desk open."),
+    ("2026-09-15", "Desk manager", "Annual complaint handling refresher for all analysts, in two sessions."),
     ("2026-09-30", "CS", "Marlowby Staffing placements end."),
     ("2026-10-09", "CS", "Workforce planning pull for the 2027 budget; Bellcroft's complaint steering committee meets "
                          "15 October."),

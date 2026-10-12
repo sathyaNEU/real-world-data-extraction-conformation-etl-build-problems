@@ -218,22 +218,40 @@ CFPB_ISSUE = {"PAY-01": ("Problem when making payments", "Problem during payment
 
 
 def write_cfpb(rng, rows, path):
+    """The CFPB's published complaints about Bellcroft credit cards: published only once the company has responded or
+    15 days have passed, a few never published, and the CFPB's own range (from January 2025, before the case system)."""
     fh, w = _writer(path, ["Date received", "Product", "Sub-product", "Issue", "Sub-issue", "Company", "State",
                            "Submitted via", "Date sent to company", "Company response to consumer", "Timely response?",
                            "Complaint ID"])
     out = []
+    pull = dt.date(2026, 10, 7)
+    codes = list(CFPB_ISSUE)
     for r in rows:
         if r["channel"] != "CFPB":
             continue
+        sent = r["opened"].date()
+        responded = r["events"][-1][1] in ("CLOSED", "MERGED") and r["events"][-1][0].date() <= pull
+        if (not responded and (pull - sent).days < 15) or rng.random() < 0.016:
+            continue
         iss, sub = CFPB_ISSUE[r["code"]]
         sp = "Store credit card" if "Secured" in r["product"] and rng.random() < 0.1 else "General-purpose credit card or charge card"
-        resp = "Closed with explanation" if rng.random() < 0.78 else "Closed with monetary relief"
-        if r["events"][-1][1] not in ("CLOSED", "MERGED"):
-            resp = "In progress"
+        resp = ("Closed with explanation" if rng.random() < 0.78 else "Closed with monetary relief") if responded else "In progress"
         cid = r["source_ref"].split("-")[1]
         out.append([r["cfpb_received"].strftime("%m/%d/%y"), "Credit card", sp, iss, sub, "BELLCROFT BANK, N.A.",
                     STATES[int(rng.integers(0, len(STATES)))], "Web" if rng.random() < 0.88 else "Phone",
-                    r["opened"].strftime("%m/%d/%y"), resp, "Yes" if rng.random() < 0.985 else "No", cid])
+                    sent.strftime("%m/%d/%y"), resp, "Yes" if rng.random() < 0.985 else "No", cid])
+    d = dt.date(2025, 1, 2)
+    while d < dt.date(2025, 9, 26):
+        for _ in range(int(rng.poisson(8.4 if d.weekday() < 5 else 2.0))):
+            code = codes[int(rng.integers(0, len(codes)))]
+            iss, sub = CFPB_ISSUE[code]
+            sent = d + dt.timedelta(days=int(rng.integers(1, 6)))
+            out.append([d.strftime("%m/%d/%y"), "Credit card", "General-purpose credit card or charge card", iss, sub,
+                        "BELLCROFT BANK, N.A.", STATES[int(rng.integers(0, len(STATES)))],
+                        "Web" if rng.random() < 0.88 else "Phone", sent.strftime("%m/%d/%y"),
+                        "Closed with explanation" if rng.random() < 0.8 else "Closed with monetary relief",
+                        "Yes" if rng.random() < 0.98 else "No", "%d" % int(rng.integers(1000000, 9999999))])
+        d += dt.timedelta(days=1)
     for row in sorted(out, key=lambda x: (dt.datetime.strptime(x[0], "%m/%d/%y"), x[-1])):
         w.writerow(row)
     fh.close()
@@ -252,7 +270,7 @@ MANIFEST = [
     ("treadwell", "Treadwell & Oake hours report, 2026", "Treadwell & Oake", "2026-10-02", "Supplier data, internal use"),
     ("opslog", "Complaint desk operations log, 2026", "Fenwright complaint desk", "2026-10-09", "Fenwright internal"),
     ("ivr", "Complaint line weekly call statistics, 2026", "Bellcroft telephony reporting", "2026-10-05", "Bellcroft confidential"),
-    ("cfpb", "CFPB consumer complaint database, Bellcroft Bank credit card complaints", "CFPB Consumer Complaint Database (public)", "2026-10-07", "Public data, no restrictions"),
+    ("cfpb", "CFPB consumer complaint database, Bellcroft Bank credit card complaints received from January 2025", "CFPB Consumer Complaint Database (public)", "2026-10-07", "Public data, no restrictions"),
 ]
 DOC_MANIFEST = [
     ("fenwright_wps3_dedicated_team_sizing.pdf", "Workforce Planning Standard WPS-3, version 3.2", "Fenwright Workforce Planning", "2025-02-26", "Fenwright internal"),

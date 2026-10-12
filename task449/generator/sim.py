@@ -568,8 +568,11 @@ def agencies(rng, days, fmt):
                     int(rng.integers(0, 3))]
             mins = (tout[0] * 60 + tout[1]) - (tin[0] * 60 + tin[1]) - brk
             we = d + dt.timedelta(days=(5 - d.weekday()) % 7)
+            sent = we + dt.timedelta(days=7)
+            if we > W.MARLOWBY[1]:                      # the placement's last week: sent the day after it ended
+                sent = W.MARLOWBY[1] + dt.timedelta(days=1)
             marlowby.append(dict(worker=t, date=d, tin=fmt(*tin), tout=fmt(*tout), brk=brk, hours=round(mins / 60.0, 2),
-                                 week_ending=we, export="MSX-%s" % (we + dt.timedelta(days=7)).strftime("%Y%m%d")))
+                                 week_ending=we, export="MSX-%s" % sent.strftime("%Y%m%d")))
     resent = [dict(r) for r in marlowby if r["week_ending"] == W.MARLOWBY_RESENT_WEEK]
     marlowby.extend(resent)
     marlowby.sort(key=lambda r: (r["export"], r["date"], r["worker"]))

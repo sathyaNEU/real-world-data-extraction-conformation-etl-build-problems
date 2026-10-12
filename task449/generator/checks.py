@@ -276,6 +276,11 @@ def run(target, golden, world=None, meta_path=None):
     ok((first == "OPENED").all(), "realism: every status history starts with OPENED")
     ok(reg.opened.max() <= pd.Timestamp("2026-10-08 23:59:59") and h.t.max() <= pd.Timestamp("2026-10-08 23:59:59"),
        "realism: nothing dated after the export")
+    man = pd.read_csv(os.path.join(target, P.FILES["manifest"]))
+    mar_sent = pd.to_datetime(B["marlowby"].export_id.str[4:], format="%Y%m%d").max()
+    got = pd.Timestamp(man.loc[man.file_name == P.FILES["marlowby"], "as_of"].iloc[0])
+    ok(mar_sent <= got and pd.to_datetime(man.as_of).max() <= pd.Timestamp("2026-10-09"),
+       "realism: no Marlowby export after its receipt, nothing in the folder after the pull", str(mar_sent.date()))
     soc_t = pd.to_datetime(B["social"].created_at.str.replace("Z", "", regex=False))
     ok(soc_t.max() <= pd.Timestamp("2026-10-09 04:00:00"), "realism: no post published after the export (UTC)")
     pers = re.compile(rb"<dc:creator>([^<]*)</dc:creator>|<cp:lastModifiedBy>([^<]*)</cp:lastModifiedBy>")

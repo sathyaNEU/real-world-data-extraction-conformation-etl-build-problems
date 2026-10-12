@@ -57,8 +57,8 @@
     {
       "path": "cfpb_public_complaints_bellcroft_card.csv",
       "format": "csv",
-      "bytes": 964649,
-      "rows": 4700,
+      "bytes": 1268795,
+      "rows": 6157,
       "source": "Constructed: CFPB public complaint database rows for the issuer, in the CFPB layout",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -84,7 +84,7 @@
     {
       "path": "data_dictionary_bellcroft_desk.xlsx",
       "format": "xlsx",
-      "bytes": 10380,
+      "bytes": 10405,
       "rows": null,
       "source": "Constructed: the field dictionary",
       "date": "2026-10-09",
@@ -93,7 +93,7 @@
     {
       "path": "desk_operations_log_2026.xlsx",
       "format": "xlsx",
-      "bytes": 7053,
+      "bytes": 7568,
       "rows": null,
       "source": "Constructed: the complaint desk's operations log",
       "date": "2026-10-09",
@@ -120,7 +120,7 @@
     {
       "path": "folder_contents_2026-10-09.csv",
       "format": "csv",
-      "bytes": 2753,
+      "bytes": 2780,
       "rows": 16,
       "source": "Constructed: the export manifest",
       "date": "2026-10-09",
