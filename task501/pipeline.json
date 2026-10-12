@@ -1,11 +1,11 @@
 {
   "task": "task501",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "epidemiology-public-health",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver joins the immunity profile to the population projection, finds the region 94.7 per cent immune on 1 January 2028 against the 93.3 per cent measles at R0 15 needs, puts the reproduction number at 0.8 and files that no catch-up is needed; the step that lands it there is treating the region as one well-mixed pool, when the national contact survey shows the 15-19-year-olds' contacts falling mostly on each other, so the next-generation matrix's dominant eigenvalue is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
   "architecture": 4,
@@ -15,17 +15,19 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 after the stage-4 rebuild (no LEAK; sweep 11 clean; every REVIEW answered in the design note's Build record)",
-    "reader": "2026-10-12 (architecture 4): nothing quoted for questions 1 to 4, its own reconstruction names B; its realism notes fixed in the generator; re-read due on the two changed documents"
+    "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2027-07-12), no LEAK, sweep 11 clean; every REVIEW line answered in the design note's Build record (one sweep-4 line new at ship, the register extract notes' own words, after the ship-time note entered the swept paragraphs)",
+    "reader": "2026-10-12 (architecture 4): nothing quoted for questions 1 to 4, its own reconstruction names B, its realism notes fixed in the generator; targeted re-read of the two changed documents (options paper, NSCS tables): nothing quoted for question 1, realism clean"
   },
   "duplicate_check": {
-    "heart": "PASS 2026-10-12 at the stage-4 rebuild (nearest driver 0.05 task95; no BLOCK)",
-    "nearest": "surface 0 hard tells; task104 and task70 promoted on card axes only, differentiated"
+    "heart": "PASS 2026-10-12 at the final rebuild (nearest driver 0.05 task95; no BLOCK)",
+    "nearest": "surface 0 hard tells; task104 and task70 promoted on card axes only, differentiated on the card"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC 2026-10-12 (judge-task501c): competing_defensible_answer on supplementary ask 4 only (three open GP-return queries on loaded events); main call forced, B 0.89 against 1.29 to 1.31",
-    "disposition": "SEND_BACK (light), fixed in the generator in one pass: every query closed by 30 June with its outcome (SF17), no graded figure moved, freeze.py determinism PASS; method pin declined; re-judge next",
-    "report": "determinism_check_report.md"
+    "verdict": "DETERMINISTIC 2026-10-12 (judge-task501d, re-judge): APPROVE, no fix; main call forced, B 0.89 against 1.29 to 1.31",
+    "disposition": "APPROVE, shipped as judged (the judged pack byte-identical to the shipped one); the low-risk residual on Ask 2 (13 doses given by 30 June 2027, loaded on 1 or 2 July) closed by the extract notes' date_given definition, no document or prompt edit; pass 1 (judge-task501c) NOT_DETERMINISTIC on one ask fork, fixed in the data (SF17)",
+    "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported figure is wrong",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [
     {
@@ -35,9 +37,9 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: re-judge once on the rebuilt pack (the ask fork closed in the data, SF17); the leak reader re-reads mmr_catch_up_options_autumn_2027.pdf and nscs_2023_published_tables.xlsx; then ship",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": [
     {
       "version": "v2",

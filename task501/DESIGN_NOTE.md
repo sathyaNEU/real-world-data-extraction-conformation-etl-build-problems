@@ -456,8 +456,47 @@ them were imported" (H23).
   standard names R0 and the aim only, the options paper the cohorts and people made immune, neither the eigenvalue or the
   contact structure (the generator asserts no method word in any file). The stump-term overlaps are domain words
   (immune, health, cohort, national, manager, population, standard) in documents that must use them, the uptake report
-  (a distractor) included. The stock return's expiry dates run past the as-of because a stock count lists future
-  expiries (H16 allow-list).
+  (a distractor) included, and at ship the register extract notes (contact, health, extract: the notes' contact line,
+  the local health office field and the notes' own subject). The stock return's expiry dates run past the as-of because
+  a stock count lists future expiries (H16 allow-list).
+- **Re-judge and ship (2026-10-12):** the re-judge (judge-task501d) returned DETERMINISTIC, APPROVE with no fix, on a
+  pack byte-identical to the one shipped (19 of 19 files); its low-risk residual on Ask 2 (13 doses given on or before
+  30 June 2027 and loaded on 1 or 2 July, counted by date given) is closed by the extract notes' field definition of
+  `date_given`, so no document and no prompt changed (determinism_check_report_pass2.md). The leak reader's targeted
+  re-read of the two changed documents quoted nothing for question 1 (leak_check_report.md). The final rebuild
+  (`build.py --zip`) is byte-identical to the judged build, every free gate re-ran green on it, and target.zip is cut
+  from it.
+
+## Pre-ship check
+
+1. Domain: the task is a regional department of public health's choice of one autumn MMR catch-up, judged on measles'
+   reproduction number for the coming winter; the quantity that decides is the dominant eigenvalue of the
+   next-generation matrix built from immunity by year of birth and a national contact survey, and another field's nouns
+   break it (no transmission between age groups, no contact survey, no susceptibility left by a vaccine history).
+2. Real work, nothing planted: immunity by year of birth against contacts by five-year group, joined through a
+   projection that carries both; a survey matrix corrected for reciprocity on the national population; a register
+   extract loaded as received from GP returns, school sessions, hospital clinics and records from abroad, with a query
+   log, a merge table and local health office codes revised in July 2024; a case export from a system migrated in 2021
+   with the 2019 outbreak back-entered; each from the region's or the national bodies' own systems, none deciding the
+   call.
+3. The flip is a method choice: in a region that does not mix at random the reproduction number is the eigenvalue, not
+   R0 times the average susceptible share; every rule in the pack (R0 15 with nobody immune, the assessment on 1
+   January 2028, the national profile, an option counted for its people made immune, the choice in PS-07 3.6) is read
+   the same on both paths.
+4. The analyst test holds: R0 times the susceptible share files no catch-up at 0.8 (94.6 per cent immune against the
+   93.3 per cent threshold), the contact-weighted share at 0.9, the widest immunity gap names D and the most people made
+   immune names E, both left at 1.3; only the eigenvalue names B (0.888 against A's 1.291, the next lowest).
+5. One defensible answer: PS-07 3.2 to 3.6 file the estimand, every fork row is asserted (SF1 to SF17), the 16-member
+   family moves no figure by more than 0.006, and the re-judge returned DETERMINISTIC, APPROVE on a pack byte-identical
+   to the one shipped (determinism_check_report_pass2.md); its low-risk residual, 13 doses given by 30 June 2027 and
+   loaded on 1 or 2 July, is closed by the extract notes' `date_given` ("Date the dose was given"), so nothing changed.
+6. No decoy: no file states a reproduction number, an age-specific immunity target or an outbreak model; the options
+   paper's table and the profile are inputs every method uses alike and rank nothing on the reproduction number; the
+   uptake report and the stock return are declared distractors; no memo or voice argues for an option or a method.
+7. Nothing hidden and recovered: no certified figure pins the method; the eigenvalue is computed from published inputs.
+8. A new lesson: a region can sit above the herd immunity threshold on average and still carry measles where a
+   susceptible cohort mixes mostly with itself, so the catch-up that counts is the one aimed at that cohort, not the
+   least immune or the largest (`guard.py heart` PASS, nearest driver task95 at 0.05; `surface` no hard tell).
 
 ## Tried and rejected
 
@@ -519,3 +558,4 @@ them were imported" (H23).
 - A one-line pin naming the age-structured method (the same judge's optional fix): declined, because it files the decisive step as a rule to execute; the data forces the method (Literal reader).
 - Option E on three rows of the options paper (its 1993-97 span, its 1998-2002 span, its total): the first restated D's row under E's label and read as a copy (leak reader, judge); E is one row and the note under the table gives its split, the same figures.
 - The survey's Table 1 population as the national shape's group totals: each group read as its thousands times 1000.446 and two groups were identical (310,138), so the column read generated (leak reader); Table 1 publishes the statistics office's estimates on a stream of their own, Table 2 unchanged and still reciprocal on them to its rounding (asserted), the family's largest move 0.006 and nearest edge 0.033 as before.
+- A prompt clause that doses count by date given (the re-judge's optional fix for 13 doses given by 30 June 2027 and loaded on 1 or 2 July): declined, because the extract notes already define `date_given` as the date the dose was given and the golden counts by it; the clause would restate a field definition in the prompt.

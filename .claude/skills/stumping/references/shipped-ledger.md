@@ -193,7 +193,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | SHIPPED, delivered 10-12, pending review | HDE vertical integration | ETL | objective population | C | referral capture follows the patient's tier for the acquirer in the projection year | - | - | proceed at $2.2M | ask layer rebuilt 10-12 (two standing exhibits, pair ceiling 27.5); judge APPROVE | oviya1301 |
 | 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 501 (v4) | drawing 10-12: re-rooted at stage 1 after v3 was spent at stage 4 (two judge passes failed) | EPH measles catch-up | FC | population time | none | a structured population's threshold set by the next-generation matrix's dominant eigenvalue, where the 15-19-year-olds mix mostly with each other (0.8 by the average, 1.3 by the eigenvalue) | - | standard | catch-up option | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
+| 501 (v4) | SHIPPED, delivered 10-12, pending review | EPH measles catch-up | FC | population time | none | a structured population's threshold set by the next-generation matrix's dominant eigenvalue, where the 15-19-year-olds mix mostly with each other (0.8 by the average, 1.3 by the eigenvalue) | - | standard | option B, the catch-up for those born 2008-12 (0.9 against 1.3) | none reported (v2 landed by 2 of 2, 10-11) | sathya8571 |
 
 ## Earlier architectures
 

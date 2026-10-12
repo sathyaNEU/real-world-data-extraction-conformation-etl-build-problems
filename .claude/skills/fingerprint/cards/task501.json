@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reproduction number in the region below one for winter 2027-28 (0.9, against 1.3 with no catch-up).",
+  "answer_source": "task501/submission.md, 1. Final Recommendation, first sentence (bold markers removed); figures in task501/generator/figures.json, written with golden/winter_measles_2027.xlsx and golden/measles_readiness_2027.pptx by generator/golden.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "population",
     "time"
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "register_mmr_events_born_1993-2017.csv",
-    "rows": 0,
+    "rows": 278746,
     "entity": "one MMR dose event loaded to one person's record in the regional immunisation register",
     "grain": "person x dose event",
     "source": "synthetic (fictional regional immunisation register)"
@@ -66,7 +66,7 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Whether a structured population can sustain a chain process is set by the dominant eigenvalue of its who-passes-to-whom matrix, so removing propensity from the subgroup that mixes most densely within itself can pull the system below its threshold while the system-average propensity, a contact-weighted average, the least-protected subgroup and the subgroup holding the most unprotected members all say the system is already below it or point at a subgroup whose removal leaves it above.",
-  "driver_concrete": "On 1 January 2028 the region is 94.7 per cent immune, above the 93.3 per cent that measles at R0 15 needs, so R0 times the susceptible share is 0.80; but the cohort born 2008-12, whose MMR uptake fell in the 2010-12 vaccine scare, is then 15-19, the ages whose contacts the national survey shows falling mostly on each other, so the dominant eigenvalue of the next-generation matrix is 1.3 and only a catch-up for that cohort brings it below one (0.9), while the options for the 30-34 and 25-34-year-olds, the least immune and the most people made immune, leave it at 1.3.",
+  "driver_concrete": "On 1 January 2028 the region is 94.6 per cent immune, above the 93.3 per cent that measles at R0 15 needs, so R0 times the susceptible share is 0.81; but the cohort born 2008-12, whose MMR uptake fell in the 2010-12 vaccine scare, is then 15-19, the ages whose contacts the national survey shows falling mostly on each other, so the dominant eigenvalue of the next-generation matrix is 1.3 and only a catch-up for that cohort brings it below one (0.9), while the options for the 30-34 and 25-34-year-olds, the least immune and the most people made immune, leave it at 1.3.",
   "stump": "A competent solver joins the immunity profile to the population projection, finds the region 94.7 per cent immune at 1 January 2028 against the 93.3 per cent measles at R0 15 needs, puts the reproduction number at 0.8 (R0 times the susceptible share) and files that no catch-up is needed; the step that lands it there is treating the region as one well-mixed pool, when the national contact survey shows the 15-19-year-olds' contacts falling mostly on each other, so the next-generation matrix's dominant eigenvalue is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads every dose, validity rule, profile basis and survey table right and compares the region's immunity with the herd immunity threshold, or computes R0 times the susceptible share (0.8), or weights each age group's susceptible share by its contacts (0.9), files that no catch-up is needed; one who ranks cohorts by their immunity gap targets the 30-34-year-olds (option D) or the most people made immune (option E); none of them brings the reproduction number below one.",
@@ -173,5 +173,5 @@
       "subdomain": "liquidity-funding-balance-sheet"
     }
   ],
-  "notes": "Re-root drawn 2026-10-12 after architecture 3 was spent at stage 4. The decisive step is the field's method for the reproduction number of a structured population (the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the national contact survey); no sentence names it and the guidance files R0, the immunity profile, the protection rules and the assessment date only. Strategy 'other' (transmission structure); none of the listed strategies is honest. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered by drawing xlsx+pptx. Figures on the card are the prototype's and are brought current at stage 4."
+  "notes": "Re-root drawn 2026-10-12 after architecture 3 was spent at stage 4. The decisive step is the field's method for the reproduction number of a structured population (the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the national contact survey); no sentence names it and the guidance files R0, the immunity profile, the protection rules and the assessment date only. Strategy 'other' (transmission structure); none of the listed strategies is honest. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered by drawing xlsx+pptx. Figures on the card are the build's, except the stump's 94.7 per cent immune, the prototype's (the build gives 94.6), kept verbatim because freeze.py holds the stump from the stage-4 fix onwards."
 }
