@@ -11,29 +11,194 @@ Architecture 2, a re-root drawn on 2026-10-12 in oviya1301's wave 1. Architectur
 - **Same-puzzle test:** gap time, decisive G4, decision `allocation_to_total`, gate `method_or_model_selection`: no build in the last twelve, lineage included, shares the triple (guard PASS on `test.same_puzzle` and `test.same_driver`); this slot's own v1 was (time, B, allocation_to_total), a recovered window rule, so the decisive rung has moved.
 - **Abstraction test against the nearest drivers.** task37's wage lineage (0.06) chose among estimators of a within-interval share by an out-of-sample test against a closed register; here no estimator is chosen by a test, the split inside each interval is read from a measured daily indicator. task130 (claims-made cover) prices a short window from claims reported soon after they occur, a reporting delay; here nothing is delayed, the measured total is complete and only its timing inside the interval is unknown. task120 (the campus wells) takes a day's use as production less the tanks' gain, a mass balance; here there is no storage and no balance, only the split of a complete total across the calendar.
 - **Guard WARNs answered.** `three_rules.strategy_risk` (time_semantics): the analyst test below runs after every field and rule is read right and still files the wrong split; the step is an estimate of how use ran inside each interval, not a reading. `overuse.gate_g`: the gate is the honest key for a method that splits each interval; the strategy, pattern and furniture all rotate. `repeat.question_form` (how-much, task120): an amount asks how much; variety lives in the prompt's sentences and files. `overuse.org_family`: none fired on nonprofit_or_charity at the final draw.
-- **Arithmetic on paper** (prototype `scratch t123v2/proto.py`, twelve counties, 70,500 accounts, a $18.6 million grant): the AMI-shaped split recovers each county's true January to within $461 of allocation; day-proration moves allocations by -$62,000 to +$80,000 (Kestrel Valley counties read late in the month and the Northbank counties read in late January lose, early-read counties gain); scaling the AMI accounts' January use up moves the Northbank counties by -$75,000 to -$138,000 and the Pine Harbor counties by +$94,000 to +$231,000; a monthly-average shape moves them by -$71,000 to +$68,000. The generator fixes the weather and the read calendars so every wrong route clears the rounding by a stated floor.
+- **Arithmetic, as built** (`generator/`, twelve counties, 47,335 residential premises, 5,885 Pine Harbor AMI meters, a $18,640,000 grant): the AMI-shaped split recovers each county's simulated true January within $1,100 of award; day-proration moves awards by -$95,625 (Ottercreek) to +$85,618 (Brennock), the billed month by -$126,109 to +$221,923, a monthly-average shape by -$75,023 to +$65,227, and scaling the AMI accounts' January up by -$234,561 (Farrish) to +$191,388 (Tillery). Every wrong route lands every county outside the golden's $5,000 bin (checks.py M2).
 
 ## Default path
 
-1. Load the three utilities' residential billing extracts and Pine Harbor's AMI calendar-month bills; net each cancel line against its rebill under the bill number.
-2. Map every premise to its county from the service-address file.
-3. Take Pine Harbor's AMI accounts' January 2026 bills as their January use (calendar-month bills).
-4. Split every other bill's therms across the calendar months its read-to-read interval covers in proportion to the days of service in each month (the standard calendarization of billing-period data).
-5. Sum calendar-January 2026 therms by county and split the $18.6 million grant in proportion.
+1. Load the three utilities' residential billing extracts and Pine Harbor's calendar-month AMI bills; net each cancel against its original under the bill number.
+2. Map every premise to its county from the service-point file.
+3. Take Pine Harbor's AMI accounts' January 2026 calendar bills as their January use.
+4. Split every other bill's therms across the calendar months its service period covers in proportion to its days of service in each month (the standard calendarization of billing-period data).
+5. Sum calendar-January 2026 therms by county and split the $18,640,000 in proportion, each award rounded to $5,000.
 
-Ends on: the day-prorated split, Halvern County (read every second month by Northbank, most reads in late January) at $1,791,000 and Brennock County (Kestrel Valley cycles read in mid-month) at $2,455,000 (prototype values; the generator fixes them at design).
-Golden: the AMI-shaped split, Halvern County at $1,853,000 and Brennock County at $2,376,000 (prototype values).
+Ends on: the day-prorated split, Ottercreek County (Kestrel Valley cycles read late in the month) at $1,135,000 and Brennock County (Kestrel Valley cycles read mid-month) at $2,465,000, the region's January at 11,190,000 therms.
+Golden: the AMI-shaped split, Ottercreek County at $1,230,000 and Brennock County at $2,380,000, the region's January at 10,260,000 therms.
 
 ## Stump sentence
 
-The default path files Halvern County at $1,791,000 and Brennock County at $2,455,000 because step 4 splits each straddling bill's therms by days of service, as if the 19 to 31 January cold snap burned no more gas a day than the mild weeks around it, when the AMI accounts' daily reads show use inside every read interval following the weather; split by that measured daily shape, Halvern gets $1,853,000 and Brennock $2,376,000.
+The default path files Ottercreek County at $1,135,000 and Brennock County at $2,465,000 because step 4 spreads each straddling bill's therms evenly over its days, as if the mild first eighteen days of January burned gas at the rate of the colder December and February days billed with them and the 19 to 31 January cold snap at no more, when the AMI meters' daily reads show use inside every service period following the weather (2.4 times as much a day in the cold snap as on 1 to 18 January); split by that measured daily shape, Ottercreek gets $1,230,000 and Brennock $2,380,000.
 
 ## Three rules
 
 Domain test: calendar-month statistics built from billing-period returns are what an official statistics producer calendarizes against an indicator of activity inside each period (here the AMI accounts' daily reads), as statistical offices calendarize fiscal-period returns with a monthly indicator; the stump lives in heating use swinging with the weather inside each read interval, so moving the nouns to a series whose activity is flat within periods leaves day-proration right and the task empty.
-Analyst test: a strong analyst who cleans the three billing extracts and the AMI reads and reads every field right prorates each bill to calendar months by days of service, the standard way to calendarize billing-period data, which moves the late-January cold snap's therms out of January wherever an interval straddles it and under-allocates the counties whose reads fall in late January, Northbank's above all, although the AMI accounts' daily reads show use is far from flat inside a bill; scaling the AMI accounts' January up instead carries their newer, smaller homes.
-Layer 1: three billing extracts in their own layouts (21 monthly cycles; reads every second month with prior and current read dates; AMI accounts on calendar months beside cycle accounts), cancel and rebill lines under one bill number, an MDMS daily-read export keyed by meter with VEE codes, daylight-saving gas days and register rollovers, AMI installations during the winter leaving short transition bills, ZIP codes that cross county lines, one utility billing CCF with a monthly heating-value factor, and the state data standard with each utility's read-date convention.
+Analyst test: a strong analyst who cleans the three billing extracts and the AMI reads and reads every field right prorates each straddling bill to calendar months by days of service, the standard way to calendarize billing-period data; with the first eighteen days of January milder than the December and February days billed with them and a cold snap at the end, that inflates every day-prorated bill's January (the region by 9 per cent, to 11,190,000 therms) while Pine Harbor's calendar-billed AMI accounts stay exact, and moves the split by $23,412 to $95,625 a county (Ottercreek $1,135,000 against $1,230,000), although the AMI meters' daily reads show use is far from flat inside a bill; scaling the AMI accounts' January up instead carries their newer, smaller homes to every county.
+Layer 1: three billing extracts in their own layouts (Kestrel Valley's 21 monthly cycles with service-period dates; Northbank's fixed-width reads every second month with prior and current read dates, four- and five-digit registers that roll over and a monthly heating value; Pine Harbor's cycle accounts beside AMI accounts on calendar months), cancel and rebill lines under one bill number, an MDMS daily-read export keyed by meter with VEE codes and daylight-saving gas days of 25 and 23 hours, AMI exchanges in October leaving short transition bills and new account numbers, unpaid accounts closed after ten business days, ZIP codes and postal cities that cross county lines, account numbers that lose their leading zero in a contractor's workbook, and the State's data standard with its definitions.
 Layer 2: calendarizing billing-period returns against a measured indicator (field_method): each straddling bill's therms split across calendar months by the AMI accounts' daily use over the days it covers, rather than by days of service, a monthly-average shape or the AMI sample scaled up.
+
+## Readability screen
+
+The six tests (`stumping` 2.1) on each rung. Every rung is a complete split of the grant; the decisive rung is R4.
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 billed month: bills read in January taken as January use | yes: the standard defines a calendar month by gas days, not by the read or bill month | no | no | no | no | no | readable |
+| R1 day-proration of every straddling bill (the default path) | no | no | yes: splitting a billing period by days of service is the calendarization reflex | no | no | no | readable |
+| R2 monthly-average AMI shape (each day of a month weighted by that month's mean AMI use) | no | the AMI daily file exists | no | no | no | no | silent |
+| R3 AMI accounts' January use per account scaled to every account | no | the AMI accounts are the only ones with an exact January | yes: a sample scaled to its population | no | no | yes: one ratio | readable |
+| R4 (decisive) each bill split by the AMI accounts' mean daily use over the gas days it covers | no: nothing says how use runs inside a read interval | no: the shape is a per-day mean over meters, joined to no bill | no: the reflex is days of service | no: no shipped figure scores any split method | no: nothing in the battery looks inside an interval | no: a per-bill ratio over a daily series | silent |
+
+Exposure: every reader must split straddling bills to reach a calendar month, so the question "split how?" is asked by everyone; what stays silent is the answer, that use inside an interval follows the weather and that the AMI accounts' daily reads measure it. A solver who opens the AMI file to take the AMI accounts' January sees daily use roughly doubling in the cold snap; that is the route to R4, and it is the exposure this design accepts.
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | residential | accounts billed on the residential rate schedules the standard lists (Kestrel Valley RS-1, Northbank R1, Pine Harbor RES) | every dwelling's gas, master-metered apartment buildings on general service included (Kestrel Valley's GS extract added) | twelve counties move bins (asserted) | the standard 2.1 and Appendix A: general service schedules, master-metered multi-family buildings included, are not residential |
+| SF2 | calendar January 2026 | use on the gas days dated 1 to 31 January 2026 | bills read or issued in January (billed basis) | the R0 split, all twelve off | the standard 2.3: a month's use is the gas used on its gas days, whatever the dates meters were read or bills issued |
+| SF3 | the gas days a bill covers | the gas day after the prior read through the gas day of the read | the prior read's gas day through the day before the read | eight counties move bins (asserted) | the standard 2.4; Kestrel Valley's SVC_FROM and Pine Harbor's SERVICE_START are the day after the prior bill's last day on every consecutive pair (asserted), Northbank's notes say the same |
+| SF4 | county | the county of the premise in the service-point file | the postal city's county or the ZIP's | 1,413 premises move, eleven counties change bins (asserted) | the standard 2.6: the county of the premise as recorded in the service-point records (the file's COUNTY) |
+| SF5 | cancelled and rebilled bills | the cancel nets its original to nil, the rebill stands | the original and the rebill both counted | double count on 666 rebilled bills | Kestrel Valley's notes (TXN_TYPE); each cancel reverses its original exactly (asserted) |
+| SF6 | therms | therms as billed (Northbank: CCF times the heating value on the bill) | Northbank's CCF recomputed at each calendar month's heating value | same call (asserted, largest move $1,130) | the standard 2.5: therms as billed |
+| SF7 | in proportion to | each county's share of the twelve counties' January total | a share of a wider total | none | the prompt names the twelve counties; same call |
+| SF8 | rounding | each award is the grant times the unrounded share, rounded to $5,000; therms reported to the nearest 10,000 | awards from therms rounded first | five counties move (asserted) | the standard 3.3: allocations are computed from unrounded county values |
+| SF9 | AMI accounts' January | the calendar-month January bill | the sum of the meter's daily reads times 1.034 | same call (each of 5,811 January AMI bills equal, asserted) | asserted equal |
+| SF10 | estimated reads | no estimated read closes a bill that touches January | an estimate re-allocated | same call | asserted: every bill touching January closes on an actual read |
+| SF11 | the AMI shape | the mean daily use of the AMI meters reporting each gas day | the median; positive reads only; meters with a whole winter; validated reads only; each meter normalised to its own winter; the own county's AMI meters; one span per account | same call (every variant in the golden's award and therms bins on all twelve, largest move $912, asserted) | asserted in checks.py; the golden sits at least $1,433 and 2,510 therms inside its bins |
+
+## Ladder
+
+Four complete wrong splits and the golden, each reproducible from the raw files, as built (`checks.py` M2, M3).
+
+| Rung | Method | Moves on the build | Nearest county to the golden | Dies to |
+|---|---|---|---|---|
+| R0 | bills read in January as January use | Ashwell +$221,923, Ottercreek -$126,109 | Pellow, $9,775 | the standard's calendar-month sentence (2.3) |
+| R1 (default) | day-proration of every straddling bill, AMI accounts exact | Brennock +$85,618, Ottercreek -$95,625; region 11,190,000 therms | Keswin, $23,412 | the AMI meters' daily reads (2.4 times the use a day in the 19 to 31 January cold snap as on 1 to 18 January) |
+| R2 | each day weighted by its month's mean AMI use | Ashwell +$65,227, Rennick -$75,023 | Halvern, $5,033 | the same daily reads (the cold snap sits inside January) |
+| R3 | the AMI accounts' mean January per account times each county's premises | Tillery +$191,388, Farrish -$234,561 | Merrion, $16,189 | the AMI accounts' bills and the housing stock (newer, smaller homes at the AMI premises) |
+| R4 (decisive, golden) | each bill split by the AMI meters' mean daily use over the gas days it covers | within $1,100 of each county's simulated true January | | none |
+
+- **Position and margin.** Every wrong rung lands all twelve counties outside the golden's $5,000 bin, the nearest cell $5,033 away (R2, Halvern). The golden sits at least $1,433 inside every award bin and at least 2,510 therms inside every 10,000-therm bin, and every valid variant of the shape stays in both bins on all twelve (SF11, SF6). Twelve distinct rounded awards, summing to $18,640,000 (M6, M7).
+- **Dominance and worth.** The decisive move is the only one that changes the split on all twelve counties both ways; R1 to R4 moves every county by $23,412 to $95,625. R3 is the population rung (the AMI sample is not the region's housing stock), R1 and R2 the time rungs, R0 the definition rung.
+- **Grid.** Partial applications: the AMI shape on Northbank's bimonthly bills only, and on every bill but Northbank's: each lands all twelve counties outside the golden's bins (M3).
+- **The call is not a hold and not a single name**: the split is graded county by county.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | residential-rate accounts at premises in the twelve counties, every account with a January gas day | the standard's Appendix A and the premise county; C1 |
+| 2 | Unit of account | therms of residential use per county | the prompt names it |
+| 3 | Attribution window | gas days 1 to 31 January 2026 | the standard's calendar-month sentence |
+| 4 | As-of dating | bills as rendered in the extracts (cut 15 April 2026), cancels netted | the extracts' manifest; C1 (no bill touching January is re-rendered after the cut) |
+| 5 | Version basis | the rebill stands | field notes; C1 once netted |
+| 6 | Denominator | the twelve counties' total January therms | the prompt |
+| 7 | Weighting | shares by therms, no weights | the prompt |
+| 8 | Window length | one calendar month | the prompt |
+| 9 | Boundary inclusivity | the read's gas day belongs to the bill read that day | the standard 2.4 and the extracts' service-period dates (SF3, asserted) |
+| 10 | Rounding path | award = grant times the unrounded share, rounded to $5,000 per county; therms reported to the nearest 10,000 | the prompt and the standard 3.3; asserted |
+| 11 | Tie-break | none: twelve distinct rounded awards, so the bars' order is unique | asserted (M6) |
+| 12 | Maturity and censoring | every January gas day of every account lies in a service period closed before the cut | asserted: the latest read on a bill touching January is 31 March 2026 (C12), and every January gas day of every account is billed once (C16) |
+| 13 | Order of operations | net cancels, map premises, split bills, sum, share, round | linear after netting; C1 |
+| 14 | Row order | sums only | C1 |
+| 15 | Duplicate resolution | cancel and rebill pairs | field notes; C1 |
+| 16 | Identity normalisation | premise ids across the billing extracts and the service-point file; meter to premise in Pine Harbor's history | the files' keys; C1 (every bill's premise has a county, asserted through the verifier) |
+| 17 | Netting against gross | cancel lines net against their originals; no negative use remains | asserted |
+| 18 | Dimensional units | therms as billed; Pine Harbor's MDMS reads in CCF at a fixed winter heating value; Northbank's monthly heating values | the standard 2.5 and the notes; the shape is unit-free; SF6 asserted |
+| 19 | Code and status semantics | rate classes, read types, transaction types | dictionaries; never the stump |
+| 20 | Integerisation | awards rounded independently to $5,000 (this build's twelve sum to the grant) | the standard 3.3: allocations are not adjusted to the program total |
+| 21 | Clause scope | the standard's definitions govern the residential series | the standard |
+| 22 | Forward window contents | the 2026-27 grant rides on January 2026 use; nothing forward is estimated | the prompt |
+
+## Literal reader
+
+Executed word for word, the prompt and the standard fix one quantity per county: therms used on the gas days dated 1 to 31 January 2026 by residential-rate accounts at its premises (2.1 to 2.6), each county's share of the twelve, and the grant times that unrounded share rounded to $5,000 (3.3), with each county's therms reported to the nearest 10,000. No sentence says how a bill's therms divide among the days it covers; every literal reading of the estimand is the same number, and the methods that estimate it (days of service, a monthly mean shape, the AMI sample scaled up, the AMI daily shape) are HOW. The data force the daily shape: the AMI daily reads are the only evidence of use inside a service period, they contradict the flat use day-proration assumes and the within-month flatness a monthly mean assumes (2.4 times the use a day in the cold snap, asserted), and the AMI accounts' own bills show they are smaller than the region's homes, so only the shape-based split reproduces January. Every shape-based variant lands in the golden's bins on all twelve counties (SF11).
+
+## Oracles
+
+None. No shipped figure ties to any split: the utilities' billed-month sales reports and any earlier grant split are not shipped, the export manifest's row counts tie on every path, and the AMI daily reads score no method (they are the indicator the method needs).
+
+## Ask sheet
+
+The two asks are columns of the county series the administrator files under the state standard beside the split: the standing need indicators the standard's assistance table defines. Both are counted on rows outside the main call's population (service orders, field activity, work orders, MDMS meter events, payment-plan enrolments), and neither needs the call or its construction.
+
+Main block (recommendation and critical components): the twelve awards and shares; the region's January 2026 residential therms; Halvern's and Brennock's January therms. The cracker keeps all of it; the mirror (R1) keeps none of it.
+
+**Ask 1: residential disconnections for nonpayment completed in January 2026, by county (12 figures).**
+- H18 home: the assistance table's first indicator, read beside the split by the community action agencies; the call does not turn on it.
+- Primary devices, one per utility so every county moves: Pine Harbor (D4, absence as the signal): its AMI meters carry shutoff valves, and most of its January nonpayment disconnections are valve closes commanded from the head end with no field work order; they live in the MDMS meter-event log, which no habitual join reaches, while the work-order export looks whole. Kestrel Valley (D4 with a D1 overlap): contractor crews completed part of January's disconnections; jobs keyed into the CIS after the 3 February extract are only in the contractor's job report, and the ones keyed earlier are in both under different numbers. Northbank (D8, a clock): its field-activity file dates each activity on its scheduled day; carried-over jobs completed days later are dated in the crew completion file only, so January by the activity file takes late-December jobs out and late-January jobs in.
+- Over-cleaning halves: every valve close counted (meter alarm closes and seasonal customer closes ride the same event); both contractor and CIS rows counted.
+- Hazards: H1 order status history (a completed order reversed as completed in error), H2 attempts that could not be completed, H3 Kestrel Valley's turn-off order type shared by seasonal, customer-request and safety reasons.
+- Path: eight files (three service-order or work-order exports, the MDMS meter-event log, the contractor job report, the crew completion file, the service-address file, the standard's assistance table) and about twelve columns.
+- Stops (targets for the generator): work orders and service orders only; every valve close; contractor rows doubled; Northbank by scheduled day; each lands outside the golden on every county it touches.
+- Realism: head-end valve shutoff is how AMI gas utilities with valve meters disconnect, contractor collections crews and late keying are ordinary, and scheduled-day dating in a field-activity file is a common default.
+
+**Ask 2: residential accounts on a low-income payment plan on 31 January 2026, by county (12 figures).**
+- H18 home: the assistance table's second indicator, beside the split; the call does not turn on it.
+- Primary devices, one per utility: Pine Harbor (D1, the same records under two key schemes): the October 2025 AMI conversion gave converted customers new account numbers, and the plan table carried each enrolment forward under the new number without ending the old row, so both are active and both residential; only the meter history shows one customer. Kestrel Valley (D9, a label that lies): the enrolment file's service_county is filled at intake from the applicant's mailing address, which differs from the premise county for post-office-box households; only the service-address file shows it. Northbank (D7, a holder after a transfer): Northbank keeps the HHAP indicator on the premise with the account that enrolled, and the indicator stays on the premise after that account closes until the next reconciliation; only the account history shows the enrolled account closed before 31 January.
+- Over-cleaning half: de-duplicating Pine Harbor by premise also removes genuine new enrolments by incoming tenants at premises whose earlier tenant was enrolled.
+- Hazards: H4 effective-dated plan rows (read on 31 January), H5 plans approved after 31 January with effective dates in January.
+- Path: seven files (three enrolment exports, Pine Harbor's meter-to-account history, Northbank's account history, the service-address file, the standard's assistance table) and about eleven columns.
+- Stops (asserted): every plan row in force; the enrollment file's own county; every Northbank HHAP premise on 31 January; each lands outside the golden on every county it touches (A-K2).
+- Realism: a renumbering that leaves the old rows open, an intake county taken from a mailing address, and a premise-level programme flag are each ordinary in utility customer systems.
+
+**Hazards (cross-cutting).**
+
+| Hazard | What it is | Ask 1 | Ask 2 |
+|---|---|---|---|
+| H1 status history | an order completed, then reversed as completed in error | Kestrel Valley counties up to -3 | none |
+| H2 attempts | orders closed unable to complete | up to +6 if counted | none |
+| H3 shared order type | Kestrel Valley's turn-off type for seasonal, customer and safety reasons | up to +40 if counted | none |
+| H4 effective dating | plan rows ended or started after 31 January | none | up to 25 per county |
+| H5 approval lag | plans approved in February effective in January | none | small, asserted |
+
+**Referees.** Ask 1: Pine Harbor's daily reads (an account with a nonpayment valve close shows nil use until its reopening), Kestrel Valley's billing extract (a disconnected account's final read), Northbank's crew completion file. Ask 2: Pine Harbor's meter history, the service-address file, Northbank's account history. None hands over a level.
+
+**No marker, no oracle.** Valve closes for nonpayment share the event type and command source with move-out and seasonal closes; the contractor's job numbers look like any job report; Northbank's activity date is the only date in its activity file; the converted accounts' old rows look like every enrolment; the intake county is a valid county code. No control total ties under one handling only.
+
+**The separation line.** Zero device and hazard rows in the main call's population, asserted by count: no device lives in a bill, a read interval touching January or the AMI shape; the valve-closed accounts' nil days move no county's award (asserted, C1); the converted accounts' old numbers have no bill after October 2025.
+
+**Cracker sheet.**
+
+| Ask figures | n | The cracker's path (lands R4, runs the battery, executes the standard) | Cracker |
+|---|---|---|---|
+| Ask 1, Pine Harbor counties | 3 | counts the work-order export: the valve closes are missing | miss |
+| Ask 1, Kestrel Valley counties | 5 | counts the CIS service orders: the late-keyed contractor jobs are missing | miss |
+| Ask 1, Northbank counties | 4 | dates by the activity file's scheduled day | miss |
+| Ask 2, Pine Harbor counties | 3 | counts active plan rows: converted customers twice | miss |
+| Ask 2, Kestrel Valley counties | 5 | uses the enrolment file's own county | miss |
+| Ask 2, Northbank counties | 4 | counts flagged premises on 31 January | miss |
+
+Mirror leakage: 0 per cent (the mirror stops at R1 and counts both asks exactly as the cracker does).
+
+Pair ceiling: 27.5 (planning weights 38 / 7 / 55 and r = 3: the cracker 38 + 7 + 0 = 45, the mirror 3 + 7 + 0 = 10).
+
+As built: Ask 1's golden runs 5 to 14 a county and Ask 2's 141 to 384; the cracker misses all twelve figures of each ask and every other stop misses every county it touches (checks.py A-K1, A-K2). Device rows: 13 contractor jobs keyed after the extract, 63 head-end nonpayment valve closes from December to February, 45 Northbank jobs completed on another day than scheduled, 307 converted Pine Harbor plans whose old row stays open, 152 Kestrel Valley enrollments under a neighbouring county, 23 stale Northbank flags.
+
+The honest exposure: a response that lands the split and also finds the valve-close log, the contractor report, the crew completion dates, the converted numbers, the intake county and the stale premise flags keeps the asks, and two such responses would fail the bar. Criteria: twelve awards, twelve county therms, twenty-four indicator figures, three chart criteria and the three files, about 54.
+
+## Pre-ship check (client two-layer standard)
+
+1. Domain: official time-series production in Survey Research & Official Statistics, a calendar-month county series built from billing-period returns by calendarizing each return against an indicator of activity inside its period (the AMI meters' daily reads); with another field's nouns in, a series whose activity is flat inside each period, day-proration is right and the task empties.
+2. Layer 1: three billing extracts in their own layouts, cancel and rebill lines, MDMS daily reads with VEE codes and daylight-saving gas days, register rollovers and monthly heating values, October AMI exchanges with new account numbers, unpaid accounts closed after ten business days, postal cities and ZIP codes crossing county lines, a contractor's workbook that drops leading zeros; real utility-system behaviour, none planted, none on the decisive step (SF11, S1).
+3. The flipping step is a methodological choice, the estimator of a stated estimand (the gas used on January's gas days): each straddling bill split by the measured daily shape rather than by days of service, a monthly mean shape, the billed month or the AMI sample scaled up; no field, code or stated rule decides it.
+4. Analyst test: after every field and rule is read right, day-proration (the standard calendarization) files Ottercreek at $1,135,000 and Brennock at $2,465,000 against $1,230,000 and $2,380,000, and every county outside the golden's bin.
+5. The standard defines the estimand (2.1 to 2.6, 3.3, Appendices A and B); the method stays open and the data force it: the AMI reads contradict flat use inside a bill (2.4 times the use a day in the cold snap) and within-month flatness, and the AMI accounts' own bills show smaller homes, while every shape-based variant lands in the golden's bins (SF11).
+6. No decoy: the thread and the notes state no method, and no file carries a county total, a share or a split.
+7. No certified-figure pin: no shipped figure ties to any split (Oracles: none).
+8. The lesson (calendarize a billing-period total by a measured indicator of activity inside the period, not by elapsed days) is taught by no earlier build: the nearest drivers on file sit at 0.09 or below and none spends this insight (guard heart, test.same_puzzle and test.same_driver PASS).
+- Asks: two indicators by county on rows outside the main population, one silent device per utility on each, the cracker missing all twelve figures of both (A-K1, A-K2); mirror leakage 0; pair ceiling 27.5.
+- Input gates: 22 files, 8 formats, a 1,062,385-row parquet, two distractors (Kestrel Valley's GS extract, Northbank's 2026-27 reading schedule), each deletion leaving the golden and both asks unchanged (G5).
+
+## Leak check
+
+- leak.py --asof 2026-04-20: REVIEW, no LEAK. Each line: the standard's clause number 2.4 equals the cold-snap ratio by coincidence (harmless, a section number); the standard's Appendix C lists the twelve counties, which is why it carries most words of the call (harmless, no figure or order); the stump terms in the standard, the notes and the prompt are ordinary words (account, calendar, register, months, Northbank) and no sentence names the split (harmless); the 2026-27 reading schedule's dates are a schedule's future dates (harmless, a distractor). Column-name tells found on the first sweep (FLAG, FLAG_SET_DT, a JSON key "generated") were renamed in the generator.
+- Reader, first read: no decisive-step sentence, no ranking file, no answer figure; question 5 executes the standard to the golden estimand and leaves the split open (the reader's own execution, an even split by days, is the stump the judge rules out). Fixed: the standard's mailing-address sentence and the notes' "entered on the application" (together they narrated the Kestrel Valley intake-county device); the service-point file credited to the Fund that combined it; Northbank activities cancelled before dispatch added (the activity and crew files no longer pair one to one).
+- Reader, second read (after the HHAP fix): the same answers on questions 1 to 5. Realism fixed: identifiers reissued in creation order with natural gaps (sorted premise numbers had stepped by a constant), the thread no longer recites the folder, two expository lines cut from the notes.
+- Reader, third read (after the realism fixes): the same answers on questions 1 to 5; nothing names the decisive step, nothing ranks or answers. Realism fixed after it: five counties renamed so the names no longer run alphabetically from A to H, and the thread's line flagging the GS extract and the reading schedule as extras cut. Left as they are: the notes' code definitions and the standard's definitions (the determinism of every figure rests on them) and the manifest's row counts.
+## Determinism check
+
+- Pass 1 (2026-10-12, isolated thread on the cut pack): DETERMINISTIC, FIX_NOW. Every committed figure reproduced (region 10,260,000 therms, twelve awards summing to $18,640,000, nearest rounding edge $1,433, every shape variant inside the bins, day-proration up to $95,600 off). The one fork: Northbank's HHAP file named premises only, so which account an enrollment belonged to was inferred (208, 155, 277 and 181 against 198, 154, 270 and 176 on the four Northbank counties). Fixed: the file names the enrolling account (ACCOUNT_NO), a flat field in the data notes.
+- Pass 2 (the re-judge): DETERMINISTIC, APPROVE; every figure reproduced again, Kestrel Valley's cycle bills fit the AMI shape far better than flat proration (cross-cycle CV 4.2 against 12.0 per cent). Optional pin taken: the contractor's report heads its rows as completed jobs. Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive step analytical.
 
 ## Tried and rejected
 
@@ -104,3 +269,13 @@ Layer 2: calendarizing billing-period returns against a measured indicator (fiel
 - 2026-10-12, architecture 2 draw: calendarizing fiscal-year returns to a calendar-year total rejected: across two consecutive fiscal years the seasonal shares sum to about one, so the total moves only with growth (about 1 per cent).
 - 2026-10-12, architecture 2 draw: a daily weather file as the indicator rejected: degree-day weighting is the textbook calendarization and a weather file is its cue; the AMI accounts' daily reads are the only daily evidence shipped.
 - 2026-10-12, architecture 2 draw: a state agency as the producer rejected at the guard: task127 v2 (drawn 2026-10-12, a government agency) has task123 in its window, and a statistics office would block task125; the producer is a statewide nonprofit administering the grant, the state its funder.
+- 2026-10-12, build: therms to the nearest thousand and shares to a hundredth of a per cent: rejected, because the defensible shape variants (the median, positive reads only, meters with a whole winter, each meter normalised) move a county's January by up to 630 therms and a share by up to 0.005 points, so three counties' therms and several shares split between bins; therms are reported to the nearest 10,000, awards to $5,000, and the share is not asked.
+- 2026-10-12, build: awards to the nearest $1,000: rejected for the same reason (the variants move an award by up to $1,130).
+- 2026-10-12, build: Northbank's heating value moving from 1.031 to 1.038 across the winter: rejected, because recomputing Northbank's January at each month's value (SF6's alternative) moved Farrish by $3,545 and out of its bin; the monthly values now run 1.034 to 1.036 from November to March and SF6 converges.
+- 2026-10-12, build: unpaid shutoffs left as zero-use accounts to the end of the winter, with the MDMS exporting every meter: rejected, the zero meters accumulating through February tilted the mean shape and a whole-winter-meters variant moved Brennock by 500 therms; an account not reconnected within ten business days is now closed with a final read, and the MDMS exports a meter's reads only while a residential account is on it.
+- 2026-10-12, build: the default path ending on Halvern and Brennock (prototype): in the built world day-proration gives Halvern $44,116 more, not less, because the first eighteen days of January are milder than the December and February days billed with them; the default path ends on Ottercreek and Brennock.
+- 2026-10-12, build: a placement with two counties at the same rounded award (Ashwell and Farrish at $1,690,000): rejected, the chart's order would tie; the placement requires twelve distinct rounded awards (M6).
+- 2026-10-12, build: the converted Pine Harbor plans' carry-forward keyed on the old account ending after the exchange: it never fired (the old account ends on the exchange day), so the device moved nothing; the carry-forward now keys on the old account ending on the exchange day.
+- 2026-10-12, stage 4: Northbank's HHAP premises file without the enrolling account: rejected on the judge's FIX_NOW, because which account a premise's enrollment belonged to was inferred from the start date and the account history, a residual fork on four Northbank counts; the file now carries ACCOUNT_NO, so the indicator counts enrolled accounts still open on 31 January.
+- 2026-10-12, stage 4: the standard's sentence that a mailing address does not determine the county, and a data-notes line calling SERVICE_COUNTY the county entered on the application: cut on the leak reader's question 6, because together they narrated the Kestrel Valley intake-county device; the standard's 2.6 (the county as recorded in the service-point records) and 4.2 still pin the indicators' county.
+- 2026-10-12, stage 4: county names running alphabetically from A to H, with the State's codes in that order (the third read's realism note): five counties carry other names in the pack (Sauvain, Rennick, Ottercreek, Wynnell, Pellow; the simulation keeps its internal keys, so no figure moved), and the codes follow the new alphabetical order; the thread's line flagging the GS extract and the reading schedule as left in the folder is cut.

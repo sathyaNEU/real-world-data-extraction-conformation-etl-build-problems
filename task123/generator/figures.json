@@ -1,0 +1,87 @@
+{
+ "awards_order": [
+  "Brennock",
+  "Rennick",
+  "Pellow",
+  "Halvern",
+  "Ashwell",
+  "Farrish",
+  "Tillery",
+  "Merrion",
+  "Ottercreek",
+  "Keswin",
+  "Sauvain",
+  "Wynnell"
+ ],
+ "awards_total_usd": "18,640,000",
+ "awards_usd": {
+  "Ashwell": "1,710,000",
+  "Brennock": "2,380,000",
+  "Farrish": "1,685,000",
+  "Halvern": "1,840,000",
+  "Keswin": "1,125,000",
+  "Merrion": "1,310,000",
+  "Ottercreek": "1,230,000",
+  "Pellow": "1,905,000",
+  "Rennick": "2,145,000",
+  "Sauvain": "910,000",
+  "Tillery": "1,525,000",
+  "Wynnell": "875,000"
+ },
+ "cold_snap_ratio": "2.4",
+ "largest": "Brennock",
+ "lipp_accounts_2026_01_31": {
+  "Ashwell": "217",
+  "Brennock": "384",
+  "Farrish": "198",
+  "Halvern": "270",
+  "Keswin": "176",
+  "Merrion": "215",
+  "Ottercreek": "211",
+  "Pellow": "344",
+  "Rennick": "282",
+  "Sauvain": "141",
+  "Tillery": "252",
+  "Wynnell": "154"
+ },
+ "np_disconnections_jan2026": {
+  "Ashwell": "13",
+  "Brennock": "13",
+  "Farrish": "9",
+  "Halvern": "14",
+  "Keswin": "5",
+  "Merrion": "11",
+  "Ottercreek": "8",
+  "Pellow": "13",
+  "Rennick": "12",
+  "Sauvain": "8",
+  "Tillery": "12",
+  "Wynnell": "8"
+ },
+ "region_therms_jan2026": "10,260,000",
+ "rounding": {
+  "award_usd": "5,000",
+  "therms": "10,000"
+ },
+ "smallest": "Wynnell",
+ "standard_clauses": [
+  "2.4",
+  "2.5",
+  "2.6",
+  "3.3"
+ ],
+ "therms_jan2026": {
+  "Ashwell": "940,000",
+  "Brennock": "1,310,000",
+  "Farrish": "930,000",
+  "Halvern": "1,010,000",
+  "Keswin": "620,000",
+  "Merrion": "720,000",
+  "Ottercreek": "680,000",
+  "Pellow": "1,050,000",
+  "Rennick": "1,180,000",
+  "Sauvain": "500,000",
+  "Tillery": "840,000",
+  "Wynnell": "480,000"
+ }
+}

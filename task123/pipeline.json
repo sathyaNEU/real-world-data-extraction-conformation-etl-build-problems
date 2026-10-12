@@ -1,37 +1,46 @@
 {
   "task": "task123",
   "owner": "oviya1301",
-  "status": "DRAWN",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design (architecture 2 drawn; readability screen, fork table, ladder, closure, asks to precut)",
+  "stage": 5,
+  "stage_name": "shipped",
   "updated": "2026-10-12",
-  "stump": "The default path prorates every straddling bill's therms across calendar months by days of service, as if the 19 to 31 January cold snap burned no more gas a day than the mild weeks around it, and files the day-prorated county split (prototype: Halvern $1,791,000, Brennock $2,455,000) against the AMI-shaped split (Halvern $1,853,000, Brennock $2,376,000).",
+  "stump": "The default path prorates every straddling bill's therms across calendar months by days of service and files the day-prorated split (Ottercreek $1,135,000, Brennock $2,465,000; the region's January 11,190,000 therms) against the split by the AMI meters' measured daily use (Ottercreek $1,230,000, Brennock $2,380,000; 10,260,000 therms), because the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap used 2.4 times the gas a day.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12",
+    "fails": "",
+    "pair_ceiling": 27.5,
+    "mirror_leakage": 0.0
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (0 LEAK) at --asof 2026-04-20, six lines answered in the design note",
+    "reader": "three isolated reads: no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; the literal reading of the standard executes to the golden estimand and leaves the split to the analysis (the readers' own execution, day-proration, is the stump); narration of two ask devices and realism tells fixed after the first and second reads"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "note": "draw checked 2026-10-12 against task500, task120, task121 (window) and against task124, task125, task127, whose windows include task123"
+    "heart": "WARN only (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; answered in the design note)",
+    "surface": "0 promoted pairs; personas Regina Fowler, Douglas Tyler, Alison Pacheco, all on the card",
+    "nearest": "0.09 (task94 v2 lineage)",
+    "clone_check": ""
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md",
+    "pass": 2,
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "fix_cycles": 1,
+    "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs)"
   },
   "returned": [],
-  "resume": "stage 2: design the ladder on the prototype (scratch t123v2/proto.py): fix the weather and read calendars so day-proration, the monthly-average shape and the AMI scale-up each clear the rounding on every county by a stated floor, then the readability screen, fork table, closure, asks and prompt.txt to precut exit 0. Pull origin/main before every guard check.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "source_note": "own draw (no seed note; the ET01 slot's world is not carried)",
   "history": {

@@ -1,0 +1,243 @@
+{
+  "task": "task123",
+  "title": "How much of the $18,640,000 Northern Heat Assistance Grant for winter 2026-27 each of the northern region's twelve counties should receive, in proportion to its residential natural gas use in January 2026",
+  "domain": "Survey Research & Official Statistics",
+  "subdomain": "seasonal adjustment and official time-series production (a calendar-month county series built from billing-period returns)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "05 (allocation to a fixed total): twelve county awards, with each county's January 2026 residential therms and two assistance indicators",
+  "as_of": "2026-04-20",
+  "deliverables": [
+    "jan2026_county_gas_series.csv",
+    "heating_grant_split_2026_27.xlsx",
+    "heating_grant_split_2026_27.png"
+  ],
+  "distractor_files": [
+    "KVG_GS_BILLING_EXTRACT_20260415.csv",
+    "NNG_READ_SCHEDULE_2026-27.csv"
+  ],
+  "input_gates": {
+    "files": 22,
+    "formats": [
+      "csv",
+      "docx",
+      "eml",
+      "json",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
+    "largest_file_rows": 1062385
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task123/generator/build.py (seeded, deterministic) around a fictional nonprofit, three fictional gas utilities, their contractor and a fictional twelve-county region; no real utility, agency, person or record is depicted.",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-04-20",
+  "generator": "task123/generator/build.py",
+  "files": [
+    {
+      "path": "County_Energy_Data_Standard_Ed3_2025.pdf",
+      "format": "pdf",
+      "bytes": 68116,
+      "rows": null,
+      "source": "Constructed: County Energy Data Standard for Home Energy Assistance, Edition 3",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "KVG_GS_BILLING_EXTRACT_20260415.csv",
+      "format": "csv",
+      "bytes": 535206,
+      "rows": 6063,
+      "source": "Constructed: Kestrel Valley Gas general service billing transactions, same reads",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "KVG_RES_BILLING_EXTRACT_20260415.csv",
+      "format": "csv",
+      "bytes": 12271284,
+      "rows": 139768,
+      "source": "Constructed: Kestrel Valley Gas residential (RS-1) billing transactions, reads 1 October 2025 to 14 April 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "KVG_SERVICE_ORDERS_20251201_20260203.csv",
+      "format": "csv",
+      "bytes": 62569,
+      "rows": 652,
+      "source": "Constructed: Kestrel Valley Gas residential service orders, activity 1 December 2025 to 3 February 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "KVG_WCP_ENROLLMENTS_20260415.csv",
+      "format": "csv",
+      "bytes": 103051,
+      "rows": 1418,
+      "source": "Constructed: Kestrel Valley Gas Winter Care Plan enrollments",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_ACCOUNT_PREMISE_HISTORY_20260415.csv",
+      "format": "csv",
+      "bytes": 526220,
+      "rows": 14654,
+      "source": "Constructed: Northbank Natural Gas R1 account history by premise",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_CREW_COMPLETIONS_DEC25_FEB26.csv",
+      "format": "csv",
+      "bytes": 16378,
+      "rows": 442,
+      "source": "Constructed: Northbank Natural Gas crew completions for the field activity",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_FIELD_ACTIVITY_DEC25_FEB26.csv",
+      "format": "csv",
+      "bytes": 20120,
+      "rows": 469,
+      "source": "Constructed: Northbank Natural Gas residential field activity, December 2025 to February 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_HHAP_PREMISES_20260131.csv",
+      "format": "csv",
+      "bytes": 30443,
+      "rows": 821,
+      "source": "Constructed: Northbank Natural Gas HHAP premises at 31 January 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_R1_READS_BIMONTHLY_20260415.txt",
+      "format": "txt",
+      "bytes": 2901678,
+      "rows": 37200,
+      "source": "Constructed: Northbank Natural Gas R1 bimonthly reads and billed usage (fixed width)",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "NNG_READ_SCHEDULE_2026-27.csv",
+      "format": "csv",
+      "bytes": 7968,
+      "rows": 240,
+      "source": "Constructed: Northbank Natural Gas 2026-27 meter reading schedule",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Northline_KVG_collections_jobs_Jan2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9544,
+      "rows": null,
+      "source": "Constructed: Northline Utility Services job report, Kestrel Valley collections batch, 5 to 16 January 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_HES_METER_EVENTS_DEC25_FEB26.csv",
+      "format": "csv",
+      "bytes": 214723,
+      "rows": 4152,
+      "source": "Constructed: Pine Harbor Energy head-end meter events, December 2025 to February 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
+      "format": "parquet",
+      "bytes": 1662183,
+      "rows": 1062385,
+      "source": "Constructed: Pine Harbor Energy MDMS daily reads of residential AMI meters",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_METER_ACCOUNT_HISTORY_20260415.csv",
+      "format": "csv",
+      "bytes": 1057278,
+      "rows": 19607,
+      "source": "Constructed: Pine Harbor Energy meter and account history",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_PAYMENT_ARRANGEMENTS_20260415.csv",
+      "format": "csv",
+      "bytes": 126263,
+      "rows": 2136,
+      "source": "Constructed: Pine Harbor Energy payment arrangements on residential accounts",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_RESIDENTIAL_BILLS_202510_202604.csv",
+      "format": "csv",
+      "bytes": 6755016,
+      "rows": 87587,
+      "source": "Constructed: Pine Harbor Energy residential bills, cycle and calendar-month",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PHE_WORK_ORDERS_DEC25_FEB26.json",
+      "format": "json",
+      "bytes": 79505,
+      "rows": null,
+      "source": "Constructed: Pine Harbor Energy residential work orders, December 2025 to February 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "RE_ NHAG 2026-27 county split - January 2026 series.eml",
+      "format": "eml",
+      "bytes": 1513,
+      "rows": null,
+      "source": "Constructed: Planning thread, 20 April 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "RHEF_data_notes_utility_extracts_2026-04.docx",
+      "format": "docx",
+      "bytes": 40083,
+      "rows": null,
+      "source": "Constructed: Ridgeline Home Energy Fund data notes on the April 2026 utility extracts",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest_2026-04-20.csv",
+      "format": "csv",
+      "bytes": 2763,
+      "rows": 21,
+      "source": "Constructed: Export manifest, 20 April 2026",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "service_points_northern_region_2026-04-15.csv",
+      "format": "csv",
+      "bytes": 3180477,
+      "rows": 48275,
+      "source": "Constructed: Service points of the three utilities in the twelve northern counties",
+      "date": "2026-04-20",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Brennock $2,380,000, Rennick $2,145,000, Pellow $1,905,000, Halvern $1,840,000, Ashwell $1,710,000, Farrish $1,685,000, Tillery $1,525,000, Merrion $1,310,000, Ottercreek $1,230,000, Keswin $1,125,000, Sauvain $910,000, Wynnell $875,000 (the region's January 2026 residential use 10,260,000 therms)",
+  "answer_source": "submission.md, block 1",
   "gap": [
     "time",
     "population"
@@ -37,9 +37,9 @@
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "pineharbor_mdms_daily_reads_2025-11_2026-03.parquet",
-    "rows": 3300000,
-    "entity": "one AMI gas meter's validated daily consumption on one gas day",
+    "file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
+    "rows": 1062385,
+    "entity": "one AMI gas meter's daily consumption on one gas day while a residential account is on it",
     "grain": "meter x gas day",
     "source": "synthetic"
   },
@@ -54,7 +54,11 @@
       "Kestrel Valley Gas",
       "Northbank Natural Gas",
       "Pine Harbor Energy",
-      "Northern Heat Assistance Grant"
+      "Northern Heat Assistance Grant",
+      "Ridgeline Home Energy Fund",
+      "Northline Utility Services",
+      "Home Heat Assistance Plan",
+      "Winter Care Plan"
     ],
     "people": [
       "Regina Fowler",
@@ -64,28 +68,29 @@
     ]
   },
   "deliverables": [
-    "jan2026_residential_gas_by_county.csv",
+    "jan2026_county_gas_series.csv",
     "heating_grant_split_2026_27.xlsx",
     "heating_grant_split_2026_27.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows rising several-fold over a run of extreme days late in one period, so splitting by elapsed days moves that run's use out of the period it fell in for every interval that straddles it, most for the units read every second period, while scaling the daily-measured sample up instead carries its members' smaller size.",
-  "driver_concrete": "Each county's calendar-January 2026 residential gas use is every Kestrel Valley, Northbank and non-AMI Pine Harbor bill's therms split across the days it covers by the daily use Pine Harbor's AMI accounts show (three to four times higher in the 19 to 31 January cold snap than in the mild weeks around it), not by days of service, so day-proration moves cold-snap therms out of January for every straddling interval, most in the counties Northbank reads every second month, and scaling the AMI accounts' January use up instead carries their newer, smaller homes.",
-  "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and splits the grant on those January totals, because use inside a bill follows the weather and the intervals straddling the late-January cold snap are split as if every day burned the same gas (the county figures are filled from the generator).",
+  "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows running well below the neighbouring periods' rate early in one period and far above it late in the same period, so splitting by elapsed days gives that period its neighbours' average rate and misallocates every straddling interval by where its reading dates fall, while scaling the daily-measured sample up instead carries its members' smaller size.",
+  "driver_concrete": "Each county's calendar-January 2026 residential gas use is every Kestrel Valley, Northbank and non-AMI Pine Harbor bill's therms split across the gas days it covers by the daily use Pine Harbor's AMI meters show (2.4 times as high a day in the 19 to 31 January cold snap as on 1 to 18 January), not by days of service, so day-proration gives January's mild days the colder December and February rate billed with them and moves the split by $23,412 to $95,625 a county (Ottercreek $1,135,000 against $1,230,000), and scaling the AMI accounts' January use up instead carries their newer, smaller homes.",
+  "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and files Ottercreek at $1,135,000 and Brennock at $2,465,000 (the region's January at 11,190,000 therms) against the golden $1,230,000 and $2,380,000, because use inside a bill follows the weather: the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap colder, and day-proration treats every day of a bill as burning the same gas.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the three billing extracts and the AMI reads and reads every field right prorates each bill to calendar months by days of service, the standard way to calendarize billing-period data, which moves the late-January cold snap's therms out of January wherever an interval straddles it and under-allocates the counties read every second month, although the AMI accounts' daily reads show use is far from flat inside a bill.",
+  "analyst_test": "A strong analyst who cleans the three billing extracts and the AMI reads and reads every field right prorates each straddling bill to calendar months by days of service, the standard way to calendarize billing-period data; with the first eighteen days of January milder than the December and February days billed with them and a cold snap at the end, that inflates every day-prorated bill's January (the region by 9 per cent) while Pine Harbor's calendar-billed AMI accounts stay exact, and files Ottercreek at $1,135,000 against $1,230,000, although the AMI meters' daily reads show use is far from flat inside a bill.",
   "domain_test": "Calendar-month statistics built from billing-period returns are what an official statistics producer calendarizes against an indicator of activity inside each period (here the AMI accounts' daily reads), as statistical offices calendarize fiscal-period returns with a monthly indicator; the stump lives in heating use swinging with the weather inside each read interval, so moving the nouns to a series whose activity is flat within periods leaves day-proration right and the task empty.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:calendar-month-use-from-read-intervals-by-a-measured-daily-shape",
   "layer1": [
-    "three utilities' billing extracts in their own layouts: a 21-cycle monthly-read CIS export, a bimonthly-read export carrying prior and current read dates, and a utility that bills its AMI accounts on calendar months while its other accounts still read on cycles",
+    "three utilities' billing extracts in their own layouts: a 21-cycle monthly-read CIS export with service-period dates, a fixed-width bimonthly-read export carrying prior and current read dates, four- and five-digit registers that roll over and a monthly heating value, and a utility that bills its AMI accounts on calendar months while its other accounts still read on cycles",
     "cancel and rebill transactions: a corrected bill carried as a reversing line and a replacement line under the original bill number",
-    "an MDMS daily-read export keyed by meter with VEE quality codes (validated, estimated, edited), daylight-saving gas days and register rollovers",
-    "meter-to-account history with AMI installations during the winter, each leaving a short transition bill from the last cycle read to month end",
-    "premise county from a service-address file whose ZIP codes cross county lines",
-    "one utility billing CCF with a monthly heating-value factor beside billed therms",
-    "the state energy data standard (calendar-month residential therms by county) and each utility's field notes on its read-date convention"
+    "an MDMS daily-read export keyed by meter with VEE codes (validated, estimated) and daylight-saving gas days of 25 and 23 hours, exported only while a residential account is on the meter",
+    "meter-to-account history with the October AMI exchanges, each leaving a short transition bill and a new account number",
+    "unpaid accounts closed with a final read ten business days after a disconnection, and move-out final reads",
+    "premise county from a service-point file whose postal cities and ZIP codes cross county lines",
+    "account numbers that lose their leading zero in a contractor's workbook",
+    "the State's county energy data standard (residential rate schedules, gas days, service periods, therms as billed) and the Fund's notes on each utility's extracts"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
