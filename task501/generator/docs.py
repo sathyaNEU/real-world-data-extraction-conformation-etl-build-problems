@@ -135,21 +135,15 @@ def options(path, opts, reg_people):
     for k in W.OPTION_KEYS:
         o = W.OPTIONS[k]
         parts = opts[k]
-        if k != "E":
-            p = parts[0]
-            a, b = p["years"]
-            rows.append([k, "%d to %d" % (a, b), "%d to %d" % (2027 - b, 2027 - a), o["setting"], "{:,}".format(p["people"]),
-                         "{:,}".format(p["susceptible"]), "%d%%" % round(o["uptake"] * 100), "{:,}".format(p["made"]),
-                         "{:,}".format(o["cost"])])
-        else:
-            for i, p in enumerate(parts):
-                a, b = p["years"]
-                rows.append(["E" if i == 0 else "", "%d to %d" % (a, b), "%d to %d" % (2027 - b, 2027 - a),
-                             o["setting"] if i == 0 else "", "{:,}".format(p["people"]), "{:,}".format(p["susceptible"]),
-                             "%d%%" % round(o["uptake"] * 100), "{:,}".format(p["made"]), ""])
-            rows.append(["", "1993 to 2002", "25 to 34", "Option E in total", "{:,}".format(sum(p["people"] for p in parts)),
-                         "{:,}".format(sum(p["susceptible"] for p in parts)), "", "{:,}".format(sum(p["made"] for p in parts)),
-                         "{:,}".format(o["cost"])])
+        a, b = o["years"]
+        rows.append([k, "%d to %d" % (a, b), "%d to %d" % (2027 - b, 2027 - a), o["setting"],
+                     "{:,}".format(sum(p["people"] for p in parts)), "{:,}".format(sum(p["susceptible"] for p in parts)),
+                     "%d%%" % round(o["uptake"] * 100), "{:,}".format(sum(p["made"] for p in parts)),
+                     "{:,}".format(o["cost"])])
+    e = opts["E"]
+    e_split = ("Of option E's %s expected people made immune, %s are among those born %d to %d and %s among those born "
+               "%d to %d." % ("{:,}".format(sum(p["made"] for p in e)), "{:,}".format(e[0]["made"]), e[0]["years"][0],
+                              e[0]["years"][1], "{:,}".format(e[1]["made"]), e[1]["years"][0], e[1]["years"][1]))
     s = [Paragraph(W.RIO.upper(), st["small"]),
          Paragraph("Autumn 2027 MMR catch-up: options", st["h1"]),
          Paragraph("For the Director of Public Health. Prepared by %s, Regional Immunisation Manager, 9 June 2027."
@@ -176,7 +170,7 @@ def options(path, opts, reg_people):
                    "of birth. Expected people made immune: susceptible people expected to become immune (estimated "
                    "susceptible x expected uptake among the susceptible x 0.97, the effectiveness of a catch-up course), "
                    "to the nearest ten; doses given to people already immune do not count. Cost: vaccine, staff, venues "
-                   "and invitations.", st["small"]),
+                   "and invitations. " + e_split, st["small"]),
          Paragraph("4 Delivery", st["h2"]),
          P("4.1&nbsp;&nbsp;Options A and B use the school immunisation team's autumn sessions; the team can add catch-up "
            "sessions in 61 primary and 38 post-primary schools between 15 September and 20 November. Further education "
@@ -184,8 +178,8 @@ def options(path, opts, reg_people):
          P("4.2&nbsp;&nbsp;Option C runs clinics on the three third-level campuses in Freshers' weeks and invites the rest "
            "by GP letter. Options D and E invite by letter and text message through GP practices and pharmacies, and E "
            "adds workplace clinics at the four largest employers."),
-         P("4.3&nbsp;&nbsp;Invitation lists come from the regional immunisation register; people not on it are reached "
-           "through schools, colleges, practices and employers."),
+         P("4.3&nbsp;&nbsp;Invitation lists for the option funded will be drawn from the regional immunisation register; "
+           "people not on it will be reached through schools, colleges, practices and employers."),
          Paragraph("5 Next step", st["h2"]),
          P("5.1&nbsp;&nbsp;The director's winter assessment under PS-07 section 3, and the recommendation to the "
            "executive management team.")]

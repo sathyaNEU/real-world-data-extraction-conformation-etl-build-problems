@@ -1,5 +1,5 @@
 """The generator's assertions on the shipped pack and goldens: the input gates, the main call's golden and every
-semantic fork row (SF1 to SF16), the rungs below it, the bins, the asks' goldens and every stop of their ladders, the
+semantic fork row (SF1 to SF17), the rungs below it, the bins, the asks' goldens and every stop of their ladders, the
 separation of the call's files from the asks' devices, the distractors' deletion test, the realism sweep and the
 container scrub. Every check prints one line; any failure raises."""
 import csv
@@ -150,6 +150,10 @@ def run(target, golden_dir, w, c):
     T = inp.P * Nn[:, None]
     tol = 0.005 * (Nn[:, None] + Nn[None, :]) + 1e-6
     ok(bool(np.all(np.abs(T - T.T) <= tol)), "Table 2 is reciprocal on Table 1's population to its two-decimal rounding")
+    ratio = (Nn % 1000) / (Nn // 1000)
+    ok(len(set(Nn.tolist())) == len(Nn) and float(np.ptp(ratio)) > 0.5,
+       "realism: Table 1's populations are distinct and their last three digits follow no fixed share of the thousands "
+       "(spread %.2f)" % float(np.ptp(ratio)))
     ok(abs(c["immune_pct"] - 94.6) < 0.05, "the region is %.2f per cent immune" % c["immune_pct"])
     # ---------------------------------------------------------------- the asks
     f = B.ask_frames(target)
@@ -174,6 +178,28 @@ def run(target, golden_dir, w, c):
     lines_in = set(log["line_ref"]) & ext
     reps_needed = set(log.loc[log["line_ref"].isin(lines_in) & (log["outcome"] == "Replaced by corrected line"), "replaced_by"])
     ok(reps_needed <= ext, "ask 2 fairness: every replaced line in the extract has its corrected line loaded")
+    # SF17: a GP return line under a query the office had not closed. The register chased every query still open when
+    # the 30 June extract was prepared, so each carries its outcome and closing date by then, and reading an unresolved
+    # query as not standing selects the same doses (C1).
+    ok(set(log["outcome"]) == {"Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice"},
+       "SF17: every query in the log has an outcome, none open")
+    ok(bool((log["closed_on"] != "").all()) and bool((log["raised_on"] < log["closed_on"]).all())
+       and log["closed_on"].max() <= W.AS_AT.isoformat(),
+       "SF17: every query closed after it was raised and by 30 June 2027 (latest %s)" % log["closed_on"].max())
+    q_in = log[log["line_ref"].isin(ext)]
+    ok(len(q_in) > 500 and bool((q_in["closed_on"] <= W.AS_AT.isoformat()).all()),
+       "SF17: the %d queries on lines in the events extract all closed by 30 June 2027" % len(q_in))
+    st = A.ask2(f["people"], f["events"], log, f["merges"], ev_how="drop_unresolved")
+    ok(st == a2, "SF17: lines under a query not closed as confirmed by 30 June 2027 dropped, every ask 2 figure unchanged")
+    chased = [r for r in w["log"] if r.get("chased")]
+    on_ext = sorted(r["line_ref"] for r in chased if r["line_ref"] in ext)
+    ok(len(chased) == 6 and on_ext == ["GPR-202704-GP3925-001", "GPR-202704-GP4195-001", "GPR-202704-GP4595-001"],
+       "SF17: %d confirmed queries still open at the extract were chased and closed, %d of them on extract lines (%s)"
+       % (len(chased), len(on_ext), ", ".join(on_ext)))
+    gone = A.ask2(f["people"], f["events"][~f["events"]["source_ref"].isin(set(on_ext))], log, f["merges"])
+    moved = {"%s %s" % (k, x): gone[k][x] - a2[k][x] for k in a2 for x in ("none", "one") if gone[k][x] != a2[k][x]}
+    ok(moved == {"C none": 1, "C one": -1, "D one": 2, "E one": 2},
+       "SF17: had those three stayed open and been dropped, ask 2 would move by %s; closed as confirmed, they stand" % moved)
     m = dict(zip(f["merges"]["retired_number"], f["merges"]["surviving_number"]))
     ok(not (set(m) & set(f["people"]["person_id"])), "ask 2: no retired registration is active")
     ok(all(len({m.get(x)}) == 1 for x in m), "ask 2: every retired registration has one surviving registration")

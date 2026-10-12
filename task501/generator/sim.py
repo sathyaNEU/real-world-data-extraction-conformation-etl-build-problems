@@ -394,6 +394,17 @@ QUERY_REASONS = {
 }
 
 
+def _chased(raised, took, least=6):
+    """A query the practice had confirmed but the office had not yet closed when the 30 June extract was prepared: the
+    register chased it and closed it by the as-at date. The drawn time to close is folded into the days left, never
+    under the office's usual six where there is room; None when it was raised too late to close by then."""
+    room = (W.AS_AT - raised).days
+    if room < 1:
+        return None
+    lo = min(least, room)
+    return raised + dt.timedelta(days=lo + (took - lo) % (room - lo + 1))
+
+
 def queries(people, events, gp_lines):
     """The immunisation office's queries on GP return lines from 2005: about 1.25 per cent of lines; replaced (the
     dose keyed to a sibling, or a wrong date), withdrawn (sent in error, or a dose already returned) or confirmed as
@@ -426,11 +437,14 @@ def queries(people, events, gp_lines):
             outcome = "confirmed"
             sub = ["batch", "interval", "notreg", "date_birth"][int(rng.integers(0, 4))]
         raised = e.loaded + dt.timedelta(days=int(rng.integers(5, 40)))
-        closed = raised + dt.timedelta(days=int(rng.integers(6, 75)))
-        if closed > W.RUN:
-            closed = None
-            if outcome != "confirmed":
+        took = int(rng.integers(6, 75))
+        closed = raised + dt.timedelta(days=took)
+        if outcome == "confirmed" and closed > W.AS_AT:
+            closed = _chased(raised, took)
+            if closed is None:
                 continue
+        elif closed > W.RUN:
+            continue
         qn += 1
         replaced_by = ""
         if outcome == "replaced":
@@ -490,7 +504,8 @@ def queries(people, events, gp_lines):
         rows.append(dict(query_ref="Q%02d-%04d" % (raised.year % 100, qn), line_ref=ref, practice=p.practice,
                          raised=raised, reason=QUERY_REASONS[sub], outcome={"replaced": "Replaced by corrected line",
                          "withdrawn": "Withdrawn by practice", "confirmed": "Confirmed as sent"}[outcome],
-                         replaced_by=replaced_by, closed=closed, kind=outcome))
+                         replaced_by=replaced_by, closed=closed, kind=outcome,
+                         chased=outcome == "confirmed" and raised + dt.timedelta(days=took) > W.AS_AT))
     events.extend(new_events)
     return rows
 
@@ -516,20 +531,24 @@ def other_queries(n_existing):
             out, kind = "Confirmed as sent", "confirmed"
             reason = QUERY_REASONS[["batch", "interval", "infant", "date_birth"][int(rng.integers(0, 4))]]
         raised = d + dt.timedelta(days=int(rng.integers(30, 70)))
-        closed = raised + dt.timedelta(days=int(rng.integers(6, 75)))
+        took = int(rng.integers(6, 75))
+        closed = raised + dt.timedelta(days=took)
         if raised > W.RUN:
             continue
-        if closed > W.RUN:
-            closed = None
-            if kind != "confirmed":
+        if kind == "confirmed" and closed > W.AS_AT:
+            closed = _chased(raised, took)
+            if closed is None:
                 continue
+        elif closed > W.RUN:
+            continue
         cl = closed or raised
         rep = ""
         if kind == "replaced":
             rr = D(cl.year, cl.month, 1)
             rep = "GPR-%04d%02d-%s-%03d" % (rr.year, rr.month, practice, 900 + int(rng.integers(1, 60)))
         rows.append(dict(query_ref=None, line_ref=ref, practice=practice, raised=raised, reason=reason, outcome=out,
-                         replaced_by=rep, closed=closed, kind=kind))
+                         replaced_by=rep, closed=closed, kind=kind,
+                         chased=kind == "confirmed" and raised + dt.timedelta(days=took) > W.AS_AT))
     return rows
 
 

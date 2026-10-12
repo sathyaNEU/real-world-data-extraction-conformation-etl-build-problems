@@ -40,34 +40,30 @@ def call_inputs(target):
 
 
 def options_from_paper(target):
-    """The options paper's table read back from the PDF text: per option and year-of-birth span, the people, the
-    estimated susceptible and the expected people made immune."""
+    """The options paper's table read back from the PDF text: per option, its years of birth, the people, the
+    estimated susceptible and the expected people made immune; option E as the note under the table splits its people
+    made immune between its two spans of years."""
     import re
     from pypdf import PdfReader
     text = " ".join(p.extract_text() for p in PdfReader(path(target, "options")).pages)
     text = re.sub(r"\s+", " ", text)
+    num = lambda x: int(x.replace(",", ""))
     spans = list(re.finditer(r"(\d{4}) to (\d{4}) (\d{1,2}) to (\d{1,2}) ", text))
-    rows = []
+    out = {k: [] for k in W.OPTION_KEYS}
     for k, m in enumerate(spans):
         chunk = text[m.end(): spans[k + 1].start() if k + 1 < len(spans) else m.end() + 600]
         r = re.search(r"(\d{1,3}(?:,\d{3})+) (\d{1,3}(?:,\d{3})*) (\d{2})% (\d{1,3}(?:,\d{3})*)", chunk)
         if not r:
             continue
-        num = lambda x: int(x.replace(",", ""))
-        rows.append(dict(years=(int(m.group(1)), int(m.group(2))), people=num(r.group(1)), susceptible=num(r.group(2)),
-                         made=num(r.group(4))))
-    out = {k: [] for k in W.OPTION_KEYS}
-    seen = set()
-    for r in rows:
-        y = r["years"]
-        if y == (1993, 1997) and "D" not in seen:
-            out["D"].append(r)
-            seen.add("D")
-        elif y in ((1993, 1997), (1998, 2002)):
-            out["E"].append(r)
-        else:
-            k = next(k for k in "ABC" if W.OPTIONS[k]["years"] == y)
-            out[k].append(r)
+        y = (int(m.group(1)), int(m.group(2)))
+        key = next(o for o in W.OPTION_KEYS if W.OPTIONS[o]["years"] == y)
+        out[key].append(dict(years=y, people=num(r.group(1)), susceptible=num(r.group(2)), made=num(r.group(4))))
+    s = re.search(r"Of option E.s ([\d,]+) expected people made immune, ([\d,]+) are among those born (\d{4}) to (\d{4}) "
+                  r"and ([\d,]+) among those born (\d{4}) to (\d{4})", text)
+    parts = [dict(years=(int(s.group(3)), int(s.group(4))), made=num(s.group(2))),
+             dict(years=(int(s.group(6)), int(s.group(7))), made=num(s.group(5)))]
+    assert len(out["E"]) == 1 and num(s.group(1)) == out["E"][0]["made"] == sum(p["made"] for p in parts)
+    out["E"] = parts
     return out
 
 

@@ -43,13 +43,18 @@ def ask1(people, how="golden"):
 
 def clean_events(events, log, how="golden"):
     """golden: drop events loaded from GP lines the log shows replaced or withdrawn; keep lines confirmed as sent.
-    all: keep every loaded event. drop_queried: drop every queried line."""
+    all: keep every loaded event. drop_queried: drop every queried line. drop_unresolved: keep a queried line only
+    where the log shows it confirmed as sent and closed by the as-at date (an open query read as not standing; SF17)."""
     ev = events
     if how == "golden":
         bad = set(log.loc[log["outcome"].isin(["Replaced by corrected line", "Withdrawn by practice"]), "line_ref"])
         ev = ev[~ev["source_ref"].isin(bad)]
     elif how == "drop_queried":
         ev = ev[~ev["source_ref"].isin(set(log["line_ref"]))]
+    elif how == "drop_unresolved":
+        stands = ((log["outcome"] == "Confirmed as sent") & (log["closed_on"] != "")
+                  & (log["closed_on"] <= W.AS_AT.isoformat()))
+        ev = ev[~ev["source_ref"].isin(set(log.loc[~stands, "line_ref"]))]
     elif how != "all":
         raise ValueError(how)
     return ev

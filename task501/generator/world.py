@@ -111,6 +111,11 @@ CONTACT = dict(s_prim=7.0, s_mid=7.0, s_sec=10.8, sig_prim=1.0, sig_sec=1.2, wor
 SURVEY_PARTICIPANTS = [512, 548, 603, 641, 466, 421, 455, 507, 533, 509, 471, 437, 398, 352, 518]
 SURVEY_DISPERSION = 1.6
 SURVEY_SEED = 9024
+# Table 1 publishes the statistics office's 1 January 2023 estimate by group, not the smooth national shape: each
+# group within about a quarter of a per cent of the shape's total (stream kept: Table 2 stays reciprocal on it to its
+# rounding, the weighted shares unchanged, the golden family's largest move 0.006 and nearest edge 0.033)
+NAT_PUBLISHED_SEED = SEED + 1358
+NAT_PUBLISHED_SD = 0.0025
 
 # --- local health office areas -------------------------------------------------------------------------------------
 # the region's areas after the 1 July 2024 revision, and before it (LH27 Monaghan West, merged into LH26)

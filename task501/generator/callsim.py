@@ -50,6 +50,14 @@ def to_groups(v):
     return np.array([v[GROUP_OF_AGE == g].sum() for g in range(W.NG)], dtype=float)
 
 
+def published_population(nat):
+    """The survey's Table 1 population by group: the statistics office's estimate for 1 January 2023, each group within
+    about a quarter of a per cent of the national shape's total (its own stream, so nothing else moves)."""
+    rng = np.random.default_rng(W.NAT_PUBLISHED_SEED)
+    N = to_groups(nat)
+    return np.round(N * (1 + rng.normal(0, W.NAT_PUBLISHED_SD, size=len(N)))).astype(int)
+
+
 # --- the contact model: contacts per participant per day by single year, then by survey group -------------------------
 def _gauss(d, s):
     return np.exp(-d * d / (2.0 * s * s))

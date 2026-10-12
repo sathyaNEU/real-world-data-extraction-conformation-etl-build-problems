@@ -58,9 +58,14 @@ def call(target):
                          r"(\d{1,3}(?:,\d{3})*)", text):
         span = (int(m.group(1)), int(m.group(2)))
         made.setdefault(span, []).append(int(m.group(6).replace(",", "")))
+    sp = re.search(r"Of option E.s ([\d,]+) expected people made immune, ([\d,]+) are among those born (\d{4}) to "
+                   r"(\d{4}) and ([\d,]+) among those born (\d{4}) to (\d{4})", text)
+    n = lambda x: int(x.replace(",", ""))
+    e_parts = [((int(sp.group(3)), int(sp.group(4))), n(sp.group(2))), ((int(sp.group(6)), int(sp.group(7))), n(sp.group(5)))]
+    assert n(sp.group(1)) == made[(1993, 2002)][0] == sum(x for _, x in e_parts), "option E's split"
     eff = {"A": [((2013, 2017), made[(2013, 2017)][0])], "B": [((2008, 2012), made[(2008, 2012)][0])],
            "C": [((2003, 2007), made[(2003, 2007)][0])], "D": [((1993, 1997), made[(1993, 1997)][0])],
-           "E": [((1993, 1997), made[(1993, 1997)][1]), ((1998, 2002), made[(1998, 2002)][0])]}
+           "E": e_parts}
     q = 15.0 / max(abs(np.linalg.eigvals(M)))
 
     def R(Sg):
@@ -89,10 +94,15 @@ def residents(target):
     return people
 
 
-def doses(target, people):
+def doses(target, people, unresolved_out=False):
+    """Valid doses per resident. unresolved_out: also drop any line whose query is not closed as confirmed by the
+    as-at date (an open query read as not standing); the counts must not move."""
     surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
-    drop = {r["line_ref"] for r in rows(target, find(target, "gp_return_queries"))
-            if r["outcome"] in ("Replaced by corrected line", "Withdrawn by practice")}
+    log = rows(target, find(target, "gp_return_queries"))
+    drop = {r["line_ref"] for r in log if r["outcome"] in ("Replaced by corrected line", "Withdrawn by practice")}
+    if unresolved_out:
+        drop |= {r["line_ref"] for r in log if r["outcome"] != "Confirmed as sent" or not r["closed_on"]
+                 or r["closed_on"] > "2027-06-30"}
     asat = dt.date(2027, 6, 30)
     per = {}
     for r in rows(target, find(target, "register_mmr_events")):
@@ -150,11 +160,17 @@ def main(argv):
         bad.append(("call", below, "Option B"))
     people = residents(target)
     cnt = doses(target, people)
+    cnt_u = doses(target, people, unresolved_out=True)
+    if any(r["outcome"] not in ("Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice")
+           for r in rows(target, find(target, "gp_return_queries"))):
+        bad.append(("query log", "an unresolved query", "every query closed"))
     cs = cases(target)
     for k, (a, b) in OPTS.items():
         res = [p for p, (dob, here) in people.items() if here and a <= dob.year <= b]
         n0 = sum(1 for p in res if cnt.get(p, 0) == 0)
         n1 = sum(1 for p in res if cnt.get(p, 0) == 1)
+        if (n0, n1) != (sum(1 for p in res if cnt_u.get(p, 0) == 0), sum(1 for p in res if cnt_u.get(p, 0) == 1)):
+            bad.append(("open-query reading " + k, "moves the dose counts", "no move"))
         conf = sum(1 for y, imp in cs if a <= y <= b)
         imp = sum(1 for y, i in cs if a <= y <= b and i)
         for label, val, key in (("residents", len(res), "ask1_register_residents"), ("none", n0, "ask2_no_valid_dose"),
@@ -166,7 +182,8 @@ def main(argv):
         for b in bad:
             print("VERIFY MISMATCH", b)
         raise SystemExit(1)
-    print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers, the call, 25 ask figures")
+    print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers, the call, 25 ask figures; "
+          "the dose counts do not move with unresolved queries read as not standing")
 
 
 if __name__ == "__main__":

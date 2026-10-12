@@ -104,7 +104,7 @@ def write_survey(path, P, nat):
     t1.append(["Table 1. Participants and population by age group"])
     t1["A1"].font = Font(bold=True)
     t1.append(["Age group", "Participants", "Participants, weighted (%)", "Population, 1 January 2023"])
-    N = CS.to_groups(nat)
+    N = CS.published_population(nat)
     wshare = N / N.sum() * 100
     for k, lab in enumerate(W.GROUP_LABELS):
         t1.append([lab, W.SURVEY_PARTICIPANTS[k], round(float(wshare[k]), 1), int(N[k])])

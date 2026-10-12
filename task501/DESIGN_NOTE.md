@@ -150,9 +150,9 @@ pitfall is the field's own: herd immunity thresholds are taught as 1 - 1/R0 agai
 
 ## Semantic fork table
 
-One row per term in the main ask and per convention the main computation needs. The stump (the estimator of the
-reproduction number) is not a reading and has no row: both methods compute the same literal estimand, and only the
-survey's structure separates them (Literal reader).
+One row per term in the main ask and per convention the main computation needs, and SF17, the one ask convention the
+stage-4 judge found open. The stump (the estimator of the reproduction number) is not a reading and has no row: both
+methods compute the same literal estimand, and only the survey's structure separates them (Literal reader).
 
 | SF | Term or convention | Golden reading | Alternative and the call under it | Ruled out by |
 |---|---|---|---|---|
@@ -172,6 +172,7 @@ survey's structure separates them (Literal reader).
 | SF14 | more than one option below one | the cheapest | the lowest reproduction number | standard 3.6; only B is below one (C1) |
 | SF15 | rounding | one decimal on the unrounded figure | rounding the inputs first | the profile's one-decimal per cent and the matrix's two decimals are the inputs; every figure at least 0.03 from a rounding edge (asserted) |
 | SF16 | the region | the four counties' residents in the projection | the register's residents | standard 3.3 (the region's population); the register is not a population count |
+| SF17 | Ask 2: a GP return line under a query | the line stands unless the query log shows it replaced or withdrawn | a line whose query is still open read as not standing: as built at stage 3, six confirmed queries were open at the pull and three sat on loaded events in the option cohorts, moving C none and one by 1 and D and E one by 2 (judge-task501c) | closed in the data, C1: the register chased every query still open when the 30 June extract was prepared, so each carries its outcome and a closing date by 30 June 2027 (the six confirmed as sent, closed 11 to 30 June), and dropping every line not closed as confirmed by then moves no figure (asserted in checks.py and verify.py) |
 
 ## Ladder
 
@@ -248,6 +249,12 @@ R0 times the susceptible share, is the same estimand computed under random mixin
 15-19-year-olds' contacts with their own group are several times that group's population share), so it is the easy
 method on the same literal estimand, not another reading of it. Re-run on the finished pack at stage 3 (Build record).
 
+Method (the stage-4 judge's optional pin, declined): nothing names the age-structured method because the data forces
+it, since Table 2's contacts by five-year group, the profile's immunity by year of birth (PS-07 3.4), the projection by
+age and year of birth on the assessment date (3.3) and R0 defined for the region with nobody immune (3.2) are used
+together only by the eigenvalue, R0 times the average share leaves Table 2 unread, and a pin would file the decisive
+step as a rule to execute.
+
 ## Oracles
 
 - The options paper's people per option, estimated susceptible and expected people made immune: inputs every method
@@ -314,6 +321,8 @@ numbers).**
   high (none 10 to 21, one 9 to 134).
 - C1: the guidelines' interval read from the previous valid dose or from any previous dose gives the same count for
   every person (asserted); no dose sits within three days of a first birthday or 24 to 32 days after another.
+- C1 (SF17): every query in the log has its outcome and a closing date by 30 June 2027, so a line under an open query
+  never arises and keeping or dropping one moves no figure (asserted).
 - Hazards: Ask 1's LH27 device (the population); infant doses from the 2014 outbreak response (before the first
   birthday, the guidelines' rule, seen and repaired right); a school-team dose keyed again by the GP from the card within
   28 days (the interval rule); pharmacy doses dated 1 and 2 July 2027 in the 3 July run (the as-of); four school
@@ -406,7 +415,7 @@ them were imported" (H23).
   contact survey, the regional projection, the immunity profile and the options paper's arithmetic; `callmodel.py` the
   next-generation matrix, the golden, the family and the rungs; `sim.py` the register (people, events, merges) and the
   surveillance records; `asks.py` the three asks and every stop; `pack.py`/`docs.py` the files; `golden.py` the two
-  deliverables, figures.json and metadata.json; `writeup.py` renders submission.md from figures.json; `checks.py` (205
+  deliverables, figures.json and metadata.json; `writeup.py` renders submission.md from figures.json; `checks.py` (212
   assertions) and `verify.py` (independent, csv + openpyxl + pdfplumber) recompute; `build.py` runs it and the
   byte-identical rebuild.
 - **Main call, built:** 538,039 residents, 94.6 per cent immune. Reproduction number without a catch-up 1.311 (R0 x
@@ -419,24 +428,36 @@ them were imported" (H23).
 - **Asks, built:** Ask 1 35,346 / 33,217 / 29,398 / 30,625 / 57,865. Ask 2 (none, one) 3,542/4,724, 4,285/6,094,
   2,859/3,960, 4,971/7,302, 8,530/11,788. Ask 3 (confirmed, imported) 9/2, 10/2, 11/3, 10/3, 16/5. Every stop asserted
   in checks.py; the main call computes from its five files alone and is unchanged with both distractors deleted.
-- **Free gates (2026-10-12):** generator checks 205 PASS; verify.py PASS; two builds byte-identical (19 pack files, 2
-  goldens, figures.json); input gates 19 files, 5 formats (csv, docx, pdf, txt, xlsx), 278,746-row events extract, 2
-  distractors; figures_check.py exit 0 (57 figures); realism sweep in checks.py (no round or uniform counts, no method
-  word, no library name, personas from the card); golden-realism editing pass done, containers scrubbed (audit clean);
-  leak.py REVIEW (no LEAK), sweep 11 clean; guard.py surface 0 hard tells (two card-axis pairs promoted, below); guard.py
-  heart WARN (no BLOCK).
+- **Free gates (2026-10-12, rebuilt after the stage-4 fix):** generator checks 212 PASS; verify.py PASS, the open-query
+  reading included; two builds byte-identical (19 pack files, 2 goldens, figures.json); input gates 19 files, 5 formats
+  (csv, docx, pdf, txt, xlsx), 278,746-row events extract, 2 distractors; figures_check.py exit 0 (57 figures); precut.py
+  exit 0 (17 fork rows); voice-check.py exit 0; realism sweep in checks.py (no round or uniform counts, no method word,
+  no library name, personas from the card, Table 1's populations distinct); golden-realism editing pass done at stage 3
+  (goldens byte-identical since), containers scrubbed (audit clean); leak.py REVIEW (no LEAK), sweep 11 clean; guard.py
+  surface 0 hard tells (two card-axis pairs promoted, below); guard.py heart PASS; freeze.py check --mode determinism
+  PASS.
+- **Stage 4 (2026-10-12):** the leak reader quoted nothing for questions 1 to 4 and its own reconstruction named B; its
+  realism notes were fixed in the generator: the options paper lists option E on one row with its split in the note
+  under the table, and 4.3 says invitation lists for the option funded will be drawn from the register (the paper cited
+  no extract; 4.3 was its only register sentence); the survey's Table 1 publishes the statistics office's populations,
+  Table 2 unchanged; the standard's revision note kept. The judge (judge-task501c) found the main call forced (B 0.89
+  against 1.29 to 1.31) and one ask fork, three open GP-return queries on loaded events, closed in the data (SF17) with
+  no graded figure moved (determinism_check_report.md); its optional method pin declined (Literal reader). Changed under
+  target/: gp_return_queries_mmr_2005-2027.csv (six rows), mmr_catch_up_options_autumn_2027.pdf and
+  nscs_2023_published_tables.xlsx; every other pack file, both goldens, figures.json and submission.md byte-identical.
 - **guard.py surface:** task104 and task70 promoted on the card axes only (gap population, pattern G16, Gate G
   method_or_model_selection, the same-driver signature), both already differentiated on the card (task104 replays a
   self-adapting scorer, task70 dates a record under a class-conditional cut; neither uses a transmission structure); no
   byte, schema, seed, name or prompt overlap. The 3 personas in the cut pack are all the card's.
-- **guard.py heart:** WARN overuse.shape (07 in three of the last twelve), answered at the draw; nearest driver 0.05
-  (task95), nearest stump 0.04 (task253 v3); no BLOCK.
+- **guard.py heart:** PASS at the stage-4 rebuild (WARN overuse.shape at stage 3, 07 in three of the last twelve,
+  answered at the draw); nearest driver 0.05 (task95), nearest stump 0.04 (task253 v3); no BLOCK.
 - **leak.py REVIEW lines, answered:** the options paper and the standard carry the committed call's distinctive words
   (option B, catch-up, measles, reproduction number) because they are the decision's own vocabulary, not the method; the
   standard names R0 and the aim only, the options paper the cohorts and people made immune, neither the eigenvalue or the
   contact structure (the generator asserts no method word in any file). The stump-term overlaps are domain words
-  (immune, health, cohort, national, manager) in documents that must use them. The stock return's expiry dates run past
-  the as-of because a stock count lists future expiries (H16 allow-list).
+  (immune, health, cohort, national, manager, population, standard) in documents that must use them, the uptake report
+  (a distractor) included. The stock return's expiry dates run past the as-of because a stock count lists future
+  expiries (H16 allow-list).
 
 ## Tried and rejected
 
@@ -494,3 +515,7 @@ them were imported" (H23).
 - Ask 2 interval read from the previous valid dose against any previous dose (stage 3): the two readings could split a count; the generator spaces every pair of doses outside 20 to 36 days and keeps none within three days of a first birthday, so checks.py asserts the two readings give the same count for every person (C1), and the interval device rides the GP card re-key within 28 days only as a hazard.
 - Ask 3 back-entries dated by swapping day and month of the date of birth and shifting onset (built): a key de-duplication on date of birth, sex and onset catches only the back-entries that kept both; asserted that no key de-duplication (date of birth and sex, or plus onset, or within 14 days) lands any option's figure, so only the comments or the laboratory file separate the 2019 outbreak's two copies.
 - A European monthly-case summary as the second distractor (built, then cut): it shared the measles noun with the case ask and added no weighing a solver would do; replaced by the cold-chain stock return, which a reader might open for delivery capacity and the solution never reads.
+- Confirmed GP-return queries left open at the pull (stage 3 build): six were open on 3 July, three on loaded events in the option cohorts, and reading an open query as not standing moved C's none and one by 1 and D's and E's one by 2 (judge-task501c, competing_defensible_answer on Ask 2). The register now chases every confirmed query still open when the extract is prepared and closes it by 30 June with its outcome (SF17, asserted); no figure moved.
+- A one-line pin naming the age-structured method (the same judge's optional fix): declined, because it files the decisive step as a rule to execute; the data forces the method (Literal reader).
+- Option E on three rows of the options paper (its 1993-97 span, its 1998-2002 span, its total): the first restated D's row under E's label and read as a copy (leak reader, judge); E is one row and the note under the table gives its split, the same figures.
+- The survey's Table 1 population as the national shape's group totals: each group read as its thousands times 1000.446 and two groups were identical (310,138), so the column read generated (leak reader); Table 1 publishes the statistics office's estimates on a stream of their own, Table 2 unchanged and still reciprocal on them to its rounding (asserted), the family's largest move 0.006 and nearest edge 0.033 as before.
