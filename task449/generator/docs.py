@@ -323,7 +323,7 @@ def write_opslog(path):
     ws.append(["Date", "By", "Entry"])
     for c in ws[1]:
         c.font = Font(bold=True)
-    for d, by, e in OPSLOG:
+    for d, by, e in sorted(OPSLOG, key=lambda x: x[0]):
         ws.append([dt.date.fromisoformat(d), by, e])
     for row in ws.iter_rows(min_row=2, max_col=1):
         for c in row:
