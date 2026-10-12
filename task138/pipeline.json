@@ -1,0 +1,39 @@
+{
+  "task": "task138",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver replays the thirty weather years through the Water Order Procedure's daily root-zone balance with every field of the 2027 requests at field capacity on 1 February and files about 174,000 acre-feet; the step that lands it there is not starting each replay from the depletion each field actually carries on 31 January 2027, built from its last 2026 delivery through the dry autumn and winter: the golden is about 184,000 (design-stage estimates).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: design (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, precut.py)",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 2 (new), seed FC09"
+}

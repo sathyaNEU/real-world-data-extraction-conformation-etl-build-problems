@@ -1,0 +1,95 @@
+{
+  "task": "task138",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 (new). Seed FC09: world, decision and quantity kept (an irrigation district's season order with its project, placed by 1 February at the requirement covered in 24 of 30 replayed weather seasons, rounded up to the next 100 acre-feet); the seed's loss-per-refill mixture is not used (its driver is task67's fixed-plus-variable carry); the pitfall is re-found from how the season's requirement depends on the soil water each field already holds when the order is placed.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "hydrology-flood-frequency",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a San Joaquin Valley irrigation district's 2027 season order with its supplying project, set at the 24th of 30 replayed weather seasons through a daily root-zone water balance on each field of the coming season's crop requests, after the driest autumn and early winter in the district's weather record and a 2026 season most growers ended at harvest",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G3"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "water resources manager of an irrigation district, who places the district's season order with its supplying project",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "kbid_irrigation_orders_2023-2026.csv",
+    "rows": 0,
+    "entity": "one irrigation set: water ordered through one turnout onto one field for one run, with its status",
+    "grain": "irrigation set x field",
+    "source": "constructed (the district's water ordering system export)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, California (San Joaquin Valley)",
+    "currency": "USD",
+    "org_type": "irrigation district (a California special district) taking surface water from a regional conveyance project",
+    "invented_names": [
+      "Kestrel Bend Irrigation District",
+      "Tolan Valley Project",
+      "Tolan Valley Canal",
+      "Tolan Valley Water Authority"
+    ],
+    "people": [
+      "Sherry Nixon",
+      "Brittany Wall",
+      "Colleen Ramsey",
+      "Dennis Zhang",
+      "Catherine Bradford",
+      "Adam Arnold",
+      "Kristin Lucas"
+    ]
+  },
+  "deliverables": [
+    "kbid_order_2027.xlsx",
+    "kbid_order_2027.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A forward requirement replayed over past driver traces has to start every trace from the store each unit actually holds at the forecast date, rebuilt from each unit's own last recorded replenishment and the observed drawdown since; starting every trace full, letting each trace inherit the store its own past year left, or rebuilding the store from the model's replenishment rule instead of the record each understates it, because most units were last replenished weeks before the rule would have replenished them and the interval since was dry.",
+  "driver_concrete": "Each field's root zone on 31 January 2027 holds the deficit left by its own last 2026 delivery (most growers stopped at harvest in September or early October) and the driest autumn and early winter in the district's weather record, so every one of the thirty replayed seasons has to start from that deficit, built per field from the irrigation orders and the daily weather, which adds roughly a twentieth to the order; starting each replay at field capacity, giving each replay its own year's winter, or running the planning model through 2026 with its own irrigation rule (which keeps watering into late October) each misses most of it.",
+  "stump": "A competent solver replays the thirty weather years through the order procedure's daily root-zone balance with every field of the 2027 requests at field capacity on 1 February and files about 174,000 acre-feet; the step that lands it there is not starting each replay from the depletion each field actually carries on 31 January 2027, built from its last 2026 delivery through the dry winter: the golden is about 184,000 (design-stage estimate, recomputed at build).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the order procedure and every file correctly, assembles the 2027 fields with their soils and irrigation methods, replays the thirty weather years through the daily root-zone balance and applies the loss allowances still starts each replay with the root zone full (or with whatever each weather year's own winter left, or with the model's own 2026 irrigation history), and files an order several thousand acre-feet short of the requirement the coming season starts from.",
+  "domain_test": "The deciding quantity is a season's irrigation requirement from a daily root-zone water balance (crop coefficients on reference evapotranspiration, allowable depletion, rain beyond field capacity draining), forecast as an ensemble of past weather traces started from the soil water each field holds when the order is placed, which is how an irrigation hydrologist conditions a season's water forecast on its antecedent state; with another field's nouns there is no root zone, field capacity or reference evapotranspiration for the carry-over to live in.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:antecedent-state-conditioned-season-replay",
+  "layer1": [
+    "station moves and instrument swaps (a weather station replaced, with an overlap period and a units change)",
+    "logger clocks in standard time against local time",
+    "site ids differ across systems (turnout ids in the ordering system, the meter book and the GIS register)",
+    "several sources for one picture (orders, meter reads, flume and weir records, the operations log)",
+    "vintages and revisions (a field register re-mapped after parcel splits)",
+    "mixed units and bases (millimetres and inches, cfs-days and acre-feet)",
+    "documentation that has to be read (the order procedure, the dictionary, the station notes)"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task446": "task446 v2 chooses which screening rate carries across years (the error rates, not the yield) under a filed leave-one-cohort-out test; here nothing is selected by a test: every replay of past weather must start from the soil water each field holds at the order date, a state rebuilt from the delivery record and the observed winter that no past season shows."
+  },
+  "lineage": [],
+  "notes": "Calibration none: the closed lateral balances and the delivery history are the district's own records, not an organ confirming a filed criterion. Pattern none, decisive G16 (method selection: a season forecast conditioned on the state at the forecast date, against an unconditioned replay of past seasons) then G3 (record against operation: the state is rebuilt from the delivery record, not from the model's irrigation rule). Gate G forecasting: the thirty past seasons, read correctly, do not pin the 2027 requirement without the antecedent state. Stump strategy time_semantics (F1, the as-of state at the forecast date, a clock process already in the data: time since each field's own last irrigation). Forcing event season_or_peak: the order for the coming irrigation season is due by 1 February. Forum customer_or_counterparty: the order goes to the supplying project. Role family procurement_lead: the water resources manager sources the district's supply."
+}
