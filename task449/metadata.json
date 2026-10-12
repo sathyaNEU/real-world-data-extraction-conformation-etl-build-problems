@@ -1,0 +1,193 @@
+{
+  "task": "task449",
+  "title": "How many dedicated complaint analysts a card issuer's outsourced desk carries into 2027, sized on the sustained weekly matters once the matters arising from its processor's payment-posting failure are taken out, when a fifth of the matters were linked to a cardholder by a name-and-city search",
+  "domain": "General Statistics & Data Science",
+  "subdomain": "data-integration-record-linkage-entity-resolution (a characteristic read through uncertain links, corrected for the false-link rate)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "other: one integer call with its base and deduction, nine month-end open counts with a chart, nine monthly flex-hour figures",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "dedicated_analysts_2027.docx",
+    "flex_hours_2026.csv"
+  ],
+  "distractor_files": [
+    "ivr_complaint_line_weekly_2026.csv",
+    "cfpb_public_complaints_bellcroft_card.csv"
+  ],
+  "input_gates": {
+    "files": 17,
+    "formats": [
+      "csv",
+      "jsonl",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "matter_status_history_2025_2026.csv",
+    "largest_file_rows": 159488
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task449/generator/build.py (seeded, deterministic) around a fictional card issuer, its complaint outsourcer, its payment processor and two staffing agencies; no real consumer, complaint, payment or company is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task449/generator/build.py",
+  "files": [
+    {
+      "path": "bellcroft_card_portfolio_2025_2026.csv",
+      "format": "csv",
+      "bytes": 425,
+      "rows": 12,
+      "source": "Constructed: the card issuer's month-end open accounts",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellcroft_fenwright_sow_2026_exhibit_b.pdf",
+      "format": "pdf",
+      "bytes": 84968,
+      "rows": null,
+      "source": "Constructed: Exhibit B of the 2026 statement of work",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cfpb_public_complaints_bellcroft_card.csv",
+      "format": "csv",
+      "bytes": 964649,
+      "rows": 4700,
+      "source": "Constructed: CFPB public complaint database rows for the issuer, in the CFPB layout",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "complaint_codes_v7.csv",
+      "format": "csv",
+      "bytes": 1108,
+      "rows": 17,
+      "source": "Constructed: the issuer's complaint code list",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "complaint_matters_2025_2026.csv",
+      "format": "csv",
+      "bytes": 11072163,
+      "rows": 77145,
+      "source": "Constructed: the case system's matter register, every matter opened 1 October 2025 to 8 October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary_bellcroft_desk.xlsx",
+      "format": "xlsx",
+      "bytes": 10380,
+      "rows": null,
+      "source": "Constructed: the field dictionary",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "desk_operations_log_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7053,
+      "rows": null,
+      "source": "Constructed: the complaint desk's operations log",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fenwright_time_bellcroft_site_2026.csv",
+      "format": "csv",
+      "bytes": 756486,
+      "rows": 17016,
+      "source": "Constructed: the outsourcer's time records for its Bellcroft site",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fenwright_wps3_dedicated_team_sizing.pdf",
+      "format": "pdf",
+      "bytes": 41843,
+      "rows": null,
+      "source": "Constructed: the outsourcer's workforce planning standard",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "folder_contents_2026-10-09.csv",
+      "format": "csv",
+      "bytes": 2753,
+      "rows": 16,
+      "source": "Constructed: the export manifest",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ivr_complaint_line_weekly_2026.csv",
+      "format": "csv",
+      "bytes": 1364,
+      "rows": 40,
+      "source": "Constructed: the complaint line's weekly call statistics",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "marlowby_timesheets_fenwright_2026.csv",
+      "format": "csv",
+      "bytes": 102082,
+      "rows": 991,
+      "source": "Constructed: a staffing agency's weekly timesheet exports",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "matter_status_history_2025_2026.csv",
+      "format": "csv",
+      "bytes": 5748513,
+      "rows": 159488,
+      "source": "Constructed: the case system's status history for the same matters",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "meridel_affected_payments_20260508_10.csv",
+      "format": "csv",
+      "bytes": 5890111,
+      "rows": 67969,
+      "source": "Constructed: the payment processor's list of the payments received 8 to 10 May 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "meridel_agreement_schedule7_may2026_incident.pdf",
+      "format": "pdf",
+      "bytes": 85095,
+      "rows": null,
+      "source": "Constructed: Schedule 7 to the issuer's ACH processing agreement",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "social_care_posts_2025_2026.jsonl",
+      "format": "jsonl",
+      "bytes": 7709538,
+      "rows": 19477,
+      "source": "Constructed: the social care desk tool's export of the posts it opened matters for",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "treadwell_oake_hours_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 40906,
+      "rows": null,
+      "source": "Constructed: a staffing agency's hours report",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

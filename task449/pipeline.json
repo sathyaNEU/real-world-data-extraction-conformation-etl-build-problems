@@ -1,27 +1,27 @@
 {
   "task": "task449",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "The default path files 41 dedicated analysts because it reads each social-care matter's incident status off the account the social care desk attached, the first of the k cardholders whose name and city match the poster's display name, which is the poster's own account only one time in k and otherwise an unrelated cardholder's, delayed at the portfolio's 2.5 per cent; recovered from each attachment's one-in-k reliability, about four in five of the social-care matters in the schedule's problem families arise from the failure, the sustained base is about 950 new matters a week and the team is 35 (figures fixed at build).",
+  "stump": "The default path files 40 dedicated analysts because it reads each social-care matter's incident status off the account the social care desk attached, the first of the k cardholders whose name and city match the poster's display name, which is the poster's own account only one time in k and otherwise an unrelated cardholder's, affected at the portfolio's 4 per cent; estimated from the searches that returned one cardholder, about four in five of the name-and-city matters under Schedule 7's codes arise from the failure, the sustained base is about 950 new matters a week and the team is 35 (figures fixed at build).",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK) 2026-10-12; the planning rate in WPS-3, contract vocabulary",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; answered) 2026-10-12",
     "nearest": "0.06 (task500 v2 lineage)",
-    "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk and repeat.gate_g answered in the design note; task101 and task126 v1 differentiated on the card"
+    "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk and repeat.gate_g answered in the design note; task101 and task126 v1 differentiated on the card; at build the decisive generator ordered G17 first (statistical rigor), clearing the task101 and task126 card collisions; surface: no promoted pair"
   },
   "judge": {
     "verdict": "",
@@ -29,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder arithmetic, closure table, asks (supplemental-stumping), prompt.txt, precut.py",
+  "resume": "stage 4: the leak reader and the determinism judge's isolated thread are running on the cut pack (brief /tmp/determinism-check-task449-r1/judge_brief.md); collect both, re-invoke the determinism-judge agent with the verdict for its report, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

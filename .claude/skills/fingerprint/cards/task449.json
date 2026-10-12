@@ -6,13 +6,13 @@
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "estimating, from a card issuer's outsourced complaint desk's five intake channels, the weekly new complaint matters that do not arise from a processor's payment-posting failure (the sustained base the 2027 dedicated team is sized on), when a quarter of the window's matters open on a social care desk that attaches the first of the cardholders whose name and city match a poster's display name",
+  "niche": "estimating, from a card issuer's outsourced complaint desk's six intake channels, the weekly new complaint matters that do not arise from a processor's payment-posting failure (the sustained base the 2027 dedicated team is sized on), when about a fifth of the window's matters open on a social care desk that attaches the first of the cardholders whose name and city match a poster's display name",
   "objective": "etl",
-  "shape": "03",
+  "shape": "other",
   "decision_type": "dial_setting",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Carry 35 dedicated analysts in Bellcroft's 2027 complaint desk statement of work (a sustained base of 950 new matters a week after 500 a week arising from Meridel's payment-posting failure).",
+  "answer_source": "task449/submission.md, block 1",
   "gap": [
     "population"
   ],
@@ -20,8 +20,8 @@
     "none"
   ],
   "generators": [
-    "G3",
     "G17",
+    "G3",
     "G10"
   ],
   "gate_g": "method_or_model_selection",
@@ -36,10 +36,10 @@
   "scoring_unit": "flat per seat",
   "spine": {
     "file": "complaint_matters_2025_2026.csv",
-    "rows": 0,
-    "entity": "one complaint matter opened by the program's case system from a contact on any of five intake channels",
+    "rows": 77145,
+    "entity": "one complaint matter opened by the program's case system from a contact on any of six intake channels",
     "grain": "matter (one consumer's complaint about one problem with one account)",
-    "source": "synthetic (constructed in the layouts of a complaint case register, the CFPB company portal export, a state referral log, a social care desk export and a processor incident file; no real consumer, complaint or company is depicted)"
+    "source": "synthetic (constructed in the layouts of a complaint case register with its status history, a social care tool's JSON export, a processor's affected-payment file and a workforce time system; no real consumer, complaint or company is depicted)"
   },
   "forum": "committee_or_panel",
   "forcing_event": "budget_or_appropriation",
@@ -60,25 +60,27 @@
   },
   "deliverables": [
     "dedicated_analysts_2027.docx",
-    "weekly_new_matters_2026.csv"
+    "flex_hours_2026.csv"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A characteristic of each record is read through a link to another file, and for one class of records the link is the first of several equally plausible targets, so the linked value is the record's own only one time in k and otherwise the value of an unrelated target, which carries the population's rate; a share computed from the linked values is diluted toward that rate, and the class's true share has to be recovered by inverting the dilution with each record's own chance of a right link, which matters only once a shock moves a large share of the records into that class.",
-  "driver_concrete": "After the May 2026 payment-posting failure about a quarter of new complaint matters open on the social care desk, whose agents attach the first of the cardholders whose name and city match a poster's display name; whether a social-care matter arises from the failure (the cardholder's payment was in the processor's delayed-payment file) read off that attached account sits near the portfolio's 2.5 per cent for every post with several matching cardholders, against a true share of about 80 per cent, so the sustained base the dedicated analysts are sized on is overstated by about 200 matters a week unless the share is recovered from each attachment's one-in-k reliability (figures fixed at build).",
-  "stump": "A competent solver attributes each new matter in the last eight complete weeks to the failure by checking the account the case system attached against the processor's delayed-payment file, keeps every social-care matter whose attached account had no delayed payment in the sustained base, and files about 41 dedicated analysts; the social care desk attached the first of k same-name cardholders, so most of the failure's social-care matters look unaffected, and with the share recovered from the attachments' reliability the base is about 950 matters a week and the team 35 (figures fixed at build).",
+  "driver_concrete": "After the May 2026 payment-posting failure about a quarter of new complaint matters open on the social care desk, whose agents attach the first of the cardholders whose name and city match a poster's display name; whether a social-care matter arises from the failure (the cardholder's payment was in the processor's affected-payment file) read off that attached account comes out near 36 per cent, against a true share of about 80 per cent, so the sustained base the dedicated analysts are sized on is overstated by about 135 matters a week unless the share is estimated from the searches that returned one cardholder or by inverting each attachment's one-in-k reliability (figures fixed at build).",
+  "stump": "A competent solver attributes each new matter in the last eight complete weeks to the failure by checking the account the case system attached against the processor's affected-payment file, keeps every social-care matter whose attached account had no affected payment in the sustained base, and files about 40 dedicated analysts; the social care desk attached the first of k same-name cardholders, so most of the failure's social-care matters look unaffected, and with the share estimated from the one-match searches the base is about 950 matters a week and the team 35 (figures fixed at build).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the five channel exports to the case system's matters, applies the reimbursement schedule's incident rule to each matter's attached account and the planning standard's run rate files about 41 dedicated analysts, because the social-care matters' accounts are the first-listed of several same-name cardholders and their incident status is diluted toward the portfolio rate (figures fixed at build).",
-  "domain_test": "False links attenuate: a characteristic read through an uncertain link mixes the record's own value with the population's, and record linkage corrects estimates from linked data for the false-link rate (the Lahiri and Larsen, Chambers adjustments) instead of reading the linked values as truth; with a generic join of the attached account the sustained base rises by about a fifth and the analysts with it, so the call does not survive the swap of method.",
+  "analyst_test": "A strong analyst who conforms the six channel matters, joins the social care desk's search records, applies Schedule 7's four codes and affected-payment test to each matter's attached account and the planning standard's 27.5 matters per analyst-week files about 40 dedicated analysts; one who distrusts the name-and-city attachments and imputes from the verified social matters files 34 (figures fixed at build).",
+  "domain_test": "False links attenuate: a characteristic read through an uncertain link mixes the record's own value with the population's, and record linkage corrects estimates from linked data for the false-link rate (the Lahiri and Larsen and Chambers adjustments, or the subsample whose links are certainly right) instead of reading the linked values as truth; with a plain join of the attached account the sustained base rises by about 135 matters a week and the team from 35 to 40, so the call does not survive the swap of method.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
   "layer1": [
-    "five intake channel exports in their own layouts (a complaint register, the CFPB company portal export, a state referral log kept as a workbook, a social care desk export in JSON lines, an executive office letter log), each with its own contact reference",
-    "received times in Eastern local time, UTC timestamps and date-only fields, and a CFPB complaint with a date received and a date sent to the company",
-    "the case system's matter register with masked account numbers, an account basis (verified or name and city) and the number of matching cardholders",
-    "the processor's delayed-payment file keyed by payment reference and account token, with reversed and re-presented payments",
-    "the CFPB product and issue taxonomy against the program's own problem families",
-    "an operations log of the surge (overtime approvals, agency temps, the social care desk's opening hours)"
+    "six intake channels in one register, each with its own source-reference format",
+    "the social care tool's export in JSON lines with nested search records and UTC post times, against the register's Eastern opening times",
+    "account references in two formats across the register and the processor's affected-payment file",
+    "returned and re-presented payments in the processor's file",
+    "the desk's complaint code list against the incident schedule's four codes",
+    "a status history in which a reopened matter keeps its number, and merged duplicates",
+    "Fenwright's time records carrying other programs' overtime, and two staffing agencies' timesheets in their own layouts",
+    "an operations log of the surge (overtime approvals, agency starts, the social care desk's changes)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

@@ -1,0 +1,53 @@
+{
+ "team": "35",
+ "base": "950",
+ "incident_week": "500",
+ "nc_share": "80",
+ "new_matters": "11,597",
+ "new_matters_week": "1,450",
+ "verified_affected": "2,081",
+ "name_city_four": "2,395",
+ "one_match": "597",
+ "one_match_affected": "478",
+ "name_city_affected": "1,920",
+ "attached_affected": "851",
+ "attached_share": "36",
+ "portfolio_rate": "4",
+ "default_team": "40",
+ "default_base": "1,080",
+ "dm_team": "34",
+ "dm_share": "89",
+ "all_verified_team": "37",
+ "all_counted_team": "33",
+ "open_month_end": {
+  "January": "720",
+  "February": "730",
+  "March": "710",
+  "April": "740",
+  "May": "8,260",
+  "June": "5,590",
+  "July": "3,230",
+  "August": "2,230",
+  "September": "1,850"
+ },
+ "flex": {
+  "January": "790",
+  "February": "670",
+  "March": "760",
+  "April": "720",
+  "May": "3,430",
+  "June": "4,120",
+  "July": "3,440",
+  "August": "2,830",
+  "September": "2,170"
+ },
+ "rate": "27.5",
+ "ratio": "34.5",
+ "team_2026": "32",
+ "clauses": [
+  "2.2",
+  "3.1",
+  "4.2",
+  "7.2"
+ ]
+}
