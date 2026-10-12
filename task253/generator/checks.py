@@ -145,32 +145,73 @@ def run(W, tables, fd, figs, grid, fam_out, fam_probs, st, target, task_dir, doc
     mess = {"B1": ("golden", "directory", "probs", 2),
             "H2": ("golden", "plan", "probs", 1), "pts": ("golden", "plan", "points", 2)}
     g0 = st[gold_key]
-    # A1 is a filed reading: the notes say the census year level is the 2026 school-year level and that
-    # students move up one level at the start of each school year. Read literally, notes plus census give
-    # the golden students; the census's own Years 3 to 6 contradicts the filed sentence.
+    # A1 (a filed reading): the notes say year level is as the student system held it on the day of the run and
+    # that students move up one level at the start of each school year. A2 (the device, D8): at the rolled
+    # schools the system had already been moved to 2027 before the run, so their rows run Year 1 to Year 7 with
+    # no Foundation; only that inconsistency, against the register's F-6, finds them. SF18 is the ask's row.
     notes_flat = " ".join(docs_text["notes"].split()).lower()
-    ok("A1 filed: census year level is the 2026 school-year level",
-       "the year level is the student's year level in the 2026 school year" in notes_flat)
-    ok("A1 filed: students move up one level each school year",
+    ok("SF18 A1 filed: year level as the student system held it on the day of the run",
+       "year level is as the student system held it on the day of the run" in notes_flat)
+    ok("SF18 A1 filed: students move up one level each school year",
        "students move up one year level at the start of each school year" in notes_flat)
-    ok("A1 filed as a fact, no figure in the sentence (the school year apart)",
-       not re.search(r"\d", notes_flat.split("the year level is the student's")[1].split("the census system")[0].replace("2026", "")))
-    nxt = {"F": 1, **{str(k): k + 1 for k in range(1, 13)}}
+    cen_entry = notes_flat.split(P.FILES["census"].lower())[1].split("the run writes the school number")[0]
+    ok("A2 unflagged: the census entry names no rollover, no school and no count",
+       not any(w in cen_entry for w in ("rolled", "rollover", "roll over", "2027", "moved", "already", "some school",
+                                        "except")) and
+       not re.search(r"\d", re.sub(r"(7 august 2026|4 november 2026)", "", cen_entry)), cen_entry)
+    rolled = W["rolled"]
+    cen_lines = open(os.path.join(target, P.FILES["census"])).read().splitlines()[1:]
     idx = {int(c): i for i, c in enumerate(W["codes"])}
-    lit = np.zeros(264)
-    for ln in open(os.path.join(target, P.FILES["census"])).read().splitlines()[1:]:
+    held = {}
+    for ln in cen_lines:
         _, sc, lv, hc = ln.split(",")
-        if int(sc) in idx and 3 <= nxt[lv] <= 6:
-            lit[idx[int(sc)]] += int(hc)
-    ok("A1 literal read of notes plus census = golden students per school",
+        if int(sc) in idx:
+            held.setdefault(idx[int(sc)], {})[lv] = int(hc)
+    ok("A2 every primary has seven census rows", all(len(held[i]) == 7 for i in range(264)))
+    sig = np.array(["7" in held[i] and "F" not in held[i] for i in range(264)])
+    ok("A2 the rolled schools are exactly those running Year 1 to 7 with no Foundation",
+       np.array_equal(sig, rolled) and all(("F" in held[i]) != bool(rolled[i]) for i in range(264)))
+    ok("A2 school totals invariant", all(sum(held[i].values()) == int(W["census"][i].sum()) for i in range(264)))
+    ok("A2 every school has Foundation and Year 6 students (the signature is never empty)",
+       (W["census"][:, 0] > 0).all() and (W["census"][:, 6] > 0).all())
+    ok("A2 no marker: one census date on every row, colleges untouched",
+       len({ln.split(",")[0] for ln in cen_lines}) == 1 and
+       {ln.split(",")[2] for ln in cen_lines if int(ln.split(",")[1]) not in idx} == {str(k) for k in range(7, 13)})
+    ok("A2 a realistic share, 15 to 25 per cent, four or more schools in every region",
+       0.15 <= rolled.mean() <= 0.25 and min((rolled & (reg == r)).sum() for r in core.REGIONS) >= 4,
+       int(rolled.sum()))
+    ok("A2 not tied to the schools' results", abs(np.corrcoef(rolled.astype(float), p)[0, 1]) < 0.10,
+       np.corrcoef(rolled.astype(float), p)[0, 1])
+    # split evidence: the 2026 NAPLAN Year 3 and Year 5 cohorts match the census's 2026 Years 3 and 5 (the file's
+    # Years 4 and 6 at a rolled school) within the March to August movement, at every school
+    d26 = tables[2]
+    for yl in (3, 5):
+        nap = np.bincount(d26[(d26.year == yl) & (d26.test == "RD")].school.to_numpy(), minlength=264)
+        fl = np.array([held[i][str(yl + 1 if rolled[i] else yl)] for i in range(264)])
+        ok("A2 split evidence: 2026 NAPLAN Year %d cohorts within 2 of the census's 2026 Year %d" % (yl, yl),
+           np.abs(nap - fl).max() <= 2, np.abs(nap - fl).max())
+    lit = np.array([sum(held[i].get(str(k), 0) for k in ((3, 4, 5, 6) if sig[i] else (2, 3, 4, 5)))
+                    for i in range(264)])
+    ok("SF18 literal read of the notes, the register and the census = golden students per school",
        np.array_equal(lit, A.students(W["census"], "golden")))
     lit_reg = A.by_region(p, lit, reg)
-    ok("A1 literal read gives the golden students by region",
+    ok("SF18 literal read gives the golden students by region",
        all(round(lit_reg[r]) == round(figs["students_region"][r]) for r in core.REGIONS)
        and round(float((p * lit).sum())) == round(figs["students_total"]))
-    unrolled = A.students(W["census"], "natural")
-    ok("A1 un-rolled read (census Years 3 to 6) counts 2027 Years 4 to 7, against the filed sentence",
-       not np.array_equal(unrolled, lit) and round(float((p * unrolled).sum())) != round(figs["students_total"]))
+    # the cracker reads the file's Years 2 to 5 everywhere (A1 executed, A2 missed): every students figure off
+    crk = A.students(W["census"], "cracker", rolled)
+    ok("A2 the cracker's read differs from the golden only at the rolled schools",
+       np.array_equal(crk != A.students(W["census"], "golden"), rolled & (W["census"][:, 1] != W["census"][:, 5])))
+    cr_reg, cr_hub = A.by_region(p, crk, reg), A.by_hub(p, crk, W["plan"])
+    for r in core.REGIONS:
+        dlt = cr_reg[r] - figs["students_region"][r]
+        ok("A2 cracker moves students %s by 4 students and 1 per cent" % r,
+           abs(dlt) >= max(4.0, 0.01 * figs["students_region"][r]), (cr_reg[r], figs["students_region"][r]))
+    for h in A.HUBS:
+        ok("A2 cracker moves hub students %s by 4 students" % h,
+           abs(cr_hub[h] - figs["students_hub"][h]) >= 4.0, (cr_hub[h], figs["students_hub"][h]))
+    ok("A2 cracker moves the students total by 20", abs(float((p * crk).sum()) - figs["students_total"]) >= 20.0,
+       float((p * crk).sum()))
     for name, key in mess.items():
         s1 = st[key]
         if name == "pts":
@@ -188,7 +229,7 @@ def run(W, tables, fd, figs, grid, fam_out, fam_probs, st, target, task_dir, doc
                 ok("%s moves hub km %s 3 per cent" % (name, h),
                    abs(s1["km_hub"][h] - g0["km_hub"][h]) >= 0.03 * g0["km_hub"][h], (s1["km_hub"][h], g0["km_hub"][h]))
     # stops and every subset of mishandlings: each graded figure leaves its bin
-    reads = ["golden", "natural", "half", "over"]
+    reads = A.READS
     n_cells = 0
     for read, hubs, wt, mult in itertools.product(reads, ("plan", "directory"), ("probs", "points"), (2, 1)):
         key = (read, hubs, wt, mult)

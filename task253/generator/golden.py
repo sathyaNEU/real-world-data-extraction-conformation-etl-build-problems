@@ -73,7 +73,8 @@ def workbook(path, W, fd, figs, names, hubs):
     ws = wb.create_sheet("Regions")
     ws["A1"] = "Year 3 to 6 students the places will serve in 2027, by region"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "2027 Years 3 to 6 are the August 2026 census's Years 2 to 5."
+    ws["A2"] = ("2027 Years 3 to 6: the August 2026 census's Years 2 to 5, or its Years 3 to 6 at the %d schools "
+                "already rolled over to 2027 in the student system." % int(W["rolled"].sum()))
     ws["A2"].font = Font(italic=True, color="595959")
     _head(ws, 4, ["Region", "Students served"], [44, 18])
     r = 5
@@ -139,8 +140,11 @@ def workbook(path, W, fd, figs, names, hubs):
         ("Places", "Guidelines 2 and 3. Each school's chance of an underlying average below 480 is added over "
                    "the 264 primary schools; the total is rounded once to whole places."),
         ("Shares", "Each region's part of that total, per cent to one decimal."),
-        ("Students", "2027 Years 3 to 6 = August 2026 census Years 2 to 5, weighted by each school's chance. "
-                     "Census school numbers padded to four characters to match the register."),
+        ("Students", "2027 Years 3 to 6, weighted by each school's chance: the August 2026 census's Years 2 to 5, "
+                     "everyone moving up a level for 2027. %d primary schools show Year 1 to Year 7 and no "
+                     "Foundation in the census run of 4 November: their student system had already been rolled "
+                     "over to 2027, so their Years 3 to 6 are taken as they stand. Census school numbers padded "
+                     "to four characters to match the register." % int(W["rolled"].sum())),
         ("Hubs", "From the hub coordinators' 2027 servicing plan (6 November 2026), matched on school name and "
                  "locality; the February facilities directory predates the 2027 hub changes."),
         ("Kilometres", "Guidelines 4: hub to school and back for each visit; routing service one-way km doubled, "

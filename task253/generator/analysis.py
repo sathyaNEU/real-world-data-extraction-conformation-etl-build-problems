@@ -91,8 +91,8 @@ def stops(W, p, points):
     reg, plan, road, census, dh = W["region"], W["plan"], W["road"], W["census"], W["dir_hub"]
     res = {}
     G = float(p.sum())
-    for read in ("golden", "natural", "half", "over"):
-        st = A.students(census, read)
+    for read in A.READS:
+        st = A.students(census, read, W["rolled"])
         for hubs_name, hubs in (("plan", plan), ("directory", dh)):
             for wname, wt in (("probs", p), ("points", points)):
                 for km_mult in (2, 1):

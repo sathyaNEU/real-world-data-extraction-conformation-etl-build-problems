@@ -11,6 +11,8 @@ import sys
 import tempfile
 import zipfile
 
+import numpy as np
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import analysis as AN
@@ -147,7 +149,33 @@ def main():
     fj["contrasts"]["year5_readers"] = "{:,}".format(int(fd["N"]))
     fj["contrasts"]["floor"] = 480
     fj["conventions"] = {"tested_year_level": 5, "served_year_levels_2027": [3, 6], "census_year_levels_2026": [2, 5],
-                         "programme_year": 2027, "standard_clauses": ["3.1", "3.2", "3.4"]}
+                         "census_year_levels_rolled_schools": [3, 6], "rolled_school_census_levels": [1, 7],
+                         "programme_year": 2027,
+                         "standard_clauses": ["3.1", "3.2", "3.4"]}
+    fj["contrasts"]["census_rolled_schools"] = int(W["rolled"].sum())
+    # the census device as built (A2, the design note's ask sheet): the rolled schools by region, their share and
+    # their correlation with the schools' chances; each census read's students against the golden, on the plan's
+    # hubs, with the point count beside them
+    import asks as AK
+    import core as CO
+    rl = W["rolled"]
+    fj["census_device"] = {
+        "rolled_by_region": {WD.REGION_NAME[r]: int((rl & (W["region"] == r)).sum()) for r in CO.REGIONS},
+        "rolled_share_pct": "%.1f" % (100 * rl.mean()),
+        "rolled_corr_with_chance": "%.2f" % np.corrcoef(rl.astype(float), fd["p"])[0, 1],
+        "rolled_census_rows": int(7 * rl.sum()),
+        "reads": {}}
+    for read in AK.READS[1:] + ["point_count"]:
+        key = ("golden", "plan", "points", 2) if read == "point_count" else (read, "plan", "probs", 2)
+        s1 = st[key]
+        fj["census_device"]["reads"][read] = {
+            "students_total": "{:,}".format(int(round(s1["students_total"]))),
+            "minus_golden_region": {WD.REGION_NAME[r]: "%+.1f" % (s1["students_region"][r] - figs["students_region"][r])
+                                    for r in CO.REGIONS},
+            "minus_golden_region_pct": {WD.REGION_NAME[r]: "%+.1f" % (100 * (s1["students_region"][r] -
+                                        figs["students_region"][r]) / figs["students_region"][r]) for r in CO.REGIONS},
+            "minus_golden_hub": {hubs[h]: "%+.1f" % (s1["students_hub"][h] - figs["students_hub"][h]) for h in AK.HUBS},
+            "minus_golden_total": "%+.1f" % (s1["students_total"] - figs["students_total"])}
     fj["contrasts"]["primary_schools"] = int(fd["n"].shape[0])
     f = fd["fit"]
     fj["contrasts"]["components_sd"] = {"school": "%.1f" % f["tu"] ** 0.5, "year_group": "%.1f" % f["tv"] ** 0.5,
@@ -187,6 +215,7 @@ def main():
         assert round(x) == round(figs["km_hub"][hinv[hn]])
     assert round(v["students_total"]) == round(figs["students_total"]) and round(v["km_total"]) == round(figs["km_total"])
     assert [hinv[h] for h in v["chart_order"]] == figs["chart_order"]
+    assert v["rolled"] == int(W["rolled"].sum())
     print("verifier: green (REML by EM, %d iterations)" % v["components"]["em_iterations"])
     # second build, byte for byte
     if "--once" not in sys.argv:

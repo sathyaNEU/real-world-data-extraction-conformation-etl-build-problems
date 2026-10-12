@@ -35,7 +35,7 @@
  "layer1": [
   "NAPLAN result extracts whose layout changes across the three sittings (a coded legacy extract, a results-portal workbook with a title block, a data-platform export with renamed columns)",
   "participation status codes (participated, absent, exempt, withdrawn, sanctioned abandonment), only participating students carrying a scale score",
-  "an August enrolment census by year level taken the year before the programme year",
+  "an August enrolment census by year level run from the live student system in November, after some schools had already moved to the next school year",
   "school master data whose servicing-hub field lags the operational schedule that takes effect next year",
   "school codes held as four-digit strings in one system and as integers with leading zeros dropped in another"
  ],

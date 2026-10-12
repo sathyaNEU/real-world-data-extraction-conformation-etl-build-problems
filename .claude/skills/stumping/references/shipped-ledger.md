@@ -186,7 +186,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
 | 229 (v2) | FAILED_TO_STUMP: backlog perssathya | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | perssathya |
 | 230 (v2) | FAILED_TO_STUMP: backlog perssathya | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
-| 253 | FAILED_TO_STUMP: backlog sathay3012 | P&E housing | DESC | - | - | - | - | - | - | none reported | sathay3012 |
+| 253 | SHIPPED, delivered 10-12, pending review | EDU student growth | DESC | population | G11, G17 | a count of schools past a floor is the sum of their probabilities, not a count of shrunken predictions (28 against 42) | - | - | 42 places | none reported | sathay3012 |
 | 254 | FAILED_TO_STUMP: backlog sathay3012 | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
 | 445 | FAILED_TO_STUMP: backlog oviya1301 | QF 13F ownership | ETL | time population | none | complete holdings reporter by reporter | - | - | 5 of 12 crowded | determinism fail | oviya1301 |
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |

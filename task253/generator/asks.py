@@ -9,17 +9,78 @@ import core
 HUBS = "ABCDE"
 
 
-def students(census, read="golden"):
-    """2027 Year 3 to 6 students from the August 2026 census (columns F,1..6)."""
-    if read == "golden":            # this year's Years 2 to 5 are next year's Years 3 to 6
+# reads of the census FILE's year levels, as [lo, hi) slices: the file holds each student's year level as the
+# student system held it when the extract ran, so at a rolled school the file's level L is the 2026 level L - 1
+FILE_READS = {"cracker": (2, 6),    # the file's Years 2 to 5 everywhere, each moved up one level
+              "natural": (3, 7),    # the file's own Years 3 to 6
+              "half": (2, 7),       # the move up seen, this year's Year 6 kept
+              "over": (3, 6)}       # Years 3 to 5 only
+READS = ["golden", "cracker", "natural", "half", "over", "drop"]
+
+
+def students(census, read="golden", rolled=None):
+    """2027 Year 3 to 6 students from the August 2026 census (world columns F,1..6 of the 2026 school year):
+    this year's Years 2 to 5. `rolled` marks the schools whose student system had already moved its students to
+    their 2027 levels when the extract ran; every other read is a read of the file's levels mapped back."""
+    if read == "golden":
         return census[:, 2:6].sum(1)
-    if read == "natural":           # the census's own Years 3 to 6
-        return census[:, 3:7].sum(1)
-    if read == "half":              # the shift seen, this year's Year 6 kept
-        return census[:, 2:7].sum(1)
-    if read == "over":              # Years 3 to 5 only
-        return census[:, 3:6].sum(1)
-    raise ValueError(read)
+    if rolled is None:
+        rolled = np.zeros(len(census), bool)
+    if read == "drop":              # the rolled schools set aside as broken returns
+        return np.where(rolled, 0, census[:, 2:6].sum(1))
+    lo, hi = FILE_READS[read]
+    return np.where(rolled, census[:, lo - 1:hi - 1].sum(1), census[:, lo:hi].sum(1))
+
+
+def roll_schools(W, p, plan, region, dir_hub, n_draws=20000):
+    """The primary schools whose student system had been moved to the 2027 school year before the census
+    extract ran. Each school is drawn on its own (larger schools likelier: they set up the next year's
+    timetable first), about a fifth of them, every region carrying four or more and nothing tied to the
+    schools' results. Of the draws, keep the one whose students figures sit farthest from the golden's under
+    every other read of the file, with the service directory's hubs as well as the plan's."""
+    census = W["census"]
+    S = len(census)
+    size = census.sum(1).astype(float)
+    z = np.log(size / np.median(size))
+    pr = 1.0 / (1.0 + np.exp(-(np.log(0.20 / 0.80) + 0.5 * z)))
+    regs = list(core.REGIONS)
+    rm = {r: region == r for r in regs}
+    hp = {h: plan == h for h in HUBS}
+    hd = {h: dir_hub == h for h in HUBS}
+    g = p * census[:, 2:6].sum(1)
+    g_r = {r: g[rm[r]].sum() for r in regs}
+    g_h = {h: g[hp[h]].sum() for h in HUBS}
+    G = g.sum()
+    # per school, each read's weighted students when the school is rolled and when it is not
+    alt = {}
+    for read in READS[1:]:
+        a = p * students(census, read, np.ones(S, bool))
+        b = p * students(census, read, np.zeros(S, bool))
+        alt[read] = (a, b)
+    best, best_val = None, -1e9
+    for k in range(n_draws):
+        rng = np.random.default_rng([2026, 11, k])
+        rolled = rng.random(S) < pr
+        share = rolled.mean()
+        if not 0.15 <= share <= 0.25 or min((rm[r] & rolled).sum() for r in regs) < 4:
+            continue
+        if abs(np.corrcoef(rolled.astype(float), p)[0, 1]) >= 0.10:
+            continue
+        margin = 1e9
+        for read, (a, b) in alt.items():
+            v = np.where(rolled, a, b)
+            cells = [abs(v[rm[r]].sum() - g_r[r]) for r in regs] + [abs(v.sum() - G)]
+            cells += [abs(v[hp[h]].sum() - g_h[h]) for h in HUBS]
+            cells += [abs(v[hd[h]].sum() - g_h[h]) for h in HUBS]
+            margin = min(margin, min(cells))
+        a, b = alt["cracker"]
+        d = np.where(rolled, a, b) - g
+        rel = min(abs(d[rm[r]].sum()) / g_r[r] for r in regs)
+        val = min(rel / 0.012, margin / 4.0, abs(d.sum()) / 20.0)
+        if val > best_val:
+            best_val, best = val, rolled
+    assert best is not None and best_val >= 1.0, best_val
+    return best, best_val
 
 
 def by_region(weight, values, region):

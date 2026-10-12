@@ -2,22 +2,21 @@
   "task": "task253",
   "domain": "education-learning-sciences",
   "objective": "descriptive-distribution",
-  "stage": 7,
-  "stage_name": "FIX_NOW repaired; round 2 and re-judge next",
-  "updated": "2026-10-11",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-12",
   "branch": "sathay3012/task253-rent-relief-closeout",
   "stump": "a competent analyst fits the system's filed three-level model (students within year groups within schools, REML), counts the schools whose predicted underlying Year 5 reading average is below 480 and commissions 28 places, where the sum of the 264 schools' probabilities of an underlying average below 480 gives 41.95, so 42",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 1,
-    "date": "2026-10-12",
-    "fails": "pair ceiling 44.5 against 40; cracker keeps Ask A (students by region), both the direct consequence of filing the census fact"
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "note": "architecture 2 built at stage 3: generator task253/generator/make.py (seed 233, shift 0.47); checks.py 728 assertions green (SF1 to SF17, ladder acceptance, grid, closures, 458 ask-composition cells, chart, bins, gates, counter-pin and realism sweeps); verify.py green (REML by EM within 1e-6 of the generator's fit); two builds byte-identical; 13 files, 5 formats, largest 111,150 rows, 2 distractors in metadata.json; figures_check exit 0; golden-realism and reduce-house-fixes passed; guard.py surface 0 promoted; precut exit 0; voice-check exit 0; target.zip cut. Golden 42 (41.95), default path 28. Standard 3.4 and 3.5 added to the filed text (ask determinacy under the golden-method variants, see the design note's Stage 3 build record)",
   "leak": {
-    "leak_py": "REVIEW, no LEAK (architecture 2; re-run after 6b, same three lines)",
-    "reader": "pass 1: no decisive-step sentence, no ranking, answer or help-only file, no main-call fork; realism tells deferred to 6b"
+    "leak_py": "REVIEW, no LEAK (the same three lines, answered)",
+    "reader": "pass 3 (after the Ask A redesign): no decisive-step sentence, no ranking, answer or help-only file, no main-call fork; nothing to fix"
   },
   "duplicate_check": {
     "heart": "WARN, no BLOCK over the pooled cards (repeat.gate_g, overuse.gate_g)",
@@ -44,13 +43,13 @@
   ],
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (thread APPROVE; spec gate: the census roll-forward settled as the natural reading)",
-    "report": "task253/determinism_check_report.md",
-    "gate_g": "statistical_rigor / method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "disposition": "APPROVE (pass 2, the re-judge of the stage 7 FIX_NOW; the optional 'expected number' clause declined as a decisive-step sentence)",
+    "report": "task253/determinism_check_report_pass2.md",
+    "gate_g": "statistical_rigor (method_selection), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "repair_6b": {
     "date": "2026-10-11",
@@ -71,6 +70,16 @@
     "documents_changed": true,
     "fresh_round_needed": true
   },
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathay3012"
+  "status": "SHIPPED",
+  "owner": "sathay3012",
+  "repair_ask_a": {
+    "date": "2026-10-12",
+    "items": "Ask A's primary device A2: 64 primaries (24.2 per cent) already moved to the 2027 school year in the student system when the census ran on 4 November 2026, rows Year 1 to 7 with no Foundation; notes census entry gives the run date, the level as held on the day of the run and the move up a level; golden workbook notes and submission step 5 name the 64 schools",
+    "gates": "checks 1041 green (704 composition cells); verify green; byte-identical; figures.json main and ask figures unchanged; figures_check 0; precut 0 (pair ceiling 37.2, mirror leakage 0, cracker misses every ask row); voice-check 0; leak.py REVIEW no LEAK (same three lines); surface 0; heart WARN no BLOCK; containers clean",
+    "golden": "42 (41.95)",
+    "default_path": 28,
+    "pair_ceiling": 37.2,
+    "documents_changed": true
+  },
+  "resume": ""
 }

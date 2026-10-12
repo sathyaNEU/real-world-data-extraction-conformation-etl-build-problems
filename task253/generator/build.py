@@ -41,6 +41,7 @@ def build():
     assert val >= 0.035, val
     W["plan"], W["moves"], W["near_e"] = plan, chosen, near_e
     W["census"], W["census_tune"] = A.tune_census(W, p, plan, region)
+    W["rolled"], W["rolled_val"] = A.roll_schools(W, p, plan, region, W["dir_hub"])
     W["road"], W["road_tune"] = A.tune_roads(W, p, plan)
     fitd = {"n": n, "ybar": ybar, "SSW": SSW, "N": N, "sq": sq, "fit": f, "mean": mean, "var": var, "p": p,
             "y5": y5}

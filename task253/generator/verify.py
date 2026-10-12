@@ -52,7 +52,7 @@ def register(t):
             continue
         if row[hdr["School type"]] == "Primary":
             out[str(row[hdr["School code"]])] = {"name": row[hdr["School name"]], "loc": row[hdr["Locality"]],
-                                                  "region": row[hdr["Region"]]}
+                                                  "region": row[hdr["Region"]], "levels": row[hdr["Year levels"]]}
     return out
 
 
@@ -143,13 +143,22 @@ def run(t=TARGET):
     out = {"components": {"tu": tu, "tv": tv, "s2": s2, "mu": mu, "em_iterations": iters},
            "places_exact": total, "places": int(round(total)),
            "shares": {r: 100.0 * sum(prob[c] for c in codes if reg[c]["region"] == r) / total for r in regions}}
-    # census: 2027 Years 3 to 6 are this August's Years 2 to 5
-    stu = {}
+    # census: the year level the student system held on the day of the run. At an F-6 school whose rows run
+    # to Year 7 with no Foundation the system had already moved to 2027, so its Years 3 to 6 are 2027's; at
+    # every other school 2027 Years 3 to 6 are this year's Years 2 to 5
+    held = {}
     with open(os.path.join(t, "census_aug2026_enrolments.csv"), newline="") as f:
         for r in csv.DictReader(f):
             c = "%04d" % int(r["school_no"])
-            if c in reg and r["year_level"] in ("2", "3", "4", "5"):
-                stu[c] = stu.get(c, 0) + int(r["headcount"])
+            if c in reg:
+                held.setdefault(c, {})[r["year_level"]] = int(r["headcount"])
+    stu, out["rolled"] = {}, 0
+    for c, lv in held.items():
+        assert reg[c]["levels"] == "F-6"
+        moved = "7" in lv and "F" not in lv
+        assert moved or ("F" in lv and "7" not in lv)
+        out["rolled"] += moved
+        stu[c] = sum(lv.get(str(k), 0) for k in ((3, 4, 5, 6) if moved else (2, 3, 4, 5)))
     out["students_region"] = {r: sum(prob[c] * stu[c] for c in codes if reg[c]["region"] == r) for r in regions}
     out["students_total"] = sum(prob[c] * stu[c] for c in codes)
     # the coordinators' 2027 plan, matched on name and locality

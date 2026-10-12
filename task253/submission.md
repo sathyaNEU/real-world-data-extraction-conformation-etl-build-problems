@@ -22,7 +22,7 @@ The 264 primary schools' chances of an underlying Year 5 reading average below 4
 2. Fitted LT-AS-04 3.1 and 3.2 (fixed mean, school and year-group random effects, student residual, REML): mean 496.5, school SD 16.5, year-group SD 9.3, student SD 69.9.
 3. Took each school's underlying average as normal given its three year-group means at the fitted values (LT-AS-04 3.4) and added the 264 chances of lying below 480: 41.95, so 42 places.
 4. Divided each region's sum of chances by 41.95 for its share of the places.
-5. Padded the census school numbers to four characters and took 2027 Years 3 to 6 as the August 2026 census Years 2 to 5, weighted by each school's chance: 7,072 students.
+5. Padded the census school numbers to four characters and took 2027 Years 3 to 6 as each school's census Years 2 to 5 moved up a level (data_team_notes.txt), or its census Years 3 to 6 at the 64 F-6 primaries whose census rows run Year 1 to Year 7 with no Foundation, already held at 2027 levels; weighted by each school's chance: 7,072 students.
 6. Assigned hubs from hub_visit_plan_2027.xlsx, matched to the register on school name and locality, and weighted twice each one-way distance in hub_school_road_distances.csv by the school's chance (guidelines 4): 8,327 km a fortnight.
 7. Recommendation: commission 42 places.
 

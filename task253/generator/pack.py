@@ -224,9 +224,12 @@ def plan(path, W, hubs):
 def census(path, W):
     rows = []
     c = W["census"]
+    rolled = W["rolled"]
     for i in range(len(W["codes"])):
         for li, lv in enumerate(W["levels"]):
-            rows.append(["07/08/2026", int(W["codes"][i]), lv, int(c[i, li])])
+            # a school already moved to the 2027 school year in the student system: every student one level up
+            held = str(li + 1) if rolled[i] else lv
+            rows.append(["07/08/2026", int(W["codes"][i]), held, int(c[i, li])])
     rng = np.random.default_rng([2026, 8])
     for k, s in enumerate(W["sec"]):
         base = rng.uniform(80, 210)

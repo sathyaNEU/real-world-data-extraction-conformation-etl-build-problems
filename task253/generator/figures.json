@@ -53,6 +53,7 @@
   "sd_underlying": "16.5",
   "year5_readers": "30,956",
   "floor": 480,
+  "census_rolled_schools": 64,
   "primary_schools": 264,
   "components_sd": {
    "school": "16.5",
@@ -82,12 +83,197 @@
    2,
    5
   ],
+  "census_year_levels_rolled_schools": [
+   3,
+   6
+  ],
+  "rolled_school_census_levels": [
+   1,
+   7
+  ],
   "programme_year": 2027,
   "standard_clauses": [
    "3.1",
    "3.2",
    "3.4"
   ]
+ },
+ "census_device": {
+  "rolled_by_region": {
+   "Metropolitan North": 18,
+   "Metropolitan South": 19,
+   "Northern": 12,
+   "Western": 4,
+   "Southern": 7,
+   "Coastal": 4
+  },
+  "rolled_share_pct": "24.2",
+  "rolled_corr_with_chance": "0.08",
+  "rolled_census_rows": 448,
+  "reads": {
+   "cracker": {
+    "students_total": "7,130",
+    "minus_golden_region": {
+     "Metropolitan North": "+22.1",
+     "Metropolitan South": "+67.1",
+     "Northern": "-7.0",
+     "Western": "-10.2",
+     "Southern": "-6.1",
+     "Coastal": "-8.4"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "+1.4",
+     "Metropolitan South": "+1.9",
+     "Northern": "-2.0",
+     "Western": "-1.3",
+     "Southern": "-1.4",
+     "Coastal": "-2.1"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "+52.0",
+     "Carnbrae": "+31.8",
+     "Kirkanby": "-12.5",
+     "Tullgate": "-7.8",
+     "Haskwick South": "-6.0"
+    },
+    "minus_golden_total": "+57.5"
+   },
+   "natural": {
+    "students_total": "7,005",
+    "minus_golden_region": {
+     "Metropolitan North": "-54.4",
+     "Metropolitan South": "-76.8",
+     "Northern": "+9.2",
+     "Western": "+27.6",
+     "Southern": "+20.2",
+     "Coastal": "+6.9"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "-3.4",
+     "Metropolitan South": "-2.2",
+     "Northern": "+2.6",
+     "Western": "+3.6",
+     "Southern": "+4.7",
+     "Coastal": "+1.7"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "-78.7",
+     "Carnbrae": "-46.6",
+     "Kirkanby": "+18.2",
+     "Tullgate": "+32.3",
+     "Haskwick South": "+7.5"
+    },
+    "minus_golden_total": "-67.2"
+   },
+   "half": {
+    "students_total": "8,846",
+    "minus_golden_region": {
+     "Metropolitan North": "+379.0",
+     "Metropolitan South": "+886.9",
+     "Northern": "+90.6",
+     "Western": "+201.3",
+     "Southern": "+116.6",
+     "Coastal": "+99.7"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "+24.0",
+     "Metropolitan South": "+25.1",
+     "Northern": "+25.4",
+     "Western": "+26.2",
+     "Southern": "+27.1",
+     "Coastal": "+24.4"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "+759.1",
+     "Carnbrae": "+558.1",
+     "Kirkanby": "+183.3",
+     "Tullgate": "+182.6",
+     "Haskwick South": "+91.2"
+    },
+    "minus_golden_total": "+1774.2"
+   },
+   "over": {
+    "students_total": "5,288",
+    "minus_golden_region": {
+     "Metropolitan North": "-411.3",
+     "Metropolitan South": "-896.5",
+     "Northern": "-88.4",
+     "Western": "-183.9",
+     "Southern": "-102.6",
+     "Coastal": "-101.2"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "-26.1",
+     "Metropolitan South": "-25.4",
+     "Northern": "-24.8",
+     "Western": "-24.0",
+     "Southern": "-23.8",
+     "Coastal": "-24.7"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "-785.8",
+     "Carnbrae": "-572.9",
+     "Kirkanby": "-177.6",
+     "Tullgate": "-158.1",
+     "Haskwick South": "-89.7"
+    },
+    "minus_golden_total": "-1784.0"
+   },
+   "drop": {
+    "students_total": "4,545",
+    "minus_golden_region": {
+     "Metropolitan North": "-460.1",
+     "Metropolitan South": "-1500.9",
+     "Northern": "-132.3",
+     "Western": "-187.5",
+     "Southern": "-93.1",
+     "Coastal": "-153.5"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "-29.2",
+     "Metropolitan South": "-42.5",
+     "Northern": "-37.2",
+     "Western": "-24.4",
+     "Southern": "-21.6",
+     "Coastal": "-37.5"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "-1286.1",
+     "Carnbrae": "-774.8",
+     "Kirkanby": "-226.9",
+     "Tullgate": "-118.3",
+     "Haskwick South": "-121.2"
+    },
+    "minus_golden_total": "-2527.3"
+   },
+   "point_count": {
+    "students_total": "5,531",
+    "minus_golden_region": {
+     "Metropolitan North": "-685.1",
+     "Metropolitan South": "-171.3",
+     "Northern": "-152.1",
+     "Western": "-150.8",
+     "Southern": "-125.7",
+     "Coastal": "-256.3"
+    },
+    "minus_golden_region_pct": {
+     "Metropolitan North": "-43.4",
+     "Metropolitan South": "-4.9",
+     "Northern": "-42.7",
+     "Western": "-19.6",
+     "Southern": "-29.2",
+     "Coastal": "-62.6"
+    },
+    "minus_golden_hub": {
+     "Brinrigg": "-783.7",
+     "Carnbrae": "-192.1",
+     "Kirkanby": "-155.3",
+     "Tullgate": "-115.3",
+     "Haskwick South": "-294.9"
+    },
+    "minus_golden_total": "-1541.2"
+   }
+  }
  },
  "variant_ask_shift_max": {
   "ml": {
