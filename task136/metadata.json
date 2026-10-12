@@ -1,0 +1,174 @@
+{
+  "task": "task136",
+  "title": "Which Yarrabin feeder gets Mirrabee Energy's FY2027-28 hosting-capacity augmentation",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "load-forecasting (rooftop PV forecast to an augmentation's design point, with two council solar bulk-buy campaigns, at a Queensland distribution network)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, each 2027 bulk-buy's systems, the chart, and two per-feeder asks (a DER Register reconciliation and battery storage)",
+  "as_of": "2026-10-12",
+  "deliverables": [
+    "feeder_upgrade_2029.xlsx",
+    "yarrabin_pv_vs_hosting_2029.png"
+  ],
+  "distractor_files": [
+    "feeder_peak_demand_forecast_2027-31.xlsx",
+    "home_battery_rebate_approvals_fy2025-26.csv"
+  ],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "merindah_rates_roll_2026-27.csv",
+    "largest_file_rows": 48876
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task136/generator/build.py (seeded, deterministic) around a fictional Queensland distributor (Mirrabee Energy), council (Merindah City Council), suburbs, consultants and people; no real organisation, person, property or meter is depicted. Product names in the DER Register extract are generic market models.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task136/generator/build.py",
+  "files": [
+    {
+      "path": "NPP-114_micro_EG_forecasting_rev3.pdf",
+      "format": "pdf",
+      "bytes": 53194,
+      "rows": null,
+      "source": "Constructed: Mirrabee Energy Network Planning Procedure NPP-114 revision 3 (micro EG forecasting for augmentation)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 14113,
+      "rows": null,
+      "source": "Constructed: Data dictionary for the extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "der_register_extract_yarrabin_20260905.csv",
+      "format": "csv",
+      "bytes": 1866251,
+      "rows": 19254,
+      "source": "Constructed: DER Register extract (AC connections and devices) for NMIs on the Yarrabin feeders, 5 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "eg_connection_applications_20260901.csv",
+      "format": "csv",
+      "bytes": 2012354,
+      "rows": 17590,
+      "source": "Constructed: Mirrabee Energy embedded generation connection register: micro EG applications (new systems and alterations, all statuses) for NMIs on the Yarrabin feeders, received to 31 August 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 2072,
+      "rows": 14,
+      "source": "Constructed: Export manifest: each file's source system, date, rows, owner and scope",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "feeder_peak_demand_forecast_2027-31.xlsx",
+      "format": "xlsx",
+      "bytes": 6701,
+      "rows": null,
+      "source": "Constructed: Feeder summer peak demand forecast 2027 to 2031 (Distribution Annual Planning Report working file)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "home_battery_rebate_approvals_fy2025-26.csv",
+      "format": "csv",
+      "bytes": 58633,
+      "rows": 612,
+      "source": "Constructed: Queensland home battery rebate approvals for Merindah addresses, FY2025-26",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "legacy_inverter_equipment.csv",
+      "format": "csv",
+      "bytes": 445234,
+      "rows": 9340,
+      "source": "Constructed: Inverters of applications migrated from the pre-July-2019 connections system",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merindah_rates_roll_2026-27.csv",
+      "format": "csv",
+      "bytes": 6146935,
+      "rows": 48876,
+      "source": "Constructed: Merindah City Council 2026-27 rates roll, western rating area",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nmi_network_model_20260831.csv",
+      "format": "csv",
+      "bytes": 5172527,
+      "rows": 47515,
+      "source": "Constructed: Network model extract: NMIs on the eight Yarrabin 22 kV feeders at 31 August 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nmi_property_xref_2026.csv",
+      "format": "csv",
+      "bytes": 1804003,
+      "rows": 47515,
+      "source": "Constructed: GIS cross-reference of NMIs to Merindah City Council property numbers",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nmi_reallocations_2019-2026.csv",
+      "format": "csv",
+      "bytes": 601957,
+      "rows": 6145,
+      "source": "Constructed: NMI re-allocation log for Yarrabin premises since 1 July 2019",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "solar_streets_2027_letter_to_mirrabee.pdf",
+      "format": "pdf",
+      "bytes": 44534,
+      "rows": null,
+      "source": "Constructed: Merindah City Council letter of 14 August 2026 confirming the two spring 2027 campaigns",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "solar_streets_program_summary.xlsx",
+      "format": "xlsx",
+      "bytes": 8817,
+      "rows": null,
+      "source": "Constructed: Merindah City Council Solar Streets campaign summary, 2018 to 2024, with the program terms",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yarrabin_hosting_capacity_assessment_2026.pdf",
+      "format": "pdf",
+      "bytes": 52593,
+      "rows": null,
+      "source": "Constructed: Hosting capacity assessment BPE-2026-031 for the Yarrabin 22 kV feeders",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

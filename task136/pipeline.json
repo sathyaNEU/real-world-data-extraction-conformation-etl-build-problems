@@ -1,26 +1,26 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver collapses alterations, builds NPP-114's base trend, carries the past bulk-buys' systems per home letterboxed onto the 2027 letterbox drops and files YRB22 at about 1.5 MW over hosting capacity; the step that lands it there is transferring each campaign's yield per contacted address instead of per owner-occupied house still without rooftop PV in its suburb, which leaves YRB24's untouched Bindarra Waters estate with about half its campaign: the golden is YRB24 at about 1.9 MW.",
+  "stump": "A competent solver collapses alterations, builds NPP-114's base trend, carries the past bulk-buys' systems per home letterboxed onto the 2027 letterbox drops and files YRB22 at about 1.5 MW over hosting capacity; the step that lands it there is transferring each campaign's yield per contacted address instead of per owner-occupied house still without rooftop PV in its suburb, which leaves YRB24's untouched Bindarra Waters estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-12 (7 lines, no LEAK; each answered in the design note build record)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN 2026-10-12 (overuse.gate_g only, answered in the design note)",
+    "nearest": "0.07 task86 v2 (driver); surface 0 promoted, nearest 0.094 task95"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: design (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, precut.py)",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,

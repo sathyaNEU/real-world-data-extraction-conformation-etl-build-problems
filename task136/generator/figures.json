@@ -1,0 +1,165 @@
+{
+ "call": {
+  "feeder": "YRB24",
+  "excess_mw": "1.9",
+  "runner_up": "YRB22",
+  "runner_up_excess_mw": "1.5",
+  "gap_mw": "0.4",
+  "bindarra_waters_systems": 240,
+  "wattleview_systems": 30
+ },
+ "steps": {
+  "connected_kw": {
+   "YRB21": "16,126",
+   "YRB22": "13,683",
+   "YRB23": "10,752",
+   "YRB24": "3,064",
+   "YRB25": "6,459",
+   "YRB26": "12,018",
+   "YRB27": "12,534",
+   "YRB28": "10,567"
+  },
+  "trend_kw": {
+   "YRB21": "928",
+   "YRB22": "826",
+   "YRB23": "575",
+   "YRB24": "432",
+   "YRB25": "510",
+   "YRB26": "690",
+   "YRB27": "754",
+   "YRB28": "563"
+  },
+  "forecast_kw": {
+   "YRB21": "18,910",
+   "YRB22": "16,161",
+   "YRB23": "12,477",
+   "YRB24": "6,112",
+   "YRB25": "7,988",
+   "YRB26": "14,087",
+   "YRB27": "15,000",
+   "YRB28": "12,257"
+  },
+  "hosting_mw": {
+   "YRB21": "17.81",
+   "YRB22": "14.66",
+   "YRB23": "12.03",
+   "YRB24": "4.22",
+   "YRB25": "6.75",
+   "YRB26": "14.71",
+   "YRB27": "13.99",
+   "YRB28": "11.54"
+  },
+  "excess_mw": {
+   "YRB21": "1.1",
+   "YRB22": "1.5",
+   "YRB23": "0.4",
+   "YRB24": "1.9",
+   "YRB25": "1.2",
+   "YRB26": "-0.6",
+   "YRB27": "1.0",
+   "YRB28": "0.7"
+  },
+  "pooled_rate_pct": "4.58",
+  "campaigns": {
+   "GLM18": {
+    "untapped": "740",
+    "systems": 34,
+    "rate_pct": "4.59"
+   },
+   "KJP19": {
+    "untapped": "1,054",
+    "systems": 48,
+    "rate_pct": "4.55"
+   },
+   "TWR21": {
+    "untapped": "2,270",
+    "systems": 104,
+    "rate_pct": "4.58"
+   },
+   "SKO22": {
+    "untapped": "810",
+    "systems": 37,
+    "rate_pct": "4.57"
+   },
+   "IBH22": {
+    "untapped": "885",
+    "systems": 41,
+    "rate_pct": "4.63"
+   },
+   "BNR23": {
+    "untapped": "1,207",
+    "systems": 55,
+    "rate_pct": "4.56"
+   },
+   "PBG24": {
+    "untapped": "851",
+    "systems": 39,
+    "rate_pct": "4.58"
+   }
+  },
+  "bindarra_untapped_base": "5,299",
+  "bindarra_adopt_fy": 24,
+  "bindarra_untapped_open": "5,275",
+  "wattleview_untapped_base": "720",
+  "wattleview_adopt_fy": 52,
+  "wattleview_untapped_open": "668",
+  "bindarra_systems_unrounded": "241.6",
+  "wattleview_systems_unrounded": "30.6",
+  "avg_kw_yrb24": "7.25",
+  "avg_kw_yrb27": "6.67",
+  "program_kw_yrb24": "1,752",
+  "program_kw_yrb27": "204",
+  "winner_forecast_mw": "6.1",
+  "winner_hosting_mw": "4.22"
+ },
+ "default_path": {
+  "feeder": "YRB22",
+  "excess_mw": "1.5",
+  "bindarra_waters_systems": 90,
+  "wattleview_systems": 50
+ },
+ "ask_a": {
+  "YRB21": {
+   "connected_not_on_der": 12,
+   "der_active_not_connected": 11
+  },
+  "YRB22": {
+   "connected_not_on_der": 8,
+   "der_active_not_connected": 12
+  },
+  "YRB23": {
+   "connected_not_on_der": 11,
+   "der_active_not_connected": 10
+  },
+  "YRB24": {
+   "connected_not_on_der": 2,
+   "der_active_not_connected": 8
+  },
+  "YRB25": {
+   "connected_not_on_der": 6,
+   "der_active_not_connected": 5
+  },
+  "YRB26": {
+   "connected_not_on_der": 14,
+   "der_active_not_connected": 4
+  },
+  "YRB27": {
+   "connected_not_on_der": 14,
+   "der_active_not_connected": 9
+  },
+  "YRB28": {
+   "connected_not_on_der": 12,
+   "der_active_not_connected": 4
+  }
+ },
+ "ask_b": {
+  "YRB21": "2,440",
+  "YRB22": "1,770",
+  "YRB23": "1,800",
+  "YRB24": "390",
+  "YRB25": "900",
+  "YRB26": "1,590",
+  "YRB27": "1,740",
+  "YRB28": "1,310"
+ }
+}

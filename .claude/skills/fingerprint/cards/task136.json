@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "YRB24 should get the FY2027-28 accelerated hosting capacity augmentation: its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029 (runner-up YRB22 at 1.5 MW, gap 0.4 MW; the Bindarra Waters bulk-buy adds 240 systems, Wattleview 30)",
+  "answer_source": "task136/submission.md block 1 and block 4, from task136/generator/figures.json (call)",
   "gap": [
     "population"
   ],
@@ -35,7 +35,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "eg_connection_applications_20260901.csv",
-    "rows": 0,
+    "rows": 17590,
     "entity": "one micro embedded generation (rooftop PV) connection application at a national meter identifier",
     "grain": "connection application (new system or alteration) x NMI",
     "source": "constructed (the distributor's embedded generation connection register)"
@@ -75,7 +75,7 @@
   "driver_concrete": "Each of the council's seven past solar bulk-buys added the same share (about 4.6 per cent) of its suburb's owner-occupied houses that had no rooftop PV when it opened, a pool reached only by joining the council's rates roll through the distributor's NMI-to-property cross-reference to its connection register; feeder YRB24's new Bindarra Waters estate holds more such houses than any past suburb, so its spring 2027 campaign adds about 1.5 MW and puts YRB24 furthest over hosting capacity in August 2029, where a transfer per home letterboxed, per owner-occupied house or per home without PV adds a third to two thirds of that and leaves the upgrade with YRB22.",
   "stump": "A competent solver files YRB22 at about 1.5 MW over hosting capacity by carrying the past campaigns' installations per home letterboxed onto the 2027 letterbox drops; the step that lands it there is transferring the yield per contacted home instead of per owner-occupied house still without rooftop PV in the suburb, which leaves YRB24's untouched new estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the forecasting procedure, collapses alterations to one system per NMI and takes each past campaign's installations correctly still carries them to the 2027 suburbs per home letterboxed and files YRB22; per owner-occupied house, per home without PV, per feeder, by rate ratio or as an average count also leave YRB24's campaign at a third to two thirds of its size and the upgrade with YRB22.",
+  "analyst_test": "A strong analyst who reads the forecasting procedure, collapses alterations to one system per NMI and takes each past campaign's installations correctly still carries them to the 2027 suburbs per home letterboxed and files YRB22; per owner-occupied house, per home without PV, per feeder, by rate ratio or as an average count also leave YRB24's campaign at 26 to 140 systems against about 240 and the upgrade with YRB22.",
   "domain_test": "The deciding quantity is each feeder's design-point rooftop PV against its hosting capacity, with a bulk-buy campaign's installations forecast from the rooftops that can still take it up (owner-occupied houses with no PV yet), which is how a distribution planner forecasts DER for an augmentation; with another field's nouns, hosting capacity, inverter ratings, rooftop ownership and the embedded generation register have nothing to attach to.",
   "mechanism_source": "design_note",
   "differentiation": {},
@@ -85,10 +85,10 @@
   "layer2_pattern": "product-analytics/feature-adoption-diffusion-modeling/2",
   "layer1": [
     "an embedded generation connection register at application grain, where an alteration (added panels, a replaced inverter, a battery retrofit) is a new application carrying the NMI's whole configuration after the work, with withdrawn and approved-not-connected applications beside connected ones",
-    "the feeder recorded at application against the feeder in the network model at the base date, after a 2023 load transfer between two feeders",
+    "the feeder recorded at application against the feeder in the network model at the base date, after a 2023 load transfer of one locality between two feeders",
     "NMIs keyed by the distributor, properties keyed by the council's property number and lot on plan, joined only through the GIS NMI-to-property cross-reference with dual-occupancy and granny-flat NMIs",
-    "inverter rating in kVA beside panel capacity in kWp, rows migrated from the pre-2019 system with panel capacity only and the inverter in a separate equipment table",
+    "inverter rating in kW AC beside panel capacity in kWp, rows migrated from the pre-2019 system with panel capacity only and the inverter in a separate equipment table",
     "the council's bulk-buy log in its own workbook layout (title block, merged headers, footnotes) with homes letterboxed, registrations, contracts and systems installed",
-    "a national DER Register extract at device grain and a customer case export with repeat calls and re-categorised cases on the ask paths"
+    "a national DER Register extract at device grain (modular batteries one row per module, decommissioned connections, NMIs with a checksum digit from the newer installer portal, builders' systems under temporary supply NMIs) and the NMI re-allocation log on the ask paths"
   ]
 }
