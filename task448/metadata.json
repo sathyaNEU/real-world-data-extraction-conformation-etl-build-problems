@@ -1,0 +1,175 @@
+{
+  "task": "task448",
+  "title": "Which five of twelve shortlisted lenders a Kansas homeownership nonprofit recruits first for its 2027 rural down-payment program, ranked on the home-purchase mortgages each made in eight non-metropolitan counties in 2024 and 2025, counting the local banks and credit unions HMDA does not cover",
+  "domain": "Survey Research & Official Statistics",
+  "subdomain": "census-register-administrative-data-quality (completing an administrative register that misses whole producers from a second, incomplete list)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "01 (ranked list under a cap): the five of twelve, in order, with counts and the sixth",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "rural_lender_recruitment_2027.xlsx",
+    "rural_lender_recruitment_2027.pptx"
+  ],
+  "distractor_files": [
+    "hmda_2023_county_summary_ks.csv",
+    "homebuyer_education_completions_2024_2026.csv"
+  ],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "hmda_lar_kansas_2024_2025.csv",
+    "largest_file_rows": 62167
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task448/generator/build.py (seeded, deterministic) around a fictional Kansas nonprofit, its lenders and a fictional recorder data vendor, in the layouts of the public HMDA files; no real lender, person or loan is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task448/generator/build.py",
+  "files": [
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 2506,
+      "rows": 14,
+      "source": "Constructed: the research desk's export manifest",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "field_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 11728,
+      "rows": null,
+      "source": "Constructed: the research desk's field dictionary",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hmda_2023_county_summary_ks.csv",
+      "format": "csv",
+      "bytes": 111168,
+      "rows": 1872,
+      "source": "Constructed: HMDA 2023 originations by Kansas county, purpose and loan type",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hmda_lar_kansas_2024_2025.csv",
+      "format": "csv",
+      "bytes": 17893358,
+      "rows": 62167,
+      "source": "Constructed: HMDA loan-level records for Kansas, 2024 and 2025, in the FFIEC public layout (the fields kept)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hmda_reporter_panel_2024_2025.csv",
+      "format": "csv",
+      "bytes": 7224,
+      "rows": 92,
+      "source": "Constructed: HMDA reporter panel rows for the institutions with records in the eight counties",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "homebuyer_education_completions_2024_2026.csv",
+      "format": "csv",
+      "bytes": 12777,
+      "rows": 447,
+      "source": "Constructed: homebuyer education completions by month, county and class format",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lender_register_2026-09.csv",
+      "format": "csv",
+      "bytes": 6600,
+      "rows": 56,
+      "source": "Constructed: lenders known to the fund, with identifiers",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mortgagee_alias_register.csv",
+      "format": "csv",
+      "bytes": 24374,
+      "rows": 202,
+      "source": "Constructed: mortgagee names as indexed, matched to lenders",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rural_dpa_program_guidelines_2027.pdf",
+      "format": "pdf",
+      "bytes": 67232,
+      "rows": null,
+      "source": "Constructed: Rural Down-Payment Assistance Program guidelines, 2027",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rural_lender_shortlist_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 8244,
+      "rows": null,
+      "source": "Constructed: the board's twelve-lender shortlist",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venridge_delivery_register.csv",
+      "format": "csv",
+      "bytes": 425,
+      "rows": 3,
+      "source": "Constructed: the research desk's register of the vendor's deliveries",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venridge_pmm_ks8_2024.txt",
+      "format": "txt",
+      "bytes": 403046,
+      "rows": 1283,
+      "source": "Constructed: county recorder vendor's purchase-money mortgage file, eight counties, recordings of 2024",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venridge_pmm_ks8_2025.txt",
+      "format": "txt",
+      "bytes": 427320,
+      "rows": 1361,
+      "source": "Constructed: county recorder vendor's purchase-money mortgage file, eight counties, recordings of 2025",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venridge_pmm_ks8_2026ytd.txt",
+      "format": "txt",
+      "bytes": 357564,
+      "rows": 1126,
+      "source": "Constructed: county recorder vendor's purchase-money mortgage file, recordings of January to August 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venridge_pmm_layout_guide_v4.pdf",
+      "format": "pdf",
+      "bytes": 44033,
+      "rows": null,
+      "source": "Constructed: the vendor's file layout guide, versions 3 and 4",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

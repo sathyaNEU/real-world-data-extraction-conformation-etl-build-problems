@@ -1,13 +1,13 @@
 {
   "task": "task448",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver ranks the lenders in the HMDA LAR and recruits the five largest reporters, because HMDA leaves out the lenders with no metropolitan office; adding those lenders from the recorder feed and scaling their counts by the feed's capture of the reporters' loans still leaves one of the two largest out, because the pooled capture is set by reporters whose closings record the mortgage with the deed, while the non-reporting lenders record their own (figures fixed at build).",
+  "stump": "The default path recruits Shunga Valley Bank at 151 instead of Mennwell Credit Union because it counts the five non-reporting lenders at their rows in the Venridge file, which holds 60 per cent of a lender's purchase mortgages when the lender records its own mortgage after the deed (97 per cent when the closing records the two together); measured on the reporters within each way of recording and carried to each non-reporting lender by its own, Mennwell made about 200 and Weyrauch State Bank about 260, while the pooled capture of 90 per cent still leaves Mennwell at about 130.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,11 +15,11 @@
     "date": ""
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK) 2026-10-12; house numbers, lender names and common words only",
+    "reader": "2026-10-12: Q1 to Q4 none; Q5 the estimand executed, no main-call fork; Q6 the reader named the 7.3 to 7.5 filters and the date basis, both asserted neutral to the call (not a rule-3 finding); realism tells fixed (small-lender names, alias review dates, shortlist notes)"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (repeat.gate_g, answered in the design note) 2026-10-12",
     "nearest": "0.06 (task62 lineage)",
     "note": "draw checked 2026-10-12: guard WARN repeat.gate_g (task185) answered; seven older same-signature builds differentiated on the card"
   },
@@ -29,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: tune the lender market so every wrong rung (HMDA only, feed unscaled, pooled capture, county and charter capture, route capture with the erroneous enumerations kept) names its own five and the golden's fifth clears its sixth by 1.2; then the readability screen, fork table, closure, asks and prompt.txt to precut exit 0",
+  "resume": "stage 4: the leak reader ran (no leak; realism fixes applied, no figure moved); the determinism judge thread is running from /tmp/determinism-check-task448-20261012193759/judge_brief.md. On its verdict: hand verdict.md to the determinism-judge agent for the report, fix every finding in the generator in one pass, re-run the stage 3 gates (build.py, figures_check, precut, leak.py, guard heart), append the reader's section to leak_check_report.md, then ship.",
   "approved": null,
   "delivered": null,
   "portal": null,

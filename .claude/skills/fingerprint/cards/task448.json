@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Recruit Corvane Home Loans (310), Weyrauch State Bank (260), Halverd Mortgage (230), Mennwell Credit Union (200) and Arkhaven Bank (180) first; Shunga Valley Bank is sixth (150)",
+  "answer_source": "task448/submission.md, block 1; generator/figures.json",
   "gap": [
     "population"
   ],
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "hmda_lar_kansas_2024_2025.csv",
-    "rows": 0,
+    "rows": 62167,
     "entity": "one HMDA loan application record (any action, any purpose) reported by an institution for a Kansas property",
     "grain": "application or purchased loan x activity year",
     "source": "synthetic (modeled on the FFIEC HMDA public loan-level dataset layout)"
@@ -55,14 +55,14 @@
     ]
   },
   "deliverables": [
-    "rural_purchase_lenders_2024_2025.xlsx",
-    "lender_recruitment_2027.pptx"
+    "rural_lender_recruitment_2027.xlsx",
+    "rural_lender_recruitment_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A register that misses whole producers is completed from a second, incomplete list whose capture of each producer's units depends on the route by which the producer files them, so the second list's capture, measured on the producers both lists hold, has to be estimated within route strata and carried to each unregistered producer by its own route; the pooled capture, set by the route the registered producers favour, leaves the unregistered producers at a fraction of their volume and off the capped list.",
   "driver_concrete": "Banks and credit unions with no metropolitan office never report HMDA, and the county recorder feed's purchase flag captures a lender's mortgages at about 97 per cent when the closing records the mortgage in one package with the deed and about 60 per cent when the lender records its own mortgage separately, so the feed's capture has to be measured on the HMDA reporters within each recording route and carried to each non-reporting lender by its own route, after the feed's non-purchase and duplicate recordings are removed; scaled by the pooled capture instead, the second-largest non-reporting lender stays outside the five largest lenders (figures fixed at build).",
-  "stump": "A competent solver ranks the lenders in the HMDA LAR and recruits the five largest reporters, because HMDA leaves out the lenders with no metropolitan office; adding those lenders from the recorder feed and scaling their counts by the feed's capture of the reporters' loans still leaves one of the two largest out, because the pooled capture is set by reporters whose closings record the mortgage with the deed, while the non-reporting lenders record their own (figures fixed at build).",
+  "stump": "A competent solver adds the five lenders HMDA does not cover from the recorder file and recruits Shunga Valley Bank (151) fifth, at their raw rows or over the file's pooled capture of the reporters' loans (90 per cent), which leaves Mennwell Credit Union at about 135; the file holds 97 per cent of mortgages recorded with the deed and 60 per cent of those a lender records after it, and measured within that route Mennwell made about 200 and Weyrauch State Bank about 260.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the LAR and the recorder feed, resolves the mortgagee names and removes the feed's non-purchase recordings sees that HMDA misses the rural lenders, measures the feed's capture against the reporters' HMDA counts and scales the rural lenders' feed counts by it; the pooled capture (about 0.88) leaves the second-largest rural lender, a credit union, below the fifth reporter, because the route it records by is captured at about 0.60.",
   "domain_test": "Completing an administrative register that misses whole classes of producers by dual-system estimation against a second, incomplete source, within post-strata where that source's capture is homogeneous and after its erroneous enumerations, is official statistics' coverage-measurement method; with another field's nouns (a credit model's default rates, a pricing grid) there is no register coverage or capture to estimate, and the task stops reading the same.",

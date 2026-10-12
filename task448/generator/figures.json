@@ -1,0 +1,114 @@
+{
+ "five": [
+  "Corvane Home Loans",
+  "Weyrauch State Bank",
+  "Halverd Mortgage",
+  "Mennwell Credit Union",
+  "Arkhaven Bank"
+ ],
+ "five_counts": {
+  "Corvane Home Loans": "310",
+  "Weyrauch State Bank": "260",
+  "Halverd Mortgage": "230",
+  "Mennwell Credit Union": "200",
+  "Arkhaven Bank": "180"
+ },
+ "sixth": "Shunga Valley Bank",
+ "sixth_count": "150",
+ "twelve": {
+  "Corvane Home Loans": "310",
+  "Weyrauch State Bank": "260",
+  "Halverd Mortgage": "230",
+  "Mennwell Credit Union": "200",
+  "Arkhaven Bank": "180",
+  "Shunga Valley Bank": "150",
+  "Tessaline Home Lending": "140",
+  "Saltfork State Bank": "140",
+  "Heidebrecht State Bank": "140",
+  "Ninnescah FCU": "130",
+  "Kessinger FCU": "80",
+  "Eisenbrandt State Bank": "80"
+ },
+ "reporter_counts": {
+  "Corvane Home Loans": "311",
+  "Halverd Mortgage": "228",
+  "Arkhaven Bank": "182",
+  "Shunga Valley Bank": "151",
+  "Tessaline Home Lending": "141",
+  "Saltfork State Bank": "138",
+  "Ninnescah FCU": "133"
+ },
+ "capture_packaged": "97",
+ "capture_separate": "60",
+ "capture_pooled": "90",
+ "reporters_packaged_hmda": "1,731",
+ "reporters_packaged_rows": "1,673",
+ "reporters_separate_hmda": "395",
+ "reporters_separate_rows": "236",
+ "recorded_rows": {
+  "Weyrauch State Bank": "154",
+  "Mennwell Credit Union": "121",
+  "Heidebrecht State Bank": "82",
+  "Kessinger FCU": "80",
+  "Eisenbrandt State Bank": "47"
+ },
+ "two_year": {
+  "Saline": "1,360",
+  "McPherson": "580",
+  "Dickinson": "360",
+  "Marion": "270",
+  "other four": "440"
+ },
+ "program_year": {
+  "Saline": "710",
+  "McPherson": "310",
+  "Dickinson": "190",
+  "Marion": "150",
+  "other four": "240",
+  "total": "1,610"
+ },
+ "default_five": [
+  "Corvane Home Loans",
+  "Halverd Mortgage",
+  "Arkhaven Bank",
+  "Weyrauch State Bank",
+  "Shunga Valley Bank"
+ ],
+ "default_sixth": "Tessaline Home Lending",
+ "pooled_five": [
+  "Corvane Home Loans",
+  "Halverd Mortgage",
+  "Arkhaven Bank",
+  "Weyrauch State Bank",
+  "Shunga Valley Bank"
+ ],
+ "pooled_counts": {
+  "Corvane Home Loans": "310",
+  "Halverd Mortgage": "230",
+  "Arkhaven Bank": "180",
+  "Weyrauch State Bank": "170",
+  "Shunga Valley Bank": "150"
+ },
+ "weyrauch_unscaled": "150",
+ "mennwell_pooled": "130",
+ "weyrauch_pooled": "170",
+ "quitclaims_kept_five": [
+  "Corvane Home Loans",
+  "Weyrauch State Bank",
+  "Halverd Mortgage",
+  "Heidebrecht State Bank",
+  "Mennwell Credit Union"
+ ],
+ "heidebrecht_quitclaims_kept": "200",
+ "heidebrecht_quitclaim_rows": "43",
+ "margin_fifth_sixth": "1.21",
+ "clauses": [
+  "7.2",
+  "7.3",
+  "7.4",
+  "7.5"
+ ],
+ "nearest": 10,
+ "years": "2024 and 2025",
+ "program_year_span": "1 July 2025 to 30 June 2026"
+}
