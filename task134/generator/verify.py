@@ -29,9 +29,9 @@ def d(s):
 
 
 def read(tdir):
-    rd = lambda f: pd.read_csv(os.path.join(tdir, f), dtype=str, keep_default_na=False)
+    rd = lambda f, sep=",": pd.read_csv(os.path.join(tdir, f), sep=sep, dtype=str, keep_default_na=False)
     X = dict(pl=rd("care_home_placements_2021-2026.csv"), li=rd("fpnc_payment_lines_2021-2026.csv"),
-             cw=rd("client_id_crosswalk_2023.csv"), dl=rd("nrs_death_linkage_2027-01-15.csv"),
+             cw=rd("client_id_crosswalk_2023.csv"), dl=rd("nrs_death_linkage_2027-01-15.tsv", "\t"),
              fa=rd("charging_assessments_2021-2026.csv"), lk=rd("postcode_locality_lookup.csv"))
     ws = openpyxl.load_workbook(os.path.join(tdir, "care_home_register_2026-12.xlsx"), read_only=True).active
     rows = list(ws.iter_rows(values_only=True))
@@ -165,7 +165,10 @@ def forecast(X):
                 conv[k] += (p * np.exp(-(H(pool + q[k]) - H(pool + mid)))).sum()
         s = s * np.exp(-tot * hh)
         t += hh
-    return surv + direct + conv, len(now), len(pool), st
+    since = {"1 January %d" % y: sum(1 for a, e, w in aw if e > ASOF and (dt.date(y, 1, 1) - EPOCH).days <= a <= ASOF)
+             for y in (2025, 2026)}
+    parts = dict(today_residents=surv, direct_admissions=direct, conversions=conv, rate=rate, since=since)
+    return surv + direct + conv, len(now), len(pool), st, parts
 
 
 def ask(X, st):
@@ -203,15 +206,22 @@ def main():
     X = read(a.target)
     F = json.load(open(os.path.join(HERE, "figures.json")))
     fails = 0
-    tot, ncf, npool, st = forecast(X)
+    tot, ncf, npool, st, parts = forecast(X)
     for k, qlab in enumerate(["30 June 2027", "30 September 2027", "31 December 2027", "31 March 2028"]):
         want = F["call"][qlab]
         good = abs(tot[k] - want["unrounded"]) < 0.01 and int(math.floor(tot[k] / 10 + 0.5) * 10) == want["stated"]
         fails += not good
         print("%s  %-18s %.2f (figures.json %.2f, stated %d)" % ("ok  " if good else "FAIL", qlab, tot[k], want["unrounded"], want["stated"]))
+        for part in ("today_residents", "direct_admissions", "conversions"):
+            good = abs(parts[part][k] - F["components"][qlab][part]) < 0.06
+            fails += not good
+            print("%s    %-18s %.2f (figures.json %.1f)" % ("ok  " if good else "FAIL", part, parts[part][k], F["components"][qlab][part]))
     good = ncf == F["stock_31_december_2026"] and npool == F["pool_31_december_2026"]
     fails += not good
     print("%s  stock %d, pool %d" % ("ok  " if good else "FAIL", ncf, npool))
+    good = abs(parts["rate"] - F["direct_admissions_per_month"]) < 0.006 and parts["since"] == F["pool_admitted_since"]
+    fails += not good
+    print("%s  direct admissions %.3f a month; pool admitted since %s" % ("ok  " if good else "FAIL", parts["rate"], parts["since"]))
     A = ask(X, st)
     for loc in LOCS:
         for ct in ("Residential", "Nursing"):

@@ -33,7 +33,7 @@ FILES = {
     "lines": "fpnc_payment_lines_2021-2026.csv",
     "crosswalk": "client_id_crosswalk_2023.csv",
     "assess": "charging_assessments_2021-2026.csv",
-    "deaths": "nrs_death_linkage_2027-01-15.csv",
+    "deaths": "nrs_death_linkage_2027-01-15.tsv",
     "register": "care_home_register_2026-12.xlsx",
     "lookup": "postcode_locality_lookup.csv",
     "definitions": "care_home_budget_definitions_2027-28.docx",
@@ -96,8 +96,8 @@ def world():
     return S, O, moves, rest, detail
 
 
-def write_csv(df, path):
-    df.to_csv(path, index=False, lineterminator="\r\n")
+def write_csv(df, path, sep=","):
+    df.to_csv(path, index=False, sep=sep, lineterminator="\r\n")
 
 
 def build(out):
@@ -111,7 +111,7 @@ def build(out):
     write_csv(T["li"], p("lines"))
     write_csv(T["cw"], p("crosswalk"))
     write_csv(T["ass"], p("assess"))
-    write_csv(T["dl"], p("deaths"))
+    write_csv(T["dl"], p("deaths"), sep="\t")
     write_csv(T["lookup"], p("lookup"))
     DOC.register_xlsx(T["reg"], p("register"))
     DOC.definitions_docx(p("definitions"))

@@ -23,7 +23,7 @@ def load(tdir):
     pl = pd.read_csv(p("care_home_placements_2021-2026.csv"), dtype=str, keep_default_na=False)
     li = pd.read_csv(p("fpnc_payment_lines_2021-2026.csv"), dtype=str, keep_default_na=False)
     cw = pd.read_csv(p("client_id_crosswalk_2023.csv"), dtype=str, keep_default_na=False)
-    dl = pd.read_csv(p("nrs_death_linkage_2027-01-15.csv"), dtype=str, keep_default_na=False)
+    dl = pd.read_csv(p("nrs_death_linkage_2027-01-15.tsv"), sep="\t", dtype=str, keep_default_na=False)
     return pl, li, cw, dl
 
 

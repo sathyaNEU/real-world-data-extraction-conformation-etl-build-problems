@@ -130,7 +130,7 @@ def draft_offer_pdf(path):
                    ["Nursing", "£%.2f" % n26, "£%.2f" % n27, "%.1f%%" % (100 * (n27 / n26 - 1))]],
          [2400, 2200, 2400, 2000], 19),
         P_("Until a new rate is agreed, placements continue to be paid at the 2026-27 rates, with any increase backdated "
-           "to 10 April 2027 once agreed. Supplements agreed for individual residents are not part of the national "
+           "to 1 April 2027 once agreed. Supplements agreed for individual residents are not part of the national "
            "rate and are reviewed separately with each home."),
         P_("For budget purposes Finance has asked that the draft offer is not treated as agreed. The contracts team will "
            "update the rate table when the national rate is confirmed."),
@@ -157,21 +157,19 @@ def rates_xlsx(path):
     ws["A1"].font = Font(bold=True, size=12)
     ws.append(["Contracts and Commissioning. Rates as agreed nationally; supplements for individual residents are recorded on the placement."])
     ws.append([])
-    hdr = ["Financial year", "Care type", "Weekly rate (£)", "Paid from"]
+    hdr = ["Financial year", "Care type", "Weekly rate (£)", "Effective from"]
     ws.append(hdr)
     for j in range(1, 5):
         c = ws.cell(row=4, column=j)
         c.font = Font(bold=True)
         c.fill = PatternFill("solid", fgColor="DDEBF7")
-    paid_from = {2021: dt.date(2021, 4, 12), 2022: dt.date(2022, 4, 11), 2023: dt.date(2023, 4, 10),
-                 2024: dt.date(2024, 4, 8), 2025: dt.date(2025, 4, 7), 2026: dt.date(2026, 4, 6)}
     for y in range(2021, 2027):
         for k, ct in enumerate(("Residential", "Nursing")):
-            ws.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC[y][k], paid_from[y]])
+            ws.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC[y][k], dt.date(y, 4, 1)])
     for r in range(5, ws.max_row + 1):
         ws.cell(row=r, column=3).number_format = "#,##0.00"
         ws.cell(row=r, column=4).number_format = "dd/mm/yyyy"
-    for col, w in zip("ABCD", [15, 13, 16, 12]):
+    for col, w in zip("ABCD", [15, 13, 16, 14]):
         ws.column_dimensions[col].width = w
     OX.xlsx_from_openpyxl(wb, path, PEOPLE["contracts"], PEOPLE["contracts"], dt.datetime(2021, 5, 4, 10, 2),
                           dt.datetime(2026, 5, 11, 14, 26), seed=3101)
@@ -215,7 +213,7 @@ Files
   fpnc_payment_lines_2021-2026.csv        finance system (care payments), %(li)s rows
   charging_assessments_2021-2026.csv      finance system (financial assessment), %(fa)s rows
   client_id_crosswalk_2023.csv            case management system, %(cw)s rows
-  nrs_death_linkage_2027-01-15.csv        NRS deaths matched to client records, %(dl)s rows
+  nrs_death_linkage_2027-01-15.tsv        NRS deaths matched to client records (tab-separated), %(dl)s rows
 
 The cut
   Each extract holds what the system recorded by the run date for events up to 31 December 2026. Admissions,
@@ -273,15 +271,18 @@ charging_assessments_2021-2026.csv
   outcome           ASSESSED contribution assessed; NIL no contribution; SELF capital above the upper limit,
                     resident pays the full fee
 
-nrs_death_linkage_2027-01-15.csv
+nrs_death_linkage_2027-01-15.tsv
   Deaths registered with National Records of Scotland by 15 January 2027, dated 1 April 2021 to 31 December 2026,
   matched to client records on 15 January 2027.
   match_status      EXACT matched on CHI number; PROBABLE matched on name, date of birth and postcode
 
 Other files supplied with this run
+  care_home_budget_definitions_2027-28.docx  budget definitions, version 1.2 (Finance and Planning)
+  charging_policy_2026-27.pdf             charging policy and rates for 2026-27 (Financial Assessment Team)
   care_home_register_2026-12.xlsx         Care Inspectorate register of care homes for older people in Strathallan
   postcode_locality_lookup.csv            postcode to partnership locality
   nchc_rates_2021-22_to_2026-27.xlsx      contract rates (Contracts and Commissioning)
+  nchc_draft_offer_2027-28.pdf            briefing note on the draft 2027-28 contract rates (Contracts and Commissioning)
   care_at_home_hours_2024-2026.csv        care at home hours by locality (Performance and Information)
   care_inspectorate_grades_2026.csv       latest inspection grades for Strathallan's care homes
 """ % dict(analyst=PEOPLE["analyst"], **{k: format(v, ",") for k, v in n.items()})

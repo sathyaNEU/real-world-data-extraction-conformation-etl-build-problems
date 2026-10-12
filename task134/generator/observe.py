@@ -331,10 +331,11 @@ PERIOD0 = W.dn(D(2021, 4, 1))
 
 
 def periods():
+    """four-weekly payment periods from 1 April 2021, each numbered in the financial year that holds its middle day"""
     out = []
     t = PERIOD0
     while t + 27 <= W.ASOF:
-        y = W.fy(t + 3)
+        y = W.fy(t + 13)
         out.append((t, t + 27, y))
         t += 28
     lab = []
@@ -346,6 +347,19 @@ def periods():
 
 
 LATE_UPRATING = {2022: 3, 2024: 3}       # financial years whose new rates were paid from the third period, with arrears
+
+
+def pay(k, lo, hi, late_y=None):
+    """free personal (k 0) or nursing (k 1) care for the days lo to hi inclusive, each day at the weekly rate of its own
+    financial year; in a year whose new rate was paid late, that year's days at the year before's rate"""
+    tot = 0.0
+    d = lo
+    while d <= hi:
+        y = W.fy(d)
+        nxt = min(hi + 1, W.fy_start(y + 1))
+        tot += W.FPNC[y - 1 if y == late_y else y][k] * (nxt - d) / 7.0
+        d = nxt
+    return tot
 
 
 def payment_lines(S, O, rng):
@@ -382,22 +396,20 @@ def payment_lines(S, O, rng):
             # recovered later
             paid_to = pe if (not np.isfinite(aend) or aend + lag > pe + 3) and aend >= ps else hi
             paid_to = min(paid_to, pe)
-            y = W.fy(ps + 3)
+            y = int(lab[:4])
+            late = y if (y in LATE_UPRATING and int(lab[-2:]) < LATE_UPRATING[y]) else None
             for comp, k in (("FPC", 0), ("FNC", 1)):
                 if comp == "FNC" and not S.care[i]:
                     continue
                 days = paid_to - lo + 1
                 if days <= 0:
                     continue
-                rate_y = y
-                if y in LATE_UPRATING and int(lab[-2:]) < LATE_UPRATING[y]:
-                    rate_y = y - 1
-                amt = round(W.FPNC[rate_y][k] * days / 7.0, 2)
+                amt = round(pay(k, lo, paid_to, late), 2)
                 h = home_at(S, i, lo)
                 svc = O.svc_new[S.H[h]["name"]] if (h in O.rereg_idx and lo >= O.rereg_idx[h][1]) else O.svc[h]
                 rows.append((i, O.debtor[i], svc, ds(S.admit[i]), ds(ast), lab, ds(ps), ds(pe), comp, amt))
                 if paid_to > hi and np.isfinite(aend) and known:
-                    rec = round(-W.FPNC[rate_y][k] * (paid_to - hi) / 7.0, 2)
+                    rec = round(-pay(k, hi + 1, paid_to, late), 2)
                     rows.append((i, O.debtor[i], svc, ds(S.admit[i]), ds(ast), lab, ds(ps), ds(pe), "ADJ", rec))
             # hospital absences: a reduction for days in hospital
             if rng.random() < 0.025 and paid_to - lo > 10:
@@ -417,7 +429,8 @@ def payment_lines(S, O, rng):
                     continue
                 days = 0
                 for qs, qe, _ in early:
-                    lo, hi = max(qs, ast, W.HIST_START), min(qe, aend if np.isfinite(aend) else qe)
+                    # arrears are owed only on the early periods' days inside the new financial year
+                    lo, hi = max(qs, ast, W.HIST_START, W.fy_start(y)), min(qe, aend if np.isfinite(aend) else qe)
                     days += max(0, hi - lo + 1)
                 if days <= 0 or (np.isfinite(aend) and aend < ps):
                     continue

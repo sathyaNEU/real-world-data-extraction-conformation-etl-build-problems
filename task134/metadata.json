@@ -59,8 +59,8 @@
       "format": "xlsx"
     },
     {
-      "path": "nrs_death_linkage_2027-01-15.csv",
-      "format": "csv"
+      "path": "nrs_death_linkage_2027-01-15.tsv",
+      "format": "tsv"
     },
     {
       "path": "postcode_locality_lookup.csv",

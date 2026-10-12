@@ -159,6 +159,13 @@ def main():
     unrec = int(((S.conv <= W.ASOF) & (S.conv + lag0 > W.EXTRACT) & (S.exit > W.ASOF)).sum())
     ok(int(sim.cf_on(S, W.ASOF).sum()) - unrec == g["n_cf"],
        "the as-of stock read from the files (%d) is the timeline's less the %d conversions not yet recorded" % (g["n_cf"], unrec))
+    # the simulated world's own outcome on the four dates (one draw): the golden sits nearer it than the default
+    outcome = np.array([int(sim.cf_on(S, q).sum()) for q in W.QEND])
+    ok(np.all(np.abs(outcome - tot) < np.abs(outcome - rungs["R1"])),
+       "the simulated outcome %s sits nearer the golden than the default at every quarter end" % outcome.tolist())
+    conv27 = int(((S.conv >= W.dn(dt.date(2027, 1, 1))) & (S.conv < W.dn(dt.date(2028, 1, 1)))).sum())
+    print("      simulated conversions in 2027: %d (the register's 2024 to 2026: %s)"
+          % (conv27, [figs["conversions_by_year"][str(y)] for y in (2024, 2025, 2026)]))
 
     # ---------------------------------------------------------------- semantic forks
     defs = doc_text()["care_home_budget_definitions_2027-28.docx"]
@@ -267,6 +274,19 @@ def main():
     con = AC.contributions(T["ass"], T["cw"])
     res = AC.residents(T["pl"], T["cw"], T["dl"])
     ok(all(r["cl"] in con for r in res), "every council-funded resident on 31 December 2026 has an assessment in force")
+    # death match status: the PROBABLE matches close no open stay or award, so EXACT only reads the same
+    Tx = dict(T)
+    Tx["dl"] = T["dl"][T["dl"]["match_status"] == "EXACT"]
+    Ix, _, _ = RP.inputs(Tx["pl"], Tx["li"], Tx["cw"], Tx["dl"])
+    gx = E.golden(Ix)
+    ok(np.allclose(gx["total"], tot, atol=1e-9) and gx["n_cf"] == g["n_cf"] and gx["n_sf"] == g["n_sf"]
+       and np.allclose(AC.vec(AC.compute(Tx)), AC.vec(ask), atol=1e-9),
+       "C1: deaths matched EXACT only give the same stock, pool, call and 20 ask figures (%d PROBABLE matches)"
+       % int((T["dl"]["match_status"] == "PROBABLE").sum()))
+    # the write-up's extra figure: the pool admitted from 1 January 2025
+    adm = I["sf_admit"][E.pool(I)]
+    ok(int((adm >= W.dn(dt.date(2025, 1, 1))).sum()) == figs["pool_admitted_since"]["1 January 2025"],
+       "the pool admitted from 1 January 2025 is %d, as figures.json and the write-up state" % figs["pool_admitted_since"]["1 January 2025"])
 
     # ---------------------------------------------------------------- Layer 1 slips priced on both paths
     slips = {
@@ -372,11 +392,12 @@ def main():
         ok(not hits, "silence: %s carries none of the method words %s" % (f, hits))
     allt = "\n".join(texts.values())
     for f in files:
-        if f.endswith((".csv", ".txt")):
+        if f.endswith((".csv", ".tsv", ".txt")):
             allt += open(os.path.join(TGT, f), encoding="utf-8").read()
     ok("—" not in allt and "–" not in allt, "no em or en dashes anywhere in the pack")
     # no file carries a forecast, a conversion count by year or a census
-    hdrs = " ".join(pd.read_csv(os.path.join(TGT, f), nrows=0).columns.str.lower().str.cat(sep=" ") for f in files if f.endswith(".csv"))
+    hdrs = " ".join(pd.read_csv(os.path.join(TGT, f), nrows=0, sep="\t" if f.endswith(".tsv") else ",").columns.str.lower()
+                    .str.cat(sep=" ") for f in files if f.endswith((".csv", ".tsv")))
     ok(not re.search(r"forecast|census|conversion", hdrs), "no column carries a forecast, a census or a conversion count")
     # realism: yearly flows are not identical, monthly streams not constant, headline totals not round
     pl = T["pl"]
@@ -396,6 +417,20 @@ def main():
     ok(np.all(np.abs(gv - np.round(gv)) > 0.001), "realism: no ask average is a whole pound exactly")
     li_types = T["li"]["line_type"].value_counts()
     ok(set(li_types.index) == {"FPC", "FNC", "ADJ", "HOSP"}, "payment lines carry every line type %s" % dict(li_types))
+    # the payment calendar: each financial year numbers its four-weekly periods from P01, whose middle day falls in
+    # April of that year, and no year runs past P13
+    per = T["li"][["period", "period_start"]].drop_duplicates()
+    bad_p = 0
+    for r in per.itertuples(index=False):
+        y, n = int(r.period[:4]), int(r.period[-2:])
+        mid = dt.date.fromisoformat(r.period_start) + dt.timedelta(days=13)
+        fy_mid = mid.year if mid.month >= 4 else mid.year - 1
+        bad_p += (fy_mid != y) or n > 13 or (n == 1 and mid.month != 4)
+    ok(bad_p == 0, "payment calendar: %d periods, each numbered in the financial year of its middle day, P01 to P13" % len(per))
+    # the extract notes name every other file in the pack (H9)
+    notes = open(os.path.join(TGT, "extract_notes_2027-01-18.txt"), encoding="utf-8").read()
+    unnamed = [f for f in files if f != "extract_notes_2027-01-18.txt" and f not in notes]
+    ok(not unnamed, "the extract notes name every other file in the pack %s" % unnamed)
     # containers: the fiction's authors and dates
     people = set(W.PEOPLE.values())
     card = json.load(open(os.path.join(TASK, "..", ".claude", "skills", "fingerprint", "cards", "task134.json")))

@@ -84,6 +84,12 @@ def figures(I, g, rungs, ask, counts, stops):
         a, b = int(lo), int(min(hi, 180))
         haz[lab] = round(float(occ[a:b].sum() / expo[a:b].sum()), 4)
     pool = {lab: int(((d0 >= lo) & (d0 < hi)).sum()) for (lo, hi), lab in zip(bands, blab)}
+    adm = I["sf_admit"][on]
+    pool_since = {"1 January %d" % y: int((adm >= W.dn(dt.date(y, 1, 1))).sum()) for y in (2025, 2026)}
+    pool_ye = {}
+    for y in range(2021, 2027):
+        d = W.dn(dt.date(y, 12, 31))
+        pool_ye[str(y)] = int(((I["sf_entry"] <= d) & (I["sf_end"] > d)).sum())
     conv_y = {}
     for y in range(2021, 2027):
         a0, a1 = W.dn(dt.date(y, 1, 1)), W.dn(dt.date(y + 1, 1, 1))
@@ -106,6 +112,8 @@ def figures(I, g, rungs, ask, counts, stops):
         "direct_admissions_per_month": round(float(E.direct_rate(I, g["o"]).sum()), 2),
         "conversion_hazard_per_month_by_months_since_admission": haz,
         "pool_by_months_since_admission": pool,
+        "pool_admitted_since": pool_since,
+        "pool_at_year_end": pool_ye,
         "conversions_by_year": conv_y,
         "default_path": {W.QLABEL[k]: round(float(rungs["R1"][k]), 1) for k in range(4)},
         "default_path_stated": {W.QLABEL[k]: r10(rungs["R1"][k]) for k in range(4)},
@@ -231,6 +239,7 @@ def chart(F, ask, path):
     ax.set_xticklabels(order)
     ax.set_ylabel("£ a week per resident, after the resident's contribution")
     ax.set_ylim(0, max(nur + res) * 1.15)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "£%s" % format(int(round(v)), ",")))
     ax.yaxis.grid(True, color="#e3e2de", linewidth=0.8)
     ax.set_axisbelow(True)
     for s in ("top", "right"):
@@ -239,9 +248,11 @@ def chart(F, ask, path):
     ax.spines["bottom"].set_color("#a3a29d")
     ax.legend(frameon=False, loc="upper right", ncol=2)
     ax.set_title(F["chart"]["title"], loc="left", fontsize=12, fontweight="bold")
-    fig.text(0.01, 0.01, "Council-funded residents in each locality's care homes, 31 December 2026. Localities ordered by "
-             "the weekly cost of a nursing place.", fontsize=8, color="#52514e")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.text(0.01, 0.042, "Council-funded residents in each locality's care homes, 31 December 2026, ordered by the weekly "
+             "cost of a nursing place; homes outside Strathallan not shown.", fontsize=8, color="#52514e")
+    fig.text(0.01, 0.012, "Source: case management and finance system extracts of 18 January 2027; care home register "
+             "(December 2026) and postcode lookup. Planning and Performance.", fontsize=8, color="#52514e")
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
 
