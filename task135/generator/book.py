@@ -33,10 +33,11 @@ def fund_codes():
     return {f: ("KWC%s%s" % (f[:2], "I"), "KWC%s%s" % (f[:2], "A")) for f in W.FUNDS}
 
 
-def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_total=None, knobs=None):
+def run(M, seed, fp, lot_mix=None, keep_rows=True, start_total=None, knobs=None):
     """knobs (income devices, none of which moves a return): nov25 scales the dividends that go ex in November 2025;
-    pid sets the REITs' property income distribution share"""
+    pid_shift moves the REITs' property income distribution share of each distribution"""
     knobs = knobs or {}
+    lot_mix = lot_mix or W.LOT_MIX
     rng = np.random.default_rng(seed)
     rngd = np.random.default_rng(seed + 101)
     rngl = np.random.default_rng(seed + 202)          # tax lots and their identifiers
@@ -47,7 +48,8 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
     ukf = np.array(M["UKF"][i0:i0 + n])
     dUK = np.diff(ukf, prepend=ukf[0])
     stocks = list(W.STOCKS) + [W.DEMERGED]
-    info = {s[0]: dict(name=s[1], sector=s[2], beta=s[3], iv=s[4], p0=s[5], dy=s[6], months=s[7], reit=s[8])
+    info = {s[0]: dict(name=s[1], sector=s[2], beta=s[3], iv=s[4], p0=s[5], dy=s[6] * knobs.get("dy", W.DIV_SCALE),
+                       months=s[7], reit=s[8])
             for s in stocks}
     codes = [s[0] for s in stocks]
     eps = {c: rng.normal(0, info[c]["iv"], n) for c in codes}
@@ -145,6 +147,8 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
     dm_pre = None
     fee_days = {W.add_bdays(q, 8): q for q in QUARTER_ENDS}
     legacy_day, legacy_sub, legacy_amt, legacy_text = W.LEGACY
+    # the legacy is sized with the portfolio, so the book is the same at any size
+    legacy_amt = round(legacy_amt * (start_total or START_TOTAL) / START_TOTAL, 2)
     narrative_pool = {"buy": ["Purchase %s", "Bought %s", "Purchase of %s"], "sell": ["Sale %s", "Sold %s", "Sale of %s"]}
 
     def mv_mand(s, k):
@@ -158,6 +162,8 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
     def buy(s, k, amount, ncount, d):
         held = sorted({L["code"] for L in lots if L["sub"] == s and L["code"] not in (RIGHTS_CODE, tk_code)})
         pool = held
+        # new money is spread so that no single purchase is much over 1.5 per cent of the designation's mandate
+        ncount = max(ncount, int(math.ceil(amount / (W.BUY_CAP * mv_mand(s, k)))))
         pick = list(rng.choice(pool, size=min(ncount, len(pool)), replace=False))
         spent = 0.0
         split = rng.dirichlet(np.full(len(pick), 4.0))
@@ -174,22 +180,29 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
         return spent
 
     def sell(s, k, amount, ncount, d):
+        """raise `amount` from the designation's holdings, taking at most 60 per cent of a holding's largest lot and
+        moving on to the next holding for any shortfall"""
         held = sorted({L["code"] for L in lots if L["sub"] == s and L["code"] not in (RIGHTS_CODE, tk_code, dm_new)})
-        pick = list(rng.choice(held, size=min(ncount, len(held)), replace=False))
+        order = [str(c) for c in rng.permutation(held)]
+        n0 = min(ncount, len(order))
+        split = rng.dirichlet(np.full(n0, 4.0))
+        plan = [(c, amount * split[j]) for j, c in enumerate(order[:n0])]
+        rest = order[n0:]
         got = 0.0
-        split = rng.dirichlet(np.full(len(pick), 4.0))
-        for j, c in enumerate(pick):
-            need = amount * split[j]
+        while plan:
+            c, need = plan.pop(0)
             mine = sorted([L for L in lots if L["sub"] == s and L["code"] == c], key=lambda L: -L["qty"])
             q = int(math.ceil(need / price[c][k]))
             q = min(q, int(mine[0]["qty"] * 0.6))
-            if q <= 0:
-                continue
-            mine[0]["qty"] -= q
-            proceeds = round(q * price[c][k], 2)
-            cash[s] = round(cash[s] + proceeds, 2)
-            got += proceeds
-            moves.append((d, s, "Sale", proceeds, rngn.choice(narrative_pool["sell"]) % info[c]["name"], c))
+            proceeds = 0.0
+            if q > 0:
+                mine[0]["qty"] -= q
+                proceeds = round(q * price[c][k], 2)
+                cash[s] = round(cash[s] + proceeds, 2)
+                got += proceeds
+                moves.append((d, s, "Sale", proceeds, rngn.choice(narrative_pool["sell"]) % info[c]["name"], c))
+            if need - proceeds > 1.0 and rest:
+                plan.append((rest.pop(0), need - proceeds))
         return got
 
     for k, d in enumerate(days):
@@ -243,7 +256,7 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
                 if not mine:
                     continue
                 if info[c]["reit"]:
-                    pid = round(e["dps"] * (knobs.get("pid", e["pid"])), 4)
+                    pid = round(e["dps"] * (e["pid"] + knobs.get("pid_shift", 0.0)), 4)
                     parts = [("PID", pid), ("DIV", round(e["dps"] - pid, 4))]
                 else:
                     parts = [("DIV", e["dps"])]
@@ -324,6 +337,10 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
                 fund_val = sum(round(units[(s, f)] * fprice(f, s, d), 2) for f in W.FUNDS)
                 mand = mv_mand(s, k)
                 total = fund_val + mand
+                # the capital the trustees release from the expendable endowment for the year's grants, drawn each
+                # quarter end across its holdings at the policy weights
+                if s == "WRX-EX02" and d in W.RELEASES:
+                    total = round(total * (1 - W.RELEASES[d]), 2)
                 flow = round(total * w80["MAND"] - mand, 2)
                 for f in W.FUNDS:
                     units[(s, f)] = round(total * w80[f] / fprice(f, s, d), 3)
@@ -339,7 +356,7 @@ def run(M, seed, fp, lot_mix=(0.90, 0.07, 0.03, 0.0), keep_rows=True, start_tota
                     cash[s] = round(cash[s] + flow, 2)
                     moves.append((d, s, "Withdrawal", flow, "Quarterly rebalancing transfer to the trust", ""))
                 if cash[s] > buffer * 1.5:
-                    buy(s, k, cash[s] - buffer, int(rng.integers(1, 3)), d)
+                    buy(s, k, cash[s] - buffer, 1, d)
                 flows[k] += flow
         # the day's valuation
         acc_by_lot = {}

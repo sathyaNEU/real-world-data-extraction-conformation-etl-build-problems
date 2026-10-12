@@ -154,27 +154,60 @@ def r1000(x):
 
 # ------------------------------------------------------------------------------------------------ every stop
 
-INCOME_VARIANTS = dict(lines=["position", "lines", "o1", "o1_last", "o2"], months=[12, 13], route=["history", "extract"],
-                       accrued_in=[False])
+# The composed mishandlings the ask sheet prices: the mandate's lines (the golden one amount per designation, security
+# and event; D6 every lot line summed; o1 a dedup on designation, security and ex-date keeping the first line; o1_last the
+# same keeping the last; o2 a dedup on security and event that loses the second designation), the report's thirteenth
+# month (H1), the funds from the custodian's report lines over today's value (s3), the instalments' clock (the golden lag
+# on project instalments after the first; D8 the due dates; o3 the lag on every instalment), euro read as pounds (H3),
+# withdrawn grants kept (H4) and the fee lines counted as running costs.
+LINE_MODES = ["position", "lines", "o1", "o1_last", "o2"]
+MONTHS = [12, 13]
+ROUTES = ["history", "extract"]
+CLOCKS = ["lag", "due", "lag_all"]
 
 
-def all_stops(P, running, capital_total):
-    """every combination of the priced mishandlings: {label: (incomes, grants, releases, title)}"""
-    lags = list(range(35, 71))
-    inc_cache = {}
-    for lines, months, route, acc in itertools.product(*INCOME_VARIANTS.values()):
-        inc_cache[(lines, months, route, acc)] = income(P, lines, months, route, acc)[0]
-    gr = {}
-    for clock, wout, conv in itertools.product([True, False], [True, False], [True, False]):
-        gr[("clock" if clock else "due", wout, conv, None)] = grant_payments(P, clock, 50, wout, conv)[0]
-        if clock:
-            for L in (35, 50, 70):
-                gr[("lag_all", wout, conv, L)] = grant_payments(P, True, L, wout, conv, lag_all=True)[0]
+def income_variants(P):
+    return {(lines, months, route): income(P, lines, months, route)[0]
+            for lines, months, route in itertools.product(LINE_MODES, MONTHS, ROUTES)}
+
+
+def grant_variants(P, lags=(50,)):
     out = {}
-    for ik, inc in inc_cache.items():
-        for gk, g in gr.items():
-            for fees in (False, True):
-                R = running + (capital_total if fees else 0.0)
-                rel = release(P, inc, g, R)
-                out[(ik, gk, fees)] = (inc, g, rel, title(inc, g))
+    for clock, conv, wout in itertools.product(CLOCKS, [True, False], [True, False]):
+        for L in (lags if clock == "lag_all" else (50,)):
+            out[(clock, conv, wout, L)] = grant_payments(P, clock != "due", L, wout, conv, lag_all=clock == "lag_all")[0]
     return out
+
+
+GOLD_INCOME = ("position", 12, "history")
+GOLD_GRANTS = ("lag", True, True, 50)
+
+
+def stop_combos():
+    """the mishandlings every golden figure is held away from: every subset of the ask sheet's hazards {D6, o1, H1, D8,
+    o3, H3, H4} on both fund routes (D6 and o1 are two handlings of the same lines, D8 and o3 two clocks), and alone the
+    over-cleaners o1 keeping the last line and o2, and the fee lines counted as running costs"""
+    out = []
+    for lines, months, route, clock, conv, wout in itertools.product(["position", "lines", "o1"], MONTHS, ROUTES, CLOCKS,
+                                                                      [True, False], [True, False]):
+        out.append(((lines, months, route), (clock, conv, wout, 50), False))
+    for lines in ("o1_last", "o2"):
+        out.append(((lines, 12, "history"), GOLD_GRANTS, False))
+    out.append((GOLD_INCOME, GOLD_GRANTS, True))
+    return [c for c in out if c != (GOLD_INCOME, GOLD_GRANTS, False)]
+
+
+def all_stops(P, running, capital_total, combos=None):
+    """the figures under each mishandling: {(income key, grants key, fees): (incomes, grants, releases, title)}"""
+    iv = income_variants(P)
+    gv = grant_variants(P, (35, 50, 70))
+    out = {}
+    for ik, gk, fees in (combos or stop_combos()):
+        inc, g = iv[ik], gv[gk]
+        rel = release(P, inc, g, running + (capital_total if fees else 0.0))
+        out[(ik, gk, fees)] = (inc, g, rel, title(inc, g))
+    return out
+
+
+def figure_vector(inc, g, rel):
+    return np.array([inc[s] for s in STEPS] + [g] + [rel[s] for s in STEPS])

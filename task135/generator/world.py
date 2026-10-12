@@ -3,7 +3,7 @@ import datetime as dt
 from zoneinfo import ZoneInfo
 
 SEED = 1352                            # world seed (books, grants); the market seed is MARKET_SEED
-MARKET_SEED = 2109                     # chosen by tune.py (see the design note's Build record)
+MARKET_SEED = 11480                    # chosen by the seed scan (see the design note's Build record)
 LON = ZoneInfo("Europe/London")
 NYC = ZoneInfo("America/New_York")
 TYO = ZoneInfo("Asia/Tokyo")
@@ -183,6 +183,9 @@ STOCKS = [
     ("BF100538", "Hartwell Engineering Services plc", "Industrials", 1.06, 0.0140, 2.648, 0.035, (5, 11), False),
     ("BF100545", "Ivybridge Specialty Insurance plc", "Financials", 0.86, 0.0125, 8.91, 0.046, (4, 9), False),
 ]
+DIV_SCALE = 0.82                       # the mandate's dividend yields, scaled to a UK equity income mandate's 3.5 per cent
+LOT_MIX = (1.0, 0.0, 0.0, 0.0)         # tax lots per position at the window's start (one, two, three, four)
+BUY_CAP = 0.04                         # new money is spread so no purchase is much over this share of the designation's mandate
 # the demerged company (shares credited the business day after the parent goes ex)
 DEMERGED = ("BF100552", "Larkfield Land plc", "Real Estate", 1.10, 0.0160, None, 0.030, (5, 11), False)
 
@@ -194,6 +197,12 @@ TAKEOVER = ("CA260244", "BF100521", dt.date(2026, 5, 11), dt.date(2026, 7, 21), 
 
 # external flows into and out of the mandate (beyond the quarter-end rebalancing, which the book computes)
 LEGACY = (dt.date(2025, 5, 14), "WRX-PE01", 5_846_310.42, "Legacy: estate of the late Mrs E. M. Rushworth")
+
+# the capital released from the expendable endowment at each quarter end (share of the designation's value), for the
+# 2025 and 2026 budgets' grant payments and running costs beyond income
+RELEASES = {dt.date(2025, 3, 31): 0.0098, dt.date(2025, 6, 30): 0.0112, dt.date(2025, 9, 30): 0.0087,
+            dt.date(2025, 12, 31): 0.0121, dt.date(2026, 3, 31): 0.0131, dt.date(2026, 6, 30): 0.0109,
+            dt.date(2026, 9, 30): 0.0127}
 
 # ------------------------------------------------------------------------------------------------ grants
 PROGRAMMES = {"CORE": "Core funding", "PROJ": "Project grants"}
@@ -208,7 +217,7 @@ CAPITAL_CHARGES = [("Investment management fee (Fernside Partners)", 61_750), ("
 
 # ------------------------------------------------------------------------------------------------ the chosen world
 # (scan.py / tune.py and tune_asks.py; the design note's Build record carries the measured ladder for these)
-START_TOTAL = 37_351_806.0
-BOOK_KNOBS = {}
-GRANT_SEED, GRANT_SCALE = 117, 1.2
-RUNNING_ADJ = 0
+START_TOTAL = 30_553_605.90
+BOOK_KNOBS = {"nov25": 0.9899, "pid_shift": 0.0185, "dy": 0.74}
+GRANT_SEED, GRANT_SCALE = 2477, 1.2
+RUNNING_ADJ = 446

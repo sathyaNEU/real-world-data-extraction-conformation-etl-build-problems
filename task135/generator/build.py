@@ -25,6 +25,7 @@ import estimators as E
 
 TASK = os.path.dirname(HERE)
 REPO = os.path.dirname(TASK)
+INDEX_YIELD = 0.0362          # the FTSE All-Share's dividend yield, for its total return in Fernside's report
 SCRUB = os.path.join(REPO, ".claude/skills/reduce-house-fixes/scripts/scrub_producer_metadata.py")
 MTIMES = {
     "val": (2026, 12, 2, 6, 44), "moves": (2026, 12, 2, 6, 44), "events": (2026, 12, 2, 6, 45), "ent": (2026, 12, 2, 6, 45),
@@ -66,7 +67,7 @@ def factsheet_figures(M, fp):
     out = {}
     meta = {"NAEF": (412.6, "3 April 2009", "FTSE World North America", 287,
                      [("Technology", 31.8), ("Financials", 13.2), ("Health care", 11.6), ("Consumer discretionary", 10.9),
-                      ("Industrials", 9.7), ("Communication services", 8.4), ("Other", 14.4)]),
+                      ("Industrials", 9.9), ("Communication services", 8.4), ("Other", 14.2)]),
             "EUEF": (188.3, "3 April 2009", "FTSE World Europe ex UK", 96,
                      [("Financials", 21.4), ("Industrials", 18.7), ("Health care", 14.2), ("Consumer staples", 9.8),
                       ("Technology", 9.1), ("Consumer discretionary", 8.6), ("Other", 18.2)]),
@@ -109,7 +110,8 @@ def fernside_figures(B, M, F):
     s = ix[ix["index_name"] == "FTSE All-Share"].set_index("date")["close"]
 
     def icum(a, b):
-        return 100 * (s[b.isoformat()] / s[a.isoformat()] - 1)
+        """the index's total return: the price index with its dividend yield accrued day by day"""
+        return 100 * ((s[b.isoformat()] / s[a.isoformat()]) * (1 + INDEX_YIELD) ** ((b - a).days / 365.0) - 1)
     a, b = idx[y1[0]], idx[y1[1]]
     rp = r[a:b]
     lv = s.loc[y1[0].isoformat():y1[1].isoformat()].values
@@ -118,18 +120,30 @@ def fernside_figures(B, M, F):
     beta = float(np.cov(rp[:n], ri[:n])[0, 1] / ri[:n].var(ddof=1))
     te = float((rp[:n] - ri[:n]).std(ddof=1) * np.sqrt(252) * 100)
     v = F["val"]
-    v30 = v[(v["valuation_date"] == "2026-09-30") & (v["asset_class"].isin(["Equity - UK", "Cash"]))]
+    v30 = v[(v["valuation_date"] == "2026-09-30") & (v["asset_class"].isin(["Equity - UK", "Cash"]))].copy()
+    v30["market_value_gbp"] = v30["market_value_gbp"].astype(float)
     tot = v30["market_value_gbp"].sum()
     top = v30[v30["asset_class"] == "Equity - UK"].groupby("security_name")["market_value_gbp"].sum().sort_values(ascending=False)
     top = [(nm, 100 * x / tot) for nm, x in top.head(10).items()]
+    # what the book did with the takeover cash between 21 July and the September rebalancing
+    tk = sum(m[3] for m in B.moves if m[2] == "Takeover consideration")
+    bought = sorted({m[5] for m in B.moves if m[2] == "Purchase" and dt.date(2026, 7, 21) <= m[0] <= dt.date(2026, 9, 30)})
+    sep = {m[1]: m[2] for m in B.moves if m[0] == dt.date(2026, 9, 30) and m[2] in ("Contribution", "Withdrawal")}
+    if bought:
+        use = ("Part of it was invested in %s at the September rebalancing and the rest stays in the portfolio's cash."
+               % " and ".join(B.info[c]["name"] for c in bought))
+    elif set(sep.values()) == {"Withdrawal"}:
+        use = ("It was held in the portfolio's cash until the September rebalancing and went to the trust with the "
+               "quarterly transfer.")
+    else:
+        use = "It is held in the portfolio's cash."
     letter = [
         "The portfolio returned %.1f%% in the third quarter against %.1f%% for the FTSE All-Share. Over twelve months it "
         "returned %.1f%% against %.1f%% for the index." % (cum(*q), icum(*q), cum(*y1), icum(*y1)),
-        "Glenrothes Distillers' scheme of arrangement completed on 21 July and the cash consideration was received the same "
-        "day. We reinvested part of it in two existing holdings at the September rebalancing and passed the rest to the "
-        "trust with the quarterly transfer.",
-        "We continue to favour companies with strong balance sheets and growing dividends. Activity in the quarter was "
-        "limited to the rebalancing trades and the reinvestment of the takeover proceeds.",
+        "Glenrothes Distillers' scheme of arrangement completed on 21 July and the cash consideration, %s, was received "
+        "the same day. %s" % ("GBP {:,.0f}".format(tk), use),
+        "We continue to favour companies with strong balance sheets and growing dividends. Trading in the quarter was "
+        "limited to the September rebalancing.",
     ]
     return dict(port=[cum(*q), cum(*ytd), cum(*y1)], index=[icum(*q), icum(*ytd), icum(*y1)],
                 vol=[float(rp.std(ddof=1) * np.sqrt(252) * 100), float(ri.std(ddof=1) * np.sqrt(252) * 100)],
@@ -174,7 +188,8 @@ def fix_pdf(path, producer, when, creator=""):
     b = open(path, "rb").read()
     b = re.sub(rb"/Producer ?(?:\((?:[^()\\]|\\.)*\)|<[0-9A-Fa-f]*>)", b"/Producer (" + producer.encode("latin-1") + b")", b)
     b = re.sub(rb"/Creator ?(?:\((?:[^()\\]|\\.)*\)|<[0-9A-Fa-f]*>)", b"/Creator (" + creator.encode("latin-1") + b")", b)
-    b = re.sub(rb"\n%ReportLab Generated PDF document[^\n]*", b"", b)
+    b = re.sub(rb"(\n%[\x80-\xff]{4})[^\n]*ReportLab[^\n]*", rb"\1", b)        # keep the binary marker, drop the writer
+    b = re.sub(rb"\n% ReportLab generated PDF document[^\n]*", b"", b)
     open(path, "wb").write(b)
     fix_xref(path)
     PP.normalize_pdf(path, when)

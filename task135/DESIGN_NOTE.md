@@ -59,7 +59,7 @@ The only reasoning record for this build. State lives in `pipeline.json`. Archit
 
 ## Default path
 
-This is the pipeline the measured opponent builds unsteered, from the prompt's words and the files' grain. It was measured on the prototype in scratch (`t135-arch2/protoA6` to `protoA10`): an hourly shock model with the six holdings struck at their own points, run over a long run of 300 years and over a two-year sample (seed 2036) that meets every condition in `## Ladder`.
+This is the pipeline the measured opponent builds unsteered, from the prompt's words and the files' grain. It was measured on the prototype in scratch (`t135-arch2/protoA6` to `protoA10`): an hourly shock model with the six holdings struck at their own points, run over a long run of 300 years and over a two-year sample (seed 2036) that meets every condition in `## Ladder`. The build (world seed 11480) measures it again from `target/`; the figures below are the build's, with the prototype's long run kept for reference.
 
 1. Read the investment policy:
    - growth assets: the Fernside mandate 40, North American 30, European 15 and Japan 15 per cent of growth;
@@ -71,16 +71,16 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
    - The mandate: the time-weighted return from the custodian's daily lot values with its cash and accrued income, external flows stripped from the capital movements report, and corporate actions carried through.
    - Each fund: the return from its dealing prices, with the distributions added back on their ex-dividend dates (from the published histories, which the custodian's fund prices agree with).
 3. Put every holding on UK business days. On the noon after its own market's holiday, the North American or Japan fund's price carries that market's last close, moved only by the exchange rate; keep those days as they are. Estimate the covariance of daily returns: 505 periods, each weighted equally, well over 100.
-4. For each step, combine the holdings at the policy weights, take the portfolio's daily standard deviation and scale it by the square root of 252. That gives 8.49 at 60, 9.66 at 70 and 10.86 per cent at 80 on the prototype sample (8.20, 9.34 and 10.53 on the long run).
+4. For each step, combine the holdings at the policy weights, take the portfolio's daily standard deviation and scale it by the square root of 252. That gives 8.25 at 60, 9.41 at 70 and 10.63 per cent at 80 on the build (8.20, 9.34 and 10.53 on the prototype's long run).
 5. Cross-check, then file:
    - each holding's daily volatility agrees with its factsheet's and with its own monthly volatility;
    - the volatility rises smoothly step by step;
    - the largest step at or under 10.0 is 70 per cent.
 
-**Ends on:** 70 per cent growth (9.66 per cent expected volatility at 70 on the prototype sample; 80 breaches at 10.86).
+**Ends on:** 70 per cent growth (9.41 per cent expected volatility at 70 on the build; 80 breaches at 10.63).
 
 **Golden:** 60 per cent growth. Co-movement is measured where the prices are struck together: weekly returns on any anchor, or daily covariances with their one-day lead and lag.
-- Prototype sample, across the golden family: 9.21 to 9.82 per cent at 60, and 10.45 to 11.24 at 70.
+- On the build, across the golden family's 26 members: 8.96 to 9.72 per cent at 60, and 10.33 to 11.11 at 70.
 - Long run: the true twelve-month volatility is 9.81 at 60 and 11.32 at 70.
 
 **Other natural variants**, each a complete pipeline:
@@ -89,9 +89,9 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
 |---|---|---|
 | Exponentially weighted daily estimate (0.94) | 80 | it weights the calm last months |
 | The benchmark indices | 70 | not the holdings' own prices |
-| A Ledoit-Wolf shrunk daily covariance | 70 | intensity 0.05 |
+| A Ledoit-Wolf shrunk daily covariance | 70 | intensity 0.031 |
 | Monthly returns | 60 | 24 periods, which the policy's 100 refuses |
-| Partial synchronisation (two-day or three-day returns, or lead and lag on the UK and North American pair only) | 60 | lands the call |
+| Partial synchronisation (two-, three- or four-day returns on any anchor, or lead and lag on the UK and North American pair only) | 60 | lands the call |
 
 ## Stump sentence
 
@@ -102,15 +102,15 @@ A competent solver builds each holding's daily total return from the prices it i
 **Domain test:** the deciding quantity is the portfolio's twelve-month volatility at each growth step. Investment risk practice estimates it from returns over which the holdings' prices are contemporaneous, because a pooled fund's dealing price is struck at its valuation point from each market's last available price while listed shares are struck at their exchange's close. Put another field's nouns in and there is no valuation point, no previous evening's close inside a noon price and no twelve-month variance assembled from daily covariances, so the task stops reading the same.
 
 **Analyst test:** take a strong analyst who strips the mandate's flows, adds back the funds' distributions, carries the corporate actions, aligns the calendars, and reads the policy's definition and the valuation points correctly.
-- The easy way: they still estimate co-movement from same-dated daily returns, scale by the square root of 252 and set growth at 70 per cent (9.66 at 70 and 10.86 at 80 on the prototype sample), above what the cap allows.
-- The right way: measuring co-movement over periods that align the noon dealing prices with the London close (weekly returns, any anchor), or adding the one-day lead and lag covariances, sets it at 60 (9.21 to 9.82 at 60, and 10.45 to 11.24 at 70).
+- The easy way: they still estimate co-movement from same-dated daily returns, scale by the square root of 252 and set growth at 70 per cent (9.41 at 70 and 10.63 at 80 on the build), above what the cap allows.
+- The right way: measuring co-movement over periods that align the noon dealing prices with the London close (weekly returns, any anchor), or adding the one-day lead and lag covariances, sets it at 60 (8.96 to 9.72 at 60, and 10.33 to 11.11 at 70).
 The easy way gets it wrong after every field and rule has been read correctly, so the stump is analytical.
 
 **Layer 1:** what these systems produce. None of it decides the call.
 - For the call:
   - a custodian's daily valuation export at tax-lot grain across two endowment sub-accounts, with accrued income beside market value and the mandate's cash on its own lines;
   - the mandate's corporate actions in a separate events file: a 1-for-8 consolidation, a demerger whose new shares arrive the day after, a rights issue taken up, and a cash takeover;
-  - external flows into and out of the mandate (a legacy added to the permanent endowment, and the quarterly rebalancing transfers) in a capital movements report that a time-weighted return has to strip;
+  - external flows into and out of the mandate (a legacy added to the permanent endowment, the quarterly rebalancing transfers, and the expendable endowment's share of the capital the trustees release each quarter) in a capital movements report that a time-weighted return has to strip;
   - UK, US and Japanese calendars that differ, so on the noon after its own market's holiday an overseas fund carries that market's last close, moved only by the exchange rate; and UK and US daylight saving changes on different dates;
   - two price sources for the funds (the custodian's valuation and Kestwick's published history, which agree);
   - income units whose distributions drop out of the price on ex-dividend dates, beside accumulation units.
@@ -124,7 +124,7 @@ The easy way gets it wrong after every field and rule has been read correctly, s
 **Layer 2:**
 - The tempting shortcut is the square-root-of-time rule on daily returns. The policy's two years give 505 daily periods, every holding's daily volatility agrees with its factsheet, and the covariance matrix looks complete.
 - An expert refuses it. The variance of a twelve-month return is the sum of every lagged covariance across the year, and same-dated prices struck hours apart put a large share of the co-movement into the one-day cross-lags. The North American fund's noon price carries the New York session that the London close priced the day before.
-- The rigorous method measures co-movement where the prices are contemporaneous, over periods long enough to align them or with the lead and lag terms added. The data's own cross-lag correlation demands it: 0.51 between the UK mandate and the next day's North American return, against 0.21 on the same day (prototype sample).
+- The rigorous method measures co-movement where the prices are contemporaneous, over periods long enough to align them or with the lead and lag terms added. The data's own cross-lag correlation demands it: 0.49 between the UK mandate and the next day's North American return, against 0.20 on the same day (the build).
 
 **Gate G.**
 - **Litmus.** No reported figure is overturned. Every price, distribution, flow and document in the pack is correct, and no shipped artifact computes a portfolio volatility.
@@ -149,75 +149,80 @@ The decisive rung's quantity is named by no sentence and no column. It is not a 
 
 ## Semantic fork table
 
-One row per term of the main ask and per convention the main computation rests on. Paragraph numbers are those of the investment policy (`## Build record` carries the text). The calls under each alternative are prototype values; `checks.py` computes and asserts each one.
+One row per term of the main ask and per convention the main computation rests on. Paragraph numbers are those of the investment policy (`## Build record` carries the text). The calls under each alternative are measured on the build; `checks.py` computes and asserts each one.
 
 | Id | Term or convention | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | growth share | the policy's growth assets (the mandate and the three overseas equity funds) at 40, 30, 15 and 15 per cent of growth, defensive at 55 and 45 | equities at today's drifted split | same call (asserted) | policy 2.1 and 2.2 |
-| SF2 | the investment policy's ten-point steps | 20, 30 and so on to 100 | a continuous share (about 64 per cent on the prototype) | not a step | the prompt ("in the investment policy's ten-point steps") and policy 3.1 |
+| SF2 | the investment policy's ten-point steps | 20, 30 and so on to 100 | a continuous share (62.9 per cent on the build) | not a step | the prompt ("in the investment policy's ten-point steps") and policy 3.1 |
 | SF3 | the largest step that keeps it inside the cap | the highest step whose own volatility is inside the cap | every step up to it inside the cap | same call: the volatility rises with the growth share at every step under every estimator (asserted) | same call |
 | SF4 | inside the cap | not more than 10 per cent | strictly under 10 per cent | same call: no golden-family value within 0.15 of 10.0 at any step (asserted) | policy 3.4 ("not more than 10 per cent") |
-| SF5 | the comparison with the cap | the estimate before any rounding | each step's volatility rounded to a whole per cent first | 70 for some members (a weekly anchor at 10.45 rounds to 10) | policy 4.4 ("before any rounding") |
-| SF6 | expected volatility | the standard deviation of the twelve-month total return, estimated as policy 4.2 and 4.3 say | a forward forecast weighting recent periods (exponentially weighted, GARCH) | 80 on the prototype sample, 90 on the long run | policy 4.3 ("every period is weighted equally") |
+| SF5 | the comparison with the cap | the estimate before any rounding | each step's volatility rounded to a whole per cent first | 70 for some members (five-day blocks from the fifth day, 10.43, and calendar weeks to Friday, 10.34, round to 10) | policy 4.4 ("before any rounding") |
+| SF6 | expected volatility | the standard deviation of the twelve-month total return, estimated as policy 4.2 and 4.3 say | a forward forecast weighting recent periods (exponentially weighted, GARCH) | 80 on the build (90 on the prototype's long run) | policy 4.3 ("every period is weighted equally") |
 | SF7 | the two years | the two years to the 30 November 2026 valuation (returns from 2 December 2024) | to 31 October 2026, or the calendar years 2025 and 2026 | same call on the October window (asserted); the calendar years are not in the pack | policy 4.2 ("the last month-end valuation before the review") |
 | SF8 | the prices | each holding's own prices: the mandate's closing prices, the funds' dealing prices | the benchmark indices | 70 | policy 4.2 ("the holding's own prices") |
 | SF9 | total return | the price change plus the dividends and distributions, time-weighted for the mandate | the income units' price return, distributions left out | same call (asserted) | policy 4.1 and 4.2 |
 | SF10 | the weights | the step's policy weights in every period | weights drifting from the window's start | same call (asserted) | policy 4.2 ("in every period") |
-| SF11 | the return periods | equal periods that divide the two years, at least 100 of them | overlapping twelve-month returns | 90 on the prototype sample (the overlapping series' standard deviation is 2.7 per cent at 60) | policy 4.3 ("divided into return periods of equal length") |
-| SF12 | the portfolio | both endowments' holdings as one portfolio, the mandate with its cash | one endowment's holdings, or the mandate without its cash | same call (asserted) | policy 1.1 and 2.3 |
+| SF11 | the return periods | equal periods that divide the two years, at least 100 of them | overlapping twelve-month returns | 60 on the build (9.43 at 60) and 90 on the prototype sample, refused either way | policy 4.3 ("divided into return periods of equal length") |
+| SF12 | the portfolio | both endowments' holdings as one portfolio, the mandate with its cash | one endowment's holdings, or the mandate without its cash | same call for either endowment alone (asserted); without its cash the mandate's purchase and sale days become one-day outliers of up to 43 per cent and the call falls to 40, a gross slip | policy 1.1 and 2.3 |
 | SF13 | twelve months from the periods | the variance scaled by the periods in a year (252 daily, 52 weekly) or by the window's own count | 250 or 260 trading days a year | same call (asserted at 250, 252, 253 and 260) | same call |
 | SF14 | for 2027 | the share the December 2026 meeting sets for calendar 2027 | the trust's financial year, or the 2026 setting | same call: the trust's year is the calendar year and the estimate uses the same window | policy 3.2 |
 
 The stump is none of these readings. The default and the golden read every term the same way and differ only in how co-movement is measured from asynchronously struck prices.
 
-## Ladder (measured on the prototype)
+## Ladder (measured on the build)
 
-The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 years under the prototype's parameters (`protoA10`). "Sample" is two years, seed 2036, one of the seeds that meet every condition (`protoA7`, `protoA9`).
+The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 years under the prototype's parameters (`protoA10`), kept for reference. "Build" is the shipped pack (world seed 11480, `## Build record`, As built), computed by `checks.py` from `target/` and recomputed by `verify.py`.
 
-| Rung | Construction | Long run 60 / 70 / 80 | Call | Sample 60 / 70 / 80 | Call | Killed by |
+| Rung | Construction | Long run 60 / 70 / 80 | Call | Build 60 / 70 / 80 | Call | Killed by |
 |---|---|---|---|---|---|---|
-| R0 (default) | daily covariance, the square root of 252 | 8.20 / 9.34 / 10.53 | 70 | 8.49 / 9.66 / 10.86 | 70 | same-dated prices struck hours apart; the co-movement a day off the diagonal |
-| R1 | exponentially weighted daily (0.94) | 7.02 / 7.94 / 8.91 | 90 | 7.47 / 8.64 / 9.84 | 80 | policy 4.3, every period weighted equally |
-| R2 | the benchmark indices, daily | 8.70 / 9.93 / 11.20 | 70 | 8.75 / 9.99 / 11.28 | 70 | policy 4.2, the holdings' own prices (the indices close at their own markets, so they are still asynchronous) |
-| R3 | daily, Ledoit-Wolf shrinkage to constant correlation | 8.20 / 9.34 / 10.53 | 70 | 8.49 / 9.64 / 10.84 | 70 | the shrinkage lift (intensity 0.05) is a fraction of the gap |
-| R4 | monthly returns | 9.59 / 10.99 / 12.43 | 60 | 9.65 / 11.06 / 12.50 | 60 | policy 4.3, at least 100 periods (24) |
-| Partial | two-day returns; three-day returns; lead and lag on the UK and North American pair only | 9.02 to 9.30 / 10.30 to 10.64 | 60 | 9.28 to 9.57 / 10.60 to 10.98 | 60 | lands the call (C1); the builder keeps each at 60 |
-| Golden | weekly on each of five anchors; daily with one or two lead-lag terms; Newey-West at four or five lags; daily volatilities with weekly correlations | 9.46 to 9.80 / 10.82 to 11.22 | 60 | 9.21 to 9.82 / 10.45 to 11.24 | 60 | |
+| R0 (default) | daily covariance, the square root of 252 | 8.20 / 9.34 / 10.53 | 70 | 8.25 / 9.41 / 10.63 | 70 | same-dated prices struck hours apart; the co-movement a day off the diagonal |
+| R1 | exponentially weighted daily (0.94) | 7.02 / 7.94 / 8.91 | 90 | 7.32 / 8.35 / 9.44 | 80 | policy 4.3, every period weighted equally |
+| R2 | the benchmark indices, daily | 8.70 / 9.93 / 11.20 | 70 | 8.63 / 9.84 / 11.10 | 70 | policy 4.2, the holdings' own prices (the indices close at their own markets, so they are still asynchronous) |
+| R3 | daily, Ledoit-Wolf shrinkage to constant correlation | 8.20 / 9.34 / 10.53 | 70 | 8.24 / 9.39 / 10.60 | 70 | the shrinkage lift (intensity 0.031) is a fraction of the gap |
+| R4 | monthly returns | 9.59 / 10.99 / 12.43 | 60 | 9.53 / 10.82 / 12.15 | 60 | policy 4.3, at least 100 periods (24) |
+| Partial | two-, three- and four-day returns on every anchor; lead and lag on the UK and North American pair only | 9.02 to 9.30 / 10.30 to 10.64 | 60 | 8.90 to 9.46 / 10.18 to 10.84 | 60 | lands the call (C1); kept at 60 |
+| Golden | 26 members: five-day periods on each of five anchors and calendar weeks to each weekday, each from the holdings' period returns and from the daily portfolio compounded; daily with one or two lead-lag terms (the portfolio series and the covariance matrix); Newey-West at four or five lags; daily volatilities with five-day correlations | 9.46 to 9.80 / 10.82 to 11.22 | 60 | 8.96 to 9.72 / 10.33 to 11.11 | 60 | |
 
-**Margins on the sample.**
-- The golden family's highest value at 60 is 9.82, 0.18 inside the cap.
-- Its lowest value at 70 is 10.45, 0.45 over.
-- The default sits 0.34 inside at 70 and 0.86 over at 80.
+**Margins on the build.**
+- The golden family's highest value at 60 is 9.72 (five-day periods from the window's first day), 0.28 inside the cap.
+- Its lowest value at 70 is 10.33 (calendar weeks to Friday from the daily portfolio), 0.33 over.
+- The default sits 0.59 inside at 70 and 0.63 over at 80.
+- The thinnest rung margin is R2's: 9.84 at 70, 0.16 inside the cap at its own boundary step.
 
-**Forcing evidence on the sample.**
-- The portfolio's lag-1 autocorrelation at 60 per cent is 0.168 (t about 3.8; 0.214 on the long run).
-- The same-day correlation of the UK mandate with the North American fund is 0.21, against 0.51 with the next day's fund return and 0.53 between their weekly returns.
-- Every single holding's daily, weekly and monthly volatilities agree within noise (UK mandate 17.3, 16.0 and 17.0), so no single-series check sees anything.
+**Forcing evidence on the build.**
+- The portfolio's lag-1 autocorrelation at 60 per cent is 0.177 (t 3.97).
+- The same-day correlation of the UK mandate with the North American fund is 0.20, against 0.49 with the next day's fund return and 0.59 between their five-day returns.
+- The variance of five-day sums at 60 per cent is 1.35 times five daily variances.
+- Every single holding's daily, five-day and monthly volatilities agree within 12 per cent (UK mandate 15.06, 15.94 and 15.46), so no single-series check sees anything.
 
 **Feasibility.**
-- `protoA7`: two-year samples meeting every call condition at a 0.10 margin, 27 of 400; at 0.15, 13 of 400. That is before any polish, so the builder's seed scan has room.
+- `protoA7`: two-year samples meeting every call condition at a 0.10 margin, 27 of 400; at 0.15, 13 of 400, on a smaller golden family.
+- The build's scan (`tune.py scan`: every target below on the book at its base size, plus the lot lines' inflation and the mandate's yield in range) passed 3 of the 8,500 seeds from 10000 to 18499: 11480, 14684 and 16914. The golden family's spread is the binding condition: its members sit within 10 per cent of each other on about one sample in five, and the targets leave them about 10 per cent of room at 60 (from about 8.9, where 70 is 10.15, to 9.85).
 - `protoA8`: across the golden family the samples spread by a median of 0.88 points at 70 per cent (up to 1.28). That is why no volatility figure is graded (`## Tried and rejected`).
 
-**The builder's targets** (asserted on the built pack):
-- Every golden-family member at or under 9.85 at 60, and at or over 10.15 at 70.
-- The default at or under 9.85 at 70, and at or over 10.15 at 80.
-- The partials at 60.
-- R1, R2 and R3 calling a step other than 60, each at least 0.15 from the cap at its own boundary steps. The sample's 9.99 for R2 at 70 is too thin and moves.
-- The portfolio's lag-1 autocorrelation at 60 per cent between 0.17 and 0.26, with t at least 3.5.
-- The same-day UK-to-North-American correlation between 0.20 and 0.35, the next-day correlation at least 0.40, and the weekly at least 0.45.
-- Single holdings' daily, weekly and monthly volatilities within 12 per cent of each other.
+**The builder's targets** (asserted on the built pack by `checks.py`; every one met):
+- Every golden-family member at or under 9.85 at 60, and at or over 10.15 at 70: 9.72 and 10.33.
+- The default at or under 9.85 at 70, and at or over 10.15 at 80: 9.41 and 10.63.
+- The partials at 60: all ten.
+- R1, R2 and R3 calling a step other than 60, each at least 0.15 from the cap at its own boundary steps: R1 80 (9.44 and 10.57), R2 70 (9.84 and 11.10), R3 70 (9.39 and 10.60).
+- The portfolio's lag-1 autocorrelation at 60 per cent between 0.17 and 0.26, with t at least 3.5: 0.177, t 3.97.
+- The same-day UK-to-North-American correlation between 0.20 and 0.35, the next-day correlation at least 0.40, and the weekly at least 0.45: 0.20, 0.49 and 0.59.
+- Single holdings' daily, weekly and monthly volatilities within 12 per cent of each other: all six.
 
-**The grid and the Layer 1 slips.** These are priced by the builder; none is a rung. Each is computed under the default and under every golden-family member:
-- the mandate's flows left in (gross outliers; the call falls to 40 or below on both paths);
-- the distributions left out;
-- the North American and Japan funds' post-holiday days dropped instead of kept;
-- one endowment's sub-account only;
-- the mandate's cash or accrued income left out;
-- the custodian's fund prices instead of Kestwick's (identical);
-- a corporate action uncarried at stock level;
-- 250 or 260 periods a year.
+**The grid and the Layer 1 slips.** Priced by the builder on the build; none is a rung. Each is computed under the default and under every golden-family member (default call; golden-family calls):
+- the mandate's flows left in: 40; 40 (one-day returns of up to 41 per cent; gross);
+- the distributions left out: 70; 60;
+- the North American and Japan funds' post-holiday days dropped instead of kept: 60; 50 and 60 at 252 periods a year, and 70; 50 and 60 at the merged series' own 229.5 a year (the one target the build does not meet: `## Build record`, As built);
+- one endowment's sub-account only, either: 70; 60;
+- the mandate's cash left out: 40; 30 and 40 (purchase and sale days become one-day outliers of up to 43 per cent; gross);
+- the accrued income left out: 70; 60;
+- the custodian's fund prices instead of Kestwick's: identical (C1, asserted);
+- the demerger uncarried at stock level: 70; 60;
+- the accumulation units instead of the income units: 70; 60;
+- 250 or 260 periods a year: 70; 60.
 
-None may land the default on 60. None may move the golden off 60, except the gross slips, which land at 40 or below with outliers a solver sees.
+None may land the default on 60. None may move the golden off 60, except the gross slips, which land at 50 or below with outliers a solver sees. The post-holiday slip breaks both at 252 periods a year; policy 4.3 refuses it (its periods are of unequal length).
 
 ## Closure table
 
@@ -263,7 +268,7 @@ The prompt and the policy, executed word for word, fix the estimand:
 - the periods: equal periods dividing the window, at least 100, each weighted equally;
 - the steps and the year the share applies to.
 
-No filed sentence names a period length or an estimator. Every literal reading of those terms selects the same returns (C1). The literal text admits daily periods, and daily periods give the default's 70 only through the square-root-of-time scaling, a method the data refutes. The portfolio's daily returns carry a lag-1 autocorrelation of about 0.17 to 0.22 (t of 3.8 or more), and the variance of five-day sums is about 1.2 times five daily variances (1.19 at 60 per cent on the sample). So the twelve-month standard deviation, which is the filed estimand, is not the daily one times the square root of 252. The design forces the method (`determinism-check` §1, form 1), and the default's 70 comes from a method, not from a reading.
+No filed sentence names a period length or an estimator. Every literal reading of those terms selects the same returns (C1). The literal text admits daily periods, and daily periods give the default's 70 only through the square-root-of-time scaling, a method the data refutes. The portfolio's daily returns carry a lag-1 autocorrelation of 0.177 at 60 per cent (t 3.97), and the variance of five-day sums is 1.35 times five daily variances at 60 per cent on the build. So the twelve-month standard deviation, which is the filed estimand, is not the daily one times the square root of 252. The design forces the method (`determinism-check` §1, form 1), and the default's 70 comes from a method, not from a reading.
 
 The asks read literally as follows:
 - income per procedure 7.2 and 7.3;
@@ -309,12 +314,12 @@ Two things are devices the records expose, never readings the prompt allows: the
 |---|---|
 | What it asks | For each step from 20 to 100, the income the portfolio would produce in 2027 under procedure 7.2 and 7.3: nine figures, to the nearest thousand pounds |
 | Named use | The finance director sets the 2027 income line at the step the trustees choose and shows them what each step gives up in income. H18 home: the other measure the workbook carries for every candidate step (income beside the volatility), computed from rows and columns the call never reads |
-| Primary device | D6, grain. The custodian's income entitlements report by tax lot repeats each mandate position's entitlement (sub-account, security, event) on every one of the position's lot lines. There is no allocation, no lot quantity and no rate on the line. About a third of the mandate's positions sit in two to four lots (purchases over the years), so summing the lines puts the mandate's trailing income about 36 per cent high: an apparent yield near 4.9 per cent against 3.6, inside the range a UK equity income mandate shows, so no sanity check fires. Fund positions are not lot-tracked and carry one line per sub-account. Silent under the battery: keys are unique on lot and event reference, there are no exact duplicates and no unmatched joins, and no count has to tie. It is visible only at a cross-file cut nothing invites: the spine's lot quantities on the ex-date, where lots of 600 and 14,000 shares carry the same amount. The export notes say "one line per tax lot" and "entitlement_gbp: the income entitlement in pounds"; nothing says whose |
+| Primary device | D6, grain. The custodian's income entitlements report by tax lot repeats each mandate position's entitlement (sub-account, security, event) on every one of the position's lot lines. There is no allocation, no lot quantity and no rate on the line. Purchases over the years (the legacy money of May 2025 among them) leave 35 of the mandate's 158 dividend events in the twelve months on two lot lines each, so summing the lines puts the mandate's trailing income 43 per cent high: an apparent yield of 5.3 per cent against 3.70, inside the range a UK equity income mandate shows, so no sanity check fires. Fund positions are not lot-tracked and carry one line per sub-account. Silent under the battery: keys are unique on lot and event reference, there are no exact duplicates and no unmatched joins, and no count has to tie. It is visible only at a cross-file cut nothing invites: the spine's lot quantities on the ex-date, where a lot of 5,906 shares and a lot of 23,625 shares in one holding carry the same £2,829.07. The export notes say "one line per tax lot" and "entitlement_gbp: the income entitlement in pounds"; nothing says whose |
 | Hazards | H1 (D5, scope): the report runs thirteen months, from 1 November 2025, and procedure 7.2's twelve months drop November 2025's ex-dates. H2 (D1, genuine repeats): the two REITs pay a property income distribution and an ordinary dividend on one ex-date under two event references, and a dedup on sub-account, security and ex-date drops one |
-| Stops (toy values in thousands of pounds, scratch `protoK1_asks.py`; the builder measures and asserts) | s1, the cracker: the lot lines summed, twelve months, the funds per unit; every step high by about 1.3 points of mandate yield on the mandate's weight (+43 at 20 to +217 at 100). s2, lazy: the whole report summed, the funds from their lines too; higher still. o1, over-cleaner: dedup on sub-account, security and ex-date; low by the REIT components (-2 at 20 to -10 at 100). o2, over-cleaner: dedup on security and event ignoring the sub-account; low by the second endowment's lines. s3: the funds' income from their report lines over today's units instead of per unit; off on every step that holds funds, because units changed at the quarterly rebalancing |
-| Golden | The mandate: one amount per sub-account, security and event reference, ex-dates from 1 December 2025 to 30 November 2026, over the mandate's market value at 30 November (cash in, accrued income out). Each fund: the distributions per unit over the twelve months, over its 30 November price. Each yield is applied to the step's policy weight of the portfolio's market value (toy: 1,697 at 20 falling to 1,059 at 100) |
-| Span (7 files, 13 columns, causal) | income entitlements report (sub-account, security, event reference, event type, ex-date, entitlement); valuation export (30 November rows: sub-account, security, market value, accrued income, lot quantity for the tell); Kestwick price and distribution history (distribution per unit, ex-date, price); static data (security code, ISIN); the policy (2.1 to 2.3); procedure 7.2 and 7.3; the export notes (which sub-account is which endowment, and which lines are fund positions). That is one file under the span floor of eight; the nine releases carry every income figure again through Ask B's eleven |
-| Necessity matrix (target) | One file misread, the rest right. Entitlements summed by line: 9 of 9. The thirteenth month kept: 9. Accrued income in the value: 9. Kestwick's history unread, so the funds are taken from their report lines over today's units: 9 (units changed at every quarterly rebalancing; the builder sizes the change past the bin). The static file unread, so the funds' ISINs do not link to Kestwick's sheets: 9. The policy weights misread: 9. The export notes unread, so a fund's line is taken for a lot line: at least 7 |
+| Stops (measured on the build, pounds against the golden; `figures.json` stops) | s1, the cracker: the lot lines summed, twelve months, the funds per unit; every step high by the lot lines' inflation on the mandate's weight (+42,307 at 20 to +211,535 at 100). s2, lazy: the whole thirteen-month report summed, the funds from their lines too; +409,069 at 20 to +310,286 at 100. o1, over-cleaner: dedup on sub-account, security and ex-date keeping the first line; low by the REITs' ordinary dividend components (-2,723 at 20 to -13,614 at 100), and by their property income distributions keeping the last (-10,775 to -53,873). o2, over-cleaner: dedup on security and event ignoring the sub-account; low by the second endowment's lines (-64,972 to -324,861). s3: the funds' income from their report lines over today's units instead of per unit; -5,506 at 20 to -3,101 at 100, because units changed at the quarterly rebalancings and with the expendable endowment's releases |
+| Golden | The mandate: one amount per sub-account, security and event reference, ex-dates from 1 December 2025 to 30 November 2026, over the mandate's market value at 30 November (cash in, accrued income out). Each fund: the distributions per unit over the twelve months, over its 30 November price. Each yield is applied to the step's policy weight of the portfolio's market value (£1,442,000 at 20 falling to £854,000 at 100, on £32,908,401) |
+| Span (7 files, 13 columns, causal) | income entitlements report (sub-account, security, event reference, event type, ex-date, entitlement); valuation export (30 November rows: sub-account, security, market value, accrued income, lot quantity for the tell); Kestwick price and distribution history (distribution per unit, ex-date, price); static data (security code, ISIN); the policy (2.1 to 2.3); procedure 7.2 and 7.3; the export notes (which sub-account is which endowment, and which lines are fund positions). That is one file under the span floor of eight. The build adds no eighth: no other file sits on this path without an organ the ask does not need, which would be padding, and the nine releases carry every income figure again through Ask B's eleven |
+| Necessity matrix (target, then measured on the build) | One file misread, the rest right. Entitlements summed by line: 9 of 9 (9). The thirteenth month kept: 9 (9). Accrued income in the value: 9 (4: the accrued income at 30 November is £29,574, 0.27 per cent of the mandate, so it moves each income by £249 to £1,035 and five stay in their bins; recorded, not sized, since only a planted accrual would size it). Kestwick's history unread, so the funds are taken from their report lines over today's units: 9 (9). The static file unread, so the funds' ISINs do not link to Kestwick's sheets: 9 (not separate: the custodian's security names carry each fund's name). The policy weights misread: 9 (9). The export notes unread, so a fund's line is taken for a lot line: at least 7 (not separate: fund lines carry no lot) |
 | Realism | A custodian's tax-lot income report is built by joining each position's entitlement to the position's tax lots for book-cost reporting. The template carries the position's amount on every lot line, with the lot quantity and the rate in other reports. No one designed it to mislead; a finance team downloads it because it is the one report that lists every dividend |
 
 ### Ask B: the capital release at each step, and the 2027 grant payments (the workbook, and the chart's lines)
@@ -323,12 +328,12 @@ Two things are devices the records expose, never readings the prompt allows: the
 |---|---|
 | What it asks | The 2027 grant payments (one figure), and for each step from 20 to 100 those payments plus the running costs less the step's income (nine figures), to the nearest thousand pounds |
 | Named use | The trustees authorise the year's release from the expendable endowment at the step they choose (policy 6.1), and the finance director plans the sales. H18 home: the other measure for every candidate (the capital each step draws), with the grant payments as its audited input |
-| Primary device | D8, clock. The grants system schedules a project grant's later instalments on the progress report's due date. The trust pays each one once the grants committee has accepted the report: 35 to 70 days after the due date in every payment from 2023 to 2026. First instalments and core grants' instalments are paid on their due date, and the schedule's due date never moves. So the project instalments falling due from 27 November to 31 December 2026 are paid in January and February 2027, and those falling due in the same weeks of 2027 are paid in 2028 (toy net: the due-date year is 96 low). Silent: the schedule is complete and carries no condition flag, and the release process is described nowhere in the pack. It is visible only at the cross-file cut of the payment ledger's dates against the schedule's due dates by grant type, which nothing invites, because every payment being forecast is in the future |
-| Hazards | H3 (D3, units): the euro grants' instalments carry euro amounts with no currency column; the currency sits on the register and the rate in procedure 7.5 (toy +30 when taken as pounds). H4 (D2, a stored label before a silent switch): withdrawn grants keep their open instalments as Scheduled, and the withdrawal sits on the register's status (toy +48). The ask also crosses D6, H1 and H2 through each step's income |
-| Stops (toy, thousands of pounds) | s1, the cracker: due dates in 2027, the register joined (euro converted, withdrawn out); grant payments 1,404 against 1,500, and every release low by 96 plus the income error, so its releases run from 8 at 20 to 472 at 100 against the golden's 147 to 785. s2, lazy: due dates, no register; 1,482, and every release off. o3, over-cleaner: the lag applied to every instalment; off by the core and first instalments falling due in December 2026 and late 2027 (+15). s4: the clock handled but withdrawn grants left in; +48 |
-| Golden | The open instalments of grants not withdrawn. Core and first instalments are taken on their due date. Project later instalments are taken on the due date plus any lag the 2023 to 2026 history shows (35 to 70 days; every lag gives the same year, by the corridor). Euro is converted at 1.1460. Add the budget workbook's running costs total, then subtract each step's income (toy: 147 at 20 to 785 at 100, on grant payments of 1,500) |
+| Primary device | D8, clock. The grants system schedules a project grant's later instalments on the progress report's due date. The trust pays each one once the grants committee has accepted the report: 35 to 70 days after the due date in every payment from 2023 to 2026. First instalments and core grants' instalments are paid on their due date, and the schedule's due date never moves. So the project instalments falling due from 27 November to 31 December 2026 are paid in January and February 2027, and those falling due in the same weeks of 2027 are paid in 2028 (on the build the due-date year is £38,000 high: £1,298,071 against £1,260,071, more project instalments falling due in late 2027 than in December 2026). Silent: the schedule is complete and carries no condition flag, and the release process is described nowhere in the pack. It is visible only at the cross-file cut of the payment ledger's dates against the schedule's due dates by grant type, which nothing invites, because every payment being forecast is in the future |
+| Hazards | H3 (D3, units): the euro grants' instalments carry euro amounts with no currency column; the currency sits on the register and the rate in procedure 7.5 (+£6,179 when taken as pounds). H4 (D2, a stored label before a silent switch): withdrawn grants keep their open instalments as Scheduled, and the withdrawal sits on the register's status (+£43,250). The ask also crosses D6, H1 and H2 through each step's income |
+| Stops (measured on the build, pounds) | s1, the cracker: due dates in 2027, the register joined (euro converted, withdrawn out); grant payments £1,298,071 against £1,260,071, and every release off by the £38,000 less the income error, so its releases run from £142,951 at 20 to £561,726 at 100 against the golden's £147,258 to £735,262. s2, lazy: due dates, no register; £1,347,500, and every release off. o3, over-cleaner: the lag applied to every instalment; +£90,000, the core and first instalments falling due in December 2026 counted in 2027. s4: the clock handled but withdrawn grants left in; +£43,250 |
+| Golden | The open instalments of grants not withdrawn. Core and first instalments are taken on their due date. Project later instalments are taken on the due date plus any lag the 2023 to 2026 history shows (35 to 70 days; every lag gives the same year, by the corridor). Euro is converted at 1.1460. Add the budget workbook's running costs total, £328,949, then subtract each step's income (£147,000 at 20 to £735,000 at 100, on grant payments of £1,260,000) |
 | Span (11 files, 25 columns, causal) | instalment schedule (grant, instalment, due date, amount, status); grants register (grant, programme, type, currency, status, status date); payment ledger (grant, instalment, payment date); budget workbook (running costs total); procedure 7.4 to 7.6; policy 5.1 and 6.1; and Ask A's seven files for the income |
-| Necessity matrix (target) | Payment ledger unread (due dates as payment dates): 10 of 10. Register unread: 10. Procedure 7.5 unread (euro as pounds): 10. The budget workbook's fee lines counted as running costs: 9. Every Ask A file misread: the 9 releases |
+| Necessity matrix (target, then measured on the build) | Payment ledger unread (due dates as payment dates): 10 of 10 (10). Register unread: 10 (10). Procedure 7.5 unread (euro as pounds): 10 (10). The budget workbook's fee lines counted as running costs: 9 (9). Every Ask A file misread: the 9 releases (9 for each, 4 for the accrued income) |
 | Realism | A grants system schedules a project grant's later payments on the date its progress report is due, because that is the date in the award letter; the money follows once the committee accepts the report. A withdrawal is recorded on the grant, not on its instalments. A finance system's payment ledger records what was paid and when. Every trust running two systems has this shape |
 | Referee | the finance system's payment ledger: dates and amounts of past payments, no 2027 level |
 
@@ -336,24 +341,27 @@ Two things are devices the records expose, never readings the prompt allows: the
 
 - **Graded parts.** One bar per step for its 2027 income (Ask A's figures), a line at the 2027 grant payments, a line at the grant payments plus running costs, and a title naming the highest step whose income still covers the grant payments.
 - **Order and title.** The order is the dial's own (20 to 100) and the title is on the ask's own quantity (income against grant payments), never on the volatility.
-- **Toy titles.**
-  - Golden: 40 (income at 40 clears the grant payments by 37,600; income at 50 falls 42,100 short).
-  - s1: 70.
+- **Titles (measured on the build).**
+  - Golden: 40 (income at 40 clears the grant payments by £34,690; income at 50 falls £38,810 short).
+  - s1: 50.
   - s2: 70.
   - D6 alone: 60.
-  - D8 alone: 50.
-- **The over-cleaner keeps the title.** o1 shifts income by at most 10,000 and lands on 40, so the title alone does not separate o1. o1 still misses all nine bars and all nine releases.
+  - D8 alone: 30 (the due-date reading is high on this grants world), as are o3 and s4.
+- **The over-cleaner keeps the title.** o1 shifts income by at most £13,614 and lands on 40, so the title alone does not separate o1. o1 still misses all nine bars and all nine releases.
 
-**Hazard table** (toy deltas in thousands of pounds against the golden; the builder sets and asserts the real ones):
+**Hazard table** (deltas in pounds against the golden, measured on the build and asserted):
 
 | Hazard | Ask A income (nine) | Ask B grant payments | Ask B release (nine) | Chart |
 |---|---|---|---|---|
-| H1 thirteen months | +8 to +42 (the mandate's November 2025 dividends) | 0 | -8 to -42 | bars |
-| H2 / o1 REIT pair | -2 to -10 | 0 | +2 to +10 | bars |
-| H3 euro as pounds | 0 | +30 | +30 | both lines, the title when income is near the line |
-| H4 withdrawn kept | 0 | +48 | +48 | both lines |
+| D6 lot lines summed | +42,307 to +211,535 | 0 | -42,307 to -211,535 | bars; title 60 |
+| H1 thirteen months | +8,163 to +40,816 (the mandate's November 2025 dividends) | 0 | -8,163 to -40,816 | bars |
+| H2 / o1 REIT pair | -2,723 to -13,614 | 0 | +2,723 to +13,614 | bars |
+| D8 due dates | 0 | +38,000 | +38,000 | both lines; title 30 |
+| H3 euro as pounds | 0 | +6,179 | +6,179 | both lines |
+| H4 withdrawn kept | 0 | +43,250 | +43,250 | both lines; title 30 |
+| o3 lag on every instalment | 0 | +90,000 | +90,000 | both lines; title 30 |
 
-**Composed mishandlings.** Every subset of {D6, D8, H1, o1, H3, H4, o3} is computed on both fund routes. The toy found one inside the bin: H1 with H3 lands the 70 per cent release £463 from the golden, because the thirteenth month's mandate income at 70 per cent nearly equals the euro overstatement. The builder re-sizes the hazards until no subset lands any figure inside £600 of the golden, and asserts it.
+**Composed mishandlings.** Every subset of {D6, D8, H1, o1, H3, H4, o3} is computed on both fund routes (D6 and o1 are two handlings of the lot lines, D8 and o3 two clocks), with o1 keeping the last line, o2 and the fee lines alone: 146 combinations (`asks.stop_combos()`). The toy found one inside the bin: H1 with H3 landed the 70 per cent release £463 from the golden. The build re-sized the hazards with `tune_asks.py` (the November 2025 dividends' level, the REITs' distribution split, the mandate's dividend scale, the grants world, the portfolio's size and the running costs total): every combination that moves a figure lands at least £759 from the stated golden (the 90 per cent release, under the thirteen-month report read for the funds too with the lag on every instalment and withdrawn grants kept), asserted at £600.
 
 **Cracker sheet.** The cracker lands the call. It runs the hygiene battery (key uniqueness, duplicates, unmatched joins, fan-out, counts that tie) and executes every filed sentence: procedure 7.2's twelve months (H1 handled), 7.3's market value, 7.5's euro rate (the register joined for currency, so withdrawn grants out, H4 handled) and 7.6's running costs. On the asks it sums the entitlement lines and takes the instalments' due dates: stop s1.
 
@@ -363,11 +371,13 @@ Two things are devices the records expose, never readings the prompt allows: the
 | Release, steps 20 to 100 (nine figures) | s1 income, s1 grant payments | D6 and D8 | miss |
 | 2027 grant payments | due dates in 2027 | D8 | miss |
 | Chart: the income bars | s1's nine incomes | D6 | miss |
-| Chart: the grant payments line | 1,404 against 1,500 (toy) | D8 | miss |
+| Chart: the grant payments line | £1,298,071 against £1,260,071 | D8 | miss |
 | Chart: the grants plus running costs line | s1's grant payments plus running costs | D8 | miss |
-| Chart: the title step | 70 against 40 (toy) | D6 and D8, each alone moving it (60 and 50) | miss |
+| Chart: the title step | 50 against 40 | D6 and D8, each alone moving it (60 and 30) | miss |
 
 **Mirror sheet.** The same response at R0, the default path, is identical on every ask row (the asks are decoupled), so the two sheets differ only in the call's criterion.
+
+Mirror leakage: 4.4 per cent of the ask weight (at most the one structural chart criterion, 2.4 of 55); the mirror misses every ask figure the cracker misses.
 
 **Pair ceiling:** 34. The arithmetic, at the planning weights 38 / 7 / 55 over 27 criteria (the call; the files and the rounding; 23 ask criteria at about 2.4 each):
 - The cracker keeps the call and instruction following (45.0), plus at most a structural chart criterion if the rubric grades one (one bar per step, 2.4): 47.4.
@@ -412,7 +422,7 @@ Two things are devices the records expose, never readings the prompt allows: the
     - stock-level prices with idiosyncratic moves around the UK factor;
     - dividends with ex and pay dates, including the two REITs' paired components.
   - The funds' distributions: quarterly for the bond funds, half-yearly for the equity funds.
-- `scan.py` and `tune.py`: the seed scan and a light polish to `## Ladder`'s targets (the prototype passes 27 of 400 seeds at a 0.10 margin before any polish), then the asks' targets: the title margins, the hazard sizes and the corridor.
+- `tune.py` and `tune_asks.py`: the seed scan (`tune.py scan`) and a light polish to `## Ladder`'s targets (each market's month-on-month moves re-scaled so every holding's monthly volatility sits between its daily and five-day ones), then the asks' targets: the title margins, the hazard sizes and the corridor (`tune_asks.py`).
 - `observe.py`: what the systems hold.
   - The custodian's daily lot-level valuation export (both sub-accounts; lot open dates and quantities; closing or dealing price; market value; accrued income; the mandate's cash lines).
   - The capital movements report and the corporate events file.
@@ -440,7 +450,7 @@ Two things are devices the records expose, never readings the prompt allows: the
 | `market_calendars_2024-2027.csv` | UK, US and Japanese business days and holidays | date, market, is_business_day, holiday_name |
 | `wrexford_investment_policy_2025-12.pdf` | the estimand, at authority | the paragraphs below |
 | `wrexford_finance_procedure_07_budget_2026-10.docx` | the asks' estimand | the paragraphs below |
-| `wrexford_budget_2027_draft_v3.xlsx` | the budget: running costs, lines to complete (Ask B) | sheets Summary and Running costs |
+| `wrexford_budget_2027_draft_2026-11-24.xlsx` | the budget: running costs, lines to complete (Ask B) | sheets Summary and Running costs |
 | `wrexford_grants_register_2026-11-30.csv` | the grant header (Ask B) | grant_ref, grantee, programme, grant_type, award_date, currency, award_amount, status, status_date |
 | `wrexford_grant_instalments_2026-11-30.csv` | the schedule (Ask B) | grant_ref, instalment_no, due_date, amount, status |
 | `wrexford_grant_payments_2023-01_2026-11.csv` | the finance system's ledger (Ask B, the referee) | payment_ref, payment_date, grant_ref, instalment_no, currency, amount, amount_gbp |
@@ -485,7 +495,7 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
   - R1, R2 and R3 calling a step other than 60 with margins;
   - R4 refused (24 periods);
   - every target in `## Ladder`, including the forcing statistics and the single-holding agreement.
-- The Layer 1 grid: every slip on the default and on every golden-family member, with none landing the default on 60, and none moving the golden off 60 except the gross slips (at 40 or below, with outliers).
+- The Layer 1 grid: every slip on the default and on every golden-family member, with none landing the default on 60, and none moving the golden off 60 except the gross slips (at 40 or below, with outliers). The post-holiday slip is the exception the build records (As built): asserted instead are its refusal by policy 4.3 (periods of unequal length) and the default's 70 at the merged series' own count of periods a year.
 - The clean-data test, the lens-swap test and the separation count (zero device and hazard cells in the call's population; scrambling the ask-only files leaves the call's figures unchanged at full precision).
 - The asks:
   - every stop in the ask sheet, its value and its distance from the golden bin;
@@ -494,7 +504,7 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
   - the corridor: no project later-instalment due in the two corridors, and every lag from 35 to 70 days gives the same year for every instalment;
   - the necessity matrix;
   - the cracker and mirror sheets;
-  - every golden figure at least 600 pounds from a bin edge;
+  - every golden figure at least 100 pounds inside its bin, and every release rounding the same way from rounded parts (measured: at most 262 pounds from its stated thousand);
   - the release positive at every step;
   - the title margins at least 2.5 per cent of income on each side.
 - The documents:
@@ -520,12 +530,50 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
 - The custodian's export keeps its own column naming. The grants system writes UK dates and the finance system ISO dates, each said in its export's notes.
 - Fernside's report and the factsheets read as their genre: a fund factsheet's layout, and a manager's quarterly letter with a performance table.
 
-**Seeds and records.** The prototype (scratch `t135-arch2/`, never shipped) used seed 5 for the long run and seeds 2036 and 2038 for two-year samples. Seed 2038 fails the builder's targets (R1 and R2 land on 60), which is why R1 to R3 are in the conditions. The builder picks its world seed and records it here with the measured ladder, which replaces the prototype figures in `## Default path`, `## Stump sentence` and `## Ladder`.
+**Seeds and records.** The prototype (scratch `t135-arch2/`, never shipped) used seed 5 for the long run and seeds 2036 and 2038 for two-year samples. Seed 2038 fails the builder's targets (R1 and R2 land on 60), which is why R1 to R3 are in the conditions. The builder picks its world seed and records it here with the measured ladder, which replaces the prototype figures in `## Default path`, `## Stump sentence` and `## Ladder`. The build's world is market seed 11480 (As built, below); the figures in `## Default path`, `## Three rules`, `## Semantic fork table`, `## Ladder` and `## Ask sheet` are the build's.
 
 **Stopping rule.**
 - A round in which the solver lands 60 by synchronising (any member of the golden family) sends the build back to the designer, with a brief naming the step that saw the asynchrony. This is loop 1 of 3 for this architecture.
 - A round in which it misses the call and keeps 35 per cent or more of the ask weight sends the build to the ask layer.
 - Three loops landed on the call re-root to architecture 3.
+
+### As built (stage 3, 2026-10-12)
+
+The builder, stopped mid-stage 3, left a generator whose world (seed 2109) missed the golden family's margins and the exponentially weighted rung's, with the ask layer untuned (`## Tried and rejected`). This session finished the stage on that generator without changing the ladder, the stump, the prompt or the asks.
+
+**The world.** Market seed 11480 (the scan's first full pass); book seed 1352. The book at a base value of £30,553,605.90 at the window's start (the legacy scaled with it), so the portfolio is worth £32,908,401 at 30 November 2026. Book knobs for the asks, the call's targets checked again on the book they make: the November 2025 dividends' level 0.9899, the REITs' property income share shifted by 0.0185, the mandate's dividend scale 0.74 (a 3.70 per cent yield). Grants world 2477 at scale 1.2. Running costs £328,949 (the draft's staff salaries line carries the adjustment). `world.py` records all of it.
+
+**The generator** (`task135/generator/`): `world.py` (calendars, holdings, policy, the mandate's shares, corporate events, the legacy, the expendable endowment's quarterly releases, the grants world's names, the budget lines, the chosen world); `sim.py` (the half-hourly market and the funds' prices and distributions); `book.py` (the custodian's book); `tune.py` (the polish, the call's conditions and the seed scan); `tune_asks.py` (the ask layer's solve and its exact check); `grants.py`; `observe.py`, `files.py`, `docs.py`, `officex.py` and `postprocess.py` (the extracts, the documents and their containers); `estimators.py`, `callcalc.py`, `ladder.py`, `asks.py` and `load.py` (the computations on the shipped files); `build.py`, `golden.py`, `checks.py` and `verify.py`. A build takes about eight seconds and `checks.py` about ten.
+
+**The pack.** 18 files in five formats (csv, docx, pdf, txt, xlsx); the spine `brackenfold_valuation_lots_2024-11_2026-11.csv` at 42,894 rows; three distractors in `metadata.json` (the benchmark index levels, the declared wrong basis; Kestwick's factsheets; Fernside's quarterly report).
+
+**Free gates, on the final build.**
+- `checks.py`: 268 assertions, 0 failed (every SF row with its quoted sentence present once, the ladder, the golden family's 26 members and the ten partials, the grid, the clean-data, lens-swap, separation and distractor-deletion tests, the asks' bins, title, corridor, the 146 composed mishandlings, the cracker sheet and necessity matrix, the cited clauses, the documents' vocabulary and the realism sweep).
+- `verify.py` (reads only `target/`, imports nothing from the generator): the 505 returns per holding, the default's 70 and R0 at every step, the one-day lead-lag, Newey-West, Friday-week and five-day members' 60 with their values at 60 and 70, the portfolio's value, the running costs, the grant payments with the payment ledger's median lag, the nine incomes, the nine releases and the chart's title step: 0 failed.
+- Two consecutive builds byte-identical, file by file and `target.zip` (sha256 bfa4abcdeb68ee7f20e5fe52c7fd2c115cf9acd6320cd5debc889b9c2ca93329); `golden.py` twice gives byte-identical goldens.
+- `figures_check.py`: 92 figures in blocks 1 to 4, 0 absent.
+- `scrub_producer_metadata.py` audit: `target/` and `golden/` clean.
+- `leak.py --asof 2026-12-02`: REVIEW, no LEAK; every line answered below.
+- `guard.py surface`: exit 0, no pair promoted; the personas in the pack (Connor Wells, Harriet Clarke, Lawrence Barnes) are on the card.
+- `guard.py heart`: WARN on repeat.gate_g against task134 v2 (answered in `## Draw`); nearest driver 0.06 (task128), nearest stump 0.05 (task111).
+- `guard.py validate`: 145 cards, 0 invalid. `precut.py`: exit 0, 38 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS.
+
+**The one design target the build does not meet, for the main session.** `## Ladder`'s grid wants no Layer 1 slip to land the default on 60. Dropping the North American and Japan funds' post-holiday days (the 46 UK business days on which one of them carries no new close of its market) merges each into the next, leaving 420 one-day, 34 two-day, 3 three-day and 2 four-day periods. Annualised at 252 that lifts every daily estimate (the longer periods count as days, and they partly line the noon prices up with the London close): the default lands on 60 (10.31 at 70) and part of the golden family on 50. At the merged series' own 229.5 periods a year the default stays on 70 (9.84) and the golden family still splits 50 and 60. Policy 4.3 refuses the slip (the periods are not of equal length), so it is a misapplied filed rule and a lower rung, not a reading the text allows; and it is off the default path, whose step 3 keeps those days. No scanned world meets it with the rest (`tune.py holiday_slip` on the scan's seeds): of 202 samples whose golden family met its margins, the slip landed the default on 60 on 144 and moved part of the golden family to 50 on 194; it held on 4 (10451, 11091, 11572 and 17062), none of which meets the other targets, and all 6 samples meeting every call target fail it (11480, 14684 and 16914 among them). The prototype carried no market holidays, so the design never priced this slip. `checks.py` asserts the refusal (the unequal periods) and the slip at the series' own count. Accept it, or send the grid back to a designer.
+
+**Other measured departures from the design's figures.**
+- The lot lines inflate the mandate's twelve-month income by 43 per cent (design: about 36): an apparent yield of 5.3 per cent against 3.70.
+- The due-date reading of the grant payments is high on the chosen grants world (+£38,000) where the design's toy had it low; the device works either way (s1 and D8 alone miss the grant payments, every release and the title).
+- The accrued income moves 4 of the 9 incomes past their bins (target 9); 7.3's sentence stays and no accrual is planted to size it.
+- Ask A's span stays at seven files (`## Ask sheet`).
+- SF11's overlapping twelve-month returns call 60 on the build (90 on the prototype); policy 4.3 refuses them either way.
+
+**Layer 1 added at the build** (no graded figure depends on it): the trustees' quarterly releases of capital from the expendable endowment (0.87 to 1.31 per cent of its value each quarter from March 2025), drawn across its holdings at the quarter-end rebalancing, so the expendable endowment's fund units fall between distribution dates and its mandate withdrawals carry its share; new money spread so that no purchase is much over 4 per cent of the designation's mandate; the Fernside report's benchmark as a total return, and its letter's account of the takeover cash read from the book.
+
+**Leak review lines** (`leak.py`, each harmless):
+- the policy's paragraph number 4.3 matches a figure the write-up cites (a clause, not an answer);
+- the policy carries 7 of 11 words of the committed call: the decision's own vocabulary (growth share, the policy's steps, expected volatility, the cap);
+- the key facts (returns, prices, valuation) and the policy (design, returns, prices, measured, mandate, valuation) carry generic stump-paragraph words; neither names a period length, a lag or an estimator;
+- dates after 2 December 2026: the income report's pay dates for dividends that went ex by 30 November, and the market calendars through 2027, forward-looking by nature.
 
 ## Tried and rejected
 
@@ -590,3 +638,16 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
   - The year's total is graded as the release's input instead, and the policy's steps from 20 to 100 supply the criteria.
 - The funds' lines repeated per lot in the income report, as well as the mandate's: dropped at design. With the funds repeated, the gilt fund's apparent yield reads near 8.7 per cent, which any analyst questions, so the device would announce itself. The repetition stays on the mandate's lots, whose apparent yield (about 4.9 per cent) sits inside a UK equity income mandate's range.
 - A two-year sample whose exponentially weighted or benchmark-index rung lands on 60 by chance: seed 2038 met every call condition and still had R1 and R2 on 60. The builder's seed conditions now hold R1, R2 and R3 off 60 with margin.
+- The stopped builder's world (market seed 2109 on the book as it stood): the golden family's lead-lag and five-day members sat at 9.88 to 9.93 at 60 and the exponentially weighted rung 0.13 from the cap, and the asks were untuned (title 100, releases negative); a fresh seed scan replaced it.
+- The legacy cut to £2.43 million to hold the lot lines' inflation under 0.48: the flows-left-in slip stopped being gross (a 17 per cent day) and landed the default on 60; the legacy keeps its size and scales with the portfolio.
+- New money bought into one or two holdings: positions of up to 12 per cent of a designation and lot inflation of 0.6 to 0.8; purchases are now capped near 4 per cent of the designation's mandate and positions start the window in one lot.
+- Sales capped at 60 per cent of a holding's largest lot with no carry of the shortfall: a designation's cash went negative at a quarter end on some seeds; the shortfall now moves to the next holding.
+- The market polish run on the book at each tuned size and knob: the market moved with the ask tuning and the scan's margins no longer held; the polish now runs on the base book, so the market is the seed's alone.
+- The ask tuner's size solve with a fixed legacy: the built portfolio missed the solved value by 1.3 per cent and the asks' bins with it; with the legacy scaled to the portfolio the book is scale-free and the solve exact to a few pounds.
+- Composing every line handling and the fee lines with every hazard (480 combinations): no portfolio size and running costs total held every figure £600 clear on the seeds tried; the composed set is the ask sheet's seven hazards on both fund routes, with o1 keeping the last line, o2 and the fee lines alone (146).
+- A portfolio size whose income fell £75,0xx a step: every stated income and release stepped by exactly 75,000 and read made up; the tuner keeps the fall at least £200 from a whole thousand.
+- The mandate's dividends at scale 0.82: a 4.1 per cent yield whose summed lot lines read 5.9 per cent, high for a UK equity income mandate and an invitation to check; scale 0.74 gives 3.70 and 5.3.
+- Holding the post-holiday-days slip to the grid's target by scanning further: seeds 10000 to 18499 gave 3 worlds meeting every other target and the slip failed on all of them, as on every sample meeting the call's targets (As built); recorded as the one target not met.
+- Fernside's letter as drafted said the takeover cash bought two holdings at the September rebalancing, where the book shows sales and a transfer to the trust; the letter now reads the book.
+- The budget workbook's totals written as text, and its summary pointing at a blank row: Excel would show the formula and a nil running costs line; the formulas now carry Excel's cached values and point at the total.
+- A Kestwick factsheet sector weight of 9.7 echoed a golden figure in `leak.py`'s sweep; 9.9.

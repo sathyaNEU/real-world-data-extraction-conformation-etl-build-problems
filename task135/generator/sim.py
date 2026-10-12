@@ -21,7 +21,7 @@ import world as W
 SLOT = 30                                  # minutes
 PER_DAY = 24 * 60 // SLOT
 
-P_DEFAULT = dict(us_early=2.8, us_late=3.2, eu_boost=2.0, as_w=0.8, SG=0.0098, scale=0.93,
+P_DEFAULT = dict(us_early=2.8, us_late=3.2, eu_boost=2.0, as_w=0.8, SG=0.0098, scale=0.975,
                  SR={"UK": 0.0046, "EU": 0.0048, "US": 0.0052, "JP": 0.0064, "RATES": 0.0036, "CREDIT": 0.0012,
                      "FX": 0.0045},
                  BETA={"UK": 0.90, "EU": 1.00, "US": 1.00, "JP": 0.95}, flight=0.10, cb=0.12, fxg=0.0,

@@ -178,7 +178,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 132 | SHIPPED & APPROVED 10-11 | ENR asset condition | FC | population time | none | a replacement restarts the wear curve | - | - | 13 lots | none reported | sathya8571 |
 | 133 | FAILED_TO_STUMP: backlog sathya8571 | BANK credit loss | FC | time | none | condition the curve on survival to date | - | - | AUD 13,160,000 | r1: one stumped, one at 100 | sathya8571 |
 | 134 (v2) | SHIPPED, delivered 10-12, pending review | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | 760 to 790 residents | none reported | sathya8571 |
-| 135 | FAILED_TO_STUMP: backlog sathya8571 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
+| 135 (v2) | built 10-12, awaiting the leak reader and judge | QF volatility | FC | time | none | noon fund prices carry the previous New York close | - | - | 60 per cent growth | none reported | sathya8571 |
 | 180 (v4) | drawing 10-12 | PES induced seismicity monitoring | AD | population time | none | a town network loses small daytime earthquakes to noise | - | - | Q (town plant) | none reported | oviya13ya |
 | 181 (v4) | SHIPPED, delivered 10-12, pending review | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik | none reported | oviya13ya |
 | 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
@@ -269,6 +269,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |
 | 134 (v1) | retired 10-11: default was the golden | CJ | FC | population time | none | Kaplan-Meier, deaths as non-returners |
+| 135 (v1) | retired 10-11: default was the golden | PES | FC | objective time | none | back-transformed median is not the mean |
 | 180 (v1) | spent 10-11: solved in-house | ENR | AD | population | none | screen grain, metering system against supply number |
 | 180 (v2) | spent 10-11: judge SEND_BACK, Gate C | ENR | AD | objective | none | main-tank acetylene attributed to a leaking compartment |
 | 180 (v3) | spent 10-11: solved in-house, then rule application once filed | PHA | AD | population time | none | channelling against a self-controlled comparison |

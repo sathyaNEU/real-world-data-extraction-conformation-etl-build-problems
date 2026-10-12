@@ -181,8 +181,9 @@ def family(X, dates):
     F["R1 ewma 0.94"] = lambda s: ewma(X, s)
     F["R3 ledoit-wolf"] = lambda s: ledoit_wolf_cc(X, s)[0]
     F["R4 monthly"] = lambda s: vol_of(MO @ wvec(s), 12.0)
-    F["P two-day"] = lambda s: simple(X, s, 2)
-    F["P three-day"] = lambda s: simple(X, s, 3)
+    for k in (2, 3, 4):
+        for a in range(k):
+            F["P %d-day blocks, anchor %d" % (k, a)] = (lambda s, k=k, a=a: simple(X, s, k, a))
     F["P pair lead-lag"] = lambda s: pair_ll(X, s)
     F["G lead-lag 1"] = lambda s: leadlag(X, s, 1)
     F["G lead-lag 2"] = lambda s: leadlag(X, s, 2)
@@ -194,6 +195,12 @@ def family(X, dates):
         F["G five-day blocks, anchor %d" % k] = (lambda s, k=k: vol_of(B5[k] @ wvec(s), 52.0))
     for wd, nm in zip(range(5), ["Mon", "Tue", "Wed", "Thu", "Fri"]):
         F["G calendar weeks to %s" % nm] = (lambda s, wd=wd: vol_of(CW[wd] @ wvec(s), 52.0))
+    # the same periods from the portfolio's daily return compounded (weights reset each day, not each period)
+    for k in range(5):
+        F["G five-day blocks of the daily portfolio, anchor %d" % k] = (lambda s, k=k: vol_of(blocks((X @ wvec(s))[:, None], 5, k)[:, 0], 52.0))
+    for wd, nm in zip(range(5), ["Mon", "Tue", "Wed", "Thu", "Fri"]):
+        F["G calendar weeks of the daily portfolio to %s" % nm] = (
+            lambda s, wd=wd: vol_of(calendar_weeks((X @ wvec(s))[:, None], dates, wd)[:, 0], 52.0))
     return F
 
 

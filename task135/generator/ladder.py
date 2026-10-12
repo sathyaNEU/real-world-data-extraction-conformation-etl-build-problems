@@ -70,14 +70,14 @@ def slip_grid(F):
 
 
 def slip_ok(g):
-    """no slip lands the default on 60; no slip moves the golden family off 60 unless it is gross (40 or below on every
-    member, with a one-day outlier)"""
+    """no slip lands the default on 60; no slip moves the golden family off 60 unless it is gross (50 or below on every
+    member, with a one-day return of ten per cent or more that a solver sees)"""
     bad = []
     for s, r in g.items():
         if r["default"] == 60:
             bad.append((s, "default on 60"))
         if r["golden"] != [60]:
             gross = all(x is None or x <= 50 for x in r["golden"])
-            if not (gross and r["maxabs"] > 0.06):
+            if not (gross and r["maxabs"] > 0.10):
                 bad.append((s, "golden %s" % r["golden"]))
     return bad

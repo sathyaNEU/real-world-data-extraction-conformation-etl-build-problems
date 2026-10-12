@@ -44,15 +44,36 @@ def budget(path):
     return running, capital
 
 
+CSV_KEYS = ("val", "moves", "events", "ent", "static", "cal", "index", "reg", "inst", "pays")
+DTYPES = {"lot_id": str, "lot_open_date": str, "sedol": str, "security_code": str, "new_security_code": str, "isin": str}
+
+
+def read_frame(src):
+    df = pd.read_csv(src, dtype=DTYPES, keep_default_na=False, na_values={"price": [""], "quantity": [""]})
+    if "entitlement_gbp" in df.columns:
+        df["entitlement_gbp"] = df["entitlement_gbp"].astype(float)
+    return df
+
+
 def pack(target):
     p = lambda k: os.path.join(target, FL.FILES[k])
     F = {}
-    for k in ("val", "moves", "events", "ent", "static", "cal", "index", "reg", "inst", "pays"):
-        F[k] = pd.read_csv(p(k), dtype={"lot_id": str, "lot_open_date": str, "sedol": str, "security_code": str,
-                                        "new_security_code": str, "isin": str}, keep_default_na=False,
-                           na_values={"price": [""], "quantity": [""]})
-    for k in ("ent",):
-        F[k]["entitlement_gbp"] = F[k]["entitlement_gbp"].astype(float)
+    for k in CSV_KEYS:
+        F[k] = read_frame(p(k))
     F["kest"], F["kest_isins"] = kestwick(p("kest"))
     F["running"], F["capital"] = budget(p("budget"))
     return F
+
+
+def typed(F, keys=CSV_KEYS):
+    """the generator's frames as the shipped files read back: each CSV frame written and read again exactly as
+    files.write_csv and pack() do, Kestwick's history as its sheets carry it"""
+    import io
+    out = dict(F)
+    for k in keys:
+        buf = io.StringIO()
+        F[k].to_csv(buf, index=False, lineterminator="\n")
+        buf.seek(0)
+        out[k] = read_frame(buf)
+    out["kest_isins"] = {f: (W.FUNDS[f]["isin_inc"], W.FUNDS[f]["isin_acc"]) for f in W.FUNDS}
+    return out

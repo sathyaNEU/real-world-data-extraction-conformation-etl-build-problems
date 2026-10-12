@@ -39,11 +39,15 @@ def index_returns(M, days):
 
 
 def build_world(mseed, iters=4, keep_rows=False, start_total=None, knobs=None):
+    """the market polished on the book at its base size and knobs (so the market is a function of the seed alone), then
+    the book at the size and knobs asked for"""
     drift = {k: {} for k in SM.DRIFT_KEYS}
     for it in range(iters + 1):
         M = SM.market(mseed, drift=drift)
         fp = SM.fund_prices(M, np.random.default_rng(W.SEED + 5))
-        B = BK.run(M, W.SEED, fp, keep_rows=keep_rows and it == iters, start_total=start_total, knobs=knobs)
+        last = it == iters
+        B = BK.run(M, W.SEED, fp, keep_rows=keep_rows and last, start_total=start_total if last else None,
+                   knobs=knobs if last else None)
         X, dates = returns(M, B, fp)
         if it == iters:
             break
@@ -100,33 +104,80 @@ def conditions(X, dates, Xi, m=0.15):
     return c, T, r2
 
 
-def scan(a, b):
-    good = []
-    for seed in range(a, b):
-        try:
-            M, fp, B, X, dates, drift = build_world(seed, iters=3)
-        except Exception as ex:          # a seed whose book cannot be run is skipped
-            print(seed, "error", ex)
+def book_stats(B):
+    """the lot lines' inflation of the mandate's twelve-month income, and the mandate's yield"""
+    inc = lines = 0.0
+    for e in B.ent:
+        if W.INC_FROM <= e["ex"] <= W.VAL_DATE:
+            inc += e["amount"]
+            lines += e["amount"] * len(e["lots"])
+    k = len(B.days) - 1
+    mv = sum(L["qty"] * B.price[L["code"]][k] for L in B.lots if L["qty"] > 0 and L["code"] != BK.RIGHTS_CODE)
+    return lines / inc - 1, inc / (mv + sum(B.cash.values()))
+
+
+def screen(seed):
+    """one seed of the scan: the call's conditions on the scan's book (base size, no knobs), the lot lines' inflation
+    (0.28 to 0.48) and the mandate's yield (3.2 to 4.2 per cent); for a seed passing all of them, the Layer 1 grid on
+    the pack's own returns"""
+    import grants as GR
+    import files as FL
+    import ladder as LD
+    import load as LO
+    import callcalc as CC
+    M, fp, B, X, dates, drift = build_world(seed, iters=3)
+    c, T, r2 = conditions(X, dates, index_returns(M, B.days))
+    fails = [k for k, v in c.items() if not v]
+    infl, yld = book_stats(B)
+    if not 0.28 <= infl <= 0.48:
+        fails.append("inflation")
+    if not 0.032 <= yld <= 0.042:
+        fails.append("yield")
+    out = dict(seed=seed, fails=fails, inflation=round(infl, 3), mandate_yield=round(yld, 4))
+    if not fails:
+        M, fp, B, X, dates, drift = build_world(seed, iters=3, keep_rows=True)
+        g, i = GR.make(W.GRANT_SEED, {"scale": W.GRANT_SCALE})
+        p = GR.settle(g, i, W.GRANT_SEED, {})
+        F = LO.typed(FL.frames(M, fp, B, g, i, p, W.GRANT_SEED))
+        Xp, dp = LD.pack_matrix(F)
+        c, T, r2 = conditions(Xp, dp, CC.index_matrix(F["index"], dp))
+        out["pack_fails"] = [k for k, v in c.items() if not v]
+        out["slips"] = LD.slip_ok(LD.slip_grid(F))
+    return out
+
+
+def holiday_slip(seed):
+    """the post-holiday-days slip on a seed's own returns: the North American and Japan funds' days with no new close
+    of their market merged into the next, at 252 periods a year; the default's call and the golden family's calls"""
+    import callcalc as CC
+    import load as LO
+    import observe as O
+    M, fp, B, X, dates, drift = build_world(seed, iters=3)
+    cal = LO.typed({"cal": O.calendars()}, keys=("cal",))["cal"]
+    drop = set(CC.post_holiday_rows(cal, dates))
+    rows, kept, carry = [], [], np.ones(X.shape[1])
+    for k in range(len(dates)):
+        carry = carry * (1 + X[k])
+        if k in drop and k + 1 < len(dates):
             continue
-        c, T, r2 = conditions(X, dates, index_returns(M, B.days))
-        if all(c.values()):
-            import grants as GR
-            import files as FL
-            import ladder as LD
-            M, fp, B, X, dates, drift = build_world(seed, iters=3, keep_rows=True)
-            g, i = GR.make(117, {"scale": 1.2})
-            p = GR.settle(g, i, 117, {})
-            F = FL.frames(M, fp, B, g, i, p, 117)
-            bad = LD.slip_ok(LD.slip_grid(F))
-            if bad:
-                print(seed, "slips", bad, flush=True)
-                continue
-            good.append(seed)
-            print("PASS", seed, flush=True)
-        else:
-            print(seed, " ".join(k for k, v in c.items() if not v), flush=True)
+        rows.append(carry - 1)
+        kept.append(dates[k])
+        carry = np.ones(X.shape[1])
+    T = E.table(np.array(rows), kept)
+    return dict(seed=seed, default=E.call(T["R0 daily"]), golden=sorted({E.call(t) for n, t in T.items() if E.GOLDEN(n)}))
+
+
+def scan(a, b, workers=1):
+    """seeds a to b; prints every seed's failing conditions and returns the seeds that pass every call condition"""
+    from multiprocessing import Pool
+    good = []
+    with Pool(workers) as pool:
+        for r in pool.imap(screen, range(a, b), chunksize=4):
+            print(r, flush=True)
+            if not r["fails"] and not r["pack_fails"]:
+                good.append((r["seed"], r["slips"]))
     return good
 
 
 if __name__ == "__main__":
-    print(scan(int(sys.argv[1]), int(sys.argv[2])))
+    print(scan(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]) if len(sys.argv) > 3 else 1))

@@ -10,8 +10,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Set the 2027 growth share at 60 per cent: it is the largest of the policy's steps whose expected volatility stays inside the 10% cap.",
+  "answer_source": "submission.md",
   "gap": [
     "time"
   ],
@@ -35,7 +35,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "brackenfold_valuation_lots_2024-11_2026-11.csv",
-    "rows": 0,
+    "rows": 42894,
     "entity": "one purchase lot of one holding in one designation of the charity's portfolio, valued on one business day",
     "grain": "holding lot x designation x valuation day",
     "source": "synthetic"
@@ -135,16 +135,15 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:nonsynchronous-unit-prices-in-a-portfolio-volatility",
   "layer1": [
-    "a custodian's daily valuation export at purchase-lot grain across two designations, with accrued income reported beside market value",
-    "corporate actions on the segregated UK equities (a share consolidation, a demerger, a rights issue, a cash takeover) recorded in a separate events file",
-    "UK and US trading calendars that differ, so the North American fund carries an unchanged New York close on the noon after each US holiday",
+    "a custodian's daily valuation export at purchase-lot grain across two designations, with accrued income reported beside market value and the mandate's cash on its own lines",
+    "corporate actions on the segregated UK equities (a share consolidation, a demerger whose new shares arrive the day after, a rights issue taken up, a cash takeover) recorded in a separate events file",
+    "UK, US and Japanese trading calendars that differ, so the North American or Japan fund carries an unchanged close on the noon after its own market's holiday",
     "two price sources for the pooled funds: the custodian's valuation for the days held and each fund's own published price history for the whole window",
     "income units whose distributions drop out of the price on ex-dividend dates, beside accumulation units",
-    "external flows into and out of the segregated mandate that a time-weighted return has to strip",
-    "an income entitlement extract that repeats each event's holding-level amount on every purchase-lot line, with the grain unstated",
-    "a fund's charity-class fee rebate paid quarterly in units and visible only in the custodian's transactions, beside the key information documents' gross ongoing charges",
-    "a superseded investment management fee schedule beside quarterly invoices billed on the current scale",
-    "grant installments whose due date is a progress-report date for conditional payments, with currency and withdrawal status held in a separate grant header table",
+    "external flows into and out of the segregated mandate (a legacy, the quarterly rebalancing transfers, the expendable endowment's quarterly capital releases) that a time-weighted return has to strip",
+    "an income entitlement extract that repeats each event's holding-level amount on every purchase-lot line, with the grain unstated, and runs thirteen months against the budget's twelve",
+    "REIT distributions paid in two components, a property income distribution and an ordinary dividend, under two event references on one ex-dividend date",
+    "grant instalments whose due date is a progress-report date for conditional payments, with currency and withdrawal status held in a separate grant header table and UK-format dates beside the finance system's ISO dates",
     "UK and US daylight-saving changes on different dates shifting the gap between valuation points"
   ]
 }

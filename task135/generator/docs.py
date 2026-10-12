@@ -135,7 +135,9 @@ def budget_xlsx(path, running, capital):
     ws.append(["Investment income", None, "To complete after the trustees set the 2027 growth share (procedure 7.2)"])
     ws.append(["Grant payments", None, "To complete (procedure 7.4)"])
     ws.append(["New awards", None, "Set by the trustees in December (procedure 7.7)"])
-    ws.append(["Running costs", "='Running costs'!B17", "Running costs sheet"])
+    n = len(running)
+    tot_row = n + 3                          # header, the lines, a blank row, the total
+    ws.append(["Running costs", "='Running costs'!B%d" % tot_row, "Running costs sheet"])
     ws.append(["Capital release from the expendable endowment", None, "To complete"])
     for r in range(4, 9):
         ws.cell(row=r, column=2).number_format = "#,##0"
@@ -143,25 +145,23 @@ def budget_xlsx(path, running, capital):
     ws.column_dimensions["B"].width = 18
     ws.column_dimensions["C"].width = 70
     rc = wb.create_sheet("Running costs")
-    rc.append(["Running costs 2027", "GBP"])
-    rc["A1"].font = bold
-    rc["B1"].font = bold
-    for nm, v in running:
-        rc.append([nm, v])
-    rc.append([])
-    n = len(running)
-    assert n + 3 == 16, n
-    rc.append(["Total running costs", "=SUM(B2:B%d)" % (n + 1)])
-    rc["A17"].font = bold
-    rc["B17"].font = bold
-    rc.append([])
-    rc.append(["Charged to capital (investment policy 5.1)", "GBP"])
-    rc["A19"].font = bold
-    for nm, v in capital:
-        rc.append([nm, v])
-    rc.append(["Total charged to capital", "=SUM(B20:B%d)" % (19 + len(capital))])
-    rc.cell(row=20 + len(capital), column=1).font = bold
-    for r in range(2, 25):
+    rc.cell(row=1, column=1, value="Running costs 2027").font = bold
+    rc.cell(row=1, column=2, value="GBP").font = bold
+    for k, (nm, v) in enumerate(running, 2):
+        rc.cell(row=k, column=1, value=nm)
+        rc.cell(row=k, column=2, value=v)
+    rc.cell(row=tot_row, column=1, value="Total running costs").font = bold
+    rc.cell(row=tot_row, column=2, value="=SUM(B2:B%d)" % (n + 1)).font = bold
+    cap_head = tot_row + 2
+    rc.cell(row=cap_head, column=1, value="Charged to capital (investment policy 5.1)").font = bold
+    rc.cell(row=cap_head, column=2, value="GBP").font = bold
+    for k, (nm, v) in enumerate(capital, cap_head + 1):
+        rc.cell(row=k, column=1, value=nm)
+        rc.cell(row=k, column=2, value=v)
+    cap_tot = cap_head + len(capital) + 1
+    rc.cell(row=cap_tot, column=1, value="Total charged to capital").font = bold
+    rc.cell(row=cap_tot, column=2, value="=SUM(B%d:B%d)" % (cap_head + 1, cap_head + len(capital))).font = bold
+    for r in range(2, cap_tot + 1):
         rc.cell(row=r, column=2).number_format = "#,##0"
     rc.column_dimensions["A"].width = 48
     rc.column_dimensions["B"].width = 14
@@ -322,7 +322,7 @@ def fernside_pdf(path, rep):
     story.append(R["Paragraph"]("Performance (time-weighted total return after fees, %)", sub))
     t = R["Table"]([["", "Quarter", "Year to date", "One year"],
                     ["Portfolio"] + ["%.1f" % x for x in rep["port"]],
-                    ["FTSE All-Share"] + ["%.1f" % x for x in rep["index"]]],
+                    ["FTSE All-Share (total return)"] + ["%.1f" % x for x in rep["index"]]],
                    colWidths=[40 * R["mm"], 28 * R["mm"], 28 * R["mm"], 28 * R["mm"]])
     t.setStyle(R["TableStyle"]([("FONT", (0, 0), (-1, -1), "Times-Roman", 9.5), ("FONT", (0, 0), (-1, 0), "Times-Bold", 9.5),
                                 ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("LINEBELOW", (0, 0), (-1, 0), 0.5, R["colors"].black)]))

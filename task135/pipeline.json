@@ -2,26 +2,25 @@
   "task": "task135",
   "domain": "quantitative-finance",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "build (architecture 2): paper design through precut, the builder cuts the pack",
-  "updated": "2026-10-11",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-12",
   "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60, treating same-dated prices as same-moment prices when the Kestwick funds are struck at noon from each market's last available price, so the North American fund carries the previous evening's New York close that the London-close UK shares have already priced.",
   "architecture": 2,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-10-11"
+    "date": "2026-10-12"
   },
   "designer": "2026-10-11, designer (architecture 2 draw and paper design): card v2 registered at WARN (repeat.gate_g against task134 v2, answered in the design note); default path, daily covariance times the square root of 252, ends on 70 per cent growth against 60 (prototype seed 2036: 9.66 at 70; golden family 9.21 to 9.82 at 60 and 10.45 to 11.24 at 70); decisive rung silent; SF1 to SF14 closed; asks are 2027 income and the capital release at nine steps, the 2027 grant payments and the chart (D6 lot-line repetition, D8 project instalments paid after the report), pair ceiling 34; prompt.txt 700 characters through voice-check; architecture 1's build products removed",
-  "decision": "build",
-  "brief": "Build architecture 2 from the design note's Build record: the generator, the pack, the goldens and the checks it lists, meeting every target in ## Ladder and ## Ask sheet; return to a designer if a target cannot be met without changing the ladder.",
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-12, no LEAK; sweeps 3, 4 and 9 answered in the design note's As built",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
+    "heart": "WARN 2026-10-12, repeat.gate_g against task134 v2 (answered in ## Draw)",
+    "nearest": "driver task128 0.06; stump task111 0.05",
+    "surface": "exit 0 2026-10-12, no pair promoted; personas Connor Wells, Harriet Clarke, Lawrence Barnes on the card",
     "clone_check": ""
   },
   "solver_rounds": [],
@@ -33,6 +32,9 @@
   "approved": null,
   "delivered": null,
   "portal": null,
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathya8571"
+  "status": "BUILD",
+  "owner": "sathya8571",
+  "resume": "stage 4: reader and judge",
+  "builder": "2026-10-12, build session (wave 1, resume 3): stage 3 finished on the stopped builder's generator without redesign; world seed 11480 from a fresh seed scan (golden family 26 members, 8.96 to 9.72 at 60 and 10.33 to 11.11 at 70; default 9.41 at 70 and 10.63 at 80); asks re-sized with tune_asks.py (every one of 146 composed mishandlings at least 759 pounds from a stated golden); ask A's span stays at seven files, reason recorded; checks.py 259 assertions 0 failed; verify.py 0 failed; two builds byte-identical; figures_check 92 figures 0 absent; precut exit 0; leak.py REVIEW; surface 0 promoted; heart WARN. One grid target not met: the post-holiday-days slip lands the default on 60 at 252 periods a year (design note, As built), for the main session to accept or return to a designer",
+  "flag": "the post-holiday-days slip lands the default on 60 at 252 periods a year (policy 4.3 refuses it; at its own 229.5 periods a year the default stays on 70); the design's grid target is not met, design note As built"
 }

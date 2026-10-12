@@ -789,6 +789,30 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
             sst.append(text)
         return sst_ix[text]
 
+    def evaluate(ws, ref, seen=()):
+        """the value Excel caches for a cell: numbers as they are, formulas of the forms the trust's workbooks use
+        (=SUM(B2:B14), ='Running costs'!B16, =B5+B6-D9) evaluated"""
+        m = re.fullmatch(r"(?:'([^']+)'!)?\$?([A-Z]+)\$?(\d+)", ref)
+        sh = wb[m.group(1)] if m.group(1) else ws
+        v = sh["%s%s" % (m.group(2), m.group(3))].value
+        if isinstance(v, str) and v.startswith("="):
+            return formula_value(sh, v[1:], seen + ((sh.title, ref),))
+        return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else 0.0
+
+    def formula_value(ws, f, seen=()):
+        def total(m):
+            c0, r0, c1, r1 = m.group(1), int(m.group(2)), m.group(3), int(m.group(4))
+            out = 0.0
+            for c in range(col_num(c0), col_num(c1) + 1):
+                for r in range(r0, r1 + 1):
+                    out += evaluate(ws, "%s%d" % (col_letter(c), r), seen)
+            return repr(out)
+        e = re.sub(r"SUM\(\$?([A-Z]+)\$?(\d+):\$?([A-Z]+)\$?(\d+)\)", total, f)
+        e = re.sub(r"(?:'[^']+'!)?\$?[A-Z]+\$?\d+", lambda m: repr(evaluate(ws, m.group(0).replace("$", ""), seen)), e)
+        assert re.fullmatch(r"[-+*/(). 0-9e]+", e), f
+        return eval(e)
+
+    calc = []
     sheets_xml, names, filters = [], [], []
     for si, ws in enumerate(wb.worksheets):
         names.append(ws.title)
@@ -806,6 +830,11 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
                 if isinstance(v, (dt.datetime, dt.date)):
                     d = v.date() if isinstance(v, dt.datetime) else v
                     cells.append('<c r="%s" s="%d"><v>%d</v></c>' % (c.coordinate, xf_of(c, True), (d - EXCEL_EPOCH).days))
+                elif isinstance(v, str) and v.startswith("="):
+                    st = xf_of(c, False)
+                    cells.append('<c r="%s"%s><f>%s</f><v>%s</v></c>' % (c.coordinate, ' s="%d"' % st if st else "", esc(v[1:]),
+                                                                        num(formula_value(ws, v[1:]))))
+                    calc.append((c.coordinate, si + 1))
                 elif isinstance(v, str):
                     st = xf_of(c, False)
                     cells.append('<c r="%s"%s t="s"><v>%d</v></c>' % (c.coordinate, ' s="%d"' % st if st else "", s_index(v)))
@@ -925,12 +954,23 @@ def xlsx_from_openpyxl(wb, path, creator, modified_by, created, modified, compan
            '<TitlesOfParts><vt:vector size="%d" baseType="lpstr">%s</vt:vector></TitlesOfParts><Company>%s</Company>'
            '<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>'
            '<AppVersion>16.0300</AppVersion></Properties>' % (n, n, "".join("<vt:lpstr>%s</vt:lpstr>" % esc(x) for x in names), esc(company)))
+    if calc:
+        wrels = wrels.replace("</Relationships>", '<Relationship Id="rId%d" Type="http://schemas.openxmlformats.org/'
+                              'officeDocument/2006/relationships/calcChain" Target="calcChain.xml"/></Relationships>' % (n + 4))
+        ct = ct.replace('<Override PartName="/docProps/core.xml"', '<Override PartName="/xl/calcChain.xml" ContentType='
+                        '"application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml"/><Override PartName="/docProps/core.xml"')
+        chain = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<calcChain xmlns="http://schemas.openxmlformats.org/'
+                 'spreadsheetml/2006/main">%s</calcChain>' % "".join(
+                     '<c r="%s" i="%d"/>' % (r, i) for i, r in sorted(((i, r) for r, i in calc), key=lambda x: (x[0], col_num(
+                         re.match(r"[A-Z]+", x[1]).group(0)), int(re.search(r"\d+", x[1]).group(0))))))
     parts = [("[Content_Types].xml", ct), ("_rels/.rels", pkg_rels), ("xl/workbook.xml", workbook),
              ("xl/_rels/workbook.xml.rels", wrels)]
     parts += [("xl/worksheets/sheet%d.xml" % (k + 1), x) for k, x in enumerate(sheets_xml)]
     parts += [("xl/theme/theme1.xml", theme_xml("excel")), ("xl/styles.xml", styles),
-              ("xl/sharedStrings.xml", sst_xml), ("docProps/core.xml", core_xml(creator, modified_by, created, modified)),
-              ("docProps/app.xml", app)]
+              ("xl/sharedStrings.xml", sst_xml)]
+    if calc:
+        parts.append(("xl/calcChain.xml", chain))
+    parts += [("docProps/core.xml", core_xml(creator, modified_by, created, modified)), ("docProps/app.xml", app)]
     write_zip(path, parts)
 
 
