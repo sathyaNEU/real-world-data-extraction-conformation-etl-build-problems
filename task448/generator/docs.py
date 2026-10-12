@@ -168,9 +168,12 @@ def write_layout(path):
                    "deliveries.", V_SUB)]
     s.append(Paragraph("1. Contents", V_H2))
     s.append(Paragraph("A PMM file holds mortgages recorded in the subscribed counties that Venridge has matched to a "
-                       "conveyance of the same property to the mortgagor. Each row is one recorded mortgage document "
-                       "with the matched conveyance. Files are cut by the mortgage's recording date: an annual file "
-                       "after each calendar year closes, and year-to-date files on request.", V_BODY))
+                       "conveyance of the same property to the mortgagor. Identification depends on that match: a "
+                       "purchase-money mortgage Venridge has not matched to its conveyance is not in the file, so a "
+                       "file does not hold every purchase-money mortgage recorded in a county. Each row is one "
+                       "recorded mortgage document with the matched conveyance. Files are cut by the mortgage's "
+                       "recording date: an annual file after each calendar year closes, and year-to-date files on "
+                       "request.", V_BODY))
     s.append(Paragraph("A mortgage that is re-recorded, for example to correct a legal description, appears again "
                        "under its new document number; the recorder's note is carried in DOC_REMARKS (REMARKS in "
                        "version 4).", V_BODY))

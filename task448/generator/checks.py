@@ -1,5 +1,5 @@
 """task448 assertions: the input gates, the three rules (R1 to R3c), the ladder with every rung computed from the
-pack, the separation and the grid, the semantic fork rows SF1 to SF10 and the estimator family inside every graded
+pack, the separation and the grid, the semantic fork rows SF1 to SF11 and the estimator family inside every graded
 bin, the asks' devices and crackers, mess neutrality item by item, consistency between the deliverables, and the
 realism sweep. Run by build.py after every build; exits on the first failure."""
 import datetime as dt
@@ -317,6 +317,31 @@ def run(target, golden, world=None, meta_path=None):
        "Ask B pin: the dictionary files HMDA's county as the institution's geocode of the address")
     ok("the county in which the property lies" in doc_text,
        "Ask B pin: the vendor's guide files the recording county as where the property lies")
+    flat = re.sub(r"\s+", " ", doc_text)
+    ok("does not hold every purchase-money mortgage recorded in a county" in flat,
+       "SF11 pin: the vendor's guide files that the file does not hold every purchase-money mortgage recorded")
+    feed_all_rows = C.counts(B, lambda F: F.mortgage)
+    direct = {nm: float(feed_all_rows.get(n, 0)) for n, nm in short}
+    t11, s11 = C.five(direct)
+    ok(set(names(t11)) != set(GOLD) and C.r10(direct["Corvane Home Loans, LLC"]) != C.r10(gold["Corvane Home Loans, LLC"]),
+       "SF11 every lender at its file rows (the file read as complete) files a wrong five and Corvane a bin low",
+       " | ".join("%s %.0f" % (n.split()[0], x) for n, x in t11))
+    r4w = C.estimate(B, sel=lambda F: F.mortgage | F.qcd)
+    hn = [n for n, nm in short if nm == "Heidebrecht State Bank"][0]
+    own = float(C.counts(B, lambda F: F.mortgage | F.qcd).get(hn, 0)) / caps[route(hn)]
+    ok(C.r10(r4w["Heidebrecht State Bank"]) == 200 and C.r10(own) == 210,
+       "write-up: the quitclaim clause's 200 counts the refinances for every lender, captures included",
+       "every lender %.1f, its own rows alone %.1f" % (r4w["Heidebrecht State Bank"], own))
+    pk11 = C.route_of(B)
+    r_by = {"P": [], "S": []}
+    for n in B["reporter_nmls"]:
+        h = float(B["hmda"].get(B["lei_of"][n], 0))
+        if h >= 20:
+            r_by["P" if pk11.get(n, 1.0) >= 0.5 else "S"].append(float(feed_all_rows.get(n, 0)) / h)
+    ok(min(r_by["P"]) >= 0.9 and max(r_by["S"]) <= 0.65 and len(r_by["S"]) >= 4,
+       "SF11 the reporters' shortfall follows how each records, not where it lends (HMDA's codes no excess)",
+       "with the deed %.3f to %.3f, after it %.3f to %.3f" % (min(r_by["P"]), max(r_by["P"]), min(r_by["S"]),
+                                                              max(r_by["S"])))
     sf4 = {}
     feed_all = C.counts(B, lambda F: F.mortgage)
     for n, nm in short:

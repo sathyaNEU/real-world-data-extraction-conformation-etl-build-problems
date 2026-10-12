@@ -120,7 +120,7 @@
     {
       "path": "rural_lender_shortlist_2027.xlsx",
       "format": "xlsx",
-      "bytes": 8244,
+      "bytes": 8256,
       "rows": null,
       "source": "Constructed: the board's twelve-lender shortlist",
       "date": "2026-10-09",
@@ -165,7 +165,7 @@
     {
       "path": "venridge_pmm_layout_guide_v4.pdf",
       "format": "pdf",
-      "bytes": 44084,
+      "bytes": 44083,
       "rows": null,
       "source": "Constructed: the vendor's file layout guide, versions 3 and 4",
       "date": "2026-10-09",

@@ -75,6 +75,13 @@ def main(target=None, golden=None):
             rows, pk = lend.get(n, (0, 1.0))
             counts[name] = rows / cap["P" if pk >= 0.5 else "S"]
     order = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    # SF11: the vendor files that the file is not every purchase-money mortgage, and its rows alone rank wrongly
+    from pypdf import PdfReader
+    guide = " ".join(" ".join(pg.extract_text() for pg in PdfReader(
+        os.path.join(target, "venridge_pmm_layout_guide_v4.pdf")).pages).split()).lower()
+    rows_only = sorted(((lend.get(n, (0, 1.0))[0], name) for n, name in short), reverse=True)
+    sf11 = ("does not hold every purchase-money mortgage recorded in a county" in guide and
+            {nm for _, nm in rows_only[:5]} != {nm for nm, _ in order[:5]})
     # county figures: reporters' HMDA count spread by their recorded counties; others over their route's capture
     two = {}
     for c, n, k, route, is_rep, tot in q.execute("""
@@ -120,6 +127,8 @@ def main(target=None, golden=None):
     chart = dict(zip(ch.plots[0].categories, ch.plots[0].series[0].values))
     if sorted(chart.values()) != sorted(rnd(v) for v in counts.values()):
         fail.append("chart")
+    if not sf11:
+        fail.append("SF11: the guide's coverage sentence, or the file's rows alone giving a wrong five")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     if fig["capture_packaged"] != "%d" % round(100 * cap["P"]) or fig["capture_separate"] != "%d" % round(100 * cap["S"]):
         fail.append("captures in figures.json")

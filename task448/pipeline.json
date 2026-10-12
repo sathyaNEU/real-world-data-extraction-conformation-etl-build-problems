@@ -15,8 +15,8 @@
     "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK) 2026-10-12; house numbers, lender names and common words only",
-    "reader": "2026-10-12: Q1 to Q4 none; Q5 the estimand executed, no main-call fork; Q6 the reader named the 7.3 to 7.5 filters and the date basis, both asserted neutral to the call (not a rule-3 finding); realism tells fixed (small-lender names, alias review dates, shortlist notes); second read after the fix: Q1 to Q4 none, Q5 resolves the county to the recorder's (fork closed), Q6 not a rule-3 finding (the named rules asserted neutral)"
+    "leak_py": "REVIEW (no LEAK) 2026-10-12, rerun after the portal repair",
+    "reader": "2026-10-12: Q1 to Q4 none; Q5 the estimand executed, no main-call fork; Q6 the reader named the 7.3 to 7.5 filters and the date basis, both asserted neutral to the call (not a rule-3 finding); realism tells fixed (small-lender names, alias review dates, shortlist notes); second read after the fix: Q1 to Q4 none, Q5 resolves the county to the recorder's (fork closed), Q6 not a rule-3 finding (the named rules asserted neutral); third read after the coverage sentence: Q1 to Q4 none (the coverage sentence read as a data caveat, not a method), Q5 the estimand executed, Q6 analytical; realism tells fixed (verification dates, one shortlist note)"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g, answered in the design note) 2026-10-12",
@@ -24,14 +24,21 @@
     "note": "draw checked 2026-10-12: guard WARN repeat.gate_g (task185) answered; seven older same-signature builds differentiated on the card"
   },
   "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC scoped to Ask B (county basis), FIX_NOW; pass 2 DETERMINISTIC, APPROVE",
+    "verdict": "pass 1 NOT_DETERMINISTIC scoped to Ask B (county basis), FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 (after the portal return) DETERMINISTIC, FIX_NOW on write-up and ask wording, fixed",
     "disposition": "APPROVE after one FIX_NOW (county basis pinned in the dictionary and the vendor's guide)",
-    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
     "gate_g": "method_or_model_selection, analytical_non_defect; sole_data_defect borderline, routed to live testing",
     "gate_h": "domain pass, layers pass, decisive step analytical"
   },
-  "returned": [],
-  "resume": "shipped; waiting for the portal",
+  "returned": [
+    {
+      "date": "2026-10-12",
+      "portal": "determinism block: one judge DETERMINISTIC, one NOT_DETERMINISTIC (competing_defensible_answer: the recorder file counted directly as the complete count, the reporters' HMDA excess read as geocoding error; Gate G planted for the per-lender recording split)",
+      "repair": "determinism",
+      "commit": ""
+    }
+  ],
+  "resume": "reshipped after the portal determinism repair; waiting for the portal",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,

@@ -137,6 +137,14 @@ def write_alias(F, LX, path):
     return len(A)
 
 
+def _verified(x):
+    """The desk re-checked the board's shortlist before the September meeting; every other lender keeps the date
+    it was last looked up, from the register's set-up in March 2025 on."""
+    if x["id"] in W.OFFICES:
+        return "2026-09-08"
+    return ("2025-03-14", "2025-06-02", "2025-11-20", "2026-01-29", "2026-04-07", "2026-06-23")[int(x["nmls"]) % 6]
+
+
 def write_register(LX, path):
     kinds = {"NB": "Mortgage company", "CU": "Credit union", "CB": "Bank", "RB": "Bank"}
     rows = []
@@ -149,7 +157,7 @@ def write_register(LX, path):
             charter = "National bank" if x["name"].endswith("N.A.") or "National" in x["name"] else "State bank"
         rows.append(dict(nmls_id=x["nmls"], legal_name=x["name"], institution_type=kinds[x["ch"]], charter=charter,
                          hq_city=x["hq"][0], hq_state=x["hq"][1], lei=x["lei"], rssd_id=x["rssd"],
-                         service_area_offices=W.OFFICES.get(x["id"], ""), last_verified="2026-09-08"))
+                         service_area_offices=W.OFFICES.get(x["id"], ""), last_verified=_verified(x)))
     pd.DataFrame(rows).to_csv(path, index=False, lineterminator="\n")
     return len(rows)
 
@@ -161,7 +169,7 @@ def write_shortlist(LX, path):
     notes = {"BIG1": "Wichita program participant since 2019; loan officers cover Salina", "BIG2": "",
              "BIG3": "Asked about a rural expansion at the June lender breakfast", "REG1": "Wichita program participant",
              "REG2": "Topeka program; Abilene branch opened 2023", "CUR2": "Wichita program; Salina branch only",
-             "CBR1": "Proposed at the September meeting", "N1": "Proposed at the September meeting; three Salina offices",
+             "CBR1": "Raised by a director at the September meeting", "N1": "Proposed at the September meeting; three Salina offices",
              "N2": "Met at the McPherson housing fair (May 2026)", "N3": "Marion County commission suggested",
              "N4": "", "N5": "Called the office in August asking about the program"}
     order = ["N2", "BIG2", "REG1", "N5", "CBR1", "N4", "BIG1", "N3", "REG2", "BIG3", "N1", "CUR2"]
