@@ -9,7 +9,8 @@ description: Find, prove and protect the analytical stump behind a main recommen
 > without it: every figure is correct, every real rule filed, and the natural pipeline reconciles and
 > commits to a specific wrong answer.
 
-Work Part 6 first, then Parts 1 to 5, with `references/strategies.md`, the client's standard and rigor
+**The client's 10/10 rules bind every draw, rework and repair** (`CLAUDE.md`, first section): Part 1.1 answers
+them in the design note before the default path is written. Work Part 6 first, then Parts 1 to 5, with `references/strategies.md`, the client's standard and rigor
 patterns in `references/client/` (learn one, write your own; `references/client/measured-drivers.md` reads the
 client's 49 measured tasks against our top-two bar: 18 held, 13 coin flips, 13 leaked their asks, 3 landed,
 so a decisive rung is drawn from the held group, upstream of every graded figure, with its partial-fix match
@@ -51,10 +52,12 @@ the client's own check before a build ships. `precut.py` refuses a missing or on
 | `Swap:` | the call sentence rewritten with another field's nouns, and what stops making sense |
 | `Layer 1:` | each mess item and the system that produces it; nothing placed to be caught |
 | `Layer 2:` | the family and the methodological choice that flips the call |
-| `Decisive step:` | why that step is not catching a plant, not reading a field, code, unit or definition, not applying a stated rule |
+| `Decisive step:` | the analytical choice that flips the call, in the field's own words |
+| `Not semantics:` | why reading every field, code, unit and definition correctly still leaves the easy route on the wrong answer |
+| `Not rule application:` | which step no filed rule or procedure performs, so executing every stated rule still files the wrong answer |
 | `Analyst test:` | the easy route a strong analyst takes with every field read and every rule applied, and the wrong answer it files (the default path's `Ends on:`, named) |
 | `Estimand:` | the filed sentence fixing population, outcome, window, unit and comparison, and the file it sits in |
-| `No decoy:` | that no memo, draft, briefing or stakeholder figure is written to carry the wrong answer |
+| `No decoy:` | that nothing is planted to be caught: no copied block, hidden rule, memo, draft, briefing or stakeholder figure written to carry the wrong answer |
 | `No certified replay:` | that the method is not hidden and recovered by reproducing certified or published figures |
 | `Lesson:` | what a model learns by getting it right, and why no build on file already teaches it |
 

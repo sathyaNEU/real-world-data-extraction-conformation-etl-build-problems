@@ -27,7 +27,9 @@ under each.
 - `solution_incorrect`, `missing_input_data`, `answer_contradicts_files`: a figure that does not recompute
   from the shipped files, or a fact the golden uses that no file carries.
 
-**3. The stump test, before choosing a move.** Ask whether the fork *is* the stump: does the golden's lead
+**3. The stump test and the 10/10 rule, before choosing a move.** A closure that files the method makes the
+decisive step rule application, which the client's rule 3 bans whatever the determinism verdict
+(`CLAUDE.md`, first section). Close the WHAT, never the HOW. Then the stump test: Ask whether the fork *is* the stump: does the golden's lead
 over the easy answer come from the reading rather than from the analysis? If closing the fork in either
 direction makes the default path land on the golden, the stump lived in the fork (eight builds died this
 way). **Stop**: write the line in `## Tried and rejected`, set `pipeline.json` `status` `DESIGN`, and report

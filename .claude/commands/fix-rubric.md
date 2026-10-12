@@ -37,6 +37,9 @@ The ask's points come back only from devices the cracker's path misses.
   frozen.
 - Never touch: the main call's rows, the files it reads, the ladder, the stump, the card's driver, the
   Final Recommendation and Critical Components blocks. A device that needs any of them is dropped.
+- The 10/10 rule 3 binds the main call only, so an ask's device may turn on data semantics or rule
+  application; rules 1 and 2 still bind every device (the domain's own quantities, realistic mess only,
+  nothing planted).
 
 **4. Assert, rebuild, prove the scope.** `checks.py` asserts the separation line by count (zero device rows in
 the main population), that files the call reads are byte-identical to the shipped commit, and that every

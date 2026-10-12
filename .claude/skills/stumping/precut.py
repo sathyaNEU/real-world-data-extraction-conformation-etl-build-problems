@@ -28,8 +28,8 @@ REQUIRED = ["Draw", "Default path", "Stump sentence", "Three rules", "Readabilit
             "Tried and rejected"]
 VOCAB = os.path.join(REPO, ".claude", "skills", "fingerprint", "vocab.json")
 # The client's check before a build ships, one label per point (stumping 1.1).
-THREE_RULES = ("Task type", "Domain test", "Swap", "Layer 1", "Layer 2", "Decisive step", "Analyst test",
-               "Estimand", "No decoy", "No certified replay", "Lesson")
+THREE_RULES = ("Task type", "Domain test", "Swap", "Layer 1", "Layer 2", "Decisive step", "Not semantics",
+               "Not rule application", "Analyst test", "Estimand", "No decoy", "No certified replay", "Lesson")
 PAIR_CEILING = 40.0
 MIRROR_CEILING = 35.0   # per cent of ask weight the best response off the call may keep (supplemental Part 1.1)
 AXES = set(range(1, 23))

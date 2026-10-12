@@ -193,6 +193,30 @@ def taken():
     return nums
 
 
+def ten_ten(t):
+    """What a rework still owes the client's 10/10 rules before it is resumed (empty when it owes nothing)."""
+    card_p = os.path.join(CARDS, t + ".json")
+    if not os.path.exists(card_p) or not os.path.isdir(os.path.join(REPO, t)):
+        return ""
+    owed = []
+    try:
+        card = json.load(open(card_p))
+    except ValueError:
+        card = {}
+    if card.get("stump_class") != "analytical":
+        owed.append("card stump_class is %s, not analytical" % (card.get("stump_class") or "missing"))
+    for f in ("analyst_test", "domain_test"):
+        if not card.get(f):
+            owed.append("card has no %s" % f)
+    if card.get("official_decoy") or card.get("validated_decoy"):
+        owed.append("card is flagged as an official or validated decoy")
+    note = os.path.join(REPO, t, "DESIGN_NOTE.md")
+    text = open(note, encoding="utf-8").read() if os.path.exists(note) else ""
+    if not re.search(r"^#+\s*Three rules", text, re.M):
+        owed.append("the design note has no ## Three rules")
+    return "; ".join(owed)
+
+
 def next_task(handle):
     rec = portal_record()
     ws = waves(handle)
@@ -206,6 +230,10 @@ def next_task(handle):
                 flying.append("%s %s" % (t, st))
                 continue
             print("next: %s (wave %d, %s%s)" % (t, n, show(st), ", " + note if note else ""))
+            gate = ten_ten(t)
+            if gate:
+                print("10/10 gate before any resume: %s. Answer it, or re-root if the old stump is a decoy, a withheld"
+                      " rule, a field reading or an executed procedure." % gate)
             if flying:
                 print("in flight: " + ", ".join(flying))
             return 0
@@ -242,17 +270,22 @@ def seed(t):
     m = re.search(r"\]\(([^)]+)\)", row)
     path = os.path.join(REPO, m.group(1))
     text = open(path, encoding="utf-8").read()
+    keep = ("objective", "domain", "mirrors", "decision shape", "committed call", "client domain", "field")
     out, sec = [], 0
     for line in text.splitlines():
         if re.match(r"#{2,3} ", line):
             sec += 1
             if sec > 1 and "situation" not in line.lower() and len("\n".join(out)) > 400:
                 break
+        cell = re.match(r"\|\s*([^|]+?)\s*\|", line)
+        if cell and sec <= 1 and not line.startswith("|---") and cell.group(1).lower() not in keep:
+            continue  # decoy-era mechanism rows (gap, pattern, Gate G, traps, calibration, driving force) are not shown
         out.append(line)
     print(row.strip())
     print("seed: %s\n" % m.group(1))
     print("\n".join(out).strip())
-    print("\n(The rest of the seed is decoy-era design and is not read: re-find the pitfall from the data.)")
+    print("\n(The seed's mechanism rows and the rest of the note are decoy-era design and are not shown: keep the world,"
+          " the decision and the quantity, and find the pitfall from the data under the 10/10 rules.)")
     return 0
 
 

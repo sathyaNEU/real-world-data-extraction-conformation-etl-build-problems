@@ -66,6 +66,10 @@ the decisive property; a filed sentence whose literal execution is the easy answ
 5. Which filed sentence, read literally, fixes how the main figure is computed or over which population?
    Quote it and give its literal result. The main thread checks it is the golden; if it is the easy
    answer it is a main-call fork (`determinism-check` §1).
+6. What decides the main answer: an analytical choice, reading one field, code, unit or definition
+   correctly, following a stated rule or procedure, or catching something that looks planted? Quote the
+   sentence or name the file that decides it. Anything but an analytical choice is a 10/10 rule 3 finding
+   (`CLAUDE.md`, first section): the build goes back to stage 2.
 
 Answers append to the report under `## Solver's-eye read`, with a verdict on each REVIEW line. The main
 thread rules fix or harmless per line, harmless ones one line each in the design note.

@@ -4,6 +4,61 @@ Every `taskNN/` folder is one deterministic analytical task: `prompt.txt`, the b
 the golden deliverables and `submission.md`. The goal is one thing: high-quality, unique, submission-ready
 tasks, shipped one after another. Everything below serves that and nothing else.
 
+## The 10/10 rules come first
+
+The client's update of 2026-10-10 sends back more tasks than anything else in this file. Every draw, every
+rework of a `FAILED_TO_STUMP` build and every fix answers it before any other work, and a build that fails it
+is neither resumed nor shipped: it is redesigned. The client's own text is the top block of
+`guidelines/introduction.md`; `stumping` Part 1.1 is how a design note answers it.
+
+1. **The task really uses its domain.** The quantity that decides the call is one the field would estimate,
+   model or test, worked the way one of the domain's task types works it. Swap test: put another field's
+   nouns in ("hospital" for "school", "megawatt-hours" for "visits"); if the task still reads the same, the
+   domain is a backdrop. A stated score, an eligibility check, a sort or a filter deciding the call is a
+   backdrop at any depth (`guide-to-prompt`).
+2. **Every task has two layers.** Layer 1 is realistic mess that the organisation's own systems produce:
+   layouts changing across years, tables inside PDFs, imperfect keys across sources, a preliminary and a
+   revised release overlapping, fiscal against calendar years, local time against UTC, thousands against
+   units. It complicates the work, is never planted, and never carries the stump (`dataset-generation`).
+   Layer 2 is the analytical rigor that decides the answer: the method an expert in the field recognises,
+   where a capable analyst's easy route files a wrong answer (the right comparison group, the data's real
+   structure such as censoring, the evidence judged with its uncertainty, a forecast validated out of
+   sample). It carries the stump (`stumping`).
+3. **Three kinds of stump are banned as the decisive step.** They may appear; none may decide the call:
+   - a planted defect, decoy or hidden rule (a block of readings secretly copied, a memo arguing the wrong
+     answer, a rule deliberately left unstated);
+   - data semantics (the answer flips only on reading a field, code, unit or definition correctly);
+   - rule application (the answer comes from executing stated rules, however many steps there are).
+
+**The test, answered in writing for the main call:** could a strong analyst who cleaned the data and read
+every rule correctly still get the answer wrong by doing the analysis the easy way? Yes is analytical and
+valid. No is semantics or rule application, and the build is redesigned. Choosing the right estimand or unit
+of analysis counts as analysis. Rule 3 binds the main call's decisive step; the asks are free of it.
+
+**Where builds slip past it, and what catches each:**
+- **A determinism repair that files the method.** Filing HOW the figure is computed turns the decisive step
+  into rule application. File the WHAT (population, window, unit, comparison), never the HOW
+  (`/fix-determinism`, `determinism-check` §1).
+- **A rework resumed from an old design.** Before resuming a `FAILED_TO_STUMP` build, its card carries
+  `stump_class: analytical`, `analyst_test` and `domain_test` and its note a passing `## Three rules`; a
+  stump that is a decoy, a withheld rule, a field reading or an executed procedure is re-rooted, never
+  resumed. `status.py next` flags a rework that has not been re-checked.
+- **A seed copied as a design.** The seeds in `analytical_tasks/` were written to the withheld-rule-with-decoy
+  architecture the client bans. Take the world, the decision and the quantity only; `status.py taskNN`
+  prints nothing else.
+- **Mess carrying the stump.** If cleaning the data makes the call easy, the stump was Layer 1: move it into
+  the analysis.
+- **The domain as backdrop.** If the deciding number is a stated score or a list check, nothing the field
+  estimates decides the call.
+
+**The gates.** The card's `stump_class` (only `analytical` passes), `analyst_test` and `domain_test`:
+`guard.py` blocks a draw without them, and blocks an official decoy, a certified record built to bless the
+wrong method, a decisive rule left unstated against a stated one, and a task type that does not serve the
+objective. The note's `## Three rules`, one labelled line per point of the client's check, `No decoy:`,
+`Not semantics:` and `Not rule application:` each on its own line: `precut.py` refuses a missing or one-word
+line. `checks.py` executes the analyst test on the generator's clean truth (`dataset-generation` §7.1). At
+stage 4 the leak reader's question 6 and the judge's Gate H read the three rules from outside the design.
+
 ## Skill routing (binding)
 
 Invoke the skill before the work, whatever the request's wording; if two apply, both, in pipeline order.
@@ -131,26 +186,7 @@ note's `## Tried and rejected`.
 
 ## Current spec
 
-**The three rules** (a break sends the task back even when it is deterministic):
-
-1. **The task really uses its domain.** The deciding quantity is one the field would estimate, model or
-   test. Swap test: with another field's nouns the task must stop making sense (`guide-to-prompt`).
-2. **Two layers.** Layer 1 is realistic mess across several files (grains, versions, calendars, IDs,
-   partial extracts, superseded documents), always something the organisation's systems would produce,
-   never what the stump rests on (`dataset-generation`). Layer 2 is the analytical pitfall: the shortcut
-   a capable analyst takes and an expert rejects, with the rigorous method the only defensible one. It
-   carries the stump (`stumping`).
-3. **Banned as the decisive step:** a planted defect, decoy or hidden rule; data semantics (reading a
-   field, code, unit or definition right); rule application (executing stated rules). Test: could a
-   strong analyst who cleaned the data and read every rule still get it wrong by doing the analysis the
-   easy way? Choosing the estimand or unit of analysis counts as analysis.
-
-Cards carry `stump_class` (only `analytical` passes), `analyst_test` and `domain_test`. The guard blocks
-an official decoy, a certified record built to bless the wrong method, a decisive rule left unstated
-against a stated one, and a task type that does not serve the objective. File the rules a real
-organisation writes down; the answer turns on a step they leave open. The rules are gates, not sentences:
-the design note's `## Three rules` answers the client's check line by line (`precut.py`), and `checks.py`
-executes the analyst test on the generator's clean truth (`dataset-generation` §7.1).
+**The three rules** are the first section of this file, and everything below assumes them.
 
 **Determinism is literal.** The judge executes the shipped text word for word. The estimand
 (population, including members not yet observed, outcome, window, unit, comparison) is filed so its

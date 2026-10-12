@@ -20,6 +20,11 @@ commits, `pipeline.json` and retirement are its business and are not restated he
   eight; map plain words to the vocabulary keys. Use the number given, or the next open one in the lane.
 - `resume taskNN`, `taskNN from <stage>`: continue from `pipeline.json`, re-checking that stage's gate first.
 
+**The 10/10 rules come before anything else** (`CLAUDE.md`, first section). A new draw answers them in the
+card and the note's `## Three rules` before the default path is written. A rework passes the 10/10 gate
+(`build-pipeline`, Failed to stump) before it is resumed: `status.py next` prints what it still owes, and a
+stump that is a plant, a withheld rule, a field reading or an executed procedure is re-rooted.
+
 A returned task is not a `/build`: a determinism finding is `/fix-determinism`, a rubric over 50 with the call
 held is `/fix-rubric`, a landed call is `/build taskNN from 2` with the portal result in the design note.
 

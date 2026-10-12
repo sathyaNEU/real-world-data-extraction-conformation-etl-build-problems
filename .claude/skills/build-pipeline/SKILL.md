@@ -16,11 +16,11 @@ judge's Gate F, and measured by the portal.
 | # | Stage | Skills | Gate to leave the stage |
 |---|---|---|---|
 | 0 | intake | `fingerprint` (`recent`, `coverage`) | `taskNN` from `status.py next <handle>` (the earliest backlog wave) or as handed out; `status.py taskNN` read for a new number (the seed's header and Situation only); `pipeline.json` with `status` `DRAWING` (or the rework's stage) and `owner` |
-| 1 | draw | `guide-to-prompt`, `stumping`, `fingerprint` (`mechanisms`, `check`, `register`, `names`) | card at PASS or answered WARN, three rules answered, both layers named, people drawn, the stump unique; **default path ending on a wrong answer, stump sentence, data-native sentence**. Commit `DRAWN (taskNN)` |
+| 1 | draw | `guide-to-prompt`, `stumping`, `fingerprint` (`mechanisms`, `check`, `register`, `names`) | card at PASS or answered WARN, **the 10/10 rules answered first** (`stump_class` analytical, the analyst test naming the easy route's wrong answer), both layers named, people drawn, the stump unique; **default path ending on a wrong answer, stump sentence, data-native sentence**. Commit `DRAWN (taskNN)` |
 | 2 | design | `stumping` (screen, fork table, 3 to 5 rungs), `determinism-check` (closure), `supplemental-stumping`, `guide-to-prompt` | **`precut.py taskNN` exit 0** (runs `voice-check.py`) |
 | 3 | build | `dataset-generation`, `determinism-check`, `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check`, `fingerprint` | generator green, every fork asserted, the three-rules block (`dataset-generation` §7.1) green; `verify`; two byte-identical builds; input gates; `metadata.json`; `figures_check.py` exit 0; realism sweep; house-fix register; `leak.py` not LEAK; `guard.py surface` clean and `heart` not BLOCK |
 | 4 | check | `leak-check` (reader), `determinism-check` (judge) | both spawned in one message, in the background. Reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork. Judge: APPROVE. Every finding fixed in the generator in one pass, stage 3 gates re-run; FIX_NOW re-judged once; the reader re-runs only if a document or the prompt changed. SEND_BACK: re-root |
-| 5 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note; `target.zip` from the final rebuild; card current; ledger row `SHIPPED, delivered MM-DD, pending review`; `status` `SHIPPED`; commit `SHIPPED (taskNN): <the call>` with the zip and `golden/` force-added; the author handed the bundle and the stump, leak and judge lines. **Then the next task** |
+| 5 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note, the 10/10 rules re-read against the built pack (the decisive step still analytical, the mess still only Layer 1); `target.zip` from the final rebuild; card current; ledger row `SHIPPED, delivered MM-DD, pending review`; `status` `SHIPPED`; commit `SHIPPED (taskNN): <the call>` with the zip and `golden/` force-added; the author handed the bundle and the stump, leak and judge lines. **Then the next task** |
 | 6 | portal | the author | the author's portal list rewrites the ledger's portal record: APPROVED is `SHIPPED_APPROVED`, PENDING_REVIEW stays `SHIPPED`, a shipped build missing from the list is `FAILED_TO_STUMP` and joins its lane owner's next wave; a determinism or rubric return is routed (Returned tasks) |
 
 Back to design: a reader finding a decisive-step sentence or a main-call fork; a FIX_NOW that moves the
@@ -83,6 +83,12 @@ Each attempt gets a `## Tried and rejected` line. A repair re-cuts `target.zip`,
 **Failed to stump.** A shipped build the portal list leaves out is `FAILED_TO_STUMP`: it goes into its lane
 owner's backlog as a rework (redesign when the portal solved it, re-root when the architecture is spent),
 and `/build taskNN` picks it up from its `pipeline.json` when its wave comes round.
+
+**The 10/10 gate on every rework, before any resume** (`CLAUDE.md`, first section). The card carries
+`stump_class: analytical`, `analyst_test` and `domain_test`, with no official or validated decoy flag; the
+note's `## Three rules` passes `precut.py`, `Not semantics:` and `Not rule application:` included. A design
+whose decisive step is a plant, a withheld rule, a field reading or an executed procedure is re-rooted at
+stage 1, never resumed. `status.py next` prints what a rework still owes.
 
 ## `freeze.py` and `status.py`
 
