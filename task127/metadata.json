@@ -1,0 +1,183 @@
+{
+ "task": "task127",
+ "title": "How many of the winter discharge fund's 1,200 discharge-to-assess packages each of Marchshire's five acute hospitals should get, and the occupied bed-days they free",
+ "domain": "Healthcare Delivery & Health Economics",
+ "subdomain": "patient flow, beds and workforce optimisation (discharge-to-assess packages)",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "05: allocation to a fixed total (five hospitals' packages and bed-days, the total, the hospitals left without packages), with each district's referrals started within seven days by month and each hospital's delayed bed-days by month on a chart",
+ "as_of": "2026-10-12",
+ "deliverables": [
+  "d2a_package_split_winter_2026-27.xlsx",
+  "delayed_bed_days_winter_2025-26.svg"
+ ],
+ "distractor_files": [
+  "discharge_delays_weekly_return_2024-12_2026-09.csv",
+  "bed_census_daily_2024-12_2026-09.xlsx",
+  "reablement_91_day_outcomes_2024-26.xlsx"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "acute_ward_stays_2024-12_2026-09.csv",
+  "largest_file_rows": 138450
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task127/generator/make.py (seeded, deterministic) around a fictional English county, its integrated care board, two acute trusts, county council and people; every record and figure is invented.",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "files": [
+  {
+   "path": "acute_discharges_65plus_2024-12_2026-09.csv",
+   "format": "csv",
+   "bytes": 11609082,
+   "rows": 65496,
+   "source": "Constructed: ICB data warehouse: acute discharges of patients aged 65 and over, Dec 2024 to Sep 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "acute_extract_notes.txt",
+   "format": "txt",
+   "bytes": 2591,
+   "rows": null,
+   "source": "Constructed: Field notes for the acute extracts",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "acute_ward_stays_2024-12_2026-09.csv",
+   "format": "csv",
+   "bytes": 7572456,
+   "rows": 138450,
+   "source": "Constructed: ICB data warehouse: ward stays of the same spells",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bed_census_daily_2024-12_2026-09.xlsx",
+   "format": "xlsx",
+   "bytes": 86649,
+   "rows": null,
+   "source": "Constructed: Daily general and acute bed census by site",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "brokerage_referrals_2024-12_2026-09.csv",
+   "format": "csv",
+   "bytes": 1706052,
+   "rows": 14020,
+   "source": "Constructed: County council brokerage: referrals for home care, Dec 2024 to Sep 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "council_extract_notes.txt",
+   "format": "txt",
+   "bytes": 2399,
+   "rows": null,
+   "source": "Constructed: Field notes for the council extracts",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "data_request_log.csv",
+   "format": "csv",
+   "bytes": 2128,
+   "rows": 15,
+   "source": "Constructed: System Flow data request log",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "discharge_delays_weekly_return_2024-12_2026-09.csv",
+   "format": "csv",
+   "bytes": 15777,
+   "rows": 190,
+   "source": "Constructed: National discharge collection as submitted by the two trusts (weekly, by trust)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gp_practices_2026-09.csv",
+   "format": "csv",
+   "bytes": 1918,
+   "rows": 21,
+   "source": "Constructed: GP practice list (Marchshire and Severnside ICBs)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ices_export_notes.txt",
+   "format": "txt",
+   "bytes": 1282,
+   "rows": null,
+   "source": "Constructed: Field notes for the equipment export",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ices_order_lines_2024-12_2026-09.csv",
+   "format": "csv",
+   "bytes": 3752190,
+   "rows": 32943,
+   "source": "Constructed: Integrated community equipment service: order lines, Dec 2024 to Sep 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "postcode_districts_marchshire.csv",
+   "format": "csv",
+   "bytes": 30879,
+   "rows": 1097,
+   "source": "Constructed: County council postcode lookup",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "reablement_91_day_outcomes_2024-26.xlsx",
+   "format": "xlsx",
+   "bytes": 7164,
+   "rows": null,
+   "source": "Constructed: Reablement 91-day outcomes by district and quarter",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "spot_care_invoice_lines_2025-26.csv",
+   "format": "csv",
+   "bytes": 363024,
+   "rows": 3876,
+   "source": "Constructed: County council finance: spot-care invoice lines, 2025-26",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ward_reference.csv",
+   "format": "csv",
+   "bytes": 6123,
+   "rows": 54,
+   "source": "Constructed: The two trusts' ward reference",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "winter_discharge_fund_2026-27.pdf",
+   "format": "pdf",
+   "bytes": 3647,
+   "rows": null,
+   "source": "Constructed: ICB allocation note SF-2026-14, Winter Discharge Fund 2026/27",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
+}

@@ -1,36 +1,37 @@
 {
   "task": "task127",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "opportunity-sizing-decision",
-  "stage": 2,
-  "stage_name": "design (architecture 2)",
+  "stage": 5,
+  "stage_name": "ship (architecture 2)",
   "updated": "2026-10-12",
-  "stump": "The default path values a discharge-to-assess package at each hospital by its covered pathway-1 patients' delay, or their home-care wait counted from medical optimisation, and fills Ashby Vale Hospital first and to all of its covered patients, where the golden fills Holmford Infirmary and Royal Marchford first and leaves Ashby Vale with few or none; at Ashby Vale most covered patients also wait days for community equipment, a wait that runs alongside the care wait and that a package does not remove.",
+  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,425 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK), every line harmless (leak_check_report.md, Solver's-eye read)",
+    "reader": "pass 1: nothing for questions 1 to 4, realism tells fixed; pass 2: nothing for questions 1 to 4, two forks closed and asserted, realism tells fixed with figures.json identical"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task119 v2 0.07 (differentiated)"
+    "heart": "WARN (overuse.org_family; same_driver_older differentiated), 2026-10-12",
+    "surface": "no promoted pair after the card update, 2026-10-12",
+    "nearest": "task119 v2 0.08 (differentiated)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task127/determinism_check_report_pass2.md (pass 1 FIX_NOW: task127/determinism_check_report.md)"
   },
   "returned": [],
-  "resume": "stage 2: design note (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt) to precut.py exit 0",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "history": {
     "architecture_1": {
