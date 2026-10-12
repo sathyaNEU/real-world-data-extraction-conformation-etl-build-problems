@@ -1,26 +1,26 @@
 {
   "task": "task140",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 127,000 cores; the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (3.0 and 0.2 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 114,000.",
+  "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 122,000 cores (Ends on); the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (2.9404 and 0.20804 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 109,000.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW, no LEAK (2026-10-12; every REVIEW line answered in the design note)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (overuse.objective), no BLOCK",
+    "nearest": "task32 v3 lineage 0.05; surface 0 promoted pairs"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: precut.py exit 0 (card registered), then stage 3 build (generator in progress under task140/generator)",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -1,0 +1,199 @@
+{
+  "call": {
+    "guarantee_cores": "109,000",
+    "firm_tenants_cores": "577,000",
+    "cell_store_cores": "38,000",
+    "cell_ctl_cores": "2,000",
+    "platform_services_cores": "40,000",
+    "reservable_cores": "726,624"
+  },
+  "steps": {
+    "machines_q1": "5,220",
+    "cores_per_machine": "96",
+    "overcommit": "1.45",
+    "reservable_cores": "726,624",
+    "rate_q1_eur": "7.42",
+    "firm_requests_total": "580,200",
+    "firm_approved_total": "576,972",
+    "firm_approved": {
+      "search-api": "126,415",
+      "avail-cache": "102,350",
+      "pricing": "76,819",
+      "booking": "54,400",
+      "payments": "32,300",
+      "reviews": "23,600",
+      "reco-serve": "52,088",
+      "ads-listings": "37,600",
+      "notify": "18,650",
+      "partner-gw": "30,950",
+      "settle-batch": "21,800"
+    },
+    "firm_held_to_budget": [
+      "pricing",
+      "reco-serve",
+      "search-api"
+    ],
+    "store_fit_intercept": "33.1",
+    "store_fit_per_machine": "2.9404",
+    "store_fit_per_batch_core": "0.20804",
+    "store_fit_hours": "17,081",
+    "one_plus_per_batch_core": "1.20804",
+    "store_fit_resid_sd": "13.0",
+    "cell_ctl_forecast": "1999.2",
+    "guarantee_unrounded": "109492.0",
+    "cell_store_at_guarantee": "38058.5",
+    "platform_total": "40057.7",
+    "unreserved": "594.3",
+    "cs3_sections": [
+      "2.1",
+      "3.2",
+      "3.3",
+      "4.1",
+      "4.2",
+      "5.1",
+      "5.2"
+    ]
+  },
+  "default_path": {
+    "guarantee_cores": "122,000",
+    "cell_store_cores": "25417.6",
+    "guarantee_unrounded": "122235.1"
+  },
+  "rungs": {
+    "R-1": {
+      "guarantee_cores": "119,000",
+      "guarantee_unrounded": "119007.1"
+    },
+    "R0": {
+      "guarantee_cores": "122,000",
+      "guarantee_unrounded": "122235.1"
+    },
+    "R0b": {
+      "guarantee_cores": "122,000",
+      "guarantee_unrounded": "122298.1"
+    },
+    "R0c": {
+      "guarantee_cores": "122,000",
+      "guarantee_unrounded": "122117.0"
+    },
+    "R0d": {
+      "guarantee_cores": "122,000",
+      "guarantee_unrounded": "122470.5"
+    },
+    "R0e": {
+      "guarantee_cores": "122,000",
+      "guarantee_unrounded": "122324.1"
+    },
+    "R1": {
+      "guarantee_cores": "119,000",
+      "guarantee_unrounded": "119115.3"
+    },
+    "R1b": {
+      "guarantee_cores": "118,000",
+      "guarantee_unrounded": "118755.1"
+    },
+    "R1c": {
+      "guarantee_cores": "118,000",
+      "guarantee_unrounded": "118703.4"
+    },
+    "R2b": {
+      "guarantee_cores": "106,000",
+      "guarantee_unrounded": "106840.8"
+    },
+    "R2e": {
+      "guarantee_cores": "120,000",
+      "guarantee_unrounded": "120620.5"
+    },
+    "R2d": {
+      "guarantee_cores": "110,000",
+      "guarantee_unrounded": "110903.7"
+    },
+    "R2": {
+      "guarantee_cores": "111,000",
+      "guarantee_unrounded": "111662.0"
+    },
+    "R2c": {
+      "guarantee_cores": "110,000",
+      "guarantee_unrounded": "110999.0"
+    },
+    "Monly": {
+      "guarantee_cores": "120,000",
+      "guarantee_unrounded": "120796.6"
+    },
+    "O1": {
+      "guarantee_cores": "101,000",
+      "guarantee_unrounded": "101636.0"
+    },
+    "LedgerFit": {
+      "guarantee_cores": "110,000",
+      "guarantee_unrounded": "110224.4"
+    },
+    "QmaxFit": {
+      "guarantee_cores": "109,000",
+      "guarantee_unrounded": "109459.4"
+    },
+    "R3": {
+      "guarantee_cores": "109,000",
+      "guarantee_unrounded": "109492.0"
+    }
+  },
+  "ask_a": {
+    "ranking-ml": {
+      "lost_core_hours": "121,800",
+      "lost_share_pct": "0.40",
+      "held_core_hours": "30,610,600"
+    },
+    "pricing-ml": {
+      "lost_core_hours": "80,500",
+      "lost_share_pct": "0.37",
+      "held_core_hours": "21,806,400"
+    },
+    "fraud-ml": {
+      "lost_core_hours": "48,500",
+      "lost_share_pct": "0.31",
+      "held_core_hours": "15,586,400"
+    },
+    "reco-ml": {
+      "lost_core_hours": "144,300",
+      "lost_share_pct": "0.59",
+      "held_core_hours": "24,434,000"
+    },
+    "demand-ml": {
+      "lost_core_hours": "72,000",
+      "lost_share_pct": "0.49",
+      "held_core_hours": "14,736,900"
+    },
+    "nlp-ml": {
+      "lost_core_hours": "134,900",
+      "lost_share_pct": "0.77",
+      "held_core_hours": "17,525,000"
+    }
+  },
+  "ask_b": {
+    "July": {
+      "hardware_faults_machine_hours": "750",
+      "maintenance_machine_hours": "850"
+    },
+    "August": {
+      "hardware_faults_machine_hours": "730",
+      "maintenance_machine_hours": "910"
+    },
+    "September": {
+      "hardware_faults_machine_hours": "660",
+      "maintenance_machine_hours": "880"
+    }
+  },
+  "ask_c": {
+    "search-api": "2,653,000",
+    "avail-cache": "2,148,200",
+    "pricing": "1,594,300",
+    "booking": "1,204,900",
+    "payments": "696,700",
+    "reviews": "506,800",
+    "reco-serve": "1,104,100",
+    "ads-listings": "822,900",
+    "notify": "409,200",
+    "partner-gw": "658,500",
+    "settle-batch": "488,500"
+  }
+}

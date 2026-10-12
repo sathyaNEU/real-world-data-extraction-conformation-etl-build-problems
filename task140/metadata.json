@@ -1,0 +1,259 @@
+{
+  "task": "task140",
+  "title": "How many cores compute cell C-22 can guarantee to batch training for the first quarter of 2027",
+  "domain": "Supply Chain & Logistics",
+  "client_domain": "General Statistics & Data Science",
+  "subdomain": "regression-classification-model-diagnostics (data-centre capacity planning: a dependent platform service's load specified on its drivers and solved together with the residual guarantee it depends on)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: the guarantee and the reservations it is struck after, the slide's split of the reservable cores, and three 2026 Q3 tables (each batch team's redone core-hours and share; each month's machine-hours lost by cause; each firm tenant's chargeback)",
+  "as_of": "2026-12-14",
+  "deliverables": [
+    "c22_capacity_2027q1.xlsx",
+    "c22_capacity_review_2027q1.pptx"
+  ],
+  "distractor_files": [
+    "mad1_cells_quarterly_summary_2025-2026.xlsx",
+    "batch_training_demand_2027H1.pdf"
+  ],
+  "input_gates": {
+    "files": 24,
+    "formats": [
+      "csv",
+      "docx",
+      "json",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "c22_usage_hourly_2025-01-01_2026-12-13.csv",
+    "largest_file_rows": 239470
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task140/generator/build.py (seeded, deterministic) around a fictional Spanish online travel company (Alisio Viajes, S.L.), its MAD1 data centre and compute cell C-22, tenants, teams and people; no real organisation, person or system is depicted.",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task140/generator/build.py",
+  "files": [
+    {
+      "path": "CS-3_cell_capacity_standard_rev2026-06.pdf",
+      "format": "pdf",
+      "bytes": 53325,
+      "rows": null,
+      "source": "Constructed: Cell Capacity Standard CS-3 (revision of June 2026): reservable cores, firm holds, platform services, the batch guarantee",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "README_capacity_review_files.txt",
+      "format": "txt",
+      "bytes": 3246,
+      "rows": null,
+      "source": "Constructed: Files note: each file, what it is and where it came from",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "batch_checkpoints_2026Q3.csv",
+      "format": "csv",
+      "bytes": 4026936,
+      "rows": 52336,
+      "source": "Constructed: Checkpoints of those runs and the checkpoints their resumptions restored",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "batch_resizes_2026Q3.csv",
+      "format": "csv",
+      "bytes": 47267,
+      "rows": 1161,
+      "source": "Constructed: Resizes of elastic batch runs in 2026 Q3",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "batch_runs_2026Q3.csv",
+      "format": "csv",
+      "bytes": 353944,
+      "rows": 3851,
+      "source": "Constructed: Batch training runs that held cores in 2026 Q3 (batch scheduler quarter snapshot)",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "batch_training_demand_2027H1.pdf",
+      "format": "pdf",
+      "bytes": 52054,
+      "rows": null,
+      "source": "Constructed: ML Platform's note on batch training demand for January to June 2027",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_capacity_report_2026Q3.pdf",
+      "format": "pdf",
+      "bytes": 52421,
+      "rows": null,
+      "source": "Constructed: C-22 capacity report for 2026 Q3",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_cell_hourly_2025-01-01_2026-12-13.csv",
+      "format": "csv",
+      "bytes": 751623,
+      "rows": 17081,
+      "source": "Constructed: C-22 machines installed and in service by hour, same period",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_hardware_plan_2027Q1_rev2026-12-11.xlsx",
+      "format": "xlsx",
+      "bytes": 15735,
+      "rows": null,
+      "source": "Constructed: C-22 hardware plan for 2027 Q1, revision of 11 December 2026: racks and machines in service by date",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_machine_events_2026Q3.csv",
+      "format": "csv",
+      "bytes": 72557,
+      "rows": 1263,
+      "source": "Constructed: C-22 machine events from the MAD1 cluster manager, 2026 Q3",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_reservation_ledger_2025Q1-2026Q4.csv",
+      "format": "csv",
+      "bytes": 6087,
+      "rows": 112,
+      "source": "Constructed: C-22 reservation ledger, 2025 Q1 to 2026 Q4",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "c22_usage_hourly_2025-01-01_2026-12-13.csv",
+      "format": "csv",
+      "bytes": 11505079,
+      "rows": 239470,
+      "source": "Constructed: C-22 monitoring export: each tenant's average cores in use by hour, 1 January 2025 to 13 December 2026",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_memo_2027Q1.docx",
+      "format": "docx",
+      "bytes": 37488,
+      "rows": null,
+      "source": "Constructed: Capacity memo for the C-22 review of 2027 Q1 (9 December 2026)",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_requests_2027Q1.csv",
+      "format": "csv",
+      "bytes": 1028,
+      "rows": 11,
+      "source": "Constructed: Firm tenants' reservation requests for 2027 Q1 from the quota tool",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "chargeback_policy_2026.pdf",
+      "format": "pdf",
+      "bytes": 35227,
+      "rows": null,
+      "source": "Constructed: Technology chargeback policy 2026",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "compute_rate_card.csv",
+      "format": "csv",
+      "bytes": 981,
+      "rows": 16,
+      "source": "Constructed: Compute rate card, every rate by effective date",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 8852,
+      "rows": null,
+      "source": "Constructed: Field definitions for the capacity review files",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mad1_cells_quarterly_summary_2025-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8355,
+      "rows": null,
+      "source": "Constructed: MAD1 compute cells' quarterly summary, 2025 and 2026",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mad1_hardware_inventory_2026-12.xlsx",
+      "format": "xlsx",
+      "bytes": 384533,
+      "rows": null,
+      "source": "Constructed: MAD1 hardware inventory for C-22: assets and their cluster ids",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mad1_operations_log_2026H2.docx",
+      "format": "docx",
+      "bytes": 38551,
+      "rows": null,
+      "source": "Constructed: MAD1 operations log, July to December 2026",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quota_changes_2026Q3.csv",
+      "format": "csv",
+      "bytes": 2154,
+      "rows": 29,
+      "source": "Constructed: Changes to firm reservations in 2026 Q3 from the quota tool",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quota_reconciler_runs_2026Q3.csv",
+      "format": "csv",
+      "bytes": 25184,
+      "rows": 355,
+      "source": "Constructed: Quota service reconciliation runs in 2026 Q3",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tech_budgets_2026_Q1-2027_freeze.xlsx",
+      "format": "xlsx",
+      "bytes": 9718,
+      "rows": null,
+      "source": "Constructed: Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tenant_directory.json",
+      "format": "json",
+      "bytes": 3625,
+      "rows": null,
+      "source": "Constructed: C-22 tenant directory",
+      "date": "2026-12-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
