@@ -16,5 +16,5 @@ architecture), new. A task from an objective no developer owns says so.
 
 | Wave | Tasks, in order |
 |---|---|
-| 1 | task124 (resume 3) · task134 (resume 3) · task135 (resume 3) · task501 (redesign: the portal landed v2) · task133 (redesign: shipped, not stumped) · task130 (re-root: retired) |
+| 1 | task124 (resume 3) · task134 (resume 3) · task135 (resume 3) · task501 (redesign: the portal landed v2) · task130 (re-root: retired) |
 | 2 | task136 (new) · task137 (new) · task138 (new) · task139 (new) · task140 (new) · task141 (new) |
